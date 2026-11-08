@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-07T18:53:45.775Z",
- "url": "http://localhost:5341",
+ "generatedAt": "2026-11-08T01:26:08.497Z",
+ "url": "http://localhost:5308",
  "dark": false,
  "routes": {
   "/student/dashboard": {
@@ -97,10 +97,10 @@
         "bg": "rgb(250, 54, 0)"
        },
        {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
+        "text": "متابعة المشاهدة",
+        "ratio": 1.09,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(246, 246, 238)"
        }
       ],
       "total": 147
@@ -206,10 +206,10 @@
         "bg": "rgb(250, 54, 0)"
        },
        {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
+        "text": "متابعة المشاهدة",
+        "ratio": 1.09,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(246, 246, 238)"
        }
       ],
       "total": 139
@@ -230,7 +230,7 @@
   },
   "/student/courses": {
    "1440:light": {
-    "score": 98.5,
+    "score": 98.8,
     "axes": {
      "typeRungs": {
       "score": 94.44444444444444,
@@ -293,19 +293,13 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 96.29629629629629,
+      "score": 98.14814814814815,
       "fails": [
        {
         "text": "تخطَّ إلى المحتوى الرئيس",
         "ratio": 3.76,
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
        }
       ],
       "total": 54
@@ -324,7 +318,7 @@
     }
    },
    "390:light": {
-    "score": 98.4,
+    "score": 98.7,
     "axes": {
      "typeRungs": {
       "score": 94.11764705882352,
@@ -387,19 +381,13 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 96.07843137254902,
+      "score": 98.0392156862745,
       "fails": [
        {
         "text": "تخطَّ إلى المحتوى الرئيس",
         "ratio": 3.76,
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
        }
       ],
       "total": 51
@@ -418,219 +406,9 @@
     }
    }
   },
-  "/student/courses/offr_e2e_algorithms": {
-   "1440:light": {
-    "score": 98.6,
-    "axes": {
-     "typeRungs": {
-      "score": 94.04761904761905,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 28,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "مقدمة في الخوارزميات"
-       },
-       {
-        "fs": 26.6667,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "المحاضرات"
-       },
-       {
-        "fs": 26.6667,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "المواد المرفقة"
-       },
-       {
-        "fs": 26.6667,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "الجدول الأسبوعي"
-       },
-       {
-        "fs": 26.6667,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "الواجبات"
-       }
-      ],
-      "total": 84,
-      "resolvedRungs": [
-       66.6667,
-       60,
-       53.3333,
-       15,
-       13.3333,
-       13.3333,
-       13,
-       13,
-       13,
-       11.67,
-       11,
-       11,
-       13.3333,
-       33.3333,
-       40,
-       13.3333,
-       40,
-       33.3333,
-       13,
-       13,
-       48,
-       30,
-       24,
-       33.3333
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 4
-     },
-     "pattern": {
-      "score": 100,
-      "paper": true,
-      "hairline": true,
-      "numeral": true,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 97.61904761904762,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 84
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 0,
-      "r": 0
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "اسأل AI"
-     }
-    }
-   },
-   "390:light": {
-    "score": 98.6,
-    "axes": {
-     "typeRungs": {
-      "score": 93.97590361445783,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 31.7557,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "مقدمة في الخوارزميات"
-       },
-       {
-        "fs": 19.8473,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "المحاضرات"
-       },
-       {
-        "fs": 19.8473,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "المواد المرفقة"
-       },
-       {
-        "fs": 19.8473,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "الجدول الأسبوعي"
-       },
-       {
-        "fs": 19.8473,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "الواجبات"
-       }
-      ],
-      "total": 83,
-      "resolvedRungs": [
-       79.3893,
-       71.4504,
-       63.5115,
-       17.8626,
-       15.8779,
-       15.8779,
-       13,
-       13,
-       13,
-       13.8931,
-       11.9084,
-       11,
-       15.8779,
-       39.6947,
-       47.6336,
-       15.8779,
-       47.6336,
-       39.6947,
-       13,
-       13,
-       48,
-       30,
-       24,
-       22.1
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 4
-     },
-     "pattern": {
-      "score": 100,
-      "paper": true,
-      "hairline": true,
-      "numeral": true,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 97.59036144578313,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 83
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 8,
-      "r": 8
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "التالي: المحاضرة 2"
-     }
-    }
-   }
-  },
   "/student/catalog": {
    "1440:light": {
-    "score": 98.6,
+    "score": 98.9,
     "axes": {
      "typeRungs": {
       "score": 95.74468085106383,
@@ -688,19 +466,13 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 95.74468085106383,
+      "score": 97.87234042553192,
       "fails": [
        {
         "text": "تخطَّ إلى المحتوى الرئيس",
         "ratio": 3.76,
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
        }
       ],
       "total": 47
@@ -719,7 +491,7 @@
     }
    },
    "390:light": {
-    "score": 98.5,
+    "score": 98.9,
     "axes": {
      "typeRungs": {
       "score": 95.55555555555556,
@@ -777,19 +549,13 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 95.55555555555556,
+      "score": 97.77777777777777,
       "fails": [
        {
         "text": "تخطَّ إلى المحتوى الرئيس",
         "ratio": 3.76,
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
        }
       ],
       "total": 45
@@ -810,10 +576,10 @@
   },
   "/student/calendar": {
    "1440:light": {
-    "score": 99.1,
+    "score": 99.3,
     "axes": {
      "typeRungs": {
-      "score": 97.82608695652173,
+      "score": 97.87234042553192,
       "distinctTiers": true,
       "fails": [
        {
@@ -827,7 +593,7 @@
         "text": "مواعيد الشهر"
        }
       ],
-      "total": 92,
+      "total": 94,
       "resolvedRungs": [
        66.6667,
        60,
@@ -868,7 +634,7 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 96.73913043478261,
+      "score": 97.87234042553192,
       "fails": [
        {
         "text": "تخطَّ إلى المحتوى الرئيس",
@@ -877,19 +643,13 @@
         "bg": "rgb(250, 54, 0)"
        },
        {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       },
-       {
-        "text": "7",
+        "text": "8",
         "ratio": 1,
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(255, 255, 255)"
        }
       ],
-      "total": 92
+      "total": 94
      },
      "edge390": {
       "score": 100,
@@ -905,10 +665,10 @@
     }
    },
    "390:light": {
-    "score": 99.1,
+    "score": 99.3,
     "axes": {
      "typeRungs": {
-      "score": 97.77777777777777,
+      "score": 97.82608695652173,
       "distinctTiers": true,
       "fails": [
        {
@@ -922,7 +682,7 @@
         "text": "مواعيد الشهر"
        }
       ],
-      "total": 90,
+      "total": 92,
       "resolvedRungs": [
        79.3893,
        71.4504,
@@ -963,7 +723,7 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 96.66666666666667,
+      "score": 97.82608695652173,
       "fails": [
        {
         "text": "تخطَّ إلى المحتوى الرئيس",
@@ -972,19 +732,13 @@
         "bg": "rgb(250, 54, 0)"
        },
        {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       },
-       {
-        "text": "7",
+        "text": "8",
         "ratio": 1,
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(255, 255, 255)"
        }
       ],
-      "total": 90
+      "total": 92
      },
      "edge390": {
       "score": 100,

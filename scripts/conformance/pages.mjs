@@ -64,7 +64,15 @@ const rungNames = [];
   for (const f of ["tokens.css", "tokens.generated.css"]) {
     let css = "";
     try { css = strip(readFileSync(join(WORKTREE, "frontend", "src", "styles", "tokens", f), "utf8")); } catch { continue; }
-    for (const m of css.matchAll(/--(fs-[a-z-]+)\s*:/g)) {
+    /* R342-11 instrument repair (reported by R342-09): the name class
+     * was [a-z-]+, which silently dropped every digit-bearing rung —
+     * fs-h1/h2/h3, fs-2xl/3xl/4xl, fs-d1/d2/d3, fs-app-h1/h2/h3 (12
+     * of the 36 real names) — so every on-token 28px h1 counted
+     * off-ladder on every page. [a-z0-9-]+ harvests the real ladder;
+     * the prefix anchor (--fs-) + declaration colon keep it narrow
+     * (no non-fs name can match). Regression belt:
+     * scripts/conformance/test-rung-harvest.sh (CI design-gates). */
+    for (const m of css.matchAll(/--(fs-[a-z0-9-]+)\s*:/g)) {
       if (!rungNames.includes(m[1])) rungNames.push(m[1]);
     }
   }

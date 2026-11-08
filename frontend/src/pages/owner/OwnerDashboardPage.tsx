@@ -427,6 +427,13 @@ export function OwnerDashboardPage() {
     <OwnerFrame>
       <PatternsPageHeader
         title="لوحة التحكم الرئيسية"
+        /* R342-10: the [01] nav-order gutter numeral — the OWNER_NAV
+         * register's first seat, the only page still missing its header
+         * numeral after D11 covered the other twelve (realtime [02] …
+         * governance [13]). The card-level w11-idx [01] on توزيع
+         * المستخدمين below is a different register (card order) and
+         * stays. */
+        index="01"
         description="نظرة شاملة وإحصائيات حيّة عن المنصة"
         meta={formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })}
         /* D11 (D8/D10 header-CTA precedent): the console's two live

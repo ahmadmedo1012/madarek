@@ -12,7 +12,10 @@
  * D10 extras (honest fixtures for the oversight surfaces the standard
  * table lacks): /quality/{overview,courses,professors,engagement,
  * curriculum,alerts} + the moderation-queue trio the /quality/
- * exam-moderation board reads (D7b's corpus payloads).
+ * exam-moderation board reads (D7b's corpus payloads) + R342-11:
+ * /quality/community's own feeds (announcements/competitions/events
+ * + me/permissions) so the shared surface measures LOADED, not in
+ * the 501 error state the D10 corpus left it in.
  *
  * Usage:
  *   node scripts/conformance/pages-quality.mjs --url http://localhost:5352 \
@@ -88,7 +91,7 @@ const rungNames = [];
   for (const f of ['tokens.css', 'tokens.generated.css']) {
     let css = '';
     try { css = strip(readFileSync(join(WORKTREE, 'frontend', 'src', 'styles', 'tokens', f), 'utf8')); } catch { continue; }
-    for (const m of css.matchAll(/--(fs-[a-z-]+)\s*:/g)) {
+    for (const m of css.matchAll(/--(fs-[a-z0-9-]+)\s*:/g)) {
       if (!rungNames.includes(m[1])) rungNames.push(m[1]);
     }
   }
@@ -255,6 +258,8 @@ const { installMockApi, seedSession, QUALITY_USER, MODERATION_QUEUE, MODERATION_
 const ok = (data) => ({ data });
 const NOW = '2026-11-07T10:00:00.000Z';
 const hoursAgo = (h) => new Date(Date.parse(NOW) - h * 3600_000).toISOString();
+const daysAgo = (d) => hoursAgo(d * 24);        /* R342-11 — the community corpus's future/past helpers */
+const inHours = (h) => new Date(Date.parse(NOW) + h * 3600_000).toISOString();
 
 const OVERVIEW = {
   users: { STUDENT: 420, TEACHER: 28, ADMIN: 4, QUALITY: 2 },
@@ -305,6 +310,30 @@ const QALERTS = {
   counts: { critical: 1, warning: 1, info: 1, total: 3 },
 };
 
+/* R342-11 — /quality/community's own feeds (the wire shapes the page
+ * actually queries — hooks/resources/social.ts + permissions.ts), so
+ * the shared surface measures in its LOADED state, not the 501 error
+ * state the D10 corpus left it in. The D7d student corpus's verified
+ * CampusEventRow family shapes; the QUALITY role's real default
+ * capabilities (backend/src/lib/permissions.ts — ANNOUNCE_FACULTY
+ * yes, EVENTS_RUN no: the honest read-mostly quality seat). */
+const ANNOUNCEMENTS_FEED = [
+  { id: 'ann_e2e_q1', scope: 'FACULTY', scopeId: 'fac_e2e_eng', title: 'بدء التسجيل في مسابقة البرمجة السنوية', body: 'يفتح التسجيل في مسابقة البرمجة السنوية لطلاب كلية الهندسة اعتباراً من الأسبوع القادم — المقاعد محدودة والمسجّلون أولاً يحصلون على أولوية المشاركة.', pinned: true, publishedAt: hoursAgo(6), iconEmoji: '🏆', author: { firstName: 'ليلى', lastName: 'الفيتوري', avatarColor: '#7c3aed', avatarInitials: 'لف', role: 'TEACHER' } },
+  { id: 'ann_e2e_q2', scope: 'DEPARTMENT', scopeId: 'dep_e2e_cs', title: 'ورشة إعداد السيرة الذاتية للمهندسين', body: 'تنظّم شعبة التدريب التعاوني ورشة تطبيقية لصياغة السيرة الذاتية التقنية يوم الأربعاء القادم في القاعة 204.', pinned: false, publishedAt: hoursAgo(30), iconEmoji: null, author: { firstName: 'خالد', lastName: 'المبروك', avatarColor: '#0e7490', avatarInitials: 'خم', role: 'TEACHER' } },
+  { id: 'ann_e2e_q3', scope: 'PLATFORM', scopeId: null, title: 'تحديث سياق الجدول الدراسي للفصل الثاني', body: 'تمّت ترقية منظومة الجداول الدراسية — ستلاحظون تحسّناً في سرعة تحميل التقويم وترتيب المحاضرات المتزامنة.', pinned: false, publishedAt: hoursAgo(74), iconEmoji: '🗓️', author: { firstName: 'أحمد', lastName: 'المهدي', avatarColor: '#15803d', avatarInitials: 'أم', role: 'OWNER' } },
+];
+const COMMUNITY_COMPETITIONS = [
+  { id: 'cmp_e2e_q1', title: 'تحدي الخوارزميات الخريفي', description: 'خمس مسائل متدرجة الصعوبة في البرمجة الديناميكية والرسوم البيانية — فردي، 48 ساعة.', category: 'برمجة', prize: 'شهادة تقدير + نقاط مهارات', deadline: inHours(72), status: 'OPEN', iconEmoji: '🧮', themeColor: '#7c3aed', organizer: { firstName: 'ليلى', lastName: 'الفيتوري', role: 'TEACHER' }, _count: { entries: 23 } },
+  { id: 'cmp_e2e_q2', title: 'مسابقة أفضل مشروع تخرج', description: 'عرض ملصق المشروع أمام لجنة تقييم ميدانية مع تصويت الزائرين.', category: 'مشاريع', prize: 'رعاية نشر علمي', deadline: hoursAgo(48), status: 'CLOSED', iconEmoji: '🏗️', themeColor: '#0e7490', organizer: { firstName: 'خالد', lastName: 'المبروك', role: 'TEACHER' }, _count: { entries: 9 } },
+  { id: 'cmp_e2e_q3', title: 'كتابة المقال العلمي الموجز', description: 'مقال من 800 كلمة يشرح مفهوماً تقنياً لجمهور غير متخصص.', category: 'كتابة', prize: 'تقييم بحثي معتمد', deadline: daysAgo(14), status: 'JUDGED', iconEmoji: '✍️', themeColor: '#b45309', organizer: { firstName: 'أحمد', lastName: 'المهدي', role: 'OWNER' }, _count: { entries: 17 } },
+];
+const COMMUNITY_EVENTS = [
+  { id: 'evt_e2e_q1', title: 'ندوة: الذكاء الاصطناعي في التعليم الجامعي', description: 'محاضرة مفتوحة مع نقاش حول توظيف النماذج اللغوية في التعليم، يقدّمها أستاذ زائر من كلية الحاسوب.', location: 'قاعة المؤتمرات الكبرى', startsAt: inHours(26), endsAt: inHours(29), capacity: 220, iconEmoji: '🤖', themeColor: '#7c3aed', organizer: { firstName: 'ليلى', lastName: 'الفيتوري', role: 'TEACHER' }, _count: { rsvps: 148 }, myRsvp: null },
+  { id: 'evt_e2e_q2', title: 'ورشة: كتابة السيرة الذاتية للمهندسين', description: 'ورشة تطبيقية لمدة ساعتين: صياغة سيرة تقنية موجّهة لفرص التدريب التعاوني.', location: 'مبنى الهندسة — القاعة 204', startsAt: inHours(52), endsAt: inHours(55), capacity: 60, iconEmoji: '📝', themeColor: '#b45309', organizer: { firstName: 'خالد', lastName: 'المبروك', role: 'TEACHER' }, _count: { rsvps: 41 }, myRsvp: 'GOING' },
+  { id: 'evt_e2e_q3', title: 'معرض مشاريع التخرج — الفصل الثاني', description: 'عرض ملصقات مشاريع التخرج مع لجان تقييم ميدانية وتصويت زائرين.', location: 'بهو كلية الهندسة', startsAt: daysAgo(2), endsAt: daysAgo(2), capacity: 300, iconEmoji: '🏗️', themeColor: '#0e7490', organizer: { firstName: 'أحمد', lastName: 'المهدي', role: 'OWNER' }, _count: { rsvps: 267 }, myRsvp: null },
+];
+const ME_PERMISSIONS = { role: 'QUALITY', capabilities: ['QUALITY_VIEW', 'QUALITY_REPORT', 'EXAMS_MODERATE', 'ANNOUNCE_FACULTY'], roleDefaults: ['QUALITY_VIEW', 'QUALITY_REPORT', 'EXAMS_MODERATE', 'ANNOUNCE_FACULTY'] };
+
 const overrides = [
   { method: 'GET', path: '/quality/overview', json: ok(OVERVIEW) },
   { method: 'GET', path: '/quality/courses', json: { data: QCOURSES, meta: { total: QCOURSES.length } } },
@@ -315,6 +344,11 @@ const overrides = [
   /* /quality/exam-moderation (OnlineExamsPages) — D7b's corpus. */
   { method: 'GET', path: '/exams/moderation-queue', json: ok(MODERATION_QUEUE) },
   { method: 'GET', path: '/exams/templates/:id', json: ok(MODERATION_TEMPLATES.tpl_e2e_quiz4) },
+  /* /quality/community (CommunityPages) — R342-11's feed corpus above. */
+  { method: 'GET', path: '/announcements/feed', json: ok(ANNOUNCEMENTS_FEED) },
+  { method: 'GET', path: '/competitions', json: ok(COMMUNITY_COMPETITIONS) },
+  { method: 'GET', path: '/events', json: ok(COMMUNITY_EVENTS) },
+  { method: 'GET', path: '/me/permissions', json: ok(ME_PERMISSIONS) },
 ];
 
 /* the seeded auth state: QUALITY_USER + the institution context the

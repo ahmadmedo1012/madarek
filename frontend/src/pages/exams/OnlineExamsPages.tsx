@@ -11,7 +11,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ClipboardCheck, Clock, CheckCircle2, AlertTriangle, ChevronRight, ChevronDown, ChevronLeft,
   FileText, Hourglass, CalendarClock, ArrowLeft, Check,
-  ListChecks, Info, Ban,
+  ListChecks, Info, Ban, BarChart3, Compass,
 } from 'lucide-react';
 import { Card, Badge, PageHeader } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
@@ -296,6 +296,24 @@ export default function OnlineExamsPage() {
           eyebrow="مركز الاختبارات"
           title="الاختبارات الإلكترونية"
           description="اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات. تنبيه: لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية."
+          /* R342-08 — the header CTA pair (the D11/D8 measured seat; the
+             phone band hides the topbar «اسأل AI» ≤920, D6, and the first
+             row's start CTA sits below the phone fold): the exam
+             journey's honest next steps — «النتائج والتقييمات» is where
+             the grades land, «المصفوفة التعليمية» is the mastery the
+             interactions feed (the exams→results→mastery loop). */
+          actions={(
+            <>
+              <Link to="/student/results" className="btn primary sm">
+                <Icon icon={BarChart3} size={13} />
+                النتائج والتقييمات
+              </Link>
+              <Link to="/student/matrix" className="btn ghost sm">
+                <Icon icon={Compass} size={13} />
+                المصفوفة التعليمية
+              </Link>
+            </>
+          )}
         />
 
         {/* [02] the startable board — the bar renders in every state
@@ -1948,11 +1966,31 @@ export function ExamModerationPage() {
   return (
     <div className="hr-scope">
     <div className="page">
-      {/* R305 Heron — the oversight brow above the page header. */}
-      <span className="hr-brow oex2-brow">طابور الاعتماد</span>
+      {/* R305 Heron — the oversight brow above the page header. R342-11:
+          the [05] QUALITY_NAV seat numeral rides the brow (the §B2
+          cover precedent — the family's own page-index mono label
+          carried by the brow line), closing the quality register:
+          [01] لوحة الجودة … [04] الانخراط · [05] هنا · [06] المناهج …
+          [09] التنبيهات. */}
+      <span className="hr-brow oex2-brow">
+        <span className="page-index" aria-hidden="true" dir="ltr">[05]</span>
+        طابور الاعتماد
+      </span>
       <PageHeader
         title="مراجعة الاختبارات"
         subtitle="مراجعة قوالب الاختبارات الموحَّدة قبل اعتمادها وإتاحتها للطلاب — صلاحية حصرية لمكتب الجودة."
+        /* R342-11: the header CTA pair (the D10 quality-family grammar,
+         * navigation-only — the queue's own decisions live on the rows).
+         * The accent seat is the measured hover surface (.has-shell
+         * .btn.accent:hover, chrome.css §10) and the phone band's
+         * primary — the SAME pair the quality dashboard carries
+         * (تقارير + تنبيهات), the sector's one consistent header. */
+        actions={
+          <>
+            <Link to="/quality/reports" className="btn accent sm">تقارير الجودة</Link>
+            <Link to="/quality/alerts" className="btn ghost sm">تنبيهات الجودة</Link>
+          </>
+        }
       />
 
       {/* The quality sector's typographic StatStrip (R189/R190 — the

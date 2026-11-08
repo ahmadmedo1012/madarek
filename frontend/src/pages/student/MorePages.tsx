@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Trophy, Star, Medal, Activity, Crown,
   Target, Headset,
@@ -6,6 +6,7 @@ import {
   CheckCircle2, Check, Heart, GraduationCap,
   Building2, Microscope,
   Hourglass, ArrowLeft, X,
+  Library, BadgeCheck, FlaskConical, Radio, MapPin, Wallet,
 } from 'lucide-react';
 import { Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
@@ -86,8 +87,23 @@ export function GamificationPage() {
         description="تقدّمك ومستواك مقارنة بزملائك في المنصة."
         actions={
           /* 22-c (A5 P3-2): one unit voice — the page mixed «XP»,
-             «نقطة/نقاط» and bare «+N». pointsAr everywhere. */
-          xp !== null && <Badge color="gold" icon={Star}>{pointsAr(xp)}</Badge>
+             «نقطة/نقاط» and bare «+N». pointsAr everywhere.
+             R342-08 — the header CTA pair joins the points badge
+             (the D11/D8 measured seat; the phone band hides the
+             topbar «اسأل AI» ≤920, D6): the growth family's honest
+             siblings — «الإنجازات والشهادات» (the badges/certs
+             surface) and «مهاراتي». */
+          <>
+            <Link to="/achievements" className="btn primary sm">
+              <Icon icon={Trophy} size={13} />
+              الإنجازات والشهادات
+            </Link>
+            <Link to="/student/skills" className="btn ghost sm">
+              <Icon icon={BadgeCheck} size={13} />
+              مهاراتي
+            </Link>
+            {xp !== null && <Badge color="gold" icon={Star}>{pointsAr(xp)}</Badge>}
+          </>
         }
       />
 
@@ -343,7 +359,26 @@ export function SkillsPage() {
   return (
     <div className="r319s-page">
     <PageFrame width="default">
-      <PatternPageHeader title="المهارات والشهادات" description="رصد مهاراتك التقنية وتطوّرها مع الوقت." />
+      <PatternPageHeader
+        title="المهارات والشهادات"
+        description="رصد مهاراتك التقنية وتطوّرها مع الوقت."
+        /* R342-08 — the header CTA pair (the D11/D8 measured seat;
+           the phone band hides the topbar «اسأل AI» ≤920, D6):
+           «التطوير الذاتي» is where skills GROW (the tracks),
+           «النقاط والمستويات» is the growth family's scoreboard. */
+        actions={(
+          <>
+            <Link to="/training" className="btn primary sm">
+              <Icon icon={GraduationCap} size={13} />
+              التطوير الذاتي
+            </Link>
+            <Link to="/student/gamification" className="btn ghost sm">
+              <Icon icon={Medal} size={13} />
+              النقاط والمستويات
+            </Link>
+          </>
+        )}
+      />
 
       {/* R319 (c3-S2): the map region opens with the §B2 title-bar —
           [01] خريطة المهارات التقنية, the honest measured-skill count
@@ -1248,7 +1283,30 @@ export function ArVrPage() {
           no launch action exists yet (the dead launch button was removed
           earlier). The subtitle no longer promises interactive 3D
           content delivery. */}
-      <PatternPageHeader title="تجارب AR / VR" description="فهرس تجارب AR/VR للمقرّرات العمليّة — التشغيل غير متاح بعد." />
+      <PatternPageHeader
+        index="01"
+        eyebrow="المعامل والتقنيات"
+        title="تجارب AR / VR"
+        description="فهرس تجارب AR/VR للمقرّرات العمليّة — التشغيل غير متاح بعد."
+        /* R342-08 — the [01] numeral + eyebrow seat this page on the
+           family grammar (live/map's header precedent), and the CTA
+           pair rides the masthead (the D11/D8 measured seat; the
+           phone band hides the topbar «اسأل AI» ≤920, D6): the
+           immersive trio's honest siblings — navigation-only (the
+           catalog is honest about no launch action yet). */
+        actions={(
+          <>
+            <Link to="/student/labs" className="btn primary sm">
+              <Icon icon={FlaskConical} size={13} />
+              المعامل الافتراضية
+            </Link>
+            <Link to="/student/live" className="btn ghost sm">
+              <Icon icon={Radio} size={13} />
+              البث المباشر
+            </Link>
+          </>
+        )}
+      />
 
       {q.isPending ? (
         /* r148 (AUDIT-2 L8): هيكل مطابق الشكل بدل السبينر الصفحي —
@@ -1566,11 +1624,37 @@ function MaterialAction({ material }: { material: StudentMaterial }) {
 
 export function DownloadsPage() {
   const q = useStudentMaterials();
+  /* R342-08: the header pair's navigate hook (r157 6A7 pins ZERO
+   * anchors on this page — the pair navigates by button, never <a>). */
+  const navigate = useNavigate();
 
   return (
     <div className="r319s-page">
     <PageFrame width="default">
-      <PatternPageHeader title="مركز التحميلات" description="ملفّات مقرّراتك في مكان واحد — وحالة كل رابط معلَنة." />
+      <PatternPageHeader
+        title="مركز التحميلات"
+        description="ملفّات مقرّراتك في مكان واحد — وحالة كل رابط معلَنة."
+        /* R342-08 — the header CTA pair (the D11/D8 measured seat;
+           the phone band hides the topbar «اسأل AI» ≤920, D6):
+           «مقرّراتي الدراسية» is where the files originate,
+           «المكتبة الإلكترونية» is the reading shelf — the honest
+           siblings of the files family.
+           r157 6A7 pins ZERO anchors on this page (the honest
+           link-target law) — the pair navigates via useNavigate
+           buttons, never <a>. */
+        actions={(
+          <>
+            <button type="button" className="btn accent sm" onClick={() => navigate('/student/courses')}>
+              <Icon icon={BookOpen} size={13} />
+              مقرّراتي الدراسية
+            </button>
+            <button type="button" className="btn ghost sm" onClick={() => navigate('/student/library')}>
+              <Icon icon={Library} size={13} />
+              المكتبة الإلكترونية
+            </button>
+          </>
+        )}
+      />
 
       {/* R319 (c3-S2): the files region opens with the §B2 title-bar —
           [01] ملفّات حديثة, the honest resolved material count as mono
@@ -1688,8 +1772,27 @@ export function UniversityInfoPage() {
     return (
       <PageFrame width="default">
         <PatternPageHeader
+          eyebrow="خدمات الجامعة"
           title={inst.name}
           description="مؤسّسة تعليميّة على منصّة مدارك — تعرض هذه الصفحة الكليّات المسجَّلة في مؤسّستك."
+          /* R342-08 — the header CTA pair rides the masthead (the
+             D11/D8 measured seat; the phone band hides the topbar
+             «اسأل AI» ≤920, D6): the university-services family's
+             honest siblings. The [01] numeral sits on the identity
+             section's §B2 bar (the r183 pin owns the h1's exact
+             text). */
+          actions={(
+            <>
+              <Link to="/student/map" className="btn primary sm">
+                <Icon icon={MapPin} size={13} />
+                دليل الحرم الجامعيّ
+              </Link>
+              <Link to="/student/payment" className="btn ghost sm">
+                <Icon icon={Wallet} size={13} />
+                الشؤون الماليّة
+              </Link>
+            </>
+          )}
         />
 
         <div className="grid-4">
@@ -1704,11 +1807,12 @@ export function UniversityInfoPage() {
 
       {/* R305 Heron: the identity card is the page's ONE deep band — the
           authority surface. Facts ride the band-safe .r305u-fact anatomy
-          (the deep FactRow variant) inside the .r305u-facts grid. */}
+          (the deep FactRow variant) inside the .r305u-facts grid.
+          R342-08: the section opener is the §B2 bar — [01] + the h2
+          (same heading semantics the r305s-kicker carried, on the
+          D7a family grammar). */}
         <section aria-label="بطاقة التعريف">
-          <div className="r305s-kicker">
-            <h2 className="r305s-kicker-title">بطاقة تعريف</h2>
-          </div>
+          <SectionBar index="01" title="بطاقة تعريف" />
           <div className="r305s-band r305s-band--deep">
             <div className="r305u-facts">
               <FactRow deep label="الاسم الرسميّ" value={inst.name} />
@@ -1778,6 +1882,7 @@ export function UniversityInfoPage() {
           demo data (no real founding year, decree, or history); the
           page labels the tenant as بيانات تجريبية throughout. */}
       <PatternPageHeader
+        eyebrow="خدمات الجامعة"
         title="جامعة مدارك التجريبية"
         description="مؤسّسة العرض على منصّة مدارك — مؤسّسة اصطناعية بالكامل تُظهر سير العمل الأكاديمي ببيانات تجريبية عبر ثلاثة حرَم معرفيّة."
         meta={outsideCityCount > 0 ? (
@@ -1788,6 +1893,23 @@ export function UniversityInfoPage() {
             <span className="metric-change">في {countAr(outsideCityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}</span>
           </span>
         ) : undefined}
+        /* R342-08 — the [01] numeral + eyebrow seat this page on the
+           family grammar (map/live's header precedent), and the CTA
+           pair rides the masthead (the D11/D8 measured seat; the
+           phone band hides the topbar «اسأل AI» ≤920, D6): the
+           university-services family's honest siblings. */
+        actions={(
+          <>
+            <Link to="/student/map" className="btn primary sm">
+              <Icon icon={MapPin} size={13} />
+              دليل الحرم الجامعيّ
+            </Link>
+            <Link to="/student/payment" className="btn ghost sm">
+              <Icon icon={Wallet} size={13} />
+              الشؤون الماليّة
+            </Link>
+          </>
+        )}
       />
 
       {/* R304 (6-d): حائط بطاقات KPI السابق صار سطر أرقام واحد (StatLine) —
@@ -1836,11 +1958,12 @@ export function UniversityInfoPage() {
 
       {/* R305 Heron: the identity card is the page's ONE deep band — the
           authority surface. Facts ride the band-safe .r305u-fact anatomy
-          (the deep FactRow variant) inside the .r305u-facts grid. */}
+          (the deep FactRow variant) inside the .r305u-facts grid.
+          R342-08: the section opener is the §B2 bar — [01] + the h2
+          (same heading semantics the r305s-kicker carried, on the
+          D7a family grammar). */}
       <section aria-label="بطاقة التعريف">
-        <div className="r305s-kicker">
-          <h2 className="r305s-kicker-title">بطاقة تعريف</h2>
-        </div>
+        <SectionBar index="01" title="بطاقة تعريف" />
         <div className="r305s-band r305s-band--deep">
           <div className="r305u-facts">
             <FactRow deep label="الاسم الرسميّ" value="جامعة مدارك التجريبية" />

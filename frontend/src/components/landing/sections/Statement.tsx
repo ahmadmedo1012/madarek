@@ -153,6 +153,20 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                 />
               </div>
               <svg className="st-media-tone" aria-hidden="true" data-spec="intro.mediasvg">
+                {/* R343 A-I2 — the reference's own tonal mechanism: its
+                    veil svg carries the staged duplicate as a filtered
+                    IMAGE layer (spec: svg[1] > image[3]), not a flat
+                    fill — the photo itself, grayscaled, is the tone. */}
+                <image
+                  className="st-media-tone-img"
+                  href={MEDIA_IMG.src}
+                  x="0"
+                  y="0"
+                  width="100%"
+                  height="100%"
+                  preserveAspectRatio="xMidYMid slice"
+                  data-spec="intro.mediatoneimg"
+                />
                 <rect className="st-media-tone-rect" x="0" y="0" width="100%" height="100%" />
               </svg>
             </div>
@@ -184,6 +198,12 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                      * word/line level (English↔Arabic char runs differ). */
                     charCounts={HERON_CHAR_COUNTS}
                     charSpec={(gi: number, ci: number) => `intro.wchar.${gi + 1}.${ci + 1}`}
+                    /* R343 A-I1: the ink-roll twin census — the reference's
+                     * split-text tween parks a second masked word copy per
+                     * word (its recorded word-wrapper windows); the twin
+                     * rides the same scrub and binds those windows
+                     * explicitly (mapping/home-intro-wrap-A-I1.json). */
+                    twinSpec={(gi: number) => `intro.wtwin.${gi + 1}`}
                     renderLine={(line: ReactNode, key: string, index: number) => (
                       /* the reference's own line nest: line group > line box
                        * > mask wrapper > word cells — one full-width box per
@@ -290,9 +310,19 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                         {/* the seamless-loop duplicate — aria-hidden span
                             seats (the logo is a background-image tile, not
                             an img: the census keeps 5 imgs, the record's
-                            own 5) */}
-                        <span className="st-crawl-cell" aria-hidden="true">
-                          <span className="st-crawl-logo st-crawl-logo-bg" style={{ ['--crawl-img' as string]: `url(/media/renders/crop-${CRAWL_CAPTURES[i]}-640.webp)` }} />
+                            own 5). R343 A-I2: the duplicate track seats
+                            now carry explicit data-spec hooks (the
+                            reference's own loop-duplicate windows are
+                            recorded in its spec — bound in
+                            mapping/home-intro-wrap-A-I2.json, never
+                            heuristic-glued). */}
+                        <span className="st-crawl-cell" aria-hidden="true" data-spec={`intro.dupcell.${i + 1}`}>
+                          <span
+                            className="st-crawl-logo st-crawl-logo-bg"
+                            aria-hidden="true"
+                            data-spec={`intro.duplogo.${i + 1}`}
+                            style={{ ['--crawl-img' as string]: `url(/media/renders/crop-${CRAWL_CAPTURES[i]}-640.webp)` }}
+                          />
                           <span className="st-crawl-sep" aria-hidden="true" />
                         </span>
                       </Fragment>
@@ -300,13 +330,18 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                   </span>
                 </div>
               </div>
-              <div className="st-desc" data-spec="intro.desc">
-                <div className="st-desc-text" data-spec="intro.desctext">
-                  توثيق وسائط لا شراكة — الصور والقنوات الرسمية لهذه الجامعات في
-                  <Link to="/campus" className="fo-text-link">صفحة الحرم الجامعي</Link>.
-                </div>
-                <div className="st-desc-rule lp-hairline lp-hairline--h" aria-hidden="true" data-spec="intro.descrule" />
+            </div>
+
+            {/* R342-02 — the desc row rides BELOW the ticker-in box (the
+                frozen spec's own nest: tickerin = labelrow + crawl; the
+                disclosure desc is the band's own closing row, inside the
+                ticker cell) */}
+            <div className="st-desc" data-spec="intro.desc">
+              <div className="st-desc-text" data-spec="intro.desctext">
+                توثيق وسائط لا شراكة — الصور والقنوات الرسمية لهذه الجامعات في
+                <Link to="/campus" className="fo-text-link">صفحة الحرم الجامعي</Link>.
               </div>
+              <div className="st-desc-rule lp-hairline lp-hairline--h" aria-hidden="true" data-spec="intro.descrule" />
             </div>
           </div>
         </div>

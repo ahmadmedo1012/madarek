@@ -158,10 +158,21 @@ function OwnerFacultyCard({
         <div className="admin-faculty-meta">
           {/* r183-B5 (A9 P1): the city rides every card — name+city is
               the uniqueness key, so same-name faculties in different
-              cities are finally distinguishable. */}
+              cities are finally distinguishable.
+              R342-10: the four facts carry NO sheet rule for
+              .admin-faculty-meta (grep: zero selectors repo-wide), so
+              the bare inline spans rendered as glued bidi runs
+              («قسمان18 مقرّراً140 طالباً» — the r342 VLM/DOM audit;
+              .admin-faculty-meta has no gap/margins to separate them).
+              The family's own separator idiom (the dept rows' «·» and
+              the courses table's «كلية · قسم») fixes the run honestly
+              in content — no new CSS, no second grammar. */}
           <span>{faculty.city.trim() || '—'}</span>
+          <span aria-hidden="true">{' · '}</span>
           <span>{countAr(faculty.departmentCount, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}</span>
+          <span aria-hidden="true">{' · '}</span>
           <span>{countAr(faculty.courseCount, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</span>
+          <span aria-hidden="true">{' · '}</span>
           <span>{countAr(faculty.studentCount, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
         </div>
       </div>

@@ -655,6 +655,30 @@
    it reads as an eyebrow, not a floating pill. */
 .hr-scope .page-title-block .hr-brow { margin-block-end: var(--sp-2); }
 
+/* R342-09 — the detail-surface classification eyebrow. A param route
+   (/teacher/intelligence/:id · /teacher/exams/:id) resolves NO topbar
+   group kicker (the shell renders one only on exact nav destinations),
+   so the detail surfaces carry their own classification line under the
+   §0 brow anatomy, named for the pattern-library eyebrow register it
+   IS (a real pre-title classification, never decoration). §0 is
+   coordinator-owned, so the alias lives here in §E and serves the §E
+   + §B detail surfaces (one anatomy, no second visual system). */
+.hr-scope .hr-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--hr-ember-ink);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0;           /* Arabic joins — never track */
+  padding-inline: var(--sp-2);
+  padding-block: var(--sp-1);
+  border-inline-start: 3px solid var(--hr-ember);
+  border-radius: var(--r-xs);
+  margin-block-end: var(--sp-2);
+  inline-size: fit-content;
+}
+
 /* Truncated-list disclosure (live · «جلسات سابقة») — sheet class
    replaces the old inline margin (r186 hygiene). */
 

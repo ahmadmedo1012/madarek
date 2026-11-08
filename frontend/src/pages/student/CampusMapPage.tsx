@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ExternalLink, ArrowLeft, Info } from 'lucide-react';
+import { ExternalLink, ArrowLeft, Info, Building2, Download } from 'lucide-react';
 /* R321 (c1 · WP-B2) — the §B2 kit: the mono-indexed section title
  * bar, the honest mono count + the hatched empty cell. */
 import { SectionBar, BarCount, EmptyCell } from '../../components/student';
@@ -83,6 +83,23 @@ export default function CampusMapPage() {
         description={
           'كلّيّات جامعة مدارك التجريبية بحسب الحرم، مع روابط لصفحاتها التفصيليّة — بيانات عرض اصطناعية.'
         }
+        /* R342-08 — the header CTA pair (the D11/D8 measured seat;
+           the phone band hides the topbar «اسأل AI» ≤920, D6):
+           «الجامعة التجريبية» is the campus's fact sheet (the
+           bottom rail keeps its fuller «الصفحة الكاملة» label),
+           «مركز التحميلات» is the university-services sibling. */
+        actions={(
+          <>
+            <Link to="/student/university" className="btn primary sm">
+              <Icon icon={Building2} size={13} />
+              الجامعة التجريبية
+            </Link>
+            <Link to="/student/downloads" className="btn ghost sm">
+              <Icon icon={Download} size={13} />
+              مركز التحميلات
+            </Link>
+          </>
+        )}
       />
 
       {/* [02] the campus "map" — an honest footprint band (real counts

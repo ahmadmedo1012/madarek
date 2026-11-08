@@ -670,32 +670,28 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   UNLAYERED — notification badge: semantic danger pair (S-1b re-skin
-   of 4-A2 P2-7 / 21-a)
+   UNLAYERED — notification badge (R342-08 contrast repair)
    ═══════════════════════════════════════════════════════════════════
    The badge's geometry/font live in polish.css's `@layer overrides`
    (.topbar-notif-badge — 13px digits via --fs-xxs, tabular-nums, the
-   2px var(--surface) isolation ring, the pulse), while its COLORS were
-   retired here: the old override pinned the raw ramp pair
-   (--c-rose-deep/--white light, --c-rose-ink/--c-rose-bg dark).
+   2px var(--surface) isolation ring, the pulse); its COLORS live here
+   (unlayered — polish.css's overrides layer must never win them).
 
-   S-1b re-keys it to the SEMANTIC danger pair — the same tokens every
-   solid-danger chip on the platform speaks (see .btn.danger's
-   --_btn-fg chain):
-     light — bg var(--danger-ink) #7C2A22 + var(--danger-fg) #FFFFFF
-             (byte-identical to the retired light pairing)
-     dark  — bg var(--danger-ink) #E08074 + var(--danger-fg) #16140F
-             (6.6:1 — up from the ramp pair's 5.5:1, same family)
-   Both tokens re-resolve per theme/contrast block, so the explicit
-   [data-theme="dark"] twin died with the raw ramp names. Unlayered for
-   the same cascade reason as the panel block above: this file imports
-   before polish.css, whose overrides layer owns background/color for
-   this selector (var(--danger) + #fff — sub-AA in dark).
-   The unread count itself is REAL server truth (meta.unread of
-   GET /notifications?limit=1, polled 60s — useUnreadNotifications);
-   digits are Western, ≥13px, tabular. */
+   R342-08: the previous seat painted `--danger-ink` (the DEEP text
+   shade #8C230A light / the night ink dark) UNDER `--danger-fg`
+   (warm-ink #191918 — the ink designed for the CORAL fill). That
+   mixed two tokens from different pairing contracts and measured
+   1.98:1 on every page. The tokens' own documented pair (tokens.css
+   §danger: "Label ink ON A --danger FILL … consumed by .btn.danger +
+   notif badge") is the coral fill + warm-ink label:
+     light — bg var(--danger) #F15534 + var(--danger-fg) #191918 = 5.10:1
+     dark  — bg var(--danger) #FF8E68 + var(--danger-fg) #191918 = 7.81:1
+   Both re-resolve per theme/contrast block. The unread count itself
+   is REAL server truth (meta.unread of GET /notifications?limit=1,
+   polled 60s — useUnreadNotifications); digits are Western, ≥13px,
+   tabular. */
 .topbar-notif-badge {
-  background: var(--danger-ink);
+  background: var(--danger);
   color: var(--danger-fg);
 }
 

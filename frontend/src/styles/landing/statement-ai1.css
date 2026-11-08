@@ -1,0 +1,51 @@
+/* R343 A-I1 — the statement's ink-roll twins (the frozen census's parked
+ * second word copy). The reference's split-text tween keeps a masked twin
+ * of every word below the word cell; ours rides the SAME --wr-k scrub the
+ * fill rides: parked at translateY(100%) (clipped by the .wr-w mask), it
+ * rolls up into place as the scrub passes the word — real scroll-tied
+ * motion, the Heron roll grammar, never a count-only box.
+ *
+ * Rest serialization (the conformance twin's own law, r338 T-03g): the
+ * twin rests at the ghost gray (--neutral-400, the spec's recorded rest
+ * state) and arrives in ink via the same background-clip gradient the
+ * primary .wr-i uses — computed `color` stays the frozen ghost measure
+ * at rest, exactly what the word-window bindings assert. */
+
+.st-title .wr-scrub .wr-w {
+  position: relative;
+}
+
+.st-title .wr-scrub .wr-i2 {
+  position: absolute;
+  inset: 0;
+  color: var(--neutral-400);
+  background-image: linear-gradient(var(--text), var(--text));
+  background-repeat: no-repeat;
+  background-size: calc(var(--wr-k, 0) * 100%) 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  transform: translateY(calc((1 - var(--wr-k, 0)) * 100%));
+  pointer-events: none;
+  user-select: none;
+}
+
+/* the dark internal-consistency flip rides the same tokens the primary
+ * fill rides (statement.css's dark block) — the twin inherits it. */
+@media (prefers-reduced-motion: reduce) {
+  /* RM: the roll retires with the scrub — the twin stands complete in
+   * full ink over its word, no motion (the transform collapses). */
+  .st-title .wr-scrub .wr-i2 {
+    color: var(--text);
+    background-image: none;
+    transform: none;
+  }
+}
+
+/* R343 A-I2 — the tonal staged duplicate: the reference's veil svg carries
+ * the photo itself as a filtered IMAGE layer (its own tonal mechanism —
+ * svg > image), grayscaled and translucent over the ink; the flat rect
+ * keeps its role as the paper-tint wash. */
+.st-media-tone-img {
+  filter: grayscale(1);
+  opacity: 1;
+}

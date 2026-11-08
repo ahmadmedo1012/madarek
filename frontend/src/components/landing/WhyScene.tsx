@@ -22,6 +22,7 @@
  * gsap; reveal engine drives the intro, Lenis stays).
  */
 import { useSheetScroll } from '../../lib/motion/useSheetScroll';
+import { RevealCssClass } from '../../hooks/useReveal';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
@@ -37,7 +38,7 @@ type Box = [x: string, y: string, w: string, h: string];
 const CARD: Box = ['14.4rem', '0rem', '55.68rem', '55.68rem'];
 const CARD_R: Box = ['101.04rem', '0rem', '55.68rem', '55.68rem'];
 
-interface Mini { box: Box; bx?: string; ic?: string; img?: boolean }
+interface Mini { box: Box; bx?: string; ic?: string; img?: boolean; capId?: string }
 interface Row {
   card: Box;
   cardId: string;
@@ -77,55 +78,86 @@ const ROWS: Row[] = [
   },
   {
     card: CARD_R, cardId: 'student-matrix',
-    minis: [{ box: ['90.96rem', '40.56rem', '13.68rem', '10.92rem'], img: true }],
+    /* R342-05: the small evidence seat carries the TEACHER surface —
+     * a distinct real capture (matrix already owns this row's card). */
+    minis: [{ box: ['90.96rem', '40.56rem', '13.68rem', '10.92rem'], img: true, capId: 'teacher-dashboard' }],
     tagX: '3.12rem',
     title: 'أتقن المهارات',
     sub: 'مصفوفة إتقان تُظهر ما أتممت وما بقي عليك',
   },
 ];
 
-/* row-4 point reveals (x, y, size rem, scale) — the dotted route. */
+/* row-4 point reveals (x, y, size rem, scale) — the dotted route.
+ * R342-05: the cluster is translated −64.8rem inline (the measured
+ * geometry-skipped seats sat under row 4's capture face; the route
+ * now hangs in the clear band beside the axis — see MAP). */
 const POINTS: Array<[string, string, string, string]> = [
-  ['107.52rem', '36.48rem', '0.48rem', '0.4'],
-  ['107.52rem', '19.2rem', '0.48rem', '0.4'],
-  ['116.4rem', '10.8rem', '0.48rem', '0.4'],
-  ['129.72rem', '10.8rem', '0.48rem', '0.4'],
-  ['144rem', '15.6rem', '0.48rem', '0.4'],
-  ['149.88rem', '21.36rem', '0.48rem', '0.4'],
-  ['127.56rem', '42rem', '0.48rem', '0.4'],
-  ['116.4rem', '27.6rem', '0.48rem', '0.4'],
-  ['124.44rem', '27.6rem', '0.48rem', '0.4'],
-  ['124.44rem', '32.52rem', '0.48rem', '0.4'],
-  ['135.84rem', '36.48rem', '0.6rem', '0.471'],
-  ['127.2rem', '24.12rem', '0.72rem', '0.591'],
+  ['42.72rem', '36.48rem', '0.48rem', '0.4'],
+  ['42.72rem', '19.2rem', '0.48rem', '0.4'],
+  ['51.6rem', '10.8rem', '0.48rem', '0.4'],
+  ['64.92rem', '10.8rem', '0.48rem', '0.4'],
+  ['79.2rem', '15.6rem', '0.48rem', '0.4'],
+  ['85.08rem', '21.36rem', '0.48rem', '0.4'],
+  ['62.76rem', '42rem', '0.48rem', '0.4'],
+  ['51.6rem', '27.6rem', '0.48rem', '0.4'],
+  ['59.64rem', '27.6rem', '0.48rem', '0.4'],
+  ['59.64rem', '32.52rem', '0.48rem', '0.4'],
+  ['71.04rem', '36.48rem', '0.6rem', '0.471'],
+  ['62.4rem', '24.12rem', '0.72rem', '0.591'],
 ];
 
-/* row-4 dashed route map segments (x, y, w, h) — authored line-art. */
-const MAP: Array<[string, string, string, string]> = [
-  ['116.4rem', '24.48rem', '11.28rem', '3.48rem'],
-  ['127.56rem', '10.92rem', '2.4rem', '13.56rem'],
-  ['129.96rem', '10.92rem', '14.52rem', '4.92rem'],
-  ['144.6rem', '15.84rem', '5.88rem', '6rem'],
-  ['136.08rem', '21.84rem', '14.4rem', '15.12rem'],
-  ['127.2rem', '37.08rem', '8.04rem', '5.52rem'],
-  ['106.68rem', '37.08rem', '20.52rem', '5.52rem'],
-  ['106.68rem', '27.96rem', '8.88rem', '9.12rem'],
-  ['106.68rem', '19.68rem', '8.88rem', '8.4rem'],
-  ['106.68rem', '10.92rem', '8.88rem', '8.64rem'],
-  ['116.4rem', '10.92rem', '11.28rem', '13.56rem'],
-  ['123.96rem', '33.24rem', '3.24rem', '9.36rem'],
-  ['123.96rem', '33.24rem', '11.28rem', '3.84rem'],
-  ['123.96rem', '24.48rem', '2.76rem', '3.48rem'],
-  ['127.56rem', '24.48rem', '8.52rem', '12.6rem'],
-  ['127.56rem', '15.84rem', '17.04rem', '8.64rem'],
+/* row-4 dashed route map — 16 authored orthogonal segments (R342-05
+ * redraw). The seats keep their mp1…mp16 bindings; the earlier
+ * arithmetic placeholder d-attrs rendered as disjoint scribbles that
+ * crossed the cards and never touched the 12 station reveals. The
+ * route is one continuous metro-style line through every station +
+ * three margin ticks, drawn in the svg's own coordinate system and
+ * TRANSLATED +540px physical into the row's empty inline-end band —
+ * the measured station cluster (geometry-skipped tween seats) sat
+ * under row 4's capture face; the clear zone right of the axis reads
+ * as the journey leg the card's mastery view points at. Mapping:
+ * viewBox 816×265 ≈ the full row aspect (816×1.75 = 1428),
+ * xMinYMin meet; vx = (x+540)/1.75 · vy = y/1.75, measured from the
+ * rendered station rects @1440. */
+const MAP: string[] = [
+  'M569 53 H505',                    // pt3 → pt4 (top run)
+  'M505 53 V75 H437',                // pt4 elbow → pt5
+  'M437 75 V103 H409',               // pt5 elbow → pt6
+  'M409 103 V175 H476',              // pt6 down → pt11
+  'M476 175 H611',                   // pt11 → pt1 (the base line)
+  'M611 175 V93',                    // pt1 → pt2
+  'M611 93 V53 H569',                // pt2 elbow → pt3 (loop closes)
+  'M569 133 V53',                    // pt8 → pt3 (col spine)
+  'M569 133 H530',                   // pt8 → pt9
+  'M530 133 V156',                   // pt9 → pt10
+  'M517 117 V53',                    // pt12 → joins the top run at x517
+  'M517 117 V133 H530',              // pt12 spur → pt9
+  'M476 175 V201 H515',              // pt11 branch → pt7
+  'M627 175 H611',                   // margin tick — pt1 approach
+  'M409 103 V90',                    // margin tick — pt6 spur
+  'M627 53 H611',                    // margin tick — pt2 approach
 ];
 
 const cap = (id: string) => PRODUCT_CAPTURES.find((c) => c.id === id);
+/* R342-05 — the four role captures beyond PRODUCT_CAPTURES. The
+ * registry's provenance lives in `frontend/public/media/manifest.json`
+ * (products[] — same R308 seeded-demo method, verifiedByPrincipal);
+ * this map only re-states the id → ladder widths so the gallery can
+ * give every capture a distinct role instead of repeating the student
+ * surfaces three times. Files verified on disk under /media/product. */
+const EXTRA_CAPTURES: Record<string, number[]> = {
+  'teacher-dashboard': [720, 1280],
+  'admin-dashboard': [720, 1280],
+  'owner-dashboard': [720, 1280],
+  'quality-dashboard': [720, 1280],
+};
 /* the /media/product ladder (ProductFrame's loader contract) — the
  * 1× intrinsic seat of the seeded capture, CLS-safe with the rem box */
 const capSrc = (id: string) => {
   const c = cap(id) ?? (CAPTURE_LECTURE_CHECKPOINT_2X.id === id ? CAPTURE_LECTURE_CHECKPOINT_2X : undefined);
-  return c ? `/media/product/${c.id}-${c.widths[0]}.webp` : '';
+  if (c) return `/media/product/${c.id}-${c.widths[0]}.webp`;
+  const widths = EXTRA_CAPTURES[id];
+  return widths ? `/media/product/${id}-${widths[0]}.webp` : '';
 };
 
 /** the 13px icon cluster — white core (4px glyph) + accent swap + ring. */
@@ -192,6 +224,53 @@ function Marker({ y, ds }: { y: string; ds: string }) {
         </svg>
       </div>
     </div>
+  );
+}
+
+/**
+ * R342-05 — the cycle overview figure (ASSET-CONTRACT §3.5, published
+ * by R342-01): the whole learning cycle as one original architectural
+ * ink piece — the conceptual anchor closing the gallery. The product
+ * PROOF stays in the deck above; this seat explains the progression.
+ * Theme twins per the contract's -light/-dark naming law. The figure
+ * renders only while at least one twin resolves — until R342-01
+ * lands the why/ files the section renders exactly as before
+ * (contract §2: filenames stable once published). No data-spec: the
+ * frozen spec has no counterpart for this seat, so it is never
+ * bound — authored chrome, off-book by design.
+ */
+function CycleFigure() {
+  const [missing, setMissing] = useState({ light: false, dark: false });
+  if (missing.light && missing.dark) return null;
+  /* a missing twin can arrive as a REAL 404 (error) or as the dev
+   * server's SPA fallback — 200 text/html, which completes the load
+   * with naturalWidth 0. Both routes must hide the twin. */
+  const settle = (key: 'light' | 'dark') => (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const broken = e.type === 'error' || e.currentTarget.naturalWidth === 0;
+    if (broken) setMissing((m) => (m[key] ? m : { ...m, [key]: true }));
+  };
+  return (
+    <figure className="wy-cycle">
+      <RevealCssClass as="div" className="wy-cycle-frame reveal-fade" delay={1}>
+        <img
+          className="wy-cycle-img is-light"
+          src="/media/illustrations/r342/why/why-cycle-light.webp"
+          alt="دورة المنصّة من اليمين إلى اليسار: مرصد التعلّم، جدار الفجوات، ممر التدريب، وسلّم التقدّم الصاعد"
+          loading="lazy"
+          onError={settle('light')}
+          onLoad={settle('light')}
+        />
+        <img
+          className="wy-cycle-img is-dark"
+          src="/media/illustrations/r342/why/why-cycle-dark.webp"
+          alt=""
+          loading="lazy"
+          onError={settle('dark')}
+          onLoad={settle('dark')}
+        />
+      </RevealCssClass>
+      <figcaption className="wy-cycle-cap">دورة مدارك في لوحة واحدة — من المشاهدة إلى الإتقان</figcaption>
+    </figure>
   );
 }
 
@@ -265,6 +344,7 @@ export function WhyScene() {
   const lecture2xSrc = lectureShot2x;
 
   return (
+    <>
     <div className="wy-stage" data-spec="why.stage" ref={stageRef} data-wy-stage="0">
       <div className="wy-axis" aria-hidden="true" data-spec="why.axis" />
       <div className="wy-stage-in" data-spec="why.stagein">
@@ -311,9 +391,13 @@ export function WhyScene() {
                           </svg>
                         </div>
                       </div>
+                      {/* R342-05: the collage frames now carry DISTINCT real
+                          captures (admin/owner/quality — manifest.json
+                          products[]) instead of repeating the student
+                          surfaces this stage already shows. */}
                       <div className="wy-vid wy-vid2" data-spec="why.vid2" style={{ '--wy-sx': '20.88rem', '--wy-sy': '14.76rem', '--wy-sw': '42.72rem', '--wy-sh': '26.28rem' } as React.CSSProperties}>
                         <div className="wy-vid-in">
-                          <img className="wy-img" src={capSrc('student-dashboard')} alt="" loading="lazy" />
+                          <img className="wy-img" src={capSrc('admin-dashboard')} alt="" loading="lazy" />
                         </div>
                       </div>
                       <div className="wy-spinz" data-spec="why.spinz" style={{ '--wy-sx': '59.52rem', '--wy-sy': '37.68rem' } as React.CSSProperties}>
@@ -344,7 +428,7 @@ export function WhyScene() {
                       </div>
                       <div className="wy-vid wy-vid3" data-spec="why.vid3" style={{ '--wy-sx': '22.92rem', '--wy-sy': '42.6rem', '--wy-sw': '38.76rem', '--wy-sh': '23.88rem' } as React.CSSProperties}>
                         <div className="wy-vid-in">
-                          <img className="wy-img" src={capSrc('student-library')} alt="" loading="lazy" />
+                          <img className="wy-img" src={capSrc('owner-dashboard')} alt="" loading="lazy" />
                         </div>
                       </div>
                       <div className="wy-loadz" data-spec="why.loadz" style={{ '--wy-sx': '57.84rem', '--wy-sy': '18.24rem' } as React.CSSProperties}>
@@ -377,7 +461,7 @@ export function WhyScene() {
                       </div>
                       <div className="wy-vid wy-vid4" data-spec="why.vid4" style={{ '--wy-sx': '20.64rem', '--wy-sy': '42.6rem', '--wy-sw': '16.32rem', '--wy-sh': '10.44rem' } as React.CSSProperties}>
                         <div className="wy-vid-in">
-                          <img className="wy-img" src={capSrc('student-matrix')} alt="" loading="lazy" />
+                          <img className="wy-img" src={capSrc('quality-dashboard')} alt="" loading="lazy" />
                         </div>
                       </div>
                       <div className="wy-dots" data-spec="why.dots" style={{ '--wy-sx': '25.44rem', '--wy-sy': '-0.72rem' } as React.CSSProperties}>
@@ -404,15 +488,20 @@ export function WhyScene() {
                     ))}
                     <div className="wy-map" data-spec="why.map">
                       <div className="wy-map-in" data-spec="why.mapin">
-                        <svg className="wy-map-svg" data-spec="why.mapsvg" viewBox="0 0 360 265" aria-hidden="true">
+                        {/* xMinYMin + the row-proportioned 816×265 system:
+                            the route shares one coordinate space with the
+                            measured station seats and hangs in the clear
+                            band inline-end of the axis (the default
+                            xMidYMid letterboxed the art into a centre
+                            band the stations never entered). */}
+                        <svg className="wy-map-svg" data-spec="why.mapsvg" viewBox="0 0 816 265" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
                           <g data-spec="why.mapg">
-                            {MAP.map(([x, y, w, h], k) => (
+                            {MAP.map((d, k) => (
                               <path
                                 key={k}
                                 className="wy-map-path"
                                 data-spec={`why.mp${k + 1}`}
-                                style={{ '--wy-sx': x, '--wy-sy': y, '--wy-sw': w, '--wy-sh': h } as React.CSSProperties}
-                                d={`M${(k * 37) % 300} ${(k * 53) % 220} l${(k % 5) * 40 + 30} ${(k % 3) * 30 + 20}`}
+                                d={d}
                               />
                             ))}
                           </g>
@@ -423,7 +512,7 @@ export function WhyScene() {
                 )}
 
                 {r.minis.map((m, k) => (
-                  <MiniSeat m={m} key={k} id={r.cardId} ds={`mini${i + 1}_${k + 1}`} />
+                  <MiniSeat m={m} key={k} id={m.capId ?? r.cardId} ds={`mini${i + 1}_${k + 1}`} />
                 ))}
               </div>
             ))}
@@ -482,5 +571,9 @@ export function WhyScene() {
         </button>
       </div>
     </div>
+    {/* the cycle overview — closes the gallery with the whole learning
+     * progression in one architectural piece (ASSET-CONTRACT §3.5). */}
+    <CycleFigure />
+    </>
   );
 }

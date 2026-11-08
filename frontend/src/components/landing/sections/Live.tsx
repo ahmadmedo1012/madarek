@@ -71,8 +71,11 @@ const PAINS = [
 ] as const;
 
 interface LiveProps {
-  /* the snap-carousel scroll region (≤767) — the composer's belt reads it */
-  colsRef: RefObject<HTMLOListElement>;
+  /* the snap-carousel scroll region (≤767) — the composer's belt reads it
+     (R342: the region is a role="list" div — the reference's own list is a
+     plain div; the ordered-list semantics ride the ARIA role; the composer
+     keeps its HTMLOListElement ref, assigned here at the JSX boundary) */
+  colsRef: RefObject<HTMLElement>;
   /* the dot rail — the composer's belt mirrors the snap position onto it */
   dotsRef: RefObject<HTMLDivElement>;
 }
@@ -80,8 +83,13 @@ interface LiveProps {
 export function Live({ colsRef, dotsRef }: LiveProps) {
   return (
     <section id="live" className="pm-section" aria-labelledby="pm-title" data-spec="problem.wrap">
-      {/* the band's top rule (a real 1px element) */}
-      <div className="pm-toprule" aria-hidden="true" data-spec="problem.toprule" />
+      {/* R342 — the reference's outer positioning wrapper (the spec census:
+          div[1] wraps the section at the same measured box). Our section
+          IS the band box; this transparent block is its honest structural
+          counterpart (div↔div), not a layout change. */}
+      <div className="pm-outer" data-spec="problem.outer">
+        {/* the band's top rule (a real 1px element) */}
+        <div className="pm-toprule" aria-hidden="true" data-spec="problem.toprule" />
 
       <div className="pm-frame" data-spec="problem.frame">
         <div className="pm-inner" data-spec="problem.inner">
@@ -94,7 +102,7 @@ export function Live({ colsRef, dotsRef }: LiveProps) {
                 [03] التحديات
               </div>
             </div>
-            <div className="pm-titlebox">
+            <div className="pm-titlebox" data-spec="problem.titlebox">
               <h2 className="pm-title" id="pm-title" data-spec="problem.h2">
                 أربعة أوجاع من التعليم العالي الليبي
               </h2>
@@ -114,17 +122,28 @@ export function Live({ colsRef, dotsRef }: LiveProps) {
         <div className="pm-band" data-spec="problem.band">
           <div className="pm-bandrule" aria-hidden="true" data-spec="problem.bandrule" />
           <div className="pm-bandinner" data-spec="problem.bandinner">
-          <ol className="pm-cols" ref={colsRef} aria-label="الأوجاع الأربعة">
+          <div
+            className="pm-cols"
+            ref={colsRef as RefObject<HTMLDivElement>}
+            role="list"
+            aria-label="الأوجاع الأربعة"
+            data-spec="problem.cols"
+          >
             {PAINS.map((p, i) => (
-              <li
+              <div
                 key={p.num}
                 className="pm-col"
+                role="listitem"
                 data-mdrk-reveal="item"
                 data-spec={`problem.col.${i + 1}`}
               >
-                {/* the column's own start-edge rule (the first column
-                    rides the band's edge — no double line) */}
-                <div className={`pm-colrule${i === 0 ? ' pm-colrule-first' : ''}`} aria-hidden="true" data-spec={`problem.colrule.${i + 1}`} />
+                {/* the column's own start-edge rule — the reference renders
+                    NO rule on the first column (the band's edge serves it)
+                    at every breakpoint, so the element is not mounted there
+                    (an invisible extra would only feed the heuristic pool). */}
+                {i > 0 && (
+                  <div className="pm-colrule" aria-hidden="true" data-spec={`problem.colrule.${i + 1}`} />
+                )}
 
                 {/* the meta row — a padded box holding the keyword roll,
                     the ghost index roll, and the orange cue dot. */}
@@ -148,7 +167,10 @@ export function Live({ colsRef, dotsRef }: LiveProps) {
                   <div className="pm-artzone" data-spec={`problem.artzone.${i + 1}`}>
                     <div className="pm-artcolor" data-spec={`problem.artcolor.${i + 1}`}>
                       <div className="pm-artin" data-spec={`problem.artin.${i + 1}`}>
-                        <PainArt kind={p.num} />
+                        {/* R342 — the svg box itself is the spec's bound art
+                            window (the drawing inside is Madarek's own motif);
+                            the container hooks stay on the boxes around it. */}
+                        <PainArt kind={p.num} data-spec={`problem.artsvg.${i + 1}`} />
                       </div>
                     </div>
                   </div>
@@ -161,33 +183,43 @@ export function Live({ colsRef, dotsRef }: LiveProps) {
                       </div>
                       <div className="pm-anszone" data-spec={`problem.anszone.${i + 1}`}>
                         <div className="pm-answrap" data-spec={`problem.answrap.${i + 1}`}>
-                          <p className="pm-item-sub" data-spec={`problem.bodytext.${i + 1}`}>
+                          <div className="pm-item-sub" data-spec={`problem.bodytext.${i + 1}`}>
                             <strong className="pm-ans">{p.answer}</strong> {p.text}
-                          </p>
+                          </div>
                         </div>
                       </div>
                     </div>
                     <div className="pm-zonerule" aria-hidden="true" data-spec={`problem.zonerule.${i + 1}`} />
+                    {/* the ruled-ledger closing rule — the reference closes every
+                        ≤991 cell with its own 1px rule (the open ≥992 grid has
+                        none); mounted only where the census draws it. */}
+                    <div className="pm-closerule" aria-hidden="true" data-spec={`problem.closerule.${i + 1}`} />
                   </div>
                 </div>
-              </li>
+                </div>
             ))}
-          </ol>
+          </div>
           </div>
 
           {/* ≤767 only — the reference's swiper dot rail at the band's
               foot (2.02×0.2rem bars, 1st active): one button per
               column, the active bar follows the snap position, a tap
               centers its column. */}
-          <div className="pm-dots" ref={dotsRef} aria-hidden="true">
-            {PAINS.map((p) => (
+          <div className="pm-dots" ref={dotsRef} aria-hidden="true" data-spec="problem.rail">
+            {PAINS.map((p, j) => (
               <button key={p.num} type="button" className="pm-dot-btn" data-pm-num={p.num} tabIndex={-1}>
-                <span className="pm-dot-bar" />
+                <span className="pm-dot-bar" data-spec={`problem.dotbar.${j + 1}`} />
               </button>
             ))}
           </div>
         </div>
+
+        {/* the band's own closing rule (≤991 — the reference's mobile ledger
+            ends on a full-width 1px rule after the band (the inner's third
+            child); the ≥992 open grid has none) */}
+        <div className="pm-bottomrule" aria-hidden="true" data-spec="problem.bottomrule" />
         </div>
+      </div>
       </div>
     </section>
   );

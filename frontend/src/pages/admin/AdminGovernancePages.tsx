@@ -312,7 +312,19 @@ export function AdminTeachersPage() {
       <PatternsPageHeader
         title="إدارة الأساتذة"
         description="توثيق الملفات الأكاديمية واقتراح المقرّرات الأنسب لكل أستاذ بناء على تخصصه ودرجته العلمية وشهاداته."
+        index="02"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الأساتذة' }]}
+        actions={(
+          /* R342-09 (D11 sub-page CTA precedent): the governance roster's
+                   * ONE honest next surface — verification exists so courses can
+                   * be assigned; the courses register is the downstream step of
+                   * this board's own loop. The phone band keeps a primary action
+                   * in the first viewport (the admin topbar hides «اسأل AI»). */
+                  <Link to="/admin/courses" className="btn accent sm">
+            <Icon icon={BookOpen} size={13} />
+            إدارة المقرّرات
+          </Link>
+        )}
       />
 
       {/* Metrics — real values only: '…' while loading, '—' on error
@@ -361,7 +373,7 @@ export function AdminTeachersPage() {
                 {teachers.map((t) => (
                   <RowItem
                     key={t.id}
-                    leading={<UserAvatar initials={t.avatarInitials ?? 'أس'} color={t.avatarColor ?? undefined} size={36} />}
+                    leading={<UserAvatar initials={t.avatarInitials ?? 'أس'} color={t.avatarColor ?? undefined} size={38} />}
                     title={(
                       <button
                         type="button"

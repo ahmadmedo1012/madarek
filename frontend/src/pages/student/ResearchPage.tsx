@@ -191,6 +191,26 @@ export default function StudentResearchPage() {
               the note since r154b; the header keeps matching it. */
           'ارفع بحوثك، اعرضها على فحص الانتحال وكشف الذكاء الاصطناعي (محاكاة حتى تفعيل كشف حقيقي)، ثم أرسلها لأستاذك للتقييم والنشر في مكتبة الجامعة.'
         }
+        /* R342-08 — the header CTA pair (the D11/D8 measured seat;
+           the phone band hides the topbar «اسأل AI» ≤920, D6):
+           «المكتبة الإلكترونية» is the published shelf the header's
+           own description names as the destination, «مقرّراتي
+           الدراسية» is where the upload form's offering selector
+           draws from (papers tie to offerings). The rail's
+           «رفع بحث جديد» keeps the workflow's single label (the
+           r157 prefill pin owns it). */
+        actions={(
+          <>
+            <RouterLink to="/student/library" className="btn primary sm">
+              <Icon icon={BookMarked} size={13} />
+              المكتبة الإلكترونية
+            </RouterLink>
+            <RouterLink to="/student/courses" className="btn ghost sm">
+              <Icon icon={FileText} size={13} />
+              مقرّراتي الدراسية
+            </RouterLink>
+          </>
+        )}
       />
 
       {my.isPending ? (

@@ -203,11 +203,13 @@ export function AdminSyncPage() {
   }, [drillStale, data, reducedMotion, setSearchParams]);
 
   /** The trigger button — one anatomy shared by the header action
-   *  slot and the empty state's CTA (same spin affordance). */
+   *  slot and the empty state's CTA (same spin affordance).
+   *  R342-09: the page's ONE decisive action rides the accent register
+   *  (the D8 family law), keeping the header action slot it lives in. */
   const triggerButton = (
     <button
       type="button"
-      className="btn primary"
+      className="btn accent"
       onClick={() => trigger.mutate()}
       disabled={trigger.isPending}
     >
@@ -227,6 +229,7 @@ export function AdminSyncPage() {
         <PatternsPageHeader
           title="المزامنة مع البيانات الرسمية"
           description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
+          index="08"
           breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
           actions={triggerButton}
         />
@@ -247,6 +250,7 @@ export function AdminSyncPage() {
         <PatternsPageHeader
           title="المزامنة مع البيانات الرسمية"
           description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
+          index="08"
           breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
         />
         <Card>
@@ -266,6 +270,7 @@ export function AdminSyncPage() {
         <PatternsPageHeader
           title="المزامنة مع البيانات الرسمية"
           description="استيراد البيانات العامة من الموقع الرسمي للجامعة."
+          index="08"
           breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
         />
         <Card>
@@ -293,7 +298,8 @@ export function AdminSyncPage() {
               forbid. */
           'استيراد بيانات المؤسّسة من المصدر المنسَّق للحفاظ على معلومات الجامعة محدّثة. يمكنك تشغيل المزامنة يدوياً عند الحاجة.'
         }
-        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
+        index="08"
+          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المزامنة' }]}
         actions={triggerButton}
       />
 

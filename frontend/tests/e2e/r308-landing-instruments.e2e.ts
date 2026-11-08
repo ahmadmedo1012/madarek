@@ -129,11 +129,25 @@ test.describe('R308 — رحلة التعلّم (the walkthrough ladder)', () =>
      * rides the fifth verbatim) */
     await expect(page.locator('.jt-intro-finding')).toHaveCount(5);
     await expect(page.locator('.jt-intro-finding').first()).toContainText('المحاضرة التفاعلية');
-    /* the closing column stacks below the track, always open */
+    /* the closing column stacks below the track, always open.
+     * R342-04 re-seat: the frozen spec's closing column IS the
+     * section's own head — chip «الفصول [04]» + the h2 + the honest
+     * copy + the four-station ledger (every column element records
+     * opacity 1 at rest in home-map-wrap.390.json). The pre-R342
+     * «الخلاصة» chip and its end-of-track reveal machine retired
+     * with the reserved-empty column they rode on (the R341
+     * dead-void defect this workstream was tasked to fix); the
+     * required meaning — the journey's wrap-up readable in flow,
+     * always open — now rides the section head + the ledger: the
+     * four stations ARE the summary, the h2's honest copy carries
+     * the «كل غرفة ميزة تعمل اليوم» truthfulness line. */
     const close = page.locator('.jt-close');
     await close.scrollIntoViewIfNeeded();
     await expect(close).toBeVisible();
-    await expect(close).toContainText('الخلاصة');
+    await expect(close).toContainText('الفصول');
+    await expect(close).toContainText('الرحلة — أربعة فصول تتحرك أمامك');
+    await expect(close).toContainText('ميزة تعمل اليوم داخل المنصّة');
+    await expect(close.locator('.jt-cms-row')).toHaveCount(4);
   });
 });
 

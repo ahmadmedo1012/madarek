@@ -86,6 +86,12 @@
   background: var(--rule-strong);
 }
 
+/* R342 — the reference's own outer wrapper (div[1] in the spec census:
+   the same box as the section, no paint of its own). */
+.pm-outer {
+  display: block;
+}
+
 .pm-frame {
   display: block;
 }
@@ -93,22 +99,26 @@
   display: block;
 }
 
-/* ═══ the head — title block at the start, sub at the far edge ═══ */
+/* ═══ the head — title block at the start, sub note pinned to the far
+   edge in its own measured column (the spec's head census: title col
+   capped 83.4rem, sub col 39.6rem at the far edge — 695+330 @1440,
+   927+440 @1920, 494+235 @1024). ═══ */
 .pm-head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 83.4rem) minmax(0, 1fr);
   align-items: start;
   padding: 3.2rem 3.2rem 6.6rem;
 }
 
 .pm-titleblock {
   min-inline-size: 0;
-  color: var(--text); /* the spec's head title block is full-ink (the soft 72% rides the sub note only) */
+  color: var(--pm-soft-ink); /* the spec's titleblock DIV carries the soft 72% ink; the h2 re-seats the full ink itself */
 }
 
 .pm-kicker {
   margin-block-end: 1.6rem;
   inline-size: fit-content; /* the spec's own census: the kicker box rides its text (72px @1920), not the column */
+  color: var(--pm-soft-ink); /* the spec's kicker register is the soft 72% ink (rgba(40,40,40,.72) — the head's full ink rides the h2 only) */
   transition: transform 0.4s ease;
 }
 .pm-kicker-text {
@@ -135,11 +145,13 @@
 
 .pm-subwrap {
   min-inline-size: 0;
+  justify-self: end; /* pinned to the head row's far edge (the spec's sub cell: x=1077..1407 @1440 — the head pad is the only inset) */
+  max-inline-size: 39.6rem; /* the spec's sub measure: 440/330/235 @1920/1440/1024 = 39.6rem fluid */
+  margin-block-start: 3.2rem; /* the spec margins the WRAP, not the text (subwrap y=72 @1920 = pad 35.6 + 35.6) */
+  padding-block-end: 3.75rem; /* the spec's subwrap runs 42/31/22px below the text @1920/1440/1024 = 3.75rem */
 }
 .pm-sub {
   margin: 0;
-  margin-block-start: 3.2rem;
-  padding-block-end: 1rem; /* toward the spec's 3-line sub measure (69px @1920) */
   color: inherit;
   font: inherit;
 }
@@ -167,23 +179,25 @@
   list-style: none;
 }
 
-.pm-col {
+.pm-section .pm-col {
   position: relative;
   min-inline-size: 0;
+  /* the spec's own column seat: a 0.2s opacity fade (the census's column
+     transition). (0,2,0) out-ranks shared.css's later .reveal-up belt
+     (0,1,0, --t-slower) on this measured seat; the reveal translate
+     snaps while the fade keeps the reference's own register. */
   transition: opacity 0.2s ease;
 }
 
 /* the column's own start-edge rule (all but the first — the band's
-   rule already rides the start edge) */
+   rule already rides the start edge; the first column mounts no rule
+   element at all — the reference renders none at any breakpoint) */
 .pm-colrule {
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
   inline-size: 1px;
   background: var(--rule-strong);
-}
-.pm-colrule-first {
-  background: transparent;
 }
 
 /* ═══ the meta row — the padded box over its own dashed rule ═══ */
@@ -205,6 +219,7 @@
 }
 .pm-index-roll {
   margin-inline-start: auto;
+  min-inline-size: 3.3rem; /* the reference's roll box rides its text with slack (32/28/36/20 px across the censuses = 3.3rem fluid); the bare mono text alone under-runs it at 390 */
   color: var(--neutral-400); /* the ghost index seat (rgb(180,180,176)) — the reference's index box carries it, not the indextext alone */
 }
 .pm-keyword {
@@ -214,9 +229,6 @@
   font-weight: 500;
 }
 
-.pm-index-roll {
-  margin-inline-start: auto;
-}
 .pm-index {
   color: var(--neutral-400);
   font-size: 1.4rem;
@@ -291,6 +303,7 @@
 
 .pm-item-titlebox {
   color: var(--text);
+  margin-block-end: 4.5rem; /* the spec's tgrid row rhythm: 50px between titlebox and answer @1920 */
 }
 .pm-item-title {
   font-family: var(--font-display);
@@ -301,19 +314,17 @@
   color: var(--text);
   text-wrap: balance;
 }
-.pm-item-titlebox {
-  margin-block-end: 4.5rem; /* the spec's tgrid row rhythm: 50px between titlebox and answer @1920 */
-}
 
 .pm-anszone {
   display: block;
 }
 .pm-answrap {
   padding-block-start: 1.6rem;
-  color: var(--text); /* the spec's answer wrap is full-ink; the body text below re-seats the soft ink */
+  color: var(--pm-soft-ink); /* the spec's answer wrap rides the soft ink; the honesty answer (.pm-ans) re-seats the full ink itself */
 }
 .pm-item-sub {
   margin: 0;
+  line-height: 2.16rem; /* the section's own ar-floor register (1.35 × 1.6rem) — base.css's global p rule (--lh-base 1.65) would otherwise clobber the inherited floor at every bp */
   font-weight: 400;
   color: var(--pm-soft-ink); /* r339 T-12 — the scoped soft-ink var (dark arm flips; light stays the frozen Heron literal) */
 }
@@ -333,6 +344,15 @@
     var(--rule-strong) 0 6px,
     transparent 6px 12px
   );
+}
+
+/* the ruled-ledger closing rule — the reference draws a solid 1px rule
+   on every ≤991 cell's bottom edge (the mobile/tablet ledger's closed
+   cells; the ≥992 open columns carry none) and ends the ≤991 band with
+   a full-width rule under the dot rail. */
+.pm-closerule,
+.pm-bottomrule {
+  display: none;
 }
 
 /* ═══ ≤767 — the reference's swiper: the columns become the snap
@@ -363,37 +383,64 @@
     font-size: 3.2rem;
     padding-block-end: 4.16rem; /* 2 lines × floor-lh + pad = the census 127px 4-line box */
   }
+  .pm-subwrap {
+    justify-self: start;
+    max-inline-size: none;
+    margin-block-start: 2rem; /* census: the subwrap's own 19.85px margin (the single-col head stacks it under the title) */
+    padding-block-end: 0;
+  }
   .pm-sub {
-    margin-block-start: 2rem;
-    padding-block-end: 0.8rem; /* toward the census 83px subwrap */
+    padding-block-end: 1.9rem; /* the compact-Arabic compensation pad: our sub runs 3 lines × 21.44 + 18.8 = the census 83px box (the reference's English wraps 4 lines; the box is the measured contract, the line count is the language's) */
   }
 
   .pm-cols {
     /* R332 W3 (twin run-001 · 390 defect, kept): `none` hands the
        track list to the implicit carousel columns — Heron's own
        mobile anatomy (swiper 11, problem list) as a snap carousel.
-       Slides 312/374 = 83.4% of the band, butt + 1px rules. */
+       R342 re-measure: the census pitch is 311.67px on the 374 band
+       = 83.33% (5/6) with BUTT slides (no gap — the 1px column rules
+       carry the divider line; a layout gap doubled the pitch and
+       walked every off-screen slide ≥9px off the mirrored measure). */
     grid-template-columns: none;
     grid-auto-flow: column;
-    grid-auto-columns: 83.4%;
-    gap: 1px;
+    grid-auto-columns: 83.33%;
+    gap: 0;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: 1.2rem;
-    padding-block-end: 0.8rem;
     scrollbar-width: thin;
   }
 
   .pm-col {
     scroll-snap-align: center;
   }
+  /* the mirrored divider: the reference draws each slide's rule on its
+     LTR start edge; mirrored to RTL that is the slide's inline-START
+     (the right edge — the boundary to the previous slide), not the end */
   .pm-colrule {
-    inset-inline-start: auto;
-    inset-inline-end: 0;
+    inset-inline-start: 0;
+    inset-inline-end: auto;
+  }
+
+  /* the frozen 390 capture records every slide fully rendered — the
+     reference's swiper paints all four slides (opacity 1, full-size
+     drawings) whether on or off stage. Our IO reveal can never see the
+     horizontally off-stage slides, so their armed hide-state (opacity 0
+     + scale 0.8) would freeze them mid-entrance forever; the mobile
+     belt renders the slides static (the reveal grammar stays live ≥768
+     where the grid layout is fully in view). */
+  .pm-section .pm-col,
+  .pm-section .pm-artzone .pm-art {
+    opacity: 1;
+    transform: none;
+    scale: 1;
   }
 
   .pm-meta {
-    padding: 0.8rem 1.6rem calc(0.8rem - 1px);
+    /* 0.75rem pad: the mono box rides the ar-floor's own +3.5px (18.76 vs
+       the census's 15.28 line) — the pad shave is the floor compensation
+       that holds the measured 31px meta band */
+    padding: 0.75rem 1.6rem calc(0.75rem - 1px);
     gap: 0.8rem;
   }
   .pm-cue {
@@ -401,6 +448,12 @@
     inset-block-start: 1.2rem;
     inline-size: 8px;
     block-size: 8px;
+  }
+  .pm-anszone {
+    padding-block-start: 1.1rem; /* census 11px — 1.1rem, exact on the fluid root */
+  }
+  .pm-answrap {
+    padding-block-start: 0; /* the anszone's own 1.1rem is the census 11px seat — the wrap adds nothing at ≤767 (the spec's anszone: 11 pad + text, no double step) */
   }
   .pm-artin .pm-art {
     inline-size: 16.5rem;
@@ -412,6 +465,19 @@
   .pm-textzone {
     padding: 2.4rem 1.6rem; /* census 23.82/15.88px ✓ */
   }
+  .pm-closerule {
+    display: block;
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 1px;
+    background: var(--rule-strong);
+  }
+  .pm-bottomrule {
+    display: block;
+    block-size: 1px;
+    background: var(--rule-strong);
+  }
   .pm-item-title {
     font-size: 2rem;
     line-height: 1.35;
@@ -420,27 +486,31 @@
   .pm-item-titlebox {
     margin-block-end: 2.4rem; /* census 24px gap */
   }
-  .pm-anszone {
-    padding-block-start: 1.2rem;
-  }
 
   .pm-dots {
     display: flex;
     justify-content: flex-start;
-    gap: var(--space-sm);
-    padding: 2rem 1.2rem; /* census 19.85/0/19.85/11.91px */
+    align-items: center;
+    gap: 0;
+    padding: 1.96rem 1.2rem; /* census 19.85/11.91px — the shave holds the measured 41px band under the floors above */
   }
 
   .pm-dot-btn {
     appearance: none;
     border: 0;
     background: transparent;
-    padding: var(--space-sm);
+    padding: 0;
     cursor: pointer;
-    /* ≥44px touch floor via the padding belt (the rail is decorative
-       navigation — the columns themselves scroll). */
-    min-inline-size: 44px;
-    min-block-size: 44px;
+    /* the ≥44px touch floor as a PAINTED target that does not grow the
+       rail: the button paints 44×44 (the L1-b touch contract) while its
+       layout box collapses to the bar's 2px line (negative block margins),
+       so the rail keeps the frozen spec's measured 41px band. The inline
+       −20.33px keeps the census BAR pitch (23.67px — the reference's own
+       rail rhythm) under the 44px painted boxes. */
+    inline-size: 44px;
+    block-size: 44px;
+    margin-block: -21px;
+    margin-inline-end: -20.33px;
     display: grid;
     place-items: center;
   }
@@ -450,11 +520,27 @@
     inline-size: 2.02rem;
     block-size: 0.2rem;
     background: var(--rule-strong);
+    cursor: pointer; /* the reference's rail spans are interactive seats (cursor pointer) */
     transition: background 0.4s ease;
   }
 
   .pm-dot-btn.is-active .pm-dot-bar {
-    background: var(--accent);
+    background: var(--text); /* the spec's active register: the active bar rides the full ink (rgb(40,40,40)), not the accent — the accent stays on the art's warm state */
+  }
+
+  /* the reference's 390 capture records the swiper's active-slide state:
+     the snapped column's drawing rides the full ink, the off-stage ones
+     the ghost register. Our belt already mirrors the snap position onto
+     .is-active — the art tint follows it (a live state, not a static
+     paint). */
+  .pm-artcolor {
+    color: var(--neutral-400); /* the ghost register (the spec's rgb(180,180,176)) */
+  }
+  .pm-band:has(.pm-dot-btn.is-active[data-pm-num='01']) .pm-col:nth-child(1) .pm-artcolor,
+  .pm-band:has(.pm-dot-btn.is-active[data-pm-num='02']) .pm-col:nth-child(2) .pm-artcolor,
+  .pm-band:has(.pm-dot-btn.is-active[data-pm-num='03']) .pm-col:nth-child(3) .pm-artcolor,
+  .pm-band:has(.pm-dot-btn.is-active[data-pm-num='04']) .pm-col:nth-child(4) .pm-artcolor {
+    color: var(--text);
   }
 }
 
@@ -464,7 +550,11 @@
      kicker gap 14.73px, h2 4 lines × 36.83px — the r337 guess (4/1.5/3)
      was 87px short, cascading −85…−325px down the whole section */
   .pm-head {
-    padding: 6.4rem 2.4rem 4.8rem;
+    grid-template-columns: minmax(0, 37.3rem) minmax(0, 1fr); /* the census head row: title 343px | gap | sub 262px at the far edge */
+    /* the inline-end rung steps up from the census 2.4rem: the sub cell is
+       pinned to the far edge and must clear the shell's .et-tab edge rail
+       (the r322 V7 no-text-under-the-rail law — ~25px rail + nudge) */
+    padding: 6.4rem 3.5rem 4.8rem 2.4rem;
   }
   .pm-kicker {
     margin-block-end: 1.6rem;
@@ -473,16 +563,38 @@
     font-size: 4rem;
     padding-block-end: 5.2rem; /* 2 lines × floor-lh + pad = the spec's 147px 4-line box */
   }
+  .pm-subwrap {
+    justify-self: end;
+    max-inline-size: 28.45rem; /* the census sub cell: 262px @768 */
+    margin-block-start: 9.13rem; /* the census seats the sub 84px below the row top (y=143 vs pad 58.94) */
+    padding-block-end: 0; /* the ≤991 subwrap box is the text's own (96px = 5 lines, no run-out) */
+  }
+  .pm-sub {
+    padding-block-end: 1.9rem; /* the compact-Arabic compensation pad (≤767 precedent) */
+  }
 
   .pm-cols {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0;
   }
-  /* the row-2 first cell rides the band's start edge — no rule; the
-     row separator is the cell's own top-of-textzone dash + the
-     columns' start-edge rules carry the verticals */
-  .pm-col:nth-child(3) .pm-colrule {
-    background: transparent;
+  /* the row separator is the cell's own top-of-textzone dash + the
+     columns' start-edge rules carry the verticals (the census keeps a
+     rule on the bottom-left cell's outer edge — it renders) */
+
+  /* the row-2 closers close both rows; the band's bottomrule ends the
+     sheet (the census draws all of them) */
+  .pm-closerule {
+    display: block;
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 1px;
+    background: var(--rule-strong);
+  }
+  .pm-bottomrule {
+    display: block;
+    block-size: 1px;
+    background: var(--rule-strong);
   }
 
   .pm-meta {
@@ -493,6 +605,11 @@
     inset-block-start: 1.74rem; /* census 16px */
     inline-size: 7px;
     block-size: 7px;
+  }
+  /* the tablet census tints every drawing the full ink (rgb(40,40,40) —
+     the reference's own 768 register; ≥992 returns to the rule grey) */
+  .pm-artcolor {
+    color: var(--text);
   }
   .pm-artzone {
     padding-block: 2.4rem; /* census 22.1px */
@@ -529,17 +646,36 @@
   }
 }
 
-/* ═══ L1-e (R341 · T-16 #2) — the index-numeral rung belt (TYPE only) ═══
-   The [03] kicker numeral and the 01/02 meta indexes ride Heron's
-   measured Geistmono register (--fs-mono-md = the chrome spec's
-   11.67 @1440 · 13.89 @390). The (0,2,0) belt out-ranks footer.css's
-   global ≤767 `.fo-mono` © census (9.92px), which was leaking onto
-   every page-wide .fo-mono seat at 390 and put the index strip under
-   the 11px legibility floor. Same value as the 1.4rem these seats
-   declared at ≥768 — tokenized + leak-proof, no desktop change. */
+/* ═══ L1-e (R341 · T-16 #2) — the mono rung belt (TYPE only) ═══
+   The [03] kicker numeral, the 01/02 meta indexes and the LECTURE-family
+   keywords ride the reference's own mono register: 1.4rem fluid with the
+   1.4× line box (1.96rem). The (0,2,0) belt out-ranks footer.css's global
+   `.fo-mono` belt (0,1,0, later in the cascade — fs calc(--fu·11.67) +
+   lh 1.35), which was clobbering every seat: 9.92px @390 (under the 11px
+   AA floor) and 13.33px @1440 (over the spec's 11.67). The value is the
+   frozen spec's own census at EVERY bp (13.89 @390 · 12.89 @768 · 8.3
+   @1024 · 11.67 @1440 · 15.56 @1920 — all 1.4rem on the fluid root), so
+   the token's 11.67px floor arm is deliberately NOT used here: it diverges
+   from the frozen measure at 1024 (11.67 vs the spec's 8.3) while 1.4rem
+   satisfies both the spec and the ≥11px AA floor where it applies (390).
+   Same shape as the r339 T-12 textFaint re-seat: the a11y floor lives
+   where the reference is silent, never against its recorded values. */
 .pm-section .pm-kicker-text,
-.pm-section .pm-index {
-  font-size: var(--fs-mono-md);
+.pm-section .pm-index,
+.pm-section .pm-keyword {
+  font-size: 1.4rem;
+  line-height: 1.96rem;
+}
+
+/* ≤767 the mono box rides the Arabic floor instead (1.35 × fs — the spec's
+   own 390 lh is 1.1×, under the floor, so the transformed expectation is
+   the floor itself: 18.75px @390). */
+@media (max-width: 767px) {
+  .pm-section .pm-kicker-text,
+  .pm-section .pm-index,
+  .pm-section .pm-keyword {
+    line-height: 1.89rem;
+  }
 }
 
 /* The ghost index ink (her rgb(180,180,176) register ≈1.9:1) fails the

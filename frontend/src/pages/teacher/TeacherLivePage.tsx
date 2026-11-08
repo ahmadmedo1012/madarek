@@ -23,6 +23,11 @@ import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import '../../styles/owner.css'; // ConfirmDialog surfaces via the discard guard (D11 css split, 12-15)
 import '../../styles/teacher/heron.css'; // R305 Heron: §0 primitives + §E tax- composition
+/* R342-09 — the [nn] section-index register (.w11-idx, inner.css §W11):
+ * the same gutter grammar the done teacher pages speak, so the live
+ * board's section heads read on the numeral axis. Fixed category
+ * numbers (the register is positional, not a visible-count renumber). */
+import '../../styles/landing/inner.css';
 import {
   useTeacherOfferings, useLiveSessions, useCreateLiveSession,
   useLifecycleLiveSession, apiErrorMessage, type LiveSessionRow,
@@ -165,7 +170,7 @@ export default function TeacherLivePage() {
         </div>
         <button
           type="button"
-          className="btn primary hr-cta"
+          className="btn accent hr-cta"
           onClick={() => (showForm ? requestClose() : setShowForm(true))}
         >
           <Icon icon={Plus} size={14} /> {showForm ? 'إغلاق النموذج' : 'جلسة جديدة'}
@@ -357,7 +362,7 @@ export default function TeacherLivePage() {
 
           {/* Live now */}
           {live.length > 0 && (
-            <Card title="مباشرة الآن" icon={Radio} subtitle="جلسات نشطة — يمكنك إنهاؤها من هنا">
+            <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>مباشرة الآن</>} icon={Radio} subtitle="جلسات نشطة — يمكنك إنهاؤها من هنا">
               <div className="flex-col gap-2">
                 {live.map((s) => (
                   <SessionRow
@@ -375,7 +380,7 @@ export default function TeacherLivePage() {
               مجدولة` template broke at 0 and 2 — «0 جلسة مجدولة» / «2
               جلسة مجدولة»); the zero case names the reality. */}
           <Card
-            title="جلسات قادمة"
+            title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>جلسات قادمة</>}
             icon={Calendar}
             subtitle={scheduled.length === 0
               ? 'لا جلسات مجدولة'
@@ -408,7 +413,7 @@ export default function TeacherLivePage() {
               names the truncation honestly: «أحدث 10 جلسات من أصل N».
               The old silent .slice(0, 10) hid the rest. */}
           {past.length > 0 && (
-            <Card title="جلسات سابقة" icon={CheckCircle2}>
+            <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[03]</span>جلسات سابقة</>} icon={CheckCircle2}>
               <div className="flex-col gap-2">
                 {past.slice(0, 10).map((s) => (
                   <SessionRow key={s.id} session={s} />

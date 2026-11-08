@@ -98,6 +98,7 @@ import '../styles/landing/colleges.css';
 import '../styles/landing/cta.css';
 import '../styles/landing/why.css';
 import '../styles/landing/footer.css';
+import '../styles/landing/statement-ai1.css';
 import '../styles/landing/shared.css';
 import '../styles/landing/platform.css';
 import '../styles/landing/strata.css';

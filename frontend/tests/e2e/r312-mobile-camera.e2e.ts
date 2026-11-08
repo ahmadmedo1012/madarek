@@ -382,28 +382,35 @@ test.describe('R312 — the desktop map contract (the R322 transplant)', () => {
       { timeout: 5000 },
     );
 
-    /* the frame: sticky, ~100dvh tall, beside the reserved column */
+    /* the frame: sticky, the measured column grid @1440. R342-04
+     * re-pin: the frame's block-size is calc(100dvh − 1.56rem) — the
+     * FROZEN SPEC's own frame row height (963+1+464 wide × 887 tall
+     * @1440, home-map-wrap.1440.json div[1]>section[1]>div[1]>div[1]
+     * >div[1] — h 887), not the retired pre-R342 100dvh=900 pin. */
     const s0 = await sheetState(page);
     expect(s0.pin?.position).toBe('sticky');
-    expect(s0.pin?.height).toBe(900);
-    /* R333 re-seat (P-B, owner order: the signature scene reads at
-     * ≥70% of the viewport): the reserved closing column slimmed
-     * 464 → clamp(256px, 19.5vw, 330px) — 281px @1440 — and the
-     * released width hands to the drawing (55.3% → 72.4% of the
-     * viewport). The column is still RESERVED from stage 0 (the
-     * width flip stays untransplanted; the pin-end 0.187 CLS dies) —
-     * the pin asserts the clamp's seat, not the retired px. */
-    expect(s0.closeW).toBeGreaterThanOrEqual(256);
-    expect(s0.closeW).toBeLessThanOrEqual(330);
+    expect(s0.pin?.height).toBe(887);
+    /* R342-04 re-seat (the frozen spec's own measured column): the
+     * closing column rides Heron's exact clamp(280px, 32.3vw, 464px)
+     * — 464px @1440, always visible from frame one (every column
+     * element records opacity 1 at rest in the spec; the R333 slimmed
+     * 281px column and the R341 reserved-empty column are both
+     * retired — the empty column read as a dead void). The pin
+     * asserts the clamp's spec seat. */
+    expect(s0.closeW).toBeGreaterThanOrEqual(280);
+    expect(s0.closeW).toBeLessThanOrEqual(464);
     expect(s0.par).toBe('xMidYMid meet');
     expect(s0.viewBox).toBe('0 0 1200 760');
 
     /* the entrance descent: before the pin engages the whole stack
-     * sits one viewport above its seat (a transform, never layout) */
+     * sits one viewport above its seat (a transform, never layout).
+     * R342-04 re-seat: the drift rides `.jt-stack` (the window's
+     * chrome — rails, marks — stays put while the plan + plaques +
+     * annotations descend; the measured architecture). */
     await scrollToPin(page, -0.1, false);
     const drift = await page.evaluate(() => {
-      const win = document.querySelector('.jt-window') as HTMLElement;
-      return win.style.transform;
+      const stack = document.querySelector('.jt-stack') as HTMLElement;
+      return stack.style.transform;
     });
     expect(drift).toMatch(/translateY\(-\d+\.\dpx\)/);
 
@@ -414,7 +421,7 @@ test.describe('R312 — the desktop map contract (the R322 transplant)', () => {
     const mid = await sheetState(page);
     expect(mid.stage).toBe('3');
     expect(
-      await page.evaluate(() => (document.querySelector('.jt-window') as HTMLElement).style.transform),
+      await page.evaluate(() => (document.querySelector('.jt-stack') as HTMLElement).style.transform),
     ).toMatch(/translateY\(-?0(?:\.0)?px\)/);
 
     /* the scrub end: the closing reveal (opacity, never width) */
@@ -422,9 +429,9 @@ test.describe('R312 — the desktop map contract (the R322 transplant)', () => {
     const end = await sheetState(page);
     expect(end.stage).toBe('5');
     expect(end.open).toBe('on');
-    /* the geometry NEVER moved — the same reserved closing box on
-     * the R333 re-seat (clamp(256px, 19.5vw, 330px) — see above) */
-    expect(end.closeW).toBeGreaterThanOrEqual(256);
-    expect(end.closeW).toBeLessThanOrEqual(330);
+    /* the geometry NEVER moved — the same spec closing box on the
+     * R342-04 re-seat (clamp(280px, 32.3vw, 464px) — see above) */
+    expect(end.closeW).toBeGreaterThanOrEqual(280);
+    expect(end.closeW).toBeLessThanOrEqual(464);
   });
 });

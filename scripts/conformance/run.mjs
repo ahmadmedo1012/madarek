@@ -748,6 +748,13 @@ try {
       cell.unmatched = unmatched.filter((u) => !u.reason).length;
       cell.excused = unmatched.filter((u) => !!u.reason).length;
 
+      // (r342-11) elements already excused with a noCounterpart reason —
+      // the scaffold loops below must never re-excuse these (the r337
+      // accounting counted them twice: once in the initial assignment
+      // above, once per scaffold pass — the repaired partition guard at
+      // the tail of this block would have thrown on the double).
+      const reasonExcused = new Set(unmatched.filter((u) => !!u.reason).map((u) => u.h));
+
       // R337 ar-char-split — TRANSFORMED expectations, two-segment law.
       // The extractor truncates spec ancestor paths at depth 6, so a
       // line container ("… > h2[1] > div[3]") and its char scaffold
@@ -810,8 +817,11 @@ try {
             cell.skipped += 4; // the four typography fields of this aggregate
             results.skippedReport.push({ section: key, bp: bp.name, heronPath: `${lineH.p} (ar-char-split aggregate)`, reason: "ar-char-split aggregate: our container carries no text-bearing descendants — nothing to measure (counterpart is structural chrome); counted, not failed" });
             for (const e of charEls) {
-              if (excusedScaffold.has(e.p)) continue;
-              excusedScaffold.add(e.p);
+              // (r342-11) identity dedup + never re-excuse a reason-excused
+              // element — it keeps its noCounterpart excuse in `unmatched`
+              const reasonExcusedSkip = reasonExcused.has(e);
+              if (reasonExcusedSkip || excusedScaffold.has(e)) continue;
+              excusedScaffold.add(e);
               cell.excused++;
               results.unmatchedReport.push({ section: key, bp: bp.name, heronPath: e.p, excused: true, reason: "ar-char-split: tween char-scaffolding — Arabic word-split law (joining forbids per-character boxes); container carries no text counterpart" });
             }
@@ -838,8 +848,11 @@ try {
             }
           }
           for (const e of charEls) {
-            if (excusedScaffold.has(e.p)) continue;
-            excusedScaffold.add(e.p);
+            // (r342-11) identity dedup + never re-excuse a reason-excused
+            // element — it keeps its noCounterpart excuse in `unmatched`
+            const reasonExcusedSkip = reasonExcused.has(e);
+            if (reasonExcusedSkip || excusedScaffold.has(e)) continue;
+            excusedScaffold.add(e);
             cell.excused++;
             results.unmatchedReport.push({ section: key, bp: bp.name, heronPath: e.p, excused: true, reason: "ar-char-split: tween char-scaffolding — Arabic word-split law (joining forbids per-character boxes); the line container is fully measured + the aggregate typography asserted" });
           }
@@ -861,18 +874,45 @@ try {
         }
       }
       // pull the excused scaffold boxes out of pair/unmatched accounting
+      // (r342-11) splice by ELEMENT IDENTITY — excusedScaffold now holds
+      // elements, not paths; every spliced element was counted exactly
+      // once above, so the three roles partition the census exactly
       for (let i = pairs.length - 1; i >= 0; i--) {
-        if (excusedScaffold.has(pairs[i].h.p)) pairs.splice(i, 1);
+        if (excusedScaffold.has(pairs[i].h)) pairs.splice(i, 1);
       }
       for (let i = unmatched.length - 1; i >= 0; i--) {
-        if (excusedScaffold.has(unmatched[i].h.p)) unmatched.splice(i, 1);
+        if (excusedScaffold.has(unmatched[i].h)) unmatched.splice(i, 1);
       }
       // wordset excuses pull by ELEMENT identity — a truncated path can be
       // shared with the real line box, which must stay measured.
       for (let i = unmatched.length - 1; i >= 0; i--) if (excusedWordEls.has(unmatched[i].h)) unmatched.splice(i, 1);
       for (let i = pairs.length - 1; i >= 0; i--) if (excusedWordEls.has(pairs[i].h)) pairs.splice(i, 1);
       cell.unmatched = unmatched.filter((u) => !u.reason).length;
-      cell.excused += unmatched.filter((u) => !!u.reason).length;
+      // (r342-11 instrument truth — the excused double-count repair): the
+      // r337 tail line `cell.excused += unmatched-with-reason` re-counted
+      // the set the initial assignment had already counted — every
+      // noCounterpart-excused element was counted TWICE (home-problem-wrap
+      // reported 206 excused at a cell whose census holds 103 excused
+      // elements; its coverage read 39% where the honest partition is
+      // ~56%, one point under the 40 floor purely by the double). The
+      // with-reason set is counted exactly once (initial assignment); the
+      // scaffold/wordset blocks count their own spliced members exactly
+      // once (identity dedup, reason-excused skipped). GUARD (fail-closed,
+      // the regression belt for this repair — fires on any future
+      // double-count or drop): excused + unmatched + paired must PARTITION
+      // the spec census exactly.
+      {
+        const accountedPairs = pairs.length;
+        const accounted = cell.excused + cell.unmatched + accountedPairs;
+        if (accounted !== spec.elements.length) {
+          throw new Error(
+            `instrument integrity (r342-11 excused partition): ${key}@${bp.name} — ` +
+            `excused ${cell.excused} + unmatched ${cell.unmatched} + paired ${accountedPairs} = ${accounted} ` +
+            `roles accounted, but the spec census records ${spec.elements.length} elements — ` +
+            `an element was counted twice or dropped`
+          );
+        }
+      }
 
       const skippedEntries = [];
       const run = (h, oEl, skip, skipReason, heronPath, oursSel) => {
@@ -1286,14 +1326,19 @@ for (const key of SECTIONS_WANTED) {
  * reddened the size gate's 500KB per-file rule (rule 1). Same cap
  * pattern as failures above; the omitted count in summary keeps the
  * report honest (nothing downstream parses unmatchedReport — it is a
- * human diagnostic; the per-cell counts in sections carry the numbers). */
-results.summary.unmatchedOmitted = Math.max(0, results.unmatchedReport.length - 400);
-results.unmatchedReport.splice(400);
+ * human diagnostic; the per-cell counts in sections carry the numbers).
+ * r342-11: 400→300 — the honest full-matrix run (800-failure work-list)
+ * put the pretty-printed file at 583KB, over rule 1's ceiling; the
+ * same law, resized (omitted count still in summary). */
+results.summary.unmatchedOmitted = Math.max(0, results.unmatchedReport.length - 300);
+results.unmatchedReport.splice(300);
 /* r338 T-14a: skipped (plumbing/binding) assertions are bounded the same
- * way; the per-cell counts in sections carry the full numbers. */
+ * way; the per-cell counts in sections carry the full numbers.
+ * r342-11: 400→250 — the size-gate re-sizing above (longest per-entry
+ * reason prose of the three reports; ~440B/entry). */
 const totalSkipped = Object.values(matrix).flatMap((b) => Object.values(b)).reduce((a, c) => a + ((c && c.skipped) || 0), 0);
-results.summary.skippedOmitted = Math.max(0, results.skippedReport.length - 400);
-results.skippedReport.splice(400);
+results.summary.skippedOmitted = Math.max(0, results.skippedReport.length - 250);
+results.skippedReport.splice(250);
 results.summary.totalSkipped = totalSkipped;
 if (DARK) {
   const dTotal = darkPass + darkFail;

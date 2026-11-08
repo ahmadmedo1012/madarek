@@ -31,6 +31,10 @@ import { useLabs, type VirtualLab } from '../../hooks/useResources';
 import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
 import '../../styles/teacher/heron.css'; // R305 Heron: §0 primitives + §E tax- composition
+/* R342-09 — the [nn] section-index register (.w11-idx, inner.css §W11):
+ * the same gutter grammar the done teacher pages speak, so the labs
+ * directory's section head reads on the numeral axis. */
+import '../../styles/landing/inner.css';
 
 const CATEGORY_ICON: Record<string, LucideIcon> = {
   net: Network,
@@ -114,6 +118,14 @@ export default function TeacherLabsPage() {
             للمحاضرات. الطلاب يدخلون المعمل كمشاركين، بينما تبقى أنت المسؤول عن سياق التعلّم.
           </p>
         </div>
+        {/* R342-09 (D8 header-CTA law — the schedule-page precedent for a
+         * read-only ledger): the directory's ONE honest next action on the
+         * accent register — the same student-eye preview every row carries,
+         * surfaced at page level so the first viewport at 390 keeps a
+         * primary action (the topbar «اسأل AI» hides ≤920px). */}
+        <Link to="/student/labs" className="btn accent sm hr-cta">
+          <Icon icon={ExternalLink} size={13} /> معاينة كطالب
+        </Link>
       </header>
 
       {isPending ? (
@@ -183,7 +195,7 @@ export default function TeacherLabsPage() {
             </Card>
           ) : (
             <Card
-              title="المعامل المتاحة"
+              title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>المعامل المتاحة</>}
               icon={FlaskConical}
               subtitle={labs && labs.length > 0
                 ? countAr(labs.length, ['معمل واحد متاح', 'معملان متاحان', 'معامل متاحة', 'معملاً متاحاً'])

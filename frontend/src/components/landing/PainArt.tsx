@@ -16,7 +16,7 @@
  * instrument. Decorative: the column's text carries the meaning
  * (aria-hidden).
  */
-export function PainArt({ kind }: { kind: '01' | '02' | '03' | '04' }) {
+export function PainArt({ kind, 'data-spec': dataSpec }: { kind: '01' | '02' | '03' | '04'; 'data-spec'?: string }) {
   return (
     <svg
       className="pm-art"
@@ -24,6 +24,7 @@ export function PainArt({ kind }: { kind: '01' | '02' | '03' | '04' }) {
       role="presentation"
       aria-hidden="true"
       focusable="false"
+      data-spec={dataSpec}
     >
       {kind === '01' && (
         <>

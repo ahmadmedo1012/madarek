@@ -266,73 +266,49 @@
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[1] > div[1]",
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[1] > div[1]",
-      "ours": "intro.linein.1",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.linein.1"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[2] > div[1]",
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[2] > div[1]",
-      "ours": "intro.linein.2",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.linein.2"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[3] > div[1]",
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[3] > div[1]",
-      "ours": "intro.linein.3",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.linein.3"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[4] > div[1]",
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[4] > div[1]",
-      "ours": "intro.linein.4",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.linein.4"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[5] > div[1]",
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[5] > div[1]",
-      "ours": "intro.linein.5",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.linein.5"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[6] > div[1]",
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[6] > div[1]",
-      "ours": "intro.linein.6",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.linein.6"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[7] > div[1]",
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[7] > div[1]",
-      "ours": "intro.linein.7",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.linein.7"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[8] > div[1]",
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[8] > div[1]",
-      "ours": "intro.linein.8",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.linein.8"
     },
     {
       "section": "home-intro-wrap",
@@ -340,8 +316,10 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[1] > div[1]",
       "ours": "intro.linemask.1",
       "skip": [
+        "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -349,8 +327,10 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[1] > div[1]",
       "ours": "intro.linemask.2",
       "skip": [
+        "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -358,8 +338,10 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[1] > div[1]",
       "ours": "intro.linemask.3",
       "skip": [
+        "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -367,8 +349,10 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[1] > div[1]",
       "ours": "intro.linemask.4",
       "skip": [
+        "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -376,8 +360,10 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[1] > div[1]",
       "ours": "intro.linemask.5",
       "skip": [
+        "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -385,8 +371,10 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[1] > div[1]",
       "ours": "intro.linemask.6",
       "skip": [
+        "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -394,8 +382,10 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[1] > div[1]",
       "ours": "intro.linemask.7",
       "skip": [
+        "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -403,8 +393,10 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[8] > div[1] > div[1]",
       "ours": "intro.linemask.8",
       "skip": [
+        "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -414,7 +406,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -424,7 +417,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -434,7 +428,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -444,7 +439,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -454,7 +450,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -464,7 +461,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -474,7 +472,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -484,7 +483,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -494,7 +494,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -504,7 +505,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -514,7 +516,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -524,7 +527,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -534,7 +538,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -544,7 +549,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -554,7 +560,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -564,7 +571,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -574,7 +582,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -584,7 +593,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -594,7 +604,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -604,7 +615,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -614,7 +626,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -624,7 +637,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -634,7 +648,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -644,7 +659,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -654,7 +670,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -664,7 +681,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -674,7 +692,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -684,7 +703,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -694,7 +714,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -704,7 +725,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -714,7 +736,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -724,7 +747,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -734,7 +758,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -744,7 +769,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -754,7 +780,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -764,7 +791,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -774,7 +802,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -784,7 +813,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -794,7 +824,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -804,7 +835,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -814,7 +846,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -824,7 +857,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -834,7 +868,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -844,7 +879,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -854,7 +890,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -864,7 +901,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -874,7 +912,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -884,7 +923,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -894,7 +934,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -904,7 +945,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -914,7 +956,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -924,7 +967,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -934,7 +978,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -944,7 +989,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -954,7 +1000,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -964,7 +1011,8 @@
       "skip": [
         "tag",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -973,9 +1021,9 @@
       "ours": "intro.wordin.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -984,9 +1032,9 @@
       "ours": "intro.wordin.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -995,9 +1043,9 @@
       "ours": "intro.wordin.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1006,9 +1054,9 @@
       "ours": "intro.wordin.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1017,9 +1065,9 @@
       "ours": "intro.wordin.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1028,9 +1076,9 @@
       "ours": "intro.wordin.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1039,9 +1087,9 @@
       "ours": "intro.wordin.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1050,9 +1098,9 @@
       "ours": "intro.wordin.8",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1061,9 +1109,9 @@
       "ours": "intro.wordin.9",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1072,9 +1120,9 @@
       "ours": "intro.wordin.10",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1083,9 +1131,9 @@
       "ours": "intro.wordin.11",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1094,9 +1142,9 @@
       "ours": "intro.wordin.12",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1105,9 +1153,9 @@
       "ours": "intro.wordin.13",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1116,9 +1164,9 @@
       "ours": "intro.wordin.14",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1127,9 +1175,9 @@
       "ours": "intro.wordin.15",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1138,9 +1186,9 @@
       "ours": "intro.wordin.16",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1149,9 +1197,9 @@
       "ours": "intro.wordin.17",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1160,9 +1208,9 @@
       "ours": "intro.wordin.18",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1171,9 +1219,9 @@
       "ours": "intro.wordin.19",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1182,9 +1230,9 @@
       "ours": "intro.wordin.20",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1193,9 +1241,9 @@
       "ours": "intro.wordin.21",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1204,9 +1252,9 @@
       "ours": "intro.wordin.22",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1215,9 +1263,9 @@
       "ours": "intro.wordin.23",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1226,9 +1274,9 @@
       "ours": "intro.wordin.24",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1237,9 +1285,9 @@
       "ours": "intro.wordin.25",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1248,9 +1296,9 @@
       "ours": "intro.wordin.26",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1259,9 +1307,9 @@
       "ours": "intro.wordin.27",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1270,9 +1318,9 @@
       "ours": "intro.wordin.28",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1281,9 +1329,9 @@
       "ours": "intro.wordin.29",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1292,9 +1340,9 @@
       "ours": "intro.wchar.1.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1303,9 +1351,9 @@
       "ours": "intro.wchar.1.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1314,9 +1362,9 @@
       "ours": "intro.wchar.1.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1325,9 +1373,9 @@
       "ours": "intro.wchar.2.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1336,9 +1384,9 @@
       "ours": "intro.wchar.2.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1347,9 +1395,9 @@
       "ours": "intro.wchar.2.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1358,9 +1406,9 @@
       "ours": "intro.wchar.2.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1369,9 +1417,9 @@
       "ours": "intro.wchar.2.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1380,9 +1428,9 @@
       "ours": "intro.wchar.2.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1391,9 +1439,9 @@
       "ours": "intro.wchar.2.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1402,9 +1450,9 @@
       "ours": "intro.wchar.2.8",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1413,9 +1461,9 @@
       "ours": "intro.wchar.2.9",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1424,9 +1472,9 @@
       "ours": "intro.wchar.2.10",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1435,9 +1483,9 @@
       "ours": "intro.wchar.3.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1446,9 +1494,9 @@
       "ours": "intro.wchar.3.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1457,9 +1505,9 @@
       "ours": "intro.wchar.3.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1468,9 +1516,9 @@
       "ours": "intro.wchar.3.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1479,9 +1527,9 @@
       "ours": "intro.wchar.3.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1490,9 +1538,9 @@
       "ours": "intro.wchar.4.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1501,9 +1549,9 @@
       "ours": "intro.wchar.4.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1512,9 +1560,9 @@
       "ours": "intro.wchar.5.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1523,9 +1571,9 @@
       "ours": "intro.wchar.5.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1534,9 +1582,9 @@
       "ours": "intro.wchar.5.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1545,9 +1593,9 @@
       "ours": "intro.wchar.5.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1556,9 +1604,9 @@
       "ours": "intro.wchar.5.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1567,9 +1615,9 @@
       "ours": "intro.wchar.5.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1578,9 +1626,9 @@
       "ours": "intro.wchar.5.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1589,9 +1637,9 @@
       "ours": "intro.wchar.5.8",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1600,9 +1648,9 @@
       "ours": "intro.wchar.5.9",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1611,9 +1659,9 @@
       "ours": "intro.wchar.6.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1622,9 +1670,9 @@
       "ours": "intro.wchar.6.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1633,9 +1681,9 @@
       "ours": "intro.wchar.6.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1644,9 +1692,9 @@
       "ours": "intro.wchar.6.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1655,9 +1703,9 @@
       "ours": "intro.wchar.6.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1666,9 +1714,9 @@
       "ours": "intro.wchar.6.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1677,9 +1725,9 @@
       "ours": "intro.wchar.6.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1688,9 +1736,9 @@
       "ours": "intro.wchar.6.8",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1699,9 +1747,9 @@
       "ours": "intro.wchar.6.9",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1710,9 +1758,9 @@
       "ours": "intro.wchar.7.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1721,9 +1769,9 @@
       "ours": "intro.wchar.7.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1732,9 +1780,9 @@
       "ours": "intro.wchar.7.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1743,9 +1791,9 @@
       "ours": "intro.wchar.8.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1754,9 +1802,9 @@
       "ours": "intro.wchar.8.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1765,9 +1813,9 @@
       "ours": "intro.wchar.8.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1776,9 +1824,9 @@
       "ours": "intro.wchar.8.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1787,9 +1835,9 @@
       "ours": "intro.wchar.9.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1798,9 +1846,9 @@
       "ours": "intro.wchar.9.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1809,9 +1857,9 @@
       "ours": "intro.wchar.9.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1820,9 +1868,9 @@
       "ours": "intro.wchar.9.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1831,9 +1879,9 @@
       "ours": "intro.wchar.10.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1842,9 +1890,9 @@
       "ours": "intro.wchar.10.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1853,9 +1901,9 @@
       "ours": "intro.wchar.10.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1864,9 +1912,9 @@
       "ours": "intro.wchar.10.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1875,9 +1923,9 @@
       "ours": "intro.wchar.10.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1886,9 +1934,9 @@
       "ours": "intro.wchar.11.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1897,9 +1945,9 @@
       "ours": "intro.wchar.11.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1908,9 +1956,9 @@
       "ours": "intro.wchar.11.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1919,9 +1967,9 @@
       "ours": "intro.wchar.11.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1930,9 +1978,9 @@
       "ours": "intro.wchar.11.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1941,9 +1989,9 @@
       "ours": "intro.wchar.11.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1952,9 +2000,9 @@
       "ours": "intro.wchar.11.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1963,9 +2011,9 @@
       "ours": "intro.wchar.12.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1974,9 +2022,9 @@
       "ours": "intro.wchar.12.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1985,9 +2033,9 @@
       "ours": "intro.wchar.12.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -1996,9 +2044,9 @@
       "ours": "intro.wchar.13.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2007,9 +2055,9 @@
       "ours": "intro.wchar.13.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2018,9 +2066,9 @@
       "ours": "intro.wchar.13.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2029,9 +2077,9 @@
       "ours": "intro.wchar.13.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2040,9 +2088,9 @@
       "ours": "intro.wchar.13.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2051,9 +2099,9 @@
       "ours": "intro.wchar.13.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2062,9 +2110,9 @@
       "ours": "intro.wchar.13.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2073,9 +2121,9 @@
       "ours": "intro.wchar.14.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2084,9 +2132,9 @@
       "ours": "intro.wchar.14.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2095,9 +2143,9 @@
       "ours": "intro.wchar.14.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2106,9 +2154,9 @@
       "ours": "intro.wchar.14.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2117,9 +2165,9 @@
       "ours": "intro.wchar.14.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2128,9 +2176,9 @@
       "ours": "intro.wchar.14.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2139,9 +2187,9 @@
       "ours": "intro.wchar.15.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2150,9 +2198,9 @@
       "ours": "intro.wchar.15.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2161,9 +2209,9 @@
       "ours": "intro.wchar.15.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2172,9 +2220,9 @@
       "ours": "intro.wchar.15.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2183,9 +2231,9 @@
       "ours": "intro.wchar.16.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2194,9 +2242,9 @@
       "ours": "intro.wchar.16.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2205,9 +2253,9 @@
       "ours": "intro.wchar.17.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2216,9 +2264,9 @@
       "ours": "intro.wchar.17.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2227,9 +2275,9 @@
       "ours": "intro.wchar.17.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2238,9 +2286,9 @@
       "ours": "intro.wchar.18.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2249,9 +2297,9 @@
       "ours": "intro.wchar.18.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2260,9 +2308,9 @@
       "ours": "intro.wchar.18.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2271,9 +2319,9 @@
       "ours": "intro.wchar.19.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2282,9 +2330,9 @@
       "ours": "intro.wchar.19.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2293,9 +2341,9 @@
       "ours": "intro.wchar.19.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2304,9 +2352,9 @@
       "ours": "intro.wchar.19.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2315,9 +2363,9 @@
       "ours": "intro.wchar.20.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2326,9 +2374,9 @@
       "ours": "intro.wchar.20.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2337,9 +2385,9 @@
       "ours": "intro.wchar.20.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2348,9 +2396,9 @@
       "ours": "intro.wchar.20.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2359,9 +2407,9 @@
       "ours": "intro.wchar.20.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2370,9 +2418,9 @@
       "ours": "intro.wchar.20.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2381,9 +2429,9 @@
       "ours": "intro.wchar.20.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2392,9 +2440,9 @@
       "ours": "intro.wchar.21.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2403,9 +2451,9 @@
       "ours": "intro.wchar.21.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2414,9 +2462,9 @@
       "ours": "intro.wchar.22.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2425,9 +2473,9 @@
       "ours": "intro.wchar.22.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2436,9 +2484,9 @@
       "ours": "intro.wchar.22.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2447,9 +2495,9 @@
       "ours": "intro.wchar.23.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2458,9 +2506,9 @@
       "ours": "intro.wchar.23.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2469,9 +2517,9 @@
       "ours": "intro.wchar.23.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2480,9 +2528,9 @@
       "ours": "intro.wchar.23.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2491,9 +2539,9 @@
       "ours": "intro.wchar.23.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2502,9 +2550,9 @@
       "ours": "intro.wchar.23.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2513,9 +2561,9 @@
       "ours": "intro.wchar.23.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2524,9 +2572,9 @@
       "ours": "intro.wchar.24.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2535,9 +2583,9 @@
       "ours": "intro.wchar.24.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2546,9 +2594,9 @@
       "ours": "intro.wchar.24.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2557,9 +2605,9 @@
       "ours": "intro.wchar.25.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2568,9 +2616,9 @@
       "ours": "intro.wchar.25.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2579,9 +2627,9 @@
       "ours": "intro.wchar.25.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2590,9 +2638,9 @@
       "ours": "intro.wchar.26.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2601,9 +2649,9 @@
       "ours": "intro.wchar.26.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2612,9 +2660,9 @@
       "ours": "intro.wchar.26.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2623,9 +2671,9 @@
       "ours": "intro.wchar.26.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2634,9 +2682,9 @@
       "ours": "intro.wchar.26.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2645,9 +2693,9 @@
       "ours": "intro.wchar.26.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2656,9 +2704,9 @@
       "ours": "intro.wchar.26.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2667,9 +2715,9 @@
       "ours": "intro.wchar.26.8",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2678,9 +2726,9 @@
       "ours": "intro.wchar.26.9",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2689,9 +2737,9 @@
       "ours": "intro.wchar.11.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2700,9 +2748,9 @@
       "ours": "intro.wchar.11.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2711,9 +2759,9 @@
       "ours": "intro.wchar.11.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2722,9 +2770,9 @@
       "ours": "intro.wchar.11.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2733,9 +2781,9 @@
       "ours": "intro.wchar.13.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2744,9 +2792,9 @@
       "ours": "intro.wchar.14.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2755,9 +2803,9 @@
       "ours": "intro.wchar.14.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2766,9 +2814,9 @@
       "ours": "intro.wchar.14.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2777,9 +2825,9 @@
       "ours": "intro.wchar.14.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2788,9 +2836,9 @@
       "ours": "intro.wchar.15.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2799,9 +2847,9 @@
       "ours": "intro.wchar.18.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2810,9 +2858,9 @@
       "ours": "intro.wchar.19.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2821,9 +2869,9 @@
       "ours": "intro.wchar.23.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2832,9 +2880,9 @@
       "ours": "intro.wchar.23.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2843,9 +2891,9 @@
       "ours": "intro.wchar.23.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2854,9 +2902,9 @@
       "ours": "intro.wchar.23.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2865,9 +2913,9 @@
       "ours": "intro.wchar.23.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2876,9 +2924,9 @@
       "ours": "intro.wchar.23.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2887,9 +2935,9 @@
       "ours": "intro.wchar.23.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2898,9 +2946,9 @@
       "ours": "intro.wchar.24.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2909,9 +2957,9 @@
       "ours": "intro.wchar.24.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2920,9 +2968,9 @@
       "ours": "intro.wchar.24.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2931,9 +2979,9 @@
       "ours": "intro.wchar.25.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2942,9 +2990,9 @@
       "ours": "intro.wchar.25.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2953,9 +3001,9 @@
       "ours": "intro.wchar.25.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2964,9 +3012,9 @@
       "ours": "intro.wchar.26.1",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2975,9 +3023,9 @@
       "ours": "intro.wchar.26.2",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2986,9 +3034,9 @@
       "ours": "intro.wchar.26.3",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -2997,9 +3045,9 @@
       "ours": "intro.wchar.26.4",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -3008,9 +3056,9 @@
       "ours": "intro.wchar.26.5",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -3019,9 +3067,9 @@
       "ours": "intro.wchar.26.6",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -3030,9 +3078,9 @@
       "ours": "intro.wchar.26.7",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -3041,9 +3089,9 @@
       "ours": "intro.wchar.26.8",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
@@ -3052,90 +3100,63 @@
       "ours": "intro.wchar.26.9",
       "skip": [
         "tag",
-        "tc",
         "geometry"
-      ]
+      ],
+      "note": " | R342-02: tag+geometry skipped — the scrub word/char seats ride the shared journey WordReveal span grammar (the r338 census law; explicit bindings hold them, the span/div tag difference and the RTL word-flow mirror are documented skips, never silent fails; tc + the 5 unskippable fields stay measured)"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
-      "ours": "intro.cell.1",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.cell.1"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
-      "ours": "intro.cell.1",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.cell.1"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[3]",
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[3]",
-      "ours": "intro.cell.1",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.cell.1"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[4]",
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[4]",
-      "ours": "intro.cell.1",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.cell.1"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[5]",
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[5]",
-      "ours": "intro.cell.1",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.cell.1"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[6]",
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[6]",
-      "ours": "intro.cell.1",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.cell.1"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[7]",
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[7]",
-      "ours": "intro.cell.1",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.cell.1"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[8]",
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[8]",
-      "ours": "intro.cell.1",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.cell.1"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[9]",
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[9]",
-      "ours": "intro.cell.1",
-      "skip": [
-        "geometry"
-      ]
+      "ours": "intro.cell.1"
     },
     {
       "section": "home-intro-wrap",

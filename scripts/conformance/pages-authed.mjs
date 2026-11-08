@@ -88,7 +88,7 @@ const rungNames = [];
   for (const f of ['tokens.css', 'tokens.generated.css']) {
     let css = '';
     try { css = strip(readFileSync(join(WORKTREE, 'frontend', 'src', 'styles', 'tokens', f), 'utf8')); } catch { continue; }
-    for (const m of css.matchAll(/--(fs-[a-z-]+)\s*:/g)) {
+    for (const m of css.matchAll(/--(fs-[a-z0-9-]+)\s*:/g)) {
       if (!rungNames.includes(m[1])) rungNames.push(m[1]);
     }
   }
