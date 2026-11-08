@@ -330,12 +330,6 @@
     },
     {
       "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[1] > div[2]",
-      "spec": "footer > footer[1] > div[1] > div[1] > div[2]",
-      "ours": "footer.col2"
-    },
-    {
-      "section": "footer",
       "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
       "spec": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
       "ours": "footer.c2top"
