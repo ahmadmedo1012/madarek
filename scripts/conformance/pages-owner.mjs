@@ -476,6 +476,12 @@ const overrides = [
   { method: 'GET', path: '/admin/courses', json: ADMIN_COURSES },
   { method: 'GET', path: '/feedback', json: FEEDBACK },
   { method: 'GET', path: '/client-errors', json: CLIENT_ERRORS },
+  /* GET /ai/config — the r160/r164-i honest-surface badge the /owner/ai
+   * header reads (useAiConfig, fail-soft: no answer = no badge). The D11
+   * baseline ran badge-less (501 in the console); the honest fixture for
+   * THIS transport is the local composer — provider 'local', model null —
+   * so the badge renders its truthful «محليّ» label, never a fake LLM. */
+  { method: 'GET', path: '/ai/config', json: ok({ provider: 'local', model: null }) },
 ];
 
 /* the seeded auth state: OWNER_USER (no memberships — the owner scope
