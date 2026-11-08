@@ -40,3 +40,12 @@
     transform: none;
   }
 }
+
+/* R343 A-I2 — the tonal staged duplicate: the reference's veil svg carries
+ * the photo itself as a filtered IMAGE layer (its own tonal mechanism —
+ * svg > image), grayscaled and translucent over the ink; the flat rect
+ * keeps its role as the paper-tint wash. */
+.st-media-tone-img {
+  filter: grayscale(1);
+  opacity: 1;
+}

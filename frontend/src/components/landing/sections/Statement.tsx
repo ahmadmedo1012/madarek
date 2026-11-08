@@ -153,6 +153,20 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                 />
               </div>
               <svg className="st-media-tone" aria-hidden="true" data-spec="intro.mediasvg">
+                {/* R343 A-I2 — the reference's own tonal mechanism: its
+                    veil svg carries the staged duplicate as a filtered
+                    IMAGE layer (spec: svg[1] > image[3]), not a flat
+                    fill — the photo itself, grayscaled, is the tone. */}
+                <image
+                  className="st-media-tone-img"
+                  href={MEDIA_IMG.src}
+                  x="0"
+                  y="0"
+                  width="100%"
+                  height="100%"
+                  preserveAspectRatio="xMidYMid slice"
+                  data-spec="intro.mediatoneimg"
+                />
                 <rect className="st-media-tone-rect" x="0" y="0" width="100%" height="100%" />
               </svg>
             </div>
@@ -296,9 +310,19 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                         {/* the seamless-loop duplicate — aria-hidden span
                             seats (the logo is a background-image tile, not
                             an img: the census keeps 5 imgs, the record's
-                            own 5) */}
-                        <span className="st-crawl-cell" aria-hidden="true">
-                          <span className="st-crawl-logo st-crawl-logo-bg" style={{ ['--crawl-img' as string]: `url(/media/renders/crop-${CRAWL_CAPTURES[i]}-640.webp)` }} />
+                            own 5). R343 A-I2: the duplicate track seats
+                            now carry explicit data-spec hooks (the
+                            reference's own loop-duplicate windows are
+                            recorded in its spec — bound in
+                            mapping/home-intro-wrap-A-I2.json, never
+                            heuristic-glued). */}
+                        <span className="st-crawl-cell" aria-hidden="true" data-spec={`intro.dupcell.${i + 1}`}>
+                          <span
+                            className="st-crawl-logo st-crawl-logo-bg"
+                            aria-hidden="true"
+                            data-spec={`intro.duplogo.${i + 1}`}
+                            style={{ ['--crawl-img' as string]: `url(/media/renders/crop-${CRAWL_CAPTURES[i]}-640.webp)` }}
+                          />
                           <span className="st-crawl-sep" aria-hidden="true" />
                         </span>
                       </Fragment>
