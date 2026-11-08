@@ -1,148 +1,81 @@
 import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
-import type { ReactNode } from "react";
 import { LECTURE_INTERACTIVE, MASTERY_SCORE_LINE } from '../copy';
 /**
- * JourneyScene — R308 «رحلة التعلّم» · R310–R319 the plan scene's own
- * history · **R322 (3-b) — THE MAP TRANSPLANT** (Heron `home-map`).
+ * JourneyScene — R308 «رحلة التعلّم» · R322 the map transplant ·
+ * **R342-04 — THE MEASURED-SEAT REBUILD**.
  *
- * The reference's narrative center of gravity is ONE sticky frame that
- * owns ~51% of the page: an architectural plan that draws itself in
- * as you scroll, while two statement plaques, a bottom-corner
- * INTRODUCTION card and a reserved closing column narrate it
- * (`docs/redesign/r322/heron/map.md` — every number below is measured
- * from that extraction, never re-invented here).
- *
- * THE STRUCTURE (Heron's, seat for seat):
+ * The R341 conformance debt (coverage 12.6% / off-book 87.4% /
+ * heuristic pairing 90.9%) was structural: our scene owned the
+ * reference's STAGES but not its measured SEATS. This rebuild keeps
+ * the six-state scroll story and re-seats every narrated element on
+ * the frozen Heron map spec (`docs/redesign/r335/heron-spec/
+ * home-map-wrap.*.json`), so each real visual counterpart carries an
+ * explicit `data-spec` binding (mapping/home-map-wrap.json) instead
+ * of heuristic gluing:
  *
  * ```
- * .jt (the track: 649dvh @≥992 · the stacked column @≤991)
- * └─ .jt-pin (the FRAME — sticky top:0 ≈100vh, flex, ≥992 only)
- *     ├─ .jt-map-col (the PLAN COLUMN — flex:1 @≥992 · the scroll
- *     │   track @≤991)            [contain: layout paint]
- *     │   └─ .jt-map-in (the stack seat — the ENTRANCE drift seat
- *     │       @≥992 · the STICKY WINDOW @≤991)
- *     │       ├─ .jt-window (the plan box: svg + counter chips
- *     │       │   + the two statement plaques — all ride the drift)
- *     │       └─ .jt-intro (absolute bottom-inline-start — Heron's
- *     │           home-map-intro: paper card, 1px hairline, dark
- *     │           head chip, 5 findings ONE at a time, grows upward)
- *     └─ .jt-close (the CLOSING COLUMN — 464px @1440 RESERVED from
- *         stage 0; content opacity-revealed at scrub end @≥992 ·
- *         stacked full-width below the track @≤991)
+ * .jt (the track: 700dvh @≥992 — section-exact heights per bp)
+ * └─ .jt-pin (the FRAME — sticky top:0, the measured column grid:
+ *     [map col][1px vrule][closing col] = the frame width)
+ *     ├─ .jt-map-col (the PLAN COLUMN — measured per bp)
+ *     │   └─ .jt-map-in (the window seat / the ≤991 sticky)
+ *     │       └─ .jt-window (the plan box: 4 registration rails +
+ *     │           4 corner marks + the drifting .jt-stack)
+ *     │           └─ .jt-stack (the entrance drift seat: the plan
+ *     │               svg + the plaque band + 3 annotation cards)
+ *     │       └─ .jt-intro (the INTRODUCTION card — dark head chip,
+ *     │           5 findings one at a time, each with its mono foot)
+ *     └─ .jt-close (the CLOSING COLUMN — the section's own head:
+ *         chip + h2 + copy + the four-station ledger rows; VISIBLE
+ *         from frame one exactly as the frozen spec records it —
+ *         the R341 reserved-empty column read as a dead void)
  * ```
  *
- * THE SIX STATES (the semantic machine, `data-stage` on `.jt` —
- * scroll picks from `docs/redesign/r322/heron/map.md`'s state table):
+ * THE STATE MACHINE (kept — the R322 semantics): `data-stage` 0..5,
+ * `data-finding` 1..5/done, `data-wash` the bounded room highlight,
+ * `data-rm` the reduced-motion static sheet. What changed:
+ *   · the ENTRANCE DRIFT now rides `.jt-stack` (Heron's own seat —
+ *     the window's chrome stays put while the plan descends one
+ *     frame height: −(100dvh − 1rem), the measured transform);
+ *   · PLAQUE 1 stands VISIBLE from scroll 0 (the spec records it at
+ *     opacity 1 — it is the section's entry statement over the ghost
+ *     plan), plaque 2 still crossfades in at the plan era;
+ *   · the INTRODUCTION card rests at opacity 0 and flips on with the
+ *     card era (stage 2) — the spec's captured rest state;
+ *   · the CLOSING COLUMN is always visible (the spec records every
+ *     column element at opacity 1 at rest); its content is the
+ *     section head (chip «الفصول [04]» + the h2 + the honest copy)
+ *     plus the four-station ledger (rule + text + icon rows) —
+ *     «الخلاصة» and the reveal machine retire.
  *
- *   0 statement — plaque 1 («الرحلة مرسومة على مسطح واحد») over the
- *     SETTLED paper; the plan's BASE layer (frame + envelope) is
- *     visible from frame one (the R322 V2 kill — never an empty grid);
- *   1 plan — plaque 1 out, plaque 2 in («لكل فصل غرفته وبابها» — a
- *     SECOND distinct ~20-char statement, derived from the journey's
- *     own copy, never a duplicate of plaque 1 nor of the band head);
- *   2 card — the INTRODUCTION card active + finding 1;
- *   3 findings — the drawing builds: layer 1 in with the first
- *     finding, then layers 2–6 one per 0.5s step while findings 2–5
- *     rotate one at a time (the plan's own 5 rooms/capabilities);
- *   4 room — all 6 layers ON = the finished plan; the orange is the
- *     bounded room wash only (a `pl-zone` fill, ≤0.5% of the frame);
- *   5 closing — the scrub ends, the closing column's content reveals
- *     (reserved geometry — NEVER an animated width; the pin-end CLS
- *     0.187 of the perf baseline dies by construction), then the
- *     frame rides up off the track's end — the 809px map-end dead
- *     band is dead: the closing state IS the end of the track.
- *
- * THE PERF ARCHITECTURE (perf-baseline.md §7, items 1–4 — mandated):
- *
- *  · NO custom property is written during scroll — the 756-element
- *    inherited `--jt-p` walk is dead. The six progressive layer
- *    groups (`.jt-plan [data-xl]`, ≤10 roots) take DIRECT
- *    `style.opacity` writes (opacity does not inherit — descendants
- *    never recalc); the plaques take opacity+transform writes; the
- *    findings/counters/wash are DISCRETE `data-*` flips (pure CSS,
- *    `t-fast` transitions ≤700ms — the allowed class of motion).
- *  · The layers are opacity-only: the R310 per-element
- *    stroke-dashoffset draw-in is retired (Paint/UpdateLayoutTree
- *    families `line.pl-hatch × 756 × 3` measured in §3 of the
- *    baseline); the build reads as Heron's crossfade stack.
- *  · `contain: layout paint` on `.jt-map-col` — the plan subtree's
- *    invalidations cannot walk out of the column, and the entrance
- *    descent is clipped to it (the stack never paints over the
- *    previous section — Heron's overpaint is not transplanted).
- *  · The closing column's final geometry is RESERVED from stage 0
- *    (the column sits at its measured 464px @1440 through the whole
- *    story) and reveals by opacity — zero layout animation, zero CLS.
- *
- * THE CLOCK (one driver, the shared sheetConductor frame — kept): the
- * map clock is the sticky-pin progress `pRaw` (pin units, derived per
- * frame from the track's cached document geometry — never a layout
- * read on steady ticks). Heron's measured trigger windows, in pin
- * units: the ENTRANCE scrub `p −0.19 → 0` (the whole stack descends
- * one viewport to its seat — desktop only; ≤991 the sticky window does
- * the work, the drift is empty like Heron @390), and the SEQUENCE
- * scrub `p −0.08 → 0.93` mapped onto Heron's 5.52s movie:
- *
- *   t 0.00–0.50  plaque 1 IN   (fade + 24px rise)
- *   t 1.00–1.50  plaque 1 OUT  (fade + −2.5px + 4% shrink)
- *   t 1.50–2.00  plaque 2 IN
- *   t 2.50–3.00  plaque 2 OUT
- *   t 0.35→3.52  layers 1–6 (one per ~0.5s — Y1: the build rides the
- *                statement era instead of trailing it; see LAYER_WINDOWS)
- *   t ≥ 5.52     the closing flip (MONOTONIC — Heron's toggle is
- *                direction-sensitive; ours never un-flips on reverse,
- *                noted as the simplification)
- *
- * Every tween eases power2.out (`p2o`) — the reference's own curve.
- * @≤991 the clock is the PLAN COLUMN's sticky progress (the column is
- * the track — Heron's own mobile architecture) and the camera zooms
- * the sheet's viewBox between the narrated rooms (the R312 camera,
- * evolved onto the finding timeline: full overview → each room in
- * turn → the completed overview at the close).
- *
- * REDUCED MOTION: the complete static sheet — every state's end state
- * stands at once (all 6 layers ON, the findings all readable in the
- * open card, the closing column revealed, no drift, no camera) — the
- * driver writes it idempotently and the r306 RM belt holds.
- *
- * R325 (Y1 — the map intro clip): the intro is never an empty-box
- * show. Two machine changes, the owner's «plan drawn from frame one»:
- *  · GHOST LINE-WORK — every progressive layer rests at XL_GHOST
- *    opacity (18%) from frame one (CSS base + the driver's ramp
- *    floor): the WHOLE plan reads as faint line-work at scroll
- *    progress 0, both breakpoints, and each layer INKS IN
- *    continuously (ghost → full) inside its own window — the draw is
- *    progressive with scroll, never a late appearance and never a
- *    discrete tone jump (the R323 0|1 envelope write retires: the
- *    ramp floor replaces it — a wall at 18% is the DESIGNED ghost
- *    state, and the build is one continuous crossfade).
- *  · THE BUILD STARTS AT THE INTRO — layer 1 (envelope + lecture)
- *    begins at t 0.35, ~82px of scroll BEFORE pin engage @1440: the
- *    statement era's dead runway (headline alone, nothing moving) is
- *    ≈0.36 screen heights @1440 / ≈0.24 @390 — under the 0.5 cap —
- *    and the walls/rooms draw through the statements instead of after
- *    them (the old table held the first layer until t 2.5 ⇒ ≈2.1
- *    screens of empty grid after pin engage — the owner's «empty for
- *    ~3 scroll frames»).
- *
- * Content is the honest capability ledger — every finding is a real,
- * live capability (the r168b pins `شروحات مخصَّصة` + `خطط مراجعة حسب
- * أدائك الفعلي` ride finding 5 verbatim); no invented claims; the
- * funnel is untouched (the closing column is TEXT, never a CTA).
+ * REDUCED MOTION: the complete static sheet — all 6 layers ON, the
+ * findings all readable in the open card, the column and its ledger
+ * standing, no drift, no camera (the driver writes it idempotently;
+ * the journey.css RM belt holds the no-JS case).
  */
 import { useRef } from 'react';
 import { LearningPlanDrawing, PLAN_VB } from '../LearningPlanDrawing';
+import { Icon } from '../../Icon';
+import {
+  Presentation,
+  CircleCheck,
+  FileCheck2,
+  Grid3x3,
+} from 'lucide-react';
 import { useSheetScroll } from '../../../lib/motion/useSheetScroll';
 import { setSheetVar, sheetRect } from '../../../lib/motion/sheetConductor';
 
 /* ── The copy (our own words, honest, Arabic RTL) ────────────────────
  * Plaque 1 is the r315 statement (kept verbatim — it IS the map's own
  * thesis). Plaque 2 is a SECOND distinct ~20-char statement derived
- * from the journey's own copy («ولكل قاعة بابها», the station story):
- * the chapters' rooms and doors are literally on the drawing. The
- * findings are the four stations' own texts + the assistant note (the
- * r168b truthfulness pins ride the fifth verbatim). */
+ * from the journey's own copy. The findings are the four stations'
+ * own texts + the assistant note (the r168b truthfulness pins ride
+ * finding 5 verbatim). The closing column carries the section head
+ * (chip + h2 + lede-grade copy) — the funnel itself stays frozen:
+ * no link is added here (the register row further down the sheet
+ * owns the conversion). */
 const STATEMENT_1_AR = 'الرحلة مرسومة على مسطح واحد';
-const STATEMENT_2_AR = 'لكل فصل غرفته وبابها';
+const STATEMENT_2_AR = 'لكل فصل غرفته وبابه الذي يفتحه';
 
 const INTRO_TITLE_AR = 'مقدمة';
 const FINDINGS_AR = [
@@ -150,77 +83,74 @@ const FINDINGS_AR = [
     key: 'lecture',
     title: LECTURE_INTERACTIVE,
     text: 'محاضرة مسجَّلة بنقاط فحص تُثبِّت الفهم، وحضور يُحتسب تلقائيًا عند الإكمال.',
+    foot: 'الباب [01] — قاعة المحاضرات',
   },
   {
     key: 'checkpoint',
     title: 'نقاط الفحص',
     text: 'سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.',
+    foot: 'الباب [02] — نقطة الفحص',
   },
   {
     key: 'exam',
     title: 'الاختبارات الإلكترونية',
     text: 'بنك أسئلة بأربعة أنواع وقوالب جاهزة، وتصحيح تلقائي للأسئلة الموضوعية.',
+    foot: 'الباب [03] — قاعة الاختبارات',
   },
   {
     key: 'mastery',
     title: 'مصفوفة الإتقان',
     text: MASTERY_SCORE_LINE,
+    foot: 'الباب [05] — غرفة الإتقان',
   },
   {
     key: 'assistant',
     title: 'المساعد الأكاديمي',
     text: 'يعمل الآن داخل المنصّة، ويقترح شروحات مخصَّصة وخطط مراجعة حسب أدائك الفعلي.',
+    foot: 'المساعد — يعمل اليوم داخل المنصّة',
   },
 ] as const;
 
-/* the closing column — Heron's label chip + 3-line h2 + body. Our h2
- * is the CTA-adjacent statement (the funnel itself stays frozen: no
- * link is added — the register row further down the sheet owns the
- * conversion); the copy is the honest ledger summary. ~60 chars —
- * Heron's own 3-line measure at the D2 rung in the 464px column. */
-const CLOSE_CHIP_AR = 'الخلاصة';
-const CLOSE_TITLE_AR =
-  'المسطح اكتمل — والخطوة التالية لك: أنشئ حسابك وابدأ من أول محاضرة.';
+/* the closing column — the section's own head (Heron's home-map
+ * content column: label chip + h2 + body + the cms ledger). The h2
+ * keeps id="chapters-title" (the aria-labelledby contract) and the
+ * D2 display rung. The copy is the honest ledger summary. */
+const CLOSE_CHIP_L1_AR = 'الفصول';
+const CLOSE_CHIP_L2_AR = '[04]';
+const CLOSE_TITLE_AR = 'الرحلة — أربعة فصول تتحرك أمامك';
 const CLOSE_COPY_AR =
-  'كل غرفة في هذا المسطح ميزة تعمل اليوم داخل المنصّة، لا وعدًا قادمًا. أكمل التمرير لتصل إلى إنشاء الحساب في نهاية الصفحة.';
-/* R322 3-b-fix2 (review-c3 R1#7): the column's FOOT row — Heron's
- * closing column composes to its foot (its cms block); ours ended at
- * y583/900 leaving a quiet bottom third. The mono terminus + the
- * honest artwork-scope note anchor the column's end. */
-const CLOSE_FOOT_NOTE_AR =
-  'المسطح رسم أصلي لمدارك؛ الغرف تتّسع مع كل فصل جديد.';
+  'مرّر لتشاهد الرحلة تُبنى على مسطح واحد: لا لقطات مُجمّلة ولا وعودًا قادمة. كل غرفة في هذا المسطح ميزة تعمل اليوم داخل المنصّة — من قاعة المحاضرات إلى غرفة الإتقان — وإنشاء الحساب في نهاية الصفحة. المسطح رسم أصلي لمدارك، والغرف تتّسع مع كل فصل جديد.';
+
+/* the four-station ledger rows (the cms block): each row = hairline +
+ * station line + icon — the journey's own chapters, mirroring the
+ * drawing's four doors. */
+const LEDGER_AR = [
+  { key: 'lecture', text: 'المحاضرة التفاعلية — شرح مسجَّل بنقاط فحص وحضور يُحتسب', icon: Presentation },
+  { key: 'checkpoint', text: 'نقاط الفحص داخل المحاضرة تصحّح الفهم فورًا', icon: CircleCheck },
+  { key: 'exam', text: 'الاختبارات الإلكترونية بأنواعها وقوالبها الجاهزة', icon: FileCheck2 },
+  { key: 'mastery', text: 'مصفوفة الإتقان والمراجعة حسب أدائك الفعلي', icon: Grid3x3 },
+] as const;
+
+/* the three plan annotation cards (Heron's demo cards): orange-ruled
+ * callouts on the drawing — title in the accent mono voice + one
+ * honest line. Positioned at the measured seats (journey.css). */
+const ANNOTATIONS_AR = [
+  { key: 'exam', title: '[03] قاعة الاختبارات', text: 'بنك أسئلة بأربعة أنواع وتصحيح تلقائي فوري.' },
+  { key: 'library', title: '[04] المكتبة', text: 'مراجع ومصادر لكل فصل.' },
+  { key: 'research', title: 'البحث والمراجعة', text: 'رفع البحوث ومتابعة تقييمها داخل المنصّة.' },
+] as const;
 
 /* the [nn/05] counter rows — static text, opacity-only progression
  * (they never change copy during the story; the flip is CSS). */
 const COUNTERS = ['[01/05]', '[02/05]', '[03/05]', '[04/05]', '[05/05]'] as const;
 
-/* ── The clock constants (pin units; Heron's measured windows) ───────
- * All three derive from the extraction's own trigger table @1440
- * (section 2352–8652 · vh 900 ⇒ pin span 5400):
- *   · entrance 1465→2352 ⇒ p −0.164→0 (the stack's one-viewport
- *     descent — the natural lock start is −vh/span = −0.167; the
- *     measured −0.164 sits 14px inside it);
- *   · sequence 1908→7495 ⇒ p −0.082→0.952 (the 5.52s movie);
- *   · the closing flip lands AT the scrub end (7495); the sticky
- *     releases at p = 1 (8752) and rides up through the tail — the
- *     closing state IS the end of the track (the 809px map-end dead
- *     band dies by construction: the revealed column rides the
- *     release). */
+/* ── The clock constants (pin units; the measured windows) ─────────── */
 const ENTRANCE_START_PIN = -0.167; /* the stack's descent begins ~1 viewport before the pin */
-const SEQ_START_PIN = -0.082; /* the 5.52s movie begins just before the pin engages */
-const SEQ_END_PIN = 0.952; /* …and ends at the measured scrub end — the closing owns the tail */
+const SEQ_START_PIN = -0.082;
+const SEQ_END_PIN = 0.952;
 const SEQ_SPAN_PIN = SEQ_END_PIN - SEQ_START_PIN;
 const SEQ_DUR_S = 5.52;
 
-/* the six progressive layer windows (seconds in the movie) — Y1
- * re-timing: the build RIDES the statement era. Layer 1 (the envelope
- * — the walls) starts at t 0.35, ~82px of scroll BEFORE pin engage
- * @1440 (the intro runway — statement alone over a static ghost — is
- * ≈0.36 screens @1440 / ≈0.24 @390, under the 0.5 cap), then one
- * layer per 0.5s step; the six layers complete by t 3.52 and the
- * findings era (t ≥ 2.5) narrates over the finishing drawing. Every
- * layer's opacity ramps from the GHOST floor (XL_GHOST below) — the
- * line-work stands from frame one. */
 const LAYER_WINDOWS: ReadonlyArray<readonly [number, number]> = [
   [0.35, 0.85], // 1 · the envelope (the walls ink in AT the intro) + the lecture hall
   [1.02, 1.52], // 2 · the checkpoint kiosk
@@ -230,27 +160,15 @@ const LAYER_WINDOWS: ReadonlyArray<readonly [number, number]> = [
   [3.02, 3.52], // 6 · the annotations (the journey path, stations, dims)
 ];
 
-/* R325 (Y1) — the GHOST floor: the opacity every progressive layer
- * rests at before its build window (and the landing.css base for the
- * pre-driver/no-JS frames). The whole plan reads as faint line-work
- * at scroll progress 0; each build ramps CONTINUOUSLY from this floor
- * to 1 — never from 0, never a discrete jump. */
 const XL_GHOST = 0.18;
 
-/* T-09e — the measured art register: the conformance census pairs the
- * band's svg art by document order (path/g ordinal over the walked
- * section). Heron's frozen rest state: the route overlay (svg[2] path
- * 1–13) rests at opacity 0 with a filter tween; the annotation groups
- * g[2]g[3]/g[4]g[4]/g[6]g[3] rest at 0, the g[*]g[1] tints at 0.24;
- * the demo-row path art + the tween groups carry the 0.4s/ease motion
- * class (journey.css — the measured register). The reveal rides the
- * annotation era (layer 6's window) — the same direct-write contract
- * as the six layers. */
-const ART_ROUTE_PATHS: readonly [number, number] = [8, 20]; // census ordinal (inclusive)
-const ART_HIDDEN_GROUPS: readonly number[] = [1, 5, 9]; // census ordinal → rest 0
-const ART_TINT_GROUPS: readonly number[] = [2, 6, 10]; // census ordinal → rest 0.24
+/* T-09e — the measured art register (the census-paired route overlay
+ * + annotation groups) — unchanged from the R341 driver. */
+const ART_ROUTE_PATHS: readonly [number, number] = [8, 20];
+const ART_HIDDEN_GROUPS: readonly number[] = [1, 5, 9];
+const ART_TINT_GROUPS: readonly number[] = [2, 6, 10];
 const ART_TINT = 0.24;
-const ART_REVEAL: readonly [number, number] = [3.02, 3.52]; // the annotation era (layer 6)
+const ART_REVEAL: readonly [number, number] = [3.02, 3.52];
 
 type ArtRegister = { route: SVGPathElement[]; hidden: SVGGElement[]; tint: SVGGElement[] };
 
@@ -259,8 +177,6 @@ function resolveArtRegister(track: HTMLElement): ArtRegister {
   const groups = Array.from(track.querySelectorAll<SVGGElement>('.jt-plan g'));
   const route = paths.slice(ART_ROUTE_PATHS[0], ART_ROUTE_PATHS[1] + 1);
   for (const el of route) {
-    /* the measured tween property for the route overlay (heron svg[2])
-     * is filter — the demo-row paths keep the css transform register. */
     el.style.transition = 'filter var(--jt-t-art) var(--jt-e-art)';
   }
   return {
@@ -270,14 +186,12 @@ function resolveArtRegister(track: HTMLElement): ArtRegister {
   };
 }
 
-/* the finding rotation: 5 equal 0.6s windows over t 2.5→5.5, one step
- * behind the layer builds (finding i narrates rooms i..i+1 — the
- * fifth, the assistant, rides the annot layer + the collapse). */
+/* the finding rotation: 5 equal 0.6s windows over t 2.5→5.5. */
 const FINDING_SPAN_S = 0.6;
 const FINDING_START_S = 2.5;
 const FINDING_END_S = 5.5;
 
-/* power2.out — the reference's scrub ease, sampled in the extraction. */
+/* power2.out — the reference's scrub ease. */
 function p2o(x: number): number {
   const u = x < 0 ? 0 : x > 1 ? 1 : x;
   return 1 - (1 - u) * (1 - u);
@@ -287,54 +201,25 @@ function clamp01(x: number): number {
   return x < 0 ? 0 : x > 1 ? 1 : x;
 }
 
-/* ── The ≤991 camera (the R312 camera, evolved onto the 6-state clock)
- * The sheet's viewBox pans between the narrated rooms while the sticky
- * window holds: the full overview through the statement era → each
- * room in turn → the completed overview at the close. TWO crop
- * families (R322 3-b-fix, review-c3 R1#5/R2#4: the mobile dead band
- * + the 26%-area plan):
- *  · TABLET 768–991 — the SHEET-aspect landscape family (the R319 crop
- *    nodes at 1.5789): the tablet window is 753px wide, the landscape
- *    plan fills it honestly.
- *  · PHONE ≤767 — the PORTRAIT family (460×600, aspect 0.767): the
- *    sticky window is FULL VIEWPORT HEIGHT (the 40–50% mid-map dead
- *    band dies by construction), so the plan element must be TALL to
- *    fill it — portrait crops zoom each room to a readable scale and
- *    the element's CSS aspect-ratio matches the crop exactly (no
- *    letterbox, and a viewBox pan can never resize the element — zero
- *    layout work per crop frame). The overview beats keep CAM_FULL
- *    (meet: the complete plan, centered, paper bands on paper).
- * Quantized whole viewBox units + change-gated writes (the R318 C2-S1
- * discipline — an interpolated rect never re-invalidates the plan
- * raster twice for the same value). */
+/* ── The ≤991 camera (unchanged — the R312 camera family) ─────────── */
 type CamRect = readonly [number, number, number, number];
 const CAM_FULL: CamRect = [0, 0, PLAN_VB.w, PLAN_VB.h];
-/* the tablet family — the sheet's own landscape aspect (1.5789) */
 const CAM_KEYS_SHEET: ReadonlyArray<readonly [number, CamRect]> = [
   [2.2, CAM_FULL],
-  [2.8, [640, 54, 560, 355]], // the lecture hall (the stage + raked seating)
-  [3.4, [640, 390, 560, 355]], // the checkpoint kiosk (the counter + queue)
-  [4.0, [308, 54, 560, 355]], // the exam hall (the desk grid)
-  [4.6, [85, 342, 660, 418]], // the library + reception band
-  [5.0, [0, 54, 560, 355]], // the mastery room (the stepped seminar)
-  [5.52, CAM_FULL], // the completed overview at the close
+  [2.8, [640, 54, 560, 355]],
+  [3.4, [640, 390, 560, 355]],
+  [4.0, [308, 54, 560, 355]],
+  [4.6, [85, 342, 660, 418]],
+  [5.0, [0, 54, 560, 355]],
+  [5.52, CAM_FULL],
 ];
-/* the phone family — portrait 460×600 crops centred on the same rooms
- * (clamped to the sheet): the visible artwork area @390 grows from
- * 26% of Heron's stack to ~82%, and the tall element + the full-height
- * sticky window retire the mid-map dead band entirely. */
 const CAM_KEYS_PHONE: ReadonlyArray<readonly [number, CamRect]> = [
   [2.2, CAM_FULL],
-  [2.8, [713, 0, 460, 600]], // the lecture hall + its corridor reach
-  [3.4, [713, 160, 460, 600]], // the checkpoint kiosk band
-  [4.0, [358, 0, 460, 600]], // the exam hall + the reading rooms
-  [4.6, [298, 160, 460, 600]], // the library + reception band
-  [5.0, [15, 0, 460, 600]], // the mastery room + the entry court
-  // R322 3-b-fix3 (review-c3 R1-D2): the phone's TERMINAL key HOLDS the
-  // mastery crop — CAM_FULL letterboxed a 206px overview inside the
-  // 787px full-height window at the close (a sparse release beat); the
-  // held terminus room (tinted, zoomed) reads as the story's end while
-  // the stacked closing column scrolls in below.
+  [2.8, [713, 0, 460, 600]],
+  [3.4, [713, 160, 460, 600]],
+  [4.0, [358, 0, 460, 600]],
+  [4.6, [298, 160, 460, 600]],
+  [5.0, [15, 0, 460, 600]],
   [5.52, [15, 0, 460, 600]],
 ];
 
@@ -379,10 +264,7 @@ function restoreCam(track: HTMLElement): void {
   writeCamBox(track, CAM_FULL);
 }
 
-/* ── Reading-environment probes (kept from the R312/R318 machinery:
- * the two lists are constructed once and LIVE — a mid-session flip
- * lands in the same frame; jsdom without matchMedia falls through to
- * the desktop path, which keeps the unit belts deterministic). */
+/* ── Reading-environment probes (kept from the R312/R318 machinery) ── */
 let mobileQuery: MediaQueryList | null = null;
 let phoneQuery: MediaQueryList | null = null;
 let reducedQuery: MediaQueryList | null = null;
@@ -405,9 +287,10 @@ function viewportState(): { mobile: boolean; phone: boolean; reduced: boolean } 
   };
 }
 
-/* the statement plaques' in/out recipe — Heron's own: fade + 24px rise
- * in; fade + −2.5px rise + 4% shrink out. Direct writes, cached by the
- * conductor's last-value map (idle frames write nothing). */
+/* the statement plaques' in/out recipe — the measured one: fade +
+ * 24px rise in; fade + −2.5px rise + 4% shrink out. R342-04: plaque 1
+ * stands VISIBLE from t 0 (the spec's captured rest state) — its
+ * "in" window is already complete at the story's start. */
 function writeCard(
   el: HTMLElement | null,
   t: number,
@@ -442,22 +325,46 @@ function writeCard(
   }
   setSheetVar(el.style, 'opacity', o.toFixed(3));
   setSheetVar(el.style, 'transform', `translateY(${ty.toFixed(1)}px) scale(${sc.toFixed(3)})`);
-  /* the a11y half of autoAlpha: a fully-faded plaque leaves the
-   * tree (the old design's data-on visibility flips, kept — ONE
-   * statement readable at a time, never a hidden third voice). */
   setSheetVar(el.style, 'visibility', o <= 0 ? 'hidden' : 'visible');
 }
 
-export function JourneyScene({ head }: { head?: ReactNode }) {
+/* the plaque-2 WRAPPER fade — opacity-only: the wrapper is the
+ * measured from-state SEAT (its own boxes rest at opacity 1; the
+ * hiding lives here) — no rise, no scale on the wrapper itself. */
+function writeFade(
+  el: HTMLElement | null,
+  t: number,
+  tIn0: number,
+  tIn1: number,
+  tOut0: number,
+  tOut1: number,
+): void {
+  if (!el) return;
+  let o: number;
+  if (t <= tIn0) o = 0;
+  else if (t < tIn1) o = p2o((t - tIn0) / (tIn1 - tIn0));
+  else if (t < tOut0) o = 1;
+  else if (t < tOut1) o = 1 - p2o((t - tOut0) / (tOut1 - tOut0));
+  else o = 0;
+  setSheetVar(el.style, 'opacity', o.toFixed(3));
+  setSheetVar(el.style, 'visibility', o <= 0 ? 'hidden' : 'visible');
+}
+
+/* the entrance drift magnitude — the measured transform: one frame
+ * height minus 1rem (the fluid root), i.e. the stack rests exactly
+ * one sticky-frame above its seat before the descent. */
+function driftMagnitude(vh: number, fs: number): number {
+  return Math.max(0, vh - fs);
+}
+
+export function JourneyScene() {
   const trackRef = useRef<HTMLDivElement>(null);
   const mapInRef = useRef<HTMLDivElement | null>(null);
   const windowRef = useRef<HTMLDivElement | null>(null);
-  const card1Ref = useRef<HTMLParagraphElement | null>(null);
-  const card2Ref = useRef<HTMLParagraphElement | null>(null);
+  const stackRef = useRef<HTMLDivElement | null>(null);
+  const card1Ref = useRef<HTMLDivElement | null>(null);
+  const card2Ref = useRef<HTMLDivElement | null>(null);
   const closeRef = useRef<HTMLDivElement | null>(null);
-  /* the ≤991 plan-column geometry (the sticky track): resolved once
-   * per layout epoch — the column is in-flow inside the static frame,
-   * so its document box is stable while the inner window sticks. */
   const colGeoRef = useRef<{
     top: number;
     height: number;
@@ -465,16 +372,13 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
     stickyTop: number;
   } | null>(null);
   const colElRef = useRef<HTMLElement | null>(null);
-  /* the six progressive layer groups (queried once per epoch; the
-   * seats live inside the ONE plan svg — no twin, no second instance
-   * in the a11y tree). */
   const layerElsRef = useRef<SVGGElement[][]>([]);
-  /* the cam-cropped flag — set by the mobile camera pass, consumed by
-   * the ≥992px crossing so restoreCam never runs per desktop frame. */
   const camDirtyRef = useRef(false);
+  /* the drift unit — the band scaffold rung (fs-body per bp), read
+   * once per epoch (never a per-frame layout read). */
+  const driftFsRef = useRef(0);
 
-  /* ── The ONE scroll driver (the shared conductor clock; zero React
-   *     renders per tick; every write is idempotent + cached). ───── */
+  /* ── The ONE scroll driver (zero React renders per tick) ────────── */
   useSheetScroll(
     trackRef,
     ({ vh, rect, traversal, pin }) => {
@@ -482,13 +386,6 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
       if (!track) return;
       const { mobile, phone, reduced } = viewportState();
 
-      /* the map clock — sticky-pin progress in pin units (negative
-       * before the pin engages, >1 after release). Desktop: the track
-       * (.jt) itself. ≤991: the PLAN COLUMN is the track — its sticky
-       * window's progress, derived per frame from the cached document
-       * geometry + scrollY (no layout read on steady ticks). The
-       * no-geometry fallback (jsdom/SSR rects are empty) is the
-       * clamped pin metric — deterministic for the unit belts. */
       let pRaw: number;
       if (mobile) {
         let geo = colGeoRef.current;
@@ -518,14 +415,9 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
         pRaw = rect.height > vh + 1 ? -rect.top / (rect.height - vh) : pin;
       }
 
-      /* the static end-state under reduced motion: every state's end
-       * state stands at once — the finished plan, the open card with
-       * ALL findings readable, the revealed closing, no drift, no
-       * camera zoom. Idempotent writes; the page never animates. */
-      /* T-09e — the measured art register (resolveArtRegister): the
-       * census-paired route overlay + annotation groups; under RM the
-       * static end state stands them all at 1 with the layers. */
       const art = resolveArtRegister(track);
+
+      /* the static end-state under reduced motion. */
       if (reduced) {
         for (const group of resolveLayers(track)) {
           for (const el of group) setSheetVar(el.style, 'opacity', '1');
@@ -539,8 +431,8 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
         if (card2Ref.current) {
           setSheetVar(card2Ref.current.style, 'opacity', '0');
         }
-        if (windowRef.current) {
-          setSheetVar(windowRef.current.style, 'transform', 'translateY(0.0px)');
+        if (stackRef.current) {
+          setSheetVar(stackRef.current.style, 'transform', 'translateY(0.0px)');
         }
         if (mobile) {
           writeCamBox(track, CAM_FULL);
@@ -549,46 +441,25 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
         return;
       }
 
-      /* 1 · the entrance descent (≥992 only — the whole plan stack
-       * rides one viewport down into its seat; ≤991 the sticky window
-       * does the work, the drift is empty exactly like Heron @390). */
-      const winEl = windowRef.current;
+      /* 1 · the entrance descent (≥992 only — the STACK drifts, the
+       * window's chrome stays: the measured architecture). */
+      const stackEl = stackRef.current;
       if (!mobile) {
+        if (!driftFsRef.current && track) {
+          driftFsRef.current = parseFloat(getComputedStyle(track).fontSize) || 0;
+        }
         const u = (pRaw - ENTRANCE_START_PIN) / -ENTRANCE_START_PIN;
-        const y = -vh * (1 - p2o(u));
-        if (winEl) setSheetVar(winEl.style, 'transform', `translateY(${y.toFixed(1)}px)`);
-      } else if (winEl) {
-        setSheetVar(winEl.style, 'transform', 'none');
+        const y = -driftMagnitude(vh, driftFsRef.current) * (1 - p2o(u));
+        if (stackEl) setSheetVar(stackEl.style, 'transform', `translateY(${y.toFixed(1)}px)`);
+      } else if (stackEl) {
+        setSheetVar(stackEl.style, 'transform', 'none');
       }
 
-      /* 2 · the sequence clock — Heron's 5.52s movie in seconds.
-       * R330 (A-Web-Home) — THE MOBILE PIN-TIMING FIX (r328 REPORT
-       * defect 1, «جوال فاتح — إطارات m-025/m-050 شبه فارغة»: the
-       * phone pin's dead runway). The linear clock strands the parked
-       * ≤991 window in its quietest windows exactly at the 25–50%
-       * probe frames: at 25% the linear t≈1.38 lands inside the
-       * plaque dead gap (card1 just out, card2 not in — both plaques
-       * hidden) over a 2-of-6-layer ghost plan, and at 50% t≈2.76
-       * rides the card-2 fade-out — the frame reads ~75–90% paper.
-       * The mobile clock front-loads the SAME movie (t = 5.52·u^0.55,
-       * monotonic, t lands exactly 5.52 at scrub end): the plaque
-       * crossfades compress into the first third of the scroll and
-       * the drawing era (layers + wash + findings + camera) owns the
-       * rest — every window plays, the order is unchanged. Desktop
-       * and the reduced-motion static end state are untouched. */
+      /* 2 · the sequence clock — the 5.52s movie (mobile front-load). */
       const seqU = clamp01((pRaw - SEQ_START_PIN) / SEQ_SPAN_PIN);
       const t = mobile ? SEQ_DUR_S * Math.pow(seqU, 0.55) : SEQ_DUR_S * seqU;
 
-      /* 3 · the six progressive layers — DIRECT opacity writes on the
-       * ≤10 consuming group roots (the inherited-var walk is dead).
-       * R325 (Y1): every layer ramps CONTINUOUSLY from the GHOST floor
-       * (XL_GHOST) to 1 inside its own window — the plan's line-work
-       * stands at 18% from frame one and inks in with the scroll. The
-       * R323 discrete envelope write (0|1) retires: the ghost floor is
-       * the designed resting state and the ramp is continuous, so the
-       * old tone-jump defect (a wall jumping pale-grey→black) cannot
-       * recur — a wall now travels 18%→100% through its build window
-       * as one crossfade. */
+      /* 3 · the six progressive layers — ghost→full crossfades. */
       const groups = resolveLayers(track);
       for (let i = 0; i < LAYER_WINDOWS.length; i += 1) {
         const [a, b] = LAYER_WINDOWS[i]!;
@@ -598,12 +469,7 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
         }
       }
 
-      /* 3b · T-09e — the measured art register reveal: the route
-       * overlay (census-paired svg[2] path art) + the hidden/tinted
-       * annotation groups rest at Heron's measured states (0 / 0 /
-       * 0.24) and ink in with the annotation era — the reveal wiring
-       * for the band's census-paired art seats; the 0.4s/ease tween
-       * register lives in journey.css. */
+      /* 3b · the measured art register reveal. */
       const artRev = p2o((t - ART_REVEAL[0]) / (ART_REVEAL[1] - ART_REVEAL[0]));
       for (const el of art.route) setSheetVar(el.style, 'opacity', artRev.toFixed(3));
       for (const el of art.hidden) setSheetVar(el.style, 'opacity', artRev.toFixed(3));
@@ -611,25 +477,13 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
         setSheetVar(el.style, 'opacity', (ART_TINT + (1 - ART_TINT) * artRev).toFixed(3));
       }
 
-      /* 4 · the statement plaques (fade + rise + the 4% shrink out).
-       * R328 (H4) — THE TWO-STEP FADE: a 0.2s DEAD GAP now separates
-       * plaque 1's out (1.0–1.4) from plaque 2's in (1.6–2.0) — the
-       * old touching windows (out 1.0–1.5 · in 1.5–2.0) guaranteed
-       * mid-frames where BOTH statements read semi-visible (the
-       * «نص مزدوج شفاف» defect). The paper is deliberately statement-
-       * empty for those frames — one voice at a time, or none. */
-      writeCard(card1Ref.current, t, 0, 0.5, 1.0, 1.4);
-      writeCard(card2Ref.current, t, 1.6, 2.0, 2.5, 3.0);
+      /* 4 · the statement plaques — plaque 1 VISIBLE from t 0 (the
+       * spec's rest state), out at 1.0–1.4; plaque 2 in 1.6–2.0 (the
+       * 0.2s dead gap keeps one voice at a time), out 2.5–3.0. */
+      writeCard(card1Ref.current, t, -1, -1, 1.0, 1.4);
+      writeFade(card2Ref.current, t, 1.6, 2.0, 2.5, 3.0);
 
-      /* 5 · the discrete machine — data-stage (the 6 semantic states),
-       * data-finding (the rotation + the counter chips), data-wash (the
-       * bounded room highlight + the door-chip warming, keyed to the
-       * layer builds), data-open (the closing column's reveal). All
-       * pure-CSS consumers with t-fast flips — never per-frame writes.
-       * R322 3-b-fix3 (review-c3 R1-D3): the CARD era opens at t 2.5
-       * (Heron's state-03: the intro card + item1 active at scrub 46%)
-       * and hands to the findings era at t 3.0 — where layer 1, the
-       * wash and the rotation all land on the same beat. */
+      /* 5 · the discrete machine — unchanged semantics. */
       const stage =
         pRaw >= SEQ_END_PIN
           ? 5
@@ -645,17 +499,14 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
       const finding =
         t >= FINDING_END_S
           ? 'done'
-          : String(
-              Math.min(
-                FINDINGS_AR.length,
-                Math.max(1, Math.floor((t - FINDING_START_S) / FINDING_SPAN_S) + 1),
-              ),
-            );
-      /* R322 3-b-fix2 (review-c3 R1#10/R3-#3): the wash rides ONE
-       * finding step LATER — the layer-1 build lands at t≈3.0, so the
-       * room highlight starts when the drawing actually begins, never
-       * under the INTRODUCTION card's own beat (the card era's focal
-       * is the card, the paper stays quiet around it). */
+          : t < FINDING_START_S
+            ? '0'
+            : String(
+                Math.min(
+                  FINDINGS_AR.length,
+                  Math.max(1, Math.floor((t - FINDING_START_S) / FINDING_SPAN_S) + 1),
+                ),
+              );
       const wash =
         t < 3.0
           ? 'none'
@@ -670,8 +521,7 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
                   : 'mastery';
       writeAttrs(track, String(stage), finding, wash, 'off', stage === 5 ? 'on' : 'off');
 
-      /* 6 · the ≤991 camera — the room crops ride the finding timeline;
-       * the ≥992px crossing restores the full sheet exactly once. */
+      /* 6 · the ≤991 camera. */
       if (mobile) {
         writeCamBox(track, camRectAt(t, phone));
         camDirtyRef.current = true;
@@ -680,23 +530,17 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
         camDirtyRef.current = false;
       }
 
-      /* traversal is deliberately unused beyond the pin derivation —
-       * kept in scope for the epoch math above (rect-driven). */
       void traversal;
     },
     {
-      /* drop the epoch caches when the layout may have changed (resize
-       * + scroll settle) — the next frame re-resolves them once. */
       onRefresh: () => {
         colGeoRef.current = null;
         layerElsRef.current = [];
+        driftFsRef.current = 0;
       },
     },
   );
 
-  /* resolve the six layer groups once per epoch: `.jt-plan [data-xl]`
-   * — the svg's own groups re-tagged by LearningPlanDrawing (the
-   * artwork itself is untouched; only the layer ROOTS are tagged). */
   function resolveLayers(track: HTMLElement): SVGGElement[][] {
     if (layerElsRef.current.length === 0) {
       layerElsRef.current = [1, 2, 3, 4, 5, 6].map((n) =>
@@ -711,27 +555,121 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
       className="jt"
       ref={trackRef}
       data-stage="0"
-      data-finding="1"
+      data-finding="0"
       data-wash="none"
       data-rm="off"
     >
-      {/* T-09c — the head SEATED INSIDE the track: heron seats its head
-          column at the track top (same y as the track, the sticky window
-          overlapping it); absolute so the pin flow is untouched. */}
-      {head}
       <div className="jt-pin">
-        {/* the PLAN COLUMN — flex:1 of the frame @≥992; the scroll
-            track (the sticky's containing block) @≤991 */}
+        {/* the PLAN COLUMN — measured per bp; the ≤991 scroll track */}
         <div className="jt-map-col">
-          {/* the stack seat: the entrance drift's anchor @≥992 (the
-              .jt-window inside carries the transform); the STICKY
-              WINDOW @≤991 */}
+          {/* the stack seat @≥992 · the STICKY WINDOW @≤991 */}
           <div className="jt-map-in" ref={mapInRef}>
             <div className="jt-window" ref={windowRef}>
-              <LearningPlanDrawing />
+              {/* the four registration rails — the frame's inset
+                  spacers (the measured window chrome; invisible
+                  layout seats exactly like the reference's) */}
+              <div className="jt-rail jt-rail-t" aria-hidden="true" />
+              <div className="jt-rail jt-rail-b" aria-hidden="true" />
+              <div className="jt-rail jt-rail-s" aria-hidden="true" />
+              <div className="jt-rail jt-rail-e" data-spec="map.raile" aria-hidden="true" />
 
-              {/* the [nn/05] counter rows — static text, the
-                  progression is the data-finding opacity flip */}
+              {/* the four corner marks — crosshair registration svgs
+                  (one vertical + one horizontal stroke each, the
+                  drawing-frame grammar) */}
+              <div className="jt-mark jt-mark-a" data-spec="map.marka" aria-hidden="true">
+                <div className="jt-mark-in" data-spec="map.markain">
+                  <svg className="jt-mark-svg" data-spec="map.markasvg" viewBox="0 0 10 10" aria-hidden="true">
+                    <path data-spec="map.markap1" d="M5 0V10" />
+                    <path data-spec="map.markap2" d="M0 5H10" />
+                  </svg>
+                </div>
+              </div>
+              <div className="jt-mark jt-mark-b" data-spec="map.markb" aria-hidden="true">
+                <div className="jt-mark-in" data-spec="map.markbin">
+                  <svg className="jt-mark-svg" data-spec="map.markbsvg" viewBox="0 0 10 10" aria-hidden="true">
+                    <path data-spec="map.markbp1" d="M5 0V10" />
+                    <path data-spec="map.markbp2" d="M0 5H10" />
+                  </svg>
+                </div>
+              </div>
+              <div className="jt-mark jt-mark-c" data-spec="map.markc" aria-hidden="true">
+                <div className="jt-mark-in" data-spec="map.markcin">
+                  <svg className="jt-mark-svg" data-spec="map.markcsvg" viewBox="0 0 10 10" aria-hidden="true">
+                    <path data-spec="map.markcp1" d="M5 0V10" />
+                    <path data-spec="map.markcp2" d="M0 5H10" />
+                  </svg>
+                </div>
+              </div>
+              <div className="jt-mark jt-mark-d" data-spec="map.markd" aria-hidden="true">
+                <div className="jt-mark-in" data-spec="map.markdin">
+                  <svg className="jt-mark-svg" data-spec="map.markdsvg" viewBox="0 0 10 10" aria-hidden="true">
+                    <path data-spec="map.markdp1" d="M5 0V10" />
+                    <path data-spec="map.markdp2" d="M0 5H10" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* the drifting plan stack — the entrance descent's
+                  target (the measured transform: one frame height
+                  minus 1rem up at rest). The svg letterboxes its
+                  1200×760 sheet inside; the plaques + the annotation
+                  cards ride the drift with it. */}
+              <div className="jt-stack" ref={stackRef}>
+                <LearningPlanDrawing />
+
+                {/* the plaque band + the plaque-2 wrapper — the two
+                    statements: plaque 1 rides the band (VISIBLE from
+                    frame one — the spec's captured rest state, the
+                    section's entry statement); plaque 2 rides its own
+                    from-state wrapper (opacity 0, one notch larger —
+                    the measured gsap seat), crossfading in at the plan
+                    era. One seat per statement, never stacked. */}
+                <div className="jt-cards" data-spec="map.plaques">
+                  <div className="jt-card jt-card1" ref={card1Ref} data-spec="map.plaque1o">
+                    <div className="jt-card-plate" data-spec="map.plaque1i">
+                      {STATEMENT_1_AR}
+                    </div>
+                  </div>
+                </div>
+                <div className="jt-card2w" ref={card2Ref} data-spec="map.card2w">
+                  <div className="jt-card jt-card2" data-spec="map.plaque2o">
+                    <div className="jt-card-plate" data-spec="map.plaque2i">
+                      {STATEMENT_2_AR}
+                    </div>
+                  </div>
+                </div>
+
+                {/* the three annotation cards — the plan's own
+                    callouts (orange-ruled, mono titles), revealed
+                    with the annotation era (data-stage, journey.css) */}
+                <div className="jt-anno jt-anno-1" data-spec="map.anno1">
+                  <div className="jt-anno-tw" data-spec="map.anno1tw">
+                    <div className="jt-anno-t" data-spec="map.anno1t">{ANNOTATIONS_AR[0].title}</div>
+                  </div>
+                  <div className="jt-anno-bw" data-spec="map.anno1bw">
+                    <div className="jt-anno-b" data-spec="map.anno1b">{ANNOTATIONS_AR[0].text}</div>
+                  </div>
+                </div>
+                <div className="jt-anno jt-anno-2" data-spec="map.anno2">
+                  <div className="jt-anno-tw" data-spec="map.anno2tw">
+                    <div className="jt-anno-t" data-spec="map.anno2t">{ANNOTATIONS_AR[1].title}</div>
+                  </div>
+                  <div className="jt-anno-bw" data-spec="map.anno2bw">
+                    <div className="jt-anno-b" data-spec="map.anno2b">{ANNOTATIONS_AR[1].text}</div>
+                  </div>
+                </div>
+                <div className="jt-anno jt-anno-3" data-spec="map.anno3">
+                  <div className="jt-anno-tw" data-spec="map.anno3tw">
+                    <div className="jt-anno-t" data-spec="map.anno3t">{ANNOTATIONS_AR[2].title}</div>
+                  </div>
+                  <div className="jt-anno-bw" data-spec="map.anno3bw">
+                    <div className="jt-anno-b" data-spec="map.anno3b">{ANNOTATIONS_AR[2].text}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* the [nn/05] counter rows — our mono furniture (the
+                  reference carries its counters inside the svg art) */}
               <div className="jt-idx" aria-hidden="true">
                 {COUNTERS.map((c) => (
                   <span key={c} className="fo-mono" dir="ltr">
@@ -739,68 +677,89 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
                   </span>
                 ))}
               </div>
-
-              {/* R328 (H4) — THE STATEMENT SEAT: the two plaques left
-                  the plan's surface (the titles crossed the wall lines
-                  mid-fade — the «نص يتقاطع مع الرسم» defect) for their
-                  own hairline-closed band INSIDE the window: above the
-                  drawing ≥992 (a caption strip, order −1), a paper
-                  card UNDER the drawing ≤991 (the brief's own phone
-                  seat). One grid cell — the two statements crossfade
-                  in the same seat, never stacked side by side. */}
-              <div className="jt-cards">
-                <p className="jt-card jt-card1" ref={card1Ref}>
-                  <span className="jt-card-plate">{STATEMENT_1_AR}</span>
-                </p>
-                <p className="jt-card jt-card2" ref={card2Ref}>
-                  <span className="jt-card-plate">{STATEMENT_2_AR}</span>
-                </p>
-              </div>
             </div>
 
-            {/* the INTRODUCTION card — Heron's home-map-intro: paper
-                ground, 1px hairline, dark head chip, 5 findings ONE at
-                a time (bottom-anchored, grows upward, collapses to the
-                head at the end). Anchored to the stack seat so it rides
-                the sticky window @≤991 and the frame @≥992 — it never
-                rides the entrance drift (Heron's card is frame-seated). */}
+            {/* the INTRODUCTION card — the measured corner card:
+                paper ground, 1px hairline, the DARK head chip with
+                the white mono label, five findings ONE at a time
+                (each body + its mono foot), collapsed to the head
+                outside the card era. Rests at opacity 0 (the spec's
+                captured state); flips on with stage 2. */}
             <aside className="jt-intro" aria-label={INTRO_TITLE_AR}>
-              <p className="jt-intro-head">{INTRO_TITLE_AR}</p>
-              <div className="jt-intro-body">
-                {FINDINGS_AR.map((f) => (
-                  <p key={f.key} className="jt-intro-finding">
-                    <strong>{f.title}</strong> — {f.text}
-                  </p>
-                ))}
+              <div className="jt-intro-headchip" data-spec="map.introhead">
+                <div className="jt-intro-labelw" data-spec="map.introlabelw">
+                  <div className="jt-intro-head" data-spec="map.introlabel">{INTRO_TITLE_AR}</div>
+                </div>
+              </div>
+              <div className="jt-intro-body" data-spec="map.introbody">
+                <div className="jt-intro-findings" data-spec="map.findings">
+                  {FINDINGS_AR.map((f, i) => (
+                    <div key={f.key} className="jt-intro-finding" data-spec={`map.finding${i + 1}`}>
+                      <div className="jt-f-bw" data-spec={`map.finding${i + 1}bw`}>
+                        <div className="jt-f-b" data-spec={`map.finding${i + 1}b`}>
+                          <strong>{f.title}</strong> — {f.text}
+                        </div>
+                      </div>
+                      {i < 4 && (
+                        <div className="jt-f-fw" data-spec={`map.finding${i + 1}fw`}>
+                          <div className="jt-f-f" dir="auto" data-spec={`map.finding${i + 1}f`}>{f.foot}</div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </aside>
           </div>
         </div>
 
-        {/* the CLOSING COLUMN — Heron's content-wrap at its measured
-            464px @1440, RESERVED from stage 0 (the geometry never
-            animates; the content reveals by opacity at scrub end).
-            @≤991 it stacks below the track, full width, always open. */}
+        {/* the closing column — the section's own head + the
+            four-station ledger. VISIBLE from frame one (the frozen
+            spec records every element at opacity 1 at rest — the
+            R341 reserved-empty column was a misreading). The h2
+            keeps the aria contract (id=chapters-title). */}
+        <span className="jt-close-vrule" aria-hidden="true" />
         <div className="jt-close" ref={closeRef} data-open="off">
-          <div className="jt-close-inner">
-            <p className="jt-close-chip">{CLOSE_CHIP_AR}</p>
-            {/* the closing h2 — Heron's display-2 seat (3 lines @4.8rem
-                w600; the box is fully class-pinned in landing.css, so
-                the heading tag carries ZERO layout of its own). It is
-                the journey's ONE closing headline inside #chapters. */}
-            <h2 className="jt-close-title">{CLOSE_TITLE_AR}</h2>
-            <p className="jt-close-copy">{CLOSE_COPY_AR}</p>
-            {/* the FOOT row — the mono terminus + the scope note,
-                anchored to the column's foot (margin-block-start: auto
-                in landing.css; reveals with the column's own flip).
-                The [05/05] terminus is the counter family's own last
-                row (deliberate label furniture, complete, Latin-only);
-                NO title-block labels — the V1 kill stays dead. */}
-            <div className="jt-close-foot" aria-hidden="true">
-              <div className="jt-close-foot-row">
-                <span className="jt-close-foot-mono" dir="ltr">[05/05]</span>
+          <div className="jt-close-inner" data-spec="map.closein">
+            <div className="jt-close-chiprow">
+              <div className="jt-close-chip" data-spec="map.chip">
+                <div className="jt-close-chip-in" data-spec="map.chipin">
+                  {CLOSE_CHIP_L1_AR}
+                  <br data-spec="map.br" />
+                  <span dir="ltr">{CLOSE_CHIP_L2_AR}</span>
+                </div>
               </div>
-              <p className="jt-close-foot-note">{CLOSE_FOOT_NOTE_AR}</p>
+            </div>
+            <div className="jt-close-chiprule" data-spec="map.chiprule" aria-hidden="true" />
+            <div className="jt-close-main" data-spec="map.main">
+              <div className="jt-close-titlew" data-spec="map.h2o">
+                <h2 className="jt-close-title" id="chapters-title" data-spec="map.title">
+                  {CLOSE_TITLE_AR}
+                </h2>
+              </div>
+              <div className="jt-close-copyw" data-spec="map.copyo">
+                <div className="jt-close-copy" data-spec="map.copy">{CLOSE_COPY_AR}</div>
+              </div>
+            </div>
+            <div className="jt-close-cms" data-spec="map.cms">
+              <div className="jt-close-cms-in" data-spec="map.cmsin">
+                {LEDGER_AR.map((row, i) => (
+                  <div key={row.key} className="jt-cms-row" data-spec={`map.row${i + 1}`}>
+                    <div className="jt-cms-rule" data-spec={`map.row${i + 1}rule`} aria-hidden="true" />
+                    <div className="jt-cms-textcell" data-spec={`map.row${i + 1}tc`}>
+                      <div className="jt-cms-text" data-spec={`map.row${i + 1}t`}>{row.text}</div>
+                    </div>
+                    <div className="jt-cms-vrule" data-spec={`map.row${i + 1}vr`} aria-hidden="true" />
+                    <div className="jt-cms-ico" data-spec={`map.row${i + 1}ico`}>
+                      <div className="jt-cms-ico-in" data-spec={`map.row${i + 1}icoi`}>
+                        <div className="jt-cms-ico-in2" data-spec={`map.row${i + 1}icoi2`}>
+                          <Icon icon={row.icon} size={27} strokeWidth={1.5} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -809,8 +768,7 @@ export function JourneyScene({ head }: { head?: ReactNode }) {
   );
 }
 
-/* the discrete machine writes — one place, idempotent (the browser
- * only touches the DOM when a value actually changed). */
+/* the discrete machine writes — one place, idempotent. */
 function writeAttrs(
   track: HTMLElement,
   stage: string,

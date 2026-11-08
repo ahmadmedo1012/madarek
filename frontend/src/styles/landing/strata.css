@@ -1293,7 +1293,7 @@
    reaches the footer (measured: walk bottomed 11539 vs real 14271).
    Two-anchor fluid fits re-pinned EXACT at the 1024/1440 gates. */
 .st-section { contain-intrinsic-size: auto calc(-0.5px + 50.24vw); }  /* 514 @1024 · 723 @1440 */
-.chapters   { contain-intrinsic-size: auto calc(3126px + 222.12vw); } /* 5400 @1024 · 6324 @1440 */
+.chapters   { contain-intrinsic-size: auto calc(3101.5px + 222.12vw); } /* 5376 @1024 · 6300 @1440 — R342-04 sync (the measured-seat rebuild's exact track heights) */
 .pr-section { contain-intrinsic-size: auto calc(2px + 49.28vw); }   /* 507 @1024 · 712 @1440 */
 .wy-section { contain-intrinsic-size: auto calc(30px + 170.67vw); }  /* 1778 @1024 · 2488 @1440 */
 .rl-section { contain-intrinsic-size: auto calc(436px + 31.25vw); }  /* 756 @1024 · 886 @1440 */
