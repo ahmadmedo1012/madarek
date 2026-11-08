@@ -346,7 +346,7 @@
 }
 .st-ticker-in {
   display: grid;
-  grid-template-rows: auto auto auto;
+  grid-template-rows: auto auto; /* R342-02 — labelrow + crawl (the desc is the ticker cell's own closing row) */
   color: inherit;
   font: inherit;
 }
@@ -369,10 +369,14 @@
 .st-plabel {
   display: inline-flex;
   align-items: center;
+  align-self: center; /* R342-02 — the label's own measured box is its text line (13–22px per bp), never the stretched 4.44rem row */
   margin-inline-start: 3.24rem;
   color: var(--text);
 }
-.st-plabel-in {
+.st-plabel .st-plabel-in {
+  /* R342-02 — the scoped (0,2,0) seat beats the shared .fo-mono rung:
+     the frozen spec's own label-text ladder (11.67@1440 · 15.56@1920 ·
+     8.3@1024 · 11.91@390 — the 1.4rem measured seat) */
   font-size: 1.4rem;
   line-height: 1.96rem;
   font-weight: 600;
@@ -393,7 +397,6 @@
   inline-size: 4.44rem;
   block-size: 4.44rem;
   border-inline-end: 1px solid var(--rule-strong);
-  transition: background-color 0.4s ease;
   cursor: pointer;
 }
 .st-parrow:last-child { border-inline-end: 0; }
@@ -462,8 +465,17 @@
   display: block;
   flex: none;
   inline-size: 17.16rem;
-  block-size: 11.4rem;
-  transition: background-color 0.4s ease;
+  block-size: 10.7rem; /* R342-02 — the measured ticker row: the cell band rides the spec's own 89px-class seat (the 11.4rem era read the crawl 20px tall) */
+}
+/* R342-02 — the spec's own 0.4s/ease first-property register on the
+   crawl cells and the label arrows (the shared 600ms reveal beat
+   yields on these seats — the rise still plays, on the measured
+   curve); the (0,2,0) scope beats the shared reveal class */
+.st-crawl .st-crawl-cell {
+  transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.4s ease;
+}
+.st-parrows .st-parrow {
+  transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.4s ease;
 }
 .st-crawl-logo {
   display: grid;
@@ -486,7 +498,7 @@
 .st-crawl-sep {
   display: block;
   inline-size: 1px;
-  block-size: 11.4rem;
+  block-size: 10.7rem;
   background: var(--rule-strong);
   opacity: 0.5;
 }
@@ -549,7 +561,8 @@
   .st-line { block-size: 2.525rem; }
   .st-titlebox { margin-block-end: 2.4rem; }
   .st-plabel { margin-inline-start: 2.4rem; }
-  .st-crawl-cell { inline-size: 15.4rem; block-size: 9.7rem; }
+  .st-crawl-cell { inline-size: 12.05rem; block-size: 7.7rem; } /* R342-02 — the measured 768 window cell (111px) and the ticker row's own band */
+
   .st-crawl-sep { block-size: 9.7rem; }
   .st-crawl-logo img,
   .st-crawl-logo-bg { inline-size: 8.6rem; block-size: 4.3rem; }
@@ -591,9 +604,9 @@
   .st-pill-t-in { line-height: 1.89rem; }
   /* the phone roll distance follows the phone label leading */
   .st-plabel { margin-inline-start: 1.61rem; }
-  .st-plabel-in { line-height: 1.62rem; }
+  .st-plabel .st-plabel-in { font-size: 1.2rem; line-height: 1.62rem; } /* the 390 label-text step (11.91px measured) */
   .st-parrows { --st-arrow-seat: 4.13rem; }
-  .st-crawl-cell { inline-size: 15.7rem; block-size: 6.6rem; }
+  .st-crawl-cell { inline-size: 10.4rem; block-size: 6.6rem; } /* R342-02 — the measured 390 window cell (103px; the 15.7rem seat read 156) */
   .st-crawl-sep { block-size: 6.6rem; }
   .st-crawl-logo img,
   .st-crawl-logo-bg { inline-size: 7rem; block-size: 3.5rem; }
@@ -636,6 +649,15 @@
 .st-section.st-section {
   min-block-size: 0;
   padding-block: 0;
+  /* R342-02 — chrome.css's shared R310 section seat (max-inline +
+  auto margins + --sp-6 inline padding) pinches the band ~80px under
+  the frozen spec's own 1902/1427/1015 section boxes; the band bleeds
+  to the spec's own gutters instead (the ≥992 margin belt below) and
+  the CELLS carry their own measured padding (the stmt-in 6.4/15/3.2
+  rung). The intro's media runs flush to the band edge exactly like
+  the reference's own media seat. */
+  padding-inline: 0;
+  max-inline-size: none;
 }
 
 @media (min-width: 992px) {

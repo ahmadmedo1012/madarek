@@ -337,12 +337,16 @@ describe('r172a §2 → r188 — the landing CTA rides the canonical accent pair
   });
 
   it('the landing CTA markup consumes the canonical classes (no private CTA class)', () => {
-    /* R331 split: the hero CTA lives in hero/Hero.tsx (its scoped hro-cta
-     * hook rides WITH the canonical .btn recipe); the header CTA moved to
-     * chrome/SheetNav.tsx. The canonical-classes contract is unchanged. */
+    /* R331 split: the hero CTA lives in hero/Hero.tsx; the header CTA moved
+     * to chrome/SheetNav.tsx. R342: the hero CTA rides the frozen spec's
+     * own measured text-link seat — the .btn classes were dead markup
+     * since R338's [C] measured skin (min-block-size 0, transparent,
+     * 600-weight link); the R342 markup cleanup drops them. The funnel
+     * contract hooks (.fo-hero-cta + the scoped .hro-cta seat class)
+     * are unchanged — still no private CTA class. */
     const heroTsx = read('src/components/landing/hero/Hero.tsx');
     const navTsx = read('src/components/landing/chrome/SheetNav.tsx');
-    expect(heroTsx).toContain('btn accent lg hro-cta fo-hero-cta');
+    expect(heroTsx).toContain('hro-cta fo-hero-cta');
     // R315 override (K-B): the HEADER CTA is the reference's measured
     // ruled cell (.fo-actions-cta — 166.66px, the reference's own
     // header-cta seat), not a .btn recipe; the hero/finale CTAs keep

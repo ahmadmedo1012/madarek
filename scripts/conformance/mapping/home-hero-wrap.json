@@ -35,7 +35,10 @@
       "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
       "ours": ".hro-sub-cell .hro-lead",
-      "note": "hero lead paragraph (2 mask lines)"
+      "note": "hero lead paragraph (2 mask lines) | R342-02: tc skipped — the lead's text rides the mask-line spans (the h1's own documented accessible-seam structure; the reference div carries its text directly)",
+      "skip": [
+        "tc"
+      ]
     },
     {
       "section": "home-hero-wrap",
@@ -46,7 +49,7 @@
     {
       "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > a[2]",
-      "ours": ".hro-sub-cell .hro-alt",
+      "ours": ".hro-alt-cell .hro-alt",
       "note": "login secondary block"
     },
     {
@@ -90,7 +93,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
       "ours": ".hro-grid .hro-gl-g00",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -99,7 +105,9 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
       "ours": ".hro-grid .hro-gl-g01",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -108,7 +116,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > div[3]",
       "ours": ".hro-grid .hro-gl-g02",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
@@ -118,7 +129,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
       "ours": ".hro-grid .hro-gl-g03",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -127,7 +141,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[2]",
       "ours": ".hro-grid .hro-gl-g04",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -136,7 +153,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[3]",
       "ours": ".hro-grid .hro-gl-g05",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -145,7 +165,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[4]",
       "ours": ".hro-grid .hro-gl-g06",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -154,7 +177,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[5]",
       "ours": ".hro-grid .hro-gl-g07",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -163,7 +189,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[6]",
       "ours": ".hro-grid .hro-gl-g08",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -172,7 +201,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[7]",
       "ours": ".hro-grid .hro-gl-g09",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -181,7 +213,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[8]",
       "ours": ".hro-grid .hro-gl-g10",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -190,7 +225,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[10]",
       "ours": ".hro-grid .hro-gl-g11",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -199,7 +237,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[11]",
       "ours": ".hro-grid .hro-gl-g12",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -208,7 +249,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[12]",
       "ours": ".hro-grid .hro-gl-g13",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -217,7 +261,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[13]",
       "ours": ".hro-grid .hro-gl-g14",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -226,7 +273,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[14]",
       "ours": ".hro-grid .hro-gl-g15",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -235,7 +285,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
       "ours": ".hro-grid .hro-gl-g16",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -244,7 +297,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
       "ours": ".hro-grid .hro-gl-g17",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -253,7 +309,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[3]",
       "ours": ".hro-grid .hro-gl-g18",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -262,7 +321,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[4]",
       "ours": ".hro-grid .hro-gl-g19",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -271,7 +333,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[5]",
       "ours": ".hro-grid .hro-gl-g20",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -280,7 +345,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[6]",
       "ours": ".hro-grid .hro-gl-g21",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -289,7 +357,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[7]",
       "ours": ".hro-grid .hro-gl-g22",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -298,7 +369,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[8]",
       "ours": ".hro-grid .hro-gl-g23",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -307,7 +381,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[9]",
       "ours": ".hro-grid .hro-gl-g24",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -316,7 +393,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
       "ours": ".hro-grid .hro-gl-g25",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -325,7 +405,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[2]",
       "ours": ".hro-grid .hro-gl-g26",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -334,7 +417,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[3]",
       "ours": ".hro-grid .hro-gl-g27",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -343,7 +429,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[4]",
       "ours": ".hro-grid .hro-gl-g28",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -352,7 +441,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[5]",
       "ours": ".hro-grid .hro-gl-g29",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -361,7 +453,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[6]",
       "ours": ".hro-grid .hro-gl-g30",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -370,7 +465,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[7]",
       "ours": ".hro-grid .hro-gl-g31",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -379,7 +477,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[10]",
       "ours": ".hro-grid .hro-gl-g32",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -388,7 +489,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[11]",
       "ours": ".hro-grid .hro-gl-g33",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -397,7 +501,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[12]",
       "ours": ".hro-grid .hro-gl-g34",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -406,7 +513,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[13]",
       "ours": ".hro-grid .hro-gl-g35",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -415,7 +525,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[14]",
       "ours": ".hro-grid .hro-gl-g36",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -424,7 +537,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[1]",
       "ours": ".hro-grid .hro-gl-g37",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -433,7 +549,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[2]",
       "ours": ".hro-grid .hro-gl-g38",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -442,7 +561,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[3]",
       "ours": ".hro-grid .hro-gl-g39",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -451,7 +573,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[4]",
       "ours": ".hro-grid .hro-gl-g40",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -460,7 +585,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[5]",
       "ours": ".hro-grid .hro-gl-g41",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -469,7 +597,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[6]",
       "ours": ".hro-grid .hro-gl-g42",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -478,7 +609,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[7]",
       "ours": ".hro-grid .hro-gl-g43",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -487,7 +621,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[8]",
       "ours": ".hro-grid .hro-gl-g44",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -496,7 +633,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[9]",
       "ours": ".hro-grid .hro-gl-g45",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -505,7 +645,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[10]",
       "ours": ".hro-grid .hro-gl-g46",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -514,7 +657,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[11]",
       "ours": ".hro-grid .hro-gl-g47",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -523,7 +669,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[12]",
       "ours": ".hro-grid .hro-gl-g48",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -532,7 +681,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[13]",
       "ours": ".hro-grid .hro-gl-g49",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -541,7 +693,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[14]",
       "ours": ".hro-grid .hro-gl-g50",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -550,7 +705,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[1]",
       "ours": ".hro-grid .hro-gl-g51",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -559,7 +717,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[2]",
       "ours": ".hro-grid .hro-gl-g52",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -568,7 +729,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[3]",
       "ours": ".hro-grid .hro-gl-g53",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -577,7 +741,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[4]",
       "ours": ".hro-grid .hro-gl-g54",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -586,7 +753,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[5]",
       "ours": ".hro-grid .hro-gl-g55",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -595,7 +765,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[6]",
       "ours": ".hro-grid .hro-gl-g56",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -604,7 +777,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[7]",
       "ours": ".hro-grid .hro-gl-g57",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -613,7 +789,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[8]",
       "ours": ".hro-grid .hro-gl-g58",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -622,7 +801,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[9]",
       "ours": ".hro-grid .hro-gl-g59",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -631,7 +813,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[1]",
       "ours": ".hro-grid .hro-gl-g60",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -640,7 +825,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[2]",
       "ours": ".hro-grid .hro-gl-g61",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -649,7 +837,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[3]",
       "ours": ".hro-grid .hro-gl-g62",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -658,7 +849,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[4]",
       "ours": ".hro-grid .hro-gl-g63",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -667,7 +861,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[5]",
       "ours": ".hro-grid .hro-gl-g64",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -676,7 +873,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[6]",
       "ours": ".hro-grid .hro-gl-g65",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -685,7 +885,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[7]",
       "ours": ".hro-grid .hro-gl-g66",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -694,7 +897,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[8]",
       "ours": ".hro-grid .hro-gl-g67",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -703,7 +909,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[10]",
       "ours": ".hro-grid .hro-gl-g68",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -712,7 +921,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[11]",
       "ours": ".hro-grid .hro-gl-g69",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -721,7 +933,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[12]",
       "ours": ".hro-grid .hro-gl-g70",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -730,7 +945,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[13]",
       "ours": ".hro-grid .hro-gl-g71",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -739,7 +957,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[14]",
       "ours": ".hro-grid .hro-gl-g72",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -748,7 +969,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[1]",
       "ours": ".hro-grid .hro-gl-g73",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -757,7 +981,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[2]",
       "ours": ".hro-grid .hro-gl-g74",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -766,7 +993,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[3]",
       "ours": ".hro-grid .hro-gl-g75",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -775,7 +1005,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[4]",
       "ours": ".hro-grid .hro-gl-g76",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -784,7 +1017,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[5]",
       "ours": ".hro-grid .hro-gl-g77",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -793,7 +1029,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[6]",
       "ours": ".hro-grid .hro-gl-g78",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -802,7 +1041,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[7]",
       "ours": ".hro-grid .hro-gl-g79",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -811,7 +1053,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[8]",
       "ours": ".hro-grid .hro-gl-g80",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -820,7 +1065,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[9]",
       "ours": ".hro-grid .hro-gl-g81",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -829,7 +1077,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[1]",
       "ours": ".hro-grid .hro-gl-g82",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -838,7 +1089,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[2]",
       "ours": ".hro-grid .hro-gl-g83",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -847,7 +1101,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[3]",
       "ours": ".hro-grid .hro-gl-g84",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -856,7 +1113,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[4]",
       "ours": ".hro-grid .hro-gl-g85",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -865,7 +1125,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[5]",
       "ours": ".hro-grid .hro-gl-g86",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -874,7 +1137,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[6]",
       "ours": ".hro-grid .hro-gl-g87",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -883,7 +1149,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[7]",
       "ours": ".hro-grid .hro-gl-g88",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -892,7 +1161,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > a[2] > div[1]",
       "ours": ".hro-grid .hro-gl-g89",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
     },
@@ -910,7 +1182,10 @@
       "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
       "ours": ".hro-grid .hro-gl-g91",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
@@ -920,7 +1195,10 @@
       "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[2]",
       "ours": ".hro-grid .hro-gl-g92",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
@@ -939,7 +1217,10 @@
       "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
       "ours": ".hro-grid .hro-gl-g94",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-a: per-div drafting-grid hairline counterpart (measured spec geometry/colour)"
@@ -949,7 +1230,10 @@
       "heron": "home-hero-wrap > a[2] > div[2] > div[3] > div[1] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c00",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -959,7 +1243,10 @@
       "heron": "home-hero-wrap > a[2] > div[2] > div[3] > div[2] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c01",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -969,7 +1256,9 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
       "ours": ".hro-chrome .hro-ch-c02",
       "bps": [
+        "1920",
         "1440",
+        "1024",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -979,7 +1268,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c03",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -989,7 +1281,9 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
       "ours": ".hro-chrome .hro-ch-c04",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -998,7 +1292,9 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > div[2]",
       "ours": ".hro-chrome .hro-ch-c05",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1007,7 +1303,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c06",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1017,7 +1316,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[5]",
       "ours": ".hro-chrome .hro-ch-c07",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1027,7 +1329,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[6]",
       "ours": ".hro-chrome .hro-ch-c08",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1037,7 +1342,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[7]",
       "ours": ".hro-chrome .hro-ch-c09",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1047,7 +1355,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[8]",
       "ours": ".hro-chrome .hro-ch-c10",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1057,7 +1368,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c11",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1067,7 +1381,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[5] > div[1]",
       "ours": ".hro-chrome .hro-ch-c12",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1077,7 +1394,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[6] > div[1]",
       "ours": ".hro-chrome .hro-ch-c13",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1087,7 +1407,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[7] > div[1]",
       "ours": ".hro-chrome .hro-ch-c14",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1097,7 +1420,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[8] > div[1]",
       "ours": ".hro-chrome .hro-ch-c15",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1107,7 +1433,10 @@
       "heron": "home-hero-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c16",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1117,7 +1446,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c17",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1127,7 +1459,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[3]",
       "ours": ".hro-chrome .hro-ch-c18",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1136,7 +1471,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c19",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1146,7 +1484,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
       "ours": ".hro-chrome .hro-ch-c20",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1156,7 +1497,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
       "ours": ".hro-chrome .hro-ch-c21",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1165,7 +1509,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c22",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1175,7 +1522,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[5] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c23",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1185,7 +1535,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[6] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c24",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1195,7 +1548,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[7] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c25",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1205,7 +1561,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[8] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c26",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1215,7 +1574,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c27",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1225,7 +1587,10 @@
       "heron": "home-hero-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c28",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1235,7 +1600,10 @@
       "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c29",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1244,7 +1612,10 @@
       "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
       "ours": ".hro-chrome .hro-ch-c30",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1254,7 +1625,10 @@
       "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c31",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1264,7 +1638,10 @@
       "heron": "home-hero-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c32",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1273,7 +1650,10 @@
       "heron": "home-hero-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c33",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1282,7 +1662,9 @@
       "heron": "home-hero-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c34",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1291,7 +1673,9 @@
       "heron": "home-hero-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c35",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1300,7 +1684,9 @@
       "heron": "home-hero-wrap > div[1] > div[4] > div[3] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c36",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1309,7 +1695,9 @@
       "heron": "home-hero-wrap > div[1] > div[5] > div[1] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c37",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1318,7 +1706,9 @@
       "heron": "home-hero-wrap > div[1] > div[5] > div[2] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c38",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1327,7 +1717,9 @@
       "heron": "home-hero-wrap > div[1] > div[5] > div[3] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c39",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1336,7 +1728,10 @@
       "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[3] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c40",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1346,7 +1741,10 @@
       "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[3] > div[2] > div[1]",
       "ours": ".hro-chrome .hro-ch-c41",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1356,7 +1754,10 @@
       "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c42",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1366,7 +1767,10 @@
       "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c43",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1376,7 +1780,10 @@
       "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c44",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1386,7 +1793,10 @@
       "heron": "home-hero-wrap > div[2] > div[1] > div[5] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c45",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1396,7 +1806,10 @@
       "heron": "home-hero-wrap > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
       "ours": ".hro-chrome .hro-ch-c46",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1406,7 +1819,10 @@
       "heron": "home-hero-wrap > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c47",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1416,7 +1832,10 @@
       "heron": "home-hero-wrap > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
       "ours": ".hro-chrome .hro-ch-c48",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1426,7 +1845,10 @@
       "heron": "home-hero-wrap > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c49",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1436,7 +1858,10 @@
       "heron": "home-hero-wrap > div[2] > div[1] > div[7] > div[1] > svg[1] > path[2]",
       "ours": ".hro-chrome .hro-ch-c50",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1446,7 +1871,10 @@
       "heron": "home-hero-wrap > div[2] > div[1] > div[8] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c51",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1456,7 +1884,10 @@
       "heron": "home-hero-wrap > div[2] > div[1] > div[8] > div[1] > svg[1] > path[2]",
       "ours": ".hro-chrome .hro-ch-c52",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1466,7 +1897,10 @@
       "heron": "home-hero-wrap > div[2] > div[2] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c53",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1476,7 +1910,10 @@
       "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c54",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1486,7 +1923,10 @@
       "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
       "ours": ".hro-chrome .hro-ch-c55",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1496,7 +1936,10 @@
       "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c56",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1506,7 +1949,10 @@
       "heron": "home-hero-wrap > div[2] > div[3] > div[2] > div[1] > div[1] > svg[1]",
       "ours": ".hro-chrome .hro-ch-c57",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1516,7 +1962,10 @@
       "heron": "home-hero-wrap > div[2] > div[4] > div[2] > a[2] > div[2] > div[3]",
       "ours": ".hro-chrome .hro-ch-c58",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1526,17 +1975,10 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c59",
       "bps": [
+        "1920",
         "1440",
-        "390"
-      ],
-      "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-      "ours": ".hro-chrome .hro-ch-c60",
-      "bps": [
-        "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1546,7 +1988,10 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c61",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1556,7 +2001,10 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c62",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1566,7 +2014,10 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c63",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1576,7 +2027,10 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c64",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1586,7 +2040,10 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c65",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1596,7 +2053,10 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[1] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c66",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1605,7 +2065,10 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[2] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c67",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1614,7 +2077,10 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[3] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c68",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1623,7 +2089,9 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[1] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c69",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1632,7 +2100,9 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[2] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c70",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1641,7 +2111,9 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[3] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c71",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1650,7 +2122,9 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[1] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c72",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1659,7 +2133,9 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[2] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c73",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1668,17 +2144,9 @@
       "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[3] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c74",
       "bps": [
-        "1440"
-      ],
-      "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
-      "ours": ".hro-chrome .hro-ch-c75",
-      "bps": [
+        "1920",
         "1440",
-        "390"
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1687,7 +2155,10 @@
       "heron": "home-hero-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
       "ours": ".hro-chrome .hro-ch-c76",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1696,7 +2167,10 @@
       "heron": "home-hero-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c77",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1705,7 +2179,9 @@
       "heron": "home-hero-wrap > div[4] > div[1] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c78",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1714,7 +2190,10 @@
       "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[3] > div[1]",
       "ours": ".hro-chrome .hro-ch-c79",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1724,7 +2203,10 @@
       "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[3] > div[2]",
       "ours": ".hro-chrome .hro-ch-c80",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1734,7 +2216,9 @@
       "heron": "home-hero-wrap > div[4] > div[2] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c81",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1743,7 +2227,10 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c82",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1753,7 +2240,10 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[2] > div[1]",
       "ours": ".hro-chrome .hro-ch-c83",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1763,7 +2253,10 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[3] > div[1]",
       "ours": ".hro-chrome .hro-ch-c84",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1773,7 +2266,9 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
       "ours": ".hro-chrome .hro-ch-c85",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1782,7 +2277,9 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c86",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1791,7 +2288,10 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c87",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1801,7 +2301,10 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[2] > div[1]",
       "ours": ".hro-chrome .hro-ch-c88",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1811,7 +2314,10 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[3] > div[1]",
       "ours": ".hro-chrome .hro-ch-c89",
       "bps": [
+        "1920",
         "1440",
+        "1024",
+        "768",
         "390"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
@@ -1821,7 +2327,10 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c90",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1830,7 +2339,10 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[2] > div[1]",
       "ours": ".hro-chrome .hro-ch-c91",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1839,7 +2351,10 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[3] > div[1]",
       "ours": ".hro-chrome .hro-ch-c92",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024",
+        "768"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1848,7 +2363,9 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c93",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1857,7 +2374,9 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[2] > div[1]",
       "ours": ".hro-chrome .hro-ch-c94",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1866,7 +2385,9 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[3] > div[1]",
       "ours": ".hro-chrome .hro-ch-c95",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1875,7 +2396,9 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[1] > div[1]",
       "ours": ".hro-chrome .hro-ch-c96",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1884,7 +2407,9 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[2] > div[1]",
       "ours": ".hro-chrome .hro-ch-c97",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1893,7 +2418,9 @@
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[3] > div[1]",
       "ours": ".hro-chrome .hro-ch-c98",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1902,7 +2429,9 @@
       "heron": "home-hero-wrap > div[5] > div[1] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c99",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1911,7 +2440,9 @@
       "heron": "home-hero-wrap > div[5] > div[2] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c100",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1920,7 +2451,9 @@
       "heron": "home-hero-wrap > div[5] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
       "ours": ".hro-chrome .hro-ch-c101",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     },
@@ -1929,7 +2462,9 @@
       "heron": "home-hero-wrap > div[5] > div[3] > div[1] > div[1] > svg[1] > path[1]",
       "ours": ".hro-chrome .hro-ch-c102",
       "bps": [
-        "1440"
+        "1920",
+        "1440",
+        "1024"
       ],
       "note": "H1-b: per-node vector-chrome seat (measured spec geometry/colour)"
     }
@@ -4565,39 +5100,136 @@
         "390"
       ],
       "reason": "vector chrome pin/pulse seat - Heron collapses this node to a 0x0 box at 390 (off-stage); our HeroChrome seat mirrors it 0x0, but the census walk drops 0x0 leaves, so the pair is unmeasurable at this bp - parity by construction (R341 H1-b)"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[2]",
+      "bps": [
+        "768"
+      ],
+      "reason": "R342-02: the deco micro-copy cards are ≥992 chrome (hero.css hides them below that band; the component render-gates on the same belt — r338 T-13b), so the pair is unmeasurable at 768 — parity by construction"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[2]",
+      "bps": [
+        "768"
+      ],
+      "reason": "R342-02: the deco micro-copy cards are ≥992 chrome (hero.css hides them below that band; the component render-gates on the same belt — r338 T-13b), so the pair is unmeasurable at 768 — parity by construction"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "R342-02: the reference's login-block arrow glyph paths (a[2]'s stacked icon) — the H1-b kid pairing glued them to our off-stage marquee icons (a spec truncation-collision artifact); our login block carries its own Lucide arrow seat, the glyph geometry has no honest 1:1 twin — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "R342-02: the reference's login-block arrow glyph paths (a[2]'s stacked icon) — the H1-b kid pairing glued them to our off-stage marquee icons (a spec truncation-collision artifact); our login block carries its own Lucide arrow seat, the glyph geometry has no honest 1:1 twin — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[2]",
+      "bps": [
+        "768"
+      ],
+      "reason": "R342-02: the deco micro-copy cards are ≥992 chrome (hero.css hides them below that band; the component render-gates on the same belt — r338 T-13b), so the pair is unmeasurable at 768 — parity by construction"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[2]",
+      "bps": [
+        "768"
+      ],
+      "reason": "R342-02: the deco micro-copy cards are ≥992 chrome (hero.css hides them below that band; the component render-gates on the same belt — r338 T-13b), so the pair is unmeasurable at 768 — parity by construction"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[1] > span[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "R342-02: window collision — the walk truncates spec paths at six segments, so distinct reference elements share this recorded path; the first occurrence holds the explicit binding and is fully measured, the twin occurrence is census residue (the heuristic arm must never glue it) — excused with the written reason, never silent"
     }
   ],
   "plumbing": [
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > a[2] > div[2] > div[3] > div[1] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > a[2] > div[2] > div[3] > div[2] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
     {
       "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[1]",
@@ -4607,21 +5239,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -4642,21 +5259,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -4740,21 +5342,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
       "skip": [
         "geometry",
@@ -4792,66 +5379,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[5]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[6]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[7]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[8]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -4942,81 +5469,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[5] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[6] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[7] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[8] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -5120,36 +5572,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
       "skip": [
         "geometry",
@@ -5160,51 +5582,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[3]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
       "skip": [
         "geometry",
@@ -5212,126 +5589,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[5] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[6] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[7] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[8] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -5392,81 +5649,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -5670,51 +5852,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[3] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[3] > div[2] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
       "skip": [
         "geometry",
@@ -5725,36 +5862,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[1]",
       "skip": [
         "geometry",
@@ -5762,201 +5869,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[1] > div[5] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[1] > div[7] > div[1] > svg[1] > path[2]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[1] > div[8] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[1] > div[8] > div[1] > svg[1] > path[2]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[2] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[3] > div[2] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -5977,21 +5889,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[2] > div[4] > div[2] > a[2] > div[2] > div[3]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -6145,126 +6042,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[1] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[1] > div[2] > div[1]",
       "skip": [
         "geometry",
@@ -6275,21 +6052,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[2] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[2] > div[2] > div[1]",
       "skip": [
         "geometry",
@@ -6297,21 +6059,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[3] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -6475,51 +6222,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[4] > div[1] > div[1] > div[1] > svg[1] > path[1]",
       "skip": [
         "geometry",
@@ -6555,52 +6257,7 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[3] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[3] > div[2]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[4] > div[2] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > div[1]",
       "skip": [
         "geometry",
         "type",
@@ -6625,21 +6282,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[2] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[2] > div[2]",
       "skip": [
         "geometry",
@@ -6647,21 +6289,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[3] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -6705,21 +6332,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > div[2]",
       "skip": [
         "geometry",
@@ -6727,21 +6339,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[2] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -6755,21 +6352,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[3] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[3] > div[2]",
       "skip": [
         "geometry",
@@ -6777,21 +6359,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[1] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -6805,21 +6372,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[2] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[2] > div[2]",
       "skip": [
         "geometry",
@@ -6827,21 +6379,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[3] > div[1]",
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); at this bp the pair is still heuristic - geometry/type/color skipped (counted) until the H1-d sweep",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ]
     },
     {
       "section": "home-hero-wrap",
@@ -7145,23 +6682,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
-      "bps": [
-        "1920",
-        "1440",
-        "1024",
-        "768",
-        "390"
-      ],
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - census path is duplicated in the spec (truncated tree); the first occurrence holds the H1-a binding, the twin occurrence is excused here - reseat via per-occurrence hooks in the H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
       "bps": [
         "1920",
@@ -7175,21 +6695,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > div[3]",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ],
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440/390 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
     },
     {
       "section": "home-hero-wrap",
@@ -8601,36 +8106,6 @@
     },
     {
       "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ],
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440/390 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[2]",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ],
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440/390 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[3] > div[2]",
       "bps": [
         "1920",
@@ -8644,21 +8119,6 @@
         "color"
       ],
       "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 390 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-    },
-    {
-      "section": "home-hero-wrap",
-      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
-      "bps": [
-        "1920",
-        "1024",
-        "768"
-      ],
-      "skip": [
-        "geometry",
-        "type",
-        "color"
-      ],
-      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440/390 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
     }
   ]
 }

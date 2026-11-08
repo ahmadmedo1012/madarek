@@ -61,11 +61,13 @@ import { useIsNarrowLayout } from '../../../hooks/useIsNarrowLayout';
 import '../../../styles/landing/hero-mechanics.css';
 import { BRAND_LABEL, LOGIN, REGISTER, LECTURE_INTERACTIVE, MASTERY_MATRIX} from '../copy';
 
-/* The display title — 3 authored lines (the reference's h1 wraps to 9
- * mask lines inside its narrow title-wrap; Arabic carries the same
- * statement in 3, each riding the identical mask-line grammar).
- * UNVOCALISED (zero tashkeel — the display canon), no tracking. */
-const TITLE_LINES = ['رحلة تعلم واحدة', 'من المحاضرة', 'إلى الإتقان'] as const;
+/* The display title — R342-02: TWO authored lines (the frozen spec's own
+ * h1 box is the 2-line seat at 1440/1920/1024: 772×93 · 1029×124 ·
+ * 549×66 — lh = fs exactly, 2 lines). UNVOCALISED (zero tashkeel — the
+ * display canon), no tracking; the second line carries the whole
+ * «من المحاضرة إلى الإتقان» clause so the pair reads as one sentence
+ * seam-to-seam at every belt. */
+const TITLE_LINES = ['رحلة تعلم واحدة', 'من المحاضرة إلى الإتقان'] as const;
 
 /* The lead — the honest funnel copy, hand-split at the em-dash into
  * two mask lines (the reference splits its sub on word-wrap; the
@@ -173,9 +175,13 @@ export function Hero() {
         </div>
       </div>
 
-      {/* ══ [2] THE CONTENT BAND — the measured strip: H1 cell ‖ 1px
-          divider ‖ sub cell (lead + the register CTA + the login
-          secondary). ══ */}
+      {/* ══ [2] THE CONTENT BAND — R342-02: the measured closing collage of
+          the fold — title cell (the 2-line H1, reading-start) ‖ sub cell
+          (the lead paragraph + the register CTA under it) ‖ alt cell (the
+          login secondary, accent ink); the work strip closes the band as
+          an absolutely-seated row inside the sub/alt column's lower zone
+          (the spec's own overlap — the h1's box-bottom is the fold's
+          last line, the subjects run under the short columns). ══ */}
       <div className="hro-content">
         <div className="hro-title-cell">
           <h1 className="hro-title fo-hero-title">
@@ -209,17 +215,26 @@ export function Hero() {
           </div>
 
           {/* the funnel contract (r164b → r188, kept byte-identical):
-              ONE primary «أنشئ حسابك الجامعي» → /auth/register, now
-              with the login secondary the reference's sub-wrap carries. */}
+              ONE primary «أنشئ حسابك الجامعي» → /auth/register, styled as
+              the reference's own hero CTA seat (a 600-weight text link
+              with the arrow glyph — the editorial voice; the .btn mass
+              era ends with the R342 seat). */}
           <div className="hro-actions fo-hero-actions">
-            <Link to="/auth/register" className="btn accent lg hro-cta fo-hero-cta" data-spec-hover="3">
+            <Link to="/auth/register" className="hro-cta fo-hero-cta" data-spec-hover="3">
               {REGISTER}
               <Icon icon={ArrowLeft} size={16} aria-hidden="true" />
             </Link>
-            <Link to="/auth" className="hro-alt" data-spec-hover="0">
-              {LOGIN}
-            </Link>
           </div>
+        </div>
+
+        {/* the alt cell — the login secondary in its own measured column
+            (the spec's a[2]: accent ink, the text row + the arrow glyph
+            stacked — the tall link box at the fold's inline-end edge) */}
+        <div className="hro-alt-cell">
+          <Link to="/auth" className="hro-alt" data-spec-hover="0">
+            {LOGIN}
+            <Icon icon={ArrowLeft} size={16} aria-hidden="true" />
+          </Link>
         </div>
       </div>
 
