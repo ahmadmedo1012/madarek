@@ -1,21 +1,21 @@
 {
- "generatedAt": "2026-11-08T15:48:36.671Z",
+ "generatedAt": "2026-11-08T20:38:11.611Z",
  "engine": "chromium",
  "url": "http://localhost:5173/",
  "specDir": "/home/z/wt/r342-integration/docs/redesign/r335/heron-spec",
  "summary": {
-  "total": 73442,
-  "pass": 68487,
-  "fail": 4955,
-  "passRate": 93.3,
-  "exceptionUses": 168,
-  "exceptionRate": 0.2,
+  "total": 75515,
+  "pass": 70415,
+  "fail": 5100,
+  "passRate": 93.2,
+  "exceptionUses": 195,
+  "exceptionRate": 0.3,
   "exceptionCap": "<5%",
   "exceptionRules": {
-   "ar-text-length-class": 168
+   "ar-text-length-class": 195
   },
   "unmatchedFailures": 98,
-  "gate": "FAIL(coverage:footer,home-intro-wrap)",
+  "gate": "PASS",
   "ratchet": 91.8,
   "coverage": {
    "formula": "coverage = measured / (measured + offBookEst); offBookEst = suppressedChecks + excusedElements × 12 (GROUP_CHECKS sum = checks per fully-measured element; conservative — the 5 unskippable per-element checks are not counted). Section cells only; scroll/interact extensions are not coverage-scored.",
@@ -25,10 +25,10 @@
     "heuristicShareCap": "50% of pairs (FAIL(heuristic))"
    },
    "overall": {
-    "measured": 72342,
-    "offBookEst": 60430,
-    "coveragePct": 54.5,
-    "offBookPct": 45.5
+    "measured": 74415,
+    "offBookEst": 59081,
+    "coveragePct": 55.7,
+    "offBookPct": 44.3
    },
    "sections": {
     "chrome": {
@@ -43,15 +43,15 @@
      "heurPct": 12.5
     },
     "footer": {
-     "measured": 6086,
-     "skipped": 1594,
-     "excused": 741,
-     "offBookEst": 10486,
-     "pairs": 579,
-     "heur": 163,
-     "coverage": 36.7,
-     "offBookPct": 63.3,
-     "heurPct": 28.2
+     "measured": 6974,
+     "skipped": 2112,
+     "excused": 649,
+     "offBookEst": 9900,
+     "pairs": 691,
+     "heur": 176,
+     "coverage": 41.3,
+     "offBookPct": 58.7,
+     "heurPct": 25.5
     },
     "home-cta-wrap": {
      "measured": 4264,
@@ -76,14 +76,14 @@
      "heurPct": 15.6
     },
     "home-intro-wrap": {
-     "measured": 9551,
-     "skipped": 3452,
-     "excused": 1065,
-     "offBookEst": 16232,
-     "pairs": 925,
+     "measured": 10736,
+     "skipped": 4237,
+     "excused": 936,
+     "offBookEst": 15469,
+     "pairs": 1059,
      "heur": 6,
-     "coverage": 37,
-     "offBookPct": 63,
+     "coverage": 41,
+     "offBookPct": 59,
      "heurPct": 0.6
     },
     "home-map-wrap": {
@@ -142,25 +142,12 @@
      "heurPct": 9.6
     }
    },
-   "gateFailures": [
-    {
-     "gate": "coverage",
-     "section": "footer",
-     "value": "36.7%",
-     "threshold": "< 40% measured (coverage floor — no escape; lift it with section work)"
-    },
-    {
-     "gate": "coverage",
-     "section": "home-intro-wrap",
-     "value": "37%",
-     "threshold": "< 40% measured (coverage floor — no escape; lift it with section work)"
-    }
-   ],
+   "gateFailures": [],
    "reviewedEscapes": []
   },
-  "unmatchedOmitted": 3060,
-  "skippedOmitted": 6068,
-  "totalSkipped": 18910,
+  "unmatchedOmitted": 2939,
+  "skippedOmitted": 6654,
+  "totalSkipped": 20213,
   "edge390": {
    "fails": 0,
    "tolerance": "±2px vs the spec's recorded 390 section-root gutter",
@@ -242,73 +229,73 @@
   },
   "footer": {
    "390": {
-    "passRate": 86.1,
-    "n": 1116,
-    "pass": 961,
-    "fail": 155,
+    "passRate": 89.2,
+    "n": 1347,
+    "pass": 1202,
+    "fail": 145,
     "exceptions": 4,
     "explicit": 0,
-    "dataSpec": 82,
-    "heuristic": 36,
+    "dataSpec": 112,
+    "heuristic": 30,
     "unmatched": 0,
-    "excused": 88,
-    "skipped": 266,
+    "excused": 64,
+    "skipped": 400,
     "missing": null
    },
    "768": {
-    "passRate": 85,
-    "n": 1351,
-    "pass": 1148,
-    "fail": 203,
-    "exceptions": 8,
+    "passRate": 86.8,
+    "n": 1565,
+    "pass": 1358,
+    "fail": 207,
+    "exceptions": 19,
     "explicit": 0,
-    "dataSpec": 84,
-    "heuristic": 27,
+    "dataSpec": 113,
+    "heuristic": 29,
     "unmatched": 0,
-    "excused": 223,
-    "skipped": 364,
+    "excused": 201,
+    "skipped": 498,
     "missing": null
    },
    "1024": {
-    "passRate": 90.8,
-    "n": 1125,
-    "pass": 1021,
-    "fail": 104,
+    "passRate": 89.9,
+    "n": 1209,
+    "pass": 1087,
+    "fail": 122,
     "exceptions": 4,
     "explicit": 0,
-    "dataSpec": 83,
-    "heuristic": 36,
+    "dataSpec": 91,
+    "heuristic": 39,
     "unmatched": 0,
-    "excused": 106,
-    "skipped": 302,
+    "excused": 97,
+    "skipped": 348,
     "missing": null
    },
    "1440": {
-    "passRate": 87.7,
-    "n": 1369,
-    "pass": 1200,
-    "fail": 169,
-    "exceptions": 8,
+    "passRate": 89.4,
+    "n": 1644,
+    "pass": 1469,
+    "fail": 175,
+    "exceptions": 24,
     "explicit": 0,
-    "dataSpec": 84,
-    "heuristic": 28,
+    "dataSpec": 116,
+    "heuristic": 31,
     "unmatched": 0,
-    "excused": 218,
-    "skipped": 360,
+    "excused": 190,
+    "skipped": 518,
     "missing": null
    },
    "1920": {
     "passRate": 88.8,
-    "n": 1125,
-    "pass": 999,
-    "fail": 126,
+    "n": 1209,
+    "pass": 1074,
+    "fail": 135,
     "exceptions": 4,
     "explicit": 0,
     "dataSpec": 83,
-    "heuristic": 36,
+    "heuristic": 47,
     "unmatched": 0,
-    "excused": 106,
-    "skipped": 302,
+    "excused": 97,
+    "skipped": 348,
     "missing": null
    }
   },
@@ -458,73 +445,73 @@
   },
   "home-intro-wrap": {
    "390": {
-    "passRate": 97.8,
-    "n": 1275,
-    "pass": 1247,
-    "fail": 28,
+    "passRate": 96.5,
+    "n": 1522,
+    "pass": 1469,
+    "fail": 53,
     "exceptions": 3,
     "explicit": 0,
-    "dataSpec": 113,
+    "dataSpec": 145,
     "heuristic": 1,
     "unmatched": 0,
-    "excused": 168,
-    "skipped": 333,
+    "excused": 141,
+    "skipped": 476,
     "missing": null
    },
    "768": {
     "passRate": 99.2,
-    "n": 2189,
-    "pass": 2171,
+    "n": 2248,
+    "pass": 2230,
     "fail": 18,
     "exceptions": 7,
     "explicit": 0,
-    "dataSpec": 215,
+    "dataSpec": 221,
     "heuristic": 2,
     "unmatched": 1,
-    "excused": 204,
-    "skipped": 860,
+    "excused": 198,
+    "skipped": 897,
     "missing": null
    },
    "1024": {
-    "passRate": 99.8,
-    "n": 2029,
-    "pass": 2025,
-    "fail": 4,
+    "passRate": 98.3,
+    "n": 2322,
+    "pass": 2283,
+    "fail": 39,
     "exceptions": 7,
     "explicit": 0,
-    "dataSpec": 197,
+    "dataSpec": 229,
     "heuristic": 1,
     "unmatched": 0,
-    "excused": 231,
-    "skipped": 753,
+    "excused": 199,
+    "skipped": 956,
     "missing": null
    },
    "1440": {
-    "passRate": 99.8,
-    "n": 2029,
-    "pass": 2025,
-    "fail": 4,
+    "passRate": 98.4,
+    "n": 2322,
+    "pass": 2286,
+    "fail": 36,
     "exceptions": 7,
     "explicit": 0,
-    "dataSpec": 197,
+    "dataSpec": 229,
     "heuristic": 1,
     "unmatched": 0,
-    "excused": 231,
-    "skipped": 753,
+    "excused": 199,
+    "skipped": 956,
     "missing": null
    },
    "1920": {
-    "passRate": 99.8,
-    "n": 2029,
-    "pass": 2025,
-    "fail": 4,
+    "passRate": 98.7,
+    "n": 2322,
+    "pass": 2292,
+    "fail": 30,
     "exceptions": 7,
     "explicit": 0,
-    "dataSpec": 197,
+    "dataSpec": 229,
     "heuristic": 1,
     "unmatched": 0,
-    "excused": 231,
-    "skipped": 753,
+    "excused": 199,
+    "skipped": 952,
     "missing": null
    }
   },
@@ -2173,8 +2160,8 @@
    "heronPath": "header.header#pin0",
    "oursSelector": "header.fo-header",
    "expected": "[0,13.27]",
-   "actual": "[0,16.482]",
-   "delta": 3212
+   "actual": "[0,16.458]",
+   "delta": 3188
   },
   {
    "section": "chrome",
@@ -2215,8 +2202,8 @@
    "heronPath": "header.header#pin0",
    "oursSelector": "header.fo-header",
    "expected": "[0,11.952]",
-   "actual": "[0,14.539]",
-   "delta": 2587
+   "actual": "[0,14.57]",
+   "delta": 2618
   },
   {
    "section": "home-map-wrap",
@@ -2378,8 +2365,8 @@
    "heronPath": "header.header#pin0",
    "oursSelector": "header.fo-header",
    "expected": "[0,12.164]",
-   "actual": "[0,14.184]",
-   "delta": 2020
+   "actual": "[0,14.181]",
+   "delta": 2017
   },
   {
    "section": "home-why-wrap",
@@ -2423,6 +2410,17 @@
    "expected": 18,
    "actual": 1920,
    "delta": 1902
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1902,
+   "actual": 13,
+   "delta": 1889
   },
   {
    "section": "footer",
@@ -2587,17 +2585,6 @@
    "expected": 631,
    "actual": 2262,
    "delta": 1631
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1902,
-   "actual": 317,
-   "delta": 1585
   },
   {
    "section": "home-map-wrap",
@@ -2908,6 +2895,17 @@
    "delta": 1298
   },
   {
+   "section": "footer",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "footer > footer[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 619,
+   "actual": 1901,
+   "delta": 1282
+  },
+  {
    "section": "home-why-wrap",
    "bp": "390",
    "kind": "y",
@@ -3036,8 +3034,8 @@
    "oursSelector": "#hm:svg.none",
    "mode": "heuristic",
    "expected": -830,
-   "actual": 365,
-   "delta": 1195
+   "actual": 362,
+   "delta": 1192
   },
   {
    "section": "home-why-wrap",
@@ -3049,6 +3047,17 @@
    "expected": 686,
    "actual": 1875,
    "delta": 1189
+  },
+  {
+   "section": "footer",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 238,
+   "actual": 1426,
+   "delta": 1188
   },
   {
    "section": "home-map-wrap",
@@ -3080,8 +3089,8 @@
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": -830,
-   "actual": 348,
-   "delta": 1178
+   "actual": 344,
+   "delta": 1174
   },
   {
    "section": "home-map-wrap",
@@ -3222,8 +3231,8 @@
    "oursSelector": "#hm:svg.none",
    "mode": "heuristic",
    "expected": -851,
-   "actual": 226,
-   "delta": 1077
+   "actual": 224,
+   "delta": 1075
   },
   {
    "section": "home-why-wrap",
@@ -3609,6 +3618,17 @@
    "expected": 943,
    "actual": 7,
    "delta": 936
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 9,
+   "actual": 935,
+   "delta": 925.5
   },
   {
    "section": "home-hero-wrap",
@@ -4191,6 +4211,17 @@
    "expected": -747,
    "actual": 0,
    "delta": 747
+  },
+  {
+   "section": "footer",
+   "bp": "768",
+   "kind": "y",
+   "heronPath": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 189,
+   "actual": 933,
+   "delta": 744
   },
   {
    "section": "home-why-wrap",
@@ -4785,6 +4816,17 @@
    "delta": 686
   },
   {
+   "section": "footer",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "footer > footer[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 330,
+   "actual": 1014,
+   "delta": 684
+  },
+  {
    "section": "home-map-wrap",
    "bp": "768",
    "kind": "h",
@@ -5268,6 +5310,17 @@
    "delta": 624
   },
   {
+   "section": "footer",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "footer > footer[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 633,
+   "actual": 10,
+   "delta": 623
+  },
+  {
    "section": "home-why-wrap",
    "bp": "768",
    "kind": "w",
@@ -5409,6 +5462,17 @@
    "expected": 583,
    "actual": 0,
    "delta": 583
+  },
+  {
+   "section": "footer",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1219,
+   "actual": 642,
+   "delta": 577
   },
   {
    "section": "home-hero-wrap",
@@ -5860,6 +5924,17 @@
    "delta": 522.5
   },
   {
+   "section": "footer",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 522,
+   "delta": 522
+  },
+  {
    "section": "home-map-wrap",
    "bp": "1024",
    "kind": "w",
@@ -6120,28 +6195,6 @@
    "mode": "data-spec",
    "expected": 467,
    "actual": 960,
-   "delta": 493
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[1] > div[3] > div[3]",
-   "oursSelector": "#ds:footer.markcap",
-   "mode": "data-spec",
-   "expected": 89,
-   "actual": 582,
-   "delta": 493
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[1] > div[3] > div[3] > img[1]",
-   "oursSelector": "#ds:footer.markimg",
-   "mode": "data-spec",
-   "expected": 89,
-   "actual": 582,
    "delta": 493
   },
   {
@@ -6496,6 +6549,28 @@
    "delta": 475
   },
   {
+   "section": "footer",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[1] > div[3] > div[3]",
+   "oursSelector": "#ds:footer.markcap",
+   "mode": "data-spec",
+   "expected": 89,
+   "actual": 562,
+   "delta": 473
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[1] > div[3] > div[3] > img[1]",
+   "oursSelector": "#ds:footer.markimg",
+   "mode": "data-spec",
+   "expected": 89,
+   "actual": 562,
+   "delta": 473
+  },
+  {
    "section": "home-cta-wrap",
    "bp": "1920",
    "kind": "h",
@@ -6705,6 +6780,17 @@
    "delta": 444
   },
   {
+   "section": "footer",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "oursSelector": "#ds:footer.bgroup.2",
+   "mode": "data-spec",
+   "expected": 151,
+   "actual": 595,
+   "delta": 444
+  },
+  {
    "section": "home-why-wrap",
    "bp": "768",
    "kind": "bg",
@@ -6804,17 +6890,6 @@
    "delta": 437
   },
   {
-   "section": "footer",
-   "bp": "768",
-   "kind": "y",
-   "heronPath": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
-   "oursSelector": "#ds:footer.bgroup.2",
-   "mode": "data-spec",
-   "expected": 70,
-   "actual": 505,
-   "delta": 435
-  },
-  {
    "section": "home-map-wrap",
    "bp": "1920",
    "kind": "x-mirror",
@@ -6846,6 +6921,17 @@
    "expected": 969,
    "actual": 537,
    "delta": 432.5
+  },
+  {
+   "section": "footer",
+   "bp": "768",
+   "kind": "y",
+   "heronPath": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "oursSelector": "#ds:footer.bgroup.2",
+   "mode": "data-spec",
+   "expected": 70,
+   "actual": 502,
+   "delta": 432
   },
   {
    "section": "home-hero-wrap",
@@ -7145,17 +7231,6 @@
    "delta": 419.5
   },
   {
-   "section": "footer",
-   "bp": "1920",
-   "kind": "h",
-   "heronPath": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 419,
-   "actual": 1,
-   "delta": 418
-  },
-  {
    "section": "home-problem-wrap",
    "bp": "1440",
    "kind": "y",
@@ -7175,17 +7250,6 @@
    "mode": "heuristic",
    "expected": 482,
    "actual": 65,
-   "delta": 417
-  },
-  {
-   "section": "footer",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
-   "oursSelector": "#ds:footer.bgroup.2",
-   "mode": "data-spec",
-   "expected": 151,
-   "actual": 568,
    "delta": 417
   },
   {
@@ -7308,6 +7372,17 @@
    "expected": 238,
    "actual": 645,
    "delta": 407
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 419,
+   "actual": 13,
+   "delta": 406
   },
   {
    "section": "home-problem-wrap",
@@ -7849,17 +7924,6 @@
    "delta": 373
   },
   {
-   "section": "footer",
-   "bp": "390",
-   "kind": "w",
-   "heronPath": "footer > footer[1] > div[1] > div[3] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 374,
-   "actual": 1,
-   "delta": 373
-  },
-  {
    "section": "home-cta-wrap",
    "bp": "390",
    "kind": "w",
@@ -7890,17 +7954,6 @@
    "mode": "heuristic",
    "expected": 863,
    "actual": 491,
-   "delta": 372
-  },
-  {
-   "section": "footer",
-   "bp": "390",
-   "kind": "h",
-   "heronPath": "footer > footer[1] > div[1]",
-   "oursSelector": "#ds:footer.in",
-   "mode": "data-spec",
-   "expected": 1265,
-   "actual": 893,
    "delta": 372
   },
   {
@@ -8047,28 +8100,6 @@
    "delta": 366
   },
   {
-   "section": "footer",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[7]",
-   "oursSelector": "#ds:footer.reg.3",
-   "mode": "data-spec",
-   "expected": 1155,
-   "actual": 789,
-   "delta": 366
-  },
-  {
-   "section": "footer",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[8]",
-   "oursSelector": "#ds:footer.reg.4",
-   "mode": "data-spec",
-   "expected": 1155,
-   "actual": 789,
-   "delta": 366
-  },
-  {
    "section": "home-why-wrap",
    "bp": "390",
    "kind": "x-mirror",
@@ -8124,6 +8155,17 @@
    "delta": 363.5
   },
   {
+   "section": "footer",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "footer > footer[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 56,
+   "actual": 419,
+   "delta": 363
+  },
+  {
    "section": "home-cta-wrap",
    "bp": "1440",
    "kind": "h",
@@ -8177,17 +8219,6 @@
    "expected": 358,
    "actual": 720,
    "delta": 362
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "kind": "h",
-   "heronPath": "footer > footer[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "#ds:footer.c2binner",
-   "mode": "data-spec",
-   "expected": 202,
-   "actual": 563,
-   "delta": 361
   },
   {
    "section": "home-hero-wrap",
@@ -8720,12 +8751,12 @@
   {
    "section": "footer",
    "bp": "1920",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 473,
-   "actual": 134,
+   "kind": "h",
+   "heronPath": "footer > footer[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "#ds:footer.c2binner",
+   "mode": "data-spec",
+   "expected": 202,
+   "actual": 541,
    "delta": 339
   },
   {
@@ -8892,6 +8923,17 @@
    "expected": 743,
    "actual": 410,
    "delta": 333
+  },
+  {
+   "section": "footer",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "footer > footer[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 337,
+   "actual": 5,
+   "delta": 332
   },
   {
    "section": "home-hero-wrap",
@@ -9103,6 +9145,17 @@
    "delta": 327
   },
   {
+   "section": "footer",
+   "bp": "390",
+   "kind": "h",
+   "heronPath": "footer > footer[1] > div[1]",
+   "oursSelector": "#ds:footer.in",
+   "mode": "data-spec",
+   "expected": 1265,
+   "actual": 938,
+   "delta": 327
+  },
+  {
    "section": "home-why-wrap",
    "bp": "1024",
    "kind": "w",
@@ -9280,6 +9333,28 @@
   },
   {
    "section": "footer",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[7]",
+   "oursSelector": "#ds:footer.reg.3",
+   "mode": "data-spec",
+   "expected": 1155,
+   "actual": 834,
+   "delta": 321
+  },
+  {
+   "section": "footer",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[8]",
+   "oursSelector": "#ds:footer.reg.4",
+   "mode": "data-spec",
+   "expected": 1155,
+   "actual": 834,
+   "delta": 321
+  },
+  {
+   "section": "footer",
    "bp": "1440",
    "kind": "h",
    "heronPath": "footer > footer[1] > div[1] > div[1] > div[2]",
@@ -9364,17 +9439,6 @@
    "mode": "heuristic",
    "expected": 863,
    "actual": 549,
-   "delta": 314
-  },
-  {
-   "section": "footer",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[3] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1219,
-   "actual": 905,
    "delta": 314
   },
   {
@@ -9596,83 +9660,6 @@
    "expected": 8,
    "actual": 317,
    "delta": 309.5
-  },
-  {
-   "section": "home-map-wrap",
-   "bp": "390",
-   "kind": "w",
-   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1,
-   "actual": 310,
-   "delta": 309
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "kind": "bg",
-   "heronPath": "footer > footer[1] > div[1] > div[1] > div[1] > div[2]",
-   "oursSelector": "#ds:footer.c1sub",
-   "mode": "data-spec",
-   "expected": "rgba(0, 0, 0, 0)",
-   "actual": "rgb(179, 179, 175)",
-   "delta": 307.75
-  },
-  {
-   "section": "home-platform-wrap",
-   "bp": "1920",
-   "kind": "bg",
-   "heronPath": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": "rgba(0, 0, 0, 0)",
-   "actual": "rgb(179, 179, 175)",
-   "delta": 307.75
-  },
-  {
-   "section": "home-platform-wrap",
-   "bp": "1920",
-   "kind": "bg",
-   "heronPath": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": "rgba(0, 0, 0, 0)",
-   "actual": "rgb(179, 179, 175)",
-   "delta": 307.75
-  },
-  {
-   "section": "home-platform-wrap",
-   "bp": "1920",
-   "kind": "bg",
-   "heronPath": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[2] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": "rgb(179, 179, 175)",
-   "actual": "rgba(0, 0, 0, 0)",
-   "delta": 307.75
-  },
-  {
-   "section": "home-problem-wrap",
-   "bp": "1920",
-   "kind": "bg",
-   "heronPath": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": "rgba(0, 0, 0, 0)",
-   "actual": "rgb(179, 179, 175)",
-   "delta": 307.75
-  },
-  {
-   "section": "footer",
-   "bp": "1440",
-   "kind": "bg",
-   "heronPath": "footer > footer[1] > div[1] > div[1] > div[1] > div[2]",
-   "oursSelector": "#ds:footer.c1sub",
-   "mode": "data-spec",
-   "expected": "rgba(0, 0, 0, 0)",
-   "actual": "rgb(179, 179, 175)",
-   "delta": 307.75
   }
  ],
  "unmatchedReport": [
@@ -9855,6 +9842,20 @@
    "section": "footer",
    "bp": "1920",
    "heronPath": "footer > div[1] > div[2] > div[2] > div[1] > div[6] > div[1]",
+   "excused": true,
+   "reason": "ar-char-split: tween char-scaffolding — Arabic word-split law (joining forbids per-character boxes); container carries no text counterpart"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]",
+   "excused": true,
+   "reason": "ar-char-split: tween char-scaffolding — Arabic word-split law (joining forbids per-character boxes); container carries no text counterpart"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]",
    "excused": true,
    "reason": "ar-char-split: tween char-scaffolding — Arabic word-split law (joining forbids per-character boxes); container carries no text counterpart"
   },
@@ -10204,70 +10205,7 @@
   {
    "section": "footer",
    "bp": "1920",
-   "heronPath": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "heronPath": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "heronPath": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "heronPath": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "heronPath": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "heronPath": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "heronPath": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
    "heronPath": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[2]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "heronPath": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "heronPath": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
    "excused": true,
    "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
   },
@@ -10288,13 +10226,6 @@
   {
    "section": "footer",
    "bp": "1920",
-   "heronPath": "footer > footer[1] > div[1] > div[3] > div[2]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
    "heronPath": "footer > footer[1] > div[1] > div[3] > div[2] > a[1] > div[1]",
    "excused": true,
    "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
@@ -10303,13 +10234,6 @@
    "section": "footer",
    "bp": "1920",
    "heronPath": "footer > footer[1] > div[1] > div[3] > div[2] > a[1] > div[2]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "heronPath": "footer > div[1] > div[3] > div[2] > a[1] > div[2] > div[1]",
    "excused": true,
    "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
   },
@@ -11044,107 +10968,9 @@
   {
    "section": "home-intro-wrap",
    "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
    "heronPath": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[1]",
    "excused": true,
    "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[5] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[6] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[7] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[8] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[9] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[10] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
   },
   {
    "section": "home-intro-wrap",
@@ -11163,100 +10989,9 @@
   {
    "section": "home-intro-wrap",
    "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[3] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[4] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[5] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[4] > div[1] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[4] > div[2] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
    "heronPath": "home-intro-wrap > div[1] > h2[1] > div[2] > div[1] > div[1] > div[1]",
    "excused": true,
    "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[3] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[4] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[5] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[6] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[7] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[8] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
   },
   {
    "section": "home-intro-wrap",
@@ -12027,454 +11762,6 @@
    "heronPath": "home-intro-wrap > div[7] > div[1] > div[1] > div[4] > div[2] > div[1]",
    "excused": true,
    "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[7] > div[1] > div[1] > div[4] > div[3] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[8] > div[1]",
-   "excused": true,
-   "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[8] > div[1] > div[1] > div[1]",
-   "excused": true,
-   "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > h2[1] > div[8] > div[1] > div[1] > div[1] > div[1]",
-   "excused": true,
-   "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[1] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > h2[1] > div[8] > div[1] > div[1] > div[1] > div[2]",
-   "excused": true,
-   "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[2] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > h2[1] > div[8] > div[1] > div[1] > div[1] > div[3]",
-   "excused": true,
-   "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[3] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[4] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[5] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[6] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[7] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[8] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[9] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[4] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[2]",
-   "excused": true,
-   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[1] > div[2] > div[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[1] > div[2] > div[2]",
-   "excused": true,
-   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[3]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[1] > div[3] > div[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[1] > div[3] > div[2]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[2] > div[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[1] > div[4] > div[1] > div[2]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[4] > div[2] > div[1] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[2]",
-   "excused": true,
-   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[4] > div[2] > div[1] > div[1] > div[2] > div[1]",
-   "excused": true,
-   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[4] > div[2] > div[1] > div[1] > div[2] > div[2]",
-   "excused": true,
-   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[3]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[4] > div[2] > div[1] > div[1] > div[3] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[1] > div[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[4] > div[2] > div[1] > div[1] > div[3] > div[2]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
-   "excused": true,
-   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[1] > div[4] > div[2] > div[2]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[2]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
-   "excused": true,
-   "reason": "crawl overflow cells: the reference frozen track records 9 window cells (1440) / 8 (390); our crawl is the five DOCUMENTED universities (r307 media-truth contract) — the paired cells intro.cell.1-5 carry the geometry"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[2]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[3]",
-   "excused": true,
-   "reason": "crawl overflow cells: the reference frozen track records 9 window cells (1440) / 8 (390); our crawl is the five DOCUMENTED universities (r307 media-truth contract) — the paired cells intro.cell.1-5 carry the geometry"
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[1] > img[1]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[2]",
-   "excused": true,
-   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1920",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[4]",
-   "excused": true,
-   "reason": "crawl overflow cells: the reference frozen track records 9 window cells (1440) / 8 (390); our crawl is the five DOCUMENTED universities (r307 media-truth contract) — the paired cells intro.cell.1-5 carry the geometry"
   }
  ],
  "skippedReport": [
@@ -13369,6 +12656,126 @@
    "group": "color",
    "checks": 2,
    "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "heronPath": "footer > div[1] > div[3] > div[2] > a[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
   },
   {
    "section": "home-cta-wrap",
@@ -14305,1326 +13712,6 @@
    "group": "type",
    "checks": 4,
    "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[3]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[4]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[4]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[4]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[5]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[5]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[5]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[6]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[6]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[6]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[7]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[7]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[7]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[8]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[8]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[8]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[9]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[9]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[9]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[10]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[10]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[10]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[11]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[11]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[11]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[12]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[12]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[12]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[13]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[13]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[13]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[14]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[14]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[14]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[1]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[1]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[1]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[2]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[2]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[2]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[3]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[3]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[3]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[4]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[4]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[4]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[5]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[5]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[5]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[6]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[6]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[6]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[7]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[7]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[7]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[8]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[8]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[8]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[9]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[9]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[9]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[10]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[10]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[10]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[11]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[11]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[11]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[12]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[12]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[12]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[13]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[13]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[13]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[14]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[14]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[14]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[1]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[1]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[1]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[2]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[2]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[2]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[3]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[3]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[3]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[4]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[4]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[4]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[5]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[5]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[5]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[6]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[6]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[6]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[7]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[7]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[7]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[8]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[8]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[8]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[1]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[1]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[1]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[2]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[2]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[2]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[3]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[3]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[3]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[4]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[4]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[4]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[5]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[5]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[5]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[6]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[6]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[6]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[7]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[7]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[7]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[8]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[8]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[8]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[9]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[9]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[9]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[10]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[10]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[10]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[11]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[11]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[11]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[12]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[12]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[12]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[13]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[13]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[13]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[14]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[14]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[14]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[1]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[1]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[1]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[2]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[2]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[2]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[3]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[3]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[3]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[4]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[4]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[4]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[5]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[5]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[5]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[6]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[6]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[6]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[7]",
-   "group": "geometry",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[7]",
-   "group": "type",
-   "checks": 4,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[7]",
-   "group": "color",
-   "checks": 2,
-   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - per-div counterpart built + bound at 1440 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > h1[1]",
-   "group": "tc",
-   "checks": 1,
-   "reason": "binding-level skip (mapping explicit[].skip)"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
-   "group": "tc",
-   "checks": 1,
-   "reason": "binding-level skip (mapping explicit[].skip)"
   }
  ],
  "darkInkReport": [],
@@ -15915,7 +14002,7 @@
    },
    "footer@1440": {
     "bp": "1440",
-    "worstGapPx": 356,
+    "worstGapPx": 357,
     "limitPx": 540
    },
    "home-cta-wrap@1440": {
@@ -16150,9 +14237,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 13930,
+       "t": 13927,
        "r": 761,
-       "b": 13988
+       "b": 13985
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -16162,9 +14249,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 7547,
+       "t": 7545,
        "r": 761,
-       "b": 7605
+       "b": 7603
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -16195,9 +14282,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 15678,
+       "t": 15679,
        "r": 1433,
-       "b": 15732
+       "b": 15733
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -16207,9 +14294,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 8593,
+       "t": 8594,
        "r": 1433,
-       "b": 8647
+       "b": 8648
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -16219,9 +14306,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 1508,
+       "t": 1509,
        "r": 1433,
-       "b": 1562
+       "b": 1563
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -16279,7 +14366,7 @@
   "skipped": []
  },
  "provenance": {
-  "file": "chromium-20261108-155421-full.json",
+  "file": "chromium-20261108-204356-full.json",
   "scope": "full",
   "fullMatrix": true,
   "sections": "10/10",
