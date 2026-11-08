@@ -25,7 +25,8 @@
  */
 import { useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { ExternalLink, Clock, MonitorPlay, X } from 'lucide-react';
+import { ExternalLink, Clock, MonitorPlay, X, Video, FlaskConical } from 'lucide-react';
+import { Link } from 'react-router-dom';
 /* R321 (c1 · WP-B2) — the §B2 kit: the mono-indexed section title
  * bar, the honest mono count + the hatched empty cell. */
 import { SectionBar, BarCount, EmptyCell } from '../../components/student';
@@ -115,7 +116,25 @@ export default function LivePage() {
         eyebrow="المعامل والتقنيات"
         title="البث المباشر"
         description="الجلسات الحيّة لمقرّراتك المسجَّلة — انضمّ للبثّ المباشر، وستجد التسجيلات هنا بعد انتهاء كل جلسة."
-        actions={headerStatus}
+        /* R342-08 — the header CTA pair joins the live-status chip
+           (the D11/D8 measured seat; the phone band hides the topbar
+           «اسأل AI» ≤920, D6): «الندوات وورش العمل» carries the
+           scheduled sessions, «المعامل الافتراضية» completes the
+           immersive trio — navigation-only, the join action stays
+           on its session row. */
+        actions={(
+          <>
+            {headerStatus}
+            <Link to="/student/webinars" className="btn primary sm">
+              <Icon icon={Video} size={13} />
+              الندوات وورش العمل
+            </Link>
+            <Link to="/student/labs" className="btn ghost sm">
+              <Icon icon={FlaskConical} size={13} />
+              المعامل الافتراضية
+            </Link>
+          </>
+        )}
       />
 
       {joined && (

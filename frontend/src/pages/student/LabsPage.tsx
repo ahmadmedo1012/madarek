@@ -3,9 +3,10 @@ import type { CSSProperties } from 'react';
 import {
   FlaskConical, Network, Cpu, Atom, Zap, Bot as BotIcon, Microscope,
   CheckCircle2, ChevronRight, ChevronLeft, Play, Award, Check,
-  AlertCircle,
+  AlertCircle, Box, Radio,
   type LucideIcon,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Card, ProgressBar } from '../../components/primitives';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { PageFrame, PageHeader, StatLine } from '../../components/patterns';
@@ -169,6 +170,23 @@ export default function LabsPage() {
             description={
               'تجارب علمية تفاعلية بدون الحاجة لمعدات حقيقية — شغّل التجربة خطوة بخطوة وراقب النتائج في طرفية المحاكاة.'
             }
+            /* R342-08 — the header CTA pair (the D11/D8 measured
+               seat; the phone band hides the topbar «اسأل AI» ≤920,
+               D6): the immersive trio's honest siblings —
+               «تجارب AR/VR» and «البث المباشر» (navigation-only;
+               the experiment runner keeps its own controls). */
+            actions={(
+              <>
+                <Link to="/student/ar" className="btn primary sm">
+                  <Icon icon={Box} size={13} />
+                  تجارب AR/VR
+                </Link>
+                <Link to="/student/live" className="btn ghost sm">
+                  <Icon icon={Radio} size={13} />
+                  البث المباشر
+                </Link>
+              </>
+            )}
           />
 
           {/* R304: the metric-card wall folds into ONE StatLine — same

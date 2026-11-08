@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
+import { Link, useInRouterContext } from 'react-router-dom';
 import {
   Briefcase, MapPin,
-  Code, BarChart3, Palette, Network, Smartphone, Shield, type LucideIcon,
+  Code, BarChart3, Palette, Network, Smartphone, Shield, BadgeCheck, GraduationCap,
+  type LucideIcon,
 } from 'lucide-react';
 /* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar + the
  * hatched empty cell. */
@@ -43,6 +45,16 @@ const jobIcon = (cat: string, title: string): LucideIcon => {
  *  (countAr owns the one/two/few/many forms). */
 function openJobsLabel(n: number): string {
   return countAr(n, ['فرصة واحدة مفتوحة', 'فرصتان مفتوحتان', 'فرص مفتوحة', 'فرصة مفتوحة']);
+}
+
+/* R342-08 — the header pair's anchor: the 18-G pin renders this page
+ * WITHOUT a Router (bare QueryClientProvider), so a bare <Link> would
+ * throw on the missing context. An honest anchor either way: in-app
+ * it rides the SPA Link; bare unit renders degrade to a plain href. */
+function JobsHeaderAction({ to, className, children }: { to: string; className: string; children: ReactNode }) {
+  const inRouter = useInRouterContext();
+  if (!inRouter) return <a href={to} className={className}>{children}</a>;
+  return <Link to={to} className={className}>{children}</Link>;
 }
 
 /** Relative posting age with proper Arabic plurals (audit 0-d —
@@ -166,6 +178,23 @@ export default function JobsPage() {
       <PageHeader
         title="فرص العمل"
         description="وظائف وفرص تدريب تجريبية مفتوحة لطلاب وخرّيجي الجامعة (بيانات عرض)."
+        /* R342-08 — the header CTA pair (the D11/D8 measured seat;
+           the phone band hides the topbar «اسأل AI» ≤920, D6):
+           «مهاراتي» is the growth surface an application rides on,
+           «التطوير الذاتي» is the tracks family that grows them —
+           the growth group's honest siblings (navigation-only). */
+        actions={(
+          <>
+            <JobsHeaderAction to="/student/skills" className="btn primary sm">
+              <Icon icon={BadgeCheck} size={13} />
+              مهاراتي
+            </JobsHeaderAction>
+            <JobsHeaderAction to="/training" className="btn ghost sm">
+              <Icon icon={GraduationCap} size={13} />
+              التطوير الذاتي
+            </JobsHeaderAction>
+          </>
+        )}
       />
 
       {/* R319 (c3-S2): the board opens with the §B2 title-bar — [01]
