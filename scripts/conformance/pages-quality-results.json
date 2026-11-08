@@ -1,11 +1,11 @@
 {
- "generatedAt": "2026-11-07T14:01:10.559Z",
- "url": "http://localhost:5351",
- "dark": false,
+ "generatedAt": "2026-11-08T00:49:36.647Z",
+ "url": "http://localhost:5310",
+ "dark": true,
  "routes": {
   "/quality/dashboard": {
-   "1440:light": {
-    "score": 99.4,
+   "1440:dark": {
+    "score": 99.8,
     "axes": {
      "typeRungs": {
       "score": 98.80952380952381,
@@ -58,22 +58,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 97.61904761904762,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 84
+      "score": 100,
+      "fails": [],
+      "total": 18
      },
      "edge390": {
       "score": 100,
@@ -88,8 +75,8 @@
      }
     }
    },
-   "390:light": {
-    "score": 99.6,
+   "390:dark": {
+    "score": 100,
     "axes": {
      "typeRungs": {
       "score": 100,
@@ -136,22 +123,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 97.61904761904762,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 84
+      "score": 100,
+      "fails": [],
+      "total": 18
      },
      "edge390": {
       "score": 100,
@@ -168,8 +142,8 @@
    }
   },
   "/quality/courses": {
-   "1440:light": {
-    "score": 99,
+   "1440:dark": {
+    "score": 99.7,
     "axes": {
      "typeRungs": {
       "score": 98.0392156862745,
@@ -222,22 +196,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 96.07843137254902,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 51
+      "score": 100,
+      "fails": [],
+      "total": 20
      },
      "edge390": {
       "score": 100,
@@ -252,8 +213,8 @@
      }
     }
    },
-   "390:light": {
-    "score": 99.3,
+   "390:dark": {
+    "score": 100,
     "axes": {
      "typeRungs": {
       "score": 100,
@@ -300,22 +261,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 95.91836734693877,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 49
+      "score": 100,
+      "fails": [],
+      "total": 20
      },
      "edge390": {
       "score": 100,
@@ -332,8 +280,8 @@
    }
   },
   "/quality/professors": {
-   "1440:light": {
-    "score": 99.2,
+   "1440:dark": {
+    "score": 99.7,
     "axes": {
      "typeRungs": {
       "score": 98.36065573770492,
@@ -386,22 +334,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 96.72131147540983,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 61
+      "score": 100,
+      "fails": [],
+      "total": 23
      },
      "edge390": {
       "score": 100,
@@ -416,8 +351,8 @@
      }
     }
    },
-   "390:light": {
-    "score": 99.4,
+   "390:dark": {
+    "score": 100,
     "axes": {
      "typeRungs": {
       "score": 100,
@@ -464,22 +399,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 96.49122807017544,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 57
+      "score": 100,
+      "fails": [],
+      "total": 21
      },
      "edge390": {
       "score": 100,
@@ -496,8 +418,8 @@
    }
   },
   "/quality/engagement": {
-   "1440:light": {
-    "score": 99.1,
+   "1440:dark": {
+    "score": 99.7,
     "axes": {
      "typeRungs": {
       "score": 98.21428571428571,
@@ -550,22 +472,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 96.42857142857143,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 56
+      "score": 100,
+      "fails": [],
+      "total": 17
      },
      "edge390": {
       "score": 100,
@@ -580,8 +489,8 @@
      }
     }
    },
-   "390:light": {
-    "score": 99.4,
+   "390:dark": {
+    "score": 100,
     "axes": {
      "typeRungs": {
       "score": 100,
@@ -628,22 +537,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 96.42857142857143,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 56
+      "score": 100,
+      "fails": [],
+      "total": 17
      },
      "edge390": {
       "score": 100,
@@ -660,8 +556,8 @@
    }
   },
   "/quality/curriculum": {
-   "1440:light": {
-    "score": 99.1,
+   "1440:dark": {
+    "score": 99.7,
     "axes": {
      "typeRungs": {
       "score": 98.21428571428571,
@@ -714,22 +610,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 96.36363636363636,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 55
+      "score": 100,
+      "fails": [],
+      "total": 27
      },
      "edge390": {
       "score": 100,
@@ -744,8 +627,8 @@
      }
     }
    },
-   "390:light": {
-    "score": 99.4,
+   "390:dark": {
+    "score": 100,
     "axes": {
      "typeRungs": {
       "score": 100,
@@ -792,22 +675,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 96.36363636363636,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 55
+      "score": 100,
+      "fails": [],
+      "total": 27
      },
      "edge390": {
       "score": 100,
@@ -824,8 +694,8 @@
    }
   },
   "/quality/reports": {
-   "1440:light": {
-    "score": 98.3,
+   "1440:dark": {
+    "score": 99.4,
     "axes": {
      "typeRungs": {
       "score": 96.66666666666667,
@@ -878,22 +748,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 93.33333333333333,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 30
+      "score": 100,
+      "fails": [],
+      "total": 18
      },
      "edge390": {
       "score": 100,
@@ -908,8 +765,8 @@
      }
     }
    },
-   "390:light": {
-    "score": 98.9,
+   "390:dark": {
+    "score": 100,
     "axes": {
      "typeRungs": {
       "score": 100,
@@ -956,22 +813,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 93.33333333333333,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 30
+      "score": 100,
+      "fails": [],
+      "total": 18
      },
      "edge390": {
       "score": 100,
@@ -988,8 +832,8 @@
    }
   },
   "/quality/alerts": {
-   "1440:light": {
-    "score": 98.8,
+   "1440:dark": {
+    "score": 99.6,
     "axes": {
      "typeRungs": {
       "score": 97.5,
@@ -1042,22 +886,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 95,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 40
+      "score": 100,
+      "fails": [],
+      "total": 29
      },
      "edge390": {
       "score": 100,
@@ -1072,8 +903,8 @@
      }
     }
    },
-   "390:light": {
-    "score": 99.2,
+   "390:dark": {
+    "score": 100,
     "axes": {
      "typeRungs": {
       "score": 100,
@@ -1120,22 +951,9 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 95,
-      "fails": [
-       {
-        "text": "تخطَّ إلى المحتوى الرئيس",
-        "ratio": 3.76,
-        "color": "rgb(255, 255, 255)",
-        "bg": "rgb(250, 54, 0)"
-       },
-       {
-        "text": "2",
-        "ratio": 1.98,
-        "color": "rgb(25, 25, 24)",
-        "bg": "rgb(140, 35, 10)"
-       }
-      ],
-      "total": 40
+      "score": 100,
+      "fails": [],
+      "total": 29
      },
      "edge390": {
       "score": 100,
