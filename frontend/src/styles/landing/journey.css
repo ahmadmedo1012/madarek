@@ -42,7 +42,7 @@ section.chapters {
 
   --jt-t-art: 0.4s; /* measured — heron home-map band art tween */
   --jt-e-art: ease; /* measured — heron home-map band art tween */
-  --jt-cap: #B4B4B0; /* color-gate: allow — the measured Heron caption ink (rgb(180,180,176)); the dark twin re-points at the dark ramp's readable caption seat */
+  --jt-cap: var(--neutral-400); /* R342-11 — the measured Heron caption ink (rgb(180,180,176)) rides the palette scale's own rung (light --neutral-400 IS #B4B4B0, tokens.generated.css); the dark twin re-points at the dark ramp's readable caption seat. The css rawHex ratchet stays at its frozen baseline — the two plan-artifact hexes below are the tokens' own documented unavoidable class (theme-pinned values var() cannot express) */
 }
 
 
