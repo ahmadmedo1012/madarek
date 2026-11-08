@@ -184,6 +184,12 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                      * word/line level (English↔Arabic char runs differ). */
                     charCounts={HERON_CHAR_COUNTS}
                     charSpec={(gi: number, ci: number) => `intro.wchar.${gi + 1}.${ci + 1}`}
+                    /* R343 A-I1: the ink-roll twin census — the reference's
+                     * split-text tween parks a second masked word copy per
+                     * word (its recorded word-wrapper windows); the twin
+                     * rides the same scrub and binds those windows
+                     * explicitly (mapping/home-intro-wrap-A-I1.json). */
+                    twinSpec={(gi: number) => `intro.wtwin.${gi + 1}`}
                     renderLine={(line: ReactNode, key: string, index: number) => (
                       /* the reference's own line nest: line group > line box
                        * > mask wrapper > word cells — one full-width box per
