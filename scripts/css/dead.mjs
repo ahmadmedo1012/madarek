@@ -82,6 +82,16 @@ try {
 
 /* ── args ─────────────────────────────────────────────────────────── */
 const arg = (n, d) => (process.argv.indexOf(`--${n}`) > 0 ? process.argv[process.argv.indexOf(`--${n}`) + 1] : d);
+/* --help/-h — print the header usage and exit 0. D1b fix: before this,
+ * `--help` was an unknown arg (silently ignored) and the tool started
+ * the FULL default crawl against whatever answered on the default URL —
+ * a footgun measured the hard way. */
+if (process.argv.includes("--help") || process.argv.includes("-h")) {
+  const header = fs.readFileSync(path.join(__dirname, "dead.mjs"), "utf8").match(/\/\*\*[\s\S]*?\*\//)?.[0] ?? "(no header)";
+  console.log(header.replace(/^\/\*\*?\n?/, "").replace(/\*\/\s*$/, "").replace(/^ \* ?/gm, "").trim());
+  console.log(`\ndefaults: --bps 390,1440 · --themes light,dark · --url http://localhost:5173/ · --routes <D1 subset> · --out docs/redesign/r343/css-dead/`);
+  process.exit(0);
+}
 const URL_BASE = (arg("url", "http://localhost:5173/") ?? "").replace(/\/$/, "");
 const BPS = (arg("bps", "390,1440") ?? "").split(",").map((b) => Number(b.trim())).filter(Boolean);
 const THEMES = (arg("themes", "light,dark") ?? "").split(",").map((t) => t.trim()).filter((t) => t === "light" || t === "dark");
