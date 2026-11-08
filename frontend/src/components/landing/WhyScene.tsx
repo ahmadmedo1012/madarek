@@ -22,6 +22,7 @@
  * gsap; reveal engine drives the intro, Lenis stays).
  */
 import { useSheetScroll } from '../../lib/motion/useSheetScroll';
+import { RevealCssClass } from '../../hooks/useReveal';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
@@ -226,6 +227,53 @@ function Marker({ y, ds }: { y: string; ds: string }) {
   );
 }
 
+/**
+ * R342-05 — the cycle overview figure (ASSET-CONTRACT §3.5, published
+ * by R342-01): the whole learning cycle as one original architectural
+ * ink piece — the conceptual anchor closing the gallery. The product
+ * PROOF stays in the deck above; this seat explains the progression.
+ * Theme twins per the contract's -light/-dark naming law. The figure
+ * renders only while at least one twin resolves — until R342-01
+ * lands the why/ files the section renders exactly as before
+ * (contract §2: filenames stable once published). No data-spec: the
+ * frozen spec has no counterpart for this seat, so it is never
+ * bound — authored chrome, off-book by design.
+ */
+function CycleFigure() {
+  const [missing, setMissing] = useState({ light: false, dark: false });
+  if (missing.light && missing.dark) return null;
+  /* a missing twin can arrive as a REAL 404 (error) or as the dev
+   * server's SPA fallback — 200 text/html, which completes the load
+   * with naturalWidth 0. Both routes must hide the twin. */
+  const settle = (key: 'light' | 'dark') => (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const broken = e.type === 'error' || e.currentTarget.naturalWidth === 0;
+    if (broken) setMissing((m) => (m[key] ? m : { ...m, [key]: true }));
+  };
+  return (
+    <figure className="wy-cycle">
+      <RevealCssClass as="div" className="wy-cycle-frame reveal-fade" delay={1}>
+        <img
+          className="wy-cycle-img is-light"
+          src="/media/illustrations/r342/why/why-cycle-light.webp"
+          alt="دورة المنصّة من اليمين إلى اليسار: مرصد التعلّم، جدار الفجوات، ممر التدريب، وسلّم التقدّم الصاعد"
+          loading="lazy"
+          onError={settle('light')}
+          onLoad={settle('light')}
+        />
+        <img
+          className="wy-cycle-img is-dark"
+          src="/media/illustrations/r342/why/why-cycle-dark.webp"
+          alt=""
+          loading="lazy"
+          onError={settle('dark')}
+          onLoad={settle('dark')}
+        />
+      </RevealCssClass>
+      <figcaption className="wy-cycle-cap">دورة مدارك في لوحة واحدة — من المشاهدة إلى الإتقان</figcaption>
+    </figure>
+  );
+}
+
 export function WhyScene() {
   const stageRef = useRef<HTMLDivElement>(null);
   /* L1-a (r341) — the ≤767 deck belt: .wy-track IS the snap scroller
@@ -296,6 +344,7 @@ export function WhyScene() {
   const lecture2xSrc = lectureShot2x;
 
   return (
+    <>
     <div className="wy-stage" data-spec="why.stage" ref={stageRef} data-wy-stage="0">
       <div className="wy-axis" aria-hidden="true" data-spec="why.axis" />
       <div className="wy-stage-in" data-spec="why.stagein">
@@ -522,5 +571,9 @@ export function WhyScene() {
         </button>
       </div>
     </div>
+    {/* the cycle overview — closes the gallery with the whole learning
+     * progression in one architectural piece (ASSET-CONTRACT §3.5). */}
+    <CycleFigure />
+    </>
   );
 }

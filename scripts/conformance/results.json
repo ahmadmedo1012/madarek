@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-07T23:58:12.513Z",
+ "generatedAt": "2026-11-08T00:06:46.032Z",
  "engine": "chromium",
  "url": "http://localhost:5305",
  "specDir": "/home/z/wt/r342-why/docs/redesign/r335/heron-spec",
@@ -48,36 +48,6 @@
   "unmatchedOmitted": 0,
   "skippedOmitted": 236,
   "totalSkipped": 1968,
-  "darkInkOmitted": 0,
-  "dark": {
-   "pass": 3247,
-   "fail": 174,
-   "passRate": 94.9,
-   "contrastChecked": 8,
-   "contrastSkippedReported": 0,
-   "contrastFloor": 3,
-   "theme": "dark",
-   "settle": [
-    {
-     "bp": "1440",
-     "settled": true,
-     "frames": 3
-    },
-    {
-     "bp": "390",
-     "settled": true,
-     "frames": 3
-    }
-   ],
-   "darkInk": {
-    "fail": 0,
-    "checked": 8,
-    "skipped": 0,
-    "floor": 4.5,
-    "note": "r339 T-02b: EVERY text-bearing node (not only spec-paired) at WCAG AA ≥4.5:1 vs composited effective background; worst 50 in results.darkInkReport; counted separately from the paired-contrast totals"
-   },
-   "note": "spec is light-only: geometry/type re-asserted on the dark DOM; color group = token-flip census + contrast floor vs COMPOSITED effective background (rgba/oklch inks alpha-blended; uncountable pairs reported as skips)"
-  },
   "edge390": {
    "fails": 0,
    "tolerance": "±2px vs the spec's recorded 390 section-root gutter",
@@ -98,22 +68,7 @@
     "unmatched": 3,
     "excused": 146,
     "skipped": 952,
-    "missing": null,
-    "dark": {
-     "pass": 1591,
-     "fail": 88,
-     "flips": 201,
-     "contrastChecked": 4,
-     "contrastSkipped": 198,
-     "contrastReported": 0,
-     "themeApplied": true,
-     "darkInk": {
-      "fail": 0,
-      "checked": 4,
-      "skipped": 0,
-      "floor": 4.5
-     }
-    }
+    "missing": null
    },
    "1440": {
     "passRate": 95.2,
@@ -127,22 +82,7 @@
     "unmatched": 3,
     "excused": 106,
     "skipped": 1016,
-    "missing": null,
-    "dark": {
-     "pass": 1656,
-     "fail": 86,
-     "flips": 210,
-     "contrastChecked": 4,
-     "contrastSkipped": 207,
-     "contrastReported": 0,
-     "themeApplied": true,
-     "darkInk": {
-      "fail": 0,
-      "checked": 4,
-      "skipped": 0,
-      "floor": 4.5
-     }
-    }
+    "missing": null
    }
   }
  },
@@ -171,44 +111,11 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3]",
-   "mode": "dark",
-   "expected": 631,
-   "actual": -9656,
-   "delta": 10287
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3] > div[2]",
-   "mode": "dark",
-   "expected": 631,
-   "actual": -9656,
-   "delta": 10287
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "390",
    "kind": "h",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 0,
-   "actual": 2578,
-   "delta": 2578
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[1]",
-   "mode": "dark",
    "expected": 0,
    "actual": 2578,
    "delta": 2578
@@ -236,33 +143,11 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[7]",
-   "mode": "dark",
-   "expected": 104,
-   "actual": 1792,
-   "delta": 1687.5
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1440",
    "kind": "y",
    "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 631,
-   "actual": 2262,
-   "delta": 1631
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[15]",
-   "mode": "dark",
    "expected": 631,
    "actual": 2262,
    "delta": 1631
@@ -281,32 +166,10 @@
   {
    "section": "home-why-wrap",
    "bp": "1440",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[6]",
-   "mode": "dark",
-   "expected": 510,
-   "actual": 2055,
-   "delta": 1545
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
    "kind": "w",
    "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 1373,
-   "actual": 0,
-   "delta": 1373
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[1] > div[2] > div[1]",
-   "mode": "dark",
    "expected": 1373,
    "actual": 0,
    "delta": 1373
@@ -325,17 +188,6 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[7]",
-   "mode": "dark",
-   "expected": 508,
-   "actual": 1784,
-   "delta": 1276
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
    "oursSelector": "#hm:div.none",
@@ -347,32 +199,10 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[4] > div[2] > div[4]",
-   "mode": "dark",
-   "expected": 49,
-   "actual": 1130,
-   "delta": 1081
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "y",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 500,
-   "actual": 1569,
-   "delta": 1069
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[4] > div[2] > div[4]",
-   "mode": "dark",
    "expected": 500,
    "actual": 1569,
    "delta": 1069
@@ -392,28 +222,6 @@
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > img[1]",
-   "mode": "dark",
-   "expected": 361,
-   "actual": 1398,
-   "delta": 1037
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 361,
-   "actual": 1386,
-   "delta": 1025
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
@@ -425,31 +233,9 @@
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 374,
-   "actual": 1386,
-   "delta": 1012
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 375,
-   "actual": 1384,
-   "delta": 1009.5
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
-   "mode": "dark",
    "expected": 375,
    "actual": 1384,
    "delta": 1009.5
@@ -469,17 +255,6 @@
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[3] > div[1]",
-   "mode": "dark",
-   "expected": 515,
-   "actual": 1406,
-   "delta": 891
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
    "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
@@ -491,31 +266,9 @@
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "y",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[1] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": -315,
-   "actual": 505,
-   "delta": 820
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 510,
-   "actual": 1319,
-   "delta": 809
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
    "expected": 510,
    "actual": 1319,
    "delta": 809
@@ -534,17 +287,6 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[4] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 16,
-   "actual": 756,
-   "delta": 740
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "y",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
    "oursSelector": "#hm:div.none",
@@ -556,32 +298,10 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[4] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 416,
-   "actual": 1141,
-   "delta": 725
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 49,
-   "actual": 756,
-   "delta": 707
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[3] > div[2] > div[1]",
-   "mode": "dark",
    "expected": 49,
    "actual": 756,
    "delta": 707
@@ -601,31 +321,9 @@
    "section": "home-why-wrap",
    "bp": "390",
    "kind": "y",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[3] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 500,
-   "actual": 1141,
-   "delta": 641
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "y",
    "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": -38,
-   "actual": 509,
-   "delta": 547
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
-   "mode": "dark",
    "expected": -38,
    "actual": 509,
    "delta": 547
@@ -655,28 +353,6 @@
   {
    "section": "home-why-wrap",
    "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3]",
-   "mode": "dark",
-   "expected": 202,
-   "actual": 726,
-   "delta": 524
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3] > div[2]",
-   "mode": "dark",
-   "expected": 202,
-   "actual": 726,
-   "delta": 524
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
    "kind": "y",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
    "oursSelector": "#hm:img.none",
@@ -689,42 +365,9 @@
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "y",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > img[1]",
-   "mode": "dark",
-   "expected": 631,
-   "actual": 1146,
-   "delta": 515
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 503,
-   "actual": 998,
-   "delta": 495
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > img[1]",
    "oursSelector": "#hm:img.none",
    "mode": "heuristic",
-   "expected": 503,
-   "actual": 992,
-   "delta": 489
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > img[1]",
-   "mode": "dark",
    "expected": 503,
    "actual": 992,
    "delta": 489
@@ -744,31 +387,9 @@
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "y",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 512,
-   "actual": 998,
-   "delta": 486
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 510,
-   "actual": 993,
-   "delta": 483
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
-   "mode": "dark",
    "expected": 510,
    "actual": 993,
    "delta": 483
@@ -787,32 +408,10 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 416,
-   "actual": 894,
-   "delta": 478
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "h",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 10,
-   "actual": 481,
-   "delta": 471
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[4] > div[2] > div[3]",
-   "mode": "dark",
    "expected": 10,
    "actual": 481,
    "delta": 471
@@ -835,28 +434,6 @@
    "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 4,
-   "actual": 464,
-   "delta": 460
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[3] > div[1]",
-   "mode": "dark",
-   "expected": 4,
-   "actual": 464,
-   "delta": 460
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[3] > div[1]",
-   "mode": "dark",
    "expected": 4,
    "actual": 464,
    "delta": 460
@@ -868,17 +445,6 @@
    "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > div[2] > div[1]",
    "oursSelector": "#hm:div.medium",
    "mode": "heuristic",
-   "expected": 716,
-   "actual": 261,
-   "delta": 455
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[1] > div[3] > div[3] > div[1]",
-   "mode": "dark",
    "expected": 716,
    "actual": 261,
    "delta": 455
@@ -919,17 +485,6 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": -38,
-   "actual": 372,
-   "delta": 410
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "h",
    "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
    "oursSelector": "#hm:div.none",
@@ -952,28 +507,6 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[3] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 75,
-   "actual": 481,
-   "delta": 406
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[4] > div[2] > div[4]",
-   "mode": "dark",
-   "expected": 75,
-   "actual": 481,
-   "delta": 406
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
    "oursSelector": "#hm:div.none",
@@ -986,31 +519,9 @@
    "section": "home-why-wrap",
    "bp": "390",
    "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 16,
-   "actual": 402,
-   "delta": 386
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 17,
-   "actual": 382,
-   "delta": 365.5
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[2] > div[1]",
-   "mode": "dark",
    "expected": 17,
    "actual": 382,
    "delta": 365.5
@@ -1041,28 +552,6 @@
    "section": "home-why-wrap",
    "bp": "390",
    "kind": "w",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[4] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 10,
-   "actual": 374,
-   "delta": 364
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3]",
-   "mode": "dark",
-   "expected": 10,
-   "actual": 374,
-   "delta": 364
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "w",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
@@ -1099,50 +588,6 @@
    "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 0,
-   "actual": 350,
-   "delta": 350
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 350,
-   "delta": 350
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 350,
-   "delta": 350
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "w",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 350,
-   "delta": 350
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "h",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
    "expected": 0,
    "actual": 350,
    "delta": 350
@@ -1165,28 +610,6 @@
    "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 5,
-   "actual": 350,
-   "delta": 345
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 5,
-   "actual": 350,
-   "delta": 345
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[2] > div[1]",
-   "mode": "dark",
    "expected": 5,
    "actual": 350,
    "delta": 345
@@ -1209,28 +632,6 @@
    "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": -38,
-   "actual": 302,
-   "delta": 340
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": -38,
-   "actual": 302,
-   "delta": 340
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
    "expected": -38,
    "actual": 302,
    "delta": 340
@@ -1259,17 +660,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[6]",
-   "mode": "dark",
-   "expected": 375,
-   "actual": 45,
-   "delta": 329.5
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "390",
    "kind": "y",
    "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
@@ -1281,33 +671,11 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 414,
-   "actual": 730,
-   "delta": 316
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1440",
    "kind": "w",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 13,
-   "actual": 323,
-   "delta": 310
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
    "expected": 13,
    "actual": 323,
    "delta": 310
@@ -1319,17 +687,6 @@
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
    "oursSelector": "#hm:img.none",
    "mode": "heuristic",
-   "expected": 202,
-   "actual": 468,
-   "delta": 266
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > img[1]",
-   "mode": "dark",
    "expected": 202,
    "actual": 468,
    "delta": 266
@@ -1393,31 +750,9 @@
    "section": "home-why-wrap",
    "bp": "390",
    "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[3] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3] > div[2]",
-   "mode": "dark",
-   "expected": 509,
-   "actual": 760,
-   "delta": 251
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "y",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 508,
-   "actual": 755,
-   "delta": 247
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3]",
-   "mode": "dark",
    "expected": 508,
    "actual": 755,
    "delta": 247
@@ -1440,28 +775,6 @@
    "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 136,
-   "actual": 374,
-   "delta": 238
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[3] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 136,
-   "actual": 374,
-   "delta": 238
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[4] > div[2] > div[4]",
-   "mode": "dark",
    "expected": 136,
    "actual": 374,
    "delta": 238
@@ -1491,17 +804,6 @@
   {
    "section": "home-why-wrap",
    "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > img[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 212,
-   "delta": 212
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
    "kind": "bg",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
    "oursSelector": "#hm:div.none",
@@ -1524,17 +826,6 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[3] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3] > div[2]",
-   "mode": "dark",
-   "expected": 7,
-   "actual": 207,
-   "delta": 200
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
    "oursSelector": "#hm:div.none",
@@ -1556,28 +847,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 203,
-   "actual": 8,
-   "delta": 195
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 203,
-   "actual": 8,
-   "delta": 195
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1440",
    "kind": "h",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
@@ -1590,32 +859,10 @@
   {
    "section": "home-why-wrap",
    "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 13,
-   "actual": 199,
-   "delta": 186
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
    "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 291,
-   "actual": 108,
-   "delta": 183
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[15]",
-   "mode": "dark",
    "expected": 291,
    "actual": 108,
    "delta": 183
@@ -1635,31 +882,9 @@
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "h",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > img[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 180,
-   "delta": 180
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > img[1]",
    "oursSelector": "#hm:img.none",
    "mode": "heuristic",
-   "expected": 0,
-   "actual": 133,
-   "delta": 133
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > img[1]",
-   "mode": "dark",
    "expected": 0,
    "actual": 133,
    "delta": 133
@@ -1671,17 +896,6 @@
    "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 7,
-   "actual": 127,
-   "delta": 120.5
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[1] > div[2] > div[1]",
-   "mode": "dark",
    "expected": 7,
    "actual": 127,
    "delta": 120.5
@@ -1710,17 +924,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "borderRadius",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 99,
-   "delta": 99
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "390",
    "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[1]",
@@ -1745,42 +948,9 @@
    "section": "home-why-wrap",
    "bp": "390",
    "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3]",
-   "mode": "dark",
-   "expected": 104,
-   "actual": 8,
-   "delta": 96
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[3] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3] > div[2]",
-   "mode": "dark",
-   "expected": 105,
-   "actual": 9,
-   "delta": 96
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
    "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 203,
-   "actual": 120,
-   "delta": 83
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
-   "mode": "dark",
    "expected": 203,
    "actual": 120,
    "delta": 83
@@ -1799,32 +969,10 @@
   {
    "section": "home-why-wrap",
    "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[1] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": 79,
-   "delta": 78
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
    "kind": "w",
    "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 180,
-   "actual": 114,
-   "delta": 66
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[15]",
-   "mode": "dark",
    "expected": 180,
    "actual": 114,
    "delta": 66
@@ -1843,32 +991,10 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[1] > div[3] > div[3] > div[1]",
-   "mode": "dark",
-   "expected": 318,
-   "actual": 374,
-   "delta": 56
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "h",
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 10,
-   "actual": 52,
-   "delta": 42
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3]",
-   "mode": "dark",
    "expected": 10,
    "actual": 52,
    "delta": 42
@@ -1913,50 +1039,6 @@
    "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": "0.4s/ease",
-   "actual": "0s/none",
-   "delta": 41
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "transition",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": "0.4s/ease",
-   "actual": "0s/none",
-   "delta": 41
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "transition",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[6]",
-   "mode": "dark",
-   "expected": "0.4s/ease",
-   "actual": "0s/none",
-   "delta": 41
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "transition",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": "0.4s/ease",
-   "actual": "0s/none",
-   "delta": 41
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "transition",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
    "expected": "0.4s/ease",
    "actual": "0s/none",
    "delta": 41
@@ -2008,65 +1090,10 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "transition",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[2]",
-   "mode": "dark",
-   "expected": "0.4s/ease",
-   "actual": "0s/none",
-   "delta": 41
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "transition",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[3]",
-   "mode": "dark",
-   "expected": "0.4s/ease",
-   "actual": "0s/none",
-   "delta": 41
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "transition",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": "0.4s/ease",
-   "actual": "0s/none",
-   "delta": 41
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "transition",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3]",
-   "mode": "dark",
-   "expected": "0.4s/ease",
-   "actual": "0s/none",
-   "delta": 41
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "h",
    "heronPath": "home-why-wrap > div[1] > div[1] > div[3] > div[3] > div[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 7,
-   "actual": 43,
-   "delta": 36
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[3] > div[3] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3] > div[2]",
-   "mode": "dark",
    "expected": 7,
    "actual": 43,
    "delta": 36
@@ -2085,32 +1112,10 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 203,
-   "actual": 175,
-   "delta": 28
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "w",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 0,
-   "actual": 8,
-   "delta": 8
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[1]",
-   "mode": "dark",
    "expected": 0,
    "actual": 8,
    "delta": 8
@@ -2122,17 +1127,6 @@
    "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > div[2] > div[1]",
    "oursSelector": "#hm:div.medium",
    "mode": "heuristic",
-   "expected": 21.44,
-   "actual": 19.37,
-   "delta": 2.07
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "lineHeight",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[1] > div[3] > div[3] > div[1]",
-   "mode": "dark",
    "expected": 21.44,
    "actual": 19.37,
    "delta": 2.07
@@ -2612,479 +1606,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[1] > section[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2]",
-   "mode": "dark",
-   "expected": "section",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[2]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": 0,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": 0,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[2] > div[2] > div[2]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[3] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[6]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[4] > div[1]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[5]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[9] > div[3]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[3]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[5]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[1] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[11]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": 0,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[2]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": 0,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": 0,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[4]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[3] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[4]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[3] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[5]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[5] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[5]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[5] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[6]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[7] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[6]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[7] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[7]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[9] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[7]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[9] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[8]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[11] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[8]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[11] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[9]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[13] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[9]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[13] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[6]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[6]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[3] > div[2]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[14] > div[1] > svg[1] > g[1] > path[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "390",
    "kind": "tag",
    "heronPath": "home-why-wrap > div[1] > section[1]",
@@ -3427,314 +1948,6 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[1] > section[1]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2]",
-   "mode": "dark",
-   "expected": "section",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": 0,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[2]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": 0,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": 0,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[2]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": 0,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[3] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[1] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[1] > div[2] > div[2]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[6]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[6]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[2]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[9]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[9] > div[2]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[14] > div[1]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[1] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[4]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[2]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": 0,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "tag",
-   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[1] > img[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[12]",
-   "mode": "dark",
-   "expected": "img",
-   "actual": "div",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[13]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[6] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[4]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[8] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[5]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[10] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[6]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[12] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[7]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[15] > div[1]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[4] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 0,
-   "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "border",
-   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[4] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 1,
-   "actual": "none",
-   "delta": 1
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
    "kind": "opacity",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
    "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[6]",
@@ -3758,42 +1971,9 @@
    "section": "home-why-wrap",
    "bp": "390",
    "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[6]",
-   "mode": "dark",
-   "expected": 0.00675,
-   "actual": 1,
-   "delta": 0.99
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[10]",
-   "mode": "dark",
-   "expected": 0.006,
-   "actual": 1,
-   "delta": 0.99
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
    "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[1]",
    "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[3]",
    "mode": "explicit",
-   "expected": 0.953916,
-   "actual": 0,
-   "delta": 0.95
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[3]",
-   "mode": "dark",
    "expected": 0.953916,
    "actual": 0,
    "delta": 0.95
@@ -3811,33 +1991,11 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0.25,
-   "actual": 1,
-   "delta": 0.75
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "390",
    "kind": "opacity",
    "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[3]",
    "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[3] > div[1] > div[1]",
    "mode": "explicit",
-   "expected": 0.25,
-   "actual": 1,
-   "delta": 0.75
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[3]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[3] > div[1] > div[1]",
-   "mode": "dark",
    "expected": 0.25,
    "actual": 1,
    "delta": 0.75
@@ -3857,31 +2015,9 @@
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[8]",
-   "mode": "dark",
-   "expected": 0.284177,
-   "actual": 1,
-   "delta": 0.72
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
    "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[2]",
    "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[1]",
    "mode": "explicit",
-   "expected": 0.338344,
-   "actual": 1,
-   "delta": 0.66
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[1]",
-   "mode": "dark",
    "expected": 0.338344,
    "actual": 1,
    "delta": 0.66
@@ -3893,17 +2029,6 @@
    "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[2]",
    "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[2] > div[3] > div[1]",
    "mode": "explicit",
-   "expected": 0.363641,
-   "actual": 1,
-   "delta": 0.64
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[2] > div[3] > div[1]",
-   "mode": "dark",
    "expected": 0.363641,
    "actual": 1,
    "delta": 0.64
@@ -3934,42 +2059,9 @@
    "section": "home-why-wrap",
    "bp": "390",
    "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[2] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 0.50675,
-   "actual": 1,
-   "delta": 0.49
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[2] > div[2] > div[2]",
-   "mode": "dark",
-   "expected": 0.507384,
-   "actual": 1,
-   "delta": 0.49
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
    "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[2]",
    "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[3]",
    "mode": "explicit",
-   "expected": 0.676677,
-   "actual": 1,
-   "delta": 0.32
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[3]",
-   "mode": "dark",
    "expected": 0.676677,
    "actual": 1,
    "delta": 0.32
@@ -4009,39 +2101,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[2]",
-   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[3]",
-   "mode": "dark",
-   "expected": 0.72,
-   "actual": 1,
-   "delta": 0.28
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": 0.72,
-   "actual": 1,
-   "delta": 0.28
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[2] > div[3] > div[1]",
-   "mode": "dark",
-   "expected": 0.72,
-   "actual": 1,
-   "delta": 0.28
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "390",
    "kind": "opacity",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[2]",
@@ -4069,39 +2128,6 @@
    "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[2]",
    "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[7] > div[2]",
    "mode": "explicit",
-   "expected": 0.72,
-   "actual": 1,
-   "delta": 0.28
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 0.72,
-   "actual": 1,
-   "delta": 0.28
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[1]",
-   "mode": "dark",
-   "expected": 0.72,
-   "actual": 1,
-   "delta": 0.28
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "opacity",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[2]",
-   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[7] > div[2]",
-   "mode": "dark",
    "expected": 0.72,
    "actual": 1,
    "delta": 0.28
@@ -8280,13 +6306,13 @@
   }
  },
  "provenance": {
-  "file": "chromium-20261107-235837-sections-home-why-wrap.bp-1440+390.json",
+  "file": "chromium-20261108-000708-sections-home-why-wrap.bp-1440+390.json",
   "scope": "sections-home-why-wrap.bp-1440+390",
   "fullMatrix": false,
   "sections": "1/10",
   "bps": "2/5",
   "engine": "chromium",
-  "dark": true,
+  "dark": false,
   "gate": false,
   "url": "http://localhost:5305"
  }

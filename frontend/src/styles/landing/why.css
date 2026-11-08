@@ -1446,4 +1446,60 @@
   }
 }
 
+/* ── R342-05 — the cycle overview figure (ASSET-CONTRACT §3.5). The
+   conceptual close: the whole learning progression as one original
+   architectural ink piece, framed in the sheet's hairline grammar.
+   Theme twins swap on the html[data-theme] flip; the seat renders
+   only while a twin resolves (see CycleFigure in WhyScene). ── */
+.wy-cycle {
+  margin-block-start: 7.2rem;
+  margin-inline: auto;
+  inline-size: min(120rem, calc(100% - 6.24rem));
+  padding-block-end: 8.4rem;
+}
+
+.wy-cycle-frame {
+  position: relative;
+  border: 0.12rem solid var(--rule);
+  border-radius: var(--r-sm, 0.24rem);
+  background: var(--bg);
+  overflow: hidden;
+  /* grid-stack: BOTH twins occupy the same cell so both always load
+     (a display:none lazy twin would never fetch in the other theme —
+     the load-guard in CycleFigure would never settle for it). */
+  display: grid;
+}
+
+.wy-cycle-img {
+  grid-area: 1 / 1;
+  inline-size: 100%;
+  block-size: auto;
+  display: block;
+}
+
+.wy-cycle-img.is-dark { visibility: hidden; }
+
+[data-theme="dark"] .wy-cycle-img.is-light { visibility: hidden; }
+[data-theme="dark"] .wy-cycle-img.is-dark { visibility: visible; }
+
+.wy-cycle-cap {
+  margin-block-start: 1.68rem;
+  font-size: var(--fs-mono-md);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--text-faint);
+  text-align: center;
+}
+
+/* ≤767 — the figure rides the deck belt's tail: full-width minus the
+   section's own 8px root margin (the phone sheet seat), tighter tail */
+@media (max-width: 767px) {
+  .wy-cycle {
+    margin-block-start: 4.32rem;
+    inline-size: calc(100% - 2.4rem);
+    padding-block-end: 5.28rem;
+  }
+}
+
 /* R342A-END */
