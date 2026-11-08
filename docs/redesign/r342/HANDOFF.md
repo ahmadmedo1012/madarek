@@ -6,9 +6,9 @@ round-report commit, one PR open against `main` @ `620a31ec`.
 
 ## Final PR link
 
-- <https://github.com/ahmadmedo1012/madarek/pull/1> — «R342: integrate redesign
-  workstreams and close release quality gates» (fill/verify the number on open; the
-  link is the round's single final PR against main).
+- **<https://github.com/ahmadmedo1012/madarek/pull/45>** — «R342: integrate redesign
+  workstreams and close release quality gates» (the round's single final PR against
+  main; head `wip/r342-integration`).
 
 ## Final integration SHA
 
