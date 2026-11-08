@@ -22,6 +22,11 @@
       "reason": "office hours accredited by the administration inside the finance-office card (R320 KEEP)"
     },
     {
+      "file": "scripts/conformance/pages-student-results.json",
+      "phrase": "الإدارة الماليّة",
+      "reason": "R342-08's per-page measurement PROVENANCE — captured DOM text of the same R320-kept finance-office copy in PaymentPage.tsx («إعلانات الإدارة الماليّة» SectionBar + contact card, measured at 2 breakpoints); the capture mirrors the kept live copy, it is not live copy itself"
+    },
+    {
       "file": "backend/src/lib/__tests__/roleLabels.test.ts",
       "phrase": "",
       "reason": "the rename BELT itself — its regex and test names necessarily name the retired label to forbid it"
