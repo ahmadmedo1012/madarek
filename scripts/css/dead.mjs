@@ -469,8 +469,12 @@ const crawlCells = [];
 const crawlErrors = [];
 let coverageEntries = 0;
 
+/* D1b honesty fix: the transport is needed for EVERY crawl — public
+ * cells run as guests on the SAME hermetic table, so data-dependent
+ * public surfaces (/colleges) render their DESIGNED state, not the
+ * no-backend ErrorState (an error sheet would brand live CSS dead). */
+const { installMockApi, seedSession, STUDENT_USER } = await ensureTransport();
 const NEED_STUDENT = CRAWL.groups.some((g) => g.auth === "student");
-const { installMockApi, seedSession, STUDENT_USER } = NEED_STUDENT ? await ensureTransport() : {};
 
 /* the D7a seeded session (pages-authed.mjs, byte-equal): STUDENT_USER +
  * the institution context the institution-scoped queries key on. */
@@ -501,6 +505,10 @@ async function crawlCell(browser, group, route, bp, theme) {
       await installMockApi(context, { sessionUser: STUDENT_USER, overrides: D7A_OVERRIDES });
       await seedSession(context, seededUser, { token: "e2e-token-student", theme: theme === "dark" ? "dark" : undefined });
     } else {
+      /* guest + the hermetic public table (colleges/faculties fixtures):
+       * /auth/me answers 401 — a real guest — while public data surfaces
+       * still render their designed (fixture) state. */
+      await installMockApi(context, { sessionUser: null });
       await seedSession(context, null, { theme: theme === "dark" ? "dark" : undefined });
     }
     const page = await context.newPage();
@@ -708,6 +716,7 @@ L.push(`## Baseline honesty — READ FIRST`);
 L.push(`- Crawl = ${CRAWL.groups.map((g) => `${g.routes.length} ${g.name}`).join(" + ")} routes × bps {${BPS.join("/")}} × themes {${THEMES.join("/")}} = ${crawlCells.length} cells (student surfaces seeded via the D7a e2e transport).`);
 L.push(`- This ran on the D1 WORKTREE (wip/r343-D1): parallel R343 branches add CSS concurrently — the authoritative baseline is the post-merge full-matrix re-run.`);
 L.push(`- admin/teacher/owner/quality surfaces were NOT crawled (their fixture corpora live inside the per-role harness scripts) — their selectors are counted \`notCrawled\` (${notCrawled.length}), never dead.`);
+L.push(`- ALL cells run on the D7a hermetic e2e transport (public cells as guests: /auth/me answers 401; public data surfaces get the fixture table — /colleges renders its designed state, never the no-backend ErrorState).`);
 L.push(`- Playwright CSS coverage cannot see Vite-dev's injected <style> tags — the live set is harvested from document.styleSheets (data-vite-dev-id attribution) after a scroll+hover pass; coverage entries: ${coverageEntries}.`);
 L.push(``);
 L.push(`## Totals (frontend/src/styles — ${files.length} files)`);
@@ -723,15 +732,19 @@ L.push(`|---|---|---|---|---|`);
 for (const [f, v] of top20) L.push(`| ${f} | ${v.selectors} | ${v.dead} | ${pct(v.dead, v.selectors)}% | ${v.important} |`);
 L.push(``);
 L.push(`## All files with dead>0 (${deadFiles.length} files; per-selector detail in report.json)`);
-for (let i = 0; i < deadFiles.length; i += 2) {
-  const a = deadFiles[i], b = deadFiles[i + 1];
-  L.push(`- \`${a[0]}\` ${a[1].dead}/${a[1].selectors}${b ? ` · \`${b[0]}\` ${b[1].dead}/${b[1].selectors}` : ""}`);
+for (let i = 0; i < deadFiles.length; i += 3) {
+  const row = deadFiles.slice(i, i + 3).map(([f, v]) => `\`${f}\` ${v.dead}/${v.selectors}`);
+  L.push(`- ${row.join(" · ")}`);
 }
 L.push(``);
-L.push(`## Notable concentrations (top single-file work-lists)`);
-for (const [f] of top20.slice(0, 5)) {
-  const tops = neverMatched.filter((s) => s.file === f).slice(0, 3).map((s) => s.selector.slice(0, 46));
-  L.push(`- ${f}: e.g. ${tops.map((s) => `\`${s}\``).join(" · ")}`);
+L.push(`## \`!important\` map — ${t.important} declarations (full file:line in report.json)`);
+{
+  const byFile = new Map();
+  for (const e of importantAll) {
+    if (!byFile.has(e.file)) byFile.set(e.file, []);
+    byFile.get(e.file).push(e.line);
+  }
+  for (const [f, lines] of byFile) L.push(`- ${f.replace("frontend/src/styles/", "")} ×${lines.length} — L${lines.join(", L")}`);
 }
 L.push(``);
 L.push(`## Duplicate/shadow findings (cross-file order = crawl sheet order)`);
