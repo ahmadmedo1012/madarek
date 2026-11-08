@@ -39,6 +39,7 @@
 import { Fragment, type ReactNode, type RefObject } from 'react';
 import { Link } from 'react-router-dom';
 import { ScrubReveal } from '../journey/WordReveal';
+import { UniversityCard } from '../../media/UniversityCard';
 
 /* ── The statement (the scrub manifesto). Same voice/length class as
  * the reference's 127-char intro statement; honest — the four clauses
@@ -96,13 +97,16 @@ const CRAWL_CAPTURES = [
   'garyounis-classic',
 ] as const;
 
-/* The media cell's tonal image — the R307 rail capture of the
- * documented Benghazi campus (manifest.json uob-garden). */
-const MEDIA_IMG = {
-  src: '/media/universities/uob-garden-1600.webp',
-  alt: 'جادة حديقة جامعة بنغازي المكسوّة بأشجار النخيل',
-  width: 1600,
-  height: 352,
+/* The media cell's art — R343 C-1: the retired Commons photograph is
+ * replaced by the R342 ORIGINAL courtyard illustration (ASSET-CONTRACT
+ * §3.2: 1200×1200 light/dark twins, the informative alt is the
+ * contract's own wording). */
+const MEDIA_ART = {
+  light: '/media/illustrations/r342/statement/statement-courtyard-light.webp',
+  dark: '/media/illustrations/r342/statement/statement-courtyard-dark.webp',
+  alt: 'المقطع المعماري لقلب الحرم الجامعي: فناء داخلي تُحيط به أروقة مقوسة وفي مركزه شجرة المعرفة — رسم حبر أصلي لمنصّة مدارك',
+  width: 1200,
+  height: 1200,
 } as const;
 
 /** One arrow glyph — the census nest (svg > path), shared by the pill
@@ -131,44 +135,37 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
     <div id="statement" className="st-section" ref={sectionRef as RefObject<HTMLDivElement>} aria-labelledby="statement-title" data-spec="intro.wrap">
       <section className="st-band" aria-hidden="false" data-spec="intro.section">
         <div className="st-grid" data-spec="intro.grid">
-          {/* ── the media cell — the tonal image fills it edge to edge;
-              its aspect drives the band at every breakpoint (square at
-              768/390, full band height on desktop). The census nest:
-              media > mediain > [mediainner > img · tonesvg]. The veil is
-              a transparent-background svg (the reference's own filtered
-              image records bg rgba(0,0,0,0) — the tone rides the svg's
-              own rect, never a css background-color). */}
+          {/* ── the media cell — R343 C-1: the ORIGINAL courtyard
+              illustration fills it edge to edge (light/dark twins, the
+              ASSET-CONTRACT §3.2 seat); its aspect drives the band at
+              every breakpoint (square at 768/390, full band height on
+              desktop). The census nest: media > mediain > mediainner >
+              img — the photo veil is retired with the photograph (a
+              line drawing carries its own tone). */}
           <div className="st-media" data-spec="intro.media">
             <div className="st-media-in" data-spec="intro.mediain">
               <div className="st-media-inner" data-spec="intro.mediainner">
                 <img
-                  src={MEDIA_IMG.src}
-                  alt={MEDIA_IMG.alt}
+                  className="st-media-img is-light"
+                  src={MEDIA_ART.light}
+                  alt={MEDIA_ART.alt}
                   loading="lazy"
                   decoding="async"
-                  width={MEDIA_IMG.width}
-                  height={MEDIA_IMG.height}
-                  className="st-media-img"
+                  width={MEDIA_ART.width}
+                  height={MEDIA_ART.height}
                   data-spec="intro.mediaimg"
                 />
-              </div>
-              <svg className="st-media-tone" aria-hidden="true" data-spec="intro.mediasvg">
-                {/* R343 A-I2 — the reference's own tonal mechanism: its
-                    veil svg carries the staged duplicate as a filtered
-                    IMAGE layer (spec: svg[1] > image[3]), not a flat
-                    fill — the photo itself, grayscaled, is the tone. */}
-                <image
-                  className="st-media-tone-img"
-                  href={MEDIA_IMG.src}
-                  x="0"
-                  y="0"
-                  width="100%"
-                  height="100%"
-                  preserveAspectRatio="xMidYMid slice"
-                  data-spec="intro.mediatoneimg"
+                <img
+                  className="st-media-img is-dark"
+                  src={MEDIA_ART.dark}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                  width={MEDIA_ART.width}
+                  height={MEDIA_ART.height}
                 />
-                <rect className="st-media-tone-rect" x="0" y="0" width="100%" height="100%" />
-              </svg>
+              </div>
             </div>
           </div>
 
@@ -288,41 +285,26 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
               </div>
               <div className="st-crawl" data-spec="intro.crawl" aria-label="جامعات ليبية موثّقة في الوسائط">
                 <div className="st-crawl-in" data-spec="intro.crawlin">
-                  {/* the seamless-loop track — a span: the duplicate copy
-                      is our own plumbing, off the pairable census */}
+                  {/* R343 C-1 — the seamless-loop track: the retired photo
+                      crops become the ORIGINAL typographic cards (the same
+                      shared geometry the campus gallery renders; type, not
+                      photos). The duplicate copy is our own plumbing (span
+                      seats off the pairable census, per the r338 law). */}
                   <span className="st-crawl-track">
                     {DOCUMENTED_UNIVERSITIES.map((u, i) => (
                       <Fragment key={u}>
                         <div className="st-crawl-cell" data-spec={`intro.cell.${i + 1}`}>
-                          <div className="st-crawl-logo" data-spec={`intro.celllogo.${i + 1}`}>
-                            <img
-                              src={`/media/renders/crop-${CRAWL_CAPTURES[i]}-640.webp`}
-                              alt=""
-                              loading="lazy"
-                              decoding="async"
-                              width={640}
-                              height={320}
-                              data-spec={`intro.cellimg.${i + 1}`}
-                            />
+                          <div className="st-crawl-card" data-spec={`intro.celllogo.${i + 1}`}>
+                            <UniversityCard id={CRAWL_CAPTURES[i] ?? CRAWL_CAPTURES[0]!} alt={`${u} — بطاقة تخطيطية`} ratioOverride={2} />
                           </div>
                           <div className="st-crawl-sep" aria-hidden="true" data-spec={`intro.cellsep.${i + 1}`} />
                         </div>
                         {/* the seamless-loop duplicate — aria-hidden span
-                            seats (the logo is a background-image tile, not
-                            an img: the census keeps 5 imgs, the record's
-                            own 5). R343 A-I2: the duplicate track seats
-                            now carry explicit data-spec hooks (the
-                            reference's own loop-duplicate windows are
-                            recorded in its spec — bound in
-                            mapping/home-intro-wrap-A-I2.json, never
-                            heuristic-glued). */}
+                            seats (off the pairable census by design) */}
                         <span className="st-crawl-cell" aria-hidden="true" data-spec={`intro.dupcell.${i + 1}`}>
-                          <span
-                            className="st-crawl-logo st-crawl-logo-bg"
-                            aria-hidden="true"
-                            data-spec={`intro.duplogo.${i + 1}`}
-                            style={{ ['--crawl-img' as string]: `url(/media/renders/crop-${CRAWL_CAPTURES[i]}-640.webp)` }}
-                          />
+                          <span className="st-crawl-card" data-spec={`intro.dupcard.${i + 1}`}>
+                            <UniversityCard id={CRAWL_CAPTURES[i] ?? CRAWL_CAPTURES[0]!} alt="" ratioOverride={2} />
+                          </span>
                           <span className="st-crawl-sep" aria-hidden="true" />
                         </span>
                       </Fragment>
@@ -338,7 +320,7 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                 ticker cell) */}
             <div className="st-desc" data-spec="intro.desc">
               <div className="st-desc-text" data-spec="intro.desctext">
-                توثيق وسائط لا شراكة — الصور والقنوات الرسمية لهذه الجامعات في
+                توثيق لا شراكة — بطاقات تخطيطية أصلية والقنوات الرسمية لهذه الجامعات في
                 <Link to="/campus" className="fo-text-link">صفحة الحرم الجامعي</Link>.
               </div>
               <div className="st-desc-rule lp-hairline lp-hairline--h" aria-hidden="true" data-spec="intro.descrule" />

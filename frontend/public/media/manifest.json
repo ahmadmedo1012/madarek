@@ -4,7 +4,8 @@
   "generatedAt": "2026-10-22",
   "policy": {
     "ar": "كل صورة الجامعات مرخّصة من ويكيميديا كومنز (PD / CC BY / CC BY-SA) مع نسب المصوّر والمصدر؛ الفيديوهات تُضمَّن من القناة الرسمية للجامعة عبر آلية التضمين المسموحة (youtube-nocookie) وتُحمَّل فقط بعد نقر المستخدم؛ لقطات المنتج من بيئة عرض محليّة ببيانات تجريبية اصطناعية بالكامل — لا بيانات شخصية حقيقية. ظهور جامعة في الوسائط لا يعني تبنّيًا أو شراكة رسمية.",
-    "en": "University photos are Commons-licensed (PD / CC BY / CC BY-SA) with per-image attribution; videos embed from official university channels via the permitted youtube-nocookie mechanism, click-to-load only; product captures come from a local seeded demo environment (fully synthetic data). Media presence does not imply institutional endorsement."
+    "en": "University photos are Commons-licensed (PD / CC BY / CC BY-SA) with per-image attribution; videos embed from official university channels via the permitted youtube-nocookie mechanism, click-to-load only; product captures come from a local seeded demo environment (fully synthetic data). Media presence does not imply institutional endorsement.",
+    "r343": "The Wikimedia photo programme is retired on the web (original cards + r342 illustrations); product plates are re-captured from the real components; provenance for every remaining byte stays in this manifest."
   },
   "derivativePipeline": "scripts/media/build-media-derivatives.mjs (ffmpeg + libwebp, zero repo dependencies)",
   "photos": [
@@ -29,10 +30,7 @@
         827
       ],
       "derivativeWidths": [
-        1600,
-        1200,
-        800,
-        480
+        800
       ],
       "source": {
         "institution": "جامعة بنغازي",
@@ -47,7 +45,8 @@
       "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
       "verifiedByPrincipal": true,
       "verifiedAt": "2026-10-22",
-      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUniversity%20of%20Benghazi%20(cropped).jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUniversity%20of%20Benghazi%20(cropped).jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
+      "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
     },
     {
       "id": "uob-science",
@@ -69,9 +68,7 @@
         3000
       ],
       "derivativeWidths": [
-        1200,
-        800,
-        480
+        800
       ],
       "source": {
         "institution": "جامعة بنغازي",
@@ -86,7 +83,8 @@
       "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
       "verifiedByPrincipal": true,
       "verifiedAt": "2026-10-22",
-      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUoB%201.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUoB%201.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
+      "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
     },
     {
       "id": "tripoli-science",
@@ -108,9 +106,7 @@
         4032
       ],
       "derivativeWidths": [
-        1000,
-        800,
-        480
+        800
       ],
       "source": {
         "institution": "جامعة طرابلس",
@@ -125,7 +121,8 @@
       "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
       "verifiedByPrincipal": true,
       "verifiedAt": "2026-10-22",
-      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3Aمبنى%20في%20جامعة%20طرابلس.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3Aمبنى%20في%20جامعة%20طرابلس.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
+      "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
     },
     {
       "id": "uob-garden",
@@ -147,8 +144,6 @@
         1080
       ],
       "derivativeWidths": [
-        1600,
-        1200,
         800
       ],
       "source": {
@@ -164,7 +159,8 @@
       "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
       "verifiedByPrincipal": true,
       "verifiedAt": "2026-10-22",
-      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUniversity%20of%20Benghazi%202.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUniversity%20of%20Benghazi%202.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
+      "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
     },
     {
       "id": "garyounis-classic",
@@ -186,9 +182,7 @@
         1275
       ],
       "derivativeWidths": [
-        1200,
-        800,
-        480
+        800
       ],
       "source": {
         "institution": "جامعة بنغازي (قاريونس)",
@@ -203,7 +197,8 @@
       "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
       "verifiedByPrincipal": true,
       "verifiedAt": "2026-10-22",
-      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AGaryounis%20University.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AGaryounis%20University.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
+      "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
     },
     {
       "id": "garyounis-1",
@@ -225,9 +220,7 @@
         2736
       ],
       "derivativeWidths": [
-        1200,
-        800,
-        480
+        800
       ],
       "source": {
         "institution": "جامعة بنغازي (قاريونس)",
@@ -242,7 +235,8 @@
       "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
       "verifiedByPrincipal": true,
       "verifiedAt": "2026-10-22",
-      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AGaryounis%20university1.JPG&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AGaryounis%20university1.JPG&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
+      "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
     },
     {
       "id": "omu-agri",
@@ -264,9 +258,7 @@
         908
       ],
       "derivativeWidths": [
-        1200,
-        800,
-        480
+        800
       ],
       "source": {
         "institution": "جامعة عمر المختار",
@@ -281,7 +273,8 @@
       "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
       "verifiedByPrincipal": true,
       "verifiedAt": "2026-10-22",
-      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AFaculty%20of%20Agriculture,%20Al%20Bayda.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AFaculty%20of%20Agriculture,%20Al%20Bayda.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
+      "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
     },
     {
       "id": "fateh-science",
@@ -303,9 +296,7 @@
         960
       ],
       "derivativeWidths": [
-        1200,
-        800,
-        480
+        800
       ],
       "source": {
         "institution": "جامعة طرابلس",
@@ -320,7 +311,8 @@
       "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
       "verifiedByPrincipal": true,
       "verifiedAt": "2026-10-22",
-      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AAl%20Fateh%20University%20Faculty%20of%20Science.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AAl%20Fateh%20University%20Faculty%20of%20Science.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
+      "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
     },
     {
       "id": "uob",
@@ -343,10 +335,7 @@
         3000
       ],
       "derivativeWidths": [
-        1600,
-        1200,
-        800,
-        480
+        800
       ],
       "source": {
         "institution": "جامعة بنغازي",
@@ -361,7 +350,8 @@
       "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
       "verifiedByPrincipal": true,
       "verifiedAt": "2026-10-22",
-      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUoB.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'"
+      "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUoB.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
+      "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
     }
   ],
   "products": [
@@ -652,84 +642,6 @@
       "verificationCommand": "curl 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=dz_t7yOOZMc&format=json' && curl -sL 'https://sebhau.edu.ly/video-gallery/' | grep -c 'UCjEGH--aN7rRas_lAdqF35Q'"
     }
   ],
-  "renders": [
-    {
-      "id": "hero-ink",
-      "type": "render",
-      "sourcePhotoId": "uob-wide",
-      "adapted": true,
-      "pipeline": "scripts/r314/ink-render.mjs (XDoG ink strokes + broken cross-hatch + clustered stipple + graphite wash; deterministic seed)",
-      "licence": "CC BY-SA 4.0",
-      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-      "attribution": "adapted from «مقر إدارة جامعة بنغازي» by WisiW (Wikimedia Commons, CC BY-SA 4.0) — derivative marked ADAPTED, same licence kept (ShareAlike)",
-      "source": {
-        "page": "https://commons.wikimedia.org/wiki/File:University_of_Benghazi_(cropped).jpg",
-        "file": "https://upload.wikimedia.org/wikipedia/commons/e/e9/University_of_Benghazi_%28cropped%29.jpg"
-      },
-      "note": "Hero architectural ink rendering — R314 V2"
-    },
-    {
-      "id": "crop-garyounis-1",
-      "type": "render",
-      "sourcePhotoId": "garyounis-1",
-      "adapted": true,
-      "pipeline": "scripts/r314/ink-render.mjs (XDoG ink strokes + broken cross-hatch + clustered stipple + graphite wash; deterministic seed)",
-      "licence": "Public domain",
-      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "attribution": "adapted from «بوابة الحرم — قاريونس» by Maher A. A. Abdussalam (Wikimedia Commons, Public domain) — derivative marked ADAPTED, same licence kept (ShareAlike)",
-      "source": {
-        "page": "https://commons.wikimedia.org/wiki/File:Garyounis_university1.JPG",
-        "file": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Garyounis_university1.JPG"
-      },
-      "note": "Use-case card crop"
-    },
-    {
-      "id": "crop-garyounis-classic",
-      "type": "render",
-      "sourcePhotoId": "garyounis-classic",
-      "adapted": true,
-      "pipeline": "scripts/r314/ink-render.mjs (XDoG ink strokes + broken cross-hatch + clustered stipple + graphite wash; deterministic seed)",
-      "licence": "Public domain",
-      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "attribution": "adapted from «حرم جامعة بنغازي — قاريونس» by Munsha'at al Akhdar lil Alwan, Benghazi. (Wikimedia Commons, Public domain) — derivative marked ADAPTED, same licence kept (ShareAlike)",
-      "source": {
-        "page": "https://commons.wikimedia.org/wiki/File:Garyounis_University.jpg",
-        "file": "https://upload.wikimedia.org/wikipedia/commons/5/55/Garyounis_University.jpg"
-      },
-      "note": "Use-case card crop"
-    },
-    {
-      "id": "crop-fateh-science",
-      "type": "render",
-      "sourcePhotoId": "uob-science",
-      "adapted": true,
-      "pipeline": "scripts/r314/ink-render.mjs (XDoG ink strokes + broken cross-hatch + clustered stipple + graphite wash; deterministic seed)",
-      "licence": "CC BY-SA 4.0",
-      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-      "attribution": "adapted from «كلية العلوم — جامعة بنغازي» by WisiW (Wikimedia Commons, CC BY-SA 4.0) — derivative marked ADAPTED, same licence kept (ShareAlike)",
-      "source": {
-        "page": "https://commons.wikimedia.org/wiki/File:UoB_1.jpg",
-        "file": "https://upload.wikimedia.org/wikipedia/commons/7/7e/UoB_1.jpg"
-      },
-      "note": "Use-case card crop — source swapped from fateh-science (interior, rendered flat) to uob-science exterior; licence/attribution follows uob-science"
-    },
-    {
-      "id": "crop-omu-agri",
-      "type": "render",
-      "sourcePhotoId": "omu-agri",
-      "adapted": true,
-      "pipeline": "scripts/r314/ink-render.mjs (XDoG ink strokes + broken cross-hatch + clustered stipple + graphite wash; deterministic seed)",
-      "licence": "Public domain",
-      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "attribution": "adapted from «كلية الزراعة — جامعة عمر المختار (البيضاء)» by Munsha'at al Akhdar lil Alwan, Benghazi. (Wikimedia Commons, Public domain) — derivative marked ADAPTED, same licence kept (ShareAlike)",
-      "source": {
-        "page": "https://commons.wikimedia.org/wiki/File:Faculty_of_Agriculture,_Al_Bayda.jpg",
-        "file": "https://upload.wikimedia.org/wikipedia/commons/1/12/Faculty_of_Agriculture%2C_Al_Bayda.jpg"
-      },
-      "note": "Use-case card crop"
-    }
-  ],
-  "rendersGeneratedFor": "R314 — VISUAL TRUTH (ink-render illustration programme §4.1)",
   "illustrations": {
     "generatedFor": "R342 — the original architectural illustration programme (R342-01)",
     "generatedAt": "2026-11-08",
@@ -1256,6 +1168,56 @@
         "tool": "glm-image + r342-duotone-remap (original work)",
         "license": "original-work-madarek-r342",
         "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      }
+    ]
+  },
+  "cards": {
+    "policy": "R343 C-1 — the university seats are ORIGINAL typographic/architectural cards (no photographs, no crests, no traced buildings). ONE geometry source: shared/media/university-cards.ts (web renders it inline; the mobile port + the static-file builder consume the same module — never forked).",
+    "items": [
+      {
+        "id": "uob-wide",
+        "nn": "01",
+        "composition": "hall"
+      },
+      {
+        "id": "uob-science",
+        "nn": "02",
+        "composition": "arcade"
+      },
+      {
+        "id": "tripoli-science",
+        "nn": "03",
+        "composition": "courtyard"
+      },
+      {
+        "id": "uob-garden",
+        "nn": "04",
+        "composition": "courtyard"
+      },
+      {
+        "id": "garyounis-classic",
+        "nn": "05",
+        "composition": "tower"
+      },
+      {
+        "id": "garyounis-1",
+        "nn": "06",
+        "composition": "arcade"
+      },
+      {
+        "id": "omu-agri",
+        "nn": "07",
+        "composition": "hall"
+      },
+      {
+        "id": "fateh-science",
+        "nn": "08",
+        "composition": "arcade"
+      },
+      {
+        "id": "uob",
+        "nn": "09",
+        "composition": "tower"
       }
     ]
   }

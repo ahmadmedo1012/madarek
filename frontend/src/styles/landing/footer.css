@@ -776,3 +776,9 @@
 @media (min-width: 992px) and (max-width: 1299.98px) {
   .fo-freg { inline-size: 7px; block-size: 7px; }
 }
+
+/* R343 C-2 — the skyline twins swap on the theme token (the wy-cycle
+ * grammar); the strip img keeps its recorded box. */
+.fo-strip-img.is-dark { visibility: hidden; }
+[data-theme="dark"] .fo-strip-img.is-light { visibility: hidden; }
+[data-theme="dark"] .fo-strip-img.is-dark { visibility: visible; }

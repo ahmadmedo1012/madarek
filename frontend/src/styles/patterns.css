@@ -3597,6 +3597,17 @@ a.pf-row-link {
   position: relative;
 }
 
+/* R343 C-1 — the card seat: the ORIGINAL typographic/architectural card
+ * fills the same intrinsic aspect box (the vector draws at any density;
+ * ink rides the seat's text token so light AND dark flip for free). */
+.mf-photo--card { display: grid; }
+.mf-photo--card .ucard {
+  inline-size: 100%;
+  block-size: 100%;
+  color: var(--text);
+  display: block;
+}
+
 .mf-photo img {
   display: block;
   inline-size: 100%;

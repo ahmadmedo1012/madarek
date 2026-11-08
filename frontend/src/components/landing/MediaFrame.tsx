@@ -15,6 +15,8 @@
  * the above-fold hero lead into eager + fetchpriority.
  */
 import { type UniversityPhoto, mediaSrcset } from '../../data/university-media';
+import { cardById } from '@shared/media/university-cards';
+import { UniversityCard } from '../media/UniversityCard';
 
 export interface MediaFrameProps {
   photo: UniversityPhoto;
@@ -25,7 +27,8 @@ export interface MediaFrameProps {
   /** aspect-ratio fallback box (uses the source intrinsic ratio) */
   className?: string;
   /** R308 — an optional overlay riding INSIDE the photo box (the ink
-   *  sketch): covers the photograph only, never the caption row. */
+   *  sketch): covers the photograph only, never the caption row.
+   *  R343 C-1: ignored on card seats (the card IS the drawing). */
   overlay?: React.ReactNode;
 }
 
@@ -37,42 +40,58 @@ export function MediaFrame({ photo, variant, eager = false, className, overlay }
   // width (no layout shift while the bytes arrive).
   const heightAt = (width: number): number => Math.round(width / photo.ratio);
 
+  /* R343 C-1 — the card seat: the retired Wikimedia photograph becomes
+   * the ORIGINAL typographic/architectural card (shared geometry, inline
+   * SVG, theme via the seat's tokens). No license deed (original art),
+   * no srcset (vector), CLS-safe by the same intrinsic aspect box. */
+  const card = cardById(photo.id);
+
   return (
     <figure
       className={['mf', variant ? `mf--${variant}` : null, className].filter(Boolean).join(' ')}
     >
-      <a
-        className="mf-photo"
-        href={photo.licenseUrl}
-        target="_blank"
-        rel="noreferrer license"
-        /* The photo links to its license deed — the caption row below
-           carries the context; the link is a documented credit affordance. */
-        aria-label={`${photo.nameAr} — رخصة ${photo.license}`}
-      >
-        <img
-          src={`/media/universities/${photo.id}-${widths[0]}.webp`}
-          srcSet={mediaSrcset(photo.id, widths)}
-          sizes={photo.sizes}
-          width={w}
-          height={heightAt(w)}
-          alt={photo.altAr}
-          loading={eager ? 'eager' : 'lazy'}
-          {...(eager ? ({ fetchpriority: 'high' } as never) : {})}
-          decoding={eager ? 'sync' : 'async'}
-          style={{ objectPosition: photo.objectPosition }}
-        />
-        {overlay}
-      </a>
+      {card ? (
+        <div className="mf-photo mf-photo--card" style={{ aspectRatio: `${photo.ratio}` }}>
+          <UniversityCard id={photo.id} alt={photo.altAr} />
+        </div>
+      ) : (
+        <a
+          className="mf-photo"
+          href={photo.licenseUrl}
+          target="_blank"
+          rel="noreferrer license"
+          /* The photo links to its license deed — the caption row below
+             carries the context; the link is a documented credit affordance. */
+          aria-label={`${photo.nameAr} — رخصة ${photo.license}`}
+        >
+          <img
+            src={`/media/universities/${photo.id}-${widths[0]}.webp`}
+            srcSet={mediaSrcset(photo.id, widths)}
+            sizes={photo.sizes}
+            width={w}
+            height={heightAt(w)}
+            alt={photo.altAr}
+            loading={eager ? 'eager' : 'lazy'}
+            {...(eager ? ({ fetchpriority: 'high' } as never) : {})}
+            decoding={eager ? 'sync' : 'async'}
+            style={{ objectPosition: photo.objectPosition }}
+          />
+          {overlay}
+        </a>
+      )}
       <figcaption className="mf-caption">
         <span className="mf-caption-name">{photo.nameAr}</span>
         <span className="mf-caption-institution">{photo.institution}</span>
-        <span className="mf-caption-credit fo-mono" dir="ltr">
-          {photo.author} ·{' '}
-          <a href={photo.licenseUrl} target="_blank" rel="noreferrer license">
-            {photo.license}
-          </a>
-        </span>
+        {card ? (
+          <span className="mf-caption-credit fo-mono" dir="ltr">MADAREK · ORIGINAL DRAWING</span>
+        ) : (
+          <span className="mf-caption-credit fo-mono" dir="ltr">
+            {photo.author} ·{' '}
+            <a href={photo.licenseUrl} target="_blank" rel="noreferrer license">
+              {photo.license}
+            </a>
+          </span>
+        )}
       </figcaption>
     </figure>
   );

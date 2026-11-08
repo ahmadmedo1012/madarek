@@ -213,10 +213,11 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     // never canvas, never <picture>
     expect(liveTsx).not.toContain('<picture>');
     expect(liveTsx).not.toContain('<canvas');
-    // the manifest carries the derivative licence chain (ShareAlike kept)
+    // R343 C-1 — the ink-render programme is retired: the manifest carries
+    // the ORIGINAL card registry instead (the crawl is type-first now)
     const manifest = read('public/media/manifest.json');
-    expect(manifest).toContain('"renders"');
-    expect(manifest).toContain('"adapted": true');
+    expect(manifest).toContain('"cards"');
+    expect(manifest).toContain('"composition"');
   });
 
   it('R314 override — the inspection stations are real buttons (HeroInspect) over the ink render', () => {
@@ -312,8 +313,15 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     // proximity-revealed as before) after the retired band grammar
     // was deleted (evidence r333/pi-b1, landing byte-identical).
     expect(live).toMatch(/\.hro-stage::before\s*\{[\s\S]*?border:\s*1px dashed/s);
-    // the render pipeline is reproducible + committed (repo root)
-    expect(read('../scripts/r314/ink-render.mjs')).toContain('OVERRIDES');
+    // R343 C-2 — the ink-render programme is RETIRED (the photo-derived
+    // renders deleted with their generator); the homepage's imagery is
+    // the r342 ORIGINAL illustrations (registered in the manifest) +
+    // the card system — the reuse is pinned where it renders
+    const manifestJson = read('public/media/manifest.json');
+    expect(manifestJson).toContain('statement-courtyard');
+    expect(manifestJson).toContain('footer-skyline');
+    expect(read('src/components/landing/sections/Statement.tsx')).toContain('statement-courtyard-light.webp');
+    expect(read('src/components/landing/sections/Footer.tsx')).toContain('footer-skyline-light.webp');
   });
 });
 

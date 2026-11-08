@@ -86,6 +86,19 @@ describe('r307 — the media registry agrees with the manifest and the bytes', (
     }
   });
 
+  it('R343 — every documented university seat renders an ORIGINAL card (registry parity)', async () => {
+    const manifest = JSON.parse(read('public/media/manifest.json'));
+    const cardsSrc = read('../shared/media/university-cards.ts');
+    for (const c of manifest.cards.items) {
+      expect(cardsSrc, `the card ${c.id} must live in the ONE shared geometry source`).toContain(`id: '${c.id}'`);
+      expect(c.composition, 'the four original compositions only').toMatch(/^(arcade|courtyard|tower|hall)$/);
+    }
+    // the retired photo derivatives are gone from disk except the mobile -800 seats
+    for (const photo of manifest.photos) {
+      expect(existsSync(path.join(root, `public/media/universities/${photo.id}-800.webp`)), '-800 mobile seat').toBe(true);
+    }
+  });
+
   it('every manifest product capture ships every promised derivative', () => {
     for (const prod of manifest.products) {
       for (const w of prod.derivativeWidths) {

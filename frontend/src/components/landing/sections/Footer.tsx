@@ -391,10 +391,13 @@ export function Footer({ year }: { year: number }) {
             {/* the spec's 17px caption seat under the mark (the 0-height
                 image stub rides inside its own wrapper) */}
             <div className="fo-mark-cap" data-spec="footer.markcap">
+              {/* R343 C-2 — the 0-height caption stub keeps its recorded
+                  seat; the retired photo render gives way to the strip's
+                  own skyline art (ASSET-CONTRACT §3.8) */}
               <img
                 className="fo-mark-img"
                 data-spec="footer.markimg"
-                src="/media/renders/hero-ink-1100.webp"
+                src="/media/illustrations/r342/footer/footer-skyline-light.webp"
                 alt=""
                 loading="lazy"
               />
@@ -414,12 +417,28 @@ export function Footer({ year }: { year: number }) {
         <div className="fo-fstrip" data-spec="footer.strip">
           <div className="fo-strip-in" data-spec="footer.stripin">
             <div className="fo-strip-media" data-spec="footer.smedia">
+              {/* R343 C-2 — the ORIGINAL skyline strip (ASSET-CONTRACT §3.8:
+                  replaces the photo-derived hero-ink render; light/dark
+                  twins swap on the theme token, the wy-cycle grammar) */}
               <img
-                className="fo-strip-img"
+                className="fo-strip-img is-light"
                 data-spec="footer.stripimg"
-                src="/media/renders/hero-ink-1100.webp"
-                alt="رسم حبري لعمارة حرم جامعي ليبي — مشتق من صورة مرخّصة"
+                src="/media/illustrations/r342/footer/footer-skyline-light.webp"
+                srcSet="/media/illustrations/r342/footer/footer-skyline-light@2x.webp 2x"
+                alt="أفق حرم جامعي متخيّل بخط رفيع: رواق وقاعة وبرج وأشجار على خط أرض واحد"
                 loading="lazy"
+                width={1440}
+                height={384}
+              />
+              <img
+                className="fo-strip-img is-dark"
+                src="/media/illustrations/r342/footer/footer-skyline-dark.webp"
+                srcSet="/media/illustrations/r342/footer/footer-skyline-dark@2x.webp 2x"
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                width={1440}
+                height={384}
               />
               <div className="fo-strip-twin" data-spec="footer.striptwin">
                 <svg
@@ -429,22 +448,15 @@ export function Footer({ year }: { year: number }) {
                   preserveAspectRatio="xMidYMid slice"
                   aria-hidden="true"
                 >
-                  <defs>
-                    <filter id="fo-gray" filterUnits="userSpaceOnUse">
-                      <feComponentTransfer>
-                        <feFuncR type="linear" slope="0.33" />
-                        <feFuncG type="linear" slope="0.33" />
-                        <feFuncB type="linear" slope="0.33" />
-                      </feComponentTransfer>
-                    </filter>
-                  </defs>
+                  {/* R343 C-2 — the tonal twin rides the DARK skyline art
+                      (the photo-era grayscale filter retires with the
+                      photograph; the dark twin IS the tone) */}
                   <image
                     className="fo-strip-image"
                     data-spec="footer.stripimage"
-                    href="/media/renders/hero-ink-1100.webp"
+                    href="/media/illustrations/r342/footer/footer-skyline-dark.webp"
                     width="1427"
                     height="314"
-                    filter="url(#fo-gray)"
                   />
                 </svg>
               </div>
