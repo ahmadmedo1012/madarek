@@ -83,14 +83,22 @@ const GATE = process.argv.includes('--gate');
 const URL = arg('url', 'http://localhost:5173/');
 const FLOOR = 90;
 
-/* the type ladder: rung NAMES (--fs-*) harvested from the token sheets */
+/* the type ladder: rung NAMES (--fs-*) harvested from the token sheets.
+ * R342-09 honesty repair: the harvest regex was [a-z-]+, which silently
+ * dropped every token name containing a DIGIT — the whole app-density
+ * ladder (--fs-app-h1/h2/h3, the 28/24 h1 rung every framed page rides)
+ * and the display ladder (--fs-d1/d2/d3) never entered the corpus, so
+ * every on-token h1 counted as off-rung on every measured page. The
+ * intent (the docstring's own words) is ALL --fs-* names; the class now
+ * admits digits. The shared pages.mjs carries the same bug — reported
+ * to the lead in R342-09.md, NOT edited here (lead-controlled). */
 const rungNames = [];
 {
   const strip = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '');
   for (const f of ['tokens.css', 'tokens.generated.css']) {
     let css = '';
     try { css = strip(readFileSync(join(WORKTREE, 'frontend', 'src', 'styles', 'tokens', f), 'utf8')); } catch { continue; }
-    for (const m of css.matchAll(/--(fs-[a-z-]+)\s*:/g)) {
+    for (const m of css.matchAll(/--(fs-[a-z0-9-]+)\s*:/g)) {
       if (!rungNames.includes(m[1])) rungNames.push(m[1]);
     }
   }

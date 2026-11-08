@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Building2, BookOpen, BarChart3, FileText, TrendingUp, ClipboardCheck, AlertTriangle, Search, X, ChevronDown, ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { Building2, BookOpen, BarChart3, FileText, TrendingUp, ClipboardCheck, AlertTriangle, Search, X, ChevronDown, ArrowLeft, Plus, Trash2, GraduationCap, RefreshCw, Activity } from 'lucide-react';
 import { Card, Badge, Tabs, UserAvatar, AlertRow, FormField } from '../../components/primitives';
 import { StatStrip, LedgerPanel, LedgerRow } from '../../components/primitives/Ledger';
 /* R304 (workstream 4D): the admin family rides the shell patterns —
@@ -340,7 +340,27 @@ export function AdminDashboardPage() {
       <PatternsPageHeader
         title={roleDashboardLabel('ADMIN')}
         description="إحصائيات حيّة عن طلاب وأساتذة المنصّة."
+        index="01"
         meta={<>{formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · حساب لحظيّ</>}
+        actions={(
+          /* R342-09 (D11 header-CTA precedent): the registrar's two live
+                   * rosters ride the header action slot — the students register
+                   * (primary) + the university sync (the standing operational
+                   * duty). The StatStrip cells keep the full drill set; this pair
+                   * is the phone band's honest affordance (the admin topbar hides
+                   * «اسأل AI» entirely, so without it the first viewport at 390
+                   * carries no primary action at all). */
+                  <>
+            <Link to="/admin/students" className="btn primary sm">
+              <Icon icon={GraduationCap} size={13} />
+              سجلّ الطلاب
+            </Link>
+            <Link to="/admin/sync" className="btn ghost sm">
+              <Icon icon={RefreshCw} size={13} />
+              مزامنة الجامعة
+            </Link>
+          </>
+        )}
       />
 
       {/* 5-A8 §6 step 1: the action list sits above the KPI row — the
@@ -776,7 +796,24 @@ export function AdminFacultiesPage() {
       <PatternsPageHeader
         title="الكلّيّات والأقسام"
         description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
+        index="03"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
+        actions={(
+          /* R342-09 (the students-page family contract): the page's ONE
+                   * create action rides the header action slot on the accent
+                   * register — the first viewport at every width keeps the
+                   * affordance (the admin topbar hides «اسأل AI» entirely). The
+                   * FilterBar trailing seat returns to filters-only. */
+                  <button
+            type="button"
+            className="btn accent sm"
+            onClick={openFacultyForm}
+            aria-label="إضافة كلّيّة جديدة"
+          >
+            <Icon icon={Plus} size={14} />
+            إضافة كلّيّة
+          </button>
+        )}
       />
 
       <StatStrip
@@ -827,19 +864,6 @@ export function AdminFacultiesPage() {
                 {cities.map((cty) => <option key={cty} value={cty}>{cty}</option>)}
               </select>
             </>
-          )}
-          trailing={(
-            /* r180: the create affordance rides the rail's trailing slot —
-                search → filter → action (the FilterBar contract). */
-            <button
-              type="button"
-              className="btn primary sm"
-              onClick={openFacultyForm}
-              aria-label="إضافة كلّيّة جديدة"
-            >
-              <Icon icon={Plus} size={14} />
-              إضافة كلّيّة
-            </button>
           )}
         />
 
@@ -1169,7 +1193,19 @@ export function AdminReportsPage() {
       <PatternsPageHeader
         title="التقارير المؤسسية"
         description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
+        index="07"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+        actions={(
+          /* R342-09 (D11 sub-page CTA precedent): a read-only ledger still
+                   * names its ONE honest next surface — the adoption view is the
+                   * reports' analytical sibling (the same institutional audience
+                   * reads both). The phone band keeps a primary action in the
+                   * first viewport (the admin topbar hides «اسأل AI»). */
+                  <Link to="/admin/digital" className="btn accent sm">
+            <Icon icon={Activity} size={13} />
+            التحوّل الرقميّ
+          </Link>
+        )}
       />
 
       {/* §5 row 8: the papers KPIs land on the register — the URL is
@@ -1594,15 +1630,32 @@ export function AdminCoursesPage() {
         description={meta
           ? `${countAr(meta.total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}${hasFilters ? ' مطابقة للبحث والتصفيّة' : ' في الجامعة'}`
           : 'جميع المقرّرات الجامعية مع إحصائيات حيّة.'}
+        index="04"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المقرّرات' }]}
+        actions={(
+          /* R342-09 (the students-page family contract): the page's ONE
+                   * create action rides the header action slot on the accent
+                   * register — the first viewport at every width keeps the
+                   * affordance (the admin topbar hides «اسأل AI» entirely). The
+                   * FilterBar trailing seat returns to filters-only. */
+                  <button
+            type="button"
+            className="btn accent sm"
+            onClick={openCreate}
+            aria-label="إضافة مقرّر جديد"
+          >
+            <Icon icon={Plus} size={14} />
+            إضافة مقرّر
+          </button>
+        )}
       />
 
       <Card>
         {/* R304: the roster's control rail rides the patterns FilterBar —
-            both filters run server-side; the create action rides the
-            trailing slot (search → filter → action, the family order).
-            The old capped-KPI header copy retired — the count reads the
-            server meta in the header description. */}
+            both filters run server-side (R342-09: the create action moved
+            up to the page header's action slot, the students-page family
+            contract). The old capped-KPI header copy retired — the count
+            reads the server meta in the header description. */}
         <FilterBar
           filters={(
             <>
@@ -1633,17 +1686,6 @@ export function AdminCoursesPage() {
                 </button>
               )}
             </>
-          )}
-          trailing={(
-            <button
-              type="button"
-              className="btn primary sm"
-              onClick={openCreate}
-              aria-label="إضافة مقرّر جديد"
-            >
-              <Icon icon={Plus} size={14} />
-              إضافة مقرّر
-            </button>
           )}
         />
 
