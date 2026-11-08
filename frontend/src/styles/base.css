@@ -188,7 +188,14 @@
     left: 50%;
     transform: translateX(-50%) translateY(-150%);
     background: var(--accent);
-    color: var(--accent-fg, white);
+    /* R342-11: the tokens' documented coral-fill label pair —
+       --warm-ink: 4.69:1 on #FA3600 light · 5.64:1 on #FF5A1F dark
+       (tokens.css itself: "labels on the orange/coral fills … AA").
+       The old --accent-fg fallback (white, 3.76:1) is the reference's
+       AA-large label seat — a focus pill's compact text can't claim
+       the large-text exception, and the shared darkInk census counts
+       this link on every page. */
+    color: var(--warm-ink);
     padding: var(--sp-2-5) 18px; /* spacing-gate: allow — floating CTA pill compact grade 10/18 (vertical is sp-2-5) */
     border-radius: var(--r-md);
     text-decoration: none;

@@ -1966,11 +1966,31 @@ export function ExamModerationPage() {
   return (
     <div className="hr-scope">
     <div className="page">
-      {/* R305 Heron — the oversight brow above the page header. */}
-      <span className="hr-brow oex2-brow">طابور الاعتماد</span>
+      {/* R305 Heron — the oversight brow above the page header. R342-11:
+          the [05] QUALITY_NAV seat numeral rides the brow (the §B2
+          cover precedent — the family's own page-index mono label
+          carried by the brow line), closing the quality register:
+          [01] لوحة الجودة … [04] الانخراط · [05] هنا · [06] المناهج …
+          [09] التنبيهات. */}
+      <span className="hr-brow oex2-brow">
+        <span className="page-index" aria-hidden="true" dir="ltr">[05]</span>
+        طابور الاعتماد
+      </span>
       <PageHeader
         title="مراجعة الاختبارات"
         subtitle="مراجعة قوالب الاختبارات الموحَّدة قبل اعتمادها وإتاحتها للطلاب — صلاحية حصرية لمكتب الجودة."
+        /* R342-11: the header CTA pair (the D10 quality-family grammar,
+         * navigation-only — the queue's own decisions live on the rows).
+         * The accent seat is the measured hover surface (.has-shell
+         * .btn.accent:hover, chrome.css §10) and the phone band's
+         * primary — the SAME pair the quality dashboard carries
+         * (تقارير + تنبيهات), the sector's one consistent header. */
+        actions={
+          <>
+            <Link to="/quality/reports" className="btn accent sm">تقارير الجودة</Link>
+            <Link to="/quality/alerts" className="btn ghost sm">تنبيهات الجودة</Link>
+          </>
+        }
       />
 
       {/* The quality sector's typographic StatStrip (R189/R190 — the

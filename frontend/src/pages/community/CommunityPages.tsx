@@ -180,21 +180,28 @@ export default function CommunityPage() {
         title="المجتمع الجامعي"
         description="إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية. المساحة الرسمية للحياة الأكاديمية اليومية."
         actions={
-          /* A fragment keeps the conditional actions as direct children
-             of the header actions row — the conditional set per tab is
-             unchanged from the r164-a fold. */
+          /* R342-11: the ALWAYS-ON header pair (the D7d/D11 measured
+           * seat) — the hover axis + every role's phone-band primary.
+           * The accent seat IS the page's documented reciprocal CTA
+           * (nav.ts: «/competitions stays reachable from the community
+           * page CTA»), promoted from the competitions-tab-only ghost
+           * to always-on; the ghost is the any-auth colleges sibling
+           * (the shared public surface ALL five roles carry, the same
+           * «المجتمع والفرص» nav group). The per-tab authoring
+           * primaries below stay untouched — they're the real
+           * per-role create verbs (capabilities-gated as before). */
           <>
+            <Link to="/competitions" className="btn accent sm">
+              صفحة المسابقات الكاملة
+            </Link>
+            <Link to="/colleges" className="btn ghost sm">
+              كلّيّات الجامعة
+            </Link>
             {tab === 'announcements' && canAnnounce && (
               <button type="button" className="btn primary" onClick={() => setCreatingAnnouncement(true)}>
                 <Icon icon={Plus} size={14} />
                 إعلان جديد
               </button>
-            )}
-            {tab === 'competitions' && (
-              <Link to="/competitions" className="btn ghost">
-                <Icon icon={Trophy} size={14} />
-                صفحة المسابقات الكاملة
-              </Link>
             )}
             {tab === 'events' && canRunEvents && (
               <button type="button" className="btn primary" onClick={() => setCreatingEvent(true)}>
