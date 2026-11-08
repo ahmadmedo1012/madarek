@@ -184,8 +184,15 @@ html[data-theme='dark'] .fo-cta .fo-cta-rbtn {
  * Light keeps the frozen transitions (spec law); hover never touched
  * color here (transform + border only), so no feel change. */
 html[data-theme='dark'] .fo-cta .btn.ghost {
+  /* r342-06 — the `background` leg is DROPPED from the dark arm: the
+   * element's own background only ever changes at the theme flip (the
+   * hover wipe rides the ::before layer), so the leg had one effect —
+   * tweening the flip through the light paper literal while the label
+   * ink snaps: a cream-on-cream window the dark ink census recorded
+   * (cta.secondary at 1:1, bps 1920/768/390). Border-color + transform
+   * keep their legs (the L1-d drift + sweep arms), per the platform
+   * frozen-flip lesson (aTransition asserts duration+easing per leg). */
   transition:
-    background var(--t-base) var(--ease),
     border-color var(--t-base) var(--ease),
     transform var(--motion-duration-micro) var(--ease);
 }
