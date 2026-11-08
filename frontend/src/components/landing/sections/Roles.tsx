@@ -100,6 +100,17 @@ const ROLE_ROWS: RoleRow[] = [
 /** the row that starts open (and whose slide starts active) */
 const FIRST_OPEN = 0;
 
+/* r342-06 — the deck's resolution ladder: the media pane renders ~950px
+ * wide @1920 (50% of the full-bleed frame), so the 720-only source
+ * upscaled softly on the wide desktop. The -1280 twins of the same
+ * seeded captures (public/media/product) join via srcSet; the pinned
+ * slide boxes never move (the img is absolutely inset in its slide —
+ * only the served bitmap sharpens). */
+const slideSrcSet = (img: string) => {
+  const base = img.replace(/-720$/, '');
+  return `/media/product/${base}-720.webp 720w, /media/product/${base}-1280.webp 1280w`;
+};
+
 /* T-13: heron faq hover ordinals (spec hovers: 5/6/7 · 20/21/22 · 35). */
 const ROLE_HOVER_ORD = [5, 6, 7, 20, 21, 22, 35];
 
@@ -139,6 +150,8 @@ export function Roles() {
                 >
                   <img
                     src={`/media/product/${r.img}.webp`}
+                    srcSet={slideSrcSet(r.img)}
+                    sizes="(min-width: 992px) 50vw, 100vw"
                     alt=""
                     loading="lazy"
                     decoding="async"

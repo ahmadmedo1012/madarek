@@ -25,20 +25,27 @@ import { ChevronLeft } from 'lucide-react';
 import { Icon } from '../../Icon';
 import { RevealCssClass } from '../../../hooks/useReveal';
 import { Hairline, Numeral } from '../patterns';
-import lectureShot from '../../../assets/product/lecture-checkpoint.webp';
+import examShot from '../../../assets/product/exam-active.webp';
 import aiTutorShot from '../../../assets/product/ai-tutor.webp';
 
 /* the two platform items — copy-driven, mirroring heron's two
- * carousel items (label/title/long-text/two CTA lines each) */
+ * carousel items (label/title/long-text/two CTA lines each).
+ * r342-06 — the capture pair is capability-disjoint from the
+ * neighbouring sections: Why's gallery owns the lecture-player
+ * screen (its row-1 card + row-3 video seat) and the roles deck
+ * rides its own slide, so the platform band proves the two
+ * capabilities no other landing seat shows — the exam runner
+ * (timer + auto-graded objective + essay to the teacher) and the
+ * academic assistant — each capture a real seeded-demo screen. */
 const PLATFORM_ITEMS = [
   {
     label: '[05] المنصّة فعليًا',
     title: 'هذه الواجهة نفسها',
-    text: 'بنية الواجهات نفسها برسم داخلي: مشغّل المحاضرة بنقاط الفحص، ومصفوفة الإتقان، والمساعد الأكاديمي — كما تعمل اليوم داخل المنصّة.',
+    text: 'اختبار إلكتروني يعمل اليوم: مؤقّت، وأسئلة موضوعية بتصحيح تلقائي، ومقالية تصل إلى الأستاذ — على بيانات الطالب نفسها.',
     cta1: 'أنشئ حسابك',
     cta2: 'لتجربتها حيّة الآن',
-    img: lectureShot,
-    alt: 'مشغّل محاضرة مدارك أثناء محاضرة «هندسة البرمجيات» مع بطاقة نقطة فحص مدمجة في الفيديو — بيانات العرض التجريبية',
+    img: examShot,
+    alt: 'اختبار إلكتروني في مدارك: مؤقّت وأسئلة مختارة ومقالية مفتوحة — بيانات العرض التجريبية',
   },
   {
     label: '[05] المنصّة فعليًا',
