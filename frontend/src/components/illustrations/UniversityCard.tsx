@@ -14,7 +14,7 @@
  */
 import { cardById, drawComposition } from '@shared/media/university-cards';
 
-export interface UniversityCardProps {
+interface UniversityCardProps {
   /** the documented registry id (manifest.json photos[].id lineage) */
   id: string;
   /** accessible Arabic description override (defaults to the spec's name+sub) */

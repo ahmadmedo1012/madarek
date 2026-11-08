@@ -3,5 +3,8 @@
   "entry": [
     "src/main.tsx",
     "src/components/landing/patterns/index.ts"
+  ],
+  "ignore": [
+    "postcss.config.cjs"
   ]
 }

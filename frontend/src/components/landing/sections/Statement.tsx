@@ -39,7 +39,7 @@
 import { Fragment, type ReactNode, type RefObject } from 'react';
 import { Link } from 'react-router-dom';
 import { ScrubReveal } from '../journey/WordReveal';
-import { UniversityCard } from '../../media/UniversityCard';
+import { UniversityCard } from '../../illustrations/UniversityCard';
 
 /* ── The statement (the scrub manifesto). Same voice/length class as
  * the reference's 127-char intro statement; honest — the four clauses

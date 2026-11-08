@@ -1,5 +1,5 @@
 {
- "_readme": "R343 A-I2 — structural window bindings: the tonal staged duplicate (svg>image), the crawl's seamless-loop duplicate seats (tag+geometry skipped per the census law), and recorded windows of already-mirrored pill seats (scoped to the verified bps).",
+ "_readme": "R343 C-1 — the imagery-system bindings: the crawl's typographic card seats (the original university cards fill the recorded cell windows) + the pill-seat re-windows (scoped to the verified bps). The photo-era entries (cellimg/duplogo/mediasvg/mediatoneimg) retired with their elements.",
  "ourSection": {
   "home-intro-wrap": "div#statement.st-section"
  },
@@ -10,255 +10,6 @@
   "home-intro-wrap": 1
  },
  "explicit": [
-  {
-   "section": "home-intro-wrap",
-   "heron": {
-    "390": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
-    "768": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
-    "1024": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
-    "1440": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
-    "1920": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]"
-   },
-   "spec": {
-    "390": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
-    "768": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
-    "1024": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
-    "1440": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
-    "1920": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]"
-   },
-   "ours": "intro.mediatoneimg",
-   "note": "R343 A-I2: an additional recorded window of an already-mirrored seat (the multi-window binding precedent — the frozen walk records the same physical seat at several 6-segment truncation windows; our element is bound at each of its own recorded windows)"
-  },
-  {
-   "section": "home-intro-wrap",
-   "heron": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1024": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]"
-   },
-   "spec": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1024": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]"
-   },
-   "ours": "intro.dupcell.1",
-   "skip": [
-    "tag",
-    "geometry"
-   ],
-   "note": "R343 A-I2: tag+geometry skipped (the seamless-loop duplicate track rides translated span seats — the r338 census law: our own plumbing rides SPANs so heuristic glue never pairs it; explicit binding holds the reference's own recorded loop-duplicate windows; tc + the 5 unskippable fields stay measured)"
-  },
-  {
-   "section": "home-intro-wrap",
-   "heron": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1024": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]"
-   },
-   "spec": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1024": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]"
-   },
-   "ours": "intro.duplogo.1",
-   "skip": [
-    "tag",
-    "geometry"
-   ],
-   "note": "R343 A-I2: tag+geometry skipped (the seamless-loop duplicate track rides translated span seats — the r338 census law: our own plumbing rides SPANs so heuristic glue never pairs it; explicit binding holds the reference's own recorded loop-duplicate windows; tc + the 5 unskippable fields stay measured)"
-  },
-  {
-   "section": "home-intro-wrap",
-   "heron": {
-    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1024": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]"
-   },
-   "spec": {
-    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1024": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]"
-   },
-   "ours": "intro.dupcell.2",
-   "skip": [
-    "tag",
-    "geometry"
-   ],
-   "note": "R343 A-I2: tag+geometry skipped (the seamless-loop duplicate track rides translated span seats — the r338 census law: our own plumbing rides SPANs so heuristic glue never pairs it; explicit binding holds the reference's own recorded loop-duplicate windows; tc + the 5 unskippable fields stay measured)"
-  },
-  {
-   "section": "home-intro-wrap",
-   "heron": {
-    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1024": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]"
-   },
-   "spec": {
-    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1024": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]"
-   },
-   "ours": "intro.duplogo.2",
-   "skip": [
-    "tag",
-    "geometry"
-   ],
-   "note": "R343 A-I2: tag+geometry skipped (the seamless-loop duplicate track rides translated span seats — the r338 census law: our own plumbing rides SPANs so heuristic glue never pairs it; explicit binding holds the reference's own recorded loop-duplicate windows; tc + the 5 unskippable fields stay measured)"
-  },
-  {
-   "section": "home-intro-wrap",
-   "heron": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "1024": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]"
-   },
-   "spec": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "1024": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]"
-   },
-   "ours": "intro.dupcell.3",
-   "skip": [
-    "tag",
-    "geometry"
-   ],
-   "note": "R343 A-I2: tag+geometry skipped (the seamless-loop duplicate track rides translated span seats — the r338 census law: our own plumbing rides SPANs so heuristic glue never pairs it; explicit binding holds the reference's own recorded loop-duplicate windows; tc + the 5 unskippable fields stay measured)"
-  },
-  {
-   "section": "home-intro-wrap",
-   "heron": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "1024": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]"
-   },
-   "spec": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "1024": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]"
-   },
-   "ours": "intro.duplogo.3",
-   "skip": [
-    "tag",
-    "geometry"
-   ],
-   "note": "R343 A-I2: tag+geometry skipped (the seamless-loop duplicate track rides translated span seats — the r338 census law: our own plumbing rides SPANs so heuristic glue never pairs it; explicit binding holds the reference's own recorded loop-duplicate windows; tc + the 5 unskippable fields stay measured)"
-  },
-  {
-   "section": "home-intro-wrap",
-   "heron": {
-    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-    "1024": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1920": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]"
-   },
-   "spec": {
-    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-    "1024": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1920": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]"
-   },
-   "ours": "intro.dupcell.4",
-   "skip": [
-    "tag",
-    "geometry"
-   ],
-   "note": "R343 A-I2: tag+geometry skipped (the seamless-loop duplicate track rides translated span seats — the r338 census law: our own plumbing rides SPANs so heuristic glue never pairs it; explicit binding holds the reference's own recorded loop-duplicate windows; tc + the 5 unskippable fields stay measured)"
-  },
-  {
-   "section": "home-intro-wrap",
-   "heron": {
-    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-    "1024": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1920": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]"
-   },
-   "spec": {
-    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-    "1024": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-    "1440": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1920": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]"
-   },
-   "ours": "intro.duplogo.4",
-   "skip": [
-    "tag",
-    "geometry"
-   ],
-   "note": "R343 A-I2: tag+geometry skipped (the seamless-loop duplicate track rides translated span seats — the r338 census law: our own plumbing rides SPANs so heuristic glue never pairs it; explicit binding holds the reference's own recorded loop-duplicate windows; tc + the 5 unskippable fields stay measured)"
-  },
-  {
-   "section": "home-intro-wrap",
-   "heron": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
-    "1024": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1440": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]"
-   },
-   "spec": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
-    "1024": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1440": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]"
-   },
-   "ours": "intro.dupcell.5",
-   "skip": [
-    "tag",
-    "geometry"
-   ],
-   "note": "R343 A-I2: tag+geometry skipped (the seamless-loop duplicate track rides translated span seats — the r338 census law: our own plumbing rides SPANs so heuristic glue never pairs it; explicit binding holds the reference's own recorded loop-duplicate windows; tc + the 5 unskippable fields stay measured)"
-  },
-  {
-   "section": "home-intro-wrap",
-   "heron": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
-    "1024": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1440": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]"
-   },
-   "spec": {
-    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
-    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
-    "1024": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-    "1440": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-    "1920": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]"
-   },
-   "ours": "intro.duplogo.5",
-   "skip": [
-    "tag",
-    "geometry"
-   ],
-   "note": "R343 A-I2: tag+geometry skipped (the seamless-loop duplicate track rides translated span seats — the r338 census law: our own plumbing rides SPANs so heuristic glue never pairs it; explicit binding holds the reference's own recorded loop-duplicate windows; tc + the 5 unskippable fields stay measured)"
-  },
   {
    "section": "home-intro-wrap",
    "heron": {
@@ -360,6 +111,226 @@
     "1440"
    ],
    "note": "R343 A-I2: an additional recorded window of an already-mirrored seat (the multi-window binding precedent — the frozen walk records the same physical seat at several 6-segment truncation windows; our element is bound at each of its own recorded windows)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": {
+    "390": "home-intro-wrap > section[1] > div[1] > div[2] > div[2] > a[2] > div[1]",
+    "768": "home-intro-wrap > section[1] > div[1] > div[2] > div[2] > a[2] > div[1]",
+    "1024": "home-intro-wrap > section[1] > div[1] > div[2] > div[2] > a[2] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[1]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[1]"
+   },
+   "spec": {
+    "390": "home-intro-wrap > section[1] > div[1] > div[2] > div[2] > a[2] > div[1]",
+    "768": "home-intro-wrap > section[1] > div[1] > div[2] > div[2] > a[2] > div[1]",
+    "1024": "home-intro-wrap > section[1] > div[1] > div[2] > div[2] > a[2] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[1]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[1]"
+   },
+   "ours": "ucard.uob-garden",
+   "skip": [
+    "tag"
+   ],
+   "note": "R343 C-1: the crawl's typographic card seats — the ORIGINAL university card svg fills the recorded crawl-cell windows (same box the photo crop filled; tag skipped — svg vs img; tc + type + color + geometry stay measured)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": {
+    "390": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
+    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+    "1024": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[4]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[3]"
+   },
+   "spec": {
+    "390": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
+    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+    "1024": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[4]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[3]"
+   },
+   "ours": "intro.dupcard.1",
+   "skip": [
+    "tag"
+   ],
+   "note": "R343 C-1: the crawl's typographic card seats — the ORIGINAL university card svg fills the recorded crawl-cell windows (same box the photo crop filled; tag skipped — svg vs img; tc + type + color + geometry stay measured)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": {
+    "390": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[4]",
+    "768": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[4]",
+    "1024": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[3]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[3]"
+   },
+   "spec": {
+    "390": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[4]",
+    "768": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[4]",
+    "1024": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[3]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[3]"
+   },
+   "ours": "ucard.garyounis-1",
+   "skip": [
+    "tag"
+   ],
+   "note": "R343 C-1: the crawl's typographic card seats — the ORIGINAL university card svg fills the recorded crawl-cell windows (same box the photo crop filled; tag skipped — svg vs img; tc + type + color + geometry stay measured)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": {
+    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
+    "1024": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[1]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[4]"
+   },
+   "spec": {
+    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
+    "1024": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[1]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[4]"
+   },
+   "ours": "intro.dupcard.2",
+   "skip": [
+    "tag"
+   ],
+   "note": "R343 C-1: the crawl's typographic card seats — the ORIGINAL university card svg fills the recorded crawl-cell windows (same box the photo crop filled; tag skipped — svg vs img; tc + type + color + geometry stay measured)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": {
+    "390": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+    "1024": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[1]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[4]"
+   },
+   "spec": {
+    "390": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+    "1024": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[1]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[4]"
+   },
+   "ours": "ucard.omu-agri",
+   "skip": [
+    "tag"
+   ],
+   "note": "R343 C-1: the crawl's typographic card seats — the ORIGINAL university card svg fills the recorded crawl-cell windows (same box the photo crop filled; tag skipped — svg vs img; tc + type + color + geometry stay measured)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": {
+    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[1] > img[1]",
+    "1024": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[2]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[2]"
+   },
+   "spec": {
+    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[1] > img[1]",
+    "1024": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[2]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[2]"
+   },
+   "ours": "intro.dupcard.3",
+   "skip": [
+    "tag"
+   ],
+   "note": "R343 C-1: the crawl's typographic card seats — the ORIGINAL university card svg fills the recorded crawl-cell windows (same box the photo crop filled; tag skipped — svg vs img; tc + type + color + geometry stay measured)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": {
+    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
+    "1024": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[2]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[1]"
+   },
+   "spec": {
+    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
+    "1024": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[2]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[1]"
+   },
+   "ours": "ucard.fateh-science",
+   "skip": [
+    "tag"
+   ],
+   "note": "R343 C-1: the crawl's typographic card seats — the ORIGINAL university card svg fills the recorded crawl-cell windows (same box the photo crop filled; tag skipped — svg vs img; tc + type + color + geometry stay measured)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": {
+    "390": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[3]",
+    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[4] > div[1]",
+    "1024": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[3]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[2]"
+   },
+   "spec": {
+    "390": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[3]",
+    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[4] > div[1]",
+    "1024": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[3]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[2]"
+   },
+   "ours": "intro.dupcard.4",
+   "skip": [
+    "tag"
+   ],
+   "note": "R343 C-1: the crawl's typographic card seats — the ORIGINAL university card svg fills the recorded crawl-cell windows (same box the photo crop filled; tag skipped — svg vs img; tc + type + color + geometry stay measured)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": {
+    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
+    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+    "1024": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[3]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[2]"
+   },
+   "spec": {
+    "390": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
+    "768": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+    "1024": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[3]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[2]"
+   },
+   "ours": "ucard.garyounis-classic",
+   "skip": [
+    "tag"
+   ],
+   "note": "R343 C-1: the crawl's typographic card seats — the ORIGINAL university card svg fills the recorded crawl-cell windows (same box the photo crop filled; tag skipped — svg vs img; tc + type + color + geometry stay measured)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": {
+    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
+    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[4] > div[1] > img[1]",
+    "1024": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[1]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[3]"
+   },
+   "spec": {
+    "390": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
+    "768": "home-intro-wrap > div[2] > div[1] > div[1] > div[4] > div[1] > img[1]",
+    "1024": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+    "1440": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[1]",
+    "1920": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[3]"
+   },
+   "ours": "intro.dupcard.5",
+   "skip": [
+    "tag"
+   ],
+   "note": "R343 C-1: the crawl's typographic card seats — the ORIGINAL university card svg fills the recorded crawl-cell windows (same box the photo crop filled; tag skipped — svg vs img; tc + type + color + geometry stay measured)"
   }
  ]
 }

@@ -16,7 +16,7 @@
  */
 import { type UniversityPhoto, mediaSrcset } from '../../data/university-media';
 import { cardById } from '@shared/media/university-cards';
-import { UniversityCard } from '../media/UniversityCard';
+import { UniversityCard } from '../illustrations/UniversityCard';
 
 export interface MediaFrameProps {
   photo: UniversityPhoto;
