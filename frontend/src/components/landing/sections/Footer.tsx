@@ -112,14 +112,14 @@ const MARK_PATHS = [
 
 /* T-99 diet — the repeated seat shapes as shared components (the
  * retired inline JSX rendered the identical DOM) */
-const A = ({ to, cls, t, ds }: { to: string; cls: string; t: string; ds?: string }) => (
+const A = ({ to, cls, t, ds, tds }: { to: string; cls: string; t: string; ds?: string; tds?: string }) => (
   <a href={to} className={cls} data-spec={ds}>
-    <div className={cls + '-t'}>{t}</div>
+    <div className={cls + '-t'} data-spec={tds}>{t}</div>
   </a>
 );
-const ML = ({ s, t }: { s?: string; t: string }) => (
+const ML = ({ s, t, ts }: { s?: string; t: string; ts?: string }) => (
   <div className="fo-mono-label" data-spec={s}>
-    <div className="fo-mono-label-t">{t}</div>
+    <div className="fo-mono-label-t" data-spec={ts}>{t}</div>
   </div>
 );
 const R = ({ c, s }: { c: string; s?: string }) => <div className={c} data-spec={s} />;
@@ -191,8 +191,15 @@ export function Footer({ year }: { year: number }) {
               </div>
               {BRAND_ROWS.map((row, i) => (
                 <div className="fo-brow" key={i} data-spec={`footer.brow.${i + 1}`}>
-                  {row.map(([to, label]) => (
-                    <A key={to} to={to} cls="fo-ilink" t={label} />
+                  {row.map(([to, label], j) => (
+                    <A
+                      key={to}
+                      to={to}
+                      cls="fo-ilink"
+                      t={label}
+                      ds={`footer.br.${i + 1}.${j + 1}`}
+                      tds={`footer.brt.${i + 1}.${j + 1}`}
+                    />
                   ))}
                 </div>
               ))}
@@ -201,12 +208,12 @@ export function Footer({ year }: { year: number }) {
               <R c="fo-rule fo-rule-h fo-rule-bleed fo-rule-solid" s="footer.c1rule" />
             </div>
             <div className="fo-c1-sub" data-spec="footer.c1sub">
-              <ML s="footer.sublabel" t="[ EARLY ACCESS ]" />
+              <ML s="footer.sublabel" ts="footer.sublabelt" t="[ EARLY ACCESS ]" />
               {/* the subscribe zone (123 @1440): its own mono label + the
                   form wrapper — the census's div[2] > [label, div[1] > form] */}
               <div className="fo-form-zone" data-spec="footer.formzone">
                 <div className="fo-form-label" data-spec="footer.formlabel">
-                  <div className="fo-form-label-t">التسجيل المبكر</div>
+                  <div className="fo-form-label-t" data-spec="footer.formlabelt">التسجيل المبكر</div>
                 </div>
                 <div className="fo-form-wrap" data-spec="footer.formwrap">
                   <form
@@ -250,10 +257,10 @@ export function Footer({ year }: { year: number }) {
                         type="submit"
                         aria-label="الانتقال إلى التسجيل المبكر"
                       >
-                        <div className="fo-go-ic">
-                          <div className="fo-go-ic-in">
-                            <svg viewBox="0 0 17 17" aria-hidden="true">
-                              <path d="M2 8.5h12M9.5 4l4.5 4.5L9.5 13" />
+                        <div className="fo-go-ic" data-spec="footer.goic">
+                          <div className="fo-go-ic-in" data-spec="footer.goicin">
+                            <svg viewBox="0 0 17 17" aria-hidden="true" data-spec="footer.goicsvg">
+                              <path d="M2 8.5h12M9.5 4l4.5 4.5L9.5 13" data-spec="footer.goicpath" />
                             </svg>
                           </div>
                         </div>
@@ -269,11 +276,11 @@ export function Footer({ year }: { year: number }) {
               the heron model: col2 > [top wrapper (groups grid + its own
               hairline) · bottom grid] — the rule lives INSIDE the wrapper */}
           <div className="fo-col fo-col2" data-spec="footer.col2">
-            <div>
+            <div data-spec="footer.c2wrap">
               <div className="fo-c2-top" data-spec="footer.c2top">
                 {INDEX_TOP.map((g, gi) => (
                   <div className="fo-lgroup" key={g.label} data-spec={`footer.lgroup.${gi + 1}`}>
-                    <ML s={`footer.lglabel.${gi + 1}`} t={g.label} />
+                    <ML s={`footer.lglabel.${gi + 1}`} ts={`footer.lglabelt.${gi + 1}`} t={g.label} />
                     <div className="fo-lg-links" data-spec={`footer.lglinks.${gi + 1}`}>
                       {gi === 2 && (
                         <>
@@ -281,11 +288,11 @@ export function Footer({ year }: { year: number }) {
                               affordance + hit-slop seat (cta.css owns the
                               phone-belt underline grammar; the class adds no
                               box of its own). */}
-                          <Link to="/auth/register" className="fo-link fo-link-account">
-                            <div className="fo-link-t">إنشاء حساب</div>
+                          <Link to="/auth/register" className="fo-link fo-link-account" data-spec="footer.acct.1">
+                            <div className="fo-link-t" data-spec="footer.acctt.1">إنشاء حساب</div>
                           </Link>
-                          <Link to="/auth" className="fo-link fo-link-account">
-                            <div className="fo-link-t">{LOGIN}</div>
+                          <Link to="/auth" className="fo-link fo-link-account" data-spec="footer.acct.2">
+                            <div className="fo-link-t" data-spec="footer.acctt.2">{LOGIN}</div>
                           </Link>
                         </>
                       )}
@@ -296,6 +303,7 @@ export function Footer({ year }: { year: number }) {
                           cls={gi || li ? 'fo-link' : 'fo-link fo-link-accent'}
                           t={label}
                           ds={`footer.ilink.${gi + 1}.${li + 1}`}
+                          tds={`footer.ilinkt.${gi + 1}.${li + 1}`}
                         />
                       ))}
                     </div>
@@ -309,13 +317,13 @@ export function Footer({ year }: { year: number }) {
                   own seat between the c2 hairline and the group grid */}
               <div className="fo-c2-binner" data-spec="footer.c2binner">
                 <div className="fo-lgroup" data-spec="footer.bgroup.1">
-                  <ML s="footer.bg1label" t="CONTACT" />
+                  <ML s="footer.bg1label" ts="footer.bg1labelt" t="CONTACT" />
                   {/* r320 §D: the contact cell — the /contact door under its
                       own التواصل heading (the honest prose moved onto the
                       page; the footer carries the door) */}
-                  <h3 className="fo-contact-h">التواصل</h3>
+                  <h3 className="fo-contact-h" data-spec="footer.contacth">التواصل</h3>
                   <Link to="/contact" className="fo-biglink" data-spec="footer.biglink">
-                    <div className="fo-biglink-t">
+                    <div className="fo-biglink-t" data-spec="footer.biglinkt">
                       التواصل والتسجيل المبكر
                       <br />
                       صفحة واحدة — بلا بريد عام
@@ -323,14 +331,14 @@ export function Footer({ year }: { year: number }) {
                   </Link>
                 </div>
                 <div className="fo-lgroup" data-spec="footer.bgroup.2">
-                  <ML s="footer.bg2label.1" t="ADDRESS" />
-                  <A to="/about" cls="fo-link" t="جامعة مدارك التجريبية" ds="footer.b2link.1" />
-                  <R c="fo-rule fo-rule-h fo-rule-g" />
-                  <ML s="footer.bg2label.2" t="REGION" />
-                  <A to="/about" cls="fo-link" t="طرابلس، ليبيا" ds="footer.b2link.2" />
+                  <ML s="footer.bg2label.1" ts="footer.bg2labelt.1" t="ADDRESS" />
+                  <A to="/about" cls="fo-link" t="جامعة مدارك التجريبية" ds="footer.b2link.1" tds="footer.b2linkt.1" />
+                  <R c="fo-rule fo-rule-h fo-rule-g" s="footer.b2rule" />
+                  <ML s="footer.bg2label.2" ts="footer.bg2labelt.2" t="REGION" />
+                  <A to="/about" cls="fo-link" t="طرابلس، ليبيا" ds="footer.b2link.2" tds="footer.b2linkt.2" />
                 </div>
                 <div className="fo-lgroup" data-spec="footer.bgroup.3">
-                  <ML s="footer.bg3label" t="CHANNELS" />
+                  <ML s="footer.bg3label" ts="footer.bg3labelt" t="CHANNELS" />
                   <div className="fo-socials" data-spec="footer.socials">
                     {CHANNEL_LINKS.map(([to, label], i) => (
                       <a
@@ -339,7 +347,7 @@ export function Footer({ year }: { year: number }) {
                         className="fo-social"
                         data-spec={`footer.social.${i + 1}`}
                       >
-                        <div className="fo-social-t">{label}</div>
+                        <div className="fo-social-t" data-spec={`footer.socialt.${i + 1}`}>{label}</div>
                       </a>
                     ))}
                   </div>
@@ -393,7 +401,7 @@ export function Footer({ year }: { year: number }) {
             recorded windows. ── */}
         <div className="fo-fstrip" data-spec="footer.strip">
           <div className="fo-strip-in" data-spec="footer.stripin">
-            <div className="fo-strip-media">
+            <div className="fo-strip-media" data-spec="footer.smedia">
               <img
                 className="fo-strip-img"
                 data-spec="footer.stripimg"

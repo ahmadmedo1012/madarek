@@ -107,7 +107,7 @@
   font-weight: 500;
   transition: color 0.4s ease; /* the census link transition (0.4s/ease seats) */
 }
-.fo-ilink-t { cursor: pointer; } /* the census's interactive label seats */
+.fo-ilink-t { cursor: pointer; line-height: 18px; } /* the census's interactive label seats; R343: the 1.35x floor */
 /* r188/r320 §D — the independence paragraph (VERBATIM the About
    page's own sentence) + the r320 contact-cell heading */
 .fo-footer-about {
@@ -240,6 +240,10 @@
   transition: color 0.4s ease;
   color: var(--text);
 }
+.fo-link-t { line-height: 18px; } /* R343: the transformed floor 1.35x13.33 (the a-seat keeps its own 17.33 box) */
+.fo-link-account { line-height: 18px; }
+.fo-mono-label-t { font-size: 11.67px; line-height: 16.33px; } /* R343: the mono text seats' own pitch (was inheriting 13.33 in some zones) */
+.fo-social-t { line-height: 18px; }
 .fo-biglink-t {
   font-size: calc(var(--fu) * 20);
   line-height: calc(var(--fu) * 22);
@@ -522,11 +526,22 @@
   .fo-lg-links { margin-block-start: 4.17px; line-height: 16px; }
   .fo-lg-links a { padding-block: 0; }
   .fo-link { padding: 4.17px; font-size: 13.33px; line-height: 17.33px; }
-  .fo-biglink { margin-block-start: 5px; padding: 4.17px; block-size: 47px; }
+  /* R343 — the census's 768-991 label scale (14.73 + the 1.35x floor 19.89 —
+     the reference's own tablet type pitch, the same scale as the input seat) */
+  .fo-link-t { font-size: 14.73px; line-height: 19.89px; }
+  .fo-ilink-t { font-size: 14.73px; line-height: 19.89px; }
+  .fo-social-t { font-size: 14.73px; line-height: 19.89px; }
+  /* R343 — the census's 390 label pitch (13.89 + the 1.35x floor 18.75);
+     the account funnel pair is the reference's own BIGGER seat (15.88) */
+  /* R343 — the census's 390 label pitch (13.89 + the 1.35x floor 18.75);
+     the account funnel pair is the reference's own BIGGER seat (15.88) */
+  /* R343 — the census's 390 label pitch (the recorded label divs are 13.89/18.06;
+     the a-seat keeps its own 13.33 metrics — only the text div changes) */
+   .fo-biglink { margin-block-start: 5px; padding: 4.17px; block-size: 47px; }
   .fo-biglink-t { font-size: 19.2px; line-height: 20px; }
   .fo-socials { margin-block-start: 5px; }
   .fo-social { padding: 4.17px; block-size: 25px; }
-  .fo-social-t { font-size: 13.33px; line-height: 17px; }
+  .fo-social-t { font-size: 14.73px; line-height: 19.89px; } /* R343: the census's 768-991 label scale */
   /* the chrome band: 217 tall, chrome inset 11 (sctop 694×7 @+19) */
   .fo-fstrip { block-size: 217px; margin-block-start: -54px; }
   .fo-sc-zone { inset: 11px; }
@@ -604,19 +619,29 @@
   .fo-lg-links { display: grid; grid-template-columns: 1fr 1fr; margin-block-start: 0; line-height: 15.4px; }
   .fo-lg-links a { padding-block: 0; }
   .fo-mono-label {
-    font-size: 10px;
-    line-height: 11px;
+    font-size: 11.91px; /* R343: the census's own 390 mono pitch (was 10/11 — the recorded seat is 11.91/16.08) */
+    line-height: 16.08px;
     color: var(--neutral-400);
   }
+  /* R343 — the census's fit-content mono text seats (the recorded label
+     windows are 49-63px tight boxes, not full-width blocks) */
+  .fo-mono-label-t { inline-size: fit-content; font-size: 11.91px; line-height: 16.08px; }
   .fo-c2-top,
   .fo-c2-bottom { grid-template-columns: 1fr; }
   .fo-input { block-size: 40.3px; padding: 6.67px 6.67px 6.67px 13.33px; font-size: 15.88px; line-height: 22.68px; } /* T-06l census: 15.88/22.68@390 */
   .fo-go { block-size: 40.3px; }
+  /* R343 — the census's 20×20 go-icon frame at 390 (the fluid 17fu unit
+     collapsed to 4.6px here — a real mobile defect, now the recorded size) */
+  .fo-go-ic, .fo-go-ic-in { inline-size: 20px; block-size: 20px; }
   .fo-form { margin-block-start: 15px; padding-block-start: 15px; }
   .fo-form-line { font-size: 13.33px; line-height: 17.33px; }
   .fo-form-row { margin-block-start: 13.33px; }
   .fo-contact-h { margin: 5px 0 0; font-size: 13.33px; line-height: 18px; }
   .fo-link { padding: 4.17px; font-size: 13.33px; line-height: 17.33px; }
+  /* R343 — the census's 390 label pitch (13.89 + the 1.35x floor 18.75);
+     the account funnel pair is the reference's own BIGGER seat (15.88) */
+  .fo-link-t { font-size: 13.89px; line-height: 18.75px; }
+  .fo-link-account { font-size: 15.88px; line-height: 21.44px; }
   /* L2-c: block-size auto + the 38.3px floor — the 2-line Arabic biglink
      (2×19.2 lh + 8.34 padding = 46.74px) overflowed the fixed 38.3px box
      and its second line's ink ran 9px into the ADDRESS label below
@@ -624,7 +649,7 @@
   .fo-biglink { margin-block-start: 5px; padding: 4.17px; block-size: auto; min-block-size: 38.3px; }
   .fo-biglink-t { font-size: 18.3px; line-height: 19.2px; }
   .fo-social { padding: 4.17px; block-size: 23.3px; }
-  .fo-social-t { font-size: 13.33px; line-height: 17px; }
+   .fo-social-t { font-size: 13.89px; line-height: 18.75px; } /* R343: the census pitch + the 1.35x floor */
   .fo-socials { margin-block-start: 5px; row-gap: 15px; }
   .fo-fstrip { block-size: 80px; margin-block-start: 0; }
   .fo-strip-in { block-size: 41.6px; }
