@@ -72,6 +72,12 @@
 /* ── col1: the brand lockup + small-link rows + the subscribe seat ── */
 .fo-c1-top { padding: calc(var(--fu) * 13.33) calc(var(--fu) * 13.33) 0; }
 .fo-rule-bleed { margin-inline: calc(var(--fu) * -13.33); }
+/* R342-07: the brand block re-seats as the census's 80–96fu row family —
+   the name (26.67) + the sub (17.33) + the independence paragraph ride
+   one block so the c1-top box returns to the recorded 202fu law. The
+   block's own ink is SOLID (the census brand seats), the sub overrides
+   to the 72% soft ink. */
+.fo-brand { min-block-size: calc(var(--fu) * 96); color: var(--text); }
 .fo-brand-name {
   font-size: calc(var(--fu) * 26.67); /* 18.96/26.67/35.56 — the census brandname law */
   line-height: calc(var(--fu) * 26.67);
@@ -89,8 +95,8 @@
   display: flex;
   flex-wrap: wrap;
   column-gap: calc(var(--fu) * 10);
-  margin-block-start: calc(var(--fu) * 5.83);
-  min-block-size: calc(var(--fu) * 27);
+  margin-block-start: calc(var(--fu) * 5);
+  min-block-size: calc(var(--fu) * 26);
   align-items: center;
 }
 .fo-ilink {
@@ -101,26 +107,21 @@
   font-weight: 500;
   transition: color 0.4s ease; /* the census link transition (0.4s/ease seats) */
 }
+.fo-ilink-t { cursor: pointer; } /* the census's interactive label seats */
 /* r188/r320 §D — the independence paragraph (VERBATIM the About
    page's own sentence) + the r320 contact-cell heading */
 .fo-footer-about {
-  margin: calc(var(--fu) * 8.33) 0 0;
+  margin: calc(var(--fu) * 6.67) 0 0;
   font-size: calc(var(--fu) * 11.67);
   line-height: calc(var(--fu) * 16.33); /* ar lh floor ≥ 1.35×fs */
   font-weight: 500;
   color: var(--text-secondary);
 }
-.fo-contact-h {
-  margin: calc(var(--fu) * 5) 0 0;
-  font-size: calc(var(--fu) * 13.33);
-  line-height: calc(var(--fu) * 18); /* ar lh floor ≥ 1.35×fs */
-  font-weight: 600;
-  color: var(--text);
-}
 
 /* T-06f: the spec-measured seat panel — the heron c1sub box paints
-   rgb(179,179,175) (measured at every bp) */
-.fo-c1-sub { padding: calc(var(--fu) * 13.33); background: var(--rule-strong); }
+   rgb(179,179,175) (measured at every bp). R342-07: the bottom pad
+   retires (the census's 153fu box ends flush at the form zone). */
+.fo-c1-sub { padding: calc(var(--fu) * 13.33) calc(var(--fu) * 13.33) 0; background: var(--rule-strong); }
 .fo-mono-label {
   font-family: var(--font-mono);
   font-size: calc(var(--fu) * 11.67);
@@ -130,18 +131,32 @@
 }
 .fo-mono-label-t { color: inherit; }
 
+/* R342-07 — the subscribe zone (the census's c1sub > div[2] > [label,
+   div[1] > form] tree): its own 63×16 mono label, then the form
+   wrapper, then the two 17px copy lines + the 358×40 input row. */
+.fo-form-zone { margin-block-start: calc(var(--fu) * 8.33); }
+.fo-form-label {
+  font-family: var(--font-mono);
+  font-size: calc(var(--fu) * 11.67);
+  line-height: calc(var(--fu) * 16.33);
+  font-weight: 500;
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the census form-label seat is the 72% soft ink */
+}
+.fo-form-label-t { color: inherit; }
+.fo-form-wrap { margin-block-start: calc(var(--fu) * 8.33); }
 .fo-form {
   margin-block-start: calc(var(--fu) * 15);
   padding-block-start: calc(var(--fu) * 15);
   transition: opacity 0.4s ease; /* the census form transition seat */
 }
-[data-spec='footer.bgroup.2'] { transition: opacity 0.4s ease; } /* the census bgroup.2 transition seat */
-.fo-form-copy-t {
+.fo-form-copy { display: grid; row-gap: calc(var(--fu) * 2); }
+.fo-form-line {
   font-size: calc(var(--fu) * 13.33);
   line-height: calc(var(--fu) * 17.33);
   font-weight: 400;
   color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
 }
+[data-spec='footer.bgroup.2'] { transition: opacity 0.4s ease; } /* the census bgroup.2 transition seat */
 .fo-form-row {
   display: flex;
   margin-block-start: calc(var(--fu) * 13.33);
@@ -174,7 +189,8 @@
      rgb(179,179,175) = --rule-strong at every bp */
   color: var(--rule-strong);
 }
-.fo-go-ic { inline-size: calc(var(--fu) * 17); block-size: calc(var(--fu) * 17); color: inherit; }
+.fo-go-ic,
+.fo-go-ic-in { inline-size: calc(var(--fu) * 17); block-size: calc(var(--fu) * 17); color: inherit; display: grid; place-items: center; }
 .fo-go-ic svg { inline-size: 100%; block-size: 100%; display: block; }
 .fo-go-ic path {
   fill: none;
@@ -193,18 +209,27 @@
 }
 .fo-lgroup { padding: calc(var(--fu) * 13.33); min-inline-size: 0; }
 .fo-lg-links { margin-block-start: calc(var(--fu) * 4.17); }
+/* R342-07 — the census link seats: fit-content <a> boxes (47–135fu wide,
+   26fu tall, label 17fu) stacked one per line; the labels carry the
+   interactive cursor + the solid-ink/accent color law of the census. */
 .fo-link {
-  display: block;
-  padding: calc(var(--fu) * 4.17);
+  display: inline-flex;
+  align-items: center;
+  min-block-size: calc(var(--fu) * 26);
+  padding-inline: calc(var(--fu) * 4.17);
   text-decoration: none;
   font-size: calc(var(--fu) * 13.33);
   line-height: calc(var(--fu) * 17.33);
   font-weight: 500;
   color: var(--text); /* spec link ink — --text IS #282828 */
-  transition: color 0.4s ease; /* the census link transition (0.4s/ease seats) */
+  transition: color 0.2s ease; /* the census link transition (0.2s/ease seats) */
 }
-.fo-link-t { color: inherit; }
-.fo-link:hover { color: var(--accent); }
+.fo-link-t {
+  color: var(--text); /* the census label law: SOLID ink, not the 72% soft ink */
+  cursor: pointer; /* the census's interactive label seats */
+}
+.fo-link:hover,
+.fo-link:hover .fo-link-t { color: var(--accent); }
 .fo-link-accent,
 .fo-link-accent .fo-link-t { color: var(--accent); }
 .fo-biglink {
@@ -220,28 +245,35 @@
   line-height: calc(var(--fu) * 22);
   font-weight: 700;
   color: inherit;
+  cursor: pointer;
 }
 .fo-biglink:hover { color: var(--accent); }
+/* R342-07 — the CHANNELS grid: the census's 2×3 single-line link seats
+   (99×26 boxes, 91×17 labels) — the retired two-line socials rode the
+   same door routes. */
 .fo-socials {
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin-block-start: calc(var(--fu) * 5);
+  row-gap: calc(var(--fu) * 4.17);
 }
 .fo-social {
-  display: block;
-  padding: calc(var(--fu) * 4.17);
+  display: inline-flex;
+  align-items: center;
+  min-block-size: calc(var(--fu) * 26);
   text-decoration: none;
   color: var(--text);
   transition: color 0.4s ease;
 }
-.fo-social-t1,
-.fo-social-t2 {
+.fo-social-t {
   font-size: calc(var(--fu) * 13.33);
-  line-height: calc(var(--fu) * 17);
+  line-height: calc(var(--fu) * 17.33);
   font-weight: 500;
-  color: inherit;
+  color: var(--text);
+  cursor: pointer;
 }
-.fo-social:hover { color: var(--accent); }
+.fo-social:hover,
+.fo-social:hover .fo-social-t { color: var(--accent); }
 
 /* ── col3: the drawn construction mark (our OWN geometry) ─────────── */
 .fo-col3 {
@@ -250,10 +282,23 @@
   place-items: center;
   transition: opacity 0.65s cubic-bezier(0.59, 0.23, 0.22, 0.96); /* the census col3 transition seat */
 }
+/* R342-07 — the rail's own seat: the census vrule runs the FULL column
+   height (1×355) at the col2/col3 boundary (the inline-end edge in
+   RTL — the x-mirror of the spec's x1076 rail). */
+.fo-col3 .fo-rule-v { position: absolute; inset-block: 0; inset-inline-end: 0; align-self: stretch; }
 .fo-mark {
   inline-size: calc(var(--fu) * 215);
   block-size: calc(var(--fu) * 215); /* 153/215/287 — the census mark law */
   transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* the census mark transition seat */
+}
+/* R342-07 — the census's mark wrapper (div[1] inside the 215 box) +
+   the 17fu caption seat that carries the 0-height image twin. */
+.fo-mark-in { inline-size: 100%; block-size: 100%; }
+.fo-mark-cap {
+  margin-block-start: calc(var(--fu) * 13.33);
+  inline-size: calc(var(--fu) * 215);
+  min-block-size: calc(var(--fu) * 17);
+  transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* the census markcap transition seat */
 }
 .fo-mark-svg {
   inline-size: 100%;
@@ -261,13 +306,19 @@
   display: block;
   color: var(--text);
 }
+/* R342-07 — the census mark-path law: paths 1–7 ship veiled (the frozen
+   capture is the pre-reveal state) and reveal on scroll at 0.5s on the
+   (0.23,1,0.32,1) curve; path 8 (the frame ticks) stays lit. The veil
+   class is written by the component's IntersectionObserver (house
+   grammar — JS writes the class, CSS owns the tween). */
 .fo-mark-p {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.7;
   vector-effect: non-scaling-stroke;
-  transition: stroke 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* the census markpath transition seat */
+  transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* the census markpath transition seat */
 }
+.fo-mark-veiled { opacity: 0; }
 .fo-mark-img { inline-size: calc(var(--fu) * 215); block-size: 0; }
 
 /* ═══ the strip band: OUR ink render + the grayscale twin + chrome ═══ */
@@ -290,8 +341,12 @@
 /* the registration chrome: 4 edge rules (heron paints them via a
    background IMAGE — backgroundColor stays transparent) + the 4 corner
    crosshairs as the fo-wordmark-reg '+' family (R321 §A6 source
-   contract: CSS ::before content, never DOM text) */
-.fo-strip-chrome { position: absolute; inset: calc(var(--fu) * 10); }
+   contract: CSS ::before content, never DOM text).
+   R342-07 — the chrome zone moves OUT of .fo-strip-in to the band's own
+   second seat (the census's 1407×294 zone + its inner wrapper), so the
+   edges + regs bind at the recorded windows. */
+.fo-sc-zone { position: absolute; inset: calc(var(--fu) * 10); }
+.fo-strip-chrome { position: absolute; inset: 0; }
 .fo-sc-edge { position: absolute; background-image: linear-gradient(var(--rule-strong), var(--rule-strong)); }
 .fo-sc-t { inset-inline: calc(var(--fu) * 17); block-size: calc(var(--fu) * 7); inset-block-start: 0; }
 .fo-sc-b { inset-inline: calc(var(--fu) * 17); block-size: calc(var(--fu) * 7); inset-block-end: 0; }
@@ -309,13 +364,17 @@
   line-height: 1.35;
   display: grid;
   place-items: center;
+  transition: opacity 0.4s ease; /* the census reg transition seat */
 }
 .fo-wordmark-reg::before { content: '+'; }
 
 @media (min-width: 1700px) { .fo-fstrip { margin-block-start: -37px; } }
 @media (min-width: 992px) and (max-width: 1299.98px) { .fo-fstrip { margin-block-start: -29px; } }
 
-/* ═══ the © bar + the legal row (R321 §A2 — one ruled line) ═══ */
+/* the © bar + the legal row (R321 §A2 — one ruled line). R342-07: the
+   links ride the census's 13.33fs label law + the 0.5s/--ease
+   transition seat; the nav + separator grammar is the r321/r332
+   contract, unchanged. */
 .fo-footer-bottom {
   position: relative; /* the legalbot hairline seats full-bleed at the row top */
   display: flex;
@@ -344,12 +403,12 @@
   transition: color 0.3s ease;
 }
 .fo-legal-a:hover { color: var(--accent); }
-.fo-mono,
-.fo-footer-cluster {
+.fo-mono {
   font-family: var(--font-mono);
   font-size: calc(var(--fu) * 11.67);
   line-height: 1.35; /* T-06l census: AR floor 1.35×fs */
   font-weight: 500;
+  font-variant-numeric: tabular-nums;
 }
 .fo-legal-row {
   display: flex;
@@ -358,19 +417,21 @@
   inline-size: calc(var(--fu) * 464); /* census: 330/464/619 = 464fu */
   line-height: 1.35; /* T-06l census: the nav row lh rides the ROOT fs (1.35×root: 18fu@1440 · 24@1920 · 21.44@390) */
 }
+/* R342-07 — the census legal-link law: SOLID ink labels, 42fu-tall seats,
+   13.33fs (17.33 lh), the 0.4s/ease transition. */
 .fo-legal-link {
   display: inline-flex;
   align-items: center;
   padding-inline: calc(var(--fu) * 10);
   text-decoration: none;
-  color: inherit;
-  font-size: calc(var(--fu) * 11.67);
-  line-height: calc(var(--fu) * 15.17);
+  color: var(--text);
+  font-size: calc(var(--fu) * 13.33);
+  line-height: calc(var(--fu) * 17.33);
   font-weight: 500;
   /* the 44px touch floor (the footer link ladder) — a CONTRACT, not a
      heron measure: stays fixed px at every bp */
   min-block-size: 44px;
-  transition: color 0.3s ease;
+  transition: color 0.4s ease; /* the census legal-link transition seat */
 }
 .fo-legal-link:hover { color: var(--accent); }
 .fo-legal-sep { color: var(--rule-strong); }
@@ -438,9 +499,11 @@
     block-size: 331px;
     align-items: start;
   }
+  .fo-col3 .fo-rule-v { position: static; grid-column: 1; grid-row: 1 / span 2; }
   .fo-mark { grid-column: 2; grid-row: 1; inline-size: 207px; block-size: 207px; }
   /* T-06i: heron 768 seats the img twin at 166×0 inside the rail */
-  .fo-mark-img { grid-column: 2; grid-row: 2; margin-inline-start: 21px; inline-size: 166px; block-size: 0; }
+  .fo-mark-cap { grid-column: 2; grid-row: 2; margin-inline-start: 21px; inline-size: 166px; min-block-size: 0; }
+  .fo-mark-cap .fo-mark-img { inline-size: 166px; block-size: 0; }
   .fo-grid-rule { grid-column: 1 / -1; grid-row: 4; }
   /* fixed text/padding seats (the desktop rules are fluid now) */
   .fo-brand-name { font-size: 26.67px; line-height: 26.67px; }
@@ -451,7 +514,7 @@
   .fo-contact-h { margin: 5px 0 0; font-size: 13.33px; line-height: 18px; }
   .fo-mono-label { font-size: 11.67px; line-height: 16.33px; }
   .fo-form { margin-block-start: 15px; padding-block-start: 15px; }
-  .fo-form-copy-t { font-size: 13.33px; line-height: 17.33px; }
+  .fo-form-line { font-size: 13.33px; line-height: 17.33px; }
   .fo-form-row { margin-block-start: 13.33px; }
   .fo-input { block-size: 44px; padding: 6.67px 6.67px 6.67px 13.33px; font-size: 14.73px; line-height: 21.05px; } /* T-06l census: 14.73/21.05@768 */
   .fo-go { block-size: 44px; }
@@ -463,11 +526,10 @@
   .fo-biglink-t { font-size: 19.2px; line-height: 20px; }
   .fo-socials { margin-block-start: 5px; }
   .fo-social { padding: 4.17px; block-size: 25px; }
-  .fo-social-t1,
-  .fo-social-t2 { font-size: 13.33px; line-height: 17px; }
+  .fo-social-t { font-size: 13.33px; line-height: 17px; }
   /* the chrome band: 217 tall, chrome inset 11 (sctop 694×7 @+19) */
   .fo-fstrip { block-size: 217px; margin-block-start: -54px; }
-  .fo-strip-chrome { inset: 11px; }
+  .fo-sc-zone { inset: 11px; }
   .fo-sc-t,
   .fo-sc-b { inset-inline: 19px; block-size: 7px; }
   .fo-sc-l,
@@ -479,8 +541,7 @@
   .fo-legal-row { inline-size: 432px; }
   .fo-legal-lc { column-gap: 3.33px; }
   .fo-legal-p { font-size: 12.89px; line-height: 17.4px; } /* T-06l census: 12.89/17.4@768 */
-  .fo-mono,
-  .fo-footer-cluster { font-size: 12.89px; line-height: 17.4px; }
+  .fo-mono { font-size: 12.89px; line-height: 17.4px; }
   .fo-legal-link { padding-inline: 10px; font-size: 11.67px; line-height: 15.17px; }
 }
 
@@ -521,8 +582,9 @@
   }
   .fo-col3rule,
   .fo-mark,
-  .fo-mark-img { grid-column: auto; grid-row: auto; }
+  .fo-mark-cap { grid-column: auto; grid-row: auto; }
   .fo-mark { inline-size: 119px; block-size: 119px; }
+  .fo-mark-cap { min-block-size: 0; }
   .fo-mark-img { inline-size: 0; block-size: 0; margin: 0; }
   .fo-grid-rule { grid-column: 1 / -1; grid-row: auto; }
   .fo-brow { display: none; }
@@ -551,7 +613,7 @@
   .fo-input { block-size: 40.3px; padding: 6.67px 6.67px 6.67px 13.33px; font-size: 15.88px; line-height: 22.68px; } /* T-06l census: 15.88/22.68@390 */
   .fo-go { block-size: 40.3px; }
   .fo-form { margin-block-start: 15px; padding-block-start: 15px; }
-  .fo-form-copy-t { font-size: 13.33px; line-height: 17.33px; }
+  .fo-form-line { font-size: 13.33px; line-height: 17.33px; }
   .fo-form-row { margin-block-start: 13.33px; }
   .fo-contact-h { margin: 5px 0 0; font-size: 13.33px; line-height: 18px; }
   .fo-link { padding: 4.17px; font-size: 13.33px; line-height: 17.33px; }
@@ -562,14 +624,13 @@
   .fo-biglink { margin-block-start: 5px; padding: 4.17px; block-size: auto; min-block-size: 38.3px; }
   .fo-biglink-t { font-size: 18.3px; line-height: 19.2px; }
   .fo-social { padding: 4.17px; block-size: 23.3px; }
-  .fo-social-t1,
-  .fo-social-t2 { font-size: 13.33px; line-height: 17px; }
+  .fo-social-t { font-size: 13.33px; line-height: 17px; }
   .fo-socials { margin-block-start: 5px; row-gap: 15px; }
   .fo-fstrip { block-size: 80px; margin-block-start: 0; }
   .fo-strip-in { block-size: 41.6px; }
   .fo-strip-media,
   .fo-strip-twin { inline-size: 181.7px; block-size: 21.7px; inset-inline: 0; margin-inline: auto; inset-block: 9.2px auto; }
-  .fo-strip-chrome { inset: auto 6.67px 86.7px 6.67px; block-size: 100.8px; }
+  .fo-sc-zone { inset: auto 6.67px 86.7px 6.67px; block-size: 100.8px; }
   .fo-sc-t,
   .fo-sc-b { inset-inline: 12px; block-size: 6px; }
   .fo-sc-l,
@@ -584,8 +645,7 @@
   .fo-legal-strip { inline-size: 218px; }
   .fo-legal-lc { column-gap: 3.33px; }
   .fo-legal-p { font-size: 9.92px; line-height: 13.39px; } /* T-06l census: 9.92/13.39@390 */
-  .fo-mono,
-  .fo-footer-cluster { font-size: 9.92px; line-height: 13.39px; }
+  .fo-mono { font-size: 9.92px; line-height: 13.39px; }
   .fo-legal-link { padding-inline: 10px; font-size: 11.67px; line-height: 15.17px; }
   .fo-footer-bottom { margin-block-start: -80px; flex-direction: column; }
   /* L2-c (R341 panel-1 finding 3 — mobile footer collisions): the wrapped
