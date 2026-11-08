@@ -1,20 +1,16 @@
-# Task A-F3 — Footer col2 subtree: link-group seats + contact + socials (THE BIG MASS)
-Section: `footer` · Port 5203 · Worktree /home/z/wt/A-F3 · Branch wip/r343-A-F3
+# Task A-F3 (v2, tight) — Footer link/contact/social seats → measured bindings (biggest mass)
+Worktree /home/z/wt/A-F3 · Branch wip/r343-A-F3 · NO browsers
 
-## Goal
-The reference has **4-div nests inside every link seat** (coverage-review: "deep wrapper chains (4-div nests inside every link seat)"). Mirror that topology across **col2** in `Footer.tsx` (~lines 271-352: c2top, lgroup.N, lglinks.N, the account links, c2bottom, bgroup.1-3, the contact biglink, socials).
+## Inputs
+`tasks/_README.md` (v2 preamble) · your slice `tasks/slices/F3.json` (115 targets: link seats (`> a[` paths + their inner div chains — the reference's 4-div nests per seat), group headers, contact biglink, socials row under `footer > div[2]` minus the form cluster) · `Footer.tsx` col2 region (~lines 271-352) · mapping header from `mapping/footer.json` (lines 1-12).
 
-1. Reference: `heron-spec/footer.{390,1440}.json` — col2 = the middle column (paths under the second top-level column div): every link seat (`a[1..n]` with its inner div chain), group headers, the big contact link, the socials row. Compare with `mapping/footer.json` explicit (85 today) — most seats are unbound.
-2. Rebuild each link seat so the reference's inner chain exists for real (text wrapper, hover-ink twin, arrow box where the reference has one). Keep existing `data-spec` names (e2e depends on some) — ADD `footer.af3.*` hooks on the new wrappers.
-3. Bindings in NEW `mapping/footer-A-F3.json`.
+## Do
+1. Mirror each link seat's inner chain honestly (text wrapper, hover-ink twin where the reference has one, arrow/icon box where present). Arabic link text; existing `data-spec` names stay; hover logic (data-spec-hover ~line 142) stays.
+2. `data-spec="footer.af3.<name>"`; bindings in `mapping/footer-A-F3.json` (per-bp object paths where 390≠1440 — col2's recorded subtree differs between bps, check each slice row's bp).
+3. CSS `landing/footer-af3.css` + one @import in `landing/home.css`.
 
-## Owned files
-`Footer.tsx` (ONLY col2 JSX region) · `mapping/footer-A-F3.json` (new) · `landing/footer-af3.css` (new) · one @import in `landing/home.css`.
+## Acceptance
+≥25 of 115 bound (prefer full-check structural seats; icon boxes and rules are the safest), gates green, report per preamble.
 
-## Numeric acceptance
-- ≥14 new bound elements (this subtree carries the largest unbound mass), ≥160 measured checks, green at 390 + 1440.
-- Hover states must still work (the component has data-spec-hover logic ~line 142 — keep it intact).
-- No new fails/excused.
-
-## Commands
-Preamble flow; two chunks; kill vite.
+## Files you own
+`Footer.tsx` (col2 region ONLY) · `mapping/footer-A-F3.json` · `landing/footer-af3.css` · one @import line. Nothing else.

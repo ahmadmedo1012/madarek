@@ -1,29 +1,30 @@
-# R343 task preamble — EVERY agent reads this first
-Repo: Madarek. Your worktree: `/home/z/wt/<ID>` (branch `wip/r343-<ID>` from b8755850). Reference reading copy (do not edit): `/home/z/wt/r342-integration`.
+# R343 authoring preamble v2 (wave 1b) — binding rules distilled; NO browsers
+You are an authoring agent. Your worktree: `/home/z/wt/<ID>` (branch `wip/r343-<ID>` off b8755850). No dev server, no Playwright, no conformance runs — the orchestrator verifies after merge. Your deliverable: component edits + a new mapping file + a new CSS file, typecheck/eslint clean.
 
-## Shell setup (every shell)
-`source /home/z/.madarek-env` — gives GITHUB_TOKEN, EXPO_TOKEN, PLAYWRIGHT_BROWSERS_PATH, and `madarek_push` (push helper). NEVER echo the tokens. NEVER run npm install / npm ci (node_modules are hard-linked inodes shared box-wide). NEVER edit `scripts/conformance/mapping/footer.json` or `home-intro-wrap.json` or regenerate mappings (parallel agents own new files only). NEVER touch `scripts/conformance/run.mjs`, gates, ratchet.json, tolerances, exceptions.json, or any test assertion — you add code and bindings, you never move the goalposts.
+## Setup every shell
+`source /home/z/.madarek-env`. NEVER npm install/ci. NEVER edit: `scripts/conformance/mapping/footer.json`, `mapping/home-intro-wrap.json`, any other existing mapping, `run.mjs`, gates, ratchet, tolerances, exceptions, tests, other agents' files. You only ADD files (mapping + css) and edit the one component region you own.
 
 ## Commit discipline
-`git add -A && git commit -m "<ID>: <what>"` every ≤5 min, then `madarek_push push origin wip/r343-<ID>`. If push fails, retry once, then continue committing locally and report it.
+`git add -A && git commit -m "<ID>: <what>"` every ≤5 min; `madarek_push push origin wip/r343-<ID>` (retry once on failure, else keep committing locally).
 
-## Dev server + conformance chunk (memory is scarce: 2 CPU / 4 GB)
-- Start YOUR vite: `cd /home/z/wt/<ID>/frontend && (nohup npx vite --port <YOUR-PORT> --strictPort > /tmp/vite-<ID>.log 2>&1 &)`; wait for `curl -s -o /dev/null -w '%{http_code}' http://localhost:<PORT>/` = 200 (Vite dev needs no build).
-- Browser discipline: before ANY browser command, wait until `pgrep -fc 'chromium' || true` < 3 (sleep 20 loop, max 5 min). Kill your vite when done: `pkill -f 'vite --port <YOUR-PORT>'`.
-- Section chunk (single bp): `cd /home/z/wt/<ID> && node scripts/conformance/run.mjs --url http://localhost:<PORT>/ --sections <SECTION> --bps 390 --out` then read the summary it prints (coverage % / measured / off-book per section).
+## The binding grammar (exact, verified in run.mjs)
+- Frozen spec elements: `docs/redesign/r335/heron-spec/<section>.{bp}.json` — your slice file lists YOUR targets (path `p`, bp, tag, text-class `tc`, x/y/w/h, fs/lh/fw, colors, radius, pad).
+- Your binding file: `scripts/conformance/mapping/<section>-<ID>.json` (run.mjs auto-merges every mapping/*.json):
+  `{"ourSection": {…copy verbatim from the big mapping file…}, "heronPageKey": {…copy…}, "explicit": [ …entries… ]}`
+- Entry: `{"section": "<section>", "heron": "<path or per-bp object>", "spec": "<same as heron>", "ours": "<section>.<yourname>", "skip": ["tag","geometry"], "note": "<why, r338 census law wording>"}`.
+  - `ours` MUST equal the `data-spec` attribute value on your element, exactly (runner matches `element.ds === ours`).
+  - Per-bp paths: if the same seat has different recorded paths at 390 vs 1440, use `"heron": {"390": "…", "1440": "…"}` (same for `spec`) — nearest-bp fallback covers 768/1024/1920 automatically; a path that doesn't exist at a bp simply no-ops (no fail).
+  - `skip` groups allowed: tag, tc, geometry, type, color. Word/char split seats (tc=short, fs < 20) take `skip:["tag","geometry"]` + note citing the r338 census law (see `intro.word.1` in mapping/home-intro-wrap.json for the canonical note). Structural seats take NO skip. If a seat's geometry cannot honestly match (Arabic length), LEAVE IT UNBOUND and list it in your report — no blanket skips, no fake wrappers, no 0×0 boxes, no duplicate invisible copies.
+- Styling law (Heron): paper `var(--paper #F6F6EE)`, ink `var(--ink #282828)`, orange `var(--accent #FA3600)` — use the existing CSS variables from the landing styles (check `tokens`/`shared.css` for names); radius 0; no shadows; hairlines 1px; no raw hex/durations/z-index. Geometry targets: match slice x/y/w/h within ±2px at BOTH 390 and 1440 (media queries per bp; 768/1024/1920 approximate — the binding no-ops there unless paths match).
+- Light theme is what the frozen spec asserts. Dark theme: your elements must flip to dark tokens (the runner asserts internal consistency + WCAG ≥ 3.0 contrast in dark). Use the same variable-driven classes pattern as neighbors.
 
-## The binding model (R342-07 wrapper-mirror method)
-- Frozen Heron reference DOM per bp: `docs/redesign/r335/heron-spec/<section>.{390,768,1024,1440,1920}.json` — `elements[]` each with `p` (Heron path like `footer > div[2] > div[1] > form[1] > div[2] > button[2] > div[1]`), tag, geometry, type, colors. LIGHT-ONLY (dark asserts internal consistency automatically).
-- Your job: make OUR DOM mirror the reference's wrapper-chain topology for your subtree — real semantic containers only (grouping, layout seats, link seats, icon boxes the reference actually has), Arabic content, correct for RTL. NO junk: no empty divs whose only job is to be counted, no duplicate invisible copies, no 0x0 boxes. If a reference wrapper has no semantic purpose you can honestly carry, leave that path unbound (report it) — do not fake it.
-- Add `data-spec="<section>.<name>"` hooks on the new elements. Bind them in a NEW file `scripts/conformance/mapping/<section>-<ID>.json` (run.mjs auto-merves every mapping/*.json): shape `{"ourSection": {"<section>": "<existing selector — copy from the big mapping file>"}, "heronPageKey": {…copy…}, "explicit": [{"section": "<section>", "heron": "<heron path>", "spec": "<heron path>", "ours": "<section>.<name>"}]}` — copy the ourSection/heronPageKey values verbatim from `mapping/<section>.json`.
-- New CSS goes in YOUR file `frontend/src/styles/landing/<file>-<id-lower>.css`, imported with one `@import "./<file>-<id-lower>.css";` line appended to `frontend/src/styles/landing/home.css` (or the import block that already imports the parent file — check first). Tokens only (var(--…)); no raw hex/durations/z-index; radius 0; no shadows; hairlines. Do NOT edit footer.css/statement.css.
-- Every new visible element must also exist sensibly in dark mode (the runner re-asserts vs light spec on theme flip) and at 390/768/1024/1440/1920 (you test 390 + 1440; the wave-end matrix does all five).
+## Component edit rules
+Mirror the reference wrapper-chain only where it is a REAL seat (layout container, text row, icon frame, rule). Keep every existing `data-spec` hook (e2e depends on them) — you only ADD. Visual output must not change beyond hairline-level alignment. React/TS strict; no new deps; Arabic copy where text is needed.
 
-## Method references
-`docs/redesign/r342/REPORT.md` (wrapper-chain method + last numbers), git log of the component (`git log --oneline -15 -- frontend/src/components/landing/sections/Footer.tsx` shows R342-07's lift commits), `scripts/conformance/run.mjs` header comment (lines 1-160) = the metric law.
+## Gates before you finish (no browsers)
+1. `cd /home/z/wt/<ID> && npm run typecheck -w frontend 2>&1 | tail -3` — clean.
+2. `cd /home/z/wt/<ID> && npx eslint frontend/src/components/landing/sections/<your component> frontend/src/styles/landing/<your css> 2>&1 | tail -3` — no new errors.
+3. `python3 -c "import json;json.load(open('scripts/conformance/mapping/<section>-<ID>.json'))"` — valid JSON; every entry's heron path exists verbatim in your slice file (string or per-bp object values).
 
-## Quality gates before you finish
-`cd /home/z/wt/<ID> && npm run typecheck -w frontend 2>&1 | tail -3` (must be clean), `npx eslint frontend/src/components/landing frontend/src/styles/landing 2>&1 | tail -3` (no new errors), `cd frontend && TZ=UTC npx vitest run --silent 2>&1 | tail -5` (no new failures; skip if box memory <500 MB free — report instead). One section chunk at 390 AND one at 1440, numbers recorded.
-
-## Report back (≤10 lines, your ONLY output)
-`<ID>: subtree <name> — coverage before→after (measured checks, bound elements added), bindings added <n>, bps verified, gates (typecheck/lint/vitest/chunk) pass|fail, risks/blockers (≤2 lines).`
+## Report (≤10 lines, your ONLY output)
+`<ID>: slice <N> targets → <n> bound (skip-full <a> / skip-tag+geo <b> / left-unbound <c> with 1-line reasons), files touched, gates pass|fail, risks ≤2.`

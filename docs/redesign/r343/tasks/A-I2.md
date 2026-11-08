@@ -1,19 +1,16 @@
-# Task A-I2 — Intro CTA pill chain + ticker rows
-Section: `home-intro-wrap` · Port 5206 · Worktree /home/z/wt/A-I2 · Branch wip/r343-A-I2
+# Task A-I2 (v2, tight) — Intro media/pill/ticker structural seats → measured bindings
+Worktree /home/z/wt/A-I2 · Branch wip/r343-A-I2 · NO browsers
 
-## Goal
-Mirror the reference wrapper-chains for the **statement CTA pill** and the **ticker band** in `Statement.tsx` (~lines 208-260: the `st-pill` chain — ctaink > ctaspan > ctaspanin > ctatext, the twin ctaspan2, ctaicons > ctaicon/ctaiconin/ctaiconbox + twins — and `st-ticker` with its rule and row/window structure to the end of the component; also `StatementArt.tsx` ONLY if the reference's media-side seats belong to the ticker/media chain you own).
+## Inputs
+`tasks/_README.md` (v2 preamble) · your slice `tasks/slices/I2.json` (82 targets: the non-word structural seats — the 374×374/713×723 image + media wrappers, the 41×41 pill icon boxes at y≈761, the 1×41 vertical rules, section[1] containers, misc wrapper seats) · `Statement.tsx` pill + ticker + media regions (~lines 141-160, 208-260) + `StatementArt.tsx` (232 lines) · mapping header from `mapping/home-intro-wrap.json` (lines 1-12).
 
-1. Reference: `heron-spec/home-intro-wrap.{390,1440}.json` — the pill region (small interactive cluster at title-below y-range: `a[1]` with nested div chain, arrow icon boxes) and the ticker (the full-width row band at section bottom: repeated window boxes). Cross-check `mapping/home-intro-wrap.json` explicit/noCounterpart for what's unbound.
-2. Rebuild so every REAL reference seat exists (pill ink twin, icon frames, ticker window wrappers, rule seats). Report-only for tween residue.
-3. Hooks `data-spec="intro.ai2.*"`; bindings in NEW `mapping/home-intro-wrap-A-I2.json`.
+## Do
+1. Mirror the reference seats honestly: media image wrappers, pill icon frames (41×41 + inner glyph boxes), ticker window wrappers + rules. Report-only for tween residue.
+2. `data-spec="intro.ai2.<name>"`; bindings in `mapping/home-intro-wrap-A-I2.json` — structural seats full checks (no skip); per-bp object paths where 390≠1440.
+3. CSS `landing/statement-ai2.css` + one @import in `landing/home.css`; geometry to slice ±2px at 390 + 1440; pill hover + ticker animation unchanged.
 
-## Owned files
-`Statement.tsx` (ONLY pill + ticker + media regions) · `StatementArt.tsx` (if needed) · `mapping/home-intro-wrap-A-I2.json` (new) · `frontend/src/styles/landing/statement-ai2.css` (new) · one @import in `landing/home.css`.
+## Acceptance
+≥25 of 82 bound, gates green, report per preamble.
 
-## Numeric acceptance
-- ≥20 new bound elements, ≥230 measured checks, green at 390 + 1440.
-- Pill hover + ticker animation unchanged; no new fails/excused.
-
-## Commands
-Preamble flow; two chunks; kill vite.
+## Files you own
+`Statement.tsx` (media/pill/ticker regions ONLY) · `StatementArt.tsx` · `mapping/home-intro-wrap-A-I2.json` · `landing/statement-ai2.css` · one @import line. Nothing else.
