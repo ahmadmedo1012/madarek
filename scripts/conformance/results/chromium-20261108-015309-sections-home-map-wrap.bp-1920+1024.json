@@ -1,0 +1,4815 @@
+{
+ "generatedAt": "2026-11-08T01:52:46.328Z",
+ "engine": "chromium",
+ "url": "http://localhost:5304/",
+ "specDir": "/home/z/wt/r342-map/docs/redesign/r335/heron-spec",
+ "summary": {
+  "total": 4400,
+  "pass": 4056,
+  "fail": 344,
+  "passRate": 92.2,
+  "exceptionUses": 20,
+  "exceptionRate": 0.5,
+  "exceptionCap": "<5%",
+  "exceptionRules": {
+   "ar-text-length-class": 20
+  },
+  "unmatchedFailures": 0,
+  "gate": "report-only",
+  "coverage": {
+   "formula": "coverage = measured / (measured + offBookEst); offBookEst = suppressedChecks + excusedElements × 12 (GROUP_CHECKS sum = checks per fully-measured element; conservative — the 5 unskippable per-element checks are not counted). Section cells only; scroll/interact extensions are not coverage-scored.",
+   "thresholds": {
+    "coverageFloor": "40% measured (FAIL(coverage), no escape)",
+    "offBookCap": "70% (FAIL(off-book) unless reviewed in coverage-review.json with written reason + owner task)",
+    "heuristicShareCap": "50% of pairs (FAIL(heuristic))"
+   },
+   "overall": {
+    "measured": 4400,
+    "offBookEst": 3168,
+    "coveragePct": 58.1,
+    "offBookPct": 41.9
+   },
+   "sections": {
+    "home-map-wrap": {
+     "measured": 4400,
+     "skipped": 0,
+     "excused": 264,
+     "offBookEst": 3168,
+     "pairs": 314,
+     "heur": 96,
+     "coverage": 58.1,
+     "offBookPct": 41.9,
+     "heurPct": 30.6
+    }
+   },
+   "gateFailures": [],
+   "reviewedEscapes": []
+  },
+  "unmatchedOmitted": 0,
+  "skippedOmitted": 0,
+  "totalSkipped": 0,
+  "edge390": {
+   "fails": 0,
+   "tolerance": "±2px vs the spec's recorded 390 section-root gutter",
+   "note": "content edge = visible-content union (fully-inside descendants), root content box as fallback; spec gutter from the section root's x/w"
+  }
+ },
+ "sections": {
+  "home-map-wrap": {
+   "1024": {
+    "passRate": 91.3,
+    "n": 2200,
+    "pass": 2009,
+    "fail": 191,
+    "exceptions": 10,
+    "explicit": 2,
+    "dataSpec": 104,
+    "heuristic": 51,
+    "unmatched": 0,
+    "excused": 132,
+    "skipped": 0,
+    "missing": null
+   },
+   "1920": {
+    "passRate": 93,
+    "n": 2200,
+    "pass": 2047,
+    "fail": 153,
+    "exceptions": 10,
+    "explicit": 2,
+    "dataSpec": 110,
+    "heuristic": 45,
+    "unmatched": 0,
+    "excused": 132,
+    "skipped": 0,
+    "missing": null
+   }
+  }
+ },
+ "failures": [
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 7560,
+   "actual": 1063,
+   "delta": 6497
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 7560,
+   "actual": 1063,
+   "delta": 6497
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 5376,
+   "actual": 759,
+   "delta": 4617
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 5376,
+   "actual": 759,
+   "delta": 4617
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -1040,
+   "actual": 982,
+   "delta": 2022
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -1040,
+   "actual": 982,
+   "delta": 2022
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[5]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 960,
+   "actual": -849,
+   "delta": 1809
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[4]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 956,
+   "actual": -849,
+   "delta": 1805
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 951,
+   "actual": -849,
+   "delta": 1800
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 884,
+   "actual": -849,
+   "delta": 1733
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[3]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1034,
+   "actual": -516,
+   "delta": 1550
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1020,
+   "actual": -499,
+   "delta": 1519
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -747,
+   "actual": 771,
+   "delta": 1518
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1011,
+   "actual": -499,
+   "delta": 1510
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 966,
+   "actual": -516,
+   "delta": 1482
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -747,
+   "actual": 715,
+   "delta": 1462
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -747,
+   "actual": 715,
+   "delta": 1462
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 940,
+   "actual": -516,
+   "delta": 1456
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[4]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 886,
+   "actual": -516,
+   "delta": 1402
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 876,
+   "actual": -516,
+   "delta": 1392
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 869,
+   "actual": -499,
+   "delta": 1368
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 798,
+   "actual": -516,
+   "delta": 1314
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 807,
+   "actual": -499,
+   "delta": 1306
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[5]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 704,
+   "actual": -549,
+   "delta": 1253
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[4]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 702,
+   "actual": -549,
+   "delta": 1251
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1257,
+   "actual": 9,
+   "delta": 1248
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 699,
+   "actual": -549,
+   "delta": 1248
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 663,
+   "actual": -549,
+   "delta": 1212
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1213,
+   "actual": 80,
+   "delta": 1133
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[3]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 744,
+   "actual": -371,
+   "delta": 1115
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 736,
+   "actual": -362,
+   "delta": 1098
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 731,
+   "actual": -362,
+   "delta": 1093
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 707,
+   "actual": -371,
+   "delta": 1078
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 693,
+   "actual": -371,
+   "delta": 1064
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1062,
+   "actual": 9,
+   "delta": 1053
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": -1040,
+   "delta": 1053
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -1040,
+   "actual": 0,
+   "delta": 1040
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[4]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 665,
+   "actual": -371,
+   "delta": 1036
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 659,
+   "actual": -371,
+   "delta": 1030
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": 1040,
+   "delta": 1027
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1036,
+   "actual": 9,
+   "delta": 1027
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 655,
+   "actual": -362,
+   "delta": 1017
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1040,
+   "actual": 25,
+   "delta": 1015
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 9,
+   "actual": 1018,
+   "delta": 1009
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 618,
+   "actual": -371,
+   "delta": 989
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 622,
+   "actual": -362,
+   "delta": 984
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1018,
+   "actual": 36,
+   "delta": 982
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1018,
+   "actual": 36,
+   "delta": 982
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1284,
+   "actual": 309,
+   "delta": 975
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1284,
+   "actual": 309,
+   "delta": 975
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 36,
+   "actual": 982,
+   "delta": 946
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1018,
+   "actual": 82,
+   "delta": 936
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 907,
+   "actual": 6,
+   "delta": 901
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[3]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 914,
+   "actual": 59,
+   "delta": 854.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 991,
+   "actual": 181,
+   "delta": 810
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[8]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -747,
+   "actual": 45,
+   "delta": 792
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 920,
+   "actual": 133,
+   "delta": 786.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[4]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 905,
+   "actual": 120,
+   "delta": 784.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 759,
+   "actual": 5,
+   "delta": 754
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 7,
+   "actual": -747,
+   "delta": 754
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -747,
+   "actual": 0,
+   "delta": 747
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 7,
+   "actual": 747,
+   "delta": 740
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 744,
+   "actual": 5,
+   "delta": 739
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 5,
+   "actual": 735,
+   "delta": 730
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 747,
+   "actual": 19,
+   "delta": 728
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 735,
+   "actual": 12,
+   "delta": 723
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 735,
+   "actual": 19,
+   "delta": 716
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 735,
+   "actual": 19,
+   "delta": 716
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 552,
+   "actual": 1265,
+   "delta": 713
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 907,
+   "actual": 205,
+   "delta": 702
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 907,
+   "actual": 205,
+   "delta": 701.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 19,
+   "actual": 715,
+   "delta": 696
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[4]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 919,
+   "actual": 226,
+   "delta": 693
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 735,
+   "actual": 44,
+   "delta": 691
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 907,
+   "actual": 225,
+   "delta": 681.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 671,
+   "actual": 5,
+   "delta": 666
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1284,
+   "actual": 619,
+   "delta": 665
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[5]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 907,
+   "actual": 247,
+   "delta": 660
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1902,
+   "actual": 1265,
+   "delta": 637
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1902,
+   "actual": 1265,
+   "delta": 637
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 637,
+   "delta": 637
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 637,
+   "delta": 637
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[4]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 637,
+   "delta": 637
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[5]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 637,
+   "delta": 637
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 721,
+   "actual": 97,
+   "delta": 624
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 319,
+   "actual": 925,
+   "delta": 606
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 647,
+   "actual": 80,
+   "delta": 567
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 318,
+   "actual": 878,
+   "delta": 560.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 561,
+   "actual": 7,
+   "delta": 554.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[2] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 552,
+   "actual": 0,
+   "delta": 552
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 913,
+   "actual": 374,
+   "delta": 539.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[2] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 326,
+   "actual": 860,
+   "delta": 534
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[4] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": -365,
+   "actual": -891,
+   "delta": 526
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 685,
+   "actual": 164,
+   "delta": 521
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 685,
+   "actual": 164,
+   "delta": 521
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 685,
+   "actual": 164,
+   "delta": 521
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 907,
+   "actual": 394,
+   "delta": 512.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 483,
+   "actual": 3,
+   "delta": 480
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[3]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 488,
+   "actual": 31,
+   "delta": 456.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 318,
+   "actual": 752,
+   "delta": 433.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 318,
+   "actual": 752,
+   "delta": 433.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -333,
+   "actual": -763,
+   "delta": 430
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "bg",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(0, 0, 0, 0)",
+   "actual": "rgb(246, 246, 238)",
+   "delta": 421.52
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "bg",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(0, 0, 0, 0)",
+   "actual": "rgb(246, 246, 238)",
+   "delta": 421.52
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 490,
+   "actual": 70,
+   "delta": 419.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[4]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 482,
+   "actual": 65,
+   "delta": 417
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -348,
+   "actual": -763,
+   "delta": 415
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": -483,
+   "actual": -891,
+   "delta": 408
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[4] > g[4] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -365,
+   "actual": -763,
+   "delta": 398
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[2] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 441,
+   "actual": 55,
+   "delta": 386
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 483,
+   "actual": 110,
+   "delta": 373
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 483,
+   "actual": 110,
+   "delta": 373
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[4]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 489,
+   "actual": 121,
+   "delta": 368.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 484,
+   "actual": 121,
+   "delta": 363
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 441,
+   "actual": 801,
+   "delta": 360
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[2] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 359,
+   "actual": 0,
+   "delta": 359
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 907,
+   "actual": 553,
+   "delta": 354
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 685,
+   "actual": 331,
+   "delta": 354
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[8]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 685,
+   "actual": 331,
+   "delta": 354
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[5]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 483,
+   "actual": 132,
+   "delta": 351
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1015,
+   "actual": 674,
+   "delta": 341
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1015,
+   "actual": 674,
+   "delta": 341
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 339,
+   "delta": 339
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[3]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 339,
+   "delta": 339
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[4]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 339,
+   "delta": 339
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[5]",
+   "oursSelector": "#hm:line.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 339,
+   "delta": 339
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 907,
+   "actual": 573,
+   "delta": 333.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[4] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 460,
+   "actual": 133,
+   "delta": 327
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 328,
+   "actual": 3,
+   "delta": 324.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 170,
+   "actual": 494,
+   "delta": 324
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 318,
+   "actual": 634,
+   "delta": 315.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 359,
+   "actual": 674,
+   "delta": 315
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[4] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": -271,
+   "actual": -576,
+   "delta": 305
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 9,
+   "actual": 311,
+   "delta": 301.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 9,
+   "actual": 311,
+   "delta": 301.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 9,
+   "actual": 309,
+   "delta": 300
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 487,
+   "actual": 200,
+   "delta": 287
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[2] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 175,
+   "actual": 459,
+   "delta": 284.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 170,
+   "actual": 444,
+   "delta": 274.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 483,
+   "actual": 211,
+   "delta": 272
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[2] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 287,
+   "actual": 29,
+   "delta": 258
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -250,
+   "actual": -503,
+   "delta": 253
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -260,
+   "actual": -503,
+   "delta": 243
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[4] > g[4] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -271,
+   "actual": -503,
+   "delta": 232
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 170,
+   "actual": 401,
+   "delta": 231.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 170,
+   "actual": 401,
+   "delta": 231.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 170,
+   "actual": 401,
+   "delta": 231.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 460,
+   "actual": 689,
+   "delta": 229
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": -348,
+   "actual": -576,
+   "delta": 228
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": -711,
+   "actual": -932,
+   "delta": 221
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 615,
+   "actual": 836,
+   "delta": 220.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[2] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -711,
+   "actual": -506,
+   "delta": 205
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 907,
+   "actual": 712,
+   "delta": 195
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[4] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 262,
+   "actual": 70,
+   "delta": 191.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 943,
+   "actual": 752,
+   "delta": 191
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 484,
+   "actual": 295,
+   "delta": 188.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 9,
+   "actual": 190,
+   "delta": 181
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 9,
+   "actual": 190,
+   "delta": 181
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -686,
+   "actual": -506,
+   "delta": 180
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 483,
+   "actual": 306,
+   "delta": 177.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[8]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 735,
+   "actual": 562,
+   "delta": 173
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 459,
+   "actual": 630,
+   "delta": 171
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 562,
+   "actual": 732,
+   "delta": 170.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 170,
+   "actual": 338,
+   "delta": 168
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[8]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 170,
+   "actual": 338,
+   "delta": 168
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 5,
+   "actual": 166,
+   "delta": 161.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 5,
+   "actual": 166,
+   "delta": 161.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 5,
+   "actual": 164,
+   "delta": 159
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 38,
+   "actual": 190,
+   "delta": 152
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 287,
+   "actual": 427,
+   "delta": 140
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[2] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -496,
+   "actual": -366,
+   "delta": 130
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[6] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 124,
+   "actual": 0,
+   "delta": 124
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[4] > g[4] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 73,
+   "actual": 190,
+   "delta": 117
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[4] > g[4] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 460,
+   "actual": 574,
+   "delta": 114.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -480,
+   "actual": -366,
+   "delta": 114
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 124,
+   "actual": 19,
+   "delta": 105
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 125,
+   "actual": 20,
+   "delta": 105
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 262,
+   "actual": 367,
+   "delta": 105
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 483,
+   "actual": 380,
+   "delta": 103.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 503,
+   "actual": 401,
+   "delta": 101.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": -496,
+   "actual": -592,
+   "delta": 96
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 6,
+   "actual": 101,
+   "delta": 95
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 6,
+   "actual": 101,
+   "delta": 95
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 615,
+   "actual": 521,
+   "delta": 94
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -672,
+   "actual": -763,
+   "delta": 91
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -425,
+   "actual": -516,
+   "delta": 91
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1284,
+   "actual": 1196,
+   "delta": 88
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 363,
+   "actual": 278,
+   "delta": 85
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 363,
+   "actual": 446,
+   "delta": 83
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[6] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 81,
+   "actual": 0,
+   "delta": 81
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[8] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno1",
+   "mode": "data-spec",
+   "expected": 139,
+   "actual": 216,
+   "delta": 77
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[8] > div[1] > div[2]",
+   "oursSelector": "#ds:map.anno2",
+   "mode": "data-spec",
+   "expected": 139,
+   "actual": 216,
+   "delta": 77
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[8] > div[1] > div[3]",
+   "oursSelector": "#ds:map.anno3",
+   "mode": "data-spec",
+   "expected": 139,
+   "actual": 216,
+   "delta": 77
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -440,
+   "actual": -516,
+   "delta": 76
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 25,
+   "actual": 101,
+   "delta": 76
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno1tw",
+   "mode": "data-spec",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno1t",
+   "mode": "data-spec",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[1] > div[2]",
+   "oursSelector": "#ds:map.anno1bw",
+   "mode": "data-spec",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[2] > div[1]",
+   "oursSelector": "#ds:map.anno2tw",
+   "mode": "data-spec",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[2] > div[2]",
+   "oursSelector": "#ds:map.anno2bw",
+   "mode": "data-spec",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[3] > div[1]",
+   "oursSelector": "#ds:map.anno3tw",
+   "mode": "data-spec",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[3] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno3t",
+   "mode": "data-spec",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[3] > div[2]",
+   "oursSelector": "#ds:map.anno3bw",
+   "mode": "data-spec",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.medium",
+   "mode": "heuristic",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.short",
+   "mode": "heuristic",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "#hm:div.short",
+   "mode": "heuristic",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "#hm:div.medium",
+   "mode": "heuristic",
+   "expected": 123,
+   "actual": 198,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 262,
+   "actual": 337,
+   "delta": 75
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[6] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 125,
+   "actual": 51,
+   "delta": 74
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 81,
+   "actual": 10,
+   "delta": 71
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 81,
+   "actual": 16,
+   "delta": 65
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 328,
+   "actual": 390,
+   "delta": 62
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1257,
+   "actual": 1196,
+   "delta": 61
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -310,
+   "actual": -371,
+   "delta": 61
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[8] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno1",
+   "mode": "data-spec",
+   "expected": 274,
+   "actual": 213,
+   "delta": 60.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno1tw",
+   "mode": "data-spec",
+   "expected": 274,
+   "actual": 213,
+   "delta": 60.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno1t",
+   "mode": "data-spec",
+   "expected": 274,
+   "actual": 213,
+   "delta": 60.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[1] > div[2]",
+   "oursSelector": "#ds:map.anno1bw",
+   "mode": "data-spec",
+   "expected": 274,
+   "actual": 213,
+   "delta": 60.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.medium",
+   "mode": "heuristic",
+   "expected": 274,
+   "actual": 213,
+   "delta": 60.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[8] > div[1] > div[3]",
+   "oursSelector": "#ds:map.anno3",
+   "mode": "data-spec",
+   "expected": 239,
+   "actual": 182,
+   "delta": 56.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[3] > div[1]",
+   "oursSelector": "#ds:map.anno3tw",
+   "mode": "data-spec",
+   "expected": 239,
+   "actual": 182,
+   "delta": 56.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[3] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno3t",
+   "mode": "data-spec",
+   "expected": 239,
+   "actual": 182,
+   "delta": 56.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[3] > div[2]",
+   "oursSelector": "#ds:map.anno3bw",
+   "mode": "data-spec",
+   "expected": 239,
+   "actual": 182,
+   "delta": 56.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "#hm:div.medium",
+   "mode": "heuristic",
+   "expected": 239,
+   "actual": 182,
+   "delta": 56.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[4] > g[4] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 73,
+   "actual": 18,
+   "delta": 55
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[4] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 73,
+   "actual": 19,
+   "delta": 54
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[4] > g[4] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 47,
+   "actual": 101,
+   "delta": 54
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[6] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 81,
+   "actual": 27,
+   "delta": 54
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[4] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 73,
+   "actual": 20,
+   "delta": 53
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1213,
+   "actual": 1265,
+   "delta": 52
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[4]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 51,
+   "delta": 51
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -320,
+   "actual": -371,
+   "delta": 51
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[8] > div[1] > div[2]",
+   "oursSelector": "#ds:map.anno2",
+   "mode": "data-spec",
+   "expected": 173,
+   "actual": 122,
+   "delta": 50.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[2] > div[1]",
+   "oursSelector": "#ds:map.anno2tw",
+   "mode": "data-spec",
+   "expected": 173,
+   "actual": 122,
+   "delta": 50.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[2] > div[2]",
+   "oursSelector": "#ds:map.anno2bw",
+   "mode": "data-spec",
+   "expected": 173,
+   "actual": 122,
+   "delta": 50.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.short",
+   "mode": "heuristic",
+   "expected": 173,
+   "actual": 122,
+   "delta": 50.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "#hm:div.short",
+   "mode": "heuristic",
+   "expected": 173,
+   "actual": 122,
+   "delta": 50.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 3,
+   "actual": 51,
+   "delta": 48
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 685,
+   "actual": 637,
+   "delta": 48
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[4] > g[4] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 262,
+   "actual": 307,
+   "delta": 45.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1284,
+   "actual": 1239,
+   "delta": 45
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[3]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 6,
+   "actual": 51,
+   "delta": 45
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1036,
+   "actual": 993,
+   "delta": 43
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > br[1]",
+   "oursSelector": "#ds:map.br",
+   "mode": "data-spec",
+   "expected": 449,
+   "actual": 407,
+   "delta": 42
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#ds:map.row1t",
+   "mode": "data-spec",
+   "expected": 389,
+   "actual": 431,
+   "delta": 42
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[3] > div[2] > div[2]",
+   "oursSelector": "#ds:map.row3t",
+   "mode": "data-spec",
+   "expected": 261,
+   "actual": 303,
+   "delta": 42
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 9,
+   "actual": 51,
+   "delta": 42
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[4]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 43,
+   "delta": 42
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "transition",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "home-map-wrap > section[1] > div[1] > div[1] > div[3]",
+   "mode": "explicit",
+   "expected": "0.4s/ease",
+   "actual": "0s/none",
+   "delta": 41
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "transition",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "home-map-wrap > section[1] > div[1] > div[1] > div[3]",
+   "mode": "explicit",
+   "expected": "0.4s/ease",
+   "actual": "0s/none",
+   "delta": 41
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": 53,
+   "delta": 40
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": 53,
+   "delta": 40
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[4] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 47,
+   "actual": 10,
+   "delta": 37
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[4] > g[4] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 47,
+   "actual": 10,
+   "delta": 37
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 671,
+   "actual": 637,
+   "delta": 34
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[6] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -483,
+   "actual": -516,
+   "delta": 33
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 18,
+   "actual": 51,
+   "delta": 33
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[6] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 328,
+   "actual": 295,
+   "delta": 32.5
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -471,
+   "actual": -503,
+   "delta": 32
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[4] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 47,
+   "actual": 16,
+   "delta": 31
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > br[1]",
+   "oursSelector": "#ds:map.br",
+   "mode": "data-spec",
+   "expected": 46,
+   "actual": 18,
+   "delta": 28
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 647,
+   "actual": 674,
+   "delta": 27
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[4]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 27,
+   "delta": 27
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1062,
+   "actual": 1036,
+   "delta": 26
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[8] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno1",
+   "mode": "data-spec",
+   "expected": -480,
+   "actual": -506,
+   "delta": 26
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > br[1]",
+   "oursSelector": "#ds:map.br",
+   "mode": "data-spec",
+   "expected": 242,
+   "actual": 216,
+   "delta": 26
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno1tw",
+   "mode": "data-spec",
+   "expected": -472,
+   "actual": -497,
+   "delta": 25
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno1t",
+   "mode": "data-spec",
+   "expected": -472,
+   "actual": -497,
+   "delta": 25
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[1] > div[2]",
+   "oursSelector": "#ds:map.anno1bw",
+   "mode": "data-spec",
+   "expected": -461,
+   "actual": -486,
+   "delta": 25
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 685,
+   "actual": 660,
+   "delta": 25
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.medium",
+   "mode": "heuristic",
+   "expected": -461,
+   "actual": -486,
+   "delta": 25
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 2,
+   "actual": 27,
+   "delta": 25
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[3]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 3,
+   "actual": 27,
+   "delta": 24
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > svg[1] > g[6] > g[3] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": -348,
+   "actual": -371,
+   "delta": 23
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[4]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 23,
+   "delta": 23
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "oursSelector": "#ds:map.plaque1o",
+   "mode": "data-spec",
+   "expected": 62,
+   "actual": 84,
+   "delta": 22
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.plaque1i",
+   "mode": "data-spec",
+   "expected": 62,
+   "actual": 84,
+   "delta": 22
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": 35,
+   "delta": 22
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 31,
+   "actual": 53,
+   "delta": 22
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 31,
+   "actual": 53,
+   "delta": 22
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 744,
+   "actual": 722,
+   "delta": 22
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 328,
+   "actual": 307,
+   "delta": 21
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 6,
+   "actual": 27,
+   "delta": 21
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 7,
+   "actual": 28,
+   "delta": 21
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 7,
+   "actual": 28,
+   "delta": 21
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 5,
+   "actual": 24,
+   "delta": 19
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 9,
+   "actual": 27,
+   "delta": 18
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-map-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > br[1]",
+   "oursSelector": "#ds:map.br",
+   "mode": "data-spec",
+   "expected": 25,
+   "actual": 9,
+   "delta": 16
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "lineHeight",
+   "heronPath": "home-map-wrap > div[1] > section[1]",
+   "oursSelector": "#hm:section.none",
+   "mode": "heuristic",
+   "expected": 12.8,
+   "actual": 21.45,
+   "delta": 8.65
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "lineHeight",
+   "heronPath": "home-map-wrap > div[1] > section[1]",
+   "oursSelector": "#hm:section.none",
+   "mode": "heuristic",
+   "expected": 24,
+   "actual": 29.33,
+   "delta": 5.33
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "lineHeight",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > h2[1]",
+   "oursSelector": "#ds:map.title",
+   "mode": "data-spec",
+   "expected": 38.39,
+   "actual": 42.85,
+   "delta": 4.46
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "fontSize",
+   "heronPath": "home-map-wrap > div[1] > section[1]",
+   "oursSelector": "#hm:section.none",
+   "mode": "heuristic",
+   "expected": 9.48,
+   "actual": 13,
+   "delta": 3.52
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "fontSize",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > h2[1]",
+   "oursSelector": "#ds:map.title",
+   "mode": "data-spec",
+   "expected": 28.44,
+   "actual": 31.74,
+   "delta": 3.3
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "color",
+   "heronPath": "home-map-wrap > div[1] > section[1]",
+   "oursSelector": "#hm:section.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[4]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[3]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "color",
+   "heronPath": "home-map-wrap > div[1] > section[1]",
+   "oursSelector": "#hm:section.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "color",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(180, 180, 176)",
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[5] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "interactive",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[4] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[4]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[3]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 0.24,
+   "actual": 1,
+   "delta": 0.76
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 0.24,
+   "actual": 1,
+   "delta": 0.76
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "lineHeight",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno1t",
+   "mode": "data-spec",
+   "expected": 18,
+   "actual": 17.33,
+   "delta": 0.67
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "lineHeight",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno2t",
+   "mode": "data-spec",
+   "expected": 18,
+   "actual": 17.33,
+   "delta": 0.67
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "lineHeight",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[3] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:map.anno3t",
+   "mode": "data-spec",
+   "expected": 18,
+   "actual": 17.33,
+   "delta": 0.67
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[3] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 0.24,
+   "actual": 0.509361,
+   "delta": 0.27
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[4] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 0.24,
+   "actual": 0.00902723,
+   "delta": 0.23
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "kind": "opacity",
+   "heronPath": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[4] > g[1]",
+   "oursSelector": "#hm:g.none",
+   "mode": "heuristic",
+   "expected": 0.24,
+   "actual": 0.354422,
+   "delta": 0.11
+  }
+ ],
+ "unmatchedReport": [
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[2]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[3]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[4]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[5]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[6]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[7]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[8]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[9]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[10]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[11]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[12]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[13]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[4]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[4] > div[1] > img[1]",
+   "excused": true,
+   "reason": "heron walkthrough chapter still is a raster <img> capture; our plan is ONE authored vector drawing (the original-artwork law) — the plan area is asserted at the bound stack container"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[5]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[5] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[5] > div[1] > img[1]",
+   "excused": true,
+   "reason": "heron walkthrough chapter still is a raster <img> capture; our plan is ONE authored vector drawing (the original-artwork law) — the plan area is asserted at the bound stack container"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[6]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[6] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[6] > div[1] > img[1]",
+   "excused": true,
+   "reason": "heron walkthrough chapter still is a raster <img> capture; our plan is ONE authored vector drawing (the original-artwork law) — the plan area is asserted at the bound stack container"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[7]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[7] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[7] > div[1] > img[1]",
+   "excused": true,
+   "reason": "heron walkthrough chapter still is a raster <img> capture; our plan is ONE authored vector drawing (the original-artwork law) — the plan area is asserted at the bound stack container"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[8]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[8] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[1] > div[3]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[2] > div[3]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[3] > div[3]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[3] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[8] > div[1] > div[4]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[4] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[4] > div[1] > svg[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > mask[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > g[2]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[2] > path[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[2] > path[2]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[2] > g[3]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[2] > g[4]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > mask[3]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > g[4]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > path[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > path[2]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > path[3]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > g[4]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > g[5]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > mask[5]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > g[6]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[6] > path[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[6] > path[2]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[6] > g[3]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[6] > g[4]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "excused": true,
+   "reason": "depth-6 census duplicate/truncation artifact: the extractor records this element under the same truncated path as its bound pairmate — the live box is asserted via that binding"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[3] > div[2] > div[5]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[3] > div[2] > div[5] > div[1]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[2] > div[5] > div[1] > div[1]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "depth-6 census duplicate/truncation artifact: the extractor records this element under the same truncated path as its bound pairmate — the live box is asserted via that binding"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1920",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "depth-6 census duplicate/truncation artifact: the extractor records this element under the same truncated path as its bound pairmate — the live box is asserted via that binding"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[2]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[3]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[4]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[5]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[6]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[7]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[8]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[9]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[10]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[11]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[12]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[13]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[4]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[4] > div[1] > img[1]",
+   "excused": true,
+   "reason": "heron walkthrough chapter still is a raster <img> capture; our plan is ONE authored vector drawing (the original-artwork law) — the plan area is asserted at the bound stack container"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[5]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[5] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[5] > div[1] > img[1]",
+   "excused": true,
+   "reason": "heron walkthrough chapter still is a raster <img> capture; our plan is ONE authored vector drawing (the original-artwork law) — the plan area is asserted at the bound stack container"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[6]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[6] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[6] > div[1] > img[1]",
+   "excused": true,
+   "reason": "heron walkthrough chapter still is a raster <img> capture; our plan is ONE authored vector drawing (the original-artwork law) — the plan area is asserted at the bound stack container"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[7]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[7] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[7] > div[1] > img[1]",
+   "excused": true,
+   "reason": "heron walkthrough chapter still is a raster <img> capture; our plan is ONE authored vector drawing (the original-artwork law) — the plan area is asserted at the bound stack container"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[8] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[1] > div[3]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[2] > div[3]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[3] > div[3]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[3] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron zero-size capture scaffold node (0×0 recording with no rendered box) — nothing to assert"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[8] > div[1] > div[4]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[2] > div[8] > div[1] > div[4] > div[1]",
+   "excused": true,
+   "reason": "heron raster-still wrapper layer (the stacked img captures' scaffolding) — our plan is one authored svg asserted at the bound stack"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[2] > div[8] > div[1] > div[4] > div[1] > svg[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > mask[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > g[2]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[2] > path[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[2] > path[2]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[2] > g[3]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[2] > g[4]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > mask[3]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > g[4]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > path[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > path[2]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > path[3]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > g[4]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > g[5]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > mask[5]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > g[6]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[6] > path[1]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[6] > path[2]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[6] > g[3]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[6] > g[4]",
+   "excused": true,
+   "reason": "heron authored-SVG internal node (path/g/mask/line under svg) — our counterpart is our OWN authored inline-SVG drawing with its own honest node structure; the drawing is asserted at its bound containers (the r337 platform svg-internals precedent)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "excused": true,
+   "reason": "depth-6 census duplicate/truncation artifact: the extractor records this element under the same truncated path as its bound pairmate — the live box is asserted via that binding"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[3] > div[2] > div[2] > div[2]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[3] > div[2] > div[5]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[3] > div[2] > div[5] > div[1]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[3] > div[2] > div[5] > div[1] > div[1]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "depth-6 census duplicate/truncation artifact: the extractor records this element under the same truncated path as its bound pairmate — the live box is asserted via that binding"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "depth-6 census duplicate/truncation artifact: the extractor records this element under the same truncated path as its bound pairmate — the live box is asserted via that binding"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1024",
+   "heronPath": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+   "excused": true,
+   "reason": "the ≤991 stacked architecture (or a desktop-only seat): this recording belongs to a family whose mobile geometry our test-pinned sticky-window + stacked-closing architecture intentionally recomposes; the desktop seat is bound at ≥992"
+  }
+ ],
+ "skippedReport": [],
+ "darkInkReport": [],
+ "sectionEdges": {},
+ "provenance": {
+  "file": "chromium-20261108-015309-sections-home-map-wrap.bp-1920+1024.json",
+  "scope": "sections-home-map-wrap.bp-1920+1024",
+  "fullMatrix": false,
+  "sections": "1/10",
+  "bps": "2/5",
+  "engine": "chromium",
+  "dark": false,
+  "gate": false,
+  "url": "http://localhost:5304/"
+ }
+}
