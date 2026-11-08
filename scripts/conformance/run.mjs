@@ -1326,14 +1326,19 @@ for (const key of SECTIONS_WANTED) {
  * reddened the size gate's 500KB per-file rule (rule 1). Same cap
  * pattern as failures above; the omitted count in summary keeps the
  * report honest (nothing downstream parses unmatchedReport — it is a
- * human diagnostic; the per-cell counts in sections carry the numbers). */
-results.summary.unmatchedOmitted = Math.max(0, results.unmatchedReport.length - 400);
-results.unmatchedReport.splice(400);
+ * human diagnostic; the per-cell counts in sections carry the numbers).
+ * r342-11: 400→300 — the honest full-matrix run (800-failure work-list)
+ * put the pretty-printed file at 583KB, over rule 1's ceiling; the
+ * same law, resized (omitted count still in summary). */
+results.summary.unmatchedOmitted = Math.max(0, results.unmatchedReport.length - 300);
+results.unmatchedReport.splice(300);
 /* r338 T-14a: skipped (plumbing/binding) assertions are bounded the same
- * way; the per-cell counts in sections carry the full numbers. */
+ * way; the per-cell counts in sections carry the full numbers.
+ * r342-11: 400→250 — the size-gate re-sizing above (longest per-entry
+ * reason prose of the three reports; ~440B/entry). */
 const totalSkipped = Object.values(matrix).flatMap((b) => Object.values(b)).reduce((a, c) => a + ((c && c.skipped) || 0), 0);
-results.summary.skippedOmitted = Math.max(0, results.skippedReport.length - 400);
-results.skippedReport.splice(400);
+results.summary.skippedOmitted = Math.max(0, results.skippedReport.length - 250);
+results.skippedReport.splice(250);
 results.summary.totalSkipped = totalSkipped;
 if (DARK) {
   const dTotal = darkPass + darkFail;
