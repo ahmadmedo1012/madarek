@@ -388,24 +388,36 @@ const GOVERNANCE = {
   weeklyGrowth: Array.from({ length: 8 }, (_, i) => ({ week: `أسبوع ${i + 1}`, count: 40 + i * 7 })),
 };
 
-/* GET /owner/institutions — OwnerInstitution[] (lib/api.ts rows:
- * counts + the admin memberships block). */
+/* GET /owner/institutions — OwnerInstitution[] (lib/api.ts rows). The
+ * REAL wire shape (institution.routes.ts GET /owner/institutions):
+ * { id, name, nameEn, slug, status, createdAt, updatedAt,
+ *   activeMembershipCount, facultyCount, admins } — NO city and NO
+ * student/teacher/course counts (the D11 fixture carried fields the
+ * route never sends and MISSED the required activeMembershipCount,
+ * so the detail page's countAr(institution.activeMembershipCount)
+ * rendered a literal «undefined عضواً نشطاً» in the hermetic capture).
+ * facultyCount mirrors the FACULTIES fixture (zu=2); active membership
+ * counts stay plausible-but-honest (zu=3 active, ms=1, tb=0 — a
+ * suspended institution's memberships are deactivated). */
 const INSTITUTIONS = [
   {
     id: 'inst_e2e_zu', slug: 'zu', name: 'جامعة الزاوية', nameEn: 'Zawia University', status: 'ACTIVE',
-    city: 'الزاوية', studentCount: 240, teacherCount: 38, courseCount: 41,
+    createdAt: '2024-09-01T08:00:00.000Z', updatedAt: '2026-03-01T09:00:00.000Z',
+    activeMembershipCount: 3, facultyCount: 2,
     admins: [
       { id: 'mem_1', membershipId: 'mem_1', userId: 'usr_e2e_admin', name: 'المسجل العام', email: 'admin@zu.edu.ly', isActive: true, revokedAt: null },
     ],
   },
   {
     id: 'inst_e2e_ms', slug: 'ms', name: 'جامعة مصراتة', nameEn: 'Misrata University', status: 'ACTIVE',
-    city: 'مصراتة', studentCount: 180, teacherCount: 26, courseCount: 30,
+    createdAt: '2024-10-12T10:00:00.000Z', updatedAt: '2026-02-20T12:00:00.000Z',
+    activeMembershipCount: 1, facultyCount: 0,
     admins: [],
   },
   {
     id: 'inst_e2e_tb', slug: 'tb', name: 'جامعة طبرق', nameEn: 'Tobruk University', status: 'SUSPENDED',
-    city: 'طبرق', studentCount: 90, teacherCount: 11, courseCount: 12,
+    createdAt: '2024-11-03T09:00:00.000Z', updatedAt: '2026-01-15T11:00:00.000Z',
+    activeMembershipCount: 0, facultyCount: 0,
     admins: [],
   },
 ];
@@ -460,6 +472,18 @@ const CLIENT_ERRORS = {
 
 const overrides = [
   { method: 'GET', path: '/owner/stats', json: ok(STATS) },
+  /* BEFORE the general /owner/users entry: the detail page's offering
+   * form asks /owner/users?role=TEACHER&institutionSlug=zu (the r181
+   * teacher picker) and the mock's no-query route would swallow it,
+   * listing every role as a choosable «أستاذ». The query-constrained
+   * entry answers the honest filtered roster; first-match wins. */
+  {
+    method: 'GET', path: '/owner/users', query: { role: 'TEACHER', institutionSlug: 'zu' },
+    json: {
+      data: USERS.data.filter((u) => u.role === 'TEACHER'),
+      meta: { page: 1, limit: 200, total: 1, totalPages: 1 },
+    },
+  },
   { method: 'GET', path: '/owner/users', json: USERS },
   { method: 'GET', path: '/owner/activity', json: ACTIVITY },
   { method: 'GET', path: '/owner/realtime', json: ok(REALTIME) },
