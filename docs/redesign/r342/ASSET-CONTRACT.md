@@ -242,4 +242,13 @@ The commit SHA is recorded in the R342-01 report and §10.
 
 | commit | date | change |
 |---|---|---|
-| (this commit) | 2026-11-08 | contract v1 published; hero pair (light/dark ×1440/2880) available |
+| `f5574d6` | 2026-11-08 | contract v1 published; hero pair available (light/dark ×1440/2880) — **the incorporation point for the other nine agents** |
+| `6d9a594` | 2026-11-08 | 14 compositions land (statement, problems 01/02/04, journey lecture/assessment/library/mastery, why-cycle, roles student/registrar/quality/owner, mobile hero) — 28 twins |
+| `13cf281` | 2026-11-08 | package completes: 19/19 (journey-route, problem-03, role-teacher v3 + footer skyline) + the manifest `illustrations` block (19 items, asset-only addition) |
+
+Rejected generations (logged for honesty): statement v1 (people+color), problem-03 v1/v2
+(no ghost floors), journey-assessment v1 (baked CJK text), journey-mastery v1 (weak
+composition), journey-route v1/v2 (baked CJK text + LTR arrow), role-teacher v1/v2
+(weak grid / colored wood), role-registrar v1 (no accent), role-quality v1 (clock
+drift), role-owner v1 (oversized accent), hero-mobile ground strip (neutralized in
+post to honor the one-accent law), role-owner ribbon (neutralized in post).
