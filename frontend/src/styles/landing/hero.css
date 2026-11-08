@@ -31,12 +31,9 @@
   min-block-size: calc(100svh - 13px); /* spacing-gate: allow — the measured reference band (887 = 900 − 13), an external constant */
   align-content: stretch;
   padding-block: 0;
-  /* R328 (H1) — the consent card's seat reserve: while the gate is
-   * unanswered the hero's closing strip ends ABOVE the corner card
-   * (the bottomStack manager writes the pile's measured height), so
-   * no indicator ever rides under the card. Answered → the var drops
-   * → the art band breathes again. */
-  padding-block-end: calc(var(--app-bottom-stack, 0px) + 14px); /* spacing-gate: allow — the card's measured pile + seam, not a rung */
+  /* R342-02 — the L1-c consent is an in-flow tail band (page bottom):
+   * the R328 corner-card reserve retires with it; the 14px seam stays. */
+  padding-block-end: 14px; /* spacing-gate: allow — the measured reference seam, not a rung */
 }
 
 /* R328 (H1/H3) — the hero's three bands are grid items of a 1-column
