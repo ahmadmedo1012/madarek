@@ -5,14 +5,13 @@
  * walkthrough alone; the honest ledger lives on
  * /capabilities.
  *
- * The walkthrough's own pin driver lives inside JourneyScene
- * (CSS sticky pin + its own scrub clocks) — this section is a pure
- * mount: header copy + the scene, no composer refs. */
-import { RevealCssClass } from '../../../hooks/useReveal';
+ * R342-04 — the head band is retired: the closing column IS the
+ * section's own head (the reference's home-map content column —
+ * chip + h2 + copy + the ledger), visible from frame one. The
+ * walkthrough's own pin driver lives inside JourneyScene (CSS
+ * sticky pin + its own scrub clocks) — this section is a pure
+ * mount, no composer refs. */
 import { JourneyScene } from '../journey/JourneyScene';
-// T-14 (r339) — the head's kicker rides the shared pattern library
-// (lp-eyebrow = the chrome fo-label grammar, computed-equal swap).
-import { Eyebrow } from '../patterns';
 
 export function Chapters() {
   return (
@@ -21,30 +20,13 @@ export function Chapters() {
       {/* r308 — «رحلة التعلّم»: the pinned walkthrough. Chapters
           01–04 play out across one persistent drawing while the
           scroll is the timeline (CSS sticky pin; stacked readable
-          sequence ≤991px). R313 (D7): the map owns ≈51% of the
-          page — the reference's proportion. R315 (K-D): the
-          walkthrough reproduces the reference's map states —
-          statement → plan on the paper → INTRODUCTION card →
-          findings stations with the progress hairline → the red
-          room reveal → the closing column. */}
-      {/* T-09c — the head is SEATED INSIDE the track (.jt): heron's head
-          column is the track's own top zone (wrap > section[1] > …,
-          y = track top), not a sibling above it. */}
-      <JourneyScene
-        head={
-          <header className="chapters-head">
-            <div className="chapters-head-copy">
-              <Eyebrow n={4}>الفصول</Eyebrow>
-              <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title">
-                الرحلة — <em>أربعة فصول تتحرك أمامك</em>
-              </RevealCssClass>
-            </div>
-            <RevealCssClass as="p" className="chapters-lede" delay={2}>
-              مرّر لترى الرحلة تُبنى: أربعة فصول تتحرك في مشهد واحد. لا لقطات مُجمّلة ولا وعود.
-            </RevealCssClass>
-          </header>
-        }
-      />
+          sequence ≤991px). The walkthrough reproduces the
+          reference's map states — the entry statement over the
+          ghost plan → the plan builds → the INTRODUCTION card →
+          the findings stations → the room reveals → the closing
+          column's ledger. The h2 (id=chapters-title) lives inside
+          the closing column. */}
+      <JourneyScene />
     </section>
   );
 }

@@ -547,11 +547,15 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
     await waitFor(() => expect(document.querySelector('.jt')).not.toBeNull(), { timeout: 2000 });
 
     /* before the pin engages (p<0): the whole plan stack sits one
-     * viewport above its seat — the transform is live */
+     * viewport above its seat — the transform is live. R342-04: the
+     * drift seat is .jt-stack (the frozen spec's measured architecture
+     * — the window's chrome is static while the plan stack descends);
+     * the assertion itself is unchanged: the descent rides a
+     * transform, never layout. */
     setScrollY(GEO.top - window.innerHeight);
     fireEvent.scroll(window);
     await waitFor(
-      () => expect(document.querySelector<HTMLElement>('.jt-window')?.style.transform).toMatch(/translateY\(-\d+\.\dpx\)/),
+      () => expect(document.querySelector<HTMLElement>('.jt-stack')?.style.transform).toMatch(/translateY\(-\d+\.\dpx\)/),
       { timeout: 2000 },
     );
 
@@ -559,7 +563,7 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
     setScrollY(GEO.top + 0.2 * (GEO.trackH - window.innerHeight));
     fireEvent.scroll(window);
     await waitFor(
-      () => expect(document.querySelector<HTMLElement>('.jt-window')?.style.transform).toBe('translateY(0.0px)'),
+      () => expect(document.querySelector<HTMLElement>('.jt-stack')?.style.transform).toBe('translateY(0.0px)'),
       { timeout: 2000 },
     );
   });
