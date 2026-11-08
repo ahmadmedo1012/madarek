@@ -90,6 +90,7 @@ const HCLIP_EXCLUSIONS = [
   { sel: ".hro-work-item", reason: "the hero work strip's measured six-box grid (hero-mechanics [W]: padding-inline-start 759px @1440 + fixed vw item widths reproduce Heron's recorded band — the sixth subject bleeding past the frame's inline-end edge IS the recorded geometry)" },
   { sel: ".jt-map-col svg text", reason: "the pinned walkthrough's panned scene — the plan/section drawings are wider than the viewport at 390/768 and translate behind the window across the scrub (station labels recorded at multiple pan offsets); edge-straddling scene text is the authored marquee-class crop" },
   { sel: ".pm-cols *", reason: "the four pains' ≤767 snap carousel (pains.css ≤767 belt: scroll-snap-type x mandatory, 83.4% slides) — neighbour slides peek past the viewport edges by design, the reference's own mobile swiper anatomy" },
+  { sel: ".st-crawl-track .st-crawl-cell", reason: "R343 C-1 — the statement ticker's seamless-loop university cards (the recorded ticker anatomy): the loop track translates cells through the viewport edge by design, so edge-straddling card text is the authored marquee-class crop (the same family as the nav brand roll and the platform marquee loop copies)" },
 ];
 
 /* ── in-browser probes ─────────────────────────────────────────────────── */
