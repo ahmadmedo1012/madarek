@@ -729,5 +729,534 @@
       "note": "Use-case card crop"
     }
   ],
-  "rendersGeneratedFor": "R314 — VISUAL TRUTH (ink-render illustration programme §4.1)"
+  "rendersGeneratedFor": "R314 — VISUAL TRUTH (ink-render illustration programme §4.1)",
+  "illustrations": {
+    "generatedFor": "R342 — the original architectural illustration programme (R342-01)",
+    "generatedAt": "2026-11-08",
+    "policy": {
+      "ar": "رسوم معمارية أصلية بأسلوب الحبر المعماري أحادي اللون، مولّدة لمدارك في جولة R342 وأعيد تلوينها إلى رموز الهوية البصرية بدقة البكسل (ورق #F6F6EE / حبر #282828 / برتقالي #FA3600 في النمط الفاتح، وعكسهما الداكن). لا أعمال لأطراف ثالثة، ولا نصوص مطبوعة داخل الصور، ولا تصوير لجامعة حقيقية. ظهور أي مبنى هو تخيّل تعليمي عام ولا يعني أي ارتباط مؤسسي.",
+      "en": "Original monochrome architectural ink illustrations generated for Madarek in R342 and post-processed to pixel-exact brand tokens (paper #F6F6EE / ink #282828 / accent #FA3600 light; dark twins #282828/#F6F6EE/#FF5A1F). No third-party artwork, no baked text, no real-university depictions; buildings are imagined educational scenes, not institutional claims."
+    },
+    "count": 19,
+    "items": [
+      {
+        "id": "r342/footer-skyline",
+        "type": "illustration",
+        "slot": "footer",
+        "nameAr": "footer-skyline",
+        "altAr": "أفق حرم جامعي متخيّل بخط رفيع: رواق وقاعة وبرج وأشجار على خط أرض واحد",
+        "assets": {
+          "light": "/media/illustrations/r342/footer/footer-skyline-light.webp",
+          "dark": "/media/illustrations/r342/footer/footer-skyline-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1440,
+            384
+          ],
+          "dark": [
+            1440,
+            384
+          ],
+          "light@2x": [
+            2880,
+            768
+          ],
+          "dark@2x": [
+            2880,
+            768
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md",
+        "assets2x": {
+          "light": "/media/illustrations/r342/footer/footer-skyline-light@2x.webp",
+          "dark": "/media/illustrations/r342/footer/footer-skyline-dark@2x.webp"
+        }
+      },
+      {
+        "id": "r342/hero-campus",
+        "type": "illustration",
+        "slot": "home-hero-wrap",
+        "nameAr": "hero-campus",
+        "altAr": "المنظور الأكسونومتري المقطوع لمجمّع التعلّم في مدارك: قاعة محاضرات مدرّجة، فناء داخلي بشجرة المعرفة، معارض مكتبة على طابقين، وأروقة مقوسة — بمدخلٍ بلون العلامة النحاسي",
+        "assets": {
+          "light": "/media/illustrations/r342/hero/hero-campus-light.webp",
+          "dark": "/media/illustrations/r342/hero/hero-campus-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1440,
+            704
+          ],
+          "dark": [
+            1440,
+            704
+          ],
+          "light@2x": [
+            2880,
+            1408
+          ],
+          "dark@2x": [
+            2880,
+            1408
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md",
+        "assets2x": {
+          "light": "/media/illustrations/r342/hero/hero-campus-light@2x.webp",
+          "dark": "/media/illustrations/r342/hero/hero-campus-dark@2x.webp"
+        }
+      },
+      {
+        "id": "r342/hero-campus-mobile",
+        "type": "illustration",
+        "slot": "home-hero-wrap (mobile)",
+        "nameAr": "hero-campus-mobile",
+        "altAr": "تركيب رأسي مخصّص للجوّال من مجمّع التعلّم: قاعة المحاضرات أعلى، معرض المكتبة في الوسط، وفناء الأروقة بأسفل — رسم حبر معماري أصلي",
+        "assets": {
+          "light": "/media/illustrations/r342/hero/hero-campus-mobile-light.webp",
+          "dark": "/media/illustrations/r342/hero/hero-campus-mobile-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            768,
+            1440
+          ],
+          "dark": [
+            768,
+            1440
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/journey-assessment",
+        "type": "illustration",
+        "slot": "home-map-wrap",
+        "nameAr": "journey-assessment",
+        "altAr": "مخطط قاعة الاختبار من الأعلى: شبكة مكاتب منتظمة ومكتب الملاحظ",
+        "assets": {
+          "light": "/media/illustrations/r342/journey/journey-assessment-light.webp",
+          "dark": "/media/illustrations/r342/journey/journey-assessment-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/journey-lecture",
+        "type": "illustration",
+        "slot": "home-map-wrap",
+        "nameAr": "journey-lecture",
+        "altAr": "مخطط قاعة المحاضرات من الأعلى: صفوف متدرجة ومسرح المناقشة",
+        "assets": {
+          "light": "/media/illustrations/r342/journey/journey-lecture-light.webp",
+          "dark": "/media/illustrations/r342/journey/journey-lecture-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/journey-library",
+        "type": "illustration",
+        "slot": "home-map-wrap",
+        "nameAr": "journey-library",
+        "altAr": "مخطط طابق المكتبة من الأعلى: صفوف الرفوف وطاولات المطالعة",
+        "assets": {
+          "light": "/media/illustrations/r342/journey/journey-library-light.webp",
+          "dark": "/media/illustrations/r342/journey/journey-library-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/journey-mastery",
+        "type": "illustration",
+        "slot": "home-map-wrap",
+        "nameAr": "journey-mastery",
+        "altAr": "مخطط غرفة الإتقان من الأعلى: طاولة دائرية وجدار تقدّم مقسّم",
+        "assets": {
+          "light": "/media/illustrations/r342/journey/journey-mastery-light.webp",
+          "dark": "/media/illustrations/r342/journey/journey-mastery-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/journey-route",
+        "type": "illustration",
+        "slot": "home-map-wrap",
+        "nameAr": "journey-route",
+        "altAr": "المسار الأكاديمي من اليمين إلى اليسار: قاعة المحاضرات فالاختبار فالمكتبة فالإتقان على ممرّ واحد",
+        "assets": {
+          "light": "/media/illustrations/r342/journey/journey-route-light.webp",
+          "dark": "/media/illustrations/r342/journey/journey-route-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1600,
+            813
+          ],
+          "dark": [
+            1600,
+            813
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/problem-01-lecture",
+        "type": "illustration",
+        "slot": "home-problem-wrap",
+        "nameAr": "problem-01-lecture",
+        "altAr": "مقطع قاعة محاضرات مدرّجة: موجات الشرح تتلاشى قبل الصفوف الأخيرة — لا قياس للفهم داخل القاعة",
+        "assets": {
+          "light": "/media/illustrations/r342/problems/problem-01-lecture-light.webp",
+          "dark": "/media/illustrations/r342/problems/problem-01-lecture-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/problem-02-feedback",
+        "type": "illustration",
+        "slot": "home-problem-wrap",
+        "nameAr": "problem-02-feedback",
+        "altAr": "جناحان بينهما جسر مكسور: أوراق الاختبارات تتساقط في الفجوة — تغذية راجعة متأخرة أو منفصلة",
+        "assets": {
+          "light": "/media/illustrations/r342/problems/problem-02-feedback-light.webp",
+          "dark": "/media/illustrations/r342/problems/problem-02-feedback-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/problem-03-mastery",
+        "type": "illustration",
+        "slot": "home-problem-wrap",
+        "nameAr": "problem-03-mastery",
+        "altAr": "برج التقدّم: طابقان فارغان بخطوط أخف تمرّ منها خطوط النظر — إتقان غير مرئي",
+        "assets": {
+          "light": "/media/illustrations/r342/problems/problem-03-mastery-light.webp",
+          "dark": "/media/illustrations/r342/problems/problem-03-mastery-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/problem-04-research",
+        "type": "illustration",
+        "slot": "home-problem-wrap",
+        "nameAr": "problem-04-research",
+        "altAr": "خزانة أرشيف متاهية: رسالة بحثية تُدفن خلف أدراج مغلقة — بحث مُودَع لا يُعثر عليه",
+        "assets": {
+          "light": "/media/illustrations/r342/problems/problem-04-research-light.webp",
+          "dark": "/media/illustrations/r342/problems/problem-04-research-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/role-owner",
+        "type": "illustration",
+        "slot": "home-usecase-wrap (supplementary)",
+        "nameAr": "role-owner",
+        "altAr": "مخطط المالك على طاولة الرسم: غرفة مظلّلة وفرجار — الحاكمية وسجلّ التدقيق",
+        "assets": {
+          "light": "/media/illustrations/r342/roles/role-owner-light.webp",
+          "dark": "/media/illustrations/r342/roles/role-owner-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/role-quality",
+        "type": "illustration",
+        "slot": "home-usecase-wrap (supplementary)",
+        "nameAr": "role-quality",
+        "altAr": "جدار ضمان الجودة: مؤشّر دائري ولائحة التزام — مجالس ومؤشرات",
+        "assets": {
+          "light": "/media/illustrations/r342/roles/role-quality-light.webp",
+          "dark": "/media/illustrations/r342/roles/role-quality-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/role-registrar",
+        "type": "illustration",
+        "slot": "home-usecase-wrap (supplementary)",
+        "nameAr": "role-registrar",
+        "altAr": "شبّاك المسجّل العام: أرشيف وسجلّ مفتوح — الكليات والمقرّرات والصلاحيات",
+        "assets": {
+          "light": "/media/illustrations/r342/roles/role-registrar-light.webp",
+          "dark": "/media/illustrations/r342/roles/role-registrar-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/role-student",
+        "type": "illustration",
+        "slot": "home-usecase-wrap (supplementary)",
+        "nameAr": "role-student",
+        "altAr": "مقعد الطالب: مكتب دراسة ورف كتب ودرج صاعد — رحلة التعلّم الفردية",
+        "assets": {
+          "light": "/media/illustrations/r342/roles/role-student-light.webp",
+          "dark": "/media/illustrations/r342/roles/role-student-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/role-teacher",
+        "type": "illustration",
+        "slot": "home-usecase-wrap (supplementary)",
+        "nameAr": "role-teacher",
+        "altAr": "منصّة الأستاذ: لوح شبكي وصفوف مقاعد — بناء المحاضرات والاختبارات",
+        "assets": {
+          "light": "/media/illustrations/r342/roles/role-teacher-light.webp",
+          "dark": "/media/illustrations/r342/roles/role-teacher-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/statement-courtyard",
+        "type": "illustration",
+        "slot": "home-intro-wrap",
+        "nameAr": "statement-courtyard",
+        "altAr": "المقطع المعماري لقلب الحرم الجامعي: فناء داخلي تُحيط به أروقة مقوسة وفي مركزه شجرة المعرفة — رسم حبر أصلي لمنصّة مدارك",
+        "assets": {
+          "light": "/media/illustrations/r342/statement/statement-courtyard-light.webp",
+          "dark": "/media/illustrations/r342/statement/statement-courtyard-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/why-cycle",
+        "type": "illustration",
+        "slot": "home-why-wrap",
+        "nameAr": "why-cycle",
+        "altAr": "دورة المنصّة من اليمين إلى اليسار: مرصد التعلّم، جدار الفجوات، ممر التدريب، وسلّم التقدّم الصاعد",
+        "assets": {
+          "light": "/media/illustrations/r342/why/why-cycle-light.webp",
+          "dark": "/media/illustrations/r342/why/why-cycle-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1600,
+            813
+          ],
+          "dark": [
+            1600,
+            813
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      }
+    ]
+  }
 }
