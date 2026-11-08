@@ -115,6 +115,11 @@
       "file": "backend/prisma/seed-demo-r330.ts",
       "phrase": "الإدارة",
       "reason": "R330 demo content data (the documented «course topics» keep category): the academic subject «مبادئ الإدارة» — course name, its lectures/exams, and the teacher's bio — a field of study, never the المسجل العام role label"
+    },
+    {
+      "file": "shared/media/university-cards.ts",
+      "phrase": "الإدارة",
+      "reason": "R343 C-1 card registry: the DOCUMENTED seat names of university buildings (الإدارة المركزية / تفصيلة من الإدارة — Benghazi's central administration block, the photo seat's own caption lineage) — institution documentation, never the registrar role"
     }
   ]
 }
