@@ -1,16 +1,12 @@
-# R344 RESUME
-State: main=4b6a423c. CI green on fe9201fd (conformance 93.218 PASS); ratchet re-pinned 93.1 (authorized, evidence in DECISIONS.md); size-gate green; docs 22.5MB (VR baseline lives at audits/evidence/r344/vr, webp, 500 shots).
-DONE:
-- G-1: origin has ONLY main (195 archive tags); D1 tool+reports cherry-picked; l2d/sec-map documented.
-- Item 0: +90 real checks (platform/why/cta static census fixes + binding wave r344-item0.json); CI 93.090→93.218; ratchet 93.1 (rises only).
-- VR baseline: audits/evidence/r344/vr (webp q92, 25 routes × 5bp × 2 themes, deterministic encoder; vr-capture.mjs emits webp to audits/ by default).
-- C-6: grain + micro-grid = inline feTurbulence data-URIs (tuned to r314 record via scripts/r344/grain-uri.mjs); media/textures + make-grain.mjs + grain-measure.json DELETED; r162 test re-keyed (feColorMatrix ban was the folio-era guard); verify --fast PASS.
-NEXT (queue order):
-1. C-4 product plates: scripts/art/render-plates.mjs (Playwright, real components, seeded, byte-stable --check; method docs/archive/redesign/r333/media-capture.md) → regenerate 16 public/media/product + 3 src/assets/product; delete old; manifest products[] re-key; ≤80KB each.
-2. C-5: wire the 18 unwired r342 illustrations per ASSET-CONTRACT §3 (WhyScene.tsx:257 model); data-spec + mapping (new files).
-3. C-sheet: imagery-sheet.png + VLM ≥8/10 per asset; CLS 0 + LCP<2.5s.
-4. D: CSS 47,5xx → ≤33,000 (vr diff ≤0.1% per batch; dead.mjs + css-dead report on main now).
-5. E panel (fix capture dark-boot per live-smoke.mjs; Heron calibration ≥80/84; 3 judges ≥72/84).
-6. F mobile (campus.tsx→cards; doctor/tsc/jest/lint; OTA).
-7. G-2 + REPORT.md + HANDOFF.md.
-GOTCHAS: kill stale vites (pkill -f "vite --port 517") — they survive calls sometimes and eat ports + inotify; this box ≈ CI (93.09 clean-main baseline vs r343-box 93.24); never pipe verify.sh; scoped probes write blobs (clean before commit); feColorMatrix is legal again (R344 grain).
+# R344 RESUME (refreshed at the budget stop)
+State: main=644af8ca; all gates green locally (verify --fast PASS; stylelint 45/45; size-gate GREEN; knip deadcode at baseline). CI on 644af8ca in flight (deadcode green on b3f74aa7; CI green on fe9201fd at conformance 93.218 PASS vs the re-pinned 93.1).
+DONE this round: G-1 (only main + 195 archive tags) · item 0 (+90 real checks, ratchet 93.1 authorized re-pin, evidence in DECISIONS.md) · VR baseline (audits/evidence/r344/vr, 500 webp) · C-6 (grain/micro-grid = feTurbulence data-URIs, media/textures deleted, r162 test re-keyed) · C-4 (deterministic /__plates stage + render-plates.mjs, 19 plates 6-21KB byte-stable --check, manifest re-keyed, all ≥8/10 VLM) · C-sheet (imagery-sheet.png; OG FIXED — the file:// subresource bug had baked a torn-photo placeholder into og.jpg since r343; VLM-verified clean; plate rejects fixed: radius-0/no-glow, 15px mono floor, ink stat digits + orange ProgressBar seat, outline pills) · deadcode + stylelint + size regressions fixed.
+NOT DONE (the honest queue for the next session, in order):
+1. D — CSS demolition 47,5xx → ≤33,000 (!important 52→0): VR baseline READY (audits/evidence/r344/vr + vr-capture.mjs --png for re-captures); inputs on main (scripts/css/dead.mjs + docs/redesign/r343/css-dead/report.{json,md}: 1,756 never-matched, top patterns.css 423/components 236/colleges 171/student 81); batches ≤10min, pixel diff ≤0.1% (write scripts/r344/vr-diff.mjs; allowlist legitimate diffs in ALLOW.md); layers + tokens-only; css-counts ratchet only down. The vr-capture emits webp to audits/evidence/r344/vr (resume-skips done cells).
+2. C-5's vault: the 18 unwired r342 illustrations stay VAULTED (see DECISIONS.md — both landing wiring attempts measured −29/−403 checks, reverted per the conformance law). F consumes them: mobile splash/illustrations/OG wiring.
+3. E — blind panel: fix the capture per live-smoke.mjs pattern (theme seeded via addInitScript); dark self-test (mean luminance <0.25); calibrate on Heron ≥80/84; 3 VLM judges (the createVision pattern works — /tmp/vlm-review/sanity.mjs from this session); findings→assertions BEFORE fixes; ≥72/84 target.
+4. F — mobile: doctor/tsc/jest/lint in apps/mobile; campus.tsx:160 → the card system (import shared/media/university-cards.ts via the copy-script pattern); wire plates+illustrations+splash+OG; delete media/universities/*-800.webp + manifest photos[] + media/app; review tabs at 390×844 (VLM ≥8/10, Arabic ≥15sp, touch ≥44pt); ONE eas update --branch production (EXPO_TOKEN in /home/z/.madarek-env); NEXT-BUILD.md for the Dec-1 native list. Mobile CI red = EAS build quota (external, expected).
+5. G-2 + REPORT.md/HANDOFF.md refresh + the §9 table.
+6. §6 perf: LCP measured 3984ms @4×CPU/1.6Mbps on THIS throttled box (CLS 0.0069) — measure on the LIVE deploy (madarek.onrender.com) for the honest §6 numbers; axe both themes; live-smoke 390/1440.
+GOTCHAS: kill stale vites (pkill -f "vite --port 517") — they survive calls, eat ports+inotify; this box ≈ CI (clean-main 93.09); never pipe verify.sh; scoped probes write results blobs (clean before commit); mapping edits = new files only; the ratchet only rises from 93.1; feColorMatrix legal again (R344 grain); z-ai-web-dev-sdk is installed at /home/z/my-project (run VLM scripts from there: zai.chat.completions.createVision + thinking disabled).
+NEXT TASK ID: D (CSS demolition) — STOPPED BY BUDGET at D (CSS demolition, not started).
