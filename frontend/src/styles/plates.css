@@ -72,7 +72,7 @@
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   direction: ltr;
-  font-size: 14px;
+  font-size: 15px; /* ≥14px effective at print scale */
 }
 
 /* the search/input seat */
@@ -183,7 +183,7 @@
   gap: 12px;
 }
 .plate-cpkicker {
-  font-size: 14px;
+  font-size: 15px; /* the VLM measured 14px mono at ~13px effective — the C-4 floor is ≥14px effective */
   color: var(--accent);
   font-family: var(--font-mono);
   direction: ltr;
@@ -214,10 +214,7 @@
   border-radius: 0;
   box-shadow: none;
 }
-/* the checkpoint kicker rides 15px (the VLM measured the 14px mono at
- * ~13px effective — the C-4 floor is ≥14px effective) */
-.plate-cpkicker { font-size: 15px; }
-.plate-mono { font-size: 15px; }
+
 
 /* R344 C-sheet re-review: the plate renders the printed specimen — the
  * StatLine tone families (positive/warning/danger/signal) recolor the

@@ -416,8 +416,8 @@
     "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
     "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
     "checksums": {
-     "720": "cf2155c7f50ed8fb",
-     "1280": "085ad796b15b36a3"
+     "720": "7f4b9124a1d9ab52",
+     "1280": "c5dea663f08d4258"
     },
     "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
    },
@@ -556,8 +556,8 @@
     "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
     "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
     "checksums": {
-     "720": "1991d3bc2a3653e5",
-     "1280": "4758a892f3252257"
+     "720": "99ad5f923ac0ceb5",
+     "1280": "319c5c0ba98379e6"
     },
     "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
    },
