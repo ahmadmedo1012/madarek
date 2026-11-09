@@ -32,7 +32,8 @@ const WORKTREE = join(__dirname, "..", "..");
 const { chromium } = createRequire(join(WORKTREE, "frontend", "package.json"))("playwright");
 const arg = (n, d) => { const i = process.argv.indexOf(`--${n}`); return i > -1 ? process.argv[i + 1] : d; };
 const URL_BASE = arg("url", "http://localhost:5173");
-const OUT = resolve(WORKTREE, arg("out", "docs/redesign/r344/vr"));
+const OUT = resolve(WORKTREE, arg("out", "audits/evidence/r344/vr"));
+const WEBP = !process.argv.includes("--png"); // webp q92 masters (deterministic encoder, like-for-like diffs)
 const MANIFEST = join(OUT, "vr-manifest.json");
 const FORCE = process.argv.includes("--force");
 const BPS_WANTED = (arg("bps", "1920,1440,1024,768,390")).split(",").map((s) => s.trim()).filter(Boolean);
@@ -150,9 +151,9 @@ try {
       for (const bp of BPS) {
         for (const theme of THEMES_WANTED) {
           const id = `${slug(route)}|${bp}|${theme}`;
-          const file = join(OUT, slug(route), `${bp}-${theme}.png`);
-          const bottom = join(OUT, slug(route), `${bp}-${theme}-bottom.png`);
-          if (!FORCE && manifest.cells[id]?.status === "done" && existsSync(file)) { skipped++; continue; }
+          const file = join(OUT, slug(route), `${bp}-${theme}.${WEBP ? "webp" : "png"}`);
+          const bottom = join(OUT, slug(route), `${bp}-${theme}-bottom.${WEBP ? "webp" : "png"}`);
+          if (!FORCE && manifest.cells[id]?.status === "done" && (existsSync(file) || existsSync(file.replace(/\.webp$/, ".png")))) { skipped++; continue; }
           const cell = { status: "error", file: relative(WORKTREE, file) };
           try {
             const context = await browser.newContext({ viewport: { width: Number(bp), height: vpH(bp) } });
@@ -178,14 +179,22 @@ try {
             const step = Math.max(400, Math.round(vpH(bp) * 0.8));
             for (let y = 0; y < height; y += step) { await seat(page, y); await page.waitForTimeout(90); }
             await seat(page, height); await page.waitForTimeout(400);
-            await page.screenshot({ path: bottom });
+            const png = (p) => WEBP ? p.replace(/\.png$/, ".tmp.png") : p;
+            const webpize = (p) => { if (!WEBP) return; };
+            await page.screenshot({ path: png(bottom) });
             await seat(page, 0); await page.waitForTimeout(500);
             mkdirSync(dirname(file), { recursive: true });
-            await page.screenshot({ path: file });
-            if (LANDING_FULLPAGE && route === "/") {
-              await page.screenshot({ path: join(OUT, slug(route), `${bp}-${theme}-full.png`), fullPage: true });
-            }
+            await page.screenshot({ path: png(file) });
             await context.close();
+            if (WEBP) {
+              const { execFileSync } = await import("node:child_process");
+              for (const pngPath of [png(bottom), png(file)]) {
+                if (!existsSync(pngPath)) continue;
+                const webpPath = pngPath.replace(/\.tmp\.png$/, ".webp");
+                execFileSync("python3", ["-c", "import sys;from PIL import Image;Image.open(sys.argv[1]).save(sys.argv[2],\"WEBP\",quality=92,method=6)", pngPath, webpPath], { stdio: "ignore" });
+                rmSync(pngPath);
+              }
+            }
             cell.status = "done";
             done++;
           } catch (e) {

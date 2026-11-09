@@ -677,7 +677,7 @@ a.pf-row-link {
   .auth-mark-br, .nf-mark-br { bottom: 0; right: 0; translate: 50% 50%; }
 
   /* ══ 1c · THE PAPER GRAIN (R315 · K-I) — the landing's .fo-grain
-     recipe verbatim (scripts/r314/grain-measure.json: tile std-dev
+     recipe verbatim (the r314 std-dev record, inline feTurbulence data-URIs per R344 C-6: tile std-dev
      matched to ±0.03% light; the dark twin rides plain alpha). A
      multiply film-grain + the faint dotted micro-grid (24px cell)
      over the paper ground, UNDER the flowing content, under the
@@ -689,8 +689,8 @@ a.pf-row-link {
     z-index: 0;
     pointer-events: none;
     background-image:
-      url('/media/textures/grain-tile-light.webp'),
-      url('/media/textures/micro-grid.svg');
+      url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256%22%20height%3D%22256%22%3E%3Cfilter%20id%3D%22f%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22256%22%20height%3D%22256%22%20filterUnits%3D%22userSpaceOnUse%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.4%22%20numOctaves%3D%221%22%20seed%3D%2211%22%20stitchTiles%3D%22stitch%22%2F%3E%3CfeColorMatrix%20type%3D%22matrix%22%20values%3D%220%200%200%200%201.0988%20-0.2600%200%200%200%201.0988%200%20-0.2600%200%200%201.0988%200%200%200%200%201%22%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%22256%22%20height%3D%22256%22%20filter%3D%22url%28%23f%29%22%2F%3E%3C%2Fsvg%3E'),
+      url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Crect%20x%3D%2212%22%20y%3D%2212%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%23B3B3AF%22%20fill-opacity%3D%220.4%22%2F%3E%3C%2Fsvg%3E');
     background-size: 256px, 24px;
     background-repeat: repeat, repeat;
     mix-blend-mode: multiply;
@@ -699,8 +699,8 @@ a.pf-row-link {
 
   html[data-theme='dark'] .auth-grain {
     background-image:
-      url('/media/textures/grain-tile-dark.webp'),
-      url('/media/textures/micro-grid.svg');
+      url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22256%22%20height%3D%22256%22%3E%3Cfilter%20id%3D%22f%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22256%22%20height%3D%22256%22%20filterUnits%3D%22userSpaceOnUse%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.4%22%20numOctaves%3D%221%22%20seed%3D%2211%22%20stitchTiles%3D%22stitch%22%2F%3E%3CfeColorMatrix%20type%3D%22matrix%22%20values%3D%220.0180%200%200%200%200.0100%200%200.0180%200%200%200.0100%200%200%200.0180%200%200.0100%200%200%200%200%201%22%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%22256%22%20height%3D%22256%22%20filter%3D%22url%28%23f%29%22%2F%3E%3C%2Fsvg%3E'),
+      url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Crect%20x%3D%2212%22%20y%3D%2212%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%23B3B3AF%22%20fill-opacity%3D%220.4%22%2F%3E%3C%2Fsvg%3E');
     mix-blend-mode: normal;
     opacity: 0.9;
   }

@@ -28,3 +28,8 @@ apps/mobile/src/api/schema.generated.ts
 # full-matrix JSON blobs run ~570-600KB (the per-cell detail is the
 # reproducible backing evidence, never last-writer-wins archaeology).
 scripts/conformance/results/
+
+# R344 (D1 cherry-picks): the CSS dead-code census report — a Phase-D
+# INPUT (the 1,756-never-matched-selector work-list); provenance blob,
+# like the conformance results blobs above.
+docs/redesign/r343/css-dead/report.json

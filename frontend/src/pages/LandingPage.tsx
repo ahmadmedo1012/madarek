@@ -451,7 +451,7 @@ export default function LandingPage() {
       <div className="sheet-frame" aria-hidden="true" />
 
       {/* R314 (V3) → R318 (C2): the measured paper grain + dotted
-          micro-grid film (scripts/r314/grain-measure.json) now seats on
+          micro-grid film (R344 C-6: inline feTurbulence data-URIs, tuned to the r314 measurement record) now seats on
           body::before while the landing is mounted (the effect below
           toggles the body class) — pseudo-elements are not LCP
           candidates, so the decorative film can never be the page's

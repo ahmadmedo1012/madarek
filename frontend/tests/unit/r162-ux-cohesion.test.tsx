@@ -394,7 +394,11 @@ describe('r172a §4 → r188 — the grain veil is retired with the Orbit-Ink wo
   it('no grain layer exists in the folio sheet (clean paper world)', () => {
     expect(css).not.toContain('.ln-grain');
     expect(css).not.toMatch(/--ln-grain-op/);
-    expect(css).not.toMatch(/feColorMatrix/);
+    // R344 C-6 re-key: the r172a-era blanket /feColorMatrix/ ban guarded the
+    // RETIRED folio canvas grain; the live contract since R314→R344 is the
+    // paper film-grain itself — deterministic inline feTurbulence SVG
+    // data-URIs (feTurbulence + feColorMatrix inside the URI, tuned to the
+    // r314 measurement record). The folio patterns stay banned above.
   });
 });
 

@@ -8,7 +8,7 @@
  * the Heron sheet: a 1px hairline frame at the 7px viewport inset (the
  * reference's measured frame constant, identical at 1440/768/390), the
  * 10×10 mono corner plus-marks, and the measured paper-grain film
- * (scripts/r314/grain-measure.json — 256px multiply film-grain tile +
+ * (the R344 C-6 inline feTurbulence data-URIs — 256px multiply film-grain tile +
  * the 24px dotted micro-grid). This component carries THAT grammar to
  * every AUTHENTICATED route: the whole viewport becomes the sheet.
  *
