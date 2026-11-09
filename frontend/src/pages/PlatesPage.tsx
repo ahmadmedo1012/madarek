@@ -285,11 +285,12 @@ function FragmentQuality() {
           </div>
         ))}
       </div>
+      <ProgressBar value={0.91} label="متوسّط الحضور هذا الفصل" />
       <StatLine
         items={[
           { label: 'اختبارات معتمدة', value: '42' },
-          { label: 'متوسّط الحضور', value: '91%', tone: 'positive' as const },
-          { label: 'تحت المراجعة', value: '5', tone: 'warning' as const },
+          { label: 'متوسّط الحضور', value: '91%' },
+          { label: 'تحت المراجعة', value: '5' },
         ]}
       />
     </div>

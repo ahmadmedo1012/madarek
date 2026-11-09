@@ -173,8 +173,8 @@ const LOCKUP = readFileSync(path.join(BRAND_DIR, 'lockup.svg'), 'utf8');
  * the faces resolve from the self-hosted woff2s via file:// URLs so the
  * card renders identically on any machine). */
 const TAGLINE = 'منصّة مدارك — كلّ معرفة تبدأ نقطةً وتصبح مدارًا';
-const plexArabicUrl = pathToFileURL(path.join(ROOT, 'frontend/public/fonts/plex-sans-arabic-600-normal-arabic.woff2')).href;
-const plexLatinUrl = pathToFileURL(path.join(ROOT, 'frontend/public/fonts/plex-sans-arabic-600-normal-latin.woff2')).href;
+const plexArabicUrl = `data:font/woff2;base64,${readFileSync(path.join(ROOT, 'frontend/public/fonts/plex-sans-arabic-600-normal-arabic.woff2')).toString('base64')}`;
+const plexLatinUrl = `data:font/woff2;base64,${readFileSync(path.join(ROOT, 'frontend/public/fonts/plex-sans-arabic-600-normal-latin.woff2')).toString('base64')}`;
 
 const browser = await chromium.launch({ executablePath: EXECUTABLE });
 try {
@@ -206,7 +206,13 @@ try {
    * ONE orange accent (the mark's point), the Arabic tagline.
    * R343: + the ORIGINAL skyline band + the [01] index — the card now
    * speaks the same imagery system as the product itself. */
-  const skylineUrl = pathToFileURL(path.join(ROOT, 'frontend/public/media/illustrations/r342/footer/footer-skyline-light.webp')).href;
+  /* R344 fix — the skyline + the woff2 fonts must ride DATA URIs: the
+   * card renders via page.setContent (an about:blank context), where
+   * every file:// subresource is cross-origin-blocked — the skyline
+   * silently rendered as the torn-photo placeholder glyph (baked into
+   * og.jpg since R343) and the tagline rode system fallback fonts. */
+  const dataUri = (p, mime) => `data:${mime};base64,${readFileSync(path.join(ROOT, p)).toString('base64')}`;
+  const skylineUrl = dataUri('frontend/public/media/illustrations/r342/footer/footer-skyline-light.webp', 'image/webp');
   const W = 1200;
   const H = 630;
   const lockupH = 150;

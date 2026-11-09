@@ -381,8 +381,8 @@
     "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
     "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
     "checksums": {
-     "720": "b12a1af5c6d0d585",
-     "1280": "93fbffd9d23a493e"
+     "720": "cdf94195f3fd0120",
+     "1280": "beee52786419cdc7"
     },
     "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
    },
@@ -416,8 +416,8 @@
     "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
     "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
     "checksums": {
-     "720": "63f1cb0c6a44d5bd",
-     "1280": "7e4bd2bf5303a208"
+     "720": "cf2155c7f50ed8fb",
+     "1280": "085ad796b15b36a3"
     },
     "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
    },
@@ -451,8 +451,8 @@
     "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
     "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
     "checksums": {
-     "720": "db56eea5711a5d01",
-     "1280": "b2df46e1ba9a77f3"
+     "720": "1536de1b2e882aaa",
+     "1280": "de0d86913159142e"
     },
     "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
    },
@@ -486,8 +486,8 @@
     "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
     "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
     "checksums": {
-     "720": "74fc53cc44d485e2",
-     "1280": "96cee5dfc0895e02"
+     "720": "9f10e07cd70dc50d",
+     "1280": "549e4e63e72db718"
     },
     "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
    },
@@ -521,8 +521,8 @@
     "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
     "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
     "checksums": {
-     "720": "1389f66b213a4bb6",
-     "1280": "1fd2f1640ca8f474"
+     "720": "61ebe431a983e39a",
+     "1280": "8a345c72758dad44"
     },
     "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
    },
@@ -556,8 +556,8 @@
     "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
     "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
     "checksums": {
-     "720": "57ac5418defdb031",
-     "1280": "5c298581f00a09d4"
+     "720": "1991d3bc2a3653e5",
+     "1280": "4758a892f3252257"
     },
     "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
    },
@@ -591,8 +591,8 @@
     "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
     "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
     "checksums": {
-     "720": "30b54b9821dd321f",
-     "1280": "72e49a874746a4a8"
+     "720": "9793436b624790ac",
+     "1280": "f51e88cbd9a9f2e9"
     },
     "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
    },
@@ -626,8 +626,8 @@
     "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
     "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
     "checksums": {
-     "720": "a7bbf95dd0b44b23",
-     "1280": "5a88dbfc5dace0c8"
+     "720": "cac5c7f4e36d021f",
+     "1280": "85e259f1b1fff8d5"
     },
     "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
    },

@@ -1,0 +1,133 @@
+{
+ "generatedAt": "2026-11-09T07:57:33.448Z",
+ "engine": "chromium",
+ "url": "http://localhost:5173/",
+ "specDir": "/home/z/madarek/docs/redesign/r335/heron-spec",
+ "summary": {
+  "total": 0,
+  "pass": 0,
+  "fail": 0,
+  "passRate": 0,
+  "exceptionUses": 0,
+  "exceptionRate": 0,
+  "exceptionCap": "<5%",
+  "exceptionRules": {},
+  "unmatchedFailures": 0,
+  "gate": "report-only",
+  "coverage": {
+   "formula": "coverage = measured / (measured + offBookEst); offBookEst = suppressedChecks + excusedElements × 12 (GROUP_CHECKS sum = checks per fully-measured element; conservative — the 5 unskippable per-element checks are not counted). Section cells only; scroll/interact extensions are not coverage-scored.",
+   "thresholds": {
+    "coverageFloor": "40% measured (FAIL(coverage), no escape)",
+    "offBookCap": "70% (FAIL(off-book) unless reviewed in coverage-review.json with written reason + owner task)",
+    "heuristicShareCap": "50% of pairs (FAIL(heuristic))"
+   },
+   "overall": {
+    "measured": 0,
+    "offBookEst": 0,
+    "coveragePct": 0,
+    "offBookPct": 0
+   },
+   "sections": {},
+   "gateFailures": [],
+   "reviewedEscapes": []
+  },
+  "unmatchedOmitted": 0,
+  "skippedOmitted": 0,
+  "totalSkipped": 0,
+  "edge390": {
+   "fails": 0,
+   "tolerance": "±2px vs the spec's recorded 390 section-root gutter",
+   "note": "content edge = visible-content union (fully-inside descendants), root content box as fallback; spec gutter from the section root's x/w"
+  }
+ },
+ "sections": {
+  "home-usecase-wrap": {
+   "390": {
+    "passRate": 0,
+    "n": 0,
+    "pass": 0,
+    "fail": 0,
+    "exceptions": 0,
+    "explicit": 0,
+    "dataSpec": 0,
+    "heuristic": 0,
+    "unmatched": 0,
+    "excused": 0,
+    "skipped": 0,
+    "missing": "no-our-container:section#roles.rl-section"
+   },
+   "768": {
+    "passRate": 0,
+    "n": 0,
+    "pass": 0,
+    "fail": 0,
+    "exceptions": 0,
+    "explicit": 0,
+    "dataSpec": 0,
+    "heuristic": 0,
+    "unmatched": 0,
+    "excused": 0,
+    "skipped": 0,
+    "missing": "no-our-container:section#roles.rl-section"
+   },
+   "1024": {
+    "passRate": 0,
+    "n": 0,
+    "pass": 0,
+    "fail": 0,
+    "exceptions": 0,
+    "explicit": 0,
+    "dataSpec": 0,
+    "heuristic": 0,
+    "unmatched": 0,
+    "excused": 0,
+    "skipped": 0,
+    "missing": "no-our-container:section#roles.rl-section"
+   },
+   "1440": {
+    "passRate": 0,
+    "n": 0,
+    "pass": 0,
+    "fail": 0,
+    "exceptions": 0,
+    "explicit": 0,
+    "dataSpec": 0,
+    "heuristic": 0,
+    "unmatched": 0,
+    "excused": 0,
+    "skipped": 0,
+    "missing": "no-our-container:section#roles.rl-section"
+   },
+   "1920": {
+    "passRate": 0,
+    "n": 0,
+    "pass": 0,
+    "fail": 0,
+    "exceptions": 0,
+    "explicit": 0,
+    "dataSpec": 0,
+    "heuristic": 0,
+    "unmatched": 0,
+    "excused": 0,
+    "skipped": 0,
+    "missing": "no-our-container:section#roles.rl-section"
+   }
+  }
+ },
+ "failures": [],
+ "unmatchedReport": [],
+ "skippedReport": [],
+ "darkInkReport": [],
+ "sectionEdges": {},
+ "provenance": {
+  "file": "chromium-20261109-075827-sections-home-usecase-wrap.json",
+  "scope": "sections-home-usecase-wrap",
+  "fullMatrix": false,
+  "sections": "1/10",
+  "bps": "5/5",
+  "engine": "chromium",
+  "dark": false,
+  "gate": false,
+  "url": "http://localhost:5173/"
+ }
+}

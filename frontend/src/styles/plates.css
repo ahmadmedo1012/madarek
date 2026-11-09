@@ -195,3 +195,60 @@
  * font floor keeps them ≥14px */
 .plate-stage .pf-statline { font-size: 14px; }
 .plate-stage .alert-row { font-size: 14px; }
+
+/* R344 C-sheet VLM review: the Heron law is radius 0 + no glow ANYWHERE —
+ * the plate stage renders the primitives in their drafting-table voice:
+ * square pills/badges/dots/chips, zero box-shadow (the app's own
+ * rounded interactive states stay interactive-only; the plate is the
+ * printed specimen). */
+.plate-stage .pill,
+.plate-stage .badge,
+.plate-stage .plate-dot,
+.plate-stage .plate-opt,
+.plate-stage .plate-bubble,
+.plate-stage .plate-inputrow,
+.plate-stage .plate-table,
+.plate-stage .metric,
+.plate-stage .alert-row,
+.plate-stage .plate-vignette {
+  border-radius: 0;
+  box-shadow: none;
+}
+/* the checkpoint kicker rides 15px (the VLM measured the 14px mono at
+ * ~13px effective — the C-4 floor is ≥14px effective) */
+.plate-cpkicker { font-size: 15px; }
+.plate-mono { font-size: 15px; }
+
+/* R344 C-sheet re-review: the plate renders the printed specimen — the
+ * StatLine tone families (positive/warning/danger/signal) recolor the
+ * VALUE digits in the live app, but the plate voice is the Heron mono
+ * rule: ink digits, the accent orange alone carries signal. Toned
+ * values read as off-voice colored numerals at print scale. */
+/* the strong-scoped mutes (the app's light-mode tone belt sits at
+ * (0,5,0) specificity — the plate chain ties it and the later sheet
+ * wins, plates.css loading after patterns.css in main.tsx) */
+.plate .plate-stage .pf-stat.positive .pf-stat-value,
+.plate .plate-stage .pf-stat.warning .pf-stat-value,
+.plate .plate-stage .pf-stat.danger .pf-stat-value,
+.plate .plate-stage .pf-stat.signal .pf-stat-value { color: inherit; }
+/* the badge tones ride ink outlines at print voice (no tinted fills) */
+.plate .plate-stage .badge,
+.plate .plate-stage .badge.green,
+.plate .plate-stage .badge.amber { background: transparent; border: 1px solid currentColor; color: inherit; }
+/* the metric card tone accents flatten to the ink voice on the plate */
+.plate .plate-stage .metric.green,
+.plate .plate-stage .metric.amber { border-color: var(--neutral-300); }
+.plate .plate-stage .metric.green .metric-value,
+.plate .plate-stage .metric.amber .metric-value { color: inherit; }
+.plate .plate-stage .metric.green .metric-change,
+.plate .plate-stage .metric.amber .metric-change { color: var(--text-muted); }
+
+/* R344 C-sheet final re-review: the plate's ON pills speak the outline
+ * voice (the accent as a hairline signal — the filled interactive block
+ * is the live app's affordance; the printed specimen signs with the
+ * orange ring alone, per the Heron sparing-accent law). */
+.plate .plate-stage .pill.on {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent-ink);
+}
