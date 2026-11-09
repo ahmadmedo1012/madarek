@@ -91,12 +91,15 @@ html[data-theme='dark'] .pr-section .pr-cta {
   background: var(--pr-rule-ink);
 }
 
-/* the per-cell hairlines (heron's absolute 1px rule divs) */
+/* the per-cell hairlines (heron's absolute 1px rule divs) — R344: the
+ * census records these seats bg-IMAGE-ONLY (computed backgroundColor
+ * rgba(0,0,0,0), the paint rides the gradient stroke) — the footer's own
+ * recorded convention (only the c1rule/col3rule/legalbot seats paint). */
 .pr-section .pr-cell-rule {
   position: absolute;
   inset-inline: 0;
   block-size: 1px;
-  background: var(--pr-rule-ink);
+  background-image: linear-gradient(var(--pr-rule-ink), var(--pr-rule-ink));
 }
 
 .pr-cell-rule.is-top { inset-block-start: 0; }
@@ -182,7 +185,7 @@ html[data-theme='dark'] .pr-section .pr-cta {
 .pr-section .pr-cta-rule {
   display: block;
   block-size: 1px;
-  background: var(--pr-rule-ink);
+  background-image: linear-gradient(var(--pr-rule-ink), var(--pr-rule-ink)); /* R344: bg-image-only (census) */
 }
 
 .pr-section .pr-cta-body {
@@ -223,7 +226,10 @@ html[data-theme='dark'] .pr-section .pr-cta {
   display: grid;
   place-items: center;
   border: 1px solid var(--pr-ink);
-  border-radius: 50%; /* the measured ring shape (a ratio, not a rung) */
+  border-radius: 0; /* R344 (item 0): the frozen census records radius 0 on
+   * every arrow seat (all bps) — Heron's outline boxes are SQUARE rings
+   * (the house law: radius 0 everywhere). The r338 "circular arrows"
+   * reading was a visual guess; the spec is unambiguous. */
   color: var(--pr-ink);
 }
 
@@ -303,7 +309,7 @@ html[data-theme='dark'] .pr-section .pr-cta {
   inset-block: 0;
   inset-inline-end: 0;
   inline-size: 1px;
-  background: var(--pr-rule-ink);
+  background-image: linear-gradient(var(--pr-rule-ink), var(--pr-rule-ink)); /* R344: bg-image-only (census) */
 }
 
 /* the central image column — ≥992 only (≤991 display:none = heron 0×0) */
@@ -634,8 +640,19 @@ html[data-theme='dark'] .pr-section .pr-cta {
   .pr-section .pr-clone .pr-cta { transition: all 0.4s ease; }
   .pr-section .pr-clone .pr-cta-row,
   .pr-section .pr-clone .pr-cta-icons,
+  .pr-section .pr-clone .pr-cta-ic,
   .pr-section .pr-clone .pr-cta-line { transition: all 0.48s cubic-bezier(0.625, 0.05, 0, 1); }
   .pr-section .pr-clone .pr-cta-icbox { transition: color 0.3s ease, background-color 0.3s cubic-bezier(0.625, 0.05, 0, 1); }
+}
+
+/* R344 (item 0) — the loop copies' voice at EVERY bp: the census records
+ * 0.48s / cubic-bezier(0.625, 0.05, 0, 1) on the clone row/icons/ic
+ * seats at the desktop bps too (the ≤991 belt above covered mobile;
+ * the desktop clones measured 0s/ease — 24 transition seats). */
+@media (min-width: 992px) {
+  .pr-section .pr-clone .pr-cta-row,
+  .pr-section .pr-clone .pr-cta-icons,
+  .pr-section .pr-clone .pr-cta-ic { transition: all 0.48s cubic-bezier(0.625, 0.05, 0, 1); } /* motion-token: allow — heron-measured loop voice (T-11A census) */
 }
 
 /* ══ T-11b2 — the band's scrubbed title flourish ═════════════════════

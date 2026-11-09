@@ -100,7 +100,7 @@ const PROBE_WALK = WALK_BODY.replace(
   return { makeWalk, pathOf, selOf };`
 ).replace(
   "        ds: el.getAttribute(\"data-spec\") || null,",
-  "        ds: el.getAttribute(\"data-spec\") || null,\n        sel: selOf(el, wrapEl),"
+  "        ds: el.getAttribute(\"data-spec\") || null,\n        sel: selOf(el, wrapEl),\n        cls: (el.className.baseVal ?? el.className ?? \"\").toString().slice(0, 60),"
 );
 
 const BPS = [
@@ -377,7 +377,7 @@ try {
         const maxGeo = Math.max(0, ...bad.filter((c) => ["x-mirror","y","w","h"].includes(c.name)).map((c) => c.ratio));
         if (!fixable || maxGeo > 30) continue; // >30x tolerance = mispair, not drift
         cell.driftList.push({
-          heronPath: h.p, oursSel: o.sel, oursPath: o.p, ds: o.ds, hvr: h.vr, ovr: o.vr,
+          heronPath: h.p, oursSel: o.sel, oursPath: o.p, ds: o.ds, ocls: o.cls, hvr: h.vr, ovr: o.vr,
           hfs: h.fs, ofs: o.fs, hcolor: h.color, ocolor: o.color, hbg: h.bg, obg: o.bg,
           nChecks: pr.nChecks, fails: bad.map((c) => ({ name: c.name, expected: c.expected, actual: c.actual, ratio: Math.round((c.ratio || 0) * 100) / 100 })),
           maxGeoRatio: Math.round(maxGeo * 100) / 100,

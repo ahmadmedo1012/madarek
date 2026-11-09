@@ -330,7 +330,7 @@
      row (+59 y cells measured) while fixing only 7 lh cells: the same
      floor-vs-geometry mutual exclusion as the h2; the reference's own
      box wins (documented in r338/excusals.md, T-02c) */
-  .rl-row-title { font-size: 1.8rem; line-height: 2.1rem; }
+  .rl-row-title { font-size: 1.8rem; line-height: 2.1rem; } /* R344 audit: the census 24.11 lh expectation is collision-glued (another bp's title seat) — the 2.1rem lh carries the row geometry; changing it cascaded 84 row-seat fails. Reverted; recorded as instrument debt. */
   .rl-row-iconbtn, .rl-row-svg { inline-size: 2rem; block-size: 2rem; }
 }
 

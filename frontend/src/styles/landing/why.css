@@ -279,6 +279,7 @@
   inset-block-start: var(--wy-sy);
   inline-size: var(--wy-sw);
   block-size: var(--wy-sh);
+  transition: opacity 0.4s ease; /* motion-token: allow — R344: heron-measured census seat (0.4s/ease on the mini family) */
 }
 
 .wy-mini-in {
@@ -338,6 +339,8 @@
   inline-size: 0.48rem;                /* 4px glyph */
   block-size: 0.48rem;
   background: var(--accent-ink);
+
+  transition: opacity 0.4s ease; /* motion-token: allow — R344: heron-measured census seat (0.4s/ease) */
 }
 
 .wy-ic-svg {
@@ -390,6 +393,12 @@
   inset-block-start: var(--wy-sy);
   inline-size: var(--wy-sw, auto);
   block-size: var(--wy-sh, auto);
+  /* R344 (item 0): the census records a 1px border on every vid seat
+   * (wy-vid/vid2/vid3/vid4 — 36 border seats across bps, the hairline
+   * law); ours carried none. */
+  border: 1px solid var(--rule-strong);
+  /* R344: the census transition seat (0.4s/ease on the vid family) */
+  transition: opacity 0.4s ease; /* motion-token: allow — heron-measured vid seats */
 }
 
 .wy-vid-in {
@@ -413,6 +422,7 @@
   block-size: 100%;
   display: block;
 }
+.wy-vic-in { transition: opacity 0.4s ease; } /* motion-token: allow — R344: heron-measured census seat */
 
 .wy-spinz,
 .wy-loadz {
@@ -488,6 +498,13 @@
   inline-size: 100%;
   block-size: 100%;
   display: block;
+}
+
+/* R344 (item 0) — the census records a 1px hairline border on the
+ * wy-pt-in seats (why row-4's map-path point cells, every bp — the
+ * hairline law). Border-box: the measured geometry is unchanged. */
+.wy-pt-in {
+  border: 1px solid var(--rule-strong);
 }
 
 .wy-pt-rect {

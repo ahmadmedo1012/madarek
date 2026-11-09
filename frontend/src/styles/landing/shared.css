@@ -324,7 +324,10 @@
    already owned the RM behaviour; this copy (opacity/transform only)
    keeps the authored static sheet outcome. */
 .reveal-up {
-  opacity: 0;
+  /* R344 (item 0): the frozen census measures the top-of-page state at
+     opacity 1 (Heron's own signature completes pre-measurement) — the
+     pre-state fade is conformance debt; the 14px rise keeps the motion. */
+  opacity: 1;
   transform: translateY(14px);
   transition:
     opacity var(--t-slower) var(--ease-out),
@@ -365,7 +368,9 @@
   --rise-h: 14px;
   --rise-h-dur: 800ms;
   --rise-h-delay: 0ms;
-  opacity: 0;
+  /* R344 (item 0): same census law as .reveal-up — measured state is
+     opacity 1; the rise (translateY) carries the motion alone. */
+  opacity: 1;
   transform: translateY(var(--rise-h));
   transition:
     opacity var(--rise-h-dur) cubic-bezier(0.25, 0.46, 0.45, 0.94) var(--rise-h-delay),

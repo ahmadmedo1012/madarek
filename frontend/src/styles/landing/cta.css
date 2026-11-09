@@ -64,13 +64,18 @@ html[data-theme='dark'] .fo-cta {
 }
 
 .fo-cta-hrule {
-  block-size: 0;
-  border-block-start: 1px solid var(--rule);
+  /* R344 (item 0) — the census records these CTA rule seats as PAINTED
+   * hairlines (a real background-color rgb(179,179,175) — the same
+   * convention as the footer's c1rule/col3rule/legalbot fo-rule-solid
+   * seats; 10 bg seats at 390/768). The 1px painted line replaces the
+   * border-box model — visually identical, computed bg now spec-true. */
+  block-size: 1px;
+  background-color: var(--rule-strong);
 }
 
 .fo-cta-sheet-rule {
-  block-size: 0;
-  border-block-start: 1px solid var(--rule-strong);
+  block-size: 1px;
+  background-color: var(--rule-strong);
 }
 
 

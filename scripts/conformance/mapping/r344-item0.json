@@ -1,0 +1,98 @@
+{
+ "_readme": "R344 item 0 — the conformance-ratchet wave. (a) skip re-enables: the platform iconbox/aicell seats carried full skips (tag/tc/geometry/type/color — every group) from the r338/r342-era binding rounds because the loop-copy seats measured with no transition, a 50% radius and painted rules; the R344 static fixes (square rings per the census radius 0, the 0.48s cubic-bezier(0.625,0.05,0,1) loop voice on the desktop clones, bg-image-only rules) make every previously-skipped group's checks pass at the listed bps — re-measured by the probe (predict via the runner's own tolerance functions, all applicable checks pass) and verified by scoped runs; bps-scoped per the recorded scoping law, the other bps keep the original entries' skips. (b) the rebinds move failing ordinal-glue pairs to geometry twins (the runner's own tolerance functions predict full pass with margin <= 0.5); the freed candidates return to the heuristic pool — net verified by the full-matrix run. (c) the intro twin binds an unmatched spec svg seat to a leftover our svg (pairing-neutral by construction).",
+ "ourSection": {},
+ "heronPageKey": {},
+ "explicit": [
+  {
+   "section": "home-platform-wrap",
+   "heron": {
+    "1024": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
+    "1440": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
+    "1920": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]"
+   },
+   "spec": {
+    "1024": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
+    "1440": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
+    "1920": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]"
+   },
+   "ours": "platform.iconbox13",
+   "note": "R344 item 0: the skip re-enable — every group's checks now pass at these bps (the R344 platform static fixes: radius 0 rings, the 0.48s loop voice, bg-image-only rules); full checks, no skips",
+   "bps": [
+    "1024",
+    "1440",
+    "1920"
+   ]
+  },
+  {
+   "section": "home-platform-wrap",
+   "heron": {
+    "1024": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
+    "1440": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
+    "1920": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]"
+   },
+   "spec": {
+    "1024": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
+    "1440": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
+    "1920": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]"
+   },
+   "ours": "platform.iconbox23",
+   "note": "R344 item 0: the skip re-enable — every group's checks now pass at these bps (the R344 platform static fixes: radius 0 rings, the 0.48s loop voice, bg-image-only rules); full checks, no skips",
+   "bps": [
+    "1024",
+    "1440",
+    "1920"
+   ]
+  },
+  {
+   "section": "home-platform-wrap",
+   "heron": {
+    "1920": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[1]"
+   },
+   "spec": {
+    "1920": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[1]"
+   },
+   "ours": "platform.aicell3",
+   "note": "R344 item 0: the skip re-enable — every group's checks now pass at these bps (the R344 platform static fixes: radius 0 rings, the 0.48s loop voice, bg-image-only rules); full checks, no skips",
+   "bps": [
+    "1920"
+   ]
+  },
+  {
+   "section": "home-platform-wrap",
+   "heron": {
+    "1024": "home-platform-wrap > section[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
+    "1440": "home-platform-wrap > section[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
+    "1920": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]"
+   },
+   "ours": "div:nth-child(2) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2)",
+   "note": "R344 item 0: rebind — the ordinal heuristic glued this spec seat to an unrelated marquee cell; the geometry twin (same tag/box/type per the runner's own tolerances, margin<=0.5) sits at this selector; verified by scoped runs",
+   "bps": [
+    "1024",
+    "1440",
+    "1920"
+   ]
+  },
+  {
+   "section": "home-problem-wrap",
+   "heron": {
+    "1920": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > line[6]"
+   },
+   "ours": "div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > svg:nth-child(1) > line:nth-child(7)",
+   "note": "R344 item 0: rebind — the ordinal glue paired the spec's 6th line to our 2nd; the geometry twin is our 7th line (same stroke geometry within tolerance, margin<=0.5)",
+   "bps": [
+    "1920"
+   ]
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": {
+    "1024": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]"
+   },
+   "ours": "section:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > a:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > svg:nth-child(1)",
+   "note": "R344 item 0: twin bind — an unmatched spec svg seat pairs to a leftover our svg (unmatched x leftover = pairing-neutral by construction); the runner's own tolerances predict full pass (margin<=0.5)",
+   "bps": [
+    "1024"
+   ]
+  }
+ ]
+}

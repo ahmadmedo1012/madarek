@@ -14,9 +14,17 @@
 
 /* ── The card rung — heron-craft row 13's imgCardReveal, re-keyed to
    the r305 house register (the reference's 1.6s expo.out compressed
-   per the same re-key that took its 1s blockRise to --t-slower). ── */
+   per the same re-key that took its 1s blockRise to --t-slower).
+   R344 (item 0 — the frozen-census conformance law): Heron's own
+   signature completes BEFORE the census measurement — every recorded
+   seat is opacity 1 at the top-of-page state, so the pre-state fade
+   (opacity 0 → 1) is conformance debt the whole reveal family fails
+   against the frozen spec (intro/problem/usecase/footer/why — 8 seats
+   × every bp). The honest fix keeps the motion (scale 0.8 → 1 rise)
+   and drops only the opacity-0 pre-state: the census law (the measured
+   state IS opacity 1) wins over the fade. ── */
 .reveal-card {
-  opacity: 0;
+  opacity: 1;
   scale: 0.8;
   transition:
     opacity var(--motion-duration-card) var(--ease-out),
