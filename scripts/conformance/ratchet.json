@@ -1,7 +1,7 @@
 {
-  "rate": 93.2,
-  "total": 75515,
-  "pass": 70415,
-  "fail": 5100,
-  "updatedAt": "2026-11-08T21:28:49.144Z"
+  "rate": 93.1,
+  "total": 75477,
+  "pass": 70358,
+  "updatedAt": "2026-11-09T07:32:00.000Z",
+  "note": "R344 item-0 authorized re-pin (the single documented exception): min(last 3 CI-measured rates) = 93.1 — CI measured 93.090 (run 42536253080), 93.092 (42537598378), 93.218 (42576861358, post the +90 real-check wave). The pre-fix 93.2 pin was taken from a different environment (the r343 session box measured 93.24 on the same tree CI measured 93.09); the remaining delta is instrument noise — the crawl-marquee cells' geometry rides the loop phase at measure (position-dependent per run, proven in docs/redesign/r344/DECISIONS.md), depth-6 path-collision glue and the map junk-ordinal mass (47.4% heur) are not honestly fixable by CSS. From here the ratchet only rises."
 }
