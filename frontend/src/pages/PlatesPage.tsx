@@ -29,7 +29,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { AlertRow, Badge, MetricCard, Pill, ProgressBar } from '../components/primitives';
 import type { ReactNode } from 'react';
 
-export function PlatesPage() {
+function PlatesPage(): React.JSX.Element {
   usePageTitle('لوحات المنتج');
   return (
     <main className="plates-root" aria-label="لوحات المنتج — مشاهد معزولة">
