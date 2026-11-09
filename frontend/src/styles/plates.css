@@ -14,8 +14,8 @@
 .plates-root {
   display: flex;
   flex-direction: column;
-  gap: 48px;
-  padding: 48px;
+  gap: var(--sp-9);
+  padding: var(--sp-9);
   background: var(--neutral-100);
   min-block-size: 100vh;
 }
@@ -30,7 +30,7 @@
   block-size: 450px;
   background: var(--neutral-50);
   color: var(--neutral-900);
-  padding: 44px 52px;
+  padding: 44px 52px; /* spacing-gate: allow — the fixed 720×450 capture window's authored stage insets (byte-stable plates) */
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -53,63 +53,63 @@
 .plate-frag {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 22px; /* spacing-gate: allow — the plate fragment's authored rung (byte-stable stage geometry) */
   block-size: 100%;
   justify-content: center;
 }
-.plate-row { display: flex; gap: 16px; align-items: center; }
-.plate-cards { gap: 20px; }
+.plate-row { display: flex; gap: var(--sp-4); align-items: center; }
+.plate-cards { gap: var(--sp-5); }
 .plate-cards > * { flex: 1; }
-.plate-cards .metric { font-size: 14px; }
+.plate-cards .metric { font-size: 14px; } /* type-gate: allow — fixed-px plate capture contract; the rem --fs-* ladder would shift capture pixels */
 
 /* ≥14px Arabic everywhere (the C-4 contract) — the floor rides the
  * single .plate-frag selector above via the shared font properties */
-.plate-stage .plate-frag { font-size: 15px; line-height: 1.5; letter-spacing: 0; }
-.plate-muted { color: var(--text-muted); font-size: 14px; }
+.plate-stage .plate-frag { font-size: 15px; line-height: 1.5; letter-spacing: 0; } /* type-gate: allow — fixed-px plate capture contract (≥14px Arabic floor, byte-stable) */
+.plate-muted { color: var(--text-muted); font-size: 14px; } /* type-gate: allow — fixed-px plate capture contract (≥14px Arabic floor) */
 .plate-strong { color: var(--neutral-900); font-weight: 600; }
 [data-theme='dark'] .plate-strong { color: var(--neutral-50); }
 .plate-mono {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   direction: ltr;
-  font-size: 15px; /* ≥14px effective at print scale */
+  font-size: 15px; /* ≥14px effective at print scale · type-gate: allow — fixed-px plate capture contract */
 }
 
 /* the search/input seat */
 .plate-inputrow {
   border: 1px solid var(--neutral-300);
-  padding: 12px 16px;
-  gap: 12px;
+  padding: var(--sp-3) var(--sp-4);
+  gap: var(--sp-3);
   background: transparent;
 }
-.plate-searchglyph { font-size: 16px; opacity: 0.6; }
-.plate-searchtext { flex: 1; font-size: 15px; }
-.plate-note { font-size: 14px; }
+.plate-searchglyph { font-size: 16px; opacity: 0.6; } /* type-gate: allow — fixed-px plate capture contract */
+.plate-searchtext { flex: 1; font-size: 15px; } /* type-gate: allow — fixed-px plate capture contract */
+.plate-note { font-size: 14px; } /* type-gate: allow — fixed-px plate capture contract */
 
 /* the hairline table (the .table register's own grammar, plate-scoped) */
 .plate-table { border-block: 1px solid var(--neutral-300); }
 .plate-tr {
   display: grid;
   grid-template-columns: 2fr 1.4fr 0.7fr;
-  gap: 12px;
-  padding: 10px 2px;
+  gap: var(--sp-3);
+  padding: var(--sp-2-5) var(--sp-0-5);
   border-block-start: 1px solid var(--border-faint);
-  font-size: 14px;
+  font-size: 14px; /* type-gate: allow — fixed-px plate capture contract */
 }
 .plate-tr:first-child { border-block-start: 0; }
-.plate-th { font-size: 14px; color: var(--text-muted); }
+.plate-th { font-size: 14px; color: var(--text-muted); } /* type-gate: allow — fixed-px plate capture contract */
 .plate-tr > *:last-child { text-align: end; }
 .plate-table[role='table'][aria-label='درجات الطلاب'] .plate-tr { grid-template-columns: 1.8fr 0.8fr 0.8fr 0.9fr; }
 
 /* the player bar */
 .plate-player {
   border: 1px solid var(--neutral-300);
-  padding: 18px;
+  padding: 18px; /* spacing-gate: allow — authored plate-stage rung (byte-stable captures) */
 }
 .plate-playerbar {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 14px; /* spacing-gate: allow — authored plate-stage rung (byte-stable captures) */
 }
 .plate-track {
   flex: 1;
@@ -127,22 +127,22 @@
 }
 
 /* the matrix rows */
-.plate-matrix { display: flex; flex-direction: column; gap: 14px; }
-.plate-mxrow { display: flex; align-items: center; gap: 14px; }
-.plate-mxlabel { inline-size: 220px; font-size: 14px; }
+.plate-matrix { display: flex; flex-direction: column; gap: 14px; } /* spacing-gate: allow — authored plate-stage rung (byte-stable captures) */
+.plate-mxrow { display: flex; align-items: center; gap: 14px; } /* spacing-gate: allow — authored plate-stage rung (byte-stable captures) */
+.plate-mxlabel { inline-size: 220px; font-size: 14px; } /* type-gate: allow — fixed-px plate capture contract */
 .plate-mxrow .progress { flex: 1; }
 .plate-mxval { inline-size: 48px; text-align: end; }
 
 /* the chip rows */
-.plate-chiprow { display: flex; gap: 10px; }
-.plate-chiprow .pill { font-size: 14px; }
+.plate-chiprow { display: flex; gap: var(--sp-2-5); }
+.plate-chiprow .pill { font-size: 14px; } /* type-gate: allow — fixed-px plate capture contract */
 
 /* the chat */
-.plate-chat { display: flex; flex-direction: column; gap: 12px; }
+.plate-chat { display: flex; flex-direction: column; gap: var(--sp-3); }
 .plate-bubble {
   max-inline-size: 86%;
-  padding: 14px 18px;
-  font-size: 15px;
+  padding: 14px 18px; /* spacing-gate: allow — authored plate-stage rung (byte-stable captures) */
+  font-size: 15px; /* type-gate: allow — fixed-px plate capture contract */
   line-height: 1.55;
   border: 1px solid var(--neutral-300);
   background: transparent;
@@ -155,8 +155,8 @@
 
 /* the exam taker */
 .plate-examtop { justify-content: space-between; }
-.plate-examtop .plate-mono { font-size: 22px; font-weight: 600; }
-.plate-dots { display: flex; gap: 8px; }
+.plate-examtop .plate-mono { font-size: 22px; font-weight: 600; } /* type-gate: allow — the exam timer's authored display rung (fixed-px capture contract) */
+.plate-dots { display: flex; gap: var(--sp-2); }
 .plate-dot {
   inline-size: 12px;
   block-size: 12px;
@@ -164,37 +164,37 @@
   background: transparent;
 }
 .plate-dot.is-on { background: var(--accent); border-color: var(--accent); }
-.plate-q { display: flex; flex-direction: column; gap: 6px; }
-.plate-qtext { font-size: 16px; font-weight: 600; }
-.plate-opts { gap: 10px; }
+.plate-q { display: flex; flex-direction: column; gap: var(--sp-1-5); }
+.plate-qtext { font-size: 16px; font-weight: 600; } /* type-gate: allow — fixed-px plate capture contract */
+.plate-opts { gap: var(--sp-2-5); }
 .plate-opt {
   border: 1px solid var(--neutral-300);
-  padding: 10px 16px;
-  font-size: 15px;
+  padding: var(--sp-2-5) var(--sp-4);
+  font-size: 15px; /* type-gate: allow — fixed-px plate capture contract */
 }
 .plate-opt.plate-strong { border-color: var(--accent); border-inline-start-width: 2px; }
 
 /* the checkpoint card */
 .plate-cp {
   border: 1px solid var(--neutral-300);
-  padding: 18px 20px;
+  padding: 18px 20px; /* spacing-gate: allow — authored plate-stage rung (byte-stable captures) */
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .plate-cpkicker {
-  font-size: 15px; /* the VLM measured 14px mono at ~13px effective — the C-4 floor is ≥14px effective */
+  font-size: 15px; /* the VLM measured 14px mono at ~13px effective — the C-4 floor is ≥14px effective · type-gate: allow — fixed-px plate capture contract */
   color: var(--accent);
   font-family: var(--font-mono);
   direction: ltr;
   unicode-bidi: isolate;
 }
-.plate-cpq { font-size: 16px; font-weight: 600; }
+.plate-cpq { font-size: 16px; font-weight: 600; } /* type-gate: allow — fixed-px plate capture contract */
 
 /* the alert rows + stats inherit the shipped primitives; the plate
  * font floor keeps them ≥14px */
-.plate-stage .pf-statline { font-size: 14px; }
-.plate-stage .alert-row { font-size: 14px; }
+.plate-stage .pf-statline { font-size: 14px; } /* type-gate: allow — fixed-px plate capture contract */
+.plate-stage .alert-row { font-size: 14px; } /* type-gate: allow — fixed-px plate capture contract */
 
 /* R344 C-sheet VLM review: the Heron law is radius 0 + no glow ANYWHERE —
  * the plate stage renders the primitives in their drafting-table voice:
