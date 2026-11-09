@@ -94,6 +94,8 @@ const NON_SHELL_TITLED: Record<string, string> = {
   '/__brand': 'دليل الهوية · مدارك',
   /* R323 A5: the component-system specimen sheet (dev + evidence). */
   '/__design': 'نظام المكونات · مدارك',
+  /* R344 C-4: the product-plate stage (deterministic capture harness). */
+  '/__plates': 'لوحات المنتج · مدارك',
   '/404': 'الصفحة غير موجودة · مدارك',
 };
 

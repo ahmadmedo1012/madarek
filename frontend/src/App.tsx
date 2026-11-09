@@ -219,6 +219,7 @@ const AppDownloadPage = lazy(() => import('./pages/AppDownloadPage').then((m) =>
  * clear-space, min sizes, tones): the reviewers' evidence surface. */
 const BrandPage = lazy(() => import('./pages/BrandPage'));
 const DesignPage = lazy(() => import('./pages/DesignPage'));
+const PlatesPage = lazy(() => import('./pages/PlatesPage'));
 
 /** Resolves the home path for an authenticated user, or `/` for guests.
  *
@@ -401,6 +402,7 @@ export function AppRoutes() {
         {/* R323 §A5 — the component-system specimen sheet + the
             contrast-gate's sweep target (scripts/r323/contrast-gate.mjs). */}
         <Route path="/__design" element={<DesignPage />} />
+        <Route path="/__plates" element={<PlatesPage />} />
         <Route path={ROUTES.root} element={<HomeRedirect />} />
 
         {/* Labs preview — role-permissive mount (A6 P1, wave 22-a;
