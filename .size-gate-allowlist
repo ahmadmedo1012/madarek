@@ -33,3 +33,7 @@ scripts/conformance/results/
 # INPUT (the 1,756-never-matched-selector work-list); provenance blob,
 # like the conformance results blobs above.
 docs/redesign/r343/css-dead/report.json
+
+# R344 C-sheet: the imagery contact sheet (every on-site asset, light+dark
+# twins, families labeled) — the VLM review artifact (imagery-sheet.png).
+docs/redesign/r344/imagery-sheet.png
