@@ -95,6 +95,24 @@ else
   fail "conformance"; tail -12 /tmp/verify-conform.log
 fi
 
+# 6.5 visual overlap detector (R347 Lane A — full mode only, REQUIRED).
+#     The appendix detector (scripts/qa/overlap.mjs — committed with the ONE
+#     sanctioned adjustment: the allowlist ledger filters provably-intentional
+#     fixed layers, scripts/qa/overlap-allow.json) + the written-reason ledger.
+#     Hermetic: boots vite preview on 4173 against step 3's build, waits,
+#     runs the sweep (1440/768/390 × light/dark on /), tears it down.
+#     Exit != 0 on any finding — fixed-over-text, text-on-text,
+#     text-on-media, big-fixed, clipped, horizontal overflow.
+step "visual overlap detector (qa:overlap)"
+if (cd frontend && npx vite preview --port 4173 --strictPort > /tmp/verify-preview.log 2>&1 &) && \
+   npx --yes wait-on http://localhost:4173/ --timeout 60000 && \
+   node scripts/qa/overlap.mjs --url http://localhost:4173 --routes / --bps 1440x900,768x1024,390x844 --themes light,dark --out /tmp/r347/overlap.json > /tmp/verify-overlap.log 2>&1; then
+  ok "overlap $(grep -oE 'stops-with-defects=[0-9]+' /tmp/verify-overlap.log | head -1)"
+else
+  fail "overlap"; tail -8 /tmp/verify-overlap.log
+fi
+pkill -f "vite preview" 2>/dev/null || true
+
 # 7. e2e (scoped with --specs for the touched files; default = the two
 #    landing-relevant suites CI runs on every push)
 step "playwright e2e (hermetic)"

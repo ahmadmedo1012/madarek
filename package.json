@@ -31,6 +31,7 @@
     "db:backup": "node scripts/db-backup.mjs",
     "db:restore": "node scripts/db-restore.mjs",
     "api:openapi": "tsx backend/scripts/generate-openapi.ts",
+    "qa:overlap": "node scripts/qa/overlap.mjs",
     "tokens:build": "node scripts/tokens/build.mjs",
     "tokens:check": "node scripts/tokens/build.mjs --check",
     "smoke": "node scripts/smoke-deploy.mjs",
