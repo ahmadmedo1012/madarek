@@ -21,6 +21,8 @@
 3. **D12 the safe way**: export the per-role corpora → the all-roles crawl → VR baseline (vr-capture, ~250 cells, resumes) → batched rule-level deletion with ≤0.1% pixel diffs.
 
 ## gotchas (additions)
+- The r305 scroll-restoration test («الرجوع يستعيد التمرير») is load-sensitive and flakes on BOTH Lane B's tree and Z's (measured 1/2-1/3 under worker load; single-worker single-run passes 10.3s; the test's own comments document 4.3s restoration paths + the 8s window). On CI it failed both attempts while the mobile session's Android builds loaded the runners — re-run before diagnosing.
+- The extended conformance matrix (`--gate --scroll --interact`) runs interact at ALL 5 bps (625/317 baked-in interact fails exist in Lane B's 91.7 record too); the plain `--gate` matrix (what verify.sh full runs locally) measures ~0.4pp higher — always compare like with like.
 - The mobile CI session (e36325aa..7084c845) builds native artifacts in CI — its Android job may stay red on quota/tooling; the CI/deadcode/size-gate jobs are the gates that matter for the web lanes.
 - The armed detector waits for `.landing.intro-done` — any NEW route with its own gate needs the same contract or the sweep measures mid-exit states.
 - dead-static.mjs is the D12 measurement instrument (≈0 on this tree); do NOT ship a rule-deletion driver without the VR baseline (the first attempt ate footer.css).
