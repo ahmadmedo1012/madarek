@@ -16,7 +16,7 @@
   - **D15**: single main on origin ✓ · REPORT-Z.md written · counts held (unit 3038 · bundle 760.3 · !important 52 · e2e 38/38 · drift clean)
 
 ## next 3
-1. **Watch CI on `d01626b6`** (the conformance job with the armed overlap step + intro fix) — green closes the round; a red is either the detector catching a REAL defect (fix at cause) or a CI-env-only condition (reproduce on vite dev first).
+1. **Recover the conformance gate to ≥91.6 (the #1 task)**: the extended matrix measures 91.2 on `b93eb383` — the banned-twin excusal (-677 passing platform seats) + 233 phase-shifted tail failures vs Lane B's 91.7 record. The recovery = fixing the 533 home-map-wrap residual failures (heuristic 377 + data-spec 156; exp/act samples: y −4835 vs 4252, h 7560 vs 1063 — the scroll-state seats + the content-visibility skirt collapsing the tall walkthrough at measure time). Every ~260 recovered checks = +0.4pp. The ratchet stays at 91.6 — never lowered.
 2. **Lane C remainder (D9/D10)**: roles section hierarchy + the authenticated pages × roles detector sweep (the per-role corpora are not importable by dead.mjs/overlap today — the harness scripts need exporting).
 3. **D12 the safe way**: export the per-role corpora → the all-roles crawl → VR baseline (vr-capture, ~250 cells, resumes) → batched rule-level deletion with ≤0.1% pixel diffs.
 
