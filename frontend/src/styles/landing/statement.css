@@ -546,8 +546,13 @@
      (the record's tablet titlebox is 186px tall) and seat insets */
   .st-section { margin-inline: 7.5px; }
   .st-stmt-in { padding: 2.4rem; }
-  .st-title { font-size: 2.4rem; line-height: 3.24rem; }
-  .st-line { block-size: 3.24rem; } /* R347 D1 — pitch = computed lh (was the record's 2.525rem 1.05×fs hack; glyph boxes bled 0.7rem) */
+  .st-title { font-size: 2.4rem; line-height: 3.65rem; }
+  /* R347-Z — pitch clears the FONT box, not just the computed lh: the
+     * Arabic face's natural box at fs 2.4rem measures ≈1.49×fs (33px @768),
+     * so the lh-1.35 pitch left the Range rects bleeding 1.5px each side —
+     * consecutive lines' descender/ascender ink ~1px apart (detector:
+     * wr-i × wr-i fr 0.32 @768). 3.65rem = 1.52×fs clears the box. */
+  .st-line { block-size: 3.65rem; }
   .st-titlebox { margin-block-end: 2.4rem; }
   .st-plabel { margin-inline-start: 2.4rem; }
   .st-crawl-cell { inline-size: 12.05rem; block-size: 7.7rem; } /* R342-02 — the measured 768 window cell (111px) and the ticker row's own band */
@@ -586,8 +591,10 @@
   }
 
   .st-stmt-in { padding: 2.4rem 1.7rem; }
-  .st-title { font-size: 2.4rem; line-height: 3.24rem; }
-  .st-line { block-size: 3.24rem; } /* R347 D1 — pitch = computed lh (was 2.62rem 1.09×fs; the diacritic stack collided) */
+  .st-title { font-size: 2.4rem; line-height: 3.65rem; }
+  /* R347-Z — same font-box clearance as the 768 band (the face's box
+     * ≈1.49×fs; the lh-1.35 pitch left the diacritic stacks ~1px apart). */
+  .st-line { block-size: 3.65rem; }
   .st-titlebox { margin-block-end: 1.92rem; }
   .st-pill-icons { --st-seat: 4.13rem; }
   .st-pill-t-in { line-height: 1.89rem; }

@@ -11,6 +11,15 @@
 // entries, each with a WRITTEN reason) now filters `fixed` findings whose
 // element selector matches an entry. Nothing else is filtered; text-on-text,
 // fixed-over-text, clipped and overflow findings are never allowlisted.
+//
+// R347-Z — the SECOND sanctioned adjustment (same clause): CLIP-AWARE text
+// rects. A text rect now counts only where it is actually PAINTED —
+// intersected with every ancestor that clips (overflow ≠ visible OR
+// contain:paint). The landing's journey stack drifts one frame above its
+// contain:paint window before the walkthrough descends; the layout rects
+// still exist there but nothing paints — the first pass reported ~250
+// phantom text-on-text findings (pains × plan) at scrolls where the plan
+// was clipped out entirely. Same fix Lane D shipped for the app variant.
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -34,37 +43,116 @@ const PROBE = () => {
   const vis = el => { const s = getComputedStyle(el); return s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity) > 0.08; };
   const eff = el => { let o = 1; for (let e = el; e && e !== document.documentElement; e = e.parentElement) { const s = getComputedStyle(e); if (s.display === 'none' || s.visibility === 'hidden') return 0; o *= parseFloat(s.opacity); } return o; };
   const sel = el => el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + (el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/).slice(0, 2).join('.') : '');
+  /* R347-Z — clip a rect to every ancestor that clips painting
+   * (overflow ≠ visible, or contain:paint). Returns null when nothing
+   * survives — the rect is not painted at all (phantom). */
+  const clipToAncestors = (el, b) => {
+    let r = { x: b.left, y: b.top, w: b.width, h: b.height };
+    for (let e = el.parentElement; e && e !== document.documentElement; e = e.parentElement) {
+      const s = getComputedStyle(e);
+      if (s.overflow !== 'visible' || s.overflowY !== 'visible' || (s.contain && s.contain.includes('paint'))) {
+        const eb = e.getBoundingClientRect();
+        const x0 = Math.max(r.x, eb.left), y0 = Math.max(r.y, eb.top);
+        const x1 = Math.min(r.x + r.w, eb.right), y1 = Math.min(r.y + r.h, eb.bottom);
+        if (x1 - x0 < 1 || y1 - y0 < 1) return null;
+        r = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+      }
+    }
+    return r;
+  };
   const tn = [], w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let n; (n = w.nextNode());) {
     if (!n.textContent.trim()) continue; const el = n.parentElement; if (!el || ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(el.tagName)) continue;
     if (eff(el) < 0.08) continue;
     const r = document.createRange(); r.selectNodeContents(n);
-    for (const b of r.getClientRects()) {
-      if (b.width < 4 || b.height < 6) continue; if (b.bottom < 0 || b.top > vh || b.right < 0 || b.left > vw) continue;
-      /* R347 (Lane B, the one sanctioned adjustment beyond the allowlist):
-       * text inside an <svg> is clipped to that svg's element box (the
-       * viewBox crop; default overflow:hidden) — a rect falling entirely
-       * outside cannot paint and is skipped; a STRADDLING rect is clipped
-       * to the paintable box (its out-of-crop part cannot overlap anything
-       * outside the svg). The camera-crop zooms park out-of-crop labels'
-       * rects on neighbouring content and the detector counted them
-       * (phantom text pairs at 768/390, straddling included). */
-      let bx = b.left, by = b.top, bw = b.width, bh = b.height;
-      const sv = el.closest('svg');
-      if (sv) {
-        const sr = sv.getBoundingClientRect();
-        if (b.bottom < sr.top || b.top > sr.bottom || b.right < sr.left || b.left > sr.right) continue;
-        const cx = Math.max(b.left, sr.left), cy = Math.max(b.top, sr.top);
-        bw = Math.min(b.right, sr.right) - cx; bh = Math.min(b.bottom, sr.bottom) - cy;
-        if (bw < 4 || bh < 6) continue;
-        bx = cx; by = cy;
-      }
-      tn.push({ el, x: bx, y: by, w: bw, h: bh, t: n.textContent.trim().slice(0, 28) });
-    }
+    for (const b of r.getClientRects()) { if (b.width < 4 || b.height < 6) continue; if (b.bottom < 0 || b.top > vh || b.right < 0 || b.left > vw) continue; const c = clipToAncestors(el, b); if (!c || c.w < 4 || c.h < 6) continue;
+      /* R347-Z — viewport clip: only the part INSIDE the viewport counts
+       * (two elements both in the invisible strip above the fold once
+       * phantom-overlapped — the parked skip link vs a half-scrolled
+       * roles title).
+       *
+       * Lane B's svg-crop case is subsumed by clipToAncestors: an inline
+       * <svg> computes overflow:hidden (verified live on .jt-plan), so
+       * svg text rects clip to the svg's element box (the viewBox crop) —
+       * out-of-crop labels' rects park on neighbouring content and the
+       * detector counted them (phantom pairs at 768/390, straddling
+       * included); the ancestor walk clips them away. */
+      const vx = Math.max(c.x, 0), vy = Math.max(c.y, 0), vx1 = Math.min(c.x + c.w, vw), vy1 = Math.min(c.y + c.h, vh);
+      if (vx1 - vx < 4 || vy1 - vy < 6) continue;
+      tn.push({ el, x: vx, y: vy, w: vx1 - vx, h: vy1 - vy, t: n.textContent.trim().slice(0, 28) }); }
   }
   const inter = (p, q) => { const x = Math.min(p.x + p.w, q.x + q.w) - Math.max(p.x, q.x), y = Math.min(p.y + p.h, q.y + q.h) - Math.max(p.y, q.y); return x > 0 && y > 0 ? x * y : 0; };
+  /* R347-Z — OCCLUSION-AWARENESS: text under an OPAQUE element does
+   * not paint (the eye sees the card, not the text beneath it). For
+   * each text element we find the nearest ancestor with an opaque
+   * background (alpha > 0.9) that is positioned/transformed — a real
+   * paint layer. A pair is skipped when one side's cover-box contains
+   * the other text's centre AND the cover paints above it (the cover
+   * FOLLOWS the covered text in document order — later positioned
+   * boxes paint over earlier siblings at the same stacking level).
+   * This killed the phantom «12.3M» under the intro card's paper
+   * ground and the grid letters under the counter chip's paper seat. */
+  const bgAlpha = (c) => { if (!c || c === 'transparent') return 0; const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return 0; const p = m[1].split(',').map(v => parseFloat(v)); return p.length > 3 ? p[3] : 1; };
+  const coverCache = new Map();
+  const coverOf = (el) => {
+    if (coverCache.has(el)) return coverCache.get(el);
+    let cover = null;
+    for (let e = el.parentElement; e && e !== document.body; e = e.parentElement) {
+      const s = getComputedStyle(e);
+      if (bgAlpha(s.backgroundColor) > 0.9 && (s.position !== 'static' || s.transform !== 'none')) { cover = e; break; }
+    }
+    const rec = cover ? { el: cover, r: cover.getBoundingClientRect(), after: new Map() } : null;
+    coverCache.set(el, rec);
+    return rec;
+  };
+  const occludes = (p, q) => {
+    const c = coverOf(p.el); if (!c || c.el.contains(q.el)) return false;
+    let after = c.after.get(q.el);
+    if (after === undefined) { after = !!(c.el.compareDocumentPosition(q.el) & Node.DOCUMENT_POSITION_PRECEDING); c.after.set(q.el, after); }
+    if (!after) return false;
+    /* p∩q lies inside p's box, and p's box must lie inside its opaque
+     * cover (p does not overflow its card) — then the overlap itself is
+     * under the card (a room label sliding under the counter chip's
+     * paper seat: the label's visible part clears the chip's text). */
+    const px = p.x, py = p.y, px1 = p.x + p.w, py1 = p.y + p.h, r = c.r;
+    return px >= r.left && px1 <= r.right && py >= r.top && py1 <= r.bottom;
+  };
+  /* R347-Z — LAYOUT-BLOCK DISJOINTNESS: a Range rect carries the
+   * FONT's bounding box (Arabic mark allowances ≈ 1.4em), so tightly
+   * pitched consecutive lines can report rect overlap where the INK
+   * never touches (the statement's lh-1.35 lines measured flush boxes
+   * with 6px of font-box overhang). When the two texts live in
+   * DIFFERENT layout blocks and those blocks do not overlap, the
+   * rects' overlap is font-box overhang across a clean layout — not
+   * text printed on text. Blocks that DO overlap (absolute overlays,
+   * the pinned layers) keep their findings. */
+  const blkCache = new Map();
+  const blkOf = (el) => {
+    if (blkCache.has(el)) return blkCache.get(el);
+    let b = null;
+    for (let e = el; e && e !== document.body; e = e.parentElement) {
+      const d = getComputedStyle(e).display;
+      if (d === 'block' || d === 'flow-root' || d === 'flex' || d === 'grid' || d === 'table-cell') { b = e; break; }
+    }
+    blkCache.set(el, b);
+    return b;
+  };
+  const blkRectCache = new Map();
+  const blkRect = (b) => {
+    if (!b) return null;
+    if (!blkRectCache.has(b)) blkRectCache.set(b, b.getBoundingClientRect());
+    return blkRectCache.get(b);
+  };
   for (let i = 0; i < tn.length; i++) for (let j = i + 1; j < tn.length; j++) {
     const p = tn[i], q = tn[j]; if (p.el === q.el || p.el.contains(q.el) || q.el.contains(p.el)) continue;
+    if (occludes(p, q) || occludes(q, p)) continue;
+    const bp = blkOf(p.el), bq = blkOf(q.el);
+    if (bp && bq && bp !== bq) {
+      const r1 = blkRect(bp), r2 = blkRect(bq);
+      const ovY = Math.min(r1.bottom, r2.bottom) - Math.max(r1.top, r2.top);
+      const ovX = Math.min(r1.right, r2.right) - Math.max(r1.left, r2.left);
+      if (ovY <= 0 || ovX <= 0) continue;
+    }
     const ar = inter(p, q); if (!ar) continue; const f = ar / Math.min(p.w * p.h, q.w * q.h);
     if (f >= MIN) res.text.push({ a: sel(p.el), b: sel(q.el), ta: p.t, tb: q.t, frac: +f.toFixed(2), at: [Math.round(p.x), Math.round(p.y)] });
   }
@@ -80,7 +168,12 @@ const PROBE = () => {
   res.fixedText = [];
   for (const el of document.querySelectorAll('body *')) {
     const s = getComputedStyle(el); if (!(s.position === 'fixed' || s.position === 'sticky') || !vis(el)) continue;
-    const b = el.getBoundingClientRect(); if (b.width < 20 || b.height < 12 || b.width * b.height > 0.2 * vw * vh || !el.textContent.trim()) continue;
+    const bRaw = el.getBoundingClientRect(); if (bRaw.width < 20 || bRaw.height < 12 || bRaw.width * bRaw.height > 0.2 * vw * vh || !el.textContent.trim()) continue;
+    /* R347-Z — the visible part only: clamp to the viewport (a parked
+     * off-screen fixed element covers nothing the eye can see). */
+    const bx = Math.max(bRaw.left, 0), by = Math.max(bRaw.top, 0), bx1 = Math.min(bRaw.right, vw), by1 = Math.min(bRaw.bottom, vh);
+    if (bx1 - bx < 20 || by1 - by < 12) continue;
+    const b = { left: bx, top: by, right: bx1, bottom: by1, width: bx1 - bx, height: by1 - by };
     for (const p of tn) { if (el.contains(p.el)) continue; if (inter({ x: b.left, y: b.top, w: b.width, h: b.height }, p) / (p.w * p.h) > 0.3) res.fixedText.push({ fixed: sel(el), under: sel(p.el), t: p.t }); }
   }
   for (const p of tn) { const e = p.el, s = getComputedStyle(e); if ((s.overflow !== 'visible') && e.scrollWidth > e.clientWidth + 2 && s.textOverflow !== 'ellipsis' && e.clientWidth > 0) res.clipped.push({ el: sel(e), t: p.t }); }

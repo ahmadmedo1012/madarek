@@ -1135,13 +1135,14 @@
 .wy-capbar { --lz-capbar: 40; /* landing-local ladder seat (rule 45 above it, chrome 50 above that) */ position: fixed; inset: 0; z-index: var(--lz-capbar); pointer-events: none; visibility: hidden; }
 .wy-capbar[data-wy-live="1"] { visibility: visible; }
 .wy-cap { position: absolute; inset: 0; visibility: hidden; }
-/* R347 D7b: the stage rule is gated on live — an explicitly-visible
-   child renders even inside a visibility:hidden bar (visibility
-   inherits only when unset), so the un-gated stage rule painted the
-   captions page-wide at every scroll stop (over the hero at scroll 0,
-   the statement, the journey, the footer). The captions now live
-   ONLY inside the why traversal, exactly like the frozen spec's own
-   pinned-caption era. */
+/* R347-Z (D7) — the stage swap ALSO requires [data-wy-live="1"]: the old
+   bare stage selectors set .cap visible at every scroll (stage defaults
+   to "0"), and a visibility:visible descendant PAINTS THROUGH the hidden
+   capbar — the four fixed caption chips rode the whole page (over the
+   hero at scroll 0, the colleges cloud at the footer; 44 detector
+   fixed-over-text findings, and they capped the hero's VLM score).
+   Gating on live makes the chips paint only while the why stage is
+   traversed — the pinned-caption design's own intent. */
 .wy-capbar[data-wy-live="1"][data-wy-stage="0"] .wy-cap:nth-child(1),
 .wy-capbar[data-wy-live="1"][data-wy-stage="1"] .wy-cap:nth-child(2),
 .wy-capbar[data-wy-live="1"][data-wy-stage="2"] .wy-cap:nth-child(3),

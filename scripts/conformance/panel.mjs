@@ -84,7 +84,7 @@ const CLIP_TOL = 2;
  * not on this list fails (the list is the law, not a suggestion). */
 const HCLIP_EXCLUSIONS = [
   { sel: "svg .bp-micro", reason: "ElevationDrawing drafting labels — the ≤991 band's authored SVG crop (T-18 A3: the crop beyond [03] is the authored overflow:hidden seat)" },
-  { sel: ".pr-clone *", reason: "platform marquee loop copies — out-of-flow clones seated on the recorded band rect, never visible, never focusable" },
+  /* R347-Z: the .pr-clone loop copies are deleted (D8 family, R346 §3) — the exclusion entry retired with them. */
   { sel: ".fo-roll-track .fo-roll-dup", reason: "the nav brand roll's loop twin — the authored marquee loop seat" },
   { sel: ".hro-work-item", reason: "the hero work strip's measured six-box grid (hero-mechanics [W]: padding-inline-start 759px @1440 + fixed vw item widths reproduce Heron's recorded band — the sixth subject bleeding past the frame's inline-end edge IS the recorded geometry)" },
   { sel: ".jt-map-col svg text", reason: "the pinned walkthrough's panned scene — the plan/section drawings are wider than the viewport at 390/768 and translate behind the window across the scrub (station labels recorded at multiple pan offsets); edge-straddling scene text is the authored marquee-class crop" },

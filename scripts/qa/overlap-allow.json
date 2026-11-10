@@ -7,7 +7,7 @@
     },
     {
       "match": "div.jt-map-in",
-      "reason": "R347 D6 (Lane B) — the journey map's STICKY WINDOW at ≤991: the plan column is its own scroll track (Heron's own mobile architecture — the map pins while the closing column scrolls past). It owns its full-width grid track, contains only its own children (statement band, plan window, findings card — all in flow, zero text-under-window findings after the R347 re-seat), and never paints over neighbouring content (the r312 e2e invariant sweep asserts the closing column is never covered). Proven intentional: position sticky inside .jt-map-col, the section's own track ladder."
+      "reason": "R347 D6 (Lane B + Z, merged reasons) — the journey map's STICKY WINDOW at ≤991: the plan column is its own scroll track (Heron's own mobile architecture — the map pins while the closing column scrolls past). It owns its full-width grid track, contains only its own children (statement band, plan window, findings card — all in flow after the R347 re-seat, zero text-under-window findings), and never paints over neighbouring content (the r312 e2e invariant sweep asserts the closing column is never covered). Proven intentional: position sticky inside .jt-map-col, the section's own track ladder; the reference's own 51% walkthrough is a pinned map — deleting the pin would delete the section."
     }
   ]
 }

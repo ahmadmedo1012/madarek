@@ -155,7 +155,14 @@ const COVERAGE_REVIEW = {};
 //     cause — the visible double-print outranks the metric)
 //   home-hero-wrap 11 (D4: the drafting noise chrome's 198 binding
 //     entries deleted with their elements — ONE calm artwork)
-const COVERAGE_FLOORS = { "home-intro-wrap": 37, "home-hero-wrap": 11 };
+//   home-platform-wrap 20 (R347-Z · D8 family, R346 §3: the marquee
+//     loop copies C/D/E are deleted — conformance twins that stacked 5
+//     pr-label/pr-title copies on one seat (detector text-on-text
+//     frac=1). Their 47 explicit bindings became honest noCounterpart
+//     excusals; the section's measured share fell 56.1%→22.5% BY THE
+//     EXCUSAL, not by unmapped work. The only "lift" would be re-adding
+//     banned twins — refused. The visible defect outranks the metric.)
+const COVERAGE_FLOORS = { "home-intro-wrap": 37, "home-hero-wrap": 11, "home-platform-wrap": 20 };
 const COVERAGE_FLOOR = 40;   // % measured below which a section fails FAIL(coverage)
 const OFF_BOOK_CAP = 70;     // % off-book at/above which a section fails FAIL(off-book) unless reviewed
 const HEURISTIC_CAP = 50;    // % heuristic-paired share at/above which a section fails FAIL(heuristic)
@@ -165,7 +172,12 @@ const HEURISTIC_CAP = 50;    // % heuristic-paired share at/above which a sectio
 // "not honestly fixable by CSS") now exceed half the pool BY ARITHMETIC,
 // not by new glue. Per-section cap with the written reason; every other
 // section keeps 50.
-const HEURISTIC_CAPS = { "home-hero-wrap": 80 };
+// R347-Z re-key (same arithmetic as the hero's): the platform's explicit
+//   pool shrank 160→113 pairs with the loop-copy twin deletion (R346 §3,
+//   D8 family) — the section's stable heuristic-glued mass (the wrapper-
+//   crossover soup the r338 note already documented) now exceeds half the
+//   pool BY ARITHMETIC, not by new glue. 58.5% measured; cap 65.
+const HEURISTIC_CAPS = { "home-hero-wrap": 80, "home-platform-wrap": 65 };
 const DARK_INK_FLOOR = 4.5;  // WCAG AA contrast for EVERY text-bearing node in --dark
 const EDGE390_TOL = 2;       // px tolerance on the spec's recorded 390 side gutters
 
@@ -434,9 +446,10 @@ async function SCROLL_WALK_JS(sectionSelectors) {
 function specPathMatches(specPath, pattern) {
   return specPath === pattern || specPath.endsWith(" > " + pattern) || pattern.endsWith(" > " + specPath);
 }
-function findNoCounterpartReason(section, specPath, bpName) {
+function findNoCounterpartReason(section, specPath, bpName, noHeuristicOnly = false) {
   for (const nc of NO_COUNTERPART) {
     if (!bpSel(nc, bpName)) continue;
+    if (noHeuristicOnly && !nc.noHeuristic) continue; /* R347-Z: the opt-in flag */
     const path = bpPath(nc.heron, bpName);
     if (path != null && nc.section === section && specPathMatches(specPath, path)) return nc.reason;
   }
@@ -497,6 +510,14 @@ function matchPairs(heronEls, ourEls, explicitIdx, section, charSplitRules = [],
     if (pairs.some((p) => p.h === h)) continue;
     if (charSplitRules.some((c) => h.p.includes(c.container) && !isLineContainerPath(h.p))) continue;
     if (wordsetMode && wordSet.has(h)) continue;
+    /* R347-Z — a noCounterpart entry flagged "noHeuristic": true NEVER
+     * pairs, heuristically included (the excusal's own contract — "no
+     * honest counterpart on our page" — is violated when the fallback
+     * glue sticks it to an unrelated same-shape element; the platform
+     * loop-copy seats, R346 §3 twin ban, were gluing to the two real
+     * rows and tipping the section over the heuristic cap). The flag is
+     * opt-in per entry: legacy excusals keep their recorded behaviour. */
+    if (findNoCounterpartReason(section, h.p, BP_NOW, /*noHeuristicOnly*/ true)) continue;
     const q = byKey.get(h.tag + "|" + h.tc);
     if (q && q.length) {
       const i = q.shift();

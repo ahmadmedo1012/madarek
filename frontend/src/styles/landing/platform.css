@@ -401,8 +401,14 @@ html[data-theme='dark'] .pr-section .pr-cta {
    * painting and hit-testing — the same seat the clone copies already
    * hold (visibility:hidden + pointer-events:none, T-08c4). */
   @keyframes pr-item-fade {
+    /* R347-Z (D8 family) — SEQUENTIAL, never concurrent: the fade-OUT
+     * completes and visibility flips hidden at 45% BEFORE the partner
+     * row's fade-IN begins (95%→100% with its +7s phase offset) — the
+     * old 50%/92% cross-fade painted BOTH rows' text stacks for ~1.1s
+     * every swap (detector text-on-text frac=1, pr-label × pr-label).
+     * Same 14s cadence, same 0.42s fade voice, zero overlap. */
     0%, 42% { opacity: 1; visibility: visible; }
-    50%, 92% { opacity: 0; visibility: hidden; }
+    45%, 95% { opacity: 0; visibility: hidden; }
     100% { opacity: 1; visibility: visible; }
   }
 
@@ -458,29 +464,11 @@ html[data-theme='dark'] .pr-section .pr-cta {
   }
 }
 
-/* ── the marquee loop copies C/D/E (.pr-clone) ────────────────────────
- * r338 T-08c4 — heron's marquee keeps ~5 loop-translated copies of the
- * band; the census records the extra twins on the cross-fade rects. The
- * clones are REAL copies of our own marquee content seated on the same
- * recorded band rect (grid row 1 ≥992 / row-1 top ≤991), out of flow so
- * no measured box of the visible pair ever moves, never visible and
- * never interactive — their geometry/type/colour stay measurable. */
-.pr-section .pr-rows {
-  position: relative; /* the clones' loop-seat containing block */
-}
-
-.pr-section .pr-row.pr-clone {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-start: 0;
-  visibility: hidden;
-  pointer-events: none;
-  user-select: none;
-  animation: none; /* loop copies never cross-fade; opacity stays 1 */
-  /* the measured marquee tween voice (heron loop copies: 0.48s cubic-bezier(0.625, 0.05, 0, 1)) */
-  transition: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1);
-  opacity: 1;
-}
+/* ── R347-Z (D8 family) — the marquee loop copies C/D/E (.pr-clone)
+ * are DELETED with their Product.tsx rows: conformance twins of the
+ * banned family (R346 §3). Their mapping leaves are re-keyed in the
+ * same commit (9 leaves, 0.014% of the ratchet; the HCLIP exclusion
+ * entry removed from panel.mjs). */
 
 /* ── 768–991 — the two-col fold: img | head+side, rows 254/258 ────── */
 @media (max-width: 991px) {
@@ -527,12 +515,13 @@ html[data-theme='dark'] .pr-section .pr-cta {
   .pr-section .pr-side {
     grid-column: 2;
     grid-row: 2;
-    block-size: 18.37rem; /* 169 @768 — the measured side-cell seat */
-  }
-
-  /* r338 T-08c2 — row-2's side cell measures 173 @768 (rows 254/258) */
-  .pr-section .pr-row:nth-child(2) .pr-side {
-    block-size: 18.8rem;
+    /* R347-Z (D8 family): auto, not the measured 18.37rem — the Arabic
+     * text + the CTA strip need more than the fixed seat, and the fixed
+     * seat made the CTA overflow the row and print over the NEXT row's
+     * head/image (detector: cta-line × pr-label fr 0.41 @768). The
+     * grid's auto rows grow with the content; the measured geometry
+     * re-keys per R346 §3 (visible correctness outranks the metric). */
+    block-size: auto;
   }
 
   .pr-section .pr-sidebox {
@@ -540,7 +529,7 @@ html[data-theme='dark'] .pr-section .pr-cta {
   }
 
   .pr-section .pr-cta {
-    block-size: 4.78rem; /* 44 @768 (measured) */
+    block-size: auto; /* R347-Z: content-driven (the two lines + the icon row) */
   }
 
   .pr-section .pr-menu {
@@ -593,13 +582,10 @@ html[data-theme='dark'] .pr-section .pr-cta {
   .pr-section .pr-side {
     grid-column: 1;
     grid-row: 3;
-    block-size: 16.23rem; /* 161 @390 — the measured side-cell seat */
-  }
-
-  /* r338 T-08c2 — row-2's side cell measures 182 @390 (the deeper
-     second fold: img 226 + head 87 + side 182) */
-  .pr-section .pr-row:nth-child(2) .pr-side {
-    block-size: 18.34rem;
+    /* R347-Z (D8 family): auto — the fixed 16.23rem seat overflowed the
+     * CTA 36px past the row onto the next row's capture + [02] tag
+     * (detector: cta-line × lp-numeral fr 0.29 @390). */
+    block-size: auto;
   }
 
   .pr-section .pr-sidebox {
@@ -607,29 +593,10 @@ html[data-theme='dark'] .pr-section .pr-cta {
   }
 
   .pr-section .pr-cta {
-    block-size: 4.33rem; /* 43 @390 (measured) */
+    block-size: auto; /* R347-Z: content-driven */
   }
 }
 
-
-/* ── T-08c5 — crossover role voices on the clone seats ──────────────
- * The heron wrapper-crossover records (duplicate marquee copies + the
- * neighbouring bands the wrap census swallowed) carry the band's own
- * interaction/tween voices: cursor-pointer inherited through the
- * a-subtrees, the 0.48s loop voice on the band wrappers, the CTA's
- * 0.3s dual-ease hover voice, the menu's 0.4s ease. The clone seats
- * reproduce exactly those voices; every other clone descendant rests
- * transition-less, like its recorded twin. */
-.pr-section .pr-clone * { transition: none; }
-.pr-section .pr-clone .pr-cta {
-  transition: color 0.3s ease, background-color 0.3s cubic-bezier(0.625, 0.05, 0, 1);
-  cursor: pointer; /* the a-subtree voice — inherited by the whole strip */
-}
-.pr-section .pr-clone .pr-head,
-.pr-section .pr-clone .pr-side {
-  transition: all 0.48s cubic-bezier(0.625, 0.05, 0, 1);
-}
-.pr-section .pr-clone .pr-menu { transition: opacity 0.4s ease; }
 
 /* ── T-08c5b — heron's ≤991 band voices (measured spec @390/768) ────
  * The mobile row wrappers carry a 0.4s ease; the clone CTA strip
@@ -637,22 +604,6 @@ html[data-theme='dark'] .pr-section .pr-cta {
  * dual-ease. Desktop voices stay as measured above. */
 @media (max-width: 991px) {
   .pr-section .pr-row { transition: all 0.4s ease; }
-  .pr-section .pr-clone .pr-cta { transition: all 0.4s ease; }
-  .pr-section .pr-clone .pr-cta-row,
-  .pr-section .pr-clone .pr-cta-icons,
-  .pr-section .pr-clone .pr-cta-ic,
-  .pr-section .pr-clone .pr-cta-line { transition: all 0.48s cubic-bezier(0.625, 0.05, 0, 1); }
-  .pr-section .pr-clone .pr-cta-icbox { transition: color 0.3s ease, background-color 0.3s cubic-bezier(0.625, 0.05, 0, 1); }
-}
-
-/* R344 (item 0) — the loop copies' voice at EVERY bp: the census records
- * 0.48s / cubic-bezier(0.625, 0.05, 0, 1) on the clone row/icons/ic
- * seats at the desktop bps too (the ≤991 belt above covered mobile;
- * the desktop clones measured 0s/ease — 24 transition seats). */
-@media (min-width: 992px) {
-  .pr-section .pr-clone .pr-cta-row,
-  .pr-section .pr-clone .pr-cta-icons,
-  .pr-section .pr-clone .pr-cta-ic { transition: all 0.48s cubic-bezier(0.625, 0.05, 0, 1); } /* motion-token: allow — heron-measured loop voice (T-11A census) */
 }
 
 /* ══ T-11b2 — the band's scrubbed title flourish ═════════════════════

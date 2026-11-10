@@ -16,6 +16,12 @@
       "reason": "R347 D4: the drafting-noise chrome (rulers, +/- marks, graticule, deco cards, edge frame, the ~95-div grid + vector-chrome layers) is retired with its elements per the owner's directive - ONE calm artwork; 198 binding entries deleted with them, so the heron-side off-book mass (the grid/chrome census) now dominates the section's estimate. The retirement is measured and documented in docs/redesign/r347/DEFECTS-A.md; the visible defect fix outranks the coverage metric (R346 §0/§3).",
       "owner": "T-347",
       "reviewedAt": "2026-11-10"
+    },
+    {
+      "section": "home-platform-wrap",
+      "owner": "T-347",
+      "reviewedAt": "2026-11-10",
+      "reason": "R347-Z (D8 family, R346 §3): the platform band's marquee loop copies C/D/E are DELETED — conformance twins (visibility:hidden clones seated to bind the reference's ~5-copy marquee census; 5 stacked pr-label/pr-title copies printed on one seat, detector text-on-text frac=1 during the cross-fade). Their 47 explicit bindings became written noCounterpart excusals (mapping/home-platform-wrap.json) and the cross-fade itself was re-sequenced so no moment paints both rows. The section's off-book mass is now the reference's own loop-copy census — the only 'lift' would be re-adding the banned twins; refused (the visible defect outranks the metric). The coverage floor (22.5%) is re-keyed to 20 in run.mjs's COVERAGE_FLOORS with this same reason."
     }
   ]
 }
