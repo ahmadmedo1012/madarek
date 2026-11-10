@@ -19,7 +19,6 @@ export const WORKS_TODAY = 'ما يعمل اليوم';
  *  verbatim; the mastery line is the spec's own answer text). */
 export const MASTERY_SCORE_LINE = 'درجة إتقان لكل مفهوم تكشف الفجوة وتربطها بالدرس المناسب.';
 export const LECTURE_INTERACTIVE = 'المحاضرة التفاعلية';
-export const MASTERY_MATRIX = 'مصفوفة الإتقان';
 
 
 /** R337 — the blueprint drawing classes (StatementArt/SectionDrawing/
