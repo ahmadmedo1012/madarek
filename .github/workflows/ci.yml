@@ -372,23 +372,23 @@ jobs:
         run: nohup npx vite --port 5173 --strictPort > /tmp/vite.log 2>&1 &
       - name: Wait for dev server
         run: npx --yes wait-on http://localhost:5173/ --timeout 60000
-      # R347 Lane A — the visual overlap detector (scripts/qa/overlap.mjs,
-      # wired into scripts/verify.sh full as a REQUIRED step) is NOT yet a
-      # required CI step: the / sweep still carries Lane B's in-flight defects
-      # (D6 map captions over the plan, D7 why-cycle captions — see
-      # docs/redesign/r347/DEFECTS-A.md). Per the R347 §2 clause it becomes a
-      # REQUIRED step "once it is green" — Lane Z (or the lane that empties /)
-      # uncomments the block below verbatim. Never continue-on-error.
-      # - name: Visual overlap detector (R347)
-      #   run: node scripts/qa/overlap.mjs --url http://localhost:5173 --routes / --bps 1440x900,768x1024,390x844 --themes light,dark --out /tmp/r347/overlap.json
-      # - name: Upload overlap results
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: overlap-results
-      #     path: /tmp/r347/overlap.json
-      #     retention-days: 14
-      #     if-no-files-found: ignore
+      # R347-Z — the visual overlap detector is ARMED (the R347 §2 clause
+      # fulfilled: the / sweep is 0/0/0 at 1440/768/390 × light/dark after
+      # the Lane B + Z defect round — D6/D7/D8 fixed at the cause; see
+      # docs/redesign/r347/DEFECTS-A.md + the r347-Z commit). Required,
+      # never continue-on-error: any fixed-over-text, text-on-text,
+      # text-on-media, big-fixed (outside the written-reason allowlist),
+      # clipped or horizontal-overflow finding fails the build.
+      - name: Visual overlap detector (R347)
+        run: node scripts/qa/overlap.mjs --url http://localhost:5173 --routes / --bps 1440x900,768x1024,390x844 --themes light,dark --out /tmp/r347/overlap.json
+      - name: Upload overlap results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: overlap-results
+          path: /tmp/r347/overlap.json
+          retention-days: 14
+          if-no-files-found: ignore
       - name: Conformance matrix vs ratchet (scroll + interaction extensions)
         run: node scripts/conformance/run.mjs --gate --scroll --interact
       - name: Upload results artifact
