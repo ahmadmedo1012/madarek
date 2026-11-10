@@ -29,6 +29,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Python bytecode (CI verifier scripts)
+__pycache__/
+*.pyc
+
 # OS
 .DS_Store
 Thumbs.db

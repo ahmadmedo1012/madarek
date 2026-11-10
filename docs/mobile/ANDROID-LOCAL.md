@@ -21,7 +21,7 @@ device/owner-machine VERIFIED only once run end to end.
 | Requirement | Version | Why |
 |---|---|---|
 | JDK | **17+** (17 or 21) | Expo SDK 58 · Gradle 9.4.1 · AGP 8/9 |
-| Android SDK | `platforms;android-37` · `build-tools;37.0.0` · `platform-tools` | RN 0.88 `gradle/libs.versions.toml` (compileSdk 37, targetSdk 36, minSdk 24) |
+| Android SDK | `platforms;android-37.0` · `build-tools;37.0.0` · `platform-tools` | RN 0.88 `gradle/libs.versions.toml` (compileSdk 37, targetSdk 36, minSdk 24) |
 | NDK | 27.1.12297006 | auto-fetched by gradle when a native module compiles C++ (reanimated/worklets) — ~2 GB |
 | Node | ≥ 20 | `apps/mobile/package.json` engines |
 | Disk | ~10 GB free | SDK + NDK + `~/.gradle` caches + first-run maven deps |
@@ -40,7 +40,7 @@ mv ~/android-sdk/cmdline-tools/cmdline-tools ~/android-sdk/cmdline-tools/latest
 export ANDROID_HOME=$HOME/android-sdk
 export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
 
-sdkmanager "platform-tools" "platforms;android-37" "build-tools;37.0.0"
+sdkmanager "platform-tools" "platforms;android-37.0" "build-tools;37.0.0"
 yes | sdkmanager --licenses        # gradle refuses to auto-fetch components with unaccepted licenses
 ```
 
@@ -157,7 +157,7 @@ quota — the very constraint that birthed paths A/B.
 | Symptom | Cause → fix |
 |---|---|
 | `Unsupported class file major version` / gradle daemon dies at startup | JDK ≠ 17+ (often 11) → `java -version`; install JDK 17/21, export `JAVA_HOME` |
-| `failed to find target with hash string 'android-37'` / license prompt mid-build | SDK component or licenses missing → `sdkmanager "platforms;android-37" "build-tools;37.0.0"` then `yes \| sdkmanager --licenses` |
+| `failed to find target with hash string 'android-37.0'` / license prompt mid-build | SDK component or licenses missing → `sdkmanager "platforms;android-37.0" "build-tools;37.0.0"` then `yes \| sdkmanager --licenses` |
 | Script exits `Android SDK missing` | `ANDROID_HOME` unset or not a dir → §1 step 2, new shell |
 | Script exits `template drift: …` | Expo changed the prebuild gradle template → inspect `android/app/build.gradle`, update the patcher anchors in `scripts/build-android-local.sh` |
 | Script exits `keystore file not found` | env points at a missing path → re-check `MADAREK_ANDROID_KEYSTORE` (§2 keytool command is printed by the script) |

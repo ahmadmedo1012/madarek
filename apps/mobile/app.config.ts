@@ -101,6 +101,13 @@ const config: ExpoConfig = {
     url: "https://u.expo.dev/afc4265f-664e-4325-a0ff-b621b81fe1b0",
     checkAutomatically: "ON_LOAD",
     fallbackToCacheTimeout: 0,
+    // Raw Xcode/Gradle CI builds have no EAS Build channel injection. The
+    // native workflows set EXPO_UPDATES_CHANNEL=production so the installed
+    // binary requests the same channel that mobile.yml publishes to. EAS
+    // Builds leave this unset and keep using their eas.json channel.
+    requestHeaders: process.env.EXPO_UPDATES_CHANNEL
+      ? { "expo-channel-name": process.env.EXPO_UPDATES_CHANNEL }
+      : undefined,
   },
   runtimeVersion: {
     policy: "fingerprint",

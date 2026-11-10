@@ -65,9 +65,9 @@ APK_PATH="$MOBILE_DIR/android/app/build/outputs/apk/release/app-release.apk"
 
 # SDK components required by Expo SDK 58 / RN 0.88 (react-native/gradle
 # libs.versions.toml): compileSdk 37 · targetSdk 36 · buildTools 37.0.0.
-SDK_PLATFORM="platforms;android-37"
+SDK_PLATFORM="platforms;android-37.0"
 SDK_BUILD_TOOLS="build-tools;37.0.0"
-SDK_PLATFORM_DIR="platforms/android-37"
+SDK_PLATFORM_DIR="platforms/android-37.0"
 SDK_BUILD_TOOLS_DIR="build-tools/37.0.0"
 
 say()  { printf '\n\033[1;36m▸ %s\033[0m\n' "$*"; }

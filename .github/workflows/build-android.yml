@@ -1,0 +1,568 @@
+name: Android — release APK/AAB
+
+# Build an installable Android APK and a Play-upload AAB with Gradle.
+#
+# Pipeline: build (Ubuntu) -> verify (Ubuntu, independent) -> publish
+# (rolling prerelease `android-latest`). The publish job only runs after the
+# artifact has been downloaded again and re-verified from the artifact store.
+#
+# Signing:
+#   * If ANDROID_KEYSTORE_BASE64 + password/alias secrets exist, the release
+#     APK/AAB are signed with that release key.
+#   * Otherwise the Expo template's stable debug keystore is used, and the
+#     verifier/release notes label the artifact as internal/debug-signed.
+#
+# Native builds run when native inputs change. JS-only changes are delivered by
+# the OTA job in mobile.yml; use workflow_dispatch for a self-contained rebuild.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/mobile/package.json"
+      - "apps/mobile/package-lock.json"
+      - "apps/mobile/app.config.ts"
+      - "apps/mobile/app.json"
+      - "apps/mobile/eas.json"
+      - "apps/mobile/assets/**"
+      - "apps/mobile/plugins/**"
+      - "apps/mobile/android/**"
+      - "apps/mobile/ios/**"
+      - "shared/**"
+      - "apps/mobile/scripts/verify-apk.py"
+      - "apps/mobile/scripts/ci/**"
+      - "scripts/ci/**"
+      - ".github/workflows/build-android.yml"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to build (branch, tag, or commit SHA)"
+        required: false
+        default: "main"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: android-release-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
+
+env:
+  CI: "1"
+  NODE_VERSION: "22"
+  JAVA_VERSION: "17"
+  ANDROID_COMPILE_SDK: "37"
+  ANDROID_MIN_SDK: "24"
+  ANDROID_TARGET_SDK: "36"
+  ANDROID_BUILD_TOOLS: "37.0.0"
+  ANDROID_NDK: "27.1.12297006"
+  # Public build-time configuration (same value as eas.json). Not a secret.
+  EXPO_PUBLIC_API_BASE_URL: "https://madarek.onrender.com/api/v1"
+  EXPO_UPDATES_CHANNEL: "production"
+  APK_NAME: "Madarek"
+  RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+jobs:
+  build:
+    name: Build release APK + AAB
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/mobile/package-lock.json
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Set up Gradle caching
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        run: |
+          set -euo pipefail
+          : "${ANDROID_HOME:?ANDROID_HOME is not set by setup-android}"
+          # yes can receive SIGPIPE when sdkmanager exits; the license state is
+          # still persisted, so don't fail the step on that harmless signal.
+          set +o pipefail
+          yes | sdkmanager --sdk_root="$ANDROID_HOME" --licenses >/dev/null || true
+          set -o pipefail
+          sdkmanager --sdk_root="$ANDROID_HOME" --install \
+            "platform-tools" \
+            "platforms;android-${ANDROID_COMPILE_SDK}.0" \
+            "build-tools;${ANDROID_BUILD_TOOLS}" \
+            "ndk;${ANDROID_NDK}"
+          sdkmanager --sdk_root="$ANDROID_HOME" --list_installed \
+            | grep -E "platforms;android-${ANDROID_COMPILE_SDK}\\.0|build-tools;${ANDROID_BUILD_TOOLS}|ndk;${ANDROID_NDK}" \
+            || true
+
+      - name: Show toolchain and source revision
+        run: |
+          set -euo pipefail
+          echo "Commit: $(git rev-parse HEAD)"
+          echo "Subject: $(git log -1 --pretty=%s)"
+          uname -a
+          java -version
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          sdkmanager --version
+          node -v
+          npm -v
+
+      - name: Install JS dependencies from the lockfile
+        working-directory: apps/mobile
+        run: npm ci --no-audit --no-fund
+
+      - name: Typecheck before the native build
+        working-directory: apps/mobile
+        run: npm run typecheck
+
+      - name: Resolve and validate the Expo config
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          npx expo config --type public --json > build/expo-config.json
+          node scripts/ci/validate-expo-config.mjs --platform android --config build/expo-config.json
+
+      - name: Generate the native Android project (Expo prebuild)
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          rm -rf android
+          npx expo prebuild --platform android --no-install 2>&1 | tee build/prebuild.log
+          test -d android
+          # prebuild rewrites the local dev scripts to `expo run:*`; restore the
+          # managed-workflow scripts so later tooling sees the repository state.
+          npm pkg set scripts.android="expo start --android" scripts.ios="expo start --ios"
+          echo "Generated native project: android/"
+
+      - name: Tune Gradle for the CI runner and release ABIs
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          GRADLE_PROPERTIES="android/gradle.properties"
+          test -f "$GRADLE_PROPERTIES"
+
+          if grep -q '^org.gradle.jvmargs=' "$GRADLE_PROPERTIES"; then
+            sed -i 's|^org.gradle.jvmargs=.*|org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8|' "$GRADLE_PROPERTIES"
+          else
+            echo 'org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8' >> "$GRADLE_PROPERTIES"
+          fi
+
+          if grep -q '^reactNativeArchitectures=' "$GRADLE_PROPERTIES"; then
+            sed -i 's|^reactNativeArchitectures=.*|reactNativeArchitectures=arm64-v8a,armeabi-v7a|' "$GRADLE_PROPERTIES"
+          else
+            echo 'reactNativeArchitectures=arm64-v8a,armeabi-v7a' >> "$GRADLE_PROPERTIES"
+          fi
+
+          grep -q '^org.gradle.caching=' "$GRADLE_PROPERTIES" || echo 'org.gradle.caching=true' >> "$GRADLE_PROPERTIES"
+          grep -q '^org.gradle.parallel=' "$GRADLE_PROPERTIES" || echo 'org.gradle.parallel=true' >> "$GRADLE_PROPERTIES"
+          grep -q '^android.enableMinifyInReleaseBuilds=' "$GRADLE_PROPERTIES" || echo 'android.enableMinifyInReleaseBuilds=true' >> "$GRADLE_PROPERTIES"
+          printf 'sdk.dir=%s\n' "$ANDROID_HOME" > android/local.properties
+
+          echo "== effective Gradle properties =="
+          cat "$GRADLE_PROPERTIES"
+          echo "sdk.dir=$ANDROID_HOME"
+
+      - name: Configure Android release signing
+        working-directory: apps/mobile
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: node scripts/ci/configure-android-signing.mjs
+
+      - name: Build release APK and AAB
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          (cd android && ./gradlew :app:assembleRelease :app:bundleRelease --no-daemon --stacktrace) \
+            2>&1 | tee build/gradle.log
+
+      - name: Collect and verify the artifacts
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          APK="android/app/build/outputs/apk/release/app-release.apk"
+          AAB="android/app/build/outputs/bundle/release/app-release.aab"
+          test -f "$APK"
+          test -f "$AAB"
+          cp "$APK" "build/$APK_NAME.apk"
+          cp "$AAB" "build/$APK_NAME.aab"
+          if [ -f android/app/build/outputs/mapping/release/mapping.txt ]; then
+            cp android/app/build/outputs/mapping/release/mapping.txt build/mapping.txt
+          fi
+
+          BUILD_TOOLS_VERSION="$ANDROID_BUILD_TOOLS" \
+            python3 scripts/verify-apk.py \
+              --apk "build/$APK_NAME.apk" \
+              --aab "build/$APK_NAME.aab" \
+              --json-out build/verify.json \
+              --expected-version "$(jq -r .version build/expo-config.json)" \
+              --expected-version-code "$(jq -r '.android.versionCode // 1' build/expo-config.json)" \
+              --min-sdk "$ANDROID_MIN_SDK" \
+              --target-sdk "$ANDROID_TARGET_SDK" \
+              --expected-signing-mode "$SIGNING_MODE" \
+              | tee build/verify.log
+
+          if [ "$SIGNING_MODE" = "release" ]; then
+            ACTUAL_CERT=$(jq -r .certificate_sha256 build/verify.json)
+            if [ "$ACTUAL_CERT" != "${EXPECTED_CERT_SHA256:?}" ]; then
+              echo "::error::APK certificate $ACTUAL_CERT does not match keystore $EXPECTED_CERT_SHA256"
+              exit 1
+            fi
+          fi
+
+      - name: Write build metadata and checksums
+        working-directory: apps/mobile
+        env:
+          REQUESTED_REF: ${{ github.event.inputs.ref || github.ref }}
+        run: |
+          set -euo pipefail
+          COMMIT=$(git rev-parse HEAD)
+          BUILT_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          GRADLE_VERSION=$(sed -n 's|.*gradle-\([0-9.]*\)-bin.zip.*|\1|p' android/gradle/wrapper/gradle-wrapper.properties)
+          JDK_VERSION=$(java -version 2>&1 | head -1)
+          CERT_SHA=$(jq -r .certificate_sha256 build/verify.json)
+
+          jq -n \
+            --arg platform "android" \
+            --arg name "$APK_NAME" \
+            --arg apk "$APK_NAME.apk" \
+            --arg aab "$APK_NAME.aab" \
+            --arg commit "$COMMIT" \
+            --arg requested_ref "$REQUESTED_REF" \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg workflow "$GITHUB_WORKFLOW" \
+            --arg event_name "$GITHUB_EVENT_NAME" \
+            --arg actor "$GITHUB_ACTOR" \
+            --arg run_id "$GITHUB_RUN_ID" \
+            --arg run_number "$GITHUB_RUN_NUMBER" \
+            --arg run_url "$RUN_URL" \
+            --arg runner "ubuntu-24.04" \
+            --arg runner_os "$RUNNER_OS" \
+            --arg runner_arch "$RUNNER_ARCH" \
+            --arg jdk "$JDK_VERSION" \
+            --arg java_home "$JAVA_HOME" \
+            --arg android_sdk "$ANDROID_COMPILE_SDK" \
+            --arg build_tools "$ANDROID_BUILD_TOOLS" \
+            --arg ndk "$ANDROID_NDK" \
+            --arg gradle "$GRADLE_VERSION" \
+            --arg signing_mode "$SIGNING_MODE" \
+            --arg certificate_sha256 "$CERT_SHA" \
+            --arg node "$(node -v)" \
+            --arg npm "$(npm -v)" \
+            --arg built_at "$BUILT_AT" \
+            --arg updates_channel "${EXPO_UPDATES_CHANNEL:-}" \
+            '{
+              platform: $platform,
+              name: $name,
+              apk: $apk,
+              aab: $aab,
+              commit: $commit,
+              requested_ref: $requested_ref,
+              repository: $repository,
+              workflow: $workflow,
+              event_name: $event_name,
+              actor: $actor,
+              run_id: $run_id,
+              run_number: $run_number,
+              run_url: $run_url,
+              runner: $runner,
+              runner_os: $runner_os,
+              runner_arch: $runner_arch,
+              jdk: $jdk,
+              java_home: $java_home,
+              android_sdk: $android_sdk,
+              build_tools: $build_tools,
+              ndk: $ndk,
+              gradle: $gradle,
+              signing_mode: $signing_mode,
+              certificate_sha256: $certificate_sha256,
+              node: $node,
+              npm: $npm,
+              built_at: $built_at,
+              updates_channel: $updates_channel,
+              verified: false
+            }' > build/build-env.json
+
+          jq -s '.[0] * .[1]' build/build-env.json build/verify.json > build/build-info.json
+          (cd build && sha256sum "$APK_NAME.apk" "$APK_NAME.aab" > SHA256SUMS.txt)
+
+          echo "== build-info.json =="
+          cat build/build-info.json
+          echo "== SHA256SUMS.txt =="
+          cat build/SHA256SUMS.txt
+
+      - name: Upload the APK/AAB candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-candidate
+          path: |
+            apps/mobile/build/Madarek.apk
+            apps/mobile/build/Madarek.aab
+            apps/mobile/build/build-info.json
+            apps/mobile/build/SHA256SUMS.txt
+            apps/mobile/build/verify.json
+            apps/mobile/build/signing.json
+            apps/mobile/build/mapping.txt
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Remove temporary signing material
+        if: always()
+        run: |
+          set -euo pipefail
+          rm -f "${RUNNER_TEMP}/madarek-release.keystore"
+          rm -f apps/mobile/android/key.properties
+          echo "Temporary signing material removed"
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-build-logs-${{ github.run_number }}
+          path: |
+            apps/mobile/build/prebuild.log
+            apps/mobile/build/gradle.log
+            apps/mobile/build/expo-config.json
+            apps/mobile/build/verify.log
+            apps/mobile/android/gradle.properties
+            apps/mobile/android/app/build.gradle
+          if-no-files-found: ignore
+          retention-days: 14
+
+  verify:
+    name: Verify APK/AAB independently (Linux)
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout verifier
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: apps/mobile/scripts
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install build-tools for verification
+        run: |
+          set -euo pipefail
+          : "${ANDROID_HOME:?ANDROID_HOME is not set by setup-android}"
+          set +o pipefail
+          yes | sdkmanager --sdk_root="$ANDROID_HOME" --licenses >/dev/null || true
+          set -o pipefail
+          sdkmanager --sdk_root="$ANDROID_HOME" --install "platform-tools" "build-tools;37.0.0"
+          sdkmanager --sdk_root="$ANDROID_HOME" --list_installed | grep -E 'build-tools;37.0.0|platform-tools' || true
+
+      - name: Download the APK/AAB candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release-candidate
+          path: candidate
+
+      - name: Re-verify the downloaded artifacts
+        env:
+          BUILD_TOOLS_VERSION: "37.0.0"
+        run: |
+          set -euo pipefail
+          SIGNING_MODE=$(jq -r .signing_mode candidate/build-info.json)
+          python3 apps/mobile/scripts/verify-apk.py \
+            --apk candidate/Madarek.apk \
+            --aab candidate/Madarek.aab \
+            --json-out candidate/verify-rerun.json \
+            --expected-version "$(jq -r .version candidate/build-info.json)" \
+            --expected-version-code "$(jq -r .version_code candidate/build-info.json)" \
+            --min-sdk "$(jq -r .min_sdk candidate/build-info.json)" \
+            --target-sdk "$(jq -r .target_sdk candidate/build-info.json)" \
+            --expected-architectures "$(jq -r '.architectures | join(",")' candidate/build-info.json)" \
+            --expected-signing-mode "$SIGNING_MODE" \
+            | tee candidate/verify.log
+
+      - name: Cross-check metadata and publish the verified artifact
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          APK_SHA=$(sha256sum candidate/Madarek.apk | awk '{print $1}')
+          APK_SIZE=$(stat -c%s candidate/Madarek.apk)
+          AAB_SHA=$(sha256sum candidate/Madarek.aab | awk '{print $1}')
+          AAB_SIZE=$(stat -c%s candidate/Madarek.aab)
+          SIGNING_MODE=$(jq -r .signing_mode candidate/build-info.json)
+          EXPECTED_CERT=$(jq -r .certificate_sha256 candidate/build-info.json)
+          ACTUAL_CERT=$(jq -r .certificate_sha256 candidate/verify-rerun.json)
+          test "$EXPECTED_CERT" = "$ACTUAL_CERT"
+
+          jq -e \
+            --arg apk_sha "$APK_SHA" \
+            --arg aab_sha "$AAB_SHA" \
+            --argjson apk_size "$APK_SIZE" \
+            --argjson aab_size "$AAB_SIZE" \
+            --arg signing_mode "$SIGNING_MODE" \
+            '.platform == "android" and .sha256 == $apk_sha and .size_bytes == $apk_size and .aab_sha256 == $aab_sha and .aab_size_bytes == $aab_size and .package == "ly.madarek.mobile" and .signing_mode == $signing_mode and .verified == false' \
+            candidate/build-info.json >/dev/null
+
+          mkdir -p verified
+          cp candidate/Madarek.apk verified/Madarek.apk
+          cp candidate/Madarek.aab verified/Madarek.aab
+          cp candidate/verify-rerun.json verified/verify.json
+          if [ -f candidate/mapping.txt ]; then cp candidate/mapping.txt verified/mapping.txt; fi
+          jq -s \
+            --arg verified_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg run_url "$RUN_URL" \
+            --arg verifier "apps/mobile/scripts/verify-apk.py" \
+            '.[0] * .[1] * {verified:true, verified_at:$verified_at, verify_run_url:$run_url, verifier:$verifier}' \
+            candidate/build-info.json candidate/verify-rerun.json > verified/build-info.json
+          (cd verified && sha256sum Madarek.apk Madarek.aab > SHA256SUMS.txt)
+
+          echo "Verified APK SHA-256: $APK_SHA"
+          echo "Verified AAB SHA-256: $AAB_SHA"
+          cat verified/SHA256SUMS.txt
+
+      - name: Upload the verified APK/AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: Madarek-android-release
+          path: |
+            verified/Madarek.apk
+            verified/Madarek.aab
+            verified/SHA256SUMS.txt
+            verified/build-info.json
+            verified/verify.json
+            verified/mapping.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Write verification summary
+        run: |
+          set -euo pipefail
+          {
+            echo "## Android APK/AAB verified"
+            echo
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| Package | \`$(jq -r .package verified/build-info.json)\` |"
+            echo "| Version | \`$(jq -r .version verified/build-info.json)\` (code \`$(jq -r .version_code verified/build-info.json)\`) |"
+            echo "| Signing | \`$(jq -r .signing_mode verified/build-info.json)\` |"
+            echo "| Certificate SHA-256 | \`$(jq -r .certificate_sha256 verified/build-info.json)\` |"
+            echo "| APK SHA-256 | \`$(jq -r .sha256 verified/build-info.json)\` |"
+            echo "| AAB SHA-256 | \`$(jq -r .aab_sha256 verified/build-info.json)\` |"
+            echo "| ABIs | \`$(jq -r '.architectures|join(", ")' verified/build-info.json)\` |"
+            echo "| Verified | $(jq -r .verified_at verified/build-info.json) |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload verification diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-verify-diagnostics-${{ github.run_number }}
+          path: |
+            candidate/verify.log
+            candidate/verify-rerun.json
+            candidate/build-info.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+  publish:
+    name: Publish rolling Android release
+    needs: verify
+    if: >-
+      needs.verify.result == 'success' &&
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event.inputs.ref == 'main' || github.event.inputs.ref == '')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      - name: Checkout release scripts
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/ci
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
+      - name: Download the verified APK/AAB
+        uses: actions/download-artifact@v4
+        with:
+          name: Madarek-android-release
+          path: verified
+
+      - name: Render release notes
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python3 scripts/ci/render-mobile-release-notes.py \
+            --platform android \
+            --build-info verified/build-info.json \
+            --repo "$GITHUB_REPOSITORY" \
+            --tag android-latest \
+            --run-url "$RUN_URL" > release-notes.md
+          cat release-notes.md
+
+      - name: Publish/update android-latest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          COMMIT=$(jq -r .commit verified/build-info.json)
+          bash scripts/ci/publish-rolling-release.sh \
+            android-latest \
+            "Madarek.apk — latest Android release build" \
+            release-notes.md \
+            "$COMMIT" \
+            verified/Madarek.apk \
+            verified/Madarek.aab \
+            verified/SHA256SUMS.txt \
+            verified/build-info.json
+
+      - name: Write release summary
+        run: |
+          set -euo pipefail
+          {
+            echo "## Android release updated"
+            echo
+            echo "**Installable APK:** https://github.com/$GITHUB_REPOSITORY/releases/download/android-latest/Madarek.apk"
+            echo
+            echo "**Play upload AAB:** https://github.com/$GITHUB_REPOSITORY/releases/download/android-latest/Madarek.aab"
+            echo
+            echo "**Signing:** \`$(jq -r '.signing_mode' verified/build-info.json)\`"
+            echo
+            echo "**SHA-256:** \`$(jq -r '.sha256' verified/build-info.json)\`"
+            echo
+            echo "**Commit:** \`$(jq -r '.commit' verified/build-info.json)\`"
+          } >> "$GITHUB_STEP_SUMMARY"

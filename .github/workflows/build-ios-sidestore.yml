@@ -1,21 +1,34 @@
-# Build an unsigned, device-only iOS IPA for SideStore.
+name: iOS — unsigned SideStore IPA
+
+# Build a real-device, unsigned iOS IPA for SideStore.
 #
-# This workflow intentionally does NOT use EAS Build, does NOT need an Apple
-# Developer account, and does NOT sign the app. SideStore re-signs the IPA on
-# the device with the user's free Apple ID.
+# Pipeline: build (macOS) -> verify (Ubuntu, independent) -> publish (rolling
+# prerelease `sidestore-latest`). The publish job only runs after the artifact
+# has been downloaded again and re-verified from the artifact store.
 #
-# The output is always built with:
-#   -configuration Release -sdk iphoneos -destination generic/platform=iOS
-# so it can never accidentally be an iOS Simulator build.
-name: Build unsigned iOS IPA (SideStore)
+# This workflow never uses EAS Build, never needs an Apple Developer account,
+# and never signs the app. SideStore re-signs on-device with a free Apple ID.
+#
+# Native builds run when native inputs change. JS-only changes are delivered by
+# the OTA job in mobile.yml; use workflow_dispatch for a self-contained rebuild.
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
-      - "apps/mobile/**"
+      - "apps/mobile/package.json"
+      - "apps/mobile/package-lock.json"
+      - "apps/mobile/app.config.ts"
+      - "apps/mobile/app.json"
+      - "apps/mobile/eas.json"
+      - "apps/mobile/assets/**"
+      - "apps/mobile/plugins/**"
+      - "apps/mobile/android/**"
+      - "apps/mobile/ios/**"
       - "shared/**"
+      - "apps/mobile/scripts/verify-ipa.py"
+      - "apps/mobile/scripts/ci/**"
+      - "scripts/ci/**"
       - ".github/workflows/build-ios-sidestore.yml"
   workflow_dispatch:
     inputs:
@@ -23,20 +36,13 @@ on:
         description: "Git ref to build (branch, tag, or commit SHA)"
         required: false
         default: "main"
-      ipa_name:
-        description: "IPA file/artifact name, without .ipa"
-        required: false
-        default: "Madarek"
 
-# The rolling "latest" release is created/updated from the workflow, so the
-# default GITHUB_TOKEN needs write access to release assets. No PAT is used.
 permissions:
-  contents: write
+  contents: read
+  actions: read
 
 concurrency:
-  group: sidestore-ipa-${{ github.ref }}
-  # A newer push to main supersedes an older in-flight build of the same ref.
-  # Manual runs do not cancel an in-flight build.
+  group: ios-sidestore-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'push' }}
 
 env:
@@ -44,18 +50,19 @@ env:
   NODE_VERSION: "22"
   EXPO_NO_TELEMETRY: "1"
   COCOAPODS_DISABLE_STATS: "true"
-  # Public build-time configuration (the same value as eas.json). This is not
-  # a secret: it is already the default in apps/mobile/app.config.ts.
+  # Public build-time configuration (same value as eas.json). Not a secret.
   EXPO_PUBLIC_API_BASE_URL: "https://madarek.onrender.com/api/v1"
-  IPA_NAME: ${{ github.event.inputs.ipa_name || 'Madarek' }}
+  EXPO_UPDATES_CHANNEL: "production"
+  IPA_NAME: "Madarek"
+  RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 jobs:
-  build-unsigned-ipa:
+  build:
     name: Build unsigned iPhoneOS IPA
-    # macOS 26 (arm64) is a GitHub-hosted standard runner. It ships Xcode 26.x,
-    # which is what Expo SDK 58 / React Native 0.88 expect.
+    # macOS 26 (arm64), GitHub-hosted. Ships the Xcode 26.x / iOS SDK that
+    # Expo SDK 58 / React Native 0.88 expect.
     runs-on: macos-26
-    timeout-minutes: 120
+    timeout-minutes: 90
 
     steps:
       - name: Checkout
@@ -69,7 +76,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: npm
           cache-dependency-path: apps/mobile/package-lock.json
 
       - name: Show toolchain and source revision
@@ -86,20 +93,13 @@ jobs:
           node -v
           npm -v
 
-      - name: Validate the requested artifact name
-        run: |
-          set -euo pipefail
-          case "$IPA_NAME" in
-            ""|*[!A-Za-z0-9._-]*|.*)
-              echo "::error::Invalid ipa_name: '$IPA_NAME' (use letters, digits, dot, dash, underscore)"
-              exit 1
-              ;;
-          esac
-          echo "IPA_NAME=$IPA_NAME" >> "$GITHUB_ENV"
-
       - name: Install JS dependencies from the lockfile
         working-directory: apps/mobile
         run: npm ci --no-audit --no-fund
+
+      - name: Typecheck before the native build
+        working-directory: apps/mobile
+        run: npm run typecheck
 
       - name: Resolve and validate the Expo config
         working-directory: apps/mobile
@@ -107,27 +107,20 @@ jobs:
           set -euo pipefail
           mkdir -p build
           npx expo config --type public --json > build/expo-config.json
-          node - <<'NODE'
-          const c = require('./build/expo-config.json');
-          const fail = (msg) => { console.error(`::error::${msg}`); process.exit(1); };
-          if (c.sdkVersion !== '58.0.0') fail(`Unexpected Expo SDK: ${c.sdkVersion}`);
-          if (c.ios?.bundleIdentifier !== 'ly.madarek.mobile') {
-            fail(`Unexpected iOS bundle id: ${c.ios?.bundleIdentifier}`);
-          }
-          if (!c.runtimeVersion) fail('runtimeVersion is missing');
-          console.log(`name=${c.name}`);
-          console.log(`slug=${c.slug}`);
-          console.log(`sdkVersion=${c.sdkVersion}`);
-          console.log(`bundleIdentifier=${c.ios.bundleIdentifier}`);
-          console.log(`version=${c.version}`);
-          NODE
+          node scripts/ci/validate-expo-config.mjs --platform ios --config build/expo-config.json
+
+      - name: Cache CocoaPods downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/CocoaPods
+          key: cocoapods-${{ runner.os }}-${{ hashFiles('apps/mobile/package-lock.json', 'apps/mobile/app.config.ts') }}
+          restore-keys: |
+            cocoapods-${{ runner.os }}-
 
       - name: Generate the native iOS project (Expo prebuild)
         working-directory: apps/mobile
         run: |
           set -euo pipefail
-          # The checkout is managed (no ios/ directory), so prebuild creates it.
-          # --no-install keeps CocoaPods in its own visible step below.
           rm -rf ios
           npx expo prebuild --platform ios --no-install 2>&1 | tee build/prebuild.log
           test -d ios
@@ -166,9 +159,6 @@ jobs:
           echo
 
           bundle_id_for_scheme() {
-            # Some schemes (e.g. boost, ReactNativeDependencies) are CocoaPods
-            # library schemes and cannot resolve an app bundle id. Treat a
-            # failure as an empty result instead of aborting the scan.
             xcodebuild -workspace "$WORKSPACE" -scheme "$1" \
               -configuration Release -sdk iphoneos \
               -showBuildSettings 2>/dev/null \
@@ -176,9 +166,8 @@ jobs:
               || true
           }
 
-          # Expo prebuild names the app scheme after the .xcodeproj. Never pick
-          # the first scheme blindly: CocoaPods exposes dozens of schemes, and
-          # the first one alphabetically is "boost", not the app.
+          # Expo names the app scheme after the .xcodeproj. Never pick the
+          # first scheme alphabetically: CocoaPods exposes dozens of schemes.
           PROJECT_SCHEME=$(basename "$PROJECT" .xcodeproj)
           SCHEME="$PROJECT_SCHEME"
           BID=$(bundle_id_for_scheme "$SCHEME")
@@ -219,6 +208,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p build
+          rm -rf build/Madarek.xcresult
           xcodebuild \
             -workspace "${{ steps.xcode.outputs.workspace }}" \
             -scheme "${{ steps.xcode.outputs.scheme }}" \
@@ -226,6 +216,8 @@ jobs:
             -sdk iphoneos \
             -destination "generic/platform=iOS" \
             -derivedDataPath "$PWD/build/DerivedData" \
+            -resultBundlePath "$PWD/build/Madarek.xcresult" \
+            -quiet \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
@@ -256,262 +248,280 @@ jobs:
           echo "Built app: $APP_PATH"
           echo "App bundle: $APP_BASENAME"
 
-          rm -rf build/Payload build/verify
+          rm -rf build/Payload
           mkdir -p build/Payload
           ditto "$APP_PATH" "build/Payload/$APP_BASENAME"
 
-          # ditto preserves symlinks and extended attributes. The resulting
-          # archive has exactly one top-level directory: Payload/
+          # ditto preserves symlinks and extended attributes. Exactly one
+          # top-level directory (Payload/) is inside the IPA.
           (cd build && ditto -c -k --keepParent Payload "$IPA_NAME.ipa")
-
-          ls -lh "build/$IPA_NAME.ipa"
+          test -f "build/$IPA_NAME.ipa"
           echo "APP_BASENAME=$APP_BASENAME" >> "$GITHUB_ENV"
-          echo "IPA_PATH=$PWD/build/$IPA_NAME.ipa" >> "$GITHUB_ENV"
 
-      - name: Verify the IPA (structure, platform, bundle id, signature)
+      - name: Verify the IPA with the committed verifier
         working-directory: apps/mobile
         run: |
           set -euo pipefail
-          IPA_PATH="${IPA_PATH:?IPA_PATH missing}"
-          APP_BASENAME="${APP_BASENAME:?APP_BASENAME missing}"
-          test -f "$IPA_PATH"
+          python3 scripts/verify-ipa.py "build/$IPA_NAME.ipa" --json-out build/verify.json | tee build/verify.log
 
-          echo "== ZIP integrity =="
-          unzip -t "$IPA_PATH" >/dev/null
-          echo "OK: archive is a valid ZIP"
-
-          echo "== Archive layout =="
-          TOP_LEVEL=$(unzip -Z1 "$IPA_PATH" | cut -d/ -f1 | sort -u)
-          printf '%s\n' "$TOP_LEVEL"
-          test "$TOP_LEVEL" = "Payload"
-          unzip -l "$IPA_PATH" | grep -q "Payload/$APP_BASENAME/Info.plist"
-          echo "OK: Payload/$APP_BASENAME.app is present"
-
-          rm -rf build/verify
-          mkdir -p build/verify
-          ditto -x -k "$IPA_PATH" build/verify
-          APP="build/verify/Payload/$APP_BASENAME"
-          test -d "$APP"
-
-          BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
-          EXECUTABLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP/Info.plist")
-          BUNDLE_VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Info.plist")
-          BUILD_NUMBER=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP/Info.plist")
-          MIN_OS=$(/usr/libexec/PlistBuddy -c 'Print :MinimumOSVersion' "$APP/Info.plist")
-          SUPPORTED_PLATFORM=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleSupportedPlatforms:0' "$APP/Info.plist")
-          DT_PLATFORM=$(/usr/libexec/PlistBuddy -c 'Print :DTPlatformName' "$APP/Info.plist")
-
-          echo "Bundle ID: $BUNDLE_ID"
-          echo "Executable: $EXECUTABLE"
-          echo "Version: $BUNDLE_VERSION ($BUILD_NUMBER)"
-          echo "Minimum iOS: $MIN_OS"
-          echo "CFBundleSupportedPlatforms[0]: $SUPPORTED_PLATFORM"
-          echo "DTPlatformName: $DT_PLATFORM"
-
-          test "$BUNDLE_ID" = "ly.madarek.mobile"
-          test "$SUPPORTED_PLATFORM" = "iPhoneOS"
-          test "$DT_PLATFORM" = "iphoneos"
-
-          echo "== Executable architecture / platform =="
-          test -x "$APP/$EXECUTABLE"
-          file "$APP/$EXECUTABLE"
-          ARCHS=$(lipo -archs "$APP/$EXECUTABLE")
-          echo "Architectures: $ARCHS"
-          case " $ARCHS " in *" arm64 "*) ;; *) echo "::error::arm64 missing"; exit 1;; esac
-
-          BUILD_VERSION=$(xcrun vtool -show-build "$APP/$EXECUTABLE")
-          printf '%s\n' "$BUILD_VERSION"
-          PLATFORM=$(printf '%s\n' "$BUILD_VERSION" | awk '$1 == "platform" { print $2; exit }')
-          test "$PLATFORM" = "IOS"
-          if printf '%s\n' "$BUILD_VERSION" | grep -q 'IOSSIMULATOR'; then
-            echo "::error::This is a Simulator build"
-            exit 1
-          fi
-          echo "OK: Mach-O platform is IOS (iPhoneOS), not IOSSIMULATOR"
-
-          echo "== Required app resources =="
-          test -f "$APP/Info.plist"
-          test -f "$APP/main.jsbundle"
-          test -f "$APP/Assets.car"
-          test -f "$APP/PkgInfo"
-          echo "OK: Info.plist, main.jsbundle, Assets.car, PkgInfo"
-
-          echo "== Unsigned app check =="
-          test ! -d "$APP/_CodeSignature"
-          test ! -f "$APP/embedded.mobileprovision"
-          if codesign -dv "$APP" >build/codesign-check.log 2>&1; then
-            cat build/codesign-check.log
-            echo "::error::The app is signed; this workflow must produce an unsigned IPA"
-            exit 1
-          fi
-          echo "OK: no _CodeSignature, no provisioning profile, codesign reports unsigned"
-          cat build/codesign-check.log || true
-
-          SIZE_BYTES=$(stat -f%z "$IPA_PATH")
-          SHA256=$(shasum -a 256 "$IPA_PATH" | awk '{print $1}')
-          XCODE_VERSION=$(xcodebuild -version | awk 'NR == 1 { print $2 }')
-          SDK_VERSION=$(xcrun --sdk iphoneos --show-sdk-version)
-
-          echo "IPA size: $SIZE_BYTES bytes"
-          echo "IPA SHA256: $SHA256"
-
-          jq -n \
-            --arg name "$IPA_NAME" \
-            --arg ipa "$IPA_NAME.ipa" \
-            --arg app_bundle "$APP_BASENAME" \
-            --argjson size_bytes "$SIZE_BYTES" \
-            --arg sha256 "$SHA256" \
-            --arg bundle_id "$BUNDLE_ID" \
-            --arg version "$BUNDLE_VERSION" \
-            --arg build_number "$BUILD_NUMBER" \
-            --arg min_os "$MIN_OS" \
-            --arg executable "$EXECUTABLE" \
-            --arg archs "$ARCHS" \
-            --arg platform "iPhoneOS" \
-            --arg commit "$GITHUB_SHA" \
-            --arg ref "$GITHUB_REF" \
-            --arg run_id "$GITHUB_RUN_ID" \
-            --arg run_number "$GITHUB_RUN_NUMBER" \
-            --arg xcode "$XCODE_VERSION" \
-            --arg sdk "$SDK_VERSION" \
-            --arg runner "macos-26" \
-            --arg signed "false" \
-            '{
-              name: $name,
-              ipa: $ipa,
-              app_bundle: $app_bundle,
-              size_bytes: $size_bytes,
-              sha256: $sha256,
-              bundle_identifier: $bundle_id,
-              version: $version,
-              build_number: $build_number,
-              minimum_os: $min_os,
-              executable: $executable,
-              architectures: $archs,
-              platform: $platform,
-              signed: ($signed == "true"),
-              commit: $commit,
-              ref: $ref,
-              run_id: $run_id,
-              run_number: $run_number,
-              xcode: $xcode,
-              ios_sdk: $sdk,
-              runner: $runner
-            }' > build/build-info.json
-
-          (cd build && shasum -a 256 "$IPA_NAME.ipa" > SHA256SUMS.txt)
-          cat build/build-info.json
-          cat build/SHA256SUMS.txt
-
-      - name: Upload the unsigned IPA artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Madarek-unsigned-ipa
-          path: |
-            apps/mobile/build/${{ env.IPA_NAME }}.ipa
-            apps/mobile/build/SHA256SUMS.txt
-            apps/mobile/build/build-info.json
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Publish/update the latest SideStore release
-        if: success() && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event.inputs.ref == 'main' || github.event.inputs.ref == '')
+      - name: Write build metadata and checksums
+        working-directory: apps/mobile
         env:
-          GH_TOKEN: ${{ github.token }}
+          REQUESTED_REF: ${{ github.event.inputs.ref || github.ref }}
         run: |
           set -euo pipefail
-          TAG="sidestore-latest"
-          TITLE="Madarek.ipa — latest unsigned SideStore build"
-          NOTES="$RUNNER_TEMP/sidestore-latest-notes.md"
-          BUILD_INFO="apps/mobile/build/build-info.json"
+          XCODE_VERSION=$(xcodebuild -version | awk 'NR==1 {print $2}')
+          IOS_SDK=$(xcrun --sdk iphoneos --show-sdk-version)
+          POD_VERSION=$(pod --version)
+          COMMIT=$(git rev-parse HEAD)
+          BUILT_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-          VERSION=$(jq -r '.version' "$BUILD_INFO")
-          BUILD_NUMBER=$(jq -r '.build_number' "$BUILD_INFO")
-          MIN_OS=$(jq -r '.minimum_os' "$BUILD_INFO")
-          ARCH=$(jq -r '.architectures' "$BUILD_INFO")
-          PLATFORM=$(jq -r '.platform' "$BUILD_INFO")
-          COMMIT=$(jq -r '.commit' "$BUILD_INFO")
-          SHA256=$(jq -r '.sha256' "$BUILD_INFO")
-          SIZE_BYTES=$(jq -r '.size_bytes' "$BUILD_INFO")
-          SIZE_MIB=$(awk -v bytes="$SIZE_BYTES" 'BEGIN { printf "%.2f", bytes / 1048576 }')
-          RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          DOWNLOAD_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/$TAG/$IPA_NAME.ipa"
+          jq -n \
+            --arg platform "ios" \
+            --arg name "$IPA_NAME" \
+            --arg ipa "$IPA_NAME.ipa" \
+            --arg commit "$COMMIT" \
+            --arg requested_ref "$REQUESTED_REF" \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg workflow "$GITHUB_WORKFLOW" \
+            --arg event_name "$GITHUB_EVENT_NAME" \
+            --arg actor "$GITHUB_ACTOR" \
+            --arg run_id "$GITHUB_RUN_ID" \
+            --arg run_number "$GITHUB_RUN_NUMBER" \
+            --arg run_url "$RUN_URL" \
+            --arg runner "macos-26" \
+            --arg runner_os "$RUNNER_OS" \
+            --arg runner_arch "$RUNNER_ARCH" \
+            --arg xcode "$XCODE_VERSION" \
+            --arg ios_sdk "$IOS_SDK" \
+            --arg cocoapods "$POD_VERSION" \
+            --arg node "$(node -v)" \
+            --arg npm "$(npm -v)" \
+            --arg built_at "$BUILT_AT" \
+            --arg updates_channel "${EXPO_UPDATES_CHANNEL:-}" \
+            '{
+              platform: $platform,
+              name: $name,
+              ipa: $ipa,
+              commit: $commit,
+              requested_ref: $requested_ref,
+              repository: $repository,
+              workflow: $workflow,
+              event_name: $event_name,
+              actor: $actor,
+              run_id: $run_id,
+              run_number: $run_number,
+              run_url: $run_url,
+              runner: $runner,
+              runner_os: $runner_os,
+              runner_arch: $runner_arch,
+              xcode: $xcode,
+              ios_sdk: $ios_sdk,
+              cocoapods: $cocoapods,
+              node: $node,
+              npm: $npm,
+              built_at: $built_at,
+              updates_channel: $updates_channel,
+              signed: false,
+              verified: false
+            }' > build/build-env.json
 
-          {
-            echo "# Madarek.ipa — latest unsigned SideStore build"
-            echo ""
-            echo "This release is updated automatically from the latest push to main that touches the mobile app."
-            echo ""
-            echo "| Field | Value |"
-            echo "|---|---|"
-            echo "| IPA | $IPA_NAME.ipa |"
-            echo "| Bundle ID | ly.madarek.mobile |"
-            echo "| Version | $VERSION ($BUILD_NUMBER) |"
-            echo "| Minimum iOS | $MIN_OS |"
-            echo "| Architecture | $ARCH — $PLATFORM |"
-            echo "| Size | $SIZE_BYTES bytes ($SIZE_MIB MiB) |"
-            echo "| SHA-256 | $SHA256 |"
-            echo "| Commit | $COMMIT |"
-            echo "| Workflow run | $RUN_URL |"
-            echo "| Signed | No — SideStore re-signs it |"
-            echo ""
-            echo "## Direct download"
-            echo ""
-            echo "$DOWNLOAD_URL"
-            echo ""
-            echo "## Install with SideStore"
-            echo ""
-            echo "1. Download the IPA on the iPhone (Safari) or transfer it to Files."
-            echo "2. Open SideStore → My Apps → + → choose the IPA."
-            echo "3. Sign with your Apple ID, then tap Install."
-            echo "4. If iOS asks, trust the developer in Settings → General → VPN & Device Management."
-            echo ""
-            echo "The IPA is intentionally unsigned; SideStore performs the signing."
-          } > "$NOTES"
+          jq -s '.[0] * .[1]' build/build-env.json build/verify.json > build/build-info.json
+          (cd build && shasum -a 256 "$IPA_NAME.ipa" > SHA256SUMS.txt)
 
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release edit "$TAG" --title "$TITLE" --notes-file "$NOTES"
-          else
-            gh release create "$TAG"               --target "$COMMIT"               --title "$TITLE"               --notes-file "$NOTES"               --prerelease
-          fi
+          echo "== build-info.json =="
+          cat build/build-info.json
+          echo "== SHA256SUMS.txt =="
+          cat build/SHA256SUMS.txt
 
-          gh release upload "$TAG"             "apps/mobile/build/${IPA_NAME}.ipa"             apps/mobile/build/SHA256SUMS.txt             apps/mobile/build/build-info.json             --clobber
-
-          {
-            echo ""
-            echo "### Stable download link"
-            echo ""
-            echo "$DOWNLOAD_URL"
-          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload the IPA candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa-candidate
+          path: |
+            apps/mobile/build/Madarek.ipa
+            apps/mobile/build/build-info.json
+            apps/mobile/build/SHA256SUMS.txt
+            apps/mobile/build/verify.json
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Upload build logs on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: sidestore-ipa-logs-${{ github.run_number }}
+          name: ios-build-logs-${{ github.run_number }}
           path: |
-            apps/mobile/build/xcodebuild.log
-            apps/mobile/build/pod-install.log
             apps/mobile/build/prebuild.log
+            apps/mobile/build/pod-install.log
             apps/mobile/build/xcode-list.json
+            apps/mobile/build/xcodebuild.log
+            apps/mobile/build/Madarek.xcresult
+            apps/mobile/build/expo-config.json
+            apps/mobile/build/verify.log
             apps/mobile/ios/Podfile.lock
           if-no-files-found: ignore
           retention-days: 14
 
-      - name: Write the job summary
-        if: success()
+  verify:
+    name: Verify IPA independently (Linux)
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout verifier
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: apps/mobile/scripts
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
+      - name: Download the IPA candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-ipa-candidate
+          path: candidate
+
+      - name: Re-verify the downloaded IPA
         run: |
+          set -euo pipefail
+          python3 apps/mobile/scripts/verify-ipa.py candidate/Madarek.ipa \
+            --json-out candidate/verify-rerun.json | tee candidate/verify.log
+
+      - name: Cross-check metadata and publish the verified artifact
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          SHA=$(sha256sum candidate/Madarek.ipa | awk '{print $1}')
+          SIZE=$(stat -c%s candidate/Madarek.ipa)
+          jq -e \
+            --arg sha "$SHA" \
+            --argjson size "$SIZE" \
+            '.platform == "ios" and .sha256 == $sha and .size_bytes == $size and .bundle_identifier == "ly.madarek.mobile" and .unsigned == true and .verified == false' \
+            candidate/build-info.json >/dev/null
+
+          mkdir -p verified
+          cp candidate/Madarek.ipa verified/Madarek.ipa
+          jq -s \
+            --arg verified_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg run_url "$RUN_URL" \
+            --arg verifier "apps/mobile/scripts/verify-ipa.py" \
+            '.[0] * .[1] * {verified:true, verified_at:$verified_at, verify_run_url:$run_url, verifier:$verifier}' \
+            candidate/build-info.json candidate/verify-rerun.json > verified/build-info.json
+          cp candidate/verify-rerun.json verified/verify.json
+          (cd verified && sha256sum Madarek.ipa > SHA256SUMS.txt)
+
+          echo "Verified SHA-256: $SHA"
+          cat verified/SHA256SUMS.txt
+
+      - name: Upload the verified IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Madarek-unsigned-ipa
+          path: |
+            verified/Madarek.ipa
+            verified/SHA256SUMS.txt
+            verified/build-info.json
+            verified/verify.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Write verification summary
+        run: |
+          set -euo pipefail
           {
-            echo "## Unsigned IPA built for SideStore"
-            echo ""
+            echo "## iOS IPA verified"
+            echo
             echo "| Field | Value |"
             echo "|---|---|"
-            echo "| IPA | \`${IPA_NAME}.ipa\` |"
-            echo "| Bundle ID | \`ly.madarek.mobile\` |"
-            echo "| Commit | \`$GITHUB_SHA\` |"
-            echo "| Platform | iPhoneOS / arm64 (not Simulator) |"
-            echo "| Signed | No — ready for SideStore re-signing |"
-            echo "| Artifact | \`Madarek-unsigned-ipa\` |"
-            echo ""
-            echo "Download the artifact from this run's **Artifacts** section."
+            echo "| Bundle | \`$(jq -r .bundle_identifier verified/build-info.json)\` |"
+            echo "| Version | \`$(jq -r .version verified/build-info.json)\` (\`$(jq -r .build_number verified/build-info.json)\`) |"
+            echo "| SHA-256 | \`$(jq -r .sha256 verified/build-info.json)\` |"
+            echo "| Size | $(jq -r .size_bytes verified/build-info.json) bytes |"
+            echo "| Mach-O | $(jq -r .mach_o_platform verified/build-info.json), $(jq -r '.architectures|join(", ")' verified/build-info.json) |"
+            echo "| Verified | $(jq -r .verified_at verified/build-info.json) |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload verification diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-verify-diagnostics-${{ github.run_number }}
+          path: |
+            candidate/verify.log
+            candidate/verify-rerun.json
+            candidate/build-info.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+  publish:
+    name: Publish rolling SideStore release
+    needs: verify
+    if: >-
+      needs.verify.result == 'success' &&
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event.inputs.ref == 'main' || github.event.inputs.ref == '')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      - name: Checkout release scripts
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/ci
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
+      - name: Download the verified IPA
+        uses: actions/download-artifact@v4
+        with:
+          name: Madarek-unsigned-ipa
+          path: verified
+
+      - name: Render release notes
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python3 scripts/ci/render-mobile-release-notes.py \
+            --platform ios \
+            --build-info verified/build-info.json \
+            --repo "$GITHUB_REPOSITORY" \
+            --tag sidestore-latest \
+            --run-url "$RUN_URL" > release-notes.md
+          cat release-notes.md
+
+      - name: Publish/update sidestore-latest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          COMMIT=$(jq -r .commit verified/build-info.json)
+          bash scripts/ci/publish-rolling-release.sh \
+            sidestore-latest \
+            "Madarek.ipa — latest unsigned SideStore build" \
+            release-notes.md \
+            "$COMMIT" \
+            verified/Madarek.ipa \
+            verified/SHA256SUMS.txt \
+            verified/build-info.json
+
+      - name: Write release summary
+        run: |
+          set -euo pipefail
+          {
+            echo "## SideStore release updated"
+            echo
+            echo "**Stable IPA:** https://github.com/$GITHUB_REPOSITORY/releases/download/sidestore-latest/Madarek.ipa"
+            echo
+            echo "**Build:** $(jq -r '.version' verified/build-info.json) ($(jq -r '.build_number' verified/build-info.json))"
+            echo
+            echo "**SHA-256:** \`$(jq -r '.sha256' verified/build-info.json)\`"
+            echo
+            echo "**Commit:** \`$(jq -r '.commit' verified/build-info.json)\`"
           } >> "$GITHUB_STEP_SUMMARY"

@@ -9,13 +9,13 @@
 #   eas-ota        → after gates: `eas update --auto` to the production
 #                     AND preview branches (JS/asset changes reach every
 #                     installed build whose fingerprint matches)
-#   eas-build      → after gates, ONLY when the change is native-affecting
-#                     (package.json/lock, app.config.ts, eas.json, plugin
-#                     config, icons/splash): a preview-profile build for
-#                     both platforms (internal APK + iOS simulator),
-#                     --no-wait, links in the summary.
+#   eas-build      → MANUAL ONLY: an optional EAS preview/store cut.
+#                     Native installable builds are produced by the
+#                     GitHub-hosted Gradle/Xcode workflows:
+#                       build-ios-sidestore.yml  → unsigned SideStore IPA
+#                       build-android.yml       → APK + AAB
 #
-# Production (store) builds stay manual: workflow_dispatch → RELEASE.md.
+# Production (store) EAS builds stay manual: workflow_dispatch → RELEASE.md.
 name: Mobile
 
 on:
@@ -137,17 +137,23 @@ jobs:
         run: npx eas-cli@latest update --branch production --auto --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_PUBLIC_API_BASE_URL: https://madarek.onrender.com/api/v1
+          # Must match the channel/fingerprint embedded by the raw native
+          # workflows (build-ios-sidestore.yml / build-android.yml).
+          EXPO_UPDATES_CHANNEL: production
       - name: Publish OTA update (preview)
         run: npx eas-cli@latest update --branch preview --auto --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_PUBLIC_API_BASE_URL: https://madarek.onrender.com/api/v1
 
   eas-build:
-    name: EAS Build (preview — native change detected)
+    name: EAS Build (manual preview/store cut)
     needs: mobile-gates
-    # push: only native-affecting changes; manual dispatch: always (the
-    # human pressed the button — that IS the intent).
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push')
+    # Native installable builds are handled by build-ios-sidestore.yml and
+    # build-android.yml on native-affecting pushes. Keep EAS only for an
+    # explicit human-requested preview or store cut.
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     defaults:
@@ -167,26 +173,7 @@ jobs:
       # This job had never actually run (it was skipped behind the red
       # icons gate from B1 to C5), so the gap only surfaced now.
       - run: npm ci --no-audit --no-fund
-      - name: Detect native-affecting changes (fingerprint inputs)
-        id: native
-        if: github.event_name == 'push'
-        run: |
-          CHANGED=$(git diff --name-only HEAD~1 HEAD || echo "")
-          NATIVE=$(echo "$CHANGED" | grep -E '^apps/mobile/(package(-lock)?\.json|app\.config\.ts|eas\.json|assets/|plugins?/)|^\.github/workflows/mobile\.yml' || true)
-          SHARED=$(echo "$CHANGED" | grep -E '^shared/' || true)
-          # shared/** feeds tokens/brand → generated files land in the app;
-          # a regenerated token file is JS-only, but shared BRAND assets can
-          # change icons → treat shared changes as native-affecting (safe).
-          if [ -n "$NATIVE" ] || [ -n "$SHARED" ]; then
-            echo "native=true" >> "$GITHUB_OUTPUT"
-            echo "Native-affecting files:"
-            echo "$NATIVE $SHARED"
-          else
-            echo "native=false" >> "$GITHUB_OUTPUT"
-            echo "JS-only change — OTA suffices, no build needed."
-          fi
       - name: "Build (preview = internal APK + iOS sim, production = the store cut)"
-        if: github.event_name == 'workflow_dispatch' || steps.native.outputs.native == 'true'
         # R327 D2: the old `|| cat build-out.txt` swallowed EAS failures —
         # the job went green while NO build was queued (that is exactly how
         # the missing-npm_ci gap hid). The step now fails loudly.

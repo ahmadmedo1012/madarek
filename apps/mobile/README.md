@@ -27,6 +27,31 @@ npm run contract-check # static API-parity gate vs ../../backend source
 EXPO_PUBLIC_API_BASE_URL=https://madarek.onrender.com/api/v1
 ```
 
+## Installable CI builds
+
+Native installable artifacts are built by GitHub Actions, without EAS Build
+quota and without a local Mac/Android SDK:
+
+| Platform | Artifact | Stable link |
+|---|---|---|
+| iOS | unsigned IPA (SideStore re-signs it) | [sidestore-latest/Madarek.ipa](https://github.com/ahmadmedo1012/madarek/releases/download/sidestore-latest/Madarek.ipa) |
+| Android | release APK + Play AAB | [android-latest/Madarek.apk](https://github.com/ahmadmedo1012/madarek/releases/download/android-latest/Madarek.apk) |
+
+Workflows: `.github/workflows/build-ios-sidestore.yml` and
+`.github/workflows/build-android.yml`. Each one builds, verifies the artifact
+again in a separate job, then updates a rolling prerelease. See
+[`docs/mobile/CI-BUILDS.md`](../../docs/mobile/CI-BUILDS.md) for triggers,
+verification commands, artifact contents, and Android signing-key setup.
+
+```bash
+# force a build for the current main
+gh workflow run build-ios-sidestore.yml -f ref=main
+gh workflow run build-android.yml -f ref=main
+```
+
+JS-only changes are delivered by the existing EAS OTA job in `mobile.yml`;
+native builds run on native-affecting pushes.
+
 ## Where things live
 
 | Area | Location |

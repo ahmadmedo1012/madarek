@@ -58,7 +58,7 @@ live, script aborts loud by design (never auto-downloads):
   from this sandbox.
 - ❌ `ANDROID_HOME` unset; `~/android-sdk` does not exist → script exit 1 at
   the SDK gate, printing the 3 install steps (cmdline-tools → env →
-  `sdkmanager "platform-tools" "platforms;android-37" "build-tools;37.0.0"` +
+  `sdkmanager "platform-tools" "platforms;android-37.0" "build-tools;37.0.0"` +
   licenses). NOT auto-installed here: see ❌ disk, below — it would be wasted.
 - ❌ Keystore absent: `~/.madarek/madarek-release.keystore` missing,
   `MADAREK_ANDROID_KEYSTORE*` env unset (§2 of ANDROID-LOCAL.md).
