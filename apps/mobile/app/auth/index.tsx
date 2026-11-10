@@ -51,9 +51,11 @@ export default function Welcome() {
         {/* the drafting sheet: faint axis grid across the whole paper */}
         <GridBackdrop color={text} />
 
-        {/* the signature band: the mobile hero of the learning complex */}
+        {/* the signature band: the mobile hero of the learning complex
+            (R345 review: 348pt — the portrait composition carries the
+            screen's visual weight; the title stack follows tight) */}
         <Animated.View entering={enter(0)}>
-          <Illustration id="r342/hero-campus-mobile" width={width} height={300} />
+          <Illustration id="r342/hero-campus-mobile" width={width} height={348} />
         </Animated.View>
 
         <View style={{ paddingHorizontal: sp[24], paddingTop: sp[24], paddingBottom: sp[16], flexGrow: 1 }}>

@@ -14,6 +14,7 @@ import { T } from "@/components/ui/text";
 import { SearchBar } from "@/components/ui/fields";
 import { Card, Badge } from "@/components/ui/surfaces";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { Illustration } from "@/components/Illustration";
 import { humanizeError } from "@/lib/errors";
 import type { SearchResults } from "@/api/types";
 
@@ -94,7 +95,11 @@ export default function Search() {
       ) : null}
 
       {submitted.length === 0 ? (
-        <EmptyState title="ابحث في المنصّة" message="ابدأ بكتابة كلمتين — نتائج فورية من مقرّرك ومحاضراتك وبحوث مكتبتك." />
+        <EmptyState
+          art={<Illustration id="r342/journey-route" width={342} accessibilityLabel="مسارات البحث في المنصّة" />}
+          title="ابحث في المنصّة"
+          message="ابدأ بكتابة كلمتين — نتائج فورية من مقرّرك ومحاضراتك وبحوث مكتبتك."
+        />
       ) : results.isLoading ? (
         <SkeletonList rows={4} />
       ) : results.isError ? (
