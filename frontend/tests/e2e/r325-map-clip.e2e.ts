@@ -228,17 +228,14 @@ test.describe('R325 Y1 — the map intro clip gate', () => {
     /* the unboxed headline: no border, no shadow, no own background.
      * R329 (CI red): the R325 Y1 "feathered paper mask" ::before is
      * RETIRED — there is nothing to mask out any more; the plate is
-     * the glyphs' wrap guard only. R342-04 re-seat: the plaques
-     * returned ONTO the plan as the frozen spec records them (the
-     * fs-46.67 statements float over the drawing at measured seats;
-     * the R328-H4 caption-band architecture — order −1 strip above
-     * the drawing closed by a hairline — retired with the measured
-     * rebuild). The belt re-seats on the overlay grammar: TWO
-     * absolute overlay seats (.jt-cards for plaque 1, .jt-card2w for
-     * plaque 2 — one statement per seat, never stacked side by
-     * side), z-above the drawing but pointer-transparent, plaque 1
-     * standing at rest and plaque 2's wrapper carrying the measured
-     * gsap from-state (opacity 0). */
+     * the glyphs' wrap guard only. R347 D6b re-seat: the plaques ride
+     * the STATEMENT BAND — their own in-flow region ABOVE the window,
+     * never on the plan (the R342-04 overlay seats put the statements
+     * directly on the drawing's room labels at every frame — the
+     * detector's 232 jt-card-plate findings). The band is the anchor
+     * (relative, in flow, pointer-transparent); plaque 2's wrapper
+     * carries the from-state as the crossfade cell over the same
+     * seat; plaque 1 stands at rest. */
     const seat = await page.evaluate(() => {
       const band = document.querySelector('.jt-cards') as HTMLElement | null;
       const wrap2 = document.querySelector('.jt-card2w') as HTMLElement | null;
@@ -246,19 +243,22 @@ test.describe('R325 Y1 — the map intro clip gate', () => {
       const cs = getComputedStyle(band);
       const w2 = getComputedStyle(wrap2);
       const plate1 = band.querySelector('.jt-card-plate') as HTMLElement | null;
+      const win = document.querySelector('.jt-window') as HTMLElement | null;
       return {
-        overlay: cs.position === 'absolute' && w2.position === 'absolute',
+        bandInFlow: cs.position === 'relative' && cs.display === 'grid',
+        bandAboveWindow: !!win && band.getBoundingClientRect().bottom <= win.getBoundingClientRect().top + 1,
+        crossfadeCell: w2.position === 'absolute' && w2.inset === '0px',
         passThrough: cs.pointerEvents === 'none' && w2.pointerEvents === 'none',
-        aboveDrawing: parseInt(cs.zIndex, 10) >= 2 && parseInt(w2.zIndex, 10) >= 2,
         plate1Stands: plate1 ? getComputedStyle(plate1.parentElement as HTMLElement).opacity === '1' : false,
         plaque2FromState: w2.opacity === '0',
         plateCount: document.querySelectorAll('.jt-card-plate').length,
       };
     });
     expect(seat).not.toBeNull();
-    expect(seat!.overlay, 'both plaques ride absolute overlay seats on the plan (R342-04)').toBe(true);
-    expect(seat!.passThrough, 'the overlays never intercept the drawing').toBe(true);
-    expect(seat!.aboveDrawing, 'the overlays sit z-above the line-work').toBe(true);
+    expect(seat!.bandInFlow, 'the plaques ride the in-flow statement band (R347 D6b)').toBe(true);
+    expect(seat!.bandAboveWindow, 'the band sits above the window — never on the plan').toBe(true);
+    expect(seat!.crossfadeCell, 'plaque 2 is the crossfade cell over the same band seat').toBe(true);
+    expect(seat!.passThrough, 'the plaques never intercept the drawing').toBe(true);
     expect(seat!.plate1Stands, 'plaque 1 stands visible at rest (the spec rest state)').toBe(true);
     expect(seat!.plaque2FromState, 'plaque 2 rides the measured opacity-0 from-state').toBe(true);
     expect(seat!.plateCount).toBe(2);

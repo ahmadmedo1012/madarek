@@ -1,28 +1,29 @@
-# R347 RESUME — Lane A — PUSHED & CI GREEN (origin/main = ae23cf03; the token arrived in chat and everything landed)
+# R347 RESUME — Lanes A+B done (B pending its mobile/why VLM re-judges); next: Lane C
 
-## done (merged to main: 13be99d6 first push → 70443ed1 a parallel session's deadcode fix → ae23cf03 my repayment rebase)
-- fbee048b detector + allowlist (sheet-frame, written reason) + npm run qa:overlap + verify.sh 6.5; CI activation DEFERRED per §2's "once it is green" clause (the verbatim step block sits commented in ci.yml for Lane Z — / still carries Lane B's D6/D7 findings)
-- 2d368bef D1: ink-roll twins + A-I1 mapping + dead veil rules deleted; LINE PITCH = computed lh at all bands. VLM 8/10 (gate met). Detector: statement 0.
-- a88cc99e D2+D3: EdgeTab/ScrollRule/BootLog/progressRegistry + sheets deleted; masthead IN FLOW (227-finding overlay + the on-scroll/on-hide machine excised); panel scrollProgress RETIRED; re-keys (r323/r306/scrollspy; r315 test deleted, unit 3042→3038)
-- f274f427 D4+D5: HeroGrid/HeroChrome + all drafting noise deleted (HeroInspect stations KEPT — e2e contract); fold = whole collage inside 100svh−63−band (27px air @1440); ONE login; hero mapping 208→10 + plumbing; footer census pull-ups retired; audit baseline re-keyed
-- 547eb017 + 0917f3a8 conformance re-keys (COVERAGE_FLOORS intro 37/hero 11; HEURISTIC_CAPS hero 80; coverage-review T-347; interact retirement — hero 104/104) + ratchet re-pin 93.1→92.2 (give-back 0.9 ≤ 1.5, floor 91.6 held). **Gate PASS.**
-- bb56a173 CTA kicker park retired (fixed 0×0 → display:none at ≤767; bindings are desktop-only); hint gate hover-OR-any-open (the reset control stays operable — e2e caught the first cut, 28/28 restored)
-
-## gates (all on the final tree)
-unit 3038/3038 · tsc 0 · bundle 760.4 ≤ 770 · stylelint ratchet green (rawZ 79→71) · 7 design gates + lint PASS · e2e r309+r308 28/28 · conformance gate PASS 92.2% · detector on / : fixed-over-text 656→44, text-on-text 1165→400, big-fixed 84→38 (allowlist 48), clipped 0, hoverflow 0 — **Lane A scope 0**; every residual attributed (wy-cap B-D7 [also caps the hero VLM], jt-map/pm B-D6/D7, product spans C-D8)
+## done
+- **Lane A** (pushed, CI green): see the previous RESUME (fbee048b..7648bab7 on main) — D1–D5 fixed at cause, detector landed, ratchet 92.1.
+- **Lane B** (branch wip/r347-b, this session; DEFECTS-B.md + REPORT-B.md carry the full tables):
+  - D6a the ENTRANCE DRIFT deleted (it parked the ghost plan one viewport above its seat — on the problems band; every pm-internal "overlap" was its phantom)
+  - D6b the statement plaques → their OWN in-flow band above the window (was: overlay-on-plan, 232 findings); the paper halo retired
+  - D6c the annos re-seated on the verified collision-free grid; the intro card IN FLOW below the window (was: corner card over 5 labels)
+  - D6d the mobile findings box relative (the head-chip overlap died)
+  - D6e constant plan ink (the 0.18 ghost crossfade retired) + the M2 labels +10 units + the SNAP camera (label-safe era crops, ≥12-unit margins; sheet band rides full; the mastery terminus held) + the window FLEXES to the sticky box's leftover (the 442px exam crop used to overflow 787px and the card tail painted the closing column)
+  - D6f the counter chip → the band's inline-end (its own region)
+  - D7b the why captions' live gate FIXED (the stage rule was beating it: an explicitly-visible child renders inside a hidden bar → captions painted page-wide, 44 findings incl. over the hero at scroll 0 — this also un-caps Lane A's hero score)
+  - the detector's one sanctioned adjustment: svg text is clipped to its element box (phantom out-of-crop rects no longer count; straddlers clipped to the paintable box)
+  - the sticky window allowlisted (written reason: it owns its scroll track; the r312 sweep proves it never covers the closing)
+- **Gates on the final tree**: unit 3038/3038 · tsc 0 · e2e r309+r308+r312+r325 **38/38** · bundle 759.8 · stylelint `!important` 52 held · **conformance gate PASS at 92.1% (no give-back)** · verify --fast PASS · detector on `/`: fixed-over-text 44→**0**, text-on-text 400→**28** (ALL Lane C's product section), big-fixed 38→**0**, clipped 0, hoverflow 0 — **Lane B scope 0 at 1440/768/390 × light/dark**
+- **VLM**: D6 desktop **8/10 light + 8/10 dark** (earned, transcripts in DEFECTS-B) — then THE BOX WAS WIPED MID-LANE (all local work lost; rebuilt edit-for-edit from the session record; the detector's per-pair list verified identical pre/post). The wipe also took the user-level z-ai token → the mobile/why/pm/hero re-judges are **PENDING-VLM** (the after-shots are captured under audits/evidence/r347/B/).
 
 ## next 3
-0. ~~PUSH~~ DONE — the owner supplied the token; main pushed (ff), all gates green on CI run 42853042133 (11/11 jobs: conformance 92.1 floor, e2e chromium + iOS WebKit, typecheck, lint, build, frontend+backend tests, DB integration, design gates, surface-drift) + deadcode + size-gate workflows; live deploy healthy at buildId ae23cf036530. First-push reds (ratchet 92.2 vs CI's 92.1 marquee-phase noise; knip's orphaned MASTERY_MATRIX) repaid in ae23cf03. A parallel session had pushed the same deadcode fix (70443ed1) — my commit rebased clean, ratchet carries. Keep-warm failed once INSIDE the Render deploy window (curl 28/60s timeout) — the endpoint answers 200/63ms on the deployed build; not a defect.
-2. Lane B: fix D6/D7 (wy-cap fixed captions at y72–97 page-wide — they sit over the hero at scroll 0 and cap its score; jt-map-in 38 big-fixed; jt/pm text-on-text) — then the detector's / sweep goes fully green and Lane Z arms the CI step.
-3. Lane Z: final panel + CSS demolition on the merged tree; the deferred CI detector step uncomments verbatim.
+1. **Lane B close-out (first 20 min of the next session)**: re-judge the captured after-shots (D6-after-390 light/dark, D7wy-after-1440 light, D7pm-after-1440, hero-after-1440 vs the Heron refs heronref-win0-y0.webp + heron-ref-home-390.png) — ≥8 closes the exit table; lower gets fixed at cause. Then push wip/r347-b → main if not already pushed (see below).
+2. **Lane C (D8/D9/D10)**: the product section owns every remaining `/` finding (28: pr-label/pr-title/lp-numeral/reveal-up) — re-render the plates at display size, one per card, no overlaps; then roles; then the authenticated pages × roles sweep. After C, the detector's `/` sweep goes fully green.
+3. **Lane Z**: arm the CI detector step (the commented block in ci.yml), the final panel, the CSS demolition, live smoke, single main.
 
 ## gotchas (for the next session)
-- The Bash display pipeline swallows "[m"-sequences (and once an "h"): verify suspicious displays with the Read tool or byte counts, never by eye.
-- Background/detached processes die at call boundaries on this box (the audit sweep, verify.sh full, nohup+setsid all died) — run long gates synchronously to a log, never piped.
-- The z-ai VLM hallucinates RTL text (a phantom banner, garbled footer transcriptions) — cross-check every claim with geometry probes before acting; the row-darkness analysis + text-inventory probes are in /home/z/shot/ (untracked).
-- verify.sh FULL now includes the overlap step — it will FAIL while Lane B's D6/D7 findings remain on / (that is the gate working, not a Lane A defect; B's pre-push run must clear them).
-- The e2e contract is the law: the first hint gate (hover-only) pointer-dead'd the reset control and red r308/r309 — the any-open disjunct is load-bearing.
-
-## exit-table state (final — see REPORT-A.md)
-CI green on the merged head ✓ · pushed ✓ · DONE-A still NOT committed (hero VLM 6/10 < 8 disclosed + B-owned / residuals — the honest table).
-detector committed+verify ✓ · D1–D5 fixed at cause ✓ (D4 VLM 6/10 < 8 — cross-checked, kept-by-directive elements; D1 8/10 ✓) · detector 0 on / for Lane A scope ✓ (B-owned residuals listed) · no fixed element >1.5% viewport covering text ✓ (only the allowlisted sheet-frame remains, 1px hairlines) · counts held ✓ (unit re-keyed 3038 with reasons; e2e 157's landing share 28/28 here; bundle held) · **DONE-A NOT committed — the exit table is not fully green (hero VLM 6/10, B-owned / residuals). REPORT-A.md carries the honest table.**
+- THE BOX WIPES MID-SESSION (twice now: the first A session, this B session) — COMMIT AND PUSH OFTEN; keep every evidence path + the judgment transcripts inside the pushed docs (DEFECTS-B.md quotes them verbatim).
+- The z-ai VLM token lives in a user-level ~/.z-ai-config the wipe eats (the root /etc/.z-ai-config lacks the `token` field → 401 missing X-Token). After a wipe the VLM is unavailable until the platform re-provisions — plan the judging accordingly (judge EARLY, right after capturing).
+- The VLM hallucinates RTL text — cross-check every claim with geometry probes (the D6-mobile 3/10 was half-hallucination; the real defect in it — the mid-sweep half-cut label — was found by probe and fixed by the snap camera).
+- verify.sh FULL includes the overlap step — it stays red while Lane C's product findings remain on `/` (the gate working as designed).
+- The e2e contract is the law: every re-key needs its written reason in the test (the pattern this lane used throughout).
+- Conformance floor is 92.1 (the CI-measured pin); the B seat changes held it without re-keys.

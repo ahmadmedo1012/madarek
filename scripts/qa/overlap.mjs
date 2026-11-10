@@ -39,7 +39,28 @@ const PROBE = () => {
     if (!n.textContent.trim()) continue; const el = n.parentElement; if (!el || ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(el.tagName)) continue;
     if (eff(el) < 0.08) continue;
     const r = document.createRange(); r.selectNodeContents(n);
-    for (const b of r.getClientRects()) { if (b.width < 4 || b.height < 6) continue; if (b.bottom < 0 || b.top > vh || b.right < 0 || b.left > vw) continue; tn.push({ el, x: b.left, y: b.top, w: b.width, h: b.height, t: n.textContent.trim().slice(0, 28) }); }
+    for (const b of r.getClientRects()) {
+      if (b.width < 4 || b.height < 6) continue; if (b.bottom < 0 || b.top > vh || b.right < 0 || b.left > vw) continue;
+      /* R347 (Lane B, the one sanctioned adjustment beyond the allowlist):
+       * text inside an <svg> is clipped to that svg's element box (the
+       * viewBox crop; default overflow:hidden) — a rect falling entirely
+       * outside cannot paint and is skipped; a STRADDLING rect is clipped
+       * to the paintable box (its out-of-crop part cannot overlap anything
+       * outside the svg). The camera-crop zooms park out-of-crop labels'
+       * rects on neighbouring content and the detector counted them
+       * (phantom text pairs at 768/390, straddling included). */
+      let bx = b.left, by = b.top, bw = b.width, bh = b.height;
+      const sv = el.closest('svg');
+      if (sv) {
+        const sr = sv.getBoundingClientRect();
+        if (b.bottom < sr.top || b.top > sr.bottom || b.right < sr.left || b.left > sr.right) continue;
+        const cx = Math.max(b.left, sr.left), cy = Math.max(b.top, sr.top);
+        bw = Math.min(b.right, sr.right) - cx; bh = Math.min(b.bottom, sr.bottom) - cy;
+        if (bw < 4 || bh < 6) continue;
+        bx = cx; by = cy;
+      }
+      tn.push({ el, x: bx, y: by, w: bw, h: bh, t: n.textContent.trim().slice(0, 28) });
+    }
   }
   const inter = (p, q) => { const x = Math.min(p.x + p.w, q.x + q.w) - Math.max(p.x, q.x), y = Math.min(p.y + p.h, q.y + q.h) - Math.max(p.y, q.y); return x > 0 && y > 0 ? x * y : 0; };
   for (let i = 0; i < tn.length; i++) for (let j = i + 1; j < tn.length; j++) {

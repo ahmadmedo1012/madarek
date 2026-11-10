@@ -639,10 +639,12 @@ ${bandVars('390')}
 .wy-capbar { position: fixed; inset: 0; z-index: 40; pointer-events: none; visibility: hidden; }
 .wy-capbar[data-wy-live="1"] { visibility: visible; }
 .wy-cap { position: absolute; inset: 0; visibility: hidden; }
-.wy-capbar[data-wy-stage="0"] .wy-cap:nth-child(1),
-.wy-capbar[data-wy-stage="1"] .wy-cap:nth-child(2),
-.wy-capbar[data-wy-stage="2"] .wy-cap:nth-child(3),
-.wy-capbar[data-wy-stage="3"] .wy-cap:nth-child(4) { visibility: visible; }
+/* R347 D7b: stage gated on live (an explicitly-visible child paints even
+   inside a hidden bar — the un-gated rule leaked captions page-wide) */
+.wy-capbar[data-wy-live="1"][data-wy-stage="0"] .wy-cap:nth-child(1),
+.wy-capbar[data-wy-live="1"][data-wy-stage="1"] .wy-cap:nth-child(2),
+.wy-capbar[data-wy-live="1"][data-wy-stage="2"] .wy-cap:nth-child(3),
+.wy-capbar[data-wy-live="1"][data-wy-stage="3"] .wy-cap:nth-child(4) { visibility: visible; }
 .wy-cap-t {
   position: fixed; top: var(--wy-ct-y); inset-inline-start: var(--wy-ct-odd-x);
   inline-size: var(--wy-ct-w); block-size: var(--wy-ct-h); margin: 0; padding: 0;

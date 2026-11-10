@@ -1135,10 +1135,17 @@
 .wy-capbar { --lz-capbar: 40; /* landing-local ladder seat (rule 45 above it, chrome 50 above that) */ position: fixed; inset: 0; z-index: var(--lz-capbar); pointer-events: none; visibility: hidden; }
 .wy-capbar[data-wy-live="1"] { visibility: visible; }
 .wy-cap { position: absolute; inset: 0; visibility: hidden; }
-.wy-capbar[data-wy-stage="0"] .wy-cap:nth-child(1),
-.wy-capbar[data-wy-stage="1"] .wy-cap:nth-child(2),
-.wy-capbar[data-wy-stage="2"] .wy-cap:nth-child(3),
-.wy-capbar[data-wy-stage="3"] .wy-cap:nth-child(4) { visibility: visible; }
+/* R347 D7b: the stage rule is gated on live — an explicitly-visible
+   child renders even inside a visibility:hidden bar (visibility
+   inherits only when unset), so the un-gated stage rule painted the
+   captions page-wide at every scroll stop (over the hero at scroll 0,
+   the statement, the journey, the footer). The captions now live
+   ONLY inside the why traversal, exactly like the frozen spec's own
+   pinned-caption era. */
+.wy-capbar[data-wy-live="1"][data-wy-stage="0"] .wy-cap:nth-child(1),
+.wy-capbar[data-wy-live="1"][data-wy-stage="1"] .wy-cap:nth-child(2),
+.wy-capbar[data-wy-live="1"][data-wy-stage="2"] .wy-cap:nth-child(3),
+.wy-capbar[data-wy-live="1"][data-wy-stage="3"] .wy-cap:nth-child(4) { visibility: visible; }
 .wy-cap-t {
   position: fixed; top: var(--wy-ct-y); inset-inline-start: var(--wy-ct-odd-x);
   inline-size: var(--wy-ct-w); block-size: var(--wy-ct-h); margin: 0; padding: 0;

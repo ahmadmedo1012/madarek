@@ -162,20 +162,30 @@ section.chapters {
 }
 
 /* the stack seat @≥992 (the window's chrome container anchor);
-   the STICKY WINDOW @≤991. */
+   the STICKY WINDOW @≤991. R347 D6b: the desktop seat is a flex
+   column — the statement band above, the window below (the mobile
+   grammar, unified). */
 .jt-map-in {
   position: relative;
   block-size: 100%;
   inline-size: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.6em;
 }
 
 /* the plan box — the measured window: inset 1.2rem of the map
    column (10@1440 · 13@1920 · 7@1024), carrying the four
-   registration rails + the four corner marks + the drifting stack.
-   will-change kept (the compositor set — perf-baseline §7). */
+   registration rails + the four corner marks + the plan stack.
+   R347 D6b: in flow (margins, flex:1) inside the column's flex box —
+   the same measured box the absolute inset drew, now sharing the
+   column with the statement band above it. */
 .jt-window {
-  position: absolute;
-  inset: 1.2rem;
+  position: relative;
+  flex: 1 1 auto;
+  min-block-size: 0;
+  margin: 1.2rem;
   will-change: transform;
 }
 
@@ -240,16 +250,14 @@ section.chapters {
   transition: transform var(--jt-t-art) var(--jt-e-art); /* the measured 0.4s/ease register */
 }
 
-/* the drifting plan stack — the entrance descent's target. The
-   measured rest transform: one frame height minus the scaffold
-   rung (−(100dvh − 1em-of-the-band-font)), written by the driver;
-   the seat itself: 0.5em inside the window, spanning the map
-   column's full width (the measured 963 vs the window's 943). */
+/* the plan stack — retired drift (R347 D6a): the stack rests in the
+   window from frame one. The seat itself: 0.5em inside the window,
+   spanning the map column's full width (the measured 963 vs the
+   window's 943). */
 .jt-stack {
   position: absolute;
   inset-block: 0.5em;
   inset-inline: -1.2rem;
-  will-change: transform;
 }
 
 /* the plan sheet — the svg element fills the stack box; the
@@ -262,10 +270,12 @@ section.chapters {
   min-block-size: 0;
 }
 
-/* ═══ the six progressive layers (the crossfade stack — unchanged) ═══ */
+/* ═══ the six progressive layers — CONSTANT FULL INK (R347 D6f: one
+   consistent line weight; the 0.18 ghost base + per-layer crossfade
+   retired — the plan never reads washed-out, never changes weight
+   between frames) ═══ */
 .jt .jt-plan [data-xl] {
-  opacity: 0.18;
-  will-change: opacity;
+  opacity: 1;
 }
 
 .jt .jt-plan .pl-l-frame .bp-drawable {
@@ -426,17 +436,21 @@ section.chapters {
   fill: var(--accent-ink);
 }
 
-/* ── the [nn/05] counter rows — our mono furniture (the reference
-   carries its counters inside the svg art; unbound by design) ──── */
+/* ── the [nn/05] counter chip — our mono furniture (the reference
+   carries its counters inside the svg art; unbound by design).
+   R347 D6e: rides the STATEMENT BAND's inline-end edge, vertically
+   centred on the plaque line — its own region, never over the plan
+   (the old top-corner window seat landed on the room labels at the
+   mobile camera zooms). */
 .jt-idx {
   position: absolute;
-  inset-block-start: 12px;
-  inset-inline-start: 12px;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  inset-inline-end: 0.4em;
   display: grid;
   overflow: hidden;
   background: var(--bg);
   padding: 3px 10px; /* spacing-gate: allow — the reference's own chip seat */
-  z-index: 2;
 }
 
 .jt-idx > span {
@@ -463,20 +477,22 @@ section.chapters {
   opacity: 1;
 }
 
-/* ── the two statement plaques — the measured overlay band ────────
-   The plaques ride the drifting stack OVER the plan (the reference's
-   own seat: centered horizontally, at the stack's mid-height), one
-   grid cell — the two statements crossfade in the SAME seat. Plaque 1
-   rests VISIBLE (the spec's captured state — it is the entry
-   statement over the ghost plan); plaque 2 rests hidden. The D1
-   display rung; the Arabic metric floor (lh 1.35) per the
+/* ── the two statement plaques — R347 D6b: THE STATEMENT BAND ────
+   The plaques live in their OWN region above the window (one grid
+   cell — the two statements crossfade in the SAME seat), never
+   printed over the plan. Plaque 1 rests VISIBLE (the entry
+   statement); plaque 2 crossfades in at the plan era and STANDS.
+   The D1 display rung; the Arabic metric floor (lh 1.35) per the
    transformed expectation. */
 .jt-cards {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  flex: none;
   display: grid;
   place-items: center;
-  z-index: 2;
+  padding-block: 0.35em 0.15em;
+  /* the counter chip's inline-end reserve — the plaque centres in the
+   * remaining content box and never runs under the chip */
+  padding-inline-end: 6.5em;
   pointer-events: none;
 }
 
@@ -501,15 +517,16 @@ section.chapters {
 
 .jt-card2w {
   position: absolute;
-  inset-block: -1.13em -1.4em;
-  inset-inline: -1.43em;
+  inset: 0;
   display: grid;
   place-items: center;
+  /* the same chip reserve as the band — the crossfading seat shares
+   * the plaque's centre */
+  padding-inline-end: 6.5em;
   opacity: 0;
   visibility: hidden;
-  will-change: opacity, transform;
+  will-change: opacity;
   pointer-events: none;
-  z-index: 2;
 }
 
 .jt-card-plate {
@@ -522,17 +539,13 @@ section.chapters {
   line-height: 1.35;
   text-wrap: balance;
   color: var(--text);
-  /* the plaque rungs: the D1 clamp @≥992; the measured mobile bands
-   * below (44.2 @768 · 39.69 @390) */
+  /* the measured mobile bands (44.2 @768 · 39.69 @390) */
   @media (max-width: 991px) {
     font-size: 4.8rem;
   }
-  /* the paper halo — the glyphs cross the plan's ghost line-work
-     (a whisper stroke keeps the statement readable over ink). */
-  paint-order: stroke fill;
-  stroke: var(--bg);
-  stroke-width: 6px;
-  stroke-linejoin: round;
+  /* R347 D6b: the paper halo is retired — the band is the plaques'
+   * own clear region on the page ground; the glyphs never cross the
+   * plan's line-work anymore. */
 }
 
 /* ── the three annotation cards — the measured plan callouts ──────
@@ -551,9 +564,18 @@ section.chapters {
   z-index: 2;
 }
 
-.jt-anno-1 { inset-inline-start: 26.9%; inset-block-start: 32.8%; }
-.jt-anno-2 { inset-inline-start: 40.4%; inset-block-start: 68.2%; }
-.jt-anno-3 { inset-inline-start: 31.6%; inset-block-start: 59.1%; }
+/* R347 D6c — the collision-free grid: every seat verified against the
+ * drawing's own label inventory (svg-coords → page px probe @1440,
+ * the stack box 949×581): anno1 rides the clear band between the exam
+ * hall's dims and the station row; anno2 the clear pocket under the
+ * reception label; anno3 the open middle-left field above the mastery
+ * room. Each clears every SVG text rect (labels: قاعة المحاضرات/
+ * 240 M2/قاعة الاختبار/150 M2/غرفة الإتقان/84 M2/[01]–[05]/
+ * الاستقبال/نقطة الفحص/المكتبة والبحوث/36·96·11.6·11.3·12.3 M/
+ * the letter rows). */
+.jt-anno-1 { inset-inline-start: 30.2%; inset-block-start: 27.5%; }
+.jt-anno-2 { inset-inline-start: 57.5%; inset-block-start: 73.7%; }
+.jt-anno-3 { inset-inline-start: 65.5%; inset-block-start: 24.9%; }
 
 /* the 1024 rung — the measured tablet boxes run wider than the em
    ladder (216 vs 196@1440): the band's own override. */
@@ -592,24 +614,23 @@ section.chapters {
   opacity: 1;
 }
 
-/* ── the INTRODUCTION card — the measured corner card ─────────────
-   17.5em wide, 2em from the map column's block-end + inline-start
-   edges (Heron's bottom-left mirrored to bottom-right in RTL,
-   opposite the closing column). Paper ground, 1px hairline, the
-   DARK head chip with the white mono label; rests at opacity 0
-   (the spec's captured state) and flips on with the card era. */
+/* ── the INTRODUCTION card — R347 D6c: IN FLOW BELOW THE WINDOW ──
+   The corner-card seat (absolute, bottom-inline-start, OVER the
+   window) covered the plan's own labels — «نقطة الفحص», «36 M2»,
+   «12.3M», «قاعة المحاضرات», «240 M2» (detector: jt-f-b × 12.3M
+   &c). The card now sits in its own region below the window — the
+   mobile grammar, unified — and the window shares the column with
+   it. Paper ground, 1px hairline, the DARK head chip with the white
+   mono label; flips on with the card era. */
 .jt-intro {
-  position: absolute;
-  inset-block-end: 2em;
-  inset-inline-start: 2em;
-  inline-size: 17.5em;
+  position: static;
+  flex: none;
   margin: 0;
   border: 1px solid var(--grid-line);
   background: var(--bg);
   color: var(--jt-ink); /* the card's scaffold rides the 72% wash (the measured chain) */
   pointer-events: none;
   opacity: 0;
-  z-index: 3;
   transition: opacity var(--t-fast) var(--ease);
 }
 
@@ -651,23 +672,16 @@ section.chapters {
   white-space: nowrap;
 }
 
-/* the findings — the collapsed body (clip) opens with the card era;
-   the per-finding containers rotate, the bodies themselves always
-   carry their own ink (the measured body opacity 1). Each container
-   is absolutely seated at the same origin with its OWN natural
-   height (the measured per-finding boxes); the wrapper holds the
-   measured 10.2em min-height. */
+/* the findings — the body stands open in the card's own region
+   (R347 D6c: the corner-card's collapsed 2.5em clip + height tween
+   retired with the seat — an in-flow region needs no grow-upward
+   trick); the per-finding containers rotate, the bodies themselves
+   always carry their own ink (the measured body opacity 1). Each
+   container is absolutely seated at the same origin with its OWN
+   natural height (the measured per-finding boxes); the wrapper holds
+   the measured 10.2em min-height. */
 .jt-intro-body {
   display: block;
-  block-size: 2.5em;
-  overflow: hidden;
-  clip-path: inset(50%);
-  transition: height var(--jt-t-art) var(--jt-e-art); /* the measured height tween — the card grows upward */
-}
-
-.jt[data-stage='2'] .jt-intro-body,
-.jt[data-stage='3'] .jt-intro-body,
-.jt[data-stage='4'] .jt-intro-body {
   block-size: auto;
   overflow: visible;
   clip-path: none;
@@ -755,28 +769,25 @@ section.chapters {
 /* the muted mono caption ink — the spec's rgb(180,180,176) in
    light; the dark arm re-points at the dark ramp's own readable
    caption seat (the all-nodes ink census floor 4.5:1). */
-/* the reduced-motion static page: the card stands OPEN with every
-   finding readable in flow. */
-.jt[data-finding='all'] .jt-intro-body,
-.jt[data-rm='on'] .jt-intro-body {
-  block-size: auto;
-  overflow: visible;
-  clip-path: none;
-  padding: var(--sp-2);
-}
-
-.jt[data-finding='all'] .jt-intro-findings,
-.jt[data-rm='on'] .jt-intro-findings {
-  min-block-size: 0;
-  opacity: 1;
-}
-
+/* R347 D6c — the RM/'all' static state: the card keeps the COMPACT
+   one-voice grammar (finding 5 — the assistant note — STANDS as the
+   end state) instead of stacking the five-finding ladder. The old
+   ladder (~693px) was sized for the retired overlay seat that could
+   grow freely over the drawing; in the card's own in-flow region it
+   would crush the plan window to an unreadable strip at every bp.
+   The DOM still carries all five findings (the e2e count contract);
+   the ladder's stacked-readable form is retired with the seat. */
 .jt[data-finding='all'] .jt-intro-finding,
 .jt[data-rm='on'] .jt-intro-finding {
-  position: static;
-  inset: auto;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  opacity: 0;
+}
+
+.jt[data-finding='all'] .jt-intro-finding:nth-child(5),
+.jt[data-rm='on'] .jt-intro-finding:nth-child(5) {
   opacity: 1;
-  margin-block-end: var(--sp-2);
 }
 
 /* ── the CLOSING COLUMN — the section's own head + ledger ─────────
@@ -1015,11 +1026,22 @@ section.chapters {
   }
 
   /* the window — the chrome box (rails + marks + the in-flow
-   * stack); the camera's aspect families pin the plan element. */
+   * stack); the camera's aspect families pin the plan element.
+   * R347 D6b: the desktop base's 1.2rem margin is retired at ≤991
+   * (the column's own padding-inline carries the inset).
+   * R347 D6e: the window FLEXES to the sticky box's leftover space
+   * (the fixed calc reserve could not anticipate the snap camera's
+   * per-era crop aspects — the 500×600 exam seat rendered a 442px
+   * svg that overflowed the 787px box and the intro card's tail
+   * painted over the closing column; the flex chain caps the plan
+   * at whatever space actually remains, at every crop aspect). */
   .jt-window {
     position: relative;
-    inset: auto;
-    flex: none;
+    margin: 0;
+    flex: 1 1 auto;
+    min-block-size: 0;
+    display: flex;
+    flex-direction: column;
     max-inline-size: none;
     will-change: auto;
   }
@@ -1029,14 +1051,17 @@ section.chapters {
     inset: auto;
     display: flex;
     flex-direction: column;
+    flex: 1 1 auto;
+    min-block-size: 0;
   }
 
   .jt-stack .bp-svg {
     block-size: auto;
-    max-block-size: calc(100dvh - 57px - 25rem);
+    max-block-size: 100%;
     inline-size: auto;
     max-inline-size: 100%;
     margin-inline: auto;
+    margin-block: auto;
   }
 
   /* the R331 blank-pin repair — the sticky window's heavy children
@@ -1046,23 +1071,17 @@ section.chapters {
     transform: translateZ(0);
   }
 
-  /* the plaques — the measured mobile seat: over the plan at the
-   * stack's mid-band (334×79 @ (20,377) @390), the same overlay
-   * grammar as desktop. R342-11: the plates cap at the ≥16px safe
-   * gutters (the reference's own mobile plaque insets — 21/28px) and
-   * center in the band; the pre-fix full-width plate let the second
-   * statement span x=7.7–382.3 @390 (r325 gutter belt). */
-  .jt-cards,
-  .jt-card2w {
-    position: absolute;
-    inset: 0;
-    place-items: center;
+  /* the plaques — R347 D6b: the mobile seat is the SAME statement
+   * band as desktop (in flow above the window, never over the plan).
+   * The plates keep the ≥16px safe gutters (the reference's own
+   * mobile plaque insets — 21/28px). */
+  .jt-cards {
+    flex: none;
   }
 
   .jt-card-plate {
     max-inline-size: calc(100% - 2 * var(--sp-4));
     margin-inline: auto;
-    stroke-width: 4px;
   }
 
   .jt-card {
@@ -1109,7 +1128,12 @@ section.chapters {
   }
 
   .jt-intro-findings {
-    position: static;
+    /* R347 D6d: position: relative (the ≤991 static override is
+     * retired) — the absolutely-stacked findings anchor to THIS box,
+     * below the head chip. The static seat anchored them to
+     * .jt-intro's own box (the translateZ(0) containing block),
+     * pulling every finding up over the «مقدمة» chip. */
+    position: relative;
     /* R342-11: the measured finding box (10.2em) — the card stays
      * COMPACT during the story (one finding at a time, the reference's
      * own mobile furniture: its 390 card measures ~230px total). The

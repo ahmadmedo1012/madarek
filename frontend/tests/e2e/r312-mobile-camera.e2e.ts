@@ -196,13 +196,12 @@ test.describe('R312 — the mobile map (§R R1, R322 override)', () => {
     expect(mid.wash).toBe('exam');
     const mvb = (mid.viewBox ?? '').split(' ').map(Number);
     expect(mvb.length).toBe(4);
-    expect(mvb[0]!).toBe(356);
-    expect(mvb[2]!).toBe(460);
+    /* R347 D6e re-key: the SNAP camera — one settled label-safe crop
+     * for the whole exam+library era (no interpolated beats to absorb). */
+    expect(mvb[0]!).toBe(403);
+    expect(mvb[1]!).toBe(95);
+    expect(mvb[2]!).toBe(500);
     expect(mvb[3]!).toBe(600);
-    /* the ±16 window absorbs the scroll-convergence residue on the
-     * interpolated y beat (both bracketing keys share w/h — the pan
-     * runs x 358→298 / y 0→160 across the 4.0→4.6s span). */
-    expect(Math.abs(mvb[1]! - 7)).toBeLessThanOrEqual(16);
 
     /* the plaque era (p=0.08 ⇒ seqU≈0.150 ⇒ t≈1.94): the full overview
      * holds through the plaque beats — nothing cropped yet. (The R330
@@ -216,14 +215,16 @@ test.describe('R312 — the mobile map (§R R1, R322 override)', () => {
     /* the release (p=1 ⇒ t=5.52s): the phone HOLDS the mastery
      * terminus crop (R322 3-b-fix3 R1-D2: CAM_FULL letterboxed a
      * 206px overview inside the 787px full-height window at the close
-     * — the held zoomed room reads as the story's end) while the
-     * stacked closing column scrolls in below (the data-open flip is
-     * desktop-only business on phones). */
+     * — the held zoomed room reads as the story's end). R347 D6e
+     * re-key: the terminus is the label-safe mastery seat — the room
+     * + its label + the exam/library context, ≥12 svg-unit margins
+     * on every edge (the old [15,0,560,355] seat straddled «غرفة
+     * الإتقان» at its bottom edge). */
     await scrollToPin(page, 1, true);
     const end = await sheetState(page);
     expect(end.stage).toBe('5');
     expect(end.finding).toBe('done');
-    expect(end.viewBox).toBe('15 0 460 600');
+    expect(end.viewBox).toBe('292 172 460 588');
     /* the stacked closing column reads immediately in flow (the
      * data-open flip is desktop-only business on phones) */
     const closeVisible = await page.evaluate(() => {
@@ -316,8 +317,9 @@ test.describe('R312 — the mobile map (§R R1, R322 override)', () => {
     expect(cropped.viewBox).not.toBe('0 0 1200 760');
     const cvb = (cropped.viewBox ?? '').split(' ').map(Number);
     expect(cvb.length).toBe(4);
-    expect(cvb[0]!).toBe(356);
-    expect(cvb[2]!).toBe(460);
+    /* R347 D6e re-key: the SNAP camera's exam+library era crop */
+    expect(cvb[0]!).toBe(403);
+    expect(cvb[2]!).toBe(500);
 
     /* up to desktop: restored exactly (the camDirty flag consumes) */
     await page.setViewportSize(VW.desktop);
@@ -402,27 +404,27 @@ test.describe('R312 — the desktop map contract (the R322 transplant)', () => {
     expect(s0.par).toBe('xMidYMid meet');
     expect(s0.viewBox).toBe('0 0 1200 760');
 
-    /* the entrance descent: before the pin engages the whole stack
-     * sits one viewport above its seat (a transform, never layout).
-     * R342-04 re-seat: the drift rides `.jt-stack` (the window's
-     * chrome — rails, marks — stays put while the plan + plaques +
-     * annotations descend; the measured architecture). */
+    /* R347 D6a re-key: the entrance drift is retired — the descent
+     * parked the plan stack one viewport above its seat (on top of
+     * the problems band); the stack now rests in the window from
+     * frame one, so NO transform is ever written (at any pin
+     * progress — before, during and after the pin). */
     await scrollToPin(page, -0.1, false);
     const drift = await page.evaluate(() => {
       const stack = document.querySelector('.jt-stack') as HTMLElement;
       return stack.style.transform;
     });
-    expect(drift).toMatch(/translateY\(-\d+\.\dpx\)/);
+    expect(drift).toBe('');
 
-    /* inside the pin: the descent completes — translateY(0); the stage
-     * advances with the pin (p=0.55 ⇒ t≈3.37 ⇒ stage 3, the findings
-     * era — R322 3-b-fix3 D3: the card→findings boundary sits at t 3.0) */
+    /* inside the pin: still no transform; the stage advances with
+     * the pin (p=0.55 ⇒ t≈3.37 ⇒ stage 3, the findings era — R322
+     * 3-b-fix3 D3: the card→findings boundary sits at t 3.0) */
     await scrollToPin(page, 0.55, false);
     const mid = await sheetState(page);
     expect(mid.stage).toBe('3');
     expect(
       await page.evaluate(() => (document.querySelector('.jt-stack') as HTMLElement).style.transform),
-    ).toMatch(/translateY\(-?0(?:\.0)?px\)/);
+    ).toBe('');
 
     /* the scrub end: the closing reveal (opacity, never width) */
     await scrollToPin(page, 1, false);

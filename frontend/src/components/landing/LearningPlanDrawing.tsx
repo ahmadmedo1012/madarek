@@ -483,7 +483,12 @@ export function LearningPlanDrawing() {
             furniture. The room's furniture is the stage + the raked
             seating + the doors + this label. */}
         <text className="pl-name" x="930" y="97" textAnchor="middle">قاعة المحاضرات</text>
-        <text className="bp-micro" x="930" y="120" textAnchor="middle">240 M2</text>
+        {/* R347 D6e: the area labels seat 10 units below their names at
+            every pair — the mobile font rung (fs 22) let the name's
+            descender box kiss the area box (2px rect overlap at 390,
+            detector frac 0.26–0.36); the clear gap holds at every
+            camera zoom. */}
+        <text className="bp-micro" x="930" y="130" textAnchor="middle">240 M2</text>
       </g>
 
       {/* ═══ zone: كشك نقطة الفحص — counter + queue (layer 2) ═══ */}
@@ -505,7 +510,7 @@ export function LearningPlanDrawing() {
             each other (the 16u gap overlapped the em-boxes); the seat
             was already clear of the queue dots and the counter */}
         <text className="pl-name" x="930" y="622" textAnchor="middle">نقطة الفحص</text>
-        <text className="bp-micro" x="930" y="645" textAnchor="middle">36 M2</text>
+        <text className="bp-micro" x="930" y="655" textAnchor="middle">36 M2</text>
       </g>
 
       {/* ═══ zone: قاعة الاختبار — the desk grid (layer 3) ═══ */}
@@ -531,7 +536,7 @@ export function LearningPlanDrawing() {
             seated ABOVE the desk grid (now y≥150) — was 126/142 with
             the area box eating the first desk row (216px²) */}
         <text className="pl-name" x="590" y="118" textAnchor="middle">قاعة الاختبار</text>
-        <text className="bp-micro" x="590" y="141" textAnchor="middle">150 M2</text>
+        <text className="bp-micro" x="590" y="151" textAnchor="middle">150 M2</text>
       </g>
 
       {/* ═══ zone: المكتبة — shelves + reading table (layer 4, with
@@ -574,7 +579,7 @@ export function LearningPlanDrawing() {
             reading table (x≤411), the counter (x≥700) and the zone's
             south wall */}
         <text className="pl-name" x="530" y="622" textAnchor="middle">المكتبة والبحوث</text>
-        <text className="bp-micro" x="530" y="645" textAnchor="middle">96 M2</text>
+        <text className="bp-micro" x="530" y="655" textAnchor="middle">96 M2</text>
       </g>
 
       {/* ═══ zone: غرفة الإتقان — the stepped seminar (layer 5) ═══ */}
@@ -606,7 +611,7 @@ export function LearningPlanDrawing() {
             373): clear of the stepped rows (y≤320), the focus screen
             (x=90), the [05] station chip (x≤293) and the zone door */}
         <text className="pl-name" x="340" y="350" textAnchor="middle">غرفة الإتقان</text>
-        <text className="bp-micro" x="340" y="373" textAnchor="middle">84 M2</text>
+        <text className="bp-micro" x="340" y="383" textAnchor="middle">84 M2</text>
       </g>
 
       {/* ═══ zone: الاستقبال — reception + bench (layer 4, with the
@@ -647,7 +652,7 @@ export function LearningPlanDrawing() {
           [850, 460, 850, 449, 1],
           [520, 394, 520, 409, 2],
           [520, 460, 520, 449, 3],
-          [270, 394, 270, 409, 4],
+          [255, 397, 255, 409, 4],
         ].map(([x1, y1, x2, y2, st]) => (
           <line
             key={`ld${x1}-${y1}`}
@@ -669,13 +674,13 @@ export function LearningPlanDrawing() {
           <rect className="pl-chip" data-station="1" x="827" y="478" width="46" height="19" rx="0" />
           <rect className="pl-chip" data-station="2" x="497" y="370" width="46" height="19" rx="0" />
           <rect className="pl-chip" data-station="3" x="497" y="478" width="46" height="19" rx="0" />
-          <rect className="pl-chip" data-station="4" x="247" y="370" width="46" height="19" rx="0" />
+          <rect className="pl-chip" data-station="4" x="232" y="378" width="46" height="19" rx="0" />
         </g>
         <text className="bp-micro pl-station" data-station="0" x="850" y="384" textAnchor="middle">[01]</text>
         <text className="bp-micro pl-station" data-station="1" x="850" y="492" textAnchor="middle">[02]</text>
         <text className="bp-micro pl-station" data-station="2" x="520" y="384" textAnchor="middle">[03]</text>
         <text className="bp-micro pl-station" data-station="3" x="520" y="492" textAnchor="middle">[04]</text>
-        <text className="bp-micro pl-station" data-station="4" x="270" y="384" textAnchor="middle">[05]</text>
+        <text className="bp-micro pl-station" data-station="4" x="255" y="392" textAnchor="middle">[05]</text>
         {/* the dimension chains — overall width + height */}
         <g className="bp-hair">
           <line className="bp-drawable" x1="64" y1="712" x2="1136" y2="712" pathLength={1} />

@@ -145,46 +145,26 @@ const ANNOTATIONS_AR = [
 const COUNTERS = ['[01/05]', '[02/05]', '[03/05]', '[04/05]', '[05/05]'] as const;
 
 /* ── The clock constants (pin units; the measured windows) ─────────── */
-const ENTRANCE_START_PIN = -0.167; /* the stack's descent begins ~1 viewport before the pin */
+/* R347 D6a: the ENTRANCE DRIFT is retired. The drift parked the whole
+ * plan stack one viewport above its seat (−(100dvh − 1rem)), which is
+ * ON TOP of the problems band above the map — its SVG room labels
+ * fed the detector's pm-region text-on-text findings and the plaques'
+ * “caption over the plan” defect was born in the same seat. The plan
+ * now rests IN the window from frame one; the story is told by the
+ * room washes, the annotation reveal and the findings rotation. */
 const SEQ_START_PIN = -0.082;
 const SEQ_END_PIN = 0.952;
 const SEQ_SPAN_PIN = SEQ_END_PIN - SEQ_START_PIN;
 const SEQ_DUR_S = 5.52;
 
-const LAYER_WINDOWS: ReadonlyArray<readonly [number, number]> = [
-  [0.35, 0.85], // 1 · the envelope (the walls ink in AT the intro) + the lecture hall
-  [1.02, 1.52], // 2 · the checkpoint kiosk
-  [1.52, 2.02], // 3 · the exam hall
-  [2.02, 2.52], // 4 · the library wing + the entry reception
-  [2.52, 3.02], // 5 · the mastery room
-  [3.02, 3.52], // 6 · the annotations (the journey path, stations, dims)
-];
-
-const XL_GHOST = 0.18;
-
-/* T-09e — the measured art register (the census-paired route overlay
- * + annotation groups) — unchanged from the R341 driver. */
-const ART_ROUTE_PATHS: readonly [number, number] = [8, 20];
-const ART_HIDDEN_GROUPS: readonly number[] = [1, 5, 9];
-const ART_TINT_GROUPS: readonly number[] = [2, 6, 10];
-const ART_TINT = 0.24;
-const ART_REVEAL: readonly [number, number] = [3.02, 3.52];
-
-type ArtRegister = { route: SVGPathElement[]; hidden: SVGGElement[]; tint: SVGGElement[] };
-
-function resolveArtRegister(track: HTMLElement): ArtRegister {
-  const paths = Array.from(track.querySelectorAll<SVGPathElement>('.jt-plan path'));
-  const groups = Array.from(track.querySelectorAll<SVGGElement>('.jt-plan g'));
-  const route = paths.slice(ART_ROUTE_PATHS[0], ART_ROUTE_PATHS[1] + 1);
-  for (const el of route) {
-    el.style.transition = 'filter var(--jt-t-art) var(--jt-e-art)';
-  }
-  return {
-    route,
-    hidden: ART_HIDDEN_GROUPS.map((i) => groups[i]).filter((el): el is SVGGElement => !!el),
-    tint: ART_TINT_GROUPS.map((i) => groups[i]).filter((el): el is SVGGElement => !!el),
-  };
-}
+/* R347 D6f: the six-layer ghost crossfade (the 0.18 ghost floor
+ * ramping to 1 per layer window) and the art register (route/hidden/
+ * tint reveals) are
+ * retired — “the plan keeps one consistent line weight”. Every plan
+ * layer stands at full ink from frame one (CSS base opacity 1; the
+ * driver writes the same 1 idempotently for the belt-and-braces
+ * contract the tests pin). The room washes (data-wash), the annotation
+ * era and the findings rotation carry the story alone. */
 
 /* the finding rotation: 5 equal 0.6s windows over t 2.5→5.5. */
 const FINDING_SPAN_S = 0.6;
@@ -201,44 +181,41 @@ function clamp01(x: number): number {
   return x < 0 ? 0 : x > 1 ? 1 : x;
 }
 
-/* ── The ≤991 camera (unchanged — the R312 camera family) ─────────── */
+/* ── The ≤991 camera (R347 D6e — THE SNAP REBUILD) ───────────────── */
 type CamRect = readonly [number, number, number, number];
 const CAM_FULL: CamRect = [0, 0, PLAN_VB.w, PLAN_VB.h];
-const CAM_KEYS_SHEET: ReadonlyArray<readonly [number, CamRect]> = [
-  [2.2, CAM_FULL],
-  [2.8, [640, 54, 560, 355]],
-  [3.4, [640, 390, 560, 355]],
-  [4.0, [308, 54, 560, 355]],
-  [4.6, [85, 342, 660, 418]],
-  [5.0, [0, 54, 560, 355]],
-  [5.52, CAM_FULL],
-];
+/* R347 D6e: the camera SNAPS between era crops — never interpolates.
+ * The lerped sweep let a frozen mid-transition viewBox park its edge
+ * INSIDE a room label («غرفة الإتقان» half-cut at the window's left
+ * edge at 390, the judge confirmed the clip in both themes). Every
+ * crop below is verified against the drawing's full label inventory
+ * with ≥12 svg-unit margins on all four edges (labels: the 5 room
+ * names + area figures + [01]–[05] chips + letter rows + dimension
+ * strings + cut flags). The exam/library eras share one wide crop
+ * (a 460-wide window cannot clear the D-letter/[01]/mastery spans at
+ * once); the mastery era returns to the FULL sheet — the story's own
+ * ending (the completed whole on one plane). */
 const CAM_KEYS_PHONE: ReadonlyArray<readonly [number, CamRect]> = [
   [2.2, CAM_FULL],
-  [2.8, [713, 0, 460, 600]],
-  [3.4, [713, 160, 460, 600]],
-  [4.0, [358, 0, 460, 600]],
-  [4.6, [298, 160, 460, 600]],
-  [5.0, [15, 0, 460, 600]],
-  [5.52, [15, 0, 460, 600]],
+  [2.8, [690, 0, 460, 600]], // the lecture hall era (right column)
+  [3.4, [690, 160, 460, 600]], // the checkpoint kiosk era
+  [4.0, [403, 95, 500, 600]], // the exam hall + library eras (one wide seat)
+  [5.0, [292, 172, 460, 588]], // the mastery terminus — the goal room held at the close
+  [5.52, [292, 172, 460, 588]],
 ];
 
 function camRectAt(t: number, phone: boolean): CamRect {
-  const keys = phone ? CAM_KEYS_PHONE : CAM_KEYS_SHEET;
+  /* R347 D6e: the sheet band (768–991) rides the FULL sheet — at that
+   * width the plan's labels read at 12–17px and the zoom adds nothing
+   * but straddle risk. Only the phone band crops, and it SNAPS. */
+  if (!phone) return CAM_FULL;
+  const keys = CAM_KEYS_PHONE;
   if (t <= keys[0]![0]) return keys[0]![1];
   const last = keys[keys.length - 1]!;
   if (t >= last[0]) return last[1];
   let i = 0;
-  while (i < keys.length - 2 && t > keys[i + 1]![0]) i += 1;
-  const [t0, a] = keys[i]!;
-  const [t1, b] = keys[i + 1]!;
-  const u = clamp01((t - t0) / (t1 - t0));
-  return [
-    a[0] + (b[0] - a[0]) * u,
-    a[1] + (b[1] - a[1]) * u,
-    a[2] + (b[2] - a[2]) * u,
-    a[3] + (b[3] - a[3]) * u,
-  ];
+  while (i < keys.length - 2 && t >= keys[i + 1]![0]) i += 1;
+  return keys[i]![1];
 }
 
 const camSvgByTrack = new WeakMap<HTMLElement, SVGSVGElement>();
@@ -350,18 +327,13 @@ function writeFade(
   setSheetVar(el.style, 'visibility', o <= 0 ? 'hidden' : 'visible');
 }
 
-/* the entrance drift magnitude — the measured transform: one frame
- * height minus 1rem (the fluid root), i.e. the stack rests exactly
- * one sticky-frame above its seat before the descent. */
-function driftMagnitude(vh: number, fs: number): number {
-  return Math.max(0, vh - fs);
-}
+/* the entrance drift magnitude — retired with the drift itself
+ * (R347 D6a); the function stays deleted, not commented. */
 
 export function JourneyScene() {
   const trackRef = useRef<HTMLDivElement>(null);
   const mapInRef = useRef<HTMLDivElement | null>(null);
   const windowRef = useRef<HTMLDivElement | null>(null);
-  const stackRef = useRef<HTMLDivElement | null>(null);
   const card1Ref = useRef<HTMLDivElement | null>(null);
   const card2Ref = useRef<HTMLDivElement | null>(null);
   const closeRef = useRef<HTMLDivElement | null>(null);
@@ -374,9 +346,6 @@ export function JourneyScene() {
   const colElRef = useRef<HTMLElement | null>(null);
   const layerElsRef = useRef<SVGGElement[][]>([]);
   const camDirtyRef = useRef(false);
-  /* the drift unit — the band scaffold rung (fs-body per bp), read
-   * once per epoch (never a per-frame layout read). */
-  const driftFsRef = useRef(0);
 
   /* ── The ONE scroll driver (zero React renders per tick) ────────── */
   useSheetScroll(
@@ -415,24 +384,21 @@ export function JourneyScene() {
         pRaw = rect.height > vh + 1 ? -rect.top / (rect.height - vh) : pin;
       }
 
-      const art = resolveArtRegister(track);
-
       /* the static end-state under reduced motion. */
       if (reduced) {
         for (const group of resolveLayers(track)) {
           for (const el of group) setSheetVar(el.style, 'opacity', '1');
         }
-        for (const el of [...art.route, ...art.hidden, ...art.tint]) {
-          setSheetVar(el.style, 'opacity', '1');
-        }
+        /* R347 D6b: under RM the band carries the SECOND statement (the
+         * standing end-state of the plaque crossfade — the first cut
+         * hid both and left the band an empty void). */
         if (card1Ref.current) {
           setSheetVar(card1Ref.current.style, 'opacity', '0');
+          setSheetVar(card1Ref.current.style, 'visibility', 'hidden');
         }
         if (card2Ref.current) {
-          setSheetVar(card2Ref.current.style, 'opacity', '0');
-        }
-        if (stackRef.current) {
-          setSheetVar(stackRef.current.style, 'transform', 'translateY(0.0px)');
+          setSheetVar(card2Ref.current.style, 'opacity', '1');
+          setSheetVar(card2Ref.current.style, 'visibility', 'visible');
         }
         if (mobile) {
           writeCamBox(track, CAM_FULL);
@@ -441,47 +407,26 @@ export function JourneyScene() {
         return;
       }
 
-      /* 1 · the entrance descent (≥992 only — the STACK drifts, the
-       * window's chrome stays: the measured architecture). */
-      const stackEl = stackRef.current;
-      if (!mobile) {
-        if (!driftFsRef.current && track) {
-          driftFsRef.current = parseFloat(getComputedStyle(track).fontSize) || 0;
-        }
-        const u = (pRaw - ENTRANCE_START_PIN) / -ENTRANCE_START_PIN;
-        const y = -driftMagnitude(vh, driftFsRef.current) * (1 - p2o(u));
-        if (stackEl) setSheetVar(stackEl.style, 'transform', `translateY(${y.toFixed(1)}px)`);
-      } else if (stackEl) {
-        setSheetVar(stackEl.style, 'transform', 'none');
-      }
-
-      /* 2 · the sequence clock — the 5.52s movie (mobile front-load). */
+      /* 1 · the sequence clock — the 5.52s movie (mobile front-load). */
       const seqU = clamp01((pRaw - SEQ_START_PIN) / SEQ_SPAN_PIN);
       const t = mobile ? SEQ_DUR_S * Math.pow(seqU, 0.55) : SEQ_DUR_S * seqU;
 
-      /* 3 · the six progressive layers — ghost→full crossfades. */
-      const groups = resolveLayers(track);
-      for (let i = 0; i < LAYER_WINDOWS.length; i += 1) {
-        const [a, b] = LAYER_WINDOWS[i]!;
-        const o = XL_GHOST + (1 - XL_GHOST) * p2o((t - a) / (b - a));
-        for (const el of groups[i] ?? []) {
-          setSheetVar(el.style, 'opacity', o.toFixed(3));
-        }
+      /* 2 · the six progressive layers — CONSTANT FULL INK (R347 D6f:
+       * one consistent line weight; the ghost crossfade retired). The
+       * idempotent '1' write keeps the pinned contract (every layer
+       * records style.opacity 1) without any crossfade math. */
+      for (const group of resolveLayers(track)) {
+        for (const el of group) setSheetVar(el.style, 'opacity', '1');
       }
 
-      /* 3b · the measured art register reveal. */
-      const artRev = p2o((t - ART_REVEAL[0]) / (ART_REVEAL[1] - ART_REVEAL[0]));
-      for (const el of art.route) setSheetVar(el.style, 'opacity', artRev.toFixed(3));
-      for (const el of art.hidden) setSheetVar(el.style, 'opacity', artRev.toFixed(3));
-      for (const el of art.tint) {
-        setSheetVar(el.style, 'opacity', (ART_TINT + (1 - ART_TINT) * artRev).toFixed(3));
-      }
-
-      /* 4 · the statement plaques — plaque 1 VISIBLE from t 0 (the
-       * spec's rest state), out at 1.0–1.4; plaque 2 in 1.6–2.0 (the
-       * 0.2s dead gap keeps one voice at a time), out 2.5–3.0. */
+      /* 3 · the statement plaques — plaque 1 VISIBLE from t 0 (the
+       * entry statement), out at 1.0–1.4; plaque 2 in 1.6–2.0 (the
+       * 0.2s dead gap keeps one voice at a time) and STANDS — the band
+       * is its own region now, so the out-fade that vacated the seat
+       * for the annotation era (the old overlay grammar) is retired
+       * with the seat change (R347 D6b). */
       writeCard(card1Ref.current, t, -1, -1, 1.0, 1.4);
-      writeFade(card2Ref.current, t, 1.6, 2.0, 2.5, 3.0);
+      writeFade(card2Ref.current, t, 1.6, 2.0, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
 
       /* 5 · the discrete machine — unchanged semantics. */
       const stage =
@@ -536,7 +481,6 @@ export function JourneyScene() {
       onRefresh: () => {
         colGeoRef.current = null;
         layerElsRef.current = [];
-        driftFsRef.current = 0;
       },
     },
   );
@@ -564,6 +508,37 @@ export function JourneyScene() {
         <div className="jt-map-col">
           {/* the stack seat @≥992 · the STICKY WINDOW @≤991 */}
           <div className="jt-map-in" ref={mapInRef}>
+            {/* R347 D6b — the STATEMENT BAND: the two plaques live in
+                their OWN region above the window (one seat, crossfade),
+                never printed over the plan. The old seat — an overlay
+                band centered on the drifting plan stack — put the
+                captions directly on the drawing's room labels at every
+                frame (detector: jt-card-plate × [01]/[03]/[05]/84 M2/
+                غرفة الإتقان, 232 findings). */}
+            <div className="jt-cards" data-spec="map.plaques">
+              <div className="jt-card jt-card1" ref={card1Ref} data-spec="map.plaque1o">
+                <div className="jt-card-plate" data-spec="map.plaque1i">
+                  {STATEMENT_1_AR}
+                </div>
+              </div>
+              <div className="jt-card2w" ref={card2Ref} data-spec="map.card2w">
+                <div className="jt-card jt-card2" data-spec="map.plaque2o">
+                  <div className="jt-card-plate" data-spec="map.plaque2i">
+                    {STATEMENT_2_AR}
+                  </div>
+                </div>
+              </div>
+              {/* the [nn/05] counter chip — the band's inline-end edge
+                  (R347 D6e; unbound by design, the reference carries its
+                  counters inside the svg art) */}
+              <div className="jt-idx" aria-hidden="true">
+                {COUNTERS.map((c) => (
+                  <span key={c} className="fo-mono" dir="ltr">
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
             <div className="jt-window" ref={windowRef}>
               {/* the four registration rails — the frame's inset
                   spacers (the measured window chrome; invisible
@@ -609,35 +584,12 @@ export function JourneyScene() {
                 </div>
               </div>
 
-              {/* the drifting plan stack — the entrance descent's
-                  target (the measured transform: one frame height
-                  minus 1rem up at rest). The svg letterboxes its
-                  1200×760 sheet inside; the plaques + the annotation
-                  cards ride the drift with it. */}
-              <div className="jt-stack" ref={stackRef}>
+              {/* the plan stack — the drawing's own seat (R347 D6a: no
+                  drift; the stack rests in the window from frame one).
+                  The svg letterboxes its 1200×760 sheet inside; the
+                  annotation cards ride the same sheet. */}
+              <div className="jt-stack">
                 <LearningPlanDrawing />
-
-                {/* the plaque band + the plaque-2 wrapper — the two
-                    statements: plaque 1 rides the band (VISIBLE from
-                    frame one — the spec's captured rest state, the
-                    section's entry statement); plaque 2 rides its own
-                    from-state wrapper (opacity 0, one notch larger —
-                    the measured gsap seat), crossfading in at the plan
-                    era. One seat per statement, never stacked. */}
-                <div className="jt-cards" data-spec="map.plaques">
-                  <div className="jt-card jt-card1" ref={card1Ref} data-spec="map.plaque1o">
-                    <div className="jt-card-plate" data-spec="map.plaque1i">
-                      {STATEMENT_1_AR}
-                    </div>
-                  </div>
-                </div>
-                <div className="jt-card2w" ref={card2Ref} data-spec="map.card2w">
-                  <div className="jt-card jt-card2" data-spec="map.plaque2o">
-                    <div className="jt-card-plate" data-spec="map.plaque2i">
-                      {STATEMENT_2_AR}
-                    </div>
-                  </div>
-                </div>
 
                 {/* the three annotation cards — the plan's own
                     callouts (orange-ruled, mono titles), revealed
@@ -668,15 +620,6 @@ export function JourneyScene() {
                 </div>
               </div>
 
-              {/* the [nn/05] counter rows — our mono furniture (the
-                  reference carries its counters inside the svg art) */}
-              <div className="jt-idx" aria-hidden="true">
-                {COUNTERS.map((c) => (
-                  <span key={c} className="fo-mono" dir="ltr">
-                    {c}
-                  </span>
-                ))}
-              </div>
             </div>
 
             {/* the INTRODUCTION card — the measured corner card:

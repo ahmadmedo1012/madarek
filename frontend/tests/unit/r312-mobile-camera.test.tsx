@@ -75,15 +75,18 @@ const JOURNEY_LIVE = JOURNEY_SRC.replace(/\/\*[\s\S]*?\*\//g, '');
 
 /* ── jsdom plumbing (per the r311 belt) ─────────────────────────── */
 let mobileWanted = false;
+let phoneWanted = false;
 let reducedWanted = false;
 
 function installMatchMedia() {
   window.matchMedia = vi.fn().mockImplementation((query: string) => {
     const matches = query.includes('max-width: 991px')
       ? mobileWanted
-      : query.includes('reduce')
-        ? reducedWanted
-        : false;
+      : query.includes('max-width: 767px')
+        ? phoneWanted
+        : query.includes('reduce')
+          ? reducedWanted
+          : false;
     return {
       matches,
       media: query,
@@ -115,6 +118,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   mobileWanted = false;
+  phoneWanted = false;
   reducedWanted = false;
   installMatchMedia();
   try { sessionStorage.clear(); } catch { /* storage can be locked */ }
@@ -215,66 +219,59 @@ describe('R312 mobile camera — the source contracts (R322 map override)', () =
     expect(JOURNEY_SRC).toMatch(/<aside className="jt-intro" aria-label=\{INTRO_TITLE_AR\}>/);
   });
 
-  it('the camera key table mirrors the plan geometry (the narrated rooms, two crop families)', () => {
-    /* seven keys over the 5.52s movie: the full overview through the
-     * statement era → each narrated room in turn → the completed
-     * overview at the close. R322 3-b-fix override (review-c3 R1#5/
-     * R2#4): TWO crop families — TABLET keeps the LANDSCAPE sheet
-     * aspect (560/355 ≈ 1200/760); PHONE adds the PORTRAIT family
-     * (460×600) so the plan element fills ~75% of the full-height
-     * sticky window (the 26%-area plan + the mid-map dead band both
-     * die). Every key still fills its element exactly (the CSS
-     * aspect-ratio matches the family), a viewBox pan can never
-     * resize the element, and the overview keys still ride PLAN_VB. */
-    expect(JOURNEY_SRC).toMatch(/const CAM_KEYS_SHEET: ReadonlyArray<readonly \[number, CamRect\]> = \[/);
+  it('the camera key table mirrors the plan geometry (R347 D6e — the snap rebuild)', () => {
+    /* R347 D6e re-key: ONE crop family (the phone portrait band) and
+     * it SNAPS — era-keyed cuts, never interpolated (a frozen
+     * mid-sweep viewBox parked its edge inside «غرفة الإتقان» and
+     * half-cut it at 390). The sheet band (768–991) rides the FULL
+     * sheet (labels read at 12–17px there; the retired sheet zoom
+     * only added straddle risk). Every crop is verified against the
+     * drawing's full label inventory with ≥12 svg-unit margins on
+     * all four edges; the exam+library eras share one wide seat; the
+     * mastery era returns to the FULL sheet (the completed whole). */
+    expect(JOURNEY_SRC).not.toContain('CAM_KEYS_SHEET');
     expect(JOURNEY_SRC).toMatch(/const CAM_KEYS_PHONE: ReadonlyArray<readonly \[number, CamRect\]> = \[/);
     const rects = [...JOURNEY_SRC.matchAll(/\[(\d+), (\d+), (\d+), (\d+)\]/g)]
       .map((m) => [Number(m[1]), Number(m[2]), Number(m[3]), Number(m[4])] as const);
-    /* the four pinned sheet-family room nodes (lecture / checkpoint /
-     * exam / mastery — the narrated rooms of the findings) */
-    expect(rects).toContainEqual([640, 54, 560, 355]);
-    expect(rects).toContainEqual([640, 390, 560, 355]);
-    expect(rects).toContainEqual([308, 54, 560, 355]);
-    expect(rects).toContainEqual([0, 54, 560, 355]);
-    /* the phone family's portrait crops (460×600) — same rooms,
-     * portrait slices for the full-height window */
-    expect(rects).toContainEqual([713, 0, 460, 600]);
-    expect(rects).toContainEqual([358, 0, 460, 600]);
-    /* every rect inside the sheet; each family's crops at its OWN
-     * aspect (the sheet family at 1200/760, the phone family at
-     * 460/600 — the CSS aspect-ratio per band matches) */
+    /* the phone family's label-safe crops: lecture (right column),
+     * checkpoint, and the shared exam+library wide seat */
+    expect(rects).toContainEqual([690, 0, 460, 600]);
+    expect(rects).toContainEqual([690, 160, 460, 600]);
+    expect(rects).toContainEqual([403, 95, 500, 600]);
+    /* every rect inside the sheet */
     for (const [x, y, w, h] of rects) {
       expect(x).toBeGreaterThanOrEqual(0);
       expect(y).toBeGreaterThanOrEqual(0);
       expect(x + w).toBeLessThanOrEqual(PLAN_VB.w);
       expect(y + h).toBeLessThanOrEqual(PLAN_VB.h);
-      if (w !== PLAN_VB.w) {
-        const sheetFamily = Math.abs(w / h - PLAN_VB.w / PLAN_VB.h) < 0.01;
-        const phoneFamily = Math.abs(w / h - 460 / 600) < 0.01;
-        expect(sheetFamily || phoneFamily).toBe(true);
-      }
     }
-    /* the overview keys ride the PLAN_VB constants (never literals) */
+    /* the overview key rides the PLAN_VB constants (never literals);
+     * the terminus holds the label-safe mastery crop (R347 D6e) */
     expect(JOURNEY_SRC).toMatch(/const CAM_FULL: CamRect = \[0, 0, PLAN_VB\.w, PLAN_VB\.h\];/);
-    expect(JOURNEY_SRC).toMatch(/\[5\.52, CAM_FULL\]/);
+    expect(JOURNEY_SRC).toMatch(/\[5\.52, \[292, 172, 460, 588\]\]/);
+    /* the snap: camRectAt never interpolates (no lerp between keys) */
+    expect(JOURNEY_SRC).not.toContain('clamp01((t - t0) / (t1 - t0))');
   });
 
   it('the state machine: the measured pin windows + the 6-state flip + the ≤991 column clock', () => {
     /* Heron's measured scrub windows @1440 (map.md's trigger table):
-     * entrance 1465→2352 ⇒ −0.167→0 · sequence 1908→7495 ⇒
-     * −0.082→0.952 — the 5.52s movie. */
-    expect(JOURNEY_SRC).toMatch(/const ENTRANCE_START_PIN = -0\.167;/);
+     * sequence 1908→7495 ⇒ −0.082→0.952 — the 5.52s movie.
+     * R347 D6a re-key: the ENTRANCE window pin is retired with the
+     * drift (the descent parked the ghost stack one viewport above
+     * its seat — on top of the problems band — and its room labels
+     * fed the detector's pm-region text-on-text findings). */
+    expect(JOURNEY_SRC).not.toContain('ENTRANCE_START_PIN');
     expect(JOURNEY_SRC).toMatch(/const SEQ_START_PIN = -0\.082;/);
     expect(JOURNEY_SRC).toMatch(/const SEQ_END_PIN = 0\.952;/);
     expect(JOURNEY_SRC).toMatch(/const SEQ_DUR_S = 5\.52;/);
-    /* the six progressive layer windows — R325 (Y1) re-timing: the
-     * build RIDES the statement era (layer 1 at t 0.35, ~82px before
-     * pin engage @1440 — the intro runway ≤ 0.5 screens), then one
-     * per 0.5s step; the six complete by t 3.52 */
-    expect(JOURNEY_SRC).toMatch(/\[0\.35, 0\.85\],[^\n]*\n\s*\[1\.02, 1\.52\],[^\n]*\n\s*\[1\.52, 2\.02\],[^\n]*\n\s*\[2\.02, 2\.52\],[^\n]*\n\s*\[2\.52, 3\.02\],[^\n]*\n\s*\[3\.02, 3\.52\],/);
-    /* the GHOST floor (Y1): every layer rests at 18% line-work from
-     * frame one and ramps continuously to 1 — never from 0 */
-    expect(JOURNEY_SRC).toMatch(/const XL_GHOST = 0\.18;/);
+    /* R347 D6f re-key: the six layer windows + the XL_GHOST floor are
+     * retired — one consistent line weight; every layer stands at
+     * full ink from frame one (constant idempotent '1' writes). */
+    expect(JOURNEY_SRC).not.toContain('XL_GHOST');
+    expect(JOURNEY_SRC).not.toContain('LAYER_WINDOWS');
+    expect(JOURNEY_SRC).toMatch(
+      /for \(const group of resolveLayers\(track\)\) \{\s*\n\s*for \(const el of group\) setSheetVar\(el\.style, 'opacity', '1'\);/,
+    );
     /* the stage flip: the closing owns the scrub end (stage 5), the
      * statement/plan/card/findings/room eras cut at t 1.5/2.5/3.5/5 */
     expect(JOURNEY_SRC).toMatch(/pRaw >= SEQ_END_PIN\s*\?\s*5/);
@@ -296,29 +293,25 @@ describe('R312 mobile camera — the source contracts (R322 map override)', () =
     expect(JOURNEY_LIVE).not.toContain("'--jt-p'");
     expect(JOURNEY_LIVE).not.toContain('"--jt-p"');
     expect(JOURNEY_LIVE).not.toContain("'--wr-p'");
-    // R325 override (Y1 · the map intro clip): the R323 DISCRETE
-    // envelope branch retires — every layer now ramps CONTINUOUSLY
-    // from the GHOST floor (XL_GHOST 18%) to 1 inside its own window.
-    // The ghost is the DESIGNED resting state (the whole plan reads as
-    // faint line-work at progress 0 — the owner's «plan drawn from
-    // frame one») and the build is one crossfade, so the old tone-jump
-    // defect (a wall jumping pale-grey→black) cannot recur. The direct
-    // style.opacity write architecture is unchanged: still per-frame
-    // direct writes, zero custom properties.
+    // R347 D6f re-key: the ghost crossfade (XL_GHOST 0.18 → 1 per
+    // layer window) is retired — "the plan keeps one consistent line
+    // weight". The layers take one CONSTANT idempotent '1' write
+    // (direct style.opacity, zero custom properties — the perf
+    // architecture is unchanged); the CSS base is opacity: 1 for the
+    // pre-driver/no-JS frames.
     expect(JOURNEY_SRC).toMatch(
-      /const o = XL_GHOST \+ \(1 - XL_GHOST\) \* p2o\(\(t - a\) \/ \(b - a\)\);\s*\n\s*for \(const el of groups\[i\] \?\? \[\]\) \{\s*setSheetVar\(el\.style, 'opacity', o\.toFixed\(3\)\);\s*\}/,
+      /for \(const group of resolveLayers\(track\)\) \{\s*\n\s*for \(const el of group\) setSheetVar\(el\.style, 'opacity', '1'\);/,
     );
-    /* landing.css: the six crossfade groups are opacity-only roots
-     * with the will-change budget; the GHOST base (0.18, not 0) keeps
-     * the line-work standing for the pre-driver/no-JS frames; contain
-     * bounds the frame seats */
-    expect(LANDING_CSS).toMatch(/\.jt \.jt-plan \[data-xl\] \{\s*opacity: 0\.18;\s*will-change: opacity;\s*\}/);
+    /* landing.css: the six layer groups stand at full ink (R347 D6f:
+     * opacity 1 — one consistent line weight, never washed-out);
+     * contain bounds the frame seats */
+    expect(LANDING_CSS).toMatch(/\.jt \.jt-plan \[data-xl\] \{\s*opacity: 1;\s*\}/);
     expect(LANDING_CSS).toMatch(/\.jt-map-col \{[^}]*contain: layout paint;/);
     expect(LANDING_CSS).toMatch(/\.jt-close \{[^}]*contain: layout paint;/);
     /* the closing column's final geometry is RESERVED from stage 0
      * (Heron's exact 464px @1440 — the width flip is NOT transplanted) */
     expect(LANDING_CSS).toMatch(/\.jt-close \{[^}]*inline-size: clamp\(280px, 32\.3vw, 464px\);/);
-    /* the entrance drift rides a transform, never layout */
+    /* the window keeps its compositor hint (the camera age) */
     expect(LANDING_CSS).toMatch(/\.jt-window \{[^}]*will-change: transform;/);
   });
 
@@ -421,8 +414,11 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
     expect(document.querySelector<HTMLElement>('.jt')?.dataset.stage).toBe('5');
   });
 
-  it('mobile: the driver pans the ONE sheet through the finding timeline (the stubbed track)', async () => {
+  it('mobile: the driver snaps the ONE sheet through the finding timeline (the stubbed track)', async () => {
+    /* R347 D6e: the camera lives on the PHONE band now — the test
+     * mocks it (≤767) so the crop timeline is exercised. */
     mobileWanted = true;
+    phoneWanted = true;
     installMatchMedia();
     installGeometry();
     mountLanding();
@@ -448,8 +444,11 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
      * annotation window 3.02–3.52 closed at this t). */
     setScrollY(GEO.top + 0.5 * (GEO.trackH - GEO.winH));
     fireEvent.scroll(window);
+    /* R347 D6e re-key: the SNAP camera — t≈4.03 sits in the
+     * exam+library era's single wide crop (403 95 500 600; the
+     * label-safe seat verified against the drawing's inventory). */
     await waitFor(
-      () => expect(camSheet()?.viewBox).toBe('299 66 564 358'),
+      () => expect(camSheet()?.viewBox).toBe('403 95 500 600'),
       { timeout: 2000 },
     );
     const track = document.querySelector<HTMLElement>('.jt');
@@ -458,23 +457,25 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
     expect(track?.dataset.stage).toBe('3');
     expect(track?.dataset.finding).toBe('3');
     expect(track?.dataset.wash).toBe('exam');
-    /* R330 mobile clock: layer 6's annotation window (3.02–3.52) is
-     * closed at t≈4.03 — every layer stands at full ink. */
+    /* R347 D6f: every layer stands at full ink — always (the constant
+     * '1' writes; the annotation-era reveal rides the CSS era rules). */
     for (const xl of ['1', '2', '3', '4', '5']) {
       expect(parseFloat(document.querySelector<SVGGElement>(`.jt-plan [data-xl='${xl}']`)?.style.opacity ?? 'x')).toBeCloseTo(1, 2);
     }
     const layer6 = parseFloat(document.querySelector<SVGGElement>(".jt-plan [data-xl='6']")?.style.opacity ?? 'x');
     expect(layer6).toBeCloseTo(1, 2);
 
-    /* the release (p=1): the completed overview — the closing owns the
-     * end of the track (the 809px map-end dead band is dead) */
+    /* the release (p=1): the mastery terminus holds (R347 D6e — the
+     * goal room at the close; CAM_FULL letterboxed a 206px overview
+     * inside the full-height window) while the closing column owns
+     * the end of the track (the 809px map-end dead band is dead) */
     setScrollY(GEO.top + (GEO.trackH - GEO.winH));
     fireEvent.scroll(window);
     await waitFor(
       () => expect(document.querySelector<HTMLElement>('.jt')?.dataset.stage).toBe('5'),
       { timeout: 2000 },
     );
-    expect(camSheet()?.viewBox).toBe(`0 0 ${PLAN_VB.w} ${PLAN_VB.h}`);
+    expect(camSheet()?.viewBox).toBe('292 172 460 588');
     expect(document.querySelector<HTMLElement>('.jt-close')?.dataset.open).toBe('on');
   });
 
@@ -507,7 +508,9 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
   });
 
   it('the ≥992px crossing restores the full sheet exactly once', async () => {
+    /* R347 D6e: the phone band (the camera's home). */
     mobileWanted = true;
+    phoneWanted = true;
     installMatchMedia();
     installGeometry();
     mountLanding();
@@ -518,7 +521,7 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
     setScrollY(GEO.top + 0.5 * (GEO.trackH - GEO.winH));
     fireEvent.scroll(window);
     await waitFor(
-      () => expect(camSheet()?.viewBox).toBe('299 66 564 358'),
+      () => expect(camSheet()?.viewBox).toBe('403 95 500 600'),
       { timeout: 2000 },
     );
 
@@ -541,30 +544,27 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
     expect(camSheet()?.viewBox).toBe('1 2 3 4');
   });
 
-  it('desktop: the entrance descent rides a transform (never layout)', async () => {
+  it('desktop: the plan stack rests in the window (R347 D6a — the drift is dead)', async () => {
     installGeometry();
     mountLanding();
     await waitFor(() => expect(document.querySelector('.jt')).not.toBeNull(), { timeout: 2000 });
 
-    /* before the pin engages (p<0): the whole plan stack sits one
-     * viewport above its seat — the transform is live. R342-04: the
-     * drift seat is .jt-stack (the frozen spec's measured architecture
-     * — the window's chrome is static while the plan stack descends);
-     * the assertion itself is unchanged: the descent rides a
-     * transform, never layout. */
+    /* R347 D6a re-key: the entrance drift is retired. The descent
+     * parked the whole plan stack one viewport above its seat — on
+     * top of the problems band — where its SVG room labels fed the
+     * detector's pm-region text-on-text findings (and the paint-
+     * clipped ghosts still counted). The stack now rests IN the
+     * window from frame one: NO transform is ever written, at any
+     * pin progress. */
     setScrollY(GEO.top - window.innerHeight);
     fireEvent.scroll(window);
-    await waitFor(
-      () => expect(document.querySelector<HTMLElement>('.jt-stack')?.style.transform).toMatch(/translateY\(-\d+\.\dpx\)/),
-      { timeout: 2000 },
-    );
+    await new Promise((r) => setTimeout(r, 120));
+    expect(document.querySelector<HTMLElement>('.jt-stack')?.style.transform).toBe('');
 
-    /* inside the pin: the descent completes — translateY(0) */
+    /* inside the pin: still no transform — the seat never moves */
     setScrollY(GEO.top + 0.2 * (GEO.trackH - window.innerHeight));
     fireEvent.scroll(window);
-    await waitFor(
-      () => expect(document.querySelector<HTMLElement>('.jt-stack')?.style.transform).toBe('translateY(0.0px)'),
-      { timeout: 2000 },
-    );
+    await new Promise((r) => setTimeout(r, 120));
+    expect(document.querySelector<HTMLElement>('.jt-stack')?.style.transform).toBe('');
   });
 });

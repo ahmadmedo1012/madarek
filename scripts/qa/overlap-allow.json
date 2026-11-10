@@ -4,6 +4,10 @@
     {
       "match": "div.sheet-frame",
       "reason": "R313 D9 / R315 K-A4 — the page's own drafting frame: four 1px hairlines at the 7px viewport inset, aria-hidden, pointer-transparent (styles/shell/sheet-frame.css). It intersects ~95% of the viewport BY DESIGN (it is the border, not a cover) and paints no ink except the hairlines; the reference's own page frame is the same construction. Proven intentional: its 4 borders are the only children, border 1px, background transparent."
+    },
+    {
+      "match": "div.jt-map-in",
+      "reason": "R347 D6 (Lane B) — the journey map's STICKY WINDOW at ≤991: the plan column is its own scroll track (Heron's own mobile architecture — the map pins while the closing column scrolls past). It owns its full-width grid track, contains only its own children (statement band, plan window, findings card — all in flow, zero text-under-window findings after the R347 re-seat), and never paints over neighbouring content (the r312 e2e invariant sweep asserts the closing column is never covered). Proven intentional: position sticky inside .jt-map-col, the section's own track ladder."
     }
   ]
 }
