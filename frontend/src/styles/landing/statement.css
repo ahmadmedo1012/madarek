@@ -96,21 +96,9 @@
   block-size: 100%;
   object-fit: cover;
 }
-/* the tonal veil the reference draws as a filtered svg — ours is a
-   transparent-background svg whose rect carries the ink (the record's
-   own svg seat keeps backgroundColor rgba(0,0,0,0); the tone is the
-   svg's own paint, never a css background-color) */
-.st-media-tone {
-  position: absolute;
-  inset: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  background: transparent;
-}
-.st-media-tone-rect {
-  fill: currentColor;
-  opacity: 0.78;
-}
+/* R347 D1 — the retired photo veil's tone rules (.st-media-tone /
+   .st-media-tone-rect, no DOM counterpart since the R343 C-1 courtyard
+   illustration replaced the photograph) are deleted with the twins. */
 
 /* ═══ the statement cell ═══ */
 .st-stmt {
@@ -190,15 +178,16 @@
 /* the scrub lines: the spec's split-text line containers — block,
    full cell width, one word-box span per word (the words are
    ScrubReveal's .wr-w/.wr-i spans, off the pairable census).
-   R338 T-03i — the LINE PITCH law: the reference lays its 8 title lines
-   at its own 1.0×fs leading (4rem ≥992), while the Arabic floor keeps
-   the COMPUTED line-height at 1.35×fs (5.4rem) for the ascenders — so
-   the line boxes carry the spec's own pitch as an explicit block-size
-   and let the taller glyph boxes bleed (overflow visible): geometry
-   matches the frozen record AND the transformed lh expectation. */
+   R347 D1 — the LINE PITCH law is CORRECTED: the r338 hack pinned the
+   line boxes at the record's 1.0×fs pitch (4rem ≥992) while the Arabic
+   glyph boxes ride the computed 1.35×fs leading and bled over the next
+   line with overflow visible — words printed on top of words (detector
+   wr-i×wr-i ≥ 0.2 frac, 154 findings). The pitch now carries the
+   computed line-height at every band: zero glyph-box overlap, the
+   statement reads as one clean text. */
 .st-line {
   display: block;
-  block-size: 4rem;
+  block-size: 5.4rem;
 }
 
 /* R338 T-03c: the reference's line nest — line box + mask wrapper, one
@@ -558,7 +547,7 @@
   .st-section { margin-inline: 7.5px; }
   .st-stmt-in { padding: 2.4rem; }
   .st-title { font-size: 2.4rem; line-height: 3.24rem; }
-  .st-line { block-size: 2.525rem; }
+  .st-line { block-size: 3.24rem; } /* R347 D1 — pitch = computed lh (was the record's 2.525rem 1.05×fs hack; glyph boxes bled 0.7rem) */
   .st-titlebox { margin-block-end: 2.4rem; }
   .st-plabel { margin-inline-start: 2.4rem; }
   .st-crawl-cell { inline-size: 12.05rem; block-size: 7.7rem; } /* R342-02 — the measured 768 window cell (111px) and the ticker row's own band */
@@ -598,7 +587,7 @@
 
   .st-stmt-in { padding: 2.4rem 1.7rem; }
   .st-title { font-size: 2.4rem; line-height: 3.24rem; }
-  .st-line { block-size: 2.62rem; }
+  .st-line { block-size: 3.24rem; } /* R347 D1 — pitch = computed lh (was 2.62rem 1.09×fs; the diacritic stack collided) */
   .st-titlebox { margin-block-end: 1.92rem; }
   .st-pill-icons { --st-seat: 4.13rem; }
   .st-pill-t-in { line-height: 1.89rem; }

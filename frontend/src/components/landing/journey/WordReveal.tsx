@@ -115,17 +115,6 @@ interface ScrubRevealProps {
    */
   charCounts?: readonly number[];
   charSpec?: (globalWordIndex: number, charIndex: number) => string | undefined;
-  /**
-   * R343 A-I1 (intro window census): optional per-word ink-roll twin —
-   * the reference's split-text tween keeps a second masked copy of
-   * every word parked below the word cell (its recorded word-wrapper
-   * windows: the ghost-rest copies the census documents per bp). The
-   * twin is real tween plumbing (it rides the same --wr-k scrub as the
-   * fill, arriving as the ink roll), aria-hidden, and carries the
-   * caller's data-spec key so the mapping binds the reference's
-   * remaining word windows explicitly instead of excusing them.
-   */
-  twinSpec?: (globalWordIndex: number) => string | undefined;
 }
 
 /**
@@ -133,7 +122,7 @@ interface ScrubRevealProps {
  * `--wr-p` custom property (0..1); each word unmasks in sequence as
  * the progress passes its index.
  */
-export function ScrubReveal({ text, className, lines, renderLine, wordSpec, charCounts, charSpec, twinSpec }: ScrubRevealProps) {
+export function ScrubReveal({ text, className, lines, renderLine, wordSpec, charCounts, charSpec }: ScrubRevealProps) {
   const words = text.split(' ');
   const n = words.length;
   const run = (from: number, to: number) =>
@@ -154,12 +143,6 @@ export function ScrubReveal({ text, className, lines, renderLine, wordSpec, char
             {Array.from({ length: charCounts?.[gi] ?? 0 }, (_, m) => (
               <span key={`wr-c-${m}`} className="wr-c" aria-hidden="true" data-spec={charSpec?.(gi, m)} />
             ))}
-            {/* R343 A-I1 — the ink-roll twin: the reference's parked
-                second word copy, riding the same scrub (real motion,
-                never a count-only box) */}
-            {twinSpec?.(gi) ? (
-              <span className="wr-i2" aria-hidden="true" data-spec={twinSpec(gi)}>{w}</span>
-            ) : null}
           </span>
           {gi < words.length - 1 ? SPACE : null}
         </Fragment>
