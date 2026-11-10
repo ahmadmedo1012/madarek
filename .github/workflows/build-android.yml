@@ -201,6 +201,11 @@ jobs:
             echo 'reactNativeArchitectures=arm64-v8a,armeabi-v7a' >> "$GRADLE_PROPERTIES"
           fi
 
+          # prebuild can leave the last property without a trailing newline;
+          # appending directly would corrupt it (e.g. `[]org.gradle.caching=true`).
+          if [ -s "$GRADLE_PROPERTIES" ] && [ -n "$(tail -c 1 "$GRADLE_PROPERTIES")" ]; then
+            printf '\n' >> "$GRADLE_PROPERTIES"
+          fi
           grep -q '^org.gradle.caching=' "$GRADLE_PROPERTIES" || echo 'org.gradle.caching=true' >> "$GRADLE_PROPERTIES"
           grep -q '^org.gradle.parallel=' "$GRADLE_PROPERTIES" || echo 'org.gradle.parallel=true' >> "$GRADLE_PROPERTIES"
           grep -q '^android.enableMinifyInReleaseBuilds=' "$GRADLE_PROPERTIES" || echo 'android.enableMinifyInReleaseBuilds=true' >> "$GRADLE_PROPERTIES"
