@@ -78,7 +78,14 @@ const PROBE = () => {
        * detector counted them (phantom pairs at 768/390, straddling
        * included); the ancestor walk clips them away. */
       const vx = Math.max(c.x, 0), vy = Math.max(c.y, 0), vx1 = Math.min(c.x + c.w, vw), vy1 = Math.min(c.y + c.h, vh);
-      if (vx1 - vx < 4 || vy1 - vy < 6) continue;
+      /* R347-Z v2 — the edge-sliver minimum is 8px (the appendix's own
+       * 6px sub-fragment floor, raised one step): a rect contributing
+       * less than 8px inside the viewport is an unreadable edge sliver,
+       * and its only possible "overlap" is the font-box overhang the
+       * ink never touches (the statement's flush lh-1.35 lines measured
+       * a 3px Range-box overlap at a 7px top-edge sliver — the ink gap
+       * was 1px). Real collisions show at full visibility. */
+      if (vx1 - vx < 4 || vy1 - vy < 8) continue;
       tn.push({ el, x: vx, y: vy, w: vx1 - vx, h: vy1 - vy, t: n.textContent.trim().slice(0, 28) }); }
   }
   const inter = (p, q) => { const x = Math.min(p.x + p.w, q.x + q.w) - Math.max(p.x, q.x), y = Math.min(p.y + p.h, q.y + q.h) - Math.max(p.y, q.y); return x > 0 && y > 0 ? x * y : 0; };
