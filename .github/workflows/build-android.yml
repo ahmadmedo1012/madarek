@@ -215,6 +215,19 @@ jobs:
           cat "$GRADLE_PROPERTIES"
           echo "sdk.dir=$ANDROID_HOME"
 
+      - name: Compute the expected OTA runtime version
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          # The Gradle expo-updates plugin embeds this fingerprint-style
+          # runtime version in assets/fingerprint. EAS Update uses the same
+          # computation for the production branch, so an APK/OTA mismatch
+          # would silently strand installed builds.
+          EXPECTED_RUNTIME_VERSION=$(EXPO_UPDATES_CHANNEL=production npx expo-updates fingerprint:generate --platform android | jq -r .hash)
+          test "${#EXPECTED_RUNTIME_VERSION}" -eq 40
+          echo "EXPECTED_RUNTIME_VERSION=$EXPECTED_RUNTIME_VERSION" >> "$GITHUB_ENV"
+          echo "Expected OTA runtime version: $EXPECTED_RUNTIME_VERSION"
+
       - name: Configure Android release signing
         working-directory: apps/mobile
         env:
@@ -256,7 +269,14 @@ jobs:
               --min-sdk "$ANDROID_MIN_SDK" \
               --target-sdk "$ANDROID_TARGET_SDK" \
               --expected-signing-mode "$SIGNING_MODE" \
+              --expected-runtime-version "$EXPECTED_RUNTIME_VERSION" \
               | tee build/verify.log
+
+          ACTUAL_COMPILE_SDK=$(jq -r .compile_sdk build/verify.json)
+          if [ "$ACTUAL_COMPILE_SDK" != "$ANDROID_COMPILE_SDK" ]; then
+            echo "::error::APK compileSdk $ACTUAL_COMPILE_SDK does not match $ANDROID_COMPILE_SDK"
+            exit 1
+          fi
 
           if [ "$SIGNING_MODE" = "release" ]; then
             ACTUAL_CERT=$(jq -r .certificate_sha256 build/verify.json)
@@ -307,6 +327,7 @@ jobs:
             --arg npm "$(npm -v)" \
             --arg built_at "$BUILT_AT" \
             --arg updates_channel "${EXPO_UPDATES_CHANNEL:-}" \
+            --arg expected_runtime_version "${EXPECTED_RUNTIME_VERSION:?}" \
             '{
               platform: $platform,
               name: $name,
@@ -336,6 +357,7 @@ jobs:
               npm: $npm,
               built_at: $built_at,
               updates_channel: $updates_channel,
+              expected_runtime_version: $expected_runtime_version,
               verified: false
             }' > build/build-env.json
 
@@ -467,6 +489,7 @@ jobs:
             --target-sdk "$(jq -r .target_sdk candidate/build-info.json)" \
             --expected-architectures "$(jq -r '.architectures | join(",")' candidate/build-info.json)" \
             --expected-signing-mode "$SIGNING_MODE" \
+            --expected-runtime-version "$(jq -r .expected_runtime_version candidate/build-info.json)" \
             | tee candidate/verify.log
 
       - name: Cross-check metadata and publish the verified artifact
@@ -483,13 +506,26 @@ jobs:
           ACTUAL_CERT=$(jq -r .certificate_sha256 candidate/verify-rerun.json)
           test "$EXPECTED_CERT" = "$ACTUAL_CERT"
 
+          BUILD_RUNTIME=$(jq -r '.runtime_version // empty' candidate/build-info.json)
+          VERIFY_RUNTIME=$(jq -r '.runtime_version // empty' candidate/verify-rerun.json)
+          EXPECTED_RUNTIME=$(jq -r '.expected_runtime_version // empty' candidate/build-info.json)
+          test -n "$BUILD_RUNTIME"
+          test -n "$EXPECTED_RUNTIME"
+          test "$BUILD_RUNTIME" = "$VERIFY_RUNTIME"
+          test "$EXPECTED_RUNTIME" = "$VERIFY_RUNTIME"
+
+          BUILD_COMPILE_SDK=$(jq -r '.compile_sdk // empty' candidate/build-info.json)
+          VERIFY_COMPILE_SDK=$(jq -r '.compile_sdk // empty' candidate/verify-rerun.json)
+          test -n "$BUILD_COMPILE_SDK"
+          test "$BUILD_COMPILE_SDK" = "$VERIFY_COMPILE_SDK"
+
           jq -e \
             --arg apk_sha "$APK_SHA" \
             --arg aab_sha "$AAB_SHA" \
             --argjson apk_size "$APK_SIZE" \
             --argjson aab_size "$AAB_SIZE" \
             --arg signing_mode "$SIGNING_MODE" \
-            '.platform == "android" and .sha256 == $apk_sha and .size_bytes == $apk_size and .aab_sha256 == $aab_sha and .aab_size_bytes == $aab_size and .package == "ly.madarek.mobile" and .signing_mode == $signing_mode and .verified == false' \
+            '.platform == "android" and .sha256 == $apk_sha and .size_bytes == $apk_size and .aab_sha256 == $aab_sha and .aab_size_bytes == $aab_size and .package == "ly.madarek.mobile" and .signing_mode == $signing_mode and (.runtime_version | test("^[0-9a-f]{40}$")) and .compile_sdk == 37 and .verified == false' \
             candidate/build-info.json >/dev/null
 
           mkdir -p verified
@@ -538,6 +574,9 @@ jobs:
             echo "| APK SHA-256 | \`$(jq -r .sha256 verified/build-info.json)\` |"
             echo "| AAB SHA-256 | \`$(jq -r .aab_sha256 verified/build-info.json)\` |"
             echo "| ABIs | \`$(jq -r '.architectures|join(", ")' verified/build-info.json)\` |"
+            echo "| Compile SDK | \`$(jq -r .compile_sdk verified/build-info.json)\` |"
+            echo "| OTA runtime version | \`$(jq -r .runtime_version verified/build-info.json)\` |"
+            echo "| OTA channel | \`$(jq -r .updates_channel verified/build-info.json)\` |"
             echo "| Verified | $(jq -r .verified_at verified/build-info.json) |"
           } >> "$GITHUB_STEP_SUMMARY"
 

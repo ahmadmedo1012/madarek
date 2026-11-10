@@ -55,6 +55,11 @@ sets the same env var so its fingerprint matches the binary, while the preview
 publish step stays channel-free for EAS preview builds. The channel and runtime
 version are recorded in every `build-info.json`.
 
+The Android build also recomputes the fingerprint after Expo prebuild and passes
+it to the verifier; the APK's `assets/fingerprint` must match exactly. The
+independent verify job re-downloads the artifact and re-checks that runtime
+version, the compile SDK, and the build metadata before publishing.
+
 ## Verification
 
 The verifiers are committed and can be run locally:

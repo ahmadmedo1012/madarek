@@ -110,6 +110,7 @@ def parse_badging(output: str) -> dict:
 
     native_match = re.search(r"native-code: (.*)", output)
     native = re.findall(r"'([^']+)'", native_match.group(1)) if native_match else []
+    compile_sdk_match = re.search(r"compileSdkVersion='(\d+)'", output)
 
     return {
         "package": package,
@@ -117,9 +118,34 @@ def parse_badging(output: str) -> dict:
         "version": version,
         "min_sdk": int(min_sdk_match.group(1)),
         "target_sdk": int(target_sdk_match.group(1)),
+        "compile_sdk": int(compile_sdk_match.group(1)) if compile_sdk_match else None,
         "native_code": native,
         "debuggable": bool(re.search(r"^application-debuggable$", output, re.MULTILINE)),
     }
+
+
+def read_runtime_version(apk: Path) -> str:
+    """Read the expo-updates fingerprint embedded in the built APK.
+
+    For a fingerprint runtime policy, expo-updates stores the 40-hex runtime
+    version in assets/fingerprint. This is the value an OTA update must match.
+    """
+    try:
+        with zipfile.ZipFile(apk) as zf:
+            try:
+                raw = zf.read("assets/fingerprint")
+            except KeyError:
+                fail("APK is missing assets/fingerprint (expo-updates runtime version)")
+    except zipfile.BadZipFile as exc:
+        fail(f"APK is not a valid ZIP: {exc}")
+
+    try:
+        value = raw.decode("utf-8").strip()
+    except UnicodeDecodeError:
+        fail("assets/fingerprint is not valid UTF-8")
+    if not re.fullmatch(r"[0-9a-f]{40}", value):
+        fail(f"assets/fingerprint is not a 40-hex runtime version: {value!r}")
+    return value
 
 
 def parse_apksigner(output: str) -> dict:
@@ -245,6 +271,10 @@ def main() -> None:
     parser.add_argument("--min-sdk", type=int, default=24)
     parser.add_argument("--target-sdk", type=int, default=36)
     parser.add_argument(
+        "--expected-runtime-version",
+        help="Fail if assets/fingerprint differs from this expo-updates runtime version",
+    )
+    parser.add_argument(
         "--build-tools-version",
         default=os.environ.get("BUILD_TOOLS_VERSION", DEFAULT_BUILD_TOOLS),
     )
@@ -281,7 +311,8 @@ def main() -> None:
         "Badging:      "
         f"package={badging['package']} version={badging['version']} "
         f"({badging['version_code']}) minSdk={badging['min_sdk']} "
-        f"targetSdk={badging['target_sdk']} native={badging['native_code']}"
+        f"targetSdk={badging['target_sdk']} compileSdk={badging['compile_sdk']} "
+        f"native={badging['native_code']}"
     )
     if badging["package"] != args.expected_package:
         fail(f"unexpected package: {badging['package']}")
@@ -327,6 +358,13 @@ def main() -> None:
     ok("APK signature verifies (v2/v3)")
 
     inspect_apk_zip(apk, expected_abis)
+    runtime_version = read_runtime_version(apk)
+    print(f"Runtime:      {runtime_version}")
+    if args.expected_runtime_version and runtime_version != args.expected_runtime_version:
+        fail(
+            f"runtime version {runtime_version} does not match expected "
+            f"{args.expected_runtime_version}"
+        )
 
     aab_size = None
     aab_sha = None
@@ -352,6 +390,8 @@ def main() -> None:
         "version_code": badging["version_code"],
         "min_sdk": badging["min_sdk"],
         "target_sdk": badging["target_sdk"],
+        "compile_sdk": badging["compile_sdk"],
+        "runtime_version": runtime_version,
         "architectures": sorted(expected_abis),
         "native_code": badging["native_code"],
         "debuggable": badging["debuggable"],
@@ -378,6 +418,7 @@ def main() -> None:
         print(f"RESULT_AAB_SHA256={aab_sha}")
         print(f"RESULT_AAB_SIZE={aab_size}")
     print(f"RESULT_SIGNING_MODE={apksigner_info['signing_mode']}")
+    print(f"RESULT_RUNTIME_VERSION={runtime_version}")
 
 
 if __name__ == "__main__":
