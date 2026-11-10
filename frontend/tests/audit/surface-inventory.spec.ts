@@ -62,7 +62,7 @@
  * baselined student surfaces get the real fixture payloads (param
  * routes resolve to the transport's fixture IDs — see
  * MOCK_PARAM_DEFAULTS), and every unfixed endpoint answers 501
- * MOCK_NOT_IMPLEMENTED so unfixtured pages render their honest
+ * NOT_IMPLEMENTED so unfixtured pages render their honest
  * error/empty states. r293 settles the protocol: the COMMITTED
  * baseline is captured this way, because the CI drift job
  * re-captures in this exact mode on every push — a baseline promoted

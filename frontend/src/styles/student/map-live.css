@@ -171,6 +171,11 @@
   background: var(--neutral-900);
   margin-block: var(--sp-3);
 }
+/* R345 E1 — the embed frame's placeholder keeps the night rung in dark
+   (the pole-inversion cream frame broke the night page's ink identity). */
+[data-theme='dark'] .live-embed-frame {
+  background: var(--neutral-150);
+}
 .live-embed-frame iframe {
   position: absolute; inset: 0;
   width: 100%; height: 100%;

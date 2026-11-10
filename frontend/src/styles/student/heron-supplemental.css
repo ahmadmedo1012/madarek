@@ -133,6 +133,23 @@
   .r305a-strip .stat-value { color: var(--neutral-0); }
   .r305a-strip .stat-trend { color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900)); }
 
+  /* R345 E1 — the achievements KPI strip keeps the ink band on the
+     night rung in dark (the same pole-inversion fix as the foundation:
+     the cream strip broke the night page's ink identity). */
+  [data-theme='dark'] .r305a-strip .stat-strip {
+    background: var(--neutral-150);
+  }
+  [data-theme='dark'] .r305a-strip .stat-cell {
+    border-color: color-mix(in srgb, var(--neutral-800) 16%, transparent);
+  }
+  [data-theme='dark'] .r305a-strip .stat-label {
+    color: color-mix(in srgb, var(--neutral-800) 72%, var(--neutral-150));
+  }
+  [data-theme='dark'] .r305a-strip .stat-value { color: var(--neutral-800); }
+  [data-theme='dark'] .r305a-strip .stat-trend {
+    color: color-mix(in srgb, var(--neutral-800) 85%, var(--neutral-150));
+  }
+
   /* ── §3 · alerts — the de-boxed register (ROLE-NEUTRAL) ───────────
      The notification list leaves its card box: hairline rows on the
      page surface, classified by the shared kicker. One scope fix only —

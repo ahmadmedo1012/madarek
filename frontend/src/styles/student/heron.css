@@ -140,6 +140,32 @@
     color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
   }
 
+  /* R345 E1 — the deep band's DARK truth: the night page keeps its
+     ink identity. The documented pole-inversion (paper band on the
+     night ground) broke the dark dashboard — the E1 dark self-test
+     measured the cream band at 0.326 mean luminance (whole-page
+     fail). The band rides the elevated night rung + light ink; every
+     inner pole re-derives toward the band's own fg (the same mixes,
+     the night poles). Light theme untouched. */
+  [data-theme='dark'] .r305s-band--deep {
+    background: var(--neutral-150);
+    color: var(--neutral-800);
+    --text: var(--neutral-800);
+    --text-muted: color-mix(in srgb, var(--neutral-800) 72%, var(--neutral-150));
+    --text-faint: color-mix(in srgb, var(--neutral-800) 67%, var(--neutral-150));
+    --success-ink: color-mix(in srgb, var(--success) 62%, var(--neutral-800));
+    --warning-ink: color-mix(in srgb, var(--warning) 62%, var(--neutral-800));
+    --danger-ink: color-mix(in srgb, var(--danger) 62%, var(--neutral-800));
+    --accent-ink: color-mix(in srgb, var(--accent) 62%, var(--neutral-800));
+  }
+  [data-theme='dark'] .r305s-band--deep .r305s-eyebrow {
+    color: color-mix(in srgb, var(--neutral-800) 72%, var(--neutral-150));
+  }
+  [data-theme='dark'] .r305s-band--deep .r305s-eyebrow::before { background: var(--neutral-500); }
+  [data-theme='dark'] .r305s-band--deep .r305s-band-secondary {
+    color: color-mix(in srgb, var(--neutral-800) 85%, var(--neutral-150));
+  }
+
   /* ── 4 · Metadata + status chips ──────────────────────────────────
      One chip anatomy: quiet well, 13px, 44px-safe when interactive.
      Tone variants color ONLY their dot/ink from semantic state tokens;

@@ -18,7 +18,7 @@
  *     axios + unwrap() behave exactly as against the live backend;
  *   - /auth/login and /auth/me are DYNAMIC (the transport owns the
  *     session; a successful login flips it, like the live backend);
- *   - every unmatched /api/** call answers 501 MOCK_NOT_IMPLEMENTED —
+ *   - every unmatched /api/** call answers 501 NOT_IMPLEMENTED —
  *     a missing fixture is loud, never a silent success.
  *
  * QA-specific extension: a route def may carry `delayMs` — the
@@ -459,7 +459,7 @@ export async function installQaApi(
     await fulfillJson(
       route,
       501,
-      fail('MOCK_NOT_IMPLEMENTED', `qa transport has no fixture for ${method} ${url.pathname}`),
+      fail('NOT_IMPLEMENTED', `qa transport has no fixture for ${method} ${url.pathname}`),
     );
   });
 }

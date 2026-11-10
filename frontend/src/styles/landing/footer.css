@@ -684,7 +684,7 @@
      «التخزين المحلي» × «100%», «تطبيق الجوال» × «09 / 09»). The row keeps
      Heron's full-sheet law but reserves the chrome's measured 66px corner
      band on the inline end — link ink now starts ≥ x74. */
-  .fo-legal-row { inline-size: auto; justify-content: space-between; row-gap: 0; padding-inline-end: 66px; }
+  .fo-legal-row { inline-size: auto; justify-content: space-between; row-gap: 15px; padding-inline-end: 66px; }
 }
 
 /* L2-c (R341 panel-1 finding 3) — the 768 social un-crush, seated AFTER the

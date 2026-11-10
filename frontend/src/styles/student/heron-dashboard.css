@@ -81,6 +81,31 @@
      the .momentum-ring .ring-* rules) — deleted with their RM belt
      arms. */
 
+  /* R345 E1 — the hero deep band's DARK truth (the E1 dark self-test
+     caught the cream pole-inversion at 0.326 mean luminance): the
+     night dashboard keeps the ink band on the elevated night rung,
+     the copper rail survives, every inner pole re-derives toward the
+     band's light fg. Light theme untouched. */
+  [data-theme='dark'] .dash-resume-card.dash-hero-deep {
+    background: var(--neutral-150);
+    color: var(--neutral-800);
+    border-inline-start: 3px solid var(--accent);
+  }
+  [data-theme='dark'] .dash-hero-deep .dash-resume-course-name {
+    color: var(--neutral-800);
+  }
+  [data-theme='dark'] .dash-hero-deep .dash-resume-eyebrow {
+    color: color-mix(in srgb, var(--neutral-800) 72%, var(--neutral-150));
+  }
+  [data-theme='dark'] .dash-hero-deep .dash-resume-eyebrow::before {
+    background: var(--neutral-500);
+  }
+  [data-theme='dark'] .dash-hero-deep .dash-resume-lecture,
+  [data-theme='dark'] .dash-hero-deep .dash-resume-side-note,
+  [data-theme='dark'] .dash-hero-deep .dash-resume-side-note .font-mono {
+    color: color-mix(in srgb, var(--neutral-800) 85%, var(--neutral-150));
+  }
+
   /* ── 2 · ScheduleStrip harmonics (r341 D7a) ──────────────
      The §B2 swap retired the .r305s-kicker wrap refinement that lived
      here (zero seats — the sections render .r319s-bar now). In its

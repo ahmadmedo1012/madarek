@@ -1,0 +1,11 @@
+import { createRequire } from "node:module";
+import path from "node:path";
+const ROOT = path.resolve(import.meta.dirname, "..", "..");
+const { chromium } = createRequire(path.join(ROOT, "frontend", "package.json"))("playwright");
+const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
+await p.goto("https://heronaiapp.com/", { waitUntil: "networkidle", timeout: 90000 });
+await p.waitForTimeout(8000);
+const links = await p.evaluate(() => [...new Set([...document.querySelectorAll("a[href]")].map((a) => a.getAttribute("href")).filter((h) => h && !h.startsWith("#") && !h.startsWith("mailto")))].slice(0, 30));
+console.log(JSON.stringify(links));
+await b.close();

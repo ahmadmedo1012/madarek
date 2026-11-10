@@ -17,7 +17,7 @@
  *   - the login endpoint is DYNAMIC (success / 401 INVALID_CREDENTIALS
  *     / 429 TOO_MANY_REQUESTS lockout) and flips the transport's
  *     session role, so /auth/me answers for whoever just logged in;
- *   - every unmatched /api/** call answers 501 MOCK_NOT_IMPLEMENTED
+ *   - every unmatched /api/** call answers 501 NOT_IMPLEMENTED
  *     with a console line — a missing fixture is loud, never a silent
  *     success (the tests assert real rendered content, so a missing
  *     payload fails visibly rather than passing vacuously).
@@ -303,7 +303,7 @@ export async function installMockApi(
     await fulfillJson(
       route,
       501,
-      fail('MOCK_NOT_IMPLEMENTED', `mock transport has no fixture for ${method} ${url.pathname}`),
+      fail('NOT_IMPLEMENTED', `mock transport has no fixture for ${method} ${url.pathname}`),
     );
   });
 }
