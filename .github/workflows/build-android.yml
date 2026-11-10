@@ -93,13 +93,40 @@ jobs:
       - name: Set up Gradle caching
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Configure the preinstalled Android SDK
+        # The runner image already ships the SDK + cmdline-tools. Avoid
+        # android-actions/setup-android v3 here: its license step hangs/fails
+        # with the current cmdline-tools, and our next step accepts licenses
+        # non-interactively before installing the exact packages we need.
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          if [ ! -d "$SDK_ROOT" ]; then
+            for candidate in "$HOME/Android/Sdk" /opt/android-sdk /usr/lib/android-sdk; do
+              if [ -d "$candidate" ]; then SDK_ROOT="$candidate"; break; fi
+            done
+          fi
+          test -d "$SDK_ROOT" || { echo "::error::Android SDK not found"; exit 1; }
+
+          SDKMANAGER=""
+          for dir in "$SDK_ROOT"/cmdline-tools/*/bin; do
+            if [ -x "$dir/sdkmanager" ]; then SDKMANAGER="$dir/sdkmanager"; break; fi
+          done
+          test -n "$SDKMANAGER" || { echo "::error::sdkmanager not found under $SDK_ROOT"; exit 1; }
+
+          SDKMANAGER_DIR=$(dirname "$SDKMANAGER")
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "$SDKMANAGER_DIR" >> "$GITHUB_PATH"
+          echo "$SDK_ROOT/platform-tools" >> "$GITHUB_PATH"
+          export PATH="$SDKMANAGER_DIR:$SDK_ROOT/platform-tools:$PATH"
+          command -v sdkmanager
+          sdkmanager --version
 
       - name: Install Android SDK packages
         run: |
           set -euo pipefail
-          : "${ANDROID_HOME:?ANDROID_HOME is not set by setup-android}"
+          : "${ANDROID_HOME:?ANDROID_HOME is not set}"
           # yes can receive SIGPIPE when sdkmanager exits; the license state is
           # still persisted, so don't fail the step on that harmless signal.
           set +o pipefail
@@ -373,13 +400,40 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Configure the preinstalled Android SDK
+        # The runner image already ships the SDK + cmdline-tools. Avoid
+        # android-actions/setup-android v3 here: its license step hangs/fails
+        # with the current cmdline-tools, and our next step accepts licenses
+        # non-interactively before installing the exact packages we need.
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          if [ ! -d "$SDK_ROOT" ]; then
+            for candidate in "$HOME/Android/Sdk" /opt/android-sdk /usr/lib/android-sdk; do
+              if [ -d "$candidate" ]; then SDK_ROOT="$candidate"; break; fi
+            done
+          fi
+          test -d "$SDK_ROOT" || { echo "::error::Android SDK not found"; exit 1; }
+
+          SDKMANAGER=""
+          for dir in "$SDK_ROOT"/cmdline-tools/*/bin; do
+            if [ -x "$dir/sdkmanager" ]; then SDKMANAGER="$dir/sdkmanager"; break; fi
+          done
+          test -n "$SDKMANAGER" || { echo "::error::sdkmanager not found under $SDK_ROOT"; exit 1; }
+
+          SDKMANAGER_DIR=$(dirname "$SDKMANAGER")
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "$SDKMANAGER_DIR" >> "$GITHUB_PATH"
+          echo "$SDK_ROOT/platform-tools" >> "$GITHUB_PATH"
+          export PATH="$SDKMANAGER_DIR:$SDK_ROOT/platform-tools:$PATH"
+          command -v sdkmanager
+          sdkmanager --version
 
       - name: Install build-tools for verification
         run: |
           set -euo pipefail
-          : "${ANDROID_HOME:?ANDROID_HOME is not set by setup-android}"
+          : "${ANDROID_HOME:?ANDROID_HOME is not set}"
           set +o pipefail
           yes | sdkmanager --sdk_root="$ANDROID_HOME" --licenses >/dev/null || true
           set -o pipefail
