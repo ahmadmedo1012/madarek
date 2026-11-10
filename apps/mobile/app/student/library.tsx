@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/pressables";
 import { SearchBar, Segmented } from "@/components/ui/fields";
 import { Avatar, DataList, LedgerRow, makeRow, usePagedList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { Illustration } from "@/components/Illustration";
 import { FilterSheet } from "@/components/ui/sheet";
 import { toast } from "@/components/ui/toast";
 import { haptics } from "@/haptics";
@@ -356,6 +357,7 @@ function BooksTab() {
         onRetryLoadMore={books.retryLoadMore}
         emptySlot={
           <EmptyState
+            art={<Illustration id="r342/journey-library" width={240} />}
             room="library"
             title={debouncedQ || availability !== "all" ? "لا توجد كتب مطابقة" : "لا توجد ملفات"}
             message={

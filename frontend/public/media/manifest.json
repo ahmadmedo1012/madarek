@@ -1,1256 +1,910 @@
 {
- "version": 1,
- "generatedFor": "R307 — Madarek complete experience upgrade",
- "generatedAt": "2026-10-22",
- "policy": {
-  "ar": "كل صورة الجامعات مرخّصة من ويكيميديا كومنز (PD / CC BY / CC BY-SA) مع نسب المصوّر والمصدر؛ الفيديوهات تُضمَّن من القناة الرسمية للجامعة عبر آلية التضمين المسموحة (youtube-nocookie) وتُحمَّل فقط بعد نقر المستخدم؛ لقطات المنتج من بيئة عرض محليّة ببيانات تجريبية اصطناعية بالكامل — لا بيانات شخصية حقيقية. ظهور جامعة في الوسائط لا يعني تبنّيًا أو شراكة رسمية.",
-  "en": "University photos are Commons-licensed (PD / CC BY / CC BY-SA) with per-image attribution; videos embed from official university channels via the permitted youtube-nocookie mechanism, click-to-load only; product captures come from a local seeded demo environment (fully synthetic data). Media presence does not imply institutional endorsement.",
-  "r343": "The Wikimedia photo programme is retired on the web (original cards + r342 illustrations); product plates are re-captured from the real components; provenance for every remaining byte stays in this manifest."
- },
- "derivativePipeline": "scripts/media/build-media-derivatives.mjs (ffmpeg + libwebp, zero repo dependencies)",
- "photos": [
-  {
-   "id": "uob-wide",
-   "type": "photo",
-   "slot": "hero-lead",
-   "institution": "جامعة بنغازي",
-   "nameAr": "مقر إدارة جامعة بنغازي",
-   "captionAr": "واجهة الإدارة المركزية بالقبّة — تصوير بانورامي",
-   "altAr": "مقر إدارة جامعة بنغازي — واجهة الإدارة المركزية بالقبّة — تصوير بانورامي",
-   "objectPosition": "50% 45%",
-   "sizesAttr": "(min-width: 992px) 46rem, 100vw",
-   "assets": {
-    "480": "/media/universities/uob-wide-480.webp",
-    "800": "/media/universities/uob-wide-800.webp",
-    "1200": "/media/universities/uob-wide-1200.webp",
-    "1600": "/media/universities/uob-wide-1600.webp"
-   },
-   "intrinsic": [
-    2689,
-    827
-   ],
-   "derivativeWidths": [
-    800
-   ],
-   "source": {
-    "institution": "جامعة بنغازي",
-    "page": "https://commons.wikimedia.org/wiki/File:University_of_Benghazi_(cropped).jpg",
-    "file": "https://upload.wikimedia.org/wikipedia/commons/e/e9/University_of_Benghazi_%28cropped%29.jpg",
-    "author": "WisiW",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "description": "بانوراما لمقر إدارة جامعة بنغازي",
-    "commonsCategories": "Garyounis University|Self-published work|Extracted images"
-   },
-   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
-   "verifiedByPrincipal": true,
-   "verifiedAt": "2026-10-22",
-   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUniversity%20of%20Benghazi%20(cropped).jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
-   "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
-  },
-  {
-   "id": "uob-science",
-   "type": "photo",
-   "slot": "hero-mid",
-   "institution": "جامعة بنغازي",
-   "nameAr": "كلية العلوم — جامعة بنغازي",
-   "captionAr": "واجهة كلية العلوم بهندسة متكرّرة",
-   "altAr": "كلية العلوم — جامعة بنغازي — واجهة كلية العلوم بهندسة متكرّرة",
-   "objectPosition": "50% 50%",
-   "sizesAttr": "(min-width: 992px) 24rem, 100vw",
-   "assets": {
-    "480": "/media/universities/uob-science-480.webp",
-    "800": "/media/universities/uob-science-800.webp",
-    "1200": "/media/universities/uob-science-1200.webp"
-   },
-   "intrinsic": [
-    4000,
-    3000
-   ],
-   "derivativeWidths": [
-    800
-   ],
-   "source": {
-    "institution": "جامعة بنغازي",
-    "page": "https://commons.wikimedia.org/wiki/File:UoB_1.jpg",
-    "file": "https://upload.wikimedia.org/wikipedia/commons/7/7e/UoB_1.jpg",
-    "author": "WisiW",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "description": "مبنى كلية العلوم",
-    "commonsCategories": "Garyounis University|Self-published work"
-   },
-   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
-   "verifiedByPrincipal": true,
-   "verifiedAt": "2026-10-22",
-   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUoB%201.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
-   "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
-  },
-  {
-   "id": "tripoli-science",
-   "type": "photo",
-   "slot": "hero-portrait",
-   "institution": "جامعة طرابلس",
-   "nameAr": "كلية العلوم — جامعة طرابلس",
-   "captionAr": "مبنى كلية العلوم من داخل الحرم",
-   "altAr": "كلية العلوم — جامعة طرابلس — مبنى كلية العلوم من داخل الحرم",
-   "objectPosition": "50% 40%",
-   "sizesAttr": "(min-width: 992px) 18rem, 60vw",
-   "assets": {
-    "480": "/media/universities/tripoli-science-480.webp",
-    "800": "/media/universities/tripoli-science-800.webp",
-    "1000": "/media/universities/tripoli-science-1000.webp"
-   },
-   "intrinsic": [
-    3024,
-    4032
-   ],
-   "derivativeWidths": [
-    800
-   ],
-   "source": {
-    "institution": "جامعة طرابلس",
-    "page": "https://commons.wikimedia.org/wiki/File:مبنى_في_جامعة_طرابلس.jpg",
-    "file": "https://upload.wikimedia.org/wikipedia/commons/c/cf/%D9%85%D8%A8%D9%86%D9%89_%D9%81%D9%8A_%D8%AC%D8%A7%D9%85%D8%B9%D8%A9_%D8%B7%D8%B1%D8%A7%D8%A8%D9%84%D8%B3.jpg",
-    "author": "Atoo77",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "description": "من داخل جامعة طرابلس كلية العلوم",
-    "commonsCategories": "Creative Commons Attribution-Share Alike missing SDC copyright status|Self-published work|Creative Commons Attribution-S"
-   },
-   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
-   "verifiedByPrincipal": true,
-   "verifiedAt": "2026-10-22",
-   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3Aمبنى%20في%20جامعة%20طرابلس.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
-   "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
-  },
-  {
-   "id": "uob-garden",
-   "type": "photo",
-   "slot": "rail-panorama",
-   "institution": "جامعة بنغازي",
-   "nameAr": "حديقة الجامعة — جامعة بنغازي",
-   "captionAr": "جادة الحديقة بخطّ النخيل",
-   "altAr": "حديقة الجامعة — جامعة بنغازي — جادة الحديقة بخطّ النخيل",
-   "objectPosition": "50% 50%",
-   "sizesAttr": "(min-width: 992px) 72rem, 100vw",
-   "assets": {
-    "800": "/media/universities/uob-garden-800.webp",
-    "1200": "/media/universities/uob-garden-1200.webp",
-    "1600": "/media/universities/uob-garden-1600.webp"
-   },
-   "intrinsic": [
-    4912,
-    1080
-   ],
-   "derivativeWidths": [
-    800
-   ],
-   "source": {
-    "institution": "جامعة بنغازي",
-    "page": "https://commons.wikimedia.org/wiki/File:University_of_Benghazi_2.jpg",
-    "file": "https://upload.wikimedia.org/wikipedia/commons/a/a3/University_of_Benghazi_2.jpg",
-    "author": "WisiW",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "description": "صورة بانورامية لحديقة الجامعة",
-    "commonsCategories": "Garyounis University|Self-published work"
-   },
-   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
-   "verifiedByPrincipal": true,
-   "verifiedAt": "2026-10-22",
-   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUniversity%20of%20Benghazi%202.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
-   "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
-  },
-  {
-   "id": "garyounis-classic",
-   "type": "photo",
-   "slot": "rail-large",
-   "institution": "جامعة بنغازي (قاريونس)",
-   "nameAr": "حرم جامعة بنغازي — قاريونس",
-   "captionAr": "منظر جوّي للحرم الجامعي",
-   "altAr": "حرم جامعة بنغازي — قاريونس — منظر جوّي للحرم الجامعي",
-   "objectPosition": "50% 40%",
-   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
-   "assets": {
-    "480": "/media/universities/garyounis-classic-480.webp",
-    "800": "/media/universities/garyounis-classic-800.webp",
-    "1200": "/media/universities/garyounis-classic-1200.webp"
-   },
-   "intrinsic": [
-    1509,
-    1275
-   ],
-   "derivativeWidths": [
-    800
-   ],
-   "source": {
-    "institution": "جامعة بنغازي (قاريونس)",
-    "page": "https://commons.wikimedia.org/wiki/File:Garyounis_University.jpg",
-    "file": "https://upload.wikimedia.org/wikipedia/commons/5/55/Garyounis_University.jpg",
-    "author": "Munsha'at al Akhdar lil Alwan, Benghazi.",
-    "license": "Public domain",
-    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "description": "Garyounis University, Benghazi, Libya.",
-    "commonsCategories": "Garyounis University|PD-Libya|PD-old missing SDC copyright status"
-   },
-   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
-   "verifiedByPrincipal": true,
-   "verifiedAt": "2026-10-22",
-   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AGaryounis%20University.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
-   "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
-  },
-  {
-   "id": "garyounis-1",
-   "type": "photo",
-   "slot": "rail-std",
-   "institution": "جامعة بنغازي (قاريونس)",
-   "nameAr": "بوابة الحرم — قاريونس",
-   "captionAr": "مدخل الحرم الجامعي",
-   "altAr": "بوابة الحرم — قاريونس — مدخل الحرم الجامعي",
-   "objectPosition": "50% 45%",
-   "sizesAttr": "(min-width: 992px) 26rem, 100vw",
-   "assets": {
-    "480": "/media/universities/garyounis-1-480.webp",
-    "800": "/media/universities/garyounis-1-800.webp",
-    "1200": "/media/universities/garyounis-1-1200.webp"
-   },
-   "intrinsic": [
-    3648,
-    2736
-   ],
-   "derivativeWidths": [
-    800
-   ],
-   "source": {
-    "institution": "جامعة بنغازي (قاريونس)",
-    "page": "https://commons.wikimedia.org/wiki/File:Garyounis_university1.JPG",
-    "file": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Garyounis_university1.JPG",
-    "author": "Maher A. A. Abdussalam",
-    "license": "Public domain",
-    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "description": "Garyounis University in Benghazi, Libya.",
-    "commonsCategories": "Taken with Sony DSC-S2000|Garyounis University|Self-published work|PD-self|2010 in Benghazi"
-   },
-   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
-   "verifiedByPrincipal": true,
-   "verifiedAt": "2026-10-22",
-   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AGaryounis%20university1.JPG&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
-   "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
-  },
-  {
-   "id": "omu-agri",
-   "type": "photo",
-   "slot": "rail-std",
-   "institution": "جامعة عمر المختار",
-   "nameAr": "كلية الزراعة — جامعة عمر المختار (البيضاء)",
-   "captionAr": "مجمّع الكلية بطرازه المعماري",
-   "altAr": "كلية الزراعة — جامعة عمر المختار (البيضاء) — مجمّع الكلية بطرازه المعماري",
-   "objectPosition": "50% 45%",
-   "sizesAttr": "(min-width: 992px) 26rem, 100vw",
-   "assets": {
-    "480": "/media/universities/omu-agri-480.webp",
-    "800": "/media/universities/omu-agri-800.webp",
-    "1200": "/media/universities/omu-agri-1200.webp"
-   },
-   "intrinsic": [
-    1310,
-    908
-   ],
-   "derivativeWidths": [
-    800
-   ],
-   "source": {
-    "institution": "جامعة عمر المختار",
-    "page": "https://commons.wikimedia.org/wiki/File:Faculty_of_Agriculture,_Al_Bayda.jpg",
-    "file": "https://upload.wikimedia.org/wikipedia/commons/1/12/Faculty_of_Agriculture%2C_Al_Bayda.jpg",
-    "author": "Munsha'at al Akhdar lil Alwan, Benghazi.",
-    "license": "Public domain",
-    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "description": "Faculty of Agriculture, Al Bayda.",
-    "commonsCategories": "Omar Al-Mukhtar University|PD-Libya|PD-old missing SDC copyright status"
-   },
-   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
-   "verifiedByPrincipal": true,
-   "verifiedAt": "2026-10-22",
-   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AFaculty%20of%20Agriculture,%20Al%20Bayda.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
-   "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
-  },
-  {
-   "id": "fateh-science",
-   "type": "photo",
-   "slot": "rail-std",
-   "institution": "جامعة طرابلس",
-   "nameAr": "ممرّ كلية العلوم — جامعة طرابلس",
-   "captionAr": "ممرّ داخلي في كلية العلوم",
-   "altAr": "ممرّ كلية العلوم — جامعة طرابلس — ممرّ داخلي في كلية العلوم",
-   "objectPosition": "50% 40%",
-   "sizesAttr": "(min-width: 992px) 26rem, 100vw",
-   "assets": {
-    "480": "/media/universities/fateh-science-480.webp",
-    "800": "/media/universities/fateh-science-800.webp",
-    "1200": "/media/universities/fateh-science-1200.webp"
-   },
-   "intrinsic": [
-    1280,
-    960
-   ],
-   "derivativeWidths": [
-    800
-   ],
-   "source": {
-    "institution": "جامعة طرابلس",
-    "page": "https://commons.wikimedia.org/wiki/File:Al_Fateh_University_Faculty_of_Science.jpg",
-    "file": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Al_Fateh_University_Faculty_of_Science.jpg",
-    "author": "Tarek Siala from Tripoli, Libya",
-    "license": "CC BY 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
-    "description": "El Fateh Univirsity - Faculty of Science, near Computer Department, Tripoli.",
-    "commonsCategories": "Flickr images reviewed by FlickreviewR|Taken with Nokia N70|Photographs by Tarek Siala|Higher education institutions in "
-   },
-   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
-   "verifiedByPrincipal": true,
-   "verifiedAt": "2026-10-22",
-   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AAl%20Fateh%20University%20Faculty%20of%20Science.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
-   "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
-  },
-  {
-   "id": "uob",
-   "type": "photo",
-   "slot": "rail-detail",
-   "institution": "جامعة بنغازي",
-   "nameAr": "مبنى الإدارة — جامعة بنغازي",
-   "captionAr": "تفصيلة معمارية من مبنى الإدارة",
-   "altAr": "مبنى الإدارة — جامعة بنغازي — تفصيلة معمارية من مبنى الإدارة",
-   "objectPosition": "50% 35%",
-   "sizesAttr": "(min-width: 992px) 26rem, 100vw",
-   "assets": {
-    "480": "/media/universities/uob-480.webp",
-    "800": "/media/universities/uob-800.webp",
-    "1200": "/media/universities/uob-1200.webp",
-    "1600": "/media/universities/uob-1600.webp"
-   },
-   "intrinsic": [
-    4000,
-    3000
-   ],
-   "derivativeWidths": [
-    800
-   ],
-   "source": {
-    "institution": "جامعة بنغازي",
-    "page": "https://commons.wikimedia.org/wiki/File:UoB.jpg",
-    "file": "https://upload.wikimedia.org/wikipedia/commons/5/59/UoB.jpg",
-    "author": "WisiW",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "description": "صورة جانبية لمبنى إدارة الجامعة",
-    "commonsCategories": "Garyounis University|Self-published work"
-   },
-   "changes": "resized and re-encoded to WebP (lanczos, quality 64-78) from the Commons 1600px rendition",
-   "verifiedByPrincipal": true,
-   "verifiedAt": "2026-10-22",
-   "verificationCommand": "curl 'https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AUoB.jpg&prop=imageinfo&iiprop=url%7Csize%7Cextmetadata&format=json'",
-   "note": "R343: the web seats render the ORIGINAL university card (see cards[]); this -800 rendition serves the shipped mobile campus page until the Phase F port."
-  }
- ],
- "products": [
-  {
-   "id": "student-dashboard",
-   "type": "product-capture",
-   "slot": "product",
-   "titleAr": "لوحة الطالب",
-   "captionAr": "نظرة الطالب على يومه: جدول اليوم، المهام، والتقدّم",
-   "altAr": "لوحة الطالب — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
-   "assets": {
-    "720": "/media/product/student-dashboard-720.webp",
-    "1280": "/media/product/student-dashboard-1280.webp"
-   },
-   "intrinsic": [
-    1280,
-    800
-   ],
-   "derivativeWidths": [
-    1280,
-    720
-   ],
-   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
-   "source": {
-    "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
-    "capturedAt": "2026-11-09",
-    "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
-    "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
-    "checksums": {
-     "720": "cdf94195f3fd0120",
-     "1280": "beee52786419cdc7"
-    },
-    "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
-   },
-   "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
-   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
-   "verifiedAt": "2026-10-22"
-  },
-  {
-   "id": "student-library",
-   "type": "product-capture",
-   "slot": "product",
-   "titleAr": "المكتبة الإلكترونية",
-   "captionAr": "بحث عربي وفهرس وتصفح الكتب والبحوث",
-   "altAr": "المكتبة الإلكترونية — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
-   "assets": {
-    "720": "/media/product/student-library-720.webp",
-    "1280": "/media/product/student-library-1280.webp"
-   },
-   "intrinsic": [
-    1280,
-    800
-   ],
-   "derivativeWidths": [
-    1280,
-    720
-   ],
-   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
-   "source": {
-    "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
-    "capturedAt": "2026-11-09",
-    "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
-    "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
-    "checksums": {
-     "720": "7f4b9124a1d9ab52",
-     "1280": "c5dea663f08d4258"
-    },
-    "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
-   },
-   "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
-   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
-   "verifiedAt": "2026-10-22"
-  },
-  {
-   "id": "student-lecture-player",
-   "type": "product-capture",
-   "slot": "product",
-   "titleAr": "المحاضرة التفاعلية",
-   "captionAr": "مشغّل المحاضرة مع نقطة فحص تُصحَّب فورًا",
-   "altAr": "المحاضرة التفاعلية — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
-   "assets": {
-    "720": "/media/product/student-lecture-player-720.webp",
-    "1280": "/media/product/student-lecture-player-1280.webp"
-   },
-   "intrinsic": [
-    1280,
-    800
-   ],
-   "derivativeWidths": [
-    1280,
-    720
-   ],
-   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
-   "source": {
-    "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
-    "capturedAt": "2026-11-09",
-    "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
-    "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
-    "checksums": {
-     "720": "1536de1b2e882aaa",
-     "1280": "de0d86913159142e"
-    },
-    "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
-   },
-   "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
-   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
-   "verifiedAt": "2026-10-22"
-  },
-  {
-   "id": "student-matrix",
-   "type": "product-capture",
-   "slot": "product",
-   "titleAr": "مصفوفة الإتقان",
-   "captionAr": "درجة إتقان لكل مفهوم وربطها بالدرس المناسب",
-   "altAr": "مصفوفة الإتقان — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
-   "assets": {
-    "720": "/media/product/student-matrix-720.webp",
-    "1280": "/media/product/student-matrix-1280.webp"
-   },
-   "intrinsic": [
-    1280,
-    800
-   ],
-   "derivativeWidths": [
-    1280,
-    720
-   ],
-   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
-   "source": {
-    "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
-    "capturedAt": "2026-11-09",
-    "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
-    "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
-    "checksums": {
-     "720": "9f10e07cd70dc50d",
-     "1280": "549e4e63e72db718"
-    },
-    "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
-   },
-   "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
-   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
-   "verifiedAt": "2026-10-22"
-  },
-  {
-   "id": "teacher-dashboard",
-   "type": "product-capture",
-   "slot": "role",
-   "titleAr": "لوحة الأستاذ",
-   "captionAr": "متابعة الأقسام والطلاب والمقرّرات",
-   "altAr": "لوحة الأستاذ — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
-   "assets": {
-    "720": "/media/product/teacher-dashboard-720.webp",
-    "1280": "/media/product/teacher-dashboard-1280.webp"
-   },
-   "intrinsic": [
-    1280,
-    800
-   ],
-   "derivativeWidths": [
-    1280,
-    720
-   ],
-   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
-   "source": {
-    "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
-    "capturedAt": "2026-11-09",
-    "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
-    "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
-    "checksums": {
-     "720": "61ebe431a983e39a",
-     "1280": "8a345c72758dad44"
-    },
-    "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
-   },
-   "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
-   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
-   "verifiedAt": "2026-10-22"
-  },
-  {
-   "id": "admin-dashboard",
-   "type": "product-capture",
-   "slot": "role",
-   "titleAr": "لوحة الإدارة",
-   "captionAr": "مؤشرات الكليات والطلاب والأساتذة",
-   "altAr": "لوحة الإدارة — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
-   "assets": {
-    "720": "/media/product/admin-dashboard-720.webp",
-    "1280": "/media/product/admin-dashboard-1280.webp"
-   },
-   "intrinsic": [
-    1280,
-    800
-   ],
-   "derivativeWidths": [
-    1280,
-    720
-   ],
-   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
-   "source": {
-    "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
-    "capturedAt": "2026-11-09",
-    "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
-    "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
-    "checksums": {
-     "720": "99ad5f923ac0ceb5",
-     "1280": "319c5c0ba98379e6"
-    },
-    "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
-   },
-   "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
-   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
-   "verifiedAt": "2026-10-22"
-  },
-  {
-   "id": "quality-dashboard",
-   "type": "product-capture",
-   "slot": "role",
-   "titleAr": "لوحة ضمان الجودة",
-   "captionAr": "مجالس الجودة ومؤشرات الالتزام",
-   "altAr": "لوحة ضمان الجودة — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
-   "assets": {
-    "720": "/media/product/quality-dashboard-720.webp",
-    "1280": "/media/product/quality-dashboard-1280.webp"
-   },
-   "intrinsic": [
-    1280,
-    800
-   ],
-   "derivativeWidths": [
-    1280,
-    720
-   ],
-   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
-   "source": {
-    "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
-    "capturedAt": "2026-11-09",
-    "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
-    "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
-    "checksums": {
-     "720": "9793436b624790ac",
-     "1280": "f51e88cbd9a9f2e9"
-    },
-    "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
-   },
-   "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
-   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
-   "verifiedAt": "2026-10-22"
-  },
-  {
-   "id": "owner-dashboard",
-   "type": "product-capture",
-   "slot": "role",
-   "titleAr": "لوحة المالك",
-   "captionAr": "الحاكمية والمؤسّسات وسجلّ التدقيق",
-   "altAr": "لوحة المالك — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
-   "assets": {
-    "720": "/media/product/owner-dashboard-720.webp",
-    "1280": "/media/product/owner-dashboard-1280.webp"
-   },
-   "intrinsic": [
-    1280,
-    800
-   ],
-   "derivativeWidths": [
-    1280,
-    720
-   ],
-   "sizesAttr": "(min-width: 992px) 44rem, 100vw",
-   "source": {
-    "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
-    "capturedAt": "2026-11-09",
-    "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
-    "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
-    "checksums": {
-     "720": "cac5c7f4e36d021f",
-     "1280": "85e259f1b1fff8d5"
-    },
-    "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
-   },
-   "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
-   "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
-   "verifiedAt": "2026-10-22"
-  }
- ],
- "videos": [
-  {
-   "id": "misurata-exams",
-   "type": "video",
-   "slot": "video-primary",
-   "institution": "جامعة مصراتة",
-   "titleAr": "أجواء امتحانات نهاية الفصل بكليات جامعة مصراتة",
-   "duration": "5:11",
-   "videoId": "qM67yDknM0U",
-   "embedUrl": "https://www.youtube-nocookie.com/embed/qM67yDknM0U",
-   "channel": "@MisurataUni",
-   "channelUrl": "https://www.youtube.com/@MisurataUni",
-   "identityEvidence": "القناة مرتبطة من الموقع الرسمي misuratau.edu.ly (أيقونة يوتيوب في التذييل)؛ oembed author_name = Misurata University",
-   "kindAr": "فيديو توثيقي من القناة الرسمية للجامعة",
-   "loadPolicy": "click-to-load (facade; iframe mounts only after user intent)",
-   "verifiedByPrincipal": true,
-   "verifiedAt": "2026-10-22",
-   "verificationCommand": "curl 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=qM67yDknM0U&format=json' && curl -s -o /dev/null -w '%{http_code}' https://www.youtube-nocookie.com/embed/qM67yDknM0U"
-  },
-  {
-   "id": "sebha-graduation",
-   "type": "video",
-   "slot": "video-secondary",
-   "institution": "جامعة سبها",
-   "titleAr": "حفل خريجي جامعة سبها — الدفعة 40",
-   "duration": "3:13",
-   "videoId": "dz_t7yOOZMc",
-   "embedUrl": "https://www.youtube-nocookie.com/embed/dz_t7yOOZMc",
-   "channel": "@sabhauniversity498",
-   "channelUrl": "https://www.youtube.com/channel/UCjEGH--aN7rRas_lAdqF35Q",
-   "identityEvidence": "القناة مرتبطة من صفحة الفيديو الرسمية sebhau.edu.ly/video-gallery/ («قناة جامعة سبها على اليوتيوب»)؛ والفيديو نفسه مضمَّن في موقع الجامعة؛ oembed author_name = جامعة سبها Sabha University",
-   "kindAr": "فيديو توثيقي من القناة الرسمية للجامعة",
-   "loadPolicy": "click-to-load (facade; iframe mounts only after user intent)",
-   "verifiedByPrincipal": true,
-   "verifiedAt": "2026-10-22",
-   "verificationCommand": "curl 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=dz_t7yOOZMc&format=json' && curl -sL 'https://sebhau.edu.ly/video-gallery/' | grep -c 'UCjEGH--aN7rRas_lAdqF35Q'"
-  }
- ],
- "illustrations": {
-  "generatedFor": "R342 — the original architectural illustration programme (R342-01)",
-  "generatedAt": "2026-11-08",
+  "version": 1,
+  "generatedFor": "R307 — Madarek complete experience upgrade",
+  "generatedAt": "2026-10-22",
   "policy": {
-   "ar": "رسوم معمارية أصلية بأسلوب الحبر المعماري أحادي اللون، مولّدة لمدارك في جولة R342 وأعيد تلوينها إلى رموز الهوية البصرية بدقة البكسل (ورق #F6F6EE / حبر #282828 / برتقالي #FA3600 في النمط الفاتح، وعكسهما الداكن). لا أعمال لأطراف ثالثة، ولا نصوص مطبوعة داخل الصور، ولا تصوير لجامعة حقيقية. ظهور أي مبنى هو تخيّل تعليمي عام ولا يعني أي ارتباط مؤسسي.",
-   "en": "Original monochrome architectural ink illustrations generated for Madarek in R342 and post-processed to pixel-exact brand tokens (paper #F6F6EE / ink #282828 / accent #FA3600 light; dark twins #282828/#F6F6EE/#FF5A1F). No third-party artwork, no baked text, no real-university depictions; buildings are imagined educational scenes, not institutional claims."
+    "ar": "كل صورة الجامعات مرخّصة من ويكيميديا كومنز (PD / CC BY / CC BY-SA) مع نسب المصوّر والمصدر؛ الفيديوهات تُضمَّن من القناة الرسمية للجامعة عبر آلية التضمين المسموحة (youtube-nocookie) وتُحمَّل فقط بعد نقر المستخدم؛ لقطات المنتج من بيئة عرض محليّة ببيانات تجريبية اصطناعية بالكامل — لا بيانات شخصية حقيقية. ظهور جامعة في الوسائط لا يعني تبنّيًا أو شراكة رسمية.",
+    "en": "University photos are Commons-licensed (PD / CC BY / CC BY-SA) with per-image attribution; videos embed from official university channels via the permitted youtube-nocookie mechanism, click-to-load only; product captures come from a local seeded demo environment (fully synthetic data). Media presence does not imply institutional endorsement.",
+    "r343": "The Wikimedia photo programme is retired on the web (original cards + r342 illustrations); product plates are re-captured from the real components; provenance for every remaining byte stays in this manifest."
   },
-  "count": 19,
-  "items": [
-   {
-    "id": "r342/footer-skyline",
-    "type": "illustration",
-    "slot": "footer",
-    "nameAr": "footer-skyline",
-    "altAr": "أفق حرم جامعي متخيّل بخط رفيع: رواق وقاعة وبرج وأشجار على خط أرض واحد",
-    "assets": {
-     "light": "/media/illustrations/r342/footer/footer-skyline-light.webp",
-     "dark": "/media/illustrations/r342/footer/footer-skyline-dark.webp"
+  "derivativePipeline": "scripts/media/build-media-derivatives.mjs (ffmpeg + libwebp, zero repo dependencies)",
+  "products": [
+    {
+      "id": "student-dashboard",
+      "type": "product-capture",
+      "slot": "product",
+      "titleAr": "لوحة الطالب",
+      "captionAr": "نظرة الطالب على يومه: جدول اليوم، المهام، والتقدّم",
+      "altAr": "لوحة الطالب — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+      "assets": {
+        "720": "/media/product/student-dashboard-720.webp",
+        "1280": "/media/product/student-dashboard-1280.webp"
+      },
+      "intrinsic": [
+        1280,
+        800
+      ],
+      "derivativeWidths": [
+        1280,
+        720
+      ],
+      "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+      "source": {
+        "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
+        "capturedAt": "2026-11-09",
+        "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
+        "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
+        "checksums": {
+          "720": "cdf94195f3fd0120",
+          "1280": "beee52786419cdc7"
+        },
+        "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
+      },
+      "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
+      "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+      "verifiedAt": "2026-10-22"
     },
-    "intrinsic": {
-     "light": [
-      1440,
-      384
-     ],
-     "dark": [
-      1440,
-      384
-     ],
-     "light@2x": [
-      2880,
-      768
-     ],
-     "dark@2x": [
-      2880,
-      768
-     ]
+    {
+      "id": "student-library",
+      "type": "product-capture",
+      "slot": "product",
+      "titleAr": "المكتبة الإلكترونية",
+      "captionAr": "بحث عربي وفهرس وتصفح الكتب والبحوث",
+      "altAr": "المكتبة الإلكترونية — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+      "assets": {
+        "720": "/media/product/student-library-720.webp",
+        "1280": "/media/product/student-library-1280.webp"
+      },
+      "intrinsic": [
+        1280,
+        800
+      ],
+      "derivativeWidths": [
+        1280,
+        720
+      ],
+      "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+      "source": {
+        "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
+        "capturedAt": "2026-11-09",
+        "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
+        "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
+        "checksums": {
+          "720": "7f4b9124a1d9ab52",
+          "1280": "c5dea663f08d4258"
+        },
+        "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
+      },
+      "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
+      "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+      "verifiedAt": "2026-10-22"
     },
-    "decorative": true,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md",
-    "assets2x": {
-     "light": "/media/illustrations/r342/footer/footer-skyline-light@2x.webp",
-     "dark": "/media/illustrations/r342/footer/footer-skyline-dark@2x.webp"
+    {
+      "id": "student-lecture-player",
+      "type": "product-capture",
+      "slot": "product",
+      "titleAr": "المحاضرة التفاعلية",
+      "captionAr": "مشغّل المحاضرة مع نقطة فحص تُصحَّب فورًا",
+      "altAr": "المحاضرة التفاعلية — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+      "assets": {
+        "720": "/media/product/student-lecture-player-720.webp",
+        "1280": "/media/product/student-lecture-player-1280.webp"
+      },
+      "intrinsic": [
+        1280,
+        800
+      ],
+      "derivativeWidths": [
+        1280,
+        720
+      ],
+      "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+      "source": {
+        "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
+        "capturedAt": "2026-11-09",
+        "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
+        "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
+        "checksums": {
+          "720": "1536de1b2e882aaa",
+          "1280": "de0d86913159142e"
+        },
+        "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
+      },
+      "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
+      "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+      "verifiedAt": "2026-10-22"
+    },
+    {
+      "id": "student-matrix",
+      "type": "product-capture",
+      "slot": "product",
+      "titleAr": "مصفوفة الإتقان",
+      "captionAr": "درجة إتقان لكل مفهوم وربطها بالدرس المناسب",
+      "altAr": "مصفوفة الإتقان — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+      "assets": {
+        "720": "/media/product/student-matrix-720.webp",
+        "1280": "/media/product/student-matrix-1280.webp"
+      },
+      "intrinsic": [
+        1280,
+        800
+      ],
+      "derivativeWidths": [
+        1280,
+        720
+      ],
+      "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+      "source": {
+        "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
+        "capturedAt": "2026-11-09",
+        "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
+        "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
+        "checksums": {
+          "720": "9f10e07cd70dc50d",
+          "1280": "549e4e63e72db718"
+        },
+        "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
+      },
+      "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
+      "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+      "verifiedAt": "2026-10-22"
+    },
+    {
+      "id": "teacher-dashboard",
+      "type": "product-capture",
+      "slot": "role",
+      "titleAr": "لوحة الأستاذ",
+      "captionAr": "متابعة الأقسام والطلاب والمقرّرات",
+      "altAr": "لوحة الأستاذ — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+      "assets": {
+        "720": "/media/product/teacher-dashboard-720.webp",
+        "1280": "/media/product/teacher-dashboard-1280.webp"
+      },
+      "intrinsic": [
+        1280,
+        800
+      ],
+      "derivativeWidths": [
+        1280,
+        720
+      ],
+      "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+      "source": {
+        "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
+        "capturedAt": "2026-11-09",
+        "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
+        "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
+        "checksums": {
+          "720": "61ebe431a983e39a",
+          "1280": "8a345c72758dad44"
+        },
+        "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
+      },
+      "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
+      "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+      "verifiedAt": "2026-10-22"
+    },
+    {
+      "id": "admin-dashboard",
+      "type": "product-capture",
+      "slot": "role",
+      "titleAr": "لوحة الإدارة",
+      "captionAr": "مؤشرات الكليات والطلاب والأساتذة",
+      "altAr": "لوحة الإدارة — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+      "assets": {
+        "720": "/media/product/admin-dashboard-720.webp",
+        "1280": "/media/product/admin-dashboard-1280.webp"
+      },
+      "intrinsic": [
+        1280,
+        800
+      ],
+      "derivativeWidths": [
+        1280,
+        720
+      ],
+      "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+      "source": {
+        "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
+        "capturedAt": "2026-11-09",
+        "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
+        "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
+        "checksums": {
+          "720": "99ad5f923ac0ceb5",
+          "1280": "319c5c0ba98379e6"
+        },
+        "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
+      },
+      "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
+      "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+      "verifiedAt": "2026-10-22"
+    },
+    {
+      "id": "quality-dashboard",
+      "type": "product-capture",
+      "slot": "role",
+      "titleAr": "لوحة ضمان الجودة",
+      "captionAr": "مجالس الجودة ومؤشرات الالتزام",
+      "altAr": "لوحة ضمان الجودة — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+      "assets": {
+        "720": "/media/product/quality-dashboard-720.webp",
+        "1280": "/media/product/quality-dashboard-1280.webp"
+      },
+      "intrinsic": [
+        1280,
+        800
+      ],
+      "derivativeWidths": [
+        1280,
+        720
+      ],
+      "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+      "source": {
+        "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
+        "capturedAt": "2026-11-09",
+        "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
+        "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
+        "checksums": {
+          "720": "9793436b624790ac",
+          "1280": "f51e88cbd9a9f2e9"
+        },
+        "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
+      },
+      "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
+      "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+      "verifiedAt": "2026-10-22"
+    },
+    {
+      "id": "owner-dashboard",
+      "type": "product-capture",
+      "slot": "role",
+      "titleAr": "لوحة المالك",
+      "captionAr": "الحاكمية والمؤسّسات وسجلّ التدقيق",
+      "altAr": "لوحة المالك — لقطة حقيقية من واجهة مدارك (بيانات العرض التجريبية)",
+      "assets": {
+        "720": "/media/product/owner-dashboard-720.webp",
+        "1280": "/media/product/owner-dashboard-1280.webp"
+      },
+      "intrinsic": [
+        1280,
+        800
+      ],
+      "derivativeWidths": [
+        1280,
+        720
+      ],
+      "sizesAttr": "(min-width: 992px) 44rem, 100vw",
+      "source": {
+        "environment": "the /__plates deterministic stage — real components (primitives/patterns), fixed fixture data",
+        "capturedAt": "2026-11-09",
+        "tool": "scripts/art/render-plates.mjs (Playwright, dSF-2 master, LANCZOS ladder, webp ≤80KB)",
+        "method": "R344 C-4: isolated UI fragment on a paper plate (hairline frame, Arabic ≥14px, no chrome) — byte-stable via --check",
+        "checksums": {
+          "720": "cac5c7f4e36d021f",
+          "1280": "85e259f1b1fff8d5"
+        },
+        "verifiedByPrincipal": "R344 C-4 — deterministic stage, seeded fixtures, no live data"
+      },
+      "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
+      "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
+      "verifiedAt": "2026-10-22"
     }
-   },
-   {
-    "id": "r342/hero-campus",
-    "type": "illustration",
-    "slot": "home-hero-wrap",
-    "nameAr": "hero-campus",
-    "altAr": "المنظور الأكسونومتري المقطوع لمجمّع التعلّم في مدارك: قاعة محاضرات مدرّجة، فناء داخلي بشجرة المعرفة، معارض مكتبة على طابقين، وأروقة مقوسة — بمدخلٍ بلون العلامة النحاسي",
-    "assets": {
-     "light": "/media/illustrations/r342/hero/hero-campus-light.webp",
-     "dark": "/media/illustrations/r342/hero/hero-campus-dark.webp"
+  ],
+  "videos": [
+    {
+      "id": "misurata-exams",
+      "type": "video",
+      "slot": "video-primary",
+      "institution": "جامعة مصراتة",
+      "titleAr": "أجواء امتحانات نهاية الفصل بكليات جامعة مصراتة",
+      "duration": "5:11",
+      "videoId": "qM67yDknM0U",
+      "embedUrl": "https://www.youtube-nocookie.com/embed/qM67yDknM0U",
+      "channel": "@MisurataUni",
+      "channelUrl": "https://www.youtube.com/@MisurataUni",
+      "identityEvidence": "القناة مرتبطة من الموقع الرسمي misuratau.edu.ly (أيقونة يوتيوب في التذييل)؛ oembed author_name = Misurata University",
+      "kindAr": "فيديو توثيقي من القناة الرسمية للجامعة",
+      "loadPolicy": "click-to-load (facade; iframe mounts only after user intent)",
+      "verifiedByPrincipal": true,
+      "verifiedAt": "2026-10-22",
+      "verificationCommand": "curl 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=qM67yDknM0U&format=json' && curl -s -o /dev/null -w '%{http_code}' https://www.youtube-nocookie.com/embed/qM67yDknM0U"
     },
-    "intrinsic": {
-     "light": [
-      1440,
-      704
-     ],
-     "dark": [
-      1440,
-      704
-     ],
-     "light@2x": [
-      2880,
-      1408
-     ],
-     "dark@2x": [
-      2880,
-      1408
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md",
-    "assets2x": {
-     "light": "/media/illustrations/r342/hero/hero-campus-light@2x.webp",
-     "dark": "/media/illustrations/r342/hero/hero-campus-dark@2x.webp"
+    {
+      "id": "sebha-graduation",
+      "type": "video",
+      "slot": "video-secondary",
+      "institution": "جامعة سبها",
+      "titleAr": "حفل خريجي جامعة سبها — الدفعة 40",
+      "duration": "3:13",
+      "videoId": "dz_t7yOOZMc",
+      "embedUrl": "https://www.youtube-nocookie.com/embed/dz_t7yOOZMc",
+      "channel": "@sabhauniversity498",
+      "channelUrl": "https://www.youtube.com/channel/UCjEGH--aN7rRas_lAdqF35Q",
+      "identityEvidence": "القناة مرتبطة من صفحة الفيديو الرسمية sebhau.edu.ly/video-gallery/ («قناة جامعة سبها على اليوتيوب»)؛ والفيديو نفسه مضمَّن في موقع الجامعة؛ oembed author_name = جامعة سبها Sabha University",
+      "kindAr": "فيديو توثيقي من القناة الرسمية للجامعة",
+      "loadPolicy": "click-to-load (facade; iframe mounts only after user intent)",
+      "verifiedByPrincipal": true,
+      "verifiedAt": "2026-10-22",
+      "verificationCommand": "curl 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=dz_t7yOOZMc&format=json' && curl -sL 'https://sebhau.edu.ly/video-gallery/' | grep -c 'UCjEGH--aN7rRas_lAdqF35Q'"
     }
-   },
-   {
-    "id": "r342/hero-campus-mobile",
-    "type": "illustration",
-    "slot": "home-hero-wrap (mobile)",
-    "nameAr": "hero-campus-mobile",
-    "altAr": "تركيب رأسي مخصّص للجوّال من مجمّع التعلّم: قاعة المحاضرات أعلى، معرض المكتبة في الوسط، وفناء الأروقة بأسفل — رسم حبر معماري أصلي",
-    "assets": {
-     "light": "/media/illustrations/r342/hero/hero-campus-mobile-light.webp",
-     "dark": "/media/illustrations/r342/hero/hero-campus-mobile-dark.webp"
+  ],
+  "illustrations": {
+    "generatedFor": "R342 — the original architectural illustration programme (R342-01)",
+    "generatedAt": "2026-11-08",
+    "policy": {
+      "ar": "رسوم معمارية أصلية بأسلوب الحبر المعماري أحادي اللون، مولّدة لمدارك في جولة R342 وأعيد تلوينها إلى رموز الهوية البصرية بدقة البكسل (ورق #F6F6EE / حبر #282828 / برتقالي #FA3600 في النمط الفاتح، وعكسهما الداكن). لا أعمال لأطراف ثالثة، ولا نصوص مطبوعة داخل الصور، ولا تصوير لجامعة حقيقية. ظهور أي مبنى هو تخيّل تعليمي عام ولا يعني أي ارتباط مؤسسي.",
+      "en": "Original monochrome architectural ink illustrations generated for Madarek in R342 and post-processed to pixel-exact brand tokens (paper #F6F6EE / ink #282828 / accent #FA3600 light; dark twins #282828/#F6F6EE/#FF5A1F). No third-party artwork, no baked text, no real-university depictions; buildings are imagined educational scenes, not institutional claims."
     },
-    "intrinsic": {
-     "light": [
-      768,
-      1440
-     ],
-     "dark": [
-      768,
-      1440
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/journey-assessment",
-    "type": "illustration",
-    "slot": "home-map-wrap",
-    "nameAr": "journey-assessment",
-    "altAr": "مخطط قاعة الاختبار من الأعلى: شبكة مكاتب منتظمة ومكتب الملاحظ",
-    "assets": {
-     "light": "/media/illustrations/r342/journey/journey-assessment-light.webp",
-     "dark": "/media/illustrations/r342/journey/journey-assessment-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/journey-lecture",
-    "type": "illustration",
-    "slot": "home-map-wrap",
-    "nameAr": "journey-lecture",
-    "altAr": "مخطط قاعة المحاضرات من الأعلى: صفوف متدرجة ومسرح المناقشة",
-    "assets": {
-     "light": "/media/illustrations/r342/journey/journey-lecture-light.webp",
-     "dark": "/media/illustrations/r342/journey/journey-lecture-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/journey-library",
-    "type": "illustration",
-    "slot": "home-map-wrap",
-    "nameAr": "journey-library",
-    "altAr": "مخطط طابق المكتبة من الأعلى: صفوف الرفوف وطاولات المطالعة",
-    "assets": {
-     "light": "/media/illustrations/r342/journey/journey-library-light.webp",
-     "dark": "/media/illustrations/r342/journey/journey-library-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/journey-mastery",
-    "type": "illustration",
-    "slot": "home-map-wrap",
-    "nameAr": "journey-mastery",
-    "altAr": "مخطط غرفة الإتقان من الأعلى: طاولة دائرية وجدار تقدّم مقسّم",
-    "assets": {
-     "light": "/media/illustrations/r342/journey/journey-mastery-light.webp",
-     "dark": "/media/illustrations/r342/journey/journey-mastery-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/journey-route",
-    "type": "illustration",
-    "slot": "home-map-wrap",
-    "nameAr": "journey-route",
-    "altAr": "المسار الأكاديمي من اليمين إلى اليسار: قاعة المحاضرات فالاختبار فالمكتبة فالإتقان على ممرّ واحد",
-    "assets": {
-     "light": "/media/illustrations/r342/journey/journey-route-light.webp",
-     "dark": "/media/illustrations/r342/journey/journey-route-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1600,
-      813
-     ],
-     "dark": [
-      1600,
-      813
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/problem-01-lecture",
-    "type": "illustration",
-    "slot": "home-problem-wrap",
-    "nameAr": "problem-01-lecture",
-    "altAr": "مقطع قاعة محاضرات مدرّجة: موجات الشرح تتلاشى قبل الصفوف الأخيرة — لا قياس للفهم داخل القاعة",
-    "assets": {
-     "light": "/media/illustrations/r342/problems/problem-01-lecture-light.webp",
-     "dark": "/media/illustrations/r342/problems/problem-01-lecture-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/problem-02-feedback",
-    "type": "illustration",
-    "slot": "home-problem-wrap",
-    "nameAr": "problem-02-feedback",
-    "altAr": "جناحان بينهما جسر مكسور: أوراق الاختبارات تتساقط في الفجوة — تغذية راجعة متأخرة أو منفصلة",
-    "assets": {
-     "light": "/media/illustrations/r342/problems/problem-02-feedback-light.webp",
-     "dark": "/media/illustrations/r342/problems/problem-02-feedback-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/problem-03-mastery",
-    "type": "illustration",
-    "slot": "home-problem-wrap",
-    "nameAr": "problem-03-mastery",
-    "altAr": "برج التقدّم: طابقان فارغان بخطوط أخف تمرّ منها خطوط النظر — إتقان غير مرئي",
-    "assets": {
-     "light": "/media/illustrations/r342/problems/problem-03-mastery-light.webp",
-     "dark": "/media/illustrations/r342/problems/problem-03-mastery-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/problem-04-research",
-    "type": "illustration",
-    "slot": "home-problem-wrap",
-    "nameAr": "problem-04-research",
-    "altAr": "خزانة أرشيف متاهية: رسالة بحثية تُدفن خلف أدراج مغلقة — بحث مُودَع لا يُعثر عليه",
-    "assets": {
-     "light": "/media/illustrations/r342/problems/problem-04-research-light.webp",
-     "dark": "/media/illustrations/r342/problems/problem-04-research-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/role-owner",
-    "type": "illustration",
-    "slot": "home-usecase-wrap (supplementary)",
-    "nameAr": "role-owner",
-    "altAr": "مخطط المالك على طاولة الرسم: غرفة مظلّلة وفرجار — الحاكمية وسجلّ التدقيق",
-    "assets": {
-     "light": "/media/illustrations/r342/roles/role-owner-light.webp",
-     "dark": "/media/illustrations/r342/roles/role-owner-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": true,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/role-quality",
-    "type": "illustration",
-    "slot": "home-usecase-wrap (supplementary)",
-    "nameAr": "role-quality",
-    "altAr": "جدار ضمان الجودة: مؤشّر دائري ولائحة التزام — مجالس ومؤشرات",
-    "assets": {
-     "light": "/media/illustrations/r342/roles/role-quality-light.webp",
-     "dark": "/media/illustrations/r342/roles/role-quality-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": true,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/role-registrar",
-    "type": "illustration",
-    "slot": "home-usecase-wrap (supplementary)",
-    "nameAr": "role-registrar",
-    "altAr": "شبّاك المسجّل العام: أرشيف وسجلّ مفتوح — الكليات والمقرّرات والصلاحيات",
-    "assets": {
-     "light": "/media/illustrations/r342/roles/role-registrar-light.webp",
-     "dark": "/media/illustrations/r342/roles/role-registrar-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": true,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/role-student",
-    "type": "illustration",
-    "slot": "home-usecase-wrap (supplementary)",
-    "nameAr": "role-student",
-    "altAr": "مقعد الطالب: مكتب دراسة ورف كتب ودرج صاعد — رحلة التعلّم الفردية",
-    "assets": {
-     "light": "/media/illustrations/r342/roles/role-student-light.webp",
-     "dark": "/media/illustrations/r342/roles/role-student-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": true,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/role-teacher",
-    "type": "illustration",
-    "slot": "home-usecase-wrap (supplementary)",
-    "nameAr": "role-teacher",
-    "altAr": "منصّة الأستاذ: لوح شبكي وصفوف مقاعد — بناء المحاضرات والاختبارات",
-    "assets": {
-     "light": "/media/illustrations/r342/roles/role-teacher-light.webp",
-     "dark": "/media/illustrations/r342/roles/role-teacher-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": true,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/statement-courtyard",
-    "type": "illustration",
-    "slot": "home-intro-wrap",
-    "nameAr": "statement-courtyard",
-    "altAr": "المقطع المعماري لقلب الحرم الجامعي: فناء داخلي تُحيط به أروقة مقوسة وفي مركزه شجرة المعرفة — رسم حبر أصلي لمنصّة مدارك",
-    "assets": {
-     "light": "/media/illustrations/r342/statement/statement-courtyard-light.webp",
-     "dark": "/media/illustrations/r342/statement/statement-courtyard-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1200,
-      1200
-     ],
-     "dark": [
-      1200,
-      1200
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   },
-   {
-    "id": "r342/why-cycle",
-    "type": "illustration",
-    "slot": "home-why-wrap",
-    "nameAr": "why-cycle",
-    "altAr": "دورة المنصّة من اليمين إلى اليسار: مرصد التعلّم، جدار الفجوات، ممر التدريب، وسلّم التقدّم الصاعد",
-    "assets": {
-     "light": "/media/illustrations/r342/why/why-cycle-light.webp",
-     "dark": "/media/illustrations/r342/why/why-cycle-dark.webp"
-    },
-    "intrinsic": {
-     "light": [
-      1600,
-      813
-     ],
-     "dark": [
-      1600,
-      813
-     ]
-    },
-    "decorative": false,
-    "objectFit": "cover",
-    "tool": "glm-image + r342-duotone-remap (original work)",
-    "license": "original-work-madarek-r342",
-    "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-   }
-  ]
- },
- "cards": {
-  "policy": "R343 C-1 — the university seats are ORIGINAL typographic/architectural cards (no photographs, no crests, no traced buildings). ONE geometry source: shared/media/university-cards.ts (web renders it inline; the mobile port + the static-file builder consume the same module — never forked).",
-  "items": [
-   {
-    "id": "uob-wide",
-    "nn": "01",
-    "composition": "hall"
-   },
-   {
-    "id": "uob-science",
-    "nn": "02",
-    "composition": "arcade"
-   },
-   {
-    "id": "tripoli-science",
-    "nn": "03",
-    "composition": "courtyard"
-   },
-   {
-    "id": "uob-garden",
-    "nn": "04",
-    "composition": "courtyard"
-   },
-   {
-    "id": "garyounis-classic",
-    "nn": "05",
-    "composition": "tower"
-   },
-   {
-    "id": "garyounis-1",
-    "nn": "06",
-    "composition": "arcade"
-   },
-   {
-    "id": "omu-agri",
-    "nn": "07",
-    "composition": "hall"
-   },
-   {
-    "id": "fateh-science",
-    "nn": "08",
-    "composition": "arcade"
-   },
-   {
-    "id": "uob",
-    "nn": "09",
-    "composition": "tower"
-   }
-  ]
- }
+    "count": 19,
+    "items": [
+      {
+        "id": "r342/footer-skyline",
+        "type": "illustration",
+        "slot": "footer",
+        "nameAr": "footer-skyline",
+        "altAr": "أفق حرم جامعي متخيّل بخط رفيع: رواق وقاعة وبرج وأشجار على خط أرض واحد",
+        "assets": {
+          "light": "/media/illustrations/r342/footer/footer-skyline-light.webp",
+          "dark": "/media/illustrations/r342/footer/footer-skyline-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1440,
+            384
+          ],
+          "dark": [
+            1440,
+            384
+          ],
+          "light@2x": [
+            2880,
+            768
+          ],
+          "dark@2x": [
+            2880,
+            768
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md",
+        "assets2x": {
+          "light": "/media/illustrations/r342/footer/footer-skyline-light@2x.webp",
+          "dark": "/media/illustrations/r342/footer/footer-skyline-dark@2x.webp"
+        }
+      },
+      {
+        "id": "r342/hero-campus",
+        "type": "illustration",
+        "slot": "home-hero-wrap",
+        "nameAr": "hero-campus",
+        "altAr": "المنظور الأكسونومتري المقطوع لمجمّع التعلّم في مدارك: قاعة محاضرات مدرّجة، فناء داخلي بشجرة المعرفة، معارض مكتبة على طابقين، وأروقة مقوسة — بمدخلٍ بلون العلامة النحاسي",
+        "assets": {
+          "light": "/media/illustrations/r342/hero/hero-campus-light.webp",
+          "dark": "/media/illustrations/r342/hero/hero-campus-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1440,
+            704
+          ],
+          "dark": [
+            1440,
+            704
+          ],
+          "light@2x": [
+            2880,
+            1408
+          ],
+          "dark@2x": [
+            2880,
+            1408
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md",
+        "assets2x": {
+          "light": "/media/illustrations/r342/hero/hero-campus-light@2x.webp",
+          "dark": "/media/illustrations/r342/hero/hero-campus-dark@2x.webp"
+        }
+      },
+      {
+        "id": "r342/hero-campus-mobile",
+        "type": "illustration",
+        "slot": "home-hero-wrap (mobile)",
+        "nameAr": "hero-campus-mobile",
+        "altAr": "تركيب رأسي مخصّص للجوّال من مجمّع التعلّم: قاعة المحاضرات أعلى، معرض المكتبة في الوسط، وفناء الأروقة بأسفل — رسم حبر معماري أصلي",
+        "assets": {
+          "light": "/media/illustrations/r342/hero/hero-campus-mobile-light.webp",
+          "dark": "/media/illustrations/r342/hero/hero-campus-mobile-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            768,
+            1440
+          ],
+          "dark": [
+            768,
+            1440
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/journey-assessment",
+        "type": "illustration",
+        "slot": "home-map-wrap",
+        "nameAr": "journey-assessment",
+        "altAr": "مخطط قاعة الاختبار من الأعلى: شبكة مكاتب منتظمة ومكتب الملاحظ",
+        "assets": {
+          "light": "/media/illustrations/r342/journey/journey-assessment-light.webp",
+          "dark": "/media/illustrations/r342/journey/journey-assessment-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/journey-lecture",
+        "type": "illustration",
+        "slot": "home-map-wrap",
+        "nameAr": "journey-lecture",
+        "altAr": "مخطط قاعة المحاضرات من الأعلى: صفوف متدرجة ومسرح المناقشة",
+        "assets": {
+          "light": "/media/illustrations/r342/journey/journey-lecture-light.webp",
+          "dark": "/media/illustrations/r342/journey/journey-lecture-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/journey-library",
+        "type": "illustration",
+        "slot": "home-map-wrap",
+        "nameAr": "journey-library",
+        "altAr": "مخطط طابق المكتبة من الأعلى: صفوف الرفوف وطاولات المطالعة",
+        "assets": {
+          "light": "/media/illustrations/r342/journey/journey-library-light.webp",
+          "dark": "/media/illustrations/r342/journey/journey-library-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/journey-mastery",
+        "type": "illustration",
+        "slot": "home-map-wrap",
+        "nameAr": "journey-mastery",
+        "altAr": "مخطط غرفة الإتقان من الأعلى: طاولة دائرية وجدار تقدّم مقسّم",
+        "assets": {
+          "light": "/media/illustrations/r342/journey/journey-mastery-light.webp",
+          "dark": "/media/illustrations/r342/journey/journey-mastery-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/journey-route",
+        "type": "illustration",
+        "slot": "home-map-wrap",
+        "nameAr": "journey-route",
+        "altAr": "المسار الأكاديمي من اليمين إلى اليسار: قاعة المحاضرات فالاختبار فالمكتبة فالإتقان على ممرّ واحد",
+        "assets": {
+          "light": "/media/illustrations/r342/journey/journey-route-light.webp",
+          "dark": "/media/illustrations/r342/journey/journey-route-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1600,
+            813
+          ],
+          "dark": [
+            1600,
+            813
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/problem-01-lecture",
+        "type": "illustration",
+        "slot": "home-problem-wrap",
+        "nameAr": "problem-01-lecture",
+        "altAr": "مقطع قاعة محاضرات مدرّجة: موجات الشرح تتلاشى قبل الصفوف الأخيرة — لا قياس للفهم داخل القاعة",
+        "assets": {
+          "light": "/media/illustrations/r342/problems/problem-01-lecture-light.webp",
+          "dark": "/media/illustrations/r342/problems/problem-01-lecture-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/problem-02-feedback",
+        "type": "illustration",
+        "slot": "home-problem-wrap",
+        "nameAr": "problem-02-feedback",
+        "altAr": "جناحان بينهما جسر مكسور: أوراق الاختبارات تتساقط في الفجوة — تغذية راجعة متأخرة أو منفصلة",
+        "assets": {
+          "light": "/media/illustrations/r342/problems/problem-02-feedback-light.webp",
+          "dark": "/media/illustrations/r342/problems/problem-02-feedback-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/problem-03-mastery",
+        "type": "illustration",
+        "slot": "home-problem-wrap",
+        "nameAr": "problem-03-mastery",
+        "altAr": "برج التقدّم: طابقان فارغان بخطوط أخف تمرّ منها خطوط النظر — إتقان غير مرئي",
+        "assets": {
+          "light": "/media/illustrations/r342/problems/problem-03-mastery-light.webp",
+          "dark": "/media/illustrations/r342/problems/problem-03-mastery-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/problem-04-research",
+        "type": "illustration",
+        "slot": "home-problem-wrap",
+        "nameAr": "problem-04-research",
+        "altAr": "خزانة أرشيف متاهية: رسالة بحثية تُدفن خلف أدراج مغلقة — بحث مُودَع لا يُعثر عليه",
+        "assets": {
+          "light": "/media/illustrations/r342/problems/problem-04-research-light.webp",
+          "dark": "/media/illustrations/r342/problems/problem-04-research-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/role-owner",
+        "type": "illustration",
+        "slot": "home-usecase-wrap (supplementary)",
+        "nameAr": "role-owner",
+        "altAr": "مخطط المالك على طاولة الرسم: غرفة مظلّلة وفرجار — الحاكمية وسجلّ التدقيق",
+        "assets": {
+          "light": "/media/illustrations/r342/roles/role-owner-light.webp",
+          "dark": "/media/illustrations/r342/roles/role-owner-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/role-quality",
+        "type": "illustration",
+        "slot": "home-usecase-wrap (supplementary)",
+        "nameAr": "role-quality",
+        "altAr": "جدار ضمان الجودة: مؤشّر دائري ولائحة التزام — مجالس ومؤشرات",
+        "assets": {
+          "light": "/media/illustrations/r342/roles/role-quality-light.webp",
+          "dark": "/media/illustrations/r342/roles/role-quality-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/role-registrar",
+        "type": "illustration",
+        "slot": "home-usecase-wrap (supplementary)",
+        "nameAr": "role-registrar",
+        "altAr": "شبّاك المسجّل العام: أرشيف وسجلّ مفتوح — الكليات والمقرّرات والصلاحيات",
+        "assets": {
+          "light": "/media/illustrations/r342/roles/role-registrar-light.webp",
+          "dark": "/media/illustrations/r342/roles/role-registrar-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/role-student",
+        "type": "illustration",
+        "slot": "home-usecase-wrap (supplementary)",
+        "nameAr": "role-student",
+        "altAr": "مقعد الطالب: مكتب دراسة ورف كتب ودرج صاعد — رحلة التعلّم الفردية",
+        "assets": {
+          "light": "/media/illustrations/r342/roles/role-student-light.webp",
+          "dark": "/media/illustrations/r342/roles/role-student-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/role-teacher",
+        "type": "illustration",
+        "slot": "home-usecase-wrap (supplementary)",
+        "nameAr": "role-teacher",
+        "altAr": "منصّة الأستاذ: لوح شبكي وصفوف مقاعد — بناء المحاضرات والاختبارات",
+        "assets": {
+          "light": "/media/illustrations/r342/roles/role-teacher-light.webp",
+          "dark": "/media/illustrations/r342/roles/role-teacher-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": true,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/statement-courtyard",
+        "type": "illustration",
+        "slot": "home-intro-wrap",
+        "nameAr": "statement-courtyard",
+        "altAr": "المقطع المعماري لقلب الحرم الجامعي: فناء داخلي تُحيط به أروقة مقوسة وفي مركزه شجرة المعرفة — رسم حبر أصلي لمنصّة مدارك",
+        "assets": {
+          "light": "/media/illustrations/r342/statement/statement-courtyard-light.webp",
+          "dark": "/media/illustrations/r342/statement/statement-courtyard-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1200,
+            1200
+          ],
+          "dark": [
+            1200,
+            1200
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      },
+      {
+        "id": "r342/why-cycle",
+        "type": "illustration",
+        "slot": "home-why-wrap",
+        "nameAr": "why-cycle",
+        "altAr": "دورة المنصّة من اليمين إلى اليسار: مرصد التعلّم، جدار الفجوات، ممر التدريب، وسلّم التقدّم الصاعد",
+        "assets": {
+          "light": "/media/illustrations/r342/why/why-cycle-light.webp",
+          "dark": "/media/illustrations/r342/why/why-cycle-dark.webp"
+        },
+        "intrinsic": {
+          "light": [
+            1600,
+            813
+          ],
+          "dark": [
+            1600,
+            813
+          ]
+        },
+        "decorative": false,
+        "objectFit": "cover",
+        "tool": "glm-image + r342-duotone-remap (original work)",
+        "license": "original-work-madarek-r342",
+        "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
+      }
+    ]
+  },
+  "cards": {
+    "policy": "R343 C-1 — the university seats are ORIGINAL typographic/architectural cards (no photographs, no crests, no traced buildings). ONE geometry source: shared/media/university-cards.ts (web renders it inline; the mobile port + the static-file builder consume the same module — never forked).",
+    "items": [
+      {
+        "id": "uob-wide",
+        "nn": "01",
+        "composition": "hall"
+      },
+      {
+        "id": "uob-science",
+        "nn": "02",
+        "composition": "arcade"
+      },
+      {
+        "id": "tripoli-science",
+        "nn": "03",
+        "composition": "courtyard"
+      },
+      {
+        "id": "uob-garden",
+        "nn": "04",
+        "composition": "courtyard"
+      },
+      {
+        "id": "garyounis-classic",
+        "nn": "05",
+        "composition": "tower"
+      },
+      {
+        "id": "garyounis-1",
+        "nn": "06",
+        "composition": "arcade"
+      },
+      {
+        "id": "omu-agri",
+        "nn": "07",
+        "composition": "hall"
+      },
+      {
+        "id": "fateh-science",
+        "nn": "08",
+        "composition": "arcade"
+      },
+      {
+        "id": "uob",
+        "nn": "09",
+        "composition": "tower"
+      }
+    ]
+  }
 }

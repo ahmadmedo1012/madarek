@@ -80,7 +80,11 @@
     "tokens:build": "node ../../scripts/tokens/build.mjs",
     "tokens:check": "node ../../scripts/tokens/build.mjs --check && npm run icons:check",
     "test": "jest",
-    "icons:check": "node ../../scripts/brand/build-app-icons.mjs --check"
+    "icons:check": "node ../../scripts/brand/build-app-icons.mjs --check",
+    "cards:build": "node ../../scripts/media/sync-university-cards.mjs",
+    "cards:check": "node ../../scripts/media/sync-university-cards.mjs --check",
+    "illus:build": "node ../../scripts/media/sync-illustrations.mjs",
+    "illus:check": "node ../../scripts/media/sync-illustrations.mjs --check"
   },
   "private": true,
   "engines": {

@@ -11,14 +11,16 @@ import { Button } from "@/components/ui/pressables";
 import { BrandMark } from "@/components/ui/brand";
 import { Hairline } from "@/components/ui/surfaces";
 import { useStaggerEntrance } from "@/motion";
-import { PlanBuilding } from "@/brand/plan";
+import { Illustration } from "@/components/Illustration";
 
 /**
  * /auth — the Welcome: the app's SIGNATURE MOMENT.
  *
- * The drafted architectural facade draws itself in on paper (the existing
- * plan library — strokeDash reveal via usePlanDraw, reduced-motion jumps
- * to the finished drawing), decisive Arabic display type, then the action
+ * R345 F: the hero seat rides the R342 original mobile-hero composition
+ * (the dedicated 768×1440 portrait drawing of the learning complex —
+ * lecture hall, library gallery, arcade courtyard; light/dark twins
+ * from the ONE illustration register) as a top band, cropped by cover
+ * to the band's height. Decisive Arabic display type, then the action
  * stack rises in a staggered entrance (base 120 · step 90 — well under
  * the 400ms rhythm cap; reduced-motion lands instantly). ONE orange CTA
  * («ابدأ الآن») + ONE quiet text link — no boxed cards, the paper is the
@@ -30,6 +32,7 @@ import { PlanBuilding } from "@/brand/plan";
  */
 export default function Welcome() {
   const { bg, text } = usePalette();
+  const { width } = useWindowDimensions();
   const params = useLocalSearchParams<{ continue?: string }>();
   const enter = useStaggerEntrance({ base: 120, step: 90 });
 
@@ -48,24 +51,26 @@ export default function Welcome() {
         {/* the drafting sheet: faint axis grid across the whole paper */}
         <GridBackdrop color={text} />
 
-        <View style={{ paddingHorizontal: sp[24], paddingTop: sp[40], paddingBottom: sp[16], flexGrow: 1 }}>
+        {/* the signature band: the mobile hero of the learning complex */}
+        <Animated.View entering={enter(0)}>
+          <Illustration id="r342/hero-campus-mobile" width={width} height={300} />
+        </Animated.View>
+
+        <View style={{ paddingHorizontal: sp[24], paddingTop: sp[24], paddingBottom: sp[16], flexGrow: 1 }}>
           {/* quiet mark row — the drawing carries the brand from here */}
-          <Animated.View entering={enter(0)} style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+          <Animated.View entering={enter(1)} style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
             <BrandMark size={20} />
             <T variant="bodyLg" weight="bold">مدارك</T>
           </Animated.View>
 
-          {/* the signature: the facade draws itself in */}
-          <PlanBuilding autoplay width="78%" style={{ marginTop: sp[40] }} />
-
           {/* title stack — decisive display type */}
-          <Animated.View entering={enter(1)} style={{ marginTop: sp[32], gap: sp[6] }}>
+          <Animated.View entering={enter(2)} style={{ marginTop: sp[24], gap: sp[6] }}>
             <T variant="display" weight="bold" style={{ lineHeight: 40 }}>رحلة تعلم واحدة</T>
             <T variant="h4" weight="medium" color="secondary">من المحاضرة إلى الإتقان</T>
           </Animated.View>
 
           {/* decisive actions — ONE orange CTA, one quiet link */}
-          <Animated.View entering={enter(2)} style={{ marginTop: "auto", paddingTop: sp[40], gap: sp[4] }}>
+          <Animated.View entering={enter(3)} style={{ marginTop: "auto", paddingTop: sp[40], gap: sp[4] }}>
             <Button
               label="ابدأ الآن"
               kind="accent"

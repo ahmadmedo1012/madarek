@@ -21,6 +21,7 @@ import { Badge, Card } from "@/components/ui/surfaces";
 import { Segmented } from "@/components/ui/fields";
 import { Avatar, RowList, LedgerRow } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { Illustration } from "@/components/Illustration";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
@@ -104,6 +105,7 @@ export default function Achievements() {
           )
         ) : (badges.data ?? []).length === 0 ? (
           <EmptyState
+            art={<Illustration id="r342/why-cycle" width={342} />}
             title="لا توجد أوسمة بعد"
             message="ابدأ بدروس التطوير الذاتي لتحصد أول وسام."
             icon={<Award size={20} color={p.textMuted} />}

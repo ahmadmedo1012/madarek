@@ -27,6 +27,7 @@ import { Screen, SectionBar } from "@/components/ui/screen";
 import { BidiText, T } from "@/components/ui/text";
 import { DataList, makeRow } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { Illustration } from "@/components/Illustration";
 import { FilterSheet } from "@/components/ui/sheet";
 import { PressableScale, RingProgress, useStaggerEntrance } from "@/motion";
 import { haptics } from "@/haptics";
@@ -348,6 +349,7 @@ export default function StudentCourses() {
           />
         ) : (
           <EmptyState
+            art={<Illustration id="r342/role-student" width={216} />}
             room="library"
             title="لا توجد مقرّرات"
             message="لم تُسجَّل في مقرّرات بعد — الإضافة تتم عبر إدارة شؤون الطلاب وستظهر هنا فور اعتماد تسجيلك."
@@ -385,6 +387,7 @@ export default function StudentCourses() {
           />
         ) : (
           <EmptyState
+            art={<Illustration id="r342/role-student" width={216} />}
             room="library"
             title="لا توجد مقرّرات"
             message="لم تُسجَّل في مقرّرات بعد — الإضافة تتم عبر إدارة شؤون الطلاب وستظهر هنا فور اعتماد تسجيلك."

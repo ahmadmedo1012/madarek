@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/pressables";
 import { Field, SelectField } from "@/components/ui/fields";
 import { LedgerRow, RowList, ProgressBar } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { Illustration } from "@/components/Illustration";
 import { toast } from "@/components/ui/toast";
 import { fullDate, latn } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
@@ -75,6 +76,7 @@ export default function ResearchScreen() {
         <ErrorState message={humanizeError(mine.error)} onRetry={() => mine.refetch()} />
       ) : papers.length === 0 ? (
         <EmptyState
+          art={<Illustration id="r342/problem-04-research" width={216} />}
           icon={<FileText size={24} color={p.textFaint} />}
           title="لم ترفع أي بحث بعد"
           message="ابدأ برفع أول بحث لك ليتم فحصه ثم تقييمه من قبل الأستاذ."

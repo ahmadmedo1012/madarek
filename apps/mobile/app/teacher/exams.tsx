@@ -25,6 +25,7 @@ import { LedgerRow, RowList } from "@/components/ui/data";
 import { Button } from "@/components/ui/pressables";
 import { Field, SearchBar, Segmented, SelectField } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { Illustration } from "@/components/Illustration";
 import { toast } from "@/components/ui/toast";
 import {
   DIFFICULTY_LABEL,
@@ -192,6 +193,7 @@ export default function Exams() {
             <ErrorState message={humanizeError(templates.error)} onRetry={() => templates.refetch()} />
           ) : (templates.data ?? []).length === 0 ? (
             <EmptyState
+              art={<Illustration id="r342/role-teacher" width={216} />}
               title="لم تُنشئ قوالب اختبارات بعد"
               message="ستظهر قوالبك هنا — ابنِ قالباً من أسئلة البنك المعتمدة (البناء يتم حاليًا من لوحة الويب)، ثم أرسله لمراجعة الجودة ونشره."
             />

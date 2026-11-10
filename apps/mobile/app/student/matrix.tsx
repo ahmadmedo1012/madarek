@@ -21,6 +21,7 @@ import { Badge, Card } from "@/components/ui/surfaces";
 import { Segmented } from "@/components/ui/fields";
 import { LedgerRow, ProgressBar, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { Illustration } from "@/components/Illustration";
 import { latn, pct } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
@@ -138,6 +139,7 @@ export default function MatrixScreen() {
         <ErrorState message={humanizeError(matrix.error)} onRetry={() => matrix.refetch()} />
       ) : courses.length === 0 ? (
         <EmptyState
+          art={<Illustration id="r342/problem-03-mastery" width={216} />}
           title="لم تتشكّل مصفوفتك بعد"
           message="شاهد أول محاضرة وأجب عن نقاط التفاعل فيها، وستبدأ المصفوفة برسم خريطة معرفتك تلقائياً."
         />

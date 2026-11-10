@@ -75,7 +75,11 @@ async function main() {
   let built = 0, skipped = 0, failed = 0;
 
   // ── photos tier ────────────────────────────────────────────────
-  for (const photo of MANIFEST.photos) {
+  // R345 F: the photos tier is RETIRED (the university seats are the
+  // R343 ORIGINAL cards — shared/media/university-cards.ts; the retired
+  // Wikimedia derivatives + manifest photos[] are deleted). This loop
+  // stays as the documented no-op for any future raster tier.
+  for (const photo of MANIFEST.photos ?? []) {
     const cache = join(TMP, `${photo.id}.jpg`);
     const target = join(MEDIA, 'universities');
     if (!existsSync(target)) mkdirSync(target, { recursive: true });

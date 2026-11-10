@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/pressables";
 import { Badge } from "@/components/ui/surfaces";
 import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { Illustration } from "@/components/Illustration";
 import { BrandMark } from "@/components/ui/brand";
 import { PressableScale } from "@/motion";
 import { haptics } from "@/haptics";
@@ -157,6 +158,7 @@ export default function SelectInstitution() {
 
         {active.length === 0 ? (
           <EmptyState
+            art={<Illustration id="r342/role-registrar" width={216} />}
             room="building"
             title="لا عضوية نشطة بعد"
             message="لم تُفعَّل أي عضوية مؤسّسة على حسابك — تواصل مع إدارة مؤسّستك لإتمام التفعيل، ثم عُد إلى تسجيل الدخول."

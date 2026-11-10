@@ -28,6 +28,8 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 import { VideoCard } from '../../src/components/landing/VideoCard';
+import { MediaFrame } from '../../src/components/landing/MediaFrame';
+import { HERO_PHOTOS } from '../../src/data/university-media';
 import { universityVideosFixture } from './fixtures/r307-media-fixtures';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -56,7 +58,6 @@ const surfaceTsx = [
 ].map(read).join('\n');
 const liveTsx = stripLineComments(stripComments(surfaceTsx));
 const manifest = JSON.parse(read('public/media/manifest.json')) as {
-  photos: Array<{ id: string; derivativeWidths: number[]; source: { license: string; licenseUrl: string | null; author: string } }>;
   products: Array<{ id: string; derivativeWidths: number[] }>;
   videos: Array<{ videoId: string; identityEvidence: string; channelUrl: string }>;
 };
@@ -77,15 +78,6 @@ beforeAll(() => {
 });
 
 describe('r307 — the media registry agrees with the manifest and the bytes', () => {
-  it('every manifest photo ships every promised derivative', () => {
-    for (const photo of manifest.photos) {
-      for (const w of photo.derivativeWidths) {
-        const file = `public/media/universities/${photo.id}-${w}.webp`;
-        expect(existsSync(path.join(root, file)), `${file} missing`).toBe(true);
-      }
-    }
-  });
-
   it('R343 — every documented university seat renders an ORIGINAL card (registry parity)', async () => {
     const manifest = JSON.parse(read('public/media/manifest.json'));
     const cardsSrc = read('../shared/media/university-cards.ts');
@@ -93,10 +85,9 @@ describe('r307 — the media registry agrees with the manifest and the bytes', (
       expect(cardsSrc, `the card ${c.id} must live in the ONE shared geometry source`).toContain(`id: '${c.id}'`);
       expect(c.composition, 'the four original compositions only').toMatch(/^(arcade|courtyard|tower|hall)$/);
     }
-    // the retired photo derivatives are gone from disk except the mobile -800 seats
-    for (const photo of manifest.photos) {
-      expect(existsSync(path.join(root, `public/media/universities/${photo.id}-800.webp`)), '-800 mobile seat').toBe(true);
-    }
+    // R345 F — the retired photo derivatives are GONE (the mobile campus
+    // ported to the card system; the -800 mobile seats shipped with them)
+    expect(existsSync(path.join(root, 'public/media/universities')), 'the retired photo dir is deleted').toBe(false);
   });
 
   it('every manifest product capture ships every promised derivative', () => {
@@ -108,13 +99,39 @@ describe('r307 — the media registry agrees with the manifest and the bytes', (
     }
   });
 
-  it('every photo carries licence + author + source — attribution is structural', () => {
-    expect(manifest.photos.length).toBeGreaterThanOrEqual(8);
-    const institutions = new Set(manifest.photos.map((p) => (p as unknown as { institution: string }).institution));
-    expect(institutions.size).toBeGreaterThanOrEqual(3);
-    for (const photo of manifest.photos) {
-      expect(photo.source.license, `${photo.id} licence`).toMatch(/Public domain|CC BY/);
-      expect(photo.source.author, `${photo.id} author`).toBeTruthy();
+  it('R345 — the retired photo register is fully retired (no photos[] in the manifest)', () => {
+    const m = JSON.parse(read('public/media/manifest.json'));
+    expect(m.photos, 'the photos[] register is deleted with its derivatives').toBeUndefined();
+    expect(m.cards.items.length, 'the card register carries the nine documented seats').toBeGreaterThanOrEqual(9);
+    const institutions = new Set(m.cards.items.map((c: { id: string }) => c.id));
+    expect(institutions.size, 'nine distinct documented seats').toBeGreaterThanOrEqual(9);
+  });
+
+  it('R345 — MediaFrame renders the ORIGINAL card seat (no raster img, no license deed)', () => {
+    for (const photo of [HERO_PHOTOS[0], HERO_PHOTOS[2]]) {
+      const { container } = render(
+        <MemoryRouter>
+          <MediaFrame photo={photo} variant="hero-lead" />
+        </MemoryRouter>,
+      );
+      const svg = container.querySelector(`svg[data-spec="ucard.${photo.id}"]`);
+      expect(svg, `${photo.id} renders its original card`).toBeTruthy();
+      expect(container.querySelector('img'), `${photo.id} mounts no raster img`).toBeNull();
+      expect(container.querySelector('a[href*="creativecommons.org"]'), `${photo.id} carries no license deed`).toBeNull();
+      expect(container.textContent, 'the caption signs the original drawing').toContain('MADAREK · ORIGINAL DRAWING');
+    }
+  });
+
+  it('R345 — the mobile twins ride the ONE shared source (cards + illustrations, byte-synced)', () => {
+    const shared = read('../shared/media/university-cards.ts');
+    const twin = read('../apps/mobile/src/media/university-cards.generated.ts');
+    expect(twin, 'the mobile card twin embeds the shared geometry verbatim').toContain(shared);
+    const manifest = JSON.parse(read('public/media/manifest.json'));
+    const illusTwin = read('../apps/mobile/src/media/illustrations.generated.ts');
+    for (const it of manifest.illustrations.items) {
+      expect(illusTwin, `the mobile illustration register carries ${it.id}`).toContain(`"${it.id}"`);
+      expect(illusTwin, `${it.id} light twin path`).toContain(it.assets.light);
+      expect(illusTwin, `${it.id} dark twin path`).toContain(it.assets.dark);
     }
   });
 });

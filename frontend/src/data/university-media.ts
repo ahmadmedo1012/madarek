@@ -9,10 +9,10 @@
  * `scripts/media/verify-media-registry.mjs` (CI-optional, runs in the
  * design-gates belt) — edit manifest.json + this file together.
  *
- * Honesty contracts (r168b/r188 lineage + R307):
- *  - Every university photo is Commons-licensed (PD / CC BY / CC
- *    BY-SA) with per-image attribution; derivatives are resized
- *    WebP renditions (changes disclosed in the rail footer).
+ * Honesty contracts (r168b/r188 lineage + R307 + R345 F):
+ *  - The university seats are ORIGINAL typographic/architectural
+ *    cards (R343 C-1, shared geometry — no photographs); the retired
+ *    Commons derivatives are deleted (no /media/universities bytes).
  *  - Videos are embedded ONLY from official university channels via
  *    the permitted youtube-nocookie mechanism, click-to-load — the
  *    facade never pretends to be a product demo («توثيقي» is the
@@ -25,7 +25,7 @@
  */
 
 export interface UniversityPhoto {
-  /** stable id (matches manifest.json photos[].id) */
+  /** stable id (matches the card registry in shared/media/university-cards.ts) */
   id: string;
   /** institution display name (Arabic) */
   institution: string;
@@ -34,26 +34,8 @@ export interface UniversityPhoto {
   /** one-line Arabic caption */
   captionAr: string;
   altAr: string;
-  /** object-position for narrow crops (mobile) */
-  objectPosition: string;
-  /** intrinsic ratio of the SOURCE rendition (w/h) for aspect boxes */
+  /** the seat's documented aspect (the retired photo's ratio — CLS-safe) */
   ratio: number;
-  /** srcset widths, ascending */
-  widths: number[];
-  /** sizes attribute */
-  sizes: string;
-  /** attribution: author string (Commons Artist) */
-  author: string;
-  /** license short name + deed URL */
-  license: string;
-  licenseUrl: string;
-}
-
-/** Helper: build the srcset string for /media/universities/{id}-{w}.webp */
-function srcset(id: string, widths: number[]): string {
-  return widths
-    .map((w) => `/media/universities/${id}-${w}.webp ${w}w`)
-    .join(', ');
 }
 
 export const HERO_PHOTOS: [UniversityPhoto, UniversityPhoto, UniversityPhoto] = [
@@ -63,13 +45,7 @@ export const HERO_PHOTOS: [UniversityPhoto, UniversityPhoto, UniversityPhoto] = 
     nameAr: 'مقرّ إدارة جامعة بنغازي',
     captionAr: 'الإدارة المركزية بالقبّة — تصوير بانورامي',
     altAr: 'صورة بانورامية لواجهة مبنى الإدارة المركزية لجامعة بنغازي بقبّتها',
-    objectPosition: '50% 45%',
     ratio: 2689 / 827,
-    widths: [480, 800, 1200, 1600],
-    sizes: '(min-width: 992px) 46rem, 100vw',
-    author: 'WisiW',
-    license: 'CC BY-SA 4.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
   },
   {
     id: 'uob-science',
@@ -77,13 +53,7 @@ export const HERO_PHOTOS: [UniversityPhoto, UniversityPhoto, UniversityPhoto] = 
     nameAr: 'كلية العلوم — جامعة بنغازي',
     captionAr: 'واجهة كلية العلوم بهندستها المتكرّرة',
     altAr: 'صورة لواجهة كلية العلوم بجامعة بنغازي بنمط النوافذ الهندسي المتكرّر',
-    objectPosition: '50% 50%',
     ratio: 4000 / 3000,
-    widths: [480, 800, 1200],
-    sizes: '(min-width: 992px) 24rem, 100vw',
-    author: 'WisiW',
-    license: 'CC BY-SA 4.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
   },
   {
     id: 'tripoli-science',
@@ -91,13 +61,7 @@ export const HERO_PHOTOS: [UniversityPhoto, UniversityPhoto, UniversityPhoto] = 
     nameAr: 'كلية العلوم — جامعة طرابلس',
     captionAr: 'مبنى كلية العلوم من داخل الحرم',
     altAr: 'صورة لمبنى كلية العلوم بجامعة طرابلس من داخل الحرم الجامعي',
-    objectPosition: '50% 40%',
     ratio: 3024 / 4032,
-    widths: [480, 800, 1000],
-    sizes: '(min-width: 992px) 18rem, 60vw',
-    author: 'Atoo77',
-    license: 'CC BY-SA 4.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
   },
 ];
 
@@ -115,13 +79,7 @@ export const RAIL_PHOTOS: [
     nameAr: 'حديقة الجامعة — جامعة بنغازي',
     captionAr: 'جادة الحديقة بخطّ النخيل',
     altAr: 'صورة بانورامية لجادة حديقة جامعة بنغازي المكسوّة بأشجار النخيل',
-    objectPosition: '50% 50%',
     ratio: 4912 / 1080,
-    widths: [800, 1200, 1600],
-    sizes: '(min-width: 992px) 72rem, 100vw',
-    author: 'WisiW',
-    license: 'CC BY-SA 4.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
   },
   {
     id: 'garyounis-classic',
@@ -129,13 +87,7 @@ export const RAIL_PHOTOS: [
     nameAr: 'حرم قاريونس من الجوّ',
     captionAr: 'منظر جوّي للحرم الجامعي',
     altAr: 'صورة جوّية لحرم جامعة بنغازي (قاريونس سابقًا) بمبانيه الأسطوانية',
-    objectPosition: '50% 40%',
     ratio: 1509 / 1275,
-    widths: [480, 800, 1200],
-    sizes: '(min-width: 992px) 44rem, 100vw',
-    author: 'Munsha’at al Akhdar lil Alwan, Benghazi',
-    license: 'Public domain',
-    licenseUrl: 'https://commons.wikimedia.org/wiki/Public_domain',
   },
   {
     id: 'garyounis-1',
@@ -143,13 +95,7 @@ export const RAIL_PHOTOS: [
     nameAr: 'مدخل الحرم — قاريونس',
     captionAr: 'بوابة الحرم الجامعي',
     altAr: 'صورة لمدخل حرم جامعة بنغازي (قاريونس) باللافتة',
-    objectPosition: '50% 45%',
     ratio: 3648 / 2736,
-    widths: [480, 800, 1200],
-    sizes: '(min-width: 992px) 26rem, 100vw',
-    author: 'Maher A. A. Abdussalam',
-    license: 'Public domain',
-    licenseUrl: 'https://commons.wikimedia.org/wiki/Public_domain',
   },
   {
     id: 'omu-agri',
@@ -157,13 +103,7 @@ export const RAIL_PHOTOS: [
     nameAr: 'كلية الزراعة — البيضاء',
     captionAr: 'مجمّع الكلية بطرازه المعماري',
     altAr: 'صورة لمجمّع كلية الزراعة بجامعة عمر المختار في البيضاء',
-    objectPosition: '50% 45%',
     ratio: 1310 / 908,
-    widths: [480, 800, 1200],
-    sizes: '(min-width: 992px) 26rem, 100vw',
-    author: 'Munsha’at al Akhdar lil Alwan, Benghazi',
-    license: 'Public domain',
-    licenseUrl: 'https://commons.wikimedia.org/wiki/Public_domain',
   },
   {
     id: 'fateh-science',
@@ -171,13 +111,7 @@ export const RAIL_PHOTOS: [
     nameAr: 'ممرّ كلية العلوم — جامعة طرابلس',
     captionAr: 'ممرّ داخلي من حياة الحرم',
     altAr: 'صورة لممرّ داخلي في كلية العلوم بجامعة طرابلس',
-    objectPosition: '50% 40%',
     ratio: 1280 / 960,
-    widths: [480, 800, 1200],
-    sizes: '(min-width: 992px) 26rem, 100vw',
-    author: 'Tarek Siala',
-    license: 'CC BY 2.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by/2.0/',
   },
   {
     id: 'uob',
@@ -185,13 +119,7 @@ export const RAIL_PHOTOS: [
     nameAr: 'تفصيلة من مبنى الإدارة',
     captionAr: 'زوايا معمارية من الإدارة المركزية',
     altAr: 'صورة معمارية لجزء من مبنى إدارة جامعة بنغازي',
-    objectPosition: '50% 35%',
     ratio: 4000 / 3000,
-    widths: [480, 800, 1200, 1600],
-    sizes: '(min-width: 992px) 26rem, 100vw',
-    author: 'WisiW',
-    license: 'CC BY-SA 4.0',
-    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
   },
 ];
 
@@ -356,4 +284,3 @@ export const UNIVERSITY_VIDEOS: [UniversityVideo, UniversityVideo] = [
   },
 ];
 
-export { srcset as mediaSrcset };
