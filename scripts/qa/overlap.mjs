@@ -187,6 +187,15 @@ const run = async () => {
     await ctx.addInitScript(m => { try { localStorage.setItem('madarek-theme', JSON.stringify({ state: { mode: m }, version: 2 })); } catch {} }, th);
     for (const r of routes) {
       const p = await ctx.newPage(); await p.goto(url + r, { waitUntil: 'networkidle' }).catch(() => {}); await p.waitForTimeout(1200);
+      /* R347-Z — wait for the landing's intro gate to settle: the
+       * preloader's mono percentage counter + its clip-path wipe overlay
+       * print over content mid-exit, and on a cold dev server the gate
+       * outlives the initial wait (CI measured the counter's final
+       * «100» over a statement word at the second stop). The sweep
+       * measures the SETTLED page — bounded 12s, 250ms polls, and
+       * routes without the gate proceed immediately. */
+      await p.waitForFunction(() => { const l = document.querySelector('.landing'); return !l || l.classList.contains('intro-done'); }, { timeout: 12000, polling: 250 }).catch(() => {});
+      await p.waitForTimeout(400);
       const H = await p.evaluate(() => document.documentElement.scrollHeight);
       for (let y = 0, i = 0; y < H; y += Math.round(h * 0.6), i++) {
         await p.evaluate(y => scrollTo(0, y), y); await p.waitForTimeout(700);
