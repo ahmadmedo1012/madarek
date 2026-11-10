@@ -4,17 +4,13 @@
  * §6 + heron-program.json `header`, evidence /home/z/heron-lab/data/
  * nav-1440.json / nav-390.json):
  *
- *  · fixed 56px bar at the sheet frame's 7px inset, TRANSPARENT paper in
- *    every state — no blur, no shadow, no on-scroll background wash
- *    (computed-verified on the reference at scrollY 0…900; the only
- *    chrome is the cell grammar's 1px #B3B3AF separators + bottom rule);
- *  · state machine, exactly the reference's class vocabulary:
- *      top        → `fo-header`
- *      > 1×bar    → `+ on-scroll`        (state marker — no paint)
- *      > 5×bar scrolling DOWN → `+ on-hide` → `.fo-header-inner`
- *        translateY(-101%) on transform .4s ease; scrolling UP (any
- *        amount) drops it again; guarded by pointer-over + an open menu
- *        and debounced 100ms before it latches;
+ *  · R347 D2 — the bar is IN FLOW, not fixed: the r331 fixed seat
+ *    printed the nav's links over every section's text that scrolled
+ *    beneath it (detector fixed-over-text at every stop — the page's
+ *    worst overlay; the reference's own page never scrolls under its
+ *    bar, ours did). The bar now rides the sheet's top edge and scrolls
+ *    away with the document; the r331 scroll state machine and
+ *    its scroll driver are deleted at the cause;
  *  · the bar itself is pointer-transparent (the reference's
  *    pointer-events:none seat) — clicks pass through the empty paper to
  *    the sheet beneath; only the real cells take the pointer;
@@ -150,14 +146,8 @@ export function SheetNav() {
    * the unmount; the clip plays on the way out). */
   const [menuMounted, setMenuMounted] = useState(false);
 
-  const headerRef = useRef<HTMLElement>(null);
   const burgerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLElement>(null);
-  /* the scroll driver's live view of the menu state (no re-render per
-   * scroll event — the r172 pattern, kept). */
-  const menuOpenRef = useRef(false);
-  menuOpenRef.current = menuOpen;
-
   /* ── the menu lifecycle: mount on open, hold the DOM 420ms on close
    * (the clip-path reverse resolves in 400ms), then unmount. A re-open
    * inside the window cancels the unmount and the panel simply plays
@@ -239,102 +229,6 @@ export function SheetNav() {
     return () => document.removeEventListener('pointerdown', onPointerDown);
   }, [menuOpen]);
 
-  /* ═══ R331 — the header state machine (the reference's updateOnScroll,
-   * decoded in heron-program.md §6):
-   *     on-scroll  ⇔ y > 1 × bar height
-   *     on-hide    ⇔ scrolling DOWN past 5 × bar height, debounced
-   *                  100ms, suppressed while the pointer is over the
-   *                  bar or the menu is open
-   *     show       ⇔ any upward scroll (immediate)
-   * The paint is pure CSS (nav.css): on-hide translates the INNER bar
-   * -101% on transform .4s ease and kills the bar's pointer reach; this
-   * driver only writes class names — zero setState per scroll event,
-   * coalesced to one rAF per frame, with the scroll read on the EVENT
-   * (passive, fires before rAF callbacks — the R318 C2 layout rule).
-   * Reconciled on load / resize / fonts-ready (r307 1-C H-2: late media
-   * must not strand a stale class while the visitor sits still).
-   * Reduced motion: the classes still flip (state, not motion) — nav.css
-   * collapses the transforms and keeps the bar pinned. */
-  useEffect(() => {
-    const header = headerRef.current;
-    if (!header) return undefined;
-
-    let lastY = window.scrollY;
-    let pendingY = lastY;
-    let overBar = false;
-    let hideTimer = 0;
-    let raf = 0;
-
-    const onEnter = () => { overBar = true; };
-    const onLeave = () => { overBar = false; };
-
-    /* R332 W9 — the bar height is CACHED (one offsetHeight read at
-     * effect-mount + the explicit re-measure seats), not read per
-     * scroll frame: the CDP profile put the per-frame forced layout at
-     * 11.1% of the 4×-throttled scroll window (SheetNav.tsx:261). The
-     * bar is a fixed-height chrome seat — resize/load/fonts-ready are
-     * the re-measure triggers (the r307 1-C H-2 reconciliation list). */
-    let barH = header.offsetHeight || 56;
-
-    const apply = () => {
-      raf = 0;
-      const y = pendingY;
-      const h = barH;
-      header.classList.toggle('on-scroll', y > h);
-      const prev = lastY;
-      lastY = y;
-      if (y > prev) {
-        /* scrolling DOWN: past 5× the bar, un-hovered, menu shut — arm
-         * the 100ms debounce, then re-check every guard at fire time
-         * (the direction re-check uses the LIVE scrollY, so a flicker
-         * of upward motion inside the window cancels the latch). */
-        if (y > h * 5 && !overBar && !menuOpenRef.current) {
-          window.clearTimeout(hideTimer);
-          hideTimer = window.setTimeout(() => {
-            hideTimer = 0;
-            if (overBar || menuOpenRef.current) return;
-            const now = window.scrollY;
-            if (now > h * 5 && now >= lastY) header.classList.add('on-hide');
-          }, 100);
-        }
-      } else if (y < prev) {
-        /* scrolling UP: the bar returns immediately (the debounce is
-         * the hide branch's alone — measured on the reference). */
-        window.clearTimeout(hideTimer);
-        hideTimer = 0;
-        header.classList.remove('on-hide');
-      }
-    };
-
-    const onScroll = () => {
-      pendingY = window.scrollY;
-      if (!raf) raf = requestAnimationFrame(apply);
-    };
-
-    const onRemeasure = () => {
-      barH = header.offsetHeight || barH;
-      onScroll();
-    };
-
-    apply();
-    header.addEventListener('pointerenter', onEnter);
-    header.addEventListener('pointerleave', onLeave);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onRemeasure, { passive: true });
-    window.addEventListener('load', onRemeasure);
-    document.fonts?.ready?.then?.(onRemeasure).catch(() => undefined);
-    return () => {
-      header.removeEventListener('pointerenter', onEnter);
-      header.removeEventListener('pointerleave', onLeave);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onRemeasure);
-      window.removeEventListener('load', onRemeasure);
-      document.fonts?.ready?.then?.(onRemeasure).catch?.(() => undefined);
-      window.clearTimeout(hideTimer);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
-
   const closeMenu = () => setMenuOpen(false);
 
   /* the reveal ladder's per-row index (the reference's SplitText mask
@@ -342,16 +236,16 @@ export function SheetNav() {
   const rowStyle = (i: number): CSSProperties => ({ '--i': i } as CSSProperties);
 
   return (
-    <header className="fo-header" ref={headerRef} data-spec="nav.bar">
+    <header className="fo-header" data-spec="nav.bar">
       {/* r339 (T-10) — the chrome grammar mirrors the frozen Heron spec
           tree (docs/redesign/r335/heron-spec/chrome.<bp>.json): the
-          transform SEAT (.fo-header-inner ≡ her container div[1] — the
-          on-hide -101% lift + transform .4s ease live here, exactly the
-          reference's own seat) wraps the BAR ROW (.fo-header-bar ≡ her
-          inner div[2]) which carries the measured 1px bottom rule as a
-          REAL element (.fo-header-rule ≡ her rule div[1] — the border on
-          .fo-header stays: the r306 sheet contract pins it; the rule div
-          rides the same pixel, same ink). */}
+          transform SEAT (.fo-header-inner ≡ her container div[1]; the
+          r331 hide-lift that lived here is retired — R347 D2) wraps
+          the BAR ROW (.fo-header-bar ≡ her inner div[2]) which carries
+          the measured 1px bottom rule as a REAL element
+          (.fo-header-rule ≡ her rule div[1] — the border on .fo-header
+          stays: the r306 sheet contract pins it; the rule div rides the
+          same pixel, same ink). */}
       <div className="fo-header-inner">
         <div className="fo-header-bar">
           <div className="fo-header-rule" data-spec="nav.rule" aria-hidden="true" />

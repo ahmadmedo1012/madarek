@@ -140,7 +140,13 @@ describe('r306 — the drawing sheet ships', () => {
      * swaps chevron→signal square. */
     expect(live).toMatch(/\.fo-header-inner\s*\{[^}]*min-block-size:\s*56px/);
     expect(live).toMatch(/\.fo-header\s*\{[^}]*border-block-end:\s*1px solid var\(--grid-line\)/);
-    expect(live).toMatch(/\.fo-header\s*\{[^}]*position:\s*fixed/);
+    /* R347 D2 re-key (the defect fix legitimately changed the live
+     * contract): the masthead is IN FLOW (relative), never a fixed
+     * overlay — the fixed seat printed the nav over scrolled content
+     * (detector fixed-over-text, the page's worst overlay).
+     * docs/redesign/r347/DEFECTS-A.md */
+    expect(live).toMatch(/\.fo-header\s*\{[^}]*position:\s*relative/);
+    expect(live).not.toMatch(/\.fo-header\s*\{[^}]*position:\s*fixed/);
     expect(live).not.toMatch(/\.fo-header\s*\{[^}]*backdrop-filter/);
     // R315 cycle-2 re-anchor: two NEW (hover:hover) blocks (the hero
     // graticule proximity reveal) now precede the nav block — the

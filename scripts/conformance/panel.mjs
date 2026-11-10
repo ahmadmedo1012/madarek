@@ -19,15 +19,13 @@
  *                     primary CTA or the footer, and dismissing it
  *                     must remove it ("cookie toast glued over the
  *                     footer/CTA band").
- *   · scrollProgress— the landing's scroll-tied progress family
- *                     (window.__madarekProgress — lib/
- *                     progressRegistry.ts) must count ≥ 5 rendered
- *                     seats (the reference measured 7), every range
- *                     non-degenerate, every colour in the accent/ink
- *                     family, and every seat must actually MOVE with
- *                     scroll (0%/40%/90% samples diff text/transform/
- *                     opacity/background — a registered-but-static
- *                     seat FAILS: the registry cannot be gamed).
+ *   · scrollProgress— RETIRED (R347 D2/D3): the progress family's
+ *                     fixed seats sat over body text at every scroll
+ *                     stop (detector fixed-over-text) and the rule
+ *                     pair crossed the viewport's middle through text;
+ *                     the family is deleted at the cause and the
+ *                     criterion retired with it (re-keyed to the live
+ *                     contract — docs/redesign/r347/DEFECTS-A.md).
  *
  * GATE LAW (the r339 T-02b precedent, same shape as the coverage
  * floor): panel rows are kept OUT of the pass-rate totals so the
@@ -45,11 +43,6 @@
  * Coverage is measured WINDOWED (viewport steps with a settle) so
  * position:sticky scenes are counted at every seat they occupy — a
  * pin runway is not a void while the scene is pinned in it.
- *
- * WebKit: scrollProgress seats that ride scroll-driven animations are
- * progressive enhancement (no animation-timeline in WebKit) — the
- * check runs on the chromium engine of record and prints a documented
- * skip note on other engines (fail-loud, never silently green).
  *
  * Usage (wired by run.mjs — also standalone):
  *   node scripts/conformance/panel.mjs --url http://localhost:5173/ [--bps 390,768,1440]
@@ -76,9 +69,15 @@ const PANEL_BPS = { 390: { width: 390, height: 844 }, 768: { width: 768, height:
 const VOID_MAX_VH = 0.6;
 /* hClip: text cut by the viewport edge beyond this many px. */
 const CLIP_TOL = 2;
-/* scrollProgress: the reference measured 7 progress elements; our
- * honest family target (rule pair + readout + ticks + bootlog trio). */
-const PROGRESS_MIN = 5;
+/* scrollProgress — RETIRED (R347 D2/D3, re-keyed to the live contract
+ * with the written reason): the progress family (ScrollRule pair +
+ * readout + ticks + BootLog trio) is deleted at the cause — its fixed
+ * seats sat over body text at every scroll stop and the rule pair
+ * crossed the middle of the viewport through headings and paragraphs
+ * (the owner's R347 yardstick: zero fixed elements over text outranks
+ * the r345 panel's criterion 7; docs/redesign/r347/DEFECTS-A.md).
+ * The probe still RECORDS the registry snapshot per bp (telemetry),
+ * but contributes no pass/fail to the panel verdict. */
 
 /* Authored horizontal-crop seats — text that deliberately runs past
  * the viewport edge. Every entry carries its WRITTEN reason; anything
@@ -372,52 +371,11 @@ export async function panel(url, bps, sections, ourSection, engine = "chromium")
       }
       const rendered = snaps[0].filter((s) => s.rendered);
       const rec = { bp: name, registered: snaps[0].length, rendered: rendered.length, seats: rendered.map((s) => s.label) };
-      let progFail = null;
-      if (rendered.length < PROGRESS_MIN) {
-        progFail = `count ${rendered.length} < ${PROGRESS_MIN} (registered ${snaps[0].length})`;
-      } else {
-        for (let i = 0; i < rendered.length; i++) {
-          /* registry order is stable across the samples (no re-mounts
-           * during the walk) — index i aligns in all three snapshots */
-          const idx = snaps[0].indexOf(rendered[i]);
-          const a = snaps[0][idx], b = snaps[1][idx], c = snaps[2][idx];
-          if (!a || !b || !c) { progFail = `${rendered[i].label}: snapshot missing`; break; }
-          const live = [a, b, c].some((x, j) => {
-            const others = [a, b, c].filter((_, k) => k !== j);
-            return others.some((y) => x.text !== y.text || x.transform !== y.transform || x.opacity !== y.opacity || x.bg !== y.bg || x.childBg !== y.childBg || x.passed !== y.passed);
-          });
-          if (!live) { progFail = `${rendered[i].label}: registered but static (no text/transform/opacity/bg change across 0/40/90%)`; break; }
-          const rg = rendered[i].range;
-          if (!Array.isArray(rg) || rg.length !== 2 || !(rg[1] > rg[0])) { progFail = `${rendered[i].label}: range ${JSON.stringify(rg)} degenerate`; break; }
-          const colourOf = (s) => {
-            for (const v of [s.color, s.bg, s.childBg]) {
-              const m = v && v.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-              if (m) {
-                const [r, g, b] = [Number(m[1]), Number(m[2]), Number(m[3])];
-                if (r + g + b > 20) return { r, g, b };
-              }
-            }
-            return null;
-          };
-          const col = colourOf(a);
-          if (!col) { progFail = `${rendered[i].label}: no measurable accent/ink colour (color/bg/childBg all transparent)`; break; }
-          /* the brand families: the accent (#C72E00 — warm, saturated)
-           * and the INK LADDER (near-neutral greys: dark ink ≤70 avg in
-           * light, light ink ≥180 avg in dark — the type tiers' own
-           * neutral ramp). Faint decorative greys (#70706A-class) are
-           * NOT progress ink. */
-          const accent = col.r >= 150 && col.g <= 90 && col.b <= 90;
-          const gray = Math.abs(col.r - col.g) <= 12 && Math.abs(col.g - col.b) <= 12;
-          const avg = (col.r + col.g + col.b) / 3;
-          const ink = gray && (avg <= 70 || avg >= 180);
-          if (!accent && !ink) { progFail = `${rendered[i].label}: colour rgb(${col.r},${col.g},${col.b}) outside the accent (#C72E00 family) / ink-ladder families`; break; }
-        }
-      }
+      /* RETIRED (R347 D2/D3): no verdict — the registry snapshot is
+       * recorded only; the family's seats no longer exist in the live
+       * contract, so the >=5/live/accent checks are deleted with them
+       * (never skipped silently — this comment is the re-key). */
       out.progress[name] = rec;
-      if (progFail) {
-        out.fail++;
-        out.failures.push({ section: "(progress)", bp: name, kind: "scrollProgress", expected: `≥ ${PROGRESS_MIN} rendered scroll-tied progress seats (ref measured 7), all live, ranges non-degenerate, accent/ink colours`, actual: progFail });
-      } else out.pass++;
 
       await page.close();
     }

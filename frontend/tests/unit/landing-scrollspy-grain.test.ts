@@ -119,20 +119,18 @@ describe('r188 — the folio chrome that ships', () => {
     expect(live).toContain('background: var(--accent)');
   });
 
-  it('the fixed masthead rides the reference class vocabulary (on-scroll / on-hide)', () => {
-    /* R313 override (WP-B2 · D8) → R331 rebuild: the same class system,
-     * thresholds re-measured against the reference (on-scroll at >1×bar,
-     * on-hide at >5×bar scrolling DOWN, 100ms debounce, hover/menu
-     * guards). The paint moved from an imperative style.transform to
-     * pure CSS on the INNER bar (.fo-header.on-hide .fo-header-inner —
-     * translateY(-101%)), the reference's own seat. on-scroll itself
-     * carries NO paint (the reference's computed probe is identical in
-     * both states — a state marker gating the hide branch). */
-    expect(navTsx).toMatch(/classList\.toggle\('on-scroll'/);
-    expect(navTsx).toMatch(/classList\.add\('on-hide'/);
-    expect(navTsx).not.toMatch(/classList\.toggle\('scrolled'/);
-    expect(navCss).toContain('.fo-header.on-hide .fo-header-inner');
-    expect(navCss).not.toMatch(/\.fo-header\.on-scroll[^ ]*\s*\{/); // no paint — state marker only
+  it('the masthead is IN FLOW — the fixed overlay is retired (R347 D2)', () => {
+    /* R347 D2 re-key (the defect fix legitimately changed the live
+     * contract): the r331 fixed bar printed the nav's links over every
+     * section's text that scrolled beneath it (detector fixed-over-text
+     * at every stop — the page's worst overlay). The masthead now rides
+     * the sheet's top edge in the document flow and scrolls away with
+     * the page; the on-scroll/on-hide state machine, its driver and its
+     * paint are deleted at the cause. See docs/redesign/r347/DEFECTS-A.md. */
+    expect(navTsx).not.toMatch(/on-scroll|on-hide/);
+    expect(navCss).not.toContain('.fo-header.on-hide');
+    expect(navCss).not.toMatch(/\.fo-header\s*\{[^}]*position:\s*fixed/); // in flow — never a fixed overlay again
+    expect(navCss).toMatch(/\.fo-header\s*\{[^}]*position:\s*relative/);
     expect(tsx).not.toContain('fo-progress-bar');
     expect(live).not.toContain('transform: scaleX(var(--p, 0))');
   });

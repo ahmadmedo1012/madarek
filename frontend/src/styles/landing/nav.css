@@ -20,14 +20,12 @@
      · the only chrome is the CELL grammar: 1px hairline separators
        between the bar's cells + the bottom rule (the R315 E-crawl
        measurement, present in ALL states);
-     · state machine: `on-scroll` > 1×bar (state marker — the reference
-       carries no paint for it), `on-hide` > 5×bar scrolling DOWN →
-       the INNER bar translateY(-101%) on transform .4s ease +
-       pointer-events:none; scrolling UP shows it again; guarded by
-       pointer-over / open menu; 100ms debounce before the latch;
+     · state machine: RETIRED (R347 D2) — the on-scroll/on-hide lift
+       died with the fixed bar; the masthead is in flow and scrolls
+       with the sheet (docs/redesign/r347/DEFECTS-A.md);
      · the bar itself is pointer-transparent — only the real cells take
        the pointer (the reference's pointer-events:none seat), so the
-       empty paper over scrolled content stays clickable;
+       empty paper stays clickable;
      · ≤991: [«القائمة» + 3-line burger] and the menu panel below on
        the reference's clip-path wipe — inset(0 0 100%) → inset(0),
        0.4s ease, hairline L/R rules — the row labels mask-revealing at
@@ -49,23 +47,31 @@
  * reference's 1e7 maps to the sheet's own ladder: et-tab 55 < header
  * 60 < skip-link 100 < cb-banner 240).
  *
- * R331: the on-scroll BACKGROUND WASH IS RETIRED — the reference is
+ * R347 D2 — the bar is IN FLOW (see the rule below). R331: the
+ * on-scroll BACKGROUND WASH IS RETIRED — the reference is
  * transparent at every scroll depth (computed bg rgba(0,0,0,0),
  * borderBottom none, no shadow — nav-1440.json `top`…`scrolled-900`).
  * The bar carries no transition of its own anymore: the hide/show
  * paint moved to .fo-header-inner (the reference's own seat), and the
  * background never changes. */
 .fo-header {
-  position: fixed;
-  inset-block-start: 7px;   /* the frame inset (D9) — the bar's top edge rides the frame's top rule */
-  inset-inline: 7px;
+  /* R347 D2 — the masthead is IN FLOW, not a fixed overlay: the r331
+   * fixed bar printed the nav's links over every section's text that
+   * scrolled beneath it (detector fixed-over-text 227/6 stops — the
+   * worst overlay on the page; the reference's page never scrolls under
+   * its bar, ours did). The bar now rides the sheet's top edge in the
+   * document flow (relative for the z ladder only) and scrolls away with
+   * the page like every other block — the 7px frame inset and the 56px
+   * measured height are kept; the geometry the chrome bindings recorded
+   * at the top of the page is unchanged. */
+  position: relative;
+  margin: 7px 7px 0;   /* the frame inset (D9) — the bar's top edge rides the frame's top rule */
   block-size: 56px;         /* the measured bar height (56.3 @1440) */
   z-index: 60;
   background: transparent;
   border-block-end: 1px solid var(--grid-line);
   /* the reference's pointer seat: the bar is pointer-TRANSPARENT — the
-   * empty paper over scrolled content stays clickable; the cells below
-   * re-enable the pointer. */
+   * empty paper stays clickable; the cells below re-enable the pointer. */
   pointer-events: none;
   /* r339 (T-10) — the measured chrome type root: her scale is PURE-vw
    * through the desktop range (9.48px @1024 · 13.33px @1440 · 17.78px
@@ -96,17 +102,9 @@ html[data-theme='dark'] .fo-header {
   .fo-header { font-size: 15.88px; } /* font-gate: allow — the frozen Heron phone chrome scale (@390) */
 }
 
-/* on-scroll — the >1×bar state marker, exactly the reference's class
- * vocabulary. The reference carries NO paint for it (its stylesheet
- * has no .header.on-scroll rule; the computed probe is identical in
- * both states) — the class exists to gate the hide branch and to keep
- * the measured vocabulary legible to telemetry. */
-
-/* on-hide — the lift: the INNER bar translates -101% (one full height
- * plus the hairline — the reference's exact value, not our old
- * -100%-8px overshoot), transform .4s on the default ease, and the
- * cells lose the pointer while lifted. Scrolling up (any amount)
- * removes it — the driver lives in SheetNav. */
+/* R347 D2 — the on-scroll / on-hide state machine is RETIRED with the
+ * fixed bar: the classes, their driver (SheetNav) and the -101% lift
+ * are deleted at the cause; nothing on this sheet toggles them. */
 .fo-header-inner {
   position: relative;
   display: flex;
@@ -226,17 +224,8 @@ html[data-theme='dark'] .fo-header {
 .landing.intro-done .fo-nav .fo-nav-link:nth-child(5) { transition-delay: 0s, calc(var(--t-sheet-exit) * 2 + 80ms); }
 .landing.intro-done .fo-nav .fo-nav-link:nth-child(6) { transition-delay: 0s, calc(var(--t-sheet-exit) * 2 + 100ms); }
 
-.fo-header.on-hide .fo-header-inner {
-  transform: translateY(-101%);
-}
-
-.fo-header.on-hide {
-  pointer-events: none;
-}
-
 /* the interactive cells — the reference re-enables the pointer per
- * cell (logo/nav/cta); ordered AFTER the on-hide kill so the lifted
- * bar's cells stay dead (equal specificity, cascade order decides). */
+ * cell (logo/nav/cta) over the bar's transparent paper. */
 .fo-header-bar > :is(.fo-brand-zone, .fo-nav-wrap, .fo-header-actions, .fo-burger),
 .fo-header-bar > :is(.fo-brand-zone, .fo-nav-wrap, .fo-header-actions, .fo-burger) :is(.fo-brand, .fo-nav, .fo-header-actions, .fo-burger) {
   pointer-events: auto;
@@ -807,15 +796,6 @@ html[data-theme='dark'] .fo-header {
 
   .fo-header-inner {
     transition: none;
-  }
-
-  .fo-header.on-hide .fo-header-inner {
-    transform: none; /* the bar stays seated — state, not motion */
-  }
-
-  /* the visible bar keeps working while the class is set */
-  .fo-header.on-hide :is(.fo-brand, .fo-nav, .fo-header-actions, .fo-burger) {
-    pointer-events: auto;
   }
 
   .fo-nav-link,

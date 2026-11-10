@@ -49,12 +49,8 @@ import { Footer } from '../components/landing/sections/Footer';
 // retired — the giant footer wordmark is <Logo variant="wordmark"> now
 // and the circle-star mark cell is removed (ONE mark per view).
 import { ConsentBanner } from '../components/landing/chrome/ConsentBanner';
-import { EdgeTab } from '../components/landing/chrome/EdgeTab';
-/* r339 T-18 (A6) — the scroll progress rule: the reference's measured
- * splitting 1px pair at 50vh + the mono % readout. Scroll-driven CSS
- * (zero JS ticks); reduced motion never mounts it. */
-import { ScrollRule } from '../components/landing/chrome/ScrollRule';
-import { BootLog } from '../components/landing/chrome/BootLog';
+/* R347 D2/D3 — the fixed HUD chrome (EdgeTab/ScrollRule/BootLog) is
+ * retired at the cause; see docs/redesign/r347/DEFECTS-A.md. */
 import { shouldPlayIntro, introEnvironment } from '../lib/motion/introGate';
 import { useSheetScroll } from '../lib/motion/useSheetScroll';
 import { clamp } from '../lib/motion/sheetConductor';
@@ -521,27 +517,17 @@ export default function LandingPage() {
           cell grid + the giant wordmark + the legal row. ═══ */}
       <Footer year={year} />
 
-      {/* R314 B10 — the landing chrome pair: the local-storage consent
-          gate (V11) + the right-edge vertical tab (V12). Public surface
-          only — these never mount on auth pages.
-          R333 P-D — the consent banner waits for the preloader's exit
-          (introDone flips at wipe-start / the `mdrk:entry-done` event;
-          no overlay overlap), while the tab is not an overlay and
-          mounts as before. */}
+      {/* R314 B10 — the landing consent gate. Public surface only —
+          never mounts on auth pages. R333 P-D — the consent banner waits
+          for the preloader's exit (introDone flips at wipe-start /
+          the `mdrk:entry-done` event; no overlay overlap).
+          R347 D2/D3 — the fixed HUD chrome (EdgeTab, ScrollRule,
+          BootLog) is RETIRED: its fixed seats sat over body text at
+          every scroll stop (detector fixed-over-text 355+) and the
+          rule pair crossed the middle of the viewport through
+          headings and paragraphs; the masthead keeps the identity.
+          See docs/redesign/r347/DEFECTS-A.md. */}
       {introDone && <ConsentBanner />}
-      <EdgeTab />
-
-      {/* r339 T-18 (A6) — the scroll progress rule (the splitting 1px
-          pair at 50vh + the mono % readout). Decorative chrome under
-          the nav (z45); reduced motion never mounts it (the component's
-          own matchMedia guard + the scroll-rule.css belt). */}
-      <ScrollRule />
-
-      {/* R340 T-P1x — the boot-log strip (the fill rail + the mono
-          counter + the stage word) at the frame's inline-end edge: the
-          scroll-tied status twin of the rule's % readout. Same laws:
-          decorative chrome (z45), reduced motion never mounts it. */}
-      <BootLog />
 
       {/* R308 → R333 P-D — the custom pointer instrument, mounted LAST
           (fine pointers only; reduced motion and touch keep the native

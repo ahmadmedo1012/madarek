@@ -10,8 +10,9 @@
  *
  *   (b) the StarMark/BrandMark import graph is FROZEN: exactly the nine
  *       documented importers (the future <Logo> call-sites), plus the
- *       one documented non-importing member (EdgeTab.tsx — its inline
- *       white star is a brand render site the integration pass swaps).
+ *       (R347 D2: EdgeTab.tsx was the one documented non-importing
+ *       member; the edge tab is retired with the fixed HUD — the
+ *       frozen list already empty, the file deleted with it.)
  *       Any new importer fails; any retirement fails until the frozen
  *       list shrinks with it (the ratchet must be conscious).
  *
@@ -169,8 +170,8 @@ const FROZEN_BRAND_IMPORTERS = [
   // StarMark.tsx / BrandMark.tsx are DELETED, so the only acceptable
   // import graph is the EMPTY set. Any re-import fails this gate.
 ] as const;
-/** R323 integration: EdgeTab now draws <Logo variant="mark" tone="paper">
- * (no inline star, no primitive import) — the expected surplus is empty. */
+/* R347 D2 — EdgeTab is retired with the fixed HUD chrome; the import
+ * graph check stays as-is (its frozen list is already empty). */
 const DOCUMENTED_NON_IMPORTERS: readonly string[] = [];
 const EXPECTED_IMPORTERS = FROZEN_BRAND_IMPORTERS.filter(
   (f) => !DOCUMENTED_NON_IMPORTERS.includes(f),
@@ -196,10 +197,6 @@ describe('R323 gate (b) — the StarMark/BrandMark import graph is frozen', () =
     }
   });
 
-  it('EdgeTab keeps its documented inline-star status (no primitive import)', () => {
-    const src = read('src/components/landing/chrome/EdgeTab.tsx');
-    expect(IMPORT_RE.test(src)).toBe(false);
-  });
 });
 
 /* ════════════════════════════════════════════════════════════════════
@@ -362,8 +359,8 @@ describe('R323 contract — <Logo> (frontend/src/brand)', () => {
     expect(markStrokePx(8)).toBeCloseTo(0.938, 3);
     expect(markStrokePx(6)).toBe(0.9); /* the sub-pixel floor (<6.4px) */
 
-    /* rendered for real: the 12px EdgeTab seat carries the tapered
-     * stroke, the 32px design seat stays 1.5 */
+    /* rendered for real (the r323 EdgeTab seat's measure): the 12px
+     * seat carries the tapered stroke, the 32px design seat stays 1.5 */
     const tiny = render(React.createElement(Logo, { variant: 'mark', size: 12 })).container;
     const tinyG = tiny.querySelector('g[stroke]');
     expect(Number(tinyG?.getAttribute('stroke-width'))).toBeCloseTo(1.031, 3);
