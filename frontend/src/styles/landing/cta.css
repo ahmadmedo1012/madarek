@@ -411,13 +411,15 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
   /* T-10e: heron parks the band-top kick-wraps at 390 as well — 0×0
      seats at the wrap top-centre (x-mirror 195, y 0); the ruled gutters
      and the 6.05rem cells stay (the labels are desktop-only matter). */
+  /* R347 D5 — the top-band mono kickers are display:none on phones:
+   * the old seat PARKED them in a position:fixed 0×0 overflow:hidden
+   * box at the viewport's top centre — an invisible fixed overlay
+   * whose text line-boxes still laid out on one point (the detector's
+   * 390 text-on-text findings) and served no instrument purpose (the
+   * kicker bindings are desktop-only records — absent from the 390
+   * spec). The title-rail FIN kicker keeps its real cell. */
   .fo-cta-band-top .fo-cta-kick {
-    position: fixed;
-    inset-block-start: 0;
-    inset-inline-start: 50%;
-    inline-size: 0;
-    block-size: 0;
-    overflow: hidden;
+    display: none;
   }
 
   /* T-10e: the phone belt re-seat — the resolve column narrows to the

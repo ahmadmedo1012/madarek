@@ -678,10 +678,13 @@
 
 /* the affordance row (overlaid at the stage's bottom corner above
    760px — the R308 position; static inside the flow rail below).
-   R347 D4: the overlay is hover-revealed with the readout — at rest
-   it was a persistent caption strip over the drawing's bottom; an
-   invisible interactive row is a trap, so pointer-events rides the
-   same gate (data-point is the instrument's own hover state). */.hi-hint {
+   R347 D4: the overlay leaves REST — it was a persistent caption
+   strip over the drawing's bottom. It appears exactly when it is
+   meaningful: on hover (data-point, the instrument's own state) or
+   while a station is open (data-any-open — the reset control must
+   stay operable; the r308/r309 e2e contract). Never pointer-dead
+   while visible. */
+.hi-hint {
   position: absolute;
   inset-block-end: var(--sp-2);
   inset-inline-start: var(--sp-3);
@@ -692,7 +695,8 @@
   pointer-events: none;
   transition: opacity var(--t-base) var(--ease);
 }
-.hi-layer[data-point='on'] .hi-hint {
+.hi-layer[data-point='on'] .hi-hint,
+.hi-flow[data-any-open='on'] .hi-hint {
   opacity: 1;
   pointer-events: auto;
 }
