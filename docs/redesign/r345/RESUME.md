@@ -6,4 +6,4 @@
 - [ ] E2 final panel
 - [ ] H live perf
 - [ ] G-2 final clean + docs
-budget stop line: (none yet)
+STOPPED BY BUDGET at D-Stage-1 (crawl/dead-set/deletion not started; safety net built + validated 50/50; E1+F green; H/E2/G-2-docs remain — see HANDOFF.md)
