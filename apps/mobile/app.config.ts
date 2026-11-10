@@ -114,14 +114,15 @@ const config: ExpoConfig = {
   },
   experiments: {
     typedRoutes: true,
-    // R327 C5 — reactCompiler ON: the M1.3 crash suspect (reanimated ×
-    // compiler) left the tree in C4, and the 87-warning purity ratchet is
-    // at zero (every set-state-in-effect / purity / immutability finding
-    // fixed by refactor, not suppression). With the plugin on: tsc 0 ·
-    // jest 726/726 · export green (4.51 MB, −27% vs the R327-open
-    // baseline). D2 fresh device builds are the confirmation step; the
-    // rollback is this one flag.
-    reactCompiler: true,
+    // R327 C5 — reactCompiler OFF. The fresh-device builds from the D2
+    // open (the confirmation step that was left unverified) terminate the
+    // app immediately after login. The React Compiler is incompatible with
+    // several reanimated UI-thread patterns used on login-adjacent screens
+    // (AnimatedCircle/AnimatedTextInput + useAnimatedProps/useDerivedValue)
+    // and the resulting failure is a native crash, not a JS error boundary.
+    // tsc/jest stay green either way, so the safety net was useless here.
+    // Re-enable only after a production-stable verification pass; revert
+    // this flag (rather than shipping a workaround) if it regresses again.
   },
   extra: {
     // Public configuration — safe to inline. The default targets the deployed
