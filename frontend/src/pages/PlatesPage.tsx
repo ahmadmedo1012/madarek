@@ -48,7 +48,7 @@ function PlatesPage(): React.JSX.Element {
       <PlateScene id="teacher-dashboard" title="لوحة الأستاذ">
         <FragmentTeacher />
       </PlateScene>
-      <PlateScene id="admin-dashboard" title="لوحة الإدارة">
+      <PlateScene id="admin-dashboard" title="لوحة المسجل العام">
         <FragmentAdmin />
       </PlateScene>
       <PlateScene id="owner-dashboard" title="لوحة المالك">
