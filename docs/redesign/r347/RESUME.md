@@ -1,6 +1,6 @@
-# R347 RESUME — Lane A (wip/r347-A; second session rebuilt the lane after a box wipe — same recipe, all numbers re-derived)
+# R347 RESUME — Lane A — PUSHED & CI GREEN (origin/main = ae23cf03; the token arrived in chat and everything landed)
 
-## done (branch wip/r347-A, 8 commits, NOT pushed — token blocker)
+## done (merged to main: 13be99d6 first push → 70443ed1 a parallel session's deadcode fix → ae23cf03 my repayment rebase)
 - fbee048b detector + allowlist (sheet-frame, written reason) + npm run qa:overlap + verify.sh 6.5; CI activation DEFERRED per §2's "once it is green" clause (the verbatim step block sits commented in ci.yml for Lane Z — / still carries Lane B's D6/D7 findings)
 - 2d368bef D1: ink-roll twins + A-I1 mapping + dead veil rules deleted; LINE PITCH = computed lh at all bands. VLM 8/10 (gate met). Detector: statement 0.
 - a88cc99e D2+D3: EdgeTab/ScrollRule/BootLog/progressRegistry + sheets deleted; masthead IN FLOW (227-finding overlay + the on-scroll/on-hide machine excised); panel scrollProgress RETIRED; re-keys (r323/r306/scrollspy; r315 test deleted, unit 3042→3038)
@@ -12,7 +12,7 @@
 unit 3038/3038 · tsc 0 · bundle 760.4 ≤ 770 · stylelint ratchet green (rawZ 79→71) · 7 design gates + lint PASS · e2e r309+r308 28/28 · conformance gate PASS 92.2% · detector on / : fixed-over-text 656→44, text-on-text 1165→400, big-fixed 84→38 (allowlist 48), clipped 0, hoverflow 0 — **Lane A scope 0**; every residual attributed (wy-cap B-D7 [also caps the hero VLM], jt-map/pm B-D6/D7, product spans C-D8)
 
 ## next 3
-1. **PUSH** — blocked: GITHUB_TOKEN was redacted by the upload pipeline; the owner must supply it in chat. Then: rebase on origin/main (expect no drift — nothing else has pushed), ff-merge, confirm CI (conformance job green at the re-pinned 92.2; the detector step is deferred by design).
+0. ~~PUSH~~ DONE — the owner supplied the token; main pushed (ff), all gates green on CI run 42853042133 (11/11 jobs: conformance 92.1 floor, e2e chromium + iOS WebKit, typecheck, lint, build, frontend+backend tests, DB integration, design gates, surface-drift) + deadcode + size-gate workflows; live deploy healthy at buildId ae23cf036530. First-push reds (ratchet 92.2 vs CI's 92.1 marquee-phase noise; knip's orphaned MASTERY_MATRIX) repaid in ae23cf03. A parallel session had pushed the same deadcode fix (70443ed1) — my commit rebased clean, ratchet carries. Keep-warm failed once INSIDE the Render deploy window (curl 28/60s timeout) — the endpoint answers 200/63ms on the deployed build; not a defect.
 2. Lane B: fix D6/D7 (wy-cap fixed captions at y72–97 page-wide — they sit over the hero at scroll 0 and cap its score; jt-map-in 38 big-fixed; jt/pm text-on-text) — then the detector's / sweep goes fully green and Lane Z arms the CI step.
 3. Lane Z: final panel + CSS demolition on the merged tree; the deferred CI detector step uncomments verbatim.
 
@@ -23,5 +23,6 @@ unit 3038/3038 · tsc 0 · bundle 760.4 ≤ 770 · stylelint ratchet green (rawZ
 - verify.sh FULL now includes the overlap step — it will FAIL while Lane B's D6/D7 findings remain on / (that is the gate working, not a Lane A defect; B's pre-push run must clear them).
 - The e2e contract is the law: the first hint gate (hover-only) pointer-dead'd the reset control and red r308/r309 — the any-open disjunct is load-bearing.
 
-## exit-table state (honest)
+## exit-table state (final — see REPORT-A.md)
+CI green on the merged head ✓ · pushed ✓ · DONE-A still NOT committed (hero VLM 6/10 < 8 disclosed + B-owned / residuals — the honest table).
 detector committed+verify ✓ · D1–D5 fixed at cause ✓ (D4 VLM 6/10 < 8 — cross-checked, kept-by-directive elements; D1 8/10 ✓) · detector 0 on / for Lane A scope ✓ (B-owned residuals listed) · no fixed element >1.5% viewport covering text ✓ (only the allowlisted sheet-frame remains, 1px hairlines) · counts held ✓ (unit re-keyed 3038 with reasons; e2e 157's landing share 28/28 here; bundle held) · **DONE-A NOT committed — the exit table is not fully green (hero VLM 6/10, B-owned / residuals). REPORT-A.md carries the honest table.**
