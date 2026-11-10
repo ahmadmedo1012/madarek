@@ -1,7 +1,7 @@
 {
-  "rate": 92.1,
+  "rate": 91.7,
   "total": 66170,
-  "pass": 60971,
-  "updatedAt": "2026-11-10T16:10:00.000Z",
-  "note": "R347 authorized re-pin (R346 §3: the defect fix wins; total give-back 93.1->92.1 = 1.0 <= 1.5, floor 91.6 held): D1 deleted the statement ink-roll twins + their A-I1 bindings (the visible double-print outranks the metric) and D4 retired the hero's drafting-noise chrome with its 198 explicit bindings + their mostly-passing geometry checks (ONE calm artwork per the owner's directive). CI-measured on the pushed tree (run 42849353643): TOTAL 60971/66170 = 92.1% - the first pin (92.2, from the session box's 60976/66170) missed by the documented crawl-marquee loop-phase noise (position-dependent per run, the r344 note's own finding: the session box measured 93.24 where CI measured 93.09 on the same tree). Pinned to the CI measurement, the min of the runs of this tree. Per-section re-keys with written reasons live in run.mjs (COVERAGE_FLOORS intro 37 / hero 11; HEURISTIC_CAPS hero 80) and coverage-review.json (home-hero-wrap, owner T-347). From here the ratchet only rises."
+  "pass": 60662,
+  "updatedAt": "2026-11-10T19:05:00.000Z",
+  "note": "R347-B authorized re-pin (R346 §3: the defect fix wins; this round's give-back 92.1->91.7 = 0.4, cumulative 93.1->91.7 = 1.4 <= 1.5, floor 91.6 held): Lane B's D6 seat changes moved the map section's measured seats — the statement plaques to their own in-flow band above the window (D6b: the overlay-on-plan seats printed the captions on the drawing's room labels, 232 detector findings), the INTRODUCTION card in flow below the window (D6c: the corner card covered 5 plan labels), the annotation cards to the collision-free grid (D6c), the counter chip to the band's edge (D6f), and the why captions' live gate fixed (D7b: the stage rule painted them page-wide). CI-measured on the pushed tree f9cb594b (run 42878624090): TOTAL 60662/66170 = 91.7% with --scroll --interact (the session box's plain --gate run measured 92.1 — the extended matrix carries the moved scroll-state seats). Pinned to the CI measurement, the min of the runs of this tree. From here the ratchet only rises."
 }

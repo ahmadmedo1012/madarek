@@ -1,13 +1,13 @@
 {
- "generatedAt": "2026-11-10T18:40:38.692Z",
+ "generatedAt": "2026-11-10T18:57:10.260Z",
  "engine": "chromium",
  "url": "http://localhost:5173/",
  "specDir": "/home/z/madarek/docs/redesign/r335/heron-spec",
  "summary": {
-  "total": 65172,
-  "pass": 60022,
-  "fail": 5150,
-  "passRate": 92.1,
+  "total": 66170,
+  "pass": 60665,
+  "fail": 5505,
+  "passRate": 91.7,
   "exceptionUses": 192,
   "exceptionRate": 0.3,
   "exceptionCap": "<5%",
@@ -16,7 +16,7 @@
   },
   "unmatchedFailures": 314,
   "gate": "PASS",
-  "ratchet": 92.1,
+  "ratchet": 91.7,
   "coverage": {
    "formula": "coverage = measured / (measured + offBookEst); offBookEst = suppressedChecks + excusedElements × 12 (GROUP_CHECKS sum = checks per fully-measured element; conservative — the 5 unskippable per-element checks are not counted). Section cells only; scroll/interact extensions are not coverage-scored.",
    "thresholds": {
@@ -236,10 +236,10 @@
   },
   "footer": {
    "390": {
-    "passRate": 89.3,
+    "passRate": 89.4,
     "n": 1339,
-    "pass": 1196,
-    "fail": 143,
+    "pass": 1197,
+    "fail": 142,
     "exceptions": 4,
     "explicit": 0,
     "dataSpec": 112,
@@ -892,8 +892,8 @@
    "oursSelector": "div#statement.st-section",
    "mode": "page",
    "expected": "right gutter 8px (±2px)",
-   "actual": "3.7px (Δ-4.3px; visible-content-union)",
-   "delta": -4.3
+   "actual": "0.4px (Δ-7.6px; visible-content-union)",
+   "delta": -7.6
   },
   {
    "section": "home-usecase-wrap",
@@ -5917,6 +5917,17 @@
    "delta": 630
   },
   {
+   "section": "home-intro-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+   "oursSelector": "#ds:intro.dupcard.5",
+   "mode": "data-spec",
+   "expected": 57,
+   "actual": 685,
+   "delta": 628
+  },
+  {
    "section": "home-map-wrap",
    "bp": "1920",
    "kind": "h",
@@ -5925,17 +5936,6 @@
    "mode": "heuristic",
    "expected": 9,
    "actual": 636,
-   "delta": 627
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1024",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-   "oursSelector": "#ds:intro.dupcard.5",
-   "mode": "data-spec",
-   "expected": 57,
-   "actual": 684,
    "delta": 627
   },
   {
@@ -13800,7 +13800,7 @@
    "specLeft": 8,
    "specRight": 8,
    "ourLeft": 8,
-   "ourRight": 3.7,
+   "ourRight": 0.4,
    "rootContentBox": {
     "l": 8,
     "r": 8
@@ -13907,6 +13907,16 @@
  "scrollCurves": {
   "pass": 0,
   "fail": 5
+ },
+ "interact": {
+  "pass": 625,
+  "fail": 317,
+  "hoverChecked": 696
+ },
+ "patterns": {
+  "pass": 17,
+  "fail": 39,
+  "checked": 60
  },
  "panel": {
   "pass": 60,
@@ -14345,7 +14355,7 @@
   "skipped": []
  },
  "provenance": {
-  "file": "chromium-20261110-184315-full.json",
+  "file": "chromium-20261110-190236-full.json",
   "scope": "full",
   "fullMatrix": true,
   "sections": "10/10",
