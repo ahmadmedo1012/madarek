@@ -19,6 +19,9 @@ export const WORKS_TODAY = 'ما يعمل اليوم';
  *  verbatim; the mastery line is the spec's own answer text). */
 export const MASTERY_SCORE_LINE = 'درجة إتقان لكل مفهوم تكشف الفجوة وتربطها بالدرس المناسب.';
 export const LECTURE_INTERACTIVE = 'المحاضرة التفاعلية';
+/* R347 D4 — MASTERY_MATRIX is deleted with its only consumer (the hero
+ * deco cards' [03] label); the live work strip carries the same honest
+ * subject. */
 
 
 /** R337 — the blueprint drawing classes (StatementArt/SectionDrawing/

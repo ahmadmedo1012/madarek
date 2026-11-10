@@ -1,7 +1,7 @@
 {
-  "rate": 92.2,
+  "rate": 92.1,
   "total": 66170,
-  "pass": 60976,
-  "updatedAt": "2026-11-10T15:20:00.000Z",
-  "note": "R347 authorized re-pin (R346 §3: the defect fix wins; give-back 93.1→92.2 = 0.9 ≤ 1.5, floor 91.6 held): D1 deleted the statement ink-roll twins + their A-I1 bindings (the visible double-print outranks the metric) and D4 retired the hero's drafting-noise chrome with its 198 explicit bindings + their mostly-passing geometry checks (ONE calm artwork per the owner's directive). Measured post-fix with --scroll --interact on the full 9-section × 5-bp matrix (results/chromium-20261110-150911-full.json): TOTAL 60976/66170 = 92.2%, interact hero 104/104 pass, per-section re-keys with written reasons in run.mjs (COVERAGE_FLOORS intro 37 / hero 11; HEURISTIC_CAPS hero 80) and coverage-review.json (home-hero-wrap, owner T-347). The remaining failure mass (map/why/footer heuristic glue) is pre-existing and documented. From here the ratchet only rises."
+  "pass": 60971,
+  "updatedAt": "2026-11-10T16:10:00.000Z",
+  "note": "R347 authorized re-pin (R346 §3: the defect fix wins; total give-back 93.1->92.1 = 1.0 <= 1.5, floor 91.6 held): D1 deleted the statement ink-roll twins + their A-I1 bindings (the visible double-print outranks the metric) and D4 retired the hero's drafting-noise chrome with its 198 explicit bindings + their mostly-passing geometry checks (ONE calm artwork per the owner's directive). CI-measured on the pushed tree (run 42849353643): TOTAL 60971/66170 = 92.1% - the first pin (92.2, from the session box's 60976/66170) missed by the documented crawl-marquee loop-phase noise (position-dependent per run, the r344 note's own finding: the session box measured 93.24 where CI measured 93.09 on the same tree). Pinned to the CI measurement, the min of the runs of this tree. Per-section re-keys with written reasons live in run.mjs (COVERAGE_FLOORS intro 37 / hero 11; HEURISTIC_CAPS hero 80) and coverage-review.json (home-hero-wrap, owner T-347). From here the ratchet only rises."
 }
