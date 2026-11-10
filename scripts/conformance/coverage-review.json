@@ -10,7 +10,12 @@
       "section": "home-intro-wrap",
       "owner": "T-342-11",
       "reason": "The intro's off-book mass is the reference's text-roll tween plumbing: the census records the h2's per-word/per-char split boxes (96-127 div.short per bp), parked roll copies, loop duplicates and 0x0 tween boxes — 2130 excused element-instances across 5 bps vs 326 explicit bindings (intro.line/word/wordin/wchar.N.M mirrors, 254 with tag+geometry skips) + 9551 measured checks at 98-100% cell rates. Every residue path carries a written reason in mapping/home-intro-wrap.json. The honest lift is deepening the split-text mirror in Statement.tsx to bind the remaining word-wrapper windows — a dedicated section task, tracked as the R342-11 report's remaining blocker; the coverage floor (24.8% < 40%) is NOT suppressed by this review and stays a FAIL."
+    },
+    {
+      "section": "home-hero-wrap",
+      "reason": "R347 D4: the drafting-noise chrome (rulers, +/- marks, graticule, deco cards, edge frame, the ~95-div grid + vector-chrome layers) is retired with its elements per the owner's directive - ONE calm artwork; 198 binding entries deleted with them, so the heron-side off-book mass (the grid/chrome census) now dominates the section's estimate. The retirement is measured and documented in docs/redesign/r347/DEFECTS-A.md; the visible defect fix outranks the coverage metric (R346 §0/§3).",
+      "owner": "T-347",
+      "reviewedAt": "2026-11-10"
     }
   ]
 }
-

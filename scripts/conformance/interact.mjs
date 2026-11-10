@@ -113,6 +113,17 @@ async (cfg) => {
 const CHANNELS = ["color", "bg", "op", "bd", "sh", "tr"];
 const changed = (a, b) => CHANNELS.filter((c) => a[c] !== b[c]);
 
+/* R347 D4 re-key (the defect fix legitimately changed the live
+ * contract): the hero's drafting-noise hover seats — the deco [0x]
+ * cards (ordinals 8/9) and the ± registration marks + measure
+ * graticule (11–20) — are retired WITH their elements (ONE calm
+ * artwork per the owner's directive; docs/redesign/r347/DEFECTS-A.md).
+ * Their probes are retired with this written reason, never silently;
+ * the login/register/work-strip seats (0/3/1/2/5/7/4/6) still probe. */
+const RETIRED_HOVERS = {
+  "home-hero-wrap": new Set([8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]),
+};
+
 export async function interact(url, bps, sections) {
   const browser = await chromium.launch({ headless: true });
   const out = { pass: 0, fail: 0, failures: [], hoverChecked: 0, patternsChecked: 0 };
@@ -140,7 +151,12 @@ export async function interact(url, bps, sections) {
         // counted by the same DOM order the extractor used.
         // Some extractor hover records are error stubs ({i, hover:{err}})
         // — skip them; only real pathed records with a delta payload probe.
-        const probes = hovers.slice(0, 40).filter((h) => h && typeof h.p === "string" && h.hover && !h.hover.err).map((h) => {
+        const retired = RETIRED_HOVERS[key];
+        const probes = hovers.slice(0, 40).filter((h) => h && typeof h.p === "string" && h.hover && !h.hover.err).filter((h) => {
+          if (!retired) return true;
+          const m0 = h.p.match(/interactive\[(\d+)\]$/);
+          return !(m0 && retired.has(Number(m0[1])));
+        }).map((h) => {
           const m = h.p.match(/interactive\[(\d+)\]$/);
           const ex = explicit.find((e) => e.heron === h.p);
           if (ex) return { p: h.p, sel: ex.scope === "page" ? ex.ours : `${sel} ${ex.ours}`, spec: h.hover };
