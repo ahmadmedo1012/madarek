@@ -179,7 +179,7 @@ try {
             const step = Math.max(400, Math.round(vpH(bp) * 0.8));
             for (let y = 0; y < height; y += step) { await seat(page, y); await page.waitForTimeout(90); }
             await seat(page, height); await page.waitForTimeout(400);
-            const png = (p) => WEBP ? p.replace(/\.png$/, ".tmp.png") : p;
+            const png = (p) => WEBP ? p.replace(/\.webp$/, ".tmp.png") : p;
             const webpize = (p) => { if (!WEBP) return; };
             await page.screenshot({ path: png(bottom) });
             await seat(page, 0); await page.waitForTimeout(500);
