@@ -269,7 +269,10 @@ export function SheetNav() {
 
           <div className="fo-header-actions" data-spec="nav.zone.actions">
             <ThemeToggle />
-            <Link to="/auth" className="fo-actions-login">{LOGIN}</Link>
+            {/* R347 D4 — the nav's login link is RETIRED: «تسجيل الدخول»
+                appeared twice at the fold (nav + the hero's measured a[2]
+                alt cell, which is the census-bound seat that stays);
+                ONE login, per the owner's directive. */}
             {/* the CTA cell — her anatomy: the 1px boundary rule + the
                 content wrap, both real elements for the measured seats. */}
             <Link to="/auth/register" className="fo-actions-cta" data-spec="nav.cta">

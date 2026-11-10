@@ -301,7 +301,12 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     // A.1: whole building, trees, ground line, two orange pin squares)
     // and the drafting chrome (rulers, + marks, dashed inner frame,
     // ± marks) stays on the window
-    expect(liveTsx).toMatch(/className="bp-ruler bp-ruler-t"/);
+    /* R347 D4 re-key: the drafting chrome (rulers/dmarks/measures/
+       deco/grid/chrome layers) is retired with its elements — ONE calm
+       artwork per the owner's directive; the ink elevation stays. */
+    expect(liveTsx).not.toMatch(/className="bp-ruler/);
+    expect(liveTsx).not.toMatch(/hro-grid|hro-chrome|bp-dmark|bp-measure|hro-deco/);
+    expect(liveTsx).toMatch(/HeroInkWindow/);
     // R321 §A6 re-pin: the marks render their glyph from CSS ::before
     // content (out of innerText) — the spans are EMPTY now; the glyph
     // contract moved to the stylesheet rules.
@@ -310,10 +315,10 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
      * added aria-hidden to the (still EMPTY, still self-closing) mark
      * spans; the pin's semantics (empty spans, glyph via ::before) are
      * unchanged, and the CSS half of the pin below is untouched. */
-    expect(liveTsx).toMatch(/className="bp-plus bp-plus-tl"(?: aria-hidden="true")? \/>/);
-    expect(liveTsx).toMatch(/className="bp-dmark bp-dmark-tl"(?: aria-hidden="true")? \/>/);
-    expect(live).toMatch(/\.bp-plus::before\s*\{\s*content:\s*'\+'/);
-    expect(live).toMatch(/\.bp-dmark::before\s*\{\s*content:\s*'\+'/);
+    expect(liveTsx).not.toMatch(/className="bp-plus/); /* R347 D4: the corner plus-marks retired with the edge frame */
+    expect(liveTsx).not.toMatch(/className="bp-dmark/); /* R347 D4: the ± registration marks retired */
+    expect(live).not.toMatch(/\.bp-plus::before/); /* R347 D4: the mark CSS retired with its elements */
+    expect(live).not.toMatch(/\.bp-dmark::before/); /* R347 D4: the mark CSS retired with its elements */
     // R322 override (2-b) → R333 re-key: the dashed inner frame rides
     // the live .hro-stage::before seat (same 1px dashed rule,
     // proximity-revealed as before) after the retired band grammar

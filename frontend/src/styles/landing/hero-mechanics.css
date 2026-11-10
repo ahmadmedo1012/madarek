@@ -1,3 +1,5 @@
+
+
 /* ════════════════════════════════════════════════════════════════════
    r331/hero.css — R331 · A-Web-Hero — the landing hero's Heron-mechanics
    rebuild (imported ONLY by components/landing/hero/Hero.tsx).
@@ -31,10 +33,7 @@
    THE ROOT — the fluid rem formula (0.5787037037vw ≥992 · 1.1990407674vw
    ≤991 · 2.5445292621vw ≤767) already lives in tokens.css R313 and is
    REUSED untouched; every rem below rides it exactly like the reference.
-   ════════════════════════════════════════════════════════════════════ */
-
-/* ── the motion register (scoped to the hero, token-clean) ────────── */
-.hro {
+   ════════════════════════════════════════════════════════════════════ *//* ── the motion register (scoped to the hero, token-clean) ────────── */.hro {
   --hro-p2-out: cubic-bezier(0.215, 0.61, 0.355, 1); /* GSAP power2.out */
   --hro-p3-out: cubic-bezier(0.165, 0.84, 0.44, 1);  /* GSAP power3.out */
   --hro-expo-out: cubic-bezier(0.19, 1, 0.22, 1);    /* GSAP expo.out   */
@@ -51,20 +50,18 @@
    card's bottom-stack reserve (R328 H1 — unchanged contract).
    R332 W1: position:relative — the band is the bg-border frame's
    containing block (Heron's bgBorderFrame is inset 1.2rem of the hero
-   wrap, over the full-bleed drawing — never around an inner box). ═════ */
-.fo-hero.hro {
+   wrap, over the full-bleed drawing — never around an inner box). ═════ */.fo-hero.hro {
   position: relative;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto auto;
-  min-block-size: calc(100svh - 13px); /* the measured reference band (887 = 900 − 13) */
+  block-size: calc(100svh - 63px - 13px); /* R347 D4: the r342 formula was calibrated for the FIXED header (an overlay that took no flow space); with the masthead IN FLOW (R347 D2) the section gives up its 63px (7px frame + 56px bar) or the content band's last 36px sink under the fold at 1440x900 - the headline and CTAs were partly cut off (the owner's D4) */
   align-content: stretch;
   padding-block: 0;
   padding-block-end: 14px; /* R342-02: the L1-c consent is an IN-FLOW TAIL BAND (page bottom) — the hero's fold can never sit under it, so the R328 corner-card reserve retires; the 14px seam stays */
 }
 
 /* the grid floor (R328 H1/H3 — min-width:auto would inflate every
-   band past the viewport on the snap strip / aspect-ruled stage) */
-.hro-art,
+   band past the viewport on the snap strip / aspect-ruled stage) */.hro-art,
 .hro-content,
 .hro-work {
   min-inline-size: 0;
@@ -73,10 +70,9 @@
 /* ══ [2] THE ART BAND — the drafting stage, FULL-BLEED (R332 W1 —
    the run-001 «window inside a window» kill): the paper is the page's
    own and runs edge-to-edge; the only vertical seat is the 63px header
-   chrome + the sheet-frame breathing room below. ═════ */
-.hro-art {
+   chrome + the sheet-frame breathing room below. ═════ */.hro-art {
   display: grid;
-  padding-block-start: 63px; /* 56px header + 7px frame chrome (the measured seat) */
+  padding-block-start: 0; /* R347 D2/D4: the 63px pad retired - the masthead is in flow above the section now */
   padding-block-end: var(--sp-2);
   padding-inline: 0; /* R332 W1: the old 7px sheet inset trapped the ink inside an inner window — the paper has no side inset */
   align-items: stretch;
@@ -89,8 +85,7 @@
    .bp-stage window rule in landing.css (border + var(--surface) white
    box + min(100%,108rem) + auto margins — the documented root cause;
    the exact landing.css edit is recorded in r332/sections/hero.md §5).
-   The stage is transparent paper, full width, ink edge-to-edge. */
-.hro .hro-stage {
+   The stage is transparent paper, full width, ink edge-to-edge. */.hro .hro-stage {
   inline-size: 100%;
   display: grid;
   place-items: center;
@@ -106,11 +101,8 @@
 /* ══ [2] THE ART BAND — R342-02: the drafting stage fills the fold above
    the content band (the 1fr row — the 62svh cap era ends: the reference's
    art band owns ~87% of the fold's height at 1440, the ink centered on
-   the paper with the ruler chrome spanning the whole field). ═══ */
-
-/* the ink — fills the frame's content width (the measured img-inner
-   grammar); height from the viewBox's own aspect, capped honest. */
-.hro .hro-art .bp-svg {
+   the paper with the ruler chrome spanning the whole field). ═══ *//* the ink — fills the frame's content width (the measured img-inner
+   grammar); height from the viewBox's own aspect, capped honest. */.hro .hro-art .bp-svg {
   inline-size: 100%;
   block-size: auto;
   max-block-size: 100%;
@@ -126,8 +118,7 @@
    explicit `pointer-events: auto`, hero.css), and the drag instrument's
    own gate is (hover:hover) and (min-width:992px) (HeroInspect.tsx) —
    above this belt, untouched. Desktop (≥769) keeps the stage's own
-   pointer grammar (the r305 cursor crosshair + drag-to-inspect). */
-@media (max-width: 768px) {
+   pointer grammar (the r305 cursor crosshair + drag-to-inspect). */@media (max-width: 768px) {
   .hro .hro-art,
   .hro .hro-art .bp-svg {
     pointer-events: none;
@@ -135,8 +126,7 @@
 }
 
 /* the line-art weight rides the vector gear (R330: the ink carries the
-   section — non-scaling strokes stay crisp at every art scale). */
-.hro-art .bp-svg .bp-hair,
+   section — non-scaling strokes stay crisp at every art scale). */.hro-art .bp-svg .bp-hair,
 .hro-art .bp-svg .bp-dash,
 .hro-art .bp-svg .bp-gridline,
 .hro-art .bp-svg .bp-hatch-line,
@@ -148,8 +138,7 @@
   vector-effect: non-scaling-stroke;
 }
 
-/* the ink weights (R330's measured gear: structure 2.4 · primary 3.2) */
-.hro .hro-art .bp-svg .bp-ink,
+/* the ink weights (R330's measured gear: structure 2.4 · primary 3.2) */.hro .hro-art .bp-svg .bp-ink,
 .hro .hro-art .bp-svg .bp-ink-fill {
   stroke-width: 2.4;
 }
@@ -167,8 +156,7 @@
   fill: none;
 }
 
-/* the proximity-revealed dashed inner frame (R315 B1 · A.3) */
-.hro-stage::before {
+/* the proximity-revealed dashed inner frame (R315 B1 · A.3) */.hro-stage::before {
   content: '';
   position: absolute;
   inset: 16px;
@@ -193,32 +181,8 @@
    inset 1.2rem; 4 edge items ~7px thick" — the 1px hairline is the
    sheet's documented chrome deviation). 1px hairlines on the page's
    own frame grammar. */
-.hro-edge {
-  position: absolute;
-  background: var(--rule);
-  pointer-events: none;
-  z-index: 4;
-}
 
-.hro-edge-t,
-.hro-edge-b {
-  inset-inline: 1.2rem;
-  block-size: 1px;
-}
-
-.hro-edge-s,
-.hro-edge-e {
-  inset-block: 1.2rem;
-  inline-size: 1px;
-}
-
-.hro-edge-t { inset-block-start: 1.2rem; transform-origin: 100% 0; }
-.hro-edge-b { inset-block-end: 1.2rem; transform-origin: 100% 100%; }
-.hro-edge-s { inset-inline-start: 1.2rem; transform-origin: 100% 0; }
-.hro-edge-e { inset-inline-end: 1.2rem; transform-origin: 0 0; }
-
-/* ≤767 — Heron's own mobile frame inset (0.8rem) */
-@media (max-width: 767px) {
+/* ≤767 — Heron's own mobile frame inset (0.8rem) */@media (max-width: 767px) {
   /* r339 T-13 — the phone sheet seat: heron's 390 hero root sits at
      x8 w374 (the 8px sheet gutter — spec home-hero-wrap.390.json
      div[1]); our full-bleed paper (the R332 W1 desktop verdict) ran
@@ -232,152 +196,24 @@
   .hro-art {
     margin-inline: 0.81rem;
   }
-
-  .hro-edge-t,
-  .hro-edge-b {
-    inset-inline: 0.8rem;
-  }
-
-  .hro-edge-s,
-  .hro-edge-e {
-    inset-block: 0.8rem;
-  }
-
-  .hro-edge-t { inset-block-start: 0.8rem; }
-  .hro-edge-b { inset-block-end: 0.8rem; }
-  .hro-edge-s { inset-inline-start: 0.8rem; }
-  .hro-edge-e { inset-inline-end: 0.8rem; }
 }
 
 /* the wipe — linear, 1.2s, from the intro gate */
-.landing.intro-draw .hro-edge-t,
-.landing.intro-draw .hro-edge-b {
-  transform: scaleX(0);
-}
-
-.landing.intro-draw .hro-edge-s,
-.landing.intro-draw .hro-edge-e {
-  transform: scaleY(0);
-}
-
-.landing.intro-done .hro-edge-t,
-.landing.intro-done .hro-edge-b {
-  transform: scaleX(1);
-  transition: transform var(--hro-hair-dur) linear;
-}
-
-.landing.intro-done .hro-edge-s,
-.landing.intro-done .hro-edge-e {
-  transform: scaleY(1);
-  transition: transform var(--hro-hair-dur) linear;
-}
 
 /* ══ [4] THE RULER CHROME — dashed ticks, corner registration marks,
    measure graticule (the reference's ruler layer, visible at rest at
    op .64 — the R322 extraction's settled state). R332 W1: inset 3.2rem
    (Heron's ruler: "inset 3.2rem, dashed tick lines") — the chrome sits
    INBOARD of the now full-bleed paper, never on the viewport edge. */
-.hro .bp-rulers {
-  position: absolute;
-  inset: 3.2rem;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.64;
-  transition: opacity var(--t-slow) var(--ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .hro-stage:is(:hover, :focus-within) .bp-rulers {
-    opacity: 1;
-  }
-}
-
-@media (max-width: 767px) {
-  .bp-rulers {
-    display: none; /* @390 the reference carries no ruler overlay — measured */
-  }
-}
 
 /* the dashed measure lines — two horizontal + two vertical dashed
    rules (the 2×2 quadrant graticule) + two solid brand marker lines */
-.bp-measure {
-  position: absolute;
-}
-
-.bp-measure-h {
-  inset-inline: 0;
-  block-size: 0;
-  border-block-start: 1px dashed var(--rule);
-}
-
-.bp-measure-v {
-  inset-block: 0;
-  inline-size: 0;
-  border-inline-start: 1px dashed var(--rule);
-}
-
-.bp-measure-h1 { inset-block-start: 22%; }
-.bp-measure-h2 { inset-block-end: 18%; }
-.bp-measure-v1 { inset-inline-start: 12%; }
-.bp-measure-v2 { inset-inline-end: 12%; }
-
-.bp-measure-marker {
-  inset-block-start: 22%;
-  inset-inline: 0;
-  block-size: 0;
-  border-block-start: 1px solid var(--accent);
-  margin-inline: 18%;
-}
-
-.bp-measure-m2 {
-  inset-block-start: auto;
-  inset-block-end: 18%;
-  margin-inline: 26% 36%;
-}
 
 /* the ruler tick strips — 1px marks on an 8px pitch, 7px long */
-.bp-ruler {
-  position: absolute;
-  opacity: 0.9;
-}
-
-.bp-ruler-t,
-.bp-ruler-b {
-  inset-inline: 2px;
-  block-size: 7px;
-  background-image: repeating-linear-gradient(to right, var(--rule) 0 1px, transparent 1px 8px);
-}
-
-.bp-ruler-t { inset-block-start: 2px; }
-.bp-ruler-b { inset-block-end: 2px; }
-
-.bp-ruler-s,
-.bp-ruler-e {
-  inset-block: 2px;
-  inline-size: 7px;
-  background-image: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px 8px);
-}
-
-.bp-ruler-s { inset-inline-start: 2px; }
-.bp-ruler-e { inset-inline-end: 2px; }
 
 /* the corner plus marks — the reference's registration marks, now the
    SECTION frame's corner chrome (R332 W1: they ride the bg-border
    frame, centred on its 1.2rem corners — Heron's corner plus marks). */
-.bp-plus {
-  position: absolute;
-  color: var(--rule);
-  font-family: var(--font-mono);
-  font-size: var(--fs-mono-md);
-  line-height: 1;
-}
-
-.bp-plus::before { content: '+'; }
-
-.hro .bp-plus-tl { inset-block-start: calc(1.2rem - 0.7rem); inset-inline-start: calc(1.2rem - 0.7rem); }
-.hro .bp-plus-tr { inset-block-start: calc(1.2rem - 0.7rem); inset-inline-end: calc(1.2rem - 0.7rem); }
-.hro .bp-plus-bl { inset-block-end: calc(1.2rem - 0.7rem); inset-inline-start: calc(1.2rem - 0.7rem); }
-.hro .bp-plus-br { inset-block-end: calc(1.2rem - 0.7rem); inset-inline-end: calc(1.2rem - 0.7rem); }
 
 /* r339 T-13 — the registration marks ride the sheet frame on phones:
  * the section-anchored 0.5rem seat put them at x5/x385 (3px outside
@@ -386,62 +222,19 @@
  * phone seat aligns them with the art band's 0.81rem sheet edge.
  * Seated BELOW the base rules — the equal-specificity tie breaks on
  * source order, and the base block above used to win. */
-@media (max-width: 767px) {
-  .hro .bp-plus-tl,
-  .hro .bp-plus-bl { inset-inline-start: 0.81rem; }
-  .hro .bp-plus-tr,
-  .hro .bp-plus-br { inset-inline-end: 0.81rem; }
-}
 
 /* the ± registration marks at the dashed inner frame's corners.
    R332 W1: they belong to the hover-revealed dashed inner frame —
    gated with it (at rest the hero's corners carry ONLY the viewport
    frame's plus marks — no stray chrome). */
-.bp-dmark {
-  position: absolute;
-  color: var(--rule);
-  font-family: var(--font-mono);
-  font-size: var(--fs-mono-xs);
-  line-height: 1;
-}
-
-.bp-dmark::before { content: '+'; }
-
-.bp-dmark-tl { inset-block-start: 11px; inset-inline-start: 11px; }
-.bp-dmark-tr { inset-block-start: 11px; inset-inline-end: 11px; }
-.bp-dmark-bl { inset-block-end: 11px; inset-inline-start: 11px; }
-.bp-dmark-br { inset-block-end: 11px; inset-inline-end: 11px; }
-
-.hro .bp-dmark {
-  opacity: 0;
-  transition: opacity var(--t-slow) var(--ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .hro-stage:is(:hover, :focus-within) .bp-dmark {
-    opacity: 0.9;
-  }
-}
 
 /* ══ [5] THE DECO CARDS — the reference's mono micro-copy cards over
    the drawing (item1/item2 grammar), each with the 1.6rem brand square
    on the reference's fadeLoop (1.5s pulse). ≥992 only (the phone art
    box carries no layer chrome). */
-.hro-deco {
-  position: absolute;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto;
-  column-gap: 0.6rem;
-  align-items: center;
-  padding: 0.8rem 1rem;
-  pointer-events: none;
-}
 
 /* the seats — the reference's item1/item2 mirrored for RTL (reading
-   start side, over the drawing's lower band) */
-.hro-deco-1 {
+   start side, over the drawing's lower band) */.hro-deco-1 {
   inset-block-end: 22%;
   inset-inline-start: 10%;
 }
@@ -451,36 +244,9 @@
   inset-inline-start: 44%;
 }
 
-.hro-deco-sq {
-  grid-row: 1 / 3;
-  inline-size: 1.6rem;
-  block-size: 1.6rem;
-  background: var(--accent-ink);
-  animation: hro-fade-loop 1.5s var(--ease) infinite;
-}
-
 @keyframes hro-fade-loop {
   0%, 100% { opacity: 0.32; }
   50% { opacity: 1; }
-}
-
-.hro-deco-label {
-  font-size: 1.4rem; /* the reference's mono label rung (11.67px @1440) */
-  color: var(--text-faint);
-  line-height: 1.1;
-}
-
-.hro-deco-text {
-  font-size: 1.4rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  line-height: 1.3;
-}
-
-@media (max-width: 991px) {
-  .hro-deco {
-    display: none;
-  }
 }
 
 /* ══ [6] THE CONTENT BAND — R342-02: the measured closing collage of the
@@ -491,8 +257,7 @@
    fold's foot: the h1's box-bottom is the section's last line (the
    100svh−13 belt pins the fold; the art band's 1fr takes everything
    above). The work strip is seated absolutely inside the band's lower
-   zone (the spec's own overlap — [7] below). */
-.hro-content {
+   zone (the spec's own overlap — [7] below). */.hro-content {
   display: grid;
   grid-template-columns: minmax(0, 92.64rem) minmax(0, 51.8rem) minmax(0, 17.16rem);
   column-gap: 1.68rem;
@@ -503,16 +268,14 @@
   align-items: start;
 }
 
-/* the H1 cell — the reading-start column (inline-start in RTL) */
-.hro-title-cell {
+/* the H1 cell — the reading-start column (inline-start in RTL) */.hro-title-cell {
   min-inline-size: 0;
 }
 
 /* the display title — the spec's own h1 rung: 5.6rem / 700 / the Arabic
    metric floor (max(1, 1.35) — IBM Plex Sans Arabic's ascender/descender
    air inside the overflow masks); UNVOCALISED display canon, zero
-   tracking (cursive joins). Two authored lines = the spec's 2-line box. */
-.hro-title {
+   tracking (cursive joins). Two authored lines = the spec's 2-line box. */.hro-title {
   font-family: var(--font-display);
   font-size: var(--fs-d1); /* 5.6rem on the shared fluid root — the Heron ladder */
   font-weight: 700;
@@ -528,8 +291,7 @@
    overflow-hidden mask; the inner line translates 102%→0 (0.8s
    power2.out, 0.02s stagger). yPercent is direction-neutral: no RTL
    mirror. The 102% (vs the reference's 100) keeps descenders from
-   peeping under the mask at rest height. */
-.hro-lmask {
+   peeping under the mask at rest height. */.hro-lmask {
   display: block;
   overflow: hidden;
   /* T-11b2 — Heron's hero load scales ride the MASK boxes (scaleX
@@ -559,8 +321,7 @@
 }
 
 /* T-11b2 — the mask scale ladder mirrors the line stagger exactly
-   (the wipe and the rise fire as one beat per line) */
-.landing.intro-draw .hro-title .hro-lmask { scale: 0 1; }
+   (the wipe and the rise fire as one beat per line) */.landing.intro-draw .hro-title .hro-lmask { scale: 0 1; }
 .landing.intro-draw .hro-lead .hro-lmask { scale: 0 0; }
 
 .landing.intro-done .hro-title .hro-lmask:nth-child(1) { transition-delay: 0.05s; }
@@ -570,8 +331,7 @@
 .landing.intro-done .hro-lead .hro-lmask:nth-child(2) { transition-delay: 0.18s; }
 
 /* the stagger — 0.02s per line, the title first (t₀ + 0.05: the loader
-   slit needs one frame before the first line lifts) */
-.landing.intro-done .hro-title .hro-lmask:nth-child(1) .hro-line { transition-delay: 0.05s; }
+   slit needs one frame before the first line lifts) */.landing.intro-done .hro-title .hro-lmask:nth-child(1) .hro-line { transition-delay: 0.05s; }
 .landing.intro-done .hro-title .hro-lmask:nth-child(2) .hro-line { transition-delay: 0.07s; }
 .landing.intro-done .hro-title .hro-lmask:nth-child(3) .hro-line { transition-delay: 0.09s; }
 
@@ -579,8 +339,7 @@
    the register CTA under it (the reference's own sub-wrap stack), riding
    the band's measured offset from the row head (the 2.28rem seat lands
    the lead at the spec's own y at 1440 and rides the root at the other
-   desktop belts) */
-.hro-sub-cell {
+   desktop belts) */.hro-sub-cell {
   min-inline-size: 0;
   display: flex;
   flex-direction: column;
@@ -590,8 +349,7 @@
 
 /* the lead — the spec's body rung (1.6rem) at the Arabic metric floor;
    full ink (the reference's rgb(40,40,40) seat — the muted ramp ends);
-   the 51.8rem column IS the measured 432px box (no ch clamp) */
-.hro-lead {
+   the 51.8rem column IS the measured 432px box (no ch clamp) */.hro-lead {
   font-size: var(--fs-body); /* 1.6rem — Heron txt-16 on the shared root */
   font-weight: 400; /* the spec's own lead weight */
   line-height: 1.35; /* the Arabic floor — the spec's 1.3 box is the Latin seat */
@@ -606,8 +364,7 @@
 /* the CTA row — the block rise (opacity 0→1 · y 3.2rem→0 · 1s
    power3.out): ONE primary (the funnel contract) on the reference's own
    CTA seat — a 600-weight text link with the arrow glyph and the
-   underline-sweep affordance (the .btn mass era ends with R342). */
-.hro-actions {
+   underline-sweep affordance (the .btn mass era ends with R342). */.hro-actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -631,8 +388,7 @@
 
 /* the primary CTA — the measured link seat: 1.6rem/600, full ink, the
    0.4s/ease color register, the underline sweep + arrow nudge on hover
-   (two affordance channels), focus-visible parity (r162 law) */
-.hro-cta {
+   (two affordance channels), focus-visible parity (r162 law) */.hro-cta {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -662,8 +418,7 @@
 
 /* the alt cell — the login secondary's own measured column (the spec's
    a[2]): accent ink, the text row over the arrow glyph (the reference's
-   stacked link box), seated at the band's inline-end edge */
-.hro-alt-cell {
+   stacked link box), seated at the band's inline-end edge */.hro-alt-cell {
   min-inline-size: 0;
   display: flex;
   flex-direction: column;
@@ -672,8 +427,7 @@
 }
 
 /* the secondary — the reference's accent link voice (rgb(250,54,0) is
-   the measured seat — our own --accent token carries the same value) */
-.hro-alt {
+   the measured seat — our own --accent token carries the same value) */.hro-alt {
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
@@ -701,6 +455,7 @@
 .hro-alt :is(svg, .icon) {
   transition: transform 0.4s var(--hro-p2-out);
 }
+
 /* ══ [7] THE WORK STRIP — R342-02: the six honest subjects on the
    reference's own seat — at ≥1024 an absolutely-positioned closing row
    inside the content band's lower zone (the spec's own composition: the
@@ -709,8 +464,7 @@
    RTL track flowing from the measured 759px-class inline-start rail
    with the tail subjects cropping at the viewport's inline-end edge
    (the reference's own overflow grammar). <1200px: the snap-scroller
-   (R328 H3) rides in flow — whole items settle at the rest edges. */
-.hro-work {
+   (R328 H3) rides in flow — whole items settle at the rest edges. */.hro-work {
   display: flex;
   overflow: hidden;
   margin-inline: 7px;
@@ -760,8 +514,7 @@
   letter-spacing: 0.12em; /* the LATIN mono chips only — Arabic keeps zero tracking */
 }
 
-/* the rise */
-.landing.intro-draw .hro-work {
+/* the rise */.landing.intro-draw .hro-work {
   opacity: 0;
   transform: translateY(var(--hro-rise));
 }
@@ -775,8 +528,7 @@
 }
 
 /* <1200px — the snap-scrolling strip (R328 H3): whole items settle at
-   the rest edges, zero mid-glyph crop */
-@media (max-width: 1199px) {
+   the rest edges, zero mid-glyph crop */@media (max-width: 1199px) {
   .hro-work {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -810,23 +562,13 @@
 /* ══ [8] THE IMG/FRAME FADE — the reference's img+deco+frame fades
    (1s power3.out). OUR img is the ink drawing itself: the SVG fades on
    the same 1s power3.out seat while the strokes draw (below) — the
-   drawing arrives as a drawing, not a photograph. */
-.landing.intro-draw .hro-art .bp-svg {
+   drawing arrives as a drawing, not a photograph. */.landing.intro-draw .hro-art .bp-svg {
   opacity: 0;
 }
 
 .landing.intro-done .hro-art .bp-svg {
   opacity: 1;
   transition: opacity var(--hro-fade-dur) var(--hro-p3-out) 0.25s;
-}
-
-.landing.intro-draw .hro-deco {
-  opacity: 0;
-}
-
-.landing.intro-done .hro-deco {
-  opacity: 1;
-  transition: opacity var(--hro-fade-dur) var(--hro-p3-out) 0.85s;
 }
 
 /* ══ [9] THE STAGED INK-IN — pathLength-normalized strokes draw
@@ -837,8 +579,7 @@
    title's masks resolve (+250ms over the R322 belt) — the drawing
    lands WHILE the frame wipes and the lines lift. Fills and labels
    resolve with their layer. (Moved verbatim in mechanism from
-   landing.css; only the delays were re-seated.) */
-.landing.intro-draw .hro-stage .bp-drawable {
+   landing.css; only the delays were re-seated.) */.landing.intro-draw .hro-stage .bp-drawable {
   stroke-dasharray: 1 1;
   stroke-dashoffset: 1;
   fill-opacity: 0;
@@ -863,8 +604,7 @@
 
 /* the drafting-order schedule — each layer begins as its predecessor
    is still resolving (the authored cascade, +250ms on the reference's
-   sequence) */
-.landing.intro-done .hro-stage [data-ink='1'] .bp-drawable,
+   sequence) */.landing.intro-done .hro-stage [data-ink='1'] .bp-drawable,
 .landing.intro-done .hro-stage [data-ink='1'] text { transition-delay: 250ms; }
 
 .landing.intro-done .hro-stage [data-ink='2'] .bp-drawable,
@@ -894,21 +634,19 @@
 .landing.intro-done .hro-stage [data-ink='10'] .bp-drawable,
 .landing.intro-done .hro-stage [data-ink='10'] text { transition-delay: 1550ms; }
 
-/* ══ [10] THE TIERS ════════════════════════════════════════════════ */
-
-/* ≤991 — R342-02: the tablet band — the reference's own 768 collage:
+/* ══ [10] THE TIERS ════════════════════════════════════════════════ *//* ≤991 — R342-02: the tablet band — the reference's own 768 collage:
    three narrow columns (title 44fr ‖ sub 23fr ‖ alt 21fr — the measured
    332/175/157 proportions), the sub stacks (paragraph over the CTA),
-   the work strip rides in flow below (the snap scroller) */
-@media (max-width: 991px) {
+   the work strip rides in flow below (the snap scroller) */@media (max-width: 991px) {
   .fo-hero.hro {
     grid-template-rows: minmax(0, 1fr) auto auto;
     min-block-size: calc(100svh - 14px);
     padding-block-end: 14px;
   }
 
+  /* R347 D2/D4: the 63px top pad retired - the masthead is in flow above the section */
   .hro-art {
-    padding-block-start: 63px;
+    padding-block-start: 0;
   }
 
   .hro-content {
@@ -937,8 +675,7 @@
    reference's own 390 presentation), ONE connected title·lead·CTA·login
    stack in the measured 14px-class content box, the CTA flush at the
    reading edge (the spec's own 390 seat), the snap-strip closing row,
-   the R329 station-open growth escape */
-@media (max-width: 767px) {
+   the R329 station-open growth escape */@media (max-width: 767px) {
   .fo-hero.hro {
     grid-template-rows: auto auto auto auto;
     min-block-size: calc(100svh - 14px);
@@ -947,7 +684,7 @@
   }
 
   .hro-art {
-    padding-block-start: 6.35rem; /* the 63px header+frame seat, rem-pure */
+    padding-block-start: 0; /* R347 D2/D4: the 63px seat retired - the masthead rides in flow above the section */
     padding-block-end: 0;
   }
 
@@ -1035,24 +772,10 @@
 
 /* ══ [11] THE RM BELT — the whole choreography collapses to the
    settled sheet (the intro gate never plays under RM; this belt also
-   covers a mid-flight RM flip) ═════════════════════════════════════ */
-@media (prefers-reduced-motion: reduce) {
+   covers a mid-flight RM flip) ═════════════════════════════════════ */@media (prefers-reduced-motion: reduce) {
   .hro-line,
   .landing.intro-draw .hro-line,
   .landing.intro-done .hro-line {
-    transform: none;
-    transition: none;
-  }
-
-  .hro-edge,
-  .landing.intro-draw .hro-edge-t,
-  .landing.intro-draw .hro-edge-b,
-  .landing.intro-draw .hro-edge-s,
-  .landing.intro-draw .hro-edge-e,
-  .landing.intro-done .hro-edge-t,
-  .landing.intro-done .hro-edge-b,
-  .landing.intro-done .hro-edge-s,
-  .landing.intro-done .hro-edge-e {
     transform: none;
     transition: none;
   }
@@ -1075,18 +798,6 @@
     transition: none;
   }
 
-  .hro-deco,
-  .landing.intro-draw .hro-deco,
-  .landing.intro-done .hro-deco {
-    opacity: 1;
-    transition: none;
-  }
-
-  .hro-deco-sq {
-    animation: none;
-    opacity: 0.72;
-  }
-
   .hro-alt {
     transition: none;
   }
@@ -1096,8 +807,7 @@
    MEASURED parameter from the frozen reference spec
    (docs/redesign/r335/heron-spec/home-hero-wrap.*.json) reproduced in
    Madarek's own construction — never pasted reference styling. Scoped
-   vars carry the measured inks per the r338 wave-9 token ruling. ══ */
-.hro {
+   vars carry the measured inks per the r338 wave-9 token ruling. ══ */.hro {
   --hro-ink-72: var(--grid-ink-72); /* r339 T-18 gate → R342-02: the tokens' own rgba(40,40,40,.72) literal — byte-equal in light AND rgb()-noted (the color-mix arm computed to color(srgb …), which the instrument's parser cannot read — the honest token twin of the frozen literal) */
   --hro-flare: var(--accent);           /* r339 T-18 gate: the measured secondary flare rgb(250,54,0) IS --accent */
   --hro-paper: rgb(255, 255, 255); /* color-gate: allow — the measured deco caption ink (frozen white; every theme-flipping label token would darken it at night, and no stable-white token exists — documented with the same convention as the dark ink arm below) */
@@ -1108,8 +818,7 @@
    (--text = #F6F6EE, the paper twin); 7.9:1 on the charcoal #282828
    ground (WCAG AAA; the --dark contrast floor >=3.0 passes with room).
    The light arm keeps the frozen Heron literal byte-identical; the
-   theme flip moves no box — only the color changes. */
-[data-theme="dark"] .hro {
+   theme flip moves no box — only the color changes. */[data-theme="dark"] .hro {
   --hro-ink-72: rgba(246, 246, 238, 0.72); /* color-gate: allow — the dark ramp's own ink --text #F6F6EE at the spec's 72% strength (7.9:1 on the #282828 ground); the light arm keeps the frozen Heron literal */
   /* r339 T-12 — the secondary flare's night seat: the measured literal
      rgb(250,54,0) is the LIGHT copper — on the #282828 dark ground it
@@ -1119,16 +828,14 @@
   --hro-flare: var(--accent-ink);
 }
 
-/* [S] the band seat — measured 0.981–0.988vh per breakpoint */
-@media (max-width: 767px) { .hro.fo-hero { min-block-size: calc(100svh - 16px); } }
-@media (min-width: 768px) and (max-width: 1023px) { .hro.fo-hero { min-block-size: calc(100svh - 16px); } }
-@media (min-width: 1024px) and (max-width: 1439px) { .hro.fo-hero { min-block-size: calc(100svh - 9px); } }
-@media (min-width: 1440px) and (max-width: 1919px) { .hro.fo-hero { min-block-size: calc(100svh - 13px); } }
-@media (min-width: 1920px) { .hro.fo-hero { min-block-size: calc(100svh - 17px); } }
+/* [S] the band seat — measured 0.981–0.988vh per breakpoint */@media (max-width: 767px) { .hro.fo-hero { block-size: calc(100svh - 63px - 16px); } } /* R347 D4: the fold holds the collage - the 63px in-flow masthead (R347 D2) is given up; block-size caps it, the art row flexes */
+@media (min-width: 768px) and (max-width: 1023px) { .hro.fo-hero { block-size: calc(100svh - 63px - 16px); } }
+@media (min-width: 1024px) and (max-width: 1439px) { .hro.fo-hero { block-size: calc(100svh - 63px - 9px); } }
+@media (min-width: 1440px) and (max-width: 1919px) { .hro.fo-hero { block-size: calc(100svh - 63px - 13px); } }
+@media (min-width: 1920px) { .hro.fo-hero { block-size: calc(100svh - 63px - 17px); } }
 
 /* [T] the display title — measured fs (31.76/36.83px, 3.241vw ≥1024)
-   with the Arabic line-height floor max(heronLh, 1.35×fs) */
-section.fo-hero .hro-title.fo-hero-title { font-size: 31.76px; line-height: 1.35; }
+   with the Arabic line-height floor max(heronLh, 1.35×fs) */section.fo-hero .hro-title.fo-hero-title { font-size: 31.76px; line-height: 1.35; }
 @media (min-width: 768px) and (max-width: 1023px) {
   section.fo-hero .hro-title.fo-hero-title { font-size: 36.83px; }
 }
@@ -1140,8 +847,7 @@ section.fo-hero .hro-title.fo-hero-title { font-size: 31.76px; line-height: 1.35
    ink rgb(40,40,40) on a transparent ground, zero chrome, single
    color 0.4s/ease token. The funnel contract classes stay on the
    markup; only the skin follows the measured box. R342-02: the 600
-   weight (the spec's own) + the underline-sweep affordance. */
-section.fo-hero .hro-actions .hro-cta {
+   weight (the spec's own) + the underline-sweep affordance. */section.fo-hero .hro-actions .hro-cta {
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
@@ -1173,8 +879,7 @@ section.fo-hero .hro-actions .hro-cta {
    (0.926vw ≥1024 = 13.33/17.78/9.48 at 1440/1920/1024; 14.73 @768;
    15.88 ≤767 — the same ladder [C]/[A] ride), full ink, the Arabic
    metric floor. The --fs-body token's 13px floor would break the 1024
-   cell (13 ≠ 9.48±0.5) — the measured rung replaces it here. */
-section.fo-hero .hro-sub-cell .hro-lead {
+   cell (13 ≠ 9.48±0.5) — the measured rung replaces it here. */section.fo-hero .hro-sub-cell .hro-lead {
   font-size: 15.88px;
   font-weight: 400;
   line-height: 1.35;
@@ -1188,8 +893,7 @@ section.fo-hero .hro-sub-cell .hro-lead {
 }
 
 /* [A] the secondary block — measured flare ink rgb(250,54,0) + the
-   measured block seats (374×64 / 157×202 / 9.9vw×6.73vw) */
-section.fo-hero .hro-alt {
+   measured block seats (374×64 / 157×202 / 9.9vw×6.73vw) */section.fo-hero .hro-alt {
   display: flex;
   align-items: flex-start;
   inline-size: 374px;
@@ -1207,8 +911,7 @@ section.fo-hero .hro-alt {
 }
 
 /* [W] the work strip — the measured six-box grid: fixed per-subject
-   widths on a 2.2vw rail (153/126/117 @1920 exact), ink at 72% */
-.hro .hro-work-item {
+   widths on a 2.2vw rail (153/126/117 @1920 exact), ink at 72% */.hro .hro-work-item {
   flex: 0 0 auto;
   inline-size: 136px;
   font-size: 13.89px;
@@ -1259,19 +962,10 @@ section.fo-hero .hro-alt {
 }
 
 /* [D] the deco captions — measured paper ink on the ink cards */
-.hro .hro-deco-text {
-  color: var(--hro-paper);
-  font-size: 12.89px;
-  line-height: 1.4;
-}
-@media (min-width: 1024px) {
-  .hro .hro-deco-text { font-size: 0.811vw; }
-}
 
 /* [X] single-entry measured transitions — the reference's svg paths
    and links carry exactly one 0.4s/ease token (T-11b residual: the
-   2-entry list read as "0.4s/ease, ease") */
-.landing.intro-done .hro-stage .bp-drawable {
+   2-entry list read as "0.4s/ease, ease") */.landing.intro-done .hro-stage .bp-drawable {
   transition: stroke-dashoffset 0.4s ease;
 }
 
@@ -1280,6 +974,7 @@ section.fo-hero .hro-alt {
   .hro .hro-alt,
   section.fo-hero .hro-actions .hro-cta { transition: none; }
 }
+
 /* ── R341 H1-a · the per-div drafting-grid hairline layer (HeroGrid) —
    measured seats from the frozen spec (home-hero-wrap.1440/390.json),
    mirrored sr-exact into our RTL frame. Geometry/opacity/colour ride
@@ -1290,41 +985,11 @@ section.fo-hero .hro-alt {
    is visibility:hidden (visible children) so the edge-390 gutter
    census — which unions every visible descendant — sees only the
    hairlines, never the frame box. ── */
-.hro .hro-grid {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  visibility: hidden;
-  color: var(--grid-ink-72);
-  font-size: 13.33px; /* type-gate: allow — the frozen spec's measured hero-grid rung (no ladder rung carries it) */
-  line-height: 18px; /* type-gate: allow — measured seat, same census */
-  font-weight: 500;
-  z-index: var(--z-hero-grid);
-}
-.hro .hro-grid .hro-gl {
-  position: absolute;
-  visibility: visible;
-  left: var(--gl-l, auto);
-  top: var(--gl-t, auto);
-  width: var(--gl-w, auto);
-  height: var(--gl-h, auto);
-  opacity: var(--gl-op, 1);
-  background-color: var(--gl-bg, transparent);
-  color: var(--gl-ink, inherit);
-  transition: var(--gl-tr, none); /* R342-02 — the reference's own 0.4s/ease color register on the animated hairlines */
-}
-.hro .hro-grid .hro-gl[data-k='dx'] {
-  background-image: repeating-linear-gradient(to right, var(--gl-ink, currentColor) 0 6px, transparent 6px 10px);
-}
-.hro .hro-grid .hro-gl[data-k='dy'] {
-  background-image: repeating-linear-gradient(to bottom, var(--gl-ink, currentColor) 0 6px, transparent 6px 10px);
-}
+
 /* R342-02 — the grid renders at EVERY belt: each row carries its own
    measured per-bp seat below (the sub-1440 display:none era ends — the
-   spec records the same grid at 1024/768/390 with its own geometry). */
-/* the a[2] datum seat's dark arm — the frozen spec's full-ink channel
+   spec records the same grid at 1024/768/390 with its own geometry). *//* the a[2] datum seat's dark arm — the frozen spec's full-ink channel
    under the dark boot (H1-a's measured dark parity). */
-:root[data-theme="dark"] .hro .hro-grid .hro-gl-g89 { color: var(--grid-ink); }
 
 /* ── R341 H1-b · the per-node vector-chrome layer (HeroChrome) — the
    reference's plus-marks / marquee icons / social arrows / pin dots as
@@ -1338,48 +1003,20 @@ section.fo-hero .hro-alt {
    boxes — never Heron's asset. The wrapper is visibility:hidden with
    visible children so the edge-390 gutter census — which unions every
    visible descendant — sees only the chrome, never the layer box. ── */
-.hro .hro-chrome {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  visibility: hidden;
-  color: var(--grid-ink-72);
-  font-size: 13.33px; /* type-gate: allow — the frozen spec's measured hero-chrome rung (same census as the grid layer) */
-  line-height: 18px; /* type-gate: allow — the Arabic floor seat (1.35 × 13.33), same census */
-  font-weight: 500;
-  z-index: var(--z-hero-grid);
-}
-.hro .hro-chrome .hro-ch {
-  position: absolute;
-  visibility: visible;
-  left: var(--ch-l, auto);
-  top: var(--ch-t, auto);
-  width: var(--ch-w, auto);
-  height: var(--ch-h, auto);
-  opacity: var(--ch-op, 1);
-  background-color: var(--ch-bg, transparent);
-  color: var(--ch-col, inherit);
-  transition: var(--ch-tr, none);
-}
+
 /* the glyph kids carry their own measured ink (and the <=991 arm can
    re-ink them); the inline --ch-ink/--ch-ink390 win over the seat colour
    the same way the seat boxes win over the wrapper seat */
-.hro .hro-chrome path.hro-ch,
-.hro .hro-chrome circle.hro-ch { color: var(--ch-ink, inherit); }
+
 /* the measured interactive flag (Heron's accent arrow seats sit inside
    real links); the pointer mirrors it without a tab stop (aria-hidden) */
-.hro .hro-chrome .hro-ch[data-act] { cursor: pointer; }
+
 /* our own glyph art: stroked line/diagonal arrows and stroke crosses,
    filled pin squares and dots */
-.hro .hro-chrome svg.hro-ch { overflow: visible; }
-.hro .hro-chrome path.hro-ch { fill: none; stroke: currentColor; stroke-width: 1; }
-.hro .hro-chrome path.hro-ch[data-k='sq'] { fill: currentColor; stroke: none; }
-.hro .hro-chrome circle.hro-ch { fill: currentColor; }
+
 /* R342-02 — the chrome renders at EVERY belt (per-bp measured seats
    below); rows the spec collapses to 0×0 at a belt keep their written
-   pin/pulse excuses — parity by construction, never a silent drop. */
-
-/* ── R342-02 · the grid's measured per-bp seat values (one rule per
+   pin/pulse excuses — parity by construction, never a silent drop. *//* ── R342-02 · the grid's measured per-bp seat values (one rule per
    element; consumed by the .hro-gl layer laws above — the single source
    of truth for the numbers; HeroGrid.tsx owns only the class census).
    Values computed from the frozen spec at every breakpoint (vr-mirrored
@@ -1387,363 +1024,24 @@ section.fo-hero .hro-alt {
    min-block-size belt; 0×0 spec boxes park at their own seat — the
    childless div twins drop from the census and ride the written
    pin/pulse excuses). ── */
-.hro .hro-grid .hro-gl-g00 { --gl-l1920: 0.469%; --gl-t1920: 44.873%; --gl-w1920: 99.063%; --gl-h1920: 0.094%; --gl-op1920: 0.2; --gl-bg1920: var(--grid-line-paper); --gl-col1920: var(--grid-ink-72); --gl-l: 0.417%; --gl-t: 45.434%; --gl-w: 99.097%; --gl-h: 0.113%; --gl-op: 0.2; --gl-bg: var(--grid-line-paper); --gl-col: var(--grid-ink-72); --gl-l1024: 0.391%; --gl-t1024: 46.113%; --gl-w1024: 99.121%; --gl-h1024: 0.132%; --gl-op1024: 0.2; --gl-bg1024: var(--grid-line-paper); --gl-col1024: var(--grid-ink-72); --gl-l768: 29.688%; --gl-t768: 37.443%; --gl-w768: 0.521%; --gl-h768: 0.452%; --gl-op768: 1; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g01 { --gl-l1920: 50%; --gl-t1920: 6.679%; --gl-w1920: 0.052%; --gl-h1920: 76.482%; --gl-op1920: 0.2; --gl-bg1920: var(--grid-line-paper); --gl-col1920: var(--grid-ink-72); --gl-l: 49.931%; --gl-t: 5.975%; --gl-w: 0.069%; --gl-h: 78.918%; --gl-op: 0.2; --gl-bg: var(--grid-line-paper); --gl-col: var(--grid-ink-72); --gl-l1024: 49.902%; --gl-t1024: 5.007%; --gl-w1024: 0.098%; --gl-h1024: 82.477%; --gl-op1024: 0.2; --gl-bg1024: var(--grid-line-paper); --gl-col1024: var(--grid-ink-72); --gl-l768: 102.051%; --gl-t768: -0.966%; --gl-w768: 0%; --gl-h768: 0%; --gl-op768: 0; --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g02 { --gl-l1920: 0.469%; --gl-t1920: 95.296%; --gl-w1920: 41.771%; --gl-h1920: 0.094%; --gl-op1920: 1; --gl-bg1920: var(--grid-line-rule); --gl-col1920: var(--grid-ink-72); --gl-l: 0.486%; --gl-t: 95.716%; --gl-w: 41.736%; --gl-h: 0.113%; --gl-op: 1; --gl-bg: var(--grid-line-rule); --gl-col: var(--grid-ink-72); --gl-l1024: 0.391%; --gl-t1024: 96.443%; --gl-w1024: 41.797%; --gl-h1024: 0.132%; --gl-op1024: 1; --gl-bg1024: var(--grid-line-rule); --gl-col1024: var(--grid-ink-72); --gl-l768: 0.911%; --gl-t768: 95.475%; --gl-w768: 49.089%; --gl-h768: 0.113%; --gl-op768: 1; --gl-bg768: var(--grid-line-rule); --gl-col768: var(--grid-ink-72); --gl-l390: 2.564%; --gl-t390: 95.048%; --gl-w390: 95.897%; --gl-h390: 0.121%; --gl-op390: 1; --gl-bg390: var(--grid-line-rule); --gl-col390: var(--grid-ink-72); }
-.hro .hro-grid .hro-gl-g03 { --gl-l1920: 2.344%; --gl-t1920: 24.083%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 23.675%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 26.877%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 27.262%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g04 { --gl-l1920: 2.344%; --gl-t1920: 26.435%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 26.156%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 29.117%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 28.62%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g05 { --gl-l1920: 2.344%; --gl-t1920: 39.981%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 40.248%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 41.634%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 36.425%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g06 { --gl-l1920: 2.344%; --gl-t1920: 43.368%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 43.856%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 44.796%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 38.462%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g07 { --gl-l1920: 2.344%; --gl-t1920: 44.873%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 45.434%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 46.245%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 39.253%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g08 { --gl-l1920: 2.344%; --gl-t1920: 59.172%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 60.316%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 59.42%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 47.511%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g09 { --gl-l1920: 2.344%; --gl-t1920: 67.545%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 69.109%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 67.194%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 52.376%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g10 { --gl-l1920: 97.656%; --gl-t1920: 24.177%; --gl-w1920: 0.052%; --gl-h1920: 43.462%; --gl-op1920: 0.64; --gl-bg1920: var(--accent); --gl-col1920: var(--grid-ink-72); --gl-l: 97.639%; --gl-t: 23.788%; --gl-w: 0.069%; --gl-h: 45.434%; --gl-op: 0.64; --gl-bg: var(--accent); --gl-col: var(--grid-ink-72); --gl-l1024: 97.559%; --gl-t1024: 27.009%; --gl-w1024: 0.098%; --gl-h1024: 40.316%; --gl-op1024: 0.64; --gl-bg1024: var(--accent); --gl-col1024: var(--grid-ink-72); --gl-l768: 95.052%; --gl-t768: 27.262%; --gl-w768: 0.13%; --gl-h768: 25.113%; --gl-op768: 0.64; --gl-bg768: var(--accent); --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g11 { --gl-l1920: 44.583%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 43.681%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 43.262%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 42.448%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g12 { --gl-l1920: 39.115%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 37.292%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 36.426%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 35.807%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g13 { --gl-l1920: 37.76%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 35.833%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 34.766%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 34.245%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g14 { --gl-l1920: 30.885%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 27.778%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 26.27%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 26.042%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g15 { --gl-l1920: 24.375%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 20.208%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 18.164%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 18.099%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g16 { --gl-l1920: 24.427%; --gl-t1920: 10.066%; --gl-w1920: 51.146%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-bg1920: var(--accent); --gl-col1920: var(--grid-ink-72); --gl-l: 20.278%; --gl-t: 9.019%; --gl-w: 59.444%; --gl-h: 0.113%; --gl-op: 0.64; --gl-bg: var(--accent); --gl-col: var(--grid-ink-72); --gl-l1024: 18.164%; --gl-t1024: 7.51%; --gl-w1024: 63.574%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-bg1024: var(--accent); --gl-col1024: var(--grid-ink-72); --gl-l768: 18.359%; --gl-t768: 8.71%; --gl-w768: 61.458%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-bg768: var(--accent); --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g17 { --gl-l1920: 75.521%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 79.653%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 81.641%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 79.688%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g18 { --gl-l1920: 68.906%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 71.944%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 73.438%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 71.745%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g19 { --gl-l1920: 68.229%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 71.181%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 72.559%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 70.833%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g20 { --gl-l1920: 63.854%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 66.042%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 67.188%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 65.625%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g21 { --gl-l1920: 61.25%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 63.056%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 63.965%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 62.5%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g22 { --gl-l1920: 55.26%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 56.111%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 56.543%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 55.339%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g23 { --gl-l1920: 54.583%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 55.347%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 55.664%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 54.557%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g24 { --gl-l1920: 45.313%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 44.514%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 44.141%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 43.359%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g25 { --gl-l1920: 2.344%; --gl-t1920: 24.083%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 23.675%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 26.877%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 27.262%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g26 { --gl-l1920: 2.344%; --gl-t1920: 39.981%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 40.248%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 41.634%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 36.425%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g27 { --gl-l1920: 2.344%; --gl-t1920: 43.368%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 43.856%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 44.796%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 38.462%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g28 { --gl-l1920: 2.344%; --gl-t1920: 44.873%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 45.434%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 46.245%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 39.253%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g29 { --gl-l1920: 2.344%; --gl-t1920: 59.172%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 60.316%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 59.42%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 47.511%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g30 { --gl-l1920: 2.344%; --gl-t1920: 67.545%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 69.109%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 67.194%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 52.376%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g31 { --gl-l1920: 2.344%; --gl-t1920: 24.177%; --gl-w1920: 0.052%; --gl-h1920: 43.462%; --gl-op1920: 0.64; --gl-bg1920: var(--accent); --gl-col1920: var(--grid-ink-72); --gl-l: 2.292%; --gl-t: 23.788%; --gl-w: 0.069%; --gl-h: 45.434%; --gl-op: 0.64; --gl-bg: var(--accent); --gl-col: var(--grid-ink-72); --gl-l1024: 2.344%; --gl-t1024: 27.009%; --gl-w1024: 0.098%; --gl-h1024: 40.316%; --gl-op1024: 0.64; --gl-bg1024: var(--accent); --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 27.262%; --gl-w768: 0.13%; --gl-h768: 25.113%; --gl-op768: 0.64; --gl-bg768: var(--accent); --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g32 { --gl-l1920: 44.583%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 43.681%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 43.262%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 42.448%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g33 { --gl-l1920: 39.115%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 37.292%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 36.426%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 35.807%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g34 { --gl-l1920: 37.76%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 35.833%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 34.766%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 34.245%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g35 { --gl-l1920: 30.885%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 27.778%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 26.27%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 26.042%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g36 { --gl-l1920: 24.375%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 20.208%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 18.164%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 18.099%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g37 { --gl-l1920: 24.427%; --gl-t1920: 10.066%; --gl-w1920: 51.146%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-bg1920: var(--accent); --gl-col1920: var(--grid-ink-72); --gl-l: 20.278%; --gl-t: 9.019%; --gl-w: 59.444%; --gl-h: 0.113%; --gl-op: 0.64; --gl-bg: var(--accent); --gl-col: var(--grid-ink-72); --gl-l1024: 18.164%; --gl-t1024: 7.51%; --gl-w1024: 63.574%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-bg1024: var(--accent); --gl-col1024: var(--grid-ink-72); --gl-l768: 18.359%; --gl-t768: 8.71%; --gl-w768: 61.458%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-bg768: var(--accent); --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g38 { --gl-l1920: 75.521%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 79.653%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 81.641%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 79.688%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g39 { --gl-l1920: 68.906%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 71.944%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 73.438%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 71.745%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g40 { --gl-l1920: 68.229%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 71.181%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 72.559%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 70.833%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g41 { --gl-l1920: 63.854%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 66.042%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 67.188%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 65.625%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g42 { --gl-l1920: 61.25%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 63.056%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 63.965%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 62.5%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g43 { --gl-l1920: 55.26%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 56.111%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 56.543%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 55.339%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g44 { --gl-l1920: 54.583%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 55.347%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 55.664%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 54.557%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g45 { --gl-l1920: 45.313%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 44.514%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 44.141%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 43.359%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g46 { --gl-l1920: 38.646%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 36.806%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 35.938%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 35.417%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g47 { --gl-l1920: 37.76%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 35.833%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 34.766%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 34.245%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g48 { --gl-l1920: 34.844%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 32.361%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 31.152%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 30.729%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g49 { --gl-l1920: 30.885%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 27.778%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 26.27%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 26.042%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g50 { --gl-l1920: 24.375%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 20.208%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 18.164%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 18.099%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g51 { --gl-l1920: 24.427%; --gl-t1920: 79.774%; --gl-w1920: 51.146%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-bg1920: var(--accent); --gl-col1920: var(--grid-ink-72); --gl-l: 20.278%; --gl-t: 81.849%; --gl-w: 59.444%; --gl-h: 0.113%; --gl-op: 0.64; --gl-bg: var(--accent); --gl-col: var(--grid-ink-72); --gl-l1024: 18.164%; --gl-t1024: 84.848%; --gl-w1024: 63.574%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-bg1024: var(--accent); --gl-col1024: var(--grid-ink-72); --gl-l768: 18.359%; --gl-t768: 69.344%; --gl-w768: 61.458%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-bg768: var(--accent); --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g52 { --gl-l1920: 75.521%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 79.653%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 81.641%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 79.688%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g53 { --gl-l1920: 74.844%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 78.819%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 80.762%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 78.776%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g54 { --gl-l1920: 62.135%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 64.097%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 65.039%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 63.542%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g55 { --gl-l1920: 61.25%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 63.056%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 63.965%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 62.5%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g56 { --gl-l1920: 55.26%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 56.111%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 56.543%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 55.339%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g57 { --gl-l1920: 54.583%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 55.347%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 55.664%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 54.557%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g58 { --gl-l1920: 45.313%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 44.514%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 44.141%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 43.359%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g59 { --gl-l1920: 44.583%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 43.681%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 43.262%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 42.448%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g60 { --gl-l1920: 2.344%; --gl-t1920: 24.083%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 23.675%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 26.877%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 27.262%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g61 { --gl-l1920: 2.344%; --gl-t1920: 26.435%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 26.156%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 29.117%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 28.62%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g62 { --gl-l1920: 2.344%; --gl-t1920: 39.981%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 40.248%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 41.634%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 36.425%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g63 { --gl-l1920: 2.344%; --gl-t1920: 43.368%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 43.856%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 44.796%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 38.462%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g64 { --gl-l1920: 2.344%; --gl-t1920: 44.873%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 45.434%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 46.245%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 39.253%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g65 { --gl-l1920: 2.344%; --gl-t1920: 59.172%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 60.316%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 59.42%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 47.511%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g66 { --gl-l1920: 2.344%; --gl-t1920: 67.545%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 69.109%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 67.194%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 52.376%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g67 { --gl-l1920: 97.656%; --gl-t1920: 24.177%; --gl-w1920: 0.052%; --gl-h1920: 43.462%; --gl-op1920: 0.64; --gl-bg1920: var(--accent); --gl-col1920: var(--grid-ink-72); --gl-l: 97.639%; --gl-t: 23.788%; --gl-w: 0.069%; --gl-h: 45.434%; --gl-op: 0.64; --gl-bg: var(--accent); --gl-col: var(--grid-ink-72); --gl-l1024: 97.559%; --gl-t1024: 27.009%; --gl-w1024: 0.098%; --gl-h1024: 40.316%; --gl-op1024: 0.64; --gl-bg1024: var(--accent); --gl-col1024: var(--grid-ink-72); --gl-l768: 95.052%; --gl-t768: 27.262%; --gl-w768: 0.13%; --gl-h768: 25.113%; --gl-op768: 0.64; --gl-bg768: var(--accent); --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g68 { --gl-l1920: 38.646%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 36.806%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 35.938%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 35.417%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g69 { --gl-l1920: 37.76%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 35.833%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 34.766%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 34.245%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g70 { --gl-l1920: 34.844%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 32.361%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 31.152%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 30.729%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g71 { --gl-l1920: 30.885%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 27.778%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 26.27%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 26.042%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g72 { --gl-l1920: 24.375%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 20.208%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 18.164%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 18.099%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g73 { --gl-l1920: 24.427%; --gl-t1920: 79.774%; --gl-w1920: 51.146%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-bg1920: var(--accent); --gl-col1920: var(--grid-ink-72); --gl-l: 20.278%; --gl-t: 81.849%; --gl-w: 59.444%; --gl-h: 0.113%; --gl-op: 0.64; --gl-bg: var(--accent); --gl-col: var(--grid-ink-72); --gl-l1024: 18.164%; --gl-t1024: 84.848%; --gl-w1024: 63.574%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-bg1024: var(--accent); --gl-col1024: var(--grid-ink-72); --gl-l768: 18.359%; --gl-t768: 69.344%; --gl-w768: 61.458%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-bg768: var(--accent); --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g74 { --gl-l1920: 75.521%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 79.653%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 81.641%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 79.688%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g75 { --gl-l1920: 74.844%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 78.819%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 80.762%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 78.776%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g76 { --gl-l1920: 62.135%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 64.097%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 65.039%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 63.542%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g77 { --gl-l1920: 61.25%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 63.056%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 63.965%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 62.5%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g78 { --gl-l1920: 55.26%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 56.111%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 56.543%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 55.339%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g79 { --gl-l1920: 54.583%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 55.347%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 55.664%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 54.557%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g80 { --gl-l1920: 45.313%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 44.514%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 44.141%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 43.359%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g81 { --gl-l1920: 44.583%; --gl-t1920: 10.066%; --gl-w1920: 0.052%; --gl-h1920: 69.708%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 43.681%; --gl-t: 9.019%; --gl-w: 0.069%; --gl-h: 72.83%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 43.262%; --gl-t1024: 7.51%; --gl-w1024: 0.098%; --gl-h1024: 77.339%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 42.448%; --gl-t768: 8.71%; --gl-w768: 0.13%; --gl-h768: 60.633%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g82 { --gl-l1920: 2.344%; --gl-t1920: 24.083%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 23.675%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 26.877%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 27.262%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g83 { --gl-l1920: 2.344%; --gl-t1920: 39.981%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 40.248%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 41.634%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 36.425%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g84 { --gl-l1920: 2.344%; --gl-t1920: 43.368%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 43.856%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 44.796%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 38.462%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g85 { --gl-l1920: 2.344%; --gl-t1920: 44.873%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 45.434%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 46.245%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 39.253%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g86 { --gl-l1920: 2.344%; --gl-t1920: 59.172%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 60.316%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 59.42%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 47.511%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g87 { --gl-l1920: 2.344%; --gl-t1920: 67.545%; --gl-w1920: 95.365%; --gl-h1920: 0.094%; --gl-op1920: 0.64; --gl-col1920: var(--grid-ink-72); --gl-l: 2.361%; --gl-t: 69.109%; --gl-w: 95.347%; --gl-h: 0.113%; --gl-op: 0.64; --gl-col: var(--grid-ink-72); --gl-l1024: 2.246%; --gl-t1024: 67.194%; --gl-w1024: 95.41%; --gl-h1024: 0.132%; --gl-op1024: 0.64; --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 52.376%; --gl-w768: 90.365%; --gl-h768: 0.113%; --gl-op768: 0.64; --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g88 { --gl-l1920: 2.344%; --gl-t1920: 24.177%; --gl-w1920: 0.052%; --gl-h1920: 43.462%; --gl-op1920: 0.64; --gl-bg1920: var(--accent); --gl-col1920: var(--grid-ink-72); --gl-l: 2.292%; --gl-t: 23.788%; --gl-w: 0.069%; --gl-h: 45.434%; --gl-op: 0.64; --gl-bg: var(--accent); --gl-col: var(--grid-ink-72); --gl-l1024: 2.344%; --gl-t1024: 27.009%; --gl-w1024: 0.098%; --gl-h1024: 40.316%; --gl-op1024: 0.64; --gl-bg1024: var(--accent); --gl-col1024: var(--grid-ink-72); --gl-l768: 4.818%; --gl-t768: 27.262%; --gl-w768: 0.13%; --gl-h768: 25.113%; --gl-op768: 0.64; --gl-bg768: var(--accent); --gl-col768: var(--grid-ink-72); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g89 { --gl-l1920: 10.313%; --gl-t1920: 83.161%; --gl-w1920: 0.052%; --gl-h1920: 12.135%; --gl-op1920: 1; --gl-bg1920: var(--grid-line-rule); --gl-col1920: var(--accent); --gl-l: 10.278%; --gl-t: 84.893%; --gl-w: 0.069%; --gl-h: 10.936%; --gl-op: 1; --gl-bg: var(--grid-line-rule); --gl-col: var(--accent); --gl-l1024: 10.254%; --gl-t1024: 87.484%; --gl-w1024: 0.098%; --gl-h1024: 9.091%; --gl-op1024: 1; --gl-bg1024: var(--grid-line-rule); --gl-col1024: var(--accent); --gl-l768: 21.354%; --gl-t768: 72.738%; --gl-w768: 0.13%; --gl-h768: 22.851%; --gl-op768: 1; --gl-bg768: var(--grid-line-rule); --gl-col768: var(--accent); --gl-l390: 102.051%; --gl-t390: -0.966%; --gl-w390: 0%; --gl-h390: 0%; --gl-op390: 0; }
-.hro .hro-grid .hro-gl-g90 { --gl-l1920: 102.051%; --gl-t1920: -0.966%; --gl-w1920: 0%; --gl-h1920: 0%; --gl-op1920: 0; --gl-l1440: 102.051%; --gl-t1440: -0.966%; --gl-w1440: 0%; --gl-h1440: 0%; --gl-op1440: 0; --gl-l1024: 102.051%; --gl-t1024: -0.966%; --gl-w1024: 0%; --gl-h1024: 0%; --gl-op1024: 0; --gl-l768: 102.051%; --gl-t768: -0.966%; --gl-w768: 0%; --gl-h768: 0%; --gl-op768: 0; --gl-l: 2.564%; --gl-t: 87.44%; --gl-w: 95.897%; --gl-h: 0.121%; --gl-op: 1; --gl-bg: var(--grid-line-rule); --gl-col: var(--grid-ink); }
-.hro .hro-grid .hro-gl-g91 { --gl-l1920: 0.469%; --gl-t1920: 83.161%; --gl-w1920: 99.063%; --gl-h1920: 0.094%; --gl-op1920: 1; --gl-bg1920: var(--grid-line-rule); --gl-col1920: var(--grid-ink-72); --gl-l: 0.417%; --gl-t: 84.893%; --gl-w: 99.097%; --gl-h: 0.113%; --gl-op: 1; --gl-bg: var(--grid-line-rule); --gl-col: var(--grid-ink-72); --gl-l1024: 0.391%; --gl-t1024: 87.484%; --gl-w1024: 99.121%; --gl-h1024: 0.132%; --gl-op1024: 1; --gl-bg1024: var(--grid-line-rule); --gl-col1024: var(--grid-ink-72); --gl-l768: 1.042%; --gl-t768: 72.738%; --gl-w768: 98.047%; --gl-h768: 0.113%; --gl-op768: 1; --gl-bg768: var(--grid-line-rule); --gl-col768: var(--grid-ink-72); --gl-l390: 2.564%; --gl-t390: 55.918%; --gl-w390: 95.897%; --gl-h390: 0.121%; --gl-op390: 1; --gl-bg390: var(--grid-line-rule); --gl-col390: var(--grid-ink-72); }
-.hro .hro-grid .hro-gl-g92 { --gl-l1920: 0.469%; --gl-t1920: 99.812%; --gl-w1920: 99.063%; --gl-h1920: 0.094%; --gl-op1920: 1; --gl-bg1920: var(--grid-line-rule); --gl-col1920: var(--grid-ink-72); --gl-l: 0.417%; --gl-t: 99.887%; --gl-w: 99.097%; --gl-h: 0.113%; --gl-op: 1; --gl-bg: var(--grid-line-rule); --gl-col: var(--grid-ink-72); --gl-l1024: 0.391%; --gl-t1024: 99.868%; --gl-w1024: 99.121%; --gl-h1024: 0.132%; --gl-op1024: 1; --gl-bg1024: var(--grid-line-rule); --gl-col1024: var(--grid-ink-72); --gl-l768: 1.042%; --gl-t768: 100%; --gl-w768: 98.047%; --gl-h768: 0.113%; --gl-op768: 1; --gl-bg768: var(--grid-line-rule); --gl-col768: var(--grid-ink-72); --gl-l390: 2.564%; --gl-t390: 99.879%; --gl-w390: 95.897%; --gl-h390: 0.121%; --gl-op390: 1; --gl-bg390: var(--grid-line-rule); --gl-col390: var(--grid-ink-72); }
-.hro .hro-grid .hro-gl-g93 { --gl-l1920: 102.051%; --gl-t1920: -0.966%; --gl-w1920: 0%; --gl-h1920: 0%; --gl-op1920: 0; --gl-l1440: 102.051%; --gl-t1440: -0.966%; --gl-w1440: 0%; --gl-h1440: 0%; --gl-op1440: 0; --gl-l1024: 102.051%; --gl-t1024: -0.966%; --gl-w1024: 0%; --gl-h1024: 0%; --gl-op1024: 0; --gl-l768: 102.051%; --gl-t768: -0.966%; --gl-w768: 0%; --gl-h768: 0%; --gl-op768: 0; --gl-l: 2.564%; --gl-t: 71.135%; --gl-w: 95.897%; --gl-h: 0.121%; --gl-op: 1; --gl-bg: var(--grid-line-rule); --gl-col: var(--grid-ink-72); }
-.hro .hro-grid .hro-gl-g94 { --gl-l1920: 42.188%; --gl-t1920: 83.161%; --gl-w1920: 0.052%; --gl-h1920: 16.745%; --gl-op1920: 1; --gl-bg1920: var(--grid-line-rule); --gl-col1920: var(--grid-ink-72); --gl-l: 42.153%; --gl-t: 84.893%; --gl-w: 0.069%; --gl-h: 14.994%; --gl-op: 1; --gl-bg: var(--grid-line-rule); --gl-col: var(--grid-ink-72); --gl-l1024: 42.09%; --gl-t1024: 87.484%; --gl-w1024: 0.098%; --gl-h1024: 12.516%; --gl-op1024: 1; --gl-bg1024: var(--grid-line-rule); --gl-col1024: var(--grid-ink-72); --gl-l768: 49.87%; --gl-t768: 72.738%; --gl-w768: 0.13%; --gl-h768: 27.376%; --gl-op768: 1; --gl-bg768: var(--grid-line-rule); --gl-col768: var(--grid-ink-72); --gl-l390: 98.205%; --gl-t390: 71.256%; --gl-w390: 0.256%; --gl-h390: 28.744%; --gl-op390: 1; --gl-bg390: var(--grid-line-rule); --gl-col390: var(--grid-ink-72); }
 
 /* R342-02 — the per-bp seat belts: each belt re-seats the layer onto
    its own measured rung (the frozen spec's per-bp wrapper census) and
    onto the per-element seats' own bp vars (falling back to the base seat
    when a row is bp-stable). */
-@media (min-width: 1920px) {
-  .hro .hro-grid {
-    font-size: 17.78px; /* type-gate: allow — the frozen spec's measured 1920 wrapper rung */
-    line-height: 1.35;
-  }
-.hro .hro-grid .hro-gl {
-    left: var(--gl-l1920, var(--gl-l, auto));
-    top: var(--gl-t1920, var(--gl-t, auto));
-    width: var(--gl-w1920, var(--gl-w, auto));
-    height: var(--gl-h1920, var(--gl-h, auto));
-    opacity: var(--gl-op1920, var(--gl-op, 1));
-    background-color: var(--gl-bg1920, var(--gl-bg, transparent));
-    transition: var(--gl-tr1920, var(--gl-tr, none));
-    color: var(--gl-ink1920, var(--gl-ink, inherit));
-}
-}
-@media (min-width: 1024px) and (max-width: 1439px) {
-  .hro .hro-grid {
-    font-size: 9.48px; /* type-gate: allow — the frozen spec's measured 1024 wrapper rung */
-    line-height: 1.35;
-  }
-.hro .hro-grid .hro-gl {
-    left: var(--gl-l1024, var(--gl-l, auto));
-    top: var(--gl-t1024, var(--gl-t, auto));
-    width: var(--gl-w1024, var(--gl-w, auto));
-    height: var(--gl-h1024, var(--gl-h, auto));
-    opacity: var(--gl-op1024, var(--gl-op, 1));
-    background-color: var(--gl-bg1024, var(--gl-bg, transparent));
-    transition: var(--gl-tr1024, var(--gl-tr, none));
-    color: var(--gl-ink1024, var(--gl-ink, inherit));
-}
-}
-@media (min-width: 768px) and (max-width: 1023px) {
-  .hro .hro-grid {
-    font-size: 14.73px; /* type-gate: allow — the frozen spec's measured 768 wrapper rung */
-    line-height: 1.35;
-  }
-.hro .hro-grid .hro-gl {
-    left: var(--gl-l768, var(--gl-l, auto));
-    top: var(--gl-t768, var(--gl-t, auto));
-    width: var(--gl-w768, var(--gl-w, auto));
-    height: var(--gl-h768, var(--gl-h, auto));
-    opacity: var(--gl-op768, var(--gl-op, 1));
-    background-color: var(--gl-bg768, var(--gl-bg, transparent));
-    transition: var(--gl-tr768, var(--gl-tr, none));
-    color: var(--gl-ink768, var(--gl-ink, inherit));
-}
-}
-@media (max-width: 767px) {
-  .hro .hro-grid {
-    font-size: 15.88px; /* type-gate: allow — the frozen spec's measured 390 wrapper rung */
-    line-height: 1.35;
-  }
-.hro .hro-grid .hro-gl {
-    left: var(--gl-l390, var(--gl-l, auto));
-    top: var(--gl-t390, var(--gl-t, auto));
-    width: var(--gl-w390, var(--gl-w, auto));
-    height: var(--gl-h390, var(--gl-h, auto));
-    opacity: var(--gl-op390, var(--gl-op, 1));
-    background-color: var(--gl-bg390, var(--gl-bg, transparent));
-    transition: var(--gl-tr390, var(--gl-tr, none));
-    color: var(--gl-ink390, var(--gl-ink, inherit));
-}
-}
 
 /* ── R342-02 · the chrome's measured per-bp seat values (one rule per
    seat; consumed by the .hro-ch layer laws above — the same mirrors,
    anchors and parks as the grid block; the kid paths carry only their
    measured ink — their geometry rides the parent svg seats, whose
    kid-vs-seat relative geometry the spec holds constant across bps). ── */
-.hro .hro-chrome .hro-ch-c00 { --ch-l1920: 0.729%; --ch-t1920: 92.85%; --ch-w1920: 1.146%; --ch-h1920: 2.07%; --ch-op1920: 1; --ch-col1920: var(--accent); --ch-l: 0.694%; --ch-t: 93.574%; --ch-w: 1.181%; --ch-h: 1.917%; --ch-op: 1; --ch-col: var(--accent); --ch-l1024: 0.684%; --ch-t1024: 94.598%; --ch-w1024: 1.172%; --ch-h1024: 1.581%; --ch-op1024: 1; --ch-col1024: var(--accent); --ch-l768: 1.432%; --ch-t768: 93.1%; --ch-w768: 2.344%; --ch-h768: 2.036%; --ch-op768: 1; --ch-col768: var(--accent); --ch-l390: 3.59%; --ch-t390: 92.874%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--accent); }
-.hro .hro-chrome .hro-ch-c01 { --ch-l1920: 1.875%; --ch-t1920: 92.85%; --ch-w1920: 1.146%; --ch-h1920: 2.07%; --ch-op1920: 1; --ch-col1920: var(--accent); --ch-l: 1.806%; --ch-t: 93.574%; --ch-w: 1.181%; --ch-h: 1.917%; --ch-op: 1; --ch-col: var(--accent); --ch-l1024: 1.855%; --ch-t1024: 94.598%; --ch-w1024: 1.172%; --ch-h1024: 1.581%; --ch-op1024: 1; --ch-col1024: var(--accent); --ch-l768: 3.906%; --ch-t768: 93.1%; --ch-w768: 2.344%; --ch-h768: 2.036%; --ch-op768: 1; --ch-col768: var(--accent); --ch-l390: 7.692%; --ch-t390: 92.874%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--accent); }
-.hro .hro-chrome .hro-ch-c02 { --ch-l1920: 49.74%; --ch-t1920: 44.403%; --ch-w1920: 0.573%; --ch-h1920: 1.035%; --ch-op1920: 1; --ch-col1920: var(--accent); --ch-l: 49.722%; --ch-t: 44.983%; --ch-w: 0.556%; --ch-h: 0.902%; --ch-op: 1; --ch-col: var(--accent); --ch-l1024: 49.707%; --ch-t1024: 45.85%; --ch-w1024: 0.586%; --ch-h1024: 0.791%; --ch-op1024: 1; --ch-col1024: var(--accent); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 1; }
-.hro .hro-chrome .hro-ch-c03 { --ch-l1920: 37.5%; --ch-t1920: 54.657%; --ch-w1920: 0.313%; --ch-h1920: 0.564%; --ch-op1920: 1; --ch-col1920: var(--grid-ink-72); --ch-l: 36.458%; --ch-t: 56.032%; --ch-w: 0.347%; --ch-h: 0.564%; --ch-op: 1; --ch-col: var(--grid-ink-72); --ch-l1024: 37.305%; --ch-t1024: 56.785%; --ch-w1024: 0.293%; --ch-h1024: 0.395%; --ch-op1024: 1; --ch-col1024: var(--grid-ink-72); --ch-l768: 29.688%; --ch-t768: 37.443%; --ch-w768: 0.521%; --ch-h768: 0.452%; --ch-op768: 1; --ch-col768: var(--grid-ink-72); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 1; }
-.hro .hro-chrome .hro-ch-c04 { --ch-l1920: 49.948%; --ch-t1920: 44.403%; --ch-w1920: 0.104%; --ch-h1920: 1.035%; --ch-op1920: 1; --ch-bg1920: var(--accent); --ch-col1920: var(--accent); --ch-l: 49.931%; --ch-t: 44.983%; --ch-w: 0.139%; --ch-h: 0.902%; --ch-op: 1; --ch-bg: var(--accent); --ch-col: var(--accent); --ch-l1024: 50%; --ch-t1024: 45.85%; --ch-w1024: 0.098%; --ch-h1024: 0.791%; --ch-op1024: 1; --ch-bg1024: var(--accent); --ch-col1024: var(--accent); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c05 { --ch-l1920: 49.74%; --ch-t1920: 44.873%; --ch-w1920: 0.573%; --ch-h1920: 0.188%; --ch-op1920: 1; --ch-bg1920: var(--accent); --ch-col1920: var(--accent); --ch-l: 49.722%; --ch-t: 45.321%; --ch-w: 0.556%; --ch-h: 0.225%; --ch-op: 1; --ch-bg: var(--accent); --ch-col: var(--accent); --ch-l1024: 49.707%; --ch-t1024: 46.113%; --ch-w1024: 0.586%; --ch-h1024: 0.132%; --ch-op1024: 1; --ch-bg1024: var(--accent); --ch-col1024: var(--accent); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c06 { --ch-op1920: 1; --ch-ink1920: var(--grid-ink-72); --ch-op: 1; --ch-ink: var(--grid-ink-72); --ch-op1024: 1; --ch-ink1024: var(--grid-ink-72); --ch-op768: 1; --ch-ink768: var(--grid-ink-72); --ch-op390: 1; --ch-ink390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c07 { --ch-l1920: 98.281%; --ch-t1920: 7.714%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 98.264%; --ch-t: 6.99%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 98.242%; --ch-t1024: 5.797%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 96.354%; --ch-t768: 6.448%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 94.615%; --ch-t390: 6.159%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c08 { --ch-l1920: 1.042%; --ch-t1920: 7.714%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 1.042%; --ch-t: 6.99%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 1.074%; --ch-t1024: 5.797%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 2.214%; --ch-t768: 6.448%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 4.359%; --ch-t390: 6.159%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c09 { --ch-l1920: 98.281%; --ch-t1920: 80.903%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 98.264%; --ch-t: 82.864%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 98.242%; --ch-t1024: 85.771%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 96.354%; --ch-t768: 70.475%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 94.615%; --ch-t390: 54.106%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c10 { --ch-l1920: 1.042%; --ch-t1920: 80.903%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 1.042%; --ch-t: 82.864%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 1.074%; --ch-t1024: 85.771%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 2.214%; --ch-t768: 70.475%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 4.359%; --ch-t390: 54.106%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c11 { --ch-l1920: 47.135%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 36.736%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 57.227%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 55.729%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 113.846%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c12 { --ch-l1920: 98.281%; --ch-t1920: 7.714%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 98.264%; --ch-t: 6.99%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 98.242%; --ch-t1024: 5.797%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 96.354%; --ch-t768: 6.448%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 94.615%; --ch-t390: 6.159%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c13 { --ch-l1920: 1.042%; --ch-t1920: 7.714%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 1.042%; --ch-t: 6.99%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 1.074%; --ch-t1024: 5.797%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 2.214%; --ch-t768: 6.448%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 4.359%; --ch-t390: 6.159%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c14 { --ch-l1920: 98.281%; --ch-t1920: 80.903%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 98.264%; --ch-t: 82.864%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 98.242%; --ch-t1024: 85.771%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 96.354%; --ch-t768: 70.475%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 94.615%; --ch-t390: 54.106%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c15 { --ch-l1920: 1.042%; --ch-t1920: 80.903%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 1.042%; --ch-t: 82.864%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 1.074%; --ch-t1024: 85.771%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 2.214%; --ch-t768: 70.475%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 4.359%; --ch-t390: 54.106%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c16 { --ch-l1920: 38.385%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 27.708%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 48.145%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 36.589%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 75.385%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c17 { --ch-l1920: 37.292%; --ch-t1920: 54.28%; --ch-w1920: 0.729%; --ch-h1920: 1.317%; --ch-op1920: 0; --ch-tr1920: opacity 0.4s ease; --ch-bg1920: var(--hro-paper); --ch-col1920: var(--grid-ink-72); --ch-l: 36.25%; --ch-t: 55.581%; --ch-w: 0.833%; --ch-h: 1.353%; --ch-op: 0; --ch-tr: opacity 0.4s ease; --ch-bg: var(--hro-paper); --ch-col: var(--grid-ink-72); --ch-l1024: 37.012%; --ch-t1024: 56.522%; --ch-w1024: 0.781%; --ch-h1024: 1.054%; --ch-op1024: 0; --ch-tr1024: opacity 0.4s ease; --ch-bg1024: var(--hro-paper); --ch-col1024: var(--grid-ink-72); --ch-l768: 29.297%; --ch-t768: 37.104%; --ch-w768: 1.302%; --ch-h768: 1.131%; --ch-op768: 0; --ch-tr768: opacity 0.4s ease; --ch-bg768: var(--hro-paper); --ch-col768: var(--grid-ink-72); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c18 { --ch-l1920: 37.292%; --ch-t1920: 54.28%; --ch-w1920: 0.729%; --ch-h1920: 1.317%; --ch-op1920: 0.862454; --ch-tr1920: top, right, height, width 0.4s, 0.4s, 0.4s, 0.4s ease, ease, ease, ease; --ch-bg1920: var(--accent); --ch-col1920: var(--grid-ink-72); --ch-l: 36.181%; --ch-t: 55.693%; --ch-w: 0.833%; --ch-h: 1.353%; --ch-op: 0.801388; --ch-tr: top, right, height, width 0.4s, 0.4s, 0.4s, 0.4s ease, ease, ease, ease; --ch-bg: var(--accent); --ch-col: var(--grid-ink-72); --ch-l1024: 37.012%; --ch-t1024: 56.522%; --ch-w1024: 0.781%; --ch-h1024: 1.054%; --ch-op1024: 0.967774; --ch-tr1024: top, right, height, width 0.4s, 0.4s, 0.4s, 0.4s ease, ease, ease, ease; --ch-bg1024: var(--accent); --ch-col1024: var(--grid-ink-72); --ch-l768: 29.297%; --ch-t768: 37.104%; --ch-w768: 1.302%; --ch-h768: 1.131%; --ch-op768: 0.886643; --ch-tr768: top, right, height, width 0.4s, 0.4s, 0.4s, 0.4s ease, ease, ease, ease; --ch-bg768: var(--accent); --ch-col768: var(--grid-ink-72); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c19 { --ch-l1920: 65.156%; --ch-t1920: 53.716%; --ch-w1920: 0.313%; --ch-h1920: 0.564%; --ch-op1920: 1; --ch-col1920: var(--grid-ink-72); --ch-l: 68.611%; --ch-t: 54.904%; --ch-w: 0.347%; --ch-h: 0.564%; --ch-op: 1; --ch-col: var(--grid-ink-72); --ch-l1024: 71.582%; --ch-t1024: 55.599%; --ch-w1024: 0.293%; --ch-h1024: 0.395%; --ch-op1024: 1; --ch-col1024: var(--grid-ink-72); --ch-l768: 65.365%; --ch-t768: 33.937%; --ch-w768: 0.521%; --ch-h768: 0.452%; --ch-op768: 1; --ch-col768: var(--grid-ink-72); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 1; }
-.hro .hro-chrome .hro-ch-c20 { --ch-l1920: 64.948%; --ch-t1920: 53.34%; --ch-w1920: 0.729%; --ch-h1920: 1.317%; --ch-op1920: 0; --ch-tr1920: opacity 0.4s ease; --ch-bg1920: var(--hro-paper); --ch-col1920: var(--grid-ink-72); --ch-l: 68.333%; --ch-t: 54.453%; --ch-w: 0.833%; --ch-h: 1.353%; --ch-op: 0; --ch-tr: opacity 0.4s ease; --ch-bg: var(--hro-paper); --ch-col: var(--grid-ink-72); --ch-l1024: 71.387%; --ch-t1024: 55.336%; --ch-w1024: 0.781%; --ch-h1024: 1.054%; --ch-op1024: 0; --ch-tr1024: opacity 0.4s ease; --ch-bg1024: var(--hro-paper); --ch-col1024: var(--grid-ink-72); --ch-l768: 64.974%; --ch-t768: 33.597%; --ch-w768: 1.302%; --ch-h768: 1.131%; --ch-op768: 0; --ch-tr768: opacity 0.4s ease; --ch-bg768: var(--hro-paper); --ch-col768: var(--grid-ink-72); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c21 { --ch-l1920: 64.948%; --ch-t1920: 53.34%; --ch-w1920: 0.729%; --ch-h1920: 1.317%; --ch-op1920: 0.862454; --ch-tr1920: top, right, height, width 0.4s, 0.4s, 0.4s, 0.4s ease, ease, ease, ease; --ch-bg1920: var(--accent); --ch-col1920: var(--grid-ink-72); --ch-l: 68.333%; --ch-t: 54.453%; --ch-w: 0.833%; --ch-h: 1.353%; --ch-op: 0.801388; --ch-tr: top, right, height, width 0.4s, 0.4s, 0.4s, 0.4s ease, ease, ease, ease; --ch-bg: var(--accent); --ch-col: var(--grid-ink-72); --ch-l1024: 71.387%; --ch-t1024: 55.336%; --ch-w1024: 0.781%; --ch-h1024: 1.054%; --ch-op1024: 0.967774; --ch-tr1024: top, right, height, width 0.4s, 0.4s, 0.4s, 0.4s ease, ease, ease, ease; --ch-bg1024: var(--accent); --ch-col1024: var(--grid-ink-72); --ch-l768: 64.974%; --ch-t768: 33.597%; --ch-w768: 1.302%; --ch-h768: 1.131%; --ch-op768: 0.886643; --ch-tr768: top, right, height, width 0.4s, 0.4s, 0.4s, 0.4s ease, ease, ease, ease; --ch-bg768: var(--accent); --ch-col768: var(--grid-ink-72); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c22 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 1; --ch-ink768: var(--grid-line-rule); --ch-op390: 1; --ch-ink390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c23 { --ch-l1920: 98.281%; --ch-t1920: 7.714%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 98.264%; --ch-t: 6.99%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 98.242%; --ch-t1024: 5.797%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 96.354%; --ch-t768: 6.448%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 94.615%; --ch-t390: 6.159%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c24 { --ch-l1920: 1.042%; --ch-t1920: 7.714%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 1.042%; --ch-t: 6.99%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 1.074%; --ch-t1024: 5.797%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 2.214%; --ch-t768: 6.448%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 4.359%; --ch-t390: 6.159%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c25 { --ch-l1920: 98.281%; --ch-t1920: 80.903%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 98.264%; --ch-t: 82.864%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 98.242%; --ch-t1024: 85.771%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 96.354%; --ch-t768: 70.475%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 94.615%; --ch-t390: 54.106%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c26 { --ch-l1920: 1.042%; --ch-t1920: 80.903%; --ch-w1920: 0.677%; --ch-h1920: 1.223%; --ch-op1920: 1; --ch-col1920: var(--grid-ink); --ch-l: 1.042%; --ch-t: 82.864%; --ch-w: 0.694%; --ch-h: 1.127%; --ch-op: 1; --ch-col: var(--grid-ink); --ch-l1024: 1.074%; --ch-t1024: 85.771%; --ch-w1024: 0.684%; --ch-h1024: 0.922%; --ch-op1024: 1; --ch-col1024: var(--grid-ink); --ch-l768: 2.214%; --ch-t768: 70.475%; --ch-w768: 1.432%; --ch-h768: 1.244%; --ch-op768: 1; --ch-col768: var(--grid-ink); --ch-l390: 4.359%; --ch-t390: 54.106%; --ch-w390: 2.051%; --ch-h390: 0.966%; --ch-op390: 1; --ch-col390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c27 { --ch-l1920: 19.948%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 8.75%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 29.102%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -3.776%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: -5.385%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c28 { --ch-l1920: 11.198%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -0.278%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 20.117%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -22.917%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: -43.846%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c29 { --ch-l1920: 2.865%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -8.75%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 11.523%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -41.016%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c30 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 1; --ch-ink768: var(--grid-line-rule); --ch-op390: 1; --ch-ink390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c31 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 1; --ch-ink768: var(--grid-line-rule); --ch-op390: 1; --ch-ink390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c32 { --ch-l1920: -7.292%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -19.236%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 1.074%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -63.281%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c33 { --ch-l1920: -16.042%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -28.194%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -8.008%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -82.422%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c34 { --ch-l1920: -24.323%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -36.736%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -16.504%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c35 { --ch-l1920: -34.479%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -47.222%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -27.051%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c36 { --ch-l1920: -43.229%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -56.181%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -36.035%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c37 { --ch-l1920: -51.562%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -64.722%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -44.629%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c38 { --ch-l1920: -61.719%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -75.208%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -55.078%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c39 { --ch-l1920: -70.469%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -84.167%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -64.16%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c40 { --ch-l1920: 0.729%; --ch-t1920: 92.85%; --ch-w1920: 1.146%; --ch-h1920: 2.07%; --ch-op1920: 1; --ch-col1920: var(--accent); --ch-l: 0.694%; --ch-t: 93.574%; --ch-w: 1.181%; --ch-h: 1.917%; --ch-op: 1; --ch-col: var(--accent); --ch-l1024: 0.684%; --ch-t1024: 94.598%; --ch-w1024: 1.172%; --ch-h1024: 1.581%; --ch-op1024: 1; --ch-col1024: var(--accent); --ch-l768: 1.432%; --ch-t768: 93.1%; --ch-w768: 2.344%; --ch-h768: 2.036%; --ch-op768: 1; --ch-col768: var(--accent); --ch-l390: 3.59%; --ch-t390: 92.874%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--accent); }
-.hro .hro-chrome .hro-ch-c41 { --ch-l1920: 1.875%; --ch-t1920: 92.85%; --ch-w1920: 1.146%; --ch-h1920: 2.07%; --ch-op1920: 1; --ch-col1920: var(--accent); --ch-l: 1.806%; --ch-t: 93.574%; --ch-w: 1.181%; --ch-h: 1.917%; --ch-op: 1; --ch-col: var(--accent); --ch-l1024: 1.855%; --ch-t1024: 94.598%; --ch-w1024: 1.172%; --ch-h1024: 1.581%; --ch-op1024: 1; --ch-col1024: var(--accent); --ch-l768: 3.906%; --ch-t768: 93.1%; --ch-w768: 2.344%; --ch-h768: 2.036%; --ch-op768: 1; --ch-col768: var(--accent); --ch-l390: 7.692%; --ch-t390: 92.874%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--accent); }
-.hro .hro-chrome .hro-ch-c42 { --ch-l1920: 37.5%; --ch-t1920: 54.657%; --ch-w1920: 0.313%; --ch-h1920: 0.564%; --ch-op1920: 1; --ch-col1920: var(--grid-ink-72); --ch-l: 36.458%; --ch-t: 56.032%; --ch-w: 0.347%; --ch-h: 0.564%; --ch-op: 1; --ch-col: var(--grid-ink-72); --ch-l1024: 37.305%; --ch-t1024: 56.785%; --ch-w1024: 0.293%; --ch-h1024: 0.395%; --ch-op1024: 1; --ch-col1024: var(--grid-ink-72); --ch-l768: 29.688%; --ch-t768: 37.443%; --ch-w768: 0.521%; --ch-h768: 0.452%; --ch-op768: 1; --ch-col768: var(--grid-ink-72); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 1; }
-.hro .hro-chrome .hro-ch-c43 { --ch-op1920: 1; --ch-ink1920: var(--grid-ink-72); --ch-op: 1; --ch-ink: var(--grid-ink-72); --ch-op1024: 1; --ch-ink1024: var(--grid-ink-72); --ch-op768: 1; --ch-ink768: var(--grid-ink-72); --ch-op390: 1; --ch-ink390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c44 { --ch-l1920: 65.156%; --ch-t1920: 53.716%; --ch-w1920: 0.313%; --ch-h1920: 0.564%; --ch-op1920: 1; --ch-col1920: var(--grid-ink-72); --ch-l: 68.611%; --ch-t: 54.904%; --ch-w: 0.347%; --ch-h: 0.564%; --ch-op: 1; --ch-col: var(--grid-ink-72); --ch-l1024: 71.582%; --ch-t1024: 55.599%; --ch-w1024: 0.293%; --ch-h1024: 0.395%; --ch-op1024: 1; --ch-col1024: var(--grid-ink-72); --ch-l768: 65.365%; --ch-t768: 33.937%; --ch-w768: 0.521%; --ch-h768: 0.452%; --ch-op768: 1; --ch-col768: var(--grid-ink-72); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 1; }
-.hro .hro-chrome .hro-ch-c45 { --ch-op1920: 1; --ch-tr1920: transform 0.4s ease; --ch-ink1920: var(--grid-ink); --ch-op: 1; --ch-tr: transform 0.4s ease; --ch-ink: var(--grid-ink); --ch-op1024: 1; --ch-tr1024: transform 0.4s ease; --ch-ink1024: var(--grid-ink); --ch-op768: 1; --ch-tr768: transform 0.4s ease; --ch-ink768: var(--grid-ink); --ch-op390: 1; --ch-tr390: transform 0.4s ease; --ch-ink390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c46 { --ch-op1920: 1; --ch-tr1920: transform 0.4s ease; --ch-ink1920: var(--grid-ink); --ch-op: 1; --ch-tr: transform 0.4s ease; --ch-ink: var(--grid-ink); --ch-op1024: 1; --ch-tr1024: transform 0.4s ease; --ch-ink1024: var(--grid-ink); --ch-op768: 1; --ch-tr768: transform 0.4s ease; --ch-ink768: var(--grid-ink); --ch-op390: 1; --ch-tr390: transform 0.4s ease; --ch-ink390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c47 { --ch-op1920: 1; --ch-tr1920: transform 0.4s ease; --ch-ink1920: var(--grid-ink); --ch-op: 1; --ch-tr: transform 0.4s ease; --ch-ink: var(--grid-ink); --ch-op1024: 1; --ch-tr1024: transform 0.4s ease; --ch-ink1024: var(--grid-ink); --ch-op768: 1; --ch-tr768: transform 0.4s ease; --ch-ink768: var(--grid-ink); --ch-op390: 1; --ch-tr390: transform 0.4s ease; --ch-ink390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c48 { --ch-op1920: 1; --ch-tr1920: transform 0.4s ease; --ch-ink1920: var(--grid-ink); --ch-op: 1; --ch-tr: transform 0.4s ease; --ch-ink: var(--grid-ink); --ch-op1024: 1; --ch-tr1024: transform 0.4s ease; --ch-ink1024: var(--grid-ink); --ch-op768: 1; --ch-tr768: transform 0.4s ease; --ch-ink768: var(--grid-ink); --ch-op390: 1; --ch-tr390: transform 0.4s ease; --ch-ink390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c49 { --ch-op1920: 1; --ch-tr1920: transform 0.4s ease; --ch-ink1920: var(--grid-ink); --ch-op: 1; --ch-tr: transform 0.4s ease; --ch-ink: var(--grid-ink); --ch-op1024: 1; --ch-tr1024: transform 0.4s ease; --ch-ink1024: var(--grid-ink); --ch-op768: 1; --ch-tr768: transform 0.4s ease; --ch-ink768: var(--grid-ink); --ch-op390: 1; --ch-tr390: transform 0.4s ease; --ch-ink390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c50 { --ch-op1920: 1; --ch-tr1920: transform 0.4s ease; --ch-ink1920: var(--grid-ink); --ch-op: 1; --ch-tr: transform 0.4s ease; --ch-ink: var(--grid-ink); --ch-op1024: 1; --ch-tr1024: transform 0.4s ease; --ch-ink1024: var(--grid-ink); --ch-op768: 1; --ch-tr768: transform 0.4s ease; --ch-ink768: var(--grid-ink); --ch-op390: 1; --ch-tr390: transform 0.4s ease; --ch-ink390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c51 { --ch-op1920: 1; --ch-tr1920: transform 0.4s ease; --ch-ink1920: var(--grid-ink); --ch-op: 1; --ch-tr: transform 0.4s ease; --ch-ink: var(--grid-ink); --ch-op1024: 1; --ch-tr1024: transform 0.4s ease; --ch-ink1024: var(--grid-ink); --ch-op768: 1; --ch-tr768: transform 0.4s ease; --ch-ink768: var(--grid-ink); --ch-op390: 1; --ch-tr390: transform 0.4s ease; --ch-ink390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c52 { --ch-op1920: 1; --ch-tr1920: transform 0.4s ease; --ch-ink1920: var(--grid-ink); --ch-op: 1; --ch-tr: transform 0.4s ease; --ch-ink: var(--grid-ink); --ch-op1024: 1; --ch-tr1024: transform 0.4s ease; --ch-ink1024: var(--grid-ink); --ch-op768: 1; --ch-tr768: transform 0.4s ease; --ch-ink768: var(--grid-ink); --ch-op390: 1; --ch-tr390: transform 0.4s ease; --ch-ink390: var(--grid-ink); }
-.hro .hro-chrome .hro-ch-c53 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 1; --ch-ink768: var(--grid-line-rule); --ch-op390: 1; --ch-ink390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c54 { --ch-l1920: 0.729%; --ch-t1920: 92.85%; --ch-w1920: 1.146%; --ch-h1920: 2.07%; --ch-op1920: 1; --ch-col1920: var(--accent); --ch-l: 0.694%; --ch-t: 93.574%; --ch-w: 1.181%; --ch-h: 1.917%; --ch-op: 1; --ch-col: var(--accent); --ch-l1024: 0.684%; --ch-t1024: 94.598%; --ch-w1024: 1.172%; --ch-h1024: 1.581%; --ch-op1024: 1; --ch-col1024: var(--accent); --ch-l768: 1.432%; --ch-t768: 93.1%; --ch-w768: 2.344%; --ch-h768: 2.036%; --ch-op768: 1; --ch-col768: var(--accent); --ch-l390: 3.59%; --ch-t390: 92.874%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--accent); }
-.hro .hro-chrome .hro-ch-c55 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 1; --ch-ink768: var(--grid-line-rule); --ch-op390: 1; --ch-ink390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c56 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 1; --ch-ink768: var(--grid-line-rule); --ch-op390: 1; --ch-ink390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c57 { --ch-l1920: 1.875%; --ch-t1920: 92.85%; --ch-w1920: 1.146%; --ch-h1920: 2.07%; --ch-op1920: 1; --ch-col1920: var(--accent); --ch-l: 1.806%; --ch-t: 93.574%; --ch-w: 1.181%; --ch-h: 1.917%; --ch-op: 1; --ch-col: var(--accent); --ch-l1024: 1.855%; --ch-t1024: 94.598%; --ch-w1024: 1.172%; --ch-h1024: 1.581%; --ch-op1024: 1; --ch-col1024: var(--accent); --ch-l768: 3.906%; --ch-t768: 93.1%; --ch-w768: 2.344%; --ch-h768: 2.036%; --ch-op768: 1; --ch-col768: var(--accent); --ch-l390: 7.692%; --ch-t390: 92.874%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--accent); }
-.hro .hro-chrome .hro-ch-c58 { --ch-l1920: 0.729%; --ch-t1920: 92.85%; --ch-w1920: 1.146%; --ch-h1920: 2.07%; --ch-op1920: 1; --ch-col1920: var(--accent); --ch-l: 0.694%; --ch-t: 93.574%; --ch-w: 1.181%; --ch-h: 1.917%; --ch-op: 1; --ch-col: var(--accent); --ch-l1024: 0.684%; --ch-t1024: 94.598%; --ch-w1024: 1.172%; --ch-h1024: 1.581%; --ch-op1024: 1; --ch-col1024: var(--accent); --ch-l768: 1.432%; --ch-t768: 93.1%; --ch-w768: 2.344%; --ch-h768: 2.036%; --ch-op768: 1; --ch-col768: var(--accent); --ch-l390: 3.59%; --ch-t390: 92.874%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--accent); }
-.hro .hro-chrome .hro-ch-c59 { --ch-l1920: 57.344%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 47.222%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 67.676%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 77.995%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 158.462%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c61 { --ch-l1920: 47.135%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 36.736%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 57.227%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 55.729%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 113.846%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c62 { --ch-l1920: 38.385%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 27.708%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 48.145%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 36.589%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 75.385%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c63 { --ch-l1920: 30.104%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 19.236%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 39.648%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 18.49%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 39.231%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c64 { --ch-l1920: 19.948%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 8.75%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 29.102%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -3.776%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: -5.385%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c65 { --ch-l1920: 11.198%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -0.278%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 20.117%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -22.917%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: -43.846%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c66 { --ch-l1920: 2.865%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -8.75%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 11.523%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -41.016%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c67 { --ch-l1920: -7.292%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -19.236%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 1.074%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -63.281%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c68 { --ch-l1920: -16.042%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -28.194%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -8.008%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -82.422%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c69 { --ch-l1920: -24.323%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -36.736%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -16.504%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c70 { --ch-l1920: -34.479%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -47.222%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -27.051%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c71 { --ch-l1920: -43.229%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -56.181%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -36.035%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c72 { --ch-l1920: -51.562%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -64.722%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -44.629%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c73 { --ch-l1920: -61.719%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -75.208%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -55.078%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c74 { --ch-l1920: -70.469%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -84.167%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -64.16%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c76 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 1; --ch-ink768: var(--grid-line-rule); --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c77 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 1; --ch-ink768: var(--grid-line-rule); --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c78 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 0; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c79 { --ch-l1920: 0.729%; --ch-t1920: 92.85%; --ch-w1920: 1.146%; --ch-h1920: 2.07%; --ch-op1920: 1; --ch-tr1920: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1); --ch-col1920: var(--accent); --ch-l: 0.694%; --ch-t: 93.574%; --ch-w: 1.181%; --ch-h: 1.917%; --ch-op: 1; --ch-tr: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1); --ch-col: var(--accent); --ch-l1024: 0.684%; --ch-t1024: 94.598%; --ch-w1024: 1.172%; --ch-h1024: 1.581%; --ch-op1024: 1; --ch-tr1024: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1); --ch-col1024: var(--accent); --ch-l768: 1.432%; --ch-t768: 93.1%; --ch-w768: 2.344%; --ch-h768: 2.036%; --ch-op768: 1; --ch-tr768: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1); --ch-col768: var(--accent); --ch-l390: 3.59%; --ch-t390: 92.874%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-tr390: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1); --ch-col390: var(--accent); }
-.hro .hro-chrome .hro-ch-c80 { --ch-l1920: 1.875%; --ch-t1920: 92.85%; --ch-w1920: 1.146%; --ch-h1920: 2.07%; --ch-op1920: 1; --ch-tr1920: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1); --ch-col1920: var(--accent); --ch-l: 1.806%; --ch-t: 93.574%; --ch-w: 1.181%; --ch-h: 1.917%; --ch-op: 1; --ch-tr: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1); --ch-col: var(--accent); --ch-l1024: 1.855%; --ch-t1024: 94.598%; --ch-w1024: 1.172%; --ch-h1024: 1.581%; --ch-op1024: 1; --ch-tr1024: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1); --ch-col1024: var(--accent); --ch-l768: 3.906%; --ch-t768: 93.1%; --ch-w768: 2.344%; --ch-h768: 2.036%; --ch-op768: 1; --ch-tr768: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1); --ch-col768: var(--accent); --ch-l390: 7.692%; --ch-t390: 92.874%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-tr390: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1); --ch-col390: var(--accent); }
-.hro .hro-chrome .hro-ch-c81 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 0; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c82 { --ch-l1920: 57.344%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 47.222%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 67.676%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 77.995%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 158.462%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c83 { --ch-l1920: 47.135%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 36.736%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 57.227%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 55.729%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 113.846%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c84 { --ch-l1920: 38.385%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 27.708%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 48.145%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 36.589%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 75.385%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c85 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 0; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c86 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 0; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c87 { --ch-l1920: 30.104%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 19.236%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 39.648%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 18.49%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 39.231%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c88 { --ch-l1920: 19.948%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: 8.75%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 29.102%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -3.776%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: -5.385%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c89 { --ch-l1920: 11.198%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -0.278%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 20.117%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -22.917%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: -43.846%; --ch-t390: 96.618%; --ch-w390: 4.103%; --ch-h390: 1.932%; --ch-op390: 1; --ch-col390: var(--grid-line-rule); }
-.hro .hro-chrome .hro-ch-c90 { --ch-l1920: 2.865%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -8.75%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 11.523%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -41.016%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c91 { --ch-l1920: -7.292%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -19.236%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: 1.074%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -63.281%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c92 { --ch-l1920: -16.042%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -28.194%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -8.008%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: -82.422%; --ch-t768: 97.059%; --ch-w768: 1.953%; --ch-h768: 1.697%; --ch-op768: 1; --ch-col768: var(--grid-line-rule); --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c93 { --ch-l1920: -24.323%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -36.736%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -16.504%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c94 { --ch-l1920: -34.479%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -47.222%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -27.051%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c95 { --ch-l1920: -43.229%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -56.181%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -36.035%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c96 { --ch-l1920: -51.562%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -64.722%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -44.629%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c97 { --ch-l1920: -61.719%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -75.208%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -55.078%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c98 { --ch-l1920: -70.469%; --ch-t1920: 96.802%; --ch-w1920: 0.938%; --ch-h1920: 1.693%; --ch-op1920: 1; --ch-col1920: var(--grid-line-rule); --ch-l: -84.167%; --ch-t: 97.182%; --ch-w: 0.903%; --ch-h: 1.466%; --ch-op: 1; --ch-col: var(--grid-line-rule); --ch-l1024: -64.16%; --ch-t1024: 97.628%; --ch-w1024: 0.879%; --ch-h1024: 1.186%; --ch-op1024: 1; --ch-col1024: var(--grid-line-rule); --ch-l768: 102.051%; --ch-t768: -0.966%; --ch-w768: 0%; --ch-h768: 0%; --ch-op768: 0; --ch-l390: 102.051%; --ch-t390: -0.966%; --ch-w390: 0%; --ch-h390: 0%; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c99 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 0; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c100 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 0; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c101 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 0; --ch-op390: 0; }
-.hro .hro-chrome .hro-ch-c102 { --ch-op1920: 1; --ch-ink1920: var(--grid-line-rule); --ch-op: 1; --ch-ink: var(--grid-line-rule); --ch-op1024: 1; --ch-ink1024: var(--grid-line-rule); --ch-op768: 0; --ch-op390: 0; }
 
 /* R342-02 — the per-bp seat belts: each belt re-seats the layer onto
    its own measured rung (the frozen spec's per-bp wrapper census) and
    onto the per-element seats' own bp vars (falling back to the base seat
    when a row is bp-stable). */
-@media (min-width: 1920px) {
-  .hro .hro-chrome {
-    font-size: 17.78px; /* type-gate: allow — the frozen spec's measured 1920 wrapper rung */
-    line-height: 1.35;
-  }
-.hro .hro-chrome .hro-ch {
-    left: var(--ch-l1920, var(--ch-l, auto));
-    top: var(--ch-t1920, var(--ch-t, auto));
-    width: var(--ch-w1920, var(--ch-w, auto));
-    height: var(--ch-h1920, var(--ch-h, auto));
-    opacity: var(--ch-op1920, var(--ch-op, 1));
-    background-color: var(--ch-bg1920, var(--ch-bg, transparent));
-    transition: var(--ch-tr1920, var(--ch-tr, none));
-    color: var(--ch-col1920, var(--ch-col, inherit));
-}
-}
-@media (min-width: 1024px) and (max-width: 1439px) {
-  .hro .hro-chrome {
-    font-size: 9.48px; /* type-gate: allow — the frozen spec's measured 1024 wrapper rung */
-    line-height: 1.35;
-  }
-.hro .hro-chrome .hro-ch {
-    left: var(--ch-l1024, var(--ch-l, auto));
-    top: var(--ch-t1024, var(--ch-t, auto));
-    width: var(--ch-w1024, var(--ch-w, auto));
-    height: var(--ch-h1024, var(--ch-h, auto));
-    opacity: var(--ch-op1024, var(--ch-op, 1));
-    background-color: var(--ch-bg1024, var(--ch-bg, transparent));
-    transition: var(--ch-tr1024, var(--ch-tr, none));
-    color: var(--ch-col1024, var(--ch-col, inherit));
-}
-}
-@media (min-width: 768px) and (max-width: 1023px) {
-  .hro .hro-chrome {
-    font-size: 14.73px; /* type-gate: allow — the frozen spec's measured 768 wrapper rung */
-    line-height: 1.35;
-  }
-.hro .hro-chrome .hro-ch {
-    left: var(--ch-l768, var(--ch-l, auto));
-    top: var(--ch-t768, var(--ch-t, auto));
-    width: var(--ch-w768, var(--ch-w, auto));
-    height: var(--ch-h768, var(--ch-h, auto));
-    opacity: var(--ch-op768, var(--ch-op, 1));
-    background-color: var(--ch-bg768, var(--ch-bg, transparent));
-    transition: var(--ch-tr768, var(--ch-tr, none));
-    color: var(--ch-col768, var(--ch-col, inherit));
-}
-}
-@media (max-width: 767px) {
-  .hro .hro-chrome {
-    font-size: 15.88px; /* type-gate: allow — the frozen spec's measured 390 wrapper rung */
-    line-height: 1.35;
-  }
-.hro .hro-chrome .hro-ch {
-    left: var(--ch-l390, var(--ch-l, auto));
-    top: var(--ch-t390, var(--ch-t, auto));
-    width: var(--ch-w390, var(--ch-w, auto));
-    height: var(--ch-h390, var(--ch-h, auto));
-    opacity: var(--ch-op390, var(--ch-op, 1));
-    background-color: var(--ch-bg390, var(--ch-bg, transparent));
-    transition: var(--ch-tr390, var(--ch-tr, none));
-    color: var(--ch-col390, var(--ch-col, inherit));
-}
-}
 
 /* the kid glyph inks — per-bp arms beside the seat colours (paths and
    circles carry their own measured ink vars; one rule per bp, no
    duplicate selectors) */
-@media (min-width: 1920px) {
-  .hro .hro-chrome path.hro-ch,
-  .hro .hro-chrome circle.hro-ch { color: var(--ch-ink1920, var(--ch-ink, inherit)); }
-}
-@media (min-width: 1024px) and (max-width: 1439px) {
-  .hro .hro-chrome path.hro-ch,
-  .hro .hro-chrome circle.hro-ch { color: var(--ch-ink1024, var(--ch-ink, inherit)); }
-}
-@media (min-width: 768px) and (max-width: 1023px) {
-  .hro .hro-chrome path.hro-ch,
-  .hro .hro-chrome circle.hro-ch { color: var(--ch-ink768, var(--ch-ink, inherit)); }
-}
-@media (max-width: 767px) {
-  .hro .hro-chrome path.hro-ch,
-  .hro .hro-chrome circle.hro-ch { color: var(--ch-ink390, var(--ch-ink, inherit)); }
-}
+

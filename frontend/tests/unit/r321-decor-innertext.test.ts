@@ -26,8 +26,9 @@ const DECOR_FAMILIES = [
   'auth-mark',
   'nf-mark',
   'sheet-mark',
-  'bp-plus',
-  'bp-dmark',
+  // R347 D4 — 'bp-plus' and 'bp-dmark' retired with the hero's edge
+  // frame and ± registration marks (the drafting chrome demolition);
+  // the families no longer exist in src/ OR the sheets.
   // R325 override — `pr-panel-mark` and `pr-bar-plus` retired with the
   // Y2 §05 rebuild (the filler chrome the brief ordered removed; the
   // families no longer exist in src/ OR the sheets — the §A6 sweep

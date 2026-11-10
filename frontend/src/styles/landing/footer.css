@@ -329,7 +329,7 @@
 /* T-06k census re-seat: the grid's accumulated height delta above the
    band, measured per bp (−37@1920 · −39@1440 · −29@1024 · −54@768 —
    non-linear, so per-belt seats); 390 keeps the parked deck */
-.fo-fstrip { position: relative; block-size: calc(var(--fu) * 314); overflow: hidden; margin-block-start: -39px; } /* 235/314/419 — the census band law */
+.fo-fstrip { position: relative; block-size: calc(var(--fu) * 314); overflow: hidden; margin-block-start: 0; } /* R347 D5: the -39px census pull-up is retired - it sat the photo strip's top edge under the socials' last row (الخصوصية/الشروط printed over the image); the socials now clear the band */ /* 235/314/419 — the census band law */
 .fo-strip-in { position: absolute; inset: 0; }
 .fo-strip-media,
 .fo-strip-twin { position: absolute; inset: 0; }
@@ -372,8 +372,8 @@
 }
 .fo-wordmark-reg::before { content: '+'; }
 
-@media (min-width: 1700px) { .fo-fstrip { margin-block-start: -37px; } }
-@media (min-width: 992px) and (max-width: 1299.98px) { .fo-fstrip { margin-block-start: -29px; } }
+@media (min-width: 1700px) { .fo-fstrip { margin-block-start: 0; } } /* R347 D5: the census pull-up retired (labels over image) */
+@media (min-width: 992px) and (max-width: 1299.98px) { .fo-fstrip { margin-block-start: 0; } } /* R347 D5 */
 
 /* the © bar + the legal row (R321 §A2 — one ruled line). R342-07: the
    links ride the census's 13.33fs label law + the 0.5s/--ease
@@ -543,7 +543,7 @@
   .fo-social { padding: 4.17px; block-size: 25px; }
   .fo-social-t { font-size: 14.73px; line-height: 19.89px; } /* R343: the census's 768-991 label scale */
   /* the chrome band: 217 tall, chrome inset 11 (sctop 694×7 @+19) */
-  .fo-fstrip { block-size: 217px; margin-block-start: -54px; }
+  .fo-fstrip { block-size: 217px; margin-block-start: 0; } /* R347 D5: the -54px mobile pull-up retired - the worst overlap (socials deep over the image) */
   .fo-sc-zone { inset: 11px; }
   .fo-sc-t,
   .fo-sc-b { inset-inline: 19px; block-size: 7px; }

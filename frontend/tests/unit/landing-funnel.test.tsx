@@ -110,14 +110,13 @@ describe('landing funnel — source contract (r164b → r331)', () => {
     expect(live).not.toMatch(/to="\/auth"\s+className="(?:btn primary|btn accent)/);
   });
 
-  it('login affordances ride the R331 register: six surfaces (header, mobile, hero secondary, finale ghost, colleges strip, footer)', () => {
-    /* R331 delta (documented): the rebuilt hero carries its own login
-     * secondary (the Heron pattern: ONE orange primary + one quiet alt),
-     * joining the previous five (header, mobile, finale ghost, colleges
-     * strip, footer). The register primary count stays 5; login grows
-     * 5→6 by product decision — the hero alt is a ghost, never a second
-     * primary. */
-    expect((live.match(/to="\/auth"/g) ?? []).length).toBe(6);
+  it('login affordances ride the register: five surfaces (mobile menu, hero secondary, finale ghost, colleges strip, footer)', () => {
+    /* R347 D4 re-key (the defect fix legitimately changed the live
+     * contract): the header-bar login is RETIRED — «تسجيل الدخول»
+     * appeared twice at the fold (nav + the hero's measured a[2] alt
+     * cell, the census-bound seat that stays). ONE login at the fold,
+     * per the owner's directive; login 6→5. */
+    expect((live.match(/to="\/auth"/g) ?? []).length).toBe(5);
   });
 
   it('the finale never shows login copy under a create-account button (label ↔ copy ↔ destination tell one story)', () => {
@@ -173,18 +172,16 @@ describe('landing funnel — rendered guest DOM (r164b → r188)', () => {
   it('a guest sees the split immediately: header login → /auth, header primary → /auth/register', () => {
     const { container } = renderLanding();
 
-    /* R315 override (K-B): the header seats ride the measured cell
-     * grammar — .fo-actions-login / .fo-actions-cta (the reference's
-     * ruled cells) replace the old .btn pair; the funnel contract
-     * itself (login → /auth, primary → /auth/register, both visible
-     * in the desktop bar) is unchanged. */
+    /* R347 D4 re-key: the header-bar login is RETIRED (one login at
+     * the fold — the hero's measured a[2] alt cell); the header keeps
+     * its primary. The hero alt below carries login → /auth. */
     const login = container.querySelector<HTMLAnchorElement>(
       '.fo-header-actions .fo-actions-login',
     );
     const primary = container.querySelector<HTMLAnchorElement>(
       '.fo-header-actions .fo-actions-cta',
     );
-    expect(login?.getAttribute('href')).toBe('/auth');
+    expect(login).toBeNull(); /* R347 D4: no second login in the bar */
     expect(primary?.getAttribute('href')).toBe('/auth/register');
   });
 

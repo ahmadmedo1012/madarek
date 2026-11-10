@@ -193,9 +193,9 @@ describe('r307 — the CSP admits exactly the two embed hosts', () => {
 });
 
 describe('r307 — the media layer added ZERO new funnel links', () => {
-  it('the 5+5 register/login counts survive untouched (R331: login 6 — the hero secondary joined the register)', () => {
+  it('the 5+5 register/login counts survive untouched (R347 D4: login 5 — the header-bar login retired, the hero secondary stays)', () => {
     expect((liveTsx.match(/to="\/auth\/register"/g) ?? []).length).toBe(5);
-    expect((liveTsx.match(/to="\/auth"/g) ?? []).length).toBe(6);
+    expect((liveTsx.match(/to="\/auth"/g) ?? []).length).toBe(5); /* R347 D4: the header-bar login retired; the hero secondary is the fold's ONE login */
   });
 
   it('the new sections route to anchors and app routes only', () => {
