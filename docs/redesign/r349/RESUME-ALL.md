@@ -246,3 +246,38 @@ all fixes re-measured on this box.
   PLACEMENT (screenshots vs canonical) rides the W-lane browser captures —
   the byte-pins (SVG twins + PNG manifest + icons:check) + the jsdom Logo
   contract cover every drift channel short of a browser raster today.
+
+### Session close — main@b4a56fbf, the live proofs (2026-11-11)
+- **main fast-forwarded** 341e4f9c → b4a56fbf (CI-red recovery + U4/U5 + KVM fix +
+  LANE B + the brand-canon sanction). Branch sweep run: 14 wip branches archived
+  (archive/* tags) and deleted — **only main remains on origin**.
+- **D1 live (structure)**: APK URL → 302 → 200, content-length 59,019,376;
+  build-info.json live from the release (commit/run fields from the run, not
+  hard-coded); the /app CTA renders («تحميل»). The full browser-rendered proof
+  rides the W/N captures.
+- **D2 freshness proof in flight**: the release served run-9 (ecd67298, the last
+  green before the smoke gate); Android run 17 on b4a56fbf rebuilds + replaces it
+  (and proves the KVM fix + the rewritten Maestro flow end-to-end — publish now
+  gated on [verify, smoke]).
+- **U exit live**: deployed landing = 0 forbidden names; deployed login shows
+  مؤسسة مدارك النموذجية / madarek-demo; deployed buildId = b4a56fbf03c1.
+- Deploy smoke 16 ✓ on b4a56fbf. CI 1121 / Mobile 58 / Android 17 running at
+  session close (all prior SHAs green: 12629db9 CI ✓, b4a56fbf branch CI ✓).
+
+## next (in order) — WAVE 2
+1. Confirm Android 17 + Mobile 58 + CI 1121 green on main (the KVM + maestro proof);
+   record run 17's artifacts (smoke green + publish + the new build-info commit).
+2. **LANE P** (profiles UI): read E1's schema (InstitutionKind, school-mode fields,
+   identity/contact/guardian columns, phones.ts/fields.ts), then P1 gap analysis →
+   P2 API (GET/PATCH /me/profile, /directory, contact-request) → P3 web profile
+   page → P4 mobile → P5 seed. PRIVACY-MATRIX.md + per-cell tests.
+3. **LANE S** (search UI on G1): S1 design doc → S2 normalisation v2 → S3 indexes
+   (own migration) → S4 golden set ≥250 queries → S5 command palette + /search →
+   S6 mobile. Mind the 770 KB bundle ceiling (GlobalSearch is eager).
+4. **LANE I** (import wizard on F1): I1 audit → I2 mapping presets → I3 cleaning →
+   I4 duplicates → I5 pipeline (dry-run/preview/commit/rollback) → I6 the 5-step
+   web wizard → I7 fixtures → I8 e2e.
+5. **LANE W** (website: detector sweep × roles, product walk, CSS demolition,
+   budgets, VLM panel, SEO/meta) and **LANE N** (mobile parity on the new screens).
+6. **LANE Z**: the integrator (migration-order conflicts, full gates, OWNER-GUIDE-AR,
+   ADRs, final report). D5 (OTA) needs the EXPO token — §5 question for the owner.
