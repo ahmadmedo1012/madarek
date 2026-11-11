@@ -10,7 +10,7 @@
 | `backend/**` | ✅ deploys | CI + **deploy-smoke** (waits for buildId == SHA, then health + 3 logins + dashboard + live-vs-committed OpenAPI additive check; failure opens an issue) | — |
 | `frontend/**`, `shared/**` (web side) | ✅ deploys | CI | — (unless `apps/mobile/**`/`shared/**` also changed → see below) |
 | `apps/mobile/**` or `shared/**` | ❌ never (render.yaml `buildFilter`) | **Mobile** workflow: gates (typecheck · expo lint · contract-check · `expo export` android+ios · bundle ≤ 8 MB) | **EAS Update** (`--auto`) to `production` **and** `preview` branches — reaches every installed build whose runtime fingerprint matches |
-| …and the change is **native-affecting** (`apps/mobile/package.json`/lock, `app.config.ts`, `eas.json`, `assets/`, or `shared/` brand assets) | ❌ | same gates | + **EAS Build** preview profile (internal APK + iOS simulator), `--no-wait`, links in the run summary |
+| …and the change **affects the installed app** (anything under `apps/mobile/**` — app/screens/src/assets/config — plus `shared/**`, `scripts/tokens/**`, `scripts/brand/**`, `docs/api/openapi.json`) | ❌ | same gates **+ `Android — release APK/AAB`** (build → independent verify → publish the rolling `android-latest` release: APK · AAB · build-info.json · SHA256SUMS.txt · verify.json) — the official public download | EAS Build stays manual-only (explicit preview/store cuts) |
 | `docs/**`, `audits/**`, `*.md` | ❌ | CI only | — |
 
 Channels: `development` (dev-client) · `preview` (internal APK/simulator) ·
@@ -173,9 +173,12 @@ blocking update screen with the `/app` download link. Unset → no gate.
 
 ## Distribution page
 
-`/app` on the website: latest APK (EAS artifact URL from
-`docs/releases.json`, updated by the build workflow), QR, changelog,
-«ما الجديد», iOS status. Link lives in the landing footer + help.
+`/app` on the website: the primary CTA downloads the official APK directly
+from the rolling GitHub Release `android-latest` (built + independently
+re-verified + published by `build-android.yml`), with live build metadata
+read from the release `build-info.json` (never blocking the download), QR,
+iOS «قريبًا» status, and the live min-version readout. Link lives in the
+landing footer + help.
 
 ## In-app update UX
 

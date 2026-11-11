@@ -10,40 +10,42 @@ import { apiBaseURL } from '../lib/api';
 /* R341 D4 — the distribution sheet rebuilt on the PATTERN LIBRARY (the
  * r340 T-D1a recipe, the D2 about / D3 help / D5 legal precedents):
  * pf-page/pf-page-header/pf-eyebrow/pf-page-actions carry the frame and
- * the app sheet's own ap-* grammar (styles/app.css) owns the rest. The
- * page left the lg-* legal-sheet family — zero lg-* seats remain here
- * (grep-proven), so the /app rules in legal.css died with this rebuild.
- * Every word, URL, live-status behaviour and honesty marker is the SAME
- * text the lg sheet carried (tests are law). */
+ * the app sheet's own ap-* grammar (styles/app.css) owns the rest.
+ *
+ * master/A1 — the official Android source is the GitHub Actions rolling
+ * release `android-latest`. The primary CTA downloads the verified APK
+ * directly (no sign-in, no EAS, no artifact ZIP); the build metadata
+ * below it is read LIVE from the release's build-info.json and NEVER
+ * blocks the download; iOS is an honest «قريبًا» — no TestFlight, no
+ * SideStore, no unsigned IPA, no developer downloads. */
 import '../styles/app.css';
 
 /**
- * /app — «تطبيق مدارك: التنزيل والتحديث» (R327 D1 · M0.8).
+ * /app — «تطبيق مدارك: التنزيل والتحديث» (R327 D1 · M0.8 · master/A1).
  *
- * The distribution sheet in the public grammar (hairline cells · [nn]
- * bars · paper/ink). EVERY claim is honest:
- *   · the APK link is the REAL preview-channel artifact (EAS),
- *     regenerated per native build — the durable source is the project's
- *     builds page, linked beside it;
- *   · TestFlight is PENDING (needs the owner's Apple Developer account —
- *     RELEASE.md documents the exact owner steps);
+ * Every claim is honest:
+ *   · the APK is the GitHub Actions rolling release asset — built,
+ *     independently re-verified and published by CI (build → verify →
+ *     publish), never an EAS artifact;
  *   · the minimum-version floor is read LIVE from /api/v1/status — the
- *     same endpoint the app's blocking gate consumes (M0.7).
+ *     same endpoint the app's blocking gate consumes (M0.7);
+ *   · iOS public distribution is «قريبًا» — internal engineering builds
+ *     continue, but nothing public is claimed.
  *
  * This URL is already wired in the wild: the backend serves it as
  * `updateUrl` in /api/v1/status, so the app's «يلزم تحديث التطبيق»
  * screen lands here.
  */
 
-/* The latest preview-channel artifacts (EAS Build, A3 evidence). The iOS
- * simulator tar.gz is for DEVELOPERS; the Android APK installs directly
- * on devices. Both regenerate on native-affecting merges — the builds
- * page is the durable source of truth. */
+/* The official distribution source (owner decision, master mission §4):
+ * the rolling GitHub Release tag `android-latest`. Stable URLs — the
+ * tag is maintained by CI, so these never go stale. */
 const ANDROID_APK_URL =
-  'https://expo.dev/artifacts/eas/5XTynelLCXq0ihxCSSNxbl-r-iNDdEpfEFA4MCXj390.tar.gz';
-const BUILDS_PAGE_URL =
-  'https://expo.dev/accounts/rh2011/projects/madarek-mobile/builds';
-const APP_VERSION = '1.0.0';
+  'https://github.com/ahmadmedo1012/madarek/releases/download/android-latest/Madarek.apk';
+const RELEASE_PAGE_URL =
+  'https://github.com/ahmadmedo1012/madarek/releases/tag/android-latest';
+const BUILD_INFO_URL =
+  'https://github.com/ahmadmedo1012/madarek/releases/download/android-latest/build-info.json';
 
 interface StatusShape {
   ok: boolean;
@@ -52,10 +54,29 @@ interface StatusShape {
   updateUrl?: string | null;
 }
 
-/** The honest unknown marker — the PendingTag's text in this sheet's
- * own class (visible but tasteful, mirrored in LEGAL-TODO.md). */
-function AppPendingTag() {
-  return <span className="ap-pending">[يُستكمل قبل الإطلاق]</span>;
+/** The release's build-info.json (published by CI alongside the APK).
+ * Everything optional — the page must render honestly without it. */
+interface BuildInfoShape {
+  version?: string;
+  version_code?: number;
+  built_at?: string;
+  commit?: string;
+  verified?: boolean;
+  signing_mode?: string;
+  size_bytes?: number;
+  package?: string;
+  min_sdk?: number;
+  target_sdk?: number;
+}
+
+function formatBytes(bytes: number): string {
+  const mb = bytes / (1024 * 1024);
+  return `${mb.toFixed(1)} MB`;
+}
+
+/** «قريبًا» — the honest, non-clickable iOS status pill. */
+function IosSoonTag() {
+  return <span className="ap-pending">[قريبًا]</span>;
 }
 
 export function AppDownloadPage() {
@@ -64,7 +85,7 @@ export function AppDownloadPage() {
     title: 'تطبيق مدارك — التنزيل والتحديث',
     path: '/app',
     description:
-      'تنزيل تطبيق مدارك لأندرويد، حالة iOS، قنوات التحديث التلقائي، والحد الأدنى للإصدار — مباشرة وبدون وسيط.',
+      'تنزيل تطبيق مدارك لأندرويد من الإصدار الرسمي الموثّق على GitHub، حالة iOS، قنوات التحديث التلقائي، والحد الأدنى للإصدار — مباشرة وبدون وسيط.',
   });
 
   // The live floor — the same status the app's version gate reads (M0.7).
@@ -80,6 +101,22 @@ export function AppDownloadPage() {
         setStatusState('ok');
       })
       .catch(() => setStatusState('error'));
+    return () => ctrl.abort();
+  }, []);
+
+  // The published build's metadata — purely informational, never blocks
+  // the download CTA (renders before this resolves; degrades honestly).
+  const [info, setInfo] = useState<BuildInfoShape | null>(null);
+  const [infoState, setInfoState] = useState<'loading' | 'ok' | 'error'>('loading');
+  useEffect(() => {
+    const ctrl = new AbortController();
+    fetch(BUILD_INFO_URL, { signal: ctrl.signal, headers: { Accept: 'application/json' } })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('build-info'))))
+      .then((data: BuildInfoShape) => {
+        setInfo(data ?? null);
+        setInfoState('ok');
+      })
+      .catch(() => setInfoState('error'));
     return () => ctrl.abort();
   }, []);
 
@@ -108,13 +145,14 @@ export function AppDownloadPage() {
               <p className="pf-eyebrow">وثيقة التوزيع</p>
               <h1 className="pf-page-title">تطبيق مدارك — التنزيل والتحديث</h1>
               <p className="pf-page-desc">
-                صفحة واحدة لكل ما يخصّ تطبيق الجوال: تنزيل أندرويد المباشر، حالة iOS، كيف تصل
-                التحديثات إلى هاتفك، والحد الأدنى للإصدار الذي تفرضه المنصّة الآن — قراءة حيّة من الخادم.
+                صفحة واحدة لكل ما يخصّ تطبيق الجوال: تنزيل أندرويد الرسمي المباشر، حالة iOS،
+                كيف تصل التحديثات إلى هاتفك، والحد الأدنى للإصدار الذي تفرضه المنصّة الآن —
+                قراءة حيّة من الخادم.
               </p>
             </div>
             <div className="pf-page-actions">
               <a className="ap-cta-primary" href={ANDROID_APK_URL} dir="ltr">
-                تنزيل APK
+                تنزيل تطبيق مدارك لأندرويد
               </a>
               <Link to="/" className="ap-cta-ghost">الصفحة الرئيسية</Link>
             </div>
@@ -124,27 +162,61 @@ export function AppDownloadPage() {
             <div className="pf-section-header">
               <h2 className="ap-bar" id="app-android">
                 <span className="ap-bar-index ap-mono" dir="ltr" aria-hidden="true">[01]</span>
-                <span className="ap-bar-title">تنزيل أندرويد (APK)</span>
+                <span className="ap-bar-title">تنزيل أندرويد — المصدر الرسمي</span>
               </h2>
             </div>
             <div className="ap-cell">
               <p className="ap-p">
-                النسخة الحالية <span className="ap-mono" dir="ltr">{APP_VERSION}</span> من قناة
-                المعاينة — ملفّ APK واحد يُثبَّت مباشرة (اسمح بـ«التثبيت من مصادر غير معروفة» عند
-                سؤال النظام أول مرة).
+                ملفّ APK واحد يُثبَّت مباشرة على جهازك (اسمح بـ«التثبيت من مصادر غير معروفة»
+                عند سؤال النظام أول مرة). المصدر هو الإصدار المتجدّد الذي تبنيه وتوثّقه
+                GitHub Actions تلقائيًا مع كل تغيير يؤثّر في التطبيق — لا حساب ولا وسيط.
               </p>
               <p className="ap-p ap-actions">
                 <a className="btn primary sm" href={ANDROID_APK_URL} dir="ltr">
-                  تنزيل APK
+                  تنزيل تطبيق مدارك لأندرويد
                 </a>
-                <a className="btn ghost sm" href={BUILDS_PAGE_URL} target="_blank" rel="noreferrer" dir="ltr">
-                  كلّ البناءات (EAS)
+                <a className="btn ghost sm" href={RELEASE_PAGE_URL} target="_blank" rel="noreferrer" dir="ltr">
+                  صفحة الإصدار والتحقّق
                 </a>
               </p>
+              {infoState === 'loading' ? (
+                <p className="ap-p ap-p-note">جارٍ قراءة بيانات آخر بناء منشور…</p>
+              ) : infoState === 'error' ? (
+                <p className="ap-p ap-p-note">
+                  تعذّر قراءة بيانات البناء الآن — زرّ التنزيل أعلاه يبقى المصدر الرسمي
+                  المباشر، وصفحة الإصدار بجانبه تعرض الإصدار والتوقيع وكل التفاصيل.
+                </p>
+              ) : (
+                <p className="ap-p ap-p-note">
+                  آخر بناء منشور وموثّق:{' '}
+                  <span className="ap-mono" dir="ltr">{info?.version ?? '—'}</span>
+                  {info?.built_at ? (
+                    <>
+                      {' '}· بتاريخ{' '}
+                      <span className="ap-mono" dir="ltr">{info.built_at.slice(0, 10)}</span>
+                    </>
+                  ) : null}
+                  {info?.commit ? (
+                    <>
+                      {' '}· من المصدر{' '}
+                      <span className="ap-mono" dir="ltr">{info.commit.slice(0, 8)}</span>
+                    </>
+                  ) : null}
+                  {info?.size_bytes ? (
+                    <>
+                      {' '}· الحجم{' '}
+                      <span className="ap-mono" dir="ltr">{formatBytes(info.size_bytes)}</span>
+                    </>
+                  ) : null}
+                  {' '}· التحقق المستقل:{' '}
+                  <span className="ap-mono" dir="ltr">{info?.verified ? 'PASS' : '—'}</span>
+                  {' '}· التوقيع:{' '}
+                  <span className="ap-mono" dir="ltr">{info?.signing_mode === 'release' ? 'release' : '—'}</span>
+                </p>
+              )}
               <p className="ap-p ap-p-note">
-                ملاحظة صادقة: رابط APK أعلاه يتجدّد مع كلّ بناء أصلي جديد — إن لم يعمل، فالصفحة
-                الدائمة للبناءات بجانبه هي المرجع. نسخة متجر Google Play (AAB) قيد الإعداد
-                وتحتاج خطوة واحدة من المالك (مفتاح الخدمة — موثّقة في RELEASE.md).
+                نسخة متجر Google Play (AAB) مبنية وموقّعة مع كل إصدار وتُرفع في صفحة الإصدار
+                نفسها — جاهزة عند اعتماد خطوة النشر من المالك (موثّقة في RELEASE.md).
               </p>
             </div>
           </section>
@@ -153,18 +225,14 @@ export function AppDownloadPage() {
             <div className="pf-section-header">
               <h2 className="ap-bar" id="app-ios">
                 <span className="ap-bar-index ap-mono" dir="ltr" aria-hidden="true">[02]</span>
-                <span className="ap-bar-title">iOS — TestFlight</span>
+                <span className="ap-bar-title">تطبيق iPhone <IosSoonTag /></span>
               </h2>
             </div>
             <div className="ap-cell">
               <p className="ap-p">
-                نشر TestFlight يحتاج حساب Apple Developer ومفتاح App Store Connect من المالك
-                <AppPendingTag /> — كلّ ما لا يحتاجه جاهز: البنية، الأيقونات، الأذونات بالعربية،
-                ووصف المتجر. خطوات المالك بالضبط (سطرين لكلّ خطوة) في صفحة الإصدار الداخلية.
-              </p>
-              <p className="ap-p ap-p-note">
-                للمطوّرين فقط: نسخة محاكي iOS تُبنى من نفس الفرع — تجدها في صفحة البناءات أعلاه
-                (توزيع داخلي، تُثبَّت عبر أداة التطوير لا عبر المتجر).
+                تطبيق iPhone قريبًا. نعمل على إكمال جاهزية النشر — وحين تجهز ستجد رابط
+                التنزيل الرسمي هنا أولًا. لا روابط تجريبية ولا تعليمات تثبيت يدوي: حين
+                ننشر، يكون عبر القناة الرسمية المباشرة فقط.
               </p>
             </div>
           </section>
@@ -186,8 +254,9 @@ export function AppDownloadPage() {
                   loading="lazy"
                 />
                 <p className="ap-p ap-p-note">
-                  امسح الرمز بكاميرا الهاتف — تفتح هذه الصفحة نفسها على الجوال، ومنها رابط APK
-                  مباشرة. الرمز مرسوم بألوان الهوية (حبر على ورق) ولا يمرّ بأي خدمة خارجية.
+                  امسح الرمز بكاميرا الهاتف — تفتح هذه الصفحة نفسها على الجوال، ومنها زرّ
+                  التنزيل المباشر. الرمز مرسوم بألوان الهوية (حبر على ورق) ولا يمرّ بأي
+                  خدمة خارجية.
                 </p>
               </div>
             </div>
@@ -204,7 +273,8 @@ export function AppDownloadPage() {
               <p className="ap-p">
                 التطبيق يفحص التحديث تلقائيًا عند كلّ فتح: تغيّرات الواجهة والشاشات تصل
                 <strong> دون إعادة تثبيت</strong> (تحديث فوري — OTA)، بينما التغيّرات الأصلية
-                (أذونات، مكتبات النظام) تصلك كملف تثبيت جديد من هذه الصفحة.
+                (أذونات، مكتبات النظام) تصلك كملف تثبيت جديد من هذه الصفحة — من المصدر
+                الرسمي نفسه.
               </p>
               <p className="ap-p">
                 ثلاث قنوات مفتوحة اليوم: <span className="ap-mono" dir="ltr">production</span> للنسخة
@@ -269,7 +339,7 @@ export function AppDownloadPage() {
             </div>
             <div className="ap-cell">
               <p className="ap-p">
-                أندرويد 8.0 أو أحدث، وiOS 15 أو أحدث للتطبيق الأصلي. الواجهة عربية بالكامل من
+                أندرويد 7.0 أو أحدث، وiOS 15 أو أحدث للتطبيق الأصلي. الواجهة عربية بالكامل من
                 اليمين لليسار، وتعمل بالوضعين الفاتح والداكن. للبلاغ عن مشكلة في التطبيق:
                 {' '}<Link to="/contact" className="ap-link">قناة التواصل</Link>.
               </p>
@@ -277,9 +347,12 @@ export function AppDownloadPage() {
           </section>
 
           <footer className="ap-colophon">
-            <p className="ap-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل</p>
+            <p className="ap-colophon-line">منصّة مستقلّة · عربية أولًا · المصدر الرسمي للتطبيق: GitHub Actions</p>
             <p className="ap-colophon-stamp">
-              آخر تحديث: <span className="ap-mono" dir="ltr">2026-10-31</span>
+              آخر بناء منشور:{' '}
+              <span className="ap-mono" dir="ltr">
+                {info?.built_at ? info.built_at.slice(0, 10) : 'انظر صفحة الإصدار'}
+              </span>
             </p>
           </footer>
         </div>
