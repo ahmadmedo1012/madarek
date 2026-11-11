@@ -25,14 +25,18 @@ publish simply because the build job exited successfully.
 
 ## When they run
 
-Native builds are automatic on pushes to `main` that touch native inputs:
+Android release builds are automatic on pushes to `main` that touch anything
+meaningful for the installed app: `apps/mobile/app/**`, `apps/mobile/src/**`,
 `package.json` / `package-lock.json`, `app.config.ts`, `app.json`, `eas.json`,
-`assets/**`, `plugins/**`, native folders, `shared/**`, or the CI scripts and
-workflow itself.
+`assets/**`, `plugins/**`, native folders, `shared/**`, the token/brand
+generators (`scripts/tokens/**`, `scripts/brand/**`), `docs/api/openapi.json`
+(mobile API client), or the CI scripts and workflow itself. The official
+public download (`/app` → the `android-latest` rolling release) therefore
+never lags the source. JS-only changes also ship to already-installed apps
+through the EAS OTA job in `mobile.yml` — OTA and a fresh APK are
+complementary, not alternatives.
 
-JS-only changes under `apps/mobile/src/**` are **not** native builds. They are
-already delivered to installed apps by the EAS OTA job in `mobile.yml`. To
-force a self-contained native artifact after a JS-only change, dispatch the
+To force a self-contained native artifact at any other time, dispatch the
 workflow manually:
 
 ```bash
@@ -79,7 +83,9 @@ Each verified artifact contains:
 - the installable binary (`.ipa` / `.apk`),
 - `SHA256SUMS.txt`,
 - `build-info.json` (commit, runner, versions, signature, verification time),
-- the verifier's `verify.json` (artifacts only).
+- the verifier's `verify.json` — also published as a release asset on
+  `android-latest` (independent re-verification evidence for the public
+  download).
 
 ## Android signing
 

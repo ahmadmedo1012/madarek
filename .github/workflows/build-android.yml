@@ -12,13 +12,17 @@ name: Android — release APK/AAB
 #   * Otherwise the Expo template's stable debug keystore is used, and the
 #     verifier/release notes label the artifact as internal/debug-signed.
 #
-# Native builds run when native inputs change. JS-only changes are delivered by
-# the OTA job in mobile.yml; use workflow_dispatch for a self-contained rebuild.
+# The official public Android binary is produced here. Any meaningful change
+# affecting the installed app — native inputs AND JavaScript/screens/assets —
+# triggers a fresh verified build, so `android-latest` never lags the source.
+# (mobile.yml stays complementary: gates + OTA delivery of JS-only updates.)
 
 on:
   push:
     branches: [main]
     paths:
+      - "apps/mobile/app/**"
+      - "apps/mobile/src/**"
       - "apps/mobile/package.json"
       - "apps/mobile/package-lock.json"
       - "apps/mobile/app.config.ts"
@@ -29,9 +33,11 @@ on:
       - "apps/mobile/android/**"
       - "apps/mobile/ios/**"
       - "shared/**"
-      - "apps/mobile/scripts/verify-apk.py"
-      - "apps/mobile/scripts/ci/**"
+      - "scripts/tokens/**"
+      - "scripts/brand/**"
+      - "apps/mobile/scripts/**"
       - "scripts/ci/**"
+      - "docs/api/openapi.json"
       - ".github/workflows/build-android.yml"
   workflow_dispatch:
     inputs:
@@ -646,7 +652,8 @@ jobs:
             verified/Madarek.apk \
             verified/Madarek.aab \
             verified/SHA256SUMS.txt \
-            verified/build-info.json
+            verified/build-info.json \
+            verified/verify.json
 
       - name: Write release summary
         run: |
