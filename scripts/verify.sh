@@ -74,6 +74,14 @@ else
   fail "identity guard"; head -30 /tmp/verify-identity.log
 fi
 
+# 3.6 brand asset manifest (R349 B2 — dependency-free; runs in BOTH modes)
+step "brand assets (the ONE logo, hash-pinned)"
+if node scripts/brand/build-assets.mjs --check > /tmp/verify-brand.log 2>&1; then
+  ok "brand $(grep -oE 'OK.*' /tmp/verify-brand.log | head -1)"
+else
+  fail "brand asset manifest"; head -20 /tmp/verify-brand.log
+fi
+
 if [[ $FAST -eq 1 ]]; then
   step "--fast mode: stopping here"
   [[ $FAIL -eq 0 ]] && echo "verify.sh: FAST PASS" || echo "verify.sh: FAIL"

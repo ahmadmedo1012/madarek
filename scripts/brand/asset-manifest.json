@@ -1,0 +1,23 @@
+{
+  "_comment": "R349 B2 — the SHA-256 of every GENERATED brand asset. Any hand-edit of a logo file breaks --check (verify.sh + CI). Regenerate via scripts/brand/build-assets.mjs (--web/--mobile) then --manifest. The generators are the only writers.",
+  "entries": {
+    "shared/brand/mark.svg": "0cc87cf66b8d3cd25b0f8c157bc618609d1fcb7f51a8a7f12c6fd428af28e297",
+    "frontend/public/favicon.svg": "c6773c529fb1a552a53dba1cb2ee585223602c17aa7373f1445d4ec3540490d2",
+    "frontend/public/brand/mark.svg": "d8efb0b2583339932a8e787b1b8dc140b2679119c67c9b5ecff00efe8a8d5757",
+    "frontend/public/brand/madarek-mark.svg": "d8efb0b2583339932a8e787b1b8dc140b2679119c67c9b5ecff00efe8a8d5757",
+    "frontend/public/brand/lockup.svg": "8c7e734d428b7004d9fe34454e3b3a78ead1a5374abbaeb295bf8b1c6c0c119b",
+    "frontend/public/brand/lockup-stacked.svg": "66bd7dd5ed8f2554147322468ad298da337481ee7f0d73d428eb9a2341ad7931",
+    "frontend/public/brand/wordmark.svg": "d3fae1cb81039d96e01118b5450a02ca9613371d23b4e2ea866ee8f99599210f",
+    "frontend/public/brand/icon-180.png": "7a4b415eb6d87009fe8f3bcc3d14dec4921c726df0641d4356928b627382e65f",
+    "frontend/public/brand/icon-192.png": "66976e60023ea541e1de35e6630136617e2ea40ac3f1f7e179e74b83155dce04",
+    "frontend/public/brand/icon-512.png": "cef04debdf08031613c21d743b9d5ad29354e8b4ba67832cdc0d552a9febe01f",
+    "frontend/public/brand/madarek-og.jpg": "f622d84bbf30e7a4cfb7a992347827636ec5434b2784b44812fe8b21bd946b75",
+    "apps/mobile/assets/images/icon.png": "c10c9a07b9a66036b0ec3534a647c2dcbffa22f237b582f053a63557b4fa9970",
+    "apps/mobile/assets/images/adaptive-foreground.png": "f6f61a08fdbfedeb322540715d8e4dcde93eb0dc3db473fc7861edfcccb61b5a",
+    "apps/mobile/assets/images/adaptive-background.png": "46b5b15d84f90c42783a171e30929357d0c701516fbf6cbf604153e4abb6407d",
+    "apps/mobile/assets/images/adaptive-monochrome.png": "788a8bc6bc5efdfa9619573ab6f5e6528b98b455e60f782c22203c669b2c18ac",
+    "apps/mobile/assets/images/splash-icon.png": "9468ebc1a39b1ab5ccb915fa51fcd0dfc5f2a81cc2b51c08eb4fb4012886df90",
+    "apps/mobile/assets/images/favicon.png": "91e9e49acf21a842f8113192e55c48f8ef50d7cebc0982854f253e028230884f",
+    "apps/mobile/assets/images/notification-icon.png": "95dc5b1d445b63fde4ec27b5fb751e4e14e1774d821a095bcbfb03d78cac4684"
+  }
+}

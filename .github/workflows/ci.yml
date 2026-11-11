@@ -316,6 +316,10 @@ jobs:
       # outside the sanctioned geometry sources. Lane U empties the
       # allowlist to zero product files (U5).
       - run: node scripts/qa/identity-guard.mjs
+      # R349 B2 — the brand asset manifest (dependency-free): every
+      # generated logo asset's committed bytes hash-pinned; a hand-edited
+      # PNG/SVG cannot ship silently.
+      - run: node scripts/brand/build-assets.mjs --check
       - run: bash scripts/check-icons.sh
       - run: bash scripts/check-motion-tokens.sh
       # CSP pin drift guard (dependency-free): r133 changed the inline

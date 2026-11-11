@@ -252,6 +252,60 @@ describe('R323 gate (c) — favicon + brand twins are the new system', () => {
     expect(LOCKUP.mark.x).toBeGreaterThan(LOCKUP.ar.x);
   });
 
+  it('R349 B — the ONE geometry across BOTH trees: frontend/src/brand/mark.ts ≡ apps/mobile/src/brand/mark.ts', () => {
+    /* The two mark.ts files are deliberate twins (the mobile parser and
+     * the web component each read their own). This pin makes silent
+     * divergence impossible: every MARK_* constant must be byte-equal. */
+    const web = read('src/brand/mark.ts');
+    const mobile = repoRead('apps/mobile/src/brand/mark.ts');
+    for (const name of [
+      'MARK_VIEWBOX',
+      'MARK_AXIS',
+      'MARK_DIAMOND_PATH',
+      'MARK_POINT',
+      'MARK_POINT_CENTRE',
+      'MARK_INK',
+      'MARK_STROKE_COMPONENT',
+      'MARK_STROKE_FAVICON',
+    ]) {
+      const extract = (src2: string) => {
+        const m = new RegExp(`export const ${name} = ('[^']*'|\\{[^}]*\\}|[0-9.]+)`).exec(src2);
+        return m?.[1] ?? null;
+      };
+      const w = extract(web);
+      const m = extract(mobile);
+      expect(w, `${name} missing in the web mark.ts`).not.toBeNull();
+      expect(m, `${name} missing in the mobile mark.ts`).not.toBeNull();
+      expect(m, `${name} DRIFTED between the web and mobile mark twins`).toBe(w);
+    }
+  });
+
+  it('R349 B — the brand asset manifest covers every generated asset with its committed hash', () => {
+    /* The manifest (scripts/brand/asset-manifest.json) is written by
+     * build-assets.mjs --manifest and checked dependency-free in
+     * verify.sh + CI. This test pins the manifest's EXISTENCE and shape
+     * from the test side too (defense in depth around the same file). */
+    const manifest = JSON.parse(repoRead('scripts/brand/asset-manifest.json')) as {
+      entries: Record<string, string>;
+    };
+    const expected = [
+      'shared/brand/mark.svg',
+      'frontend/public/favicon.svg',
+      'frontend/public/brand/mark.svg',
+      'frontend/public/brand/wordmark.svg',
+      'frontend/public/brand/icon-180.png',
+      'frontend/public/brand/icon-192.png',
+      'frontend/public/brand/icon-512.png',
+      'frontend/public/brand/madarek-og.jpg',
+      'apps/mobile/assets/images/icon.png',
+      'apps/mobile/assets/images/splash-icon.png',
+      'apps/mobile/assets/images/notification-icon.png',
+    ];
+    for (const rel of expected) {
+      expect(manifest.entries[rel], `${rel} missing from the asset manifest`).toMatch(/^[0-9a-f]{64}$/);
+    }
+  });
+
   it('mark.ts and scripts/r323/brand-assets.mjs state the SAME geometry', () => {
     const mark = read('src/brand/mark.ts');
     const gen = repoRead('scripts/r323/brand-assets.mjs');
