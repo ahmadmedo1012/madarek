@@ -123,6 +123,7 @@ export interface StudentPerson extends StudentProfileView {
 export interface TeacherPerson extends TeacherProfileView {
   user: PersonUserView;
   customFields: CustomFieldValue[];
+  department?: { id: string; name: string; nameEn: string | null; faculty?: { name: string } | null } | null;
 }
 
 export interface DirectoryMeta {
@@ -236,7 +237,7 @@ export function usePerson(id: string | null) {
   const inst = useInstitutionScope();
   return useQuery({
     queryKey: withInstitutionScope(['people', 'person', id], inst),
-    queryFn: () => unwrap<{ data: StudentPerson | TeacherPerson }>(api.get(`/people/${id}`)),
+    queryFn: () => unwrap<StudentPerson | TeacherPerson>(api.get(`/people/${id}`)),
     enabled: Boolean(id),
   });
 }

@@ -1017,6 +1017,53 @@ router.post(
 );
 
 /* ════════════════════════════════════════════════════════════════
+   GET /people/:id/history — the file's own trail (الملاحظات tab)
+   ════════════════════════════════════════════════════════════════ */
+router.get(
+  '/people/:id/history',
+  requireRole(Role.ADMIN, Role.OWNER, Role.QUALITY),
+  async (req, res, next) => {
+    try {
+      const scope = await callerInstitutionOrThrow(
+        req.user!.id, req.user!.role, req.user!.institutionId,
+      );
+      // The trail exists only for a profile that EXISTS in the caller's
+      // institution (student first, teacher fallthrough — 404 otherwise).
+      const student = await withRetry(() => prisma.studentProfile.findUnique({
+        where: { id: req.params.id },
+        select: { id: true, institutionId: true },
+      }));
+      let resourceType = 'StudentProfile';
+      if (student) {
+        if (student.institutionId !== scope) throw AppError.notFound();
+      } else {
+        const teacher = await withRetry(() => prisma.teacherProfile.findUnique({
+          where: { id: req.params.id },
+          select: { id: true, userId: true },
+        }));
+        if (!teacher) throw AppError.notFound();
+        const membership = await withRetry(() => prisma.membership.findFirst({
+          where: { userId: teacher.userId, institutionId: scope, isActive: true },
+          select: { id: true },
+        }));
+        if (!membership) throw AppError.notFound();
+        resourceType = 'TeacherProfile';
+      }
+      const rows = await withRetry(() => prisma.auditLog.findMany({
+        where: { resourceType, resourceId: req.params.id },
+        orderBy: { createdAt: 'desc' },
+        take: 50,
+        select: {
+          id: true, action: true, metadata: true, createdAt: true,
+          user: { select: { firstName: true, lastName: true } },
+        },
+      }));
+      res.json({ data: rows });
+    } catch (e) { next(e); }
+  },
+);
+
+/* ════════════════════════════════════════════════════════════════
    Field definitions — the registrar's custom-field editor (P3)
    ════════════════════════════════════════════════════════════════ */
 

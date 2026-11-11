@@ -81,6 +81,10 @@
       "description": "3 operation(s) under /api/v1/feedback"
     },
     {
+      "name": "field-definitions",
+      "description": "4 operation(s) under /api/v1/field-definitions"
+    },
+    {
       "name": "files",
       "description": "6 operation(s) under /api/v1/files"
     },
@@ -150,7 +154,7 @@
     },
     {
       "name": "people",
-      "description": "3 operation(s) under /api/v1/people"
+      "description": "4 operation(s) under /api/v1/people"
     },
     {
       "name": "posts",
@@ -6951,6 +6955,274 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/feedbackpatchBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/field-definitions": {
+      "get": {
+        "tags": [
+          "field-definitions"
+        ],
+        "summary": "GET /api/v1/field-definitions",
+        "description": "Declared in `backend/src/http/routes/profiles.routes.ts` (mounted at `/api/v1`).",
+        "x-mounted-at": "/api/v1",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "tags": [
+          "field-definitions"
+        ],
+        "summary": "POST /api/v1/field-definitions",
+        "description": "Declared in `backend/src/http/routes/profiles.routes.ts` (mounted at `/api/v1`).",
+        "x-mounted-at": "/api/v1",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/profilesfieldDefinitionSchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/field-definitions/{id}": {
+      "delete": {
+        "tags": [
+          "field-definitions"
+        ],
+        "summary": "DELETE /api/v1/field-definitions/:id",
+        "description": "Declared in `backend/src/http/routes/profiles.routes.ts` (mounted at `/api/v1`).",
+        "x-mounted-at": "/api/v1",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "patch": {
+        "tags": [
+          "field-definitions"
+        ],
+        "summary": "PATCH /api/v1/field-definitions/:id",
+        "description": "Declared in `backend/src/http/routes/profiles.routes.ts` (mounted at `/api/v1`).",
+        "x-mounted-at": "/api/v1",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/profilesfieldDefinitionPatchSchema"
               }
             }
           }
@@ -15582,6 +15854,69 @@
         }
       }
     },
+    "/api/v1/people/{id}/history": {
+      "get": {
+        "tags": [
+          "people"
+        ],
+        "summary": "GET /api/v1/people/:id/history",
+        "description": "Declared in `backend/src/http/routes/profiles.routes.ts` (mounted at `/api/v1`).",
+        "x-mounted-at": "/api/v1",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
     "/api/v1/posts": {
       "get": {
         "tags": [
@@ -20884,6 +21219,297 @@
         "additionalProperties": false,
         "x-source-ident": "feedback.routes.ts#patchBody"
       },
+      "profilesfieldDefinitionSchema": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "maxLength": 60
+          },
+          "labelAr": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "labelEn": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "STUDENT",
+              "TEACHER"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "TEXT",
+              "NUMBER",
+              "DATE",
+              "BOOLEAN",
+              "SELECT",
+              "MULTI_SELECT"
+            ]
+          },
+          "required": {
+            "type": "boolean",
+            "default": false
+          },
+          "options": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                "maxItems": 30
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "validation": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "type": "number"
+                  },
+                  "max": {
+                    "type": "number"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "visibleTo": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "roles": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "STUDENT",
+                        "TEACHER",
+                        "ADMIN",
+                        "QUALITY",
+                        "OWNER"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "roles"
+                ],
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "searchable": {
+            "type": "boolean",
+            "default": false
+          },
+          "importKeyAr": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "importKeyEn": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sortOrder": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999,
+            "default": 0
+          }
+        },
+        "required": [
+          "entity",
+          "key",
+          "labelAr",
+          "labelEn",
+          "type"
+        ],
+        "additionalProperties": false,
+        "x-source-ident": "profiles.routes.ts#fieldDefinitionSchema"
+      },
+      "profilesfieldDefinitionPatchSchema": {
+        "type": "object",
+        "properties": {
+          "key": {},
+          "labelAr": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "labelEn": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "STUDENT",
+              "TEACHER"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "TEXT",
+              "NUMBER",
+              "DATE",
+              "BOOLEAN",
+              "SELECT",
+              "MULTI_SELECT"
+            ]
+          },
+          "required": {
+            "type": "boolean",
+            "default": false
+          },
+          "options": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                "maxItems": 30
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "validation": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "type": "number"
+                  },
+                  "max": {
+                    "type": "number"
+                  },
+                  "pattern": {
+                    "type": "string",
+                    "maxLength": 200
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "visibleTo": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "roles": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "STUDENT",
+                        "TEACHER",
+                        "ADMIN",
+                        "QUALITY",
+                        "OWNER"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "roles"
+                ],
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "searchable": {
+            "type": "boolean",
+            "default": false
+          },
+          "importKeyAr": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "importKeyEn": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sortOrder": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999,
+            "default": 0
+          }
+        },
+        "additionalProperties": false,
+        "x-source-ident": "profiles.routes.ts#fieldDefinitionPatchSchema"
+      },
       "importcommitBodySchema": {
         "type": "object",
         "properties": {
@@ -22806,9 +23432,9 @@
   },
   "x-generator": {
     "tool": "backend/scripts/generate-openapi.ts (hand-rolled: express-stack walk + zod-v3 walker)",
-    "generatedAt": "2026-11-11T22:42:40.404Z",
-    "operationCount": 265,
-    "pathCount": 225,
+    "generatedAt": "2026-11-11T23:28:42.868Z",
+    "operationCount": 270,
+    "pathCount": 228,
     "contractSnapshotCovered": 13,
     "snapshotCoveredRoutes": [
       "GET /api/v1/ai/config",
@@ -22828,7 +23454,8 @@
     "warnings": [
       "GET /api/v1/live/sessions: duplicate registration for GET /api/v1/live/sessions — kept the first",
       "POST /api/v1/live/sessions: duplicate registration for POST /api/v1/live/sessions — kept the first",
-      "POST /api/v1/live/sessions/:id/lifecycle: duplicate registration for POST /api/v1/live/sessions/{id}/lifecycle — kept the first"
+      "POST /api/v1/live/sessions/:id/lifecycle: duplicate registration for POST /api/v1/live/sessions/{id}/lifecycle — kept the first",
+      "[resolver] zodToJsonSchema: unhandled ZodUndefined"
     ],
     "securityHeuristic": "bearerAuth is attached when the route (or its router-level gate) uses authMiddleware; optionalAuthMiddleware and ungated routes are marked security:[]. Per-endpoint role/capability gates (requireRole/requireCapability) are NOT modelled — see the route sources."
   }

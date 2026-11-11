@@ -151,6 +151,10 @@ const AdminStudentsPage = lazy(() => import('./pages/admin/AdminExtraPages').the
 const AdminAnalysisPage = lazy(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminAnalysisPage })));
 const AdminDigitalPage = lazy(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminDigitalPage })));
 const AdminSettingsPage = lazy(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminSettingsPage })));
+/* r349-P3b — the people surface (LANE P): the contact directory + the
+   registrar's student file. */
+const PeopleDirectoryPage = lazy(() => import('./pages/admin/PeoplePages').then((m) => ({ default: m.PeopleDirectoryPage })));
+const StudentFilePage = lazy(() => import('./pages/admin/PeoplePages').then((m) => ({ default: m.StudentFilePage })));
 
 const QualityDashboardPage = lazy(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityDashboardPage })));
 const QualityCoursesPage = lazy(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityCoursesPage })));
@@ -520,6 +524,8 @@ export function AppRoutes() {
           <Route element={<AppShell />}>
             <Route path={ROUTES.adminDashboard} element={<AdminDashboardPage />} />
             <Route path={ROUTES.adminStudents} element={<AdminStudentsPage />} />
+            <Route path={ROUTES.adminDirectory} element={<PeopleDirectoryPage />} />
+            <Route path={ROUTES.adminPersonFile} element={<StudentFilePage />} />
             <Route path={ROUTES.adminTeachers} element={<AdminTeachersPage />} />
             <Route path="/admin/permissions/:id" element={<AdminPermissionsPage />} />
             <Route path={ROUTES.adminCommunity} element={<CommunityPage />} />
