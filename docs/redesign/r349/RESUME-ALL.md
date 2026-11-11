@@ -281,3 +281,28 @@ all fixes re-measured on this box.
    budgets, VLM panel, SEO/meta) and **LANE N** (mobile parity on the new screens).
 6. **LANE Z**: the integrator (migration-order conflicts, full gates, OWNER-GUIDE-AR,
    ADRs, final report). D5 (OTA) needs the EXPO token — §5 question for the owner.
+
+### Session 2 resume (2026-11-11, this box — sandbox was RESET again)
+- Environment rebuilt from zero: no `/home/z/.madarek-env` (the platform redacts tokens
+  from uploaded context — the PAT must be re-supplied by the owner before ANY push;
+  all work is committed locally on `wip/*` branches until then), fresh partial clone
+  (`.git` 36 MB, blob-filtered), full checkout of main.
+- main had moved b4a56fbf → **46c807e5** (3 post-heartbeat CI-fix commits by the
+  previous session: POSIX sh emulator script, self-contained one-liner lines, the
+  x86_64 second gradle pass). CI on 46c807e5: CI/Size/deadcode ✓ — Android run 20
+  **failed at "Collect and verify the artifacts"**, smoke+verify+publish skipped.
+- **Root cause (no log needed — structural)**: the x86_64 pass writes
+  `app-release.apk` to the SAME Gradle output path as the multi-ABI release build,
+  and runs BEFORE the collect step; verify-apk.py (no `--expected-architectures` in
+  the build job → default arm64-v8a,armeabi-v7a) rejects the single-ABI lib set.
+- **Fix (this commit, `wip/all-d-ci-abi-order`)**: step reorder — "Collect and
+  verify the artifacts" now runs immediately after the multi-ABI build; the x86_64
+  pass moved after it (before metadata+upload), with comments pinning the ordering
+  invariant on both sides; `gradle-x86.log` added to the failure-upload set.
+  YAML re-validated (python yaml safe_load, step table verified).
+
+## next (in order) — WAVE 2 (session 2)
+1. Push needs the PAT re-supplied (once). Until then: local commits only.
+2. npm install (root workspaces + mobile) + verify.sh --fast on this box.
+3. LANE P in order: P1 gap analysis → P2 API + PRIVACY-MATRIX → P3 web → P4 mobile
+   → P5 seed. Then S, I, W, N, Z per the Wave-2 list above.

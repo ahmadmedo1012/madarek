@@ -251,18 +251,11 @@ jobs:
           (cd android && ./gradlew :app:assembleRelease :app:bundleRelease --no-daemon --stacktrace) \
             2>&1 | tee build/gradle.log
 
-      - name: Build the x86_64 emulator APK (the smoke's ABI)
-        # The release APK carries arm64-v8a + armeabi-v7a (physical
-        # devices). The API-34 x86_64 emulator needs its own native
-        # libs — a second incremental gradle pass, cached (~1 min).
-        working-directory: apps/mobile
-        run: |
-          set -euo pipefail
-          (cd android && ./gradlew :app:assembleRelease --no-daemon --stacktrace \
-            -PreactNativeArchitectures=x86_64) 2>&1 | tee build/gradle-x86.log
-          cp android/app/build/outputs/apk/release/app-release.apk build/Madarek-x86_64.apk
-
       - name: Collect and verify the artifacts
+        # MUST run immediately after the multi-ABI release build: the x86_64
+        # smoke pass below overwrites app-release.apk at the same Gradle
+        # output path, and verify-apk.py would reject its single-ABI lib set
+        # (run 20's failure: ABIs ['x86_64'] != ['arm64-v8a','armeabi-v7a']).
         working-directory: apps/mobile
         run: |
           set -euo pipefail
@@ -302,6 +295,20 @@ jobs:
               exit 1
             fi
           fi
+
+      - name: Build the x86_64 emulator APK (the smoke's ABI)
+        # The release APK carries arm64-v8a + armeabi-v7a (physical
+        # devices). The API-34 x86_64 emulator needs its own native
+        # libs — a second incremental gradle pass, cached (~1 min).
+        # Runs AFTER the multi-ABI artifacts are collected+verified into
+        # build/: this pass overwrites app-release.apk at the same Gradle
+        # output path (single-ABI lib set), which verify-apk.py rejects.
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          (cd android && ./gradlew :app:assembleRelease --no-daemon --stacktrace \
+            -PreactNativeArchitectures=x86_64) 2>&1 | tee build/gradle-x86.log
+          cp android/app/build/outputs/apk/release/app-release.apk build/Madarek-x86_64.apk
 
       - name: Write build metadata and checksums
         working-directory: apps/mobile
@@ -418,6 +425,7 @@ jobs:
           path: |
             apps/mobile/build/prebuild.log
             apps/mobile/build/gradle.log
+            apps/mobile/build/gradle-x86.log
             apps/mobile/build/expo-config.json
             apps/mobile/build/verify.log
             apps/mobile/android/gradle.properties
