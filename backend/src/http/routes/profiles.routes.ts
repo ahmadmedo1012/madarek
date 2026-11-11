@@ -142,6 +142,41 @@ const contactRequestSchema = z
   })
   .strict();
 
+/* ── field definitions (the registrar's custom-field editor) ─────── */
+
+const fieldDefinitionSchema = z
+  .object({
+    key: z
+      .string()
+      .trim()
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'المفتاح: حروف لاتينية صغيرة وأرقام وشرطات فقط')
+      .max(60),
+    labelAr: z.string().trim().min(1).max(120),
+    labelEn: z.string().trim().min(1).max(120),
+    entity: z.enum(['STUDENT', 'TEACHER']),
+    type: z.enum(['TEXT', 'NUMBER', 'DATE', 'BOOLEAN', 'SELECT', 'MULTI_SELECT']),
+    required: z.boolean().default(false),
+    options: z.array(z.string().trim().min(1).max(80)).max(30).nullable().optional(),
+    validation: z
+      .object({
+        min: z.number().optional(),
+        max: z.number().optional(),
+        pattern: z.string().max(200).optional(),
+      })
+      .nullable()
+      .optional(),
+    visibleTo: z.object({ roles: z.array(z.enum(['STUDENT', 'TEACHER', 'ADMIN', 'QUALITY', 'OWNER'])) }).nullable().optional(),
+    searchable: z.boolean().default(false),
+    importKeyAr: z.string().trim().max(120).nullable().optional(),
+    importKeyEn: z.string().trim().max(120).nullable().optional(),
+    sortOrder: z.coerce.number().int().min(0).max(999).default(0),
+  })
+  .strict();
+
+const fieldDefinitionPatchSchema = fieldDefinitionSchema.partial().extend({
+  key: z.undefined().optional(), // the key is immutable after creation
+});
+
 /* ── helpers ────────────────────────────────────────────────────── */
 
 /** Normalize a phone input → { display, normalized } | null (empty → null). */
@@ -292,6 +327,16 @@ router.get('/me/profile', async (req, res, next) => {
     const studentProfile = user.studentProfiles[0] ?? null;
     const teacherProfile = user.teacherProfiles[0] ?? null;
 
+    // r349-P3: the self view carries the institution's custom fields
+    // (the الوثائق section) — visibleTo is NOT re-filtered here: the
+    // owner of the file sees their own values (the definitions carry
+    // the visibility for OTHER readers; /people/:id applies it).
+    const customFields = studentProfile
+      ? await customFieldsFor('student', studentProfile.id)
+      : teacherProfile
+        ? await customFieldsFor('teacher', teacherProfile.id)
+        : [];
+
     res.json({
       data: {
         // ── the pre-P2 consumer contract (useMyProfile) — UNTOUCHED ──
@@ -313,11 +358,12 @@ router.get('/me/profile', async (req, res, next) => {
               level: (studentProfile as { level?: number }).level ?? 1,
               faculty: studentProfile.faculty,
               department: studentProfile.department,
-              // ── r349-P2: the shaped self view (additive key) ──
+              // ── r349-P2/P3: the shaped self view + custom fields ──
               profile: shapeStudentProfileFor(
                 studentProfile as unknown as StudentProfileInput,
                 { role: req.user!.role, isSelf: true },
               ),
+              customFields,
             }
           : null,
         teacher: teacherProfile
@@ -330,11 +376,12 @@ router.get('/me/profile', async (req, res, next) => {
                     facultyName: teacherProfile.department.faculty?.name,
                   }
                 : null,
-              // ── r349-P2: the shaped self view (additive key) ──
+              // ── r349-P2/P3: the shaped self view + custom fields ──
               profile: shapeTeacherProfileFor(
                 teacherProfile as unknown as TeacherProfileInput,
                 { role: req.user!.role, isSelf: true },
               ),
+              customFields,
             }
           : null,
       },
@@ -965,6 +1012,187 @@ router.post(
       });
 
       res.status(201).json({ data: { sent: true, channel } });
+    } catch (e) { next(e); }
+  },
+);
+
+/* ════════════════════════════════════════════════════════════════
+   Field definitions — the registrar's custom-field editor (P3)
+   ════════════════════════════════════════════════════════════════ */
+
+/** Prisma Json columns need the explicit JsonNull sentinel, not JS null. */
+function jsonOrNull(v: unknown): Prisma.InputJsonValue | typeof Prisma.JsonNull {
+  return v === null || v === undefined ? Prisma.JsonNull : (v as Prisma.InputJsonValue);
+}
+
+/** Controlled-JSON guards (E1's fields.ts contract): SELECT types NEED
+ *  options; other types must NOT carry them. */
+function assertDefinitionShape(
+  type: string,
+  options: string[] | null | undefined,
+): void {
+  if (type === 'SELECT' || type === 'MULTI_SELECT') {
+    if (!options || options.length === 0) {
+      throw new AppError('VALIDATION_ERROR', 'حقول الاختيار تحتاج قائمة خيارات', 400);
+    }
+    if (new Set(options).size !== options.length) {
+      throw new AppError('VALIDATION_ERROR', 'الخيارات مكررة', 400);
+    }
+  } else if (options && options.length > 0) {
+    throw new AppError('VALIDATION_ERROR', 'الخيارات تُستخدم مع حقول الاختيار فقط', 400);
+  }
+}
+
+router.get(
+  '/field-definitions',
+  requireRole(Role.TEACHER, Role.ADMIN, Role.QUALITY, Role.OWNER),
+  async (req, res, next) => {
+    try {
+      const scope = await callerInstitutionOrThrow(
+        req.user!.id, req.user!.role, req.user!.institutionId,
+      );
+      const entity =
+        req.query.entity === 'TEACHER' ? 'TEACHER' : req.query.entity === 'STUDENT' ? 'STUDENT' : undefined;
+      const rows = await withRetry(() => prisma.institutionFieldDefinition.findMany({
+        where: { institutionId: scope, ...(entity ? { entity } : {}) },
+        orderBy: [{ entity: 'asc' }, { sortOrder: 'asc' }],
+      }));
+      res.json({ data: rows });
+    } catch (e) { next(e); }
+  },
+);
+
+router.post(
+  '/field-definitions',
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(fieldDefinitionSchema),
+  async (req, res, next) => {
+    try {
+      const body = req.body as z.infer<typeof fieldDefinitionSchema>;
+      const scope = await callerInstitutionOrThrow(
+        req.user!.id, req.user!.role, req.user!.institutionId,
+      );
+      assertDefinitionShape(body.type, body.options ?? null);
+      // Per (institution, entity, sortOrder) uniqueness: two fields may
+      // not claim one seat (schema @@unique).
+      const seatTaken = await withRetry(() => prisma.institutionFieldDefinition.findFirst({
+        where: { institutionId: scope, entity: body.entity, sortOrder: body.sortOrder },
+        select: { id: true },
+      }));
+      if (seatTaken) {
+        throw new AppError('VALIDATION_ERROR', 'هذا الترتيب مشغول بحقل آخر لنفس الكيان', 400);
+      }
+      const created = await withRetry(() => prisma.institutionFieldDefinition.create({
+        data: {
+          institutionId: scope,
+          key: body.key,
+          labelAr: body.labelAr,
+          labelEn: body.labelEn,
+          entity: body.entity,
+          type: body.type,
+          required: body.required,
+          options: jsonOrNull(body.options),
+          validation: jsonOrNull(body.validation),
+          visibleTo: jsonOrNull(body.visibleTo),
+          searchable: body.searchable,
+          importKeyAr: body.importKeyAr ?? null,
+          importKeyEn: body.importKeyEn ?? null,
+          sortOrder: body.sortOrder,
+        },
+      }));
+      await audit(req.user!.id, scope, 'field-definition.create', 'InstitutionFieldDefinition', created.id, {
+        key: created.key, entity: created.entity, type: created.type,
+      } as Prisma.InputJsonValue);
+      res.status(201).json({ data: created });
+    } catch (e) { next(e); }
+  },
+);
+
+router.patch(
+  '/field-definitions/:id',
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(fieldDefinitionPatchSchema),
+  async (req, res, next) => {
+    try {
+      const body = req.body as z.infer<typeof fieldDefinitionPatchSchema>;
+      const scope = await callerInstitutionOrThrow(
+        req.user!.id, req.user!.role, req.user!.institutionId,
+      );
+      const existing = await withRetry(() => prisma.institutionFieldDefinition.findUnique({
+        where: { id: req.params.id },
+        select: {
+          id: true, institutionId: true, type: true, sortOrder: true,
+          entity: true, options: true,
+        },
+      }));
+      if (!existing || existing.institutionId !== scope) throw AppError.notFound();
+      // The MERGED shape must stay coherent: a SELECT keeps real options,
+      // a non-SELECT carries none (E1's controlled-JSON contract).
+      const nextType = body.type ?? existing.type;
+      const existingOptions = Array.isArray(existing.options)
+        ? (existing.options as string[])
+        : null;
+      const nextOptions =
+        body.options !== undefined ? body.options : existingOptions;
+      assertDefinitionShape(nextType, nextOptions);
+      if (body.sortOrder !== undefined && body.sortOrder !== existing.sortOrder) {
+        const seatTaken = await withRetry(() => prisma.institutionFieldDefinition.findFirst({
+          where: {
+            institutionId: scope, entity: existing.entity,
+            sortOrder: body.sortOrder, id: { not: existing.id },
+          },
+          select: { id: true },
+        }));
+        if (seatTaken) {
+          throw new AppError('VALIDATION_ERROR', 'هذا الترتيب مشغول بحقل آخر لنفس الكيان', 400);
+        }
+      }
+      const updated = await withRetry(() => prisma.institutionFieldDefinition.update({
+        where: { id: existing.id },
+        data: {
+          ...(body.labelAr !== undefined ? { labelAr: body.labelAr } : {}),
+          ...(body.labelEn !== undefined ? { labelEn: body.labelEn } : {}),
+          ...(body.type !== undefined ? { type: body.type } : {}),
+          ...(body.required !== undefined ? { required: body.required } : {}),
+          ...(body.options !== undefined ? { options: jsonOrNull(body.options) } : {}),
+          ...(body.validation !== undefined ? { validation: jsonOrNull(body.validation) } : {}),
+          ...(body.visibleTo !== undefined ? { visibleTo: jsonOrNull(body.visibleTo) } : {}),
+          ...(body.searchable !== undefined ? { searchable: body.searchable } : {}),
+          ...(body.importKeyAr !== undefined ? { importKeyAr: body.importKeyAr } : {}),
+          ...(body.importKeyEn !== undefined ? { importKeyEn: body.importKeyEn } : {}),
+          ...(body.sortOrder !== undefined ? { sortOrder: body.sortOrder } : {}),
+        },
+      }));
+      await audit(req.user!.id, scope, 'field-definition.update', 'InstitutionFieldDefinition', existing.id, {
+        fields: Object.keys(body),
+      } as Prisma.InputJsonValue);
+      res.json({ data: updated });
+    } catch (e) { next(e); }
+  },
+);
+
+router.delete(
+  '/field-definitions/:id',
+  requireRole(Role.ADMIN, Role.OWNER),
+  async (req, res, next) => {
+    try {
+      const scope = await callerInstitutionOrThrow(
+        req.user!.id, req.user!.role, req.user!.institutionId,
+      );
+      const existing = await withRetry(() => prisma.institutionFieldDefinition.findUnique({
+        where: { id: req.params.id },
+        select: { id: true, institutionId: true, key: true, entity: true },
+      }));
+      if (!existing || existing.institutionId !== scope) throw AppError.notFound();
+      // Deleting a definition cascades its FieldValue rows (schema) —
+      // the registrar sees the consequence in the confirm copy (FE).
+      await withRetry(() => prisma.institutionFieldDefinition.delete({
+        where: { id: existing.id },
+      }));
+      await audit(req.user!.id, scope, 'field-definition.delete', 'InstitutionFieldDefinition', existing.id, {
+        key: existing.key, entity: existing.entity,
+      } as Prisma.InputJsonValue);
+      res.json({ data: { deleted: true } });
     } catch (e) { next(e); }
   },
 );

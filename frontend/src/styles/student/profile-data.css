@@ -1,0 +1,177 @@
+/* r349-P3 — MyProfileData (البيانات الشخصية · الاتصال · الأكاديمية ·
+   ولي الأمر · الوثائق · الأمان) + the directory/file pages' shared
+   atoms. Token-only: no raw colors/type/radius/spacing (design gates).
+   RTL: logical properties only. Light+dark: every color rides a token
+   that flips with the theme. */
+
+/* ── the sheet's section stack ─────────────────────────────────── */
+
+.r349p-data {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* ── inline edit tiles ─────────────────────────────────────────── */
+
+.r349p-editable {
+  position: relative;
+}
+
+.r349p-edit-btn {
+  opacity: 0;
+  transition: opacity var(--t-fast, 150ms) var(--e-out, ease-out);
+}
+
+.r349p-editable:hover .r349p-edit-btn,
+.r349p-editable:focus-within .r349p-edit-btn {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .r349p-edit-btn {
+    opacity: 1;
+  }
+}
+
+.r349p-editing {
+  border-color: var(--accent, var(--primary));
+}
+
+.r349p-input {
+  width: 100%;
+  margin-top: var(--sp-0-5);
+  padding: var(--sp-1) var(--sp-2);
+  font: inherit;
+  font-size: var(--fs-sm, 0.875rem);
+  color: var(--text);
+  background: var(--surface-2, var(--bg));
+  border: 1px solid var(--border);
+  border-radius: var(--r-md, 8px);
+}
+
+.r349p-input:focus-visible {
+  outline: 2px solid var(--accent, var(--primary));
+  outline-offset: 1px;
+}
+
+.r349p-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-0-5);
+  color: var(--success);
+}
+
+/* ── notes + errors ────────────────────────────────────────────── */
+
+.r349p-note {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-xs, 0.75rem);
+  color: var(--text-subtle, var(--text-2));
+  line-height: 1.7;
+}
+
+.r349p-error {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-0-5);
+  margin-top: var(--sp-1);
+  font-size: var(--fs-xs, 0.75rem);
+  color: var(--danger, var(--error));
+}
+
+/* ── the visibility radiogroup (الأمان) ────────────────────────── */
+
+.r349p-vis {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.r349p-vis-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-sm, 0.875rem);
+  font-weight: var(--fw-semibold, 600);
+  color: var(--text);
+}
+
+.r349p-vis-option {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: baseline;
+  gap: var(--sp-1-5);
+  padding: var(--sp-2) var(--sp-3);
+  text-align: start;
+  background: var(--surface-2, var(--bg));
+  border: 1px solid var(--border);
+  border-radius: var(--r-md, 8px);
+  cursor: pointer;
+  transition: border-color var(--t-fast, 150ms) var(--e-out, ease-out),
+    background-color var(--t-fast, 150ms) var(--e-out, ease-out);
+}
+
+.r349p-vis-option:hover:not(:disabled) {
+  border-color: var(--accent, var(--primary));
+}
+
+.r349p-vis-option--active {
+  border-color: var(--accent, var(--primary));
+  background: var(--accent-soft, color-mix(in srgb, var(--accent, var(--primary)) 8%, transparent));
+}
+
+.r349p-vis-option:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.r349p-vis-option > svg {
+  align-self: center;
+  color: var(--text-subtle, var(--text-2));
+}
+
+.r349p-vis-option--active > svg {
+  color: var(--accent, var(--primary));
+}
+
+.r349p-vis-title {
+  font-size: var(--fs-sm, 0.875rem);
+  font-weight: var(--fw-semibold, 600);
+  color: var(--text);
+}
+
+.r349p-vis-desc {
+  grid-column: 2 / -1;
+  font-size: var(--fs-xs, 0.75rem);
+  color: var(--text-subtle, var(--text-2));
+  line-height: 1.6;
+}
+
+/* ── skeletons (pending state) ─────────────────────────────────── */
+
+.r349p-skeleton-line {
+  height: 14px;
+  margin-block: var(--sp-1);
+  border-radius: var(--r-full, 999px);
+  background: var(--surface-2, var(--bg));
+  animation: r349p-pulse 1.4s ease-in-out infinite;
+}
+
+.r349p-skeleton-line--w70 { width: 70%; }
+.r349p-skeleton-line--w40 { width: 40%; }
+
+@keyframes r349p-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r349p-skeleton-line {
+    animation: none;
+  }
+  .r349p-edit-btn,
+  .r349p-vis-option {
+    transition: none;
+  }
+}

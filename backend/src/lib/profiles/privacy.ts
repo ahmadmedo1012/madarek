@@ -203,6 +203,11 @@ export function shapeStudentProfileFor(
     profileImageUrl: p.profileImageUrl,
     universityId: p.universityId,
     phone: shapePhone(p.studentPhone, view, p.studentPhoneVisibility),
+    /** The SETTING itself (not the access) — the owner's own control
+     *  state for the الأمان selector; harmless for staff readers
+     *  (they infer it from the masked access anyway). */
+    phoneVisibility: p.studentPhoneVisibility,
+    guardianPhoneVisibility: p.guardianPhoneVisibility,
     additionalPhone: p.additionalPhone,
     guardian:
       view.isSelf || (STAFF_ROLES as readonly string[]).includes(view.role)
@@ -251,6 +256,7 @@ export function shapeTeacherProfileFor(
     websiteUrl: p.websiteUrl,
     employeeId: (view.isSelf || view.role === 'ADMIN' || view.role === 'OWNER') ? p.employeeId : null,
     phone: shapePhone(p.personalPhone, view, p.personalPhoneVisibility),
+    phoneVisibility: p.personalPhoneVisibility,
     officialPhone: p.officialPhone,
     officialEmail: p.officialEmail,
     preferredContact: p.preferredContact,

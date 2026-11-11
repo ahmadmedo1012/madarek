@@ -16,6 +16,8 @@ export * from './resources/training';
 export * from './resources/permissions';
 export * from './resources/ai';
 export * from './resources/live';
+// r349-P2/P3 — the people surface (LANE P).
+export * from './resources/people';
 
 /**
  * Best-effort Arabic error message for inline mutation failures.
