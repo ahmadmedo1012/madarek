@@ -52,6 +52,7 @@ const surfaceTsx = [
 const liveTsx = stripLineComments(stripComments(surfaceTsx));
 const manifest = JSON.parse(read('public/media/manifest.json')) as {
   products: Array<{ id: string; derivativeWidths: number[] }>;
+  illustrations: { items: Array<{ id: string; assets: { light: string; dark: string } }> };
 };
 
 describe('r307 — the generic media registry agrees with the manifest and the bytes', () => {
