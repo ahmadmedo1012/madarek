@@ -294,7 +294,7 @@ test.describe('المسار النشط واستعادة التمرير', () => {
     await expect(page.locator('.topbar-title')).toContainText('مقرّراتي الدراسية');
     await expect(page).toHaveTitle('مقرّراتي الدراسية · مدارك');
 
-    // 2) الرجوع يستعيد التمرير على صفحة طويلة (مراقب POP المحدود ~1s).
+    // 2) الرجوع يستعيد التمرير على صفحة طويلة (مراقب POP المحدود).
     await page.goto('/student/dashboard');
     await expect(page.locator('h1.pf-page-title')).toBeVisible();
     // اكتمال ارتفاع الصفحة شرط الفحص الحقيقي (بيانات mock بعد Suspense).
@@ -305,41 +305,75 @@ test.describe('المسار النشط واستعادة التمرير', () => {
       }), { timeout: 6000, message: 'لوحة الطالب صفحة طويلة فعليًا' })
       .toBeGreaterThan(250);
 
+    // r349-Q3 (التشخيص المقاس): المتصفّح يُطبّق «إرساء التمرير» على
+    // .content — عند هبوط الودجات المتأخرة (swings مقاسة في sh:
+    // 1683↔1677، وقفزة +64px فوق نقطة الضبط) يُزاح scrollTop بلا
+    // حدث من المستخدم، فحُفِظت 664/596 بدل 600 واستقرّت الاستعادة
+    // على 660 = خارج نافذة ±60 بالضبط. الإرساء سلوك متصفّح مرغوب
+    // لكنه خارج الخاصية المُختبَرة (استعادة التطبيق)؛ نعزله بتعطيله
+    // على الحاوية في هذا الاختبار فقط — فتصبح القيم حتمية تمامًا.
+    await page.addStyleTag({ content: '.content { overflow-anchor: none; }' });
+
     const y = await page.evaluate(() => {
       const el = document.querySelector<HTMLElement>('.content');
       if (!el) return 0;
       const max = el.scrollHeight - el.clientHeight;
       const target = Math.min(600, Math.max(0, max));
+      // r349-Q3: احتفظ بوعدٍ يُحلّ عند إطلاق حدث التمرير نفسه — إشارة
+      // حتمية بدل مؤقّت 150ms الذي كان قد يمرّ قبل إرسال الحدث أصلًا
+      // تحت حمل أربعة عمّال (فيبقى previousScrollTop = 0). ترتيب
+      // المستمعين هو ترتيب الإرفاق: مستمع التطبيق (أُرفق عند التركيب)
+      // يسبق مستمعنا، فحلّ وعدنا يعني أن التسجيل تمّ فعلًا.
+      (window as unknown as { __r349ScrollAck?: Promise<number> }).__r349ScrollAck =
+        new Promise<number>((resolve) => {
+          el.addEventListener('scroll', () => resolve(el.scrollTop), {
+            once: true,
+            passive: true,
+          });
+        });
       el.scrollTop = target;
       return target;
     });
     expect(y, 'لوحة الطالب تتسع لتمرير معنوي').toBeGreaterThan(250);
-    await page.waitForTimeout(150); // حدث scroll يُسجَّل في previousScrollTop
+    await page.evaluate(
+      () =>
+        (window as unknown as { __r349ScrollAck?: Promise<number> }).__r349ScrollAck,
+    );
 
     await page.getByRole('link', { name: 'مقرّراتي الدراسية' }).click();
     await expect(page).toHaveURL(/\/student\/courses$/);
     await expect(page.locator('h1.pf-page-title')).toBeVisible();
 
+    // الإشارة لا الافتراض: اقرأ ما حَفِظه التطبيق فعلًا تحت مفتاح
+    // هذه الدخول (القيمة الحية المسجّلة عند المغادرة). مع تعطيل
+    // الإرساء يجب أن تطابق ما ضبطناه حرفيًا.
+    const saved = await page.evaluate(() => {
+      let best = -1;
+      for (let i = 0; i < sessionStorage.length; i += 1) {
+        const k = sessionStorage.key(i)!;
+        if (k.startsWith('madarek.scroll:')) {
+          best = Math.max(best, Number(sessionStorage.getItem(k)));
+        }
+      }
+      return best;
+    });
+    expect(saved, `حُفِظ موضع التمرير الفعلي (${saved} = ${y})`).toBe(y);
+
     await page.goBack();
     await expect(page).toHaveURL(/\/student\/dashboard$/);
-    // المراقب المحدود يعيد التطبيق حتى ~60 إطارًا — تحت حمل CI قد
-    // يتجاوز 60 إطار 2500ms (CI خضراء أثبتت 4.3s للمسار نفسه)، فالنافذة
-    // 4000ms تغطي الإطار الواحد البطيء دون إضعاف التثبيت (±60px كما هو).
-    // R337: نافذة 4000ms كانت تحدّ قدَم المراقب نفسه — المسار قاس 4.3s
-    // في CI خضراء سابقًا، ووصل الحد مرة أخرى في 5327cb3f (كلا المحاولتين
-    // انتهتا بالتايم-آوت على waitForFunction فقط، والاختبار يمر محليًا
-    // 3/3 تحت حمل عاملَين). النافذة 8000ms تُبقي التثبيت كما هو (±60px)
-    // وتفصل بين «الاستعادة بطيئة تحت الحمل» و«الاستعادة مفقودة».
+    // نافذة 8000ms (سابقة R337): تفصل بين «الاستعادة بطيئة تحت
+    // الحمل» و«الاستعادة مفقودة»؛ التثبيت كما هو (±60px) والمقارنة
+    // ضد القيمة المحفوظة المقروءة أعلاه — لا ضد قيمة مفترضة.
     await page.waitForFunction(
       (expected) => {
         const el = document.querySelector<HTMLElement>('.content');
         return el != null && Math.abs(el.scrollTop - (expected as number)) < 60;
       },
-      y,
+      saved,
       { timeout: 8000 },
     );
     const restored = await page.evaluate(() => document.querySelector<HTMLElement>('.content')?.scrollTop ?? -1);
-    expect(Math.abs(restored - y), `التمرير استُعيد (${restored} ≈ ${y})`).toBeLessThanOrEqual(60);
+    expect(Math.abs(restored - saved), `التمرير استُعيد (${restored} ≈ ${saved})`).toBeLessThanOrEqual(60);
   });
 });
 

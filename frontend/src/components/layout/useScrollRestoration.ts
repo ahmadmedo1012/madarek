@@ -40,8 +40,29 @@ const persistScroll = (key: string, scrollTop: number): void => {
  * the container themselves (any position that isn't the one our own
  * write produced — the clamped result of our write always compares
  * equal to `expected`, user movement never does). PUSH/REPLACE —
- * always top, no stored offset to lose — are untouched. */
-const RESTORE_WATCH_FRAMES = 60;
+ * always top, no stored offset to lose — are untouched.
+ *
+ * r349-Q3: the original budget was 60 rAF frames flat. Under worker
+ * load (4 CI workers) rAF cadence is erratic — 60 frames can elapse
+ * in ~1s of wall time while the destination's payload (mock transport,
+ * cold chunks) lands seconds later, so the watcher stood down before
+ * the height that could hold the offset ever arrived and the restore
+ * was lost forever (measured: 6/20 e2e failures under --workers=4).
+ * The budget is now two-legged and load-honest:
+ *   · SETTLED frames — frames in which the container can already hold
+ *     the target (scrollHeight − clientHeight ≥ top) count against a
+ *     60-frame interference budget. If the clamp is NOT binding and
+ *     the offset still won't stick, something else is scrolling the
+ *     container — we stop fighting after 60 such frames (original
+ *     intent, preserved).
+ *   · A hard wall-clock cap (RESTORE_WATCH_MAX_MS) bounds the whole
+ *     watch no matter what — the loop can never outlive it, and a
+ *     navigation effect cleanup tears it down as before.
+ * While the container is too short, watching is free (every apply
+ * clamps to the same place; nothing is fought), so late content
+ * restores deterministically instead of racing a frame counter. */
+const RESTORE_WATCH_SETTLED_FRAMES = 60;
+const RESTORE_WATCH_MAX_MS = 10_000;
 
 /**
  * useScrollRestoration — saves the content scroll position per history
@@ -87,7 +108,9 @@ export function useScrollRestoration(scrollRef: React.RefObject<HTMLElement | nu
     let applyRaf = 0;
     let watchRaf = 0;
     let honored = false;
-    let watched = 0;
+    let settled = 0;
+    const startedAt =
+      typeof performance !== 'undefined' ? performance.now() : Date.now();
     // What our last programmatic write produced (the clamped result).
     // -1 until the first apply: scroll events before the restore has
     // applied must not cancel it (old-code parity — the apply always
@@ -124,11 +147,23 @@ export function useScrollRestoration(scrollRef: React.RefObject<HTMLElement | nu
     const tick = () => {
       watchRaf = 0;
       if (honored) return;
-      if (watched >= RESTORE_WATCH_FRAMES) {
+      const elapsed =
+        (typeof performance !== 'undefined' ? performance.now() : Date.now()) -
+        startedAt;
+      if (elapsed >= RESTORE_WATCH_MAX_MS) {
         stopWatching();
         return;
       }
-      watched += 1;
+      // Only burn the interference budget on frames where the clamp is
+      // NOT binding — while the destination is still too short to hold
+      // the offset, watching is free (r349-Q3; see header note).
+      if (node.scrollHeight - node.clientHeight >= top) {
+        settled += 1;
+        if (settled >= RESTORE_WATCH_SETTLED_FRAMES) {
+          stopWatching();
+          return;
+        }
+      }
       watchRaf = requestAnimationFrame(() => {
         watchRaf = 0;
         if (honored) return;
