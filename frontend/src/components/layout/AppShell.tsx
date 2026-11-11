@@ -109,6 +109,9 @@ const DYNAMIC_TITLES: Array<[RegExp, string]> = [
   [/^\/training\/[^/]+$/,                    'مسار تدريبي'],
   [/^\/teacher\/intelligence\/[^/]+$/,       'تفاصيل المقرّر'],
   [/^\/teacher\/exams\/[^/]+$/,             'بنك الأسئلة والاختبارات'],
+  /* r349-P3b: the registrar's student file (LANE P) — the person
+     profile the directory drills into. */
+  [/^\/admin\/people\/[^/]+$/,              'ملف الطالب'],
   /* A4 P2-5: this one route hosts FOUR states — pre-start («هل أنت
      مستعد للبدء؟»), a live attempt, the result screen, and the
      already-completed screen. The shell resolves titles from the

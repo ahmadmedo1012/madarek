@@ -82,6 +82,40 @@ enum Gender {
   UNSPECIFIED
 }
 
+// ─── r349-P1: وضع الدراسة (صباحي/مسائي/موازي) — مصدر: كلام المالك ──
+enum StudyType {
+  MORNING // صباحي
+  EVENING // مسائي
+  PARALLEL // موازي
+}
+
+// ─── r349-P1: الوضع الدراسي الجاري — إيقاف/تأجيل/تخرج/انسحاب ──────
+// nullable على الصفوف القائمة (القيمة الغائبة = ACTIVE في الخدمة؛
+// حالة الالتحاق «منتقل/مستجد» بقيت في transferStatus كما هي).
+enum EnrollmentStatus {
+  ACTIVE // مقيّد
+  SUSPENDED // موقوف
+  DEFERRED // مؤجّل
+  GRADUATED // متخرّج
+  WITHDRAWN // منسحب
+}
+
+// ─── r349-P1: مصفوفة ظهور الهاتف — من يرى الهاتف ──────────────────
+// INSTITUTION_STAFF (الافتراضي): طاقم مؤسستي يراه في الدليل/الملف.
+// PRIVATE: مقنّع للجميع عدا المالك، والطريق هو طلب التواصل (P2).
+enum PhoneVisibility {
+  INSTITUTION_STAFF
+  PRIVATE
+}
+
+// ─── r349-P1: قناة التواصل المفضلة للمدرّس ─────────────────────────
+enum PreferredContact {
+  PHONE // هاتف
+  WHATSAPP // واتساب
+  EMAIL // بريد
+  OFFICE_HOURS // ساعات المكتب
+}
+
 enum AcademicRank {
   LECTURER
   ASSISTANT_PROFESSOR
@@ -541,6 +575,31 @@ model StudentProfile {
   emergencyContactName    String? // جهة الاتصال للطوارئ
   emergencyContactPhone   String? // هاتف الطوارئ (معروض)
 
+  // ─── r349-P1: الاسم الرباعي والهوية الوطنية (PROFILES-RESEARCH §2) ──
+  // الاسم الكامل كما في الوثائق يبقى nameAr أعلاه؛ هذه الأجزاء
+  // المفصولة اختيارية — منظمة، قابلة للاستيراد والبحث، ولا تُلزم أحدًا.
+  fatherName      String? // اسم الأب (الاسم الثاني في الرباعي)
+  grandfatherName String? // اسم الجد (الاسم الثالث)
+  motherName      String? // اسم الأم — كما في الوثائق عند الحاجة
+  birthPlace      String? // مكان الميلاد (بلدية/مدينة) — غير مدينة السكن
+  // الرقم الوطني: الخام لا يُعاد أبدًا إلا للمالك/OWNER/ADMIN؛ البحث
+  // والتطابق (الاستيراد/الدليل) عبر الهاش المطبَّع، والعرض المقنّع
+  // من الخام في طبقة الخدمة (maskNationalId).
+  nationalId     String? // الرقم الوطني — 12 خانة تبدأ بسنة الميلاد
+  nationalIdHash String? // SHA-256(أرقام فقط) — مفتاح المطابقة المفهرس
+
+  // ─── r349-P1: وضع الدراسة والقبول ────────────────────────────────
+  studyType                StudyType? // صباحي/مسائي/موازي
+  enrollmentStatus        EnrollmentStatus? // مقيّد/موقوف/مؤجّل/… (الغائب = ACTIVE)
+  secondarySchool         String? // اسم مدرسة الشهادة الثانوية
+  secondarySchoolBranch   String? // الشعبة (علمي/أدبي/…) — نص حر: الفروع تختلف
+  secondarySchoolPercent  Decimal? @db.Decimal(5, 2) // نسبة الثانوية المئوية 0-100
+  admissionYear           Int? // سنة القبول/التسجيل الأول
+
+  // ─── r349-P1: مصفوفة ظهور الهاتف (الملف يتحكم فيمن يراه) ────────
+  studentPhoneVisibility  PhoneVisibility @default(INSTITUTION_STAFF)
+  guardianPhoneVisibility PhoneVisibility @default(INSTITUTION_STAFF)
+
   // master-E1 — قيم الحقول المخصصة المرتبطة بهذا الملف.
   fieldValues FieldValue[]
 
@@ -556,6 +615,9 @@ model StudentProfile {
   @@index([departmentId])
   // master-E1 — البحث بالهاتف المُطبَّع (استعلامات «من هذا الرقم؟»).
   @@index([studentPhoneNormalized])
+  // r349-P1 — مطابقة الرقم الوطني عبر الهاش (الاستيراد/الدليل) بلا
+  // فهرسة الخام ولا تعريضه في سجلات الاستعلام.
+  @@index([nationalIdHash])
 }
 
 model TeacherProfile {
@@ -606,6 +668,10 @@ model TeacherProfile {
   personalPhoneNormalized String? // الهاتف الشخصي — مفتاح البحث (src/lib/phones.ts)
   officialPhone           String? // هاتف المكتب الرسمي
   officialEmail           String? // البريد الرسمي للمؤسسة (مستقل عن بريد الدخول)
+
+  // ─── r349-P1: تفضيلات التواصل وظهور الهاتف الشخصي ────────────────
+  preferredContact         PreferredContact? // قناة التواصل المفضلة
+  personalPhoneVisibility  PhoneVisibility @default(INSTITUTION_STAFF)
 
   // master-E1 — قيم الحقول المخصصة المرتبطة بهذا الملف.
   fieldValues FieldValue[]

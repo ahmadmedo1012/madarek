@@ -282,27 +282,89 @@ all fixes re-measured on this box.
 6. **LANE Z**: the integrator (migration-order conflicts, full gates, OWNER-GUIDE-AR,
    ADRs, final report). D5 (OTA) needs the EXPO token — §5 question for the owner.
 
-### Session 2 resume (2026-11-11, this box — sandbox was RESET again)
-- Environment rebuilt from zero: no `/home/z/.madarek-env` (the platform redacts tokens
-  from uploaded context — the PAT must be re-supplied by the owner before ANY push;
-  all work is committed locally on `wip/*` branches until then), fresh partial clone
-  (`.git` 36 MB, blob-filtered), full checkout of main.
-- main had moved b4a56fbf → **46c807e5** (3 post-heartbeat CI-fix commits by the
-  previous session: POSIX sh emulator script, self-contained one-liner lines, the
-  x86_64 second gradle pass). CI on 46c807e5: CI/Size/deadcode ✓ — Android run 20
-  **failed at "Collect and verify the artifacts"**, smoke+verify+publish skipped.
-- **Root cause (no log needed — structural)**: the x86_64 pass writes
-  `app-release.apk` to the SAME Gradle output path as the multi-ABI release build,
-  and runs BEFORE the collect step; verify-apk.py (no `--expected-architectures` in
-  the build job → default arm64-v8a,armeabi-v7a) rejects the single-ABI lib set.
-- **Fix (this commit, `wip/all-d-ci-abi-order`)**: step reorder — "Collect and
-  verify the artifacts" now runs immediately after the multi-ABI build; the x86_64
-  pass moved after it (before metadata+upload), with comments pinning the ordering
-  invariant on both sides; `gradle-x86.log` added to the failure-upload set.
-  YAML re-validated (python yaml safe_load, step table verified).
+### Session 2 resume (2026-11-11 — sandbox was RESET; this box rebuilt from zero)
+- Environment: root workspaces + tools (embedded PG 16) installed; mobile NOT installed
+  (only schema.generated.ts regenerated via npx openapi-typescript — no mobile jest run).
+  **No `/home/z/.madarek-env`**: the platform redacts tokens from uploaded context —
+  the PAT must be re-supplied before ANY push; all work committed locally until then.
+- main was at **46c807e5** (3 post-heartbeat CI-fix commits): CI/Size/deadcode ✓ but
+  Android run 20 failed at "Collect and verify the artifacts" — the x86_64 smoke pass
+  (46c807e5 itself) overwrote app-release.apk with a single-ABI lib set before the
+  verify step read it (verify-apk.py defaults to arm64-v8a,armeabi-v7a).
 
-## next (in order) — WAVE 2 (session 2)
-1. Push needs the PAT re-supplied (once). Until then: local commits only.
-2. npm install (root workspaces + mobile) + verify.sh --fast on this box.
-3. LANE P in order: P1 gap analysis → P2 API + PRIVACY-MATRIX → P3 web → P4 mobile
-   → P5 seed. Then S, I, W, N, Z per the Wave-2 list above.
+Branch `wip/all-d-ci-abi-order` (from main 46c807e):
+- **a96cbedb** the Android fix: step reorder — collect+verify immediately after the
+  multi-ABI build, the x86_64 pass moved after it (before metadata+upload), invariant
+  comments pinned on both steps, gradle-x86.log joins the failure uploads.
+  YAML safe_load + step table verified. NOT PUSHED (no PAT).
+
+Branch `wip/p1-profiles-foundation` (LANE P executed; 5 commits):
+- **PROFILES-RESEARCH.md** (P0): every field sourced (owner words / E1's §9.4 alias
+  dictionary / documented Libyan facts); web verification walled on this box
+  (DDG empty, Bing junk, Google JS-walled, admission.ly SPA, uot.edu.ly placeholder —
+  all logged); unknowns declared (منظومة الغويل sample, quadruple-name strictness,
+  school nationalId, mask depth) — nothing invented.
+- **9ef94dfb (P1)**: migration `20261111220000_r349_p1_profile_fields` — additive
+  nullable-first: fatherName/grandfatherName/motherName, birthPlace, nationalId +
+  nationalIdHash (SHA-256, indexed — raw access-controlled, display masked by
+  default), StudyType/EnrollmentStatus/PhoneVisibility/PreferredContact enums,
+  secondary-school admission data (school/branch/percent/year), per-phone
+  PhoneVisibility defaults INSTITUTION_STAFF, teacher preferredContact +
+  personalPhoneVisibility. Proof: fresh embedded-PG deploy of all 35 migrations ✓;
+  columns/enums/index verified in information_schema; migrate status up-to-date;
+  P1 drift count 0 (only the pre-existing documented GIN-trgm raw-SQL diff).
+  national-id.ts pure service (normalize/hash/mask/prepare) + 13 tests.
+- **5c84826a (P2)**: `profiles.routes.ts` — GET /me/profile MOVED from
+  learning.routes.ts and extended (shaped self views + customFields; the pre-P2
+  consumer contract keys untouched); PATCH /me/profile (contact lane only, strict
+  zod, phones folded via normalizePhone, audits FIELD NAMES); GET /people/:id
+  (TEACHER roster-scoped / cross-institution 404 / PII-read audits with saw* booleans
+  — no values); PATCH /people/:id (registrar lane ADMIN/OWNER; nationalId stored as
+  the raw+hash pair); GET /directory (kind/q/faculty/year/stage/grade/studyType/
+  status/phone-digits filters, pagination, json|xlsx|csv with the OWASP
+  formula-injection escape + UTF-8 BOM; exports audited); POST /people/:id/
+  contact-request (per-user hourly gate + 24h per-target dedup VIA the audit trail;
+  SYSTEM notification to the owner; audited). privacy.ts pure matrix engine +
+  PRIVACY-MATRIX.md (role × field, the write lanes, audit events, rate limits,
+  isolation rules); 25 per-cell privacy tests + 19 route-contract tests.
+  openapi.json + mobile schema.generated.ts regenerated.
+- **49e9273a (P3a)**: MyProfileData (components/student) — the student's six sections
+  (البيانات الشخصية · الاتصال · الأكاديمية · ولي الأمر · الوثائق · الأمان) over
+  the shaped self view; inline Libyan phone validation (lib/phone-validation.ts,
+  the documented mirror of phones.ts — 09X/9X/+218/00218, Eastern-Arabic folded,
+  no carrier names); the plain-Arabic visibility radiogroup; ProfilePage's data tab
+  leads; the completion meter counts REAL profile signals (the R305 hero meter test
+  re-pinned 70→50% with the rationale in-file). phoneVisibility (the SETTING) rides
+  the shaped views for the owner's selector.
+- **b7c1fd9e (P3b)**: /admin/directory «دليل التواصل» (nav, unique Phone icon) —
+  the contact sheet (server search + study-type/status filters + pagination; tel:/
+  wa.me/copy verbs on the normalized form; طلب تواصل on PRIVATE; audited xlsx/csv
+  blob downloads) + /admin/people/:id «ملف الطالب» — five tabs (الملف = the
+  registrar's full edit form incl. nationalId pair/guardian/admission/school-mode ·
+  المقررات = GET /enrollments?studentId · الدرجات/الحضور = per-offering reads
+  filtered to the student · الملاحظات = the file's own audit trail via the new
+  GET /people/:id/history). Field-definitions CRUD API (GET/POST/PATCH/DELETE —
+  controlled-JSON guards, seat uniqueness, audited). DYNAMIC_TITLES + admin nav
+  wired; route-titles coverage green.
+
+Gates measured this session: backend tsc 0/0 · vitest **2119 passed · 19 skipped**;
+frontend tsc 0/0 · vitest **3028 passed** · vite build ✓ · bundle **758.8/770 KB gz**
+(entry 64.7/92, pdf 95.7/110) · icons/colors/raw-css gates ✓ on the new files.
+**Pre-existing on main (flagged for W)**: `npm run lint:css` (npx -y stylelint@16,
+unpinned) reports 46 no-duplicate-selectors errors on main@46c807e TOO — zero from
+this session's files (profile-data.css: 1 warning). CI design-gates is green on
+main → the local npx resolves a newer 16.x than the lockfile's; W-lane pins it.
+
+## next (in order) — after session 2
+1. **PUSH (needs the PAT re-supplied once)**: push `wip/all-d-ci-abi-order` →
+   fast-forward main (fixes the Android pipeline — its push retriggers the workflow
+   by the .yml path filter); then `wip/p1-profiles-foundation` → merge to main and
+   watch CI (the Android run on that SHA finally exercises the emulator smoke live).
+2. LANE P residue: **P4 mobile UI** (tap-to-call/WhatsApp on the same shaped
+   payloads — the people.ts contract types exist; mobile deps NOT installed here) ·
+   **P5 seed** enrichment (realistic Libyan names + clearly-fake phones on the new
+   columns; the E1 seed already carries the demo tenant) · the field-definitions
+   EDITOR UI (API shipped in P3b; host it on the directory page) · screenshots
+   390/1440 × light/dark + the overlap detector on the new routes.
+3. LANE S (S1-S6), LANE I (I1-I8), LANE W (detector sweep × roles, CSS demolition,
+   the stylelint pin, VLM panel), LANE N, LANE Z per the Wave-2 order above.

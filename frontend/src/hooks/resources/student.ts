@@ -389,11 +389,18 @@ export interface MyProfile {
     level: number;
     faculty: { id: string; name: string; nameEn: string | null } | null;
     department: { id: string; name: string; nameEn: string | null } | null;
+    // r349-P2/P3: the privacy-shaped self view + the institution's
+    // custom fields (additive keys — the legacy surface above is the
+    // frozen pre-P2 consumer contract).
+    profile?: import('./people').StudentProfileView;
+    customFields?: import('./people').CustomFieldValue[];
   } | null;
   teacher: {
     specialty: string | null;
     rank: string | null;
     department: { name: string; facultyName: string | undefined } | null;
+    profile?: import('./people').TeacherProfileView;
+    customFields?: import('./people').CustomFieldValue[];
   } | null;
 }
 export function useMyProfile() {

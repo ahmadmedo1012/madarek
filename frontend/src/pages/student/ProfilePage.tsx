@@ -14,6 +14,11 @@ import { SectionBar, BarCount, StatusChip, EmptyCell } from '../../components/st
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useMyAchievements, useMyEnrollments, useMyResearch, useMyProfile } from '../../hooks/useResources';
+/* r349-P3 — «بياناتي واتصالي»: the six-section real file (LANE P) over
+   the privacy-shaped self view. Lazy-adjacent by construction: the
+   component is imported by this already-lazy page chunk. */
+import MyProfileData from '../../components/student/MyProfileData';
+import '../../styles/student/profile-data.css';
 /* R320 cycle-3 (P2-1): the change-password surface is ONE shared card
  * now (components/account) — the teacher profile never had one and the
  * API serves every role; /settings mounts the same card. Behavior,
@@ -95,7 +100,7 @@ function persistLinks(next: Record<string, string>) {
   }
 }
 
-type ProfileTab = 'academic' | 'links' | 'achievements';
+type ProfileTab = 'data' | 'academic' | 'links' | 'achievements';
 
 export default function ProfilePage() {
   const user = useAuthStore((s) => s.user);
@@ -104,7 +109,12 @@ export default function ProfilePage() {
   const research = useMyResearch();
   const profile = useMyProfile();
 
-  const [tab, setTab] = useState<ProfileTab>('academic');
+  const [tab, setTab] = useState<ProfileTab>(
+    /* r349-P3: the data tab leads for students — the real file is the
+       page's primary facet now; the legacy academic/links/achievements
+       tabs follow. */
+    'data',
+  );
 
   // Persist link state in localStorage — a LOCAL browser preference.
   // Nothing here is sent to any API (no server-side field exists for it),
@@ -124,15 +134,25 @@ export default function ProfilePage() {
 
   const linkedCount = Object.keys(links).filter((k) => links[k]).length;
 
-  // Profile completeness — real signals only: basic account data (name +
-  // email, always present server-side), actual email verification, and
-  // uploaded papers. Local link shortcuts do not claim server-side state.
+  // Profile completeness — real signals only (r349-P3): the base +
+  // verification + the profile's own contact/demographics lanes +
+  // uploaded papers. Local link shortcuts stay counted as their own
+  // (browser-local) signal — nothing claims server-side state it
+  // doesn't have.
   const emailVerified = Boolean(profile.data?.emailVerifiedAt);
-  const completeness =
-    40 +
-    (emailVerified ? 20 : 0) +
-    Math.min(30, linkedCount * 10) +
-    (research.data?.length ? 10 : 0);
+  const p = profile.data?.student?.profile;
+  const completeness = Math.min(
+    100,
+    25 +
+      (emailVerified ? 15 : 0) +
+      (p?.phone.display ? 15 : 0) +
+      (p?.dateOfBirth ? 10 : 0) +
+      (p?.city ? 10 : 0) +
+      (research.data?.length ? 10 : 0) +
+      Math.min(15, linkedCount * 5) +
+      (p?.emergencyContact.name ? 5 : 0) +
+      (p?.guardian?.name ? 10 : 0),
+  );
 
   const draftError = editing ? validateLink(editing, draft) : null;
   // dirty-state: Save stays disabled until the draft differs from the
@@ -280,11 +300,14 @@ export default function ProfilePage() {
         value={tab}
         onChange={setTab}
         items={[
+          { value: 'data', label: 'بياناتي واتصالي' },
           { value: 'academic', label: 'المعلومات الأكاديمية' },
           { value: 'links', label: 'الحسابات البحثية' },
           { value: 'achievements', label: 'الإنجازات' },
         ]}
       />
+
+      {tab === 'data' && <MyProfileData />}
 
       {tab === 'academic' && (
         <section aria-label="المعلومات الأكاديمية">
@@ -528,9 +551,11 @@ export default function ProfilePage() {
       )}
 
       {/* r180-F4: password change — an account-level section, so it
-          lives OUTSIDE the academic tabs (security is not one of the
-          profile's academic facets). R319 (c3-S2): the block's heading
-          joins the §B2 title-bar register as the sheet's closing [04]. */}
+          lives OUTSIDE the tabs (security is not one of the profile's
+          academic facets). R319 (c3-S2): the block's heading joins
+          the §B2 title-bar register as the sheet's closing section.
+          r349-P3: kept for the legacy tabs; the data tab carries its
+          own الأمان section (visibility + this same pointer). */}
       <section aria-label="تغيير كلمة المرور">
         <SectionBar index="04" title="تغيير كلمة المرور" />
         <p className="r319sp-sec-note">عند التغيير تُنهى جلساتك على بقية الأجهزة، وتبقى جلستك الحالية مفتوحة.</p>

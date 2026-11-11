@@ -219,13 +219,16 @@ describe('R305 profile — the identity hero is the page’s ONE deep band', () 
     // The verified state survives on the band (real signal — emailVerifiedAt).
     expect(screen.getByText('موثَّق')).toBeInTheDocument();
 
-    // The completeness meter: 40 (account) + 20 (verified) + 10 (research) = 70%,
+    // The completeness meter (r349-P3 re-pin): 25 (account) + 15 (verified)
+    // + 10 (research) = 50% — the fixture carries NO profile lanes
+    // (phone/DOB/city/guardian all absent, zero saved links), and the
+    // new formula counts exactly those real signals,
     // the % readout riding the band's own ink (.r305p-hero-meter-value), the
     // semantic progress rail (graphic, redundant with the %) still inside.
     const meter = band!.querySelector('.r305p-hero-meter');
     expect(meter).not.toBeNull();
     expect(meter!.querySelector('.r305p-hero-meter-head')!.textContent).toContain('اكتمال الملف');
-    expect(meter!.querySelector('.r305p-hero-meter-value')!.textContent).toBe('70%');
+    expect(meter!.querySelector('.r305p-hero-meter-value')!.textContent).toBe('50%');
     expect(meter!.querySelector('.progress')).not.toBeNull();
   });
 

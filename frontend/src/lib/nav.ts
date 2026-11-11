@@ -8,7 +8,7 @@ import { MessageSquarePlus,
   Radio, Wallet, MapPin, UserCircle, Brain, Megaphone,
   Palette, Settings, UserCog, AlertTriangle, MessageCircle, Video, Globe,
   Download, Medal, BadgeCheck, Box, Telescope,
-  Bell, Award, Landmark, Inbox,
+  Bell, Award, Landmark, Inbox, Phone,
   type LucideIcon,
 } from 'lucide-react';
 import { ROUTES } from './routes';
@@ -276,6 +276,9 @@ export const ADMIN_NAV: NavGroup[] = [
     label: 'النظام',
     items: [
       { to: ROUTES.adminStudents, icon: GraduationCap, label: 'إدارة الطلاب' },
+      /* r349-P3b (LANE P): the contact directory — the staff's phone
+         sheet with the live contact verbs and the audited exports. */
+      { to: ROUTES.adminDirectory, icon: Phone, label: 'دليل التواصل' },
       /* 5-B4 hand-off: «تحليل الأداء» (/admin/analysis) left the nav —
          the surface is folded into /admin/reports (?trend=table). The
          route row in App.tsx stays (it renders the redirect preserving

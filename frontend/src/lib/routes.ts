@@ -19,6 +19,8 @@ export const ROUTES = {
   adminReports: '/admin/reports',
   adminSettings: '/admin/settings',
   adminStudents: '/admin/students',
+  adminDirectory: '/admin/directory',
+  adminPersonFile: '/admin/people/:id',
   adminTeachers: '/admin/teachers',
   auth: '/auth',
   authRegister: '/auth/register',
