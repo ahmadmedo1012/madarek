@@ -83,7 +83,6 @@ const ACTION_LABEL: Record<string, string> = {
   'paper.published': 'نشر بحث',
   'announcement.created': 'بثّ إعلان',
   'competition.created': 'إنشاء مسابقة',
-  'sync.run': 'تشغيل المزامنة',
   ROLE_CHANGE: 'تغيير صلاحيات مستخدم',
   STATUS_CHANGE: 'تعديل حالة الحساب',
   CAPABILITY_OVERRIDE: 'تجاوز صلاحية',

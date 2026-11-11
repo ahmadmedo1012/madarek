@@ -141,11 +141,6 @@ export default function OwnerSystem() {
                   hint="من حالة الاستعلام الحيّ"
                 />
                 <StatLine
-                  label="آخر مزامنة"
-                  value={s?.sync?.lastRunAt ? fromNow(s.sync.lastRunAt) : null}
-                  hint="مع المصدر الرسميّ"
-                />
-                <StatLine
                   label="تنبيهات حرجة مفتوحة"
                   value={numOf(s?.alerts?.criticalCount)}
                   hint={

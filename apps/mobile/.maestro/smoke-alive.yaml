@@ -1,16 +1,25 @@
 # R349 M1.2 — the crash-regression smoke (iOS simulator + Android emulator).
-# login → dashboard (the KPI count-ups — the EXACT surface that SIGABRT'd
-# ~15s after login on device) → assert the app is STILL alive and
-# interactive 60 seconds later. If the process aborts, the final
-# assertions fail (the app is gone) AND the runner's post-flow crash
-# scan finds the .ips/logcat fatals.
+# Boot (guest) → Welcome («ابدأ الآن» — the app's entry CTA, NOT a login
+# button: the first CI run failed tapping a «تسجيل الدخول» that never
+# existed on the Welcome) → login → dashboard (the KPI count-ups — the
+# EXACT surface that SIGABRT'd ~15s after login on device) → assert the
+# app is STILL alive and interactive 60 seconds later. If the process
+# aborts, the final assertions fail (the app is gone) AND the runner's
+# post-flow crash scan finds the .ips/logcat fatals.
 # API: the production base URL baked in the Release build — the honest
 # end-to-end (the same API the owner's device talks to).
 appId: ly.madarek.mobile
 name: "00 — smoke: دخول، لوحة، البقاء حيًّا 60 ثانية"
 ---
-- launchApp
-- tapOn: "تسجيل الدخول"
+# Boot → Welcome: the splash/Boot screen resolves the session (guest on a
+# fresh simulator) and routes to /auth. 120s covers a cold production API
+# wake (Render free tier) behind the version gate before the CTA appears.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "ابدأ الآن"
+    timeout: 120000
+- tapOn: "ابدأ الآن"
 - extendedWaitUntil:
     visible:
       id: "login-email"

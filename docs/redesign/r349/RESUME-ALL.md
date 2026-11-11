@@ -141,3 +141,39 @@ call on this box — run conformance separately when scoping (evidence: /tmp/ver
   memberships suite pins the retirement), mobile 1184 green, tsc 0/0 everywhere,
   verify --fast green (identity CLEAN, allowlist hits 650, all remaining = docs/specs/frontend
   copy — the U4 workload).
+
+### CI-RED RECOVERY — U3/M1 residue + workflow schema (2026-11-11, this commit)
+The U3/M1b pushes left main RED (CI Typecheck ×2, Mobile gates, build-android 0-job,
+iOS run 33). Environment had reset (sandbox rebuilt): re-cloned, npm install ×3,
+all fixes re-measured on this box.
+- **build-android.yml startup failure (runs 10–15, 0 jobs)**: the M1.4 smoke job's
+  checkout step put `sparse-checkout`/`sparse-checkout-cone-mode`/`persist-credentials`
+  as DIRECT step keys — GitHub's schema rejects the workflow file → instant 0-job
+  failure on every wip push. Fixed: nested under `with:`. Also `android-emulator-runner@v9`
+  never existed (latest v2.38.0) → pinned `@v2`; and publish now gates on
+  `needs: [verify, smoke]` (a smoke that cannot block a release is not a defense).
+- **Backend typecheck red**: 3 test files still mocked the deleted `prisma.syncRun` /
+  imported `SyncRunStatus`/`syncRunAction`/`toSyncFeedEntry` (owner-schemas,
+  owner-alerts-counts, owner-system-storage). Removed with the feature per L3;
+  the storage test's probe-overlap assertion re-anchored on alertFindMany; the
+  additive-siblings source-scan pin re-pinned to alerts/activity (sync block retired);
+  the s3 siblings assertion drops `data.sync`. 59 tests green in the 3 files.
+- **Mobile contract red**: `/admin/sync` + `/admin/sync/trigger` still consumed.
+  Deleted the whole retired surface: `app/admin/sync.tsx` (screen), adminApi
+  syncStatus/syncTrigger, the dashboard «المزامنة مع البيانات الرسمية» action row
+  (+RefreshCw import), the governance sync kit (SYNC_STATUS_LABEL/TONE,
+  syncStatusLabel, SyncStatusChip, SYNC_CATEGORY_LABEL, SystemRow.sync,
+  'sync.run' + 'sync' label-map entries — backend emits neither), their 8 tests,
+  and the owner System screen's «آخر مزامنة» StatLine. FE side: the stale
+  'sync.run' labels in OwnerActivityPage/OwnerDashboardPage + the r299 fixture.
+- **Maestro smoke-alive.yaml (iOS run 33 failed at step 1)**: the flow tapped
+  «تسجيل الدخول» which does not exist — the guest entry is the Welcome's
+  «ابدأ الآن» CTA (the failure log: Element not found after 66s). Flow rewritten:
+  launchApp(clearState) → extendedWaitUntil «ابدأ الآن» (120s — Boot routes the
+  guest after the version gate; covers a cold Render wake) → tap → login-email/
+  password testIDs (verified in tree) → «دخول» → «مقرراتي» (120s) → the 60s
+  alive window. Production login for student@test.ly verified live (200,
+  inst-madarek-demo membership — the U2 keying is live).
+- Gates on this box: backend tsc 0/0, mobile tsc 0/0, mobile jest 42/42 suites
+  1176 green (1184−8 retired), contract-check 200 consumed/0 unmatched,
+  verify --fast PASS (bundle 747.6/770, ratchet 52, identity CLEAN 650/133).

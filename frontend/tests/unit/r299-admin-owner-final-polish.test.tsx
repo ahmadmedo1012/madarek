@@ -100,7 +100,7 @@ const usersMocks = vi.hoisted(() => ({
     data: {
       data: [
         { id: 'ev-1', action: 'user.login', createdAt: '2026-10-01T10:00:00.000Z', user: { firstName: 'سالم', lastName: 'الفيتوري', email: 'salim@zu.edu.ly' }, resourceType: 'User', resourceId: 'u-1', metadata: null },
-        { id: 'ev-2', action: 'sync.run', createdAt: '2026-10-01T11:00:00.000Z', user: null, resourceType: null, resourceId: null, metadata: null },
+        { id: 'ev-2', action: 'institution.update', createdAt: '2026-10-01T11:00:00.000Z', user: null, resourceType: null, resourceId: null, metadata: null },
       ],
       meta: { total: 75, page: 1, limit: 50, totalPages: 2 },
     },

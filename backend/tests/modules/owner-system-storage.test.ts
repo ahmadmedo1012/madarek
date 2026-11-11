@@ -12,7 +12,7 @@
  *   - local driver: the block keeps its EXACT pre-r167 two-field shape
  *     and the probe helper is never even called (short-circuit).
  *   - s3 + probe answered true/false: reachable + checkedAt ride along;
- *     the payload's sibling keys (sync/alerts/activity) stay put.
+ *     the payload's sibling keys (alerts/activity) stay put.
  *   - s3 + no answer yet: BOTH fields omitted (honest unknown).
  *   - never-throws: a rejecting helper still answers 200 without the
  *     fields (the route's belt beyond the cache's own guarantee).
@@ -31,7 +31,6 @@ import { Role } from '@prisma/client';
 vi.mock('../../src/db.js', () => ({
   prisma: {
     operationalAlert: { findMany: vi.fn(), count: vi.fn() },
-    syncRun: { findMany: vi.fn() },
     auditLog: { count: vi.fn() },
     $transaction: vi.fn(),
   },
@@ -72,7 +71,6 @@ afterAll(async () => {
 
 // ── Mocked delegates + helpers ─────────────────────────────────────
 
-const syncRunFindMany = vi.mocked(prisma.syncRun.findMany);
 const alertFindMany = vi.mocked(prisma.operationalAlert.findMany);
 const alertCount = vi.mocked(prisma.operationalAlert.count);
 const auditLogCount = vi.mocked(prisma.auditLog.count);
@@ -80,7 +78,7 @@ const getReachability = reachabilityMock.getStorageReachability;
 
 /** Prisma delegates return PrismaPromise — one cast, the
  *  owner-alerts-counts test pattern. */
-type FindManyImpl = NonNullable<Parameters<typeof syncRunFindMany.mockImplementation>[0]>;
+type FindManyImpl = NonNullable<Parameters<typeof alertFindMany.mockImplementation>[0]>;
 
 const OWNER_ID = 'owner-1';
 const bearer = (userId: string, role: Role) => ({
@@ -92,7 +90,6 @@ const getOwnerSystem = () =>
 
 beforeEach(() => {
   vi.clearAllMocks();
-  syncRunFindMany.mockResolvedValue([] as never);
   alertFindMany.mockResolvedValue([] as never);
   alertCount.mockResolvedValue(0 as never);
   auditLogCount.mockResolvedValue(0 as never);
@@ -139,7 +136,6 @@ describe('GET /api/v1/owner/system — storage block, s3 driver (r167 reachabili
     const { data } = (await res.json()) as {
       data: {
         storage: Record<string, unknown>;
-        sync: unknown;
         alerts: unknown;
         activity: unknown;
       };
@@ -152,7 +148,8 @@ describe('GET /api/v1/owner/system — storage block, s3 driver (r167 reachabili
       checkedAt: '2026-01-05T00:00:00.000Z',
     });
     // Additive ONLY: the payload's pre-existing blocks ride along.
-    expect(data.sync).toEqual({ lastRunAt: null, recent: [] });
+    // (R349 U2: the sync block is retired with the university-facts
+    // pipeline — alerts/activity are the surviving siblings.)
     expect(data.alerts).toEqual({ open: [], openCount: 0, criticalCount: 0 });
     expect(data.activity).toEqual({ recentEventsLast7Days: 0 });
   });
@@ -187,7 +184,7 @@ describe('GET /api/v1/owner/system — storage block, s3 driver (r167 reachabili
   it('the probe promise is consulted once per request and awaited AFTER the DB queries resolve (overlap, not membership)', async () => {
     env.STORAGE_DRIVER = 's3';
     getReachability.mockResolvedValue({ reachable: true, checkedAt: '2026-01-05T00:00:00.000Z' });
-    syncRunFindMany.mockImplementation((async () => {
+    alertFindMany.mockImplementation((async () => {
       // The DB Promise.all is in flight — the probe must already have
       // been STARTED (kicked before Promise.all, not inside it).
       expect(getReachability).toHaveBeenCalledTimes(1);

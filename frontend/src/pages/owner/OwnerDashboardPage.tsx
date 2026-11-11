@@ -55,7 +55,6 @@ const ACTION_LABEL: Record<string, string> = {
   'paper.published': 'نشر بحث',
   'announcement.created': 'بثّ إعلان',
   'competition.created': 'إنشاء مسابقة',
-  'sync.run': 'مزامنة بيانات الجامعة',
   // Real backend audit actions (owner/permissions/teacher routes) —
   // without these the feed shows raw English enums.
   ROLE_CHANGE: 'تغيير صلاحيات مستخدم',

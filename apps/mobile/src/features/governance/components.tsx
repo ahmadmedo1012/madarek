@@ -449,7 +449,6 @@ export const ALERT_CATEGORY_LABEL: Record<string, string> = {
   api: "واجهة البرمجة",
   app: "التطبيق",
   http: "الخادم",
-  sync: "المزامنة",
   attendance: "الحضور",
   plagiarism: "الاقتباس",
   content: "المحتوى",
@@ -536,7 +535,6 @@ export const AUDIT_ACTION_LABEL: Record<string, string> = {
   "paper.published": "نشر بحث",
   "announcement.created": "بثّ إعلان",
   "competition.created": "إنشاء مسابقة",
-  "sync.run": "تشغيل المزامنة",
   "institution.create": "إنشاء مؤسسة",
   "institution.update": "تحديث مؤسسة",
   "institution.admin.provision": "تعيين مسجل عام",
@@ -620,40 +618,6 @@ export function loginReasonLabel(reason?: string | null): string {
   if (!reason) return "—";
   return LOGIN_REASON_LABEL[reason] ?? "سبب آخر";
 }
-
-/** Sync run statuses (AdminSyncPage parity). */
-export const SYNC_STATUS_LABEL: Record<string, string> = {
-  RUNNING: "قيد التنفيذ",
-  SUCCESS: "ناجحة",
-  PARTIAL: "جزئية",
-  FAILED: "فاشلة",
-};
-/** Semantic tone per sync status (ok/warn/error → mint/yellow/rose). */
-export const SYNC_STATUS_TONE: Record<string, StatusToneName> = {
-  RUNNING: "yellow",
-  SUCCESS: "mint",
-  PARTIAL: "yellow",
-  FAILED: "rose",
-};
-/** The one sync-status renderer — unknown enums render «غير معروفة»,
- *  never the raw `SYNC_*`-style code (R334 audit P0 strings fix). */
-export function syncStatusLabel(status?: string | null): string {
-  if (!status) return "—";
-  return SYNC_STATUS_LABEL[status] ?? "غير معروفة";
-}
-export function SyncStatusChip({ status }: { status?: string | null }) {
-  return <Badge label={syncStatusLabel(status)} tone={SYNC_STATUS_TONE[status ?? ""] ?? "grey"} />;
-}
-export const SYNC_CATEGORY_LABEL: Record<string, string> = {
-  identity: "هوية الجامعة",
-  contact: "بيانات التواصل",
-  strategic: "الخطة الاستراتيجية",
-  grading: "نظام التقييم",
-  programs: "الدراسة والشهادات",
-  memberships: "العضويات",
-  colleges: "الكلّيّات",
-  general: "عام",
-};
 
 /** Institution statuses. */
 export const INST_STATUS_LABEL: Record<string, string> = {
@@ -1210,7 +1174,6 @@ export interface EducationRow {
 }
 export interface SystemRow {
   storage?: { driver?: string; persistent?: boolean; reachable?: boolean; checkedAt?: string | null } | null;
-  sync?: { lastRunAt?: string | null; recent?: { id?: string; at?: string; action?: string; actor?: string; metadata?: unknown }[] } | null;
   alerts?: {
     openCount?: number;
     criticalCount?: number;

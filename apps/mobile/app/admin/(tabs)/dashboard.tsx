@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import BookOpen from "lucide-react-native/icons/book-open";
 import FileText from "lucide-react-native/icons/file-text";
 import Inbox from "lucide-react-native/icons/inbox";
-import RefreshCw from "lucide-react-native/icons/refresh-cw";
 import ShieldCheck from "lucide-react-native/icons/shield-check";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
@@ -153,7 +152,6 @@ export default function AdminDashboard() {
             {(
               [
                 [BookOpen, "إدارة المقرّرات", "المقرّرات والشُّعب مع البحث والإضافة", "/admin/courses"],
-                [RefreshCw, "المزامنة مع البيانات الرسمية", "آخر التشغيلات والحقول القديمة", "/admin/sync"],
                 [ShieldCheck, "التحوّل الرقميّ", "مؤشّرات تبنّي المنصّة الرقميّة", "/admin/digital"],
                 [Inbox, "دعوات التسجيل", "أكواد الانضمام للطلاب والأساتذة", "/admin/invites"],
                 [FileText, "صندوق التغذية الراجعة", "تقارير المستخدمين وسياقها الكامل", "/admin/feedback"],

@@ -13,16 +13,12 @@
  *  - the pure Education-page aggregation folds (attendance trend,
  *    teacher workload, byFaculty name-aggregation — 4-A7 P1-3)
  *    extracted so the SQL-backed routes stay thin;
- *  - the pure System-page sync-feed mapping (SyncRun row → feed
- *    entry — the feed reads the REAL SyncRun table since audit 15-a
- *    P1-5, so the mapping is pinned like every other fold);
  *  - the pure System-page storage fold (r164-l): env STORAGE_DRIVER →
  *    { driver, persistent } — additive payload field + source-scan
  *    wiring pin. r167 extends the fold with an optional reachability
  *    argument (s3-only additive fields) and re-pins the wiring.
  */
 import { readFileSync } from 'node:fs';
-import { SyncRunStatus } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 import {
   bucketTeacherWorkload,
@@ -30,9 +26,7 @@ import {
   buildByFaculty,
   changeRoleSchema,
   settingKeySchema,
-  syncRunAction,
   toStorageStatus,
-  toSyncFeedEntry,
   toggleFlagSchema,
   toggleStatusSchema,
   upsertSettingSchema,
@@ -314,37 +308,6 @@ describe('buildByFaculty (Education page, byFaculty fold)', () => {
   });
 });
 
-// ── System-page sync feed (pure SyncRun mapping — audit 15-a P1-5) ─
-
-describe('syncRunAction (SyncRun status → feed action vocabulary)', () => {
-  it('maps every SyncRunStatus onto an action the System page label map knows', () => {
-    // The FE label map (OwnerSystemPage SYNC_ACTION_LABEL) knows
-    // exactly 'sync.run' / 'sync.partial' / 'sync.failed' — no status
-    // may leak a raw enum string into the Arabic UI.
-    expect([...new Set(Object.values(SyncRunStatus).map(syncRunAction))].sort()).toEqual([
-      'sync.failed',
-      'sync.partial',
-      'sync.run',
-    ]);
-  });
-
-  it("SUCCESS → sync.run (every run is a full sync — runSync has no partial semantics)", () => {
-    expect(syncRunAction(SyncRunStatus.SUCCESS)).toBe('sync.run');
-  });
-
-  it('FAILED → sync.failed (the FE badge turns red on .includes("failed"))', () => {
-    expect(syncRunAction(SyncRunStatus.FAILED)).toBe('sync.failed');
-  });
-
-  it('PARTIAL → sync.partial (reserved enum value runSync never writes today)', () => {
-    expect(syncRunAction(SyncRunStatus.PARTIAL)).toBe('sync.partial');
-  });
-
-  it('RUNNING → sync.partial — an in-flight run renders as not-complete, never as success', () => {
-    expect(syncRunAction(SyncRunStatus.RUNNING)).toBe('sync.partial');
-  });
-});
-
 // ── System-page storage status (r164-l — additive payload field) ──
 
 describe('toStorageStatus (System page storage fold, r164-l + r167 reachability + r175 postgres)', () => {
@@ -394,9 +357,11 @@ describe('toStorageStatus (System page storage fold, r164-l + r167 reachability 
   });
 
   it('wiring: the field is additive — the payload keeps its existing keys (source-scan pin)', () => {
-    // sync / alerts / activity must stay exactly where the System page
-    // reads them; `storage` rides alongside, never replaces.
-    expect(ownerRouteSource).toMatch(/data:\s*\{\s*\/\/ r164-l[\s\S]*?storage: toStorageStatus\(env\.STORAGE_DRIVER, await storageReachability\),\s*sync:\s*\{[\s\S]*?alerts:\s*\{[\s\S]*?activity:\s*\{/);
+    // alerts / activity must stay exactly where the System page reads
+    // them; `storage` rides alongside, never replaces. (R349 U2: the sync
+    // block is retired with the university-facts pipeline — the pin now
+    // guards the two surviving siblings.)
+    expect(ownerRouteSource).toMatch(/data:\s*\{\s*\/\/ r164-l[\s\S]*?storage: toStorageStatus\(env\.STORAGE_DRIVER, await storageReachability\),\s*alerts:\s*\{[\s\S]*?activity:\s*\{/);
   });
 
   it('wiring: the route awaits the memoized reachability promise kicked off BEFORE the DB Promise.all (source-scan pin)', () => {
@@ -446,67 +411,5 @@ describe('toStorageStatus — the r167 reachability fold', () => {
     expect(toStorageStatus('local', { reachable: true, checkedAt: '2026-01-05T00:00:00.000Z' })).toEqual(
       { driver: 'local', persistent: false },
     );
-  });
-});
-
-describe('toSyncFeedEntry (SyncRun row → System-page feed entry)', () => {
-  const run = {
-    id: 'run-1',
-    startedAt: new Date('2026-06-15T08:00:00Z'),
-    completedAt: new Date('2026-06-15T08:00:03Z'),
-    status: SyncRunStatus.SUCCESS,
-    source: 'static-markdown',
-    factsAdded: 12,
-    factsUpdated: 3,
-    durationMs: 3_140,
-    errorMsg: null,
-    notes: 'Synced 15 fact(s) from static-markdown.',
-  };
-
-  it('keeps the feed shape the System page consumes (id / action / at / actor / metadata)', () => {
-    const entry = toSyncFeedEntry(run);
-
-    expect(entry.id).toBe('run-1');
-    expect(entry.action).toBe('sync.run');
-    expect(entry.at).toBe(run.startedAt);
-    // SyncRun carries no user attribution — every run is
-    // system-initiated (scheduler tick or guarded manual trigger).
-    expect(entry.actor).toBe('النظام');
-  });
-
-  it('carries the run outcome detail in metadata for diagnosis', () => {
-    expect(toSyncFeedEntry(run).metadata).toEqual({
-      status: SyncRunStatus.SUCCESS,
-      source: 'static-markdown',
-      factsAdded: 12,
-      factsUpdated: 3,
-      durationMs: 3_140,
-      completedAt: run.completedAt,
-      errorMsg: null,
-      notes: 'Synced 15 fact(s) from static-markdown.',
-    });
-  });
-
-  it('preserves the failure detail of a FAILED run', () => {
-    const entry = toSyncFeedEntry({
-      ...run,
-      id: 'run-2',
-      status: SyncRunStatus.FAILED,
-      factsAdded: 0,
-      factsUpdated: 0,
-      errorMsg: 'Error: connection reset',
-      notes: null,
-    });
-
-    expect(entry.action).toBe('sync.failed');
-    expect(entry.metadata.errorMsg).toBe('Error: connection reset');
-  });
-
-  it("anchors the timeline on the run START (matching the admin sync view’s startedAt ordering)", () => {
-    const entry = toSyncFeedEntry({ ...run, status: SyncRunStatus.RUNNING, completedAt: null });
-
-    expect(entry.at).toBe(run.startedAt);
-    expect(entry.action).toBe('sync.partial');
-    expect(entry.metadata.completedAt).toBeNull();
   });
 });

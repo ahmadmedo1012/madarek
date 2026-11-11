@@ -426,9 +426,10 @@ jobs:
     steps:
       - name: Checkout the Maestro flows
         uses: actions/checkout@v4
-        sparse-checkout: apps/mobile/.maestro
-        sparse-checkout-cone-mode: false
-        persist-credentials: false
+        with:
+          sparse-checkout: apps/mobile/.maestro
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
 
       - name: Download the APK candidate
         uses: actions/download-artifact@v4
@@ -443,7 +444,7 @@ jobs:
           echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
 
       - name: Run the alive-flow on the emulator
-        uses: reactivecircus/android-emulator-runner@v9
+        uses: reactivecircus/android-emulator-runner@v2
         env:
           API_LEVEL: '34'
         with:
@@ -681,9 +682,10 @@ jobs:
 
   publish:
     name: Publish rolling Android release
-    needs: verify
+    needs: [verify, smoke]
     if: >-
       needs.verify.result == 'success' &&
+      needs.smoke.result == 'success' &&
       github.ref == 'refs/heads/main' &&
       (github.event_name == 'push' || github.event.inputs.ref == 'main' || github.event.inputs.ref == '')
     runs-on: ubuntu-24.04

@@ -5,7 +5,7 @@
  * The rule (docs/mobile/screens/governance.md): a KNOWN enum renders its
  * web-parity Arabic label; an UNKNOWN enum renders the honest Arabic
  * fallback («غير معروف» or a scoped sibling) — NEVER the raw internal
- * code (SYNC_*, INST_STATUS, English severity words, provider codes…).
+ * code (INST_STATUS, English severity words, provider codes…).
  *
  * Pure-function tests for every label helper added/migrated in Round 2
  * plus render smoke for the shared chips (one Badge vocabulary) and the
@@ -23,12 +23,10 @@ import {
   LOGIN_REASON_LABEL,
   PAPER_STATUS_LABEL,
   SEVERITY_LABEL,
-  SYNC_STATUS_LABEL,
   UNKNOWN_LABEL,
   InstitutionStatusChip,
   PaperStatusChip,
   SeverityChip,
-  SyncStatusChip,
   UserAvatar,
   alertCategoryLabel,
   auditActionLabel,
@@ -41,22 +39,9 @@ import {
   questionTypeLabel,
   resourceLabel,
   settingCategoryLabel,
-  syncStatusLabel,
 } from "./components";
 
 describe("R334 governance kit — label maps cover the backend enums", () => {
-  it("sync statuses: every SYNC_STATUS_LABEL key stays Arabic-labelled", () => {
-    for (const [code, label] of Object.entries(SYNC_STATUS_LABEL)) {
-      expect(syncStatusLabel(code)).toBe(label);
-      expect(label).toMatch(/[\u0600-\u06FF]/);
-    }
-    // Unknown codes never render raw (the original leak: `SYNC_QUEUED`).
-    expect(syncStatusLabel("SYNC_QUEUED")).toBe("غير معروفة");
-    expect(syncStatusLabel("RUNNING_2")).toBe("غير معروفة");
-    expect(syncStatusLabel(null)).toBe("—");
-    expect(syncStatusLabel(undefined)).toBe("—");
-  });
-
   it("login reasons: known codes map, unknown read «سبب آخر», null is a dash", () => {
     expect(loginReasonLabel("INVALID_CREDENTIALS")).toBe("بيانات دخول غير صحيحة");
     expect(loginReasonLabel("TOTALLY_NEW_CODE")).toBe("سبب آخر");
@@ -121,15 +106,6 @@ describe("R334 governance kit — label maps cover the backend enums", () => {
 });
 
 describe("R334 governance kit — shared chips render the Arabic label", () => {
-  it("SyncStatusChip: known + unknown statuses (no raw codes in the tree)", async () => {
-    const ok = await render(<SyncStatusChip status="SUCCESS" />);
-    expect(ok.getByText("ناجحة")).toBeTruthy();
-    const weird = await render(<SyncStatusChip status="SYNC_WEIRD" />);
-    expect(weird.getByText("غير معروفة")).toBeTruthy();
-    const none = await render(<SyncStatusChip status={null} />);
-    expect(none.getByText("—")).toBeTruthy();
-  });
-
   it("SeverityChip + PaperStatusChip + InstitutionStatusChip: one vocabulary", async () => {
     const crit = await render(<SeverityChip severity="critical" />);
     expect(crit.getByText("حرج")).toBeTruthy();
