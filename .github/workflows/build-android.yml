@@ -413,6 +413,87 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+  smoke:
+    # R349 M1.4 — the crash-regression smoke on Android parity: install the
+    # freshly built APK on an API-34 emulator, run the Maestro alive-flow
+    # (login -> dashboard count-ups -> 60s alive — the exact surface that
+    # SIGABRT'd on iOS), then scan the crash buffer for native fatals.
+    name: Emulator smoke (API 34, Maestro alive-flow)
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout the Maestro flows
+        uses: actions/checkout@v4
+        sparse-checkout: apps/mobile/.maestro
+        sparse-checkout-cone-mode: false
+        persist-credentials: false
+
+      - name: Download the APK candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release-candidate
+          path: candidate
+
+      - name: Install Maestro
+        run: |
+          set -euo pipefail
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Run the alive-flow on the emulator
+        uses: reactivecircus/android-emulator-runner@v9
+        env:
+          API_LEVEL: '34'
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: |
+            set -euo pipefail
+            adb wait-for-device
+            echo "Waiting for boot completion..."
+            for i in $(seq 1 120); do
+              BOOTED=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)
+              [ "$BOOTED" = "1" ] && break
+              sleep 5
+            done
+            [ "$BOOTED" = "1" ] || { echo "::error::Emulator did not boot"; exit 1; }
+
+            echo "== Installing the APK =="
+            adb install -r candidate/Madarek.apk
+
+            echo "== Maestro alive-flow (login -> dashboard -> 60s alive) =="
+            cd apps/mobile
+            maestro test .maestro/smoke-alive.yaml --format junit --output build/maestro-junit.xml || MAESTRO_RC=$?
+            if [ "${MAESTRO_RC:-0}" != "0" ]; then
+              echo "::error::Maestro alive-flow FAILED — the app did not stay alive/interactive"
+              adb logcat -d -b crash || true
+              exit 1
+            fi
+
+            echo "== Crash-buffer scan (fatal for ly.madarek.mobile) =="
+            CRASHES=$(adb logcat -d -b crash 2>/dev/null | grep -c "ly.madarek.mobile" || true)
+            if [ "$CRASHES" != "0" ]; then
+              echo "::error::$CRASHES crash-buffer line(s) for ly.madarek.mobile"
+              adb logcat -d -b crash || true
+              exit 1
+            fi
+            echo "Alive-flow green: no crashes, 60s window held."
+
+      - name: Upload Maestro diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-smoke-diagnostics-${{ github.run_number }}
+          path: |
+            apps/mobile/build/maestro-junit.xml
+          if-no-files-found: ignore
+          retention-days: 14
+
   verify:
     name: Verify APK/AAB independently (Linux)
     needs: build

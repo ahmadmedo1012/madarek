@@ -346,6 +346,92 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      # ── R349 M1.2 — the simulator smoke (the crash-regression net) ──
+      # Build the SAME Release code for the simulator (reusing the prebuilt
+      # workspace + pods), boot a simulator, install the app, and run the
+      # Maestro alive-flow: login -> dashboard count-ups (the EXACT surface
+      # that SIGABRT'd ~15s after login on the owner's iPhone) -> assert
+      # the process stays alive + interactive for a full 60s. Then scan for
+      # crash reports — any .ips for ly.madarek.mobile fails the pipeline.
+      - name: Build Release for the iOS Simulator
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          xcodebuild \
+            -workspace "${{ steps.xcode.outputs.workspace }}" \
+            -scheme "${{ steps.xcode.outputs.scheme }}" \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$PWD/build/DerivedDataSim" \
+            -quiet \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            build 2>&1 | tee build/xcodebuild-sim.log
+          test -d build/DerivedDataSim/Build/Products/Release-iphonesimulator
+
+      - name: Boot a simulator and run the Maestro alive-flow
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+
+          # Pick the first available iPhone simulator (never watch/tv).
+          DEVICE=$(xcrun simctl list devices available | grep -oE "iPhone [^(]*" | head -1 | xargs)
+          [ -n "$DEVICE" ] || { echo "::error::No iPhone simulator available"; exit 1; }
+          echo "Simulator: $DEVICE"
+          UDID=$(xcrun simctl list devices available | grep "$DEVICE" | head -1 | grep -oE '[0-9A-F-]{36}' | head -1)
+          [ -n "$UDID" ] || { echo "::error::Could not resolve simulator UDID"; exit 1; }
+
+          # Mark the crash-report dir so we only flag NEW reports.
+          CRASH_DIR="$HOME/Library/Logs/DiagnosticReports"
+          mkdir -p "$CRASH_DIR"
+          MARKER="$CRASH_DIR/.smoke-marker"
+          touch "$MARKER"
+
+          xcrun simctl boot "$UDID" 2>/dev/null || true
+          xcrun simctl bootstatus "$UDID" -b
+
+          APP_SIM=""
+          for d in build/DerivedDataSim/Build/Products/Release-iphonesimulator/*.app; do
+            if [ -d "$d" ]; then APP_SIM="$d"; break; fi
+          done
+          [ -n "$APP_SIM" ] || { echo "::error::No simulator .app bundle"; exit 1; }
+          xcrun simctl install "$UDID" "$APP_SIM"
+
+          # Maestro drives the booted simulator by the flow's appId.
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          export PATH="$HOME/.maestro/bin:$PATH"
+          maestro --version
+
+          if maestro test .maestro/smoke-alive.yaml --format junit --output build/maestro-junit.xml; then
+            echo "alive-flow: PASS"
+          else
+            echo "::error::Maestro alive-flow FAILED — the app did not stay alive/interactive"
+            xcrun simctl spawn "$UDID" log show --last 5m --style compact 2>/dev/null | tail -200 || true
+            exit 1
+          fi
+
+          echo "== Crash-report scan (ly.madarek.mobile .ips since the marker) =="
+          NEW_IPS=$(find "$CRASH_DIR" -name "*.ips" -newer "$MARKER" 2>/dev/null | grep -i "madarek" | wc -l | tr -d ' ')
+          if [ "$NEW_IPS" != "0" ]; then
+            echo "::error::$NEW_IPS new crash report(s) for the app during the smoke"
+            find "$CRASH_DIR" -name "*.ips" -newer "$MARKER" 2>/dev/null || true
+            exit 1
+          fi
+          echo "Smoke green: 60s alive window held, zero crash reports."
+
+      - name: Upload smoke diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-smoke-diagnostics-${{ github.run_number }}
+          path: |
+            apps/mobile/build/xcodebuild-sim.log
+            apps/mobile/build/maestro-junit.xml
+            ~/Library/Logs/DiagnosticReports/*.ips
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Upload build logs on failure
         if: failure()
         uses: actions/upload-artifact@v4

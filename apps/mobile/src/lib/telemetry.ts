@@ -99,12 +99,41 @@ export async function reportClientError(report: {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 8000);
     try {
-      await fetch(`${API_BASE}/client-errors`, {
+      const res = await fetch(`${API_BASE}/client-errors`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
         signal: ctrl.signal,
       });
+      // R349 M1.5 — a non-OK answer means the report did NOT land;
+      // queue it for the next launch's drain (crashPersist owns the
+      // queue; dynamic import avoids the telemetry↔crashPersist cycle).
+      if (!res.ok) {
+        const { enqueuePendingReport } = await import("./crashPersist");
+        void enqueuePendingReport({
+          kind: report.kind,
+          message: report.message,
+          stack: report.stack,
+          route: report.route,
+          queuedAt: new Date().toISOString(),
+        });
+      }
+    } catch {
+      // Network failure / death race — same queue (best effort; a
+      // hard SIGABRT still outruns every JS write — the sentinel in
+      // crashPersist is the net that catches those).
+      try {
+        const { enqueuePendingReport } = await import("./crashPersist");
+        void enqueuePendingReport({
+          kind: report.kind,
+          message: report.message,
+          stack: report.stack,
+          route: report.route,
+          queuedAt: new Date().toISOString(),
+        });
+      } catch {
+        /* never */
+      }
     } finally {
       clearTimeout(timer);
     }
@@ -123,6 +152,9 @@ export function setTelemetryContext(ctx: { role?: string; route?: string }): voi
   if (ctx.route !== undefined) {
     currentRoute = ctx.route;
     crumb(`nav ${ctx.route}`);
+    // R349 M1.5 — keep the unclean-exit sentinel's route fresh so a
+    // synthesized crash report names where the session died.
+    void import("./crashPersist").then((m) => m.touchSentinelRoute()).catch(() => undefined);
   }
 }
 

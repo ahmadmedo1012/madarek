@@ -1,0 +1,41 @@
+# R349 M1.2 — the crash-regression smoke (iOS simulator + Android emulator).
+# login → dashboard (the KPI count-ups — the EXACT surface that SIGABRT'd
+# ~15s after login on device) → assert the app is STILL alive and
+# interactive 60 seconds later. If the process aborts, the final
+# assertions fail (the app is gone) AND the runner's post-flow crash
+# scan finds the .ips/logcat fatals.
+# API: the production base URL baked in the Release build — the honest
+# end-to-end (the same API the owner's device talks to).
+appId: ly.madarek.mobile
+name: "00 — smoke: دخول، لوحة، البقاء حيًّا 60 ثانية"
+---
+- launchApp
+- tapOn: "تسجيل الدخول"
+- extendedWaitUntil:
+    visible:
+      id: "login-email"
+    timeout: 30000
+- tapOn:
+    id: "login-email"
+- inputText: "student@test.ly"
+- tapOn:
+    id: "login-password"
+- inputText: "12345678"
+- hideKeyboard
+- tapOn: "دخول"
+# the tab bar appearing = login completed (Render may be waking: 120s)
+- extendedWaitUntil:
+    visible: "مقرراتي"
+    timeout: 120000
+# ——— the 60-second alive window ———
+# The crash window was ~15s after login; the dashboard count-ups run in
+# the first seconds. Staying visible AND interactive for a full minute
+# on this screen is the regression assertion.
+- extendedWaitUntil:
+    visible: "مقرراتي"
+    timeout: 60000
+- assertVisible: "مقرراتي"
+- tapOn: "مقرراتي"
+- extendedWaitUntil:
+    visible: "مقرراتي"
+    timeout: 30000

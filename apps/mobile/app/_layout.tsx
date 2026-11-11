@@ -46,6 +46,11 @@ import { ToastHost } from "@/components/ui/toast";
 import { useSession } from "@/auth/session";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { installGlobalErrorHandlers, crumb } from "@/lib/telemetry";
+// R349 M1.5 — the previous-session crash, persisted + surfaced after
+// relaunch (unclean-exit sentinel + the pending-report drain + the
+// user-facing toast). Fire-and-forget at module scope, after the
+// global handlers exist.
+import { initCrashPersistence } from "@/lib/crashPersist";
 import { ensureRTL } from "@/lib/rtl";
 import { BlockingUpdateGate, useAppUpdates, useVersionGate } from "@/lib/updates";
 import { PushRegistrar } from "@/lib/push";
@@ -69,6 +74,9 @@ void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 // R326 M1.1: global JS-exception + unhandled-rejection capture → /client-errors.
 installGlobalErrorHandlers();
+
+// R349 M1.5: previous-crash collection + sentinel arming (async, never blocks boot).
+void initCrashPersistence();
 
 /**
  * R334 B8 — one-time query-cache restore + session save subscription.
