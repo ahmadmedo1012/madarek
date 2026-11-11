@@ -89,6 +89,16 @@ for g in "node scripts/tokens/build.mjs --check" "bash scripts/check-icons.sh" \
   if $g > /tmp/verify-gate.log 2>&1; then ok "$g"; else fail "$g"; tail -6 /tmp/verify-gate.log; fi
 done
 
+# 4.5 worklet audit (R349 M1.3c — the UI-runtime law, AST-enforced; needs
+#     root node_modules/typescript; full mode only — mobile's own jest
+#     covers behaviour, this covers the crash class statically)
+step "worklet audit (UI-runtime closures)"
+if node scripts/qa/worklet-audit.mjs > /tmp/verify-worklet.log 2>&1; then
+  ok "worklet $(grep -oE 'LAWFUL.*' /tmp/verify-worklet.log | head -1)"
+else
+  fail "worklet audit"; head -30 /tmp/verify-worklet.log
+fi
+
 # 5. lint
 step "eslint (src trees)"
 if npm run lint > /tmp/verify-lint.log 2>&1; then ok "lint"; else fail "lint"; tail -8 /tmp/verify-lint.log; fi

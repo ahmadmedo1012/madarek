@@ -1,14 +1,39 @@
 /**
  * R334 2-a — CountUp: the animated number (KPI counters, XP, scores).
+ * R349 M1.3 — the worklet-law hardening (the iOS crash class, fixed).
  *
- * Platform split (the robust RN + web approach):
- *   · native — the UI-thread TextInput trick: the shared progress drives a
- *     derived string, pushed to the `text` prop of an uncontrolled
- *     Animated TextInput via useAnimatedProps. Zero JS-thread frames.
- *   · web — react-native-web's TextInput has no `text` native prop, so the
- *     same derived value mirrors through state via useAnimatedReaction +
- *     runOnJS (reanimated on web drives updates from the same frame loop,
- *     so the fidelity is identical — there is no separate UI thread there).
+ * THE LAW (react-native-worklets 0.13): a closure that executes on the
+ * UI runtime may NEVER CALL a captured plain-JS function — the call
+ * throws on the UI runtime, the exception surfaces inside an
+ * animation-frame batchinator with no JS handler, and the process
+ * aborts (the owner's iPhone .ips: SIGABRT ~15s after login, exactly
+ * when the dashboard KPIs start counting — `formatter` was exactly such
+ * a captured plain function).
+ *
+ * Three faces, chosen per formatter at render time by RUNTIME TRUTH
+ * (`isWorkletFunction` — worklet-transformed functions carry
+ * `__workletHash`; a wrong guess here is the crash, so the component
+ * checks, it does not trust the caller's promise):
+ *
+ *   · WORKLET formatter (a module-level function carrying the
+ *     `'worklet'` directive — e.g. the default face and `pctFace`) on
+ *     native → the FAST PATH: the derived string is computed on the UI
+ *     thread and pushed to the `text` prop of an uncontrolled Animated
+ *     TextInput via useAnimatedProps. Zero JS-thread frames.
+ *
+ *   · JS formatter on native — hook-bound closures such as
+ *     `useNumerals().formatNumber` can NEVER be worklets (they close
+ *     over React state) → the MIRROR PATH: the progress shared value
+ *     rides useAnimatedReaction → `scheduleOnRN` (worklets 0.13's
+ *     `runOnJS` successor) back to JS state; a plain TextInput renders
+ *     it. A few JS ticks for the ~650ms count — the honest price of
+ *     arbitrary formatters, and the branch that makes the component
+ *     safe for EVERY caller without demanding worklet discipline.
+ *
+ *   · web — always the mirror path (react-native-web's TextInput has
+ *     no `text` native prop; reanimated on web drives updates from the
+ *     same frame loop, so fidelity is identical — no separate UI
+ *     thread there).
  *
  * Reduced motion → instant: a plain Text at the final value, no hooks
  * churn, no animation. `formatter` shapes the output — Latin digits by
@@ -25,13 +50,13 @@ import {
 } from "react-native";
 import type { ComponentType } from "react";
 import Animated, {
-  runOnJS,
   useAnimatedProps,
   useAnimatedReaction,
   useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { isWorkletFunction, scheduleOnRN } from "react-native-worklets";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
 import { durations, easings } from "./presets";
 
@@ -47,8 +72,12 @@ const AnimatedTextInput = Animated.createAnimatedComponent(
   TextInput as unknown as ComponentType<AnimatedTextInputProps>,
 );
 
-/** Latin digits, rounded — the default face. */
-const defaultFormatter = (n: number): string => String(Math.round(n));
+/** Latin digits, rounded — the default face. A WORKLET: the UI-thread
+ * derivation below calls it, so it must carry the directive (M1.3). */
+const defaultFormatter = (n: number): string => {
+  "worklet";
+  return String(Math.round(n));
+};
 
 /**
  * Input-neutralizing defaults — a bare TextInput carries intrinsic
@@ -70,7 +99,12 @@ export interface CountUpProps {
   /** animation duration in ms (default 650 — durations.countUp). */
   duration?: number;
   /** shape the output: `String(Math.round(n))` by default; pass an
-   *  Arabic-Indic numeral formatter for عربية output. */
+   *  Arabic-Indic numeral formatter for عربية output.
+   *
+   *  M1.3 contract: a formatter carrying the `'worklet'` directive rides
+   *  the zero-JS-frames UI-thread fast path on native; any other function
+   *  (e.g. a hook-bound closure) is executed on the JS thread via the
+   *  mirror path — never on the UI runtime. Both render identically. */
   formatter?: (n: number) => string;
   style?: StyleProp<TextStyle>;
   /** announced to screen readers — defaults to the FINAL formatted value,
@@ -98,22 +132,43 @@ export function CountUp({
     }
   }, [value, duration, reduced, progress]);
 
-  const text = useDerivedValue(() => formatter(progress.value));
+  // M1.3 — the fast path is chosen by runtime truth, not convention.
+  const formatterIsWorklet = isWorkletFunction(formatter);
 
-  // web mirror — native never enters this path (prepare returns null there)
-  const shouldMirror = Platform.OS === "web";
+  // The UI-thread derived string. Its closure may only call a
+  // PROVEN-worklet function: when the caller's formatter is plain JS
+  // (hook-bound), the derived face falls back to the worklet default —
+  // its output is unused on the mirror path, and the closure stays
+  // lawful no matter what the caller passed.
+  const derivedFace = formatterIsWorklet ? formatter : defaultFormatter;
+  const text = useDerivedValue(() => derivedFace(progress.value));
+
+  // The mirror path — web always; native when the formatter is a JS
+  // function that can never execute on the UI runtime.
+  const needsMirror = Platform.OS === "web" || !formatterIsWorklet;
   const [mirror, setMirror] = useState(() => formatter(0));
+
+  // A stable JS callback scheduled from the UI reaction — the successor
+  // of the deprecated `runOnJS(setMirror)(next)` shape (worklets 0.13).
+  const onMirrorTick = (n: number): void => {
+    setMirror((prev) => {
+      const next = formatter(n);
+      return next === prev ? prev : next;
+    });
+  };
+
   useAnimatedReaction(
-    () => (shouldMirror ? text.value : null),
-    (next, prev) => {
-      if (next != null && next !== prev) {
-        runOnJS(setMirror)(next);
+    () => (needsMirror ? progress.value : Number.NaN),
+    (next) => {
+      if (!Number.isNaN(next)) {
+        scheduleOnRN(onMirrorTick, next);
       }
     },
   );
 
-  // native — UI-thread text updates through the animated `text` prop.
-  // (Declared unconditionally — the render branches below may early-return.)
+  // native fast path — UI-thread text updates through the animated
+  // `text` prop. (Declared unconditionally — the render branches below
+  // may early-return.)
   const animatedProps = useAnimatedProps<AnimatedTextInputProps>(() => ({
     text: text.value,
   }));
@@ -129,7 +184,7 @@ export function CountUp({
     );
   }
 
-  if (shouldMirror) {
+  if (needsMirror) {
     return (
       <TextInput
         testID={testID}

@@ -80,12 +80,19 @@ export type NumeralsPreference = "latin" | "arabic-indic";
 
 const ARABIC_INDIC_DIGITS = "٠١٢٣٤٥٦٧٨٩";
 
-/** ٠١٢٣٤٥٦٧٨٩ → 0123 (digit-script normalization; no-op for numbers). */
-const toLatinDigits = (s: string): string =>
-  s.replace(/[٠-٩]/g, (d) => String(ARABIC_INDIC_DIGITS.indexOf(d)));
+/** ٠١٢٣٤٥٦٧٨٩ → 0123 (digit-script normalization; no-op for numbers).
+ *  R349 M1.3: a WORKLET — called (through `latn`) from UI-runtime
+ *  closures (the CountUp fast path, the exam clock); pure string math
+ *  only, so it is lawful on both threads. */
+const toLatinDigits = (s: string): string => {
+  "worklet";
+  return s.replace(/[٠-٩]/g, (d) => String(ARABIC_INDIC_DIGITS.indexOf(d)));
+};
 
-/** Force Western digit glyphs regardless of device locale. */
+/** Force Western digit glyphs regardless of device locale.
+ *  R349 M1.3: a WORKLET (see toLatinDigits). */
 export function latn(n: number): string {
+  "worklet";
   return toLatinDigits(String(n));
 }
 

@@ -69,6 +69,11 @@ jobs:
       # lucide validity) — tsx is a root devDep, lucide-react is hoisted.
       # Validates the claim in scripts/validate-college-identity.ts:11.
       - run: npm run validate:colleges
+      # R349 M1.3c — the UI-runtime law, AST-enforced: a Reanimated
+      # worklet-context closure may never call a captured plain-JS
+      # function (the iOS SIGABRT class; Jest mocks hide it). Typescript
+      # is hoisted at the root; scans apps/mobile only.
+      - run: node scripts/qa/worklet-audit.mjs
 
   build:
     name: Build (DB-free)

@@ -98,8 +98,13 @@ export const QTYPE_LABEL: Record<string, string> = {
   ESSAY: "سؤال مقالي",
 };
 
-/** M:SS countdown, Western glyphs (contract rule 2). */
+/** M:SS countdown, Western glyphs (contract rule 2).
+ *  R349 M1.3: a WORKLET — the exam clock derives it on the UI thread
+ *  (`useDerivedValue(() => fmtClock(...))` in the online-exams taker);
+ *  it calls the worklet `latn`, so the whole chain is UI-runtime
+ *  lawful. Still a plain JS-callable function everywhere else. */
 export function fmtClock(totalSeconds: number): string {
+  "worklet";
   const s = Math.max(0, Math.floor(totalSeconds));
   const m = Math.floor(s / 60);
   const r = s % 60;

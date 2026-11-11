@@ -25,8 +25,13 @@ import { latn, num, pct } from "@/lib/format";
 import { countAr } from "@/features/student/more";
 import { PushFrame, gradeKindLabel, normalizeResults } from "@/features/student/components";
 
-/** «%» with Latin digits — the CountUp face for percentages. */
-const pctFace = (n: number): string => `${latn(Math.round(n))}%`;
+/** «%» with Latin digits — the CountUp face for percentages.
+ *  R349 M1.3: a WORKLET — CountUp derives it on the UI thread (fast
+ *  path); calls the worklet `latn`, so the chain is UI-runtime lawful. */
+const pctFace = (n: number): string => {
+  "worklet";
+  return `${latn(Math.round(n))}%`;
+};
 
 /** The Arabic share/export summary (text-only, no PII beyond grades). */
 export function resultsShareText(data: {

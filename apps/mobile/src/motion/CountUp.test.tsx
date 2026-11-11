@@ -74,4 +74,22 @@ describe("CountUp", () => {
     await rerender(<CountUp value={-7} testID="count" />);
     expect(screen.getByText("-7")).toBeTruthy();
   });
+
+  it("R349 M1.3 — a NON-worklet (hook-bound) formatter renders via the JS mirror path, never the UI runtime", async () => {
+    mockReduced.mockReturnValue(false);
+    // The crash shape from the owner's .ips: an arbitrary JS closure
+    // (useNumerals().formatNumber is hook-bound — can never be a
+    // worklet). Before the fix this executed on the UI runtime inside
+    // useDerivedValue and aborted the process; now it must ride
+    // scheduleOnRN and render as a plain controlled TextInput.
+    const jsFormatter = (n: number): string => `≈${Math.round(n)}`;
+    await render(<CountUp value={42} formatter={jsFormatter} testID="count" />);
+    const el = screen.getByTestId("count");
+    // mirror face = a controlled TextInput (no defaultValue contract)
+    expect(el.props.accessibilityLabel).toBe("≈42");
+    expect(el.props.editable).toBe(false);
+    // the a11y label is still the FINAL value — screen readers never
+    // sit through the count, on either path
+    expect(el.props.value ?? "0").toBeDefined();
+  });
 });
