@@ -251,6 +251,17 @@ jobs:
           (cd android && ./gradlew :app:assembleRelease :app:bundleRelease --no-daemon --stacktrace) \
             2>&1 | tee build/gradle.log
 
+      - name: Build the x86_64 emulator APK (the smoke's ABI)
+        # The release APK carries arm64-v8a + armeabi-v7a (physical
+        # devices). The API-34 x86_64 emulator needs its own native
+        # libs — a second incremental gradle pass, cached (~1 min).
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          (cd android && ./gradlew :app:assembleRelease --no-daemon --stacktrace \
+            -PreactNativeArchitectures=x86_64) 2>&1 | tee build/gradle-x86.log
+          cp android/app/build/outputs/apk/release/app-release.apk build/Madarek-x86_64.apk
+
       - name: Collect and verify the artifacts
         working-directory: apps/mobile
         run: |
@@ -382,6 +393,7 @@ jobs:
           path: |
             apps/mobile/build/Madarek.apk
             apps/mobile/build/Madarek.aab
+            apps/mobile/build/Madarek-x86_64.apk
             apps/mobile/build/build-info.json
             apps/mobile/build/SHA256SUMS.txt
             apps/mobile/build/verify.json
@@ -469,8 +481,8 @@ jobs:
             # or cwd surviving across lines) — every line is self-contained.
             adb wait-for-device
             adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
-            echo "== Installing the APK =="
-            adb install -r candidate/Madarek.apk
+            echo "== Installing the x86_64 smoke APK =="
+            adb install -r candidate/Madarek-x86_64.apk
             echo "== Maestro alive-flow (login -> dashboard -> 60s alive) =="
             maestro test apps/mobile/.maestro/smoke-alive.yaml --format junit --output apps/mobile/build/maestro-junit.xml
             echo "== Crash-buffer scan (fatal for ly.madarek.mobile) =="
