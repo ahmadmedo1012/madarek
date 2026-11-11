@@ -279,8 +279,16 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                       <Fragment key={cap}>
                         <div className="st-crawl-cell" data-spec={`intro.cell.${i + 1}`}>
                           <div className="st-crawl-card" data-spec={`intro.celllogo.${i + 1}`}>
-                            <span className="st-crawl-word fo-mono" dir="ltr" aria-hidden="true">{`0${i + 1}`}</span>
-                            <span className="st-crawl-name">{cap}</span>
+                            <svg
+                              className="st-crawl-svg"
+                              viewBox="0 0 104 66"
+                              preserveAspectRatio="xMidYMid meet"
+                              role="img"
+                              aria-label={cap}
+                            >
+                              <text className="st-crawl-svg-word" x="52" y="24" textAnchor="middle" direction="ltr">{`0${i + 1}`}</text>
+                              <text className="st-crawl-svg-name" x="52" y="45" textAnchor="middle" direction="rtl">{cap}</text>
+                            </svg>
                           </div>
                           <div className="st-crawl-sep" aria-hidden="true" data-spec={`intro.cellsep.${i + 1}`} />
                         </div>
@@ -288,8 +296,10 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                             seats (off the pairable census by design) */}
                         <span className="st-crawl-cell" aria-hidden="true" data-spec={`intro.dupcell.${i + 1}`}>
                           <span className="st-crawl-card" data-spec={`intro.dupcard.${i + 1}`}>
-                            <span className="st-crawl-word fo-mono" dir="ltr" aria-hidden="true">{`0${i + 1}`}</span>
-                            <span className="st-crawl-name">{cap}</span>
+                            <svg className="st-crawl-svg" viewBox="0 0 104 66" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                              <text className="st-crawl-svg-word" x="52" y="24" textAnchor="middle" direction="ltr">{`0${i + 1}`}</text>
+                              <text className="st-crawl-svg-name" x="52" y="45" textAnchor="middle" direction="rtl">{cap}</text>
+                            </svg>
                           </span>
                           <span className="st-crawl-sep" aria-hidden="true" />
                         </span>
@@ -306,8 +316,7 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                 ticker cell) */}
             <div className="st-desc" data-spec="intro.desc">
               <div className="st-desc-text" data-spec="intro.desctext">
-                منصّة مستقلّة — القدرات الموثّقة أعلاه تعمل اليوم على بيئة عرض تجريبية،
-                وتُدار من مؤسستك التعليمية مباشرة: مدرسة كانت أو كلية أو مركز تدريب.
+                منصّة مستقلّة — القدرات أعلاه تعمل اليوم على بيئة عرض تجريبية من مؤسستك مباشرة.
               </div>
               <div className="st-desc-rule lp-hairline lp-hairline--h" aria-hidden="true" data-spec="intro.descrule" />
             </div>

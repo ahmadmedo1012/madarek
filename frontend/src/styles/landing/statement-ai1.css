@@ -16,24 +16,25 @@
 [data-theme="dark"] .st-media-img.is-dark { visibility: visible; }
 
 .st-crawl-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
+  display: block;
   block-size: 100%;
   inline-size: 100%;
   overflow: clip;
   color: var(--text);
-  text-align: center;
 }
-.st-crawl-word {
-  font-size: 0.6875rem;
-  letter-spacing: 0;
+/* the typographic register rides an svg canvas (the same box grammar the
+ * retired university cards used — the census pairs the svg box with the
+ * reference's crawl art seats); the texts are viewBox-unit styled. */
+.st-crawl-svg { display: block; inline-size: 100%; block-size: 100%; }
+.st-crawl-svg-word {
+  font-family: var(--font-mono, monospace);
+  font-size: 8.5px;
   opacity: 0.62;
+  fill: currentColor;
 }
-.st-crawl-name {
-  font-size: 0.9375rem;
-  line-height: 1.35;
+.st-crawl-svg-name {
+  font-family: inherit;
+  font-size: 11.5px;
   font-weight: 600;
+  fill: currentColor;
 }
