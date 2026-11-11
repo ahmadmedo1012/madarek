@@ -31,6 +31,7 @@ import meRoutes from './http/routes/me.routes.js';
 import catalogRoutes from './http/routes/catalog.routes.js';
 import aiRoutes from './http/routes/ai.routes.js';
 import learningRoutes from './http/routes/learning.routes.js';
+import profilesRoutes from './http/routes/profiles.routes.js';
 import trainingRoutes from './http/routes/training.routes.js';
 import teacherRoutes from './http/routes/teacher.routes.js';
 import examsRoutes from './http/routes/exams.routes.js';
@@ -309,6 +310,11 @@ app.use('/api/v1/import', importRoutes);
   // paths that fall through it).
   app.use('/api/v1', pushRoutes);
   app.use('/api/v1', learningRoutes); // /lectures, /me/matrix, /me/gaps, /research, /quality
+  // r349-P2 — the people surface (GET/PATCH /me/profile, /people/:id,
+  // /directory, contact-request). Mounted beside learningRoutes: bare
+  // /api/v1 prefix, own root-level paths, router-level authMiddleware —
+  // no path collides with any earlier mount.
+  app.use('/api/v1', profilesRoutes);
   app.use('/api/v1', trainingRoutes); // /training/* (catalog, lessons, badges, certificates, leaderboard)
   app.use('/api/v1', teacherRoutes);  // /teacher/* (offerings, students, risks, attendance, curriculum)
   app.use('/api/v1', examsRoutes);    // /exams/*, /question-bank/*

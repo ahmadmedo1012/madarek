@@ -57,6 +57,10 @@
       "description": "5 operation(s) under /api/v1/courses"
     },
     {
+      "name": "directory",
+      "description": "1 operation(s) under /api/v1/directory"
+    },
+    {
       "name": "enrollments",
       "description": "5 operation(s) under /api/v1/enrollments"
     },
@@ -122,7 +126,7 @@
     },
     {
       "name": "me",
-      "description": "25 operation(s) under /api/v1/me"
+      "description": "26 operation(s) under /api/v1/me"
     },
     {
       "name": "messages",
@@ -143,6 +147,10 @@
     {
       "name": "owner",
       "description": "23 operation(s) under /api/v1/owner"
+    },
+    {
+      "name": "people",
+      "description": "3 operation(s) under /api/v1/people"
     },
     {
       "name": "posts",
@@ -4807,6 +4815,211 @@
             }
           }
         }
+      }
+    },
+    "/api/v1/directory": {
+      "get": {
+        "tags": [
+          "directory"
+        ],
+        "summary": "GET /api/v1/directory",
+        "description": "Declared in `backend/src/http/routes/profiles.routes.ts` (mounted at `/api/v1`).",
+        "x-mounted-at": "/api/v1",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "student",
+                "teacher"
+              ],
+              "default": "student"
+            }
+          },
+          {
+            "name": "facultyId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            }
+          },
+          {
+            "name": "departmentId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 20
+            }
+          },
+          {
+            "name": "stage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          },
+          {
+            "name": "grade",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 40
+            }
+          },
+          {
+            "name": "studyType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "MORNING",
+                "EVENING",
+                "PARALLEL"
+              ]
+            }
+          },
+          {
+            "name": "enrollmentStatus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "SUSPENDED",
+                "DEFERRED",
+                "GRADUATED",
+                "WITHDRAWN"
+              ]
+            }
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 32
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "xlsx",
+                "csv"
+              ],
+              "default": "json"
+            }
+          }
+        ]
       }
     },
     "/api/v1/enrollments": {
@@ -10728,7 +10941,7 @@
           "me"
         ],
         "summary": "GET /api/v1/me/profile",
-        "description": "Declared in `backend/src/http/routes/learning.routes.ts` (mounted at `/api/v1`).",
+        "description": "Declared in `backend/src/http/routes/profiles.routes.ts` (mounted at `/api/v1`).",
         "x-mounted-at": "/api/v1",
         "responses": {
           "200": {
@@ -10783,6 +10996,77 @@
           }
         },
         "security": []
+      },
+      "patch": {
+        "tags": [
+          "me"
+        ],
+        "summary": "PATCH /api/v1/me/profile",
+        "description": "Declared in `backend/src/http/routes/profiles.routes.ts` (mounted at `/api/v1`).",
+        "x-mounted-at": "/api/v1",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/profilespatchMeProfileSchema"
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/me/push-devices": {
@@ -15085,6 +15369,213 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ownertoggleStatusSchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/people/{id}": {
+      "get": {
+        "tags": [
+          "people"
+        ],
+        "summary": "GET /api/v1/people/:id",
+        "description": "Declared in `backend/src/http/routes/profiles.routes.ts` (mounted at `/api/v1`).",
+        "x-mounted-at": "/api/v1",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "patch": {
+        "tags": [
+          "people"
+        ],
+        "summary": "PATCH /api/v1/people/:id",
+        "description": "Declared in `backend/src/http/routes/profiles.routes.ts` (mounted at `/api/v1`).",
+        "x-mounted-at": "/api/v1",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/profilespatchPeopleSchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/people/{id}/contact-request": {
+      "post": {
+        "tags": [
+          "people"
+        ],
+        "summary": "POST /api/v1/people/:id/contact-request",
+        "description": "Declared in `backend/src/http/routes/profiles.routes.ts` (mounted at `/api/v1`).",
+        "x-mounted-at": "/api/v1",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/profilescontactRequestSchema"
               }
             }
           }
@@ -20923,6 +21414,88 @@
         "additionalProperties": false,
         "x-source-ident": "router.ts#fireBodySchema"
       },
+      "profilespatchMeProfileSchema": {
+        "type": "object",
+        "properties": {
+          "nameEn": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "UNSPECIFIED"
+            ]
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "address": {
+            "type": "string",
+            "maxLength": 240
+          },
+          "studentPhone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "studentPhoneVisibility": {
+            "type": "string",
+            "enum": [
+              "INSTITUTION_STAFF",
+              "PRIVATE"
+            ]
+          },
+          "additionalPhone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "emergencyContactName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "emergencyContactPhone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "x-source-ident": "profiles.routes.ts#patchMeProfileSchema"
+      },
       "pushupsertBody": {
         "type": "object",
         "properties": {
@@ -21528,6 +22101,400 @@
         "additionalProperties": false,
         "x-source-ident": "owner.routes.ts#toggleStatusSchema"
       },
+      "profilespatchPeopleSchema": {
+        "type": "object",
+        "properties": {
+          "nameAr": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "nameEn": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fatherName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "grandfatherName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "motherName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "birthPlace": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "nationalId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 240
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "studentPhone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "studentPhoneVisibility": {
+            "type": "string",
+            "enum": [
+              "INSTITUTION_STAFF",
+              "PRIVATE"
+            ]
+          },
+          "additionalPhone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "guardianName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "guardianRelationship": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "guardianPhone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "guardianPhoneVisibility": {
+            "type": "string",
+            "enum": [
+              "INSTITUTION_STAFF",
+              "PRIVATE"
+            ]
+          },
+          "emergencyContactName": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "emergencyContactPhone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "stage": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "section": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "previousSchool": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transferStatus": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "studyType": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "MORNING",
+                  "EVENING",
+                  "PARALLEL"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "enrollmentStatus": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "ACTIVE",
+                  "SUSPENDED",
+                  "DEFERRED",
+                  "GRADUATED",
+                  "WITHDRAWN"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "secondarySchool": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "secondarySchoolBranch": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "secondarySchoolPercent": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "admissionYear": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1950,
+                "maximum": 2100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "employeeId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "personalPhone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "personalPhoneVisibility": {
+            "type": "string",
+            "enum": [
+              "INSTITUTION_STAFF",
+              "PRIVATE"
+            ]
+          },
+          "preferredContact": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "PHONE",
+                  "WHATSAPP",
+                  "EMAIL",
+                  "OFFICE_HOURS"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "x-source-ident": "profiles.routes.ts#patchPeopleSchema"
+      },
+      "profilescontactRequestSchema": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": [
+              "student",
+              "guardian"
+            ],
+            "default": "student"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 280
+          }
+        },
+        "additionalProperties": false,
+        "x-source-ident": "profiles.routes.ts#contactRequestSchema"
+      },
       "catalogcreatePostSchema": {
         "type": "object",
         "properties": {
@@ -21839,9 +22806,9 @@
   },
   "x-generator": {
     "tool": "backend/scripts/generate-openapi.ts (hand-rolled: express-stack walk + zod-v3 walker)",
-    "generatedAt": "2026-11-11T12:04:24.075Z",
-    "operationCount": 260,
-    "pathCount": 222,
+    "generatedAt": "2026-11-11T22:42:40.404Z",
+    "operationCount": 265,
+    "pathCount": 225,
     "contractSnapshotCovered": 13,
     "snapshotCoveredRoutes": [
       "GET /api/v1/ai/config",
