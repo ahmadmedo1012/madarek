@@ -37,3 +37,11 @@ docs/redesign/r343/css-dead/report.json
 # R344 C-sheet: the imagery contact sheet (every on-site asset, light+dark
 # twins, families labeled) — the VLM review artifact (imagery-sheet.png).
 docs/redesign/r344/imagery-sheet.png
+
+# r347-Z — the home-map-wrap scroll-state re-key: 1,128 noCounterpart
+# entries (438 new noHeuristic excusals + 690 legacy flags, each with a
+# written reason) on top of the section's already-432KB-class mapping.
+# The size is a function of the excusal count the R346 §3 law REQUIRES
+# (every excused record carries its reason inline), not evidence bloat;
+# reasons compacted to the canonical form in gen-map-rekey-r347.mjs.
+scripts/conformance/mapping/home-map-wrap.json

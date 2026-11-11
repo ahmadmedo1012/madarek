@@ -100,8 +100,13 @@ for (const b of mapping.explicit) {
 }
 
 // ── 2. heuristic-glue failures → noCounterpart noHeuristic excusals ─────────
+// The COMPACT canonical reason — the full evidence trail (the mid-animation
+// capture forensics, the probe results, the cascade measurements) lives in
+// THIS file's header + the probe scripts; repeating 400 chars × hundreds of
+// entries blew the mapping past the size gate's 500KB ceiling (977KB — the
+// r347-Z iteration-3 lesson). The reason keeps the contract legible inline.
 const GLUE_REASON =
-  "R347-Z scroll-state re-key (R346 §3 precedent — the platform-twin 47): the record belongs to the reference's scroll-driven stacked-track anatomy, frozen mid-animation at capture (sr.y −4835/−885 families — step rows visually ABOVE the section root, only possible mid-transform). The R342-04 measured-seat rebuild + R347-B calm-sheet seat replaced the stack with the single pinned stage: no honest counterpart element exists at that geometry. The pair was heuristic glue (tag+tc queue) producing junk y/x-mirror/w/h/bg fails; binding a fake twin to satisfy the checks is refused.";
+  "R347-Z scroll-state re-key — the frozen record is the reference's mid-animation stacked-track capture (sr.y −4835/−885, visually above the section root); the rebuilt calm-sheet seat has no counterpart at that geometry (evidence: gen-map-rekey-r347.mjs)";
 const TRANSITION_REASON_SUFFIX =
   " (The 0.4s/ease height-tween records: R347 D6c retired the corner-card's clip+tween with the seat — re-adding a dead transition would be a conformance twin.)";
 
@@ -120,9 +125,23 @@ if (LEGACY_NOHEURISTIC) {
   for (const nc of mapping.noCounterpart) {
     if (nc.section !== "home-map-wrap" || nc.noHeuristic) continue;
     nc.noHeuristic = true;
-    nc.reason += " [R347-Z --legacy-noheuristic: the excusal's contract (no honest counterpart) now also bars the heuristic glue — the re-key's freed queue elements let this record grab unrelated same-shape elements and junk-fail (the measured cascade, iteration 2).]";
     legacyFlagged++;
   }
+}
+
+// ── 2c. reason compaction (idempotent): entries this tool previously wrote
+// with the long-form reason — and legacy entries carrying the appended
+// iteration-2 suffix — normalize to the compact canonical form. The flag +
+// bps + paths are the functional contract; the prose lives here.
+let compacted = 0;
+for (const nc of mapping.noCounterpart) {
+  if (nc.section !== "home-map-wrap") continue;
+  const before = nc.reason;
+  nc.reason = nc.reason
+    .replace(/ \[R347-Z --legacy-noheuristic:[^\]]*\]$/, "")
+    .replace(/^R347-Z scroll-state re-key \(R346 §3 precedent[\s\S]*$/, GLUE_REASON)
+    .replace(/ \(The 0\.4s\/ease height-tween records:[^)]*\)\.$/, ".");
+  if (nc.reason !== before) compacted++;
 }
 
 const existing = new Set(
@@ -146,5 +165,5 @@ for (const { bp, path } of gluePairs.values()) {
 
 // ── write back ───────────────────────────────────────────────────────────────
 writeFileSync(MAP_FILE, JSON.stringify(mapping, null, 2) + "\n");
-console.log(`gen-map-rekey-r347: +${skipsAdded} geometry skips, +${excusalsAdded} noHeuristic excusals${LEGACY_NOHEURISTIC ? `, ${legacyFlagged} legacy entries flagged noHeuristic` : ""} (${mapping.noCounterpart.length} total noCounterpart entries)`);
+console.log(`gen-map-rekey-r347: +${skipsAdded} geometry skips, +${excusalsAdded} noHeuristic excusals${LEGACY_NOHEURISTIC ? `, ${legacyFlagged} legacy entries flagged noHeuristic` : ""}, ${compacted} reasons compacted (${mapping.noCounterpart.length} total noCounterpart entries)`);
 console.log(`geo-failing data-spec keys: ${geoFailingKeys.size}; glue (bp,path) pairs: ${gluePairs.size}`);
