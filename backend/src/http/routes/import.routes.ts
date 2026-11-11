@@ -1,0 +1,522 @@
+/**
+ * master-F1 — the institutional import API (§9).
+ *
+ * The registrar's full migration system: parse (XLSX/CSV detection +
+ * column intelligence), preview (an ImportJob with per-row verdicts +
+ * the duplicate report), commit (chunked transactions, idempotent per
+ * row, duplicate policy), progress polling, downloadable templates
+ * (REAL .xlsx) and the per-line report workbook, plus saveable mapping
+ * profiles. The r323 small CSV workflow (/users/bulk-import/*) stays
+ * untouched and compatible — this module is the scalable successor.
+ *
+ * Conventions: the users.routes envelope (authMiddleware + requireRole
+ * ADMIN/OWNER + zod validate + AppError), institution scoping mirrors
+ * resolveCallerInstitutionScope, and NO raw SQL — prisma only.
+ */
+import { Router, type Request } from 'express';
+import { Role } from '@prisma/client';
+import { z } from 'zod';
+import { prisma } from '../../db.js';
+import { authMiddleware } from '../middleware/auth.js';
+import { requireRole } from '../middleware/requireRole.js';
+import { createRouteLimiter } from '../middleware/rateLimit.js';
+import { validate } from '../validate.js';
+import { AppError } from '../../lib/errors.js';
+import { resolveCallerInstitutionScope, institutionContextRequiredError } from '../../lib/profile-scoping.js';
+import { hashPassword } from '../../lib/password.js';
+import { generateTempPassword } from '../../lib/bulk-import.js';
+import { detectFormat, readSheet } from '../../lib/import/xlsx.js';
+import {
+  applyMappingProfile,
+  buildColumnMap,
+  toMappingProfile,
+  type MappingProfile,
+} from '../../lib/import/mapping.js';
+import { validateRows, IMPORT_MAX_ROWS, type ImportEntity } from '../../lib/import/validate.js';
+import { buildImportTemplate, buildImportReport } from '../../lib/import/templates.js';
+import { parseCsv } from '../../lib/bulk-import.js';
+
+const router = Router();
+router.use(authMiddleware);
+
+const importLimiter = createRouteLimiter({ max: 20 });
+
+/* ── shared helpers ─────────────────────────────────────────────── */
+
+const entitySchema = z.enum(['STUDENT', 'TEACHER']);
+
+const fileBodySchema = z.object({
+  fileBase64: z.string().min(16).max(24 * 1024 * 1024), // ≤ 24 MB encoded
+  institutionId: z.string().min(1).max(64).optional(),
+  entity: entitySchema,
+});
+
+/* The institution resolver (the r323 bulk-import pattern): ADMIN is
+ * scoped by their own institution context; OWNER names the target. */
+async function resolveInstitutionId(req: Request, bodyInstitutionId?: string): Promise<string> {
+  if (req.user!.role === Role.ADMIN) {
+    const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (scope === null) throw institutionContextRequiredError();
+    return scope;
+  }
+  if (typeof bodyInstitutionId !== 'string' || bodyInstitutionId.length === 0) {
+    throw AppError.badRequest('حدّد المؤسسة التي سيُستورد إليها السجل');
+  }
+  const inst = await prisma.institution.findFirst({
+    where: { id: bodyInstitutionId, status: 'ACTIVE' },
+    select: { id: true, kind: true },
+  });
+  if (!inst) throw AppError.badRequest('المؤسسة المحددة غير موجودة أو غير نشطة');
+  return inst.id;
+}
+
+async function loadInstitution(id: string) {
+  const inst = await prisma.institution.findUnique({ where: { id }, select: { id: true, kind: true } });
+  if (!inst) throw AppError.notFound('المؤسسة غير موجودة');
+  return inst;
+}
+
+function decodeFile(fileBase64: string): Buffer {
+  const buf = Buffer.from(fileBase64, 'base64');
+  if (buf.length === 0) throw AppError.badRequest('الملف فارغ أو غير مُرمَّز بشكل صحيح');
+  return buf;
+}
+
+async function loadGrid(buf: Buffer): Promise<{ headers: string[]; rows: string[][] }> {
+  const format = detectFormat(buf);
+  if (format === 'XLSX') return readSheet(buf);
+  if (format === 'CSV') {
+    const grid = parseCsv(buf.toString('utf8'));
+    const [header, ...rows] = grid;
+    return { headers: header ?? [], rows };
+  }
+  throw AppError.badRequest('صيغة الملف غير مدعومة — المسموح: XLSX أو CSV بترميز UTF-8');
+}
+
+/* The institution's custom-field definitions in BOTH shapes the pure
+ * layer consumes: the full definition (validateFieldValue) and the
+ * import-alias meta (mapImportHeader). */
+async function customFields(institutionId: string, entity: ImportEntity) {
+  const defs = await prisma.institutionFieldDefinition.findMany({
+    where: { institutionId, entity },
+    orderBy: { sortOrder: 'asc' },
+  });
+  const full = defs.map((d) => ({
+    key: d.key,
+    labelAr: d.labelAr,
+    labelEn: d.labelEn ?? undefined,
+    entity: d.entity,
+    type: d.type,
+    required: d.required,
+    options: d.options ?? undefined,
+    validation: d.validation ?? undefined,
+  }));
+  const metas = full.map((d) => ({
+    key: d.key,
+    labelAr: d.labelAr,
+    labelEn: d.labelEn,
+    importKeyAr: undefined,
+    importKeyEn: undefined,
+  }));
+  return { full, metas };
+}
+
+/* ── POST /import/parse — structure detection + suggested mapping ── */
+
+router.post(
+  '/parse',
+  importLimiter,
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(fileBodySchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { fileBase64, institutionId, entity } = req.body as z.infer<typeof fileBodySchema>;
+      const instId = await resolveInstitutionId(req, institutionId);
+      const buf = decodeFile(fileBase64);
+      const grid = await loadGrid(buf);
+      if (grid.headers.length === 0) throw AppError.badRequest('الملف بلا ترويسة — الصف الأول يجب أن يحمل أسماء الأعمدة');
+      if (grid.rows.length > IMPORT_MAX_ROWS) {
+        throw AppError.badRequest(`عدد الصفوف يتجاوز الحد (${IMPORT_MAX_ROWS}) — قسّم الملف`);
+      }
+      const { metas } = await customFields(instId, entity);
+      const map = buildColumnMap(grid.headers, metas);
+      res.json({
+        data: {
+          format: detectFormat(buf),
+          headers: grid.headers,
+          rowCount: grid.rows.length,
+          detectedLanguage: map.detectedLanguage,
+          suggestedMap: toMappingProfile(map),
+          unknownColumns: map.unknownColumns,
+        },
+      });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+/* ── POST /import/preview — create the job + per-row verdicts ────── */
+
+const previewBodySchema = fileBodySchema.extend({
+  columnMap: z.object({
+    version: z.literal(1),
+    columns: z.array(z.object({ source: z.string(), target: z.string() })).min(1),
+  }),
+});
+
+router.post(
+  '/preview',
+  importLimiter,
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(previewBodySchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { fileBase64, institutionId, entity, columnMap } = req.body as z.infer<typeof previewBodySchema>;
+      const instId = await resolveInstitutionId(req, institutionId);
+      const buf = decodeFile(fileBase64);
+      const grid = await loadGrid(buf);
+      const { full, metas } = await customFields(instId, entity);
+      const map = applyMappingProfile(grid.headers, columnMap as unknown as MappingProfile, metas);
+      const inst = await loadInstitution(instId);
+      const mode = inst.kind === 'SCHOOL' ? 'SCHOOL' : 'UNIVERSITY';
+      const result = validateRows(grid.rows, map, { entity, mode, customFields: full });
+
+      const job = await prisma.importJob.create({
+        data: {
+          institutionId: instId,
+          createdByUserId: req.user!.id,
+          entity,
+          fileName: `upload.${detectFormat(buf) === 'XLSX' ? 'xlsx' : 'csv'}`,
+          format: detectFormat(buf) === 'XLSX' ? 'XLSX' : 'CSV',
+          status: 'VALIDATED',
+          totalRows: result.counts.total,
+          columnMap: toMappingProfile(map) as unknown as object,
+          summary: {
+            ok: result.counts.ok,
+            error: result.counts.error,
+            warningCount: result.counts.warningCount,
+            duplicateReport: result.duplicateReport as unknown as object,
+            mode,
+          } as unknown as object,
+          rows: {
+            create: result.rows.slice(0, 2000).map((r) => ({
+              line: r.line,
+              status: r.status === 'ok' ? 'PENDING' : 'ERROR',
+              rawData: {},
+              mappedData: r.status === 'ok' ? (r.mapped as object) : undefined,
+              errorAr: r.errorsAr[0] ?? null,
+            })),
+          },
+        },
+      });
+
+      res.json({
+        data: {
+          jobId: job.id,
+          counts: result.counts,
+          duplicateReport: result.duplicateReport,
+          rows: result.rows.slice(0, 100).map((r) => ({
+            line: r.line,
+            status: r.status,
+            errorsAr: r.errorsAr,
+            warningsAr: r.warningsAr,
+          })),
+        },
+      });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+/* ── POST /import/jobs/:id/commit — chunked, idempotent ──────────── */
+
+const commitBodySchema = z.object({
+  duplicatePolicy: z.enum(['SKIP', 'UPDATE', 'ERROR']).default('SKIP'),
+  chunkSize: z.number().int().min(20).max(500).default(200),
+  fileBase64: z.string().min(16).max(24 * 1024 * 1024),
+});
+
+router.post(
+  '/jobs/:id/commit',
+  importLimiter,
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(commitBodySchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { duplicatePolicy, chunkSize, fileBase64 } = req.body as z.infer<typeof commitBodySchema>;
+      const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
+      if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
+      await resolveInstitutionId(req, job.institutionId);
+      if (job.status === 'COMMITTING' || job.status === 'COMPLETED') {
+        throw AppError.badRequest('المهمة قيد التنفيذ أو مكتملة بالفعل');
+      }
+
+      // Re-read the source file and re-validate against the SAVED map —
+      // the commit is grounded in the same bytes the preview judged.
+      const buf = decodeFile(fileBase64);
+      const grid = await loadGrid(buf);
+      const { full, metas } = await customFields(job.institutionId, job.entity as ImportEntity);
+      const map = applyMappingProfile(grid.headers, job.columnMap as unknown as MappingProfile, metas);
+      const mode = (await loadInstitution(job.institutionId)).kind === 'SCHOOL' ? 'SCHOOL' : 'UNIVERSITY';
+      const result = validateRows(grid.rows, map, { entity: job.entity as ImportEntity, mode, customFields: full });
+      const okRows = result.rows.filter((r) => r.status === 'ok');
+
+      await prisma.importJob.update({ where: { id: job.id }, data: { status: 'COMMITTING', totalRows: result.counts.total } });
+
+      // Resolve the faculty/department NAME references ONCE (the
+      // registrar's file speaks names, the DB speaks ids).
+      const faculties = await prisma.faculty.findMany({ where: { institutionId: job.institutionId }, select: { id: true, name: true } });
+      const departments = await prisma.department.findMany({
+        where: { faculty: { institutionId: job.institutionId } },
+        select: { id: true, name: true, facultyId: true },
+      });
+      const facByName = new Map(faculties.map((f) => [f.name.trim(), f.id]));
+      const depByName = new Map(departments.map((d) => [d.name.trim(), d]));
+
+      let succeeded = 0;
+      let skipped = 0;
+      let failed = 0;
+      for (let i = 0; i < okRows.length; i += chunkSize) {
+        const chunk = okRows.slice(i, i + chunkSize);
+         
+        await prisma.$transaction(async (tx) => {
+          for (const row of chunk) {
+            const m = row.mapped as {
+              firstName: string; lastName: string; nameAr?: string; email?: string; emailPlaceholder: boolean;
+              universityId: string; year: number; faculty?: string; department?: string;
+              stage?: string; grade?: string; section?: string;
+              studentPhone?: string; studentPhoneNormalized?: string;
+              guardianName?: string; guardianPhone?: string; guardianPhoneNormalized?: string;
+            };
+            // Idempotency: an existing institution-scoped reg-number honors the policy.
+            const existing = await tx.studentProfile.findFirst({
+              where: { institutionId: job.institutionId, universityId: m.universityId },
+              select: { id: true },
+            });
+            if (existing) {
+              if (duplicatePolicy === 'SKIP') { skipped += 1; continue; }
+              if (duplicatePolicy === 'ERROR') { failed += 1; continue; }
+              // UPDATE: refresh the permitted profile fields only.
+              await tx.studentProfile.update({
+                where: { id: existing.id },
+                data: {
+                  nameAr: m.nameAr ?? `${m.firstName} ${m.lastName}`.trim(),
+                  stage: m.stage, grade: m.grade, section: m.section,
+                  studentPhone: m.studentPhone, studentPhoneNormalized: m.studentPhoneNormalized,
+                  guardianName: m.guardianName, guardianPhone: m.guardianPhone, guardianPhoneNormalized: m.guardianPhoneNormalized,
+                },
+              });
+              succeeded += 1;
+              continue;
+            }
+            const email = m.email ?? `${m.universityId}@students.import.madarek.local`;
+            const tempPassword = generateTempPassword();
+            const user = await tx.user.create({
+              data: {
+                email,
+                firstName: m.firstName,
+                lastName: m.lastName,
+                passwordHash: await hashPassword(tempPassword),
+                role: Role.STUDENT,
+              },
+            });
+            const membership = await tx.membership.create({
+              data: { userId: user.id, institutionId: job.institutionId, role: Role.STUDENT },
+            });
+            const facultyId = m.faculty ? facByName.get(m.faculty.trim()) : undefined;
+            const dep = m.department ? depByName.get(m.department.trim()) : undefined;
+            await tx.studentProfile.create({
+              data: {
+                userId: user.id,
+                membershipId: membership.id,
+                institutionId: job.institutionId,
+                universityId: m.universityId,
+                facultyId: facultyId ?? faculties[0]!.id,
+                departmentId: dep?.id ?? departments[0]!.id,
+                year: m.year,
+                nameAr: m.nameAr ?? `${m.firstName} ${m.lastName}`.trim(),
+                stage: m.stage, grade: m.grade, section: m.section,
+                studentPhone: m.studentPhone, studentPhoneNormalized: m.studentPhoneNormalized,
+                guardianName: m.guardianName, guardianPhone: m.guardianPhone, guardianPhoneNormalized: m.guardianPhoneNormalized,
+              },
+            });
+            succeeded += 1;
+          }
+        });
+         
+        await prisma.importJob.update({
+          where: { id: job.id },
+          data: { processedRows: i + chunk.length, succeededRows: succeeded, skippedRows: skipped, failedRows: failed },
+        });
+      }
+
+      const completed = await prisma.importJob.update({
+        where: { id: job.id },
+        data: {
+          status: 'COMPLETED',
+          processedRows: okRows.length,
+          succeededRows: succeeded,
+          skippedRows: skipped,
+          failedRows: failed + result.counts.error,
+          summary: {
+            ...(job.summary as object),
+            duplicatePolicy,
+            emailPlaceholder: okRows.some((r) => (r.mapped as { emailPlaceholder: boolean }).emailPlaceholder),
+          },
+        },
+      });
+      res.json({ data: { jobId: completed.id, status: completed.status, succeeded, skipped, failed: completed.failedRows } });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+/* ── GET /import/jobs — the institution's job list ───────────────── */
+
+router.get(
+  '/jobs',
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(z.object({ institutionId: z.string().optional(), page: z.coerce.number().int().min(1).default(1), pageSize: z.coerce.number().int().min(1).max(50).default(20) }), 'query'),
+  async (req, res, next) => {
+    try {
+      const instId = await resolveInstitutionId(req, (req.query as { institutionId?: string }).institutionId);
+      const { page, pageSize } = req.query as unknown as { page: number; pageSize: number };
+      const [jobs, total] = await Promise.all([
+        prisma.importJob.findMany({
+          where: { institutionId: instId },
+          orderBy: { createdAt: 'desc' },
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          select: { id: true, entity: true, fileName: true, format: true, status: true, totalRows: true, processedRows: true, succeededRows: true, skippedRows: true, failedRows: true, createdAt: true },
+        }),
+        prisma.importJob.count({ where: { institutionId: instId } }),
+      ]);
+      res.json({ data: { jobs, page, pageSize, total } });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+/* ── GET /import/jobs/:id — progress polling ─────────────────────── */
+
+router.get(
+  '/jobs/:id',
+  requireRole(Role.ADMIN, Role.OWNER),
+  async (req, res, next) => {
+    try {
+      const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
+      if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
+      await resolveInstitutionId(req, job.institutionId);
+      res.json({ data: job });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+/* ── GET /import/templates/:entity.xlsx — REAL workbooks ─────────── */
+
+router.get(
+  '/templates/:entity',
+  importLimiter,
+  requireRole(Role.ADMIN, Role.OWNER),
+  async (req, res, next) => {
+    try {
+      const entity = entitySchema.parse(req.params.entity);
+      const buf = await buildImportTemplate(entity);
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename="madarek-import-${entity.toLowerCase()}.xlsx"`);
+      res.send(buf);
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+/* ── GET /import/jobs/:id/report.xlsx — the per-line result sheet ─── */
+
+router.get(
+  '/jobs/:id/report.xlsx',
+  requireRole(Role.ADMIN, Role.OWNER),
+  async (req, res, next) => {
+    try {
+      const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
+      if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
+      await resolveInstitutionId(req, job.institutionId);
+      const rows = await prisma.importRow.findMany({ where: { jobId: job.id }, orderBy: { line: 'asc' } });
+      const buf = await buildImportReport(
+        rows.map((r) => {
+          const m = (r.mappedData ?? {}) as { nameAr?: string; firstName?: string; lastName?: string; universityId?: string };
+          const statusMap = { OK: 'ok', SKIPPED: 'skipped', ERROR: 'error', PENDING: 'pending' } as const;
+          return {
+            line: r.line,
+            status: statusMap[r.status as keyof typeof statusMap] ?? 'pending',
+            detail: r.errorAr ?? undefined,
+            name: (m.nameAr ?? [m.firstName, m.lastName].filter(Boolean).join(' ')) || `السطر ${r.line}`,
+            identifier: m.universityId ?? '—',
+          };
+        }),
+        { entity: job.entity as ImportEntity, fileName: job.fileName, counts: { total: job.totalRows, succeeded: job.succeededRows, skipped: job.skippedRows, failed: job.failedRows } },
+      );
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename="madarek-import-report-${job.id.slice(-8)}.xlsx"`);
+      res.send(buf);
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+/* ── mapping profiles — save + list reusable mappings ────────────── */
+
+const profileBodySchema = z.object({
+  institutionId: z.string().min(1).max(64).optional(),
+  name: z.string().min(1).max(80),
+  entity: entitySchema,
+  profile: z.object({ version: z.literal(1), columns: z.array(z.object({ source: z.string(), target: z.string() })).min(1) }),
+});
+
+router.post(
+  '/mapping-profiles',
+  importLimiter,
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(profileBodySchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { institutionId, name, entity, profile } = req.body as z.infer<typeof profileBodySchema>;
+      const instId = await resolveInstitutionId(req, institutionId);
+      const saved = await prisma.importMappingProfile.upsert({
+        where: { institutionId_name: { institutionId: instId, name } },
+        create: { institutionId: instId, name, entity, profile: profile as object, createdById: req.user!.id },
+        update: { entity, profile: profile as object },
+      });
+      res.json({ data: saved });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+router.get(
+  '/mapping-profiles',
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(z.object({ institutionId: z.string().optional() }), 'query'),
+  async (req, res, next) => {
+    try {
+      const instId = await resolveInstitutionId(req, (req.query as { institutionId?: string }).institutionId);
+      const profiles = await prisma.importMappingProfile.findMany({
+        where: { institutionId: instId },
+        orderBy: { createdAt: 'desc' },
+      });
+      res.json({ data: profiles });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+export const importRoutes = router;

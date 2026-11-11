@@ -339,6 +339,9 @@ model Institution {
   // master-E1 — تعريفات الحقول المخصصة لهذه المؤسسة (النظام البنيوي
   // للحقول المخصصة — انظر InstitutionFieldDefinition أدناه).
   fieldDefinitions  InstitutionFieldDefinition[]
+  // master-F1 — وظائف الاستيراد ومخططات الأعمدة المحفوظة.
+  importJobs        ImportJob[]
+  importMappings    ImportMappingProfile[]
 
   @@index([status])
 }
@@ -473,6 +476,11 @@ model User {
 
   // r326 M2.6 — the push devices registered by this user's installs.
   pushDevices PushDevice[]
+
+  // master-F1 — وظائف الاستيراد التي أنشأها هذا المستخدم + مخططات
+  // الأعمدة التي حفظها (العلاقة المسماة لأن User مكتظ بالعلاقات).
+  importJobsCreated          ImportJob[]            @relation("ImportJobCreator")
+  importMappingProfilesSaved ImportMappingProfile[] @relation("ImportMappingProfileCreator")
 
   @@index([role])
   @@index([email])
@@ -711,6 +719,118 @@ model FieldValue {
   @@unique([definitionId, teacherProfileId])
   @@index([studentProfileId])
   @@index([teacherProfileId])
+}
+
+// ────────────────────────────────────────────────────────────────
+//  master-F1 — نظام الاستيراد/الترحيل (Import jobs)
+// ────────────────────────────────────────────────────────────────
+//  تطوّر مسار CSV القديم (r323 B3.1 — /users/bulk-import الذي يبقى
+//  كما هو) إلى نظام ترحيل كامل: ملفات CSV/XLSX، تخطيط أعمدة قابل
+//  للحفظ وإعادة الاستخدام، تحقق صفًّا صفًّا بلا قاعدة، ثم تنفيذ
+//  مجزَّأ (chunks) بمعاملات صغيرة — لا معاملة عملاقة أبدًا (قانون
+//  المهمة). الطبقة النقية في src/lib/import/*؛ هذه النماذج هي
+//  حالات الاستيراد فقط (سجل الوظيفة + صفوفها + مخططات الأعمدة).
+
+// صيغة الملف المصدر. XLSX يُقرأ عبر exceljs (الورقة الأولى)، وCSV
+// عبر محلّل RFC 4180 نفسه الذي يستخدمه مسار r323.
+enum ImportFormat {
+  CSV
+  XLSX
+}
+
+// دورة حياة وظيفة الاستيراد: رفع ← تخطيط ← تحقق ← تنفيذ ← إتمام.
+// FAILED تعني فشلًا وظيفيًا (مثل ملف غير قابل للقراءة)؛ الصفوف
+// الفاشلة داخل تنفيذ ناجح تبقى في صفوف الوظيفة (ImportRow) ولا
+// تُفشل الوظيفة كلها. CANCELLED مقبض إداري مستقبلي.
+enum ImportJobStatus {
+  UPLOADED
+  MAPPED
+  VALIDATED
+  COMMITTING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+// حالة صف المصدر الواحد: PENDING عند الإنشاء، ثم حكم التحقق
+// (OK/ERROR)، ثم نتيجة التنفيذ (OK مع resultRef، أو SKIPPED بسياسة
+// التكرار، أو ERROR برسالة عربية).
+enum ImportRowStatus {
+  PENDING
+  OK
+  SKIPPED
+  ERROR
+}
+
+// وظيفة استيراد واحدة — مملوكة للمؤسسة. columnMap يحمل
+// MappingProfile {version, columns:[{source,target}]} القابل
+// للتسلسل والحفظ، وsummary يحمل العدادات وتقرير التكرار، وerror
+// سبب الفشل الوظيفي إن وُجد. idempotencyKey يسمح للعميل إعادة
+// إرسال نفس الطلب دون إنشاء وظيفة مكررة.
+model ImportJob {
+  id              String          @id @default(cuid())
+  institutionId   String
+  institution     Institution     @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  createdByUserId String
+  createdByUser   User            @relation("ImportJobCreator", fields: [createdByUserId], references: [id])
+  entity          FieldEntity // STUDENT | TEACHER (STAFF يُرفض في طبقة الخدمة — لا نموذج ملف موظف بعد)
+  fileName        String
+  format          ImportFormat
+  status          ImportJobStatus @default(UPLOADED)
+  totalRows       Int
+  processedRows   Int             @default(0)
+  succeededRows   Int             @default(0)
+  skippedRows     Int             @default(0)
+  failedRows      Int             @default(0)
+  columnMap       Json? // MappingProfile — {version: 1, columns: [{source, target}]}
+  summary         Json? // {counts, duplicateReport, warnings, emailPlaceholder…}
+  error           Json? // {messageAr, at} — الفشل الوظيفي فقط
+  idempotencyKey  String?         @unique
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  rows ImportRow[]
+
+  @@index([institutionId, status])
+  @@index([createdByUserId, createdAt])
+}
+
+// صف مصدر واحد داخل وظيفة — rawData الخلايا كما وردت، mappedData
+// الحقول المخطَّطة، errorAr رسالة الرفض العربية، resultRef معرّف
+// الملف/الحساب الناتج (idempotency: التنفيذ مجددًا يتخطى ما له
+// resultRef).
+model ImportRow {
+  id         String          @id @default(cuid())
+  jobId      String
+  job        ImportJob       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  line       Int // 1-based — رقم صف البيانات (بعد الترويسة)
+  status     ImportRowStatus @default(PENDING)
+  rawData    Json // string[] — خلايا الصف كما وردت في الملف
+  mappedData Json? // الحقول المخطَّطة + القيم المُطبَّعة
+  errorAr    String? // رسالة الرفض/الفشل العربية (بلا فاصلة، صف واحد)
+  resultRef  String? // معرّف StudentProfile/TeacherProfile الناتج (أو الموجود عند SKIP)
+
+  @@unique([jobId, line])
+  @@index([jobId, status])
+}
+
+// مخطط أعمدة محفوظ باسم — يستعيده المسجّل في الملف القادم بدل
+// إعادة المطابقة يدويًا. profile يحمل MappingProfile نفسه، والتفرد
+// (institutionId, name) يمنع التسمية المزدوجة داخل المؤسسة.
+model ImportMappingProfile {
+  id            String      @id @default(cuid())
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  name          String
+  entity        FieldEntity
+  profile       Json // MappingProfile — {version: 1, columns: [{source, target}]}
+  createdById   String
+  createdBy     User        @relation("ImportMappingProfileCreator", fields: [createdById], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([institutionId, name])
+  @@index([institutionId, entity])
 }
 
 // ────────────────────────────────────────────────────────────────
