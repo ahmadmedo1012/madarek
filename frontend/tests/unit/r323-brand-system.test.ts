@@ -283,6 +283,26 @@ describe('R323 gate (c) — favicon + brand twins are the new system', () => {
 /* ════════════════════════════════════════════════════════════════════
  * the public contract (the parallel packages code against this)
  * ════════════════════════════════════════════════════════════════════ */
+
+describe('master/B1 — the footer construction mark is re-sourced from the ONE brand geometry', () => {
+  it('Footer.tsx derives its mark from brand/mark, never an independent geometry', () => {
+    const footer = read('src/components/landing/sections/Footer.tsx');
+    expect(footer).toContain("from '../../../brand/mark'");
+    expect(footer).toContain('MARK_AXIS');
+    expect(footer).toContain('MARK_DIAMOND_PATH');
+    expect(footer).toContain('MARK_POINT');
+    // the retired orbit/compass literals can never come back
+    for (const banned of ['A94 94', 'A67 67', 'M178 38', 'M159 56']) {
+      expect(footer, `the retired orbit literal ${banned} must not return`).not.toContain(banned);
+    }
+  });
+
+  it('the point path rides the accent seat (footer.css)', () => {
+    const css = read('src/styles/landing/footer.css');
+    expect(css).toMatch(/\.fo-mark-p--point\s*\{[^}]*fill:\s*var\(--accent\)/);
+  });
+});
+
 describe('R323 contract — <Logo> (frontend/src/brand)', () => {
   it('default render: lockup, role=img, <title>مدارك, data-logo, miter joins', () => {
     const { container } = render(React.createElement(Logo));

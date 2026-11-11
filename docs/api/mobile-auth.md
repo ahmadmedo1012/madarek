@@ -77,7 +77,7 @@ Real response (HTTP 200, trimmed):
       "avatarColor": "…", "avatarInitials": "…",
       "themePreference": "light",
       "memberships": [ { "institutionId": "…", "slug": "madarek-demo", "role": "MEMBER", "isActive": true, "…": "…" } ],
-      "currentInstitution": { "id": "…", "name": "جامعة مدارك التجريبية", "nameEn": "Madarek Demo University", "slug": "madarek-demo" },
+      "currentInstitution": { "id": "…", "name": "مؤسسة مدارك النموذجية", "nameEn": "Madarek Model Institution", "slug": "madarek-demo" },
       "membershipRole": "MEMBER"
     },
     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ…"

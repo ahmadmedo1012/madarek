@@ -333,7 +333,7 @@ const ASYNC = {
   staleCount: 2,
   categories: [
     { category: 'بيانات الجامعة', count: 24, items: [
-      { key: 'اسم الجامعة', value: 'جامعة الزاوية', source: 'السجلّ الرسمي', isStale: false, syncedAt: hoursAgo(49) },
+      { key: 'اسم الجامعة', value: 'مؤسسة مدارك النموذجية', source: 'السجلّ الرسمي', isStale: false, syncedAt: hoursAgo(49) },
       { key: 'عدد الكليات', value: '6', source: 'السجلّ الرسمي', isStale: false, syncedAt: hoursAgo(49) },
     ] },
     { category: 'الأسماء والهوية', count: 22, items: [
@@ -410,7 +410,7 @@ const overrides = [
 
 /* the seeded auth state: ADMIN_USER + the institution context the
  * institution-scoped queries key on (the shape auth.store hydrates). */
-const seededUser = { ...ADMIN_USER, memberships: [], currentInstitution: { id: 'inst_e2e_zu', name: 'جامعة الزاوية', nameEn: 'Zawia University', slug: 'zu' }, membershipRole: 'ADMIN' };
+const seededUser = { ...ADMIN_USER, memberships: [], currentInstitution: { id: 'inst_e2e_zu', name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', slug: 'zu' }, membershipRole: 'ADMIN' };
 
 /* /auth/me is AUTHORITATIVE for the institution context (useAuth.useMe
  * → applySessionExtras: "no context in the payload resets the context")

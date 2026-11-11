@@ -271,10 +271,10 @@ const STATS = {
  * rows — the directory's institution column reads them, r183-B5). */
 const USERS = {
   data: [
-    { id: 'usr_e2e_owner', email: 'owner@zu.edu.ly', firstName: 'المدير', lastName: 'الأعلى', role: 'OWNER', avatarColor: '#dc2626', avatarInitials: 'مأ', isActive: true, createdAt: hoursAgo(24 * 700), memberships: [{ institution: { id: 'inst_e2e_zu', name: 'جامعة الزاوية', slug: 'zu', status: 'ACTIVE' } }] },
-    { id: 'usr_e2e_admin', email: 'admin@zu.edu.ly', firstName: 'المسجل', lastName: 'العام', role: 'ADMIN', avatarColor: '#0891b2', avatarInitials: 'مع', isActive: true, createdAt: hoursAgo(24 * 300), memberships: [{ institution: { id: 'inst_e2e_zu', name: 'جامعة الزاوية', slug: 'zu', status: 'ACTIVE' } }] },
-    { id: 'usr_e2e_teacher', email: 'teacher@zu.edu.ly', firstName: 'أستاذ', lastName: 'الرياضيات', role: 'TEACHER', avatarColor: '#7c3aed', avatarInitials: 'أر', isActive: true, createdAt: hoursAgo(24 * 90), memberships: [{ institution: { id: 'inst_e2e_zu', name: 'جامعة الزاوية', slug: 'zu', status: 'ACTIVE' } }] },
-    { id: 'usr_e2e_student', email: 'student@zu.edu.ly', firstName: 'طالب', lastName: 'السنة الثالثة', role: 'STUDENT', avatarColor: '#15803d', avatarInitials: 'طس', isActive: true, createdAt: hoursAgo(24 * 60), memberships: [{ institution: { id: 'inst_e2e_zu', name: 'جامعة الزاوية', slug: 'zu', status: 'ACTIVE' } }] },
+    { id: 'usr_e2e_owner', email: 'owner@zu.edu.ly', firstName: 'المدير', lastName: 'الأعلى', role: 'OWNER', avatarColor: '#dc2626', avatarInitials: 'مأ', isActive: true, createdAt: hoursAgo(24 * 700), memberships: [{ institution: { id: 'inst_e2e_zu', name: 'مؤسسة مدارك النموذجية', slug: 'zu', status: 'ACTIVE' } }] },
+    { id: 'usr_e2e_admin', email: 'admin@zu.edu.ly', firstName: 'المسجل', lastName: 'العام', role: 'ADMIN', avatarColor: '#0891b2', avatarInitials: 'مع', isActive: true, createdAt: hoursAgo(24 * 300), memberships: [{ institution: { id: 'inst_e2e_zu', name: 'مؤسسة مدارك النموذجية', slug: 'zu', status: 'ACTIVE' } }] },
+    { id: 'usr_e2e_teacher', email: 'teacher@zu.edu.ly', firstName: 'أستاذ', lastName: 'الرياضيات', role: 'TEACHER', avatarColor: '#7c3aed', avatarInitials: 'أر', isActive: true, createdAt: hoursAgo(24 * 90), memberships: [{ institution: { id: 'inst_e2e_zu', name: 'مؤسسة مدارك النموذجية', slug: 'zu', status: 'ACTIVE' } }] },
+    { id: 'usr_e2e_student', email: 'student@zu.edu.ly', firstName: 'طالب', lastName: 'السنة الثالثة', role: 'STUDENT', avatarColor: '#15803d', avatarInitials: 'طس', isActive: true, createdAt: hoursAgo(24 * 60), memberships: [{ institution: { id: 'inst_e2e_zu', name: 'مؤسسة مدارك النموذجية', slug: 'zu', status: 'ACTIVE' } }] },
     { id: 'usr_e2e_quality', email: 'quality@zu.edu.ly', firstName: 'أخصائي', lastName: 'الجودة', role: 'QUALITY', avatarColor: '#b45309', avatarInitials: 'أج', isActive: false, createdAt: hoursAgo(24 * 40), memberships: [] },
   ],
   meta: { page: 1, limit: 20, total: 5, totalPages: 1 },
@@ -401,7 +401,7 @@ const GOVERNANCE = {
  * suspended institution's memberships are deactivated). */
 const INSTITUTIONS = [
   {
-    id: 'inst_e2e_zu', slug: 'zu', name: 'جامعة الزاوية', nameEn: 'Zawia University', status: 'ACTIVE',
+    id: 'inst_e2e_zu', slug: 'zu', name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', status: 'ACTIVE',
     createdAt: '2024-09-01T08:00:00.000Z', updatedAt: '2026-03-01T09:00:00.000Z',
     activeMembershipCount: 3, facultyCount: 2,
     admins: [
@@ -409,13 +409,13 @@ const INSTITUTIONS = [
     ],
   },
   {
-    id: 'inst_e2e_ms', slug: 'ms', name: 'جامعة مصراتة', nameEn: 'Misrata University', status: 'ACTIVE',
+    id: 'inst_e2e_ms', slug: 'ms', name: 'مؤسسة العرض الأولى', nameEn: 'Misrata University', status: 'ACTIVE',
     createdAt: '2024-10-12T10:00:00.000Z', updatedAt: '2026-02-20T12:00:00.000Z',
     activeMembershipCount: 1, facultyCount: 0,
     admins: [],
   },
   {
-    id: 'inst_e2e_tb', slug: 'tb', name: 'جامعة طبرق', nameEn: 'Tobruk University', status: 'SUSPENDED',
+    id: 'inst_e2e_tb', slug: 'tb', name: 'مؤسسة العرض الثانية', nameEn: 'Tobruk University', status: 'SUSPENDED',
     createdAt: '2024-11-03T09:00:00.000Z', updatedAt: '2026-01-15T11:00:00.000Z',
     activeMembershipCount: 0, facultyCount: 0,
     admins: [],

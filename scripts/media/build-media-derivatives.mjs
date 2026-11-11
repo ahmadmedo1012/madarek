@@ -6,9 +6,12 @@
  * WHAT IT DOES
  *   Rebuilds every WebP derivative under frontend/public/media/ from
  *   the recorded sources, exactly as shipped in R307:
- *     photos    → Wikimedia Commons 1600px renditions (thumb.php)
  *     products  → re-encoded from the R307 capture archive (local
  *                  seeded demo; see manifest.json source.environment)
+ *
+ *   The photos tier (Wikimedia Commons university renditions) was
+ *   RETIRED with the university showcase removal — manifest photos[]
+ *   and public/media/universities/ are gone; nothing to rebuild.
  *
  * WHY FFMPEG + LIBWEBP
  *   Zero new repository dependencies (the verify-parity-export.mjs
@@ -19,7 +22,6 @@
  *
  * RUNTIME
  *   node scripts/media/build-media-derivatives.mjs [--dry-run]
- *   Requires network access to commons.wikimedia.org (photos tier).
  *   This is a maintenance tool — it is deliberately NOT wired into CI;
  *   derivatives are committed artifacts, and the committed bytes are
  *   what the surface baseline pins.
@@ -30,8 +32,7 @@
  *   verification command.
  */
 import { execFileSync } from 'node:child_process';
-import { createWriteStream, existsSync, mkdirSync, readFileSync } from 'node:fs';
-import { get as httpsGet } from 'node:https';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -42,23 +43,10 @@ const MANIFEST = JSON.parse(readFileSync(join(MEDIA, 'manifest.json'), 'utf8'));
 const DRY = process.argv.includes('--dry-run');
 const TMP = join(ROOT, '.media-cache');
 
-/** Per-tier WebP quality map recorded in R307 (see manifest photos[].changes). */
-const PHOTO_QUALITY = { 480: 78, 800: 76, 1000: 72, 1200: 70, 1600: 74 };
+/** Per-tier WebP quality map recorded in R307 (see manifest products[].changes). */
 const PRODUCT_QUALITY = { 720: 78, 1280: 78 };
 
 function log(msg) { process.stdout.write(`${msg}\n`); }
-
-function fetchToFile(url, dest) {
-  return new Promise((res, rej) => {
-    httpsGet(url, { headers: { 'User-Agent': 'Madarek-media-pipeline/1.0 (scripts/media/build-media-derivatives.mjs; contact via the repository owner)' } }, (r) => {
-      if (r.statusCode !== 200) { r.resume(); return rej(new Error(`HTTP ${r.statusCode} for ${url}`)); }
-      const ws = createWriteStream(dest);
-      r.pipe(ws);
-      ws.on('finish', () => res(dest));
-      ws.on('error', rej);
-    }).on('error', rej);
-  });
-}
 
 function encode(src, width, quality, dest) {
   execFileSync('ffmpeg', [
@@ -74,33 +62,13 @@ async function main() {
   mkdirSync(TMP, { recursive: true });
   let built = 0, skipped = 0, failed = 0;
 
-  // ── photos tier ────────────────────────────────────────────────
-  // R345 F: the photos tier is RETIRED (the university seats are the
-  // R343 ORIGINAL cards — shared/media/university-cards.ts; the retired
-  // Wikimedia derivatives + manifest photos[] are deleted). This loop
-  // stays as the documented no-op for any future raster tier.
-  for (const photo of MANIFEST.photos ?? []) {
-    const cache = join(TMP, `${photo.id}.jpg`);
-    const target = join(MEDIA, 'universities');
-    if (!existsSync(target)) mkdirSync(target, { recursive: true });
-    const have = photo.derivativeWidths.every((w) => existsSync(join(target, `${photo.id}-${w}.webp`)));
-    if (have) { skipped += photo.derivativeWidths.length; continue; }
-    if (!existsSync(cache)) {
-      if (DRY) { log(`[dry] would fetch ${photo.source.page}`); continue; }
-      const fileName = photo.source.file.split('/').pop().replace(/ /g, '_');
-      const thumb = `https://commons.wikimedia.org/w/thumb.php?f=${encodeURIComponent(fileName)}&w=1600`;
-      log(`fetch ${photo.id} ← ${thumb}`);
-      await fetchToFile(thumb, cache);
-    }
-    for (const w of photo.derivativeWidths) {
-      const dest = join(target, `${photo.id}-${w}.webp`);
-      log(`  encode ${photo.id}-${w} (q${PHOTO_QUALITY[w] ?? 74})`);
-      if (!DRY) encode(cache, w, PHOTO_QUALITY[w] ?? 74, dest);
-      built += 1;
-    }
-  }
+  // ── photos tier — RETIRED (R345 F) ───────────────────────────────
+  // The university showcase removal deleted public/media/universities/
+  // and the manifest's photos[] rows (the Wikimedia derivatives had no
+  // remaining importer). No loop runs here; any future raster tier
+  // re-introduces one against a new manifest section.
 
-  // ── product tier ───────────────────────────────────────────────
+  // ── product tier ─────────────────────────────────────────
   // Product captures re-encode from the R308 archive recorded in the
   // manifest (source.environment) — the r307 archive was superseded
   // by the r308 re-capture (onboarding completed through its real

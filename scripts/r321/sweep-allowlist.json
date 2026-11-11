@@ -51,60 +51,24 @@
       "reason": "the help sheet mentions the @test.ly demo domain twice in honest copy (support + the accounts pointer)"
     },
     {
-      "norm": "الحياةالجامعية",
-      "reason": "campus: the nav label + the page's own section title"
-    },
-    {
       "norm": "سؤالقصيرداخلالمحاضرةيصححفوراقبلالمتابعة",
       "reason": "the checkpoint card's one-line definition appears in the statement pains AND the chapters walkthrough — the same honest fact in two sections"
-    },
-    {
-      "norm": "جامعةبنغازي",
-      "reason": "campus media captions name the university per photo (Commons attribution)"
     },
     {
       "norm": "مراجعةبحث",
       "reason": "the research-library card's one-liner appears in the statement pains AND the chapters walkthrough — one honest fact, two sections"
     },
     {
-      "norm": "CCBYSA40",
-      "reason": "the Commons CC BY-SA 4.0 attribution repeats per campus photo — the license name is per-item metadata"
-    },
-    {
       "norm": "أنشئحسابكالجامعي",
       "reason": "the landing's two CTA seats (hero + closing) share the one action label — the funnel's own convention"
-    },
-    {
-      "norm": "جامعةطرابلس",
-      "reason": "campus media captions name the university per photo (same family as بنغازي)"
     },
     {
       "norm": "محاكاةقيدالتطوير",
       "reason": "the honest 'simulation under development' tag rides every early-stage capability card (the PendingTag family)"
     },
     {
-      "norm": "SHEETFIELD06",
-      "reason": "the campus media cards share the one sheet-field code stamp (the drafting chrome's own family)"
-    },
-    {
       "norm": "عرضتوضيحي",
       "reason": "the honest demo-data disclosure tag rides every demo element (§J KEEP: demo-data disclosure is mandated, per-card)"
-    },
-    {
-      "norm": "Publicdomain",
-      "reason": "the Commons license name repeats per campus photo — per-item attribution metadata"
-    },
-    {
-      "norm": "فيديوتوثيقيمنالقناةالرسميةللجامعة",
-      "reason": "the campus videos share the one honest credit line (each video's per-item attribution)"
-    },
-    {
-      "norm": "أجواءامتحاناتنهايةالفصلبكلياتجامعةمصراتة",
-      "reason": "the campus photo's caption names its subject; the gallery + lightbox both carry it (two regions, one honest caption)"
-    },
-    {
-      "norm": "شاهدالفيديو",
-      "reason": "one action label per video card (the per-item action family, like the demo rows' تعبئة)"
     },
     {
       "norm": "صفحةالقدرات",
@@ -122,7 +86,7 @@
   "clipContainers": [
     {
       "sel": ".fo-ticker",
-      "reason": "the capabilities + universities MARQUEES — the track paints items outside the clip window by design (infinite crawl)"
+      "reason": "the capabilities MARQUEE — the track paints items outside the clip window by design (infinite crawl)"
     },
     {
       "sel": ".jt",

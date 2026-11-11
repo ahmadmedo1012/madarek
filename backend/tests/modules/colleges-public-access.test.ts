@@ -131,7 +131,7 @@ function mockDetailBundle() {
     // r179 (phase-5): the bundle's events/competitions are scoped to
     // the faculty's institution — the mock carries it like the real
     // include does.
-    institution: { id: 'inst-showcase', name: 'جامعة مدارك التجريبية', nameEn: 'Madarek Demo University', slug: 'madarek-demo' },
+    institution: { id: 'inst-showcase', name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', slug: 'madarek-demo' },
     departments: [
       { id: 'dep-1', name: 'قسم اللغة العربية', _count: { students: 40, teachers: 3, courses: 6 } },
     ],

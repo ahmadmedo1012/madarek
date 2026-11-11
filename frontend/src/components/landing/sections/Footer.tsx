@@ -32,6 +32,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { BRAND_LABEL, LOGIN } from '../copy';
+import { MARK_AXIS, MARK_DIAMOND_PATH, MARK_POINT } from '../../../brand/mark';
 
 /* the small-link rows under the brand lockup (the spec's 4+3+2 inline
  * rows, 27px lines) — our honest platform index: [to, label] */
@@ -97,17 +98,29 @@ const CHANNEL_LINKS: [string, string][] = [
   ['/legal/terms', 'الشروط'],
 ];
 
-/* the col3 construction mark — Madarek's OWN Logo geometry, authored
- * inline line-art (never Heron's paths) */
+/* the col3 construction mark — master/B1: RE-SOURCED from the ONE
+ * brand geometry (frontend/src/brand/mark.ts — the same 32-unit khatam
+ * grid <Logo> renders). The grid is projected onto the 215×215
+ * construction canvas (scale 215/32) and authored as line-art: the two
+ * squares + the orange point, plus the drawing's own construction axes
+ * and registration frame. The retired orbit/compass drawing was an
+ * independent geometry — never the Logo's — and is gone. */
+const GRID = 215 / 32; /* 6.71875 — the projection scale */
+const g = (n: number) => +(n * GRID).toFixed(2);
+const C = g(16); /* 107.5 — the shared centre */
+const DIAMOND = (MARK_DIAMOND_PATH.match(/\d+(?:\.\d+)?\s+\d+(?:\.\d+)?/g) ?? [])
+  .map((pair) => pair.split(/\s+/).map(Number))
+  .map(([x, y]) => `${g(x ?? 0)} ${g(y ?? 0)}`)
+  .join('L');
 const MARK_PATHS = [
-  'M178 38A94 94 0 1 0 190 122', // the orbit circle (open at the reading apex)
-  'M159 56A67 67 0 1 0 168 116', // the inner second orbit
-  'M108 10v195', // the vertical construction axis
-  'M10 108h195', // the horizontal construction axis
-  'M40 40l136 136', // the diagonal construction track
-  'M178 38h.01', // the knowledge point on the orbit
+  `M${C} 20v175`, // the vertical construction axis (through the centre)
+  `M20 ${C}h175`, // the horizontal construction axis
+  'M40 40l135 135', // the diagonal construction track (45°)
+  `M${g(MARK_AXIS.x)} ${g(MARK_AXIS.y)}h${g(MARK_AXIS.size)}v${g(MARK_AXIS.size)}h-${g(MARK_AXIS.size)}Z`, // the axis square (the 8..24 grid seat)
+  `M${DIAMOND}Z`, // the rotated square — vertices on the grid axes
+  `M${g(MARK_POINT.x)} ${g(MARK_POINT.y)}h${g(MARK_POINT.size)}v${g(MARK_POINT.size)}h-${g(MARK_POINT.size)}Z`, // «النقطة» — the orange point on the NE intersection (filled)
   'M55 182h105', // the base line
-  'M22 62V22h40M153 22h40v40M193 153v40h-40M62 193H22v-40', // frame corner ticks
+  'M22 62V22h40M153 22h40v40M193 153v40h-40M62 193H22v-40', // frame corner ticks (the registration frame — stays lit)
 ];
 
 /* T-99 diet — the repeated seat shapes as shared components (the
@@ -369,8 +382,9 @@ export function Footer({ year }: { year: number }) {
           </div>
 
           {/* col3 (RTL: the left column) — the drawn construction mark:
-              Madarek's OWN mark geometry, authored inline line-art (the
-              circle + orbit + point construction), never Heron's paths */}
+              Madarek's OWN khatam geometry re-sourced from brand/mark
+              (the two squares + the orange point as authored line-art),
+              never Heron's paths */}
           <div className="fo-col fo-col3" data-spec="footer.col3">
             <R c="fo-rule fo-rule-v fo-rule-solid" s="footer.col3rule" />
             <div className="fo-mark" data-spec="footer.mark">
@@ -380,10 +394,15 @@ export function Footer({ year }: { year: number }) {
                   data-spec="footer.marksvg"
                   viewBox="0 0 215 215"
                   role="img"
-                  aria-label="علامة مدارك — رسم بنائي لخط المدار والنقطة"
+                  aria-label="علامة مدارك — رسم بنائي للخاتم والنقطة"
                 >
                   {MARK_PATHS.map((d, i) => (
-                    <path key={i} className="fo-mark-p" data-spec={`footer.markpath.${i + 1}`} d={d} />
+                    <path
+                      key={i}
+                      className={i === 5 ? 'fo-mark-p fo-mark-p--point' : 'fo-mark-p'}
+                      data-spec={`footer.markpath.${i + 1}`}
+                      d={d}
+                    />
                   ))}
                 </svg>
               </div>

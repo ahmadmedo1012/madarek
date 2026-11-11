@@ -34,7 +34,7 @@
 | Achievements | `app/achievements` | `GET /me/achievements`, `GET /training/me/badges`, `GET /training/me/certificates`, `GET /training/leaderboard` | ✅ |
 | Legal pages (6) | `app/legal/[doc].tsx` | — | ✅ |
 | About/Help/Contact | `app/about.tsx`, `app/help.tsx`, `app/contact.tsx` | — | ✅ |
-| Campus life | `app/campus.tsx` | — (documentary) | ✅ |
+| ~~Campus life~~ | ~~`app/campus.tsx`~~ | — | **RETIRED (master/D3)** — university showcase removed |
 | Feedback loop («أبلغ عن مشكلة») | `/report` route from Profile/`/settings` (R331: FAB removed) | `POST /feedback` | ✅ (no screenshot/console tape on mobile — disclosed) |
 | Theme sync (light/dark/system) | settings | `PUT /me/theme` | ✅ |
 | Onboarding/milestones | welcome + role home | `POST /me/onboarding/complete` fired on first role-home | ✅ (4-frame tour & milestone scenes are web instruments, not ported) |

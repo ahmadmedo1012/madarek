@@ -31,7 +31,7 @@ for (const [route, label] of [["/", "landing"], ["/student/dashboard", "dash"]])
   const context = await b.newContext({ viewport: { width: 390, height: 844 } });
   if (route.startsWith("/student")) {
     await installMockApi(context, { sessionUser: STUDENT_USER });
-    await seedSession(context, { ...STUDENT_USER, memberships: [], currentInstitution: { id: "inst_e2e_zu", name: "جامعة الزاوية", nameEn: "Zawia University", slug: "zu" }, membershipRole: "STUDENT" }, { token: "e2e-token-student" });
+    await seedSession(context, { ...STUDENT_USER, memberships: [], currentInstitution: { id: "inst_e2e_zu", name: "مؤسسة مدارك النموذجية", nameEn: "Madarek Model Institution", slug: "zu" }, membershipRole: "STUDENT" }, { token: "e2e-token-student" });
   }
   const page = await context.newPage();
   await page.goto(URL_BASE + route, { waitUntil: "networkidle", timeout: 60000 });

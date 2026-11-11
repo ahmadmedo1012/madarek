@@ -323,6 +323,9 @@
   transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* the census markpath transition seat */
 }
 .fo-mark-veiled { opacity: 0; }
+/* master/B1 — «النقطة»: the construction mark's orange point rides the
+   shared accent seat (the same var(--accent) <Logo> uses — one brand). */
+.fo-mark-p--point { fill: var(--accent); stroke: none; }
 .fo-mark-img { inline-size: calc(var(--fu) * 215); block-size: 0; }
 
 /* ═══ the strip band: OUR ink render + the grayscale twin + chrome ═══ */

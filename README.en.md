@@ -16,7 +16,7 @@ is the English mirror for international readers and tooling.
 **Madarek** is an **independent** smart-learning platform (Arabic-first).
 No official adoption or endorsement by any educational
 institution exists — the institutional data currently shown (faculties,
-facts) is showcase/reference data for the University of Zawia, sourced
+facts) is showcase/reference data for the Madarek Model Institution, sourced
 from its public website.
 
 ## What it is

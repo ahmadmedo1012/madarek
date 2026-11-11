@@ -103,7 +103,6 @@ const PUBLIC_ROUTES: readonly [name: string, route: string][] = [
   ['auth', '/auth'],
   ['forgot-password', '/auth/forgot-password'],
   ['colleges', '/colleges'],
-  ['campus', '/campus'],
   ['capabilities', '/capabilities'],
   ['not-found', '/404'],
   ['forbidden', '/403'],

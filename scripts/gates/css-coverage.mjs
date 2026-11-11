@@ -57,7 +57,7 @@ const CKPT_OUT = FULL_OUT.replace(/\.json$/, '') + '.ckpt.json';
 
 const ROUTES = [
   '/', '/login', '/register', '/about', '/help', '/contact',
-  '/campus', '/colleges', '/competitions', '/app', '/legal/privacy', '/404',
+  '/colleges', '/competitions', '/app', '/legal/privacy', '/404',
 ];
 const VIEWPORTS = [390, 768, 1440];
 const THEMES = ['light', 'dark'];
