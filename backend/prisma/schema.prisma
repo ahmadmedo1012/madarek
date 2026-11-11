@@ -61,6 +61,28 @@ enum InstitutionStatus {
   SUSPENDED
 }
 
+// master-E1 — نوع المؤسسة التعليمية: المدرسة مواطن من الدرجة الأولى
+// بقدر الجامعة (مدارك تخدم الاثنين + مراكز التدريب). القيمة nullable
+// عمدًا للتوافق الرجعي: الصفوف القائمة (عرض r178 والمؤسسات التجريبية)
+// تُقرأ بدون قيمة = نمط جامعي — نفس الدلالة التاريخية — ولا تُحدَّث
+// إلا صراحةً عندما يختار المالك نوع مؤسسته.
+enum InstitutionKind {
+  SCHOOL // مدرسة (ابتدائية/إعدادية/ثانوية) — نمط المرحلة/الصف/الفصل
+  UNIVERSITY // جامعة — نمط الكلية/القسم/السنة (الحقول التاريخية)
+  COLLEGE // كلية/معهد عالٍ
+  TRAINING_CENTER // مركز تدريب/تعليم مستمر
+  OTHER // غير ذلك
+}
+
+// master-E1 — جنس صاحب الملف (اختياري في ملف الطالب). UNSPECIFIED هي
+// قيمة عدم الإفصاح — لم تُهيّأ قيمة افتراضية للعمود حتى لا تُخزَّن
+// دلالة لم يصرّح بها المستخدم.
+enum Gender {
+  MALE
+  FEMALE
+  UNSPECIFIED
+}
+
 enum AcademicRank {
   LECTURER
   ASSISTANT_PROFESSOR
@@ -268,29 +290,55 @@ enum ThemePreference {
 // alandalus-demo) مؤسسة تجريبية عامة تثبت تفرد رموز المقررات وأرقام
 // التسجيل على مستوى المؤسسة لا المنصة.
 model Institution {
-  id        String            @id @default(cuid())
-  name      String
-  nameEn    String?
-  slug      String            @unique
-  status    InstitutionStatus @default(ACTIVE)
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  id             String            @id @default(cuid())
+  name           String
+  nameEn         String?
+  slug           String            @unique
+  status         InstitutionStatus @default(ACTIVE)
+  // master-E1 — النوع التعليمي (مدرسة/جامعة/كلية/مركز تدريب). NULL =
+  // النمط الجامعي التاريخي (توافق رجعي: كل الصفوف القائمة أُنشئت في
+  // سياق جامعي). يحدد النمط أي حقول الملف الطالب تُعرض/تُلزم:
+  // SCHOOL → stage/grade/section… ، UNIVERSITY → faculty/department/year…
+  kind           InstitutionKind?
+  // master-E1 — إعدادات أكاديمية مضبوطة (ليست حقيبة JSON حرة).
+  // الشكل المُتحكَّم به (يُصدَّق في طبقة الخدمة، لا في القاعدة):
+  //   {
+  //     gradingScale?: {
+  //       kind: 'PERCENT_100' | 'GPA_4' | 'GPA_5',   // سلم التنقيط
+  //       passMark?: number,                          // حد النجاح (نسبة أو معدل)
+  //       decimals?: number                           // خانات التقريب (0-3)
+  //     },
+  //     stages?: Array<{                             // مراحل المؤسسة (kind=SCHOOL)
+  //       key: string,                               // مفتاح ثابت (slug)
+  //       labelAr: string,                           // «المرحلة الثانوية»
+  //       labelEn?: string,
+  //       grades?: Array<{ key: string; labelAr: string; labelEn?: string }>
+  //     }>,
+  //     sections?: string[]                          // أسماء الفصول المتاحة («أ»، «ب»…)
+  //   }
+  // أي مفتاح غير معرَّف = تكوين غير مقبول (تُرفض الكتابة لا تُهمَل).
+  academicConfig Json?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
-  memberships      Membership[]
-  faculties        Faculty[]
-  students         StudentProfile[]
-  courses          Course[]
-  permissionGrants UserPermission[]
-  auditLogs        AuditLog[]
-  posts            Post[]
-  studyRooms       StudyRoom[]
-  campusEvents     CampusEvent[]
-  competitions     Competition[]
-  researchPapers   ResearchPaper[]
-  aiConversations  AiConversation[]
-  universityFacts  UniversityFact[]
-  syncRuns         SyncRun[]
+  memberships       Membership[]
+  faculties         Faculty[]
+  students          StudentProfile[]
+  courses           Course[]
+  permissionGrants  UserPermission[]
+  auditLogs         AuditLog[]
+  posts             Post[]
+  studyRooms        StudyRoom[]
+  campusEvents      CampusEvent[]
+  competitions      Competition[]
+  researchPapers    ResearchPaper[]
+  aiConversations   AiConversation[]
+  universityFacts   UniversityFact[]
+  syncRuns          SyncRun[]
   aiKnowledgeChunks AiKnowledgeChunk[]
+  // master-E1 — تعريفات الحقول المخصصة لهذه المؤسسة (النظام البنيوي
+  // للحقول المخصصة — انظر InstitutionFieldDefinition أدناه).
+  fieldDefinitions  InstitutionFieldDefinition[]
 
   @@index([status])
 }
@@ -412,23 +460,23 @@ model User {
   // R320 §D (P0-3/P0-4) — the forgot-password flow's single-use tokens.
   passwordResetTokens PasswordResetToken[]
 
-  @@index([role])
-  @@index([email])
-  @@index([scopeFacultyId])
-
   // r323 B3.1 — the invite codes this user issued / consumed.
-  issuedInvites  InviteCode[] @relation("InviteCodeCreator")
-  inviteUses     InviteUse[]  @relation("InviteUseUser")
+  issuedInvites InviteCode[] @relation("InviteCodeCreator")
+  inviteUses    InviteUse[]  @relation("InviteUseUser")
 
   // r323 B3.6 — the pilot feedback loop the user filed.
-  feedbackSent   PilotFeedback[]
+  feedbackSent PilotFeedback[]
 
   // r326 M1.1 — the client-error telemetry the user's devices sent
   // (optional userId — anonymous crash reports are accepted).
-  clientErrors   ClientError[]
+  clientErrors ClientError[]
 
   // r326 M2.6 — the push devices registered by this user's installs.
-  pushDevices    PushDevice[]
+  pushDevices PushDevice[]
+
+  @@index([role])
+  @@index([email])
+  @@index([scopeFacultyId])
 }
 
 model StudentProfile {
@@ -454,8 +502,45 @@ model StudentProfile {
   gpa           Decimal     @default(0) @db.Decimal(3, 2)
   totalXp       Int         @default(0)
   level         Int         @default(1)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+
+  // ─── master-E1: حقول النمط المدرسي (kind=SCHOOL) ───────────────
+  // ثنائية المدرسة/الجامعة: الحقول الجامعية أعلاه (facultyId/
+  // departmentId/year/universityId) تبقى كما هي وتُقرأ كنمط جامعي؛
+  // هذه الحقول للنمط المدرسي حيث لا كليات ولا أقسام — كلها اختيارية
+  // لأن الجامعات لا تستخدمها، والملزِمية تُفرض في طبقة الخدمة حسب
+  // kind المؤسسة (لا يمكن NOT NULL هنا دون كسر الصفوف الجامعية).
+  stage          String? // المرحلة (ابتدائية/إعدادية/ثانوية)
+  grade          String? // الصف (الأول/…/السادس عشر)
+  section        String? // الفصل (أ/ب/…)
+  previousSchool String? // المدرسة السابقة (نقل/قيد جديد)
+  transferStatus String? // حالة النقل (منتقل/مستجد/منسحب…)
+
+  // ─── master-E1: الهوية والتواصل على الملف نفسه ─────────────────
+  // مؤسسات بلا بريد إلكتروني (مدارس خصوصًا) تحتاج بياناتها على الملف
+  // لا على المستخدم — كلها اختيارية: الاسم على User يبقى مصدر
+  // المصادقة، وهذه نسخة الملف (الاسم الرسمي في الوثائق قد يطول).
+  nameAr                  String? // الاسم الكامل (عربي) كما في الوثائق
+  nameEn                  String? // الاسم الكامل (لاتيني) إن وُجد
+  dateOfBirth             DateTime? // تاريخ الميلاد
+  profileImageUrl         String? // صورة الملف (مقعد الملف لا المستخدم)
+  gender                  Gender?
+  city                    String?
+  address                 String?
+  studentPhone            String? // هاتف الطالب — الصيغة المعروضة
+  studentPhoneNormalized  String? // هاتف الطالب — مفتاح البحث (أرقام فقط مع رمز الدولة، انظر src/lib/phones.ts)
+  additionalPhone         String? // هاتف إضافي (صيغة معروضة)
+  guardianName            String? // اسم ولي الأمر
+  guardianRelationship    String? // صلة القرابة (أب/أم/وصي…)
+  guardianPhone           String? // هاتف ولي الأمر — المعروض
+  guardianPhoneNormalized String? // هاتف ولي الأمر — مفتاح البحث
+  emergencyContactName    String? // جهة الاتصال للطوارئ
+  emergencyContactPhone   String? // هاتف الطوارئ (معروض)
+
+  // master-E1 — قيم الحقول المخصصة المرتبطة بهذا الملف.
+  fieldValues FieldValue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // رقم التسجيل الجامعي مُتفرّد لكل مؤسسة — نفس الرقم قد يوجد في
   // مؤسسة أخرى (r178).
@@ -464,6 +549,8 @@ model StudentProfile {
   @@index([institutionId])
   @@index([facultyId])
   @@index([departmentId])
+  // master-E1 — البحث بالهاتف المُطبَّع (استعلامات «من هذا الرقم؟»).
+  @@index([studentPhoneNormalized])
 }
 
 model TeacherProfile {
@@ -503,14 +590,127 @@ model TeacherProfile {
   positionDepartment   Department?       @relation("DepartmentLeadership", fields: [positionDepartmentId], references: [id])
   appointedAt          DateTime?
   termEndsAt           DateTime?
-  createdAt            DateTime          @default(now())
-  updatedAt            DateTime          @updatedAt
+
+  // ─── master-E1: هوية المدرّس وموظفيته (كلها اختيارية) ─────────
+  // المدارس والمراكز تخاطب مدرّسيها بالرقم الوظيفي لا بالبريد؛
+  // والاسم الرسمي قد يطول عن الاسم القصير على User.
+  employeeId              String? // الرقم الوظيفي داخل المؤسسة
+  nameAr                  String? // الاسم الكامل (عربي) كما في الوثائق
+  nameEn                  String? // الاسم الكامل (لاتيني) إن وُجد
+  personalPhone           String? // الهاتف الشخصي — المعروض
+  personalPhoneNormalized String? // الهاتف الشخصي — مفتاح البحث (src/lib/phones.ts)
+  officialPhone           String? // هاتف المكتب الرسمي
+  officialEmail           String? // البريد الرسمي للمؤسسة (مستقل عن بريد الدخول)
+
+  // master-E1 — قيم الحقول المخصصة المرتبطة بهذا الملف.
+  fieldValues FieldValue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([departmentId])
   @@index([verifiedById])
   @@index([positionFacultyId])
   @@index([positionDepartmentId])
+  // master-E1 — بحث الرقم الوظيفي (رواتب/حضور/استيراد).
+  @@index([employeeId])
+}
+
+// ────────────────────────────────────────────────────────────────
+//  master-E1 — النظام البنيوي للحقول المخصصة (Custom fields)
+// ────────────────────────────────────────────────────────────────
+//  كل مؤسسة تُعرّف حقولها الإضافية على ملفات الطلبة/المدرّسين/
+//  الموظفين — تعريف مُهيكل (عمود لكل دلالة: نوع، إلزام، خيارات،
+//  تحقق، صلاحية رؤية) لا كيس Json على الملف. القيمة تُخزَّن في
+//  FieldValue بعمود مطابق لنوع التعريف — قابلة للفهرسة والتحقق
+//  المركزي في طبقة الخدمة (validateFieldValue في
+//  src/lib/profiles/fields.ts — نقية بلا قاعدة).
+//  ثنائية المدرسة/الجامعة: الجامعة تُعرّف «المعدل التراكمي الثانوي»
+//  والمدرسة تُعرّف «رقم الحافلة» — نفس الجهاز يخدم الاثنين.
+
+enum FieldEntity {
+  STUDENT
+  TEACHER
+  // STAFF معرَّف مسبقًا لطبقة الموظفين القادمة — لا يوجد نموذج ملف
+  // موظف بعد، وFieldValue لا يقبل سوى ملفات الطالب/المدرّس حاليًا
+  // (يُفرض في طبقة الخدمة حتى يوجد النموذج).
+  STAFF
+}
+
+enum FieldType {
+  TEXT // نص حر — valueText
+  NUMBER // رقم — valueNumber
+  DATE // تاريخ — valueDate
+  BOOLEAN // نعم/لا — valueBoolean
+  SELECT // اختيار واحد من options — valueSelect
+  MULTI_SELECT // اختيار متعدد من options — valueMultiSelect
+}
+
+// تعريف حقل مخصص — مملوك للمؤسسة. key ثابت (slug) تُبنى عليه
+// استعلامات/API الملف؛ والترتيب sortOrder مُتفرّد داخل
+// (المؤسسة، الكيان) حتى لا يتزاحم حقلان على مقعد واحد في النموذج.
+model InstitutionFieldDefinition {
+  id            String      @id @default(cuid())
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  key           String // مفتاح ثابت (slug) — «bus-number»
+  labelAr       String
+  labelEn       String
+  entity        FieldEntity
+  type          FieldType
+  required      Boolean     @default(false)
+  // مُتحكَّم به: string[] — خيارات SELECT/MULTI_SELECT (يُصدَّق في
+  // الخدمة: مصفوفة نصوص غير خالية بلا تكرار؛ null لبقية الأنواع).
+  options       Json?
+  // مُتحكَّم به: { min?: number; max?: number; pattern?: string } —
+  // للنص: طول/نمط؛ للرقم: حدّان؛ للتاريخ: نطاق زمني (epoch ms).
+  // يُصدَّق في الخدمة لا في القاعدة.
+  validation    Json?
+  // مُتحكَّم به: { roles: Role[] } — من يرى الحقل (قائمة أدوار
+  // صالحة من enum Role)؛ null = عام داخل المؤسسة.
+  visibleTo     Json?
+  searchable    Boolean     @default(false) // يدخل البحث العام للملفات
+  importKeyAr   String? // مرادف الترويسة في الاستيراد (عربي)
+  importKeyEn   String? // مرادف الترويسة في الاستيراد (لاتيني)
+  sortOrder     Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  values FieldValue[]
+
+  @@unique([institutionId, key])
+  @@unique([institutionId, entity, sortOrder])
+  @@index([institutionId, entity])
+}
+
+// قيمة حقل مخصص — صف واحد لكل (تعريف، ملف). أحد مفتاحي الملف
+// مُعبَّد والآخر فارغ (يُفرض في طبقة الخدمة — Prisma 5.22 لا يدعم
+// CHECK عبر التخطيط)؛ وفهرسا التفرد (definitionId، studentProfileId)
+// و(definitionId، teacherProfileId) يضمنان قيمة واحدة للتعريف على
+// كل ملف (تعدد NULL مسموح في Postgres — صفوف الكيان الآخر لا
+// تتزاحم).
+model FieldValue {
+  id               String                     @id @default(cuid())
+  definitionId     String
+  definition       InstitutionFieldDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  studentProfileId String?
+  studentProfile   StudentProfile?            @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+  teacherProfileId String?
+  teacherProfile   TeacherProfile?            @relation(fields: [teacherProfileId], references: [id], onDelete: Cascade)
+
+  // عمود واحد مطابق لنوع التعريف يُملأ (يُفرض في الخدمة):
+  valueText        String? // TEXT
+  valueNumber      Decimal? // NUMBER
+  valueDate        DateTime? // DATE
+  valueBoolean     Boolean? // BOOLEAN
+  valueSelect      String? // SELECT — قيمة من options التعريف
+  valueMultiSelect String[]  @default([]) // MULTI_SELECT — قيم من options
+
+  @@unique([definitionId, studentProfileId])
+  @@unique([definitionId, teacherProfileId])
+  @@index([studentProfileId])
+  @@index([teacherProfileId])
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -539,12 +739,12 @@ model Faculty {
   scopedAdmins       User[]             @relation("FacultyScopedAdmins")
   leadership         TeacherProfile[]   @relation("FacultyLeadership")
 
+  // r323 B3.1
+  inviteCodes InviteCode[]
+
   @@unique([institutionId, name, city])
   @@index([city])
   @@index([institutionId])
-
-  // r323 B3.1
-  inviteCodes InviteCode[]
 }
 
 model Department {
@@ -561,11 +761,11 @@ model Department {
   // Reverse relation for department-head appointments
   leadership         TeacherProfile[]   @relation("DepartmentLeadership")
 
-  @@unique([facultyId, name])
-  @@index([facultyId])
-
   // r323 B3.1
   inviteCodes InviteCode[]
+
+  @@unique([facultyId, name])
+  @@index([facultyId])
 }
 
 model Course {
@@ -616,12 +816,12 @@ model CourseOffering {
   examTemplates  ExamTemplate[]
   liveSessions   LiveSession[]
 
+  // r323 B3.1
+  inviteCodes InviteCode[]
+
   @@unique([courseId, term, teacherId])
   @@index([teacherId])
   @@index([term])
-
-  // r323 B3.1
-  inviteCodes InviteCode[]
 }
 
 model Enrollment {
@@ -1150,21 +1350,21 @@ model AuditLog {
 // ════════════════════════════════════════════════════════════════
 
 model Lecture {
-  id            String         @id @default(cuid())
-  offeringId    String
-  offering      CourseOffering @relation(fields: [offeringId], references: [id])
-  title         String
-  description   String?
-  ordinal       Int            @default(0)
-  durationSec   Int            @default(0)
-  videoUrl      String
-  posterUrl     String?
-  transcriptUrl String?
+  id               String           @id @default(cuid())
+  offeringId       String
+  offering         CourseOffering   @relation(fields: [offeringId], references: [id])
+  title            String
+  description      String?
+  ordinal          Int              @default(0)
+  durationSec      Int              @default(0)
+  videoUrl         String
+  posterUrl        String?
+  transcriptUrl    String?
   // r323 B2.3 — the STT job ledger (the upload path writes DONE directly;
   // the generation path walks QUEUED → RUNNING → DONE|FAILED).
   transcriptStatus TranscriptStatus @default(NONE)
   transcriptError  String?
-  createdAt     DateTime       @default(now())
+  createdAt        DateTime         @default(now())
 
   chapters    LectureChapter[]
   checkpoints LectureCheckpoint[]
@@ -2110,8 +2310,8 @@ model AiFeedback {
 // r323 B3.1 — invite codes (single-use/expiring, scoped self-registration)
 // ────────────────────────────────────────────────────────────────
 model InviteCode {
-  id           String   @id @default(cuid())
-  code         String   @unique
+  id           String          @id @default(cuid())
+  code         String          @unique
   role         Role
   // The scope the code enrolls into: exactly one of offering/department/
   // faculty (a code may target a course section, a department, or a whole
@@ -2123,12 +2323,12 @@ model InviteCode {
   facultyId    String?
   faculty      Faculty?        @relation(fields: [facultyId], references: [id])
   createdById  String
-  createdBy    User     @relation("InviteCodeCreator", fields: [createdById], references: [id])
+  createdBy    User            @relation("InviteCodeCreator", fields: [createdById], references: [id])
   expiresAt    DateTime
-  maxUses      Int      @default(1)
-  usedCount    Int      @default(0)
+  maxUses      Int             @default(1)
+  usedCount    Int             @default(0)
   uses         InviteUse[]
-  createdAt    DateTime @default(now())
+  createdAt    DateTime        @default(now())
 
   @@index([createdById])
 }
@@ -2151,21 +2351,21 @@ model InviteUse {
 // owner inbox works the status. Weekly digest reads the same rows.
 // ────────────────────────────────────────────────────────────────
 model PilotFeedback {
-  id        String   @id @default(cuid())
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id])
-  kind      String // BUG | IDEA
-  role      String? // the sender's role at send time
-  route     String? // the SPA path it was filed from
-  userAgent String?
-  console   Json? // [{ t, text }] — the consoleTape ring (≤ 20 rows)
-  note      String   @db.Text
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  kind       String // BUG | IDEA
+  role       String? // the sender's role at send time
+  route      String? // the SPA path it was filed from
+  userAgent  String?
+  console    Json? // [{ t, text }] — the consoleTape ring (≤ 20 rows)
+  note       String   @db.Text
   // The optional screenshot: a client-downscaled JPEG data URL
   // (≤ 1280px wide, ≤ 600 KB) — a pilot-scale convenience, not a
   // storage product; the inbox renders it inline.
   screenshot String?
-  status    String   @default("open") // open → triage → fixed | dismissed
-  createdAt DateTime @default(now())
+  status     String   @default("open") // open → triage → fixed | dismissed
+  createdAt  DateTime @default(now())
 
   @@index([status, createdAt])
   @@index([userId])
