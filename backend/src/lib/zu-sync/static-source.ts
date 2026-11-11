@@ -41,13 +41,13 @@ export interface FactPatch {
 
 /**
  * Curated facts for the fictional demonstration tenant
- * (جامعة مدارك التجريبية). Synthetic by design — demo contact
+ * (مؤسسة مدارك النموذجية). Synthetic by design — demo contact
  * details, demo identity, demo structure.
  */
 export const STATIC_FACTS: FactPatch[] = [
   // ─── Identity ────────────────────────────────────────────
-  { key: 'name.ar', value: 'جامعة مدارك التجريبية', category: 'identity', source: 'demo-source:identity' },
-  { key: 'name.en', value: 'Madarek Demo University', category: 'identity', source: 'demo-source:identity' },
+  { key: 'name.ar', value: 'مؤسسة مدارك النموذجية', category: 'identity', source: 'demo-source:identity' },
+  { key: 'name.en', value: 'Madarek Model Institution', category: 'identity', source: 'demo-source:identity' },
   { key: 'foundingYear', value: '2015', category: 'identity', source: 'demo-source:identity' },
   { key: 'foundingDecree', value: 'سجلّ عرض تجريبي — لا قرار حقيقي (بيانات اصطناعية)', category: 'identity', source: 'demo-source:identity' },
   { key: 'collegeCount', value: '25', category: 'identity', source: 'demo-source:colleges' },

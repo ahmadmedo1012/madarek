@@ -184,7 +184,7 @@ describe('r170d → r188 — landing burger keyboard contract (Escape + aria-exp
     // structure — «الفصول» is now «الرحلة» (the pinned map section), and
     // «ما يعمل اليوم» routes to /capabilities (the ledger sub-page).
     // R331 register: the flat real-route seat register + the ledger row.
-    for (const name of ['الرئيسية', 'المقررات', 'الكليات', 'الحرم الجامعي', 'المسابقات', 'التطبيق', 'ما يعمل اليوم']) {
+    for (const name of ['الرئيسية', 'المقررات', 'الكليات', 'المسابقات', 'التطبيق', 'ما يعمل اليوم']) {
       expect(items.some((a) => (a.textContent || '').includes(name))).toBe(true);
     }
 

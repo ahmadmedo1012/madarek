@@ -24,7 +24,7 @@ import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
  *     bracketed count in the footer line — no slab, no inversion;
  *   · إلى أين — the honest status pairs: live / simulated /
  *     in-development, mono-tagged, exactly as the system is today;
- *   · الجامعة التجريبية — the registry summary: the computed college
+ *   · المؤسسة النموذجية — the registry summary: the computed college
  *     count + the demo-data disclosure, linking to /colleges for the
  *     full registry (the interactive detail stays where it lives).
  */
@@ -63,10 +63,10 @@ export function CapabilitiesPage() {
               كل رقم يُحسب من حالة الميزات في النظام — يتغيّر مع التحديثات، لا مع الحملات.
             </RevealCssClass>
             {/* D9: the honest CTA pair at the page head (the D7c measured
-                seat) — the sister sub-page + the real registry page; the
+                seat) — the sister public page + the real registry page; the
                 registry section below keeps the data + the disclosure. */}
             <RevealCssClass as="div" className="pf-page-actions" delay={3}>
-              <Link to="/campus" className="btn accent" aria-label="الحياة الجامعية — الصور والفيديو">الحياة الجامعية</Link>
+              <Link to="/competitions" className="btn accent" aria-label="المسابقات — تحديات مدارك">المسابقات</Link>
               <Link to="/colleges" className="btn ghost">بوابة الكليات</Link>
             </RevealCssClass>
           </div>
@@ -110,10 +110,10 @@ export function CapabilitiesPage() {
           </RevealCssClass>
         </section>
 
-        {/* ── الجامعة التجريبية — the registry summary ── */}
+        {/* ── المؤسسة النموذجية — the registry summary ── */}
         <section aria-labelledby="cap-colleges-title">
           <div className="cu-head pf-page-header-text">
-            <span className="fo-eyebrow"><span className="fo-mono" dir="ltr">[03]</span> الجامعة التجريبية</span>
+            <span className="fo-eyebrow"><span className="fo-mono" dir="ltr">[03]</span> المؤسسة النموذجية</span>
             <RevealCssClass as="h2" className="cu-title" delay={1} id="cap-colleges-title">
               {formatInt(colleges.length)} كلية في {formatInt(campusCount)} أحرام
             </RevealCssClass>
@@ -126,7 +126,7 @@ export function CapabilitiesPage() {
             <dl className="cu-meta" aria-label="بيانات السجلّ">
               <div className="fo-meta-row">
                 <dt className="fo-meta-k">السجلّ</dt>
-                <dd className="fo-meta-v">جامعة مدارك التجريبية</dd>
+                <dd className="fo-meta-v">مؤسسة مدارك النموذجية</dd>
               </div>
               <div className="fo-meta-row">
                 <dt className="fo-meta-k">الكليات</dt>
@@ -146,7 +146,7 @@ export function CapabilitiesPage() {
           </RevealCssClass>
 
           <p className="cu-foot">
-            بيانات العرض تخصّ «جامعة مدارك التجريبية» — مؤسّسة اصطناعية بالكامل لأغراض العرض،
+            بيانات العرض تخصّ «مؤسسة مدارك النموذجية» — مؤسّسة اصطناعية بالكامل لأغراض العرض،
             ومدارك منصّة مستقلّة لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها.
           </p>
         </section>

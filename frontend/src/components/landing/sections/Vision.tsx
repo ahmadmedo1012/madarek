@@ -202,7 +202,7 @@ export function Vision({ year }: { year: number }) {
           <strong><span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> كلية</strong> في{' '}
           <span className="fo-mono" dir="ltr">{formatInt(CAMPUS_COUNT)}</span> أحرام —{' '}
           <span className="fo-mono" dir="ltr">[{String(LIVE_COUNT).padStart(2, '0')}]</span> قدرات تعمل اليوم.
-          بيانات «جامعة مدارك التجريبية»: اصطناعية بالكامل لأغراض العرض.
+          بيانات «مؤسسة مدارك النموذجية»: اصطناعية بالكامل لأغراض العرض.
         </p>
         <div className="cg-strip-links" data-spec="cta.registry-links">
           <Link to="/colleges" className="btn ghost sm" data-spec-hover="6">تصفح الكليات التجريبية</Link>

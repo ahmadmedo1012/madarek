@@ -44,7 +44,7 @@ export default function CollegesIndex() {
 
   return (
     <Screen scroll>
-      <StackHeader title="الكلّيات" kicker="جامعة مدارك التجريبية" />
+      <StackHeader title="الكلّيات" kicker="مؤسسة مدارك النموذجية" />
 
       <View style={{ gap: sp[4], paddingBottom: sp[8] }}>
         <T variant="h3" weight="bold">

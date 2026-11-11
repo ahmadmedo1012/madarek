@@ -2,7 +2,7 @@
 // Source of truth (this PR): static config. Long-term: backend College table.
 //
 // ═══════════════════════════════════════════════════════════════════
-// r188 — FICTIONAL DEMONSTRATION REGISTRY (جامعة مدارك التجريبية).
+// r188 — FICTIONAL DEMONSTRATION REGISTRY (مؤسسة مدارك النموذجية).
 //
 // The registry previously transcribed the real University of Zawia
 // faculty list (13 الزاوية + 8 العجيلات + 1 زوارة + 3 أخرى — real

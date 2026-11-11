@@ -1,11 +1,10 @@
 {
   "version": 1,
-  "generatedFor": "R307 — Madarek complete experience upgrade",
+  "generatedFor": "product + illustration registries (master/D5: the university showcase sections are retired)",
   "generatedAt": "2026-10-22",
   "policy": {
-    "ar": "كل صورة الجامعات مرخّصة من ويكيميديا كومنز (PD / CC BY / CC BY-SA) مع نسب المصوّر والمصدر؛ الفيديوهات تُضمَّن من القناة الرسمية للجامعة عبر آلية التضمين المسموحة (youtube-nocookie) وتُحمَّل فقط بعد نقر المستخدم؛ لقطات المنتج من بيئة عرض محليّة ببيانات تجريبية اصطناعية بالكامل — لا بيانات شخصية حقيقية. ظهور جامعة في الوسائط لا يعني تبنّيًا أو شراكة رسمية.",
-    "en": "University photos are Commons-licensed (PD / CC BY / CC BY-SA) with per-image attribution; videos embed from official university channels via the permitted youtube-nocookie mechanism, click-to-load only; product captures come from a local seeded demo environment (fully synthetic data). Media presence does not imply institutional endorsement.",
-    "r343": "The Wikimedia photo programme is retired on the web (original cards + r342 illustrations); product plates are re-captured from the real components; provenance for every remaining byte stays in this manifest."
+    "ar": "لقطات المنتج من بيئة عرض محليّة ببيانات تجريبية اصطناعية بالكامل — لا بيانات شخصية حقيقية ولا انتساب مؤسسي. كل الرسوم والبطاقات أصلية من رسم مدارك.",
+    "en": "Product captures come from a local seeded demo environment (fully synthetic data — no personal data, no institutional affiliation). All artwork and cards are original Madarek drawings."
   },
   "derivativePipeline": "scripts/media/build-media-derivatives.mjs (ffmpeg + libwebp, zero repo dependencies)",
   "products": [
@@ -288,44 +287,6 @@
       "changes": "cropped to viewport, re-encoded to WebP from .r308-capture-archive/; contains seeded demo data only — no real personal data",
       "demoDataDisclosure": "بيانات العرض التجريبية داخل «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل",
       "verifiedAt": "2026-10-22"
-    }
-  ],
-  "videos": [
-    {
-      "id": "misurata-exams",
-      "type": "video",
-      "slot": "video-primary",
-      "institution": "جامعة مصراتة",
-      "titleAr": "أجواء امتحانات نهاية الفصل بكليات جامعة مصراتة",
-      "duration": "5:11",
-      "videoId": "qM67yDknM0U",
-      "embedUrl": "https://www.youtube-nocookie.com/embed/qM67yDknM0U",
-      "channel": "@MisurataUni",
-      "channelUrl": "https://www.youtube.com/@MisurataUni",
-      "identityEvidence": "القناة مرتبطة من الموقع الرسمي misuratau.edu.ly (أيقونة يوتيوب في التذييل)؛ oembed author_name = Misurata University",
-      "kindAr": "فيديو توثيقي من القناة الرسمية للجامعة",
-      "loadPolicy": "click-to-load (facade; iframe mounts only after user intent)",
-      "verifiedByPrincipal": true,
-      "verifiedAt": "2026-10-22",
-      "verificationCommand": "curl 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=qM67yDknM0U&format=json' && curl -s -o /dev/null -w '%{http_code}' https://www.youtube-nocookie.com/embed/qM67yDknM0U"
-    },
-    {
-      "id": "sebha-graduation",
-      "type": "video",
-      "slot": "video-secondary",
-      "institution": "جامعة سبها",
-      "titleAr": "حفل خريجي جامعة سبها — الدفعة 40",
-      "duration": "3:13",
-      "videoId": "dz_t7yOOZMc",
-      "embedUrl": "https://www.youtube-nocookie.com/embed/dz_t7yOOZMc",
-      "channel": "@sabhauniversity498",
-      "channelUrl": "https://www.youtube.com/channel/UCjEGH--aN7rRas_lAdqF35Q",
-      "identityEvidence": "القناة مرتبطة من صفحة الفيديو الرسمية sebhau.edu.ly/video-gallery/ («قناة جامعة سبها على اليوتيوب»)؛ والفيديو نفسه مضمَّن في موقع الجامعة؛ oembed author_name = جامعة سبها Sabha University",
-      "kindAr": "فيديو توثيقي من القناة الرسمية للجامعة",
-      "loadPolicy": "click-to-load (facade; iframe mounts only after user intent)",
-      "verifiedByPrincipal": true,
-      "verifiedAt": "2026-10-22",
-      "verificationCommand": "curl 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=dz_t7yOOZMc&format=json' && curl -sL 'https://sebhau.edu.ly/video-gallery/' | grep -c 'UCjEGH--aN7rRas_lAdqF35Q'"
     }
   ],
   "illustrations": {
@@ -854,56 +815,6 @@
         "tool": "glm-image + r342-duotone-remap (original work)",
         "license": "original-work-madarek-r342",
         "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
-      }
-    ]
-  },
-  "cards": {
-    "policy": "R343 C-1 — the university seats are ORIGINAL typographic/architectural cards (no photographs, no crests, no traced buildings). ONE geometry source: shared/media/university-cards.ts (web renders it inline; the mobile port + the static-file builder consume the same module — never forked).",
-    "items": [
-      {
-        "id": "uob-wide",
-        "nn": "01",
-        "composition": "hall"
-      },
-      {
-        "id": "uob-science",
-        "nn": "02",
-        "composition": "arcade"
-      },
-      {
-        "id": "tripoli-science",
-        "nn": "03",
-        "composition": "courtyard"
-      },
-      {
-        "id": "uob-garden",
-        "nn": "04",
-        "composition": "courtyard"
-      },
-      {
-        "id": "garyounis-classic",
-        "nn": "05",
-        "composition": "tower"
-      },
-      {
-        "id": "garyounis-1",
-        "nn": "06",
-        "composition": "arcade"
-      },
-      {
-        "id": "omu-agri",
-        "nn": "07",
-        "composition": "hall"
-      },
-      {
-        "id": "fateh-science",
-        "nn": "08",
-        "composition": "arcade"
-      },
-      {
-        "id": "uob",
-        "nn": "09",
-        "composition": "tower"
       }
     ]
   }

@@ -33,7 +33,6 @@ const DECOR_FAMILIES = [
   // Y2 §05 rebuild (the filler chrome the brief ordered removed; the
   // families no longer exist in src/ OR the sheets — the §A6 sweep
   // re-lists them the day a decorative text glyph returns).
-  'inkm-sketch-mark',
   'fo-cta-sketch-mark',
   'fo-wordmark-reg',
 ];
@@ -89,9 +88,9 @@ describe('R321 §A6 — decorative marks never carry DOM text (the innerText lea
       'landing/shared.css',
       'landing/platform.css',
       'landing/strata.css',
-      /* R341/D9: campus.css is DELETED — its .inkm-sketch-mark family
-       * moved verbatim to patterns.css §10 (already first in this list),
-       * so the ::before glyph pin still has its home. */
+      /* R341/D9: campus.css is DELETED (its .inkm-sketch-mark family
+       * moved to patterns.css §10, then retired entirely with the
+       * university showcase at master/D3). */
       'shell/sheet-frame.css',
     ]
       .map((f) => readFileSync(path.join(SRC, 'styles', f), 'utf8'))

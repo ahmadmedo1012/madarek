@@ -144,7 +144,7 @@ describe('r188 — the folio chrome that ships', () => {
       expect(tsx).toContain(`id="${s2}"`);
     }
     expect(navTsx).toContain("href: '#chapters'");
-    for (const r of ['/colleges', '/campus', '/competitions', '/app']) {
+    for (const r of ['/colleges', '/competitions', '/app']) {
       expect(navTsx).toContain(`href: '${r}'`);
     }
   });

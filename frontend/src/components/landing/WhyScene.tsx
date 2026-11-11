@@ -28,7 +28,7 @@ import { createPortal } from 'react-dom';
 import {
   CAPTURE_LECTURE_CHECKPOINT_2X,
   PRODUCT_CAPTURES,
-} from '../../data/university-media';
+} from '../../data/product-media';
 import lectureShot2x from '../../assets/product/lecture-checkpoint.webp';
 
 /* rem seats (fluid root: 8.333px @1440) — section/row-relative,

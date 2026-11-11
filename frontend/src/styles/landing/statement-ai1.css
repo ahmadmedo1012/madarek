@@ -7,17 +7,33 @@
 
 /* R343 C-1 — the courtyard twins (the retired photo veil is gone with the
  * photograph; the light/dark illustration pair swaps on the theme token,
- * the wy-cycle grammar) + the crawl's typographic cards (the card svg
- * fills the cell the photo crop used to fill — same box, zero CLS). */
+ * the wy-cycle grammar) + master/D2 — the crawl's capability cells: the
+ * same card box the university card svg used to fill, now OUR OWN
+ * typographic register (a mono index + the capability name, centered
+ * in the same box — zero CLS). */
 .st-media-img.is-dark { visibility: hidden; }
 [data-theme="dark"] .st-media-img.is-light { visibility: hidden; }
 [data-theme="dark"] .st-media-img.is-dark { visibility: visible; }
 
 .st-crawl-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
   block-size: 100%;
   inline-size: 100%;
   overflow: clip;
   color: var(--text);
+  text-align: center;
 }
-.st-crawl-card .ucard { display: block; inline-size: 100%; block-size: 100%; }
+.st-crawl-word {
+  font-size: 0.6875rem;
+  letter-spacing: 0;
+  opacity: 0.62;
+}
+.st-crawl-name {
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  font-weight: 600;
+}

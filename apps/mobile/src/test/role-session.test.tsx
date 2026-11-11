@@ -44,7 +44,7 @@ function makeUser(role: AppRole): AuthUser {
     memberships: [
       {
         institutionId: "inst-1",
-        name: "الجامعة التجريبية",
+        name: "المؤسسة النموذجية",
         slug: "test-university",
         role,
         isActive: true,
@@ -53,7 +53,7 @@ function makeUser(role: AppRole): AuthUser {
     currentInstitution:
       role === "OWNER"
         ? null // OWNER is platform-level by design — no institution
-        : { id: "inst-1", name: "الجامعة التجريبية", slug: "test-university" },
+        : { id: "inst-1", name: "المؤسسة النموذجية", slug: "test-university" },
     membershipRole: role,
   };
 }

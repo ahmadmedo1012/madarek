@@ -33,7 +33,6 @@ import ForgotPasswordPage from '../../src/pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from '../../src/pages/auth/ResetPasswordPage';
 import { PrivacyPage, TermsPage, CookiesPage, AccessibilityPage, SecurityPage, DataPage } from '../../src/pages/legal/LegalPages';
 import { HelpPage, AboutPage, ContactPage } from '../../src/pages/PublicPages';
-import { CampusLifePage } from '../../src/pages/campus/CampusPages';
 import { CapabilitiesPage } from '../../src/pages/capabilities/CapabilityPages';
 
 /** The banned jargon patterns (P0 X10 + P8's list). The bare NN/NN
@@ -107,7 +106,6 @@ const SURFACES: ReadonlyArray<{ name: string; el: React.ReactElement }> = (() =>
     { name: '/help', el: wrap(<HelpPage />) },
     { name: '/about', el: wrap(<AboutPage />) },
     { name: '/contact', el: wrap(<ContactPage />) },
-    { name: '/colleges', el: wrap(<CampusLifePage />) },
     { name: '/capabilities', el: wrap(<CapabilitiesPage />) },
   ];
 })();

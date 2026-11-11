@@ -219,11 +219,13 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     // never canvas, never <picture>
     expect(liveTsx).not.toContain('<picture>');
     expect(liveTsx).not.toContain('<canvas');
-    // R343 C-1 — the ink-render programme is retired: the manifest carries
-    // the ORIGINAL card registry instead (the crawl is type-first now)
+    // master/D3 — the university card registry is retired with the
+    // showcase: the manifest carries ONLY the generic product +
+    // illustration registers (the crawl is OUR capability register now)
     const manifest = read('public/media/manifest.json');
-    expect(manifest).toContain('"cards"');
-    expect(manifest).toContain('"composition"');
+    expect(manifest).toContain('"products"');
+    expect(manifest).toContain('"illustrations"');
+    expect(manifest).not.toContain('"cards"');
   });
 
   it('R314 override — the inspection stations are real buttons (HeroInspect) over the ink render', () => {

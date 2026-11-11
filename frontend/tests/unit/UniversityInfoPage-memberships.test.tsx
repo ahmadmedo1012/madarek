@@ -56,6 +56,6 @@ describe('UniversityInfoPage — بطاقة تعريف المؤسّسة (r188)',
 
   it('the fictional institution name is the one the page carries', () => {
     renderPage();
-    expect(screen.getAllByText('جامعة مدارك التجريبية').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('مؤسسة مدارك النموذجية').length).toBeGreaterThan(0);
   });
 });

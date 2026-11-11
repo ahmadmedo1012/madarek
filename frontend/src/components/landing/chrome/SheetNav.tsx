@@ -74,7 +74,6 @@ const NAV_SEATS: readonly NavSeat[] = [
   { label: 'الرئيسية', href: '/' },
   { label: 'المقررات', href: '#chapters', anchor: true },
   { label: 'الكليات', href: '/colleges' },
-  { label: 'الحرم الجامعي', href: '/campus' },
   { label: 'المسابقات', href: '/competitions' },
   { label: 'التطبيق', href: '/app' },
 ] as const;

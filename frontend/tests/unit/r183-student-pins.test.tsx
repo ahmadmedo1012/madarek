@@ -202,8 +202,8 @@ const STUDENT = {
 const ZAWIA: InstitutionSummary = {
   // r188: the demonstration tenant — fictional identity, legacy id kept.
   id: 'inst-zawia-showcase',
-  name: 'جامعة مدارك التجريبية',
-  nameEn: 'Madarek Demo University',
+  name: 'مؤسسة مدارك النموذجية',
+  nameEn: 'Madarek Model Institution',
   slug: 'madarek-demo',
 };
 
@@ -254,7 +254,7 @@ describe('r183-B3 — /student/university derives its identity from the session 
   it('madarek-demo session: the fictional demo facts stay, labeled as the demonstration institution', () => {
     const { container } = renderUniversity(ZAWIA, ZAWIA_FACULTIES);
 
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('جامعة مدارك التجريبية');
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('مؤسسة مدارك النموذجية');
     // r188: the real-university facts (1988/decree/memberships) are GONE —
     // the demo tenant's synthetic profile is the only fact story.
     expect(screen.queryByText('1988')).toBeNull();

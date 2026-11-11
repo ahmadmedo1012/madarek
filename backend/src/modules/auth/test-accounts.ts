@@ -124,11 +124,11 @@ const ACCOUNT_PROFILES: Record<string, AccountProfileData> = {
 async function ensureSkeleton(prisma: PrismaClient) {
   const zawia = await prisma.institution.upsert({
     where: { slug: 'madarek-demo' },
-    update: { name: 'جامعة مدارك التجريبية', nameEn: 'Madarek Demo University', status: 'ACTIVE' },
+    update: { name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', status: 'ACTIVE' },
     create: {
       id: 'inst-zawia-showcase',
-      name: 'جامعة مدارك التجريبية',
-      nameEn: 'Madarek Demo University',
+      name: 'مؤسسة مدارك النموذجية',
+      nameEn: 'Madarek Model Institution',
       slug: 'madarek-demo',
       status: 'ACTIVE',
     },
