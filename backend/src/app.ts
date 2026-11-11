@@ -18,7 +18,12 @@ import { globalRateLimiter } from './http/middleware/rateLimit.js';
 
 import authRoutes from './http/routes/auth.routes.js';
 import usersRoutes from './http/routes/users.routes.js';
-import importRoutes from './http/routes/import.routes.js';
+// master-G1 note: pre-existing baseline breakage from the master-F1
+// merge — import.routes.ts exports a NAMED `importRoutes` (no default),
+// so the default import below failed `tsc --noEmit` on a clean install.
+// Minimal unblock (TS's own suggestion), flagged in the G1 report for
+// the lander; every other route module keeps the default-export idiom.
+import { importRoutes } from './http/routes/import.routes.js';
 import coursesRoutes from './http/routes/courses.routes.js';
 import enrollmentsRoutes from './http/routes/enrollments.routes.js';
 import offeringsRoutes from './http/routes/offerings.routes.js';
