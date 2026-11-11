@@ -3,14 +3,8 @@
  * pins for the defects this round fixed. Every pin binds to a semantic
  * contract (role/name/ARIA/behavior), never to a styling accident.
  *
- *  1. AdminSyncPage honesty: the subtitle never again carries the
- *     fabricated `demo-source` slug (r164i's dead-data family) — the
- *     page's own source map names the real curated source.
- *  2. AdminSyncPage freshness-first: the KPI strip answers "how
- *     fresh are we?" before "how big are we".
- *  3. AdminSyncPage stale affordance: a category head carries its
- *     own stale count — the operator sees WHICH category is stale
- *     without opening each accordion.
+ *  1–3. (retired — the AdminSyncPage went with the /admin/sync
+ *     backend, R349 U2)
  *  4. admin.css owns the .spin rule: the sync-in-flight motion had
  *     zero stylesheet rules anywhere, so «جارٍ المزامنة…» and RUNNING
  *     history rows lost their motion signal entirely.
@@ -32,13 +26,12 @@
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import type { Mock } from 'vitest';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { readFileSync } from 'node:fs';
 import { resolve as resolvePath } from 'node:path';
 import { AdminCoursesPage } from '../../src/pages/admin/AdminPages';
-import { AdminSyncPage } from '../../src/pages/admin/AdminSyncPage';
 import { OwnerAlertsPage } from '../../src/pages/owner/OwnerAlertsPage';
 import { OwnerUsersPage } from '../../src/pages/owner/OwnerUsersPage';
 import { OwnerActivityPage } from '../../src/pages/owner/OwnerActivityPage';
@@ -129,75 +122,7 @@ vi.mock('../../src/hooks/useOwner', async (importOriginal) => {
   };
 });
 
-/* ═══ 1–3. AdminSyncPage (honesty · freshness · stale affordance) ═══ */
-
-const SYNC_FIXTURE = {
-  staleCount: 1,
-  factCount: 6,
-  latestRun: {
-    id: 'run-1', startedAt: '2026-10-01T10:00:00.000Z', completedAt: '2026-10-01T10:00:02.000Z',
-    status: 'SUCCESS', source: 'static-markdown', factsAdded: 4, factsUpdated: 2,
-    durationMs: 2100, errorMsg: null, notes: 'مزامنة أولية',
-  },
-  runHistory: [
-    {
-      id: 'run-1', startedAt: '2026-10-01T10:00:00.000Z', completedAt: '2026-10-01T10:00:02.000Z',
-      status: 'SUCCESS', source: 'static-markdown', factsAdded: 4, factsUpdated: 2,
-      durationMs: 2100, errorMsg: null, notes: 'مزامنة أولية',
-    },
-  ],
-  categories: [
-    {
-      category: 'identity', count: 2,
-      items: [{ key: 'name', value: 'الجامعة', source: 'static-markdown', isStale: false, syncedAt: '2026-10-01T10:00:00.000Z' }],
-    },
-    {
-      category: 'contact', count: 2,
-      items: [{ key: 'email', value: 'info@zu.edu.ly', source: 'static-markdown', isStale: true, syncedAt: '2026-01-01T00:00:00.000Z' }],
-    },
-  ],
-};
-
-describe('AdminSyncPage — r299 honesty + freshness pins', () => {
-  beforeEach(() => {
-    getMock.mockReset();
-    // useSyncStatus unwraps (res.data.data) — the backend body carries
-    // the sync payload under .data.
-    installAdminApi({ '/admin/sync': { data: SYNC_FIXTURE } });
-  });
-
-  it('never renders the fabricated «demo-source» slug — the real source labels stay', async () => {
-    const { container } = renderWithProviders(<AdminSyncPage />);
-    await screen.findByText('حقول مُزامنة');
-
-    expect(container.textContent).not.toContain('demo-source');
-    // The page's own source map still names the curated source — on
-    // the strip's trend note AND the history rows' source column.
-    expect(screen.getAllByText('بيانات جامعية موثّقة').length).toBeGreaterThan(0);
-  });
-
-  it('answers freshness before size — «آخر مزامنة ناجحة» leads the strip', async () => {
-    renderWithProviders(<AdminSyncPage />);
-    const firstCell = await screen.findByText('آخر مزامنة ناجحة');
-    const strip = firstCell.closest('.stat-strip');
-    expect(strip).not.toBeNull();
-    const labels = Array.from(strip!.querySelectorAll('.stat-label'))
-      .map((l) => l.textContent ?? '');
-    // Freshness (last success + last run) before size (fact count) —
-    // the page's question is «how fresh are we?».
-    expect(labels.indexOf('آخر مزامنة ناجحة')).toBeLessThan(labels.indexOf('حقول مُزامنة'));
-    expect(labels.indexOf('حالة آخر تشغيل')).toBeLessThan(labels.indexOf('حقول مُزامنة'));
-  });
-
-  it('a category head carries its own stale count — no opening each accordion to find it', async () => {
-    renderWithProviders(<AdminSyncPage />);
-    const contactHead = (await screen.findByRole('button', { name: /بيانات التواصل/ }));
-    expect(within(contactHead).getByText(/حقل قديم واحد/)).toBeInTheDocument();
-    // The fresh category carries no stale badge.
-    const identityHead = screen.getByRole('button', { name: /هوية الجامعة/ });
-    expect(within(identityHead).queryByText(/قديم/)).toBeNull();
-  });
-});
+/* ═══ 1–3. AdminSyncPage — RETIRED with the /admin/sync backend (R349 U2) ═══ */
 
 /* ═══ 4. admin.css owns the .spin motion rule ══════════════════════ */
 

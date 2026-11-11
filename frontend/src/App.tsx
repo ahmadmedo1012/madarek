@@ -129,7 +129,6 @@ const CommunityPage = lazy(() => import('./pages/community/CommunityPages'));
 
 const AdminTeachersPage = lazy(() => import('./pages/admin/AdminGovernancePages').then((m) => ({ default: m.AdminTeachersPage })));
 const AdminPermissionsPage = lazy(() => import('./pages/admin/AdminGovernancePages').then((m) => ({ default: m.AdminPermissionsPage })));
-const AdminSyncPage = lazy(() => import('./pages/admin/AdminSyncPage').then((m) => ({ default: m.AdminSyncPage })));
 
 const TeacherSchedulePage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.TeacherSchedulePage })));
 const AttendancePage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.AttendancePage })));
@@ -523,7 +522,6 @@ export function AppRoutes() {
             <Route path={ROUTES.adminStudents} element={<AdminStudentsPage />} />
             <Route path={ROUTES.adminTeachers} element={<AdminTeachersPage />} />
             <Route path="/admin/permissions/:id" element={<AdminPermissionsPage />} />
-            <Route path={ROUTES.adminSync} element={<AdminSyncPage />} />
             <Route path={ROUTES.adminCommunity} element={<CommunityPage />} />
             <Route path={ROUTES.adminFaculties} element={<AdminFacultiesPage />} />
             <Route path={ROUTES.adminCourses} element={<AdminCoursesPage />} />

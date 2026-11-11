@@ -14,7 +14,7 @@
   "tags": [
     {
       "name": "admin",
-      "description": "19 operation(s) under /api/v1/admin"
+      "description": "17 operation(s) under /api/v1/admin"
     },
     {
       "name": "ai",
@@ -83,6 +83,10 @@
     {
       "name": "health",
       "description": "1 operation(s) under /api/v1/health"
+    },
+    {
+      "name": "import",
+      "description": "9 operation(s) under /api/v1/import"
     },
     {
       "name": "institutions",
@@ -158,7 +162,7 @@
     },
     {
       "name": "search",
-      "description": "1 operation(s) under /api/v1/search"
+      "description": "2 operation(s) under /api/v1/search"
     },
     {
       "name": "status",
@@ -179,10 +183,6 @@
     {
       "name": "training",
       "description": "8 operation(s) under /api/v1/training"
-    },
-    {
-      "name": "university",
-      "description": "1 operation(s) under /api/v1/university"
     },
     {
       "name": "users",
@@ -911,132 +911,6 @@
             }
           }
         ]
-      }
-    },
-    "/api/v1/admin/sync": {
-      "get": {
-        "tags": [
-          "admin"
-        ],
-        "summary": "GET /api/v1/admin/sync",
-        "description": "Declared in `backend/src/http/routes/sync.routes.ts` (mounted at `/api/v1`).",
-        "x-mounted-at": "/api/v1",
-        "responses": {
-          "200": {
-            "description": "Success envelope `{ data }`",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessEnvelope"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation / bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Unexpected server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          }
-        },
-        "security": []
-      }
-    },
-    "/api/v1/admin/sync/trigger": {
-      "post": {
-        "tags": [
-          "admin"
-        ],
-        "summary": "POST /api/v1/admin/sync/trigger",
-        "description": "Declared in `backend/src/http/routes/sync.routes.ts` (mounted at `/api/v1`).",
-        "x-mounted-at": "/api/v1",
-        "responses": {
-          "200": {
-            "description": "Success envelope `{ data }`",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessEnvelope"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation / bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Unexpected server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          }
-        },
-        "security": []
       }
     },
     "/api/v1/admin/teachers/{id}/position": {
@@ -7285,6 +7159,652 @@
                       "additionalProperties": true
                     }
                   ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/import/jobs": {
+      "get": {
+        "tags": [
+          "import"
+        ],
+        "summary": "GET /api/v1/import/jobs",
+        "description": "Declared in `backend/src/http/routes/import.routes.ts` (mounted at `/api/v1/import`).",
+        "x-mounted-at": "/api/v1/import",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "parameters": [
+          {
+            "name": "institutionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/import/jobs/{id}": {
+      "get": {
+        "tags": [
+          "import"
+        ],
+        "summary": "GET /api/v1/import/jobs/:id",
+        "description": "Declared in `backend/src/http/routes/import.routes.ts` (mounted at `/api/v1/import`).",
+        "x-mounted-at": "/api/v1/import",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/import/jobs/{id}/commit": {
+      "post": {
+        "tags": [
+          "import"
+        ],
+        "summary": "POST /api/v1/import/jobs/:id/commit",
+        "description": "Declared in `backend/src/http/routes/import.routes.ts` (mounted at `/api/v1/import`).",
+        "x-mounted-at": "/api/v1/import",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/importcommitBodySchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/import/jobs/{id}/report.xlsx": {
+      "get": {
+        "tags": [
+          "import"
+        ],
+        "summary": "GET /api/v1/import/jobs/:id/report.xlsx",
+        "description": "Declared in `backend/src/http/routes/import.routes.ts` (mounted at `/api/v1/import`).",
+        "x-mounted-at": "/api/v1/import",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/import/mapping-profiles": {
+      "get": {
+        "tags": [
+          "import"
+        ],
+        "summary": "GET /api/v1/import/mapping-profiles",
+        "description": "Declared in `backend/src/http/routes/import.routes.ts` (mounted at `/api/v1/import`).",
+        "x-mounted-at": "/api/v1/import",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "parameters": [
+          {
+            "name": "institutionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "import"
+        ],
+        "summary": "POST /api/v1/import/mapping-profiles",
+        "description": "Declared in `backend/src/http/routes/import.routes.ts` (mounted at `/api/v1/import`).",
+        "x-mounted-at": "/api/v1/import",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/importprofileBodySchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/import/parse": {
+      "post": {
+        "tags": [
+          "import"
+        ],
+        "summary": "POST /api/v1/import/parse",
+        "description": "Declared in `backend/src/http/routes/import.routes.ts` (mounted at `/api/v1/import`).",
+        "x-mounted-at": "/api/v1/import",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/importfileBodySchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/import/preview": {
+      "post": {
+        "tags": [
+          "import"
+        ],
+        "summary": "POST /api/v1/import/preview",
+        "description": "Declared in `backend/src/http/routes/import.routes.ts` (mounted at `/api/v1/import`).",
+        "x-mounted-at": "/api/v1/import",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/importpreviewBodySchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/import/templates/{entity}": {
+      "get": {
+        "tags": [
+          "import"
+        ],
+        "summary": "GET /api/v1/import/templates/:entity",
+        "description": "Declared in `backend/src/http/routes/import.routes.ts` (mounted at `/api/v1/import`).",
+        "x-mounted-at": "/api/v1/import",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
                 }
               }
             }
@@ -16148,6 +16668,69 @@
         "security": []
       }
     },
+    "/api/v1/search/discover": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "summary": "GET /api/v1/search/discover",
+        "description": "Declared in `backend/src/http/routes/search.routes.ts` (mounted at `/api/v1`).",
+        "x-mounted-at": "/api/v1",
+        "responses": {
+          "200": {
+            "description": "Success envelope `{ data }`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation / bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
     "/api/v1/search/global": {
       "get": {
         "tags": [
@@ -17892,69 +18475,6 @@
         ],
         "summary": "POST /api/v1/training/tracks/:slug/enroll",
         "description": "Declared in `backend/src/http/routes/training.routes.ts` (mounted at `/api/v1`).",
-        "x-mounted-at": "/api/v1",
-        "responses": {
-          "200": {
-            "description": "Success envelope `{ data }`",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessEnvelope"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation / bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Missing, invalid or expired bearer token (TOKEN_EXPIRED on expiry — refresh)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Rate limited (global 1000 req/15 min/IP; auth surface 10 req/15 min/IP)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Unexpected server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelope"
-                }
-              }
-            }
-          }
-        },
-        "security": []
-      }
-    },
-    "/api/v1/university/facts": {
-      "get": {
-        "tags": [
-          "university"
-        ],
-        "summary": "GET /api/v1/university/facts",
-        "description": "Declared in `backend/src/http/routes/sync.routes.ts` (mounted at `/api/v1`).",
         "x-mounted-at": "/api/v1",
         "responses": {
           "200": {
@@ -19873,6 +20393,192 @@
         "additionalProperties": false,
         "x-source-ident": "feedback.routes.ts#patchBody"
       },
+      "importcommitBodySchema": {
+        "type": "object",
+        "properties": {
+          "duplicatePolicy": {
+            "type": "string",
+            "enum": [
+              "SKIP",
+              "UPDATE",
+              "ERROR"
+            ],
+            "default": "SKIP"
+          },
+          "chunkSize": {
+            "type": "integer",
+            "minimum": 20,
+            "maximum": 500,
+            "default": 200
+          },
+          "fileBase64": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 25165824
+          }
+        },
+        "required": [
+          "fileBase64"
+        ],
+        "additionalProperties": true,
+        "x-source-ident": "import.routes.ts#commitBodySchema"
+      },
+      "importprofileBodySchema": {
+        "type": "object",
+        "properties": {
+          "institutionId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "STUDENT",
+              "TEACHER"
+            ]
+          },
+          "profile": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "enum": [
+                  1
+                ]
+              },
+              "columns": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "source": {
+                      "type": "string"
+                    },
+                    "target": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "source",
+                    "target"
+                  ],
+                  "additionalProperties": true
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "columns",
+              "version"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "entity",
+          "name",
+          "profile"
+        ],
+        "additionalProperties": true,
+        "x-source-ident": "import.routes.ts#profileBodySchema"
+      },
+      "importfileBodySchema": {
+        "type": "object",
+        "properties": {
+          "fileBase64": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 25165824
+          },
+          "institutionId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "STUDENT",
+              "TEACHER"
+            ]
+          }
+        },
+        "required": [
+          "entity",
+          "fileBase64"
+        ],
+        "additionalProperties": true,
+        "x-source-ident": "import.routes.ts#fileBodySchema"
+      },
+      "importpreviewBodySchema": {
+        "type": "object",
+        "properties": {
+          "fileBase64": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 25165824
+          },
+          "institutionId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "STUDENT",
+              "TEACHER"
+            ]
+          },
+          "columnMap": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "enum": [
+                  1
+                ]
+              },
+              "columns": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "source": {
+                      "type": "string"
+                    },
+                    "target": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "source",
+                    "target"
+                  ],
+                  "additionalProperties": true
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "columns",
+              "version"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "columnMap",
+          "entity",
+          "fileBase64"
+        ],
+        "additionalProperties": true,
+        "x-source-ident": "import.routes.ts#previewBodySchema"
+      },
       "invitecreateBody": {
         "type": "object",
         "properties": {
@@ -21133,9 +21839,9 @@
   },
   "x-generator": {
     "tool": "backend/scripts/generate-openapi.ts (hand-rolled: express-stack walk + zod-v3 walker)",
-    "generatedAt": "2026-10-31T11:58:34.468Z",
-    "operationCount": 253,
-    "pathCount": 216,
+    "generatedAt": "2026-11-11T12:04:24.075Z",
+    "operationCount": 260,
+    "pathCount": 222,
     "contractSnapshotCovered": 13,
     "snapshotCoveredRoutes": [
       "GET /api/v1/ai/config",

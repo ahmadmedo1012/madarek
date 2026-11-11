@@ -124,7 +124,7 @@ const MENU_GROUPS: { title: string; items: { icon: LucideIcon; label: string; to
     title: "الجامعة",
     items: [
       { icon: Library, label: "المكتبة", to: "/student/library" },
-      { icon: Landmark, label: "عن الجامعة", to: "/student/university" },
+      { icon: Landmark, label: "عن المؤسّسة", to: "/student/university" },
       { icon: Map, label: "خريطة الكليات", to: "/student/map" },
     ],
   },

@@ -244,10 +244,8 @@ export function useOwnerEducation() {
 }
 
 export interface OwnerSystem {
-  sync: {
-    lastRunAt: string | null;
-    recent: Array<{ id: string; action: string; at: string; actor: string; metadata: unknown }>;
-  };
+  /* R349 U2 — the `sync` block is retired with the university-facts
+   * pipeline (no sync runs exist to report). */
   alerts: {
     open: Array<{
       id: string;
@@ -297,7 +295,7 @@ export function useOwnerSystem() {
      * E2E sweep, a hidden tab and a phone in a pocket all stop the
      * churn; the backend's reachability memo is built for exactly this
      * rhythm: STORAGE_PROBE_TTL_MS 60s ≥ 2× this interval). Explicit
-     * like the sibling polls (useOwnerRealtime, AdminSyncPage). */
+     * like the sibling polls (useOwnerRealtime). */
     refetchInterval: 30_000,
     refetchIntervalInBackground: false,
   });

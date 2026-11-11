@@ -5,7 +5,7 @@ import { MessageSquarePlus,
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, Microscope, School,
   FileText, FileQuestion, ShieldCheck, Activity, Compass, BookMarked, BookCopy,
-  Radio, Wallet, MapPin, UserCircle, Brain, Megaphone, RefreshCw,
+  Radio, Wallet, MapPin, UserCircle, Brain, Megaphone,
   Palette, Settings, UserCog, AlertTriangle, MessageCircle, Video, Globe,
   Download, Medal, BadgeCheck, Box, Telescope,
   Bell, Award, Landmark, Inbox,
@@ -285,7 +285,6 @@ export const ADMIN_NAV: NavGroup[] = [
       /* 5-B5 (A4 P1-3/P2-8): the bell-only alerts page gains its
          sidebar home — parity with the owner role. */
       { to: ROUTES.adminAlerts, icon: Bell, label: 'الإشعارات' },
-      { to: ROUTES.adminSync, icon: RefreshCw, label: 'مزامنة الجامعة' },
       /* R320 cycle-3 (PAGES-GAP T-3): retitled — this is the ADMIN
          platform sheet (identity, DB health, limits), NOT user
          settings; the account door is /settings below (UserCog). */

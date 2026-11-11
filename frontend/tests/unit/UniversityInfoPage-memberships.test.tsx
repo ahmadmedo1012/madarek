@@ -1,22 +1,19 @@
 /**
- * r188 — UniversityInfoPage demo-profile source-of-truth pin.
+ * R349 U3 — UniversityInfoPage unified-contract pin.
  *
- * The retired real-university memberships card (r155b: the
- * MEDITERRANEAN/ARAB/AFRICAN unions list — real-institution claims)
- * is gone with the brand reset. The card now renders the demo
- * tenant's SYNTHETIC profile from UNIVERSITY_FACTS.profile: the
- * r155b retyping-error lesson (never hand-retype the fact list)
- * carries over — the render still reads the single source module.
- *
- * useFaculties mocked at the module boundary (the ...actual spread
- * pattern); the profile card itself is static data.
+ * The curated demo-profile card (r188's UNIVERSITY_FACTS synthetic
+ * memberships) is RETIRED with the university facts pipeline: every
+ * institution — the demo tenant included — gets the same honest OWN
+ * page (session identity + scoped faculties). This suite pins that
+ * retirement: the card does not render, the synthetic profile is
+ * gone from the tree, and the page's identity is the session's.
  */
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { UniversityInfoPage } from '../../src/pages/student/MorePages';
-import { UNIVERSITY_FACTS } from '../../src/data/university.facts';
+import { useAuthStore } from '../../src/stores/auth.store';
 
 vi.mock('../../src/hooks/useResources', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../src/hooks/useResources')>();
@@ -42,20 +39,17 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-describe('UniversityInfoPage — بطاقة تعريف المؤسّسة (r188)', () => {
-  it('renders the demo-tenant profile straight from UNIVERSITY_FACTS (no hand-retyped list)', () => {
+describe('UniversityInfoPage — the curated profile card is retired (R349 U3)', () => {
+  it('renders NO بطاقة تعريف card and NO synthetic profile entries', () => {
     renderPage();
 
-    // the synthetic profile's three entries, in module order
-    for (const entry of UNIVERSITY_FACTS.profile) {
-      expect(screen.getAllByText(entry.full).length).toBeGreaterThan(0);
-    }
-    // the card title states what this is
-    expect(screen.getByText('بطاقة تعريف المؤسّسة')).toBeInTheDocument();
+    expect(screen.queryByText('بطاقة تعريف المؤسّسة')).toBeNull();
+    expect(screen.queryByText('بيانات تجريبية')).toBeNull();
   });
 
-  it('the fictional institution name is the one the page carries', () => {
+  it('without a session institution: the honest empty state (nothing invented)', () => {
+    useAuthStore.setState({ currentInstitution: null });
     renderPage();
-    expect(screen.getAllByText('مؤسسة مدارك النموذجية').length).toBeGreaterThan(0);
+    expect(screen.getByText('لا توجد مؤسّسة في جلستك')).toBeInTheDocument();
   });
 });

@@ -1,7 +1,8 @@
 /**
- * R305-A8 (task 2-b) — «Heron» transformation pins for the three admin
- * governance/extras/sync page modules (AdminGovernancePages,
- * AdminExtraPages, AdminSyncPage).
+ * R305-A8 (task 2-b) — «Heron» transformation pins for the admin
+ * governance/extras page modules (AdminGovernancePages,
+ * AdminExtraPages). The sync page module retired with the /admin/sync
+ * backend (R349 U2).
  *
  * Every pin binds to the scoping/danger contracts of the pass, never to
  * a styling accident:
@@ -50,7 +51,6 @@ vi.mock('../../src/lib/api', () => {
 
 import { AdminTeachersPage, AdminPermissionsPage } from '../../src/pages/admin/AdminGovernancePages';
 import { AdminStudentsPage, AdminDigitalPage, AdminSettingsPage } from '../../src/pages/admin/AdminExtraPages';
-import { AdminSyncPage } from '../../src/pages/admin/AdminSyncPage';
 import { api } from '../../src/lib/api';
 
 const getMock = api.get as unknown as Mock;
@@ -168,28 +168,6 @@ const DIGITAL = {
   materialsUploaded: 210,
 };
 
-const SYNC_PAYLOAD = {
-  latestRun: {
-    id: 'run-1', startedAt: '2026-10-01T10:00:00.000Z', completedAt: '2026-10-01T10:00:02.000Z',
-    status: 'SUCCESS', source: 'static-markdown', factsAdded: 4, factsUpdated: 2,
-    durationMs: 2100, errorMsg: null, notes: null,
-  },
-  runHistory: [
-    {
-      id: 'run-1', startedAt: '2026-10-01T10:00:00.000Z', completedAt: '2026-10-01T10:00:02.000Z',
-      status: 'SUCCESS', source: 'static-markdown', factsAdded: 4, factsUpdated: 2,
-      durationMs: 2100, errorMsg: null, notes: null,
-    },
-  ],
-  factCount: 6,
-  staleCount: 0,
-  categories: [
-    {
-      category: 'identity', count: 2,
-      items: [{ key: 'name', value: 'الجامعة', source: 'static-markdown', isStale: false, syncedAt: '2026-10-01T10:00:00.000Z' }],
-    },
-  ],
-};
 
 /** The permissions payload for the matrix pin: USERS_MANAGE rides the
  *  role (effective + fromRole → the «سحب» verb), everything else stays
@@ -295,46 +273,8 @@ describe('R305-A8 marker — extras module roots', () => {
   });
 });
 
-describe('R305-A8 marker — sync module roots (every branch)', () => {
-  it('pending branch keeps the marker on the aria-busy root', () => {
-    getMock.mockImplementation(() => new Promise(() => {})); // /admin/sync never settles
-    const { container } = renderWithProviders(<AdminSyncPage />);
-    const root = container.querySelector('.page.r305ao');
-    expect(root).not.toBeNull();
-    expect(root).toHaveAttribute('aria-busy', 'true');
-  });
-
-  it('error branch keeps the marker + the retry chrome', async () => {
-    getMock.mockRejectedValue(new Error('network down'));
-    renderWithProviders(<AdminSyncPage />);
-    expect(await screen.findByRole('heading', { level: 1, name: 'المزامنة مع البيانات الرسمية' })).toBeInTheDocument();
-    expect(document.querySelector('.page.r305ao')).not.toBeNull();
-  });
-
-  it('never-run branch keeps the marker on the honest empty state', async () => {
-    // A resolved payload with nothing in it → the !data guard branch.
-    // unwrap reads r.data.data — a null body (no run has ever landed)
-    // resolves to null, and TanStack v5 treats a void body as an error,
-    // so null is the honest shape that reaches the guard.
-    getMock.mockResolvedValue({ data: { data: null } });
-    renderWithProviders(<AdminSyncPage />);
-    expect(await screen.findByText('لم تُنفَّذ أي مزامنة بعد')).toBeInTheDocument();
-    expect(document.querySelector('.page.r305ao')).not.toBeNull();
-  });
-
-  it('resolved branch keeps the marker + the run-history table', async () => {
-    getMock.mockImplementation(async (url: string) => {
-      if (url === '/admin/sync') return { data: { data: SYNC_PAYLOAD } };
-      throw new Error(`unexpected GET ${url}`);
-    });
-    renderWithProviders(<AdminSyncPage />);
-    expect(await screen.findByText('سجلّ المزامنات')).toBeInTheDocument();
-    expect(scopedRoot()).toContainElement(screen.getByText('سجلّ المزامنات'));
-    // The real API stays the only source of truth — the resolved run's
-    // status badge renders from the payload, never faked.
-    expect(screen.getAllByText('ناجحة').length).toBeGreaterThan(0);
-  });
-});
+/* R349 U2 — the AdminSyncPage marker suite retired with the page
+ * (the /admin/sync backend is deleted). */
 
 /* ═══ 2. The danger hierarchy — the destructive verbs stand apart ═ */
 
@@ -415,7 +355,6 @@ describe('R305-A8 import wiring — the scoped Heron sheet in all three modules'
   const MODULES = [
     'AdminGovernancePages.tsx',
     'AdminExtraPages.tsx',
-    'AdminSyncPage.tsx',
   ];
 
   it('each module imports heron-admin-owner.css AFTER its admin.css import', () => {

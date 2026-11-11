@@ -19,7 +19,6 @@ export const ROUTES = {
   adminReports: '/admin/reports',
   adminSettings: '/admin/settings',
   adminStudents: '/admin/students',
-  adminSync: '/admin/sync',
   adminTeachers: '/admin/teachers',
   auth: '/auth',
   authRegister: '/auth/register',

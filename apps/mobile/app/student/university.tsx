@@ -1,254 +1,154 @@
 /**
- * /student/university — عن الجامعة (web UniversityInfoPage parity, pilot
- * mode): the platform's reference showcase institution facts served by
- * the PUBLIC GET /university/facts, plus the caller's own membership
- * context from the session. The endpoint carries no typed mobile client
- * yet — the sheet is normalized defensively (object entries / {facts:[…]}
- * / {data:{…}} all land as StatLine rows; an unrecognized shape renders
- * the honest empty state, never a guess).
+ * /student/university — عن المؤسّسة (R349 U3): the caller's OWN
+ * institution page. The retired showcase-facts feed (GET
+ * /university/facts + UniversityFact) is deleted with the university
+ * purge — the project belongs to no university and no reference facts
+ * are curated for any institution.
+ *
+ * Feed (all real, all the caller's own):
+ *   · the session's currentInstitution (name/nameEn/slug),
+ *   · the faculties + departments scoped to it (GET /faculties with
+ *     the institution slug — the same public route the web page rides),
+ *   · the membership card (session context), unchanged.
+ *
+ * Vocabulary is kind-neutral («الكليّات») — InstitutionKind-aware
+ * wording lands with lane P's profiles work.
  */
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import Building2 from "lucide-react-native/icons/building-complex";
-import { get } from "@/api/client";
 import { useSession, ROLE_LABELS } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { SectionBar } from "@/components/ui/screen";
-import { Badge, Card } from "@/components/ui/surfaces";
+import { Card } from "@/components/ui/surfaces";
 import { StatLine } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { latn } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
-import { SectionNote, countAr } from "@/features/student/more";
+import { countAr } from "@/features/student/more";
 import { PushFrame } from "@/features/student/components";
+import { catalogApi } from "@/api/catalog";
 
-/* ── Defensive normalization (unknown wire shape) ─────────────────── */
-
-interface FactEntry {
-  key: string;
-  value: string;
+interface FacultyRow {
+  id: string;
+  name: string;
+  nameEn?: string | null;
+  city?: string | null;
+  departments?: { id: string; name: string }[];
 }
-
-interface FactSection {
-  category: string;
-  entries: FactEntry[];
-}
-
-interface FactsSheet {
-  institutionName: string | null;
-  sections: FactSection[];
-}
-
-/** Western glyphs for server strings that may carry Arabic-Indic digits. */
-function latnify(s: string): string {
-  return s.replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
-}
-
-/** Honest scalar rendering — strings/numbers/booleans pass, the rest «—». */
-function factValue(v: unknown): string {
-  if (typeof v === "string") {
-    const t = latnify(v).trim();
-    return t.length > 0 ? t : "—";
-  }
-  if (typeof v === "number") return Number.isFinite(v) ? latn(v) : "—";
-  if (typeof v === "boolean") return v ? "نعم" : "لا";
-  return "—";
-}
-
-/** Known category ids → Arabic section titles (unknown ids pass through). */
-const CATEGORY_LABEL: Record<string, string> = {
-  identity: "الهويّة",
-  contact: "التواصل",
-  memberships: "العضويّات",
-  strategic: "الخطّة الاستراتيجيّة",
-  grading: "سلّم الدرجات",
-  programs: "البرامج والدرجات",
-};
-
-/** Server categories may arrive in Arabic already — pass those verbatim. */
-const HAS_ARABIC = /[\u0600-\u06FF]/;
-
-function categoryLabel(category: string): string {
-  if (CATEGORY_LABEL[category]) return CATEGORY_LABEL[category];
-  if (HAS_ARABIC.test(category)) return category;
-  return "معلومات إضافية";
-}
-
-/**
- * Normalize the /university/facts payload into honest sections:
- *   { institution, categories: { cat: { key: value } } } — the public route,
- *   { facts: [{ key, value, category }, …] } / { categories: [{ category,
- *   items }] } — the sync registry views,
- *   a plain object — one entry per key («عام» bucket),
- * all optionally wrapped in { data: {… }}.
- */
-function normalizeFacts(raw: unknown): FactsSheet {
-  /* Unwrap nested {data:{…}} re-wraps defensively (the client already
-     unwraps the outer success envelope). */
-  let node: unknown = raw;
-  for (let depth = 0; depth < 3; depth += 1) {
-    if (!node || typeof node !== "object" || Array.isArray(node)) break;
-    const inner = (node as { data?: unknown }).data;
-    if (inner === undefined) break;
-    node = inner;
-  }
-
-  const sheet: FactsSheet = { institutionName: null, sections: [] };
-  if (!node || typeof node !== "object" || Array.isArray(node)) return sheet;
-
-  const obj = node as Record<string, unknown>;
-  const inst = obj.institution;
-  if (inst && typeof inst === "object" && typeof (inst as { name?: unknown }).name === "string") {
-    sheet.institutionName = (inst as { name: string }).name;
-  }
-
-  const sections: FactSection[] = [];
-  const add = (category: string | null, key: string, value: unknown) => {
-    if (!key || value === null || value === undefined || typeof value === "object") return;
-    const label = category && category.trim().length > 0 ? category : "عام";
-    let section = sections.find((s) => s.category === label);
-    if (!section) {
-      section = { category: label, entries: [] };
-      sections.push(section);
-    }
-    section.entries.push({ key, value: factValue(value) });
-  };
-
-  const factsArr = obj.facts;
-  const categories = obj.categories;
-  if (Array.isArray(factsArr)) {
-    /* { facts: [{ key, value, category }, …] } */
-    for (const f of factsArr) {
-      if (!f || typeof f !== "object") continue;
-      const row = f as { key?: unknown; value?: unknown; category?: unknown };
-      if (typeof row.key === "string") {
-        add(typeof row.category === "string" ? row.category : null, row.key, row.value);
-      }
-    }
-  } else if (Array.isArray(categories)) {
-    /* { categories: [{ category, items: [{ key, value }] }] } */
-    for (const c of categories) {
-      if (!c || typeof c !== "object") continue;
-      const sec = c as { category?: unknown; items?: unknown };
-      const cat = typeof sec.category === "string" ? sec.category : null;
-      if (!Array.isArray(sec.items)) continue;
-      for (const it of sec.items) {
-        if (!it || typeof it !== "object") continue;
-        const row = it as { key?: unknown; value?: unknown };
-        if (typeof row.key === "string") add(cat, row.key, row.value);
-      }
-    }
-  } else if (categories && typeof categories === "object") {
-    /* { categories: { cat: { key: value } } } — the public route shape. */
-    for (const [cat, kv] of Object.entries(categories as Record<string, unknown>)) {
-      if (!kv || typeof kv !== "object" || Array.isArray(kv)) continue;
-      for (const [key, value] of Object.entries(kv as Record<string, unknown>)) {
-        add(cat, key, value);
-      }
-    }
-  } else {
-    /* A plain object — one StatLine per entry, «عام» bucket. */
-    for (const [key, value] of Object.entries(obj)) {
-      if (key === "institution") continue;
-      add(null, key, value);
-    }
-  }
-
-  sheet.sections = sections;
-  return sheet;
-}
-
-/* ── Screen ──────────────────────────────────────────────────────── */
 
 export default function UniversityScreen() {
   const p = usePalette();
   const scope = useInstitutionScope();
   const user = useSession((s) => s.user);
+  const institution = user?.currentInstitution ?? null;
 
-  const facts = useQuery({
-    queryKey: ["university", "facts", scope],
-    queryFn: () => get("/university/facts"),
+  const facs = useQuery({
+    queryKey: ["institution", "faculties", institution?.slug ?? null, scope],
+    queryFn: () => catalogApi.faculties(institution?.slug ?? undefined),
+    enabled: Boolean(institution?.slug),
   });
 
-  const sheet = facts.data ? normalizeFacts(facts.data) : null;
-  const institution = user?.currentInstitution ?? null;
-  const membershipRole = user?.membershipRole ?? user?.role ?? null;
-  const membershipIndex = (sheet?.sections.length ?? 0) + 1;
+  const faculties = (facs.data ?? []) as FacultyRow[];
+  const departmentCount = faculties.reduce((n, f) => n + (f.departments?.length ?? 0), 0);
+  const membershipIndex = 3; // identity, faculties, membership
+
+  if (!institution) {
+    /* Null context (the multi-membership pre-selection edge): the
+     * honest empty state — nothing is invented. */
+    return (
+      <PushFrame title="عن المؤسّسة" kicker="مؤسّستك التعليميّة على منصّة مدارك">
+        <EmptyState
+          icon={<Building2 size={22} color={p.textMuted} />}
+          title="لا توجد مؤسّسة في جلستك"
+          message="اختر مؤسّستك من قائمة العضويّات ثم عُد إلى هذه الصفحة."
+        />
+      </PushFrame>
+    );
+  }
 
   return (
     <PushFrame
-      title="عن الجامعة"
-      kicker="حقائق مؤسّسة العرض المرجعية — وضع الطيار"
-      refreshing={facts.isFetching && !facts.isLoading}
-      onRefresh={() => facts.refetch()}
+      title="عن المؤسّسة"
+      kicker={institution.name}
+      refreshing={facs.isFetching && !facs.isLoading}
+      onRefresh={() => facs.refetch()}
     >
-      <SectionNote>
-        تُقرأ هذه الصفحة من مصدر حقائق مؤسّسة العرض المرجعية (بيانات تجريبية اصطناعية)، بينما تعود معلومات
-        العضويّة أدناه إلى جلستك الحالية.
-      </SectionNote>
+      {/* ── 01 · بطاقة تعريف (the session's own institution) ── */}
+      <SectionBar index={1} title="بطاقة تعريف" />
+      <Card>
+        <StatLine label="الاسم الرسميّ" value={institution.name} />
+        <StatLine label="الاسم بالإنجليزيّة" value={institution.nameEn ?? "—"} />
+        <StatLine label="المعرّف على المنصّة" value={institution.slug} />
+      </Card>
 
-      {facts.isLoading ? (
-        <SkeletonList rows={6} rowHeight={56} />
-      ) : facts.isError ? (
-        <ErrorState message={humanizeError(facts.error)} onRetry={() => facts.refetch()} />
-      ) : !sheet || sheet.sections.length === 0 ? (
+      {/* ── 02 · الكليّات المسجَّلة في مؤسستك ── */}
+      <SectionBar
+        index={2}
+        title="الكليّات"
+        action={
+          <T variant="xs" color="muted">
+            {facs.isPending ? "…" : latn(faculties.length)}
+          </T>
+        }
+      />
+      {facs.isError ? (
+        <ErrorState message={humanizeError(facs.error)} onRetry={() => facs.refetch()} />
+      ) : facs.isLoading ? (
+        <SkeletonList rows={4} rowHeight={56} />
+      ) : faculties.length === 0 ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
-          title="لا توجد حقائق محفوظة بعد"
-          message="لم تُزامَن أي حقائق لهذه المؤسّسة — ستظهر هنا فور توافرها من المصدر المعتمد."
+          title="لا توجد كليّات بعد"
+          message="لم تُسجَّل كلّيّات في هذه المؤسّسة بعد."
         />
       ) : (
         <>
-          {sheet.institutionName ? (
-            <Card>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: sp[8],
-                  flexWrap: "wrap",
-                }}
-              >
-                <T variant="h3" weight="bold" style={{ flex: 1 }}>
-                  {sheet.institutionName}
-                </T>
-                <Badge label="بيانات تجريبية" tone="yellow" />
+          <Card>
+            <StatLine
+              label="عدد الكليّات"
+              value={latn(faculties.length)}
+              hint={countAr(faculties.length, ["كلّيّة واحدة", "كلّيّتان", "كلّيّات", "كلّيّة"])}
+            />
+            {departmentCount > 0 ? (
+              <StatLine
+                label="عدد الأقسام"
+                value={latn(departmentCount)}
+                hint={countAr(departmentCount, ["قسم واحد", "قسمان", "أقسام", "قسم"])}
+              />
+            ) : null}
+          </Card>
+          {faculties.map((f) => (
+            <Card key={f.id}>
+              <View style={{ gap: sp[4] }}>
+                <StatLine label={f.name} value={f.city ?? "—"} />
+                {f.departments && f.departments.length > 0 ? (
+                  <StatLine
+                    label="الأقسام"
+                    value={f.departments.map((d) => d.name).join(" · ")}
+                  />
+                ) : null}
               </View>
             </Card>
-          ) : null}
-
-          {sheet.sections.map((s, i) => (
-            <View key={s.category} style={{ gap: sp[8] }}>
-              <SectionBar
-                index={i + 1}
-                title={categoryLabel(s.category)}
-                action={
-                  <T variant="xs" color="muted">
-                    {latn(s.entries.length)}
-                  </T>
-                }
-              />
-              <Card>
-                {s.entries.map((e) => (
-                  <StatLine key={`${s.category}-${e.key}`} label={e.key} value={e.value} />
-                ))}
-              </Card>
-            </View>
           ))}
         </>
       )}
 
-      {/* عضويّتك — session context (currentInstitution), always available */}
+      {/* ── 03 · عضويّتك — session context, always available ── */}
       <SectionBar index={membershipIndex} title="عضويّتك" />
       <Card>
-        <StatLine label="المؤسسة الحالية" value={institution?.name ?? "—"} />
-        <StatLine label="المعرّف على المنصّة" value={institution?.slug ?? "—"} />
+        <StatLine label="المؤسسة الحالية" value={institution.name} />
+        <StatLine label="المعرّف على المنصّة" value={institution.slug} />
         <StatLine
           label="دورك في المؤسّسة"
-          value={membershipRole ? ROLE_LABELS[membershipRole] ?? "عضو" : "—"}
+          value={
+            (user?.membershipRole ?? user?.role) != null
+              ? ROLE_LABELS[(user?.membershipRole ?? user?.role)!] ?? "عضو"
+              : "—"
+          }
         />
         {user?.memberships && user.memberships.length > 0 ? (
           <StatLine

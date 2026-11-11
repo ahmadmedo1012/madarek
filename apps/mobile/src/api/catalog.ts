@@ -5,7 +5,6 @@ import type { Book, Faculty, Institution, JobPost, MoocCourse, Paginated } from 
 export const catalogApi = {
   institutions: () => get<Institution[]>("/institutions"),
   faculties: (institutionSlug?: string) => get<(Faculty & { departments: { id: string; name: string }[] })[]>("/faculties", institutionSlug ? { institutionSlug } : undefined),
-  universityFacts: () => get<unknown>("/university/facts"),
   libraryBooks: (q?: { page?: number; limit?: number; q?: string }) => get<Paginated<Book>>("/library/books", q),
   borrow: (bookId: string) => post<unknown>("/library/loans", { bookId }),
   returnBook: (loanId: string) => post<unknown>(`/library/loans/${loanId}/return`),

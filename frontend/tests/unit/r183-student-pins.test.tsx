@@ -250,30 +250,33 @@ function changeLines(container: HTMLElement): string[] {
   );
 }
 
-describe('r183-B3 — /student/university derives its identity from the session institution (A6 P2)', () => {
-  it('madarek-demo session: the fictional demo facts stay, labeled as the demonstration institution', () => {
+describe("r183-B3/R349-U3 — /student/university is the caller's OWN institution page (A6 P2)", () => {
+  it('madarek-demo session: the SAME generic page — own name, no curated showcase content', () => {
     const { container } = renderUniversity(ZAWIA, ZAWIA_FACULTIES);
 
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('مؤسسة مدارك النموذجية');
-    // r188: the real-university facts (1988/decree/memberships) are GONE —
-    // the demo tenant's synthetic profile is the only fact story.
+    // R349 U3: the curated showcase branch is RETIRED with the university
+    // facts pipeline — the demo tenant gets the same honest page as every
+    // other institution: no synthetic profile card, no campus-split cards,
+    // no curated memberships/accreditation/strategic-plan blocks.
+    expect(screen.queryByText('بطاقة تعريف المؤسّسة')).toBeNull();
+    expect(screen.queryByText('داخل الحرم الجامعيّ')).toBeNull();
+    expect(screen.queryByText('فروع خارجيّة')).toBeNull();
     expect(screen.queryByText('1988')).toBeNull();
     expect(screen.queryAllByText(/بقرار رقم/)).toHaveLength(0);
     expect(screen.queryByText('العضويّات الدوليّة')).toBeNull();
-    expect(screen.getByText('بطاقة تعريف المؤسّسة')).toBeInTheDocument();
-    // The campus-split cards.
-    expect(screen.getByText('داخل الحرم الجامعيّ')).toBeInTheDocument();
-    expect(screen.getByText('فروع خارجيّة')).toBeInTheDocument();
+    // its own facts: the platform identifier + the scoped faculties.
+    expect(screen.getByText('المعرّف على المنصّة')).toBeInTheDocument();
     expect(container.querySelectorAll('.faculty-chip-row').length).toBe(3);
   });
 
-  it("alandalus-demo session: the page carries the institution's OWN name — no ZU facts anywhere", () => {
+  it("alandalus-demo session: the page carries the institution's OWN name — no reference facts anywhere", () => {
     renderUniversity(ANDALUS, ANDALUS_FACULTIES);
 
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('مؤسّسة الأندلس التعليميّة');
-    expect(screen.getByText(/مؤسّسة تعليميّة على منصّة مدارك/)).toBeInTheDocument();
+    expect(screen.getByText(/مؤسّستك التعليميّة على منصّة مدارك/)).toBeInTheDocument();
 
-    // The ZU-specific facts are dropped, never re-attributed.
+    // The reference facts are dropped, never re-attributed.
     expect(screen.queryByText('سنة التأسيس')).toBeNull();
     expect(screen.queryByText('1988')).toBeNull();
     expect(screen.queryAllByText(/بقرار رقم 135/)).toHaveLength(0);
@@ -290,22 +293,22 @@ describe('r183-B3 — /student/university derives its identity from the session 
     expect(screen.getByText('كلية الأندلس للعلوم')).toBeInTheDocument();
   });
 
-  it('the «فروع خارجيّة» cities line counts the REAL outside cities (was «1 في 0 مدينة»)', () => {
-    // All faculties outside حرم المعرفة: 1 faculty, 1 distinct campus.
+  it('the faculties KPI counts the real distinct cities of the scoped faculties', () => {
+    // All faculties in one city: 1 faculty, 1 distinct city.
     const outside = [{ id: 'g1', name: 'كلية الأندلس للعلوم', city: 'طرابلس', iconEmoji: null }];
     const { container } = renderUniversity(ZAWIA, outside);
     const lines = changeLines(container);
-    expect(lines).toContain('في مدينة واحدة');
+    expect(lines).toContain('موزَّعة على مدينة واحدة');
     expect(lines.some((l) => l.includes('0 مدينة'))).toBe(false);
   });
 
-  it('zero outside faculties: no cities line at all (the old code said «في 0 مدينة» here)', () => {
+  it('campus-city faculties still count their city honestly (no «0 مدينة» line)', () => {
     const inside = [
       { id: 'f1', name: 'كلية الآداب', city: 'حرم المعرفة', iconEmoji: null },
       { id: 'f2', name: 'كلية العلوم', city: 'حرم المعرفة', iconEmoji: null },
     ];
     const { container } = renderUniversity(ZAWIA, inside);
-    expect(changeLines(container).some((l) => l.startsWith('في '))).toBe(false);
+    expect(changeLines(container).some((l) => l.includes('0 مدينة'))).toBe(false);
   });
 });
 

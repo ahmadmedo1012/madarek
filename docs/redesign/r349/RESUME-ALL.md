@@ -119,3 +119,25 @@ call on this box — run conformance separately when scoping (evidence: /tmp/ver
 - Backend gates after the purge: tsc 0/0 (src + tests), vitest **2071 passed** · 19 skipped.
 - identity-guard: backend residue now 0 outside migrations (659 allowlisted hits remain, all in
   frontend/mobile/docs — the U3/U4 workload).
+
+### LANE U — U3 my-institution everywhere (2026-11-11, this commit)
+- **web UniversityInfoPage** (MorePages.tsx): the curated showcase branch is DELETED — every
+  institution (the demo tenant included) gets the same honest OWN page (session identity card +
+  scoped faculties + the faculties KPI), with the honest empty state for a null institution.
+  `data/university.facts.ts` deleted. Vocabulary neutralized (خدمات المؤسسة).
+- **owner System page**: the `sync` block retired end-to-end — backend /owner/system no longer
+  reads SyncRun (the feed + SyncFeedEntry mapping + the enum import deleted); the web page drops
+  the «آخر مزامنة» KPI + the «سجلّ المزامنة» card; useOwner's OwnerSystem.sync removed.
+- **AdminSyncPage**: deleted with its route (ROUTES.adminSync), nav item («مزامنة الجامعة»), the
+  dashboard's stale-fields summary query + action row + header button, and its test suites
+  (AdminConsolePages §7, r164i §3, r299 items 1-3, r305a8's sync-roots marker + MODULES entry).
+- **mobile /student/university**: rewritten as the generic «عن المؤسّسة» page — session identity
+  card + the caller's own faculties/departments (catalogApi.faculties with the institution slug)
+  + the membership card; the /university/facts call + its defensive normalizer deleted;
+  `universityFacts` dropped from catalog.ts; the profile menu label neutralized.
+- **openapi regenerated** (the /admin/sync + /university/facts routes gone from docs/api/openapi.json
+  and the mobile schema.generated.ts).
+- Tests: web 3026 green (the U3 pins rewritten: r183-B3 now pins the unified page; the
+  memberships suite pins the retirement), mobile 1184 green, tsc 0/0 everywhere,
+  verify --fast green (identity CLEAN, allowlist hits 650, all remaining = docs/specs/frontend
+  copy — the U4 workload).

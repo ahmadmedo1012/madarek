@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { Building2, BookOpen, BarChart3, FileText, TrendingUp, ClipboardCheck, AlertTriangle, Search, X, ChevronDown, ArrowLeft, Plus, Trash2, GraduationCap, RefreshCw, Activity } from 'lucide-react';
+import { Building2, BookOpen, BarChart3, FileText, TrendingUp, ClipboardCheck, AlertTriangle, Search, X, ChevronDown, ArrowLeft, Plus, Trash2, GraduationCap, Activity } from 'lucide-react';
 import { Card, Badge, Tabs, UserAvatar, AlertRow, FormField } from '../../components/primitives';
 import { StatStrip, LedgerPanel, LedgerRow } from '../../components/primitives/Ledger';
 /* R304 (workstream 4D): the admin family rides the shell patterns —
@@ -42,9 +41,6 @@ import {
 /* T-24: pageList + TablePaginationFooter live in their own leaf module
  * now (was AdminGovernancePages ↔ AdminPages cycle — deadcode baseline). */
 import { TablePaginationFooter, PAPER_UNIT } from './TablePaginationFooter';
-import { api, unwrap } from '../../lib/api';
-import { useInstitutionScope } from '../../stores/auth.store';
-import { withInstitutionScope } from '../../lib/queryClient';
 import { countAr, formatPct, formatRelativeArShort } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
 // R320 §B (c1-RENAME): the ADMIN dashboard's title/breadcrumb root is
@@ -172,14 +168,6 @@ function ActionStrip() {
   // Zero-content courses: within the first 100 (the /admin/courses
   // limit ceiling). The row's copy names the window when it binds.
   const courses = useAdminCourses({ limit: 100 });
-  const sync = useQuery({
-    // Separate key from the sync page's polled ['admin','sync'] — this
-    // summary must never inherit the 30s background poll.
-    /* r180: /admin/sync summary is institution-scoped server-side — scoped key. */
-    queryKey: withInstitutionScope(['admin', 'sync', 'summary'], useInstitutionScope()),
-    queryFn: () => unwrap<{ staleCount: number }>(api.get('/admin/sync')),
-    staleTime: 60_000,
-  });
   // limit:1 — the register only needs meta.total for the count.
   const gradedPapers = useAdminPapers({ status: 'GRADED', limit: 1 });
 
@@ -190,7 +178,7 @@ function ActionStrip() {
   // StripSkeleton rides the same Card anatomy with the static title +
   // row placeholders, so the page-skeleton slot and this pending state
   // hand off to the resolved strip at identical heights.
-  if (courses.isPending || sync.isPending || gradedPapers.isPending) {
+  if (courses.isPending || gradedPapers.isPending) {
     return <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />;
   }
 
@@ -208,18 +196,6 @@ function ActionStrip() {
         hint: 'فتح إدارة المقرّرات', // R320 §B KEEP: management-function name
       });
     }
-  }
-  if (sync.data && sync.data.staleCount > 0) {
-    rows.push({
-      key: 'stale-sync',
-      title: 'حقول بيانات جامعية قديمة',
-      desc: `${countAr(sync.data.staleCount, ['حقل واحد', 'حقلان', 'حقول', 'حقلاً'])} يحتاج مزامنة جديدة مع المصدر الرسميّ`,
-      /* r190-D3: the drill deep-links with ?stale=1 — the sync page's
-       * URL effect opens the first stale category on landing (the
-       * question arrives with its answer open). */
-      to: '/admin/sync?stale=1',
-      hint: 'فتح صفحة المزامنة مع الحقول القديمة',
-    });
   }
   if (gradedPapers.data && gradedPapers.data.meta.total > 0) {
     rows.push({
@@ -343,21 +319,17 @@ export function AdminDashboardPage() {
         index="01"
         meta={<>{formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · حساب لحظيّ</>}
         actions={(
-          /* R342-09 (D11 header-CTA precedent): the registrar's two live
-                   * rosters ride the header action slot — the students register
-                   * (primary) + the university sync (the standing operational
-                   * duty). The StatStrip cells keep the full drill set; this pair
-                   * is the phone band's honest affordance (the admin topbar hides
-                   * «اسأل AI» entirely, so without it the first viewport at 390
-                   * carries no primary action at all). */
+          /* R342-09 (D11 header-CTA precedent): the registrar's live
+                   * students register rides the header action slot (primary).
+                   * The StatStrip cells keep the full drill set; this is the
+                   * phone band's honest affordance (the admin topbar hides
+                   * «اسأل AI» entirely, so without it the first viewport at
+                   * 390 carries no primary action at all). The university-sync
+                   * twin retired with the /admin/sync backend (R349 U2). */
                   <>
             <Link to="/admin/students" className="btn primary sm">
               <Icon icon={GraduationCap} size={13} />
               سجلّ الطلاب
-            </Link>
-            <Link to="/admin/sync" className="btn ghost sm">
-              <Icon icon={RefreshCw} size={13} />
-              مزامنة الجامعة
             </Link>
           </>
         )}

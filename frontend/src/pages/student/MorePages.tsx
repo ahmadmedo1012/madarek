@@ -1,10 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Trophy, Star, Medal, Activity, Crown,
-  Target, Headset,
+  Headset,
   Bell, AlertTriangle, BookOpen, Download, CalendarDays,
   CheckCircle2, Check, Heart, GraduationCap,
-  Building2, Microscope,
+  Building2,
   Hourglass, ArrowLeft, X,
   Library, BadgeCheck, FlaskConical, Radio, MapPin, Wallet,
 } from 'lucide-react';
@@ -18,7 +18,6 @@ import { EmojiIcon } from '../../components/EmojiIcon';
 import { useMyAchievements, useLeaderboard, useMySkills, useStudentResults, useMyEnrollments, useNotificationsFeed, useMarkNotifRead, useMarkAllNotifsRead, notifDeepLink, useArExperiences, useStudentMaterials, useFaculties, useCurrentInstitutionSlug, useStudentDashboard, useTrainingMe, submissionStatusAr, type StudentMaterial } from '../../hooks/useResources';
 import { materialHref } from '../../lib/materialHref';
 import { usePostsFeed } from '../../components/community/usePostsFeed';
-import { UNIVERSITY_FACTS } from '../../data/university.facts';
 import { formatNum, formatPct1 } from '../../utils/numbers';
 import { useAuthStore, type InstitutionSummary } from '../../stores/auth.store';
 import { cartesianOptions, chartAnimation, chartColors, useChartThemeKey } from '../../lib/chartTheme';
@@ -1729,38 +1728,20 @@ export function DownloadsPage() {
 /* ─── University Info ──────────────────────────────────── */
 
 /* r183-B3 (A6 P2): the slug of the reference showcase institution —
- * the same contract as the backend's SHOWCASE_INSTITUTION_SLUG
+ * the same contract as the backend's DEMO_INSTITUTION_SLUG
  * (http/routes/colleges.routes.ts) and the seed row (prisma/seed.ts,
  * slug `madarek-demo` — r188 fictional demo tenant). Only this institution renders the curated
  * ZU showcase facts; every other institution gets its own identity
  * and only the facts the platform actually holds for it. */
-const SHOWCASE_INSTITUTION_SLUG = 'madarek-demo';
 
 export function UniversityInfoPage() {
   const institution = useAuthStore((s) => s.currentInstitution);
   const facs = useFaculties(useCurrentInstitutionSlug()); // r180: caller-institution scoping
   const faculties = facs.data ?? [];
-  const insideCampus = faculties.filter((f) => f.city === 'حرم المعرفة');
-  const outsideCampus = faculties.filter((f) => f.city !== 'حرم المعرفة');
   const cityCount = new Set(faculties.map((f) => f.city)).size;
   /* master/D6: the campuses KPI is DERIVED from the live faculty seats
    * (the distinct demo-campus labels), never a hard-coded count — the
    * mission's no-invented-numbers law. */
-  const campusCount = new Set(
-    faculties.map((f) => (f.city?.startsWith('حرم') ? f.city : null)).filter(Boolean),
-  ).size;
-  /* r183-B3: the outside-branch change line said «في 0 مدينة» whenever
-   * every faculty sat outside the main campus — a self-contradictory KPI (the
-   * alandalus view). Phrase the line ONLY from the real distinct
-   * cities of the outside faculties, and only when there are any. */
-  const outsideCityCount = new Set(outsideCampus.map((f) => f.city)).size;
-
-  /* Null context (the multi-membership pre-selection edge) keeps the
-   * showcase default — the only institution whose facts the platform
-   * curates. A scoped session at any OTHER institution never reads
-   * the ZU identity again. */
-  const isShowcase = !institution || institution.slug === SHOWCASE_INSTITUTION_SLUG;
-
   const facCount = facs.isPending
     ? '…'
     : facs.isError || faculties.length === 0 ? '—' : formatNum(faculties.length);
@@ -1768,142 +1749,48 @@ export function UniversityInfoPage() {
     ? `موزَّعة على ${countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`
     : undefined;
 
-  if (!isShowcase) {
-    /* ── The institution's OWN page (r183-B3): name/slug facts + the
-     * faculties scoped to it. The ZU-specific facts (founding year,
-     * campus split, demo profile, strategic plan,
-     * contact block) are showcase-curated content and are dropped —
-     * never re-attributed to another institution. */
-    const inst: InstitutionSummary = institution;
+  /* R349 U3 — ONE page for every institution (the curated showcase
+   * branch is retired with the university facts pipeline): the
+   * caller's OWN institution — name/slug facts + the faculties scoped
+   * to it. No reference facts about any real university, no curated
+   * memberships/accreditation/strategic-plan blocks: content the
+   * institution itself enters arrives when its data does. */
+  if (!institution) {
+    /* Null context (the multi-membership pre-selection edge): the
+     * honest empty state — nothing is invented. */
     return (
       <PageFrame width="default">
         <PatternPageHeader
-          eyebrow="خدمات الجامعة"
-          title={inst.name}
-          description="مؤسّسة تعليميّة على منصّة مدارك — تعرض هذه الصفحة الكليّات المسجَّلة في مؤسّستك."
-          /* R342-08 — the header CTA pair rides the masthead (the
-             D11/D8 measured seat; the phone band hides the topbar
-             «اسأل AI» ≤920, D6): the university-services family's
-             honest siblings. The [01] numeral sits on the identity
-             section's §B2 bar (the r183 pin owns the h1's exact
-             text). */
-          actions={(
-            <>
-              <Link to="/student/map" className="btn primary sm">
-                <Icon icon={MapPin} size={13} />
-                دليل الحرم الجامعيّ
-              </Link>
-              <Link to="/student/payment" className="btn ghost sm">
-                <Icon icon={Wallet} size={13} />
-                الشؤون الماليّة
-              </Link>
-            </>
-          )}
+          eyebrow="خدمات المؤسسة"
+          title="عن المؤسّسة"
+          description="مؤسّستك التعليميّة على منصّة مدارك."
         />
-
-        <div className="grid-4">
-          <MetricCard
-            icon={Building2}
-            label="عدد الكليّات"
-            value={facCount}
-            change={citiesChange}
-            color="brand"
-          />
-        </div>
-
-      {/* R305 Heron: the identity card is the page's ONE deep band — the
-          authority surface. Facts ride the band-safe .r305u-fact anatomy
-          (the deep FactRow variant) inside the .r305u-facts grid.
-          R342-08: the section opener is the §B2 bar — [01] + the h2
-          (same heading semantics the r305s-kicker carried, on the
-          D7a family grammar). */}
-        <section aria-label="بطاقة التعريف">
-          <SectionBar index="01" title="بطاقة تعريف" />
-          <div className="r305s-band r305s-band--deep">
-            <div className="r305u-facts">
-              <FactRow deep label="الاسم الرسميّ" value={inst.name} />
-              {inst.nameEn ? (
-                <FactRow deep label="الاسم بالإنجليزيّة" value={inst.nameEn} mono />
-              ) : null}
-              <FactRow deep label="المعرّف على المنصّة" value={inst.slug} mono />
-            </div>
-          </div>
-        </section>
-
-        {facs.isError ? (
-          /* One honest error surface for the shared query (the
-           * showcase branch's own convention). */
-          <Card title="الكليّات" icon={Building2}>
-            <ErrorState
-              message="تعذَّر تحميل قائمة الكليّات"
-              error={facs.error}
-              onRetry={() => facs.refetch()}
-            />
-          </Card>
-        ) : (
-          <Card
-            title="كلّيّات المؤسّسة"
-            icon={Building2}
-            subtitle={facs.isPending ? 'جارٍ التحميل…' : `${countAr(faculties.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} في مؤسّستك`}
-          >
-            {facs.isPending ? (
-              <div className="flex-col gap-2" aria-busy="true">
-                {[0, 1, 2, 3].map((i) => (
-                  <div className="campus-skel-row" key={i} aria-hidden>
-                    <Skeleton width={130} height={13} />
-                    <span style={{ flex: 1 }} />
-                    <Skeleton width={54} height={13} />
-                  </div>
-                ))}
-              </div>
-            ) : faculties.length === 0 ? (
-              <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" description="لم تُسجَّل كلّيّات في هذه المؤسّسة بعد." />
-            ) : (
-              <div className="grid-auto-260" style={{ gap: 'var(--sp-2)' }}>
-                {faculties.map((f) => (
-                  <Link
-                    key={f.id}
-                    to={`/colleges/${f.id}`}
-                    className="faculty-chip-row"
-                  >
-                    <span className="faculty-chip-emoji" aria-hidden>
-                      <EmojiIcon emoji={f.iconEmoji ?? '🏛️'} size={16} />
-                    </span>
-                    <span className="text-sm" style={{ flex: 1, minWidth: 0 }}>{f.name}</span>
-                    <Badge color="purple">{f.city}</Badge>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </Card>
-        )}
+        <EmptyState
+          illustration="empty-list"
+          title="لا توجد مؤسّسة في جلستك"
+          description="اختر مؤسّستك من قائمة العضويّات ثم عُد إلى هذه الصفحة."
+        />
       </PageFrame>
     );
   }
-
+  /* ── The institution's OWN page (r183-B3): name/slug facts + the
+   * faculties scoped to it. The ZU-specific facts (founding year,
+   * campus split, demo profile, strategic plan,
+   * contact block) are showcase-curated content and are dropped —
+   * never re-attributed to another institution. */
+  const inst: InstitutionSummary = institution;
   return (
     <PageFrame width="default">
-      {/* r188: the demonstration tenant — the platform's explicitly
-          FICTIONAL reference institution. Every fact below is synthetic
-          demo data (no real founding year, decree, or history); the
-          page labels the tenant as بيانات تجريبية throughout. */}
       <PatternPageHeader
-        eyebrow="خدمات الجامعة"
-        title="مؤسسة مدارك النموذجية"
-        description="مؤسّسة العرض على منصّة مدارك — مؤسّسة اصطناعية بالكامل تُظهر سير العمل الأكاديمي ببيانات تجريبية عبر ثلاثة حرَم معرفيّة."
-        meta={outsideCityCount > 0 ? (
-          /* سطر التوزيع الحقيقي للفروع — العدّ من مدن الكليّات الخارجيّة
-             الفعليّة لا من السقّ النظري (عقد r183-B3: لا «في 0 مدينة»). */
-          <span>
-            الفروع الخارجيّة{' '}
-            <span className="metric-change">في {countAr(outsideCityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}</span>
-          </span>
-        ) : undefined}
-        /* R342-08 — the [01] numeral + eyebrow seat this page on the
-           family grammar (map/live's header precedent), and the CTA
-           pair rides the masthead (the D11/D8 measured seat; the
-           phone band hides the topbar «اسأل AI» ≤920, D6): the
-           university-services family's honest siblings. */
+        eyebrow="خدمات المؤسسة"
+        title={inst.name}
+        description="مؤسّستك التعليميّة على منصّة مدارك — تعرض هذه الصفحة الكليّات المسجَّلة في مؤسّستك."
+        /* R342-08 — the header CTA pair rides the masthead (the
+           D11/D8 measured seat; the phone band hides the topbar
+           «اسأل AI» ≤920, D6): the university-services family's
+           honest siblings. The [01] numeral sits on the identity
+           section's §B2 bar (the r183 pin owns the h1's exact
+           text). */
         actions={(
           <>
             <Link to="/student/map" className="btn primary sm">
@@ -1918,73 +1805,38 @@ export function UniversityInfoPage() {
         )}
       />
 
-      {/* R304 (6-d): حائط بطاقات KPI السابق صار سطر أرقام واحد (StatLine) —
-          نفس الحقائق نفسها الصدق: العدّ الحقيقي من الكليّات المحمّلة،
-          وسطر التجريبيّة يعلن طابع البيانات. */}
-      <StatLine
-        items={[
-          {
-            label: 'عدد الكليّات',
-            value: facCount,
-            hint: citiesChange,
-            tone: 'signal',
-          },
-          {
-            label: 'داخل الحرم الجامعيّ',
-            value: facs.isPending ? '…' : facs.isError ? '—' : formatNum(insideCampus.length),
-            hint: 'حرم المعرفة',
-          },
-          {
-            label: 'فروع خارجيّة',
-            value: facs.isPending ? '…' : facs.isError ? '—' : formatNum(outsideCampus.length),
-          },
-          {
-            label: 'الحرَم الأكاديميّة',
-            value: facs.isPending ? '…' : facs.isError ? '—' : formatNum(campusCount),
-            hint: 'بيانات تجريبية',
-          },
-        ]}
-      />
-
-      {/* Vision + Mission (the demo tenant's synthetic strategy —
-          mirrors static-source.ts strategicPlan.*) */}
-      <div className="grid-2">
-        <Card title="الرؤية" icon={Target}>
-          <p style={{ fontSize: 'var(--fs-md)', color: 'var(--text)', lineHeight: 'var(--lh-loose)', margin: 0 }}>
-            منصّة عرض تُبرهن على تعليم عالي منظَّم رقميًا — ببيانات اصطناعية آمنة.
-          </p>
-        </Card>
-        <Card title="الرسالة" icon={Star}>
-          <p style={{ fontSize: 'var(--fs-sm)', color: 'var(--text-muted)', lineHeight: 'var(--lh-loose)', margin: 0 }}>
-            إظهار سير العمل الأكاديمي الكامل — من الهيكل إلى الإتقان — داخل مدارك:
-            تجربة الطالب، تقييم الأستاذ، عزل المؤسّسات، وجودة قابلة للقياس، كلها كأمثلة حيّة.
-          </p>
-        </Card>
+      <div className="grid-4">
+        <MetricCard
+          icon={Building2}
+          label="عدد الكليّات"
+          value={facCount}
+          change={citiesChange}
+          color="brand"
+        />
       </div>
 
-      {/* R305 Heron: the identity card is the page's ONE deep band — the
-          authority surface. Facts ride the band-safe .r305u-fact anatomy
-          (the deep FactRow variant) inside the .r305u-facts grid.
-          R342-08: the section opener is the §B2 bar — [01] + the h2
-          (same heading semantics the r305s-kicker carried, on the
-          D7a family grammar). */}
+    {/* R305 Heron: the identity card is the page's ONE deep band — the
+        authority surface. Facts ride the band-safe .r305u-fact anatomy
+        (the deep FactRow variant) inside the .r305u-facts grid.
+        R342-08: the section opener is the §B2 bar — [01] + the h2
+        (same heading semantics the r305s-kicker carried, on the
+        D7a family grammar). */}
       <section aria-label="بطاقة التعريف">
         <SectionBar index="01" title="بطاقة تعريف" />
         <div className="r305s-band r305s-band--deep">
           <div className="r305u-facts">
-            <FactRow deep label="الاسم الرسميّ" value="مؤسسة مدارك النموذجية" />
-            <FactRow deep label="النطاق" value="بيانات اصطناعية — لا مؤسّسة حقيقية" />
-            <FactRow deep label="النوع" value="مؤسّسة عرض تجريبية (اصطناعية)" />
-            <FactRow deep label="بريد العرض" value="demo.madarek.ly" mono />
-            <FactRow deep label="الحرم" value="حرم المعرفة · حرم الابتكار · حرم البيان" />
-            <FactRow deep label="طابع البيانات" value="مولَّدة لأغراض العرض" />
+            <FactRow deep label="الاسم الرسميّ" value={inst.name} />
+            {inst.nameEn ? (
+              <FactRow deep label="الاسم بالإنجليزيّة" value={inst.nameEn} mono />
+            ) : null}
+            <FactRow deep label="المعرّف على المنصّة" value={inst.slug} mono />
           </div>
         </div>
       </section>
 
       {facs.isError ? (
-        /* One honest error surface for the shared query — no masked
-           “لا توجد بيانات” empty states (audit 0-d P1). */
+        /* One honest error surface for the shared query (the
+         * showcase branch's own convention). */
         <Card title="الكليّات" icon={Building2}>
           <ErrorState
             message="تعذَّر تحميل قائمة الكليّات"
@@ -1993,161 +1845,42 @@ export function UniversityInfoPage() {
           />
         </Card>
       ) : (
-        <>
-          <Card
-            title="الكليّات داخل الحرم الجامعيّ"
-            icon={Building2}
-            subtitle={facs.isPending ? 'جارٍ التحميل…' : `${countAr(insideCampus.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} في الحرم الرئيسي`}
-          >
-            {facs.isPending ? (
-              <div className="flex-col gap-2" aria-busy="true">
-                {[0, 1, 2, 3].map((i) => (
-                  <div className="campus-skel-row" key={i} aria-hidden>
-                    <Skeleton width={110} height={13} />
-                    <span style={{ flex: 1 }} />
-                    <Skeleton width={40} height={13} />
-                  </div>
-                ))}
-              </div>
-            ) : insideCampus.length === 0 ? (
-              <EmptyState illustration="empty-list" title="لا توجد بيانات" description="لم تُسجَّل كلّيّات داخل الحرم بعد." />
-            ) : (
-              <div className="grid-auto-200" style={{ gap: 'var(--sp-2)' }}>
-                {insideCampus.map((f) => (
-                  <Link
-                    key={f.id}
-                    to={`/colleges/${f.id}`}
-                    className="faculty-chip-row"
-                  >
-                    <span className="faculty-chip-emoji" aria-hidden>
-                      <EmojiIcon emoji={f.iconEmoji ?? '🏛️'} size={16} />
-                    </span>
-                    <span className="text-sm" style={{ flex: 1 }}>{f.name}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </Card>
-
-          <Card
-            title="الكليّات الفرعيّة"
-            icon={Building2}
-            subtitle={facs.isPending ? 'جارٍ التحميل…' : `${countAr(outsideCampus.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} موزَّعة على ${countAr(new Set(outsideCampus.map((c) => c.city)).size, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`}
-          >
-            {facs.isPending ? (
-              <div className="flex-col gap-2" aria-busy="true">
-                {[0, 1, 2, 3].map((i) => (
-                  <div className="campus-skel-row" key={i} aria-hidden>
-                    <Skeleton width={130} height={13} />
-                    <span style={{ flex: 1 }} />
-                    <Skeleton width={54} height={13} />
-                  </div>
-                ))}
-              </div>
-            ) : outsideCampus.length === 0 ? (
-              <EmptyState illustration="empty-list" title="لا توجد فروع خارج الحرم" description="كل الكليّات المسجَّلة داخل الحرم الرئيسي." />
-            ) : (
-              <div className="grid-auto-260" style={{ gap: 'var(--sp-2)' }}>
-                {outsideCampus.map((f) => (
-                  <Link
-                    key={f.id}
-                    to={`/colleges/${f.id}`}
-                    className="faculty-chip-row"
-                  >
-                    <span className="faculty-chip-emoji" aria-hidden>
-                      <EmojiIcon emoji={f.iconEmoji ?? '🏛️'} size={16} />
-                    </span>
-                    <span className="text-sm" style={{ flex: 1, minWidth: 0 }}>{f.name}</span>
-                    <Badge color="purple">{f.city}</Badge>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </Card>
-        </>
+        <Card
+          title="كلّيّات المؤسّسة"
+          icon={Building2}
+          subtitle={facs.isPending ? 'جارٍ التحميل…' : `${countAr(faculties.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} في مؤسّستك`}
+        >
+          {facs.isPending ? (
+            <div className="flex-col gap-2" aria-busy="true">
+              {[0, 1, 2, 3].map((i) => (
+                <div className="campus-skel-row" key={i} aria-hidden>
+                  <Skeleton width={130} height={13} />
+                  <span style={{ flex: 1 }} />
+                  <Skeleton width={54} height={13} />
+                </div>
+              ))}
+            </div>
+          ) : faculties.length === 0 ? (
+            <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" description="لم تُسجَّل كلّيّات في هذه المؤسّسة بعد." />
+          ) : (
+            <div className="grid-auto-260" style={{ gap: 'var(--sp-2)' }}>
+              {faculties.map((f) => (
+                <Link
+                  key={f.id}
+                  to={`/colleges/${f.id}`}
+                  className="faculty-chip-row"
+                >
+                  <span className="faculty-chip-emoji" aria-hidden>
+                    <EmojiIcon emoji={f.iconEmoji ?? '🏛️'} size={16} />
+                  </span>
+                  <span className="text-sm" style={{ flex: 1, minWidth: 0 }}>{f.name}</span>
+                  <Badge color="purple">{f.city}</Badge>
+                </Link>
+              ))}
+            </div>
+          )}
+        </Card>
       )}
-
-      <Card title="بطاقة تعريف المؤسّسة" icon={Crown}>
-        <div className="r305u-rows">
-          {/* r155b: العضويّات تُقرأ من UNIVERSITY_FACTS (data/university.facts.ts
-              — مصدر الحقيقة الوحيد المعتمد على static-source.ts). النسخة
-              المحليّة السابقة أعادت إنتاج خطأ إعادة الكتابة الموثّق هناك:
-              «اتحاد الجامعات الإسلامية» بدل المتوسطيّة. الشارة تحمل تصنيف
-              العضويّة (label) — الاختصارات اللاتينيّة القديمة لم تكن ضمن
-              المصدر المعتمد أصلاً. */}
-          {/* R305 Heron: the inline surface-2 wells become hairline ledger
-              rows (.r305u-row). The membership Badge drops the gold tone —
-              gold is the ACHIEVEMENTS-only signal on the Madarek canon;
-              institutional classifications ride the neutral chip. */}
-          {UNIVERSITY_FACTS.profile.map((m) => (
-            <div key={m.label} className="r305u-row">
-              <span className="text-sm r305u-row-main">{m.full}</span>
-              <Badge>{m.label}</Badge>
-            </div>
-          ))}
-        </div>
-        {/* 5-A6 P2-7 — accreditation chip as a class (student.css
-            .uni-accredit): the old inline styles painted --accent on
-            --accent-soft at 11px (measured 3.06:1); the class pairs the
-            pastel with its -deep rung ink. */}
-        <div className="uni-accredit">
-          معتمدة من وزارة التعليم العالي والبحث العلميّ — ليبيا
-        </div>
-      </Card>
-
-      {/* Strategic plan */}
-      <Card title="الخطّة الاستراتيجيّة 2024–2028" icon={Target} subtitle="خارطة طريق للارتقاء بمكانة الجامعة وتعزيز دورها في خدمة المجتمع">
-        <div className="grid-2 r305u-rows">
-          {[
-            'تقديم برامج تعليميّة وفق معايير الجودة المحليّة والدوليّة',
-            'الارتقاء بمستوى البحث العلميّ',
-            'تعزيز دور الجامعة في خدمة المجتمع',
-            'توفير بيئة مناسبة وتحسين مستوى الخدمات',
-            'تأهيل وتطوير الموارد البشريّة',
-            'مواءمة المخرجات مع متطلّبات سوق العمل',
-            'دعم التعاون مع المؤسّسات المحليّة والدوليّة',
-            'تجويد الخدمات التعليميّة والمجتمعيّة',
-          ].map((g) => (
-            <div key={g} className="r305u-row">
-              <Icon icon={CheckCircle2} size={14} style={{ color: 'var(--success)', flexShrink: 0 }} />
-              <span className="text-sm r305u-row-main">{g}</span>
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      <Card title="الشهادات والبرامج الأكاديميّة" icon={Microscope} subtitle="درجات أكاديميّة معتمدة على الموقع الرسميّ">
-        <div className="grid-3" style={{ gap: 'var(--sp-3)', marginBottom: 'var(--sp-4)' }}>
-          {[
-            { ar: 'الإجازة الجامعيّة', en: 'Bachelor / Licence' },
-            { ar: 'الدراسات العليا', en: "Master's" },
-            { ar: 'الدراسات الدقيقة', en: 'PhD / Doctorate' },
-          ].map((d) => (
-            /* Leading icon chip replaces the old 3px borderRight stripe
-               (orchestrator ruling #4 — no colored start-edge stripes). */
-            <div key={d.en} className="degree-card">
-              <span className="degree-card-icon" aria-hidden>
-                <Icon icon={GraduationCap} size={16} />
-              </span>
-              <div>
-                <div className="text-sm" style={{ fontWeight: 600 }}>{d.ar}</div>
-                <div className="text-xxs text-subtle font-mono"><bdi>{d.en}</bdi></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      <Card title="معلومات التواصل" icon={Headset}>
-        <div className="grid-2">
-          <FactRow label="العنوان" value="بيانات عرض — بلا عنوان حقيقي (مؤسّسة اصطناعية)" />
-          <FactRow label="الهاتف" value="+218 23 762659" mono />
-          <FactRow label="هاتف بديل" value="+218 23 762882" mono />
-          <FactRow label="البريد العامّ" value="info@demo.madarek.ly" mono />
-          <FactRow label="بريد العرض" value="ico@demo.madarek.ly" mono />
-          <FactRow label="نطاق العرض" value="demo.madarek.ly" mono />
-        </div>
-      </Card>
     </PageFrame>
   );
 }
