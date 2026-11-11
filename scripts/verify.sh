@@ -66,6 +66,14 @@ else
   fail "css ratchet"; tail -8 /tmp/verify-cssgate.log
 fi
 
+# 3.5 identity ratchet (R349 Q4 — dependency-free; runs in BOTH modes)
+step "identity guard (university residue + single-mark)"
+if node scripts/qa/identity-guard.mjs > /tmp/verify-identity.log 2>&1; then
+  ok "identity $(grep -oE 'CLEAN.*' /tmp/verify-identity.log | head -1)"
+else
+  fail "identity guard"; head -30 /tmp/verify-identity.log
+fi
+
 if [[ $FAST -eq 1 ]]; then
   step "--fast mode: stopping here"
   [[ $FAIL -eq 0 ]] && echo "verify.sh: FAST PASS" || echo "verify.sh: FAIL"

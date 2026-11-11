@@ -1,0 +1,1069 @@
+{
+ "_comment": "R349 Q4 seed — every entry is LANE U's workload; U5 empties this to zero product files (structural exemptions: migrations, this gate, round ledgers).",
+ "entries": [
+  {
+   "path": "BACKEND.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "CHANGELOG.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "DESIGN.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "LICENSE",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "README.en.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "apps/mobile/app/student/university.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U3: UniversityFact → the generic my-institution page (model + feeds)",
+   "owner": "U"
+  },
+  {
+   "path": "apps/mobile/docs/feature-parity.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U3/U4: mobile university page + docs",
+   "owner": "U"
+  },
+  {
+   "path": "apps/mobile/src/api/catalog.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U3: UniversityFact → the generic my-institution page (model + feeds)",
+   "owner": "U"
+  },
+  {
+   "path": "backend/prisma/schema.prisma",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U3: UniversityFact → the generic my-institution page (model + feeds)",
+   "owner": "U"
+  },
+  {
+   "path": "backend/prisma/seed-demo-r330.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: seeds/test-accounts/DTOs — re-key to the neutral demo tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/prisma/seed.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: seeds/test-accounts/DTOs — re-key to the neutral demo tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/src/app.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/src/http/routes/colleges.routes.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/src/http/routes/sync.routes.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: the zu-sync family + its scheduler/routes — purged with the showcase tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/src/http/routes/training.routes.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/src/lib/zu-sync/index.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: the zu-sync family + its scheduler/routes — purged with the showcase tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/src/modules/auth/auth.dto.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: seeds/test-accounts/DTOs — re-key to the neutral demo tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/src/modules/auth/test-accounts.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: seeds/test-accounts/DTOs — re-key to the neutral demo tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/src/modules/institution/institution.dto.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/src/modules/search/__tests__/normalize.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/src/modules/search/global.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/src/scheduler.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: the zu-sync family + its scheduler/routes — purged with the showcase tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/integration/sync-institution-isolation.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: the zu-sync family + its scheduler/routes — purged with the showcase tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/integration/two-institution-regression.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/auth-institution-context.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/auth-register-password.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/auth-rotation.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/auth-test-accounts.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/catalog-faculties-public.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/catalog-structure-create.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/colleges-logic.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/colleges-public-access.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/enrollments-scope.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/owner-alerts-counts.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/owner-console-scope.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/scheduler-guard.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: the zu-sync family + its scheduler/routes — purged with the showcase tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/scheduler-institution.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: the zu-sync family + its scheduler/routes — purged with the showcase tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/scheduler-retention.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: the zu-sync family + its scheduler/routes — purged with the showcase tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/search-logic.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/sync-routes-scope.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: the zu-sync family + its scheduler/routes — purged with the showcase tenant",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/visibility-logic.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2/U4: backend residue — neutralize with the showcase purge",
+   "owner": "U"
+  },
+  {
+   "path": "backend/tests/modules/zu-sync-run.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U2: the zu-sync family + its scheduler/routes — purged with the showcase tenant",
+   "owner": "U"
+  },
+  {
+   "path": "docs/02-features.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/03-architecture.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/04-repository-map.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/07-database.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/09-user-journeys.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/13-maintenance.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/16-decisions-and-limitations.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/DATABASE-REFERENCE.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/MASTER-CONSOLIDATION-PLAN.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/MASTER-CONSOLIDATION-REPORT.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/MASTER-CONSOLIDATION-RESUME.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/PROJECT-REFERENCE.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/SPECS-REFERENCE.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/architecture/multi-institution/architecture-decisions.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/architecture/multi-institution/brand-audit-and-changes.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/architecture/multi-institution/data-scope-inventory.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/architecture/multi-institution/migration-and-rollout.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/history/audits/4-A1-landing.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/history/audits/4-A14-navigation-ia.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/history/audits/4-A8-admin-quality.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/history/audits/5-A1-landing-scrollcraft.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/history/audits/5-A12-public-funnel.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/history/audits/5-A4-navigation-ia.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/mobile/foundations/lists.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/mobile/route-inventory.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/mobile/screens/longtail-public.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/mobile/screens/longtail-student.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/modules/admin.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/modules/platform.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/releases/R307-MEDIA-LAYER-FINAL.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/runbooks/restore-exercise-log.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "docs/superpowers/specs/2026-05-31-role-and-governance-model-design.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: docs/license/changelog neutralization (history entries past-tense)",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/index.html",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/public/media/manifest.json",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/App.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/components/landing/sections/Statement.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/data/colleges.config.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/data/product-media.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/data/university.facts.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/lib/ownerLabels.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/pages/admin/AdminSyncPage.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/pages/student/MorePages.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/styles/landing/strata.css",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/styles/patterns.css",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/styles/polish.css",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/src/styles/student/heron-supplemental.css",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/r325/flows/flow-02-assignment-authoring.spec.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/G-final-shared-surfaces.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/OwnerInstitutionDetailPage.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/OwnerInstitutionsPage.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/OwnerUsersPage-institution-column.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/PageHeader.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/RegisterPage-departments-errors.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/RegisterPage-institution-step.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/RegisterPage-password-blocklist.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/RegisterPage-steps.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/Sidebar-Topbar.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/auth-store-institution-context.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/ownerLabels-categories.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r164i-admin-owner-truthfulness.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r170e-a11y-pins.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r177-brand-neutrality.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r180-admin-structure-hooks.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r183-student-pins.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r188-brand-integrity.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r305-topbar-cluster.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r305a8-owner-core-heron.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r306-landing-sheet.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r307-landing-media.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r320-rename-belt.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/r321-decor-innertext.test.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/route-titles-coverage.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/useAuth-session.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "frontend/tests/unit/useChangePassword.test.tsx",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: test fixtures/expectations — re-key with the neutral tenant",
+   "owner": "U"
+  },
+  {
+   "path": "scripts/conformance/pages-owner-results.json",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: captured results JSONs (regenerate after the sweep)",
+   "owner": "U"
+  },
+  {
+   "path": "scripts/conformance/pages-student-results.json",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: captured results JSONs (regenerate after the sweep)",
+   "owner": "U"
+  },
+  {
+   "path": "scripts/media/build-media-derivatives.mjs",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "scripts/r327/ai-retrieval-check.ts",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "scripts/r327/b3-invite-bulk-proof.mjs",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "scripts/r327/p4c-rehearsal.mjs",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: product copy/styles/config — the showcase word sweep",
+   "owner": "U"
+  },
+  {
+   "path": "specs/001-premium-motion-system/contracts/college-identity-profile.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: speckit specs neutralization",
+   "owner": "U"
+  },
+  {
+   "path": "specs/001-premium-motion-system/data-model.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: speckit specs neutralization",
+   "owner": "U"
+  },
+  {
+   "path": "specs/001-premium-motion-system/plan.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: speckit specs neutralization",
+   "owner": "U"
+  },
+  {
+   "path": "specs/001-premium-motion-system/research.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: speckit specs neutralization",
+   "owner": "U"
+  },
+  {
+   "path": "specs/001-premium-motion-system/spec.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: speckit specs neutralization",
+   "owner": "U"
+  },
+  {
+   "path": "specs/001-premium-motion-system/tasks.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: speckit specs neutralization",
+   "owner": "U"
+  },
+  {
+   "path": "specs/002-visual-uplift/spec.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: speckit specs neutralization",
+   "owner": "U"
+  },
+  {
+   "path": "specs/002-visual-uplift/tasks.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: speckit specs neutralization",
+   "owner": "U"
+  },
+  {
+   "path": "specs/004-colleges-gallery/spec.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: speckit specs neutralization",
+   "owner": "U"
+  },
+  {
+   "path": "specs/011-platform-completeness-uplift/spec.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: speckit specs neutralization",
+   "owner": "U"
+  },
+  {
+   "path": "specs/012-design-graphics-uplift/spec.md",
+   "patterns": [
+    "*"
+   ],
+   "reason": "U4: speckit specs neutralization",
+   "owner": "U"
+  }
+ ]
+}

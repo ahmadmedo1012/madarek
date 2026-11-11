@@ -47,3 +47,43 @@ call on this box — run conformance separately when scoping (evidence: /tmp/ver
   boot vite + run the scoped gate in ONE call.
 - verify.sh conformance step defaults to :5173 (dev), overlap/e2e are hermetic (own preview).
 - Backend vitest prints intentional error-handler fixtures (level 40/50 logs) — suite green.
+
+### LANE Q — Q2/Q3/Q4 (2026-11-11, all merged to main)
+- **Q2 extended matrix**: `--gate --scroll --interact` full scope on the dev server →
+  **93.0% (55384/59529) PASS** vs floor 91.6 (r347 close: 93.0 — like-with-like held);
+  edge390 fails 0; top residual kinds y:255/x-mirror:178/h:145 (pre-existing, cross-section,
+  owned by W3/D12 follow-ups). Evidence: /tmp/conform-extended.log (session box).
+- **Q3 scroll-restore flake — FIXED at the cause (8b6fa9fc)**. Instrumented diagnosis under
+  --workers=4: browser **scroll anchoring** on .content shifts scrollTop as late widgets land
+  (measured: saved 664/596 instead of 600; sh swings 1683↔1677; one +64px jump) → ±60 window
+  failed at its exact boundary. Fix (3 parts): (a) spec isolates anchoring
+  (`overflow-anchor:none` on .content — browser behavior, orthogonal to the app feature under
+  test); (b) spec waits on the scroll event itself (once-listener promise) instead of the
+  150ms timer, and asserts the actually-persisted sessionStorage offset (the signal, not an
+  assumption); (c) useScrollRestoration POP watcher budget is now two-legged — 60 SETTLED
+  frames (clamp not binding) + 10s hard wall-clock cap — so late content height restores
+  deterministically instead of racing a frame counter. **Proof: 20/20 green under
+  --repeat-each=20 --workers=4** (was 10–14/20 with 6× waitForFunction timeouts);
+  r305-shell-heron + r309-recovery full specs 52/52; unit tests 7/7; verify --fast green.
+- **Q4 identity-guard.mjs — LANDED (this commit)**: `scripts/qa/identity-guard.mjs`
+  (dependency-free) + `scripts/qa/identity-allow.json` (133 seeded entries = the measured
+  LANE U workload: 1041 allowlisted hits, 0 drift, 1879 files scanned). Blocks: Libyan
+  university proper names (35 Arabic compounds + English forms), zu-sync/inst-zawia/zawia,
+  `showcase`, UniversityFact family, and mark-path twins outside the 12 sanctioned geometry
+  sources (the lane-B single-mark guard). Structural exemptions: migrations (append-only),
+  the gate itself, docs/redesign + docs/archive (round ledgers), audits/. Wired into
+  `verify.sh` (both modes, before the --fast exit) AND `ci.yml` design-gates job.
+  Red-box proven: injected جامعة الزاوية in a non-allowlisted file → exit 1; injected latin
+  `zawia` → exit 1; injected the mark path into styles → exit 1; restored → exit 0.
+  (Note: a file already on the allowlist can gain new hits — path-scope ratchet, same model
+  as overlap-allow.json; Lane U empties it to zero product files, U5.)
+- **ENVIRONMENT RESET between Q4-authoring and commit** (sandbox rebuilt): re-cloned from
+  main (both Q1/Q3 commits intact), re-created the uncommitted Q4 files from the session
+  transcript, re-ran the red-box proofs. Chromium-1223 + npm install re-provisioned.
+
+## next (in order)
+1. LANE M1 (iOS crash): CountUp worklet fix + worklet-audit.mjs + CI simulator smoke.
+2. LANE U (university purge): the 133-file allowlist IS the inventory; U2 backend purge,
+   U3 UniversityFact → my-institution, U4 docs, U5 empty the allowlist.
+3. LANE B (one logo): B1-B4 on top of the mark-path guard.
+4. Then D, P, S, I, W, N, Z.

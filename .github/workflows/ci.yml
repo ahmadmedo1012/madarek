@@ -304,6 +304,13 @@ jobs:
       # committed generated halves (web CSS + mobile TS) and the RN
       # brand port must match shared/design-tokens.json byte-for-byte.
       - run: node scripts/tokens/build.mjs --check
+      # R349 Q4 — identity ratchet (dependency-free): fails on the
+      # retired real-university names, the old sync-source ids, the
+      # retired synthetic-tenant word, and the removed fact model —
+      # each outside the reasoned allowlist — plus mark-path twins
+      # outside the sanctioned geometry sources. Lane U empties the
+      # allowlist to zero product files (U5).
+      - run: node scripts/qa/identity-guard.mjs
       - run: bash scripts/check-icons.sh
       - run: bash scripts/check-motion-tokens.sh
       # CSP pin drift guard (dependency-free): r133 changed the inline
