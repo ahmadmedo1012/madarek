@@ -464,7 +464,8 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
           disable-animations: true
           script: |
-            set -euo pipefail
+            # NOTE: this script runs under /bin/sh (POSIX) — no `pipefail`.
+            set -eu
             adb wait-for-device
             echo "Waiting for boot completion..."
             for i in $(seq 1 120); do
