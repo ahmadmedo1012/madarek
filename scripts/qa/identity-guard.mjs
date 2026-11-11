@@ -72,43 +72,15 @@ const LATIN_PATTERNS = [
 // Arabic proper-name compounds — the removed showcase + the Libyan
 // public universities (city hosts). Adjectival/generic use of «جامعة»
 // (e.g. «جامعة حكومية», «الجامعة») is NOT a violation.
-const ARABIC_NAMES = [
-  'جامعة الزاوية',
-  'جامعة السابع من أبريل',
-  'جامعة طرابلس',
-  'جامعة بنغازي',
-  'جامعة قاريونس',
-  'جامعة مصراتة',
-  'جامعة مصراته',
-  'جامعة سبها',
-  'جامعة عمر المختار',
-  'جامعة الجفرة',
-  'جامعة زليتن',
-  'جامعة المرقب',
-  'جامعة الخمس',
-  'جامعة الواحات',
-  'جامعة أجدابيا',
-  'جامعة درنة',
-  'جامعة طبرق',
-  'جامعة غريان',
-  'جامعة العقم',
-  'جامعة صبراتة',
-  'جامعة سبراثة',
-  'جامعة الكفرة',
-  'جامعة غات',
-  'جامعة أوباري',
-  'جامعة مرزق',
-  'جامعة الشاطئ',
-  'جامعة نالوت',
-  'جامعة الأصبعة',
-  'جامعة الأساسية',
-  'جامعة البيضاء',
-  'جامعة سرت',
-  'جامعة ترهونة',
-  'جامعة بني وليد',
-  'جامعة يفرن',
-  'جامعة الزنتان',
-].map((name) => ({ id: name, re: new RegExp(name.replace(/\s+/g, '\\s+')) }));
+/* R349 U4 — the names live in identity-banned.json (shared with the
+   brand tests — the deliberate consumers); this gate is their reader. */
+const BANNED_DATA = JSON.parse(
+  fs.readFileSync(path.join(here, 'identity-banned.json'), 'utf8'),
+);
+const ARABIC_NAMES = BANNED_DATA.universities.concat(BANNED_DATA.latinForms).map((name) => ({
+  id: name,
+  re: new RegExp(name.replace(/\s+/g, '\\s+')),
+}));
 
 // The single-mark guard (lane B): the mark's literal diamond path.
 const MARK_PATH_LITERAL = 'M16 5L27 16L16 27L5 16Z';
@@ -135,7 +107,14 @@ const MARK_SANCTIONED = new Set([
   'scripts/brand/build-app-icons.mjs',
 ]);
 
-const ALL_PATTERNS = [...LATIN_PATTERNS, ...ARABIC_NAMES];
+/* R349 U4 — the shared fragments (zu.edu.ly …): banned everywhere the
+   compounds are, enforced from the same single source. */
+const FRAGMENT_PATTERNS = BANNED_DATA.fragments.map((frag) => ({
+  id: frag,
+  re: new RegExp(frag.replace(/\./g, '\\.'), 'i'),
+}));
+
+const ALL_PATTERNS = [...LATIN_PATTERNS, ...ARABIC_NAMES, ...FRAGMENT_PATTERNS];
 
 /* ── scan scope ────────────────────────────────────────────────────── */
 
@@ -155,6 +134,7 @@ const STRUCTURAL_EXEMPT = [
   /^backend\/prisma\/migrations\//, // append-only history
   /^scripts\/qa\/identity-guard\.mjs$/, // this gate (names the tokens)
   /^scripts\/qa\/identity-allow\.json$/, // the allowlist itself
+  /^scripts\/qa\/identity-banned\.json$/, // the shared banned list (U4: the gate + brand tests read it)
   /^docs\/redesign\//, // round ledgers — they NAME the residue
   /^docs\/archive\//, // archived history
   /^audits\//, // evidence captures (round artifacts)

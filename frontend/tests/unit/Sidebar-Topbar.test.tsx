@@ -440,19 +440,19 @@ describe('Topbar — institution context chip (r178)', () => {
         user: STUDENT,
         memberships: [
           {
-            institutionId: 'inst-zawia-showcase',
-            name: 'جامعة الزاوية',
-            nameEn: 'University of Zawia',
-            slug: 'zawia-showcase',
+            institutionId: 'inst-madarek-demo',
+            name: 'مؤسسة مدارك النموذجية',
+            nameEn: 'Madarek Model Institution',
+            slug: 'madarek-demo',
             role: 'STUDENT',
             isActive: true,
           },
         ],
         currentInstitution: {
-          id: 'inst-zawia-showcase',
-          name: 'جامعة الزاوية',
-          nameEn: 'University of Zawia',
-          slug: 'zawia-showcase',
+          id: 'inst-madarek-demo',
+          name: 'مؤسسة مدارك النموذجية',
+          nameEn: 'Madarek Model Institution',
+          slug: 'madarek-demo',
         },
         membershipRole: 'STUDENT',
       });
@@ -460,7 +460,7 @@ describe('Topbar — institution context chip (r178)', () => {
     renderTopbar();
 
     // Passive pill (the .topbar-scope vocabulary) — no switcher.
-    const chip = screen.getByText('جامعة الزاوية');
+    const chip = screen.getByText('مؤسسة مدارك النموذجية');
     expect(chip).toHaveClass('topbar-scope');
     expect(screen.queryByRole('button', { name: 'المؤسسة الحالية' })).toBeNull();
   });
@@ -471,10 +471,10 @@ describe('Topbar — institution context chip (r178)', () => {
         user: STUDENT,
         memberships: [
           {
-            institutionId: 'inst-zawia-showcase',
-            name: 'جامعة الزاوية',
-            nameEn: 'University of Zawia',
-            slug: 'zawia-showcase',
+            institutionId: 'inst-madarek-demo',
+            name: 'مؤسسة مدارك النموذجية',
+            nameEn: 'Madarek Model Institution',
+            slug: 'madarek-demo',
             role: 'STUDENT',
             isActive: true,
           },
@@ -488,10 +488,10 @@ describe('Topbar — institution context chip (r178)', () => {
           },
         ],
         currentInstitution: {
-          id: 'inst-zawia-showcase',
-          name: 'جامعة الزاوية',
-          nameEn: 'University of Zawia',
-          slug: 'zawia-showcase',
+          id: 'inst-madarek-demo',
+          name: 'مؤسسة مدارك النموذجية',
+          nameEn: 'Madarek Model Institution',
+          slug: 'madarek-demo',
         },
         membershipRole: 'STUDENT',
       });
@@ -511,10 +511,10 @@ describe('Topbar — institution context chip (r178)', () => {
         user: STUDENT,
         memberships: [
           {
-            institutionId: 'inst-zawia-showcase',
-            name: 'جامعة الزاوية',
-            nameEn: 'University of Zawia',
-            slug: 'zawia-showcase',
+            institutionId: 'inst-madarek-demo',
+            name: 'مؤسسة مدارك النموذجية',
+            nameEn: 'Madarek Model Institution',
+            slug: 'madarek-demo',
             role: 'STUDENT',
             isActive: true,
           },

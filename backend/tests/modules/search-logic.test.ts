@@ -85,7 +85,9 @@ describe('matchesNormalizedQuery', () => {
   });
 
   it('matches taa-marbuta folding (ة vs ه)', () => {
-    expect(matchesNormalizedQuery('جامعة الزاوية', 'جامعه')).toBe(true);
+    // (The route pre-normalizes the query — R349 U4 keeps the taa-marbuta
+    //  semantics on a neutral compound.)
+    expect(matchesNormalizedQuery('مؤسسة الزاوية التعليمية', normalizeArabicSearch('مؤسسه'))).toBe(true);
   });
 
   it('matches with the ال prefix tolerance', () => {

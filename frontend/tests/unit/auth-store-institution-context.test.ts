@@ -21,20 +21,20 @@ import type { AuthUser, MembershipInfo } from '../../src/stores/auth.store';
 
 const USER_A: AuthUser = {
   id: 'u1',
-  email: 'student@zu.edu.ly',
+  email: 'student@test.ly',
   firstName: 'طالب',
   lastName: 'تجريبي',
   role: 'STUDENT',
 };
 
 /** The seeded multi-institution demo state (Agent A's seed): a student
- *  member of BOTH zawia-showcase and alandalus-demo. */
+ *  member of BOTH madarek-demo and alandalus-demo. */
 const MEMBERSHIPS: MembershipInfo[] = [
   {
-    institutionId: 'inst-zawia-showcase',
-    name: 'جامعة الزاوية',
-    nameEn: 'University of Zawia',
-    slug: 'zawia-showcase',
+    institutionId: 'inst-madarek-demo',
+    name: 'مؤسسة مدارك النموذجية',
+    nameEn: 'Madarek Model Institution',
+    slug: 'madarek-demo',
     role: 'STUDENT',
     isActive: true,
   },
@@ -48,11 +48,11 @@ const MEMBERSHIPS: MembershipInfo[] = [
   },
 ];
 
-const ZAWIA = {
-  id: 'inst-zawia-showcase',
-  name: 'جامعة الزاوية',
-  nameEn: 'University of Zawia',
-  slug: 'zawia-showcase',
+const DEMO = {
+  id: 'inst-madarek-demo',
+  name: 'مؤسسة مدارك النموذجية',
+  nameEn: 'Madarek Model Institution',
+  slug: 'madarek-demo',
 } as const;
 
 async function importAuthStore() {
@@ -78,7 +78,7 @@ describe('setSession institution context (r178)', () => {
 
     useAuthStore.getState().setSession(USER_A, 'tok-ctx', {
       memberships: MEMBERSHIPS,
-      currentInstitution: ZAWIA,
+      currentInstitution: DEMO,
       membershipRole: 'STUDENT',
     });
 
@@ -86,8 +86,8 @@ describe('setSession institution context (r178)', () => {
     expect(state.user?.id).toBe('u1');
     expect(state.accessToken).toBe('tok-ctx');
     expect(state.memberships).toHaveLength(2);
-    expect(state.memberships[0]?.slug).toBe('zawia-showcase');
-    expect(state.currentInstitution?.id).toBe('inst-zawia-showcase');
+    expect(state.memberships[0]?.slug).toBe('madarek-demo');
+    expect(state.currentInstitution?.id).toBe('inst-madarek-demo');
     expect(state.membershipRole).toBe('STUDENT');
   });
 
@@ -99,7 +99,7 @@ describe('setSession institution context (r178)', () => {
     // selected an institution)…
     useAuthStore.getState().setSession(USER_A, 'tok-ctx', {
       memberships: MEMBERSHIPS,
-      currentInstitution: ZAWIA,
+      currentInstitution: DEMO,
       membershipRole: 'STUDENT',
     });
     // …then a bare {user, token} re-set (a context-less payload).
@@ -117,7 +117,7 @@ describe('setSession institution context (r178)', () => {
 
     useAuthStore.getState().setSession(USER_A, 'tok-ctx', {
       memberships: MEMBERSHIPS,
-      currentInstitution: ZAWIA,
+      currentInstitution: DEMO,
       membershipRole: 'STUDENT',
     });
     useAuthStore.getState().clear();
@@ -135,7 +135,7 @@ describe('setSession institution context (r178)', () => {
     await flush();
     first.useAuthStore.getState().setSession(USER_A, 'tok-ctx', {
       memberships: MEMBERSHIPS,
-      currentInstitution: ZAWIA,
+      currentInstitution: DEMO,
       membershipRole: 'STUDENT',
     });
 
@@ -148,7 +148,7 @@ describe('setSession institution context (r178)', () => {
     expect(state.user?.id).toBe('u1');
     expect(state.accessToken).toBe('tok-ctx');
     expect(state.memberships).toHaveLength(2);
-    expect(state.currentInstitution?.slug).toBe('zawia-showcase');
+    expect(state.currentInstitution?.slug).toBe('madarek-demo');
     expect(state.membershipRole).toBe('STUDENT');
   });
 });
@@ -183,7 +183,7 @@ describe('persist migrate v0 → v1 (r178)', () => {
           user: USER_A,
           accessToken: 'tok-1',
           memberships: MEMBERSHIPS,
-          currentInstitution: ZAWIA,
+          currentInstitution: DEMO,
           membershipRole: 'STUDENT',
         },
         version: 1,
@@ -195,7 +195,7 @@ describe('persist migrate v0 → v1 (r178)', () => {
     const state = useAuthStore.getState();
     expect(state.isHydrated).toBe(true);
     expect(state.memberships).toHaveLength(2);
-    expect(state.currentInstitution?.slug).toBe('zawia-showcase');
+    expect(state.currentInstitution?.slug).toBe('madarek-demo');
     expect(state.membershipRole).toBe('STUDENT');
   });
 });

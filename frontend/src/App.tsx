@@ -192,7 +192,7 @@ const CompetitionDetailPage = lazy(() => import('./pages/competitions/Competitio
  * ledgers onto a guest sub-page — a chrome-less public surface in the
  * /colleges pattern (window-scrolled for everyone, so the guest Lenis
  * engine covers it exactly like '/' and the colleges gallery).
- * master/D3 — the /campus showcase sub-page is retired with the
+ * master/D3 — the /campus curated sub-page is retired with the
  * university gallery. */
 const CapabilitiesPage = lazy(() => import('./pages/capabilities/CapabilityPages').then((m) => ({ default: m.CapabilitiesPage })));
 
@@ -611,7 +611,7 @@ export function AppRoutes() {
             AppShell branch — a marketing sheet, so signed-in visitors get
             the same chrome-less reading experience and the guest Lenis
             engine stays the scroller for everyone). master/D3: /campus is
-            retired with the university showcase. */}
+            retired with the curated university section. */}
         <Route
           path={ROUTES.capabilities}
           element={(

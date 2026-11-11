@@ -88,7 +88,7 @@ vi.mock('../../src/lib/toast', () => ({
 
 const TEACHER: AuthUser = {
   id: 'teacher-r170b',
-  email: 'teacher@zu.edu.ly',
+  email: 'teacher@test.ly',
   firstName: 'سالم',
   lastName: 'الطاهر',
   role: 'TEACHER',

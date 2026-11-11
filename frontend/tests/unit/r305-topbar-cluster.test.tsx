@@ -111,7 +111,7 @@ const membership = (over: Partial<MembershipInfo>): MembershipInfo => ({
   ...over,
 });
 
-const INST_A = membership({ institutionId: 'inst-a', name: 'جامعة الزاوية', nameEn: 'University of Zawia', slug: 'zawia' });
+const INST_A = membership({ institutionId: 'inst-a', name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', slug: 'madarek-demo' });
 const INST_B = membership({ institutionId: 'inst-b', name: 'مؤسسة الأندلس التعليمية', nameEn: 'Al-Andalus Education Institute', slug: 'andalus', role: 'ADMIN' });
 
 const contextFor = (inst: MembershipInfo) => ({
@@ -164,7 +164,7 @@ describe('InstitutionChip — passive pill vs switcher', () => {
     });
     renderShell(<Topbar title="لوحة التحكم" />);
 
-    const pill = screen.getByText('جامعة الزاوية');
+    const pill = screen.getByText('مؤسسة مدارك النموذجية');
     expect(pill).toHaveClass('topbar-scope');
     expect(screen.queryByRole('button', { name: 'المؤسسة الحالية' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'اختيار المؤسسة' })).toBeNull();
@@ -189,7 +189,7 @@ describe('InstitutionChip — passive pill vs switcher', () => {
     expect(items).toHaveLength(2);
     // The current institution's row is disabled — honest selected state.
     expect(items[0]).toHaveAttribute('aria-disabled', 'true');
-    expect(items[0]!.textContent).toContain('جامعة الزاوية');
+    expect(items[0]!.textContent).toContain('مؤسسة مدارك النموذجية');
     // The role label rides the trailing edge (topbar-inst-role).
     expect(items[1]!.textContent).toContain('المسجل العام'); // R320 override: «إداري» → «المسجل العام» (§B rename)
   });

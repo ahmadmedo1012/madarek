@@ -466,7 +466,9 @@ describe('provision-owner contract (r187)', () => {
   });
 
   it('--suspend-demo-owner: created-first ordering, suspension + session revocation in the SAME transaction', () => {
-    expect(provisionSource).toMatch(/DEMO_OWNER_EMAIL\s*=\s*'owner@zu\.edu\.ly'/);
+    // R349 U4: the demo owner rides the seed's @test.ly domain (the old
+    // real-university domain is retired with the identity purge).
+    expect(provisionSource).toMatch(/DEMO_OWNER_EMAIL\s*=\s*'owner@test\.ly'/);
     // the demo-owner update is inside the $transaction callback…
     expect(provisionSource).toMatch(/\$transaction\(async \(tx\)/);
     // …and revokes live sessions atomically with the suspension.

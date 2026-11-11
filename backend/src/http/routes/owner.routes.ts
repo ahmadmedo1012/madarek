@@ -535,7 +535,7 @@ export interface FacultyCourseRow {
  * Pure transform (audit 4-A7 P1-3): fold the per-ROW faculty census
  * into the Education chart's per-NAME series. The Faculty table
  * deliberately holds same-name rows — the university really runs
- * كلية التربية in four campuses (docs/archive/zu.edu.ly.md; the
+ * كلية التربية in four campuses (docs/archive/test.ly.md; the
  * (name, city) unique key is the documented source-of-truth model,
  * consumed city-aware by /colleges and the campus map) — but a
  * per-row list made the chart render «كلية التربية» ×4 with count 0:

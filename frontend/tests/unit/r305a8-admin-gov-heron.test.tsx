@@ -91,7 +91,7 @@ beforeEach(() => {
 
 const teacherRow = (id: string, firstName: string) => ({
   id,
-  email: `${id}@zu.edu.ly`,
+  email: `${id}@test.ly`,
   firstName,
   lastName: 'الفيتوري',
   role: 'TEACHER',
@@ -108,7 +108,7 @@ const usersBody = (rows: unknown[], total: number) => ({
 
 const STUDENT = {
   id: 'student_1',
-  email: 'ahmed@zu.edu.ly',
+  email: 'ahmed@test.ly',
   firstName: 'أحمد',
   lastName: 'الزروق',
   isActive: true,
@@ -175,7 +175,7 @@ const DIGITAL = {
 const PERMISSIONS = {
   user: {
     id: 'u1',
-    email: 'amina@zu.edu.ly',
+    email: 'amina@test.ly',
     role: 'ADMIN',
     firstName: 'أمينة',
     lastName: 'المشرفة',

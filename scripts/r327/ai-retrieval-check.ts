@@ -39,7 +39,7 @@ import { searchKnowledge } from '../../backend/src/modules/ai/knowledge.js';
 const prisma = new PrismaClient();
 
 /** Natural Arabic questions about the seeded course truth (the 25
- * checkpoint chunks /ai/knowledge/reindex indexed from the showcase
+ * checkpoint chunks /ai/knowledge/reindex indexed from the demo
  * institution's 24 lectures). Written the way a STUDENT would phrase
  * them — not engineered to substring-match the stored text. */
 const QUESTIONS: ReadonlyArray<{ id: string; q: string }> = [
@@ -56,7 +56,7 @@ const QUESTIONS: ReadonlyArray<{ id: string; q: string }> = [
 ];
 
 async function main(): Promise<void> {
-  const institutionId = process.argv[2] ?? 'inst-zawia-showcase';
+  const institutionId = process.argv[2] ?? 'inst-madarek-demo';
   const chunkCount = await prisma.aiKnowledgeChunk.count({ where: { institutionId } });
   console.log(`━━━ r327 P4(b) — grounded-retrieval check ━━━`);
   console.log(`institution: ${institutionId} · AiKnowledgeChunk rows: ${chunkCount}`);

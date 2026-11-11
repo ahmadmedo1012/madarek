@@ -151,7 +151,7 @@ Static-audit set: screens rendering **query-driven** rows via ScrollView/Refresh
 | 8 | `app/quality/alerts.tsx` | alerts | same feed, quality scope |
 | 9 | `app/admin/alerts.tsx` | alerts | same feed, admin scope |
 | 10 | `src/features/notifications/NotificationsScreen.tsx` (student/teacher/owner alerts tabs) | alerts | push permission card stays above the list |
-| 11 | `app/student/calendar.tsx` | events | day-sectioned → sticky headers showcase |
+| 11 | `app/student/calendar.tsx` | events | day-sectioned → the sticky-header exemplar |
 | 12 | `app/student/schedule.tsx` | events | week sections, same pattern |
 | 13 | `app/student/lectures/[lectureId].tsx` | lectures | lecture/lesson list inside a course |
 

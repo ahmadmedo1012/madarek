@@ -72,7 +72,7 @@ type UserFindUniqueImpl = NonNullable<Parameters<typeof userFindUnique.mockImple
 const makeUser = (id: string, tokenVersion = 0): User =>
   ({
     id,
-    email: `${id}@zu.edu.ly`,
+    email: `${id}@test.ly`,
     passwordHash: 'stored-hash',
     role: 'STUDENT',
     firstName: 'مستخدم',

@@ -184,7 +184,7 @@ A user can switch the interface between Arabic (default, RTL) and English (LTR) 
 
 ### User Story 8 — Premium motion polish across landing and inner shell (Priority: P3)
 
-The landing page and platform shell carry the visible signature of the existing motion foundation (`001-premium-motion-system`). Sections fade and translate in on scroll, statistic counters animate up from zero on first reveal, cards lift on hover with subtle elevation change, page transitions are smooth rather than jarring, branded skeleton screens replace blank loading states, and the Oasis AI showcase on the landing page becomes an interactive mini-demo (visitors can type a question and see a response). All motion respects `prefers-reduced-motion`.
+The landing page and platform shell carry the visible signature of the existing motion foundation (`001-premium-motion-system`). Sections fade and translate in on scroll, statistic counters animate up from zero on first reveal, cards lift on hover with subtle elevation change, page transitions are smooth rather than jarring, branded skeleton screens replace blank loading states, and the Oasis AI spot on the landing page becomes an interactive mini-demo (visitors can type a question and see a response). All motion respects `prefers-reduced-motion`.
 
 **Why this priority**: The audit's "Notion-inspired interaction" gap. Important for perceived quality and conversion on the landing page, but it must not block the launch-critical work in US1–US6.
 

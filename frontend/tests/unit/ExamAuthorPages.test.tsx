@@ -66,7 +66,7 @@ vi.mock('../../src/lib/api', () => ({
 
 const TEACHER = {
   id: 't1',
-  email: 'salim@zu.edu.ly',
+  email: 'salim@test.ly',
   firstName: 'سالم',
   lastName: 'الطاهر',
   role: 'TEACHER' as const,

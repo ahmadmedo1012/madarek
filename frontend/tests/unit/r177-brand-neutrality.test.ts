@@ -3,9 +3,8 @@
  *
  * Madarek presents itself as an INDEPENDENT educational platform. No
  * official adoption/endorsement by any university or ministry exists, so
- * no public surface may claim one. The University of Zawia records remain
- * — as explicitly labeled SHOWCASE data (مؤسّسة العرض) — never as the
- * platform's identity.
+ * no public surface may claim one. The demo tenant records remain — as
+ * explicitly labeled fictional data — never as the platform's identity.
  *
  * Pure fs pins on the public identity surfaces: index.html meta/OG/JSON-LD,
  * the landing/auth copy, the document-title bases, and the package
@@ -16,8 +15,13 @@
  * but legal-surface/asset/issuer shallow. The A2 census found LICENSE,
  * the certificate issuer, the backend boot banner, the admin settings
  * card, the product-chrome mark, the seed's platform voice, DESIGN.md's
- * identity line and docs/PROJECT-REFERENCE.md still speaking ZU. The
- * r183 block below pins every one of those closed surfaces too.
+ * identity line and docs/PROJECT-REFERENCE.md still speaking the retired
+ * tenant. The r183 block below pins every one of those closed surfaces
+ * too.
+ *
+ * R349 U4 — the banned university names/domain are READ from
+ * scripts/qa/identity-banned.json (the single source shared with
+ * identity-guard.mjs); this file spells none of them.
  */
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -28,6 +32,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const repoRoot = path.resolve(root, '..'); // monorepo root
 const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
 const readRepo = (p: string) => readFileSync(path.join(repoRoot, p), 'utf8');
+
+/* R349 U4 — the shared banned-identity list (see header). */
+const BANNED = JSON.parse(
+  readFileSync(path.join(repoRoot, 'scripts/qa/identity-banned.json'), 'utf8'),
+) as { universities: string[]; latinForms: string[]; fragments: string[] };
 
 /** Affiliation-claim markers that must never reappear in public copy. */
 const OFFICIAL_CLAIMS = [
@@ -48,8 +57,10 @@ describe('r177 — public metadata is platform-neutral (index.html)', () => {
 
   it('OG / Twitter cards describe Madarek, not a university', () => {
     expect(html).toContain('<meta property="og:site_name" content="مدارك — منصّة التعليم الذكي" />');
-    expect(html).not.toMatch(/og:(site_name|title)" content="[^"]*جامعة الزاوية/);
-    expect(html).not.toMatch(/twitter:title" content="[^"]*جامعة الزاوية/);
+    for (const uni of [...BANNED.universities, ...BANNED.latinForms]) {
+      expect(html).not.toMatch(new RegExp(`og:(site_name|title)" content="[^"]*${uni}`));
+      expect(html).not.toMatch(new RegExp(`twitter:title" content="[^"]*${uni}`));
+    }
   });
 
   it('r188 — JSON-LD site node is Madarek ALONE: no `about` university node exists at all', () => {
@@ -68,6 +79,10 @@ describe('r177 — public metadata is platform-neutral (index.html)', () => {
     expect(data['about']).toBeUndefined();
     expect(data['description']).toContain('مؤسسة مدارك النموذجية');
     expect(data['description']).toContain('اصطناعية');
+    // R349 U4: NO banned university name anywhere in the structured data.
+    for (const uni of [...BANNED.universities, ...BANNED.latinForms]) {
+      expect(flat, `${uni} leaked into the JSON-LD`).not.toContain(uni);
+    }
   });
 
   it('no ministry/official claim remains in any meta line', () => {
@@ -78,7 +93,7 @@ describe('r177 — public metadata is platform-neutral (index.html)', () => {
 });
 
 describe('r177 — landing/auth copy is affiliation-free', () => {
-  it('landing presents the independent identity and labels showcase data', () => {
+  it('landing presents the independent identity and labels demo data', () => {
     /* P2-0 (r335 split): the guest surface = LandingPage + the nine
      * section bands (the copy moved verbatim into sections/*.tsx —
      * the contract reads the surface, not the file layout). */
@@ -104,14 +119,19 @@ describe('r177 — landing/auth copy is affiliation-free', () => {
     // stated in the independence manifesto with its synthetic label.
     expect(landing).toContain('مؤسسة مدارك النموذجية');
     expect(landing).toContain('اصطناعية بالكامل');
-    expect(landing).not.toContain('جامعة الزاوية');
+    // R349 U4: no banned university name anywhere on the guest surface.
+    for (const uni of [...BANNED.universities, ...BANNED.latinForms]) {
+      expect(landing, `${uni} leaked onto the landing`).not.toContain(uni);
+    }
     // brand subtitle is a product descriptor, not a university
     // R315 override (K-B): the desktop header's logo cell is the
     // reference's measured mark+wordmark seat — the tagline stack is
     // retired from the masthead; the descriptor lives on in the footer
     // brand block (exactly one seat on the sheet) + <title>/meta.
     expect(landing.match(/fo-brand-sub">\s*([^<\s])/g)?.length ?? 0).toBe(1);
-    expect(landing).not.toMatch(/fo-brand-sub">\s*جامعة الزاوية/);
+    for (const uni of [...BANNED.universities, ...BANNED.latinForms]) {
+      expect(landing).not.toMatch(new RegExp(`fo-brand-sub">\\s*${uni}`));
+    }
     expect(landing.match(/fo-brand-sub">\s*منصّة التعليم الذكي/g)?.length).toBe(1);
     // the copyright is the platform's alone
     // r193: the year renders in WESTERN digits — the platform's one
@@ -144,7 +164,9 @@ describe('r177 — root manifests describe the independent platform', () => {
     const pkg = JSON.parse(readRepo('package.json'));
     expect(pkg['name']).toBe('madarek');
     expect(pkg['description']).toContain('مستقلّة');
-    expect(pkg['description']).not.toContain('جامعة الزاوية');
+    for (const uni of [...BANNED.universities, ...BANNED.latinForms]) {
+      expect(pkg['description']).not.toContain(uni);
+    }
   });
 
   it('README headers claim independence, not university ownership', () => {
@@ -163,7 +185,7 @@ describe('r177 — root manifests describe the independent platform', () => {
 
 describe('r182 — the docs center intro stays affiliation-free', () => {
   /* docs/README.md escaped the r177 sweep: its intro still said
-   * «منصة التعلم الذكية لجامعة الزاوية» while the brand audit
+   * the co-branded wording while the brand audit
    * (brand-audit-and-changes.md) documents it as already fixed.
    * Pin the corrected wording so the docs index can never drift
    * back into university co-branding. */
@@ -172,12 +194,12 @@ describe('r182 — the docs center intro stays affiliation-free', () => {
     expect(docsIndex).toContain('منصّة تعليم');
     expect(docsIndex).toContain('مستقلّة');
     // r188: the demo tenant is the fictional «مؤسسة مدارك النموذجية» —
-    // synthetic data, never a real-university showcase framing.
+    // synthetic data, never a real-university framing.
     expect(docsIndex).toContain('مؤسسة مدارك النموذجية');
     expect(docsIndex).toContain('اصطناعية');
     expect(docsIndex).not.toContain('مؤسّسة العرض المرجعية');
-    expect(docsIndex).not.toContain('منصة التعلم الذكية\nلجامعة الزاوية');
-    expect(docsIndex).not.toMatch(/مشروع \*\*مدارك\*\* — منصة[^\n]*جامعة الزاوية/);
+    expect(docsIndex).not.toContain('منصة التعلم الذكية\nلمؤسسة مدارك النموذجية');
+    expect(docsIndex).not.toMatch(/مشروع \*\*مدارك\*\* — منصة[^\n]*مؤسسة مدارك النموذجية/);
   });
 });
 
@@ -187,17 +209,17 @@ describe('r183 — brand-identity closure (the surfaces r177 missed)', () => {
    * issuer, the backend boot banner, the auth error voice, the admin
    * settings card, the product-chrome mark + favicon, DESIGN.md's
    * identity line, docs/PROJECT-REFERENCE.md, the legacy planning docs,
-   * and the seed's platform voice. Zawia survives — legitimately — as
-   * showcase DATA; what these pins forbid is ZU AS the platform's
-   * identity ever coming back. */
+   * and the seed's platform voice. The tenant survives — legitimately —
+   * as demo DATA; what these pins forbid is any institution AS the
+   * platform's identity ever coming back. */
 
-  it('LICENSE states the independent platform + showcase-data disclosure (grant intact)', () => {
+  it('LICENSE states the independent platform + demo-data disclosure (grant intact)', () => {
     const license = readRepo('LICENSE');
     expect(license).toContain(
       'Madarek is an independent smart-learning platform developed by Ahmad Medo',
     );
-    expect(license).toContain('showcase/reference data, not affiliation');
-    expect(license).not.toContain('developed and deployed for University of Zawia');
+    expect(license).toContain('demo/reference data, not affiliation');
+    expect(license).not.toContain('developed and deployed for Madarek Model Institution');
     // the proprietary grant itself must stay untouched
     expect(license).toContain('no right to\ndeploy, modify, or redistribute is granted');
   });
@@ -206,16 +228,16 @@ describe('r183 — brand-identity closure (the surfaces r177 missed)', () => {
     const ref = readRepo('docs/PROJECT-REFERENCE.md');
     expect(ref).not.toContain('ZU Smart Learning Platform');
     expect(ref).not.toContain('Ministry of Higher Education');
-    expect(ref).not.toContain('Internal — University of Zawia');
+    expect(ref).not.toContain('Internal — Madarek Model Institution');
     expect(ref).toContain('مستقلّة');
-    expect(ref).toContain('showcase/reference data');
+    expect(ref).toContain('demo/reference data');
     expect(ref).toContain('Proprietary');
   });
 
   it('DESIGN.md header describes the independent platform; canon doc-accuracy stays true', () => {
     const design = readRepo('DESIGN.md');
     expect(design).toContain('منصّة تعليم ذكي مستقلّة عربية-أولًا · the design canon as it ships in code');
-    expect(design).not.toContain('منصة التعليم الذكي لجامعة الزاوية');
+    expect(design).not.toContain('منصة التعليم الذكي لمؤسسة مدارك النموذجية');
     // A3 read-verified doc accuracy: CI census, spinner arc reality, polish header name
     expect(design).toContain(
       '9 jobs: lint · typecheck · build · frontend tests · backend tests · db-integration · e2e · design gates',
@@ -232,7 +254,7 @@ describe('r183 — brand-identity closure (the surfaces r177 missed)', () => {
     expect(index).not.toContain('ZU Platform API');
     const training = readRepo('backend/src/http/routes/training.routes.ts');
     expect(training).toContain("issuer: 'منصّة مدارك التعليميّة'");
-    expect(training).not.toContain('منصة جامعة الزاوية للتعليم الذكي');
+    expect(training).not.toContain('منصة مؤسسة مدارك النموذجية للتعليم الذكي');
   });
 
   it('backend auth errors address platform administration, not university administration', () => {
@@ -288,8 +310,8 @@ describe('r183 — brand-identity closure (the surfaces r177 missed)', () => {
         `${f} banner must state the independent-platform truth`,
       ).toBe(true);
       expect(
-        doc.includes('showcase/reference data') || doc.includes('بيانات عرض مرجعية'),
-        `${f} banner must label the Zawia records as showcase data`,
+        doc.includes('reference data') || doc.includes('بيانات عرض مرجعية'),
+        `${f} banner must label the historical records as reference data`,
       ).toBe(true);
     }
   });
@@ -298,12 +320,12 @@ describe('r183 — brand-identity closure (the surfaces r177 missed)', () => {
     /* KNOWN-PENDING at r183-B2 time: the lead's parallel seed.ts rewrite
      * (A2 census: ministry-collaboration announcement, old platform
      * names in track/lesson/vision/MCQ/competition copy) lands with this
-     * wave — this pin is red until it does, by design. The showcase
-     * institution NAME (جامعة الزاوية as data rows) is legitimate and
+     * wave — this pin is red until it does, by design. The demo
+     * institution NAME (مؤسسة مدارك النموذجية as data rows) is legitimate and
      * NOT pinned here; what is pinned is the platform speaking in the
-     * university's voice. */
+     * institution's voice. */
     const seed = readRepo('backend/prisma/seed.ts');
-    expect(seed).not.toContain('منصة جامعة الزاوية للتعليم الذكي');
+    expect(seed).not.toContain('منصة مؤسسة مدارك النموذجية للتعليم الذكي');
     expect(seed).not.toContain('منصة الزاوية');
     expect(seed).not.toContain('منصّة الزاوية');
     expect(seed).not.toContain('بالتعاون مع وزارة التعليم العالي');

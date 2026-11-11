@@ -220,7 +220,7 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     expect(liveTsx).not.toContain('<picture>');
     expect(liveTsx).not.toContain('<canvas');
     // master/D3 — the university card registry is retired with the
-    // showcase: the manifest carries ONLY the generic product +
+    // the manifest carries ONLY the generic product +
     // illustration registers (the crawl is OUR capability register now)
     const manifest = read('public/media/manifest.json');
     expect(manifest).toContain('"products"');

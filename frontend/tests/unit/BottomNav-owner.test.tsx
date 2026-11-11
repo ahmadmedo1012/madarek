@@ -23,7 +23,7 @@ import type { AuthUser } from '../../src/stores/auth.store';
 
 const ownerUser: AuthUser = {
   id: 'u-owner',
-  email: 'owner@zu.edu.ly',
+  email: 'owner@test.ly',
   firstName: 'مالك',
   lastName: 'المنصة',
   role: 'OWNER',
@@ -31,7 +31,7 @@ const ownerUser: AuthUser = {
 
 const studentUser: AuthUser = {
   id: 'u-student',
-  email: 'student@zu.edu.ly',
+  email: 'student@test.ly',
   firstName: 'طالب',
   lastName: 'تجريبي',
   role: 'STUDENT',

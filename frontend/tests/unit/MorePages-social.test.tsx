@@ -116,7 +116,7 @@ beforeEach(() => {
     useAuthStore.setState({
       user: {
         id: 'st1',
-        email: 'amna@zu.edu.ly',
+        email: 'amna@test.ly',
         firstName: 'آمنة',
         lastName: 'العبيدي',
         role: 'STUDENT',

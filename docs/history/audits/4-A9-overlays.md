@@ -2,7 +2,7 @@
 
 **Scope:** `components/overlays/*` (Modal, Sheet, Toast/ToastStack, Tooltip, Popover, Dropdown, Lightbox, NotificationPanel, CommandPalette + hooks), `components/primitives/*`, `components/charts/ChartFrame.tsx`, `components/pdf/*`, `components/curriculum/*`, `components/onboarding/*`, `lib/{scrollLock,overlayStack,toast}.ts`, `components/owner/{ToggleSwitch,ConfirmDialog}.tsx`.
 **Method:** code-first audit + live Playwright probes (teacher + student, desktop 1440×900 + mobile 390×844) + VLM critique of 16 captured states (`/tmp/madarek-shots/a9-*.png`) with every VLM claim re-verified against DOM/CSS measurements (several VLM claims were disproven and dismissed — noted inline).
-**Runtime:** FE :5173 · BE :4000 · logins student@/teacher@zu.edu.ly.
+**Runtime:** FE :5173 · BE :4000 · logins student@/teacher@test.ly.
 
 ---
 

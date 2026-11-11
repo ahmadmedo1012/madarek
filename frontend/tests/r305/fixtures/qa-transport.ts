@@ -63,7 +63,7 @@ export interface FixtureUser {
 
 export const STUDENT_USER: FixtureUser = {
   id: 'usr_qa_student',
-  email: 'student@zu.edu.ly',
+  email: 'student@test.ly',
   firstName: 'أحمد',
   lastName: 'الزاوي',
   role: 'STUDENT',
@@ -75,7 +75,7 @@ export const STUDENT_USER: FixtureUser = {
 /** Credentials the dynamic login endpoint accepts (backend seed twin). */
 export const VALID_LOGIN = { email: STUDENT_USER.email, password: TEST_PASSWORD } as const;
 export const WRONG_LOGIN = { email: STUDENT_USER.email, password: 'wrong-password' } as const;
-export const LOCKED_EMAIL = 'locked@zu.edu.ly';
+export const LOCKED_EMAIL = 'locked@test.ly';
 export const LOGIN_FAILED_MESSAGE = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
 export const LOGIN_LOCKED_MESSAGE = 'محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة.';
 

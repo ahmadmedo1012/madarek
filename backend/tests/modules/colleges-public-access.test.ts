@@ -294,7 +294,7 @@ describe('GET /api/v1/colleges(+/leaderboard) — institution-aware listing (r17
   it('the anonymous default resolves the demo institution and filters faculties by it', async () => {
     vi.mocked(prisma.faculty.findMany).mockResolvedValue([] as never);
     await get('/api/v1/colleges');
-    // The target institution row resolved by slug (the showcase default)…
+    // The target institution row resolved by slug (the demo default)…
     expect(prisma.institution.findUnique).toHaveBeenCalledWith({
       where: { slug: 'madarek-demo' },
       select: { id: true, status: true },

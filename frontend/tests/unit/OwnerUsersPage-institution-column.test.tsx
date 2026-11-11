@@ -19,7 +19,7 @@ import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/re
 import { MemoryRouter } from 'react-router-dom';
 import { OwnerUsersPage } from '../../src/pages/owner/OwnerUsersPage';
 
-const ZAWIA = { id: 'inst-zawia', name: 'جامعة الزاوية', slug: 'zawia-showcase', status: 'ACTIVE' };
+const DEMO = { id: 'inst-madarek-demo', name: 'مؤسسة مدارك النموذجية', slug: 'madarek-demo', status: 'ACTIVE' };
 const ALANDALUS = { id: 'inst-alandalus', name: 'مؤسسة الأندلس التعليمية', slug: 'alandalus-demo', status: 'SUSPENDED' };
 
 const mocks = vi.hoisted(() => ({
@@ -87,7 +87,7 @@ describe('OwnerUsersPage — the المؤسسات scope (r183-B5, A9 P2 · r252 
       data: [
         baseRow({
           id: 'u-teacher-00000000001',
-          memberships: [{ institution: ZAWIA }, { institution: ALANDALUS }],
+          memberships: [{ institution: DEMO }, { institution: ALANDALUS }],
         }),
       ],
       meta: { total: 1, page: 1, limit: 20, totalPages: 1 },
@@ -96,7 +96,7 @@ describe('OwnerUsersPage — the المؤسسات scope (r183-B5, A9 P2 · r252 
 
     // r252: the memberships ride the row's meta line (the column died
     // with the table) — same chips, same suspended annotation.
-    expect(screen.getByText('جامعة الزاوية')).toBeInTheDocument();
+    expect(screen.getByText('مؤسسة مدارك النموذجية')).toBeInTheDocument();
     // The suspended institution stays visible — annotated, never dropped.
     expect(screen.getByText(/مؤسسة الأندلس التعليمية · معلّقة/)).toBeInTheDocument();
   });
@@ -109,7 +109,7 @@ describe('OwnerUsersPage — the المؤسسات scope (r183-B5, A9 P2 · r252 
     renderPage();
 
     expect(screen.getByText('بلا مؤسسة')).toBeInTheDocument();
-    expect(screen.queryByText('جامعة الزاوية')).toBeNull();
+    expect(screen.queryByText('مؤسسة مدارك النموذجية')).toBeNull();
   });
 
   it('the role-change confirm names the active institutions (scope at the decision point)', async () => {
@@ -117,7 +117,7 @@ describe('OwnerUsersPage — the المؤسسات scope (r183-B5, A9 P2 · r252 
       data: [
         baseRow({
           id: 'u-teacher-00000000003',
-          memberships: [{ institution: ZAWIA }],
+          memberships: [{ institution: DEMO }],
         }),
       ],
       meta: { total: 1, page: 1, limit: 20, totalPages: 1 },
@@ -130,7 +130,7 @@ describe('OwnerUsersPage — the المؤسسات scope (r183-B5, A9 P2 · r252 
     fireEvent.change(select, { target: { value: 'ADMIN' } });
 
     await waitFor(() => expect(screen.getByRole('dialog')).toBeTruthy());
-    expect(screen.getByText(/عضويته النشطة: جامعة الزاوية\./)).toBeInTheDocument();
+    expect(screen.getByText(/عضويته النشطة: مؤسسة مدارك النموذجية\./)).toBeInTheDocument();
   });
 
   it('the confirm says the honest no-membership line for a membership-less user', async () => {

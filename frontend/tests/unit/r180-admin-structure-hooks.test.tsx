@@ -119,7 +119,7 @@ describe('useCreateFaculty — POST /admin/faculties (r180)', () => {
    * binding that keeps an owner write inside ONE institution. */
   it('r181: binds the OWNER construction to ?institutionSlug=', async () => {
     const { wrapper } = makeClient();
-    const { result } = renderHook(() => useCreateFaculty('zawia-showcase'), { wrapper });
+    const { result } = renderHook(() => useCreateFaculty('madarek-demo'), { wrapper });
 
     await act(async () => {
       result.current.mutate({ name: 'كلية الهندسة', city: 'الزاوية' });
@@ -129,7 +129,7 @@ describe('useCreateFaculty — POST /admin/faculties (r180)', () => {
     expect(postMock).toHaveBeenCalledWith('/admin/faculties', {
       name: 'كلية الهندسة',
       city: 'الزاوية',
-    }, { params: { institutionSlug: 'zawia-showcase' } });
+    }, { params: { institutionSlug: 'madarek-demo' } });
   });
 });
 
@@ -156,7 +156,7 @@ describe('useCreateDepartment — POST /admin/departments (r180)', () => {
    * write too (the backend re-verifies the faculty chain against it). */
   it('r181: binds the OWNER construction to ?institutionSlug=', async () => {
     const { wrapper } = makeClient();
-    const { result } = renderHook(() => useCreateDepartment('zawia-showcase'), { wrapper });
+    const { result } = renderHook(() => useCreateDepartment('madarek-demo'), { wrapper });
 
     await act(async () => {
       result.current.mutate({ name: 'قسم الفيزياء', facultyId: 'clsfaculty1' });
@@ -166,7 +166,7 @@ describe('useCreateDepartment — POST /admin/departments (r180)', () => {
     expect(postMock).toHaveBeenCalledWith('/admin/departments', {
       name: 'قسم الفيزياء',
       facultyId: 'clsfaculty1',
-    }, { params: { institutionSlug: 'zawia-showcase' } });
+    }, { params: { institutionSlug: 'madarek-demo' } });
   });
 });
 
@@ -228,8 +228,8 @@ describe('useAdminTeachers — the offering modal picker (r180)', () => {
     getMock.mockResolvedValueOnce({
       data: {
         data: [
-          { id: 't1', email: 'salim@zu.edu.ly', firstName: 'سالم', lastName: 'الطاهر' },
-          { id: 't2', email: 'maryam@zu.edu.ly', firstName: 'مريم', lastName: 'الفيتوري' },
+          { id: 't1', email: 'salim@test.ly', firstName: 'سالم', lastName: 'الطاهر' },
+          { id: 't2', email: 'maryam@test.ly', firstName: 'مريم', lastName: 'الفيتوري' },
         ],
       },
     });
@@ -244,8 +244,8 @@ describe('useAdminTeachers — the offering modal picker (r180)', () => {
     // The <select> consumes {id, name, email} — the name is the joined
     // display string, exactly the two rows on the wire.
     expect(result.current.data).toEqual([
-      { id: 't1', name: 'سالم الطاهر', email: 'salim@zu.edu.ly' },
-      { id: 't2', name: 'مريم الفيتوري', email: 'maryam@zu.edu.ly' },
+      { id: 't1', name: 'سالم الطاهر', email: 'salim@test.ly' },
+      { id: 't2', name: 'مريم الفيتوري', email: 'maryam@test.ly' },
     ]);
   });
 });

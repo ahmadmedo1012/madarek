@@ -349,14 +349,14 @@ const ADIGITAL = { totalUsers: 1336, activeUsers: 1102, adoptionPct: 82.5, onlin
 /* ── /admin/users — the enveloped, role-filtered roster. */
 const AUSERS_TEACHERS = {
   data: [
-    { id: 'usr_e2e_teacher', email: 'layla@zu.edu.ly', firstName: 'ليلى', lastName: 'الفيتوري', role: 'TEACHER', avatarColor: '#7c3aed', avatarInitials: 'لف', isActive: true, createdAt: '2026-01-10T08:00:00.000Z' },
-    { id: 'usr_e2e_teacher2', email: 'khaled@zu.edu.ly', firstName: 'خالد', lastName: 'المبروك', role: 'TEACHER', avatarColor: '#059669', avatarInitials: 'خم', isActive: true, createdAt: '2026-02-02T08:00:00.000Z' },
-    { id: 'usr_e2e_teacher3', email: 'amina@zu.edu.ly', firstName: 'أمينة', lastName: 'الشريف', role: 'TEACHER', avatarColor: '#d97706', avatarInitials: 'أش', isActive: false, createdAt: '2026-01-20T08:00:00.000Z' },
+    { id: 'usr_e2e_teacher', email: 'layla@test.ly', firstName: 'ليلى', lastName: 'الفيتوري', role: 'TEACHER', avatarColor: '#7c3aed', avatarInitials: 'لف', isActive: true, createdAt: '2026-01-10T08:00:00.000Z' },
+    { id: 'usr_e2e_teacher2', email: 'khaled@test.ly', firstName: 'خالد', lastName: 'المبروك', role: 'TEACHER', avatarColor: '#059669', avatarInitials: 'خم', isActive: true, createdAt: '2026-02-02T08:00:00.000Z' },
+    { id: 'usr_e2e_teacher3', email: 'amina@test.ly', firstName: 'أمينة', lastName: 'الشريف', role: 'TEACHER', avatarColor: '#d97706', avatarInitials: 'أش', isActive: false, createdAt: '2026-01-20T08:00:00.000Z' },
   ],
   meta: { page: 1, limit: 20, total: 3, totalPages: 1 },
 };
 const APERMISSIONS = {
-  user: { id: 'usr_e2e_teacher', email: 'layla@zu.edu.ly', role: 'TEACHER', firstName: 'ليلى', lastName: 'الفيتوري', scopeFacultyId: null, scopeFaculty: null },
+  user: { id: 'usr_e2e_teacher', email: 'layla@test.ly', role: 'TEACHER', firstName: 'ليلى', lastName: 'الفيتوري', scopeFacultyId: null, scopeFaculty: null },
   roleDefaults: [],
   effective: [],
   overrides: [],
@@ -365,9 +365,9 @@ const APERMISSIONS = {
 /* ── /admin/students — the enveloped, paginated roster. */
 const ASTUDENTS = {
   data: [
-    { id: 'stu_e2e_1', email: 'marwa@zu.edu.ly', firstName: 'مروة', lastName: 'البراني', isActive: true, avatarColor: '#0ea5e9', avatarInitials: 'مر', createdAt: '2026-01-15T08:00:00.000Z', studentProfile: { universityId: 'zu-2023-1041', year: 3, gpa: '3.4', totalXp: 1240, level: 8, faculty: { id: 'fac_e2e_eng', name: 'كلية الهندسة' }, department: { id: 'dep_e2e_cs', name: 'قسم علوم الحاسوب' } } },
-    { id: 'stu_e2e_2', email: 'salim@zu.edu.ly', firstName: 'سالم', lastName: 'قدّور', isActive: true, avatarColor: '#059669', avatarInitials: 'سق', createdAt: '2026-01-16T08:00:00.000Z', studentProfile: { universityId: 'zu-2023-1042', year: 2, gpa: '2.8', totalXp: 860, level: 6, faculty: { id: 'fac_e2e_eng', name: 'كلية الهندسة' }, department: { id: 'dep_e2e_cs', name: 'قسم علوم الحاسوب' } } },
-    { id: 'stu_e2e_3', email: 'mona@zu.edu.ly', firstName: 'منى', lastName: 'الزوي', isActive: false, avatarColor: '#f59e0b', avatarInitials: 'من', createdAt: '2026-01-18T08:00:00.000Z', studentProfile: null },
+    { id: 'stu_e2e_1', email: 'marwa@test.ly', firstName: 'مروة', lastName: 'البراني', isActive: true, avatarColor: '#0ea5e9', avatarInitials: 'مر', createdAt: '2026-01-15T08:00:00.000Z', studentProfile: { universityId: 'zu-2023-1041', year: 3, gpa: '3.4', totalXp: 1240, level: 8, faculty: { id: 'fac_e2e_eng', name: 'كلية الهندسة' }, department: { id: 'dep_e2e_cs', name: 'قسم علوم الحاسوب' } } },
+    { id: 'stu_e2e_2', email: 'salim@test.ly', firstName: 'سالم', lastName: 'قدّور', isActive: true, avatarColor: '#059669', avatarInitials: 'سق', createdAt: '2026-01-16T08:00:00.000Z', studentProfile: { universityId: 'zu-2023-1042', year: 2, gpa: '2.8', totalXp: 860, level: 6, faculty: { id: 'fac_e2e_eng', name: 'كلية الهندسة' }, department: { id: 'dep_e2e_cs', name: 'قسم علوم الحاسوب' } } },
+    { id: 'stu_e2e_3', email: 'mona@test.ly', firstName: 'منى', lastName: 'الزوي', isActive: false, avatarColor: '#f59e0b', avatarInitials: 'من', createdAt: '2026-01-18T08:00:00.000Z', studentProfile: null },
   ],
   meta: { total: 3, page: 1, limit: 20, totalPages: 1 },
 };

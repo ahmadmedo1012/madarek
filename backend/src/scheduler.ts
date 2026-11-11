@@ -12,9 +12,9 @@ import { logger } from './logger.js';
  * The job never throws into the timer callback — errors are captured
  * by the logger.
  *
- * R349 U2 — the university-facts sync job (lib/zu-sync) was RETIRED
+ * R349 U2 — the university-facts sync job (the sync library) was RETIRED
  * with the demo-tenant purge: the owner's word «احذفهم نهائيًا» — the
- * project belongs to no university, and the facts feed (UniversityFact
+ * project belongs to no university, and the facts feed (the model
  * + SyncRun + /admin/sync + /university/facts) is deleted. The
  * my-institution page now reads the signed-in user's OWN institution
  * (Institution + Faculty + contact profiles).

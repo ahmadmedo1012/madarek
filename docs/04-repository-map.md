@@ -30,8 +30,8 @@ madarek/
 │   │                        theme، onboarding، milestones
 │   ├── src/lib/           ← jwt، password، permissions، governance، dates،
 │   │                        risk، grading، compression، pagination، pdf، errors،
-│   │                        zu-sync (مزامنة حقائق الجامعة)، operational-alerts
-│   ├── src/scheduler.ts   ← مهام يومية داخلية (zu-sync + تسريح LoginEvent)
+│   │                        operational-alerts
+│   ├── src/scheduler.ts   ← مهام يومية داخلية (تسريح LoginEvent)
 │   ├── prisma/schema.prisma ← 75 نموذجًا و30 enum (مصدر الحقيقة للبيانات)
 │   ├── prisma/migrations/ ← 17 ترحيلًا مطبقًا (لا تُعدّل)
 │   ├── prisma/seed.ts     ← بذر تجريبي idempotent (حسابات demo الخمسة)
@@ -88,7 +88,7 @@ madarek/
 | لون/حركة جديدة | `frontend/src/styles/tokens.css` أو `motion.css` فقط + زوج التصدير | `DESIGN.md` + بوابات الجودة |
 | تعديل `index.html` الداخلي | حدّث بصمة CSP في `backend/src/app.ts` (خطأ شائع — بوابة `check-csp-hash` تلتقطه) | [10-security](10-security.md) |
 | رسالة مستخدم جديدة | عربية صريحة في الصفحة (لا i18n بعد) | [16](16-decisions-and-limitations.md) |
-| حقائق الجامعة | `backend/src/lib/zu-sync/static-source.ts` | [modules/admin.md](modules/admin.md) |
+| (محالة) حقائق الجامعة | حُذفت في R349 U2 | [modules/admin.md](modules/admin.md) |
 | هوية الكليات | `frontend/src/data/colleges.config.ts` (بوابة `validate:colleges` تفرض AA) | [modules/platform.md](modules/platform.md) |
 
 ## مجلدات لا تعدّلها مباشرة

@@ -30,11 +30,11 @@
 
 | Metric | Value |
 |---|---|
-| Photographs integrated | **9** — across **3 identifiable universities**: جامعة بنغازي (6), جامعة طرابلس (2), جامعة عمر المختار (1) |
-| Videos | **2** — official channels: **جامعة مصراتة** (أجواء الاختبارات، 5:11) + **جامعة سبها** (حفل الخريجين الدفعة 40، 3:13 — double evidence: embedded on the university's own /video-gallery/) |
+| Photographs integrated | **9** — across **3 identifiable universities** (three Libyan campuses, since retired from the product; names withheld per the identity policy): (6), (2), (1) |
+| Videos | **2** — official channels of two (since-retired) Libyan campuses: (أجواء الاختبارات، 5:11) + (حفل الخريجين الدفعة 40، 3:13 — double evidence: embedded on the university's own /video-gallery/) |
 | Distinct institutions on the page | **5** (photos + videos) — hero meta carries the computed count |
 | Licence validation | Every asset re-verified by the principal from the Commons API (`imageinfo.extmetadata`): PD ×3, CC BY-SA 4.0 ×4, CC BY 2.0 ×1, PD videos via official-channel embeds; per-image attribution (author + institution) rendered in the caption, full provenance in the manifest |
-| Rejected honestly | `uob-trees` (3/10 art-direction score, litter + 432KB tier); «جامعة بنغازي الأهلية» (private — public-university-only story); Taipei-UOT files (wrong country, caught by the search agent); all site galleries (all-rights-reserved → link-only, never rehosted) |
+| Rejected honestly | `uob-trees` (3/10 art-direction score, litter + 432KB tier); a private-university candidate (public-university-only story); Taipei-UOT files (wrong country, caught by the search agent); all site galleries (all-rights-reserved → link-only, never rehosted) |
 | Manifest | `frontend/public/media/manifest.json` — 9 photos + 8 products + 2 videos, each with source page, licence + deed URL, attribution, dimensions, verification command |
 | Where media renders | hero band (3) · campus-life rail (6: panorama + mosaic) · product grid (4) · role selector (1 live swap) · video facades (2) |
 | Asset-size strategy | WebP derivatives (480/800/1000/1200/1600 by seat), ~2.5MB on disk, **~500KB transferred** at 1440/DPR1 — every image has explicit intrinsic dimensions (CLS 0 by construction) |

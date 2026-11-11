@@ -3,7 +3,7 @@
  * rotate-demo-passwords — authorized operator password rotation (r166c).
  *
  * Purpose: rotate ANY account's password from the operator side — the
- * documented owner-account recovery path (owner@zu.edu.ly has no
+ * documented owner-account recovery path (owner@test.ly has no
  * in-app admin reset) and the repeatable, auditable replacement for
  * hand-rolled SQL. The operator must already hold DATABASE_URL (the
  * secret IS the authorization) — the script adds the guard rails.
@@ -55,8 +55,8 @@
  *
  * Usage:
  *   export NEW_PASSWORD='…'   # operator exports; never a literal arg
- *   npm run db:rotate-password -- --email owner@zu.edu.ly --new-password-env NEW_PASSWORD --dry-run
- *   npm run db:rotate-password -- --email owner@zu.edu.ly --new-password-env NEW_PASSWORD --yes
+ *   npm run db:rotate-password -- --email owner@test.ly --new-password-env NEW_PASSWORD --dry-run
+ *   npm run db:rotate-password -- --email owner@test.ly --new-password-env NEW_PASSWORD --yes
  *
  * Guards: --yes is required for actual execution (dry-run otherwise);
  * NODE_ENV=production without --yes is refused outright; unknown email
@@ -100,7 +100,7 @@ const HELP = [
   '',
   'مثال استعادة حساب المالك / owner recovery example:',
   "  export NEW_PASSWORD=\"$(openssl rand -base64 24)\"",
-  '  npm run db:rotate-password -- --email owner@zu.edu.ly --new-password-env NEW_PASSWORD --yes',
+  '  npm run db:rotate-password -- --email owner@test.ly --new-password-env NEW_PASSWORD --yes',
 ].join('\n');
 
 async function main() {

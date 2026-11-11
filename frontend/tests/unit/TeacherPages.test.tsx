@@ -208,7 +208,7 @@ vi.mock('../../src/hooks/useResources', () => ({
 
 const TEACHER: AuthUser = {
   id: 't1',
-  email: 'salim@zu.edu.ly',
+  email: 'salim@test.ly',
   firstName: 'سالم',
   lastName: 'الطاهر',
   role: 'TEACHER',

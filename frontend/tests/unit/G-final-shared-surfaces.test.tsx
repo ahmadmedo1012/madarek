@@ -120,7 +120,7 @@ vi.mock('../../src/hooks/useAuth', () => ({
 
 vi.mock('../../src/hooks/useInstitutions', () => ({
   useInstitutions: () => ({
-    data: [{ id: 'inst-zawia', name: 'جامعة الزاوية', nameEn: 'University of Zawia', slug: 'zawia' }],
+    data: [{ id: 'inst-madarek-demo', name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', slug: 'madarek-demo' }],
     isPending: false,
     isError: false,
   }),

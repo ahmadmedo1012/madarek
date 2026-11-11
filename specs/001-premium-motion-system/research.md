@@ -251,7 +251,7 @@ movements mirror correctly in Arabic (RTL)?
   page root: `--college-accent`, `--college-accent-fg`, etc. Components on
   the college page consume these without hardcoded values.
 - **Source of truth (this PR)**: a static `colleges.config.ts` file
-  containing one entry per real University of Zawia college. Long-term
+  containing one entry per real the then-tenant university college. Long-term
   follow-up: move to backend `College` table columns (out of scope for
   this PR; captured as a backend task).
 - **Contrast validation**: a build-time script

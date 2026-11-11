@@ -62,7 +62,8 @@ export const CATEGORY_LABELS: Record<string, string> = {
   // writers ACTUALLY emit — raiseOperationalAlert derives the category
   // from the alert-code prefix (operational-alerts.ts), and the only
   // live callers write APP_* (errorHandler 5xx paths), HTTP_500
-  // (errorHandler unhandled) and SYNC_* (zu-sync stale-run reaper).
+  // (errorHandler unhandled) and SYNC_* (the retired sync job's stale-
+  // run reaper; the category stays mapped for historic rows).
   // Without these entries every real server-fault alert rendered a raw
   // Latin «http»/«app»/«sync» badge — the exact leak this map exists
   // to prevent. The seed writes no alerts, so demo data never showed it.

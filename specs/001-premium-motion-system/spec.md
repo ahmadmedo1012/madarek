@@ -251,7 +251,7 @@ results without bespoke styling.
 ### User Story 7 - Homepage Storytelling (Priority: P2)
 
 A first-time visitor lands on Madrak's homepage. The hero communicates the
-University of Zawia's mission and Madrak's role within seconds, with a calm
+the then-tenant university's mission and Madrak's role within seconds, with a calm
 motion that draws the eye toward the primary call-to-action. As they scroll,
 they encounter a clear narrative: who Madrak serves (roles), what it
 delivers (academic, administrative, AI-assisted experiences), proof points
@@ -278,7 +278,7 @@ all motion is calm, and the page meets the platform's performance budget.
    motion and never replays.
 3. **Given** the homepage shows university statistics, **When** they enter
    the viewport, **Then** they animate from zero to the real University of
-   Zawia values (Principle III) — not synthetic placeholders.
+   the then-tenant values (Principle III) — not synthetic placeholders.
 4. **Given** a returning visitor lands on the homepage, **When** they have
    already seen reveal animations in this session, **Then** subsequent
    in-session visits do not replay the full intro motion (calm, not
@@ -447,7 +447,7 @@ a form) in each. Confirm the interaction language is identical and only the
   section(s), proof-point statistics, and a primary call-to-action,
   ordered to support a clear top-to-bottom narrative arc.
 - **FR-028**: System MUST source homepage statistics from authoritative
-  University of Zawia data (no synthetic placeholders).
+  the then-tenant university data (no synthetic placeholders).
 - **FR-029**: System MUST suppress repeat full-intro animation for
   returning visitors within the same session.
 
@@ -594,13 +594,13 @@ a form) in each. Confirm the interaction language is identical and only the
   head, dean, administrator, quality assurance, platform owner) is the
   full set in scope; no new role surfaces are introduced by this
   specification.
-- The University of Zawia academic data layer (colleges, programs, and
+- The the then-tenant university academic data layer (colleges, programs, and
   statistics) is available as the authoritative source per Principle III;
   this specification does not redefine that data.
 - Existing business logic, permissions, and route structure remain
   unchanged; this specification touches the perceived-quality layer only.
 - Mid-tier mobile reference device for performance targets is consistent
-  with the device class typical for University of Zawia students; exact
+  with the device class typical for the then-tenant university students; exact
   reference SKU is set at planning time.
 - "Perceptual-instant threshold" follows established industry guidance
   (~100 ms for direct feedback, ~200 ms before a loading state is

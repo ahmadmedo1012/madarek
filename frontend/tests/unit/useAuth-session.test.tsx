@@ -37,14 +37,14 @@ const unwrapMock = vi.mocked(unwrap);
 
 const USER_A: AuthUser = {
   id: 'user-a',
-  email: 'a@zu.edu.ly',
+  email: 'a@test.ly',
   firstName: 'أحمد',
   lastName: 'المبروك',
   role: 'STUDENT',
 };
 const USER_B: AuthUser = {
   id: 'user-b',
-  email: 'b@zu.edu.ly',
+  email: 'b@test.ly',
   firstName: 'براء',
   lastName: 'الطاهر',
   role: 'TEACHER',
@@ -112,7 +112,7 @@ describe('useRegister — session boundary', () => {
         firstName: USER_B.firstName,
         lastName: USER_B.lastName,
         role: 'TEACHER',
-        institutionId: 'inst-zawia-showcase', // r178: required for both public roles
+        institutionId: 'inst-madarek-demo', // r178: required for both public roles
       });
     });
 
@@ -183,19 +183,19 @@ describe('useMe — institution context sync (r178)', () => {
     useAuthStore.getState().setSession(USER_A, 'tok-me', {
       memberships: [
         {
-          institutionId: 'inst-zawia-showcase',
-          name: 'جامعة الزاوية',
-          nameEn: 'University of Zawia',
-          slug: 'zawia-showcase',
+          institutionId: 'inst-madarek-demo',
+          name: 'مؤسسة مدارك النموذجية',
+          nameEn: 'Madarek Model Institution',
+          slug: 'madarek-demo',
           role: 'STUDENT',
           isActive: true,
         },
       ],
       currentInstitution: {
-        id: 'inst-zawia-showcase',
-        name: 'جامعة الزاوية',
-        nameEn: 'University of Zawia',
-        slug: 'zawia-showcase',
+        id: 'inst-madarek-demo',
+        name: 'مؤسسة مدارك النموذجية',
+        nameEn: 'Madarek Model Institution',
+        slug: 'madarek-demo',
       },
       membershipRole: 'STUDENT',
     });

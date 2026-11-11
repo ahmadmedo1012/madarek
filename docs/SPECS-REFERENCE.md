@@ -64,7 +64,7 @@ Spec directories on `main`: 001, 002, 003, 004, 011, 012 (no 009/010 ever existe
 | 8 | PDF Viewer | ResearchPaper, PaperAnnotation | `/document/:filename` | All |
 | 9 | Notifications | Notification | Dropdown + `/student/alerts` | All |
 | 10 | Social Feed | Post, PostComment, PostReaction | `/student/social` | All |
-| 11 | University Info | UniversityFact, SyncRun | `/student/university` | All |
+| 11 | University Info | (retired models — now the institution's own catalogue) | `/student/university` | All |
 | 12 | AI Assistant (Oasis) | AiConversation, AiMessage, AiTelemetry | `/student/ai`, `/teacher/ai` | All |
 | 13 | Virtual Labs | VirtualLab, LabSession | `/student/labs`, `/teacher/labs` | STUDENT, TEACHER |
 | 14 | AR/VR | ArExperience | `/student/ar` | STUDENT |

@@ -63,7 +63,7 @@
 
 **Audit Health (impeccable rubric):** A11y **3** (one real finding: unlabeled nested canvas img-role; the axe "no h1/main" messages are transient skeleton-state scans — disproven) · Performance **4** (lazy routes, placeholderData, foreground-pinned polls) · Responsive **3** (390 clean everywhere except the A5 toolbar; one 768 regression) · Theming **4** (token-clean, dark verified live ×8, charts remount) · Integrity **2** (invented vision statistics ×30, overpromising disclaimer, public zeros story) → **16/20 Good; weakest: integrity.**
 
-**RTL/bidi verdict:** clean. All Latin runs bdi-wrapped (codes, emails, terms, MOOC, zu.edu.ly, API); pagination chevrons RTL-correct; `dir="ltr"` only on genuinely LTR inputs (score, datetime, url). The `2.340`/`3,40` separators are the documented ar-LY CLDR convention (utils/numbers.ts header + pinned test) — **not** a finding.
+**RTL/bidi verdict:** clean. All Latin runs bdi-wrapped (codes, emails, terms, MOOC, test.ly, API); pagination chevrons RTL-correct; `dir="ltr"` only on genuinely LTR inputs (score, datetime, url). The `2.340`/`3,40` separators are the documented ar-LY CLDR convention (utils/numbers.ts header + pinned test) — **not** a finding.
 
 ---
 

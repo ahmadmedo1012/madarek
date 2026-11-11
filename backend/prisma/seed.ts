@@ -8,7 +8,7 @@
  * institutions — مؤسسة مدارك النموذجية (slug madarek-demo, the
  * r188 FICTIONAL demonstration institution that owns the 25-faculty
  * synthetic catalogue + all academic demo content — renamed from the
- * retired real-university showcase; the row keeps its stable id
+ * retired synthetic demo tenant; the row keeps its stable id
  * inst-madarek-demo, a legacy identifier, not identity) and مؤسسة
  * الأندلس التعليمية (slug alandalus-demo, a generic demo institution,
  * NOT a real-university claim). The Al-Andalus demo
@@ -72,7 +72,7 @@
  * metadata are refreshed (deliberate demo freshness).
  *
  * NOTE (r183 brand voice): all seed copy speaks in the Madarek
- * platform voice («منصّة مدارك») — the showcase university is DATA
+ * platform voice («منصّة مدارك») — the demo institution is DATA
  * (organizer/institution context), never the platform's identity.
  */
 
@@ -134,9 +134,9 @@ async function main() {
   // product value; the string is internal, never public identity) —
   // the same id the migration backfill used, so migrated databases and
   // fresh seeded databases agree on the reference id (tests rely on
-  // it). The r188 migration renames an existing zawia-showcase row to
+  // it). The r188 migration renames the legacy synthetic tenant row to
   // this slug/name; fresh installs create it directly.
-  const zawia = await prisma.institution.upsert({
+  const demoInst = await prisma.institution.upsert({
     where: { slug: 'madarek-demo' },
     update: { name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', status: 'ACTIVE' },
     create: {
@@ -174,7 +174,7 @@ async function main() {
   // One-time rename: legacy "كلية الطب" row → source-correct name (kept
   // idempotent — modern databases already match).
   await prisma.faculty.updateMany({
-    where: { name: 'كلية الطب', institutionId: zawia.id },
+    where: { name: 'كلية الطب', institutionId: demoInst.id },
     data: { name: 'كلية الطب البشري', nameEn: 'Human Medicine', iconEmoji: '⚕️' },
   });
 
@@ -209,8 +209,8 @@ async function main() {
       { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'ناصر' },
       { name: 'كلية الموارد الطبيعية', nameEn: 'Natural Resources', iconEmoji: '⛰️', city: 'مناطق أخرى' },
     ].map((f) => prisma.faculty.upsert({
-      where: { institutionId_name_city: { institutionId: zawia.id, name: f.name, city: f.city } },
-      create: { ...f, institutionId: zawia.id },
+      where: { institutionId_name_city: { institutionId: demoInst.id, name: f.name, city: f.city } },
+      create: { ...f, institutionId: demoInst.id },
       update: { nameEn: f.nameEn, iconEmoji: f.iconEmoji },
     })),
   );
@@ -309,17 +309,17 @@ async function main() {
       emailVerifiedAt: new Date(),
     },
   });
-  const studentMembership = await ensureMembership(student.id, zawia.id, Role.STUDENT);
+  const studentMembership = await ensureMembership(student.id, demoInst.id, Role.STUDENT);
   // Keyed by the scoped unique (institutionId, universityId). On the
   // migrated dev DB this finds the migration-backfilled row (whose
   // membershipId points at the same membership upserted above).
   await prisma.studentProfile.upsert({
-    where: { institutionId_universityId: { institutionId: zawia.id, universityId: DEMO_REG_NUMBER } },
+    where: { institutionId_universityId: { institutionId: demoInst.id, universityId: DEMO_REG_NUMBER } },
     update: { membershipId: studentMembership.id, facultyId: itFaculty.id, departmentId: csDept.id },
     create: {
       userId: student.id,
       membershipId: studentMembership.id,
-      institutionId: zawia.id,
+      institutionId: demoInst.id,
       universityId: DEMO_REG_NUMBER,
       facultyId: itFaculty.id,
       departmentId: csDept.id,
@@ -344,12 +344,12 @@ async function main() {
       emailVerifiedAt: new Date(),
     },
   });
-  const teacherMembership = await ensureMembership(teacher.id, zawia.id, Role.TEACHER);
+  const teacherMembership = await ensureMembership(teacher.id, demoInst.id, Role.TEACHER);
   // TeacherProfile has no natural unique key (per-membership rows with
   // cuid ids) — resolve by (user, membership institution), create when
   // absent; re-runs and migrated DBs both find the existing row.
   let teacherProfile = await prisma.teacherProfile.findFirst({
-    where: { userId: teacher.id, membership: { institutionId: zawia.id } },
+    where: { userId: teacher.id, membership: { institutionId: demoInst.id } },
   });
   if (!teacherProfile) {
     teacherProfile = await prisma.teacherProfile.create({
@@ -379,7 +379,7 @@ async function main() {
       emailVerifiedAt: new Date(),
     },
   });
-  await ensureMembership(admin.id, zawia.id, Role.ADMIN);
+  await ensureMembership(admin.id, demoInst.id, Role.ADMIN);
 
   const quality = await prisma.user.upsert({
     where: { email: 'quality@test.ly' },
@@ -395,7 +395,7 @@ async function main() {
       emailVerifiedAt: new Date(),
     },
   });
-  await ensureMembership(quality.id, zawia.id, Role.QUALITY);
+  await ensureMembership(quality.id, demoInst.id, Role.QUALITY);
 
   // Platform owner — Master Control Panel demo account. Like ADMIN and
   // QUALITY it carries no profile and keeps scopeFacultyId NULL (the
@@ -603,7 +603,7 @@ async function main() {
   for (const c of courseDefs) {
     const created = await prisma.course.upsert({
       // r178: course code is unique PER INSTITUTION (demo CS dept here).
-      where: { institutionId_code: { institutionId: zawia.id, code: c.code } },
+      where: { institutionId_code: { institutionId: demoInst.id, code: c.code } },
       update: {},
       create: {
         code: c.code,
@@ -612,7 +612,7 @@ async function main() {
         iconEmoji: c.icon,
         themeColor: c.color,
         departmentId: csDept.id,
-        institutionId: zawia.id,
+        institutionId: demoInst.id,
       },
     });
     courses.push(created);
@@ -872,8 +872,8 @@ async function main() {
       where: { authorId: p.authorId, body: p.body },
     });
     // r179 (phase-5): community posts are institution-scoped — the demo
-    // demo community belongs to the showcase institution.
-    if (!existing) await prisma.post.create({ data: { ...p, institutionId: zawia.id } });
+    // demo community belongs to the demo institution.
+    if (!existing) await prisma.post.create({ data: { ...p, institutionId: demoInst.id } });
   }
 
   // ─── Virtual labs + AR ─────────────────────────────────────
@@ -1238,7 +1238,7 @@ async function main() {
       where: { studentId: p.studentId, title: p.title },
     });
     // r179 (phase-5): papers carry the submission's institution.
-    if (!existing) await prisma.researchPaper.create({ data: { ...p, institutionId: zawia.id } });
+    if (!existing) await prisma.researchPaper.create({ data: { ...p, institutionId: demoInst.id } });
   }
 
   // ─── Watch events: honest progress + a live resume point ──
@@ -1830,21 +1830,21 @@ async function main() {
         description: 'تستقبل الجامعة البحوث الطلابية في مجال الذكاء الاصطناعي وتطبيقاته. الفائز يحصل على منحة لحضور مؤتمر دولي.',
         category: 'بحث', prize: 'منحة مؤتمر دولي + 2,000 د.ل',
         deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        organizerId: teacher.id, institutionId: zawia.id, iconEmoji: '🔬', themeColor: '#7B3AED',
+        organizerId: teacher.id, institutionId: demoInst.id, iconEmoji: '🔬', themeColor: '#7B3AED',
       },
       {
         title: 'هاكاثون مدارك الأول',
         description: 'هاكاثون 48 ساعة لتطوير حلول رقمية لتحديات المؤسسات التعليمية. مفتوح لجميع الطلاب من جميع الكليات.',
         category: 'برمجة', prize: '5,000 د.ل + فرصة تدريب',
         deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-        organizerId: admin.id, institutionId: zawia.id, iconEmoji: '💻', themeColor: '#2952C8',
+        organizerId: admin.id, institutionId: demoInst.id, iconEmoji: '💻', themeColor: '#2952C8',
       },
       {
         title: 'مسابقة الإلقاء العلمي بالإنجليزية',
         description: 'قدّم بحثك في 3 دقائق باللغة الإنجليزية. تنميةً لمهارات العرض والتواصل العلمي الدولي.',
         category: 'إلقاء', prize: 'دورة TOEFL مجانية + شهادة',
         deadline: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
-        organizerId: teacher.id, institutionId: zawia.id, iconEmoji: '🎤', themeColor: '#D4A537',
+        organizerId: teacher.id, institutionId: demoInst.id, iconEmoji: '🎤', themeColor: '#D4A537',
       },
       {
         title: 'تحدي الأندلس للبرمجة الأول',
@@ -1864,19 +1864,19 @@ async function main() {
         title: 'يوم المهنة 2026', description: 'فعالية يوم كامل تجمع الطلاب بأكثر من 30 شركة ومؤسسة وطنية. فرص توظيف وتدريب للخريجين والطلاب في السنوات النهائية.',
         location: 'القاعة الكبرى — الحرم الجامعي الرئيسي', startsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         endsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 + 8 * 60 * 60 * 1000),
-        capacity: 500, organizerId: admin.id, institutionId: zawia.id, iconEmoji: '💼', themeColor: '#0E5C2F',
+        capacity: 500, organizerId: admin.id, institutionId: demoInst.id, iconEmoji: '💼', themeColor: '#0E5C2F',
       },
       {
         title: 'ندوة: مستقبل التعليم في ليبيا', description: 'ندوة حوارية مع وزارة التعليم العالي والبحث العلمي حول رؤية التعليم 2030.',
         location: 'مدرج كلية الهندسة', startsAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         endsAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000 + 3 * 60 * 60 * 1000),
-        capacity: 200, organizerId: quality.id, institutionId: zawia.id, iconEmoji: '🎓', themeColor: '#2952C8',
+        capacity: 200, organizerId: quality.id, institutionId: demoInst.id, iconEmoji: '🎓', themeColor: '#2952C8',
       },
       {
         title: 'ورشة عمل: مهارات البحث العلمي', description: 'ورشة عملية لمدة 4 ساعات تغطي صياغة سؤال البحث، البحث في قواعد البيانات، والاقتباس الصحيح.',
         location: 'مكتبة الجامعة المركزية', startsAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
         endsAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000),
-        capacity: 60, organizerId: teacher.id, institutionId: zawia.id, iconEmoji: '📚', themeColor: '#7B3AED',
+        capacity: 60, organizerId: teacher.id, institutionId: demoInst.id, iconEmoji: '📚', themeColor: '#7B3AED',
       },
       {
         title: 'ملتقى الأندلس التقني',

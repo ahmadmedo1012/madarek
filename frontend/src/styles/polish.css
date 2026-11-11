@@ -1322,7 +1322,7 @@
    ─────────────────────────────────────────────────────────────────────
    First phase of the comprehensive design polish plan. Adds:
    · Token system (elevation, spring eases, focus rings, glass blur)
-   · Campus showcase section styling (parallax photo + chips)
+   · Campus curated-section styling (parallax photo + chips)
    · Sidebar collapse easing + active rail dot
    · Dropdown / popover spring-pop entrance
    · Bottom nav active dot indicator
@@ -1374,7 +1374,7 @@
      or wave 2's to remove. See 0-a P1-1.) */
 
 
-  /* CAMPUS SHOWCASE — RETIRED (r150a color-gate triage): the whole
+  /* CAMPUS SECTION — RETIRED (r150a color-gate triage): the whole
      .landing-campus-* family died with the landing redesign —
      LandingPage renders the ln-campus-* classes owned by landing.css
      since R3-W2-6. Zero TSX consumers, rg-verified. ~136 lines

@@ -49,7 +49,7 @@ const deleteMock = api.delete as unknown as Mock;
 
 const STUDENT = {
   id: 'student_1',
-  email: 'ahmed@zu.edu.ly',
+  email: 'ahmed@test.ly',
   firstName: 'أحمد',
   lastName: 'الزروق',
   isActive: true,

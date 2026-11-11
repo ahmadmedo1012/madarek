@@ -10,7 +10,7 @@
  *                  seeded demo; see manifest.json source.environment)
  *
  *   The photos tier (Wikimedia Commons university renditions) was
- *   RETIRED with the university showcase removal — manifest photos[]
+ *   RETIRED with the curated university section removal — manifest photos[]
  *   and public/media/universities/ are gone; nothing to rebuild.
  *
  * WHY FFMPEG + LIBWEBP
@@ -63,7 +63,7 @@ async function main() {
   let built = 0, skipped = 0, failed = 0;
 
   // ── photos tier — RETIRED (R345 F) ───────────────────────────────
-  // The university showcase removal deleted public/media/universities/
+  // The curated-section removal deleted public/media/universities/
   // and the manifest's photos[] rows (the Wikimedia derivatives had no
   // remaining importer). No loop runs here; any future raster tier
   // re-introduces one against a new manifest section.

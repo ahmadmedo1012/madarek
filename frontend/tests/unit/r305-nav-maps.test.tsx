@@ -72,7 +72,7 @@ const users = Object.fromEntries(
     role,
     {
       id: `u-${role.toLowerCase()}`,
-      email: `${role.toLowerCase()}@zu.edu.ly`,
+      email: `${role.toLowerCase()}@test.ly`,
       firstName: 'مستخدم',
       lastName: `تجريبي ${i + 1}`,
       role,

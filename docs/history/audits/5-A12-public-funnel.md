@@ -110,7 +110,7 @@ LANDING (9, A1) ──«ابدأ الآن/أنشئ حسابك الجامعي»�
 
 ### P2-6 · The only crawlable pages carry no per-page document title for guests
 - **Where:** `frontend/src/components/layout/AppShell.tsx:272-284` (the docTitle effect is mounted inside the shell) × `App.tsx:172-183` (guests on `/colleges*` never get the shell). `PAGE_TITLES` **already contains** `/colleges: 'كلّيّات الجامعة'`, `/colleges/leaderboard: 'منافسة الكلّيّات'`, and the `كلّيّة` pattern (AppShell.tsx:72-73,107) — they simply never execute for guests.
-- **Evidence (measured):** guest `/colleges`, `/colleges/:id`, `/colleges/leaderboard` all ship the static `index.html` title «مدارك · منصة التعليم الذكي · جامعة الزاوية»; the authed surfaces all get dynamic titles. h1s are correct on all three — only the title layer is missing.
+- **Evidence (measured):** guest `/colleges`, `/colleges/:id`, `/colleges/leaderboard` all ship the static `index.html` title «مدارك · منصة التعليم الذكي» + the then-tenant suffix (since removed); the authed surfaces all get dynamic titles. h1s are correct on all three — only the title layer is missing.
 - **Fix sketch:** hoist the title effect out of the shell (a tiny `useDocumentTitle(pathname)` at router level, or set it inside `CollegesLayout` for the guest branch — the map already exists, this is a 5-line move).
 
 ### P2-7 · Vision article reading experience: the only prose is 13px muted at a 1134px measure — a spec sheet, not an article

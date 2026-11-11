@@ -88,9 +88,9 @@ describe('PageHeader — the page-opening header primitive (r164-a)', () => {
 
   it('accepts node content for both title and subtitle', () => {
     const { container } = render(
-      <PageHeader title={<span>جامعة الزاوية</span>} subtitle={<span>مؤسّسة تعليميّة</span>} />,
+      <PageHeader title={<span>مؤسسة مدارك النموذجية</span>} subtitle={<span>مؤسّسة تعليميّة</span>} />,
     );
-    expect(screen.getByRole('heading', { level: 1, name: 'جامعة الزاوية' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'مؤسسة مدارك النموذجية' })).toBeInTheDocument();
     expect(container.querySelector('.page-subtitle')?.textContent).toBe('مؤسّسة تعليميّة');
   });
 });

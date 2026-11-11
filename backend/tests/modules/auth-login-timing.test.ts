@@ -37,7 +37,7 @@ import { LOCK_DURATION_DEMO_MS, LOCK_DURATION_MS, MAX_FAILED_LOGINS } from '../.
 const makeUser = (overrides: Partial<User> = {}): User =>
   ({
     id: 'user-1',
-    email: 'locked@zu.edu.ly',
+    email: 'locked@test.ly',
     passwordHash: 'real-hash',
     role: 'STUDENT',
     firstName: 'أحمد',
@@ -67,7 +67,7 @@ describe('loginUser — timing equalization (dummy hash)', () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
 
     await expect(
-      loginUser('ghost@zu.edu.ly', 'wrong-password', { ip: '10.0.0.9', userAgent: 'vitest' }),
+      loginUser('ghost@test.ly', 'wrong-password', { ip: '10.0.0.9', userAgent: 'vitest' }),
     ).rejects.toMatchObject({ code: 'INVALID_CREDENTIALS', status: 401 });
 
     // The anti-enumeration invariant: same argon2 work as a real check.
@@ -79,7 +79,7 @@ describe('loginUser — timing equalization (dummy hash)', () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
     vi.mocked(verifyPassword).mockRejectedValueOnce(new Error('argon2 exploded'));
 
-    await expect(loginUser('ghost@zu.edu.ly', 'pw')).rejects.toMatchObject({
+    await expect(loginUser('ghost@test.ly', 'pw')).rejects.toMatchObject({
       code: 'INVALID_CREDENTIALS',
     });
   });
@@ -94,7 +94,7 @@ describe('loginUser — timing equalization (dummy hash)', () => {
       makeUser({ lockedUntil: new Date(Date.now() + 60_000) }),
     );
 
-    await expect(loginUser('locked@zu.edu.ly', 'pw')).rejects.toMatchObject({
+    await expect(loginUser('locked@test.ly', 'pw')).rejects.toMatchObject({
       code: 'TOO_MANY_REQUESTS',
     });
 
@@ -110,13 +110,13 @@ describe('loginUser — LoginEvent telemetry', () => {
   it('writes a USER_NOT_FOUND failure row with ip/userAgent and no userId', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
 
-    await expect(loginUser('ghost@zu.edu.ly', 'pw')).rejects.toMatchObject({
+    await expect(loginUser('ghost@test.ly', 'pw')).rejects.toMatchObject({
       code: 'INVALID_CREDENTIALS',
     });
 
     expect(prisma.loginEvent.create).toHaveBeenCalledWith({
       data: {
-        email: 'ghost@zu.edu.ly',
+        email: 'ghost@test.ly',
         success: false,
         reason: 'USER_NOT_FOUND',
         userId: null,
@@ -131,7 +131,7 @@ describe('loginUser — LoginEvent telemetry', () => {
       makeUser({ lockedUntil: new Date(Date.now() + 60_000) }),
     );
 
-    await expect(loginUser('locked@zu.edu.ly', 'pw')).rejects.toMatchObject({
+    await expect(loginUser('locked@test.ly', 'pw')).rejects.toMatchObject({
       code: 'TOO_MANY_REQUESTS',
     });
 
@@ -148,7 +148,7 @@ describe('loginUser — LoginEvent telemetry', () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
     vi.mocked(prisma.loginEvent.create).mockRejectedValueOnce(new Error('telemetry table missing'));
 
-    await expect(loginUser('ghost@zu.edu.ly', 'pw')).rejects.toMatchObject({
+    await expect(loginUser('ghost@test.ly', 'pw')).rejects.toMatchObject({
       code: 'INVALID_CREDENTIALS',
     });
   });
@@ -161,7 +161,7 @@ describe('loginUser — lockout failure accounting (wave 12-3 race hardening)', 
     // for "the row now says 3" no matter how many callers raced to 2.
     vi.mocked(prisma.user.update).mockResolvedValue({ failedLoginCount: 3 } as User);
 
-    await expect(loginUser('locked@zu.edu.ly', 'pw')).rejects.toMatchObject({
+    await expect(loginUser('locked@test.ly', 'pw')).rejects.toMatchObject({
       code: 'INVALID_CREDENTIALS',
     });
 
@@ -185,7 +185,7 @@ describe('loginUser — lockout failure accounting (wave 12-3 race hardening)', 
     );
     vi.mocked(prisma.user.update).mockResolvedValue({ failedLoginCount: MAX_FAILED_LOGINS } as User);
 
-    await expect(loginUser('locked@zu.edu.ly', 'pw')).rejects.toMatchObject({
+    await expect(loginUser('locked@test.ly', 'pw')).rejects.toMatchObject({
       code: 'INVALID_CREDENTIALS',
     });
 
@@ -210,7 +210,7 @@ describe('loginUser — lockout failure accounting (wave 12-3 race hardening)', 
     // its decision from the DB's returned value, not from user.failedLoginCount.
     vi.mocked(prisma.user.update).mockResolvedValue({ failedLoginCount: MAX_FAILED_LOGINS } as User);
 
-    await expect(loginUser('locked@zu.edu.ly', 'pw')).rejects.toMatchObject({
+    await expect(loginUser('locked@test.ly', 'pw')).rejects.toMatchObject({
       code: 'INVALID_CREDENTIALS',
     });
 
@@ -239,9 +239,9 @@ describe('loginUser — lockout failure accounting (wave 12-3 race hardening)', 
 
     // Real account → the full 15-minute policy.
     vi.mocked(prisma.user.findUnique).mockResolvedValue(
-      makeUser({ failedLoginCount: MAX_FAILED_LOGINS - 1, email: 'ahmed@zu.edu.ly' }),
+      makeUser({ failedLoginCount: MAX_FAILED_LOGINS - 1, email: 'ahmed@gmail.com' }),
     );
-    await expect(loginUser('ahmed@zu.edu.ly', 'pw')).rejects.toMatchObject({
+    await expect(loginUser('ahmed@gmail.com', 'pw')).rejects.toMatchObject({
       code: 'INVALID_CREDENTIALS',
     });
     const realCalls = vi.mocked(prisma.user.updateMany).mock.calls as unknown as Array<

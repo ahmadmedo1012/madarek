@@ -30,7 +30,7 @@
  *
  * Usage: node scripts/r327/p4c-rehearsal.mjs [outFile.txt]
  * Env: BASE_URL, EVAL_PASSWORD, EVAL_TEACHER_EMAIL, EVAL_REGISTRAR_EMAIL,
- *      OFFERING_ID, FACULTY_ID, DEPARTMENT_ID (defaults = the showcase
+ *      OFFERING_ID, FACULTY_ID, DEPARTMENT_ID (defaults = the demo
  *      chain, same as b3-invite-bulk-proof.mjs).
  */
 import { writeFileSync } from 'node:fs';
@@ -41,7 +41,7 @@ const IDS_OUT = OUT.replace(/\.txt$/, '.ids.json');
 const PASSWORD = process.env.EVAL_PASSWORD ?? '12345678';
 const TEACHER_EMAIL = process.env.EVAL_TEACHER_EMAIL ?? 'teacher@test.ly';
 const REGISTRAR_EMAIL = process.env.EVAL_REGISTRAR_EMAIL ?? 'registrar@test.ly';
-const INSTITUTION_ID = process.env.INSTITUTION_ID ?? 'inst-zawia-showcase';
+const INSTITUTION_ID = process.env.INSTITUTION_ID ?? 'inst-madarek-demo';
 const OFFERING_ID = process.env.OFFERING_ID ?? 'cmvwl5onk003s124xe5r1ufgt';
 const FACULTY_ID = process.env.FACULTY_ID ?? 'cmvwl5oiu0002124xqqg65j7p';
 const DEPARTMENT_ID = process.env.DEPARTMENT_ID ?? 'cmvwl5ojg001g124x8a1251es';

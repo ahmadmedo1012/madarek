@@ -69,7 +69,7 @@ import { overlayStack } from '../../src/lib/overlayStack';
 
 const STUDENT = {
   id: 'u1',
-  email: 'student@zu.edu.ly',
+  email: 'student@test.ly',
   firstName: 'سالم',
   lastName: 'الزوي',
   role: 'STUDENT' as const,

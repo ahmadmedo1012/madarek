@@ -9,7 +9,7 @@
  *    passing on stale hexes).
  *  · P2 /student/university institution identity: the page derives its
  *    identity from the session's institution context — rendered pins
- *    for both branches (zawia-showcase keeps the labeled showcase
+ *    for both branches (madarek-demo keeps the labeled demo
  *    facts; alandalus-demo gets its own name and drops the ZU facts),
  *    plus the «فروع خارجيّة … في 0 مدينة» contradiction pin.
  *  · P3 Arabic hashtags never ride font-mono (post chips + .trend-tag).
@@ -193,15 +193,15 @@ import { useAuthStore, type InstitutionSummary } from '../../src/stores/auth.sto
 
 const STUDENT = {
   id: 'st1',
-  email: 'amna@zu.edu.ly',
+  email: 'amna@test.ly',
   firstName: 'آمنة',
   lastName: 'العبيدي',
   role: 'STUDENT',
 } as const;
 
-const ZAWIA: InstitutionSummary = {
+const DEMO: InstitutionSummary = {
   // r188: the demonstration tenant — fictional identity, legacy id kept.
-  id: 'inst-zawia-showcase',
+  id: 'inst-madarek-demo',
   name: 'مؤسسة مدارك النموذجية',
   nameEn: 'Madarek Model Institution',
   slug: 'madarek-demo',
@@ -214,7 +214,7 @@ const ANDALUS: InstitutionSummary = {
   slug: 'alandalus-demo',
 };
 
-const ZAWIA_FACULTIES = [
+const DEMO_FACULTIES = [
   { id: 'f1', name: 'كلية الآداب', city: 'حرم المعرفة', iconEmoji: null },
   { id: 'f2', name: 'كلية العلوم', city: 'حرم المعرفة', iconEmoji: null },
   { id: 'f3', name: 'كلية التربية', city: 'حرم الابتكار', iconEmoji: null },
@@ -224,11 +224,21 @@ const ANDALUS_FACULTIES = [
   { id: 'g1', name: 'كلية الأندلس للعلوم', city: 'طرابلس', iconEmoji: null },
 ];
 
+/* R349 U4 — the banned-identity single source (scripts/qa/identity-banned.json):
+ * the deliberate consumer. The university compounds and the retired domain
+ * are READ, never spelled, in this file. */
+const BANNED = JSON.parse(
+  readFileSync(
+    path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../scripts/qa/identity-banned.json'),
+    'utf8',
+  ),
+) as { universities: string[]; latinForms: string[]; fragments: string[] };
+
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
 });
 
-function renderUniversity(institution: InstitutionSummary | null, faculties: typeof ZAWIA_FACULTIES) {
+function renderUniversity(institution: InstitutionSummary | null, faculties: typeof DEMO_FACULTIES) {
   uni.faculties = faculties;
   uni.slug = institution?.slug;
   act(() => {
@@ -251,11 +261,11 @@ function changeLines(container: HTMLElement): string[] {
 }
 
 describe("r183-B3/R349-U3 — /student/university is the caller's OWN institution page (A6 P2)", () => {
-  it('madarek-demo session: the SAME generic page — own name, no curated showcase content', () => {
-    const { container } = renderUniversity(ZAWIA, ZAWIA_FACULTIES);
+  it('madarek-demo session: the SAME generic page — own name, no curated tenant content', () => {
+    const { container } = renderUniversity(DEMO, DEMO_FACULTIES);
 
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('مؤسسة مدارك النموذجية');
-    // R349 U3: the curated showcase branch is RETIRED with the university
+    // R349 U3: the curated tenant branch is RETIRED with the university
     // facts pipeline — the demo tenant gets the same honest page as every
     // other institution: no synthetic profile card, no campus-split cards,
     // no curated memberships/accreditation/strategic-plan blocks.
@@ -284,8 +294,11 @@ describe("r183-B3/R349-U3 — /student/university is the caller's OWN institutio
     expect(screen.queryByText('فروع خارجيّة')).toBeNull();
     expect(screen.queryByText(/مؤسّسة تعليميّة حكوميّة/)).toBeNull();
     expect(screen.queryByText('العضويّات الدوليّة')).toBeNull();
-    expect(screen.queryByText('جامعة السابع من أبريل')).toBeNull();
-    expect(screen.queryByText('zu.edu.ly')).toBeNull();
+    for (const uni of BANNED.universities) {
+      expect(screen.queryByText(uni), `${uni} must never render as the demo identity`).toBeNull();
+    }
+    // the retired real-university domain, likewise (the shared fragment).
+    expect(screen.queryByText(BANNED.fragments[1]!)).toBeNull();
 
     // Its own facts: the platform identifier + the scoped faculties.
     expect(screen.getByText('المعرّف على المنصّة')).toBeInTheDocument();
@@ -296,7 +309,7 @@ describe("r183-B3/R349-U3 — /student/university is the caller's OWN institutio
   it('the faculties KPI counts the real distinct cities of the scoped faculties', () => {
     // All faculties in one city: 1 faculty, 1 distinct city.
     const outside = [{ id: 'g1', name: 'كلية الأندلس للعلوم', city: 'طرابلس', iconEmoji: null }];
-    const { container } = renderUniversity(ZAWIA, outside);
+    const { container } = renderUniversity(DEMO, outside);
     const lines = changeLines(container);
     expect(lines).toContain('موزَّعة على مدينة واحدة');
     expect(lines.some((l) => l.includes('0 مدينة'))).toBe(false);
@@ -307,7 +320,7 @@ describe("r183-B3/R349-U3 — /student/university is the caller's OWN institutio
       { id: 'f1', name: 'كلية الآداب', city: 'حرم المعرفة', iconEmoji: null },
       { id: 'f2', name: 'كلية العلوم', city: 'حرم المعرفة', iconEmoji: null },
     ];
-    const { container } = renderUniversity(ZAWIA, inside);
+    const { container } = renderUniversity(DEMO, inside);
     expect(changeLines(container).some((l) => l.includes('0 مدينة'))).toBe(false);
   });
 });

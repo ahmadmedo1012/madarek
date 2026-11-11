@@ -325,7 +325,7 @@ stain).
 
 | # | Feeling | Act | Cause |
 |---|---|---|---|
-| 1 | وضوح (clarity) | Hero: «منصّة التعليم الذكيّ لجامعة الزاوية» + **real** dashboard, CTA above the fold, ≤4 blocks | the visitor understands what this is in one screen |
+| 1 | وضوح (clarity) | Hero: «منصّة التعليم الذكيّ» + co-branded suffix (since removed) + **real** dashboard, CTA above the fold, ≤4 blocks | the visitor understands what this is in one screen |
 | 2 | ثقة (trust, compressed) | Facts row alone (logos folded into the ministry strip) | 25 كلّيّة · 4 مدن · 1988 · sourced numbers |
 | 3 | **انتماء (belonging) — THE PEAK** | Campus photo, full-bleed, quiet facts-row before it, most scroll room; caption «منذ 1988»; optional colleges dissolve (option C) | the only photographic beat; the place itself is the argument |
 | 4 | قدرة (capability) | Features — varied entrances (underline-draw / quote-fade — kinds already shipped) | tools, not a wall |

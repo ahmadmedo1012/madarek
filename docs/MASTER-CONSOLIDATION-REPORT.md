@@ -33,22 +33,22 @@ Round: `master` (session 1 of N). Baseline `86c9d615` → close `188f700f`
 - **Release live-verified**: `android-latest` rebuilt from `5601fe79`
   (2026-11-11T03:56Z) with all 5 assets — APK 59 MB (release-signed, cert
   `746196e6…ce12`), AAB, build-info, SHA256SUMS, verify.json (`verified: true`).
-  The rolling release now carries the university-showcase-free app.
+  The rolling release now carries the curated-section-free app.
 - Signing identity preserved (established release key, untouched).
 
 ## Identity (M1 — COMPLETE)
 
-- University showcase retired: 13 files deleted, ~120 modified (web route/page,
+- Curated university section retired: 13 files deleted, ~120 modified (web route/page,
   MediaFrame/VideoCard/InkSketch, the shared card system + mobile twins + sync
-  script, 462 lines of showcase CSS families, manifest/robots/sitemap/
+  script, 462 lines of curated CSS families, manifest/robots/sitemap/
   index.html registers, CSP frame-src back to self-only).
 - The landing statement crawl is now OUR OWN capability register
   (typographic svg cells) — no external institutions anywhere; r307 rewritten
-  as the retirement contract (showcase cannot return: registry/source/route/
+  as the retirement contract (the section cannot return: registry/source/route/
   CSS/CSP pins).
 - The synthetic tenant re-keyed: «جامعة مدارك التجريبية» → «مؤسسة مدارك
   النموذجية» across ~50 files (web+backend+mobile+tests+docs); FK anchors
-  (`inst-zawia-showcase`, `madarek-demo`) preserved by design; hard-coded
+  (the legacy tenant id, `madarek-demo`) preserved by design; hard-coded
   campus counts now derived from live data.
 - **Brand**: the footer's MARK_PATHS bypass re-sourced from the ONE
   `brand/mark` geometry (Option A — 8-path census contract + data-specs kept,
@@ -94,7 +94,7 @@ Round: `master` (session 1 of N). Baseline `86c9d615` → close `188f700f`
 
 ## Website / conformance
 
-- Bundle 760.0 → **753.2 KB gz** (showcase retirement paid for itself);
+- Bundle 760.0 → **753.2 KB gz** (the section retirement paid for itself);
   CSS ratchet held (52 `!important`); intro conformance ≥ the R347 baseline
   at EVERY breakpoint (390: 87.2→88 · 768: 89.4→90 · 1024: 96.9→98);
   footer stable 89–90; coverage 37.6% ≥ 37 floor (full-matrix union math);

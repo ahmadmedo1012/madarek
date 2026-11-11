@@ -121,7 +121,7 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  * the boot plate moved with it. */
 const THEME_BOOTSTRAP_SHA256 = 'jEZ9yPBzXBwMFxHwFlLFqiKKy+HtK9TOGA7FRviqIMc=';
 /* r188: pin refreshed — the JSON-LD block now describes the INDEPENDENT
- * Madarek platform alone (WebSite node; the retired University-of-Zawia
+ * Madarek platform alone (WebSite node; the retired legacy university
  * `about` node is gone — the only demo-data story is the explicitly
  * fictional «مؤسسة مدارك النموذجية», named in the description as
  * synthetic data, never as affiliation). Verified by check-csp-hash.sh. */
@@ -290,7 +290,7 @@ app.use('/api/v1/import', importRoutes);
   app.use('/api/v1', institutionRoutes);
   // R349 U2 — the sync router (admin/sync + the public university/facts
   // feed) is RETIRED with the demo-tenant purge: the project belongs to
-  // no university and the facts pipeline (zu-sync/UniversityFact) is
+  // no university and the facts pipeline (the sync library/model) is
   // deleted. The my-institution page reads the caller's OWN
   // institution through institutionRoutes/catalogRoutes.
   // catalogRoutes mounts here (before meRoutes) for the same reason:

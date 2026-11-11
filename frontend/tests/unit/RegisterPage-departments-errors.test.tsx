@@ -82,10 +82,10 @@ vi.mock('../../src/hooks/useInstitutions', () => ({
   useInstitutions: () => ({
     data: [
       {
-        id: 'inst-zawia',
-        name: 'جامعة الزاوية',
-        nameEn: 'University of Zawia',
-        slug: 'zawia-showcase',
+        id: 'inst-madarek-demo',
+        name: 'مؤسسة مدارك النموذجية',
+        nameEn: 'Madarek Model Institution',
+        slug: 'madarek-demo',
       },
     ],
     isLoading: false,
@@ -123,7 +123,7 @@ const chooseStudent = () => fireEvent.click(screen.getByRole('button', { name: /
 function fillValidStudent(facultyId: string) {
   fireEvent.change(screen.getByLabelText('الاسم الأول'), { target: { value: 'سالم' } });
   fireEvent.change(screen.getByLabelText('اللقب'), { target: { value: 'الفيتوري' } });
-  fireEvent.change(screen.getByLabelText('البريد الإلكتروني'), { target: { value: 'salem@zu.edu.ly' } });
+  fireEvent.change(screen.getByLabelText('البريد الإلكتروني'), { target: { value: 'salem@test.ly' } });
   fireEvent.change(screen.getByLabelText('كلمة المرور (12 حرفًا على الأقل)'), { target: { value: 'Salam-Zawiya-2026' } });
   fireEvent.change(screen.getByLabelText('رقم القيد الجامعي'), { target: { value: '2024-CS-1234' } });
   fireEvent.change(screen.getByLabelText('الكلّيّة'), { target: { value: facultyId } });
@@ -218,7 +218,7 @@ describe('RegisterPage — department honesty (r157 F5)', () => {
 
     expect((screen.getByLabelText('الاسم الأول') as HTMLInputElement).value).toBe('سالم');
     expect((screen.getByLabelText('اللقب') as HTMLInputElement).value).toBe('الفيتوري');
-    expect((screen.getByLabelText('البريد الإلكتروني') as HTMLInputElement).value).toBe('salem@zu.edu.ly');
+    expect((screen.getByLabelText('البريد الإلكتروني') as HTMLInputElement).value).toBe('salem@test.ly');
     expect((screen.getByLabelText('رقم القيد الجامعي') as HTMLInputElement).value).toBe('2024-CS-1234');
     expect((screen.getByLabelText('الكلّيّة') as HTMLSelectElement).value).toBe('fac-1');
   });

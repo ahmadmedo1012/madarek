@@ -105,7 +105,7 @@ describe('R320 §C — isTestAccountEmail (the @test.ly demo marker)', () => {
   });
 
   it('rejects look-alikes (the marker must be a SUFFIX match)', () => {
-    expect(isTestAccountEmail('ahmed@zu.edu.ly')).toBe(false);
+    expect(isTestAccountEmail('ahmed@gmail.com')).toBe(false);
     expect(isTestAccountEmail('test.ly@example.com')).toBe(false); // domain as local part
     expect(isTestAccountEmail('student@test.ly.evil.com')).toBe(false); // demo-like infix
     expect(isTestAccountEmail('student@testly')).toBe(false); // missing the dot

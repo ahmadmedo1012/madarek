@@ -484,7 +484,7 @@ nonsense search — confirm empty state with clear-filters action.
   defects open at release.
 - **SC-008 (Real-data integrity)**: Zero synthetic / placeholder
   colleges shipped — every entry traces to canonical University
-  of Zawia data (Principle III).
+  of the then-tenant data (Principle III).
 - **SC-009 (Identity adoption)**: When a college Identity Profile
   is added in `colleges.config.ts`, its card surface MUST reflect
   the accent within one PR — no gallery code change required.

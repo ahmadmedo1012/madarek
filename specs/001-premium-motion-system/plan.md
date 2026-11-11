@@ -45,7 +45,7 @@ desktop/tablet/mobile in both LTR and RTL.
 
 **Target Platform**: Modern browsers — Chrome/Edge/Safari/Firefox latest two
 versions; reference mid-tier mobile = Android device class equivalent to a
-Snapdragon 6-series, 4 GB RAM (typical University of Zawia student baseline).
+Snapdragon 6-series, 4 GB RAM (typical the then-tenant university student baseline).
 
 **Project Type**: Web application (existing `frontend/` + `backend/`).
 
@@ -71,7 +71,7 @@ focus/loading audits.
 |-----------|---------|-------|
 | I. Premium Experience & Design Excellence | ✅ Pass | This is the principle being instantiated. All output is token-driven; visual review checklist baked into the rollout. |
 | II. Mobile-First, Accessible & Bilingual | ✅ Pass | Mobile-first 360 px target, WCAG 2.1 AA gates, full LTR + RTL + reduced-motion coverage are non-negotiables in this plan. |
-| III. University-Truth Alignment | ✅ Pass | Homepage stats and college identity sourced from the existing University of Zawia data layer; no synthetic placeholders. |
+| III. University-Truth Alignment | ✅ Pass | Homepage stats and college identity sourced from the existing the then-tenant university data layer; no synthetic placeholders. |
 | IV. Role-Based Governance & Least Privilege | ✅ Pass | Spec touches presentation only; permissions and route guards untouched. |
 | V. AI-Assisted, Human-Authoritative | ✅ Pass | No AI decision pathways modified. |
 | VI. Scalability & Integration Readiness | ✅ Pass | Tokens + primitives are versioned and consumable by future modules; bundle budget honored (≤ 8 KB add). |
@@ -137,7 +137,7 @@ frontend/
     └── motion/                            # primitive unit + a11y tests
 
 design-system/
-└── madarek-zawia-university-lms/          # reference visual spec — authoritative
+└── madarek-demo-tenant-university-lms/          # reference visual spec — authoritative
                                            # source of accent palette already
                                            # used by the project
 

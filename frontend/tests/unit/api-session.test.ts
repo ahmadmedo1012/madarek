@@ -14,7 +14,7 @@ import { useAuthStore, type AuthUser } from '../../src/stores/auth.store';
 
 const USER_A: AuthUser = {
   id: 'u1',
-  email: 'a@zu.edu.ly',
+  email: 'a@test.ly',
   firstName: 'أحمد',
   lastName: 'المبروك',
   role: 'STUDENT',

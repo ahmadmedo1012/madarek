@@ -93,7 +93,7 @@ Mobile 390×844: **11882px = 14.08 viewports** (just over the 8–14vh scroll bu
 
 ### P2-2 — "Partners" strip is text-only wordmarks at 0.55 opacity (2.66:1) and self-referential
 - **Where:** `LandingPage.tsx:444-454`, `landing.css:650-665` (`.landing-logos-grid { opacity: 0.55 }`).
-- **What:** 6 text labels (no logos) at 55% opacity → effective #9c9b98 on #fbfaf9 = **2.66:1** (this is exactly the 6 axe contrast errors the dev console prints on load). VLM: "reads as a cheap placeholder… looks like you forgot to swap the wireframe assets." Content-wise the list is the university accrediting itself (جامعة الزاوية، عمادة الطلاب…) — weak trust claim.
+- **What:** 6 text labels (no logos) at 55% opacity → effective #9c9b98 on #fbfaf9 = **2.66:1** (this is exactly the 6 axe contrast errors the later sweep fixed; the labels named the then-tenant, since retired, and the dev console printed them on load). VLM: "reads as a cheap placeholder… looks like you forgot to swap the wireframe assets." Content-wise the list is the university accrediting itself (اسم الجامعة حينها، عمادة الطلاب…) — weak trust claim.
 - **Fix sketch:** real monochrome institutional marks at ≥0.8 opacity, or cut the section and let the facts row carry credibility.
 
 ### P2-3 — Div-built fake dashboard as the hero mockup

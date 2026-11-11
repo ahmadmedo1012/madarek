@@ -99,7 +99,7 @@ const usersMocks = vi.hoisted(() => ({
   activity: {
     data: {
       data: [
-        { id: 'ev-1', action: 'user.login', createdAt: '2026-10-01T10:00:00.000Z', user: { firstName: 'سالم', lastName: 'الفيتوري', email: 'salim@zu.edu.ly' }, resourceType: 'User', resourceId: 'u-1', metadata: null },
+        { id: 'ev-1', action: 'user.login', createdAt: '2026-10-01T10:00:00.000Z', user: { firstName: 'سالم', lastName: 'الفيتوري', email: 'salim@test.ly' }, resourceType: 'User', resourceId: 'u-1', metadata: null },
         { id: 'ev-2', action: 'institution.update', createdAt: '2026-10-01T11:00:00.000Z', user: null, resourceType: null, resourceId: null, metadata: null },
       ],
       meta: { total: 75, page: 1, limit: 50, totalPages: 2 },
@@ -209,7 +209,7 @@ describe('OwnerAlertsPage — error-severity cards read urgent (r299)', () => {
 /* ═══ 7–8. OwnerUsersPage — honest «الفئة الأكبر» + red suspended chip */
 
 const USER_ROW = {
-  id: 'u-1', firstName: 'سالم', lastName: 'الفيتوري', email: 'salim@zu.edu.ly',
+  id: 'u-1', firstName: 'سالم', lastName: 'الفيتوري', email: 'salim@test.ly',
   role: 'TEACHER', isActive: true, avatarInitials: 'سف', avatarColor: null,
   createdAt: '2026-01-01T00:00:00.000Z',
   memberships: [{ institution: { id: 'inst-1', name: 'مؤسسة الأندلس التعليمية', slug: 'alandalus-demo', status: 'SUSPENDED' } }],

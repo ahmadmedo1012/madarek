@@ -63,10 +63,10 @@ vi.mock('../../src/hooks/useInstitutions', () => ({
   useInstitutions: () => ({
     data: [
       {
-        id: 'inst-zawia',
-        name: 'جامعة الزاوية',
-        nameEn: 'University of Zawia',
-        slug: 'zawia-showcase',
+        id: 'inst-madarek-demo',
+        name: 'مؤسسة مدارك النموذجية',
+        nameEn: 'Madarek Model Institution',
+        slug: 'madarek-demo',
       },
     ],
     isLoading: false,
@@ -93,7 +93,7 @@ const chooseStudent = () => fireEvent.click(screen.getByRole('button', { name: /
 function fillStudent(password: string) {
   fireEvent.change(screen.getByLabelText('الاسم الأول'), { target: { value: 'سالم' } });
   fireEvent.change(screen.getByLabelText('اللقب'), { target: { value: 'الفيتوري' } });
-  fireEvent.change(screen.getByLabelText('البريد الإلكتروني'), { target: { value: 'salem@zu.edu.ly' } });
+  fireEvent.change(screen.getByLabelText('البريد الإلكتروني'), { target: { value: 'salem@test.ly' } });
   fireEvent.change(screen.getByLabelText('كلمة المرور (12 حرفًا على الأقل)'), { target: { value: password } });
   fireEvent.change(screen.getByLabelText('رقم القيد الجامعي'), { target: { value: '2024-CS-1234' } });
   fireEvent.change(screen.getByLabelText('الكلّيّة'), { target: { value: 'fac-1' } });

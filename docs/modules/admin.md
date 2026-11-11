@@ -11,7 +11,7 @@
 | `/admin/faculties`, `/admin/courses`, `/admin/reports` | `AdminPages.tsx` | بنية الجامعة + تقارير حية + مقررات بصفحات |
 | `/admin/students`, `/admin/digital`, `/admin/settings`, `/admin/analysis` | `pages/admin/AdminExtraPages.tsx` | كشوف ببحث عميق `?q=`، تبنٍّ رقمي، إعدادات؛ «analysis» يعيد التوجيه إلى `/admin/reports` |
 | `/admin/teachers`, `/admin/permissions/:id` | `pages/admin/AdminGovernancePages.tsx` | توثيق أستاذ + تعيين منصب + محرر قدرات |
-| `/admin/sync` | `pages/admin/AdminSyncPage.tsx` | zu-sync: زناد يدوي + سجل `SyncRun` |
+| ~~`/admin/sync`~~ | ~~`pages/admin/AdminSyncPage.tsx`~~ | **أُحيل في R349 U2** (لا مزامنة حقائق) |
 | `/admin/community`, `/admin/alerts` | حزم مشتركة | إعلانات بنطاق + تنبيهات |
 
 ## الـendpoints (الخلفية)
@@ -30,14 +30,12 @@
 
 `User/RolePermission/UserPermission`، `Faculty/Department`، `Course/CourseOffering/Enrollment`،
 `Book/Loan`، `MoocCourse/Enrollment`، `Job/JobApplication`، `Post/…`، `Announcement`،
-`UniversityFact/SyncRun`، `AuditLog`.
+`AuditLog`.
 
 ## النقاط الحرجة للتعديل
 
-- **حقائق الجامعة**: `backend/src/lib/zu-sync/static-source.ts` — مصدر
-  منسّق قابل للاستبدال بجالب حقيقي (واجهة fetcher جاهزة). `collegeCount`
-  هناك = 26 (قائمة الجامعة) بينما سجل الواجهة 25 — التوازن موثق في
-  [../02](../02-features.md) و[../16](../16-decisions-and-limitations.md)؛
+- **حقائق الجامعة (محالة)**: أُحيل المصدر المنسّق في R349 U2 مع
+  النموذج والمسارات — لا مزامنة ولا عدّ كليات خارجي بعد الآن؛
   لا تلمس أحد الجانبين دون قرار.
 - **الحاكمية أولاً**: أي تعديل أدوار/حالات يمر بـ`lib/governance.ts`
   (قفل آخر مالك، توفير أستاذ، تدقيق بنفس المعاملة) — لا تتجاوزه أبدًا.

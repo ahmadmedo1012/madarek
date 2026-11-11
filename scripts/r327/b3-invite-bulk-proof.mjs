@@ -34,7 +34,7 @@
  *
  * Usage: node scripts/r327/b3-invite-bulk-proof.mjs [outFile.txt]
  * Env: BASE_URL, EVAL_PASSWORD, EVAL_TEACHER_EMAIL, OFFERING_ID,
- *       FACULTY_ID, DEPARTMENT_ID (the showcase IT faculty + CS
+ *       FACULTY_ID, DEPARTMENT_ID (the demo IT faculty + CS
  *       department by default — the register route validates the
  *       academic chain belongs to the institution).
  */
@@ -44,10 +44,10 @@ const BASE_URL = process.env.BASE_URL ?? 'http://localhost:4000';
 const OUT = process.argv[2] ?? 'audits/evidence/r327/p4/b3/invite-bulk-proof.txt';
 const PASSWORD = process.env.EVAL_PASSWORD ?? '12345678';
 const TEACHER_EMAIL = process.env.EVAL_TEACHER_EMAIL ?? 'teacher@test.ly';
-const INSTITUTION_ID = process.env.INSTITUTION_ID ?? 'inst-zawia-showcase';
+const INSTITUTION_ID = process.env.INSTITUTION_ID ?? 'inst-madarek-demo';
 // An offering owned by teacher@test.ly in the seed (هندسة البرمجيات).
 const OFFERING_ID = process.env.OFFERING_ID ?? 'cmvwl5onk003s124xe5r1ufgt';
-// The showcase academic chain (كلية تقنية المعلومات → علوم الحاسوب).
+// The demo academic chain (كلية تقنية المعلومات → علوم الحاسوب).
 const FACULTY_ID = process.env.FACULTY_ID ?? 'cmvwl5oiu0002124xqqg65j7p';
 const DEPARTMENT_ID = process.env.DEPARTMENT_ID ?? 'cmvwl5ojg001g124x8a1251es';
 const THROWAWAY_PASSWORD = 'r327-b3-throwaway!x';

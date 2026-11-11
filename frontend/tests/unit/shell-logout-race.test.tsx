@@ -55,7 +55,7 @@ const unwrapMock = vi.mocked(unwrap);
 
 const STUDENT: AuthUser = {
   id: 'u-logout-race',
-  email: 'student@zu.edu.ly',
+  email: 'student@test.ly',
   firstName: 'سالم',
   lastName: 'الزوي',
   role: 'STUDENT',

@@ -17,7 +17,7 @@
 | الفئة | العدد | النماذج |
 |---|---|---|
 | `PLATFORM_GLOBAL` | 8 | AuditLog, PlatformSetting, FeatureFlag, AiTelemetry, OperationalAlert, LoginEvent, BinaryObject, RolePermission |
-| `INSTITUTION_SCOPED` | 22 | Faculty, Department, Course, CourseOffering, ScheduleSlot, Material, Assignment, AttendanceSession, Lecture, LectureChapter, LectureCheckpoint, KnowledgeConcept, ResearchPaper, PaperAnnotation, QuestionCategory, Question, ExamTemplate, ExamTemplateQuestion, Announcement, UniversityFact, SyncRun, LiveSession |
+| `INSTITUTION_SCOPED` | 22 | Faculty, Department, Course, CourseOffering, ScheduleSlot, Material, Assignment, AttendanceSession, Lecture, LectureChapter, LectureCheckpoint, KnowledgeConcept, ResearchPaper, PaperAnnotation, QuestionCategory, Question, ExamTemplate, ExamTemplateQuestion, Announcement, LiveSession (والنموذجان المُحالان لاحقًا في R349 U2 كانا حينها ضمنها) |
 | `MEMBERSHIP_SCOPED` | 22 | StudentProfile, TeacherProfile, Enrollment, Submission, Grade, AttendanceRecord, CheckpointAnswer, WatchEvent, StudentMastery, TrainingEnrollment, LessonProgress, ExamAttempt, ExamAnswer, UserAchievement, UserSkill, UserBadge, MoocEnrollment, JobApplication, Loan, LabSession, CompetitionEntry, EventRSVP |
 | `USER_GLOBAL` | 6 | User, Notification, Message, AiMessage, Certificate, PointsLedger |
 | `SHARED_CATALOG` | 10 | Book, MoocCourse, Job, VirtualLab, ArExperience, TrainingTrack, TrainingLesson, Badge, Achievement, Skill |
@@ -53,8 +53,8 @@
 | `CourseOffering` | `@@unique([courseId, term, teacherId])` | عبر السلسلة | لا تغيير مباشر |
 | `ScheduleSlot`, `Material`, `Assignment`, `AttendanceSession`, `Lecture`, `LectureChapter`, `LectureCheckpoint`, `KnowledgeConcept`, `ResearchPaper`, `PaperAnnotation`, `QuestionCategory` (بها `isShared` عابر كليات), `Question`, `ExamTemplate`, `ExamTemplateQuestion`, `LiveSession` | عبر السلسلة/فهارس أب | عزل ضمني عبر السلسلة — لا تُنسخ قيود النطاق إلى استعلامات مباشرة | `institutionId` مشتق (يُخزَّن أو يُستنتج عبر join) لضمان تصفية موحّدة وسرعة تصدير/حذف |
 | `Announcement` | enum scope فيه `PLATFORM` أصلًا | تصميم جيد مسبقًا | نطاقات مؤسّسة ضمن enum الحالي |
-| `UniversityFact` | `key @id` **عالمي** | **مفاتيح جامعة واحدة فقط** (مصدر `zu.edu.ly` ثابت في `static-source.ts`) | `institutionId` FK؛ المفتاح → `(institutionId, key)`؛ مصدر sync لكل مؤسّسة |
-| `SyncRun` | بلا نطاق | مزامنة مؤسّسة واحدة | `institutionId` + مصدر لكل مؤسّسة |
+| ~~نموذج الحقائق الجامعية~~ | — | **أُحيل في R349 U2** (لا حقائق جامعية بعد الآن) | — |
+| ~~`SyncRun`~~ | — | **أُحيل في R349 U2** | — |
 
 **حساسية البيانات:** هذه الجداول تحمل المحتوى الأكاديمي والملفات
 (عبر `Material.url`/`ResearchPaper.fileUrl`) — عزلها هو جوهر الثقة
@@ -93,7 +93,7 @@
 |---|---|
 | `Book` | كتالوج مكتبة منصّة مشترك (البذرة الحالية عالمية) — قرار مفتوح: نسخ مؤسسية؟ الافتراض: مشترك |
 | `MoocCourse` | كتالوج خارجي مشترك — عالمي صحيحًا |
-| `Job` | لوحة فرص: مشتركة منصّة أم لكل مؤسّسة؟ **قرار مفتوح** (البذرة تقول «لطلاب جامعة الزاوية» — نص واجهة مستهدف بالتعديل في المرحلة اللاحقة) |
+| `Job` | لوحة فرص: مشتركة منصّة أم لكل مؤسّسة؟ **قرار مفتوح** (نص البذرة القديم كان يستهدف جامعةً بعينها — عُدِّل لاحقًا) |
 | `VirtualLab`, `ArExperience` | كتالوجات منصّة مشتركة |
 | `TrainingTrack`, `TrainingLesson` | محتوى تطوير ذاتي عربي من المنصّة — مشترك |
 | `Badge`, `Achievement`, `Skill` | كتالوجات إنجاز منصّة — مشتركة |
@@ -115,7 +115,6 @@
 | `User.email @unique` | **يبقى عالميًا** (هوية واحدة متعددة العضويات — قرار منتج) |
 | `StudentProfile.universityId @unique` | يصبح `(institutionId, universityId)` — رقم القيد فريد **داخل** مؤسّسته |
 | `Course.code @unique` | يصبح `(institutionId, code)` |
-| `UniversityFact.key @id` | يصبح `(institutionId, key)` |
 | `Faculty.@@unique([name, city])` | يصبح `(institutionId, name, city)` |
 | `Achievement.code`, `Skill.name`, `TrainingTrack.slug`, `Badge.slug`, `QuestionCategory.slug`, `PlatformSetting.key`, `FeatureFlag.slug` | تبقى **عالمية عمدًا** (كتالوجات/إعدادات منصّة) |
 | `User.email` + تسجيل الدخول برقم القيد (`loginUser`) | مسار الرقم الجامعي سيحتاج تفكيك «رقم → عضوية → مستخدم» بدل بحث عالمي مباشر |
@@ -136,9 +135,9 @@
 
 > **تحديث r179 (منفَّذ)**: الجولة الخامسة أضافت أعمدة `institutionId`
 > صريحة للمحتوى الذي لا سلسلة أب له: `Post` و`StudyRoom` و
-> `CampusEvent` و`Competition` و`ResearchPaper` و`AiConversation` و
-> `UniversityFact` (مفتاح مركّب institutionId+key) و`SyncRun` — بترحيل
-> واحد بتعبئة بيانات العرض القائمة لمؤسسة الزاوية. `Material` بقيت
+> `CampusEvent` و`Competition` و`ResearchPaper` و`AiConversation` — بترحيل
+> واحد بتعبئة بيانات العرض القائمة للمؤسسة التجريبية. (نموذجا الحقائق
+> وسجل المزامنة أُحيلا لاحقًا في R349 U2.) `Material` بقيت
 > على سلسلة العرض (offering→course→department→faculty→institution) بلا
 > عمود مكرر، و`Message` بلا عمود (الحدود عند الإرسال: عضوية مشتركة
 > مطلوبة)، وكتالوج التدريب مشترك عمدًا.

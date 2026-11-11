@@ -61,7 +61,7 @@ import {
 const makeUser = (overrides: Partial<User> = {}): User =>
   ({
     id: 'user-1',
-    email: 'user@zu.edu.ly',
+    email: 'user@test.ly',
     passwordHash: 'real-hash',
     role: 'STUDENT',
     firstName: 'أحمد',
@@ -144,7 +144,7 @@ describe('lockDurationFor — R320 demo-account backoff', () => {
   });
 
   it('keeps the FULL policy for real accounts (the branch never widens)', () => {
-    expect(lockDurationFor('ahmed@zu.edu.ly')).toBe(LOCK_DURATION_MS);
+    expect(lockDurationFor('ahmed@gmail.com')).toBe(LOCK_DURATION_MS);
     expect(lockDurationFor('test.ly@example.com')).toBe(LOCK_DURATION_MS); // domain as local part — not a demo
     expect(lockDurationFor('student@test.ly.evil.com')).toBe(LOCK_DURATION_MS); // demo-like infix, not a suffix
     expect(lockDurationFor('student@testly')).toBe(LOCK_DURATION_MS); // missing the dot
@@ -374,20 +374,20 @@ describe('password policy', () => {
 // ─────────────────────────────────────────────────────────────────────
 describe('auth DTO sanitizer trims', () => {
   it('loginSchema trims the identifier (email or reg-number)', () => {
-    const parsed = loginSchema.parse({ email: '  user@zu.edu.ly \n', password: 'pw' });
-    expect(parsed.email).toBe('user@zu.edu.ly');
+    const parsed = loginSchema.parse({ email: '  user@test.ly \n', password: 'pw' });
+    expect(parsed.email).toBe('user@test.ly');
   });
 
   it('registerSchema trims + lowercases the email and trims names', () => {
     const parsed = registerSchema.parse({
-      email: '  New.Student@ZU.edu.ly ',
+      email: '  New.Student@TEST.ly ',
       password: 'Salam-Zawiya-2026',
       firstName: '  أحمد ',
       lastName: 'المستخدم  ',
       role: 'STUDENT',
       institutionId: 'inst-madarek-demo',
     });
-    expect(parsed.email).toBe('new.student@zu.edu.ly');
+    expect(parsed.email).toBe('new.student@test.ly');
     expect(parsed.firstName).toBe('أحمد');
     expect(parsed.lastName).toBe('المستخدم');
   });

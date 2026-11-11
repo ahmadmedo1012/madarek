@@ -10,7 +10,7 @@ This is the first sub-project of a multi-spec initiative. Sub-projects B (colleg
 
 ## 1. Problem
 
-The current role model has five flat values — `STUDENT | TEACHER | ADMIN | QUALITY | OWNER` — that don't reflect Zawia University's actual hierarchy:
+The current role model has five flat values — `STUDENT | TEACHER | ADMIN | QUALITY | OWNER` — that don't reflect the then-tenant institution's actual hierarchy:
 
 - A real **Dean** or **Department Head** is a sitting professor with a leadership appointment, not a separate user type.
 - "Admin" today is a single role with no notion of *scope* (university-wide vs college-scoped).
@@ -34,7 +34,7 @@ Non-goals: dean/dept-head specific dashboards, scope-aware permission enforcemen
 | # | Decision | Why |
 |---|---|---|
 | D1 | `Role` enum stays at 5 values | Leadership = layered appointment, per the user's choice |
-| D2 | New `AcademicPosition` enum: `DEAN`, `ASSOCIATE_DEAN`, `DEPARTMENT_HEAD` | Three positions cover Zawia's structure |
+| D2 | New `AcademicPosition` enum: `DEAN`, `ASSOCIATE_DEAN`, `DEPARTMENT_HEAD` | Three positions cover the then-tenant's structure |
 | D3 | `TeacherProfile` gets `position`, `positionFacultyId`, `positionDepartmentId`, `appointedAt`, `termEndsAt` | Nullable; optional appointment metadata |
 | D4 | `User` gets `scopeFacultyId` (nullable, FK to `Faculty`) | NULL = university-wide; set = scoped to that college (applies to ADMIN/QUALITY) |
 | D5 | Self-serve registration: STUDENT, TEACHER (without position) | Reality: deans/admins are appointed, not self-registered |

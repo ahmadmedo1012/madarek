@@ -3383,7 +3383,7 @@ a.pf-row-link {
    UNLAYERED, so this tail stays unlayered (unlayered beats every
    @layer rule regardless of import position — cascade-neutral), class
    names unchanged (the r306 .lv-list/.lv-row hairline pins re-key to
-   this file; master/D3 retired the showcase families — mf/um/vc/vd/inkm
+   this file; master/D3 retired the curated families — mf/um/vc/vd/inkm
    are deleted, patterns.css stays in the decor sweep list), tokens
    only, no !important.
 

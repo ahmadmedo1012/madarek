@@ -90,7 +90,7 @@ describe('R321 §A6 — decorative marks never carry DOM text (the innerText lea
       'landing/strata.css',
       /* R341/D9: campus.css is DELETED (its .inkm-sketch-mark family
        * moved to patterns.css §10, then retired entirely with the
-       * university showcase at master/D3). */
+       * curated university section at master/D3). */
       'shell/sheet-frame.css',
     ]
       .map((f) => readFileSync(path.join(SRC, 'styles', f), 'utf8'))

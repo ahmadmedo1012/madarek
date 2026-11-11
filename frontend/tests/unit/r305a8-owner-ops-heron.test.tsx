@@ -140,12 +140,12 @@ const REALTIME = {
  *  and one SUSPENDED row (the restorative direction). */
 const USERS_ROWS = [
   {
-    id: 'u1', email: 'amina@zu.edu.ly', firstName: 'أمينة', lastName: 'المشرفة',
+    id: 'u1', email: 'amina@test.ly', firstName: 'أمينة', lastName: 'المشرفة',
     role: 'ADMIN', avatarColor: null, avatarInitials: null,
     isActive: true, createdAt: '2026-01-05T00:00:00.000Z', memberships: [],
   },
   {
-    id: 'u2', email: 'salem@zu.edu.ly', firstName: 'سالم', lastName: 'الفيتوري',
+    id: 'u2', email: 'salem@test.ly', firstName: 'سالم', lastName: 'الفيتوري',
     role: 'TEACHER', avatarColor: null, avatarInitials: null,
     isActive: false, createdAt: '2026-01-06T00:00:00.000Z', memberships: [],
   },

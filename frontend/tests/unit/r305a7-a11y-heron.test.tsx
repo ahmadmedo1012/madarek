@@ -132,11 +132,11 @@ function taskFor(doc: unknown) {
 /* ── fixtures ─────────────────────────────────────────────────────── */
 
 const TEACHER: AuthUser = {
-  id: 't1', role: 'TEACHER', email: 't@zu.edu.ly',
+  id: 't1', role: 'TEACHER', email: 't@test.ly',
   firstName: 'سالم', lastName: 'الطاهر',
 };
 const STUDENT: AuthUser = {
-  id: 's1', role: 'STUDENT', email: 's@zu.edu.ly',
+  id: 's1', role: 'STUDENT', email: 's@test.ly',
   firstName: 'آمنة', lastName: 'العبيدي',
 };
 

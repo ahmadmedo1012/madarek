@@ -1727,11 +1727,11 @@ export function DownloadsPage() {
 
 /* ─── University Info ──────────────────────────────────── */
 
-/* r183-B3 (A6 P2): the slug of the reference showcase institution —
+/* r183-B3 (A6 P2): the slug of the reference demo institution —
  * the same contract as the backend's DEMO_INSTITUTION_SLUG
  * (http/routes/colleges.routes.ts) and the seed row (prisma/seed.ts,
  * slug `madarek-demo` — r188 fictional demo tenant). Only this institution renders the curated
- * ZU showcase facts; every other institution gets its own identity
+ * curated facts; every institution gets its own identity
  * and only the facts the platform actually holds for it. */
 
 export function UniversityInfoPage() {
@@ -1749,7 +1749,7 @@ export function UniversityInfoPage() {
     ? `موزَّعة على ${countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`
     : undefined;
 
-  /* R349 U3 — ONE page for every institution (the curated showcase
+  /* R349 U3 — ONE page for every institution (the curated tenant
    * branch is retired with the university facts pipeline): the
    * caller's OWN institution — name/slug facts + the faculties scoped
    * to it. No reference facts about any real university, no curated
@@ -1776,7 +1776,7 @@ export function UniversityInfoPage() {
   /* ── The institution's OWN page (r183-B3): name/slug facts + the
    * faculties scoped to it. The ZU-specific facts (founding year,
    * campus split, demo profile, strategic plan,
-   * contact block) are showcase-curated content and are dropped —
+   * contact block) are tenant-curated content and are dropped —
    * never re-attributed to another institution. */
   const inst: InstitutionSummary = institution;
   return (
@@ -1836,7 +1836,7 @@ export function UniversityInfoPage() {
 
       {facs.isError ? (
         /* One honest error surface for the shared query (the
-         * showcase branch's own convention). */
+         * legacy branch's own convention). */
         <Card title="الكليّات" icon={Building2}>
           <ErrorState
             message="تعذَّر تحميل قائمة الكليّات"

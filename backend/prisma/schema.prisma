@@ -836,7 +836,7 @@ model ImportMappingProfile {
 model Faculty {
   id                 String             @id @default(cuid())
   // The same faculty name can exist in multiple cities (e.g. "كلية الاقتصاد"
-  // in Zawia AND Ajilat are distinct campuses). Since r178 the institution
+  // in two cities are distinct campuses). Since r178 the institution
   // carries the scoping — uniqueness is on (institutionId, name, city).
   name               String
   nameEn             String?
@@ -2107,9 +2107,9 @@ model EventRSVP {
 }
 
 // ════════════════════════════════════════════════════════════════
-//  RETIRED (R349 U2/U3): the university-facts pipeline — UniversityFact,
-//  SyncRun, lib/zu-sync, /admin/sync, /university/facts — deleted with
-//  the showcase tenant («المشروع لا ينتمي لأي جامعة»). The
+//  RETIRED (R349 U2/U3): the university-facts pipeline (the facts model,
+//  its run ledger, the sync library, and both routes) — deleted with
+//  the legacy demo tenant («المشروع لا ينتمي لأي جامعة»). The
 //  my-institution page reads the caller's own Institution + Faculty
 //  + contact profiles.
 // ────────────────────────────────────────────────────────────────

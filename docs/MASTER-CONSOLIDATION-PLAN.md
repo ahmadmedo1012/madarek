@@ -20,7 +20,7 @@ finish web + native · retire R347 debt safely · commit and push continuously.
 
 ## Audit facts driving the plan (from the three M0 inventory agents)
 
-### University showcase (M1)
+### Curated university section (M1)
 - DELETE 13 files; MODIFY ≈90 (19 frontend src, 7 mobile, 5 backend, ~19 scripts, ~25 tests, ~20 docs).
 - Removal ORDER is load-bearing (compile + gates):
   1. extract generic exports from `university-media.ts` → `product-media.ts` (WhyScene/ProductFrame repoint)
@@ -31,10 +31,10 @@ finish web + native · retire R347 debt safely · commit and push continuously.
   6. synthetic identity neutralization («جامعة مدارك التجريبية» → «مؤسسة مدارك التعليمية النموذجية»)
   7. CSP frame-src tighten (after videos gone + r307 CSP pins updated)
   8. scripts/docs last
-- **KEEP**: `inst-zawia-showcase` id + `madarek-demo` slug (FK anchors through applied
-  migrations + zu-sync + tests) — display names only. Generic institution/faculty/
+- **KEEP**: the legacy tenant id + `madarek-demo` slug (FK anchors through applied
+  migrations + tests) — display names only. Generic institution/faculty/
   department/colleges systems, /student/university + map, product captures, r342
-  illustrations, zu-sync pipeline itself: all preserved.
+  illustrations: all preserved. (The facts-sync pipeline was later retired at R349 U2.)
 
 ### Brand (M1)
 - Footer bypass: `MARK_PATHS` (Footer.tsx:100-111, usage 374-390) = orbit construction,

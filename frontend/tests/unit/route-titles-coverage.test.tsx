@@ -301,10 +301,10 @@ vi.mock('../../src/hooks/useInstitutions', () => ({
   useInstitutions: () => ({
     data: [
       {
-        id: 'inst-zawia',
-        name: 'جامعة الزاوية',
-        nameEn: 'University of Zawia',
-        slug: 'zawia-showcase',
+        id: 'inst-madarek-demo',
+        name: 'مؤسسة مدارك النموذجية',
+        nameEn: 'Madarek Model Institution',
+        slug: 'madarek-demo',
       },
     ],
     isLoading: false,

@@ -1,7 +1,7 @@
 # 4-A6 — Teacher Surfaces Audit (Campaign 4 «سيادة المظهر»)
 
 **Scope:** all 20 teacher routes (`frontend/src/pages/teacher/*.tsx` + shared pages mounted under `/teacher/*`).
-**Method:** 21 desktop shoots (1440×900), 6 mobile shoots (390×844@2x), 2 dark shoots, 5 Playwright click-through probes (exam hub tabs → builder modal → question form; template detail hover/focus; grades/students/messages/attendance/research; mobile overflow sweep ×8 routes; touch-target sweep), 8 VLM critique batches (55 images). Login: `teacher@zu.edu.ly`. Evidence prefix `/tmp/madarek-shots/a6-*`.
+**Method:** 21 desktop shoots (1440×900), 6 mobile shoots (390×844@2x), 2 dark shoots, 5 Playwright click-through probes (exam hub tabs → builder modal → question form; template detail hover/focus; grades/students/messages/attendance/research; mobile overflow sweep ×8 routes; touch-target sweep), 8 VLM critique batches (55 images). Login: `teacher@test.ly`. Evidence prefix `/tmp/madarek-shots/a6-*`.
 **Runtime notes:** BE+FE healthy; `teacher@` = pure author (tabs: قوالب اختباراتي / بنك الأسئلة only — «مراجعة الجودة» needs EXAMS_MODERATE, out of this account's reach). No page errors, no console exceptions (only an axe "content not contained by landmarks" warning, owner: A2/A9). No horizontal overflow at 390px on any probed route. ⚠️ First full shoot round was discarded: the auto-start onboarding overlay (`أهلاً بك في مدارك`) covered every page until server-side completion — all shots re-taken clean (see X-1).
 
 ## Scores per surface (VLM × code review)

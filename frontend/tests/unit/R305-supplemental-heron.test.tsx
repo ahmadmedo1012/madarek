@@ -149,7 +149,7 @@ vi.mock('../../src/hooks/useResources', async (importOriginal) => {
 
 const STUDENT: AuthUser = {
   id: 's1',
-  email: 'amna@zu.edu.ly',
+  email: 'amna@test.ly',
   firstName: 'آمنة',
   lastName: 'العبيدي',
   role: 'STUDENT',
@@ -215,7 +215,7 @@ describe('R305 profile — the identity hero is the page’s ONE deep band', () 
     expect(band!.querySelector('.r305p-hero-name')!.textContent).toBe('آمنة العبيدي');
     const mail = band!.querySelector('.r305p-hero-mail bdi.font-mono');
     expect(mail).not.toBeNull();
-    expect(mail!.textContent).toBe('amna@zu.edu.ly');
+    expect(mail!.textContent).toBe('amna@test.ly');
     // The verified state survives on the band (real signal — emailVerifiedAt).
     expect(screen.getByText('موثَّق')).toBeInTheDocument();
 

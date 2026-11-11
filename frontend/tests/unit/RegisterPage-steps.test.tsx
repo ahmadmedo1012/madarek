@@ -65,10 +65,10 @@ vi.mock('../../src/hooks/useInstitutions', () => ({
   useInstitutions: () => ({
     data: [
       {
-        id: 'inst-zawia',
-        name: 'جامعة الزاوية',
-        nameEn: 'University of Zawia',
-        slug: 'zawia-showcase',
+        id: 'inst-madarek-demo',
+        name: 'مؤسسة مدارك النموذجية',
+        nameEn: 'Madarek Model Institution',
+        slug: 'madarek-demo',
       },
     ],
     isLoading: false,
@@ -104,7 +104,7 @@ describe('RegisterPage — step persistence (audit 4-A13 P2-3)', () => {
     fireEvent.change(screen.getByLabelText('الاسم الأول'), { target: { value: 'سالم' } });
     fireEvent.change(screen.getByLabelText('اللقب'), { target: { value: 'الفيتوري' } });
     fireEvent.change(screen.getByLabelText('البريد الإلكتروني'), {
-      target: { value: 'salem@zu.edu.ly' },
+      target: { value: 'salem@test.ly' },
     });
     fireEvent.change(screen.getByLabelText('رقم القيد الجامعي'), {
       target: { value: '2024-CS-1234' },
@@ -121,7 +121,7 @@ describe('RegisterPage — step persistence (audit 4-A13 P2-3)', () => {
     expect((screen.getByLabelText('الاسم الأول') as HTMLInputElement).value).toBe('سالم');
     expect((screen.getByLabelText('اللقب') as HTMLInputElement).value).toBe('الفيتوري');
     expect((screen.getByLabelText('البريد الإلكتروني') as HTMLInputElement).value).toBe(
-      'salem@zu.edu.ly',
+      'salem@test.ly',
     );
     expect((screen.getByLabelText('رقم القيد الجامعي') as HTMLInputElement).value).toBe(
       '2024-CS-1234',

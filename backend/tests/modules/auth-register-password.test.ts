@@ -68,7 +68,7 @@ const postRegister = (body: Record<string, unknown>) =>
   });
 
 const VALID_REGISTER_BODY = {
-  email: 'salem@zu.edu.ly',
+  email: 'salem@test.ly',
   firstName: 'سالم',
   lastName: 'الفيتوري',
   role: 'STUDENT',

@@ -88,7 +88,7 @@ Measured live (5-question exam, scrollH 1804px in a 784px viewport): the sticky 
 *Fix:* `var(--warning-ink)` (text-grade token) for the value; keep `--warning` for the ProgressBar fill (graphic-grade, 3:1 floor).
 
 **P2-6 · Profile: support email `--accent` on surface-2 — 3.52:1 at 11px.**
-`ProfilePage.tsx:307` — `info@zu.edu.ly` in `var(--accent)` on `--surface-2`. 11px mono bdi.
+`ProfilePage.tsx:307` — `info@test.ly` in `var(--accent)` on `--surface-2`. 11px mono bdi.
 *Fix:* `var(--accent-ink)`.
 
 **P2-7 · University page: accreditation chip 3.06:1 at 11px + raw inline styles.**

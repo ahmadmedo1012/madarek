@@ -2,7 +2,7 @@
  * product-media — the generic product-capture registry (master/D1).
  *
  * Extracted verbatim from the retired `university-media.ts` (R307 landing
- * media registry) when the university showcase was removed: everything
+ * media registry) when the curated university section was removed: everything
  * here is product marketing on our OWN seeded demo surfaces — no
  * external institutions. The machine-readable provenance manifest is
  * `frontend/public/media/manifest.json` (rights, sources, verification);
@@ -119,7 +119,7 @@ export const ROLE_SHOWCASES: [
   },
   {
     key: 'ADMIN',
-    /* R320 §B: the role showcase names the role — «المسجل العام». The
+    /* R320 §B: the role strip names the role — «المسجل العام». The
        definite form (no leading ل) is deliberate: LandingPage renders
        the card title as `roleAr.replace(/^ل/, '')`, so a «للمسجل العام»
        entry would strip to the dangling «لمسجل العام»; this entry

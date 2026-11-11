@@ -31,7 +31,7 @@
   و`AuditLog.institutionId?` (NULL = نطاق منصة).
 - **الترحيل** (`20261017020724_multi_institution_foundation`): أنشأ
   المؤسسة والمجموعات ثم **استرجاع البيانات** قبل ضبط NOT NULL: مؤسسة
-  العرض «مؤسسة مدارك النموذجية» بمعرّف ثابت `inst-zawia-showcase` (مرساة FK داخلية تاريخية — r188)؛ ربط كل
+  العرض «مؤسسة مدارك النموذجية» بمعرّف ثابت `inst-madarek-demo` (أُعيد تسميته بترحيل R349 U2)؛ ربط كل
   الكليات القائمة بها؛ عضوية لكل مستخدم له ملف طالب/أستاذ (أو دور
   STUDENT/TEACHER/ADMIN/QUALITY) في مؤسسة العرض؛ إعادة بناء مفاتيح
   ملفات الطالب/الأستاذ بمفاتيح cuid جديدة مع `membershipId`؛ اشتقاق
@@ -68,7 +68,7 @@
 | الاجتماعي | `Post/Comment/Reaction`، `Message`، `Notification`، `Announcement`، `Competition`، `CampusEvent` | مجتمع جامعي وإعلانات بنطاقات |
 | المختبرات/AR | `VirtualLab`، `LabSession`، `ArExperience` | مختبرات افتراضية وتجارب معززة |
 | الذكاء | `AiConversation`، `AiMessage`، `AiTelemetry` | دردشة «Oasis» المحلية |
-| التشغيل | `AuditLog`، `PlatformSetting`، `FeatureFlag`، `OperationalAlert`، `LoginEvent`، `UniversityFact`، `SyncRun`، `LiveSession` | تدقيق، إعدادات، تنبيهات، حقائق جامعية، بث |
+| التشغيل | `AuditLog`، `PlatformSetting`، `FeatureFlag`، `OperationalAlert`، `LoginEvent`، `LiveSession` | تدقيق، إعدادات، تنبيهات، بث |
 
 ## العلاقات والقيود المهمة
 
@@ -116,7 +116,7 @@ P1017/P1001/P1002 العابرة (`backend/src/db.ts`).
 ## البذور (`backend/prisma/seed.ts`)
 
 - idempotent بـupserts: 25 كلية عبر مدن الجامعة (الزاوية/العجيلات/زوارة
-  وأبو عيسى وناصر و«مناطق أخرى» — المصدر الرسمي الراحل zu.edu.ly؛ r188: السجل اصطناعي بالكامل بثلاثة حرَم معرفيّة)،
+  وأبو عيسى وناصر و«مناطق أخرى» — المصدر الرسمي الراحل test.ly؛ r188: السجل اصطناعي بالكامل بثلاثة حرَم معرفيّة)،
   مقررات وشعبة، مواد وواجبات ودرجات، حضور وأحداث مشاهدة، كتب ومووك ووظائف،
   بحوث بحالات مختلفة، 11 مسارًا تدريبيًا، قدرات أدوار، أسئلة وقوالب اختبار.
 - **ثلاثة تحذيرات:**

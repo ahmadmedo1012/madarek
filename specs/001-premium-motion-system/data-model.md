@@ -159,7 +159,7 @@ bespoke styling.
 
 | Field                | Type             | Required | Validation |
 |----------------------|------------------|----------|------------|
-| `slug`               | string           | yes      | Matches one University of Zawia college slug; primary key. |
+| `slug`               | string           | yes      | Matches one the then-tenant university college slug; primary key. |
 | `nameAr`             | string           | yes      | Arabic display name (already exists in colleges data). |
 | `nameEn`             | string           | yes      | English display name. |
 | `accent`             | string (hex)     | yes      | Primary accent. AA contrast checked at build. |
@@ -197,7 +197,7 @@ export type CollegeIdentityProfile = {
 - `heroImage.src` MUST exist on disk at build time (build script verifies).
 - `icon` MUST be a valid `lucide-react` export name (build script verifies).
 - `slug` MUST match an existing college record; orphan profiles fail build.
-- All twelve real University of Zawia colleges MUST have a profile (Principle III).
+- All twelve real the then-tenant university colleges MUST have a profile (Principle III).
 
 ### State Transitions
 

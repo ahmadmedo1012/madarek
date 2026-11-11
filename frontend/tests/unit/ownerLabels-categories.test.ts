@@ -8,7 +8,7 @@
  *
  *   errorHandler  → APP_*   → 'app'   (5xx AppError paths)
  *   errorHandler  → HTTP_500 → 'http' (unhandled errors)
- *   zu-sync reaper → SYNC_* → 'sync'  (stale-run reap warnings)
+ *   the sync reaper → SYNC_* → 'sync'  (stale-run reap warnings)
  *
  * CATEGORY_LABELS in lib/ownerLabels.ts must cover every category a
  * writer can emit, or the badge falls back to a raw Latin run inside

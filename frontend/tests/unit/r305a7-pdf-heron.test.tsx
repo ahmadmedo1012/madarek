@@ -150,7 +150,7 @@ function taskFor(doc: unknown) {
 
 const TEACHER: AuthUser = {
   id: 't1',
-  email: 'salim@zu.edu.ly',
+  email: 'salim@test.ly',
   firstName: 'سالم',
   lastName: 'الطاهر',
   role: 'TEACHER',
@@ -393,7 +393,7 @@ describe('PdfViewer — selection → contextual note (reviewer-gated)', () => {
     getDocumentMock.mockReturnValueOnce(taskFor(makeDoc(['نص للقراءة'])));
     act(() => {
       useAuthStore.setState({
-        user: { id: 's1', email: 's@zu.edu.ly', firstName: 'سالم', lastName: 'الطالب', role: 'STUDENT' },
+        user: { id: 's1', email: 's@test.ly', firstName: 'سالم', lastName: 'الطالب', role: 'STUDENT' },
       });
     });
 

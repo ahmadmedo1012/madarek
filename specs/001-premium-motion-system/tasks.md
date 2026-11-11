@@ -185,8 +185,8 @@ This is a **web application** layout (existing).
 
 ### Implementation for User Story 6
 
-- [X] T063 [US6] Implement the `CollegeIdentityProfile` TypeScript type and the `colleges: CollegeIdentityProfile[]` array in `frontend/src/data/colleges.config.ts` per `contracts/college-identity-profile.md`. Populate entries for every real University of Zawia college (cross-reference the existing colleges data)
-- [X] T064 [P] [US6] Add hero image assets under `frontend/public/colleges/<slug>/hero.{jpg,webp}` for each configured college. Use real University of Zawia imagery only (Principle III)
+- [X] T063 [US6] Implement the `CollegeIdentityProfile` TypeScript type and the `colleges: CollegeIdentityProfile[]` array in `frontend/src/data/colleges.config.ts` per `contracts/college-identity-profile.md`. Populate entries for every real the then-tenant university college (cross-reference the existing colleges data)
+- [X] T064 [P] [US6] Add hero image assets under `frontend/public/colleges/<slug>/hero.{jpg,webp}` for each configured college. Use real the then-tenant university imagery only (Principle III)
 - [X] T065 [P] [US6] Implement `scripts/validate-college-identity.ts` (replacing the T006 skeleton): cross-reference slugs, asset existence, lucide icon validity, AA contrast computation against `--surface`, fail with per-college errors
 - [X] T066 [P] [US6] Wire `validate:colleges` into the CI script chain (extend the script added in T007 with the now-functional validator)
 - [X] T067 [US6] Update `frontend/src/styles/colleges.css` to consume `--college-accent`, `--college-accent-fg`, `--college-accent-soft` custom properties. Remove any hardcoded per-college hex values
@@ -200,7 +200,7 @@ This is a **web application** layout (existing).
 
 ## Phase 9: User Story 7 - Homepage Storytelling (Priority: P2)
 
-**Goal**: Homepage has a clear hero → roles → proof → CTA narrative arc, with the motion system applied throughout. Real University of Zawia stats. Returning-visitor calm.
+**Goal**: Homepage has a clear hero → roles → proof → CTA narrative arc, with the motion system applied throughout. Real the then-tenant university stats. Returning-visitor calm.
 
 **Independent Test**: Open homepage on a fresh session at desktop, tablet, mobile. Top-to-bottom reads as a narrative. Hero CTA unambiguous. Motion calm. Returning visit (same session) does not replay full intro.
 
@@ -208,7 +208,7 @@ This is a **web application** layout (existing).
 
 - [X] T071 [US7] Restructure `frontend/src/pages/LandingPage.tsx` into named narrative sections: `<Hero>`, `<RolesNarrative>`, `<ProofPoints>`, `<CallToAction>`. Keep existing copy where it fits; flag missing copy with `[NEEDS COPY]` comments rather than placeholder text
 - [X] T072 [US7] Wrap each narrative section in `<Reveal>` (and the page in `<RevealGroup>`); apply `distance="large"` to the hero, `distance="medium"` to subsequent sections
-- [X] T073 [US7] Source proof-point statistics from the canonical University of Zawia data layer (Principle III). If a statistic is unavailable, render the "data pending" surface — never a synthetic placeholder
+- [X] T073 [US7] Source proof-point statistics from the canonical the then-tenant university data layer (Principle III). If a statistic is unavailable, render the "data pending" surface — never a synthetic placeholder
 - [X] T074 [P] [US7] Apply `<AnimatedNumber>` to every proof-point statistic on the homepage
 - [X] T075 [P] [US7] Add a session-storage flag `madarek.intro.seen` that, once set on first homepage visit, suppresses the hero's full intro motion on subsequent in-session visits — falls back to a calm fade. Stored, read, written in `frontend/src/pages/LandingPage.tsx`
 - [X] T076 [US7] Verify hero responsiveness at 360 px, 768 px, 1280 px, 4 K. Headline + supporting line + CTA all visible in the first viewport at each size

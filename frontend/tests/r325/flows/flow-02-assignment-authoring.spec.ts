@@ -35,7 +35,7 @@ test('F2 · teacher authors an assignment through the UI and sees it listed', as
     const modal = page.getByRole('dialog', { name: 'إنشاء واجب جديد' });
     await expect(modal).toBeVisible();
     // The offering select is pre-filled with the teacher's first real
-    // offering (the seed pins all 8 zawia offerings to this teacher) —
+    // offering (the seed pins all 8 demo offerings to this teacher) —
     // a real option, never the empty placeholder.
     const offering = modal.getByLabel('المقرّر');
     await expect(offering).toBeVisible();

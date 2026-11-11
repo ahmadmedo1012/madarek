@@ -21,7 +21,7 @@
  *      User, metadata.source='operator-script') so the platform's own
  *      trail records how the account came to exist;
  *   4. optionally (--suspend-demo-owner) suspends the seeded demo
- *      owner (owner@zu.edu.ly) in the SAME transaction —
+ *      owner (owner@test.ly) in the SAME transaction —
  *      isActive=false + tokenVersion bump (kills its live sessions) —
  *      closing the public-credential exposure (the demo password is
  *      published in the public repo; production is a public URL).
@@ -91,7 +91,7 @@ const PASSWORD_MAX = 72;
 
 /** The seeded demo owner (seed.ts) — the public-credential exposure this
  * script can close with --suspend-demo-owner once a real owner exists. */
-const DEMO_OWNER_EMAIL = 'owner@zu.edu.ly';
+const DEMO_OWNER_EMAIL = 'owner@test.ly';
 
 /** Seed palette for avatarColor (seed.ts) — UserAvatar's ink gate reads
  * it live, any of the five is AA-safe with the gated ink. */
@@ -113,7 +113,7 @@ const HELP = [
   '                           env var NAME holding YOUR chosen password (never printed)',
   '                           — بدونها: يولّد السكربت سرًّا عشوائيًّا لمرة واحدة ويطبعه مرة واحدة',
   '                           without it: the script generates a one-time random secret and prints it once',
-  '  --suspend-demo-owner     مع إنشاء الحساب: تعليق حساب المالك التجريبي (owner@zu.edu.ly)',
+  '  --suspend-demo-owner     مع إنشاء الحساب: تعليق حساب المالك التجريبي (owner@test.ly)',
   '                           يُنشأ الحساب الجديد أولًا فلا تنتهي المعاملة بصفر مالكين نشطين',
   '                           also suspend the seeded demo owner (created first — never zero active owners)',
   '  --dry-run                معاينة بلا كتابة / preview without writing',

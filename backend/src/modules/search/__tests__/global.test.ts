@@ -171,7 +171,7 @@ describe('rankHit — exact=0, prefix=1, substring=2, none=∞', () => {
 //  globalSearchScope — THE §10.4 permission matrix
 // ─────────────────────────────────────────────────────────────────
 
-const INST = 'inst_zawia';
+const INST = 'inst_demo';
 const USER = 'user_1';
 
 describe('globalSearchScope — STUDENT discovers NO people', () => {
@@ -337,14 +337,14 @@ describe('globalSearchScope — cross-institution isolation (the law)', () => {
     // never enter the OR.
     for (const role of [Role.STUDENT, Role.TEACHER, Role.ADMIN, Role.QUALITY] as const) {
       const scope = globalSearchScope(role, USER, INST, {
-        facultyIds: ['fac_zawia_1'],
-        departmentIds: ['dep_zawia_1'],
-        offeringIds: ['off_zawia_1'],
+        facultyIds: ['fac_demo_1'],
+        departmentIds: ['dep_demo_1'],
+        offeringIds: ['off_demo_1'],
       });
       const blob = JSON.stringify(scope.announcements);
-      expect(blob, role).toContain('fac_zawia_1');
-      expect(blob, role).toContain('dep_zawia_1');
-      expect(blob, role).toContain('off_zawia_1');
+      expect(blob, role).toContain('fac_demo_1');
+      expect(blob, role).toContain('dep_demo_1');
+      expect(blob, role).toContain('off_demo_1');
       expect(blob, role).not.toContain('inst_tripoli');
     }
   });

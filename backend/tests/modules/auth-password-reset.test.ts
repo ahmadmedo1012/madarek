@@ -361,9 +361,9 @@ describe('POST /auth/forgot-password (route envelope)', () => {
   });
 
   it('known REAL-domain account → generic 200, NO devInbox (the link can never leak for a real user)', async () => {
-    userFindUnique.mockResolvedValue(makeUser('user-2', 'real@zu.edu.ly'));
+    userFindUnique.mockResolvedValue(makeUser('user-2', 'real@gmail.com'));
 
-    const res = await post('/auth/forgot-password', { email: 'real@zu.edu.ly' });
+    const res = await post('/auth/forgot-password', { email: 'real@gmail.com' });
     expect(res.status).toBe(200);
     const body = (await res.json()) as { data: { message: string; devInbox?: unknown } };
     expect(body.data.message).toBe('إذا كان البريد مسجلًا فستصلك رسالة خلال دقائق');

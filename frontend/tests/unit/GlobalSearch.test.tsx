@@ -231,7 +231,7 @@ describe('GlobalSearch — quick-action fallback + Escape reset (5-B5, A4 P2-3/P
     const { useAuthStore } = await import('../../src/stores/auth.store');
     useAuthStore.setState({
       user: {
-        id: 'u1', email: 's@zu.edu.ly', firstName: 'سالم', lastName: 'الزوي',
+        id: 'u1', email: 's@test.ly', firstName: 'سالم', lastName: 'الزوي',
         role: 'STUDENT' as const,
       },
     });
@@ -262,7 +262,7 @@ describe('GlobalSearch — quick-action fallback + Escape reset (5-B5, A4 P2-3/P
     const { useAuthStore } = await import('../../src/stores/auth.store');
     useAuthStore.setState({
       user: {
-        id: 'u1', email: 's@zu.edu.ly', firstName: 'سالم', lastName: 'الزوي',
+        id: 'u1', email: 's@test.ly', firstName: 'سالم', lastName: 'الزوي',
         role: 'STUDENT' as const,
       },
     });

@@ -1,7 +1,7 @@
 /**
  * /student/university — عن المؤسّسة (R349 U3): the caller's OWN
- * institution page. The retired showcase-facts feed (GET
- * /university/facts + UniversityFact) is deleted with the university
+ * institution page. The retired facts feed (GET
+ * /university/facts + the facts model) is deleted with the university
  * purge — the project belongs to no university and no reference facts
  * are curated for any institution.
  *

@@ -82,7 +82,7 @@ hex value directly. Example:
 
 1. **Slug match**: Every entry's `slug` MUST match an existing college
    record in the canonical colleges data. Orphan profiles fail build.
-2. **Coverage**: Every real University of Zawia college MUST have a
+2. **Coverage**: Every real the then-tenant university college MUST have a
    profile. Missing profiles fail build (Principle III: real data only).
 3. **AA contrast**: A build-time script validates `accent` against the
    platform background (`--surface`) and against `--college-accent-soft`.

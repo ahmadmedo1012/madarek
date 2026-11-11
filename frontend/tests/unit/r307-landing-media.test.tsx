@@ -8,7 +8,7 @@
  *   · the GENERIC media that remains (product captures + r342
  *     illustrations) still agrees with the manifest and the bytes on
  *     disk — every derivative the srcset promises actually ships;
- *   · the university showcase CANNOT come back: no manifest registers,
+ *   · the curated university section CANNOT come back: no manifest registers,
  *     no card geometry sources, no mobile twins, no embed surfaces, no
  *     YouTube CSP holes, no /campus route, and the landing statement
  *     crawl is OUR OWN capability register — never external
@@ -75,8 +75,8 @@ describe('r307 — the generic media registry agrees with the manifest and the b
   });
 });
 
-describe('r307/master — the university showcase is retired and cannot return', () => {
-  it('the manifest carries no showcase registers (no videos[], no cards[], no photos[])', () => {
+describe('r307/master — the curated university section is retired and cannot return', () => {
+  it('the manifest carries no curated registers (no videos[], no cards[], no photos[])', () => {
     const m = JSON.parse(read('public/media/manifest.json'));
     expect(m.videos, 'the videos[] register is deleted').toBeUndefined();
     expect(m.cards, 'the cards[] register is deleted').toBeUndefined();
@@ -116,12 +116,21 @@ describe('r307/master — the university showcase is retired and cannot return',
   it('the statement crawl is OUR OWN capability register — no external institutions', () => {
     const statementTsx = read('src/components/landing/sections/Statement.tsx');
     expect(statementTsx, 'the capability register is the crawl source').toContain('CAPABILITY_REGISTER');
-    for (const banned of ['جامعة بنغازي', 'جامعة طرابلس', 'جامعة عمر المختار', 'جامعة مصراتة', 'جامعة سبها', 'قاريونس']) {
+    /* R349 U4 — the banned names are READ from the shared single source
+     * (scripts/qa/identity-banned.json — the same list identity-guard.mjs
+     * enforces): this file spells none of them. */
+    const BANNED = JSON.parse(
+      readFileSync(
+        path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../scripts/qa/identity-banned.json'),
+        'utf8',
+      ),
+    ) as { universities: string[]; fragments: string[] };
+    for (const banned of [...BANNED.universities, ...BANNED.fragments]) {
       expect(statementTsx, `${banned} must not appear in the statement`).not.toContain(banned);
     }
   });
 
-  it('the retired showcase CSS families stay deleted', () => {
+  it('the retired curated CSS families stay deleted', () => {
     const patternsCss = read('src/styles/patterns.css');
     for (const fam of ['.mf-', '.um-', '.vc-', '.vd-', '.inkm-']) {
       expect(patternsCss, `${fam} family is retired`).not.toContain(fam);
@@ -158,7 +167,7 @@ describe('r307 — the media changes added ZERO new funnel links', () => {
   });
 
   it('the new sections route to anchors and app routes only', () => {
-    /* master/D3: the /campus sub-page is retired with the showcase —
+    /* master/D3: the /campus sub-page is retired with the curated section —
      * the landing keeps #product + #cta anchors. */
     for (const id of ['product', 'cta']) {
       expect(liveTsx).toContain(`id="${id}"`);

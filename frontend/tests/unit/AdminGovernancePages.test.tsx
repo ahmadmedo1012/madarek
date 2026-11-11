@@ -54,7 +54,7 @@ const postMock = api.post as unknown as Mock;
 
 const teacherRow = (id: string, firstName: string): AdminUserRow => ({
   id,
-  email: `${id}@zu.edu.ly`,
+  email: `${id}@test.ly`,
   firstName,
   lastName: 'الفيتوري',
   role: 'TEACHER',
@@ -82,7 +82,7 @@ const suggestion = (over: {
   teacher: {
     id: 't1',
     name: 'سالم الفيتوري',
-    email: 't1@zu.edu.ly',
+    email: 't1@test.ly',
     specialty: 'شبكات',
     rank: 'PROFESSOR',
     degreeLevel: 'PHD' as const,
@@ -452,7 +452,7 @@ describe('ScopeAssignmentCard — invalidation refetch must not clobber drafts (
     const permissions = (scopeFacultyId: string | null, scopeFacultyName: string | null) => ({
       user: {
         id: 'u1',
-        email: 'amina@zu.edu.ly',
+        email: 'amina@test.ly',
         role: 'ADMIN',
         firstName: 'أمينة',
         lastName: 'المشرفة',

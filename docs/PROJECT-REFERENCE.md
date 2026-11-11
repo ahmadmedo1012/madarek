@@ -1,7 +1,7 @@
 # Madarek Platform — Project Reference
 
 > مدارك — منصّة تعليم ذكي مستقلّة عربية-أولًا (Madarek — an independent Arabic-first smart-learning platform)
-> Arabic-first, built in Libya — University of Zawia records shown in the platform are showcase/reference data, not affiliation or endorsement
+> Arabic-first, built in Libya — the demo tenant records shown in the platform are fictional demo/reference data, not affiliation or endorsement
 
 ## Quick Facts
 
@@ -44,7 +44,7 @@ madarek/
 │   │   ├── http/routes/        # 25 route modules
 │   │   ├── http/middleware/    # auth, requireRole, requireCapability, rateLimit, errorHandler
 │   │   ├── lib/                # jwt, password, errors, governance, grading, permissions,
-│   │   │                       # pagination, pdf, compression, operational-alerts, zu-sync/
+│   │   │                       # pagination, pdf, compression, operational-alerts
 │   │   ├── modules/            # auth service, search, theme, onboarding, milestones
 │   │   └── ...                 # index.ts, app.ts, env.ts, db.ts, logger.ts, scheduler.ts
 │   ├── prisma/

@@ -24,7 +24,7 @@ condensed overview.
 | `http/validate.ts` | Generic Zod validation middleware factory |
 | `http/middleware/*` | `auth`, `requireRole`, `requireCapability`, `rateLimit`, `errorHandler` |
 | `http/routes/*` | 25 route modules (incl. `submissions.routes.ts` + `curriculum.routes.ts`) |
-| `lib/*` | `jwt`, `password`, `errors`, `pagination`, `pdf`, `permissions`, `governance`, `grading`, `risk`, `dates`, `compression`, `storage` (upload drivers: local fs / S3-compatible SigV4), `operational-alerts`, `zu-sync/` |
+| `lib/*` | `jwt`, `password`, `errors`, `pagination`, `pdf`, `permissions`, `governance`, `grading`, `risk`, `dates`, `compression`, `storage` (upload drivers: local fs / S3-compatible SigV4), `operational-alerts` |
 | `modules/auth/*` | `auth.service.ts`, `auth.dto.ts`, `password-policy`, `lockout`, `rotation` |
 | `modules/search/*` | Arabic-aware search normalization (`normalize.ts`) backing `/search/global` |
 | `modules/theme/*` | `router.ts` — `GET/PUT /me/theme` (handler inline; the separate service module was folded in wave 16) |
@@ -316,8 +316,8 @@ condensed overview.
   Africa/Tripoli civil days via `tripoliDayKey()`/`tripoliDayDow()` (Libya is
   UTC+2 with no DST since 2013 — always use the tz name, never a hardcoded
   offset, so a DST return widens nothing silently).
-- **University sync** (`lib/zu-sync/`): pulls institutional facts from a static
-  source into `UniversityFact`.
+- **University facts sync**: RETIRED at R349 U2 (the platform belongs to no
+  university — the pipeline, its model, and its routes are deleted).
 - **PDF** (`lib/pdf.ts`): `extractPaperText()` via `pdf-parse` for library
   full-text search; best-effort, never throws; reads bytes through the
   storage abstraction (same `backend/storage/papers/` layout locally).
@@ -354,7 +354,7 @@ condensed overview.
 | Student assistant (SSE streaming + JSON fallback, quota card, thumbs, conversations sidebar) | `/student/ai` → `POST /ai/chat` | STUDENT | live — mastery‑aware composer locally; real LLM when `AI_PROVIDER=openai` |
 | Teacher assistant (same page, generic persona + the caller's teaching context lines) | `/teacher/ai` → `POST /ai/chat` | TEACHER | live |
 | Owner AI metrics (telemetry aggregates: success rate, latency, models) | `/owner/ai` → `GET /owner/ai-metrics` | OWNER | live — now carries 71 real telemetry rows from the r327 eval run |
-| Knowledge (re)index (the grounding source of truth) | `POST /ai/knowledge/reindex` | ADMIN/OWNER | live — 25 checkpoint chunks indexed from the showcase institution on 2026‑10‑31 |
+| Knowledge (re)index (the grounding source of truth) | `POST /ai/knowledge/reindex` | ADMIN/OWNER | live — 25 checkpoint chunks indexed from the demo institution on 2026‑10‑31 |
 | Lecture transcript ingest (SRT/VTT paste → stored as VTT → player `<track>` + knowledge index read the same bytes) | `PUT /lectures/:id/transcript` | TEACHER/ADMIN/OWNER | live |
 | Lecture transcript generation (STT, OpenAI‑compatible `/audio/transcriptions`) | `POST /lectures/:id/transcript/generate` | TEACHER/ADMIN/OWNER | refuses honestly (409, Arabic) while `STT_*` is unset — the local stack has no STT key; the manual ingest path is the fallback |
 | Registrar / quality / dean consoles | — | — | **no AI surface by design** — `/ai/chat` serves every authenticated role, but the UI exposes it only where it has student‑facing value |
@@ -556,7 +556,7 @@ The registrar's bulk story is therefore: mint one code per cohort with
 `maxUses = N`, share it, and every registration lands enrolled + counted.
 `DELETE /users/demo-cohort` (ADMIN/OWNER) is the counterpart bulk
 **removal** — the one‑transaction sweep of the `@demo.madarek.ly`
-pilot sample (30 seeded users on the showcase institution).
+pilot sample (30 seeded users on the demo institution).
 
 ### 11.2 What was proven live (seeded DB, real API)
 
@@ -579,8 +579,6 @@ the seed's own 30 demo users untouched — recorded in the evidence log).
   feature. (The invite‑code design was the deliberate r323 decision:
   self‑serve, no password handling by staff, no CSV parsing attack
   surface.)
-- `POST /admin/sync/trigger` (ADMIN with institution context / OWNER)
-  re‑syncs an institution's **UniversityFact** rows from its configured
-  source — institutional statistics, not user import. It ran on this
-  stack only as the scheduler's boot tick (`initial: SUCCESS,
-  factsAdded: 0`); no user rows are touched.
+- The facts-sync trigger route is RETIRED at R349 U2 (with the model and
+  the pipeline). Institutional statistics are no longer synced — the
+  my-institution page reads the institution's own catalogue.

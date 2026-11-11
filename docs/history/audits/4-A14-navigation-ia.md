@@ -37,7 +37,7 @@
 | `/teacher/alerts` | `منصة الزاوية · مدارك` | unmapped (Topbar bell «عرض الكلّ» target) |
 | `/admin/alerts` | `منصة الزاوية · مدارك` | unmapped (Topbar bell target) |
 | `/student/ar` | `منصة الزاوية · مدارك` | unmapped + orphan route |
-| `/` `/auth` `/auth/register` `/404` + all guest `/colleges*` | static `مدارك · منصة التعليم الذكي · جامعة الزاوية` | No title logic outside AppShell (A13 P3 cross-ref) |
+| `/` `/auth` `/auth/register` `/404` + all guest `/colleges*` | static `مدارك · منصة التعليم الذكي` + the then-tenant suffix (since removed) | No title logic outside AppShell (A13 P3 cross-ref) |
 | (fallback itself) | `منصة الزاوية · مدارك` | **Wrong brand** — the platform is «مدارك», the fallback names the university platform (AppShell.tsx:125) |
 
 ---

@@ -34,7 +34,7 @@ exactly what Madrak is, who it's for, and what to do next. The hero is
 unmistakable on a 360 px phone and on a 27" monitor. Sections breathe.
 Motion is calm but unmistakably present. Type rhythm reads like a
 considered editorial layout — not a marketing template. Numbers from the
-University of Zawia ground the page in real institutional weight. The
+the then-tenant university ground the page in real institutional weight. The
 primary call-to-action is one of the boldest elements on the page.
 
 **Why this priority**: The homepage is the single highest-leverage surface
@@ -59,7 +59,7 @@ RTL. Check first-paint motion is calm, not theatrical.
    tiles.
 4. **Given** the visitor reaches a proof-point statistic, **When** the
    number enters view, **Then** it animates from zero to the real
-   University of Zawia value using `AnimatedNumber`.
+   the then-tenant university value using `AnimatedNumber`.
 5. **Given** the visitor uses a phone, **When** they read the page,
    **Then** every line wraps cleanly with no overflow, no clipping, and
    touch targets are ≥ 44×44 CSS px.
@@ -171,7 +171,7 @@ navigation is reachable with one thumb. Sidebar opens as a calm drawer,
 not a jolt. Tables collapse to readable card lists. Charts adapt to the
 viewport, not horizontal scroll. Touch targets are ≥ 44×44.
 
-**Why this priority**: A meaningful share of University of Zawia
+**Why this priority**: A meaningful share of the then-tenant university
 students will use Madrak primarily on mid-range phones. "Looks fine on
 desktop" is not enough.
 
@@ -310,7 +310,7 @@ and validates the system reads as one product across them.
   supported breakpoint, in both LTR and RTL.
 - **FR-004**: System MUST render proof-point statistics using
   `AnimatedNumber` (from `001-*`) sourced from authoritative University
-  of Zawia data — no synthetic placeholders.
+  of the then-tenant data — no synthetic placeholders.
 - **FR-005**: System MUST suppress the full intro motion on returning
   in-session visits (carries `001-*` SC-010).
 - **FR-006**: System MUST tighten section rhythm so every primary
@@ -513,7 +513,7 @@ and validates the system reads as one product across them.
 - The motion system, interaction tokens, and primitives shipped in
   `001-premium-motion-system` are stable and the foundation for this
   uplift; this spec does not redesign them.
-- The University of Zawia data layer carries the institutional
+- The the then-tenant university data layer carries the institutional
   numbers and college metadata used by the homepage and college pages
   (Principle III).
 - The reference mid-tier mobile device for performance verification is

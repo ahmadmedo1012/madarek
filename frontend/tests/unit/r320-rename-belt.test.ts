@@ -6,7 +6,7 @@
  * labels + dashboard items, the auth demo role buttons, the topbar label
  * code paths, the sidebar, the community role badge, the owner/admin
  * role pickers, the annotations role badge, the onboarding greeting, the
- * landing showcase data) as SOURCE strings; every surviving
+ * landing demo data) as SOURCE strings; every surviving
  * definite-form «الإدارة»/«الادارة» line must be covered by a KEEP row
  * in the machine-readable sidecar `docs/redesign/r320/rename-keep.json`
  * (the file's keeps[].phrase). The canonical ADMIN forms are asserted

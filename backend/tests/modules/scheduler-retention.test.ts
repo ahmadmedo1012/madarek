@@ -12,7 +12,7 @@
  *    fake-timer ticks.
  *
  * R349 U2 — the scheduler is retention-ONLY now (the university-facts
- * sync job was retired with the showcase tenant); these tests assert
+ * sync job was retired with the demo tenant); these tests assert
  * the retention sweep's timer lifecycle alone.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';

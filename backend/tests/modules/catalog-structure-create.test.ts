@@ -68,7 +68,7 @@ const CREATED_FACULTY = {
   iconEmoji: '🏗️',
   city: 'الزاوية',
   institutionId: INST_A,
-  institution: { id: INST_A, name: 'جامعة الزاوية', nameEn: 'University of Zawia', slug: SLUG_A },
+  institution: { id: INST_A, name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', slug: SLUG_A },
 };
 const CREATED_DEPARTMENT = {
   id: 'dep-new-1',

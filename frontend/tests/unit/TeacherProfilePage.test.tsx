@@ -48,7 +48,7 @@ function teacherProfile(over: Record<string, unknown> = {}): Record<string, unkn
     name: 'سالم الطاهر',
     firstName: 'سالم',
     lastName: 'الطاهر',
-    email: 'salim@zu.edu.ly',
+    email: 'salim@test.ly',
     avatarColor: null,
     avatarInitials: 'سط',
     specialty: 'هندسة البرمجيات',

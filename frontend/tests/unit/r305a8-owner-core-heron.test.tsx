@@ -87,11 +87,11 @@ const NO_IDLE_EDUCATION = {
 
 /* ── Institutions boundary: the hook mocks (r178/r181 precedent) ──── */
 
-const ZAWIA = {
-  id: 'inst-zawia-showcase',
-  name: 'جامعة الزاوية',
-  nameEn: 'University of Zawia',
-  slug: 'zawia-showcase',
+const DEMO = {
+  id: 'inst-madarek-demo',
+  name: 'مؤسسة مدارك النموذجية',
+  nameEn: 'Madarek Model Institution',
+  slug: 'madarek-demo',
   status: 'ACTIVE',
   createdAt: '2026-10-01T00:00:00.000Z',
   updatedAt: '2026-10-01T00:00:00.000Z',
@@ -100,10 +100,10 @@ const ZAWIA = {
   admins: [
     {
       userId: 'u-admin-000000000000',
-      email: 'admin@zu.edu.ly',
+      email: 'admin@test.ly',
       firstName: 'إداري',
       lastName: 'تجريبي',
-      membershipId: 'mem-admin-zawia',
+      membershipId: 'mem-admin-demo',
       isActive: true,
     },
   ],
@@ -287,7 +287,7 @@ describe('OwnerDashboardPage — the .r305ao marker (R305-A8)', () => {
 
 describe('OwnerInstitutionsPage — the .r305ao marker (R305-A8)', () => {
   it('the resolved roster carries the marker on its .page root', () => {
-    instMocks.listing.data = [ZAWIA, ALANDALUS];
+    instMocks.listing.data = [DEMO, ALANDALUS];
     renderInstitutions();
 
     const root = expectOneMarkerRoot();
@@ -322,7 +322,7 @@ describe('OwnerInstitutionDetailPage — the .r305ao marker (R305-A8)', () => {
 
   it('the pending branch carries the marker', () => {
     instMocks.listing.isPending = true;
-    renderDetailAt('zawia-showcase');
+    renderDetailAt('madarek-demo');
 
     const root = expectOneMarkerRoot();
     expect(root.getAttribute('aria-busy')).toBe('true');
@@ -334,7 +334,7 @@ describe('OwnerInstitutionDetailPage — the .r305ao marker (R305-A8)', () => {
   it('the listing error branch carries the marker', () => {
     instMocks.listing.isError = true;
     instMocks.listing.error = new Error('forced failure');
-    renderDetailAt('zawia-showcase');
+    renderDetailAt('madarek-demo');
 
     const root = expectOneMarkerRoot();
     expect(
@@ -344,7 +344,7 @@ describe('OwnerInstitutionDetailPage — the .r305ao marker (R305-A8)', () => {
   });
 
   it('the honest not-found branch carries the marker', () => {
-    instMocks.listing.data = [ZAWIA];
+    instMocks.listing.data = [DEMO];
     renderDetailAt('no-such-institution');
 
     const root = expectOneMarkerRoot();
@@ -354,15 +354,15 @@ describe('OwnerInstitutionDetailPage — the .r305ao marker (R305-A8)', () => {
   });
 
   it('the resolved setup page carries the marker and mounts NO destructive group (none exists)', () => {
-    instMocks.listing.data = [ZAWIA];
+    instMocks.listing.data = [DEMO];
     detailMocks.faculties.data = [];
     detailMocks.courses.data = EMPTY_COURSES;
-    renderDetailAt('zawia-showcase');
+    renderDetailAt('madarek-demo');
 
     const root = expectOneMarkerRoot();
     expect(root.className).toBe('page r305ao');
     expect(
-      within(root as HTMLElement).getByRole('heading', { level: 1, name: 'جامعة الزاوية' }),
+      within(root as HTMLElement).getByRole('heading', { level: 1, name: 'مؤسسة مدارك النموذجية' }),
     ).toBeInTheDocument();
 
     /* R305-A8 deviation tripwire — this page's writes are ALL
@@ -383,7 +383,7 @@ describe('OwnerInstitutionDetailPage — the .r305ao marker (R305-A8)', () => {
 
 describe('OwnerInstitutionsPage — the destructive verbs ride .r305ao-btn-danger (R305-A8)', () => {
   it('suspend + live-membership revoke get the danger fill; routine and restoring verbs stay ghost', () => {
-    instMocks.listing.data = [ZAWIA, ALANDALUS];
+    instMocks.listing.data = [DEMO, ALANDALUS];
     renderInstitutions();
 
     // Destructive: suspending an ACTIVE institution…
@@ -406,12 +406,12 @@ describe('OwnerInstitutionsPage — the destructive verbs ride .r305ao-btn-dange
   });
 
   it('the danger classes never change the guarded flow (the confirm dialog still names the institution)', () => {
-    instMocks.listing.data = [ZAWIA];
+    instMocks.listing.data = [DEMO];
     renderInstitutions();
 
     fireEvent.click(screen.getByRole('button', { name: 'تعليق' }));
     const dialog = screen.getByRole('dialog');
-    expect(within(dialog).getByText(/هل تريد تعليق «جامعة الزاوية»/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/هل تريد تعليق «مؤسسة مدارك النموذجية»/)).toBeInTheDocument();
   });
 });
 

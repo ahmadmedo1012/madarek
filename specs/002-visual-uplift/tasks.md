@@ -77,7 +77,7 @@ Web app layout (existing).
 - [X] T018 [US1] Apply `--type-display-*` role tokens to the hero headline and `--type-body-size-lg` to the supporting line in `frontend/src/styles/landing.css`. Remove any inline `font-*` overrides on the hero in `LandingPage.tsx`.
 - [X] T019 [P] [US1] Apply `--section-pad-y-wide` to hero and CTA sections, `--section-pad-y-narrow` to interior content sections in `frontend/src/styles/landing.css`. Remove ad-hoc `padding-block` values flagged by audit.
 - [~] T020 [P] [US1] Replace the homepage's existing CountUp instances with `<AnimatedNumber>` (from 001-* primitives) in `frontend/src/pages/LandingPage.tsx` for proof-point statistics. Add `tabular` to keep digit width stable.
-- [X] T021 [P] [US1] Verify all homepage statistics source from real University of Zawia data (Principle III). For any synthetic numbers found, replace with a "data-pending" surface or remove. Document in PR.
+- [X] T021 [P] [US1] Verify all homepage statistics source from real the then-tenant university data (Principle III). For any synthetic numbers found, replace with a "data-pending" surface or remove. Document in PR.
 - [X] T022 [US1] Verify the returning-visitor calm flag from 001-* (`madarek.intro.seen`) suppresses the hero re-animation; if any new motion was introduced by the uplift that doesn't honor this flag, add it.
 - [~] T023 [US1] Re-run `npm run -w frontend test:visual` for `/` only (filter via `playwright test --grep landing`). Compare against the baseline captures via `scripts/visual-diff.html`. Record the visible delta in PR description (one screenshot pair per breakpoint).
 

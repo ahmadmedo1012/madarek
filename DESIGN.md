@@ -43,7 +43,7 @@ basis: `audits/evidence/r313/` (live Heron census + production baseline; 3 match
   conductor-driven, scrollbar hidden while live, `.content` stays native; RM never
   inits).
 - **D7** landing 12 sections → **9 Heron sections** (the map/journey pin ≈51% of
-  the page; the documentary media band is RETIRED with the university showcase (master/D3) and the capability ledger lives at `/capabilities` +
+  the page; the documentary media band is RETIRED with the curated university section (master/D3) and the capability ledger lives at `/capabilities` +
   `/capabilities`).
 - **D8** header 57px sticky no-hide → **56px fixed at the 7px inset** with the
   measured `on-scroll`/`on-hide` states + MENU button <992px.

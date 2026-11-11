@@ -15,7 +15,7 @@ const PUBLIC_ROUTES = [
 
 // Authed routes — keyed by demo email (matches AuthPage demo buttons)
 const AUTHED = [
-  { email: 'student@zu.edu.ly', routes: [
+  { email: 'student@test.ly', routes: [
     ['/student/dashboard', 'student-dashboard'],
     ['/student/courses',   'student-courses'],
     ['/student/library',   'student-library'],
@@ -24,20 +24,20 @@ const AUTHED = [
     ['/student/matrix',    'student-matrix'],
     ['/student/profile',   'student-profile'],
   ]},
-  { email: 'teacher@zu.edu.ly', routes: [
+  { email: 'teacher@test.ly', routes: [
     ['/teacher/dashboard',    'teacher-dashboard'],
     ['/teacher/intelligence', 'teacher-intelligence'],
     ['/teacher/students',     'teacher-students'],
   ]},
-  { email: 'admin@zu.edu.ly', routes: [
+  { email: 'admin@test.ly', routes: [
     ['/admin/dashboard',  'admin-dashboard'],
     ['/admin/faculties',  'admin-faculties'],
   ]},
-  { email: 'quality@zu.edu.ly', routes: [
+  { email: 'quality@test.ly', routes: [
     ['/quality/dashboard',   'quality-dashboard'],
     ['/quality/courses',     'quality-courses'],
   ]},
-  { email: 'owner@zu.edu.ly', routes: [
+  { email: 'owner@test.ly', routes: [
     ['/owner/dashboard',  'owner-dashboard'],
     ['/owner/realtime',   'owner-realtime'],
   ]},

@@ -39,7 +39,7 @@
 
 **Audit Health (impeccable rubric, scope-wide):** A11y **3** (one AA fail on a default-active public control; aria-pressed/expanded/aria-live used well) · Performance **3** (lazy routes, placeholderData keeps rosters, chart themeKey remounts) · Responsive **2** (two quality rosters + leaderboard have no mobile collapse) · Theming **4** (token-clean, dark verified live, charts re-resolve on flip) · Integrity **3** (fake notify promise, static settings claims, invented quality score) → **15/20 (Good — address weak dimensions: responsive + integrity).**
 
-**RTL/bidi verdict:** No P0 RTL leakage in scope. Every Latin run is `<bdi>`-wrapped or `dir`-scoped (emails, course codes, terms `2024-2025`, sources, MOOC, capability keys, zu.edu.ly). One typography-adjacent RTL defect: letter-spacing on an Arabic eyebrow (P2-3). Tables/`admin-table-num` use logical properties; pagination chevrons RTL-correct (السابق→ChevronRight).
+**RTL/bidi verdict:** No P0 RTL leakage in scope. Every Latin run is `<bdi>`-wrapped or `dir`-scoped (emails, course codes, terms `2024-2025`, sources, MOOC, capability keys, test.ly). One typography-adjacent RTL defect: letter-spacing on an Arabic eyebrow (P2-3). Tables/`admin-table-num` use logical properties; pagination chevrons RTL-correct (السابق→ChevronRight).
 
 **Counts: P0 ×0 · P1 ×2 · P2 ×6 · P3 ×9.**
 
@@ -64,7 +64,7 @@
 ## P2 — Minor (fix in next pass)
 
 ### P2-1 · College hero eyebrow: letter-spacing breaks Arabic cursive joins (and violates the platform's own eyebrow ban)
-- **Where:** `frontend/src/styles/colleges.css:653-659` (`.college-hero-eyebrow { letter-spacing: 0.05em; text-transform: uppercase }`) rendering Arabic «جامعة الزاوية · {city}» (`CollegePages.tsx:483`).
+- **Where:** `frontend/src/styles/colleges.css:653-659` (`.college-hero-eyebrow { letter-spacing: 0.05em; text-transform: uppercase }`) rendering Arabic «الجامعة السابقة · {city}» (`CollegePages.tsx:483`).
 - **Evidence:** computed letter-spacing 0.05em on connected Arabic script (كسر وصل الحروف); `text-transform` is a Latin-only concept. The codebase already ruled this out: `VisionPages.tsx:18-19` — «The eyebrow/kicker is removed per ruling #2 (app-internal page) — its letter-spacing also broke Arabic cursive joins.» Craft-floor bans eyebrows outright.
 - **Fix sketch:** delete the eyebrow (ruling #2) or, if kept as a campus line, drop `letter-spacing`/`text-transform` and set `color: var(--text-muted)`.
 
@@ -153,7 +153,7 @@
 - «Charts have no grid» → `madarekFadingAxisPlugin` fades gridlines at edges (chartTheme.ts:341).
 - «Revoke/منح buttons look identical» → `btn primary` vs `btn ghost` (code + screenshot).
 - «Mobile college-card stat chips < 44px touch targets» → chips aren't interactive; the whole card is the target.
-- «Sync claims daily but is manual-only» → backend `scheduler.ts` runs zu-sync every 24h — claim is true.
+- «Sync claims daily but is manual-only» → backend `scheduler.ts` ran the facts sync every 24h — claim was true (the job is since retired).
 
 ## Positive findings (replicate)
 - **Permissions editor** (`AdminGovernancePages.tsx:861-1036`): state-tinted capability cards, one-shot confirm pulse, inline retry of the *last attempt*, scope card keyed by user id, back-link first in tab order — the authed-app reference page.

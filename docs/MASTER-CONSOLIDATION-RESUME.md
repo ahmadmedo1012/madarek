@@ -12,7 +12,7 @@ Update after every substantial commit/integration. Format: done / next / gotchas
   triggers cover apps/mobile/app+src JS changes, verify.json joined the release
   assets. **LIVE-VERIFIED**: the release rebuilt from `5601fe79` at 03:56 with
   all 5 assets, `verified: true` — the distribution chain self-updates.
-- **M1 complete — MERGED `5601fe79`**: university showcase retired (13 files
+- **M1 complete — MERGED `5601fe79`**: curated university section retired (13 files
   deleted, ~120 modified), Statement crawl = OUR capability register (svg
   canvas, census box grammar kept), synthetic tenant re-keyed to «مؤسسة مدارك
   النموذجية», CSP frame-src self-only, r307 rewritten as the retirement
@@ -49,7 +49,7 @@ Update after every substantial commit/integration. Format: done / next / gotchas
    role journeys + the BrandMark fix already shipped via the new APK.
 4. **M8 debt**: D9/D10 per-role corpora export glue (pages-*.mjs exist, the
    dead.mjs/overlap harness needs the export), then D12 safe CSS demolition
-   (46,591 → ≤33,000 lines; the patterns.css showcase families already took
+   (46,591 → ≤33,000 lines; the patterns.css curated families already took
    −462 this round).
 5. **M9 final**: full verify.sh + extended conformance re-measure + the
    report's honest-status refresh.

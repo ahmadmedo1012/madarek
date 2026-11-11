@@ -229,7 +229,7 @@ describe('parseInstitutionSlug + resolveCollegesTarget (public colleges funnel)'
     });
   });
 
-  it('anonymous/contextless land on the showcase default (implicit — degrades to the empty listing)', () => {
+  it('anonymous/contextless get no default (implicit — degrades to the empty listing)', () => {
     expect(resolveCollegesTarget(undefined, null)).toEqual({
       kind: 'slug',
       slug: DEMO_INSTITUTION_SLUG,

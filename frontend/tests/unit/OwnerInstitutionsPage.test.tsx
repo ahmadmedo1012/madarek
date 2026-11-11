@@ -21,11 +21,11 @@ import { render, screen, fireEvent, cleanup, within, waitFor } from '@testing-li
 import { MemoryRouter } from 'react-router-dom';
 import { OwnerInstitutionsPage } from '../../src/pages/owner/OwnerInstitutionsPage';
 
-const ZAWIA = {
-  id: 'inst-zawia-showcase',
-  name: 'جامعة الزاوية',
-  nameEn: 'University of Zawia',
-  slug: 'zawia-showcase',
+const DEMO = {
+  id: 'inst-madarek-demo',
+  name: 'مؤسسة مدارك النموذجية',
+  nameEn: 'Madarek Model Institution',
+  slug: 'madarek-demo',
   status: 'ACTIVE',
   createdAt: '2026-10-01T00:00:00.000Z',
   updatedAt: '2026-10-01T00:00:00.000Z',
@@ -34,10 +34,10 @@ const ZAWIA = {
   admins: [
     {
       userId: 'u-admin-000000000000',
-      email: 'admin@zu.edu.ly',
+      email: 'admin@test.ly',
       firstName: 'إداري',
       lastName: 'تجريبي',
-      membershipId: 'mem-admin-zawia',
+      membershipId: 'mem-admin-demo',
       isActive: true,
     },
   ],
@@ -67,7 +67,7 @@ const ALANDALUS = {
 
 const mocks = vi.hoisted(() => ({
   listing: {
-    data: null as typeof ZAWIA[] | null,
+    data: null as typeof DEMO[] | null,
     isPending: false,
     isError: false,
     error: null,
@@ -138,29 +138,29 @@ function renderPage() {
 
 describe('OwnerInstitutionsPage — listing (r178)', () => {
   it('renders the page header and both seeded institutions with their status badges and counts', () => {
-    mocks.listing.data = [ZAWIA, ALANDALUS];
+    mocks.listing.data = [DEMO, ALANDALUS];
     renderPage();
 
     expect(screen.getByRole('heading', { level: 1, name: 'المؤسسات' })).toBeInTheDocument();
     expect(screen.getByText('إدارة المؤسسات التعليمية على المنصّة')).toBeInTheDocument();
 
     // Identity: Arabic name + Latin nameEn + slug per institution.
-    expect(screen.getByText('جامعة الزاوية')).toBeInTheDocument();
-    expect(screen.getByText('University of Zawia')).toBeInTheDocument();
-    expect(screen.getByText('zawia-showcase')).toBeInTheDocument();
+    expect(screen.getByText('مؤسسة مدارك النموذجية')).toBeInTheDocument();
+    expect(screen.getByText('Madarek Model Institution')).toBeInTheDocument();
+    expect(screen.getByText('madarek-demo')).toBeInTheDocument();
     expect(screen.getByText('مؤسسة الأندلس التعليمية')).toBeInTheDocument();
 
     // Status badges — the Arabic status vocabulary, not raw enum values.
     expect(screen.getByText('نشطة')).toBeInTheDocument();
     expect(screen.getByText('معلّقة')).toBeInTheDocument();
 
-    // Counts land as figures (4 members / 25 faculties for Zawia).
+    // Counts land as figures (4 members / 25 faculties for the demo tenant).
     expect(screen.getByText('4')).toBeInTheDocument();
     expect(screen.getByText('25')).toBeInTheDocument();
 
-    // Admin rows: active Zawia admin offers «إلغاء العضوية», the revoked
+    // Admin rows: the active demo admin offers «إلغاء العضوية», the revoked
     // Al-Andalus admin offers «استعادة».
-    expect(screen.getByText('admin@zu.edu.ly')).toBeInTheDocument();
+    expect(screen.getByText('admin@test.ly')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'إلغاء العضوية' })).toBeInTheDocument();
     expect(screen.getByText('admin2@test.ly')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'استعادة' })).toBeInTheDocument();
@@ -201,7 +201,7 @@ describe('OwnerInstitutionsPage — create form (r178)', () => {
 
 describe('OwnerInstitutionsPage — provision admin modal (r178)', () => {
   it('opens with the institution named and the mode + email fields', () => {
-    mocks.listing.data = [ZAWIA];
+    mocks.listing.data = [DEMO];
     renderPage();
 
     fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
@@ -209,7 +209,7 @@ describe('OwnerInstitutionsPage — provision admin modal (r178)', () => {
     // The modal names the target institution — the OWNER must always
     // know which institution the grant lands in.
     const dialog = screen.getByRole('dialog');
-    expect(within(dialog).getByText(/جامعة الزاوية/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/مؤسسة مدارك النموذجية/)).toBeInTheDocument();
     const modeSelect = within(dialog).getByLabelText('نوع المستخدم') as HTMLSelectElement;
     expect(modeSelect.value).toBe('new');
     expect(within(dialog).getByLabelText(/البريد الإلكتروني/)).toBeInTheDocument();
@@ -220,19 +220,19 @@ describe('OwnerInstitutionsPage — provision admin modal (r178)', () => {
 
 describe('OwnerInstitutionsPage — status toggle (r178)', () => {
   it('confirms suspension and PATCHes status SUSPENDED for the named institution', () => {
-    mocks.listing.data = [ZAWIA];
+    mocks.listing.data = [DEMO];
     renderPage();
 
     fireEvent.click(screen.getByRole('button', { name: 'تعليق' }));
 
     // The confirm dialog names the institution before the danger lands.
     const dialog = screen.getByRole('dialog');
-    expect(within(dialog).getByText(/هل تريد تعليق «جامعة الزاوية»/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/هل تريد تعليق «مؤسسة مدارك النموذجية»/)).toBeInTheDocument();
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'تعليق المؤسسة' }));
 
     expect(mocks.update.mutate).toHaveBeenCalledWith(
-      { id: 'inst-zawia-showcase', patch: { status: 'SUSPENDED' } },
+      { id: 'inst-madarek-demo', patch: { status: 'SUSPENDED' } },
       expect.objectContaining({ onSuccess: expect.any(Function), onError: expect.any(Function) }),
     );
   });
@@ -253,7 +253,7 @@ describe('OwnerInstitutionsPage — status toggle (r178)', () => {
 
 describe('OwnerInstitutionsPage — membership revoke (r178)', () => {
   it('confirms and revokes the admin membership by its membershipId', () => {
-    mocks.listing.data = [ZAWIA];
+    mocks.listing.data = [DEMO];
     renderPage();
 
     fireEvent.click(screen.getByRole('button', { name: 'إلغاء العضوية' }));
@@ -266,7 +266,7 @@ describe('OwnerInstitutionsPage — membership revoke (r178)', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'إلغاء العضوية' }));
 
     expect(mocks.revoke.mutate).toHaveBeenCalledWith(
-      { institutionId: 'inst-zawia-showcase', membershipId: 'mem-admin-zawia' },
+      { institutionId: 'inst-madarek-demo', membershipId: 'mem-admin-demo' },
       expect.objectContaining({ onSuccess: expect.any(Function), onError: expect.any(Function) }),
     );
   });
@@ -298,7 +298,7 @@ describe('OwnerInstitutionsPage — keep edits on create failure (r183-B5)', () 
     renderPage();
 
     fireEvent.change(screen.getByLabelText(/اسم المؤسسة/), { target: { value: 'أكاديمية طرابلس' } });
-    fireEvent.change(screen.getByLabelText(/المعرّف/), { target: { value: 'zawia-showcase' } });
+    fireEvent.change(screen.getByLabelText(/المعرّف/), { target: { value: 'madarek-demo' } });
 
     mocks.create.mutateAsync.mockRejectedValueOnce(new Error('409 CONFLICT'));
     fireEvent.click(screen.getByRole('button', { name: /إنشاء المؤسسة/ }));
@@ -307,7 +307,7 @@ describe('OwnerInstitutionsPage — keep edits on create failure (r183-B5)', () 
     // THE DRAFT SURVIVES — the 409 slug conflict keeps both fields the
     // owner typed (the old code cleared them at submit).
     expect((screen.getByLabelText(/اسم المؤسسة/) as HTMLInputElement).value).toBe('أكاديمية طرابلس');
-    expect((screen.getByLabelText(/المعرّف/) as HTMLInputElement).value).toBe('zawia-showcase');
+    expect((screen.getByLabelText(/المعرّف/) as HTMLInputElement).value).toBe('madarek-demo');
   });
 
   it('a successful create clears the draft', async () => {
@@ -336,7 +336,7 @@ describe('OwnerInstitutionsPage — keep edits on create failure (r183-B5)', () 
 
 describe('OwnerInstitutionsPage — keep edits on provision failure (r183-B5)', () => {
   it('a rejected provision keeps the modal OPEN with the draft intact', async () => {
-    mocks.listing.data = [ZAWIA];
+    mocks.listing.data = [DEMO];
     renderPage();
 
     fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
@@ -355,7 +355,7 @@ describe('OwnerInstitutionsPage — keep edits on provision failure (r183-B5)', 
   });
 
   it('a successful provision closes the modal', async () => {
-    mocks.listing.data = [ZAWIA];
+    mocks.listing.data = [DEMO];
     renderPage();
 
     fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
@@ -373,7 +373,7 @@ describe('OwnerInstitutionsPage — keep edits on provision failure (r183-B5)', 
   });
 
   it('the provision failure is named inline inside the modal', () => {
-    mocks.listing.data = [ZAWIA];
+    mocks.listing.data = [DEMO];
     renderPage();
     fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
 
@@ -390,7 +390,7 @@ describe('OwnerInstitutionsPage — keep edits on provision failure (r183-B5)', 
 
 describe('OwnerInstitutionsPage — provision modal quick wins (r183-B5, A9 P3)', () => {
   it('the password is masked by default; the reveal toggle is opt-in', () => {
-    mocks.listing.data = [ZAWIA];
+    mocks.listing.data = [DEMO];
     renderPage();
     fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
 
@@ -406,7 +406,7 @@ describe('OwnerInstitutionsPage — provision modal quick wins (r183-B5, A9 P3)'
   });
 
   it('the modal title is an h3 (the owner modals\' heading grammar)', () => {
-    mocks.listing.data = [ZAWIA];
+    mocks.listing.data = [DEMO];
     renderPage();
     fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
 

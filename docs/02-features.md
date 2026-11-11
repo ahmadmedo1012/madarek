@@ -183,11 +183,10 @@ PDF بصدق، والصمامات تُستنسخ على العميل قبل أي
 `backend/src/lib/permissions.ts`، `lib/governance.ts`،
 `frontend/src/pages/admin/AdminGovernancePages.tsx`.
 
-### مزامنة الجامعة (zu-sync) — [منفَّذة]
-حقائق جامعية (كليات، إحصاءات) من مصدر منسّق ثابت قابل للاستبدال بجالب
-حقيقي، بسجل `SyncRun` وحرس تزامن ومسح سجلات دخول أقدم من 180 يومًا
-يوميًا. الملفات: `backend/src/lib/zu-sync/`، `backend/src/scheduler.ts`،
-`frontend/src/pages/admin/AdminSyncPage.tsx`.
+### مزامنة حقائق الجامعة — [مُحالة (R349 U2)]
+أُحيلت مع «المشروع لا ينتمي لأي جامعة»: حُذفت خطّة المزامنة ونموذج
+الحقائق ومساراتها كاملة. تبقّى من المجدول مهمة واحدة: مسح سجلات
+الدخول أقدم من 180 يومًا (`backend/src/scheduler.ts`).
 
 ## قطاع الجودة (QUALITY) — «القطاع الرابع»
 

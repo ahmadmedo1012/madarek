@@ -59,10 +59,10 @@ test.describe('الزائر — الأسطح العامة', () => {
     // The public gallery renders REAL payload rows (mock /colleges),
     // grouped per canonical campus — the mock rows all ride «حرم المعرفة».
     await expect(page.locator('h1.pf-page-title')).toContainText('مؤسسة مدارك النموذجية');
-    const zawiaGroup = page.getByRole('group', { name: 'كلّيّات حرم المعرفة' });
-    await expect(zawiaGroup).toBeVisible();
-    await expect(zawiaGroup).toContainText('كلية الهندسة');
-    await expect(zawiaGroup).toContainText('كلية العلوم');
+    const campusGroup = page.getByRole('group', { name: 'كلّيّات حرم المعرفة' });
+    await expect(campusGroup).toBeVisible();
+    await expect(campusGroup).toContainText('كلية الهندسة');
+    await expect(campusGroup).toContainText('كلية العلوم');
   });
 
   test('لوحة منافسة الكلّيّات للزائر: جدول المتصدّرين ببيانات حقيقية', async ({ page }) => {

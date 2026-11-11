@@ -4,7 +4,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // r188 — FICTIONAL DEMONSTRATION REGISTRY (مؤسسة مدارك النموذجية).
 //
-// The registry previously transcribed the real University of Zawia
+// The registry previously transcribed a real university's catalogue
 // faculty list (13 الزاوية + 8 العجيلات + 1 زوارة + 3 أخرى — real
 // Libyan cities tied to a real institution). r188 replaces it with a
 // coherent SYNTHETIC catalogue for the demonstration institution:

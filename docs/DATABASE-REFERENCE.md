@@ -14,7 +14,7 @@ NOT a visual identity (one product/brand; no per-institution logos/themes/domain
 
 | Field | Type | Notes |
 |-------|------|-------|
-| id | String (cuid) | PK (showcase row uses fixed literal `inst-zawia-showcase`) |
+| id | String (cuid) | PK (demo row uses fixed literal `inst-madarek-demo`, renamed by the R349 U2 migration) |
 | name / nameEn | String/String? | Arabic + English display name |
 | slug | String | Unique, `^[a-z0-9-]{2,64}$`, public filter key |
 | status | InstitutionStatus | ACTIVE/SUSPENDED — SUSPENDED blocks all institution-context access at the middleware level |
@@ -630,12 +630,11 @@ leak into it).
   institution-scope (owner mutations on institutions carry it). Index
   `[institutionId]`.
 
-### SyncRun
-- source, status (RUNNING/SUCCESS/PARTIAL/FAILED), factsAdded/Updated, errorMsg
-
-### UniversityFact
-- Key-value institutional facts (vision, mission, contacts, grade scale, etc.)
-- Fields: key (PK), value, category, source, syncedAt, isStale
+### (RETired R349 U2) the facts-sync models
+- Both the run ledger and the key-value facts model were deleted at R349 U2
+  (the platform belongs to no university; the my-institution page reads the
+  institution's own catalogue). Their tables are dropped by migration
+  `20261111080000_r349_u_neutral_tenant`.
 
 ---
 

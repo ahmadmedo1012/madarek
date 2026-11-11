@@ -53,15 +53,15 @@ const post = api.post as unknown as Mock;
 
 const SESSION_USER = {
   id: 'user-1',
-  email: 'student@zu.edu.ly',
+  email: 'student@test.ly',
   firstName: 'طالب',
   lastName: 'تجريبي',
   role: 'STUDENT' as const,
   memberships: [],
   currentInstitution: {
-    id: 'inst-zawia-showcase',
-    name: 'جامعة الزاوية',
-    slug: 'zawia-showcase',
+    id: 'inst-madarek-demo',
+    name: 'مؤسسة مدارك النموذجية',
+    slug: 'madarek-demo',
   },
   membershipRole: 'STUDENT' as const,
 };
@@ -82,7 +82,7 @@ beforeEach(() => {
   // A logged-in session on the OLD token — what the bump must replace,
   // never clear. (No extras → the store's honest context-less defaults.)
   useAuthStore.getState().setSession(
-    { id: 'user-1', email: 'student@zu.edu.ly', firstName: 'طالب', lastName: 'تجريبي', role: 'STUDENT' },
+    { id: 'user-1', email: 'student@test.ly', firstName: 'طالب', lastName: 'تجريبي', role: 'STUDENT' },
     'old-token',
   );
 });
@@ -114,7 +114,7 @@ describe('useChangePassword — the re-issued session (r180-F4)', () => {
     expect(state.user?.id).toBe('user-1');
     // The institution context rides the payload (the route re-resolves
     // it the same way refresh does).
-    expect(state.currentInstitution?.slug).toBe('zawia-showcase');
+    expect(state.currentInstitution?.slug).toBe('madarek-demo');
     expect(state.membershipRole).toBe('STUDENT');
     // renderHook's proxy needs a settled re-render to observe the
     // terminal flag (the store assertions above are the contract;

@@ -14,7 +14,7 @@
  *           link (rolling label pair + TWO inline arrow icons).
  *   ticker— the second row: the partner label row (mono label, twin
  *           hairlines, two arrow buttons), the capabilities crawl
- *           (master/D2 — the university showcase is retired; the crawl
+ *           (master/D2 — the curated university section is retired; the crawl
  *           is OUR OWN capability register, typographic cells), and the
  *           platform disclosure desc closed by the bottom rule.
  *

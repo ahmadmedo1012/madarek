@@ -64,7 +64,7 @@ export interface FixtureUser {
 
 export const STUDENT_USER: FixtureUser = {
   id: 'usr_e2e_student',
-  email: 'student@zu.edu.ly',
+  email: 'student@test.ly',
   firstName: 'أحمد',
   lastName: 'الزاوي',
   role: 'STUDENT',
@@ -75,7 +75,7 @@ export const STUDENT_USER: FixtureUser = {
 
 export const TEACHER_USER: FixtureUser = {
   id: 'usr_e2e_teacher',
-  email: 'teacher@zu.edu.ly',
+  email: 'teacher@test.ly',
   firstName: 'ليلى',
   lastName: 'الفيتوري',
   role: 'TEACHER',
@@ -93,7 +93,7 @@ export const TEACHER_USER: FixtureUser = {
  */
 export const ADMIN_USER: FixtureUser = {
   id: 'usr_e2e_admin',
-  email: 'admin@zu.edu.ly',
+  email: 'admin@test.ly',
   firstName: 'سالم',
   lastName: 'القرضابي',
   role: 'ADMIN',
@@ -104,7 +104,7 @@ export const ADMIN_USER: FixtureUser = {
 
 export const QUALITY_USER: FixtureUser = {
   id: 'usr_e2e_quality',
-  email: 'quality@zu.edu.ly',
+  email: 'quality@test.ly',
   firstName: 'عائشة',
   lastName: 'الباروني',
   role: 'QUALITY',
@@ -115,7 +115,7 @@ export const QUALITY_USER: FixtureUser = {
 
 export const OWNER_USER: FixtureUser = {
   id: 'usr_e2e_owner',
-  email: 'owner@zu.edu.ly',
+  email: 'owner@test.ly',
   firstName: 'المدير',
   lastName: 'الأعلى',
   role: 'OWNER',
@@ -146,7 +146,7 @@ export const VALID_LOGIN = {
 } as const;
 
 /** Lockout account: login answers 429 TOO_MANY_REQUESTS (A13 P2-1). */
-export const LOCKED_EMAIL = 'locked@zu.edu.ly';
+export const LOCKED_EMAIL = 'locked@test.ly';
 
 /** Wrong-password login the mock answers with 401 INVALID_CREDENTIALS. */
 export const WRONG_LOGIN = { email: STUDENT_USER.email, password: 'wrong-password' } as const;

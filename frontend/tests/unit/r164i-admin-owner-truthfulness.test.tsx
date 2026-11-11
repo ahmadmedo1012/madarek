@@ -16,7 +16,7 @@
  * 3. (retired) the sync page's freshness suite went with the page (R349 U2)
  *    «آخر تحديث» from the payload's syncedAt (a real field
  *    sync.routes.ts ships), and the facts card is labelled as what it
- *    is — a fixed zu-sync snapshot («مصدر: المزامنة»).
+ *    is — a fixed sync snapshot («مصدر: المزامنة»).
  * 4. OwnerUsersPage table coherence: the pagination footer renders
  *    whenever rows exist (single page included — the roster's total
  *    stays visible, matching the AdminStudentsPage family footer), and
@@ -88,7 +88,7 @@ const AI_METRICS_EMPTY = {
 };
 
 const OWNER_USER_ROW = {
-  id: 'u1', email: 'amina@zu.edu.ly', firstName: 'أمينة', lastName: 'المشرفة',
+  id: 'u1', email: 'amina@test.ly', firstName: 'أمينة', lastName: 'المشرفة',
   role: 'ADMIN', avatarColor: null, avatarInitials: null,
   isActive: true, createdAt: '2026-01-05T00:00:00.000Z',
 };
@@ -252,7 +252,7 @@ describe('OwnerUsersPage — footer count + error state', () => {
 
 const ME: AuthUser = {
   id: 'me1',
-  email: 'admin@zu.edu.ly',
+  email: 'admin@test.ly',
   firstName: 'المشرف',
   lastName: 'العام',
   role: 'ADMIN',
@@ -261,7 +261,7 @@ const ME: AuthUser = {
 const permissionsPayload = (userId: string) => ({
   user: {
     id: userId,
-    email: `${userId}@zu.edu.ly`,
+    email: `${userId}@test.ly`,
     role: 'ADMIN',
     firstName: 'أمينة',
     lastName: 'المشرفة',

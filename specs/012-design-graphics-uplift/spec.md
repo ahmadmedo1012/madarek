@@ -56,7 +56,7 @@ A user opens Madrak in the evening and the platform is in a calm, considered dar
 
 ### User Story 2 — Homepage that competes with the best public software pages (Priority: P1)
 
-A first-time visitor reaches the homepage. The hero is no longer just "headline + CTA on a gradient" — it's a small, considered scene: a hand-crafted illustration of an academic moment (lecture hall, library, graduation, code-on-a-laptop) layered with the ambient motion from `003-*`. As they scroll, each narrative section is anchored by its own bespoke scene — not stock icons, not Lottie packs, but a small library of original SVG-based illustrations that share a colour palette, a stroke weight, and a perspective. Numbers from the University of Zawia animate in. A subtle parallax adds depth on scroll without making content move out from under their cursor. The page reads like a flagship public software product page.
+A first-time visitor reaches the homepage. The hero is no longer just "headline + CTA on a gradient" — it's a small, considered scene: a hand-crafted illustration of an academic moment (lecture hall, library, graduation, code-on-a-laptop) layered with the ambient motion from `003-*`. As they scroll, each narrative section is anchored by its own bespoke scene — not stock icons, not Lottie packs, but a small library of original SVG-based illustrations that share a colour palette, a stroke weight, and a perspective. Numbers from the the then-tenant university animate in. A subtle parallax adds depth on scroll without making content move out from under their cursor. The page reads like a flagship public software product page.
 
 **Why this priority**: The homepage is the single highest-leverage public surface for credibility. A scenes-based homepage is the difference between "good university platform" and "world-class educational product."
 
@@ -281,4 +281,4 @@ A platform owner runs a one-pass sweep across every route in the platform — pu
 - Animated 3D, WebGL scenes, video backgrounds, and Lottie packs are OUT of scope; the visual language is SVG-based with the existing motion primitives.
 - The illustration family is producible within the project's existing design capacity; V1 ships the documented illustration system + 6 high-impact bespoke scenes, with the remaining catalogue surfaces (12+ total) added in a follow-up cycle inside the same family.
 - The platform's existing performance, accessibility, RTL, and reduced-motion guarantees from `001-*` / `002-*` / `003-*` are preserved without exception by this feature.
-- The University of Zawia institutional context (logo, identity colour, statistics) remains the homepage's grounding reference.
+- The the then-tenant university institutional context (logo, identity colour, statistics) remains the homepage's grounding reference.

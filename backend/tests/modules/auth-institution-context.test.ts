@@ -104,7 +104,7 @@ const makeMembership = (overrides: {
     updatedAt: new Date(),
     institution: {
       id: overrides.institutionId,
-      name: 'جامعة الزاوية',
+      name: 'مؤسسة مدارك النموذجية',
       nameEn: 'Madarek Model Institution',
       slug: 'madarek-demo',
       status: 'ACTIVE',
@@ -138,7 +138,7 @@ describe('loginUser — session institution context', () => {
     expect(user.memberships).toEqual([
       {
         institutionId: 'inst-madarek-demo',
-        name: 'جامعة الزاوية',
+        name: 'مؤسسة مدارك النموذجية',
         nameEn: 'Madarek Model Institution',
         slug: 'madarek-demo',
         role: 'STUDENT',
@@ -300,7 +300,7 @@ describe('registerUser — institution chain consistency', () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
     vi.mocked(prisma.institution.findUnique).mockResolvedValue({
       id: 'inst-madarek-demo',
-      name: 'جامعة الزاوية',
+      name: 'مؤسسة مدارك النموذجية',
       nameEn: 'Madarek Model Institution',
       slug: 'madarek-demo',
       status: 'ACTIVE',
@@ -497,7 +497,7 @@ describe('requireInstitution middleware', () => {
   });
 
   it('attaches req.membership / req.institution / membership-scoped profiles when confirmed', async () => {
-    const institution = { id: 'inst-madarek-demo', name: 'جامعة الزاوية', status: 'ACTIVE' };
+    const institution = { id: 'inst-madarek-demo', name: 'مؤسسة مدارك النموذجية', status: 'ACTIVE' };
     const studentProfile = { id: 'sp-1', universityId: 'UM-2024-00001' };
     vi.mocked(prisma.membership.findFirst).mockResolvedValue({
       id: 'mem-1',

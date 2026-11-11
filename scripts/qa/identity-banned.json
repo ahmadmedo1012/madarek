@@ -1,0 +1,48 @@
+{
+  "_comment": "R349 U4 — the single source of forbidden identity strings. Read by identity-guard.mjs (the gate) AND the brand-integrity tests (r177/r188/r183/r307) — the deliberate consumers. Every other file in the tree carries ZERO of these strings (U5: empty allowlist). Structurally exempt like the gate itself: this file is the list.",
+  "universities": [
+    "جامعة الزاوية",
+    "جامعة السابع من أبريل",
+    "جامعة طرابلس",
+    "جامعة بنغازي",
+    "جامعة قاريونس",
+    "جامعة مصراتة",
+    "جامعة مصراته",
+    "جامعة سبها",
+    "جامعة عمر المختار",
+    "جامعة الجفرة",
+    "جامعة زليتن",
+    "جامعة المرقب",
+    "جامعة الخمس",
+    "جامعة الواحات",
+    "جامعة أجدابيا",
+    "جامعة درنة",
+    "جامعة طبرق",
+    "جامعة غريان",
+    "جامعة العقم",
+    "جامعة صبراتة",
+    "جامعة سبراثة",
+    "جامعة الكفرة",
+    "جامعة غات",
+    "جامعة أوباري",
+    "جامعة مرزق",
+    "جامعة الشاطئ",
+    "جامعة نالوت",
+    "جامعة الأصبعة",
+    "جامعة الأساسية",
+    "جامعة البيضاء",
+    "جامعة سرت",
+    "جامعة ترهونة",
+    "جامعة بني وليد",
+    "جامعة يفرن",
+    "جامعة الزنتان"
+  ],
+  "latinForms": [
+    "University of Zawia",
+    "Zawia University"
+  ],
+  "fragments": [
+    "قاريونس",
+    "zu.edu.ly"
+  ]
+}

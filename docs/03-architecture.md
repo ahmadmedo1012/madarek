@@ -16,7 +16,7 @@ flowchart LR
     subgraph Server["خدمة Express واحدة (Render)"]
         MW["سلسلة الوسائط<br/>helmet · cors · gzip · rate-limit"]
         API["مسارات /api/v1/*<br/>25 ملف مسارات + 3 وحدات"]
-        SCH["مجدول داخلي<br/>zu-sync + تسريح السجلات"]
+        SCH["مجدول داخلي<br/>تسريح السجلات"]
         ST["static/SPA<br/>frontend/dist"]
     end
     DB[("Neon PostgreSQL<br/>75 نموذج Prisma")]
