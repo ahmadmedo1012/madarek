@@ -61,7 +61,7 @@ const alertCount = vi.mocked(prisma.operationalAlert.count);
 const syncRunFindMany = vi.mocked(prisma.syncRun.findMany);
 const auditLogCount = vi.mocked(prisma.auditLog.count);
 
-/** Prisma delegates return PrismaPromise — one cast, the zu-sync-run
+/** Prisma delegates return PrismaPromise — one cast, the retired sync-run
  *  pattern (see enrollments-scope.test.ts). */
 type CountImpl = NonNullable<Parameters<typeof alertCount.mockImplementation>[0]>;
 type FindManyImpl = NonNullable<Parameters<typeof alertFindMany.mockImplementation>[0]>;

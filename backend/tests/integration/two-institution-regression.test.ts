@@ -23,7 +23,7 @@
  * 10. Switching institution changes the data the SAME user sees (the
  *     backend half of the frontend cache contract).
  *
- * Files/materials byte-level isolation and the zu-sync isolation have
+ * Files/materials byte-level isolation and the facts-feed isolation have
  * their dedicated suites (files-institution-isolation,
  * sync-institution-isolation) — this file pins the CROSS-CUTTING
  * behavior those suites don't reach: governance, catalog, social,

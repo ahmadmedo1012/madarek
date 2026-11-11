@@ -47,8 +47,8 @@ export const registerSchema = z
     lastName: z.string().trim().min(1).max(60),
     role: z.enum(SELF_SERVE_ROLES),
     // r178: the institution the account registers into. Plain min(1)
-    // string — NOT cuid: showcase institutions carry fixed literal ids
-    // (e.g. 'inst-zawia-showcase'). The service validates the academic
+    // string — NOT cuid: demo institutions carry fixed literal ids
+    // (e.g. 'inst-madarek-demo'). The service validates the academic
     // chain (department → faculty → institution) belongs to it.
     institutionId: z.string().min(1),
     // Optional profile fields (validated in service):

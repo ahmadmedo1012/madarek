@@ -44,13 +44,13 @@ const router = Router();
 //      same rows are reachable by anyone via ?institution=, so there
 //      is nothing to re-verify for honesty (the institution row must
 //      still be ACTIVE, which the lookup below enforces);
-//   3. anonymous/contextless land on the SHOWCASE default — the
+//   3. anonymous/contextless land on the demo default — the
 //      reference institution that owns the public 25-faculty registry
 //      (seed.ts: slug `madarek-demo`). A fresh install without the
-//      showcase row degrades to an empty 200 listing, not a dead page.
+//      demo row degrades to an empty 200 listing, not a dead page.
 
-/** The showcase institution's slug (the public landing default). */
-export const SHOWCASE_INSTITUTION_SLUG = 'madarek-demo';
+/** The demo institution's slug (the public landing default). */
+export const DEMO_INSTITUTION_SLUG = 'madarek-demo';
 
 /** One resolved colleges target — `explicit` drives the fail-closed
  * posture (explicit targets 404 when unresolvable; the implicit
@@ -58,7 +58,7 @@ export const SHOWCASE_INSTITUTION_SLUG = 'madarek-demo';
 export type CollegesTarget =
   | { kind: 'slug'; slug: string; explicit: true }
   | { kind: 'id'; id: string; explicit: true }
-  | { kind: 'slug'; slug: typeof SHOWCASE_INSTITUTION_SLUG; explicit: false };
+  | { kind: 'slug'; slug: typeof DEMO_INSTITUTION_SLUG; explicit: false };
 
 /** Parse the optional ?institution= query value (trimmed; empty →
  * undefined). Pure — unit-tested. */
@@ -76,7 +76,7 @@ export function resolveCollegesTarget(
 ): CollegesTarget {
   if (explicitSlug) return { kind: 'slug', slug: explicitSlug, explicit: true };
   if (callerInstitutionId) return { kind: 'id', id: callerInstitutionId, explicit: true };
-  return { kind: 'slug', slug: SHOWCASE_INSTITUTION_SLUG, explicit: false };
+  return { kind: 'slug', slug: DEMO_INSTITUTION_SLUG, explicit: false };
 }
 
 /** Resolve the target institution ROW (one findUnique). Returns the
@@ -110,7 +110,7 @@ async function collegesInstitutionFor(
  * Light list for the public index / homepage popover: name, emoji, city,
  * department / student / teacher / course counts. No PII; safe to expose.
  * Shows ONE institution's faculties — `?institution=slug` explicit, the
- * authed caller's institution, or the showcase default (see
+ * authed caller's institution, or the demo default (see
  * resolveCollegesTarget above).
  */
 router.get('/colleges', optionalAuthMiddleware, async (req, res, next) => {
@@ -277,7 +277,7 @@ export function anonymizeGuestUser<U extends PersonName>(user: U): U {
  *
  * r179 (phase-5): the comparison set is ONE institution's faculties
  * (the same target resolution as GET /colleges — ?institution=slug /
- * authed context / showcase default). The metric rollups stay
+ * authed context / demo default). The metric rollups stay
  * platform-wide reads, but the FOLD keys them onto the target
  * institution's department/faculty ids only — a foreign faculty's
  * rows never resolve onto a row (rollupCounts drops unattributable

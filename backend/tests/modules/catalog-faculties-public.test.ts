@@ -66,7 +66,7 @@ describe('GET /api/v1/faculties — public catalog (audit 4-A13 P0-1)', () => {
         iconEmoji: '📚',
         city: 'الزاوية',
         // r178: every public faculty row carries its institution basics.
-        institution: { id: 'inst-1', name: 'جامعة الزاوية', nameEn: 'University of Zawia', slug: 'zawia-showcase' },
+        institution: { id: 'inst-1', name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', slug: 'madarek-demo' },
         departments: [
           { id: 'dep-1', name: 'قسم اللغة العربية' },
           { id: 'dep-2', name: 'قسم التاريخ' },
@@ -94,7 +94,7 @@ describe('GET /api/v1/faculties — public catalog (audit 4-A13 P0-1)', () => {
       city: 'الزاوية',
       // r178: institution basics on every row (the register funnel
       // groups/labels faculties by institution).
-      institution: { id: 'inst-1', name: 'جامعة الزاوية', nameEn: 'University of Zawia', slug: 'zawia-showcase' },
+      institution: { id: 'inst-1', name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', slug: 'madarek-demo' },
       departments: [
         { id: 'dep-1', name: 'قسم اللغة العربية' },
         { id: 'dep-2', name: 'قسم التاريخ' },

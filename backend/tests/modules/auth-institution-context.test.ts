@@ -68,7 +68,7 @@ import { getEffectiveCapabilities } from '../../src/lib/permissions';
 const makeUser = (overrides: Partial<User> = {}): User =>
   ({
     id: 'user-1',
-    email: 'student@zu.edu.ly',
+    email: 'student@test.ly',
     passwordHash: 'real-hash',
     role: 'STUDENT',
     firstName: 'أحمد',
@@ -105,8 +105,8 @@ const makeMembership = (overrides: {
     institution: {
       id: overrides.institutionId,
       name: 'جامعة الزاوية',
-      nameEn: 'University of Zawia',
-      slug: 'zawia-showcase',
+      nameEn: 'Madarek Model Institution',
+      slug: 'madarek-demo',
       status: 'ACTIVE',
     },
   }) as unknown as Membership & { institution: { slug: string; name: string } };
@@ -129,34 +129,34 @@ describe('loginUser — session institution context', () => {
   it('auto-selects the ONLY active membership (inst claim + currentInstitution + membershipRole)', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(makeUser());
     vi.mocked(prisma.membership.findMany).mockResolvedValue([
-      makeMembership({ institutionId: 'inst-zawia-showcase' }),
+      makeMembership({ institutionId: 'inst-madarek-demo' }),
     ]);
 
-    const { user, accessToken } = await loginUser('student@zu.edu.ly', 'Salam-Zawiya-2026');
+    const { user, accessToken } = await loginUser('student@test.ly', 'Salam-Madarek-2026');
 
-    expect(verifyAccessToken(accessToken).inst).toBe('inst-zawia-showcase');
+    expect(verifyAccessToken(accessToken).inst).toBe('inst-madarek-demo');
     expect(user.memberships).toEqual([
       {
-        institutionId: 'inst-zawia-showcase',
+        institutionId: 'inst-madarek-demo',
         name: 'جامعة الزاوية',
-        nameEn: 'University of Zawia',
-        slug: 'zawia-showcase',
+        nameEn: 'Madarek Model Institution',
+        slug: 'madarek-demo',
         role: 'STUDENT',
         isActive: true,
       },
     ]);
-    expect(user.currentInstitution).toMatchObject({ id: 'inst-zawia-showcase', slug: 'zawia-showcase' });
+    expect(user.currentInstitution).toMatchObject({ id: 'inst-madarek-demo', slug: 'madarek-demo' });
     expect(user.membershipRole).toBe('STUDENT');
   });
 
   it('multiple memberships → NO context (inst null, client must select-institution)', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(makeUser());
     vi.mocked(prisma.membership.findMany).mockResolvedValue([
-      makeMembership({ institutionId: 'inst-zawia-showcase' }),
+      makeMembership({ institutionId: 'inst-madarek-demo' }),
       makeMembership({ institutionId: 'inst-alandalus-demo', role: 'TEACHER' }),
     ]);
 
-    const { user, accessToken } = await loginUser('student@zu.edu.ly', 'Salam-Zawiya-2026');
+    const { user, accessToken } = await loginUser('student@test.ly', 'Salam-Madarek-2026');
 
     expect(verifyAccessToken(accessToken).inst).toBeNull();
     expect(user.currentInstitution).toBeNull();
@@ -169,7 +169,7 @@ describe('loginUser — session institution context', () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(makeUser({ role: 'OWNER' }));
     vi.mocked(prisma.membership.findMany).mockResolvedValue([]);
 
-    const { user, accessToken } = await loginUser('owner@zu.edu.ly', 'Salam-Zawiya-2026');
+    const { user, accessToken } = await loginUser('owner@test.ly', 'Salam-Madarek-2026');
 
     expect(verifyAccessToken(accessToken).inst).toBeNull();
     expect(user.memberships).toEqual([]);
@@ -182,14 +182,14 @@ describe('loginUser — session institution context', () => {
 // loginUser — reg-number disambiguation (institution-scoped uniqueness)
 // ─────────────────────────────────────────────────────────────────────
 describe('loginUser — reg-number across institutions', () => {
-  const zawiaStudent = makeUser({ id: 'zawia-user', email: 'student@zu.edu.ly' });
+  const demoStudent = makeUser({ id: 'demo-user', email: 'student@test.ly' });
   const alandalusStudent = makeUser({ id: 'alandalus-user', email: 'student2@test.ly' });
   const profile = (user: User, institutionId: string) => ({
     id: `sp-${user.id}`,
     userId: user.id,
     membershipId: `mem-${user.id}`,
     institutionId,
-    universityId: 'UZ-2024-00001',
+    universityId: 'UM-2024-00001',
     facultyId: 'fac-1',
     departmentId: 'dept-1',
     user,
@@ -197,11 +197,11 @@ describe('loginUser — reg-number across institutions', () => {
 
   it('the same reg-number in 2 institutions → 400 REG_NUMBER_AMBIGUOUS with the Arabic guidance', async () => {
     vi.mocked(prisma.studentProfile.findMany).mockResolvedValue([
-      profile(zawiaStudent, 'inst-zawia-showcase') as never,
+      profile(demoStudent, 'inst-madarek-demo') as never,
       profile(alandalusStudent, 'inst-alandalus-demo') as never,
     ]);
 
-    await expect(loginUser('UZ-2024-00001', 'Salam-Zawiya-2026')).rejects.toMatchObject({
+    await expect(loginUser('UM-2024-00001', 'Salam-Madarek-2026')).rejects.toMatchObject({
       code: 'REG_NUMBER_AMBIGUOUS',
       status: 400,
       message: 'الرقم الجامعي مسجّل في أكثر من مؤسسة — سجّل الدخول بالبريد الإلكتروني أو حدّد المؤسسة',
@@ -216,32 +216,32 @@ describe('loginUser — reg-number across institutions', () => {
 
   it('institutionSlug narrows the lookup to one profile → login succeeds for that user', async () => {
     vi.mocked(prisma.studentProfile.findMany).mockResolvedValue([
-      profile(zawiaStudent, 'inst-zawia-showcase') as never,
+      profile(demoStudent, 'inst-madarek-demo') as never,
     ]);
 
     const { user, accessToken } = await loginUser(
-      'UZ-2024-00001',
-      'Salam-Zawiya-2026',
+      'UM-2024-00001',
+      'Salam-Madarek-2026',
       {},
-      'zawia-showcase',
+      'madarek-demo',
     );
 
     expect(prisma.studentProfile.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          universityId: 'UZ-2024-00001',
-          institution: { slug: 'zawia-showcase' },
+          universityId: 'UM-2024-00001',
+          institution: { slug: 'madarek-demo' },
         }),
       }),
     );
-    expect(user.id).toBe('zawia-user');
-    expect(verifyAccessToken(accessToken).sub).toBe('zawia-user');
+    expect(user.id).toBe('demo-user');
+    expect(verifyAccessToken(accessToken).sub).toBe('demo-user');
   });
 
   it('a reg-number with zero hits keeps the not-found path (INVALID_CREDENTIALS)', async () => {
     vi.mocked(prisma.studentProfile.findMany).mockResolvedValue([]);
 
-    await expect(loginUser('UZ-9999-99999', 'Salam-Zawiya-2026')).rejects.toMatchObject({
+    await expect(loginUser('UM-9999-99999', 'Salam-Madarek-2026')).rejects.toMatchObject({
       code: 'INVALID_CREDENTIALS',
       status: 401,
     });
@@ -255,7 +255,7 @@ describe('selectInstitution', () => {
   it('rejects a non-member (403 INSTITUTION_CONTEXT_INVALID) — the token never grants what the DB denies', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(makeUser());
     vi.mocked(prisma.membership.findMany).mockResolvedValue([
-      makeMembership({ institutionId: 'inst-zawia-showcase' }),
+      makeMembership({ institutionId: 'inst-madarek-demo' }),
     ]);
 
     await expect(selectInstitution('user-1', 'inst-alandalus-demo')).rejects.toMatchObject({
@@ -268,7 +268,7 @@ describe('selectInstitution', () => {
   it('mints a session carrying the selected institution (same membershipRole)', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(makeUser());
     vi.mocked(prisma.membership.findMany).mockResolvedValue([
-      makeMembership({ institutionId: 'inst-zawia-showcase' }),
+      makeMembership({ institutionId: 'inst-madarek-demo' }),
       makeMembership({ institutionId: 'inst-alandalus-demo', role: 'TEACHER' }),
     ]);
 
@@ -285,29 +285,29 @@ describe('selectInstitution', () => {
 // ─────────────────────────────────────────────────────────────────────
 describe('registerUser — institution chain consistency', () => {
   const BASE = {
-    email: 'new.student@zu.edu.ly',
-    password: 'Salam-Zawiya-2026',
+    email: 'new.student@test.ly',
+    password: 'Salam-Madarek-2026',
     firstName: 'سالم',
     lastName: 'الفيتوري',
     role: 'STUDENT' as const,
-    institutionId: 'inst-zawia-showcase',
+    institutionId: 'inst-madarek-demo',
     facultyId: 'fac-1',
     departmentId: 'dept-1',
-    universityId: 'UZ-2024-00999',
+    universityId: 'UM-2024-00999',
   };
 
   const armHappyChain = () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
     vi.mocked(prisma.institution.findUnique).mockResolvedValue({
-      id: 'inst-zawia-showcase',
+      id: 'inst-madarek-demo',
       name: 'جامعة الزاوية',
-      nameEn: 'University of Zawia',
-      slug: 'zawia-showcase',
+      nameEn: 'Madarek Model Institution',
+      slug: 'madarek-demo',
       status: 'ACTIVE',
     } as never);
     vi.mocked(prisma.faculty.findUnique).mockResolvedValue({
       id: 'fac-1',
-      institutionId: 'inst-zawia-showcase',
+      institutionId: 'inst-madarek-demo',
     } as never);
     vi.mocked(prisma.department.findUnique).mockResolvedValue({
       id: 'dept-1',
@@ -315,7 +315,7 @@ describe('registerUser — institution chain consistency', () => {
     } as never);
     vi.mocked(prisma.user.create).mockResolvedValue(makeUser({ id: 'new-user' }));
     vi.mocked(prisma.membership.create).mockResolvedValue(
-      makeMembership({ institutionId: 'inst-zawia-showcase', userId: 'new-user' }),
+      makeMembership({ institutionId: 'inst-madarek-demo', userId: 'new-user' }),
     );
   };
 
@@ -324,17 +324,17 @@ describe('registerUser — institution chain consistency', () => {
 
     const { user, accessToken } = await registerUser(BASE);
 
-    expect(verifyAccessToken(accessToken).inst).toBe('inst-zawia-showcase');
+    expect(verifyAccessToken(accessToken).inst).toBe('inst-madarek-demo');
     expect(user.memberships).toHaveLength(1);
     expect(user.memberships[0]).toMatchObject({
-      institutionId: 'inst-zawia-showcase',
+      institutionId: 'inst-madarek-demo',
       role: 'STUDENT',
     });
-    expect(user.currentInstitution).toMatchObject({ id: 'inst-zawia-showcase' });
+    expect(user.currentInstitution).toMatchObject({ id: 'inst-madarek-demo' });
     expect(prisma.membership.create).toHaveBeenCalledWith({
       data: {
         userId: 'new-user',
-        institutionId: 'inst-zawia-showcase',
+        institutionId: 'inst-madarek-demo',
         role: 'STUDENT',
         isActive: true,
       },
@@ -342,9 +342,9 @@ describe('registerUser — institution chain consistency', () => {
     expect(prisma.studentProfile.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
         userId: 'new-user',
-        membershipId: 'mem-inst-zawia-showcase',
-        institutionId: 'inst-zawia-showcase',
-        universityId: 'UZ-2024-00999',
+        membershipId: 'mem-inst-madarek-demo',
+        institutionId: 'inst-madarek-demo',
+        universityId: 'UM-2024-00999',
         facultyId: 'fac-1',
         departmentId: 'dept-1',
       }),
@@ -421,25 +421,25 @@ describe('registerUser — institution chain consistency', () => {
 // ─────────────────────────────────────────────────────────────────────
 describe('getCurrentUser — profiles scoped to the CURRENT membership', () => {
   it('returns the current membership\'s studentProfile + context fields', async () => {
-    const studentProfile = { id: 'sp-1', universityId: 'UZ-2024-00001', year: 2 };
+    const studentProfile = { id: 'sp-1', universityId: 'UM-2024-00001', year: 2 };
     vi.mocked(prisma.user.findUnique).mockResolvedValue({
       ...makeUser(),
       scopeFaculty: null,
       memberships: [
         {
-          ...makeMembership({ institutionId: 'inst-zawia-showcase' }),
+          ...makeMembership({ institutionId: 'inst-madarek-demo' }),
           studentProfiles: [studentProfile],
           teacherProfiles: [],
         },
       ],
     } as never);
 
-    const me = await getCurrentUser('user-1', 'inst-zawia-showcase');
+    const me = await getCurrentUser('user-1', 'inst-madarek-demo');
 
     expect(me.memberships).toHaveLength(1);
-    expect(me.currentInstitution).toMatchObject({ id: 'inst-zawia-showcase' });
+    expect(me.currentInstitution).toMatchObject({ id: 'inst-madarek-demo' });
     expect(me.membershipRole).toBe('STUDENT');
-    expect(me.studentProfile).toMatchObject({ id: 'sp-1', universityId: 'UZ-2024-00001' });
+    expect(me.studentProfile).toMatchObject({ id: 'sp-1', universityId: 'UM-2024-00001' });
     expect(me.teacherProfile).toBeNull();
   });
 
@@ -449,7 +449,7 @@ describe('getCurrentUser — profiles scoped to the CURRENT membership', () => {
       scopeFaculty: null,
       memberships: [
         {
-          ...makeMembership({ institutionId: 'inst-zawia-showcase' }),
+          ...makeMembership({ institutionId: 'inst-madarek-demo' }),
           studentProfiles: [{ id: 'sp-1' }],
           teacherProfiles: [],
         },
@@ -497,12 +497,12 @@ describe('requireInstitution middleware', () => {
   });
 
   it('attaches req.membership / req.institution / membership-scoped profiles when confirmed', async () => {
-    const institution = { id: 'inst-zawia-showcase', name: 'جامعة الزاوية', status: 'ACTIVE' };
-    const studentProfile = { id: 'sp-1', universityId: 'UZ-2024-00001' };
+    const institution = { id: 'inst-madarek-demo', name: 'جامعة الزاوية', status: 'ACTIVE' };
+    const studentProfile = { id: 'sp-1', universityId: 'UM-2024-00001' };
     vi.mocked(prisma.membership.findFirst).mockResolvedValue({
       id: 'mem-1',
       userId: 'user-1',
-      institutionId: 'inst-zawia-showcase',
+      institutionId: 'inst-madarek-demo',
       role: 'STUDENT',
       isActive: true,
       institution,
@@ -510,7 +510,7 @@ describe('requireInstitution middleware', () => {
       teacherProfiles: [],
     } as never);
 
-    const req = { user: { id: 'user-1', role: 'STUDENT', institutionId: 'inst-zawia-showcase' } };
+    const req = { user: { id: 'user-1', role: 'STUDENT', institutionId: 'inst-madarek-demo' } };
     const { next } = run(req);
     await vi.waitFor(() => expect(next).toHaveBeenCalledTimes(1));
 
@@ -519,14 +519,14 @@ describe('requireInstitution middleware', () => {
     expect(prisma.membership.findFirst).toHaveBeenCalledWith({
       where: {
         userId: 'user-1',
-        institutionId: 'inst-zawia-showcase',
+        institutionId: 'inst-madarek-demo',
         isActive: true,
         institution: { status: 'ACTIVE' },
       },
       include: { institution: true, studentProfiles: true, teacherProfiles: true },
     });
     expect((req as { membership?: { id: string } }).membership?.id).toBe('mem-1');
-    expect((req as { institution?: { id: string } }).institution?.id).toBe('inst-zawia-showcase');
+    expect((req as { institution?: { id: string } }).institution?.id).toBe('inst-madarek-demo');
     expect((req as { studentProfile?: { id: string } }).studentProfile?.id).toBe('sp-1');
     expect((req as { teacherProfile?: unknown }).teacherProfile).toBeNull();
   });
@@ -541,12 +541,12 @@ describe('getEffectiveCapabilities — UserPermission scope filter (r178)', () =
       { capability: 'QUALITY_VIEW', grant: true },
     ] as never);
 
-    const caps = await getEffectiveCapabilities('user-1', 'ADMIN', 'inst-zawia-showcase');
+    const caps = await getEffectiveCapabilities('user-1', 'ADMIN', 'inst-madarek-demo');
 
     expect(prisma.userPermission.findMany).toHaveBeenCalledWith({
       where: {
         userId: 'user-1',
-        OR: [{ institutionId: null }, { institutionId: 'inst-zawia-showcase' }],
+        OR: [{ institutionId: null }, { institutionId: 'inst-madarek-demo' }],
       },
       select: { capability: true, grant: true },
     });

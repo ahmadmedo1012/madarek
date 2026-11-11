@@ -37,7 +37,6 @@ import examsRoutes from './http/routes/exams.routes.js';
 import socialRoutes from './http/routes/social.routes.js';
 import permissionsRoutes from './http/routes/permissions.routes.js';
 import searchRoutes from './http/routes/search.routes.js';
-import syncRoutes from './http/routes/sync.routes.js';
 import teacherProfileRoutes from './http/routes/teacher-profile.routes.js';
 import filesRoutes from './http/routes/files.routes.js';
 import statusRoutes from './http/routes/status.routes.js';
@@ -159,7 +158,7 @@ export function createApp() {
           'object-src': ["'none'"],
           'base-uri': ["'self'"],
           /* master/D7: the university documentary embeds are retired
-             with the showcase (VideoCard.tsx deleted) — frame-src
+             with the retired media band (VideoCard.tsx deleted) — frame-src
              returns to self-only. The landing embeds nothing from
              third parties; media-src stays unset (falls back to
              'self'), and img-src stays self-only. */
@@ -289,15 +288,11 @@ app.use('/api/v1/import', importRoutes);
   // /institutions children, so nothing collides (boot-verified). The
   // /owner/* paths carry their own requireRole(OWNER) gate.
   app.use('/api/v1', institutionRoutes);
-  // r179d (phase-5): syncRoutes mounts here (before catalogRoutes) for
-  // the same ordering reason as institutionRoutes: its GET
-  // /university/facts is a PUBLIC route (the landing's facts feed),
-  // and sync's own auth gate is PATH-SCOPED to /admin — so anonymous
-  // requests for other routers' paths pass through untouched, while
-  // any earlier broad-mount router-level gate (catalog's) would 401
-  // anonymous /university/facts before syncRoutes ever runs. No
-  // syncRoutes path collides with a colleges/institution/catalog path.
-  app.use('/api/v1', syncRoutes);   // /admin/sync, /university/facts (public)
+  // R349 U2 — the sync router (admin/sync + the public university/facts
+  // feed) is RETIRED with the demo-tenant purge: the project belongs to
+  // no university and the facts pipeline (zu-sync/UniversityFact) is
+  // deleted. The my-institution page reads the caller's OWN
+  // institution through institutionRoutes/catalogRoutes.
   // catalogRoutes mounts here (before meRoutes) for the same reason:
   // its GET /faculties is a PUBLIC route declared above the router's
   // own auth gate (audit 4-A13 P0-1 — the register funnel). Any

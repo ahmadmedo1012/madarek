@@ -53,7 +53,7 @@ const OWNER_ID = 'owner-o1';
 const STUDENT_ID = 'student-s1';
 const INST_A = 'inst-a';
 const INST_B = 'inst-b';
-const SLUG_A = 'zawia-showcase';
+const SLUG_A = 'madarek-demo';
 // cuid-shaped (the zod schema rejects anything else before the handler
 // runs — the IDs must pass z.string().cuid()).
 const FACULTY_A = 'cfaculty0000000000000001';

@@ -558,7 +558,7 @@ export function teacherHitHref(role: Role): string | null {
  * institution's faculties (colleges.routes.ts resolveCollegesTarget —
  * the authed context wins), which is exactly the one institution a
  * non-OWNER scope can hit. OWNER gets null — they hold no institution
- * context, so /colleges would show the showcase default, not the hit's
+ * context, so /colleges would show the demo default, not the hit's
  * institution (a plain row beats a wrong destination).
  */
 export function institutionHitHref(role: Role): string | null {

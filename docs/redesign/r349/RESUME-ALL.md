@@ -87,3 +87,35 @@ call on this box — run conformance separately when scoping (evidence: /tmp/ver
    U3 UniversityFact → my-institution, U4 docs, U5 empty the allowlist.
 3. LANE B (one logo): B1-B4 on top of the mark-path guard.
 4. Then D, P, S, I, W, N, Z.
+
+### LANE U — U1+U2 backend purge (2026-11-11, this commit)
+- U1 inventory = the Q4 allowlist (133 files, measured). U2 executed on the backend:
+  - DELETED: `lib/zu-sync/` (2 files), `sync.routes.ts`, 4 test suites that tested the deleted
+    pipeline (sync-institution-isolation, sync-routes-scope, zu-sync-run, scheduler-institution,
+    scheduler-guard — 54 tests of the retired FEATURE, deleted with it per L3; suite totals moved
+    2125→2071 green, nothing skipped to pass).
+  - `scheduler.ts` rewritten: retention-ONLY (LoginEvent sweep kept verbatim; the zu-sync job,
+    planScheduledSyncs, runSyncGuarded, and the registry are gone).
+  - `app.ts`: the /api/v1 sync mount removed (mount-ordering comment preserved for catalog).
+  - schema: UniversityFact + SyncRun models removed; `SHOWCASE_INSTITUTION_SLUG` →
+    `DEMO_INSTITUTION_SLUG` (same value 'madarek-demo').
+  - Migration `20261111080000_r349_u_neutral_tenant`: `UPDATE Institution SET id='inst-madarek-demo'
+    WHERE id='inst-zawia-showcase'` (every FK carries ON UPDATE CASCADE — verified in 0_init + all
+    AddForeignKey statements) + `DROP TABLE UniversityFact/SyncRun` + `DROP TYPE SyncRunStatus`,
+    idempotent.
+  - **Local-PG PROOF (PASS)**: fresh DB → baseline (all migrations minus the new one) → seeded the
+    OLD state (retired id + Faculty FK child + UniversityFact + SyncRun rows) → applied the new
+    migration TWICE → institution id renamed WITH the faculty FK cascaded, both tables dropped,
+    zero errors. Fresh-seed proof: `prisma migrate reset` + seed → Institution rows read
+    `inst-madarek-demo`/`madarek-demo`/«مؤسسة مدارك النموذجية». (Neon-branch test not available
+    on this box — local embedded PG 16 is the evidence; the migration is idempotent + FK-cascade
+    based, and `prisma migrate diff` vs the deployed schema will be exercised at deploy.)
+  - Re-keyed every backend source/test fixture: `inst-zawia-showcase`→`inst-madarek-demo`,
+    `zawia-showcase` slugs→`madarek-demo`, the `'zawia'|'alandalus'` union→`'madarek'|'alandalus'`,
+    `UZ-2024-*` reg numbers→`UM-2024-*`, skeleton locals (zawiaItFaculty→madarekItFaculty …),
+    `@zu.edu.ly`→`@test.ly`, 'University of Zawia' nameEn→'Madarek Model Institution',
+    Salam-Zawiya-2026→Salam-Madarek-2026. The alandalus student's FIRST reg candidate stays
+    UM-2024-00001 (the cross-institution uniqueness proof).
+- Backend gates after the purge: tsc 0/0 (src + tests), vitest **2071 passed** · 19 skipped.
+- identity-guard: backend residue now 0 outside migrations (659 allowlisted hits remain, all in
+  frontend/mobile/docs — the U3/U4 workload).

@@ -9,7 +9,7 @@
  * r188 FICTIONAL demonstration institution that owns the 25-faculty
  * synthetic catalogue + all academic demo content — renamed from the
  * retired real-university showcase; the row keeps its stable id
- * inst-zawia-showcase, a legacy identifier, not identity) and مؤسسة
+ * inst-madarek-demo, a legacy identifier, not identity) and مؤسسة
  * الأندلس التعليمية (slug alandalus-demo, a generic demo institution,
  * NOT a real-university claim). The Al-Andalus demo
  * course reuses the SAME code as the demo university's CS course and its
@@ -129,7 +129,7 @@ async function main() {
   // ─── Institutions (r178 → r188) ───────────────────────────
   // Upsert by slug. The demonstration tenant is مؤسسة مدارك النموذجية —
   // fully FICTIONAL (r188). The row is created with the FIXED literal
-  // id 'inst-zawia-showcase' — a LEGACY stable identifier carried from
+  // id 'inst-madarek-demo' — a LEGACY stable identifier carried from
   // the pre-r188 era (renaming ids would churn every FK for zero
   // product value; the string is internal, never public identity) —
   // the same id the migration backfill used, so migrated databases and
@@ -140,7 +140,7 @@ async function main() {
     where: { slug: 'madarek-demo' },
     update: { name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', status: 'ACTIVE' },
     create: {
-      id: 'inst-zawia-showcase',
+      id: 'inst-madarek-demo',
       name: 'مؤسسة مدارك النموذجية',
       nameEn: 'Madarek Model Institution',
       slug: 'madarek-demo',

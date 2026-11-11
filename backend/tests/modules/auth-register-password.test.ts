@@ -74,7 +74,7 @@ const VALID_REGISTER_BODY = {
   role: 'STUDENT',
   // r178: institutionId is now a required register field — the 400
   // under test must come from the PASSWORD, not a missing institution.
-  institutionId: 'inst-zawia-showcase',
+  institutionId: 'inst-madarek-demo',
 };
 
 describe('POST /auth/register — password blocklist 400 is field-specific (r165f)', () => {

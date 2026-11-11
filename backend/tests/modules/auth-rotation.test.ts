@@ -385,7 +385,7 @@ describe('auth DTO sanitizer trims', () => {
       firstName: '  أحمد ',
       lastName: 'المستخدم  ',
       role: 'STUDENT',
-      institutionId: 'inst-zawia-showcase',
+      institutionId: 'inst-madarek-demo',
     });
     expect(parsed.email).toBe('new.student@zu.edu.ly');
     expect(parsed.firstName).toBe('أحمد');
@@ -408,11 +408,11 @@ describe('JWT — sign/verify round trips', () => {
   });
 
   it('round-trips an institution-scoped access token (r178 inst claim)', () => {
-    const token = signAccessToken('user-1', 'ADMIN', 'inst-zawia-showcase');
+    const token = signAccessToken('user-1', 'ADMIN', 'inst-madarek-demo');
     expect(verifyAccessToken(token)).toEqual({
       sub: 'user-1',
       role: 'ADMIN',
-      inst: 'inst-zawia-showcase',
+      inst: 'inst-madarek-demo',
       type: 'access',
     });
   });

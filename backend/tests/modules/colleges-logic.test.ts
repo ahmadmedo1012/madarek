@@ -23,7 +23,7 @@ import {
   parseInstitutionSlug,
   resolveCollegesTarget,
   rollupCounts,
-  SHOWCASE_INSTITUTION_SLUG,
+  DEMO_INSTITUTION_SLUG,
 } from '../../src/http/routes/colleges.routes';
 
 // ── rollupCounts ───────────────────────────────────────────────────
@@ -204,7 +204,7 @@ describe('buildLeaderboardRow (wire shape + zero defaults)', () => {
 
 describe('parseInstitutionSlug + resolveCollegesTarget (public colleges funnel)', () => {
   it('parses ?institution= only when it is a non-empty string (trimmed)', () => {
-    expect(parseInstitutionSlug({ institution: 'zawia-showcase' })).toBe('zawia-showcase');
+    expect(parseInstitutionSlug({ institution: 'madarek-demo' })).toBe('madarek-demo');
     expect(parseInstitutionSlug({ institution: '  alandalus-demo  ' })).toBe('alandalus-demo');
     expect(parseInstitutionSlug({ institution: '' })).toBeUndefined();
     expect(parseInstitutionSlug({ institution: '   ' })).toBeUndefined();
@@ -214,7 +214,7 @@ describe('parseInstitutionSlug + resolveCollegesTarget (public colleges funnel)'
   });
 
   it('an explicit ?institution=slug ALWAYS wins over the authed context', () => {
-    expect(resolveCollegesTarget('alandalus-demo', 'inst-zawia')).toEqual({
+    expect(resolveCollegesTarget('alandalus-demo', 'inst-madarek')).toEqual({
       kind: 'slug',
       slug: 'alandalus-demo',
       explicit: true,
@@ -222,9 +222,9 @@ describe('parseInstitutionSlug + resolveCollegesTarget (public colleges funnel)'
   });
 
   it('an authed caller without an explicit slug gets THEIR institution (explicit id target)', () => {
-    expect(resolveCollegesTarget(undefined, 'inst-zawia')).toEqual({
+    expect(resolveCollegesTarget(undefined, 'inst-madarek')).toEqual({
       kind: 'id',
-      id: 'inst-zawia',
+      id: 'inst-madarek',
       explicit: true,
     });
   });
@@ -232,20 +232,19 @@ describe('parseInstitutionSlug + resolveCollegesTarget (public colleges funnel)'
   it('anonymous/contextless land on the showcase default (implicit — degrades to the empty listing)', () => {
     expect(resolveCollegesTarget(undefined, null)).toEqual({
       kind: 'slug',
-      slug: SHOWCASE_INSTITUTION_SLUG,
+      slug: DEMO_INSTITUTION_SLUG,
       explicit: false,
     });
     expect(resolveCollegesTarget(undefined, undefined)).toEqual({
       kind: 'slug',
-      slug: SHOWCASE_INSTITUTION_SLUG,
+      slug: DEMO_INSTITUTION_SLUG,
       explicit: false,
     });
   });
 
-  it('the showcase slug constant matches the seeded reference institution', () => {
-    // seed.ts upserts the showcase institution by slug `zawia-showcase`
-    // r188: the demo tenant keeps the legacy fixed id
-    // `inst-zawia-showcase` — the public default names the r188 slug.
-    expect(SHOWCASE_INSTITUTION_SLUG).toBe('madarek-demo');
+  it('the demo slug constant matches the seeded reference institution', () => {
+    // seed.ts upserts the demo institution by slug `madarek-demo`
+    // (r188 slug + the R349 U2 re-keyed id `inst-madarek-demo`).
+    expect(DEMO_INSTITUTION_SLUG).toBe('madarek-demo');
   });
 });

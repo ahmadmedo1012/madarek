@@ -23,10 +23,9 @@
 //    own cuid PKs (userId keeps FK + index for legacy reads).
 //  · UserPermission/AuditLog gain nullable institutionId (NULL =
 //    platform scope).
-//  · Deliberately untouched (Phase 5): UniversityFact/SyncRun (Zawia
-//    showcase source), Announcement/PlatformSetting/FeatureFlag
-//    (platform-global), offerings/enrollments/grades (ownership via
-//    the verified parent chain).
+//  · Deliberately untouched (Phase 5): Announcement/PlatformSetting/
+//    FeatureFlag (platform-global), offerings/enrollments/grades
+//    (ownership via the verified parent chain).
 // ────────────────────────────────────────────────────────────────
 
 generator client {
@@ -285,10 +284,10 @@ enum ThemePreference {
 // ────────────────────────────────────────────────────────────────
 
 // المؤسسة سياق تعليمي داخل مدارك (ليست هوية بصرية — لا شعارات ولا
-// نطاقات). مؤسسة العرض المرجعية: جامعة الزاوية (slug: zawia-showcase)
-// تحمل البيانات التجريبية؛ ومؤسسة الأندلس التعليمية (slug:
-// alandalus-demo) مؤسسة تجريبية عامة تثبت تفرد رموز المقررات وأرقام
-// التسجيل على مستوى المؤسسة لا المنصة.
+// نطاقات). المؤسسة التجريبية المرجعية «مؤسسة مدارك النموذجية» (id:
+// inst-madarek-demo، slug: madarek-demo) تحمل البيانات التجريبية؛
+// ومؤسسة الأندلس التعليمية (slug: alandalus-demo) مؤسسة تجريبية عامة
+// تثبت تفرد رموز المقررات وأرقام التسجيل على مستوى المؤسسة لا المنصة.
 model Institution {
   id             String            @id @default(cuid())
   name           String
@@ -333,8 +332,6 @@ model Institution {
   competitions      Competition[]
   researchPapers    ResearchPaper[]
   aiConversations   AiConversation[]
-  universityFacts   UniversityFact[]
-  syncRuns          SyncRun[]
   aiKnowledgeChunks AiKnowledgeChunk[]
   // master-E1 — تعريفات الحقول المخصصة لهذه المؤسسة (النظام البنيوي
   // للحقول المخصصة — انظر InstitutionFieldDefinition أدناه).
@@ -2110,61 +2107,12 @@ model EventRSVP {
 }
 
 // ════════════════════════════════════════════════════════════════
-//  University data synchronization (PRD: daily sync from zu.edu.ly)
-// ════════════════════════════════════════════════════════════════
-//  UniversityFact   key/value store of public institutional facts
-//                   (vision, mission, contact, grade scale, etc.)
-//  SyncRun          audit log of every sync attempt
+//  RETIRED (R349 U2/U3): the university-facts pipeline — UniversityFact,
+//  SyncRun, lib/zu-sync, /admin/sync, /university/facts — deleted with
+//  the showcase tenant («المشروع لا ينتمي لأي جامعة»). The
+//  my-institution page reads the caller's own Institution + Faculty
+//  + contact profiles.
 // ────────────────────────────────────────────────────────────────
-
-enum SyncRunStatus {
-  RUNNING
-  SUCCESS
-  PARTIAL
-  FAILED
-}
-
-model UniversityFact {
-  /// Stable key — e.g. "name", "foundingYear", "phone.primary",
-  /// "address", "vision", "mission", "grade.scale.excellent".
-  key           String
-  institutionId String
-  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
-  /// Localized display value (Arabic by default; English-tagged keys for English).
-  value         String      @db.Text
-  /// Group: general | identity | contact | strategic | grading | colleges | calendar | other
-  category      String      @default("general")
-  /// Where the value came from: "zu.edu.ly:about" | "zu.edu.ly:faculty" | "manual"
-  source        String      @default("zu.edu.ly")
-  syncedAt      DateTime    @default(now())
-  /// Marked stale if a sync run could not refresh it.
-  isStale       Boolean     @default(false)
-
-  @@id([institutionId, key])
-  @@index([institutionId, category])
-}
-
-model SyncRun {
-  id            String        @id @default(cuid())
-  startedAt     DateTime      @default(now())
-  completedAt   DateTime?
-  status        SyncRunStatus @default(RUNNING)
-  source        String        @default("static-markdown")
-  /// r179 (phase-5): the institution this run synced — a run for one
-  /// institution never marks another's facts stale or overwrites its data.
-  institutionId String
-  institution   Institution   @relation(fields: [institutionId], references: [id], onDelete: Cascade)
-  factsAdded    Int           @default(0)
-  factsUpdated  Int           @default(0)
-  errorMsg      String?       @db.Text
-  durationMs    Int?
-  /// Free-form notes / fields the run could not resolve.
-  notes         String?       @db.Text
-
-  @@index([startedAt])
-  @@index([status])
-  @@index([institutionId, startedAt])
-}
 
 // ════════════════════════════════════════════════════════════════
 //  Live streaming sessions (PRD: teacher controls, students watch)

@@ -16,7 +16,7 @@ import { ROLE_LABEL_INDEFINITE } from '../../lib/roleLabels.js';
 
 /**
  * Slug contract: lowercase alphanumerics + dashes, 2–63 chars, must
- * start alphanumerically. Same shape the seed uses for the showcase
+ * start alphanumerically. Same shape the seed uses for the demo
  * institutions ('madarek-demo', 'alandalus-demo').
  */
 const SLUG_PATTERN = /^[a-z0-9][a-z0-9-]{1,62}$/;

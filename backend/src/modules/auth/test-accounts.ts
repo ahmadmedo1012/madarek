@@ -50,8 +50,8 @@ interface AccountProfileData {
   lastName: string;
   avatarInitials: string;
   avatarColor: string;
-  /** Which demo institution this account belongs to ('zawia' | 'alandalus'). */
-  institution: 'zawia' | 'alandalus';
+  /** Which demo institution this account belongs to ('madarek' | 'alandalus'). */
+  institution: 'madarek' | 'alandalus';
   /** Reg-number candidates, tried in order, ONLY when allocating a new
    * StudentProfile (an existing profile is never renumbered). */
   regNumbers?: string[];
@@ -66,30 +66,30 @@ interface AccountProfileData {
 const ACCOUNT_PROFILES: Record<string, AccountProfileData> = {
   'student@test.ly': {
     firstName: 'أحمد', lastName: 'الزروق', avatarInitials: 'أح', avatarColor: '#4F8EF7',
-    institution: 'zawia', regNumbers: ['UZ-2024-00001', 'UZ-2025-00001'],
+    institution: 'madarek', regNumbers: ['UM-2024-00001', 'UM-2025-00001'],
     year: 3, gpa: 3.4, totalXp: 2340, level: 7,
   },
   'student2@test.ly': {
     firstName: 'ليلى', lastName: 'المهدي', avatarInitials: 'لم', avatarColor: '#F06292',
-    institution: 'alandalus', regNumbers: ['UZ-2024-00001', 'AA-2025-00001'],
+    institution: 'alandalus', regNumbers: ['UM-2024-00001', 'AA-2025-00001'],
     year: 1,
   },
   'teacher@test.ly': {
     firstName: 'سالم', lastName: 'البوسيفي', avatarInitials: 'سب', avatarColor: '#3DD68C',
-    institution: 'zawia', specialty: 'علوم الحاسوب والذكاء الاصطناعي',
+    institution: 'madarek', specialty: 'علوم الحاسوب والذكاء الاصطناعي',
     rank: AcademicRank.ASSOCIATE_PROFESSOR,
   },
   'head@test.ly': {
     firstName: 'محمد', lastName: 'الشريف', avatarInitials: 'مش', avatarColor: '#0E7490',
-    institution: 'zawia', specialty: 'هندسة البرمجيات', rank: AcademicRank.PROFESSOR,
+    institution: 'madarek', specialty: 'هندسة البرمجيات', rank: AcademicRank.PROFESSOR,
   },
   'dean@test.ly': {
     firstName: 'إبراهيم', lastName: 'الفيتوري', avatarInitials: 'إف', avatarColor: '#B45309',
-    institution: 'zawia', specialty: 'نظم المعلومات الإدارية', rank: AcademicRank.PROFESSOR,
+    institution: 'madarek', specialty: 'نظم المعلومات الإدارية', rank: AcademicRank.PROFESSOR,
   },
   'vicedean@test.ly': {
     firstName: 'آمال', lastName: 'بن عيسى', avatarInitials: 'آب', avatarColor: '#7C3AED',
-    institution: 'zawia', specialty: 'شبكات الحاسوب', rank: AcademicRank.PROFESSOR,
+    institution: 'madarek', specialty: 'شبكات الحاسوب', rank: AcademicRank.PROFESSOR,
   },
   'registrar@test.ly': {
     /* R320 §B lockstep fix: the seed corpus (prisma/seed.ts, c1-RENAME)
@@ -102,19 +102,19 @@ const ACCOUNT_PROFILES: Record<string, AccountProfileData> = {
        lockstep. (R321 §A7: the stale literal retired from comments —
        the ledger scan owns the history.) */
     firstName: 'المسجل', lastName: 'العام', avatarInitials: 'مع', avatarColor: '#9B6FE8',
-    institution: 'zawia',
+    institution: 'madarek',
   },
   'faculty@test.ly': {
     firstName: 'خديجة', lastName: 'المرابط', avatarInitials: 'خم', avatarColor: '#2EC4B6',
-    institution: 'zawia',
+    institution: 'madarek',
   },
   'quality@test.ly': {
     firstName: 'ضمان', lastName: 'الجودة', avatarInitials: 'جو', avatarColor: '#D4A537',
-    institution: 'zawia',
+    institution: 'madarek',
   },
   'owner@test.ly': {
     firstName: 'مالك', lastName: 'المنصة', avatarInitials: 'مل', avatarColor: '#6B7280',
-    institution: 'zawia', // informational only — the owner NEVER gets a membership
+    institution: 'madarek', // informational only — the owner NEVER gets a membership
   },
 };
 
@@ -122,11 +122,11 @@ const ACCOUNT_PROFILES: Record<string, AccountProfileData> = {
  * so fresh installs and bare boot-time skeletons converge on the same
  * rows the corpus seed would create). */
 async function ensureSkeleton(prisma: PrismaClient) {
-  const zawia = await prisma.institution.upsert({
+  const madarekInst = await prisma.institution.upsert({
     where: { slug: 'madarek-demo' },
     update: { name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', status: 'ACTIVE' },
     create: {
-      id: 'inst-zawia-showcase',
+      id: 'inst-madarek-demo',
       name: 'مؤسسة مدارك النموذجية',
       nameEn: 'Madarek Model Institution',
       slug: 'madarek-demo',
@@ -143,13 +143,13 @@ async function ensureSkeleton(prisma: PrismaClient) {
       status: 'ACTIVE',
     },
   });
-  const zawiaItFaculty = await prisma.faculty.upsert({
+  const madarekItFaculty = await prisma.faculty.upsert({
     where: {
-      institutionId_name_city: { institutionId: zawia.id, name: 'كلية تقنية المعلومات', city: 'حرم المعرفة' },
+      institutionId_name_city: { institutionId: madarekInst.id, name: 'كلية تقنية المعلومات', city: 'حرم المعرفة' },
     },
     create: {
       name: 'كلية تقنية المعلومات', nameEn: 'Information Technology', iconEmoji: '💻',
-      city: 'حرم المعرفة', institutionId: zawia.id,
+      city: 'حرم المعرفة', institutionId: madarekInst.id,
     },
     update: {},
   });
@@ -163,9 +163,9 @@ async function ensureSkeleton(prisma: PrismaClient) {
     },
     update: {},
   });
-  const zawiaCsDept = await prisma.department.upsert({
-    where: { facultyId_name: { facultyId: zawiaItFaculty.id, name: 'علوم الحاسوب' } },
-    create: { name: 'علوم الحاسوب', nameEn: 'Computer Science', facultyId: zawiaItFaculty.id },
+  const madarekCsDept = await prisma.department.upsert({
+    where: { facultyId_name: { facultyId: madarekItFaculty.id, name: 'علوم الحاسوب' } },
+    create: { name: 'علوم الحاسوب', nameEn: 'Computer Science', facultyId: madarekItFaculty.id },
     update: {},
   });
   const aaCsDept = await prisma.department.upsert({
@@ -174,9 +174,9 @@ async function ensureSkeleton(prisma: PrismaClient) {
     update: {},
   });
   return {
-    zawia, alandalus,
-    zawiaItFaculty, aaFaculty,
-    zawiaCsDept, aaCsDept,
+    madarek: madarekInst, alandalus,
+    madarekItFaculty, aaFaculty,
+    madarekCsDept, aaCsDept,
   };
 }
 
@@ -243,9 +243,9 @@ export async function ensureTestAccounts(prisma: PrismaClient): Promise<number> 
     if (!profile) continue; // unknown account — the table and profiles must stay in lockstep
 
     const institution =
-      profile.institution === 'alandalus' ? skeleton.alandalus : skeleton.zawia;
-    const faculty = profile.institution === 'alandalus' ? skeleton.aaFaculty : skeleton.zawiaItFaculty;
-    const department = profile.institution === 'alandalus' ? skeleton.aaCsDept : skeleton.zawiaCsDept;
+      profile.institution === 'alandalus' ? skeleton.alandalus : skeleton.madarek;
+    const faculty = profile.institution === 'alandalus' ? skeleton.aaFaculty : skeleton.madarekItFaculty;
+    const department = profile.institution === 'alandalus' ? skeleton.aaCsDept : skeleton.madarekCsDept;
 
     // ── user: create-or-heal by the fixed test email ──────────────
     // The heal (update) branch converges the row on the canonical
@@ -267,7 +267,7 @@ export async function ensureTestAccounts(prisma: PrismaClient): Promise<number> 
         avatarColor: profile.avatarColor,
         // Governance scope is part of the account's documented contract:
         // faculty-scoped for `scoped`, university-wide (NULL) otherwise.
-        scopeFacultyId: account.scoped ? skeleton.zawiaItFaculty.id : null,
+        scopeFacultyId: account.scoped ? skeleton.madarekItFaculty.id : null,
       },
       create: {
         email: account.email,
@@ -278,7 +278,7 @@ export async function ensureTestAccounts(prisma: PrismaClient): Promise<number> 
         avatarInitials: profile.avatarInitials,
         avatarColor: profile.avatarColor,
         emailVerifiedAt: new Date(),
-        scopeFacultyId: account.scoped ? skeleton.zawiaItFaculty.id : null,
+        scopeFacultyId: account.scoped ? skeleton.madarekItFaculty.id : null,
       },
     });
     const user = await prisma.user.findUniqueOrThrow({

@@ -46,7 +46,7 @@ const OWNER_ID = 'owner-o1';
 const ADMIN_ID = 'admin-a1';
 const INST_A = 'inst-a';
 const INST_B = 'inst-b';
-const SLUG_A = 'zawia-showcase';
+const SLUG_A = 'madarek-demo';
 const SLUG_B = 'alandalus-demo';
 
 const bearerFor = (userId: string, role: Role, institutionId: string | null) => ({
@@ -99,7 +99,7 @@ describe('GET /api/v1/admin/courses?institutionSlug= (r181 — OWNER narrowing)'
     vi.mocked(prisma.course.count).mockResolvedValue(0 as never);
 
     const res = await get(
-      '/api/v1/admin/courses?institutionSlug=zawia-showcase',
+      '/api/v1/admin/courses?institutionSlug=madarek-demo',
       bearerFor(OWNER_ID, Role.OWNER, null),
     );
 
@@ -164,7 +164,7 @@ describe('GET /api/v1/owner/users?institutionSlug= (r181 — membership-scoped r
     vi.mocked(prisma.user.count).mockResolvedValue(0 as never);
 
     const res = await get(
-      '/api/v1/owner/users?institutionSlug=zawia-showcase',
+      '/api/v1/owner/users?institutionSlug=madarek-demo',
       bearerFor(OWNER_ID, Role.OWNER, null),
     );
 
@@ -213,7 +213,7 @@ describe('GET /api/v1/owner/users?institutionSlug= (r181 — membership-scoped r
      * (r181: the FE picker sends it; the route must accept the same
      * hard cap its ADMIN twin does, else the picker 400s empty). */
     const res = await get(
-      '/api/v1/owner/users?role=TEACHER&institutionSlug=zawia-showcase&limit=200',
+      '/api/v1/owner/users?role=TEACHER&institutionSlug=madarek-demo&limit=200',
       bearerFor(OWNER_ID, Role.OWNER, null),
     );
 
@@ -230,7 +230,7 @@ describe('GET /api/v1/owner/users?institutionSlug= (r181 — membership-scoped r
 
   it('stays OWNER-only — an ADMIN bearer is rejected at the router guard', async () => {
     const res = await get(
-      '/api/v1/owner/users?institutionSlug=zawia-showcase',
+      '/api/v1/owner/users?institutionSlug=madarek-demo',
       bearerFor(ADMIN_ID, Role.ADMIN, INST_A),
     );
 

@@ -11,7 +11,7 @@
  * What it seeds (all upsert/guarded-create → re-runs are no-ops):
  *   - reuses the established demo tenant مؤسسة مدارك النموذجية
  *     (slug madarek-demo — the same row seed.ts maintains; the fixed
- *     legacy id 'inst-zawia-showcase' is only on the fresh-create
+ *     legacy id 'inst-madarek-demo' is only on the fresh-create
  *     branch so migrated and fresh databases agree on the reference id)
  *   - 8 courses with real Arabic names (codes CS101…NT101 — a fresh
  *     grammar that cannot collide with the 30x codes of seed.ts /
@@ -377,7 +377,7 @@ export async function seedDemoR330(prisma: PrismaClient): Promise<DemoSummary> {
     where: { slug: INSTITUTION_SLUG },
     update: {},
     create: {
-      id: 'inst-zawia-showcase',
+      id: 'inst-madarek-demo',
       name: 'مؤسسة مدارك النموذجية',
       nameEn: 'Madarek Model Institution',
       slug: INSTITUTION_SLUG,

@@ -33,7 +33,7 @@ import type { AddressInfo } from 'node:net';
 vi.mock('../../src/db.js', () => ({
   prisma: {
     // r179 (phase-5): the colleges surfaces resolve the target
-    // institution (?institution=slug / authed context / showcase
+    // institution (?institution=slug / authed context / demo
     // default) before listing faculties.
     institution: { findUnique: vi.fn() },
     // GET /colleges/:id
@@ -76,11 +76,11 @@ afterAll(async () => {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  // r179 (phase-5): the default target resolves — an ACTIVE showcase
+  // r179 (phase-5): the default target resolves — an ACTIVE demo
   // institution row (both the anonymous and the contextless-authed
   // paths land on it).
   vi.mocked(prisma.institution.findUnique).mockResolvedValue({
-    id: 'inst-showcase',
+    id: 'inst-madarek-demo',
     status: 'ACTIVE',
   } as never);
 });
@@ -131,7 +131,7 @@ function mockDetailBundle() {
     // r179 (phase-5): the bundle's events/competitions are scoped to
     // the faculty's institution — the mock carries it like the real
     // include does.
-    institution: { id: 'inst-showcase', name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', slug: 'madarek-demo' },
+    institution: { id: 'inst-madarek-demo', name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', slug: 'madarek-demo' },
     departments: [
       { id: 'dep-1', name: 'قسم اللغة العربية', _count: { students: 40, teachers: 3, courses: 6 } },
     ],
@@ -291,7 +291,7 @@ describe('widening the college funnel did not open anything else', () => {
 // ── r179 (phase-5): institution-aware public colleges surfaces ─────
 
 describe('GET /api/v1/colleges(+/leaderboard) — institution-aware listing (r179)', () => {
-  it('the anonymous default resolves the SHOWCASE institution and filters faculties by it', async () => {
+  it('the anonymous default resolves the demo institution and filters faculties by it', async () => {
     vi.mocked(prisma.faculty.findMany).mockResolvedValue([] as never);
     await get('/api/v1/colleges');
     // The target institution row resolved by slug (the showcase default)…
@@ -301,7 +301,7 @@ describe('GET /api/v1/colleges(+/leaderboard) — institution-aware listing (r17
     });
     // …and the faculty listing is scoped to the resolved institution id.
     expect(prisma.faculty.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { institutionId: 'inst-showcase' } }),
+      expect.objectContaining({ where: { institutionId: 'inst-madarek-demo' } }),
     );
   });
 
@@ -321,7 +321,7 @@ describe('GET /api/v1/colleges(+/leaderboard) — institution-aware listing (r17
     );
   });
 
-  it('an authed caller WITH an institution context gets THEIR institution (not the showcase)', async () => {
+  it('an authed caller WITH an institution context gets THEIR institution (not the demo default)', async () => {
     vi.mocked(prisma.institution.findUnique).mockResolvedValue({
       id: 'inst-mine',
       status: 'ACTIVE',
@@ -345,7 +345,7 @@ describe('GET /api/v1/colleges(+/leaderboard) — institution-aware listing (r17
     expect(((await res.json()) as { error: { code: string } }).error.code).toBe('NOT_FOUND');
   });
 
-  it('a SUSPENDED explicit target is a 404; the implicit showcase default degrades to the empty listing', async () => {
+  it('a SUSPENDED explicit target is a 404; the implicit demo default degrades to the empty listing', async () => {
     vi.mocked(prisma.institution.findUnique).mockResolvedValue({
       id: 'inst-suspended',
       status: 'SUSPENDED',
@@ -370,7 +370,7 @@ describe('GET /api/v1/colleges(+/leaderboard) — institution-aware listing (r17
       select: { id: true, status: true },
     });
     expect(prisma.faculty.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { institutionId: 'inst-showcase' } }),
+      expect.objectContaining({ where: { institutionId: 'inst-madarek-demo' } }),
     );
   });
 });
@@ -380,10 +380,10 @@ describe('GET /api/v1/colleges/:id — bundle scoped to the faculty\'s instituti
     mockDetailBundle();
     await get(`/api/v1/colleges/${FACULTY_ID}`);
     expect(prisma.campusEvent.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: expect.objectContaining({ institutionId: 'inst-showcase' }) }),
+      expect.objectContaining({ where: expect.objectContaining({ institutionId: 'inst-madarek-demo' }) }),
     );
     expect(prisma.competition.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: expect.objectContaining({ institutionId: 'inst-showcase' }) }),
+      expect.objectContaining({ where: expect.objectContaining({ institutionId: 'inst-madarek-demo' }) }),
     );
   });
 });
