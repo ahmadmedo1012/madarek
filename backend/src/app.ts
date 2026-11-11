@@ -18,6 +18,7 @@ import { globalRateLimiter } from './http/middleware/rateLimit.js';
 
 import authRoutes from './http/routes/auth.routes.js';
 import usersRoutes from './http/routes/users.routes.js';
+import importRoutes from './http/routes/import.routes.js';
 import coursesRoutes from './http/routes/courses.routes.js';
 import enrollmentsRoutes from './http/routes/enrollments.routes.js';
 import offeringsRoutes from './http/routes/offerings.routes.js';
@@ -250,6 +251,8 @@ export function createApp() {
 
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/users', usersRoutes);
+// master-F1 — the institutional import system (§9): parse/preview/commit/templates/report.
+app.use('/api/v1/import', importRoutes);
   app.use('/api/v1/courses', coursesRoutes);
   app.use('/api/v1/enrollments', enrollmentsRoutes);
   app.use('/api/v1/offerings', offeringsRoutes);
