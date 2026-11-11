@@ -94,6 +94,7 @@ const MARK_PATTERN = {
 // mobile port. Lane B's generator outputs land here too.
 const MARK_SANCTIONED = new Set([
   'frontend/src/brand/mark.ts',
+  'docs/brand.md', // R349 B4: the brand CANON — states the geometry it governs (same class as mark.ts)
   'apps/mobile/src/brand/mark.ts',
   'shared/brand/mark.svg',
   'frontend/public/favicon.svg',

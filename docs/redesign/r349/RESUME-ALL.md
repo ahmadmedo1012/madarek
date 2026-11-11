@@ -223,3 +223,26 @@ all fixes re-measured on this box.
   **CLEAN — 0 allowlisted, 0 drift, 0 entries**.
 - Open: live-deploy proof (landing/footer text after this deploy) + the U exit
   table lands with the Z-lane report; screenshots ride the W-lane browser work.
+
+### LANE B — one logo, provably (2026-11-11, this commit)
+- **Inventory (B1)**: the placements are either (a) the <Logo> component (header,
+  chrome, preloader, states, 404, auth, footer — same-source by construction),
+  (b) generator outputs (favicon.svg, PWA 192/512, apple-touch 180, OG card,
+  wordmark/lockups, all 7 mobile rasters), (c) the sanctioned TEXT wordmark
+  «مدارك.» (email + offline pages), or (d) expo-prebuild native launchers
+  (from the same assets at build time). docs/brand.md §5 records the table.
+- **Cross-tree pin (new test)**: frontend/src/brand/mark.ts ≡ apps/mobile/
+  src/brand/mark.ts — every MARK_* constant byte-equal (the two-twin
+  architecture, now ratcheted). 20/20 green in r323-brand-system.
+- **B2 the single door**: scripts/brand/build-assets.mjs (--web/--mobile/
+  --manifest/--check) + scripts/brand/asset-manifest.json (SHA-256 ×18
+  assets) — dependency-free --check wired into verify.sh (BOTH modes,
+  step 3.6) AND the CI design-gates job. A hand-edited logo file can
+  never ship silently.
+- **B4 the lock-up rule**: docs/brand.md — geometry canon, the three
+  colours + the dark accent swap, lock-up spacing/min-size/clear-space,
+  the sanctioned seats, the never-list.
+- **Honest scope note (B3)**: the raster-tolerance cross-render of every
+  PLACEMENT (screenshots vs canonical) rides the W-lane browser captures —
+  the byte-pins (SVG twins + PNG manifest + icons:check) + the jsdom Logo
+  contract cover every drift channel short of a browser raster today.
