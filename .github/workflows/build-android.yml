@@ -464,36 +464,17 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
           disable-animations: true
           script: |
-            # NOTE: this script runs under /bin/sh (POSIX) — no `pipefail`.
-            set -eu
+            # NOTE: android-emulator-runner executes EVERY LINE of this script
+            # as its own `/usr/bin/sh -c` (POSIX sh, no pipefail, no variables
+            # or cwd surviving across lines) — every line is self-contained.
             adb wait-for-device
-            echo "Waiting for boot completion..."
-            for i in $(seq 1 120); do
-              BOOTED=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)
-              [ "$BOOTED" = "1" ] && break
-              sleep 5
-            done
-            [ "$BOOTED" = "1" ] || { echo "::error::Emulator did not boot"; exit 1; }
-
+            adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
             echo "== Installing the APK =="
             adb install -r candidate/Madarek.apk
-
             echo "== Maestro alive-flow (login -> dashboard -> 60s alive) =="
-            cd apps/mobile
-            maestro test .maestro/smoke-alive.yaml --format junit --output build/maestro-junit.xml || MAESTRO_RC=$?
-            if [ "${MAESTRO_RC:-0}" != "0" ]; then
-              echo "::error::Maestro alive-flow FAILED — the app did not stay alive/interactive"
-              adb logcat -d -b crash || true
-              exit 1
-            fi
-
+            maestro test apps/mobile/.maestro/smoke-alive.yaml --format junit --output apps/mobile/build/maestro-junit.xml
             echo "== Crash-buffer scan (fatal for ly.madarek.mobile) =="
-            CRASHES=$(adb logcat -d -b crash 2>/dev/null | grep -c "ly.madarek.mobile" || true)
-            if [ "$CRASHES" != "0" ]; then
-              echo "::error::$CRASHES crash-buffer line(s) for ly.madarek.mobile"
-              adb logcat -d -b crash || true
-              exit 1
-            fi
+            adb logcat -d -b crash | tee /tmp/crash-buffer.txt | grep -c "ly.madarek.mobile" | grep -qx 0
             echo "Alive-flow green: no crashes, 60s window held."
 
       - name: Upload Maestro diagnostics on failure
