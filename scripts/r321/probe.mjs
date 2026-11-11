@@ -66,7 +66,7 @@ for (const route of ['/', '/500', '/legal/privacy']) {
 const PUBLIC_SHEETS = [
   '/legal/privacy', '/legal/terms', '/legal/cookies', '/legal/accessibility',
   '/legal/security', '/legal/data', '/about', '/help', '/contact',
-  '/auth', '/auth/forgot-password', '/colleges', '/campus',
+  '/auth', '/auth/forgot-password', '/colleges',
   '/capabilities', '/404', '/403', '/500', '/maintenance',
 ];
 for (const vp of [{ width: 320, height: 568 }, { width: 360, height: 800 }, { width: 390, height: 844 }, { width: 430, height: 932 }]) {

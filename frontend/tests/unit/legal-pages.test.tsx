@@ -276,7 +276,7 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
     expect(text).toContain('72');
     expect(text).toContain('@test.ly');
     expect(text).toContain('كما هي');
-    expect(text).toContain('جامعة مدارك التجريبية');
+    expect(text).toContain('مؤسسة مدارك النموذجية');
   });
 
   it('cookies: the ONE cookie with its REAL attributes (httpOnly · strict · path · 7d)', () => {
@@ -580,7 +580,7 @@ describe('R320 §D — every wiring point', () => {
     expect(src).toContain("import('./pages/PublicPages')");
     // each row rides GuestReveal (the window-scrolled guest mount)
     const guestRevealRoutes = (src.match(/<GuestReveal>/g) ?? []).length;
-    expect(guestRevealRoutes).toBeGreaterThanOrEqual(11); // /campus + /capabilities + 9 new
+    expect(guestRevealRoutes).toBeGreaterThanOrEqual(10); // /capabilities + the 9 sheets (master/D3: /campus retired)
   });
 
   it('the /legal family is a DOCUMENT surface — Lenis never mounts there; /about /help /contact ride the engine', () => {
@@ -610,7 +610,7 @@ describe('R320 §D — every wiring point', () => {
 describe('R320 §D — the static identity (robots · sitemap · manifest · icons)', () => {
   it('robots.txt: the public sheets allowed (incl. /auth + /auth/register), the five authed trees disallowed', () => {
     const robots = read('public/robots.txt');
-    for (const allow of ['/', '/auth', '/auth/register', '/colleges', '/campus', '/capabilities', '/about', '/help', '/contact',
+    for (const allow of ['/', '/auth', '/auth/register', '/colleges', '/capabilities', '/about', '/help', '/contact',
       '/legal/privacy', '/legal/terms', '/legal/cookies', '/legal/accessibility', '/legal/security', '/legal/data']) {
       expect(robots, `Allow: ${allow}`).toContain(`Allow: ${allow}`);
     }
@@ -620,15 +620,15 @@ describe('R320 §D — the static identity (robots · sitemap · manifest · ico
     expect(robots).toContain('Sitemap: https://madarek.onrender.com/sitemap.xml');
   });
 
-  it('sitemap.xml: exactly 16 public routes', () => {
+  it('sitemap.xml: exactly 15 public routes (master/D3: /campus retired)', () => {
     const sitemap = read('public/sitemap.xml');
     const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    expect(urls).toHaveLength(16);
+    expect(urls).toHaveLength(15);
     // the 7 existing public paths + the 9 new sheets, all on the canonical base
     const base = 'https://madarek.onrender.com';
     expect(urls).toEqual([
       `${base}/`, `${base}/auth`, `${base}/auth/register`, `${base}/colleges`,
-      `${base}/colleges/leaderboard`, `${base}/campus`, `${base}/capabilities`,
+      `${base}/colleges/leaderboard`, `${base}/capabilities`,
       `${base}/legal/privacy`, `${base}/legal/terms`, `${base}/legal/cookies`,
       `${base}/legal/accessibility`, `${base}/legal/security`, `${base}/legal/data`,
       `${base}/about`, `${base}/help`, `${base}/contact`,

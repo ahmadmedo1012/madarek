@@ -16,7 +16,7 @@ const EXE = process.env.HOME + '/.cache/ms-playwright/chromium-1200/chrome-linux
 const args = process.argv.slice(2);
 const get = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 ? args[i + 1] : d; };
 const BASE = get('base', 'http://localhost:5173');
-const ROUTES = ['/', '/auth', '/auth/register', '/colleges', '/colleges/leaderboard', '/campus', '/capabilities', '/vision', '/competitions', '/no-such-404'];
+const ROUTES = ['/', '/auth', '/auth/register', '/colleges', '/colleges/leaderboard', '/capabilities', '/vision', '/competitions', '/no-such-404'];
 const VIEWPORTS = ['1440x900', '390x844'];
 const THEMES = ['light', 'dark'];
 

@@ -7,8 +7,10 @@
 
 /* R343 C-1 — the courtyard twins (the retired photo veil is gone with the
  * photograph; the light/dark illustration pair swaps on the theme token,
- * the wy-cycle grammar) + the crawl's typographic cards (the card svg
- * fills the cell the photo crop used to fill — same box, zero CLS). */
+ * the wy-cycle grammar) + master/D2 — the crawl's capability cells: the
+ * same card box the university card svg used to fill, now OUR OWN
+ * typographic register (a mono index + the capability name, centered
+ * in the same box — zero CLS). */
 .st-media-img.is-dark { visibility: hidden; }
 [data-theme="dark"] .st-media-img.is-light { visibility: hidden; }
 [data-theme="dark"] .st-media-img.is-dark { visibility: visible; }
@@ -20,4 +22,19 @@
   overflow: clip;
   color: var(--text);
 }
-.st-crawl-card .ucard { display: block; inline-size: 100%; block-size: 100%; }
+/* the typographic register rides an svg canvas (the same box grammar the
+ * retired university cards used — the census pairs the svg box with the
+ * reference's crawl art seats); the texts are viewBox-unit styled. */
+.st-crawl-svg { display: block; inline-size: 100%; block-size: 100%; }
+.st-crawl-svg-word {
+  font-family: var(--font-mono, monospace);
+  font-size: 8.5px;
+  opacity: 0.62;
+  fill: currentColor;
+}
+.st-crawl-svg-name {
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  fill: currentColor;
+}

@@ -47,7 +47,7 @@ const CRAWL = {
   groups: [
     {
       name: "public", auth: null,
-      routes: ["/", "/auth", "/register", "/universities", "/features", "/about", "/campus", "/contact", "/help", "/app", "/colleges/leaderboard", "/legal/privacy", "/legal/terms", "/404", "/__design"],
+      routes: ["/", "/auth", "/register", "/about", "/contact", "/help", "/app", "/colleges/leaderboard", "/legal/privacy", "/legal/terms", "/404", "/__design"],
     },
     {
       name: "student", auth: "student",
@@ -97,12 +97,12 @@ const RESULTS = {
 };
 const CATALOG = {
   data: [
-    { id: "crs_e2e_algorithms", code: "CS-201", name: "مقدمة في الخوارزميات", iconEmoji: "🧮", themeColor: "#7c3aed", credits: 3, department: { id: "dep_e2e_cs", name: "قسم علوم الحاسوب" }, institution: { id: "inst_e2e_zu", name: "جامعة الزاوية", slug: "zu" } },
-    { id: "crs_e2e_databases", code: "CS-310", name: "قواعد البيانات المتقدمة", iconEmoji: "🗄️", themeColor: "#0ea5e9", credits: 3, department: { id: "dep_e2e_cs", name: "قسم علوم الحاسوب" }, institution: { id: "inst_e2e_zu", name: "جامعة الزاوية", slug: "zu" } },
-    { id: "crs_e2e_stats", code: "MA-210", name: "الإحصاء التطبيقي", iconEmoji: "📊", themeColor: "#15803d", credits: 2, department: { id: "dep_e2e_math", name: "قسم الرياضيات" }, institution: { id: "inst_e2e_zu", name: "جامعة الزاوية", slug: "zu" } },
-    { id: "crs_e2e_net", code: "CS-304", name: "شبكات الحاسوب", iconEmoji: "🌐", themeColor: "#b45309", credits: 3, department: { id: "dep_e2e_cs", name: "قسم علوم الحاسوب" }, institution: { id: "inst_e2e_zu", name: "جامعة الزاوية", slug: "zu" } },
-    { id: "crs_e2e_ai", code: "CS-410", name: "أساسيات الذكاء الاصطناعي", iconEmoji: "🤖", themeColor: "#dc2626", credits: 3, department: { id: "dep_e2e_cs", name: "قسم علوم الحاسوب" }, institution: { id: "inst_e2e_zu", name: "جامعة الزاوية", slug: "zu" } },
-    { id: "crs_e2e_se", code: "CS-330", name: "هندسة البرمجيات", iconEmoji: "🧩", themeColor: "#0891b2", credits: 3, department: { id: "dep_e2e_cs", name: "قسم علوم الحاسوب" }, institution: { id: "inst_e2e_zu", name: "جامعة الزاوية", slug: "zu" } },
+    { id: "crs_e2e_algorithms", code: "CS-201", name: "مقدمة في الخوارزميات", iconEmoji: "🧮", themeColor: "#7c3aed", credits: 3, department: { id: "dep_e2e_cs", name: "قسم علوم الحاسوب" }, institution: { id: "inst_e2e_zu", name: "مؤسسة مدارك النموذجية", slug: "zu" } },
+    { id: "crs_e2e_databases", code: "CS-310", name: "قواعد البيانات المتقدمة", iconEmoji: "🗄️", themeColor: "#0ea5e9", credits: 3, department: { id: "dep_e2e_cs", name: "قسم علوم الحاسوب" }, institution: { id: "inst_e2e_zu", name: "مؤسسة مدارك النموذجية", slug: "zu" } },
+    { id: "crs_e2e_stats", code: "MA-210", name: "الإحصاء التطبيقي", iconEmoji: "📊", themeColor: "#15803d", credits: 2, department: { id: "dep_e2e_math", name: "قسم الرياضيات" }, institution: { id: "inst_e2e_zu", name: "مؤسسة مدارك النموذجية", slug: "zu" } },
+    { id: "crs_e2e_net", code: "CS-304", name: "شبكات الحاسوب", iconEmoji: "🌐", themeColor: "#b45309", credits: 3, department: { id: "dep_e2e_cs", name: "قسم علوم الحاسوب" }, institution: { id: "inst_e2e_zu", name: "مؤسسة مدارك النموذجية", slug: "zu" } },
+    { id: "crs_e2e_ai", code: "CS-410", name: "أساسيات الذكاء الاصطناعي", iconEmoji: "🤖", themeColor: "#dc2626", credits: 3, department: { id: "dep_e2e_cs", name: "قسم علوم الحاسوب" }, institution: { id: "inst_e2e_zu", name: "مؤسسة مدارك النموذجية", slug: "zu" } },
+    { id: "crs_e2e_se", code: "CS-330", name: "هندسة البرمجيات", iconEmoji: "🧩", themeColor: "#0891b2", credits: 3, department: { id: "dep_e2e_cs", name: "قسم علوم الحاسوب" }, institution: { id: "inst_e2e_zu", name: "مؤسسة مدارك النموذجية", slug: "zu" } },
   ],
   meta: { page: 1, limit: 12, total: 6, totalPages: 1 },
 };
@@ -121,7 +121,7 @@ const SEAT_JS = `(y) => {
 const { installMockApi, seedSession, STUDENT_USER } = await ensureTransport();
 const NEED_STUDENT = CRAWL.groups.some((g) => g.auth === "student");
 const seededUser = NEED_STUDENT
-  ? { ...STUDENT_USER, memberships: [], currentInstitution: { id: "inst_e2e_zu", name: "جامعة الزاوية", nameEn: "Zawia University", slug: "zu" }, membershipRole: "STUDENT" }
+  ? { ...STUDENT_USER, memberships: [], currentInstitution: { id: "inst_e2e_zu", name: "مؤسسة مدارك النموذجية", nameEn: "Madarek Model Institution", slug: "zu" }, membershipRole: "STUDENT" }
   : null;
 const meJson = NEED_STUDENT
   ? JSON.stringify({

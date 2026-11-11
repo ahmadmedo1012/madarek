@@ -21,20 +21,9 @@
     "frontend/src/pages/admin/AdminGovernancePages.tsx",
     "frontend/src/components/pdf/AnnotationsPanel.tsx",
     "frontend/src/components/onboarding/OnboardingFlow.tsx",
-    "frontend/src/data/university-media.ts",
     "frontend/src/pages/student/PaymentPage.tsx"
   ],
   "keeps": [
-    {
-      "file": "frontend/src/data/university-media.ts",
-      "phrase": "الإدارة المركزية",
-      "reason": "the university BUILDING (Central Administration, Benghazi University) — Commons photo captions/alt text, not the role"
-    },
-    {
-      "file": "frontend/src/data/university-media.ts",
-      "phrase": "مبنى الإدارة",
-      "reason": "the university administration BUILDING's architectural detail photo (name + alt)"
-    },
     {
       "file": "frontend/src/pages/student/PaymentPage.tsx",
       "phrase": "الإدارة الماليّة",

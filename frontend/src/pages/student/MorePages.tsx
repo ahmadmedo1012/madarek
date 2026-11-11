@@ -1743,6 +1743,12 @@ export function UniversityInfoPage() {
   const insideCampus = faculties.filter((f) => f.city === 'حرم المعرفة');
   const outsideCampus = faculties.filter((f) => f.city !== 'حرم المعرفة');
   const cityCount = new Set(faculties.map((f) => f.city)).size;
+  /* master/D6: the campuses KPI is DERIVED from the live faculty seats
+   * (the distinct demo-campus labels), never a hard-coded count — the
+   * mission's no-invented-numbers law. */
+  const campusCount = new Set(
+    faculties.map((f) => (f.city?.startsWith('حرم') ? f.city : null)).filter(Boolean),
+  ).size;
   /* r183-B3: the outside-branch change line said «في 0 مدينة» whenever
    * every faculty sat outside the main campus — a self-contradictory KPI (the
    * alandalus view). Phrase the line ONLY from the real distinct
@@ -1883,7 +1889,7 @@ export function UniversityInfoPage() {
           page labels the tenant as بيانات تجريبية throughout. */}
       <PatternPageHeader
         eyebrow="خدمات الجامعة"
-        title="جامعة مدارك التجريبية"
+        title="مؤسسة مدارك النموذجية"
         description="مؤسّسة العرض على منصّة مدارك — مؤسّسة اصطناعية بالكامل تُظهر سير العمل الأكاديمي ببيانات تجريبية عبر ثلاثة حرَم معرفيّة."
         meta={outsideCityCount > 0 ? (
           /* سطر التوزيع الحقيقي للفروع — العدّ من مدن الكليّات الخارجيّة
@@ -1934,7 +1940,7 @@ export function UniversityInfoPage() {
           },
           {
             label: 'الحرَم الأكاديميّة',
-            value: formatNum(3),
+            value: facs.isPending ? '…' : facs.isError ? '—' : formatNum(campusCount),
             hint: 'بيانات تجريبية',
           },
         ]}
@@ -1966,7 +1972,7 @@ export function UniversityInfoPage() {
         <SectionBar index="01" title="بطاقة تعريف" />
         <div className="r305s-band r305s-band--deep">
           <div className="r305u-facts">
-            <FactRow deep label="الاسم الرسميّ" value="جامعة مدارك التجريبية" />
+            <FactRow deep label="الاسم الرسميّ" value="مؤسسة مدارك النموذجية" />
             <FactRow deep label="النطاق" value="بيانات اصطناعية — لا مؤسّسة حقيقية" />
             <FactRow deep label="النوع" value="مؤسّسة عرض تجريبية (اصطناعية)" />
             <FactRow deep label="بريد العرض" value="demo.madarek.ly" mono />

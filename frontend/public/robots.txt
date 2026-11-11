@@ -13,7 +13,6 @@ Allow: /
 Allow: /auth
 Allow: /auth/register
 Allow: /colleges
-Allow: /campus
 Allow: /capabilities
 Allow: /about
 Allow: /help

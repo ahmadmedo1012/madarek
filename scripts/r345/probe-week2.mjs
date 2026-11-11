@@ -20,7 +20,7 @@ const { installMockApi, seedSession, STUDENT_USER } = await import(`${pathToFile
 const b = await chromium.launch();
 const context = await b.newContext({ viewport: { width: 390, height: 844 } });
 await installMockApi(context, { sessionUser: STUDENT_USER });
-await seedSession(context, { ...STUDENT_USER, memberships: [], currentInstitution: { id: "inst_e2e_zu", name: "جامعة الزاوية", nameEn: "Zawia University", slug: "zu" }, membershipRole: "STUDENT" }, { token: "e2e-token-student" });
+await seedSession(context, { ...STUDENT_USER, memberships: [], currentInstitution: { id: "inst_e2e_zu", name: "مؤسسة مدارك النموذجية", nameEn: "Madarek Model Institution", slug: "zu" }, membershipRole: "STUDENT" }, { token: "e2e-token-student" });
 const page = await context.newPage();
 await page.goto("http://localhost:5275/student/dashboard", { waitUntil: "networkidle", timeout: 60000 });
 await page.waitForTimeout(2500);

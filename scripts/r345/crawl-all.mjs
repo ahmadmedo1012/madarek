@@ -140,7 +140,7 @@ const GROUPS = {
     routes: [
       "/", "/auth", "/auth/register", "/auth/forgot-password", "/auth/reset-password",
       "/colleges", "/colleges/leaderboard", "/colleges/clg_e2e_eng",
-      "/campus", "/capabilities",
+      "/capabilities",
       "/legal/privacy", "/legal/terms", "/legal/cookies", "/legal/accessibility",
       "/legal/security", "/legal/data",
       "/about", "/help", "/contact", "/app",

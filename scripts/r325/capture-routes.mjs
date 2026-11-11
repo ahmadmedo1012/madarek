@@ -442,7 +442,6 @@ const ROLE_ROUTES = {
     { path: '/auth', slug: 'auth' },
     { path: '/auth/register', slug: 'register' },
     { path: '/auth/forgot-password', slug: 'forgot-password' },
-    { path: '/campus', slug: 'campus' },
     { path: '/capabilities', slug: 'capabilities' },
     { path: '/about', slug: 'about' },
     { path: '/help', slug: 'help' },

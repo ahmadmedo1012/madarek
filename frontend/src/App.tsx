@@ -189,17 +189,17 @@ const CollegesLeaderboardPage = lazy(() => import('./pages/colleges/CollegePages
 const CompetitionsIndexPage = lazy(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionsIndexPage })));
 const CompetitionDetailPage = lazy(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionDetailPage })));
 
-/* R313 (WP-A1 · D7): the landing re-composition moved the documentary
- * media rail + video facades and the capability/status ledgers onto two
- * guest sub-pages — chrome-less public surfaces in the /colleges
- * pattern (window-scrolled for everyone, so the guest Lenis engine
- * covers them exactly like '/' and the colleges gallery). */
-const CampusLifePage = lazy(() => import('./pages/campus/CampusPages').then((m) => ({ default: m.CampusLifePage })));
+/* R313 (WP-A1 · D7): the landing re-composition moved the capability/status
+ * ledgers onto a guest sub-page — a chrome-less public surface in the
+ * /colleges pattern (window-scrolled for everyone, so the guest Lenis
+ * engine covers it exactly like '/' and the colleges gallery).
+ * master/D3 — the /campus showcase sub-page is retired with the
+ * university gallery. */
 const CapabilitiesPage = lazy(() => import('./pages/capabilities/CapabilityPages').then((m) => ({ default: m.CapabilitiesPage })));
 
 /* R320 §D (c2-LEGAL): the nine PUBLIC document sheets — the six
  * /legal/* policies + /about · /help · /contact. Same chrome-less
- * guest mount as /campus + /capabilities (GuestReveal, window-scrolled
+ * guest mount as /capabilities (GuestReveal, window-scrolled
  * for everyone — marketing sheets and policies share the reading
  * register); the /legal/* family is additionally a DOCUMENT surface
  * (plain native scrolling — see DOCUMENT_SURFACE_PREFIXES below). */
@@ -608,19 +608,12 @@ export function AppRoutes() {
           <Route path="/colleges/:id" element={<CollegeDetailPage />} />
         </Route>
 
-        {/* R313 (WP-A1 · D7) — the landing's two guest sub-pages: public,
+        {/* R313 (WP-A1 · D7) — the landing's guest sub-page: public,
             chrome-less, window-scrolled (the /colleges pattern, minus the
-            AppShell branch — these are marketing sheets, so signed-in
-            visitors get the same chrome-less reading experience and the
-            guest Lenis engine stays the scroller for everyone). */}
-        <Route
-          path="/campus"
-          element={(
-            <GuestReveal>
-              <CampusLifePage />
-            </GuestReveal>
-          )}
-        />
+            AppShell branch — a marketing sheet, so signed-in visitors get
+            the same chrome-less reading experience and the guest Lenis
+            engine stays the scroller for everyone). master/D3: /campus is
+            retired with the university showcase. */}
         <Route
           path={ROUTES.capabilities}
           element={(

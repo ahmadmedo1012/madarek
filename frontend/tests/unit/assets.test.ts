@@ -114,7 +114,7 @@ describe('r188 brand reset — campus photography retired (no real-university im
     // transparent paper — the raster <image> is gone from the window
     expect(ink).not.toContain('<image');
     // …and the r188 provenance strings survive (brand gates below
-    // still pin جامعة مدارك التجريبية as synthetic data).
+    // still pin مؤسسة مدارك النموذجية as synthetic data).
   });
 
   it('r198 — the retired landing raster family stays deleted', () => {

@@ -15,7 +15,7 @@
  * no animation — the plate class pins `prefers-reduced-motion` via a
  * no-JS-motion style guard).
  *
- * Scene ids match `src/data/university-media.ts` PRODUCT_CAPTURES +
+ * Scene ids match `src/data/product-media.ts` PRODUCT_CAPTURES +
  * the Roles EXTRA_CAPTURES ladder + the three `src/assets/product`
  * consumers (Product.tsx / WhyScene.tsx).
  */

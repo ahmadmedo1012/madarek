@@ -118,11 +118,11 @@ const THEME_BOOTSTRAP_SHA256 = 'jEZ9yPBzXBwMFxHwFlLFqiKKy+HtK9TOGA7FRviqIMc=';
 /* r188: pin refreshed — the JSON-LD block now describes the INDEPENDENT
  * Madarek platform alone (WebSite node; the retired University-of-Zawia
  * `about` node is gone — the only demo-data story is the explicitly
- * fictional «جامعة مدارك التجريبية», named in the description as
+ * fictional «مؤسسة مدارك النموذجية», named in the description as
  * synthetic data, never as affiliation). Verified by check-csp-hash.sh. */
 // r191: pin refreshed — the JSON-LD description dropped the rejected
 // provenance slogan with the meta copy fix.
-const JSON_LD_SHA256 = 'IRTvs2lj91QMTupUETl0okZh8+Bgoccsoy/MNlneYDI=';
+const JSON_LD_SHA256 = '8MzcOipyinFqQfzKfzufOYfyEU2dhOqIFCzxNfhk10w=';
 
 export function createApp() {
   const app = express();
@@ -152,19 +152,12 @@ export function createApp() {
           'worker-src': ["'self'", 'blob:'],
           'object-src': ["'none'"],
           'base-uri': ["'self'"],
-          /* r307: the landing's official-university documentaries embed
-             via the privacy-enhanced youtube-nocookie mechanism, mounted
-             ONLY after an explicit user click (the facade contract — see
-             frontend/src/components/landing/VideoCard.tsx). frame-src
-             admits exactly the two embed hosts; media-src stays unset
-             (falls back to 'self' — all landing video bytes stay local
-             until the visitor opts in), and img-src stays self-only: no
-             third-party thumbnail hosts, posters are composed in CSS. */
-          'frame-src': [
-            "'self'",
-            'https://www.youtube-nocookie.com',
-            'https://www.youtube.com',
-          ],
+          /* master/D7: the university documentary embeds are retired
+             with the showcase (VideoCard.tsx deleted) — frame-src
+             returns to self-only. The landing embeds nothing from
+             third parties; media-src stays unset (falls back to
+             'self'), and img-src stays self-only. */
+          'frame-src': ["'self'"],
         },
       },
       crossOriginResourcePolicy: { policy: 'cross-origin' },

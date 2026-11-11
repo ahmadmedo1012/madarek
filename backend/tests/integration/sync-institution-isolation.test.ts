@@ -73,7 +73,7 @@ async function seedWorld(): Promise<World> {
   // alpha mirrors prisma/seed.ts: the FIXED showcase id + slug — the
   // registry's configured source applies to it.
   const alpha = await prisma.institution.create({
-    data: { id: 'inst-zawia-showcase', name: 'جامعة مدارك التجريبية', slug: 'madarek-demo' },
+    data: { id: 'inst-zawia-showcase', name: 'مؤسسة مدارك النموذجية', slug: 'madarek-demo' },
   });
   const beta = await prisma.institution.create({
     data: { name: 'مؤسسة الأندلس التجريبية', slug: `alandalus-${uniqueSuffix()}` },
@@ -145,7 +145,7 @@ describe('S1 — runSync(institution A) never touches institution B', () => {
 
     // A's overlapping key: refreshed + un-staled.
     const aName = await fact(alpha.id, 'name.ar');
-    expect(aName?.value).toBe('جامعة مدارك التجريبية');
+    expect(aName?.value).toBe('مؤسسة مدارك النموذجية');
     expect(aName?.isStale).toBe(false);
 
     // A's own orphan (not in the source) IS stale-marked — scoped to A.
@@ -177,7 +177,7 @@ describe('S1 — runSync(institution A) never touches institution B', () => {
 
     // B got the source facts + its own orphans stale-marked.
     const bName = await fact(beta.id, 'name.ar');
-    expect(bName?.value).toBe('جامعة مدارك التجريبية');
+    expect(bName?.value).toBe('مؤسسة مدارك النموذجية');
     expect(await fact(beta.id, 'b.custom')).toMatchObject({ isStale: true });
     // A kept its seeded value and flags.
     expect(await fact(alpha.id, 'name.ar')).toMatchObject({
@@ -218,7 +218,7 @@ describe('S2 — POST /api/v1/admin/sync/trigger (institution rules)', () => {
     expect(body.data.factsAdded).toBe(STATIC_FACTS.length - 1);
 
     // DB state: A synced, B untouched.
-    expect(await fact(alpha.id, 'name.ar')).toMatchObject({ value: 'جامعة مدارك التجريبية', isStale: false });
+    expect(await fact(alpha.id, 'name.ar')).toMatchObject({ value: 'مؤسسة مدارك النموذجية', isStale: false });
     expect(await fact(beta.id, 'name.ar')).toMatchObject({ value: 'بيانات الأندلس', isStale: false });
     expect(await db().syncRun.count({ where: { institutionId: alpha.id } })).toBe(1);
   });
@@ -391,7 +391,7 @@ describe('S4 — GET /api/v1/university/facts (public, never blended)', () => {
       data: { institution: { slug: string }; categories: Record<string, Record<string, string>> };
     };
     expect(body.data.institution.slug).toBe('madarek-demo');
-    expect(body.data.categories.identity!['name.ar']).toBe('جامعة مدارك التجريبية');
+    expect(body.data.categories.identity!['name.ar']).toBe('مؤسسة مدارك النموذجية');
     // Never B's values.
     const values = Object.values(body.data.categories).flatMap((c) => Object.values(c));
     expect(values).not.toContain('بيانات الأندلس');

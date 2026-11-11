@@ -66,7 +66,7 @@ describe('r177 — public metadata is platform-neutral (index.html)', () => {
     // r188: the retired real-university `about` node is GONE — the only
     // demo-data mention is the fictional tenant, inside the description.
     expect(data['about']).toBeUndefined();
-    expect(data['description']).toContain('جامعة مدارك التجريبية');
+    expect(data['description']).toContain('مؤسسة مدارك النموذجية');
     expect(data['description']).toContain('اصطناعية');
   });
 
@@ -102,7 +102,7 @@ describe('r177 — landing/auth copy is affiliation-free', () => {
     expect(landing).toContain('مستقلّة');
     // r188: the only sample-data story is the FICTIONAL demo tenant,
     // stated in the independence manifesto with its synthetic label.
-    expect(landing).toContain('جامعة مدارك التجريبية');
+    expect(landing).toContain('مؤسسة مدارك النموذجية');
     expect(landing).toContain('اصطناعية بالكامل');
     expect(landing).not.toContain('جامعة الزاوية');
     // brand subtitle is a product descriptor, not a university
@@ -171,9 +171,9 @@ describe('r182 — the docs center intro stays affiliation-free', () => {
     const docsIndex = readRepo('docs/README.md');
     expect(docsIndex).toContain('منصّة تعليم');
     expect(docsIndex).toContain('مستقلّة');
-    // r188: the demo tenant is the fictional «جامعة مدارك التجريبية» —
+    // r188: the demo tenant is the fictional «مؤسسة مدارك النموذجية» —
     // synthetic data, never a real-university showcase framing.
-    expect(docsIndex).toContain('جامعة مدارك التجريبية');
+    expect(docsIndex).toContain('مؤسسة مدارك النموذجية');
     expect(docsIndex).toContain('اصطناعية');
     expect(docsIndex).not.toContain('مؤسّسة العرض المرجعية');
     expect(docsIndex).not.toContain('منصة التعلم الذكية\nلجامعة الزاوية');

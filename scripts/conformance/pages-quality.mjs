@@ -353,7 +353,7 @@ const overrides = [
 
 /* the seeded auth state: QUALITY_USER + the institution context the
  * institution-scoped queries key on (the shape auth.store hydrates). */
-const seededUser = { ...QUALITY_USER, memberships: [], currentInstitution: { id: 'inst_e2e_zu', name: 'جامعة الزاوية', nameEn: 'Zawia University', slug: 'zu' }, membershipRole: 'QUALITY' };
+const seededUser = { ...QUALITY_USER, memberships: [], currentInstitution: { id: 'inst_e2e_zu', name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', slug: 'zu' }, membershipRole: 'QUALITY' };
 
 /* /auth/me is AUTHORITATIVE for the institution context (useAuth.useMe
  * → applySessionExtras: "no context in the payload resets the context")

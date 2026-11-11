@@ -81,18 +81,18 @@ export default function CampusMapPage() {
         eyebrow="خدمات الجامعة"
         title="دليل الحرم الجامعيّ"
         description={
-          'كلّيّات جامعة مدارك التجريبية بحسب الحرم، مع روابط لصفحاتها التفصيليّة — بيانات عرض اصطناعية.'
+          'كلّيّات مؤسسة مدارك النموذجية بحسب الحرم، مع روابط لصفحاتها التفصيليّة — بيانات عرض اصطناعية.'
         }
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
-           «الجامعة التجريبية» is the campus's fact sheet (the
+           «المؤسسة النموذجية» is the campus's fact sheet (the
            bottom rail keeps its fuller «الصفحة الكاملة» label),
            «مركز التحميلات» is the university-services sibling. */
         actions={(
           <>
             <Link to="/student/university" className="btn primary sm">
               <Icon icon={Building2} size={13} />
-              الجامعة التجريبية
+              المؤسسة النموذجية
             </Link>
             <Link to="/student/downloads" className="btn ghost sm">
               <Icon icon={Download} size={13} />
@@ -276,7 +276,7 @@ export default function CampusMapPage() {
       <div className="r305s-next r305p-rail">
         <Link to="/student/university" className="btn primary sm">
           <Icon icon={ArrowLeft} size={13} />
-          صفحة الجامعة التجريبية الكاملة
+          صفحة المؤسسة النموذجية الكاملة
         </Link>
       </div>
     </PageFrame>

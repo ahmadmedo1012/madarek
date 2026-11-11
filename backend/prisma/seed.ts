@@ -5,7 +5,7 @@
  * Run:  npm run db:seed
  *
  * r178 (multi-institution foundation): the demo data now spans TWO
- * institutions — جامعة مدارك التجريبية (slug madarek-demo, the
+ * institutions — مؤسسة مدارك النموذجية (slug madarek-demo, the
  * r188 FICTIONAL demonstration institution that owns the 25-faculty
  * synthetic catalogue + all academic demo content — renamed from the
  * retired real-university showcase; the row keeps its stable id
@@ -127,7 +127,7 @@ async function main() {
   console.log('🌱 Seeding database...');
 
   // ─── Institutions (r178 → r188) ───────────────────────────
-  // Upsert by slug. The demonstration tenant is جامعة مدارك التجريبية —
+  // Upsert by slug. The demonstration tenant is مؤسسة مدارك النموذجية —
   // fully FICTIONAL (r188). The row is created with the FIXED literal
   // id 'inst-zawia-showcase' — a LEGACY stable identifier carried from
   // the pre-r188 era (renaming ids would churn every FK for zero
@@ -138,11 +138,11 @@ async function main() {
   // this slug/name; fresh installs create it directly.
   const zawia = await prisma.institution.upsert({
     where: { slug: 'madarek-demo' },
-    update: { name: 'جامعة مدارك التجريبية', nameEn: 'Madarek Demo University', status: 'ACTIVE' },
+    update: { name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', status: 'ACTIVE' },
     create: {
       id: 'inst-zawia-showcase',
-      name: 'جامعة مدارك التجريبية',
-      nameEn: 'Madarek Demo University',
+      name: 'مؤسسة مدارك النموذجية',
+      nameEn: 'Madarek Model Institution',
       slug: 'madarek-demo',
       status: 'ACTIVE',
     },
@@ -160,7 +160,7 @@ async function main() {
     },
   });
 
-  // ─── Faculties & Departments (جامعة مدارك التجريبية) ───
+  // ─── Faculties & Departments (مؤسسة مدارك النموذجية) ───
   // r188: the FICTIONAL demonstration catalogue — 25 faculties across
   // three synthetic knowledge-named campuses (حرم المعرفة · حرم
   // الابتكار · حرم البيان). Same name CAN repeat across campuses
@@ -1200,7 +1200,7 @@ async function main() {
       studentId: student.id,
       reviewerId: teacher.id,
       offeringId: seOffering.id,
-      title: 'تأثير استراتيجية الصف المعكوس على تحصيل طلاب الهندسة في جامعة مدارك التجريبية',
+      title: 'تأثير استراتيجية الصف المعكوس على تحصيل طلاب الهندسة في مؤسسة مدارك النموذجية',
       abstract:
         'دراسة شبه تجريبية على 84 طالباً من أقسام الهندسة، تقارن متوسط التحصيل بين فصلين أحدهما اعتمد الصف المعكوس مدعوماً بمنصة مدارك. النتائج تُظهر فرقاً ذا دلالة إحصائية لصالح المجموعة التجريبية.',
       status: ResearchPaperStatus.PUBLISHED,
@@ -1467,7 +1467,7 @@ async function main() {
       slug: 'vision-ai-data',
       title: 'الذكاء الاصطناعي وعلم البيانات',
       titleEn: 'AI & Data Science (Vision Track)',
-      summary: 'مسار متخصص ضمن رؤية الجامعة التجريبية المستقبلية.',
+      summary: 'مسار متخصص ضمن رؤية المؤسسة النموذجية المستقبلية.',
       category: 'VISION', level: 'ADVANCED', iconEmoji: '🤖', themeColor: '#7B3AED',
       estMinutes: 70, pointsAward: 400, order: 11,
       lessons: [

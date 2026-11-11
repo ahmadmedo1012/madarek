@@ -20,7 +20,7 @@ const { chromium } = createRequire(path.join(WORKTREE, "frontend", "package.json
 const esbuild = createRequire(path.join(WORKTREE, "frontend", "package.json"))("esbuild");
 
 const ROUTES = (process.argv.includes("--routes") ? process.argv[process.argv.indexOf("--routes") + 1].split(",") : [
-  "/", "/auth", "/register", "/universities", "/features", "/about", "/campus", "/contact", "/help", "/app",
+  "/", "/auth", "/register", "/about", "/contact", "/help", "/app",
   "/colleges/leaderboard", "/legal/privacy", "/legal/terms", "/404", "/__design",
   "/student/dashboard", "/student/courses", "/student/catalog", "/student/courses/offr_e2e_algorithms",
   "/student/lectures/lec_e2e_greedy", "/student/colleges", "/student/achievements", "/student/community", "/student/exams", "/student/training",
@@ -97,7 +97,7 @@ for (const route of ROUTES) {
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     if (isStudent) {
       await installMockApi(context, { sessionUser: STUDENT_USER });
-      await seedSession(context, { ...STUDENT_USER, memberships: [], currentInstitution: { id: "inst_e2e_zu", name: "جامعة الزاوية", nameEn: "Zawia University", slug: "zu" }, membershipRole: "STUDENT" }, { token: "e2e-token-student" });
+      await seedSession(context, { ...STUDENT_USER, memberships: [], currentInstitution: { id: "inst_e2e_zu", name: "مؤسسة مدارك النموذجية", nameEn: "Madarek Model Institution", slug: "zu" }, membershipRole: "STUDENT" }, { token: "e2e-token-student" });
     } else {
       await installMockApi(context, { sessionUser: null });
       await seedSession(context, null, {});

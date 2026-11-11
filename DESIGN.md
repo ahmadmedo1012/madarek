@@ -43,7 +43,7 @@ basis: `audits/evidence/r313/` (live Heron census + production baseline; 3 match
   conductor-driven, scrollbar hidden while live, `.content` stays native; RM never
   inits).
 - **D7** landing 12 sections → **9 Heron sections** (the map/journey pin ≈51% of
-  the page; the documentary media band + capability ledger moved to `/campus` +
+  the page; the documentary media band is RETIRED with the university showcase (master/D3) and the capability ledger lives at `/capabilities` +
   `/capabilities`).
 - **D8** header 57px sticky no-hide → **56px fixed at the 7px inset** with the
   measured `on-scroll`/`on-hide` states + MENU button <992px.
@@ -72,7 +72,7 @@ basis: `audits/evidence/r313/` (live Heron census + production baseline; 3 match
    Arabic-correct); Geist Mono (OFL) is adopted.
 2. **Arabic glyph metrics** — there is no uppercase; hierarchy transfers through
    weight + size, never letter-spacing (joins).
-3. **Honest-copy rules unchanged** — «جامعة مدارك التجريبية» disclosure, banned
+3. **Honest-copy rules unchanged** — «مؤسسة مدارك النموذجية» disclosure, banned
    marketing wording, real numbers only.
 4. **Funnel pins unchanged** — 5 register CTAs + 5 login affordances + the pinned
    section ids (`statement/chapters/live/roles/colleges/vision`), exactly as r306
@@ -261,7 +261,7 @@ contract is enforced by `r170*`/`r305a7-a11y` test belts + axe in dev.
    the §6c real product capture) — every one of them flat, hairline-framed, honestly
    labelled, and rights-verified in the media manifest. Generic stock imagery, unlicensed
    rehosts, and decorative raster remain banned.
-7. Honest copy is permanent («جامعة مدارك التجريبية» synthetic-data disclosure, banned
+7. Honest copy is permanent («مؤسسة مدارك النموذجية» synthetic-data disclosure, banned
    marketing wording — r168b/r177/r188 gates).
 
 ## 9. Architecture (as it ships)

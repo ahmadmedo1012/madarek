@@ -1,30 +1,58 @@
-import Svg, { Path, Rect } from "react-native-svg";
+import Svg, { G, Path, Rect } from "react-native-svg";
 import { StyleSheet, View } from "react-native";
 import { usePalette } from "@/design/theme";
+import {
+  MARK_AXIS,
+  MARK_DIAMOND_PATH,
+  MARK_POINT,
+  MARK_VIEWBOX,
+  markStrokePx,
+} from "@/brand/mark";
 import { T } from "./text";
 
 /**
- * The Madarek brand mark — geometry from frontend/src/brand/mark.ts:
+ * The Madarek brand mark — geometry imported verbatim from @/brand/mark
+ * (the R323 single source of truth, the same constants <Logo> renders):
  * square + rotated-square (compass) hairlines in ink, one orange node.
+ *
+ * The 32-unit viewBox maps the grid onto the pixel canvas, so coordinates
+ * render in viewBox units directly — NEVER pre-multiplied by size (the
+ * double-scaling bug that shrank the mark toward the top-left corner and
+ * clipped it at size 72). react-native-svg has no
+ * vector-effect:non-scaling-stroke, so the X11 optical hairline ramp
+ * reproduces the web's non-scaling stroke in viewBox units —
+ * markStrokePx(size) × 32/size — exactly what <Logo> does.
  */
-export function BrandMark({ size = 32, ink, orange }: { size?: number; ink?: string; orange?: string }) {
+export function BrandMark({
+  size = 32,
+  ink,
+  orange,
+  testID,
+}: {
+  size?: number;
+  ink?: string;
+  orange?: string;
+  testID?: string;
+}) {
   const p = usePalette();
   const stroke = ink ?? p.text;
   const accent = orange ?? p.accent;
-  const sw = 1;
-  const scale = size / 32;
+  const markStrokeUnits = +((markStrokePx(size) * 32) / size).toFixed(3);
   return (
     <View style={{ width: size, height: size }} accessibilityLabel="شعار مدارك">
-      <Svg width={size} height={size} viewBox="0 0 32 32">
-        <Rect x={8 * scale} y={8 * scale} width={16 * scale} height={16 * scale} fill="none" stroke={stroke} strokeWidth={sw} strokeLinejoin="miter" />
-        <Path
-          d={`M16 ${5 * scale}L${27 * scale} 16L16 ${27 * scale}L${5 * scale} 16Z`}
-          fill="none"
-          stroke={stroke}
-          strokeWidth={sw}
-          strokeLinejoin="miter"
-        />
-        <Rect x={22 * scale} y={6 * scale} width={4 * scale} height={4 * scale} fill={accent} />
+      <Svg width={size} height={size} viewBox={MARK_VIEWBOX} testID={testID}>
+        <G stroke={stroke} fill="none" strokeWidth={markStrokeUnits} strokeLinejoin="miter">
+          <Rect x={MARK_AXIS.x} y={MARK_AXIS.y} width={MARK_AXIS.size} height={MARK_AXIS.size} />
+          <Path d={MARK_DIAMOND_PATH} />
+          <Rect
+            x={MARK_POINT.x}
+            y={MARK_POINT.y}
+            width={MARK_POINT.size}
+            height={MARK_POINT.size}
+            fill={accent}
+            stroke="none"
+          />
+        </G>
       </Svg>
     </View>
   );

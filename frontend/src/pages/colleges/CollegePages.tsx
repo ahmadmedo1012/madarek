@@ -317,7 +317,7 @@ export function CollegesIndexPage() {
           title + [01] gutter index (the inner-public sheet bridge). */}
       <div className="inx-head">
         <PageHeader
-          title="البنية الأكاديمية التجريبية — جامعة مدارك التجريبية"
+          title="البنية الأكاديمية التجريبية — مؤسسة مدارك النموذجية"
           description="استكشف الكلّيّات والأقسام في سجلّ المؤسّسة المرجعية للعرض، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطها."
           actions={isGuest ? <GuestJoinRow /> : undefined}
           index="01"
@@ -647,7 +647,7 @@ export function CollegeDetailPage() {
           <div className="college-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={36} /></div>
         )}
         <div className="college-hero-titles">
-          <div className="college-hero-eyebrow">جامعة مدارك التجريبية · {c.city} · بيانات تجريبية</div>
+          <div className="college-hero-eyebrow">مؤسسة مدارك النموذجية · {c.city} · بيانات تجريبية</div>
           <h1 className="page-title college-hero-name">{c.name}</h1>
           {c.nameEn && <div className="college-hero-sub">{c.nameEn}</div>}
         </div>

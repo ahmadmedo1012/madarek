@@ -30,7 +30,7 @@ vi.mock('../../src/hooks/useAuth', () => {
       lastName: 'البوسيفي',
       role: 'TEACHER',
       themePreference: 'SYSTEM',
-      currentInstitution: { id: 'inst-1', name: 'جامعة مدارك التجريبية' },
+      currentInstitution: { id: 'inst-1', name: 'مؤسسة مدارك النموذجية' },
     },
     isPending: false,
   };
@@ -178,7 +178,7 @@ describe('R320 cycle-3 — SettingsPage (any-authed)', () => {
     expect(screen.getByText('سالم البوسيفي')).toBeInTheDocument();
     expect(screen.getByText('teacher@test.ly')).toBeInTheDocument();
     expect(screen.getByText('أستاذ')).toBeInTheDocument(); // roleLabel(TEACHER)
-    expect(screen.getByText('جامعة مدارك التجريبية')).toBeInTheDocument();
+    expect(screen.getByText('مؤسسة مدارك النموذجية')).toBeInTheDocument();
     // The verification story is honest (no fake verified badge).
     expect(screen.getByText(/التحقق بالبريد قيد الإطلاق/)).toBeInTheDocument();
   });

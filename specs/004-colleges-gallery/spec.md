@@ -22,7 +22,7 @@ deliberate discovery moment. This feature closes that loop:
    an organized, filterable, visually-rich experience that lets a
    visitor scan ~26 colleges in seconds and dive into any one with
    a single tap.
-3. The gallery uses real University of Zawia structure
+3. The gallery uses real the demo model institution (مؤسسة مدارك النموذجية — synthetic seed data) structure
    (الزاوية / العجيلات / زوارة / أبو عيسى / ناصر / مناطق أخرى) and
    real college data — never synthetic.
 
@@ -37,7 +37,7 @@ primitives, type roles, and chart palette.
 
 A first-time visitor lands on the Madrak homepage, sees the hero
 "أكثر من 25 كلّيّة" badge, taps it, and lands on a gallery showing
-every college in the University of Zawia organized by campus and
+every college in the the demo model institution (مؤسسة مدارك النموذجية — synthetic seed data) organized by campus and
 visually distinct. The journey is one tap, takes < 2 seconds on a
 typical connection, and feels like a deliberate part of the homepage
 narrative — not a hidden link.
@@ -310,7 +310,7 @@ nonsense search — confirm empty state with clear-filters action.
 - **FR-003**: System MUST surface a hint affordance ("→") next to
   the badge text indicating it is a link.
 - **FR-004**: System MUST source the count value (currently "أكثر
-  من 25") from the real University of Zawia college count when
+  من 25") from the real the demo model institution (مؤسسة مدارك النموذجية — synthetic seed data) college count when
   available; if the count is hard-coded for marketing, it MUST be
   documented as such in code.
 

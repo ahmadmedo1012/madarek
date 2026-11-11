@@ -21,7 +21,7 @@ import { flowPage, flowShot, runTag } from './fixtures/live';
 
 const CSV_HEADER = 'الاسم الأول,اسم العائلة,البريد الإلكتروني,الرقم الجامعي,الكلية,القسم,السنة';
 // Names the preview resolves against the REAL seeded institution
-// (جامعة مدارك التجريبية — كلية تقنية المعلومات / علوم الحاسوب, verified
+// (مؤسسة مدارك النموذجية — كلية تقنية المعلومات / علوم الحاسوب, verified
 // against POST /users/bulk-import/preview).
 const FACULTY = 'كلية تقنية المعلومات';
 const DEPARTMENT = 'علوم الحاسوب';

@@ -9,7 +9,7 @@
  * Idempotent/resumable: existing shots are skipped unless --force.
  *
  * Usage:
- *   node scripts/r345/mobile-review.mjs --mode public    # /, /auth, /campus, /achievements…
+ *   node scripts/r345/mobile-review.mjs --mode public    # /, /auth, /achievements…
  *   node scripts/r345/mobile-review.mjs --mode student   # the 5 student tabs + library/research/matrix
  *   node scripts/r345/mobile-review.mjs --mode teacher   # teacher exams (empty bank/templates)
  *   node scripts/r345/mobile-review.mjs --mode all
@@ -52,7 +52,6 @@ const SCREENS = {
     { url: "/", me: null },
     { url: "/auth", me: null },
     { url: "/select-institution", me: "STUDENT", noMembership: true },
-    { url: "/campus", me: null },
     { url: "/achievements", me: null },
     { url: "/community", me: null },
     { url: "/search", me: null },
@@ -131,7 +130,7 @@ for (const mode of modes) {
             scopeFacultyId: null, themePreference: null, themePreferenceUpdatedAt: null,
             onboardingCompletedAt: "2025-01-01T00:00:00Z", firedMilestones: [],
             memberships: noMembership ? [] : [{ id: "m1", institutionId: "inst_rev", isActive: true }],
-            currentInstitution: noMembership ? undefined : { id: "inst_rev", nameAr: "جامعة مدارك التجريبية" },
+            currentInstitution: noMembership ? undefined : { id: "inst_rev", nameAr: "مؤسسة مدارك النموذجية" },
           };
           localStorage.setItem("mdrk-mobile-user", JSON.stringify(u));
           localStorage.setItem("mdrk-mobile-access-token", "review-token");

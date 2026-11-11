@@ -89,7 +89,7 @@ export const DEFAULT_SYNC_INSTITUTION_ID = 'inst-zawia-showcase';
  * WHICH source POST /admin/sync/trigger runs.
  *
  * The demonstration tenant's curated synthetic source (static-source.ts,
- * r188 fictional «جامعة مدارك التجريبية» fact sheet) is the DEMO
+ * r188 fictional «مؤسسة مدارك النموذجية» fact sheet) is the DEMO
  * institution's source, NOT a global source for every university. An
  * institution absent from this registry (today: every institution other
  * than the demo tenant, e.g. alandalus-demo) has NO configured source —

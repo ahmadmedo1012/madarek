@@ -71,7 +71,7 @@ export default function PaymentPage() {
           <>
             <Link to="/student/university" className="btn primary sm">
               <Icon icon={Building2} size={13} />
-              الجامعة التجريبية
+              المؤسسة النموذجية
             </Link>
             <Link to="/student/map" className="btn ghost sm">
               <Icon icon={MapPin} size={13} />
@@ -168,7 +168,7 @@ export default function PaymentPage() {
             <ContactRow icon={Phone} label="الهاتف" value="+218 23 762659" mono />
             <ContactRow icon={Phone} label="هاتف بديل" value="+218 23 762882" mono />
             <ContactRow icon={Mail} label="البريد الإلكترونيّ" value="info@demo.madarek.ly" mono />
-            <ContactRow icon={Building2} label="العنوان" value="جامعة مدارك التجريبية — بيانات عرض" />
+            <ContactRow icon={Building2} label="العنوان" value="مؤسسة مدارك النموذجية — بيانات عرض" />
           </div>
         </Card>
         </div>

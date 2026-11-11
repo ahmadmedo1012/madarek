@@ -71,7 +71,7 @@ Root Stack (`app/_layout.tsx`: RTL-forced at module scope, one-reload `ensureRTL
 | `/search` | `app/search.tsx` | all | Global search (kit skeletons present) | L2 | QS | not deep-read; results list = ScrollView map | P1 |
 | `/about` | `app/about.tsx` | public | «عن مدارك» identity page | L2 | QS | static; MonoLabels (brand terms) | P2 |
 | `/achievements` | `app/achievements.tsx` | student | «الإنجازات» (322 ln, kit) | L2 | QS | not deep-read | P1 |
-| `/campus` | `app/campus.tsx` | public | «الحياة الجامعية» — TEXT-ONLY port of web media rail | L1 | PART | placeholder-feel: photo registry rendered as ledger text, no images (honest but dead-end); no states (static) | P2 |
+| `/campus` | ~~`app/campus.tsx`~~ | public | **RETIRED (master/D3)** — the university showcase is removed from the product; the screen + the university card system are deleted | — | RETIRED | — | — |
 | `/community` | `app/community.tsx` | student | Community feed/bookmarks/events (706 ln monolith) | L2 | QS | longest non-player screen; ScrollView + .map (no virtualization); not deep-read | P1 |
 | `/contact` | `app/contact.tsx` | public | Contact channels | L2 | QS | static | P2 |
 | `/help` | `app/help.tsx` | all | «دليل الاستخدام» FAQ accordion | L2 | QS | chevron expand = no motion; not deep-read | P2 |
@@ -219,7 +219,7 @@ Non-shell L3 screens: welcome, auth/index, student dashboard/courses/profile/cou
 
 **The 10 worst screens (Round-2 fix-plan candidates)**
 1. `/student/payment` — L1 honest stub; dead-end (no data model).
-2. `/campus` — L1 text-only media rail (no images by honesty choice — needs real treatment or removal).
+2. `/campus` — RETIRED at master/D3 (the university showcase is gone from the product).
 3. `/student/ar` — L1 browsing-only index, operator unbuilt.
 4. `/quality/dashboard` — untyped `Record<string, unknown>` parsing; no EmptyState; generic feel.
 5. `/owner/dashboard` — untyped `OwnerStatsRow` casts; manual alert list.

@@ -9,7 +9,7 @@
  *     /\br\d{3}\b|probe|APP_INTERNAL|SYNC_|test/i   → must NOT match
  *
  * What it seeds (all upsert/guarded-create → re-runs are no-ops):
- *   - reuses the established demo tenant جامعة مدارك التجريبية
+ *   - reuses the established demo tenant مؤسسة مدارك النموذجية
  *     (slug madarek-demo — the same row seed.ts maintains; the fixed
  *     legacy id 'inst-zawia-showcase' is only on the fresh-create
  *     branch so migrated and fresh databases agree on the reference id)
@@ -378,8 +378,8 @@ export async function seedDemoR330(prisma: PrismaClient): Promise<DemoSummary> {
     update: {},
     create: {
       id: 'inst-zawia-showcase',
-      name: 'جامعة مدارك التجريبية',
-      nameEn: 'Madarek Demo University',
+      name: 'مؤسسة مدارك النموذجية',
+      nameEn: 'Madarek Model Institution',
       slug: INSTITUTION_SLUG,
       status: 'ACTIVE',
     },
@@ -769,7 +769,7 @@ async function main(): Promise<void> {
   try {
     const s = await seedDemoR330(prisma);
     console.log(
-      `🌱 بذرة العرض النظيفة: مؤسسة «جامعة مدارك التجريبية» — ${s.courses} مقررات، ${s.lectures} محاضرات، ` +
+      `🌱 بذرة العرض النظيفة: مؤسسة «مؤسسة مدارك النموذجية» — ${s.courses} مقررات، ${s.lectures} محاضرات، ` +
         `${s.teachers} أساتذة، ${s.students} طلبة، ${s.enrollments} تسجيل، ${s.grades} درجة، ` +
         `${s.examTemplates} نماذج امتحان، ${s.messages} رسائل، ${s.notifications} إشعارات — كل النصوص المعروضة نظيفة (بلا سلاسل فنية).`,
     );
