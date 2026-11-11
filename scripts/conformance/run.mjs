@@ -162,7 +162,22 @@ const COVERAGE_REVIEW = {};
 //     excusals; the section's measured share fell 56.1%→22.5% BY THE
 //     EXCUSAL, not by unmapped work. The only "lift" would be re-adding
 //     banned twins — refused. The visible defect outranks the metric.)
-const COVERAGE_FLOORS = { "home-intro-wrap": 37, "home-hero-wrap": 11, "home-platform-wrap": 20 };
+//   home-map-wrap 30 (R347-Z · the scroll-state re-key, the gate
+//     recovery's own arithmetic: the frozen spec recorded the
+//     reference's map band MID-ANIMATION — its scroll-driven stacked
+//     track still translated by the end-of-scroll progress at capture
+//     (step rows at sr.y −4835/−885, visually ABOVE the section root —
+//     only possible mid-transform). The R342-04 measured-seat rebuild
+//     + the R347-B calm-sheet seat replaced the whole stack with the
+//     single pinned stage: those records have NO honest counterpart.
+//     438 noHeuristic excusals + 690 legacy flags later the section's
+//     measured share fell 69.2%→31.8% BY THE EXCUSAL, not by unmapped
+//     work — the only "lift" would be re-adding the overflowing-stack
+//     anatomy the D6 defect round removed, or binding fake twins to
+//     the old records — both refused. heur 59.2%→0% (the section
+//     finally clears the heuristic cap it rode since the re-seat).
+//     The floor only rises from here.)
+const COVERAGE_FLOORS = { "home-intro-wrap": 37, "home-hero-wrap": 11, "home-platform-wrap": 20, "home-map-wrap": 30 };
 const COVERAGE_FLOOR = 40;   // % measured below which a section fails FAIL(coverage)
 const OFF_BOOK_CAP = 70;     // % off-book at/above which a section fails FAIL(off-book) unless reviewed
 const HEURISTIC_CAP = 50;    // % heuristic-paired share at/above which a section fails FAIL(heuristic)

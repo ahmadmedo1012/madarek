@@ -548,6 +548,16 @@ section.chapters {
    * plan's line-work anymore. */
 }
 
+/* R347-Z: the reference's own mobile plaque ink — the outer box rides
+   the 72% wash ≤991 (its frozen 390/768 records are rgba(40,40,40,0.72);
+   the desktop records stay solid rgb(40,40,40)). The plate keeps its
+   own solid ink above. */
+@media (max-width: 991px) {
+  .jt-card {
+    color: var(--jt-ink);
+  }
+}
+
 /* ── the three annotation cards — the measured plan callouts ──────
    Orange-ruled (1px #FA3600), the mono title in the accent voice +
    one honest line. Seated at the measured percentages of the stack;
@@ -589,7 +599,10 @@ section.chapters {
   font-family: var(--font-mono);
   font-size: 0.75em;
   font-weight: var(--fw-medium);
-  line-height: 1.3;
+  /* R347-Z: 1.3 → 1.35 — the Arabic metric floor (the spec's own lh 18
+     = 1.35 × the 13.33fs; 1.3 computed 17.33 and failed the floor by
+     0.67px @1920 — the aLh transformed expectation max(heron, 1.35fs)) */
+  line-height: 1.35;
   color: var(--accent);
   white-space: nowrap;
 }
@@ -892,6 +905,25 @@ section.chapters {
   line-height: 1.35;
   text-wrap: balance;
   color: var(--text);
+}
+
+/* R347-Z (the tablet/laptop h2 rungs revived at the cause): the two belt
+   rules ABOVE (768–991) were written BEFORE the base var(--fs-d2) rule and
+   lost the cascade — the tablet h2 rendered 36.86px (the band d2's own 768
+   rung) instead of the measured 29.47px, and @1024 the d2 clamp's 31.74px
+   phone floor overrode the reference's own 4.8rem rung (28.44px @1024).
+   Both rules re-declared HERE (after the base) so they win; the ladder
+   rejoins the reference: 29.45 @768 · 28.44 @1024 · 40 @1440 (4.8rem and
+   the d2 clamp are IDENTICAL ≥1440 — smooth boundary). */
+@media (min-width: 768px) and (max-width: 991px) {
+  .jt-close-title {
+    font-size: 3.2rem; /* the measured tablet h2 rung (29.47px @768 under the 1.199vw root) */
+  }
+}
+@media (min-width: 992px) and (max-width: 1439px) {
+  .jt-close-title {
+    font-size: 4.8rem; /* the reference's own desktop h2 rung (28.44 @1024) — the d2 clamp's 31.74px phone floor must not swallow the laptop belt */
+  }
 }
 
 /* the copy — the honest ledger summary at the body voice. */

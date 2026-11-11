@@ -256,6 +256,20 @@ export async function patterns(url) {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     await page.goto(url, { waitUntil: "networkidle", timeout: 60000 });
     await page.waitForTimeout(2000);
+    /* R347-Z — the intro-settle wait (the CI overlap step's own contract,
+     * d01626b6): the pattern census joins the settle discipline every
+     * other measuring pass already follows — on a cold CI runner the
+     * networkidle+2000ms margin can still race the preloader's exit.
+     * NOTE (measured, r347-Z iteration 3): the numeral-label
+     * non-uniformity (38–39 instances) is NOT a timing flake — it is a
+     * deterministic design divergence (.fo-mono is the shared mono
+     * GRAMMAR, reused across 13 per-context tuple variants: inverted
+     * white-on-chip codes, muted indices, tracked kickers). Documented
+     * in the r347 RESUME as known pattern-library work; this wait only
+     * guarantees the census state itself is deterministic. */
+    await page
+      .waitForFunction(() => { const l = document.querySelector(".landing"); return !l || l.classList.contains("intro-done"); }, { timeout: 12000, polling: 250 })
+      .catch(() => {});
     const r = await page.evaluate(({ src, cfg }) => new Function("return (" + src + ")")()(cfg), { src: PROBE_JS, cfg: { hovers: [], focusables: [], patterns: PATTERNS.map((p) => ({ key: p.key, sel: p.sel })) } });
     for (const pat of PATTERNS) {
       const inst = r.patterns[pat.key] || [];
