@@ -65,8 +65,9 @@ export default function Welcome() {
             <T variant="bodyLg" weight="bold">مدارك</T>
           </Animated.View>
 
-          {/* title stack — decisive display type */}
-          <Animated.View entering={enter(2)} style={{ marginTop: sp[24], gap: sp[6] }}>
+          {/* title stack — decisive display type (testID: the smoke's
+              stable anchor — RTL text matching proved unreliable) */}
+          <Animated.View entering={enter(2)} testID="welcome-title" style={{ marginTop: sp[24], gap: sp[6] }}>
             <T variant="display" weight="bold" style={{ lineHeight: 40 }}>رحلة تعلم واحدة</T>
             <T variant="h4" weight="medium" color="secondary">من المحاضرة إلى الإتقان</T>
           </Animated.View>
@@ -76,6 +77,7 @@ export default function Welcome() {
             <Button
               label="ابدأ الآن"
               kind="accent"
+              testID="welcome-cta"
               onPress={() => router.push(withContinue("/auth/login"))}
             />
             <Pressable

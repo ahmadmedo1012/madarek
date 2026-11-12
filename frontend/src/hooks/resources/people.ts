@@ -187,10 +187,19 @@ export function useDirectory(params: DirectoryParams) {
   if (params.limit) search.set('limit', String(params.limit));
   return useQuery({
     queryKey: withInstitutionScope(['people', 'directory', search.toString()], inst),
-    queryFn: () =>
-      unwrap<{ data: Array<StudentPerson | TeacherPerson>; meta: DirectoryMeta }>(
-        api.get(`/directory?${search.toString()}`),
-      ),
+    /* P5 fix: /directory's envelope paginates — meta is a SIBLING of
+     * data in the body, so unwrap() (which drills to body.data and
+     * drops the siblings) can never carry it. The admin.ts paginated
+     * pattern instead: read the ApiResponse envelope directly. The
+     * first P5 sweep caught this LIVE (the API returned 25 rows, the
+     * page rendered «لا نتائج» — unwrap left the hook holding the bare
+     * rows array, so .data/.meta were undefined). */
+    queryFn: async () => {
+      const res = await api.get<{ data: Array<StudentPerson | TeacherPerson>; meta: DirectoryMeta }>(
+        `/directory?${search.toString()}`,
+      );
+      return { data: res.data.data, meta: res.data.meta };
+    },
     placeholderData: keepPreviousData,
   });
 }

@@ -81,6 +81,7 @@ export default function SignIn() {
         submitLabel={busy ? "جارٍ الدخول…" : "دخول"}
         submitLoading={busy}
         submitKind="accent"
+        submitTestID="login-submit"
         error={error}
         footer={
           <View style={{ gap: sp[12] }}>

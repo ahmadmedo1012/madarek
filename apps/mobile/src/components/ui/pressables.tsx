@@ -24,6 +24,9 @@ export interface ButtonProps {
   icon?: ReactNode;
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
+  /** Stable e2e anchor (Maestro/RTL text matching is unreliable —
+   * the R349 smoke now pins every step by id). */
+  testID?: string;
 }
 
 /**
@@ -40,6 +43,7 @@ export function Button({
   icon,
   style,
   accessibilityLabel,
+  testID,
 }: ButtonProps) {
   const p = usePalette();
   const busy = loading || disabled;
@@ -57,6 +61,7 @@ export function Button({
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{ disabled: busy }}
       disabled={busy}
+      testID={testID}
       onPress={() => {
         if (busy) return;
         // R334 review-3 T1 — through the gated, throttled module (kill-switch + spam guard)

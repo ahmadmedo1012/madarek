@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 // scripts/qa/overlap.mjs — visual-defect detector. Usage:
 //   node scripts/qa/overlap.mjs --url http://localhost:4173 --routes / --bps 1440x900,390x844 --themes light,dark --out /tmp/r346/overlap.json
+//   Authed routes: --storage /tmp/state.json (a Playwright storageState — see
+//   frontend/tests/e2e/fixtures/auth-storage.ts; R349 P5: the people surfaces).
+//   Evidence shots: --shots /tmp/dir (one PNG per route×bp×theme at the top stop).
 // Finds, at every scroll stop: (1) TEXT-ON-TEXT overlaps, (2) text overlapping non-text media/plates,
 // (3) fixed/sticky elements covering > 6% of the viewport, (4) clipped text, (5) horizontal page overflow.
 //
@@ -30,6 +33,8 @@ const routes = (a.routes || '/').split(',');
 const bps = (a.bps || '1440x900,390x844').split(',').map(s => s.split('x').map(Number));
 const themes = (a.themes || 'light,dark').split(',');
 const out = a.out || '/tmp/r346/overlap.json';
+const storage = a.storage || null;   /* R349 P5 — Playwright storageState for authed routes */
+const shotsDir = a.shots || null;    /* R349 P5 — evidence PNGs (route at top per bp×theme) */
 const MIN_FRAC = Number(a.minfrac || 0.2);
 const MEDIA = a.media === '1';          // overlap area / smaller rect area
 /* the intentional-layering ledger (entries: {match, reason}) */
@@ -189,8 +194,9 @@ const PROBE = () => {
 };
 const run = async () => {
   const br = await chromium.launch({executablePath: process.env.CHROME_BIN}); const all = [];
+  const st = storage ? JSON.parse(fs.readFileSync(storage, 'utf8')) : undefined;
   for (const [w, h] of bps) for (const th of themes) {
-    const ctx = await br.newContext({ viewport: { width: w, height: h } });
+    const ctx = await br.newContext({ viewport: { width: w, height: h }, ...(st ? { storageState: st } : {}) });
     await ctx.addInitScript(m => { try { localStorage.setItem('madarek-theme', JSON.stringify({ state: { mode: m }, version: 2 })); } catch {} }, th);
     for (const r of routes) {
       const p = await ctx.newPage(); await p.goto(url + r, { waitUntil: 'networkidle' }).catch(() => {}); await p.waitForTimeout(1200);
@@ -202,6 +208,16 @@ const run = async () => {
        * measures the SETTLED page — bounded 12s, 250ms polls, and
        * routes without the gate proceed immediately. */
       await p.waitForFunction(() => { const l = document.querySelector('.landing'); return !l || l.classList.contains('intro-done'); }, { timeout: 12000, polling: 250 }).catch(() => {});
+      /* R349 P5 — authed routes fetch their data AFTER mount (react-query);
+       * a cold dev-server compile can outlive networkidle. Settle once
+       * more before the evidence shot so it shows DATA, not the first
+       * pending frame (the first P5 run shot the directory's skeleton). */
+      await p.waitForTimeout(2500);
+      if (shotsDir) {
+        fs.mkdirSync(shotsDir, { recursive: true });
+        const slug = r.split('?')[0].split('/').filter(Boolean).join('-') || 'root';
+        await p.screenshot({ path: `${shotsDir}/${slug}-${w}x${h}-${th}.png`, fullPage: false }).catch(() => {});
+      }
       await p.waitForTimeout(400);
       const H = await p.evaluate(() => document.documentElement.scrollHeight);
       for (let y = 0, i = 0; y < H; y += Math.round(h * 0.6), i++) {

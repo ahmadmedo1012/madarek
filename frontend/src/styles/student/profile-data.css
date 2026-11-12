@@ -253,7 +253,13 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--sp-3);
+  /* The feedback FAB floats fixed at the inline-end bottom corner
+   * (components.css .fb-fab — inset-inline-end 18px); the savebar's
+   * actions ride the same corner when sticky. Clear the lane: the
+   * R349-P5 sweep (detector + VLM read of the shot) caught the save
+   * button sitting under the FAB on /admin/people/:id. */
   padding: var(--sp-2) 0;
+  padding-inline-end: 76px;
   position: sticky;
   bottom: var(--sp-2);
   background: var(--surface-1, var(--bg));

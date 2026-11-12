@@ -109,6 +109,8 @@ export interface FormScreenProps {
   submitLabel?: string;
   submitLoading?: boolean;
   submitDisabled?: boolean;
+  /** Stable e2e anchor for the submit Button (R349 smoke ids). */
+  submitTestID?: string;
   submitKind?: ButtonKind;
   /** Form-level Arabic error summary (API refusal, etc.) — announced as alert. */
   error?: string | null;
@@ -140,6 +142,7 @@ export function FormScreen({
   submitLoading,
   submitDisabled,
   submitKind,
+  submitTestID,
   error,
   success,
   footer,
@@ -226,6 +229,7 @@ export function FormScreen({
           loading={loading}
           disabled={submitDisabled}
           kind={submitKind}
+          testID={submitTestID}
         />
       ) : null}
       {footer}

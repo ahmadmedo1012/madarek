@@ -493,7 +493,7 @@ jobs:
             adb install -r candidate/Madarek-x86_64.apk
             echo "== Maestro alive-flow (login -> dashboard -> 60s alive) =="
             mkdir -p apps/mobile/build
-            maestro test apps/mobile/.maestro/smoke-alive.yaml --format junit --output apps/mobile/build/maestro-junit.xml
+            maestro test apps/mobile/.maestro/smoke-alive.yaml --format junit --output apps/mobile/build/maestro-junit.xml || { adb exec-out screencap -p > apps/mobile/build/smoke-failure.png; echo "screenshot: apps/mobile/build/smoke-failure.png"; false; }
             echo "== Crash-buffer scan (fatal for ly.madarek.mobile) =="
             adb logcat -d -b crash | tee /tmp/crash-buffer.txt | grep -c "ly.madarek.mobile" | grep -qx 0
             echo "Alive-flow green: no crashes, 60s window held."
@@ -505,6 +505,7 @@ jobs:
           name: android-smoke-diagnostics-${{ github.run_number }}
           path: |
             apps/mobile/build/maestro-junit.xml
+            apps/mobile/build/smoke-failure.png
           if-no-files-found: ignore
           retention-days: 14
 

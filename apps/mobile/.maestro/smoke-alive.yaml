@@ -1,36 +1,42 @@
 # R349 M1.2 — the crash-regression smoke (iOS simulator + Android emulator).
-# Boot (guest) → Welcome («ابدأ الآن» — the app's entry CTA, NOT a login
-# button: the first CI run failed tapping a «تسجيل الدخول» that never
-# existed on the Welcome) → login → dashboard (the KPI count-ups — the
+# Boot (guest) → Welcome → login → dashboard (the KPI count-ups — the
 # EXACT surface that SIGABRT'd ~15s after login on device) → assert the
 # app is STILL alive and interactive 60 seconds later. If the process
 # aborts, the final assertions fail (the app is gone) AND the runner's
 # post-flow crash scan finds the .ips/logcat fatals.
 # API: the production base URL baked in the Release build — the honest
 # end-to-end (the same API the owner's device talks to).
+#
+# r349-P5b — EVERY anchor is a testID now. The Arabic TEXT anchors failed
+# on the runner's emulator twice in a row (run 43122827163: «ابدأ الآن»
+# never "visible"; run 43131697814 with the fold-fix + the title anchor:
+# «رحلة تعلم واحدة» never "visible" either) — RTL text matching in
+# Maestro-on-Android is not dependable, while the id (resource-id)
+# channel is: the login testIDs already worked in the same flow. The ids
+# ship with this change: welcome-title, welcome-cta, login-submit,
+# tab-courses (TabBar testID={`tab-${route}`}).
 appId: ly.madarek.mobile
 name: "00 — smoke: دخول، لوحة، البقاء حيًّا 60 ثانية"
 ---
-# Boot → Welcome: the splash/Boot screen resolves the session (guest on a
-# fresh simulator) and routes to /auth. 120s covers a cold production API
-# wake (Render free tier) behind the version gate before the CTA appears.
-# The wait anchor is the TITLE STACK («رحلة تعلم واحدة») — above the fold
-# on every device profile. The CTA («ابدأ الآن») rides at marginTop:auto
-# under the fixed 348pt hero: on short screens (the CI emulator's
-# 320×640 — real Android-Go class too) it lands BELOW the fold, so the
-# flow scrolls to it instead of assuming visibility (run 43122827163
-# failed exactly there: 120s of «ابدأ الآن» is visible, never true).
+# Boot → Welcome: the splash/Boot screen resolves the session (guest on
+# a fresh simulator) and routes to /auth. 120s covers a cold production
+# API wake (Render free tier) behind the version gate before the title
+# appears.
 - launchApp:
     clearState: true
 - extendedWaitUntil:
-    visible: "رحلة تعلم واحدة"
+    visible:
+      id: "welcome-title"
     timeout: 120000
+# The CTA rides at marginTop:auto under the fixed 348pt hero — on short
+# screens (the CI emulator's 320×640) it lands below the fold.
 - scrollUntilVisible:
     element:
-      text: "ابدأ الآن"
+      id: "welcome-cta"
     direction: DOWN
     timeout: 20000
-- tapOn: "ابدأ الآن"
+- tapOn:
+    id: "welcome-cta"
 - extendedWaitUntil:
     visible:
       id: "login-email"
@@ -42,20 +48,26 @@ name: "00 — smoke: دخول، لوحة، البقاء حيًّا 60 ثانية
     id: "login-password"
 - inputText: "12345678"
 - hideKeyboard
-- tapOn: "دخول"
+- tapOn:
+    id: "login-submit"
 # the tab bar appearing = login completed (Render may be waking: 120s)
 - extendedWaitUntil:
-    visible: "مقرراتي"
+    visible:
+      id: "tab-courses"
     timeout: 120000
 # ——— the 60-second alive window ———
 # The crash window was ~15s after login; the dashboard count-ups run in
 # the first seconds. Staying visible AND interactive for a full minute
 # on this screen is the regression assertion.
 - extendedWaitUntil:
-    visible: "مقرراتي"
+    visible:
+      id: "tab-courses"
     timeout: 60000
-- assertVisible: "مقرراتي"
-- tapOn: "مقرراتي"
+- assertVisible:
+    id: "tab-courses"
+- tapOn:
+    id: "tab-courses"
 - extendedWaitUntil:
-    visible: "مقرراتي"
+    visible:
+      id: "tab-courses"
     timeout: 30000

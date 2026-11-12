@@ -243,6 +243,9 @@ function TabButton({
       accessibilityRole="tab"
       accessibilityLabel={tab.label}
       accessibilityState={{ selected: active }}
+      /* Stable e2e anchor (R349 smoke): the Arabic label's TEXT proved
+       * unreliable to match on the emulator — the route name is the id. */
+      testID={`tab-${tab.name}`}
       onPress={onPress}
       style={{
         flex: 1,

@@ -25,6 +25,7 @@ on:
       - "apps/mobile/plugins/**"
       - "apps/mobile/android/**"
       - "apps/mobile/ios/**"
+      - "apps/mobile/.maestro/**"
       - "shared/**"
       - "apps/mobile/scripts/verify-ipa.py"
       - "apps/mobile/scripts/ci/**"
