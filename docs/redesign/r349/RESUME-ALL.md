@@ -437,3 +437,58 @@ main → the local npx resolves a newer 16.x than the lockfile's; W-lane pins it
    /admin/people/:id, the profile data tab.
 3. LANE S (S1-S6), LANE I (I1-I8), LANE W (detector sweep × roles, CSS
    demolition, the stylelint pin, VLM panel), LANE N, LANE Z per Wave-2.
+
+### Session 3½ — the P5 sweep runs, two real bugs it caught (2026-11-12)
+- **The evidence sweep infrastructure** (scripts/r349/p5-sweep.mjs + overlap.mjs
+  extensions): overlap.mjs gained `--storage` (Playwright storageState — real-API
+  login states per the auth-storage.ts pattern) and `--shots` (evidence PNGs
+  per route×bp×theme, taken AFTER the data settles — the first run shot the
+  directory's skeleton at 1200ms). The sweep logs in registrar+student against
+  the LOCAL STACK (embedded PG :5433 migrated+seeded, backend :4000, vite :5173 —
+  backend/.env.local points at the tools/boot-pg.sh cluster, user `madarek`).
+- **Bug 1 — useDirectory's unwrap** (P2): /directory paginates with meta
+  SIBLING of data in the body; unwrap() drills to body.data and drops the
+  siblings — the hook held the bare rows array, `.data`/`.meta` undefined, the
+  page rendered «لا نتائج» while the API returned 25 rows. Fixed with the
+  admin.ts paginated pattern (read the ApiResponse envelope directly). The
+  sweep caught it LIVE (VLM read + DOM debug confirmed; now 25 rows + the
+  pagination footer).
+- **Bug 2 — the savebar/FAB collision** (P3b CSS): the r349p-savebar's sticky
+  actions rode the same inline-end bottom corner as the fixed feedback FAB —
+  the detector's fixed-over-text + the VLM read both caught the save button
+  under the FAB on /admin/people/:id. Fixed: padding-inline-end 76px clears
+  the lane (re-verified by sweep + VLM).
+- **The sweep verdict** (12 shots, /admin/directory + /admin/people/:id +
+  /student/profile × light/dark × 1440/390): text-on-text 0 · text-on-media 0 ·
+  hoverflow 0. Remaining finding classes are the app-shell chrome
+  (header.topbar / nav.bottom-nav sticky by design; fb-fab floats by design)
+  + span.sr-only clipped (the a11y pattern — invisible BY DESIGN) + the sticky
+  savebar with its OPAQUE background over scrolled labels. **These classes are
+  the W-lane detector-policy workload** (the allowlist ledger covers `fixed`
+  only; fixed-over-text/clipped are never allowlisted — the W sweep × roles
+  must adjudicate the chrome layering + teach the probe the sr-only exemption).
+- **The maestro fold-fix was insufficient** (run 43131697814: the new title
+  anchor «رحلة تعلم واحدة» failed exactly like «ابدأ الآن» — 120s never
+  visible): two INDEPENDENT Arabic anchors failing while the id-based login
+  testIDs matched in the SAME flow = **RTL text matching in
+  Maestro-on-Android is the unreliable channel**. **The smoke is id-first
+  now** (510ce208): welcome-title / welcome-cta / login-submit / tab-courses
+  (Button gains testID, FormScreen gains submitTestID, TabBar pins
+  tab-<route>); the screencap-on-failure ships with the junit in the
+  diagnostics artifact; the iOS workflow's path filter gains .maestro/** (the
+  flow exercised Android only — the gap). Mobile gates on this box: tsc 0/0 ·
+  jest 42/42 suites 1176 green · contract-check no drift.
+- **The rename-ledger off-list hit** (CI design-gates on 1830aaf1): P3a's
+  «راجع الإدارة» in MyProfileData → the R321 vocabulary («يُدخلها المسجّل
+  العام… راجعه») — scan rc=0 now.
+- Stray: the daemon pid files (backend-dev/frontend-dev.pid) rode 510ce208 —
+  removed + gitignored in cb5fecd3.
+
+## next (in order) — after session 3½
+1. Watch 510ce208's Android run — the id-first smoke's live proof (build+verify
+   already green twice; publish rides [verify, smoke]). iOS re-enters via the
+   .maestro path filter.
+2. **P4 mobile UI** (tap-to-call/WhatsApp on the shaped payloads — deps NOW
+   installed on this box: tsc+jest+contract all green).
+3. LANE S (S1-S6), LANE I (I1-I8), LANE W (owns the detector policy for the
+   chrome/sr-only classes above + the stylelint pin + VLM panel), LANE N, Z.
