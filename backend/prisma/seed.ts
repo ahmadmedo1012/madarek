@@ -92,6 +92,8 @@ import {
 import { hashPassword } from '../src/lib/password.js';
 import { utcDayStart } from '../src/lib/dates.js';
 import { ensureTestAccounts } from '../src/modules/auth/test-accounts.js';
+import { normalizePhone } from '../src/lib/phones.js';
+import { hashNationalId, normalizeNationalId } from '../src/lib/profiles/national-id.js';
 // r323 B4 — the pilot cohort pack (8 courses, lectures+chapters+
 // checkpoints per course, 30 demo students — create-once, idempotent).
 import { seedPilotCohort } from './seed-pilot.js';
@@ -313,9 +315,37 @@ async function main() {
   // Keyed by the scoped unique (institutionId, universityId). On the
   // migrated dev DB this finds the migration-backfilled row (whose
   // membershipId points at the same membership upserted above).
+  //
+  // r349-P5 — the profile-field enrichment: the demo student now
+  // carries the FULL Libyan documentary file (quadruple name, national
+  // id pair, guardian, secondary-school admission data, study lane).
+  // Phones are DELIBERATELY clearly-fake (09X000000X — valid Libyan
+  // SHAPE, obviously seeded) — the seed must never look like real
+  // people's contact data. The national id follows the documented
+  // shape (12 digits, first two = birth year) with the hash riding the
+  // SAME service the routes use — never hand-rolled here.
+  const studentNationalId = normalizeNationalId('104061512345')!;
+  const studentPhone = normalizePhone('0910000001');
+  const guardianPhone = normalizePhone('0920000001');
   await prisma.studentProfile.upsert({
     where: { institutionId_universityId: { institutionId: demoInst.id, universityId: DEMO_REG_NUMBER } },
-    update: { membershipId: studentMembership.id, facultyId: itFaculty.id, departmentId: csDept.id },
+    update: {
+      membershipId: studentMembership.id, facultyId: itFaculty.id, departmentId: csDept.id,
+      nameAr: 'أحمد محمد الزروق البرك', nameEn: 'Ahmed Al-Zarrug',
+      fatherName: 'محمد', grandfatherName: 'الزروق', motherName: 'فاطمة البركاوي',
+      dateOfBirth: new Date('2004-06-15'), birthPlace: 'طرابلس', gender: 'MALE',
+      city: 'طرابلس', address: 'شارع الجديدة',
+      nationalId: studentNationalId, nationalIdHash: hashNationalId(studentNationalId),
+      studentPhone: '0910000001',
+      studentPhoneNormalized: studentPhone?.normalized ?? null,
+      guardianName: 'محمد الزروق البرك', guardianRelationship: 'أب',
+      guardianPhone: '0920000001',
+      guardianPhoneNormalized: guardianPhone?.normalized ?? null,
+      emergencyContactName: 'سالم الزروق', emergencyContactPhone: '0910000002',
+      studyType: 'MORNING', enrollmentStatus: 'ACTIVE',
+      secondarySchool: 'ثانوية طرابلس للعلوم', secondarySchoolBranch: 'علمي',
+      secondarySchoolPercent: 88.5, admissionYear: 2023,
+    },
     create: {
       userId: student.id,
       membershipId: studentMembership.id,
@@ -327,6 +357,32 @@ async function main() {
       gpa: 3.4,
       totalXp: 2340,
       level: 7,
+      nameAr: 'أحمد محمد الزروق البرك',
+      nameEn: 'Ahmed Al-Zarrug',
+      fatherName: 'محمد',
+      grandfatherName: 'الزروق',
+      motherName: 'فاطمة البركاوي',
+      dateOfBirth: new Date('2004-06-15'),
+      birthPlace: 'طرابلس',
+      gender: 'MALE',
+      city: 'طرابلس',
+      address: 'شارع الجديدة',
+      nationalId: studentNationalId,
+      nationalIdHash: hashNationalId(studentNationalId),
+      studentPhone: '0910000001',
+      studentPhoneNormalized: studentPhone?.normalized ?? null,
+      guardianName: 'محمد الزروق البرك',
+      guardianRelationship: 'أب',
+      guardianPhone: '0920000001',
+      guardianPhoneNormalized: guardianPhone?.normalized ?? null,
+      emergencyContactName: 'سالم الزروق',
+      emergencyContactPhone: '0910000002',
+      studyType: 'MORNING',
+      enrollmentStatus: 'ACTIVE',
+      secondarySchool: 'ثانوية طرابلس للعلوم',
+      secondarySchoolBranch: 'علمي',
+      secondarySchoolPercent: 88.5,
+      admissionYear: 2023,
     },
   });
 
@@ -359,6 +415,26 @@ async function main() {
         specialty: 'علوم الحاسوب والذكاء الاصطناعي',
         rank: AcademicRank.ASSOCIATE_PROFESSOR,
         departmentId: csDept.id,
+        // r349-P5 — the contact lane (P1 fields): a preferred channel +
+        // the clearly-fake personal phone pair (09X000000X shape).
+        preferredContact: 'WHATSAPP',
+        personalPhone: '0913000001',
+        personalPhoneNormalized: normalizePhone('0913000001')?.normalized ?? null,
+        officeLocation: 'مبنى تقنية المعلومات — الطابق الثاني',
+        officeHours: 'الأحد والثلاثاء 10:00–12:00',
+      },
+    });
+  } else {
+    // Idempotent re-seed refresh (same values — create-once rows keep
+    // user edits on other columns).
+    await prisma.teacherProfile.update({
+      where: { id: teacherProfile.id },
+      data: {
+        preferredContact: 'WHATSAPP',
+        personalPhone: '0913000001',
+        personalPhoneNormalized: normalizePhone('0913000001')?.normalized ?? null,
+        officeLocation: 'مبنى تقنية المعلومات — الطابق الثاني',
+        officeHours: 'الأحد والثلاثاء 10:00–12:00',
       },
     });
   }
@@ -461,9 +537,21 @@ async function main() {
   const student2Membership = await ensureMembership(student2.id, alandalus.id, Role.STUDENT);
   // SAME reg-number as the demo student — allowed because the
   // unique key is (institutionId, universityId), not universityId alone.
+  // r349-P5 — the second institution's student carries the lighter
+  // variant of the documentary file (EVENING lane — the demo proves the
+  // study-type filter's other side; phones keep the clearly-fake shape).
   await prisma.studentProfile.upsert({
     where: { institutionId_universityId: { institutionId: alandalus.id, universityId: DEMO_REG_NUMBER } },
-    update: { membershipId: student2Membership.id, facultyId: aaFaculty.id, departmentId: aaCsDept.id },
+    update: {
+      membershipId: student2Membership.id, facultyId: aaFaculty.id, departmentId: aaCsDept.id,
+      nameAr: 'ليلى المهدي الفيتوري', fatherName: 'المهدي', grandfatherName: 'الفيتوري',
+      birthPlace: 'بنغازي', city: 'طرابلس',
+      studentPhone: '0915000001',
+      studentPhoneNormalized: normalizePhone('0915000001')?.normalized ?? null,
+      studyType: 'EVENING', enrollmentStatus: 'ACTIVE',
+      secondarySchool: 'ثانوية بنغازي', secondarySchoolBranch: 'أدبي',
+      secondarySchoolPercent: 91, admissionYear: 2025,
+    },
     create: {
       userId: student2.id,
       membershipId: student2Membership.id,
@@ -472,6 +560,19 @@ async function main() {
       facultyId: aaFaculty.id,
       departmentId: aaCsDept.id,
       year: 1,
+      nameAr: 'ليلى المهدي الفيتوري',
+      fatherName: 'المهدي',
+      grandfatherName: 'الفيتوري',
+      birthPlace: 'بنغازي',
+      city: 'طرابلس',
+      studentPhone: '0915000001',
+      studentPhoneNormalized: normalizePhone('0915000001')?.normalized ?? null,
+      studyType: 'EVENING',
+      enrollmentStatus: 'ACTIVE',
+      secondarySchool: 'ثانوية بنغازي',
+      secondarySchoolBranch: 'أدبي',
+      secondarySchoolPercent: 91,
+      admissionYear: 2025,
     },
   });
 
@@ -525,6 +626,11 @@ async function main() {
         specialty: 'علوم الحاسوب',
         rank: AcademicRank.ASSISTANT_PROFESSOR,
         departmentId: aaCsDept.id,
+        // r349-P5 — the contact lane: EMAIL preference (the second
+        // institution demonstrates the other preferred-contact value).
+        preferredContact: 'EMAIL',
+        personalPhone: '0914000001',
+        personalPhoneNormalized: normalizePhone('0914000001')?.normalized ?? null,
       },
     });
   }
