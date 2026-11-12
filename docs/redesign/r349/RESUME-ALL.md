@@ -368,3 +368,72 @@ main → the local npx resolves a newer 16.x than the lockfile's; W-lane pins it
    390/1440 × light/dark + the overlap detector on the new routes.
 3. LANE S (S1-S6), LANE I (I1-I8), LANE W (detector sweep × roles, CSS demolition,
    the stylelint pin, VLM panel), LANE N, LANE Z per the Wave-2 order above.
+
+### Session 3 — the push + the CI-red set + P5 (2026-11-12, PAT re-supplied)
+- **PUSHED** (PAT re-supplied by the owner, saved to /home/z/.madarek-env 600):
+  `wip/all-d-ci-abi-order` + `wip/p1-profiles-foundation` → main fast-forwarded
+  to a96cbedb (the Android ABI fix) → LANE P merged as 0bcf1d59 (the heartbeat
+  conflict resolved on the lane-P side — the later, superset ledger).
+- **The merge went red in 4 places — each fixed at the cause (a22a0992)**:
+  1. **deadcode** (knip 49→53 / types 229→234): the P3b CRUD hooks + contract
+     types had no consumer. **The field-definitions EDITOR now ships** on
+     /admin/directory (ADMIN/OWNER-gated toggle in the header; groups by
+     entity; inline create/edit with client validation mirroring the zod
+     schema — key regex, options dedup, 0–999 order; two-step delete) —
+     consumes the 4 hooks + FieldDefinition; DirectoryParams types the
+     directory filter state; PatchPersonInput types the registrar save;
+     PatchMyProfileInput types the self-edit mapper; DirectoryMeta +
+     PhoneCheck un-exported (in-file only). Baseline re-pinned: exports 49
+     (held) · types 227 (−2) · jscpd 250 (−2: the fe-meta/dir-meta selector
+     merge + ONE form-initial literal in StudentFileTab instead of the
+     twin literals).
+  2. **typecheck:tests** (45 errors, all profiles-routes.test.ts): vitest
+     never typechecks — the Prisma-delegate mocks needed the whole-fn
+     `as never` cast (the file's own 355/356/384 pattern, applied to all
+     27 call sites); the json helper's body typed; two indexed-access
+     non-nulls. The session-2 claim «tsc 0/0 src+tests» was src-only.
+  3. **design-gates motion** (6 violations in profile-data.css): the
+     literal fallbacks (`var(--t-fast, 150ms)` / `--e-out` — a token that
+     does not exist / `1.4s ease-in-out`) → the canonical tokens
+     (`--t-fast`/`--ease-out` bare; the skeleton rides
+     `--motion-duration-ambient-pulse` + `--motion-ease-standard`).
+  4. **e2e r319 profile pin**: P3a made the data tab the DEFAULT —
+     re-pinned to the six-section sheet [01]–[06] + a legacy academic-tab
+     [01]+[04] assertion. **Design correction**: the account-level
+     password block now renders on every tab EXCEPT data (its own [06]
+     الأمان section carries the pointer — the P3a comment said «kept for
+     the legacy tabs» but it rendered unconditionally, putting two [04]s
+     on one sheet against the §B2 unique-index grammar). MY_PROFILE e2e
+     fixture enriched with the P2 shaped self view + customFields.
+- **Android smoke (run 43122827163)**: the **ABI-order fix WORKED** — build +
+  verify-apk green for the first time since run 20 (the collect step reads the
+  multi-ABI APK before the x86_64 pass overwrites it). The smoke itself failed
+  at «ابدأ الآن» not visible in 120s: on the runner's 320×640 AVD the CTA
+  (marginTop:auto under the fixed 348pt hero) lands BELOW the fold — the flow
+  now anchors on the title stack («رحلة تعلم واحدة») and
+  `scrollUntilVisible`s the CTA; **mkdir -p apps/mobile/build** before the
+  maestro call (the junit report write crashed even on a green flow — the
+  directory never existed, so failure diagnostics never uploaded either).
+- **P5 — the seed enrichment (3fa38f40)**: the demo student carries the FULL
+  Libyan documentary file (quadruple name, national-id pair via
+  hashNationalId/normalizeNationalId — the route services, never hand-rolled —
+  guardian, emergency contact, MORNING/ACTIVE, ثانوية طرابلس للعلوم · علمي ·
+  88.5 · 2023); the Al-Andalus student rides the OTHER side of every filter
+  (EVENING · أدبي · بنغازي); both teachers seed preferredContact (WHATSAPP /
+  EMAIL) + personal-phone pairs. Phones DELIBERATELY clearly-fake
+  (09X000000X). Proof on the embedded PG: fresh madarek_dev → deploy (36) →
+  FORCE seed → rows verified → re-run idempotent → identity-guard CLEAN.
+- Gates this session: fe tsc 0/0 · vitest 3028 ✓ · profile e2e ✓ (chromium
+  1223 reinstalled on this box) · be tsc src+tests 0/0 · vitest 2119 ✓ ·
+  bundle 758.8/770 · identity CLEAN · brand/icons/colors/raw-css/motion ✓ ·
+  deadcode re-pinned green. CI on a22a0992: deadcode/Size/Deploy-smoke ✓✓✓,
+  CI/Mobile/Android green-pending at heartbeat-write time.
+
+## next (in order) — after session 3
+1. Watch a22a0992 + 3fa38f40 CI to full green (Android = the maestro fold-fix
+   live proof; the publish gate rides [verify, smoke]).
+2. LANE P residue: **P4 mobile UI** (mobile deps NOT installed on this box) ·
+   screenshots 390/1440 × light/dark + the overlap detector on /admin/directory,
+   /admin/people/:id, the profile data tab.
+3. LANE S (S1-S6), LANE I (I1-I8), LANE W (detector sweep × roles, CSS
+   demolition, the stylelint pin, VLM panel), LANE N, LANE Z per Wave-2.
