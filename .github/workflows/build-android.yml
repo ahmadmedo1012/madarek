@@ -492,6 +492,7 @@ jobs:
             echo "== Installing the x86_64 smoke APK =="
             adb install -r candidate/Madarek-x86_64.apk
             echo "== Maestro alive-flow (login -> dashboard -> 60s alive) =="
+            mkdir -p apps/mobile/build
             maestro test apps/mobile/.maestro/smoke-alive.yaml --format junit --output apps/mobile/build/maestro-junit.xml
             echo "== Crash-buffer scan (fatal for ly.madarek.mobile) =="
             adb logcat -d -b crash | tee /tmp/crash-buffer.txt | grep -c "ly.madarek.mobile" | grep -qx 0

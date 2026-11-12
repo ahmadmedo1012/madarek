@@ -79,6 +79,8 @@ export interface StudentProfileView {
   academic: AcademicView;
 }
 
+/** The shaped teacher profile (consumed by student.ts's useMyProfile
+ *  teacher view + the in-file base of TeacherPerson). */
 export interface TeacherProfileView {
   id: string;
   userId: string;
@@ -126,7 +128,7 @@ export interface TeacherPerson extends TeacherProfileView {
   department?: { id: string; name: string; nameEn: string | null; faculty?: { name: string } | null } | null;
 }
 
-export interface DirectoryMeta {
+interface DirectoryMeta {
   page: number;
   limit: number;
   total: number;

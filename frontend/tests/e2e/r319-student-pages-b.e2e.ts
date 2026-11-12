@@ -66,22 +66,37 @@ async function expectSheetContract(page: import('@playwright/test').Page) {
 test.describe('student pages B — §B2 sheet grammar (chromium · light)', () => {
   test.use({ themeSeed: 'light' });
 
-  test('/student/profile — [01]+[04] SectionBars, UNLINKED mono chips, radius-0 cards', async ({ page }) => {
+  test('/student/profile — the six-section data sheet [01]–[06] + the legacy [01]+[04] grammar, UNLINKED mono chips, radius-0 cards', async ({ page }) => {
     await page.goto('/student/profile');
     await expect(page.locator('h1.pf-page-title')).toBeVisible({ timeout: 20000 });
-    /* The default academic tab shows [01]; the account-level password
-     * block below the tabs closes the sheet as [04]. */
-    await expect(page.locator('.r319s-bar')).toHaveCount(2, { timeout: 15000 });
+    /* r349-P3 re-pin: the default tab is now «بياناتي واتصالي» — the
+     * student's real six-section file (LANE P). The account-level
+     * password block renders on every tab EXCEPT data (the data tab's
+     * own [06] الأمان section carries the pointer), so the data sheet
+     * is exactly the six bars. */
+    await expect(page.locator('.r319s-bar')).toHaveCount(6, { timeout: 15000 });
 
     const bars = await readBars(page);
-    expect(bars.map((b) => b.title)).toEqual(['المعلومات الأكاديمية', 'تغيير كلمة المرور']);
-    expect(bars.map((b) => b.index)).toEqual(['[01]', '[04]']);
+    expect(bars.map((b) => b.title)).toEqual([
+      'البيانات الشخصية', 'الاتصال', 'الأكاديمية', 'ولي الأمر',
+      'الوثائق وبيانات المؤسسة', 'الأمان والخصوصية',
+    ]);
+    expect(bars.map((b) => b.index)).toEqual(['[01]', '[02]', '[03]', '[04]', '[05]', '[06]']);
     for (const b of bars) {
       expect(b.indexDir).toBe('ltr');
       expect(b.indexHidden).toBe('true');
       expect(b.indexMono).toContain('Geist Mono');
       expect(b.hasRule).toBe(true);
     }
+
+    /* The legacy grammar survives on the academic tab: its panel bar is
+     * [01] and the account-level password block closes the sheet as
+     * [04] (the pre-P3 default view, now behind one click). */
+    await page.getByRole('tab', { name: 'المعلومات الأكاديمية' }).click();
+    await expect(page.locator('.r319s-bar')).toHaveCount(2);
+    const academicBars = await readBars(page);
+    expect(academicBars.map((b) => b.title)).toEqual(['المعلومات الأكاديمية', 'تغيير كلمة المرور']);
+    expect(academicBars.map((b) => b.index)).toEqual(['[01]', '[04]']);
 
     /* The links tab — the §B2 indicator contract: the three unlinked
      * accounts ride the mono chip register + the bar's linked/total

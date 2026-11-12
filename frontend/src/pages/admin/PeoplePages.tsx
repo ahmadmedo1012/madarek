@@ -3,6 +3,7 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 import {
   Phone, MessageCircle, Copy, Check, Download, FileSpreadsheet,
   Search, User, GraduationCap, ShieldCheck, Clock, Eye,
+  Settings2, Pencil, Trash2, Plus, X, ListPlus,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar, Tabs } from '../../components/primitives';
@@ -12,11 +13,14 @@ import { Icon } from '../../components/Icon';
 import { EmptyCell, SectionBar } from '../../components/student';
 import {
   useDirectory, usePerson, usePatchPerson, useContactRequest,
+  useFieldDefinitions, useCreateFieldDefinition, useUpdateFieldDefinition,
+  useDeleteFieldDefinition,
   downloadDirectoryExport,
   type StudentPerson, type TeacherPerson,
+  type DirectoryParams, type FieldDefinition, type PatchPersonInput,
 } from '../../hooks/resources/people';
 import { api, unwrap } from '../../lib/api';
-import { useInstitutionScope } from '../../stores/auth.store';
+import { useInstitutionScope, useAuthStore } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
 import { useQuery } from '@tanstack/react-query';
 import { checkLibyanPhone } from '../../lib/phone-validation';
@@ -58,6 +62,21 @@ function telHref(display: string | null): string | null {
   return c.ok ? `+${c.normalized}` : null;
 }
 
+/** Arabic labels for the custom-field types (P3b's FieldDefinition.type). */
+const FIELD_TYPE_LABELS: Record<FieldDefinition['type'], string> = {
+  TEXT: 'نص', NUMBER: 'رقم', DATE: 'تاريخ', BOOLEAN: 'نعم/لا',
+  SELECT: 'اختيار', MULTI_SELECT: 'اختيار متعدد',
+};
+const FIELD_ENTITY_LABELS: Record<FieldDefinition['entity'], string> = {
+  STUDENT: 'الطالب', TEACHER: 'المدرّس',
+};
+
+/** The admin/owner seat — mirrors the POST/PATCH/DELETE role guards. */
+function useCanEditFields(): boolean {
+  const role = useAuthStore((s) => s.user?.role);
+  return role === 'ADMIN' || role === 'OWNER';
+}
+
 /* ════════════════════════════════════════════════════════════════
    PeopleDirectoryPage
    ════════════════════════════════════════════════════════════════ */
@@ -74,6 +93,8 @@ export function PeopleDirectoryPage() {
   const [page, setPage] = useState(1);
   const [exporting, setExporting] = useState<'xlsx' | 'csv' | null>(null);
   const [exportError, setExportError] = useState(false);
+  const [fieldsOpen, setFieldsOpen] = useState(false);
+  const canEditFields = useCanEditFields();
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -83,14 +104,15 @@ export function PeopleDirectoryPage() {
     return () => clearTimeout(t);
   }, [q]);
 
-  const directory = useDirectory({
+  const filters: DirectoryParams = {
     kind,
     q: debouncedQ || undefined,
-    studyType: (studyType || undefined) as 'MORNING' | 'EVENING' | 'PARALLEL' | undefined,
-    enrollmentStatus: (enrollmentStatus || undefined) as StudentPerson['academic']['enrollmentStatus'] | undefined,
+    studyType: (studyType || undefined) as DirectoryParams['studyType'],
+    enrollmentStatus: (enrollmentStatus || undefined) as DirectoryParams['enrollmentStatus'],
     page,
     limit: 25,
-  });
+  };
+  const directory = useDirectory(filters);
 
   const rows = directory.data?.data ?? [];
   const meta = directory.data?.meta;
@@ -99,12 +121,10 @@ export function PeopleDirectoryPage() {
     setExporting(format);
     setExportError(false);
     try {
-      await downloadDirectoryExport({
-        kind,
-        q: debouncedQ || undefined,
-        studyType: (studyType || undefined) as 'MORNING' | 'EVENING' | 'PARALLEL' | undefined,
-        enrollmentStatus: (enrollmentStatus || undefined) as StudentPerson['academic']['enrollmentStatus'] | undefined,
-      }, format);
+      await downloadDirectoryExport(
+        { ...filters, page: undefined, limit: undefined },
+        format,
+      );
     } catch {
       setExportError(true);
     } finally {
@@ -119,6 +139,16 @@ export function PeopleDirectoryPage() {
         description="دليل التواصل المؤسسي: الطلاب والمدرّسون مع أرقام التواصل — وفق إعدادات الظهور لكل ملف."
         actions={(
           <>
+            {canEditFields && (
+              <button
+                type="button" className="btn ghost sm"
+                aria-expanded={fieldsOpen}
+                onClick={() => setFieldsOpen((v) => !v)}
+              >
+                <Icon icon={Settings2} size={13} />
+                {fieldsOpen ? 'إخفاء الحقول' : 'الحقول المخصصة'}
+              </button>
+            )}
             <button
               type="button" className="btn primary sm" disabled={exporting !== null}
               onClick={() => void doExport('xlsx')}
@@ -140,6 +170,8 @@ export function PeopleDirectoryPage() {
       {exportError && (
         <p className="r349p-error" role="alert">تعذّر تجهيز ملف التصدير — أعد المحاولة.</p>
       )}
+
+      {fieldsOpen && canEditFields && <FieldEditorPanel />}
 
       <Tabs
         value={kind}
@@ -336,6 +368,280 @@ function PhoneActions({
 }
 
 /* ════════════════════════════════════════════════════════════════
+   FieldEditorPanel — الحقول المخصصة (the registrar's editor)
+   P3b shipped the CRUD API; this is the seat on the directory page.
+   ADMIN/OWNER only (the header button is role-gated; the backend
+   guards POST/PATCH/DELETE with the same roles — the UI gate is
+   affordance, the server is the authority).
+   ════════════════════════════════════════════════════════════════ */
+
+const FIELD_KEY_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+function FieldEditorPanel() {
+  const defs = useFieldDefinitions();
+  const [editing, setEditing] = useState<{ id: string } | { isNew: true; entity: FieldDefinition['entity'] } | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const del = useDeleteFieldDefinition();
+
+  if (defs.isPending) {
+    return <Card><ListSkeleton rows={3} /></Card>;
+  }
+  if (defs.isError) {
+    return (
+      <Card>
+        <ErrorState error={defs.error} message="تعذّر تحميل الحقول المخصصة" onRetry={() => defs.refetch()} />
+      </Card>
+    );
+  }
+
+  const rows = defs.data?.data ?? [];
+  const byEntity = (entity: FieldDefinition['entity']) =>
+    rows.filter((r) => r.entity === entity);
+
+  const doDelete = (id: string) => {
+    del.mutate(id, {
+      onSuccess: () => setConfirmDelete(null),
+    });
+  };
+
+  return (
+    <section className="r349p-fe" aria-label="الحقول المخصصة">
+      <div className="r349p-fe-head">
+        <div>
+          <b className="text-sm">الحقول المخصصة للمؤسسة</b>
+          <p className="text-xxs text-subtle">
+            حقول إضافية يظهر ملؤها في ملفات الطلاب والمدرّسين — تُدار هنا وتُعرض حيث صُمّمت.
+          </p>
+        </div>
+        <div className="r349p-fe-actions">
+          <button type="button" className="btn ghost sm" onClick={() => setEditing({ isNew: true, entity: 'STUDENT' })}>
+            <Icon icon={Plus} size={13} />
+            حقل للطالب
+          </button>
+          <button type="button" className="btn ghost sm" onClick={() => setEditing({ isNew: true, entity: 'TEACHER' })}>
+            <Icon icon={Plus} size={13} />
+            حقل للمدرّس
+          </button>
+        </div>
+      </div>
+
+      {(['STUDENT', 'TEACHER'] as const).map((entity) => (
+        <div key={entity} className="r349p-fe-group">
+          <div className="r349p-fe-group-title">
+            <Icon icon={entity === 'STUDENT' ? GraduationCap : User} size={13} aria-hidden />
+            حقول {FIELD_ENTITY_LABELS[entity]}
+            <span className="text-xxs text-subtle">({byEntity(entity).length})</span>
+          </div>
+          {byEntity(entity).length === 0 && (
+            <p className="r349p-fe-empty text-xs text-subtle">
+              لا حقول بعد — أضف أول حقل من الأزرار أعلاه.
+            </p>
+          )}
+          {byEntity(entity).map((f) => (
+            confirmDelete === f.id ? (
+              <div key={f.id} className="r349p-fe-row r349p-fe-row--danger" role="alertdialog" aria-label="تأكيد حذف الحقل">
+                <span className="text-xs">
+                  حذف «{f.labelAr}» نهائيًا؟ القيم المخزّنة في ملفات الأعضاء تبقى بلا عنوان يعرضها.
+                </span>
+                <span className="r349p-fe-actions">
+                  <button type="button" className="btn danger sm" disabled={del.isPending} onClick={() => doDelete(f.id)}>
+                    {del.isPending ? '…' : 'حذف نهائي'}
+                  </button>
+                  <button type="button" className="btn ghost sm" onClick={() => setConfirmDelete(null)}>إلغاء</button>
+                </span>
+              </div>
+            ) : editing && 'id' in editing && editing.id === f.id ? (
+              <FieldForm key={f.id} initial={f} onDone={() => setEditing(null)} />
+            ) : (
+              <div key={f.id} className="r349p-fe-row">
+                <div className="r349p-fe-id">
+                  <span className="text-sm r349p-fe-label">{f.labelAr}</span>
+                  <span className="r349p-fe-meta">
+                    <bdi dir="ltr" className="font-mono">{f.key}</bdi>
+                    <span>· {f.labelEn}</span>
+                    <Badge>{FIELD_TYPE_LABELS[f.type]}</Badge>
+                    {f.required && <span>· إلزامي</span>}
+                    {f.searchable && <span>· قابل للبحث</span>}
+                    <span>· ترتيب {f.sortOrder}</span>
+                  </span>
+                </div>
+                <span className="r349p-fe-actions">
+                  <button
+                    type="button" className="btn ghost sm" aria-label={`تعديل الحقل ${f.labelAr}`}
+                    onClick={() => { setEditing({ id: f.id }); setConfirmDelete(null); }}
+                  >
+                    <Icon icon={Pencil} size={12} />
+                  </button>
+                  <button
+                    type="button" className="btn ghost sm" aria-label={`حذف الحقل ${f.labelAr}`}
+                    onClick={() => setConfirmDelete(f.id)}
+                  >
+                    <Icon icon={Trash2} size={12} />
+                  </button>
+                </span>
+              </div>
+            )
+          ))}
+        </div>
+      ))}
+
+      {editing && 'isNew' in editing && (
+        <FieldForm
+          key={`new-${editing.entity}`}
+          initial={{ entity: editing.entity } as Partial<FieldDefinition>}
+          onDone={() => setEditing(null)}
+        />
+      )}
+
+      {del.isError && (
+        <p className="r349p-error" role="alert">تعذّر الحذف — أعد المحاولة</p>
+      )}
+    </section>
+  );
+}
+
+/* ── the create/edit form (one shape, two seats) ─────────────────── */
+
+interface FieldFormState {
+  key: string;
+  labelAr: string;
+  labelEn: string;
+  entity: FieldDefinition['entity'];
+  type: FieldDefinition['type'];
+  required: boolean;
+  searchable: boolean;
+  sortOrder: string;
+  options: string;
+}
+
+function FieldForm({ initial, onDone }: { initial: Partial<FieldDefinition>; onDone: () => void }) {
+  const isEdit = Boolean(initial.id);
+  const create = useCreateFieldDefinition();
+  const update = useUpdateFieldDefinition();
+  const [form, setForm] = useState<FieldFormState>({
+    key: initial.key ?? '',
+    labelAr: initial.labelAr ?? '',
+    labelEn: initial.labelEn ?? '',
+    entity: initial.entity ?? 'STUDENT',
+    type: initial.type ?? 'TEXT',
+    required: initial.required ?? false,
+    searchable: initial.searchable ?? false,
+    sortOrder: String(initial.sortOrder ?? 0),
+    options: (initial.options ?? []).join('\n'),
+  });
+  const [error, setError] = useState<string | null>(null);
+
+  const set = (k: keyof FieldFormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+    setForm((f) => ({ ...f, [k]: e.target.value }));
+  const toggle = (k: 'required' | 'searchable') => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm((f) => ({ ...f, [k]: e.target.checked }));
+
+  const needsOptions = form.type === 'SELECT' || form.type === 'MULTI_SELECT';
+  const optionsList = form.options.split('\n').map((s) => s.trim()).filter(Boolean);
+
+  const validate = (): string | null => {
+    if (!form.labelAr.trim()) return 'التسمية العربية مطلوبة';
+    if (!form.labelEn.trim()) return 'التسمية اللاتينية مطلوبة';
+    if (!isEdit && !FIELD_KEY_RE.test(form.key.trim())) return 'المفتاح: حروف لاتينية صغيرة وأرقام وشرطات فقط';
+    if (needsOptions) {
+      if (optionsList.length === 0) return 'حقول الاختيار تحتاج خيارًا واحدًا على الأقل';
+      if (new Set(optionsList).size !== optionsList.length) return 'الخيارات مكررة';
+    }
+    const order = Number(form.sortOrder);
+    if (!Number.isInteger(order) || order < 0 || order > 999) return 'الترتيب: رقم صحيح 0–999';
+    return null;
+  };
+
+  const save = () => {
+    const v = validate();
+    if (v) { setError(v); return; }
+    setError(null);
+    const payload = {
+      labelAr: form.labelAr.trim(),
+      labelEn: form.labelEn.trim(),
+      entity: form.entity,
+      type: form.type,
+      required: form.required,
+      searchable: form.searchable,
+      sortOrder: Number(form.sortOrder),
+      ...(needsOptions ? { options: optionsList } : { options: null }),
+    };
+    if (isEdit && initial.id) {
+      update.mutate(
+        { id: initial.id, ...payload },
+        { onSuccess: onDone },
+      );
+    } else {
+      create.mutate(
+        { ...payload, key: form.key.trim() },
+        { onSuccess: onDone },
+      );
+    }
+  };
+
+  const pending = create.isPending || update.isPending;
+  const failure = (create.isError || update.isError)
+    ? 'تعذّر الحفظ — تحقّق من المفتاح والترتيب (قد يكونا محجوزين لحقل آخر)'
+    : error;
+
+  return (
+    <div className="r349p-fe-form" role="form" aria-label={isEdit ? `تعديل الحقل ${initial.labelAr ?? ''}` : 'حقل جديد'}>
+      <div className="r349p-fe-form-head">
+        <Icon icon={ListPlus} size={14} className="text-subtle" aria-hidden />
+        <b className="text-sm">{isEdit ? `تعديل «${initial.labelAr}»` : 'حقل جديد'}</b>
+        <button type="button" className="btn ghost sm" aria-label="إلغاء" onClick={onDone}>
+          <Icon icon={X} size={12} />
+        </button>
+      </div>
+      <div className="grid-2">
+        <FormField label="التسمية بالعربية" value={form.labelAr} onChange={set('labelAr')} />
+        <FormField label="التسمية باللاتينية" value={form.labelEn} onChange={set('labelEn')} dir="ltr" />
+        {!isEdit && (
+          <FormField label="المفتاح (لا يتغيّر لاحقًا)" value={form.key} onChange={set('key')} dir="ltr" mono />
+        )}
+        <SelectField label="الجهة" value={form.entity} onChange={set('entity')} options={[
+          { value: 'STUDENT', label: 'حقول الطالب' },
+          { value: 'TEACHER', label: 'حقول المدرّس' },
+        ]} />
+        <SelectField label="النوع" value={form.type} onChange={set('type')} options={[
+          { value: 'TEXT', label: 'نص' },
+          { value: 'NUMBER', label: 'رقم' },
+          { value: 'DATE', label: 'تاريخ' },
+          { value: 'BOOLEAN', label: 'نعم/لا' },
+          { value: 'SELECT', label: 'اختيار' },
+          { value: 'MULTI_SELECT', label: 'اختيار متعدد' },
+        ]} />
+        <FormField label="الترتيب (0–999)" value={form.sortOrder} onChange={set('sortOrder')} dir="ltr" mono />
+        {needsOptions && (
+          <label className="r349p-field r349p-field--wide">
+            <span className="text-xxs text-subtle">الخيارات (واحد في كل سطر)</span>
+            <textarea
+              className="r349p-input r349p-fe-options" value={form.options}
+              onChange={set('options')} rows={3} dir="rtl" aria-label="خيارات الحقل"
+            />
+          </label>
+        )}
+        <label className="r349p-fe-check">
+          <input type="checkbox" checked={form.required} onChange={toggle('required')} />
+          <span className="text-xs">إلزامي عند التسجيل</span>
+        </label>
+        <label className="r349p-fe-check">
+          <input type="checkbox" checked={form.searchable} onChange={toggle('searchable')} />
+          <span className="text-xs">قابل للبحث في الدليل</span>
+        </label>
+      </div>
+      {failure && <p className="r349p-error" role="alert">{failure}</p>}
+      <div className="r349p-savebar" role="toolbar" aria-label="حفظ الحقل">
+        <button type="button" className="btn primary sm" onClick={save} disabled={pending}>
+          {pending ? '…' : 'حفظ الحقل'}
+        </button>
+        <button type="button" className="btn ghost sm" onClick={onDone}>إلغاء</button>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
    StudentFilePage — ملف الطالب (the registrar's five tabs)
    ════════════════════════════════════════════════════════════════ */
 
@@ -414,7 +720,9 @@ export function StudentFilePage() {
 
 function StudentFileTab({ p }: { p: StudentPerson }) {
   const patch = usePatchPerson(p.id);
-  const [form, setForm] = useState({
+  // One literal feeds BOTH the initial state and the dirty comparison —
+  // a single source (the pre-P5 twin literals drifted into a jscpd clone).
+  const initial = {
     nameAr: p.nameAr ?? '',
     fatherName: p.fatherName ?? '',
     grandfatherName: p.grandfatherName ?? '',
@@ -435,52 +743,40 @@ function StudentFileTab({ p }: { p: StudentPerson }) {
     stage: p.academic.stage ?? '',
     grade: p.academic.grade ?? '',
     section: p.academic.section ?? '',
-  });
+  };
+  const [form, setForm] = useState(initial);
   const [saved, setSaved] = useState(false);
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const dirty = JSON.stringify(form) !== JSON.stringify({
-    nameAr: p.nameAr ?? '', fatherName: p.fatherName ?? '',
-    grandfatherName: p.grandfatherName ?? '', motherName: p.motherName ?? '',
-    birthPlace: p.birthPlace ?? '', nationalId: p.nationalId.value ?? '',
-    guardianName: p.guardian?.name ?? '', guardianRelationship: p.guardian?.relationship ?? '',
-    guardianPhone: p.guardian?.phone.display ?? '',
-    studyType: p.academic.studyType ?? '', enrollmentStatus: p.academic.enrollmentStatus ?? 'ACTIVE',
-    secondarySchool: p.academic.secondarySchool ?? '',
-    secondarySchoolBranch: p.academic.secondarySchoolBranch ?? '',
-    secondarySchoolPercent: p.academic.secondarySchoolPercent?.toString() ?? '',
-    admissionYear: p.academic.admissionYear?.toString() ?? '',
-    city: p.city ?? '', address: p.address ?? '',
-    stage: p.academic.stage ?? '', grade: p.academic.grade ?? '',
-    section: p.academic.section ?? '',
-  });
+  const dirty = JSON.stringify(form) !== JSON.stringify(initial);
 
   const save = () => {
+    const payload: PatchPersonInput = {
+      nameAr: form.nameAr || null,
+      fatherName: form.fatherName || null,
+      grandfatherName: form.grandfatherName || null,
+      motherName: form.motherName || null,
+      birthPlace: form.birthPlace || null,
+      ...(form.nationalId ? { nationalId: form.nationalId } : { nationalId: null }),
+      guardianName: form.guardianName || null,
+      guardianRelationship: form.guardianRelationship || null,
+      guardianPhone: form.guardianPhone || null,
+      studyType: (form.studyType || null) as PatchPersonInput['studyType'],
+      enrollmentStatus: form.enrollmentStatus as PatchPersonInput['enrollmentStatus'],
+      secondarySchool: form.secondarySchool || null,
+      secondarySchoolBranch: form.secondarySchoolBranch || null,
+      secondarySchoolPercent: form.secondarySchoolPercent ? Number(form.secondarySchoolPercent) : null,
+      admissionYear: form.admissionYear ? Number(form.admissionYear) : null,
+      city: form.city || null,
+      address: form.address || null,
+      stage: form.stage || null,
+      grade: form.grade || null,
+      section: form.section || null,
+    };
     patch.mutate(
-      {
-        nameAr: form.nameAr || null,
-        fatherName: form.fatherName || null,
-        grandfatherName: form.grandfatherName || null,
-        motherName: form.motherName || null,
-        birthPlace: form.birthPlace || null,
-        ...(form.nationalId ? { nationalId: form.nationalId } : { nationalId: null }),
-        guardianName: form.guardianName || null,
-        guardianRelationship: form.guardianRelationship || null,
-        guardianPhone: form.guardianPhone || null,
-        studyType: (form.studyType || null) as 'MORNING' | 'EVENING' | 'PARALLEL' | null,
-        enrollmentStatus: form.enrollmentStatus as StudentPerson['academic']['enrollmentStatus'],
-        secondarySchool: form.secondarySchool || null,
-        secondarySchoolBranch: form.secondarySchoolBranch || null,
-        secondarySchoolPercent: form.secondarySchoolPercent ? Number(form.secondarySchoolPercent) : null,
-        admissionYear: form.admissionYear ? Number(form.admissionYear) : null,
-        city: form.city || null,
-        address: form.address || null,
-        stage: form.stage || null,
-        grade: form.grade || null,
-        section: form.section || null,
-      },
+      payload,
       { onSuccess: () => { setSaved(true); window.setTimeout(() => setSaved(false), 2500); } },
     );
   };

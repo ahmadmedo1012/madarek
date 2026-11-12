@@ -9,6 +9,11 @@ import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
 import type { AppRole } from '../../stores/auth.store';
 import type { Course } from './catalog';
+import type {
+  StudentProfileView,
+  TeacherProfileView,
+  CustomFieldValue,
+} from './people';
 
 // ── Student dashboard aggregate ───────────────────────────────
 export interface StudentDashboard {
@@ -392,15 +397,15 @@ export interface MyProfile {
     // r349-P2/P3: the privacy-shaped self view + the institution's
     // custom fields (additive keys — the legacy surface above is the
     // frozen pre-P2 consumer contract).
-    profile?: import('./people').StudentProfileView;
-    customFields?: import('./people').CustomFieldValue[];
+    profile?: StudentProfileView;
+    customFields?: CustomFieldValue[];
   } | null;
   teacher: {
     specialty: string | null;
     rank: string | null;
     department: { name: string; facultyName: string | undefined } | null;
-    profile?: import('./people').TeacherProfileView;
-    customFields?: import('./people').CustomFieldValue[];
+    profile?: TeacherProfileView;
+    customFields?: CustomFieldValue[];
   } | null;
 }
 export function useMyProfile() {

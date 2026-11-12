@@ -108,7 +108,7 @@ function authHeaders(userId: string, role: Role, institutionId: string | null = 
   return { Authorization: `Bearer ${signAccessToken(userId, role, institutionId)}` };
 }
 
-async function json(path: string, init: RequestInit = {}) {
+async function json(path: string, init: RequestInit = {}): Promise<{ status: number; body: any; res: Response }> {
   const res = await fetch(`${baseUrl}${path}`, init);
   const body = await res.json().catch(() => null);
   return { status: res.status, body, res };
@@ -127,16 +127,16 @@ beforeEach(() => {
   notificationCreate.mockReset();
   fieldValueFindMany.mockReset();
   // Default: a valid institution context for whoever asks.
-  membershipFindFirst.mockImplementation(async () => ({ institutionId: INST }) as never);
-  fieldValueFindMany.mockImplementation(async () => [] as never);
-  auditCreate.mockImplementation(async () => ({}) as never);
+  membershipFindFirst.mockImplementation((async () => ({ institutionId: INST })) as never);
+  fieldValueFindMany.mockImplementation((async () => []) as never);
+  auditCreate.mockImplementation((async () => ({})) as never);
 });
 
 /* ── GET /me/profile — the extended self view ─────────────────────── */
 
 describe('r349-P2 GET /me/profile', () => {
   it('returns the legacy contract keys UNCHANGED plus the shaped self view', async () => {
-    userFindUnique.mockImplementation(async () => userRow as never);
+    userFindUnique.mockImplementation((async () => userRow) as never);
     const { status, body } = await json('/api/v1/me/profile', {
       headers: authHeaders('u-student', Role.STUDENT),
     });
@@ -167,8 +167,8 @@ describe('r349-P2 GET /me/profile', () => {
 
 describe('r349-P2 PATCH /me/profile', () => {
   it('updates the phone pair (display+normalized) and audits FIELD NAMES only', async () => {
-    studentFindFirst.mockImplementation(async () => ({ id: 'sp1' }) as never);
-    studentUpdate.mockImplementation(async () => ({ id: 'sp1', updatedAt: new Date() }) as never);
+    studentFindFirst.mockImplementation((async () => ({ id: 'sp1' })) as never);
+    studentUpdate.mockImplementation((async () => ({ id: 'sp1', updatedAt: new Date() })) as never);
     const { status, body } = await json('/api/v1/me/profile', {
       method: 'PATCH',
       headers: { ...authHeaders('u-student', Role.STUDENT), 'Content-Type': 'application/json' },
@@ -198,7 +198,7 @@ describe('r349-P2 PATCH /me/profile', () => {
   });
 
   it('an unparseable phone → 400, nothing stored, nothing audited', async () => {
-    studentFindFirst.mockImplementation(async () => ({ id: 'sp1' }) as never);
+    studentFindFirst.mockImplementation((async () => ({ id: 'sp1' })) as never);
     const { status } = await json('/api/v1/me/profile', {
       method: 'PATCH',
       headers: { ...authHeaders('u-student', Role.STUDENT), 'Content-Type': 'application/json' },
@@ -230,12 +230,12 @@ describe('r349-P2 GET /people/:id', () => {
   });
 
   it('TEACHER with the student on their roster → shaped view + PII read audit', async () => {
-    studentFindUnique.mockImplementation(async () => studentRow as never);
-    enrollmentFindFirst.mockImplementation(async () => ({ id: 'e1' }) as never);
-    userFindUnique.mockImplementation(async () => ({
+    studentFindUnique.mockImplementation((async () => studentRow) as never);
+    enrollmentFindFirst.mockImplementation((async () => ({ id: 'e1' })) as never);
+    userFindUnique.mockImplementation((async () => ({
       id: 'u-student', firstName: 'محمد', lastName: 'علي', email: 'student@test.ly',
       avatarColor: null, avatarInitials: 'مح', isActive: true,
-    }) as never);
+    })) as never);
     const { status, body } = await json('/api/v1/people/sp1', {
       headers: authHeaders('u-teacher', Role.TEACHER),
     });
@@ -259,8 +259,8 @@ describe('r349-P2 GET /people/:id', () => {
   });
 
   it('TEACHER with a NON-roster student → 404 (never leak existence)', async () => {
-    studentFindUnique.mockImplementation(async () => studentRow as never);
-    enrollmentFindFirst.mockImplementation(async () => null as never);
+    studentFindUnique.mockImplementation((async () => studentRow) as never);
+    enrollmentFindFirst.mockImplementation((async () => null) as never);
     const { status } = await json('/api/v1/people/sp1', {
       headers: authHeaders('u-teacher', Role.TEACHER),
     });
@@ -268,7 +268,7 @@ describe('r349-P2 GET /people/:id', () => {
   });
 
   it('cross-institution profile id → 404 for every staff role', async () => {
-    studentFindUnique.mockImplementation(async () => ({ ...studentRow, institutionId: 'inst-other' }) as never);
+    studentFindUnique.mockImplementation((async () => ({ ...studentRow, institutionId: 'inst-other' })) as never);
     for (const role of [Role.TEACHER, Role.ADMIN, Role.QUALITY]) {
       const { status } = await json('/api/v1/people/sp1', {
         headers: authHeaders('u-staff', role),
@@ -278,11 +278,11 @@ describe('r349-P2 GET /people/:id', () => {
   });
 
   it('QUALITY caller → masked nationalId + audit with the access level', async () => {
-    studentFindUnique.mockImplementation(async () => studentRow as never);
-    userFindUnique.mockImplementation(async () => ({
+    studentFindUnique.mockImplementation((async () => studentRow) as never);
+    userFindUnique.mockImplementation((async () => ({
       id: 'u-student', firstName: 'محمد', lastName: 'علي', email: 'student@test.ly',
       avatarColor: null, avatarInitials: 'مح', isActive: true,
-    }) as never);
+    })) as never);
     const { status, body } = await json('/api/v1/people/sp1', {
       headers: authHeaders('u-quality', Role.QUALITY),
     });
@@ -301,8 +301,8 @@ describe('r349-P2 GET /people/:id', () => {
 
 describe('r349-P2 PATCH /people/:id', () => {
   it('ADMIN sets the nationalId PAIR (raw + hash) and audits field names', async () => {
-    studentFindUnique.mockImplementation(async () => ({ id: 'sp1', institutionId: INST }) as never);
-    studentUpdate.mockImplementation(async () => ({ id: 'sp1', updatedAt: new Date() }) as never);
+    studentFindUnique.mockImplementation((async () => ({ id: 'sp1', institutionId: INST })) as never);
+    studentUpdate.mockImplementation((async () => ({ id: 'sp1', updatedAt: new Date() })) as never);
     const { status } = await json('/api/v1/people/sp1', {
       method: 'PATCH',
       headers: { ...authHeaders('u-admin', Role.ADMIN), 'Content-Type': 'application/json' },
@@ -313,7 +313,7 @@ describe('r349-P2 PATCH /people/:id', () => {
       }),
     });
     expect(status).toBe(200);
-    const data = studentUpdate.mock.calls[0][0].data;
+    const data = studentUpdate.mock.calls[0]?.[0]?.data as Record<string, unknown>;
     expect(data.nationalId).toBe('119012345678');
     expect(data.nationalIdHash).toMatch(/^[0-9a-f]{64}$/);
     expect(data.studyType).toBe('EVENING');
@@ -336,7 +336,7 @@ describe('r349-P2 PATCH /people/:id', () => {
   });
 
   it('a malformed nationalId → 400, nothing written', async () => {
-    studentFindUnique.mockImplementation(async () => ({ id: 'sp1', institutionId: INST }) as never);
+    studentFindUnique.mockImplementation((async () => ({ id: 'sp1', institutionId: INST })) as never);
     const { status } = await json('/api/v1/people/sp1', {
       method: 'PATCH',
       headers: { ...authHeaders('u-admin', Role.ADMIN), 'Content-Type': 'application/json' },
@@ -358,7 +358,7 @@ describe('r349-P2 GET /directory', () => {
       headers: authHeaders('u-teacher', Role.TEACHER),
     });
     expect(status).toBe(200);
-    const where = (prisma.studentProfile.findMany as ReturnType<typeof vi.fn>).mock.calls[0][0].where;
+    const where = (prisma.studentProfile.findMany as ReturnType<typeof vi.fn>).mock.calls[0]?.[0]?.where as Record<string, unknown>;
     expect(where.institutionId).toBe(INST);
     expect(where.user).toEqual({
       enrollments: {
@@ -422,10 +422,10 @@ describe('r349-P2 POST /people/:id/contact-request', () => {
   };
 
   it('creates the owner notification + audit row, returns 201', async () => {
-    studentFindUnique.mockImplementation(async () => privateRow as never);
-    auditFindFirst.mockImplementation(async () => null as never);
-    userFindUnique.mockImplementation(async () => ({ firstName: 'سالم', lastName: 'الفيتوري' }) as never);
-    notificationCreate.mockImplementation(async () => ({}) as never);
+    studentFindUnique.mockImplementation((async () => privateRow) as never);
+    auditFindFirst.mockImplementation((async () => null) as never);
+    userFindUnique.mockImplementation((async () => ({ firstName: 'سالم', lastName: 'الفيتوري' })) as never);
+    notificationCreate.mockImplementation((async () => ({})) as never);
     const { status, body } = await json('/api/v1/people/sp1/contact-request', {
       method: 'POST',
       headers: { ...authHeaders('u-teacher', Role.TEACHER), 'Content-Type': 'application/json' },
@@ -451,7 +451,7 @@ describe('r349-P2 POST /people/:id/contact-request', () => {
   });
 
   it('a request on a STAFF-VISIBLE phone → 400 (the door is for private phones only)', async () => {
-    studentFindUnique.mockImplementation(async () => studentRow as never);
+    studentFindUnique.mockImplementation((async () => studentRow) as never);
     const { status } = await json('/api/v1/people/sp1/contact-request', {
       method: 'POST',
       headers: { ...authHeaders('u-teacher', Role.TEACHER), 'Content-Type': 'application/json' },
@@ -462,8 +462,8 @@ describe('r349-P2 POST /people/:id/contact-request', () => {
   });
 
   it('24h per-target dedup: a recent audit row → 429, no duplicate notification', async () => {
-    studentFindUnique.mockImplementation(async () => privateRow as never);
-    auditFindFirst.mockImplementation(async () => ({ id: 'recent' }) as never);
+    studentFindUnique.mockImplementation((async () => privateRow) as never);
+    auditFindFirst.mockImplementation((async () => ({ id: 'recent' })) as never);
     const { status } = await json('/api/v1/people/sp1/contact-request', {
       method: 'POST',
       headers: { ...authHeaders('u-teacher', Role.TEACHER), 'Content-Type': 'application/json' },

@@ -555,12 +555,16 @@ export default function ProfilePage() {
           academic facets). R319 (c3-S2): the block's heading joins
           the §B2 title-bar register as the sheet's closing section.
           r349-P3: kept for the legacy tabs; the data tab carries its
-          own الأمان section (visibility + this same pointer). */}
-      <section aria-label="تغيير كلمة المرور">
-        <SectionBar index="04" title="تغيير كلمة المرور" />
-        <p className="r319sp-sec-note">عند التغيير تُنهى جلساتك على بقية الأجهزة، وتبقى جلستك الحالية مفتوحة.</p>
-        <ChangePasswordCard />
-      </section>
+          own الأمان section (visibility + this same pointer) — so the
+          block renders on every tab EXCEPT data (two [04]s on one
+          sheet would break the §B2 unique-index grammar). */}
+      {tab !== 'data' && (
+        <section aria-label="تغيير كلمة المرور">
+          <SectionBar index="04" title="تغيير كلمة المرور" />
+          <p className="r319sp-sec-note">عند التغيير تُنهى جلساتك على بقية الأجهزة، وتبقى جلستك الحالية مفتوحة.</p>
+          <ChangePasswordCard />
+        </section>
+      )}
     </PageFrame>
     </div>
   );

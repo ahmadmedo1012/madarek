@@ -14,11 +14,22 @@ name: "00 — smoke: دخول، لوحة، البقاء حيًّا 60 ثانية
 # Boot → Welcome: the splash/Boot screen resolves the session (guest on a
 # fresh simulator) and routes to /auth. 120s covers a cold production API
 # wake (Render free tier) behind the version gate before the CTA appears.
+# The wait anchor is the TITLE STACK («رحلة تعلم واحدة») — above the fold
+# on every device profile. The CTA («ابدأ الآن») rides at marginTop:auto
+# under the fixed 348pt hero: on short screens (the CI emulator's
+# 320×640 — real Android-Go class too) it lands BELOW the fold, so the
+# flow scrolls to it instead of assuming visibility (run 43122827163
+# failed exactly there: 120s of «ابدأ الآن» is visible, never true).
 - launchApp:
     clearState: true
 - extendedWaitUntil:
-    visible: "ابدأ الآن"
+    visible: "رحلة تعلم واحدة"
     timeout: 120000
+- scrollUntilVisible:
+    element:
+      text: "ابدأ الآن"
+    direction: DOWN
+    timeout: 20000
 - tapOn: "ابدأ الآن"
 - extendedWaitUntil:
     visible:

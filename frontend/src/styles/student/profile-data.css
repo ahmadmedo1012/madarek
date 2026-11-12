@@ -20,7 +20,7 @@
 
 .r349p-edit-btn {
   opacity: 0;
-  transition: opacity var(--t-fast, 150ms) var(--e-out, ease-out);
+  transition: opacity var(--t-fast) var(--ease-out);
 }
 
 .r349p-editable:hover .r349p-edit-btn,
@@ -108,8 +108,8 @@
   border: 1px solid var(--border);
   border-radius: var(--r-md, 8px);
   cursor: pointer;
-  transition: border-color var(--t-fast, 150ms) var(--e-out, ease-out),
-    background-color var(--t-fast, 150ms) var(--e-out, ease-out);
+  transition: border-color var(--t-fast) var(--ease-out),
+    background-color var(--t-fast) var(--ease-out);
 }
 
 .r349p-vis-option:hover:not(:disabled) {
@@ -155,7 +155,7 @@
   margin-block: var(--sp-1);
   border-radius: var(--r-full, 999px);
   background: var(--surface-2, var(--bg));
-  animation: r349p-pulse 1.4s ease-in-out infinite;
+  animation: r349p-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
 }
 
 .r349p-skeleton-line--w70 { width: 70%; }
@@ -214,7 +214,9 @@
   text-decoration: underline;
 }
 
-.r349p-dir-meta {
+/* The directory-row meta + the field-editor row meta share one sheet. */
+.r349p-dir-meta,
+.r349p-fe-meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -264,4 +266,130 @@
   justify-content: center;
   gap: var(--sp-3);
   padding-top: var(--sp-3);
+}
+
+/* ── the field-definitions editor (P5 residue, hosted on /admin/directory) ── */
+
+.r349p-fe {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md, 8px);
+  background: var(--surface-1, transparent);
+}
+
+.r349p-fe-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.r349p-fe-head > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.r349p-fe-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex-shrink: 0;
+}
+
+.r349p-fe-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.r349p-fe-group-title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-xs, 0.75rem);
+  font-weight: var(--fw-semibold, 600);
+  color: var(--text-subtle, var(--text-2));
+}
+
+.r349p-fe-empty {
+  padding-inline-start: var(--sp-4);
+}
+
+.r349p-fe-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md, 8px);
+  background: var(--surface-2, transparent);
+  min-height: 44px; /* touch floor */
+}
+
+.r349p-fe-row--danger {
+  border-color: var(--danger, var(--border));
+  flex-wrap: wrap;
+}
+
+.r349p-fe-id {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.r349p-fe-label {
+  font-weight: var(--fw-semibold, 600);
+  color: var(--text);
+}
+
+.r349p-fe-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: 1px dashed var(--border);
+  border-radius: var(--r-md, 8px);
+  background: var(--surface-2, transparent);
+}
+
+.r349p-fe-form-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.r349p-fe-form-head .btn {
+  margin-inline-start: auto;
+}
+
+.r349p-fe-options {
+  resize: vertical;
+  min-height: calc(var(--sp-4) * 3);
+}
+
+.r349p-fe-check {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: 44px; /* touch floor */
+  cursor: pointer;
+}
+
+.r349p-fe-check input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--accent, var(--text));
+}
+
+.r349p-field--wide {
+  grid-column: 1 / -1;
 }

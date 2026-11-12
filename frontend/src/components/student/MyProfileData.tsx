@@ -8,7 +8,7 @@ import { Card, Badge } from '../primitives';
 import { EmptyCell, SectionBar } from './index';
 import { Icon } from '../Icon';
 import { useMyProfile } from '../../hooks/useResources';
-import { usePatchMyProfile, type StudentProfileView, type CustomFieldValue } from '../../hooks/resources/people';
+import { usePatchMyProfile, type StudentProfileView, type CustomFieldValue, type PatchMyProfileInput } from '../../hooks/resources/people';
 import { checkLibyanPhone, foldDigits } from '../../lib/phone-validation';
 
 /**
@@ -96,8 +96,18 @@ export default function MyProfileData() {
       if (draft.trim() !== '' && !phoneCheck?.ok) { setRevealError(true); return; }
     }
     const value = draft.trim() === '' ? null : draft.trim();
+    const payload: PatchMyProfileInput = {};
+    if (editing === 'nameEn') payload.nameEn = value;
+    else if (editing === 'dateOfBirth') payload.dateOfBirth = value;
+    else if (editing === 'gender') payload.gender = (value ?? undefined) as PatchMyProfileInput['gender'];
+    else if (editing === 'city') payload.city = value;
+    else if (editing === 'address') payload.address = value;
+    else if (editing === 'studentPhone') payload.studentPhone = value;
+    else if (editing === 'additionalPhone') payload.additionalPhone = value;
+    else if (editing === 'emergencyContactName') payload.emergencyContactName = value;
+    else if (editing === 'emergencyContactPhone') payload.emergencyContactPhone = value;
     patch.mutate(
-      { [editing]: value },
+      payload,
       {
         onSuccess: () => {
           const done = editing;

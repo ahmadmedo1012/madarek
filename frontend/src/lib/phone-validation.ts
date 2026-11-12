@@ -20,7 +20,8 @@ function toAsciiDigits(text: string): string {
   return text.replace(ARABIC_DIGITS, (d) => String(d.charCodeAt(0) & 0x0f));
 }
 
-export type PhoneCheck =
+/** The check verdict (in-file — the consumers use checkLibyanPhone). */
+type PhoneCheck =
   | { ok: true; normalized: string }
   | { ok: false; reasonAr: string };
 
