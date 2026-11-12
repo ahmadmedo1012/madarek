@@ -71,8 +71,8 @@ export interface MeProfile {
   firstName?: string;
   lastName?: string;
   role?: string;
-  student?: { universityId?: string | null; year?: number | null; gpa?: number | null; totalXp?: number | null; level?: number | null; faculty?: { id: string; name: string } | null; department?: { id: string; name: string } | null } | null;
-  teacher?: { specialty?: string | null; rank?: string | null; department?: { id: string; name: string } | null; position?: string | null } | null;
+  student?: { universityId?: string | null; year?: number | null; gpa?: number | null; totalXp?: number | null; level?: number | null; faculty?: { id: string; name: string } | null; department?: { id: string; name: string } | null; profile?: import("./people").StudentProfileView | null; customFields?: import("./people").CustomFieldValue[] | null } | null;
+  teacher?: { specialty?: string | null; rank?: string | null; department?: { id: string; name: string } | null; position?: string | null; profile?: import("./people").TeacherProfileView | null; customFields?: import("./people").CustomFieldValue[] | null } | null;
   memberships?: unknown;
   [k: string]: unknown;
 }

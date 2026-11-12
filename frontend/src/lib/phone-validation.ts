@@ -43,9 +43,14 @@ export function checkLibyanPhone(raw: string): PhoneCheck {
   if (!hasPlus && !hasDoubleZero && digits.length === 10 && digits.startsWith('0')) {
     return { ok: true, normalized: `218${digits.slice(1)}` };
   }
-  // International Libyan: +218 / 00218 / 218… → 12 digits starting 218
-  if ((hasPlus || hasDoubleZero || digits.startsWith('218')) && digits.startsWith('218') && digits.length === 12) {
-    return { ok: true, normalized: digits };
+  // International Libyan: +218 / 00218 / 218… → 12 digits starting 218.
+  // The 00 access prefix is stripped before the shape check — the
+  // backend's own rule (phones.ts: `00…` → digits.slice(2)) that the
+  // first mirror draft missed (P4 sweep: «00218 91 234 5678» was
+  // rejected against both the docblock and the authority).
+  const cc = hasDoubleZero ? digits.slice(2) : digits;
+  if ((hasPlus || hasDoubleZero || digits.startsWith('218')) && cc.startsWith('218') && cc.length === 12) {
+    return { ok: true, normalized: cc };
   }
   // Other international with an explicit +
   if (hasPlus && digits.length >= 8 && digits.length <= 15) {

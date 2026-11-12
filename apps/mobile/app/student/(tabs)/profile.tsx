@@ -32,6 +32,7 @@ import Fingerprint from "lucide-react-native/icons/fingerprint-pattern";
 import Gauge from "lucide-react-native/icons/gauge";
 import Globe from "lucide-react-native/icons/globe";
 import Grid3x3 from "lucide-react-native/icons/grid-3x3";
+import IdCard from "lucide-react-native/icons/id-card";
 import Landmark from "lucide-react-native/icons/landmark";
 import Library from "lucide-react-native/icons/library";
 import Mail from "lucide-react-native/icons/mail";
@@ -73,6 +74,13 @@ import { countAr } from "@/features/student/more";
  *  R341 M4: the wall of 28 flat rows is grouped by concern; routes and
  *  labels are byte-identical to the flat list, only the grouping is new. */
 const MENU_GROUPS: { title: string; items: { icon: LucideIcon; label: string; to: string }[] }[] = [
+  {
+    // r349-P4 — the student's real file: the shaped self view's six
+    // sections (البيانات الشخصية · الاتصال · الأكاديمية · ولي الأمر ·
+    // الوثائق · الأمان) live one tap from the account hub.
+    title: "ملفي",
+    items: [{ icon: IdCard, label: "بياناتي واتصالي", to: "/student/my-data" }],
+  },
   {
     title: "الدراسة والجدول",
     items: [

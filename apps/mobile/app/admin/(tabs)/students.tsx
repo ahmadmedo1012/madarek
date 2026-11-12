@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
+import { router } from "expo-router";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { useStaggerEntrance } from "@/motion";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import GraduationCap from "lucide-react-native/icons/graduation-cap";
+import Phone from "lucide-react-native/icons/phone";
 import UserMinus from "lucide-react-native/icons/user-minus";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui";
@@ -35,6 +37,7 @@ const PAGE_LIMIT = 20;
  *  DataList migration (R334 audit P0): FlashList rows + accumulate-style
  *  pagination (usePagedList + onEndReached) instead of ScrollView+map. */
 export default function AdminStudents() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
@@ -68,9 +71,20 @@ export default function AdminStudents() {
           the title + search block takes the kit stagger. */}
       <Animated.View entering={entering(0)} style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
         <View>
-          <T variant="h2" weight="bold">
-            إدارة الطلاب
-          </T>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: sp[12] }}>
+            <T variant="h2" weight="bold">
+              إدارة الطلاب
+            </T>
+            {/* r349-P4 — the contact directory: the shaped /directory rows
+                with the native call/WhatsApp verbs, one tap from the roster. */}
+            <Button
+              small
+              kind="ghost"
+              label="دليل التواصل"
+              icon={<Phone size={14} color={p.text} />}
+              onPress={() => router.push("/admin/directory" as never)}
+            />
+          </View>
           <T variant="body" color="muted">
             قائمة الطلاب المسجَّلين في الجامعة، مع البحث وإدارة التسجيلات.
           </T>

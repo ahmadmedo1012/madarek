@@ -4,6 +4,7 @@ import { humanizeError } from "@/lib/errors";
 import { router } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Crown from "lucide-react-native/icons/crown";
+import Phone from "lucide-react-native/icons/phone";
 import ShieldCheck from "lucide-react-native/icons/shield-check";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui";
@@ -41,6 +42,7 @@ const POSITION_OPTIONS: { id: PositionChoice; label: string }[] = [
 
 /** (tabs) Teachers roster — «إدارة الأساتذة» (web AdminTeachersPage parity). */
 export default function AdminTeachers() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const [q, setQ] = useState("");
   const [appliedQ, setAppliedQ] = useState("");
@@ -74,9 +76,20 @@ export default function AdminTeachers() {
       <AppTopBar alertsPath="/admin/alerts" />
       <View style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
         <View>
-          <T variant="h2" weight="bold">
-            إدارة الأساتذة
-          </T>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: sp[12] }}>
+            <T variant="h2" weight="bold">
+              إدارة الأساتذة
+            </T>
+            {/* r349-P4 — the contact directory (the shaped rows + the
+                native call/WhatsApp verbs), one tap from the roster. */}
+            <Button
+              small
+              kind="ghost"
+              label="دليل التواصل"
+              icon={<Phone size={14} color={p.text} />}
+              onPress={() => router.push("/admin/directory" as never)}
+            />
+          </View>
           <T variant="body" color="muted">
             توثيق الملفات الأكاديمية وتعيين المناصب القيادية لكل أستاذ.
           </T>
