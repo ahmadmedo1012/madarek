@@ -371,6 +371,24 @@ jobs:
             build 2>&1 | tee build/xcodebuild-sim.log
           test -d build/DerivedDataSim/Build/Products/Release-iphonesimulator
 
+      # R349 (post-3½): the flow's login POST hits the PRODUCTION API and
+      # Render's free tier cold-boots 30–90s — run 43135742169 died exactly
+      # here (welcome ✓ login ✓, tab-courses ✗ after a 120s wait on a cold
+      # server). Warm it BEFORE the simulator boots so the smoke measures
+      # the app, not the server's boot. Never fails the job.
+      - name: Warm the production API (Render cold boot)
+        working-directory: apps/mobile
+        run: |
+          for i in 1 2 3; do
+            BODY=$(curl -sf --max-time 150 "https://madarek.onrender.com/api/v1/health" || true)
+            if [ -n "$BODY" ] && echo "$BODY" | grep -q '"ok":true'; then
+              echo "API warm (attempt $i): $BODY"
+              exit 0
+            fi
+            echo "warm attempt $i: not ok yet (${BODY:-timeout})"
+          done
+          echo "::warning::API still cold after 3 attempts — the flow may time out at login"
+
       - name: Boot a simulator and run the Maestro alive-flow
         working-directory: apps/mobile
         run: |
@@ -408,7 +426,12 @@ jobs:
             echo "alive-flow: PASS"
           else
             echo "::error::Maestro alive-flow FAILED — the app did not stay alive/interactive"
-            xcrun simctl spawn "$UDID" log show --last 5m --style compact 2>/dev/null | tail -200 || true
+            # R349 (post-3½): the previous failure dumped only a log tail to
+            # the step log — no screenshot, no artifact. Capture BOTH: the
+            # pixel truth (simctl screenshot) and the app's own simulator
+            # log window, so the next diagnosis reads the ACTUAL state.
+            xcrun simctl io "$UDID" screenshot build/smoke-failure.png || true
+            xcrun simctl spawn "$UDID" log show --last 10m --style compact 2>/dev/null | tail -400 > build/sim-log-tail.log || true
             exit 1
           fi
 
@@ -429,6 +452,8 @@ jobs:
           path: |
             apps/mobile/build/xcodebuild-sim.log
             apps/mobile/build/maestro-junit.xml
+            apps/mobile/build/smoke-failure.png
+            apps/mobile/build/sim-log-tail.log
             ~/Library/Logs/DiagnosticReports/*.ips
           if-no-files-found: ignore
           retention-days: 14

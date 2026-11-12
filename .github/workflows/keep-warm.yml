@@ -32,7 +32,10 @@ jobs:
   ping:
     name: Ping the health endpoint
     runs-on: ubuntu-24.04
-    timeout-minutes: 3
+    # R349 (post-3½): 3 bounded attempts × 120s can exceed the old 3-minute
+    # job cap when Render pays a pathological cold boot (run 43148018520
+    # timed out at 60s and left the instance half-woken).
+    timeout-minutes: 10
     steps:
       - name: curl GET /api/v1/health
         run: |
@@ -40,6 +43,21 @@ jobs:
           # (the ping must never hang the runner for minutes), and the
           # grep proves the body is the real health JSON, not a proxy
           # error page.
-          BODY=$(curl -sf --max-time 60 "$HEALTH_URL")
-          echo "health: $BODY"
-          echo "$BODY" | grep -q '"ok":true'
+          # R349 (post-3½): a single 60s ping FAILED the job on a slow
+          # cold boot while still waking the instance — the retry makes
+          # the wake deterministic (attempt 1 pays the boot, attempt 2
+          # proves it's up) instead of red. The */10 cron is also starved
+          # by GitHub's scheduler (47 runs in 12 days ≈ every 6h), so each
+          # fired run should complete the wake it starts.
+          BODY=""
+          for i in 1 2 3; do
+            BODY=$(curl -sf --max-time 120 "$HEALTH_URL" || true)
+            if [ -n "$BODY" ] && echo "$BODY" | grep -q '"ok":true'; then
+              echo "health (attempt $i): $BODY"
+              exit 0
+            fi
+            echo "attempt $i: no ok yet (${BODY:-timeout/error})"
+            sleep 5
+          done
+          echo "::error::health endpoint not ok after 3 attempts"
+          exit 1

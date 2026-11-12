@@ -473,6 +473,24 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      # R349 (post-3½): the flow's login step POSTs against the PRODUCTION
+      # API, and Render's free tier cold-boots 30–90s (run 43148018520's
+      # keep-warm timed out at 60s; the iOS run died waiting for tab-courses
+      # on the same cold boot). Warm it BEFORE the emulator so the smoke
+      # measures the app, not the server's boot. Never fails the job — the
+      # flow itself remains the test.
+      - name: Warm the production API (Render cold boot)
+        run: |
+          for i in 1 2 3; do
+            BODY=$(curl -sf --max-time 150 "https://madarek.onrender.com/api/v1/health" || true)
+            if [ -n "$BODY" ] && echo "$BODY" | grep -q '"ok":true'; then
+              echo "API warm (attempt $i): $BODY"
+              exit 0
+            fi
+            echo "warm attempt $i: not ok yet (${BODY:-timeout})"
+          done
+          echo "::warning::API still cold after 3 attempts — the flow may time out at login"
+
       - name: Run the alive-flow on the emulator
         uses: reactivecircus/android-emulator-runner@v2
         env:
@@ -489,11 +507,25 @@ jobs:
             # or cwd surviving across lines) — every line is self-contained.
             adb wait-for-device
             adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
+            mkdir -p apps/mobile/build
             echo "== Installing the x86_64 smoke APK =="
             adb install -r candidate/Madarek-x86_64.apk
+            # R349 (post-3½): the smoke has NEVER rendered the welcome screen
+            # (13 red runs, id- and text-anchors alike) and the failure
+            # screenshot is bare paper — the app dies/hangs BEFORE first
+            # content, outside Maestro's view. Probe a NATIVE launch first:
+            # fresh logcat + screenshot + dumpsys after 30s tells us which
+            # layer stalls (expo-updates? hermes? React mount?) without
+            # Maestro in the path. THEN the flow runs from a clean stop.
+            adb logcat -c
+            adb shell am start -n ly.madarek.mobile/.MainActivity
+            sleep 30
+            adb exec-out screencap -p > apps/mobile/build/smoke-boot-probe.png
+            adb logcat -d > apps/mobile/build/logcat-boot-probe.log
+            adb shell dumpsys activity top > apps/mobile/build/dumpsys-boot-probe.txt
+            adb shell am force-stop ly.madarek.mobile
             echo "== Maestro alive-flow (login -> dashboard -> 60s alive) =="
-            mkdir -p apps/mobile/build
-            maestro test apps/mobile/.maestro/smoke-alive.yaml --format junit --output apps/mobile/build/maestro-junit.xml || { adb exec-out screencap -p > apps/mobile/build/smoke-failure.png; echo "screenshot: apps/mobile/build/smoke-failure.png"; false; }
+            maestro test apps/mobile/.maestro/smoke-alive.yaml --format junit --output apps/mobile/build/maestro-junit.xml || { adb exec-out screencap -p > apps/mobile/build/smoke-failure.png; adb logcat -d > apps/mobile/build/logcat-failure.log; adb shell dumpsys activity top > apps/mobile/build/dumpsys-failure.txt; adb shell ps -A | grep -E "USER|madarek" > apps/mobile/build/ps-failure.txt; echo "failure diagnostics captured"; false; }
             echo "== Crash-buffer scan (fatal for ly.madarek.mobile) =="
             adb logcat -d -b crash | tee /tmp/crash-buffer.txt | grep -c "ly.madarek.mobile" | grep -qx 0
             echo "Alive-flow green: no crashes, 60s window held."
@@ -506,6 +538,12 @@ jobs:
           path: |
             apps/mobile/build/maestro-junit.xml
             apps/mobile/build/smoke-failure.png
+            apps/mobile/build/logcat-failure.log
+            apps/mobile/build/dumpsys-failure.txt
+            apps/mobile/build/ps-failure.txt
+            apps/mobile/build/smoke-boot-probe.png
+            apps/mobile/build/logcat-boot-probe.log
+            apps/mobile/build/dumpsys-boot-probe.txt
           if-no-files-found: ignore
           retention-days: 14
 
