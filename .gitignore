@@ -172,3 +172,6 @@ docs/redesign/**/evidence/
 # docs/redesign/r3xx/heron-live/) — local-only.
 *.har
 **/heron-live/
+
+# r349 local-stack daemon pids (tools/daemon.js)
+*-dev.pid
