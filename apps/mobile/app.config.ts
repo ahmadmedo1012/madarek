@@ -50,6 +50,12 @@ const config: ExpoConfig = {
   },
   plugins: [
     "expo-router",
+    // r349-P4 — RTL baked natively BEFORE the first React root: the
+    // JS-side controlled reload (lib/rtl.ts) is retired — reloading the
+    // context mid-boot left the reloaded tree with a dead render
+    // pipeline (views mounted, zero frames painted — the CI smoke's
+    // bare-paper screen across all 13 anchor generations).
+    "./plugins/force-rtl-android",
     [
       "expo-splash-screen",
       {

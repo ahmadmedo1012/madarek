@@ -126,9 +126,11 @@ function RootNavigator() {
 export default function RootLayout() {
   const [loaded] = useFonts(fontMap as unknown as Record<string, number>);
   const hydrate = useSession((s) => s.hydrate);
-  // R326 M1.3(e): one controlled reload if the native RTL direction hasn't
-  // been applied yet (first-ever launch). While the check runs we keep the
-  // splash up — no LTR flash, no mirrored screens.
+  // R326 M1.3(e): the direction is baked natively before the first
+  // React root (plugins/force-rtl-android.js — r349-P4), so the boot
+  // resolves rtlReady on the FIRST pass: no LTR flash, no mirrored
+  // screens, and — since the old controlled reload is retired — no
+  // reloaded-context dead render pipeline (the smoke's bare-paper bug).
   const [rtlReady, setRtlReady] = useState(false);
   // R326 M0.7 — the server-issued minimum-version floor: below it, the
   // blocking gate replaces the app (nothing runs under the floor).
