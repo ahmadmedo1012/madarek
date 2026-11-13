@@ -37,6 +37,11 @@ on:
         description: "Git ref to build (branch, tag, or commit SHA)"
         required: false
         default: "main"
+  # R6 — the freshness safety net (same policy as Android's R3): a nightly
+  # rebuild re-publishes from current main so `sidestore-latest` can never
+  # go stale because of a missed trigger.
+  schedule:
+    - cron: '40 2 * * *'
 
 permissions:
   contents: read
@@ -78,7 +83,9 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          cache-dependency-path: apps/mobile/package-lock.json
+          cache-dependency-path: |
+            apps/mobile/package-lock.json
+            package-lock.json
 
       - name: Show toolchain and source revision
         run: |
@@ -347,6 +354,79 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      # ── R6: the HERMETIC backend stack for the simulator smoke ─────
+      # macOS runners have no service containers — Postgres comes from
+      # Homebrew (bottle install, ~2 min), the backend from this commit.
+      # The device IPA above keeps the production URL; the SIMULATOR build
+      # below re-bundles JS with the hermetic base URL baked in.
+
+      - name: Install and start PostgreSQL (Homebrew)
+        run: |
+          set -euo pipefail
+          brew install postgresql@16
+          brew services start postgresql@16
+          for i in $(seq 1 30); do
+            if pg_isready -h localhost -p 5432 >/dev/null 2>&1; then
+              echo "postgres ready (attempt $i)"
+              break
+            fi
+            sleep 2
+          done
+          pg_isready -h localhost -p 5432
+          createdb madarek_smoke
+          echo "SMOKE_DATABASE_URL=postgresql://$(whoami)@localhost:5432/madarek_smoke" >> "$GITHUB_ENV"
+
+      - name: Install backend dependencies (root workspaces)
+        run: npm ci --no-audit --no-fund
+
+      - name: Build the backend
+        run: npm run build -w backend
+
+      - name: Migrate + seed the smoke database
+        run: |
+          set -euo pipefail
+          export DATABASE_URL="$SMOKE_DATABASE_URL"
+          npm run db:deploy
+          npm run db:seed
+
+      - name: Boot the backend (background) and wait for health
+        run: |
+          set -euo pipefail
+          mkdir -p apps/mobile/build
+          DATABASE_URL="$SMOKE_DATABASE_URL" \
+          JWT_ACCESS_SECRET="ci-only-access-secret-0123456789abcdef0123456789abcdef" \
+          JWT_REFRESH_SECRET="ci-only-refresh-secret-0123456789abcdef0123456789abcd" \
+          PORT=4000 \
+          MADAREK_TEST_ACCOUNTS=1 \
+          GIT_SHA="$(git rev-parse --short HEAD)" \
+            nohup node backend/dist/index.js > apps/mobile/build/backend.log 2>&1 &
+          echo $! > apps/mobile/build/backend.pid
+          for i in $(seq 1 60); do
+            BODY=$(curl -s --max-time 3 http://localhost:4000/api/v1/health || true)
+            if echo "$BODY" | grep -q '"ok":true'; then
+              echo "backend healthy after ${i} probes: $BODY"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::backend never became healthy; log tail:"
+          tail -50 apps/mobile/build/backend.log
+          exit 1
+
+      - name: Allow local networking for the simulator build (ATS)
+        # R6: the sim app talks to http://localhost:4000 — ATS blocks
+        # cleartext to localhost by default. NSAllowsLocalNetworking is
+        # scoped to local hosts only (production HTTPS unaffected), and
+        # the patch lands AFTER the device IPA was packaged above.
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          PLIST=$(ls ios/*/Info.plist | head -1)
+          test -n "$PLIST" && test -f "$PLIST"
+          /usr/libexec/PlistBuddy -c 'Add :NSAppTransportSecurity dict' "$PLIST" 2>/dev/null || true
+          /usr/libexec/PlistBuddy -c 'Add :NSAppTransportSecurity:NSAllowsLocalNetworking bool true' "$PLIST" 2>/dev/null || true
+          /usr/libexec/PlistBuddy -c 'Print :NSAppTransportSecurity' "$PLIST"
+
       # ── R349 M1.2 — the simulator smoke (the crash-regression net) ──
       # Build the SAME Release code for the simulator (reusing the prebuilt
       # workspace + pods), boot a simulator, install the app, and run the
@@ -354,8 +434,13 @@ jobs:
       # that SIGABRT'd ~15s after login on the owner's iPhone) -> assert
       # the process stays alive + interactive for a full 60s. Then scan for
       # crash reports — any .ips for ly.madarek.mobile fails the pipeline.
-      - name: Build Release for the iOS Simulator
+      - name: Build Release for the iOS Simulator (hermetic API)
+        # R6: the STEP-scoped EXPO_PUBLIC_API_BASE_URL overrides the workflow
+        # default for THIS bundle only — the simulator app talks to the
+        # local backend; the device IPA above keeps production HTTPS.
         working-directory: apps/mobile
+        env:
+          EXPO_PUBLIC_API_BASE_URL: http://localhost:4000/api/v1
         run: |
           set -euo pipefail
           mkdir -p build
@@ -371,24 +456,8 @@ jobs:
             build 2>&1 | tee build/xcodebuild-sim.log
           test -d build/DerivedDataSim/Build/Products/Release-iphonesimulator
 
-      # R349 (post-3½): the flow's login POST hits the PRODUCTION API and
-      # Render's free tier cold-boots 30–90s — run 43135742169 died exactly
-      # here (welcome ✓ login ✓, tab-courses ✗ after a 120s wait on a cold
-      # server). Warm it BEFORE the simulator boots so the smoke measures
-      # the app, not the server's boot. Never fails the job.
-      - name: Warm the production API (Render cold boot)
-        working-directory: apps/mobile
-        run: |
-          for i in 1 2 3; do
-            BODY=$(curl -sf --max-time 150 "https://madarek.onrender.com/api/v1/health" || true)
-            if [ -n "$BODY" ] && echo "$BODY" | grep -q '"ok":true'; then
-              echo "API warm (attempt $i): $BODY"
-              exit 0
-            fi
-            echo "warm attempt $i: not ok yet (${BODY:-timeout})"
-          done
-          echo "::warning::API still cold after 3 attempts — the flow may time out at login"
-
+      # R6: the flow runs against the HERMETIC backend on this runner
+      # (localhost:4000, same commit) — production is never a variable.
       - name: Boot a simulator and run the Maestro alive-flow
         working-directory: apps/mobile
         run: |
@@ -443,6 +512,41 @@ jobs:
             exit 1
           fi
           echo "Smoke green: 60s alive window held, zero crash reports."
+
+      - name: Write the smoke result (R6)
+        if: always()
+        working-directory: apps/mobile
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          RESULT="unknown"
+          if [ -f build/maestro-junit.xml ] && ! grep -q '<failure' build/maestro-junit.xml; then
+            RESULT="pass"
+          elif [ -f build/maestro-junit.xml ]; then
+            RESULT="fail"
+          fi
+          jq -n --arg result "$RESULT" \
+            --arg api "hermetic (localhost:4000, same-commit backend)" \
+            --arg run_url "$RUN_URL" \
+            --arg commit "$(git rev-parse HEAD)" \
+            '{smoke: $result, api: $api, run_url: $run_url, commit: $commit}' \
+            > build/smoke-result.json
+          cat build/smoke-result.json
+          if [ "$RESULT" != "pass" ]; then
+            echo "::error::smoke result: $RESULT (recorded; publish proceeds on verify per R6 policy)"
+            exit 1
+          fi
+
+      - name: Upload smoke result (R6)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-smoke-result
+          path: apps/mobile/build/smoke-result.json
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Upload smoke diagnostics on failure
         if: failure()
@@ -571,10 +675,15 @@ jobs:
   publish:
     name: Publish rolling SideStore release
     needs: verify
+    # R6: same policy as Android R3 — verify gates the publish; the smoke
+    # result is merged into build-info.json and badged in the notes; a red
+    # smoke job makes the run loud without blocking the IPA; the nightly
+    # schedule publishes exactly like a push on main.
     if: >-
+      always() &&
       needs.verify.result == 'success' &&
       github.ref == 'refs/heads/main' &&
-      (github.event_name == 'push' || github.event.inputs.ref == 'main' || github.event.inputs.ref == '')
+      (github.event_name == 'push' || github.event_name == 'schedule' || github.event.inputs.ref == 'main' || github.event.inputs.ref == '')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -595,6 +704,28 @@ jobs:
           name: Madarek-unsigned-ipa
           path: verified
 
+      - name: Download the smoke result (if produced)
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-smoke-result
+          path: smoke
+        continue-on-error: true
+
+      - name: Merge the smoke result into build-info (R6)
+        run: |
+          set -euo pipefail
+          if [ -f smoke/smoke-result.json ]; then
+            SMOKE=$(jq -r .smoke smoke/smoke-result.json)
+            SMOKE_URL=$(jq -r .run_url smoke/smoke-result.json)
+          else
+            SMOKE="unknown"; SMOKE_URL=""
+          fi
+          echo "smoke: $SMOKE"
+          jq --arg smoke "$SMOKE" --arg smoke_url "$SMOKE_URL" \
+             '. * {smoke: $smoke, smoke_run_url: $smoke_url}' \
+             verified/build-info.json > verified/build-info.tmp.json
+          mv verified/build-info.tmp.json verified/build-info.json
+
       - name: Render release notes
         env:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -606,6 +737,14 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --tag sidestore-latest \
             --run-url "$RUN_URL" > release-notes.md
+          SMOKE=$(jq -r '.smoke // "unknown"' verified/build-info.json)
+          SMOKE_URL=$(jq -r '.smoke_run_url // ""' verified/build-info.json)
+          case "$SMOKE" in
+            pass) BADGE="✅ simulator smoke: PASS (hermetic backend)" ;;
+            fail) BADGE="⚠️ simulator smoke: FAIL — $SMOKE_URL" ;;
+            *) BADGE="⚠️ simulator smoke: not run/unknown" ;;
+          esac
+          printf '\n---\n\n%s\n' "$BADGE" >> release-notes.md
           cat release-notes.md
 
       - name: Publish/update sidestore-latest
