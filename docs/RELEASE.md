@@ -63,6 +63,13 @@ services:
 Until either is in place, first visitors after ~15 idle minutes pay the
 cold boot; the web app shows «الخادم يستيقظ…» honestly while it wakes.
 
+## Mail (Resend) — activation is owner-side
+
+See **docs/MAIL-SETUP-AR.md** (Arabic): domain verification + the 3
+Render env fields + the live-send proof. The backend provider layer
+is already merged; `MAIL_PROVIDER` stays `none` until the domain is
+verified (the honest-off default).
+
 ## The one-time setup that is already done
 
 - `EXPO_TOKEN` is set as the GitHub Actions secret `EXPO_TOKEN`
