@@ -73,3 +73,18 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
 - Measured NOW on production (evidence): health 200/843ms · LCP 1660ms (<2500) · CLS 0.0118
   (<0.05) · INP-proxy 96ms (<200) · TTFB 219ms · 0 page errors · RTL sanity h1+2749 chars ·
   /auth 200 — ALL LIVE CHECKS PASS (chromium 1223 installed on this box).
+
+### LANE H — H4 the cold-boot UX becomes a real state machine (this commit)
+- WEB (api.ts): transport-level wake retry — a GET/HEAD that dies on TRANSPORT (timeout/
+  network fault, no HTTP answer) re-enters the pipeline after 2s/6s/12s backoff with a
+  tighter 10s retry timeout (worst ≈64s). Writes NEVER blind-retry; an answered server's
+  refusal is final (503 ≠ booting). The page keeps skeletons the whole window — no error
+  flash; the SlowServerCard's «نُعيد المحاولة تلقائيًا» copy becomes TRUE at the layer
+  that matters. serverWake gains phases (waking 4s / long 25s) and the pill swaps to the
+  honest «عادةً ٣٠–٦٠ ثانية، لا تُغلق الصفحة» copy past 25s.
+- MOBILE (client.ts): the same law — GET-only, 3s/8s/15s backoff, 12s retry timeout,
+  worst ≈60s; the Boot screen's calm label stays up the whole window (the request is
+  still pending), the Arabic timeout error only surfaces after the budget is spent.
+- Pinned: 5 frontend tests (r350/wake-retry) + 4 mobile jest tests — retry law, no-write-
+  retry, answered-is-final, bounded budget, tighter retry timeout.
+- Gates: fe tsc 0/0 · r350 vitest 5/5 · build ✓ · mobile tsc 0/0 · jest 1205/1205.

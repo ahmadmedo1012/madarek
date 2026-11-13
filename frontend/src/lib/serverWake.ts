@@ -24,9 +24,17 @@
  * the user experiences.
  */
 const SLOW_AFTER_MS = 4000;
+const LONG_AFTER_MS = 25_000;
 const CHECK_EVERY_MS = 1000;
 
 type WakeListener = (slow: boolean) => void;
+
+/** R350 H4 — the wake phases the pill copy reads: calm → honest →
+ *  reassuring. `waking` is any slow-pending request; `long` means the
+ *  oldest has been in flight past the usual cold boot (25s), where the
+ *  copy must set the 30–60s expectation and forbid closing the page
+ *  (the transport retry is still working — see api.ts WAKE_RETRY). */
+export type WakePhase = 'ok' | 'waking' | 'long';
 
 const starts = new Map<number, number>();
 const listeners = new Set<WakeListener>();
@@ -37,6 +45,12 @@ function oldestAge(): number {
   let oldest = Infinity;
   for (const ts of starts.values()) if (ts < oldest) oldest = ts;
   return oldest === Infinity ? -1 : Date.now() - oldest;
+}
+
+export function serverWakePhase(): WakePhase {
+  const age = oldestAge();
+  if (!slow || age < 0) return 'ok';
+  return age >= LONG_AFTER_MS ? 'long' : 'waking';
 }
 
 function recompute() {

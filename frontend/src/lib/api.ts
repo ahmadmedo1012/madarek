@@ -267,7 +267,7 @@ export class ApiError<T = unknown> extends Error {
  *  session suite used to reach for `api.defaults.adapter` on axios). */
 export type ApiTransport = (config: ApiRequestConfig) => Promise<ApiResponse<unknown>>;
 
-type InternalConfig = ApiRequestConfig & { __retried?: boolean };
+type InternalConfig = ApiRequestConfig & { __retried?: boolean; __wakeAttempt?: number };
 
 let transportOverride: ApiTransport | null = null;
 
@@ -333,7 +333,35 @@ const QUERY_PARAM_MAX_LENGTH = 120;
 // request — exactly the truth the user sees.
 let wakeSeq = 0;
 
-async function request(config: ApiRequestConfig): Promise<ApiResponse<unknown>> {
+// ── R350 H4: the cold-boot wake retry (GET/HEAD only) ─────────────
+/**
+ * A free-tier cold boot makes the FIRST request time out (20s) while
+ * the instance is still booting; without this the page received a raw
+ * error the moment the server was ~5s from answering. The wake law:
+ *   · only idempotent reads (GET/HEAD) retry — a write is NEVER
+ *     blind-retried (the 401-refresh path owns its own single retry);
+ *   · only TRANSPORT failures retry (timeout / network fault — no HTTP
+ *     response): a server that ANSWERED 4xx/5xx is awake, its refusal
+ *     is the truth;
+ *   · bounded budget: 3 retries (2s/6s/12s backoff), and retry attempts
+ *     carry a tighter 10s timeout — total worst case ≈64s, inside the
+ *     honest «عادةً ٣٠–٦٠ ثانية» copy the wake pill shows;
+ *   · every attempt rides the full pipeline (own wake id) so the pill
+ *     stays truthful through the whole window, and the page keeps its
+ *     skeletons instead of an error flash.
+ */
+const WAKE_RETRY_DELAYS_MS = [2_000, 6_000, 12_000] as const;
+const WAKE_RETRY_TIMEOUT_MS = 10_000;
+
+function isTransportFailure(err: ApiError): boolean {
+  return err.response === undefined && (err.code === 'ECONNABORTED' || err.code === 'NETWORK' || err.message === 'Network Error');
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function request(config: InternalConfig): Promise<ApiResponse<unknown>> {
   const cfg: InternalConfig = { ...config };
   const url = typeof cfg.url === 'string' ? cfg.url : '';
 
@@ -381,6 +409,19 @@ async function request(config: ApiRequestConfig): Promise<ApiResponse<unknown>> 
         return request(cfg); // full re-entry: fresh wake id, own guard
       }
     }
+
+    /* R350 H4 — the cold-boot wake retry (see the WAKE_RETRY block above):
+     * a timed-out GET/HEAD while the free-tier instance boots re-enters the
+     * pipeline after a bounded backoff. The page never sees the error
+     * unless the whole budget is spent — skeletons + the honest pill the
+     * whole way. */
+    const method = (cfg.method ?? 'get').toLowerCase();
+    const wakeAttempt = cfg.__wakeAttempt ?? 0;
+    if ((method === 'get' || method === 'head') && isTransportFailure(err) && wakeAttempt < WAKE_RETRY_DELAYS_MS.length && cfg.signal?.aborted !== true) {
+      await sleep(WAKE_RETRY_DELAYS_MS[wakeAttempt]!);
+      return request({ ...cfg, __wakeAttempt: wakeAttempt + 1, timeout: WAKE_RETRY_TIMEOUT_MS });
+    }
+
     throw err;
   }
 }

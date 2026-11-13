@@ -58,6 +58,17 @@ interface RequestOptions {
   /** Auth-refresh retry is internal; guards one retry per request. */
   _isRetry?: boolean;
   _skipAuth?: boolean;
+  /** R350 H4 — the cold-boot wake retry attempt (GET/HEAD only). */
+  _wakeAttempt?: number;
+}
+
+/* R350 H4 — the wake-retry budget: 3 retries (3s/8s/15s) with a 12s
+ * retry timeout — the worst case ≈60s, the calm-Boot contract. */
+const WAKE_RETRY_DELAYS_MS = [3_000, 8_000, 15_000] as const;
+const WAKE_RETRY_TIMEOUT_MS = 12_000;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function buildUrl(path: string, query?: RequestOptions["query"]): string {
@@ -146,7 +157,7 @@ async function tryRefresh(): Promise<boolean> {
 }
 
 export async function api<T>(path: string, opts: RequestOptions = {}): Promise<T> {
-  const { method = "GET", body, rawBody, contentType, query, timeoutMs = 20_000, _isRetry, _skipAuth } = opts;
+  const { method = "GET", body, rawBody, contentType, query, timeoutMs = 20_000, _isRetry, _skipAuth, _wakeAttempt = 0 } = opts;
   const url = buildUrl(path, query);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -177,6 +188,21 @@ export async function api<T>(path: string, opts: RequestOptions = {}): Promise<T
     }
     return await parseEnvelope<T>(res);
   } catch (err) {
+    /* R350 H4 — the cold-boot wake retry. The free-tier server can take
+     * 25–60s to boot; a GET/HEAD that dies on TRANSPORT (timeout /
+     * network fault — no HTTP answer) re-enters after a bounded backoff
+     * (3s/8s/15s, retry timeout 12s; total worst case ≈60s, matching the
+     * calm Boot copy «قد يستغرق لحظات»). Writes are NEVER blind-retried;
+     * a server that answered (any status) is awake — the error paths
+     * above stay honest. The splash/Boot screen keeps its slow label the
+     * whole window because the request is still pending — no error flash. */
+    const isTransport =
+      !(err instanceof ApiError) &&
+      ((err as { name?: string })?.name === "AbortError" || (err as { message?: string })?.message === "Network request failed");
+    if (method === "GET" && isTransport && _wakeAttempt < WAKE_RETRY_DELAYS_MS.length) {
+      await sleep(WAKE_RETRY_DELAYS_MS[_wakeAttempt]);
+      return api<T>(path, { ...opts, _wakeAttempt: _wakeAttempt + 1, timeoutMs: WAKE_RETRY_TIMEOUT_MS });
+    }
     if (err instanceof ApiError) throw err;
     if ((err as { name?: string })?.name === "AbortError") {
       throw new ApiError("TIMEOUT", "انتهت مهلة الطلب — الخادم بطيء، أعد المحاولة", 0);
