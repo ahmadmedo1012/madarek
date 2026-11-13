@@ -103,3 +103,28 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
   under), dbLatency 3ms; local /me/dashboard 33ms (parallel wave proof). Prod after-deploy
   measurement rides the next deploy (Render auto-deploys this commit).
 - Gates: backend tsc 0/0 · vitest 2119 passed / 19 skipped (full).
+
+### LANE E — E2 the mail outbox lands (this commit)
+- Schema (additive): MailOutbox (status queued|sending|sent|failed|suppressed, attempts,
+  nextAttemptAt, provider+providerId, lastError, dedupeKey UNIQUE, institutionId, sentAt;
+  3 covering indexes) + MailSuppression (email+type unique, reason) — migration
+  `20261113233247_r350_e2_mail_outbox`. CAUGHT + FIXED during authoring: the auto-generated
+  migration wanted to DROP the 8 raw-SQL pg_trgm search indexes (invisible to the schema
+  diff) — the DROPs removed, `CREATE INDEX IF NOT EXISTS` re-assertions added (the E1/F1
+  pattern); local proof: 8/8 trgm indexes + both tables present after the fixed apply.
+- lib/mail-outbox.ts: queueMail (caps checked BEFORE insert — recipient 12/day, institution
+  500/day UTC; dedupeKey P2002 → the replay contract), drainOutbox (CAS claim, suppression
+  consult, backoff 1m/5m/30m/2h/6h → dead-letter, provider=none parks rows = the honest off),
+  the in-process worker (30s ticks) wired into scheduler.ts start/stop.
+- The forgot-password caller queues through the outbox now (dedupeKey reset:<email>:<token18>)
+  — the generic 200 contract unchanged; auth-password-reset tests extended for the outbox.
+- Pinned: tests/modules/mail-outbox.test.ts — 11 tests (schedule, caps, dedupe, CAS, suppress,
+  backoff, dead-letter, honest-off, lost-race skip).
+- Gates: backend tsc 0/0 · full vitest 2128→2130 green (18 reset tests re-green) · verify --fast PASS.
+
+### LANE H — H5 prod after-measurement (partial)
+- Deployed (buildId e6bfd0ba04d3): /me/dashboard 1.45s → ~1.3s median warm (0.77–1.38 band;
+  /me baseline 0.20s) — the parallel wave helped but ~0.6–1.1s of server time remains. The
+  remaining attribution needs the slow_request warn lines (now instrumented ≥400ms) in the
+  Render log stream, or the Neon slow-query list — neither readable from this box (no
+  RENDER_API_KEY / Neon MCP). Honest state: instrumented + first structural fix shipped.

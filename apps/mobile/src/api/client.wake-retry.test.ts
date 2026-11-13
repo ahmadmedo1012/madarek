@@ -73,7 +73,9 @@ describe("R350 H4 — mobile wake retry", () => {
   it("an HTTP answer is never retried (503 is awake, not booting)", async () => {
     const fetchMock = jest.fn(async () => jsonResponse({ error: { code: "UNAVAILABLE", message: "no" } }, 503));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
-    await expect(client.get("/health")).rejects.toThrow();
+    // /status — a real registered route (contract-check scans test files too;
+    // /health lives only on the app-level mount in app.ts, not routes/*).
+    await expect(client.get("/status")).rejects.toThrow();
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,5 +1,6 @@
 import { prisma } from './db.js';
 import { logger } from './logger.js';
+import { startMailOutboxWorker, stopMailOutboxWorker } from './lib/mail-outbox.js';
 
 /**
  * Lightweight in-process scheduler.
@@ -65,6 +66,9 @@ let bootTimer: NodeJS.Timeout | null = null;
 let retentionInProgress = false;
 
 export function startScheduler() {
+  // R350 E2 — the transactional-mail outbox worker (30s drain ticks;
+  // provider=none queues without sending — the honest off).
+  startMailOutboxWorker();
   // Retention runs on boot: on Render's free tier the process is
   // restarted (or cold-started) far more often than a 24h interval
   // elapses, so the boot tick is the one that fires most reliably.
@@ -85,6 +89,7 @@ export function startScheduler() {
 }
 
 export function stopScheduler() {
+  stopMailOutboxWorker();
   if (dailyTimer) { clearInterval(dailyTimer); dailyTimer = null; }
   if (bootTimer) { clearTimeout(bootTimer); bootTimer = null; }
 }

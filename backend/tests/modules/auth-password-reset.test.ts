@@ -56,6 +56,8 @@ vi.mock('../../src/db.js', () => ({
     passwordResetToken: { findUnique: vi.fn(), create: vi.fn(), updateMany: vi.fn(), deleteMany: vi.fn() },
     membership: { findMany: vi.fn(async () => []) },
     loginEvent: { create: vi.fn(async () => ({})) },
+    // R350 E2 — the forgot-password caller queues through the outbox now.
+    mailOutbox: { count: vi.fn(async () => 0), create: vi.fn(async () => ({ id: 'outbox_test' })), findUnique: vi.fn() },
   },
   withRetry: vi.fn(),
 }));

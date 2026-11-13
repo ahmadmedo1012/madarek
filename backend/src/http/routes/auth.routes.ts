@@ -28,7 +28,8 @@ import {
 } from '../../modules/auth/auth.service.js';
 import { requestPasswordReset, resetPassword, TOKEN_TTL_MS } from '../../modules/auth/password-reset.service.js';
 import { isTestAccountEmail } from '../../modules/auth/test-accounts.data.js';
-import { mailConfig, renderResetEmail, sendMail } from '../../lib/mail.js';
+import { renderResetEmail } from '../../lib/mail.js';
+import { queueMail } from '../../lib/mail-outbox.js';
 import { parseDurationMs, verifyRefreshToken } from '../../lib/jwt.js';
 import { AppError } from '../../lib/errors.js';
 import { logger } from '../../logger.js';
@@ -262,21 +263,29 @@ router.post(
           url: `${origin}/auth/reset-password?token=${encodeURIComponent(token)}`,
         };
       }
-      /* r323 B3.2 — the REAL delivery path: when a mail provider is
-       * configured (MAIL_PROVIDER=resend|brevo + MAIL_API_KEY), the
-       * token emails to ANY registered address through the brand RTL
-       * template. none-mode (the default) stays exactly as documented
-       * above — a provider refusal lands in the server log and the
-       * response stays the SAME generic 200 (never a leaky error). */
-      if (token !== null && mailConfig.provider !== 'none') {
+      /* r323 B3.2 / R350 E2 — the REAL delivery path: the message lands
+       * in the DB-backed OUTBOX first (idempotent by token hash — a
+       * double-submit never double-sends), and the in-process worker
+       * delivers it with retries + backoff through the brand RTL
+       * template. none-mode queues without sending (the honest off —
+       * flipping the provider on drains the backlog); a cap refusal is
+       * logged, never leaked. The response stays the SAME generic 200. */
+      if (token !== null) {
         const rawOrigin =
           typeof req.headers.origin === 'string' && /^https?:\/\/[^/]+/.test(req.headers.origin)
             ? req.headers.origin
             : (env.APP_ORIGIN ?? 'http://localhost:5173');
         const resetUrl = `${rawOrigin.replace(/\/+$/, '')}/auth/reset-password?token=${encodeURIComponent(token)}`;
         const mail = renderResetEmail(resetUrl, MAIL_TTL_MINUTES);
-        const sent = await sendMail(mailConfig, { to: email, ...mail });
-        if (!sent) logger.warn({ email }, 'forgot-password: mail send failed — generic response kept');
+        const queued = await queueMail({
+          to: email,
+          template: 'reset-password',
+          subject: mail.subject,
+          html: mail.html,
+          text: mail.text,
+          dedupeKey: `reset:${email}:${token.slice(0, 18)}`,
+        });
+        if (!queued.ok) logger.warn({ email, reason: queued.reason }, 'forgot-password: outbox refused the message — generic response kept');
       }
       res.json({ data });
     } catch (e) {
