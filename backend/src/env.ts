@@ -70,6 +70,9 @@ const schema = z
     MAIL_PROVIDER: z.enum(['none', 'resend', 'brevo']).default('none'),
     MAIL_API_KEY: z.string().min(1).optional(),
     MAIL_FROM: z.string().min(3).optional(),
+    // R350 E4 — Resend's svix webhook signing secret (optional; unset =
+    // the webhook route refuses everything, fail-closed).
+    RESEND_WEBHOOK_SECRET: z.string().min(16).optional(),
     // The app origin for email footer links (optional — templates omit
     // the footer link when unset).
     APP_ORIGIN: z.string().url().optional(),

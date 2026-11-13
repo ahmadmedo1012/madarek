@@ -22,6 +22,8 @@
 import { prisma } from '../db.js';
 import { logger } from '../logger.js';
 import { sendMail, mailConfig, type MailMessage } from './mail.js';
+import { unsubscribeToken } from '../http/routes/mail.routes.js';
+import { env } from '../env.js';
 
 export interface QueueMailInput {
   to: string;
@@ -130,7 +132,7 @@ export async function drainOutbox(opts: {
   now?: Date;
 } = {}): Promise<DrainResult> {
   const batchSize = opts.batchSize ?? 10;
-  const send = opts.send ?? ((m: MailMessage) => sendMail(mailConfig, m));
+  const send = opts.send ?? (async (m: MailMessage) => (await sendMail(mailConfig, m)).ok);
   const now = opts.now ?? new Date();
   const result: DrainResult = { picked: 0, sent: 0, failed: 0, suppressed: 0, skippedProviderOff: 0 };
 
@@ -142,7 +144,7 @@ export async function drainOutbox(opts: {
     where: { status: 'queued', nextAttemptAt: { lte: now } },
     orderBy: { createdAt: 'asc' },
     take: batchSize,
-    select: { id: true, to: true, subject: true, html: true, text: true, attempts: true },
+    select: { id: true, to: true, template: true, subject: true, html: true, text: true, attempts: true },
   });
   result.picked = due.length;
 
@@ -180,7 +182,18 @@ export async function drainOutbox(opts: {
       continue;
     }
 
-    const ok = await send({ to: row.to, subject: row.subject, html: row.html, text: row.text });
+    // R350 E4 — RFC 8058 one-click unsubscribe for NON-transactional mail
+    // (announcements/digests/invites). Transactional templates (reset,
+    // security alerts) are exempt by law: a password reset must always
+    // arrive. The token is the signed unsubscribe credential.
+    const TRANSACTIONAL = new Set(['reset-password', 'security-alert', 'verify-email']);
+    const headers: Record<string, string> | undefined = TRANSACTIONAL.has(row.template)
+      ? undefined
+      : {
+          'List-Unsubscribe': `<${env.APP_ORIGIN ?? ''}/api/v1/mail/unsubscribe?email=${encodeURIComponent(row.to)}&token=${unsubscribeToken(row.to)}>`,
+          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        };
+    const ok = await send({ to: row.to, subject: row.subject, html: row.html, text: row.text, headers });
     if (ok) {
       await prisma.mailOutbox.update({
         where: { id: row.id },

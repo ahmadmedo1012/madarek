@@ -128,3 +128,25 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
   remaining attribution needs the slow_request warn lines (now instrumented ≥400ms) in the
   Render log stream, or the Neon slow-query list — neither readable from this box (no
   RENDER_API_KEY / Neon MCP). Honest state: instrumented + first structural fix shipped.
+
+### LANE E — E4 deliverability & compliance (this commit)
+- sendMail → SendOutcome {ok, providerId} (resend id / brevo messageId recorded on the
+  outbox row) + optional transport headers (List-Unsubscribe / RFC 8058 one-click).
+- mail.routes.ts: POST /api/v1/mail/webhook — svix-signed (HMAC-SHA256 over
+  `${svix-id}.${svix-timestamp}.${rawBody}`, space-separated v1 schemes — the initial
+  comma-split bug caught by the pure tests), RESEND_WEBHOOK_SECRET fail-closed (503 when
+  unset), email.bounced → hard_bounce suppression, email.complained → complaint suppression,
+  email.delivered → outbox providerId link, unknown events acked-and-ignored.
+- GET/POST /api/v1/mail/unsubscribe — the signed one-click (HMAC of JWT_ACCESS_SECRET over
+  `unsub:<email>`, timing-safe compare), the Arabic RTL no-login page, idempotent
+  MailSuppression(type: unsubscribe). Mounted BEFORE the rate limiter (webhooks must never
+  be throttled). Raw body via the json parser's verify hook (one capture, no second parser).
+- The outbox attaches List-Unsubscribe headers to NON-transactional templates only
+  (reset-password / security-alert / verify-email exempt — a password reset must always arrive).
+- render.yaml gains RESEND_WEBHOOK_SECRET (sync:false). Owner steps to appear in the final
+  guide: Resend dashboard → Webhooks → add https://madarek.onrender.com/api/v1/mail/webhook,
+  copy the signing secret into the Render env.
+- Pinned: tests/modules/mail-webhook.test.ts — 13 tests (pure svix good/tampered/wrong-secret/
+  missing-headers, token round-trip, bounce/complaint upserts, 401-no-write, ack-unknown,
+  GET page, invalid-token refusal, POST one-click).
+- Gates: backend tsc 0/0 · full vitest 2143 passed / 19 skipped.

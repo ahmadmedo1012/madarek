@@ -43,6 +43,16 @@ export interface MailMessage {
   subject: string;
   html: string;
   text: string;
+  /** R350 E4: transport headers (List-Unsubscribe / List-Unsubscribe-Post
+   * for non-transactional mail — RFC 8058 one-click). */
+  headers?: Record<string, string>;
+}
+
+/** The send outcome: the provider's message id when it has one (the
+ * outbox records it — E4's webhook then links delivery/bounce events). */
+export interface SendOutcome {
+  ok: boolean;
+  providerId?: string;
 }
 
 /** The config from env (built once in index.ts / injected in tests). */
@@ -69,10 +79,10 @@ export function resolveMailConfig(source: {
  * a provider refusal exactly like none-mode: the generic 200 + a
  * server-side warn, never a leaky error).
  */
-export async function sendMail(cfg: MailConfig, message: MailMessage, fetchImpl: typeof fetch = fetch): Promise<boolean> {
+export async function sendMail(cfg: MailConfig, message: MailMessage, fetchImpl: typeof fetch = fetch): Promise<SendOutcome> {
   if (cfg.provider === 'none' || !cfg.apiKey) {
     logger.warn({ to: message.to, subject: message.subject, provider: cfg.provider }, 'mail: provider not configured — message dropped (honest off)');
-    return false;
+    return { ok: false };
   }
   try {
     const res =
@@ -80,7 +90,14 @@ export async function sendMail(cfg: MailConfig, message: MailMessage, fetchImpl:
         ? await fetchImpl('https://api.resend.com/emails', {
             method: 'POST',
             headers: { Authorization: `Bearer ${cfg.apiKey}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ from: cfg.from, to: [message.to], subject: message.subject, html: message.html, text: message.text }),
+            body: JSON.stringify({
+              from: cfg.from,
+              to: [message.to],
+              subject: message.subject,
+              html: message.html,
+              text: message.text,
+              ...(message.headers ? { headers: message.headers } : {}),
+            }),
             signal: AbortSignal.timeout(15_000),
           })
         : await fetchImpl('https://api.brevo.com/v3/smtp/email', {
@@ -92,18 +109,22 @@ export async function sendMail(cfg: MailConfig, message: MailMessage, fetchImpl:
               subject: message.subject,
               htmlContent: message.html,
               textContent: message.text,
+              ...(message.headers ? { headers: message.headers } : {}),
             }),
             signal: AbortSignal.timeout(15_000),
           });
     if (!res.ok) {
       const detail = (await res.text().catch(() => '')).slice(0, 300);
       logger.error({ provider: cfg.provider, status: res.status, detail }, 'mail: provider refused the message');
-      return false;
+      return { ok: false };
     }
-    return true;
+    // Resend answers { id }; Brevo answers { messageId }. Record either —
+    // E4's webhook links provider events back to the outbox row.
+    const body = (await res.json().catch(() => ({}))) as { id?: string; messageId?: string };
+    return { ok: true, providerId: body.id ?? body.messageId };
   } catch (err) {
     logger.error({ err, provider: cfg.provider }, 'mail: transport failure');
-    return false;
+    return { ok: false };
   }
 }
 

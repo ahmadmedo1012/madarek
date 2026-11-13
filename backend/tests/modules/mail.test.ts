@@ -80,7 +80,7 @@ describe('sendMail — provider shapes and honest modes', () => {
       { to: 's@x.ly', subject: 's', html: '<p/>', text: 't' },
       fetchMock as unknown as typeof fetch,
     );
-    expect(ok).toBe(false);
+    expect(ok.ok).toBe(false);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -91,7 +91,7 @@ describe('sendMail — provider shapes and honest modes', () => {
       { to: 's@x.ly', subject: 'مرحبا', html: '<p>ن</p>', text: 'ن' },
       fetchMock as unknown as typeof fetch,
     );
-    expect(ok).toBe(true);
+    expect(ok.ok).toBe(true);
     const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     expect(url).toBe('https://api.resend.com/emails');
     expect((init.headers as Record<string, string>).Authorization).toBe('Bearer re_test_key');
@@ -106,7 +106,7 @@ describe('sendMail — provider shapes and honest modes', () => {
       { to: 's@x.ly', subject: 's', html: '<p/>', text: 't' },
       fetchMock as unknown as typeof fetch,
     );
-    expect(ok).toBe(true);
+    expect(ok.ok).toBe(true);
     const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     expect(url).toBe('https://api.brevo.com/v3/smtp/email');
     expect((init.headers as Record<string, string>)['api-key']).toBe('re_test_key');
@@ -118,6 +118,6 @@ describe('sendMail — provider shapes and honest modes', () => {
   it('a provider refusal returns false (caller keeps the generic envelope)', async () => {
     const fetchMock = vi.fn(async () => new Response('{"message":"quota"}', { status: 402 }));
     const ok = await sendMail(S3, { to: 's@x.ly', subject: 's', html: '<p/>', text: 't' }, fetchMock as unknown as typeof fetch);
-    expect(ok).toBe(false);
+    expect(ok.ok).toBe(false);
   });
 });

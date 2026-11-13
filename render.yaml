@@ -140,6 +140,11 @@ services:
         sync: false
       - key: MAIL_FROM
         sync: false
+      # R350 E4 — Resend webhook signing secret (svix). Optional: unset =
+      # the webhook route fail-closes (503) until the owner sets it from
+      # the Resend dashboard's webhook page.
+      - key: RESEND_WEBHOOK_SECRET
+        sync: false
       - key: APP_ORIGIN
         sync: false
       # R320 §C — boot-time test-account ensure. ON while the project is

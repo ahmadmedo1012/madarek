@@ -24,6 +24,7 @@ import usersRoutes from './http/routes/users.routes.js';
 // Minimal unblock (TS's own suggestion), flagged in the G1 report for
 // the lander; every other route module keeps the default-export idiom.
 import { importRoutes } from './http/routes/import.routes.js';
+import mailRoutes from './http/routes/mail.routes.js';
 import coursesRoutes from './http/routes/courses.routes.js';
 import enrollmentsRoutes from './http/routes/enrollments.routes.js';
 import offeringsRoutes from './http/routes/offerings.routes.js';
@@ -191,7 +192,18 @@ export function createApp() {
   // 1 MB request-body cap for JSON + urlencoded. Body-parser rejections
   // (entity.parse.failed / entity.too.large) are mapped to 400/413 by the
   // error handler (wave 12-5) — coordinate here if the limit ever changes.
-  app.use(express.json({ limit: '1mb' }));
+  // R350 E4: the `verify` hook captures the RAW body for the mail webhook's
+  // svix signature (signed over the exact bytes) — one capture, no second
+  // parser, no stream rewinding.
+  app.use(
+    express.json({
+      limit: '1mb',
+      verify: (req, _res, buf) => {
+        (req as import('express-serve-static-core').Request & { rawBody?: string }).rawBody = buf.toString('utf8');
+        return true;
+      },
+    }),
+  );
   app.use(express.urlencoded({ extended: true, limit: '1mb' }));
   app.use(cookieParser());
 
@@ -268,6 +280,11 @@ export function createApp() {
   });
 
   // ── Global rate limit on the API surface ─────────────────
+  // R350 E4 — the mail webhook + public unsubscribe mount BEFORE the
+  // limiter: Resend's webhook must never be throttled, and the one-click
+  // unsubscribe comes from mail clients, not users hammering the API.
+  // (statusRoutes keeps its own before-limiter note below.)
+  app.use('/api/v1', mailRoutes);
   app.use('/api/v1', globalRateLimiter);
 
   // r323 B5/B6 — the public status surface BEFORE the auth routers:
