@@ -817,40 +817,8 @@ router.get('/me/dashboard', async (req, res, next) => {
 
     const offeringIds = enrollments.map((e) => e.offering.id);
     const courseCount = enrollments.length;
-    // Progress truth (premium-polish P0-2): the average must only span
-    // offerings that actually have lectures — an offering with nothing to
-    // watch can never progress, so including it turns «متوسط تقدّمك» into
-    // a number permanently dragged toward zero no matter how much the
-    // student watches (the frozen-seed era hid this by lying 60% flat).
-    const lectureCounts = await prisma.lecture.groupBy({
-      by: ['offeringId'],
-      where: { offeringId: { in: offeringIds } },
-      _count: { _all: true },
-    });
-    const lectureCountByOffering = new Map(
-      lectureCounts.map((r) => [r.offeringId, r._count._all]),
-    );
-    const measurableEnrollments = enrollments.filter(
-      (e) => (lectureCountByOffering.get(e.offering.id) ?? 0) > 0,
-    );
-    const avgProgressPct = measurableEnrollments.length
-      ? Math.round(measurableEnrollments.reduce((s, e) => s + e.progressPct, 0) / measurableEnrollments.length)
-      : 0;
 
-    // ── Attendance % (whole-history; one groupBy per status) ──
-    const attByStatus = await prisma.attendanceRecord.groupBy({
-      by: ['status'],
-      where: { studentId: userId },
-      _count: { status: true },
-    });
-    const attendancePct = attendancePctFromStatusCounts(
-      attByStatus.map((g) => ({ status: g.status, count: g._count.status })),
-    );
-
-    // ── Pending assignments — due within the week, not yet submitted ──
-    // One predicate feeds BOTH the agenda list (take: 6) and the uncapped
-    // KPI count — the count used to be `list.length`, so a student with 9
-    // assignments due this week saw "6" on the KPI card (audit 11-d P1-8).
+    // ── Pending assignments predicate — feeds BOTH the agenda list and the KPI count ──
     const pendingAssignmentsWhere = {
       offeringId: { in: offeringIds },
       dueAt: { gte: now, lte: horizon },
@@ -862,7 +830,46 @@ router.get('/me/dashboard', async (req, res, next) => {
         },
       },
     } satisfies Prisma.AssignmentWhereInput;
-    const [upcomingAssignments, pendingAssignmentsCount] = await Promise.all([
+
+    // ── R350 H5: one parallel wave, not six sequential round-trips ──
+    // Every query below depends ONLY on wave-1's results (userId,
+    // offeringIds, profile.facultyId/totalXp) — they were fired one
+    // after another and the Neon pooler round-trips stacked into the
+    // dashboard's measured 1.45s. One Promise.all cuts the sequential
+    // chain from ~8 round-trips to 3 waves (scope → profile+enrollments
+    // → everything here), the exam-attempts follow-up needs the
+    // templates and stays a dependent second step.
+    const [
+      lectureCounts,
+      attByStatus,
+      upcomingAssignments,
+      pendingAssignmentsCount,
+      upcomingLive,
+      upcomingExamTemplates,
+      peersAhead,
+      cohortSize,
+    ] = await Promise.all([
+      // Progress truth (premium-polish P0-2): the average must only span
+      // offerings that actually have lectures — an offering with nothing to
+      // watch can never progress, so including it turns «متوسط تقدّمك» into
+      // a number permanently dragged toward zero no matter how much the
+      // student watches (the frozen-seed era hid this by lying 60% flat).
+      prisma.lecture.groupBy({
+        by: ['offeringId'],
+        where: { offeringId: { in: offeringIds } },
+        _count: { _all: true },
+      }),
+      // Attendance % (whole-history; one groupBy per status)
+      prisma.attendanceRecord.groupBy({
+        by: ['status'],
+        where: { studentId: userId },
+        _count: { status: true },
+      }),
+      // Pending assignments — due within the week, not yet submitted.
+      // One predicate feeds BOTH the agenda list (take: 6) and the
+      // uncapped KPI count — the count used to be `list.length`, so a
+      // student with 9 assignments due this week saw "6" on the KPI
+      // card (audit 11-d P1-8).
       prisma.assignment.findMany({
         where: pendingAssignmentsWhere,
         orderBy: { dueAt: 'asc' },
@@ -877,51 +884,72 @@ router.get('/me/dashboard', async (req, res, next) => {
         },
       }),
       prisma.assignment.count({ where: pendingAssignmentsWhere }),
+      // Upcoming live sessions for enrolled offerings
+      prisma.liveSession.findMany({
+        where: {
+          offeringId: { in: offeringIds },
+          scheduledAt: { gte: now, lte: horizon },
+          status: { in: ['SCHEDULED', 'LIVE'] },
+        },
+        orderBy: { scheduledAt: 'asc' },
+        take: 4,
+        select: {
+          id: true, title: true, scheduledAt: true, status: true, offeringId: true,
+          offering: { select: { course: { select: { name: true, code: true } } } },
+        },
+      }),
+      // r164-c: upcoming exams (agenda bucket #4). Candidate set = the
+      // /exams/me scoping (PUBLISHED templates for the student's enrolled
+      // offerings OR their faculty), coarse-prefiltered to "not yet
+      // closed". The precise week-window + attemptability decision is
+      // selectAgendaExams above (pure, unit-tested).
+      prisma.examTemplate.findMany({
+        where: {
+          status: 'PUBLISHED',
+          AND: [
+            {
+              OR: [
+                { offeringId: { in: offeringIds } },
+                ...(profile.facultyId ? [{ facultyId: profile.facultyId }] : []),
+              ],
+            },
+            // Window still actable at all — a closeAt in the past is the
+            // start route's «أغلق باب التسليم» refusal; closeAt null = no
+            // deadline (the selector below drops those: no event).
+            { OR: [{ closeAt: null }, { closeAt: { gte: now } }] },
+          ],
+        },
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true, title: true, kind: true, openAt: true, closeAt: true,
+          offering: { select: { course: { select: { name: true, code: true } } } },
+          faculty: { select: { name: true } },
+        },
+      }),
+      // XP rank within faculty (for "place X in your batch") — two
+      // indexed counts instead of loading every profile in the faculty
+      // to filter in JS (audit 11-d P1-11). Same semantics as before:
+      // rank = number of peers strictly ahead + 1.
+      prisma.studentProfile.count({
+        where: { facultyId: profile.facultyId, totalXp: { gt: profile.totalXp } },
+      }),
+      prisma.studentProfile.count({ where: { facultyId: profile.facultyId } }),
     ]);
 
-    // ── Upcoming live sessions for enrolled offerings ─────────
-    const upcomingLive = await prisma.liveSession.findMany({
-      where: {
-        offeringId: { in: offeringIds },
-        scheduledAt: { gte: now, lte: horizon },
-        status: { in: ['SCHEDULED', 'LIVE'] },
-      },
-      orderBy: { scheduledAt: 'asc' },
-      take: 4,
-      select: {
-        id: true, title: true, scheduledAt: true, status: true, offeringId: true,
-        offering: { select: { course: { select: { name: true, code: true } } } },
-      },
-    });
+    const lectureCountByOffering = new Map(
+      lectureCounts.map((r) => [r.offeringId, r._count._all]),
+    );
+    const measurableEnrollments = enrollments.filter(
+      (e) => (lectureCountByOffering.get(e.offering.id) ?? 0) > 0,
+    );
+    const avgProgressPct = measurableEnrollments.length
+      ? Math.round(measurableEnrollments.reduce((s, e) => s + e.progressPct, 0) / measurableEnrollments.length)
+      : 0;
 
-    // ── r164-c: upcoming exams (agenda bucket #4) ────────────
-    // Candidate set = the /exams/me scoping (PUBLISHED templates for the
-    // student's enrolled offerings OR their faculty), coarse-prefiltered
-    // to "not yet closed". The precise week-window + attemptability
-    // decision is selectAgendaExams above (pure, unit-tested).
-    const upcomingExamTemplates = await prisma.examTemplate.findMany({
-      where: {
-        status: 'PUBLISHED',
-        AND: [
-          {
-            OR: [
-              { offeringId: { in: offeringIds } },
-              ...(profile.facultyId ? [{ facultyId: profile.facultyId }] : []),
-            ],
-          },
-          // Window still actable at all — a closeAt in the past is the
-          // start route's «أغلق باب التسليم» refusal; closeAt null = no
-          // deadline (the selector below drops those: no event).
-          { OR: [{ closeAt: null }, { closeAt: { gte: now } }] },
-        ],
-      },
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true, title: true, kind: true, openAt: true, closeAt: true,
-        offering: { select: { course: { select: { name: true, code: true } } } },
-        faculty: { select: { name: true } },
-      },
-    });
+    const attendancePct = attendancePctFromStatusCounts(
+      attByStatus.map((g) => ({ status: g.status, count: g._count.status })),
+    );
+
     // The student's attempts on those templates — folded to the
     // "finished" flag (SUBMITTED / GRADED always; EXPIRED for
     // non-PRACTICE kinds — see AgendaExamCandidate.finished).
@@ -983,16 +1011,7 @@ router.get('/me/dashboard', async (req, res, next) => {
       a.when === b.when ? a.startTime.localeCompare(b.startTime) : a.when === 'today' ? -1 : 1,
     );
 
-    // ── XP rank within faculty (for "place X in your batch") ──
-    // Two indexed counts instead of loading every profile in the faculty
-    // to filter in JS (audit 11-d P1-11). Same semantics as before:
-    // rank = number of peers strictly ahead + 1.
-    const [peersAhead, cohortSize] = await Promise.all([
-      prisma.studentProfile.count({
-        where: { facultyId: profile.facultyId, totalXp: { gt: profile.totalXp } },
-      }),
-      prisma.studentProfile.count({ where: { facultyId: profile.facultyId } }),
-    ]);
+    // peersAhead/cohortSize resolved in the parallel wave above (R350 H5).
     const rank = peersAhead + 1;
 
     // ── Term progress fraction ────────────────────────────────

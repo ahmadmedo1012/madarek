@@ -195,6 +195,28 @@ export function createApp() {
   app.use(express.urlencoded({ extended: true, limit: '1mb' }));
   app.use(cookieParser());
 
+  // ── R350 H5: slow-request telemetry ────────────────────────────
+  // One lightweight finish-listener per request: anything slower than
+  // SLOW_REQUEST_MS logs a warn with the ROUTE PATTERN (not the raw URL —
+  // no ids/queries in logs) + duration + status. The top slow endpoints
+  // then read straight from the Render log stream (`grep slow_request`),
+  // and the 400ms bar sits under the API's own latency targets so the
+  // signal is rare enough to be actionable, not noise.
+  const SLOW_REQUEST_MS = 400;
+  app.use((req, res, next) => {
+    const startedAt = Date.now();
+    res.on('finish', () => {
+      const ms = Date.now() - startedAt;
+      if (ms >= SLOW_REQUEST_MS) {
+        logger.warn(
+          { slow_request: true, method: req.method, route: req.route?.path ?? req.baseUrl + req.path, status: res.statusCode, ms },
+          'slow request',
+        );
+      }
+    });
+    next();
+  });
+
   // ── Health (no rate limit, no auth) ──────────────────────────
   // buildId is DERIVED from the platform's deployed-commit env var
   // (Render injects RENDER_GIT_COMMIT on every git-connected build) —

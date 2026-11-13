@@ -88,3 +88,18 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
 - Pinned: 5 frontend tests (r350/wake-retry) + 4 mobile jest tests — retry law, no-write-
   retry, answered-is-final, bounded budget, tighter retry timeout.
 - Gates: fe tsc 0/0 · r350 vitest 5/5 · build ✓ · mobile tsc 0/0 · jest 1205/1205.
+
+### LANE H — H5 slow-endpoint fix + boot time + telemetry (this commit)
+- BEFORE (prod, single-shot, warm): /me/dashboard **1.453s** · /status 0.585s · /courses 0.575s ·
+  /people/directory 0.504s · /me 0.201s · /lectures 0.192s · /students 0.201s.
+- Root cause of the dashboard outlier: six SEQUENTIAL DB round-trips after wave-1 (lecture
+  groupBy → attendance groupBy → assignments+count → live → examTemplates → rank counts),
+  each paying the Neon pooler RTT. Fix: ONE Promise.all wave for all eight independent
+  queries (the exam-attempts follow-up stays dependent on the templates). No schema/index
+  change needed — the queries were already indexed; the N+1-shaped sequencing was the cost.
+- Telemetry: app.ts gains the slow-request middleware (≥400ms → warn with ROUTE PATTERN,
+  never raw URLs/ids) — the top slow endpoints now read from the Render log stream.
+- Boot time (local embedded PG 16, node dist): **776ms to listening** (target <8s — 10×
+  under), dbLatency 3ms; local /me/dashboard 33ms (parallel wave proof). Prod after-deploy
+  measurement rides the next deploy (Render auto-deploys this commit).
+- Gates: backend tsc 0/0 · vitest 2119 passed / 19 skipped (full).
