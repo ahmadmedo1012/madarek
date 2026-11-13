@@ -57,11 +57,21 @@ jobs:
     name: Smoke the live service
     needs: wait-for-deploy
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Health
-        run: curl -sf --max-time 30 "$BASE/health" | tee /dev/stderr | grep -q '"ok":true'
+      - name: Health (wake-aware)
+        # R350 H6: 502/503 during a Render cold boot means WAKING — retry
+        # instead of failing the run that woke the instance (H2's law).
+        run: |
+          for i in $(seq 1 10); do
+            BODY=$(curl -s --max-time 20 "$BASE/health" || true)
+            echo "attempt $i: ${BODY:-unreachable}"
+            echo "$BODY" | grep -q '"ok":true' && exit 0
+            sleep 10
+          done
+          echo "::error::health never answered ok after 10 wake-aware attempts"
+          exit 1
       - name: Login ×3 test accounts (student · teacher · registrar)
         run: |
           for who in student teacher registrar; do
@@ -121,6 +131,16 @@ jobs:
               raise SystemExit(2)  # a REAL failure: a committed op is gone live
           print("contract holds: every committed op exists live (additive-only)")
           EOF
+      - name: Live web-vitals smoke (R350 H6 — live-smoke.mjs)
+        # The full browser-level live gate: LCP/CLS/INP-proxy budgets, page
+        # errors, RTL render sanity, the /auth route — wake-aware throughout.
+        run: |
+          set -euo pipefail
+          pushd frontend >/dev/null
+          npm ci --no-audit --no-fund >/dev/null 2>&1
+          npx playwright install chromium --with-deps >/dev/null 2>&1
+          popd >/dev/null
+          node scripts/qa/live-smoke.mjs "https://madarek.onrender.com"
       - name: Open an issue on failure
         if: failure()
         uses: actions/github-script@v7

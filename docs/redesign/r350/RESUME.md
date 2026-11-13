@@ -61,3 +61,15 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
 - Nightly `schedule: 25 2 * * *` freshness net added.
 - Flaky-infra: maestro retries exactly once inside the emulator script (both attempts'
   junit files land in the diagnostics artifact).
+
+### LANE H — H6 live smoke wired + measured (this commit)
+- live-smoke.mjs: portable playwright resolution (frontend workspace @playwright/test via
+  import.meta.url — was a hardcoded sandbox path + the wrong package), wake-aware health
+  (502/503 = waking, 10×10s), screenshot to a repo-relative path.
+- deploy-smoke.yml: the health step goes wake-aware (10 attempts); the full browser-level
+  live-vitals step added after the API checks (LCP/CLS/INP budgets, page errors, RTL sanity,
+  /auth) — wired as the after-every-deploy gate. (The `branches: [main]` trigger was NEVER
+  broken — the `ain]` reading was the terminal eating `[m` as an ANSI escape; bytes verified.)
+- Measured NOW on production (evidence): health 200/843ms · LCP 1660ms (<2500) · CLS 0.0118
+  (<0.05) · INP-proxy 96ms (<200) · TTFB 219ms · 0 page errors · RTL sanity h1+2749 chars ·
+  /auth 200 — ALL LIVE CHECKS PASS (chromium 1223 installed on this box).
