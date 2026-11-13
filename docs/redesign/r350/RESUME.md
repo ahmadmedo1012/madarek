@@ -45,3 +45,19 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
    maestro retry-once for flaky infra).
 3. E1: live Resend send (onboarding@resend.dev → owner) + MAIL_* dashboard doc.
 4. Watch 65300dfb CI → R4 freshness proof.
+
+### LANE R — R2+R3 the hermetic smoke + the publish policy (this commit)
+- build-android.yml rewritten: smoke job now runs PARALLEL to build (no needs) with its own
+  postgres:16 service + the same-commit backend (migrate+seed+boot, MADAREK_TEST_ACCOUNTS=1)
+  and builds its own x86_64 smoke APK with EXPO_PUBLIC_API_BASE_URL=http://10.0.2.2:4000/api/v1
+  baked at Metro time + a cleartext patch on the throwaway prebuild tree (release parity kept:
+  R8 minified). A no-minify x86_64 variant is pre-built as the paint-freeze discriminator and
+  installed ONLY on double maestro failure (screencap + a11y dump + logcat). Paint probes
+  (screencap@8s/@25s + uiautomator dump) run before Maestro; disable-animations:false.
+- Publish policy: needs [verify, smoke] with always(); verify-success on main (push|schedule|
+  dispatch-main) publishes; the smoke result merges into build-info.json (smoke: pass|fail|
+  pass-flaky|unknown + run URL + api + attempts), the release notes gain a smoke badge line,
+  the summary shows it; a red smoke job makes the run loud without blocking the APK.
+- Nightly `schedule: 25 2 * * *` freshness net added.
+- Flaky-infra: maestro retries exactly once inside the emulator script (both attempts'
+  junit files land in the diagnostics artifact).

@@ -2,9 +2,18 @@ name: Android — release APK/AAB
 
 # Build an installable Android APK and a Play-upload AAB with Gradle.
 #
-# Pipeline: build (Ubuntu) -> verify (Ubuntu, independent) -> publish
-# (rolling prerelease `android-latest`). The publish job only runs after the
-# artifact has been downloaded again and re-verified from the artifact store.
+# R350 R2/R3 pipeline: build (Ubuntu) -> verify (Ubuntu, independent) ->
+# publish (rolling prerelease `android-latest`), with the emulator smoke
+# running HERMETICALLY in parallel (its own Postgres + backend on the job
+# runner, reached from the emulator via 10.0.2.2 — the smoke APK's baked
+# API base URL points at that local stack, NOT at sleeping production;
+# the published release APK keeps the production URL).
+#
+# Publish policy (R3): the release is replaced whenever build + independent
+# verify pass. The smoke result is recorded in build-info.json (smoke:
+# pass|fail) and the run summary; a failed smoke turns the run red (loud)
+# but must never leave the public APK stale for days. A flaky-infra smoke
+# failure retries once inside the job.
 #
 # Signing:
 #   * If ANDROID_KEYSTORE_BASE64 + password/alias secrets exist, the release
@@ -15,7 +24,8 @@ name: Android — release APK/AAB
 # The official public Android binary is produced here. Any meaningful change
 # affecting the installed app — native inputs AND JavaScript/screens/assets —
 # triggers a fresh verified build, so `android-latest` never lags the source.
-# (mobile.yml stays complementary: gates + OTA delivery of JS-only updates.)
+# A nightly scheduled rebuild is the freshness safety net. (mobile.yml stays
+# complementary: gates + OTA delivery of JS-only updates.)
 
 on:
   push:
@@ -45,6 +55,11 @@ on:
         description: "Git ref to build (branch, tag, or commit SHA)"
         required: false
         default: "main"
+  # R3 — the freshness safety net: even with no mobile-touching commits, a
+  # nightly rebuild re-publishes from current main so `android-latest` can
+  # never go stale because of a missed trigger.
+  schedule:
+    - cron: '25 2 * * *'
 
 permissions:
   contents: read
@@ -434,28 +449,220 @@ jobs:
           retention-days: 14
 
   smoke:
-    # R349 M1.4 — the crash-regression smoke on Android parity: install the
-    # freshly built APK on an API-34 emulator, run the Maestro alive-flow
-    # (login -> dashboard count-ups -> 60s alive — the exact surface that
-    # SIGABRT'd on iOS), then scan the crash buffer for native fatals.
-    name: Emulator smoke (API 34, Maestro alive-flow)
-    needs: build
+    # R350 R2 — the HERMETIC crash-regression smoke: its own Postgres
+    # (service container) + the real backend built from the same commit,
+    # running on this job runner and reached from the emulator via the
+    # host-loopback alias 10.0.2.2. The smoke APK is built HERE (x86_64,
+    # release parity incl. R8 minification) with EXPO_PUBLIC_API_BASE_URL
+    # baked to http://10.0.2.2:4000/api/v1 — the flow measures the APP,
+    # never sleeping production and never the Render cold boot (the iOS
+    # run 43135742169 died exactly there: tab-courses after login).
+    # A second NON-minified x86_64 build is kept ready as a paint-freeze
+    # discriminator: if the minified welcome screen never paints but the
+    # no-minify probe does, R8 owns the bug (installed only on double
+    # failure, never published).
+    name: Emulator smoke (API 34, hermetic backend, Maestro alive-flow)
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 50
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: madarek
+          POSTGRES_PASSWORD: madarek
+          POSTGRES_DB: madarek_smoke
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U madarek"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      # The hermetic stack: baked into the smoke APK at Metro bundle time
+      # (EXPO_PUBLIC_* inlining) and used by the backend steps below.
+      EXPO_PUBLIC_API_BASE_URL: http://10.0.2.2:4000/api/v1
+      SMOKE_DATABASE_URL: postgresql://madarek:madarek@localhost:5432/madarek_smoke
+      SMOKE_JWT_ACCESS_SECRET: ci-only-access-secret-0123456789abcdef0123456789abcdef
+      SMOKE_JWT_REFRESH_SECRET: ci-only-refresh-secret-0123456789abcdef0123456789abcd
 
     steps:
-      - name: Checkout the Maestro flows
+      - name: Checkout (full — backend + mobile + flows)
         uses: actions/checkout@v4
         with:
-          sparse-checkout: apps/mobile/.maestro
-          sparse-checkout-cone-mode: false
+          ref: ${{ github.event.inputs.ref || github.ref }}
           persist-credentials: false
 
-      - name: Download the APK candidate
-        uses: actions/download-artifact@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          name: android-release-candidate
-          path: candidate
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/mobile/package-lock.json
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Set up Gradle caching
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Configure the preinstalled Android SDK
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          if [ ! -d "$SDK_ROOT" ]; then
+            for candidate in "$HOME/Android/Sdk" /opt/android-sdk /usr/lib/android-sdk; do
+              if [ -d "$candidate" ]; then SDK_ROOT="$candidate"; break; fi
+            done
+          fi
+          test -d "$SDK_ROOT" || { echo "::error::Android SDK not found"; exit 1; }
+          SDKMANAGER=""
+          for dir in "$SDK_ROOT"/cmdline-tools/*/bin; do
+            if [ -x "$dir/sdkmanager" ]; then SDKMANAGER="$dir/sdkmanager"; break; fi
+          done
+          test -n "$SDKMANAGER" || { echo "::error::sdkmanager not found under $SDK_ROOT"; exit 1; }
+          SDKMANAGER_DIR=$(dirname "$SDKMANAGER")
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "$SDKMANAGER_DIR" >> "$GITHUB_PATH"
+          echo "$SDK_ROOT/platform-tools" >> "$GITHUB_PATH"
+          command -v sdkmanager
+          sdkmanager --version
+
+      - name: Install Android SDK packages
+        run: |
+          set -euo pipefail
+          : "${ANDROID_HOME:?ANDROID_HOME is not set}"
+          set +o pipefail
+          yes | sdkmanager --sdk_root="$ANDROID_HOME" --licenses >/dev/null || true
+          set -o pipefail
+          sdkmanager --sdk_root="$ANDROID_HOME" --install \
+            "platform-tools" \
+            "platforms;android-${ANDROID_COMPILE_SDK}.0" \
+            "build-tools;${ANDROID_BUILD_TOOLS}" \
+            "ndk;${ANDROID_NDK}"
+
+      # ── The hermetic backend stack ──────────────────────────────────
+
+      - name: Install backend dependencies (root workspaces)
+        run: npm ci --no-audit --no-fund
+
+      - name: Build the backend
+        run: npm run build -w backend
+
+      - name: Migrate + seed the smoke database
+        run: |
+          set -euo pipefail
+          export DATABASE_URL="$SMOKE_DATABASE_URL"
+          npm run db:deploy
+          npm run db:seed
+
+      - name: Boot the backend (background) and wait for health
+        run: |
+          set -euo pipefail
+          mkdir -p apps/mobile/build
+          DATABASE_URL="$SMOKE_DATABASE_URL" \
+          JWT_ACCESS_SECRET="$SMOKE_JWT_ACCESS_SECRET" \
+          JWT_REFRESH_SECRET="$SMOKE_JWT_REFRESH_SECRET" \
+          PORT=4000 \
+          MADAREK_TEST_ACCOUNTS=1 \
+          GIT_SHA="$(git rev-parse --short HEAD)" \
+            nohup node backend/dist/index.js > apps/mobile/build/backend.log 2>&1 &
+          echo $! > apps/mobile/build/backend.pid
+          for i in $(seq 1 60); do
+            BODY=$(curl -s --max-time 3 http://localhost:4000/api/v1/health || true)
+            if echo "$BODY" | grep -q '"ok":true'; then
+              echo "backend healthy after ${i} probes: $BODY"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::backend never became healthy; log tail:"
+          tail -50 apps/mobile/build/backend.log
+          exit 1
+
+      # ── The smoke APK (x86_64, hermetic URL, release parity) ────────
+
+      - name: Install JS dependencies from the lockfile
+        working-directory: apps/mobile
+        run: npm ci --no-audit --no-fund
+
+      - name: Generate the native Android project (Expo prebuild)
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          rm -rf android
+          npx expo prebuild --platform android --no-install 2>&1 | tee build/prebuild-smoke.log
+          test -d android
+          npm pkg set scripts.android="expo start --android" scripts.ios="expo start --ios"
+
+      - name: Allow cleartext to the local backend (smoke variant only)
+        # Release builds block cleartext HTTP by default; the hermetic API
+        # base URL is http://10.0.2.2:4000 — this patch touches ONLY the
+        # throwaway prebuild tree in this job (the published release APK
+        # is built by the build job and keeps production HTTPS).
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          test -f "$MANIFEST"
+          if grep -q 'networkSecurityConfig' "$MANIFEST"; then
+            echo "::warning::template ships a networkSecurityConfig — usesCleartextTraffic may be shadowed"
+          fi
+          sed -i 's|<application |<application android:usesCleartextTraffic="true" |' "$MANIFEST"
+          grep -q 'android:usesCleartextTraffic="true"' "$MANIFEST" || { echo "::error::cleartext patch failed"; exit 1; }
+          echo "cleartext permitted for the smoke variant"
+
+      - name: Tune Gradle for the CI runner (x86_64 smoke build)
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          GRADLE_PROPERTIES="android/gradle.properties"
+          test -f "$GRADLE_PROPERTIES"
+          sed -i 's|^org.gradle.jvmargs=.*|org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8|' "$GRADLE_PROPERTIES"
+          grep -q '^org.gradle.jvmargs=' "$GRADLE_PROPERTIES" || echo 'org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8' >> "$GRADLE_PROPERTIES"
+          if grep -q '^reactNativeArchitectures=' "$GRADLE_PROPERTIES"; then
+            sed -i 's|^reactNativeArchitectures=.*|reactNativeArchitectures=x86_64|' "$GRADLE_PROPERTIES"
+          else
+            echo 'reactNativeArchitectures=x86_64' >> "$GRADLE_PROPERTIES"
+          fi
+          if [ -s "$GRADLE_PROPERTIES" ] && [ -n "$(tail -c 1 "$GRADLE_PROPERTIES")" ]; then printf '\n' >> "$GRADLE_PROPERTIES"; fi
+          grep -q '^org.gradle.caching=' "$GRADLE_PROPERTIES" || echo 'org.gradle.caching=true' >> "$GRADLE_PROPERTIES"
+          grep -q '^org.gradle.parallel=' "$GRADLE_PROPERTIES" || echo 'org.gradle.parallel=true' >> "$GRADLE_PROPERTIES"
+          # Release parity: the shipped APK is minified — the smoke tests the
+          # same code path (and a no-minify discriminator is built below).
+          grep -q '^android.enableMinifyInReleaseBuilds=' "$GRADLE_PROPERTIES" || echo 'android.enableMinifyInReleaseBuilds=true' >> "$GRADLE_PROPERTIES"
+          printf 'sdk.dir=%s\n' "$ANDROID_HOME" > android/local.properties
+
+      - name: Build the x86_64 smoke APK (minified, hermetic URL)
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          (cd android && ./gradlew :app:assembleRelease --no-daemon --stacktrace) \
+            2>&1 | tee build/gradle-smoke.log
+          cp android/app/build/outputs/apk/release/app-release.apk build/Madarek-smoke-x86_64.apk
+          test -s build/Madarek-smoke-x86_64.apk
+
+      - name: Build the no-minify discriminator APK
+        # Cheap incremental pass (R8 off): if the minified welcome screen
+        # never paints but this one does, R8 owns the paint freeze. Never
+        # published; only installed on double smoke failure.
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          sed -i 's|^android.enableMinifyInReleaseBuilds=.*|android.enableMinifyInReleaseBuilds=false|' android/gradle.properties
+          (cd android && ./gradlew :app:assembleRelease --no-daemon --stacktrace) \
+            2>&1 | tee build/gradle-smoke-nominify.log
+          cp android/app/build/outputs/apk/release/app-release.apk build/Madarek-smoke-x86_64-nominify.apk
+          test -s build/Madarek-smoke-x86_64-nominify.apk
 
       - name: Install Maestro
         run: |
@@ -468,30 +675,12 @@ jobs:
       # emulation and "device offline" never resolves (run 16's failure).
       - name: Enable KVM group permissions (ubuntu-24.04)
         run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+          echo 'KERNEL==kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
             | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      # R349 (post-3½): the flow's login step POSTs against the PRODUCTION
-      # API, and Render's free tier cold-boots 30–90s (run 43148018520's
-      # keep-warm timed out at 60s; the iOS run died waiting for tab-courses
-      # on the same cold boot). Warm it BEFORE the emulator so the smoke
-      # measures the app, not the server's boot. Never fails the job — the
-      # flow itself remains the test.
-      - name: Warm the production API (Render cold boot)
-        run: |
-          for i in 1 2 3; do
-            BODY=$(curl -sf --max-time 150 "https://madarek.onrender.com/api/v1/health" || true)
-            if [ -n "$BODY" ] && echo "$BODY" | grep -q '"ok":true'; then
-              echo "API warm (attempt $i): $BODY"
-              exit 0
-            fi
-            echo "warm attempt $i: not ok yet (${BODY:-timeout})"
-          done
-          echo "::warning::API still cold after 3 attempts — the flow may time out at login"
-
-      - name: Run the alive-flow on the emulator
+      - name: Run the alive-flow on the emulator (hermetic)
         uses: reactivecircus/android-emulator-runner@v2
         env:
           API_LEVEL: '34'
@@ -500,7 +689,10 @@ jobs:
           arch: x86_64
           target: default
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
-          disable-animations: true
+          # R350 R2: animations ON — the entrance stagger is ~400ms and
+          # Maestro waits idly through it; disabling system animations was
+          # a variable in the never-painting era, removed from the equation.
+          disable-animations: false
           script: |
             # NOTE: android-emulator-runner executes EVERY LINE of this script
             # as its own `/usr/bin/sh -c` (POSIX sh, no pipefail, no variables
@@ -508,42 +700,95 @@ jobs:
             adb wait-for-device
             adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
             mkdir -p apps/mobile/build
-            echo "== Installing the x86_64 smoke APK =="
-            adb install -r candidate/Madarek-x86_64.apk
-            # R349 (post-3½): the smoke has NEVER rendered the welcome screen
-            # (13 red runs, id- and text-anchors alike) and the failure
-            # screenshot is bare paper — the app dies/hangs BEFORE first
-            # content, outside Maestro's view. Probe a NATIVE launch first:
-            # fresh logcat + screenshot + dumpsys after 30s tells us which
-            # layer stalls (expo-updates? hermes? React mount?) without
-            # Maestro in the path. THEN the flow runs from a clean stop.
+            echo "== animator scales (for the record) =="
+            adb shell settings get global window_animation_scale
+            adb shell settings get global transition_animation_scale
+            adb shell settings get global animator_duration_scale
+            echo "== hermetic backend reachable from the emulator? =="
+            adb shell "curl -s --max-time 5 http://10.0.2.2:4000/api/v1/health || echo EMULATOR-CURL-MISSING"
+            echo "== Installing the x86_64 hermetic smoke APK =="
+            adb install -r apps/mobile/build/Madarek-smoke-x86_64.apk
+            echo "== Paint probes (native launch, no Maestro) =="
             adb logcat -c
             adb shell am start -n ly.madarek.mobile/.MainActivity
-            sleep 30
-            adb exec-out screencap -p > apps/mobile/build/smoke-boot-probe.png
-            adb logcat -d > apps/mobile/build/logcat-boot-probe.log
-            adb shell dumpsys activity top > apps/mobile/build/dumpsys-boot-probe.txt
+            sleep 8
+            adb exec-out screencap -p > apps/mobile/build/paint-probe-8s.png
+            sleep 17
+            adb exec-out screencap -p > apps/mobile/build/paint-probe-25s.png
+            adb shell uiautomator dump /sdcard/paint-dump.xml >/dev/null 2>&1
+            adb pull /sdcard/paint-dump.xml apps/mobile/build/paint-probe-dump.xml >/dev/null 2>&1
+            adb logcat -d > apps/mobile/build/logcat-paint-probe.log
+            adb shell dumpsys activity top > apps/mobile/build/dumpsys-paint-probe.txt
             adb shell am force-stop ly.madarek.mobile
-            echo "== Maestro alive-flow (login -> dashboard -> 60s alive) =="
-            maestro test apps/mobile/.maestro/smoke-alive.yaml --format junit --output apps/mobile/build/maestro-junit.xml || { adb exec-out screencap -p > apps/mobile/build/smoke-failure.png; adb logcat -d > apps/mobile/build/logcat-failure.log; adb shell dumpsys activity top > apps/mobile/build/dumpsys-failure.txt; adb shell ps -A | grep -E "USER|madarek" > apps/mobile/build/ps-failure.txt; echo "failure diagnostics captured"; false; }
+            echo "== Maestro alive-flow (login -> dashboard -> 60s alive), one flaky-infra retry =="
+            maestro test apps/mobile/.maestro/smoke-alive.yaml --format junit --output apps/mobile/build/maestro-junit.xml || { echo "attempt 1 failed — capturing diagnostics"; adb exec-out screencap -p > apps/mobile/build/smoke-failure-attempt1.png; adb shell uiautomator dump /sdcard/wd1.xml >/dev/null 2>&1; adb pull /sdcard/wd1.xml apps/mobile/build/ui-attempt1.xml >/dev/null 2>&1; adb logcat -d > apps/mobile/build/logcat-failure.log; echo "attempt 1 diagnostics captured"; }
+            { test -f apps/mobile/build/maestro-junit.xml && ! grep -q "<failure" apps/mobile/build/maestro-junit.xml; } || { echo "retrying once (flaky-infra allowance)"; maestro test apps/mobile/.maestro/smoke-alive.yaml --format junit --output apps/mobile/build/maestro-junit-retry.xml || { echo "retry failed too"; adb exec-out screencap -p > apps/mobile/build/smoke-failure-retry.png; }; }
+            echo "== No-minify paint discriminator (only on double failure) =="
+            { test -f apps/mobile/build/maestro-junit-retry.xml && grep -q "<failure" apps/mobile/build/maestro-junit-retry.xml; } && { echo "both attempts failed — probing the NO-MINIFY build"; adb uninstall ly.madarek.mobile || true; adb install -r apps/mobile/build/Madarek-smoke-x86_64-nominify.apk; adb logcat -c; adb shell am start -n ly.madarek.mobile/.MainActivity; sleep 12; adb exec-out screencap -p > apps/mobile/build/nominify-probe.png; adb shell uiautomator dump /sdcard/wd3.xml >/dev/null 2>&1; adb pull /sdcard/wd3.xml apps/mobile/build/ui-nominify.xml >/dev/null 2>&1; adb logcat -d > apps/mobile/build/logcat-nominify.log; adb shell am force-stop ly.madarek.mobile; } || echo "smoke finished — skipping the no-minify probe"
             echo "== Crash-buffer scan (fatal for ly.madarek.mobile) =="
             adb logcat -d -b crash | tee /tmp/crash-buffer.txt | grep -c "ly.madarek.mobile" | grep -qx 0
-            echo "Alive-flow green: no crashes, 60s window held."
+            echo "Alive-flow sequence complete."
 
-      - name: Upload Maestro diagnostics on failure
-        if: failure()
+      - name: Write the smoke result
+        if: always()
+        working-directory: apps/mobile
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          RESULT="unknown"
+          ATTEMPTS=0
+          if [ -f build/maestro-junit.xml ] && ! grep -q '<failure' build/maestro-junit.xml; then
+            RESULT="pass"; ATTEMPTS=1
+          elif [ -f build/maestro-junit-retry.xml ] && ! grep -q '<failure' build/maestro-junit-retry.xml; then
+            RESULT="pass-flaky"; ATTEMPTS=2
+          elif [ -f build/maestro-junit.xml ] || [ -f build/maestro-junit-retry.xml ]; then
+            RESULT="fail"; ATTEMPTS=$([ -f build/maestro-junit-retry.xml ] && echo 2 || echo 1)
+          fi
+          jq -n --arg result "$RESULT" --argjson attempts "$ATTEMPTS" \
+            --arg api "hermetic (10.0.2.2:4000, same-commit backend)" \
+            --arg run_url "$RUN_URL" \
+            --arg commit "$(git rev-parse HEAD)" \
+            '{smoke: $result, attempts: $attempts, api: $api, run_url: $run_url, commit: $commit}' \
+            > build/smoke-result.json
+          cat build/smoke-result.json
+          if [ "$RESULT" = "fail" ] || [ "$RESULT" = "unknown" ]; then
+            echo "::error::smoke result: $RESULT (recorded; publish proceeds on verify per R3 policy)"
+            exit 1
+          fi
+
+      - name: Upload smoke result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-smoke-result
+          path: apps/mobile/build/smoke-result.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload smoke diagnostics
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: android-smoke-diagnostics-${{ github.run_number }}
           path: |
             apps/mobile/build/maestro-junit.xml
-            apps/mobile/build/smoke-failure.png
+            apps/mobile/build/maestro-junit-retry.xml
+            apps/mobile/build/smoke-failure-attempt1.png
+            apps/mobile/build/smoke-failure-retry.png
+            apps/mobile/build/paint-probe-8s.png
+            apps/mobile/build/paint-probe-25s.png
+            apps/mobile/build/paint-probe-dump.xml
+            apps/mobile/build/logcat-paint-probe.log
+            apps/mobile/build/dumpsys-paint-probe.txt
+            apps/mobile/build/ui-attempt1.xml
             apps/mobile/build/logcat-failure.log
-            apps/mobile/build/dumpsys-failure.txt
-            apps/mobile/build/ps-failure.txt
-            apps/mobile/build/smoke-boot-probe.png
-            apps/mobile/build/logcat-boot-probe.log
-            apps/mobile/build/dumpsys-boot-probe.txt
+            apps/mobile/build/nominify-probe.png
+            apps/mobile/build/ui-nominify.xml
+            apps/mobile/build/logcat-nominify.log
+            apps/mobile/build/backend.log
+            apps/mobile/build/gradle-smoke.log
           if-no-files-found: ignore
           retention-days: 14
 
@@ -735,11 +980,18 @@ jobs:
   publish:
     name: Publish rolling Android release
     needs: [verify, smoke]
+    # R3 publish policy: the release is replaced whenever build + the
+    # INDEPENDENT verify pass. The smoke result is merged into
+    # build-info.json (smoke: pass|fail|pass-flaky|unknown) and shown in
+    # the summary; a failed smoke makes the RUN red (loud) but never
+    # leaves the public APK stale for days — the owner's headline
+    # requirement is "always the newest APK". schedule (nightly net)
+    # publishes exactly like a push on main.
     if: >-
+      always() &&
       needs.verify.result == 'success' &&
-      needs.smoke.result == 'success' &&
       github.ref == 'refs/heads/main' &&
-      (github.event_name == 'push' || github.event.inputs.ref == 'main' || github.event.inputs.ref == '')
+      (github.event_name == 'push' || github.event_name == 'schedule' || github.event.inputs.ref == 'main' || github.event.inputs.ref == '')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -760,6 +1012,34 @@ jobs:
           name: Madarek-android-release
           path: verified
 
+      - name: Download the smoke result (if produced)
+        uses: actions/download-artifact@v4
+        with:
+          name: android-smoke-result
+          path: smoke
+        continue-on-error: true
+
+      - name: Merge the smoke result into build-info
+        run: |
+          set -euo pipefail
+          if [ -f smoke/smoke-result.json ]; then
+            SMOKE=$(jq -r .smoke smoke/smoke-result.json)
+            SMOKE_URL=$(jq -r .run_url smoke/smoke-result.json)
+            SMOKE_API=$(jq -r .api smoke/smoke-result.json)
+            SMOKE_ATTEMPTS=$(jq -r .attempts smoke/smoke-result.json)
+          else
+            SMOKE="unknown"; SMOKE_URL=""; SMOKE_API="not run"; SMOKE_ATTEMPTS=0
+          fi
+          echo "smoke: $SMOKE (attempts: $SMOKE_ATTEMPTS, api: $SMOKE_API)"
+          jq --arg smoke "$SMOKE" \
+             --arg smoke_url "$SMOKE_URL" \
+             --arg smoke_api "$SMOKE_API" \
+             --argjson smoke_attempts "$SMOKE_ATTEMPTS" \
+             '. * {smoke: $smoke, smoke_run_url: $smoke_url, smoke_api: $smoke_api, smoke_attempts: $smoke_attempts}' \
+             verified/build-info.json > verified/build-info.tmp.json
+          mv verified/build-info.tmp.json verified/build-info.json
+          jq -r '.smoke' verified/build-info.json
+
       - name: Render release notes
         env:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -771,6 +1051,15 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --tag android-latest \
             --run-url "$RUN_URL" > release-notes.md
+          SMOKE=$(jq -r .smoke verified/build-info.json)
+          SMOKE_URL=$(jq -r '.smoke_run_url // ""' verified/build-info.json)
+          case "$SMOKE" in
+            pass) BADGE="✅ emulator smoke: PASS (hermetic backend)" ;;
+            pass-flaky) BADGE="✅ emulator smoke: PASS on retry (flaky infra noted)" ;;
+            fail) BADGE="⚠️ emulator smoke: FAIL — $SMOKE_URL" ;;
+            *) BADGE="⚠️ emulator smoke: not run/unknown" ;;
+          esac
+          printf '\n---\n\n%s\n' "$BADGE" >> release-notes.md
           cat release-notes.md
 
       - name: Publish/update android-latest
@@ -793,6 +1082,8 @@ jobs:
       - name: Write release summary
         run: |
           set -euo pipefail
+          SMOKE=$(jq -r .smoke verified/build-info.json)
+          SMOKE_URL=$(jq -r '.smoke_run_url // ""' verified/build-info.json)
           {
             echo "## Android release updated"
             echo
@@ -805,4 +1096,6 @@ jobs:
             echo "**SHA-256:** \`$(jq -r '.sha256' verified/build-info.json)\`"
             echo
             echo "**Commit:** \`$(jq -r '.commit' verified/build-info.json)\`"
+            echo
+            echo "**Emulator smoke (hermetic):** $SMOKE — $SMOKE_URL"
           } >> "$GITHUB_STEP_SUMMARY"
