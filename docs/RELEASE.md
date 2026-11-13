@@ -22,10 +22,46 @@ automatically).
 ## Keep-warm (free tier)
 
 Render's free plan sleeps the web service after ~15 idle minutes;
-`.github/workflows/keep-warm.yml` pings `GET /api/v1/health` every 10
-minutes so visitors never pay the 30–60s cold boot. Upgrading the
-Render service to **Starter** removes the sleep behaviour entirely —
-then delete the workflow.
+`.github/workflows/keep-warm.yml` pings `GET /api/v1/health` (which also
+round-trips a `SELECT 1` on Neon — `dbLatencyMs` in the body) and `/`
+every **5** minutes, retry-aware: a 502/503 «Application loading» during
+a cold boot counts as *waking*, and the run only goes green once both
+endpoints answer. Upgrading the Render service to **Starter** removes
+the sleep behaviour entirely — then delete the workflow.
+
+### The honest limits, and the two reliable fixes (R350 H3)
+
+GitHub's cron is **best-effort and starved on quiet repos** — measured
+~4 fired runs/day at `*/10` (the scheduler deprioritises repos without
+recent activity; the delay is unbounded). A 5-minute cron therefore
+does **not** guarantee a 5-minute ping. The workflow stays as the
+zero-cost net; the reliable fixes:
+
+**1) An external pinger (free, 5 minutes, owner-side — recommended):**
+
+عندك طريقتان مجانيتان، اختر واحدة:
+١. من https://uptimerobot.com أنشئ حسابًا مجانيًا.
+٢. أضف «Monitor» جديدًا من نوع HTTP(s) والعنوان: https://madarek.onrender.com/api/v1/health
+٣. اجعل فترة الفحص كل 5 دقائق (الحساب المجاني يسمح بها).
+٤. فعِّل تنبيه البريد حين يتوقف الخادم عن الاستجابة.
+٥. اتركه يعمل — هذا يمنع الخادم من النوم أصلًا ويخبرك عند أي توقف حقيقي.
+
+(البديل: https://cron-job.org بنفس العنوان كل 5 دقائق.)
+
+**2) Render Starter (the only guaranteed fix — owner decision, ≈$7/mo):**
+
+Render → Dashboard → madarek → Settings → Instance Type → **Starter**.
+The equivalent `render.yaml` change, ready to apply when you decide:
+
+```yaml
+services:
+  - type: web
+    name: madarek
+    plan: starter   # free → starter: no sleep, no cold boots, 2× RAM
+```
+
+Until either is in place, first visitors after ~15 idle minutes pay the
+cold boot; the web app shows «الخادم يستيقظ…» honestly while it wakes.
 
 ## The one-time setup that is already done
 

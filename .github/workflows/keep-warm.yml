@@ -1,21 +1,34 @@
 # Keep-warm — R327 E1: Render's free tier spins the web service down
 # after ~15 minutes without inbound traffic; the next visitor then pays
-# a 30–60s cold boot (the «الخادم يستيقظ…» moment). This workflow keeps
-# the instance awake by touching the public health endpoint every 10
-# minutes — one cheap request, no auth, no side effects.
+# a 25–60s cold boot (the «الخادم يستيقظ…» moment). This workflow keeps
+# the instance awake by touching the public endpoints every 5 minutes.
+#
+# R350 H2 — the wake-aware rewrite:
+#   · 502/503 "Application loading" during a cold boot is WAKING, not
+#     failure — the loop retries until 200 within the budget, so a run
+#     that pays a cold boot ends GREEN, never red (the old single-ping
+#     design logged red on every wake it performed).
+#   · Both endpoints: /api/v1/health (which also round-trips Neon — the
+#     dbLatencyMs field proves the DB compute is awake; no separate
+#     select-1 variant needed) AND / (the SPA root + static assets).
+#   · */5 cron + workflow_dispatch (GitHub's scheduler starves cron on
+#     quiet repos — observed ~4 runs/day at */10 — so every run that
+#     DOES fire must finish the wake it starts; see docs/RELEASE.md
+#     §Keep-warm for the honest limits and the owner-side pingers).
 #
 # The honest trade-off (documented in docs/RELEASE.md §Keep-warm):
 # upgrading the Render service to the Starter plan removes the sleep
 # behaviour entirely and makes this workflow unnecessary — delete it
-# with the upgrade. Until then: cron every 10 minutes + a manual
-# workflow_dispatch for ad-hoc pings.
+# with the upgrade. Until then: this best-effort pinger + the owner's
+# external monitor.
 name: Keep warm
 
 on:
   schedule:
-    # Every 10 minutes, UTC. GitHub Actions cron can lag a few minutes
-    # on busy hours — well inside the ~15-minute free-tier sleep window.
-    - cron: '*/10 * * * *'
+    # Every 5 minutes, UTC — best-effort (GitHub delays/starves cron on
+    # quiet repos; the external monitor in docs/RELEASE.md is the
+    # reliable path on the free tier).
+    - cron: '*/5 * * * *'
   workflow_dispatch: {}
 
 permissions:
@@ -27,37 +40,45 @@ concurrency:
 
 env:
   HEALTH_URL: https://madarek.onrender.com/api/v1/health
+  ROOT_URL: https://madarek.onrender.com/
 
 jobs:
   ping:
-    name: Ping the health endpoint
+    name: Wake-and-verify (health + root)
     runs-on: ubuntu-24.04
-    # R349 (post-3½): 3 bounded attempts × 120s can exceed the old 3-minute
-    # job cap when Render pays a pathological cold boot (run 43148018520
-    # timed out at 60s and left the instance half-woken).
-    timeout-minutes: 10
+    # 12 attempts × (15s curl cap + 5s sleep) ≈ 4 min worst case —
+    # covers a pathological cold boot while bounding the runner.
+    timeout-minutes: 6
     steps:
-      - name: curl GET /api/v1/health
+      - name: Wake the service (retry-aware), then verify both endpoints
         run: |
-          # -f fails on HTTP ≥400, --max-time bounds a wedged cold boot
-          # (the ping must never hang the runner for minutes), and the
-          # grep proves the body is the real health JSON, not a proxy
-          # error page.
-          # R349 (post-3½): a single 60s ping FAILED the job on a slow
-          # cold boot while still waking the instance — the retry makes
-          # the wake deterministic (attempt 1 pays the boot, attempt 2
-          # proves it's up) instead of red. The */10 cron is also starved
-          # by GitHub's scheduler (47 runs in 12 days ≈ every 6h), so each
-          # fired run should complete the wake it starts.
+          set -uo pipefail
+          # Phase 1 — WAKE: retry until /api/v1/health answers 200 with
+          # the real health JSON. A 502/503 "Application loading" proxy
+          # page means the instance is BOOTING — keep going, never fail.
+          # The health handler also SELECT-1s Neon (dbLatencyMs in the
+          # body), so a green here means web + DB are both awake.
           BODY=""
-          for i in 1 2 3; do
-            BODY=$(curl -sf --max-time 120 "$HEALTH_URL" || true)
-            if [ -n "$BODY" ] && echo "$BODY" | grep -q '"ok":true'; then
-              echo "health (attempt $i): $BODY"
-              exit 0
+          for i in $(seq 1 12); do
+            BODY=$(curl -s --max-time 15 "$HEALTH_URL" || true)
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$HEALTH_URL" || echo 000)
+            if [ "$CODE" = "200" ] && echo "$BODY" | grep -q '"ok":true'; then
+              echo "awake (attempt $i): $BODY"
+              break
             fi
-            echo "attempt $i: no ok yet (${BODY:-timeout/error})"
+            echo "waking… attempt $i (HTTP $CODE)"
             sleep 5
           done
-          echo "::error::health endpoint not ok after 3 attempts"
-          exit 1
+          echo "$BODY" | grep -q '"ok":true' || {
+            echo "::error::service did not answer 200 ok after 12 attempts (~4 min)"
+            exit 1
+          }
+
+          # Phase 2 — VERIFY the SPA root too (static serving + the
+          # built frontend the first visitor actually loads).
+          ROOT_CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$ROOT_URL" || echo 000)
+          echo "root: HTTP $ROOT_CODE"
+          case "$ROOT_CODE" in
+            200|301|302) exit 0 ;;
+            *) echo "::error::root endpoint answered $ROOT_CODE after wake"; exit 1 ;;
+          esac
