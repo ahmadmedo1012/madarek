@@ -15,6 +15,7 @@ import { Illustration } from "@/components/Illustration";
 import { BrandMark } from "@/components/ui/brand";
 import { PressableScale } from "@/motion";
 import { haptics } from "@/haptics";
+import { unregisterPushDevices } from "@/lib/push";
 import { humanizeError } from "@/lib/errors";
 
 /**
@@ -65,6 +66,9 @@ export default function SelectInstitution() {
   };
 
   const doLogout = async () => {
+    // R327 C3 — a handed-over phone must not keep pushing (same law as
+    // settings + student profile logouts; this screen skipped it).
+    await unregisterPushDevices().catch(() => undefined);
     await logout();
     qc.clear();
     router.replace("/");
