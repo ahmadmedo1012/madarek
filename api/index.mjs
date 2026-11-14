@@ -30,6 +30,28 @@
 import { createApp } from '../backend/dist/app.js';
 import { opportunisticTick } from '../backend/dist/lib/tick-jobs.js';
 
+/* R352 Z2/K1 — the DB identity line: hostname + database name ONLY
+ * (never credentials, never query params). The X4 cutover left
+ * production pointed at a database NOBODY could name — the r351 docs
+ * claimed "ep-cool-paper us-east-1", the live errors said TickRun/
+ * RateLimitHit "do not exist" (three r351 migrations never applied),
+ * and logins still worked (an older schema). One line per cold boot
+ * makes that drift visible in `vercel logs` forever. */
+try {
+  const dbUrl = new URL(process.env.DATABASE_URL ?? '');
+  console.log(
+    JSON.stringify({
+      service: 'madarek',
+      boot: 'api',
+      buildId: process.env.RENDER_GIT_COMMIT ?? null,
+      dbIdentity: `${dbUrl.hostname}${dbUrl.pathname}`,
+      vercelRegion: process.env.VERCEL_REGION ?? null,
+    }),
+  );
+} catch {
+  /* diagnostics never block boot */
+}
+
 const app = createApp();
 
 /**
