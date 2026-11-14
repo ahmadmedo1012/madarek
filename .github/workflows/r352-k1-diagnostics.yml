@@ -1,0 +1,162 @@
+# R352 K1 — the one-shot production diagnostics run.
+#
+# WHY: the round's biggest defect (the stale production schema) was found
+# by reading runtime errors; the close-out of the defect table needs the
+# SAME evidence channel now that the repair has deployed:
+#   1. Vercel runtime logs since the repair (42P01/RateLimitHit should be
+#      GONE; any new error class surfaces here).
+#   2. Neon slow queries + table sizes (pg_stat_statements when the
+#      extension exists — Neon enables it by default on most databases).
+#   3. The migration ledger state + the anomaly tables (ClientError,
+#      LoginEvent failures) — the T-lane signals, one table.
+#
+# HOW (no secrets in this box's env — everything rides the repo's stored
+# VERCEL_TOKEN/VERCEL_PROJECT_ID/VERCEL_ORG_ID):
+#   · `vercel logs` CLI for runtime logs (defensive: if the token/plan
+#     refuses, the step degrades to a note, never fails the run).
+#   · The env-decrypt probe: GET v10 .../env/{id}?decrypt=1 for
+#     DATABASE_URL. If the token may not decrypt, the psql section is
+#     skipped HONESTLY (the vercel-usage-watch.mjs limitation pattern).
+#   · psql via postgresql-client; every query in the summary. The
+#     connection string is NEVER printed (redacted to host-first-segment
+#     — the RESUME convention, e.g. "ep-icy-mode…/neondb").
+name: R352 K1 diagnostics
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: r352-k1-diagnostics
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    name: Runtime logs + slow queries + ledger + anomalies
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      TARGET: https://madarek-nine.vercel.app
+      TEAM: ${{ secrets.VERCEL_ORG_ID }}
+      PROJECT: ${{ secrets.VERCEL_PROJECT_ID }}
+      VTOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Live state first (health + status, the anchor table)
+        run: |
+          set -euo pipefail
+          {
+            echo "## R352 K1 — production diagnostics"
+            echo
+            echo "### Live state ($(date -u +%FT%TZ))"
+            echo
+            echo '```'
+            for URL in "$TARGET/api/v1/health" "$TARGET/api/v1/status"; do
+              echo "-- $URL"
+              curl -sS --max-time 30 --retry 2 "$URL" | head -c 800; echo
+            done
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Vercel runtime logs since the repair (defensive)
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          npm i -g vercel@latest >/dev/null 2>&1
+          LOGS=/tmp/runtime-logs.txt
+          : > "$LOGS"
+          # The CLI surface moves; try the known shapes, keep the first
+          # that answers. Failure is a NOTE, never a red job.
+          vercel logs "$TARGET" --token "$VTOKEN" --scope "$TEAM" >"$LOGS" 2>&1 || true
+          if [ ! -s "$LOGS" ]; then
+            vercel inspect "$TARGET" --token "$VTOKEN" --scope "$TEAM" >"$LOGS" 2>&1 || true
+          fi
+          {
+            echo "### Vercel runtime logs"
+            echo
+            if [ -s "$LOGS" ]; then
+              echo '```'
+              # The defect signals the round cares about, then the tail.
+              echo "-- error-class hits:"
+              grep -Ei '42P01|RateLimitHit|TickRun|P1001|P1002|ECONN|timeout|slow_request|5[0-9][0-9] ' "$LOGS" | tail -40 || echo "(none)"
+              echo "-- tail:"
+              tail -25 "$LOGS"
+              echo '```'
+            else
+              echo "_No runtime logs on this token/plan (the vercel-usage-watch.mjs limitation pattern). The dashboard remains the owner-side channel._"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Env decrypt probe → psql diagnostics (defensive)
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          mkdir -p /tmp/k1
+          # List the project's envs; find DATABASE_URL's id.
+          curl -sS -H "Authorization: Bearer $VTOKEN" \
+            "https://api.vercel.com/v9/projects/$PROJECT/env?teamId=$TEAM" > /tmp/k1/envs.json
+          DB_ID=$(jq -r '[.envs[] | select(.key == "DATABASE_URL")][0].id // empty' /tmp/k1/envs.json)
+          echo "DATABASE_URL env id: ${DB_ID:-<not-found>}"
+          if [ -z "$DB_ID" ]; then
+            {
+              echo "### Neon diagnostics"
+              echo
+              echo "_No DATABASE_URL env on the project — skipped honestly._"
+            } >> "$GITHUB_STEP_SUMMARY"; exit 0
+          fi
+
+          # Decrypt attempt (needs the token's encrypted-env scope).
+          curl -sS -H "Authorization: Bearer $VTOKEN" \
+            "https://api.vercel.com/v10/projects/$PROJECT/env/$DB_ID?decrypt=1&teamId=$TEAM" > /tmp/k1/dbenv.json
+          DBURL=$(jq -r '.value // empty' /tmp/k1/dbenv.json)
+          if [ -z "$DBURL" ] || [ "$DBURL" = "null" ]; then
+            {
+              echo "### Neon diagnostics"
+              echo
+              echo "_The token may not decrypt env values — psql diagnostics skipped honestly (the usage-watch limitation pattern). Owner-side: Neon dashboard → Insights._"
+            } >> "$GITHUB_STEP_SUMMARY"; exit 0
+          fi
+
+          # Redacted identity only — the RESUME convention.
+          HOST=$(echo "$DBURL" | sed -E 's#.*@([^/?:]+).*#\1#')
+          DBNAME=$(echo "$DBURL" | sed -E 's#.*/([^/?]+).*#\1#')
+          IDENTITY="$(echo "$HOST" | cut -d. -f1)…/${DBNAME}"
+          echo "$DBURL" > /tmp/k1/.url; chmod 600 /tmp/k1/.url
+
+          sudo apt-get -qq update >/dev/null 2>&1; sudo apt-get -qq install -y postgresql-client >/dev/null 2>&1 || true
+          psql "$(cat /tmp/k1/.url)" -v ON_ERROR_STOP=0 -P pager=off > /tmp/k1/psql.txt 2>&1 <<'SQL'
+          \echo === migrations ledger ===
+          SELECT count(*) AS applied, max(applied_at)::date AS last FROM "_prisma_migrations";
+          \echo === extensions ===
+          SELECT extname FROM pg_extension ORDER BY 1;
+          \echo === slow queries (pg_stat_statements) ===
+          SELECT calls, round(total_exec_time::numeric,1) AS total_ms, round(mean_exec_time::numeric,1) AS mean_ms, left(regexp_replace(query, '[\n\r ]+', ' ', 'g'), 90) AS query
+          FROM pg_stat_statements ORDER BY total_exec_time DESC LIMIT 15;
+          \echo === table sizes ===
+          SELECT relname, pg_size_pretty(pg_total_relation_size(relid)) AS total, n_live_tup AS rows
+          FROM pg_stat_user_tables ORDER BY pg_total_relation_size(relid) DESC LIMIT 12;
+          \echo === BinaryObject (K5 feed) ===
+          SELECT count(*) AS rows, pg_size_pretty(sum(size)::bigint) AS bytes FROM "BinaryObject";
+          \echo === ClientError last 14 days ===
+          SELECT count(*) AS total FROM "ClientError" WHERE "createdAt" > now() - interval '14 days';
+          \echo === LoginEvent failures last 14 days ===
+          SELECT count(*) AS failed FROM "LoginEvent" WHERE success = false AND "createdAt" > now() - interval '14 days';
+          SQL
+          rm -f /tmp/k1/.url
+          {
+            echo "### Neon diagnostics ($IDENTITY)"
+            echo
+            echo '```'
+            cat /tmp/k1/psql.txt | head -120
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Summary close-out note
+        if: always()
+        run: |
+          {
+            echo
+            echo "---"
+            echo "_Generated by r352-k1-diagnostics (dispatch-only). Findings fold into docs/redesign/r352/RESUME.md._"
+          } >> "$GITHUB_STEP_SUMMARY"
