@@ -13,7 +13,7 @@ import * as Device from "expo-device";
 
 const API_BASE =
   (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ||
-  "https://madarek.onrender.com/api/v1";
+  "https://madarek-nine.vercel.app/api/v1";
 
 export type ClientErrorKind = "crash" | "js_error" | "unhandled_rejection" | "api_error" | "render";
 

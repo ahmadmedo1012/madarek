@@ -7,7 +7,7 @@
 
 | Aspect | Value |
 |--------|-------|
-| **Production** | https://madarek.onrender.com |
+| **Production** | https://madarek-nine.vercel.app |
 | **Repo** | <repository-url> |
 | **Branch** | `main` |
 | **Stack** | React 18 + Vite + Express + Prisma + PostgreSQL (Neon) |
@@ -97,7 +97,7 @@ The UI is Arabic-first RTL with no i18n runtime — there is **no** i18next/reac
 | `JWT_REFRESH_SECRET` | ✅ | — | ≥32 chars |
 | `NODE_ENV` | ❌ | `development` | `production` enables static serving + secure cookies |
 | `PORT` | ❌ | `4000` | Listen port |
-| `CORS_ORIGINS` | ❌ | madarek.onrender.com + localhost:5173 | Comma-separated allow-list; wildcards unsupported (credentials are on) |
+| `CORS_ORIGINS` | ❌ | madarek-nine.vercel.app + madarek.onrender.com (standby) + localhost:5173 | Comma-separated allow-list; wildcards unsupported (credentials are on) |
 | `INTERNAL_SERVICE_TOKEN` | ❌ | — | ≥16 chars; gates `POST /api/v1/me/milestones/:id/fire` (fail-closed when unset) |
 | `DIRECT_DATABASE_URL` | ❌ | derived | Neon direct URL for `prisma migrate deploy`; derived from `DATABASE_URL` when unset |
 
@@ -239,7 +239,7 @@ The current maintenance phase ran as four waves of parallel, file-disjoint batch
 1. `app.disable('x-powered-by')`
 2. `app.set('trust proxy', 1)`
 3. Helmet — **CSP enabled** (D7 allow-list + sha256 pin for the inline theme bootstrap), cross-origin resource policy
-4. CORS — allow-list `https://madarek.onrender.com` + `http://localhost:5173` by default, overridable via `CORS_ORIGINS`; `credentials: true`
+4. CORS — allow-list `https://madarek-nine.vercel.app`, `https://madarek.onrender.com` (standby) + `http://localhost:5173` by default, overridable via `CORS_ORIGINS`; `credentials: true`
 5. gzip compression middleware (≥1KB, text/JSON/JS/SVG, `Vary: Accept-Encoding`)
 6. `express.json({ limit: '1mb' })` + urlencoded (rejects mapped to 400/413/415)
 7. `cookieParser()`

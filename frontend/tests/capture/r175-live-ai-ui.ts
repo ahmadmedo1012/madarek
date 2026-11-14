@@ -18,7 +18,7 @@
  * (r175a) — absent creds exit 2 without any request.
  */
 import { chromium } from '@playwright/test';
-const BASE = process.env.BASE_URL ?? 'https://madarek.onrender.com';
+const BASE = process.env.BASE_URL ?? 'https://madarek-nine.vercel.app';
 const EMAIL = process.env.SMOKE_EMAIL;
 const PASSWORD = process.env.SMOKE_PASSWORD;
 const CAPTURE_DIR = process.env.CAPTURE_DIR ?? '/tmp/r176-captures';

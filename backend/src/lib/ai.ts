@@ -353,7 +353,7 @@ export function parseAiModelsList(raw: string | undefined): string[] {
 
 /** Attribution headers OpenRouter's docs suggest for app analytics —
  * sent ONLY when the base URL actually points at openrouter.ai. */
-export const OPENROUTER_REFERER = 'https://madarek.onrender.com';
+export const OPENROUTER_REFERER = 'https://madarek-nine.vercel.app';
 export const OPENROUTER_TITLE = 'Madarek';
 
 /** Is this base URL OpenRouter's? (host-scoped, never path-based). */

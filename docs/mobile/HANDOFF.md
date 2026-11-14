@@ -31,7 +31,7 @@ Owner-facing handoff for the mobile-pro branch. Kept current as work lands.
 ## RN-web capture pipeline (pinned, reproducible — used for the VLM verification + review panel)
 1. `cd apps/mobile && EXPO_PUBLIC_API_BASE_URL=http://localhost:8900/api/v1 npx expo export --platform web --output-dir /tmp/export-branch`
 2. Serve with SPA fallback (plain `http.server` 404s deep links — `output: "single"`): tiny node server mapping unknown paths → `index.html` on :8899.
-3. CORS-open reverse proxy on :8900 → `https://madarek.onrender.com` (echoes Origin, answers preflights) — the prod API does not allow localhost origins.
+3. CORS-open reverse proxy on :8900 → `https://madarek-nine.vercel.app` (echoes Origin, answers preflights) — the prod API does not allow localhost origins.
 4. Playwright walks: login (`student|teacher|admin|quality|owner@test.ly` / `12345678`) via `[role="button"]:has-text("دخول")`, then route captures at 360/390/430/768 + `colorScheme: dark`.
 5. Visual review: `z-ai vision -p "<question>" -i <png>` (VLM) — Arabic-string claims always re-verified against code (VLM misreads Arabic ligatures at small sizes).
 

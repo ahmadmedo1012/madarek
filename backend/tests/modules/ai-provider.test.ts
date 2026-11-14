@@ -487,7 +487,7 @@ describe('callOpenAiCompatible — request shape', () => {
     const init = calls[0]!.init as { headers: Record<string, string> };
     expect(init.headers['HTTP-Referer']).toBe(OPENROUTER_REFERER);
     expect(init.headers['X-Title']).toBe(OPENROUTER_TITLE);
-    expect(OPENROUTER_REFERER).toBe('https://madarek.onrender.com');
+    expect(OPENROUTER_REFERER).toBe('https://madarek-nine.vercel.app');
     expect(OPENROUTER_TITLE).toBe('Madarek');
   });
 

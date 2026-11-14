@@ -14,7 +14,7 @@
 ## قبل العرض (تحقّق 5 دقائق)
 
 ```bash
-curl -s https://madarek.onrender.com/api/v1/health   # {"ok":true,…,buildId يطابق رأس الشجرة}
+curl -s https://madarek-nine.vercel.app/api/v1/health   # {"ok":true,…,buildId يطابق رأس الشجرة}
 ```
 
 - افتح الصفحة العامة `/` — العنوان والزر الذهبي «ابدأ رحلتك»

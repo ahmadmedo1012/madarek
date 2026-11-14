@@ -45,7 +45,7 @@
  * login (rate-limited by the auth limiter like any client).
  */
 
-const DEFAULT_BASE_URL = 'https://madarek.onrender.com';
+const DEFAULT_BASE_URL = 'https://madarek-nine.vercel.app';
 /** frontend/index.html SPA mount root — the page is dead without it. */
 const MOUNT_ROOT_MARKER = 'id="root"';
 /** D7: the CSP header must pin inline scripts with sha256 hashes. */
@@ -80,7 +80,7 @@ function parseArgs(argv) {
 function helpText() {
   return [
     'الاستخدام / usage: npm run smoke -- [BASE_URL | --base-url URL]',
-    'المتغيرات / env:  BASE_URL (default https://madarek.onrender.com)',
+    'المتغيرات / env:  BASE_URL (default https://madarek-nine.vercel.app)',
     '                  SMOKE_EMAIL + SMOKE_PASSWORD (both) → login round-trip',
   ].join('\n');
 }

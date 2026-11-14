@@ -1,7 +1,7 @@
 # Madarek Mobile — Feature & API Parity Matrix
 
 **App:** `apps/mobile` (Expo SDK 58 · RN 0.88.1 · expo-router · TypeScript strict)
-**API:** `https://madarek.onrender.com/api/v1` — deployed `buildId b773b188ce31` (= GitHub `b773b18`, r323 B3.6) at time of writing; the backend continues to evolve on `main` and the deployed service may lag behind source between Render deploys.
+**API:** `https://madarek-nine.vercel.app/api/v1` — deployed `buildId b773b188ce31` (= GitHub `b773b18`, r323 B3.6) at time of writing; the backend continues to evolve on `main` and the deployed service may lag behind source between Render deploys.
 **Sources of truth:** `frontend/src/App.tsx` (113 web routes), `backend/src/app.ts` + `backend/src/http/routes/*` (real contract), `DESIGN.md` + `frontend/src/styles/tokens/tokens.css` (Heron).
 
 **Status legend:**

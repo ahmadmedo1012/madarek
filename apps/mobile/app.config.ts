@@ -138,7 +138,7 @@ const config: ExpoConfig = {
     // Public configuration — safe to inline. The default targets the deployed
     // production API at all times so a bare clone works out of the box.
     apiBaseUrl:
-      process.env.EXPO_PUBLIC_API_BASE_URL ?? "https://madarek.onrender.com/api/v1",
+      process.env.EXPO_PUBLIC_API_BASE_URL ?? "https://madarek-nine.vercel.app/api/v1",
     eas: {
       projectId: "afc4265f-664e-4325-a0ff-b621b81fe1b0",
     },

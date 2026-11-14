@@ -87,7 +87,7 @@ buildCommand: npm ci --include=dev && npm run build
 اليدوي بعد كل نشر أو لربطه بأتمتة المالك:
 
 ```bash
-npm run smoke                                 # الافتراضي: madarek.onrender.com
+npm run smoke                                 # الافتراضي: madarek-nine.vercel.app
 BASE_URL=https://<نطاقك> npm run smoke        # هدف مختلف عبر البيئة
 npm run smoke -- https://<نطاقك>              # أو وسيطًا موضعيًا
 SMOKE_EMAIL=<بريد> SMOKE_PASSWORD=<كلمة> npm run smoke   # + حلقة دخول كاملة

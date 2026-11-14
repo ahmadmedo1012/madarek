@@ -85,7 +85,7 @@ export async function sendEventMail(opts: {
 
 /* ── the templates (Arabic, RTL, shared shell) ─────────────────── */
 
-const APP_ORIGIN = process.env.APP_ORIGIN ?? 'https://madarek.onrender.com';
+const APP_ORIGIN = process.env.APP_ORIGIN ?? 'https://madarek-nine.vercel.app';
 
 export function renderVerifyEmail(name: string, verifyUrl: string, minutes = 60 * 24): { subject: string; bodyHtml: string; bodyText: string; preheader: string; ctaLabel: string } {
   const n = escapeHtml(name);

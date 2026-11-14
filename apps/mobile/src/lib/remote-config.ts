@@ -37,9 +37,10 @@ export const CONFIG_SOURCES = [
  * stays second (the 14-day suspended standby, resumeable in minutes). */
 
 /**
- * The bundled fallback: both origins, Render first (the production API
- * until the R351 X4 cutover flips the order — the flip is exactly ONE
- * commit to this list + the config asset).
+ * The bundled fallback: both origins, Vercel first (the primary API
+ * since the R351 X4 cutover — the flip landed with the config asset),
+ * Render second (the 14-day suspended standby, resumable in minutes;
+ * see docs/RELEASE.md for the rollback recipe).
  */
 export const FALLBACK_ORIGINS = [
   "https://madarek-nine.vercel.app",

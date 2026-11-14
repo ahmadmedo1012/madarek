@@ -15,7 +15,7 @@ import { mkdirSync } from 'node:fs';
 const ENABLED = !!process.env.MADAREK_PROD_VERIFY;
 test.skip(!ENABLED, 'deployment verification — set MADAREK_PROD_VERIFY=1 to run');
 
-const BASE = process.env.MADAREK_E2E_BASE_URL ?? 'https://madarek.onrender.com';
+const BASE = process.env.MADAREK_E2E_BASE_URL ?? 'https://madarek-nine.vercel.app';
 /* cwd = the frontend workspace → ../audits is the repo's evidence tree */
 const SHOTS = process.env.R309_SHOTS
   ?? path.resolve(process.cwd(), '../audits/evidence/r309-recovery/production');

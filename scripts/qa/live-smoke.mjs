@@ -13,7 +13,7 @@ import path from 'node:path';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const { chromium } = createRequire(path.join(here, '..', '..', 'frontend', 'package.json'))('@playwright/test');
 
-const URL = process.argv[2] || 'https://madarek.onrender.com';
+const URL = process.argv[2] || 'https://madarek-nine.vercel.app';
 const results = { url: URL, checks: [] };
 const check = (name, pass, value, budget) => {
   results.checks.push({ name, pass, value, budget });

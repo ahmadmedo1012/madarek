@@ -1,6 +1,6 @@
 # Mobile implementation contracts (READ FIRST — for implementation agents)
 
-This app is Arabic-first RTL, Heron-designed, wired to `https://madarek.onrender.com/api/v1`.
+This app is Arabic-first RTL, Heron-designed, wired to `https://madarek-nine.vercel.app/api/v1`.
 You own ONLY the files listed for you. Shared files are FROZEN — never edit anything under
 `src/components/ui/**`, `src/components/shell/**`, `src/design/**`, `src/api/client.ts`,
 `src/api/types.ts`, `src/auth/session.ts`, `src/lib/**`, `src/hooks/useNotifications.ts`,

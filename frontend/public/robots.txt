@@ -31,4 +31,4 @@ Disallow: /admin
 Disallow: /quality
 Disallow: /owner
 
-Sitemap: https://madarek.onrender.com/sitemap.xml
+Sitemap: https://madarek-nine.vercel.app/sitemap.xml

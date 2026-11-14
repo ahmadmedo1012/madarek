@@ -5,7 +5,7 @@ built with **Expo SDK 58 / React Native 0.88.1 / expo-router / TypeScript**,
 wired to the live production API.
 
 ```
-API   https://madarek.onrender.com/api/v1
+API   https://madarek-nine.vercel.app/api/v1
 App   ly.madarek.mobile · slug madarek-mobile
 EAS   project afc4265f-664e-4325-a0ff-b621b81fe1b0 (account: rh2011)
 ```
@@ -24,7 +24,7 @@ npm run contract-check # static API-parity gate vs ../../backend source
 `.env` (all values are public config — no secrets ever live in the bundle):
 
 ```
-EXPO_PUBLIC_API_BASE_URL=https://madarek.onrender.com/api/v1
+EXPO_PUBLIC_API_BASE_URL=https://madarek-nine.vercel.app/api/v1
 ```
 
 ## Installable CI builds

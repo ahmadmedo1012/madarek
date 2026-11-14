@@ -2,7 +2,7 @@
 
 Madarek (مدارك) is an independent, Arabic-first smart-learning platform: one service —
 Express + TypeScript + Prisma backend that also serves the built React 18 + Vite SPA —
-deployed to Render with Neon PostgreSQL. The UI is fully Arabic RTL. **Code wins over
+deployed to Vercel (web + API as one project) with Neon PostgreSQL; Render is the suspended standby (the rollback path). The UI is fully Arabic RTL. **Code wins over
 docs**: on any conflict, fix the doc in the same change. Platform docs (docs/01–16,
 docs/modules/) are Arabic; generated references (docs/*-REFERENCE.md) are English.
 
@@ -27,7 +27,7 @@ Sources of truth (don't guess, read): endpoints → `backend/src/app.ts` + `http
 design tokens → `frontend/src/styles/tokens.css` (wins over `DESIGN.md`) +
 `shared/design-tokens.json`; route strings → `frontend/src/lib/routes.ts` (the
 r341/Y2 single source); commands → the three `package.json` files; deploy →
-`render.yaml` + `.github/workflows/ci.yml`.
+  `vercel.json` + `.github/workflows/deploy-vercel.yml` (Render's `render.yaml` stays as the standby recipe).
 
 ## 2. Commands
 

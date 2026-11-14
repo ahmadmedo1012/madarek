@@ -151,6 +151,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `🚨 Deploy smoke failed — ${context.sha.slice(0, 12)}`,
-              body: `The post-deploy smoke failed on main@${context.sha}.\n\nRun: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run}\n\nCheck the Render deploy and the failing step.`,
+              body: `The post-deploy smoke failed on main@${context.sha}.\n\nRun: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run}\n\nCheck the Vercel deploy and the failing step.`,
               labels: ['deploy-smoke'],
             });

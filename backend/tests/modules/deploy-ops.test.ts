@@ -114,7 +114,7 @@ describe('smoke script wiring (r164-l)', () => {
   });
 
   it('defaults to the production origin and never embeds credentials', () => {
-    expect(smokeSource).toContain('https://madarek.onrender.com');
+    expect(smokeSource).toContain('https://madarek-nine.vercel.app');
     // Credentials arrive via SMOKE_* env vars only — no literals.
     expect(smokeSource).not.toMatch(/SMOKE_PASSWORD\s*=\s*['"][^'"]+['"]/);
     expect(smokeSource).not.toMatch(/Bearer\s+['"][A-Za-z0-9._-]{8,}['"]/);

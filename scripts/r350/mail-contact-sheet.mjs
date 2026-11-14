@@ -15,7 +15,7 @@
 process.env.NODE_ENV = 'test';
 // The logo + footer links render absolutely — pin the site origin so the
 // contact sheet shows the real hosted-brand path (env.ts reads this).
-process.env.APP_ORIGIN = process.env.APP_ORIGIN ?? 'https://madarek.onrender.com';
+process.env.APP_ORIGIN = process.env.APP_ORIGIN ?? 'https://madarek-nine.vercel.app';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { join, dirname } from 'node:path';

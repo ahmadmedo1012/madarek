@@ -51,7 +51,7 @@ router.get('/status', async (_req, res) => {
       // the blocking «يلزم تحديث التطبيق» screen pointing at updateUrl.
       // Unset MIN_APP_VERSION = no gate (bare-clone/dev default).
       minAppVersion: env.MIN_APP_VERSION ?? null,
-      updateUrl: env.APP_DOWNLOAD_URL ?? 'https://madarek.onrender.com/app',
+      updateUrl: env.APP_DOWNLOAD_URL ?? 'https://madarek-nine.vercel.app/app',
     },
   });
 });

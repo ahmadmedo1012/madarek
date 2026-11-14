@@ -3,7 +3,7 @@
 **Command** (the numbers below are only ever valid WITH it):
 
 ```bash
-K6_BASE_URL=https://madarek.onrender.com k6 run scripts/load/k6.js
+K6_BASE_URL=https://madarek-nine.vercel.app k6 run scripts/load/k6.js
 ```
 
 Scenario: ramping 0 → 20 → 60 → 100 VUs over ~4.5 min, each VU walking
@@ -26,7 +26,7 @@ shape). Accounts: the documented @test.ly demo accounts only.
 **Sandbox-scale honesty:** these rows validate the script and the local
 stack's sub-limiter behavior. The full 100-VU profile (the r323 bar) is
 **owner-runnable against production**:
-`K6_BASE_URL=https://madarek.onrender.com k6 run scripts/load/k6.js` —
+`K6_BASE_URL=https://madarek-nine.vercel.app k6 run scripts/load/k6.js` —
 expect the global limiter (1000/15 min/IP) to engage after the first
 ~1000 requests from the runner IP: within-budget requests carry the
 performance signal; the 429 tail is the app protecting itself (counted

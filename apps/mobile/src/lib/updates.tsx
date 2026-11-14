@@ -23,7 +23,7 @@ import { themeFor } from "@/design/theme";
 
 const STATUS_URL =
   (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ||
-  "https://madarek.onrender.com/api/v1";
+  "https://madarek-nine.vercel.app/api/v1";
 
 function appSemver(): string {
   return (
@@ -137,7 +137,7 @@ export function useVersionGate(): VersionGate {
         };
         clearTimeout(timer);
         const min = body.data?.minAppVersion ?? null;
-        const updateUrl = body.data?.updateUrl ?? "https://madarek.onrender.com/app";
+        const updateUrl = body.data?.updateUrl ?? "https://madarek-nine.vercel.app/app";
         if (cancelled) return;
         if (min && compareSemver(appSemver(), min) < 0) {
           crumb(`version gate: BLOCKED (app ${appSemver()} < min ${min})`);

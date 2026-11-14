@@ -2,7 +2,7 @@
  * r323 B6 — the 100-virtual-user load test (k6, https://k6.io).
  *
  *   k6 run scripts/load/k6.js                    (local: http://localhost:3000)
- *   K6_BASE_URL=https://madarek.onrender.com k6 run scripts/load/k6.js
+ *   K6_BASE_URL=https://madarek-nine.vercel.app k6 run scripts/load/k6.js
  *   K6_MAX_VUS=20 K6_BASE_URL=http://localhost:4000 k6 run scripts/load/k6.js
  *   K6_ACCOUNTS=student@test.ly,teacher@test.ly k6 run …   (override the
  *   demo accounts — NEVER real students)

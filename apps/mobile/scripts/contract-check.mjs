@@ -30,7 +30,7 @@ const REPO = join(MOBILE, "..", "..");
 const API_DIR = join(MOBILE, "src", "api");
 const APP_TS = join(REPO, "backend", "src", "app.ts");
 const ROUTES_DIR = join(REPO, "backend", "src", "http", "routes");
-const HEALTH_URL = "https://madarek.onrender.com/api/v1/health";
+const HEALTH_URL = "https://madarek-nine.vercel.app/api/v1/health";
 
 /* ---------------------------------- helpers --------------------------------- */
 

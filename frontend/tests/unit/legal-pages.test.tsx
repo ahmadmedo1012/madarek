@@ -190,9 +190,9 @@ describe('R320 §D — titles + per-page head metadata', () => {
     expect(desc.getAttribute('content')).toBe(
       'ما تجمعه منصّة مدارك من بيانات، ولماذا، وأين تُخزَّن، وحقوقك — مكتوبة من سلوك المنصّة الفعلي لا من قوالب.',
     );
-    expect(canonical.getAttribute('href')).toBe('https://madarek.onrender.com/legal/privacy');
+    expect(canonical.getAttribute('href')).toBe('https://madarek-nine.vercel.app/legal/privacy');
     expect(ogTitle.getAttribute('content')).toBe('سياسة الخصوصية');
-    expect(ogUrl.getAttribute('content')).toBe('https://madarek.onrender.com/legal/privacy');
+    expect(ogUrl.getAttribute('content')).toBe('https://madarek-nine.vercel.app/legal/privacy');
     unmount();
     // restore-on-unmount: the previous values come back
     expect(desc.getAttribute('content')).toBe('الوصف السابق');
@@ -617,7 +617,7 @@ describe('R320 §D — the static identity (robots · sitemap · manifest · ico
     for (const dis of ['/student', '/teacher', '/admin', '/quality', '/owner']) {
       expect(robots, `Disallow: ${dis}`).toContain(`Disallow: ${dis}`);
     }
-    expect(robots).toContain('Sitemap: https://madarek.onrender.com/sitemap.xml');
+    expect(robots).toContain('Sitemap: https://madarek-nine.vercel.app/sitemap.xml');
   });
 
   it('sitemap.xml: exactly 15 public routes (master/D3: /campus retired)', () => {
@@ -625,7 +625,7 @@ describe('R320 §D — the static identity (robots · sitemap · manifest · ico
     const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     expect(urls).toHaveLength(15);
     // the 7 existing public paths + the 9 new sheets, all on the canonical base
-    const base = 'https://madarek.onrender.com';
+    const base = 'https://madarek-nine.vercel.app';
     expect(urls).toEqual([
       `${base}/`, `${base}/auth`, `${base}/auth/register`, `${base}/colleges`,
       `${base}/colleges/leaderboard`, `${base}/capabilities`,

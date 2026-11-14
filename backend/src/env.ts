@@ -28,7 +28,7 @@ const schema = z
     // refuses every request — fail-closed by default.
     INTERNAL_SERVICE_TOKEN: z.string().min(16).optional(),
     // Optional comma-separated CORS origin allow-list, e.g.
-    // CORS_ORIGINS="https://madarek.onrender.com,https://staging.example.com".
+    // CORS_ORIGINS="https://madarek-nine.vercel.app,https://staging.example.com".
     // Unset (or empty after trimming) → DEFAULT_CORS_ORIGINS below.
     // Wildcards are NOT supported on purpose: credentials are enabled,
     // so reflecting arbitrary origins would be a CSRF/CORS hole.
@@ -233,7 +233,7 @@ if (!parsed.success) {
 const isProd = parsed.data.NODE_ENV === 'production';
 
 /** CORS allow-list fallback — production is same-origin, so this mostly serves local Vite dev. */
-const DEFAULT_CORS_ORIGINS = ['https://madarek.onrender.com', 'http://localhost:5173'];
+const DEFAULT_CORS_ORIGINS = ['https://madarek-nine.vercel.app', 'https://madarek.onrender.com', 'http://localhost:5173'];
 
 /**
  * Parse CORS_ORIGINS (comma-separated) into a normalized allow-list.

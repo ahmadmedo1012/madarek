@@ -18,7 +18,7 @@
 |----------|---------|
 | `NODE_ENV` | `production` enables static serving + secure cookies + `info` log level |
 | `PORT` | Listen port (default: 4000) |
-| `CORS_ORIGINS` | Comma-separated CORS origin allow-list (e.g. `"https://madarek.onrender.com,https://staging.example.com"`). Trailing slashes are stripped, empty entries dropped; unset/empty → default list (`https://madarek.onrender.com`, `http://localhost:5173`). Wildcards are deliberately unsupported because credentials are enabled |
+| `CORS_ORIGINS` | Comma-separated CORS origin allow-list (e.g. `"https://madarek-nine.vercel.app,https://staging.example.com"`). Trailing slashes are stripped, empty entries dropped; unset/empty → default list (`https://madarek-nine.vercel.app`, `https://madarek.onrender.com` (standby), `http://localhost:5173`). Wildcards are deliberately unsupported because credentials are enabled |
 | `INTERNAL_SERVICE_TOKEN` | Service-to-service auth for `POST /api/v1/me/milestones/:id/fire` (≥16 chars; **fail-closed when unset** — every call is rejected). Comparison is constant-time: both sides are SHA-256-hashed to fixed-length digests, then compared with `crypto.timingSafeEqual`, so attackers cannot probe the token length via response timing. A user JWT never authenticates this endpoint |
 | `DIRECT_DATABASE_URL` | Neon **direct** (non-pooled) connection. When set, `prisma migrate deploy` uses it directly. When unset, the migrate script derives it from `DATABASE_URL` by stripping the `-pooler` hostname suffix + `pgbouncer`/`connection_limit` query params. |
 | `STORAGE_DRIVER` | Upload storage driver: `local` (default, filesystem — **ephemeral on Render**) or `s3` (persistent object storage). See `docs/12-deployment.md` |
@@ -96,8 +96,8 @@ To rotate again: `npm run db:rotate-password -- --email <account> --new-password
 
 ## Production URLs
 
-- **App:** https://madarek.onrender.com
-- **Health:** https://madarek.onrender.com/api/v1/health
+- **App:** https://madarek-nine.vercel.app
+- **Health:** https://madarek-nine.vercel.app/api/v1/health
 - **GitHub:** <repository-url>
 
 ## Database Connection (Neon)

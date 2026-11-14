@@ -247,7 +247,7 @@ router.post('/test-send', validate(testSendSchema), async (req, res, next) => {
       preheader: 'هذه رسالة اختبار من لوحة البريد',
       bodyHtml: '<p style="margin:0;">أُرسلت هذه الرسالة من لوحة «البريد» للتأكد من أن قناة الإرسال تعمل. لا تتطلب أي إجراء منك.</p>',
       ctaLabel: 'الدخول إلى مدارك',
-      ctaUrl: `${process.env.APP_ORIGIN ?? 'https://madarek.onrender.com'}/auth/login`,
+      ctaUrl: `${process.env.APP_ORIGIN ?? 'https://madarek-nine.vercel.app'}/auth/login`,
     });
     const queued = await queueMail({
       to,

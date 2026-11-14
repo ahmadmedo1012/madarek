@@ -47,7 +47,7 @@
 - قائمة سماح: `CORS_ORIGINS` مفصولة بفواصل؛ قصّ الشرائح الختامية؛
   **بلا أحرف بديلة**؛ الاعتمادات مفعلة؛ أصل غير مسموح → `cb(null,false)`
   (لا رؤوس، لا 500).
-- عند عدم الضبط: `https://madarek.onrender.com` + `http://localhost:5173`.
+- عند عدم الضبط: `https://madarek-nine.vercel.app` + `https://madarek.onrender.com` (احتياط) + `http://localhost:5173`.
 - ⚠️ ضبط `CORS_ORIGINS` **يستبدل** الافتراضي كليًا (لا يلحقه) — إن ضبطته
   فأدخل نطاق الإنتاج صراحة (`.env.example` صُحّح ليعكس ذلك).
 

@@ -231,7 +231,7 @@ function shellWrap(rendered: {
 
 /** One entry per mail template: sample data for the preview route. */
 export const MAIL_TEMPLATE_SAMPLES: Record<string, () => { subject: string; html: string; text: string; ctaLabel?: string }> = {
-  'reset-password': () => renderResetEmail('https://madarek.onrender.com/auth/reset?token=sample-token-0123456789', 30),
+  'reset-password': () => renderResetEmail('https://madarek-nine.vercel.app/auth/reset?token=sample-token-0123456789', 30),
   'verify-email': () =>
     shellWrap({ ...renderVerifyEmail('سالم', verifyUrlFor('sample-token-0123456789abcdef')), ctaUrl: verifyUrlFor('sample-token-0123456789abcdef') }),
   welcome: () => shellWrap({ ...renderWelcome('سالم'), ctaLabel: 'الدخول إلى مدارك', ctaUrl: loginUrl() }),

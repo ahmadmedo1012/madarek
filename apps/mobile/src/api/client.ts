@@ -1,5 +1,5 @@
 /**
- * Madarek API client — typed transport for https://madarek.onrender.com/api/v1.
+ * Madarek API client — typed transport for https://madarek-nine.vercel.app/api/v1.
  *
  * Backend contract (backend/src/app.ts + lib/errors.ts):
  *   success:   { data: T }            paginated: { data: T[], meta }
@@ -16,7 +16,7 @@ import { AppNotification, PageMeta, Paginated } from "./types";
 
 export const API_BASE =
   (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ||
-  "https://madarek.onrender.com/api/v1";
+  "https://madarek-nine.vercel.app/api/v1";
 
 /* R351 X3 — origin failover: the remote config owns an ORDERED list of
  * API origins; the base below resolves through it. The build-time
