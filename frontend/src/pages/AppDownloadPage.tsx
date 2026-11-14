@@ -85,7 +85,7 @@ export function AppDownloadPage() {
     title: 'تطبيق مدارك — التنزيل والتحديث',
     path: '/app',
     description:
-      'تنزيل تطبيق مدارك لأندرويد من الإصدار الرسمي الموثّق على GitHub، حالة iOS، قنوات التحديث التلقائي، والحد الأدنى للإصدار — مباشرة وبدون وسيط.',
+      'تنزيل تطبيق مدارك لأندرويد من GitHub — حالة iOS وقنوات التحديث والحد الأدنى للإصدار.',
   });
 
   // The live floor — the same status the app's version gate reads (M0.7).
@@ -145,8 +145,7 @@ export function AppDownloadPage() {
               <p className="pf-eyebrow">وثيقة التوزيع</p>
               <h1 className="pf-page-title">تطبيق مدارك — التنزيل والتحديث</h1>
               <p className="pf-page-desc">
-                صفحة واحدة لكل ما يخصّ تطبيق الجوال: تنزيل أندرويد الرسمي المباشر، حالة iOS،
-                كيف تصل التحديثات إلى هاتفك، والحد الأدنى للإصدار الذي تفرضه المنصّة الآن —
+                تنزيل أندرويد المباشر، حالة iOS، قنوات التحديث، والحد الأدنى للإصدار —
                 قراءة حيّة من الخادم.
               </p>
             </div>
@@ -167,9 +166,8 @@ export function AppDownloadPage() {
             </div>
             <div className="ap-cell">
               <p className="ap-p">
-                ملفّ APK واحد يُثبَّت مباشرة على جهازك (اسمح بـ«التثبيت من مصادر غير معروفة»
-                عند سؤال النظام أول مرة). المصدر هو الإصدار المتجدّد الذي تبنيه وتوثّقه
-                GitHub Actions تلقائيًا مع كل تغيير يؤثّر في التطبيق — لا حساب ولا وسيط.
+                تنزيل مباشر من GitHub Actions — الإصدار المتجدّد. اسمح بالتثبيت من مصادر
+                غير معروفة أول مرة.
               </p>
               <p className="ap-p ap-actions">
                 <a className="btn primary sm" href={ANDROID_APK_URL} dir="ltr">
@@ -183,8 +181,7 @@ export function AppDownloadPage() {
                 <p className="ap-p ap-p-note">جارٍ قراءة بيانات آخر بناء منشور…</p>
               ) : infoState === 'error' ? (
                 <p className="ap-p ap-p-note">
-                  تعذّر قراءة بيانات البناء الآن — زرّ التنزيل أعلاه يبقى المصدر الرسمي
-                  المباشر، وصفحة الإصدار بجانبه تعرض الإصدار والتوقيع وكل التفاصيل.
+                  تعذّر قراءة بيانات البناء — زرّ التنزيل أعلاه يبقى المصدر المباشر.
                 </p>
               ) : (
                 <p className="ap-p ap-p-note">
@@ -214,9 +211,6 @@ export function AppDownloadPage() {
                   <span className="ap-mono" dir="ltr">{info?.signing_mode === 'release' ? 'release' : '—'}</span>
                 </p>
               )}
-              <p className="ap-p ap-p-note">
-                ملف APK واحد مثبّت وموقّع مع كل إصدار — بدون حزم متجر (AAB) في مرحلة التطوير.
-              </p>
             </div>
           </section>
 
@@ -228,11 +222,7 @@ export function AppDownloadPage() {
               </h2>
             </div>
             <div className="ap-cell">
-              <p className="ap-p">
-                تطبيق iPhone قريبًا. نعمل على إكمال جاهزية النشر — وحين تجهز ستجد رابط
-                التنزيل الرسمي هنا أولًا. لا روابط تجريبية ولا تعليمات تثبيت يدوي: حين
-                ننشر، يكون عبر القناة الرسمية المباشرة فقط.
-              </p>
+              <p className="ap-p">تطبيق iPhone قريبًا.</p>
             </div>
           </section>
 
@@ -253,9 +243,7 @@ export function AppDownloadPage() {
                   loading="lazy"
                 />
                 <p className="ap-p ap-p-note">
-                  امسح الرمز بكاميرا الهاتف — تفتح هذه الصفحة نفسها على الجوال، ومنها زرّ
-                  التنزيل المباشر. الرمز مرسوم بألوان الهوية (حبر على ورق) ولا يمرّ بأي
-                  خدمة خارجية.
+                  امسح الرمز بكاميرا الهاتف — تفتح هذه الصفحة على الجوال.
                 </p>
               </div>
             </div>
@@ -270,16 +258,14 @@ export function AppDownloadPage() {
             </div>
             <div className="ap-cell">
               <p className="ap-p">
-                التطبيق يفحص التحديث تلقائيًا عند كلّ فتح: تغيّرات الواجهة والشاشات تصل
-                <strong> دون إعادة تثبيت</strong> (تحديث فوري — OTA)، بينما التغيّرات الأصلية
-                (أذونات، مكتبات النظام) تصلك كملف تثبيت جديد من هذه الصفحة — من المصدر
-                الرسمي نفسه.
+                الشاشات تتحدّث فوريًا (OTA)، والتغيّرات الأصلية (الأذونات، مكتبات النظام)
+                تصلك كتثبيت جديد من هذه الصفحة.
               </p>
               <p className="ap-p">
                 ثلاث قنوات مفتوحة اليوم: <span className="ap-mono" dir="ltr">production</span> للنسخة
-                العامة، <span className="ap-mono" dir="ltr">preview</span> للمعاينة قبل النشر،
-                و<span className="ap-mono" dir="ltr">development</span> للتطوير — تحديث كلّ قناة
-                مستقلّ، وجهازك يسحب من قناته فقط.
+                العامة، <span className="ap-mono" dir="ltr">preview</span> للمعاينة،
+                و<span className="ap-mono" dir="ltr">development</span> للتطوير — جهازك
+                يسحب من قناته فقط.
               </p>
             </div>
           </section>
@@ -296,7 +282,7 @@ export function AppDownloadPage() {
                 <p className="ap-p">جارٍ قراءة حالة الخادم…</p>
               ) : statusState === 'error' ? (
                 <p className="ap-p">
-                  تعذّر قراءة الحالة الآن — الخادم المجاني قد يكون نائمًا؛ حدّث الصفحة بعد لحظات.
+                  تعذّر قراءة الحالة — حدّث الصفحة بعد لحظات.
                 </p>
               ) : (
                 <>
@@ -304,14 +290,12 @@ export function AppDownloadPage() {
                     {status?.minAppVersion ? (
                       <>
                         الخادم يفرض الآن حدًا أدنى{' '}
-                        <span className="ap-mono" dir="ltr">{status.minAppVersion}</span> — إن كان
-                        تطبيقك أقدم، يمنعك من المتابعة ويعيدك إلى هذه الصفحة حتى تُحدّث.
+                        <span className="ap-mono" dir="ltr">{status.minAppVersion}</span> — الأقدم
+                        يُعاد إلى هذه الصفحة حتى يُحدّث.
                       </>
                     ) : (
                       <>
-                        لا يوجد حدّ أدنى مفروض حاليًا — كلّ نسخة مثبَّتة تعمل. عند فرض حدٍّ مستقبلًا
-                        تظهر قيمة هنا فورًا (قراءة حيّة من{' '}
-                        <span className="ap-mono" dir="ltr">/api/v1/status</span>).
+                        لا حدّ أدنى مفروض حاليًا — أي نسخة تعمل. تظهر القيمة هنا فورًا عند فرضه.
                       </>
                     )}
                   </p>
@@ -338,8 +322,8 @@ export function AppDownloadPage() {
             </div>
             <div className="ap-cell">
               <p className="ap-p">
-                أندرويد 7.0 أو أحدث، وiOS 15 أو أحدث للتطبيق الأصلي. الواجهة عربية بالكامل من
-                اليمين لليسار، وتعمل بالوضعين الفاتح والداكن. للبلاغ عن مشكلة في التطبيق:
+                أندرويد 7.0 أو أحدث، وiOS 15 أو أحدث للتطبيق الأصلي. الواجهة عربية بالكامل
+                بالوضعين الفاتح والداكن. للبلاغ عن مشكلة في التطبيق:
                 {' '}<Link to="/contact" className="ap-link">قناة التواصل</Link>.
               </p>
             </div>
