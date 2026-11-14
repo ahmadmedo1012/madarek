@@ -173,10 +173,35 @@ while the deploy fails.
   The diagnostics dispatch itself worked end to end: flag PATCH
   200 in/out, GH_REPO fixed, the fallback found the deploy run, the
   log fetched (448 lines) — only the module was missing.
-→ STILL OPEN: the 18:20 prisma silent exit (that build ran BEFORE
-  db:diagnostics in the chain; with the scripts now shipped, the
-  next deploy shows db:deploy's true behavior — if it still exits
-  silently, the flag=1 diagnostics run reads the ledger by name).
+→ STILL OPEN: the 18:20 prisma silent exit — RESOLVED TRANSIENT
+  (19:16Z, the 03717fca build): with the scripts shipped, db:deploy
+  printed the NORMAL 'No pending migrations to apply. / ✅ migrations
+  applied' — the same code green at 16:00, green at 19:16, failed
+  once at 18:20 with zero output. Nothing in the repo differed;
+  consistent with a transient Neon pooler/wake event mid-migrate.
+  Any recurrence now has its evidence channel (the diagnostics).
+
+THE LEDGER (19:22Z, the flag=1 diagnostics run — green end to end):
+  · _prisma_migrations holds 44 rows = the 43 folder names + ONE
+    DUPLICATE: '20260523171735_init' twice (finished 15:38:16 and
+    15:42:34 — the two baselining passes of the repair; the r352
+    story's '44/44' explained). Harmless to migrate deploy (PROVEN:
+    green deploys ×2) — cosmetic residue; cleanup is owner-side if
+    ever desired (DELETE one of the two rows).
+  · extensions: pg_trgm + plpgsql only — NO pg_stat_statements →
+    the slow-queries section skipped honestly; slow queries stay
+    owner-side (HOSTING.md §2). The live signal is dbLatencyMs
+    (2-3 ms warm — the table above).
+  · BinaryObject: 0 rows / 0 bytes (K5 verified clean — the flip
+    stranded nothing; the '4 rows ~5 MB in ep-cool-paper' worry was
+    about Render's OLD database).
+  · ClientError 14 d: 0 · LoginEvent failures 14 d: 77 (probe-era
+    noise, non-actionable from outside) · AuditLog 14 d: 16.
+  · table sizes: LoginEvent 272 kB is the LARGEST table — the
+    pilot is tiny; no bloat concern.
+  · Cosmetic warts noted for a later sweep: the ledger-count query
+    failed honestly (the by-name listing carried the truth); the
+    CLI entry double-prefixes [db-diagnostics] lines.
 
 ### K3 latency (AFTER the fra1 flip — measured 2026-11-14 ~17:5xZ, this session)
 
