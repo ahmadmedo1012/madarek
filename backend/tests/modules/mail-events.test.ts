@@ -275,3 +275,48 @@ describe('R350 E3 — the activation invite (import accounts)', () => {
     expect(t.ctaLabel).toBe('الدخول إلى مدارك');
   });
 });
+
+describe('R350 E5 — the shell carries the logo, preheader, and dark-mode metadata', () => {
+  it('renders the ONE logo (hosted PNG, alt text) + the hidden preheader + color-scheme', async () => {
+    const { renderEmailShell } = await import('../../src/lib/mail.js');
+    const html = renderEmailShell({
+      title: 'عنوان تجريبي',
+      bodyHtml: '<p>نص</p>',
+      baseUrl: 'https://madarek.onrender.com',
+      preheader: 'سطر المعاينة',
+    });
+    expect(html).toContain('<meta name="color-scheme" content="light dark">');
+    expect(html).toContain('prefers-color-scheme');
+    expect(html).toContain('display:none;max-height:0;overflow:hidden;opacity:0;">سطر المعاينة');
+    expect(html).toContain('src="https://madarek.onrender.com/brand/icon-192.png"');
+    expect(html).toContain('alt="مدارك"');
+    expect(html).toContain('width="36" height="36"');
+    // the wordmark text survives with images off (the logo is never essential)
+    expect(html).toContain('>مدارك</span>');
+  });
+
+  it('event mail (sendEventMail) rides the shell with the site origin logo', async () => {
+    await sendEventMail({
+      userId: 'u1', to: 'a@b.ly', category: 'security', template: 'security-x',
+      subject: 'س', bodyHtml: '<p>س</p>', bodyText: 'س', dedupeKey: 'k-e5',
+    });
+    const create = mocked.mailOutbox.create.mock.calls[0]![0] as { data: { html: string } };
+    expect(create.data.html).toContain('dir="rtl"');
+    expect(create.data.html).toContain('color-scheme');
+  });
+});
+
+describe('R350 E5 — the dev-only preview registry', () => {
+  it('every sample renders HTML through the shell (15 templates)', async () => {
+    const { MAIL_TEMPLATE_SAMPLES, mailPreviewEnabled } = await import('../../src/http/routes/mail.routes.js');
+    expect(Object.keys(MAIL_TEMPLATE_SAMPLES).length).toBe(15);
+    for (const [name, sample] of Object.entries(MAIL_TEMPLATE_SAMPLES)) {
+      const rendered = sample();
+      expect(rendered.subject.length, name).toBeGreaterThan(0);
+      expect(rendered.html, name).toContain('dir="rtl"');
+      expect(rendered.html, name).toContain('مدارك');
+      expect(rendered.text.length, name).toBeGreaterThan(0);
+    }
+    expect(typeof mailPreviewEnabled()).toBe('boolean');
+  });
+});

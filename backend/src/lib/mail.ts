@@ -26,6 +26,7 @@ export const mailConfig: MailConfig = resolveMailConfig({
   MAIL_PROVIDER: env.MAIL_PROVIDER,
   MAIL_API_KEY: env.MAIL_API_KEY,
   MAIL_FROM: env.MAIL_FROM,
+  MAIL_REPLY_TO: env.MAIL_REPLY_TO,
   APP_ORIGIN: env.APP_ORIGIN,
 });
 
@@ -36,6 +37,8 @@ export interface MailConfig {
   apiKey?: string;
   from: string; // «مدارك <no-reply@domain>» or a bare address
   baseUrl?: string; // the app origin for footer links (optional)
+  /** R350 E5: optional Reply-To for every send (MAIL_REPLY_TO). */
+  replyTo?: string;
 }
 
 export interface MailMessage {
@@ -60,6 +63,7 @@ export function resolveMailConfig(source: {
   MAIL_PROVIDER?: string;
   MAIL_API_KEY?: string;
   MAIL_FROM?: string;
+  MAIL_REPLY_TO?: string;
   APP_ORIGIN?: string;
 }): MailConfig {
   const provider = (source.MAIL_PROVIDER ?? 'none') as MailProviderName;
@@ -68,6 +72,7 @@ export function resolveMailConfig(source: {
     provider: valid.includes(provider) ? provider : 'none',
     apiKey: source.MAIL_API_KEY,
     from: source.MAIL_FROM ?? 'مدارك <no-reply@madarek.example>',
+    replyTo: source.MAIL_REPLY_TO,
     baseUrl: source.APP_ORIGIN,
   };
 }
@@ -92,6 +97,7 @@ export async function sendMail(cfg: MailConfig, message: MailMessage, fetchImpl:
             headers: { Authorization: `Bearer ${cfg.apiKey}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
               from: cfg.from,
+              ...(cfg.replyTo ? { replyTo: cfg.replyTo } : {}),
               to: [message.to],
               subject: message.subject,
               html: message.html,
@@ -105,6 +111,7 @@ export async function sendMail(cfg: MailConfig, message: MailMessage, fetchImpl:
             headers: { 'api-key': cfg.apiKey, 'Content-Type': 'application/json', accept: 'application/json' },
             body: JSON.stringify({
               sender: brevoSender(cfg.from),
+              ...(cfg.replyTo ? { replyTo: brevoSender(cfg.replyTo) } : {}),
               to: [{ email: message.to }],
               subject: message.subject,
               htmlContent: message.html,
@@ -142,26 +149,69 @@ const SHELL_BORDER = '1px solid #E4E2D8';
 /**
  * The shared RTL shell: paper ground, hairline ink frame, the orange
  * accent on the CTA only. 600px measure, table layout, inline styles.
+ *
+ * R350 E5 — the shell now carries the ONE logo (the generated
+ * brand PNG, hosted on the site — never an attachment), a hidden
+ * preheader, and dark-mode-safe colours: `color-scheme` metadata +
+ * a <style> block with prefers-color-scheme overrides (Gmail strips
+ * <style>; the inline styles stay the base, dark clients that honor
+ * the query get the gentler palette). The logo is brand, never
+ * information: alt text carries the name, and the shell renders
+ * perfectly with images off.
  */
-export function renderEmailShell(opts: { title: string; bodyHtml: string; ctaLabel?: string; ctaUrl?: string; footerNote?: string; baseUrl?: string }): string {
+export function renderEmailShell(opts: {
+  title: string;
+  bodyHtml: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+  footerNote?: string;
+  baseUrl?: string;
+  /** R350 E5: the inbox-list teaser line (default: the title). */
+  preheader?: string;
+}): string {
+  // Default the origin from env so every template (reset/invite/event)
+  // carries the ONE logo without each caller threading it through.
+  const base = (opts.baseUrl ?? env.APP_ORIGIN ?? '').replace(/\/+$/, '');
+  // The header is a two-cell row (email-safe alignment — inline-block
+  // + vertical-align is flaky across clients): the brand chip, then the
+  // wordmark. The logo is a deliberate paper chip (rounded, hairline
+  // border) so it reads intentionally on dark backgrounds too.
+  const wordmark = `<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;"><tr>${
+    base
+      ? `<td style="padding:0;"><img src="${base}/brand/icon-192.png" width="36" height="36" alt="مدارك" class="logo-img" style="display:block;width:36px;height:36px;border:1px solid #E4E2D8;border-radius:8px;padding:3px;background:#FFFFFF;"></td><td style="width:10px;"></td>`
+      : ''
+  }<td style="padding:0;"><span style="font-size:19px;font-weight:700;color:#282828;" class="ink">مدارك</span></td></tr></table>`;
   const cta =
     opts.ctaLabel && opts.ctaUrl
       ? `<tr><td style="padding:8px 32px 24px;"><a href="${opts.ctaUrl}" style="display:inline-block;background:#FA3600;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:15px;padding:12px 28px;border-radius:0;">${opts.ctaLabel}</a></td></tr>`
       : '';
   const footer = `<tr><td style="padding:0 32px 28px;font-size:12px;color:#8A887C;line-height:1.8;">${
     opts.footerNote ?? 'إذا لم تكن من طلب هذه الرسالة فتجاهلها — لن يتغير شيء في حسابك.'
-  }${opts.baseUrl ? `<br>مدارك — <a href="${opts.baseUrl}" style="color:#8A887C;">${opts.baseUrl.replace(/^https?:\/\//, '')}</a>` : ''}</td></tr>`;
+  }${base ? `<br>مدارك — <a href="${base}" style="color:#8A887C;">${base.replace(/^https?:\/\//, '')}</a>` : ''}</td></tr>`;
+  const preheader = opts.preheader ?? opts.title;
 
   return `<!DOCTYPE html>
 <html dir="rtl" lang="ar">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${opts.title}</title></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><title>${opts.title}</title>
+<style>
+  @media (prefers-color-scheme: dark) {
+    .shell-ground { background:#1F1E1B !important; }
+    .shell-card { background:#26251F !important; }
+    .ink { color:#EDEBE2 !important; }
+    .ink-soft { color:#B7B4A6 !important; }
+    .ink-body { color:#D6D3C6 !important; }
+    .logo-img { border-color:#4A4A44 !important; background:#F6F6EE !important; }
+  }
+</style>
+</head>
 <body style="margin:0;padding:0;background:#F1EFE7;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F1EFE7;padding:24px 12px;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">${preheader}</div>
+<table role="presentation" class="shell-ground" width="100%" cellpadding="0" cellspacing="0" style="background:#F1EFE7;padding:24px 12px;">
 <tr><td align="center">
-<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#F6F6EE;border:${SHELL_BORDER};">
-<tr><td style="padding:28px 32px 4px;font-weight:700;font-size:18px;color:#282828;">مدارك</td></tr>
-<tr><td style="padding:4px 32px 8px;font-size:20px;font-weight:600;color:#282828;">${opts.title}</td></tr>
-<tr><td style="padding:0 32px 20px;font-size:14px;color:#4A4A44;line-height:2;">${opts.bodyHtml}</td></tr>
+<table role="presentation" class="shell-card" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#F6F6EE;border:${SHELL_BORDER};">
+<tr><td style="padding:24px 32px 4px;">${wordmark}</td></tr>
+<tr><td class="ink" style="padding:8px 32px 8px;font-size:20px;font-weight:600;color:#282828;">${opts.title}</td></tr>
+<tr><td class="ink-body" style="padding:0 32px 20px;font-size:14px;color:#4A4A44;line-height:2;">${opts.bodyHtml}</td></tr>
 ${cta}
 ${footer}
 </table>

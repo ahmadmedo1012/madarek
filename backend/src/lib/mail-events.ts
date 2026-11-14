@@ -62,6 +62,8 @@ export async function sendEventMail(opts: {
     bodyHtml: opts.bodyHtml,
     ctaLabel: opts.ctaLabel,
     ctaUrl: opts.ctaUrl,
+    // R350 E5 — the ONE logo + the footer link ride the site origin.
+    baseUrl: APP_ORIGIN,
   });
   const queued = await queueMail({
     to: opts.to,

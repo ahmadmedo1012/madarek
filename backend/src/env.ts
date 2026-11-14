@@ -70,12 +70,16 @@ const schema = z
     MAIL_PROVIDER: z.enum(['none', 'resend', 'brevo']).default('none'),
     MAIL_API_KEY: z.string().min(1).optional(),
     MAIL_FROM: z.string().min(3).optional(),
+    /** R350 E1/E5: optional Reply-To for every provider send (documented in MAIL-SETUP-AR). */
+    MAIL_REPLY_TO: z.string().min(3).optional(),
     // R350 E4 — Resend's svix webhook signing secret (optional; unset =
     // the webhook route refuses everything, fail-closed).
     RESEND_WEBHOOK_SECRET: z.string().min(16).optional(),
     // The app origin for email footer links (optional — templates omit
     // the footer link when unset).
     APP_ORIGIN: z.string().url().optional(),
+    /** R350 E5: allow the dev-only mail template preview in production-like envs. */
+    MAIL_PREVIEW: z.enum(['0', '1']).optional(),
     // ── AI provider (chat assistant: backend/src/lib/ai.ts) ── The
     // default 'local' mode composes replies in-process (zero cost,
     // zero external calls). Selecting 'openai' opts into a real

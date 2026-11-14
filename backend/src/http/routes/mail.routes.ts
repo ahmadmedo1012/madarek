@@ -26,6 +26,29 @@ import { Router, type Request, type Response } from 'express';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { prisma } from '../../db.js';
 import { env } from '../../env.js';
+// R350 E5 — the dev-only template preview: every render function, one
+// registry, sample data. Gated to non-production (or MAIL_PREVIEW=1).
+import { renderResetEmail, renderEmailShell } from '../../lib/mail.js';
+import {
+  renderVerifyEmail,
+  renderWelcome,
+  renderPasswordChanged,
+  renderNewDeviceAlert,
+  renderRoleChanged,
+  renderActivationInvite,
+  renderAnnouncement,
+  renderAssignmentGraded,
+  renderExamGraded,
+  renderAssignmentDue,
+  renderExamScheduled,
+  renderEnrollmentConfirmed,
+  renderAccountStatusChange,
+  renderWeeklyDigest,
+  verifyUrlFor,
+  loginUrl,
+  appUrl,
+  formatLyDateTime,
+} from '../../lib/mail-events.js';
 import { logger } from '../../logger.js';
 
 const router = Router();
@@ -180,5 +203,124 @@ async function handleUnsubscribe(req: Request, res: Response): Promise<void> {
 router.get('/mail/unsubscribe', (req, res) => void handleUnsubscribe(req, res));
 // RFC 8058: List-Unsubscribe-Post — mail clients POST an empty body.
 router.post('/mail/unsubscribe', (req, res) => void handleUnsubscribe(req, res));
+
+/* ── R350 E5: the dev-only template preview ───────────────────── */
+
+/**
+ * An event-template sample: bodyHtml/bodyText (the sendEventMail shape)
+ * wrapped through the SAME shell the outbox send path uses.
+ */
+function shellWrap(rendered: {
+  subject: string;
+  bodyHtml: string;
+  bodyText: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+}): { subject: string; html: string; text: string } {
+  return {
+    subject: rendered.subject,
+    html: renderEmailShell({
+      title: rendered.subject.replace(/^مدارك — /, ''),
+      bodyHtml: rendered.bodyHtml,
+      ctaLabel: rendered.ctaLabel,
+      ctaUrl: rendered.ctaUrl,
+    }),
+    text: rendered.bodyText,
+  };
+}
+
+/** One entry per mail template: sample data for the preview route. */
+export const MAIL_TEMPLATE_SAMPLES: Record<string, () => { subject: string; html: string; text: string; ctaLabel?: string }> = {
+  'reset-password': () => renderResetEmail('https://madarek.onrender.com/auth/reset?token=sample-token-0123456789', 30),
+  'verify-email': () =>
+    shellWrap({ ...renderVerifyEmail('سالم', verifyUrlFor('sample-token-0123456789abcdef')), ctaUrl: verifyUrlFor('sample-token-0123456789abcdef') }),
+  welcome: () => shellWrap({ ...renderWelcome('سالم'), ctaLabel: 'الدخول إلى مدارك', ctaUrl: loginUrl() }),
+  'password-changed': () => shellWrap({ ...renderPasswordChanged(), ctaLabel: 'الدخول إلى مدارك', ctaUrl: loginUrl() }),
+  'new-device': () =>
+    shellWrap({
+      ...renderNewDeviceAlert('Chrome على ويندوز — طرابلس، ليبيا', formatLyDateTime(new Date('2026-11-14T18:30:00Z'))),
+      ctaLabel: 'الدخول إلى مدارك',
+      ctaUrl: loginUrl(),
+    }),
+  'role-changed': () =>
+    shellWrap({ ...renderRoleChanged('محاضر', 'أحمد المدير'), ctaLabel: 'الدخول إلى مدارك', ctaUrl: loginUrl() }),
+  'activation-invite': () =>
+    shellWrap({ ...renderActivationInvite('سالم العماري', loginUrl(), 'Mad-9k2X!qL'), ctaUrl: loginUrl() }),
+  announcement: () =>
+    shellWrap({
+      ...renderAnnouncement('محاضرة إضافية غدًا', 'نلقي محاضرة إضافية لمراجعة الفصل الثالث — القاعة الكبرى، الساعة العاشرة صباحًا.', 'د. سالم الفيتوري'),
+      ctaLabel: 'الدخول إلى مدارك',
+      ctaUrl: loginUrl(),
+    }),
+  'assignment-graded': () =>
+    shellWrap({
+      ...renderAssignmentGraded('بحوث الفصل الثالث', 8.5, 10, 'عمل جيد — راجع المرجع الخامس.'),
+      ctaLabel: 'عرض النتيجة',
+      ctaUrl: appUrl('/student/results'),
+    }),
+  'exam-graded': () =>
+    shellWrap({ ...renderExamGraded('اختبار المنتصف', 7, 10), ctaLabel: 'الاختبارات', ctaUrl: appUrl('/student/online-exams') }),
+  'assignment-due': () =>
+    shellWrap({
+      ...renderAssignmentDue('بحوث الفصل الثالث', new Date('2026-11-15T21:00:00Z')),
+      ctaLabel: 'تكاليفي',
+      ctaUrl: appUrl('/student/assignments'),
+    }),
+  'exam-scheduled': () =>
+    shellWrap({
+      ...renderExamScheduled('اختبار المنتصف', new Date('2026-11-20T08:00:00Z'), new Date('2026-11-21T20:00:00Z'), 60),
+      ctaLabel: 'الاختبارات',
+      ctaUrl: appUrl('/student/online-exams'),
+    }),
+  'enrollment-confirmed': () =>
+    shellWrap({
+      ...renderEnrollmentConfirmed('مقدمة إلى علوم الحاسب', 'د. سالم الفيتوري'),
+      ctaLabel: 'مقرراتي',
+      ctaUrl: appUrl('/student/courses'),
+    }),
+  'account-status': () =>
+    shellWrap({ ...renderAccountStatusChange(false, 'أحمد المدير'), ctaLabel: 'الدخول إلى مدارك', ctaUrl: loginUrl() }),
+  'weekly-digest': () =>
+    shellWrap({
+      ...renderWeeklyDigest('سالم', 'الأسبوع القادم', [
+        `تكليف «بحوث الفصل الثالث» يستحق ${formatLyDateTime(new Date('2026-11-16T21:00:00Z'))}`,
+        `اختبار «اختبار المنتصف» يفتح ${formatLyDateTime(new Date('2026-11-20T08:00:00Z'))}`,
+      ]),
+      ctaLabel: 'لوحتي',
+      ctaUrl: appUrl('/student/dashboard'),
+    }),
+};
+
+/** Dev-only gate: never mounted in production (unless MAIL_PREVIEW=1). */
+export function mailPreviewEnabled(): boolean {
+  return env.NODE_ENV !== 'production' || env.MAIL_PREVIEW === '1';
+}
+
+/**
+ * GET /api/v1/mail/preview — the index (every template name, one line).
+ * GET /api/v1/mail/preview/:template — the rendered HTML (dev-only).
+ */
+router.get('/mail/preview', (_req, res) => {
+  if (!mailPreviewEnabled()) {
+    res.status(404).json({ error: { code: 'NOT_FOUND', message: 'غير موجود' } });
+    return;
+  }
+  res.json({ data: { templates: Object.keys(MAIL_TEMPLATE_SAMPLES) } });
+});
+
+router.get('/mail/preview/:template', (req, res) => {
+  if (!mailPreviewEnabled()) {
+    res.status(404).json({ error: { code: 'NOT_FOUND', message: 'غير موجود' } });
+    return;
+  }
+  const sample = MAIL_TEMPLATE_SAMPLES[req.params.template!];
+  if (!sample) {
+    res.status(404).json({ error: { code: 'UNKNOWN_TEMPLATE', message: 'قالب غير معروف' } });
+    return;
+  }
+  const rendered = sample();
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.send(rendered.html);
+});
 
 export default router;

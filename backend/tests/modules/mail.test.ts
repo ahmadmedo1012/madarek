@@ -39,14 +39,31 @@ describe('brevoSender', () => {
 });
 
 describe('renderEmailShell (the brand RTL shell)', () => {
-  it('is RTL, table-based, inline-styled, image-free, gradient-free', () => {
-    const html = renderEmailShell({ title: 'عنوان', bodyHtml: '<p>نص</p>', ctaLabel: 'زر', ctaUrl: 'https://x.ly' });
-    expect(html).toContain('dir="rtl"');
-    expect(html).toContain('#F6F6EE');
-    expect(html).toContain('#FA3600');
-    expect(html).not.toContain('<style');
-    expect(html).not.toContain('<img');
-    expect(html.toLowerCase()).not.toContain('linear-gradient');
+  it('is RTL, table-based, inline-styled, gradient-free; the only style is the dark-mode block, the only image is the ONE logo', () => {
+    // R350 E5 evolved the r323 contract: the shell carries the ONE logo
+    // (the generated brand PNG, hosted — never essential: alt text +
+    // the text wordmark carry the name with images off) and ONE
+    // <style> block: the prefers-color-scheme dark palette. Everything
+    // else stays the old law: tables + inline styles, no gradients.
+    const withBase = renderEmailShell({ title: 'عنوان', bodyHtml: '<p>نص</p>', ctaLabel: 'زر', ctaUrl: 'https://x.ly', baseUrl: 'https://madarek.onrender.com' });
+    expect(withBase).toContain('dir="rtl"');
+    expect(withBase).toContain('#F6F6EE');
+    expect(withBase).toContain('#FA3600');
+    const styleCount = (withBase.match(/<style/g) ?? []).length;
+    expect(styleCount).toBe(1); // the dark-mode block only
+    expect(withBase).toContain('prefers-color-scheme');
+    expect(withBase).toContain('<meta name="color-scheme" content="light dark">');
+    const imgCount = (withBase.match(/<img/g) ?? []).length;
+    expect(imgCount).toBe(1); // the ONE brand logo
+    expect(withBase).toContain('src="https://madarek.onrender.com/brand/icon-192.png"');
+    expect(withBase).toContain('alt="مدارك"');
+    expect(withBase).toContain('>مدارك</span>'); // the wordmark survives images-off
+    expect(withBase).toContain('display:none;max-height:0;overflow:hidden;opacity:0;'); // the preheader
+    expect(withBase.toLowerCase()).not.toContain('linear-gradient');
+    // No baseUrl (tests + dev renders): the shell degrades to the text
+    // wordmark — never a relative/broken image path.
+    const bare = renderEmailShell({ title: 'عنوان', bodyHtml: '<p>نص</p>', ctaLabel: 'زر', ctaUrl: 'https://x.ly', baseUrl: '' });
+    expect(bare).not.toContain('<img');
   });
 
   it('omits the CTA row when no url is given', () => {
