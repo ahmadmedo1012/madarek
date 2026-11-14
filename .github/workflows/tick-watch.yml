@@ -1,0 +1,159 @@
+# R352 K4 — the tick watch: probe → self-heal → alert.
+#
+# WHY: the platform's background work (mail outbox, reminders, imports)
+# runs as TICKS with four triggers (request-piggyback, this repo's
+# tick.yml */5, Vercel's daily cron, the post-enqueue drain) — but
+# GitHub cron is STARVED on quiet repos (tick.yml has measured gaps of
+# hours; R350 H3), and a quiet day has no traffic to piggyback on.
+# Correctness never depends on tick frequency (idempotent slots, CAS
+# claims — see backend/src/lib/tick.ts); only mail latency does. So a
+# stale fast slot is not an emergency — but a fast slot that CANNOT be
+# refreshed even by a forced tick IS a defect (backend down, DB down,
+# CRON_SECRET broken).
+#
+# THE DESIGN (probe → self-heal → alert):
+#   1. GET /api/v1/health — production liveness (200 + ok:true).
+#   2. GET /api/v1/status — read tick.fastAt (the ledger's fast slot).
+#   3. If the fast slot is older than 30 min → FORCE a tick
+#      (POST /api/v1/internal/tick with CRON_SECRET) and re-read.
+#      The watch is therefore a FIFTH tick trigger that fires exactly
+#      when the others are starved — self-healing, zero-cost.
+#   4. Alert (open/update one issue, label `tick-watch`) ONLY when:
+#      health fails, or the fast slot is STILL stale after the forced
+#      tick, or the ledger itself is unreadable twice. A stale-but-
+#      healable platform never pages anyone.
+#
+# Cadence: */30 best-effort (the same starvation applies to this
+# workflow — that is acceptable; the watch is a net, and the forced
+# tick inside it carries the healing).
+name: Tick watch
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: tick-watch
+  cancel-in-progress: false
+
+env:
+  TARGET: ${{ vars.TICK_TARGET_URL || 'https://madarek-nine.vercel.app' }}
+  STALE_MINUTES: "30"
+
+jobs:
+  watch:
+    name: Probe health + tick freshness (self-healing)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Probe → force-tick if stale → re-probe
+        id: probe
+        run: |
+          set -euo pipefail
+
+          probe_status() {
+            curl -sS --max-time 30 --retry 2 "$TARGET/api/v1/status" | tee /tmp/status-$1.json | jq -c '{ok: .data.ok, tick: .data.tick}'
+          }
+
+          echo "== 1. health =="
+          HEALTH=$(curl -sS --max-time 30 --retry 2 -w '\n%{http_code}' "$TARGET/api/v1/health" || echo $'\n000')
+          HEALTH_CODE=$(echo "$HEALTH" | tail -1)
+          HEALTH_BODY=$(echo "$HEALTH" | head -n -1)
+          echo "health HTTP $HEALTH_CODE: $HEALTH_BODY"
+          if [ "$HEALTH_CODE" != "200" ] || ! echo "$HEALTH_BODY" | grep -q '"ok":true'; then
+            echo "health=down" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "== 2. tick ledger (before) =="
+          probe_status before
+
+          echo "== 3. force a tick when the fast slot is stale =="
+          FAST_AT=$(jq -r '.data.tick.fastAt // empty' /tmp/status-before.json)
+          FORCED=no
+          if [ -z "$FAST_AT" ]; then
+            echo "ledger unreadable (fastAt null) — forcing a tick to test the pipeline"
+            FORCED=yes
+          else
+            AGE_MIN=$(( ( $(date +%s) - $(date -d "$FAST_AT" +%s) ) / 60 ))
+            echo "fast slot age: ${AGE_MIN} min (stale threshold: ${STALE_MINUTES} min)"
+            if [ "$AGE_MIN" -ge "$STALE_MINUTES" ]; then FORCED=yes; fi
+          fi
+
+          if [ "$FORCED" = "yes" ]; then
+            echo "forcing a tick (the self-heal path)"
+            TICK_CODE=$(curl -sS --max-time 120 -X POST \
+              -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+              -H 'Content-Type: application/json' \
+              -o /tmp/forced-tick.json -w '%{http_code}' \
+              "$TARGET/api/v1/internal/tick" || echo 000)
+            echo "forced tick HTTP $TICK_CODE: $(cat /tmp/forced-tick.json 2>/dev/null || true)"
+            sleep 3
+            echo "== 4. tick ledger (after) =="
+            probe_status after
+            FAST_AT_AFTER=$(jq -r '.data.tick.fastAt // empty' /tmp/status-after.json)
+            if [ -n "$FAST_AT_AFTER" ] && [ "$FAST_AT_AFTER" != "$FAST_AT" ]; then
+              echo "verdict=healed" >> "$GITHUB_OUTPUT"
+            else
+              echo "verdict=stale-after-forced-tick" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "verdict=fresh" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "health=up" >> "$GITHUB_OUTPUT"
+
+      - name: Alert — open/update the tick-watch issue
+        if: steps.probe.outputs.health == 'down' || steps.probe.outputs.verdict == 'stale-after-forced-tick'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEALTH: ${{ steps.probe.outputs.health }}
+          VERDICT: ${{ steps.probe.outputs.verdict }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [ "$HEALTH" = "down" ]; then
+            TITLE="tick-watch: health DOWN"
+            DETAIL="الـ /health لا يجيب — المنصة غير متاحة."
+          else
+            TITLE="tick-watch: fast tick stale after a forced tick"
+            DETAIL="الـ fast slot في TickRun لم يتحدث رغم tick قسري (CRON_SECRET أو الـ backend أو الـ DB)."
+          fi
+          STAMP="$(date -u +%FT%TZ)"
+          BODY="$DETAIL
+
+          Target: ${TARGET}
+          Run: ${RUN_URL}
+          Probe: health=${HEALTH} verdict=${VERDICT}
+
+          هذا الإشعار آلي من tick-watch.yml (R352 K4). أغلق الإشارة عند المعالجة."
+
+          # One rolling issue per defect episode (search open issues by label).
+          gh label create tick-watch --color B60205 --description "tick-watch automated alerts (R352 K4)" 2>/dev/null || true
+          ISSUE_URL=$(gh issue list --repo "$GITHUB_REPOSITORY" --label tick-watch --state open --json url --jq '.[0].url' || true)
+          if [ -n "$ISSUE_URL" ] && [ "$ISSUE_URL" != "null" ]; then
+            gh issue comment "$ISSUE_URL" --repo "$GITHUB_REPOSITORY" --body "$TITLE — $STAMP
+
+          $BODY"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" \
+              --label tick-watch \
+              --title "$TITLE" \
+              --body "$BODY"
+          fi
+
+      - name: Auto-close healed episodes
+        if: steps.probe.outputs.verdict == 'healed' || steps.probe.outputs.verdict == 'fresh'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for ISSUE in $(gh issue list --repo "$GITHUB_REPOSITORY" --label tick-watch --state open --json number --jq '.[].number' || true); do
+            gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" \
+              --comment "تعافى النظام (tick-watch probe: ${{ steps.probe.outputs.verdict }}) — إغلاق تلقائي $(date -u +%FT%TZ)."
+          done

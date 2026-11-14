@@ -11,7 +11,7 @@
 > read at launch). **Render is the 14-day suspended standby** — resume
 > from the dashboard if the rollback is ever needed (the reverse flip is
 > the `apiOrigins` order + `serverlessFunctionRegion` + the workflows'
-> URLs). `keep-warm.yml`'s schedule is OFF for the window.
+> URLs). The Render-era `keep-warm.yml` is **deleted** (R352 L3) — see §Liveness & tick below.
 
 ## What triggers what
 
@@ -49,67 +49,45 @@ Hobby للاستخدام الشخصي غير التجاري — ملائمة ل�
 بالخطة المدفوعة بلا sleeps وتُدار من `render.yaml` كما هي؛ التراجع =
 عكس `apiOrigins` كما في §القطع أعلاه).
 
-## Keep-warm (free tier)
+## Liveness & tick (Vercel era — R352 L3)
 
-**R351 X4: this whole section is DORMANT** — the service is suspended
-for the 14-day standby window and the schedule is off. It documents the
-Render mode for the rollback window.
+**`keep-warm.yml` is deleted.** It existed to defeat Render free-tier
+sleep (15 idle minutes); on Vercel there is **no always-on instance to
+keep warm** — every request lands on the CDN or spins a Function on
+demand, so a keep-warm ping buys nothing and would only burn quota.
 
-Render's free plan sleeps the web service after ~15 idle minutes and
-gives **750 instance-hours/workspace/month** — an around-the-clock
-keep-warm would burn ≈ 744 h/month, exactly the cliff the owner wants
-away from his quota. `.github/workflows/keep-warm.yml` therefore pings
-`GET /api/v1/health` (which also round-trips a `SELECT 1` on Neon —
-`dbLatencyMs` in the body) and `/` every **10 minutes, only inside the
-daily window 06:00–21:00 UTC = 08:00–23:00 Africa/Tripoli** (R351 X0):
-inside the window the service never sleeps (10 < the 15-min timer) at
-≤ 15 h/day ⇒ ≈ 450–465 h/month worst-case; outside it the service
-sleeps and a night visitor pays ONE cold boot with the honest
-«الخادم يستيقظ…» UX. The ping is retry-aware: a 502/503 «Application
-loading» during a cold boot counts as *waking*, and the run only goes
-green once both endpoints answer. This window is **temporary** — it is
-deleted at the R351 X4 hosting cutover (web/API move off Render).
-Upgrading the Render service to **Starter** would also remove the sleep
-behaviour entirely — then delete the workflow.
+What keeps the platform's background work (mail outbox, reminders,
+imports) flowing now — four triggers, none a single point of failure:
 
-### The honest limits, and the two reliable fixes (R350 H3)
+| Trigger | Cadence | Where |
+|---|---|---|
+| Request-piggyback tick | on real traffic (opportunistic) | `api/index.mjs` |
+| GitHub Actions `tick.yml` | `*/5` best-effort (cron is starved on quiet repos — measured; it is a net, never the spine) | `.github/workflows/tick.yml`, guarded by `CRON_SECRET`, targets `TICK_TARGET_URL` |
+| Vercel secure cron | daily (Hobby limit) | `vercel.json` |
+| Post-enqueue drain | immediately after mail is queued | backend `mail-outbox` |
 
-GitHub's cron is **best-effort and starved on quiet repos** — measured
-~4 fired runs/day at `*/10` (the scheduler deprioritises repos without
-recent activity; the delay is unbounded). A 5-minute cron therefore
-does **not** guarantee a 5-minute ping. The workflow stays as the
-zero-cost net; the reliable fixes:
+The **tick watch** (R352 K4): `tick-watch.yml` checks the API's own
+tick ledger hourly and opens/updates a GitHub issue when no tick has
+landed for > 90 minutes (GitHub cron starvation makes 30 min
+untenable — the honest threshold; see the workflow header).
 
-**1) An external pinger (free, owner-side — only inside the window):**
+A nightly **freshness assertion** (R352 R3) also rides the mobile
+ledger: `build-info.json.commit` must equal main HEAD.
 
-If you add an external pinger (UptimeRobot/cron-job.org), set it to the
-**same 08:00–23:00 Tripoli window** — a 24/7 pinger would keep the
-service awake ≈ 744 h/month and burn the free quota the window exists
-to protect.
+### Render standby note (rollback window only)
 
-عندك طريقتان مجانيتان، اختر واحدة:
-١. من https://uptimerobot.com أنشئ حسابًا مجانيًا.
-٢. أضف «Monitor» جديدًا من نوع HTTP(s) والعنوان: https://madarek-nine.vercel.app/api/v1/health
-٣. اجعل فترة الفحص كل 5 أو 10 دقائق، وحدد فترة التشغيل من 08:00 إلى 23:00 (توقيت ليبيا) — ليس على مدار الساعة.
-٤. فعِّل تنبيه البريد حين يتوقف الخادم عن الاستجابة.
-٥. اتركه يعمل — هذا يمنع الخادم من النوم أصلًا ويخبرك عند أي توقف حقيقي.
+The suspended Render service (the 14-day standby from the X4 cutover)
+sleeps by design on the free plan. If the rollback is ever exercised,
+do **not** resurrect a keep-warm ping: either accept the honest
+«الخادم يستيقظ…» cold-boot UX for the standby hours, or upgrade that
+service to **Starter** (≈$7/mo, `render.yaml` snippet retained in git
+history at the R351 tag). The old window math (750 instance-hours /
+month cliff, 450–465 h/month windowed) is preserved in
+`docs/redesign/r351/RESUME.md` for that contingency.
 
-(البديل: https://cron-job.org بنفس العنوان كل 5 دقائق.)
-
-**2) Render Starter (the only guaranteed fix — owner decision, ≈$7/mo):**
-
-Render → Dashboard → madarek → Settings → Instance Type → **Starter**.
-The equivalent `render.yaml` change, ready to apply when you decide:
-
-```yaml
-services:
-  - type: web
-    name: madarek
-    plan: starter   # free → starter: no sleep, no cold boots, 2× RAM
-```
-
-Until either is in place, first visitors after ~15 idle minutes pay the
-cold boot; the web app shows «الخادم يستيقظ…» honestly while it wakes.
+External pinger guidance (UptimeRobot/cron-job.org → `/api/v1/health`)
+now lives in **docs/HOSTING.md** §Uptime probe — on Vercel it is pure
+monitoring, no warm-up semantics.
 
 ## Mail (Resend) — activation is owner-side
 

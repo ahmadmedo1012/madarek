@@ -36,6 +36,35 @@ router.get('/status', async (_req, res) => {
     if (timer) clearTimeout(timer);
   }
 
+  // R352 K4 — the tick ledger, freshness only (ISO timestamps, no
+  // summaries/counts): the tick-watch workflow answers «when did the
+  // platform last tick?» from here, and a forced tick's effect is
+  // observable on the next read. Best-effort — a ledger read failure
+  // degrades the field to nulls, never fails the route.
+  let tick: { fastAt: string | null; dailyAt: string | null; weeklyAt: string | null } = {
+    fastAt: null,
+    dailyAt: null,
+    weeklyAt: null,
+  };
+  try {
+    const rows = await Promise.race([
+      prisma.tickRun.findMany({ select: { key: true, lastRunAt: true } }),
+      new Promise<{ key: string; lastRunAt: Date }[]>((_, reject) => {
+        timer = setTimeout(() => reject(new Error('tick status timeout')), 5_000);
+      }),
+    ]);
+    const byKey = new Map(rows.map((row) => [row.key, row.lastRunAt]));
+    tick = {
+      fastAt: byKey.get('tick')?.toISOString() ?? null,
+      dailyAt: byKey.get('tick-daily')?.toISOString() ?? null,
+      weeklyAt: byKey.get('tick-weekly')?.toISOString() ?? null,
+    };
+  } catch (err) {
+    logger.warn({ err }, 'status: tick ledger read failed');
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+
   res.json({
     data: {
       ok: dbOk,
@@ -46,6 +75,7 @@ router.get('/status', async (_req, res) => {
       mailProvider: env.MAIL_PROVIDER,
       buildId: BUILD_ID,
       serverTime: new Date().toISOString(),
+      tick,
       // r326 M0.7 — the mobile minimum-version gate: the native app
       // compares its semver on cold start; below minAppVersion it shows
       // the blocking «يلزم تحديث التطبيق» screen pointing at updateUrl.

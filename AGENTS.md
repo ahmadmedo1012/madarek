@@ -19,7 +19,7 @@ docs/modules/) are Arabic; generated references (docs/*-REFERENCE.md) are Englis
 | `specs/` | SpeckKit feature specs (001–012); live status is `docs/SPECS-REFERENCE.md`, **not** `specs/*/spec.md` |
 | `tools/` | `boot-pg.sh` (local postgres), `daemon.js` |
 | `docs/` | Arabic platform docs 01–16 + `modules/` + `architecture/` + `redesign/` (round history r305…r341; `redesign/r335/heron-spec/*.json` = frozen reference; `redesign/r341/` = current program: QUEUE/HANDOFF/OWNERSHIP/tasks/arsenal; r338–r340 = closed rounds still on disk — r333/r335/r337 docs already under `docs/archive/redesign/`) |
-| `.github/workflows/` | `ci.yml` (full gate matrix), `size-gate.yml`, `mobile.yml`, `deploy-smoke.yml`, `keep-warm.yml`, `build-ios-sidestore.yml`, `mobile-builds-ledger.yml`, `deadcode.yml` — runners pinned to `ubuntu-24.04` |
+| `.github/workflows/` | `ci.yml` (full gate matrix), `size-gate.yml`, `mobile.yml`, `deploy-smoke.yml`, `deploy-vercel.yml`, `build-android.yml`, `build-ios-sidestore.yml`, `mobile-builds-ledger.yml`, `tick.yml` + `tick-watch.yml` (R352 K4 self-healing probe), `vercel-usage-watch.yml`, `config-pages.yml`, `deadcode.yml` — runners pinned to `ubuntu-24.04` (the Render-era `keep-warm.yml` was deleted at R352 L3) |
 
 Sources of truth (don't guess, read): endpoints → `backend/src/app.ts` + `http/routes/`
 (full table: `docs/API-REFERENCE.md`); models → `backend/prisma/schema.prisma`
