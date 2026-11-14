@@ -445,20 +445,137 @@
      concepts yet (was: N identical empty-state cards). Dashed rule =
      "pending", matching the colleges announce-row separators. */
   /* ═══ AiAssistant — typing indicator + gap cards + error rows ═══ */
+  /* R353 C1 RESTORE: the r333 WAVE-6 sweep deleted these rule bodies on
+     the belief they were dead — they were not (AiAssistantPage.tsx is a
+     live consumer of every class here; the orphaned keyframes below
+     were the tell). Restored verbatim from ca5a5ad0~1. */
 
   /* Gap starter cards — replaced ~15 lines of inline styles + a JS
      mouseenter border swap (no focus parity) with the card recipe. */
+  .ai-gap-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    min-block-size: 44px; /* touch target */
+    padding: var(--sp-4);
+    text-align: start;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      border-color var(--motion-duration-short) var(--motion-ease-standard),
+      transform var(--motion-duration-micro) var(--motion-ease-standard);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .ai-gap-card:hover:not(:disabled) {
+      background: var(--surface);
+      border-color: var(--border-strong);
+    }
+  }
+  .ai-gap-card:active:not(:disabled) { transform: translateY(1px); }
+  .ai-gap-card:disabled { cursor: default; }
+  .ai-gap-head { display: flex; align-items: center; gap: var(--sp-2); }
   /* 21-c: same -ink pairing as .ai-gap-pct — the 14px warning glyph is
      the card's gap marker (non-text 3:1 floor; --warning was 2.13 on
      the light card ground). */
+  .ai-gap-warn { color: var(--warning-ink); flex-shrink: 0; }
+  .ai-gap-pct {
+    margin-inline-start: auto;
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    /* 21-c (A5 P1-2): --warning gold measured 2.13:1 on the card's
+       surface-2 ground in light (the one number each gap card exists
+       to show). --warning-ink keeps the hue family and clears AA
+       both themes: 7.29:1 light / 9.90:1 dark (dark value identical
+       to the old token, so dark is a no-op). */
+    color: var(--warning-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .ai-gap-name {
+    font-size: var(--type-body-size);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .ai-gap-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+  }
+
   /* Typing indicator — the authored moment while a reply is in flight
      (bot-bubble silhouette, calm wave, sr text for the live region). */
+  .chat-typing {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; /* spacing-gate: allow — typing-dots cadence gap for the three-dot animation */
+    /* r149 (R3-A2 R8): نفس حشو فقاعة الدردشة 10/14 (كانت 12/14 درجة أعلى) */
+    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat bubble compact grade 10/14 — r149 R3-A2 R8 message density */
+    border-radius: var(--r-xl);
+    /* R313 (WP-E): square bubbles — the 4px tail-corner detail is
+       retired with the radius-0 canon. */
+    background: var(--surface-2);
+    border: 1px solid var(--border-faint);
+  }
+  .chat-typing-dot {
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: var(--r-full);
+    background: var(--text-subtle);
+    animation: ai-typing-bob var(--motion-duration-stat) var(--motion-ease-standard) infinite;
+  }
+  .chat-typing-dot:nth-child(2) { animation-delay: calc(var(--motion-stagger-step) * 2); }
+  .chat-typing-dot:nth-child(3) { animation-delay: calc(var(--motion-stagger-step) * 4); }
   @keyframes ai-typing-bob {
     0%, 60%, 100% { transform: none; opacity: 0.45; }
     30% { transform: translateY(-3px); opacity: 1; }
   }
 
   /* Failed exchange — stays in the log, recoverable via retry. */
+  .chat-error {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-2);
+    max-inline-size: min(640px, 78%);
+    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat error bubble compact grade 10/14 — r149 R3-A2 R8 message density */
+    border-radius: var(--r-xl);
+    background: var(--danger-soft);
+    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+    color: var(--danger-ink);
+    font-size: var(--type-body-size);
+    line-height: var(--lh-base);
+    animation: ai-row-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  .chat-retry {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    min-block-size: 36px;
+    padding-inline: var(--sp-3);
+    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+    /* R313 (WP-E): square control. */
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--danger-ink);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      border-color var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .chat-retry:hover {
+      background: color-mix(in srgb, var(--danger) 10%, var(--surface));
+      border-color: var(--danger);
+    }
+  }
+  .chat-retry:active { transform: translateY(1px); }
   @keyframes ai-row-in {
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: none; }
@@ -467,9 +584,18 @@
   /* Phone: 44px touch floor for the compact chat controls (min-* sizes
      coexist with the shared 40px boxes — min wins, desktop unchanged). */
   @media (max-width: 640px) {
+    .ai-quick-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-block-size: 44px;
+    }
+    .chat-input { min-block-size: 44px; }
+    .chat-send { min-inline-size: 44px; min-block-size: 44px; }
     /* r164g: the conversations rows' compact actions hit the same 44px
        touch floor on phones (min-* coexists with .btn.sm's 32px box —
        min wins, desktop unchanged). */
+    .ai-conv-row .btn { min-block-size: 44px; }
   }
 
   /* Guardrail #6 — keyframe off-switches (the base.css token belt
@@ -1202,11 +1328,153 @@
 
   /* ═══════════════════════════════════════════════════════════════
      AI ASSISTANT — chat bubbles + quick actions
+     R353 C1 RESTORE: the r333 WAVE-6 sweep emptied this section while
+     AiAssistantPage.tsx still consumes every class (the transcript had
+     NO scroll container — messages painted under the composer inside
+     .ai-surface's overflow:hidden and could never scroll: the owner's
+     «messages don't show / clipped» report). Restored from ca5a5ad0~1;
+     .chat-avatar stays deleted (zero consumers).
      ═══════════════════════════════════════════════════════════════ */
+  .chat-area {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    min-block-size: 320px;
+    max-block-size: 480px;
+    overflow-y: auto; /* THE transcript scroller (ai.css's .ai-surface .chat-area lifts the ceiling) */
+    padding: var(--sp-4) var(--sp-2) var(--sp-3);
+    scroll-behavior: smooth;
+    overscroll-behavior-y: contain;
+  }
   @keyframes chat-in {
     from { opacity: 0; transform: translateY(4px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+
+  .chat-msg {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-2);
+  }
+  .chat-msg.bot { justify-content: flex-start; }
+  .chat-msg.user { flex-direction: row-reverse; }
+
+  .chat-bubble {
+    max-inline-size: min(640px, 78%);
+    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat bubble compact grade 10/14 — r149 R3-A2 R8 message density */
+    border-radius: var(--r-xl);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border-faint);
+    /* R353 C1 (W3): long tokens (URLs, code, unbroken Arabic strings)
+       must wrap inside the bubble, not clip under .ai-surface. */
+    overflow-wrap: anywhere;
+    /* subtle entrance */
+    animation: chat-in var(--motion-duration-medium) var(--ease-out) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chat-bubble { animation: none; }
+  }
+
+  /* R313 (WP-E): both bubbles are SQUARE — the 4px tail-corner details
+     are retired with the radius-0 canon (the bot bubble needs no
+     override at all now). */
+  .chat-msg.user .chat-bubble {
+    /* R313 (WP-E): FLAT accent fill — the reference's white-on-#FA3600
+       slab (gradients are retired system-wide); square corners. */
+    background: var(--accent);
+    color: var(--accent-fg);
+    border-color: transparent;
+  }
+
+  .chat-bubble p { margin: 0; }
+  .chat-bubble p + p { margin-block-start: var(--sp-1-5); } /* r153h: 6px → --sp-1-5 */
+
+  .ai-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+    padding: var(--sp-3) var(--sp-2) var(--sp-2);
+    border-block-start: 1px solid var(--rule);
+    margin-block-start: var(--sp-1);
+  }
+  .ai-quick-chip {
+    padding: var(--sp-1-5) var(--sp-3); /* r153h: 6px → --sp-1-5 */
+    /* R313 (WP-E · D16): square chip — hairline frame, 0 radius. */
+    border-radius: var(--r-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change */
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+    transition: var(--t-clean);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .ai-quick-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+      background: var(--accent-soft);
+    }
+  }
+
+  .chat-input-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-2) var(--sp-1);
+  }
+  .chat-input {
+    flex: 1;
+    min-inline-size: 0;
+    block-size: 40px;
+    padding-inline: var(--sp-3);
+    /* R313 (WP-E · D16): the Heron input recipe — transparent ground,
+       1px #B3B3AF hairline, square corners (the old surface-2 well +
+       pill radius are retired). */
+    border-radius: var(--r-md);
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text);
+    font-family: inherit;
+    /* 21-c (A5 P2-X / A10 P1): was var(--fs-sm) 13px — iOS Safari
+       zooms the viewport on any <16px input focus. 16px floor
+       (components.css's shared .input takes the same fix from 21-b). */
+    font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
+    transition: var(--t-clean);
+  }
+  .chat-input:focus {
+    outline: none;
+    background: transparent;
+    /* R313 (WP-E · D16): focus = the reference's #ED4C1F signal border
+       (the shared input recipe's measured literal — no halo). */
+    border-color: var(--input-focus-signal); /* R313 D16 — tokenized R353 P4 */
+  }
+  .chat-send {
+    inline-size: 40px;
+    block-size: 40px;
+    /* R313 (WP-E): square control — the accent slab. */
+    border-radius: var(--r-sm);
+    border: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: var(--accent-fg);
+    cursor: pointer;
+    transition: var(--t-clean);
+    flex-shrink: 0;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .chat-send:hover:not(:disabled) {
+      /* R313 (WP-E): flat hover — the brightened accent tier, no scale,
+         no glow. */
+      background: var(--accent-hover);
+    }
+  }
+  .chat-send:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
 
   /* R313 (WP-E): both bubbles are SQUARE — the 4px tail-corner details
      are retired with the radius-0 canon (the bot bubble needs no

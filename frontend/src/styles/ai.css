@@ -81,6 +81,8 @@
 .ai-surface {
   display: flex;
   flex-direction: column;
+  /* R353 C1 — the jump-to-latest chip anchors to the surface */
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: var(--r-2xl);
@@ -90,12 +92,12 @@
   /* الارتفاع مقيد بإطار العرض (وليس الشاشة كاملة): الرأس وفوقه من
      صفحة العنوان والفجوات يأكلان ~36-40dvh — يبقى السطح هو الكتلة
      الغالبة والمرسِل قريبًا من الطيّة الأولى. */
-  block-size: clamp(440px, 60dvh, 780px);
+  block-size: clamp(320px, 60dvh, 780px); /* R353 C1 (W5): 440 floor ate the composer on short viewports */
   overflow: hidden;
   min-inline-size: 0;
 }
 @media (max-width: 760px) {
-  .ai-surface { block-size: clamp(430px, 64dvh, 640px); }
+  .ai-surface { block-size: clamp(300px, 64dvh, 640px); } /* R353 C1 (W5) */
 }
 .ai-surface-head {
   display: flex;
@@ -130,9 +132,39 @@
   padding: var(--sp-5) var(--sp-4) var(--sp-3);
 }
 
+/* R353 C1 — the jump-to-latest chip: rides above the transcript's last
+   fold, anchored to the composer's top edge. Shown only when the user
+   scrolled up (React removes it at bottom). */
+.ai-jump {
+  position: absolute;
+  inset-inline-end: var(--sp-3);
+  /* anchors to the composer's TOP edge (chip lives inside .ai-composer,
+     whose height varies with the privacy row + chips + counter) */
+  bottom: calc(100% + var(--sp-2));
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-block-size: 32px;
+  padding-inline: var(--sp-3);
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  z-index: 2;
+  transition: var(--t-clean);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ai-jump:hover { border-color: var(--accent); color: var(--accent-strong); }
+}
+
 /* المرسِل — جوال أولًا: إفصاح الخصوصية، الرقائق السريعة، صفّ الإدخال
    والعدّاد — كلها داخل قاعدة اللوحة فوق حدودها السفلية. */
 .ai-composer {
+  position: relative; /* R353 C1 — the .ai-jump chip anchors here */
   border-block-start: 1px solid var(--surface-divider);
   padding: var(--sp-3) var(--sp-4) var(--sp-4);
   flex-shrink: 0;

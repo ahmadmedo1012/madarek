@@ -31,6 +31,13 @@ const config: ExpoConfig = {
   },
   android: {
     package: "ly.madarek.mobile",
+    // R353 C1 (M1) — the documented pairing with react-native-keyboard-
+    // controller: the window must NOT resize under the keyboard (Expo's
+    // default); the library's KeyboardAvoidingView owns the compensation.
+    // With the default "resize" the assistant transcript was double-
+    // compensated (window shrank AND KAV padded) and the composer could
+    // ride above a clipped last message.
+    softwareKeyboardLayoutMode: "pan",
     // R350 R5 — monotonically increasing with every CI build: the release
     // workflow exports MADAREK_VERSION_CODE=$(github.run_number) before
     // prebuild; local/dev builds stay at 1.

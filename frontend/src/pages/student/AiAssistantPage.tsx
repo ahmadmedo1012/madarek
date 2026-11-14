@@ -20,6 +20,8 @@ import {
   Clock3,
   Compass,
   BookOpen,
+  /* R353 C1 — the jump-to-latest chip */
+  ArrowDown,
 } from 'lucide-react';
 import { Card, Badge, AlertRow } from '../../components/primitives';
 import { Skeleton } from '../../components/primitives/States';
@@ -358,20 +360,47 @@ export default function AiAssistantPage() {
    * re-render needed) tracks near-bottom from onScroll; the effect
    * consults it BEFORE scrolling. */
   const autoScroll = useRef(true);
+  /* R353 C1: atBottom also drives the «انتقل لأحدث رسالة» chip — a
+   * transcript that is scrolled up (or left stale by a viewport
+   * resize / keyboard open) must offer one tap back to the latest. */
+  const [atBottom, setAtBottom] = useState(true);
+  const pinToBottom = (smooth = true) => {
+    const el = scroller.current;
+    if (!el) return;
+    el.scrollTo({
+      top: el.scrollHeight,
+      behavior: smooth && !reducedMotion ? 'smooth' : 'auto',
+    });
+  };
   const handleScroll = () => {
     const el = scroller.current;
     if (!el) return;
-    autoScroll.current = el.scrollHeight - el.scrollTop - el.clientHeight <= 80;
+    const near = el.scrollHeight - el.scrollTop - el.clientHeight <= 80;
+    autoScroll.current = near;
+    setAtBottom(near);
   };
 
   useEffect(() => {
     if (!autoScroll.current) return;
-    scroller.current?.scrollTo({
-      top: scroller.current.scrollHeight,
-      // Smooth scrolling is motion too — respect the reduced-motion preference.
-      behavior: reducedMotion ? 'auto' : 'smooth',
-    });
+    pinToBottom();
   }, [messages, chat.isPending, reducedMotion]);
+
+  /* R353 C1: viewport changes (rotate, soft keyboard, devtools) resize
+   * the surface but never re-ran the auto-scroll — the transcript stayed
+   * at a stale offset and the newest message could sit under the fold.
+   * Re-pin on scroller resize ONLY when the user is at bottom (a reader
+   * scrolled up to reread is never yanked). */
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => {
+      if (!autoScroll.current) return;
+      pinToBottom(false);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reducedMotion]);
 
   /* ── r323 B1.1 — the reply delivery dispatcher ─────────────────────
    *
@@ -1071,10 +1100,29 @@ export default function AiAssistantPage() {
               )}
             </div>
 
-            {/* المرسِل — رقائق سريعة + صفّ الإدخال + العدّاد، ملتصقة بأسفل
-                اللوحة (r261). r305-A7: صفّ الإدخال داخل سكة الإجراء
-                الوحيدة (.r305rp-next) والإرسال هو الزر المُشديد الوحيد. */}
             <div className="ai-composer">
+              {/* R353 C1: the jump-to-latest chip — anchored to the
+                  composer's top edge, shown only when the transcript is
+                  scrolled up. One tap returns to the newest message (the
+                  ResizeObserver keeps at-bottom users pinned). */}
+              {!atBottom && (
+                <button
+                  type="button"
+                  className="ai-jump"
+                  onClick={() => {
+                    autoScroll.current = true;
+                    setAtBottom(true);
+                    pinToBottom();
+                  }}
+                >
+                  <Icon icon={ArrowDown} size={13} />
+                  انتقل لأحدث رسالة
+                </button>
+              )}
+
+              {/* المرسِل — رقائق سريعة + صفّ الإدخال + العدّاد، ملتصقة بأسفل
+                  اللوحة (r261). r305-A7: صفّ الإدخال داخل سكة الإجراء
+                  الوحيدة (.r305rp-next) والإرسال هو الزر المُشديد الوحيد. */}
               {/* r323 B1.1 — the daily-quota card («وصلتَ حدَّ اليوم»): the
                   honest state when the DB-backed per-user daily ask quota
                   is spent. The server's own rejection copy wins when one

@@ -613,6 +613,9 @@
     font-size: var(--fs-body);
     line-height: var(--lh-base);
     color: var(--text-strong);
+    /* R353 C1 (W3): long unbreakable tokens (URLs/code) wrap inside the
+       ledger row instead of clipping under .ai-surface's overflow. */
+    overflow-wrap: anywhere;
     animation: none; /* the ledger is calm; no per-row entrance */
   }
   .r305rp .chat-msg.user .chat-bubble {
@@ -628,7 +631,7 @@
     max-inline-size: min(72ch, 100%);
   }
   /* Reply typography — moved out of TSX inline styles (r305 contract). */
-  .r305rp .r305ai-line { margin: 0; }
+  .r305rp .r305ai-line { margin: 0; overflow-wrap: anywhere; }
   .r305rp .r305ai-line--breath { min-block-size: 0.5em; }
   .r305rp .r305ai-list {
     margin: 0;
