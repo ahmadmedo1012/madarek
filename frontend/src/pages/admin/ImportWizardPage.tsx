@@ -29,7 +29,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  AlertTriangle, ArrowLeft, CheckCircle2,
+  AlertTriangle, ArrowLeft, Check, CheckCircle2,
   Download, FileUp, RotateCcw, UploadCloud,
 } from 'lucide-react';
 import { Card } from '../../components/primitives';
@@ -340,7 +340,7 @@ export function ImportWizardPage() {
           const state = step === n ? 'now' : step > n ? 'done' : 'todo';
           return (
             <li key={label} data-state={state} aria-current={step === n ? 'step' : undefined}>
-              <span className="iw-step-num" aria-hidden="true">{state === 'done' ? '✓' : n}</span>
+              <span className="iw-step-num" aria-hidden="true">{state === 'done' ? <Check size={12} /> : n}</span>
               <span className="iw-step-label">{label}</span>
             </li>
           );
