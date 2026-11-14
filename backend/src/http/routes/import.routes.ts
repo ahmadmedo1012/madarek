@@ -39,6 +39,9 @@ import {
 import { validateRows, IMPORT_MAX_ROWS, type ImportEntity } from '../../lib/import/validate.js';
 import { buildImportTemplate, buildImportReport } from '../../lib/import/templates.js';
 import { parseCsv } from '../../lib/bulk-import.js';
+// R350 I-P0 — faculty/department NAME resolution (exact → normalised →
+// suggestion; never a silent fall-back-to-the-first-faculty).
+import { resolveOrgName, orgResolutionErrorAr } from '../../lib/import/resolve.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -167,6 +170,9 @@ const previewBodySchema = fileBodySchema.extend({
     version: z.literal(1),
     columns: z.array(z.object({ source: z.string(), target: z.string() })).min(1),
   }),
+  /** R350 I-P0 — unknown faculty/department names: create them at
+   * commit (audited) instead of erroring the rows. */
+  createIfMissing: z.boolean().default(false),
 });
 
 router.post(
@@ -176,7 +182,7 @@ router.post(
   validate(previewBodySchema, 'body'),
   async (req, res, next) => {
     try {
-      const { fileBase64, institutionId, entity, columnMap } = req.body as z.infer<typeof previewBodySchema>;
+      const { fileBase64, institutionId, entity, columnMap, createIfMissing } = req.body as z.infer<typeof previewBodySchema>;
       const instId = await resolveInstitutionId(req, institutionId);
       const buf = decodeFile(fileBase64);
       const grid = await loadGrid(buf);
@@ -185,6 +191,66 @@ router.post(
       const inst = await loadInstitution(instId);
       const mode = inst.kind === 'SCHOOL' ? 'SCHOOL' : 'UNIVERSITY';
       const result = validateRows(grid.rows, map, { entity, mode, customFields: full });
+
+      /* R350 I-P0/I4 — the DB-side truths the pure layer cannot know:
+       * faculty/department names, reg-numbers that already exist, and
+       * emails already taken. The silent first-faculty fallback and the
+       * email P2002 abort both die here — at PREVIEW, where the
+       * registrar can still fix the file. */
+      const [faculties, departments] = await Promise.all([
+        prisma.faculty.findMany({ where: { institutionId: instId }, select: { id: true, name: true } }),
+        prisma.department.findMany({ where: { faculty: { institutionId: instId } }, select: { id: true, name: true } }),
+      ]);
+      const okUniIds = result.rows.filter((r) => r.status === 'ok').map((r) => (r.mapped as { universityId?: string }).universityId).filter((v): v is string => typeof v === 'string');
+      const okEmails = result.rows
+        .filter((r) => r.status === 'ok')
+        .map((r) => (r.mapped as { email?: string }).email)
+        .filter((e): e is string => typeof e === 'string' && e.length > 3)
+        .map((e) => e.toLowerCase());
+      const [existingUniIds, takenEmails] = await Promise.all([
+        okUniIds.length
+          ? prisma.studentProfile.findMany({ where: { institutionId: instId, universityId: { in: okUniIds } }, select: { universityId: true } })
+          : Promise.resolve([]),
+        okEmails.length
+          ? prisma.user.findMany({ where: { email: { in: okEmails } }, select: { email: true } })
+          : Promise.resolve([]),
+      ]);
+      const knownUniIds = new Set(existingUniIds.map((r) => r.universityId));
+      const takenEmailSet = new Set(takenEmails.map((u) => u.email.toLowerCase()));
+      for (const row of result.rows) {
+        if (row.status !== 'ok') continue;
+        const m = row.mapped as { faculty?: string; department?: string; universityId?: string; email?: string };
+        if (m.faculty) {
+          const res = resolveOrgName(m.faculty, faculties);
+          if (res.kind !== 'exact' && res.kind !== 'normalised') {
+            if (createIfMissing) row.warningsAr.push(`ستُنشأ كلية جديدة باسم «${m.faculty.trim()}» عند التأكيد`);
+            else {
+              row.status = 'error';
+              row.errorsAr.push(orgResolutionErrorAr('faculty', m.faculty, res));
+            }
+          }
+        }
+        if (m.department) {
+          const res = resolveOrgName(m.department, departments);
+          if (res.kind !== 'exact' && res.kind !== 'normalised') {
+            if (createIfMissing) row.warningsAr.push(`ستُنشأ قسم جديد باسم «${m.department.trim()}» عند التأكيد`);
+            else {
+              row.status = 'error';
+              row.errorsAr.push(orgResolutionErrorAr('department', m.department, res));
+            }
+          }
+        }
+        if (m.universityId && knownUniIds.has(m.universityId)) {
+          row.warningsAr.push(`رقم القيد «${m.universityId}» موجود مسبقًا — ستُطبَّق سياسة التكرار`);
+        }
+        if (m.email && takenEmailSet.has(m.email.toLowerCase())) {
+          row.status = 'error';
+          row.errorsAr.push(`البريد «${m.email}» مستخدم بحساب آخر — لا يمكن إنشاء حساب ثانٍ به`);
+        }
+      }
+      result.counts.ok = result.rows.filter((r) => r.status === 'ok').length;
+      result.counts.error = result.rows.filter((r) => r.status === 'error').length;
+      result.counts.warningCount = result.rows.reduce((a, r) => a + (r.status === 'ok' ? r.warningsAr.length : 0), 0);
 
       const job = await prisma.importJob.create({
         data: {
@@ -202,6 +268,7 @@ router.post(
             warningCount: result.counts.warningCount,
             duplicateReport: result.duplicateReport as unknown as object,
             mode,
+            createIfMissing,
           } as unknown as object,
           rows: {
             create: result.rows.slice(0, 2000).map((r) => ({
@@ -253,8 +320,20 @@ router.post(
       const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
       if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
       await resolveInstitutionId(req, job.institutionId);
-      if (job.status === 'COMMITTING' || job.status === 'COMPLETED') {
-        throw AppError.badRequest('المهمة قيد التنفيذ أو مكتملة بالفعل');
+      if (job.status === 'COMPLETED') {
+        throw AppError.badRequest('المهمة مكتملة بالفعل');
+      }
+      // R350 I-P0 — COMMITTING is RESUMABLE, not stuck: every row write is
+      // idempotent (existing reg-numbers take the duplicate policy), so a
+      // crashed commit re-runs safely from the top of the remaining rows.
+      if (job.status === 'COMMITTING') {
+        logger.warn({ jobId: job.id, processedRows: job.processedRows }, 'import: resuming a COMMITTING job (idempotent re-entry)');
+      }
+      // R350 I-P0 — honest refusal: the commit path persists STUDENT
+      // profiles only today; a TEACHER job answers clearly instead of
+      // crashing mid-transaction on a student-shaped write.
+      if (job.entity === 'TEACHER') {
+        throw AppError.badRequest('مسار تثبيت استيراد المدرّسين قيد الإعداد — المسار المفعّل حاليًا لاستيراد الطلاب فقط');
       }
 
       // Re-read the source file and re-validate against the SAVED map —
@@ -270,14 +349,19 @@ router.post(
       await prisma.importJob.update({ where: { id: job.id }, data: { status: 'COMMITTING', totalRows: result.counts.total } });
 
       // Resolve the faculty/department NAME references ONCE (the
-      // registrar's file speaks names, the DB speaks ids).
+      // registrar's file speaks names, the DB speaks ids) — through the
+      // R350 resolver: exact → normalised → suggestion, with an explicit
+      // createIfMissing path (preview flagged the rows, the commit
+      // honours the promise). The silent faculties[0] fallback is DEAD.
+      const jobSummary = (job.summary ?? {}) as { createIfMissing?: boolean };
+      const createIfMissing = jobSummary.createIfMissing === true;
       const faculties = await prisma.faculty.findMany({ where: { institutionId: job.institutionId }, select: { id: true, name: true } });
       const departments = await prisma.department.findMany({
         where: { faculty: { institutionId: job.institutionId } },
         select: { id: true, name: true, facultyId: true },
       });
-      const facByName = new Map(faculties.map((f) => [f.name.trim(), f.id]));
-      const depByName = new Map(departments.map((d) => [d.name.trim(), d]));
+      /** R350 I-P0 — created orgs, audited once at completion. */
+      const createdOrgs: { kind: 'faculty' | 'department'; name: string }[] = [];
 
       let succeeded = 0;
       let skipped = 0;
@@ -285,9 +369,19 @@ router.post(
       // R350 E3 — one activation payload per created account that has a
       // REAL email (placeholder-domain rows are sheet-only by design).
       const activation: { userId: string; email: string; name: string; tempPassword: string }[] = [];
+      /* R350 I-P0 — the ONE-TIME credentials sheet: created rows with NO
+       * deliverable email return their temp password HERE (never stored
+       * raw anywhere — this response is its only existence), so the
+       * registrar can hand them out. The old flow hashed and discarded
+       * them: unloginable accounts. */
+      const credentials: { name: string; universityId: string; email: string; tempPassword: string }[] = [];
+      /** R350 I-P0 — the per-row ledger updates for this chunk (applied
+       * inside the same transaction as the writes they describe). */
+      const rowOutcomes: { line: number; status: 'OK' | 'SKIPPED' | 'ERROR'; resultRef?: string; errorAr?: string }[] = [];
       for (let i = 0; i < okRows.length; i += chunkSize) {
         const chunk = okRows.slice(i, i + chunkSize);
-         
+        rowOutcomes.length = 0;
+
         await prisma.$transaction(async (tx) => {
           for (const row of chunk) {
             const m = row.mapped as {
@@ -303,8 +397,8 @@ router.post(
               select: { id: true },
             });
             if (existing) {
-              if (duplicatePolicy === 'SKIP') { skipped += 1; continue; }
-              if (duplicatePolicy === 'ERROR') { failed += 1; continue; }
+              if (duplicatePolicy === 'SKIP') { skipped += 1; rowOutcomes.push({ line: row.line, status: 'SKIPPED', resultRef: existing.id }); continue; }
+              if (duplicatePolicy === 'ERROR') { failed += 1; rowOutcomes.push({ line: row.line, status: 'ERROR', errorAr: 'رقم قيد موجود مسبقًا وسياسة التكرار رفضته' }); continue; }
               // UPDATE: refresh the permitted profile fields only.
               await tx.studentProfile.update({
                 where: { id: existing.id },
@@ -316,9 +410,20 @@ router.post(
                 },
               });
               succeeded += 1;
+              rowOutcomes.push({ line: row.line, status: 'OK', resultRef: existing.id });
               continue;
             }
             const email = m.email ?? `${m.universityId}@students.import.madarek.local`;
+            /* R350 I-P0 — the email-collision guard: a taken address
+             * fails THIS row honestly (the preview already flagged it;
+             * a race between preview and commit still dies here instead
+             * of aborting the whole chunk via P2002). */
+            const emailTaken = await tx.user.findUnique({ where: { email }, select: { id: true } });
+            if (emailTaken) {
+              failed += 1;
+              rowOutcomes.push({ line: row.line, status: 'ERROR', errorAr: `البريد «${email}» مستخدم بحساب آخر` });
+              continue;
+            }
             const tempPassword = generateTempPassword();
             const user = await tx.user.create({
               data: {
@@ -339,28 +444,75 @@ router.post(
                 name: m.nameAr ?? `${m.firstName} ${m.lastName}`.trim(),
                 tempPassword,
               });
+            } else {
+              credentials.push({
+                name: m.nameAr ?? `${m.firstName} ${m.lastName}`.trim(),
+                universityId: m.universityId,
+                email,
+                tempPassword,
+              });
             }
-            const facultyId = m.faculty ? facByName.get(m.faculty.trim()) : undefined;
-            const dep = m.department ? depByName.get(m.department.trim()) : undefined;
-            await tx.studentProfile.create({
+            /* R350 I-P0 — the resolver: exact/normalised hit, or an
+             * explicit audited create (preview promised it); unknown +
+             * !createIfMissing is impossible here (preview errored the
+             * row) but still guarded honestly. */
+            let facultyId: string | undefined;
+            if (m.faculty) {
+              const res = resolveOrgName(m.faculty, faculties);
+              if (res.kind === 'exact' || res.kind === 'normalised') {
+                facultyId = res.ref.id;
+              } else if (createIfMissing) {
+                const created = await tx.faculty.create({ data: { name: m.faculty.trim(), institutionId: job.institutionId, city: 'غير محدد' }, select: { id: true, name: true } });
+                faculties.push(created);
+                createdOrgs.push({ kind: 'faculty', name: created.name });
+                facultyId = created.id;
+              }
+            }
+            let departmentId: string | undefined;
+            if (m.department) {
+              const res = resolveOrgName(m.department, departments);
+              if (res.kind === 'exact' || res.kind === 'normalised') {
+                departmentId = res.ref.id;
+              } else if (createIfMissing) {
+                const created = await tx.department.create({
+                  data: { name: m.department.trim(), facultyId: facultyId ?? faculties[0]!.id },
+                  select: { id: true, name: true },
+                });
+                departments.push({ ...created, facultyId: null as never });
+                createdOrgs.push({ kind: 'department', name: created.name });
+                departmentId = created.id;
+              }
+            }
+            const profile = await tx.studentProfile.create({
               data: {
                 userId: user.id,
                 membershipId: membership.id,
                 institutionId: job.institutionId,
                 universityId: m.universityId,
                 facultyId: facultyId ?? faculties[0]!.id,
-                departmentId: dep?.id ?? departments[0]!.id,
+                departmentId: departmentId ?? departments[0]!.id,
                 year: m.year,
                 nameAr: m.nameAr ?? `${m.firstName} ${m.lastName}`.trim(),
                 stage: m.stage, grade: m.grade, section: m.section,
                 studentPhone: m.studentPhone, studentPhoneNormalized: m.studentPhoneNormalized,
                 guardianName: m.guardianName, guardianPhone: m.guardianPhone, guardianPhoneNormalized: m.guardianPhoneNormalized,
               },
+              select: { id: true },
             });
             succeeded += 1;
+            rowOutcomes.push({ line: row.line, status: 'OK', resultRef: profile.id });
+          }
+          // R350 I-P0 — the per-row ledger rides the SAME transaction:
+          // the report.xlsx stops lying (all-PENDING) and a resumed job
+          // shows exactly what happened per line.
+          for (const o of rowOutcomes) {
+            await tx.importRow.update({
+              where: { jobId_line: { jobId: job.id, line: o.line } },
+              data: { status: o.status, resultRef: o.resultRef ?? null, errorAr: o.errorAr ?? null },
+            });
           }
         });
-         
+
         await prisma.importJob.update({
           where: { id: job.id },
           data: { processedRows: i + chunk.length, succeededRows: succeeded, skippedRows: skipped, failedRows: failed },
@@ -401,10 +553,47 @@ router.post(
             duplicatePolicy,
             emailPlaceholder: okRows.some((r) => (r.mapped as { emailPlaceholder: boolean }).emailPlaceholder),
             activationMailQueued: activation.length,
+            createdOrgs,
           },
         },
       });
-      res.json({ data: { jobId: completed.id, status: completed.status, succeeded, skipped, failed: completed.failedRows } });
+      /* R350 I-P0 — the import commit becomes an AUDITED act (the r323
+       * path always was): one row with the counts, the policy, and the
+       * created organisations. */
+      await prisma.auditLog.create({
+        data: {
+          action: 'IMPORT_COMMITTED',
+          resourceType: 'ImportJob',
+          resourceId: job.id,
+          userId: req.user!.id,
+          institutionId: job.institutionId,
+          metadata: {
+            fileName: job.fileName,
+            duplicatePolicy,
+            createIfMissing,
+            succeeded,
+            skipped,
+            failed: failed + result.counts.error,
+            activationMailQueued: activation.length,
+            credentialsIssued: credentials.length,
+            createdOrgs,
+          },
+        },
+      });
+      /* The one-time credentials sheet: ONLY rows without a deliverable
+       * email (emailless/placeholder) — deliverable ones get the
+       * activation mail. Never persisted raw; shown once. */
+      res.json({
+        data: {
+          jobId: completed.id,
+          status: completed.status,
+          succeeded,
+          skipped,
+          failed: completed.failedRows,
+          activationMailQueued: activation.length,
+          credentials: credentials.map((c) => ({ ...c, tempPassword: c.tempPassword })),
+        },
+      });
     } catch (e) {
       next(e);
     }

@@ -243,3 +243,51 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
 - This box acknowledges the S claim (d24ce5da): this session owns the
   remaining lanes (E7 → I → P-rem → N → W → T → V → Z), the other owns S.
 - Gates: backend 2204 green · the consolidated AdminMailPage tests 26/26.
+
+### LANE E — E7 the fake-Resend integration belt (this commit)
+- tests/modules/mail-resend-integration.test.ts — a REAL local HTTP server
+  stands for api.resend.com; the REAL sendMail pipeline + the REAL drain
+  loop run against it (only prisma + mailConfig are mocked):
+  · sendMail: 200→{ok,providerId} · 429/5xx/garbage→ok:false (single-shot,
+    retries are the outbox's) · the exact request shape pinned (Bearer key,
+    from/to-array/subject/html/text/headers);
+  · the drain: a 429 attempt requeues with the 1m backoff, nothing due
+    before it elapses, the retry sends + links the provider id;
+  · the exhausted schedule dead-letters honestly (MAX_ATTEMPTS loop,
+    terminal afterwards);
+  · idempotent replay: dedupeKey P2002 → ONE row, exactly ONE HTTP send.
+- REAL GAP FIXED at the cause (L2): drainOutbox discarded the SendOutcome
+  and never wrote providerId on success — E4's delivered/bounce webhook
+  links rows BY providerId, so the link was dead in practice. The send
+  seam now takes boolean | SendOutcome and the success update records
+  providerId + provider (boolean callers unchanged).
+- Gates: backend 2211 green · tsc src 0/0 · tsc tests 0/0 · LANE E COMPLETE
+  (E1–E7 all landed; only owner-side DNS/domain steps remain — §5).
+
+### LANE I — I-P0 the import commit hardening (this commit)
+- Audited F1 against the lane targets (two read-only sub-agents; the gap
+  tables live in this session's notes). Landed the P0 batch:
+  · the credentials black hole CLOSED: created rows WITHOUT a deliverable
+    email return a one-time credentials sheet in the commit response
+    (name/reg/email/tempPassword — never persisted raw; deliverable rows
+    keep the E3 activation mail);
+  · the silent first-faculty fallback DEAD: src/lib/import/resolve.ts
+    (exact → normalised → ≤2-edit suggestion → unknown) + the preview
+    errors unknown faculties WITH the «هل تقصد…؟» copy; createIfMissing
+    (preview flag, honoured at commit) creates them explicitly instead
+    (city «غير محدد», audited once in summary.createdOrgs + the audit row);
+  · preview now knows the DB: existing reg-numbers warn (policy will
+    apply), TAKEN EMAILS error the row (the P2002 chunk-abort dies at
+    preview where the registrar can still fix the file);
+  · the commit: per-row email-collision guard (row fails, chunk
+    continues), per-row ImportRow ledger inside the same transaction
+    (report.xlsx stops lying), resumable COMMITTING (idempotent re-entry),
+    TEACHER jobs honestly refused until their path exists, and the
+    IMPORT_COMMITTED AuditLog row (counts + policy + createdOrgs).
+- Pinned: resolve.test.ts (8) + tests/modules/import-commit.test.ts (8,
+  real app + OWNER auth; preview verdicts, credentials, ledger, audit,
+  resume, collision, createIfMissing).
+- Gates: backend 2227 green · tsc src 0/0 · tsc tests 0/0.
+- Next (I-P1): Win-1256/ISO-8859-6 + delimiter sniffing + multi-sheet +
+  zip-bomb guard + limits 10MB/20k + quadruple names + serial dates;
+  then I-P2 (rollback + diff), I-P3 (mode B), F2 (the wizard).
