@@ -1,12 +1,16 @@
-# R352 K5 — the STORAGE_DRIVER flip: postgres → vercel-blob, ONE deploy.
+# R352 K5 — the STORAGE_DRIVER env assertion (postgres ⇄ vercel-blob).
 #
-# WHY: uploads ride BYTEA rows in the application database (the Render-era
-# pilot trade-off). The Blob store (tadmora-private-files) is connected to
-# production+preview with BLOB_READ_WRITE_TOKEN auto-provisioned; the
-# X2d client-direct transport exists. The flip needs every existing
-# BinaryObject object to already live in Blob at boot (a half-migrated
-# flip 404s real files) — that is scripts/storage-to-blob.mjs's job on
-# every remote build (fail-closed: a partial migration fails the build).
+# STATUS CORRECTION (measured 2026-11-14T18:01Z): production ALREADY runs
+# STORAGE_DRIVER=vercel-blob (GET /api/v1/status → storageDriver:
+# vercel-blob, buildId 8601f6a3) — the r352 RESUME's "flip PENDING"
+# note lagged the live state. This workflow's true role is therefore an
+# ENV ASSERTION/REPAIR tool: dispatching it (default) re-asserts
+# vercel-blob (a no-op when already set — idempotent) and forces one
+# full deploy whose remote build runs scripts/storage-to-blob.mjs,
+# migrating any pre-flip BinaryObject rows into Blob (the part a bare
+# env flip could have missed — a missing row is a 404 file). The Blob
+# store (tadmora-private-files) is connected with BLOB_READ_WRITE_TOKEN
+# auto-provisioned; the migration is fail-closed per build.
 #
 # THE ORDER (one dispatch, all steps visible):
 #   0. Preflight: the env inventory (STORAGE_DRIVER present? token

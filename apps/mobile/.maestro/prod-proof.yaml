@@ -1,0 +1,56 @@
+# R352 R4 — the production remote-config proof.
+#
+# WHAT THIS PROVES (the release APK's actual boot behavior):
+#   The published APK (arm64/armeabi) cannot run on the x86_64 CI
+#   emulator, so the smoke job builds a proof variant that is IDENTICAL
+#   to the release in every dimension the test cares about — same JS,
+#   same R8 minification, same EXPO_PUBLIC_API_BASE_URL baked (a
+#   production origin) — differing ONLY in ABI. With a production
+#   baked base, the hermetic pin (R352 R1) leaves the remote config
+#   ACTIVE: the app fetches /config/app.json from the live sources,
+#   resolves apiOrigins, and logs in against PRODUCTION.
+#
+# The flow is therefore the end-to-end evidence: launch → the Boot
+# screen resolves the remote config → welcome → login (a REAL
+# production account, the seeded student) → the student dashboard.
+# A pass here + the hermetic pass covers both halves: the app's
+# networking against production AND the hermetic stack against itself.
+#
+# Signal, never a gate (the R2 law): a failure is a warning annotation
+# recorded into build-info.json (prod_config_proof), never a red job.
+appId: ly.madarek.mobile
+name: "01 — prod proof: الإصدار يتصل بالإنتاج عبر الإعداد البعيد"
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: "welcome-title"
+    # 120s: a cold start may race a Neon autosuspend wake behind the
+    # version gate — the same allowance the shipped app gives the owner.
+    timeout: 120000
+- scrollUntilVisible:
+    element:
+      id: "welcome-cta"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: "welcome-cta"
+- extendedWaitUntil:
+    visible:
+      id: "login-email"
+    timeout: 30000
+- tapOn:
+    id: "login-email"
+- inputText: "student@test.ly"
+- tapOn:
+    id: "login-password"
+- inputText: "12345678"
+- tapOn:
+    id: "login-submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab-courses"
+    timeout: 120000
+- assertVisible:
+    id: "tab-courses"

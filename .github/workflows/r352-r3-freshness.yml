@@ -1,0 +1,172 @@
+# R352 R3 — the daily freshness watch for the public Android release.
+#
+# WHY: the publish policy (R2/R3) replaces `android-latest` whenever
+# build + the independent verify pass, and a nightly rebuild is the
+# safety net. But a policy is not a property — the honest machine
+# ASSERTS the release's freshness every day and pages when it drifts.
+#
+# THE ASSERTION (evidence, not vibes):
+#   release.build-info.json.commit — fetched from the android-latest
+#   GitHub Release — must satisfy BOTH:
+#     1. It is an ANCESTOR of main HEAD (the release is built from
+#        history the repo still contains — a force-push/rewrite or a
+#        foreign commit fails here).
+#     2. NO commit in release..HEAD touches the mobile-rebuild path
+#        list (the build-android.yml push filter). If any did, the
+#        release MISSED a mobile change → stale.
+#   A web-only push (the common case) keeps 1 true and 2 empty → the
+#   release is FRESH BY POLICY (nothing mobile changed since it); the
+#   nightly net then converges commit==HEAD anyway.
+#
+# Alert shape (the tick-watch pattern): one rolling `freshness-watch`
+# labelled issue, updated while the defect persists, auto-closed when
+# the assertion passes again. Never a red run — the watch is a net.
+name: R352 R3 freshness watch
+
+on:
+  schedule:
+    # 04:10 UTC daily — the nightly rebuild fires at 02:25 and the
+    # Android pipeline measures ~38 min; 04:10 reads the settled state.
+    - cron: '10 4 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: r352-r3-freshness
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    name: Assert the release is fresh (ancestor + no mobile gap)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout (blobless — history needed for the ancestry check)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
+
+      - name: Fetch the release's build-info.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+        id: release
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/releases" --jq '[.[] | select(.tag_name=="android-latest")][0].assets[] | select(.name=="build-info.json") | .url' | head -1 > /tmp/asset-url.txt
+          ASSET=$(cat /tmp/asset-url.txt)
+          test -n "$ASSET" || { echo "::error::android-latest carries no build-info.json asset"; exit 1; }
+          curl -sL -H "Authorization: Bearer $GH_TOKEN" "$(cat /tmp/asset-url.txt)" -o /tmp/build-info.json
+          RELEASE_COMMIT=$(jq -r .commit /tmp/build-info.json)
+          RELEASE_AT=$(jq -r .built_at /tmp/build-info.json 2>/dev/null || jq -r .verified_at /tmp/build-info.json 2>/dev/null || echo '?')
+          echo "release commit: $RELEASE_COMMIT (built: $RELEASE_AT)"
+          echo "release_commit=$RELEASE_COMMIT" >> "$GITHUB_OUTPUT"
+          {
+            echo "## R352 R3 — freshness watch"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| main HEAD | \`$(git rev-parse HEAD)\` |"
+            echo "| release commit | \`$RELEASE_COMMIT\` |"
+            echo "| release built | $RELEASE_AT |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Assert (ancestor + no mobile-rebuild gap)
+        id: assert
+        env:
+          RELEASE_COMMIT: ${{ steps.release.outputs.release_commit }}
+        run: |
+          set -euo pipefail
+          HEAD=$(git rev-parse HEAD)
+          VERDICT=fresh
+
+          # 1. ancestry — the release is built from history HEAD still has.
+          if ! git cat-file -e "$RELEASE_COMMIT" 2>/dev/null; then
+            echo "NOT-IN-HISTORY: the release commit does not exist in the current repo (rewrite or foreign build)"
+            VERDICT=stale-unknown-commit
+          elif ! git merge-base --is-ancestor "$RELEASE_COMMIT" "$HEAD"; then
+            echo "NOT-AN-ANCESTOR: the release commit exists but is not an ancestor of HEAD"
+            VERDICT=stale-orphan
+          else
+            # 2. the mobile-rebuild gap — the exact push-filter of
+            #    build-android.yml (a commit in this range that would
+            #    have triggered a rebuild means the release missed it).
+            GAP=$(git log --oneline "$RELEASE_COMMIT..$HEAD" -- \
+              apps/mobile/app apps/mobile/src apps/mobile/package.json \
+              apps/mobile/package-lock.json apps/mobile/app.config.ts \
+              apps/mobile/app.json apps/mobile/eas.json apps/mobile/assets \
+              apps/mobile/plugins apps/mobile/android apps/mobile/ios \
+              shared scripts/tokens scripts/brand apps/mobile/scripts \
+              scripts/ci docs/api/openapi.json .github/workflows/build-android.yml)
+            GAP_N=$(git rev-list --count "$RELEASE_COMMIT..$HEAD" -- \
+              apps/mobile/app apps/mobile/src apps/mobile/package.json \
+              apps/mobile/package-lock.json apps/mobile/app.config.ts \
+              apps/mobile/app.json apps/mobile/eas.json apps/mobile/assets \
+              apps/mobile/plugins apps/mobile/android apps/mobile/ios \
+              shared scripts/tokens scripts/brand apps/mobile/scripts \
+              scripts/ci docs/api/openapi.json .github/workflows/build-android.yml)
+            echo "mobile-rebuild commits in release..HEAD: $GAP_N"
+            if [ "$GAP_N" != "0" ]; then
+              echo "THE GAP (the release missed these):"
+              echo "$GAP"
+              VERDICT=stale-mobile-gap
+            fi
+          fi
+
+          echo "verdict: $VERDICT"
+          echo "verdict=$VERDICT" >> "$GITHUB_OUTPUT"
+          {
+            echo
+            echo "**Verdict: $VERDICT**"
+            echo
+            if [ "$VERDICT" = "fresh" ]; then
+              echo "_The release is fresh by policy (no mobile-touching commit since it was built; the nightly net converges commit==HEAD)._"
+            else
+              echo "_The release is STALE — see the issue for the gap._"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Alert — open/update the freshness issue
+        if: steps.assert.outputs.verdict != 'fresh'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERDICT: ${{ steps.assert.outputs.verdict }}
+          RELEASE_COMMIT: ${{ steps.release.outputs.release_commit }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          STAMP="$(date -u +%FT%TZ)"
+          BODY="إصدار أندرويد العام (android-latest) لم يعد محدّثًا مقابل المصدر.
+
+          Verdict: ${VERDICT}
+          Release commit: \`${RELEASE_COMMIT}\`
+          Run: ${RUN_URL}
+
+          الحكم الآلي من r352-r3-freshness.yml (R352 R3). أغلق الإشارة عند نشر إصدار محدّث."
+          gh label create freshness-watch --color D93F0B --description "release freshness automated alerts (R352 R3)" 2>/dev/null || true
+          ISSUE_URL=$(gh issue list --repo "$GITHUB_REPOSITORY" --label freshness-watch --state open --json url --jq '.[0].url' || true)
+          if [ -n "$ISSUE_URL" ] && [ "$ISSUE_URL" != "null" ]; then
+            gh issue comment "$ISSUE_URL" --repo "$GITHUB_REPOSITORY" --body "STILL STALE — $VERDICT @ $STAMP
+
+          $BODY"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" \
+              --label freshness-watch \
+              --title "freshness-watch: android-latest is STALE ($VERDICT)" \
+              --body "$BODY"
+          fi
+
+      - name: Auto-close healed episodes
+        if: steps.assert.outputs.verdict == 'fresh'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for ISSUE in $(gh issue list --repo "$GITHUB_REPOSITORY" --label freshness-watch --state open --json number --jq '.[].number' || true); do
+            gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" \
+              --comment "الإصدار محدّث الآن (freshness verdict: fresh) — إغلاق تلقائي $(date -u +%FT%TZ)."
+          done

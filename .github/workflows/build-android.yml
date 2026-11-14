@@ -668,6 +668,28 @@ jobs:
           cp android/app/build/outputs/apk/release/app-release.apk build/Madarek-smoke-x86_64.apk
           test -s build/Madarek-smoke-x86_64.apk
 
+      - name: Build the prod-config proof APK (x86_64, release parity, PRODUCTION base)
+        # R352 R4 — the published APK is arm64/armeabi and cannot run on
+        # the x86_64 emulator. This variant is IDENTICAL to the release
+        # in everything the proof tests (same JS, R8 minify ON, same
+        # EXPO_PUBLIC_API_BASE_URL as the build job bakes) — ABI only.
+        # The baked production origin keeps the remote config ACTIVE
+        # (the R1 pin rule) — exactly the shipped app's boot path.
+        working-directory: apps/mobile
+        env:
+          EXPO_PUBLIC_API_BASE_URL: https://madarek-nine.vercel.app/api/v1
+          EXPO_PUBLIC_DISABLE_REMOTE_CONFIG: ""
+        run: |
+          set -euo pipefail
+          # release parity after the no-minify pass re-enabled nothing:
+          # the discriminator step left minify OFF — turn it back ON.
+          sed -i 's|^android.enableMinifyInReleaseBuilds=.*|android.enableMinifyInReleaseBuilds=true|' android/gradle.properties
+          grep -q '^android.enableMinifyInReleaseBuilds=true' android/gradle.properties
+          (cd android && ./gradlew :app:assembleRelease --no-daemon --stacktrace) \
+            2>&1 | tee build/gradle-prodconfig.log
+          cp android/app/build/outputs/apk/release/app-release.apk build/Madarek-prodconfig-x86_64.apk
+          test -s build/Madarek-prodconfig-x86_64.apk
+
       - name: Build the no-minify discriminator APK
         # Cheap incremental pass (R8 off): if the minified welcome screen
         # never paints but this one does, R8 owns the paint freeze. Never
@@ -771,6 +793,15 @@ jobs:
             echo "${CRASHES:-0}" > apps/mobile/build/crash-count.txt
             echo "crash-buffer entries for ly.madarek.mobile: ${CRASHES:-0}"
             echo "Alive-flow sequence complete."
+            echo "== PROD-CONFIG PROOF (R352 R4): the release APK's boot path, on this emulator =="
+            adb uninstall ly.madarek.mobile || true
+            adb install -r apps/mobile/build/Madarek-prodconfig-x86_64.apk
+            adb logcat -c
+            maestro test apps/mobile/.maestro/prod-proof.yaml --format junit --output apps/mobile/build/prodproof-junit.xml || { echo "PROOF FAILED (a signal — never a gate; the R2 law)"; adb exec-out screencap -p > apps/mobile/build/prodproof-failure.png; }
+            adb exec-out screencap -p > apps/mobile/build/prodproof-final.png
+            adb logcat -d > apps/mobile/build/logcat-prodproof.log
+            adb shell am force-stop ly.madarek.mobile || true
+            echo "== prod-config proof sequence complete =="
 
       - name: Write the smoke result
         if: always()
@@ -789,12 +820,20 @@ jobs:
           elif [ -f build/maestro-junit.xml ] || [ -f build/maestro-junit-retry.xml ]; then
             RESULT="fail"; ATTEMPTS=$([ -f build/maestro-junit-retry.xml ] && echo 2 || echo 1)
           fi
+          PROOF="not-run"
+          if [ -f build/prodproof-junit.xml ] && ! grep -q '<failure' build/prodproof-junit.xml; then
+            PROOF="pass"
+          elif [ -f build/prodproof-junit.xml ]; then
+            PROOF="fail"
+          fi
+          echo "prod-config proof: $PROOF"
           jq -n --arg result "$RESULT" --argjson attempts "$ATTEMPTS" \
             --argjson crashes "$(cat build/crash-count.txt 2>/dev/null || echo 0)" \
             --arg api "hermetic (10.0.2.2:4000, same-commit backend)" \
             --arg run_url "$RUN_URL" \
             --arg commit "$(git rev-parse HEAD)" \
-            '{smoke: $result, attempts: $attempts, crashes: $crashes, api: $api, run_url: $run_url, commit: $commit}' \
+            --arg proof "$PROOF" \
+            '{smoke: $result, attempts: $attempts, crashes: $crashes, api: $api, run_url: $run_url, commit: $commit, prod_config_proof: $proof}' \
             > build/smoke-result.json
           cat build/smoke-result.json
           # R352 R2 — the smoke is a SIGNAL, never a publish gate: the
@@ -807,6 +846,7 @@ jobs:
             echo
             echo '- attempts: '"${ATTEMPTS}"
             echo '- api: hermetic (10.0.2.2:4000, same-commit backend)'
+            echo '- prod-config proof (R4): '"$PROOF"'
             echo '- run: '"${RUN_URL}"
             if [ "$RESULT" = "pass" ] || [ "$RESULT" = "pass-flaky" ]; then
               echo '- the alive-flow held: login → dashboard → 60s alive'
@@ -819,6 +859,11 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           if [ "$RESULT" = "fail" ] || [ "$RESULT" = "unknown" ]; then
             echo "::warning::smoke result: $RESULT (recorded in build-info.json + summary; publish proceeds on the independent verify)"
+          fi
+          if [ "$PROOF" = "fail" ]; then
+            echo "::warning::prod-config proof FAILED — the release APK's remote-config path did not log into production (recorded as prod_config_proof in build-info.json; a signal, never a gate)"
+          elif [ "$PROOF" = "pass" ]; then
+            echo "- prod-config proof (R4): PASS — the release boot path (remote config ACTIVE) logged into production"
           fi
 
       - name: Upload smoke result
@@ -852,6 +897,11 @@ jobs:
             apps/mobile/build/logcat-nominify.log
             apps/mobile/build/backend.log
             apps/mobile/build/gradle-smoke.log
+            apps/mobile/build/prodproof-junit.xml
+            apps/mobile/build/prodproof-failure.png
+            apps/mobile/build/prodproof-final.png
+            apps/mobile/build/logcat-prodproof.log
+            apps/mobile/build/gradle-prodconfig.log
           if-no-files-found: ignore
           retention-days: 14
 
@@ -1091,6 +1141,7 @@ jobs:
             SMOKE_API=$(jq -r .api smoke/smoke-result.json)
             SMOKE_ATTEMPTS=$(jq -r .attempts smoke/smoke-result.json)
             SMOKE_CRASHES=$(jq -r '.crashes // 0' smoke/smoke-result.json)
+            PROOF=$(jq -r '.prod_config_proof // "unknown"' smoke/smoke-result.json)
           else
             SMOKE="unknown"; SMOKE_URL=""; SMOKE_API="not run"; SMOKE_ATTEMPTS=0; SMOKE_CRASHES=0
           fi
@@ -1100,7 +1151,8 @@ jobs:
              --arg smoke_api "$SMOKE_API" \
              --argjson smoke_attempts "$SMOKE_ATTEMPTS" \
              --argjson smoke_crashes "$SMOKE_CRASHES" \
-             '. * {smoke: $smoke, smoke_run_url: $smoke_url, smoke_api: $smoke_api, smoke_attempts: $smoke_attempts, smoke_crashes: $smoke_crashes}' \
+             --arg prod_config_proof "$PROOF" \
+             '. * {smoke: $smoke, smoke_run_url: $smoke_url, smoke_api: $smoke_api, smoke_attempts: $smoke_attempts, smoke_crashes: $smoke_crashes, prod_config_proof: $prod_config_proof}' \
              verified/build-info.json > verified/build-info.tmp.json
           mv verified/build-info.tmp.json verified/build-info.json
           jq -r '.smoke' verified/build-info.json
