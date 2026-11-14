@@ -31,6 +31,18 @@
 -- prior migrations are marked applied via `prisma migrate resolve`,
 -- so this file is the single source of the catch-up DDL and the
 -- history is clean going forward.
+-- CONDITIONAL BODY (r352 follow-up): this migration already ran
+-- against production (recorded 2026-11-14). On any database where the
+-- regular 43-migration history ran normally, it must be a NO-OP — the
+-- prod-broken state uniquely still had the dead SyncRun table (dropped
+-- by 20261111080000_r349_u_neutral_tenant everywhere else) AND lacked
+-- the ImportJob family this repair creates. Fresh databases (CI's
+-- disposable Postgres, future environments) skip the body entirely.
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'SyncRun')
+     AND NOT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'ImportJob')
+  THEN
 -- CreateEnum
 CREATE TYPE "EnrollmentStatus" AS ENUM ('ACTIVE', 'SUSPENDED', 'DEFERRED', 'GRADUATED', 'WITHDRAWN');
 
@@ -508,3 +520,5 @@ ALTER TABLE "InstitutionFieldDefinition" ADD CONSTRAINT "InstitutionFieldDefinit
 -- AddForeignKey
 ALTER TABLE "NotificationPreference" ADD CONSTRAINT "NotificationPreference_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+  END IF;
+END $$;
