@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { Capability, Role } from '@prisma/client';
+import { Capability, Role, StaffRole } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireCapability } from '../middleware/requireCapability.js';
@@ -324,8 +324,42 @@ const setRoleSchema = z
     role: z.nativeEnum(Role),
     departmentId: z.string().cuid().optional(),
     specialty: z.string().trim().min(2).max(120).optional(),
+    // R353 E2 — the Libyan staff office (docs/ROLES-LIBYA.md).
+    // undefined = leave unchanged; null = clear the office.
+    staffRole: z.nativeEnum(StaffRole).nullable().optional(),
   })
   .strict();
+
+/**
+ * R353 E2 — validate a staff office against the target's NEW role and
+ * governance scope (conservative, per docs/ROLES-LIBYA.md):
+ *   REGISTRAR_GENERAL  → ADMIN only, and only unscoped (no faculty)
+ *   COLLEGE_REGISTRAR  → ADMIN only, and REQUIRES scopeFacultyId
+ *   EXAMS_CONTROLLER   → QUALITY only (grants EXAMS_MODERATE via
+ *                        UserPermission — the exams office owns it)
+ *   QUALITY_OFFICER    → QUALITY only (no exam moderation)
+ */
+function validateStaffRoleSeat(
+  staffRole: StaffRole | null | undefined,
+  newRole: Role,
+  targetScopeFacultyId: string | null,
+): string | null {
+  if (staffRole == null) return null; // clearing or unchanged is always allowed
+  if (staffRole === 'REGISTRAR_GENERAL') {
+    if (newRole !== Role.ADMIN) return 'المسجل العام مقعد إداري (ADMIN) فقط';
+    if (targetScopeFacultyId) return 'المسجل العام غير محدّد بكلية — استخدم مقعد مسجل الكلية';
+    return null;
+  }
+  if (staffRole === 'COLLEGE_REGISTRAR') {
+    if (newRole !== Role.ADMIN) return 'مسجل الكلية مقعد إداري (ADMIN) فقط';
+    if (!targetScopeFacultyId) return 'مسجل الكلية يتطلب نطاق كلية محدّداً';
+    return null;
+  }
+  if (newRole !== Role.QUALITY) {
+    return 'مقاعد مراقب الامتحانات وموظف الجودة تخص دور الجودة فقط';
+  }
+  return null;
+}
 
 router.post(
   '/admin/users/:id/role',
@@ -334,7 +368,7 @@ router.post(
   async (req, res, next) => {
     try {
       const id = req.params.id!;
-      const { role: newRole, departmentId, specialty } = req.body as z.infer<typeof setRoleSchema>;
+      const { role: newRole, departmentId, specialty, staffRole } = req.body as z.infer<typeof setRoleSchema>;
 
       // Self-modification guard — same protection the OWNER endpoint enforces.
       if (id === req.user!.id) {
@@ -366,6 +400,8 @@ router.post(
         select: {
           id: true,
           role: true,
+          scopeFacultyId: true,
+          staffRole: true,
           // r179: per-membership profiles — resolved within the caller's
           // institution context only; without one (OWNER) NO profile is
           // read (the promotion then needs an explicit departmentId).
@@ -392,6 +428,10 @@ router.post(
       const oldRole = target.role;
       const studentProfile = target.studentProfiles[0] ?? null;
       const teacherProfile = target.teacherProfiles[0] ?? null;
+
+      // R353 E2 — the staff office must match the seat (role + scope).
+      const staffRoleError = validateStaffRoleSeat(staffRole, newRole, target.scopeFacultyId);
+      if (staffRoleError) throw AppError.badRequest(staffRoleError);
 
       // Faculty governance scope — a scoped ADMIN may only change the
       // roles of users in their own faculty.
@@ -454,10 +494,45 @@ router.post(
         }
         const u = await tx.user.update({
           where: { id },
-          data: { role: newRole, tokenVersion: { increment: 1 } },
+          data: {
+            role: newRole,
+            tokenVersion: { increment: 1 },
+            // R353 E2 — the staff office rides the same atomic change.
+            ...(staffRole !== undefined ? { staffRole, staffRoleAt: staffRole ? new Date() : null } : {}),
+          },
           select: { id: true, role: true },
         });
         if (teacherProvision) await teacherProvision(tx);
+        // R353 E2 — exam moderation is the exams office's capability:
+        // EXAMS_CONTROLLER seat ⇒ grant EXAMS_MODERATE; any other
+        // explicit seat on a QUALITY user ⇒ revoke it (an office change
+        // moves the duty with it). Unset seats never touch overrides
+        // (operators' explicit grants are theirs).
+        if (staffRole != null && newRole === Role.QUALITY) {
+          if (staffRole === 'EXAMS_CONTROLLER') {
+            /* r178 precedent: a global override (institutionId = NULL)
+             * cannot ride the compound-unique upsert — find-then-write. */
+            const existing = await tx.userPermission.findFirst({
+              where: { userId: id, capability: 'EXAMS_MODERATE', institutionId: null },
+              select: { id: true },
+            });
+            if (existing) {
+              await tx.userPermission.update({
+                where: { id: existing.id },
+                data: { grant: true, grantedById: req.user!.id, reason: 'R353 E2 — مقعد مراقب الامتحانات' },
+              });
+            } else {
+              await tx.userPermission.create({
+                data: { userId: id, capability: 'EXAMS_MODERATE', grant: true, grantedById: req.user!.id, reason: 'R353 E2 — مقعد مراقب الامتحانات' },
+              });
+            }
+          } else {
+            await tx.userPermission.updateMany({
+              where: { userId: id, capability: 'EXAMS_MODERATE', grant: true, institutionId: null },
+              data: { grant: false },
+            });
+          }
+        }
         await tx.auditLog.create({
           data: {
             action: 'ROLE_CHANGE',
@@ -467,6 +542,7 @@ router.post(
             metadata: {
               oldRole,
               newRole,
+              ...(staffRole !== undefined ? { staffRole: staffRole ?? null, oldStaffRole: target.staffRole ?? null } : {}),
               source: 'admin',
               ...(teacherProvision ? { teacherProfileProvisioned: true } : {}),
             },

@@ -15,7 +15,7 @@
  * frontend/tests/unit/r320-rename-belt.test.ts) — change them TOGETHER,
  * and update docs/redesign/r320/RENAME-LEDGER.md when you do.
  */
-import { Role } from '@prisma/client';
+import { Role, StaffRole } from '@prisma/client';
 
 /** Arabic display name per role — messages, exports, audit copy. */
 export const ROLE_LABELS: Record<Role, string> = {
@@ -32,6 +32,19 @@ export const ROLE_LABELS: Record<Role, string> = {
 export function roleLabel(role: Role): string {
   return ROLE_LABELS[role];
 }
+
+/**
+ * R353 E2 — the Arabic labels of the Libyan staff offices
+ * (docs/ROLES-LIBYA.md). BACKEND TWIN of the map in
+ * frontend/src/stores/auth.store.ts (STAFF_ROLE_LABELS); the two are
+ * belt-locked by the same rename-belt tests — change them TOGETHER.
+ */
+export const STAFF_ROLE_LABELS: Record<StaffRole, string> = {
+  REGISTRAR_GENERAL: 'المسجل العام',
+  COLLEGE_REGISTRAR: 'مسجل الكلية',
+  EXAMS_CONTROLLER: 'مراقب الامتحانات',
+  QUALITY_OFFICER: 'موظف الجودة',
+};
 
 /** Indefinite forms for copy that counts or appoints the role's
  * holders (حساب مسجل عام جديد، تعيين مسجل عام). */

@@ -9,7 +9,7 @@
  * sentinel hash so the payload assertions stay deterministic.
  *
  * Pins:
- *  1. TABLE invariants — exactly the 10 documented jobs, unique
+ *  1. TABLE invariants — exactly the 11 documented jobs, unique
  *     @test.ly emails, ONE easy password, positions only on TEACHER
  *     rows, `scoped` only on the faculty registrar, the three panel
  *     groups with their documented members;
@@ -40,10 +40,10 @@ import { ensureTestAccounts } from '../../src/modules/auth/test-accounts';
 /* ── table invariants ─────────────────────────────────────────── */
 
 describe('R320 §C — the test-account table', () => {
-  it('carries exactly the 10 documented jobs with unique @test.ly emails', () => {
-    expect(TEST_ACCOUNTS).toHaveLength(10);
+  it('carries exactly the 11 documented jobs with unique @test.ly emails', () => {
+    expect(TEST_ACCOUNTS).toHaveLength(11);
     const emails = TEST_ACCOUNTS.map((a) => a.email);
-    expect(new Set(emails).size).toBe(10);
+    expect(new Set(emails).size).toBe(11); /* R353 E2: + exams@test.ly (مراقب الامتحانات) */
     for (const email of emails) {
       expect(email.endsWith('@test.ly')).toBe(true);
     }
@@ -57,6 +57,7 @@ describe('R320 §C — the test-account table', () => {
       'vicedean@test.ly',
       'registrar@test.ly',
       'faculty@test.ly',
+      'exams@test.ly',
       'quality@test.ly',
       'owner@test.ly',
     ]);
@@ -86,11 +87,11 @@ describe('R320 §C — the test-account table', () => {
     expect(TEST_ACCOUNTS.filter((a) => a.scoped)).toHaveLength(1);
   });
 
-  it('groups match the documented panel contract (التعليم 6 · الحوكمة 3 · النظام 1 — R321 §A7: the governance bucket is «الحوكمة»)', () => {
+  it('groups match the documented panel contract (التعليم 6 · الحوكمة 4 · النظام 1 — R353 E2 added مراقب الامتحانات to الحوكمة)', () => {
     expect(TEST_ACCOUNT_GROUPS).toEqual(['التعليم', 'الحوكمة', 'النظام']);
     const count = (group: string) => TEST_ACCOUNTS.filter((a) => a.group === group).length;
     expect(count('التعليم')).toBe(6);
-    expect(count('الحوكمة')).toBe(3);
+    expect(count('الحوكمة')).toBe(4);
     expect(count('النظام')).toBe(1);
     // No pending@test.ly — the honest skip (no pending user state in
     // the schema); documented in the module header.
@@ -127,6 +128,7 @@ const CANONICAL_NAMES: Record<string, { first: string; last: string; initials: s
   'vicedean@test.ly': { first: 'آمال', last: 'بن عيسى', initials: 'آب' },
   'registrar@test.ly': { first: 'المسجل', last: 'العام', initials: 'مع' },
   'faculty@test.ly': { first: 'خديجة', last: 'المرابط', initials: 'خم' },
+  'exams@test.ly': { first: 'مراقب', last: 'الامتحانات', initials: 'مر' },
   'quality@test.ly': { first: 'ضمان', last: 'الجودة', initials: 'جو' },
   'owner@test.ly': { first: 'مالك', last: 'المنصة', initials: 'مل' },
 };
@@ -185,6 +187,14 @@ function makePrisma(): PrismaClient & {
       })),
     },
     membership: { upsert: membershipUpsert },
+    /* R353 E2 — the exams-office capability routing reads/writes
+     * UserPermission (exams@ grant / quality@ cleanup). */
+    userPermission: {
+      findFirst: vi.fn(async () => null),
+      create: vi.fn(async () => ({ id: 'up-1' })),
+      update: vi.fn(async () => ({ id: 'up-1' })),
+      delete: vi.fn(async () => ({ id: 'up-1' })),
+    },
     studentProfile: {
       // No existing profiles (fresh pass) — overridden per-test.
       findFirst: vi.fn(async () => null),
@@ -213,11 +223,11 @@ describe('R320 §C — ensureTestAccounts (idempotent upsert)', () => {
     const prisma = makePrisma();
     const ensured = await ensureTestAccounts(prisma);
 
-    expect(ensured).toBe(10);
+    expect(ensured).toBe(11);
     const calls = prisma._spies.userUpsert.mock.calls as unknown as Array<
       [{ where: { email: string }; update: Record<string, unknown>; create: Record<string, unknown> }]
     >;
-    expect(calls).toHaveLength(10);
+    expect(calls).toHaveLength(11);
     for (const [args] of calls) {
       // One easy password for all — the SAME hash everywhere.
       expect(args.update.passwordHash).toBe('test-hash');
@@ -263,7 +273,7 @@ describe('R320 §C — ensureTestAccounts (idempotent upsert)', () => {
         },
       ]
     >;
-    expect(calls).toHaveLength(10);
+    expect(calls).toHaveLength(11);
     for (const [args] of calls) {
       const canonical = CANONICAL_NAMES[args.where.email]!;
       // The heal branch converges the row on the canonical name.
@@ -311,7 +321,7 @@ describe('R320 §C — ensureTestAccounts (idempotent upsert)', () => {
     const memberEmails = (prisma._spies.membershipUpsert.mock.calls as unknown as Array<
       [{ where: { userId_institutionId: { userId: string } } }]
     >).map(([args]) => args.where.userId_institutionId.userId.replace(/^u-/, ''));
-    expect(memberEmails).toHaveLength(9);
+    expect(memberEmails).toHaveLength(10);
     expect(memberEmails).not.toContain('owner@test.ly');
     expect(memberEmails).toContain('student2@test.ly'); // the second institution
   });

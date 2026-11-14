@@ -13,7 +13,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { ROUTES } from './routes';
-import type { AppRole, AcademicPosition } from '../stores/auth.store';
+import { STAFF_ROLE_LABELS, type AppRole, type AcademicPosition, type StaffRole } from '../stores/auth.store';
 // R320 §B (c1-RENAME): the role display-name map lives in lib/roleLabels.ts
 // (the one source of truth, with the backend twin) — re-exported here so
 // every existing ROLE_LABELS import keeps working.
@@ -303,6 +303,20 @@ export const ADMIN_NAV: NavGroup[] = [
   },
 ];
 
+/** R353 E2 — the exam-moderation surface belongs to مراقب الامتحانات
+ * (قسم الدراسة والامتحانات — docs/ROLES-LIBYA.md), not the quality
+ * office. The nav item is hidden for plain QUALITY_OFFICER seats; the
+ * backend guards the route with the EXAMS_MODERATE capability either
+ * way (the menu is the map, the capability is the territory). */
+export function filterNavForStaffRole(groups: NavGroup[], staffRole?: StaffRole | null): NavGroup[] {
+  if (staffRole === 'QUALITY_OFFICER') {
+    return groups
+      .map((g) => ({ ...g, items: g.items.filter((i) => i.to !== ROUTES.qualityExamModeration) }))
+      .filter((g) => g.items.length > 0);
+  }
+  return groups;
+}
+
 export const QUALITY_NAV: NavGroup[] = [
   {
     label: 'مركز ضمان الجودة',
@@ -447,6 +461,8 @@ export function displayRoleLabel(
   role: AppRole,
   position?: AcademicPosition | null,
   positionFacultyName?: string | null,
+  /** R353 E2 — the staff office names the exact Libyan seat. */
+  staffRole?: StaffRole | null,
 ): string {
   if (role === 'TEACHER' && position) {
     const base = POSITION_LABELS[position];
@@ -454,6 +470,9 @@ export function displayRoleLabel(
       return `${ROLE_LABELS.TEACHER} · ${base} ${positionFacultyName}`;
     }
     return `${ROLE_LABELS.TEACHER} · ${base}`;
+  }
+  if ((role === 'ADMIN' || role === 'QUALITY') && staffRole) {
+    return STAFF_ROLE_LABELS[staffRole];
   }
   return ROLE_LABELS[role];
 }

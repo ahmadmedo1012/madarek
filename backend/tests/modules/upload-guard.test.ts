@@ -274,7 +274,7 @@ describe('POST /offerings/:id/materials/file wiring (TEACHER/ADMIN/OWNER upload)
     // institution for every non-OWNER uploader — BEFORE the row is
     // created and before assertOfferingAccess's teacher check.
     const institutionGate = routeSlice.indexOf('await assertOfferingInstitutionForUpload(');
-    const accessCheck = routeSlice.indexOf('await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);');
+    const accessCheck = routeSlice.indexOf('await assertOfferingAccess(offeringId, req.user!.id, req.user!.role, req.user!.institutionId);');
     const create = routeSlice.indexOf('prisma.material.create({');
     const put = routeSlice.indexOf("getStorage().put(buildStorageKey('materials', filename), body)");
     expect([institutionGate, accessCheck, create, put].every((i) => i >= 0)).toBe(true);

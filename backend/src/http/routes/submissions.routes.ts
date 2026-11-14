@@ -164,7 +164,7 @@ router.post(
       // enrollments are rejected here. The former inline duplicate of
       // this check was removed once the shared guard took over the
       // status filter (wave 12-8).
-      await assertOfferingAccess(offeringId, studentId, Role.STUDENT);
+      await assertOfferingAccess(offeringId, studentId, Role.STUDENT, req.user!.institutionId);
 
       // Assignment must exist AND belong to the offering in the path.
       const assignment = await prisma.assignment.findUnique({

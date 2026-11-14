@@ -461,14 +461,17 @@ describe('POST /api/v1/exams/templates/:id/clone', () => {
 
   it('QUALITY holding EXAMS_MODERATE may clone (the canSeeAnswers twin rule)', async () => {
     templateRow = baseTemplate({ questions: [] });
-    // QUALITY's default capabilities include EXAMS_MODERATE but NOT
-    // EXAMS_AUTHOR — the route door needs an explicit user grant (the
-    // operator action permissions.ts documents), the same way an admin
-    // reaches this route.
+    // R353 E2: EXAMS_MODERATE left QUALITY's role defaults (the exams
+    // office owns it now — مراقب الامتحانات). A quality user reaching
+    // the clone door holds BOTH grants explicitly via UserPermission,
+    // exactly like a seated exams controller would.
     userPermissionFindMany.mockImplementation(
       (async (args: { where?: { userId?: string } }) =>
         args.where?.userId === QUALITY_ID
-          ? [{ capability: 'EXAMS_AUTHOR' as const, grant: true }]
+          ? [
+              { capability: 'EXAMS_AUTHOR' as const, grant: true },
+              { capability: 'EXAMS_MODERATE' as const, grant: true },
+            ]
           : []) as unknown as Parameters<typeof userPermissionFindMany.mockImplementation>[0],
     );
     const res = await post(`/exams/templates/${TEMPLATE_ID}/clone`, QUALITY_ID, Role.QUALITY);

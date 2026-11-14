@@ -108,6 +108,12 @@ const ACCOUNT_PROFILES: Record<string, AccountProfileData> = {
     firstName: 'خديجة', lastName: 'المرابط', avatarInitials: 'خم', avatarColor: '#2EC4B6',
     institution: 'madarek',
   },
+  'exams@test.ly': {
+    /* R353 E2 — مراقب الامتحانات (قسم الدراسة والامتحانات): the exams
+       office seat. Owns EXAMS_MODERATE via the explicit grant below. */
+    firstName: 'مراقب', lastName: 'الامتحانات', avatarInitials: 'مر', avatarColor: '#C25E1E',
+    institution: 'madarek',
+  },
   'quality@test.ly': {
     firstName: 'ضمان', lastName: 'الجودة', avatarInitials: 'جو', avatarColor: '#D4A537',
     institution: 'madarek',
@@ -268,6 +274,10 @@ export async function ensureTestAccounts(prisma: PrismaClient): Promise<number> 
         // Governance scope is part of the account's documented contract:
         // faculty-scoped for `scoped`, university-wide (NULL) otherwise.
         scopeFacultyId: account.scoped ? skeleton.madarekItFaculty.id : null,
+        // R353 E2 — the staff office is part of the contract too (the
+        // table is the truth; re-runs converge drift).
+        staffRole: account.staffRole ?? null,
+        staffRoleAt: account.staffRole ? new Date() : null,
       },
       create: {
         email: account.email,
@@ -279,12 +289,38 @@ export async function ensureTestAccounts(prisma: PrismaClient): Promise<number> 
         avatarColor: profile.avatarColor,
         emailVerifiedAt: new Date(),
         scopeFacultyId: account.scoped ? skeleton.madarekItFaculty.id : null,
+        staffRole: account.staffRole ?? null,
+        staffRoleAt: account.staffRole ? new Date() : null,
       },
     });
     const user = await prisma.user.findUniqueOrThrow({
       where: { email: account.email },
       select: { id: true },
     });
+
+    // ── R353 E2: exam moderation follows the office, not the role ──
+    // exams@ (EXAMS_CONTROLLER) holds the explicit global grant;
+    // quality@ (QUALITY_OFFICER) must NOT keep one from earlier runs.
+    if (account.role === Role.QUALITY && account.staffRole) {
+      const existing = await prisma.userPermission.findFirst({
+        where: { userId: user.id, capability: 'EXAMS_MODERATE', institutionId: null },
+        select: { id: true },
+      });
+      if (account.staffRole === 'EXAMS_CONTROLLER') {
+        if (existing) {
+          await prisma.userPermission.update({
+            where: { id: existing.id },
+            data: { grant: true, reason: 'R353 E2 — مقعد مراقب الامتحانات' },
+          });
+        } else {
+          await prisma.userPermission.create({
+            data: { userId: user.id, capability: 'EXAMS_MODERATE', grant: true, reason: 'R353 E2 — مقعد مراقب الامتحانات' },
+          });
+        }
+      } else if (existing) {
+        await prisma.userPermission.delete({ where: { id: existing.id } });
+      }
+    }
 
     // ── membership (the platform OWNER deliberately has NONE) ─────
     let membershipId: string | null = null;

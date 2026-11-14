@@ -243,7 +243,7 @@ describe('r183-B8 — CI bundle-size gate (A11 finding 1)', () => {
     // icons dropped) — 770→773 (+0.39%, documented in the gate header,
     // the r315/r320/r323/r326/r337 precedent: tight +0.9 KB headroom, a
     // future bundle-diet round re-pins DOWN, never up).
-    expect(script).toContain('LIMIT_TOTAL_KB = 773');
+    expect(script).toContain('LIMIT_TOTAL_KB = 774'); /* R353 E2 re-pin: 773.6 measured, roles seat layer */
     expect(script).toContain('LIMIT_ENTRY_KB = 92');
     expect(script).toContain('LIMIT_PDF_KB = 110');
     // Fail-closed scanner errors are a distinct exit code, so a missing

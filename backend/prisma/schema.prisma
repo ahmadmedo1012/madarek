@@ -53,6 +53,26 @@ enum Role {
   OWNER
 }
 
+// R353 E2 — the exact Libyan staff seat for non-teaching officers
+// (docs/ROLES-LIBYA.md). Role stays the coarse authN enum; staffRole
+// names the OFFICE the account holds so labels, menus, and capability
+// routing can be exact instead of folded into ADMIN/QUALITY:
+//   ADMIN   + REGISTRAR_GENERAL  = المسجل العام (university registrar)
+//   ADMIN   + COLLEGE_REGISTRAR  = مسجل الكلية (requires scopeFacultyId)
+//   QUALITY + EXAMS_CONTROLLER   = مراقب الامتحانات / قسم الدراسة
+//                                  والامتحانات (owns EXAMS_MODERATE)
+//   QUALITY + QUALITY_OFFICER    = موظف مكتب الجودة (read/report, no
+//                                  exam moderation)
+// Teacher-side leadership (عميد/وكيل/رئيس قسم) stays on
+// TeacherProfile.position + positionFacultyId/positionDepartmentId —
+// it is layered on top of teaching, not a staff office.
+enum StaffRole {
+  REGISTRAR_GENERAL
+  COLLEGE_REGISTRAR
+  EXAMS_CONTROLLER
+  QUALITY_OFFICER
+}
+
 // r178 — مؤسسات متعددة: حالة المؤسسة (تعليق المؤسسة يمنع كل وصول
 // متعلق بها عبر حرّاس السياق في الخلفية).
 enum InstitutionStatus {
@@ -426,6 +446,10 @@ model User {
   // NULL = university-wide; set = scoped to that faculty only.
   scopeFacultyId           String?
   scopeFaculty             Faculty?        @relation("FacultyScopedAdmins", fields: [scopeFacultyId], references: [id])
+  // R353 E2 — the Libyan staff office (see the StaffRole enum above).
+  // Nullable: STUDENT/TEACHER/OWNER accounts hold no staff office.
+  staffRole                StaffRole?
+  staffRoleAt              DateTime?
   // 012-design-graphics-uplift — presentation preferences (no PII).
   // See specs/012-design-graphics-uplift/data-model.md.
   themePreference          ThemePreference @default(SYSTEM)

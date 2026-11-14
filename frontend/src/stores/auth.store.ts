@@ -34,6 +34,23 @@ import { persist, type PersistStorage, type StorageValue } from 'zustand/middlew
 
 export type AppRole = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER';
 
+/** R353 E2 — the Libyan staff office (docs/ROLES-LIBYA.md), mirroring
+ *  the Prisma StaffRole enum. Rides ADMIN/QUALITY accounts only. */
+export type StaffRole =
+  | 'REGISTRAR_GENERAL'
+  | 'COLLEGE_REGISTRAR'
+  | 'EXAMS_CONTROLLER'
+  | 'QUALITY_OFFICER';
+
+/** Arabic seat labels for the staff offices (the ONE canonical map —
+ *  sidebar, topbar kicker, account menus, and page titles all read it). */
+export const STAFF_ROLE_LABELS: Record<StaffRole, string> = {
+  REGISTRAR_GENERAL: 'المسجل العام',
+  COLLEGE_REGISTRAR: 'مسجل الكلية',
+  EXAMS_CONTROLLER: 'مراقب الامتحانات',
+  QUALITY_OFFICER: 'موظف الجودة',
+};
+
 /**
  * Academic leadership appointment, layered on top of the TEACHER role.
  * A regular teacher has `position: null`; a dean is a teacher with `DEAN`.
@@ -50,6 +67,11 @@ export interface AuthUser {
   avatarInitials?: string | null;
   /** NULL for university-wide ADMIN/QUALITY; set = scoped to that faculty. */
   scopeFacultyId?: string | null;
+  /** R353 E2 — the Libyan staff office (docs/ROLES-LIBYA.md):
+   *  REGISTRAR_GENERAL (المسجل العام) · COLLEGE_REGISTRAR (مسجل الكلية)
+   *  · EXAMS_CONTROLLER (مراقب الامتحانات) · QUALITY_OFFICER (موظف الجودة).
+   *  Null on STUDENT/TEACHER/OWNER accounts. */
+  staffRole?: StaffRole | null;
 }
 
 /** r178: one of the user's institution memberships (login/register/me

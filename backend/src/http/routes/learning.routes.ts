@@ -58,7 +58,7 @@ export function decToNum<T>(o: T): T {
 router.get('/offerings/:id/full', async (req, res, next) => {
   try {
     const id = req.params.id!;
-    await assertOfferingAccess(id, req.user!.id, req.user!.role);
+    await assertOfferingAccess(id, req.user!.id, req.user!.role, req.user!.institutionId);
     // r179 (phase-5): the oversight roles whose per-row guard bypasses
     // ownership (ADMIN/QUALITY) are pinned to their DB-verified
     // institution by the Course→institutionId chain (404 for a foreign
@@ -141,7 +141,7 @@ export function answeredCheckpointsByLecture(
 router.get('/offerings/:id/lectures', async (req, res, next) => {
   try {
     const offeringId = req.params.id!;
-    await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
+    await assertOfferingAccess(offeringId, req.user!.id, req.user!.role, req.user!.institutionId);
     // r179 (phase-5): see GET /offerings/:id/full — the oversight bypass
     // is institution-pinned.
     await assertOfferingInCallerInstitution(offeringId, req.user!, 'read');
@@ -217,7 +217,7 @@ router.get('/lectures/:id', async (req, res, next) => {
     });
     if (!lec) throw AppError.notFound();
     // Offering-level access gate before any lecture content is returned.
-    await assertOfferingAccess(lec.offeringId, req.user!.id, req.user!.role);
+    await assertOfferingAccess(lec.offeringId, req.user!.id, req.user!.role, req.user!.institutionId);
     // r179 (phase-5): see GET /offerings/:id/full — the oversight bypass
     // is institution-pinned.
     await assertOfferingInCallerInstitution(lec.offeringId, req.user!, 'read');
@@ -284,7 +284,7 @@ router.post('/lectures/:id/watch', validate(watchSchema), async (req, res, next)
       select: { offeringId: true, durationSec: true },
     });
     if (!lectureStub) throw AppError.notFound();
-    await assertOfferingAccess(lectureStub.offeringId, studentId, req.user!.role);
+    await assertOfferingAccess(lectureStub.offeringId, studentId, req.user!.role, req.user!.institutionId);
 
     // One transaction for the whole flow — prior-state read, high-water
     // clamp, watch-event upsert and both attendance upserts — so the
@@ -460,7 +460,7 @@ router.post(
       // Enrollment check: same guard as the watch endpoint. Without
       // this, any student could inflate their StudentMastery for
       // concepts in courses they aren't enrolled in.
-      await assertOfferingAccess(cp.lecture.offeringId, req.user!.id, req.user!.role);
+      await assertOfferingAccess(cp.lecture.offeringId, req.user!.id, req.user!.role, req.user!.institutionId);
       // Validate the answer against THIS checkpoint's options length —
       // a hardcoded .max(10) accepted indices that point past the options.
       const optionCount = Array.isArray(cp.options) ? cp.options.length : 0;

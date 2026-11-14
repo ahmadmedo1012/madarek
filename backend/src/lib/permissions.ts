@@ -46,8 +46,14 @@ export const DEFAULT_ROLE_CAPABILITIES: Record<Role, Capability[]> = {
   QUALITY: [
     'QUALITY_VIEW',
     'QUALITY_REPORT',
-    'EXAMS_MODERATE',
     'ANNOUNCE_FACULTY',
+    // R353 E2: EXAMS_MODERATE moved OUT of the role default — per
+    // docs/ROLES-LIBYA.md exam moderation belongs to مراقب الامتحانات
+    // (قسم الدراسة والامتحانات), NOT the quality office. The capability
+    // is granted via UserPermission to QUALITY users whose staffRole is
+    // EXAMS_CONTROLLER (the seed + the role-assignment route do this);
+    // the migration deletes the seeded QUALITY→EXAMS_MODERATE
+    // RolePermission row so the DB layer cannot resurrect it.
     // NOTE: NO USERS_MANAGE, NO ROLES_ASSIGN — quality is oversight, not control.
   ],
   OWNER: [
@@ -314,17 +320,53 @@ export function decideOfferingAccess(role: Role, facts: OfferingAccessFacts): Of
  * answers, etc.). Without it, any authenticated user can read any
  * course's full content — an IDOR.
  */
-export async function assertOfferingAccess(offeringId: string, userId: string, role: Role): Promise<void> {
+export async function assertOfferingAccess(
+  offeringId: string,
+  userId: string,
+  role: Role,
+  institutionId?: string | null,
+): Promise<void> {
   if (role === Role.ADMIN || role === Role.OWNER) return;
+  // R353 E2: academic leadership (عميد/وكيل كلية/رئيس قسم —
+  // TeacherProfile.position + positionFacultyId/positionDepartmentId)
+  // gets OVERSIGHT READ of offerings inside their appointment scope.
+  // The appointment columns are optional; a position without a scope is
+  // a label only (conservative: no extra access).
+  let leadershipScope: { facultyId: string | null; departmentId: string | null } | null = null;
+  if (role === Role.TEACHER) {
+    const profile = await prisma.teacherProfile.findFirst({
+      where: {
+        userId,
+        ...(institutionId ? { membership: { institutionId } } : {}),
+      },
+      select: { position: true, positionFacultyId: true, positionDepartmentId: true },
+    });
+    if (profile?.position === 'DEAN' || profile?.position === 'ASSOCIATE_DEAN') {
+      leadershipScope = { facultyId: profile.positionFacultyId, departmentId: null };
+    } else if (profile?.position === 'DEPARTMENT_HEAD') {
+      leadershipScope = { facultyId: null, departmentId: profile.positionDepartmentId };
+    }
+  }
   // Only teacherId + the caller's ACTIVE enrollment existence feed the
   // decision — fetch exactly that, filtered server-side by status.
+  // (plus the department/faculty chain when a leadership check is needed)
   const offering = await prisma.courseOffering.findUnique({
     where: { id: offeringId },
     select: {
       teacherId: true,
       enrollments: { where: { studentId: userId, status: 'active' }, take: 1, select: { id: true } },
+      ...(leadershipScope
+        ? { course: { select: { department: { select: { id: true, facultyId: true } } } } }
+        : {}),
     },
   });
+  if (offering && leadershipScope) {
+    const dept = (offering as { course?: { department?: { id: string; facultyId: string } } }).course?.department;
+    if (dept) {
+      if (leadershipScope.facultyId && dept.facultyId === leadershipScope.facultyId) return;
+      if (leadershipScope.departmentId && dept.id === leadershipScope.departmentId) return;
+    }
+  }
   const decision = decideOfferingAccess(role, {
     exists: offering !== null,
     taughtBy: offering?.teacherId === userId,

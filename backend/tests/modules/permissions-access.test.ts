@@ -21,6 +21,12 @@ vi.mock('../../src/db.js', () => ({
     courseOffering: {
       findUnique: vi.fn(),
     },
+    /* R353 E2 — the leadership-scope lookup inside assertOfferingAccess
+     * (dean/vice-dean/head oversight). Default: no profile (a plain
+     * teacher) — leadership cases set mockResolvedValue explicitly. */
+    teacherProfile: {
+      findFirst: vi.fn().mockResolvedValue(null),
+    },
   },
 }));
 
@@ -91,6 +97,63 @@ describe('assertOfferingAccess — DB-bound wrapper (mocked prisma)', () => {
   it('OWNER bypasses the check without querying the DB', async () => {
     await assertOfferingAccess('offering-1', 'user-1', Role.OWNER);
     expect(findUnique).not.toHaveBeenCalled();
+  });
+
+  it('R353 E2 — a DEAN reads offerings inside their appointed faculty (leadership oversight)', async () => {
+    vi.mocked(prisma.teacherProfile.findFirst).mockResolvedValueOnce({
+      position: 'DEAN',
+      positionFacultyId: 'fac-1',
+      positionDepartmentId: null,
+    } as never);
+    findUnique.mockResolvedValue({
+      ...offeringRow('someone-else'),
+      course: { department: { id: 'dept-1', facultyId: 'fac-1' } },
+    });
+    await expect(
+      assertOfferingAccess('offering-1', 'dean-1', Role.TEACHER),
+    ).resolves.toBeUndefined();
+  });
+
+  it('R353 E2 — a DEAN of ANOTHER faculty is refused (the appointment scopes the read)', async () => {
+    vi.mocked(prisma.teacherProfile.findFirst).mockResolvedValueOnce({
+      position: 'DEAN',
+      positionFacultyId: 'fac-OTHER',
+      positionDepartmentId: null,
+    } as never);
+    findUnique.mockResolvedValue({
+      ...offeringRow('teacher-1'),
+      course: { department: { id: 'dept-1', facultyId: 'fac-1' } },
+    });
+    await expect(
+      assertOfferingAccess('offering-1', 'dean-1', Role.TEACHER),
+    ).rejects.toMatchObject({ status: 403, code: 'FORBIDDEN' });
+  });
+
+  it('R353 E2 — a DEPARTMENT_HEAD reads offerings in their department only', async () => {
+    vi.mocked(prisma.teacherProfile.findFirst).mockResolvedValueOnce({
+      position: 'DEPARTMENT_HEAD',
+      positionFacultyId: null,
+      positionDepartmentId: 'dept-1',
+    } as never);
+    findUnique.mockResolvedValue({
+      ...offeringRow('someone-else'),
+      course: { department: { id: 'dept-1', facultyId: 'fac-1' } },
+    });
+    await expect(
+      assertOfferingAccess('offering-1', 'head-1', Role.TEACHER),
+    ).resolves.toBeUndefined();
+  });
+
+  it('R353 E2 — a position WITHOUT a scope is a label only (no extra access)', async () => {
+    vi.mocked(prisma.teacherProfile.findFirst).mockResolvedValueOnce({
+      position: 'DEAN',
+      positionFacultyId: null,
+      positionDepartmentId: null,
+    } as never);
+    findUnique.mockResolvedValue(offeringRow('teacher-1'));
+    await expect(
+      assertOfferingAccess('offering-1', 'scopeless-dean', Role.TEACHER),
+    ).rejects.toMatchObject({ status: 403, code: 'FORBIDDEN' });
   });
 
   it("resolves for the TEACHER who teaches the offering", async () => {

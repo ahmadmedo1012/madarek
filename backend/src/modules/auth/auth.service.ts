@@ -143,6 +143,9 @@ export const sanitizeUser = (u: User) => ({
   avatarColor: u.avatarColor,
   avatarInitials: u.avatarInitials,
   scopeFacultyId: u.scopeFacultyId ?? null,
+  // R353 E2 — the Libyan staff office (docs/ROLES-LIBYA.md), so clients
+  // can label seats exactly (مسجل عام/مسجل كلية/مراقب امتحانات/جودة).
+  staffRole: u.staffRole ?? null,
   // 012-design-graphics-uplift — presentation preferences (no PII).
   themePreference: u.themePreference,
   themePreferenceUpdatedAt: u.themePreferenceUpdatedAt,

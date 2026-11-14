@@ -16,8 +16,8 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { Role } from '@prisma/client';
-import { ROLE_LABELS, roleLabel, ROLE_LABEL_INDEFINITE, ROLE_LABEL_PLURAL_OBLIQUE } from '../roleLabels.js';
+import { Role, StaffRole } from '@prisma/client';
+import { ROLE_LABELS, roleLabel, ROLE_LABEL_INDEFINITE, ROLE_LABEL_PLURAL_OBLIQUE, STAFF_ROLE_LABELS } from '../roleLabels.js';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 const frontendTwinPath = path.join(
@@ -71,6 +71,24 @@ describe('R320 §B — the frontend/backend roleLabels twins match', () => {
 
   it('the frontend twin was found and parses to five entries', () => {
     expect(frontendMap.size).toBe(5);
+  });
+
+  it('R353 E2 — the STAFF_ROLE_LABELS twins match (the four Libyan offices)', () => {
+    /* The frontend staff map lives in auth.store.ts (not roleLabels.ts)
+     * — extract it from source the same way. */
+    const storeSource = readFileSync(
+      path.join(repoRoot, 'frontend', 'src', 'stores', 'auth.store.ts'),
+      'utf8',
+    );
+    const frontendStaff = extractMap(storeSource, 'STAFF_ROLE_LABELS');
+    const backendStaff = extractMap(backendSource, 'STAFF_ROLE_LABELS');
+    expect(frontendStaff.size).toBe(4);
+    expect(backendStaff.size).toBe(4);
+    for (const [k, v] of backendStaff) {
+      expect(frontendStaff.get(k), `staff label ${k}`).toBe(v);
+    }
+    expect(backendStaff.get('EXAMS_CONTROLLER')).toBe('مراقب الامتحانات');
+    expect(backendStaff.get('QUALITY_OFFICER')).toBe('موظف الجودة');
   });
 
   it('same keys, same Arabic values — the two maps cannot drift', () => {

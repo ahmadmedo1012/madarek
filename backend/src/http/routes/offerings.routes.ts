@@ -133,7 +133,7 @@ router.get(
 router.get('/:id', async (req, res, next) => {
   try {
     const id = req.params.id!;
-    await assertOfferingAccess(id, req.user!.id, req.user!.role);
+    await assertOfferingAccess(id, req.user!.id, req.user!.role, req.user!.institutionId);
     // r179 (phase-5): the ADMIN/QUALITY ownership bypass is
     // institution-pinned (404 for a foreign offering).
     await assertOfferingInCallerInstitution(id, req.user!, 'read');
@@ -287,7 +287,7 @@ export function serializeMaterial<T extends { sizeBytes: bigint }>(
 
 router.get('/:id/materials', async (req, res, next) => {
   try {
-    await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+    await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role, req.user!.institutionId);
     // r179 (phase-5): the oversight bypass is institution-pinned.
     await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'read');
     // Bounded read (audit P2-18): newest materials first, capped well
@@ -327,7 +327,7 @@ router.post(
   validate(materialCreateSchema),
   async (req, res, next) => {
     try {
-      await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+      await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role, req.user!.institutionId);
       // r179 (phase-5): the oversight bypass is institution-pinned
       // (write mode — 403 for a foreign offering).
       await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'write');
@@ -417,7 +417,7 @@ router.post(
         req.user!.role,
         req.user!.institutionId,
       );
-      await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
+      await assertOfferingAccess(offeringId, req.user!.id, req.user!.role, req.user!.institutionId);
       const body = req.body;
       if (!Buffer.isBuffer(body)) {
         throw AppError.badRequest('أرسل ملف PDF واحدًا بترميز application/pdf');
@@ -471,7 +471,7 @@ router.post(
 // ─── Assignments ───
 router.get('/:id/assignments', async (req, res, next) => {
   try {
-    await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+    await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role, req.user!.institutionId);
     // r179 (phase-5): the oversight bypass is institution-pinned.
     await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'read');
     // Bounded read (audit P2-18): soonest-due first, capped well above
@@ -504,7 +504,7 @@ router.post(
   validate(assignmentCreateSchema),
   async (req, res, next) => {
     try {
-      await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+      await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role, req.user!.institutionId);
       // r179 (phase-5): the oversight bypass is institution-pinned
       // (write mode).
       await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'write');
@@ -539,7 +539,7 @@ router.post(
 // ─── Grades ───
 router.get('/:id/grades', async (req, res, next) => {
   try {
-    await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+    await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role, req.user!.institutionId);
     // r179 (phase-5): the oversight bypass is institution-pinned.
     await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'read');
     const where = {
@@ -610,7 +610,7 @@ router.post(
   async (req, res, next) => {
     try {
       const offeringId = req.params.id!;
-      await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
+      await assertOfferingAccess(offeringId, req.user!.id, req.user!.role, req.user!.institutionId);
       // r179 (phase-5): the oversight bypass is institution-pinned
       // (write mode).
       await assertOfferingInCallerInstitution(offeringId, req.user!, 'write');
@@ -661,7 +661,7 @@ router.post(
 // both normalize their day keys through lib/dates.ts.
 router.get('/:id/attendance', async (req, res, next) => {
   try {
-    await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+    await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role, req.user!.institutionId);
     // r179 (phase-5): the oversight bypass is institution-pinned.
     await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'read');
     // Bounded reads (audit P2-18): sessions newest-first (a term holds

@@ -232,7 +232,7 @@ describe('AuthPage — journey alignment (imm-5)', () => {
      * this pin keeps the form-integrity half here (fill only, never
      * submit). */
     const fillButtons = screen.getAllByRole('button', { name: /^تعبئة حساب / });
-    expect(fillButtons).toHaveLength(10);
+    expect(fillButtons).toHaveLength(11); /* R353 E2: + مراقب الامتحانات */
     for (const b of fillButtons) {
       expect(b).toHaveClass('auth-demo-fill');
     }
@@ -259,9 +259,9 @@ describe('AuthPage — journey alignment (imm-5)', () => {
   it('R321 §A8 — the demo hint panel starts OPEN in development (dismiss → reopen chip)', () => {
     renderPage();
 
-    // The owner's one-tap-per-job rule: all 10 jobs visible on load.
+    // The owner's one-tap-per-job rule: all 11 jobs visible on load.
     expect(screen.getByText('حسابات تجريبية — بيئة التطوير')).toBeInTheDocument();
-    expect(screen.getAllByRole('button', { name: /^تعبئة حساب / })).toHaveLength(10);
+    expect(screen.getAllByRole('button', { name: /^تعبئة حساب / })).toHaveLength(11);
 
     // Dismissible — the quiet reopen chip returns after a dismiss.
     fireEvent.click(screen.getByRole('button', { name: 'إخفاء لوحة الحسابات التجريبية' }));

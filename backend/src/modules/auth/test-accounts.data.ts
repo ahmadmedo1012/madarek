@@ -54,6 +54,9 @@ export interface TestAccount {
   position?: TestAccountPosition;
   /** ADMIN accounts scoped to one faculty (scopeFacultyId) instead of university-wide. */
   scoped?: true;
+  /** R353 E2 — the Libyan staff office (docs/ROLES-LIBYA.md): registrar
+   *  general / college registrar / exams controller / quality officer. */
+  staffRole?: 'REGISTRAR_GENERAL' | 'COLLEGE_REGISTRAR' | 'EXAMS_CONTROLLER' | 'QUALITY_OFFICER';
   group: TestAccountGroup;
   note?: string;
 }
@@ -99,17 +102,42 @@ export const TEST_ACCOUNTS: readonly TestAccount[] = [
     position: 'ASSOCIATE_DEAN',
     group: 'التعليم',
   },
-  { job: 'المسجل العام', email: 'registrar@test.ly', password: TEST_PASSWORD, role: 'ADMIN', group: 'الحوكمة' },
+  {
+    job: 'المسجل العام',
+    email: 'registrar@test.ly',
+    password: TEST_PASSWORD,
+    role: 'ADMIN',
+    staffRole: 'REGISTRAR_GENERAL',
+    group: 'الحوكمة',
+  },
   {
     job: 'مسجل كلية (نطاق كلية)',
     email: 'faculty@test.ly',
     password: TEST_PASSWORD,
     role: 'ADMIN',
     scoped: true,
+    staffRole: 'COLLEGE_REGISTRAR',
     group: 'الحوكمة',
     note: 'ADMIN محصور بنطاق الكلية عبر scopeFacultyId',
   },
-  { job: 'أخصائي جودة', email: 'quality@test.ly', password: TEST_PASSWORD, role: 'QUALITY', group: 'الحوكمة' },
+  {
+    job: 'مراقب الامتحانات',
+    email: 'exams@test.ly',
+    password: TEST_PASSWORD,
+    role: 'QUALITY',
+    staffRole: 'EXAMS_CONTROLLER',
+    group: 'الحوكمة',
+    note: 'قسم الدراسة والامتحانات — يملك اعتماد نماذج الامتحانات (EXAMS_MODERATE)',
+  },
+  {
+    job: 'موظف جودة',
+    email: 'quality@test.ly',
+    password: TEST_PASSWORD,
+    role: 'QUALITY',
+    staffRole: 'QUALITY_OFFICER',
+    group: 'الحوكمة',
+    note: 'مكتب الجودة — رقابة وتقارير دون اعتماد الامتحانات',
+  },
   { job: 'مالك المنصة', email: 'owner@test.ly', password: TEST_PASSWORD, role: 'OWNER', group: 'النظام' },
 ];
 

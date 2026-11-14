@@ -20,7 +20,7 @@ import { useOnboardingStore } from '../../stores/onboarding.store';
 import { useUiStore } from '../../stores/ui.store';
 import { acquireScrollLock, releaseScrollLock } from '../../lib/scrollLock';
 import { overlayStack } from '../../lib/overlayStack';
-import { NAV_BY_ROLE, displayRoleLabel, type NavGroup } from '../../lib/nav';
+import { NAV_BY_ROLE, displayRoleLabel, filterNavForStaffRole, type NavGroup } from '../../lib/nav';
 
 export function Sidebar() {
   const user = useAuthStore((s) => s.user);
@@ -233,13 +233,13 @@ export function Sidebar() {
   }, [toggleSidebarCollapsed]);
 
   if (!user) return null;
-  const groups = NAV_BY_ROLE[user.role];
+  const groups = filterNavForStaffRole(NAV_BY_ROLE[user.role], user.staffRole);
   const initials = user.avatarInitials ?? `${user.firstName[0] ?? ''}${user.lastName[0] ?? ''}`;
 
   // Composite role label that surfaces leadership appointments inline.
   const position = me.data?.teacherProfile?.position ?? null;
   const positionFacultyName = me.data?.teacherProfile?.positionFaculty?.name ?? null;
-  const roleLabel = displayRoleLabel(user.role, position, positionFacultyName);
+  const roleLabel = displayRoleLabel(user.role, position, positionFacultyName, user.staffRole);
 
   const cls = [
     'sidebar',
