@@ -283,10 +283,10 @@ export default function TeacherDashboard() {
                   {latn(g.count)}
                 </T>
                 <View style={{ flex: 1 }}>
-                  <T variant="body" weight="medium" numberOfLines={1}>
+                  <T variant="body" weight="medium" numberOfLines={1} maxFontSizeMultiplier={1.3}>
                     {g.title}
                   </T>
-                  <T variant="xs" color="muted" numberOfLines={1}>
+                  <T variant="xs" color="muted" numberOfLines={1} maxFontSizeMultiplier={1.5}>
                     {g.courseName}
                     {g.oldestSubmittedAt ? ` · أقدم تسليم ${fromNow(g.oldestSubmittedAt)}` : ""}
                   </T>
@@ -371,10 +371,10 @@ export default function TeacherDashboard() {
                     tone={phase === "ongoing" ? "rose" : phase === "done" ? "grey" : "sky"}
                   />
                 </View>
-                <T variant="body" weight="medium" numberOfLines={1}>
+                <T variant="body" weight="medium" numberOfLines={1} maxFontSizeMultiplier={1.3}>
                   {s.courseName}
                 </T>
-                <T variant="xs" color="muted" numberOfLines={1}>
+                <T variant="xs" color="muted" numberOfLines={1} maxFontSizeMultiplier={1.5}>
                   {s.room ? `${s.room} · ` : ""}
                   {s.courseCode}
                 </T>
@@ -467,13 +467,13 @@ export default function TeacherDashboard() {
                   <View style={{ flex: 1 }}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
                       <View style={{ flex: 1 }}>
-                        <T variant="body" weight="medium" numberOfLines={2}>
+                        <T variant="body" weight="medium" numberOfLines={2} maxFontSizeMultiplier={1.5}>
                           {f.title ?? f.text ?? "—"}
                         </T>
                       </View>
                       {f.late ? <Badge label="متأخر" tone="yellow" /> : null}
                     </View>
-                    <T variant="xs" color="muted" numberOfLines={1}>
+                    <T variant="xs" color="muted" numberOfLines={1} maxFontSizeMultiplier={1.5}>
                       {author} · {fromNow(f.when)}
                     </T>
                   </View>
@@ -507,7 +507,7 @@ export default function TeacherDashboard() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                 <ClipboardCheck size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
-                  <T variant="body" weight="medium" numberOfLines={1}>
+                  <T variant="body" weight="medium" numberOfLines={1} maxFontSizeMultiplier={1.3}>
                     {o.course.name}
                   </T>
                   <T variant="xs" color="muted">
