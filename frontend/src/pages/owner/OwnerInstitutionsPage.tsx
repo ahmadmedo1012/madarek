@@ -110,7 +110,7 @@ function CreateInstitutionCard({
   return (
     <Card
       title="إنشاء مؤسسة جديدة"
-      subtitle="أضف مؤسسة تعليمية إلى المنصّة — تُنشأ نشطة ويمكن تعيين مسجلها العام بعد ذلك."
+      subtitle="تُنشأ نشطة — ويعيَّن مسجلها العام بعد ذلك."
       icon={Plus}
     >
       <form
@@ -466,8 +466,8 @@ export function OwnerInstitutionsPage() {
       title: suspending ? 'تعليق المؤسسة' : 'تنشيط المؤسسة',
       confirmLabel: suspending ? 'تعليق المؤسسة' : 'تنشيط المؤسسة',
       message: suspending
-        ? `هل تريد تعليق «${institution.name}»؟ لن يتمكّن أعضاؤها من الوصول إلى سياق المؤسسة حتى تُنشَّط مجددًا.`
-        : `هل تريد إعادة تنشيط «${institution.name}»؟ سيستعيد أعضاؤها النشطون وصولهم.`,
+        ? `لن يتمكّن أعضاؤها من الوصول إلى سياق المؤسسة حتى تُنشَّط مجددًا.`
+        : `سيستعيد الأعضاء النشطون وصولهم.`,
       danger: suspending,
       onConfirm: async () => {
         setConfirmOpen(false);
@@ -525,7 +525,7 @@ export function OwnerInstitutionsPage() {
     setConfirmConfig({
       title: 'إلغاء عضوية المسجل العام',
       confirmLabel: 'إلغاء العضوية',
-      message: `هل تريد إلغاء عضوية «${admin.firstName} ${admin.lastName}» في «${institution.name}»؟ سيفقد وصوله إلى سياق هذه المؤسسة فورًا.`,
+      message: `سيفقد وصوله إلى سياق هذه المؤسسة فورًا.`,
       danger: true,
       onConfirm: async () => {
         setConfirmOpen(false);

@@ -195,7 +195,7 @@ function OwnerActionStrip({ alerts }: { alerts: OperationalAlert[] }) {
       tone: 'brand',
       icon: GraduationCap,
       title: 'أساتذة بلا حصص تدريس هذا الفصل',
-      desc: `${countAr(idle, IDLE_TEACHER_FORMS)} لم تُسند إليهم مقرّرات — راجع أعباء التدريس من لوحة التعليم`,
+      desc: `${countAr(idle, IDLE_TEACHER_FORMS)} لم تُسند إليهم مقرّرات — راجع أعباء التدريس`,
       to: '/owner/education',
       hint: 'فتح لوحة التعليم',
     });
