@@ -383,3 +383,24 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
   verify.sh --fast PASS.
 - Next (I-P4): the mapping presets (generic-university,
   generic-school, ghweil stub unverified); then F2 the wizard.
+
+### LANE I — I-P4 the mapping presets (this commit)
+- src/lib/import/presets.ts — the §I2 preset framework: generic-university
+  (verified), generic-school (verified), ghweil-school (UNVERIFIED stub —
+  honest Arabic note «قالب غير موثّق…أرسل عينة مجهولة الهوية», least
+  requiredness: nameAr only). Tolerant on the HEADER side (fold-equality:
+  «اسم الطالب» places where the template said «الاسم الكامل»), strict on
+  the TARGET side (unknown vocabulary never places); rule order is
+  priority order (first-wins collisions — deterministic).
+- Routes: GET /import/presets (the three, ghweil marked unverified +
+  note + rules); POST /import/parse now carries presetSuggestions
+  (per-preset required-target coverage, best-first, verified-breaks-ties)
+  — the wizard's one-tap starting points; unverified presets never
+  auto-apply.
+- mapping.ts exports KNOWN_IMPORT_TARGETS for the engine.
+- Pinned: tests/modules/import-presets.test.ts — 7 (header tolerance,
+  target strictness, coverage separation uni/school, the ghweil honesty,
+  profile serialisation, the 2 routes).
+- Gates: backend tsc 0/0 · vitest 2278 green (19 skipped).
+- Next: F2 — the 5-step web wizard (رفع → مطابقة → مراجعة → تأكيد →
+  نتيجة) + the teacher «إرفاق طلاب بهذا المقرر» entry.

@@ -41,6 +41,11 @@ import {
 } from '../../lib/import/mapping.js';
 import { validateRows, IMPORT_MAX_ROWS, type ImportEntity } from '../../lib/import/validate.js';
 import { buildImportTemplate, buildImportReport } from '../../lib/import/templates.js';
+// R350 I-P4 — the mapping presets (generic-university, generic-school,
+// the unverified ghweil stub) + their coverage scoring.
+import { IMPORT_PRESETS, presetCoverage } from '../../lib/import/presets.js';
+import { KNOWN_IMPORT_TARGETS } from '../../lib/import/mapping.js';
+import { normalizeArabicSearch } from '../../modules/search/normalize.js';
 // R350 I-P0 — faculty/department NAME resolution (exact → normalised →
 // suggestion; never a silent fall-back-to-the-first-faculty).
 import { resolveOrgName, orgResolutionErrorAr } from '../../lib/import/resolve.js';
@@ -170,6 +175,19 @@ router.post(
       }
       const { metas } = await customFields(instId, entity);
       const map = buildColumnMap(grid.headers, metas);
+      /* R350 I-P4 — per-preset required-target coverage, best first: the
+       * wizard's one-tap starting points. Unverified presets (ghweil)
+       * carry their honest note and NEVER auto-apply — the registrar
+       * picks them explicitly. */
+      const customKeys = new Set(metas.map((m) => m.key));
+      const presetSuggestions = IMPORT_PRESETS
+        .map((p) => ({
+          ...presetCoverage(p, grid.headers, normalizeArabicSearch, KNOWN_IMPORT_TARGETS, customKeys),
+          labelAr: p.labelAr,
+          verified: p.verified,
+          ...(p.noteAr ? { noteAr: p.noteAr } : {}),
+        }))
+        .sort((a, b) => b.coverage - a.coverage || Number(b.verified) - Number(a.verified));
       res.json({
         data: {
           format: detectFormat(buf),
@@ -181,6 +199,7 @@ router.post(
           detectedLanguage: map.detectedLanguage,
           suggestedMap: toMappingProfile(map),
           unknownColumns: map.unknownColumns,
+          presetSuggestions,
         },
       });
     } catch (e) {
@@ -969,6 +988,23 @@ router.get(
     }
   },
 );
+
+/* ── GET /import/presets — the named mapping presets (I-P4) ──────── */
+
+router.get('/presets', requireRole(Role.ADMIN, Role.OWNER), (_req, res) => {
+  res.json({
+    data: IMPORT_PRESETS.map((p) => ({
+      id: p.id,
+      labelAr: p.labelAr,
+      entity: p.entity,
+      shape: p.shape,
+      verified: p.verified,
+      ...(p.noteAr ? { noteAr: p.noteAr } : {}),
+      requiredTargets: p.requiredTargets,
+      rules: p.rules.map((r) => ({ target: r.target, aliases: r.aliases })),
+    })),
+  });
+});
 
 /* ── mapping profiles — save + list reusable mappings ────────────── */
 

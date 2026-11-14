@@ -278,6 +278,15 @@ const KNOWN_TARGETS = new Set<string>([
   'unknown',
 ]);
 
+/** R350 I-P4 — the canonical target vocabulary, public for the preset
+ *  engine (a preset target outside this set degrades to unknown). */
+export const KNOWN_IMPORT_TARGETS: ReadonlySet<string> = KNOWN_TARGETS;
+
+/** R350 I-P4 — membership check convenience. */
+export function isKnownImportTarget(target: string): boolean {
+  return KNOWN_TARGETS.has(target);
+}
+
 /**
  * Replay a saved MappingProfile against a (possibly new) header row:
  * each profile column re-finds its source header by fold-equality, and
