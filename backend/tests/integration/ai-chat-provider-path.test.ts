@@ -326,7 +326,10 @@ describe('POST /api/v1/ai/chat — the REAL-PROVIDER path against a real databas
       body: JSON.stringify({ message: 'سؤال' }),
     });
     const system = (wireCalls[0]!.body as { messages: Array<{ role: string; content: string }> }).messages[0]!.content;
-    const masteryLineCount = (system.match(/مفهوم \d+ r176b/g) ?? []).length;
+    // R352 A/G2: the activity block's summary may NAME the weakest
+    // concept («أبرز فجوة: …») — the count must anchor on the mastery
+    // BLOCK's line shape (a leading dash), not on any mention.
+    const masteryLineCount = (system.match(/^- مفهوم \d+ r176b /gm) ?? []).length;
     expect(masteryLineCount).toBe(25);
     // Worst-first: the weakest row (0.05 → 5%) is present…
     expect(system).toContain('مفهوم 0 r176b');

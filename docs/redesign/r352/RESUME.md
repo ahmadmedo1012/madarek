@@ -164,7 +164,19 @@ failing deploy destroyed its own evidence channel).
 → e8cab95e: db:diagnostics moved BEFORE db:deploy + the ledger query
 now lists every row BY NAME; the r352-db-diagnostics dispatch (flag
 in → deploy → flag out → extract) reads it from the build log even
-while the deploy fails. Next: dispatch, read the ledger, repair.
+while the deploy fails.
+→ CONVICTION #1 (run 43627634973, 18:43Z, the c7ec5f12 build):
+  'Cannot find module /vercel/path0/backend/scripts/db-diagnostics.mjs'
+  — .vercelignore ignores backend/scripts/* and re-included ONLY
+  migrate-deploy.mjs; storage-to-blob.mjs and db-diagnostics.mjs
+  never reached the remote build (03e56015 re-includes both).
+  The diagnostics dispatch itself worked end to end: flag PATCH
+  200 in/out, GH_REPO fixed, the fallback found the deploy run, the
+  log fetched (448 lines) — only the module was missing.
+→ STILL OPEN: the 18:20 prisma silent exit (that build ran BEFORE
+  db:diagnostics in the chain; with the scripts now shipped, the
+  next deploy shows db:deploy's true behavior — if it still exits
+  silently, the flag=1 diagnostics run reads the ledger by name).
 
 ### K3 latency (AFTER the fra1 flip — measured 2026-11-14 ~17:5xZ, this session)
 
@@ -240,6 +252,33 @@ Repo now: main + gh-pages only.
   log ([storage-to-blob] lines) — blocked on the K1-regression above
   (db:deploy exits 1 before storage:blob runs).
 
+## A/G2 — the StudentContextPack (DONE this session)
+
+The AI agent's student model (owner req #4 — «مساعد أذكى يفهم محتوى
+وتقدّم كل طالب»): the prompt previously saw only mastery levels +
+enrollment titles. Now (03e56015):
+
+- modules/ai/context-pack.ts — the deterministic pack: stopped-
+  lecture pct + days-since-seen, checkpoint mistakes per lecture
+  (never a fabricated denominator — total mirrors wrong), grade
+  trends pct-normalized with ±10-pt direction, attendance
+  (EXCUSED never a truancy signal), assignment+exam deadlines
+  merged soonest-first. Institution-scoped (the academic chain),
+  projection-only, bounded (take caps + the 18-line prompt budget),
+  deterministic ar tie-breaks, best-effort (a pack failure never
+  fails a chat turn).
+- buildStudentSystemPrompt gained the optional activity block
+  inside <platform_data> (additive — the injection-hardening canon
+  untouched); both call sites (JSON + SSE) wired; the TTL cache
+  (10 min) + never-throw invalidation hooks at the three write
+  surfaces (watch, checkpoint answers STUDENT-only, grading).
+- 18 pins + the ai-provider source pin updated; backend suite
+  2381 green (19 skipped).
+
+Remaining in the A lane (next sessions): G1 eval baseline (≥120
+Arabic Q&A), G3 semantic retrieval (pgvector), G4 provider chain,
+G5 behaviours (quiz-me, planner, teacher view), G7 UI polish.
+
 ## Commits this round
 
 | sha | what |
@@ -260,6 +299,7 @@ Repo now: main + gh-pages only.
 | 8e108508 | fix(r352-K5): the migration test typechecks — a .d.mts + typed collaborators — this session (CI red on 4c8f5bf9 fixed) |
 | 86be12c2 | feat(r352-K1/T): the DB diagnostics channel — through the remote build log — this session |
 | e8cab95e | fix(r352-K1): db:diagnostics BEFORE db:deploy + the ledger by name — this session |
+| 03e56015 | feat(r352-A/G2): the StudentContextPack + the .vercelignore fix that unblocked the deploys — this session |
 
 ## Session 2026-11-14 ~17:40Z onward (continuation after the box reset)
 
