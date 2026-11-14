@@ -15,7 +15,9 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: read
+  # The plumbing push to gh-pages needs write; nothing else in this
+  # workflow touches the repo.
+  contents: write
 
 jobs:
   mirror:
