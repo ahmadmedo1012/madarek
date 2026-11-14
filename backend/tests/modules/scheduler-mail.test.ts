@@ -6,7 +6,7 @@
  *    enrolled users get their week's items, the ISO-week dedupe key;
  *  · never-throw wrappers (overlap + error) per the retention contract.
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../../src/db.js', () => {
   const p: Record<string, unknown> = {
@@ -127,12 +127,11 @@ describe('R350 E3 — the weekly digest', () => {
 
     const r = await sendWeeklyDigests(NOW);
     expect(r).toEqual({ users: 2, queued: 1 });
-    const create = mocked.mailOutbox.create.mock.calls[0]![0] as { data: { dedupeKey: string; template: string } };
+    const create = mocked.mailOutbox.create.mock.calls[0]![0] as { data: { dedupeKey: string; template: string; html: string } };
     expect(create.data.template).toBe('weekly-digest');
     expect(create.data.dedupeKey).toBe(`digest:u1:${isoWeekStamp(NOW)}`);
-    const html = (create.data as { html: string }).html;
-    expect(html).toContain('بحوث الفصل');
-    expect(html).toContain('اختبار المنتصف');
+    expect(create.data.html).toContain('بحوث الفصل');
+    expect(create.data.html).toContain('اختبار المنتصف');
   });
 
   it('isoWeekStamp is stable per ISO week', () => {

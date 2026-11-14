@@ -14,7 +14,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../../src/db.js', () => {
   const p: Record<string, unknown> = {
-    user: { findUnique: vi.fn(), update: vi.fn() },
+    user: { findUnique: vi.fn(), findMany: vi.fn(), update: vi.fn() },
     emailVerificationToken: { findUnique: vi.fn(), updateMany: vi.fn(), create: vi.fn() },
     notificationPreference: { findUnique: vi.fn() },
     loginEvent: { findFirst: vi.fn() },
@@ -29,7 +29,7 @@ import { mintVerificationToken, claimVerificationToken, hashVerifyToken } from '
 import { sendEventMail, renderVerifyEmail, renderWelcome, renderPasswordChanged } from '../../src/lib/mail-events.js';
 
 const mocked = prisma as unknown as {
-  user: { findUnique: ReturnType<typeof vi.fn>; update: ReturnType<typeof vi.fn> };
+  user: { findUnique: ReturnType<typeof vi.fn>; findMany: ReturnType<typeof vi.fn>; update: ReturnType<typeof vi.fn> };
   emailVerificationToken: { findUnique: ReturnType<typeof vi.fn>; updateMany: ReturnType<typeof vi.fn>; create: ReturnType<typeof vi.fn> };
   notificationPreference: { findUnique: ReturnType<typeof vi.fn> };
   mailOutbox: { create: ReturnType<typeof vi.fn> };
