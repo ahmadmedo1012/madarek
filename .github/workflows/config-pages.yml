@@ -33,12 +33,14 @@ jobs:
           set -euo pipefail
           git config user.name "madarek-ci"
           git config user.email "ci@madarek.ly"
+          # Stage the config OUTSIDE the tree first: `git switch --orphan`
+          # clears every tracked file from the working tree.
+          cp -r frontend/public/config /tmp/madarek-config
           # A clean orphan branch carries ONLY config/ — no history, no
           # source, nothing else from the repo ever reaches Pages.
           git switch --orphan gh-pages-fresh
           mkdir -p config
-          cp -r frontend/public/config/. config/
-          rm -rf frontend
+          cp -r /tmp/madarek-config/. config/
           git add config
           git commit -m "config: mirror frontend/public/config from main@${GITHUB_SHA::8}"
           git push origin HEAD:gh-pages --force
