@@ -5,8 +5,11 @@
 >
 > R351 X4 — the hosting cutover: **web + API run on Vercel**
 > (https://madarek-nine.vercel.app — static SPA on the CDN + the Express
-> app as one Fluid function in iad1, co-located with the Neon primary in
-> us-east-1; deploys from `.github/workflows/deploy-vercel.yml` after CI
+> app as one Fluid function in fra1, co-located with the Neon primary in
+> eu-central-1 (R352 K3: the r351 claim of iad1+us-east-1 was WRONG — the
+> live evidence: warm dbLatencyMs 93 ms = the iad1↔fra RTT, and the
+> production DATABASE_URL resolves to ep-icy-mode…c-7.eu-central-1/spike_r351;
+> deploys from `.github/workflows/deploy-vercel.yml` after CI
 > green; `/config/app.json` carries the ordered `apiOrigins` the apps
 > read at launch). **Render is the 14-day suspended standby** — resume
 > from the dashboard if the rollback is ever needed (the reverse flip is
