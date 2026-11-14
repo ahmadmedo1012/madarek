@@ -4,10 +4,11 @@ import Fingerprint from "lucide-react-native/icons/fingerprint-pattern";
 import Flag from "lucide-react-native/icons/flag";
 import Hash from "lucide-react-native/icons/hash";
 import Moon from "lucide-react-native/icons/moon";
+import Mail from "lucide-react-native/icons/mail";
 import Vibrate from "lucide-react-native/icons/vibrate";
 import { router } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { apiWithCookieCapture, ApiError, put } from "@/api/client";
+import { apiWithCookieCapture, ApiError, get, put } from "@/api/client";
 import { useSession, ROLE_LABELS, POSITION_LABELS, RANK_LABELS } from "@/auth/session";
 import { setThemePreference, usePalette, useThemePreference, type ThemePreference } from "@/design/theme";
 import { unregisterPushDevices } from "@/lib/push";
@@ -87,6 +88,44 @@ export default function Settings() {
       );
     } finally {
       setBioBusy(false);
+    }
+  };
+
+  /* R350 E6 — «إعدادات البريد»: the notification-preference toggles
+   * (the E3 law, on its user seat): security/account are ESSENTIAL
+   * (shown read-only, never toggleable — a password reset must always
+   * arrive); courses/announcements/digest are the user's call. */
+  const [mailPrefs, setMailPrefs] = useState<
+    Array<{ category: string; emailEnabled: boolean; essential: boolean }>
+  >([]);
+  const [mailPrefsBusy, setMailPrefsBusy] = useState<string | null>(null);
+  useEffect(() => {
+    get<Array<{ category: string; emailEnabled: boolean; essential: boolean }>>(
+      "/me/notification-preferences",
+    )
+      // The poisoned-net law: a hostile API answer (null/undefined/shape)
+      // degrades to "no toggles" — never a crash on .length.
+      .then((rows) => setMailPrefs(Array.isArray(rows) ? rows : []))
+      .catch(() => setMailPrefs([])); // offline — the toggles just stay hidden
+  }, []);
+  const toggleMailPref = async (category: string, next: boolean) => {
+    setMailPrefsBusy(category);
+    try {
+      const row = await put<{ category: string; emailEnabled: boolean }>(
+        "/me/notification-preferences",
+        { category, emailEnabled: next },
+      );
+      setMailPrefs((rows) =>
+        rows.map((r) => (r.category === row.category ? { ...r, emailEnabled: row.emailEnabled } : r)),
+      );
+      toast.success(
+        next ? "ستصلك رسائل هذه الفئة على بريدك." : "أوقفت رسائل هذه الفئة.",
+        "البريد",
+      );
+    } catch (err) {
+      toast.error((err as ApiError).message ?? "تعذّر حفظ التفضيل.", "البريد");
+    } finally {
+      setMailPrefsBusy(null);
     }
   };
 
@@ -203,7 +242,53 @@ export default function Settings() {
         </RowList>
       </View>
 
-      {/* [02] الحساب — الهويّة والحقائق كما تقرؤها الخدمة الآن */}
+      {/* [02] البريد — تفضيلات إشعارات البريد الإلكتروني (E3/E6) */}
+      {mailPrefs.length > 0 ? (
+        <View style={{ gap: sp[8] }}>
+          <GroupHeader index={2} title="البريد" />
+          <RowList>
+            {mailPrefs.map((pref, i) => {
+              const label = MAIL_CATEGORY_LABELS[pref.category] ?? pref.category;
+              const last = i === mailPrefs.length - 1;
+              if (pref.essential) {
+                return (
+                  <LedgerRow key={pref.category} last={last}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+                      <Mail size={20} color={p.textMuted} />
+                      <View style={{ flex: 1 }}>
+                        <T variant="body" weight="medium">{label}</T>
+                        <T variant="xs" color="muted">
+                          ضروري لأمان حسابك — لا يمكن إيقافه.
+                        </T>
+                      </View>
+                      <Badge label="دائمًا" tone="sky" />
+                    </View>
+                  </LedgerRow>
+                );
+              }
+              return (
+                <LedgerRow key={pref.category} last={last}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+                    <Mail size={20} color={p.textMuted} />
+                    <T variant="body" weight="medium" style={{ flex: 1 }}>
+                      {label}
+                    </T>
+                    <Button
+                      label={mailPrefsBusy === pref.category ? "…" : pref.emailEnabled ? "إلغاء" : "تفعيل"}
+                      kind={pref.emailEnabled ? "ghost" : "primary"}
+                      small
+                      disabled={mailPrefsBusy === pref.category}
+                      onPress={() => void toggleMailPref(pref.category, !pref.emailEnabled)}
+                    />
+                  </View>
+                </LedgerRow>
+              );
+            })}
+          </RowList>
+        </View>
+      ) : null}
+
+      {/* [03] الحساب — الهويّة والحقائق كما تقرؤها الخدمة الآن */}
       <View style={{ gap: sp[8] }}>
         <GroupHeader index={2} title="الحساب" />
         <RowList>
@@ -244,9 +329,9 @@ export default function Settings() {
         </RowList>
       </View>
 
-      {/* [03] الأمان — قفل التطبيق وكلمة المرور في مقعد واحد */}
+      {/* [04] الأمان — قفل التطبيق وكلمة المرور في مقعد واحد */}
       <View style={{ gap: sp[8] }}>
-        <GroupHeader index={3} title="الأمان" />
+        <GroupHeader index={4} title="الأمان" />
         <RowList>
           {bioAvail ? (
             <LedgerRow last>
@@ -292,7 +377,7 @@ export default function Settings() {
           admin/quality/owner reach it here). Replaces the removed
           floating feedback FAB. */}
       <View style={{ gap: sp[8] }}>
-        <GroupHeader index={4} title="الدعم" />
+        <GroupHeader index={5} title="الدعم" />
         <RowList>
           <LedgerRow
             last
@@ -312,9 +397,9 @@ export default function Settings() {
         </RowList>
       </View>
 
-      {/* [05] الجلسة — الخروج وتذييل الإصدار */}
+      {/* [06] الجلسة — الخروج وتذييل الإصدار */}
       <View style={{ gap: sp[8] }}>
-        <GroupHeader index={5} title="الجلسة" />
+        <GroupHeader index={6} title="الجلسة" />
         <Button
           label="تسجيل الخروج"
           kind="danger"
@@ -349,6 +434,16 @@ export default function Settings() {
     </Screen>
   );
 }
+
+/** R350 E6 — the mail category labels (one Arabic name per category,
+ *  shared with the E3 preference law on the backend). */
+const MAIL_CATEGORY_LABELS: Record<string, string> = {
+  security: "تنبيهات الأمان",
+  account: "تنبيهات الحساب",
+  courses: "بريد المقرّرات",
+  announcements: "الإعلانات",
+  digest: "الموجز الأسبوعي",
+};
 
 /** Group header — the muted wayfinding tier of the settings sheet: mono
  *  [nn] index + small muted title over a hairline. Deliberately quieter
