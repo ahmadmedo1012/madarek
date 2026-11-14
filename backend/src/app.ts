@@ -134,7 +134,8 @@ const THEME_BOOTSTRAP_SHA256 = 'jEZ9yPBzXBwMFxHwFlLFqiKKy+HtK9TOGA7FRviqIMc=';
  * synthetic data, never as affiliation). Verified by check-csp-hash.sh. */
 // r191: pin refreshed — the JSON-LD description dropped the rejected
 // provenance slogan with the meta copy fix.
-const JSON_LD_SHA256 = '8MzcOipyinFqQfzKfzufOYfyEU2dhOqIFCzxNfhk10w=';
+// R351 X4: pin refreshed — the JSON-LD url/logo moved to the Vercel origin (the origin flip).
+const JSON_LD_SHA256 = '1MZqzUngi6d2K8Okt5DYMoo8uAUErYQOQhUS4k0mxic=';
 
 export function createApp() {
   const app = express();
