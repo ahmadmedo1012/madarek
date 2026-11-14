@@ -48,7 +48,7 @@ export const ORGS: CorpusEntity[] = [
   { id: 'fa-3', kind: 'faculty', haystacks: ['كلية الطب البشري'], title: 'كلية الطب البشري', studentVisible: true, institution: 'b' },
   { id: 'dp-1', kind: 'department', haystacks: ['علوم الحاسب'], title: 'علوم الحاسب', studentVisible: true, institution: A },
   { id: 'dp-2', kind: 'department', haystacks: ['الهندسة الكهربائية'], title: 'الهندسة الكهربائية', studentVisible: true, institution: A },
-  { id: 'in-1', kind: 'institution', haystacks: ['جامعة بنغازي', 'Benghazi University'], title: 'جامعة بنغازي', studentVisible: true, institution: A },
+  { id: 'in-1', kind: 'institution', haystacks: ['مؤسسة مدارك النموذجية', 'Madarek Model Institution'], title: 'مؤسسة مدارك النموذجية', studentVisible: true, institution: A },
 ];
 
 /** Courses (offering rows: course name + code). */
