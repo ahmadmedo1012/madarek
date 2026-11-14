@@ -89,6 +89,14 @@ describe('R320 §B — the frontend/backend roleLabels twins match', () => {
     }
     expect(backendStaff.get('EXAMS_CONTROLLER')).toBe('مراقب الامتحانات');
     expect(backendStaff.get('QUALITY_OFFICER')).toBe('موظف الجودة');
+    /* The extracted-source map must equal the imported runtime map —
+     * the Prisma StaffRole enum and STAFF_ROLE_LABELS are the same
+     * four offices the source text declares (kills TS6133 while
+     * making the lock stronger). */
+    expect([...Object.values(StaffRole)].sort()).toEqual([...backendStaff.keys()].sort());
+    for (const [k, v] of Object.entries(STAFF_ROLE_LABELS)) {
+      expect(backendStaff.get(k), `imported staff label ${k}`).toBe(v);
+    }
   });
 
   it('same keys, same Arabic values — the two maps cannot drift', () => {
