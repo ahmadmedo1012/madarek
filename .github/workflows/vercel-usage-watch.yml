@@ -1,0 +1,86 @@
+# R351 X5 — the weekly Vercel usage watch.
+#
+# What it records (the honest set — see scripts/ops/vercel-usage-watch.mjs
+# for the limitations that are documented, never invented):
+#   · deployments per day vs the 100/day Hobby limit
+#   · the production freshness pair (live buildId vs main HEAD)
+# and commits the derived table to frontend/public/ops/vercel-usage.json
+# (a static asset the admin settings page reads — no token ever reaches
+# the browser). Any day ≥ 60% of the daily-deploy limit, or a stale
+# buildId, opens an issue for the owner.
+#
+# Not recorded (no API on this token+plan — the owner reads the
+# dashboard weekly): invocations, Active-CPU-hours, fast transfer, Blob.
+name: Vercel usage watch
+
+on:
+  schedule:
+    # Mondays 06:00 UTC = 08:00 Tripoli (the start of the Libyan work week).
+    - cron: '0 6 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: usage-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    name: Record the week + alert at 60%
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Record (deployments/day + the freshness pair)
+        id: record
+        run: node scripts/ops/vercel-usage-watch.mjs --token ${{ secrets.VERCEL_TOKEN }} --project ${{ secrets.VERCEL_PROJECT_ID }} --team ${{ secrets.VERCEL_ORG_ID }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Alert on any ≥60% breach or a stale buildId
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let doc;
+            try {
+              doc = JSON.parse(fs.readFileSync('frontend/public/ops/vercel-usage.json', 'utf8'));
+            } catch (err) {
+              core.info(`no usage doc to read (${err.message}) — skip alerts`);
+              return;
+            }
+            core.info(`alerts: ${doc.alerts.length} · freshness ${doc.freshness.current ? 'current' : 'STALE'}`);
+            for (const a of doc.alerts) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `⚠️ استخدام Vercel تجاوز 60% — ${a.date} (${a.pct}%)`,
+                body: `المقياس: ${a.metric} · القيمة ${a.value}/${a.limit} (${a.pct}%).\nعتبة التنبيه 60% (سياسة R351 X5).\nالوثيقة: frontend/public/ops/vercel-usage.json (generatedAt ${doc.generatedAt}).\nراجع لوحة Vercel وقابلية الترقية (Pro / Render Starter) في docs/RELEASE.md §الاستضافة.`,
+                labels: ['ops'],
+              });
+            }
+            if (!doc.freshness.current) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `⚠️ نضارة الإنتاج: buildId حيّ ${doc.freshness.liveBuildId} ≠ main ${doc.freshness.mainHead}`,
+                body: `رأس main لا يخدمه الإنتاج — راجع آخر نشر على Vercel.\nالوثيقة: generatedAt ${doc.generatedAt}.`,
+                labels: ['ops'],
+              });
+            }
+
+      - name: Commit the table
+        run: |
+          git config user.name "madarek-ops"
+          git config user.email "ops@madarek.invalid"
+          git add frontend/public/ops/vercel-usage.json
+          git commit -m "chore(ops): the weekly Vercel usage table — $(date -u +%F)" -m "Recorded by vercel-usage-watch (R351 X5): deployments/day + the freshness pair; the invocations/Active-CPU/Blob limitations are documented inside the doc itself (not exposed by the API on this plan+token)." || echo "nothing to commit"
+          git push

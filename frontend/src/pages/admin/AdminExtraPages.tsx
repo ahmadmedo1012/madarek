@@ -22,6 +22,8 @@ import { toast } from '../../lib/toast';
 import { useFaculties, useCurrentInstitutionSlug, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 /* T-24: footer moved to the shared leaf (AdminPages cycle severance). */
+/* R351 X5 — the hosting/usage card (the weekly watch's static table). */
+import { HostingUsageCard } from './ops/HostingUsage';
 import { TablePaginationFooter } from './TablePaginationFooter';
 /* P2.2 dedup: re-pointed off AdminPages' retired byte-identical copy
  * onto the canonical owner StatStripSkeleton (components/owner). */
@@ -679,6 +681,11 @@ export function AdminSettingsPage() {
             </div>
           </div>
         </Card>
+
+        {/* R351 X5 — the hosting/usage seat: the weekly watch's derived
+            table (deployments/day + the freshness pair) served as a
+            static asset; no token reaches the browser. */}
+        <HostingUsageCard />
 
         <Card title="عمليّات النظام" icon={RefreshCw}>
           <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>

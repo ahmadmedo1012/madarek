@@ -29,6 +29,26 @@ native dependency/plugin/config change silently produces a new fingerprint:
 OTA updates then wait for the matching build (the workflow queues it
 automatically).
 
+## الاستضافة والحدود — Vercel Hobby (R351 X5)
+
+الخطة الحالية **Hobby** (مجانية) — حدودها: مليون استدعاء دوالّ شهريًا ·
+4 ساعات Active-CPU · 100 غيغابايت نقل سريع · **100 نشر/يوم** (المقاس
+الذي يراقبه `vercel-usage-watch.yml` أسبوعيًا — الإثنين 06:00 UTC —
+ويفتح issue عند تجاوز 60% من حدّ النشر اليومي أو عند تقادم buildId
+الإنتاج). جدول الأسبوع يُخزَّن في `frontend/public/ops/vercel-usage.json`
+وتقرؤه بطاقة «الاستضافة والاستخدام» في صفحة إعدادات المسجل. ما لا
+يكشفه الـ API بهذا الرمز+الخطة (استدعاءات الدوالّ الفعلية، Active-CPU،
+النقل، Blob) يُقرأ من لوحة Vercel أسبوعيًا؛ الوثيقة نفسها تحمل القيد
+مكتوبًا — لا تُختلق أرقام.
+
+**تحذير غير التجاري (قرارٌ مطلوب من المالك قبل أي نشر تجاري):** خطة
+Hobby للاستخدام الشخصي غير التجاري — ملائمة لمرحلة التطوير والعرض على
+الجامعات، ويلزم إعادة القرار قبل أي تشغيل تجاري فعلي. مساران جاهزان:
+الترقية إلى **Vercel Pro** (~20$/مقعد شهريًا — ترفع الحدود وتقرّب
+الدعم)، أو العودة إلى **Render Starter** (الخدمة المعلّقة تستيقظ
+بالخطة المدفوعة بلا sleeps وتُدار من `render.yaml` كما هي؛ التراجع =
+عكس `apiOrigins` كما في §القطع أعلاه).
+
 ## Keep-warm (free tier)
 
 **R351 X4: this whole section is DORMANT** — the service is suspended

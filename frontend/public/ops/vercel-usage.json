@@ -1,0 +1,62 @@
+{
+  "generatedAt": "2026-11-14T13:25:02.036Z",
+  "windowDays": 7,
+  "origin": "https://madarek-nine.vercel.app",
+  "deployments7d": 7,
+  "deploymentsPerDay": [
+    {
+      "date": "2026-11-08",
+      "count": 0
+    },
+    {
+      "date": "2026-11-09",
+      "count": 0
+    },
+    {
+      "date": "2026-11-10",
+      "count": 0
+    },
+    {
+      "date": "2026-11-11",
+      "count": 0
+    },
+    {
+      "date": "2026-11-12",
+      "count": 0
+    },
+    {
+      "date": "2026-11-13",
+      "count": 0
+    },
+    {
+      "date": "2026-11-14",
+      "count": 7
+    }
+  ],
+  "maxDay": {
+    "date": "2026-11-14",
+    "count": 7,
+    "pctOfLimit": 7
+  },
+  "freshness": {
+    "liveBuildId": "2d513a46d75d",
+    "mainHead": "2d513a46d75d",
+    "current": true
+  },
+  "plan": {
+    "name": "Hobby",
+    "nonCommercial": true,
+    "limits": {
+      "deploysPerDay": 100,
+      "invocations": 1000000,
+      "activeCpuHours": 4,
+      "transferGB": 100
+    }
+  },
+  "thresholdPct": 60,
+  "alerts": [],
+  "limitations": [
+    "invocations/Active-CPU/النقل: لا تُكشف عبر الـ API بهذا الرمز+الخطة (404 على جميع نقاط الاستخدام — مُختبَرة 2026-11-14)؛ يقرأ المالك لوحة Vercel أسبوعيًا.",
+    "Blob: ‎/v2/blob خارج نطاق هذا الرمز (403) — يُراجع لاحقًا برمزٍ مخصّص للقراءة."
+  ]
+}

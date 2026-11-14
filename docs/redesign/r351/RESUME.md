@@ -33,9 +33,13 @@ Tokens in `/home/z/.madarek-env` (600). Queue (§4): X → K → R-verify → A 
 - The deploy lesson: --prebuilt bound the [SENSITIVE] pull placeholders at runtime (DB_UNAVAILABLE 12 ms; run 43595196731); the deploy goes REMOTE build (4d80e9aa) — the platform injects the stored values server-side. The buildId pin (PATCH RENDER_GIT_COMMIT per deploy) makes /status's buildId == the pushed sha.
 - Verified live on https://madarek-nine.vercel.app: /health ok:true dbLatencyMs:280 env:production buildId:2d513a46d75d; Deploy Vercel + Deploy smoke green on the same sha (logins ×3, dashboard, OpenAPI, web-vitals); OTA to production+preview; Render SUSPENDED (13:15:37 UTC, the 14-day standby); keep-warm disabled_manually; #44 closed; APP_ORIGIN PATCHed to the Vercel origin.
 
+### LANE X — X5 the usage watch — DONE
+- The weekly vercel-usage-watch.yml (Mondays 06:00 UTC) + scripts/ops/vercel-usage-watch.mjs (projectId+teamId-scoped deployments/day + the freshness pair vs the DEPLOY-RELEVANT head); the table lands in frontend/public/ops/vercel-usage.json (static asset); issues on ≥60% breaches or a stale buildId. The admin settings page gains the «الاستضافة والاستخدام» card (7/7 unit tests). RELEASE.md carries §الاستضافة والحدود with the Hobby non-commercial warning + the Pro / Render-Starter paths.
+- Seed evidence: 7 deployments/7d (7%), freshness current, alerts 0. Vercel API quirks convicted: state=ALL ⇒ EMPTY list (faked the earlier "0 production deployments" reading — the CLI --prod deploys ARE production-target); the unscoped listing mixes account projects (ulara's storm) — scope projectId+teamId always.
+
 ## next (in order)
-1. X5 — the Vercel usage watch (weekly table; 60 % alert thresholds in the admin ops page) + the Hobby non-commercial caveat in the owner guide with the upgrade path.
-2. K (stability), then R-verify: R1 owns the 4d80e9aa Android build failure (diagnose with its run logs; android-latest last good = 03:54 pre-wave; iOS still in flight) + the /app page freshness proof.
+1. K (stability: the ranked defect table, one resilient fetch layer, the cold-start UX, recoverable errors) — P0.
+2. R-verify: R1 owns the 4d80e9aa Android build failure (run logs; android-latest last good = 03:54 pre-wave) + the /app freshness proof + the iOS build outcome.
 3. Then A, G, M (the From domain + Resend-domain decision), S5/S6, P-rem, N, W, T, V, Q, L, Z (§4 order).
 
 ## box notes
