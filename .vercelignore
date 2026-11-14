@@ -1,0 +1,18 @@
+# R351 X1 — lean uploads for the web+API spike. The Vercel build needs:
+# root package.json + package-lock.json (workspaces install),
+# backend/{src,prisma} (the function imports src; postinstall generates
+# the Prisma client from prisma/schema.prisma), frontend/{src,index.html,
+# configs}, shared/ (the @shared/ alias target). Everything else is
+# repo-local weight that would slow every upload:
+apps
+docs
+audits
+specs
+tools
+.github
+frontend/tests
+backend/tests
+backend/scripts
+scripts/*
+!scripts/warn-node-env.mjs
+*.md

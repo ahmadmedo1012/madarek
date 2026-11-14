@@ -175,3 +175,7 @@ docs/redesign/**/evidence/
 
 # r349 local-stack daemon pids (tools/daemon.js)
 *-dev.pid
+
+# R351 X1 — Vercel CLI link metadata (local, never committed)
+.vercel/
+.env*
