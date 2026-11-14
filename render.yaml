@@ -150,6 +150,17 @@ services:
       # Render's in-process scheduler keeps ticking regardless.
       - key: CRON_SECRET
         sync: false
+      # R351 X2c — the rate-limit store. This Render service sits in
+      # virginia while the Neon primary sits in eu-central-1, so the
+      # Postgres-backed store would add ~2×90 ms of cross-Atlantic
+      # round trips to every rate-limited request (login/register/…).
+      # memory keeps Render's per-instance counters (single instance =
+      # still accurate) until the X4 cutover moves the API to Vercel
+      # fra1 — co-located with Neon — where the Postgres store runs
+      # (and where concurrent instances NEED it). Remove this line at
+      # the cutover.
+      - key: RATE_LIMIT_STORE
+        value: memory
       - key: APP_ORIGIN
         sync: false
       # R320 §C — boot-time test-account ensure. ON while the project is
