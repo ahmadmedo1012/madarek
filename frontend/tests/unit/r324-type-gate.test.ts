@@ -64,8 +64,9 @@ function collectVars(src: string, prefix = ''): Map<string, string> {
 }
 
 const tokenSrc = strip(readFileSync(path.join(STYLES, 'tokens', 'tokens.css'), 'utf8'));
-const paritySrc = strip(readFileSync(path.join(STYLES, 'unified-parity.css'), 'utf8'));
-const TOKENS = new Map([...collectVars(paritySrc), ...collectVars(tokenSrc)]);
+/* R353 P4: unified-parity.css (the dead 60px-topbar drift trap) was
+ * deleted — tokens.css is the sole var source for the gate. */
+const TOKENS = new Map([...collectVars(tokenSrc)]);
 
 /** Resolve a font-size expression to px at a band. Supports: Npx, Nrem,
  *  Nvw, var(--x), max(a,b), clamp(a,b,c) — the grammar the ladder uses. */
@@ -363,7 +364,7 @@ describe('r325 Y4 — the type census gate (every heading level × every seat ×
   describe('the mono micro-label rung — ≥ 11px at every band (§R324 app density)', () => {
     for (const t of ['--fs-mono-md', '--fs-mono-sm', '--fs-mono-xs']) {
       it(`${t} resolves ≥ ${MONO_FLOOR}px at 1440/768/390`, () => {
-        for (const src of [tokenSrc, paritySrc]) {
+        for (const src of [tokenSrc]) { /* R353 P4: parity sheet deleted */
           const m = src.match(new RegExp(`${t}:\\s*([^;]+);`));
           expect(m, `${t} exists`).toBeTruthy();
           for (const band of BANDS) {

@@ -1,3 +1,29 @@
+
+/* ═════════════════════════════════════════════════════════════════════
+   THE APPSHELL CONTRACT (R353 P4) — the four laws of the layout shell
+   ─────────────────────────────────────────────────────────────────────
+   1. HEADER HEIGHT: --topbar-h (tokens.css:459, var(--app-topbar-h,56px))
+      is the ONLY declaration of the topbar height. No other sheet may
+      re-declare the custom property or hardcode a px topbar height.
+      (The dead unified-parity.css / shared-design-system.css 60px
+      re-declarations were deleted in R353 P4 for exactly this reason.)
+   2. VIEWPORT: the shell and every sticky/fixed chrome surface measure
+      with dvh (100dvh), never vh — the mobile URL bar must not clip or
+      overlap. (.has-shell: layout.css; split-detail pane: patterns.css;
+      plates: plates.css — all dvh since R353 P4.)
+   3. SCROLL OWNERSHIP: .content (base.css) is the app's single page
+      scroller. A page may own an inner bounded scroller ONLY if it
+      declares overflow-y:auto + min-block-size:0 as a flex child +
+      overscroll-behavior:contain and pads clear of fixed siblings
+      (the AI transcript .chat-area is the canonical example, R353 C1).
+   4. Z-INDEX SCALE: tokens.css's ladder is the only scale
+      (0/90/100/150/200/250/300/400/500/510/520/530/600/700/800).
+      Chrome (sidebar/topbar/bottom-nav) rides the 100 rung;
+      --z-frame 150 is the sheet-frame chrome rung; sub-100 values are
+      local paint order inside .main's stacking context. No new magic
+      numbers — add a rung to the ladder instead.
+   ═════════════════════════════════════════════════════════════════════ */
+
 /* ═════════════════════════════════════════════════════════════════════
    MADAREK — r305 «Heron» shell layer (R305-A4, Task 2-d)
    ─────────────────────────────────────────────────────────────────────

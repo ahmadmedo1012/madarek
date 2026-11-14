@@ -380,6 +380,13 @@
     --state-card-selected-ring:   inset 0 0 0 2px var(--accent);
 
     --state-input-focus-border:   var(--accent);
+    /* R353 P4 — the Heron input-focus SIGNAL seat: the reference's
+       measured #ED4C1F (R313 D16). It is deliberately NOT --accent
+       (the shared input recipe's live digest uses this exact orange);
+       theme-invariant (a measured signal, not a themed surface). The
+       raw literal previously lived in components.css + student.css —
+       this seat retires both (css-ratchet rawHex 37→35). */
+    --input-focus-signal: #ED4C1F;
     --state-input-error-border:   var(--danger);
     --state-input-disabled-opacity: 0.6;
     /* Two disabled-opacity tiers: buttons/pills/actions here, inputs one
@@ -972,6 +979,8 @@
        < sheet 300 < modal 400 < toast 500 < lightbox 600). */
     --z-base: 0;
     --z-dropdown: 100;
+  /* R353 P4 — the sheet-frame chrome rung: above header/dropdown chrome, below popovers */
+  --z-frame: 150;
     --z-popover: 200;
     --z-tooltip: 250;
     --z-sheet: 300;

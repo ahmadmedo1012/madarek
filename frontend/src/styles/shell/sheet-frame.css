@@ -90,7 +90,7 @@ html[data-theme='dark'] .sheet-grain {
   --frame-inset: 7px; /* the reference's measured frame constant — not a spacing rung */
   position: fixed;
   inset: var(--frame-inset);
-  z-index: 150;
+  z-index: var(--z-frame, 150); /* R353 P4: the token from tokens.css's ladder — no magic numbers */
   pointer-events: none;
   border: 1px solid var(--border-strong);
 }

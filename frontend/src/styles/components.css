@@ -729,7 +729,7 @@
      note for the lead). No halo, no box-shadow — hairline only. */
   .input:focus,
   input:focus, textarea:focus, select:focus {
-    border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (live digest inputs.focus; no token seat exists yet) */
+    border-color: var(--input-focus-signal); /* R313 D16 — the measured Heron focus orange, tokenized R353 P4 (--input-focus-signal) */
     outline: none;
   }
   /* R313 (D16): the FILLED state — autofilled fields carry the accent

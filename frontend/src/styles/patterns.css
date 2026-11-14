@@ -265,7 +265,7 @@ a.pf-row-link {
 .pf-split-detail {
   position: sticky;
   top: 0;
-  max-block-size: calc(100vh - var(--topbar-h) - var(--sp-6));
+  max-block-size: calc(100dvh - var(--topbar-h) - var(--sp-6)); /* R353 P4: dvh — the URL bar must not clip the sticky pane */
   overflow-y: auto;
   min-inline-size: 0;
 }

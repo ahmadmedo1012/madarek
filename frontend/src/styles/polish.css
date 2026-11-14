@@ -891,7 +891,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (max-width: 920px) {
     .page {
-      padding-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4)); /* spacing-gate: allow — fixed bottom-nav clearance (measured dock 78px at 390px; 64px + rung clears it) + safe-area + rung — NOT the topbar (r299 comment fix: the old comment misattributed this to the topbar, whose real height is --topbar-h 60px) */
+      padding-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4)); /* spacing-gate: allow — fixed bottom-nav clearance (measured dock 78px at 390px; 64px + rung clears it) + safe-area + rung — NOT the topbar (r299 comment fix: the old comment misattributed this to the topbar, whose real height is the --topbar-h token) */
     }
   }
 

@@ -119,8 +119,7 @@ const COPPER_ALLOWLIST: Readonly<Record<string, string>> = {
     'R323-PENDING — generated --gold light (#B57438) from shared/design-tokens.json (R326 M0.4); byte-gated by tokens:check — moves only WITH the JSON',
   /* live: the parity-export mirror is value-pinned by
      scripts/verify-parity-export.mjs — it can only move WITH tokens.css. */
-  'src/styles/unified-parity.css':
-    'R323-PENDING — value-pinned parity mirror of --gold (unified-parity.css:476); moves with the tokens pass',
+  /* R353 P4: unified-parity.css deleted (dead sheet, 60px topbar drift trap) — its gold entry left with it. */
   /* live: the PDF annotation swatch «نحاسي» is a product FEATURE colour
      (user-facing ink picker), not brand — out of A1 scope. */
   'src/components/pdf/AnnotationsPanel.tsx':

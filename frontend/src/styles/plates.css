@@ -17,7 +17,7 @@
   gap: var(--sp-9);
   padding: var(--sp-9);
   background: var(--neutral-100);
-  min-block-size: 100vh;
+  min-block-size: 100dvh; /* R353 P4: dvh */
 }
 
 .plate {
