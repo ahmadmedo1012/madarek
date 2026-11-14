@@ -117,6 +117,16 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   });
 }
 
+// R352 K3 — the boot warm ping (web): fire-and-forget GET /api/v1/health
+// at module scope, before the first render's queries. The serverless
+// function and the Neon compute (free-plan autosuspend ≈ 5 min idle)
+// wake while the shell paints, so the first real query — usually
+// /auth/me or the announcements feed — lands on a warm path instead of
+// paying the wake. Same-origin (the /api rewrite), rate-limit-free
+// (mounted before the limiter), and failure is silent by design: a
+// courtesy ping, never a gate, never user-visible state.
+void fetch('/api/v1/health', { keepalive: true }).catch(() => undefined);
+
 createRoot(root).render(
   <StrictMode>
     <App />

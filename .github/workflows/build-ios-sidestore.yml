@@ -437,6 +437,12 @@ jobs:
       # is RECORDED (smoke-result.json + summary + warning); it never
       # blocks the verify/publish of an otherwise-good IPA.
       - name: Build Release for the iOS Simulator (hermetic API)
+        # R352 R2b — smoke-only infrastructure: the DEVICE IPA above is
+        # already built + verified + uploaded as the candidate; a sim
+        # build failure (xcodebuild flake, runner meltdown) must never
+        # block verify/publish. The result writer below records the
+        # missing artifacts as an honest smoke result instead.
+        continue-on-error: true
         # R6: the STEP-scoped EXPO_PUBLIC_API_BASE_URL overrides the workflow
         # default for THIS bundle only — the simulator app talks to the
         # local backend; the device IPA above keeps production HTTPS.
@@ -466,6 +472,10 @@ jobs:
       # R6: the flow runs against the HERMETIC backend on this runner
       # (localhost:4000, same commit) — production is never a variable.
       - name: Boot a simulator and run the Maestro alive-flow
+        # R352 R2b — same ruling as the sim build above: the flow is the
+        # crash-regression SIGNAL; a driver/boot flake records a result,
+        # it never gates the publish of the verified IPA.
+        continue-on-error: true
         working-directory: apps/mobile
         run: |
           set -euo pipefail

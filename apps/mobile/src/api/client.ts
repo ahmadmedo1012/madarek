@@ -31,6 +31,18 @@ export function apiBase(): string {
   return `${getActiveOrigin()}/api/v1`;
 }
 
+/**
+ * R352 K3 — the boot warm ping: fire-and-forget GET /health so the
+ * serverless function AND the Neon compute (free-plan autosuspend
+ * ≈ 5 min idle) are awake BEFORE the user finishes typing credentials.
+ * The route is unauthenticated and rate-limit-free (mounted before the
+ * limiter); failure is silent by design — a courtesy ping, never a
+ * gate, never a user-visible state.
+ */
+export function warmBackend(): void {
+  void fetch(`${apiBase()}/health`, { method: "GET" }).catch(() => undefined);
+}
+
 /** True when the failure class justifies an origin switch: transport
  *  (nothing reached the app) or the platform proxy's 502/503/504 (the
  *  app never processed the request). A 4xx/5xx FROM the app is an

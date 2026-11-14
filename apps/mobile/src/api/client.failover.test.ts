@@ -97,3 +97,27 @@ describe("R351 X3 — origin failover", () => {
     expect(fetchMock).toHaveBeenCalledTimes(5);
   });
 });
+
+describe("R352 K3 — the boot warm ping", () => {
+  it("warmBackend fires one GET at apiBase()/health and never rejects", async () => {
+    const fetchMock = jest.fn(async () => jsonResponse({ ok: true }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    client.warmBackend();
+    await Promise.resolve(); // let the void-call settle its first tick
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const firstCall = fetchMock.mock.calls[0] as unknown as [string, ...unknown[]];
+    expect(firstCall[0]).toBe(
+      `${FALLBACK_ORIGINS[0]}/api/v1/health`,
+    );
+  });
+
+  it("a rejecting ping is swallowed silently (courtesy, never a gate)", async () => {
+    const fetchMock = jest.fn(async () => {
+      throw new TypeError("Network request failed");
+    });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    expect(() => client.warmBackend()).not.toThrow();
+    await Promise.resolve();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+});

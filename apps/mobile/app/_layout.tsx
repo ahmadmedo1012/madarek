@@ -43,6 +43,7 @@ import { RootSheetModalProvider } from "@/components/shell/SheetModalHost";
 // R334 2-b — hydrate the persisted haptics preference once at boot.
 import { haptics } from "@/haptics";
 import { loadRemoteConfig } from "../src/lib/remote-config";
+import { warmBackend } from "../src/api/client";
 import { ToastHost } from "@/components/ui/toast";
 import { useSession } from "@/auth/session";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -144,7 +145,13 @@ export default function RootLayout() {
     // R351 X3 — the remote app config (ordered apiOrigins): cached list
     // applies instantly, the freshest source refreshes it. Never fatal —
     // the bundled defaults + failover keep every installed build working.
-    void loadRemoteConfig().then(() => crumb(bootMs("remote config resolved")));
+    // R352 K3 — once the origins resolve, warm the backend (function +
+    // Neon compute) so the login POST lands on a warm path instead of
+    // paying the autosuspend wake.
+    void loadRemoteConfig().then(() => {
+      crumb(bootMs("remote config resolved"));
+      warmBackend();
+    });
   }, []);
 
   useEffect(() => {
