@@ -83,7 +83,7 @@ export function AdminMailPage() {
         title="البريد"
         description="حالة مزوّد البريد، سجلّ التسليم، قائمة الحجب، وإرسال رسالة اختبار — كل ما يجري فعلًا، بلا ادّعاء."
         breadcrumbs={[
-          { label: 'لوحة الإدارة', to: '/admin/dashboard' },
+          { label: 'لوحة المسجل العام', to: '/admin/dashboard' },
           { label: 'البريد' },
         ]}
       />

@@ -200,7 +200,7 @@ export function parseDateOfBirth(raw: string): { date: string } | null {
     const d = new Date(ascii);
     return Number.isNaN(d.getTime()) ? null : { date: ascii.slice(0, 10) };
   }
-  const dmy = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/.exec(ascii);
+  const dmy = /^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/.exec(ascii);
   if (dmy) {
     const day = Number(dmy[1]);
     const month = Number(dmy[2]);

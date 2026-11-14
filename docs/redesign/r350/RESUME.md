@@ -336,3 +336,15 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
 - Gates: backend 2262 green · tsc src 0/0 · tsc tests 0/0.
 - Remaining in I: I-P2 (rollback/undo + diff), I-P4 (presets/ghweil
   stub), F2 (the 5-step wizard + the teacher «إرفاق طلاب» entry).
+
+### LANE I — the red-main fix on 90d61cf7 (this commit)
+- CI 43555400134 had two red jobs, both from the I-P1/I-P3 batch:
+  (1) Lint: validate.ts:203 `[\/\-]` — the no-useless-escape ×4 (a `/`
+  and a trailing `-` are literal inside a character class) → `[/-]`;
+  46/46 import-lib tests still green.
+  (2) Design gates: AdminMailPage.tsx:86 breadcrumb «لوحة الإدارة» —
+  an OFF-LIST hit; every other admin page says «لوحة المسجل العام»
+  (the R320 §B one-term law) → renamed to the house term;
+  rename-ledger-scan 0 OFF-LIST; AdminMailPage 7/7.
+- Gates: lint 0 errors (15 pre-existing warnings) · ledger scan 0 ·
+  fe mail tests 7/7 · import tests 46/46.
