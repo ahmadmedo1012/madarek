@@ -14,12 +14,85 @@ import {
   getActiveOrigin,
   markOriginFailed,
   loadRemoteConfig,
+  isRemoteConfigDisabled,
   FALLBACK_ORIGINS,
   __resetForTests,
 } from "./remote-config";
 
 const setItem = jest.spyOn(AsyncStorage, "setItem").mockResolvedValue(undefined);
 const getItem = jest.spyOn(AsyncStorage, "getItem").mockResolvedValue(null);
+
+/* ── R352 R1 — the hermetic pin ────────────────────────────────────────
+ * Run 43596707814: the live config asset steered the CI emulator's app
+ * to production, and the hermetic smoke logged in against Vercel while
+ * its own backend sat idle. The pin law: a baked NON-production base
+ * (or EXPO_PUBLIC_DISABLE_REMOTE_CONFIG) freezes the origin list. */
+describe("R352 R1 — the hermetic pin", () => {
+  const ORIGINAL_BASE = process.env.EXPO_PUBLIC_API_BASE_URL;
+  const ORIGINAL_DISABLE = process.env.EXPO_PUBLIC_DISABLE_REMOTE_CONFIG;
+
+  afterEach(() => {
+    if (ORIGINAL_BASE === undefined) delete process.env.EXPO_PUBLIC_API_BASE_URL;
+    else process.env.EXPO_PUBLIC_API_BASE_URL = ORIGINAL_BASE;
+    if (ORIGINAL_DISABLE === undefined) delete process.env.EXPO_PUBLIC_DISABLE_REMOTE_CONFIG;
+    else process.env.EXPO_PUBLIC_DISABLE_REMOTE_CONFIG = ORIGINAL_DISABLE;
+    jest.resetModules();
+    __resetForTests();
+  });
+
+  function freshModule() {
+    // Re-import so the module-scope BAKED_API_BASE picks up the env.
+    let mod: typeof import("./remote-config");
+    jest.isolateModules(() => {
+      mod = require("./remote-config");
+    });
+    return mod!;
+  }
+
+  it("pins a hermetic baked base (10.0.2.2) and never consults the wire or cache", async () => {
+    process.env.EXPO_PUBLIC_API_BASE_URL = "http://10.0.2.2:4000/api/v1";
+    const mod = freshModule();
+    expect(mod.isRemoteConfigDisabled()).toBe(true);
+    expect(mod.getActiveOrigin()).toBe("http://10.0.2.2:4000");
+    const fetchMock = jest.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ apiOrigins: ["https://madarek-nine.vercel.app"] }), { status: 200 }),
+    );
+    getItem.mockResolvedValueOnce(JSON.stringify({ apiOrigins: ["https://cached.example"] }));
+    const loaded = await mod.loadRemoteConfig();
+    expect(loaded.apiOrigins).toEqual(["http://10.0.2.2:4000"]);
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(getItem).not.toHaveBeenCalled();
+    fetchMock.mockRestore();
+  });
+
+  it("EXPO_PUBLIC_DISABLE_REMOTE_CONFIG pins even a production-shaped baked base", async () => {
+    process.env.EXPO_PUBLIC_API_BASE_URL = "https://madarek-nine.vercel.app/api/v1";
+    process.env.EXPO_PUBLIC_DISABLE_REMOTE_CONFIG = "1";
+    const mod = freshModule();
+    expect(mod.isRemoteConfigDisabled()).toBe(true);
+    const fetchMock = jest.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ apiOrigins: ["https://elsewhere.example"] }), { status: 200 }),
+    );
+    const loaded = await mod.loadRemoteConfig();
+    expect(loaded.apiOrigins).toEqual(["https://madarek-nine.vercel.app"]);
+    expect(fetchMock).not.toHaveBeenCalled();
+    fetchMock.mockRestore();
+  });
+
+  it("a localhost baked base is pinned too (the iOS simulator smoke)", () => {
+    process.env.EXPO_PUBLIC_API_BASE_URL = "http://localhost:4000/api/v1";
+    const mod = freshModule();
+    expect(mod.isRemoteConfigDisabled()).toBe(true);
+    expect(mod.getApiOrigins()).toEqual(["http://localhost:4000"]);
+  });
+
+  it("a production baked base KEEPS the remote config enabled", () => {
+    process.env.EXPO_PUBLIC_API_BASE_URL = "https://madarek-nine.vercel.app/api/v1";
+    const mod = freshModule();
+    expect(mod.isRemoteConfigDisabled()).toBe(false);
+    expect(mod.getApiOrigins()).toEqual([...FALLBACK_ORIGINS]);
+  });
+});
 
 describe("parseRemoteConfig", () => {
   it("accepts a valid ordered list and dedupes", () => {

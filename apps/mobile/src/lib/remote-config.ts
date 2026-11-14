@@ -19,6 +19,18 @@
  * default (the Vercel origin since the X4 cutover; Render is the
  * suspended standby) plus
  * the failover in api/client.ts keep every installed build working.
+ *
+ * R352 R1 — the hermetic pin: a build that bakes a NON-production API
+ * base (the CI smoke emulators bake http://10.0.2.2:4000 / localhost,
+ * a dev machine bakes a LAN IP) must NEVER be steered away from it by
+ * the live remote config — run 43596707814 proved the failure mode:
+ * the emulator has internet, fetched the config asset, and login went
+ * to production instead of the hermetic backend on the runner. Rule:
+ * when the baked base is set and its origin is NOT one of the known
+ * production origins (the FALLBACK list below), the remote config is
+ * DISABLED and the baked origin is the one and only API origin.
+ * EXPO_PUBLIC_DISABLE_REMOTE_CONFIG=1 forces the same state
+ * explicitly (belt for workflows, suspenders for the auto-rule).
  */
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -46,6 +58,39 @@ export const FALLBACK_ORIGINS = [
   "https://madarek-nine.vercel.app",
   "https://madarek.onrender.com",
 ] as const;
+
+/** The baked build-time API base (empty when the app used the default). */
+const BAKED_API_BASE = (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) || "";
+
+/** The baked base's origin, when it parses ("http://10.0.2.2:4000"). */
+function bakedOrigin(): string | null {
+  if (!BAKED_API_BASE) return null;
+  try {
+    return new URL(BAKED_API_BASE).origin;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * True when this build must NOT consult the remote config: either the
+ * explicit opt-out is baked in, or the baked base points somewhere the
+ * production failover list does not know (hermetic CI smoke, local
+ * dev). Production builds bake a production origin (or nothing) and
+ * keep the failover.
+ */
+export function isRemoteConfigDisabled(): boolean {
+  if ((process.env.EXPO_PUBLIC_DISABLE_REMOTE_CONFIG ?? "") !== "") return true;
+  const origin = bakedOrigin();
+  if (origin === null) return false;
+  return !(FALLBACK_ORIGINS as readonly string[]).includes(origin);
+}
+
+/** The pinned origin list for a remote-config-disabled build. */
+function pinnedOrigins(): string[] {
+  const origin = bakedOrigin();
+  return origin ? [origin] : [...FALLBACK_ORIGINS];
+}
 
 const CACHE_KEY = "madarek.remote-config.v1";
 const FETCH_TIMEOUT_MS = 4_000;
@@ -76,8 +121,8 @@ export function parseRemoteConfig(value: unknown): RemoteAppConfig | null {
   return { apiOrigins: origins };
 }
 
-/** The live origin list (starts bundled, updated by load/cached). */
-let activeOrigins: string[] = [...FALLBACK_ORIGINS];
+/** The live origin list (starts bundled — or pinned, below). */
+let activeOrigins: string[] = isRemoteConfigDisabled() ? pinnedOrigins() : [...FALLBACK_ORIGINS];
 /** Origins that answered with a hard failure this session (failover marks). */
 const failedOrigins = new Set<string>();
 
@@ -104,7 +149,7 @@ export function markOriginFailed(origin: string): string | null {
 
 /** Test seam: reset the module state. */
 export function __resetForTests(origins: string[] = [...FALLBACK_ORIGINS]): void {
-  activeOrigins = [...origins];
+  activeOrigins = isRemoteConfigDisabled() ? pinnedOrigins() : [...origins];
   failedOrigins.clear();
 }
 
@@ -129,6 +174,11 @@ async function fetchConfigFrom(source: string): Promise<RemoteAppConfig | null> 
  * the bundled defaults.
  */
 export async function loadRemoteConfig(): Promise<RemoteAppConfig> {
+  // R352 R1 — hermetic pin: a non-production baked base is the whole
+  // truth for this build; never read the cache, never hit the wire.
+  if (isRemoteConfigDisabled()) {
+    return { apiOrigins: [...activeOrigins] };
+  }
   // 1. Cached list first (last session's truth) — no await on the wire.
   try {
     const cached = await AsyncStorage.getItem(CACHE_KEY);
