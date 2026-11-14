@@ -31,6 +31,8 @@ jobs:
       - name: Publish to gh-pages (config/ only — never the whole repo)
         run: |
           set -euo pipefail
+          git config user.name "madarek-ci"
+          git config user.email "ci@madarek.ly"
           # Plumbing, not a working-tree switch: build a root tree that
           # contains ONLY config/app.json (no history, no source, nothing
           # else from the repo ever reaches Pages) and force-push it.
