@@ -31,6 +31,16 @@ import {
   type AiChatMessage,
   type MasteryFact,
 } from '../../lib/ai.js';
+/* R353 C2 — the multi-provider chain (gemini → groq → openrouter → …):
+ * the same OpenAI-compatible adapter, walked across PROVIDERS with a
+ * per-provider circuit breaker and a total turn budget. */
+import {
+  callProviderChain,
+  getAiChain,
+  getAiChainWarnings,
+  isChainMode,
+  streamProviderChain,
+} from '../../lib/ai/providers.js';
 import {
   consumeDailyAskQuota,
   recordMonthlyUsage,
@@ -259,6 +269,11 @@ const writeAiTelemetry = async (
     errorMessage?: string;
     /** Which engine produced (or failed to produce) the reply. */
     model?: string;
+    /** R353 C2 — which CHAIN provider actually answered (its stable
+     * id, or 'local' for the chain's terminal composer fallback).
+     * Absent = the single-provider/local era (the column stays null
+     * — no invented provider). */
+    provider?: string;
     inputTokens?: number;
     outputTokens?: number;
   },
@@ -269,6 +284,9 @@ const writeAiTelemetry = async (
         userId: data.userId,
         feature: 'chat',
         model: data.model ?? AI_CHAT_MODEL,
+        // undefined = "not set" (the column's null default) — chain
+        // turns name their provider; legacy/local turns leave it null.
+        provider: data.provider,
         inputTokens: data.inputTokens ?? 0,
         outputTokens: data.outputTokens ?? 0,
         latencyMs: data.latencyMs,
@@ -446,6 +464,29 @@ async function loadChatContext(
 /** Boot-frozen provider resolution: null = local composer mode. */
 const aiProvider = getAiProvider();
 
+/* R353 C2 — the multi-PROVIDER chain, boot-frozen exactly like the
+ * legacy provider (env is frozen at boot). CHAIN MODE = ≥2 providers
+ * configured: chat turns walk gemini → groq → openrouter → … with a
+ * per-provider circuit breaker and a total turn budget, and the LOCAL
+ * COMPOSER is the chain's designed terminal fallback (honestly
+ * labeled — never a template wearing an LLM badge). A 0/1-provider
+ * chain keeps the historical single-provider contract (an honest
+ * Arabic error on failure) so the legacy configuration is untouched. */
+const aiChain = getAiChain();
+const aiChainMode = isChainMode(aiChain);
+for (const chainWarning of getAiChainWarnings()) {
+  logger.warn({ chainWarning }, 'AI provider chain configuration warning (fail-open — the chain degrades, boot never crashes)');
+}
+
+/** The /ai/config chain summary — provider ids + model counts + the
+ * primary, NEVER keys (the honest surface for the FE badge). */
+const aiChainSummary = aiChainMode
+  ? {
+      primary: aiChain.providers[0]!.id,
+      providers: aiChain.providers.map((p) => ({ id: p.id, models: p.models.length, tasks: [...p.tasks] })),
+    }
+  : null;
+
 /* r179 (phase-5): the verified institution-context gate for every AI
  * surface in this router — a contextless institutional caller gets 403
  * INSTITUTION_CONTEXT_REQUIRED (fail closed: the client must POST
@@ -487,6 +528,21 @@ const aiRouteId = aiProvider
     : aiProvider.model
   : null;
 
+/* R353 C2 — the unified reply-engine result (one shape across the
+ * chain, legacy, and local branches so the envelope/telemetry code
+ * below stays branch-free). `engine`/`provider` name WHO answered
+ * (the honest label + the chain's stable id); `usedProvider` gates
+ * citations (the composer never cites — it never read the sources). */
+interface ChatEngineResult {
+  reply: string;
+  inputTokens: number;
+  outputTokens: number;
+  model: string;
+  engine: string;
+  provider: string;
+  usedProvider: boolean;
+}
+
 /** The real-provider reply. NO silent fallback on failure — the owner
  * configured a real model, so an honest Arabic error + retry (the FE
  * already renders one) beats a template reply wearing an LLM badge.
@@ -502,7 +558,7 @@ async function composeReplyWithProvider(
   history: readonly AiChatMessage[],
   context: ChatContextLines,
   ragBlock = '',
-): Promise<{ reply: string; inputTokens: number; outputTokens: number; model: string }> {
+): Promise<ChatEngineResult> {
   const persona = isMasteryAwareRole(role)
     ? buildStudentSystemPrompt(context.masteryLines, context.courseLines, context.activityLines)
     : buildGenericSystemPrompt(context.teachingLines);
@@ -525,7 +581,73 @@ async function composeReplyWithProvider(
      * the fallback is the AI_MODELS list (joined) when one is set —
      * `openrouter/free` is no longer the attempted route. */
     model: attributedModel(completion.model, aiRouteId!),
+    engine: aiProviderLabel,
+    // The legacy single-provider path has no chain provider id — the
+    // telemetry provider column honestly stays null there.
+    provider: '',
+    usedProvider: true,
   };
+}
+
+/* R353 C2 — the CHAIN-mode reply (JSON path). Same prompt contract as
+ * the legacy path, but the call walks (provider, model) pairs across
+ * the chain; WHO answered rides the envelope (engine = the honest
+ * provider label, provider = the stable id) and telemetry. The LOCAL
+ * COMPOSER is the chain's designed terminal fallback — unlike the
+ * legacy single-provider path, a chain's whole point is availability,
+ * and the fallback is HONESTLY labeled (engine 'local', composer
+ * model, provider 'local', no citations — the composer never read the
+ * retrieved sources, so it never cites). The provider failures were
+ * already logged by the runner per fall-through. */
+async function composeReplyWithProviderChain(
+  userId: string,
+  message: string,
+  role: Role,
+  history: readonly AiChatMessage[],
+  context: ChatContextLines,
+  ragBlock: string,
+  institutionId: string,
+): Promise<{
+  reply: string;
+  inputTokens: number;
+  outputTokens: number;
+  model: string;
+  engine: string;
+  provider: string;
+  usedProvider: boolean;
+}> {
+  const persona = isMasteryAwareRole(role)
+    ? buildStudentSystemPrompt(context.masteryLines, context.courseLines, context.activityLines)
+    : buildGenericSystemPrompt(context.teachingLines);
+  const system = ragBlock !== '' ? `${persona}\n\n${ragBlock}` : persona;
+  try {
+    const outcome = await callProviderChain(aiChain, buildChatMessages(system, history, message), {
+      log: (obj, msg) => logger.warn(obj, msg),
+    });
+    return {
+      reply: outcome.result.content,
+      inputTokens: outcome.result.inputTokens,
+      outputTokens: outcome.result.outputTokens,
+      // Per-response attribution with the PINNED chain model as the
+      // flagged fallback (the model this provider was asked for).
+      model: attributedModel(outcome.result.model, outcome.model),
+      engine: outcome.providerLabel,
+      provider: outcome.providerId,
+      usedProvider: true,
+    };
+  } catch (err) {
+    logger.warn({ err }, 'AI provider chain exhausted — degrading to the local composer (honestly labeled)');
+    const reply = await composeReply(userId, message, role, institutionId);
+    return {
+      reply,
+      inputTokens: 0,
+      outputTokens: 0,
+      model: AI_CHAT_MODEL,
+      engine: 'local',
+      provider: 'local',
+      usedProvider: false,
+    };
+  }
 }
 
 /* ── r323 B1.1 — the DB-backed cost-control layer ─────────────────── */
@@ -644,6 +766,9 @@ async function handleChatStream(args: ChatStreamArgs): Promise<void> {
     reply: string,
     inputTokens: number,
     outputTokens: number,
+    /** R353 C2 — the answering chain provider's id ('local' for the
+     * chain's terminal composer fallback); absent = legacy path). */
+    provider?: string,
   ): Promise<{ conversationId: string; messageId: string }> => {
     // Same ONE-transaction shape as the JSON path: conversation create
     // (first turn only) + both messages + telemetry, atomically, only
@@ -670,6 +795,7 @@ async function handleChatStream(args: ChatStreamArgs): Promise<void> {
         latencyMs: Date.now() - startedAt,
         success: true,
         model: engineModel,
+        provider,
         inputTokens,
         outputTokens,
       });
@@ -705,6 +831,102 @@ async function handleChatStream(args: ChatStreamArgs): Promise<void> {
   };
 
   try {
+    /* R353 C2 — CHAIN MODE (≥2 providers): the walk crosses providers
+     * (breaker + budget governed); WHO answered rides the done frame
+     * and telemetry. The chain's terminal fallback is the LOCAL
+     * COMPOSER — but ONLY when no token ever reached the student: once
+     * deltas streamed, falling back would stitch two engines' prose
+     * into one lie of a reply, so the failure surfaces instead. */
+    if (aiChainMode) {
+      // r323 B1.2: the RAG block rides AFTER the role prompt so the
+      // grounding context reads as appended course evidence, not as a
+      // replacement of the tutor persona.
+      const persona = isMasteryAwareRole(req.user!.role)
+        ? buildStudentSystemPrompt(context.masteryLines, context.courseLines, context.activityLines)
+        : buildGenericSystemPrompt(context.teachingLines);
+      const system = rag.block !== '' ? `${persona}\n\n${rag.block}` : persona;
+      let emittedAnyToken = false;
+      try {
+        const outcome = await streamProviderChain(
+          aiChain,
+          buildChatMessages(system, history, message),
+          (delta) => {
+            emittedAnyToken = true;
+            writeEvent('token', { t: delta });
+          },
+          {
+            log: (obj, msg) => logger.warn(obj, msg),
+            externalSignal: abort.signal,
+          },
+        );
+        // An abort that raced the final chunk: nothing persists, no done.
+        if (abort.signal.aborted || res.writableEnded) return;
+        const model = attributedModel(outcome.result.model, outcome.model);
+        const { conversationId: finalId, messageId } = await finishTurnWrites(
+          model,
+          outcome.result.content,
+          outcome.result.inputTokens,
+          outcome.result.outputTokens,
+          outcome.providerId,
+        );
+        writeEvent('done', {
+          conversationId: finalId,
+          messageId,
+          reply: outcome.result.content,
+          engine: outcome.providerLabel,
+          model,
+          // R353 C2 — the answering provider's stable id (additive;
+          // mobile/older web clients ignore it).
+          provider: outcome.providerId,
+          inputTokens: outcome.result.inputTokens,
+          outputTokens: outcome.result.outputTokens,
+          citations: rag.citations,
+          ...(quota.limit > 0 ? { remaining: quota.remaining } : {}),
+        });
+      } catch (e) {
+        if (abort.signal.aborted || res.writableEnded) {
+          // The student stopped generation — a cancellation, not an
+          // outage: honest failure telemetry, no error frame (nobody
+          // is listening), nothing persisted.
+          await emitFailure(new AiProviderError('client aborted the stream', 'transport'), undefined);
+          return;
+        }
+        if (emittedAnyToken) {
+          // Mid-stream failure after tokens reached the student: the
+          // partial text stays unpersisted (the turn never completed)
+          // and the typed error frame explains the stop — a local
+          // fallback here would stitch two engines' prose.
+          await emitFailure(e);
+          return;
+        }
+        // The chain exhausted itself BEFORE any token: the designed
+        // terminal fallback — the local composer, streamed in chunks
+        // and HONESTLY labeled (engine 'local', composer model, no
+        // citations: the composer never read the retrieved sources).
+        logger.warn({ err: e }, 'AI provider chain exhausted before any token — streaming the local composer fallback');
+        const reply = await composeReply(userId, message, req.user!.role, institutionId);
+        if (abort.signal.aborted || res.writableEnded) return;
+        for (const chunk of chunkLocalReply(reply)) {
+          if (abort.signal.aborted || res.writableEnded) return;
+          writeEvent('token', { t: chunk });
+        }
+        const { conversationId: finalId, messageId } = await finishTurnWrites(AI_CHAT_MODEL, reply, 0, 0, 'local');
+        writeEvent('done', {
+          conversationId: finalId,
+          messageId,
+          reply,
+          engine: 'local',
+          model: AI_CHAT_MODEL,
+          provider: 'local',
+          inputTokens: 0,
+          outputTokens: 0,
+          citations: [] as unknown[],
+          ...(quota.limit > 0 ? { remaining: quota.remaining } : {}),
+        });
+      }
+      return;
+    }
+
     if (aiProvider) {
       // r323 B1.2: the RAG block rides AFTER the role prompt so the
       // grounding context reads as appended course evidence, not as a
@@ -838,18 +1060,19 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
       throw AppError.tooMany(dailyQuotaMessage(quota.limit));
     }
 
-    /* P4 mode switch: openai mode loads the conversation's recent
-     * turns (newest-first bounded read, re-oriented chronologically —
-     * the /conversations/:id/messages pattern) so the model gets real
-     * context, IN PARALLEL with the role-routed prompt context
-     * (r176b) — two independent reads must not serialize. Local mode
-     * ignores both exactly as before. r176a: each HISTORY turn is also
-     * content-clipped (AI_HISTORY_CHAR_CAP) — the turn window alone
-     * can still overflow small free-model context windows; the NEW
-     * user message below is never clipped. */
+    /* P4 mode switch: openai mode (or R353 C2 chain mode) loads the
+     * conversation's recent turns (newest-first bounded read,
+     * re-oriented chronologically — the /conversations/:id/messages
+     * pattern) so the model gets real context, IN PARALLEL with the
+     * role-routed prompt context (r176b) — two independent reads must
+     * not serialize. Local mode ignores both exactly as before.
+     * r176a: each HISTORY turn is also content-clipped
+     * (AI_HISTORY_CHAR_CAP) — the turn window alone can still overflow
+     * small free-model context windows; the NEW user message below is
+     * never clipped. */
     let history: AiChatMessage[] = [];
     let context: ChatContextLines = { masteryLines: [], courseLines: [], teachingLines: [], activityLines: [] };
-    if (aiProvider) {
+    if (aiProvider || aiChainMode) {
       const [rows, ctx] = await Promise.all([
         conv
           ? prisma.aiMessage.findMany({
@@ -913,13 +1136,26 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
       return;
     }
 
-    /* The reply engine: real provider when configured, local composer
-     * otherwise. On provider failure the catch below writes failure
-     * telemetry (with the attempted model) and surfaces one honest
-     * Arabic error — no silent template fallback (see composeReplyWithProvider). */
-    const engine = aiProvider
-      ? await composeReplyWithProvider(message, req.user!.role, history, context, rag.block)
-      : { reply: await composeReply(userId, message, req.user!.role, chatInstitutionId), model: AI_CHAT_MODEL, inputTokens: 0, outputTokens: 0 };
+    /* The reply engine (R353 C2): the CHAIN when ≥2 providers are
+     * configured (its terminal fallback is the local composer,
+     * honestly labeled), the legacy single provider when one is, the
+     * local composer otherwise. On LEGACY provider failure the catch
+     * below writes failure telemetry (with the attempted model) and
+     * surfaces one honest Arabic error — no silent template fallback
+     * (see composeReplyWithProvider). */
+    const engine: ChatEngineResult = aiChainMode
+      ? await composeReplyWithProviderChain(userId, message, req.user!.role, history, context, rag.block, chatInstitutionId)
+      : aiProvider
+        ? await composeReplyWithProvider(message, req.user!.role, history, context, rag.block)
+        : {
+            reply: await composeReply(userId, message, req.user!.role, chatInstitutionId),
+            model: AI_CHAT_MODEL,
+            inputTokens: 0,
+            outputTokens: 0,
+            engine: 'local',
+            provider: '',
+            usedProvider: false,
+          };
 
     // All chat writes (conversation create + both messages + telemetry)
     // in ONE transaction — previously three separate non-transactional
@@ -949,6 +1185,10 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
           latencyMs: Date.now() - startedAt,
           success: true,
           model: engine.model,
+          // R353 C2 — chain turns name the provider that answered
+          // ('local' for the terminal composer fallback); legacy and
+          // local turns leave the column null (no invented provider).
+          provider: aiChainMode ? engine.provider : undefined,
           inputTokens: engine.inputTokens,
           outputTokens: engine.outputTokens,
         });
@@ -990,18 +1230,24 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
          * attribution: the provider-reported model when OpenRouter's
          * free router named one, else the configured router id clearly
          * flagged (unattributed). Locally: 'local' + the composer tag —
-         * never a fabricated name. */
-        engine: aiProviderLabel,
+         * never a fabricated name. R353 C2: a chain turn names the
+         * provider that ANSWERED (gemini/groq/… or 'local' for the
+         * terminal composer fallback). */
+        engine: aiChainMode ? engine.engine : aiProviderLabel,
         model: engine.model,
+        /* R353 C2 (additive) — the answering chain provider's stable id
+         * (omitted on legacy/local turns where there is no chain). */
+        ...(aiChainMode ? { provider: engine.provider } : {}),
         /* r323 B1.2 — the JSON grammar carries the same citations the
          * SSE grammar does (parity across transports). r327 (P4b): the
          * local composer NEVER cites — its reply is template-composed
          * and never read the retrieved sources, so attaching
          * rag.citations would dress a template answer in a grounding
-         * badge it did not earn. Local mode returns [] exactly like
-         * the SSE path always has (the comment claimed this; the code
-         * leaked the citations — proven live before this fix). */
-        citations: aiProvider ? rag.citations : ([] as KnowledgeCitation[]),
+         * badge it did not earn. Local mode (and the chain's local
+         * fallback) returns [] exactly like the SSE path always has. */
+        citations: (aiChainMode ? engine.usedProvider : aiProvider != null)
+          ? rag.citations
+          : ([] as KnowledgeCitation[]),
       },
     });
   } catch (e) {
@@ -1221,8 +1467,24 @@ router.post('/feedback', validate(aiFeedbackSchema), async (req, res, next) => {
  * is the honest LABEL (openrouter/openai/hostname — the configured
  * ROUTER, distinct from the per-response model the chat envelope
  * carries); `model` here is the configured route id, which for
- * `openrouter/free` honestly reads as a router, not one fixed model. */
+ * `openrouter/free` honestly reads as a router, not one fixed model.
+ * R353 C2: a ≥2-provider chain reports provider 'chain' + the chain
+ * summary (provider ids + model counts + the primary) — NEVER keys,
+ * NEVER base URLs with credentials; `model` names the primary's head
+ * model (+N models across the whole chain). */
 router.get('/config', (_req, res) => {
+  if (aiChainMode && aiChainSummary !== null) {
+    const totalModels = aiChain.providers.reduce((n, p) => n + p.models.length, 0);
+    const primaryHead = aiChain.providers[0]!.models[0]!;
+    res.json({
+      data: {
+        provider: 'chain',
+        model: `${primaryHead}${totalModels > 1 ? ` +${totalModels - 1}` : ''}`,
+        chain: aiChainSummary,
+      },
+    });
+    return;
+  }
   res.json({
     data: {
       provider: aiProviderLabel,

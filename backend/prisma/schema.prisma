@@ -2302,6 +2302,11 @@ model AiTelemetry {
   userId       String?
   feature      String
   model        String?
+  // R353 C2 — which CHAIN provider actually answered (its stable id:
+  // gemini/groq/openrouter/… or 'local' for the chain's terminal
+  // composer fallback). Nullable + no backfill: rows from the
+  // single-provider era honestly stay null.
+  provider     String?
   inputTokens  Int      @default(0)
   outputTokens Int      @default(0)
   latencyMs    Int      @default(0)
