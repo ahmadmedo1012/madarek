@@ -37,13 +37,15 @@ import {
   applyMappingProfile,
   buildColumnMap,
   toMappingProfile,
+  type ColumnMapEntry,
+  type ColumnTarget,
   type MappingProfile,
 } from '../../lib/import/mapping.js';
 import { validateRows, IMPORT_MAX_ROWS, type ImportEntity } from '../../lib/import/validate.js';
 import { buildImportTemplate, buildImportReport } from '../../lib/import/templates.js';
 // R350 I-P4 — the mapping presets (generic-university, generic-school,
 // the unverified ghweil stub) + their coverage scoring.
-import { IMPORT_PRESETS, presetCoverage } from '../../lib/import/presets.js';
+import { IMPORT_PRESETS, presetCoverage, applyPresetToHeaders } from '../../lib/import/presets.js';
 import { KNOWN_IMPORT_TARGETS } from '../../lib/import/mapping.js';
 import { normalizeArabicSearch } from '../../modules/search/normalize.js';
 // R350 I-P0 — faculty/department NAME resolution (exact → normalised →
@@ -69,6 +71,10 @@ const fileBodySchema = z.object({
   entity: entitySchema,
   /** R350 I-P1 — which XLSX sheet to read (default: the first). */
   sheetName: z.string().min(1).max(64).optional(),
+  /** R350 F2 — apply a named preset's placement as the suggested map
+   * (generic-university | generic-school | ghweil-school); the general
+   * alias sniff runs when absent. */
+  presetId: z.enum(['generic-university', 'generic-school', 'ghweil-school']).optional(),
 });
 
 /* The institution resolver (the r323 bulk-import pattern): ADMIN is
@@ -164,7 +170,7 @@ router.post(
   validate(fileBodySchema, 'body'),
   async (req, res, next) => {
     try {
-      const { fileBase64, institutionId, entity, sheetName } = req.body as z.infer<typeof fileBodySchema>;
+      const { fileBase64, institutionId, entity, sheetName, presetId } = req.body as z.infer<typeof fileBodySchema>;
       const instId = await resolveInstitutionId(req, institutionId);
       const buf = decodeFile(fileBase64);
       const sheets = detectFormat(buf) === 'XLSX' ? await listSheets(buf) : [];
@@ -174,7 +180,31 @@ router.post(
         throw AppError.badRequest(`عدد الصفوف يتجاوز الحد (${IMPORT_MAX_ROWS}) — قسّم الملف`);
       }
       const { metas } = await customFields(instId, entity);
-      const map = buildColumnMap(grid.headers, metas);
+      /* R350 F2 — a presetId applies the named preset's placement as the
+       * suggested map (the chip's one tap); otherwise the general alias
+       * sniff runs. The placement logic lives HERE — one source of
+       * truth, the client just renders. */
+      const customKeySet = new Set(metas.map((m) => m.key));
+      let map = buildColumnMap(grid.headers, metas);
+      if (presetId !== undefined) {
+        const preset = IMPORT_PRESETS.find((p) => p.id === presetId);
+        if (preset !== undefined) {
+          const placed = applyPresetToHeaders(preset, grid.headers, normalizeArabicSearch, KNOWN_IMPORT_TARGETS, customKeySet);
+          map = {
+            headers: grid.headers,
+            detectedLanguage: map.detectedLanguage,
+            columns: grid.headers.map((raw, index): ColumnMapEntry => {
+              const source = raw.trim();
+              const target = placed.get(source);
+              if (source === '' || target === undefined) {
+                return { source, index, target: 'unknown' as const, confidence: 0 };
+              }
+              return { source, index, target: target as ColumnTarget, confidence: 1 };
+            }),
+            unknownColumns: grid.headers.filter((h) => h.trim() !== '' && !placed.has(h.trim())),
+          };
+        }
+      }
       /* R350 I-P4 — per-preset required-target coverage, best first: the
        * wizard's one-tap starting points. Unverified presets (ghweil)
        * carry their honest note and NEVER auto-apply — the registrar
@@ -196,6 +226,10 @@ router.post(
           delimiter: grid.delimiter ?? ',',
           headers: grid.headers,
           rowCount: grid.rows.length,
+          // R350 F2 — the first data rows: the mapping step's LIVE sample
+          // values, so the registrar maps columns against what the file
+          // actually carries (not just the header spelling).
+          sampleRows: grid.rows.slice(0, 3),
           detectedLanguage: map.detectedLanguage,
           suggestedMap: toMappingProfile(map),
           unknownColumns: map.unknownColumns,

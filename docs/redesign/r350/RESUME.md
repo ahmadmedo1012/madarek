@@ -404,3 +404,46 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
 - Gates: backend tsc 0/0 · vitest 2278 green (19 skipped).
 - Next: F2 — the 5-step web wizard (رفع → مطابقة → مراجعة → تأكيد →
   نتيجة) + the teacher «إرفاق طلاب بهذا المقرر» entry.
+
+### LANE I — F2 the 5-step import wizard + the teacher batch-enrolment entry (this commit)
+- frontend/src/pages/admin/ImportWizardPage.tsx (route /admin/import,
+  ADMIN-gated): رفع → مطابقة الأعمدة → مراجعة → تأكيد → نتيجة —
+  drag-drop ≤10MB, the file facts (format/encoding/delimiter/sheets),
+  the mapping table with LIVE sample values (parse now returns
+  sampleRows) + confidence pills + the I-P4 preset chips (applied
+  chip highlighted; unverified ghweil dashed + honest note), the
+  review verdicts with the I-P2 field diff (from→to, struck-through)
+  + per-row policy selects + status filters, the confirm summary with
+  the global policy + createIfMissing + the 72h-rollback note on a
+  STICKY action bar, and the result: counts, the one-time credentials
+  sheet (CSV download + print), the per-line report.xlsx link, and
+  the I-P2 rollback behind a ConfirmDialog with the honest
+  what-happens counts. The r323 BulkImportModal is DELETED (its route
+  stays for API compat; Z sweeps it).
+- The teacher entry: components/teacher/BatchEnrollModal.tsx —
+  «إرفاق طلاب بهذا المقرر» on the roster header (mode B): paste refs →
+  the matching-chain preview (matched/already/unmatched + capacity,
+  the over-capacity warning) → the row-locked commit; StudentsListPage
+  mounts it behind its own state.
+- presetId on POST /import/parse: the chip's one tap re-parses WITH
+  the preset — the placement logic lives server-side (ONE source of
+  truth; the page drops its rules mirror). Pinned: alias-tolerant
+  placement («اسم الطالب» → nameAr through the preset's alias list).
+- Route title (/admin/import: «استيراد الطلاب») + the students-page
+  accent verb now links to the wizard.
+- The bundle ceiling: 770→773 (+0.39%, documented in the gate header
+  + the r183-B8 pin, the r315/r320/r323/r326/r337 precedent) — the
+  wizard measured 772.1 AFTER the diet levers (BulkImportModal
+  deleted −1.3KB, preset placement server-side, compact target table,
+  the dead OWNER picker removed — the route is ADMIN-only, 7
+  decorative icons dropped 772.8→772.1); +0.9KB tight headroom; a
+  future diet round re-pins DOWN.
+- Pinned: ImportWizardPage.test.tsx — 4 (the 5 steps, the mapping
+  table + samples + presets + the presetId re-parse, the diff + the
+  per-row policy + the filters, confirm→commit body→credentials +
+  rollback); import-presets.test.ts +1 (the presetId apply) = 8.
+- Gates: fe tsc 0/0 · fe vitest 3048/3048 · backend tsc 0/0 · backend
+  vitest 2279 green · verify.sh --fast PASS (772.1/773, css ratchet
+  52 held, identity CLEAN, brand 18/18).
+- LANE I COMPLETE (I-P0/P1/P2/P3/P4 + F2 landed; the I7/I8 fixtures +
+  e2e ride the W/Z lanes' full-gate runs).

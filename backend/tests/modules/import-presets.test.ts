@@ -143,4 +143,27 @@ describe('R350 I-P4 — the routes', () => {
     const covs = suggestions.map((s) => s.coverage);
     expect([...covs].sort((a, b) => b - a)).toEqual(covs);
   });
+
+  it('POST /import/parse with presetId applies the preset as the suggested map (F2: the chip\'s one tap)', async () => {
+    const mocked = prisma as unknown as { institutionFieldDefinition: { findMany: ReturnType<typeof vi.fn> } };
+    mocked.institutionFieldDefinition.findMany.mockResolvedValue([]);
+    // the header SPELLING differs from the template's first alias — the
+    // preset's alias list (not just the first spelling) must place it
+    const fileBase64 = Buffer.from(
+      '\uFEFFاسم الطالب,الرقم الجامعي,التخصص\nسالم العماري,9001,علوم الحاسب\n',
+      'utf8',
+    ).toString('base64');
+    const res = await fetch(`${baseUrl}/api/v1/import/parse`, {
+      method: 'POST',
+      headers: ownerAuth,
+      body: JSON.stringify({ institutionId: 'inst-1', entity: 'STUDENT', fileBase64, presetId: 'generic-university' }),
+    });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { suggestedMap: { columns: { source: string; target: string }[] }; unknownColumns: string[] } };
+    const bySource = new Map(body.data.suggestedMap.columns.map((c) => [c.source, c.target]));
+    expect(bySource.get('اسم الطالب')).toBe('nameAr');
+    expect(bySource.get('الرقم الجامعي')).toBe('universityId');
+    expect(bySource.get('التخصص')).toBe('department');
+    expect(body.data.unknownColumns).toEqual([]);
+  });
 });

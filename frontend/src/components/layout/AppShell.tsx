@@ -92,6 +92,10 @@ const PAGE_TITLES: Record<string, string> = {
   // Folded out of the student sidebar (A4 P2-1) — still a real surface
   // one click from /colleges (the leaderboard CTA), so it keeps a title.
   '/colleges/leaderboard': 'منافسة الكلّيّات',
+  /* R350 F2 — the import wizard: a flow reachable from the roster's
+     accent verb, not a nav destination; the title map carries it so
+     resolveTitle() never falls to the generic fallback. */
+  '/admin/import': 'استيراد الطلاب',
   /* R320 cycle-3 (PAGES-GAP P2-3/4/5): the routed error sheets — the
      same titles the pages' own usePageTitle calls set; the map carries
      them so resolveTitle() never falls to the generic fallback. */

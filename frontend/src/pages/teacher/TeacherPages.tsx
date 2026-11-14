@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { InviteCodesCard } from '../../components/teacher/InvitesCard';
+import { BatchEnrollModal } from '../../components/teacher/BatchEnrollModal';
 import { Card, Badge, ProgressBar, UserAvatar, FormField, Pill } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, CardSkeleton } from '../../components/primitives/States';
@@ -1604,6 +1605,9 @@ export function StudentsListPage() {
   const { offsQ, offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
   const students = stuQ.data ?? [];
+  /* R350 F2 (mode B): the teacher's batch-enrolment entry — «إرفاق طلاب
+   * بهذا المقرر» on the roster's action row (the owner's ask). */
+  const [batchEnrollOpen, setBatchEnrollOpen] = useState(false);
   /* R304: the same sortable-header grammar as the grades table — name /
      attendance / average cycle highest-first → lowest-first → default. */
   const [sort, setSort] = useState<RosterSort | null>(null);
@@ -1646,6 +1650,11 @@ export function StudentsListPage() {
              * links stay the name rows' job — the r164-h pin counts
              * them). */}
             <Link to="/teacher/intelligence" className="btn accent sm">تحليل المخاطرة</Link>
+            {effectiveOfferingId !== '' && (
+              <button type="button" className="btn ghost sm" onClick={() => setBatchEnrollOpen(true)}>
+                إرفاق طلاب بهذا المقرر
+              </button>
+            )}
             <OfferingPickerSelect
               offerings={offerings}
               effectiveOfferingId={effectiveOfferingId}
@@ -1742,6 +1751,17 @@ export function StudentsListPage() {
       {/* r323 B3.1 — the invite codes seat: mint scoped codes for the
           selected offering (the register page consumes them). */}
       <InviteCodesCard offeringId={effectiveOfferingId} />
+
+      {/* R350 F2 (mode B): the batch-enrolment modal — refs in, seats
+          out, capacity-honest. */}
+      {batchEnrollOpen && offering !== null && (
+        <BatchEnrollModal
+          offeringId={offering.id}
+          courseName={offering.course.name}
+          onClose={() => setBatchEnrollOpen(false)}
+          onEnrolled={() => void stuQ.refetch()}
+        />
+      )}
 </div>
   );
 }

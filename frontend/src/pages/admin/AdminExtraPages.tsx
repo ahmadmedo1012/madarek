@@ -21,7 +21,6 @@ import { withInstitutionScope } from '../../lib/queryClient';
 import { toast } from '../../lib/toast';
 import { useFaculties, useCurrentInstitutionSlug, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
-import { BulkImportModal } from '../../components/admin/BulkImportModal';
 /* T-24: footer moved to the shared leaf (AdminPages cycle severance). */
 import { TablePaginationFooter } from './TablePaginationFooter';
 /* P2.2 dedup: re-pointed off AdminPages' retired byte-identical copy
@@ -98,8 +97,6 @@ export function AdminStudentsPage() {
   // A8 P3-4: the empty-search state gets the same reset affordance its
   // teachers twin has — a dead end otherwise.
   const hasActiveFilters = debouncedQ !== '' || facultyId !== '';
-  // r323 B3.1: the registrar's bulk-import entry point.
-  const [bulkImportOpen, setBulkImportOpen] = useState(false);
   const clearSearch = () => {
     setQ('');
     setDebouncedQ('');
@@ -162,21 +159,14 @@ export function AdminStudentsPage() {
            * register (the D8 family law) — the bulk import is the
            * registrar's primary students verb, so the first viewport at
            * every width keeps the affordance (the admin topbar hides
-           * «اسأل AI» entirely). */
-          <button type="button" className="btn accent sm" onClick={() => setBulkImportOpen(true)}>
+           * «اسأل AI» entirely). R350 F2: the verb now opens the
+           * 5-step wizard (its own route); the r323 modal retires. */
+          <Link to="/admin/import" className="btn accent sm">
             <Icon icon={Download} size={14} />
             استيراد طلاب من ملف
-          </button>
+          </Link>
         )}
       />
-
-      {bulkImportOpen && (
-        <BulkImportModal onClose={() => {
-          setBulkImportOpen(false);
-          // The roster may have grown — refresh whatever the server has now.
-          void studentsQ.refetch();
-        }} />
-      )}
 
       <FilterBar
         search={{
