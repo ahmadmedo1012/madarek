@@ -25,9 +25,12 @@
  * Seeded test accounts (R320 §C — the single source of truth is the
  * repo-root shared/testAccounts.ts, physically
  * backend/src/modules/auth/test-accounts.data.ts; one easy account per
- * job on the @test.ly domain, password 12345678). This fixture derives
- * the five STACK roles from that table by job label so it can never
- * drift from the seeder.
+ * job on the @test.ly domain, password 12345678). This fixture pins the
+ * five STACK roles by EMAIL (R353 E2: job labels are display data — the
+ * office split renamed «أخصائي جودة» to «موظف جودة» and the old label
+ * lookup threw at module load); every pin is still verified against
+ * the shared table so seeder drift fails LOUDLY here, not as a 401
+ * mid-spec.
  *
  * Env knobs:
  *   MADAREK_E2E_API_URL   API origin the login POSTs to
@@ -44,7 +47,7 @@ import type { Browser } from '@playwright/test';
 // verified empirically), so Playwright-consumed fixtures import the
 // PHYSICAL table module directly; vite/vitest consumers use the
 // @shared alias.
-import { TEST_PASSWORD, testAccountForJob } from '../../../../backend/src/modules/auth/test-accounts.data';
+import { TEST_ACCOUNTS, TEST_PASSWORD, type TestAccount } from '../../../../backend/src/modules/auth/test-accounts.data';
 
 /**
  * Playwright's `storageState` option shape (`{ cookies, origins }` —
@@ -59,29 +62,40 @@ export type StorageStateOption = NonNullable<
 
 export type StackRole = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER';
 
-/** The shared table's job labels for the five stack roles (R320 §C —
- * the labels match frontend/src/lib/nav.ts ROLE_LABELS' established
- * wording: أخصائي جودة / مالك المنصة). */
-const STACK_JOBS: Record<StackRole, string> = {
-  STUDENT: 'طالب',
-  TEACHER: 'أستاذ',
-  ADMIN: 'المسجل العام',
-  QUALITY: 'أخصائي جودة',
-  OWNER: 'مالك المنصة',
-};
+/** Loud lookup — a pinned email missing from the shared table is
+ * seeder drift and must fail at module load, never mid-spec. */
+function accountByEmail(email: string): TestAccount {
+  const hit = TEST_ACCOUNTS.find((a) => a.email === email);
+  if (!hit) {
+    throw new Error(
+      `auth-storage: seeder drift — ${email} is not in TEST_ACCOUNTS ` +
+        `(backend/src/modules/auth/test-accounts.data.ts). Pin the stack roles to existing @test.ly rows.`,
+    );
+  }
+  return hit;
+}
 
 /** Demo credentials — derived from the shared test-account table
  * (backend/prisma/seed.ts + ensureTestAccounts keep the DB in sync
  * with exactly these rows). */
 export const DEMO_PASSWORD = TEST_PASSWORD;
 
+/** The five stack roles, pinned by email (R353 E2 — labels drift,
+ * emails do not). QUALITY = the quality OFFICER (quality@test.ly);
+ * the exams-office variant of the QUALITY role is
+ * DEMO_ACCOUNT_EXAMS_CONTROLLER below. */
 export const DEMO_ACCOUNTS: Record<StackRole, string> = {
-  STUDENT: testAccountForJob(STACK_JOBS.STUDENT)!.email,
-  TEACHER: testAccountForJob(STACK_JOBS.TEACHER)!.email,
-  ADMIN: testAccountForJob(STACK_JOBS.ADMIN)!.email,
-  QUALITY: testAccountForJob(STACK_JOBS.QUALITY)!.email,
-  OWNER: testAccountForJob(STACK_JOBS.OWNER)!.email,
+  STUDENT: accountByEmail('student@test.ly').email,
+  TEACHER: accountByEmail('teacher@test.ly').email,
+  ADMIN: accountByEmail('registrar@test.ly').email,
+  QUALITY: accountByEmail('quality@test.ly').email,
+  OWNER: accountByEmail('owner@test.ly').email,
 };
+
+/** The QUALITY + EXAMS_CONTROLLER variant (مراقب الامتحانات — owns
+ * EXAMS_MODERATE, distinct from the quality officer). Not a StackRole
+ * key: specs opt in explicitly; validated eagerly like the five. */
+export const DEMO_ACCOUNT_EXAMS_CONTROLLER: string = accountByEmail('exams@test.ly').email;
 
 export const STACK_ROLES: readonly StackRole[] = [
   'STUDENT',
