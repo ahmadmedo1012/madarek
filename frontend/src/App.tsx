@@ -150,6 +150,7 @@ const AdminCoursesPage = lazy(() => import('./pages/admin/AdminPages').then((m) 
 const AdminStudentsPage = lazy(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminStudentsPage })));
 const AdminAnalysisPage = lazy(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminAnalysisPage })));
 const AdminDigitalPage = lazy(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminDigitalPage })));
+const AdminMailPage = lazy(() => import('./pages/admin/AdminMailPage').then((m) => ({ default: m.AdminMailPage })));
 const AdminSettingsPage = lazy(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminSettingsPage })));
 /* r349-P3b — the people surface (LANE P): the contact directory + the
    registrar's student file. */
@@ -535,6 +536,7 @@ export function AppRoutes() {
             <Route path={ROUTES.adminDigital} element={<AdminDigitalPage />} />
             <Route path={ROUTES.adminReports} element={<AdminReportsPage />} />
             <Route path={ROUTES.adminSettings} element={<AdminSettingsPage />} />
+            <Route path={ROUTES.adminMail} element={<AdminMailPage />} />
             <Route path={ROUTES.adminAlerts} element={<AlertsPage />} />
           </Route>
         </Route>

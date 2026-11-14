@@ -24,7 +24,7 @@ import { AppError } from '../../lib/errors.js';
 import { mailConfig } from '../../lib/mail.js';
 import { queueMail, RECIPIENT_DAILY_CAP, INSTITUTION_DAILY_CAP, RETRY_DELAYS_MS } from '../../lib/mail-outbox.js';
 import { renderEmailShell } from '../../lib/mail.js';
-import { mailPreviewEnabled } from './mail.routes.js';
+import { mailPreviewEnabled, MAIL_TEMPLATE_SAMPLES } from './mail.routes.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -272,6 +272,12 @@ router.post('/test-send', validate(testSendSchema), async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+/* ── GET /admin/mail/templates — the previewable registry ──────── */
+
+router.get('/templates', (_req, res) => {
+  res.json({ data: { templates: Object.keys(MAIL_TEMPLATE_SAMPLES) } });
 });
 
 export default router;

@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
 import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
+import { toast } from '../../lib/toast';
 
 // ── Admin stats ───────────────────────────────────────────────
 export interface AdminStats {
@@ -588,4 +589,147 @@ export function useDropEnrollment() {
       qc.invalidateQueries({ queryKey: ['enrollments', 'offerings'] });
     },
   });
+}
+
+// ── R350 E6: the mail administration surface («البريد») ────────
+// Platform-level mail ops (provider status, delivery log, outbox
+// retry/cancel, suppression list, test send, template previews) —
+// NOT institution-scoped, so plain query keys (no scope invalidation).
+
+export interface MailAdminStatus {
+  provider: string;
+  configured: boolean;
+  from: string;
+  domainVerified: null;
+  previewEnabled: boolean;
+  caps: { recipientDaily: number; institutionDaily: number };
+  retryScheduleMin: number[];
+  last24h: { queued: number; sending: number; sent: number; failed: number; suppressed: number };
+  outboxTotals: { queued: number; sending: number; sent: number; failed: number; suppressed: number };
+  suppressionTotal: number;
+  lastSentAt: string | null;
+  lastSentTemplate: string | null;
+}
+
+export function useMailAdminStatus() {
+  return useQuery({
+    queryKey: ['mail-admin', 'status'],
+    queryFn: () => unwrap<MailAdminStatus>(api.get('/admin/mail/status')),
+    refetchInterval: 30_000,
+  });
+}
+
+export interface MailOutboxRow {
+  id: string;
+  to: string;
+  template: string;
+  subject: string;
+  status: 'queued' | 'sending' | 'sent' | 'failed' | 'suppressed';
+  attempts: number;
+  nextAttemptAt: string | null;
+  providerId: string | null;
+  lastError: string | null;
+  dedupeKey: string;
+  sentAt: string | null;
+  createdAt: string;
+}
+
+export interface MailListMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export function useMailOutbox(params: {
+  page: number;
+  status?: string;
+  enabled?: boolean;
+}) {
+  return useQuery({
+    queryKey: ['mail-admin', 'outbox', params.page, params.status ?? ''],
+    queryFn: () =>
+      unwrap<MailOutboxRow[]>(api.get('/admin/mail/outbox', { params })),
+    placeholderData: (prev: MailOutboxRow[] | undefined) => prev,
+    enabled: params.enabled !== false,
+  });
+}
+
+export function useMailOutboxMeta(params: { page: number; status?: string; enabled?: boolean }) {
+  return useQuery({
+    queryKey: ['mail-admin', 'outbox-meta', params.page, params.status ?? ''],
+    queryFn: async (): Promise<MailListMeta> => {
+      const res = await api.get<{ data: MailOutboxRow[]; meta: MailListMeta }>('/admin/mail/outbox', { params });
+      return res.data.meta;
+    },
+    enabled: params.enabled !== false,
+  });
+}
+
+export interface MailSuppressionRow {
+  id: string;
+  email: string;
+  type: 'hard_bounce' | 'complaint' | 'unsubscribe';
+  reason: string | null;
+  createdAt: string;
+}
+
+export function useMailSuppression(page: number, type?: string) {
+  return useQuery({
+    queryKey: ['mail-admin', 'suppression', page, type ?? ''],
+    queryFn: () =>
+      unwrap<MailSuppressionRow[]>(api.get('/admin/mail/suppression', { params: { page, ...(type ? { type } : {}) } })),
+    placeholderData: (prev: MailSuppressionRow[] | undefined) => prev,
+  });
+}
+
+export function useMailRetry() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => unwrap(api.post(`/admin/mail/outbox/${id}/retry`)),
+    onSuccess: () => {
+      toastMailOp();
+      void qc.invalidateQueries({ queryKey: ['mail-admin'] });
+    },
+  });
+}
+
+export function useMailCancel() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => unwrap(api.post(`/admin/mail/outbox/${id}/cancel`)),
+    onSuccess: () => {
+      toastMailOp();
+      void qc.invalidateQueries({ queryKey: ['mail-admin'] });
+    },
+  });
+}
+
+export function useMailTestSend() {
+  return useMutation({
+    mutationFn: (to: string) => unwrap(api.post('/admin/mail/test-send', { to })),
+  });
+}
+
+export function useMailUnsuppress() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => unwrap(api.delete(`/admin/mail/suppression/${id}`)),
+    onSuccess: () => {
+      toastMailOp();
+      void qc.invalidateQueries({ queryKey: ['mail-admin'] });
+    },
+  });
+}
+
+export function useMailTemplates() {
+  return useQuery({
+    queryKey: ['mail-admin', 'templates'],
+    queryFn: () => unwrap<{ templates: string[] }>(api.get('/admin/mail/templates')),
+    staleTime: Infinity,
+  });
+}
+
+function toastMailOp() {
+  toast.success('حُدِّثت قائمة البريد.', { title: 'البريد' });
 }

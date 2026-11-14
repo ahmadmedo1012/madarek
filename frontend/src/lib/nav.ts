@@ -1,4 +1,5 @@
-import { MessageSquarePlus,
+import {
+  Mail, MessageSquarePlus,
   LayoutDashboard, Calendar, CalendarDays, BookOpen, BarChart3,
   Bot, Library, Trophy, FlaskConical,
   GraduationCap, Briefcase, Building2, Network,
@@ -270,6 +271,9 @@ export const ADMIN_NAV: NavGroup[] = [
          intent across the five roles. */
       { to: ROUTES.colleges, icon: Building2, label: 'كلّيّات الجامعة' },
       { to: ROUTES.adminCourses, icon: BookOpen, label: 'إدارة المقرّرات' },
+      // 4-A14 P1-1: the shared roadmap entry (any-auth route) — moved
+      // here (R350 E6) so «النظام» stays ≤9 with «البريد» joining it.
+      { to: ROUTES.vision, icon: Telescope, label: 'الابتكارات القادمة' },
     ],
   },
   {
@@ -288,14 +292,13 @@ export const ADMIN_NAV: NavGroup[] = [
       /* 5-B5 (A4 P1-3/P2-8): the bell-only alerts page gains its
          sidebar home — parity with the owner role. */
       { to: ROUTES.adminAlerts, icon: Bell, label: 'الإشعارات' },
+    { to: ROUTES.adminMail, icon: Mail, label: 'البريد' },
       /* R320 cycle-3 (PAGES-GAP T-3): retitled — this is the ADMIN
          platform sheet (identity, DB health, limits), NOT user
          settings; the account door is /settings below (UserCog). */
       { to: ROUTES.adminSettings, icon: Settings, label: 'إعدادات المنصّة' },
       { to: ROUTES.settings, icon: UserCog, label: 'إعدادات الحساب' },
       { to: ROUTES.adminCommunity, icon: Megaphone, label: 'المجتمع الجامعي' },
-      // 4-A14 P1-1: the shared roadmap entry (any-auth route).
-      { to: ROUTES.vision, icon: Telescope, label: 'الابتكارات القادمة' },
     ],
   },
 ];

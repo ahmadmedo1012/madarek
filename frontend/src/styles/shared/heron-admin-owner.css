@@ -843,3 +843,98 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 }
 .bimp-table tr[data-status='error'] td { color: var(--danger); }
 
+
+/* ════════════════════════════════════════════════════════════════
+   R350 E6 — «البريد» (admin mail surface), scoped under .r305ao.
+   Pure tokens only (the raw-hex ratchet counts literals outside the
+   token sheets): --surface-2 / --rule / --text-muted / --text-secondary
+   / --success / --danger / --font-mono / --space-2/-3.
+   ════════════════════════════════════════════════════════════════ */
+
+.r305ao .r350-e6-grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 960px) {
+  .r305ao .r350-e6-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.r305ao .r350-e6-stats {
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .r305ao .r350-e6-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.r305ao .metric-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+}
+
+.r305ao .metric-ok,
+.r305ao .metric-warn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.r305ao .metric-ok { color: var(--success); }
+.r305ao .metric-warn { color: var(--danger); }
+
+.r305ao .metric-label { font-size: 13px; color: var(--text-muted); }
+
+.r305ao .mail-status-pill { white-space: nowrap; }
+
+.r305ao .mail-subject { display: block; max-width: 34ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.r305ao .mail-provider-id {
+  display: inline-block;
+  margin-inline-start: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-decoration: underline dotted;
+}
+
+.r305ao .mail-error { display: block; margin-top: 4px; font-size: 12px; color: var(--danger); }
+
+.r305ao .r350-e6-actions { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+
+.r305ao .r350-e6-suppression { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+
+.r305ao .r350-e6-suppression li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  background: var(--surface-2);
+}
+
+.r305ao .suppression-mail { font-family: var(--font-mono); font-size: 13px; direction: ltr; }
+
+.r305ao .r350-e6-testsend { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; }
+
+.r305ao .r350-e6-testsend .field { display: flex; flex-direction: column; gap: 4px; flex: 1 1 240px; }
+
+.r305ao .r350-e6-testsend input {
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  background: var(--surface-2);
+  font-size: 14px;
+}
+
+.r305ao .r350-e6-note { margin: 12px 0 0; font-size: 13px; color: var(--text-secondary); line-height: 1.9; }
+.r305ao .r350-e6-note code { font-size: 12px; padding: 1px 5px; border: 1px solid var(--rule); margin-inline-start: 4px; }

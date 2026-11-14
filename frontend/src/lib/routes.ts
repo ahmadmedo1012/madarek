@@ -16,6 +16,7 @@ export const ROUTES = {
   adminDashboard: '/admin/dashboard',
   adminDigital: '/admin/digital',
   adminFaculties: '/admin/faculties',
+  adminMail: '/admin/mail',
   adminReports: '/admin/reports',
   adminSettings: '/admin/settings',
   adminStudents: '/admin/students',
