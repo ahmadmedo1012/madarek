@@ -25,6 +25,7 @@ import usersRoutes from './http/routes/users.routes.js';
 // the lander; every other route module keeps the default-export idiom.
 import { importRoutes } from './http/routes/import.routes.js';
 import mailRoutes from './http/routes/mail.routes.js';
+import mailAdminRoutes from './http/routes/mail-admin.routes.js';
 import coursesRoutes from './http/routes/courses.routes.js';
 import enrollmentsRoutes from './http/routes/enrollments.routes.js';
 import offeringsRoutes from './http/routes/offerings.routes.js';
@@ -365,6 +366,9 @@ app.use('/api/v1/import', importRoutes);
   app.use('/api/v1/files', filesRoutes);
   app.use('/api/v1/owner', ownerRoutes);
   app.use('/api/v1/admin', adminExtrasRoutes);
+  // R350 E6 - the admin mail surface (status/log/retry/cancel/
+  // suppression/test-send) - ADMIN/OWNER guarded inside the router.
+  app.use('/api/v1/admin/mail', mailAdminRoutes);
   app.use('/api/v1', studentDashboardRoutes);
   app.use('/api/v1/teacher', teacherDashboardRoutes);
   app.use('/api/v1', submissionsRoutes); // /offerings/:id/assignments/:id/submit, /submissions/:id/grade (WS-B1)

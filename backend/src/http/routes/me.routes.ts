@@ -245,4 +245,52 @@ router.post('/messages/read-all', validate(markMessagesReadSchema), async (req, 
   }
 });
 
+/* ── R350 E6 — the mail notification preferences ───────────────────
+ * The ESSENTIAL categories (security/account) are never user-
+ * suppressible (a password-reset mail must always arrive — E3 law);
+ * the optional ones (announcements/courses/digest) are per-user rows,
+ * absent = ON. Mobile settings + the web profile both ride these. */
+
+const MAIL_CATEGORIES = ['security', 'account', 'announcements', 'courses', 'digest'] as const;
+const OPTIONAL_MAIL_CATEGORIES = ['announcements', 'courses', 'digest'] as const;
+
+router.get('/notification-preferences', async (req, res, next) => {
+  try {
+    const rows = await prisma.notificationPreference.findMany({
+      where: { userId: req.user!.id },
+      select: { category: true, emailEnabled: true },
+    });
+    const byCategory = new Map(rows.map((r) => [r.category, r.emailEnabled]));
+    res.json({
+      data: MAIL_CATEGORIES.map((category) => ({
+        category,
+        emailEnabled: byCategory.get(category) ?? true,
+        essential: category === 'security' || category === 'account',
+      })),
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+const preferenceSchema = z.object({
+  category: z.enum(OPTIONAL_MAIL_CATEGORIES),
+  emailEnabled: z.boolean(),
+});
+
+router.put('/notification-preferences', validate(preferenceSchema), async (req, res, next) => {
+  try {
+    const { category, emailEnabled } = req.body as z.infer<typeof preferenceSchema>;
+    const row = await prisma.notificationPreference.upsert({
+      where: { userId_category: { userId: req.user!.id, category } },
+      update: { emailEnabled },
+      create: { userId: req.user!.id, category, emailEnabled },
+      select: { category: true, emailEnabled: true },
+    });
+    res.json({ data: row });
+  } catch (e) {
+    next(e);
+  }
+});
+
 export default router;
