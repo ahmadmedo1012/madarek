@@ -1043,13 +1043,13 @@ jobs:
   publish:
     name: Publish rolling Android release
     needs: [verify, smoke]
-    # R3 publish policy: the release is replaced whenever build + the
-    # INDEPENDENT verify pass. The smoke result is merged into
-    # build-info.json (smoke: pass|fail|pass-flaky|unknown) and shown in
-    # the summary; a failed smoke makes the RUN red (loud) but never
-    # leaves the public APK stale for days — the owner's headline
-    # requirement is "always the newest APK". schedule (nightly net)
-    # publishes exactly like a push on main.
+    # R3 publish policy (R352 R2 amendment): the release is replaced
+    # whenever build + the INDEPENDENT verify pass. The smoke result is
+    # merged into build-info.json (smoke: pass|fail|pass-flaky|unknown,
+    # smoke_crashes: N) and shown in the summary as a WARNING — the
+    # smoke is a signal, never a publish gate — so the public APK is
+    # never left stale. schedule (nightly net) publishes exactly like a
+    # push on main.
     if: >-
       always() &&
       needs.verify.result == 'success' &&
@@ -1090,15 +1090,17 @@ jobs:
             SMOKE_URL=$(jq -r .run_url smoke/smoke-result.json)
             SMOKE_API=$(jq -r .api smoke/smoke-result.json)
             SMOKE_ATTEMPTS=$(jq -r .attempts smoke/smoke-result.json)
+            SMOKE_CRASHES=$(jq -r '.crashes // 0' smoke/smoke-result.json)
           else
-            SMOKE="unknown"; SMOKE_URL=""; SMOKE_API="not run"; SMOKE_ATTEMPTS=0
+            SMOKE="unknown"; SMOKE_URL=""; SMOKE_API="not run"; SMOKE_ATTEMPTS=0; SMOKE_CRASHES=0
           fi
-          echo "smoke: $SMOKE (attempts: $SMOKE_ATTEMPTS, api: $SMOKE_API)"
+          echo "smoke: $SMOKE (attempts: $SMOKE_ATTEMPTS, crashes: $SMOKE_CRASHES, api: $SMOKE_API)"
           jq --arg smoke "$SMOKE" \
              --arg smoke_url "$SMOKE_URL" \
              --arg smoke_api "$SMOKE_API" \
              --argjson smoke_attempts "$SMOKE_ATTEMPTS" \
-             '. * {smoke: $smoke, smoke_run_url: $smoke_url, smoke_api: $smoke_api, smoke_attempts: $smoke_attempts}' \
+             --argjson smoke_crashes "$SMOKE_CRASHES" \
+             '. * {smoke: $smoke, smoke_run_url: $smoke_url, smoke_api: $smoke_api, smoke_attempts: $smoke_attempts, smoke_crashes: $smoke_crashes}' \
              verified/build-info.json > verified/build-info.tmp.json
           mv verified/build-info.tmp.json verified/build-info.json
           jq -r '.smoke' verified/build-info.json

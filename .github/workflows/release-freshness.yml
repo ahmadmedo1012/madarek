@@ -1,0 +1,123 @@
+# R352 R3 — the release freshness assertion (nightly).
+#
+# The owner's law: the public APK is ALWAYS the newest — the app tab
+# downloads `android-latest` directly, and the internal iOS build rides
+# `sidestore-latest`. Both releases carry build-info.json with the
+# commit they were cut from. This workflow asserts, once a night:
+#
+#   1. the release's build-info.commit equals main HEAD, OR
+#   2. every commit after it is irrelevant to the mobile app (none of
+#      them touch the Android/iOS trigger paths — docs-only pushes must
+#      NOT page anyone).
+#
+# A stale release that SHOULD have refreshed (a cancelled/failed mobile
+# run, a publish regression) opens/updates a `release-freshness`
+# labelled issue — the same rolling-issue law as tick-watch. A missing
+# release or unreadable build-info is treated as stale (loud).
+name: Release freshness
+
+on:
+  schedule:
+    - cron: '41 2 * * *' # nightly 02:41 UTC (off-peak minute)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: release-freshness
+  cancel-in-progress: false
+
+env:
+  # The paths that trigger the mobile build workflows (kept in sync
+  # with build-android.yml / build-ios-sidestore.yml path filters).
+  APP_PATHS: apps/mobile/|shared/
+
+jobs:
+  freshness:
+    name: android-latest + sidestore-latest == main HEAD (path-aware)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Assert freshness (both rolling releases)
+        id: assert
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          HEAD=$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)
+          echo "main HEAD: $HEAD"
+
+          check_release() {
+            local TAG="$1" PLATFORM="$2"
+            local INFO COMMIT VERDICT DETAIL
+            INFO=$(curl -sfL "https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/build-info.json" || true)
+            if [ -z "$INFO" ]; then
+              echo "$PLATFORM=stale" >> "$GITHUB_OUTPUT"
+              echo "$PLATFORM: build-info.json unreadable or release missing (${TAG})"
+              return
+            fi
+            COMMIT=$(echo "$INFO" | jq -r '.commit // empty')
+            BUILT=$(echo "$INFO" | jq -r '.built_at // empty')
+            SMOKE=$(echo "$INFO" | jq -r '.smoke // "absent"')
+            echo "$PLATFORM: commit=${COMMIT:0:8} built_at=${BUILT} smoke=${SMOKE}"
+            if [ "$COMMIT" = "$HEAD" ]; then
+              echo "$PLATFORM=fresh" >> "$GITHUB_OUTPUT"
+              return
+            fi
+            # Path-aware tolerance: stale is fine ONLY when none of the
+            # commits after it touch the app paths.
+            RELEVANT=$(curl -sf -H "Authorization: Bearer ${GH_TOKEN}" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/compare/${COMMIT}...${HEAD}" \
+              | jq -r '[.files[].filename | select(test(env.APP_PATHS))] | length')
+            if [ "$RELEVANT" = "0" ]; then
+              echo "$PLATFORM=fresh-irrelevant" >> "$GITHUB_OUTPUT"
+              echo "$PLATFORM: stale at ${COMMIT:0:8} but no app-path commits since — tolerated"
+            else
+              echo "$PLATFORM=stale" >> "$GITHUB_OUTPUT"
+              echo "$PLATFORM: STALE — ${RELEVANT} app-path file(s) changed since ${COMMIT:0:8}"
+            fi
+          }
+
+          check_release android-latest android
+          check_release sidestore-latest ios
+
+      - name: Alert on stale releases
+        if: steps.assert.outputs.android == 'stale' || steps.assert.outputs.ios == 'stale'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ANDROID: ${{ steps.assert.outputs.android }}
+          IOS: ${{ steps.assert.outputs.ios }}
+        run: |
+          set -euo pipefail
+          STALE=""
+          [ "$ANDROID" = "stale" ] && STALE="android-latest"
+          [ "$IOS" = "stale" ] && STALE="${STALE:+$STALE }sidestore-latest"
+          [ -z "$STALE" ] && STALE="(unknown)"
+          STAMP="$(date -u +%FT%TZ)"
+          BODY="إصدار عام لم يتحدّث رغم تغيّرات التطبيق — تحقّق من آخر Android/iOS run.
+          Stale: ${STALE}
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          هذا إشعار آلي من release-freshness.yml (R352 R3)."
+          gh label create release-freshness --color D93F0B --description "stale rolling releases (R352 R3)" 2>/dev/null || true
+          ISSUE_URL=$(gh issue list --repo "$GITHUB_REPOSITORY" --label release-freshness --state open --json url --jq '.[0].url' || true)
+          if [ -n "$ISSUE_URL" ] && [ "$ISSUE_URL" != "null" ]; then
+            gh issue comment "$ISSUE_URL" --repo "$GITHUB_REPOSITORY" --body "ما زال قديمًا — $STAMP
+
+          $BODY"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --label release-freshness \
+              --title "release-freshness: $STALE stale" --body "$BODY"
+          fi
+
+      - name: Auto-close fresh episodes
+        if: steps.assert.outputs.android != 'stale' && steps.assert.outputs.ios != 'stale'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for ISSUE in $(gh issue list --repo "$GITHUB_REPOSITORY" --label release-freshness --state open --json number --jq '.[].number' || true); do
+            gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" \
+              --comment "الإصدارات محدّثة (freshness probe green) — إغلاق تلقائي $(date -u +%FT%TZ)."
+          done

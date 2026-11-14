@@ -12,7 +12,11 @@ tools
 .github
 frontend/tests
 backend/tests
-backend/scripts
+# R352 K1 — migrate-deploy.mjs must ride the upload: db:deploy runs in
+# the REMOTE build (schema drift becomes structurally impossible).
+# The contents (not the dir) are ignored so the file can be re-included.
+backend/scripts/*
+!backend/scripts/migrate-deploy.mjs
 scripts/*
 !scripts/warn-node-env.mjs
 *.md
