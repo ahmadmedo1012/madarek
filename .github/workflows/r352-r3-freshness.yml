@@ -60,8 +60,11 @@ jobs:
           gh api "repos/${GITHUB_REPOSITORY}/releases" --jq '[.[] | select(.tag_name=="android-latest")][0].assets[] | select(.name=="build-info.json") | .url' | head -1 > /tmp/asset-url.txt
           ASSET=$(cat /tmp/asset-url.txt)
           test -n "$ASSET" || { echo "::error::android-latest carries no build-info.json asset"; exit 1; }
-          curl -sL -H "Authorization: Bearer $GH_TOKEN" "$(cat /tmp/asset-url.txt)" -o /tmp/build-info.json
-          RELEASE_COMMIT=$(jq -r .commit /tmp/build-info.json)
+          # octet-stream: the default Accept returns the asset METADATA
+          # JSON (no .commit — the first dispatch read 'null' and raised
+          # a false NOT-IN-HISTORY alarm).
+          curl -sL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/octet-stream" "$(cat /tmp/asset-url.txt)" -o /tmp/build-info.json
+          RELEASE_COMMIT=$(jq -er .commit /tmp/build-info.json) || { echo "::error::build-info.json fetched but carries no .commit — inspect /tmp/build-info.json"; exit 1; }
           RELEASE_AT=$(jq -r .built_at /tmp/build-info.json 2>/dev/null || jq -r .verified_at /tmp/build-info.json 2>/dev/null || echo '?')
           echo "release commit: $RELEASE_COMMIT (built: $RELEASE_AT)"
           echo "release_commit=$RELEASE_COMMIT" >> "$GITHUB_OUTPUT"
