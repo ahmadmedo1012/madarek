@@ -27,7 +27,6 @@ vi.mock('../../src/db.js', () => {
 import { prisma } from '../../src/db.js';
 import { mintVerificationToken, claimVerificationToken, hashVerifyToken } from '../../src/modules/auth/email-verification.service.js';
 import { sendEventMail, renderVerifyEmail, renderWelcome, renderPasswordChanged } from '../../src/lib/mail-events.js';
-import { AppError } from '../../src/lib/errors.js';
 
 const mocked = prisma as unknown as {
   user: { findUnique: ReturnType<typeof vi.fn>; update: ReturnType<typeof vi.fn> };

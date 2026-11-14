@@ -29,14 +29,8 @@ vi.mock('../../src/db.js', () => {
 
 import type { AddressInfo } from 'node:net';
 import { prisma } from '../../src/db.js';
-import { env } from '../../src/env.js';
 import { verifySvixSignature, unsubscribeToken, verifyUnsubscribeToken } from '../../src/http/routes/mail.routes.js';
 import { createApp } from '../../src/app.js';
-
-function startServer(app: ReturnType<typeof createApp>) {
-  const server = app.listen(0);
-  return { server, baseUrl: `http://127.0.0.1:${(server.address() as AddressInfo).port}` };
-}
 
 const mocked = prisma as unknown as {
   mailSuppression: { upsert: ReturnType<typeof vi.fn> };
