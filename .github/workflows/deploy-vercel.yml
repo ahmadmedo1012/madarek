@@ -2,8 +2,10 @@
 #
 # Flow: push/PR → CI (ci.yml) + this workflow's verify job run in
 # parallel; the deploy job needs CI green (the R350 R3 verify-gated
-# publish policy, ported to the web API), then `vercel deploy --prod`
-# and the retry-aware live smoke against the deployed URL.
+# publish policy, ported to the web API), then pins the deployed
+# buildId, `vercel build` (the platform's own buildCommand →
+# .vercel/output), `vercel deploy --prebuilt --prod`, and the
+# retry-aware live smoke against the deployed URL.
 #
 # PRs: the same job tree but `vercel deploy` without --prod (preview
 # deployments; preview env is the isolated spike database — never prod
@@ -87,20 +89,56 @@ jobs:
       - name: Install Vercel CLI
         run: npm i -g vercel@latest
 
+      - name: Pin the build id (RENDER_GIT_COMMIT = this sha)
+        # CLI deploys inject no git-sha env (that's a git-integration
+        # feature), so the workflow pins it per deploy: PATCH the
+        # project's RENDER_GIT_COMMIT to this sha before the
+        # pull/build/deploy, and /api/v1/status serves it as buildId —
+        # deploy-smoke's wait-for-deploy then matches buildId == the
+        # pushed sha, proving THIS deploy is the one serving.
+        run: |
+          set -euo pipefail
+          ENV_ID=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            "https://api.vercel.com/v9/projects/${{ secrets.VERCEL_PROJECT_ID }}/env?teamId=${{ secrets.VERCEL_ORG_ID }}" \
+            | jq -r '[.envs[] | select(.key == "RENDER_GIT_COMMIT")][0].id')
+          echo "RENDER_GIT_COMMIT env id: $ENV_ID"
+          CODE=$(curl -s -X PATCH \
+            "https://api.vercel.com/v10/projects/${{ secrets.VERCEL_PROJECT_ID }}/env/$ENV_ID?teamId=${{ secrets.VERCEL_ORG_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H 'Content-Type: application/json' \
+            -d '{"value":"${{ github.sha }}","type":"encrypted","target":["production","preview"]}' \
+            -o /dev/null -w '%{http_code}')
+          echo "pin buildId -> HTTP $CODE"
+          [ "$CODE" = "200" ]
+
       - name: Pull the Vercel environment (build-time env parity)
         run: vercel pull --yes --environment=${{ github.event_name == 'pull_request' && 'preview' || 'production' }} --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} --project=${{ secrets.VERCEL_PROJECT_ID }}
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
 
-      - name: Build (the same buildCommand the platform runs)
-        run: |
-          set -euo pipefail
-          npm ci --include=dev
-          npm run build -w backend
-          npm run build -w frontend
+      - name: Install dependencies
+        run: npm ci --include=dev
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+
+      - name: Build (vercel build — one pass, the platform's buildCommand)
+        # `vercel build` runs vercel.json's buildCommand (backend tsc +
+        # frontend vite) against the pulled env files and produces
+        # .vercel/output — what `vercel deploy --prebuilt` uploads. The
+        # npm builds happen INSIDE this pass (the old flow built with
+        # npm then handed --prebuilt an empty .vercel/output — run
+        # 43589835490: "no prebuilt output found"). The 5 project-secret
+        # values stay [SENSITIVE] in the local env files — the build
+        # never reads them and the deployment binds real values at
+        # runtime.
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            vercel build --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} --project=${{ secrets.VERCEL_PROJECT_ID }}
+          else
+            vercel build --prod --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} --project=${{ secrets.VERCEL_PROJECT_ID }}
+          fi
 
       - name: Deploy (production on main, preview otherwise)
         run: |
