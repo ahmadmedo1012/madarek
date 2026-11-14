@@ -325,6 +325,9 @@ G5 behaviours (quiz-me, planner, teacher view), G7 UI polish.
 | 86be12c2 | feat(r352-K1/T): the DB diagnostics channel — through the remote build log — this session |
 | e8cab95e | fix(r352-K1): db:diagnostics BEFORE db:deploy + the ledger by name — this session |
 | 03e56015 | feat(r352-A/G2): the StudentContextPack + the .vercelignore fix that unblocked the deploys — this session |
+| 03717fca | fix(r352-A/G2): the r176b bound test anchors on the mastery line shape — this session |
+| 7d42b4fe | docs(r352): the K1-regression CLOSED — the ledger read, the duplicate init row, K5 verified clean — this session |
+| 404fedfb | fix(r352-R3): the freshness watch reads the asset, not its metadata — octet-stream — this session |
 
 ## Session 2026-11-14 ~17:40Z onward (continuation after the box reset)
 
@@ -341,6 +344,39 @@ G5 behaviours (quiz-me, planner, teacher view), G7 UI polish.
 - Token audit: GITHUB_PAT read/write OK (this session's pushes);
   EXPO_TOKEN present (unused this session — no EAS builds needed);
   RESEND_API_KEY present (M1 already verified live last session).
+
+### The session's closing state (19:3xZ, all verified live)
+
+- Production serves buildId 03717fca8b92 (the StudentContextPack
+  rides live); both origins healthy; remote config live; tick fresh
+  (fastAt seconds-old at the sweep); storage vercel-blob; ai
+  openai; mail resend. First health hit after the deploy churn read
+  dbLatency 1271 ms (the documented Neon wake) then 4/3 ms warm.
+- The freshness watch verified END TO END on real data: the first
+  dispatch raised a FALSE alarm (issue #46 — the asset fetch read
+  the METADATA json, not the content; fixed with octet-stream +
+  jq -er fail-loud) — the re-run read release c7ec5f12 (built
+  18:51Z), gap 0 mobile commits → verdict fresh → #46 auto-CLOSED.
+  The false-alarm → fix → fresh → auto-close loop is proven.
+- android-latest = c7ec5f12, verified: true, smoke pass attempts 1
+  crashes 0, prod_config_proof pass (in its build-info.json).
+
+## Open (the updated queue for the next sessions)
+
+- A lane: G1 eval baseline (≥120 Arabic Q&A + judges), G3 semantic
+  retrieval (needs an embeddings provider — owner input), G4
+  provider chain (needs owner AI keys — the §5 questions), G5
+  behaviours (quiz-me, planner, teacher view), G7 chat UI polish.
+- G lane (accounts/student-data): not started — A1 login identity
+  (email OR number OR phone), A2 registration flows, A3 password
+  lifecycle, A4 phone verification/search, A5 student file data
+  (photo/DOB/documents), A6 bulk photos, A7 admin tools, A8 e2e.
+- W/T/V/Q: the page ledger + detector sweeps; the T signals are
+  RECORDED (the 19:22Z ledger: ClientError 0, LoginEvent failures
+  77, AuditLog 16); Q flake measurement (nightly --repeat-each=5).
+- Cosmetic sweep (noted): the ledger-count query failed honestly
+  (the by-name listing carried the truth); the db-diagnostics CLI
+  entry double-prefixes; the duplicate init row (owner-side).
 
 ## Decisions
 
