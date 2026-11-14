@@ -227,3 +227,8 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
 - Contact sheet regenerated through the canonical script (15 templates ×
   390/600/dark); VLM reset@390: solid orange button + chip+wordmark, 9/10.
 - Gates: backend vitest 2192 passed/19 skipped · tsc src 0/0 · tsc tests 0/0.
+
+### LANE S — claimed (this session, 03:37Z) — S1→S6 in order
+- Session-claim (the multi-session protocol this box's two lanes now follow):
+  this session owns LANE S (search) end-to-end — the other box owns the
+  remaining lanes. Evidence of liveness lands with every task commit.
