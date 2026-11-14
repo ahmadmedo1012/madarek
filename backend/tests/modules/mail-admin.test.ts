@@ -185,9 +185,9 @@ describe('R350 E6 — suppression list/remove + test-send', () => {
   });
 });
 
-describe('R350 E6 — /notification-preferences', () => {
+describe('R350 E6 — /me/notification-preferences', () => {
   it('lists the five categories with the essential flags', async () => {
-    const res = await fetch(`${baseUrl}/api/v1/notification-preferences`, { headers: studentAuth });
+    const res = await fetch(`${baseUrl}/api/v1/me/notification-preferences`, { headers: studentAuth });
     expect(res.status).toBe(200);
     const body = (await res.json()) as { data: { category: string; emailEnabled: boolean; essential: boolean }[] };
     expect(body.data.map((d) => d.category)).toEqual(['security', 'account', 'announcements', 'courses', 'digest']);
@@ -196,7 +196,7 @@ describe('R350 E6 — /notification-preferences', () => {
   });
 
   it('PUT upserts an optional category', async () => {
-    const res = await fetch(`${baseUrl}/api/v1/notification-preferences`, {
+    const res = await fetch(`${baseUrl}/api/v1/me/notification-preferences`, {
       method: 'PUT',
       headers: { ...studentAuth, 'content-type': 'application/json' },
       body: JSON.stringify({ category: 'digest', emailEnabled: false }),
@@ -208,7 +208,7 @@ describe('R350 E6 — /notification-preferences', () => {
   });
 
   it('PUT refuses the ESSENTIAL categories at the API edge (400)', async () => {
-    const res = await fetch(`${baseUrl}/api/v1/notification-preferences`, {
+    const res = await fetch(`${baseUrl}/api/v1/me/notification-preferences`, {
       method: 'PUT',
       headers: { ...studentAuth, 'content-type': 'application/json' },
       body: JSON.stringify({ category: 'security', emailEnabled: false }),

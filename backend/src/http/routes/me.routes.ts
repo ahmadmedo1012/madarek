@@ -254,7 +254,7 @@ router.post('/messages/read-all', validate(markMessagesReadSchema), async (req, 
 const MAIL_CATEGORIES = ['security', 'account', 'announcements', 'courses', 'digest'] as const;
 const OPTIONAL_MAIL_CATEGORIES = ['announcements', 'courses', 'digest'] as const;
 
-router.get('/notification-preferences', async (req, res, next) => {
+router.get('/me/notification-preferences', async (req, res, next) => {
   try {
     const rows = await prisma.notificationPreference.findMany({
       where: { userId: req.user!.id },
@@ -278,7 +278,7 @@ const preferenceSchema = z.object({
   emailEnabled: z.boolean(),
 });
 
-router.put('/notification-preferences', validate(preferenceSchema), async (req, res, next) => {
+router.put('/me/notification-preferences', validate(preferenceSchema), async (req, res, next) => {
   try {
     const { category, emailEnabled } = req.body as z.infer<typeof preferenceSchema>;
     const row = await prisma.notificationPreference.upsert({

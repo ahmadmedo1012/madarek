@@ -232,3 +232,14 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
 - Session-claim (the multi-session protocol this box's two lanes now follow):
   this session owns LANE S (search) end-to-end — the other box owns the
   remaining lanes. Evidence of liveness lands with every task commit.
+
+### LANE E — the E6 integration fix: /me/notification-preferences (this commit)
+- Cross-session bug caught: E6m (the other box) calls PUT /me/notification-
+  preferences from the mobile settings, but E6a (this box) mounted the
+  endpoints at /notification-preferences — every toggle would 404 (unit-mocked
+  transports on both sides hid it). The house convention for self surfaces is
+  /me/* (me/theme, me/matrix, me/dashboard…) — the endpoints MOVE to
+  /me/notification-preferences; mail-admin.test.ts follows (12/12).
+- This box acknowledges the S claim (d24ce5da): this session owns the
+  remaining lanes (E7 → I → P-rem → N → W → T → V → Z), the other owns S.
+- Gates: backend 2204 green · the consolidated AdminMailPage tests 26/26.
