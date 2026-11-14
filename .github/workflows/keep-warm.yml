@@ -38,10 +38,12 @@ name: Keep warm
 
 on:
   schedule:
-    # Every 10 minutes, 06:00–20:50 UTC — inside the 06:00–21:00 UTC
-    # window (08:00–23:00 Africa/Tripoli); the R351 X0 hours budget.
-    # Best-effort (GitHub starves cron on quiet repos; see header).
-    - cron: '*/10 6-20 * * *'
+    # R351 X4 (cutover): the schedule is OFF for the 14-day Render
+    # standby window — the service is SUSPENDED and every ping would
+    # be a red run. Restore this block (the X0 window) if the rollback
+    # ever resumes Render:
+    #   - cron: '*/10 6-20 * * *'
+    # (06:00–21:00 UTC = 08:00–23:00 Africa/Tripoli; the X0 hours budget)
   workflow_dispatch: {}
 
 permissions:

@@ -3,7 +3,7 @@
   "buildCommand": "npm run build -w backend && npm run build -w frontend",
   "outputDirectory": "frontend/dist",
   "regions": [
-    "fra1"
+    "iad1"
   ],
   "functions": {
     "api/index.mjs": {

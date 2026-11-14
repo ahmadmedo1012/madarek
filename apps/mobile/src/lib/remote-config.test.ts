@@ -46,19 +46,19 @@ describe("the origin list + failover marking", () => {
     __resetForTests();
   });
 
-  it("starts on the bundled fallback (Render first until the X4 flip)", () => {
+  it("starts on the bundled fallback (the Vercel origin first since the X4 cutover)", () => {
     expect(getApiOrigins()).toEqual([...FALLBACK_ORIGINS]);
-    expect(FALLBACK_ORIGINS[0]).toBe("https://madarek.onrender.com");
+    expect(FALLBACK_ORIGINS[0]).toBe("https://madarek-nine.vercel.app");
     expect(getActiveOrigin()).toBe(FALLBACK_ORIGINS[0]);
   });
 
-  it("markOriginFailed advances to the next healthy origin, then null", () => {
-    expect(markOriginFailed("https://madarek.onrender.com")).toBe("https://madarek-nine.vercel.app");
-    expect(getActiveOrigin()).toBe("https://madarek-nine.vercel.app");
-    expect(markOriginFailed("https://madarek-nine.vercel.app")).toBeNull();
+  it("markOriginFailed advances to the next healthy origin (the Render standby), then null", () => {
+    expect(markOriginFailed("https://madarek-nine.vercel.app")).toBe("https://madarek.onrender.com");
+    expect(getActiveOrigin()).toBe("https://madarek.onrender.com");
+    expect(markOriginFailed("https://madarek.onrender.com")).toBeNull();
     // Everything failed: the active base falls back to the first origin
     // (the caller's own retry/wake logic owns the rest).
-    expect(getActiveOrigin()).toBe("https://madarek.onrender.com");
+    expect(getActiveOrigin()).toBe("https://madarek-nine.vercel.app");
   });
 });
 

@@ -2,6 +2,16 @@
 
 > R326 M0.6. One branch (`main`), one project. Every change lands on main
 > in small verified commits; automation decides what deploys where.
+>
+> R351 X4 — the hosting cutover: **web + API run on Vercel**
+> (https://madarek-nine.vercel.app — static SPA on the CDN + the Express
+> app as one Fluid function in iad1, co-located with the Neon primary in
+> us-east-1; deploys from `.github/workflows/deploy-vercel.yml` after CI
+> green; `/config/app.json` carries the ordered `apiOrigins` the apps
+> read at launch). **Render is the 14-day suspended standby** — resume
+> from the dashboard if the rollback is ever needed (the reverse flip is
+> the `apiOrigins` order + `serverlessFunctionRegion` + the workflows'
+> URLs). `keep-warm.yml`'s schedule is OFF for the window.
 
 ## What triggers what
 
@@ -20,6 +30,10 @@ OTA updates then wait for the matching build (the workflow queues it
 automatically).
 
 ## Keep-warm (free tier)
+
+**R351 X4: this whole section is DORMANT** — the service is suspended
+for the 14-day standby window and the schedule is off. It documents the
+Render mode for the rollback window.
 
 Render's free plan sleeps the web service after ~15 idle minutes and
 gives **750 instance-hours/workspace/month** — an around-the-clock

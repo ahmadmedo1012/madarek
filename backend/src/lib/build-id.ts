@@ -14,9 +14,11 @@
  *      every git-connected deploy. Preferred source: platform-truth,
  *      zero-maintenance, and lets `/api/v1/health` answer "which
  *      commit is serving?" without shell access.
- *   2. GIT_SHA — generic escape hatch for other PaaS/providers or
+ *   2. VERCEL_GIT_COMMIT_SHA — the same platform-truth on Vercel
+ *      (R351 X4: the primary production home after the cutover).
+ *   3. GIT_SHA — generic escape hatch for other PaaS/providers or
  *      container builds that export the commit explicitly.
- *   3. local-dev fallback — a label that never claims to be a commit,
+ *   4. local-dev fallback — a label that never claims to be a commit,
  *      so a local server cannot be mistaken for a deployment.
  *
  * The derivation is pure (a pure function of its inputs) so the
@@ -34,6 +36,16 @@ const SHA_PREFIX_LEN = 12;
  *                  GIT_SHA) — hex-ish, ≥ 7 chars to be trusted.
  * @returns either `<sha[:12]>` or the local-dev sentinel.
  */
+/** The full input chain, in preference order (app.ts passes the env
+ *  values; the order lives here so the unit belt can pin it). */
+export function buildIdInput(envLike: {
+  RENDER_GIT_COMMIT?: string;
+  VERCEL_GIT_COMMIT_SHA?: string;
+  GIT_SHA?: string;
+}): string | undefined {
+  return envLike.RENDER_GIT_COMMIT || envLike.VERCEL_GIT_COMMIT_SHA || envLike.GIT_SHA;
+}
+
 export function buildIdFromEnv(
   gitCommit: string | undefined,
 ): string {

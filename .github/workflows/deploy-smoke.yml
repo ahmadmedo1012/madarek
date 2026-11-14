@@ -27,17 +27,17 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BASE: https://madarek.onrender.com/api/v1
+  BASE: https://madarek-nine.vercel.app/api/v1
 
 jobs:
   wait-for-deploy:
-    name: Wait for the Render deploy (buildId == ${{ github.sha }})
+    name: Wait for the Vercel deploy (buildId == ${{ github.sha }})
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     outputs:
       deployed: ${{ steps.wait.outputs.deployed }}
     steps:
-      - name: Poll /status until buildId matches the pushed commit
+      - name: Poll /status until buildId matches the pushed commit (VERCEL_GIT_COMMIT_SHA since the X4 cutover)
         id: wait
         run: |
           SHORT=$(echo "${{ github.sha }}" | cut -c1-12)
@@ -51,7 +51,7 @@ jobs:
             sleep 20
           done
           echo "deployed=false" >> "$GITHUB_OUTPUT"
-          echo "::warning::Render did not report buildId $SHORT within 20 minutes — smokes run against the PREVIOUS deploy."
+          echo "::warning::Vercel did not report buildId $SHORT within 20 minutes — smokes run against the PREVIOUS deploy."
 
   smoke:
     name: Smoke the live service
@@ -98,7 +98,7 @@ jobs:
           # candidate URLs, parse defensively, and SKIP (warn) when the
           # live spec isn't exposed as JSON. The additive-only contract
           # itself is enforced by the repo's contract tests.
-          curl -sfL --max-time 30 "https://madarek.onrender.com/openapi.json" -o live1.json || true
+          curl -sfL --max-time 30 "https://madarek-nine.vercel.app/openapi.json" -o live1.json || true
           curl -sfL --max-time 30 "$BASE/openapi.json" -o live2.json || true
           python3 - <<'EOF' || echo "::warning::live openapi not exposed as JSON — skipping (repo contract tests own the gate)"
           import json, sys
@@ -140,7 +140,7 @@ jobs:
           npm ci --no-audit --no-fund >/dev/null 2>&1
           npx playwright install chromium --with-deps >/dev/null 2>&1
           popd >/dev/null
-          node scripts/qa/live-smoke.mjs "https://madarek.onrender.com"
+          node scripts/qa/live-smoke.mjs "https://madarek-nine.vercel.app"
       - name: Open an issue on failure
         if: failure()
         uses: actions/github-script@v7

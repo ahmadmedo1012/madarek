@@ -1,0 +1,128 @@
+# R351 X4 — the Vercel production deploy, from CI, after the gates.
+#
+# Flow: push/PR → CI (ci.yml) + this workflow's verify job run in
+# parallel; the deploy job needs CI green (the R350 R3 verify-gated
+# publish policy, ported to the web API), then `vercel deploy --prod`
+# and the retry-aware live smoke against the deployed URL.
+#
+# PRs: the same job tree but `vercel deploy` without --prod (preview
+# deployments; preview env is the isolated spike database — never prod
+# data).
+#
+# Secrets (repo): VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID.
+# The dormant ticker (tick.yml) wakes at the cutover via the
+# TICK_TARGET_URL repo variable.
+name: Deploy Vercel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'shared/**'
+      - 'api/**'
+      - 'vercel.json'
+      - '.github/workflows/deploy-vercel.yml'
+      - 'package.json'
+      - 'package-lock.json'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'shared/**'
+      - 'api/**'
+      - 'vercel.json'
+      - '.github/workflows/deploy-vercel.yml'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-vercel-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The gates: CI (the full matrix) must be green on the SAME sha.
+  verify:
+    name: CI green on this sha
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Wait for the CI workflow conclusion
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 90); do
+            STATUS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs?head_sha=${{ github.sha }}&per_page=20" \
+              | jq -r '[.workflow_runs[] | select(.name == "CI")] | sort_by(.created_at) | last | "\(.status) \(.conclusion // "-")"')
+            echo "CI: $STATUS (attempt $attempt)"
+            case "$STATUS" in
+              completed\ success) exit 0 ;;
+              completed\ *) echo "::error::CI concluded without success: $STATUS"; exit 1 ;;
+            esac
+            sleep 20
+          done
+          echo "::error::CI did not conclude within the wait window"
+          exit 1
+
+  deploy:
+    name: vercel deploy (prod on main, preview on PRs)
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Pull the Vercel environment (build-time env parity)
+        run: vercel pull --yes --environment=${{ github.event_name == 'pull_request' && 'preview' || 'production' }} --token=${{ secrets.VERCEL_TOKEN }} --org=${{ secrets.VERCEL_ORG_ID }} --project=${{ secrets.VERCEL_PROJECT_ID }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+
+      - name: Build (the same buildCommand the platform runs)
+        run: |
+          set -euo pipefail
+          npm ci --include=dev
+          npm run build -w backend
+          npm run build -w frontend
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+
+      - name: Deploy (production on main, preview otherwise)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --org=${{ secrets.VERCEL_ORG_ID }} --project=${{ secrets.VERCEL_PROJECT_ID }}
+          else
+            vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} --org=${{ secrets.VERCEL_ORG_ID }} --project=${{ secrets.VERCEL_PROJECT_ID }}
+          fi
+
+      - name: Live smoke on the production URL (main only)
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          URL="https://madarek-nine.vercel.app"
+          # Wake-tolerant: 502/503 = still deploying, keep trying.
+          for attempt in $(seq 1 12); do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$URL/api/v1/health" || echo 000)
+            echo "health attempt $attempt → HTTP $CODE"
+            [ "$CODE" = "200" ] && break
+            sleep 10
+          done
+          [ "$CODE" = "200" ] || { echo "::error::health never answered 200"; exit 1; }
+          # The full browser-level live smoke (R350 H6 instrument).
+          cd frontend && npx playwright install chromium-headless-shell --with-deps >/dev/null 2>&1 || npx playwright install chromium-headless-shell >/dev/null 2>&1 || true
+          cd .. && node scripts/qa/live-smoke.mjs "$URL"

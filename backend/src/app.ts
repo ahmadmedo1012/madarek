@@ -242,7 +242,7 @@ export function createApp() {
   // is serving. (r184: the old constant said 'r180-product-completion'
   // while production was actually serving r183 — a rot the derived id
   // makes structurally impossible. See lib/build-id.ts.)
-  const BUILD_ID = buildIdFromEnv(env.RENDER_GIT_COMMIT ?? env.GIT_SHA);
+  const BUILD_ID = buildIdFromEnv(env.RENDER_GIT_COMMIT ?? env.VERCEL_GIT_COMMIT_SHA ?? env.GIT_SHA);
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();
     // Race the DB ping against a 5s timeout so a sleepy Neon

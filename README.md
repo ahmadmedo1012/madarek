@@ -200,6 +200,6 @@ madarek/
 
 ---
 
-*الاسم التطويري للمشروع: مدارك (Madarek) · منصّة مستقلّة · الإنتاج: [madarek.onrender.com](https://madarek.onrender.com)*
+*الاسم التطويري للمشروع: مدارك (Madarek) · منصّة مستقلّة · الإنتاج: [mmadarek-nine.vercel.app](https://madarek-nine.vercel.app)*
 
 </div>

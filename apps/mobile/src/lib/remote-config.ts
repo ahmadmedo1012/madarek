@@ -16,7 +16,8 @@
  * build-time default until then). The result is cached in
  * AsyncStorage so the NEXT boot starts with the last good list while
  * the refresh runs; a failed fetch is never fatal — the bundled
- * default (Render today, the cutover's Vercel origin after X4) plus
+ * default (the Vercel origin since the X4 cutover; Render is the
+ * suspended standby) plus
  * the failover in api/client.ts keep every installed build working.
  */
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -32,14 +33,17 @@ export const CONFIG_SOURCES = [
   "https://ahmadmedo1012.github.io/madarek/config/app.json",
 ] as const;
 
+/* R351 X4 — the cutover flip: the Vercel origin is now PRIMARY; Render
+ * stays second (the 14-day suspended standby, resumeable in minutes). */
+
 /**
  * The bundled fallback: both origins, Render first (the production API
  * until the R351 X4 cutover flips the order — the flip is exactly ONE
  * commit to this list + the config asset).
  */
 export const FALLBACK_ORIGINS = [
-  "https://madarek.onrender.com",
   "https://madarek-nine.vercel.app",
+  "https://madarek.onrender.com",
 ] as const;
 
 const CACHE_KEY = "madarek.remote-config.v1";

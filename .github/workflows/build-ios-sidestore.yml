@@ -57,7 +57,7 @@ env:
   EXPO_NO_TELEMETRY: "1"
   COCOAPODS_DISABLE_STATS: "true"
   # Public build-time configuration (same value as eas.json). Not a secret.
-  EXPO_PUBLIC_API_BASE_URL: "https://madarek.onrender.com/api/v1"
+  EXPO_PUBLIC_API_BASE_URL: "https://madarek-nine.vercel.app/api/v1"
   EXPO_UPDATES_CHANNEL: "production"
   IPA_NAME: "Madarek"
   RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

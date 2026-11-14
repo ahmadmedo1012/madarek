@@ -42,6 +42,9 @@ const schema = z
     // in that file: production served r183 code while still reporting
     // an r180 buildId).
     RENDER_GIT_COMMIT: z.string().optional(),
+    // R351 X4 — Vercel injects the deployed commit sha on every build
+    // (platform-truth for /api/v1/health's buildId after the cutover).
+    VERCEL_GIT_COMMIT_SHA: z.string().optional(),
     GIT_SHA: z.string().optional(),
     // ── File storage (uploads: backend/src/lib/storage.ts) ── All
     // optional individually; selecting s3 without its credentials
