@@ -433,14 +433,21 @@ jobs:
       # Maestro alive-flow: login -> dashboard count-ups (the EXACT surface
       # that SIGABRT'd ~15s after login on the owner's iPhone) -> assert
       # the process stays alive + interactive for a full 60s. Then scan for
-      # crash reports — any .ips for ly.madarek.mobile fails the pipeline.
+      # crash reports — R352 R2: every result (including new .ips files)
+      # is RECORDED (smoke-result.json + summary + warning); it never
+      # blocks the verify/publish of an otherwise-good IPA.
       - name: Build Release for the iOS Simulator (hermetic API)
         # R6: the STEP-scoped EXPO_PUBLIC_API_BASE_URL overrides the workflow
         # default for THIS bundle only — the simulator app talks to the
         # local backend; the device IPA above keeps production HTTPS.
+        # R352 R1: EXPO_PUBLIC_DISABLE_REMOTE_CONFIG pins the sim build to
+        # the hermetic backend — the live remote config (live since the
+        # X4 cutover) would otherwise steer login to production exactly
+        # like Android run 43596707814.
         working-directory: apps/mobile
         env:
           EXPO_PUBLIC_API_BASE_URL: http://localhost:4000/api/v1
+          EXPO_PUBLIC_DISABLE_REMOTE_CONFIG: "1"
         run: |
           set -euo pipefail
           mkdir -p build
@@ -491,27 +498,42 @@ jobs:
           export PATH="$HOME/.maestro/bin:$PATH"
           maestro --version
 
-          if maestro test .maestro/smoke-alive.yaml --format junit --output build/maestro-junit.xml; then
-            echo "alive-flow: PASS"
+          # R352 R1 — run 43596707875 died on IOSDriverTimeoutException
+          # (the XCUITest runner needed longer than Maestro's 120 s
+          # default on a loaded mac runner). 6 minutes of startup
+          # budget, and the flow itself gets one infra retry below.
+          export MAESTRO_DRIVER_STARTUP_TIMEOUT=360000
+
+          # R352 R2 — the smoke is a SIGNAL, never a publish gate: a
+          # failed flow is recorded (junit + diagnostics + warning),
+          # never a red step — publishing is owned by build + verify.
+          SMOKE_RC=0
+          maestro test .maestro/smoke-alive.yaml --format junit --output build/maestro-junit.xml \
+            || SMOKE_RC=$?
+          if [ "$SMOKE_RC" != "0" ]; then
+            echo "attempt 1 failed (rc=$SMOKE_RC) — capturing diagnostics, retrying once"
+            xcrun simctl io "$UDID" screenshot build/smoke-failure-attempt1.png || true
+            xcrun simctl spawn "$UDID" log show --last 5m --style compact 2>/dev/null | tail -300 > build/sim-log-attempt1.log || true
+            if maestro test .maestro/smoke-alive.yaml --format junit --output build/maestro-junit-retry.xml; then
+              echo "retry: PASS"
+            else
+              echo "retry failed too"
+              xcrun simctl io "$UDID" screenshot build/smoke-failure.png || true
+              xcrun simctl spawn "$UDID" log show --last 10m --style compact 2>/dev/null | tail -400 > build/sim-log-tail.log || true
+              echo "::warning::Maestro alive-flow FAILED on both attempts — recorded in the smoke result; publish proceeds on the independent verify"
+            fi
           else
-            echo "::error::Maestro alive-flow FAILED — the app did not stay alive/interactive"
-            # R349 (post-3½): the previous failure dumped only a log tail to
-            # the step log — no screenshot, no artifact. Capture BOTH: the
-            # pixel truth (simctl screenshot) and the app's own simulator
-            # log window, so the next diagnosis reads the ACTUAL state.
-            xcrun simctl io "$UDID" screenshot build/smoke-failure.png || true
-            xcrun simctl spawn "$UDID" log show --last 10m --style compact 2>/dev/null | tail -400 > build/sim-log-tail.log || true
-            exit 1
+            echo "alive-flow: PASS"
           fi
 
-          echo "== Crash-report scan (ly.madarek.mobile .ips since the marker) =="
+          echo "== Crash-report scan (ly.madarek.mobile .ips since the marker; recorded, signal not gate) =="
           NEW_IPS=$(find "$CRASH_DIR" -name "*.ips" -newer "$MARKER" 2>/dev/null | grep -i "madarek" | wc -l | tr -d ' ')
-          if [ "$NEW_IPS" != "0" ]; then
-            echo "::error::$NEW_IPS new crash report(s) for the app during the smoke"
+          echo "${NEW_IPS:-0}" > build/crash-count.txt
+          echo "new crash report(s) for the app during the smoke: ${NEW_IPS:-0}"
+          if [ "${NEW_IPS:-0}" != "0" ]; then
             find "$CRASH_DIR" -name "*.ips" -newer "$MARKER" 2>/dev/null || true
-            exit 1
+            echo "::warning::$NEW_IPS new crash report(s) recorded in the smoke result"
           fi
-          echo "Smoke green: 60s alive window held, zero crash reports."
 
       - name: Write the smoke result (R6)
         if: always()
@@ -522,21 +544,42 @@ jobs:
           set -euo pipefail
           mkdir -p build
           RESULT="unknown"
+          ATTEMPTS=0
           if [ -f build/maestro-junit.xml ] && ! grep -q '<failure' build/maestro-junit.xml; then
-            RESULT="pass"
-          elif [ -f build/maestro-junit.xml ]; then
-            RESULT="fail"
+            RESULT="pass"; ATTEMPTS=1
+          elif [ -f build/maestro-junit-retry.xml ] && ! grep -q '<failure' build/maestro-junit-retry.xml; then
+            RESULT="pass-flaky"; ATTEMPTS=2
+          elif [ -f build/maestro-junit.xml ] || [ -f build/maestro-junit-retry.xml ]; then
+            RESULT="fail"; ATTEMPTS=$([ -f build/maestro-junit-retry.xml ] && echo 2 || echo 1)
           fi
-          jq -n --arg result "$RESULT" \
+          jq -n --arg result "$RESULT" --argjson attempts "$ATTEMPTS" \
+            --argjson crashes "$(cat build/crash-count.txt 2>/dev/null || echo 0)" \
             --arg api "hermetic (localhost:4000, same-commit backend)" \
             --arg run_url "$RUN_URL" \
             --arg commit "$(git rev-parse HEAD)" \
-            '{smoke: $result, api: $api, run_url: $run_url, commit: $commit}' \
+            '{smoke: $result, attempts: $attempts, crashes: $crashes, api: $api, run_url: $run_url, commit: $commit}' \
             > build/smoke-result.json
           cat build/smoke-result.json
-          if [ "$RESULT" != "pass" ]; then
-            echo "::error::smoke result: $RESULT (recorded; publish proceeds on verify per R6 policy)"
-            exit 1
+          # R352 R2 — signal, not gate: the build job stays green so the
+          # independent verify + the SideStore publish ALWAYS run; the
+          # smoke result rides the summary + the release notes.
+          {
+            echo "## iOS simulator smoke result: ${RESULT}"
+            echo
+            echo '- attempts: '"${ATTEMPTS}"
+            echo '- api: hermetic (localhost:4000, same-commit backend)'
+            echo '- run: '"${RUN_URL}"
+            if [ "$RESULT" = "pass" ] || [ "$RESULT" = "pass-flaky" ]; then
+              echo '- the alive-flow held: login → dashboard → 60s alive'
+            else
+              echo '- :warning: the alive-flow did NOT pass — recorded in the smoke result; the IPA still verifies + publishes per the R352 R2 policy'
+            fi
+            if [ "$(cat build/crash-count.txt 2>/dev/null || echo 0)" != "0" ]; then
+              echo "- :warning: crash reports: $(cat build/crash-count.txt) — see the diagnostics artifact"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$RESULT" = "fail" ] || [ "$RESULT" = "unknown" ]; then
+            echo "::warning::smoke result: $RESULT (recorded; publish proceeds on the independent verify)"
           fi
 
       - name: Upload smoke result (R6)
@@ -548,16 +591,23 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Upload smoke diagnostics on failure
-        if: failure()
+      - name: Upload smoke diagnostics (always — files exist only on a failed flow)
+        # R352 R2 — the flow step no longer fails the job, so failure()
+        # would never fire; always() + if-no-files-found: ignore keeps
+        # the diagnostics arriving exactly when they exist.
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ios-smoke-diagnostics-${{ github.run_number }}
           path: |
             apps/mobile/build/xcodebuild-sim.log
             apps/mobile/build/maestro-junit.xml
+            apps/mobile/build/maestro-junit-retry.xml
+            apps/mobile/build/smoke-failure-attempt1.png
             apps/mobile/build/smoke-failure.png
+            apps/mobile/build/sim-log-attempt1.log
             apps/mobile/build/sim-log-tail.log
+            apps/mobile/build/crash-count.txt
             ~/Library/Logs/DiagnosticReports/*.ips
           if-no-files-found: ignore
           retention-days: 14

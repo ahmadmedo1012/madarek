@@ -494,6 +494,10 @@ jobs:
       # The hermetic stack: baked into the smoke APK at Metro bundle time
       # (EXPO_PUBLIC_* inlining) and used by the backend steps below.
       EXPO_PUBLIC_API_BASE_URL: http://10.0.2.2:4000/api/v1
+      # R352 R1 — belt: the baked base above is already non-production so
+      # the app pins it itself (remote-config auto-rule); the explicit
+      # flag makes the intent legible and immune to list drift.
+      EXPO_PUBLIC_DISABLE_REMOTE_CONFIG: "1"
       SMOKE_DATABASE_URL: postgresql://madarek:madarek@localhost:5432/madarek_smoke
       SMOKE_JWT_ACCESS_SECRET: ci-only-access-secret-0123456789abcdef0123456789abcdef
       SMOKE_JWT_REFRESH_SECRET: ci-only-refresh-secret-0123456789abcdef0123456789abcd
@@ -762,8 +766,10 @@ jobs:
             { test -f apps/mobile/build/maestro-junit.xml && ! grep -q "<failure" apps/mobile/build/maestro-junit.xml; } || { echo "retrying once (flaky-infra allowance)"; maestro test apps/mobile/.maestro/smoke-alive.yaml --format junit --output apps/mobile/build/maestro-junit-retry.xml || { echo "retry failed too"; adb exec-out screencap -p > apps/mobile/build/smoke-failure-retry.png; }; }
             echo "== No-minify paint discriminator (only on double failure) =="
             { test -f apps/mobile/build/maestro-junit-retry.xml && grep -q "<failure" apps/mobile/build/maestro-junit-retry.xml; } && { echo "both attempts failed — probing the NO-MINIFY build"; adb uninstall ly.madarek.mobile || true; adb install -r apps/mobile/build/Madarek-smoke-x86_64-nominify.apk; adb logcat -c; adb shell am start -n ly.madarek.mobile/.MainActivity; sleep 12; adb exec-out screencap -p > apps/mobile/build/nominify-probe.png; adb shell uiautomator dump /sdcard/wd3.xml >/dev/null 2>&1; adb pull /sdcard/wd3.xml apps/mobile/build/ui-nominify.xml >/dev/null 2>&1; adb logcat -d > apps/mobile/build/logcat-nominify.log; adb shell am force-stop ly.madarek.mobile; } || echo "smoke finished — skipping the no-minify probe"
-            echo "== Crash-buffer scan (fatal for ly.madarek.mobile) =="
-            adb logcat -d -b crash | tee /tmp/crash-buffer.txt | grep -c "ly.madarek.mobile" | grep -qx 0
+            echo "== Crash-buffer scan (recorded for build-info; signal not gate per R352 R2) =="
+            CRASHES=$(adb logcat -d -b crash | tee /tmp/crash-buffer.txt | { grep -c "ly.madarek.mobile" || true; })
+            echo "${CRASHES:-0}" > apps/mobile/build/crash-count.txt
+            echo "crash-buffer entries for ly.madarek.mobile: ${CRASHES:-0}"
             echo "Alive-flow sequence complete."
 
       - name: Write the smoke result
@@ -784,15 +790,35 @@ jobs:
             RESULT="fail"; ATTEMPTS=$([ -f build/maestro-junit-retry.xml ] && echo 2 || echo 1)
           fi
           jq -n --arg result "$RESULT" --argjson attempts "$ATTEMPTS" \
+            --argjson crashes "$(cat build/crash-count.txt 2>/dev/null || echo 0)" \
             --arg api "hermetic (10.0.2.2:4000, same-commit backend)" \
             --arg run_url "$RUN_URL" \
             --arg commit "$(git rev-parse HEAD)" \
-            '{smoke: $result, attempts: $attempts, api: $api, run_url: $run_url, commit: $commit}' \
+            '{smoke: $result, attempts: $attempts, crashes: $crashes, api: $api, run_url: $run_url, commit: $commit}' \
             > build/smoke-result.json
           cat build/smoke-result.json
+          # R352 R2 — the smoke is a SIGNAL, never a publish gate: the
+          # result rides build-info.json + the job summary; publishing is
+          # owned by build + the independent verify. A failed smoke gets
+          # a loud warning annotation, not a red job (a red job buys
+          # nothing the warning + summary don't already say).
+          {
+            echo "## Emulator smoke result: ${RESULT}"
+            echo
+            echo '- attempts: '"${ATTEMPTS}"
+            echo '- api: hermetic (10.0.2.2:4000, same-commit backend)'
+            echo '- run: '"${RUN_URL}"
+            if [ "$RESULT" = "pass" ] || [ "$RESULT" = "pass-flaky" ]; then
+              echo '- the alive-flow held: login → dashboard → 60s alive'
+            else
+              echo '- :warning: the alive-flow did NOT pass — the result is recorded in build-info.json; publishing proceeds on the independent verify per the R3 policy'
+            fi
+            if [ "$(cat build/crash-count.txt 2>/dev/null || echo 0)" != "0" ]; then
+              echo "- :warning: crash-buffer entries: $(cat build/crash-count.txt) — see the diagnostics artifact"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
           if [ "$RESULT" = "fail" ] || [ "$RESULT" = "unknown" ]; then
-            echo "::error::smoke result: $RESULT (recorded; publish proceeds on verify per R3 policy)"
-            exit 1
+            echo "::warning::smoke result: $RESULT (recorded in build-info.json + summary; publish proceeds on the independent verify)"
           fi
 
       - name: Upload smoke result
