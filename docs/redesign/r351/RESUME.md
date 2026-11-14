@@ -28,14 +28,15 @@ Tokens in `/home/z/.madarek-env` (600). Queue (§4): X → K → R-verify → A 
 ### LANE X — X3 remote config (0bdaeeca + the gh-pages mirror)
 - apiOrigins[] served by the Vercel CDN + mirrored to gh-pages (config-pages.yml); mobile remote-config + client origin failover; mobile jest 1216/1216 (+11).
 
-### LANE X — X4 cutover (29187787 + CI fixes) — IN FLIGHT
-- The flip landed: apiOrigins vercel-first (config asset + gh-pages), deploy-smoke retargeted, keep-warm schedule OFF (14-day standby window), tick wakes via TICK_TARGET_URL. deploy-vercel.yml failed twice (--org; then --prebuilt with no .vercel/output — run 43589835490); fix aa70de8b (vercel build + the buildId pin) in flight as run 43595196731; the residual origin flip (next commit) is held locally until that run concludes (same-ref concurrency would cancel it mid-flight).
-- Render is NOT yet suspended (auto-deploys on main pushes — events at 11:37 UTC); suspend happens right after the production deploy verifies. keep-warm still runs on pushes and fails (disabled at cutover completion, file deleted day 14). Issue #44 (the pre-cutover smoke failure) closes with the verify evidence. Preview URLs SSO-protected by default; production alias public.
+### LANE X — X4 cutover (29187787 → 2d513a46) — DONE, verified live
+- The flip: apiOrigins vercel-first, the residual origin flip (8c9b14e7 — every operative surface incl. canonical/OG/sitemap/robots, mobile baked defaults, backend fallbacks, CORS default + standby, the 4 pinning tests reconciled), the JSON-LD CSP pin refresh (2d513a46).
+- The deploy lesson: --prebuilt bound the [SENSITIVE] pull placeholders at runtime (DB_UNAVAILABLE 12 ms; run 43595196731); the deploy goes REMOTE build (4d80e9aa) — the platform injects the stored values server-side. The buildId pin (PATCH RENDER_GIT_COMMIT per deploy) makes /status's buildId == the pushed sha.
+- Verified live on https://madarek-nine.vercel.app: /health ok:true dbLatencyMs:280 env:production buildId:2d513a46d75d; Deploy Vercel + Deploy smoke green on the same sha (logins ×3, dashboard, OpenAPI, web-vitals); OTA to production+preview; Render SUSPENDED (13:15:37 UTC, the 14-day standby); keep-warm disabled_manually; #44 closed; APP_ORIGIN PATCHed to the Vercel origin.
 
 ## next (in order)
-1. X4 completion: watch deploy-vercel run 43595196731 (aa70de8b) → push the held origin-flip commit → watch ITS deploy → verify production (buildId == sha on /api/v1/status, health ok, the live smoke, deploy-smoke's ×3 logins).
-2. Then the API-side cutover set: Render suspend (srv-d88trgm7r5hc73cri9i0), disable the keep-warm workflow (delete the file at day 14), close issue #44, OTA `eas update --branch production`, the X4 verify LOG line.
-3. X5 usage watch; then K, R-verify, A, G, M (the From domain + Resend-domain decision), S5/S6, P-rem, N, W, T, V, Q, L, Z (§4 order).
+1. X5 — the Vercel usage watch (weekly table; 60 % alert thresholds in the admin ops page) + the Hobby non-commercial caveat in the owner guide with the upgrade path.
+2. K (stability), then R-verify: R1 owns the 4d80e9aa Android build failure (diagnose with its run logs; android-latest last good = 03:54 pre-wave; iOS still in flight) + the /app page freshness proof.
+3. Then A, G, M (the From domain + Resend-domain decision), S5/S6, P-rem, N, W, T, V, Q, L, Z (§4 order).
 
 ## box notes
 - Every task: worktree `/home/z/wt/<id>`, branch `wip/<id>`, commit + push each step; verify.sh --fast before main ff.
