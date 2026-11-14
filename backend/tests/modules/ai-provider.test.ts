@@ -803,7 +803,7 @@ describe('ai.routes.ts — the P4 mode switch', () => {
     expect(aiRouteSource).toContain('buildChatMessages(system, history, message)');
     // r176b: the prompts are built from the PRE-LOADED context lines
     // (grounded: mastery + enrollment for students, teaching for others).
-    expect(aiRouteSource).toContain('buildStudentSystemPrompt(context.masteryLines, context.courseLines)');
+    expect(aiRouteSource).toContain('buildStudentSystemPrompt(context.masteryLines, context.courseLines, context.activityLines)');
     expect(aiRouteSource).toContain('buildGenericSystemPrompt(context.teachingLines)');
     expect(aiRouteSource).toContain('isMasteryAwareRole(role)');
   });

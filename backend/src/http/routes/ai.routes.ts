@@ -46,6 +46,10 @@ import {
   searchKnowledge,
   type KnowledgeCitation,
 } from '../../modules/ai/knowledge.js';
+import {
+  getStudentContextPack,
+  renderContextPackLines,
+} from '../../modules/ai/context-pack.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -407,6 +411,9 @@ interface ChatContextLines {
   masteryLines: string[];
   courseLines: string[];
   teachingLines: string[];
+  /** R352 A/G2: the StudentContextPack's bounded activity lines
+   *  (empty for non-student roles). */
+  activityLines: string[];
 }
 
 async function loadChatContext(
@@ -415,13 +422,25 @@ async function loadChatContext(
   institutionId: string,
 ): Promise<ChatContextLines> {
   if (isMasteryAwareRole(role)) {
+    /* R352 A/G2 — the StudentContextPack rides the SAME parallel wave:
+     * the TTL-cached builder (10 min + write-surface invalidation) adds
+     * the activity signals the prompt never saw. Best-effort by the
+     * module's law: a pack failure degrades to empty activity lines and
+     * is logged here — it must never fail the chat turn. */
+    let activityLines: string[] = [];
+    try {
+      const pack = await getStudentContextPack(userId, institutionId, { prisma });
+      activityLines = renderContextPackLines(pack);
+    } catch (err) {
+      logger.warn({ err }, 'ai context-pack build failed (non-blocking; empty activity lines)');
+    }
     const [facts, courseLines] = await Promise.all([
       loadMasteryFacts(userId, institutionId),
       loadEnrollmentContext(userId, institutionId),
     ]);
-    return { masteryLines: masteryContextLines(facts), courseLines, teachingLines: [] };
+    return { masteryLines: masteryContextLines(facts), courseLines, teachingLines: [], activityLines };
   }
-  return { masteryLines: [], courseLines: [], teachingLines: await loadTeachingContext(userId, institutionId) };
+  return { masteryLines: [], courseLines: [], teachingLines: await loadTeachingContext(userId, institutionId), activityLines: [] };
 }
 
 /** Boot-frozen provider resolution: null = local composer mode. */
@@ -485,7 +504,7 @@ async function composeReplyWithProvider(
   ragBlock = '',
 ): Promise<{ reply: string; inputTokens: number; outputTokens: number; model: string }> {
   const persona = isMasteryAwareRole(role)
-    ? buildStudentSystemPrompt(context.masteryLines, context.courseLines)
+    ? buildStudentSystemPrompt(context.masteryLines, context.courseLines, context.activityLines)
     : buildGenericSystemPrompt(context.teachingLines);
   const system = ragBlock !== '' ? `${persona}\n\n${ragBlock}` : persona;
   const completion = await callProviderWithRetry(
@@ -691,7 +710,7 @@ async function handleChatStream(args: ChatStreamArgs): Promise<void> {
       // grounding context reads as appended course evidence, not as a
       // replacement of the tutor persona.
       const persona = isMasteryAwareRole(req.user!.role)
-        ? buildStudentSystemPrompt(context.masteryLines, context.courseLines)
+        ? buildStudentSystemPrompt(context.masteryLines, context.courseLines, context.activityLines)
         : buildGenericSystemPrompt(context.teachingLines);
       const system = rag.block !== '' ? `${persona}\n\n${rag.block}` : persona;
       try {
@@ -829,7 +848,7 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
      * can still overflow small free-model context windows; the NEW
      * user message below is never clipped. */
     let history: AiChatMessage[] = [];
-    let context: ChatContextLines = { masteryLines: [], courseLines: [], teachingLines: [] };
+    let context: ChatContextLines = { masteryLines: [], courseLines: [], teachingLines: [], activityLines: [] };
     if (aiProvider) {
       const [rows, ctx] = await Promise.all([
         conv

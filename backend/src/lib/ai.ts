@@ -260,6 +260,11 @@ export function masteryContextLines(facts: readonly MasteryFact[]): string[] {
 export function buildStudentSystemPrompt(
   masteryLines: readonly string[],
   courseLines: readonly string[] = [],
+  /** R352 A/G2: the StudentContextPack's bounded activity lines —
+   *  where the student stopped, recent checkpoint mistakes, grade
+   *  trends, attendance, upcoming deadlines, risk flags. Optional and
+   *  additive: older callers (and their pins) are untouched. */
+  activityLines: readonly string[] = [],
 ): string {
   const masteryBlock =
     masteryLines.length > 0
@@ -269,6 +274,10 @@ export function buildStudentSystemPrompt(
     courseLines.length > 0
       ? `مقرّرات الطالب المسجَّلة هذه الفترة (عناوين وأرقام فقط — بلا محتوى):\n${courseLines.join('\n')}`
       : 'لا توجد مقرّرات مسجَّلة لهذا الطالب هذه الفترة.';
+  const activityBlock =
+    activityLines.length > 0
+      ? `سياق النشاط الأخير (توقّف المشاهدة، أخطاء التفقّد، اتجاه الدرجات، الحضور، الاستحقاقات — أرقام وتواريخ فقط):\n${activityLines.join('\n')}`
+      : 'لا توجد إشارات نشاط إضافية لهذا الطالب بعد.';
   return [
     'أنت «مساعد مدارك الدراسيّ» — مساعد تعليميّ لطلبة الجامعة على منصّة مدارك.',
     // ── output style ──
@@ -295,6 +304,7 @@ export function buildStudentSystemPrompt(
     '<platform_data>',
     courseBlock,
     masteryBlock,
+    activityBlock,
     '</platform_data>',
   ].join('\n');
 }

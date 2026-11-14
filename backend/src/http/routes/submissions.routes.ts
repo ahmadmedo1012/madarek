@@ -8,6 +8,8 @@ import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
+/* R352 A/G2 — grading mutates the pack's grade-trend signal. */
+import { invalidateStudentContextPack } from '../../modules/ai/context-pack.js';
 // R350 E3 — the graded mail rides the committed grade (non-blocking).
 import { sendEventMail, renderAssignmentGraded, isDeliverableEmail, appUrl } from '../../lib/mail-events.js';
 import { assertOfferingAccess, assertOwnsOffering } from '../../lib/permissions.js';
@@ -313,6 +315,10 @@ router.post(
         }
         return row;
       });
+
+      // R352 A/G2 — a grade landed: the course-trend signal in the
+      // student's context pack is stale. Never-throw by the module's law.
+      invalidateStudentContextPack(submission.studentId);
 
       // R350 E3 — the graded mail (category courses, preference-gated,
       // outbox-owned). Non-blocking: a mail failure never fails the grade.

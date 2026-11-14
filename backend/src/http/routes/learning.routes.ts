@@ -16,6 +16,10 @@ import { extractPaperText } from '../../lib/pdf.js';
 // r179b: the file-adjacent paper scan shares the files institution gate
 // (no cycle: files.routes imports nothing from this file).
 import { requireFileInstitutionScope } from './files.routes.js';
+/* R352 A/G2 — the StudentContextPack cache invalidation hooks: these
+ * two surfaces mutate the pack's signals (watch progress, checkpoint
+ * correctness). Never-throw by the module's law. */
+import { invalidateStudentContextPack } from '../../modules/ai/context-pack.js';
 import { assertOwnsResearchPaper, assertOfferingAccess } from '../../lib/permissions.js';
 import { attendancePctFromStatusCounts } from '../../lib/risk.js';
 import { requireCapability } from '../middleware/requireCapability.js';
@@ -320,6 +324,8 @@ router.post('/lectures/:id/watch', validate(watchSchema), async (req, res, next)
           lastSeenAt: new Date(),
         },
       });
+      // R352 A/G2: watch progress changed — the pack's stop pct is stale.
+      invalidateStudentContextPack(studentId);
 
       // Smart auto-attendance: when a recorded lecture transitions into
       // "fully watched" for the first time, register the student as PRESENT
@@ -533,6 +539,8 @@ router.post(
             updatedAt: new Date(),
           },
         });
+        // R352 A/G2: a checkpoint answer changed — mistakes/risk flags are stale.
+        if (req.user!.role === Role.STUDENT) invalidateStudentContextPack(req.user!.id);
       }
       res.json({ data: { correct, correctIndex: cp.correctIndex, explanation: cp.explanation } });
     } catch (e) { next(e); }

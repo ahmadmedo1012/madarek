@@ -17,6 +17,8 @@ backend/tests
 # The contents (not the dir) are ignored so the file can be re-included.
 backend/scripts/*
 !backend/scripts/migrate-deploy.mjs
+!backend/scripts/storage-to-blob.mjs
+!backend/scripts/db-diagnostics.mjs
 scripts/*
 !scripts/warn-node-env.mjs
 *.md
