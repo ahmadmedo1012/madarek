@@ -169,3 +169,42 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
 - Remaining E3 events (announcements, assignment due/graded, exam schedule, enrolment,
   registrar approval, weekly digest) follow the same sendEventMail pattern at their
   trigger seats — next session's continuation.
+
+### LANE R — R8 the second-paint-killer verdict + the triple infra fix (0b983e1e)
+- Run 43531370824 root-cause table (closed): (1) the udev rule wrote
+  `KERNEL==kvm"` (missing opening quote) → matched NOTHING → no KVM →
+  5-min software boot → system_server monitor-contention storm → ANRs
+  (bluetooth/phone/system) → the "Process system isn't responding" dialog
+  covered the app in ALL 5 screenshots (the same 23.7% light box); the app
+  ITSELF painted (attempt1 shows the dark UI). (2) `expo config` ran
+  without MADAREK_VERSION_CODE → verify failed `unexpected versionCode:
+  36`. (3) iOS `migrate-deploy` died: dns.resolve4 can never see
+  /etc/hosts → localhost ESERVFAIL on macOS.
+- Fixes: the quoted rule + `test -r/-w /dev/kvm` proof; the env rides the
+  config-resolution step (+ an assertion the resolved config records it);
+  dns.lookup (getaddrinfo) in diagDns; a real phone panel (1080x2340
+  @420dpi via pre-emulator-launch-script) + cores 3 / ram 3072M / heap
+  512M; post-boot settle (dev.bootcomplete + keyguard + 20s).
+- **VERDICT: run 43541517670 on 0b983e1e = ALL FOUR JOBS GREEN — smoke:
+  pass, attempts: 1, hermetic 10.0.2.2:4000. android-latest now carries
+  0b983e1e (ancestor of main), version_code 37, verified: true,
+  release-signed, APK 59,043,736B @2026-11-14T01:52Z.** The 13-run mystery
+  is closed: every prior failure was the missing-KVM storm, never the app.
+- R4 freshness proof (half): mobile-touching commit 0b983e1e → new APK in
+  ~38 min; web/backend-only c54a702b → NO Android rebuild (paths filter).
+  iOS 43541598221 in flight on the same fixes.
+
+### LANE E — E3 continuation: the course-life events (c54a702b)
+- 9 wired seats (all void + never-throw + outbox-owned): announcements
+  fan-out (same audience as bell/push), assignment-graded, exam-graded,
+  exam PUBLISH now TELLS its audience (bell+push+mail — was silent),
+  enrollment-confirmed, users/owner status-change (ESSENTIAL), owner
+  role-change (the previously-unused template), import activation invites
+  (F1 mode A + r323 CSV; placeholder-domain rows stay sheet-only;
+  summary.activationMailQueued), scheduler daily 12–36h due-reminder +
+  weekly digest (ISO-week dedupe).
+- 8 new Arabic templates + escapeHtml retrofit across ALL templates +
+  isDeliverableEmail/clipText/appUrl/formatLyDateTime (Africa/Tripoli).
+- sendEventMail returns whether it queued (the fan-out counts real queues).
+- Tests +17 (mail-events 19, scheduler-mail 7); backend suite 2169 green;
+  verify --fast PASS; lint 0 errors.
