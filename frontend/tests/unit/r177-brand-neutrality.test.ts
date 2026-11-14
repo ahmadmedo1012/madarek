@@ -249,7 +249,7 @@ describe('r183 — brand-identity closure (the surfaces r177 missed)', () => {
   });
 
   it('backend boot banner and certificate issuer are the platform name, not ZU', () => {
-    const index = readRepo('backend/src/index.ts');
+    const index = readRepo('backend/src/server.ts');
     expect(index).toContain('Madarek Platform API listening');
     expect(index).not.toContain('ZU Platform API');
     const training = readRepo('backend/src/http/routes/training.routes.ts');

@@ -156,9 +156,12 @@ export function ImportWizardPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  /* step 1 — the file */
+  /* step 1 — the file (inline base64 OR the client-direct storage key —
+   * R351 X2d: the server offers the storage transport when the platform
+   * runs a Blob store; big rosters then never ride the request body) */
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
+  const [storageKey, setStorageKey] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
@@ -186,13 +189,13 @@ export function ImportWizardPage() {
   const [rollback, setRollback] = useState<RollbackOk | null>(null);
   const [rollbackConfirm, setRollbackConfirm] = useState(false);
 
-  const runParse = useCallback(async (b64: string, sheet?: string, presetId?: string) => {
+  const runParse = useCallback(async (b64: string | null, sheet?: string, presetId?: string, storageKeyIn?: string | null) => {
     setBusy(true);
     setError(null);
     try {
       const payload = await unwrap<ParseOk>(api.post('/import/parse', {
         entity: 'STUDENT',
-        fileBase64: b64,
+        ...(storageKeyIn ? { storageKey: storageKeyIn } : { fileBase64: b64 ?? '' }),
         ...(sheet ? { sheetName: sheet } : {}),
         ...(presetId ? { presetId } : {}),
       }));
@@ -215,6 +218,30 @@ export function ImportWizardPage() {
     }
   }, []);
 
+  /* R351 X2d — ask the server for the transport first: a Blob-backed
+   * deploy answers with a presigned client-direct PUT (the file never
+   * enters the request body — Vercel caps bodies at ≈4.5 MB); anything
+   * else answers mode:'inline' and the legacy base64 path runs. */
+  const uploadFile = useCallback(async (file: File): Promise<{ b64: string | null; storageKey: string | null }> => {
+    type Ticket = { mode: 'inline' } | { mode: 'client-upload'; key: string; uploadUrl: string };
+    // A failed ticket ask (older backend, transient fault) falls back
+    // to the inline base64 path — the import never blocks on transport
+    // negotiation.
+    const ticket = await unwrap<Ticket>(
+      api.post('/import/upload-ticket', { filename: file.name, sizeBytes: file.size }),
+    ).catch((): Ticket => ({ mode: 'inline' }));
+    if (ticket && ticket.mode === 'client-upload') {
+      const res = await fetch(ticket.uploadUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type || 'application/octet-stream' },
+        body: file,
+      });
+      if (!res.ok) throw new Error('upload-failed');
+      return { b64: null, storageKey: ticket.key };
+    }
+    return { b64: await fileToBase64(file), storageKey: null };
+  }, []);
+
   const acceptFile = useCallback(async (file: File) => {
     if (file.size > MAX_BYTES) {
       setError('حجم الملف يتجاوز ١٠ ميغابايت — قسّمه إلى ملفات أصغر');
@@ -222,14 +249,22 @@ export function ImportWizardPage() {
     }
     setError(null);
     setFileName(file.name);
-    const b64 = await fileToBase64(file);
-    setFileBase64(b64);
-    await runParse(b64);
-  }, [runParse]);
+    setBusy(true);
+    try {
+      const { b64, storageKey: key } = await uploadFile(file);
+      setFileBase64(b64);
+      setStorageKey(key);
+      await runParse(b64, undefined, undefined, key);
+    } catch {
+      setError('تعذّر رفع الملف — أعد المحاولة');
+    } finally {
+      setBusy(false);
+    }
+  }, [runParse, uploadFile]);
 
   /* step 2 → 3 */
   const runPreview = useCallback(async () => {
-    if (parsed === null || fileBase64 === null) return;
+    if (parsed === null || (fileBase64 === null && storageKey === null)) return;
     setBusy(true);
     setError(null);
     try {
@@ -242,7 +277,7 @@ export function ImportWizardPage() {
       }
       const payload = await unwrap<PreviewOk>(api.post('/import/preview', {
         entity: 'STUDENT',
-        fileBase64,
+        ...(storageKey ? { storageKey } : { fileBase64 }),
         columnMap: { version: 1, columns },
         createIfMissing,
         ...(sheetName ? { sheetName } : {}),
@@ -256,18 +291,18 @@ export function ImportWizardPage() {
     } finally {
       setBusy(false);
     }
-  }, [parsed, fileBase64, mapping, createIfMissing, sheetName]);
+  }, [parsed, fileBase64, storageKey, mapping, createIfMissing, sheetName]);
 
   /* step 4 → 5 */
   const runCommit = useCallback(async () => {
-    if (preview === null || fileBase64 === null) return;
+    if (preview === null || (fileBase64 === null && storageKey === null)) return;
     setBusy(true);
     setError(null);
     try {
       const payload = await unwrap<CommitOk>(api.post(`/import/jobs/${preview.jobId}/commit`, {
         duplicatePolicy,
         chunkSize: 200,
-        fileBase64,
+        ...(storageKey ? { storageKey } : { fileBase64 }),
         rowPolicies,
         ...(sheetName ? { sheetName } : {}),
       }));
@@ -279,7 +314,7 @@ export function ImportWizardPage() {
     } finally {
       setBusy(false);
     }
-  }, [preview, fileBase64, duplicatePolicy, rowPolicies, sheetName]);
+  }, [preview, fileBase64, storageKey, duplicatePolicy, rowPolicies, sheetName]);
 
   const runRollback = useCallback(async () => {
     if (committed === null) return;
@@ -320,7 +355,7 @@ export function ImportWizardPage() {
    * chip is an explicit restart of the mapping step. */
   const applyPreset = (presetId: string, labelAr: string) => {
     if (fileBase64 === null) return;
-    void runParse(fileBase64, sheetName, presetId).then(() => {
+    void runParse(fileBase64, sheetName, presetId, storageKey).then(() => {
       toast.success(`طُبق «${labelAr}» — راجع الأعمدة ثم عدّل ما تشاء`);
     });
   };
@@ -456,7 +491,7 @@ export function ImportWizardPage() {
                   id="iw-sheet"
                   className="auth-input"
                   value={sheetName ?? parsed.sheets[0] ?? ''}
-                  onChange={(e) => { if (fileBase64) void runParse(fileBase64, e.target.value); }}
+                  onChange={(e) => { if (fileBase64 || storageKey) void runParse(fileBase64, e.target.value, undefined, storageKey); }}
                 >
                   {parsed.sheets.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>

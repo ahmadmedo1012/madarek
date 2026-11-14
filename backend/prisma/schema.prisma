@@ -2686,3 +2686,19 @@ model RateLimitHit {
 
   @@index([updatedAt])
 }
+
+// ── R351 X2d — the import upload tickets (client-direct transports) ──
+/// One row per server-minted upload key (POST /import/upload-ticket).
+/// The row is the bookkeeping truth for the transient object: consumed
+/// on commit, pruned (object + row) after 24 h by the daily tick.
+model ImportUpload {
+  id            String    @id @default(cuid())
+  key           String    @unique
+  sizeBytes     Int
+  mintedBy      String
+  institutionId String?
+  consumedAt    DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([createdAt])
+}

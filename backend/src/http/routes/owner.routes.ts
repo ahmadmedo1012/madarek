@@ -771,7 +771,7 @@ router.get('/education', async (_req, res, next) => {
  * clock, no network); the reachability pair is folded in by the route
  * from the memoized probe. */
 export interface StorageStatus {
-  driver: 'local' | 's3' | 'postgres';
+  driver: 'local' | 's3' | 'postgres' | 'vercel-blob';
   persistent: boolean;
   /** r167: present ONLY for driver=s3 once a probe has answered —
    *  `true` = the store answered (a 404 on the probe key is still an
@@ -798,10 +798,16 @@ export interface StorageStatus {
  * by construction; pinned by the owner-schemas tests).
  */
 export function toStorageStatus(
-  driver: 'local' | 's3' | 'postgres',
+  driver: 'local' | 's3' | 'postgres' | 'vercel-blob',
   reachability?: StorageReachability | null,
 ): StorageStatus {
-  const status: StorageStatus = { driver, persistent: driver === 's3' || driver === 'postgres' };
+  // R351 X2d — vercel-blob joins the persistent set (Vercel Blob is
+  // durable storage; the imports namespace is transient BY POLICY, not
+  // by infrastructure).
+  const status: StorageStatus = {
+    driver,
+    persistent: driver === 's3' || driver === 'postgres' || driver === 'vercel-blob',
+  };
   // Defensive: a non-s3 driver never gains reachability fields (local
   // and postgres short-circuit upstream; a stray answer must not leak
   // through — the postgres driver's "reachability" IS the app's own DB

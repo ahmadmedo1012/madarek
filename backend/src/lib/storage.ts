@@ -36,6 +36,14 @@ import {
   parseUploadId,
   presignS3Url,
 } from './storage-presign.js';
+import {
+  put as blobPut,
+  get as blobGet,
+  head as blobHead,
+  del as blobDel,
+  issueSignedToken,
+  presignUrl,
+} from '@vercel/blob';
 import { logger } from '../logger.js';
 import { prisma } from '../db.js';
 
@@ -56,7 +64,11 @@ export interface StorageDriver {
 // ─── Pure key helpers (tests/modules/storage-sigv4.test.ts) ───────
 
 /** The only namespaces the platform stores under. */
-export const STORAGE_NAMESPACES = ['papers', 'materials', 'lectures'] as const;
+// R351 X2d: 'imports' — the registrar's upload files. Transient by
+// design (deleted on commit + pruned after 24 h by the tick): the blob
+// is only the client-direct TRANSPORT that keeps 10 MB rosters out of
+// the function body (Vercel ≈4.5 MB request cap).
+export const STORAGE_NAMESPACES = ['papers', 'materials', 'lectures', 'imports'] as const;
 export type StorageNamespace = (typeof STORAGE_NAMESPACES)[number];
 
 /**
@@ -125,6 +137,13 @@ export function storageKeyIsValid(key: string): boolean {
   if (filename.length === 0 || filename.includes('/')) return false;
   if (namespace === 'papers' || namespace === 'materials') {
     return filename.toLowerCase().endsWith('.pdf');
+  }
+  if (namespace === 'imports') {
+    // R351 X2d: the registrar's upload files — server-minted ids with
+    // the spreadsheet extensions the import parser accepts. Transient
+    // objects (see STORAGE_NAMESPACES).
+    const stem = filename.replace(/\.[^.]+$/, '');
+    return /^c[0-9a-f]{32}$/.test(stem) && /\.(xlsx|xls|csv)$/i.test(filename);
   }
   if (namespace === 'lectures') {
     // r327 P4(d) B2: the lectures namespace (r323 B2.1 presigned videos
@@ -665,13 +684,14 @@ export class PostgresDriver implements StorageDriver {
 /** The env slice the driver selection depends on (env.ts's parsed output
  *  satisfies it; tests inject their own object into buildDriver). */
 export interface StorageEnv {
-  STORAGE_DRIVER: 'local' | 's3' | 'postgres';
+  STORAGE_DRIVER: 'local' | 's3' | 'postgres' | 'vercel-blob';
   STORAGE_DIR?: string | undefined;
   S3_ENDPOINT?: string | undefined;
   S3_REGION: string;
   S3_BUCKET?: string | undefined;
   S3_ACCESS_KEY_ID?: string | undefined;
   S3_SECRET_ACCESS_KEY?: string | undefined;
+  BLOB_READ_WRITE_TOKEN?: string | undefined;
 }
 
 /** Injectable collaborators for buildDriver (r175): the postgres driver
@@ -687,6 +707,89 @@ export interface BuildDriverDeps {
  * The postgres branch fails loudly when the prisma model is not wired —
  * never silently degrades to local (same fail-closed ruling as s3).
  */
+// ─── Vercel Blob driver (R351 X2d) ─────────────────────────────────
+//
+// The serverless upload transport: files ride Blob's client-direct
+// presigned PUTs (Vercel functions cap request bodies at ≈4.5 MB — a
+// 10 MB import roster can never go through the body) and the API reads
+// them back with the read-write token, PRIVATE (access: 'private'
+// objects never get public URLs — student rosters are PII). Persistent
+// user-facing assets stay on their existing drivers; Blob objects in
+// the imports namespace are TRANSIENT (deleted on commit, pruned after
+// 24 h by the tick).
+export class VercelBlobDriver implements StorageDriver {
+  constructor(private readonly token: string) {}
+
+  async put(key: string, bytes: Buffer): Promise<void> {
+    await blobPut(key, bytes, {
+      access: 'private',
+      token: this.token,
+      allowOverwrite: true,
+      addRandomSuffix: false,
+    });
+  }
+
+  async get(key: string): Promise<Buffer | null> {
+    const result = await blobGet(key, { access: 'private', token: this.token });
+    if (!result || result.statusCode !== 200 || !result.stream) return null;
+    const full = new Uint8Array(await new Response(result.stream).arrayBuffer());
+    return Buffer.from(full);
+  }
+
+  async getRange(key: string, start: number, end: number): Promise<Buffer | null> {
+    // Blob has no ranged object reads — the full read + slice is the
+    // honest fallback (the imports transport never ranges; video
+    // streaming stays on the s3 driver).
+    const full = await this.get(key);
+    if (full === null || start >= full.length) return null;
+    return full.subarray(start, Math.min(end + 1, full.length));
+  }
+
+  async stat(key: string): Promise<{ size: number } | null> {
+    const info = await blobHead(key, { token: this.token });
+    return info ? { size: info.size } : null;
+  }
+
+  /** Best-effort transient cleanup — never throws (the DB row is the
+   *  bookkeeping source of truth; a leaked object dies at the 24 h
+   *  prune or the store's lifecycle). */
+  async delete(key: string): Promise<void> {
+    try {
+      await blobDel(key, { token: this.token });
+    } catch {
+      /* best-effort */
+    }
+  }
+
+  /**
+   * Mint a short-lived client-direct PUT URL for a server-chosen key:
+   * the browser PUTs the file straight to Blob (no function body, no
+   * base64), scoped to this one pathname, one content type, one size
+   * ceiling, and an absolute expiry.
+   */
+  async presignClientPut(key: string, opts: {
+    allowedContentType: string;
+    maximumSizeInBytes: number;
+    validUntilMs: number;
+  }): Promise<{ uploadUrl: string }> {
+    const signed = await issueSignedToken({
+      pathname: key,
+      operations: ['put'],
+      validUntil: opts.validUntilMs,
+      token: this.token,
+    });
+    const { presignedUrl } = await presignUrl(signed, {
+      operation: 'put',
+      pathname: key,
+      access: 'private',
+      validUntil: opts.validUntilMs,
+      allowedContentTypes: [opts.allowedContentType],
+      maximumSizeInBytes: opts.maximumSizeInBytes,
+    });
+    return { uploadUrl: presignedUrl };
+  }
+}
+
 export function buildDriver(e: StorageEnv, deps: BuildDriverDeps = {}): StorageDriver {
   if (e.STORAGE_DRIVER === 's3') {
     const missing: string[] = [];
@@ -704,6 +807,14 @@ export function buildDriver(e: StorageEnv, deps: BuildDriverDeps = {}): StorageD
       accessKeyId: e.S3_ACCESS_KEY_ID!,
       secretAccessKey: e.S3_SECRET_ACCESS_KEY!,
     });
+  }
+  if (e.STORAGE_DRIVER === 'vercel-blob') {
+    if (!e.BLOB_READ_WRITE_TOKEN) {
+      throw new Error(
+        'STORAGE_DRIVER=vercel-blob requires BLOB_READ_WRITE_TOKEN (create a Blob store in the Vercel dashboard, connect it to the project — the token env appears automatically)',
+      );
+    }
+    return new VercelBlobDriver(e.BLOB_READ_WRITE_TOKEN);
   }
   if (e.STORAGE_DRIVER === 'postgres') {
     if (!deps.binaryObject) {

@@ -50,7 +50,7 @@ const schema = z
     // own PostgreSQL — the durable pilot choice for Render Free (no
     // persistent disks on that plan, no new infrastructure); it needs
     // NO extra vars (DATABASE_URL is already required).
-    STORAGE_DRIVER: z.enum(['local', 's3', 'postgres']).default('local'),
+    STORAGE_DRIVER: z.enum(['local', 's3', 'postgres', 'vercel-blob']).default('local'),
     // Optional absolute override for the local driver root (defaults to
     // <backend>/storage — see storage.ts). Ignored when driver=s3.
     STORAGE_DIR: z.string().optional(),
@@ -80,6 +80,10 @@ const schema = z
     // mail webhook; Vercel's secure cron (CRON_SECRET env) and the GitHub
     // Actions ticker both send it as a Bearer token.
     CRON_SECRET: z.string().min(16).optional(),
+    // R351 X2d — the Vercel Blob store's read-write token (server reads
+    // the client-direct uploads back, privately). Only required when
+    // STORAGE_DRIVER=vercel-blob (the superRefine below fail-closes).
+    BLOB_READ_WRITE_TOKEN: z.string().min(16).optional(),
     // The app origin for email footer links (optional — templates omit
     // the footer link when unset).
     APP_ORIGIN: z.string().url().optional(),
@@ -150,6 +154,13 @@ const schema = z
     // message naming exactly which vars are missing. Test mode keeps the
     // placeholder-secret pattern and skips the check (vars stay optional
     // there — unit tests exercise buildDriver directly instead).
+    if (cfg.STORAGE_DRIVER === 'vercel-blob' && !isTest && !cfg.BLOB_READ_WRITE_TOKEN) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          'STORAGE_DRIVER=vercel-blob requires BLOB_READ_WRITE_TOKEN (create a Blob store in the Vercel dashboard and connect it to the project — the token env appears automatically)',
+      });
+    }
     if (cfg.STORAGE_DRIVER !== 's3' || isTest) return;
     const missing: string[] = [];
     if (!cfg.S3_ENDPOINT) missing.push('S3_ENDPOINT');

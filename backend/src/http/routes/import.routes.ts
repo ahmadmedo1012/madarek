@@ -46,6 +46,15 @@ import { buildImportTemplate, buildImportReport } from '../../lib/import/templat
 // R350 I-P4 — the mapping presets (generic-university, generic-school,
 // the unverified ghweil stub) + their coverage scoring.
 import { IMPORT_PRESETS, presetCoverage, applyPresetToHeaders } from '../../lib/import/presets.js';
+// R351 X2d — client-direct upload tickets (the blob transport) + the
+// storage read path that keeps 10 MB rosters out of the request body.
+import {
+  getStorage,
+  VercelBlobDriver,
+  buildStorageKey,
+  generateStorageId,
+  storageKeyIsValid,
+} from '../../lib/storage.js';
 import { KNOWN_IMPORT_TARGETS } from '../../lib/import/mapping.js';
 import { normalizeArabicSearch } from '../../modules/search/normalize.js';
 // R350 I-P0 — faculty/department NAME resolution (exact → normalised →
@@ -65,10 +74,30 @@ const importLimiter = createRouteLimiter({ max: 20 });
 
 const entitySchema = z.enum(['STUDENT', 'TEACHER']);
 
-const fileBodySchema = z.object({
-  fileBase64: z.string().min(16).max(14 * 1024 * 1024), // ≤ 14 MB encoded ≈ 10 MB raw (I1)
-  institutionId: z.string().min(1).max(64).optional(),
-  entity: entitySchema,
+/** R351 X2d — the file-source xor applies to parse/preview alike. */
+function withFileSourceXor<T extends z.ZodObject<z.ZodRawShape>>(schema: T) {
+  return schema.superRefine((body, ctx) => {
+    const b = body as { fileBase64?: string; storageKey?: string };
+    if (b.fileBase64 && b.storageKey) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'أرسل الملف إما مضمّنًا أو عبر المفتاح — ليس كليهما' });
+    }
+    if (!b.fileBase64 && !b.storageKey) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'الملف مطلوب (مضمّنًا أو عبر مفتاح الرفع)' });
+    }
+  });
+}
+
+const fileBodyBase = z
+  .object({
+    // R351 X2d — EITHER the inline base64 (≤14 MB encoded, the legacy
+    // path; fails at Vercel's ≈4.5 MB body cap) OR the storageKey of a
+    // client-direct upload (POST /import/upload-ticket minted the key;
+    // the server reads the object from storage). Exactly one must be
+    // present — the superRefine enforces the xor.
+    fileBase64: z.string().min(16).max(14 * 1024 * 1024).optional(), // ≤ 14 MB encoded ≈ 10 MB raw (I1)
+    storageKey: z.string().min(6).max(120).optional(),
+    institutionId: z.string().min(1).max(64).optional(),
+    entity: entitySchema,
   /** R350 I-P1 — which XLSX sheet to read (default: the first). */
   sheetName: z.string().min(1).max(64).optional(),
   /** R350 F2 — apply a named preset's placement as the suggested map
@@ -76,6 +105,8 @@ const fileBodySchema = z.object({
    * alias sniff runs when absent. */
   presetId: z.enum(['generic-university', 'generic-school', 'ghweil-school']).optional(),
 });
+
+const fileBodySchema = withFileSourceXor(fileBodyBase);
 
 /* The institution resolver (the r323 bulk-import pattern): ADMIN is
  * scoped by their own institution context; OWNER names the target. */
@@ -106,6 +137,84 @@ function decodeFile(fileBase64: string): Buffer {
   const buf = Buffer.from(fileBase64, 'base64');
   if (buf.length === 0) throw AppError.badRequest('الملف فارغ أو غير مُرمَّز بشكل صحيح');
   return buf;
+}
+
+/**
+ * R351 X2d — read a client-direct upload back from storage. The key
+ * MUST be one THIS server minted (an ImportUpload row exists, not yet
+ * consumed): a client-supplied arbitrary key would be a read primitive
+ * over the whole store. The row's declared size bounds the read, and
+ * the key re-passes the driver-side belt.
+ */
+export async function readUploadByKey(storageKey: string): Promise<Buffer> {
+  if (!storageKeyIsValid(storageKey) || !storageKey.startsWith('imports/')) {
+    throw AppError.badRequest('مفتاح الرفع غير صالح');
+  }
+  const ticket = await prisma.importUpload.findUnique({ where: { key: storageKey } });
+  if (!ticket) throw AppError.badRequest('مفتاح الرفع غير معروف — ابدأ الرفع من جديد');
+  if (ticket.consumedAt) throw AppError.badRequest('هذا الملف مُستهلك بالفعل — ارفعه مرة أخرى');
+  const storage = getStorage();
+  const buf = await storage.get(storageKey);
+  if (buf === null) throw AppError.badRequest('الملف المرفوع لم يصل إلى التخزين — أعد المحاولة');
+  if (buf.length === 0 || buf.length > 10 * 1024 * 1024) {
+    throw AppError.badRequest('حجم الملف خارج الحدود (١٠ ميجابايت كحد أقصى)');
+  }
+  return buf;
+}
+
+/** The parse/preview/commit file loader: inline base64 OR storage key. */
+export async function loadFileBuffer(body: { fileBase64?: string; storageKey?: string }): Promise<Buffer> {
+  if (body.storageKey) return readUploadByKey(body.storageKey);
+  return decodeFile(body.fileBase64!);
+}
+
+/** The transient-upload horizon: a ticket older than this is dead (the
+ *  registrar never finished the wizard) — the daily tick deletes the
+ *  object + the row. Generous against a long review session, tight
+ *  against orphans. */
+export const IMPORT_UPLOAD_TTL_MS = 24 * 3_600_000;
+
+/**
+ * R351 X2d — the daily tick's prune: delete stale upload tickets (and
+ * best-effort their objects). Returns the counts for the tick summary.
+ * Never throws (the tick's contract).
+ */
+export async function pruneImportUploads(now: Date = new Date()): Promise<{ pruned: number }> {
+  try {
+    const stale = await prisma.importUpload.findMany({
+      where: { createdAt: { lt: new Date(now.getTime() - IMPORT_UPLOAD_TTL_MS) } },
+      select: { key: true },
+      take: 500,
+    });
+    const storage = getStorage();
+    for (const row of stale) {
+      if (storage instanceof VercelBlobDriver) await storage.delete(row.key);
+    }
+    if (stale.length > 0) {
+      await prisma.importUpload.deleteMany({ where: { key: { in: stale.map((r) => r.key) } } });
+    }
+    return { pruned: stale.length };
+  } catch (err) {
+    logger.warn({ err }, 'import: upload prune failed (non-blocking)');
+    return { pruned: 0 };
+  }
+}
+
+/**
+ * Consume a ticket: mark it and best-effort delete the transient object
+ * (the commit is the last read; parse/preview may re-read the same key).
+ */
+export async function consumeUpload(storageKey?: string): Promise<void> {
+  if (!storageKey) return;
+  try {
+    await prisma.importUpload.update({ where: { key: storageKey }, data: { consumedAt: new Date() } });
+  } catch {
+    /* the row may already be gone — the prune owns it then */
+  }
+  const storage = getStorage();
+  if (storage instanceof VercelBlobDriver) {
+    await storage.delete(storageKey);
+  }
 }
 
 async function loadGrid(buf: Buffer, sheetName?: string): Promise<{ headers: string[]; rows: string[][]; encoding?: string; delimiter?: string }> {
@@ -163,6 +272,67 @@ async function customFields(institutionId: string, entity: ImportEntity) {
 
 /* ── POST /import/parse — structure detection + suggested mapping ── */
 
+/* ── POST /import/upload-ticket — the client-direct transport ────── */
+
+const IMPORT_UPLOAD_MAX_BYTES = 10 * 1024 * 1024;
+/** Spreadsheet content types the parser accepts (the ext belt + the
+ *  parser's own sniff both re-check — the content type here scopes the
+ *  presigned PUT). */
+const IMPORT_UPLOAD_TYPES: Record<string, string> = {
+  '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  '.xls': 'application/vnd.ms-excel',
+  '.csv': 'text/csv',
+};
+
+const uploadTicketSchema = z.object({
+  filename: z.string().min(1).max(255),
+  sizeBytes: z.number().int().positive().max(IMPORT_UPLOAD_MAX_BYTES),
+});
+
+router.post(
+  '/upload-ticket',
+  importLimiter,
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(uploadTicketSchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { filename, sizeBytes } = req.body as z.infer<typeof uploadTicketSchema>;
+      const baseName = filename.split(/[\\/]/).pop() ?? '';
+      const ext = baseName.slice(baseName.lastIndexOf('.')).toLowerCase();
+      const contentType = IMPORT_UPLOAD_TYPES[ext];
+      if (!contentType) {
+        throw AppError.badRequest('صيغة الملف غير مدعومة — المسموح: xlsx، xls، csv');
+      }
+      const storage = getStorage();
+      if (!(storage instanceof VercelBlobDriver)) {
+        // No blob transport configured (local/postgres/s3 drivers — dev,
+        // Render, or an S3-backed deploy): the wizard stays on the
+        // inline base64 path; the honest answer names the mode.
+        res.json({ data: { mode: 'inline' as const } });
+        return;
+      }
+      const key = buildStorageKey('imports', `${generateStorageId()}${ext}`);
+      const validUntilMs = Date.now() + 10 * 60_000; // 10 minutes to start the PUT
+      const { uploadUrl } = await storage.presignClientPut(key, {
+        allowedContentType: contentType,
+        maximumSizeInBytes: IMPORT_UPLOAD_MAX_BYTES,
+        validUntilMs,
+      });
+      await prisma.importUpload.create({
+        data: {
+          key,
+          sizeBytes,
+          mintedBy: req.user!.id,
+          institutionId: req.user!.institutionId ?? null,
+        },
+      });
+      res.json({ data: { mode: 'client-upload' as const, key, uploadUrl, validUntilMs } });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
 router.post(
   '/parse',
   importLimiter,
@@ -170,9 +340,9 @@ router.post(
   validate(fileBodySchema, 'body'),
   async (req, res, next) => {
     try {
-      const { fileBase64, institutionId, entity, sheetName, presetId } = req.body as z.infer<typeof fileBodySchema>;
+      const { institutionId, entity, sheetName, presetId } = req.body as z.infer<typeof fileBodySchema>;
       const instId = await resolveInstitutionId(req, institutionId);
-      const buf = decodeFile(fileBase64);
+      const buf = await loadFileBuffer(req.body as { fileBase64?: string; storageKey?: string });
       const sheets = detectFormat(buf) === 'XLSX' ? await listSheets(buf) : [];
       const grid = await loadGrid(buf, sheetName);
       if (grid.headers.length === 0) throw AppError.badRequest('الملف بلا ترويسة — الصف الأول يجب أن يحمل أسماء الأعمدة');
@@ -244,15 +414,17 @@ router.post(
 
 /* ── POST /import/preview — create the job + per-row verdicts ────── */
 
-const previewBodySchema = fileBodySchema.extend({
-  columnMap: z.object({
-    version: z.literal(1),
-    columns: z.array(z.object({ source: z.string(), target: z.string() })).min(1),
+const previewBodySchema = withFileSourceXor(
+  fileBodyBase.extend({
+    columnMap: z.object({
+      version: z.literal(1),
+      columns: z.array(z.object({ source: z.string(), target: z.string() })).min(1),
+    }),
+    /** R350 I-P0 — unknown faculty/department names: create them at
+     * commit (audited) instead of erroring the rows. */
+    createIfMissing: z.boolean().default(false),
   }),
-  /** R350 I-P0 — unknown faculty/department names: create them at
-   * commit (audited) instead of erroring the rows. */
-  createIfMissing: z.boolean().default(false),
-});
+);
 
 router.post(
   '/preview',
@@ -261,9 +433,9 @@ router.post(
   validate(previewBodySchema, 'body'),
   async (req, res, next) => {
     try {
-      const { fileBase64, institutionId, entity, columnMap, createIfMissing, sheetName } = req.body as z.infer<typeof previewBodySchema>;
+      const { institutionId, entity, columnMap, createIfMissing, sheetName } = req.body as z.infer<typeof previewBodySchema>;
       const instId = await resolveInstitutionId(req, institutionId);
-      const buf = decodeFile(fileBase64);
+      const buf = await loadFileBuffer(req.body as { fileBase64?: string; storageKey?: string });
       const grid = await loadGrid(buf, sheetName);
       const { full, metas } = await customFields(instId, entity);
       const map = applyMappingProfile(grid.headers, columnMap as unknown as MappingProfile, metas);
@@ -434,16 +606,28 @@ router.post(
 
 /* ── POST /import/jobs/:id/commit — chunked, idempotent ──────────── */
 
-const commitBodySchema = z.object({
+const commitBodySchema = z
+  .object({
   duplicatePolicy: z.enum(['SKIP', 'UPDATE', 'FILL_EMPTY', 'ERROR']).default('SKIP'),
   chunkSize: z.number().int().min(20).max(500).default(200),
-  fileBase64: z.string().min(16).max(14 * 1024 * 1024), // ≤ 14 MB encoded ≈ 10 MB raw (I1)
+  // R351 X2d — inline base64 (legacy) OR the storageKey of a
+  // client-direct upload; exactly one (the same xor as fileBodySchema).
+  fileBase64: z.string().min(16).max(14 * 1024 * 1024).optional(), // ≤ 14 MB encoded ≈ 10 MB raw (I1)
+  storageKey: z.string().min(6).max(120).optional(),
   sheetName: z.string().min(1).max(64).optional(),
   /** R350 I-P2 — per-row policy overrides, keyed by the data line
    * number: the wizard's per-row verdict beats the global policy for
    * duplicates (SKIP | UPDATE | FILL_EMPTY). */
   rowPolicies: z.record(z.string().regex(/^\d+$/), z.enum(['SKIP', 'UPDATE', 'FILL_EMPTY'])).default({}),
-});
+  })
+  .superRefine((body, ctx) => {
+    if (body.fileBase64 && body.storageKey) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'أرسل الملف إما مضمّنًا أو عبر المفتاح — ليس كليهما' });
+    }
+    if (!body.fileBase64 && !body.storageKey) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'الملف مطلوب (مضمّنًا أو عبر مفتاح الرفع)' });
+    }
+  });
 
 router.post(
   '/jobs/:id/commit',
@@ -452,7 +636,7 @@ router.post(
   validate(commitBodySchema, 'body'),
   async (req, res, next) => {
     try {
-      const { duplicatePolicy, chunkSize, fileBase64, sheetName, rowPolicies } = req.body as z.infer<typeof commitBodySchema>;
+      const { duplicatePolicy, chunkSize, storageKey, sheetName, rowPolicies } = req.body as z.infer<typeof commitBodySchema>;
       const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
       if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
       await resolveInstitutionId(req, job.institutionId);
@@ -474,7 +658,7 @@ router.post(
 
       // Re-read the source file and re-validate against the SAVED map —
       // the commit is grounded in the same bytes the preview judged.
-      const buf = decodeFile(fileBase64);
+      const buf = await loadFileBuffer(req.body as { fileBase64?: string; storageKey?: string });
       const grid = await loadGrid(buf, sheetName);
       const { full, metas } = await customFields(job.institutionId, job.entity as ImportEntity);
       const map = applyMappingProfile(grid.headers, job.columnMap as unknown as MappingProfile, metas);
@@ -742,6 +926,10 @@ router.post(
           logger.warn({ err, jobId: job.id }, 'import: activation mail failed (non-blocking)');
         }
       })();
+
+      // R351 X2d — the commit is the LAST read of the upload: consume
+      // the ticket + best-effort delete the transient object.
+      await consumeUpload(storageKey);
 
       const completed = await prisma.importJob.update({
         where: { id: job.id },
