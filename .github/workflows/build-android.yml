@@ -846,7 +846,7 @@ jobs:
             echo
             echo '- attempts: '"${ATTEMPTS}"
             echo '- api: hermetic (10.0.2.2:4000, same-commit backend)'
-            echo '- prod-config proof (R4): '"$PROOF"'
+            echo "- prod-config proof (R4): $PROOF"
             echo '- run: '"${RUN_URL}"
             if [ "$RESULT" = "pass" ] || [ "$RESULT" = "pass-flaky" ]; then
               echo '- the alive-flow held: login → dashboard → 60s alive'
