@@ -17,7 +17,6 @@ name: "02 — طالب: دخول، تبويبات، خروج"
 - tapOn:
     id: "login-password"
 - inputText: "12345678"
-- hideKeyboard
 - tapOn: "دخول"
 - extendedWaitUntil:
     visible: "مقرراتي"

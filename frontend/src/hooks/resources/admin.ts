@@ -596,7 +596,7 @@ export function useDropEnrollment() {
 // retry/cancel, suppression list, test send, template previews) —
 // NOT institution-scoped, so plain query keys (no scope invalidation).
 
-export interface MailAdminStatus {
+interface MailAdminStatus {
   provider: string;
   configured: boolean;
   from: string;
@@ -619,7 +619,7 @@ export function useMailAdminStatus() {
   });
 }
 
-export interface MailOutboxRow {
+interface MailOutboxRow {
   id: string;
   to: string;
   template: string;
@@ -634,7 +634,7 @@ export interface MailOutboxRow {
   createdAt: string;
 }
 
-export interface MailListMeta {
+interface MailListMeta {
   page: number;
   limit: number;
   total: number;
@@ -666,7 +666,7 @@ export function useMailOutboxMeta(params: { page: number; status?: string; enabl
   });
 }
 
-export interface MailSuppressionRow {
+interface MailSuppressionRow {
   id: string;
   email: string;
   type: 'hard_bounce' | 'complaint' | 'unsubscribe';

@@ -14,7 +14,6 @@ name: "05 — جودة: دخول، تبويبات، خروج"
 - tapOn:
     id: "login-password"
 - inputText: "12345678"
-- hideKeyboard
 - tapOn: "دخول"
 - extendedWaitUntil:
     visible: "المقررات"

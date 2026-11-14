@@ -15,7 +15,6 @@ name: "03 — أستاذ: دخول، تبويبات، خروج"
 - tapOn:
     id: "login-password"
 - inputText: "12345678"
-- hideKeyboard
 - tapOn: "دخول"
 - extendedWaitUntil:
     visible: "الجدول"
