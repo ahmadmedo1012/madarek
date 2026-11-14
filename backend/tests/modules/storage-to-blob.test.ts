@@ -14,32 +14,48 @@
  *      up front (the one-row-at-a-time memory law).
  */
 import { describe, expect, it, afterEach } from 'vitest';
-import { planRow, shouldRun, runMigration } from '../../scripts/storage-to-blob.mjs';
+import {
+  planRow,
+  shouldRun,
+  runMigration,
+  type MigrationRow,
+  type BlobHeadInfo,
+  type MigrationPrisma,
+  type MigrationBlob,
+} from '../../scripts/storage-to-blob.mjs';
 
-function fakePrisma(rows) {
-  const state = { listedKeys: null, fetchedKeys: [] };
+type TestRow = MigrationRow & { bytes: Buffer };
+
+function fakePrisma(rows: TestRow[]): MigrationPrisma & {
+  state: { listedKeys: string[] | null; fetchedKeys: string[] };
+} {
+  const state = { listedKeys: null as string[] | null, fetchedKeys: [] as string[] };
   return {
     state,
     binaryObject: {
-      findMany: async ({ select }) => {
+      findMany: async ({ select }: { select?: Record<string, boolean> } = {}) => {
         if (select && 'bytes' in select) throw new Error('findMany must never select bytes (memory law)');
-        state.listedKeys = rows.map((r) => r.key);
-        return rows.map(({ key, size }) => ({ key, size }));
+        state.listedKeys = rows.map((r: TestRow) => r.key);
+        return rows.map(({ key, size }: TestRow) => ({ key, size }));
       },
-      findUnique: async ({ where, select }) => {
-        if (!select || !('bytes' in select)) throw new Error('findUnique must select bytes');
+      findUnique: async ({ where, select }: { where: { key: string }; select: { bytes: boolean; size: boolean } }) => {
+        if (!select || !select.bytes) throw new Error('findUnique must select bytes');
         state.fetchedKeys.push(where.key);
-        const row = rows.find((r) => r.key === where.key);
+        const row = rows.find((r: TestRow) => r.key === where.key);
         return row ? { bytes: row.bytes, size: row.size } : null;
       },
     },
   };
 }
 
-function fakeBlob(headMap, putLog = []) {
+function fakeBlob(
+  headMap: Map<string, BlobHeadInfo>,
+  putLog: Array<{ key: string; bytes: number }> = [],
+): MigrationBlob & { putLog: Array<{ key: string; bytes: number }> } {
   return {
-    head: async (key) => headMap.get(key) ?? null,
-    put: async (key, bytes) => {
+    putLog,
+    head: async (key: string) => headMap.get(key) ?? null,
+    put: async (key: string, bytes: Buffer) => {
       putLog.push({ key, bytes: bytes.length });
       headMap.set(key, { size: bytes.length });
     },
@@ -95,7 +111,7 @@ describe('runMigration', () => {
       { key: 'papers/two.pdf', size: 4, bytes: Buffer.from('bye!') },
     ];
     const headMap = new Map([['papers/two.pdf', { size: 4 }]]); // two already migrated
-    const putLog = [];
+    const putLog: Array<{ key: string; bytes: number }> = [];
     const prisma = fakePrisma(rows);
     const blob = fakeBlob(headMap, putLog);
     const out = await runMigration({ prisma, blob, envSlice: PROD_ENV });
@@ -110,35 +126,34 @@ describe('runMigration', () => {
   it('a size-mismatched Blob object gets re-uploaded', async () => {
     const rows = [{ key: 'papers/stale.pdf', size: 7, bytes: Buffer.from('current') }];
     const headMap = new Map([['papers/stale.pdf', { size: 3 }]]); // stale/different bytes
-    const putLog = [];
+    const putLog: Array<{ key: string; bytes: number }> = [];
     const out = await runMigration({ prisma: fakePrisma(rows), blob: fakeBlob(headMap, putLog), envSlice: PROD_ENV });
     expect(out).toMatchObject({ rows: 1, migrated: 1, alreadyMigrated: 0, failed: 0 });
     expect(putLog).toEqual([{ key: 'papers/stale.pdf', bytes: 7 }]);
   });
 
   it('a failed upload fails the build (exitCode) and reports honestly', async () => {
-    const rows = [
+    const rows: TestRow[] = [
       { key: 'papers/ok.pdf', size: 3, bytes: Buffer.from('abc') },
       { key: 'papers/bad.pdf', size: 3, bytes: Buffer.from('xyz') },
     ];
-    const headMap = new Map();
-    const blob = {
-      head: async (key) => headMap.get(key) ?? null,
-      put: async (key, bytes) => {
+    const headMap = new Map<string, BlobHeadInfo>();
+    const blob: MigrationBlob = {
+      head: async (key: string) => headMap.get(key) ?? null,
+      put: async (key: string, bytes: Buffer) => {
         if (key === 'papers/bad.pdf') throw new Error('blob 500');
         headMap.set(key, { size: bytes.length });
       },
     };
     const out = await runMigration({ prisma: fakePrisma(rows), blob, envSlice: PROD_ENV });
     expect(out).toMatchObject({ rows: 2, migrated: 1, failed: 1 });
-    expect(out.failures[0]).toMatchObject({ key: 'papers/bad.pdf' });
-    expect(out.failures[0].error).toMatch(/blob 500/);
+    expect(out.failures?.[0]).toMatchObject({ key: 'papers/bad.pdf' });
+    expect(out.failures?.[0]?.error).toMatch(/blob 500/);
     expect(process.exitCode).toBe(1);
   });
 
   it('a row that vanishes between listing and fetch reports, never crashes', async () => {
-    const rows = [{ key: 'papers/gone.pdf', size: 3, bytes: Buffer.from('abc') }];
-    const prisma = {
+    const prisma: MigrationPrisma = {
       binaryObject: {
         findMany: async () => [{ key: 'papers/gone.pdf', size: 3 }],
         findUnique: async () => null,
@@ -146,28 +161,34 @@ describe('runMigration', () => {
     };
     const out = await runMigration({ prisma, blob: fakeBlob(new Map(), []), envSlice: PROD_ENV });
     expect(out).toMatchObject({ rows: 1, migrated: 0, failed: 1 });
-    expect(out.failures[0].error).toMatch(/vanish/);
+    expect(out.failures?.[0]?.error).toMatch(/vanish/);
   });
 
   it('post-upload verification failure fails the build', async () => {
-    const rows = [{ key: 'papers/lying.pdf', size: 9, bytes: Buffer.from('123456789') }];
-    const blob = {
+    const rows: TestRow[] = [{ key: 'papers/lying.pdf', size: 9, bytes: Buffer.from('123456789') }];
+    const blob: MigrationBlob = {
       head: async () => null, // always missing → plan=upload; verify also null → verify fail
       put: async () => {},
     };
     const out = await runMigration({ prisma: fakePrisma(rows), blob, envSlice: PROD_ENV });
     expect(out.failed).toBe(1);
-    expect(out.failures[0].error).toMatch(/verification failed/);
+    expect(out.failures?.[0]?.error).toMatch(/verification failed/);
     expect(process.exitCode).toBe(1);
   });
 
   it('preview env skips before touching the DB', async () => {
     let touched = false;
-    const prisma = {
+    const prisma: MigrationPrisma = {
       binaryObject: {
         findMany: async () => {
           touched = true;
           return [];
+        },
+        // The gate skips BEFORE findMany; this stub exists only to
+        // satisfy the model interface (it must never run — asserted
+        // by touched === false below).
+        findUnique: async () => {
+          throw new Error('findUnique must never run in the preview gate');
         },
       },
     };
