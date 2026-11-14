@@ -181,14 +181,19 @@ export function renderEmailShell(opts: {
       ? `<td style="padding:0;"><img src="${base}/brand/icon-192.png" width="36" height="36" alt="مدارك" class="logo-img" style="display:block;width:36px;height:36px;border:1px solid #E4E2D8;border-radius:8px;padding:3px;background:#FFFFFF;"></td><td style="width:10px;"></td>`
       : ''
   }<td style="padding:0;"><span style="font-size:19px;font-weight:700;color:#282828;" class="ink">مدارك</span></td></tr></table>`;
+  // E5b — the bulletproof padded-cell CTA: bgcolor lives on the td,
+  // the padding on the anchor; Outlook's Word engine honors the cell,
+  // everyone else the anchor. No image, no VML.
   const cta =
     opts.ctaLabel && opts.ctaUrl
-      ? `<tr><td style="padding:8px 32px 24px;"><a href="${opts.ctaUrl}" style="display:inline-block;background:#FA3600;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:15px;padding:12px 28px;border-radius:0;">${opts.ctaLabel}</a></td></tr>`
+      ? `<tr><td class="pad" style="padding:8px 32px 24px;"><table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;"><tr><td align="center" bgcolor="#FA3600" style="border-radius:0;"><a href="${opts.ctaUrl}" style="display:inline-block;padding:12px 28px;font-weight:600;font-size:15px;color:#FFFFFF;text-decoration:none;font-family:inherit;">${opts.ctaLabel}</a></td></tr></table></td></tr>`
       : '';
-  const footer = `<tr><td style="padding:0 32px 28px;font-size:12px;color:#8A887C;line-height:1.8;">${
+  const footer = `<tr><td class="pad" style="padding:0 32px 28px;font-size:12px;color:#8A887C;line-height:1.8;">${
     opts.footerNote ?? 'إذا لم تكن من طلب هذه الرسالة فتجاهلها — لن يتغير شيء في حسابك.'
   }${base ? `<br>مدارك — <a href="${base}" style="color:#8A887C;">${base.replace(/^https?:\/\//, '')}</a>` : ''}</td></tr>`;
-  const preheader = opts.preheader ?? opts.title;
+  // E5b — the anti-leak filler: ~60 zero-width chars keep whatever the
+  // client appends after the body OUT of the inbox preview line.
+  const preheader = `${opts.preheader ?? opts.title}${'&#847;&zwnj;'.repeat(45)}`;
 
   return `<!DOCTYPE html>
 <html dir="rtl" lang="ar">
@@ -202,6 +207,12 @@ export function renderEmailShell(opts: {
     .ink-body { color:#D6D3C6 !important; }
     .logo-img { border-color:#4A4A44 !important; background:#F6F6EE !important; }
   }
+  /* E5b — the phone squeeze (390px): the 32px gutters halve so the
+     measure survives narrow screens without horizontal scrolling. */
+  @media screen and (max-width: 420px) {
+    .pad { padding-inline: 20px !important; }
+    .shell-ground { padding: 12px 4px !important; }
+  }
 </style>
 </head>
 <body style="margin:0;padding:0;background:#F1EFE7;">
@@ -209,9 +220,9 @@ export function renderEmailShell(opts: {
 <table role="presentation" class="shell-ground" width="100%" cellpadding="0" cellspacing="0" style="background:#F1EFE7;padding:24px 12px;">
 <tr><td align="center">
 <table role="presentation" class="shell-card" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#F6F6EE;border:${SHELL_BORDER};">
-<tr><td style="padding:24px 32px 4px;">${wordmark}</td></tr>
-<tr><td class="ink" style="padding:8px 32px 8px;font-size:20px;font-weight:600;color:#282828;">${opts.title}</td></tr>
-<tr><td class="ink-body" style="padding:0 32px 20px;font-size:14px;color:#4A4A44;line-height:2;">${opts.bodyHtml}</td></tr>
+<tr><td class="pad" style="padding:24px 32px 4px;">${wordmark}</td></tr>
+<tr><td class="pad ink" style="padding:8px 32px 8px;font-size:20px;font-weight:600;color:#282828;">${opts.title}</td></tr>
+<tr><td class="pad ink-body" style="padding:0 32px 20px;font-size:14px;color:#4A4A44;line-height:2;">${opts.bodyHtml}</td></tr>
 ${cta}
 ${footer}
 </table>

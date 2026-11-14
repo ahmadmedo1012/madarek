@@ -208,3 +208,22 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
 - sendEventMail returns whether it queued (the fan-out counts real queues).
 - Tests +17 (mail-events 19, scheduler-mail 7); backend suite 2169 green;
   verify --fast PASS; lint 0 errors.
+
+### LANE E — E5b the shell-craft completion on top of 0bb17236 (this commit)
+- Concurrent-session note: a parallel box landed E5 (0bb17236) while this session
+  built the same lane; reconciled by adopting 0bb17236 as the base and shipping
+  the deltas it lacked (evidence-first, no duplicated surfaces):
+  · per-template Arabic preheaders — all 16 render* functions thread a real
+    teaser line through sendEventMail (the base shell defaulted preheader to
+    the title; every template now carries its own line; account-status × both
+    branches; digest × both variants).
+  · the bulletproof padded-cell CTA (bgcolor on td / padding on anchor — the
+    Outlook-safe pair) replacing the single-anchor button.
+  · the anti-leak preheader filler (45 × &#847;&zwnj; — trailing client content
+    can never leak into the inbox preview).
+  · the ≤420px gutter squeeze (.pad class on every 32px cell).
+- Pinned: tests/modules/mail-shell.test.ts — 20 tests (shell craft + EVERY
+  MAIL_TEMPLATE_SAMPLES entry × rtl/preheader+filler/absolute-href/plain-text).
+- Contact sheet regenerated through the canonical script (15 templates ×
+  390/600/dark); VLM reset@390: solid orange button + chip+wordmark, 9/10.
+- Gates: backend vitest 2192 passed/19 skipped · tsc src 0/0 · tsc tests 0/0.
