@@ -30,7 +30,7 @@ describe('planSections (the extension gate)', () => {
     expect(namesWith).toContain('slow queries (pg_stat_statements top 15 by total_exec_time)');
     expect(namesWithout).not.toContain('slow queries (pg_stat_statements top 15 by total_exec_time)');
     // the extension-free sections survive both plans
-    for (const must of ['migrations ledger', 'table sizes (top 12)', 'BinaryObject (the storage migration feed)']) {
+    for (const must of ['migrations ledger (count)', 'migrations ledger (every row by name)', 'table sizes (top 12)', 'BinaryObject (the storage migration feed)']) {
       expect(namesWith).toContain(must);
       expect(namesWithout).toContain(must);
     }
@@ -47,7 +47,12 @@ describe('runDiagnostics (injected collaborators)', () => {
     const prisma = {
       $queryRawUnsafe: async (sql: string) => {
         if (sql.includes('pg_extension')) return [{ installed: 'plpgsql' }];
-        if (sql.includes('_prisma_migrations')) return [{ applied: 44, last: '2026-11-14' }];
+        if (sql.includes('_prisma_migrations')) {
+          if (sql.includes('ORDER BY migration_name')) {
+            return [{ migration_name: '20261114154500_r352_k1_repair_baseline', finished: '2026-11-14T15:45:02' }];
+          }
+          return [{ applied: 44, last: '2026-11-14' }];
+        }
         throw new Error('boom (simulated section failure)');
       },
     };
@@ -57,7 +62,8 @@ describe('runDiagnostics (injected collaborators)', () => {
       write: (...a: unknown[]) => lines.push(String(a[1] ?? a[0])),
     });
     expect(out.ran).toBe(true);
-    expect(out.sections['migrations ledger']).toEqual([{ applied: 44, last: '2026-11-14' }]);
+    expect(out.sections['migrations ledger (count)']).toEqual([{ applied: 44, last: '2026-11-14' }]);
+    expect(out.sections['migrations ledger (every row by name)']).toEqual([{ migration_name: '20261114154500_r352_k1_repair_baseline', finished: '2026-11-14T15:45:02' }]);
     expect((out.sections['table sizes (top 12)'] as { error: string }).error).toMatch(/boom/);
     expect(lines.some((l) => l.includes('FAILED'))).toBe(true);
   });

@@ -26,7 +26,11 @@ const log = (...args) => console.log('[db-diagnostics]', ...args);
 
 const QUERIES = [
   {
-    section: 'migrations ledger',
+    section: 'migrations ledger (every row by name)',
+    sql: `SELECT migration_name, finished_at::text AS finished FROM "_prisma_migrations" ORDER BY migration_name`,
+  },
+  {
+    section: 'migrations ledger (count)',
     sql: `SELECT count(*)::int AS applied, max(applied_at)::text AS last FROM "_prisma_migrations"`,
   },
   {
