@@ -6,6 +6,10 @@
  * re-enters after a bounded backoff (3s/8s/15s, retry timeout 12s,
  * worst ≈60s — the calm Boot contract). Writes are NEVER blind-retried;
  * a server that answered is awake.
+ *
+ * R351 X3 extension: when the wake budget is spent, a transport-faulted
+ * GET gets exactly ONE origin-switch retry (the remote config's next
+ * healthy origin) before the honest timeout — bounded before and after.
  */
 import { afterEach, describe, expect, it, jest } from "@jest/globals";
 import * as client from "./client";
@@ -67,7 +71,7 @@ describe("R350 H4 — mobile wake retry", () => {
     const assertion = expect(p).rejects.toThrow();
     await jest.advanceTimersByTimeAsync(3_000 + 8_000 + 15_000 + 1_000);
     await assertion;
-    expect(fetchMock).toHaveBeenCalledTimes(4); // original + 3 retries — bounded
+    expect(fetchMock).toHaveBeenCalledTimes(5); // R351 X3: original + 3 wake retries + ONE origin-switch retry (≈52s — inside the ≈60s envelope)
   });
 
   it("an HTTP answer is never retried (503 is awake, not booting)", async () => {

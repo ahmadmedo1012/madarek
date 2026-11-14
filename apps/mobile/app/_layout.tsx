@@ -42,6 +42,7 @@ import { persistQueryClient } from "@/lib/resilience/persistence";
 import { RootSheetModalProvider } from "@/components/shell/SheetModalHost";
 // R334 2-b — hydrate the persisted haptics preference once at boot.
 import { haptics } from "@/haptics";
+import { loadRemoteConfig } from "../src/lib/remote-config";
 import { ToastHost } from "@/components/ui/toast";
 import { useSession } from "@/auth/session";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -140,6 +141,10 @@ export default function RootLayout() {
     // R334 2-b — exact haptics gate state for this session (fire-and-forget;
     // the module already kicked its own cheap hydrate at import).
     void haptics.hydrate();
+    // R351 X3 — the remote app config (ordered apiOrigins): cached list
+    // applies instantly, the freshest source refreshes it. Never fatal —
+    // the bundled defaults + failover keep every installed build working.
+    void loadRemoteConfig().then(() => crumb(bootMs("remote config resolved")));
   }, []);
 
   useEffect(() => {

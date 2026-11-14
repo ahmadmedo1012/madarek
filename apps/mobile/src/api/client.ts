@@ -18,6 +18,30 @@ export const API_BASE =
   (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ||
   "https://madarek.onrender.com/api/v1";
 
+/* R351 X3 — origin failover: the remote config owns an ORDERED list of
+ * API origins; the base below resolves through it. The build-time
+ * API_BASE above stays the bundled default (telemetry/updates read it
+ * at import; the flip at a hosting move re-bakes it in the workflows
+ * anyway) — installed builds that never update get flipped by the
+ * remote config instead of a rebuild. */
+import { getActiveOrigin, markOriginFailed } from "../lib/remote-config";
+
+/** The active base: healthy origin + /api/v1. */
+export function apiBase(): string {
+  return `${getActiveOrigin()}/api/v1`;
+}
+
+/** True when the failure class justifies an origin switch: transport
+ *  (nothing reached the app) or the platform proxy's 502/503/504 (the
+ *  app never processed the request). A 4xx/5xx FROM the app is an
+ *  answered refusal — failover must never retry it elsewhere. */
+function isFailoverClass(err: unknown, status?: number): boolean {
+  if (status !== undefined && (status === 502 || status === 503 || status === 504)) return true;
+  // fetch throws TypeError on network faults (RN surfaces "Network
+  // request failed"); ApiError/AbortError are answered/timeout classes.
+  return err instanceof TypeError;
+}
+
 export class ApiError extends Error {
   code: string;
   status: number;
@@ -60,6 +84,8 @@ interface RequestOptions {
   _skipAuth?: boolean;
   /** R350 H4 — the cold-boot wake retry attempt (GET/HEAD only). */
   _wakeAttempt?: number;
+  /** R351 X3 — the origin-failover retry guard (one switch per request). */
+  _failoverAttempt?: boolean;
 }
 
 /* R350 H4 — the wake-retry budget: 3 retries (3s/8s/15s) with a 12s
@@ -72,7 +98,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 function buildUrl(path: string, query?: RequestOptions["query"]): string {
-  const url = path.startsWith("http") ? path : `${API_BASE}${path}`;
+  const url = path.startsWith("http") ? path : `${apiBase()}${path}`;
   if (!query) return url;
   const sp = new URLSearchParams();
   for (const [k, v] of Object.entries(query)) {
@@ -136,7 +162,7 @@ async function tryRefresh(): Promise<boolean> {
       const cookie = bridge.getRefreshCookie();
       if (!cookie) return false;
       try {
-        const res = await fetch(`${API_BASE}/auth/refresh`, {
+        const res = await fetch(`${apiBase()}/auth/refresh`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Cookie: `mdrk_refresh=${cookie}` },
           body: "{}",
@@ -157,7 +183,7 @@ async function tryRefresh(): Promise<boolean> {
 }
 
 export async function api<T>(path: string, opts: RequestOptions = {}): Promise<T> {
-  const { method = "GET", body, rawBody, contentType, query, timeoutMs = 20_000, _isRetry, _skipAuth, _wakeAttempt = 0 } = opts;
+  const { method = "GET", body, rawBody, contentType, query, timeoutMs = 20_000, _isRetry, _skipAuth, _wakeAttempt = 0, _failoverAttempt = false } = opts;
   const url = buildUrl(path, query);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -202,6 +228,35 @@ export async function api<T>(path: string, opts: RequestOptions = {}): Promise<T
     if (method === "GET" && isTransport && _wakeAttempt < WAKE_RETRY_DELAYS_MS.length) {
       await sleep(WAKE_RETRY_DELAYS_MS[_wakeAttempt]);
       return api<T>(path, { ...opts, _wakeAttempt: _wakeAttempt + 1, timeoutMs: WAKE_RETRY_TIMEOUT_MS });
+    }
+    /* R351 X3 — origin failover, the LAST resort after the wake budget:
+     * a transport-faulted GET (the origin never answered — a dead
+     * origin, not a waking one) switches to the next healthy origin
+     * from the remote config. Writes never failover here: a transport
+     * fault on a POST is ambiguous (it may have landed) — the K2
+     * idempotency-key work extends failover to writes safely. */
+    if (!_failoverAttempt && method === "GET" && isTransport) {
+      const current = getActiveOrigin();
+      const next = markOriginFailed(current);
+      if (next && current !== next) {
+        return api<T>(path, { ...opts, _failoverAttempt: true });
+      }
+    }
+    /* R351 X3 — the proxy-failure failover (502/503/504, any verb):
+     * the platform answered, the APP never processed the request —
+     * switching origins can never double-apply a write. Runs after the
+     * wake budget (a waking origin 503s for <60 s; only a genuinely
+     * unavailable one outlives it). */
+    if (
+      !_failoverAttempt &&
+      err instanceof ApiError &&
+      (err.status === 502 || err.status === 503 || err.status === 504)
+    ) {
+      const current = getActiveOrigin();
+      const next = markOriginFailed(current);
+      if (next && next !== current) {
+        return api<T>(path, { ...opts, _failoverAttempt: true });
+      }
     }
     if (err instanceof ApiError) throw err;
     if ((err as { name?: string })?.name === "AbortError") {
@@ -267,8 +322,8 @@ export async function getPage<T>(path: string, query?: RequestOptions["query"]):
 export function absoluteUrl(path: string | null | undefined): string | null {
   if (!path) return null;
   if (path.startsWith("http")) return path;
-  if (path.startsWith("/api/v1/")) return `${API_BASE}${path.slice("/api/v1".length)}`;
-  if (path.startsWith("/")) return `${API_BASE}${path}`;
+  if (path.startsWith("/api/v1/")) return `${apiBase()}${path.slice("/api/v1".length)}`;
+  if (path.startsWith("/")) return `${apiBase()}${path}`;
   return path;
 }
 

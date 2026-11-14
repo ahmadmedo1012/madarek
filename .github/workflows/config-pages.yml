@@ -1,0 +1,44 @@
+name: Config Pages mirror
+
+# R351 X3 — mirror /config/app.json to GitHub Pages: the remote config
+# must live on an ALWAYS-UP static origin that is NOT the API (the
+# Vercel deployment is the other one). The workflow force-pushes the
+# config directory to the gh-pages branch whenever it changes on main;
+# GitHub Pages serves it at
+# https://ahmadmedo1012.github.io/madarek/config/app.json
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/public/config/**'
+      - '.github/workflows/config-pages.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    name: Publish config/ to gh-pages
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout main (config only)
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            frontend/public/config
+      - name: Publish to gh-pages (config/ only — never the whole repo)
+        run: |
+          set -euo pipefail
+          git config user.name "madarek-ci"
+          git config user.email "ci@madarek.ly"
+          # A clean orphan branch carries ONLY config/ — no history, no
+          # source, nothing else from the repo ever reaches Pages.
+          git switch --orphan gh-pages-fresh
+          mkdir -p config
+          cp -r frontend/public/config/. config/
+          rm -rf frontend
+          git add config
+          git commit -m "config: mirror frontend/public/config from main@${GITHUB_SHA::8}"
+          git push origin HEAD:gh-pages --force
