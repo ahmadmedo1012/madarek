@@ -22,9 +22,10 @@ import { dateTime, fromNow, initials, latn } from "@/lib/format";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
-import { Badge, Card, Sheet } from "@/components/ui/surfaces";
+import { Badge, Card } from "@/components/ui/surfaces";
+import { AppSheet, SheetTextInput, useSheetMounted } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/pressables";
-import { Field, Segmented } from "@/components/ui/fields";
+import { Segmented } from "@/components/ui/fields";
 import { Avatar, DataList, LedgerRow, RowList, makeRow } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
@@ -135,6 +136,9 @@ function PostsPanel({ header }: { header: ReactNode }) {
   const user = useSession((s) => s.user);
   const [composing, setComposing] = useState(false);
   const [draft, setDraft] = useState("");
+  /* Mount-on-demand: the native sheet graph loads on first open, never on
+     the signed-out render net (see ui/sheet useSheetMounted). */
+  const composerMounted = useSheetMounted(composing);
 
   const q = useQuery({
     queryKey: ["community", "posts", scope],
@@ -213,41 +217,50 @@ function PostsPanel({ header }: { header: ReactNode }) {
         contentPadding={{ bottom: 24 }}
       />
 
-      <Sheet
-        open={composing}
-        onClose={() => setComposing(false)}
-        title="منشور جديد"
-        footer={
-          <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-            <View style={{ flex: 1 }}>
-              <T variant="xs" color="faint">{`${latn(draft.length)} / ${latn(2000)}`}</T>
+      {composerMounted ? (
+        <AppSheet
+          open={composing}
+          onClose={() => setComposing(false)}
+          title="منشور جديد"
+          snap="lg"
+          footer={
+            <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+              <View style={{ flex: 1 }}>
+                <T variant="xs" color="faint">{`${latn(draft.length)} / ${latn(2000)}`}</T>
+              </View>
+              <Button
+                label={publish.isPending ? "جارٍ النشر…" : "نشر"}
+                onPress={() => draft.trim() && publish.mutate()}
+                loading={publish.isPending}
+                disabled={!draft.trim()}
+                small
+                icon={<Send size={14} color={p.accentFg} />}
+              />
             </View>
-            <Button
-              label={publish.isPending ? "جارٍ النشر…" : "نشر"}
-              onPress={() => draft.trim() && publish.mutate()}
-              loading={publish.isPending}
-              disabled={!draft.trim()}
-              small
-              icon={<Send size={14} color={p.accentFg} />}
+          }
+        >
+          <View style={{ gap: sp[12] }}>
+            <T variant="sm" weight="medium" color="secondary">
+              ماذا يدور في ذهنك؟
+            </T>
+            <SheetTextInput
+              accessibilityLabel="نص المنشور"
+              value={draft}
+              onChangeText={setDraft}
+              placeholder="يمكنك استخدام #هاشتاج"
+              multiline
+              maxLength={2000}
+              textAlignVertical="top"
+              style={{ minHeight: 160 }}
             />
+            {publish.isError ? (
+              <T variant="sm" color="danger">
+                {apiMessage(publish.error, "تعذّر نشر المنشور.")}
+              </T>
+            ) : null}
           </View>
-        }
-      >
-        <Field
-          label="ماذا يدور في ذهنك؟"
-          value={draft}
-          onChangeText={setDraft}
-          placeholder="يمكنك استخدام #هاشتاج"
-          multiline
-          maxLength={2000}
-          textAlignVertical="top"
-        />
-        {publish.isError ? (
-          <T variant="sm" color="danger">
-            {apiMessage(publish.error, "تعذّر نشر المنشور.")}
-          </T>
-        ) : null}
-      </Sheet>
+        </AppSheet>
+      ) : null}
     </View>
   );
 }
@@ -541,6 +554,8 @@ function RoomsPanel() {
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const [topic, setTopic] = useState("");
+  /* Mount-on-demand — same law as the composer sheet above. */
+  const createMounted = useSheetMounted(creating);
 
   const q = useQuery({
     queryKey: ["community", "rooms", scope],
@@ -619,49 +634,62 @@ function RoomsPanel() {
         </RowList>
       )}
 
-      <Sheet
-        open={creating}
-        onClose={() => setCreating(false)}
-        title="غرفة دراسة جديدة"
-        footer={
-          <View style={{ flexDirection: "row", gap: sp[8] }}>
-            <View style={{ flex: 1 }}>
-              <Button label="إلغاء" kind="ghost" small onPress={() => setCreating(false)} />
+      {createMounted ? (
+        <AppSheet
+          open={creating}
+          onClose={() => setCreating(false)}
+          title="غرفة دراسة جديدة"
+          snap="lg"
+          footer={
+            <View style={{ flexDirection: "row", gap: sp[8] }}>
+              <View style={{ flex: 1 }}>
+                <Button label="إلغاء" kind="ghost" small onPress={() => setCreating(false)} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Button
+                  label={create.isPending ? "جارٍ الإنشاء…" : "إنشاء الغرفة"}
+                  loading={create.isPending}
+                  disabled={!name.trim()}
+                  onPress={() => create.mutate()}
+                  small
+                />
+              </View>
             </View>
-            <View style={{ flex: 1 }}>
-              <Button
-                label={create.isPending ? "جارٍ الإنشاء…" : "إنشاء الغرفة"}
-                loading={create.isPending}
-                disabled={!name.trim()}
-                onPress={() => create.mutate()}
-                small
+          }
+        >
+          <View style={{ gap: sp[12] }}>
+            <View style={{ gap: sp[6] }}>
+              <T variant="sm" weight="medium" color="secondary">
+                اسم الغرفة
+              </T>
+              <SheetTextInput
+                accessibilityLabel="اسم الغرفة"
+                value={name}
+                onChangeText={setName}
+                placeholder="مجموعة مراجعة الشبكات…"
+                maxLength={120}
               />
             </View>
+            <View style={{ gap: sp[6] }}>
+              <T variant="sm" weight="medium" color="secondary">
+                الموضوع (اختياري)
+              </T>
+              <SheetTextInput
+                accessibilityLabel="موضوع الغرفة"
+                value={topic}
+                onChangeText={setTopic}
+                placeholder="ما الذي ستدرسونه معًا؟"
+                maxLength={300}
+              />
+            </View>
+            {create.isError ? (
+              <T variant="sm" color="danger">
+                {apiMessage(create.error, "تعذّر إنشاء الغرفة.")}
+              </T>
+            ) : null}
           </View>
-        }
-      >
-        <View style={{ gap: sp[12] }}>
-          <Field
-            label="اسم الغرفة"
-            value={name}
-            onChangeText={setName}
-            placeholder="مجموعة مراجعة الشبكات…"
-            maxLength={120}
-          />
-          <Field
-            label="الموضوع (اختياري)"
-            value={topic}
-            onChangeText={setTopic}
-            placeholder="ما الذي ستدرسونه معًا؟"
-            maxLength={300}
-          />
-          {create.isError ? (
-            <T variant="sm" color="danger">
-              {apiMessage(create.error, "تعذّر إنشاء الغرفة.")}
-            </T>
-          ) : null}
-        </View>
-      </Sheet>
+        </AppSheet>
+      ) : null}
     </View>
   );
 }

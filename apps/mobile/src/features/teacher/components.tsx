@@ -23,7 +23,7 @@ import { T } from "@/components/ui/text";
 import { Badge } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
 import { SearchBar, Segmented, SelectField } from "@/components/ui/fields";
-import { AppSheet, FilterSheet, SheetTextInput } from "@/components/ui/sheet";
+import { AppSheet, FilterSheet, SheetTextInput, useSheetMounted } from "@/components/ui/sheet";
 import { Avatar, DataList, LedgerRow, makeRow, ProgressBar, StatLine } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
@@ -212,14 +212,12 @@ export function offeringLabel(o: TeacherOffering): string {
  * foundations/sheets.md §lazy-native-graph). AppSheet already loads the
  * graph lazily on first render; this keeps the FIRST render itself from
  * happening until the user actually opens a sheet.
+ *
+ * Moved to ui/sheet (next to AppSheet) in R3 so non-teacher screens can
+ * use it without a cross-feature import; re-exported here for the
+ * existing teacher call sites.
  */
-export function useSheetMounted(open: boolean): boolean {
-  const [mounted, setMounted] = useState(false);
-  // React-blessed "adjust state during render" (same pattern as the
-  // grades scale adoption) — flips once, then never again.
-  if (open && !mounted) setMounted(true);
-  return mounted;
-}
+export { useSheetMounted };
 
 /** «المقرّر» picker — a labeled SelectField over my offerings. */
 export function OfferingPicker({
