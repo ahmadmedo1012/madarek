@@ -44,6 +44,10 @@ import { buildImportTemplate, buildImportReport } from '../../lib/import/templat
 // R350 I-P0 — faculty/department NAME resolution (exact → normalised →
 // suggestion; never a silent fall-back-to-the-first-faculty).
 import { resolveOrgName, orgResolutionErrorAr } from '../../lib/import/resolve.js';
+// R350 I-P3 (mode B) — the batch-enrolment matching chain's helpers.
+import { normalizeNationalId, hashNationalId } from '../../lib/profiles/national-id.js';
+import { normalizePhone } from '../../lib/phones.js';
+import { renderEnrollmentConfirmed } from '../../lib/mail-events.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -767,5 +771,236 @@ router.get(
     }
   },
 );
+
+
+
+/* ── R350 I-P3 — MODE B: batch enrolment (إرفاق الطلاب دفعة واحدة) ──
+ *
+ * The owner's «ارفاق الطلاب دفعة واحدة»: attach EXISTING students to a
+ * course offering in one batch. Each ref (a pasted reg-number / phone /
+ * national-id / exact name) resolves through the chain
+ * universityId → phone → nationalIdHash → exact-unique-name; already-
+ * enrolled students report as such (never a duplicate error); the
+ * commit honours the offering's capacity with the SAME row-lock the
+ * single-enrolment route uses, audits every seat, and queues the E3
+ * enrolment-confirmed mail per created seat.
+ *
+ * Scope: TEACHER → own offerings only; ADMIN → their institution;
+ * OWNER → any active offering. */
+
+const enrollPreviewSchema = z.object({
+  offeringId: z.string().cuid(),
+  refs: z.array(z.string().trim().min(1).max(120)).min(1).max(500),
+});
+
+const enrollCommitSchema = z.object({
+  offeringId: z.string().cuid(),
+  studentIds: z.array(z.string().cuid()).min(1).max(500),
+});
+
+type EnrolScope = { offeringId: string; institutionId: string; capacity: number };
+
+async function assertBatchEnrolScope(req: Request, offeringId: string): Promise<EnrolScope> {
+  const offering = await prisma.courseOffering.findUnique({
+    where: { id: offeringId },
+    select: { teacherId: true, capacity: true, course: { select: { institutionId: true } } },
+  });
+  if (!offering) throw AppError.notFound('المقرر المحدد غير موجود');
+  if (req.user!.role === Role.TEACHER) {
+    if (offering.teacherId !== req.user!.id) {
+      throw AppError.forbidden('يمكنك الإرفاق في المقررات التي تُدرّسها فقط');
+    }
+  } else if (req.user!.role === Role.ADMIN) {
+    const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (scope === null) throw institutionContextRequiredError();
+    if (offering.course.institutionId !== scope) {
+      throw AppError.forbidden('هذا المقرر ينتمي إلى مؤسسة أخرى');
+    }
+  }
+  return { offeringId, institutionId: offering.course.institutionId, capacity: offering.capacity };
+}
+
+/** The matching chain: reg-number → phone → nationalId → exact-unique
+ *  name. Returns the student's user id + how it matched, or why not. */
+async function matchStudentRef(
+  institutionId: string,
+  ref: string,
+): Promise<{ studentId: string; name: string; universityId: string | null; method: 'universityId' | 'phone' | 'nationalId' | 'name' } | { reason: string }> {
+  const base = { institutionId };
+  // 1. reg-number (the registrar's canonical key)
+  const byUniId = await prisma.studentProfile.findFirst({
+    where: { ...base, universityId: ref },
+    select: { userId: true, nameAr: true, universityId: true },
+  });
+  if (byUniId) return { studentId: byUniId.userId, name: byUniId.nameAr ?? '', universityId: byUniId.universityId, method: 'universityId' };
+  // 2. phone (the student's own, normalized)
+  const phone = normalizePhone(ref);
+  if (phone) {
+    const byPhone = await prisma.studentProfile.findFirst({
+      where: { ...base, studentPhoneNormalized: phone.normalized },
+      select: { userId: true, nameAr: true, universityId: true },
+    });
+    if (byPhone) return { studentId: byPhone.userId, name: byPhone.nameAr ?? '', universityId: byPhone.universityId, method: 'phone' };
+  }
+  // 3. national id (hash — exact only, by design)
+  const nid = normalizeNationalId(ref);
+  if (nid) {
+    const byNid = await prisma.studentProfile.findFirst({
+      where: { ...base, nationalIdHash: hashNationalId(nid) },
+      select: { userId: true, nameAr: true, universityId: true },
+    });
+    if (byNid) return { studentId: byNid.userId, name: byNid.nameAr ?? '', universityId: byNid.universityId, method: 'nationalId' };
+  }
+  // 4. exact name — only when UNIQUE in the institution (an ambiguous
+  // name is a reason, never a silent pick)
+  if (ref.includes(' ')) {
+    const byName = await prisma.studentProfile.findMany({
+      where: { ...base, nameAr: ref.trim() },
+      select: { userId: true, nameAr: true, universityId: true },
+      take: 2,
+    });
+    if (byName.length === 1) {
+      const only = byName[0]!;
+      return { studentId: only.userId, name: only.nameAr ?? '', universityId: only.universityId, method: 'name' };
+    }
+    if (byName.length > 1) {
+      return { reason: `الاسم «${ref}» يحمله أكثر من طالب — استخدم الرقم الجامعي أو الهاتف` };
+    }
+  }
+  return { reason: `لم يُعثر على طالب يطابق «${ref}» في هذه المؤسسة` };
+}
+
+router.post('/enroll/preview', importLimiter, requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), validate(enrollPreviewSchema, 'body'), async (req, res, next) => {
+  try {
+    const { offeringId, refs } = req.body as z.infer<typeof enrollPreviewSchema>;
+    const scope = await assertBatchEnrolScope(req, offeringId);
+
+    const [enrolled, activeCount] = await Promise.all([
+      prisma.enrollment.findMany({ where: { offeringId, status: 'active' }, select: { studentId: true } }),
+      prisma.enrollment.count({ where: { offeringId, status: 'active' } }),
+    ]);
+    const enrolledSet = new Set(enrolled.map((e) => e.studentId));
+
+    const matched: ({ ref: string } & Awaited<ReturnType<typeof matchStudentRef>>)[] = [];
+    const matchedIds = new Set<string>();
+    const alreadyEnrolled: { ref: string; studentId: string; name: string }[] = [];
+    const unmatched: { ref: string; reason: string }[] = [];
+    for (const ref of refs) {
+      const m = await matchStudentRef(scope.institutionId, ref);
+      if ('reason' in m) {
+        unmatched.push({ ref, reason: m.reason });
+        continue;
+      }
+      if (enrolledSet.has(m.studentId)) {
+        alreadyEnrolled.push({ ref, studentId: m.studentId, name: m.name });
+        continue;
+      }
+      // one ref per student: a second ref matching the SAME student reports as a duplicate ref
+      if (matchedIds.has(m.studentId)) {
+        unmatched.push({ ref, reason: `طالب مطابق لمرجع آخر في القائمة نفسها (${m.name})` });
+        continue;
+      }
+      matchedIds.add(m.studentId);
+      matched.push({ ref, ...m });
+    }
+
+    res.json({
+      data: {
+        offeringId,
+        capacity: { used: activeCount, total: scope.capacity, free: Math.max(0, scope.capacity - activeCount) },
+        matched,
+        alreadyEnrolled,
+        unmatched,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post('/enroll/commit', importLimiter, requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), validate(enrollCommitSchema, 'body'), async (req, res, next) => {
+  try {
+    const { offeringId, studentIds } = req.body as z.infer<typeof enrollCommitSchema>;
+    await assertBatchEnrolScope(req, offeringId);
+
+    const created: string[] = [];
+    let skippedAlready = 0;
+    let failedCapacity = 0;
+
+    const result = await prisma.$transaction(async (tx) => {
+      // the SAME per-offering row lock the single-enrolment route uses —
+      // a batch can never race itself or the single path past capacity.
+      await tx.$queryRaw`SELECT id FROM "CourseOffering" WHERE id = ${offeringId} FOR UPDATE`;
+      const activeCount = await tx.enrollment.count({ where: { offeringId, status: 'active' } });
+      const offering = await tx.courseOffering.findUnique({ where: { id: offeringId }, select: { capacity: true, course: { select: { name: true } } } });
+      if (!offering) throw AppError.notFound('المقرر المحدد غير موجود');
+      // one batched read of the existing seats (idempotent skips)
+      const existing = await tx.enrollment.findMany({
+        where: { offeringId, studentId: { in: studentIds } },
+        select: { studentId: true },
+      });
+      const existingSet = new Set(existing.map((e) => e.studentId));
+
+      let seats = activeCount;
+      for (const studentId of studentIds) {
+        if (existingSet.has(studentId)) {
+          skippedAlready += 1;
+          continue;
+        }
+        if (seats >= offering.capacity) {
+          failedCapacity += 1;
+          continue;
+        }
+        const enrollment = await tx.enrollment.create({ data: { studentId, offeringId }, select: { id: true } });
+        await tx.auditLog.create({
+          data: {
+            action: 'ENROLLMENT_CREATED',
+            resourceType: 'Enrollment',
+            resourceId: enrollment.id,
+            userId: req.user!.id,
+            metadata: { studentId, offeringId, batch: true },
+          },
+        });
+        created.push(studentId);
+        seats += 1;
+      }
+      return { courseName: offering.course.name };
+    });
+
+    // R350 E3 — the enrolment-confirmation fan-out (never-throw, outbox)
+    void (async () => {
+      try {
+        const students = created.length
+          ? await prisma.user.findMany({ where: { id: { in: created }, isActive: true }, select: { id: true, email: true, firstName: true } })
+          : [];
+        for (const st of students) {
+          if (!isDeliverableEmail(st.email)) continue;
+          await sendEventMail({
+            userId: st.id,
+            to: st.email,
+            category: 'courses',
+            template: 'enrollment-confirmed',
+            ...renderEnrollmentConfirmed(result.courseName, null),
+            ctaLabel: 'مقرراتي',
+            dedupeKey: `enroll-batch:${offeringId}:${st.id}`,
+          });
+        }
+      } catch (err) {
+        logger.warn({ err, offeringId }, 'import: enrol-batch confirmation mail failed (non-blocking)');
+      }
+    })();
+
+    res.json({
+      data: {
+        offeringId,
+        created: created.length,
+        skippedAlready,
+        failedCapacity,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
+});
 
 export const importRoutes = router;

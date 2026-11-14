@@ -316,3 +316,23 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
   caps). Gates: backend 2247 green · tsc src 0/0 · tsc tests 0/0.
 - Next (I-P2): rollback/undo + diff view + per-row policy; I-P3: mode B;
   then F2 the wizard.
+
+### LANE I — I-P3 MODE B: batch enrolment (this commit)
+- The owner's «ارفاق الطلاب دفعة واحدة»: POST /import/enroll/preview +
+  /import/enroll/commit (TEACHER→own offerings, ADMIN→institution, OWNER).
+- The matching chain per ref: universityId → phone (normalized) →
+  nationalIdHash (exact, by design) → exact-UNIQUE-name (an ambiguous
+  name is a REASON, never a silent pick); already-enrolled report as
+  such; a duplicate ref inside one list is caught; the capacity picture
+  (used/total/free) rides the preview.
+- The commit: the SAME per-offering row lock as the single-enrolment
+  route (a batch can never race past capacity), idempotent skips,
+  per-seat ENROLLMENT_CREATED audit rows (batch:true), and the E3
+  enrolment-confirmed mail fan-out (never-throw, outbox-owned,
+  deliverable emails only).
+- Pinned: tests/modules/import-enroll-batch.test.ts — 7 (the chain ×3,
+  ambiguous name, already-enrolled, duplicate ref, capacity picture,
+  teacher scope 403, the commit counts + audit).
+- Gates: backend 2262 green · tsc src 0/0 · tsc tests 0/0.
+- Remaining in I: I-P2 (rollback/undo + diff), I-P4 (presets/ghweil
+  stub), F2 (the 5-step wizard + the teacher «إرفاق طلاب» entry).
