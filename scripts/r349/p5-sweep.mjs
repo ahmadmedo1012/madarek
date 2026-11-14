@@ -6,7 +6,7 @@
  * new authed routes × light/dark × 1440/390 with evidence screenshots.
  *
  * Prereqs (the local stack): embedded PG on :5433 (tools/boot-pg.sh,
- * migrated + seeded), backend on :4000 (tsx src/index.ts), frontend dev
+ * migrated + seeded), backend on :4000 (tsx src/server.ts), frontend dev
  * on :5173. Usage: node scripts/r349/p5-sweep.mjs [--out <dir>]
  */
 import { spawnSync } from 'node:child_process';

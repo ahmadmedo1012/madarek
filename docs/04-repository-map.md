@@ -21,7 +21,7 @@ madarek/
 ├── render.yaml            ← مخطط نشر Render (الخدمة، المتغيرات، TZ=UTC)
 │
 ├── backend/               ← الخلفية (Express + TS + Prisma)      [03-architecture]
-│   ├── src/index.ts       ← نقطة الإقلاع: اتصال DB، استماع :4000، المجدول، إطفاء رشيق
+│   ├── src/server.ts      ← نقطة الإقلاع: اتصال DB، استماع :4000، المجدول، إطفاء رشيق
 │   ├── src/app.ts         ← تجميع التطبيق: الوسائط، CSP، الصحة، المسارات، SPA
 │   ├── src/env.ts         ← تحليل متغيرات البيئة (فشل مبكر عند نقص الإلزامي)
 │   ├── src/http/routes/   ← 25 ملف مسارات (188 endpoint مسجلًا) + 3 راوترات وحدات (4 مسارات)
@@ -72,7 +72,7 @@ madarek/
 
 | ماذا؟ | الملف |
 |---|---|
-| إقلاع الخادم (إنتاج ومحلي) | `backend/src/index.ts` |
+| إقلاع الخادم (إنتاج ومحلي) | `backend/src/server.ts` |
 | تجميع Express والوسائط | `backend/src/app.ts` → `createApp()` |
 | إقلاع الواجهة | `frontend/src/main.tsx` → `frontend/src/App.tsx` |
 | جدول مسارات الواجهة | `frontend/src/App.tsx` (`AppRoutes`) |

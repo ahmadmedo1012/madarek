@@ -161,7 +161,7 @@ Effective = (role defaults) ∪ (grants) ∖ (revokes)
 ### Backend
 | Script | Description |
 |--------|-------------|
-| `npm run dev` | `tsx watch src/index.ts` |
+| `npm run dev` | `tsx watch src/server.ts` |
 | `npm run build` | `tsc -p tsconfig.json` |
 | `npm run typecheck` / `typecheck:tests` | `tsc --noEmit` / tests via `tsconfig.test.json` |
 | `npm run prisma:generate` | `prisma generate` (also runs on every `postinstall`) |
