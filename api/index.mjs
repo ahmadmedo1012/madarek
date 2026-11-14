@@ -17,8 +17,8 @@
  * app — zero TS in the function builder's path.
  *
  * `createApp()` (backend/src/app.ts) is a PURE factory — no `listen`,
- * no SIGTERM, no scheduler timers (those live in backend/src/index.ts,
- * the Render/server entry, NOT imported here). Static SPA serving is
+ * no SIGTERM, no scheduler timers (those live in backend/src/server.ts,
+ * the local/Render entry, NOT imported here). Static SPA serving is
  * Vercel's CDN job (outputDirectory + the SPA fallback rewrite), so
  * `env.serveStatic` finding no `frontend/dist` inside the function
  * bundle is expected and harmless.

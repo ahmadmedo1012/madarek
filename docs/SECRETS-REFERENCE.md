@@ -119,5 +119,5 @@ here — take them from your Neon dashboard (Connection Details).
 5. (Optional) Set `DIRECT_DATABASE_URL` if your Neon pooler URL doesn't follow the standard `-pooler` suffix convention
 6. Build sequence: `npm ci --include=dev && npm run build` (lockfile-exact; `npm ci` keeps the deployed artifact identical to what the committed `package-lock.json` was CI-tested against)
    - `npm run build` runs: `frontend build` → `backend build` → `db:deploy` (migrate-deploy.mjs)
-7. Start: `npm run start` (`node backend/dist/index.js`)
+7. Start: `npm run start` (`node backend/dist/server.js`)
 8. Seed (one-time, from local): `DATABASE_URL='...' JWT_ACCESS_SECRET='...' JWT_REFRESH_SECRET='...' npm run db:seed`

@@ -5,6 +5,14 @@ import { prisma } from './db.js';
 import { startScheduler, stopScheduler } from './scheduler.js';
 
 /**
+ * R351 X2a — the SERVER entry (listen + timers), for local dev and the
+ * Render deployment. The pure app factory lives in app.ts; the Vercel
+ * function entry is the repo-root api/index.mjs (it imports the built
+ * app WITHOUT this file — no listen, no SIGTERM, no scheduler timers;
+ * the serverless world ticks through POST /api/v1/internal/tick).
+ */
+
+/**
  * Graceful-shutdown horizon. server.close() can stay pending forever on a
  * hung keep-alive socket; the platform (Render) escalates from SIGTERM to
  * SIGKILL shortly after — force-exit before that happens.

@@ -51,7 +51,7 @@ buildCommand: npm ci --include=dev && npm run build
   مشاهدات/مستويات مهارات) **لا يُرجَع أبدًا** (upserts إنشاء-فقط) —
   انظر رأس `backend/prisma/seed.ts` وعقد الاختبار في
   `backend/tests/integration/seed-idempotency.test.ts`.
-- ثم `startCommand: npm run start` → `node backend/dist/index.js`.
+- ثم `startCommand: npm run start` → `node backend/dist/server.js`.
 
 > سبب «بلا DB» لبناء CI: الخطوة الأخيرة أعلاه تتطلب قاعدة حية، لذا يبني
 > CI كل workspace منفصلًا ولا يلمس الترحيلات (`.github/workflows/ci.yml`).

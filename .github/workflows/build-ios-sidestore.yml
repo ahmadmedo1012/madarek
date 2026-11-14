@@ -399,7 +399,7 @@ jobs:
           PORT=4000 \
           MADAREK_TEST_ACCOUNTS=1 \
           GIT_SHA="$(git rev-parse --short HEAD)" \
-            nohup node backend/dist/index.js > apps/mobile/build/backend.log 2>&1 &
+            nohup node backend/dist/server.js > apps/mobile/build/backend.log 2>&1 &
           echo $! > apps/mobile/build/backend.pid
           for i in $(seq 1 60); do
             BODY=$(curl -s --max-time 3 http://localhost:4000/api/v1/health || true)
