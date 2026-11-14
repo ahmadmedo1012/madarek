@@ -115,20 +115,44 @@ export interface SheetGrid {
   rows: string[][];
 }
 
-/**
- * Read the FIRST worksheet of an XLSX buffer into `{headers, rows}`.
- * The first non-blank row is the header row; fully blank rows are
- * skipped wherever they appear (registrar spreadsheets carry padding
- * rows — r323's parser drops them too).
- */
-export async function readSheet(buffer: Buffer): Promise<SheetGrid> {
+/** R350 I-P1 — the workbook's sheet names (the parse response shows
+ *  them; the registrar picks one for preview/commit). */
+export async function listSheets(buffer: Buffer): Promise<string[]> {
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(buffer as unknown as ArrayBuffer);
-  const sheet = workbook.worksheets[0];
+  return workbook.worksheets.map((w) => w.name);
+}
+
+/**
+ * Read ONE worksheet into `{headers, rows}` — the FIRST sheet by
+ * default (the F1 behaviour), or the named sheet the registrar picked
+ * (I-P1 multi-sheet). The first non-blank row is the header row; fully
+ * blank rows are skipped wherever they appear (registrar spreadsheets
+ * carry padding rows — r323's parser drops them too).
+ *
+ * R350 I-P1 — the zip-bomb guard lives HERE (after exceljs inflates
+ * the sheet into memory): the CELL BUDGET (rows × max-width) caps the
+ * damage a crafted workbook can do — a 10MB input cannot become a
+ * 4-billion-cell monster. The caps are deliberately generous for real
+ * registrar files (20k rows × 64 cols) and fatal beyond.
+ */
+export const IMPORT_MAX_CELLS = 1_280_000; // 20k rows × 64 cols
+export const IMPORT_MAX_COLS = 64;
+
+export async function readSheet(buffer: Buffer, sheetName?: string): Promise<SheetGrid> {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(buffer as unknown as ArrayBuffer);
+  const sheet = sheetName ? workbook.worksheets.find((w) => w.name === sheetName) : workbook.worksheets[0];
   if (!sheet) return { headers: [], rows: [] };
 
   const grid: string[][] = [];
+  let cellBudget = 0;
   sheet.eachRow({ includeEmpty: true }, (row) => {
+    // the zip-bomb budget: one fatal line, counted BEFORE stringifying
+    cellBudget += Math.max(row.cellCount, 1);
+    if (cellBudget > IMPORT_MAX_CELLS || row.cellCount > IMPORT_MAX_COLS + 8) {
+      throw new Error('IMPORT_BUDGET_EXCEEDED');
+    }
     // row.values is a sparse 1-based array whose [0] is always null —
     // slice it off and stringify every cell positionally.
     const values = row.values as unknown[];

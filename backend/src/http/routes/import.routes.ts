@@ -29,7 +29,10 @@ import { sendEventMail, renderActivationInvite, isDeliverableEmail, loginUrl } f
 import { logger } from '../../logger.js';
 import { hashPassword } from '../../lib/password.js';
 import { generateTempPassword } from '../../lib/bulk-import.js';
-import { detectFormat, readSheet } from '../../lib/import/xlsx.js';
+import { detectFormat, readSheet, listSheets } from '../../lib/import/xlsx.js';
+// R350 I-P1 — encoding recovery (cp1256/8859-6) + delimiter sniffing.
+import { decodeCsvBuffer } from '../../lib/import/encoding.js';
+import { sniffDelimiter, parseDelimited } from '../../lib/import/csv.js';
 import {
   applyMappingProfile,
   buildColumnMap,
@@ -38,7 +41,6 @@ import {
 } from '../../lib/import/mapping.js';
 import { validateRows, IMPORT_MAX_ROWS, type ImportEntity } from '../../lib/import/validate.js';
 import { buildImportTemplate, buildImportReport } from '../../lib/import/templates.js';
-import { parseCsv } from '../../lib/bulk-import.js';
 // R350 I-P0 — faculty/department NAME resolution (exact → normalised →
 // suggestion; never a silent fall-back-to-the-first-faculty).
 import { resolveOrgName, orgResolutionErrorAr } from '../../lib/import/resolve.js';
@@ -53,9 +55,11 @@ const importLimiter = createRouteLimiter({ max: 20 });
 const entitySchema = z.enum(['STUDENT', 'TEACHER']);
 
 const fileBodySchema = z.object({
-  fileBase64: z.string().min(16).max(24 * 1024 * 1024), // ≤ 24 MB encoded
+  fileBase64: z.string().min(16).max(14 * 1024 * 1024), // ≤ 14 MB encoded ≈ 10 MB raw (I1)
   institutionId: z.string().min(1).max(64).optional(),
   entity: entitySchema,
+  /** R350 I-P1 — which XLSX sheet to read (default: the first). */
+  sheetName: z.string().min(1).max(64).optional(),
 });
 
 /* The institution resolver (the r323 bulk-import pattern): ADMIN is
@@ -89,15 +93,29 @@ function decodeFile(fileBase64: string): Buffer {
   return buf;
 }
 
-async function loadGrid(buf: Buffer): Promise<{ headers: string[]; rows: string[][] }> {
+async function loadGrid(buf: Buffer, sheetName?: string): Promise<{ headers: string[]; rows: string[][]; encoding?: string; delimiter?: string }> {
   const format = detectFormat(buf);
-  if (format === 'XLSX') return readSheet(buf);
-  if (format === 'CSV') {
-    const grid = parseCsv(buf.toString('utf8'));
-    const [header, ...rows] = grid;
-    return { headers: header ?? [], rows };
+  if (format === 'XLSX') {
+    try {
+      return await readSheet(buf, sheetName);
+    } catch (err) {
+      if (err instanceof Error && err.message === 'IMPORT_BUDGET_EXCEEDED') {
+        throw AppError.badRequest('الملف أكبر من الميزانية المسموحة (٢٠ ألف صف × ٦٤ عمودًا) — قسّمه إلى ملفات أصغر');
+      }
+      throw err;
+    }
   }
-  throw AppError.badRequest('صيغة الملف غير مدعومة — المسموح: XLSX أو CSV بترميز UTF-8');
+  if (format === 'CSV') {
+    // R350 I-P1 — the encoding recovery + the delimiter sniff replace
+    // the blind utf8/comma read: Windows-1256 exports decode cleanly,
+    // semicolon/tab exports parse with THEIR delimiter.
+    const { text, encoding } = decodeCsvBuffer(buf);
+    const delimiter = sniffDelimiter(text);
+    const grid = parseDelimited(text, delimiter);
+    const [header, ...rows] = grid;
+    return { headers: header ?? [], rows, encoding, delimiter };
+  }
+  throw AppError.badRequest('صيغة الملف غير مدعومة — المسموح: XLSX أو CSV');
 }
 
 /* The institution's custom-field definitions in BOTH shapes the pure
@@ -137,10 +155,11 @@ router.post(
   validate(fileBodySchema, 'body'),
   async (req, res, next) => {
     try {
-      const { fileBase64, institutionId, entity } = req.body as z.infer<typeof fileBodySchema>;
+      const { fileBase64, institutionId, entity, sheetName } = req.body as z.infer<typeof fileBodySchema>;
       const instId = await resolveInstitutionId(req, institutionId);
       const buf = decodeFile(fileBase64);
-      const grid = await loadGrid(buf);
+      const sheets = detectFormat(buf) === 'XLSX' ? await listSheets(buf) : [];
+      const grid = await loadGrid(buf, sheetName);
       if (grid.headers.length === 0) throw AppError.badRequest('الملف بلا ترويسة — الصف الأول يجب أن يحمل أسماء الأعمدة');
       if (grid.rows.length > IMPORT_MAX_ROWS) {
         throw AppError.badRequest(`عدد الصفوف يتجاوز الحد (${IMPORT_MAX_ROWS}) — قسّم الملف`);
@@ -150,6 +169,9 @@ router.post(
       res.json({
         data: {
           format: detectFormat(buf),
+          sheets,
+          encoding: grid.encoding ?? 'utf-8',
+          delimiter: grid.delimiter ?? ',',
           headers: grid.headers,
           rowCount: grid.rows.length,
           detectedLanguage: map.detectedLanguage,
@@ -182,10 +204,10 @@ router.post(
   validate(previewBodySchema, 'body'),
   async (req, res, next) => {
     try {
-      const { fileBase64, institutionId, entity, columnMap, createIfMissing } = req.body as z.infer<typeof previewBodySchema>;
+      const { fileBase64, institutionId, entity, columnMap, createIfMissing, sheetName } = req.body as z.infer<typeof previewBodySchema>;
       const instId = await resolveInstitutionId(req, institutionId);
       const buf = decodeFile(fileBase64);
-      const grid = await loadGrid(buf);
+      const grid = await loadGrid(buf, sheetName);
       const { full, metas } = await customFields(instId, entity);
       const map = applyMappingProfile(grid.headers, columnMap as unknown as MappingProfile, metas);
       const inst = await loadInstitution(instId);
@@ -306,7 +328,8 @@ router.post(
 const commitBodySchema = z.object({
   duplicatePolicy: z.enum(['SKIP', 'UPDATE', 'ERROR']).default('SKIP'),
   chunkSize: z.number().int().min(20).max(500).default(200),
-  fileBase64: z.string().min(16).max(24 * 1024 * 1024),
+  fileBase64: z.string().min(16).max(14 * 1024 * 1024), // ≤ 14 MB encoded ≈ 10 MB raw (I1)
+  sheetName: z.string().min(1).max(64).optional(),
 });
 
 router.post(
@@ -316,7 +339,7 @@ router.post(
   validate(commitBodySchema, 'body'),
   async (req, res, next) => {
     try {
-      const { duplicatePolicy, chunkSize, fileBase64 } = req.body as z.infer<typeof commitBodySchema>;
+      const { duplicatePolicy, chunkSize, fileBase64, sheetName } = req.body as z.infer<typeof commitBodySchema>;
       const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
       if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
       await resolveInstitutionId(req, job.institutionId);
@@ -339,7 +362,7 @@ router.post(
       // Re-read the source file and re-validate against the SAVED map —
       // the commit is grounded in the same bytes the preview judged.
       const buf = decodeFile(fileBase64);
-      const grid = await loadGrid(buf);
+      const grid = await loadGrid(buf, sheetName);
       const { full, metas } = await customFields(job.institutionId, job.entity as ImportEntity);
       const map = applyMappingProfile(grid.headers, job.columnMap as unknown as MappingProfile, metas);
       const mode = (await loadInstitution(job.institutionId)).kind === 'SCHOOL' ? 'SCHOOL' : 'UNIVERSITY';

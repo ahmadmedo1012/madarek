@@ -291,3 +291,28 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
 - Next (I-P1): Win-1256/ISO-8859-6 + delimiter sniffing + multi-sheet +
   zip-bomb guard + limits 10MB/20k + quadruple names + serial dates;
   then I-P2 (rollback + diff), I-P3 (mode B), F2 (the wizard).
+
+### LANE I — I-P1 the format robustness batch (this commit)
+- Encoding recovery (src/lib/import/encoding.ts): BOM strip → strict-UTF8
+  (fatal decoder) → Node-ICU decode of BOTH Windows-1256 and ISO-8859-6,
+  the more-Arabic verdict wins; /import/parse reports the encoding used
+  (never a silent re-interpretation). Fixtures computed from Node's own
+  decoder table (no hand-typed bytes).
+- Delimiter sniffing (src/lib/import/csv.ts): comma/semicolon/tab counted
+  outside quotes over the first 5 lines + a parameterised RFC4180 parser
+  (BOM/doubled-quote/CRLF-CR-LF/trailing-flush); /parse reports the
+  delimiter; the r323 comma parser stays untouched for its own route.
+- Multi-sheet: listSheets + readSheet(buf, sheetName?); /parse returns
+  `sheets`, preview/commit bodies take `sheetName`.
+- Zip-bomb guard: the CELL BUDGET in readSheet (20k×64 = 1.28M cells,
+  fatal beyond; 64-col cap per row) with the honest Arabic refusal.
+- Limits to the I1 spec: 14MB base64 (≈10MB raw) everywhere, rows cap
+  5000 → 20,000.
+- The Libyan quadruple-name law: splitFullName keeps عبد + the next word
+  as ONE firstName (عبد الله محمد → «عبد الله» / «محمد»).
+- Birth dates from the wild: dd/mm/yyyy + dd-mm-yyyy (day-first) + Excel
+  serial numbers (1899-12-30 epoch, 1900–2100 plausibility) join ISO.
+- Pinned: encoding.test.ts (20 — recovery/sniffing/parse/names/dates/
+  caps). Gates: backend 2247 green · tsc src 0/0 · tsc tests 0/0.
+- Next (I-P2): rollback/undo + diff view + per-row policy; I-P3: mode B;
+  then F2 the wizard.

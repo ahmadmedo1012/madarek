@@ -51,7 +51,9 @@ export type InstitutionMode = 'UNIVERSITY' | 'SCHOOL';
 
 /** One import file, ≤ 5000 data rows — a migration is many files, and
  *  the per-row ledger (ImportRow) stays bounded per job. */
-export const IMPORT_MAX_ROWS = 5000;
+/** R350 I-P1 — the I1 spec cap: ≤20,000 rows (the 10k perf pin lives
+ *  in load.test.ts; 20k is the engine's hard ceiling). */
+export const IMPORT_MAX_ROWS = 20_000;
 
 const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // same shape as r323
 
@@ -160,14 +162,34 @@ export interface ValidateRowsOptions {
 /** Split a full name for the User record: first word = firstName, the
  *  rest = lastName; a single word leaves lastName '' (User.lastName is
  *  NOT NULL but not non-empty — the schema accepts the honest shape). */
-function splitFullName(nameAr: string): { firstName: string; lastName: string } {
+/**
+ * The LIBYAN quadruple-name law (R350 I-P1): a first token of «عبد» is
+ * INCOMPLETE on its own (the theophoric compound needs its second half
+ * — عبد الله، عبد الرحمن)، so it keeps the NEXT word inside firstName.
+ * Everything else: first word = firstName, the rest = lastName; a
+ * single word leaves lastName '' (User.lastName is NOT NULL but not
+ * non-empty — the schema accepts the honest shape).
+ */
+export function splitFullName(nameAr: string): { firstName: string; lastName: string } {
   const parts = nameAr.trim().split(/\s+/);
+  if (parts[0] === 'عبد' && parts.length >= 2) {
+    return { firstName: `${parts[0]} ${parts[1]}`, lastName: parts.slice(2).join(' ') };
+  }
   const firstName = parts.shift() ?? '';
   return { firstName, lastName: parts.join(' ') };
 }
 
 /** yyyy-mm-dd (or a full ISO instant) → {iso date}; anything else fails. */
-function parseDateOfBirth(raw: string): { date: string } | null {
+/**
+ * A birth date from the wild (R350 I-P1) → {iso date}; anything else fails:
+ *   · yyyy-mm-dd (the documented template format);
+ *   · a full ISO instant (an xlsx cell that carried a time part) — keep the date;
+ *   · dd/mm/yyyy or dd-mm-yyyy (the registrar's hand-typed shape — day
+ *     ≤ 31 and month ≤ 12 make the two orders disambiguate themselves);
+ *   · an Excel SERIAL number (days since 1899-12-30 — the raw number a
+ *     cell shows when Excel ate the date format), plausible 1900–2100.
+ */
+export function parseDateOfBirth(raw: string): { date: string } | null {
   const ascii = toAsciiDigits(raw.trim());
   if (/^\d{4}-\d{2}-\d{2}$/.test(ascii)) {
     const d = new Date(`${ascii}T00:00:00.000Z`);
@@ -177,6 +199,26 @@ function parseDateOfBirth(raw: string): { date: string } | null {
   if (/^\d{4}-\d{2}-\d{2}T/.test(ascii)) {
     const d = new Date(ascii);
     return Number.isNaN(d.getTime()) ? null : { date: ascii.slice(0, 10) };
+  }
+  const dmy = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/.exec(ascii);
+  if (dmy) {
+    const day = Number(dmy[1]);
+    const month = Number(dmy[2]);
+    if (day >= 1 && day <= 31 && month >= 1 && month <= 12) {
+      const iso = `${dmy[3]}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const d = new Date(`${iso}T00:00:00.000Z`);
+      if (!Number.isNaN(d.getTime())) return { date: iso };
+    }
+    return null;
+  }
+  if (/^\d{4,6}$/.test(ascii)) {
+    const serial = Number(ascii);
+    const ms = (serial - 25569) * 86_400_000; // 1899-12-30 → Unix epoch
+    const d = new Date(ms);
+    const year = d.getUTCFullYear();
+    if (!Number.isNaN(d.getTime()) && year >= 1900 && year <= 2100) {
+      return { date: d.toISOString().slice(0, 10) };
+    }
   }
   return null;
 }
