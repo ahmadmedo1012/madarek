@@ -852,6 +852,11 @@ model ImportJob {
   summary         Json? // {counts, duplicateReport, warnings, emailPlaceholder…}
   error           Json? // {messageAr, at} — الفشل الوظيفي فقط
   idempotencyKey  String?         @unique
+  // R350 I-P2 — علامة التراجع: مهمة مكتملة ارتدّت (حُذف الإنشاء
+  // غير المسجَّل دخوله، ورُدّت صور «قبل» للتعديلات) داخل نافذة
+  // التراجع. rollbackSummary يحمل العدادات كما جرت فعلًا.
+  rolledBackAt    DateTime?
+  rollbackSummary Json?
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
@@ -875,9 +880,15 @@ model ImportRow {
   mappedData Json? // الحقول المخطَّطة + القيم المُطبَّعة
   errorAr    String? // رسالة الرفض/الفشل العربية (بلا فاصلة، صف واحد)
   resultRef  String? // معرّف StudentProfile/TeacherProfile الناتج (أو الموجود عند SKIP)
+  // R350 I-P2 — ما فعله التنفيذ فعلًا بهذا الصف (CREATED | UPDATED |
+  // SKIPPED)؛ التراجع يقرأه ليعرف ماذا يُرجع. before صورة الحقول قبل
+  // التعديل (UPDATE فقط) — يرتدّها التراجع كما كانت.
+  action     String?
+  before     Json?
 
   @@unique([jobId, line])
   @@index([jobId, status])
+  @@index([jobId, action])
 }
 
 // مخطط أعمدة محفوظ باسم — يستعيده المسجّل في الملف القادم بدل

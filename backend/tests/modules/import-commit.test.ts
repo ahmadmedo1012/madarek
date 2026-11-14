@@ -51,6 +51,8 @@ vi.mock('../../src/db.js', () => {
   const facCreate = vi.fn(async ({ data }: { data: { name: string } }) => ({ id: 'f-new', name: data.name }));
   const depCreate = vi.fn(async ({ data }: { data: { name: string } }) => ({ id: 'd-new', name: data.name }));
   const importRowUpdate = vi.fn(async () => ({}));
+  const importRowUpdateMany = vi.fn(async () => ({ count: 1 }));
+  const importRowFindMany = vi.fn(async () => [] as { line: number; action: string }[]);
   const auditLogCreate = vi.fn(async () => ({}));
   const jobFindUnique = vi.fn(async () => null);
   const jobUpdate = vi.fn(async ({ data }: { data: Record<string, unknown> }) => ({ id: 'job-1', ...data }));
@@ -63,7 +65,7 @@ vi.mock('../../src/db.js', () => {
     studentProfile: { findFirst: spFindFirst, findMany: spFindMany, create: spCreate, update: spUpdate },
     user: { findMany: userFindMany, findUnique: userFindUnique, create: userCreate },
     membership: { create: membershipCreate },
-    importRow: { update: importRowUpdate },
+    importRow: { update: importRowUpdate, updateMany: importRowUpdateMany, findMany: importRowFindMany },
     auditLog: { create: auditLogCreate },
     importJob: { findUnique: jobFindUnique, update: jobUpdate, create: jobCreate },
     $transaction: vi.fn(async (fn: (tx: unknown) => Promise<unknown>) =>
@@ -73,7 +75,7 @@ vi.mock('../../src/db.js', () => {
         membership: { create: membershipCreate },
         faculty: { create: facCreate },
         department: { create: depCreate },
-        importRow: { update: importRowUpdate },
+        importRow: { update: importRowUpdate, updateMany: importRowUpdateMany, findMany: importRowFindMany },
       }),
     ),
   };
@@ -101,7 +103,7 @@ const mocked = prisma as unknown as {
   department: { findMany: ReturnType<typeof vi.fn>; create: ReturnType<typeof vi.fn> };
   studentProfile: { findFirst: ReturnType<typeof vi.fn>; findMany: ReturnType<typeof vi.fn> };
   user: { findMany: ReturnType<typeof vi.fn>; findUnique: ReturnType<typeof vi.fn> };
-  importRow: { update: ReturnType<typeof vi.fn> };
+  importRow: { update: ReturnType<typeof vi.fn>; updateMany: ReturnType<typeof vi.fn>; findMany: ReturnType<typeof vi.fn> };
   auditLog: { create: ReturnType<typeof vi.fn> };
   importJob: { findUnique: ReturnType<typeof vi.fn>; create: ReturnType<typeof vi.fn> };
 };
@@ -225,8 +227,12 @@ describe('R350 I-P0 — commit: the hardening', () => {
     expect(body.data.credentials[0]!.tempPassword.length).toBeGreaterThanOrEqual(12);
     expect(body.data.credentials.map((c) => c.universityId).sort()).toEqual(['9101', '9102']);
     expect(body.data.activationMailQueued).toBe(0);
-    // the per-row ledger: one importRow.update per committed row
-    expect(mocked.importRow.update).toHaveBeenCalledTimes(2);
+    // the per-row ledger: one importRow.updateMany per committed row
+    // (I-P2: updateMany — jobs past the 2000-row ledger cap can't crash)
+    expect(mocked.importRow.updateMany).toHaveBeenCalledTimes(2);
+    // I-P2: every committed row records what the commit DID
+    const createdActions = mocked.importRow.updateMany.mock.calls.map((c) => (c[0] as { data: { action: string } }).data.action);
+    expect(createdActions).toEqual(['CREATED', 'CREATED']);
     // the audit row at completion
     const audit = mocked.auditLog.create.mock.calls[0]![0] as { data: { action: string; metadata: { credentialsIssued: number } } };
     expect(audit.data.action).toBe('IMPORT_COMMITTED');
@@ -246,7 +252,7 @@ describe('R350 I-P0 — commit: the hardening', () => {
     expect(body.data.succeeded).toBe(1);
     expect(body.data.failed).toBe(1);
     // the failed row's ledger entry carries the Arabic reason
-    const failedLedger = mocked.importRow.update.mock.calls.find((c) => (c[0] as { data: { status: string } }).data.status === 'ERROR');
+    const failedLedger = mocked.importRow.updateMany.mock.calls.find((c) => (c[0] as { data: { status: string } }).data.status === 'ERROR');
     expect((failedLedger![0] as { data: { errorAr: string } }).data.errorAr).toContain('مستخدم بحساب آخر');
   });
 
@@ -266,7 +272,7 @@ describe('R350 I-P0 — commit: the hardening', () => {
     const created = mocked.faculty.create.mock.calls[0]![0] as { data: { name: string; city: string } };
     expect(created.data.name).toBe('كلية الطب');
     expect(created.data.city).toBe('غير محدد');
-    const audit = mocked.auditLog.create.mock.calls[0]![0] as { data: { metadata: { createdOrgs: { kind: string; name: string }[] } } };
-    expect(audit.data.metadata.createdOrgs).toEqual([{ kind: 'faculty', name: 'كلية الطب' }]);
+    const audit = mocked.auditLog.create.mock.calls[0]![0] as { data: { metadata: { createdOrgs: { kind: string; name: string; id: string }[] } } };
+    expect(audit.data.metadata.createdOrgs).toEqual([{ kind: 'faculty', name: 'كلية الطب', id: 'f-new' }]);
   });
 });

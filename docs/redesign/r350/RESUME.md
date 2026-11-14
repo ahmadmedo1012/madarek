@@ -348,3 +348,38 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
   rename-ledger-scan 0 OFF-LIST; AdminMailPage 7/7.
 - Gates: lint 0 errors (15 pre-existing warnings) · ledger scan 0 ·
   fe mail tests 7/7 · import tests 46/46.
+
+### LANE I — I-P2 rollback/undo + diff view + per-row policies (this commit)
+- Schema (additive, local PG 16 proof — the auto-diff's 8 trgm DROPs
+  caught and killed again, reset-from-scratch 38/38 applied, 13 GIN
+  alive): ImportRow.action (CREATED|UPDATED|SKIPPED) + ImportRow.before
+  (the UPDATE's before-image) + ImportRow_jobId_action_idx;
+  ImportJob.rolledBackAt + rollbackSummary.
+- The DIFF VIEW: preview rows whose reg-number exists carry
+  {existing, diff:[{field,fieldAr,from,to}], fillable} — the registrar
+  judges duplicates with evidence (name from→to, «اسم ولي الأمر» fillable…).
+- Per-row policies: duplicatePolicy gains FILL_EMPTY (only empty
+  profile fields; a nothing-to-fill row reports SKIPPED, never a
+  hollow success) + rowPolicies {line→SKIP|UPDATE|FILL_EMPTY} beats
+  the global policy (the wizard's per-row verdict).
+- Resume-exactness: priorLedger read at commit start — a resumed job
+  never loses the first attempt's CREATED action (rows it created now
+  read as "existing") and UPDATED rows keep their FIRST before-image
+  (the resume's before is post-first-update state).
+- The ledger write is updateMany (the >2000-row latent P2025 crash
+  dies; counters stay honest, ledger best-effort).
+- ROLLBACK: POST /import/jobs/:id/rollback — CREATED rows delete the
+  full account (profile+membership+user) ONLY when never-logged-in
+  AND activityless (LoginEvent success ∨ enrolments ∨ submissions →
+  keptActive); UPDATED rows restore the before-image verbatim; orgs
+  the job created are swept only when now empty (id rides createdOrgs
+  since this commit; pre-I-P2 summaries skip honestly); 72h window;
+  one rollback per job; IMPORT_ROLLED_BACK audit row + summary JSON.
+- Pinned: tests/modules/import-rollback.test.ts — 9 (diff, FILL_EMPTY
+  ×2, rowPolicies override, before-image capture, rollback happy +
+  keeps-active + empty-org sweep + the 3 guards); import-commit.test.ts
+  re-pinned to the updateMany + action + createdOrgs-id contract.
+- Gates: backend tsc 0/0 · vitest 2271 green (19 skipped) ·
+  verify.sh --fast PASS.
+- Next (I-P4): the mapping presets (generic-university,
+  generic-school, ghweil stub unverified); then F2 the wizard.

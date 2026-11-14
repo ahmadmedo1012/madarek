@@ -243,6 +243,56 @@ router.post(
       ]);
       const knownUniIds = new Set(existingUniIds.map((r) => r.universityId));
       const takenEmailSet = new Set(takenEmails.map((u) => u.email.toLowerCase()));
+      /* R350 I-P2 — the DIFF VIEW: rows whose reg-number exists carry the
+       * field-level before→after picture (what UPDATE would change, what
+       * FILL_EMPTY would add) so the registrar judges duplicates with
+       * evidence, not trust. */
+      const existingProfiles = okUniIds.length
+        ? await prisma.studentProfile.findMany({
+            where: { institutionId: instId, universityId: { in: okUniIds } },
+            select: {
+              id: true, universityId: true, nameAr: true, stage: true, grade: true, section: true,
+              studentPhone: true, guardianName: true, guardianPhone: true,
+            },
+          })
+        : [];
+      const existingByUniId = new Map(existingProfiles.map((p) => [p.universityId, p]));
+      type DiffTarget = { nameAr: string; stage?: string | null; grade?: string | null; section?: string | null; studentPhone?: string | null; guardianName?: string | null; guardianPhone?: string | null };
+      const DIFF_FIELDS: [keyof DiffTarget, string][] = [
+        ['nameAr', 'الاسم'],
+        ['stage', 'المرحلة'],
+        ['grade', 'الصف'],
+        ['section', 'الشعبة'],
+        ['studentPhone', 'هاتف الطالب'],
+        ['guardianName', 'اسم ولي الأمر'],
+        ['guardianPhone', 'هاتف ولي الأمر'],
+      ];
+      const rowDiffs = new Map<number, { existing: { universityId: string; nameAr: string }; diff: { field: string; fieldAr: string; from: string; to: string }[]; fillable: string[] }>();
+      for (const row of result.rows) {
+        if (row.status !== 'ok') continue;
+        const m = row.mapped as { universityId?: string; firstName: string; lastName: string; nameAr?: string } & DiffTarget;
+        const existing = m.universityId ? existingByUniId.get(m.universityId) : undefined;
+        if (!existing) continue;
+        const file: DiffTarget = {
+          nameAr: m.nameAr ?? `${m.firstName} ${m.lastName}`.trim(),
+          stage: m.stage ?? null, grade: m.grade ?? null, section: m.section ?? null,
+          studentPhone: m.studentPhone ?? null, guardianName: m.guardianName ?? null, guardianPhone: m.guardianPhone ?? null,
+        };
+        const diff: { field: string; fieldAr: string; from: string; to: string }[] = [];
+        const fillable: string[] = [];
+        for (const [field, fieldAr] of DIFF_FIELDS) {
+          const from = (existing[field] as string | null | undefined) ?? '';
+          const to = (file[field] as string | null | undefined) ?? '';
+          if (from === to) continue;
+          diff.push({ field, fieldAr, from, to });
+          if (from === '' && to !== '') fillable.push(fieldAr);
+        }
+        rowDiffs.set(row.line, {
+          existing: { universityId: existing.universityId, nameAr: existing.nameAr ?? '' },
+          diff,
+          fillable,
+        });
+      }
       for (const row of result.rows) {
         if (row.status !== 'ok') continue;
         const m = row.mapped as { faculty?: string; department?: string; universityId?: string; email?: string };
@@ -318,6 +368,8 @@ router.post(
             status: r.status,
             errorsAr: r.errorsAr,
             warningsAr: r.warningsAr,
+            // R350 I-P2 — the duplicate diff (only rows the DB matched).
+            ...(rowDiffs.get(r.line) ?? {}),
           })),
         },
       });
@@ -330,10 +382,14 @@ router.post(
 /* ── POST /import/jobs/:id/commit — chunked, idempotent ──────────── */
 
 const commitBodySchema = z.object({
-  duplicatePolicy: z.enum(['SKIP', 'UPDATE', 'ERROR']).default('SKIP'),
+  duplicatePolicy: z.enum(['SKIP', 'UPDATE', 'FILL_EMPTY', 'ERROR']).default('SKIP'),
   chunkSize: z.number().int().min(20).max(500).default(200),
   fileBase64: z.string().min(16).max(14 * 1024 * 1024), // ≤ 14 MB encoded ≈ 10 MB raw (I1)
   sheetName: z.string().min(1).max(64).optional(),
+  /** R350 I-P2 — per-row policy overrides, keyed by the data line
+   * number: the wizard's per-row verdict beats the global policy for
+   * duplicates (SKIP | UPDATE | FILL_EMPTY). */
+  rowPolicies: z.record(z.string().regex(/^\d+$/), z.enum(['SKIP', 'UPDATE', 'FILL_EMPTY'])).default({}),
 });
 
 router.post(
@@ -343,7 +399,7 @@ router.post(
   validate(commitBodySchema, 'body'),
   async (req, res, next) => {
     try {
-      const { duplicatePolicy, chunkSize, fileBase64, sheetName } = req.body as z.infer<typeof commitBodySchema>;
+      const { duplicatePolicy, chunkSize, fileBase64, sheetName, rowPolicies } = req.body as z.infer<typeof commitBodySchema>;
       const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
       if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
       await resolveInstitutionId(req, job.institutionId);
@@ -375,6 +431,20 @@ router.post(
 
       await prisma.importJob.update({ where: { id: job.id }, data: { status: 'COMMITTING', totalRows: result.counts.total } });
 
+      /* R350 I-P2 — resume-exactness: a crashed-and-resumed commit must
+       * never LOSE what the first attempt did. Rows the first attempt
+       * CREATED will read as "existing" now — their ledger action stays
+       * CREATED (rollback still undoes them). Rows the first attempt
+       * UPDATED keep their FIRST before-image (the resume's before is
+       * post-first-update state — restoring that would leave the first
+       * attempt's changes applied). */
+      const priorLedger = await prisma.importRow.findMany({
+        where: { jobId: job.id, action: { not: null } },
+        select: { line: true, action: true },
+      });
+      const priorCreated = new Set(priorLedger.filter((r) => r.action === 'CREATED').map((r) => r.line));
+      const priorUpdated = new Set(priorLedger.filter((r) => r.action === 'UPDATED').map((r) => r.line));
+
       // Resolve the faculty/department NAME references ONCE (the
       // registrar's file speaks names, the DB speaks ids) — through the
       // R350 resolver: exact → normalised → suggestion, with an explicit
@@ -387,8 +457,10 @@ router.post(
         where: { faculty: { institutionId: job.institutionId } },
         select: { id: true, name: true, facultyId: true },
       });
-      /** R350 I-P0 — created orgs, audited once at completion. */
-      const createdOrgs: { kind: 'faculty' | 'department'; name: string }[] = [];
+      /** R350 I-P0 — created orgs, audited once at completion. I-P2:
+       * the id rides along so a rollback can sweep the ones that ended
+       * up empty (old summaries without ids are simply skipped). */
+      const createdOrgs: { kind: 'faculty' | 'department'; name: string; id: string }[] = [];
 
       let succeeded = 0;
       let skipped = 0;
@@ -403,8 +475,10 @@ router.post(
        * them: unloginable accounts. */
       const credentials: { name: string; universityId: string; email: string; tempPassword: string }[] = [];
       /** R350 I-P0 — the per-row ledger updates for this chunk (applied
-       * inside the same transaction as the writes they describe). */
-      const rowOutcomes: { line: number; status: 'OK' | 'SKIPPED' | 'ERROR'; resultRef?: string; errorAr?: string }[] = [];
+       * inside the same transaction as the writes they describe).
+       * I-P2: action (CREATED|UPDATED|SKIPPED) + before (the update's
+       * before-image) ride along so the rollback knows what to undo. */
+      const rowOutcomes: { line: number; status: 'OK' | 'SKIPPED' | 'ERROR'; resultRef?: string; errorAr?: string; action?: 'CREATED' | 'UPDATED' | 'SKIPPED'; before?: object }[] = [];
       for (let i = 0; i < okRows.length; i += chunkSize) {
         const chunk = okRows.slice(i, i + chunkSize);
         rowOutcomes.length = 0;
@@ -419,14 +493,55 @@ router.post(
               guardianName?: string; guardianPhone?: string; guardianPhoneNormalized?: string;
             };
             // Idempotency: an existing institution-scoped reg-number honors the policy.
+            // R350 I-P2 — the wizard's per-row verdict beats the global one.
+            const rowPolicy = rowPolicies[String(row.line)] ?? duplicatePolicy;
             const existing = await tx.studentProfile.findFirst({
               where: { institutionId: job.institutionId, universityId: m.universityId },
-              select: { id: true },
+              select: { id: true, nameAr: true, stage: true, grade: true, section: true, studentPhone: true, studentPhoneNormalized: true, guardianName: true, guardianPhone: true, guardianPhoneNormalized: true },
             });
             if (existing) {
-              if (duplicatePolicy === 'SKIP') { skipped += 1; rowOutcomes.push({ line: row.line, status: 'SKIPPED', resultRef: existing.id }); continue; }
-              if (duplicatePolicy === 'ERROR') { failed += 1; rowOutcomes.push({ line: row.line, status: 'ERROR', errorAr: 'رقم قيد موجود مسبقًا وسياسة التكرار رفضته' }); continue; }
-              // UPDATE: refresh the permitted profile fields only.
+              if (rowPolicy === 'SKIP') {
+                skipped += 1;
+                rowOutcomes.push({ line: row.line, status: 'SKIPPED', resultRef: existing.id, action: priorCreated.has(row.line) ? 'CREATED' : 'SKIPPED' });
+                continue;
+              }
+              if (rowPolicy === 'ERROR') { failed += 1; rowOutcomes.push({ line: row.line, status: 'ERROR', errorAr: 'رقم قيد موجود مسبقًا وسياسة التكرار رفضته' }); continue; }
+              const fileUpdates = {
+                nameAr: m.nameAr ?? `${m.firstName} ${m.lastName}`.trim(),
+                stage: m.stage, grade: m.grade, section: m.section,
+                studentPhone: m.studentPhone, studentPhoneNormalized: m.studentPhoneNormalized,
+                guardianName: m.guardianName, guardianPhone: m.guardianPhone, guardianPhoneNormalized: m.guardianPhoneNormalized,
+              };
+              if (rowPolicy === 'FILL_EMPTY') {
+                /* R350 I-P2 — FILL_EMPTY: only the fields the profile does
+                 * NOT carry yet; existing values are untouchable. A row
+                 * with nothing to fill reports as SKIPPED (nothing
+                 * changed), never as a hollow success. */
+                const fill: Record<string, string | null | undefined> = {};
+                for (const [k, v] of Object.entries(fileUpdates)) {
+                  if (v == null || v === '') continue;
+                  const cur = (existing as Record<string, unknown>)[k];
+                  if (cur == null || cur === '') fill[k] = v as string;
+                }
+                if (Object.keys(fill).length === 0) {
+                  skipped += 1;
+                  rowOutcomes.push({ line: row.line, status: 'SKIPPED', resultRef: existing.id, action: priorCreated.has(row.line) ? 'CREATED' : 'SKIPPED' });
+                  continue;
+                }
+                const beforeFill: Record<string, unknown> = {};
+                for (const k of Object.keys(fill)) beforeFill[k] = (existing as Record<string, unknown>)[k] ?? null;
+                await tx.studentProfile.update({ where: { id: existing.id }, data: fill });
+                succeeded += 1;
+                rowOutcomes.push({ line: row.line, status: 'OK', resultRef: existing.id, action: 'UPDATED', before: beforeFill });
+                continue;
+              }
+              // UPDATE: refresh the permitted profile fields only — the
+              // before-image of every field touched rides the ledger (I-P2).
+              const beforeImage = {
+                nameAr: existing.nameAr ?? null, stage: existing.stage ?? null, grade: existing.grade ?? null, section: existing.section ?? null,
+                studentPhone: existing.studentPhone ?? null, studentPhoneNormalized: existing.studentPhoneNormalized ?? null,
+                guardianName: existing.guardianName ?? null, guardianPhone: existing.guardianPhone ?? null, guardianPhoneNormalized: existing.guardianPhoneNormalized ?? null,
+              };
               await tx.studentProfile.update({
                 where: { id: existing.id },
                 data: {
@@ -437,7 +552,7 @@ router.post(
                 },
               });
               succeeded += 1;
-              rowOutcomes.push({ line: row.line, status: 'OK', resultRef: existing.id });
+              rowOutcomes.push({ line: row.line, status: 'OK', resultRef: existing.id, action: 'UPDATED', before: beforeImage });
               continue;
             }
             const email = m.email ?? `${m.universityId}@students.import.madarek.local`;
@@ -491,7 +606,7 @@ router.post(
               } else if (createIfMissing) {
                 const created = await tx.faculty.create({ data: { name: m.faculty.trim(), institutionId: job.institutionId, city: 'غير محدد' }, select: { id: true, name: true } });
                 faculties.push(created);
-                createdOrgs.push({ kind: 'faculty', name: created.name });
+                createdOrgs.push({ kind: 'faculty', name: created.name, id: created.id });
                 facultyId = created.id;
               }
             }
@@ -506,7 +621,7 @@ router.post(
                   select: { id: true, name: true },
                 });
                 departments.push({ ...created, facultyId: null as never });
-                createdOrgs.push({ kind: 'department', name: created.name });
+                createdOrgs.push({ kind: 'department', name: created.name, id: created.id });
                 departmentId = created.id;
               }
             }
@@ -527,15 +642,23 @@ router.post(
               select: { id: true },
             });
             succeeded += 1;
-            rowOutcomes.push({ line: row.line, status: 'OK', resultRef: profile.id });
+            rowOutcomes.push({ line: row.line, status: 'OK', resultRef: profile.id, action: 'CREATED' });
           }
           // R350 I-P0 — the per-row ledger rides the SAME transaction:
           // the report.xlsx stops lying (all-PENDING) and a resumed job
-          // shows exactly what happened per line.
+          // shows exactly what happened per line. I-P2: action + before
+          // ride too, and the write is updateMany — jobs beyond the
+          // 2000-row ledger cap no longer crash on a missing row (the
+          // counters stay honest, the ledger stays best-effort).
           for (const o of rowOutcomes) {
-            await tx.importRow.update({
-              where: { jobId_line: { jobId: job.id, line: o.line } },
-              data: { status: o.status, resultRef: o.resultRef ?? null, errorAr: o.errorAr ?? null },
+            await tx.importRow.updateMany({
+              where: { jobId: job.id, line: o.line },
+              data: {
+                status: o.status, resultRef: o.resultRef ?? null, errorAr: o.errorAr ?? null,
+                action: o.action ?? null,
+                // the FIRST before-image stands across resumes (I-P2)
+                before: priorUpdated.has(o.line) ? undefined : ((o.before ?? undefined) as object | undefined),
+              },
             });
           }
         });
@@ -643,7 +766,7 @@ router.get(
           orderBy: { createdAt: 'desc' },
           skip: (page - 1) * pageSize,
           take: pageSize,
-          select: { id: true, entity: true, fileName: true, format: true, status: true, totalRows: true, processedRows: true, succeededRows: true, skippedRows: true, failedRows: true, createdAt: true },
+          select: { id: true, entity: true, fileName: true, format: true, status: true, totalRows: true, processedRows: true, succeededRows: true, skippedRows: true, failedRows: true, rolledBackAt: true, createdAt: true },
         }),
         prisma.importJob.count({ where: { institutionId: instId } }),
       ]);
@@ -665,6 +788,129 @@ router.get(
       if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
       await resolveInstitutionId(req, job.institutionId);
       res.json({ data: job });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+/* ── POST /import/jobs/:id/rollback — undo a committed import ──────
+ * R350 I-P2 — the time-boxed, audited undo:
+ *  · CREATED rows: the account is deleted (profile + membership +
+ *    user) ONLY if it never logged in and carries no activity
+ *    (enrolments/submissions); an active account is KEPT and counted
+ *    (never destroy a student's real life to undo a spreadsheet).
+ *  · UPDATED rows: the before-image recorded at commit time is
+ *    restored verbatim.
+ *  · orgs this job created: removed only when now empty.
+ *  · Window: 72h from completion; one rollback per job; the act is
+ *    audited (IMPORT_ROLLED_BACK) and the summary JSON keeps the
+ *    counts forever. */
+
+const ROLLBACK_WINDOW_MS = 72 * 60 * 60 * 1000;
+
+router.post(
+  '/jobs/:id/rollback',
+  importLimiter,
+  requireRole(Role.ADMIN, Role.OWNER),
+  async (req, res, next) => {
+    try {
+      const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
+      if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
+      await resolveInstitutionId(req, job.institutionId);
+      if (job.status !== 'COMPLETED') throw AppError.badRequest('التراجع متاح للمهام المكتملة فقط');
+      if (job.rolledBackAt) throw AppError.badRequest('هذه المهمة مردودة بالفعل — لا يمكن التراجع مرتين');
+      if (Date.now() - job.updatedAt.getTime() > ROLLBACK_WINDOW_MS) {
+        throw AppError.badRequest('انقضت نافذة التراجع (٧٢ ساعة من إتمام المهمة) — أنشئ مهمة تصحيح بدلًا من ذلك');
+      }
+      if (job.entity === 'TEACHER') {
+        throw AppError.badRequest('مسار تراجع استيراد المدرّسين قيد الإعداد — المسار المفعّل لاستيراد الطلاب فقط');
+      }
+
+      const rows = await prisma.importRow.findMany({
+        where: { jobId: job.id, action: { in: ['CREATED', 'UPDATED'] } },
+        orderBy: { line: 'asc' },
+      });
+
+      let deletedUsers = 0;
+      let restoredUpdates = 0;
+      let keptActive = 0;
+      let removedEmptyOrgs = 0;
+      let missingRows = 0;
+
+      for (const row of rows) {
+        if (!row.resultRef) continue;
+        if (row.action === 'UPDATED') {
+          const before = (row.before ?? {}) as Record<string, unknown>;
+          if (Object.keys(before).length > 0) {
+            await prisma.studentProfile.update({ where: { id: row.resultRef }, data: before }).catch(() => {
+              missingRows += 1; // the profile vanished since (deleted by hand?) — nothing to restore
+            });
+          }
+          restoredUpdates += 1;
+          continue;
+        }
+        // CREATED — undo only a never-activated account.
+        const profile = await prisma.studentProfile.findUnique({
+          where: { id: row.resultRef },
+          select: { id: true, userId: true, membershipId: true },
+        });
+        if (!profile) { missingRows += 1; continue; }
+        const [login, enrollments, submissions] = await Promise.all([
+          prisma.loginEvent.findFirst({ where: { userId: profile.userId, success: true }, select: { id: true } }),
+          prisma.enrollment.count({ where: { studentId: profile.userId } }),
+          prisma.submission.count({ where: { studentId: profile.userId } }),
+        ]);
+        if (login || enrollments > 0 || submissions > 0) { keptActive += 1; continue; }
+        await prisma.studentProfile.delete({ where: { id: profile.id } });
+        await prisma.membership.delete({ where: { id: profile.membershipId } });
+        await prisma.user.delete({ where: { id: profile.userId } });
+        deletedUsers += 1;
+      }
+
+      // Orgs this job created: sweep only the ones that ended up empty.
+      const summary = (job.summary ?? {}) as { createdOrgs?: { kind: 'faculty' | 'department'; name: string; id?: string }[] };
+      for (const org of summary.createdOrgs ?? []) {
+        if (!org.id) continue; // pre-I-P2 summary — no id, no safe sweep
+        if (org.kind === 'faculty') {
+          const [profiles, deps] = await Promise.all([
+            prisma.studentProfile.count({ where: { facultyId: org.id } }),
+            prisma.department.count({ where: { facultyId: org.id } }),
+          ]);
+          if (profiles === 0 && deps === 0) {
+            await prisma.faculty.delete({ where: { id: org.id } }).then(() => { removedEmptyOrgs += 1; }).catch(() => {});
+          }
+        } else {
+          const profiles = await prisma.studentProfile.count({ where: { departmentId: org.id } });
+          if (profiles === 0) {
+            await prisma.department.delete({ where: { id: org.id } }).then(() => { removedEmptyOrgs += 1; }).catch(() => {});
+          }
+        }
+      }
+
+      const rollbackSummary = {
+        deletedUsers,
+        restoredUpdates,
+        keptActive,
+        removedEmptyOrgs,
+        missingRows,
+        at: new Date().toISOString(),
+      };
+      await prisma.importJob.update({
+        where: { id: job.id },
+        data: { rolledBackAt: new Date(), rollbackSummary },
+      });
+      await prisma.auditLog.create({
+        data: {
+          action: 'IMPORT_ROLLED_BACK',
+          resourceType: 'ImportJob',
+          resourceId: job.id,
+          userId: req.user!.id,
+          institutionId: job.institutionId,
+          metadata: { fileName: job.fileName, ...rollbackSummary },
+        },
+      });
+      res.json({ data: { jobId: job.id, ...rollbackSummary } });
     } catch (e) {
       next(e);
     }
