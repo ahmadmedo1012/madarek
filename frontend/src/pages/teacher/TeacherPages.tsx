@@ -79,7 +79,7 @@ const HR_CHIP_TONE: Record<'green' | 'amber' | 'red' | 'purple' | 'gold' | 'bran
   red: 'danger',
 };
 
-function PageHeader({ title, subtitle, actions, brow }: { title: string; subtitle: string; actions?: React.ReactNode; brow?: string }) {
+function PageHeader({ title, subtitle, actions, brow }: { title: string; subtitle?: string; actions?: React.ReactNode; brow?: string }) {
   return (
     <header className="page-header">
       <div className="page-title-block">
@@ -87,7 +87,7 @@ function PageHeader({ title, subtitle, actions, brow }: { title: string; subtitl
             daily-workflow area (a real classification, never decoration). */}
         {brow && <span className="hr-brow">{brow}</span>}
         <h1 className="page-title">{title}</h1>
-        <p className="page-subtitle">{subtitle}</p>
+        {subtitle && <p className="page-subtitle">{subtitle}</p>}
       </div>
       {actions}
     </header>
@@ -213,7 +213,7 @@ export function TeacherSchedulePage() {
         <EmptyState
           title="لا يوجد جدول مسجَّل"
           illustration="empty-list"
-          description="ستظهر محاضراتك هنا فور تسجيل الجداول لمقرّراتك من قِبَل المسجل العام."
+          description="ستظهر محاضراتك هنا فور تسجيل جداول مقرّراتك."
         />
       ) : (
         /* 4C-c Superlist recomposition: calm day sections in a grid —
@@ -418,7 +418,6 @@ export function AttendancePage() {
       <div className="page">
         <PageHeader
           title="الحضور والغياب"
-          subtitle="سجّل الحضور لكلّ محاضرة. يحفظ سجلّاً واحداً لكلّ تاريخ في قاعدة البيانات."
         />
         <CardSkeleton lines={3} />
         <ListSkeleton rows={5} />
@@ -430,7 +429,6 @@ export function AttendancePage() {
       <div className="page">
         <PageHeader
           title="الحضور والغياب"
-          subtitle="سجّل الحضور لكلّ محاضرة. يحفظ سجلّاً واحداً لكلّ تاريخ في قاعدة البيانات."
         />
         <ErrorState error={offsQ.error} onRetry={() => void offsQ.refetch()} />
       </div>
@@ -465,7 +463,6 @@ export function AttendancePage() {
     <div className="page">
       <PageHeader
         title="الحضور والغياب"
-        subtitle="سجِّل الحضور لكلّ محاضرة. يحفظ سجلّاً واحداً لكلّ تاريخ في قاعدة البيانات."
         brow="التدريس · الحضور"
         actions={
           <button
@@ -505,7 +502,7 @@ export function AttendancePage() {
                * midnight and would echo the previous day west of
                * Greenwich; the teacher picked a calendar DAY. */
               ? <>المحدَّد: {formatDateWithYearAr(`${date}T12:00:00`)}</>
-              : 'اختر التاريخ من تقويم الحقل — ترتيب الصيغة داخل الحقل يتبع إعدادات المتصفح.'}
+              : 'اختر التاريخ من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'}
           >
             <input
               type="date"
@@ -632,7 +629,7 @@ export function AttendancePage() {
               ))}
             </div>
           ) : students.length === 0 ? (
-            <EmptyState icon={ClipboardCheck} title="لا طلاب في هذا المقرّر بعد" description="لا إحصائيّات لعرضها — سجّل طالبًا أول لعرض حضوره وتأخّره." illustration="empty-list" />
+            <EmptyState icon={ClipboardCheck} title="لا طلاب في هذا المقرّر بعد" description="لا إحصائيّات بعد — سجّل طالبًا أول لعرض حضوره." illustration="empty-list" />
           ) : (
             <div className="flex-col gap-4">
               {/* R304: the honest dim rides a class now (was 4× inline
@@ -696,7 +693,7 @@ export function GradesPage() {
   if (offsQ.isPending) {
     return (
       <div className="page">
-        <PageHeader title="درجات الطلاب" subtitle="نظرة على متوسّط درجات طلاب المقرّر الحاليّ." />
+        <PageHeader title="درجات الطلاب" />
         <TableSkeleton rows={5} cols={5} />
       </div>
     );
@@ -704,7 +701,7 @@ export function GradesPage() {
   if (offsQ.isError) {
     return (
       <div className="page">
-        <PageHeader title="درجات الطلاب" subtitle="نظرة على متوسّط درجات طلاب المقرّر الحاليّ." />
+        <PageHeader title="درجات الطلاب" />
         <ErrorState error={offsQ.error} onRetry={() => void offsQ.refetch()} />
       </div>
     );
@@ -751,7 +748,7 @@ export function GradesPage() {
         }
       >
         {!effectiveOfferingId ? (
-          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض درجات طلابه." illustration="empty-courses" />
+          <EmptyState title="اختر مقرّراً" description="حدّد مقرّراً من الأعلى لعرض درجات طلابه." illustration="empty-courses" />
         ) : stuQ.isPending ? (
           <TableSkeleton rows={5} cols={5} />
         ) : stuQ.isError ? (
@@ -911,12 +908,12 @@ function SemesterGradeEntry({
       return;
     }
     if (dirtyRows.length === 0) {
-      setFormError('أدخل درجة واحدة على الأقل — الصفوف الفارغة لا تُرسَل ولا تمسّ الدرجات المسجَّلة.');
+      setFormError('أدخل درجة واحدة على الأقل — الفارغ لا يُرسَل ولا يمسّ المسجَّلة.');
       return;
     }
     if (dirtyRows.length > 200) {
       // gradesUpsertSchema caps the array at 200 — the roster can exceed it.
-      setFormError('الحدّ الأقصى 200 درجة في الحفظة الواحدة — احفظ على دفعات.');
+      setFormError('الحدّ 200 درجة في الحفظة الواحدة — احفظ على دفعات.');
       return;
     }
     /* Per-row validation mirrors GradeSubmissionModal's copy: a valid
@@ -970,7 +967,7 @@ function SemesterGradeEntry({
       subtitle={
         dirtyRows.length > 0
           ? countAr(dirtyRows.length, ['صف واحد غير محفوظ', 'صفان غير محفوظان', 'صفوف غير محفوظة', 'صفاً غير محفوظاً'])
-          : 'سجّل درجة كل طالب في التقييم المحدَّد — الصفوف الفارغة لا تُرسَل، والدرجات المسجَّلة مسبقاً تظهر معبَّأة.'
+          : 'سجّل درجة كل طالب — الفارغ لا يُرسَل، والمسجَّلة مسبقاً تأتي معبَّأة.'
       }
       actions={
         <button
@@ -1003,7 +1000,7 @@ function SemesterGradeEntry({
           </FormField>
           <FormField
             label="الدرجة العظمى"
-            hint="بين 1 و100 — تعتمد من الدرجات المسجَّلة لهذا النوع"
+            hint="بين 1 و100 — تعتمد من المسجَّلة لهذا النوع"
             error={formError && maxInvalid ? formError : undefined}
           >
             <input
@@ -1035,13 +1032,13 @@ function SemesterGradeEntry({
         </div>
 
         {!offeringId ? (
-          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لإدخال درجات طلابه." illustration="empty-courses" />
+          <EmptyState title="اختر مقرّراً" description="حدّد مقرّراً من الأعلى لإدخال درجات طلابه." illustration="empty-courses" />
         ) : studentsQ.isPending ? (
           <TableSkeleton rows={5} cols={3} />
         ) : studentsQ.isError ? (
           <ErrorState error={studentsQ.error} onRetry={() => studentsQ.refetch()} />
         ) : students.length === 0 ? (
-          <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات في هذا المقرّر بعد — لا درجات لإدخالها." illustration="empty-list" />
+          <EmptyState title="لا يوجد طلاب" description="لا تسجيلات في المقرّر بعد — لا درجات لإدخالها." illustration="empty-list" />
         ) : gradesQ.isPending ? (
           <TableSkeleton rows={4} cols={3} />
         ) : gradesQ.isError ? (
@@ -1426,7 +1423,7 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
 
               <FormField
                 label="الرابط (https)"
-                hint='رابط مباشر للملف على خدمة خارجية، أو مسار ملف ورقة من المنصة.'
+                hint='رابط مباشر للملف، أو مسار ملف ورقة من المنصة.'
                 error={validationError && !/^https:\/\//.test(url.trim()) ? validationError : undefined}
               >
                 <input
@@ -1445,7 +1442,7 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
           <FormField label="الوصف (اختياري)">
             <textarea
               className="input" rows={3} maxLength={2000}
-              placeholder='وصف مختصر يساعد الطالب على معرفة محتوى المادة…'
+              placeholder='وصف مختصر لمحتوى المادة…'
               value={description} onChange={(e) => setDescription(e.target.value)}
               disabled={pending} style={{ resize: 'vertical', fontFamily: 'inherit' }}
             />
@@ -1506,7 +1503,7 @@ export function MaterialsPage() {
     <div className="page">
       <PageHeader
         title="الملفات التعليمية"
-        subtitle="ملفّاتك المرفوعة على مقرّراتك — مع عدد المشاهدات والتحميلات الفعليّ."
+        subtitle="ملفّاتك على مقرّراتك — مع المشاهدات والتحميلات الفعليّة."
         brow="التدريس · المواد"
         actions={(
           /* r144 (T1-h F2): the channel the old dead-end card pointed
@@ -1529,8 +1526,8 @@ export function MaterialsPage() {
         icon={FileText}
         subtitle={(
           <span>
-            ارفع ملف PDF مباشرة من جهازك، أو أضف رابطاً خارجياً لأي نوع آخر — الملفات
-            المرفوعة تُخزَّن على المنصة ويفتحها طلاب المقرّر من العارض الداخلي.
+            ارفع ملف PDF من جهازك أو أضف رابطاً خارجياً — المرفوعات
+            تُخزَّن على المنصة ويفتحها الطلاب من العارض الداخلي.
           </span>
         )}
       >
@@ -1539,7 +1536,7 @@ export function MaterialsPage() {
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
-          <EmptyState title="لم ترفع ملفات بعد" description="أضف أول مادة بزر «إضافة مادة» بالأعلى — سيظهر لطلاب المقرّر فوراً." illustration="empty-list" />
+          <EmptyState title="لم ترفع ملفات بعد" description="أضف أول مادة بزر «إضافة مادة» — يظهر لطلاب المقرّر فوراً." illustration="empty-list" />
         ) : (
           /* 4C-c: file rows, not a 7-column table — the detail rides the
               row (course · type badge · views · downloads), the trailing
@@ -1683,13 +1680,13 @@ export function StudentsListPage() {
         icon={Users}
       >
         {!effectiveOfferingId ? (
-          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض قائمة طلابه." illustration="empty-courses" />
+          <EmptyState title="اختر مقرّراً" description="حدّد مقرّراً من الأعلى لعرض قائمة طلابه." illustration="empty-courses" />
         ) : stuQ.isPending ? (
           <TableSkeleton rows={5} cols={6} />
         ) : stuQ.isError ? (
           <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : students.length === 0 ? (
-          <EmptyState title="لا يوجد طلاب مسجَّلون" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." illustration="empty-list" />
+          <EmptyState title="لا يوجد طلاب مسجَّلون" description="لا تسجيلات نشطة في المقرّر بعد." illustration="empty-list" />
         ) : (
           <div className="table-wrap tpg-students">
             <table className="table tbl-stack">
@@ -1818,7 +1815,7 @@ export function PerformancePage() {
   if (offsQ.isPending) {
     return (
       <div className="page">
-        <PageHeader title="الأداء والتحليل" subtitle="رؤى على أداء فصلك — مُستخرجة من بيانات الحضور والدرجات الفعليّة." />
+        <PageHeader title="الأداء والتحليل" />
         <StatStripSkeleton />
         <CardSkeleton lines={5} />
       </div>
@@ -1827,7 +1824,7 @@ export function PerformancePage() {
   if (offsQ.isError) {
     return (
       <div className="page">
-        <PageHeader title="الأداء والتحليل" subtitle="رؤى على أداء فصلك — مُستخرجة من بيانات الحضور والدرجات الفعليّة." />
+        <PageHeader title="الأداء والتحليل" />
         <ErrorState error={offsQ.error} onRetry={() => void offsQ.refetch()} />
       </div>
     );
@@ -1868,7 +1865,7 @@ export function PerformancePage() {
       />
 
       {!effectiveOfferingId ? (
-        <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض تحليل أداء فصلك." illustration="empty-courses" />
+        <EmptyState title="اختر مقرّراً" description="حدّد مقرّراً من الأعلى لعرض تحليل فصلك." illustration="empty-courses" />
       ) : stuQ.isPending || analytics.isPending ? (
         /* 5-C3 (A9 P2-2): bare spinner → the shapes that land — the
            stat strip + the distribution card — so the data-land swap
@@ -1916,7 +1913,7 @@ export function PerformancePage() {
               <EmptyState
                 title="لا توجد بيانات توزيع بعد"
                 illustration="empty-list"
-                description="سيظهر توزيع الدرجات هنا فور تسجيل طلاب في المقرّر."
+                description="سيظهر التوزيع فور تسجيل طلاب في المقرّر."
               />
             ) : (
               /* A6 P2 (22-a): empty buckets dim instead of painting
@@ -2118,7 +2115,7 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
             error={validationError && !dueAt ? validationError : undefined}
             hint={dueAt
               ? `المحدَّد: ${formatDateTimeAr(dueAt)}`
-              : 'اختر من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'}
+              : 'اختر من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'}
           >
             <input
               type="datetime-local"
@@ -2148,7 +2145,7 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
           <FormField label="الوصف (اختياري)">
             <textarea
               className="input" rows={3} maxLength={4000}
-              placeholder="تعليمات التسليم، المراجع، معايير التقييم…"
+              placeholder="تعليمات التسليم ومعايير التقييم…"
               value={description} onChange={(e) => setDescription(e.target.value)}
               disabled={create.isPending} style={{ resize: 'vertical', fontFamily: 'inherit' }}
             />
@@ -2215,7 +2212,7 @@ export function AssignmentsPage() {
     <div className="page">
       <PageHeader
         title="الواجبات والاختبارات"
-        subtitle="كلّ الواجبات الموزَّعة على مقرّراتك، والتسليمات بانتظار تقييمك."
+        subtitle="الواجبات الموزَّعة على مقرّراتك، والتسليمات بانتظار تقييمك."
         brow="التدريس · التصحيح"
         actions={(
           /* r144 (T1-h F1): the teaching loop's missing authoring half —
@@ -2246,7 +2243,7 @@ export function AssignmentsPage() {
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
-          <EmptyState title="لا توجد واجبات بعد" description="أنشئ أول واجب بزر «واجب جديد» بالأعلى — سيظهر لطلاب المقرّر فوراً." illustration="empty-list" />
+          <EmptyState title="لا توجد واجبات بعد" description="أنشئ أول واجب بزر «واجب جديد» — يظهر لطلاب المقرّر فوراً." illustration="empty-list" />
         ) : (
           <div className="flex-col gap-2">
             {q.data.map((a) => {
@@ -2813,12 +2810,12 @@ function TeacherMessageCompose({
         options: roster.map((s) => ({ id: s.studentId, name: s.name, detail: s.universityId })),
       }] : undefined}
       statusOptions={statusOptions}
-      noRecipientsHint="لا يوجد مستلمون متاحون بعد — اختر مقرّراً لطلابه، أو انتظر رسالة واردة تردّ عليها."
+      noRecipientsHint="لا مستلمين متاحين بعد — اختر مقرّراً أو ردّ على رسالة واردة."
       extraDirty={preset ? false : offeringId !== ''}
       extraFields={offerings.length > 0 && !preset ? ({ sendPending }) => (
         <FormField
           label="المقرّر (لاختيار أحد طلابك)"
-          hint="اختر مقرّراً لدرج أسماء طلابه ضمن قائمة المستلمين — أو راسِل من سبق أن راسلك."
+          hint="اختر مقرّراً لدرج طلابه — أو راسِل من راسلك سابقاً."
         >
           <select
             className="input"
@@ -2845,7 +2842,7 @@ export function MessagesPage() {
     <div className="hr-scope">
       <MessagesInbox
         title="الرسائل"
-        subtitle="كل رسالة وصلتك أو أرسلتها عبر المنصّة — أنشئ رسالة جديدة أو ردّ على الواردة منها، والمستلمون المتاحون هم طلاب مقرّراتك ومن راسلتك سابقاً."
+        subtitle="كل رسالة وصلتك أو أرسلتها — المستلمون طلاب مقرّراتك ومن راسلك سابقاً."
         renderCompose={(args) => <TeacherMessageCompose {...args} />}
       />
     </div>
