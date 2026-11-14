@@ -2652,3 +2652,21 @@ model NotificationPreference {
 
   @@unique([userId, category])
 }
+
+// ── R351 X2b — the tick bookkeeping (serverless timers → ticks) ──────
+/// One row per tick slot. The slot's CAS claim (`updateMany WHERE
+/// lastRunAt < now - interval`) is the concurrency guard that replaces
+/// process-level timers on serverless: whichever instance wins the
+/// claim runs the slot's jobs; everyone else skips. Pooler-safe by
+/// design (a plain row UPDATE — advisory locks would bind to a PgBouncer
+/// session that the next statement may not reuse).
+model TickRun {
+  /// Slot name: 'tick' (fast: outbox drain), 'tick-daily' (retention,
+  /// due reminders, rate-limit prune), 'tick-weekly' (digest).
+  key           String   @id
+  lastRunAt     DateTime @default(now())
+  lastDurationMs Int?
+  /// Compact {label, summary} of the last run — diagnostics only.
+  lastSummary   Json?
+  updatedAt     DateTime @updatedAt
+}

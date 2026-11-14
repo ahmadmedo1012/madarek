@@ -24,6 +24,7 @@ import { logger } from '../logger.js';
 import { sendMail, mailConfig, type MailMessage, type SendOutcome } from './mail.js';
 import { unsubscribeToken } from '../http/routes/mail.routes.js';
 import { env } from '../env.js';
+import { afterResponse } from './after-response.js';
 
 export interface QueueMailInput {
   to: string;
@@ -99,6 +100,10 @@ export async function queueMail(input: QueueMailInput): Promise<QueueMailResult>
       },
       select: { id: true },
     });
+    // R351 X2b — a fresh row is due now; give the serverless instance
+    // its immediate drain (debounced, waitUntil-registered, harmless on
+    // the long-lived instances where the 30 s worker also runs).
+    scheduleDrainSoon();
     return { ok: true, id: row.id, deduped: false };
   } catch (err) {
     // P2002 = unique dedupeKey already queued/sent — the replay contract.
@@ -232,6 +237,30 @@ export async function drainOutbox(opts: {
     result.failed += 1;
   }
   return result;
+}
+
+/* ── R351 X2b: the post-enqueue drain ─────────────────────────────────
+ * On a long-lived process the 30 s worker below drains the outbox. On
+ * a serverless instance there is no worker — but a fresh row just
+ * landed, so THIS instance is warm and the mail is due NOW. A debounced
+ * 2 s drain fires (waitUntil-registered on Vercel so it survives the
+ * response); if it never fires, correctness is untouched — the row's
+ * nextAttemptAt and the tick slots own the retry. */
+let drainSoonTimer: NodeJS.Timeout | null = null;
+
+function scheduleDrainSoon(): void {
+  if (drainSoonTimer !== null) return; // one drain per 2 s window
+  drainSoonTimer = setTimeout(() => {
+    drainSoonTimer = null;
+    afterResponse(
+      drainOutbox()
+        .then((r) => {
+          if (r.picked > 0) logger.info({ ...r }, 'mail-outbox: post-enqueue drain');
+        })
+        .catch((err) => logger.error({ err }, 'mail-outbox: post-enqueue drain failed')),
+    );
+  }, 2_000);
+  drainSoonTimer.unref?.();
 }
 
 /* ── the worker (in-process; wired by scheduler.ts) ───────────────── */

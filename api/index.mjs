@@ -28,7 +28,18 @@
  * entry ships the app AS-IS to measure the §2 gate before any refactor.
  */
 import { createApp } from '../backend/dist/app.js';
+import { opportunisticTick } from '../backend/dist/lib/tick-jobs.js';
 
 const app = createApp();
 
-export default app;
+/**
+ * R351 X2b — every request gets a chance to carry the tick: at most one
+ * attempt per 60 s per instance, fire-and-forget through waitUntil; the
+ * DB claim (lib/tick.ts) bounds real work to one tick per 55 s across
+ * ALL instances. This is the traffic-riding trigger that keeps the
+ * outbox draining and the sweeps sweeping without any timer.
+ */
+export default function handler(req, res) {
+  opportunisticTick();
+  app(req, res);
+}

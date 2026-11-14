@@ -16,6 +16,10 @@ import { buildIdFromEnv } from './lib/build-id.js';
 import { errorHandler } from './http/middleware/errorHandler.js';
 import { globalRateLimiter } from './http/middleware/rateLimit.js';
 
+// R351 X2b — the internal tick (serverless timer surface; CRON_SECRET-
+// guarded, fail-closed). Mounted BEFORE the global rate limiter with
+// the mail webhook: cron must never be throttled.
+import { internalRouter } from './http/routes/internal.routes.js';
 import authRoutes from './http/routes/auth.routes.js';
 import usersRoutes from './http/routes/users.routes.js';
 // master-G1 note: pre-existing baseline breakage from the master-F1
@@ -286,6 +290,7 @@ export function createApp() {
   // unsubscribe comes from mail clients, not users hammering the API.
   // (statusRoutes keeps its own before-limiter note below.)
   app.use('/api/v1', mailRoutes);
+  app.use('/api/v1/internal', internalRouter);
   app.use('/api/v1', globalRateLimiter);
 
   // r323 B5/B6 — the public status surface BEFORE the auth routers:

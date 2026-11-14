@@ -20,5 +20,11 @@
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/v1/internal/tick",
+      "schedule": "0 3 * * *"
+    }
   ]
 }

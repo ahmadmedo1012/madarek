@@ -145,6 +145,11 @@ services:
       # the Resend dashboard's webhook page.
       - key: RESEND_WEBHOOK_SECRET
         sync: false
+      # R351 X2b — the internal tick route's secret (serverless timer
+      # surface). Optional: unset = the tick route fail-closes (503).
+      # Render's in-process scheduler keeps ticking regardless.
+      - key: CRON_SECRET
+        sync: false
       - key: APP_ORIGIN
         sync: false
       # R320 §C — boot-time test-account ensure. ON while the project is

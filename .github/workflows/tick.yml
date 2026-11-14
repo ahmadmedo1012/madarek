@@ -1,0 +1,56 @@
+# R351 X2b — the serverless tick (*/5 best-effort).
+#
+# DORMANT BY DESIGN: the job skips silently until the repo variable
+# TICK_TARGET_URL is set (the X4 cutover flips it to the Vercel
+# production URL). Before that, the API lives on Render where the
+# in-process scheduler already ticks — pointing this workflow at Render
+# would keep the free instance awake 24/7 and defeat X0's hours budget.
+#
+# GitHub schedules are best-effort and starved on quiet repos (measured
+# ~4 runs/day at */5 — R350 H3), so this is ONE trigger of four, never
+# the only one: Vercel's daily secure cron (vercel.json), the
+# opportunistic tick riding traffic (api/index.mjs), and the
+# post-enqueue drain (mail-outbox.ts) all keep the platform correct;
+# this workflow only tightens mail latency between visits.
+name: Tick
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tick
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    name: POST /api/v1/internal/tick
+    # Empty/absent TICK_TARGET_URL = dormant (pre-cutover).
+    if: ${{ vars.TICK_TARGET_URL != '' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Tick the API (CRON_SECRET-guarded, retry-aware)
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            CODE=$(curl -sS -X POST --max-time 120 \
+              -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+              -H 'Content-Type: application/json' \
+              -o tick-response.json -w '%{http_code}' \
+              "${{ vars.TICK_TARGET_URL }}/api/v1/internal/tick" || echo 000)
+            echo "attempt $attempt → HTTP $CODE"
+            cat tick-response.json || true
+            echo
+            case "$CODE" in
+              200) exit 0 ;;
+              000|502|503|504) sleep $((attempt * 10)) ;;  # waking/transport — retry
+              *) exit 1 ;;
+            esac
+          done
+          echo "::error::tick did not answer 200 after 3 attempts"
+          exit 1

@@ -75,6 +75,11 @@ const schema = z
     // R350 E4 — Resend's svix webhook signing secret (optional; unset =
     // the webhook route refuses everything, fail-closed).
     RESEND_WEBHOOK_SECRET: z.string().min(16).optional(),
+    // R351 X2b — guards POST /api/v1/internal/tick (the serverless timer
+    // replacement). Unset = the route fail-closes (503) exactly like the
+    // mail webhook; Vercel's secure cron (CRON_SECRET env) and the GitHub
+    // Actions ticker both send it as a Bearer token.
+    CRON_SECRET: z.string().min(16).optional(),
     // The app origin for email footer links (optional — templates omit
     // the footer link when unset).
     APP_ORIGIN: z.string().url().optional(),
