@@ -117,8 +117,14 @@ function parseHostPort(rawUrl) {
 
 async function diagDns(hostname) {
   try {
-    const records = await dns.resolve4(hostname);
-    return { ok: true, ips: records };
+    // dns.resolve4() interrogates the DNS SERVER — it never consults
+    // /etc/hosts, so `localhost` (the iOS workflow's Homebrew Postgres)
+    // fails with ESERVFAIL on the macOS runners (run 43531371049: the
+    // smoke stack never reached migration). dns.lookup() (getaddrinfo)
+    // resolves BOTH hosts-file names and real DNS names — exactly the
+    // reachability question the caller asks.
+    const res = await dns.lookup(hostname);
+    return { ok: true, ips: [res.address] };
   } catch (err) {
     return { ok: false, error: err.code || err.message };
   }

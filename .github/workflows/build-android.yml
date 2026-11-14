@@ -185,11 +185,17 @@ jobs:
 
       - name: Resolve and validate the Expo config
         working-directory: apps/mobile
+        env:
+          # R5/R8: the SAME versionCode the prebuild bakes two steps below
+          # — run 43531370824 failed verify ("unexpected versionCode: 36")
+          # because this resolved config still carried the fallback 1.
+          MADAREK_VERSION_CODE: ${{ github.run_number }}
         run: |
           set -euo pipefail
           mkdir -p build
           npx expo config --type public --json > build/expo-config.json
           node scripts/ci/validate-expo-config.mjs --platform android --config build/expo-config.json
+          jq -r '.android.versionCode' build/expo-config.json | grep -qx "$MADAREK_VERSION_CODE"
 
       - name: Generate the native Android project (Expo prebuild)
         working-directory: apps/mobile
@@ -682,10 +688,20 @@ jobs:
       # emulation and "device offline" never resolves (run 16's failure).
       - name: Enable KVM group permissions (ubuntu-24.04)
         run: |
-          echo 'KERNEL==kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+          # R8 fix: the rule previously wrote KERNEL==kvm" (missing opening
+          # quote — run 43531370824) so it matched NOTHING: /dev/kvm kept its
+          # 0660 kvm-group mode, the emulator fell back to full software
+          # emulation (5-minute boot), system_server ANR'd ("Process system
+          # isn't responding" over the app) and Maestro never saw a control.
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
             | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm
+          # Evidence over claims: the emulator process only needs read+write
+          # on the node — prove THIS user has it before spending 20 minutes
+          # on a software-emulated boot.
+          test -r /dev/kvm && test -w /dev/kvm && echo 'KVM node accessible (rw) for this user'
 
       - name: Run the alive-flow on the emulator (hermetic)
         uses: reactivecircus/android-emulator-runner@v2
@@ -696,6 +712,17 @@ jobs:
           arch: x86_64
           target: default
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
+          # R8: a real phone panel + headroom. The default AVD is 320x640
+          # @160dpi — cramped for an app shipped for 390dp+ screens — and the
+          # stock 2-core/2GB VM starved system_server next to the smoke
+          # backend stack. Appended config entries win over the defaults
+          # (the action's own cores/ram mechanism does exactly this).
+          cores: 3
+          ram-size: 3072M
+          heap-size: 512M
+          pre-emulator-launch-script: |
+            printf 'hw.lcd.width=1080\nhw.lcd.height=2340\nhw.lcd.density=420\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"
+            grep '^hw.lcd' "$ANDROID_AVD_HOME/test.avd/config.ini"
           # R350 R2: animations ON — the entrance stagger is ~400ms and
           # Maestro waits idly through it; disabling system animations was
           # a variable in the never-painting era, removed from the equation.
@@ -706,6 +733,9 @@ jobs:
             # or cwd surviving across lines) — every line is self-contained.
             adb wait-for-device
             adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
+            adb shell 'while [ "$(getprop dev.bootcomplete)" != "1" ]; do sleep 2; done'
+            adb shell wm dismiss-keyguard || true
+            sleep 20
             mkdir -p apps/mobile/build
             echo "== animator scales (for the record) =="
             adb shell settings get global window_animation_scale
