@@ -32,27 +32,12 @@ name: Android — release APK
 # complementary: gates + OTA delivery of JS-only updates.)
 
 on:
+  # R353 R2 — EVERY push to main produces a fresh verified APK: the
+  # owner wants `android-latest` to always match main HEAD, whatever
+  # was pushed. (The old paths filter let docs-only pushes through
+  # without a rebuild and the release lagged the source.)
   push:
     branches: [main]
-    paths:
-      - "apps/mobile/app/**"
-      - "apps/mobile/src/**"
-      - "apps/mobile/package.json"
-      - "apps/mobile/package-lock.json"
-      - "apps/mobile/app.config.ts"
-      - "apps/mobile/app.json"
-      - "apps/mobile/eas.json"
-      - "apps/mobile/assets/**"
-      - "apps/mobile/plugins/**"
-      - "apps/mobile/android/**"
-      - "apps/mobile/ios/**"
-      - "shared/**"
-      - "scripts/tokens/**"
-      - "scripts/brand/**"
-      - "apps/mobile/scripts/**"
-      - "scripts/ci/**"
-      - "docs/api/openapi.json"
-      - ".github/workflows/build-android.yml"
   workflow_dispatch:
     inputs:
       ref:
