@@ -488,3 +488,29 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
   verify.sh --fast PASS.
 - Next (S4): the golden-set eval harness + the CI gate; then S5 the
   web palette/page; S6 the mobile search.
+
+### LANE S — S4 the golden-set eval harness + the CI gate (this commit)
+- tests/search-eval/: corpus.ts (45 fixed-seed entities across the 15
+  kinds, Arabic/English/mixed, two institutions for the leak pins) ·
+  golden-set.ts (programmatic generation — exact/prefix/substring/
+  clitic/diacritic/hamza/teh/maqsura/Eastern-digits/english × the
+  corpus = 352 queries, every one carrying a real expected id) ·
+  evaluator.ts (the REAL pure engine — rankHit + matchesNormalizedQuery
+  + the rankAndPaginate tie-break law — over the corpus; Recall@1/5/10,
+  MRR, p50/p95) · baseline.json (the committed ratchet) ·
+  search-eval.test.ts (the gate).
+- Measured: 352 queries · Recall@1 0.9119 · Recall@5 0.9830 ·
+  Recall@10 0.9915 · MRR 0.9467 · rank-pass p50 0.204ms / p95 0.352ms —
+  ALL TARGETS MET (the lane's ≥0.95/≥0.85 with room).
+- The gate: the targets (r5 ≥0.95, MRR ≥0.85, r10 ≥0.98, ≥250 queries),
+  the regression ratchet (no metric >0.5% below baseline + the corpus
+  size pinned — a silently-shrunk corpus is a silently-weakened gate),
+  the role-leak negative sets (a student NEVER sees the question bank
+  or institution-b people, even on verbatim-matching queries), the
+  per-shape breakdown (exact r1 ≥0.94 with the honest duplicate-title
+  note — both rank top-2, r5=1.0; every fold arm r5 ≥0.9), and the
+  sub-millisecond rank-pass pin.
+- Gates: backend tsc 0/0 · tests tsc 0/0 · vitest 2304 green (19
+  skipped) — the eval rides the suite, so CI runs it on every push.
+- Next (S5): the web palette/page wiring to /search/discover; then S6
+  the mobile search.

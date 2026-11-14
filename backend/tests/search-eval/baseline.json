@@ -1,0 +1,8 @@
+{
+  "$comment": "R350 S4 — the committed golden-set baseline (measured 2026-11-14: 352 queries, r1=0.9119, r5=0.9830, r10=0.9915, MRR=0.9467, rank-pass p50=0.204ms p95=0.352ms). Re-pin ONLY with a documented improvement or an authorised give-back (the ratchet law): edit the numbers to the freshly measured values in the same commit that changes the corpus or the engine.",
+  "queries": 352,
+  "recallAt1": 0.9119,
+  "recallAt5": 0.983,
+  "recallAt10": 0.9915,
+  "mrr": 0.9467
+}
