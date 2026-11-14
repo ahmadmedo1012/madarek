@@ -140,16 +140,43 @@ migrations". Full story in the 5e634d42 commit message; the essence:
 
 | # | defect | evidence | fix | state |
 |---|---|---|---|---|
-| 1 | Production DB: foreign migration row + stale schema (details above) | vercel logs (RateLimitHit/TickRun 42P01 ×N) + direct DB inspection | repair baseline 5e634d42 + db:deploy on every build | DONE (deploy of the no-op-migration pending) |
-| 2 | Cross-region DB roundtrip: warm dbLatencyMs 93 ms constant (function region ↔ DB region mismatch); burst handshakes 860-963 ms | 20 sequential + 20 burst health, 14:47Z (baseline table below) | a7d9eac2: regions iad1 → fra1 | deployed pending |
-| 3 | Neon autosuspend wake on first request after idle (~1.5 s dbLatency) | health attempt1 3.91 s wall / dbLatency 1559 ms vs warm 0.63 s | K3: warm-ping on app open (client) + tick-watch forced ticks every ≤30 min best-effort | partial |
+| 1 | Production DB: foreign migration row + stale schema (details above) | vercel logs (RateLimitHit/TickRun 42P01 ×N) + direct DB inspection | repair baseline 5e634d42 + db:deploy on every build | DONE — but see the K1-regression note below: db:deploy now exits 1 silently |
+| 2 | Cross-region DB roundtrip: warm dbLatencyMs 93 ms constant (function region ↔ DB region mismatch); burst handshakes 860-963 ms | 20 sequential + 20 burst health, 14:47Z (baseline table below) | a7d9eac2: regions iad1 → fra1 | DONE — AFTER table below (97.8 % dbLatency cut) |
+| 3 | Neon autosuspend wake on first request after idle (~1.5 s dbLatency) | health attempt1 3.91 s wall / dbLatency 1559 ms vs warm 0.63 s | K3: warm-ping on app open (client) + tick-watch forced ticks every ≤30 min best-effort | partial — the ledger stays fresh (fastAt 34 s old at the 18:01Z probe); residual cold-start p95 2.2 s on burst |
 | 4 | Smoke steps could kill publishing (iOS) / redden runs (Android) | runs 43596707814 / 43596707875 | R1+R2 fixes; verified green on 43606189827 | DONE |
 
-### K3 latency baseline (BEFORE the fra1 flip, function iad1)
+### K1-regression (2026-11-14 18:20Z, this session) — db:deploy exits 1 SILENTLY
 
-/api/v1/health, 2026-11-14 14:47Z: 20 sequential — wall p50 329 / p95 395 ms,
-dbLatency p50 93 / p95 95 ms. 20 concurrent — wall p50 3075 / p95 3302 ms,
-dbLatency p50 860 / p95 963 ms. (AFTER numbers land with the fra1 deploy.)
+The 18:20 deploy on 8e108508 (green CI) failed its remote build:
+`prisma migrate deploy` printed its header (schema loaded, datasource
+ep-icy-mode…/neondb, "43 migrations found in prisma/migrations") then
+exited 1 with NO further output — no "Applying", no "No pending
+migrations to apply", no error text, no [migrate-deploy] catch line
+(https://github.com/ahmadmedo1012/madarek/actions/runs/43625062386).
+The 16:00/16:15 deploys on 8601f6a3 ran the same db:deploy GREEN —
+the delta is NOT in the repo (nothing between the two touched prisma/)
+→ prime suspect: production DB state (the ledger) or its env. The
+repo folder holds 43 migration dirs; the repair story says the DB
+holds 44 _prisma_migrations rows — if the 44th name is not a folder
+name, deploy treats it… that theory needs the LEDGER, and the
+diagnostics previously rode AFTER db:deploy in the buildCommand (a
+failing deploy destroyed its own evidence channel).
+→ e8cab95e: db:diagnostics moved BEFORE db:deploy + the ledger query
+now lists every row BY NAME; the r352-db-diagnostics dispatch (flag
+in → deploy → flag out → extract) reads it from the build log even
+while the deploy fails. Next: dispatch, read the ledger, repair.
+
+### K3 latency (AFTER the fra1 flip — measured 2026-11-14 ~17:5xZ, this session)
+
+/api/v1/health, function fra1 (a7d9eac2), warm Neon: 20 sequential —
+wall p50 257 / p95 312 ms, dbLatency p50 2 / p95 3 ms. 20 concurrent —
+wall p50 339 / p95 2247 ms, dbLatency p50 2 / p95 153 ms. 0 errors.
+vs BEFORE (iad1): dbLatency 93 → 2 ms (−97.8 %); burst db 860 → 2 ms
+median (−99.8 %); burst wall 3075 → 339 ms (−89 %). The residual burst
+p95 (wall 2.2 s / db 153 ms) is the Neon pooler under 20-way
+concurrency — acceptable at pilot scale. Live status at 18:01Z:
+storageDriver vercel-blob · buildId 8601f6a3c358 · tick fastAt 34 s
+fresh. The defect table's #2 row is CLOSED by this table.
 
 ## M1/M2/M3 — mail (DONE, verified live)
 
@@ -194,18 +221,24 @@ Repo now: main + gh-pages only.
   commit — deferred until the critical deploy chain settles; old origin
   stays as failover either way.
 
-## K5 — uploads (in flight)
+## K5 — uploads (CORRECTED + COMPLETED this session)
 
-- Storage today: STORAGE_DRIVER=postgres (BYTEA in the primary DB — the
-  pilot trade-off); the r351 X2d client-direct Blob path exists
-  (ImportUpload tickets + presigned PUTs) but no Blob store was connected
-  and upload-ticket honestly answers mode:inline.
-- Connected the existing team Blob store (`tadmora-private-files`,
-  store_gPYrMJGN3z5BZemw — was ulara-only) to madarek production+preview:
-  BLOB_READ_WRITE_TOKEN auto-provisioned. Driver flip PENDING a data
-  migration: ep-cool-paper/neondb holds 4 BinaryObject rows (~5 MB) that
-  must move to Blob first (whichever DB production uses — the identity
-  log decides).
+- CORRECTION (measured 18:01Z): production ALREADY runs
+  STORAGE_DRIVER=vercel-blob (GET /api/v1/status → storageDriver:
+  vercel-blob, buildId 8601f6a3) — the "flip PENDING" note below had
+  lagged the live state; the flip happened without a data migration,
+  so any pre-flip BinaryObject rows were stranded (a missing row = a
+  404 file).
+- COMPLETED (4c8f5bf9 + fixes): backend/scripts/storage-to-blob.mjs
+  rides EVERY remote build (after db:deploy; no-op when 0 rows /
+  preview / token-less; fail-closed: a partial migration fails the
+  build). 13 unit pins + the .d.mts (the db-ops-lib pattern).
+  r352-k5-blob-flip.yml = the env assertion/repair tool (idempotent;
+  flip_back is the rollback). Rows are never deleted by the script —
+  they stay the pre-flip backup until a later verified sweep.
+- The migration counts on production land in the next deploy's build
+  log ([storage-to-blob] lines) — blocked on the K1-regression above
+  (db:deploy exits 1 before storage:blob runs).
 
 ## Commits this round
 
@@ -217,6 +250,32 @@ Repo now: main + gh-pages only.
 | a7d9eac2 | fix(r352-K3+Z2): the function moves to fra1 — it was NEVER co-located with the DB |
 | b10af76b | docs(r352-M1+M2): the mail truth + the owner's DNS checklist |
 | 773c617b | fix(r352-K1): migrations ride every deploy + the boot DB-identity log |
+| e40686f5 | feat(r352-K3+R2b): the boot warm ping (web + mobile) + the iOS smoke steps can never kill a publish |
+| 5e634d42 | fix(r352-K1): the production repair baseline — the schema is CURRENT and the history is clean |
+| bfb058f0 | docs(r352): the repair story in the round ledger |
+| 8601f6a3 | fix(r352-K1): the repair baseline gates itself — a no-op on every healthy database |
+| 561c0ace | chore(r352-K1): the one-shot production diagnostics run (dispatch) — this session |
+| 4c8f5bf9 | feat(r352-K5): the postgres→Blob storage flip — migration script + one dispatch — this session |
+| d997f6e3 | feat(r352-R3+R4): the freshness watch + the prod-config proof on the emulator — this session |
+| 8e108508 | fix(r352-K5): the migration test typechecks — a .d.mts + typed collaborators — this session (CI red on 4c8f5bf9 fixed) |
+| 86be12c2 | feat(r352-K1/T): the DB diagnostics channel — through the remote build log — this session |
+| e8cab95e | fix(r352-K1): db:diagnostics BEFORE db:deploy + the ledger by name — this session |
+
+## Session 2026-11-14 ~17:40Z onward (continuation after the box reset)
+
+- The box was RESET (the previous session's /home/z state died):
+  /home/z/.madarek-env rebuilt from the fresh TOKENS block
+  (GITHUB_PAT + EXPO_TOKEN + RESEND_API_KEY — no DATABASE_URL this
+  time; logged here per the missing-token law); re-cloned
+  (blobless, PAT embedded in the remote URL); push test OK.
+- K3 AFTER measured (the table above) — defect #2 CLOSED.
+- K5 corrected + completed (the table above).
+- R3/R4 landed (the freshness watch + the prod-config proof).
+- The K1-regression found + the diagnostics channel built for it
+  (the K1-regression note above).
+- Token audit: GITHUB_PAT read/write OK (this session's pushes);
+  EXPO_TOKEN present (unused this session — no EAS builds needed);
+  RESEND_API_KEY present (M1 already verified live last session).
 
 ## Decisions
 
