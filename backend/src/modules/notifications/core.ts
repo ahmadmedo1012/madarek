@@ -66,6 +66,25 @@ export function assignmentCreatedPayload(
   };
 }
 
+/** R350 E3 — an exam template went live for its audience. */
+export function examPublishedPayload(
+  examTitle: string,
+  openAt: Date | null,
+  closeAt: Date | null,
+): NotificationPayload {
+  const window =
+    openAt && closeAt
+      ? `يفتح ${arabicDayMonthTime(openAt)} ويغلق ${arabicDayMonthTime(closeAt)}`
+      : 'طالع التفاصيل من صفحة الاختبارات';
+  return {
+    type: 'ACADEMIC',
+    icon: '📝',
+    title: `اختبار جديد: ${examTitle.slice(0, 80)}`,
+    body: window,
+    link: '/student/online-exams',
+  };
+}
+
 /** A live session was scheduled (Jitsi default or a pasted provider). */
 export function liveScheduledPayload(
   sessionTitle: string,

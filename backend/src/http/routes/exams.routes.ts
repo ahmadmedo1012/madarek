@@ -3,6 +3,19 @@ import { z } from 'zod';
 import { DifficultyLevel, ExamKind, QuestionType, AttemptStatus, ExamStatus, NotificationType, Prisma, Role } from '@prisma/client';
 import type { ExamAttempt, ExamAnswer } from '@prisma/client';
 import { prisma } from '../../db.js';
+import { logger } from '../../logger.js';
+// R350 E3 — exam mail events (graded + published) ride their commits.
+import {
+  sendEventMail,
+  fanOutEventMail,
+  renderExamGraded,
+  renderExamScheduled,
+  isDeliverableEmail,
+  appUrl,
+} from '../../lib/mail-events.js';
+import { notifyOfferingStudentsTx, notifyAnnouncementScopeTx } from '../../modules/notifications/fire.js';
+import { fanOutPush } from '../../modules/notifications/push.js';
+import { examPublishedPayload } from '../../modules/notifications/core.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { requireCapability } from '../middleware/requireCapability.js';
@@ -827,6 +840,46 @@ router.post('/exams/templates/:id/publish', requireCapability('EXAMS_AUTHOR'), a
     // re-read (learning.routes.ts:777/843/920) — keeps `data: null`
     // impossible in the response envelope.
     if (!updated) throw AppError.notFound('قالب الاختبار غير موجود');
+    // R350 E3 — publish tells its audience: in-app bell + push + mail,
+    // all riding the COMMITTED row (the r327-C3 discipline). A
+    // published exam nobody hears about is a missed exam. The audience:
+    // the offering's roster, or the faculty's students/teachers for a
+    // faculty-wide template. Non-blocking — publish never waits on mail.
+    if (updated.offeringId || updated.facultyId) {
+      void (async () => {
+        try {
+          const payload = examPublishedPayload(updated.title, updated.openAt, updated.closeAt);
+          const recipientIds = await prisma.$transaction((tx) =>
+            updated.offeringId
+              ? notifyOfferingStudentsTx(tx, updated.offeringId, payload)
+              : notifyAnnouncementScopeTx(
+                  tx,
+                  {
+                    scope: 'FACULTY',
+                    scopeId: updated.facultyId,
+                    authorId: updated.authorId,
+                    institutionId: null,
+                  },
+                  payload,
+                ),
+          );
+          await fanOutPush(recipientIds, payload);
+          await fanOutEventMail(
+            recipientIds,
+            (r) => ({
+              category: 'courses' as const,
+              template: 'exam-scheduled',
+              ...renderExamScheduled(updated.title, updated.openAt, updated.closeAt, updated.durationMin),
+              ctaLabel: 'الاختبارات',
+              ctaUrl: appUrl('/student/online-exams'),
+              dedupeKey: `exam-published:${updated.id}:${r.userId}`,
+            }),
+          );
+        } catch (err) {
+          logger.warn({ err, templateId: updated.id }, 'exam publish: notification/mail fan-out failed (non-blocking)');
+        }
+      })();
+    }
     res.json({ data: updated });
   } catch (e) { next(e); }
 });
@@ -1965,6 +2018,29 @@ router.post(
       });
 
       const maxScore = Number(attempt.maxScore);
+      // R350 E3 — the exam-graded mail (non-blocking, outbox-owned).
+      void (async () => {
+        try {
+          const student = await prisma.user.findUnique({
+            where: { id: attempt.studentId },
+            select: { email: true },
+          });
+          if (student && isDeliverableEmail(student.email)) {
+            await sendEventMail({
+              userId: attempt.studentId,
+              to: student.email,
+              category: 'courses',
+              template: 'exam-graded',
+              ...renderExamGraded(attempt.template.title, totalAwarded, maxScore),
+              ctaLabel: 'الاختبارات',
+              ctaUrl: appUrl('/student/online-exams'),
+              dedupeKey: `exam-graded:${attempt.id}`,
+            });
+          }
+        } catch (err) {
+          logger.warn({ err, attemptId: attempt.id }, 'exam grade: mail event failed (non-blocking)');
+        }
+      })();
       res.json({
         data: {
           score: totalAwarded,

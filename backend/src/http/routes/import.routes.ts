@@ -23,6 +23,10 @@ import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { resolveCallerInstitutionScope, institutionContextRequiredError } from '../../lib/profile-scoping.js';
+// R350 E3 — import-created accounts with REAL emails get the activation
+// mail; placeholder-domain rows keep the credentials sheet only.
+import { sendEventMail, renderActivationInvite, isDeliverableEmail, loginUrl } from '../../lib/mail-events.js';
+import { logger } from '../../logger.js';
 import { hashPassword } from '../../lib/password.js';
 import { generateTempPassword } from '../../lib/bulk-import.js';
 import { detectFormat, readSheet } from '../../lib/import/xlsx.js';
@@ -278,6 +282,9 @@ router.post(
       let succeeded = 0;
       let skipped = 0;
       let failed = 0;
+      // R350 E3 — one activation payload per created account that has a
+      // REAL email (placeholder-domain rows are sheet-only by design).
+      const activation: { userId: string; email: string; name: string; tempPassword: string }[] = [];
       for (let i = 0; i < okRows.length; i += chunkSize) {
         const chunk = okRows.slice(i, i + chunkSize);
          
@@ -325,6 +332,14 @@ router.post(
             const membership = await tx.membership.create({
               data: { userId: user.id, institutionId: job.institutionId, role: Role.STUDENT },
             });
+            if (m.email && isDeliverableEmail(m.email)) {
+              activation.push({
+                userId: user.id,
+                email: m.email,
+                name: m.nameAr ?? `${m.firstName} ${m.lastName}`.trim(),
+                tempPassword,
+              });
+            }
             const facultyId = m.faculty ? facByName.get(m.faculty.trim()) : undefined;
             const dep = m.department ? depByName.get(m.department.trim()) : undefined;
             await tx.studentProfile.create({
@@ -352,6 +367,27 @@ router.post(
         });
       }
 
+      // R350 E3 — the activation invites ride the COMMITTED import
+      // (best-effort, outbox-owned; the response/sheet stays the
+      // registrar's fallback for placeholder/emailless rows).
+      void (async () => {
+        try {
+          for (const a of activation) {
+            await sendEventMail({
+              userId: a.userId,
+              to: a.email,
+              category: 'account',
+              template: 'activation-invite',
+              ...renderActivationInvite(a.name, loginUrl(), a.tempPassword),
+              dedupeKey: `import-activation:${a.userId}`,
+              institutionId: job.institutionId,
+            });
+          }
+        } catch (err) {
+          logger.warn({ err, jobId: job.id }, 'import: activation mail failed (non-blocking)');
+        }
+      })();
+
       const completed = await prisma.importJob.update({
         where: { id: job.id },
         data: {
@@ -364,6 +400,7 @@ router.post(
             ...(job.summary as object),
             duplicatePolicy,
             emailPlaceholder: okRows.some((r) => (r.mapped as { emailPlaceholder: boolean }).emailPlaceholder),
+            activationMailQueued: activation.length,
           },
         },
       });

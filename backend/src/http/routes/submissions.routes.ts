@@ -8,6 +8,8 @@ import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
+// R350 E3 — the graded mail rides the committed grade (non-blocking).
+import { sendEventMail, renderAssignmentGraded, isDeliverableEmail, appUrl } from '../../lib/mail-events.js';
 import { assertOfferingAccess, assertOwnsOffering } from '../../lib/permissions.js';
 import { assertOfferingInCallerInstitution } from '../../lib/profile-scoping.js';
 import { fireMilestone } from '../../modules/milestones/service.js';
@@ -311,6 +313,37 @@ router.post(
         }
         return row;
       });
+
+      // R350 E3 — the graded mail (category courses, preference-gated,
+      // outbox-owned). Non-blocking: a mail failure never fails the grade.
+      void (async () => {
+        try {
+          const student = await prisma.user.findUnique({
+            where: { id: submission.studentId },
+            select: { email: true },
+          });
+          if (student && isDeliverableEmail(student.email)) {
+            const t = renderAssignmentGraded(
+              submission.assignment.title,
+              Number(grade),
+              Number(submission.assignment.maxScore),
+              feedback ?? null,
+            );
+            await sendEventMail({
+              userId: submission.studentId,
+              to: student.email,
+              category: 'courses',
+              template: 'assignment-graded',
+              ...t,
+              ctaLabel: 'عرض النتيجة',
+              ctaUrl: appUrl('/student/results'),
+              dedupeKey: `assignment-graded:${submissionId}`,
+            });
+          }
+        } catch (err) {
+          logger.warn({ err, submissionId }, 'grade: mail event failed (non-blocking)');
+        }
+      })();
 
       res.json({ data: { ...updated, grade: updated.grade === null ? null : Number(updated.grade) } });
     } catch (e) {

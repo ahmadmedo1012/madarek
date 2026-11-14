@@ -139,3 +139,139 @@ describe('R350 E3 — templates render Arabic on the shell', () => {
     expect(p.bodyText).toContain('تغيير كلمة مرور');
   });
 });
+
+/* ══════════════════════════════════════════════════════════════════
+ * R350 E3 continuation — the course-life templates, escaping, the
+ * fan-out, and the scheduler mail sweeps (due reminders + digest).
+ * ══════════════════════════════════════════════════════════════════ */
+
+import {
+  renderAnnouncement,
+  renderAssignmentGraded,
+  renderExamGraded,
+  renderAssignmentDue,
+  renderExamScheduled,
+  renderEnrollmentConfirmed,
+  renderAccountStatusChange,
+  renderWeeklyDigest,
+  renderActivationInvite,
+  isDeliverableEmail,
+  escapeHtml,
+  clipText,
+  fanOutEventMail,
+} from '../../src/lib/mail-events.js';
+
+describe('R350 E3 — the course-life templates render Arabic + escaped', () => {
+  it('announcement carries the title/excerpt/author and escapes HTML', () => {
+    const a = renderAnnouncement('محاضرة إضافية <غدًا>', 'نلقي محاضرة إضافية & نراجع', 'د. سالم');
+    expect(a.subject).toContain('إعلان جديد');
+    expect(a.subject).toContain('محاضرة إضافية');
+    expect(a.bodyHtml).toContain('&lt;غدًا&gt;');
+    expect(a.bodyHtml).toContain('&amp;');
+    expect(a.bodyHtml).toContain('د. سالم');
+  });
+
+  it('assignment-graded carries the grade out of max + feedback', () => {
+    const g = renderAssignmentGraded('بحوث الفصل', 8.5, 10, 'عمل جيد');
+    expect(g.subject).toContain('تم تصحيح');
+    expect(g.bodyHtml).toContain('8.5');
+    expect(g.bodyHtml).toContain('10');
+    expect(g.bodyHtml).toContain('ملاحظات المصحّح');
+  });
+
+  it('exam-graded / exam-scheduled / assignment-due / enrollment render', () => {
+    const eg = renderExamGraded('اختبار الفصل', 7, 10);
+    expect(eg.bodyHtml).toContain('7');
+    const es = renderExamScheduled('اختبار الفصل', new Date('2026-11-20T09:00:00Z'), new Date('2026-11-21T09:00:00Z'), 60);
+    expect(es.subject).toContain('اختبار جديد');
+    expect(es.bodyHtml).toContain('60 دقيقة');
+    const d = renderAssignmentDue('بحوث الفصل', new Date('2026-11-20T09:00:00Z'));
+    expect(d.subject).toContain('تسليمك');
+    const en = renderEnrollmentConfirmed('مقدمة في الحاسب', 'د. سالم');
+    expect(en.subject).toContain('إرفاقك بمقرر');
+    expect(en.bodyHtml).toContain('مقدمة في الحاسب');
+    expect(en.bodyHtml).toContain('د. سالم');
+  });
+
+  it('account status change renders both directions', () => {
+    expect(renderAccountStatusChange(true, 'د. المدير').subject).toContain('تنشيط');
+    expect(renderAccountStatusChange(false, 'د. المدير').subject).toContain('إيقاف');
+  });
+
+  it('weekly digest renders items and the quiet week', () => {
+    const d = renderWeeklyDigest('سالم', 'الأسبوع القادم', ['تكليف «X» يستحق الجمعة']);
+    expect(d.bodyHtml).toContain('مستحقّات');
+    expect(d.bodyHtml).toContain('تكليف «X»');
+    const q = renderWeeklyDigest('سالم', 'الأسبوع القادم', []);
+    expect(q.bodyHtml).toContain('أسبوع هادئ');
+  });
+
+  it('escapeHtml + clipText behave', () => {
+    expect(escapeHtml('<script>"x"&\'y\'</script>')).toBe(
+      '&lt;script&gt;&quot;x&quot;&amp;&#39;y&#39;&lt;/script&gt;',
+    );
+    expect(clipText('a '.repeat(200), 50).length).toBeLessThanOrEqual(52);
+    expect(clipText('قصير').length).toBeLessThanOrEqual(50);
+  });
+
+  it('isDeliverableEmail rejects placeholders/malformed, accepts real', () => {
+    expect(isDeliverableEmail('salem@students.import.madarek.local')).toBe(false);
+    expect(isDeliverableEmail('salem@teachers.import.madarek.local')).toBe(false);
+    expect(isDeliverableEmail(null)).toBe(false);
+    expect(isDeliverableEmail('nope@')).toBe(false);
+    expect(isDeliverableEmail('@nope.ly')).toBe(false);
+    expect(isDeliverableEmail('salem@madarek.ly')).toBe(true);
+  });
+});
+
+describe('R350 E3 — fanOutEventMail skips placeholders and queues the rest', () => {
+  it('hydrates users, skips placeholder emails, queues per recipient with dedupe keys', async () => {
+    mocked.user.findMany = vi.fn(async () => [
+      { id: 'u1', email: 'salem@madarek.ly', firstName: 'سالم' },
+      { id: 'u2', email: '99001122@students.import.madarek.local', firstName: 'طالب' },
+      { id: 'u3', email: 'huda@madarek.ly', firstName: 'هدى' },
+    ]);
+    const n = await fanOutEventMail(['u1', 'u2', 'u3'], (r) => ({
+      category: 'announcements' as const,
+      template: 'announcement',
+      subject: 'س',
+      bodyHtml: '<p>س</p>',
+      bodyText: 'س',
+      dedupeKey: `announce:a1:${r.userId}`,
+    }));
+    expect(n).toBe(2);
+    expect(mocked.mailOutbox.create).toHaveBeenCalledTimes(2);
+    const keys = mocked.mailOutbox.create.mock.calls.map(
+      (c: unknown[]) => (c[0] as { data: { dedupeKey: string } }).data.dedupeKey,
+    );
+    expect(keys).toContain('announce:a1:u1');
+    expect(keys).toContain('announce:a1:u3');
+    expect(keys).not.toContain('announce:a1:u2');
+  });
+
+  it('honours per-user preferences inside the fan-out', async () => {
+    mocked.user.findMany = vi.fn(async () => [
+      { id: 'u1', email: 'salem@madarek.ly', firstName: 'سالم' },
+    ]);
+    mocked.notificationPreference.findUnique.mockResolvedValue({ emailEnabled: false });
+    const n = await fanOutEventMail(['u1'], (r) => ({
+      category: 'announcements' as const,
+      template: 'announcement',
+      subject: 'س',
+      bodyHtml: '<p>س</p>',
+      bodyText: 'س',
+      dedupeKey: `announce:a2:${r.userId}`,
+    }));
+    expect(n).toBe(0);
+    expect(mocked.mailOutbox.create).not.toHaveBeenCalled();
+  });
+});
+
+describe('R350 E3 — the activation invite (import accounts)', () => {
+  it('renders the temp password + login CTA in Arabic', () => {
+    const t = renderActivationInvite('سالم', 'https://madarek.onrender.com/auth/login', 'Abc123!xyz');
+    expect(t.subject).toContain('كلمة المرور المؤقتة');
+    expect(t.bodyHtml).toContain('Abc123!xyz');
+    expect(t.ctaLabel).toBe('الدخول إلى مدارك');
+  });
+});

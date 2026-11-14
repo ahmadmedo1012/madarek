@@ -3,6 +3,7 @@ import type { Request } from 'express';
 import { Role } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
+import { logger } from '../../logger.js';
 import { env } from '../../env.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
@@ -10,6 +11,14 @@ import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
+// R350 E3 — governance mail events (status change + bulk-import activation).
+import {
+  sendEventMail,
+  renderAccountStatusChange,
+  renderActivationInvite,
+  isDeliverableEmail,
+  loginUrl,
+} from '../../lib/mail-events.js';
 import { hashPassword } from '../../lib/password.js';
 import {
   parseCsv,
@@ -404,11 +413,50 @@ router.patch('/:id', validate(patchSchema), async (req, res, next) => {
       return u;
     });
 
+    // R350 E3 — the status change tells the affected account (ESSENTIAL
+    // category: governance mail is never preference-suppressible).
+    // Non-blocking, outbox-owned.
+    const statusChangedTo = typeof data.isActive === 'boolean' ? data.isActive : null;
+    if (statusChangedTo !== null) {
+      void (async () => {
+        try {
+          const [target, actorUser] = await Promise.all([
+            prisma.user.findUnique({ where: { id }, select: { email: true } }),
+            prisma.user.findUnique({
+              where: { id: req.user!.id },
+              select: { firstName: true, lastName: true },
+            }),
+          ]);
+          if (target && isDeliverableEmail(target.email)) {
+            const by = actorUser
+              ? `${actorUser.firstName} ${actorUser.lastName}`.trim() || 'إدارة المؤسسة'
+              : 'إدارة المؤسسة';
+            await sendEventMail({
+              userId: id,
+              to: target.email,
+              category: 'account',
+              template: 'account-status',
+              ...renderAccountStatusChange(statusChangedTo, by),
+              ctaLabel: 'الدخول إلى مدارك',
+              ctaUrl: loginUrl(),
+              dedupeKey: `account-status:${id}:${statusChangedTo ? 'on' : 'off'}:${hourStamp()}`,
+            });
+          }
+        } catch (err) {
+          logger.warn({ err, targetId: id }, 'status change: mail event failed (non-blocking)');
+        }
+      })();
+    }
     res.json({ data: updated });
   } catch (e) {
     next(e);
   }
 });
+
+/** UTC hour stamp — collapses same-direction replays within the hour. */
+function hourStamp(): string {
+  return new Date().toISOString().slice(0, 13);
+}
 
 // ── r323 B3.1: bulk student import (CSV) ───────────────────────────
 // The registrar pastes or uploads a class list CSV; the platform
@@ -577,6 +625,9 @@ router.post(
       // half-created class is the worst possible registrar outcome.
       const created = await prisma.$transaction(async (tx) => {
         const sheet: { name: string; email: string; universityId: string; tempPassword: string }[] = [];
+        // R350 E3 — activation mail payload per created account (sent
+        // post-commit; the sheet stays the registrar's fallback).
+        const activation: { userId: string; email: string; name: string; tempPassword: string }[] = [];
         for (const row of okRows) {
           const tempPassword = generateTempPassword();
           const passwordHash = await hashPassword(tempPassword);
@@ -621,14 +672,41 @@ router.post(
             universityId: row.universityId!,
             tempPassword,
           });
+          activation.push({
+            userId: user.id,
+            email: row.email!,
+            name: `${row.firstName} ${row.lastName}`,
+            tempPassword,
+          });
         }
-        return sheet;
+        return { sheet, activation };
       });
+
+      // R350 E3 — the activation invites ride the COMMITTED cohort
+      // (best-effort, outbox-owned; a mail failure never fails the
+      // import — the sheet is the registrar's fallback).
+      void (async () => {
+        try {
+          for (const a of created.activation) {
+            await sendEventMail({
+              userId: a.userId,
+              to: a.email,
+              category: 'account',
+              template: 'activation-invite',
+              ...renderActivationInvite(a.name, loginUrl(), a.tempPassword),
+              dedupeKey: `import-activation:${a.userId}`,
+              institutionId: inst,
+            });
+          }
+        } catch (err) {
+          logger.warn({ err }, 'bulk import: activation mail failed (non-blocking)');
+        }
+      })();
 
       res.status(201).json({
         data: {
-          created: created.length,
-          sheet: created,
+          created: created.sheet.length,
+          sheet: created.sheet,
           skipped: plan.summary.error,
         },
       });

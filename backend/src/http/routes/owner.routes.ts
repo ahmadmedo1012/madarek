@@ -10,6 +10,15 @@ import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
 import { getStorageReachability, type StorageReachability } from '../../lib/storage.js';
 import { resolveProvisionInstitution } from '../../lib/governance.js';
+// R350 E3 — governance mail events (role change + status change).
+import {
+  sendEventMail,
+  renderRoleChanged,
+  renderAccountStatusChange,
+  isDeliverableEmail,
+  loginUrl,
+} from '../../lib/mail-events.js';
+import { logger } from '../../logger.js';
 import {
   assertNotLastActiveOwner,
   buildTeacherProvision,
@@ -253,6 +262,25 @@ export const settingKeySchema = z
  * against each other instead of only against themselves.
  */
 
+
+/** Arabic role label for governance mail copy. */
+const ROLE_LABEL_AR: Record<Role, string> = {
+  OWNER: 'المالك',
+  ADMIN: 'مدير النظام',
+  QUALITY: 'وحدة الجودة',
+  TEACHER: 'محاضر',
+  STUDENT: 'طالب',
+};
+
+function roleLabelAr(role: Role): string {
+  return ROLE_LABEL_AR[role] ?? 'عضو';
+}
+
+/** UTC hour stamp — collapses same-direction replays within the hour. */
+function hourStamp(): string {
+  return new Date().toISOString().slice(0, 13);
+}
+
 router.post(
   '/users/:id/role',
   validate(changeRoleSchema),
@@ -376,6 +404,35 @@ router.post(
         return u;
       });
 
+      // R350 E3 — the role change tells the account (ESSENTIAL category).
+      // Non-blocking, outbox-owned.
+      void (async () => {
+        try {
+          const [target, actor] = await Promise.all([
+            prisma.user.findUnique({ where: { id }, select: { email: true } }),
+            prisma.user.findUnique({
+              where: { id: req.user!.id },
+              select: { firstName: true, lastName: true },
+            }),
+          ]);
+          if (target && isDeliverableEmail(target.email)) {
+            const by = actor ? `${actor.firstName} ${actor.lastName}`.trim() || 'المالك' : 'المالك';
+            await sendEventMail({
+              userId: id,
+              to: target.email,
+              category: 'account',
+              template: 'role-changed',
+              ...renderRoleChanged(roleLabelAr(role), by),
+              ctaLabel: 'الدخول إلى مدارك',
+              ctaUrl: loginUrl(),
+              dedupeKey: `role-changed:${id}:${role}:${hourStamp()}`,
+            });
+          }
+        } catch (err) {
+          logger.warn({ err, targetId: id }, 'role change: mail event failed (non-blocking)');
+        }
+      })();
+
       res.json({ data: updated });
     } catch (e) {
       next(e);
@@ -443,6 +500,34 @@ router.patch(
         });
         return u;
       });
+
+      // R350 E3 — the status change tells the account (ESSENTIAL category).
+      void (async () => {
+        try {
+          const [target, actor] = await Promise.all([
+            prisma.user.findUnique({ where: { id }, select: { email: true } }),
+            prisma.user.findUnique({
+              where: { id: req.user!.id },
+              select: { firstName: true, lastName: true },
+            }),
+          ]);
+          if (target && isDeliverableEmail(target.email)) {
+            const by = actor ? `${actor.firstName} ${actor.lastName}`.trim() || 'المالك' : 'المالك';
+            await sendEventMail({
+              userId: id,
+              to: target.email,
+              category: 'account',
+              template: 'account-status',
+              ...renderAccountStatusChange(isActive, by),
+              ctaLabel: 'الدخول إلى مدارك',
+              ctaUrl: loginUrl(),
+              dedupeKey: `account-status:${id}:${isActive ? 'on' : 'off'}:${hourStamp()}`,
+            });
+          }
+        } catch (err) {
+          logger.warn({ err, targetId: id }, 'status change: mail event failed (non-blocking)');
+        }
+      })();
 
       res.json({ data: updated });
     } catch (e) {

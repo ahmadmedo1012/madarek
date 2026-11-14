@@ -15,6 +15,9 @@ import { resolveStudentProfile, resolveTeacherProfile } from '../../lib/profile-
 import { announcementPayload } from '../../modules/notifications/core.js';
 import { notifyAnnouncementScopeTx } from '../../modules/notifications/fire.js';
 import { fanOutPush } from '../../modules/notifications/push.js';
+// R350 E3 — the announcement mail rides the committed row + the same audience.
+import { fanOutEventMail, renderAnnouncement, clipText, loginUrl } from '../../lib/mail-events.js';
+import { logger } from '../../logger.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -551,6 +554,28 @@ router.post(
       // R327 C3 — the push rides the COMMITTED announcement only
       // (a rollback must never produce a phantom bell). Best-effort.
       await fanOutPush(recipientIds, announcementPayload(body.title, body.iconEmoji ?? null));
+      // R350 E3 — the mail fan-out: same audience, same commit
+      // discipline (a rollback must never produce a phantom mail).
+      // Non-blocking — the outbox owns delivery, caps and retries.
+      const author = await prisma.user.findUnique({
+        where: { id: req.user!.id },
+        select: { firstName: true, lastName: true },
+      });
+      const authorName = author ? `${author.firstName} ${author.lastName}`.trim() : 'إدارة المؤسسة';
+      void fanOutEventMail(
+        recipientIds,
+        (r) => ({
+          category: 'announcements' as const,
+          template: 'announcement',
+          ...renderAnnouncement(body.title, clipText(body.body), authorName),
+          ctaLabel: 'الدخول إلى مدارك',
+          ctaUrl: loginUrl(),
+          dedupeKey: `announce:${created.id}:${r.userId}`,
+        }),
+        { institutionId: notifyInstitutionId },
+      ).catch((err) => {
+        logger.warn({ err, announcementId: created.id }, 'announcement: mail fan-out failed (non-blocking)');
+      });
       res.status(201).json({ data: created });
     } catch (e) { next(e); }
   },

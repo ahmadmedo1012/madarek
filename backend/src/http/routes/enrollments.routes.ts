@@ -7,6 +7,9 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
+// R350 E3 — the enrolment confirmation mail (non-blocking, outbox-owned).
+import { sendEventMail, renderEnrollmentConfirmed, isDeliverableEmail, appUrl } from '../../lib/mail-events.js';
+import { logger } from '../../logger.js';
 import {
   assertWithinScope,
   buildScopedUserWhere,
@@ -414,6 +417,40 @@ router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(enrollSchema), as
       });
       return enrollment;
     });
+    // R350 E3 — the enrolment confirmation mail: hydrate the student +
+    // the offering (course + teacher names) AFTER the commit; a mail
+    // failure never fails the enrolment.
+    void (async () => {
+      try {
+        const [student, offering] = await Promise.all([
+          prisma.user.findUnique({ where: { id: studentId }, select: { email: true } }),
+          prisma.courseOffering.findUnique({
+            where: { id: offeringId },
+            select: {
+              course: { select: { name: true, code: true } },
+              teacher: { select: { firstName: true, lastName: true } },
+            },
+          }),
+        ]);
+        if (student && isDeliverableEmail(student.email) && offering) {
+          const teacherName = offering.teacher
+            ? `${offering.teacher.firstName} ${offering.teacher.lastName}`.trim()
+            : null;
+          await sendEventMail({
+            userId: studentId,
+            to: student.email,
+            category: 'courses',
+            template: 'enrollment-confirmed',
+            ...renderEnrollmentConfirmed(offering.course.name, teacherName),
+            ctaLabel: 'مقرراتي',
+            ctaUrl: appUrl('/student/courses'),
+            dedupeKey: `enrollment:${created.id}`,
+          });
+        }
+      } catch (err) {
+        logger.warn({ err, studentId, offeringId }, 'enroll: confirmation mail failed (non-blocking)');
+      }
+    })();
     res.status(201).json({ data: created });
   } catch (e) {
     next(e);
