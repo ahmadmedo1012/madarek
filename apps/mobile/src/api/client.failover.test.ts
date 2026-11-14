@@ -69,7 +69,7 @@ describe("R351 X3 — origin failover", () => {
   it("an answered refusal (404 from the app) NEVER fails over", async () => {
     const fetchMock = jest.fn(async () => jsonResponse({ error: { code: "NOT_FOUND", message: "لا يوجد" } }, 404));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
-    await expect(client.get("/nope")).rejects.toMatchObject({ code: "NOT_FOUND" });
+    await expect(client.get("/announcements/nonexistent")).rejects.toMatchObject({ code: "NOT_FOUND" });
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
