@@ -179,3 +179,4 @@ docs/redesign/**/evidence/
 # R351 X1 — Vercel CLI link metadata (local, never committed)
 .vercel/
 .env*
+.vercel
