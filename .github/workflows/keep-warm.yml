@@ -11,24 +11,37 @@
 #   · Both endpoints: /api/v1/health (which also round-trips Neon — the
 #     dbLatencyMs field proves the DB compute is awake; no separate
 #     select-1 variant needed) AND / (the SPA root + static assets).
-#   · */5 cron + workflow_dispatch (GitHub's scheduler starves cron on
-#     quiet repos — observed ~4 runs/day at */10 — so every run that
-#     DOES fire must finish the wake it starts; see docs/RELEASE.md
-#     §Keep-warm for the honest limits and the owner-side pingers).
+#   · */10 cron INSIDE the daily window + workflow_dispatch (GitHub's
+#     scheduler starves cron on quiet repos — observed ~4 runs/day — so
+#     every run that DOES fire must finish the wake it starts; see
+#     docs/RELEASE.md §Keep-warm for the honest limits).
+#
+# R351 X0 — the daily window (TEMPORARY: removed at the R351 X4 hosting
+# cutover, when web/API move off Render and this workflow is deleted):
+#   · Render free = 750 instance-hours/workspace/month; an around-the-
+#     clock ping keeps the service awake ≈ 744 h/month — exactly what
+#     endangers the owner's free quota (owner requirement #1).
+#   · The window: 06:00–21:00 UTC = 08:00–23:00 Africa/Tripoli (the
+#     Libyan day). Pings every 10 min inside it (10 < the 15-min sleep
+#     timer ⇒ never sleeps inside the window) ⇒ ≤ 15 h/day awake
+#     ⇒ ≈ 450–465 h/month even if cron fired perfectly — ~40 % saved
+#     and real headroom under the 750 cliff for genuine traffic.
+#   · Outside the window the service sleeps after 15 idle minutes; a
+#     night visitor pays ONE cold boot with the honest «الخادم
+#     يستيقظ…» UX (r350 H4) — the documented trade-off.
 #
 # The honest trade-off (documented in docs/RELEASE.md §Keep-warm):
 # upgrading the Render service to the Starter plan removes the sleep
 # behaviour entirely and makes this workflow unnecessary — delete it
-# with the upgrade. Until then: this best-effort pinger + the owner's
-# external monitor.
+# with the upgrade. Until then: this best-effort windowed pinger.
 name: Keep warm
 
 on:
   schedule:
-    # Every 5 minutes, UTC — best-effort (GitHub delays/starves cron on
-    # quiet repos; the external monitor in docs/RELEASE.md is the
-    # reliable path on the free tier).
-    - cron: '*/5 * * * *'
+    # Every 10 minutes, 06:00–20:50 UTC — inside the 06:00–21:00 UTC
+    # window (08:00–23:00 Africa/Tripoli); the R351 X0 hours budget.
+    # Best-effort (GitHub starves cron on quiet repos; see header).
+    - cron: '*/10 6-20 * * *'
   workflow_dispatch: {}
 
 permissions:

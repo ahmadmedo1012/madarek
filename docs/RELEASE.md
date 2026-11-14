@@ -21,13 +21,22 @@ automatically).
 
 ## Keep-warm (free tier)
 
-Render's free plan sleeps the web service after ~15 idle minutes;
-`.github/workflows/keep-warm.yml` pings `GET /api/v1/health` (which also
-round-trips a `SELECT 1` on Neon — `dbLatencyMs` in the body) and `/`
-every **5** minutes, retry-aware: a 502/503 «Application loading» during
-a cold boot counts as *waking*, and the run only goes green once both
-endpoints answer. Upgrading the Render service to **Starter** removes
-the sleep behaviour entirely — then delete the workflow.
+Render's free plan sleeps the web service after ~15 idle minutes and
+gives **750 instance-hours/workspace/month** — an around-the-clock
+keep-warm would burn ≈ 744 h/month, exactly the cliff the owner wants
+away from his quota. `.github/workflows/keep-warm.yml` therefore pings
+`GET /api/v1/health` (which also round-trips a `SELECT 1` on Neon —
+`dbLatencyMs` in the body) and `/` every **10 minutes, only inside the
+daily window 06:00–21:00 UTC = 08:00–23:00 Africa/Tripoli** (R351 X0):
+inside the window the service never sleeps (10 < the 15-min timer) at
+≤ 15 h/day ⇒ ≈ 450–465 h/month worst-case; outside it the service
+sleeps and a night visitor pays ONE cold boot with the honest
+«الخادم يستيقظ…» UX. The ping is retry-aware: a 502/503 «Application
+loading» during a cold boot counts as *waking*, and the run only goes
+green once both endpoints answer. This window is **temporary** — it is
+deleted at the R351 X4 hosting cutover (web/API move off Render).
+Upgrading the Render service to **Starter** would also remove the sleep
+behaviour entirely — then delete the workflow.
 
 ### The honest limits, and the two reliable fixes (R350 H3)
 
@@ -37,12 +46,17 @@ recent activity; the delay is unbounded). A 5-minute cron therefore
 does **not** guarantee a 5-minute ping. The workflow stays as the
 zero-cost net; the reliable fixes:
 
-**1) An external pinger (free, 5 minutes, owner-side — recommended):**
+**1) An external pinger (free, owner-side — only inside the window):**
+
+If you add an external pinger (UptimeRobot/cron-job.org), set it to the
+**same 08:00–23:00 Tripoli window** — a 24/7 pinger would keep the
+service awake ≈ 744 h/month and burn the free quota the window exists
+to protect.
 
 عندك طريقتان مجانيتان، اختر واحدة:
 ١. من https://uptimerobot.com أنشئ حسابًا مجانيًا.
 ٢. أضف «Monitor» جديدًا من نوع HTTP(s) والعنوان: https://madarek.onrender.com/api/v1/health
-٣. اجعل فترة الفحص كل 5 دقائق (الحساب المجاني يسمح بها).
+٣. اجعل فترة الفحص كل 5 أو 10 دقائق، وحدد فترة التشغيل من 08:00 إلى 23:00 (توقيت ليبيا) — ليس على مدار الساعة.
 ٤. فعِّل تنبيه البريد حين يتوقف الخادم عن الاستجابة.
 ٥. اتركه يعمل — هذا يمنع الخادم من النوم أصلًا ويخبرك عند أي توقف حقيقي.
 
