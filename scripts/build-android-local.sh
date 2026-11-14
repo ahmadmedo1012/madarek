@@ -298,8 +298,7 @@ if [[ -z "$KEYSTORE" ]]; then
   echo "  ⚠ DEBUG-signed (ALLOW_DEBUG_KEYSTORE) — do NOT upload to Play."
 else
   echo "  Release-signed with: $KEYSTORE (alias $ALIAS)"
-  echo "  Play upload wants an AAB instead: cd apps/mobile/android && ./gradlew bundleRelease"
-  echo "  → android/app/build/outputs/bundle/release/app-release.aab"
+  echo "  (R353 R1: APK only during development — no AAB is produced.)"
 fi
 echo ""
 echo "  OTA reminder: this binary embeds the CURRENT runtime fingerprint."

@@ -13,7 +13,7 @@
 #                     Native installable builds are produced by the
 #                     GitHub-hosted Gradle/Xcode workflows:
 #                       build-ios-sidestore.yml  → unsigned SideStore IPA
-#                       build-android.yml       → APK + AAB
+#                       build-android.yml       → APK only
 #
 # Production (store) EAS builds stay manual: workflow_dispatch → RELEASE.md.
 name: Mobile
@@ -29,9 +29,10 @@ on:
   # free-plan quota is spent but iOS still has headroom, or to re-cut
   # preview builds after a quota reset without waiting for a push.
   # R327 D2b: profile joins the trigger — preview (default: internal APK
-  # + iOS simulator) or production (the store cut: Android AAB via the
-  # EAS-managed upload key; iOS production needs the owner's Apple
-  # credentials and will refuse honestly without them).
+  # + iOS simulator) or production (the store cut; Android's public
+  # artifact stays the APK from build-android.yml — R353 R1 dropped the
+  # AAB for the development phase; iOS production needs the owner's
+  # Apple credentials and will refuse honestly without them).
   workflow_dispatch:
     inputs:
       platforms:
@@ -178,7 +179,7 @@ jobs:
         # the job went green while NO build was queued (that is exactly how
         # the missing-npm_ci gap hid). The step now fails loudly.
         # R327 D2b: the profile rides the dispatch input (preview default);
-        # production = the AAB store cut with the EAS-managed upload key.
+        # production = the store cut with the EAS-managed upload key.
         run: |
           set +e
           PROFILE="${{ github.event.inputs.profile || 'preview' }}"

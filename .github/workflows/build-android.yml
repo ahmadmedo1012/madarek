@@ -1,6 +1,10 @@
-name: Android — release APK/AAB
+name: Android — release APK
 
-# Build an installable Android APK and a Play-upload AAB with Gradle.
+# Build an installable Android release APK with Gradle.
+#
+# R353 R1 — APK ONLY (development phase): the owner dropped the AAB.
+# No bundleRelease, no Play-upload artifact; when the store cut is
+# needed later the AAB path returns with its own evidence.
 #
 # R350 R2/R3 pipeline: build (Ubuntu) -> verify (Ubuntu, independent) ->
 # publish (rolling prerelease `android-latest`), with the emulator smoke
@@ -16,8 +20,8 @@ name: Android — release APK/AAB
 # failure retries once inside the job.
 #
 # Signing:
-#   * If ANDROID_KEYSTORE_BASE64 + password/alias secrets exist, the release
-#     APK/AAB are signed with that release key.
+#   * If ANDROID_KEYSTORE_BASE64 + password/alias secrets exist, the
+#     release APK is signed with that release key.
 #   * Otherwise the Expo template's stable debug keystore is used, and the
 #     verifier/release notes label the artifact as internal/debug-signed.
 #
@@ -86,7 +90,7 @@ env:
 
 jobs:
   build:
-    name: Build release APK + AAB
+    name: Build release APK
     runs-on: ubuntu-24.04
     timeout-minutes: 75
 
@@ -268,12 +272,13 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: node scripts/ci/configure-android-signing.mjs
 
-      - name: Build release APK and AAB
+      # R353 R1 — APK ONLY (development phase): the owner's call, no AAB.
+      - name: Build release APK
         working-directory: apps/mobile
         run: |
           set -euo pipefail
           mkdir -p build
-          (cd android && ./gradlew :app:assembleRelease :app:bundleRelease --no-daemon --stacktrace) \
+          (cd android && ./gradlew :app:assembleRelease --no-daemon --stacktrace) \
             2>&1 | tee build/gradle.log
 
       - name: Collect and verify the artifacts
@@ -285,11 +290,8 @@ jobs:
         run: |
           set -euo pipefail
           APK="android/app/build/outputs/apk/release/app-release.apk"
-          AAB="android/app/build/outputs/bundle/release/app-release.aab"
           test -f "$APK"
-          test -f "$AAB"
           cp "$APK" "build/$APK_NAME.apk"
-          cp "$AAB" "build/$APK_NAME.aab"
           if [ -f android/app/build/outputs/mapping/release/mapping.txt ]; then
             cp android/app/build/outputs/mapping/release/mapping.txt build/mapping.txt
           fi
@@ -297,7 +299,6 @@ jobs:
           BUILD_TOOLS_VERSION="$ANDROID_BUILD_TOOLS" \
             python3 scripts/verify-apk.py \
               --apk "build/$APK_NAME.apk" \
-              --aab "build/$APK_NAME.aab" \
               --json-out build/verify.json \
               --expected-version "$(jq -r .version build/expo-config.json)" \
               --expected-version-code "$(jq -r '.android.versionCode // 1' build/expo-config.json)" \
@@ -351,7 +352,6 @@ jobs:
             --arg platform "android" \
             --arg name "$APK_NAME" \
             --arg apk "$APK_NAME.apk" \
-            --arg aab "$APK_NAME.aab" \
             --arg commit "$COMMIT" \
             --arg requested_ref "$REQUESTED_REF" \
             --arg repository "$GITHUB_REPOSITORY" \
@@ -381,7 +381,6 @@ jobs:
               platform: $platform,
               name: $name,
               apk: $apk,
-              aab: $aab,
               commit: $commit,
               requested_ref: $requested_ref,
               repository: $repository,
@@ -411,20 +410,19 @@ jobs:
             }' > build/build-env.json
 
           jq -s '.[0] * .[1]' build/build-env.json build/verify.json > build/build-info.json
-          (cd build && sha256sum "$APK_NAME.apk" "$APK_NAME.aab" > SHA256SUMS.txt)
+          (cd build && sha256sum "$APK_NAME.apk" > SHA256SUMS.txt)
 
           echo "== build-info.json =="
           cat build/build-info.json
           echo "== SHA256SUMS.txt =="
           cat build/SHA256SUMS.txt
 
-      - name: Upload the APK/AAB candidate
+      - name: Upload the APK candidate
         uses: actions/upload-artifact@v4
         with:
           name: android-release-candidate
           path: |
             apps/mobile/build/Madarek.apk
-            apps/mobile/build/Madarek.aab
             apps/mobile/build/Madarek-x86_64.apk
             apps/mobile/build/build-info.json
             apps/mobile/build/SHA256SUMS.txt
@@ -906,7 +904,7 @@ jobs:
           retention-days: 14
 
   verify:
-    name: Verify APK/AAB independently (Linux)
+    name: Verify APK independently (Linux)
     needs: build
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -965,7 +963,7 @@ jobs:
           sdkmanager --sdk_root="$ANDROID_HOME" --install "platform-tools" "build-tools;37.0.0"
           sdkmanager --sdk_root="$ANDROID_HOME" --list_installed | grep -E 'build-tools;37.0.0|platform-tools' || true
 
-      - name: Download the APK/AAB candidate
+      - name: Download the APK candidate
         uses: actions/download-artifact@v4
         with:
           name: android-release-candidate
@@ -979,7 +977,6 @@ jobs:
           SIGNING_MODE=$(jq -r .signing_mode candidate/build-info.json)
           python3 apps/mobile/scripts/verify-apk.py \
             --apk candidate/Madarek.apk \
-            --aab candidate/Madarek.aab \
             --json-out candidate/verify-rerun.json \
             --expected-version "$(jq -r .version candidate/build-info.json)" \
             --expected-version-code "$(jq -r .version_code candidate/build-info.json)" \
@@ -997,8 +994,6 @@ jobs:
           set -euo pipefail
           APK_SHA=$(sha256sum candidate/Madarek.apk | awk '{print $1}')
           APK_SIZE=$(stat -c%s candidate/Madarek.apk)
-          AAB_SHA=$(sha256sum candidate/Madarek.aab | awk '{print $1}')
-          AAB_SIZE=$(stat -c%s candidate/Madarek.aab)
           SIGNING_MODE=$(jq -r .signing_mode candidate/build-info.json)
           EXPECTED_CERT=$(jq -r .certificate_sha256 candidate/build-info.json)
           ACTUAL_CERT=$(jq -r .certificate_sha256 candidate/verify-rerun.json)
@@ -1019,16 +1014,13 @@ jobs:
 
           jq -e \
             --arg apk_sha "$APK_SHA" \
-            --arg aab_sha "$AAB_SHA" \
             --argjson apk_size "$APK_SIZE" \
-            --argjson aab_size "$AAB_SIZE" \
             --arg signing_mode "$SIGNING_MODE" \
-            '.platform == "android" and .sha256 == $apk_sha and .size_bytes == $apk_size and .aab_sha256 == $aab_sha and .aab_size_bytes == $aab_size and .package == "ly.madarek.mobile" and .signing_mode == $signing_mode and (.runtime_version | test("^[0-9a-f]{40}$")) and .compile_sdk == 37 and .verified == false' \
+            '.platform == "android" and .sha256 == $apk_sha and .size_bytes == $apk_size and .package == "ly.madarek.mobile" and .signing_mode == $signing_mode and (.runtime_version | test("^[0-9a-f]{40}$")) and .compile_sdk == 37 and .verified == false' \
             candidate/build-info.json >/dev/null
 
           mkdir -p verified
           cp candidate/Madarek.apk verified/Madarek.apk
-          cp candidate/Madarek.aab verified/Madarek.aab
           cp candidate/verify-rerun.json verified/verify.json
           if [ -f candidate/mapping.txt ]; then cp candidate/mapping.txt verified/mapping.txt; fi
           jq -s \
@@ -1037,19 +1029,17 @@ jobs:
             --arg verifier "apps/mobile/scripts/verify-apk.py" \
             '.[0] * .[1] * {verified:true, verified_at:$verified_at, verify_run_url:$run_url, verifier:$verifier}' \
             candidate/build-info.json candidate/verify-rerun.json > verified/build-info.json
-          (cd verified && sha256sum Madarek.apk Madarek.aab > SHA256SUMS.txt)
+          (cd verified && sha256sum Madarek.apk > SHA256SUMS.txt)
 
           echo "Verified APK SHA-256: $APK_SHA"
-          echo "Verified AAB SHA-256: $AAB_SHA"
           cat verified/SHA256SUMS.txt
 
-      - name: Upload the verified APK/AAB
+      - name: Upload the verified APK
         uses: actions/upload-artifact@v4
         with:
           name: Madarek-android-release
           path: |
             verified/Madarek.apk
-            verified/Madarek.aab
             verified/SHA256SUMS.txt
             verified/build-info.json
             verified/verify.json
@@ -1061,7 +1051,7 @@ jobs:
         run: |
           set -euo pipefail
           {
-            echo "## Android APK/AAB verified"
+            echo "## Android APK verified"
             echo
             echo "| Field | Value |"
             echo "|---|---|"
@@ -1070,7 +1060,6 @@ jobs:
             echo "| Signing | \`$(jq -r .signing_mode verified/build-info.json)\` |"
             echo "| Certificate SHA-256 | \`$(jq -r .certificate_sha256 verified/build-info.json)\` |"
             echo "| APK SHA-256 | \`$(jq -r .sha256 verified/build-info.json)\` |"
-            echo "| AAB SHA-256 | \`$(jq -r .aab_sha256 verified/build-info.json)\` |"
             echo "| ABIs | \`$(jq -r '.architectures|join(", ")' verified/build-info.json)\` |"
             echo "| Compile SDK | \`$(jq -r .compile_sdk verified/build-info.json)\` |"
             echo "| OTA runtime version | \`$(jq -r .runtime_version verified/build-info.json)\` |"
@@ -1119,7 +1108,7 @@ jobs:
           sparse-checkout-cone-mode: false
           persist-credentials: false
 
-      - name: Download the verified APK/AAB
+      - name: Download the verified APK
         uses: actions/download-artifact@v4
         with:
           name: Madarek-android-release
@@ -1191,7 +1180,6 @@ jobs:
             release-notes.md \
             "$COMMIT" \
             verified/Madarek.apk \
-            verified/Madarek.aab \
             verified/SHA256SUMS.txt \
             verified/build-info.json \
             verified/verify.json
@@ -1205,8 +1193,6 @@ jobs:
             echo "## Android release updated"
             echo
             echo "**Installable APK:** https://github.com/$GITHUB_REPOSITORY/releases/download/android-latest/Madarek.apk"
-            echo
-            echo "**Play upload AAB:** https://github.com/$GITHUB_REPOSITORY/releases/download/android-latest/Madarek.aab"
             echo
             echo "**Signing:** \`$(jq -r '.signing_mode' verified/build-info.json)\`"
             echo

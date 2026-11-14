@@ -89,24 +89,22 @@ def main() -> None:
         print("> The same IPA is also attached to the latest workflow run artifact (verified, 30-day retention).")
     else:
         apk = value(info, "apk", "Madarek.apk")
-        aab = value(info, "aab", "Madarek.aab")
         signing_mode = value(info, "signing_mode")
         print(f"# مدارك — Android release build ({short})\n")
         print(
             f"**Installable APK:** [{apk}]({base}/{apk})  \n"
-            f"**Play upload AAB:** [{aab}]({base}/{aab})  \n"
             f"**Checksums:** [SHA256SUMS.txt]({base}/SHA256SUMS.txt)  \n"
             f"**Build metadata:** [build-info.json]({base}/build-info.json)  \n"
             f"**Workflow run:** {args.run_url}\n"
         )
         if signing_mode == "release":
             print("This build is **release-signed**; it can be installed directly and updated "
-                  "with later builds from this workflow. The AAB is for a Play Console upload.\n")
+                  "with later builds from this workflow.\n")
         else:
             print("> **Internal build — debug-signed.** This APK installs on real devices, but it is "
                   "signed with Expo's template debug keystore, so do **not** publish it to Google Play. "
                   "Add the `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, "
-                  "and `ANDROID_KEY_PASSWORD` repository secrets to produce a release-signed APK/AAB.\n")
+                  "and `ANDROID_KEY_PASSWORD` repository secrets to produce a release-signed APK.\n")
         print("| Field | Value |")
         print("|---|---|")
         print(f"| Version | `{value(info, 'version')}` (code `{value(info, 'version_code')}`) |")
@@ -119,8 +117,6 @@ def main() -> None:
         print(f"| OTA runtime version | `{value(info, 'runtime_version')}` |")
         print(f"| APK size | {human_size(info.get('size_bytes'))} |")
         print(f"| APK SHA-256 | `{value(info, 'sha256')}` |")
-        print(f"| AAB size | {human_size(info.get('aab_size_bytes'))} |")
-        print(f"| AAB SHA-256 | `{value(info, 'aab_sha256')}` |")
         print(f"| JDK / SDK / build-tools | `{value(info, 'jdk')}` / `{value(info, 'android_sdk')}` / `{value(info, 'build_tools')}` |")
         print(f"| Verified | {value(info, 'verified')} at `{value(info, 'verified_at')}` |")
         print(f"| Commit | [{short}]({commit_link}) |\n")
@@ -128,7 +124,6 @@ def main() -> None:
         print("1. Download the APK on the Android device.")
         print("2. Allow **Install unknown apps** for the browser/Files app when prompted.")
         print("3. Open the APK and install. If an older build with a different signature is installed, uninstall it first.")
-        print("4. The AAB is **not** directly installable on a phone; upload it to Google Play or use `bundletool`.\n")
         if signing_mode != "release":
             print("> Configure release signing secrets before treating this as a production artifact. "
                   "The workflow will switch to release signing automatically.")

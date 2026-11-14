@@ -35,7 +35,7 @@ quota and without a local Mac/Android SDK:
 | Platform | Artifact | Stable link |
 |---|---|---|
 | iOS | unsigned IPA (SideStore re-signs it) | [sidestore-latest/Madarek.ipa](https://github.com/ahmadmedo1012/madarek/releases/download/sidestore-latest/Madarek.ipa) |
-| Android | release APK + Play AAB | [android-latest/Madarek.apk](https://github.com/ahmadmedo1012/madarek/releases/download/android-latest/Madarek.apk) |
+| Android | release APK | [android-latest/Madarek.apk](https://github.com/ahmadmedo1012/madarek/releases/download/android-latest/Madarek.apk) |
 
 Workflows: `.github/workflows/build-ios-sidestore.yml` and
 `.github/workflows/build-android.yml`. Each one builds, verifies the artifact
@@ -103,7 +103,7 @@ distribution chain.
 
 `eas.json` (authoritative): profiles `development` (dev-client APK),
 `preview` (internal-distribution APK, channel `preview`), and
-`production` (AAB, channel `production`). All embed
+`production` (channel `production`). All embed
 `EXPO_PUBLIC_API_BASE_URL` from the profile env.
 
 ```bash

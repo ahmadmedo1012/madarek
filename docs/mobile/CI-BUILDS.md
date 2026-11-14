@@ -6,7 +6,7 @@ Build quota, a Mac, or an Android SDK on the developer machine:
 | Platform | Workflow | Output | Stable link |
 |---|---|---|---|
 | iOS | `.github/workflows/build-ios-sidestore.yml` | unsigned `iphoneos` IPA | [sidestore-latest/Madarek.ipa](https://github.com/ahmadmedo1012/madarek/releases/download/sidestore-latest/Madarek.ipa) |
-| Android | `.github/workflows/build-android.yml` | release APK + Play AAB | [android-latest/Madarek.apk](https://github.com/ahmadmedo1012/madarek/releases/download/android-latest/Madarek.apk) |
+| Android | `.github/workflows/build-android.yml` | release APK | [android-latest/Madarek.apk](https://github.com/ahmadmedo1012/madarek/releases/download/android-latest/Madarek.apk) |
 
 Both pipelines have the same three-stage shape:
 
@@ -72,10 +72,10 @@ The verifiers are committed and can be run locally:
 # iOS: structure, device-only Mach-O, bundle id, Hermes, unsigned
 python3 apps/mobile/scripts/verify-ipa.py Madarek.ipa --json-out /tmp/ipa.json
 
-# Android: package/version/SDK, ABIs, signature, debug/release mode, AAB
+# Android: package/version/SDK, ABIs, signature, debug/release mode
 ANDROID_HOME="$ANDROID_HOME" BUILD_TOOLS_VERSION=37.0.0 \
   python3 apps/mobile/scripts/verify-apk.py \
-    --apk Madarek.apk --aab Madarek.aab --json-out /tmp/apk.json
+    --apk Madarek.apk --json-out /tmp/apk.json
 ```
 
 Each verified artifact contains:
@@ -99,7 +99,7 @@ The Android workflow uses release signing when these repository secrets exist:
 | `ANDROID_KEY_PASSWORD` | key password; for PKCS#12 it must equal the store password (omit it to use the store password automatically) |
 
 If the keystore secret is absent, the workflow still produces an installable
-**internal** APK/AAB using Expo's stable template debug keystore. The release
+**internal** APK using Expo's stable template debug keystore. The release
 notes and `build-info.json` label it `signing_mode: debug`; do not publish that
 artifact to Google Play.
 

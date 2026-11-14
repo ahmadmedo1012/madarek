@@ -23,7 +23,7 @@
 | `backend/**` | ✅ deploys | CI + **deploy-smoke** (waits for buildId == SHA, then health + 3 logins + dashboard + live-vs-committed OpenAPI additive check; failure opens an issue) | — |
 | `frontend/**`, `shared/**` (web side) | ✅ deploys | CI | — (unless `apps/mobile/**`/`shared/**` also changed → see below) |
 | `apps/mobile/**` or `shared/**` | ❌ never (render.yaml `buildFilter`) | **Mobile** workflow: gates (typecheck · expo lint · contract-check · `expo export` android+ios · bundle ≤ 8 MB) | **EAS Update** (`--auto`) to `production` **and** `preview` branches — reaches every installed build whose runtime fingerprint matches |
-| …and the change **affects the installed app** (anything under `apps/mobile/**` — app/screens/src/assets/config — plus `shared/**`, `scripts/tokens/**`, `scripts/brand/**`, `docs/api/openapi.json`) | ❌ | same gates **+ `Android — release APK/AAB`** (build → independent verify → publish the rolling `android-latest` release: APK · AAB · build-info.json · SHA256SUMS.txt · verify.json) — the official public download | EAS Build stays manual-only (explicit preview/store cuts) |
+| …and the change **affects the installed app** (anything under `apps/mobile/**` — app/screens/src/assets/config — plus `shared/**`, `scripts/tokens/**`, `scripts/brand/**`, `docs/api/openapi.json`) | ❌ | same gates **+ `Android — release APK`** (build → independent verify → publish the rolling `android-latest` release: APK · build-info.json · SHA256SUMS.txt · verify.json) — the official public download | EAS Build stays manual-only (explicit preview/store cuts) |
 | `docs/**`, `audits/**`, `*.md` | ❌ | CI only | — |
 
 Channels: `development` (dev-client) · `preview` (internal APK/simulator) ·

@@ -215,8 +215,7 @@ export function AppDownloadPage() {
                 </p>
               )}
               <p className="ap-p ap-p-note">
-                نسخة متجر Google Play (AAB) مبنية وموقّعة مع كل إصدار وتُرفع في صفحة الإصدار
-                نفسها — جاهزة عند اعتماد خطوة النشر من المالك (موثّقة في RELEASE.md).
+                ملف APK واحد مثبّت وموقّع مع كل إصدار — بدون حزم متجر (AAB) في مرحلة التطوير.
               </p>
             </div>
           </section>

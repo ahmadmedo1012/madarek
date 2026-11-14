@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify an Android release APK (and optionally its AAB).
+"""Verify an Android release APK.
 
 This is the single source of truth for Android artifact checks in CI and
 locally. It uses the Android SDK build-tools (aapt2/apksigner) plus direct
@@ -7,18 +7,18 @@ ZIP inspection, so it validates the actual installable bytes rather than
 trusting Gradle's output paths.
 
 Checks:
-  * ZIP integrity and required APK/AAB members
+  * ZIP integrity and required APK members
   * package id, versionName, versionCode, minSdk, targetSdk via aapt2
   * release build is not debuggable
   * native libraries exist for every expected ABI, and only those ABIs
   * APK is signed; certificate digest and signing mode are recorded
   * APK Signature Scheme v2 or v3 is present
-  * AAB has a manifest, BundleConfig.pb, native libs, and a JAR signature
+(R353 R1: the AAB companion check is gone - the pipeline builds an
+APK only during the development phase.)
 
 Usage:
   ANDROID_HOME=$ANDROID_HOME python3 apps/mobile/scripts/verify-apk.py \
     --apk build/Madarek.apk \
-    --aab build/Madarek.aab \
     --json-out build/verify.json \
     --expected-signing-mode release
 """
@@ -30,7 +30,6 @@ import hashlib
 import json
 import os
 import re
-import shutil
 import subprocess
 import sys
 import zipfile
@@ -214,52 +213,9 @@ def inspect_apk_zip(apk: Path, expected_architectures: set[str]) -> None:
     ok(f"APK ZIP members; native ABIs={sorted(apk_abis)}")
 
 
-def inspect_aab_zip(aab: Path, expected_architectures: set[str]) -> None:
-    try:
-        zf = zipfile.ZipFile(aab)
-        bad = zf.testzip()
-        if bad:
-            fail(f"AAB member failed CRC: {bad}")
-        names = zf.namelist()
-    except zipfile.BadZipFile as exc:
-        fail(f"AAB is not a valid ZIP: {exc}")
-
-    required = {"base/manifest/AndroidManifest.xml", "BundleConfig.pb"}
-    missing = required - set(names)
-    if missing:
-        fail(f"AAB is missing required members: {sorted(missing)}")
-
-    aab_abis = set()
-    for name in names:
-        match = re.match(r"base/lib/([^/]+)/.+\.so$", name)
-        if match:
-            aab_abis.add(match.group(1))
-    if aab_abis != expected_architectures:
-        fail(
-            f"AAB native ABIs {sorted(aab_abis)} do not match expected "
-            f"{sorted(expected_architectures)}"
-        )
-
-    if "META-INF/MANIFEST.MF" not in names:
-        fail("AAB has no META-INF/MANIFEST.MF (not JAR-signed)")
-    if not any(re.fullmatch(r"META-INF/[^/]+\.(SF|RSA|EC|DSA)", name) for name in names):
-        fail("AAB has no JAR signature block (META-INF/*.SF or *.RSA)")
-
-    jarsigner = shutil.which("jarsigner")
-    if jarsigner:
-        output = run([jarsigner, "-verify", str(aab)], "jarsigner -verify")
-        if "jar verified" not in output.lower():
-            print(output, file=sys.stderr)
-            fail("jarsigner did not report 'jar verified' for the AAB")
-    else:
-        print("WARN: jarsigner not found; skipping AAB JAR signature command")
-    ok(f"AAB structure + signature; native ABIs={sorted(aab_abis)}")
-
-
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Verify a signed Android release APK/AAB")
+    parser = argparse.ArgumentParser(description="Verify a signed Android release APK")
     parser.add_argument("--apk", type=Path, required=True)
-    parser.add_argument("--aab", type=Path)
     parser.add_argument("--json-out", type=Path)
     parser.add_argument("--expected-package", default="ly.madarek.mobile")
     parser.add_argument("--expected-version", default="1.0.0")
@@ -281,11 +237,8 @@ def main() -> None:
     args = parser.parse_args()
 
     apk = args.apk.resolve()
-    aab = args.aab.resolve() if args.aab else None
     if not apk.is_file():
         fail(f"missing APK: {apk}")
-    if aab is not None and not aab.is_file():
-        fail(f"missing AAB: {aab}")
 
     sdk_root_value = os.environ.get("ANDROID_HOME") or os.environ.get("ANDROID_SDK_ROOT")
     if not sdk_root_value:
@@ -366,25 +319,11 @@ def main() -> None:
             f"{args.expected_runtime_version}"
         )
 
-    aab_size = None
-    aab_sha = None
-    if aab is not None:
-        aab_size = aab.stat().st_size
-        aab_sha = sha256_file(aab)
-        print(f"AAB size:     {aab_size} bytes ({aab_size / 1048576:.2f} MiB)")
-        print(f"AAB SHA-256:  {aab_sha}")
-        if aab_size < 5 * 1024 * 1024:
-            fail(f"AAB is suspiciously small ({aab_size} bytes)")
-        inspect_aab_zip(aab, expected_abis)
-
     result = {
         "platform": "android",
         "apk": apk.name,
-        "aab": aab.name if aab else None,
         "size_bytes": apk_size,
         "sha256": apk_sha,
-        "aab_size_bytes": aab_size,
-        "aab_sha256": aab_sha,
         "package": badging["package"],
         "version": badging["version"],
         "version_code": badging["version_code"],
@@ -414,9 +353,6 @@ def main() -> None:
     print("\nALL CHECKS PASSED")
     print(f"RESULT_SHA256={apk_sha}")
     print(f"RESULT_SIZE={apk_size}")
-    if aab_sha:
-        print(f"RESULT_AAB_SHA256={aab_sha}")
-        print(f"RESULT_AAB_SIZE={aab_size}")
     print(f"RESULT_SIGNING_MODE={apksigner_info['signing_mode']}")
     print(f"RESULT_RUNTIME_VERSION={runtime_version}")
 

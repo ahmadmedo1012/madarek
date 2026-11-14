@@ -100,8 +100,7 @@ anchors on the SDK-58 template text and fails loud on template drift
 instead of silently building an unsigned "release"). Extra gradle args pass
 through: `scripts/build-android-local.sh --stacktrace --info`.
 
-For Play's AAB: `cd apps/mobile/android && ./gradlew bundleRelease` →
-`android/app/build/outputs/bundle/release/app-release.aab`.
+(R353 R1: the AAB is not built during the development phase — APK only.)
 
 ### B. `eas build --local` (EAS tooling, still your machine)
 
@@ -139,7 +138,7 @@ quota — the very constraint that birthed paths A/B.
 
 ## 4. Signing for Play
 
-- Play requires an **AAB** for new listings: `./gradlew bundleRelease`
+- When Play distribution returns: an **AAB** is required for new listings (`./gradlew bundleRelease`)
   (path A) or the `production` profile (paths B/C).
 - Enable **Play App Signing** (default for new apps): you upload once with
   your upload key; Play re-signs distributions. Even then, keep the upload
