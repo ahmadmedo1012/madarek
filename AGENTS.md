@@ -27,7 +27,7 @@ Sources of truth (don't guess, read): endpoints → `backend/src/app.ts` + `http
 design tokens → `frontend/src/styles/tokens.css` (wins over `DESIGN.md`) +
 `shared/design-tokens.json`; route strings → `frontend/src/lib/routes.ts` (the
 r341/Y2 single source); commands → the three `package.json` files; deploy →
-  `vercel.json` + `.github/workflows/deploy-vercel.yml` (Render's `render.yaml` stays as the standby recipe).
+  `vercel.json` + `.github/workflows/deploy-vercel.yml` (Render's `render.yaml` stays as the standby recipe); the hosting map, every free-tier limit, the self-monitoring devices, and the upgrade/rollback recipes → **docs/HOSTING.md** (R352 K6).
 
 ## 2. Commands
 
