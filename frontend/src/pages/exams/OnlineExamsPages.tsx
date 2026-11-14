@@ -140,7 +140,7 @@ function startErrorAr(error: unknown, exam: MyExam | undefined): string {
   if (detail === 'لم يفتح باب هذا الاختبار بعد' && exam?.openAt) {
     return `لم يفتح باب هذا الاختبار بعد — يفتح ${formatDateTimeAr(exam.openAt)}.`;
   }
-  return apiErrorMessage(error, 'تعذَّر بدء الاختبار — تحقّق من اتصالك وحاول مرة أخرى.');
+  return apiErrorMessage(error, 'تعذَّر بدء الاختبار — تحقّق من اتصالك.');
 }
 
 /* r165a — a submit answer the backend rejected as TERMINAL. The submit
@@ -295,7 +295,7 @@ export default function OnlineExamsPage() {
           index="01"
           eyebrow="مركز الاختبارات"
           title="الاختبارات الإلكترونية"
-          description="اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات. تنبيه: لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية."
+          description="اختبارات موحَّدة معتمدة — لا إعادة بعد التسليم إلا التدريبية."
           /* R342-08 — the header CTA pair (the D11/D8 measured seat; the
              phone band hides the topbar «اسأل AI» ≤920, D6, and the first
              row's start CTA sits below the phone fold): the exam
@@ -323,7 +323,7 @@ export default function OnlineExamsPage() {
             the screen-reader phrase). */}
         <SectionBar
           index="02"
-          title="اختبارات متاحة لك الآن"
+          title="اختبارات متاحة الآن"
           id="oex-sec-available"
           meta={
             !q.isPending && !q.isError && available.length > 0 ? (
@@ -362,8 +362,8 @@ export default function OnlineExamsPage() {
                 label="لا توجد اختبارات متاحة حالياً"
                 note={
                   unavailable.length > 0
-                    ? 'بعض اختباراتك لم يفتح بابها بعد أو أُغلق — مواعيدها في القائمة أدناه.'
-                    : 'سماؤك صافية الليلة — ستُضيء النجوم هنا فور اعتماد مكتب الجودة ومُقرِّريك الاختبارات.'
+                    ? 'مواعيد المغلقة في القائمة أدناه.'
+                    : undefined
                 }
               />
             )}
@@ -389,7 +389,7 @@ export default function OnlineExamsPage() {
           <section className="oex-sec" aria-labelledby="oex-sec-unavailable">
             <SectionBar
               index="03"
-              title="اختبارات غير متاحة الآن"
+              title="غير متاحة الآن"
               id="oex-sec-unavailable"
               meta={(
                 <BarCount
@@ -530,7 +530,7 @@ function ExamCard({ exam, canStart, actNow }: { exam: MyExam; canStart: boolean;
             {exam.kind === 'PRACTICE' && ws === 'open' && exam.myAttempt && exam.myAttempt.status !== 'IN_PROGRESS' && (
               <span className="r305s-chip r305s-chip--info">
                 <i className="r305s-chip-dot" aria-hidden />
-                تدريبي — إعادة المحاولة متاحة
+                تدريبي — إعادة متاحة
               </span>
             )}
             {ws === 'upcoming' && exam.openAt && (
@@ -791,8 +791,8 @@ export function ExamTakerPage() {
   // payload — a rare deep link before the list resolves keeps the
   // conservative non-practice copy.
   const finalityNote = listedExam?.kind === 'PRACTICE'
-    ? 'بعد التسليم لا يمكنك تعديل إجاباتك — يمكنك بدء محاولة تدريبية جديدة لاحقاً.'
-    : 'بعد التسليم لا يمكنك تعديل إجاباتك أو إعادة المحاولة.';
+    ? 'بعد التسليم لا تعديل — التدريبية تُعاد لاحقاً.'
+    : 'بعد التسليم لا تعديل ولا إعادة.';
 
   const onStart = async () => {
     if (!id) return;
@@ -975,7 +975,7 @@ export function ExamTakerPage() {
   useEffect(() => {
     if (!attempt || autoSubmittedRef.current) return;
     if (secondsLeft > 0 && secondsLeft <= 120 && urgentNote === null) {
-      setUrgentNote('تبقّى أقلّ من دقيقتين — سيُسلَّم الاختبار تلقائياً عند انتهاء الوقت.');
+      setUrgentNote('أقلّ من دقيقتين — تسليم تلقائي عند الانتهاء.');
     }
   }, [attempt, secondsLeft, urgentNote]);
 
@@ -1166,8 +1166,7 @@ export function ExamTakerPage() {
             </h1>
             {expired ? (
               <>
-                <p className="oex-result-note">انتهى وقت المحاولة دون تسليم — لا تُحتسب لها نتيجة ولا يمكن إعادتها.</p>
-                <p className="oex-result-note">راجع مواعيد الاختبارات المتاحة من قائمة الاختبارات.</p>
+                <p className="oex-result-note">انتهى الوقت دون تسليم — لا نتيجة ولا إعادة.</p>
               </>
             ) : exam && myAttempt && score !== null && score !== undefined ? (
               <>
@@ -1186,7 +1185,7 @@ export function ExamTakerPage() {
                 </div>
                 <p className="oex-result-note">
                   {myAttempt.status === 'SUBMITTED'
-                    ? 'درجتك الأولية من الأسئلة الآلية — الدرجات المقالية بانتظار تقييم الأستاذ.'
+                    ? 'درجة أولية آلية — المقالية بانتظار الأستاذ.'
                     : 'لا يمكن إعادة المحاولة بعد التسليم.'}
                 </p>
                 {/* 5-D3 (5-B3 hand-off #1 / A6 P2-4): the deep-link
@@ -1196,7 +1195,7 @@ export function ExamTakerPage() {
                 {myAttempt.status === 'GRADED' ? (
                   <ExamReviewSection attemptId={myAttempt.id} />
                 ) : (
-                  <p className="oex-result-note">ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح.</p>
+                  <p className="oex-result-note">المراجعة متاحة بعد اكتمال التصحيح.</p>
                 )}
               </>
             ) : examsQ.isPending ? (
@@ -1222,7 +1221,7 @@ export function ExamTakerPage() {
             ) : (
               <>
                 <p className="oex-result-note">لا يمكن إعادة المحاولة بعد التسليم.</p>
-                <p className="oex-result-note">النتيجة قيد الاحتساب أو بانتظار تقييم الأسئلة المقالية.</p>
+                <p className="oex-result-note">النتيجة قيد الاحتساب أو بانتظار تقييم المقالية.</p>
               </>
             )}
             <button type="button" className="btn accent" onClick={() => navigate('/student/online-exams')}>
@@ -1330,8 +1329,8 @@ export function ExamTakerPage() {
             )}
             <p className="oex-cover-note text-sm text-muted">
               {hasLiveAttempt
-                ? 'الوقت لم يتوقف منذ البدء، وإجاباتك المحفوظة ستظهر كما تركتها.'
-                : 'بمجرد الضغط على «بدء الاختبار» سيبدأ المؤقت ولا يمكنك إيقافه. اقرأ كل سؤال جيداً قبل الإجابة. تُسجَّل إجابات الاختيار فور اختيارها، والإجابات النصية عند مغادرة الحقل — ويُسلَّم الاختبار تلقائياً عند انتهاء الوقت.'}
+                ? 'الوقت لم يتوقف — إجاباتك كما تركتها.'
+                : 'المؤقّت يبدأ مع أول ضغطة ولا يتوقف.'}
             </p>
             <footer className="oex-cover-actions">
               {startError && (
@@ -1366,7 +1365,7 @@ export function ExamTakerPage() {
               {win === 'open' && listedExam && !start.isPending && !examsQ.isPending && (
                 <span className="oex-cover-hint" data-state="open">
                   <Icon icon={Clock} size={13} />
-                  <bdi className="font-mono">{listedExam.durationMin}:00</bdi> عدّاد ينطلق مع البدء
+                  <bdi className="font-mono">{listedExam.durationMin}:00</bdi>
                 </span>
               )}
             </footer>
@@ -1400,7 +1399,7 @@ export function ExamTakerPage() {
                 semantics, exactly like the twin's lockup. */}
             <MkIllustration name="exam-complete" size={140} />
             <h1 className="oex-result-title">
-              {awaitingManual ? 'تم تسليم اختبارك' : result.passed ? 'مبروك — لقد اجتزت الاختبار!' : 'الاختبار انتهى'}
+              {awaitingManual ? 'تم تسليم اختبارك' : result.passed ? 'مبروك — اجتزت الاختبار!' : 'الاختبار انتهى'}
             </h1>
             {/* The authored moment — the grade reveal: the real score
                 lands as the visual anchor (same exam-grade language as
@@ -1422,7 +1421,7 @@ export function ExamTakerPage() {
                   2/3–10; countAr speaks the forms (the same grammar the
                   submit dialog and the moderation rows carry). */}
               {result.needsManual > 0
-                ? <>{countAr(result.needsManual, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])} بحاجة لتقييم يدوي من الأستاذ — ستظهر الدرجة النهائية بعد المراجعة.</>
+                ? <>{countAr(result.needsManual, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])} بحاجة لتقييم الأستاذ — الدرجة النهائية بعد المراجعة.</>
                 : 'تم احتساب النتيجة فوراً.'}
             </p>
             {/* 5-D3 (5-B3 hand-off #1 / A6 P2-4): the review endpoint
@@ -1431,7 +1430,7 @@ export function ExamTakerPage() {
                 the honest promise replaces the old "not available"
                 note (the key is not released until GRADED). */}
             {awaitingManual ? (
-              <p className="oex-result-note">ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح اليدوي.</p>
+              <p className="oex-result-note">المراجعة متاحة بعد اكتمال التصحيح اليدوي.</p>
             ) : (
               <ExamReviewSection attemptId={result.attemptId} />
             )}
@@ -1577,7 +1576,7 @@ export function ExamTakerPage() {
         {attempt.questions.length === 0 && (
           <EmptyCell
             label="لا توجد أسئلة في هذا الاختبار"
-            note="لم يُعتمد أي سؤال لهذه الورقة بعد — يمكنك تسليم المحاولة كما هي أو مراجعة قائمة الاختبارات."
+            note="لا أسئلة معتمدة بعد — سلِّم كما هي أو راجع القائمة."
           />
         )}
         {attempt.questions.length > 0 && (
@@ -1830,7 +1829,7 @@ function TemplateQuestionsPreview({ templateId }: { templateId: string }) {
         <div className="form-error" role="alert">
           <Icon icon={AlertTriangle} size={14} />
           <span className="form-error-msg">
-            {apiErrorMessage(tplQ.error, 'تعذَّر تحميل أسئلة القالب — راجع الأسئلة قبل القرار.')}
+            {apiErrorMessage(tplQ.error, 'تعذَّر تحميل أسئلة القالب — راجع قبل القرار.')}
           </span>
           <button type="button" className="btn ghost sm" onClick={() => void tplQ.refetch()}>
             إعادة المحاولة
@@ -1841,7 +1840,6 @@ function TemplateQuestionsPreview({ templateId }: { templateId: string }) {
           illustration="empty-list"
           icon={FileText}
           title="لا أسئلة في هذا القالب"
-          description="ربما أُوقفت أسئلته من البنك بعد بنائه."
         />
       ) : (
         <div className="flex-col">
@@ -1943,7 +1941,7 @@ export function ExamModerationPage() {
       setOpen(null);
       setNote('');
     } catch (e) {
-      setActionError({ id, approve, message: apiErrorMessage(e, 'تعذَّر تنفيذ القرار — تحقّق من اتصالك وحاول مرة أخرى.') });
+      setActionError({ id, approve, message: apiErrorMessage(e, 'تعذَّر تنفيذ القرار — تحقّق من اتصالك.') });
     } finally {
       setActing(null);
     }
@@ -1978,7 +1976,7 @@ export function ExamModerationPage() {
       </span>
       <PageHeader
         title="مراجعة الاختبارات"
-        subtitle="مراجعة قوالب الاختبارات الموحَّدة قبل اعتمادها وإتاحتها للطلاب — صلاحية حصرية لمكتب الجودة."
+        subtitle="اعتماد قوالب الاختبارات قبل إتاحتها للطلاب."
         /* R342-11: the header CTA pair (the D10 quality-family grammar,
          * navigation-only — the queue's own decisions live on the rows).
          * The accent seat is the measured hover surface (.has-shell
@@ -2014,7 +2012,7 @@ export function ExamModerationPage() {
             label: 'أسئلة بانتظار الفحص',
             value: queueQ.isPending ? '…' : queueQ.isError ? '—' : `${questionsAwaiting}`,
             trend: kpiKnown
-              ? (questionsAwaiting === 0 ? 'لا أسئلة معلّقة' : 'مجموع أسئلة القوالب المعلّقة')
+              ? (questionsAwaiting === 0 ? 'لا أسئلة معلّقة' : 'أسئلة القوالب المعلّقة')
               : 'بانتظار البيانات',
             trendTone: kpiKnown ? (questionsAwaiting > 0 ? 'down' : 'up') : 'flat',
           },
@@ -2041,7 +2039,6 @@ export function ExamModerationPage() {
           <EmptyState
             icon={CheckCircle2}
             title="لا شيء بانتظار المراجعة"
-            description="كل قوالب الاختبارات المتاحة للطلاب اجتازت المراجعة."
           />
         ) : (
           <div className="oex-queue" role="list" aria-label="طابور المراجعة">
@@ -2177,7 +2174,7 @@ export function ExamModerationPage() {
       <ConfirmDialog
         open={confirmingReject !== null}
         title="رفض قالب الاختبار"
-        message="سيُرفض القالب ويُعاد إلى مؤلفه مع ملاحظاتك، ويخرج من قائمة الانتظار. لا يمكن التراجع عن هذا القرار."
+        message="سيُرفض القالب ويُعاد لمؤلفه — لا تراجع."
         confirmLabel="رفض القالب"
         cancelLabel="مراجعة القالب"
         danger
