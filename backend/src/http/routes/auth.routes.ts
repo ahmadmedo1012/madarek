@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { env } from '../../env.js';
 import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth.js';
+import { prisma } from '../../db.js';
 import {
   forgotPasswordEmailRateLimiter,
   forgotPasswordRateLimiter,
@@ -30,6 +31,15 @@ import { requestPasswordReset, resetPassword, TOKEN_TTL_MS } from '../../modules
 import { isTestAccountEmail } from '../../modules/auth/test-accounts.data.js';
 import { renderResetEmail } from '../../lib/mail.js';
 import { queueMail } from '../../lib/mail-outbox.js';
+import {
+  sendEventMail,
+  renderVerifyEmail,
+  renderWelcome,
+  renderPasswordChanged,
+  renderNewDeviceAlert,
+  verifyUrlFor,
+} from '../../lib/mail-events.js';
+import { mintVerificationToken, claimVerificationToken } from '../../modules/auth/email-verification.service.js';
 import { parseDurationMs, verifyRefreshToken } from '../../lib/jwt.js';
 import { AppError } from '../../lib/errors.js';
 import { logger } from '../../logger.js';
@@ -60,6 +70,42 @@ router.post('/register', authRateLimiter, validate(registerSchema), async (req, 
   try {
     const { user, accessToken, refreshToken } = await registerUser(req.body);
     setRefreshCookie(res, refreshToken);
+    // R350 E3 — the verification + welcome events (best-effort: a mail
+    // failure must never fail registration). The verify token is minted
+    // here; the outbox owns delivery/retries.
+    void (async () => {
+      try {
+        const minted = await mintVerificationToken(user.email as string);
+        if (minted) {
+          const t = renderVerifyEmail(minted.name, verifyUrlFor(minted.token));
+          await sendEventMail({
+            userId: minted.userId,
+            to: user.email as string,
+            category: 'account',
+            template: 'verify-email',
+            subject: t.subject,
+            bodyHtml: t.bodyHtml,
+            bodyText: t.bodyText,
+            ctaLabel: t.ctaLabel,
+            ctaUrl: verifyUrlFor(minted.token),
+            dedupeKey: `verify:${minted.userId}:${minted.token.slice(0, 12)}`,
+          });
+        }
+        const w = renderWelcome(String(user.firstName ?? ''));
+        await sendEventMail({
+          userId: user.id,
+          to: user.email as string,
+          category: 'account',
+          template: 'welcome',
+          subject: w.subject,
+          bodyHtml: w.bodyHtml,
+          bodyText: w.bodyText,
+          dedupeKey: `welcome:${user.id}`,
+        });
+      } catch (err) {
+        logger.warn({ err }, 'register: mail events failed (non-blocking)');
+      }
+    })();
     res.status(201).json({ data: { user, accessToken } });
   } catch (e) {
     next(e);
@@ -80,7 +126,88 @@ router.post('/login', authRateLimiter, validate(loginSchema), async (req, res, n
     );
 
     setRefreshCookie(res, refreshToken);
+    // R350 E3 — the new-device security alert: the first login from an
+    // unseen (ip, userAgent) pair for this user queues the Arabic alert.
+    // Best-effort + non-blocking; ESSENTIAL category (cannot be opted out).
+    void (async () => {
+      try {
+        const ip = req.ip ?? null;
+        const ua = req.header('user-agent') ?? null;
+        if (ip || ua) {
+          const seen = await prisma.loginEvent.findFirst({
+            where: { userId: user.id, success: true, ip, userAgent: ua },
+            select: { id: true },
+          });
+          if (!seen) {
+            const device = (ua ?? 'جهاز غير معروف').slice(0, 120);
+            const when = new Date().toLocaleString('ar-LY', { timeZone: 'Africa/Tripoli' });
+            const t = renderNewDeviceAlert(device, when);
+            await sendEventMail({
+              userId: user.id,
+              to: user.email as string,
+              category: 'security',
+              template: 'security-new-device',
+              subject: t.subject,
+              bodyHtml: t.bodyHtml,
+              bodyText: t.bodyText,
+              dedupeKey: `newdevice:${user.id}:${ip ?? 'noip'}:${(ua ?? 'noua').slice(0, 24)}`,
+            });
+          }
+        }
+      } catch (err) {
+        logger.warn({ err }, 'login: new-device mail check failed (non-blocking)');
+      }
+    })();
     res.json({ data: { user, accessToken } });
+  } catch (e) {
+    next(e);
+  }
+});
+
+/**
+ * R350 E3 — GET /auth/verify-email?token=…: claim the one-time token,
+ * mark the email verified. Same generic refusal for unknown/expired/
+ * used tokens (no oracle). (The SPA hits this from the emailed link;
+ * the response is a small JSON the page renders.)
+ */
+router.get('/verify-email', async (req, res, next) => {
+  try {
+    await claimVerificationToken(String(req.query.token ?? ''));
+    res.json({ data: { verified: true, message: 'تم تأكيد بريدك الإلكتروني — شكرًا' } });
+  } catch (e) {
+    next(e);
+  }
+});
+
+/**
+ * R350 E3 — POST /auth/resend-verification: the authenticated user asks
+ * for a fresh verification email (rate-limited by the auth limiter;
+ * already-verified accounts answer the same generic 200).
+ */
+router.post('/resend-verification', authMiddleware, authRateLimiter, async (req, res, next) => {
+  try {
+    const me = await prisma.user.findUnique({
+      where: { id: req.user!.id },
+      select: { email: true },
+    });
+    const email = me?.email ?? '';
+    const minted = email ? await mintVerificationToken(email) : null;
+    if (minted) {
+      const t = renderVerifyEmail(minted.name, verifyUrlFor(minted.token));
+      await sendEventMail({
+        userId: minted.userId,
+        to: email,
+        category: 'account',
+        template: 'verify-email',
+        subject: t.subject,
+        bodyHtml: t.bodyHtml,
+        bodyText: t.bodyText,
+        ctaLabel: t.ctaLabel,
+        ctaUrl: verifyUrlFor(minted.token),
+        dedupeKey: `verify:${minted.userId}:${minted.token.slice(0, 12)}`,
+      });
+    }
+    res.json({ data: { message: 'إذا كان بريدك غير مؤكَّد فستصلك رسالة تأكيد جديدة خلال دقائق' } });
   } catch (e) {
     next(e);
   }
@@ -144,6 +271,25 @@ router.post(
         req.body.newPassword,
       );
       setRefreshCookie(res, refreshToken);
+      // R350 E3 — the security alert (ESSENTIAL category): the password
+      // just changed; the account owner must hear about it.
+      void (async () => {
+        try {
+          const t = renderPasswordChanged();
+          await sendEventMail({
+            userId: req.user!.id,
+            to: user.email as string,
+            category: 'security',
+            template: 'security-password-changed',
+            subject: t.subject,
+            bodyHtml: t.bodyHtml,
+            bodyText: t.bodyText,
+            dedupeKey: `pwdchanged:${req.user!.id}:${Date.now()}`,
+          });
+        } catch (err) {
+          logger.warn({ err }, 'change-password: security mail failed (non-blocking)');
+        }
+      })();
       res.json({ data: { user, accessToken } });
     } catch (e) {
       next(e);

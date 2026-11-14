@@ -439,6 +439,9 @@ model User {
   // institution and teach in another) — hence plural reverse relations.
   // Legacy single-profile surfaces resolve via the membership context.
   memberships     Membership[]
+  // R350 E3 — verification tokens + notification preferences.
+  emailVerificationTokens EmailVerificationToken[] @relation("EmailVerificationTokens")
+  notificationPreferences NotificationPreference[] @relation("NotificationPreferences")
   studentProfiles StudentProfile[]
   teacherProfiles TeacherProfile[]
 
@@ -2607,4 +2610,34 @@ model MailSuppression {
 
   @@unique([email, type])
   @@index([email])
+}
+
+// ── R350 E3 — verification tokens + notification preferences ────────
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation("EmailVerificationTokens", fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+/// Per-user, per-category email toggles (E3's preference contract).
+/// Categories: security | account | courses | announcements | digest.
+/// ABSENT row = the category's default (security/account: ON and not
+/// user-suppressible for transactional essentials; courses/announcements/
+/// digest: ON until the user opts out — List-Unsubscribe also writes here).
+model NotificationPreference {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation("NotificationPreferences", fields: [userId], references: [id], onDelete: Cascade)
+  category    String
+  emailEnabled Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, category])
 }

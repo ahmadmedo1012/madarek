@@ -150,3 +150,22 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
   missing-headers, token round-trip, bounce/complaint upserts, 401-no-write, ack-unknown,
   GET page, invalid-token refusal, POST one-click).
 - Gates: backend tsc 0/0 · full vitest 2143 passed / 19 skipped.
+
+### LANE E — E3 events → mail: the verification flow + security alerts (this commit)
+- Schema (additive): EmailVerificationToken (tokenHash unique, one-live-per-user, 24h TTL) +
+  NotificationPreference (userId+category unique; security/account are ESSENTIAL — never
+  user-suppressible; courses/announcements/digest optional, absent row = ON).
+- email-verification.service.ts: the reset-service security shape (randomBytes→SHA-256,
+  single-use CAS claim, equal-cost unknown path, generic Arabic refusal — no oracle).
+- mail-events.ts: sendEventMail (preference-aware dispatch through the E2 outbox) + the
+  template registry: verify-email, welcome, password-changed, new-device, role-changed,
+  activation-invite (Arabic, shared shell).
+- Wired: register → verify + welcome; login → new-device alert (first unseen ip+UA pair,
+  LoginEvent consult, non-blocking); change-password → the security alert;
+  GET /auth/verify-email (claim) + POST /auth/resend-verification (authMiddleware +
+  rate-limited, generic 200).
+- Pinned: tests/modules/mail-events.test.ts — 9 tests (mint/claim/no-oracle/one-live,
+  preference law ×3, template content). Full backend suite 2152 green.
+- Remaining E3 events (announcements, assignment due/graded, exam schedule, enrolment,
+  registrar approval, weekly digest) follow the same sendEventMail pattern at their
+  trigger seats — next session's continuation.
