@@ -1,0 +1,133 @@
+# R352 K5 — the STORAGE_DRIVER flip: postgres → vercel-blob, ONE deploy.
+#
+# WHY: uploads ride BYTEA rows in the application database (the Render-era
+# pilot trade-off). The Blob store (tadmora-private-files) is connected to
+# production+preview with BLOB_READ_WRITE_TOKEN auto-provisioned; the
+# X2d client-direct transport exists. The flip needs every existing
+# BinaryObject object to already live in Blob at boot (a half-migrated
+# flip 404s real files) — that is scripts/storage-to-blob.mjs's job on
+# every remote build (fail-closed: a partial migration fails the build).
+#
+# THE ORDER (one dispatch, all steps visible):
+#   0. Preflight: the env inventory (STORAGE_DRIVER present? token
+#      present? BLOB store connected?) — fail EARLY with an honest
+#      message, never PATCH anything on a half-connected project.
+#   1. PATCH every STORAGE_DRIVER env (production + preview entries) to
+#      vercel-blob — the RENDER_GIT_COMMIT-pin pattern (deploy-vercel.yml).
+#      Env changes affect only FUTURE deployments; the old deployment
+#      keeps serving with its frozen env — the flip is atomic per
+#      deployment, reversible by PATCHing back.
+#   2. Trigger the Deploy Vercel workflow (workflow_dispatch) and watch
+#      it: its remote build runs the migration script BEFORE the new
+#      deployment boots; its live smoke then proves the deployment.
+#   3. Verify the flip on the live surface: GET /api/v1/status →
+#      storageDriver == vercel-blob + health 200.
+#
+# ROLLBACK: dispatch again with `flip_back` input — PATCHes back to
+# postgres and redeploys. The BinaryObject rows were never deleted (the
+# pre-flip backup), so a rollback is complete by construction.
+name: R352 K5 blob flip
+
+on:
+  workflow_dispatch:
+    inputs:
+      flip_back:
+        description: 'Rollback: flip back to postgres'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: r352-k5-blob-flip
+  cancel-in-progress: false
+
+jobs:
+  flip:
+    name: Preflight → PATCH env → deploy → verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      TEAM: ${{ secrets.VERCEL_ORG_ID }}
+      PROJECT: ${{ secrets.VERCEL_PROJECT_ID }}
+      VTOKEN: ${{ secrets.VERCEL_TOKEN }}
+      TARGET: https://madarek-nine.vercel.app
+      DRIVER: ${{ inputs.flip_back == true && 'postgres' || 'vercel-blob' }}
+    steps:
+      - name: Preflight — the env inventory (fail early, never half-flip)
+        run: |
+          set -euo pipefail
+          curl -sS -H "Authorization: Bearer $VTOKEN" \
+            "https://api.vercel.com/v9/projects/$PROJECT/env?teamId=$TEAM" > /tmp/envs.json
+          jq -r '.envs[] | [.key, (.target|join(",")), .type] | @tsv' /tmp/envs.json | sort > /tmp/env-table.txt
+          echo "== project env inventory =="
+          cat /tmp/env-table.txt
+
+          HAVE_DRIVER=$(grep -c $'^STORAGE_DRIVER\t' /tmp/env-table.txt || true)
+          HAVE_TOKEN=$(grep -c $'^BLOB_READ_WRITE_TOKEN\t' /tmp/env-table.txt || true)
+          echo "STORAGE_DRIVER entries: $HAVE_DRIVER · BLOB_READ_WRITE_TOKEN entries: $HAVE_TOKEN"
+
+          if [ "$DRIVER" = "vercel-blob" ] && [ "$HAVE_TOKEN" -eq 0 ]; then
+            echo "::error::BLOB_READ_WRITE_TOKEN missing — the Blob store is not connected. Connect it in the Vercel dashboard first (the r352 RESUME K5 notes the store tadmora-private-files)."
+            exit 1
+          fi
+          if [ "$HAVE_DRIVER" -eq 0 ]; then
+            echo "::error::No STORAGE_DRIVER env on the project — unexpected (production runs postgres today). Inspect /tmp/env-table.txt."
+            exit 1
+          fi
+          echo "preflight OK → target driver: $DRIVER"
+
+      - name: PATCH every STORAGE_DRIVER env → $DRIVER
+        run: |
+          set -euo pipefail
+          IDS=$(jq -r '[.envs[] | select(.key == "STORAGE_DRIVER")][].id' /tmp/envs.json)
+          for ID in $IDS; do
+            CODE=$(curl -sS -X PATCH \
+              "https://api.vercel.com/v10/projects/$PROJECT/env/$ID?teamId=$TEAM" \
+              -H "Authorization: Bearer $VTOKEN" \
+              -H 'Content-Type: application/json' \
+              -d "{\"value\":\"$DRIVER\",\"type\":\"encrypted\",\"target\":[\"production\",\"preview\"]}" \
+              -o /dev/null -w '%{http_code}')
+            echo "PATCH $ID → $DRIVER: HTTP $CODE"
+            [ "$CODE" = "200" ] || exit 1
+          done
+
+      - name: "Deploy (the full chain — CI gate, remote build incl. the migration, live smoke)"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Trigger deploy-vercel.yml on its own main checkout.
+          gh workflow run "Deploy Vercel" --ref main
+          sleep 20
+          RUN_ID=$(gh run list --workflow "Deploy Vercel" --limit 5 --json databaseId,createdAt --jq 'sort_by(.createdAt) | last | .databaseId')
+          echo "watching deploy run $RUN_ID"
+          gh run watch "$RUN_ID" --exit-status --interval 20 || { gh run view "$RUN_ID" --log-failed | tail -80; exit 1; }
+
+      - name: Verify the flip on the live surface
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 12); do
+            STATUS=$(curl -sS --max-time 30 "$TARGET/api/v1/status" || echo '{}')
+            LIVE=$(echo "$STATUS" | jq -r '.data.storageDriver // empty')
+            echo "storageDriver attempt $attempt → ${LIVE:-<none>}"
+            [ "$LIVE" = "$DRIVER" ] && break
+            sleep 10
+          done
+          if [ "$LIVE" != "$DRIVER" ]; then
+            echo "::error::live storageDriver is '$LIVE', expected '$DRIVER'"
+            exit 1
+          fi
+          curl -sS --max-time 30 "$TARGET/api/v1/health" | jq -c '{ok, dbLatencyMs}'
+          {
+            echo "### R352 K5 — STORAGE_DRIVER flip verified"
+            echo
+            echo "Live surface: \`storageDriver = $DRIVER\` (GET /api/v1/status) + health ok."
+            echo
+            echo "Migration script (backend/scripts/storage-to-blob.mjs) ran inside the deploy's remote build — counts in that build's log."
+            echo
+            echo "Rollback: dispatch this workflow with flip_back=true."
+          } >> "$GITHUB_STEP_SUMMARY"

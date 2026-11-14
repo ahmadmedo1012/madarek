@@ -23,7 +23,8 @@
     "seed:demo:r330": "tsx prisma/seed-demo-r330.ts",
     "rotate:password": "node scripts/rotate-demo-passwords.mjs",
     "provision:owner": "node scripts/provision-owner.mjs",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "storage:blob": "node scripts/storage-to-blob.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
