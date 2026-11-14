@@ -33,7 +33,10 @@ import { normalizePhone } from '../../lib/phones.js';
 //  Categories
 // ─────────────────────────────────────────────────────────────────
 
-/** The seven discovery categories, in canonical response order. */
+/** The discovery categories, in canonical response order. R350 S3
+ * grows the seven with the design matrix's eight record kinds
+ * (SEARCH-DESIGN.md §1) — lectures/materials/papers/tracks/books/jobs/
+ * events/questions — every one role-honest and institution-pinned. */
 export const GLOBAL_SEARCH_CATEGORIES = [
   'students',
   'teachers',
@@ -41,7 +44,15 @@ export const GLOBAL_SEARCH_CATEGORIES = [
   'faculties',
   'departments',
   'courses',
+  'lectures',
+  'materials',
+  'papers',
+  'tracks',
+  'books',
+  'jobs',
+  'events',
   'announcements',
+  'questions',
 ] as const;
 
 export type GlobalSearchCategoryKey = (typeof GLOBAL_SEARCH_CATEGORIES)[number];
@@ -214,6 +225,28 @@ export interface GlobalSearchScope {
    * `unexpiredAnnouncementFilter` (the feed convention).
    */
   announcements: Prisma.AnnouncementWhereInput | null;
+  /* R350 S3 — the design matrix's record kinds (SEARCH-DESIGN §1):
+   * lectures/materials ride the offering-visibility law (the same
+   * chain the courses scope encodes), papers are PUBLISHED with a real
+   * file, tracks are published, books/jobs are shared authenticated
+   * content, events are institution-scoped, questions are the approved
+   * staff bank. null = not discoverable for this role. */
+  /** Lecture rows. STUDENT: active-enrollment offerings; TEACHER: own. */
+  lectures: Prisma.LectureWhereInput | null;
+  /** Material rows — the same offering-visibility chain as lectures. */
+  materials: Prisma.MaterialWhereInput | null;
+  /** ResearchPaper rows: PUBLISHED + a real fileUrl, institution-pinned. */
+  papers: Prisma.ResearchPaperWhereInput | null;
+  /** TrainingTrack rows: isPublished (shared content — every role). */
+  tracks: Prisma.TrainingTrackWhereInput | null;
+  /** Book rows — the shared library (every authenticated role). */
+  books: Prisma.BookWhereInput | null;
+  /** Job rows — the shared board (every authenticated role). */
+  jobs: Prisma.JobWhereInput | null;
+  /** CampusEvent rows — institution-scoped (OWNER: every institution). */
+  events: Prisma.CampusEventWhereInput | null;
+  /** Question rows — the APPROVED staff bank; null for STUDENT. */
+  questions: Prisma.QuestionWhereInput | null;
   /**
    * May this caller match people BY PHONE? ADMIN/QUALITY of one
    * institution + OWNER only — a TEACHER never phone-searches, a STUDENT
@@ -254,6 +287,14 @@ function emptyScope(): GlobalSearchScope {
     departments: null,
     courses: null,
     announcements: null,
+    lectures: null,
+    materials: null,
+    papers: null,
+    tracks: null,
+    books: null,
+    jobs: null,
+    events: null,
+    questions: null,
     phoneSearch: false,
     phoneFieldsVisible: false,
   };
@@ -309,6 +350,14 @@ export function globalSearchScope(
       departments: {},
       courses: {},
       announcements: {},
+      lectures: {},
+      materials: {},
+      papers: { status: 'PUBLISHED', fileUrl: { not: null } },
+      tracks: { isPublished: true },
+      books: {},
+      jobs: {},
+      events: {},
+      questions: { isApproved: true },
       phoneSearch: true,
       phoneFieldsVisible: true,
     };
@@ -323,6 +372,18 @@ export function globalSearchScope(
   const faculties: Prisma.FacultyWhereInput = { institutionId: inst };
   const departments: Prisma.DepartmentWhereInput = { faculty: { institutionId: inst } };
   const announcements = announcementConditions(facts);
+  // R350 S3 — the shared record kinds (institution-pinned where the
+  // model carries the institution; shared content stays unscoped).
+  const papers: Prisma.ResearchPaperWhereInput = {
+    institutionId: inst,
+    status: 'PUBLISHED',
+    fileUrl: { not: null },
+  };
+  const tracks: Prisma.TrainingTrackWhereInput = { isPublished: true };
+  const books: Prisma.BookWhereInput = {};
+  const jobs: Prisma.JobWhereInput = {};
+  const events: Prisma.CampusEventWhereInput = { institutionId: inst };
+  const questions: Prisma.QuestionWhereInput = { isApproved: true };
 
   if (role === 'STUDENT') {
     return {
@@ -336,6 +397,16 @@ export function globalSearchScope(
       // only ACTIVE enrollments grant visibility.
       courses: { enrollments: { some: { studentId: userId, status: 'active' } } },
       announcements,
+      // The same offering-visibility law, one relation deeper.
+      lectures: { offering: { enrollments: { some: { studentId: userId, status: 'active' } } } },
+      materials: { offering: { enrollments: { some: { studentId: userId, status: 'active' } } } },
+      papers,
+      tracks,
+      books,
+      jobs,
+      events,
+      // A student never sees the staff question bank.
+      questions: null,
       phoneSearch: false,
       phoneFieldsVisible: false,
     };
@@ -361,6 +432,17 @@ export function globalSearchScope(
       departments,
       courses: { teacherId: userId },
       announcements,
+      // Own offerings' lectures + materials (the offeringVisibility
+      // TEACHER branch — what they teach is what they find).
+      lectures: { offering: { teacherId: userId } },
+      materials: { offering: { teacherId: userId } },
+      papers,
+      tracks,
+      books,
+      jobs,
+      events,
+      // The teacher's question bank (approved questions only).
+      questions,
       phoneSearch: false,
       phoneFieldsVisible: false,
     };
@@ -386,6 +468,16 @@ export function globalSearchScope(
       // (assertOfferingInCallerInstitution's ownership chain).
       courses: { course: { institutionId: inst } },
       announcements,
+      // The institution's lectures + materials (the same chain).
+      lectures: { offering: { course: { institutionId: inst } } },
+      materials: { offering: { course: { institutionId: inst } } },
+      papers,
+      tracks,
+      books,
+      jobs,
+      events,
+      // The staff bank (approved questions only).
+      questions,
       phoneSearch: true,
       phoneFieldsVisible: role === 'ADMIN',
     };
@@ -595,5 +687,71 @@ export function announcementHitHref(role: Role): string | null {
     case 'ADMIN': return '/admin/community';
     case 'QUALITY': return '/quality/community';
     case 'OWNER': return null;
+  }
+}
+
+/* ── R350 S3 — the new kinds' hrefs (the file-less-paper law: a row
+ * with no real destination for the role renders no link, never a dead
+ * click) ──────────────────────────────────────────────────────────── */
+
+/**
+ * MATERIAL-row destination: STUDENT → the offering's course page (the
+ * materials ride the course detail); TEACHER → their materials page;
+ * oversight roles → null (no oversight materials surface exists).
+ */
+export function materialHitHref(role: Role, offeringId: string): string | null {
+  switch (role) {
+    case 'STUDENT': return `/student/courses/${offeringId}`;
+    case 'TEACHER': return '/teacher/materials';
+    case 'ADMIN':
+    case 'QUALITY':
+    case 'OWNER': return null;
+  }
+}
+
+/**
+ * BOOK-row destination: the library is STUDENT/TEACHER surfaces
+ * (/student/library · /teacher/library — App.tsx role blocks); the
+ * oversight roles get null (no console library page exists).
+ */
+export function bookHitHref(role: Role): string | null {
+  switch (role) {
+    case 'STUDENT': return '/student/library';
+    case 'TEACHER': return '/teacher/library';
+    case 'ADMIN':
+    case 'QUALITY':
+    case 'OWNER': return null;
+  }
+}
+
+/** JOB-row destination: the board is the STUDENT surface (/student/jobs). */
+export function jobHitHref(role: Role): string | null {
+  switch (role) {
+    case 'STUDENT': return '/student/jobs';
+    case 'TEACHER':
+    case 'ADMIN':
+    case 'QUALITY':
+    case 'OWNER': return null;
+  }
+}
+
+/** CAMPUS-EVENT-row destination: /community (every authenticated role). */
+export function eventHitHref(): string {
+  return '/community';
+}
+
+/**
+ * QUESTION-row destination: the staff bank surfaces — TEACHER → their
+ * exams bank, QUALITY/ADMIN → the moderation queue; OWNER/STUDENT →
+ * null (the owner console has no question surface; a student never
+ * sees the bank at all — the scope nulls the whole category).
+ */
+export function questionHitHref(role: Role): string | null {
+  switch (role) {
+    case 'TEACHER': return '/teacher/exams';
+    case 'QUALITY':
+    case 'ADMIN': return '/quality/exam-moderation';
+    case 'OWNER':
+    case 'STUDENT': return null;
   }
 }

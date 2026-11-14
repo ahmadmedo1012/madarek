@@ -29,15 +29,20 @@ import {
   RANK_SUBSTRING,
   RANK_EXACT,
   announcementHitHref,
+  bookHitHref,
   candidateTake,
+  eventHitHref,
   facultyHitHref,
   globalSearchScope,
   institutionHitHref,
+  jobHitHref,
+  materialHitHref,
   parseGlobalSearchCategories,
   parseGlobalSearchPagination,
   phoneHit,
   phoneMatchArm,
   planGlobalQuery,
+  questionHitHref,
   rankAndPaginate,
   rankHit,
   studentHitHref,
@@ -592,5 +597,106 @@ describe('institutionHitHref / facultyHitHref / announcementHitHref', () => {
     expect(announcementHitHref(Role.ADMIN)).toBe('/admin/community');
     expect(announcementHitHref(Role.QUALITY)).toBe('/quality/community');
     expect(announcementHitHref(Role.OWNER)).toBeNull();
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════
+   R350 S3 — the eight new record kinds' scope laws (SEARCH-DESIGN §1)
+   ════════════════════════════════════════════════════════════════ */
+
+describe('R350 S3 — globalSearchScope: the new record kinds', () => {
+  it('STUDENT: enrolled offerings only (lectures + materials), the shared content, NO questions', () => {
+    const scope = globalSearchScope(Role.STUDENT, USER, INST, {});
+    expect(scope.lectures).toEqual({
+      offering: { enrollments: { some: { studentId: USER, status: 'active' } } },
+    });
+    expect(scope.materials).toEqual({
+      offering: { enrollments: { some: { studentId: USER, status: 'active' } } },
+    });
+    // papers: PUBLISHED with a real file, institution-pinned
+    expect(scope.papers).toEqual({ institutionId: INST, status: 'PUBLISHED', fileUrl: { not: null } });
+    expect(scope.tracks).toEqual({ isPublished: true });
+    expect(scope.books).toEqual({});
+    expect(scope.jobs).toEqual({});
+    expect(scope.events).toEqual({ institutionId: INST });
+    // the staff question bank is INVISIBLE to a student (the law)
+    expect(scope.questions).toBeNull();
+  });
+
+  it('TEACHER: own offerings\' lectures + materials; the approved question bank', () => {
+    const scope = globalSearchScope(Role.TEACHER, USER, INST, {});
+    expect(scope.lectures).toEqual({ offering: { teacherId: USER } });
+    expect(scope.materials).toEqual({ offering: { teacherId: USER } });
+    expect(scope.papers).toEqual({ institutionId: INST, status: 'PUBLISHED', fileUrl: { not: null } });
+    expect(scope.questions).toEqual({ isApproved: true });
+    expect(scope.events).toEqual({ institutionId: INST });
+  });
+
+  it('ADMIN/QUALITY: the institution\'s lectures + materials (the course→institution chain)', () => {
+    for (const role of [Role.ADMIN, Role.QUALITY] as const) {
+      const scope = globalSearchScope(role, USER, INST, {});
+      expect(scope.lectures).toEqual({ offering: { course: { institutionId: INST } } });
+      expect(scope.materials).toEqual({ offering: { course: { institutionId: INST } } });
+      expect(scope.questions).toEqual({ isApproved: true });
+      expect(scope.books).toEqual({});
+      expect(scope.jobs).toEqual({});
+    }
+  });
+
+  it('OWNER: platform-wide — every offering\'s lectures/materials, every paper/track/book/job/event', () => {
+    const scope = globalSearchScope(Role.OWNER, USER, null, {});
+    expect(scope.lectures).toEqual({});
+    expect(scope.materials).toEqual({});
+    expect(scope.papers).toEqual({ status: 'PUBLISHED', fileUrl: { not: null } });
+    expect(scope.tracks).toEqual({ isPublished: true });
+    expect(scope.events).toEqual({});
+    expect(scope.questions).toEqual({ isApproved: true });
+  });
+
+  it('fail-closed: a contextless institutional role discovers NOTHING (the second lock)', () => {
+    const scope = globalSearchScope(Role.ADMIN, USER, null, {});
+    expect(scope.lectures).toBeNull();
+    expect(scope.materials).toBeNull();
+    expect(scope.papers).toBeNull();
+    expect(scope.tracks).toBeNull();
+    expect(scope.books).toBeNull();
+    expect(scope.jobs).toBeNull();
+    expect(scope.events).toBeNull();
+    expect(scope.questions).toBeNull();
+  });
+
+  it('the categories constant carries all fifteen kinds in canonical order', () => {
+    expect(GLOBAL_SEARCH_CATEGORIES).toEqual([
+      'students', 'teachers', 'institutions', 'faculties', 'departments',
+      'courses', 'lectures', 'materials', 'papers', 'tracks', 'books',
+      'jobs', 'events', 'announcements', 'questions',
+    ]);
+  });
+});
+
+describe('R350 S3 — the new kinds\' hrefs (the file-less-paper law)', () => {
+  it('materialHitHref: STUDENT → the offering course page, TEACHER → their materials, oversight → null', () => {
+    expect(materialHitHref(Role.STUDENT, 'off_1')).toBe('/student/courses/off_1');
+    expect(materialHitHref(Role.TEACHER, 'off_1')).toBe('/teacher/materials');
+    expect(materialHitHref(Role.ADMIN, 'off_1')).toBeNull();
+    expect(materialHitHref(Role.QUALITY, 'off_1')).toBeNull();
+    expect(materialHitHref(Role.OWNER, 'off_1')).toBeNull();
+  });
+
+  it('bookHitHref/jobHitHref: the STUDENT surfaces only', () => {
+    expect(bookHitHref(Role.STUDENT)).toBe('/student/library');
+    expect(bookHitHref(Role.TEACHER)).toBe('/teacher/library');
+    expect(bookHitHref(Role.ADMIN)).toBeNull();
+    expect(jobHitHref(Role.STUDENT)).toBe('/student/jobs');
+    expect(jobHitHref(Role.OWNER)).toBeNull();
+  });
+
+  it('eventHitHref: /community for every role; questionHitHref: the staff surfaces only', () => {
+    expect(eventHitHref()).toBe('/community');
+    expect(questionHitHref(Role.TEACHER)).toBe('/teacher/exams');
+    expect(questionHitHref(Role.QUALITY)).toBe('/quality/exam-moderation');
+    expect(questionHitHref(Role.ADMIN)).toBe('/quality/exam-moderation');
+    expect(questionHitHref(Role.OWNER)).toBeNull();
+    expect(questionHitHref(Role.STUDENT)).toBeNull();
   });
 });

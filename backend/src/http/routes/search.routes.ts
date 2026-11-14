@@ -15,15 +15,20 @@ import {
   RANK_NONE,
   RANK_SUBSTRING,
   announcementHitHref,
+  bookHitHref,
   candidateTake,
+  eventHitHref,
   facultyHitHref,
   globalSearchScope,
   institutionHitHref,
+  jobHitHref,
+  materialHitHref,
   parseGlobalSearchCategories,
   parseGlobalSearchPagination,
   phoneHit,
   phoneMatchArm,
   planGlobalQuery,
+  questionHitHref,
   rankAndPaginate,
   rankHit,
   studentHitHref,
@@ -384,7 +389,22 @@ router.get('/search/global', async (req, res, next) => {
 /** One discovery hit — the wire item shape of /search/discover. */
 interface GlobalSearchItem {
   id: string;
-  kind: 'student' | 'teacher' | 'institution' | 'faculty' | 'department' | 'course' | 'announcement';
+  kind:
+    | 'student'
+    | 'teacher'
+    | 'institution'
+    | 'faculty'
+    | 'department'
+    | 'course'
+    | 'lecture'
+    | 'material'
+    | 'paper'
+    | 'track'
+    | 'book'
+    | 'job'
+    | 'event'
+    | 'announcement'
+    | 'question';
   titleAr: string;
   subtitleAr: string | null;
   href: string | null;
@@ -433,6 +453,15 @@ interface AnnouncementRow {
   title: string;
   author: { firstName: string; lastName: string };
 }
+/* R350 S3 — the new kinds' candidate rows. */
+interface LectureRow { id: string; offeringId: string; title: string }
+interface MaterialRow { id: string; offeringId: string; name: string }
+interface PaperRow { id: string; title: string; fileUrl: string }
+interface TrackRow { id: string; slug: string; title: string; titleEn: string | null }
+interface BookRow { id: string; title: string; author: string }
+interface JobRow { id: string; title: string; company: string }
+interface EventRow { id: string; title: string; location: string }
+interface QuestionRow { id: string; prompt: string; category: { title: string } }
 
 /**
  * Announcement-scope facts for globalSearchScope — the exact gathering
@@ -591,6 +620,14 @@ router.get('/search/discover', async (req, res, next) => {
       departmentRows,
       courseRows,
       announcementRows,
+      lectureRows,
+      materialRows,
+      paperRows,
+      trackRows,
+      bookRows,
+      jobRows,
+      eventRows,
+      questionRows,
     ] = await Promise.all([
       want('students')
         ? prisma.user.findMany({
@@ -729,6 +766,129 @@ router.get('/search/discover', async (req, res, next) => {
             },
           }) as Promise<AnnouncementRow[]>
         : Promise.resolve([] as AnnouncementRow[]),
+      /* R350 S3 — the eight new kinds, the same windowed-contains +
+       * JS-rerank pattern. Jobs carry their own unexpired filter (the
+       * announcement convention — an expired posting never surfaces). */
+      want('lectures')
+        ? prisma.lecture.findMany({
+            where: {
+              AND: [
+                scope.lectures!,
+                { OR: plan.variants.map((v) => ({ title: ic(v) })) },
+              ],
+            },
+            orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+            take,
+            select: { id: true, offeringId: true, title: true },
+          }) as Promise<LectureRow[]>
+        : Promise.resolve([] as LectureRow[]),
+      want('materials')
+        ? prisma.material.findMany({
+            where: {
+              AND: [
+                scope.materials!,
+                { OR: plan.variants.map((v) => ({ name: ic(v) })) },
+              ],
+            },
+            orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+            take,
+            select: { id: true, offeringId: true, name: true },
+          }) as Promise<MaterialRow[]>
+        : Promise.resolve([] as MaterialRow[]),
+      want('papers')
+        ? prisma.researchPaper.findMany({
+            where: {
+              AND: [
+                scope.papers!,
+                { OR: plan.variants.map((v) => ({ title: ic(v) })) },
+              ],
+            },
+            orderBy: [{ publishedAt: 'desc' }, { id: 'asc' }],
+            take,
+            select: { id: true, title: true, fileUrl: true },
+          }) as Promise<PaperRow[]>
+        : Promise.resolve([] as PaperRow[]),
+      want('tracks')
+        ? prisma.trainingTrack.findMany({
+            where: {
+              AND: [
+                scope.tracks!,
+                {
+                  OR: [
+                    ...plan.variants.map((v) => ({ title: ic(v) })),
+                    ...plan.variants.map((v) => ({ titleEn: ic(v) })),
+                  ],
+                },
+              ],
+            },
+            orderBy: [{ order: 'asc' }, { id: 'asc' }],
+            take,
+            select: { id: true, slug: true, title: true, titleEn: true },
+          }) as Promise<TrackRow[]>
+        : Promise.resolve([] as TrackRow[]),
+      want('books')
+        ? prisma.book.findMany({
+            where: {
+              AND: [
+                scope.books!,
+                {
+                  OR: [
+                    ...plan.variants.map((v) => ({ title: ic(v) })),
+                    ...plan.variants.map((v) => ({ author: ic(v) })),
+                  ],
+                },
+              ],
+            },
+            orderBy: [{ title: 'asc' }, { id: 'asc' }],
+            take,
+            select: { id: true, title: true, author: true },
+          }) as Promise<BookRow[]>
+        : Promise.resolve([] as BookRow[]),
+      want('jobs')
+        ? prisma.job.findMany({
+            where: {
+              AND: [
+                scope.jobs!,
+                {
+                  OR: [
+                    ...plan.variants.map((v) => ({ title: ic(v) })),
+                    ...plan.variants.map((v) => ({ company: ic(v) })),
+                  ],
+                },
+                { OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] },
+              ],
+            },
+            orderBy: [{ postedAt: 'desc' }, { id: 'asc' }],
+            take,
+            select: { id: true, title: true, company: true },
+          }) as Promise<JobRow[]>
+        : Promise.resolve([] as JobRow[]),
+      want('events')
+        ? prisma.campusEvent.findMany({
+            where: {
+              AND: [
+                scope.events!,
+                { OR: plan.variants.map((v) => ({ title: ic(v) })) },
+              ],
+            },
+            orderBy: [{ startsAt: 'desc' }, { id: 'asc' }],
+            take,
+            select: { id: true, title: true, location: true },
+          }) as Promise<EventRow[]>
+        : Promise.resolve([] as EventRow[]),
+      want('questions')
+        ? prisma.question.findMany({
+            where: {
+              AND: [
+                scope.questions!,
+                { OR: plan.variants.map((v) => ({ prompt: ic(v) })) },
+              ],
+            },
+            orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+            take,
+            select: { id: true, prompt: true, category: { select: { title: true } } },
+          }) as Promise<QuestionRow[]>
+        : Promise.resolve([] as QuestionRow[]),
     ]);
 
     // JS re-verification + ranking (matchesNormalizedQuery is the
@@ -830,6 +990,89 @@ router.get('/search/discover', async (req, res, next) => {
           pageSize,
         )
       : null;
+    /* R350 S3 — the new kinds' rankers (the same tier law; field
+     * weights per the design matrix: title 1.0, author/company 0.7 —
+     * the weight rides the haystack ORDER, the tier stays the rank). */
+    const lecturePage = want('lectures')
+      ? rankAndPaginate(
+          lectureRows,
+          makeRanker((l: LectureRow) => [l.title]),
+          (l: LectureRow) => normalizeArabicSearch(l.title),
+          (l: LectureRow) => l.id,
+          page,
+          pageSize,
+        )
+      : null;
+    const materialPage = want('materials')
+      ? rankAndPaginate(
+          materialRows,
+          makeRanker((m: MaterialRow) => [m.name]),
+          (m: MaterialRow) => normalizeArabicSearch(m.name),
+          (m: MaterialRow) => m.id,
+          page,
+          pageSize,
+        )
+      : null;
+    const paperPage = want('papers')
+      ? rankAndPaginate(
+          paperRows,
+          makeRanker((p: PaperRow) => [p.title]),
+          (p: PaperRow) => normalizeArabicSearch(p.title),
+          (p: PaperRow) => p.id,
+          page,
+          pageSize,
+        )
+      : null;
+    const trackPage = want('tracks')
+      ? rankAndPaginate(
+          trackRows,
+          makeRanker((t: TrackRow) => [t.title, t.titleEn ?? '']),
+          (t: TrackRow) => normalizeArabicSearch(t.title),
+          (t: TrackRow) => t.id,
+          page,
+          pageSize,
+        )
+      : null;
+    const bookPage = want('books')
+      ? rankAndPaginate(
+          bookRows,
+          makeRanker((b: BookRow) => [b.title, b.author]),
+          (b: BookRow) => normalizeArabicSearch(b.title),
+          (b: BookRow) => b.id,
+          page,
+          pageSize,
+        )
+      : null;
+    const jobPage = want('jobs')
+      ? rankAndPaginate(
+          jobRows,
+          makeRanker((j: JobRow) => [j.title, j.company]),
+          (j: JobRow) => normalizeArabicSearch(j.title),
+          (j: JobRow) => j.id,
+          page,
+          pageSize,
+        )
+      : null;
+    const eventPage = want('events')
+      ? rankAndPaginate(
+          eventRows,
+          makeRanker((e: EventRow) => [e.title]),
+          (e: EventRow) => normalizeArabicSearch(e.title),
+          (e: EventRow) => e.id,
+          page,
+          pageSize,
+        )
+      : null;
+    const questionPage = want('questions')
+      ? rankAndPaginate(
+          questionRows,
+          makeRanker((q: QuestionRow) => [q.prompt, q.category.title]),
+          (q: QuestionRow) => normalizeArabicSearch(q.prompt),
+          (q: QuestionRow) => q.id,
+          page,
+          pageSize,
+        )
+      : null;
 
     // ── Item mapping ──────────────────────────────────────────────
     const studentItems: GlobalSearchItem[] = (studentPage?.items ?? []).map((u) => {
@@ -911,6 +1154,69 @@ router.get('/search/discover', async (req, res, next) => {
       subtitleAr: `${a.author.firstName} ${a.author.lastName}`,
       href: announcementHitHref(role),
     }));
+    /* R350 S3 — the new kinds' items. The lecture href rides
+     * lectureHitHref (r156 — STUDENT deep link, TEACHER intelligence,
+     * oversight null); the paper href is the r155c basename+?paper=
+     * grammar every paper consumer uses; tracks ride trackHitHref
+     * (r165e); the rest follow the file-less-paper law. */
+    const lectureItems: GlobalSearchItem[] = (lecturePage?.items ?? []).map((l) => ({
+      id: l.id,
+      kind: 'lecture',
+      titleAr: l.title,
+      subtitleAr: null,
+      href: lectureHitHref(role, l.id, l.offeringId),
+    }));
+    const materialItems: GlobalSearchItem[] = (materialPage?.items ?? []).map((m) => ({
+      id: m.id,
+      kind: 'material',
+      titleAr: m.name,
+      subtitleAr: null,
+      href: materialHitHref(role, m.offeringId),
+    }));
+    const paperItems: GlobalSearchItem[] = (paperPage?.items ?? []).map((p) => ({
+      id: p.id,
+      kind: 'paper',
+      titleAr: p.title,
+      subtitleAr: null,
+      href: `/document/${encodeURIComponent(p.fileUrl.split('/').pop() ?? '')}?paper=${encodeURIComponent(p.id)}`,
+    }));
+    const trackItems: GlobalSearchItem[] = (trackPage?.items ?? []).map((t) => ({
+      id: t.id,
+      kind: 'track',
+      titleAr: t.title,
+      subtitleAr: t.titleEn ?? null,
+      href: trackHitHref(role, t.slug),
+    }));
+    const bookItems: GlobalSearchItem[] = (bookPage?.items ?? []).map((b) => ({
+      id: b.id,
+      kind: 'book',
+      titleAr: b.title,
+      subtitleAr: b.author,
+      href: bookHitHref(role),
+    }));
+    const jobItems: GlobalSearchItem[] = (jobPage?.items ?? []).map((j) => ({
+      id: j.id,
+      kind: 'job',
+      titleAr: j.title,
+      subtitleAr: j.company,
+      href: jobHitHref(role),
+    }));
+    const eventItems: GlobalSearchItem[] = (eventPage?.items ?? []).map((e) => ({
+      id: e.id,
+      kind: 'event',
+      titleAr: e.title,
+      subtitleAr: e.location,
+      href: eventHitHref(),
+    }));
+    const questionItems: GlobalSearchItem[] = (questionPage?.items ?? []).map((q) => ({
+      id: q.id,
+      kind: 'question',
+      // The prompt is long text — the row shows its first 120 chars
+      // (clipText-style; the full prompt lives on the bank surface).
+      titleAr: q.prompt.length > 120 ? `${q.prompt.slice(0, 120)}…` : q.prompt,
+      subtitleAr: q.category.title,
+      href: questionHitHref(role),
+    }));
 
     const categoryAnswers: Record<GlobalSearchCategoryKey, GlobalSearchCategory> = {
       students: { items: studentItems, total: studentPage?.total ?? 0 },
@@ -919,7 +1225,15 @@ router.get('/search/discover', async (req, res, next) => {
       faculties: { items: facultyItems, total: facultyPage?.total ?? 0 },
       departments: { items: departmentItems, total: departmentPage?.total ?? 0 },
       courses: { items: courseItems, total: coursePage?.total ?? 0 },
+      lectures: { items: lectureItems, total: lecturePage?.total ?? 0 },
+      materials: { items: materialItems, total: materialPage?.total ?? 0 },
+      papers: { items: paperItems, total: paperPage?.total ?? 0 },
+      tracks: { items: trackItems, total: trackPage?.total ?? 0 },
+      books: { items: bookItems, total: bookPage?.total ?? 0 },
+      jobs: { items: jobItems, total: jobPage?.total ?? 0 },
+      events: { items: eventItems, total: eventPage?.total ?? 0 },
       announcements: { items: announcementItems, total: announcementPage?.total ?? 0 },
+      questions: { items: questionItems, total: questionPage?.total ?? 0 },
     };
 
     res.json({

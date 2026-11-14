@@ -447,3 +447,44 @@ Tokens in `/home/z/.madarek-env` (600). Lane order: H → R → E1 → E · S ·
   52 held, identity CLEAN, brand 18/18).
 - LANE I COMPLETE (I-P0/P1/P2/P3/P4 + F2 landed; the I7/I8 fixtures +
   e2e ride the W/Z lanes' full-gate runs).
+
+### LANE S — S3 the discovery engine grows eight record kinds + the index floor (this commit)
+- The other box's session claimed S at d24ce5da, landed S1 (the
+  SEARCH-DESIGN doc) + S2 (the v2 normalisation corpus) and stopped —
+  this session continues the lane (LANE: ALL covers it).
+- global.ts: GLOBAL_SEARCH_CATEGORIES 7 → 15 (lectures, materials,
+  papers, tracks, books, jobs, events, questions) + the scope matrix
+  per role: lectures/materials ride the offering-visibility law
+  (STUDENT active enrollments / TEACHER own / ADMIN+QUALITY the
+  institution chain / OWNER all); papers PUBLISHED + real fileUrl,
+  institution-pinned; tracks isPublished; books/jobs shared
+  authenticated content; events institution-scoped; questions the
+  APPROVED staff bank — null for STUDENT (the law). New href helpers
+  (material/book/job/event/question) follow the file-less-paper law.
+- search.routes.ts /search/discover: 8 new windowed candidate scans
+  (the established contains + JS-rerank pattern; jobs carry their own
+  unexpired filter, papers order by publishedAt), the rankers (title
+  1.0, author/company/category the secondary haystacks), the items
+  (the r155c paper href grammar, the r156 lecture matrix, the r165e
+  track matrix, the 120-char question prompt clip).
+- Migration 20261114100000_r350_s3_search_indexes: 14 GIN trgm indexes
+  (Lecture.title, Material.name, ResearchPaper.title, TrainingTrack.
+  title+titleEn, Book.title+author, Job.title+company, CampusEvent.
+  title, Question.prompt, Course.code, StudentProfile phone-normalized
+  ×2) — the honest floor: every indexed column is a WHERE arm (the
+  design's aspirational abstract/nameAr entries are NOT queried by the
+  engine; documented in the migration).
+- EXPLAIN proof (local PG 16, tools/s3-explain.cjs): 100k fabricated
+  lectures → Bitmap Index Scan on Lecture_title_trgm_idx, 6.5 ms for a
+  rare needle (budget 150 ms p95). At 10k rows the planner correctly
+  prefers a 2-5 ms seq scan — small tables are not the index's job.
+  Fabric cleaned after the proof.
+- Pinned: global.test.ts +9 (the new-kind scope laws ×5 + the href
+  matrix) = 73; tests/modules/search-discover-new-kinds.test.ts — 4
+  (the 15-category envelope, the STUDENT href matrix + the
+  question-bank-invisible law + the scan-never-runs pin, the TEACHER
+  question bank with the clip, the job expiry filter in the where).
+- Gates: backend tsc 0/0 · vitest 2292 green (19 skipped) ·
+  verify.sh --fast PASS.
+- Next (S4): the golden-set eval harness + the CI gate; then S5 the
+  web palette/page; S6 the mobile search.
