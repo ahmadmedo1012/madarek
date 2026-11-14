@@ -83,3 +83,66 @@ describe('stripAlPrefix', () => {
     expect(stripAlPrefix('الالكترونيات')).toBe('الكترونيات');
   });
 });
+
+/* ════════════════════════════════════════════════════════════════
+ * R350 S2 — the v2 corpus: digits, zero-width, clitics, variants.
+ * ════════════════════════════════════════════════════════════════ */
+import { stripCliticPrefix, matchVariants, matchesNormalizedQuery } from '../normalize.js';
+
+describe('R350 S2 — normalizeArabicSearch v2 folds', () => {
+  it('folds Eastern-Arabic and Persian digits to Latin', () => {
+    expect(normalizeArabicSearch('١٢٣٤٥')).toBe('12345');
+    expect(normalizeArabicSearch('۹۲۵۴۱۷۰')).toBe('9254170');
+    // mixed with letters: an ID typed on the Arabic keyboard
+    expect(normalizeArabicSearch('رقم ٠٩٢٥١٢٣٤٥')).toBe('رقم 092512345');
+  });
+
+  it('strips zero-width joiners/non-joiners/BOM smuggled into pasted text', () => {
+    expect(normalizeArabicSearch('كلية\u200bالهندسة')).toBe('كليه الهندسه'.replaceAll(' ', ''));
+    expect(normalizeArabicSearch('مدارك\ufeff')).toBe('مدارك');
+  });
+
+  it('keeps the v1 fold byte-stable (regression net)', () => {
+    expect(normalizeArabicSearch('ٱلْخُوَارِزْمِيَّات')).toBe('الخوارزميات');
+    expect(normalizeArabicSearch('مـقـررات')).toBe('مقررات');
+    expect(normalizeArabicSearch('أحمد')).toBe('احمد');
+    // the v1 hamza fold (ء → '') applies word-finally too: علياء → عليا.
+    expect(normalizeArabicSearch('علياء')).toBe('عليا');
+  });
+});
+
+describe('R350 S2 — stripCliticPrefix (the clitic tolerance)', () => {
+  it('strips و/ب/ل/ف/ك carrying or bare, longest first', () => {
+    expect(stripCliticPrefix('والكلية')).toBe('كلية');
+    expect(stripCliticPrefix('للطلاب')).toBe('طلاب');
+    expect(stripCliticPrefix('بالاختبار')).toBe('اختبار');
+    expect(stripCliticPrefix('كالجامعة')).toBe('جامعة');
+    expect(stripCliticPrefix('ومقرر')).toBe('مقرر');
+  });
+
+  it('never strips a particle into a sub-2-char remainder', () => {
+    expect(stripCliticPrefix('و')).toBe('و');
+    expect(stripCliticPrefix('لا')).toBe('لا');
+    // 'وال' keeps only the bare-particle strip (و → ال): the full 'وال' strip
+    // would leave a 0-char remainder.
+    expect(stripCliticPrefix('وال')).toBe('ال');
+  });
+});
+
+describe('R350 S2 — matchVariants + matchesNormalizedQuery v2', () => {
+  it('matchVariants yields the full tolerance ladder, no duplicates', () => {
+    expect(matchVariants('والكلية')).toEqual(['والكلية', 'كلية']);
+    expect(matchVariants('الخوارزميات')).toEqual(['الخوارزميات', 'خوارزميات']);
+    expect(matchVariants('')).toEqual([]);
+  });
+
+  it('a cliticated query still matches the bare stored term', () => {
+    expect(matchesNormalizedQuery('كلية الهندسة', 'والكلية')).toBe(true);
+    expect(matchesNormalizedQuery('قسم الحاسوب', 'للقسم')).toBe(true);
+    expect(matchesNormalizedQuery('اختبار المنتصف', 'بالاختبار')).toBe(true);
+  });
+
+  it('Eastern-digit IDs match their Latin-stored columns', () => {
+    expect(matchesNormalizedQuery('092512345', '٠٩٢٥١٢٣٤٥')).toBe(true);
+  });
+});

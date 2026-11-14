@@ -22,10 +22,28 @@ const HAMZA = /ء/g; // ء
 const ALIF_MAQSURA = /ى/g; // ى
 const TAA_MARBUTA = /ة/g; // ة
 
+// R350 S2 — the v2 corpus: zero-width + Eastern-digit folds join the v1
+// set (byte-pinned to the backend mirror by tests/unit/search-normalize.test.ts).
+const ZERO_WIDTH = /[\u200B-\u200F\uFEFF]/g;
+const EASTERN_DIGITS = /[٠-٩۰-۹]/g;
+const EASTERN_DIGIT_MAP: Record<string, string> = {
+  '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4', '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9',
+  '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4', '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9',
+};
+
+/** The clitic+article prefixes the matcher strips in the match direction
+ *  (والـ بالـ للـ فالـ كالـ + bare particles + ال) — longest first. */
+const CLITIC_PREFIXES = [
+  'وال', 'بال', 'لل', 'فال', 'كال',
+  'و', 'ب', 'ل', 'ف', 'ك',
+  'ال',
+] as const;
+
 export function normalizeArabicSearch(input: string): string {
   return input
-    .normalize('NFC')
+    .normalize('NFKC')
     .toLowerCase()
+    .replace(ZERO_WIDTH, '')
     .replace(ARABIC_DIACRITICS, '')
     .replace(TATWEEL, '')
     .replace(ALIF_VARIANTS, 'ا')
@@ -34,6 +52,7 @@ export function normalizeArabicSearch(input: string): string {
     .replace(HAMZA, '')
     .replace(ALIF_MAQSURA, 'ي')
     .replace(TAA_MARBUTA, 'ه')
+    .replace(EASTERN_DIGITS, (d) => EASTERN_DIGIT_MAP[d] ?? d)
     .trim();
 }
 
@@ -43,14 +62,37 @@ export function stripAlPrefix(normalized: string): string {
   return normalized.startsWith('ال') ? normalized.slice(2) : normalized;
 }
 
+/** Strip ONE leading clitic particle (و/ب/ل/ف/ك, optionally carrying ال)
+ *  — the remainder must stay ≥2 chars (a bare «و» never strips). */
+export function stripCliticPrefix(normalized: string): string {
+  for (const prefix of CLITIC_PREFIXES) {
+    if (normalized.startsWith(prefix) && normalized.length - prefix.length >= 2) {
+      return normalized.slice(prefix.length);
+    }
+  }
+  return normalized;
+}
+
+/** The match variants of one normalized query, longest-first. */
+export function matchVariants(normalized: string): string[] {
+  if (!normalized) return [];
+  const stripped = stripCliticPrefix(normalized);
+  const alStripped = stripAlPrefix(normalized);
+  const bothStripped = stripAlPrefix(stripped);
+  return [...new Set([normalized, stripped, alStripped, bothStripped])].filter(Boolean);
+}
+
 /** Does a raw haystack match a raw query, once both sides are folded
- *  by `normalizeArabicSearch`? Applies the `ال` tolerance at match
- *  time — the same predicate the backend search routes use. */
+ *  by `normalizeArabicSearch`? Applies the `ال` + clitic tolerance at
+ *  match time — the same predicate the backend search routes use. */
 export function matchesNormalizedQuery(haystack: string, rawQuery: string): boolean {
   const q = normalizeArabicSearch(rawQuery);
   if (!q) return false;
   const h = normalizeArabicSearch(haystack);
-  return h.includes(q) || h.includes(stripAlPrefix(q));
+  for (const variant of matchVariants(q)) {
+    if (h.includes(variant)) return true;
+  }
+  return false;
 }
 
 /* ────────────────────────────────────────────────────────────────────

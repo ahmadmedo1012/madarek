@@ -121,3 +121,34 @@ describe('matchesQueryTokens (quick-action word matching)', () => {
     expect(matchesQueryTokens('الشبكة الاجتماعية', 'تصفية الواجهة')).toBe(false);
   });
 });
+
+/* ════════════════════════════════════════════════════════════════
+ * R350 S2 — the v2 corpus mirror: digits, zero-width, clitics.
+ * Byte-pinned to the backend normalizer (the FE mirror must answer
+ * exactly what the server would).
+ * ════════════════════════════════════════════════════════════════ */
+import { stripCliticPrefix, matchVariants } from '../../src/lib/search';
+
+describe('R350 S2 — the v2 fold mirror', () => {
+  it('folds Eastern/Persian digits + strips zero-width', () => {
+    expect(normalizeArabicSearch('٠٩٢٥١٢٣٤٥')).toBe('092512345');
+    expect(normalizeArabicSearch('۹۲۵۴۱۷۰')).toBe('9254170');
+    expect(normalizeArabicSearch('كلية\u200bالهندسة')).toBe('كليهالهندسه');
+  });
+
+  it('strips clitic prefixes with the ≥2-char remainder guard', () => {
+    expect(stripCliticPrefix('والكلية')).toBe('كلية');
+    expect(stripCliticPrefix('للقسم')).toBe('قسم');
+    expect(stripCliticPrefix('و')).toBe('و');
+  });
+
+  it('matchVariants yields the tolerance ladder', () => {
+    expect(matchVariants('والكلية')).toEqual(['والكلية', 'كلية']);
+    expect(matchVariants('الخوارزميات')).toEqual(['الخوارزميات', 'خوارزميات']);
+  });
+
+  it('cliticated queries match bare stored terms', () => {
+    expect(matchesNormalizedQuery('كلية الهندسة', 'والكلية')).toBe(true);
+    expect(matchesNormalizedQuery('قسم الحاسوب', 'للقسم')).toBe(true);
+  });
+});
