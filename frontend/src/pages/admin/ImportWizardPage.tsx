@@ -364,7 +364,7 @@ export function ImportWizardPage() {
     <div className="r305ao">
       <PageHeader
         title="استيراد الطلاب"
-        description="معالج الاستيراد الكامل: رفع ← مطابقة ← مراجعة ← تأكيد ← نتيجة. لا شيء يُكتب قبل تأكيدك، وكل مهمة قابلة للتراجع خلال ٧٢ ساعة."
+        description="رفع ← مطابقة ← مراجعة ← تأكيد ← نتيجة — لا شيء يُكتب قبل تأكيدك."
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'استيراد الطلاب' }]}
       />
 
@@ -461,7 +461,7 @@ export function ImportWizardPage() {
           <Card title="مطابقة الأعمدة">
             {parsed.presetSuggestions.length > 0 && (
               <div className="iw-presets">
-                <p className="iw-presets-title">قوالب جاهزة — طبّقها بلمسة واحدة ثم عدّل ما تشاء:</p>
+                <p className="iw-presets-title">قوالب جاهزة — طبّقها بلمسة ثم عدّل ما تشاء:</p>
                 <div className="iw-preset-chips">
                   {parsed.presetSuggestions.map((s) => (
                     <button
@@ -479,7 +479,7 @@ export function ImportWizardPage() {
                 </div>
                 {parsed.presetSuggestions.some((s) => !s.verified) && (
                   <p className="iw-hint">
-                    «منظومة الغويل» قالب غير موثّق — لم نتمكن من التحقق من صيغة ملفاتها. طبّقه بحذر وراجع كل عمود قبل التثبيت.
+                    «منظومة الغويل» قالب غير موثّق — طبّقه بحذر وراجع كل عمود قبل التثبيت.
                   </p>
                 )}
               </div>
@@ -710,7 +710,7 @@ export function ImportWizardPage() {
                   {' '}إنشاء الكليات/الأقسام غير الموجودة بأسمائها (تُسجَّل في التدقيق)
                 </label>
               </li>
-              <li>الحسابات الجديدة بلا بريد ستُنشأ بكلمات مرور مؤقتة تُعرض مرة واحدة في الخطوة التالية.</li>
+              <li>الحسابات الجديدة بلا بريد تُنشأ بكلمات مرور مؤقتة — تُعرض مرة واحدة في الخطوة التالية.</li>
               <li className="iw-muted">يمكنك التراجع عن كل المهمة خلال ٧٢ ساعة من التثبيت (ما لم يسجّل الطالب دخوله).</li>
             </ul>
           </Card>
@@ -802,7 +802,7 @@ export function ImportWizardPage() {
                 <ConfirmDialog
                   open
                   title="التراجع عن الاستيراد؟"
-                  message="سيُحذف كل حساب أُنشئ بهذه المهمة ولم يسجّل الدخول بعد، وتُستعاد قيم الحقول كما كانت قبل التحديثات. المهمة المتابعة لا تُمسّ."
+                  message="سيُحذف كل حساب أُنشئ بها ولم يسجّل الدخول بعد، وتُستعاد القيم كما كانت. المهمة المتابعة لا تُمسّ."
                   confirmLabel="نعم، تراجع"
                   onConfirm={() => void runRollback()}
                   onCancel={() => setRollbackConfirm(false)}

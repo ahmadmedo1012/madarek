@@ -272,11 +272,11 @@ export default function ResearchReviewPage() {
     setGradeErrorCode(null);
     try {
       await grade.mutateAsync({ id: selected.id, grade: draftScore, feedback: draftFeedback || undefined });
-      toast.success('صار البحث مُقيَّماً؛ يمكنك نشره في المكتبة من قسم «جاهزة للنشر».', {
+      toast.success('صار البحث مُقيَّماً — انشره في المكتبة من «جاهزة للنشر».', {
         title: 'تمّ حفظ التقييم',
       });
     } catch (err) {
-      setGradeError(apiErrorMessage(err, 'تعذَّر حفظ التقييم — تحقّق من اتصالك ثم أعد المحاولة.'));
+      setGradeError(apiErrorMessage(err, 'تعذَّر حفظ التقييم — أعد المحاولة.'));
       setGradeErrorCode(errorCodeOf(err));
     }
   };
@@ -291,7 +291,7 @@ export default function ResearchReviewPage() {
         title: 'تمّ نشر البحث',
       });
     } catch (err) {
-      setPublishError(apiErrorMessage(err, 'تعذَّر نشر البحث في المكتبة — تحقّق من اتصالك ثم أعد المحاولة.'));
+      setPublishError(apiErrorMessage(err, 'تعذَّر نشر البحث — أعد المحاولة.'));
       setPublishErrorCode(errorCodeOf(err));
     }
   };
@@ -404,7 +404,7 @@ export default function ResearchReviewPage() {
                       <EmptyState illustration="empty-research"
                         icon={CheckCircle2}
                         title="لا بحوث في الانتظار"
-                        description="ستظهر هنا بحوث الطلاب فور اجتيازها الفحص التجريبي (محاكاة) للانتحال والمحتوى الآلي."
+                        description="تظهر هنا بحوث الطلاب فور اجتيازها الفحص (محاكاة)."
                       />
                     ) : (
                       <div className="r305rp-rev-queue">
@@ -492,7 +492,7 @@ export default function ResearchReviewPage() {
               <ConfirmDialog
                 open
                 title="تعديلات غير محفوظة"
-                message="لديك تقييم لم تحفظه بعد. التبديل أو الإغلاق الآن يتخلّى عنه نهائياً."
+                message="لديك تقييم لم تحفظه — التبديل أو الإغلاق الآن يتخلّى عنه نهائياً."
                 confirmLabel="التخلّي عن التعديلات"
                 cancelLabel="متابعة التحرير"
                 danger
@@ -699,7 +699,7 @@ function ReviewWorkspace({
           <ScanResults
             plagiarismPct={paper.plagiarismPct}
             aiContentPct={paper.aiContentPct}
-            note="قيم الفحص تجريبية معلنة — ليست قياساً فعلياً حتى تفعيل كشف حقيقي."
+            note="قيم الفحص تجريبية معلنة — ليست قياساً فعلياً."
           />
         </section>
 
