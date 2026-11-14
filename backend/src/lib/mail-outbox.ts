@@ -21,7 +21,7 @@
  */
 import { prisma } from '../db.js';
 import { logger } from '../logger.js';
-import { sendMail, mailConfig, type MailMessage } from './mail.js';
+import { sendMail, mailConfig, type MailMessage, type SendOutcome } from './mail.js';
 import { unsubscribeToken } from '../http/routes/mail.routes.js';
 import { env } from '../env.js';
 
@@ -128,11 +128,14 @@ export interface DrainResult {
  */
 export async function drainOutbox(opts: {
   batchSize?: number;
-  send?: (message: MailMessage) => Promise<boolean>;
+  /** R350 E7: boolean OR the full SendOutcome — an outcome carries the
+   * providerId, which lands on the outbox row so E4's webhook can link
+   * delivered/bounced events back to it. */
+  send?: (message: MailMessage) => Promise<boolean | SendOutcome>;
   now?: Date;
 } = {}): Promise<DrainResult> {
   const batchSize = opts.batchSize ?? 10;
-  const send = opts.send ?? (async (m: MailMessage) => (await sendMail(mailConfig, m)).ok);
+  const send = opts.send ?? (async (m: MailMessage) => sendMail(mailConfig, m));
   const now = opts.now ?? new Date();
   const result: DrainResult = { picked: 0, sent: 0, failed: 0, suppressed: 0, skippedProviderOff: 0 };
 
@@ -193,11 +196,19 @@ export async function drainOutbox(opts: {
           'List-Unsubscribe': `<${env.APP_ORIGIN ?? ''}/api/v1/mail/unsubscribe?email=${encodeURIComponent(row.to)}&token=${unsubscribeToken(row.to)}>`,
           'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
         };
-    const ok = await send({ to: row.to, subject: row.subject, html: row.html, text: row.text, headers });
-    if (ok) {
+    const outcome = await send({ to: row.to, subject: row.subject, html: row.html, text: row.text, headers });
+    const okSend = typeof outcome === 'object' ? outcome.ok : outcome;
+    if (okSend) {
+      const providerId = typeof outcome === 'object' ? outcome.providerId : undefined;
       await prisma.mailOutbox.update({
         where: { id: row.id },
-        data: { status: 'sent', sentAt: now, attempts: row.attempts + 1, lastError: null },
+        data: {
+          status: 'sent',
+          sentAt: now,
+          attempts: row.attempts + 1,
+          lastError: null,
+          ...(providerId ? { providerId, provider: mailConfig.provider } : {}),
+        },
       });
       result.sent += 1;
       continue;
