@@ -147,7 +147,7 @@ function BookRow({ book }: { book: Book }) {
       });
     } catch (e) {
       // 409ات الخلفية عربية (ازدواج الاستعارة/نفاد النسخ) — تُعرض كما هي.
-      toast.error(apiErrorMessage(e, 'تعذَّرت الاستعارة — تحقّق من اتصالك وحاول مرة أخرى.'));
+      toast.error(apiErrorMessage(e, 'تعذَّرت الاستعارة — تحقّق من اتصالك.'));
     }
   };
 
@@ -245,12 +245,12 @@ function BookRow({ book }: { book: Book }) {
         )}
         <div className="lib-book-detail-row">
           <span className="lib-book-detail-k">مدة الاستعارة</span>
-          <span className="lib-book-detail-v">14 يوماً من موعد الاستعارة، ويصلك موعد الإرجاع في إشعار التأكيد.</span>
+          <span className="lib-book-detail-v">14 يوماً — يصلك موعد الإرجاع في إشعار التأكيد.</span>
         </div>
         {unavailable && (
           <div className="lib-book-detail-row">
             <span className="lib-book-detail-k">الحالة</span>
-            <span className="lib-book-detail-v">جميع النسخ مستعارة حالياً — جرّب لاحقاً أو استعرض البحوث في هذه الفئة.</span>
+            <span className="lib-book-detail-v">جميع النسخ مستعارة — جرّب لاحقاً أو استعرض البحوث.</span>
           </div>
         )}
       </div>
@@ -308,7 +308,7 @@ function LoanRow({ loan }: { loan: MyLoan }) {
       await returnLoan.mutateAsync(loan.id);
       toast.success(`أُعيد «${loan.book.title}» إلى المكتبة.`, { title: 'تمّ الإرجاع' });
     } catch (e) {
-      toast.error(apiErrorMessage(e, 'تعذَّر الإرجاع — تحقّق من اتصالك وحاول مرة أخرى.'));
+      toast.error(apiErrorMessage(e, 'تعذَّر الإرجاع — تحقّق من اتصالك.'));
     }
   };
 
@@ -608,7 +608,7 @@ export default function LibraryPage() {
         ? 'أكمل البحث'
         : researchSearchActive ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
       description={researchFloorShort
-        ? 'البحث في البحوث يبدأ من حرفين على الأقل — أضف حرفًا ثانيًا وسيبدأ البحث فورًا.'
+        ? 'البحث في البحوث يبدأ من حرفين — أضف حرفًا ثانيًا ليبدأ فورًا.'
         : researchSearchActive
           ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
           : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
@@ -627,7 +627,7 @@ export default function LibraryPage() {
         title="المكتبة الإلكترونية"
         description={
           /* 22-c (A3 P3-10): honest scope — no «آلاف الكتب» overclaim. */
-          'كتب المكتبة الأكاديمية وبحوث طلاب الجامعة المنشورة — متاحة للاستعارة الفورية والاطّلاع المرجعي.'
+          'كتب وبحوث الجامعة المنشورة — للاستعارة الفوريّة والاطّلاع.'
         }
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
@@ -724,7 +724,7 @@ export default function LibraryPage() {
               <div className="r305rp-empty">
                 <span className="r305rp-eyebrow">الحالة</span>
                 <p className="r305rp-lib-loansempty-line">
-                  <strong>لا استعارات نشطة</strong> — اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه خلال 14 يوماً.
+                  <strong>لا استعارات نشطة</strong> — اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه (14 يوماً).
                 </p>
               </div>
             ) : (

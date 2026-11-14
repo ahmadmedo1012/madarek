@@ -84,10 +84,10 @@ function nextStepFor(paper: ResearchPaper, isScanning: boolean): { k: string; hi
   switch (paper.status) {
     case 'UPLOADED':
       return isScanning
-        ? { k: 'جارٍ الآن', hint: 'الفحص الأوتوماتيكي يجري — النتائج تظهر هنا تلقائياً.' }
-        : { k: 'الخطوة التالية', hint: 'ابدأ الفحص الأوتوماتيكي (انتحال + محتوى ذكاء اصطناعي).' };
+        ? { k: 'جارٍ الآن', hint: 'الفحص يجري — النتائج تظهر تلقائياً.' }
+        : { k: 'الخطوة التالية', hint: 'ابدأ الفحص (انتحال + ذكاء اصطناعي).' };
     case 'SCANNING':
-      return { k: 'جارٍ الآن', hint: 'الفحص الأوتوماتيكي يجري — النتائج تظهر هنا تلقائياً.' };
+      return { k: 'جارٍ الآن', hint: 'الفحص يجري — النتائج تظهر تلقائياً.' };
     case 'CHECKS_PASSED':
       return { k: 'الخطوة التالية', hint: 'بانتظار تقييم أستاذك — لا إجراء مطلوب منك الآن.' };
     case 'CHECKS_FAILED':
@@ -189,7 +189,7 @@ export default function StudentResearchPage() {
           /* r168b: the scan is a deterministic simulation until a real
               detection provider is activated — the results area carries
               the note since r154b; the header keeps matching it. */
-          'ارفع بحوثك، اعرضها على فحص الانتحال وكشف الذكاء الاصطناعي (محاكاة حتى تفعيل كشف حقيقي)، ثم أرسلها لأستاذك للتقييم والنشر في مكتبة الجامعة.'
+          'ارفع بحوثك، اعرضها على فحص الانتحال (محاكاة)، ثم أرسلها لأستاذك للتقييم والنشر في المكتبة.'
         }
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
@@ -228,7 +228,7 @@ export default function StudentResearchPage() {
                 <span className="r305rp-eyebrow">الخطوة الأولى</span>
                 <div className="r305rp-res-cta-title">بحث جديد؟</div>
                 <div className="r305rp-res-cta-desc">
-                  ارفعه الآن — يُفحص أوتوماتيكياً، ثم يصل أستاذك للتقييم، وتميّزه ينشره في المكتبة.
+                  ارفعه الآن — يُفحص، ثم يقيّمه أستاذك، وتميّزه يُنشر.
                 </div>
               </div>
               <button type="button" className="btn primary" onClick={openFreshUpload}>
@@ -353,7 +353,7 @@ export default function StudentResearchPage() {
               });
               setUploadOpen(false);
               stagedUpload.current = null;
-              toast.success('سيخضع البحث لفحص الانتحال ثم يصل إلى أستاذك للتقييم.', {
+              toast.success('سيخضع البحث لفحص الانتحال ثم يصل إلى أستاذك.', {
                 title: 'تمّ رفع البحث',
               });
             } catch (e) {
@@ -384,7 +384,7 @@ function EmptyUpload({ onOpen }: { onOpen: () => void }) {
     <EmptyState
       icon={BookMarked}
       title="لم ترفع أي بحث بعد"
-      description="ابدأ برفع أول بحث لك ليتم فحصه ثم تقييمه من قبل الأستاذ."
+      description="ارفع أول بحث ليُفحص ثم يُقيَّم من الأستاذ."
       illustration="empty-research"
       action={
         <button type="button" className="btn primary" onClick={onOpen}>
@@ -533,7 +533,7 @@ function PaperRow({
 function ProcessExplainer() {
   const STEPS: Array<{ n: number; title: string; desc: string; icon: LucideIcon }> = [
     { n: 1, title: 'ارفع بحثك', desc: 'العنوان، الملخّص، والمقرّر المرتبط.', icon: Upload },
-    { n: 2, title: 'فحص أوتوماتيكي', desc: 'كشف الانتحال + كشف توليد الذكاء الاصطناعي خلال ثوانٍ (محاكاة حتى تفعيل كشف حقيقي).', icon: ScanSearch },
+    { n: 2, title: 'فحص أوتوماتيكي', desc: 'كشف الانتحال + الذكاء الاصطناعي (محاكاة).', icon: ScanSearch },
     { n: 3, title: 'تقييم الأستاذ', desc: 'بعد اجتياز الفحص، يُقيِّم الأستاذ البحث من 20.', icon: FileText },
     { n: 4, title: 'النشر في المكتبة', desc: 'البحوث المتميزة تُضاف إلى مكتبة الجامعة.', icon: BookMarked },
   ];
@@ -723,7 +723,7 @@ function UploadModal({
         <FormField
           label="ملف البحث (PDF، اختياري)"
           id={fileId}
-          hint="ملفات PDF فقط، بحد أقصى 20 ميغابايت — بدون ملف يسجّل البحث بعنوانه وملخصه فقط."
+          hint="PDF فقط، بحد أقصى 20 ميغابايت — بدونه يُسجَّل البحث بعنوانه وملخصه فقط."
           error={fileError ?? undefined}
         >
           <input
