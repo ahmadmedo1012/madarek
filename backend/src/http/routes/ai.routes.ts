@@ -60,6 +60,10 @@ import {
   getStudentContextPack,
   renderContextPackLines,
 } from '../../modules/ai/context-pack.js';
+/* R353 C3 — the exam-active guard shares the exam routes' late-submit
+ * grace constant (route→route import precedent: search.routes.ts
+ * imports courses.routes.ts helpers). */
+import { SUBMIT_GRACE_MS as EXAM_SUBMIT_GRACE_MS } from './exams.routes.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -487,6 +491,68 @@ const aiChainSummary = aiChainMode
     }
   : null;
 
+/* ── R353 C3 — the exam-active guard (exam-leak prevention) ───────
+ *
+ * POST /ai/knowledge/reindex indexes every lecture checkpoint's
+ * `question + explanation` (the exact facts a graded assessment
+ * tests). Without a guard, a student MID-EXAM could ask the assistant
+ * and retrieve those chunks verbatim through RAG — the audit's leak.
+ * The guard has two halves, both scoped to the CALLING student's
+ * chat turns:
+ *  · retrieval: chunk sourceType 'checkpoint' is EXCLUDED from the
+ *    per-question search while the student has an in-progress exam
+ *    attempt (course/lecture chunks stay — the tutor still teaches);
+ *  · prompt: the system prompt states the exam-integrity rule, so
+ *    the model explains concepts and methodology instead of handing
+ *    over assessment answers. */
+
+/** The exam-period integrity clause appended to the provider system
+ * prompt while the student has an in-progress attempt. */
+const AI_EXAM_INTEGRITY_CLAUSE =
+  'تنبيه نزاهة فترة الاختبار: لدى هذا الطالب محاولة اختبار جارية الآن. لا تُقدِّم إجابات أسئلة الاختبار ولا تلميحات تكشف الحلّ مباشرةً؛ اشرح المفاهيم والمنهجية العامة فقط ووجّهه إلى مراجعة مواد المقرر بنفسه.';
+
+/** Does this student have an in-progress, unexpired exam attempt RIGHT
+ * NOW? (status IN_PROGRESS inside the late-submit grace window — the
+ * same liveness rule the exam routes' resume logic uses.) Non-students
+ * never check (they have no attempts). A check FAILURE applies the
+ * guard anyway: integrity fails CLOSED (the worst case is a missing
+ * checkpoint citation, never a leaked answer). */
+async function isExamActiveForStudent(userId: string, role: Role): Promise<boolean> {
+  if (role !== Role.STUDENT) return false;
+  try {
+    const attempt = await prisma.examAttempt.findFirst({
+      where: {
+        studentId: userId,
+        status: 'IN_PROGRESS',
+        expiresAt: { gte: new Date(Date.now() - EXAM_SUBMIT_GRACE_MS) },
+      },
+      select: { id: true },
+    });
+    return attempt !== null;
+  } catch (err) {
+    logger.warn({ err }, 'exam-active check failed — applying the exam guard anyway (integrity fails closed)');
+    return true;
+  }
+}
+
+/** The provider system prompt for one turn: the role persona + (R353
+ * C3) the exam-integrity clause + the RAG grounding block — one
+ * assembly shared by BOTH transports and all three engine branches. */
+function buildProviderSystemPrompt(
+  role: Role,
+  context: ChatContextLines,
+  ragBlock: string,
+  examActive: boolean,
+): string {
+  const persona = isMasteryAwareRole(role)
+    ? buildStudentSystemPrompt(context.masteryLines, context.courseLines, context.activityLines)
+    : buildGenericSystemPrompt(context.teachingLines);
+  const parts = [persona];
+  if (examActive) parts.push(AI_EXAM_INTEGRITY_CLAUSE);
+  if (ragBlock !== '') parts.push(ragBlock);
+  return parts.join('\n\n');
+}
+
 /* r179 (phase-5): the verified institution-context gate for every AI
  * surface in this router — a contextless institutional caller gets 403
  * INSTITUTION_CONTEXT_REQUIRED (fail closed: the client must POST
@@ -557,12 +623,10 @@ async function composeReplyWithProvider(
   role: Role,
   history: readonly AiChatMessage[],
   context: ChatContextLines,
-  ragBlock = '',
+  ragBlock: string,
+  examActive: boolean,
 ): Promise<ChatEngineResult> {
-  const persona = isMasteryAwareRole(role)
-    ? buildStudentSystemPrompt(context.masteryLines, context.courseLines, context.activityLines)
-    : buildGenericSystemPrompt(context.teachingLines);
-  const system = ragBlock !== '' ? `${persona}\n\n${ragBlock}` : persona;
+  const system = buildProviderSystemPrompt(role, context, ragBlock, examActive);
   const completion = await callProviderWithRetry(
     aiProvider!,
     buildChatMessages(system, history, message),
@@ -607,6 +671,7 @@ async function composeReplyWithProviderChain(
   context: ChatContextLines,
   ragBlock: string,
   institutionId: string,
+  examActive: boolean,
 ): Promise<{
   reply: string;
   inputTokens: number;
@@ -616,10 +681,7 @@ async function composeReplyWithProviderChain(
   provider: string;
   usedProvider: boolean;
 }> {
-  const persona = isMasteryAwareRole(role)
-    ? buildStudentSystemPrompt(context.masteryLines, context.courseLines, context.activityLines)
-    : buildGenericSystemPrompt(context.teachingLines);
-  const system = ragBlock !== '' ? `${persona}\n\n${ragBlock}` : persona;
+  const system = buildProviderSystemPrompt(role, context, ragBlock, examActive);
   try {
     const outcome = await callProviderChain(aiChain, buildChatMessages(system, history, message), {
       log: (obj, msg) => logger.warn(obj, msg),
@@ -724,6 +786,10 @@ interface ChatStreamArgs {
    * them into the system prompt and returns their citations; local
    * mode ignores the block (the composer never pretends to cite). */
   rag: RagResult;
+  /* R353 C3 — the caller is a student with an in-progress exam
+   * attempt: the retrieval already EXCLUDED checkpoint chunks and the
+   * system prompt carries the exam-integrity clause. */
+  examActive: boolean;
 }
 
 /** r323 B1.2 — the per-turn retrieval result (bounded, honest-empty). */
@@ -1104,8 +1170,18 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
      * Best-effort by construction: a knowledge-index outage must NEVER
      * take the chat down — an empty result degrades to the historical
      * ungrounded behaviour (the honest local-mode rule applies: the
-     * reply simply carries no citations). */
-    const rag = await searchKnowledge(prisma, chatInstitutionId, message)
+     * reply simply carries no citations).
+     * R353 C3 — the exam-active guard: a student with an in-progress
+     * exam attempt retrieves WITHOUT checkpoint question/explanation
+     * chunks (the graded answers must not ride the prompt verbatim),
+     * and the provider prompt carries the integrity clause. */
+    const examActive = await isExamActiveForStudent(userId, req.user!.role);
+    const rag = await searchKnowledge(
+      prisma,
+      chatInstitutionId,
+      message,
+      examActive ? { excludeSourceTypes: ['checkpoint'] } : {},
+    )
       .then((hits) => buildRagContextBlock(hits))
       .catch((err) => {
         logger.warn({ err }, 'ai knowledge retrieval failed (non-blocking)');
@@ -1132,6 +1208,7 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
         quota,
         startedAt,
         rag,
+        examActive,
       });
       return;
     }
@@ -1144,9 +1221,9 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
      * surfaces one honest Arabic error — no silent template fallback
      * (see composeReplyWithProvider). */
     const engine: ChatEngineResult = aiChainMode
-      ? await composeReplyWithProviderChain(userId, message, req.user!.role, history, context, rag.block, chatInstitutionId)
+      ? await composeReplyWithProviderChain(userId, message, req.user!.role, history, context, rag.block, chatInstitutionId, examActive)
       : aiProvider
-        ? await composeReplyWithProvider(message, req.user!.role, history, context, rag.block)
+        ? await composeReplyWithProvider(message, req.user!.role, history, context, rag.block, examActive)
         : {
             reply: await composeReply(userId, message, req.user!.role, chatInstitutionId),
             model: AI_CHAT_MODEL,

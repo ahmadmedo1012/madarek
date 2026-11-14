@@ -37,6 +37,9 @@ vi.mock('../../src/db.js', () => {
     enrollment: { findMany: vi.fn() },
     courseOffering: { findMany: vi.fn() },
     operationalAlert: { create: vi.fn() },
+    // R353 C3: the exam-active guard's liveness probe (mocked → no
+    // active attempt by default; the guard's own suite pins it).
+    examAttempt: { findFirst: vi.fn() },
     $queryRaw: vi.fn(),
   };
   p.$transaction = vi.fn(async (fn: (tx: unknown) => Promise<unknown>) => fn(p));
@@ -198,6 +201,9 @@ beforeEach(async () => {
   geminiCalls.length = 0;
   groqCalls.length = 0;
   vi.mocked(prisma.studentMastery.findMany).mockResolvedValue([] as never);
+  // R353 C3: no active exam attempt by default (the guard's own suite
+  // pins the mid-exam behavior).
+  vi.mocked(prisma.examAttempt.findFirst).mockResolvedValue(null as never);
   vi.mocked(prisma.enrollment.findMany).mockResolvedValue([] as never);
   vi.mocked(prisma.courseOffering.findMany).mockResolvedValue([] as never);
   vi.mocked(prisma.membership.findFirst).mockResolvedValue({ institutionId: INSTITUTION_ID } as never);

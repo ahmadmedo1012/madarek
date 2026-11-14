@@ -241,6 +241,18 @@ export const RAG_UNGROUNDED_NOTE =
 
 type PrismaLike = Pick<PrismaClient, 'aiKnowledgeChunk' | '$queryRaw'>;
 
+/** searchKnowledge options (all optional).
+ *  · limit — the top-hit bound (default 6, the historical value);
+ *  · excludeSourceTypes — R353 C3 (the exam-active guard): chunk
+ *    source types to EXCLUDE from retrieval. A student with an
+ *    in-progress exam attempt must not retrieve checkpoint
+ *    question/explanation chunks verbatim through RAG — the guard
+ *    drops sourceType 'checkpoint' for that student's chat turns. */
+export interface SearchKnowledgeOptions {
+  limit?: number;
+  excludeSourceTypes?: string[];
+}
+
 /**
  * (Re)index ONE lecture's transcript windows into AiKnowledgeChunk.
  * Idempotent per source: the lecture's previous 'lecture' chunks are
@@ -293,15 +305,24 @@ export async function indexLectureTranscript(
  * (scoreKnowledgeHits, ≥0.25 gate) stays the sole arbiter of
  * relevance; the prefilter only widens the candidate set (still
  * capped at 60).
+ *
+ * R353 C3: opts.excludeSourceTypes adds a `sourceType != ALL(...)`
+ * clause — the exam-active guard's retrieval half (checkpoint
+ * question/explanation chunks never reach a mid-exam student's
+ * prompt, so RAG cannot hand back the answers verbatim).
  */
 export async function searchKnowledge(
   prisma: PrismaLike,
   institutionId: string,
   query: string,
-  limit = 6,
+  opts: SearchKnowledgeOptions = {},
 ): Promise<ScoredKnowledgeHit[]> {
   const trimmed = query.trim();
   if (trimmed.length < 3) return [];
+  const limit = opts.limit ?? 6;
+  const excluded = [...new Set((opts.excludeSourceTypes ?? []).map((t) => t.trim()).filter((t) => t !== ''))].slice(0, 5);
+  const exclusionClause =
+    excluded.length > 0 ? Prisma.sql` AND "sourceType" != ALL(${excluded}::text[])` : Prisma.empty;
   const tokens = [...new Set(trimmed.split(TOKEN_SPLIT).map((t) => t.trim()).filter((t) => t.length >= 3 && t.length <= 40))].slice(0, 6);
   const tokenPatterns = tokens.map((t) => `%${t}%`);
   const tokenClause =
@@ -312,7 +333,7 @@ export async function searchKnowledge(
     SELECT id, "sourceType" AS "sourceType", "sourceId" AS "sourceId",
            title, locator, url, content
     FROM "AiKnowledgeChunk"
-    WHERE "institutionId" = ${institutionId}
+    WHERE "institutionId" = ${institutionId}${exclusionClause}
       AND ("content" % ${trimmed} OR "content" ILIKE ${'%' + trimmed.slice(0, 60) + '%'}${tokenClause})
     ORDER BY GREATEST(similarity("content", ${trimmed}), 0)
     LIMIT 60`;
