@@ -92,16 +92,23 @@ run (notifications path, theme verb, chapter mutations, a nonexistent
 `GET /admin/users/:id`) — run it in CI or before any merge touching
 `src/api/**` or `backend/src/http/routes/**`.
 
-## EAS — build, update, and what needs a rebuild
+## EAS — OTA updates + the manual-only build fallback
+
+**The official Android/iOS binaries come from GitHub Actions**
+(`build-android.yml` → the rolling `android-latest` release;
+`build-ios-sidestore.yml` → `sidestore-latest`) — never from EAS Build.
+EAS **builds are manual-only** (the free build quota is exhausted until
+≈Dec 1); use them for one-off experiments if you must, not for the
+distribution chain.
 
 `eas.json` (authoritative): profiles `development` (dev-client APK),
-`preview` (internal-distribution **APK**, channel `preview`), and
+`preview` (internal-distribution APK, channel `preview`), and
 `production` (AAB, channel `production`). All embed
 `EXPO_PUBLIC_API_BASE_URL` from the profile env.
 
 ```bash
-npx eas build -p android --profile preview   # installable APK
-npx eas update --channel preview             # OTA (JS-only changes)
+npx eas update --channel production          # OTA (JS-only changes) — the quota-free path
+npx eas build -p android --profile preview   # MANUAL ONLY — quota-limited fallback
 ```
 
 | Change | Delivery |

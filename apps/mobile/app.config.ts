@@ -31,6 +31,10 @@ const config: ExpoConfig = {
   },
   android: {
     package: "ly.madarek.mobile",
+    // R350 R5 — monotonically increasing with every CI build: the release
+    // workflow exports MADAREK_VERSION_CODE=$(github.run_number) before
+    // prebuild; local/dev builds stay at 1.
+    versionCode: Number(process.env.MADAREK_VERSION_CODE ?? 1),
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-foreground.png",
       backgroundImage: "./assets/images/adaptive-background.png",

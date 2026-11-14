@@ -193,6 +193,10 @@ jobs:
 
       - name: Generate the native Android project (Expo prebuild)
         working-directory: apps/mobile
+        env:
+          # R5: versionCode rides the run number — every publish is
+          # strictly newer than the last on the device.
+          MADAREK_VERSION_CODE: ${{ github.run_number }}
         run: |
           set -euo pipefail
           rm -rf android
@@ -597,6 +601,8 @@ jobs:
 
       - name: Generate the native Android project (Expo prebuild)
         working-directory: apps/mobile
+        env:
+          MADAREK_VERSION_CODE: ${{ github.run_number }}
         run: |
           set -euo pipefail
           rm -rf android
