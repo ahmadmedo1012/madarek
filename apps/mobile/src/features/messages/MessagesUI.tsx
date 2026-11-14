@@ -31,6 +31,7 @@ import { Image } from "expo-image";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 import { KeyboardToolbar } from "react-native-keyboard-controller";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Check from "lucide-react-native/icons/check";
 import CheckCheck from "lucide-react-native/icons/check-check";
 import Send from "lucide-react-native/icons/send";
@@ -95,6 +96,7 @@ const GREY_BLURHASH = "LG[[{0000000000000000000000";
 export function MessagesUI() {
   const p = usePalette();
   const qc = useQueryClient();
+  const insets = useSafeAreaInsets();
   const scope = useInstitutionScope();
   const me = useSession((s) => s.user);
   const myId = me?.id ?? "";
@@ -142,7 +144,9 @@ export function MessagesUI() {
           gap: sp[8],
           paddingHorizontal: sp[16],
           paddingVertical: sp[8],
-          paddingTop: sp[16],
+          /* R3 audit P0 — the fixed 16pt pad clipped under the status bar
+             on edge-to-edge Android 15. Same Math.max law as Assistant. */
+          paddingTop: Math.max(insets.top, sp[16]),
           borderBottomWidth: StyleSheet.hairlineWidth,
           borderBottomColor: p.rule,
           backgroundColor: p.surface,
