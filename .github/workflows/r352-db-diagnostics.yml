@@ -40,6 +40,9 @@ jobs:
       PROJECT: ${{ secrets.VERCEL_PROJECT_ID }}
       VTOKEN: ${{ secrets.VERCEL_TOKEN }}
       GH_TOKEN: ${{ github.token }}
+      # No checkout in this job: gh CLI resolves the repo from GH_REPO
+      # (run 43626680640: `gh workflow run` died "not a git repository").
+      GH_REPO: ${{ github.repository }}
     steps:
       - name: Flag in — MADAREK_DB_DIAGNOSTICS=1 (create-or-patch)
         run: |
@@ -89,6 +92,14 @@ jobs:
         if: always()
         run: |
           set -euo pipefail
+          # DEPLOY_RUN_ID may be unset when the dispatch step died early
+          # (run 43626680640) — fall back to the latest Deploy Vercel run
+          # on main, which is the deploy this workflow just triggered.
+          if [ -z "${DEPLOY_RUN_ID:-}" ]; then
+            DEPLOY_RUN_ID=$(gh run list --workflow "Deploy Vercel" --branch main --limit 5 --json databaseId,createdAt --jq 'sort_by(.createdAt) | last | .databaseId')
+            echo "DEPLOY_RUN_ID fallback → $DEPLOY_RUN_ID"
+          fi
+          test -n "$DEPLOY_RUN_ID"
           gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${DEPLOY_RUN_ID}/jobs?per_page=20" > /tmp/jobs.json
           # the deploy job of the deploy-vercel run
           JOB_ID=$(jq -r '[.jobs[] | select(.name | contains("deploy"))][0].id' /tmp/jobs.json)

@@ -58,6 +58,8 @@ jobs:
       TEAM: ${{ secrets.VERCEL_ORG_ID }}
       PROJECT: ${{ secrets.VERCEL_PROJECT_ID }}
       VTOKEN: ${{ secrets.VERCEL_TOKEN }}
+      # gh CLI resolves the repo from GH_REPO (no checkout in this job)
+      GH_REPO: ${{ github.repository }}
       TARGET: https://madarek-nine.vercel.app
       DRIVER: ${{ inputs.flip_back == true && 'postgres' || 'vercel-blob' }}
     steps:
