@@ -24,7 +24,8 @@
     "rotate:password": "node scripts/rotate-demo-passwords.mjs",
     "provision:owner": "node scripts/provision-owner.mjs",
     "postinstall": "prisma generate",
-    "storage:blob": "node scripts/storage-to-blob.mjs"
+    "storage:blob": "node scripts/storage-to-blob.mjs",
+    "db:diagnostics": "node scripts/db-diagnostics.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

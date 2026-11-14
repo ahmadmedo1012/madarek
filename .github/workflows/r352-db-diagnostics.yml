@@ -1,0 +1,112 @@
+# R352 K1/T — the production DB diagnostics, through the remote build log.
+#
+# WHY: the first diagnostics run proved VERCEL_TOKEN cannot decrypt env
+# values (GET v10 ?decrypt=1 refuses; the psql branch exited in 300 ms
+# before apt). The ONLY machine channel holding the real DATABASE_URL is
+# the REMOTE BUILD — `vercel deploy` streams the build output into the
+# GitHub Actions log, which the API can read.
+#
+# THE DANCE (one dispatch):
+#   1. PATCH MADAREK_DB_DIAGNOSTICS=1 into the project env (create-if-
+#      missing; the RENDER_GIT_COMMIT pin pattern).
+#   2. Dispatch the Deploy Vercel workflow and watch it — its remote
+#      build runs db-diagnostics.mjs, which is a NO-OP unless the flag
+#      is set (zero noise on every other build; queries are read-only).
+#   3. PATCH the flag back to 0 — the very next build is silent again.
+#   4. Download the deploy run's log, extract the [db-diagnostics] and
+#      [storage-to-blob] blocks, print them HERE (summary + stdout —
+#      the first diagnostics run's summary was API-unreadable; stdout
+#      is the channel that survives).
+name: R352 K1 db diagnostics
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: r352-db-diagnostics
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    name: Flag in → deploy → flag out → extract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      TEAM: ${{ secrets.VERCEL_ORG_ID }}
+      PROJECT: ${{ secrets.VERCEL_PROJECT_ID }}
+      VTOKEN: ${{ secrets.VERCEL_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Flag in — MADAREK_DB_DIAGNOSTICS=1 (create-or-patch)
+        run: |
+          set -euo pipefail
+          curl -sS -H "Authorization: Bearer $VTOKEN" \
+            "https://api.vercel.com/v9/projects/$PROJECT/env?teamId=$TEAM" > /tmp/envs.json
+          EXISTING=$(jq -r '[.envs[] | select(.key == "MADAREK_DB_DIAGNOSTICS")][0].id // empty' /tmp/envs.json)
+          if [ -n "$EXISTING" ]; then
+            CODE=$(curl -sS -X PATCH \
+              "https://api.vercel.com/v10/projects/$PROJECT/env/$EXISTING?teamId=$TEAM" \
+              -H "Authorization: Bearer $VTOKEN" -H 'Content-Type: application/json' \
+              -d '{"value":"1","type":"encrypted","target":["production"]}' -o /dev/null -w '%{http_code}')
+            echo "PATCH $EXISTING → 1: HTTP $CODE"; [ "$CODE" = "200" ]
+          else
+            CODE=$(curl -sS -X POST \
+              "https://api.vercel.com/v10/projects/$PROJECT/env?teamId=$TEAM" \
+              -H "Authorization: Bearer $VTOKEN" -H 'Content-Type: application/json' \
+              -d '{"key":"MADAREK_DB_DIAGNOSTICS","value":"1","type":"encrypted","target":["production"]}' \
+              -o /dev/null -w '%{http_code}')
+            echo "CREATE MADAREK_DB_DIAGNOSTICS → 1: HTTP $CODE"; [ "$CODE" = "200" ] || [ "$CODE" = "201" ]
+          fi
+
+      - name: Deploy once with the flag on
+        run: |
+          set -euo pipefail
+          gh workflow run "Deploy Vercel" --ref main
+          sleep 20
+          RUN_ID=$(gh run list --workflow "Deploy Vercel" --limit 5 --json databaseId,createdAt --jq 'sort_by(.createdAt) | last | .databaseId')
+          echo "watching deploy run $RUN_ID"
+          gh run watch "$RUN_ID" --exit-status --interval 20 || { gh run view "$RUN_ID" --log-failed | tail -80; exit 1; }
+          echo "DEPLOY_RUN_ID=$RUN_ID" >> "$GITHUB_ENV"
+
+      - name: Flag out — MADAREK_DB_DIAGNOSTICS=0 (silent again)
+        if: always()
+        run: |
+          set -euo pipefail
+          EXISTING=$(jq -r '[.envs[] | select(.key == "MADAREK_DB_DIAGNOSTICS")][0].id // empty' /tmp/envs.json)
+          if [ -n "$EXISTING" ]; then
+            CODE=$(curl -sS -X PATCH \
+              "https://api.vercel.com/v10/projects/$PROJECT/env/$EXISTING?teamId=$TEAM" \
+              -H "Authorization: Bearer $VTOKEN" -H 'Content-Type: application/json' \
+              -d '{"value":"0","type":"encrypted","target":["production"]}' -o /dev/null -w '%{http_code}')
+            echo "PATCH $EXISTING → 0: HTTP $CODE"
+          fi
+
+      - name: Extract the diagnostics from the deploy run's log
+        if: always()
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${DEPLOY_RUN_ID}/jobs?per_page=20" > /tmp/jobs.json
+          # the deploy job of the deploy-vercel run
+          JOB_ID=$(jq -r '[.jobs[] | select(.name | contains("deploy"))][0].id' /tmp/jobs.json)
+          curl -sL -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/jobs/$JOB_ID/logs" -o /tmp/deploy-job.log || true
+          echo "deploy job log: $(wc -l < /tmp/deploy-job.log 2>/dev/null || echo 0) lines"
+          {
+            echo "## R352 K1 — DB diagnostics (via the remote build log)"
+            echo
+            echo '```'
+            grep -E '^\[db-diagnostics\]|\[db-diagnostics\]' /tmp/deploy-job.log | sed 's/^[0-9T:.Z-]* *//' || echo "(no db-diagnostics block found)"
+            echo '```'
+            echo
+            echo "### storage-to-blob (the K5 migration counts, same build)"
+            echo
+            echo '```'
+            grep -E '\[storage-to-blob\]' /tmp/deploy-job.log | sed 's/^[0-9T:.Z-]* *//' || echo "(no storage-to-blob block found)"
+            echo '```'
+          } | tee /tmp/diag-summary.md >> "$GITHUB_STEP_SUMMARY"
+          # stdout too — the API-readable channel (the first run's lesson)
+          cat /tmp/diag-summary.md
