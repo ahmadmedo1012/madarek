@@ -2670,3 +2670,19 @@ model TickRun {
   lastSummary   Json?
   updatedAt     DateTime @updatedAt
 }
+
+// ── R351 X2c — the shared rate-limit store (serverless multi-instance) ──
+/// Fixed-window counters, one row per (limiter:key:windowIndex). On the
+/// long-lived instances the in-memory store was fine; Vercel Fluid spins
+/// concurrent instances (measured in the X1 burst), so the counters live
+/// in the DB now — one upsert round-trip per limiter hit, pruned by the
+/// daily tick (anything older than 25 h is dead weight: every window in
+/// the app is ≤ 15 min + the 60 s route factory).
+model RateLimitHit {
+  key         String   @id
+  windowStart DateTime
+  count       Int      @default(1)
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@index([updatedAt])
+}

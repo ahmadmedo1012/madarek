@@ -1,5 +1,38 @@
 import rateLimit, { type Options, type RateLimitRequestHandler } from 'express-rate-limit';
 
+import { PrismaRateLimitStore } from '../../lib/rate-limit-store.js';
+
+/*
+ * R351 X2c — the shared store wiring.
+ *
+ * Production (and anything not NODE_ENV=test): every limiter counts in
+ * Postgres (PrismaRateLimitStore) — Vercel Fluid runs concurrent
+ * instances, and per-instance memory under-counts by the instance count.
+ * NODE_ENV=test keeps the in-process memory store so the existing
+ * suite's mocked prisma (no $queryRaw) stays intact — the DB store has
+ * its own unit belt + one app-level 429 proof behind the
+ * MADAREK_TEST_DB_RATE_LIMIT_STORE opt-in.
+ *
+ * RATE_LIMIT_STORE=memory restores the old store on EVERY environment
+ * (the documented Neon-hours escape hatch).
+ */
+const DB_STORE_FORCED_OFF = process.env.RATE_LIMIT_STORE === 'memory';
+const DB_STORE_TEST_OPT_IN = process.env.MADAREK_TEST_DB_RATE_LIMIT_STORE === '1';
+const USE_DB_STORE =
+  !DB_STORE_FORCED_OFF && (process.env.NODE_ENV !== 'test' || DB_STORE_TEST_OPT_IN);
+
+/** One store instance per limiter (express-rate-limit requirement). */
+const storeFor = (prefix: string, windowMs: number): Partial<Options> =>
+  USE_DB_STORE ? { store: new PrismaRateLimitStore({ prefix, windowMs }) } : {};
+
+/** Factory limiters get a unique prefix per CALL: the named limiters
+ *  above share one bucket by design, but two createRouteLimiter routes
+ *  must never share a bucket. Call sites instantiate at module load in
+ *  a deterministic import order, so route-N maps to the same route in
+ *  every instance — and even a runtime call only risks a fresh prefix,
+ *  never a wrong shared one. */
+let routeFactoryCounter = 0;
+
 /*
  * Trust-topology note (r170c, probe-verified — the setting itself lives
  * in app.ts): with `trust proxy = 1`, express resolves req.ip to the
@@ -36,6 +69,7 @@ const FIFTEEN_MIN = GLOBAL_RATE.windowMinutes * 60 * 1000;
  */
 export const globalRateLimiter = rateLimit({
   windowMs: FIFTEEN_MIN,
+  ...storeFor('global', FIFTEEN_MIN),
   max: GLOBAL_RATE.max,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
@@ -49,6 +83,7 @@ export const globalRateLimiter = rateLimit({
  */
 export const authRateLimiter = rateLimit({
   windowMs: FIFTEEN_MIN,
+  ...storeFor('auth', FIFTEEN_MIN),
   max: AUTH_RATE.max,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
@@ -74,6 +109,7 @@ export const authRateLimiter = rateLimit({
  */
 export const changePasswordRateLimiter = rateLimit({
   windowMs: FIFTEEN_MIN,
+  ...storeFor('change-password', FIFTEEN_MIN),
   max: AUTH_RATE.max,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
@@ -99,6 +135,7 @@ export const changePasswordRateLimiter = rateLimit({
  */
 export const forgotPasswordRateLimiter = rateLimit({
   windowMs: FIFTEEN_MIN,
+  ...storeFor('forgot-password', FIFTEEN_MIN),
   max: AUTH_RATE.max,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
@@ -125,6 +162,7 @@ export const forgotPasswordRateLimiter = rateLimit({
  */
 export const forgotPasswordEmailRateLimiter = rateLimit({
   windowMs: FIFTEEN_MIN,
+  ...storeFor('forgot-password-email', FIFTEEN_MIN),
   max: 3,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
@@ -151,6 +189,7 @@ export const forgotPasswordEmailRateLimiter = rateLimit({
  */
 export const resetPasswordRateLimiter = rateLimit({
   windowMs: FIFTEEN_MIN,
+  ...storeFor('reset-password', FIFTEEN_MIN),
   max: AUTH_RATE.max,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
@@ -174,6 +213,7 @@ export const resetPasswordRateLimiter = rateLimit({
 export const createRouteLimiter = (overrides: Partial<Options> = {}): RateLimitRequestHandler =>
   rateLimit({
     windowMs: 60_000,
+    ...storeFor(`route-${(routeFactoryCounter += 1)}`, 60_000),
     max: 20,
     standardHeaders: 'draft-7',
     legacyHeaders: false,

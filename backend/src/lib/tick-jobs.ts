@@ -22,19 +22,22 @@ import { runTick, type TickReport } from './tick.js';
 import { afterResponse } from './after-response.js';
 import { drainOutbox } from './mail-outbox.js';
 import { runLoginEventRetentionSweep, runAssignmentDueSweep, runWeeklyDigestSweep } from '../scheduler.js';
+import { pruneRateLimitHits } from './rate-limit-store.js';
 
 export async function runPlatformTick(label: string): Promise<TickReport> {
   return runTick(prisma, {
     tick: () => drainOutbox(),
     'tick-daily': async () => {
       // allSettled: one failing sweep must not skip the others.
-      const [retention, due] = await Promise.allSettled([
+      const [retention, due, prune] = await Promise.allSettled([
         runLoginEventRetentionSweep(label),
         runAssignmentDueSweep(label),
+        pruneRateLimitHits(),
       ]);
       return {
         retention: retention.status === 'fulfilled' ? retention.value : { ran: false, reason: 'error' },
         due: due.status === 'fulfilled' ? due.value : false,
+        rateLimitPrune: prune.status === 'fulfilled' ? prune.value : { error: String(prune.reason) },
       };
     },
     'tick-weekly': () => runWeeklyDigestSweep(label),
