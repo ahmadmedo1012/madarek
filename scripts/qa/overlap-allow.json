@@ -8,6 +8,18 @@
     {
       "match": "div.jt-map-in",
       "reason": "R347 D6 (Lane B + Z, merged reasons) — the journey map's STICKY WINDOW at ≤991: the plan column is its own scroll track (Heron's own mobile architecture — the map pins while the closing column scrolls past). It owns its full-width grid track, contains only its own children (statement band, plan window, findings card — all in flow after the R347 re-seat, zero text-under-window findings), and never paints over neighbouring content (the r312 e2e invariant sweep asserts the closing column is never covered). Proven intentional: position sticky inside .jt-map-col, the section's own track ladder; the reference's own 51% walkthrough is a pinned map — deleting the pin would delete the section."
+    },
+    {
+      "match": "header.topbar",
+      "reason": "R353 P1 — the app shell's own fixed topbar (the AppShell contract from R353 P4: one header height token, the primary navigation). On a 390x844 viewport the 56-64px bar measures ~7% of the viewport area — over the 6% big-fixed threshold by construction, not by defect: it is the platform's global chrome, contains only its own controls, and the R353 P4 layout contract pins its z-index and height. Proven intentional: every authed page renders inside AppShell with the topbar; content scrolls under it by design."
+    },
+    {
+      "match": "div.auth-frame",
+      "reason": "R353 P1 — the auth/colleges/app sheets' own DRAFTING FRAME (patterns.css .auth-frame/.nf-frame, W7 dedup family of div.sheet-frame): four 1px hairlines at the 7px viewport inset, aria-hidden, pointer-transparent, decorative registration chrome present at every breakpoint by design. It intersects ~95% of the viewport BY CONSTRUCTION (it is the border, not a cover) — same proven-intentional case as the allowlisted div.sheet-frame."
+    },
+    {
+      "match": "div.nf-frame",
+      "reason": "R353 P1 — the 404/legal sheets' DRAFTING FRAME, the .auth-frame twin (patterns.css:635, W7 dedup — identical bodies, same layer). Decorative 1px fixed frame, aria-hidden, pointer-transparent; the big-fixed flag measures its inset box, not any ink. Same construction as div.sheet-frame / div.auth-frame."
     }
   ]
 }

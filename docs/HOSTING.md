@@ -10,12 +10,33 @@
 | الطبقة | المزوّد | الخطة | ملاحظات |
 |---|---|---|---|
 | الويب (SPA) | Vercel — مشروع `madarek` | Hobby (مجانية) | `frontend/dist` عبر CDN — دائمًا متاح، لا sleeps |
-| الـ API (Express) | Vercel Function واحد (`api/index.mjs`) | نفس المشروع | `regions: fra1`، `maxDuration 60s`، ذاكرة 1 GB |
+| الـ API (Express) | Vercel Function واحد (`api/main.mjs` — أعيدت تسميته R353 بعد تجميد كاش الدالة) | نفس المشروع | `regions: fra1`، `maxDuration 60s`، ذاكرة 1 GB؛ buildId يُخبز وقت البناء (ثلاث طبقات: ثابت tsc + `api/build-sha.json` + `/build-sha.txt`) |
 | قاعدة البيانات | Neon — `ep-icy-mode…eu-central-1/neondb` (قاعدة المالك الأصلية) | Free | عبر الرابط المُجمِّع (pooler) — القياس بعد fra1: dbLatency وسيطًا **2 ms** |
 | البريد | Resend (`onboarding@resend.dev`) | Free | **يُسلِّم لعنوان المالك فقط** حتى توثيق نطاق — التفاصيل في `docs/MAIL.md` |
 | ملفات التحميل | Vercel Blob — مخزن `tadmora-private-files` | متصل بالمشروع | `STORAGE_DRIVER=vercel-blob`؛ ترحيل صفوف `BinaryObject` القديمة يركب كل بناء (`backend/scripts/storage-to-blob.mjs`) |
 | مرآة الإعداد البعيد | GitHub Pages (`gh-pages`) | — | `config/app.json` (apiOrigins) — مرآة ثانية دائمة التاح |
 | الاستعداد الاحتياطي | Render — `madarek.onrender.com` (مُعلَّقة) | Free (موقوفة) | **مسار التراجع فقط** — راجع §6 |
+
+
+### مزوّدو الذكاء الاصطناعي (R353 C2) — سلسلة لا مزوّدًا واحدًا
+
+الترتيب: **Gemini ← Groq ← OpenRouter ← المزوّد القديم ← الملحّن المحلي**
+(الأخير دائمًا متاح — بلا مفاتيح إطلاقًا لا يتعطل الإقلاع).
+
+| المتغيّر | النطاق | ملاحظات |
+|---|---|---|
+| `GEMINI_API_KEY` + `AI_GEMINI_MODELS` | production + preview | الطراز الافتراضي `gemini-2.5-flash`؛ المهام الطويلة/العربية الدقيقة |
+| `GROQ_API_KEY` + `AI_GROQ_MODELS` | production + preview | الافتراضي `llama-3.3-70b-versatile`؛ السريع/القصير |
+| `OPENROUTER_API_KEY` + `AI_OPENROUTER_MODELS` | اختياري | احتياط ثالث |
+| `AI_PROVIDERS` | اختياري (JSON) | يلغي القائمة الفردية إن وُجد — `[{"id","baseUrl","apiKeyEnv","models","timeoutMs"}]` |
+
+- قاطع دائرة لكل مزوّد (3 إخفاقات متتالية ← إغلاق 60 ثانية)؛ ميزانية الدوران 50 ثانية (سقف Vercel Hobby 60 ثانية)؛ `AiTelemetry.provider` يسجّل من أجاب فعلًا؛ `/ai/config` يعرض السلسلة بلا أسرار؛ `/api/v1/status` يقول `aiMode: chain`.
+- **تحقق المفاتيح من هذا الصندوق مستحيل** (حجب جغرافي: Groq 403، Gemini FAILED_PRECONDITION) — الاختبارات كلها عبر مزوّدات وهمية محلية؛ جدول التقييم الحي يتطلب التشغيل من Vercel أو جهاز المالك (`node scripts/ai-eval/golden-run.mjs`).
+
+### الإشعارات (R353 N) — حالة الدفع الفعلية
+
+- يعمل اليوم بلا Firebase: مركز الإشعارات داخل التطبيق + التفضيلات (`/me/push-preferences`) + ساعات الهدوء + معالجة الإيصالات وتقليم الرموز الميتة + مفاتيح الدمج. `PUSH_ENABLED` افتراضيًا **true**.
+- **دفع Android خارجيًا ينتظر المالك** — قائمة خطوات واحدة في `docs/PUSH-FIREBASE-CHECKLIST.md` (مشروع Firebase + تطبيق `ly.madarek.mobile` + `google-services.json` + حساب خدمة) ثم نرفع بيانات FCM v1 إلى EAS ونعيد البناء.
 
 ## 2. الحدود الحرة — الجدول الصادق
 

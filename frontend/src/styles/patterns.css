@@ -1950,8 +1950,12 @@ a.pf-row-link {
     position: sticky;
     inset-block-start: 0;
     z-index: var(--z-dropdown);
-    background: color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter: blur(10px);
+    /* R353 P1 (the overlap crawl): OPAQUE — the 82%-transparent wash let
+     * scrolled text bleed through the sticky bar on /app, /legal/*, the
+     * auth sheets and the college pages (crawl cells: fixedText 8-10
+     * combos per page + the VLM screenshot confirmation). The blur stays
+     * for the paper texture; the ink no longer shows through. */
+    background: var(--bg);
     border-block-end: 1px solid var(--grid-line);
   }
 

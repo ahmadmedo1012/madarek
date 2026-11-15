@@ -3,6 +3,11 @@
 //   node scripts/qa/overlap.mjs --url http://localhost:4173 --routes / --bps 1440x900,390x844 --themes light,dark --out /tmp/r346/overlap.json
 //   Authed routes: --storage /tmp/state.json (a Playwright storageState — see
 //   frontend/tests/e2e/fixtures/auth-storage.ts; R349 P5: the people surfaces).
+//   R353 P1 — hermetic per-role crawl: --seed student|teacher|registrar|quality|owner
+//   bundles frontend/tests/e2e/fixtures/mock-transport.ts (esbuild), installs the
+//   mock API + seeds that role's session in every context (the pages-*.mjs
+//   harness method) — no backend needed; the role's /auth/me override keeps
+//   role guards honest. --routes then accepts that role's authed paths.
 //   Evidence shots: --shots /tmp/dir (one PNG per route×bp×theme at the top stop).
 // Finds, at every scroll stop: (1) TEXT-ON-TEXT overlaps, (2) text overlapping non-text media/plates,
 // (3) fixed/sticky elements covering > 6% of the viewport, (4) clipped text, (5) horizontal page overflow.
@@ -25,8 +30,10 @@
 // was clipped out entirely. Same fix Lane D shipped for the app variant.
 import { chromium } from 'playwright';
 import fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
+import os from 'node:os';
+import crypto from 'node:crypto';
 const a = Object.fromEntries(process.argv.slice(2).reduce((m, v, i, r) => (v.startsWith('--') ? m.push([v.slice(2), r[i + 1]]) : 0, m), []));
 const url = a.url || 'http://localhost:4173';
 const routes = (a.routes || '/').split(',');
@@ -34,6 +41,7 @@ const bps = (a.bps || '1440x900,390x844').split(',').map(s => s.split('x').map(N
 const themes = (a.themes || 'light,dark').split(',');
 const out = a.out || '/tmp/r346/overlap.json';
 const storage = a.storage || null;   /* R349 P5 — Playwright storageState for authed routes */
+const seedRole = a.seed || null;      /* R353 P1 — hermetic per-role session (mock API) */
 const shotsDir = a.shots || null;    /* R349 P5 — evidence PNGs (route at top per bp×theme) */
 const MIN_FRAC = Number(a.minfrac || 0.2);
 const MEDIA = a.media === '1';          // overlap area / smaller rect area
@@ -45,6 +53,16 @@ const allowed = (sel) => ALLOW.some(m => typeof m === 'string' && m && sel.start
 const PROBE = () => {
   const MEDIA = __MEDIA__;
   const vw = innerWidth, vh = innerHeight, res = { text: [], media: [], fixed: [], clipped: [], hoverflow: 0 };
+  /* R353 P1 — OCCLUSION: a text rect genuinely COVERED by an opaque
+   * higher-layer element is invisible to the eye, not a defect. The
+   * sticky/fixed header bars now carry opaque backgrounds (the 82%
+   * translucent bleed-through was fixed in patterns.css); the geometry
+   * probe must respect that or every scrolled-under-header paragraph
+   * reads as an overlap. opaqueBar(el): the nearest sticky/fixed
+   * ancestor with a solid background that owns the space. */
+  const opaqueBar = (el) => { for (let e = el; e && e !== document.body; e = e.parentElement) { const st = getComputedStyle(e); if (st.position === 'fixed' || st.position === 'sticky') { const bg = st.backgroundColor; if (bg && !/rgba\([^)]*,\s*0\)|transparent/.test(bg)) return e; } } return null; };
+  const coveredBy = (a, b) => { const barA = opaqueBar(a), barB = opaqueBar(b); if (barA && barA === barB) return false; const bar = barA || barB; if (!bar) return false; const other = barA ? b : a; if (bar.contains(other) || other.contains(bar)) return false; const r = bar.getBoundingClientRect(), o = other.getBoundingClientRect(); const ix = Math.max(0, Math.min(r.right, o.right) - Math.max(r.left, o.left)), iy = Math.max(0, Math.min(r.bottom, o.bottom) - Math.max(r.top, o.top)); return ix * iy > 0; }; /* R353 P1: ANY intersection with an opaque bar = hidden or boundary-straddle (the universal scroll-under-header reality); the defect class this check guards — text showing THROUGH an overlay — requires a translucent bar, which the patterns now forbid */
+
   const vis = el => { const s = getComputedStyle(el); return s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity) > 0.08; };
   const eff = el => { let o = 1; for (let e = el; e && e !== document.documentElement; e = e.parentElement) { const s = getComputedStyle(e); if (s.display === 'none' || s.visibility === 'hidden') return 0; o *= parseFloat(s.opacity); } return o; };
   const sel = el => el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + (el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/).slice(0, 2).join('.') : '');
@@ -165,6 +183,7 @@ const PROBE = () => {
       const ovX = Math.min(r1.right, r2.right) - Math.max(r1.left, r2.left);
       if (ovY <= 0 || ovX <= 0) continue;
     }
+    if (coveredBy(p.el, q.el)) continue;
     const ar = inter(p, q); if (!ar) continue; const f = ar / Math.min(p.w * p.h, q.w * q.h);
     if (f >= MIN) res.text.push({ a: sel(p.el), b: sel(q.el), ta: p.t, tb: q.t, frac: +f.toFixed(2), at: [Math.round(p.x), Math.round(p.y)] });
   }
@@ -186,20 +205,74 @@ const PROBE = () => {
     const bx = Math.max(bRaw.left, 0), by = Math.max(bRaw.top, 0), bx1 = Math.min(bRaw.right, vw), by1 = Math.min(bRaw.bottom, vh);
     if (bx1 - bx < 20 || by1 - by < 12) continue;
     const b = { left: bx, top: by, right: bx1, bottom: by1, width: bx1 - bx, height: by1 - by };
-    for (const p of tn) { if (el.contains(p.el)) continue; if (inter({ x: b.left, y: b.top, w: b.width, h: b.height }, p) / (p.w * p.h) > 0.3) res.fixedText.push({ fixed: sel(el), under: sel(p.el), t: p.t }); }
+    for (const p of tn) { if (el.contains(p.el)) continue; if (inter({ x: b.left, y: b.top, w: b.width, h: b.height }, p) / (p.w * p.h) > 0.3) { if (coveredBy(el, p.el)) continue; res.fixedText.push({ fixed: sel(el), under: sel(p.el), t: p.t }); } }
   }
-  for (const p of tn) { const e = p.el, s = getComputedStyle(e); if ((s.overflow !== 'visible') && e.scrollWidth > e.clientWidth + 2 && s.textOverflow !== 'ellipsis' && e.clientWidth > 0) res.clipped.push({ el: sel(e), t: p.t }); }
+  for (const p of tn) { const e = p.el, s = getComputedStyle(e); if (e.classList.contains('sr-only')) continue; /* R353 P1 — sr-only is deliberate a11y hiding (the clip IS the technique), never a clipped defect */ if ((s.overflow !== 'visible') && e.scrollWidth > e.clientWidth + 2 && s.textOverflow !== 'ellipsis' && e.clientWidth > 0) res.clipped.push({ el: sel(e), t: p.t }); }
   res.hoverflow = Math.max(0, document.documentElement.scrollWidth - vw);
   return res;
 };
+/* ── R353 P1 — the hermetic per-role seed (the pages-*.mjs method) ── */
+const SEED_USERS = { student: 'STUDENT_USER', teacher: 'TEACHER_USER', registrar: 'ADMIN_USER', quality: 'QUALITY_USER', owner: 'OWNER_USER' };
+let seedInstall = null; /* { ctx(c, theme), me(p) } — mock API + session + per-page /auth/me */
+if (seedRole) {
+  if (!SEED_USERS[seedRole]) { console.error(`--seed: unknown role '${seedRole}' (student|teacher|registrar|quality|owner)`); process.exit(2); }
+  const require_ = (await import('node:module')).createRequire(import.meta.url);
+  const esbuild = require_('esbuild');
+  const srcDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../frontend/tests/e2e/fixtures');
+  const sources = ['mock-transport.ts', 'api-fixtures.ts'].map((f) => path.join(srcDir, f));
+  const stdinContents = `export { installMockApi, seedSession, standardRoutes } from ${JSON.stringify(sources[0])}; export { STUDENT_USER, TEACHER_USER, ADMIN_USER, QUALITY_USER, OWNER_USER, meProfile } from ${JSON.stringify(sources[1])};`;
+  const hash = crypto.createHash('sha1').update(stdinContents + sources.map((f) => fs.readFileSync(f)).join('')).digest('hex').slice(0, 12);
+  const dir = path.join(os.tmpdir(), `r353-overlap-seed-${hash}`);
+  const out = path.join(dir, 'transport.mjs');
+  if (!fs.existsSync(out)) {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.mkdirSync(path.join(dir, 'media'), { recursive: true });
+    fs.copyFileSync(path.join(srcDir, 'media/lecture.mp4'), path.join(dir, 'media/lecture.mp4'));
+    esbuild.buildSync({
+      stdin: { contents: stdinContents, resolveDir: srcDir, loader: 'ts' },
+      bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'silent',
+    });
+  }
+  const T = await import(`${pathToFileURL(out).href}?v=${hash}`);
+  const user = T[SEED_USERS[seedRole]];
+  /* the per-role /auth/me override keeps role guards honest (the pages-*.mjs
+   * meJson precedent — installMockApi answers /auth/me for the bare session
+   * user, which carries no institution context; a PAGE-level route overrides
+   * it with the enriched profile). */
+  const roleExtras = {
+    teacher: { teacherProfile: { position: null, facultyId: 'fac_e2e_eng', departmentId: 'dep_e2e_cs', faculty: { id: 'fac_e2e_eng', name: 'كلية الهندسة' }, department: { id: 'dep_e2e_cs', name: 'قسم علوم الحاسوب' } }, studentProfile: null },
+    registrar: { scopeFaculty: null, staffRole: 'REGISTRAR_GENERAL' },
+    quality: { staffRole: 'EXAMS_CONTROLLER' },
+    owner: {},
+    student: {},
+  };
+  const seededUser = { ...user, memberships: [], currentInstitution: { id: 'inst_e2e_zu', name: 'مؤسسة مدارك النموذجية', nameEn: 'Madarek Model Institution', slug: 'zu' }, membershipRole: user.role };
+  seedInstall = {
+    ctx: async (c, theme) => {
+      await T.installMockApi(c, { sessionUser: user });
+      await T.seedSession(c, seededUser, { token: `e2e-token-${seedRole}`, theme: theme === 'dark' ? 'dark' : undefined });
+    },
+    /* applied per PAGE (page.route outranks the context route) */
+    me: async (p) => {
+      await p.route('**/auth/me', async (route) => {
+        if (route.request().method().toUpperCase() !== 'GET') { await route.fallback(); return; }
+        await route.fulfill({ status: 200, contentType: 'application/json; charset=utf-8', body: JSON.stringify({ data: { ...T.meProfile(user), memberships: [], currentInstitution: seededUser.currentInstitution, membershipRole: user.role, ...roleExtras[seedRole] } }) });
+      });
+    },
+  };
+}
+
 const run = async () => {
   const br = await chromium.launch({executablePath: process.env.CHROME_BIN}); const all = [];
   const st = storage ? JSON.parse(fs.readFileSync(storage, 'utf8')) : undefined;
   for (const [w, h] of bps) for (const th of themes) {
     const ctx = await br.newContext({ viewport: { width: w, height: h }, ...(st ? { storageState: st } : {}) });
+    if (seedInstall) { await seedInstall.ctx(ctx, th); }
     await ctx.addInitScript(m => { try { localStorage.setItem('madarek-theme', JSON.stringify({ state: { mode: m }, version: 2 })); } catch {} }, th);
     for (const r of routes) {
-      const p = await ctx.newPage(); await p.goto(url + r, { waitUntil: 'networkidle' }).catch(() => {}); await p.waitForTimeout(1200);
+      const p = await ctx.newPage();
+      if (seedInstall) { await seedInstall.me(p); }
+      await p.goto(url + r, { waitUntil: 'networkidle' }).catch(() => {}); await p.waitForTimeout(1200);
       /* R347-Z — wait for the landing's intro gate to settle: the
        * preloader's mono percentage counter + its clip-path wipe overlay
        * print over content mid-exit, and on a cold dev server the gate
