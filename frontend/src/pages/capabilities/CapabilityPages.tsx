@@ -60,7 +60,7 @@ export function CapabilitiesPage() {
               قدرات <em>موثَّقة</em>، لا ادّعاءات
             </RevealCssClass>
             <RevealCssClass as="p" className="cu-lede" delay={2}>
-              كل رقم يُحسب من حالة الميزات في النظام — يتغيّر مع التحديثات، لا مع الحملات.
+              كل رقم من حالة الميزات في النظام — يتغيّر مع التحديثات، لا الحملات.
             </RevealCssClass>
             {/* D9: the honest CTA pair at the page head (the D7c measured
                 seat) — the sister public page + the real registry page; the
@@ -118,7 +118,7 @@ export function CapabilitiesPage() {
               {formatInt(colleges.length)} كلية في {formatInt(campusCount)} أحرام
             </RevealCssClass>
             <RevealCssClass as="p" className="cu-lede" delay={2}>
-              بنية الكليات كاملة معروضة داخل المنصّة — والسجلّ التفاعلي في صفحة الكلّيّات.
+              بنية الكليات كاملة داخل المنصّة — والسجلّ التفاعلي في صفحة الكلّيّات.
             </RevealCssClass>
           </div>
 
@@ -146,8 +146,8 @@ export function CapabilitiesPage() {
           </RevealCssClass>
 
           <p className="cu-foot">
-            بيانات العرض تخصّ «مؤسسة مدارك النموذجية» — مؤسّسة اصطناعية بالكامل لأغراض العرض،
-            ومدارك منصّة مستقلّة لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها.
+            بيانات العرض تخصّ «مؤسسة مدارك النموذجية» الاصطناعية — ومدارك منصّة
+            مستقلّة لا تنتمي لأيّ مؤسّسة تعليمية.
           </p>
         </section>
       </main>

@@ -42,11 +42,11 @@ type ForgotInputs = z.infer<typeof forgotSchema>;
  * after-submit state (the generic API message alone would imply a mail
  * that never leaves; the platform says what it is). */
 const MAIL_NOT_CONFIGURED_NOTE =
-  'إرسال البريد الفعلي غير مُهيّأ بعد [يُستكمل قبل الإطلاق] — حتى تهيئته، حسابات @test.ly التجريبية تستلم رابط الاستعادة هنا مباشرةً، وللحسابات الأخرى استخدم قناة التواصل في صفحة «اتصل بنا».';
+  'إرسال البريد غير مُهيّأ بعد [يُستكمل قبل الإطلاق] — حسابات @test.ly تستلم الرابط هنا مباشرةً، وغيرها عبر «اتصل بنا».';
 
 /** Generic refusal ONLY for failures the server never answered (network). */
 const GENERIC_REQUEST_ERROR =
-  'تعذّر إرسال الطلب — تحقّق من اتصالك بالشبكة ثم أعد المحاولة.';
+  'تعذّر إرسال الطلب — تحقّق من اتصالك.';
 
 export default function ForgotPasswordPage() {
   useThemeSync();
@@ -154,7 +154,7 @@ export default function ForgotPasswordPage() {
                     <p className="fp-dev-inbox-head">
                       وضع الاختبار — رابط الاستعادة <span dir="ltr">(test mode)</span>
                     </p>
-                    <p className="fp-dev-inbox-note">لا يُرسل بريد فعلي — الرابط معروض هنا لأن الحساب تجريبي (@test.ly).</p>
+                    <p className="fp-dev-inbox-note">لا يُرسل بريد فعلي — الرابط معروض هنا (حساب تجريبي @test.ly).</p>
                     <div className="fp-dev-inbox-link-row">
                       <a
                         className="fp-dev-inbox-link"

@@ -122,7 +122,7 @@ describe('R320 §D — the 9-page grammar (the Heron public sheet)', () => {
      * R341 D3 re-key: /help likewise (help.css hp-* header). */
     expect(container.querySelector('header.lg-header, header.ab-header, header.hp-header')).toBeTruthy();
     // the honest colophon cluster + the آخر تحديث stamp
-    expect(screen.getByText('منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل')).toBeTruthy();
+    expect(screen.getByText('منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية')).toBeTruthy();
     expect(screen.getAllByText(/آخر تحديث/).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(LEGAL_UPDATED).length).toBeGreaterThanOrEqual(1);
   });
@@ -137,7 +137,7 @@ describe('R320 §D — the 9-page grammar (the Heron public sheet)', () => {
 
   it('the sticky guest header carries the back-to-home link + the brand mark', () => {
     renderPage(PrivacyPage);
-    const back = screen.getByRole('link', { name: /العودة إلى الصفحة الرئيسية/ });
+    const back = screen.getByRole('link', { name: /العودة للرئيسية/ });
     expect(back.getAttribute('href')).toBe('/');
     const brand = screen.getByRole('link', { name: 'مدارك — الصفحة الرئيسية' });
     expect(brand.getAttribute('href')).toBe('/');
@@ -188,7 +188,7 @@ describe('R320 §D — titles + per-page head metadata', () => {
 
     const { unmount } = renderPage(PrivacyPage);
     expect(desc.getAttribute('content')).toBe(
-      'ما تجمعه منصّة مدارك من بيانات، ولماذا، وأين تُخزَّن، وحقوقك — مكتوبة من سلوك المنصّة الفعلي لا من قوالب.',
+      'ما تجمعه مدارك من بيانات ولماذا وأين تُخزَّن، وحقوقك — من سلوك المنصّة الفعلي.',
     );
     expect(canonical.getAttribute('href')).toBe('https://madarek-nine.vercel.app/legal/privacy');
     expect(ogTitle.getAttribute('content')).toBe('سياسة الخصوصية');
@@ -264,8 +264,8 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
       expect(text).toContain(provider);
     }
     // the honest fallback: the local composer when the provider is off
-    expect(text).toContain('أداة محلية بسيطة');
-    expect(text).toContain('دون إرسال أي بيانات');
+    expect(text).toContain('أداة محلية');
+    expect(text).toContain('لا إرسال للخارج');
   });
 
   it('terms: demo-platform honesty · 12-72 policy · @test.ly · «كما هي»', () => {
@@ -295,8 +295,8 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
     expect(text).toContain('mdrk-ui');
     expect(text).toContain('mdrk-doc-side-w');
     expect(text).toContain('mdrk-academic-links');
-    expect(text).toContain('لا يُمس أبدًا عند الرفض');
-    expect(text).toContain('لا يدمّر محتوى المستخدم');
+    expect(text).toContain('فلا يُمس عند الرفض');
+    expect(text).toContain('بياناتك التي كتبتَها تبقى ملكك');
   });
 
   it('cookies: the 9-key table rendered VERBATIM — each key in its own dir=ltr mono cell', () => {
@@ -385,17 +385,21 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
     expect(link.getAttribute('href')).toBe('/capabilities');
   });
 
-  it('about: the landing independence paragraph VERBATIM (nothing added)', () => {
+  it('about: the landing independence paragraph, dieted (r353) — same claims, fewer words', () => {
     /* P2-0 (r335 split): the independence paragraph lives in the
-     * footer band — sections/Footer.tsx. */
+     * footer band — sections/Footer.tsx. R353 copy diet: the ABOUT
+     * sheet carries the short form (independent · Arabic-first ·
+     * artificial demo data); the full no-affiliation clause stays
+     * verbatim on the landing footer AND /legal/terms. */
     const landing = read('src/components/landing/sections/Footer.tsx');
     // extract the honest identity paragraph from the landing source
     const m = landing.match(/منصّة تعليمية تقنية مستقلّة، عربية أولًا\.[^<]+/);
     expect(m).toBeTruthy();
-    const paragraph = m![0].trim();
-    expect(paragraph).toContain('اصطناعية بالكامل لأغراض العرض');
+    expect(m![0]).toContain('لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها');
     renderPage(AboutPage);
-    expect(screen.getByText(paragraph)).toBeTruthy();
+    expect(
+      screen.getByText('منصّة تعليمية تقنية مستقلّة، عربية أولًا — بيانات العرض اصطناعية بالكامل.'),
+    ).toBeTruthy();
   });
 
   it('help: nine FAQs, each citing a real surface (@test.ly/12345678 · 5 roles · the storage ledger · the print sheet)', () => {

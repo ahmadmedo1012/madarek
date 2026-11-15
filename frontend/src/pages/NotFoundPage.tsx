@@ -68,14 +68,13 @@ export default function NotFoundPage() {
 
         <h1 className="nf-title">هذه الصفحة تغيّبت عن الحضور</h1>
         <p className="nf-sub">
-          الرابط الذي فتحته لا يطابق أيّ صفحة في مدارك — ربّما تغيّر عنوانها أو وُرِد
-          بشكل غير دقيق.
+          الرابط لا يطابق أيّ صفحة — ربّما تغيّر العنوان.
         </p>
 
         <div className="nf-actions">
           <Link to="/" className="btn primary lg">
             <Icon icon={Home} size={16} />
-            العودة إلى الرئيسية
+            العودة للرئيسية
           </Link>
           <Link to="/colleges" className="btn lg">
             <Icon icon={Building2} size={16} />

@@ -81,7 +81,7 @@ export function AdminMailPage() {
     <div className="page r305ao">
       <PageHeader
         title="البريد"
-        description="حالة مزوّد البريد، سجلّ التسليم، قائمة الحجب، وإرسال رسالة اختبار — كل ما يجري فعلًا، بلا ادّعاء."
+        description="حالة المزوّد، سجلّ التسليم، الحجب، ورسالة اختبار — كما هي، بلا ادّعاء."
         breadcrumbs={[
           { label: 'لوحة المسجل العام', to: '/admin/dashboard' },
           { label: 'البريد' },
@@ -169,7 +169,7 @@ function DeliveryLogCard() {
     <Card
       title="سجلّ التسليم"
       icon={Mail}
-      subtitle="كل رسالة عبر صندوق الصادر: الحالة، المحاولات، معرّف المزوّد، وأزرار إعادة الإرسال/الإلغاء."
+      subtitle="الحالة، المحاولات، المزوّد، وأزرار الإعادة/الإلغاء."
       actions={
         <div className="filter-bar" role="group" aria-label="تصفية حسب الحالة">
           {OUTBOX_STATUSES.map((s) => (
@@ -197,7 +197,7 @@ function DeliveryLogCard() {
         <EmptyState
           icon={Mail}
           title="لا رسائل بعد"
-          description="لم يُرسِل النظام أي بريد حتى الآن — الرسائل تظهر هنا لحظة دخولها صندوق الصادر."
+          description="لم يُرسِل النظام أي بريد بعد — تظهر هنا لحظة الدخول للصادر."
         />
       ) : (
         <div className="table-wrap">
@@ -306,7 +306,7 @@ function SuppressionCard() {
     <Card
       title="قائمة الحجب"
       icon={MailX}
-      subtitle="العناوين التي ارتدّت أو اشتكت أو ألغت الاشتراك — لن يُرسَل إليها مجددًا ما دامت هنا."
+      subtitle="لن يُرسَل إليها مجددًا ما دامت هنا."
     >
       {isPending ? (
         <ListSkeleton rows={4} />
@@ -361,7 +361,7 @@ function TestSendCard() {
     <Card
       title="إرسال رسالة اختبار"
       icon={Send}
-      subtitle="إرسال حقيقي عبر المزوّد المضبوط إلى عنوان تختاره — أثبتِ التوصيل بنفسك."
+      subtitle="إرسال حقيقي عبر المزوّد إلى عنوان تختاره."
     >
       <form
         className="r350-e6-testsend"
@@ -369,8 +369,8 @@ function TestSendCard() {
           e.preventDefault();
           if (!to) return;
           send.mutate(to, {
-            onSuccess: () => toast.success('انضمت رسالة الاختبار إلى صندوق الصادر — تُسلَّم مع الدفعة القادمة.', { title: 'أُرسلت' }),
-            onError: (err) => toast.error(apiErrorMessage(err, 'تعذّر الانضمام إلى صندوق الصادر — الحد اليومي ممتلئ أو الإرسال غير مضبوط.'), { title: 'فشل' }),
+            onSuccess: () => toast.success('انضمت رسالة الاختبار للصادر — تُسلَّم مع الدفعة القادمة.', { title: 'أُرسلت' }),
+            onError: (err) => toast.error(apiErrorMessage(err, 'تعذّر الانضمام — الحد اليومي ممتلئ أو الإرسال غير مضبوط.'), { title: 'فشل' }),
           });
         }}
       >

@@ -55,7 +55,7 @@ describe('DocumentViewerPage — the filename param gate (r164f)', () => {
     renderAt('/document/cmv7nja0p0010');
 
     expect(screen.getByText('الملف غير موجود')).toBeInTheDocument();
-    expect(screen.getByText(/اسم الملف في الرابط لا يصلح لعرض PDF/)).toBeInTheDocument();
+    expect(screen.getByText(/اسم الملف لا يصلح لعرض PDF/)).toBeInTheDocument();
     // The reader (mocked) must never mount for an unservable param —
     // no pdfjs chunk, no fetch, no English envelope error.
     expect(screen.queryByTestId('pdf-viewer-stub')).toBeNull();

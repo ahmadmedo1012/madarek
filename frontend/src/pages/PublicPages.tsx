@@ -37,15 +37,15 @@ export function AboutPage() {
   useLegalMeta({
     title: 'عن مدارك',
     path: '/about',
-    description: 'منصّة تعليمية تقنية مستقلّة، عربية أولًا — البيان كاملًا كما هو في صفحة البداية، بلا إضافات.',
+    description: 'منصّة تعليمية تقنية مستقلّة، عربية أولًا — بيان الاستقلال، بلا إضافات.',
   });
 
   /* R341 D2 — rebuilt on the pattern library (the r340 T-D1a recipe):
    * the pf-page/pf-page-header frame + the about sheet's own ab-*
    * grammar (about.css). Same chrome laws as the guest sheets: the
    * skip link first, GuestSheetChrome's frame + grain, the sticky
-   * guest header, ONE h1, and the honest colophon — every word below
-   * is the SAME text the lg sheet carried (tests are law). */
+   * guest header, ONE h1, and the honest colophon — every claim
+   * below is the lg sheet's statement, dieted (r353). */
   return (
     <div className="ab">
       <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
@@ -88,11 +88,12 @@ export function AboutPage() {
               </h2>
             </div>
             <div className="ab-cell">
-              {/* The landing's own identity paragraph, VERBATIM
-                  (LandingPage.tsx:1346-1350 — the r188 honesty pin keeps
-                  «اصطناعية بالكامل» contiguous on one source line; the same
-                  discipline holds here). LEGAL-TODO row 14: nothing may be
-                  added about who builds مدارك until the owner states it. */}
+              {/* The landing's identity paragraph, dieted (r353) to its
+                  three claims — independent, Arabic-first, artificial
+                  demo data. The full no-affiliation clause stays
+                  verbatim on the landing footer + /legal/terms.
+                  LEGAL-TODO row 14: nothing may be added about who
+                  builds مدارك until the owner states it. */}
               <p className="ab-p ab-p-statement">
                 منصّة تعليمية تقنية مستقلّة، عربية أولًا — بيانات العرض اصطناعية بالكامل.
               </p>

@@ -26,10 +26,10 @@ export default function Error403Page() {
   return (
     <ErrorSheetPage
       title="هذه الصفحة خارج نطاق صلاحياتك"
-      lead="وصلت إلى صفحة لا يفتحها دورك في مدارك. ربّما تغيّر الرابط أو أن الصفحة مخصّصة لدور آخر."
+      lead="صفحة لا يفتحها دورك — ربّما تغيّر الرابط أو أنها لدور آخر."
       illustration="forbidden"
       kicker="غير مصرّح"
-      note="لوحة دورك هي نقطة البداية الصحيحة لكل ما يخصّك."
+      note="لوحة دورك هي نقطة البداية الصحيحة."
     >
       <Link to={home} className="btn lg">
         <Icon icon={LayoutDashboard} size={16} />

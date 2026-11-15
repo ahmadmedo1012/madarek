@@ -23,7 +23,7 @@ export default function Error500Page() {
   return (
     <ErrorSheetPage
       title={title}
-      lead="حدث خطأ داخلي أثناء تجهيز هذه الصفحة. فريق مدارك يرصد الأخطاء تلقائيًا؛ جرّب تحديث الصفحة بعد لحظات."
+      lead="خطأ داخلي — جرّب التحديث بعد لحظات."
       illustration="error-generic"
       kicker="خطأ في الخادم"
       note="إذا استمرّ الخلل، يمكنك العودة إلى الرئيسية أو تسجيل الدخول من جديد."

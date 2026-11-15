@@ -95,14 +95,14 @@ export function VisionGalleryPage() {
           colleges); the authored vision statement stays the h1. */}
       <PageHeader
         title={`${formatNum(total)} ابتكاراً قادماً، نبني التعليم في يدك خطوة بخطوة.`}
-        description="هذه نظرة على المسار التقني للمنصة — من الذكاء الاصطناعي والميتافيرس إلى البلوكشين والترجمة الفورية."
+        description="نظرة على المسار التقني — من الذكاء الاصطناعي إلى البلوكشين."
       />
 
       {total === 0 ? (
         <EmptyState illustration="empty-list"
           icon={Sparkles}
           title="لا توجد ابتكارات معروضة بعد"
-          description="ستظهر خارطة الطريق التقنية للمنصة هنا حين تُنشر."
+          description="تظهر خارطة الطريق هنا حين تُنشر."
         />
       ) : (
         <>
@@ -320,7 +320,7 @@ export function VisionDetailPage() {
               نبّهني عند إطلاق هذه الميزة
             </div>
             <div className="text-xs text-subtle vision-notify-hint">
-              خدمة التنبيه على البريد قيد التطوير — تابع صفحة الرؤية: حالة كل ابتكار تُحدَّث هنا فور تغيّرها.
+              خدمة التنبيه على البريد قيد التطوير — حالة كل ابتكار تُحدَّث هنا فور تغيّرها.
             </div>
           </div>
           <button type="button" className="btn outline" disabled>
