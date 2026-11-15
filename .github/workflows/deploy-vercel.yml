@@ -1,20 +1,28 @@
-# R351 X4 — the Vercel production deploy, from CI, after the gates.
+# R351 X4 → R353 repair — the production deploy verification workflow.
 #
-# Flow: push/PR → CI (ci.yml) + this workflow's verify job run in
-# parallel; the deploy job needs CI green (the R350 R3 verify-gated
-# publish policy, ported to the web API), then pins the deployed
-# buildId, `vercel deploy --prod` (a REMOTE build — the platform runs
-# vercel.json's buildCommand with the project's stored env, the 5
-# sensitive values included), and the retry-aware live smoke against
-# the deployed URL.
+# REALITY (verified 2026-11-15): the Vercel GitHub integration deploys
+# every push to main AUTOMATICALLY (one READY production deployment per
+# sha — including shas where this workflow failed before ever reaching
+# a deploy step; e.g. 0ddf853 went READY while this workflow's pin step
+# 404'd). The buildId is baked at BUILD time by
+# backend/scripts/bake-build-sha.mjs from VERCEL_GIT_COMMIT_SHA (a
+# git-integration build env), so no per-deploy env pinning is needed —
+# the old "Pin the build id (RENDER_GIT_COMMIT)" step PATCHes a project
+# env that was DELIBERATELY deleted in the R353 buildId saga and 404s.
 #
-# PRs: the same job tree but `vercel deploy` without --prod (preview
-# deployments; preview env is the isolated spike database — never prod
-# data).
+# Flow now: push → CI + the git-integration deploy run in parallel;
+# this workflow WAITS for CI green, then waits until the LIVE
+# production build is THIS sha's deployment (buildId == sha via
+# /api/v1/health), then runs the full browser-level live smoke.
+# No CLI deploy — a second deployment of the same sha would compete
+# with the integration's build for the Hobby plan's single builder
+# (the R352 double-deploy cancellation lesson).
 #
-# Secrets (repo): VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID.
-# The dormant ticker (tick.yml) wakes at the cutover via the
-# TICK_TARGET_URL repo variable.
+# PRs: the verify job runs (CI must be green); the deploy job is
+# main-only — the integration's preview deployment needs no help.
+#
+# Secrets (repo): GITHUB_TOKEN (built-in) — VERCEL_* no longer needed
+# by this workflow.
 name: Deploy Vercel
 
 on:
@@ -75,10 +83,11 @@ jobs:
           exit 1
 
   deploy:
-    name: vercel deploy (prod on main, preview on PRs)
+    name: await the git-integration deploy + live smoke
     needs: verify
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -88,51 +97,31 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install Vercel CLI
-        run: npm i -g vercel@latest
-
-      - name: Pin the build id (RENDER_GIT_COMMIT = this sha)
-        # CLI deploys inject no git-sha env (that's a git-integration
-        # feature), so the workflow pins it per deploy: PATCH the
-        # project's RENDER_GIT_COMMIT to this sha before the
-        # pull/build/deploy, and /api/v1/status serves it as buildId —
-        # deploy-smoke's wait-for-deploy then matches buildId == the
-        # pushed sha, proving THIS deploy is the one serving.
+      - name: Wait until the live production build IS this sha
+        # The git integration builds every main push; the bake pins the
+        # deployment sha into /api/v1/health's buildId. Poll until they
+        # match — proof that THIS push's deployment is the one serving
+        # (not a stale lambda, not a previous sha).
         run: |
           set -euo pipefail
-          ENV_ID=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            "https://api.vercel.com/v9/projects/${{ secrets.VERCEL_PROJECT_ID }}/env?teamId=${{ secrets.VERCEL_ORG_ID }}" \
-            | jq -r '[.envs[] | select(.key == "RENDER_GIT_COMMIT")][0].id')
-          echo "RENDER_GIT_COMMIT env id: $ENV_ID"
-          CODE=$(curl -s -X PATCH \
-            "https://api.vercel.com/v10/projects/${{ secrets.VERCEL_PROJECT_ID }}/env/$ENV_ID?teamId=${{ secrets.VERCEL_ORG_ID }}" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            -H 'Content-Type: application/json' \
-            -d '{"value":"${{ github.sha }}","type":"encrypted","target":["production","preview"]}' \
-            -o /dev/null -w '%{http_code}')
-          echo "pin buildId -> HTTP $CODE"
-          [ "$CODE" = "200" ]
+          URL="https://madarek-nine.vercel.app"
+          WANT="${{ github.sha }}"
+          SHORT="${WANT:0:12}"
+          for attempt in $(seq 1 60); do
+            BODY=$(curl -s --max-time 20 "$URL/api/v1/health" || echo '{}')
+            GOT=$(echo "$BODY" | jq -r '.buildId // ""')
+            OK=$(echo "$BODY" | jq -r '.ok // false')
+            echo "attempt $attempt → buildId=$GOT ok=$OK (want $SHORT)"
+            if [ "$GOT" = "$SHORT" ] && [ "$OK" = "true" ]; then
+              echo "the ${SHORT} deployment is LIVE and healthy"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::the ${SHORT} deployment never became the live production build"
+          exit 1
 
-      - name: Deploy (remote build — the platform runs the buildCommand with the REAL env)
-        # `vercel deploy --prod` builds on Vercel's own infra: the project's
-        # stored env values (the 5 pull-protected sensitive ones included)
-        # are injected server-side. The --prebuilt path embedded the
-        # "[SENSITIVE]" placeholders `vercel pull` writes for those values
-        # and the functions then failed at runtime (run 43595196731, the
-        # first --prebuilt prod deploy: DB_UNAVAILABLE in 12 ms — an invalid
-        # connection string, not a slow DB; the X1/X2 spike deployments on
-        # this remote path verified green end to end). No local npm ci and
-        # no vercel build: the platform runs vercel.json's buildCommand
-        # itself against the uploaded source.
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} --project=${{ secrets.VERCEL_PROJECT_ID }}
-          else
-            vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }} --project=${{ secrets.VERCEL_PROJECT_ID }}
-          fi
-
-      - name: Live smoke on the production URL (main only)
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+      - name: Live smoke on the production URL
         run: |
           set -euo pipefail
           URL="https://madarek-nine.vercel.app"
