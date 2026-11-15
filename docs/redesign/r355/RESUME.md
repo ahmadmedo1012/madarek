@@ -1,7 +1,10 @@
 # R355 — RESUME (the master record)
 
 Agent: DeepSeek v4.1 (the R355 hand-off brief). Session start: main = `2c763f9c`.
-Session end: main = `103a0897` (all evidence below names its SHA/run).
+Session end: main = `f3adf91c` (CI GREEN on it; production serves buildId f3adf91c;
+android-latest holds the a0a7d1b3 build — smoke pass, verified — with the
+f3adf91c rebuild funneling through the serialized queue; every publish this
+session used the fixed script: 9537102a, d9fe495f, 103a0897-era, a0a7d1b3).
 Owner-facing summary: the Arabic final report (§J of the brief) — this file is the evidence.
 
 ## 0. Environment truth (decisions recorded per §C.1)
@@ -137,9 +140,10 @@ Commit `7f89903d`: `backend/tests/modules/r355-routes-permissions-exhaustive.tes
 
 ## 5. LANE B — production truth
 
-- main `103a0897`: CI / Size / deadcode / Deploy / Android / iOS all green (the e83a3da6 red —
-  icon gate + drift + e2e pins — was root-caused and reconciled in `b81c3768`; the rerun on
-  `103a0897` is the green proof).
+- main `f3adf91c`: CI GREEN (the e83a3da6/a0a7d1b3/7c19b386 reds — icon gate, drift
+  baseline, e2e pins, the strict tests-tsconfig, one R321 term — were each root-caused and
+  reconciled in `b81c3768` + `7c19b386` + `f3adf91c`; verify.sh --fast ALL GREEN: 3,072 unit
+  tests, bundle, css, identity, brand, copy 12,753, mobile 13,056, release 10/10).
 - `/api/v1/health`: `{"ok":true,"buildId":"d9fe495f0403","env":"production"}` — buildId == the
   then-HEAD; the post-103a0897 deploy re-verifies on its own run.
 - Branches: only `main` + `gh-pages` (kept — config mirror) — the sweep was already done.
