@@ -618,31 +618,39 @@ export const FACULTIES = [
   },
 ];
 
-/* ── global search: GET /search/global?q=… — SearchResults ─────── */
+/* ── discovery search: GET /search/discover?q=… — DiscoverResults (r353-F) ── */
 
-export const SEARCH_RESULTS = {
-  courses: [
-    {
-      id: 'crs_e2e_algorithms',
-      title: 'مقدمة في الخوارزميات',
-      subtitle: 'CS-201 · كلية الهندسة',
-      iconEmoji: '🧮',
-      themeColor: '#7c3aed',
-      href: `/student/courses/${OFFERING_ID}`,
+export const DISCOVER_RESULTS = {
+  query: 'خوارزم',
+  categories: {
+    courses: {
+      items: [
+        {
+          id: 'crs_e2e_algorithms',
+          kind: 'course' as const,
+          titleAr: 'مقدمة في الخوارزميات',
+          subtitleAr: 'CS-201 · كلية الهندسة',
+          href: `/student/courses/${OFFERING_ID}`,
+        },
+      ],
+      total: 1,
     },
-  ],
-  lectures: [
-    {
-      id: LECTURE_ID,
-      title: 'الخوارزميات الجشعة',
-      subtitle: 'المحاضرة 2 · مقدمة في الخوارزميات',
-      iconEmoji: '🎬',
-      themeColor: null,
-      href: `/student/lectures/${LECTURE_ID}`,
+    lectures: {
+      items: [
+        {
+          id: LECTURE_ID,
+          kind: 'lecture' as const,
+          titleAr: 'الخوارزميات الجشعة',
+          subtitleAr: 'المحاضرة 2 · مقدمة في الخوارزميات',
+          // The palette suppresses lecture rows for a role with no
+          // openable lecture surface — STUDENT keeps the deep link.
+          href: `/student/lectures/${LECTURE_ID}`,
+        },
+      ],
+      total: 1,
     },
-  ],
-  papers: [],
-  tracks: [],
+  },
+  tookMs: 2,
 };
 
 /* ══════════════════════════════════════════════════════════════════

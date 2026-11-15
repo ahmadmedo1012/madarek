@@ -2,7 +2,7 @@
  * global-search.e2e.ts — لوحة الأوامر والبحث الشامل ⌘K (r164-k).
  *
  * الوتر مملوك من AppShell (⌘K/Ctrl+K يفتح اللوحة على كل الأدوار).
- * الرحلة: فتح → كتابة → انتظار debounce (300ms) + GET /search/global
+ * الرحلة: فتح → كتابة → انتظار debounce (300ms) + GET /search/discover
  * → أقسام النتائج الحقيقية → اختيار نتيجة يغلق اللوحة ويستقر في
  * وجهة href نفسها.
  */
@@ -24,7 +24,7 @@ test.describe('لوحة الأوامر والبحث الشامل', () => {
     /* إجراءات سريعة تظهر قبل كتابة أي شيء (وجهات الدور) */
     await expect(page.getByText('إجراءات سريعة')).toBeVisible();
 
-    /* كتابة استعلام عربي → debounce → نتائج /search/global */
+    /* كتابة استعلام عربي → debounce → نتائج /search/discover */
     await input.fill('خوارزم');
     const coursesSection = page.locator('.search-section', { hasText: 'مقررات' });
     await expect(coursesSection).toBeVisible();

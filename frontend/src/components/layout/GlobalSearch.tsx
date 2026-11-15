@@ -26,14 +26,19 @@
 import { useEffect, useId, useRef, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Search, X, ArrowLeft, Sun, Moon, CornerDownLeft } from 'lucide-react';
+import {
+  Search, X, ArrowLeft, Sun, Moon, CornerDownLeft,
+  Users, GraduationCap, Building2, Landmark, Network, BookOpen, Book,
+  CirclePlay, FileText, ScrollText, Route, Briefcase, CalendarDays,
+  Megaphone, CircleHelp,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
-import { EmojiIcon } from '../EmojiIcon';
 import { Illustration as MkIllustration } from '../illustrations/Illustration';
 import { api, unwrap } from '../../lib/api';
 import { matchesQueryTokens } from '../../lib/search';
 import { useAuthStore } from '../../stores/auth.store';
+import type { AppRole } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { useUiStore } from '../../stores/ui.store';
 import { NAV_BY_ROLE } from '../../lib/nav';
@@ -81,27 +86,147 @@ function focusTrappedOverlayOpen(): boolean {
   return document.querySelector('[aria-modal="true"]') !== null;
 }
 
-interface SearchHit {
+/* ── r353-F — the discovery engine's wire shapes (GET /search/discover) ──
+   The pill + the palette both consume the discovery endpoint's 15
+   typed categories (backend GLOBAL_SEARCH_CATEGORIES, canonical
+   order) — one row shape: kind + titleAr + one meta line + the
+   role-honest href (null = a plain row, the file-less-paper law). */
+type DiscoverKind =
+  | 'student' | 'teacher' | 'institution' | 'faculty' | 'department'
+  | 'course' | 'lecture' | 'material' | 'paper' | 'track' | 'book'
+  | 'job' | 'event' | 'announcement' | 'question';
+
+const DISCOVER_CATEGORY_ORDER = [
+  'students', 'teachers', 'institutions', 'faculties', 'departments',
+  'courses', 'lectures', 'materials', 'papers', 'tracks', 'books',
+  'jobs', 'events', 'announcements', 'questions',
+] as const;
+type DiscoverCategoryKey = (typeof DISCOVER_CATEGORY_ORDER)[number];
+
+interface DiscoverItem {
   id: string;
-  title: string;
-  subtitle: string;
-  iconEmoji?: string | null;
-  themeColor?: string | null;
-  href: string;
+  kind: DiscoverKind;
+  titleAr: string;
+  subtitleAr: string | null;
+  href: string | null;
 }
-interface SearchResults {
-  courses: SearchHit[];
-  lectures: SearchHit[];
-  papers: SearchHit[];
-  tracks: SearchHit[];
+interface DiscoverResults {
+  query: string;
+  categories: Partial<Record<DiscoverCategoryKey, { items: DiscoverItem[]; total: number }>>;
+  tookMs: number;
 }
 
-const SECTION_LABEL: Record<keyof SearchResults, string> = {
+/** One flattened UI row (title + ONE meta, the 1-line law). */
+interface DiscoverHit {
+  id: string;
+  kind: DiscoverKind;
+  title: string;
+  meta: string | null;
+  href: string | null;
+}
+
+const SECTION_LABEL: Record<DiscoverCategoryKey, string> = {
+  students: 'الطلاب',
+  teachers: 'الأساتذة',
+  institutions: 'المؤسسات',
+  faculties: 'الكليات',
+  departments: 'الأقسام',
   courses: 'مقررات',
   lectures: 'محاضرات',
+  materials: 'مواد تعليمية',
   papers: 'بحوث منشورة',
   tracks: 'مسارات تدريب',
+  books: 'كتب',
+  jobs: 'وظائف',
+  events: 'فعاليات',
+  announcements: 'إعلانات',
+  questions: 'بنك الأسئلة',
 };
+
+/** Kind → the row icon (the wire carries no emoji/color — the kind is the signal). */
+const KIND_ICON: Record<DiscoverKind, LucideIcon> = {
+  student: Users,
+  teacher: GraduationCap,
+  institution: Building2,
+  faculty: Landmark,
+  department: Network,
+  course: BookOpen,
+  lecture: CirclePlay,
+  material: FileText,
+  paper: ScrollText,
+  track: Route,
+  book: Book,
+  job: Briefcase,
+  event: CalendarDays,
+  announcement: Megaphone,
+  question: CircleHelp,
+};
+
+/* r353-F — the role/scope filter rides the backend's `categories`
+   param: a STUDENT discovers no people and never the staff question
+   bank (globalSearchScope nulls those rows), so the pill never even
+   requests them; every other role asks for all fifteen and the
+   backend's scope matrix owns the row-level law. An unknown/missing
+   role asks the conservative records-only set. */
+const STUDENT_EXCLUDED_CATEGORIES: ReadonlySet<DiscoverCategoryKey> = new Set([
+  'students', 'teachers', 'questions',
+]);
+
+function discoverCategoriesForRole(role: AppRole | undefined): DiscoverCategoryKey[] {
+  if (role && role !== 'STUDENT') return [...DISCOVER_CATEGORY_ORDER];
+  return DISCOVER_CATEGORY_ORDER.filter((c) => !STUDENT_EXCLUDED_CATEGORIES.has(c));
+}
+
+/* The shared discovery query — ONE query key per (term, categories)
+   so the pill and the palette share a single GET per term (the shared
+   queryClient cache stays the dedupe layer between the surfaces). The
+   AbortController TanStack hands the queryFn rides the raw GET, so a
+   superseded keystroke's request is aborted instead of racing the
+   newer term. */
+function useDiscoverSearch(debounced: string, role: AppRole | undefined) {
+  const enabled = debounced.length >= 2;
+  const categories = useMemo(() => discoverCategoriesForRole(role), [role]);
+  const { data, isPending, isFetching, isError, refetch } = useQuery({
+    queryKey: ['search', 'discover', debounced, categories.join(',')],
+    enabled,
+    queryFn: ({ signal }) =>
+      unwrap<DiscoverResults>(
+        api.get(
+          `/search/discover?q=${encodeURIComponent(debounced)}` +
+            `&categories=${encodeURIComponent(categories.join(','))}&pageSize=5`,
+          { signal },
+        ),
+      ),
+  });
+  const sections = useMemo(() => {
+    const cats = data?.categories;
+    if (!cats) return [] as Array<{ key: DiscoverCategoryKey; items: DiscoverHit[] }>;
+    return DISCOVER_CATEGORY_ORDER
+      .filter((k) => (cats[k]?.items.length ?? 0) > 0)
+      .map((k) => ({
+        key: k,
+        items: cats[k]!.items.map((it) => ({
+          id: it.id,
+          kind: it.kind,
+          title: it.titleAr,
+          meta: it.subtitleAr,
+          href: it.href,
+        })),
+      }));
+  }, [data]);
+  return {
+    enabled,
+    loading: enabled && (isFetching || isPending),
+    isError,
+    refetch,
+    sections,
+    /* Identity-stable (memoized on the memoized sections) — the pill's
+       r299 activeIdx reset keys on flatOptions identity, so a fresh
+       array per render would re-seed the highlight after every render
+       and ArrowDown could never move it. */
+    flatHits: useMemo(() => sections.flatMap((s) => s.items), [sections]),
+  };
+}
 
 /* SR option-count announcement, Arabic counted-noun rules: 0 → none,
    1 → singular, 2 → dual, 3–10 → plural, 11+ → singular again.
@@ -139,36 +264,13 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
      TanStack passes the queryFn rides on the raw GET (15-e P1-3) — a
      superseded request is aborted instead of burning the socket, and
      clearing the query disables the query outright, so `loading` can
-     never stick. Cache freshness + the retry policy come from the
-     shared client defaults; a failed fetch renders a retryable error
-     row, never a fake "no results". */
-  const enabled = debounced.length >= 2;
-  const { data, isPending, isFetching, isError, refetch } = useQuery({
-    queryKey: ['search', 'global', debounced],
-    enabled,
-    queryFn: ({ signal }) =>
-      unwrap<SearchResults>(
-        api.get(`/search/global?q=${encodeURIComponent(debounced)}`, { signal }),
-      ),
-  });
-  /* isPending covers the one-render gap between a key change and the
-     fetch actually starting (status pending, fetchStatus idle) — without
-     it the empty-state branch would flash for a frame before the
-     shimmer. The manual effect had the same gap; the query layer lets
-     us close it. */
-  const loading = enabled && (isFetching || isPending);
-  const results = data ?? null;
-
-  // Flatten for keyboard nav
-  const flatHits = useMemo(() => {
-    if (!results) return [];
-    return [
-      ...results.courses,
-      ...results.lectures,
-      ...results.papers,
-      ...results.tracks,
-    ];
-  }, [results]);
+     never stick. r353-F: the endpoint is the discovery engine
+     (/search/discover, 15 typed categories, the role filter riding the
+     backend categories param — see useDiscoverSearch above). Cache
+     freshness + the retry policy come from the shared client defaults;
+     a failed fetch renders a retryable error row, never a fake
+     "no results". */
+  const { enabled, loading, isError, refetch, sections, flatHits } = useDiscoverSearch(debounced, role);
 
   /* 5-B5 (A4 P2-4): the pill answers with the SAME quick-action source
      the palette uses (NAV_BY_ROLE). Queries the live index can't answer
@@ -187,7 +289,8 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
 
   /* One flat keyboard order across both sources — actions first, then
      live results (the palette's order, so ↑/↓ behave identically in
-     both surfaces). */
+     both surfaces). A hit with a null href is still a row (the
+     plain-row law) — Enter on it is a no-op, never a dead navigation. */
   const flatOptions = useMemo(
     () => [
       ...navActions.map((item) => ({ kind: 'action' as const, to: item.to })),
@@ -290,7 +393,10 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
     } else if (e.key === 'Enter' && flatOptions[activeIdx]) {
       e.preventDefault();
       const opt = flatOptions[activeIdx]!;
-      goTo(opt.kind === 'action' ? opt.to : opt.href);
+      /* A null-href hit is a plain row (the file-less-paper law) — Enter
+         is a no-op there, never a dead navigation. */
+      if (opt.kind === 'action') goTo(opt.to);
+      else if (opt.href) goTo(opt.href);
     }
   };
 
@@ -301,7 +407,6 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
     navigate(href);
   };
 
-  const sections: Array<keyof SearchResults> = ['courses', 'lectures', 'papers', 'tracks'];
   const totalHits = flatHits.length;
   const totalOptions = flatOptions.length;
   const showDropdown = open && (loading || enabled);
@@ -316,7 +421,7 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
   const announcement =
     !enabled || loading
       ? ''
-      : isError && !results
+      : isError && sections.length === 0
         ? 'تعذَّر إتمام البحث'
         : optionsCountAr(totalOptions);
 
@@ -394,7 +499,7 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
           {/* Fetch failure ≠ "no results" (15-d P2-8) — a retryable
               error row; stale cached hits (refetch failed on a term
               already in the cache) stay rendered below instead. */}
-          {!loading && isError && !results && (
+          {!loading && isError && sections.length === 0 && (
             <div className="search-empty" role="presentation">
               <div className="search-empty-title">تعذَّر إتمام البحث</div>
               <div className="search-empty-tips">
@@ -456,30 +561,28 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
                 <button type="button" className="search-tip-pill" onClick={() => setQuery('حرم المعرفة')}>حرم المعرفة</button>
               </div>
               <div className="search-empty-hint">
-                البحث يشمل المقرّرات والمحاضرات والبحوث المنشورة ومسارات التدريب.
+                البحث يشمل الطلاب والأساتذة والمقرّرات والكليات والمحاضرات والبحوث والكتب والوظائف.
               </div>
             </div>
           )}
 
-          {!loading && results && totalHits > 0 && sections.map((section) => {
-            const items = results[section];
-            if (items.length === 0) return null;
-            const sectionLabelId = `${listboxId}-sec-${section}`;
+          {/* r353-F — the discovery sections (canonical category order,
+              people first). Each row is ONE line: title + one meta
+              (subtitleAr), the kind icon on the tile. A null href is a
+              plain row — never a dead click. */}
+          {!loading && !isError && totalHits > 0 && sections.map((section) => {
+            const sectionLabelId = `${listboxId}-sec-${section.key}`;
             return (
               <div
-                key={section}
+                key={section.key}
                 className="search-section"
                 role="group"
                 aria-labelledby={sectionLabelId}
               >
-                <div className="search-section-label" id={sectionLabelId}>{SECTION_LABEL[section]}</div>
-                {items.map((hit) => {
+                <div className="search-section-label" id={sectionLabelId}>{SECTION_LABEL[section.key]}</div>
+                {section.items.map((hit) => {
                   const idx = navActions.length + runningIdx++;
                   const isActive = idx === activeIdx;
-                  /* wave 2-b (0-c P2-9): `${accent}1a` produced invalid CSS
-                     whenever themeColor was null (`var(--accent)1a`). A
-                     color-mix tint is valid for both hex and var() accents. */
-                  const accent = hit.themeColor ?? 'var(--accent)';
                   return (
                     <button
                       key={hit.id}
@@ -489,22 +592,18 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
                       aria-selected={isActive}
                       className={`search-row${isActive ? ' active' : ''}`}
                       onMouseEnter={() => setActiveIdx(idx)}
-                      onClick={() => goTo(hit.href)}
+                      onClick={() => { if (hit.href) goTo(hit.href); }}
                     >
-                      <span
-                        className="search-row-icon"
-                        style={{
-                          background: `color-mix(in srgb, ${accent} 10%, transparent)`,
-                          color: accent,
-                        }}
-                      >
-                        <EmojiIcon emoji={hit.iconEmoji} size={16} fallback={Search} />
+                      <span className="search-row-icon">
+                        <Icon icon={KIND_ICON[hit.kind]} size={16} />
                       </span>
                       <span className="search-row-body">
-                        <span className="search-row-title" title={hit.title}>{hit.title}</span>
-                        <span className="search-row-sub">{hit.subtitle}</span>
+                        <span className="search-row-line">
+                          <span className="search-row-title" title={hit.title}>{hit.title}</span>
+                          {hit.meta && <span className="search-row-meta">{hit.meta}</span>}
+                        </span>
                       </span>
-                      <Icon icon={ArrowLeft} size={12} className="search-row-arrow" />
+                      {hit.href && <Icon icon={ArrowLeft} size={12} className="search-row-arrow" />}
                     </button>
                   );
                 })}
@@ -539,11 +638,12 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
         (lib/nav.ts NAV_BY_ROLE, so the palette and the sidebar can
         never drift) plus a theme toggle. Filtered by the query,
         capped at a curated few while the box is empty.
-     2. Live global-search results — the SAME ['search','global',term]
-        query key GlobalSearch uses, so the two surfaces share one
-        cache entry per term: opening the palette on a term the pill
-        already fetched is served without a second GET. That is the
-        "no duplicated state" contract — only the input text is local.
+     2. Live discovery results — the SAME useDiscoverSearch query
+        GlobalSearch uses (one query key per term + role categories), so
+        the two surfaces share one cache entry per term: opening the
+        palette on a term the pill already fetched is served without a
+        second GET. That is the "no duplicated state" contract — only
+        the input text is local.
 
    Combobox ARIA mirrors GlobalSearch (the pattern A2 verified-good):
    role=combobox + aria-expanded/controls/activedescendant over one
@@ -590,19 +690,9 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
     return () => clearTimeout(t);
   }, [query]);
 
-  // Identical query to GlobalSearch — the shared queryClient cache is
-  // the dedupe layer between the two surfaces.
-  const enabled = debounced.length >= 2;
-  const { data, isPending, isFetching, isError, refetch } = useQuery({
-    queryKey: ['search', 'global', debounced],
-    enabled,
-    queryFn: ({ signal }) =>
-      unwrap<SearchResults>(
-        api.get(`/search/global?q=${encodeURIComponent(debounced)}`, { signal }),
-      ),
-  });
-  const loading = enabled && (isFetching || isPending);
-  const results = data ?? null;
+  // Identical query to GlobalSearch (useDiscoverSearch) — the shared
+  // queryClient cache is the dedupe layer between the two surfaces.
+  const { enabled, loading, isError, refetch, sections, flatHits } = useDiscoverSearch(debounced, role);
 
   const goTo = (href: string) => {
     onClose();
@@ -685,16 +775,6 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
       .slice(0, PALETTE_ACTIONS_EMPTY_CAP);
   }, [allActions, debounced, recentIds]);
 
-  const flatHits = useMemo(() => {
-    if (!results) return [];
-    return [
-      ...results.courses,
-      ...results.lectures,
-      ...results.papers,
-      ...results.tracks,
-    ];
-  }, [results]);
-
   // One flat keyboard order across all three sources — recents first.
   const flatOptions = useMemo(
     () => [...visibleRecents, ...actions, ...flatHits],
@@ -724,8 +804,10 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
       const item = flatOptions[activeIdx];
       if (item) {
         e.preventDefault();
-        if ('href' in item) goTo(item.href);
-        else item.run();
+        /* A null-href hit is a plain row (the file-less-paper law) —
+           Enter is a no-op there, never a dead navigation. */
+        if ('href' in item && item.href) goTo(item.href);
+        else if ('run' in item) item.run();
       }
     }
   };
@@ -755,7 +837,6 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
   /* Polite count announcement — actions + results settle together. */
   const announcement = loading ? '' : optionsCountAr(flatOptions.length);
 
-  const sections: Array<keyof SearchResults> = ['courses', 'lectures', 'papers', 'tracks'];
   const showEmpty =
     !loading && !isError && actions.length === 0 && visibleRecents.length === 0 && (!enabled || flatHits.length === 0);
 
@@ -821,7 +902,7 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
-        {!loading && isError && !results && (
+        {!loading && isError && sections.length === 0 && (
           <div className="search-empty" role="presentation">
             <div className="search-empty-title">تعذَّر إتمام البحث</div>
             <div className="search-empty-tips">
@@ -847,17 +928,17 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
-        {!loading && results && sections.map((section) => {
-          const items = results[section];
-          if (items.length === 0) return null;
-          const sectionLabelId = `${listboxId}-sec-${section}`;
+        {/* r353-F — the discovery sections (canonical category order,
+            people first). One-line rows: title + one meta, kind icon on
+            the tile; a null href is a plain row — never a dead click. */}
+        {!loading && sections.map((section) => {
+          const sectionLabelId = `${listboxId}-sec-${section.key}`;
           return (
-            <div key={section} className="search-section" role="group" aria-labelledby={sectionLabelId}>
-              <div className="search-section-label" id={sectionLabelId}>{SECTION_LABEL[section]}</div>
-              {items.map((hit) => {
+            <div key={section.key} className="search-section" role="group" aria-labelledby={sectionLabelId}>
+              <div className="search-section-label" id={sectionLabelId}>{SECTION_LABEL[section.key]}</div>
+              {section.items.map((hit) => {
                 const idx = visibleRecents.length + actions.length + runningIdx++;
                 const isActive = idx === activeIdx;
-                const accent = hit.themeColor ?? 'var(--accent)';
                 return (
                   <button
                     key={hit.id}
@@ -867,22 +948,18 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
                     aria-selected={isActive}
                     className={`search-row cmd-row${isActive ? ' active' : ''}`}
                     onMouseEnter={() => setActiveIdx(idx)}
-                    onClick={() => goTo(hit.href)}
+                    onClick={() => { if (hit.href) goTo(hit.href); }}
                   >
-                    <span
-                      className="search-row-icon cmd-row-icon"
-                      style={{
-                        background: `color-mix(in srgb, ${accent} 10%, transparent)`,
-                        color: accent,
-                      }}
-                    >
-                      <EmojiIcon emoji={hit.iconEmoji} size={16} fallback={Search} />
+                    <span className="search-row-icon cmd-row-icon">
+                      <Icon icon={KIND_ICON[hit.kind]} size={16} />
                     </span>
                     <span className="search-row-body">
-                      <span className="search-row-title" title={hit.title}>{hit.title}</span>
-                      <span className="search-row-sub">{hit.subtitle}</span>
+                      <span className="search-row-line">
+                        <span className="search-row-title" title={hit.title}>{hit.title}</span>
+                        {hit.meta && <span className="search-row-meta">{hit.meta}</span>}
+                      </span>
                     </span>
-                    <Icon icon={ArrowLeft} size={12} className="search-row-arrow" />
+                    {hit.href && <Icon icon={ArrowLeft} size={12} className="search-row-arrow" />}
                   </button>
                 );
               })}
