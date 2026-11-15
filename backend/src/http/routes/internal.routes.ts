@@ -12,6 +12,15 @@
  *   3. the owner's optional external pinger (cron-job.org/UptimeRobot,
  *      documented in the owner guide — add the Bearer header).
  *
+ * R354 V2 — POST /api/v1/internal/ai-selftest: the provider REALITY
+ * probe. Runs INSIDE the production function (fra1) so the vantage
+ * point is the one that actually serves student chats: every provider
+ * in the resolved chain gets a /models probe + a 1-token completion,
+ * answered with {provider, ok, status, latencyMs, model} rows. Keys
+ * NEVER appear in the response (lib/ai/selftest.ts redacts). Same
+ * CRON_SECRET belt as the tick; owner-triggered via the ai-selftest
+ * workflow (workflow_dispatch — write-access only).
+ *
  * Auth: CRON_SECRET (Bearer or ?key=), timing-safe compared; unset
  * secret = 503 fail-closed (the mail-webhook law). The route mounts
  * BEFORE the global rate limiter — cron must never be throttled.
@@ -21,6 +30,7 @@ import { timingSafeEqual } from 'node:crypto';
 
 import { env } from '../../env.js';
 import { runPlatformTick } from '../../lib/tick-jobs.js';
+import { runAiSelftest } from '../../lib/ai/selftest.js';
 
 export const internalRouter = Router();
 
@@ -60,5 +70,25 @@ internalRouter.post('/tick', async (req, res) => {
         ? req.query.label
         : 'http';
   const report = await runPlatformTick(label);
+  res.json({ data: { ok: true, report } });
+});
+
+// R354 V2 — the provider reality probe (see the header comment). The
+// whole probe set is bounded (~10 s worst case, parallel legs, 10 s
+// AbortController deadlines) far inside the function's 60 s ceiling.
+internalRouter.post('/ai-selftest', async (req, res) => {
+  if (!env.CRON_SECRET) {
+    res.status(503).json({
+      error: { code: 'SELFTEST_DISABLED', message: 'CRON_SECRET is not configured' },
+    });
+    return;
+  }
+  if (!tickAuthorized(req)) {
+    res.status(401).json({
+      error: { code: 'UNAUTHORIZED', message: 'مفتاح التشغيل غير صحيح' },
+    });
+    return;
+  }
+  const report = await runAiSelftest(process.env);
   res.json({ data: { ok: true, report } });
 });
