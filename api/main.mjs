@@ -33,9 +33,7 @@
  * entry ships the app AS-IS to measure the §2 gate before any refactor.
  */
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { createApp } from '../backend/dist/app.js';
-import { BUILD_SHA } from '../backend/dist/lib/build-sha.generated.js';
 import { opportunisticTick } from '../backend/dist/lib/tick-jobs.js';
 
 /* R353 layer 2 — the build-time-baked sha read at RUNTIME from this
@@ -81,30 +79,6 @@ try {
 }
 
 const app = createApp();
-
-/* TEMPORARY R353 diagnostics — pinpoints which bake layer survives the
- * bundle (remove once buildId reports the true sha). */
-app.get('/api/v1/build-debug', (_req, res) => {
-  let inlined = 'NOT-FOUND';
-  try {
-    const own = readFileSync(fileURLToPath(import.meta.url), 'utf8');
-    inlined = (own.match(/BUILD_SHA\s*=\s*'([^']*)'/) || [])[1] ?? 'NO-MATCH';
-  } catch {}
-  let jsonState = 'READ-THREW';
-  try {
-    jsonState = readFileSync(new URL('./build-sha.json', import.meta.url), 'utf8').slice(0, 100);
-  } catch (e) {
-    jsonState = `MISSING: ${e.code ?? e.message}`;
-  }
-  res.json({
-    layer1_imported_BUILD_SHA: BUILD_SHA,
-    layer1_inlined_in_bundle: inlined,
-    layer2_env_GIT_SHA: process.env.GIT_SHA ?? null,
-    layer2_json_state: jsonState,
-    cwd: process.cwd(),
-    entryUrl: import.meta.url,
-  });
-});
 
 /**
  * R351 X2b — every request gets a chance to carry the tick: at most one
