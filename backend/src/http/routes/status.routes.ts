@@ -13,10 +13,16 @@ import { prisma } from '../../db.js';
 import { env } from '../../env.js';
 import { buildIdFromEnv } from '../../lib/build-id.js';
 import { logger } from '../../logger.js';
+/* R353 C2 — the AI mode label: 'chain' when ≥2 providers are
+ * configured (the multi-provider failover chain), else the historical
+ * env label. Boot-frozen like everything AI (memoized in providers.ts). */
+import { getAiChain, isChainMode } from '../../lib/ai/providers.js';
 
 const router = Router();
 
 const BUILD_ID = buildIdFromEnv(env.RENDER_GIT_COMMIT ?? env.GIT_SHA);
+/** The boot-frozen AI mode label (mode NAMES only — never keys). */
+const AI_MODE_LABEL = isChainMode(getAiChain()) ? 'chain' : env.AI_PROVIDER;
 
 router.get('/status', async (_req, res) => {
   const start = Date.now();
@@ -71,7 +77,7 @@ router.get('/status', async (_req, res) => {
       db: { ok: dbOk, latencyMs: dbOk ? Date.now() - start : null },
       // Mode names only — never endpoints, keys, or counts.
       storageDriver: env.STORAGE_DRIVER,
-      aiMode: env.AI_PROVIDER,
+      aiMode: AI_MODE_LABEL,
       mailProvider: env.MAIL_PROVIDER,
       buildId: BUILD_ID,
       serverTime: new Date().toISOString(),

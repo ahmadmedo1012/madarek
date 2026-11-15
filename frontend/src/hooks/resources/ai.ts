@@ -27,9 +27,16 @@ export function useAiChat() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: { conversationId?: string; message: string }) =>
-      unwrap<{ conversationId: string; reply: string; engine?: string; model?: string }>(
-        api.post('/ai/chat', input),
-      ),
+      unwrap<{
+        conversationId: string;
+        reply: string;
+        engine?: string;
+        model?: string;
+        /** R353 C3 (parity): the turn's retrieved sources — the SSE
+         * grammar has always carried them; the JSON grammar does too
+         * (r323 B1.2) and now the page renders them. Empty = none. */
+        citations?: Array<{ index: number; title: string; locator?: string | null; url?: string | null; snippet?: string }>;
+      }>(api.post('/ai/chat', input)),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['ai', 'conversations'] });
     },
@@ -47,6 +54,13 @@ export function useAiChat() {
 export interface AiConfig {
   provider: string;
   model: string | null;
+  /** R353 C2 (additive): the multi-provider chain summary when ≥2
+   * providers are configured (provider === 'chain' then) — ids +
+   * model counts + the primary, never keys. Absent on legacy/local. */
+  chain?: {
+    primary: string;
+    providers: Array<{ id: string; models: number; tasks?: string[] }>;
+  };
 }
 
 export function useAiConfig() {

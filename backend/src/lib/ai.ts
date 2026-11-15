@@ -392,6 +392,12 @@ export function providerLabelFromBaseUrl(baseUrl: string): string {
   }
   if (host === 'api.openai.com') return 'openai';
   if (host === 'openrouter.ai' || host.endsWith('.openrouter.ai')) return 'openrouter';
+  // R353 C2: Gemini's OpenAI-compatible endpoint
+  // (generativelanguage.googleapis.com/v1beta/openai/) is labeled
+  // gemini — the vendor name, never a bare hostname.
+  if (host === 'generativelanguage.googleapis.com' || host.endsWith('.generativelanguage.googleapis.com')) {
+    return 'gemini';
+  }
   if (host === 'groq.com' || host.endsWith('.groq.com')) return 'groq';
   if (host === 'api.deepseek.com' || host.endsWith('.deepseek.com')) return 'deepseek';
   return host.length > 0 ? host : 'compatible';
@@ -496,6 +502,9 @@ const RETRYABLE_KINDS: ReadonlySet<AiFailureKind> = new Set<AiFailureKind>([
   'transport',
   'provider_error',
 ]);
+// R353 C2: exported for the provider-chain runner (lib/ai/providers.ts)
+// so the per-model retry set cannot drift between the two drivers.
+export { RETRYABLE_KINDS };
 
 /** Jittered backoff between attempts (ms) — jitter avoids the
  * synchronized-burst pattern when several pilot students trip the same

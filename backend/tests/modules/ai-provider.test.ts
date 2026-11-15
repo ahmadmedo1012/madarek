@@ -792,8 +792,25 @@ describe('clipHistoryContent (r176a — bounded history payload)', () => {
 describe('ai.routes.ts — the P4 mode switch', () => {
   it('resolves the provider once at boot (module level) and switches on it', () => {
     expect(aiRouteSource).toContain('const aiProvider = getAiProvider();');
-    expect(aiRouteSource).toContain('aiProvider\n      ? await composeReplyWithProvider(');
-    expect(aiRouteSource).toContain(': { reply: await composeReply(');
+    // R353 C2: the engine ternary is now three-deep — the CHAIN first
+    // (≥2 providers), the legacy single provider, the local composer.
+    expect(aiRouteSource).toContain('? await composeReplyWithProviderChain(');
+    expect(aiRouteSource).toContain(': aiProvider\n        ? await composeReplyWithProvider(');
+    expect(aiRouteSource).toContain('reply: await composeReply(userId, message, req.user!.role, chatInstitutionId)');
+  });
+
+  it('R353 C2: the chain is boot-frozen beside the legacy provider and drives both transports', () => {
+    expect(aiRouteSource).toContain('const aiChain = getAiChain();');
+    expect(aiRouteSource).toContain('const aiChainMode = isChainMode(aiChain);');
+    expect(aiRouteSource).toContain('await callProviderChain(aiChain, buildChatMessages(system, history, message)');
+    expect(aiRouteSource).toContain('await streamProviderChain(');
+    // The chain's terminal fallback is the LOCAL COMPOSER — but only
+    // before any token streamed (never stitched mid-reply).
+    expect(aiRouteSource).toContain('if (emittedAnyToken)');
+    expect(aiRouteSource).toContain('chain exhausted before any token');
+    // The legacy single-provider path keeps its honest NO-fallback
+    // contract (the catch surfaces one Arabic error).
+    expect(aiRouteSource).toContain('callProviderWithRetry(');
   });
 
   it('the real path builds messages and calls the provider through the lib helpers', () => {

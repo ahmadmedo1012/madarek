@@ -151,6 +151,32 @@ const schema = z
         message: 'AI_MODELS must list at most 3 models (OpenRouter live contract: the models array must have 3 items or fewer)',
       })
       .optional(),
+    // ── R353 C2 — the multi-PROVIDER chain (lib/ai/providers.ts) ──
+    // ALL optional and FAIL-OPEN: AI is an optional feature, an empty
+    // chain is the honest local-composer mode, and NO value of these
+    // vars can crash boot (unlike the legacy single-provider
+    // fail-closed superRefine above, which stays untouched) — so these
+    // are plain optional strings with NO failing constraints; every
+    // bound (models ≤3, ids ≤40, budget 5s..55s) is enforced by the
+    // fail-open parser in lib/ai/providers.ts, which drops/warns
+    // instead of crashing. Keys are read from the environment only —
+    // never echoed, never logged. The explicit JSON chain (array of
+    // {id, baseUrl?, apiKeyEnv?, models, timeoutMs?, tasks?} or
+    // {providers: […], totalBudgetMs}). When it parses, it IS the
+    // chain; otherwise the individual keys below build the default
+    // order: gemini → groq → openrouter → legacy → (implicit) local
+    // composer.
+    AI_PROVIDERS: z.string().optional(),
+    // Gemini's OpenAI-compatible endpoint
+    // (https://generativelanguage.googleapis.com/v1beta/openai/).
+    GEMINI_API_KEY: z.string().optional(),
+    AI_GEMINI_MODELS: z.string().optional(),
+    // Groq (https://api.groq.com/openai/v1) — the fast/cheap lane.
+    GROQ_API_KEY: z.string().optional(),
+    AI_GROQ_MODELS: z.string().optional(),
+    // OpenRouter (https://openrouter.ai/api/v1) — optional third lane.
+    OPENROUTER_API_KEY: z.string().optional(),
+    AI_OPENROUTER_MODELS: z.string().optional(),
   })
   .superRefine((cfg, ctx) => {
     // Fail-closed: a half-configured s3 driver must stop boot with a
