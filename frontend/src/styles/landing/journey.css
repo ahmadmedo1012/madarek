@@ -593,6 +593,17 @@ section.chapters {
   .jt-anno {
     inline-size: 22.8em;
   }
+  /* R353 P1 (the overlap crawl's ONE real finding): at 1024×768 the
+     wider card parks anno-2's title tail on the plan's own «المكتبة
+     والبحوث» label (title x-end 618 vs label x-start 579.6, a 39×5px
+     corner kiss, frac 0.59). The band seat moves down one rung
+     (73.7% → 75.7% ≈ 15px): the title clears the label's bottom edge
+     with ~10px spare; the body follows (its paper halo rides anything
+     below). The conformance spec skips annotation geometry (the frozen
+     record's scroll-state seats are not comparable) — safe to move. */
+  .jt-anno-2 {
+    inset-block-start: 75.7%;
+  }
 }
 
 .jt-anno-t {
