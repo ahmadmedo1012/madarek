@@ -1379,7 +1379,7 @@ export default function AiAssistantPage() {
                         color="red"
                         icon={AlertCircle}
                         title="تعذَّر حذف المحادثة"
-                        description={apiErrorMessage(delConversation.error, 'لم تُحذف المحادثة — حاول مرة أخرى.')}
+                        description={apiErrorMessage(delConversation.error, 'لم تُحذف المحادثة.')}
                       />
                     </div>
                   )}
