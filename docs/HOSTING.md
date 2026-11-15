@@ -10,6 +10,7 @@
 | الطبقة | المزوّد | الخطة | ملاحظات |
 |---|---|---|---|
 | الويب (SPA) | Vercel — مشروع `madarek` | Hobby (مجانية) | `frontend/dist` عبر CDN — دائمًا متاح، لا sleeps |
+| **رابطا الإنتاج** | `madarek-app.vercel.app` (+ الأصل `madarek-nine.vercel.app` احتياطًا) | — | R355: كلاهما يخدم الإنتاج مباشرة (تحقّق حيّ: 200 + buildId متطابق). الرابط `madarek.vercel.app` محجوز لجهة أخرى. التحويل الكامل للأصل القانوني (canonical/OG/CORS/افتراضيات التطبيق) بجلسة قادمة بارتكاز واحد |
 | الـ API (Express) | Vercel Function واحد (`api/main.mjs` — أعيدت تسميته R353 بعد تجميد كاش الدالة) | نفس المشروع | `regions: fra1`، `maxDuration 60s`، ذاكرة 1 GB؛ buildId يُخبز وقت البناء (ثلاث طبقات: ثابت tsc + `api/build-sha.json` + `/build-sha.txt`) |
 | قاعدة البيانات | Neon — `ep-icy-mode…eu-central-1/neondb` (قاعدة المالك الأصلية) | Free | عبر الرابط المُجمِّع (pooler) — القياس بعد fra1: dbLatency وسيطًا **2 ms** |
 | البريد | Resend (`onboarding@resend.dev`) | Free | **يُسلِّم لعنوان المالك فقط** حتى توثيق نطاق — التفاصيل في `docs/MAIL.md` |
@@ -26,7 +27,7 @@
 | المتغيّر | النطاق | ملاحظات |
 |---|---|---|
 | `GEMINI_API_KEY` + `AI_GEMINI_MODELS` | production + preview | الطراز الافتراضي `gemini-2.5-flash`؛ المهام الطويلة/العربية الدقيقة — **مُتحقَّق حيًّا من الإنتاج (R353/R354: 16+ دورًا ناجحًا + selftest من fra1)** |
-| `GROQ_API_KEY` + `AI_GROQ_MODELS` | production + preview | المفتاح سليم؛ الطراز الافتراضي القديم `llama-3.3-70b-versatile` **موقوف من Groq (404)** — المضبوط حيًّا: `openai/gpt-oss-20b,qwen/qwen3.8-27b` |
+| `GROQ_API_KEY` + `AI_GROQ_MODELS` | production + preview | R355: عائلة gpt-oss الحيّة — **`openai/gpt-oss-120b,openai/gpt-oss-20b`** (تقييم حيّ 54 حالة: 120b نجاح 92.6% بوسيط 726ms و20b نجاح 84% بـ479ms — الأدق أولًا)؛ selftest من الإنتاج: models 200 + completion 200 ✅ |
 | `OPENROUTER_API_KEY` + `AI_OPENROUTER_MODELS` | اختياري | احتياط ثالث — الحصّة المجانية 50 طلبًا/يوم |
 | `AI_MODELS` (القديم) | production + preview | درع openrouter الأخير — `cohere/north-mini-code:free,dots-studio/dots-3-note-preview:free` (أُزيل الطراز الميت `nvidia/nemotron-3-super-120b-a12b:free`) |
 | `AI_PROVIDERS` | اختياري (JSON) | يلغي القائمة الفردية إن وُجد — `[{"id","baseUrl","apiKeyEnv","models","timeoutMs"}]` |
