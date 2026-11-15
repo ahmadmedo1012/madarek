@@ -85,6 +85,9 @@ export function rankCorpus(entities: readonly CorpusEntity[], q: string, qN: str
 export function fetchCandidates(entities: readonly CorpusEntity[], q: string): CorpusEntity[] {
   const plan = planGlobalQuery(q);
   const needles = plan.variants.map((v) => v.trim().toLowerCase()).filter((n) => n.length >= 2);
+  // Hoisted so the closure below narrows (a `!== null` check in the
+  // condition cannot narrow plan.phoneDigits INSIDE the callback).
+  const phoneDigits = plan.phoneDigits;
   return entities.filter((e) => {
     const fields = [
       ...e.haystacks,
@@ -96,8 +99,8 @@ export function fetchCandidates(entities: readonly CorpusEntity[], q: string): C
     if (needles.some((n) => fields.some((f) => f.includes(n)))) return true;
     if (
       plan.isPhoneQuery &&
-      plan.phoneDigits !== null &&
-      fields.some((f) => f.includes(plan.phoneDigits))
+      phoneDigits !== null &&
+      fields.some((f) => f.includes(phoneDigits))
     ) {
       return true;
     }
