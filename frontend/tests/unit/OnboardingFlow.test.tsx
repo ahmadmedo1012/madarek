@@ -28,7 +28,16 @@ vi.mock('../../src/lib/api', () => {
   };
 });
 
-const meState: { data: { id: string; role: string } | null } = { data: null };
+/* The mocked /auth/me payload — widened for R353 E4: the seat-exact
+ * role frame also keys off staffRole (ADMIN/QUALITY) and
+ * teacherProfile.position (TEACHER leadership overlay). */
+interface MeMock {
+  id: string;
+  role: string;
+  staffRole?: string | null;
+  teacherProfile?: { position?: string | null } | null;
+}
+const meState: { data: MeMock | null } = { data: null };
 vi.mock('../../src/hooks/useAuth', () => ({
   useMe: () => meState,
 }));
@@ -204,6 +213,110 @@ describe('OnboardingFlow role frame', () => {
     });
     expect(roleIntro().querySelector(studentDesk)).not.toBeNull();
     expect(roleIntro().querySelector(teacherStand)).toBeNull();
+  });
+});
+
+/* ── R353 E4 — the seat-exact role frame ───────────────────────────
+ *
+ * Frame 4 greets the SEAT, not the coarse Role enum (docs/
+ * ROLES-LIBYA.md §3). Each row is one demo account (backend
+ * test-accounts.data.ts) — the pin asserts BOTH the exact seat title
+ * (built from the canonical STAFF_ROLE_LABELS / ROLE_LABELS maps in
+ * the component) and the Arabic first-action line, so a copy drift
+ * on any seat fails its own named test. */
+describe('OnboardingFlow seat frame (R353 E4) — one seat, one greeting', () => {
+  beforeEach(() => {
+    resetStore();
+    (api.post as unknown as { mockClear: () => void }).mockClear();
+  });
+
+  const SEATS: Array<{ account: string; me: MeMock; headline: string; body: string }> = [
+    {
+      account: 'registrar@test.ly — المسجل العام',
+      me: { id: 'u1', role: 'ADMIN', staffRole: 'REGISTRAR_GENERAL' },
+      headline: 'مرحباً بك أيها المسجل العام',
+      body: 'ملفات الطلاب والقبول والتسجيل على مستوى المنصّة. ابدأ باستيراد قوائم الطلاب وإنشاء الملفات وإسناد الأرقام الجامعية والموافقة على الطلبات.',
+    },
+    {
+      account: 'faculty@test.ly — مسجل الكلية',
+      me: { id: 'u2', role: 'ADMIN', staffRole: 'COLLEGE_REGISTRAR' },
+      headline: 'مرحباً بك يا مسجل الكلية',
+      body: 'ملفات الطلاب والقبول والتسجيل في كليتك. ابدأ بقوائم كليتك وإسناد الأرقام الجامعية واعتماد التسجيل.',
+    },
+    {
+      account: 'exams@test.ly — مراقب الامتحانات',
+      me: { id: 'u3', role: 'QUALITY', staffRole: 'EXAMS_CONTROLLER' },
+      headline: 'مرحباً بك يا مراقب الامتحانات',
+      body: 'قسم الدراسة والامتحانات: راجع الاختبارات واعتمدها، واضبط النتائج.',
+    },
+    {
+      account: 'quality@test.ly — موظف الجودة',
+      me: { id: 'u4', role: 'QUALITY', staffRole: 'QUALITY_OFFICER' },
+      headline: 'مرحباً بك يا موظف الجودة',
+      body: 'مؤشرات الجودة والتقارير أمامك. مراجعة الاختبارات ليست من صلاحياتك — فهي لدى قسم الدراسة والامتحانات.',
+    },
+    {
+      account: 'teacher@test.ly — أستاذ (بلا منصب)',
+      me: { id: 'u5', role: 'TEACHER', teacherProfile: { position: null } },
+      headline: 'مرحباً بك أستاذنا',
+      body: 'موادك ومحاضراتك بين يديك: ارفع المحتوى، وتابع الحضور، وأدخل الدرجات.',
+    },
+    {
+      account: 'head@test.ly — رئيس القسم',
+      me: { id: 'u6', role: 'TEACHER', teacherProfile: { position: 'DEPARTMENT_HEAD' } },
+      headline: 'مرحباً بك يا رئيس القسم',
+      body: 'نفس أدوات الأستاذ: رفع المحتوى ومتابعة الحضور وإدخال الدرجات. ومعها اطلاع إشرافيّ على قسمك.',
+    },
+    {
+      account: 'dean@test.ly — العميد',
+      me: { id: 'u7', role: 'TEACHER', teacherProfile: { position: 'DEAN' } },
+      headline: 'مرحباً بك أيها العميد',
+      body: 'نفس أدوات الأستاذ: رفع المحتوى ومتابعة الحضور وإدخال الدرجات. ومعها اطلاع إشرافيّ على كلّيّتك وأقسامها.',
+    },
+    {
+      account: 'vicedean@test.ly — وكيل الكلية',
+      me: { id: 'u8', role: 'TEACHER', teacherProfile: { position: 'ASSOCIATE_DEAN' } },
+      headline: 'مرحباً بك يا وكيل الكلية',
+      body: 'نفس أدوات الأستاذ: رفع المحتوى ومتابعة الحضور وإدخال الدرجات. ومعها اطلاع إشرافيّ على كلّيّتك وأقسامها.',
+    },
+    {
+      account: 'student@test.ly — طالب',
+      me: { id: 'u9', role: 'STUDENT' },
+      headline: 'مرحباً يا طالب',
+      body: 'موادك واختباراتك بين يديك — تابع الدروس والاختبارات والنتائج.',
+    },
+    {
+      account: 'owner@test.ly — مالك المنصة',
+      me: { id: 'u10', role: 'OWNER' },
+      headline: 'مرحباً يا مالك المنصة',
+      body: 'إدارة المنصّة بين يديك: المؤسسات والمستخدمون وإعدادات النظام.',
+    },
+  ];
+
+  it.each(SEATS)('$account greets its seat on frame 4', ({ me, headline, body }) => {
+    meState.data = me;
+    renderFlow();
+    act(() => {
+      const s = useOnboardingStore.getState();
+      s.start();
+      s.goTo(3);
+    });
+    expect(document.querySelector('.onboarding-flow-headline')!.textContent).toBe(headline);
+    expect(document.querySelector('.onboarding-flow-body')!.textContent).toBe(body);
+    meState.data = null;
+  });
+
+  it('a staff row without staffRole falls back to its coarse-role seat (pre-E2-migration)', () => {
+    meState.data = { id: 'u11', role: 'ADMIN' };
+    renderFlow();
+    act(() => {
+      const s = useOnboardingStore.getState();
+      s.start();
+      s.goTo(3);
+    });
+    expect(document.querySelector('.onboarding-flow-headline')!.textContent)
+      .toBe('مرحباً بك أيها المسجل العام');
+    meState.data = null;
   });
 });
 
