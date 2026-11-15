@@ -250,7 +250,11 @@ export function createApp() {
   const BUILD_ID = resolveBuildId(BUILD_SHA, {
     RENDER_GIT_COMMIT: env.RENDER_GIT_COMMIT,
     VERCEL_GIT_COMMIT_SHA: env.VERCEL_GIT_COMMIT_SHA,
-    GIT_SHA: env.GIT_SHA,
+    // Read at createApp() CALL time (not module-import time): the
+    // Vercel entry (api/index.mjs) fills process.env.GIT_SHA from the
+    // build-baked api/build-sha.json BEFORE calling createApp() — the
+    // zod-parsed env was already frozen by then. (R353 layer 2.)
+    GIT_SHA: process.env.GIT_SHA ?? env.GIT_SHA,
   });
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();

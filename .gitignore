@@ -180,3 +180,7 @@ docs/redesign/**/evidence/
 .vercel/
 .env*
 .vercel
+
+# R353 baked deployment artifacts — written by backend/scripts/bake-build-sha.mjs during platform builds, never committed
+api/build-sha.json
+frontend/public/build-sha.txt

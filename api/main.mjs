@@ -32,8 +32,29 @@
  * the shared rate-limit store, and client-direct uploads are X2 — this
  * entry ships the app AS-IS to measure the §2 gate before any refactor.
  */
+import { readFileSync } from 'node:fs';
 import { createApp } from '../backend/dist/app.js';
 import { opportunisticTick } from '../backend/dist/lib/tick-jobs.js';
+
+/* R353 layer 2 — the build-time-baked sha read at RUNTIME from this
+ * function's own directory (api/build-sha.json, written by
+ * backend/scripts/bake-build-sha.mjs during the Vercel build). The
+ * dist-compiled constant (layer 1) proved unreliable in the bundle
+ * trace (the ccd21539/69f4f12d mystery: dist baked, runtime sentinel),
+ * so this env fill is the function-side fallback — app.ts reads
+ * process.env.GIT_SHA at createApp() call time, which happens AFTER
+ * this block runs. Absent file (local dev) keeps the local-dev
+ * sentinel law: a local server never claims a deployment. */
+try {
+  const bakedSha = JSON.parse(
+    readFileSync(new URL('./build-sha.json', import.meta.url), 'utf8'),
+  )?.sha;
+  if (typeof bakedSha === 'string' && /^[0-9a-f]{7,64}$/i.test(bakedSha)) {
+    process.env.GIT_SHA = bakedSha;
+  }
+} catch {
+  /* no baked file — local build, sentinel law holds */
+}
 
 /* R352 Z2/K1 — the DB identity line: hostname + database name ONLY
  * (never credentials, never query params). The X4 cutover left

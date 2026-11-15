@@ -1,12 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build -w backend && npm run build -w frontend && npm run db:diagnostics -w backend && npm run db:deploy && npm run storage:blob -w backend",
+  "buildCommand": "node backend/scripts/bake-build-sha.mjs && npm run build -w backend && npm run build -w frontend && npm run db:diagnostics -w backend && npm run db:deploy && npm run storage:blob -w backend",
   "outputDirectory": "frontend/dist",
   "regions": [
     "fra1"
   ],
   "functions": {
-    "api/index.mjs": {
+    "api/main.mjs": {
       "maxDuration": 60,
       "memory": 1024
     }
@@ -14,7 +14,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "/api/index"
+      "destination": "/api/main"
     },
     {
       "source": "/((?!api/).*)",
