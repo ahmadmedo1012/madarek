@@ -178,17 +178,27 @@ beforeEach(() => {
     createdAt: new Date(0),
   } as never);
   vi.mocked(prisma.aiMessage.create).mockImplementation(
-    async (args: { data: { content: string } }) =>
-      ({ id: 'msg-exam', content: args.data.content, tokens: 0 }) as never,
+    // The `as never` cast is the house prisma-mock idiom (the file's
+    // value casts): the delegate's SHAPE is deliberately not the real
+    // Prisma client type — mockImplementation's parameter is the full
+    // client method signature, which a plain async lambda can never
+    // satisfy (the PrismaPromise brand); the runtime behavior is what
+    // the tests pin.
+    (async (args: { data: { content: string } }) =>
+      ({ id: 'msg-exam', content: args.data.content, tokens: 0 })) as never,
   );
   vi.mocked(prisma.aiTelemetry.create).mockResolvedValue({} as never);
   // The retrieval: capture the tagged-template call, return no
   // candidates (the guard's exclusion is pinned on the QUERY, not on
   // fixture rows).
-  vi.mocked(prisma.$queryRaw).mockImplementation(async (...args: unknown[]) => {
-    rawCalls.push(args);
-    return [];
-  });
+  vi.mocked(prisma.$queryRaw).mockImplementation(
+    // Same idiom as the create mock above: $queryRaw's real signature
+    // returns the branded PrismaPromise — the loose mock must cast.
+    (async (...args: unknown[]) => {
+      rawCalls.push(args);
+      return [];
+    }) as never,
+  );
 });
 
 describe('R353 C3 — the exam-active guard', () => {

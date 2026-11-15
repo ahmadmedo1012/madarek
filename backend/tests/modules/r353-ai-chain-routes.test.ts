@@ -214,8 +214,14 @@ beforeEach(async () => {
     createdAt: new Date(0),
   } as never);
   vi.mocked(prisma.aiMessage.create).mockImplementation(
-    async (args: { data: { content: string } }) =>
-      ({ id: 'msg-chain', content: args.data.content, tokens: 0 }) as never,
+    // The `as never` cast is the house prisma-mock idiom (the file's
+    // value casts): the delegate's SHAPE is deliberately not the real
+    // Prisma client type — mockImplementation's parameter is the full
+    // client method signature, which a plain async lambda can never
+    // satisfy (the PrismaPromise brand); the runtime behavior is what
+    // the tests pin.
+    (async (args: { data: { content: string } }) =>
+      ({ id: 'msg-chain', content: args.data.content, tokens: 0 })) as never,
   );
   vi.mocked(prisma.aiTelemetry.create).mockResolvedValue({} as never);
   // The process-wide breaker starts each case clean (the route and
