@@ -59,6 +59,24 @@ for attempt in 1 2 3; do
   echo "    upload attempt $attempt failed; retrying in 5s" >&2
   sleep 5
 done
+
+# R353 R1 — PURGE stale assets: the rolling release is APK-ONLY; any
+# asset that is not part of THIS upload (e.g. the pre-R1 Madarek.aab
+# that survived every refresh because --clobber only overwrites names
+# it is given) is deleted. The release must mirror exactly what this
+# run built — nothing more.
+if [[ "$uploaded" == "1" ]]; then
+  keep="$(printf '%s\n' "$@" | sort | tr '\n' '|')"
+  gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | while read -r name; do
+    [[ -z "$name" ]] && continue
+    if printf '%s' "$keep" | tr '|' '\n' | grep -qxF "$name"; then
+      echo "    keep asset: $name"
+    else
+      echo "    purge stale asset: $name (not in this build's upload list)"
+      gh release delete-asset "$TAG" "$name" --repo "$GITHUB_REPOSITORY" --yes || true
+    fi
+  done
+fi
 [[ "$uploaded" == "1" ]] || { echo "release asset upload failed after 3 attempts" >&2; exit 1; }
 
 url="$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json url --jq .url)"
