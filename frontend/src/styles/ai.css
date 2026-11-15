@@ -183,6 +183,41 @@
 .ai-bubble-skeleton { background: var(--surface-2); }
 .ai-conv-error-pad { padding: var(--sp-2); }
 .ai-suggestion-text { color: var(--text-muted); }
+/* ── R353 C3 — «المصادر»: قائمة المصادر المرقّمة تحت ردّ مؤسَّس (تكافؤ
+   الويب مع شارات المصادر في تطبيق الجوال). كتلة هادئة بلا ضجيج: عنوان
+   صغير خافت + بنود مرقّمة؛ الروابط الداخلية تفتح داخل التطبيق والروابط
+   المطلقة في تبويب جديد، والمصدر بلا رابط يبقى نصًّا معلوماتيًّا. */
+.ai-citations {
+  margin-block-start: var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.ai-citations-label {
+  font-size: var(--fs-xxs);
+  line-height: var(--type-label-line-height);
+  color: var(--text-muted);
+}
+.ai-citations-list {
+  margin: 0;
+  /* أرقام مرقّمة مضغوطة على جهة البداية (RTL) — بلا هوامش القوائم الافتراضية */
+  padding-inline-start: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ai-citations-list li {
+  font-size: var(--fs-xxs);
+  line-height: var(--type-label-line-height);
+  color: var(--text-muted);
+}
+.ai-citation-link {
+  color: var(--accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.ai-citation-link:hover { text-decoration: none; }
+.ai-citation-text { color: var(--text-muted); }
 
 /* ── G (عقد r290 نفسه): أرضية اللمس 44px لأدوات المحادثة على كل جهاز
       لمسي فعلي — الأجهزة اللوحية فوق 640px كانت تقيس .chat-send عند

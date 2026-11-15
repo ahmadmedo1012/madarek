@@ -57,6 +57,7 @@ import {
   isDailyQuotaMessage,
   sendAiFeedback,
   streamAiChat,
+  type AiCitation,
 } from '../../lib/ai-stream';
 import { queryClient } from '../../lib/queryClient';
 import { formatReplyBlocks } from './aiReplyFormat';
@@ -104,6 +105,30 @@ interface ChatMsg {
   streaming?: boolean;
   messageId?: string;
   rating?: 1 | -1;
+  /* R353 C3 (web citations parity): the turn's retrieved sources —
+   * the SSE `done` frame / the JSON envelope carry them (mobile
+   * already renders the field). Only COMPLETED provider turns carry
+   * them (the local composer never cites — it never read the
+   * sources); a conversation reloaded from the server has none
+   * (citations are not persisted per message). */
+  citations?: AiCitation[];
+}
+
+/* ── R353 C3 — citation rendering helpers (pure, test-pinned; mirror
+ * the mobile client's citationChipLabel/isCitationOpenable rulings) ── */
+
+/** The source label: «العنوان (الموقع)» — bounded, one line. */
+export function citationLabel(c: AiCitation): string {
+  const base = typeof c.title === 'string' && c.title.trim() !== '' ? c.title.trim() : 'مصدر';
+  return c.locator && c.locator.trim() !== '' ? `${base} (${c.locator.trim()})` : base;
+}
+
+/** Openable sources only: an in-app route ("/student/lectures?…") or
+ * an absolute http(s) URL; anything else is informational text. */
+export function citationHref(c: AiCitation): string | null {
+  const url = typeof c.url === 'string' ? c.url.trim() : '';
+  if (url === '') return null;
+  return url.startsWith('/') || /^https?:\/\//i.test(url) ? url : null;
 }
 
 /* Role-aware first questions. The student set rides the mastery-aware
@@ -471,6 +496,7 @@ export default function AiAssistantPage() {
             engine: done.engine,
             model: done.model,
             messageId: done.messageId,
+            citations: done.citations,
           };
         } else {
           next.push({
@@ -479,6 +505,7 @@ export default function AiAssistantPage() {
             engine: done.engine,
             model: done.model,
             messageId: done.messageId,
+            citations: done.citations,
           });
         }
         return next;
@@ -563,6 +590,9 @@ export default function AiAssistantPage() {
           engine: res.engine,
           model: res.model,
           messageId: (res as { messageId?: string }).messageId,
+          // R353 C3: the JSON grammar carries the same citations the
+          // SSE grammar does (r323 B1.2 parity) — now rendered.
+          citations: res.citations?.length ? res.citations : undefined,
         },
       ]);
     } catch (err) {
@@ -992,6 +1022,39 @@ export default function AiAssistantPage() {
                               still landing in THIS bubble (aria-hidden;
                               the transcript's aria-live carries the text). */}
                           {m.streaming && <span className="ai-stream-cursor" aria-hidden />}
+                          {/* R353 C3 — web citations parity (mobile
+                              Assistant.tsx renders the same field): a
+                              quiet «المصادر» block of numbered sources
+                              under a COMPLETED grounded reply. Links
+                              open in-app for /student/... routes,
+                              externally for absolute http(s); a
+                              url-less source stays plain text. No
+                              clutter: absent when the turn retrieved
+                              nothing (or the composer answered — it
+                              never cites). */}
+                          {m.role === 'bot' && !m.streaming && (m.citations?.length ?? 0) > 0 && (
+                            <div className="ai-citations">
+                              <span className="ai-citations-label">المصادر</span>
+                              <ol className="ai-citations-list">
+                                {m.citations!.map((c) => {
+                                  const href = citationHref(c);
+                                  return (
+                                    <li key={`${c.index}-${c.title}`}>
+                                      {href === null ? (
+                                        <span className="ai-citation-text">{citationLabel(c)}</span>
+                                      ) : href.startsWith('/') ? (
+                                        <Link className="ai-citation-link" to={href}>{citationLabel(c)}</Link>
+                                      ) : (
+                                        <a className="ai-citation-link" href={href} target="_blank" rel="noreferrer">
+                                          {citationLabel(c)}
+                                        </a>
+                                      )}
+                                    </li>
+                                  );
+                                })}
+                              </ol>
+                            </div>
+                          )}
                           {/* r166d per-turn engine tag — muted mono under the
                               reply text, existing utility classes only (no new
                               CSS). Honest in both directions: a real provider

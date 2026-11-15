@@ -24,11 +24,24 @@
 import { api, apiBaseURL, unwrap } from './api';
 import { useAuthStore } from '../stores/auth.store';
 
+/** One knowledge citation (backend KnowledgeCitation, denormalized) —
+ * mirrors the mobile client's shape (apps/mobile/src/features/ai/
+ * stream.ts) so the two clients cannot drift on the contract. */
+export interface AiCitation {
+  index: number;
+  title: string;
+  locator?: string | null;
+  url?: string | null;
+  snippet?: string;
+}
+
 /** The `done` frame — the FINAL turn as the server persisted it. The
  * server's `reply` replaces the client's accumulated buffer (a
  * transport drop can never truncate the answer on screen). `remaining`
  * is the per-user daily ask quota left AFTER this turn — omitted by
- * the server when the quota store was unavailable (never invented). */
+ * the server when the quota store was unavailable (never invented).
+ * R353 C3: `citations` carries the turn's retrieved sources (the
+ * mobile client renders the same field — web parity). */
 export interface AiStreamDone {
   conversationId: string;
   messageId: string;
@@ -38,6 +51,7 @@ export interface AiStreamDone {
   inputTokens?: number;
   outputTokens?: number;
   remaining?: number;
+  citations?: AiCitation[];
 }
 
 /** The `error` frame — a typed failure AFTER the SSE headers shipped
