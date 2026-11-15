@@ -1,14 +1,12 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { LiveSessionStatus, Prisma, Role } from '@prisma/client';
+import { LiveSessionStatus, Role } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { requireInstitution } from '../middleware/institution.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
-import { assertOwnsOffering } from '../../lib/permissions.js';
-import { assertOfferingInCallerInstitution } from '../../lib/profile-scoping.js';
 import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
 
 const router = Router();
@@ -185,105 +183,15 @@ router.patch(
 );
 
 // ════════════════════════════════════════════════════════════════
-//  Live streaming — teacher controls + student watch list
+//  Live streaming — the pure lifecycle contract ONLY (R354 E2).
 // ════════════════════════════════════════════════════════════════
-
-/** GET /live/sessions — visibility scoped to role */
-router.get('/live/sessions', async (req, res, next) => {
-  try {
-    const role = req.user!.role;
-    const userId = req.user!.id;
-
-    // Teacher → sessions on the offerings they teach (same offering-scoped
-    //   model as the write guards below — an OWNER/ADMIN-created session on
-    //   their offering is theirs to run too, so it must be theirs to see).
-    // Student → sessions for offerings they're ACTIVELY enrolled in.
-    // Admin/Quality → all.
-    let where: Prisma.LiveSessionWhereInput = {};
-    if (role === Role.TEACHER) {
-      where = { offering: { teacherId: userId } };
-    } else if (role === Role.STUDENT) {
-      const enr = await prisma.enrollment.findMany({
-        where: { studentId: userId, status: 'active' },
-        select: { offeringId: true },
-      });
-      where = { offeringId: { in: enr.map((e) => e.offeringId) } };
-    }
-
-    // Rank-ordered fetch: one bounded bucket per status. A single
-    // `take: 50, orderBy scheduledAt desc` could drop LIVE rows when 50
-    // newer-scheduled historical sessions exist, and SQL cannot order by
-    // enum rank without a raw query. Each bucket keeps its own meaningful
-    // order — LIVE/SCHEDULED soonest first, ENDED/CANCELLED most recent
-    // first — so no in-memory re-sort is needed either.
-    const include: Prisma.LiveSessionInclude = {
-      offering: { select: { id: true, course: { select: { name: true, code: true, iconEmoji: true, themeColor: true } } } },
-      teacher: { select: { firstName: true, lastName: true, avatarInitials: true, avatarColor: true } },
-    };
-    const [live, scheduled, ended, cancelled] = await Promise.all([
-      prisma.liveSession.findMany({ where: { ...where, status: 'LIVE' }, include, orderBy: { scheduledAt: 'asc' }, take: 50 }),
-      prisma.liveSession.findMany({ where: { ...where, status: 'SCHEDULED' }, include, orderBy: { scheduledAt: 'asc' }, take: 50 }),
-      prisma.liveSession.findMany({ where: { ...where, status: 'ENDED' }, include, orderBy: { scheduledAt: 'desc' }, take: 50 }),
-      prisma.liveSession.findMany({ where: { ...where, status: 'CANCELLED' }, include, orderBy: { scheduledAt: 'desc' }, take: 50 }),
-    ]);
-
-    // What's LIVE now first, then what's SCHEDULED next (soonest first),
-    // then ENDED/CANCELLED history (most recent first).
-    res.json({ data: [...live, ...scheduled, ...ended, ...cancelled] });
-  } catch (e) { next(e); }
-});
-
-const createSessionSchema = z.object({
-  offeringId: z.string().cuid(),
-  title: z.string().trim().min(3).max(200),
-  description: z.string().trim().max(2000).optional(),
-  topic: z.string().trim().max(200).optional(),
-  scheduledAt: z.coerce.date(),
-  joinUrl: z.string().trim().max(500).optional(),
-}).strict();
-
-// Small grace so "starts now" survives client clock skew and the
-// datetime picker's minute resolution — anything further in the past
-// is a mistyped date, not a schedule.
-const SCHEDULED_AT_PAST_GRACE_MS = 5 * 60 * 1000;
-
-router.post('/live/sessions', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), validate(createSessionSchema), async (req, res, next) => {
-  try {
-    const body = req.body as z.infer<typeof createSessionSchema>;
-
-    // Offering-scoped ownership — the same guard every other offering
-    // write uses (OWNER bypass / ADMIN via CURRICULUM_EDIT_ANY / TEACHER
-    // own-only) and a 404 on a missing offering. The previous inline
-    // `teacherId !== user` check 403'd admins who can author this
-    // offering's curriculum — an inconsistent admin model (audit 11-d
-    // P2-11b).
-    await assertOwnsOffering(body.offeringId, req.user!.id, req.user!.role);
-    // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
-    // (403 for a foreign institution's live session create).
-    await assertOfferingInCallerInstitution(body.offeringId, req.user!, 'write');
-
-    if (body.scheduledAt.getTime() < Date.now() - SCHEDULED_AT_PAST_GRACE_MS) {
-      throw AppError.badRequest('موعد الجلسة لا يمكن أن يكون في الماضي');
-    }
-
-    const session = await prisma.liveSession.create({
-      data: {
-        offeringId: body.offeringId,
-        // Attributed to the acting user. For TEACHERs (the common case)
-        // that is also the offering's teacher; an OWNER/ADMIN acting on a
-        // colleague's offering keeps their own attribution.
-        teacherId: req.user!.id,
-        title: body.title,
-        description: body.description ?? null,
-        topic: body.topic ?? null,
-        scheduledAt: body.scheduledAt,
-        joinUrl: body.joinUrl ?? null,
-        status: 'SCHEDULED',
-      },
-    });
-    res.status(201).json({ data: session });
-  } catch (e) { next(e); }
-});
+// R354 E2 finding: the three /live/sessions* route handlers that
+// lived here were SHADOWED dead code — live.routes.ts is mounted
+// FIRST (app.ts line 324 vs this router's line 382), so Express never
+// dispatched to these copies (which had also drifted from the live
+// ones' guards). The dead handlers are deleted; the PURE exports
+// below stay — visibility-logic.test.ts pins them and the live router
+// reuses the same transition contract via modules/live/core.js.
 
 const lifecycleSchema = z.object({
   action: z.enum(['START', 'END', 'CANCEL']),
@@ -334,45 +242,5 @@ const LIVE_STATUS_LABEL: Record<LiveSessionStatus, string> = {
 export function liveTransitionConflictMessage(status: LiveSessionStatus, action: LiveSessionAction): string {
   return `لا يمكن ${LIVE_ACTION_LABEL[action]} جلسة ${LIVE_STATUS_LABEL[status]}`;
 }
-
-router.post('/live/sessions/:id/lifecycle', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), validate(lifecycleSchema), async (req, res, next) => {
-  try {
-    const session = await prisma.liveSession.findUnique({ where: { id: req.params.id } });
-    if (!session) throw AppError.notFound();
-
-    // Offering-scoped ownership, same as create (see above).
-    await assertOwnsOffering(session.offeringId, req.user!.id, req.user!.role);
-    // r179 (phase-5): the ADMIN ownership bypass is institution-pinned
-    // (403 for a foreign institution's live session).
-    await assertOfferingInCallerInstitution(session.offeringId, req.user!, 'write');
-
-    const action = (req.body as z.infer<typeof lifecycleSchema>).action;
-    const nextStatus = nextLiveSessionStatus(session.status, action);
-    if (!nextStatus) {
-      throw AppError.conflict(liveTransitionConflictMessage(session.status, action));
-    }
-
-    // Conditional claim: the flip only applies while the row is still in
-    // the status we read. A concurrent lifecycle action on the same
-    // session loses the race and 409s instead of double-flipping (e.g.
-    // START landing after CANCEL used to resurrect a cancelled session).
-    const claim = await prisma.liveSession.updateMany({
-      where: { id: session.id, status: session.status },
-      data: {
-        status: nextStatus,
-        ...(action === 'START' ? { startedAt: new Date() } : {}),
-        ...(action === 'END' ? { endedAt: new Date() } : {}),
-      },
-    });
-    if (claim.count === 0) {
-      throw AppError.conflict('تغيّرت حالة الجلسة — حدّث الصفحة ثم أعد المحاولة');
-    }
-
-    // updateMany returns no row — read back the persisted state.
-    const updated = await prisma.liveSession.findUnique({ where: { id: session.id } });
-    if (!updated) throw AppError.internal(); // unreachable barring a mid-request cascade delete
-    res.json({ data: updated });
-  } catch (e) { next(e); }
-});
 
 export default router;

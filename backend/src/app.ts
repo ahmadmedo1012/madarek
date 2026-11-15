@@ -379,7 +379,7 @@ app.use('/api/v1/import', importRoutes);
   app.use('/api/v1', socialRoutes);   // /announcements/*, /competitions/*, /events/*
   app.use('/api/v1', permissionsRoutes); // /me/permissions, /admin/users/*
   app.use('/api/v1', searchRoutes);   // /search/global
-  app.use('/api/v1', teacherProfileRoutes); // /me/teacher-profile, /live/sessions/*
+  app.use('/api/v1', teacherProfileRoutes); // /me/teacher-profile (the shadowed /live/sessions* copies were removed in R354 E2 — live.routes.ts owns them)
   app.use('/api/v1/ai', aiRoutes);
   app.use('/api/v1/files', filesRoutes);
   app.use('/api/v1/owner', ownerRoutes);

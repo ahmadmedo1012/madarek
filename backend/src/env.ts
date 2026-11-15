@@ -136,10 +136,12 @@ const schema = z
     // deployed site.
     MIN_APP_VERSION: z.string().trim().regex(/^\d+\.\d+\.\d+$/, 'MIN_APP_VERSION must be semver (e.g. 1.0.0)').optional(),
     APP_DOWNLOAD_URL: z.string().trim().url().optional(),
-    // ── r326 M2.6 — Expo push fan-out switch ── dark until the project
-    // is fully configured on the Expo dashboard (FCM/APNs credentials);
-    // registration routes are always on, only the send path is gated.
-    PUSH_ENABLED: z.coerce.boolean().default(false),
+    // ── r326 M2.6 — Expo push fan-out switch ──
+    // R354 N2: default TRUE (HOSTING.md's documented contract). The send
+    // path is a no-op without registered device tokens, so an empty
+    // devices table makes this harmless — and the in-app notification
+    // center keeps working either way. Registration routes are always on.
+    PUSH_ENABLED: z.coerce.boolean().default(true),
     AI_MODELS: z
       .string()
       .trim()

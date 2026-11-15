@@ -39,6 +39,10 @@ export interface SelftestProbeResult {
     latencyMs: number;
     /** How many model ids the provider listed (null = unparsable). */
     modelCount: number | null;
+    /** First ≤10 live model ids (R354 C1: the evidence for picking a
+     * live model when the configured one was decommissioned — e.g.
+     * Groq's llama-3.3-70b-versatile 404). Model ids are public. */
+    sample: string[];
   } | null;
   completion: {
     ok: boolean;
@@ -139,19 +143,21 @@ function legError(leg: LegResult, secrets: readonly string[]): string {
   return redactSecrets(leg.bodyText.trim() || `HTTP ${leg.status}`, secrets);
 }
 
-/** Count model ids in an OpenAI-compatible /models response. */
-function countModels(bodyText: string): number | null {
+/** Extract model ids from an OpenAI-compatible /models response. */
+function parseModelIds(bodyText: string): { count: number | null; sample: string[] } {
   try {
     const parsed = JSON.parse(bodyText) as { data?: unknown };
     if (Array.isArray(parsed.data)) {
-      return parsed.data.filter(
-        (m): m is { id: unknown } => typeof m === 'object' && m !== null && 'id' in m,
-      ).length;
+      const ids = parsed.data
+        .filter((m): m is { id: unknown } => typeof m === 'object' && m !== null && 'id' in m)
+        .map((m) => (typeof m.id === 'string' ? m.id : null))
+        .filter((id): id is string => id !== null);
+      return { count: ids.length, sample: ids.slice(0, 10) };
     }
   } catch {
-    /* unparsable → null */
+    /* unparsable → null count, empty sample */
   }
-  return null;
+  return { count: null, sample: [] };
 }
 
 /** Extract reply text length from a chat completion response. */
@@ -192,11 +198,13 @@ export async function probeProvider(
 
   // Leg 1 — the models list.
   const modelsLeg = await fetchLeg(`${base}/models`, { method: 'GET', headers: authHeaders }, fetchImpl);
+  const modelsParsed = modelsLeg.status >= 200 && modelsLeg.status < 300 ? parseModelIds(modelsLeg.bodyText) : { count: null, sample: [] };
   result.modelsList = {
     ok: modelsLeg.status >= 200 && modelsLeg.status < 300,
     status: modelsLeg.status,
     latencyMs: modelsLeg.latencyMs,
-    modelCount: modelsLeg.status >= 200 && modelsLeg.status < 300 ? countModels(modelsLeg.bodyText) : null,
+    modelCount: modelsParsed.count,
+    sample: modelsParsed.sample,
   };
   if (!result.modelsList.ok) {
     result.error = legError(modelsLeg, secrets);

@@ -50,6 +50,7 @@ describe('probeProvider', () => {
     expect(r.baseUrl).toBe('https://api.groq.com/openai/v1/');
     expect(r.modelsList?.ok).toBe(true);
     expect(r.modelsList?.modelCount).toBe(3);
+    expect(r.modelsList?.sample).toEqual(['model-a', 'model-b', 'model-c']);
     expect(r.completion?.ok).toBe(true);
     expect(r.completion?.model).toBe('model-a');
     expect(r.completion?.replyChars).toBe(1);

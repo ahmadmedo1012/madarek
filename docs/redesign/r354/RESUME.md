@@ -24,8 +24,33 @@ The sandbox geo-block made provider validation impossible from here (Groq 403, G
 
 **RESULT TABLE (run after this commit deployed — filled in §3 below).**
 
-### 3. LANE V2 — the live self-test run
-- TODO (filled immediately after the deploy of the V2 commit goes READY).
+### 3. LANE V2 — the live self-test run (run 43702927621, success, 2026-11-15T10:12Z)
+
+The provider REALITY table, produced from inside the production function (region `fra1`, aiMode `chain`, 3 providers, budget 50,000 ms):
+
+| provider | models list | 1-token completion | model | latency | error |
+|---|---|---|---|---|---|
+| **gemini** | ✅ 200 (272 ms, 64 models) | ✅ 200 (310 ms) | gemini-2.5-flash | 310 ms | — |
+| **groq** | ✅ 200 (248 ms, 11 models) | ❌ 404 | llama-3.3-70b-versatile | 21 ms | `The model llama-3.3-70b-versatile does not exist or you do not have access to it.` |
+| **openrouter** | ✅ 200 (625 ms, 435 models) | ❌ 429 | cohere/north-mini-code:free | 46 ms | `Rate limit exceeded: free-models-per-day` |
+
+**Interpretation (changes R353's open item #4):**
+- **The Gemini key is VALID** — the `AQ.…` key works fine from fra1; the "location not supported" failure was purely this sandbox's geo-block. **The owner does NOT need a new key.** Gemini stays the primary (quality) provider.
+- **The Groq key is VALID** but the configured model `llama-3.3-70b-versatile` was **decommissioned by Groq** — the chain's groq leg is dead-on-arrival for completions. Fix in flight: self-test now reports live model samples (R354 C1) → pick a live model → set `AI_GROQ_MODELS`.
+- **OpenRouter works** but the free daily quota was exhausted at probe time (429) — fine as the tertiary leg.
+- Sandbox block re-confirmed: `api.expo.dev` and provider APIs are unreachable from this sandbox (proxy 404s) — all live checks ride GitHub workflows / the production function.
+- Repo secrets added for the live-eval workflow (lane C): `GEMINI_API_KEY`, `GROQ_API_KEY`, `RESEND_API_KEY` (GitHub API, sealed-box encrypted — never printed).
+
+### 4. LANE V3 — push reality (this commit)
+- `docs/PUSH-FIREBASE-CHECKLIST.md` — **was NOT on main** (HOSTING.md referenced a file that did not exist). Now committed: the ONE owner-action page (Firebase project → android app `ly.madarek.mobile` → `google-services.json` → FCM v1 service-account key → send both files).
+- **PUSH_ENABLED default was still `false`** in `backend/src/env.ts` (contradicting HOSTING.md's "افتراضيًا true"). Fixed: default now `true` (N2 law: the send path is a no-op with zero registered device tokens — an empty PushDevice table makes it harmless; the in-app notification center works either way). No Vercel env var exists for it, so the code default is the truth everywhere.
+- Expo API (`api.expo.dev`) unreachable from this sandbox (proxy 404 on every endpoint) — credentials state rides on R353's verified evidence (unchanged): `androidFcm: null`, no `google-services.json` in the repo (grep-verified again: zero matches). The owner supplied no Firebase files this round → **lane N takes the N2 fallback path** (full in-app fallback + this checklist at the top of the final report).
+- `DELETE /invites/:id` (flagged by the roles analyzer as possibly any-authed): **verified SAFE** — `revokeInvite()` enforces creator-ownership + OWNER bypass in the service layer (`modules/invites/service.ts:160`).
+
+### 5. LANE E2 first harvest (this commit — mechanical fixes)
+- **3 shadowed dead routes deleted**: `GET /live/sessions`, `POST /live/sessions`, `POST /live/sessions/:id/lifecycle` in `teacher-profile.routes.ts` were never dispatched (`live.routes.ts` mounts first, app.ts:324 vs :382) and their guards had drifted from the live copies. The PURE exports stay (visibility-logic.test.ts pins them). Stale app.ts mount comment fixed.
+- **Seed/migration drift fixed**: `prisma/seed.ts` ROLE_CAPS.QUALITY still seeded `EXAMS_MODERATE` — re-seeding would resurrect the RolePermission row that migration `20261114200000_r353_e2_staff_roles` deliberately deleted. Seed now mirrors `DEFAULT_ROLE_CAPABILITIES` (QUALITY = QUALITY_VIEW, QUALITY_REPORT, ANNOUNCE_FACULTY).
+- Analyzer findings logged for the exhaustive pass (next): 294 unique endpoints, only 71 (24.1%) matrix-driven; menus 1/101 matrix-driven; matrix under-lists `enrollments:create` leadership seats + `curriculum:edit` ADMIN (app admits them via Role.TEACHER leadership + CURRICULUM_EDIT_ANY). The exhaustive route×seat generator + matrix reconciliation lands next (E2 bundle).
 
 ## Open items (moving to lanes)
 - Copy diet TRUE current: **19,637 Arabic words** (verify.sh copy-budget output on base `99dfe800`; baseline 21,504 → −8.7 %). Owner target ≥ 40 % ⇒ ≤ 12,902. Gap to cut: **~6,700 words**. Enforced ceilings sum: 18,522.

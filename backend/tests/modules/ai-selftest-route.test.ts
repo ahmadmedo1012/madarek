@@ -38,7 +38,7 @@ vi.mock('../../src/lib/ai/selftest.js', () => ({
         provider: 'gemini',
         baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai/',
         modelsTried: ['gemini-2.5-flash'],
-        modelsList: { ok: true, status: 200, latencyMs: 210, modelCount: 42 },
+        modelsList: { ok: true, status: 200, latencyMs: 210, modelCount: 42, sample: ['gemini-2.5-flash', 'gemini-2.5-pro'] },
         completion: { ok: true, status: 200, latencyMs: 640, model: 'gemini-2.5-flash', replyChars: 1 },
         error: null,
       },
