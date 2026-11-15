@@ -1933,8 +1933,14 @@ a.pf-row-link {
      z-index only through the --z-* rungs · @media print collapses to
      one clean column. */
 
-  /* the shell — framed guest paper, one rule for the four roots */
-  .ab, .ap, .hp, .lg {
+  /* the shell — framed guest paper, one rule for the four roots.
+     R354-UI: `.lg:not(.btn)` — the bare `.lg` also matched the `.btn.lg`
+     size variant, and this pages-layer ground beat the components-layer
+     `.btn` slab on every large CTA (/404, /500, /403, dashboard focus
+     actions): the accent/primary fill vanished and the label fell back
+     to the paper. The legal root is a <div>, never a button, so the
+     guard changes no guest-sheet paint. */
+  .ab, .ap, .hp, .lg:not(.btn) {
     background: var(--bg);
     color: var(--text);
     overflow-x: clip;
