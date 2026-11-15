@@ -82,6 +82,17 @@ else
   fail "brand asset manifest"; head -20 /tmp/verify-brand.log
 fi
 
+# 3.7 copy-budget ratchet (R353 lane P2 — the per-page Arabic-copy ceiling
+#     set; dependency-free, runs in BOTH modes like the identity guard.
+#     Fails on any page over its ceiling in docs/QA/copy-budget.json, on a
+#     page missing from the ratchet, or on a stale ratchet entry.)
+step "copy-budget (Arabic words per page vs ratchet)"
+if node scripts/gates/copy-budget.mjs > /tmp/verify-copybudget.log 2>&1; then
+  ok "copy-budget $(grep -oE 'arabic words: [0-9]+.*' /tmp/verify-copybudget.log | head -1)"
+else
+  fail "copy-budget"; rg '^OVER|^✗|over ceiling' /tmp/verify-copybudget.log | head -10; tail -8 /tmp/verify-copybudget.log
+fi
+
 if [[ $FAST -eq 1 ]]; then
   step "--fast mode: stopping here"
   [[ $FAIL -eq 0 ]] && echo "verify.sh: FAST PASS" || echo "verify.sh: FAIL"
