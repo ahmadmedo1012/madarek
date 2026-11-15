@@ -50,8 +50,10 @@ const findUnique = vi.mocked(prisma.courseOffering.findUnique);
  * filter — an empty array is exactly what a dropped/completed enrollment
  * yields.
  */
-const offeringRow = (teacherId: string, enrollments: Array<{ id: string }> = []) =>
-  ({ teacherId, enrollments }) as never;
+const offeringRow = (
+  teacherId: string,
+  enrollments: Array<{ id: string }> = [],
+): { teacherId: string; enrollments: Array<{ id: string }> } => ({ teacherId, enrollments });
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -108,7 +110,7 @@ describe('assertOfferingAccess — DB-bound wrapper (mocked prisma)', () => {
     findUnique.mockResolvedValue({
       ...offeringRow('someone-else'),
       course: { department: { id: 'dept-1', facultyId: 'fac-1' } },
-    });
+    } as never);
     await expect(
       assertOfferingAccess('offering-1', 'dean-1', Role.TEACHER),
     ).resolves.toBeUndefined();
@@ -123,7 +125,7 @@ describe('assertOfferingAccess — DB-bound wrapper (mocked prisma)', () => {
     findUnique.mockResolvedValue({
       ...offeringRow('teacher-1'),
       course: { department: { id: 'dept-1', facultyId: 'fac-1' } },
-    });
+    } as never);
     await expect(
       assertOfferingAccess('offering-1', 'dean-1', Role.TEACHER),
     ).rejects.toMatchObject({ status: 403, code: 'FORBIDDEN' });
@@ -138,7 +140,7 @@ describe('assertOfferingAccess — DB-bound wrapper (mocked prisma)', () => {
     findUnique.mockResolvedValue({
       ...offeringRow('someone-else'),
       course: { department: { id: 'dept-1', facultyId: 'fac-1' } },
-    });
+    } as never);
     await expect(
       assertOfferingAccess('offering-1', 'head-1', Role.TEACHER),
     ).resolves.toBeUndefined();
@@ -150,28 +152,28 @@ describe('assertOfferingAccess — DB-bound wrapper (mocked prisma)', () => {
       positionFacultyId: null,
       positionDepartmentId: null,
     } as never);
-    findUnique.mockResolvedValue(offeringRow('teacher-1'));
+    findUnique.mockResolvedValue(offeringRow('teacher-1') as never);
     await expect(
       assertOfferingAccess('offering-1', 'scopeless-dean', Role.TEACHER),
     ).rejects.toMatchObject({ status: 403, code: 'FORBIDDEN' });
   });
 
   it("resolves for the TEACHER who teaches the offering", async () => {
-    findUnique.mockResolvedValue(offeringRow('teacher-1'));
+    findUnique.mockResolvedValue(offeringRow('teacher-1') as never);
     await expect(
       assertOfferingAccess('offering-1', 'teacher-1', Role.TEACHER),
     ).resolves.toBeUndefined();
   });
 
   it("rejects a TEACHER who does not teach the offering", async () => {
-    findUnique.mockResolvedValue(offeringRow('teacher-1'));
+    findUnique.mockResolvedValue(offeringRow('teacher-1') as never);
     await expect(
       assertOfferingAccess('offering-1', 'teacher-2', Role.TEACHER),
     ).rejects.toMatchObject({ status: 403, code: 'FORBIDDEN' });
   });
 
   it('resolves for a STUDENT with an active enrollment', async () => {
-    findUnique.mockResolvedValue(offeringRow('teacher-1', [{ id: 'enr-1' }]));
+    findUnique.mockResolvedValue(offeringRow('teacher-1', [{ id: 'enr-1' }]) as never);
     await expect(
       assertOfferingAccess('offering-1', 'student-1', Role.STUDENT),
     ).resolves.toBeUndefined();
@@ -180,21 +182,21 @@ describe('assertOfferingAccess — DB-bound wrapper (mocked prisma)', () => {
   it('rejects a STUDENT whose only enrollment is non-active (filtered out server-side)', async () => {
     // The `where: { status: 'active' }` clause means a dropped/completed
     // enrollment row is NOT returned — the student sees 403, not content.
-    findUnique.mockResolvedValue(offeringRow('teacher-1', []));
+    findUnique.mockResolvedValue(offeringRow('teacher-1', []) as never);
     await expect(
       assertOfferingAccess('offering-1', 'student-1', Role.STUDENT),
     ).rejects.toMatchObject({ status: 403, code: 'FORBIDDEN' });
   });
 
   it('rejects a STUDENT with no enrollment row at all', async () => {
-    findUnique.mockResolvedValue(offeringRow('teacher-1', []));
+    findUnique.mockResolvedValue(offeringRow('teacher-1', []) as never);
     await expect(
       assertOfferingAccess('offering-1', 'student-2', Role.STUDENT),
     ).rejects.toMatchObject({ status: 403, code: 'FORBIDDEN' });
   });
 
   it('resolves for QUALITY with no enrollment and no teaching link', async () => {
-    findUnique.mockResolvedValue(offeringRow('teacher-1', []));
+    findUnique.mockResolvedValue(offeringRow('teacher-1', []) as never);
     await expect(
       assertOfferingAccess('offering-1', 'quality-1', Role.QUALITY),
     ).resolves.toBeUndefined();
@@ -208,7 +210,7 @@ describe('assertOfferingAccess — DB-bound wrapper (mocked prisma)', () => {
   });
 
   it('queries ONLY for an active enrollment row — pins the status filter (P1-2 fix)', async () => {
-    findUnique.mockResolvedValue(offeringRow('teacher-1', []));
+    findUnique.mockResolvedValue(offeringRow('teacher-1', []) as never);
     // Outcome is irrelevant here; the query shape is the contract.
     await assertOfferingAccess('offering-1', 'student-1', Role.STUDENT).catch(() => {});
 
