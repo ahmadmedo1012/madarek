@@ -122,6 +122,9 @@ export function NotificationsScreen({
 
   return (
     <View
+      /* R356 Lane N — the e2e anchor for the push proof flow (tab-alerts
+       * mounts this screen; the id asserts the inbox rendered). */
+      testID="notifications-screen"
       style={{
         flex: 1,
         backgroundColor: p.bg,

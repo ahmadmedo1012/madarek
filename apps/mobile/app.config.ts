@@ -1,4 +1,6 @@
 import type { ExpoConfig } from "expo/config";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
 /**
  * مدارك — Madarek mobile (Expo / React Native).
@@ -7,6 +9,28 @@ import type { ExpoConfig } from "expo/config";
  * The API base URL is public configuration (EXPO_PUBLIC_API_BASE_URL);
  * secrets never belong in this file or in the app bundle.
  */
+
+/**
+ * R356 Lane N — Firebase (FCM v1) for Android push.
+ *
+ * google-services.json is NOT in the repo (the owner-promise in
+ * docs/PUSH-FIREBASE-CHECKLIST.md: neither Firebase file is ever
+ * committed — they ride repo secrets into CI worktrees and EAS
+ * credentials for delivery). When the file is present (CI writes it
+ * from the GOOGLE_SERVICES_JSON secret before prebuild; the owner can
+ * drop it locally too) the app wires native Firebase and
+ * expo-notifications mints real FCM v1-backed Expo tokens. When it is
+ * absent (a bare clone) the field is omitted: prebuild still succeeds,
+ * the app still boots, and push registration degrades honestly to its
+ * retryable failure seat (src/lib/push.tsx — no fake grants).
+ *
+ * CI law: every job that resolves this config (build-android build +
+ * smoke, build-ios-sidestore, mobile eas-ota) MUST write the file from
+ * the secret first, so the published binaries and the published OTA
+ * updates compute the SAME fingerprint.
+ */
+const GOOGLE_SERVICES = join(__dirname, "google-services.json");
+
 const config: ExpoConfig = {
   name: "مدارك",
   slug: "madarek-mobile",
@@ -31,6 +55,12 @@ const config: ExpoConfig = {
   },
   android: {
     package: "ly.madarek.mobile",
+    // R356 Lane N — present ONLY when google-services.json is in the
+    // worktree (CI writes it from the GOOGLE_SERVICES_JSON secret);
+    // see the block comment above for the fingerprint law.
+    ...(existsSync(GOOGLE_SERVICES)
+      ? { googleServicesFile: "./google-services.json" }
+      : {}),
     // R353 C1 (M1) — the documented pairing with react-native-keyboard-
     // controller: the window must NOT resize under the keyboard (Expo's
     // default); the library's KeyboardAvoidingView owns the compensation.

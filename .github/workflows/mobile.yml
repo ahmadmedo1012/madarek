@@ -134,6 +134,26 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm ci --no-audit --no-fund
+      # R356 Lane N — `eas update --auto` computes the runtimeVersion
+      # fingerprint from THIS tree; without the Firebase file the update
+      # would target the pre-Firebase fingerprint and never reach the
+      # new binaries (measured: hash changes with/without the file).
+      - name: Write google-services.json (fingerprint parity, from the repo secret)
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GOOGLE_SERVICES_JSON:-}" ]; then
+            echo "::warning::GOOGLE_SERVICES_JSON is empty — OTA update targets the pre-Firebase fingerprint"
+            exit 0
+          fi
+          printf '%s' "$GOOGLE_SERVICES_JSON" > google-services.json
+          node -e '
+            const c = JSON.parse(require("fs").readFileSync("google-services.json", "utf8"));
+            const pkg = c?.client?.[0]?.client_info?.android_client_info?.package_name;
+            if (pkg !== "ly.madarek.mobile") { console.error(`bad package: ${pkg}`); process.exit(1); }
+            console.log(`google-services.json OK (${c.project_info.project_id})`);
+          '
       - name: Publish OTA update (production)
         run: npx eas-cli@latest update --branch production --auto --non-interactive
         env:

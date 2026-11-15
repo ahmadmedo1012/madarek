@@ -73,4 +73,79 @@ rolling-issue law as release-freshness/tick-watch. First dispatch evidence: (pen
 
 (pending — the fix push's CI / Deploy Vercel / Android / Size gate / deadcode + watches)
 
+## LANE N — Push (executed mid-Lane-1: the owner delivered the Firebase files)
+
+The owner supplied both Firebase files mid-session (chat upload). Executed per his
+instruction: googleServicesFile in app.config.ts, FCM v1 to EAS via EXPO_TOKEN,
+rebuild, real-notification emulator proof, evidence.
+
+### N.1 EAS FCM v1 upload (done, verified from the credentials panel itself)
+
+`eas credentials -p android` (production profile) driven through a scripted pty —
+the CLI has no non-interactive FCM v1 path; byte-by-byte and chunked arrow-key
+probing established the exact menu route first. The session transcript shows:
+
+```
+✔ Uploaded Google Service Account Key.
+✔ Google Service Account Key assigned to ly.madarek.mobile for FCM V1
+Push Notifications (FCM V1): Google Service Account Key For FCM V1
+  Project ID      madarek-20141
+  Client Email    firebase-adminsdk-fbsvc@madarek-20141.iam.gserviceaccount.com
+  Client ID       107845582703217383885
+  Private Key ID  84f9157f5d1eac4b87465f9f49d6f0996584e318
+  Updated         0 second ago
+```
+
+### N.2 The never-in-repo law (the owner-promise in PUSH-FIREBASE-CHECKLIST)
+
+- `GOOGLE_SERVICES_JSON` repo secret created (GitHub API, libsodium-sealed, HTTP 201)
+  from the owner's google-services.json (project `madarek-20141`, package
+  `ly.madarek.mobile` — validated).
+- `apps/mobile/.gitignore`: google-services.json + service-account patterns ignored.
+- `app.config.ts`: `android.googleServicesFile` is CONDITIONAL on the file's
+  presence — a bare clone prebuilds fine (verified: config resolves both ways);
+  CI worktrees get the file from the secret before any config resolution.
+
+### N.3 The fingerprint law (measured, not assumed)
+
+`npx @expo/fingerprint`: WITH google-services.json
+`01825f31be5638b172151452aa5d651143b0bfff`, WITHOUT
+`998095c1c40b41bb65287fd1547e0ac6f51e606b` — different. Therefore EVERY job that
+resolves the config/prebuild/fingerprint now writes the file from the secret
+first: build-android (build + smoke jobs), build-ios-sidestore (build job —
+fingerprint parity), mobile.yml eas-ota (`eas update --auto` must target the
+new fingerprint or the new binaries get no OTA).
+
+Local prebuild proof (the native wiring, empirically):
+`android/app/google-services.json` copied (673 B) +
+`apply plugin: 'com.google.gms.google-services'` (app/build.gradle:184) +
+`classpath 'com.google.gms:google-services:4.4.4'` (root build.gradle:9).
+
+### N.4 The proof workflow (`.github/workflows/push-firebase-proof.yml`)
+
+google_apis API-34 emulator (the smoke's AOSP `default` image has no Play
+services — FCM cannot arrive there). One release-parity x86_64 APK (minified,
+production URL, Firebase from the secret; the prebuild step ASSERTS the native
+wiring). Then `scripts/ci/push-proof-run.sh`:
+
+1. `pm grant POST_NOTIFICATIONS` (deterministic; the in-app ask is unit-tested)
+2. Maestro `push-proof.yaml`: login student@test.ly on PRODUCTION → tab-alerts
+3. Server-side registration proof: GET /me/push-devices shows the ANDROID row
+4. REAL server event: registrar@test.ly (ADMIN, ANNOUNCE_PLATFORM) →
+   POST /api/v1/announcements (PLATFORM) → production fanOutPush → Expo → FCM v1
+5. Arrival: dumpsys notification + logcat poll (≤120s) + screenshots
+6. In-app inbox row: Maestro `push-inbox.yaml` + screenshot
+7. Implicit Expo receipt `ok`: the device row SURVIVES the send (a
+   DeviceNotRegistered receipt prunes it — push.ts's receipt pass)
+
+Hard assertions in the workflow (registration ≥1 ANDROID row + row survives +
+announcement created + dumpsys carries the posted notification), evidence bundle
+artifact (retention 30d). Mobile tests green after the additive testID anchor:
+1,250/1,250; tsc clean. (Run URL recorded below once executed.)
+
+### N.5 Evidence
+
+(first proof run: pending the push + workflow execution — recorded here with the
+run URL and the artifact link)
+
 ## LANE 2..9 — (not started)

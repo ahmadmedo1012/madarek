@@ -1,0 +1,58 @@
+# R356 Lane N — the REAL push proof, first half (registration).
+#
+# WHAT THIS PROVES: the freshly-built APK (with google-services.json from
+# the GOOGLE_SERVICES_JSON secret) boots, reaches PRODUCTION, logs the
+# seeded student in, and opens the alerts tab — after which the app's
+# PushRegistrar silently mints an ExponentPushToken (Firebase/FCM v1 via
+# the EAS-uploaded credentials) and registers it on the production
+# backend (POST /me/push-devices). The runner-side script then verifies
+# the device row exists and fires a REAL announcement from the server;
+# the second flow (push-inbox.yaml) captures the arrival.
+#
+# The notification permission is PRE-GRANTED by the runner (adb pm grant)
+# for determinism — the in-app ask flow is unit-tested in
+# src/lib/push-registrar.test.tsx; this flow proves the PIPELINE.
+appId: ly.madarek.mobile
+name: "LN-a — دفعة حقيقية: دخول الإنتاج وفتح الإشعارات"
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: "welcome-title"
+    timeout: 120000
+- scrollUntilVisible:
+    element:
+      id: "welcome-cta"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: "welcome-cta"
+- extendedWaitUntil:
+    visible:
+      id: "login-email"
+    timeout: 30000
+- tapOn:
+    id: "login-email"
+- inputText: "student@test.ly"
+- tapOn:
+    id: "login-password"
+- inputText: "12345678"
+- tapOn:
+    id: "login-submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab-courses"
+    timeout: 120000
+- tapOn:
+    id: "tab-alerts"
+- extendedWaitUntil:
+    visible:
+      id: "notifications-screen"
+    timeout: 30000
+# Dwell: the silent registration (token mint → POST /me/push-devices)
+# rides the login; give it room before the runner-side checks.
+- extendedWaitUntil:
+    visible:
+      id: "notifications-screen"
+    timeout: 20000

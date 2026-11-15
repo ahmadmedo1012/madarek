@@ -1,0 +1,28 @@
+# R356 Lane N — the REAL push proof, second half (arrival).
+#
+# Runs AFTER the runner-side script fired a real announcement from the
+# production server (registrar@test.ly → POST /api/v1/announcements).
+# The app relaunches on the cached session, opens the alerts inbox, and
+# the runner screenshots it — the announcement row in the inbox + the
+# system-tray notification (dumpsys) + the FCM logcat lines together
+# are the end-to-end arrival evidence.
+appId: ly.madarek.mobile
+name: "LN-b — وصول الإشعار: صندوق الإشعارات بعد الإرسال الحقيقي"
+---
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: "tab-courses"
+    timeout: 120000
+- tapOn:
+    id: "tab-alerts"
+- extendedWaitUntil:
+    visible:
+      id: "notifications-screen"
+    timeout: 30000
+# Dwell for the screenshot (the runner captures after this flow exits).
+- extendedWaitUntil:
+    visible:
+      id: "notifications-screen"
+    timeout: 15000

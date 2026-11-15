@@ -174,6 +174,35 @@ jobs:
         working-directory: apps/mobile
         run: npm ci --no-audit --no-fund
 
+      # R356 Lane N — Firebase for Android push. The file NEVER enters
+      # the repo (the owner-promise in docs/PUSH-FIREBASE-CHECKLIST.md);
+      # CI writes it from the GOOGLE_SERVICES_JSON secret before any
+      # config/prebuild/fingerprint resolution. Absent secret → a LOUD
+      # warning + honest degradation (the app builds, push registration
+      # fails retryably in-app — the documented fallback); an invalid
+      # secret → hard fail (never ship a wrong Firebase config).
+      - name: Write google-services.json (Firebase push, from the repo secret)
+        working-directory: apps/mobile
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GOOGLE_SERVICES_JSON:-}" ]; then
+            echo "::warning::GOOGLE_SERVICES_JSON is empty — building WITHOUT Firebase push (the honest fallback); Android push tokens will not mint until the secret returns"
+            exit 0
+          fi
+          printf '%s' "$GOOGLE_SERVICES_JSON" > google-services.json
+          node -e '
+            const fs = require("fs");
+            const c = JSON.parse(fs.readFileSync("google-services.json", "utf8"));
+            const pkg = c?.client?.[0]?.client_info?.android_client_info?.package_name;
+            if (pkg !== "ly.madarek.mobile") {
+              console.error(`google-services.json package is ${pkg}, expected ly.madarek.mobile`);
+              process.exit(1);
+            }
+            console.log(`google-services.json OK (project ${c.project_info.project_id}, package ${pkg})`);
+          '
+
       - name: Typecheck before the native build
         working-directory: apps/mobile
         run: npm run typecheck
@@ -597,6 +626,27 @@ jobs:
       - name: Install JS dependencies from the lockfile
         working-directory: apps/mobile
         run: npm ci --no-audit --no-fund
+
+      # R356 Lane N — same Firebase secret write as the build job: the
+      # smoke APK must exercise the SAME native wiring (and fingerprint)
+      # as the published release.
+      - name: Write google-services.json (Firebase push, from the repo secret)
+        working-directory: apps/mobile
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GOOGLE_SERVICES_JSON:-}" ]; then
+            echo "::warning::GOOGLE_SERVICES_JSON is empty — smoke build WITHOUT Firebase push (the honest fallback)"
+            exit 0
+          fi
+          printf '%s' "$GOOGLE_SERVICES_JSON" > google-services.json
+          node -e '
+            const c = JSON.parse(require("fs").readFileSync("google-services.json", "utf8"));
+            const pkg = c?.client?.[0]?.client_info?.android_client_info?.package_name;
+            if (pkg !== "ly.madarek.mobile") { console.error(`bad package: ${pkg}`); process.exit(1); }
+            console.log(`google-services.json OK (${c.project_info.project_id})`);
+          '
 
       - name: Generate the native Android project (Expo prebuild)
         working-directory: apps/mobile

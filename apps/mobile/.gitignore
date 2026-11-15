@@ -46,3 +46,9 @@ example
 # local env files
 .env
 .env.local
+
+# R356 Lane N — Firebase files NEVER enter the repo (the owner-promise:
+# they ride repo secrets -> written to the worktree by CI, uploaded to EAS)
+google-services.json
+firebase-service-account*.json
+*-firebase-adminsdk-*.json

@@ -1,0 +1,290 @@
+# R356 Lane N — the REAL push proof (owner-supplied Firebase files).
+#
+# WHAT THIS WORKFLOW PROVES, end to end, on a Google-APIs Android
+# emulator (Firebase needs Play services — the hermetic smoke's AOSP
+# `default` image cannot receive FCM):
+#
+#   1. BUILD: the same release-parity x86_64 APK recipe as the smoke's
+#      prod-config proof (R8 minified, PRODUCTION base URL baked) PLUS
+#      google-services.json written from the GOOGLE_SERVICES_JSON repo
+#      secret (the file never enters the repo — the owner-promise in
+#      docs/PUSH-FIREBASE-CHECKLIST.md).
+#   2. REGISTER: the app (Maestro: push-proof.yaml) logs the seeded
+#      student into PRODUCTION and opens the alerts inbox; the app's
+#      PushRegistrar mints an ExponentPushToken (Firebase init via
+#      google-services.json + FCM v1 delivery via the EAS-uploaded
+#      service-account credentials) and registers it on
+#      POST /me/push-devices. The runner then READS the device row back
+#      from production — server-side proof of registration.
+#   3. SEND (a REAL server event): the runner logs in as the seeded
+#      registrar (ADMIN, ANNOUNCE_PLATFORM) and posts a PLATFORM
+#      announcement through the production API — the production
+#      backend's fanOutPush sends through Expo push service → FCM v1.
+#   4. ARRIVE: the runner polls the emulator for the posted system
+#      notification (dumpsys) and the FCM delivery lines (logcat),
+#      captures a screenshot, opens the in-app inbox (push-inbox.yaml)
+#      and screenshots the announcement row, then re-reads the device
+#      row on production (a DeviceNotRegistered receipt would have
+#      pruned it — its survival is the implicit Expo receipt `ok`).
+#
+# Gate policy: registration + arrival are HARD assertions (a failure
+# fails the run and opens nothing — the evidence bundle tells the
+# story). The workflow runs on manual dispatch and when its own recipe
+# changes; it is NOT in the push-critical path.
+name: Push proof (Firebase, real send)
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/push-firebase-proof.yml'
+      - 'apps/mobile/.maestro/push-proof.yaml'
+      - 'apps/mobile/.maestro/push-inbox.yaml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: push-proof
+  cancel-in-progress: false
+
+env:
+  CI: "1"
+  NODE_VERSION: "22"
+  JAVA_VERSION: "17"
+  ANDROID_COMPILE_SDK: "37"
+  ANDROID_MIN_SDK: "24"
+  ANDROID_TARGET_SDK: "36"
+  ANDROID_BUILD_TOOLS: "37.0.0"
+  ANDROID_NDK: "27.1.12297006"
+  EXPO_PUBLIC_API_BASE_URL: "https://madarek-nine.vercel.app/api/v1"
+  EXPO_UPDATES_CHANNEL: "production"
+  API_BASE: "https://madarek-nine.vercel.app/api/v1"
+
+jobs:
+  push-proof:
+    name: "Firebase push: build → register → real send → arrive"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/mobile/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Configure the preinstalled Android SDK
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          if [ ! -d "$SDK_ROOT" ]; then
+            for candidate in "$HOME/Android/Sdk" /opt/android-sdk /usr/lib/android-sdk; do
+              if [ -d "$candidate" ]; then SDK_ROOT="$candidate"; break; fi
+            done
+          fi
+          test -d "$SDK_ROOT" || { echo "::error::Android SDK not found"; exit 1; }
+          SDKMANAGER=""
+          for dir in "$SDK_ROOT"/cmdline-tools/*/bin; do
+            if [ -x "$dir/sdkmanager" ]; then SDKMANAGER="$dir/sdkmanager"; break; fi
+          done
+          test -n "$SDKMANAGER" || { echo "::error::sdkmanager not found under $SDK_ROOT"; exit 1; }
+          SDKMANAGER_DIR=$(dirname "$SDKMANAGER")
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "$SDKMANAGER_DIR" >> "$GITHUB_PATH"
+          echo "$SDK_ROOT/platform-tools" >> "$GITHUB_PATH"
+          export PATH="$SDKMANAGER_DIR:$SDK_ROOT/platform-tools:$PATH"
+          command -v sdkmanager
+          sdkmanager --version
+
+      - name: Install Android SDK packages
+        run: |
+          set -euo pipefail
+          : "${ANDROID_HOME:?ANDROID_HOME is not set}"
+          set +o pipefail
+          yes | sdkmanager --sdk_root="$ANDROID_HOME" --licenses >/dev/null || true
+          set -o pipefail
+          sdkmanager --sdk_root="$ANDROID_HOME" --install \
+            "platform-tools" \
+            "platforms;android-${ANDROID_COMPILE_SDK}.0" \
+            "build-tools;${ANDROID_BUILD_TOOLS}" \
+            "ndk;${ANDROID_NDK}"
+
+      - name: Install JS dependencies from the lockfile
+        working-directory: apps/mobile
+        run: npm ci --no-audit --no-fund
+
+      - name: Write google-services.json (Firebase push, from the repo secret)
+        working-directory: apps/mobile
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GOOGLE_SERVICES_JSON:-}" ]; then
+            echo "::error::GOOGLE_SERVICES_JSON is empty — the push proof cannot run without Firebase"
+            exit 1
+          fi
+          printf '%s' "$GOOGLE_SERVICES_JSON" > google-services.json
+          node -e '
+            const c = JSON.parse(require("fs").readFileSync("google-services.json", "utf8"));
+            const pkg = c?.client?.[0]?.client_info?.android_client_info?.package_name;
+            if (pkg !== "ly.madarek.mobile") { console.error(`bad package: ${pkg}`); process.exit(1); }
+            console.log(`google-services.json OK (project ${c.project_info.project_id})`);
+          '
+
+      - name: Generate the native Android project (Expo prebuild)
+        working-directory: apps/mobile
+        env:
+          MADAREK_VERSION_CODE: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          rm -rf android
+          npx expo prebuild --platform android --no-install 2>&1 | tee build/prebuild-push.log
+          test -d android
+          test -f android/app/google-services.json
+          grep -q "com.google.gms.google-services" android/app/build.gradle
+          npm pkg set scripts.android="expo start --android" scripts.ios="expo start --ios"
+          echo "native Firebase wiring verified (google-services.json + gradle plugin)"
+
+      - name: Tune Gradle for the CI runner (x86_64 proof build)
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          GRADLE_PROPERTIES="android/gradle.properties"
+          test -f "$GRADLE_PROPERTIES"
+          sed -i 's|^org.gradle.jvmargs=.*|org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8|' "$GRADLE_PROPERTIES"
+          grep -q '^org.gradle.jvmargs=' "$GRADLE_PROPERTIES" || echo 'org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8' >> "$GRADLE_PROPERTIES"
+          if grep -q '^reactNativeArchitectures=' "$GRADLE_PROPERTIES"; then
+            sed -i 's|^reactNativeArchitectures=.*|reactNativeArchitectures=x86_64|' "$GRADLE_PROPERTIES"
+          else
+            echo 'reactNativeArchitectures=x86_64' >> "$GRADLE_PROPERTIES"
+          fi
+          if [ -s "$GRADLE_PROPERTIES" ] && [ -n "$(tail -c 1 "$GRADLE_PROPERTIES")" ]; then printf '\n' >> "$GRADLE_PROPERTIES"; fi
+          grep -q '^org.gradle.caching=' "$GRADLE_PROPERTIES" || echo 'org.gradle.caching=true' >> "$GRADLE_PROPERTIES"
+          grep -q '^org.gradle.parallel=' "$GRADLE_PROPERTIES" || echo 'org.gradle.parallel=true' >> "$GRADLE_PROPERTIES"
+          grep -q '^android.enableMinifyInReleaseBuilds=' "$GRADLE_PROPERTIES" || echo 'android.enableMinifyInReleaseBuilds=true' >> "$GRADLE_PROPERTIES"
+          printf 'sdk.dir=%s\n' "$ANDROID_HOME" > android/local.properties
+
+      - name: Build the x86_64 proof APK (minified, PRODUCTION base, Firebase)
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          (cd android && ./gradlew :app:assembleRelease --no-daemon --stacktrace) \
+            2>&1 | tee build/gradle-push.log
+          cp android/app/build/outputs/apk/release/app-release.apk build/Madarek-push-x86_64.apk
+          test -s build/Madarek-push-x86_64.apk
+
+      - name: Install Maestro
+        run: |
+          set -euo pipefail
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      # ubuntu-24.04 runners: the runner user is not in the kvm group —
+      # same rule as build-android.yml's smoke (run 43531370824 lesson).
+      - name: Enable KVM group permissions (ubuntu-24.04)
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm
+          test -r /dev/kvm && test -w /dev/kvm && echo 'KVM node accessible (rw) for this user'
+
+      # The whole sequence runs as ONE bash script: android-emulator-runner
+      # executes every script LINE as its own /bin/sh -c (no cwd/vars
+      # survive across lines — the documented lesson in build-android.yml).
+      - name: Register → real send → prove arrival (google_apis emulator)
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          API_LEVEL: '34'
+        with:
+          api-level: 34
+          arch: x86_64
+          # google_apis — NOT `default`: FCM needs Google Play services.
+          target: google_apis
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
+          cores: 3
+          ram-size: 3072M
+          heap-size: 512M
+          pre-emulator-launch-script: |
+            printf 'hw.lcd.width=1080\nhw.lcd.height=2340\nhw.lcd.density=420\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"
+            grep '^hw.lcd' "$ANDROID_AVD_HOME/test.avd/config.ini"
+          disable-animations: false
+          script: bash "$GITHUB_WORKSPACE/scripts/ci/push-proof-run.sh"
+
+      - name: Assert the evidence (registration + arrival)
+        run: |
+          set -euo pipefail
+          B="apps/mobile/build"
+          echo "== registration (server-side device row) =="
+          cat "$B/push-devices.json"
+          DEVICES=$(jq -e '[.data[] | select(.platform == "ANDROID")] | length' "$B/push-devices.json")
+          echo "ANDROID devices registered on production: $DEVICES"
+          [ "$DEVICES" -ge 1 ] || { echo "::error::no ANDROID device row on production — registration failed"; exit 1; }
+          echo "== device row survives the send (implicit Expo receipt ok) =="
+          DEVICES_AFTER=$(jq -e '[.data[] | select(.platform == "ANDROID")] | length' "$B/push-devices-after.json")
+          echo "ANDROID devices after the send: $DEVICES_AFTER"
+          [ "$DEVICES_AFTER" -ge 1 ] || { echo "::error::the device row was PRUNED — Expo reported DeviceNotRegistered (the receipt said the token is dead)"; exit 1; }
+          echo "== the announcement row exists (the server event) =="
+          jq -e '.data.title' "$B/announcement.json" >/dev/null
+          echo "== arrival: the system posted our notification =="
+          if grep -q "ly.madarek.mobile" "$B/dumpsys-notification.txt" && grep -qi "madarek" "$B/dumpsys-notification.txt"; then
+            echo "dumpsys: a Madarek notification is POSTED on the emulator"
+          else
+            echo "::error::no Madarek notification in dumpsys — the push never arrived"
+            exit 1
+          fi
+          echo "== arrival: FCM delivery lines in logcat =="
+          FCM_LINES=$(grep -cE "FirebaseMessaging|com.google.android.datatransport|GoogleCertificates" "$B/logcat-push.log" || true)
+          echo "FCM-related logcat lines: $FCM_LINES"
+          echo "ALL PUSH EVIDENCE ASSERTIONS PASSED"
+
+      - name: Upload the push evidence bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: push-proof-evidence-${{ github.run_number }}
+          path: |
+            apps/mobile/build/push-devices.json
+            apps/mobile/build/push-devices-after.json
+            apps/mobile/build/announcement.json
+            apps/mobile/build/dumpsys-notification.txt
+            apps/mobile/build/logcat-push.log
+            apps/mobile/build/logcat-full.log
+            apps/mobile/build/push-before.png
+            apps/mobile/build/push-after.png
+            apps/mobile/build/push-inbox.png
+            apps/mobile/build/push-maestro-junit.xml
+            apps/mobile/build/push-inbox-junit.xml
+            apps/mobile/build/prebuild-push.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Write the run summary
+        if: always()
+        run: |
+          {
+            echo "## Push proof (Firebase, real send)"
+            echo
+            echo "- APK: release-parity x86_64 with google-services.json (from secret) — native wiring verified at prebuild"
+            echo "- Emulator: API 34 google_apis (Play services present — FCM capable)"
+            echo "- Registration: server-side ANDROID device row for student@test.ly (see artifact push-devices.json)"
+            echo "- Real send: registrar@test.ly → POST /api/v1/announcements (PLATFORM) → production fanOutPush → Expo → FCM v1 (EAS credentials)"
+            echo "- Arrival: dumpsys + logcat + screenshots (see artifact push-proof-evidence-${{ github.run_number }})"
+          } >> "$GITHUB_STEP_SUMMARY"
