@@ -61,7 +61,7 @@ export default function WebinarsPage() {
     <PageFrame width="default">
       <PageHeader
         title="الندوات وورش العمل"
-        description="جدول البثّ المباشر لمقرّراتك، وروابط سريعة إلى حيث تُنشر الفعاليّات الجامعيّة الرسميّة."
+        description="جدول البثّ المباشر لمقرّراتك، وروابط الفعاليّات الجامعيّة."
       />
 
       {/* The two MetricCards collapsed into ONE StatLine — counts from
@@ -131,7 +131,7 @@ export default function WebinarsPage() {
              reserved-but-empty region (same copy, same one action). */
           <EmptyCell
             label="لا توجد جلسات مباشرة مجدولة الآن"
-            note="عندما يبدأ أستاذك بثّاً مباشراً ستجده هنا وفي صفحة البثّ — مع التسجيلات بعد انتهاء الجلسة."
+            note="تجده هنا وفي صفحة البثّ — مع التسجيلات بعد الجلسة."
             action={<Link to="/student/live" className="btn outline sm">زيارة صفحة البثّ</Link>}
           />
         ) : (
@@ -201,8 +201,7 @@ export default function WebinarsPage() {
               <Icon icon={MessageSquare} size={16} aria-hidden /> المجتمع الجامعيّ
             </div>
             <p className="webinar-dest-desc">
-              تابع الفعاليّات والإعلانات والمسابقات على مستوى الجامعة. جميع الأحداث القادمة ظاهرة هناك مع
-              زر «سأحضر» للتأكيد.
+              كل الأحداث القادمة ظاهرة هناك مع زر «سأحضر».
             </p>
             <Link to="/community" className="btn primary sm">
               <Icon icon={ArrowLeft} size={13} />

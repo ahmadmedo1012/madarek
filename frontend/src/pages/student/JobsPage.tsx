@@ -149,7 +149,7 @@ function JobRow({ job, applied }: { job: Job; applied: boolean }) {
         <tr>
           <td colSpan={6} role="alert">
             <p className="job-apply-error">
-              {apiErrorMessage(apply.error, 'تعذّر إرسال طلب التقديم — حاول مرة أخرى.')}
+              {apiErrorMessage(apply.error, 'تعذّر إرسال الطلب — حاول مرة أخرى.')}
             </p>
           </td>
         </tr>
@@ -222,7 +222,7 @@ export default function JobsPage() {
            region — the hatched EmptyCell (same honest copy). */
         <EmptyCell
           label="لا توجد فرص نشطة هذا الأسبوع"
-          note="نضيف فرص التوظيف والتدريب من شركات وطنية وعربية بشكل دوري. ستصلك إشعارات الفرص الملائمة لتخصصك تلقائياً."
+          note="تُضاف فرص التوظيف والتدريب دوريًا — وسيصلك إشعار الفرص الملائمة لتخصصك."
         />
       ) : (
         <>
@@ -274,7 +274,7 @@ export default function JobsPage() {
                EmptyCell (the CoursesPage filter-bucket precedent). */
             <EmptyCell
               label="لا توجد فرص ضمن هذا النوع"
-              note="اختر نوعاً آخر من الأزرار أعلاه — كل الفرص المفتوحة تظهر تحت «الكل»."
+              note="كل الفرص المفتوحة تظهر تحت «الكل»."
             />
           ) : (
             <div className="table-wrap jobs-table-wrap">

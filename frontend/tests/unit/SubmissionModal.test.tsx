@@ -149,6 +149,6 @@ describe('SubmitAssignmentModal validation wiring', () => {
     await flush();
 
     expect(screen.getByText('تمّ التسليم — بعد الموعد النهائي')).toBeInTheDocument();
-    expect(screen.getByText(/سيُعلَّم تسليمك كمتأخر/)).toBeInTheDocument();
+    expect(screen.getByText(/سيُعلَّم التسليم متأخرًا/)).toBeInTheDocument();
   });
 });

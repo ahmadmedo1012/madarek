@@ -631,7 +631,7 @@ export default function LecturePlayerPage() {
 
           {failedReport && (
             <div className="lecture-report-retry" role="alert">
-              <span>تعذّر تسجيل اكتمال المحاضرة — قد لا يُحتسب تقدّمك للمحاضرة.</span>
+              <span>تعذّر تسجيل الاكتمال — قد لا يُحتسب تقدّمك.</span>
               <button
                 type="button"
                 className="btn sm"
@@ -948,7 +948,7 @@ export default function LecturePlayerPage() {
               ) : (
                 // R321 B3 — the honest no-chapters copy, now the sheet's
                 // hatched EmptyCell (same words, the reserved region).
-                <EmptyCell label="لا فصول مقسَّمة" note="لم تُقسَّم هذه المحاضرة إلى فصول — شاهدها كاملة دون تنقّل." />
+                <EmptyCell label="لا فصول مقسَّمة" note="لم تُقسَّم المحاضرة — شاهدها كاملة دون تنقّل." />
               )}
             </section>
 
@@ -1082,7 +1082,7 @@ export default function LecturePlayerPage() {
 
           {answerError && (
             <div className="checkpoint-error" role="alert">
-              تعذّر إرسال الإجابة — تحقّق من اتصالك ثم أعد المحاولة.
+              تعذّر إرسال الإجابة — أعد المحاولة.
             </div>
           )}
 

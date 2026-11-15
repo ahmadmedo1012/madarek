@@ -279,8 +279,7 @@ export default function StudentCalendarPage() {
       <PageHeader
         title="التقويم الأكاديمي"
         description={
-          'كل مواعيدك في نظرة واحدة: الحصص الأسبوعية، ومواعيد تسليم الواجبات، ' +
-          'ونوافذ الاختبارات، والبث المباشر — بتوقيت ليبيا.'
+          'كل مواعيدك في نظرة واحدة: الحصص، التسليمات، الاختبارات، والبثّ — بتوقيت ليبيا.'
         }
         /* r341 D7a — the header's action seat: the honest cross-route
            verb on the accent register (the quality pages' «لوحة الجودة»
@@ -431,13 +430,13 @@ export default function StudentCalendarPage() {
                copy, kept honest and verbatim). */
             <EmptyCell
               label="شهر هادئ"
-              note={`لا مواعيد في ${monthTitleAr(view.year, view.month)} — جرّب شهرًا آخر، أو راجع جدولك ومقرّراتك.`}
+              note={`لا مواعيد في ${monthTitleAr(view.year, view.month)} — جرّب شهرًا آخر أو راجع جدولك.`}
             />
           ) : selectedEvents.length === 0 ? (
             <EmptyState
               icon={CalendarDays}
               title={selectedKey ? selectedDayLabel(selectedKey) : 'اختر يومًا'}
-              description="لا أحداث في هذا اليوم — اختر يومًا آخر من الشبكة أعلاه."
+              description="لا أحداث في هذا اليوم — اختر يومًا آخر."
             />
           ) : (
             <>

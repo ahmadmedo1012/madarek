@@ -143,7 +143,7 @@ export default function MoocPage() {
     <PageFrame width="default">
       <PageHeader
         title="دورات خارجية"
-        description="دورات من منصّات تعليم عالمية وبرامج تدريبية معتمدة — التسجيل يتم على موقع المنصّة نفسها."
+        description="دورات من منصّات عالمية معتمدة — التسجيل من موقع المنصّة."
       />
 
       {isPending ? (
@@ -155,7 +155,7 @@ export default function MoocPage() {
            the sheet's reserved-but-empty region. */
         <EmptyCell
           label="لا توجد دورات خارجية مرتبطة"
-          note="يربط المسجل العام دورات Coursera ودورات edX المعتمدة بمقرّراتك؛ راجع المرشد الأكاديمي لمعرفة المعتمد هذا الفصل."
+          note="يربط المسجل العام دورات Coursera وedX بمقرّراتك — راجع المرشد لمعرفة المعتمد."
         />
       ) : (
         <>
@@ -200,7 +200,7 @@ export default function MoocPage() {
                EmptyCell — the sheet's reserved-but-empty region. */
             <EmptyCell
               label="لا نتائج مطابقة للبحث"
-              note="جرّب كلمة أقصر، أو ابحث باسم الجهة التي تقدّم الدورة."
+              note="جرّب كلمة أقصر، أو ابحث باسم الجهة."
             />
           ) : (
             <div className="grid-3 mooc-grid">

@@ -168,7 +168,7 @@ export default function LabsPage() {
           <PageHeader
             title="المعامل الافتراضية"
             description={
-              'تجارب علمية تفاعلية بدون الحاجة لمعدات حقيقية — شغّل التجربة خطوة بخطوة وراقب النتائج في طرفية المحاكاة.'
+              'تجارب تفاعلية بلا معدات — شغّلها خطوة بخطوة وراقب النتائج في طرفية المحاكاة.'
             }
             /* R342-08 — the header CTA pair (the D11/D8 measured
                seat; the phone band hides the topbar «اسأل AI» ≤920,
@@ -457,7 +457,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
             تعذَّر تسجيل الإكمال
           </div>
           <div className="text-sm text-muted" style={{ maxWidth: 460, marginTop: 'var(--sp-2)' }}>
-            وصلت إلى نهاية التجربة لكن لم يُسجَّل الإكمال على الخادم. يمكنك إعادة المحاولة أو العودة لاحقاً.
+            وصلت إلى نهاية التجربة لكن لم يُسجَّل الإكمال على الخادم — أعد المحاولة أو عُد لاحقاً.
           </div>
           <div className="flex gap-2" style={{ marginTop: 'var(--sp-5)' }}>
             <button type="button" className="btn" onClick={onExit}>

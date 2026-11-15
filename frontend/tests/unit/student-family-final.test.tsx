@@ -139,7 +139,7 @@ describe('r299 — the student-learning family rides the patterns contract', () 
     // ONE semantic h1 on the pattern title, with the page's real copy.
     const h1 = screen.getByRole('heading', { level: 1, name: 'المصفوفة التعليمية' });
     expect(h1).toHaveClass('pf-page-title');
-    expect(screen.getByText(/خريطة معرفيّة شخصيّة/)).toBeInTheDocument();
+    expect(screen.getByText(/خريطة معرفيّة لكل مفهوم درسته/)).toBeInTheDocument();
     // the meta line counts the real payload (3 concepts, 1 course).
     expect(screen.getByText(/مفاهيم مُقاسة عبر مقرّر واحد/)).toBeInTheDocument();
     // the legacy grammar is gone from this route.

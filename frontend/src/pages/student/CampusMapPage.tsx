@@ -81,7 +81,7 @@ export default function CampusMapPage() {
         eyebrow="خدمات الجامعة"
         title="دليل الحرم الجامعيّ"
         description={
-          'كلّيّات مؤسسة مدارك النموذجية بحسب الحرم، مع روابط لصفحاتها التفصيليّة — بيانات عرض اصطناعية.'
+          'كلّيّات مؤسسة مدارك النموذجية بحسب الحرم — بيانات عرض اصطناعية.'
         }
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
@@ -123,7 +123,7 @@ export default function CampusMapPage() {
             ) : undefined
           }
         />
-        <p className="ml-sec-note">طول كل شريط يتناسب مع عدد الكليّات المسجَّلة في المدينة — انقر مدينة لتصفية الدليل.</p>
+        <p className="ml-sec-note">طول الشريط يتناسب مع عدد الكليّات — انقر مدينة لتصفية الدليل.</p>
         {facs.isPending ? (
           <div className="flex-col gap-2" aria-busy="true">
             {[0, 1, 2, 3].map((i) => (

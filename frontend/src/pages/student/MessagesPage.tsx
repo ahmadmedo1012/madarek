@@ -80,7 +80,7 @@ function StudentMessageCompose({
       correspondents={correspondents}
       recipientGroups={teachers.length > 0 ? [{ label: 'أساتذة مقرّراتي', options: teachers }] : undefined}
       statusOptions={statusOptions}
-      noRecipientsHint="لا يوجد مستلمون متاحون بعد — أساتذة مقرّراتك يظهرون هنا بعد تسجيلك في مقرّر، أو انتظر رسالة واردة تردّ عليها."
+      noRecipientsHint="لا مستلمين بعد — ردّ على رسالة واردة."
       onClose={onClose}
     />
   );
@@ -95,7 +95,7 @@ export function StudentMessagesPage() {
          of the same surface. The subtitle keeps its honest recipient
          ceiling (enrolled teachers + prior correspondents). */
       title="الرسائل"
-      subtitle="كل رسالة وصلتك أو أرسلتها — راسل أساتذة مقرّراتك أو ردّ على الوارد، والمستلمون المتاحون هم أساتذة مقرّراتك ومن راسلتك سابقاً."
+      subtitle="رسائلك — راسل أساتذة مقرّراتك أو ردّ على الوارد."
       renderCompose={(args) => <StudentMessageCompose {...args} />}
     />
   );
