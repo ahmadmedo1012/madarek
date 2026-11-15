@@ -105,10 +105,10 @@ interface PresetSuggestion {
  * heavier than the data it carries). */
 const TARGET_OPTIONS: { value: string; label: string }[] =
   ('nameAr:الاسم الكامل,firstName:الاسم الأول,lastName:اسم العائلة,' +
-   'universityId:رقم القيد,email:البريد الإلكتروني,year:السنة الدراسية,' +
+   'universityId:رقم القيد,email:البريد,year:السنة,' +
    'faculty:الكلية,department:القسم,stage:المرحلة,grade:الصف,section:الفصل,' +
-   'studentPhone:هاتف الطالب,guardianName:اسم ولي الأمر,' +
-   'guardianPhone:هاتف ولي الأمر,dateOfBirth:تاريخ الميلاد,gender:الجنس,' +
+   'studentPhone:هاتف الطالب,guardianName:اسم الولي,' +
+   'guardianPhone:هاتف الولي,dateOfBirth:تاريخ الميلاد,gender:الجنس,' +
    'city:المدينة,employeeId:الرقم الوظيفي,unknown:— تجاهل العمود —')
     .split(',')
     .map((pair) => {
@@ -121,7 +121,7 @@ const STEP_LABELS = ['رفع الملف', 'مطابقة الأعمدة', 'الم
 const POLICY_LABELS: Record<string, string> = {
   SKIP: 'تجاوز الموجود',
   UPDATE: 'تحديث كامل',
-  FILL_EMPTY: 'إكمال الفراغات فقط',
+  FILL_EMPTY: 'إكمال الفراغات',
   ERROR: 'رفض الصف',
 };
 
@@ -211,7 +211,7 @@ export function ImportWizardPage() {
       setMapping(m);
       setConfidences(c);
     } catch (err) {
-      setError(apiErrorMessage(err, 'تعذّر تحليل الملف — تأكد من الصيغة (XLSX أو CSV) وحجمه (≤ ١٠ م.ب)'));
+      setError(apiErrorMessage(err, 'تعذّر تحليل الملف'));
       setParsed(null);
     } finally {
       setBusy(false);
@@ -244,7 +244,7 @@ export function ImportWizardPage() {
 
   const acceptFile = useCallback(async (file: File) => {
     if (file.size > MAX_BYTES) {
-      setError('حجم الملف يتجاوز ١٠ ميغابايت — قسّمه إلى ملفات أصغر');
+      setError('أكبر من ١٠ ميغابايت — قسّمه');
       return;
     }
     setError(null);
@@ -256,7 +256,7 @@ export function ImportWizardPage() {
       setStorageKey(key);
       await runParse(b64, undefined, undefined, key);
     } catch {
-      setError('تعذّر رفع الملف — أعد المحاولة');
+      setError('تعذّر رفع الملف');
     } finally {
       setBusy(false);
     }
@@ -272,7 +272,7 @@ export function ImportWizardPage() {
         .map((h) => ({ source: h, target: mapping[h] ?? 'unknown' }))
         .filter((c) => c.source !== '' && c.target !== 'unknown');
       if (columns.length === 0) {
-        setError('لم تُطابَق أي أعمدة — خصّص عمودًا واحدًا على الأقل قبل المتابعة');
+        setError('خصّص عمودًا على الأقل');
         return;
       }
       const payload = await unwrap<PreviewOk>(api.post('/import/preview', {
@@ -287,7 +287,7 @@ export function ImportWizardPage() {
       setRowFilter('all');
       setStep(3);
     } catch (err) {
-      setError(apiErrorMessage(err, 'تعذّر تجهيز المعاينة — أعد المحاولة'));
+      setError(apiErrorMessage(err, 'تعذّر تجهيز المعاينة'));
     } finally {
       setBusy(false);
     }
@@ -308,9 +308,9 @@ export function ImportWizardPage() {
       }));
       setCommitted(payload);
       setStep(5);
-      toast.success(`تم تثبيت الاستيراد: ${payload.succeeded} صفًا`);
+      toast.success(`تم التثبيت — ${payload.succeeded} صفًا`);
     } catch (err) {
-      setError(apiErrorMessage(err, 'تعذّر تثبيت الاستيراد — راجع المعاينة وأعد المحاولة'));
+      setError(apiErrorMessage(err, 'تعذّر التثبيت — راجع المعاينة'));
     } finally {
       setBusy(false);
     }
@@ -323,9 +323,9 @@ export function ImportWizardPage() {
       const payload = await unwrap<RollbackOk>(api.post(`/import/jobs/${committed.jobId}/rollback`, {}));
       setRollback(payload);
       setRollbackConfirm(false);
-      toast.success('تم التراجع عن الاستيراد');
+      toast.success('تم التراجع');
     } catch (err) {
-      setError(apiErrorMessage(err, 'تعذّر التراجع — حاول مجددًا'));
+      setError(apiErrorMessage(err, 'تعذّر التراجع'));
     } finally {
       setBusy(false);
     }
@@ -356,7 +356,7 @@ export function ImportWizardPage() {
   const applyPreset = (presetId: string, labelAr: string) => {
     if (fileBase64 === null) return;
     void runParse(fileBase64, sheetName, presetId, storageKey).then(() => {
-      toast.success(`طُبق «${labelAr}» — راجع الأعمدة ثم عدّل ما تشاء`);
+      toast.success(`طُبق «${labelAr}» — راجع الأعمدة`);
     });
   };
 
@@ -364,7 +364,7 @@ export function ImportWizardPage() {
     <div className="r305ao">
       <PageHeader
         title="استيراد الطلاب"
-        description="رفع ← مطابقة ← مراجعة ← تأكيد ← نتيجة — لا شيء يُكتب قبل تأكيدك."
+        description="لا شيء يُكتب قبل تأكيدك."
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'استيراد الطلاب' }]}
       />
 
@@ -390,7 +390,7 @@ export function ImportWizardPage() {
 
       {/* ── step 1: upload ─────────────────────────────────────────── */}
       {step === 1 && (
-        <Card title="ارفع ملف الطلاب" icon={FileUp}>
+        <Card title="رفع الملف" icon={FileUp}>
           <div
             className={`iw-drop${dragOver ? ' over' : ''}`}
             role="button"
@@ -408,8 +408,8 @@ export function ImportWizardPage() {
             }}
           >
             <UploadCloud size={28} aria-hidden="true" />
-            <p className="iw-drop-title">اسحب ملف Excel أو CSV هنا</p>
-            <p className="iw-drop-sub">أو اضغط للاختيار · XLSX / CSV · حتى ١٠ ميغابايت · حتى ٢٠ ألف صف</p>
+            <p className="iw-drop-title">اسحب الملف هنا</p>
+            <p className="iw-drop-sub">XLSX / CSV · حتى ١٠ ميغابايت · ٢٠ ألف صف</p>
             {fileName !== null && <p className="iw-drop-file" dir="ltr">{fileName}</p>}
           </div>
           <input
@@ -424,8 +424,7 @@ export function ImportWizardPage() {
             }}
           />
           <p className="iw-hint">
-            <a href="/api/v1/import/templates/STUDENT" download>تحميل القالب الرسمي (Excel)</a>
-            {' '}— يدعم النظام ترميز Windows-1256 وفواصل الأعمدة المختلفة تلقائيًا.
+            <a href="/api/v1/import/templates/STUDENT" download>تحميل القالب (Excel)</a>
           </p>
           {busy && parsed === null && <p className="iw-busy" role="status">جارٍ تحليل الملف…</p>}
           {parsed !== null && (
@@ -438,7 +437,7 @@ export function ImportWizardPage() {
                 <span>{parsed.sheets.length} أوراق — تُختار في الخطوة التالية</span>
               )}
               {parsed.unknownColumns.length > 0 && (
-                <span className="iw-warn">{parsed.unknownColumns.length} أعمدة غير متعرَّف عليها — ستُراجع في المطابقة</span>
+                <span className="iw-warn">{parsed.unknownColumns.length} أعمدة غير متعرَّف عليها</span>
               )}
             </div>
           )}
@@ -449,7 +448,7 @@ export function ImportWizardPage() {
               disabled={busy || parsed === null}
               onClick={() => setStep(2)}
             >
-              متابعة إلى المطابقة <ArrowLeft size={15} aria-hidden="true" />
+              متابعة <ArrowLeft size={15} aria-hidden="true" />
             </button>
           </div>
         </Card>
@@ -461,14 +460,14 @@ export function ImportWizardPage() {
           <Card title="مطابقة الأعمدة">
             {parsed.presetSuggestions.length > 0 && (
               <div className="iw-presets">
-                <p className="iw-presets-title">قوالب جاهزة — طبّقها بلمسة ثم عدّل ما تشاء:</p>
+                <p className="iw-presets-title">قوالب جاهزة:</p>
                 <div className="iw-preset-chips">
                   {parsed.presetSuggestions.map((s) => (
                     <button
                       key={s.id}
                       type="button"
                       className={`iw-preset-chip${s.verified ? '' : ' unverified'}${appliedPreset === s.id ? ' now' : ''}`}
-                      title={s.noteAr ?? (s.coverage === 1 ? 'تطابق كامل مع المتطلبات' : `ينقص: ${s.missingTargets.join('، ')}`)}
+                      title={s.noteAr ?? (s.coverage === 1 ? 'تطابق كامل' : `ينقص: ${s.missingTargets.join('، ')}`)}
                       onClick={() => applyPreset(s.id, s.labelAr)}
                     >
                       {s.labelAr}
@@ -479,7 +478,7 @@ export function ImportWizardPage() {
                 </div>
                 {parsed.presetSuggestions.some((s) => !s.verified) && (
                   <p className="iw-hint">
-                    «منظومة الغويل» قالب غير موثّق — طبّقه بحذر وراجع كل عمود قبل التثبيت.
+                    القوالب غير الموثّقة — راجعها قبل التثبيت.
                   </p>
                 )}
               </div>
@@ -502,7 +501,7 @@ export function ImportWizardPage() {
                 <thead>
                   <tr>
                     <th scope="col">عمود الملف</th>
-                    <th scope="col">الحقل في مدارك</th>
+                    <th scope="col">الحقل الهدف</th>
                     <th scope="col">الثقة</th>
                     {parsed.sampleRows.map((_, i) => (
                       <th key={i} scope="col">عينة {i + 1}</th>
@@ -554,7 +553,7 @@ export function ImportWizardPage() {
       {/* ── step 3: review ─────────────────────────────────────────── */}
       {step === 3 && preview !== null && (
         <>
-          <Card title="المراجعة — نتيجة كل صف قبل الكتابة">
+          <Card title="المراجعة">
             <div className="iw-counts" role="status">
               <span className="pill on"><CheckCircle2 size={13} aria-hidden="true" /> {preview.counts.ok} صالحًا</span>
               {preview.counts.warningCount > 0 && (
@@ -563,7 +562,7 @@ export function ImportWizardPage() {
               {preview.counts.error > 0 && (
                 <span className="pill danger"><AlertTriangle size={13} aria-hidden="true" /> {preview.counts.error} مرفوضًا</span>
               )}
-              <span className="iw-counts-total">من أصل {preview.counts.total} صفًا</span>
+              <span className="iw-counts-total">من {preview.counts.total} صفًا</span>
             </div>
             <div className="iw-filters" role="group" aria-label="تصفية الصفوف">
               {([
@@ -583,7 +582,7 @@ export function ImportWizardPage() {
               ))}
             </div>
             {visibleRows.length === 0 ? (
-              <EmptyState title="لا صفوف بهذا التصنيف" description="غيّر التصفية لمشاهدة بقية الصفوف." illustration="empty-list" />
+              <EmptyState title="لا صفوف" illustration="empty-list" />
             ) : (
               <div className="iw-table-wrap iw-rows" tabIndex={0} role="region" aria-label="نتائج المعاينة">
                 <table className="iw-table">
@@ -617,7 +616,7 @@ export function ImportWizardPage() {
                                 «{r.existing.nameAr}» (رقم القيد {r.existing.universityId}) موجود — التغييرات المقترحة:
                               </p>
                               {(r.diff ?? []).length === 0
-                                ? <p className="iw-row-msg">لا اختلافات — الملف يطابق بيانات الملف الشخصي.</p>
+                                ? <p className="iw-row-msg">لا اختلافات.</p>
                                 : (
                                   <ul className="iw-diff-list">
                                     {(r.diff ?? []).map((d) => (
@@ -631,7 +630,7 @@ export function ImportWizardPage() {
                                   </ul>
                                 )}
                               {(r.fillable ?? []).length > 0 && (
-                                <p className="iw-row-msg">سياسة «إكمال الفراغات» ستضيف: {r.fillable!.join('، ')}</p>
+                                <p className="iw-row-msg">«إكمال الفراغات» ستضيف: {r.fillable!.join('، ')}</p>
                               )}
                             </div>
                           )}
@@ -671,7 +670,7 @@ export function ImportWizardPage() {
               تعديل المطابقة
             </button>
             <button type="button" className="btn primary" disabled={busy || preview.counts.ok === 0} onClick={() => setStep(4)}>
-              متابعة إلى التأكيد <ArrowLeft size={15} aria-hidden="true" />
+              متابعة <ArrowLeft size={15} aria-hidden="true" />
             </button>
           </div>
         </>
@@ -680,7 +679,7 @@ export function ImportWizardPage() {
       {/* ── step 4: confirm ────────────────────────────────────────── */}
       {step === 4 && preview !== null && (
         <>
-          <Card title="التأكيد — ما الذي سيحدث بالضبط؟">
+          <Card title="التأكيد">
             <ul className="iw-confirm-list">
               <li>سيُعالَج <strong>{preview.counts.ok} صفًا صالحًا</strong> من أصل {preview.counts.total}.</li>
               <li>الصفوف المرفوضة ({preview.counts.error}) لن تُكتب إطلاقًا.</li>
@@ -707,19 +706,19 @@ export function ImportWizardPage() {
                     checked={createIfMissing}
                     onChange={(e) => setCreateIfMissing(e.target.checked)}
                   />
-                  {' '}إنشاء الكليات/الأقسام غير الموجودة بأسمائها (تُسجَّل في التدقيق)
+                  {' '}إنشاء الكليات/الأقسام غير الموجودة (تُسجَّل في التدقيق)
                 </label>
               </li>
-              <li>الحسابات الجديدة بلا بريد تُنشأ بكلمات مرور مؤقتة — تُعرض مرة واحدة في الخطوة التالية.</li>
-              <li className="iw-muted">يمكنك التراجع عن كل المهمة خلال ٧٢ ساعة من التثبيت (ما لم يسجّل الطالب دخوله).</li>
+              <li>الحسابات بلا بريد: كلمة مرور مؤقتة تُعرض مرة واحدة.</li>
+              <li className="iw-muted">٧٢ ساعة للتراجع (ما لم يسجّل الطالب دخوله).</li>
             </ul>
           </Card>
           <div className="iw-stickybar">
             <button type="button" className="btn ghost" onClick={() => setStep(3)} disabled={busy}>
-              رجوع للمراجعة
+              رجوع
             </button>
             <button type="button" className="btn accent" disabled={busy} onClick={() => void runCommit()}>
-              {busy ? 'جارٍ التثبيت…' : 'تثبيت الاستيراد نهائيًا'}
+              {busy ? 'جارٍ التثبيت…' : 'تثبيت الاستيراد'}
             </button>
           </div>
         </>
@@ -742,8 +741,7 @@ export function ImportWizardPage() {
               {committed.credentials.length > 0 && (
                 <>
                   <p className="iw-lede">
-                    كلمات المرور المؤقتة أدناه تُعرض <strong>مرة واحدة</strong> — نزّل الورقة واطبعها ووزّعها؛
-                    يُطلب من الطلاب تغييرها عند أول دخول.
+                    كلمات المرور تُعرض <strong>مرة واحدة</strong> — نزّلها؛ تُغيَّر عند أول دخول.
                   </p>
                   <div className="iw-table-wrap iw-rows" tabIndex={0} role="region" aria-label="ورقة كلمات المرور المؤقتة">
                     <table className="iw-table">
@@ -752,7 +750,7 @@ export function ImportWizardPage() {
                           <th scope="col">الاسم</th>
                           <th scope="col">الرقم الجامعي</th>
                           <th scope="col">البريد</th>
-                          <th scope="col">كلمة المرور المؤقتة</th>
+                          <th scope="col">كلمة المرور</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -775,8 +773,8 @@ export function ImportWizardPage() {
                     type="button"
                     className="btn ghost sm"
                     onClick={() => downloadText(
-                      'كلمات-المرور-المؤقتة.csv',
-                      'الاسم,الرقم الجامعي,البريد,كلمة المرور المؤقتة\n' +
+                      'كلمات-المرور.csv',
+                      'الاسم,الرقم الجامعي,البريد,كلمة المرور\n' +
                         committed.credentials.map((c) => `${c.name},${c.universityId},${c.email},${c.tempPassword}`).join('\n'),
                     )}
                   >
@@ -791,18 +789,18 @@ export function ImportWizardPage() {
                   href={`/api/v1/import/jobs/${committed.jobId}/report.xlsx`}
                   download
                 >
-                  <Download size={14} aria-hidden="true" /> تقرير كل صف (Excel)
+                  <Download size={14} aria-hidden="true" /> تقرير الصفوف (Excel)
                 </a>
                 <button type="button" className="btn ghost sm" onClick={() => setRollbackConfirm(true)} disabled={busy}>
-                  <RotateCcw size={14} aria-hidden="true" /> التراجع عن المهمة
+                  <RotateCcw size={14} aria-hidden="true" /> التراجع
                 </button>
-                <Link className="btn primary sm" to="/admin/students">العودة إلى قائمة الطلاب</Link>
+                <Link className="btn primary sm" to="/admin/students">قائمة الطلاب</Link>
               </div>
               {rollbackConfirm && (
                 <ConfirmDialog
                   open
-                  title="التراجع عن الاستيراد؟"
-                  message="سيُحذف كل حساب أُنشئ بها ولم يسجّل الدخول بعد، وتُستعاد القيم كما كانت. المهمة المتابعة لا تُمسّ."
+                  title="التراجع؟"
+                  message="تُحذف الحسابات غير المستخدمة وتُستعاد القيم."
                   confirmLabel="نعم، تراجع"
                   onConfirm={() => void runRollback()}
                   onCancel={() => setRollbackConfirm(false)}
@@ -818,7 +816,7 @@ export function ImportWizardPage() {
                 {rollback.keptActive > 0 && <li>بقي {rollback.keptActive} حسابًا نشطًا (سجّل دخوله — لا يُمسّ)</li>}
                 {rollback.removedEmptyOrgs > 0 && <li>حُذفت {rollback.removedEmptyOrgs} كلية/قسمًا فارغًا أنشأتها المهمة</li>}
               </ul>
-              <Link className="btn primary sm" to="/admin/students">العودة إلى قائمة الطلاب</Link>
+              <Link className="btn primary sm" to="/admin/students">قائمة الطلاب</Link>
             </div>
           )}
         </Card>

@@ -232,7 +232,8 @@ describe('ExamTakerPage terminal submit answers (r165a)', () => {
     // its exit; one submit, no retry storm on a dead attempt.
     expect(mocks.finish).toHaveBeenCalledTimes(1);
     expect(mocks.refetch).toHaveBeenCalled();
-    expect(screen.getByText('انتهت مدة هذه المحاولة')).toBeTruthy();
+    // R355 copy diet: «هذه» dropped from the expired title.
+    expect(screen.getByText('انتهت مدة المحاولة')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'العودة للقائمة' })).toBeTruthy();
 
     clearIntervalSpy.mockRestore();
@@ -262,7 +263,8 @@ describe('ExamTakerPage terminal submit answers (r165a)', () => {
     expect(mocks.refetch).toHaveBeenCalled();
     // The done screen with the real provisional score, the neutral
     // awaiting chip, and the exit — never the zombie.
-    expect(screen.getByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    // R355 copy diet: the done-state title reads «أنهيت الاختبار مسبقاً».
+    expect(screen.getByText('أنهيت الاختبار مسبقاً')).toBeTruthy();
     expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'العودة للقائمة' })).toBeTruthy();
     expect(screen.queryByText('سؤال اختيار من متعدد')).toBeNull();
@@ -279,7 +281,9 @@ describe('ExamTakerPage terminal submit answers (r165a)', () => {
 
     // The honest error paints and the attempt STAYS mounted — a
     // network fault is retryable, only terminal answers settle it.
-    expect(screen.getByText('تعذَّر تسليم الاختبار — حاول مرة أخرى.')).toBeTruthy();
+    // R355 copy diet: the retryable-fault message lost its «حاول مرة
+    // أخرى» tail (the retry button beside it is the affordance).
+    expect(screen.getByText('تعذَّر تسليم الاختبار.')).toBeTruthy();
     expect(screen.getByText('سؤال اختيار من متعدد')).toBeTruthy();
     // No list re-read was forced (nothing changed server-side).
     expect(mocks.refetch).not.toHaveBeenCalled();

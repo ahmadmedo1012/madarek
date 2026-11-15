@@ -98,18 +98,18 @@ const ROLE_LABEL: Record<string, string> = { ...SHARED_ROLE_LABELS };
 const CAP_LABEL: Record<AppCapability, string> = {
   RESEARCH_GRADE_OWN: 'تقييم بحوث طلابي',
   RESEARCH_GRADE_ANY: 'تقييم أي بحث',
-  RESEARCH_PUBLISH: 'نشر البحوث للمكتبة',
+  RESEARCH_PUBLISH: 'نشر البحوث',
   EXAMS_AUTHOR: 'إنشاء اختبارات',
   EXAMS_MODERATE: 'مراجعة الاختبارات',
   EXAMS_TAKE: 'تأدية الاختبارات',
-  CURRICULUM_EDIT_OWN: 'تعديل منهج مقرّراتي',
-  CURRICULUM_EDIT_ANY: 'تعديل أي منهج',
+  CURRICULUM_EDIT_OWN: 'تعديل منهجي',
+  CURRICULUM_EDIT_ANY: 'تعديل المناهج',
   USERS_MANAGE: 'إدارة المستخدمين',
   ROLES_ASSIGN: 'إسناد الأدوار',
   TEACHERS_VERIFY: 'توثيق الأساتذة',
-  QUALITY_VIEW: 'عرض لوحة الجودة',
-  QUALITY_REPORT: 'إصدار تقارير الجودة',
-  ANNOUNCE_PLATFORM: 'إعلانات على مستوى المنصة',
+  QUALITY_VIEW: 'لوحة الجودة',
+  QUALITY_REPORT: 'تقارير الجودة',
+  ANNOUNCE_PLATFORM: 'إعلانات المنصة',
   ANNOUNCE_FACULTY: 'إعلانات الكلّيّة',
   COMPETITIONS_RUN: 'إنشاء مسابقات',
   EVENTS_RUN: 'إنشاء فعاليات',
@@ -288,10 +288,10 @@ export function AdminTeachersPage() {
   const teacherListEmpty = (
     <EmptyState
       icon={Users}
-      title={isSearching ? 'لا نتائج مطابقة' : 'لم يتم تسجيل أساتذة بعد'}
+      title={isSearching ? 'لا نتائج' : 'لا أساتذة'}
       description={isSearching
-        ? 'لم نجد أساتذة تطابق البحث الحالي.'
-        : 'ستظهر القائمة فور تسجيل أول أستاذ في النظام.'}
+        ? 'لم نجد مطابقات.'
+        : 'ستظهر مع أول أستاذ.'}
       action={isSearching ? (
         <button type="button" className="btn ghost sm" onClick={clearSearch}>
           <Icon icon={X} size={13} />
@@ -311,9 +311,8 @@ export function AdminTeachersPage() {
     <PageFrame width="wide">
       <PatternsPageHeader
         title="إدارة الأساتذة"
-        description="توثيق الملفات الأكاديمية واقتراح المقرّرات الأنسب لكل أستاذ."
         index="02"
-        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الأساتذة' }]}
+        breadcrumbs={[{ label: 'المسجل العام', to: '/admin/dashboard' }, { label: 'الأساتذة' }]}
         actions={(
           /* R342-09 (D11 sub-page CTA precedent): the governance roster's
                    * ONE honest next surface — verification exists so courses can
@@ -339,9 +338,9 @@ export function AdminTeachersPage() {
           r251: the lone fact rides the patterns StatLine. */}
       <StatLine
         items={[{
-          label: 'عدد الأساتذة',
+          label: 'الأساتذة',
           value: teacherCount,
-          hint: count.isPending ? 'قراءة عدّاد الخادم…' : count.data ? 'في هذه المؤسّسة' : 'تعذّر قراءة العدّاد',
+          hint: count.isPending ? 'قراءة العدّاد…' : count.data ? 'في هذه المؤسّسة' : 'تعذّر القراءة',
         }]}
       />
 
@@ -349,7 +348,7 @@ export function AdminTeachersPage() {
         search={{
           value: search,
           onChange: setSearch,
-          placeholder: 'ابحث بالاسم أو البريد الإلكتروني…',
+          placeholder: 'ابحث بالاسم أو البريد…',
         }}
       />
 
@@ -363,7 +362,7 @@ export function AdminTeachersPage() {
             <Card>
               <ErrorState
                 error={roster.error}
-                message="تعذّر تحميل قائمة الأساتذة"
+                message="تعذّر تحميل الأساتذة"
                 onRetry={() => roster.refetch()}
               />
             </Card>
@@ -399,7 +398,7 @@ export function AdminTeachersPage() {
                   page={page}
                   totalPages={totalPages}
                   total={meta.total}
-                  unit={['أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً']}
+                  unit={['أستاذ', 'أستاذان', 'أساتذة', 'أستاذاً']}
                   onPage={setPage}
                 />
               )}
@@ -431,7 +430,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
       <Card>
         <ErrorState
           error={error}
-          message="تعذّر تحميل الملف الأكاديمي"
+          message="تعذّر التحميل"
           onRetry={() => refetch()}
         />
       </Card>
@@ -442,8 +441,8 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
       <Card>
         <EmptyState illustration="empty-list"
           icon={GraduationCap}
-          title="لا يوجد ملف أستاذ"
-          description="هذا الحساب لم يُستكمل ملفه الأكاديمي بعد."
+          title="بلا ملف"
+          description="لم يُستكمل بعد."
         />
       </Card>
     );
@@ -467,8 +466,8 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
           <AlertRow
             color="red"
             icon={AlertCircle}
-            title="تعذّر توثيق الأستاذ"
-            description={apiErrorMessage(verify.error, 'لم يستجب الخادم للطلب. أعد المحاولة بعد لحظات.')}
+          title="تعذّر التوثيق"
+            description={apiErrorMessage(verify.error, 'لم يستجب الخادم.')}
             actions={
               <button
                 type="button"
@@ -486,9 +485,9 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
           <FactRow label="الاسم" value={data.teacher.name} />
           <FactRow label="البريد" value={data.teacher.email} mono />
           <FactRow label="التخصص" value={data.teacher.specialty} />
-          <FactRow label="الدرجة العلمية" value={DEGREE_LABEL[data.teacher.degreeLevel] ?? data.teacher.degreeLevel} />
-          <FactRow label="الرتبة الأكاديمية" value={RANK_LABEL[data.teacher.rank] ?? data.teacher.rank} />
-          <FactRow label="سنوات الخبرة" value={`${data.teacher.yearsExperience} سنة`} />
+          <FactRow label="الدرجة" value={DEGREE_LABEL[data.teacher.degreeLevel] ?? data.teacher.degreeLevel} />
+          <FactRow label="الرتبة" value={RANK_LABEL[data.teacher.rank] ?? data.teacher.rank} />
+          <FactRow label="الخبرة" value={`${data.teacher.yearsExperience} سنة`} />
           <FactRow label="القسم" value={data.teacher.department} />
           <FactRow label="الكلّيّة" value={data.teacher.faculty} />
         </div>
@@ -512,7 +511,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
       <PositionAssignmentCard key={data.teacher.id} teacher={data.teacher} />
 
       {data.teacher.certifications.length > 0 && (
-        <Card title="الشهادات والاعتمادات" icon={Award}>
+      <Card title="الشهادات" icon={Award}>
           <div className="flex-col gap-2">
             {data.teacher.certifications.map((c, i) => (
               <div key={i} className="cert-row">
@@ -530,7 +529,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
         </Card>
       )}
 
-      <Card title="المقرّرات المقترحة لتدريسها" icon={Briefcase} subtitle={data.suggestedCourses.length > 0 ? `${countAr(data.suggestedCourses.length, ['مقرّر مرتّب', 'مقرّران مرتّبان', 'مقرّرات مرتّبة', 'مقرّراً مرتّباً'])} حسب القرب من تخصصه` : undefined}>
+      <Card title="المقرّرات المقترحة" icon={Briefcase} subtitle={data.suggestedCourses.length > 0 ? `${countAr(data.suggestedCourses.length, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً'])} حسب تخصصه` : undefined}>
         <div className="flex-col gap-2">
           {data.suggestedCourses.map((c) => (
             <div key={c.id} className="suggested-course-row">
@@ -542,7 +541,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
                 </div>
               </div>
               <div className="suggested-course-score">
-                <Badge color="brand">{c.matchScore} درجة تطابق</Badge>
+                <Badge color="brand">{c.matchScore} تطابق</Badge>
                 <span className="text-xxs text-subtle">{c.reason}</span>
               </div>
             </div>
@@ -550,8 +549,8 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
           {data.suggestedCourses.length === 0 && (
             <EmptyState
               icon={Briefcase}
-              title="لا توجد مقرّرات مطابقة بعد"
-              description="أضف كلمات مفتاحية لملف الأستاذ لتوليد اقتراحات أدق."
+              title="لا مطابقات"
+              description="أضف كلمات مفتاحية."
             />
           )}
         </div>
@@ -569,7 +568,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
         open={verifyConfirm}
         title="توثيق الأستاذ"
         confirmLabel="توثيق"
-        message={`سيحمل «${data.teacher.name}» شارة التوثيق ويظهر كمدرّس مؤهّل في الاقتراحات — ويُسجَّل في سجلّ النشاط.`}
+        message={`سيحمل «${data.teacher.name}» شارة التوثيق.`}
         onConfirm={async () => {
           try {
             await verify.mutateAsync({ id: teacherId, verified: true });
@@ -645,7 +644,7 @@ function PositionAssignmentCard({
   };
 
   return (
-    <Card title="المنصب القياديّ" icon={Crown} subtitle="يُمنح بالتعيين الإداريّ — فوق دور الأستاذ ولا يستبدله">
+    <Card title="المنصب القياديّ" icon={Crown}>
       {teacher.position && teacher.appointedAt && (
         <div className="text-xxs text-subtle" style={{ marginBlockEnd: 'var(--sp-2)' }}>
           تمّ التعيين في {formatDate(teacher.appointedAt, { dateStyle: 'medium' })}
@@ -663,7 +662,7 @@ function PositionAssignmentCard({
             value={position}
             onChange={(e) => setPosition(e.target.value as typeof position)}
           >
-            <option value="NONE">— بلا منصب —</option>
+            <option value="NONE">بلا منصب</option>
             <option value="DEAN">عميد كلّيّة</option>
             <option value="ASSOCIATE_DEAN">وكيل العميد</option>
             <option value="DEPARTMENT_HEAD">رئيس قسم</option>
@@ -733,7 +732,7 @@ function PositionAssignmentCard({
             className="btn ghost"
             onClick={() => { setPosition('NONE'); }}
           >
-            إنهاء المنصب الحاليّ
+            إنهاء المنصب
           </button>
         )}
       </div>
@@ -742,8 +741,8 @@ function PositionAssignmentCard({
         <AlertRow
           color="red"
           icon={AlertCircle}
-          title="تعذّر حفظ التعيين"
-          description={apiErrorMessage(assign.error, 'لم يستجب الخادم للطلب. أعد المحاولة بعد لحظات.')}
+          title="تعذّر الحفظ"
+          description={apiErrorMessage(assign.error, 'لم يستجب الخادم.')}
           actions={
             <button
               type="button"
@@ -796,11 +795,8 @@ function ScopeAssignmentCard({
     <div className="gov-scope-card">
       <div className="gov-scope-head">
         <Icon icon={Building2} size={14} style={{ color: 'var(--accent)' }} />
-        <strong className="text-sm">نطاق صلاحيّة {roleLabel}</strong>
+        <strong className="text-sm">نطاق {roleLabel}</strong>
       </div>
-      <p className="gov-scope-note">
-        النطاق الافتراضيّ على مستوى الجامعة — يمكن قَصره على كلّيّة واحدة.
-      </p>
       <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
         <FormField label="النطاق" id={`scope-${userId}`}>
           <select
@@ -808,8 +804,8 @@ function ScopeAssignmentCard({
             value={scope}
             onChange={(e) => setScope(e.target.value as 'UNIVERSITY' | 'FACULTY')}
           >
-            <option value="UNIVERSITY">على مستوى الجامعة</option>
-            <option value="FACULTY">كلّيّة محدَّدة</option>
+            <option value="UNIVERSITY">الجامعة</option>
+            <option value="FACULTY">كلّيّة</option>
           </select>
         </FormField>
         {scope === 'FACULTY' && (
@@ -829,7 +825,7 @@ function ScopeAssignmentCard({
       </div>
       {scopeFacultyName && (
         <div className="text-xxs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
-          النطاق الحاليّ: <strong>{scopeFacultyName}</strong>
+          الحاليّ: <strong>{scopeFacultyName}</strong>
         </div>
       )}
       <div className="gov-form-actions">
@@ -839,15 +835,15 @@ function ScopeAssignmentCard({
           onClick={onSave}
           disabled={assign.isPending || !dirty}
         >
-          {assign.isPending ? 'جارٍ الحفظ…' : 'حفظ النطاق'}
+          {assign.isPending ? 'جارٍ الحفظ…' : 'حفظ'}
         </button>
       </div>
       {assign.isError && (
         <AlertRow
           color="red"
           icon={AlertCircle}
-          title="تعذّر حفظ النطاق"
-          description={apiErrorMessage(assign.error, 'لم يستجب الخادم للطلب. أعد المحاولة بعد لحظات.')}
+          title="تعذّر الحفظ"
+          description={apiErrorMessage(assign.error, 'لم يستجب الخادم.')}
           actions={
             <button
               type="button"
@@ -900,12 +896,12 @@ const CAP_DOMAIN_ORDER: CapDomain[] = [
 ];
 
 const CAP_DOMAIN_LABEL: Record<CapDomain, string> = {
-  research: 'البحوث العلمية',
-  exams: 'الاختبارات الإلكترونية',
+  research: 'البحوث',
+  exams: 'الاختبارات',
   curriculum: 'المناهج والمقرّرات',
   quality: 'ضمان الجودة',
   community: 'الإعلانات والمجتمع',
-  governance: 'المستخدمون والحاكمية',
+  governance: 'الحاكمية',
 };
 
 /** JS cadence constant — clears the one-shot confirm pulse shortly after
@@ -955,12 +951,12 @@ export function AdminPermissionsPage() {
     return (
       <div className="page r305ao">
         <Link to="/admin/teachers" className="back-link">
-          <Icon icon={ChevronRight} size={14} /> العودة إلى الأساتذة
+          <Icon icon={ChevronRight} size={14} /> العودة للأساتذة
         </Link>
         <Card>
           <ErrorState
             error={error}
-            message="تعذّر تحميل صلاحيات المستخدم"
+            message="تعذّر التحميل"
             onRetry={() => refetch()}
           />
         </Card>
@@ -992,7 +988,7 @@ export function AdminPermissionsPage() {
         setPulse({ cap: capability, ok: grant !== false });
         setAnnouncement(
           grant === null
-            ? `أُعيدت صلاحية «${CAP_LABEL[capability]}» إلى قيمة الدور الافتراضية`
+            ? `أُعيدت صلاحية «${CAP_LABEL[capability]}» للافتراضيّ`
             : grant
               ? `مُنحت صلاحية «${CAP_LABEL[capability]}»`
               : `سُحبت صلاحية «${CAP_LABEL[capability]}»`,
@@ -1018,7 +1014,7 @@ export function AdminPermissionsPage() {
         setPulse({ cap: capability, ok: grant !== false });
         setAnnouncement(
           grant === null
-            ? `أُعيدت صلاحية «${CAP_LABEL[capability]}» إلى قيمة الدور الافتراضية`
+            ? `أُعيدت صلاحية «${CAP_LABEL[capability]}» للافتراضيّ`
             : grant
               ? `مُنحت صلاحية «${CAP_LABEL[capability]}»`
               : `سُحبت صلاحية «${CAP_LABEL[capability]}»`,
@@ -1031,7 +1027,7 @@ export function AdminPermissionsPage() {
   return (
     <div className="page r305ao">
       <Link to="/admin/teachers" className="back-link">
-        <Icon icon={ChevronRight} size={14} /> العودة إلى الأساتذة
+        <Icon icon={ChevronRight} size={14} /> العودة للأساتذة
       </Link>
 
       {/* r190-D3: the page finally owns a masthead — the editor used to
@@ -1041,7 +1037,6 @@ export function AdminPermissionsPage() {
           * meta line carries the role + email facts. */}
       <PageHeader
         title={<>{data.user.firstName} {data.user.lastName}</>}
-        subtitle="الدور الافتراضي، والاستثناءات، والنطاق."
         meta={<>{roleLabel} · <bdi>{data.user.email}</bdi></>}
       />
 
@@ -1052,12 +1047,12 @@ export function AdminPermissionsPage() {
       <StatStrip
         ariaLabel="حالة صلاحيات المستخدم"
         cells={[
-          { label: 'صلاحيات فعلية', value: formatNum(data.effective.length), trend: 'مفعّلة الآن' },
-          { label: 'استثناءات يدوية', value: formatNum(data.overrides.length), trend: data.overrides.length > 0 ? 'منح أو سحب يدويّ' : 'لا استثناءات' },
+          { label: 'فعلية', value: formatNum(data.effective.length), trend: 'مفعّلة الآن' },
+          { label: 'استثناءات', value: formatNum(data.overrides.length), trend: data.overrides.length > 0 ? 'يدويّ' : 'لا استثناءات' },
         ]}
       />
 
-      <Card title="محرّر الصلاحيات" icon={ShieldCheck}>
+      <Card title="الصلاحيات" icon={ShieldCheck}>
         {(data.user.role === 'ADMIN' || data.user.role === 'QUALITY') && (
           <ScopeAssignmentCard
             key={data.user.id}
@@ -1076,8 +1071,8 @@ export function AdminPermissionsPage() {
           <AlertRow
             color="amber"
             icon={ShieldCheck}
-            title="هذه صلاحياتك أنت — لا يمكن تعديلها من هنا"
-            description="حرس الحاكمية يمنع تعديل صلاحياتك بنفسك (403) — اطلب من مالك أو إداري آخر تطبيق التغيير."
+            title="لا تُعدَّل من هنا"
+            description="اطلب من غيرك تطبيقه (403)."
           />
         )}
 
@@ -1085,8 +1080,8 @@ export function AdminPermissionsPage() {
           <AlertRow
             color="red"
             icon={AlertCircle}
-            title="تعذّر تحديث الصلاحية"
-            description={apiErrorMessage(setCap.error, 'لم يستجب الخادم للطلب. أعد المحاولة بعد لحظات.')}
+            title="تعذّر التحديث"
+            description={apiErrorMessage(setCap.error, 'لم يستجب الخادم.')}
             actions={
               <button
                 type="button"
@@ -1125,7 +1120,7 @@ export function AdminPermissionsPage() {
                     className="govx-group-count"
                     aria-label={countAr(
                       effectiveCount,
-                      ['صلاحية واحدة مفعّلة', 'صلاحيتان مفعّلتان', 'صلاحيات مفعّلة', 'صلاحية مفعّلة'],
+                      ['صلاحية مفعّلة', 'صلاحيتان مفعّلتان', 'صلاحيات مفعّلة', 'صلاحية مفعّلة'],
                     )}
                   >
                     {formatNum(effectiveCount)} مفعّلة من {formatNum(caps.length)}
@@ -1154,8 +1149,8 @@ export function AdminPermissionsPage() {
                           <code className="perm-row-key"><bdi>{cap}</bdi></code>
                           <div className="perm-row-state">
                             {state === 'role' && <Badge color="brand">من الدور</Badge>}
-                            {state === 'granted' && <Badge color="green">ممنوحة يدوياً</Badge>}
-                            {state === 'revoked' && <Badge color="amber">مسحوبة يدوياً</Badge>}
+                            {state === 'granted' && <Badge color="green">ممنوحة</Badge>}
+                            {state === 'revoked' && <Badge color="amber">مسحوبة</Badge>}
                             {state === 'none' && <Badge>غير مفعّلة</Badge>}
                           </div>
                         </div>

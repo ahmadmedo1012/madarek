@@ -94,7 +94,9 @@ function fillStudent(password: string) {
   fireEvent.change(screen.getByLabelText('الاسم الأول'), { target: { value: 'سالم' } });
   fireEvent.change(screen.getByLabelText('اللقب'), { target: { value: 'الفيتوري' } });
   fireEvent.change(screen.getByLabelText('البريد الإلكتروني'), { target: { value: 'salem@test.ly' } });
-  fireEvent.change(screen.getByLabelText('كلمة المرور (12 حرفًا على الأقل)'), { target: { value: password } });
+  // R355 copy diet: the label dropped the parenthetical floor — the
+  // 12-dot placeholder carries it now.
+  fireEvent.change(screen.getByLabelText('كلمة المرور'), { target: { value: password } });
   fireEvent.change(screen.getByLabelText('رقم القيد الجامعي'), { target: { value: '2024-CS-1234' } });
   fireEvent.change(screen.getByLabelText('الكلّيّة'), { target: { value: 'fac-1' } });
   fireEvent.change(screen.getByLabelText('القسم'), { target: { value: 'dep-1' } });
@@ -176,7 +178,8 @@ describe('RegisterPage — blocklist password surfaces as a field error (r165f)'
     const fieldError = await waitFor(() => screen.getByText(COMMON_PASSWORD_MESSAGE));
     expect(fieldError).toHaveClass('auth-field-error');
     // …the failed password input is flagged invalid…
-    const pwInput = screen.getByLabelText('كلمة المرور (12 حرفًا على الأقل)');
+    // R355 copy diet: same label trim as above.
+    const pwInput = screen.getByLabelText('كلمة المرور');
     expect(pwInput).toHaveAttribute('aria-invalid', 'true');
     // …the submission never left the page (the old defect: FE-valid →
     // server 400 with the field-less generic banner)…

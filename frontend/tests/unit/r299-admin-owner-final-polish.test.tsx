@@ -230,8 +230,8 @@ describe('OwnerUsersPage — «الفئة الأكبر» honesty + suspended chi
     // The claim rides the teachers fact exactly once…
     expect(screen.getAllByText('الفئة الأكبر')).toHaveLength(1);
     expect(screen.getByText('الأساتذة')).toBeInTheDocument();
-    // …the students fact stays a neutral noun…
-    expect(screen.getByText('حسابات الطلاب')).toBeInTheDocument();
+    // …the students fact carries no claim (the neutral hint is retired)…
+    expect(screen.queryByText('حسابات الطلاب')).toBeNull();
     // …and the old unconditional «أكبر شريحة» never prints.
     expect(screen.queryByText('أكبر شريحة')).toBeNull();
   });
@@ -241,8 +241,8 @@ describe('OwnerUsersPage — «الفئة الأكبر» honesty + suspended chi
     renderWithProviders(<OwnerUsersPage />);
 
     expect(screen.getAllByText('الفئة الأكبر')).toHaveLength(1);
-    // The teachers fact fell back to its neutral noun.
-    expect(screen.getByText('هيئة التدريس')).toBeInTheDocument();
+    // The teachers fact carries no claim (the neutral hint is retired).
+    expect(screen.queryByText('هيئة التدريس')).toBeNull();
   });
 
   it('a SUSPENDED institution chip reads red — like every other suspended-institution surface', () => {

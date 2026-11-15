@@ -73,6 +73,16 @@ const LEVEL_LABEL: Record<string, string> = {
   ADVANCED: 'متقدم',
 };
 
+/* Shared counted-noun forms (R353 copy diet): the same plural sets were
+ * duplicated per call site — one module-level home each, the file's own
+ * CATEGORY_LABEL convention. */
+const MINUTES_AR: [string, string, string, string] = ['دقيقة واحدة', 'دقيقتين', 'دقائق', 'دقيقة'];
+const LESSONS_AR: [string, string, string, string] = ['درس واحد', 'درسان', 'دروس', 'درساً'];
+const BADGES_AR: [string, string, string, string] = ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'];
+const BACK_TO_TRACKS = 'العودة إلى المسارات';
+const TRACK_NOT_FOUND = 'المسار غير موجود';
+const BROWSE_TRACKS = 'تصفح المسارات';
+
 /** Counted Arabic noun for point values (D17-2): ar-LY grouping with the
  *  proper one/dual/few/many forms — «نقطة واحدة»، «نقطتان»، «5 نقاط»، «25 نقطة».
  *  Local twin of MorePages' helper (lib/format is frozen this wave). */
@@ -118,7 +128,6 @@ export default function TrainingCatalogPage() {
     <PageFrame>
       <PageHeader
         title="التطوير الذاتي"
-        description="مسارات تدريبية لاحتياجاتك الأكاديمية والمهنية — أكمل مساراً لتحصل على سجلّ إتمام موثَّق."
       />
 
       {/* My summary — KPI band + level progress. Pending → shape-matched
@@ -133,7 +142,7 @@ export default function TrainingCatalogPage() {
       ) : meQ.isError ? (
         <Card>
           <ErrorState
-            message="تعذَّر تحميل ملخص تقدّمك في التطوير الذاتي"
+            message="تعذَّر تحميل الملخص"
             error={meQ.error}
             onRetry={() => meQ.refetch()}
           />
@@ -144,9 +153,9 @@ export default function TrainingCatalogPage() {
             ariaLabel="ملخّص إنجازاتك"
             cells={[
               { label: 'نقاطك', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
-              { label: 'الأوسمة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])} في المنصة` : 'في مسارات التطوير الذاتي' },
+              { label: 'الأوسمة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, BADGES_AR)}` : undefined },
               { label: 'مسارات نشطة', value: formatNum(enrolledCount), trend: countAr(completedCount, ['واحد مكتمل', 'مكتملان', 'مكتملة', 'مكتمل']) },
-              { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق من المنصة' },
+              { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق' },
             ]}
           />
 
@@ -222,7 +231,7 @@ export default function TrainingCatalogPage() {
       ) : tracksQ.isError ? (
         <Card>
           <ErrorState
-            message="تعذَّر تحميل المسارات التدريبية"
+            message="تعذَّر تحميل المسارات"
             error={tracksQ.error}
             onRetry={() => tracksQ.refetch()}
           />
@@ -234,9 +243,8 @@ export default function TrainingCatalogPage() {
               أسطح المجتمع فقط. */}
           <EmptyState
             icon={BookOpen}
-            title={filter === 'all' ? 'لا توجد مسارات منشورة بعد' : 'لا توجد مسارات في هذه الفئة بعد'}
+            title="لا مسارات بعد"
             illustration="empty-courses"
-            description="تظهر المسارات هنا فور نشرها من فريق الجامعة."
           />
         </Card>
       ) : (
@@ -270,7 +278,7 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
           </span>
           <span className="cp-meta-stats">
             <span className="cp-inline"><Icon icon={Clock} size={12} /> {formatNum(track.estMinutes)} د</span>
-            <span className="cp-inline"><Icon icon={BookOpen} size={12} /> {countAr(track.totalLessons, ['درس واحد', 'درسان', 'دروس', 'درساً'])}</span>
+            <span className="cp-inline"><Icon icon={BookOpen} size={12} /> {countAr(track.totalLessons, LESSONS_AR)}</span>
             {/* 5-D3: --gold measured 2.30:1 on the light card — the amber
                 graphics tier (chart-6) instead. */}
             <span className="cp-inline"><Icon icon={Sparkles} size={12} style={{ color: 'var(--chart-6)' }} /> {pointsAr(track.pointsAward)}</span>
@@ -346,7 +354,7 @@ export function TrainingTrackPage() {
       <PageFrame>
         <Link to="/training" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          العودة إلى المسارات
+          {BACK_TO_TRACKS}
         </Link>
         <ErrorState message="تعذَّر تحميل المسار" error={trackQ.error} onRetry={() => trackQ.refetch()} />
       </PageFrame>
@@ -358,9 +366,8 @@ export function TrainingTrackPage() {
       <PageFrame>
         <EmptyState
           icon={BookOpen}
-          title="المسار غير موجود"
-          description="ربما تم حذفه أو أن الرابط غير صحيح."
-          action={<Link to="/training" className="btn primary sm">تصفح المسارات</Link>}
+          title={TRACK_NOT_FOUND}
+          action={<Link to="/training" className="btn primary sm">{BROWSE_TRACKS}</Link>}
         />
       </PageFrame>
     );
@@ -389,7 +396,7 @@ export function TrainingTrackPage() {
     <PageFrame>
       <Link to="/training" className="back-link">
         <Icon icon={ChevronRight} size={14} />
-        العودة إلى المسارات
+        {BACK_TO_TRACKS}
       </Link>
 
       {/* Hero band — track-themed (tint + hairline via --track-accent;
@@ -406,8 +413,8 @@ export function TrainingTrackPage() {
           {track.titleEn && <div className="text-xs text-subtle"><bdi>{track.titleEn}</bdi></div>}
           <p className="track-hero-summary">{track.summary}</p>
           <div className="track-hero-meta">
-            <Badge><Icon icon={Clock} size={11} /> {countAr(track.estMinutes, ['دقيقة واحدة', 'دقيقتين', 'دقائق', 'دقيقة'])}</Badge>
-            <Badge><Icon icon={BookOpen} size={11} /> {countAr(track.lessons.length, ['درس واحد', 'درسان', 'دروس', 'درساً'])}</Badge>
+            <Badge><Icon icon={Clock} size={11} /> {countAr(track.estMinutes, MINUTES_AR)}</Badge>
+            <Badge><Icon icon={BookOpen} size={11} /> {countAr(track.lessons.length, LESSONS_AR)}</Badge>
             <Badge color="gold"><Icon icon={Sparkles} size={11} /> {pointsAr(track.pointsAward)} عند الإكمال</Badge>
             <Badge color="purple">{LEVEL_LABEL[track.level]}</Badge>
           </div>
@@ -433,7 +440,7 @@ export function TrainingTrackPage() {
           color="red"
           icon={AlertTriangle}
           title="تعذّر بدء المسار"
-          description="تحقّق من اتصالك بالشبكة ثم أعد المحاولة."
+          description="تحقّق من اتصالك."
         />
       )}
 
@@ -442,7 +449,7 @@ export function TrainingTrackPage() {
           <ProgressBar
             value={Math.round((completedCount / track.lessons.length) * 100)}
             color={accent}
-            label={track.isCompleted ? 'هذا المسار مكتمل — شهادة جاهزة' : `${completedCount} / ${countAr(track.lessons.length, ['درس مكتمل', 'درسان مكتملان', 'دروس مكتملة', 'درساً مكتملًا'])}`}
+            label={track.isCompleted ? 'مكتمل — شهادة جاهزة' : `${completedCount} / ${countAr(track.lessons.length, ['درس مكتمل', 'درسان مكتملان', 'دروس مكتملة', 'درساً مكتملًا'])}`}
             ariaLabel={`تقدّم مسار ${track.title}`}
           />
         </Card>
@@ -455,7 +462,7 @@ export function TrainingTrackPage() {
         title="الدروس"
         heading="h2"
         icon={BookOpen}
-        subtitle={track.enrolled ? 'اضغط على أي درس للبدء بمراجعته' : 'سجّل في المسار أعلاه لفتح الدروس'}
+        subtitle={track.enrolled ? undefined : 'سجّل في المسار لفتح الدروس'}
         style={{ ['--track-accent' as never]: accent }}
       >
         <div className="flex-col gap-2">
@@ -542,7 +549,7 @@ export function TrainingLessonPage() {
       <PageFrame>
         <Link to="/training" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          العودة إلى المسارات
+          {BACK_TO_TRACKS}
         </Link>
         <ErrorState message="تعذَّر تحميل الدرس" error={trackQ.error} onRetry={() => trackQ.refetch()} />
       </PageFrame>
@@ -554,9 +561,8 @@ export function TrainingLessonPage() {
       <PageFrame>
         <EmptyState
           icon={BookOpen}
-          title="المسار غير موجود"
-          description="ربما تم حذفه أو أن الرابط غير صحيح."
-          action={<Link to="/training" className="btn primary sm">تصفح المسارات</Link>}
+          title={TRACK_NOT_FOUND}
+          action={<Link to="/training" className="btn primary sm">{BROWSE_TRACKS}</Link>}
         />
       </PageFrame>
     );
@@ -569,7 +575,6 @@ export function TrainingLessonPage() {
         <EmptyState
           icon={BookOpen}
           title="الدرس غير موجود"
-          description="ربما تم حذفه أو أن الرابط غير صحيح."
           action={<Link to={`/training/${track.slug}`} className="btn primary sm">عودة إلى المسار</Link>}
         />
       </PageFrame>
@@ -599,11 +604,11 @@ export function TrainingLessonPage() {
           },
         });
       } else {
-        setFeedback({ ok: true, msg: 'تم احتساب هذا الدرس مسبقاً.' });
+        setFeedback({ ok: true, msg: 'تم احتسابه مسبقاً.' });
       }
     } catch (err: unknown) {
       // Arabic-first guard (15-j P0-1): an English API message never renders raw.
-      setFeedback({ ok: false, msg: apiErrorMessage(err, 'تعذّر احتساب الدرس — أعد المحاولة.') });
+      setFeedback({ ok: false, msg: apiErrorMessage(err, 'تعذّر احتساب الدرس.') });
     }
   };
 
@@ -620,7 +625,7 @@ export function TrainingLessonPage() {
         <div className="lesson-kicker">
           <span>الدرس <bdi>{lesson.order}</bdi> من <bdi>{track.lessons.length}</bdi></span>
           <span>·</span>
-          <span><Icon icon={Clock} size={10} /> {countAr(lesson.estMinutes, ['دقيقة واحدة', 'دقيقتين', 'دقائق', 'دقيقة'])}</span>
+          <span><Icon icon={Clock} size={10} /> {countAr(lesson.estMinutes, MINUTES_AR)}</span>
         </div>
         <h1 className="lesson-title">{lesson.title}</h1>
         {lesson.summary && <p className="text-sm text-muted lesson-summary">{lesson.summary}</p>}
@@ -707,7 +712,7 @@ export function TrainingLessonPage() {
             onClick={onComplete}
             disabled={complete.isPending || lesson.isCompleted}
           >
-            {lesson.isCompleted ? 'تم الإكمال' : complete.isPending ? 'جارٍ الإرسال…' : 'أكملت — احتساب الدرس'}
+            {lesson.isCompleted ? 'تم الإكمال' : complete.isPending ? 'جارٍ الإرسال…' : 'أكملت الدرس'}
           </button>
           {next && (
             <button
@@ -777,7 +782,6 @@ export function AchievementsPage() {
           انضبط على تركيب العائلة الواحد. */}
       <PageHeader
         title="الإنجازات"
-        description="نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء."
         tabs={
           /* Tabs — manual role/aria annotation (the tabs carry icons, which the
               shared Tabs primitive's string-only labels don't support yet).
@@ -807,7 +811,7 @@ export function AchievementsPage() {
       ) : meQ.isError ? (
         <Card>
           <ErrorState
-            message="تعذَّر تحميل ملخص نقاطك"
+            message="تعذَّر تحميل الملخص"
             error={meQ.error}
             onRetry={() => meQ.refetch()}
           />
@@ -822,8 +826,8 @@ export function AchievementsPage() {
             ariaLabel="ملخّص نقاطك"
             cells={[
               { label: 'مجموع النقاط', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
-              { label: 'الأوسمة المحقّقة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])}` : undefined },
-              { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق من المنصة' },
+              { label: 'الأوسمة المحقّقة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, BADGES_AR)}` : undefined },
+              { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق' },
             ]}
           />
         </div>
@@ -842,8 +846,8 @@ export function AchievementsPage() {
                empty region — the hatched EmptyCell (same copy + action). */
             <EmptyCell
               label="لا توجد أوسمة بعد"
-              note="ابدأ بدروس التطوير الذاتي لتحصد أول وسام."
-              action={<Link to="/training" className="btn primary sm">تصفح المسارات</Link>}
+              note="أكمل الدروس لتحصد الأوسمة."
+              action={<Link to="/training" className="btn primary sm">{BROWSE_TRACKS}</Link>}
             />
           ) : (
             <div className="badge-grid">
@@ -882,9 +886,9 @@ export function AchievementsPage() {
           ) : !certsQ.data?.length ? (
             /* R319 (c3-S2): the hatched EmptyCell (same copy + action). */
             <EmptyCell
-              label="لم تحصل على شهادات بعد"
-              note="أكمل أول مسار لشهادتك الأولى."
-              action={<Link to="/training" className="btn primary sm">تصفح المسارات</Link>}
+              label="لا شهادات بعد"
+              note="أكمل مساراً لشهادتك."
+              action={<Link to="/training" className="btn primary sm">{BROWSE_TRACKS}</Link>}
             />
           ) : (
             <div className="grid-2">
@@ -914,7 +918,7 @@ export function AchievementsPage() {
                         {c.issuedAt && (
                           <Badge>{formatDate(c.issuedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</Badge>
                         )}
-                        <Badge>{countAr(c.hours, ['ساعة تقديرية واحدة', 'ساعتان تقديريّتان', 'ساعات تقديرية', 'ساعة تقديرية'])}</Badge>
+                        <Badge>{countAr(c.hours, ['ساعة تقديرية', 'ساعتان تقديريّتان', 'ساعات تقديرية', 'ساعة تقديرية'])}</Badge>
                       </div>
                     </div>
                   </div>
@@ -931,7 +935,7 @@ export function AchievementsPage() {
             title="الأعلى نقاطاً هذا الأسبوع"
             heading="h2"
             icon={Crown}
-            subtitle="آخر 20 طالباً نشاطاً على المنصة"
+            subtitle="آخر 20 طالباً نشاطاً"
           >
             {lbQ.isPending ? (
               <ListSkeleton rows={6} />
@@ -941,7 +945,7 @@ export function AchievementsPage() {
               /* R319 (c3-S2): the hatched EmptyCell (same copy + action). */
               <EmptyCell
                 label="لا يوجد ترتيب بعد"
-                note="اكسب النقاط بإكمال الدروس — يظهر ترتيبك فور أول نقطة."
+                note="اكسب النقاط بإكمال الدروس."
                 action={<Link to="/training" className="btn primary sm">ابدأ من التطوير الذاتي</Link>}
               />
             ) : (
@@ -979,8 +983,8 @@ export function AchievementsPage() {
                   onClick={() => setLbExpanded((v) => !v)}
                 >
                   {lbExpanded
-                    ? 'عرض أفضل 10 فقط'
-                    : `عرض الترتيب كاملًا — ${countAr(lbRows.length, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}`}
+                    ? 'أفضل 10 فقط'
+                    : `عرض الكل — ${countAr(lbRows.length, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}`}
                 </button>
               )}
               </>

@@ -77,7 +77,7 @@ test('F6 · teacher records an attendance session and reads it in the report', a
     // record is what the % and the risk signals compute from.
     const rosterTab = page.getByRole('tab', { name: 'قائمة الطلاب' });
     if (await rosterTab.count()) await rosterTab.click();
-    await expect(page.getByText('قائمة الطلاب — تحليل لحظي').first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByText('قائمة الطلاب').first()).toBeVisible({ timeout: 30_000 });
     await flowShot(page, 'flow-06-attendance-report');
   } finally {
     await close();

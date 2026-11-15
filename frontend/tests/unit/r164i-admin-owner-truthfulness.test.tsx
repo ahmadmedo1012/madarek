@@ -140,7 +140,9 @@ describe('OwnerSystemPage — storage block (r164-l additive field, defensive re
     expect(await screen.findByText('غير متوفر')).toBeInTheDocument();
     expect(screen.getByText('تخزين الرفعات (PDF)')).toBeInTheDocument();
     // The honest unknown note, not the production warning.
-    expect(screen.getByText(/لا تُصرّح عن حالة تخزين/)).toBeInTheDocument();
+    // R355 copy diet: the note's verb was re-formed (تُصرّح → يُصرّح) and
+    // the sentence now reads «لا يُصرّح عن حالة تخزين الرفعات بعد.».
+    expect(screen.getByText(/لا يُصرّح عن حالة تخزين/)).toBeInTheDocument();
     expect(screen.queryByText(/يتطلب إعداد تخزين دائم/)).toBeNull();
   });
 
@@ -291,10 +293,14 @@ describe('AdminPermissionsPage — self-edit guard (blocked-action explanation)'
   it('opening MY OWN profile explains the 403 up front and disables the row actions', async () => {
     useAuthStore.setState({ user: ME });
     renderPermissionsPage('me1');
+    // R355 copy diet: the guard's long sentence became the short amber
+    // AlertRow — title «لا تُعدَّل من هنا» + description naming the 403.
     expect(
-      await screen.findByText('هذه صلاحياتك أنت — لا يمكن تعديلها من هنا'),
+      await screen.findByText('لا تُعدَّل من هنا'),
     ).toBeInTheDocument();
-    expect(screen.getByText(/حرس الحاكمية يمنع تعديل صلاحياتك بنفسك/)).toBeInTheDocument();
+    // R355 copy diet: the «حرس الحاكمية» explainer was cut — the
+    // surviving description still names the 403 reason.
+    expect(screen.getByText('اطلب من غيرك تطبيقه (403).')).toBeInTheDocument();
     // Every grant/revoke affordance is disabled — no dead clicks
     // bouncing off the backend guard.
     const grantButtons = screen.getAllByRole('button', { name: 'منح' });
@@ -307,8 +313,10 @@ describe('AdminPermissionsPage — self-edit guard (blocked-action explanation)'
   it('another user\'s profile keeps the actions enabled (guard is surface-only honesty)', async () => {
     useAuthStore.setState({ user: ME });
     renderPermissionsPage('other1');
-    expect(await screen.findByText('صلاحيات فعلية')).toBeInTheDocument();
-    expect(screen.queryByText('هذه صلاحياتك أنت — لا يمكن تعديلها من هنا')).toBeNull();
+    // R355 copy diet: the stat line's label lost «صلاحيات» — «فعلية» is it.
+    expect(await screen.findByText('فعلية')).toBeInTheDocument();
+    // R355 copy diet: the guard now reads «لا تُعدَّل من هنا».
+    expect(screen.queryByText('لا تُعدَّل من هنا')).toBeNull();
     const grantButtons = screen.getAllByRole('button', { name: 'منح' });
     expect(grantButtons.length).toBeGreaterThan(0);
     for (const b of grantButtons) expect(b).toBeEnabled();
@@ -317,8 +325,10 @@ describe('AdminPermissionsPage — self-edit guard (blocked-action explanation)'
 
   it('no session user → the guard stays silent (no false positive)', async () => {
     renderPermissionsPage('other1');
-    expect(await screen.findByText('صلاحيات فعلية')).toBeInTheDocument();
-    expect(screen.queryByText('هذه صلاحياتك أنت — لا يمكن تعديلها من هنا')).toBeNull();
+    // R355 copy diet: the stat line's label lost «صلاحيات» — «فعلية» is it.
+    expect(await screen.findByText('فعلية')).toBeInTheDocument();
+    // R355 copy diet: the guard now reads «لا تُعدَّل من هنا».
+    expect(screen.queryByText('لا تُعدَّل من هنا')).toBeNull();
     await waitFor(() => {
       expect(screen.getAllByRole('button', { name: 'منح' })[0]).toBeEnabled();
     });

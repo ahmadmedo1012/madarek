@@ -109,7 +109,6 @@ export default function CatalogPage() {
   // claim, persisted by the auth store) — the catalogue is scoped to
   // it. Null = no context yet; the query stays disabled and the page
   // says so instead of rendering a fabricated list.
-  const institutionName = useAuthStore((s) => s.currentInstitution?.name ?? null);
   const institutionSlug = useAuthStore((s) => s.currentInstitution?.slug ?? null);
 
   const [q, setQ] = useState('');
@@ -165,12 +164,7 @@ export default function CatalogPage() {
           OWN enrolled courses. */}
       <PageHeader
         title="دليل المقرّرات"
-        eyebrow="مرجع للقراءة فقط"
-        description={
-          institutionName
-            ? `فهرس مقرّرات ${institutionName} — للبحث والاطّلاع على الخطة الدراسية.`
-            : 'فهرس مقرّرات مؤسستك — للبحث والاطّلاع على الخطة الدراسية.'
-        }
+        eyebrow="للقراءة فقط"
         actions={
           <Link to="/student/courses" className="btn accent sm">
             مقرّراتي المسجّلة
@@ -185,7 +179,7 @@ export default function CatalogPage() {
           .r305c-note anatomy lives in the family sheet, tokens only). */}
       <div role="note" className="r305c-note">
         <span><Icon icon={Info} size={15} /></span>
-        <span>التسجيل عبر مكتب المسجل العام — تواصل مع مؤسستك.</span>
+        <span>التسجيل عبر مكتب المسجل العام.</span>
       </div>
 
       {/* Search bar — the LibraryPage GlobalSearch grammar: aria-label,
@@ -223,7 +217,7 @@ export default function CatalogPage() {
           <EmptyState
             icon={BookOpen}
             title="لم تُحدَّد مؤسستك بعد"
-            description="اختر مؤسستك من مبدّل المؤسسة أعلاه لعرض دليلها."
+            description="اختر مؤسستك من المبدّل أعلاه."
           />
         </Card>
       ) : catalog.isPending ? (
@@ -236,8 +230,8 @@ export default function CatalogPage() {
           <EmptyCell
             label={searching ? 'لا توجد مقرّرات تطابق البحث' : 'لا توجد مقرّرات بعد'}
             note={searching
-              ? `لم نجد مقرّراً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
-              : 'لم تُضف مقرّرات لدليل مؤسستك بعد — تظهر فور إضافتها من المسجل العام.'}
+              ? `لا نتائج لـ «${debouncedQ}».`
+              : 'لم تُضف مقرّرات بعد.'}
           />
         </Card>
       ) : (
@@ -247,7 +241,7 @@ export default function CatalogPage() {
               as quiet mono meta (countAr for assistive tech). */}
           <SectionBar
             index="01"
-            title="مقرّرات المؤسسة"
+            title="المقرّرات"
             meta={
               <BarCount
                 n={meta?.total ?? rows.length}
@@ -257,7 +251,7 @@ export default function CatalogPage() {
           />
           <p className="courses-summary">
             <bdi>{countAr(meta?.total ?? rows.length, COURSE_UNIT)}</bdi>
-            {searching && <> · نتائج البحث عن «<bdi>{debouncedQ}</bdi>»</>}
+            {searching && <> · نتائج «<bdi>{debouncedQ}</bdi>»</>}
           </p>
           <div className="grid-3 courses-grid">
             {rows.map((c, i) => (

@@ -134,14 +134,16 @@ describe('RegisterPage — step persistence (audit 4-A13 P2-3)', () => {
     renderPage();
     fireEvent.click(screen.getByRole('button', { name: /عضو هيئة تدريس/ }));
     fireEvent.change(screen.getByLabelText('الاسم الأول'), { target: { value: 'أمل' } });
-    fireEvent.change(screen.getByLabelText('التخصص العلمي'), {
+    // R355 copy diet: the specialty label dropped «العلمي» — the
+    // control is still the teacher specialty input.
+    fireEvent.change(screen.getByLabelText('التخصص'), {
       target: { value: 'قواعد بيانات' },
     });
 
     backToRoles();
     fireEvent.click(screen.getByRole('button', { name: /عضو هيئة تدريس/ }));
     expect((screen.getByLabelText('الاسم الأول') as HTMLInputElement).value).toBe('أمل');
-    expect((screen.getByLabelText('التخصص العلمي') as HTMLInputElement).value).toBe('قواعد بيانات');
+    expect((screen.getByLabelText('التخصص') as HTMLInputElement).value).toBe('قواعد بيانات');
   });
 
   it('resets the shared register mutation on every role transition (r152a A4 P3)', () => {

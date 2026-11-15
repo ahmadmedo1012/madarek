@@ -65,7 +65,7 @@ function telHref(display: string | null): string | null {
 /** Arabic labels for the custom-field types (P3b's FieldDefinition.type). */
 const FIELD_TYPE_LABELS: Record<FieldDefinition['type'], string> = {
   TEXT: 'نص', NUMBER: 'رقم', DATE: 'تاريخ', BOOLEAN: 'نعم/لا',
-  SELECT: 'اختيار', MULTI_SELECT: 'اختيار متعدد',
+  SELECT: 'اختيار', MULTI_SELECT: 'متعدد',
 };
 const FIELD_ENTITY_LABELS: Record<FieldDefinition['entity'], string> = {
   STUDENT: 'الطالب', TEACHER: 'المدرّس',
@@ -136,7 +136,6 @@ export function PeopleDirectoryPage() {
     <PageFrame width="default">
       <PageHeader
         title="الدليل"
-        description="الطلاب والمدرّسون مع أرقام التواصل — وفق إعدادات الظهور."
         actions={(
           <>
             {canEditFields && (
@@ -168,7 +167,7 @@ export function PeopleDirectoryPage() {
       />
 
       {exportError && (
-        <p className="r349p-error" role="alert">تعذّر تجهيز ملف التصدير — أعد المحاولة.</p>
+        <p className="r349p-error" role="alert">تعذّر تجهيز التصدير.</p>
       )}
 
       {fieldsOpen && canEditFields && <FieldEditorPanel />}
@@ -188,7 +187,7 @@ export function PeopleDirectoryPage() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder={kind === 'student' ? 'ابحث بالاسم أو رقم القيد أو الهاتف…' : 'ابحث بالاسم أو الرقم الوظيفي…'}
+            placeholder={kind === 'student' ? 'الاسم أو رقم القيد أو الهاتف…' : 'الاسم أو الرقم الوظيفي…'}
             aria-label="بحث الدليل"
           />
         </div>
@@ -199,10 +198,10 @@ export function PeopleDirectoryPage() {
               onChange={(e) => { setStudyType(e.target.value); setPage(1); }}
               aria-label="تصفية حسب وضع الدراسة"
             >
-              <option value="">كل أوضاع الدراسة</option>
-              <option value="MORNING">صباحي</option>
-              <option value="EVENING">مسائي</option>
-              <option value="PARALLEL">موازي</option>
+              <option value="">كل الأوضاع</option>
+              <option value="MORNING">{STUDY_TYPE_LABELS.MORNING}</option>
+              <option value="EVENING">{STUDY_TYPE_LABELS.EVENING}</option>
+              <option value="PARALLEL">{STUDY_TYPE_LABELS.PARALLEL}</option>
             </select>
             <select
               className="admin-students-input" value={enrollmentStatus}
@@ -210,11 +209,11 @@ export function PeopleDirectoryPage() {
               aria-label="تصفية حسب الحالة"
             >
               <option value="">كل الحالات</option>
-              <option value="ACTIVE">مقيّد</option>
-              <option value="SUSPENDED">موقوف</option>
-              <option value="DEFERRED">مؤجّل</option>
-              <option value="GRADUATED">متخرّج</option>
-              <option value="WITHDRAWN">منسحب</option>
+              <option value="ACTIVE">{ENROLLMENT_LABELS.ACTIVE}</option>
+              <option value="SUSPENDED">{ENROLLMENT_LABELS.SUSPENDED}</option>
+              <option value="DEFERRED">{ENROLLMENT_LABELS.DEFERRED}</option>
+              <option value="GRADUATED">{ENROLLMENT_LABELS.GRADUATED}</option>
+              <option value="WITHDRAWN">{ENROLLMENT_LABELS.WITHDRAWN}</option>
             </select>
           </>
         )}
@@ -223,10 +222,10 @@ export function PeopleDirectoryPage() {
       <Card>
         {directory.isPending && <ListSkeleton rows={6} />}
         {directory.isError && (
-          <ErrorState error={directory.error} message="تعذّر تحميل الدليل" onRetry={() => directory.refetch()} />
+          <ErrorState error={directory.error} message="تعذّر التحميل" onRetry={() => directory.refetch()} />
         )}
         {directory.data && rows.length === 0 && (
-          <EmptyCell label="لا نتائج" note="جرّب تعديل البحث أو التصفية." />
+          <EmptyCell label="لا نتائج" note="عدّل البحث أو التصفية." />
         )}
         {directory.data && rows.length > 0 && (
           <div className="r349p-dir-list">
@@ -338,7 +337,7 @@ function PhoneActions({
             disabled={pending || requested}
           >
             <Icon icon={MessageCircle} size={12} />
-            {requested ? 'أُرسل الطلب' : 'طلب تواصل'}
+            {requested ? 'أُرسل' : 'طلب تواصل'}
           </button>
         )}
       </div>
@@ -389,7 +388,7 @@ function FieldEditorPanel() {
   if (defs.isError) {
     return (
       <Card>
-        <ErrorState error={defs.error} message="تعذّر تحميل الحقول المخصصة" onRetry={() => defs.refetch()} />
+        <ErrorState error={defs.error} message="تعذّر تحميل الحقول" onRetry={() => defs.refetch()} />
       </Card>
     );
   }
@@ -408,10 +407,7 @@ function FieldEditorPanel() {
     <section className="r349p-fe" aria-label="الحقول المخصصة">
       <div className="r349p-fe-head">
         <div>
-          <b className="text-sm">الحقول المخصصة للمؤسسة</b>
-          <p className="text-xxs text-subtle">
-            حقول إضافية تُدار هنا وتُعرض في ملفات الطلاب والمدرّسين.
-          </p>
+          <b className="text-sm">الحقول المخصصة</b>
         </div>
         <div className="r349p-fe-actions">
           <button type="button" className="btn ghost sm" onClick={() => setEditing({ isNew: true, entity: 'STUDENT' })}>
@@ -434,7 +430,7 @@ function FieldEditorPanel() {
           </div>
           {byEntity(entity).length === 0 && (
             <p className="r349p-fe-empty text-xs text-subtle">
-              لا حقول بعد — أضف أول حقل من الأزرار أعلاه.
+              أضف أول حقل أعلاه.
             </p>
           )}
           {byEntity(entity).map((f) => (
@@ -494,7 +490,7 @@ function FieldEditorPanel() {
       )}
 
       {del.isError && (
-        <p className="r349p-error" role="alert">تعذّر الحذف — أعد المحاولة</p>
+        <p className="r349p-error" role="alert">تعذّر الحذف.</p>
       )}
     </section>
   );
@@ -542,9 +538,9 @@ function FieldForm({ initial, onDone }: { initial: Partial<FieldDefinition>; onD
   const validate = (): string | null => {
     if (!form.labelAr.trim()) return 'التسمية العربية مطلوبة';
     if (!form.labelEn.trim()) return 'التسمية اللاتينية مطلوبة';
-    if (!isEdit && !FIELD_KEY_RE.test(form.key.trim())) return 'المفتاح: حروف لاتينية صغيرة وأرقام وشرطات فقط';
+    if (!isEdit && !FIELD_KEY_RE.test(form.key.trim())) return 'حروف لاتينية صغيرة وأرقام وشرطات';
     if (needsOptions) {
-      if (optionsList.length === 0) return 'حقول الاختيار تحتاج خيارًا واحدًا على الأقل';
+      if (optionsList.length === 0) return 'تحتاج خيارًا واحدًا على الأقل';
       if (new Set(optionsList).size !== optionsList.length) return 'الخيارات مكررة';
     }
     const order = Number(form.sortOrder);
@@ -581,7 +577,7 @@ function FieldForm({ initial, onDone }: { initial: Partial<FieldDefinition>; onD
 
   const pending = create.isPending || update.isPending;
   const failure = (create.isError || update.isError)
-    ? 'تعذّر الحفظ — تحقّق من المفتاح والترتيب (قد يكونان محجوزين)'
+    ? 'تحقّق من المفتاح والترتيب'
     : error;
 
   return (
@@ -597,24 +593,24 @@ function FieldForm({ initial, onDone }: { initial: Partial<FieldDefinition>; onD
         <FormField label="التسمية بالعربية" value={form.labelAr} onChange={set('labelAr')} />
         <FormField label="التسمية باللاتينية" value={form.labelEn} onChange={set('labelEn')} dir="ltr" />
         {!isEdit && (
-          <FormField label="المفتاح (لا يتغيّر لاحقًا)" value={form.key} onChange={set('key')} dir="ltr" mono />
+        <FormField label="المفتاح" value={form.key} onChange={set('key')} dir="ltr" mono />
         )}
         <SelectField label="الجهة" value={form.entity} onChange={set('entity')} options={[
           { value: 'STUDENT', label: 'حقول الطالب' },
           { value: 'TEACHER', label: 'حقول المدرّس' },
         ]} />
         <SelectField label="النوع" value={form.type} onChange={set('type')} options={[
-          { value: 'TEXT', label: 'نص' },
-          { value: 'NUMBER', label: 'رقم' },
-          { value: 'DATE', label: 'تاريخ' },
-          { value: 'BOOLEAN', label: 'نعم/لا' },
-          { value: 'SELECT', label: 'اختيار' },
-          { value: 'MULTI_SELECT', label: 'اختيار متعدد' },
+          { value: 'TEXT', label: FIELD_TYPE_LABELS.TEXT },
+          { value: 'NUMBER', label: FIELD_TYPE_LABELS.NUMBER },
+          { value: 'DATE', label: FIELD_TYPE_LABELS.DATE },
+          { value: 'BOOLEAN', label: FIELD_TYPE_LABELS.BOOLEAN },
+          { value: 'SELECT', label: FIELD_TYPE_LABELS.SELECT },
+          { value: 'MULTI_SELECT', label: FIELD_TYPE_LABELS.MULTI_SELECT },
         ]} />
         <FormField label="الترتيب (0–999)" value={form.sortOrder} onChange={set('sortOrder')} dir="ltr" mono />
         {needsOptions && (
           <label className="r349p-field r349p-field--wide">
-            <span className="text-xxs text-subtle">الخيارات (واحد في كل سطر)</span>
+            <span className="text-xxs text-subtle">الخيارات (سطر لكل خيار)</span>
             <textarea
               className="r349p-input r349p-fe-options" value={form.options}
               onChange={set('options')} rows={3} dir="rtl" aria-label="خيارات الحقل"
@@ -623,17 +619,17 @@ function FieldForm({ initial, onDone }: { initial: Partial<FieldDefinition>; onD
         )}
         <label className="r349p-fe-check">
           <input type="checkbox" checked={form.required} onChange={toggle('required')} />
-          <span className="text-xs">إلزامي عند التسجيل</span>
+          <span className="text-xs">إلزامي</span>
         </label>
         <label className="r349p-fe-check">
           <input type="checkbox" checked={form.searchable} onChange={toggle('searchable')} />
-          <span className="text-xs">قابل للبحث في الدليل</span>
+          <span className="text-xs">قابل للبحث</span>
         </label>
       </div>
       {failure && <p className="r349p-error" role="alert">{failure}</p>}
       <div className="r349p-savebar" role="toolbar" aria-label="حفظ الحقل">
         <button type="button" className="btn primary sm" onClick={save} disabled={pending}>
-          {pending ? '…' : 'حفظ الحقل'}
+          {pending ? '…' : 'حفظ'}
         </button>
         <button type="button" className="btn ghost sm" onClick={onDone}>إلغاء</button>
       </div>
@@ -663,9 +659,9 @@ export function StudentFilePage() {
   if (person.isError || !person.data) {
     return (
       <PageFrame width="default">
-        <PageHeader title="ملف الطالب" description="الملف غير موجود أو خارج نطاق مؤسستك." />
+        <PageHeader title="ملف الطالب" description="خارج نطاق مؤسستك." />
         <Card>
-          <ErrorState error={person.error ?? new Error('not found')} message="تعذّر فتح الملف" onRetry={() => person.refetch()} />
+          <ErrorState error={person.error ?? new Error('not found')} message="تعذّر الفتح" onRetry={() => person.refetch()} />
         </Card>
       </PageFrame>
     );
@@ -674,9 +670,9 @@ export function StudentFilePage() {
   if (!p || p.kind !== 'student') {
     return (
       <PageFrame width="default">
-        <PageHeader title="الملف" description="هذا الملف لمدرّس — يُعرض من دليل المدرّسين." />
+        <PageHeader title="الملف" description="ملف مدرّس." />
         <Card>
-          {p ? <TeacherFileBody person={p} /> : <EmptyCell label="الملف غير موجود" note="خارج نطاق مؤسستك أو محذوف." />}
+          {p ? <TeacherFileBody person={p} /> : <EmptyCell label="غير موجود" note="خارج نطاقك أو محذوف." /> }
         </Card>
       </PageFrame>
     );
@@ -686,12 +682,12 @@ export function StudentFilePage() {
     <PageFrame width="default">
       <PageHeader
         title={p.nameAr ?? `${p.user.firstName} ${p.user.lastName}`}
-        description={`ملف الطالب · رقم القيد ${p.universityId}`}
+        description={`رقم القيد ${p.universityId}`}
       />
       <StatLine
         items={[
           { label: 'الحالة', value: ENROLLMENT_LABELS[p.academic.enrollmentStatus] ?? p.academic.enrollmentStatus },
-          { label: 'وضع الدراسة', value: p.academic.studyType ? STUDY_TYPE_LABELS[p.academic.studyType] : '—' },
+          { label: 'الوضع', value: p.academic.studyType ? STUDY_TYPE_LABELS[p.academic.studyType] : '—' },
           { label: 'الكلية', value: p.faculty?.name ?? '—' },
           { label: 'الهاتف', value: p.phone.display ?? '—' },
         ]}
@@ -785,15 +781,15 @@ function StudentFileTab({ p }: { p: StudentPerson }) {
 
   return (
     <section aria-label="الملف" className="r349p-data">
-      <SectionBar index="01" title="الملف — بيانات التوثيق" />
+      <SectionBar index="01" title="بيانات التوثيق" />
       <Card>
         <div className="grid-2">
-          <FormField label="الاسم كما في الوثائق" value={form.nameAr} onChange={set('nameAr')} />
-          <FormField label="اسم الأب" value={form.fatherName} onChange={set('fatherName')} />
-          <FormField label="اسم الجد" value={form.grandfatherName} onChange={set('grandfatherName')} />
-          <FormField label="اسم الأم" value={form.motherName} onChange={set('motherName')} />
+          <FormField label="الاسم" value={form.nameAr} onChange={set('nameAr')} />
+          <FormField label="الأب" value={form.fatherName} onChange={set('fatherName')} />
+          <FormField label="الجد" value={form.grandfatherName} onChange={set('grandfatherName')} />
+          <FormField label="الأم" value={form.motherName} onChange={set('motherName')} />
           <FormField label="الرقم الوطني" value={form.nationalId} onChange={set('nationalId')} dir="ltr" mono error={nationalIdDirty ? '12 خانة رقمية' : undefined} />
-          <FormField label="مكان الميلاد" value={form.birthPlace} onChange={set('birthPlace')} />
+          <FormField label="الميلاد" value={form.birthPlace} onChange={set('birthPlace')} />
           <FormField label="المدينة" value={form.city} onChange={set('city')} />
           <FormField label="العنوان" value={form.address} onChange={set('address')} />
         </div>
@@ -803,37 +799,37 @@ function StudentFileTab({ p }: { p: StudentPerson }) {
       <Card>
         <div className="grid-2">
           <FormField label="الاسم" value={form.guardianName} onChange={set('guardianName')} />
-          <FormField label="صلة القرابة" value={form.guardianRelationship} onChange={set('guardianRelationship')} />
+          <FormField label="الصلة" value={form.guardianRelationship} onChange={set('guardianRelationship')} />
           <FormField label="الهاتف" value={form.guardianPhone} onChange={set('guardianPhone')} dir="ltr" mono />
         </div>
         {p.guardian?.phone.access === 'MASKED' && (
-          <p className="r349p-note">هاتف ولي الأمر خاص — يظهر مقنّعًا حتى يغيّر الملف إعداده.</p>
+          <p className="r349p-note">هاتف ولي الأمر خاص — مقنّع.</p>
         )}
       </Card>
 
       <SectionBar index="03" title="الأكاديمية" />
       <Card>
         <div className="grid-2">
-          <SelectField label="وضع الدراسة" value={form.studyType} onChange={set('studyType')} options={[
+          <SelectField label="الوضع" value={form.studyType} onChange={set('studyType')} options={[
             { value: '', label: '—' },
-            { value: 'MORNING', label: 'صباحي' },
-            { value: 'EVENING', label: 'مسائي' },
-            { value: 'PARALLEL', label: 'موازي' },
+            { value: 'MORNING', label: STUDY_TYPE_LABELS.MORNING! },
+            { value: 'EVENING', label: STUDY_TYPE_LABELS.EVENING! },
+            { value: 'PARALLEL', label: STUDY_TYPE_LABELS.PARALLEL! },
           ]} />
-          <SelectField label="الحالة الدراسية" value={form.enrollmentStatus} onChange={set('enrollmentStatus')} options={[
-            { value: 'ACTIVE', label: 'مقيّد' },
-            { value: 'SUSPENDED', label: 'موقوف' },
-            { value: 'DEFERRED', label: 'مؤجّل' },
-            { value: 'GRADUATED', label: 'متخرّج' },
-            { value: 'WITHDRAWN', label: 'منسحب' },
+          <SelectField label="الحالة" value={form.enrollmentStatus} onChange={set('enrollmentStatus')} options={[
+            { value: 'ACTIVE', label: ENROLLMENT_LABELS.ACTIVE! },
+            { value: 'SUSPENDED', label: ENROLLMENT_LABELS.SUSPENDED! },
+            { value: 'DEFERRED', label: ENROLLMENT_LABELS.DEFERRED! },
+            { value: 'GRADUATED', label: ENROLLMENT_LABELS.GRADUATED! },
+            { value: 'WITHDRAWN', label: ENROLLMENT_LABELS.WITHDRAWN! },
           ]} />
-          <FormField label="المرحلة (مدارس)" value={form.stage} onChange={set('stage')} />
-          <FormField label="الصف (مدارس)" value={form.grade} onChange={set('grade')} />
+          <FormField label="المرحلة" value={form.stage} onChange={set('stage')} />
+          <FormField label="الصف" value={form.grade} onChange={set('grade')} />
           <FormField label="الفصل" value={form.section} onChange={set('section')} />
           <FormField label="الثانوية" value={form.secondarySchool} onChange={set('secondarySchool')} />
-          <FormField label="شعبة الثانوية" value={form.secondarySchoolBranch} onChange={set('secondarySchoolBranch')} />
-          <FormField label="نسبة الثانوية ٪" value={form.secondarySchoolPercent} onChange={set('secondarySchoolPercent')} dir="ltr" mono />
-          <FormField label="سنة القبول" value={form.admissionYear} onChange={set('admissionYear')} dir="ltr" mono />
+          <FormField label="شعبة" value={form.secondarySchoolBranch} onChange={set('secondarySchoolBranch')} />
+          <FormField label="نسبة الثانوية" value={form.secondarySchoolPercent} onChange={set('secondarySchoolPercent')} dir="ltr" mono />
+          <FormField label="القبول" value={form.admissionYear} onChange={set('admissionYear')} dir="ltr" mono />
         </div>
       </Card>
 
@@ -863,10 +859,10 @@ function StudentFileTab({ p }: { p: StudentPerson }) {
       )}
 
       <div className="r349p-savebar" role="toolbar" aria-label="حفظ الملف">
-        {patch.isError && <span className="r349p-error" role="alert">تعذّر الحفظ — أعد المحاولة</span>}
+        {patch.isError && <span className="r349p-error" role="alert">تعذّر الحفظ.</span>}
         {saved && <span className="r349p-saved"><Icon icon={Check} size={12} /> حُفظ</span>}
         <button type="button" className="btn primary sm" onClick={save} disabled={!dirty || patch.isPending || Boolean(nationalIdDirty)}>
-          {patch.isPending ? '…' : 'حفظ التعديلات'}
+          {patch.isPending ? '…' : 'حفظ'}
         </button>
       </div>
     </section>
@@ -893,9 +889,9 @@ function CoursesTab({ userId }: { userId: string }) {
     ),
   });
   if (q.isPending) return <Card><ListSkeleton rows={4} /></Card>;
-  if (q.isError) return <Card><ErrorState error={q.error} message="تعذّر تحميل المقررات" onRetry={() => q.refetch()} /></Card>;
+  if (q.isError) return <Card><ErrorState error={q.error} message="تعذّر التحميل" onRetry={() => q.refetch()} /></Card>;
   const rows = q.data?.data ?? [];
-  if (rows.length === 0) return <Card><EmptyCell label="لا مقررات" note="الطالب غير مسجّل في مقررات بعد." /></Card>;
+  if (rows.length === 0) return <Card><EmptyCell label="لا مقررات" note="غير مسجّل بعد." /></Card>;
   return (
     <Card>
       <div className="r349p-dir-list">
@@ -985,7 +981,7 @@ function PerOfferingTab({ p, mode }: { p: StudentPerson; mode: 'grades' | 'atten
 
   if (enrollments.isPending) return <Card><ListSkeleton rows={4} /></Card>;
   if (enrollments.isError) return <Card><ErrorState error={enrollments.error} message="تعذّر التحميل" onRetry={() => enrollments.refetch()} /></Card>;
-  if (offeringIds.length === 0) return <Card><EmptyCell label="لا مقررات" note="لا درجات ولا حضور بلا مقررات." /></Card>;
+  if (offeringIds.length === 0) return <Card><EmptyCell label="لا مقررات" /></Card>;
   if (loaded.length === 0) return <Card><ListSkeleton rows={3} /></Card>;
 
   return (
@@ -999,7 +995,7 @@ function PerOfferingTab({ p, mode }: { p: StudentPerson; mode: 'grades' | 'atten
               {mode === 'grades' ? (
                 <span className="r349p-dir-meta">
                   {(o.grades?.length ?? 0) === 0
-                    ? 'لا درجات مسجّلة'
+                    ? 'لا درجات'
                     : o.grades!.map((g) => `${g.kind}: ${g.score}/${g.maxScore}`).join(' · ')}
                 </span>
               ) : (
@@ -1027,11 +1023,11 @@ interface AuditRow {
 }
 
 const ACTION_LABELS: Record<string, string> = {
-  'people.read': 'قراءة الملف',
-  'people.update': 'تعديل الملف',
-  'directory.export': 'تصدير دليل شمل الملف',
+  'people.read': 'قراءة',
+  'people.update': 'تعديل',
+  'directory.export': 'تصدير دليل',
   'people.contact-request': 'طلب تواصل',
-  'profile.self-update': 'تعديل صاحب الملف',
+  'profile.self-update': 'تعديل ذاتيّ',
 };
 
 function NotesTab({ id }: { id: string }) {
@@ -1041,9 +1037,9 @@ function NotesTab({ id }: { id: string }) {
     queryFn: () => unwrap<AuditRow[]>(api.get(`/people/${id}/history`)),
   });
   if (q.isPending) return <Card><ListSkeleton rows={4} /></Card>;
-  if (q.isError) return <Card><ErrorState error={q.error} message="تعذّر تحميل السجل" onRetry={() => q.refetch()} /></Card>;
+  if (q.isError) return <Card><ErrorState error={q.error} message="تعذّر التحميل" onRetry={() => q.refetch()} /></Card>;
   if (!q.data?.length) {
-    return <Card><EmptyCell label="سجل فارغ" note="لم يُقرأ ولم يُعدّل بعد — كل لمسة ستُسجّل هنا." /></Card>;
+    return <Card><EmptyCell label="فارغ" note="لا لمسات بعد." /></Card>;
   }
   return (
     <Card>
@@ -1062,9 +1058,6 @@ function NotesTab({ id }: { id: string }) {
           </div>
         ))}
       </div>
-      <p className="r349p-note">
-        سجل اللمسات على الملف (قراءة/تعديل/تصدير) — بلا قيم بيانات شخصية.
-      </p>
     </Card>
   );
 }

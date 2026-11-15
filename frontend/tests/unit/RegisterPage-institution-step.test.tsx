@@ -87,7 +87,9 @@ function renderPage() {
 
 const chooseStudent = () => fireEvent.click(screen.getByRole('button', { name: /طالب/ }));
 
-const institutionSelect = () => screen.getByLabelText('المؤسسة التعليمية') as HTMLSelectElement;
+// R355 copy diet: the institution label dropped «التعليمية» — the
+// control is still the institution select (first link of the chain).
+const institutionSelect = () => screen.getByLabelText('المؤسسة') as HTMLSelectElement;
 const facultySelect = () => screen.getByLabelText('الكلّيّة') as HTMLSelectElement;
 
 beforeEach(() => {
@@ -188,7 +190,9 @@ describe('RegisterPage — institution step (r178)', () => {
     fireEvent.change(screen.getByLabelText('البريد الإلكتروني'), {
       target: { value: 'salem@test.ly' },
     });
-    fireEvent.change(screen.getByLabelText('كلمة المرور (12 حرفًا على الأقل)'), {
+    // R355 copy diet: the label dropped the parenthetical floor — the
+    // 12-dot placeholder carries it now.
+    fireEvent.change(screen.getByLabelText('كلمة المرور'), {
       target: { value: 'Salam-Zawiya-2026' },
     });
     fireEvent.change(screen.getByLabelText('رقم القيد الجامعي'), {

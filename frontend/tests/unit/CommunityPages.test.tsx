@@ -31,7 +31,7 @@ const h = vi.hoisted(() => {
   return {
     rsvpMutate: vi.fn(),
     /* 5.5 h ahead — the card floors full hours at render, so the label
-       is robustly «تنتهي بعد 5 ساعات» for any render within ~30 min. */
+       is robustly «بعد 5 ساعات» for any render within ~30 min. */
     competition: {
       id: 'comp1',
       title: 'تحدي الذكاء الاصطناعي',
@@ -146,7 +146,7 @@ describe('CommunityPage — CompetitionCard deadline chip (15-h P1-4)', () => {
   it('an OPEN competition with hours left shows the ends-in-hours label, never «مغلقة»', () => {
     renderPage();
     fireEvent.click(screen.getByRole('tab', { name: /المسابقات/ }));
-    expect(screen.getByText('تنتهي بعد 5 ساعات')).toBeInTheDocument();
+    expect(screen.getByText('بعد 5 ساعات')).toBeInTheDocument();
     expect(screen.queryByText('مغلقة')).toBeNull();
   });
 

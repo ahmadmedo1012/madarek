@@ -113,10 +113,6 @@ export default function TeacherLabsPage() {
         <div className="page-title-block">
           <span className="hr-brow">التعلّم العملي</span>
           <h1 className="page-title">المعامل الافتراضية</h1>
-          <p className="page-subtitle">
-            وجّه طلابك للمعامل كمكمّل عملي — يدخلون كمشاركين، وأنت
-            المسؤول عن سياق التعلّم.
-          </p>
         </div>
         {/* R342-09 (D8 header-CTA law — the schedule-page precedent for a
          * read-only ledger): the directory's ONE honest next action on the
@@ -162,14 +158,10 @@ export default function TeacherLabsPage() {
               {
                 label: 'فئات المعامل',
                 value: formatNum(categories),
-                trend: 'شبكات، علوم، ذكاء اصطناعي…',
-                trendTone: 'flat',
               },
               {
                 label: 'منصّات التدريب',
                 value: formatNum(platforms),
-                trend: 'منصّات مختلفة داخل المعامل',
-                trendTone: 'flat',
               },
             ]}
           />
@@ -179,8 +171,7 @@ export default function TeacherLabsPage() {
           <div className="hr-note">
             <Icon icon={AlertCircle} size={16} />
             <div className="text-xs">
-              <strong>تنويه:</strong> المعامل بيئات محاكاة معتمدة — لتعزيز فهم النظري،
-              ليست بديلاً عن المختبر الواقعي.
+              <strong>تنويه:</strong> بيئات محاكاة — ليست بديلاً عن المختبر الواقعي.
             </div>
           </div>
 
@@ -190,7 +181,7 @@ export default function TeacherLabsPage() {
               <EmptyState
                 illustration="empty-list"
                 title="لم تُضف معامل بعد"
-                description="تواصل مع إدارة المنصة لإضافة معامل لكليتك."
+                description="تواصل مع إدارة المنصّة."
               />
             </Card>
           ) : (

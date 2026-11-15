@@ -223,7 +223,7 @@ export function TeacherDashboardPage() {
     return (
       <div className="hr-scope">
         <PageFrame aria-busy="true" aria-live="polite">
-          <PageHeader title="لوحة الأستاذ" description="جارٍ تحضير لوحتك…" />
+          <PageHeader title="لوحة الأستاذ" description="جارٍ التحميل…" />
           <RowList loading aria-label="ملخص نشاط التدريس" />
           <RowList loading aria-label="طابور التصحيح" />
           <RowList loading aria-label="طلاب يحتاجون متابعة" />
@@ -240,7 +240,7 @@ export function TeacherDashboardPage() {
         <PageFrame>
           <PageHeader title="لوحة الأستاذ" />
           <ErrorState
-            message="تعذَّر تحميل لوحة الأستاذ"
+            message="تعذَّر التحميل."
             error={dash.error}
             onRetry={() => dash.refetch()}
           />
@@ -260,7 +260,7 @@ export function TeacherDashboardPage() {
   // as "not enough data yet". The sr-only data table feeds both branches.
   const coverage = trendCoverage(d.trend);
   const trendTable = {
-    caption: 'اتجاه الأداء والحضور — آخر ستة أسابيع',
+    caption: 'اتجاه الأداء والحضور',
     columns: ['الأسبوع', 'متوسط الأداء', 'الحضور'],
     rows: d.trend.map((t) => [
       t.week,
@@ -282,7 +282,6 @@ export function TeacherDashboardPage() {
       <PageHeader
         title="لوحة الأستاذ"
         eyebrow="التدريس · متابعات اليوم"
-        description="كل ما يحتاج تدخّلك اليوم — تيار واحد مرتّب بالأولوية."
         meta={
           <>
             {WEEKDAY_NAMES_AR[new Date().getDay()]} · {formatDate(new Date(), { day: 'numeric', month: 'long' })}
@@ -294,7 +293,7 @@ export function TeacherDashboardPage() {
           <span className="hr-chip" data-tone={visible.length === 0 ? 'ok' : 'ember'}>
             {visible.length === 0
               ? 'لا عناصر تحتاج متابعة'
-              : countAr(visible.length, ['عنصر يحتاج متابعة', 'عنصران يحتاجان متابعة', 'عناصر تحتاج متابعة', 'عنصراً يحتاج متابعة'])}
+              : countAr(visible.length, ['عنصر', 'عنصران', 'عناصر', 'عنصراً'])}
           </span>
         }
       />
@@ -352,22 +351,22 @@ export function TeacherDashboardPage() {
           screen readers (aria-label + sr-only data table, audit 0-f). */}
       <Card
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>اتجاه الأداء والحضور</>}
-        icon={Activity} subtitle="متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية">
+        icon={Activity}>
         {!coverage.drawable ? (
           <>
             <EmptyState
               icon={Activity}
-              title="لا تتوفّر بيانات كافية بعد لرسم الاتجاه"
+              title="لا بيانات كافية بعد"
               description={
                 coverage.weeksRecorded === 0
-                  ? 'لم يُسجَّل أسبوع بعد — يُرسم المخطط بعد أسبوعين على الأقل.'
-                  : `${countAr(coverage.weeksRecorded, ['أسبوع واحد مسجَّل', 'أسبوعان مسجَّلان', 'أسابيع مسجَّلة', 'أسبوعاً مسجَّلاً'])} حتى الآن — يُرسم بعد أسبوعين على الأقل.`
+                  ? ''
+                  : `${countAr(coverage.weeksRecorded, ['أسبوع واحد مسجَّل', 'أسبوعان مسجَّلان', 'أسابيع مسجَّلة', 'أسبوعاً مسجَّلاً'])}`
               }
             />
             {/* The real data points stay available to screen readers
                 even while the canvas is withheld. */}
             <div className="visually-hidden">
-              <p>لا تتوفّر بيانات كافية بعد لرسم المخطط الخطي.</p>
+              <p>لا بيانات كافية بعد.</p>
               <table>
                 <caption>{trendTable.caption}</caption>
                 <thead>
@@ -390,7 +389,7 @@ export function TeacherDashboardPage() {
         ) : (
           <ChartFrame
             ariaLabel="مخطط خطي لمتوسط الأداء ونسبة الحضور خلال الأسابيع الستة الماضية"
-            summary="مقارنة أسبوعية بين متوسط درجات الطلاب ونسبة الحضور."
+            summary="متوسط الدرجات مقابل الحضور."
             height={240}
             table={trendTable}
           >
@@ -446,12 +445,12 @@ export function TeacherDashboardPage() {
         empty={
           <EmptyState
             icon={CheckCircle2}
-            title="لا متطلبات الآن — أحسنت!"
-            description="سيظهر هنا أي عنصر جديد فور وصوله."
+            title="لا متطلبات الآن"
+            description=""
             action={
               <Link to="/teacher/intelligence" className="btn outline sm">
                 <Icon icon={Users} size={13} />
-                استعرض أداء مقرّراتك
+                استعرض مقرّراتك
               </Link>
             }
           />
@@ -550,7 +549,7 @@ function PendingGradingQueue({ index, entries }: { index: string; entries: Teach
     <>
       <SectionHeader
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[{index}]</span>طابور التصحيح</>}
-        description={total === 0 ? undefined : countAr(total, ['تسليم بانتظار درجتك', 'تسليمان بانتظار درجتك', 'تسليمات بانتظار درجتك', 'تسليماً بانتظار درجتك'])}
+        description={total === 0 ? undefined : `${countAr(total, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'])} بانتظار درجتك`}
         actions={total > 0 ? (
           /* R305 Heron: the ONE ember-flavored primary action of the
            * home — the queue is the day's first decision surface. */
@@ -565,7 +564,6 @@ function PendingGradingQueue({ index, entries }: { index: string; entries: Teach
            * named, its line closed by the green status chip. */
           <div className="hr-empty">
             <strong>لا انتظار — كل التسليمات مُقيَّمة</strong>
-            <span>تظهر الجديدة فور وصولها.</span>
             <span className="hr-chip" data-tone="ok">مكتمل</span>
           </div>
         ) : (
@@ -583,7 +581,7 @@ function PendingGradingQueue({ index, entries }: { index: string; entries: Teach
                       hear the per-row submission count. */}
                   <span className="tq-num tqd-count" aria-hidden="true">{formatNum(e.count)}</span>
                   <span className="visually-hidden">
-                    {countAr(e.count, ['تسليم واحد', 'تسليمان', 'تسليمات', 'تسليماً'])}
+                    {countAr(e.count, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'])}
                   </span>
                 </>
               }
@@ -631,7 +629,7 @@ function TodayLectures({ index }: { index: string }) {
       {offsQ.isPending ? (
         <ListSkeleton rows={2} />
       ) : offsQ.isError ? (
-        <ErrorState message="تعذَّر تحميل جدول اليوم" error={offsQ.error} onRetry={() => offsQ.refetch()} />
+        <ErrorState message="تعذَّر التحميل." error={offsQ.error} onRetry={() => offsQ.refetch()} />
       ) : (
         <TodayList
           items={slots.map((slot) => {
@@ -660,7 +658,6 @@ function TodayLectures({ index }: { index: string }) {
           emptyState={
             <RowItem
               title="لا محاضرات اليوم"
-              meta="جدول اليوم فارغ — استرح أو راجع الأسبوعيّ."
               trailing={<span className="hr-chip" data-tone="ok">يوم مفتوح</span>}
             />
           }
@@ -685,7 +682,7 @@ function AtRiskShortcuts({ index }: { index: string }) {
       <SectionHeader
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[{index}]</span>طلاب يحتاجون متابعة</>}
         description={risks.data && risks.data.length > 0
-          ? countAr(risks.data.length, ['طالب تحت المتابعة', 'طالبان تحت المتابعة', 'طلاب تحت المتابعة', 'طالباً تحت المتابعة'])
+          ? countAr(risks.data.length, ['طالب', 'طالبان', 'طلاب', 'طالباً'])
           : undefined}
         actions={risks.data && risks.data.length > 0 ? (
           <Link to="/teacher/intelligence" className="btn ghost sm">
@@ -696,13 +693,12 @@ function AtRiskShortcuts({ index }: { index: string }) {
       {risks.isPending ? (
         <ListSkeleton rows={3} />
       ) : risks.isError ? (
-        <ErrorState message="تعذَّر تحميل قائمة المتابعة" error={risks.error} onRetry={() => risks.refetch()} />
+        <ErrorState message="تعذَّر التحميل." error={risks.error} onRetry={() => risks.refetch()} />
       ) : (
         <RowList aria-label="طلاب يحتاجون متابعة">
           {top.length === 0 ? (
             <RowItem
               title="جميع طلابك في وضع جيد"
-              meta="لا مؤشّرات خطر — تظهر هنا أقصر طرق المتابعة فور رصدها."
               trailing={<span className="hr-chip" data-tone="ok">مستقر</span>}
             />
           ) : (

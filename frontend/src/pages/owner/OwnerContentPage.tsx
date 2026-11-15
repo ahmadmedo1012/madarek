@@ -110,7 +110,6 @@ export function OwnerContentPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="المحتوى والعلامة التجاريّة"
-        description="إدارة الإعلانات، أعلام الميزات، والهويّة البصريّة للمنصّة"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المحتوى والعلامة التجاريّة' }]}
         /* R341 D11: the [06] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). The page's body cards
@@ -121,18 +120,17 @@ export function OwnerContentPage() {
       <div className="grid-2">
         <Card title="الإعلانات الرسميّة" icon={Bell}>
           <p className="owner-card-lead">
-            إنشاء وبثّ الإعلانات على مستوى المنصّة أو الكلّيّة أو القسم — مع أيقونة وخيار تثبيت.
+            بثّ إعلانات على مستوى المنصّة أو الكلّيّة أو القسم.
           </p>
           <Link to="/community" className="btn primary sm">
             <Icon icon={ArrowLeft} size={13} />
-            فتح المجتمع الجامعيّ
+            فتح المجتمع
           </Link>
         </Card>
 
         <Card title="ميزات المنصّة" icon={ToggleRight}>
           <p className="owner-card-lead">
-            تشغيل الميزات عبر نظام الأعلام — تُسجَّل وتُوثَّق في السجلّ، ولا تستهلكها بوابة تشغيل:
-            الميزات تعمل بحالاتها المضمّنة في الشيفرة.
+            تُسجَّل وتُوثَّق في السجلّ، ولا تستهلكها بوابة تشغيل.
           </p>
           <Link to="/owner/system" className="btn primary sm">
             <Icon icon={ArrowLeft} size={13} />
@@ -145,15 +143,14 @@ export function OwnerContentPage() {
         <div className="owner-brand-notice">
           <Icon icon={Info} size={14} />
           <span>
-            تعديل ألوان العلامة التجاريّة (الأساسيّ، الثانويّ، التمييز) ومحتوى الصفحة الرئيسيّة قيد
-            التطوير. حالياً تُعتمَد ألوان علامة مدارك الرسميّة المعتمدة في نظام التصميم — تُقرَأ
-            مباشرةً من رموز نظام التصميم النشطة (فاتح/داكن) عند عرض الصفحة.
+            تعديل ألوان العلامة التجاريّة ومحتوى الصفحة الرئيسيّة قيد التطوير — الألوان
+            تُقرَأ حالياً من رموز نظام التصميم النشطة (فاتح/داكن).
             {/* r299: the one-sentence «محتوى الواجهة الرئيسيّة» card folded
                 in here — a whole bordered box for one sentence that restated
                 this same dev-status note; the «فوراً» honesty contract
                 (r165g) stays intact (no «instant» promises anywhere). */}
-            محرّر العنوان والوصف الفرعيّ ونصّ زرّ «ابدأ الآن» قيد التطوير — النصوص
-            الحاليّة محدّدة في كود الصفحة الرئيسيّة.
+            محرّر العنوان والوصف ونصّ زرّ الصفحة الرئيسيّة قيد التطوير — النصوص
+            محدّدة في كود الصفحة.
           </span>
         </div>
 

@@ -41,6 +41,9 @@ const LEVEL_LABEL: Record<string, string> = {
   ADVANCED: 'متقدم',
 };
 
+/* One counted-noun tuple shared by both course-count lines (dedup). */
+const MOOC_UNIT: [string, string, string, string] = ['دورة خارجية واحدة', 'دورتان خارجيتان', 'دورات خارجية', 'دورة خارجية'];
+
 function levelLabel(level: string): ReactNode {
   const known = LEVEL_LABEL[level];
   if (known) return known;
@@ -143,7 +146,7 @@ export default function MoocPage() {
     <PageFrame width="default">
       <PageHeader
         title="دورات خارجية"
-        description="دورات من منصّات عالمية معتمدة — التسجيل من موقع المنصّة."
+        description="التسجيل من موقع المنصّة."
       />
 
       {isPending ? (
@@ -155,7 +158,7 @@ export default function MoocPage() {
            the sheet's reserved-but-empty region. */
         <EmptyCell
           label="لا توجد دورات خارجية مرتبطة"
-          note="يربط المسجل العام دورات Coursera وedX بمقرّراتك — راجع المرشد لمعرفة المعتمد."
+          note="يربطها المسجّل العام بمقرّراتك."
         />
       ) : (
         <>
@@ -168,7 +171,7 @@ export default function MoocPage() {
             meta={
               <BarCount
                 n={data.length}
-                srLabel={countAr(data.length, ['دورة خارجية واحدة', 'دورتان خارجيتان', 'دورات خارجية', 'دورة خارجية'])}
+                srLabel={countAr(data.length, MOOC_UNIT)}
               />
             }
           />
@@ -190,7 +193,7 @@ export default function MoocPage() {
               {searching ? (
                 <bdi>{formatInt(filtered.length)} من {formatInt(data.length)} دورة</bdi>
               ) : (
-                <bdi>{countAr(data.length, ['دورة خارجية واحدة', 'دورتان خارجيتان', 'دورات خارجية', 'دورة خارجية'])}</bdi>
+                <bdi>{countAr(data.length, MOOC_UNIT)}</bdi>
               )}
             </span>
           </p>
@@ -200,7 +203,7 @@ export default function MoocPage() {
                EmptyCell — the sheet's reserved-but-empty region. */
             <EmptyCell
               label="لا نتائج مطابقة للبحث"
-              note="جرّب كلمة أقصر، أو ابحث باسم الجهة."
+              note="جرّب كلمة أقصر."
             />
           ) : (
             <div className="grid-3 mooc-grid">

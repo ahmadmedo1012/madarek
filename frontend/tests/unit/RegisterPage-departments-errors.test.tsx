@@ -107,8 +107,10 @@ function axError(status: number, code?: string, message?: string): AxiosError<{ 
 }
 
 const NO_DEPARTMENTS_TEXT =
-  // R320 override: «تواصل مع إدارة الجامعة» → «تواصل مع المسجل العام» (§B rename).
-  'لا أقسام في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع المسجل العام.';
+  // R355 copy diet: «لا أقسام في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو
+  // تواصل مع المسجل العام.» → the surviving short form (§B rename folded
+  // into R320 previously; R355 trimmed the tail).
+  'لا أقسام في هذه الكلّيّة — اختر كلّيّة أخرى.';
 
 function renderPage() {
   return render(
@@ -124,7 +126,9 @@ function fillValidStudent(facultyId: string) {
   fireEvent.change(screen.getByLabelText('الاسم الأول'), { target: { value: 'سالم' } });
   fireEvent.change(screen.getByLabelText('اللقب'), { target: { value: 'الفيتوري' } });
   fireEvent.change(screen.getByLabelText('البريد الإلكتروني'), { target: { value: 'salem@test.ly' } });
-  fireEvent.change(screen.getByLabelText('كلمة المرور (12 حرفًا على الأقل)'), { target: { value: 'Salam-Zawiya-2026' } });
+  // R355 copy diet: the label dropped the parenthetical floor (the 12-dot
+  // placeholder carries it now) — the control is still the password field.
+  fireEvent.change(screen.getByLabelText('كلمة المرور'), { target: { value: 'Salam-Zawiya-2026' } });
   fireEvent.change(screen.getByLabelText('رقم القيد الجامعي'), { target: { value: '2024-CS-1234' } });
   fireEvent.change(screen.getByLabelText('الكلّيّة'), { target: { value: facultyId } });
 }
@@ -269,7 +273,9 @@ describe('RegisterPage — server-error contract (r157 F5 / D17-3)', () => {
 
     const banner = screen.getByRole('alert');
     expect(banner).toHaveTextContent('تعذَّر إنشاء الحساب');
-    expect(banner).toHaveTextContent('اتصالك');
+    // R355 copy diet: the authored generic's tail is now «راجع البيانات
+    // وأعد المحاولة» (was the اتصالك phrasing).
+    expect(banner).toHaveTextContent('راجع البيانات وأعد المحاولة');
     // The raw Latin transport prose never renders in the RTL UI.
     expect(banner).not.toHaveTextContent('Network Error');
     expect(screen.queryByRole('link', { name: 'سجِّل الدخول' })).toBeNull();

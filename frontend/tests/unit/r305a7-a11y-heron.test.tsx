@@ -410,7 +410,7 @@ describe('StudentResearchPage — in-flight submits carry the platform pairing',
     mocks.scan = { isPending: false, isError: false, error: null, mutateAsync: vi.fn(() => new Promise(() => {})) };
     render(page(<StudentResearchPage />));
 
-    const idle = screen.getByRole('button', { name: 'ابدأ الفحص الآن' });
+    const idle = screen.getByRole('button', { name: 'ابدأ الفحص' }); // R355 copy diet: «الآن» dropped
     expect(idle).not.toHaveAttribute('aria-disabled');
 
     fireEvent.click(idle);
@@ -423,7 +423,7 @@ describe('StudentResearchPage — in-flight submits carry the platform pairing',
     mocks.my = { data: [paperFixture()], isPending: false, isError: false, error: null, refetch: () => undefined };
     render(page(<StudentResearchPage />));
 
-    const btn = screen.getByRole('button', { name: 'ابدأ الفحص الآن' }) as HTMLButtonElement;
+    const btn = screen.getByRole('button', { name: 'ابدأ الفحص' }) as HTMLButtonElement; // R355 copy diet: «الآن» dropped
     expect(btn.disabled).toBe(false);
     expect(btn).not.toHaveAttribute('aria-disabled');
   });
@@ -434,7 +434,7 @@ describe('StudentResearchPage — in-flight submits carry the platform pairing',
     render(page(<StudentResearchPage />));
 
     fireEvent.click(screen.getByRole('button', { name: 'رفع بحث جديد' }));
-    const title = screen.getByPlaceholderText('مثال: تطبيق أنماط التصميم في تطبيقات الويب');
+    const title = screen.getByPlaceholderText('مثال: أنماط التصميم'); // R355 copy diet: placeholder shortened
     fireEvent.change(title, { target: { value: 'عنوان صالح للتجربة' } });
 
     const submit = screen.getByRole('button', { name: 'جارٍ الرفع…' }) as HTMLButtonElement;

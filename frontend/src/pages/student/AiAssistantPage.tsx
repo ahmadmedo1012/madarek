@@ -138,17 +138,17 @@ export function citationHref(c: AiCitation): string | null {
  * «ما المفاهيم التي أحتاج إلى مراجعتها؟» (a mastery question their role
  * has no data for). */
 const STUDENT_SUGGESTIONS = [
-  'ما المفاهيم التي أحتاج إلى مراجعتها؟',
-  'اقترح لي خطّة مذاكرة لفجواتي المعرفيّة',
-  'كيف أحسّن درجتي في أضعف مفاهيمي؟',
-  'ما خطوتي الدراسيّة التالية؟',
-  'راجع معي المفاهيم التي أتعثّر فيها',
+  'ما المفاهيم التي أحتاج مراجعتها؟',
+  'اقترح خطّة مذاكرة لفجواتي',
+  'كيف أحسّن أضعف مفاهيمي؟',
+  'ما خطوتي التالية؟',
+  'راجع معي مفاهيمي المتعثّرة',
 ];
 const OTHER_SUGGESTIONS = [
-  'اقترح طريقة لتقييم فهم الطلاب بعد كل محاضرة',
-  'كيف أنظّم مقرّري عبر الأسابيع بدفعة زمنية واضحة؟',
-  'اقترح أنشطة تفاعلية تزيد مشاركة الطلاب في المحاضرة',
-  'كيف أصوغ أسئلة اختبار تقيس الفهم لا الحفظ؟',
+  'كيف أقيّم فهم الطلاب؟',
+  'كيف أنظّم مقرّري؟',
+  'اقترح أنشطة تزيد مشاركة الطلاب',
+  'كيف أصوغ أسئلة تقيس الفهم؟',
 ];
 
 /* P4: the two engines' copy. The page NEVER claims an LLM while the
@@ -156,13 +156,13 @@ const OTHER_SUGGESTIONS = [
  * Unknown (pending/error) renders the LOCAL copy: the honest default
  * when the mode is unverifiable. */
 const LOCAL_GREETING_STUDENT =
-  'مرحبًا! أنا مساعدك الدراسيّ. أحلّل بيانات إتقانك محليّاً (بلا نموذج لغويّ خارجيّ) لأقترح خطوات مذاكرة تركّز على فجواتك المعرفيّة. كيف أساعدك؟';
+  'مرحبًا! أحلّل بيانات إتقانك محليّاً وأقترح خطوة مذاكرة تالية.';
 const LOCAL_GREETING_OTHER =
-  'مرحبًا! أنا مساعد تحليليّ محليّ (بلا نموذج لغويّ خارجيّ). لا أملك بيانات إتقان للمقرّرات التي تدرّسها، فإجاباتي عامّة. كيف أساعدك؟';
+  'مرحبًا! لا بيانات إتقان لمقرّراتك — إجاباتي عامّة.';
 const REAL_GREETING_STUDENT =
-  'مرحبًا! أنا مساعدك الدراسيّ المدعوم بنموذج لغويّ حقيقيّ عبر مزوّد خارجيّ. أرى بيانات إتقانك ومقرّراتك المسجَّلة في المنصّة لتركّز إجاباتي على فجواتك المعرفيّة. كيف أساعدك؟';
+  'مرحبًا! أرى بيانات إتقانك لأركّز على فجواتك.';
 const REAL_GREETING_OTHER =
-  'مرحبًا! أنا مساعدك المدعوم بنموذج لغويّ حقيقيّ عبر مزوّد خارجيّ. لا أملك بيانات إتقان، لكن أستطيع مساعدتك في أسئلة التدريس والتقييم وتنظيم المقرّرات. كيف أساعدك؟';
+  'مرحبًا! لا بيانات إتقان لديّ — أساعدك في التدريس والتقييم.';
 
 /* r176c (privacy disclosure, P1-1 from the r176-B audit): a REAL
  * provider processes the conversation OFF-platform — mastery facts
@@ -172,7 +172,7 @@ const REAL_GREETING_OTHER =
  * turn; this line is persistent). Factual only: names the flow, makes
  * no claims about the provider's downstream handling. */
 const PRIVACY_DISCLOSURE =
-  'إشعار الخصوصيّة: تُرسَل رسائلك وبيانات إتقانك إلى مزوّد ذكاء اصطناعيّ خارجيّ (المسمّى في الشارة أعلاه) لتوليد الردّ.';
+  'إشعار الخصوصيّة: تُرسَل رسائلك وبيانات إتقانك إلى مزوّد خارجيّ.';
 
 /* r323 B1.1 — the daily-quota card («وصلتَ حدَّ اليوم»). The card's
  * body prefers the SERVER's own Arabic rejection verbatim (the honest
@@ -183,7 +183,7 @@ const PRIVACY_DISCLOSURE =
  * server, not the client, owns the limit — it lifts at the UTC
  * boundary, and the standing rate limiter is still the real gate). */
 const DAILY_QUOTA_FALLBACK_NOTE =
-  'انتهت حصّتك اليوميّة من أسئلة المساعد الذكيّ — عُد غدًا أو تابع من محادثاتك السابقة.';
+  'انتهت حصّتك اليوميّة — عُد غدًا.';
 /* The streamed-turn quota sentinel: the `done` frame's `remaining` is
  * omitted entirely when the quota store was unavailable (0 could then
  * mean «unknown», never «exhausted» — no invented card). */
@@ -616,7 +616,7 @@ export default function AiAssistantPage() {
         ...m,
         {
           role: 'bot',
-          text: serverMsg || 'تعذَّر الاتصال بالمساعد الآن.',
+          text: serverMsg || 'تعذَّر الاتصال بالمساعد.',
           error: true,
           retryText: t,
           code: apiErrorCode(err) ?? undefined,
@@ -781,7 +781,7 @@ export default function AiAssistantPage() {
   };
 
   const askAboutGap = (conceptName: string) => {
-    void send(`اشرح لي مفهوم "${conceptName}" — لاحظت أنّ لديّ فجوة فيه.`);
+    void send(`اشرح لي مفهوم "${conceptName}"`);
   };
 
   const convList = conversations.data ?? [];
@@ -804,11 +804,6 @@ export default function AiAssistantPage() {
             الصادق يبقى نصًّا فرعيًّا والشارة في خانة الإجراءات. */}
         <PageHeader
           title="المساعد الذكيّ"
-          description={
-            isRealLlm
-              ? 'مساعدك الدراسيّ مدعوم بنموذج لغويّ حقيقيّ يرى بيانات إتقانك ويعطي إجابات مخصّصة لك.'
-              : 'يحلّل بيانات إتقانك محليّاً ويقترح خطوة مذاكرة تالية — مساعد تحليليّ محليّ، لا نموذج لغويّ خارجيّ.'
-          }
           /* The badge names the real model when one answers — an LLM
              badge on template replies (or the reverse) would be a lie. */
           /* R342-08 — the header CTA pair (the D11/D8 measured seat):
@@ -846,7 +841,6 @@ export default function AiAssistantPage() {
                 mono meta once resolved; the old hint line survives as
                 the quiet note under the bar (honest copy, verbatim). */}
             <SectionBar index="01" title="بناءً على أدائك" />
-            <p className="r319sp-sec-note">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
             <div className="ai-gaps-row">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="ai-gap-card" aria-hidden>
@@ -861,8 +855,8 @@ export default function AiAssistantPage() {
           <AlertRow
             color="red"
             icon={AlertCircle}
-            title="تعذَّر تحليل فجواتك المعرفيّة"
-            description="لن تظهر بطاقات المفاهيم المقترحة، لكن يمكنك مواصلة المحادثة مع المساعد بشكل طبيعي."
+            title="تعذَّر تحليل فجواتك"
+            description="يمكنك مواصلة المحادثة."
             actions={
               <button type="button" className="btn ghost sm" onClick={() => gaps.refetch()}>
                 <Icon icon={RefreshCw} size={13} />
@@ -880,11 +874,10 @@ export default function AiAssistantPage() {
               meta={(
                 <BarCount
                   n={gaps.data.length}
-                  srLabel={countAr(gaps.data.length, ['فجوة واحدة ذات أولويّة', 'فجوتان ذاتا أولويّة', 'فجوات ذات أولويّة', 'فجوةً ذات أولويّة'])}
+                  srLabel={countAr(gaps.data.length, ['فجوة', 'فجوتان', 'فجوات', 'فجوةً'])}
                 />
               )}
             />
-            <p className="r319sp-sec-note">مفاهيم تحتاج إلى توضيح — اضغط على أيٍّ منها لطرح سؤال مباشر على المساعد</p>
             <div className="ai-gaps-row">
               {gaps.data.slice(0, 3).map((g) => (
                 <button
@@ -904,7 +897,7 @@ export default function AiAssistantPage() {
                   </div>
                   <div className="ai-gap-name">{g.conceptName}</div>
                   <div className="ai-gap-cta">
-                    اسأل المساعد عن هذا المفهوم
+                    اسأل عن المفهوم
                     {/* In RTL, "continue" points left — the literal → glyph
                         mirrored the wrong way (audit 0-d P2). */}
                     <Icon icon={ArrowLeft} size={12} />
@@ -926,7 +919,7 @@ export default function AiAssistantPage() {
                 الدائم — كل الإفصاحات في مكان واحد صادق. */}
             <div className="ai-surface-head r305rp-band--deep r305ai-head">
               <div className="r305ai-head-main">
-                <span className="ai-surface-title r305ai-head-title"><Icon icon={Bot} size={16} />محادثتك مع المساعد</span>
+                <span className="ai-surface-title r305ai-head-title"><Icon icon={Bot} size={16} />محادثتك</span>
                 <div className="r305ai-head-chips">
                   {/* Engine/config chip — the /ai/config surface itself.
                       Real provider → the dot turns copper and the chip
@@ -1011,7 +1004,7 @@ export default function AiAssistantPage() {
                               onClick={() => retryExchange(i)}
                             >
                               <Icon icon={RefreshCw} size={12} />
-                              أعد إرسال سؤالك
+                              أعد الإرسال
                             </button>
                           )}
                         </div>
@@ -1137,7 +1130,7 @@ export default function AiAssistantPage() {
                           onClick={() => void openConversation(convLoad.id)}
                         >
                           <Icon icon={RefreshCw} size={12} />
-                          أعد فتح المحادثة
+                          أعد الفتح
                         </button>
                       </div>
                     </div>
@@ -1213,25 +1206,25 @@ export default function AiAssistantPage() {
               <div className="ai-quick-actions">
                 {isRealLlm ? (
                   <>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص لي الفصل الأخير من المقرّر')} disabled={busy}>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص الفصل الأخير')} disabled={busy}>
                       لخّص الفصل الأخير
                     </button>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={busy}>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح مفهوماً صعباً')} disabled={busy}>
                       اشرح مفهوماً
                     </button>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('أنشئ لي اختباراً قصيراً (5 أسئلة)')} disabled={busy}>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('أنشئ اختباراً قصيراً')} disabled={busy}>
                       اختبار قصير
                     </button>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد دراسيّة إضافيّة')} disabled={busy}>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد إضافيّة')} disabled={busy}>
                       موارد إضافيّة
                     </button>
                   </>
                 ) : (
                   <>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={busy}>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح مفهوماً صعباً')} disabled={busy}>
                       اشرح مفهوماً
                     </button>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('ما المفاهيم التي أحتاج إلى مراجعتها؟')} disabled={busy}>
+                    <button type="button" className="ai-quick-chip" onClick={() => void send('ما المفاهيم التي أحتاج مراجعتها؟')} disabled={busy}>
                       أسوأ فجواتي
                     </button>
                   </>
@@ -1300,10 +1293,10 @@ export default function AiAssistantPage() {
               {!quotaLimited && quotaRemaining !== QUOTA_UNKNOWN && (
                 <p className="text-xxs text-subtle ai-counter ai-quota-remaining">
                   {countAr(quotaRemaining, [
-                    'سؤال واحد متبقٍّ اليوم',
-                    'سؤالان متبقّيان اليوم',
-                    'أسئلة متبقّية اليوم',
-                    'سؤالًا متبقّيًا اليوم',
+                    'سؤال متبقٍّ',
+                    'سؤالان متبقّيان',
+                    'أسئلة متبقّية',
+                    'سؤالًا متبقّيًا',
                   ])}
                 </p>
               )}
@@ -1327,7 +1320,7 @@ export default function AiAssistantPage() {
                 !conversations.isPending && !conversations.isError && convList.length > 0 ? (
                   <BarCount
                     n={convList.length}
-                    srLabel={countAr(convList.length, ['محادثة واحدة سابقة', 'محادثتان سابقتان', 'محادثات سابقة', 'محادثةً سابقة'])}
+                    srLabel={countAr(convList.length, ['محادثة', 'محادثتان', 'محادثات', 'محادثةً'])}
                   />
                 ) : undefined
               }
@@ -1355,7 +1348,7 @@ export default function AiAssistantPage() {
                   color="red"
                   icon={AlertCircle}
                   title="تعذَّر تحميل محادثاتك"
-                  description="يمكنك مواصلة محادثتك الحالية بشكل طبيعي، وستظهر القائمة عند إعادة المحاولة."
+                  description="ستظهر القائمة عند إعادة المحاولة."
                   actions={
                     <button type="button" className="btn ghost sm" onClick={() => conversations.refetch()}>
                       <Icon icon={RefreshCw} size={13} />
@@ -1368,8 +1361,7 @@ export default function AiAssistantPage() {
                    empty region — the hatched EmptyCell (the old EmptyState's
                    copy, kept honest and verbatim). */
                 <EmptyCell
-                  label="لا توجد محادثات سابقة بعد"
-                  note="ابدأ بأول سؤال وستظهر محادثاتك هنا."
+                  label="لا محادثات سابقة بعد"
                 />
               ) : (
                 <div className="flex-col">
@@ -1407,7 +1399,7 @@ export default function AiAssistantPage() {
                               onClick={() => void deleteConversation(c.id)}
                               disabled={delConversation.isPending}
                               aria-disabled={delConversation.isPending || undefined}
-                              title="سيُحذف سجلّ هذه المحادثة نهائيًا"
+                              title="سيُحذف نهائيًا"
                             >
                               <Icon icon={Trash2} size={13} />
                               تأكيد الحذف
@@ -1433,7 +1425,7 @@ export default function AiAssistantPage() {
                               onClick={() => setConfirmDeleteId(c.id)}
                               disabled={busy || delConversation.isPending}
                               aria-label={`حذف محادثة: ${title}`}
-                              title="حذف هذه المحادثة نهائيًا"
+                              title="حذف نهائيّ"
                             >
                               <Icon icon={Trash2} size={13} />
                               حذف
@@ -1450,7 +1442,7 @@ export default function AiAssistantPage() {
             <SectionBar
               index="03"
               title="أسئلة مقترحة"
-              meta={<BarCount n={suggestions.length} srLabel={countAr(suggestions.length, ['سؤال مقترح واحد', 'سؤالان مقترحان', 'أسئلة مقترحة', 'سؤالاً مقترحاً'])} />}
+              meta={<BarCount n={suggestions.length} srLabel={countAr(suggestions.length, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])} />}
             />
             <Card>
               <div className="flex-col gap-2">

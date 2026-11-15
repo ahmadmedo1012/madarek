@@ -32,7 +32,6 @@ import '../../styles/student/academic-pages.css';
 
 interface LabExperiment {
   title: string;
-  description: string;
   steps: Array<{ title: string; instructions: string; output: string }>;
 }
 
@@ -40,11 +39,10 @@ interface LabExperiment {
 const EXPERIMENT_LIBRARY: Record<string, LabExperiment> = {
   net: {
     title: 'إعداد شبكة LAN مع VLAN',
-    description: 'تكوين راوتر وسويتش، إعداد VLANs، اختبار الاتصال بين الأجهزة.',
     steps: [
       {
         title: 'تكوين الراوتر',
-        instructions: 'أدخل الأوامر التالية لتفعيل الواجهات وتعيين IP.',
+        instructions: 'فعّل الواجهات وعيّن IP.',
         output: [
           '$ enable',
           'Router# configure terminal',
@@ -52,7 +50,7 @@ const EXPERIMENT_LIBRARY: Record<string, LabExperiment> = {
           'Router(config-if)# ip address 192.168.10.1 255.255.255.0',
           'Router(config-if)# no shutdown',
           '%LINK-3-UPDOWN: Interface GigabitEthernet0/0, changed state to up',
-          '✔ تم تفعيل الواجهة بنجاح.', // allow-emoji: simulated terminal content
+          '✔ الواجهة مفعّلة.', // allow-emoji: simulated terminal content
         ].join('\n'),
       },
       {
@@ -65,12 +63,12 @@ const EXPERIMENT_LIBRARY: Record<string, LabExperiment> = {
           'Switch(config)# interface fastEthernet 0/1',
           'Switch(config-if)# switchport mode access',
           'Switch(config-if)# switchport access vlan 10',
-          '✔ تم إعداد VLAN 10 على المنفذ FastEthernet0/1.', // allow-emoji: simulated terminal content
+          '✔ VLAN 10 جاهزة.', // allow-emoji: simulated terminal content
         ].join('\n'),
       },
       {
         title: 'اختبار الاتصال',
-        instructions: 'استخدم ping للتحقق من الاتصال بين الأجهزة.',
+        instructions: 'اختبر الاتصال عبر ping.',
         output: [
           '$ PC1> ping 192.168.10.1',
           'Pinging 192.168.10.1 with 32 bytes of data:',
@@ -79,39 +77,37 @@ const EXPERIMENT_LIBRARY: Record<string, LabExperiment> = {
           'Reply from 192.168.10.1: bytes=32 time=2ms TTL=255',
           'Reply from 192.168.10.1: bytes=32 time=1ms TTL=255',
           'Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)',
-          '✔ الاتصال يعمل بنجاح.', // allow-emoji: simulated terminal content
+          '✔ الاتصال يعمل.', // allow-emoji: simulated terminal content
         ].join('\n'),
       },
       {
         title: 'تأكيد الإعدادات',
-        instructions: 'احفظ الإعدادات إلى الذاكرة الدائمة.',
+        instructions: 'احفظ الإعدادات.',
         output: [
           '$ Switch# write memory',
           'Building configuration...',
           '[OK]',
-          '✔ تم حفظ الإعدادات في NVRAM.', // allow-emoji: simulated terminal content
+          '✔ حُفظت الإعدادات.', // allow-emoji: simulated terminal content
         ].join('\n'),
       },
     ],
   },
   chem: {
     title: 'تجربة تفاعل حمض-قاعدة',
-    description: 'محاكاة تفاعل HCl مع NaOH وقياس درجة الحموضة.',
     steps: [
-      { title: 'تجهيز المواد', instructions: 'حضّر 50 مل من HCl تركيز 0.1M و 50 مل من NaOH.', output: '> beaker.add(\'HCl\', 50, 0.1);\n> beaker.add(\'NaOH\', 50, 0.1);\n✔ تم تحضير المواد بأمان.' }, // allow-emoji: simulated terminal content
+      { title: 'تجهيز المواد', instructions: 'حضّر HCl وNaOH بتركيز 0.1M.', output: '> beaker.add(\'HCl\', 50, 0.1);\n> beaker.add(\'NaOH\', 50, 0.1);\n✔ تم التحضير.' }, // allow-emoji: simulated terminal content
       { title: 'القياس الابتدائي', instructions: 'اقرأ pH قبل الخلط.', output: '> ph.measure(beaker_A);\nHCl pH = 1.0\n> ph.measure(beaker_B);\nNaOH pH = 13.0' },
-      { title: 'الخلط والتفاعل', instructions: 'اخلط الكميتين تدريجياً.', output: '> mix(beaker_A, beaker_B);\nReaction: HCl + NaOH → NaCl + H₂O\nTemperature rise: +5°C (exothermic)\n✔ التفاعل مكتمل.' }, // allow-emoji: simulated terminal content
-      { title: 'القياس النهائي', instructions: 'اقرأ pH بعد التفاعل.', output: '> ph.measure(mix);\npH = 7.0 (متعادل)\n✔ النتيجة المتوقعة: تفاعل تعادل تام.' }, // allow-emoji: simulated terminal content
+      { title: 'الخلط والتفاعل', instructions: 'اخلط الكميتين.', output: '> mix(beaker_A, beaker_B);\nReaction: HCl + NaOH → NaCl + H₂O\nTemperature rise: +5°C (exothermic)\n✔ التفاعل مكتمل.' }, // allow-emoji: simulated terminal content
+      { title: 'القياس النهائي', instructions: 'اقرأ pH بعد التفاعل.', output: '> ph.measure(mix);\npH = 7.0 (متعادل)\n✔ تعادل تام.' }, // allow-emoji: simulated terminal content
     ],
   },
   eng: {
     title: 'دائرة كهربائية بسيطة',
-    description: 'بناء دائرة بقاعدة ومقاوم ومصباح، حساب التيار.',
     steps: [
-      { title: 'تجميع المكونات', instructions: 'اختر بطارية 9V، مقاوم 470Ω، ومصباح LED.', output: '+ Battery: 9V\n+ Resistor: 470Ω\n+ LED: Red, Vf=2.0V\n✔ المكونات جاهزة.' }, // allow-emoji: simulated terminal content
-      { title: 'حساب التيار', instructions: 'استخدم قانون أوم: I = (Vbat - Vled) / R.', output: 'I = (9 - 2) / 470\nI = 14.89 mA\n✔ ضمن النطاق الآمن للـ LED (Imax = 20 mA).' }, // allow-emoji: simulated terminal content
-      { title: 'إغلاق الدائرة', instructions: 'وصّل المكونات على متوازي.', output: '> circuit.close();\nCurrent flowing: 14.9 mA\nLED brightness: 75%\n✔ المصباح يعمل.' }, // allow-emoji: simulated terminal content
-      { title: 'قياس الجهد', instructions: 'استخدم الفولتميتر لقياس الجهد على المقاوم.', output: '> voltmeter.read(R1);\nVR = 7.0V\nVerification: Vbat = VR + VLED = 7 + 2 = 9V ✔' }, // allow-emoji: simulated terminal content
+      { title: 'تجميع المكونات', instructions: 'اختر المكونات.', output: '+ Battery: 9V\n+ Resistor: 470Ω\n+ LED: Red, Vf=2.0V\n✔ جاهزة.' }, // allow-emoji: simulated terminal content
+      { title: 'حساب التيار', instructions: 'استخدم قانون أوم: I = (Vbat - Vled) / R.', output: 'I = (9 - 2) / 470\nI = 14.89 mA\n✔ آمن (Imax = 20 mA).' }, // allow-emoji: simulated terminal content
+      { title: 'إغلاق الدائرة', instructions: 'وصّل المكونات.', output: '> circuit.close();\nCurrent flowing: 14.9 mA\nLED brightness: 75%\n✔ يعمل.' }, // allow-emoji: simulated terminal content
+      { title: 'قياس الجهد', instructions: 'قِس جهد المقاوم.', output: '> voltmeter.read(R1);\nVR = 7.0V\nVerification: Vbat = VR + VLED = 7 + 2 = 9V ✔' }, // allow-emoji: simulated terminal content
     ],
   },
 };
@@ -167,9 +163,7 @@ export default function LabsPage() {
         <>
           <PageHeader
             title="المعامل الافتراضية"
-            description={
-              'تجارب تفاعلية بلا معدات — شغّلها خطوة بخطوة وراقب النتائج في طرفية المحاكاة.'
-            }
+            description={'تجارب تفاعلية بلا معدات.'}
             /* R342-08 — the header CTA pair (the D11/D8 measured
                seat; the phone band hides the topbar «اسأل AI» ≤920,
                D6): the immersive trio's honest siblings —
@@ -200,7 +194,6 @@ export default function LabsPage() {
                 {
                   label: 'معامل متاحة',
                   value: labs.isError ? '—' : formatNum(labs.data?.length ?? 0),
-                  hint: 'مسجَّلة في دليل المنصّة',
                 },
                 {
                   label: 'جلسات نشطة',
@@ -217,10 +210,6 @@ export default function LabsPage() {
                 {
                   label: 'تجارب مكتملة',
                   value: labStats.isPending ? '…' : labStats.isError || !labStats.data ? '—' : formatNum(labStats.data.completed),
-                  hint:
-                    labStats.data && labStats.data.completed === 0
-                      ? 'لم تُسجَّل تجربة مكتملة بعد'
-                      : undefined,
                   tone: labStats.data && labStats.data.completed > 0 ? 'positive' : undefined,
                 },
               ]}
@@ -240,7 +229,7 @@ export default function LabsPage() {
                 !labs.isPending && !labs.isError && (labs.data?.length ?? 0) > 0 ? (
                   <BarCount
                     n={labs.data!.length}
-                    srLabel={countAr(labs.data!.length, ['معمل واحد متاح', 'معملان متاحان', 'معامل متاحة', 'معملاً متاحاً'])}
+                    srLabel={countAr(labs.data!.length, ['معمل واحد', 'معملان', 'معامل متاحة', 'معملاً'])}
                   />
                 ) : undefined
               }
@@ -263,10 +252,7 @@ export default function LabsPage() {
            !labs.data?.length ? (
              /* R319 (c3-S1): the empty catalog is the hatched EmptyCell —
                 the sheet's reserved-but-empty region. */
-             <EmptyCell
-               label="لا معامل متاحة"
-               note="لم تُسجّل معامل في دليل المنصّة بعد — ستظهر هنا فور إضافتها."
-             />
+             <EmptyCell label="لا معامل متاحة" />
            ) : (
             <div className="grid-3">
               {labs.data.map((l) => {
@@ -388,7 +374,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
   if (!exp) {
     return (
       <Card>
-        <EmptyState icon={FlaskConical} title="هذه التجربة قيد البناء" description="سيتم إضافتها قريباً." />
+        <EmptyState icon={FlaskConical} title="التجربة قيد البناء" description="" />
       </Card>
     );
   }
@@ -426,7 +412,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
           </div>
           <div className="text-2xl font-bold" style={{ color: 'var(--text)', marginTop: 'var(--sp-3)' }}>أحسنت!</div>
           <div className="text-sm text-muted" style={{ maxWidth: 460, marginTop: 'var(--sp-2)' }}>
-            أكملت «<bdi>{exp.title}</bdi>» بنجاح — أُحتسبت في إحصائيّاتك.
+            أكملت «<bdi>{exp.title}</bdi>» — أُحتسبت في إحصائيّاتك.
           </div>
           <div className="lab-done-chip" style={{ marginTop: 'var(--sp-5)' }}>
             <Icon icon={Award} size={18} />
@@ -457,7 +443,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
             تعذَّر تسجيل الإكمال
           </div>
           <div className="text-sm text-muted" style={{ maxWidth: 460, marginTop: 'var(--sp-2)' }}>
-            وصلت إلى نهاية التجربة لكن لم يُسجَّل الإكمال على الخادم — أعد المحاولة أو عُد لاحقاً.
+            لم يُسجَّل الإكمال على الخادم.
           </div>
           <div className="flex gap-2" style={{ marginTop: 'var(--sp-5)' }}>
             <button type="button" className="btn" onClick={onExit}>
@@ -501,7 +487,6 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
           <span className="text-xs text-subtle">{lab.name}</span>
         </div>
         <h2 className="lab-hero-title">{exp.title}</h2>
-        <p className="text-sm text-muted" style={{ marginBottom: 'var(--sp-4)' }}>{exp.description}</p>
         <ProgressBar
           value={(stepIndex / exp.steps.length) * 100}
           label={<bdi>الخطوة {stepIndex + 1} من {exp.steps.length}</bdi>}
@@ -527,7 +512,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
                 arrow-scroll the simulation output. */}
             <div className="terminal-body" role="log" tabIndex={0} aria-live="polite" aria-label="مخرجات المحاكاة">
               {terminalLines.length === 0 && !running ? (
-                <div className="terminal-hint">— اضغط "تشغيل الخطوة" لتنفيذ الأوامر —</div>
+                <div className="terminal-hint">— بانتظار التشغيل —</div>
               ) : (
                 terminalLines.map((line, i) => (
                   <div key={i} className={`terminal-line ${

@@ -188,7 +188,7 @@ describe('AlertsPage — mark-all error banner (r165d D3)', () => {
     expect(banner).toHaveClass('form-feedback');
     expect(banner).toHaveClass('fail');
     expect(banner.textContent).toContain('تعذَّر تعليم الإشعارات كمقروءة');
-    expect(banner.textContent).toContain('أعد المحاولة');
+    expect(banner.textContent).toContain('إعادة المحاولة'); // R355 copy diet: retry label shortened
   });
 
   it('«إعادة المحاولة» re-fires the SAME bulk mutation', () => {

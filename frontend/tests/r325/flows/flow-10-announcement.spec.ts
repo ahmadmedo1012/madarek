@@ -40,7 +40,7 @@ test('F10 · registrar broadcasts a platform announcement → a student reads it
       const modal = page.getByRole('dialog', { name: 'إعلان جديد' });
       await expect(modal).toBeVisible();
       // ADMIN carries ANNOUNCE_PLATFORM — the scope defaults to it.
-      await expect(modal.getByLabel('النطاق')).toContainText('على مستوى المنصّة');
+      await expect(modal.getByLabel('النطاق')).toContainText('المنصّة');
       await modal.getByLabel('العنوان').fill(title);
       await modal.getByLabel('نصّ الإعلان').fill('بثّ آلي من مواصلة F10 — الإعلان الرسمي يظهر لكل المستخدمين.');
       await modal.getByRole('button', { name: 'نشر الإعلان' }).click();

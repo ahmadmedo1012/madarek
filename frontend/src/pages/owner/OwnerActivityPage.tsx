@@ -28,12 +28,26 @@ type EventType = 'all' | 'login' | 'content' | 'roles' | 'system';
 
 const PAGE_SIZE = 50;
 
+/* Copy diet (single source): the category labels + action labels render
+ * from several maps + the filter tabs — one literal each, referenced
+ * everywhere; the multi-word action labels keep only their nouns. */
+const L_LOGIN = 'تسجيل دخول';
+const L_LOGOUT = 'تسجيل خروج';
+const L_ROLES = 'أدوار';
+const L_SYSTEM = 'نظام';
+const L_ERROR = 'خطأ';
+const L_ROLE_EDIT = 'تعديل صلاحيات';
+const L_ROLE_CHANGE = 'تغيير صلاحيات';
+const L_ACCOUNT_STATUS = 'تعديل حالة الحساب';
+const L_ENROLL = 'تسجيل مقرّر';
+const L_USER_CREATED = 'إنشاء حساب';
+
 const TYPE_CONFIG: Record<'login' | 'content' | 'roles' | 'system' | 'error', { icon: LucideIcon; colorClass: string; label: string }> = {
-  login:   { icon: LogIn, colorClass: 'green', label: 'تسجيل دخول' },
+  login:   { icon: LogIn, colorClass: 'green', label: L_LOGIN },
   content: { icon: FileText, colorClass: 'blue', label: 'محتوى' },
-  roles:   { icon: UserCog, colorClass: 'purple', label: 'أدوار' },
-  system:  { icon: Server, colorClass: 'amber', label: 'نظام' },
-  error:   { icon: AlertTriangle, colorClass: 'red', label: 'خطأ' },
+  roles:   { icon: UserCog, colorClass: 'purple', label: L_ROLES },
+  system:  { icon: Server, colorClass: 'amber', label: L_SYSTEM },
+  error:   { icon: AlertTriangle, colorClass: 'red', label: L_ERROR },
 };
 
 /**
@@ -41,21 +55,21 @@ const TYPE_CONFIG: Record<'login' | 'content' | 'roles' | 'system' | 'error', { 
  * Falls back to 'system' for anything unrecognized so we never lose events.
  */
 function classifyAction(action: string): { category: keyof typeof TYPE_CONFIG; label: string } {
-  if (action.startsWith('user.login') || action.startsWith('auth.login')) return { category: 'login', label: 'تسجيل دخول' };
-  if (action.includes('login.failed')) return { category: 'error', label: 'محاولة دخول فاشلة' };
-  if (action.startsWith('user.logout')) return { category: 'login', label: 'تسجيل خروج' };
-  if (action.startsWith('user.role') || action.startsWith('user.status') || action.startsWith('roles.')) return { category: 'roles', label: 'تعديل صلاحيات' };
-  if (action.startsWith('user.created')) return { category: 'roles', label: 'إنشاء حساب' };
+  if (action.startsWith('user.login') || action.startsWith('auth.login')) return { category: 'login', label: L_LOGIN };
+  if (action.includes('login.failed')) return { category: 'error', label: 'دخول فاشل' };
+  if (action.startsWith('user.logout')) return { category: 'login', label: L_LOGOUT };
+  if (action.startsWith('user.role') || action.startsWith('user.status') || action.startsWith('roles.')) return { category: 'roles', label: L_ROLE_EDIT };
+  if (action.startsWith('user.created')) return { category: 'roles', label: L_USER_CREATED };
   // Real backend audit actions (owner/permissions/teacher routes) —
   // uppercase enums, mapped so they never render raw in the feed.
   if (
     action.startsWith('ROLE_') || action.startsWith('STATUS_') ||
     action.startsWith('CAPABILITY_') || action.startsWith('USER_SCOPE') ||
     action.startsWith('TEACHER_')
-  ) return { category: 'roles', label: 'تعديل صلاحيات' };
+  ) return { category: 'roles', label: L_ROLE_EDIT };
   // Enrollment audit actions the backend actually writes (15-a P1-4:
   // without the branch these fell through to the raw-English fallback).
-  if (action.startsWith('ENROLLMENT_')) return { category: 'content', label: 'تسجيل في مقرّر' };
+  if (action.startsWith('ENROLLMENT_')) return { category: 'content', label: L_ENROLL };
   if (action.startsWith('material.') || action.startsWith('course.') || action.startsWith('paper.') || action.startsWith('announcement.') || action.startsWith('competition.')) {
     return { category: 'content', label: 'تعديل محتوى' };
   }
@@ -64,40 +78,40 @@ function classifyAction(action: string): { category: keyof typeof TYPE_CONFIG; l
     action.startsWith('theme.') || action.startsWith('onboarding.') || action.startsWith('milestone.')) {
     return { category: 'system', label: 'تشغيل نظام' };
   }
-  if (action.includes('error') || action.includes('failed')) return { category: 'error', label: 'خطأ' };
+  if (action.includes('error') || action.includes('failed')) return { category: 'error', label: L_ERROR };
   return { category: 'system', label: action };
 }
 
 const ACTION_LABEL: Record<string, string> = {
-  'user.login': 'تسجيل دخول ناجح',
-  'auth.login': 'تسجيل دخول ناجح',
-  'user.logout': 'تسجيل خروج',
-  'user.created': 'إنشاء حساب',
-  'user.role_changed': 'تغيير صلاحيات مستخدم',
-  'user.status_changed': 'تعديل حالة الحساب',
+  'user.login': 'دخول ناجح',
+  'auth.login': 'دخول ناجح',
+  'user.logout': L_LOGOUT,
+  'user.created': L_USER_CREATED,
+  'user.role_changed': L_ROLE_CHANGE,
+  'user.status_changed': L_ACCOUNT_STATUS,
   'course.created': 'إنشاء مقرّر',
   'course.updated': 'تحديث مقرّر',
-  'enrollment.created': 'تسجيل في مقرّر',
+  'enrollment.created': L_ENROLL,
   'material.uploaded': 'رفع ملف',
   'material.deleted': 'حذف ملف',
   'paper.published': 'نشر بحث',
   'announcement.created': 'بثّ إعلان',
   'competition.created': 'إنشاء مسابقة',
-  ROLE_CHANGE: 'تغيير صلاحيات مستخدم',
-  STATUS_CHANGE: 'تعديل حالة الحساب',
+  ROLE_CHANGE: L_ROLE_CHANGE,
+  STATUS_CHANGE: L_ACCOUNT_STATUS,
   CAPABILITY_OVERRIDE: 'تجاوز صلاحية',
-  USER_SCOPE_CHANGE: 'تعديل نطاق مستخدم',
-  TEACHER_POSITION: 'تعيين موقع أستاذ',
+  USER_SCOPE_CHANGE: 'تعديل نطاق',
+  TEACHER_POSITION: 'تعيين موقع',
   TEACHER_VERIFY: 'توثيق أستاذ',
   // The two enrollment audit actions the backend writes (15-a P1-4) —
   // before 17-a2 these rendered raw English in the timeline.
-  ENROLLMENT_CREATED: 'تسجيل طالب في مقرّر',
-  ENROLLMENT_REMOVED: 'إلغاء تسجيل طالب',
-  ALERT_RESOLVED: 'حلّ تنبيه تشغيليّ',
-  SETTING_UPDATED: 'تحديث إعداد المنصّة',
+  ENROLLMENT_CREATED: 'تسجيل طالب',
+  ENROLLMENT_REMOVED: 'إلغاء تسجيل',
+  ALERT_RESOLVED: 'حلّ تنبيه',
+  SETTING_UPDATED: 'تحديث إعداد',
   FEATURE_FLAG_TOGGLED: 'تبديل ميزة',
-  'theme.update': 'تغيير مظهر المنصّة',
-  'onboarding.complete': 'إكمال جولة التعريف',
+  'theme.update': 'تغيير المظهر',
+  'onboarding.complete': 'إكمال التعريف',
   'milestone.fire': 'تحقيق إنجاز',
 };
 
@@ -116,7 +130,7 @@ const RESOURCE_LABELS: Record<string, string> = {
  *  raw digits; a large audit total wants the separators). */
 function eventsCountLabel(n: number): string {
   if (n === 0) return 'لا أحداث';
-  if (n === 1) return 'حدث واحد';
+  if (n === 1) return 'حدث';
   if (n === 2) return 'حدثان';
   if (n >= 3 && n <= 10) return `${formatNum(n)} أحداث`;
   return `${formatNum(n)} حدثاً`;
@@ -154,10 +168,10 @@ export function OwnerActivityPage() {
 
   const tabItems: Array<{ value: EventType; label: string }> = [
     { value: 'all', label: 'الكل' },
-    { value: 'login', label: 'تسجيل دخول' },
-    { value: 'content', label: 'محتوى' },
-    { value: 'roles', label: 'أدوار' },
-    { value: 'system', label: 'نظام' },
+    { value: 'login', label: TYPE_CONFIG.login.label },
+    { value: 'content', label: TYPE_CONFIG.content.label },
+    { value: 'roles', label: TYPE_CONFIG.roles.label },
+    { value: 'system', label: TYPE_CONFIG.system.label },
   ];
 
   const events = activity.data?.data ?? [];
@@ -202,8 +216,7 @@ export function OwnerActivityPage() {
     <div className="r305ao">
       <PageFrame width="default">
         <PatternsPageHeader
-          title="سجل النشاط والمراقبة"
-          description="العمليّات المنفَّذة — حيّة من سجلّ التدقيق"
+          title="سجلّ النشاط"
           breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'سجلّ النشاط' }]}
           /* R341 D11: the [05] nav-order gutter numeral (OWNER_NAV
            * register — the D10 quality precedent). */
@@ -225,25 +238,22 @@ export function OwnerActivityPage() {
         <StatLine
           items={[
             {
-              label: 'إجمالي الأحداث',
+              label: 'الأحداث',
               value: kpiValue(activity.data?.meta.total ?? kpi.total),
-              hint: 'المسجَّلة على المنصّة',
             },
             {
-              label: 'تسجيلات دخول',
+              label: 'دخول',
               value: kpiValue(kpi.logins),
-              hint: 'ضمن الصفحة الحاليّة',
             },
             {
               label: 'عمليّات فاشلة',
               value: kpiValue(kpi.failed),
-              hint: kpiKnown ? (kpi.failed === 0 ? 'لا إخفاقات ضمن الصفحة' : 'تحقّق من التفاصيل أدناه') : 'بانتظار البيانات',
+              hint: kpiKnown ? (kpi.failed === 0 ? 'لا إخفاقات' : 'التفاصيل أدناه') : 'بانتظار البيانات',
               tone: kpiKnown && kpi.failed > 0 ? 'danger' : 'neutral',
             },
             {
               label: 'تغييرات صلاحيّات',
               value: kpiValue(kpi.roles),
-              hint: 'ضمن الصفحة الحاليّة',
             },
           ]}
         />
@@ -260,10 +270,7 @@ export function OwnerActivityPage() {
             <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
           ) : filtered.length === 0 ? (
             <EmptyState illustration="empty-list"
-              title={filter === 'all' ? 'لا توجد أحداث مسجَّلة بعد' : 'لا أحداث في هذا التبويب'}
-              description={filter === 'all'
-                ? 'تُسجَّل الأحداث فور أول عمليّة.'
-                : 'جرِّب تبويباً آخر.'}
+              title={filter === 'all' ? 'لا أحداث بعد' : 'لا أحداث هنا'}
               action={filter === 'all' && (
                 <button type="button" className="btn ghost sm" onClick={() => activity.refetch()}>
                   <Icon icon={RefreshCw} size={12} />
@@ -310,7 +317,7 @@ export function OwnerActivityPage() {
                         onClick={() => setExpanded(expanded === event.id ? null : event.id)}
                       >
                         <Icon icon={ChevronDown} size={12} className="owner-detail-chevron" />
-                        {expanded === event.id ? 'إخفاء التفاصيل' : 'عرض التفاصيل'}
+                        {expanded === event.id ? 'إخفاء' : 'عرض'}
                       </button>
                     )}
                     {expanded === event.id && event.metadata !== null && event.metadata !== undefined && (

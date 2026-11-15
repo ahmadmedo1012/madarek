@@ -197,8 +197,8 @@ describe('TeacherLivePage — create-form discard guard (E / 3-a)', () => {
       target: { value: 'شرح الوحدة الثالثة — التعلم الآلي' },
     });
 
-    // The toggle reads «إغلاق النموذج» while the form is open.
-    fireEvent.click(screen.getByRole('button', { name: 'إغلاق النموذج' }));
+    // The toggle reads «إغلاق» while the form is open.
+    fireEvent.click(screen.getByRole('button', { name: 'إغلاق' }));
 
     await screen.findByRole('dialog', { name: 'تعديلات غير محفوظة' });
     // The form stays open behind the confirm.

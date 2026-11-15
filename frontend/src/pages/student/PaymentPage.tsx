@@ -51,7 +51,7 @@ export default function PaymentPage() {
     if (profile.isError) hadLoadError.current = true;
     else if (profile.isSuccess && hadLoadError.current) {
       hadLoadError.current = false;
-      toast.success('تم تحميل بياناتك الدراسية من الخادم.', { title: 'تمّ التحديث' });
+      toast.success('تمّ التحميل.', { title: 'تمّ التحديث' });
     }
   }, [profile.isError, profile.isSuccess]);
 
@@ -60,7 +60,6 @@ export default function PaymentPage() {
     <PageFrame width="default">
       <PageHeader
         title="الشؤون الماليّة"
-        description="حالة رسومك الجامعيّة وكيفيّة سدادها."
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6): the
            university-services family's honest siblings — «الجامعة
@@ -94,7 +93,7 @@ export default function PaymentPage() {
         {profile.isError && (
           <div className="fact-error" role="status">
             <Icon icon={Info} size={13} />
-            <span>تعذّر تحميل بياناتك الدراسية من الخادم.</span>
+            <span>تعذّر تحميل بياناتك.</span>
             <button type="button" className="btn ghost sm" onClick={() => profile.refetch()}>
               إعادة المحاولة
             </button>
@@ -112,9 +111,7 @@ export default function PaymentPage() {
               the neutral panel well. */}
           <div className="r305s-next r305p-rail">
             <p className="text-sm text-muted" style={{ margin: 0, lineHeight: 'var(--lh-loose)' }}>
-              تكامل الدفع قيد التطوير ولا تُعرض مبالغ تقديريّة — رصيدك وسجلّ سدادك
-              من مكتب الشؤون الماليّة.
-              حتّى ذلك الحين، خُطواتك اليوم:
+              لا تُعرض مبالغ هنا — رصيدك وسجلّ سدادك من مكتب الشؤون الماليّة.
             </p>
           </div>
         </Card>
@@ -136,7 +133,7 @@ export default function PaymentPage() {
               </span>
             }
             title="راجع مكتب الشؤون الماليّة"
-            meta="في كلّيّتك، أو تواصل معه عبر القنوات أدناه"
+            meta="في كلّيّتك — القنوات أدناه"
           />
           <RowItem
             leading={
@@ -144,7 +141,7 @@ export default function PaymentPage() {
                 <Icon icon={Wallet} size={18} />
               </span>
             }
-            title="أحضر رقمك الجامعيّ أو بطاقتك الجامعيّة"
+            title="أحضر بطاقتك الجامعيّة"
             meta="عند المراجعة أو السداد"
           />
           <RowItem
@@ -154,15 +151,15 @@ export default function PaymentPage() {
                 <Icon icon={Megaphone} size={18} />
               </span>
             }
-            title="تابع مواعيد الرسوم وإعلانات الإدارة الماليّة"
-            meta="تُنشر على لوحة المجتمع الجامعيّ"
+            title="تابع إعلانات الإدارة الماليّة"
+            meta="على لوحة المجتمع"
           />
         </RowList>
       </section>
 
       <div className="grid-2">
         <div>
-        <SectionBar index="04" title="مكتب الشؤون الماليّة بالجامعة" />
+        <SectionBar index="04" title="مكتب الشؤون الماليّة" />
         <Card>
           <div className="flex-col gap-3">
             <ContactRow icon={Phone} label="الهاتف" value="+218 23 762659" mono />
@@ -179,7 +176,7 @@ export default function PaymentPage() {
             <div className="list-row">
               <div className="list-row-body">
                 <div className="list-row-title">الأحد إلى الخميس</div>
-                <div className="list-row-sub">من 9:00 صباحاً حتى 2:00 مساءً</div>
+                <div className="list-row-sub">9:00 صباحاً – 2:00 مساءً</div>
               </div>
             </div>
             <div className="list-row">
@@ -189,21 +186,15 @@ export default function PaymentPage() {
               </div>
             </div>
           </div>
-          <p className="text-xxs text-subtle" style={{ marginBlockStart: 'var(--sp-3)', lineHeight: 1.6 }}>
-            الساعات من الإدارة — قد تتغيّر خلال الاختبارات والإجازات.
-          </p>
         </Card>
         </div>
       </div>
 
       <SectionBar index="06" title="إعلانات الإدارة الماليّة" />
       <Card>
-        <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>
-          الإعلانات الرسميّة للرسوم والمواعيد تُنشر على لوحة المجتمع.
-        </p>
         <Link to="/community" className="btn primary sm">
           <Icon icon={ArrowLeft} size={13} />
-          فتح المجتمع الجامعيّ
+          فتح المجتمع
         </Link>
       </Card>
     </PageFrame>

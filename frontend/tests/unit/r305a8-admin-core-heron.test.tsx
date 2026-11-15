@@ -324,7 +324,7 @@ describe('R305-A8 — the Heron pass changed no data flow', () => {
     renderPage(<AdminDashboardPage />);
     // f1 carries a zero-content course (totalLectures 0 + totalMaterials 0)
     // → the strip renders the row with its deep link.
-    const row = await screen.findByText('مقرّرات بلا محتوى تعليميّ');
+    const row = await screen.findByText('مقرّرات بلا محتوى');
     expect(row.closest('a')!.getAttribute('href')).toBe('/admin/courses');
   });
 

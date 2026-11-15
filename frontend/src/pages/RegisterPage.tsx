@@ -81,8 +81,8 @@ const studentSchema = z.object({
   inviteCode: z
     .string()
     .trim()
-    .max(16, 'الكود أطول من اللازم — 16 حرفًا كحدّ أقصى')
-    .refine((v) => v === '' || v.length >= 4, 'الكود قصير جدًا — 4 أحرف على الأقل'),
+    .max(16, '16 حرفًا كحدّ أقصى')
+    .refine((v) => v === '' || v.length >= 4, '4 أحرف على الأقل'),
 });
 
 const teacherSchema = z.object({
@@ -110,13 +110,13 @@ type StepDir = 'forward' | 'back';
  *  DID answer, its own Arabic message shows verbatim (authErrorView,
  *  r157 F5 / D17-3), and a 409 adds the login link. */
 const GENERIC_REGISTER_ERROR =
-  'تعذَّر إنشاء الحساب — راجع البيانات وتأكَّد من اتصالك ثم أعد المحاولة.';
+  'تعذَّر إنشاء الحساب — راجع البيانات وأعد المحاولة.';
 
 /** r157 F5: honest empty state for a faculty whose department list is
  *  empty — 21 of 25 live faculties ship zero departments; the old dead
  *  select promised a choice that does not exist. */
 const NO_DEPARTMENTS_TEXT =
-  'لا أقسام في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع المسجل العام.';
+  'لا أقسام في هذه الكلّيّة — اختر كلّيّة أخرى.';
 
 /** r305 (2-a): the institution lookup gets the same honesty contract
  *  (audit 0-b P0-4 — never a silently empty select): a ready-but-empty
@@ -124,7 +124,7 @@ const NO_DEPARTMENTS_TEXT =
  *  «اختر…» select that promises options no deployment can offer.
  *  Platform-administration voice per r177 (إدارة المنصّة). */
 const NO_INSTITUTIONS_TEXT =
-  'لا توجد مؤسسات تعليمية متاحة للتسجيل بعد — تواصل مع إدارة المنصّة.';
+  'لا مؤسسات متاحة للتسجيل — تواصل مع إدارة المنصّة.';
 
 /* ═─ r170-e: password strength hint (ASVS 2.1.8 advisory) ────────────
  *
@@ -339,7 +339,7 @@ export default function RegisterPage() {
         {role ? (
           <Link to="/auth" className="auth-context">تسجيل الدخول</Link>
         ) : (
-          <span className="auth-context">إنشاء حساب جديد</span>
+          <span className="auth-context">إنشاء حساب</span>
         )}
       </header>
 
@@ -380,7 +380,6 @@ export default function RegisterPage() {
                   <h1 className="auth-form-title" tabIndex={-1} ref={stepHeadingRef}>
                     {role === 'STUDENT' ? 'تسجيل طالب جديد' : 'تسجيل عضو هيئة تدريس'}
                   </h1>
-                  <p className="auth-form-sub">جميع الحقول مطلوبة لإتمام إنشاء الحساب.</p>
                 </div>
 
                 {role === 'STUDENT' ? (
@@ -435,9 +434,6 @@ export default function RegisterPage() {
                       chooser step kept the sheet grammar incomplete. */}
                   <span className="auth-meta">(إنشاء حساب)</span>
                   <h1 className="auth-form-title" tabIndex={-1} ref={stepHeadingRef}>من أنت؟</h1>
-                  <p className="auth-form-sub">
-                    اختر نوع الحساب لإنشاء وصولك إلى منصّة مدارك.
-                  </p>
                 </div>
 
                 {/* r168a: the chooser is a named group — each card is a
@@ -454,7 +450,6 @@ export default function RegisterPage() {
                       {/* R341/D1: the sub rides the card's short CTA
                           register (the ruled row's own mono index + role
                           title carry the full accessible name). */}
-                      <span className="role-card-sub">مقيَّد في كلّية جامعية</span>
                     </span>
                     <span className="role-card-arrow"><Icon icon={ArrowLeft} size={16} /></span>
                   </button>
@@ -475,7 +470,7 @@ export default function RegisterPage() {
                       compressed to one line — the appointment channel is
                       the message; the enumeration of seats lives in the
                       FAQ/onboarding, not the chooser. */}
-                  <span>تعيين القيادة والمسجلين يتم عبر دعوة من مالك المنصة</span>
+                  <span>تعيين القيادة والمسجلين بدعوة من مالك المنصة</span>
                 </div>
 
                 {/* R341/D1 — the returning-visitor door at the chooser
@@ -496,7 +491,7 @@ export default function RegisterPage() {
       <footer className="auth-bottom">
         {/* r177 → r191: the platform's own identity; the operator-rejected
             provenance slogan is gone — the honest identity stays. */}
-        <strong>منصّة تعليم ذكية مستقلّة</strong> · عربية أولًا
+        <strong>منصّة تعليم ذكية مستقلّة</strong>
       </footer>
     </div>
   );
@@ -562,15 +557,15 @@ function useInviteHint(): InviteHint {
     // empty = the field was left alone; < 4 = the schema owns the length
     // error — the network round-trip would only echo it.
     if (code.length < 4) { setState({ kind: 'idle', text: '' }); return; }
-    setState({ kind: 'busy', text: 'جارٍ التحقق من الكود…' });
+    setState({ kind: 'busy', text: 'جارٍ التحقق…' });
     try {
       const res = await validateInvitePublic(code, 'STUDENT');
       setState({
         kind: 'ok',
-        text: res.scopeLabel ? `الكود صحيح — ستُضاف تلقائيًا إلى ${res.scopeLabel}.` : 'الكود صحيح.',
+        text: res.scopeLabel ? `الكود صحيح — ستُضاف إلى ${res.scopeLabel}.` : 'الكود صحيح.',
       });
     } catch (e) {
-      setState({ kind: 'bad', text: authErrorView(e).serverMessage ?? 'تعذّر التحقق من الكود — الحسم عند إنشاء الحساب.' });
+      setState({ kind: 'bad', text: authErrorView(e).serverMessage ?? 'تعذّر التحقق — الحسم عند إنشاء الحساب.' });
     }
   };
   return { ...state, check };
@@ -655,7 +650,7 @@ function StudentForm({ form, error, isPending, faculties, institutions, institut
         <input className="input auth-input" type="email" dir="ltr" placeholder="example@email.com" autoComplete="email" {...form.register('email')} />
       </Field>
 
-      <Field index="[04]" label="كلمة المرور (12 حرفًا على الأقل)" error={form.formState.errors.password?.message}>
+      <Field index="[04]" label="كلمة المرور" error={form.formState.errors.password?.message}>
         {/* dir="ltr": passwords are overwhelmingly Latin runs; the caret
             and masked glyphs must not bidi-flip in RTL. The 12-dot
             placeholder carries the length floor (and marks the field
@@ -704,7 +699,7 @@ function StudentForm({ form, error, isPending, faculties, institutions, institut
         {faculties.status === 'error' && (
           <div className="auth-error" role="alert">
             <Icon icon={AlertCircle} size={14} />
-            <span>تعذّر تحميل الكلّيّات — تحقّق من اتصالك بالشبكة.</span>
+            <span>تعذّر تحميل الكلّيّات.</span>
             <button type="button" className="auth-retry-link" onClick={faculties.retry}>
               إعادة المحاولة
             </button>
@@ -759,7 +754,7 @@ function StudentForm({ form, error, isPending, faculties, institutions, institut
 
       {issueCount > 0 && (
         <p className="auth-form-summary" role="status" aria-live="polite">
-          {countAr(issueCount, ['مشكلة واحدة', 'مشكلتان', 'مشاكل', 'مشكلة'])} في النموذج — راجع الحقول المعلّمة ثم أعد المحاولة.
+          {countAr(issueCount, ['مشكلة واحدة', 'مشكلتان', 'مشاكل', 'مشكلة'])} في النموذج — راجع الحقول المعلّمة.
         </p>
       )}
 
@@ -831,7 +826,7 @@ function TeacherForm({ form, error, isPending, faculties, institutions, institut
         <input className="input auth-input" type="email" dir="ltr" placeholder="example@email.com" autoComplete="email" {...form.register('email')} />
       </Field>
 
-      <Field index="[04]" label="كلمة المرور (12 حرفًا على الأقل)" error={form.formState.errors.password?.message}>
+      <Field index="[04]" label="كلمة المرور" error={form.formState.errors.password?.message}>
         {/* dir="ltr": passwords are overwhelmingly Latin runs; the caret
             and masked glyphs must not bidi-flip in RTL. The 12-dot
             placeholder carries the length floor (and marks the field
@@ -874,7 +869,7 @@ function TeacherForm({ form, error, isPending, faculties, institutions, institut
         {faculties.status === 'error' && (
           <div className="auth-error" role="alert">
             <Icon icon={AlertCircle} size={14} />
-            <span>تعذّر تحميل الكلّيّات — تحقّق من اتصالك بالشبكة.</span>
+            <span>تعذّر تحميل الكلّيّات.</span>
             <button type="button" className="auth-retry-link" onClick={faculties.retry}>
               إعادة المحاولة
             </button>
@@ -902,7 +897,7 @@ function TeacherForm({ form, error, isPending, faculties, institutions, institut
         )}
       </Field>
 
-      <Field index="[08]" label="التخصص العلمي" error={form.formState.errors.specialty?.message}>
+      <Field index="[08]" label="التخصص" error={form.formState.errors.specialty?.message}>
         <input className="input auth-input" type="text" placeholder="مثلاً: الذكاء الاصطناعي" {...form.register('specialty')} />
       </Field>
       </div>
@@ -910,7 +905,7 @@ function TeacherForm({ form, error, isPending, faculties, institutions, institut
       <div className="role-invitation-note" role="note">
         <Icon icon={Building2} size={13} />
         <span>
-          المنصب القياديّ يُحدَّد بقرار إداريّ بعد التحقّق من الملف.
+          المنصب القياديّ يُحدَّد بقرار إداريّ.
         </span>
       </div>
 
@@ -918,7 +913,7 @@ function TeacherForm({ form, error, isPending, faculties, institutions, institut
 
       {issueCount > 0 && (
         <p className="auth-form-summary" role="status" aria-live="polite">
-          {countAr(issueCount, ['مشكلة واحدة', 'مشكلتان', 'مشاكل', 'مشكلة'])} في النموذج — راجع الحقول المعلّمة ثم أعد المحاولة.
+          {countAr(issueCount, ['مشكلة واحدة', 'مشكلتان', 'مشاكل', 'مشكلة'])} في النموذج — راجع الحقول المعلّمة.
         </p>
       )}
 
@@ -1018,14 +1013,14 @@ function InstitutionField({
   error,
 }: InstitutionFieldProps) {
   return (
-    <Field index={index} label="المؤسسة التعليمية" error={error}>
+    <Field index={index} label="المؤسسة" error={error}>
       {institutions.status === 'loading' && (
         <Skeleton className="auth-select-skeleton" aria-label="جارٍ تحميل المؤسسات" />
       )}
       {institutions.status === 'error' && (
         <div className="auth-error" role="alert">
           <Icon icon={AlertCircle} size={14} />
-          <span>تعذّر تحميل المؤسسات — تحقّق من اتصالك بالشبكة.</span>
+          <span>تعذّر تحميل المؤسسات.</span>
           <button type="button" className="auth-retry-link" onClick={institutions.retry}>
             إعادة المحاولة
           </button>

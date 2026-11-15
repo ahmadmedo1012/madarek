@@ -135,8 +135,8 @@ describe('CompetitionDetailPage — myEntry identity (r157 w2-F6)', () => {
     fireEvent.click(cta);
     // Prefill proof: the edit modal carries the userId-matched entry's
     // content, never the stranger's.
-    expect((screen.getByLabelText('عنوان المشاركة') as HTMLInputElement).value).toBe('مشاركتي أنا');
-    expect((screen.getByLabelText('الوصف / المحتوى') as HTMLTextAreaElement).value).toBe('نصّ مشاركتي الحقيقي المربوط بمعرّفي.');
+    expect((screen.getByLabelText('العنوان') as HTMLInputElement).value).toBe('مشاركتي أنا');
+    expect((screen.getByLabelText('المحتوى') as HTMLTextAreaElement).value).toBe('نصّ مشاركتي الحقيقي المربوط بمعرّفي.');
   });
 
   it('a guest (null user) gets no entry even when third-party entries exist — the truthy userId guard blocks undefined === undefined', () => {
@@ -158,7 +158,7 @@ describe('CompetitionsIndexPage — URL-synced status filter (r157 w2-F6)', () =
     renderIndexAt('/competitions?status=JUDGED');
     expect(screen.getByText('مسابقة البحوث المحكّمة')).toBeInTheDocument();
     expect(screen.queryByText('مسابقة الابتكار المفتوحة')).toBeNull();
-    expect(screen.getByRole('button', { name: 'تمّ التحكيم' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'محكّمة' })).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByRole('button', { name: 'الكل' })).toHaveAttribute('aria-pressed', 'false');
   });
 });

@@ -217,8 +217,8 @@ describe('OwnerInstitutionDetailPage — header + honest states (r181)', () => {
     renderAt('no-such-institution');
 
     expect(screen.getByRole('heading', { level: 1, name: 'المؤسسة غير موجودة' })).toBeInTheDocument();
-    expect(screen.getByText(/لا توجد مؤسسة بمعرّف «no-such-institution»/)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /العودة إلى المؤسسات/ })).toHaveAttribute(
+    expect(screen.getByText('حُذفت أو تغيّر معرّفها.')).toBeInTheDocument(); // R355 copy diet: slug-naming explainer cut to one honest line
+    expect(screen.getByRole('link', { name: /العودة للمؤسسات/ })).toHaveAttribute(
       'href',
       '/owner/institutions',
     );
@@ -260,7 +260,7 @@ describe('OwnerInstitutionDetailPage — suspended institutions (r181)', () => {
     mocks.courses.data = { data: [COURSE_CS101], meta: { page: 1, limit: 20, total: 1, totalPages: 1 } };
     renderAt('alandalus-demo');
 
-    expect(screen.getByText('هذه المؤسسة معلّقة')).toBeInTheDocument();
+    expect(screen.getByText('المؤسسة معلّقة')).toBeInTheDocument(); // R355 copy diet: banner tightened
     expect(screen.getByText('معلّقة')).toBeInTheDocument();
     // Create affordances: all disabled while suspended.
     expect(screen.getByRole('button', { name: /إضافة كلّيّة/ })).toBeDisabled();
@@ -281,9 +281,9 @@ describe('OwnerInstitutionDetailPage — faculty create flow (r181)', () => {
     fireEvent.click(screen.getByRole('button', { name: /إضافة كلّيّة/ }));
 
     const dialog = screen.getByRole('dialog');
-    // The modal names the target institution — an owner write must
-    // always say WHERE it lands.
-    expect(within(dialog).getByText(/ستُضاف الكلّيّة إلى «مؤسسة مدارك النموذجية»/)).toBeInTheDocument();
+    // R355 copy diet: the «ستُضاف الكلّيّة إلى …» target line was cut —
+    // the page header names the institution and the binding itself is
+    // pinned by the construction log above (useCreateFaculty ← slug).
 
     fireEvent.change(within(dialog).getByLabelText(/اسم الكلّيّة/), { target: { value: 'كلية الهندسة' } });
     fireEvent.change(within(dialog).getByLabelText(/المدينة/), { target: { value: 'الزاوية' } });
@@ -297,7 +297,7 @@ describe('OwnerInstitutionDetailPage — faculty create flow (r181)', () => {
 });
 
 describe('OwnerInstitutionDetailPage — department create flow (r181)', () => {
-  it('binds the department draft to the card it rode on and names both faculty and institution', () => {
+  it('binds the department draft to the card it rode on and names the faculty', () => {
     mocks.listing.data = [DEMO];
     mocks.faculties.data = [FACULTY_SCIENCE];
     mocks.courses.data = { data: [], meta: { page: 1, limit: 20, total: 0, totalPages: 1 } };
@@ -306,7 +306,7 @@ describe('OwnerInstitutionDetailPage — department create flow (r181)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'إضافة قسم' }));
 
     const dialog = screen.getByRole('dialog');
-    expect(within(dialog).getByText(/سيُضاف القسم إلى «كلية العلوم» في «مؤسسة مدارك النموذجية»/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/سيُضاف القسم إلى «كلية العلوم»/)).toBeInTheDocument(); // R355 copy diet: institution tail cut
 
     fireEvent.change(within(dialog).getByLabelText(/اسم القسم/), { target: { value: 'قسم الفيزياء' } });
     fireEvent.click(within(dialog).getByRole('button', { name: 'إضافة القسم' }));
@@ -328,7 +328,9 @@ describe('OwnerInstitutionDetailPage — course create flow (r181)', () => {
     fireEvent.click(screen.getByRole('button', { name: /إضافة مقرّر/ }));
 
     const dialog = screen.getByRole('dialog');
-    expect(within(dialog).getByText(/سيُضاف المقرّر إلى «مؤسسة مدارك النموذجية»/)).toBeInTheDocument();
+    // R355 copy diet: the «سيُضاف المقرّر إلى …» line died; the department
+    // picker's scope hint is the surviving institution naming.
+    expect(within(dialog).getByText(/أقسام «مؤسسة مدارك النموذجية» فقط/)).toBeInTheDocument();
 
     fireEvent.change(within(dialog).getByLabelText(/كود المقرّر/), { target: { value: 'CS210' } });
     fireEvent.change(within(dialog).getByLabelText(/اسم المقرّر/), { target: { value: 'هياكل البيانات' } });
@@ -357,10 +359,10 @@ describe('OwnerInstitutionDetailPage — offering create flow (r181)', () => {
     fireEvent.click(screen.getByRole('button', { name: /فتح شعبة لمقرّر مقدمة في علوم الحاسب/ }));
 
     const dialog = screen.getByRole('dialog');
-    expect(within(dialog).getByText(/سيُدرَّس مقرّر «مقدمة في علوم الحاسب»/)).toBeInTheDocument();
-    expect(within(dialog).getByText(/داخل «مؤسسة مدارك النموذجية»/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/سيُدرَّس «مقدمة في علوم الحاسب» في شعبة جديدة/)).toBeInTheDocument();
+    // R355 copy diet: explainer cut — the institution tail «داخل «…»» died.
 
-    fireEvent.change(within(dialog).getByLabelText(/الفصل الدراسي/), { target: { value: '2027-SPRING' } });
+    fireEvent.change(within(dialog).getByLabelText(/الفصل/), { target: { value: '2027-SPRING' } });
     const teacherSelect = within(dialog).getByLabelText(/الأستاذ/) as HTMLSelectElement;
     fireEvent.change(teacherSelect, { target: { value: 'u-teacher-00000000001' } });
     fireEvent.change(within(dialog).getByLabelText(/القاعة \(اختياري\)/), { target: { value: 'قاعة B7' } });
@@ -394,7 +396,7 @@ describe('OwnerInstitutionDetailPage — offering create flow (r181)', () => {
     const submit = within(dialog).getByRole('button', { name: 'فتح الشعبة' });
     expect(submit).toBeDisabled();
 
-    fireEvent.change(within(dialog).getByLabelText(/الفصل الدراسي/), { target: { value: '2027-SPRING' } });
+    fireEvent.change(within(dialog).getByLabelText(/الفصل/), { target: { value: '2027-SPRING' } });
     expect(submit).toBeDisabled(); // teacher still missing
   });
 });
@@ -426,9 +428,9 @@ describe('OwnerInstitutionDetailPage — one owner per datum (r299)', () => {
     // The duplicated KPI band never renders…
     expect(document.querySelector('.stat-strip')).toBeNull();
     // …while the real owners stay: the header's member count…
-    expect(screen.getByText(/4 أعضاء نشطون/)).toBeInTheDocument();
+    expect(screen.getByText(/4 أعضاء/)).toBeInTheDocument(); // R355 copy diet: «نشطون» dropped
     // …and the academic card's faculty/department subtitle.
-    expect(screen.getByText(/كلّيّة واحدة · قسمان/)).toBeInTheDocument();
+    expect(screen.getByText(/كلّيّة · قسمان/)).toBeInTheDocument();
   });
 });
 

@@ -94,15 +94,15 @@ export function VisionGalleryPage() {
           contract every recomposed index rides (community/competitions/
           colleges); the authored vision statement stays the h1. */}
       <PageHeader
-        title={`${formatNum(total)} ابتكاراً قادماً، نبني التعليم في يدك خطوة بخطوة.`}
+        title={`${formatNum(total)} ابتكاراً قادماً`}
         description="نظرة على المسار التقني — من الذكاء الاصطناعي إلى البلوكشين."
       />
 
       {total === 0 ? (
         <EmptyState illustration="empty-list"
           icon={Sparkles}
-          title="لا توجد ابتكارات معروضة بعد"
-          description="تظهر خارطة الطريق هنا حين تُنشر."
+          title="لا ابتكارات بعد"
+          description=""
         />
       ) : (
         <>
@@ -129,7 +129,7 @@ export function VisionGalleryPage() {
               <header className="vision-group-head">
                 <h2 id="vision-group-live" className="vision-h2">جرّبها الآن</h2>
                 <span className="text-xs text-subtle">
-                  {countAr(grouped.beta.length, ['ابتكار متاح للتجربة', 'ابتكاران متاحان للتجربة', 'ابتكارات متاحة للتجربة', 'ابتكاراً متاحاً للتجربة'])}
+                  {countAr(grouped.beta.length, ['متاح للتجربة', 'متاحان للتجربة', 'متاحة للتجربة', 'متاحاً للتجربة'])}
                 </span>
               </header>
               <RowList aria-label="ابتكارات متاحة للتجربة">
@@ -146,7 +146,7 @@ export function VisionGalleryPage() {
                 <span className="text-xs text-subtle">
                   {countAr(
                     grouped.prototype.length + grouped.planning.length + grouped.research.length,
-                    ['ابتكار في المراحل المبكرة', 'ابتكاران في المراحل المبكرة', 'ابتكارات في المراحل المبكرة', 'ابتكاراً في المراحل المبكرة'],
+                    ['ابتكار مبكر', 'ابتكاران مبكران', 'ابتكارات مبكرة', 'ابتكاراً مبكراً'],
                   )}
                 </span>
               </header>
@@ -166,9 +166,7 @@ export function VisionGalleryPage() {
             <div className="flex items-center gap-3">
               <Icon icon={Sparkles} size={20} className="text-accent" />
               <p className="text-sm text-muted flex-1 vision-note-copy">
-                هذه خارطة طريق لا وعود تسويقية: كل بطاقة تصف مرحلتها الفعلية من
-                التطوير، وتُحدَّث حالتها هنا فور تغيّرها. لا نتائج مقيسة ولا
-                مواعيد إطلاق متوقّعة — حقائق تصميم ومراحل عمل فقط.
+                خارطة طريق لا وعود تسويقية — كل بطاقة تصف مرحلتها الفعلية وتُحدَّث فور تغيّرها.
               </p>
             </div>
           </Card>
@@ -317,10 +315,10 @@ export function VisionDetailPage() {
           </span>
           <div className="flex-1 vision-notify-body">
             <div className="text-md font-semibold vision-notify-title">
-              نبّهني عند إطلاق هذه الميزة
+              نبّهني عند الإطلاق
             </div>
             <div className="text-xs text-subtle vision-notify-hint">
-              خدمة التنبيه على البريد قيد التطوير — حالة كل ابتكار تُحدَّث هنا فور تغيّرها.
+              خدمة التنبيه على البريد قيد التطوير.
             </div>
           </div>
           <button type="button" className="btn outline" disabled>

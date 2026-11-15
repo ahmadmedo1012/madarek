@@ -39,8 +39,8 @@ describe('r168b — Oasis chips are engine-gated in source', () => {
   it('the chip block branches on isRealLlm', () => {
     const page = stripJsx(read('src/pages/student/AiAssistantPage.tsx'));
     expect(page).toMatch(/\{isRealLlm\s*\?\s*\(/);
-    expect(page).toContain("send('لخّص لي الفصل الأخير من المقرّر')");
-    expect(page).toContain("send('ما المفاهيم التي أحتاج إلى مراجعتها؟')");
+    expect(page).toContain("send('لخّص الفصل الأخير')");
+    expect(page).toContain("send('ما المفاهيم التي أحتاج مراجعتها؟')");
   });
 });
 
@@ -107,9 +107,11 @@ describe('r168b — landing copy claims only what ships', () => {
 });
 
 describe('r168b — research scan honesty + modal validation', () => {
-  it('the page subtitle and explainer step 2 label the simulation', () => {
+  it('the results area and explainer step 2 label the simulation', () => {
     const page = stripJsx(read('src/pages/student/ResearchPage.tsx'));
-    expect(page).toContain('فحص الانتحال (محاكاة)');
+    // R355 copy diet: the header-subtitle disclosure was cut — one
+    // disclosure per screen now; the results-area alert survives.
+    expect(page).toContain('تجاوز الحدود المسموح بها (محاكاة)');
     const step2 = page.match(/n: 2, title: 'فحص أوتوماتيكي', desc: '[^']*'/)?.[0] ?? '';
     expect(step2).toContain('محاكاة');
     expect(page).not.toContain('أربع مراحل أوتوماتيكية بالكامل');
@@ -120,7 +122,7 @@ describe('r168b — research scan honesty + modal validation', () => {
     expect(page).toContain('label="عنوان البحث (مطلوب)"');
     expect(page).toMatch(/\{!canSubmit && !isPending && \(/);
     expect(page).toContain('role="status"');
-    expect(page).toContain('لتتمكّن من الرفع');
+    expect(page).toContain('أكمل العنوان (3 أحرف على الأقل)'); // R355 copy diet: status copy shortened
   });
 });
 
@@ -136,7 +138,7 @@ describe('r168b — training certificates are honest records', () => {
   it('subtitle + KPI + badges drop accreditation claims', () => {
     const page = stripJsx(read('src/pages/student/TrainingPages.tsx'));
     expect(page).not.toContain('شهادة معتمدة');
-    expect(page).toContain('سجلّ إتمام موثَّق');
+    expect(page).toContain('إتمام موثَّق'); // R355 copy diet: honest-record label shortened
     expect(page).not.toContain('معتمدة من المنصة');
     expect(page).not.toContain('ساعة معتمدة');
     expect(page).toContain('ساعات تقديرية');

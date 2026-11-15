@@ -177,10 +177,13 @@ describe('back-link grammar — «العودة إلى X» everywhere (r183-B6, A
   });
 
   it('the three already-correct surfaces stay correct (verify-only trio)', () => {
+    /* R355 copy diet: the trio's back-links tightened — «العودة إلى X»
+     * became «العودة للـX» (and the course-detail error exit reads
+     * «عودة للمقرّرات»); same destination, same grammar family. */
     const pins: Array<[string, string]> = [
-      ['src/pages/student/CourseDetailPage.tsx', 'العودة إلى مقرراتي'],
-      ['src/pages/admin/AdminGovernancePages.tsx', 'العودة إلى الأساتذة'],
-      ['src/pages/owner/OwnerInstitutionDetailPage.tsx', 'العودة إلى المؤسسات'],
+      ['src/pages/student/CourseDetailPage.tsx', 'عودة للمقرّرات'],
+      ['src/pages/admin/AdminGovernancePages.tsx', 'العودة للأساتذة'],
+      ['src/pages/owner/OwnerInstitutionDetailPage.tsx', 'العودة للمؤسسات'],
     ];
     for (const [p, marker] of pins) {
       expect(read(p), `${p} → ${marker}`).toContain(marker);

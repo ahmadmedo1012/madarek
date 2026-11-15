@@ -71,6 +71,15 @@ import { formatDate } from '../../utils/numbers';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip);
 
+/* P-B2 (copy budget): one definition per counted noun — the plural
+ * forms were inline (byte-identical) at every call site below.
+ * COURSE_UNIT is exported: QualityPages' rosters speak the same noun
+ * (same cross-page import seat as useCompactRosterBand above). */
+export const COURSE_UNIT: [string, string, string, string] = ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'];
+const STUDENT_UNIT: [string, string, string, string] = ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'];
+const DEPT_UNIT: [string, string, string, string] = ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'];
+const ENROLL_UNIT: [string, string, string, string] = ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'];
+
 /* ════════════════════════════════════════════════════════════════
    Shared helpers
    ════════════════════════════════════════════════════════════════ */
@@ -179,7 +188,7 @@ function ActionStrip() {
   // row placeholders, so the page-skeleton slot and this pending state
   // hand off to the resolved strip at identical heights.
   if (courses.isPending || gradedPapers.isPending) {
-    return <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />;
+    return <StripSkeleton title="يحتاج انتباهك" subtitle="" />;
   }
 
   const rows: ActionRow[] = [];
@@ -190,8 +199,8 @@ function ActionStrip() {
     if (zeroContent.length > 0) {
       rows.push({
         key: 'zero-content',
-        title: 'مقرّرات بلا محتوى تعليميّ',
-        desc: `${countAr(zeroContent.length, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])} لم تُرفع لها محاضرات أو ملفات بعد${capped ? ' (ضمن أول 100 مقرّر)' : ''}`,
+        title: 'مقرّرات بلا محتوى',
+        desc: `${countAr(zeroContent.length, COURSE_UNIT)}${capped ? ' (ضمن أول 100 مقرّر)' : ''}`,
         to: '/admin/courses',
         hint: 'فتح إدارة المقرّرات', // R320 §B KEEP: management-function name
       });
@@ -201,7 +210,7 @@ function ActionStrip() {
     rows.push({
       key: 'graded-papers',
       title: 'بحوث مقيَّمة بانتظار النشر',
-      desc: `${countAr(gradedPapers.data.meta.total, ['بحث واحد', 'بحثان', 'بحوث', 'بحثاً'])} جاهزة للنشر في مكتبة الجامعة`,
+      desc: `${countAr(gradedPapers.data.meta.total, ['بحث واحد', 'بحثان', 'بحوث', 'بحثاً'])}`,
       to: '/admin/reports?status=GRADED',
       hint: 'فتح سجلّ البحوث',
     });
@@ -212,7 +221,7 @@ function ActionStrip() {
     <LedgerPanel
       title="يحتاج انتباهك"
       zone="rose"
-      tag={countAr(rows.length, ['بند واحد', 'بندان', 'بنود', 'بنداً'])}
+      tag={countAr(rows.length, ['بند', 'بندان', 'بنود', 'بنداً'])}
       ariaLabel="حالات تحتاج انتباهك"
     >
       {rows.map((r) => (
@@ -249,8 +258,8 @@ export function AdminDashboardPage() {
        so the pending → resolved handoff moves nothing. */
     return (
       <div className="page r305ao" aria-busy="true" aria-live="polite">
-        <PatternsPageHeader title={roleDashboardLabel('ADMIN')} description="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
-        <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
+        <PatternsPageHeader title={roleDashboardLabel('ADMIN')} />
+        <StripSkeleton title="يحتاج انتباهك" subtitle="" />
         <div className="stat-strip" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="stat-cell">
@@ -280,7 +289,7 @@ export function AdminDashboardPage() {
     // am I on?) before offering the retry.
     return (
       <div className="page r305ao">
-        <PatternsPageHeader title={roleDashboardLabel('ADMIN')} description="إحصائيات حيّة عن طلاب وأساتذة المنصّة." />
+        <PatternsPageHeader title={roleDashboardLabel('ADMIN')} />
         <Card>
           <ErrorState
             error={stats.error ?? facs.error ?? reports.error}
@@ -315,7 +324,6 @@ export function AdminDashboardPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title={roleDashboardLabel('ADMIN')}
-        description="إحصائيات حيّة عن طلاب وأساتذة المنصّة."
         index="01"
         meta={<>{formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · حساب لحظيّ</>}
         actions={(
@@ -347,14 +355,13 @@ export function AdminDashboardPage() {
           {
             label: 'الكلّيّات',
             value: formatNum(facultyCount),
-            trend: `موزّعة على ${countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`,
+            trend: countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة']),
             trendTone: 'flat',
             to: '/admin/faculties',
           },
           {
             label: 'الطلاب',
             value: formatNum(s.totalStudents),
-            trend: 'مسجَّل في النظام',
             trendTone: 'flat',
             to: '/admin/students',
           },
@@ -368,7 +375,7 @@ export function AdminDashboardPage() {
           {
             label: 'المقرّرات',
             value: formatNum(s.totalCourses),
-            trend: countAr(s.totalEnrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً']),
+            trend: countAr(s.totalEnrollments, ENROLL_UNIT),
             trendTone: 'flat',
             to: '/admin/courses',
           },
@@ -382,9 +389,6 @@ export function AdminDashboardPage() {
         <Card
           title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>توزّع الطلاب حسب الكلّيّة</>}
           icon={BarChart3}
-          subtitle={topByStudents.length > 1
-            ? `أعلى ${countAr(topByStudents.length, ['كلّيّة', 'كلّيّتين', 'كلّيّات', 'كلّيّة'])} عدداً · انقر عموداً لعرض طلابها`
-            : undefined}
         >
           {/* 5-A8 §6 step 5 (chart honesty): a single bar in a chart box
               carries no distribution signal — degrade to the stat + its
@@ -392,16 +396,15 @@ export function AdminDashboardPage() {
           {topByStudents.length === 0 ? (
             <EmptyState illustration="empty-list"
               icon={BarChart3}
-              title="لا توجد بيانات طلاب بعد"
-              description="ستظهر التوزيعة هنا فور تسجيل الطلاب في الكلّيّات."
+              title="لا بيانات طلاب بعد"
             />
           ) : topByStudents.length === 1 && topFaculty ? (
             <div className="flex-col gap-3">
               <p className="text-sm text-muted">
-                كلّيّة واحدة لديها طلاب — يظهر التفصيل عند تعدُّد الكلّيّات.
+                كلّيّة واحدة لديها طلاب.
               </p>
               <Stat
-                label="أعلى كلّيّة عدداً للطلاب"
+                label="أعلى كلّيّة عدداً"
                 value={`${topFaculty.name} (${countAr(topFaculty.studentCount, ['طالب واحد', 'طالبين', 'طلاب', 'طالباً'])})`}
               />
               <Link
@@ -416,10 +419,10 @@ export function AdminDashboardPage() {
           ) : (
             <ChartFrame
               ariaLabel={`توزيع الطلاب حسب الكلّيّة — أعلى ${countAr(topByStudents.length, ['كلّيّة', 'كلّيّتين', 'كلّيّات', 'كلّيّة'])} عددًا`}
-              summary={topFaculty ? `أعلى كلّيّة عددًا للطلاب: ${topFaculty.name} بـ${countAr(topFaculty.studentCount, ['طالب واحد', 'طالبين', 'طلاب', 'طالباً'])}.` : undefined}
+              summary={topFaculty ? `أعلى كلّيّة: ${topFaculty.name} (${countAr(topFaculty.studentCount, ['طالب واحد', 'طالبين', 'طلاب', 'طالباً'])}).` : undefined}
               height={Math.max(180, topByStudents.length * 36)}
               table={{
-                caption: 'توزيع الطلاب حسب الكلّيّة',
+                caption: 'توزيع الطلاب',
                 columns: ['الكلّيّة', 'عدد الطلاب'],
                 rows: topByStudents.map((row) => [row.name, row.studentCount]),
               }}
@@ -475,7 +478,7 @@ export function AdminDashboardPage() {
               label="أعلى عدد مقرّرات"
               value={topByCourses ? `${topByCourses.name} (${topByCourses.courseCount})` : '—'}
               to={topByCourses ? '/admin/faculties' : undefined}
-              hint="عرض الكلّيّات والأقسام"
+              hint="عرض الكلّيّات"
             />
             <Stat
               label="نسبة طالب/أستاذ"
@@ -485,26 +488,24 @@ export function AdminDashboardPage() {
               label="بحوث منشورة"
               value={formatNum(r.headline.publishedPapers)}
               to="/admin/reports?status=PUBLISHED"
-              hint="فتح سجلّ البحوث المنشورة"
+              hint="فتح سجلّ البحوث"
             />
           </div>
         </Card>
       </div>
 
-      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[03]</span>نشاط الإنتاج العلميّ — آخر 6 أشهر</>} icon={TrendingUp} subtitle="أبحاث مقدَّمة، مقيَّمة، ومنشورة شهرياً">
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[03]</span>نشاط الإنتاج العلميّ</>} icon={TrendingUp}>
         {r.paperTrend.length === 0 || r.paperTrend.every((m) => m.submitted + m.graded + m.published === 0) ? (
           <EmptyState illustration="empty-research"
             icon={TrendingUp}
-            title="لا توجد بيانات أبحاث بعد"
-            description="ستظهر حركة النشر هنا بعد رفع أول بحث إلى المنصة."
+            title="لا أبحاث بعد"
           />
         ) : (
           <ChartFrame
             ariaLabel="نشاط الإنتاج العلمي في الأشهر الستة الأخيرة — أبحاث مقدَّمة ومقيَّمة ومنشورة شهرياً"
-            summary="حركة البحوث المرفوعة والمقيَّمة والمنشورة — ستة أشهر الأخيرة."
             height={240}
             table={{
-              caption: 'نشاط الإنتاج العلمي شهرياً',
+              caption: 'الإنتاج العلمي شهرياً',
               columns: ['الشهر', 'مقدَّم', 'مقيَّم', 'منشور'],
               rows: r.paperTrend.map((m) => [m.month, m.submitted, m.graded, m.published]),
             }}
@@ -581,10 +582,10 @@ function FacultyRow({
         <div className="admin-faculty-meta">
           {/* A8 P3-3: counted Arabic phrases — mono is a costume
               here (IBM Plex Mono has no Arabic); plain text. */}
-          <span>{countAr(faculty.departmentCount, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}</span>
-          <span>{countAr(faculty.courseCount, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</span>
-          <span>{countAr(faculty.studentCount, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
-          <span>{countAr(faculty.teacherCount, ['عضو هيئة تدريس واحد', 'عضوا هيئة تدريس', 'أعضاء هيئة تدريس', 'عضواً هيئة تدريس'])}</span>
+          <span>{countAr(faculty.departmentCount, DEPT_UNIT)}</span>
+          <span>{countAr(faculty.courseCount, COURSE_UNIT)}</span>
+          <span>{countAr(faculty.studentCount, STUDENT_UNIT)}</span>
+          <span>{countAr(faculty.teacherCount, ['عضو هيئة تدريس', 'عضوا هيئة تدريس', 'أعضاء هيئة تدريس', 'عضواً هيئة تدريس'])}</span>
         </div>
       </div>
       {hasDepts && (
@@ -611,7 +612,6 @@ function FacultyRow({
           aria-expanded={open}
           aria-controls={`faculty-depts-${faculty.id}`}
           onClick={onToggle}
-          title={open ? 'طيّ الأقسام' : 'توسيع الأقسام'}
           style={{ width: '100%', textAlign: 'start', padding: 0 }}
         >
           {head}
@@ -625,7 +625,7 @@ function FacultyRow({
             <div key={d.id} className="admin-faculty-dept">
               <span className="admin-faculty-dept-name">{d.name}</span>
               <span className="admin-faculty-dept-meta">
-                {countAr(d.students, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])} · {countAr(d.teachers, ['مدرّس واحد', 'مدرّسان', 'مدرّسون', 'مدرّساً'])} · {countAr(d.courses, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}
+                {countAr(d.students, STUDENT_UNIT)} · {countAr(d.teachers, ['مدرّس واحد', 'مدرّسان', 'مدرّسون', 'مدرّساً'])} · {countAr(d.courses, COURSE_UNIT)}
               </span>
             </div>
           ))}
@@ -695,7 +695,7 @@ export function AdminFacultiesPage() {
   const submitFaculty = () => {
     createFaculty.mutate(facultyForm, {
       onSuccess: () => {
-        toast.success(`أُضيفت كلّيّة «${facultyForm.name.trim()}».`, { title: 'تمّت الإضافة' });
+        toast.success(`أُضيفت كلّيّة «${facultyForm.name.trim()}».`);
         closeFacultyForm();
       },
     });
@@ -704,10 +704,7 @@ export function AdminFacultiesPage() {
     if (!deptTarget) return;
     createDepartment.mutate(deptForm, {
       onSuccess: () => {
-        toast.success(
-          `أُضيف قسم «${deptForm.name.trim()}» إلى «${deptTarget.name}».`,
-          { title: 'تمّت الإضافة' },
-        );
+        toast.success(`أُضيف قسم «${deptForm.name.trim()}».`);
         closeDeptForm();
       },
     });
@@ -718,8 +715,7 @@ export function AdminFacultiesPage() {
       <div className="page r305ao">
         <PatternsPageHeader
           title="الكلّيّات والأقسام"
-          description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
-          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
+          breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
         />
         <StatStripSkeleton />
         <CardSkeleton lines={7} />
@@ -731,8 +727,7 @@ export function AdminFacultiesPage() {
       <div className="page r305ao">
         <PatternsPageHeader
           title="الكلّيّات والأقسام"
-          description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
-          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
+          breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
         />
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
@@ -767,9 +762,8 @@ export function AdminFacultiesPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="الكلّيّات والأقسام"
-        description="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية."
         index="03"
-        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
+        breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: 'الكلّيّات والأقسام' }]}
         actions={(
           /* R342-09 (the students-page family contract): the page's ONE
                    * create action rides the header action slot on the accent
@@ -791,10 +785,10 @@ export function AdminFacultiesPage() {
       <StatStrip
         ariaLabel="إحصائيات الكلّيّات والأقسام"
         cells={[
-          { label: 'الكلّيّات', value: formatNum(data.length), trend: 'في هذه المؤسّسة', trendTone: 'flat' },
-          { label: 'الأقسام', value: formatNum(totalDepts), trend: 'عبر الكلّيّات', trendTone: 'flat' },
-          { label: 'إجمالي الطلاب', value: formatNum(totalStudents), trend: 'مسجَّلون', trendTone: 'flat' },
-          { label: 'هيئة التدريس', value: formatNum(totalTeachers), trend: 'أعضاء', trendTone: 'flat' },
+          { label: 'الكلّيّات', value: formatNum(data.length), trendTone: 'flat' },
+          { label: 'الأقسام', value: formatNum(totalDepts), trendTone: 'flat' },
+          { label: 'إجمالي الطلاب', value: formatNum(totalStudents), trendTone: 'flat' },
+          { label: 'هيئة التدريس', value: formatNum(totalTeachers), trendTone: 'flat' },
         ]}
       />
 
@@ -805,8 +799,8 @@ export function AdminFacultiesPage() {
         title={`الكلّيّات (${visible.length})`}
         icon={Building2}
         subtitle={hasFilters
-          ? `من أصل ${countAr(data.length, ['كلّيّة واحدة', 'كلّيّتين', 'كلّيّات', 'كلّيّة'])} · بعد التصفيّة`
-          : `${countAr(totalDepts, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])} · ${countAr(totalCourses, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}`}
+          ? `${countAr(data.length, ['كلّيّة واحدة', 'كلّيّتين', 'كلّيّات', 'كلّيّة'])} · بعد التصفيّة`
+          : `${countAr(totalDepts, DEPT_UNIT)} · ${countAr(totalCourses, COURSE_UNIT)}`}
       >
         {/* R304: the directory's control rail rides the patterns FilterBar —
             search → city filter → the create action, the family order.
@@ -819,7 +813,7 @@ export function AdminFacultiesPage() {
                 <Icon icon={Search} size={14} />
                 <input
                   type="search"
-                  placeholder="ابحث باسم الكلّيّة أو القسم…"
+                  placeholder="ابحث…"
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   className="admin-students-input"
@@ -853,8 +847,7 @@ export function AdminFacultiesPage() {
             <EmptyState
               illustration="empty-search"
               icon={Building2}
-              title="لا توجد نتائج مطابقة"
-              description="جرّب تعديل البحث أو اختيار مدينة أخرى."
+              title="لا نتائج مطابقة"
               action={hasFilters ? (
                 <button
                   type="button"
@@ -881,7 +874,7 @@ export function AdminFacultiesPage() {
         ariaLabel="إضافة كلّيّة جديدة"
       >
         <div className="modal-header">
-          <h3 className="modal-title">إضافة كلّيّة جديدة</h3>
+          <h3 className="modal-title">إضافة كلّيّة</h3>
           <button type="button" className="icon-btn" onClick={closeFacultyForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
@@ -895,7 +888,7 @@ export function AdminFacultiesPage() {
               placeholder="كلية العلوم"
             />
           </FormField>
-          <FormField label="الاسم بالإنجليزية (اختياري)" id="faculty-name-en" hint="يظهر بجانب الاسم العربي في السجلّ">
+          <FormField label="الاسم بالإنجليزية (اختياري)" id="faculty-name-en">
             <input
               className="input"
               value={facultyForm.nameEn}
@@ -906,7 +899,6 @@ export function AdminFacultiesPage() {
           <FormField
             label="المدينة"
             id="faculty-city"
-            hint="الكلّيّات تتميّز بالاسم داخل كل مدينة"
           >
             <input
               className="input"
@@ -915,12 +907,12 @@ export function AdminFacultiesPage() {
               placeholder="حرم المعرفة"
             />
           </FormField>
-          <FormField label="رمز تعبيري (اختياري)" id="faculty-icon" hint="يظهر مكان الأيقونة الافتراضية بجانب اسم الكلّيّة">
+          <FormField label="رمز تعبيري (اختياري)" id="faculty-icon">
             <input
               className="input"
               value={facultyForm.iconEmoji}
               onChange={(e) => setFacultyForm({ ...facultyForm, iconEmoji: e.target.value })}
-              placeholder="رمز تعبيري قصير (اختياري)"
+              placeholder="🎓"
               maxLength={10}
             />
           </FormField>
@@ -946,7 +938,7 @@ export function AdminFacultiesPage() {
             title="تعذّر إضافة الكلّيّة"
             description={apiErrorMessage(
               createFaculty.error,
-              'لم يستجب الخادم للطلب. إعادة المحاولة.',
+              'لا استجابة من الخادم.',
             )}
           />
         )}
@@ -970,7 +962,7 @@ export function AdminFacultiesPage() {
         <div className="modal-body" style={{ maxWidth: 480 }}>
           {deptTarget && (
             <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-              سيُضاف القسم إلى «{deptTarget.name}».
+              في «{deptTarget.name}»
             </p>
           )}
           <FormField label="اسم القسم" id="dept-name">
@@ -981,7 +973,7 @@ export function AdminFacultiesPage() {
               placeholder="قسم الحاسوب"
             />
           </FormField>
-          <FormField label="الاسم بالإنجليزية (اختياري)" id="dept-name-en" hint="يظهر بجانب الاسم العربي في السجلّ">
+          <FormField label="الاسم بالإنجليزية (اختياري)" id="dept-name-en">
             <input
               className="input"
               value={deptForm.nameEn}
@@ -1010,7 +1002,7 @@ export function AdminFacultiesPage() {
             title="تعذّر إضافة القسم"
             description={apiErrorMessage(
               createDepartment.error,
-              'لم يستجب الخادم للطلب. إعادة المحاولة.',
+              'لا استجابة من الخادم.',
             )}
           />
         )}
@@ -1134,8 +1126,7 @@ export function AdminReportsPage() {
       <div className="page r305ao">
         <PatternsPageHeader
           title="التقارير المؤسسية"
-          description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
-          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+          breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
         />
         <StatStripSkeleton />
         <CardSkeleton lines={6} />
@@ -1147,8 +1138,7 @@ export function AdminReportsPage() {
       <div className="page r305ao">
         <PatternsPageHeader
           title="التقارير المؤسسية"
-          description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
-          breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+          breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
         />
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
@@ -1164,9 +1154,8 @@ export function AdminReportsPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="التقارير المؤسسية"
-        description="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية."
         index="07"
-        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+        breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
         actions={(
           /* R342-09 (D11 sub-page CTA precedent): a read-only ledger still
                    * names its ONE honest next surface — the adoption view is the
@@ -1191,25 +1180,22 @@ export function AdminReportsPage() {
           {
             label: 'إجمالي البحوث',
             value: formatNum(data.headline.totalPapers),
-            trend: periodLabel ? `آخر 6 أشهر · ${periodLabel}` : 'في النظام',
+            trend: periodLabel,
             to: status ? '/admin/reports' : undefined,
           },
           {
             label: 'بحوث منشورة',
             value: formatNum(data.headline.publishedPapers),
-            trend: 'جاهزة في مكتبة الجامعة',
             to: '/admin/reports?status=PUBLISHED',
           },
           {
             label: 'طلاب نشطون',
             value: formatNum(data.headline.activeStudents),
-            trend: 'حسابات تعمل الآن',
             to: '/admin/students',
           },
           {
             label: 'إجمالي المستخدمين',
             value: formatNum(data.headline.totalUsers),
-            trend: 'كل الأدوار',
           },
         ]}
       />
@@ -1223,7 +1209,7 @@ export function AdminReportsPage() {
         style={{ marginBlockStart: 'var(--sp-9)' }}
         title="حركة البحوث العلمية"
         icon={TrendingUp}
-        subtitle={periodLabel ? `آخر 6 أشهر (${periodLabel}) · مرفوعة، مقيَّمة، منشورة` : 'مرفوعة · مقيَّمة · منشورة'}
+        subtitle={periodLabel || undefined}
         actions={(
           <Tabs
             value={trendView}
@@ -1238,8 +1224,7 @@ export function AdminReportsPage() {
         {data.paperTrend.length === 0 ? (
           <EmptyState illustration="empty-research"
             icon={TrendingUp}
-            title="لا توجد بيانات نشر بعد"
-            description="ستظهر حركة البحوث هنا بعد رفع أول بحث."
+            title="لا بيانات بعد"
           />
         ) : trendView === 'table' ? (
           <div className="table-wrap">
@@ -1252,7 +1237,7 @@ export function AdminReportsPage() {
                 <tr>
                   <th scope="col">الشهر</th>
                   <th scope="col">مُقدَّم</th>
-                  <th scope="col">تمّ تقييمه</th>
+                  <th scope="col">مقيَّم</th>
                   <th scope="col">منشور</th>
                 </tr>
               </thead>
@@ -1264,7 +1249,7 @@ export function AdminReportsPage() {
                         phones («12 / 8 / 5» with no column names). */}
                     <td data-label="الشهر">{row.month}</td>
                     <td className="font-mono" data-label="مُقدَّم">{row.submitted}</td>
-                    <td className="font-mono" data-label="تمّ تقييمه">{row.graded}</td>
+                    <td className="font-mono" data-label="مقيَّم">{row.graded}</td>
                     <td className="font-mono" data-label="منشور">{row.published}</td>
                   </tr>
                 ))}
@@ -1280,7 +1265,6 @@ export function AdminReportsPage() {
                   <div className="trend-bars">
                     <div
                       className="trend-bar trend-submitted"
-                      title={`مرفوعة: ${b.submitted}`}
                       /* 5-C1 (A2 §1c #28): the value rides --trend-scale (0..1)
                          consumed by a clip-path wipe in components.css —
                          paint-only, no per-frame reflow. The 0.004 floor
@@ -1292,14 +1276,12 @@ export function AdminReportsPage() {
                     </div>
                     <div
                       className="trend-bar trend-graded"
-                      title={`مقيَّمة: ${b.graded}`}
                       style={{ '--trend-scale': Math.max(b.graded / maxBucket, 0.004) } as CSSProperties}
                     >
                       {b.graded > 0 && <span className="trend-bar-val">{b.graded}</span>}
                     </div>
                     <div
                       className="trend-bar trend-published"
-                      title={`منشورة: ${b.published}`}
                       style={{ '--trend-scale': Math.max(b.published / maxBucket, 0.004) } as CSSProperties}
                     >
                       {b.published > 0 && <span className="trend-bar-val">{b.published}</span>}
@@ -1328,7 +1310,7 @@ export function AdminReportsPage() {
           icon={FileText}
           subtitle={papersMeta
             ? `${countAr(papersMeta.total, ['ورقة واحدة', 'ورقتان', 'أوراق', 'ورقة'])}${status ? ` · ${PAPER_STATUS_LABEL[status]}` : ' · جميع الحالات'}`
-            : 'سجلّ مؤسّسيّ لبحوث الطلاب عبر دورة حياتها'}
+            : undefined}
         >
           <div className="filter-bar" role="group" aria-label="تصفية البحوث حسب الحالة">
             <button
@@ -1363,14 +1345,11 @@ export function AdminReportsPage() {
           ) : papers.data && papers.data.data.length === 0 ? (
             <EmptyState
               icon={FileText}
-              title={status ? `لا توجد بحوث بحالة «${PAPER_STATUS_LABEL[status]}»` : 'لا توجد بحوث بعد'}
-              description={status
-                ? 'جرّب حالة أخرى أو اعرض جميع الحالات.'
-                : 'ستظهر البحوث هنا فور رفع أول بحث إلى المنصة.'}
+              title={status ? `لا توجد بحوث بحالة «${PAPER_STATUS_LABEL[status]}»` : 'لا بحوث بعد'}
               action={status ? (
                 <button type="button" className="btn ghost sm" onClick={() => setStatusFilter(undefined)}>
                   <Icon icon={X} size={13} />
-                  عرض جميع الحالات
+                  عرض الكل
                 </button>
               ) : undefined}
             />
@@ -1384,7 +1363,7 @@ export function AdminReportsPage() {
                     <th scope="col">البحث</th>
                     <th scope="col">الطالب</th>
                     <th scope="col">الحالة</th>
-                    <th scope="col" className="admin-table-num" style={{ width: 110 }} title="قيمة محاكاة — ليست قياساً فعلياً">نسبة الاقتباس <span className="text-xxs text-subtle">محاكاة</span></th>
+                    <th scope="col" className="admin-table-num" style={{ width: 110 }}>نسبة الاقتباس <span className="text-xxs text-subtle">محاكاة</span></th>
                     <th scope="col" style={{ width: 130 }}>تاريخ الرفع</th>
                   </tr>
                 </thead>
@@ -1407,12 +1386,11 @@ export function AdminReportsPage() {
       </div>
 
       {/* Top courses */}
-      <Card title="أكثر المقرّرات تسجيلاً" icon={ClipboardCheck} subtitle={data.topCourses.length > 0 ? `أعلى ${countAr(data.topCourses.length, ['مقرّر', 'مقرّرين', 'مقرّرات', 'مقرّراً'])} بناءً على عدد الطلاب` : undefined}>
+      <Card title="أكثر المقرّرات تسجيلاً" icon={ClipboardCheck}>
         {data.topCourses.length === 0 ? (
           <EmptyState illustration="empty-list"
             icon={ClipboardCheck}
-            title="لا توجد تسجيلات بعد"
-            description="تظهر هنا فور تسجيل الطلاب في مقرّراتهم."
+            title="لا تسجيلات بعد"
           />
         ) : (
           <div className="table-wrap">
@@ -1497,14 +1475,14 @@ export function AdminCoursesPage() {
     if (formMode === 'edit' && editing) {
       updateCourse.mutate(form as Partial<CourseFormInput>, {
         onSuccess: () => {
-          toast.success(`حُفظت تعديلات «${form.name}».`, { title: 'تمّ الحفظ' });
+          toast.success(`حُفظت تعديلات «${form.name}».`);
           closeForm();
         },
       });
     } else {
       createCourse.mutate(form, {
         onSuccess: () => {
-          toast.success(`أُضيف مقرّر «${form.name}» إلى السجلّ.`, { title: 'تمّت الإضافة' });
+          toast.success(`أُضيف مقرّر «${form.name}».`);
           closeForm();
         },
       });
@@ -1549,7 +1527,6 @@ export function AdminCoursesPage() {
         onSuccess: () => {
           toast.success(
             `فُتحت شعبة «${offeringCourse.name}» للفصل «${offeringForm.term.trim()}».`,
-            { title: 'تمّ فتح الشعبة' },
           );
           closeOfferingForm();
         },
@@ -1600,10 +1577,10 @@ export function AdminCoursesPage() {
       <PatternsPageHeader
         title="إدارة المقرّرات"
         description={meta
-          ? `${countAr(meta.total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}${hasFilters ? ' مطابقة للبحث والتصفيّة' : ' في الجامعة'}`
-          : 'جميع المقرّرات الجامعية مع إحصائيات حيّة.'}
+          ? `${countAr(meta.total, COURSE_UNIT)}${hasFilters ? ' مطابقة للبحث والتصفيّة' : ' في الجامعة'}`
+          : undefined}
         index="04"
-        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'المقرّرات' }]}
+        breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: 'المقرّرات' }]}
         actions={(
           /* R342-09 (the students-page family contract): the page's ONE
                    * create action rides the header action slot on the accent
@@ -1635,7 +1612,7 @@ export function AdminCoursesPage() {
                 <Icon icon={Search} size={14} />
                 <input
                   type="search"
-                  placeholder="ابحث بالاسم أو الكود…"
+                  placeholder="ابحث…"
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   className="admin-students-input"
@@ -1649,12 +1626,12 @@ export function AdminCoursesPage() {
                 disabled={facQ.isPending}
                 aria-label="تصفية حسب الكلّيّة"
               >
-                <option value="">{facQ.isPending ? 'جارٍ تحميل الكلّيّات…' : 'كلّ الكلّيّات'}</option>
+                <option value="">{facQ.isPending ? 'جارٍ التحميل…' : 'كلّ الكلّيّات'}</option>
                 {facQ.data?.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
               </select>
               {facQ.isError && (
                 <button type="button" className="btn ghost sm" onClick={() => facQ.refetch()}>
-                  إعادة تحميل الكلّيّات
+                  إعادة المحاولة
                 </button>
               )}
             </>
@@ -1710,8 +1687,7 @@ export function AdminCoursesPage() {
                   <tr>
                     <td colSpan={courseCols}>
                       <EmptyState illustration="empty-search"
-                        title="لا توجد نتائج"
-                        description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع."
+                        title="لا نتائج"
                         action={hasFilters ? (
                           <button type="button" className="btn ghost sm" onClick={clearFilters}>
                             <Icon icon={X} size={13} />
@@ -1734,7 +1710,7 @@ export function AdminCoursesPage() {
                           <span className="font-semibold" style={{ color: 'var(--text)' }}>{c.name}</span>
                           {compact && (
                             <div className="ws-meta">
-                              {countAr(c.totalEnrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'])}
+                              {countAr(c.totalEnrollments, ENROLL_UNIT)}
                               {' · '}
                               {countAr(c.offeringCount, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])}
                             </div>
@@ -1818,7 +1794,7 @@ export function AdminCoursesPage() {
                 page={meta.page}
                 totalPages={meta.totalPages}
                 total={meta.total}
-                unit={['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً']}
+                unit={COURSE_UNIT}
                 onPage={setPage}
               />
             )}
@@ -1839,14 +1815,14 @@ export function AdminCoursesPage() {
       >
         <div className="modal-header">
           <h3 className="modal-title">
-            {formMode === 'edit' ? 'تعديل المقرّر' : 'إضافة مقرّر جديد'}
+            {formMode === 'edit' ? 'تعديل المقرّر' : 'إضافة مقرّر'}
           </h3>
           <button type="button" className="icon-btn" onClick={closeForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
         <div className="modal-body" style={{ maxWidth: 480 }}>
-          <FormField label="كود المقرّر" id="course-code" hint="مثال: CS101 — يظهر بخط أحادي في السجلّ">
+          <FormField label="كود المقرّر" id="course-code">
             <input
               className="input"
               value={form.code}
@@ -1859,10 +1835,10 @@ export function AdminCoursesPage() {
               className="input"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="مقدمة في علوم الحاسب"
+              placeholder="مقدمة في الحاسوب"
             />
           </FormField>
-          <FormField label="القسم" id="course-dept" hint="الكلّيّة تحدّدها القسم الذي تختاره">
+          <FormField label="القسم" id="course-dept">
             <select
               className="input"
               value={form.departmentId}
@@ -1880,7 +1856,7 @@ export function AdminCoursesPage() {
           <FormField
             label="الساعات المعتمدة"
             id="course-credits"
-            hint="بين 1 و10 — الزرّ معطّل خارجه"
+            hint="بين 1 و10"
           >
             <input
               className="input"
@@ -1916,7 +1892,7 @@ export function AdminCoursesPage() {
             title="تعذّر حفظ المقرّر"
             description={apiErrorMessage(
               createCourse.isError ? createCourse.error : updateCourse.error,
-              'لم يستجب الخادم للطلب. إعادة المحاولة.',
+              'لا استجابة من الخادم.',
             )}
           />
         )}
@@ -1945,10 +1921,10 @@ export function AdminCoursesPage() {
         <div className="modal-body" style={{ maxWidth: 480 }}>
           {offeringCourse && (
             <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-              سيُدرَّس مقرّر «{offeringCourse.name}» (<bdi>{offeringCourse.code}</bdi>) في الشعبة الجديدة.
+              شعبة لمقرّر «{offeringCourse.name}» (<bdi>{offeringCourse.code}</bdi>).
             </p>
           )}
-          <FormField label="الفصل الدراسي" id="offering-term" hint="نص حرّ من 1 إلى 50 حرفًا — مثال: 2024-FALL">
+          <FormField label="الفصل الدراسي" id="offering-term" hint="1–50 حرفًا">
             <input
               className="input"
               value={offeringForm.term}
@@ -1960,7 +1936,6 @@ export function AdminCoursesPage() {
           <FormField
             label="الأستاذ"
             id="offering-teacher"
-            hint="أساتذة مؤسستك فقط — لا تُسند الشُّعب إلا لنشط فيها"
           >
             <select
               className="input"
@@ -1969,7 +1944,7 @@ export function AdminCoursesPage() {
               disabled={teachersQ.isPending}
             >
               <option value="">
-                {teachersQ.isPending ? 'جارٍ تحميل الأساتذة…' : 'اختر الأستاذ…'}
+                {teachersQ.isPending ? 'جارٍ التحميل…' : 'اختر الأستاذ…'}
               </option>
               {teachersQ.data?.map((t) => (
                 <option key={t.id} value={t.id}>{t.name}</option>
@@ -1984,7 +1959,7 @@ export function AdminCoursesPage() {
               placeholder="قاعة A12"
             />
           </FormField>
-          <FormField label="السعة" id="offering-capacity" hint="أقصى عدد طلاب يمكن تسجيلهم في الشعبة">
+          <FormField label="السعة" id="offering-capacity">
             <input
               className="input"
               type="number"
@@ -2001,7 +1976,7 @@ export function AdminCoursesPage() {
               title="تعذّر تحميل قائمة الأساتذة"
               description={apiErrorMessage(
                 teachersQ.error,
-                'لم يستجب الخادم للطلب. إعادة المحاولة.',
+                'لا استجابة من الخادم.',
               )}
               actions={
                 <button
@@ -2037,7 +2012,7 @@ export function AdminCoursesPage() {
             title="تعذّر فتح الشعبة"
             description={apiErrorMessage(
               createOffering.error,
-              'لم يستجب الخادم للطلب. إعادة المحاولة.',
+              'لا استجابة من الخادم.',
             )}
           />
         )}
@@ -2050,7 +2025,7 @@ export function AdminCoursesPage() {
         open={confirmingDelete !== null}
         title="حذف المقرّر"
         message={confirmingDelete
-          ? `سيُحذف «${confirmingDelete.name}» نهائيًا من السجلّ — لا تراجع.`
+          ? `سيُحذف «${confirmingDelete.name}» نهائيًا.`
           : ''}
         confirmLabel="حذف نهائي"
         danger
@@ -2061,9 +2036,9 @@ export function AdminCoursesPage() {
           setConfirmingDelete(null);
           try {
             await deleteCourse.mutateAsync(target.id);
-            toast.success(`حُذف «${target.name}» من السجلّ.`, { title: 'تمّ الحذف' });
+            toast.success(`حُذف «${target.name}».`);
           } catch (err) {
-            toast.error(apiErrorMessage(err, 'تعذّر حذف المقرّر — قد تكون له شُعب أو مفاهيم مرتبطة.'), {
+            toast.error(apiErrorMessage(err, 'تعذّر الحذف — توجد عناصر مرتبطة.'), {
               title: 'فشل الحذف',
             });
           }

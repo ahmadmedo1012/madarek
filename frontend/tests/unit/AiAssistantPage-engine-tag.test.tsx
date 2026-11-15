@@ -153,8 +153,10 @@ describe('AiAssistantPage — per-turn engine tag (r166d)', () => {
     // router, not one fixed model).
     expect(screen.getByText('openrouter/free')).toBeInTheDocument();
     // The real-LLM copy renders (openrouter counts as a real engine) —
-    // BOTH the subtitle and the greeting bot bubble carry it.
-    expect(screen.getAllByText(/نموذج لغويّ حقيقيّ/).length).toBeGreaterThanOrEqual(1);
+    // R355 copy diet: explainer cut; the greeting bubble + the engine
+    // chip carry the claim now.
+    expect(screen.getByText(/مرحبًا! أرى بيانات إتقانك لأركّز على فجواتك/)).toBeInTheDocument();
+    expect(screen.getByText('نموذج خارجيّ')).toBeInTheDocument();
   });
 
   it('a failed exchange renders NO engine tag (nothing was produced to attribute)', async () => {

@@ -5,7 +5,7 @@
  * 1. The five SPEC'd 6A10 pins:
  *    - AI KPI rounding (6A10-3): 97.4→97 / 812.6→813 — the tiles carry
  *      whole numbers, never tenth-precision aggregates.
- *    - Dashboard dot gates, both directions (6A10-4): «جلسات نشطة الآن»
+ *    - Dashboard dot gates, both directions (6A10-4): «جلسات نشطة»
  *      and «سجلّات آخر 7 أيام» paint green ONLY above zero — zero is
  *      quiet/unknown, not "healthy".
  *    - Governance growth window (6A10-8): «آخر N أسابيع» computed from
@@ -172,13 +172,13 @@ describe('OwnerDashboardPage — health dot gates (6A10-4)', () => {
   const dotBeside = (label: string) =>
     screen.getByText(label).closest('.owner-health-row')!.querySelector('.owner-health-dot')!;
 
-  it('renders «جلسات نشطة الآن» and «سجلّات آخر 7 أيام» neutral at zero (quiet, not healthy)', async () => {
+  it('renders «جلسات نشطة» and «سجلّات آخر 7 أيام» neutral at zero (quiet, not healthy)', async () => {
     FIXTURES['/owner/realtime'] = { ...REALTIME_LIVE, activeSessions: 0 };
     FIXTURES['/owner/stats'] = { ...STATS_BASE, recentAuditLogs: 0 };
     renderPage(<OwnerDashboardPage />);
     await screen.findByText('سجلّات آخر 7 أيام');
 
-    const sessionsDot = dotBeside('جلسات نشطة الآن');
+    const sessionsDot = dotBeside('جلسات نشطة'); // R355 copy diet: label tightened
     expect(sessionsDot).toHaveClass('neutral');
     expect(sessionsDot).not.toHaveClass('green');
     const logsDot = dotBeside('سجلّات آخر 7 أيام');
@@ -191,7 +191,7 @@ describe('OwnerDashboardPage — health dot gates (6A10-4)', () => {
     renderPage(<OwnerDashboardPage />);
     await screen.findByText('سجلّات آخر 7 أيام');
 
-    expect(dotBeside('جلسات نشطة الآن')).toHaveClass('green');
+    expect(dotBeside('جلسات نشطة')).toHaveClass('green'); // R355 copy diet: label tightened
     expect(dotBeside('سجلّات آخر 7 أيام')).toHaveClass('green');
   });
 });
@@ -203,7 +203,7 @@ describe('OwnerGovernancePage — growth window from weeklyGrowth.length (6A10-8
     expect(await screen.findByText('نموّ المستخدمين (آخر 8 أسابيع)')).toBeInTheDocument();
     // …and so does the chart's accessible name.
     expect(
-      screen.getByRole('img', { name: 'مخطط خطّي لنموّ المستخدمين — مستخدمون جدد أسبوعياً على مدى آخر 8 أسابيع' }),
+      screen.getByRole('img', { name: 'مخطط نموّ المستخدمين (آخر 8 أسابيع)' }),
     ).toBeInTheDocument();
   });
 
@@ -220,7 +220,7 @@ describe('OwnerGovernancePage — growth window from weeklyGrowth.length (6A10-8
     expect(screen.getByText('نموّ المستخدمين', { exact: true })).toBeInTheDocument();
     expect(screen.queryByText(/نموّ المستخدمين \(/)).toBeNull();
     // The accessible name stays windowless too.
-    const chart = screen.getByRole('img', { name: 'مخطط خطّي لنموّ المستخدمين — مستخدمون جدد أسبوعياً' });
+    const chart = screen.getByRole('img', { name: 'مخطط نموّ المستخدمين' });
     expect(chart.getAttribute('aria-label')).not.toMatch(/آخر|أسابيع/);
   });
 });

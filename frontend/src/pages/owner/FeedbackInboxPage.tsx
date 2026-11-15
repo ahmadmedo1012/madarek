@@ -8,7 +8,7 @@
  */
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Inbox, MessageSquarePlus, RefreshCw, Smartphone } from 'lucide-react';
+import { Inbox, RefreshCw, Smartphone } from 'lucide-react';
 import { Card } from '../../components/primitives';
 /* The patterns PageHeader — breadcrumbs brow + meta, the owner pages' seat. */
 import { PageHeader } from '../../components/patterns';
@@ -182,7 +182,6 @@ export default function FeedbackInboxPage() {
     <div className="page">
       <PageHeader
         title="صندوق التغذية الراجعة"
-        description="كل «أبلغ عن مشكلة / اقتراح» — بسياقه الكامل."
         eyebrow="المنصّة · التشغيل"
         /* R341 D11: the [12] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
@@ -200,7 +199,7 @@ export default function FeedbackInboxPage() {
         }
       />
 
-      <Card title="التقارير" subtitle="مفتوح → قيد المراجعة → أُصلح أو مُستبعد.">
+      <Card title="التقارير">
         <div className="fb-status-actions" style={{ marginInlineStart: 0, marginBottom: 'var(--sp-2-5)' }}>
           {FILTERS.map((f) => (
             <button
@@ -226,7 +225,6 @@ export default function FeedbackInboxPage() {
           <EmptyState
             icon={Inbox}
             title="لا تقارير هنا"
-            description="يظهر تقريره هنا بسياقه الكامل."
           />
         ) : (
           <div className="fb-inbox">
@@ -255,9 +253,6 @@ export default function FeedbackInboxPage() {
           </div>
         )}
 
-        <p className="inv-note">
-          <Icon icon={MessageSquarePlus} size={12} /> الودجت العائم على كل شاشة مسجّل الدخول هو مصدر هذه التقارير.
-        </p>
       </Card>
 
       <Card
@@ -296,7 +291,6 @@ export default function FeedbackInboxPage() {
           <EmptyState
             icon={Smartphone}
             title="لا أخطاء تطبيق هنا"
-            description="يصل التقرير هنا تلقائيًا — لا يُطلب من المستخدم شيء."
           />
         ) : (
           <div className="fb-inbox">

@@ -140,7 +140,9 @@ vi.mock('../../src/hooks/useInstitutions', () => ({
 import RegisterPage, { passwordStrengthTier, registerPasswordSchema } from '../../src/pages/RegisterPage';
 import { isCommonPassword } from '../../src/lib/commonPasswords';
 
-const PW_LABEL = 'كلمة المرور (12 حرفًا على الأقل)';
+/* R355 copy diet: the length floor moved out of the label (the 12-dot
+ * placeholder carries it now) — the label is the bare subject. */
+const PW_LABEL = 'كلمة المرور';
 
 function renderPage() {
   return render(

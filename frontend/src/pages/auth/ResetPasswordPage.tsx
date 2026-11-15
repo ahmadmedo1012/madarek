@@ -57,7 +57,7 @@ type ResetInputs = z.infer<typeof resetFormSchema>;
  * are indistinguishable by design (PAGES-GAP §5: no token-oracle). */
 const INVALID_TOKEN_TITLE = 'الرابط غير صالح أو انتهت صلاحيته';
 const INVALID_TOKEN_BODY =
-  'روابط الاستعادة تُستخدم مرة وتنتهي بعد ٣٠ دقيقة — اطلب رابطًا جديدًا.';
+  'الرابط يُستخدم مرة وينتهي بعد ٣٠ دقيقة.';
 
 /** Generic refusal ONLY for failures the server never answered (network). */
 const GENERIC_RESET_ERROR =
@@ -132,13 +132,13 @@ export default function ResetPasswordPage() {
                 <span className="auth-meta">(تمّ بنجاح)</span>
                 <h1 className="auth-form-title">تمّ تغيير كلمة المرور</h1>
                 <p className="auth-form-sub">
-                  كلمة المرور الجديدة سارية، وأُبطلت كل الجلسات على جميع الأجهزة — سجّل الدخول من جديد.
+                  كلمة المرور الجديدة سارية وأُبطلت كل الجلسات — سجّل الدخول من جديد.
                 </p>
               </div>
               {/* The redirect fires 2.4s after success (setTimeout above);
                   the link is the same door, immediate for the impatient. */}
               <p className="fp-sent-message" role="status">
-                سيُعاد توجيهك إلى صفحة تسجيل الدخول بعد لحظات — أو{' '}
+                سيُعاد توجيهك إلى تسجيل الدخول بعد لحظات — أو{' '}
                 <Link to="/auth" className="auth-register-link">سجّل الدخول الآن</Link>
               </p>
             </>
@@ -157,7 +157,7 @@ export default function ResetPasswordPage() {
                     terminal panel is the sheet's single content row). */}
                 <span className="auth-cell-index" dir="ltr" aria-hidden="true">[01]</span>
                 <Icon icon={AlertCircle} size={14} />
-                <span>{INVALID_TOKEN_TITLE} — اطلب رابطًا جديدًا.</span>
+                <span>{INVALID_TOKEN_TITLE}.</span>
               </div>
               {/* R341/D1: .auth-primary-link names the state's primary
                   door for the hover contract (the fill-wipe already
@@ -171,7 +171,7 @@ export default function ResetPasswordPage() {
                   session — back to the login sheet is the other way
                   forward. */}
               <p className="auth-register-prompt">
-                <Link to="/auth" className="auth-register-link">العودة إلى تسجيل الدخول</Link>
+                <Link to="/auth" className="auth-register-link">تسجيل الدخول</Link>
               </p>
             </>
           ) : (
@@ -233,13 +233,6 @@ export default function ResetPasswordPage() {
                   </div>
                 </div>
 
-                {/* The REAL policy, from the code (auth.dto.ts): length
-                    12–72 + the common-password blocklist — nothing
-                    invented, nothing hidden. */}
-                <div className="fp-mail-note" role="note">
-                  السياسة: ١٢ حرفًا على الأقل و٧٢ كحدّ أقصى، وليست من الكلمات الشائعة — كما في التسجيل والتغيير.
-                </div>
-
                 {resetPassword.isError && (
                   <div className="auth-error" role="alert">
                     <Icon icon={AlertCircle} size={14} />
@@ -256,7 +249,7 @@ export default function ResetPasswordPage() {
                   <p className="auth-form-summary" role="status" aria-live="polite">
                     {(() => {
                       const n = [form.formState.errors.password, form.formState.errors.confirm].filter(Boolean).length;
-                      return n === 1 ? 'مشكلة واحدة في النموذج — راجع الحقل المعلّم ثم أعد المحاولة.' : 'مشكلتان في النموذج — راجع الحقلين المعلّمين ثم أعد المحاولة.';
+                      return n === 1 ? 'مشكلة واحدة — راجع الحقل المعلّم.' : 'مشكلتان — راجع الحقلين المعلّمين.';
                     })()}
                   </p>
                 )}
@@ -274,17 +267,11 @@ export default function ResetPasswordPage() {
                     </>
                   ) : (
                     <>
-                      <span>حفظ كلمة المرور الجديدة</span>
+                      <span>حفظ كلمة المرور</span>
                       <Icon icon={ArrowLeft} size={14} />
                     </>
                   )}
                 </button>
-
-                {resetPassword.isPending && (
-                  <span className="sr-only" role="status" aria-live="polite">
-                    جارٍ تحديث كلمة المرور…
-                  </span>
-                )}
               </form>
             </>
           )}

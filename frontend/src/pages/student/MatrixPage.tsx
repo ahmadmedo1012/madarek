@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Play, AlertCircle, Sparkles, ArrowLeft, Bot, ClipboardCheck,
+  Play, AlertCircle, ArrowLeft, Bot, ClipboardCheck,
 } from 'lucide-react';
 import { Badge } from '../../components/primitives';
 import { ErrorState, Skeleton } from '../../components/primitives/States';
@@ -168,10 +168,10 @@ export default function MatrixPage() {
       <PageHeader
         title="المصفوفة التعليمية"
         description={
-          'خريطة معرفيّة لكل مفهوم درسته — كل خلية تعكس إتقانك من التفاعل والاختبارات.'
+          'خريطة معرفيّة لكل مفهوم درسته.'
         }
         meta={matrix.data && totalConcepts > 0
-          ? <>{countAr(totalConcepts, ['مفهوم واحد مُقاس', 'مفهومان مُقاسان', 'مفاهيم مُقاسة', 'مفهوماً مُقاساً'])} عبر {countAr(mappedCourses.length, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}</>
+          ? <>{countAr(totalConcepts, ['مفهوم مُقاس', 'مفهومان مُقاسان', 'مفاهيم مُقاسة', 'مفهوماً مُقاساً'])} عبر {countAr(mappedCourses.length, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}</>
           : undefined}
         actions={(
           /* R342-08 — the header CTA pair joins the tacking badge
@@ -189,7 +189,6 @@ export default function MatrixPage() {
               <Icon icon={ClipboardCheck} size={13} />
               الاختبارات الإلكترونية
             </Link>
-            <Badge color="brand" icon={Sparkles}>تتبّع المعرفة</Badge>
           </>
         )}
       />
@@ -226,7 +225,6 @@ export default function MatrixPage() {
             ) : undefined
           }
         />
-        <p className="r319sp-sec-note">ابدأ بسدّ الفجوات — الصفّ يأخذك مباشرة إلى المحاضرة المناسبة</p>
         {gaps.isPending ? (
           <RowList aria-label="قائمة الفجوات ذات الأولوية" loading />
         ) : gaps.isError ? (
@@ -238,8 +236,7 @@ export default function MatrixPage() {
         ) : !gaps.data?.length ? (
           /* R319 (c3-S1): the no-gaps state is the hatched EmptyCell. */
           <EmptyCell
-            label="لا فجوات حالياً — أحسنت!"
-            note="استمر بحضور المحاضرات والإجابة على نقاط التفاعل."
+            label="لا فجوات حالياً"
           />
         ) : (
           <RowList aria-label="قائمة الفجوات ذات الأولوية">
@@ -276,7 +273,6 @@ export default function MatrixPage() {
            the sheet's reserved-but-empty region. */
         <EmptyCell
           label="لم تتشكّل مصفوفتك بعد"
-          note="شاهد أول محاضرة وأجب عن نقاط التفاعل — سترسم المصفوفة خريطتك تلقائياً."
         />
       ) : (
         <div className="flex-col gap-4">
@@ -290,7 +286,7 @@ export default function MatrixPage() {
               totalConcepts > 0 ? (
                 <BarCount
                   n={totalConcepts}
-                  srLabel={countAr(totalConcepts, ['مفهوم واحد مُقاس', 'مفهومان مُقاسان', 'مفاهيم مُقاسة', 'مفهوماً مُقاساً'])}
+                  srLabel={countAr(totalConcepts, ['مفهوم', 'مفهومان', 'مفاهيم', 'مفهوماً'])}
                 />
               ) : undefined
             }
@@ -384,7 +380,7 @@ export default function MatrixPage() {
                     <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>{c.courseName}</div>
                     <div className="text-xs text-subtle">
                       {conceptCount(totalConceptsInCourse)} ·{' '}
-                      {masteredConcepts > 0 ? `أتقنت ${masteredConcepts}` : 'لم تتقن منها بعد'}
+                      {masteredConcepts > 0 ? `أتقنت ${masteredConcepts}` : 'لا إتقان بعد'}
                     </div>
                   </div>
                   <Link to={`/student/courses/${c.offeringId}`} className="btn ghost sm">
@@ -446,7 +442,7 @@ export default function MatrixPage() {
                           to={`/student/lectures/${remediation.lectureId}`}
                           className={`matrix-cell ${cls}${dimmed ? ' is-dim' : ''}`}
                           style={{ cursor: 'pointer' }}
-                          title={`${titleBase} — راجع في: ${remediation.lectureTitle ?? 'المحاضرة الموصى بها'}`}
+                          title={`${titleBase} — ${remediation.lectureTitle ?? 'المحاضرة الموصى بها'}`}
                           aria-label={`سدّ فجوة: ${k.name} — انتقل إلى المحاضرة${remediation.lectureTitle ? ` «${remediation.lectureTitle}»` : ''}`}
                           key={k.id}
                         >
@@ -472,7 +468,7 @@ export default function MatrixPage() {
           })}
           {unmappedCount > 0 && (
             <p className="matrix-unmapped-note">
-              {countAr(unmappedCount, ['مقرّر واحد آخر في قائمتك', 'مقرّران آخران في قائمتك', 'مقرّرات أخرى في قائمتك', 'مقرّراً آخر في قائمتك'])}
+              {countAr(unmappedCount, ['مقرّر آخر', 'مقرّران آخران', 'مقرّرات أخرى', 'مقرّراً آخر'])}
               {' '}بلا مفاهيم محدَّدة بعد — تظهر خرائطها هنا فور إضافتها من الأستاذ.
             </p>
           )}

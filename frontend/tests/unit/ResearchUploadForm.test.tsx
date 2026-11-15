@@ -78,7 +78,7 @@ describe('ResearchPage upload modal — FormField wiring (r152c)', () => {
     await openUploadModal();
     expect(screen.getByLabelText('عنوان البحث (مطلوب)')).toBeInstanceOf(HTMLInputElement);
     expect(screen.getByLabelText('الملخّص (اختياري)')).toBeInstanceOf(HTMLTextAreaElement);
-    expect(screen.getByLabelText('المقرّر الأكاديمي المرتبط (اختياري)')).toBeInstanceOf(HTMLSelectElement);
+    expect(screen.getByLabelText('المقرّر المرتبط (اختياري)')).toBeInstanceOf(HTMLSelectElement);
     // P3: the file field is a REAL picker now (the r154d disclosure about
     // ephemeral storage is gone — direct upload ships). It must be
     // labelled through the canon and filter to PDFs.
@@ -97,7 +97,7 @@ describe('ResearchPage upload modal — FormField wiring (r152c)', () => {
 
     fireEvent.change(title, { target: { value: 'أ' } });
     const alert = await screen.findByRole('alert');
-    expect(alert).toHaveTextContent('يجب أن يكون 3 أحرف على الأقل.');
+    expect(alert).toHaveTextContent('3 أحرف على الأقل.'); // R355 copy diet: error copy shortened
 
     // The input is marked invalid and its describedby RESOLVES to the
     // alert element — the dangling-reference fix.
@@ -169,7 +169,7 @@ describe('ResearchPage resubmit — CHECKS_FAILED prefill (r157)', () => {
     // …and the modal opens carrying the paper's own metadata.
     const title = screen.getByLabelText('عنوان البحث (مطلوب)') as HTMLInputElement;
     const abstract = screen.getByLabelText('الملخّص (اختياري)') as HTMLTextAreaElement;
-    const offering = screen.getByLabelText('المقرّر الأكاديمي المرتبط (اختياري)') as HTMLSelectElement;
+    const offering = screen.getByLabelText('المقرّر المرتبط (اختياري)') as HTMLSelectElement;
     expect(title.value).toBe('تحليل أداء قواعد البيانات الموزعة');
     expect(abstract.value).toBe('دراسة تجريبية لأداء النسخ المتماثلة تحت حمل متغيّر.');
     expect(offering.value).toBe('off1');
@@ -193,7 +193,7 @@ describe('ResearchPage resubmit — CHECKS_FAILED prefill (r157)', () => {
 
     const title = screen.getByLabelText('عنوان البحث (مطلوب)') as HTMLInputElement;
     const abstract = screen.getByLabelText('الملخّص (اختياري)') as HTMLTextAreaElement;
-    const offering = screen.getByLabelText('المقرّر الأكاديمي المرتبط (اختياري)') as HTMLSelectElement;
+    const offering = screen.getByLabelText('المقرّر المرتبط (اختياري)') as HTMLSelectElement;
     expect(title.value).toBe('');
     expect(abstract.value).toBe('');
     expect(offering.value).toBe('');

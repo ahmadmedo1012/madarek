@@ -290,7 +290,7 @@ describe('MessagesPage — compose (r170a)', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'رسالة جديدة' }));
     // Empty inbox → the honest no-recipients hint rides the field.
-    expect(screen.getByText('لا مستلمين متاحين بعد — اختر مقرّراً أو ردّ على رسالة واردة.')).toBeInTheDocument();
+    expect(screen.getByText('لا مستلمين — اختر مقرّراً أو ردّ على رسالة واردة.')).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText('المقرّر (لاختيار أحد طلابك)'), { target: { value: 'off1' } });
     const recipient = screen.getByLabelText('المستلِم') as HTMLSelectElement;

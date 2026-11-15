@@ -47,8 +47,8 @@ import { TablePaginationFooter } from './TablePaginationFooter';
 import '../../styles/admin.css';
 import '../../styles/shared/heron-admin-owner.css';
 
-const OUTBOX_ROW_UNIT: [string, string, string, string] = ['صف واحد', 'صفّان', 'صفوف', 'صفًا'];
-const SUPPRESSION_ROW_UNIT: [string, string, string, string] = ['عنوان واحد', 'عنوانان', 'عناوين', 'عنوانًا'];
+const OUTBOX_ROW_UNIT: [string, string, string, string] = ['صف', 'صفّان', 'صفوف', 'صفًا'];
+const SUPPRESSION_ROW_UNIT: [string, string, string, string] = ['عنوان', 'عنوانان', 'عناوين', 'عنوانًا'];
 
 const STATUS_LABEL_AR: Record<string, string> = {
   queued: 'في الانتظار',
@@ -81,7 +81,6 @@ export function AdminMailPage() {
     <div className="page r305ao">
       <PageHeader
         title="البريد"
-        description="حالة المزوّد، سجلّ التسليم، الحجب، ورسالة اختبار — كما هي، بلا ادّعاء."
         breadcrumbs={[
           { label: 'لوحة المسجل العام', to: '/admin/dashboard' },
           { label: 'البريد' },
@@ -125,20 +124,20 @@ function ProviderStatusCard() {
       }
     >
       <div className="stat-grid r350-e6-stats">
-        <Metric label="أُرسل (٢٤ ساعة)" value={String(data.last24h.sent)} ok={data.last24h.sent >= 0} icon={CheckCircle2} />
-        <Metric label="فشل (٢٤ ساعة)" value={String(data.last24h.failed)} ok={data.last24h.failed === 0} icon={XCircle} />
+        <Metric label="أُرسل (24 ساعة)" value={String(data.last24h.sent)} ok={data.last24h.sent >= 0} icon={CheckCircle2} />
+        <Metric label="فشل (24 ساعة)" value={String(data.last24h.failed)} ok={data.last24h.failed === 0} icon={XCircle} />
         <Metric label="في الانتظار" value={String(data.outboxTotals.queued)} ok={data.outboxTotals.queued < 50} icon={ListChecks} />
         <Metric label="محجوب" value={String(data.suppressionTotal)} ok={data.suppressionTotal < 50} icon={ShieldAlert} />
       </div>
       {data.lastSentAt && (
         <p className="r350-e6-note">
-          آخر إرسال ناجح: <time dateTime={data.lastSentAt}>{formatDate(data.lastSentAt)}</time>
+          آخر إرسال: <time dateTime={data.lastSentAt}>{formatDate(data.lastSentAt)}</time>
           {data.lastSentTemplate ? <> — القالب <code>{data.lastSentTemplate}</code></> : null}
         </p>
       )}
       {!data.configured && (
         <p className="r350-e6-note">
-          لتشغيل الإرسال الفعلي: اضبط <code>MAIL_PROVIDER</code> و<code>MAIL_API_KEY</code> و<code>MAIL_FROM</code> من إعدادات الخدمة — الدليل الكامل في <code>MAIL-SETUP-AR.md</code>. توثيق النطاق لدى المزوّد خطوة تخصّ المالك.
+          لتشغيل الإرسال اضبط <code>MAIL_PROVIDER</code> و<code>MAIL_API_KEY</code> و<code>MAIL_FROM</code> — الدليل في <code>MAIL-SETUP-AR.md</code>. توثيق النطاق خطوة تخصّ المالك.
         </p>
       )}
     </Card>
@@ -169,7 +168,6 @@ function DeliveryLogCard() {
     <Card
       title="سجلّ التسليم"
       icon={Mail}
-      subtitle="الحالة، المحاولات، المزوّد، وأزرار الإعادة/الإلغاء."
       actions={
         <div className="filter-bar" role="group" aria-label="تصفية حسب الحالة">
           {OUTBOX_STATUSES.map((s) => (
@@ -197,7 +195,6 @@ function DeliveryLogCard() {
         <EmptyState
           icon={Mail}
           title="لا رسائل بعد"
-          description="لم يُرسِل النظام أي بريد بعد — تظهر هنا لحظة الدخول للصادر."
         />
       ) : (
         <div className="table-wrap">
@@ -253,7 +250,7 @@ function DeliveryLogCard() {
                           className="btn accent sm"
                           onClick={() =>
                             retry.mutate(row.id, {
-                              onSuccess: () => toast.success('أُعيد الصف إلى قائمة الانتظار.', { title: 'إعادة إرسال' }),
+                              onSuccess: () => toast.success('أُعيد للانتظار.', { title: 'إعادة إرسال' }),
                               onError: (err) => toast.error(apiErrorMessage(err, 'تعذّرت إعادة الإرسال.'), { title: 'فشل' }),
                             })
                           }
@@ -267,7 +264,7 @@ function DeliveryLogCard() {
                           className="btn ghost sm"
                           onClick={() =>
                             cancel.mutate(row.id, {
-                              onSuccess: () => toast.success('أُلغي إرسال الصف.', { title: 'إلغاء' }),
+                              onSuccess: () => toast.success('أُلغي الإرسال.', { title: 'إلغاء' }),
                               onError: (err) => toast.error(apiErrorMessage(err, 'تعذّر الإلغاء.'), { title: 'فشل' }),
                             })
                           }
@@ -306,14 +303,13 @@ function SuppressionCard() {
     <Card
       title="قائمة الحجب"
       icon={MailX}
-      subtitle="لن يُرسَل إليها مجددًا ما دامت هنا."
     >
       {isPending ? (
         <ListSkeleton rows={4} />
       ) : isError ? (
         <ErrorState error={error} onRetry={() => void refetch()} />
       ) : !data || data.length === 0 ? (
-        <EmptyState icon={MailX} title="لا محجوبين" description="لا عناوين محجوبة — كل الرسائل تصل مَن تصلهم." />
+        <EmptyState icon={MailX} title="لا محجوبين" />
       ) : (
         <ul className="r350-e6-suppression">
           {data.map((row) => (
@@ -329,7 +325,7 @@ function SuppressionCard() {
                 className="btn ghost sm"
                 onClick={() =>
                   unsuppress.mutate(row.id, {
-                    onSuccess: () => toast.success('أُزيل العنوان من قائمة الحجب.', { title: 'إزالة الحجب' }),
+                    onSuccess: () => toast.success('أُزيل من الحجب.', { title: 'إزالة' }),
                     onError: (err) => toast.error(apiErrorMessage(err, 'تعذّرت الإزالة.'), { title: 'فشل' }),
                   })
                 }
@@ -361,7 +357,7 @@ function TestSendCard() {
     <Card
       title="إرسال رسالة اختبار"
       icon={Send}
-      subtitle="إرسال حقيقي عبر المزوّد إلى عنوان تختاره."
+      subtitle="إرسال حقيقي إلى عنوان تختاره."
     >
       <form
         className="r350-e6-testsend"
@@ -369,8 +365,8 @@ function TestSendCard() {
           e.preventDefault();
           if (!to) return;
           send.mutate(to, {
-            onSuccess: () => toast.success('انضمت رسالة الاختبار للصادر — تُسلَّم مع الدفعة القادمة.', { title: 'أُرسلت' }),
-            onError: (err) => toast.error(apiErrorMessage(err, 'تعذّر الانضمام — الحد اليومي ممتلئ أو الإرسال غير مضبوط.'), { title: 'فشل' }),
+            onSuccess: () => toast.success('انضمت للصادر؛ تُسلَّم قريباً.', { title: 'أُرسلت' }),
+            onError: (err) => toast.error(apiErrorMessage(err, 'تعذّر الانضمام — الحد اليومي ممتلئ أو غير مضبوط.'), { title: 'فشل' }),
           });
         }}
       >
@@ -391,7 +387,7 @@ function TestSendCard() {
       </form>
       {templates.data && templates.data.templates.length > 0 && (
         <p className="r350-e6-note">
-          قوالب جاهزة للمعاينة: {templates.data.templates.map((t) => (
+          قوالب: {templates.data.templates.map((t) => (
             <code key={t}>{t}</code>
           ))}
         </p>

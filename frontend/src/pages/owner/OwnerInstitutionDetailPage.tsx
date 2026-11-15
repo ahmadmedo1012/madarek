@@ -143,9 +143,7 @@ function OwnerFacultyCard({
         <div className="admin-faculty-titles">
           <span className="admin-faculty-name">{faculty.name}</span>
           {duplicateCount > 1 && (
-            <span
-              title={`${duplicateCount} سجلات متطابقة بلا محتوى — مجمّعة هنا، والسجلات كما هي`}
-            >
+            <span>
               <Badge>سجلّ مكرّر ×{duplicateCount}</Badge>
             </span>
           )}
@@ -169,11 +167,11 @@ function OwnerFacultyCard({
               in content — no new CSS, no second grammar. */}
           <span>{faculty.city.trim() || '—'}</span>
           <span aria-hidden="true">{' · '}</span>
-          <span>{countAr(faculty.departmentCount, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}</span>
+          <span>{countAr(faculty.departmentCount, ['قسم', 'قسمان', 'أقسام', 'قسماً'])}</span>
           <span aria-hidden="true">{' · '}</span>
-          <span>{countAr(faculty.courseCount, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</span>
+          <span>{countAr(faculty.courseCount, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</span>
           <span aria-hidden="true">{' · '}</span>
-          <span>{countAr(faculty.studentCount, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
+          <span>{countAr(faculty.studentCount, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}</span>
         </div>
       </div>
       {hasDepts && (
@@ -200,7 +198,6 @@ function OwnerFacultyCard({
           aria-expanded={open}
           aria-controls={`owner-inst-depts-${faculty.id}`}
           onClick={onToggle}
-          title={open ? 'طيّ الأقسام' : 'توسيع الأقسام'}
           style={{ width: '100%', textAlign: 'start', padding: 0 }}
         >
           {head}
@@ -214,7 +211,7 @@ function OwnerFacultyCard({
             <div key={d.id} className="admin-faculty-dept">
               <span className="admin-faculty-dept-name">{d.name}</span>
               <span className="admin-faculty-dept-meta">
-                {countAr(d.courses, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])} · {countAr(d.teachers, ['مدرّس واحد', 'مدرّسان', 'مدرّسون', 'مدرّساً'])}
+                {countAr(d.courses, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً'])} · {countAr(d.teachers, ['مدرّس', 'مدرّسان', 'مدرّسون', 'مدرّساً'])}
               </span>
             </div>
           ))}
@@ -226,7 +223,6 @@ function OwnerFacultyCard({
           className="btn ghost sm"
           onClick={onAddDepartment}
           disabled={writesDisabled}
-          title={writesDisabled ? 'التعديلات الأكاديمية متاحة للمؤسسات النشطة فقط' : `إضافة قسم إلى «${faculty.name}»`}
         >
           <Icon icon={Plus} size={13} />
           إضافة قسم
@@ -280,10 +276,7 @@ export function OwnerInstitutionDetailPage() {
   const submitFaculty = () => {
     createFaculty.mutate(facultyForm, {
       onSuccess: () => {
-        toast.success(
-          `أُضيفت كلّيّة «${facultyForm.name.trim()}» إلى «${institution?.name ?? ''}».`,
-          { title: 'تمّت الإضافة' },
-        );
+        toast.success(`أُضيفت كلّيّة «${facultyForm.name.trim()}».`);
         closeFacultyForm();
       },
     });
@@ -303,10 +296,7 @@ export function OwnerInstitutionDetailPage() {
     if (!deptTarget) return;
     createDepartment.mutate(deptForm, {
       onSuccess: () => {
-        toast.success(
-          `أُضيف قسم «${deptForm.name.trim()}» إلى «${deptTarget.name}».`,
-          { title: 'تمّت الإضافة' },
-        );
+        toast.success(`أُضيف قسم «${deptForm.name.trim()}».`);
         closeDeptForm();
       },
     });
@@ -325,10 +315,7 @@ export function OwnerInstitutionDetailPage() {
   const submitCourse = () => {
     createCourse.mutate(courseForm, {
       onSuccess: () => {
-        toast.success(
-          `أُضيف مقرّر «${courseForm.name}» إلى «${institution?.name ?? ''}».`,
-          { title: 'تمّت الإضافة' },
-        );
+        toast.success(`أُضيف مقرّر «${courseForm.name}».`);
         closeCourseForm();
       },
     });
@@ -357,10 +344,7 @@ export function OwnerInstitutionDetailPage() {
       },
       {
         onSuccess: () => {
-          toast.success(
-            `فُتحت شعبة «${offeringCourse.name}» للفصل «${offeringForm.term.trim()}».`,
-            { title: 'تمّ فتح الشعبة' },
-          );
+          toast.success(`فُتحت شعبة «${offeringCourse.name}».`);
           closeOfferingForm();
         },
       },
@@ -421,18 +405,17 @@ export function OwnerInstitutionDetailPage() {
         <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">المؤسسة غير موجودة</h1>
-            <p className="page-subtitle">لا توجد مؤسسة بمعرّف «{routeSlug}» على المنصّة.</p>
           </div>
         </header>
         <Card>
           <EmptyState
             icon={Landmark}
             title="المؤسسة غير موجودة"
-            description="حُذفت أو تغيّر معرّفها — عد إلى قائمة المؤسسات واخترها."
+            description="حُذفت أو تغيّر معرّفها."
             action={(
               <Link to="/owner/institutions" className="btn primary sm">
                 <Icon icon={ArrowLeft} size={13} />
-                العودة إلى المؤسسات
+                العودة للمؤسسات
               </Link>
             )}
           />
@@ -493,7 +476,7 @@ export function OwnerInstitutionDetailPage() {
               {STATUS_LABELS[institution.status]}
             </Badge>
             <span>
-              {countAr(institution.activeMembershipCount, ['عضو نشط واحد', 'عضوان نشطان', 'أعضاء نشطون', 'عضواً نشطاً'])}
+              {countAr(institution.activeMembershipCount, ['عضو', 'عضوان', 'أعضاء', 'عضواً'])}
             </span>
           </span>
         }
@@ -517,8 +500,8 @@ export function OwnerInstitutionDetailPage() {
         <AlertRow
           color="amber"
           icon={AlertTriangle}
-          title="هذه المؤسسة معلّقة"
-          description="التعديلات الأكاديمية للمؤسسات النشطة فقط — فعّل المؤسسة من قائمة المؤسسات أولًا."
+          title="المؤسسة معلّقة"
+          description="التعديلات للمؤسسات النشطة فقط."
         />
       )}
 
@@ -533,7 +516,7 @@ export function OwnerInstitutionDetailPage() {
       <Card
         title="البنية الأكاديمية"
         icon={Building2}
-        subtitle={`${countAr(faculties.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} · ${countAr(totalDepartments, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}${foldedRows > 0 ? ` · ${foldedRows} سجلّ بذر مكرّر مُجمَّع` : ''}`}
+        subtitle={`${countAr(faculties.length, ['كلّيّة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} · ${countAr(totalDepartments, ['قسم', 'قسمان', 'أقسام', 'قسماً'])}${foldedRows > 0 ? ` · ${foldedRows} سجلّ بذر مُجمَّع` : ''}`}
         actions={(
           /* r180/R304: the section's create action rides the section
               header — the scope (this institution) is named by the
@@ -544,7 +527,6 @@ export function OwnerInstitutionDetailPage() {
             onClick={openFacultyForm}
             disabled={suspended}
             aria-label="إضافة كلّيّة جديدة إلى المؤسسة"
-            title={suspended ? 'التعديلات الأكاديمية متاحة للمؤسسات النشطة فقط' : undefined}
           >
             <Icon icon={Plus} size={14} />
             إضافة كلّيّة
@@ -585,8 +567,7 @@ export function OwnerInstitutionDetailPage() {
                   <span>
                     {/* countAr prefixes the digit itself (lib/format) — the
                         forms carry only the nouns. */}
-                    {countAr(emptyCensus.length, ['كلّيّة واحدة بلا محتوى بعد', 'كلّيتان بلا محتوى بعد', 'كلّيّات بلا محتوى بعد', 'كلّيّة بلا محتوى بعد'])}
-                    {' — '}أقسام ومقرّرات وطلابها لم تُنشأ بعد
+                    {countAr(emptyCensus.length, ['كلّيّة بلا محتوى', 'كلّيتان بلا محتوى', 'كلّيّات بلا محتوى', 'كلّيّة بلا محتوى'])}
                   </span>
                 </button>
                 {showEmptyFaculties && (
@@ -599,7 +580,7 @@ export function OwnerInstitutionDetailPage() {
                           {entry.duplicateCount > 1 && (
                             <>
                               {' · '}
-                              <span title={`${entry.duplicateCount} سجلات متطابقة بلا محتوى — مجمّعة، والسجلات كما هي`}>
+                            <span>
                                 سجلّ مكرّر ×{entry.duplicateCount}
                               </span>
                             </>
@@ -610,7 +591,6 @@ export function OwnerInstitutionDetailPage() {
                           className="btn ghost sm"
                           onClick={() => openDeptForm(entry.faculty)}
                           disabled={suspended}
-                          title={suspended ? 'التعديلات الأكاديمية متاحة للمؤسسات النشطة فقط' : `إضافة قسم إلى «${entry.faculty.name}»`}
                         >
                           <Icon icon={Plus} size={13} />
                           إضافة قسم
@@ -624,8 +604,7 @@ export function OwnerInstitutionDetailPage() {
             {faculties.length === 0 && (
               <EmptyState
                 icon={Building2}
-                title="لا كليات بعد في هذه المؤسسة"
-                description="أنشئ أول كلّيّة من الزر أعلاه — بعدها الأقسام والمقرّرات والشُّعب."
+                title="لا كليات بعد"
               />
             )}
           </div>
@@ -637,7 +616,7 @@ export function OwnerInstitutionDetailPage() {
         title="المقرّرات والشُّعب"
         icon={BookOpen}
         subtitle={coursesMeta
-          ? countAr(coursesMeta.total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])
+          ? countAr(coursesMeta.total, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً'])
           : undefined}
         actions={(
           <button
@@ -646,7 +625,6 @@ export function OwnerInstitutionDetailPage() {
             onClick={openCourseForm}
             disabled={suspended}
             aria-label="إضافة مقرّر جديد إلى المؤسسة"
-            title={suspended ? 'التعديلات الأكاديمية متاحة للمؤسسات النشطة فقط' : undefined}
           >
             <Icon icon={Plus} size={14} />
             إضافة مقرّر
@@ -666,7 +644,7 @@ export function OwnerInstitutionDetailPage() {
               <thead>
                 <tr>
                   <th scope="col" style={{ width: 100 }}>الكود</th>
-                  <th scope="col">اسم المقرّر</th>
+                  <th scope="col">المقرّر</th>
                   <th scope="col">الكلّيّة / القسم</th>
                   <th scope="col" className="admin-table-num" style={{ width: 70 }}>س.م</th>
                   <th scope="col" className="admin-table-num" style={{ width: 100 }}>الفصول</th>
@@ -680,7 +658,6 @@ export function OwnerInstitutionDetailPage() {
                       <EmptyState
                         icon={BookOpen}
                         title="لا مقرّرات بعد"
-                        description="أضف أول مقرّر بعد إنشاء كلّيّة وقسم — الشُّعب من صف المقرّر."
                       />
                     </td>
                   </tr>
@@ -688,7 +665,7 @@ export function OwnerInstitutionDetailPage() {
                 {courses.map((c) => (
                   <tr key={c.id}>
                     <td className="font-mono text-subtle" data-label="الكود"><bdi>{c.code}</bdi></td>
-                    <td className="ws-id" data-label="اسم المقرّر">
+                    <td className="ws-id" data-label="المقرّر">
                       <span className="font-semibold" style={{ color: 'var(--text)' }}>{c.name}</span>
                     </td>
                     <td data-label="الكلّيّة / القسم">
@@ -701,7 +678,7 @@ export function OwnerInstitutionDetailPage() {
                         <span className="text-xxs text-subtle">—</span>
                       )}
                     </td>
-                    <td className="admin-table-num font-mono" data-label="ساعات معتمدة">{c.credits}</td>
+                    <td className="admin-table-num font-mono" data-label="س.م">{c.credits}</td>
                     <td className="admin-table-num font-mono" data-label="الفصول">{c.offeringCount}</td>
                     <td data-label="إجراءات">
                       <button
@@ -710,7 +687,6 @@ export function OwnerInstitutionDetailPage() {
                         onClick={() => openOfferingForm(c)}
                         disabled={suspended || mutationBusy}
                         aria-label={`فتح شعبة لمقرّر ${c.name}`}
-                        title={suspended ? 'التعديلات الأكاديمية متاحة للمؤسسات النشطة فقط' : undefined}
                       >
                         <Icon icon={Plus} size={13} />
                         فتح شعبة
@@ -723,7 +699,7 @@ export function OwnerInstitutionDetailPage() {
             {coursesMeta && coursesMeta.totalPages > 1 && (
               <div className="table-pagination">
                 <span>
-                  صفحة {formatNum(coursesMeta.page)} من {formatNum(coursesMeta.totalPages)} · {countAr(coursesMeta.total, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}
+                  صفحة {formatNum(coursesMeta.page)} من {formatNum(coursesMeta.totalPages)} · {countAr(coursesMeta.total, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً'])}
                 </span>
                 <span className="table-row-actions">
                   {/* r183-B5 (A10 wave-A P2 — RTL directionality): «السابق»
@@ -759,15 +735,12 @@ export function OwnerInstitutionDetailPage() {
       {/* ── «إضافة كلّيّة» modal ─────────────────────────────────────── */}
       <Modal open={facultyFormOpen} onClose={closeFacultyForm} ariaLabel="إضافة كلّيّة جديدة">
         <div className="modal-header">
-          <h3 className="modal-title">إضافة كلّيّة جديدة</h3>
+          <h3 className="modal-title">إضافة كلّيّة</h3>
           <button type="button" className="icon-btn" onClick={closeFacultyForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
         <div className="modal-body" style={{ maxWidth: 480 }}>
-          <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            ستُضاف الكلّيّة إلى «{institution.name}».
-          </p>
           <FormField label="اسم الكلّيّة" id="owner-faculty-name">
             <input
               className="input"
@@ -787,7 +760,7 @@ export function OwnerInstitutionDetailPage() {
           <FormField
             label="المدينة"
             id="owner-faculty-city"
-            hint="مطلوب — الكلّيّات تتميّز بالاسم داخل كل مدينة"
+            hint="مطلوب"
           >
             <input
               className="input"
@@ -823,7 +796,7 @@ export function OwnerInstitutionDetailPage() {
             color="red"
             icon={AlertTriangle}
             title="تعذّر إضافة الكلّيّة"
-            description={apiErrorMessage(createFaculty.error, 'لم يستجب الخادم للطلب. إعادة المحاولة.')}
+            description={apiErrorMessage(createFaculty.error, 'تعذَّر الاتصال.')}
           />
         )}
       </Modal>
@@ -839,7 +812,7 @@ export function OwnerInstitutionDetailPage() {
         <div className="modal-body" style={{ maxWidth: 480 }}>
           {deptTarget && (
             <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-              سيُضاف القسم إلى «{deptTarget.name}» في «{institution.name}».
+              سيُضاف القسم إلى «{deptTarget.name}».
             </p>
           )}
           <FormField label="اسم القسم" id="owner-dept-name">
@@ -877,7 +850,7 @@ export function OwnerInstitutionDetailPage() {
             color="red"
             icon={AlertTriangle}
             title="تعذّر إضافة القسم"
-            description={apiErrorMessage(createDepartment.error, 'لم يستجب الخادم للطلب. إعادة المحاولة.')}
+            description={apiErrorMessage(createDepartment.error, 'تعذَّر الاتصال.')}
           />
         )}
       </Modal>
@@ -885,16 +858,13 @@ export function OwnerInstitutionDetailPage() {
       {/* ── «إضافة مقرّر» modal (department picker from this institution) ── */}
       <Modal open={courseFormOpen} onClose={closeCourseForm} ariaLabel="إضافة مقرّر جديد">
         <div className="modal-header">
-          <h3 className="modal-title">إضافة مقرّر جديد</h3>
+          <h3 className="modal-title">إضافة مقرّر</h3>
           <button type="button" className="icon-btn" onClick={closeCourseForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
         <div className="modal-body" style={{ maxWidth: 480 }}>
-          <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            سيُضاف المقرّر إلى «{institution.name}».
-          </p>
-          <FormField label="كود المقرّر" id="owner-course-code" hint="مثال: CS101 — يظهر بخط أحادي في السجلّ">
+          <FormField label="كود المقرّر" id="owner-course-code">
             <input
               className="input"
               value={courseForm.code}
@@ -913,7 +883,7 @@ export function OwnerInstitutionDetailPage() {
           <FormField
             label="القسم"
             id="owner-course-dept"
-            hint={`أقسام «${institution.name}» فقط — القسم يحدّد الكلّيّة`}
+            hint={`أقسام «${institution.name}» فقط`}
           >
             <select
               className="input"
@@ -922,7 +892,7 @@ export function OwnerInstitutionDetailPage() {
               disabled={facultiesQ.isPending}
             >
               <option value="">
-                {facultiesQ.isPending ? 'جارٍ تحميل الأقسام…' : 'اختر القسم…'}
+                {facultiesQ.isPending ? 'جارٍ التحميل…' : 'اختر القسم…'}
               </option>
               {faculties.flatMap((f) =>
                 f.departments.map((d) => (
@@ -934,7 +904,7 @@ export function OwnerInstitutionDetailPage() {
           <FormField
             label="الساعات المعتمدة"
             id="owner-course-credits"
-            hint="بين 1 و10 — الزرّ معطّل خارجه"
+            hint="بين 1 و10"
           >
             <input
               className="input"
@@ -974,7 +944,7 @@ export function OwnerInstitutionDetailPage() {
             color="red"
             icon={AlertTriangle}
             title="تعذّر حفظ المقرّر"
-            description={apiErrorMessage(createCourse.error, 'لم يستجب الخادم للطلب. إعادة المحاولة.')}
+            description={apiErrorMessage(createCourse.error, 'تعذَّر الاتصال.')}
           />
         )}
       </Modal>
@@ -990,10 +960,10 @@ export function OwnerInstitutionDetailPage() {
         <div className="modal-body" style={{ maxWidth: 480 }}>
           {offeringCourse && (
             <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-              سيُدرَّس مقرّر «{offeringCourse.name}» (<bdi>{offeringCourse.code}</bdi>) في الشعبة الجديدة داخل «{institution.name}».
+              سيُدرَّس «{offeringCourse.name}» في شعبة جديدة.
             </p>
           )}
-          <FormField label="الفصل الدراسي" id="owner-offering-term" hint="نص حرّ من 1 إلى 50 حرفًا — مثال: 2024-FALL">
+          <FormField label="الفصل" id="owner-offering-term">
             <input
               className="input"
               value={offeringForm.term}
@@ -1005,7 +975,7 @@ export function OwnerInstitutionDetailPage() {
           <FormField
             label="الأستاذ"
             id="owner-offering-teacher"
-            hint="أساتذة هذه المؤسسة فقط — لا تُسند الشُّعب إلا لنشط فيها"
+            hint="أساتذة المؤسسة فقط"
           >
             <select
               className="input"
@@ -1014,7 +984,7 @@ export function OwnerInstitutionDetailPage() {
               disabled={teachersQ.isPending}
             >
               <option value="">
-                {teachersQ.isPending ? 'جارٍ تحميل الأساتذة…' : 'اختر الأستاذ…'}
+                {teachersQ.isPending ? 'جارٍ التحميل…' : 'اختر الأستاذ…'}
               </option>
               {teachersQ.data?.map((t) => (
                 <option key={t.id} value={t.id}>{t.name}</option>
@@ -1029,7 +999,7 @@ export function OwnerInstitutionDetailPage() {
               placeholder="قاعة A12"
             />
           </FormField>
-          <FormField label="السعة" id="owner-offering-capacity" hint="أقصى عدد طلاب يمكن تسجيلهم في الشعبة">
+          <FormField label="السعة" id="owner-offering-capacity">
             <input
               className="input"
               type="number"
@@ -1043,8 +1013,8 @@ export function OwnerInstitutionDetailPage() {
             <AlertRow
               color="red"
               icon={AlertTriangle}
-              title="تعذّر تحميل قائمة الأساتذة"
-              description={apiErrorMessage(teachersQ.error, 'لم يستجب الخادم للطلب. إعادة المحاولة.')}
+              title="تعذّر تحميل الأساتذة"
+              description={apiErrorMessage(teachersQ.error, 'تعذَّر الاتصال.')}
               actions={(
                 <button
                   type="button"
@@ -1077,7 +1047,7 @@ export function OwnerInstitutionDetailPage() {
             color="red"
             icon={AlertTriangle}
             title="تعذّر فتح الشعبة"
-            description={apiErrorMessage(createOffering.error, 'لم يستجب الخادم للطلب. إعادة المحاولة.')}
+            description={apiErrorMessage(createOffering.error, 'تعذَّر الاتصال.')}
           />
         )}
       </Modal>

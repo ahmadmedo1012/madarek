@@ -42,7 +42,7 @@ type ForgotInputs = z.infer<typeof forgotSchema>;
  * after-submit state (the generic API message alone would imply a mail
  * that never leaves; the platform says what it is). */
 const MAIL_NOT_CONFIGURED_NOTE =
-  'إرسال البريد غير مُهيّأ بعد [يُستكمل قبل الإطلاق] — حسابات @test.ly تستلم الرابط هنا مباشرةً، وغيرها عبر «اتصل بنا».';
+  'إرسال البريد غير مُهيّأ بعد [يُستكمل قبل الإطلاق] — حسابات @test.ly تستلم الرابط هنا.';
 
 /** Generic refusal ONLY for failures the server never answered (network). */
 const GENERIC_REQUEST_ERROR =
@@ -98,7 +98,7 @@ export default function ForgotPasswordPage() {
             <span className="auth-meta">(استعادة الحساب)</span>
             <h1 className="auth-form-title">استعادة كلمة المرور</h1>
             <p className="auth-form-sub">
-              أدخل بريدك الإلكتروني المسجّل — إذا كان موجودًا فستصلك رسالة خلال دقائق.
+              أدخل بريدك الإلكتروني المسجّل.
             </p>
           </div>
 
@@ -154,7 +154,7 @@ export default function ForgotPasswordPage() {
                     <p className="fp-dev-inbox-head">
                       وضع الاختبار — رابط الاستعادة <span dir="ltr">(test mode)</span>
                     </p>
-                    <p className="fp-dev-inbox-note">لا يُرسل بريد فعلي — الرابط معروض هنا (حساب تجريبي @test.ly).</p>
+                    <p className="fp-dev-inbox-note">لا يُرسل بريد فعلي — الرابط هنا (حساب @test.ly).</p>
                     <div className="fp-dev-inbox-link-row">
                       <a
                         className="fp-dev-inbox-link"
@@ -192,7 +192,7 @@ export default function ForgotPasswordPage() {
 
             {form.formState.errors.email && (
               <p className="auth-form-summary" role="status" aria-live="polite">
-                مشكلة واحدة في النموذج — راجع الحقل المعلّم ثم أعد المحاولة.
+                راجع الحقل المعلّم ثم أعد المحاولة.
               </p>
             )}
 
@@ -229,7 +229,7 @@ export default function ForgotPasswordPage() {
       </main>
 
       <footer className="auth-bottom">
-        <strong>منصّة تعليم ذكية مستقلّة</strong> · عربية أولًا
+        <strong>منصّة تعليم مستقلّة</strong> · عربية أولًا
       </footer>
     </div>
   );

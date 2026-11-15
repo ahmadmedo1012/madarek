@@ -159,7 +159,7 @@ describe('OwnerSystemPage — storage card, s3 unverified (fields absent)', () =
     renderPage(<OwnerSystemPage />);
 
     expect(await screen.findByText('تخزين كائنات (S3-متوافق)')).toBeInTheDocument();
-    expect(screen.getByText('لم يُتحقق بعد')).toBeInTheDocument();
+    expect(screen.getByText('لم يُتحقق')).toBeInTheDocument();
     expect(screen.queryByText('دائمة')).toBeNull();
     expect(screen.queryByText(/لا يستجيب/)).toBeNull();
     expect(screen.queryByText(/لا تنجو من إعادة النشر/)).toBeNull();

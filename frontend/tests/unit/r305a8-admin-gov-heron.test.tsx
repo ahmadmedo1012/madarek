@@ -219,7 +219,7 @@ describe('R305-A8 marker — governance module roots', () => {
     // Error — the honest retry state keeps the page chrome + marker.
     getMock.mockRejectedValue(new Error('network down'));
     const errored = renderWithProviders(<AdminPermissionsPage />, '/admin/permissions/u1');
-    expect(await screen.findByText('تعذّر تحميل صلاحيات المستخدم')).toBeInTheDocument();
+    expect(await screen.findByText('تعذّر التحميل')).toBeInTheDocument(); // R355 copy diet: error message generalized
     expect(errored.container.querySelector('.page.r305ao')).not.toBeNull();
     errored.unmount();
 
@@ -232,7 +232,7 @@ describe('R305-A8 marker — governance module roots', () => {
     renderWithProviders(<AdminPermissionsPage />, '/admin/permissions/u1');
     expect(await screen.findByRole('heading', { level: 1, name: /أمينة المشرفة/ })).toBeInTheDocument();
     const root = scopedRoot();
-    expect(root).toContainElement(screen.getByText('محرّر الصلاحيات'));
+    expect(root).toContainElement(screen.getByText('الصلاحيات')); // R355 copy diet: card title tightened
   });
 });
 
@@ -287,7 +287,7 @@ describe('R305-A8 danger hierarchy — destructive verbs ride the new vocabulary
     });
 
     renderWithProviders(<AdminPermissionsPage />, '/admin/permissions/u1');
-    expect(await screen.findByText('محرّر الصلاحيات')).toBeInTheDocument();
+    expect(await screen.findByText('الصلاحيات')).toBeInTheDocument(); // R355 copy diet: card title tightened
 
     // The matrix structure is untouched — six domain groups of perm rows.
     expect(document.querySelector('.govx-matrix')).not.toBeNull();
@@ -339,13 +339,15 @@ describe('R305-A8 danger hierarchy — destructive verbs ride the new vocabulary
     const zoneEl = zone as HTMLElement;
     expect(zoneEl.closest('.modal-card')).not.toBeNull(); // portals to body
     expect(within(zoneEl).getByText('التسجيلات الحالية')).toBeInTheDocument();
-    // The zone names the consequence — the note is the quiet red fence.
-    expect(within(zoneEl).getByText(/إلغاء التسجيل يحذف تسجيل الطالب وتقدُّمه نهائيًا/)).toBeInTheDocument();
+    // R355 copy diet: explainer cut — the zone's consequence note died;
+    // the consequence sentence lives once, in the confirm gate below.
     // …and the confirm gate behind them is untouched (AdminStudents-
     // enrollment.test.tsx owns the full dialog contract; this proves
     // the zone did not break the flow).
     fireEvent.click(dropButtons[0]!);
     expect(await screen.findByRole('button', { name: 'إلغاء نهائي' })).toBeInTheDocument();
+    // The consequence is still named — at the decision point now.
+    expect(await screen.findByText(/سيُحذف تسجيل الطالب في «هندسة البرمجيات» وتقدُّمه نهائيًا/)).toBeInTheDocument();
   });
 });
 

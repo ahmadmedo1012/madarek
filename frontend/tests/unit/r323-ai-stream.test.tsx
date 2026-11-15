@@ -403,7 +403,7 @@ describe('AiAssistantPage — SSE consumption (r323 B1.1)', () => {
     // counter renders countAr's counted-noun sentence for 24 — the
     // 11+ form takes the singular accusative تمييز WITH the numeral
     // prefixed (the bare few-form would be wrong Arabic for 24).
-    expect(screen.getByText('24 سؤالًا متبقّيًا اليوم')).toBeInTheDocument();
+    expect(screen.getByText('24 سؤالًا متبقّيًا')).toBeInTheDocument();
   });
 
   it('STOP keeps the partial text honestly (no engine tag, no feedback — nothing was persisted)', async () => {
@@ -441,7 +441,7 @@ describe('AiAssistantPage — SSE consumption (r323 B1.1)', () => {
     expect(screen.getByText(/وصلتَ حدَّ الأسئلة اليوميّ للمساعد الذكيّ \(25 سؤالًا\)/)).toBeInTheDocument();
     // A quota state is not a retryable failure — no error row, no retry.
     expect(screen.queryByRole('alert')).toBeNull();
-    expect(screen.queryByRole('button', { name: 'أعد إرسال سؤالك' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'أعد الإرسال' })).toBeNull();
   });
 
   it('a MID-STREAM typed error frame surfaces its Arabic message as a recoverable row', async () => {
@@ -456,7 +456,7 @@ describe('AiAssistantPage — SSE consumption (r323 B1.1)', () => {
     // The partial text stays AND the typed error row explains the stop.
     await screen.findByText('بداية حقيقية');
     expect(await screen.findByText('تعذّر الوصول إلى نموذج المساعد الآن — حاول مرة أخرى')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'أعد إرسال سؤالك' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'أعد الإرسال' })).toBeInTheDocument();
   });
 
   it('a mid-stream failure AFTER the done frame is impossible to double-render (done wins)', async () => {
@@ -464,7 +464,7 @@ describe('AiAssistantPage — SSE consumption (r323 B1.1)', () => {
     renderPage();
     await send('سؤال سريع');
     expect(await screen.findByText('الإجابة الكاملة من الخادم')).toBeInTheDocument();
-    expect(screen.getByText('سؤال واحد متبقٍّ اليوم')).toBeInTheDocument();
+    expect(screen.getByText('سؤال متبقٍّ')).toBeInTheDocument();
   });
 
   it('thumbs feedback POSTs the persisted messageId with rating ±1', async () => {

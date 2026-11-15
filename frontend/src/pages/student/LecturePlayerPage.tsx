@@ -369,10 +369,10 @@ export default function LecturePlayerPage() {
       <PageFrame width="default">
         <EmptyState
           icon={ListVideo}
-          title="لم يتم تحديد محاضرة"
+          title="لا محاضرة محددة"
           illustration="not-found"
-          description="الرابط لا يتضمّن محاضرة — اختر محاضرة من المقرر للمتابعة."
-          action={<Link className="btn ghost sm" to="/student/courses">العودة إلى مقرراتي</Link>}
+          description=""
+          action={<Link className="btn ghost sm" to="/student/courses">مقرراتي</Link>}
         />
       </PageFrame>
       </div>
@@ -385,7 +385,7 @@ export default function LecturePlayerPage() {
       <PageFrame width="default">
         <Link to="/student/courses" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
           <Icon icon={ChevronRight} size={13} />
-          العودة إلى مقرراتي
+          مقرراتي
         </Link>
         <ErrorState error={error} onRetry={() => refetch()} />
       </PageFrame>
@@ -631,7 +631,7 @@ export default function LecturePlayerPage() {
 
           {failedReport && (
             <div className="lecture-report-retry" role="alert">
-              <span>تعذّر تسجيل الاكتمال — قد لا يُحتسب تقدّمك.</span>
+              <span>تعذّر تسجيل الاكتمال.</span>
               <button
                 type="button"
                 className="btn sm"
@@ -644,7 +644,7 @@ export default function LecturePlayerPage() {
                 }}
                 disabled={reportWatch.isPending}
               >
-                {reportWatch.isPending ? 'يُعيد المحاولة…' : 'إعادة تسجيل الاكتمال'}
+                {reportWatch.isPending ? 'يُعيد المحاولة…' : 'إعادة التسجيل'}
               </button>
             </div>
           )}
@@ -671,7 +671,6 @@ export default function LecturePlayerPage() {
             <div className="lecture-meta-sub r305s-band-secondary">
               د. {data.offering.teacher.firstName} {data.offering.teacher.lastName} ·{' '}
               <bdi className="font-mono">{formatMmSs(currentSec)} / {formatMmSs(reportTotalSec)}</bdi>
-              {checkpointsTotal > 0 && <> · {countAr(checkpointsTotal, ['نقطة تفاعل واحدة', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])}</>}
             </div>
           </div>
 
@@ -685,7 +684,7 @@ export default function LecturePlayerPage() {
             onClick={jumpToContents}
           >
             <Icon icon={ListVideo} size={13} />
-            الفصول ونقاط التفاعل
+            المحتويات
           </button>
 
           <div className="lecture-progress">
@@ -719,11 +718,6 @@ export default function LecturePlayerPage() {
                 />
               ))}
             </div>
-            {checkpointsTotal > 0 && (
-              <div className={`lecture-progress-note${allCheckpointsAnswered ? ' done' : ''}`}>
-                أُجيب عن {checkpointsAnswered} من {countAr(checkpointsTotal, ['نقطة تفاعل واحدة', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])}
-              </div>
-            )}
           </div>
 
           {/* r164d (course flow): checkpoint continuity — after the watch
@@ -751,8 +745,8 @@ export default function LecturePlayerPage() {
               }}
             >
               <span>
-                أنهيت المشاهدة — تبقى {countAr(checkpointsTotal - checkpointsAnswered,
-                  ['نقطة تفاعل واحدة لم تُجب', 'نقطتا تفاعل لم تُجبا', 'نقاط تفاعل لم تُجب', 'نقطة تفاعل لم تُجب'])}.
+                تبقى {countAr(checkpointsTotal - checkpointsAnswered,
+                  ['نقطة تفاعل', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])}.
               </span>
               <button
                 type="button"
@@ -760,7 +754,7 @@ export default function LecturePlayerPage() {
                 onClick={() => openCheckpoint(firstUnansweredCheckpoint)}
               >
                 <Icon icon={AlertCircle} size={13} />
-                إلى نقطة التفاعل التالية
+                أجب الآن
               </button>
             </div>
           )}
@@ -788,7 +782,7 @@ export default function LecturePlayerPage() {
             >
               <span className="flex items-center gap-2">
                 <Icon icon={CheckCircle2} size={14} />
-                أنهيت هذه المحاضرة{checkpointsTotal > 0 ? ' — ونقاط تفاعلها كلّها مُجابة' : ''}.
+                أنهيت المحاضرة.
               </span>
               {nextLec ? (
                 <Link to={`/student/lectures/${nextLec.id}`} className="btn sm">
@@ -948,7 +942,7 @@ export default function LecturePlayerPage() {
               ) : (
                 // R321 B3 — the honest no-chapters copy, now the sheet's
                 // hatched EmptyCell (same words, the reserved region).
-                <EmptyCell label="لا فصول مقسَّمة" note="لم تُقسَّم المحاضرة — شاهدها كاملة دون تنقّل." />
+                <EmptyCell label="لا فصول مقسَّمة" />
               )}
             </section>
 
@@ -968,7 +962,7 @@ export default function LecturePlayerPage() {
                   <input
                     type="search"
                     className="tr-search-input"
-                    placeholder="ابحث في النص المكتوب…"
+                    placeholder="ابحث…"
                     aria-label="ابحث في النص المكتوب"
                     value={cueQuery}
                     onChange={(e) => setCueQuery(e.target.value)}
@@ -994,7 +988,7 @@ export default function LecturePlayerPage() {
                 </div>
                 {cueQuery.trim() !== '' &&
                   cues.filter((c) => c.text.includes(cueQuery.trim())).length === 0 && (
-                    <p className="lecture-sec-note">لا نتائج مطابقة في هذا النص.</p>
+                    <p className="lecture-sec-note">لا نتائج.</p>
                   )}
               </section>
             )}
@@ -1007,7 +1001,7 @@ export default function LecturePlayerPage() {
             <div className="lecture-keys" aria-label="اختصارات لوحة المفاتيح">
               <span className="lecture-keys-row">
                 <kbd className="kbd" dir="ltr">Space</kbd>
-                <span>تشغيل / إيقاف</span>
+                <span>تشغيل/إيقاف</span>
               </span>
               <span className="lecture-keys-row">
                 <kbd className="kbd" dir="ltr">→ ←</kbd>
@@ -1082,7 +1076,7 @@ export default function LecturePlayerPage() {
 
           {answerError && (
             <div className="checkpoint-error" role="alert">
-              تعذّر إرسال الإجابة — أعد المحاولة.
+              تعذّر إرسال الإجابة.
             </div>
           )}
 

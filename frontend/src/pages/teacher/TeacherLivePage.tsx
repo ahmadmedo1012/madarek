@@ -148,7 +148,7 @@ export default function TeacherLivePage() {
     } catch (err) {
       // Keep the form open with the entered values; the Arabic error
       // renders inside the card so the teacher can retry.
-      setCreateError(apiErrorMessage(err, 'تحقّق من اتصالك ثم أعد المحاولة.'));
+      setCreateError(apiErrorMessage(err, 'تحقّق من اتصالك.'));
     }
   };
 
@@ -162,18 +162,14 @@ export default function TeacherLivePage() {
     <div className="page">
       <header className="page-header">
         <div className="page-title-block">
-          <span className="hr-brow">التعليم المتزامن</span>
           <h1 className="page-title">إدارة البث المباشر</h1>
-          <p className="page-subtitle">
-            جدولة المحاضرات الحية وتشغيلها — الطلاب يرون جلسات مقرّراتهم فقط.
-          </p>
         </div>
         <button
           type="button"
           className="btn accent hr-cta"
           onClick={() => (showForm ? requestClose() : setShowForm(true))}
         >
-          <Icon icon={Plus} size={14} /> {showForm ? 'إغلاق النموذج' : 'جلسة جديدة'}
+          <Icon icon={Plus} size={14} /> {showForm ? 'إغلاق' : 'جلسة جديدة'}
         </button>
       </header>
 
@@ -210,19 +206,17 @@ export default function TeacherLivePage() {
                 /* A6 P2 (22-a): keep the honest zeros, add the one-word
                    context — the bare 0/0/0 wall read as a malfunction
                    ("Zero Wall" / "depressing" VLM verdicts). */
-                trend: live.length === 0 ? 'لا بثّ نشط حالياً' : 'يمكن إنهاؤها من هنا',
+                trend: live.length === 0 ? 'لا بثّ' : undefined,
                 trendTone: 'flat',
               },
               {
                 label: 'مجدولة',
                 value: scheduled.length.toString(),
-                trend: scheduled.length === 0 ? 'لا جلسات قادمة' : 'قادمة في جدولك',
-                trendTone: scheduled.length === 0 ? 'flat' : 'up',
               },
               {
                 label: 'منتهية',
                 value: past.length.toString(),
-                trend: past.length === 0 ? 'لا جلسات سابقة' : 'معروضة في الأسفل',
+                trend: past.length === 0 ? 'لا جلسات سابقة' : undefined,
                 trendTone: 'flat',
               },
             ]}
@@ -230,12 +224,12 @@ export default function TeacherLivePage() {
 
           {/* New-session form */}
           {showForm && (
-            <Card title="جلسة بث جديدة" icon={Plus}>
+            <Card title="جلسة جديدة" icon={Plus}>
               <form onSubmit={onSubmit} className="flex-col gap-3">
                 {offerings.isError && (
                   <div className="form-feedback fail" role="alert">
                     <Icon icon={AlertCircle} size={14} />
-                    <span className="flex-1">تعذَّر تحميل مقرّراتك — اختر المقرر بعد إعادة المحاولة.</span>
+                    <span className="flex-1">تعذَّر تحميل مقرّراتك.</span>
                     <button type="button" className="btn ghost sm" onClick={() => offerings.refetch()}>
                       <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
                     </button>
@@ -251,7 +245,7 @@ export default function TeacherLivePage() {
                       disabled={offerings.isError}
                     >
                       <option value="">
-                        {offerings.isPending ? 'جارٍ تحميل مقرّراتك…' : '— اختر مقرراً —'}
+                        {offerings.isPending ? 'جارٍ التحميل…' : '— اختر مقرراً —'}
                       </option>
                       {offerings.data?.map((o) => (
                         <option key={o.id} value={o.id}>
@@ -274,7 +268,7 @@ export default function TeacherLivePage() {
                     id="live-when"
                     hint={form.scheduledAt
                       ? <>المحدَّد: {formatDateTimeAr(form.scheduledAt)}</>
-                      : 'اختر من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'}
+                      : 'اختر من التقويم.'}
                   >
                     <input
                       type="datetime-local"
@@ -290,7 +284,7 @@ export default function TeacherLivePage() {
                   <input
                     type="text"
                     className="input"
-                    placeholder="مثال: شرح الوحدة الثالثة — التعلم الآلي"
+                    placeholder="مثال: الوحدة الثالثة"
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
                     required
@@ -301,7 +295,7 @@ export default function TeacherLivePage() {
                   <input
                     type="text"
                     className="input"
-                    placeholder="مثال: الانحدار الخطي"
+                    placeholder="الانحدار الخطي"
                     value={form.topic}
                     onChange={(e) => setForm({ ...form, topic: e.target.value })}
                     maxLength={200}
@@ -322,7 +316,7 @@ export default function TeacherLivePage() {
                   <textarea
                     className="input"
                     rows={3}
-                    placeholder="الموضوعات التي ستغطّيها الجلسة…"
+                    placeholder="ما ستغطّيه الجلسة…"
                     value={form.description}
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                     maxLength={2000}
@@ -362,7 +356,7 @@ export default function TeacherLivePage() {
 
           {/* Live now */}
           {live.length > 0 && (
-            <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>مباشرة الآن</>} icon={Radio} subtitle="جلسات نشطة — أنهِها من هنا">
+            <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>مباشرة الآن</>} icon={Radio}>
               <div className="flex-col gap-2">
                 {live.map((s) => (
                   <SessionRow
@@ -384,15 +378,15 @@ export default function TeacherLivePage() {
             icon={Calendar}
             subtitle={scheduled.length === 0
               ? 'لا جلسات مجدولة'
-              : countAr(scheduled.length, ['جلسة مجدولة واحدة', 'جلستان مجدولتان', 'جلسات مجدولة', 'جلسة مجدولة'])}
+              : countAr(scheduled.length, ['جلسة مجدولة', 'جلستان مجدولتان', 'جلسات مجدولة', 'جلسة مجدولة'])}
           >
             {scheduled.length === 0 ? (
               /* r149 (R3-A1 #6): EmptyState الكنونية — كانت يدوية بعلامة
                  مزدوجة (رسم + أيقونة معًا) وبلا تشريح العنوان/الدور. */
               <EmptyState
                 illustration="empty-list"
-                title="لا توجد جلسات قادمة"
-                description="أنشئ جلسة جديدة لتظهر هنا."
+                title="لا جلسات قادمة"
+                description=""
               />
             ) : (
               <div className="flex-col gap-2">
@@ -496,12 +490,12 @@ function SessionRow({
       )}
       <div className="run-row-actions">
         {onStart && (
-          <button type="button" className="btn primary sm" onClick={onStart} title="بدء البث" disabled={busy}>
+          <button type="button" className="btn primary sm" onClick={onStart} disabled={busy}>
             <Icon icon={Play} size={12} /> بدء
           </button>
         )}
         {onEnd && (
-          <button type="button" className="btn sm" onClick={onEnd} title="إنهاء البث" disabled={busy}>
+          <button type="button" className="btn sm" onClick={onEnd} disabled={busy}>
             <Icon icon={Square} size={12} /> إنهاء
           </button>
         )}
@@ -510,7 +504,6 @@ function SessionRow({
             type="button"
             className="btn ghost sm"
             onClick={onCancel}
-            title="إلغاء الجلسة"
             aria-label="إلغاء الجلسة"
             disabled={busy}
           >

@@ -48,7 +48,7 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
   // «تعذّر إجراء الفحص» alert below (the scan itself could not run).
   CHECKS_FAILED: 'تعذّر اجتياز الفحص',
   GRADED: 'مُقيَّم',
-  PUBLISHED: 'مُنشور في المكتبة',
+  PUBLISHED: 'منشور',
 };
 
 /* R305-A7: status chips — dot + Arabic label (state never rides color
@@ -80,22 +80,25 @@ function StatusChip({ tone, label }: { tone: ChipTone; label: string }) {
    r304: the workflow is a sequence the student can READ. Each status
    maps to ONE next action (or an explicit «no action needed»), in the
    same vocabulary the row's badge and the pipeline rail speak. */
+const SCANNING_NOW = { k: 'جارٍ الآن', hint: 'الفحص يجري — النتائج تظهر تلقائياً.' };
+const UPLOAD_NEW = 'رفع بحث جديد';
+const UPLOADING_FILE = 'جارٍ رفع الملف…';
 function nextStepFor(paper: ResearchPaper, isScanning: boolean): { k: string; hint: string } {
   switch (paper.status) {
     case 'UPLOADED':
       return isScanning
-        ? { k: 'جارٍ الآن', hint: 'الفحص يجري — النتائج تظهر تلقائياً.' }
+        ? SCANNING_NOW
         : { k: 'الخطوة التالية', hint: 'ابدأ الفحص (انتحال + ذكاء اصطناعي).' };
     case 'SCANNING':
-      return { k: 'جارٍ الآن', hint: 'الفحص يجري — النتائج تظهر تلقائياً.' };
+      return SCANNING_NOW;
     case 'CHECKS_PASSED':
-      return { k: 'الخطوة التالية', hint: 'بانتظار تقييم أستاذك — لا إجراء مطلوب منك الآن.' };
+      return { k: 'الخطوة التالية', hint: 'بانتظار تقييم أستاذك — لا إجراء مطلوب.' };
     case 'CHECKS_FAILED':
-      return { k: 'الخطوة التالية', hint: 'ارفع نسخة معدّلة — عنوانك وملخّصك يُعبّآن مسبقاً.' };
+      return { k: 'الخطوة التالية', hint: 'ارفع نسخة معدّلة — تُعبّأ مسبقاً.' };
     case 'GRADED':
-      return { k: 'التقييم وصل', hint: 'راجع الدرجة والملاحظات — النشر قرار الأستاذ.' };
+      return { k: 'التقييم وصل', hint: 'راجع الدرجة والملاحظات — النشر للأستاذ.' };
     case 'PUBLISHED':
-      return { k: 'مكتمل', hint: 'البحث متاح للجميع في مكتبة الجامعة.' };
+      return { k: 'مكتمل', hint: 'متاح في المكتبة.' };
   }
 }
 
@@ -139,8 +142,8 @@ export default function StudentResearchPage() {
    * (a failed paper) rides a danger dot + the hint line, never color
    * alone. */
   const kpis: Array<{ label: string; value: ReactNode; hint: string; flag?: boolean }> = [
-    { label: 'إجمالي بحوثك', value: formatInt(papers.length), hint: 'منذ أول رفعة' },
-    { label: 'قيد المراجعة', value: formatInt(pendingCount), hint: pendingCount > 0 ? 'بانتظار خطوة تالية' : 'لا شيء معلّق' },
+    { label: 'إجمالي بحوثك', value: formatInt(papers.length), hint: 'منذ البداية' },
+    { label: 'قيد المراجعة', value: formatInt(pendingCount), hint: pendingCount > 0 ? 'بانتظار خطوة' : 'لا شيء' },
     { label: 'مُقيَّمة', value: formatInt(gradedCount), hint: gradedCount > 0 ? 'منها المنشور' : 'لا توجد بعد' },
     { label: 'تعذّر اجتياز الفحص', value: formatInt(failedCount), hint: failedCount > 0 ? 'تحتاج إعادة رفع' : 'لا شيء', flag: failedCount > 0 },
   ];
@@ -151,7 +154,7 @@ export default function StudentResearchPage() {
     try {
       await scan.mutateAsync(id);
     } catch (e) {
-      setScanError(apiErrorMessage(e, 'تعذَّر بدء الفحص — تحقّق من اتصالك وحاول مرة أخرى.'));
+      setScanError(apiErrorMessage(e, 'تعذَّر بدء الفحص — تحقّق من اتصالك.'));
     } finally {
       setScanningId(null);
     }
@@ -185,12 +188,10 @@ export default function StudentResearchPage() {
     <PageFrame width="default">
       <PageHeader
         title="بحوثي العلمية"
-        description={
-          /* r168b: the scan is a deterministic simulation until a real
-              detection provider is activated — the results area carries
-              the note since r154b; the header keeps matching it. */
-          'ارفع بحوثك، اعرضها على فحص الانتحال (محاكاة)، ثم أرسلها لأستاذك للتقييم والنشر في المكتبة.'
-        }
+        /* r168b: the scan is a deterministic simulation until a real
+            detection provider is activated — the results area and the
+            explainer below carry the «محاكاة» note; the header keeps it
+            out (R353 copy diet: one disclosure per screen). */
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
            «المكتبة الإلكترونية» is the published shelf the header's
@@ -227,13 +228,10 @@ export default function StudentResearchPage() {
               <div className="r305rp-res-cta-body">
                 <span className="r305rp-eyebrow">الخطوة الأولى</span>
                 <div className="r305rp-res-cta-title">بحث جديد؟</div>
-                <div className="r305rp-res-cta-desc">
-                  ارفعه الآن — يُفحص، ثم يقيّمه أستاذك، وتميّزه يُنشر.
-                </div>
               </div>
               <button type="button" className="btn primary" onClick={openFreshUpload}>
                 <Icon icon={Upload} size={14} />
-                رفع بحث جديد
+                {UPLOAD_NEW}
               </button>
             </section>
           )}
@@ -353,7 +351,7 @@ export default function StudentResearchPage() {
               });
               setUploadOpen(false);
               stagedUpload.current = null;
-              toast.success('سيخضع البحث لفحص الانتحال ثم يصل إلى أستاذك.', {
+              toast.success('سيُفحص ثم يصل إلى أستاذك.', {
                 title: 'تمّ رفع البحث',
               });
             } catch (e) {
@@ -364,7 +362,7 @@ export default function StudentResearchPage() {
               // generic «تحقّق من اتصالك» fallback; the quota 413 keeps
               // its own honest backend message.
               setUploadError(
-                pdfUploadErrorMessage(e, 'تعذَّر رفع البحث — تحقّق من اتصالك وحاول مرة أخرى.'),
+                pdfUploadErrorMessage(e, 'تعذَّر رفع البحث — تحقّق من اتصالك.'),
               );
             }
           }}
@@ -383,13 +381,12 @@ function EmptyUpload({ onOpen }: { onOpen: () => void }) {
   return (
     <EmptyState
       icon={BookMarked}
-      title="لم ترفع أي بحث بعد"
-      description="ارفع أول بحث ليُفحص ثم يُقيَّم من الأستاذ."
+      title="لا بحوث بعد"
       illustration="empty-research"
       action={
         <button type="button" className="btn primary" onClick={onOpen}>
           <Icon icon={Upload} size={14} />
-          رفع بحث جديد
+          {UPLOAD_NEW}
         </button>
       }
     />
@@ -438,7 +435,7 @@ function PaperRow({
         />
       }
       defaultExpanded={mustAct}
-      expandLabel={`تفاصيل البحث: ${paper.title}`}
+      expandLabel={`تفاصيل: ${paper.title}`}
     >
       <div className="flex-col gap-3">
         <StatusPipeline status={paper.status} paper={paper} />
@@ -460,7 +457,7 @@ function PaperRow({
                   voice and no double-fire guard). */}
               <button type="button" className="btn outline" onClick={onScan} disabled={isScanning} aria-disabled={isScanning || undefined}>
                 <Icon icon={ScanSearch} size={14} />
-                {isScanning ? 'جارٍ بدء الفحص…' : 'ابدأ الفحص الآن'}
+                {isScanning ? 'جارٍ بدء الفحص…' : 'ابدأ الفحص'}
               </button>
             </div>
           )}
@@ -504,23 +501,20 @@ function PaperRow({
           <div className="rs-row-alert" role="alert">
             <div className="rs-row-alert-title">
               <Icon icon={AlertCircle} size={14} />
-              تجاوز البحث الحدود التجريبية المسموح بها (محاكاة)
+              تجاوز الحدود المسموح بها (محاكاة)
             </div>
           </div>
         )}
 
-        {paper.status === 'PUBLISHED' && (
-          <p className="rs-row-published" style={{ margin: 0 }}>
-            <Icon icon={Sparkles} size={13} />
-            تم نشر هذا البحث في مكتبة الجامعة.
-          </p>
-        )}
+        {/* R353 copy diet: the published row already speaks via the
+            «منشور» chip + the مكتمل next-step line — the third
+            repetition paragraph is gone. */}
 
         {(paper.status === 'GRADED' || paper.status === 'PUBLISHED') && readerPath && (
           <div className="rs-row-actions">
             <RouterLink to={readerPath} className="btn outline">
               <Icon icon={MessageSquare} size={13} />
-              مراجعة البحث مع ملاحظات الأستاذ
+              ملاحظات الأستاذ
             </RouterLink>
           </div>
         )}
@@ -532,10 +526,10 @@ function PaperRow({
 /* ─── Process explainer (helps demo storytelling) ──────── */
 function ProcessExplainer() {
   const STEPS: Array<{ n: number; title: string; desc: string; icon: LucideIcon }> = [
-    { n: 1, title: 'ارفع بحثك', desc: 'العنوان، الملخّص، والمقرّر المرتبط.', icon: Upload },
+    { n: 1, title: 'ارفع بحثك', desc: 'العنوان والملخّص والمقرّر.', icon: Upload },
     { n: 2, title: 'فحص أوتوماتيكي', desc: 'كشف الانتحال + الذكاء الاصطناعي (محاكاة).', icon: ScanSearch },
-    { n: 3, title: 'تقييم الأستاذ', desc: 'بعد اجتياز الفحص، يُقيِّم الأستاذ البحث من 20.', icon: FileText },
-    { n: 4, title: 'النشر في المكتبة', desc: 'البحوث المتميزة تُضاف إلى مكتبة الجامعة.', icon: BookMarked },
+    { n: 3, title: 'تقييم الأستاذ', desc: 'يُقيِّم الأستاذ البحث من 20.', icon: FileText },
+    { n: 4, title: 'النشر في المكتبة', desc: 'المتميزة تُنشر.', icon: BookMarked },
   ];
   return (
     <section aria-label="كيف يعمل النظام" className="r305rp-res-how">
@@ -671,7 +665,7 @@ function UploadModal({
       closeOnEscape={!escapeLocked}
     >
       <div className="modal-header">
-        <div className="modal-title">رفع بحث جديد</div>
+        <div className="modal-title">{UPLOAD_NEW}</div>
         <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={isPending}>
           <Icon icon={X} size={16} />
         </button>
@@ -683,13 +677,13 @@ function UploadModal({
           label="عنوان البحث (مطلوب)"
           id={titleId}
           error={title.trim().length > 0 && title.trim().length < 3
-            ? 'يجب أن يكون 3 أحرف على الأقل.'
+            ? '3 أحرف على الأقل.'
             : undefined}
         >
           <input
             type="text"
             className="input"
-            placeholder="مثال: تطبيق أنماط التصميم في تطبيقات الويب"
+            placeholder="مثال: أنماط التصميم"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
@@ -699,18 +693,18 @@ function UploadModal({
           <textarea
             className="input"
             rows={4}
-            placeholder="اكتب ملخصاً مختصراً عن الفكرة، المنهج، والنتائج…"
+            placeholder="الفكرة والمنهج والنتائج…"
             value={abstractText}
             onChange={(e) => setAbstractText(e.target.value)}
             style={{ resize: 'vertical', fontFamily: 'inherit' }}
           />
         </FormField>
 
-        <FormField label="المقرّر الأكاديمي المرتبط (اختياري)" id={offeringFieldId}>
+        <FormField label="المقرّر المرتبط (اختياري)" id={offeringFieldId}>
           <select className="input" value={offeringId} onChange={(e) => setOfferingId(e.target.value)}>
-            <option value="">— غير مرتبط بمقرّر محدّد —</option>
+            <option value="">— بدون مقرّر —</option>
             {enrollmentsPending && (
-              <option value="" disabled>جارٍ تحميل مقرراتك المسجَّلة…</option>
+              <option value="" disabled>جارٍ تحميل المقرّرات…</option>
             )}
             {enrollments.map((e) => (
               <option key={e.offering.id} value={e.offering.id}>
@@ -723,7 +717,7 @@ function UploadModal({
         <FormField
           label="ملف البحث (PDF، اختياري)"
           id={fileId}
-          hint="PDF فقط، بحد أقصى 20 ميغابايت — بدونه يُسجَّل البحث بعنوانه وملخصه فقط."
+          hint="PDF فقط، حتى 20 ميغابايت."
           error={fileError ?? undefined}
         >
           <input
@@ -758,7 +752,7 @@ function UploadModal({
             {file === stagedFile && (
               <p className="text-sm text-subtle" role="note" style={{ marginBlockStart: 'calc(-1 * var(--sp-1))' }}>
                 <Icon icon={CheckCircle2} size={13} />{' '}
-                الملف مرفوع بالفعل — إعادة المحاولة ستعيد استخدامه دون رفعه من جديد.
+                الملف مرفوع بالفعل — ستعيد المحاولة استخدامه.
               </p>
             )}
             {/* r164f: the real upload progress — a 20MB body on a slow
@@ -766,7 +760,7 @@ function UploadModal({
             {filePending && fileProgress !== null && (
               <ProgressBar
                 value={Math.round(fileProgress * 100)}
-                label="جارٍ رفع الملف…"
+                label={UPLOADING_FILE}
                 ariaLabel="تقدّم رفع الملف"
                 showValue
               />
@@ -786,7 +780,7 @@ function UploadModal({
             hear it too. */}
         {!canSubmit && !isPending && (
           <p role="status" aria-live="polite" className="form-field-hint">
-            أكمل عنوان البحث (3 أحرف على الأقل) لتتمكّن من الرفع.
+            أكمل العنوان (3 أحرف على الأقل).
           </p>
         )}
         <button type="button" className="btn ghost" onClick={requestClose} disabled={isPending}>
@@ -800,7 +794,7 @@ function UploadModal({
           onClick={submit}
         >
           <Icon icon={Upload} size={14} />
-          {filePending ? 'جارٍ رفع الملف…' : isPending ? 'جارٍ الرفع…' : 'رفع البحث'}
+          {filePending ? UPLOADING_FILE : isPending ? 'جارٍ الرفع…' : 'رفع البحث'}
         </button>
       </div>
       {guard}

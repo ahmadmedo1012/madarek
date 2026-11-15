@@ -265,14 +265,13 @@ describe('G · AiAssistantPage — the header rides the family patterns contract
         <AiAssistantPage />
       </MemoryRouter>,
     );
-    expect(screen.getByText('لا توجد محادثات سابقة بعد')).toBeInTheDocument();
-    expect(screen.getByText('ابدأ بأول سؤال وستظهر محادثاتك هنا.')).toBeInTheDocument();
-    // The kit contract: the §B2 hatched cell (hatch + label + note).
+    expect(screen.getByText('لا محادثات سابقة بعد')).toBeInTheDocument();
+    // R355 copy diet: explainer cut (the «ابدأ بأول سؤال…» note no longer renders)
+    // The kit contract: the §B2 hatched cell (hatch + label).
     const cell = container.querySelector('.r319s-empty');
     expect(cell).not.toBeNull();
     expect(container.querySelector('.r319s-empty-hatch')).not.toBeNull();
-    expect(cell?.querySelector('.r319s-empty-label')?.textContent).toBe('لا توجد محادثات سابقة بعد');
-    expect(cell?.querySelector('.r319s-empty-note')?.textContent).toBe('ابدأ بأول سؤال وستظهر محادثاتك هنا.');
+    expect(cell?.querySelector('.r319s-empty-label')?.textContent).toBe('لا محادثات سابقة بعد');
   });
 });
 

@@ -75,7 +75,7 @@ describe('r170d — SubmitAssignmentModal: focus moves to the first invalid fiel
       </MemoryRouter>,
     );
     const textarea = screen.getByLabelText('إجابتك النصيّة') as HTMLTextAreaElement;
-    fireEvent.click(screen.getByRole('button', { name: 'تسليم الواجب' }));
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ التسليم' })); // R355 copy diet: submit label tightened
     await flush();
 
     // error text exists, is role=alert, and is aria-describedby-ASSOCIATED
@@ -102,7 +102,7 @@ describe('r170d — SubmitAssignmentModal: focus moves to the first invalid fiel
     fireEvent.change(screen.getByLabelText('رابط ملف (اختياري)'), {
       target: { value: 'http://example.com/x.pdf' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'تسليم الواجب' }));
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ التسليم' })); // R355 copy diet: submit label tightened
     await flush();
 
     expect(screen.getByRole('alert').textContent).toContain('https://');
@@ -119,7 +119,7 @@ describe('r170d — SubmitAssignmentModal: focus moves to the first invalid fiel
     fireEvent.change(screen.getByLabelText('إجابتك النصيّة'), {
       target: { value: 'إجابتي على الواجب' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'تسليم الواجب' }));
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ التسليم' })); // R355 copy diet: submit label tightened
     await flush();
 
     expect(h.mutateAsync).toHaveBeenCalledTimes(1);

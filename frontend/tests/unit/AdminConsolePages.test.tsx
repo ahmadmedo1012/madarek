@@ -314,7 +314,7 @@ describe('AdminDashboardPage — action strip + navigable KPIs (§6 steps 1/3)',
     renderPage(<AdminDashboardPage />);
 
     // Zero-content courses row → /admin/courses
-    const coursesRow = await screen.findByText('مقرّرات بلا محتوى تعليميّ');
+    const coursesRow = await screen.findByText('مقرّرات بلا محتوى');
     expect(coursesRow.closest('a')!.getAttribute('href')).toBe('/admin/courses');
     // Graded-papers row → the register, pre-filtered (§5 landing craft)
     const papersRow = screen.getByText('بحوث مقيَّمة بانتظار النشر');
@@ -530,7 +530,7 @@ describe('AdminCoursesPage — server-side filters + meta pagination (P2-1)', ()
 
     // Server-side search (debounce fires inside waitFor's act scope).
     fireEvent.change(screen.getByLabelText('البحث في المقرّرات'), { target: { value: 'zzz' } });
-    await screen.findByText('لا توجد نتائج');
+    await screen.findByText('لا نتائج');
     await waitFor(() => {
       expect(coursesCalls().some((p) => p.q === 'zzz')).toBe(true);
     });
@@ -640,7 +640,7 @@ describe('AdminCoursesPage — CRUD wiring (r153i)', () => {
     // The in-modal error the old code could never show (it closed on click).
     expect(await screen.findByText('تعذّر حفظ المقرّر')).toBeInTheDocument();
     // And the modal is still open — the draft is not lost.
-    expect(screen.getByText('إضافة مقرّر جديد')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'إضافة مقرّر' })).toBeInTheDocument();
   });
 });
 
@@ -672,7 +672,7 @@ describe('AdminFacultiesPage — retrieval affordances (P2-3)', () => {
     expect(screen.getByText(/بعد التصفيّة/)).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText('البحث في الكلّيّات'), { target: { value: 'zzz' } });
-    expect(await screen.findByText('لا توجد نتائج مطابقة')).toBeInTheDocument();
+    expect(await screen.findByText('لا نتائج مطابقة')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /مسح البحث والتصفيّة/ }));
     await waitFor(() => {
       expect(screen.getByText('كلية الهندسة')).toBeInTheDocument();
@@ -692,8 +692,11 @@ describe('AdminDigitalPage — one adoption register (§6 step 4)', () => {
 
     expect(await screen.findByText('تبنّي المكوّنات')).toBeInTheDocument();
     expect(screen.getByText('محاولات أداء')).toBeInTheDocument();
-    expect(screen.getByText('جلسات بثّ مباشر')).toBeInTheDocument();
-    expect(screen.getByText('أوراق علميّة في النظام')).toBeInTheDocument();
+    // R355 copy diet: the live-sessions metric lost «جلسات» (its sibling
+    // «جلسات معامل» keeps it where it names sessions).
+    expect(screen.getByText('بثّ مباشر')).toBeInTheDocument();
+    // R355 copy diet: «في النظام» tail cut.
+    expect(screen.getByText('أوراق علميّة')).toBeInTheDocument();
     // KPI strip keeps its pair of headline adoption metrics.
     expect(screen.getByText('نسبة التبنّي')).toBeInTheDocument();
   });

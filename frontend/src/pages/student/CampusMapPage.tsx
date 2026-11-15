@@ -49,6 +49,9 @@ function arCount(n: number, one: string, two: string, few: string, many: string)
   return `${formatNum(n)} ${many}`;
 }
 
+/* One counted-noun tuple shared by both BarCount sr labels (dedup). */
+const COLLEGE_UNIT = ['كلّيّة واحدة', 'كلّيّتان', 'كليّات', 'كلّيّة'] as const;
+
 export default function CampusMapPage() {
   const facs = useFaculties(useCurrentInstitutionSlug()); // r180: caller-institution scoping
   const faculties = facs.data ?? [];
@@ -80,9 +83,7 @@ export default function CampusMapPage() {
         index="01"
         eyebrow="خدمات الجامعة"
         title="دليل الحرم الجامعيّ"
-        description={
-          'كلّيّات مؤسسة مدارك النموذجية بحسب الحرم — بيانات عرض اصطناعية.'
-        }
+        description="بيانات عرض اصطناعية."
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
            «المؤسسة النموذجية» is the campus's fact sheet (the
@@ -112,18 +113,18 @@ export default function CampusMapPage() {
       <section className="ml-sec" aria-labelledby="map-sec-footprint">
         <SectionBar
           index="02"
-          title="انتشار الكليّات على المدن"
+          title="انتشار الكليّات"
           id="map-sec-footprint"
           meta={
             !facs.isPending && !facs.isError && faculties.length > 0 ? (
               <BarCount
                 n={faculties.length}
-                srLabel={arCount(faculties.length, 'كلّيّة واحدة', 'كلّيّتان', 'كليّات', 'كلّيّة')}
+                srLabel={arCount(faculties.length, ...COLLEGE_UNIT)}
               />
             ) : undefined
           }
         />
-        <p className="ml-sec-note">طول الشريط يتناسب مع عدد الكليّات — انقر مدينة لتصفية الدليل.</p>
+        <p className="ml-sec-note">انقر مدينة لتصفية الدليل.</p>
         {facs.isPending ? (
           <div className="flex-col gap-2" aria-busy="true">
             {[0, 1, 2, 3].map((i) => (
@@ -196,7 +197,7 @@ export default function CampusMapPage() {
               facs.isSuccess ? (
                 <BarCount
                   n={visible.length}
-                  srLabel={arCount(visible.length, 'كلّيّة واحدة', 'كلّيّتان', 'كليّات', 'كلّيّة')}
+                  srLabel={arCount(visible.length, ...COLLEGE_UNIT)}
                 />
               ) : undefined
             }
@@ -209,8 +210,7 @@ export default function CampusMapPage() {
                  reserved-but-empty region: the hatched EmptyCell, same
                  honest copy. */
               <EmptyCell
-                label="لا توجد كلّيّات في هذه المدينة"
-                note="جرِّب اختيار مدينة أخرى من انتشار الكليّات الأعلى."
+                label="لا كلّيّات في هذه المدينة"
               />
             }
           >
@@ -276,7 +276,7 @@ export default function CampusMapPage() {
       <div className="r305s-next r305p-rail">
         <Link to="/student/university" className="btn primary sm">
           <Icon icon={ArrowLeft} size={13} />
-          صفحة المؤسسة النموذجية الكاملة
+          صفحة المؤسسة الكاملة
         </Link>
       </div>
     </PageFrame>

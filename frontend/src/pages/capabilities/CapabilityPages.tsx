@@ -60,7 +60,7 @@ export function CapabilitiesPage() {
               قدرات <em>موثَّقة</em>، لا ادّعاءات
             </RevealCssClass>
             <RevealCssClass as="p" className="cu-lede" delay={2}>
-              كل رقم من حالة الميزات في النظام — يتغيّر مع التحديثات، لا الحملات.
+              كل رقم من حالة الميزات في النظام.
             </RevealCssClass>
             {/* D9: the honest CTA pair at the page head (the D7c measured
                 seat) — the sister public page + the real registry page; the
@@ -91,8 +91,6 @@ export function CapabilitiesPage() {
               نحو تعليمٍ <em>يعرف كلَّ طالب</em>
             </RevealCssClass>
             <RevealCssClass as="p" className="cu-lede" delay={2}>
-              نبني منظومة تتذكّر ما شاهد الطالب وما أخطأ وما ينقصه —
-              ثم تقترح الخطوة التالية. بلا أرقام مختلقة ولا وعود بلا تنفيذ:
               كل حالة أدناه كما هي في النظام اليوم.
             </RevealCssClass>
           </div>

@@ -25,6 +25,17 @@ import { StatStripSkeleton } from '../../components/owner/StripSkeletons';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip, Legend);
 
+/* Copy diet (single source): the title + breadcrumb + card titles
+ * render on up to three branches (pending / error / settled) — one
+ * literal each, referenced everywhere. */
+const PAGE_TITLE = 'النظرة التعليميّة';
+const BREADCRUMB_ROOT = 'لوحة المالك';
+const T_FACULTY = 'المقرّرات حسب الكلّيّة';
+const T_TOP = 'أكثر المقرّرات تسجيلاً';
+const T_WORKLOAD = 'توزيع حِمل أعضاء هيئة التدريس';
+const T_TREND = 'اتّجاه الحضور';
+const L_COURSE_COUNT = 'عدد المقرّرات';
+
 /** Proper Arabic counted plural for teacher counts (bucket labels). */
 function teachersCountLabel(n: number): string {
   if (n === 0) return 'لا أساتذة';
@@ -67,7 +78,7 @@ export function OwnerEducationPage() {
   const barData = useMemo(() => ({
     labels: (edu?.byFaculty ?? []).map((f) => f.name),
     datasets: [{
-      label: 'عدد المقررات',
+      label: L_COURSE_COUNT,
       data: (edu?.byFaculty ?? []).map((f) => f.courseCount),
       backgroundColor: `color-mix(in srgb, ${c.accent} 60%, transparent)`,
       borderColor: c.accent,
@@ -120,16 +131,16 @@ export function OwnerEducationPage() {
          so the scoped sheet reaches the skeleton band too. */
       <div className="page r305ao" aria-busy="true">
         <PatternsPageHeader
-          title="النظرة التعليميّة"
+          title={PAGE_TITLE}
           description="جارٍ جمع البيانات…"
-          breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'النظرة التعليميّة' }]}
+          breadcrumbs={[{ label: BREADCRUMB_ROOT, to: '/owner/dashboard' }, { label: PAGE_TITLE }]}
         />
         {/* Shape-matched skeletons — one per card the data will fill. */}
         <StatStripSkeleton />
-        <Card title="المقرّرات حسب الكلّيّة"><ChartSkeleton height={240} /></Card>
-        <Card title="أكثر المقرّرات تسجيلاً"><TableSkeleton rows={5} cols={4} /></Card>
-        <Card title="توزيع حِمل أعضاء هيئة التدريس"><ListSkeleton rows={5} /></Card>
-        <Card title="اتّجاه الحضور"><ChartSkeleton height={240} /></Card>
+        <Card title={T_FACULTY}><ChartSkeleton height={240} /></Card>
+        <Card title={T_TOP}><TableSkeleton rows={5} cols={4} /></Card>
+        <Card title={T_WORKLOAD}><ListSkeleton rows={5} /></Card>
+        <Card title={T_TREND}><ChartSkeleton height={240} /></Card>
       </div>
     );
   }
@@ -139,8 +150,8 @@ export function OwnerEducationPage() {
          state renders under the same scoped grammar. */
       <div className="page r305ao">
         <PatternsPageHeader
-          title="النظرة التعليميّة"
-          breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'النظرة التعليميّة' }]}
+          title={PAGE_TITLE}
+          breadcrumbs={[{ label: BREADCRUMB_ROOT, to: '/owner/dashboard' }, { label: PAGE_TITLE }]}
         />
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       </div>
@@ -167,7 +178,7 @@ export function OwnerEducationPage() {
   // Workload buckets — share-of-teachers meters (owner.css §6-b); the
   // staggered fill on load is the page's authored moment.
   const buckets: Array<{ label: string; n: number; color: string; aria: string }> = [
-    { label: 'بدون عرض هذا الفصل', n: workloadBuckets.idle, color: 'var(--neutral-400)', aria: 'نسبة الأساتذة بدون عرض هذا الفصل' },
+    { label: 'بدون عرض', n: workloadBuckets.idle, color: 'var(--neutral-400)', aria: 'نسبة الأساتذة بدون عرض هذا الفصل' },
     { label: 'عرض واحد', n: workloadBuckets.one, color: c.accent, aria: 'نسبة الأساتذة بعرض واحد هذا الفصل' },
     { label: 'عرضان', n: workloadBuckets.two, color: c.success, aria: 'نسبة الأساتذة بعرضين هذا الفصل' },
     { label: '3 عروض', n: workloadBuckets.three, color: c.gold, aria: 'نسبة الأساتذة بثلاثة عروض هذا الفصل' },
@@ -179,9 +190,8 @@ export function OwnerEducationPage() {
        tables and chart containers all key off the scoped sheet. */
     <div className="page r305ao">
       <PatternsPageHeader
-        title="النظرة التعليميّة"
-        description="إحصائيات المقرّرات وهيئة التدريس والطلاب"
-        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'النظرة التعليميّة' }]}
+        title={PAGE_TITLE}
+        breadcrumbs={[{ label: BREADCRUMB_ROOT, to: '/owner/dashboard' }, { label: PAGE_TITLE }]}
         /* R341 D11: the [08] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
         index="08"
@@ -207,20 +217,20 @@ export function OwnerEducationPage() {
           { label: 'إجمالي المقرّرات', value: formatNum(totals.totalCourses) },
           { label: 'عدد الأساتذة', value: formatNum(totals.teachers) },
           { label: 'العروض النشطة', value: formatNum(totals.totalOfferings) },
-          { label: 'متوسط التسجيل في العرض', value: formatNum(totals.avgEnrolment) },
+          { label: 'متوسط التسجيل', value: formatNum(totals.avgEnrolment) },
         ]}
       />
 
-      <Card title="المقرّرات حسب الكلّيّة" subtitle="عدد المقرّرات المُدرَّجة في كل كلّيّة">
+      <Card title={T_FACULTY}>
         {byFaculty.length === 0 ? (
-          <EmptyState illustration="empty-courses" title="لا مقرّرات بعد" description="تظهر حين تُسجَّل مقرّرات على الكلّيّات." />
+          <EmptyState illustration="empty-courses" title="لا مقرّرات بعد" />
         ) : (
           <ChartFrame
             ariaLabel="مخطط أعمدة أفقي — عدد المقرّرات في كل كلّيّة"
             summary={`${facultiesCountLabel(byFaculty.length)} بها مقرّرات؛ أكبرها ${byFaculty.reduce((a, b) => (b.courseCount > a.courseCount ? b : a)).name}.`}
             table={{
-              caption: 'المقرّرات حسب الكلّيّة',
-              columns: ['الكلّيّة', 'عدد المقرّرات'],
+              caption: T_FACULTY,
+              columns: ['الكلّيّة', L_COURSE_COUNT],
               rows: byFaculty.map((f) => [f.name, f.courseCount]),
             }}
             height={barHeight}
@@ -230,9 +240,9 @@ export function OwnerEducationPage() {
         )}
       </Card>
 
-      <Card title="أكثر المقرّرات تسجيلاً">
+      <Card title={T_TOP}>
         {topCourses.length === 0 ? (
-          <EmptyState illustration="empty-list" title="لا تسجيلات بعد" description="تظهر فور تسجيل الطلاب في العروض." />
+          <EmptyState illustration="empty-list" title="لا تسجيلات بعد" />
         ) : (
           <div className="table-wrap">
             <table className="table tbl-stack">
@@ -263,12 +273,9 @@ export function OwnerEducationPage() {
         )}
       </Card>
 
-      <Card
-        title="توزيع حِمل أعضاء هيئة التدريس"
-        subtitle="الأساتذة حسب عدد العروض هذا الفصل"
-      >
+      <Card title={T_WORKLOAD}>
         {totalTeachers === 0 ? (
-          <EmptyState illustration="empty-list" title="لا يوجد أساتذة بعد" description="يُحسب التوزيع فور إسناد أول عرض." />
+          <EmptyState illustration="empty-list" title="لا أساتذة بعد" />
         ) : (
           <div className="owner-workload">
             {buckets.map((b, i) => (
@@ -285,15 +292,15 @@ export function OwnerEducationPage() {
         )}
       </Card>
 
-      <Card title="اتّجاه الحضور" subtitle="آخر 6 أشهر — يُحسب من سجلات الحضور الفعليّة">
+      <Card title={T_TREND} subtitle="آخر 6 أشهر">
         {!trendHasData ? (
-          <EmptyState illustration="empty-list" title="لا توجد سجلّات حضور بعد" description="يبدأ الحساب فور أول جلسة حضور." />
+          <EmptyState illustration="empty-list" title="لا سجلّات حضور بعد" />
         ) : (
           <ChartFrame
             ariaLabel="مخطط خطّي لاتّجاه نسبة الحضور الشهريّة على مدى آخر ستة أشهر"
             summary={`أعلى نسبة حضور مسجَّلة ${trendMax}%.`}
             table={{
-              caption: 'اتّجاه الحضور الشهري',
+              caption: T_TREND,
               columns: ['الشهر', 'نسبة الحضور %'],
               rows: attendanceTrend.map((t) => [t.month, t.attendancePct ?? '—']),
             }}

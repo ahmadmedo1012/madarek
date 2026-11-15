@@ -195,8 +195,8 @@ export function OwnerUsersPage() {
       setActionError({
         title: attempt.kind === 'role'
           ? `تعذَّر تغيير دور «${name}»`
-          : `تعذَّر تحديث حالة حساب «${name}»`,
-        detail: apiErrorMessage(e, 'حاول مرة أخرى بعد لحظات.'),
+          : `تعذَّر تحديث حالة «${name}»`,
+        detail: apiErrorMessage(e, 'حاول مرة أخرى.'),
       });
     }
   };
@@ -209,7 +209,7 @@ export function OwnerUsersPage() {
    *  — scope ambiguity was the finding's whole point. */
   const institutionsLabel = (user: UserRow): string | null =>
     user.memberships.length > 0
-      ? user.memberships.map((m) => m.institution.name).join('، ')
+      ? user.memberships.map((m) => m.institution.name).join(' · ')
       : null;
   const handleRoleSelect = (user: UserRow, role: string) => {
     if (role === user.role) return;
@@ -237,8 +237,8 @@ export function OwnerUsersPage() {
       title: user.isActive ? 'تعطيل الحساب' : 'تفعيل الحساب',
       confirmLabel: user.isActive ? 'تعطيل الحساب' : 'تفعيل الحساب',
       message: user.isActive
-        ? `«${user.firstName} ${user.lastName}» لن يتمكّن من الدخول.`
-        : `«${user.firstName} ${user.lastName}» سيتمكّن من الدخول مجدداً.`,
+        ? `«${user.firstName} ${user.lastName}» لن يستطيع الدخول.`
+        : `«${user.firstName} ${user.lastName}» سيستطيع الدخول مجدداً.`,
       danger: user.isActive,
       onConfirm: async () => {
         await runAttempt({ kind: 'status', user });
@@ -300,7 +300,6 @@ export function OwnerUsersPage() {
       <PageFrame width="default">
         <PatternsPageHeader
           title="إدارة المستخدمين"
-          description="عرض جميع حسابات المنصّة والبحث فيها وإدارتها"
           breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المستخدمون' }]}
           /* R341 D11: the [03] nav-order gutter numeral (OWNER_NAV
            * register — the D10 quality precedent). */
@@ -322,10 +321,10 @@ export function OwnerUsersPage() {
             (never a fake zero). r252: the patterns StatLine. */}
         <StatLine
           items={[
-            { label: 'إجمالي المستخدمين', value: kpiValue(statData?.totalUsers ?? 0), hint: 'حسابات مسجَّلة' },
-            { label: 'الطلاب', value: kpiValue(statData?.students ?? 0), hint: topSegmentKey === 'students' ? 'الفئة الأكبر' : 'حسابات الطلاب' },
-            { label: 'الأساتذة', value: kpiValue(statData?.teachers ?? 0), hint: topSegmentKey === 'teachers' ? 'الفئة الأكبر' : 'هيئة التدريس' },
-            { label: 'مسجلون عامّون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), hint: topSegmentKey === 'staff' ? 'الفئة الأكبر' : 'إدارة ومتابعة' },
+            { label: 'إجمالي المستخدمين', value: kpiValue(statData?.totalUsers ?? 0) },
+            { label: 'الطلاب', value: kpiValue(statData?.students ?? 0), hint: topSegmentKey === 'students' ? 'الفئة الأكبر' : undefined },
+            { label: 'الأساتذة', value: kpiValue(statData?.teachers ?? 0), hint: topSegmentKey === 'teachers' ? 'الفئة الأكبر' : undefined },
+            { label: 'مسجلون عامّون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), hint: topSegmentKey === 'staff' ? 'الفئة الأكبر' : undefined },
           ]}
         />
 
@@ -334,7 +333,7 @@ export function OwnerUsersPage() {
           search={{
             value: search,
             onChange: setSearch,
-            placeholder: 'ابحث بالاسم أو البريد الإلكتروني…',
+            placeholder: 'ابحث…',
           }}
           filters={(
             <div className="owner-filter-pills" role="group" aria-label="تصفية حسب الدور">
@@ -392,14 +391,12 @@ export function OwnerUsersPage() {
             <EmptyState
               icon={Users}
               illustration="empty-list"
-              title={hasActiveFilters ? 'لا نتائج مطابقة' : 'لا يوجد مستخدمون بعد'}
-              description={hasActiveFilters
-                ? 'لم نجد حسابات تطابق البحث أو الدور المحدّد.'
-                : 'تظهر الحسابات فور تسجيل أول مستخدم.'}
+              title={hasActiveFilters ? 'لا نتائج' : 'لا مستخدمين بعد'}
+              description=""
               action={hasActiveFilters ? (
                 <button type="button" className="btn ghost sm" onClick={clearFilters}>
                   <Icon icon={X} size={13} />
-                  مسح البحث والفلاتر
+                  مسح الفلاتر
                 </button>
               ) : undefined}
             />
@@ -469,13 +466,13 @@ export function OwnerUsersPage() {
                                   pulled the eye with a status semantic a join
                                   date never carried. */}
                               <span className="owner-joined-dot" aria-hidden />
-                              <span className="visually-hidden">انضم خلال الأسبوع الماضي — </span>
+                              <span className="visually-hidden">انضم حديثاً — </span>
                             </>
                           )}
                           انضم {formatDate(joined, { dateStyle: 'medium' })}
                         </span>
                         {user.role === 'OWNER' ? (
-                          <span className="text-xs text-subtle" title="دور المالك لا يُغيَّر من هذه الواجهة">
+                          <span className="text-xs text-subtle" title="دور المالك ثابت">
                             {ROLE_LABELS.OWNER}
                           </span>
                         ) : (

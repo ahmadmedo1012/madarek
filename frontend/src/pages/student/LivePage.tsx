@@ -115,7 +115,6 @@ export default function LivePage() {
         index="01"
         eyebrow="المعامل والتقنيات"
         title="البث المباشر"
-        description="الجلسات الحيّة لمقرّراتك — انضمّ مباشرة، والتسجيلات هنا بعد كل جلسة."
         /* R342-08 — the header CTA pair joins the live-status chip
            (the D11/D8 measured seat; the phone band hides the topbar
            «اسأل AI» ≤920, D6): «الندوات وورش العمل» carries the
@@ -221,7 +220,6 @@ export default function LivePage() {
           {list.length === 0 ? (
             <EmptyCell
               label="لا توجد بثوث بعد"
-              note="تظهر الجلسة تلقائياً حال نشرها من أساتذتك."
             />
           ) : (
             <>
@@ -240,14 +238,13 @@ export default function LivePage() {
                   }
                 />
                 {live.length > 0 && (
-                  <p className="ml-sec-note">انضمّ إلى أيّ جلسة بنقرة واحدة</p>
+                  <p className="ml-sec-note">انضمّ بنقرة واحدة</p>
                 )}
                 <RowList
                   aria-label="الجلسات المباشرة الآن"
                   empty={(
                     <EmptyCell
                       label="لا بثّ مباشرة الآن"
-                      note="لا جلسات نشطة الآن — القادمة في القائمة أدناه."
                     />
                   )}
                 >
@@ -282,7 +279,6 @@ export default function LivePage() {
                   empty={(
                     <EmptyCell
                       label="لا توجد جلسات مجدولة"
-                      note="يظهر هنا أي بثّ يجدوله أساتذتك."
                     />
                   )}
                 >
@@ -306,7 +302,7 @@ export default function LivePage() {
                       />
                     )}
                   />
-                  <p className="ml-sec-note">أحدث الجلسات المنتهية — قد تتوفر لها تسجيلات</p>
+                  <p className="ml-sec-note">قد تتوفر تسجيلات</p>
                   <RowList aria-label="الجلسات المنتهية">
                     {recent.map((s) => <StudentSessionRow key={s.id} session={s} />)}
                   </RowList>

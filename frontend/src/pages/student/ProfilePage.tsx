@@ -47,7 +47,6 @@ type LinkKind = 'research-gate' | 'google-scholar' | 'orcid';
 interface AcademicLink {
   key: LinkKind;
   title: string;
-  description: string;
   hint: string;
 }
 
@@ -55,19 +54,16 @@ const LINKS: AcademicLink[] = [
   {
     key: 'research-gate',
     title: 'ResearchGate',
-    description: 'منصة عالمية لمشاركة البحوث — احفظ رابط ملفك هنا.',
     hint: 'https://www.researchgate.net/profile/...',
   },
   {
     key: 'google-scholar',
     title: 'Google Scholar',
-    description: 'فهرس البحوث الأشهر — منشوراتك مع الاستشهادات.',
     hint: 'https://scholar.google.com/citations?user=...',
   },
   {
     key: 'orcid',
     title: 'ORCID',
-    description: 'معرّف الباحث الدولي — يُنصح به عند النشر الأكاديمي.',
     hint: '0000-0000-0000-0000',
   },
 ];
@@ -201,7 +197,6 @@ export default function ProfilePage() {
     <PageFrame width="default">
       <PageHeader
         title="ملفي الشخصي"
-        description="معلوماتك الأكاديمية وحساباتك العلمية وإنجازاتك."
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
            «الإنجازات والشهادات» is the growth surface this page's
@@ -228,7 +223,6 @@ export default function ProfilePage() {
       <div className="r305s-band r305s-band--deep r305p-hero">
         <UserAvatar initials={initials} color={user.avatarColor ?? undefined} size={64} />
         <div className="r305p-hero-id">
-          <span className="r305s-eyebrow">الملف الشخصي</span>
           <div className="r305p-hero-name">{user.firstName} {user.lastName}</div>
           <div className="r305p-hero-mail">
             <Icon icon={Mail} size={12} />
@@ -290,7 +284,7 @@ export default function ProfilePage() {
           {
             label: 'روابط محفوظة',
             value: `${formatNum(linkedCount)} / ${formatNum(LINKS.length)}`,
-            hint: 'حفظ محليّ في متصفّحك فقط',
+            hint: 'حفظ محليّ',
             tone: linkedCount >= 2 ? 'positive' : linkedCount === 0 ? 'warning' : 'neutral',
           },
         ]}
@@ -353,7 +347,7 @@ export default function ProfilePage() {
           {profile.isError && (
             <div className="fact-error" role="status">
               <Icon icon={AlertCircle} size={13} />
-              <span>تعذّر تحميل بياناتك — الحقول تُعرض “—” حتى يعود الاتصال.</span>
+              <span>تعذّر تحميل بياناتك.</span>
               <button type="button" className="btn ghost sm" onClick={() => profile.refetch()}>
                 إعادة المحاولة
               </button>
@@ -386,11 +380,11 @@ export default function ProfilePage() {
             meta={(
               <span className="r319s-bar-meta">
                 <bdi className="r319s-mono" dir="ltr" aria-hidden="true">{linkedCount}/{formatNum(LINKS.length)}</bdi>
-                <span className="sr-only">{countAr(linkedCount, ['رابط محفوظ واحد', 'رابطان محفوظان', 'روابط محفوظة', 'رابطاً محفوظاً'])} من {formatNum(LINKS.length)}</span>
+                <span className="sr-only">{countAr(linkedCount, ['رابط', 'رابطان', 'روابط', 'رابطاً'])} من {formatNum(LINKS.length)}</span>
               </span>
             )}
           />
-          <p className="r319sp-sec-note">روابطك للرجوع السريع — تُحفظ في متصفّحك فقط، لا تُرسَل للجامعة.</p>
+          <p className="r319sp-sec-note">تُحفظ في متصفّحك فقط — لا تُرسَل للجامعة.</p>
           <Card>
           <div className="flex-col gap-3">
             {LINKS.map((l) => {
@@ -417,11 +411,10 @@ export default function ProfilePage() {
                         {savedKey === l.key && (
                           <span className="profile-link-saved" role="status">
                             <Icon icon={CheckCircle2} size={13} />
-                            تم الحفظ في متصفّحك
+                            تم الحفظ
                           </span>
                         )}
                       </div>
-                      <div className="profile-link-desc">{l.description}</div>
                       {value && !isEditing && (
                         <div className="profile-link-value font-mono" title={value}>
                           <bdi dir="ltr">{value}</bdi>
@@ -499,7 +492,7 @@ export default function ProfilePage() {
               !achievements.isPending && !achievements.isError && (achievements.data?.length ?? 0) > 0 ? (
                 <BarCount
                   n={achievements.data!.length}
-                  srLabel={countAr(achievements.data!.length, ['إنجاز واحد محقّق', 'إنجازان محقّقان', 'إنجازات محقّقة', 'إنجازاً محقّقاً'])}
+                  srLabel={countAr(achievements.data!.length, ['إنجاز', 'إنجازان', 'إنجازات', 'إنجازاً'])}
                 />
               ) : undefined
             }
@@ -530,7 +523,6 @@ export default function ProfilePage() {
                EmptyState's copy, kept honest and verbatim). */
             <EmptyCell
               label="لا إنجازات بعد"
-              note="أكمل بعض المحاضرات والمهام لكسب أوّل شارة."
             />
           ) : (
             <div className="flex-col gap-2">

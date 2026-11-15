@@ -82,6 +82,14 @@ interface PaginatedStudents {
  *  ar-LY grouping label is gone; five-digit totals render ungrouped
  *  like every sibling roster). */
 
+/* Shared roster nouns (R353 copy diet): the meta line and the pagination
+ * footer counted the same "طالب" forms twice — one home. */
+const STUDENT_COUNT: [string, string, string, string] = ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'];
+const REGISTRAR_DASHBOARD = 'لوحة المسجل العام';
+const LOADING = 'جارٍ التحميل…';
+const FAILED_LOAD = 'تعذّر التحميل';
+const DROP_ENROLLMENT = 'إلغاء التسجيل';
+
 export function AdminStudentsPage() {
   const [searchParams] = useSearchParams();
   // 5-B4 (5-A8 §5 row 5 landing craft): drill-down links arrive with
@@ -150,12 +158,11 @@ export function AdminStudentsPage() {
     <PageFrame width="default">
       <PatternsPageHeader
         title="إدارة الطلاب"
-        description="الطلاب المسجَّلون في الجامعة، مع البحث والتصفية حسب الكلّيّة."
         index="05"
-        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الطلاب' }]}
+        breadcrumbs={[{ label: REGISTRAR_DASHBOARD, to: '/admin/dashboard' }, { label: 'الطلاب' }]}
         meta={studentsQ.data
-          ? `${countAr(studentsQ.data.meta.total, ['طالب واحد مسجَّل', 'طالبان مسجَّلان', 'طلاب مسجَّلون', 'طالباً مسجَّلاً'])} · بحث الخادم`
-          : 'قراءة سجلّ الطلاب…'}
+          ? `${countAr(studentsQ.data.meta.total, STUDENT_COUNT)}`
+          : LOADING}
         actions={(
           /* R342-09: the roster's ONE standing action rides the accent
            * register (the D8 family law) — the bulk import is the
@@ -163,9 +170,9 @@ export function AdminStudentsPage() {
            * every width keeps the affordance (the admin topbar hides
            * «اسأل AI» entirely). R350 F2: the verb now opens the
            * 5-step wizard (its own route); the r323 modal retires. */
-          <Link to="/admin/import" className="btn accent sm">
+            <Link to="/admin/import" className="btn accent sm">
             <Icon icon={Download} size={14} />
-            استيراد طلاب من ملف
+            استيراد الطلاب
           </Link>
         )}
       />
@@ -174,7 +181,7 @@ export function AdminStudentsPage() {
         search={{
           value: q,
           onChange: setQ,
-          placeholder: 'ابحث بالاسم أو البريد أو رقم القيد…',
+          placeholder: 'اسم / بريد / رقم قيد…',
         }}
         filters={(
           <>
@@ -185,13 +192,13 @@ export function AdminStudentsPage() {
               disabled={facQ.isPending}
               aria-label="تصفية حسب الكلّيّة"
             >
-              <option value="">{facQ.isPending ? 'جارٍ تحميل الكلّيّات…' : 'كلّ الكلّيّات'}</option>
+              <option value="">{facQ.isPending ? LOADING : 'كلّ الكلّيّات'}</option>
               {facQ.data?.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
             </select>
             {facQ.isError && (
               <button type="button" className="btn ghost sm" onClick={() => facQ.refetch()}>
                 <Icon icon={RefreshCw} size={13} />
-                إعادة تحميل الكلّيّات
+                إعادة المحاولة
               </button>
             )}
           </>
@@ -200,11 +207,11 @@ export function AdminStudentsPage() {
 
       <Card>
         {studentsQ.isPending && <ListSkeleton rows={6} />}
-        {studentsQ.isError && <ErrorState error={studentsQ.error} message="تعذّر تحميل قائمة الطلاب" onRetry={() => studentsQ.refetch()} />}
+        {studentsQ.isError && <ErrorState error={studentsQ.error} message={FAILED_LOAD} onRetry={() => studentsQ.refetch()} />}
         {studentsQ.data && (
           <>
             <RowList aria-label="قائمة الطلاب" empty={(
-              <EmptyState illustration="empty-search" title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." action={hasActiveFilters ? (
+              <EmptyState illustration="empty-search" title="لا نتائج" action={hasActiveFilters ? (
                 <button type="button" className="btn ghost sm" onClick={clearSearch}>
                   <Icon icon={X} size={13} />
                   مسح البحث
@@ -269,7 +276,7 @@ export function AdminStudentsPage() {
                 page={studentsQ.data.meta.page}
                 totalPages={studentsQ.data.meta.totalPages}
                 total={studentsQ.data.meta.total}
-                unit={['طالب واحد', 'طالبان', 'طلاب', 'طالباً']}
+                unit={STUDENT_COUNT}
                 onPage={setPage}
               />
             )}
@@ -310,10 +317,10 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
     setError(null);
     try {
       await enroll.mutateAsync({ studentId: student.id, offeringId: selectedOffering });
-      toast.success('تمّ التسجيل في المقرّر');
+      toast.success('تمّ التسجيل');
       setSelectedOffering('');
     } catch (e) {
-      setError(apiErrorMessage(e, 'تعذَّر التسجيل — حاول مرة أخرى.'));
+      setError(apiErrorMessage(e, 'تعذَّر التسجيل.'));
     }
   };
 
@@ -340,15 +347,14 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
             flow itself is untouched. */}
         <div className="r305ao-danger-zone" style={{ marginBlockEnd: 'var(--sp-4)' }}>
           <div className="r305ao-danger-zone-title">التسجيلات الحالية</div>
-          <p className="r305ao-danger-zone-note">
-            إلغاء التسجيل يحذف تسجيل الطالب وتقدُّمه نهائيًا — كل إلغاء يمرّ على تأكيد صريح.
-          </p>
+          {/* R353 copy diet: the consequence warning lives once — in the
+              confirm dialog at the decision point (r157 6A9 #4 contract). */}
           {enrollments.isPending ? (
             <div className="flex-col gap-2"><Skeleton width="100%" height={40} /><Skeleton width="100%" height={40} /></div>
           ) : enrollments.isError ? (
             <ErrorState error={enrollments.error} message="تعذّر تحميل التسجيلات" onRetry={() => enrollments.refetch()} />
           ) : !enrollments.data?.length ? (
-            <div className="text-sm text-muted">لا تسجيلات حاليًا.</div>
+            <div className="text-sm text-muted">لا تسجيلات.</div>
           ) : (
             enrollments.data.map((e) => (
               <div key={e.id} className="flex items-center gap-2" style={{ padding: 'var(--sp-2)', background: 'var(--surface-2)', borderRadius: 'var(--r-sm)' }}>
@@ -366,7 +372,7 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
                   <Icon icon={UserMinus} size={13} />
                   {/* Per-row pending via drop.variables — only the row
                       whose drop is in flight reads «جارٍ الإلغاء…». */}
-                  {drop.isPending && drop.variables?.enrollmentId === e.id ? 'جارٍ الإلغاء…' : 'إلغاء التسجيل'}
+                  {drop.isPending && drop.variables?.enrollmentId === e.id ? 'جارٍ الإلغاء…' : DROP_ENROLLMENT}
                 </button>
               </div>
             ))
@@ -375,13 +381,13 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
 
         {/* Enroll in a new offering */}
         <div className="flex-col gap-2">
-          <div className="text-sm font-semibold">تسجيل في مقرّر جديد</div>
+          <div className="text-sm font-semibold">تسجيل بمقرّر</div>
           {offerings.isPending ? (
             <Skeleton width="100%" height={40} />
           ) : offerings.isError ? (
             <ErrorState error={offerings.error} message="تعذّر تحميل المقرّرات" onRetry={() => offerings.refetch()} />
           ) : !offerings.data?.length ? (
-            <div className="text-sm text-muted">لا توجد مقرّرات متاحة للتسجيل.</div>
+            <div className="text-sm text-muted">لا مقرّرات.</div>
           ) : (
             <>
               <select
@@ -429,9 +435,9 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
           Cancel closes the dialog only; nothing is deleted. */}
       <ConfirmDialog
         open={confirmingDrop !== null}
-        title="إلغاء التسجيل"
+        title={DROP_ENROLLMENT}
         message={confirmingDrop
-          ? `سيُحذف تسجيل الطالب في «${confirmingDrop.courseName}» وتقدُّمه نهائيًا — لا تراجع.`
+          ? `سيُحذف تسجيل الطالب في «${confirmingDrop.courseName}» وتقدُّمه نهائيًا.`
           : ''}
         confirmLabel="إلغاء نهائي"
         danger
@@ -443,9 +449,9 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
           setError(null);
           try {
             await drop.mutateAsync({ enrollmentId: target.enrollmentId, studentId: student.id });
-            toast.success('تمّ إلغاء التسجيل');
+            toast.success('تمّ الإلغاء');
           } catch (e) {
-            setError(apiErrorMessage(e, 'تعذَّر إلغاء التسجيل — حاول مرة أخرى.'));
+            setError(apiErrorMessage(e, 'تعذَّر الإلغاء.'));
           }
         }}
       />
@@ -485,9 +491,8 @@ export function AdminDigitalPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="التحوّل الرقميّ"
-        description="مؤشّرات تبنّي المنصّة عبر مكوّنات الجامعة."
         index="06"
-        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'التحوّل الرقميّ' }]}
+        breadcrumbs={[{ label: REGISTRAR_DASHBOARD, to: '/admin/dashboard' }, { label: 'التحوّل الرقميّ' }]}
         actions={(
           /* R342-09 (D11 sub-page CTA precedent): a read-only metrics ledger
            * names its ONE honest next surface — the institutional reports
@@ -505,7 +510,7 @@ export function AdminDigitalPage() {
           <TableSkeleton rows={6} cols={3} />
         </>
       )}
-      {q.isError && <ErrorState error={q.error} message="تعذّر تحميل مؤشّرات التحوّل الرقميّ" onRetry={() => q.refetch()} />}
+      {q.isError && <ErrorState error={q.error} message={FAILED_LOAD} onRetry={() => q.refetch()} />}
       {q.data && (
         <>
           {/* R190-D3: the typographic stat line replaces the icon-box
@@ -514,10 +519,10 @@ export function AdminDigitalPage() {
           <StatStrip
             ariaLabel="مؤشّرات التبنّي العامّة"
             cells={[
-              { label: 'إجمالي الحسابات', value: formatNum(q.data.totalUsers), trend: 'كل الأدوار في الجامعة' },
-              { label: 'حسابات نشطة', value: formatNum(q.data.activeUsers), trend: 'من إجمالي الحسابات' },
-              { label: 'نسبة التبنّي', value: `${formatNum(q.data.adoptionPct)}٪`, trend: 'حصة الحسابات النشطة' },
-              { label: 'ملفات تعليمية مرفوعة', value: formatNum(q.data.materialsUploaded) },
+              { label: 'إجمالي الحسابات', value: formatNum(q.data.totalUsers), trend: 'كل الأدوار' },
+              { label: 'حسابات نشطة', value: formatNum(q.data.activeUsers), trend: 'من الإجمالي' },
+              { label: 'نسبة التبنّي', value: `${formatNum(q.data.adoptionPct)}٪`, trend: 'حصة النشطة' },
+              { label: 'ملفات تعليمية', value: formatNum(q.data.materialsUploaded) },
             ]}
           />
 
@@ -531,7 +536,6 @@ export function AdminDigitalPage() {
             style={{ marginBlockStart: 'var(--sp-9)' }}
             title="تبنّي المكوّنات"
             icon={ShieldCheck}
-            subtitle="ما يجري فعلاً عبر المنصّة في كل مكوّن"
           >
             <div className="table-wrap">
               <table className="table tbl-stack ws-table">
@@ -545,10 +549,10 @@ export function AdminDigitalPage() {
                 <tbody>
                   <DigitalRow component="الاختبار الإلكترونيّ" label="اختبارات منشورة" value={q.data.onlineExams} />
                   <DigitalRow component="الاختبار الإلكترونيّ" label="محاولات أداء" value={q.data.examAttempts} />
-                  <DigitalRow component="التعلّم النشط" label="جلسات معامل افتراضيّة" value={q.data.labSessions} />
-                  <DigitalRow component="التعلّم النشط" label="جلسات بثّ مباشر" value={q.data.liveSessions} />
+                  <DigitalRow component="التعلّم النشط" label="جلسات معامل" value={q.data.labSessions} />
+                  <DigitalRow component="التعلّم النشط" label="بثّ مباشر" value={q.data.liveSessions} />
                   <DigitalRow component="التعلّم الذاتيّ" label={<>تسجيلات <bdi>MOOC</bdi></>} value={q.data.moocEnrollments} />
-                  <DigitalRow component="البحث العلميّ" label="أوراق علميّة في النظام" value={q.data.researchPapers} />
+                  <DigitalRow component="البحث العلميّ" label="أوراق علميّة" value={q.data.researchPapers} />
                 </tbody>
               </table>
             </div>
@@ -616,9 +620,8 @@ export function AdminSettingsPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="إعدادات المنصّة"
-        description="إعدادات تشغيليّة على مستوى الجامعة."
         index="09"
-        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'إعدادات المنصّة' }]}
+        breadcrumbs={[{ label: REGISTRAR_DASHBOARD, to: '/admin/dashboard' }, { label: 'إعدادات المنصّة' }]}
         actions={(
           /* R342-09 (D11 sub-page CTA precedent): the settings ledger's ONE
            * honest next surface — the university sync is the standing
@@ -640,14 +643,14 @@ export function AdminSettingsPage() {
           </div>
           <div className="settings-row">
             <div>
-              <div className="settings-label">اللغة الافتراضيّة</div>
+              <div className="settings-label">اللغة</div>
               <div className="settings-value">العربيّة (RTL)</div>
             </div>
           </div>
           <div className="settings-row">
             <div>
               <div className="settings-label">الشعار</div>
-              <div className="settings-value">مدارك — علامة المنصّة المستقلّة</div>
+              <div className="settings-value">مدارك</div>
             </div>
           </div>
         </Card>
@@ -660,8 +663,8 @@ export function AdminSettingsPage() {
                 {health.isPending
                   ? 'جارٍ التحقق…'
                   : dbOk
-                    ? `متصلة · زمن الاستجابة ${health.data!.dbLatencyMs} مث`
-                    : 'تعذّر التحقق من الاتصال'}
+                    ? `زمن الاستجابة ${health.data!.dbLatencyMs} مث`
+                    : 'تعذّر التحقق'}
               </div>
             </div>
             {!health.isPending && (
@@ -671,13 +674,13 @@ export function AdminSettingsPage() {
           <div className="settings-row">
             <div>
               <div className="settings-label">المصادقة</div>
-              <div className="settings-value">صلاحية الرمز 15 دقيقة · التحديث كل 7 أيام</div>
+              <div className="settings-value">الرمز 15 دقيقة · التحديث كل 7 أيام</div>
             </div>
           </div>
           <div className="settings-row">
             <div>
               <div className="settings-label">معدّل الطلبات</div>
-              <div className="settings-value">حدّ عامّ 1000 طلب كل 15 دقيقة · مصادقة 10 محاولات لكل 15 دقيقة</div>
+              <div className="settings-value">حدّ عامّ 1000 طلب/15 دقيقة · مصادقة 10 محاولات/15 دقيقة</div>
             </div>
           </div>
         </Card>
@@ -689,7 +692,7 @@ export function AdminSettingsPage() {
 
         <Card title="عمليّات النظام" icon={RefreshCw}>
           <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            عمليّات تنفيذيّة — للتنفيذ الفعليّ استخدم لوحة المالك.
+            التنفيذ من لوحة المالك.
           </p>
           <div className="settings-actions">
             {/* r155c: أُزيل زر «مزامنة بيانات الجامعة» المعطَّل — كانت
@@ -699,23 +702,23 @@ export function AdminSettingsPage() {
                 الصحّة) ما تزال ملك لوحة المالك — التعليقة صادقة بشأنها. */}
             <button type="button" className="btn ghost sm" disabled>
               <Icon icon={Download} size={14} />
-              تصدير سجلّ النشاط
+              تصدير السجلّ
             </button>
             <button type="button" className="btn ghost sm" disabled>
               <Icon icon={Mail} size={14} />
-              بثّ إعلان عامّ
+              بثّ إعلان
             </button>
             <button type="button" className="btn ghost sm" disabled>
               <Icon icon={Radio} size={14} />
-              فحص الصحّة العامّة
+              فحص الصحّة
             </button>
           </div>
         </Card>
 
         <Card title="الموارد المرتبطة" icon={ShieldCheck}>
           <ul className="settings-links">
-            <li><Link to="/admin/sync">مزامنة الكلّيّات والأقسام</Link></li>
-            <li><Link to="/admin/teachers">صلاحيات أعضاء هيئة التدريس</Link></li>
+            <li><Link to="/admin/sync">مزامنة الكلّيّات</Link></li>
+            <li><Link to="/admin/teachers">صلاحيات هيئة التدريس</Link></li>
             <li><Link to="/admin/reports">تقارير المسجل العام</Link></li>
             {/* 5-B5 hand-off (one-name-per-surface): the surface's own
                 title is «كلّيّات الجامعة» — the former «صفحات الكلّيّات»

@@ -141,7 +141,7 @@ export default function TeacherProfilePage() {
           </div>
         </header>
         <ErrorState
-          message="تعذَّر تحميل ملفك الأكاديمي"
+          message="تعذَّر التحميل."
           error={error}
           onRetry={() => refetch()}
         />
@@ -163,8 +163,8 @@ export default function TeacherProfilePage() {
         <Card>
           <EmptyState illustration="empty-list"
             icon={AlertCircle}
-            title="لا يوجد ملف أستاذ مرتبط بهذا الحساب"
-            description="تواصل مع المسجل العام لربط ملفك الأكاديمي بهذا الحساب."
+            title="لا ملف مرتبط"
+            description="راجع المسجل العام لربطه."
           />
         </Card>
       </div>
@@ -204,7 +204,7 @@ export default function TeacherProfilePage() {
     } catch (err) {
       // Keep the edit open with the entered values; the Arabic error
       // renders inline so the teacher can retry without losing work.
-      setSaveError(apiErrorMessage(err, 'تعذَّر حفظ التعديلات — أعد المحاولة.'));
+      setSaveError(apiErrorMessage(err, 'تعذَّر الحفظ.'));
     }
   };
 
@@ -215,9 +215,6 @@ export default function TeacherProfilePage() {
         <div className="page-title-block">
           <span className="hr-brow">هيئة التدريس</span>
           <h1 className="page-title">الملف الأكاديمي</h1>
-          <p className="page-subtitle">
-            ملفك كما يظهر للمسجل العام والجودة والطلاب — حدّثه ليعكس نشاطك العلمي.
-          </p>
         </div>
         {!editing ? (
           /* R305 → R342-09: the surface's one primary action rides the
@@ -225,7 +222,7 @@ export default function TeacherProfilePage() {
            * per view, the same seat the daily-work pages' create/edit
            * verbs hold), keeping the .hr-cta emphasis cap. */
           <button type="button" className="btn accent hr-cta" onClick={startEdit}>
-            <Icon icon={Edit3} size={14} /> تعديل البيانات الشخصية
+            <Icon icon={Edit3} size={14} /> تعديل البيانات
           </button>
         ) : (
           <div className="flex gap-2">
@@ -233,7 +230,7 @@ export default function TeacherProfilePage() {
               <Icon icon={X} size={14} /> إلغاء
             </button>
             <button type="button" className="btn accent hr-cta" onClick={() => void saveEdit()} disabled={update.isPending}>
-              <Icon icon={Save} size={14} /> {update.isPending ? 'جارٍ الحفظ…' : 'حفظ'}
+              <Icon icon={Save} size={14} /> {update.isPending ? 'جارٍ…' : 'حفظ'}
             </button>
           </div>
         )}
@@ -247,7 +244,7 @@ export default function TeacherProfilePage() {
         >
           <Icon icon={saveError ? AlertCircle : ShieldCheck} size={14} />
           <span className="flex-1">
-            {saveError ?? 'تمّ حفظ تعديلات ملفك الأكاديمي.'}
+            {saveError ?? 'تمّ الحفظ.'}
           </span>
           {saveError && (
             <button type="button" className="btn ghost sm" onClick={() => void saveEdit()} disabled={update.isPending}>
@@ -300,21 +297,21 @@ export default function TeacherProfilePage() {
         ariaLabel="حجم التدريس هذا الفصل"
         cells={[
           {
-            label: 'المقرّرات هذا الفصل',
+            label: 'المقرّرات',
             value: profile.workload.courseCount.toString(),
-            trend: countAr(profile.workload.totalCredits, ['وحدة معتمدة واحدة', 'وحدتان معتمدتان', 'وحدات معتمدة', 'وحدة معتمدة']),
+            trend: countAr(profile.workload.totalCredits, ['وحدة', 'وحدتان', 'وحدات', 'وحدة']),
             trendTone: 'flat',
           },
           {
             label: 'إجمالي الطلاب',
             value: profile.workload.totalEnrolled.toString(),
-            trend: 'مسجَّلون في مقرّراتك',
+            trend: 'في مقرّراتك',
             trendTone: 'flat',
           },
           {
             label: 'الدرجة العلمية',
             value: DEGREE_LABEL[profile.degreeLevel] ?? profile.degreeLevel,
-            trend: countAr(profile.yearsExperience, ['سنة خبرة واحدة', 'سنتا خبرة', 'سنوات خبرة', 'سنة خبرة']),
+            trend: countAr(profile.yearsExperience, ['سنة خبرة', 'سنتا خبرة', 'سنوات خبرة', 'سنة خبرة']),
             trendTone: 'flat',
           },
         ]}
@@ -330,7 +327,7 @@ export default function TeacherProfilePage() {
             <textarea
               className="input"
               rows={5}
-              placeholder="نبذة عن خبرتك الأكاديمية واهتماماتك العلمية…"
+              placeholder="خبرتك واهتماماتك العلمية…"
               value={draft.bio}
               onChange={(e) => setDraft({ ...draft, bio: e.target.value })}
             />
@@ -338,7 +335,7 @@ export default function TeacherProfilePage() {
         ) : profile.bio ? (
           <p className="profile-bio">{profile.bio}</p>
         ) : (
-          <div className="text-sm text-muted">لم تُضف نبذة بعد — اضغط «تعديل» لإضافتها.</div>
+          <div className="text-sm text-muted">لم تُضف نبذة.</div>
         )}
       </Card>
 
@@ -349,7 +346,7 @@ export default function TeacherProfilePage() {
               <FormField label="موقع المكتب" id="teacher-office-location-field">
                 <input
                   className="input"
-                  placeholder="مثال: مبنى الكلّيّة - مكتب 305"
+                  placeholder="مبنى الكلّيّة - مكتب 305"
                   value={draft.officeLocation}
                   onChange={(e) => setDraft({ ...draft, officeLocation: e.target.value })}
                 />
@@ -357,7 +354,7 @@ export default function TeacherProfilePage() {
               <FormField label="ساعات العمل" id="teacher-office-hours-field">
                 <input
                   className="input"
-                  placeholder="مثال: الأحد والثلاثاء 10-12"
+                  placeholder="الأحد والثلاثاء 10-12"
                   value={draft.officeHours}
                   onChange={(e) => setDraft({ ...draft, officeHours: e.target.value })}
                 />
@@ -371,7 +368,7 @@ export default function TeacherProfilePage() {
                   <span>{profile.officeLocation}</span>
                 </div>
               ) : (
-                <div className="text-xs text-muted">لم يُحدد موقع المكتب.</div>
+                <div className="text-xs text-muted">غير محدّد.</div>
               )}
               {profile.officeHours ? (
                 <div className="kv-row">
@@ -379,7 +376,7 @@ export default function TeacherProfilePage() {
                   <span>{profile.officeHours}</span>
                 </div>
               ) : (
-                <div className="text-xs text-muted">لم تُحدَّد ساعات العمل.</div>
+                <div className="text-xs text-muted">غير محدّدة.</div>
               )}
             </div>
           )}
@@ -401,7 +398,7 @@ export default function TeacherProfilePage() {
               {profile.websiteUrl}
             </a>
           ) : (
-            <div className="text-xs text-muted">لم يُضف موقع شخصي.</div>
+            <div className="text-xs text-muted">غير مضاف.</div>
           )}
         </Card>
       </div>
@@ -410,7 +407,7 @@ export default function TeacherProfilePage() {
       <div className="grid-2">
         <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>مجالات الاهتمام البحثي</>} icon={Sparkles}>
           {profile.subjectKeywords.length === 0 ? (
-            <div className="text-sm text-muted">لم تُسجَّل مجالات بحثية بعد.</div>
+            <div className="text-sm text-muted">لا مجالات بعد.</div>
           ) : (
             <div className="flex flex-wrap gap-2">
               {profile.subjectKeywords.map((kw) => <Badge key={kw}>{kw}</Badge>)}
@@ -424,11 +421,11 @@ export default function TeacherProfilePage() {
            * `${n} شهادة` template broke at 0 and 2); the zero case
            * names the reality like the body copy does. */
           subtitle={profile.certifications.length === 0
-            ? 'لم تُضف شهادة'
-            : countAr(profile.certifications.length, ['شهادة واحدة', 'شهادتان', 'شهادات', 'شهادة'])}
+            ? 'لا شهادات'
+            : countAr(profile.certifications.length, ['شهادة', 'شهادتان', 'شهادات', 'شهادة'])}
         >
           {profile.certifications.length === 0 ? (
-            <div className="text-sm text-muted">لم تُضف شهادات.</div>
+            <div className="text-sm text-muted">لا شهادات.</div>
           ) : (
             <div className="flex-col gap-2">
               {profile.certifications.map((c, i) => (
@@ -450,14 +447,14 @@ export default function TeacherProfilePage() {
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[06]</span>المنشورات العلمية</>}
         icon={FileText}
         subtitle={profile.publications.length === 0
-          ? 'لم تُضف منشورات'
-          : countAr(profile.publications.length, ['منشور واحد', 'منشوران', 'منشورات', 'منشوراً'])}
+          ? 'لا منشورات'
+          : countAr(profile.publications.length, ['منشور', 'منشوران', 'منشورات', 'منشوراً'])}
       >
         {profile.publications.length === 0 ? (
           <EmptyState illustration="empty-research"
             icon={FileText}
-            title="لم تُضف منشورات بعد"
-            description="تُدار منشوراتك من ملفك الأكاديمي لدى المسجل العام."
+            title="لا منشورات بعد"
+            description="تُدار من المسجل العام."
           />
         ) : (
           <div className="flex-col gap-2">
@@ -483,14 +480,14 @@ export default function TeacherProfilePage() {
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[07]</span>التكريمات والجوائز</>}
         icon={Award}
         subtitle={profile.awards.length === 0
-          ? 'لم تُضف جائزة'
-          : countAr(profile.awards.length, ['جائزة واحدة', 'جائزتان', 'جوائز', 'جائزة'])}
+          ? 'لا جوائز'
+          : countAr(profile.awards.length, ['جائزة', 'جائزتان', 'جوائز', 'جائزة'])}
       >
         {profile.awards.length === 0 ? (
           <EmptyState illustration="achievement"
             icon={Award}
-            title="لم تُضف جوائز بعد"
-            description="تُدار تكريماتك وجوائزك من ملفك الأكاديمي لدى المسجل العام."
+            title="لا جوائز بعد"
+            description="تُدار من المسجل العام."
           />
         ) : (
           <div className="flex-col gap-2">
@@ -510,12 +507,12 @@ export default function TeacherProfilePage() {
       </Card>
 
       {/* Courses currently teaching */}
-      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[08]</span>المقرّرات الحالية</>} icon={BookOpen} subtitle={countAr(profile.courses.length, ['مقرّر واحد هذا الفصل', 'مقرّران هذا الفصل', 'مقرّرات هذا الفصل', 'مقرّراً هذا الفصل'])}>
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[08]</span>المقرّرات الحالية</>} icon={BookOpen} subtitle={`${countAr(profile.courses.length, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً'])} هذا الفصل`}>
         {profile.courses.length === 0 ? (
           <EmptyState illustration="empty-courses"
             icon={BookOpen}
-            title="لم يُسند إليك أي مقرّر بعد"
-            description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل المسجل العام."
+            title="لا مقرّرات"
+            description=""
           />
         ) : (
           /* r241 (Superlist): the current courses are a LIST — one row
@@ -560,8 +557,8 @@ function CourseRow({ course: c }: {
         <span className="tq-row-kicker"><bdi>{c.code}</bdi> · {c.term}</span>
         <span className="tq-row-title" title={c.name}>{c.name}</span>
         <span className="tq-row-meta">
-          <span><Icon icon={Users2} size={12} /> {countAr(c.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
-          <span>{countAr(c.credits, ['وحدة واحدة', 'وحدتان', 'وحدات', 'وحدة'])}</span>
+          <span><Icon icon={Users2} size={12} /> {countAr(c.enrolled, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}</span>
+          <span>{countAr(c.credits, ['وحدة', 'وحدتان', 'وحدات', 'وحدة'])}</span>
         </span>
       </span>
       <Icon icon={ChevronLeft} size={14} className="tq-row-chevron" />

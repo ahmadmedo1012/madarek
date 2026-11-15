@@ -63,6 +63,10 @@ const FILTERS: Array<{ key: CourseFilter; label: string }> = [
   { key: 'attention', label: 'بحاجة إلى اهتمام' },
 ];
 
+/* Copy diet (single source): the enrolled-count counted plural feeds both
+ * the SectionBar's sr-only meta and the summary line — one literal. */
+const ENROLLED_FORMS: [string, string, string, string] = ['مقرّر مسجَّل', 'مقرّران مسجّلان', 'مقرّرات مسجَّلة', 'مقرّراً'];
+
 function matchesFilter(e: MyEnrollment, f: CourseFilter): boolean {
   if (f === 'done') return e.progressPct >= 100;
   if (f === 'active') return e.progressPct > 0 && e.progressPct < 100;
@@ -236,7 +240,7 @@ export default function StudentCoursesPage() {
     <PageFrame width="default">
       <PageHeader
         title="مقرّراتي الدراسية"
-        description="جميع المقرّرات التي سجّلت فيها هذا الفصل، مع تقدّمك في كل واحد منها."
+        description="جميع المقرّرات التي سجّلت فيها هذا الفصل."
       />
 
       {isPending ? (
@@ -252,7 +256,7 @@ export default function StudentCoursesPage() {
       ) : isError ? (
         <ErrorState error={error} onRetry={() => refetch()} />
       ) : !data?.length ? (
-        <EmptyState illustration="empty-courses" icon={BookOpen} title="لم تسجّل في أي مقرّر بعد" description="تواصل مع المسجل العام لإكمال تسجيل مقرّرات الفصل — ستظهر هنا فور اعتمادها." />
+        <EmptyState illustration="empty-courses" icon={BookOpen} title="لا مقرّرات بعد" description="تواصل مع المسجل العام لإكمال التسجيل." />
       ) : (
         <>
           {/* R319 (c3-S1): the courses region opens with the §B2
@@ -266,7 +270,7 @@ export default function StudentCoursesPage() {
             meta={
               <BarCount
                 n={data.length}
-                srLabel={countAr(data.length, ['مقرّر مسجَّل واحد', 'مقرّران مسجّلان', 'مقرّرات مسجَّلة', 'مقرّراً مسجّلاً'])}
+                srLabel={countAr(data.length, ENROLLED_FORMS)}
               />
             }
           />
@@ -276,7 +280,7 @@ export default function StudentCoursesPage() {
               keeps the per-bucket counts, so a bucket shows here only
               when it is non-zero. */}
           <p className="courses-summary">
-            <bdi>{countAr(data.length, ['مقرّر مسجَّل واحد', 'مقرّران مسجّلان', 'مقرّرات مسجَّلة', 'مقرّراً مسجّلاً'])}</bdi>
+            <bdi>{countAr(data.length, ENROLLED_FORMS)}</bdi>
             {counts.done > 0 && (
               <> · مكتملة <bdi>{counts.done}</bdi></>
             )}
@@ -319,8 +323,7 @@ export default function StudentCoursesPage() {
                  reserved-but-empty region — the hatched EmptyCell, never
                  a bare «لا شيء» prose wall. */
               <EmptyCell
-                label="لا توجد مقرّرات في هذا التصنيف"
-                note="جرّب تصنيفاً آخر من الأزرار أعلاه لعرض مقرّراتك."
+                label="لا مقرّرات في هذا التصنيف"
               />
             )}
           </RowList>
@@ -339,12 +342,11 @@ export default function StudentCoursesPage() {
             !dashboard.isPending && !dashboard.isError && upcoming.length > 0 ? (
               <BarCount
                 n={upcoming.length}
-                srLabel={countAr(upcoming.length, ['واجب واحد قادم', 'واجبان قادمان', 'واجبات قادمة', 'واجباً قادماً'])}
+                srLabel={countAr(upcoming.length, ['واجب قادم', 'واجبان', 'واجبات قادمة', 'واجباً'])}
               />
             ) : undefined
           }
         />
-        <p className="r305c-sec-note">واجباتك المستحقة فعلياً خلال الأسبوع القادم ولم تُسلّمها بعد</p>
         {dashboard.isPending ? (
           <CourseListSkeleton />
         ) : dashboard.isError ? (
@@ -353,8 +355,7 @@ export default function StudentCoursesPage() {
           /* R319 (c3-S1): the empty agenda is the hatched EmptyCell —
              the sheet's reserved-but-empty region. */
           <EmptyCell
-            label="لا توجد واجبات قادمة"
-            note="ستظهر هنا الواجبات المستحقة فور إضافتها من أساتذة مقرّراتك."
+            label="لا واجبات قادمة"
           />
         ) : (
           <RowList aria-label="قائمة الواجبات القادمة">
@@ -504,18 +505,18 @@ export function SubmitAssignmentModal({
           >
             <div className="flex items-center gap-2 font-semibold text-sm">
               <Icon icon={late ? AlertTriangle : CheckCircle2} size={15} />
-              {late ? 'تمّ التسليم — بعد الموعد النهائي' : 'تمّ التسليم بنجاح'}
+              {late ? 'تمّ التسليم متأخرًا' : 'تمّ التسليم بنجاح'}
             </div>
             <p className="text-xs" style={{ color: 'var(--text-muted)', lineHeight: 'var(--lh-base)' }}>
               {late
-                ? 'استُلمت إجابتك وسيُعلَّم التسليم متأخرًا؛ الحسم لأستاذ المقرّر.'
-                : 'استُلمت إجابتك وستظهر للأستاذ بانتظار التقييم.'}
+                ? 'استُلمت إجابتك وسيُعلَّم التسليم متأخرًا.'
+                : 'استُلمت إجابتك — بانتظار التقييم.'}
             </p>
             {/* r164-e (assessment loop): the timeline's next step is a
                 PLACE, not a dead end — the submission now lives on the
                 results page until the teacher's grade lands. */}
             <Link to="/student/results" className="text-xs" style={{ color: late ? 'var(--warning-ink)' : 'var(--success-ink)', textDecoration: 'underline' }}>
-              تابع حالة التقييم ودرجتك من صفحة النتائج
+              تابع تقييمك في النتائج
             </Link>
           </div>
         ) : (
@@ -547,7 +548,7 @@ export function SubmitAssignmentModal({
             <FormField
               label="رابط ملف (اختياري)"
               id="submit-file"
-              hint="رابط خارجي يبدأ بـ https:// إن توفّر — نصك وحده يكفي للتسليم."
+              hint="رابط https:// اختياري — نصك يكفي للتسليم."
             >
               <input
                 type="text"
@@ -564,7 +565,7 @@ export function SubmitAssignmentModal({
 
             {submit.isError && (
               <p role="alert" className="text-xs" style={{ color: 'var(--danger-ink)', marginTop: 'var(--sp-2)' }}>
-                {apiErrorMessage(submit.error, 'تعذَّر تسليم الواجب — تحقّق من اتصالك وحاول مرة أخرى.')}
+                {apiErrorMessage(submit.error, 'تعذَّر تسليم الواجب — تحقّق من اتصالك.')}
               </p>
             )}
           </>
@@ -581,7 +582,7 @@ export function SubmitAssignmentModal({
             onClick={() => void onSubmit()}
             disabled={submit.isPending}
           >
-            {submit.isPending ? 'جارٍ التسليم…' : 'تسليم الواجب'}
+            {submit.isPending ? 'جارٍ التسليم…' : 'حفظ التسليم'}
           </button>
         )}
       </div>

@@ -150,7 +150,7 @@ describe('QualityDashboardPage — real payload, no fabricated KPIs', () => {
     FIXTURES['/quality/alerts'] = { alerts: [], counts: { critical: 0, warning: 0, info: 0, total: 0 } };
     renderPage(<QualityDashboardPage />);
 
-    expect(await screen.findByText('لا توجد تنبيهات')).toBeInTheDocument();
+    expect(await screen.findByText('لا تنبيهات')).toBeInTheDocument();
   });
 
   /* r299 (E item 1): the dashboard rides the sector's own read-only cue
@@ -182,9 +182,9 @@ describe('QualityDashboardPage — real payload, no fabricated KPIs', () => {
     expect(strip!.getAttribute('aria-busy')).toBe('true');
     expect(strip!.querySelectorAll('.stat-cell')).toHaveLength(5);
 
-    // The subtitle equals the resolved header's copy — nothing moves on
-    // the pending → resolved handoff.
-    expect(screen.getByText(/تطوير الأداء الأكاديمي والإداري والتقني/)).toBeInTheDocument();
+    // P-B2 copy cut: the marketing subtitle is gone; the pending header
+    // carries the RESOLVED h1 — nothing moves on the handoff.
+    expect(screen.getByRole('heading', { level: 1, name: 'لوحة الجودة' })).toBeInTheDocument();
     expect(screen.queryByText(/رؤية لحظية لسير العملية التعليمية/)).toBeNull();
   });
 });

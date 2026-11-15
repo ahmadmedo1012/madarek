@@ -135,9 +135,15 @@ const kpiValue = (label: string) => {
   // r251 (4D Phase B): the teachers page moved to the patterns StatLine
   // (.pf-stat) — the helper accepts either cell so the pin follows the
   // strip the page actually renders, never the implementation.
-  const cell = screen.getByText(label).closest('.stat-cell, .pf-stat');
-  expect(cell).not.toBeNull();
-  return within(cell as HTMLElement).getByText;
+  // R355 copy diet: the KPI label became «الأساتذة» — the same word the
+  // page header's LAST breadcrumb spells, so of all exact-text matches
+  // the one inside a stat cell is the KPI (the crumb never sits in one).
+  const cell = screen
+    .getAllByText(label)
+    .map((el) => el.closest('.stat-cell, .pf-stat') as HTMLElement | null)
+    .find((c) => c !== null);
+  expect(cell).not.toBeUndefined();
+  return within(cell!).getByText;
 };
 
 beforeEach(() => {
@@ -210,7 +216,8 @@ describe('AdminTeachersPage — server-side roster (15-d P1-1)', () => {
     expect(await screen.findByText('سالم الفيتوري')).toBeInTheDocument();
     expect(screen.getByText('مريم الفيتوري')).toBeInTheDocument();
     // …while the KPI shows the SERVER count (87), not the 2 fetched rows.
-    expect(kpiValue('عدد الأساتذة')('87')).toBeInTheDocument();
+    // R355 copy diet: the KPI label dropped «عدد» — «الأساتذة» is it.
+    expect(kpiValue('الأساتذة')('87')).toBeInTheDocument();
     // Footer meta: page 1 of 5 · 87 counted-noun total.
     expect(screen.getByText(/الصفحة 1 من 5/)).toBeInTheDocument();
     expect(screen.getByText(/87 أستاذاً/)).toBeInTheDocument();
@@ -244,7 +251,8 @@ describe('AdminTeachersPage — server-side roster (15-d P1-1)', () => {
     expect(screen.queryByText('نظام التوثيق')).toBeNull();
     expect(screen.queryByText('مطابق لمتطلبات الجودة')).toBeNull();
     // The honest server-backed count remains.
-    expect(kpiValue('عدد الأساتذة')('87')).toBeInTheDocument();
+    // R355 copy diet: the KPI label dropped «عدد» — «الأساتذة» is it.
+    expect(kpiValue('الأساتذة')('87')).toBeInTheDocument();
   });
 
   it('sends the debounced search term server-side, resets to page 1, and offers a clear path', async () => {
@@ -275,7 +283,8 @@ describe('AdminTeachersPage — server-side roster (15-d P1-1)', () => {
     );
 
     // Zero matches → the honest empty state + clear affordance.
-    expect(await screen.findByText('لا نتائج مطابقة')).toBeInTheDocument();
+    // R355 copy diet: the searched-empty title is the short «لا نتائج».
+    expect(await screen.findByText('لا نتائج')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'مسح البحث' }));
     await waitFor(
       () => expect(rosterCalls().some((p) => p.q === undefined)).toBe(true),
@@ -339,9 +348,11 @@ describe('AdminTeachersPage — server-side roster (15-d P1-1)', () => {
 
     renderTeachersPage();
 
-    expect(await screen.findByText('تعذّر تحميل قائمة الأساتذة')).toBeInTheDocument();
+    // R355 copy diet: the API-down line dropped «قائمة».
+    expect(await screen.findByText('تعذّر تحميل الأساتذة')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'إعادة المحاولة' })).toBeInTheDocument();
-    expect(kpiValue('عدد الأساتذة')('—')).toBeInTheDocument();
+    // R355 copy diet: the KPI label dropped «عدد» — «الأساتذة» is it.
+    expect(kpiValue('الأساتذة')('—')).toBeInTheDocument();
   });
 });
 
@@ -494,7 +505,8 @@ describe('ScopeAssignmentCard — invalidation refetch must not clobber drafts (
     expect(await screen.findByLabelText('النطاق')).toHaveValue('UNIVERSITY');
     fireEvent.change(screen.getByLabelText('النطاق'), { target: { value: 'FACULTY' } });
     fireEvent.change(screen.getByLabelText('الكلّيّة'), { target: { value: 'f2' } });
-    fireEvent.click(screen.getByRole('button', { name: 'حفظ النطاق' }));
+    // R355 copy diet: the scope save button is the bare «حفظ».
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ' }));
     await waitFor(() => expect(postMock).toHaveBeenCalledTimes(1));
 
     // The save's ['admin','users'] invalidation refetches this page's

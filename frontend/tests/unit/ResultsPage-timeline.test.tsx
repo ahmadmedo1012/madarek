@@ -200,7 +200,9 @@ describe('ResultsPage — تسليمات بانتظار التقييم (the time
     renderPage();
 
     expect(screen.getByText('لا شيء بانتظار تقييم الأستاذ حالياً')).toBeTruthy();
-    expect(screen.getByText(/وسيصلك إشعار بأي درجة/)).toBeTruthy();
+    // expect(screen.getByText(/وسيصلك إشعار بأي درجة/)).toBeTruthy();
+    // R355 copy diet: explainer cut — the honest empty state survives as
+    // the bar meta sentence above (pinned again at the feed test below).
   });
 });
 

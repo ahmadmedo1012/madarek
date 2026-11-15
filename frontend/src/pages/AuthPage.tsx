@@ -293,11 +293,7 @@ export default function AuthPage() {
                   (same sheet, same chrome; the ruled role-row grammar the
                   register page's chooser owns — no new styles). */}
               <div className="auth-form-header">
-                <span className="auth-meta">(اختيار المؤسسة)</span>
                 <h1 className="auth-form-title">اختر مؤسستك</h1>
-                <p className="auth-form-sub">
-                  حسابك عضو في أكثر من مؤسسة — اختر مؤسسة هذه الجلسة.
-                </p>
               </div>
 
               <div className="role-card-grid" role="group" aria-label="اختيار المؤسسة">
@@ -341,7 +337,7 @@ export default function AuthPage() {
                   verification while the selection request is in flight. */}
               {selectInstitution.isPending && (
                 <span className="sr-only" role="status" aria-live="polite">
-                  جارٍ التحقق من العضوية…
+                  جارٍ التحقق…
                 </span>
               )}
             </>
@@ -367,8 +363,8 @@ export default function AuthPage() {
                   condition honest: only a real in-app from-path (the
                   exact thing navigateAfterLogin will resume) counts. */}
               {readFromPath(location.state)
-                ? 'سجّل الدخول للمتابعة إلى الصفحة التي طلبها.'
-                : 'سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية.'}
+                ? 'سجّل الدخول للمتابعة إلى صفحتك.'
+                : 'سجِّل دخولك للوصول إلى مقرَّراتك.'}
             </p>
           </div>
 
@@ -472,7 +468,7 @@ export default function AuthPage() {
                     {institutions.isError ? (
                       <div className="auth-error" role="alert">
                         <Icon icon={AlertCircle} size={14} />
-                        <span>تعذّر تحميل المؤسسات — تحقّق من اتصالك بالشبكة.</span>
+                        <span>تعذّر تحميل المؤسسات.</span>
                         <button
                           type="button"
                           className="auth-retry-link"
@@ -520,7 +516,7 @@ export default function AuthPage() {
                 on the register page). */}
             {issueCount > 0 && (
               <p className="auth-form-summary" role="status" aria-live="polite">
-                {countAr(issueCount, ['مشكلة واحدة', 'مشكلتان', 'مشاكل', 'مشكلة'])} في النموذج — راجع الحقول المعلّمة ثم أعد المحاولة.
+                {countAr(issueCount, ['مشكلة', 'مشكلتان', 'مشاكل', 'مشكلة'])} في النموذج — راجع الحقول المعلّمة ثم أعد المحاولة.
               </p>
             )}
 
@@ -579,7 +575,7 @@ export default function AuthPage() {
                   </button>
                 </div>
                 <p className="auth-demo-hint-body">
-                  حساب واحد لكل دور — «تعبئة» ثم «دخول».
+                  «تعبئة» ثم «دخول».
                 </p>
                 {/* R320 §C — the hairline-cell account table (Heron sheet
                     grammar: 1px hairline rows, square cells, radius 0,

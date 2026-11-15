@@ -41,7 +41,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   AlertTriangle, Archive, BadgeCheck, Ban, BookOpen, CheckCircle2,
   ChevronDown, ChevronRight, ClipboardCheck, Copy, FileQuestion, FileText,
-  Hourglass, Info, Lock, Pencil, Plus, Search, Send, Trash2, X,
+  Hourglass, Info, Pencil, Plus, Search, Send, Trash2, X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Badge, Button, FormField, Input, Tabs } from '../../components/primitives';
@@ -157,6 +157,38 @@ const ATTEMPT_STATUS_COLOR: Record<ExamAttemptStatusFE, ThemeColor> = {
   EXPIRED: 'red',
 };
 
+/* Copy-diet dedupe (r353): the counted-noun lists and the shared
+ * validation messages that used to be repeated per call site now
+ * count ONCE — identical rendered text, one literal in the file. */
+const COUNT__QUESTIONS: [string, string, string, string] = ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'];
+const COUNT__MINUTES: [string, string, string, string] = ['دقيقة واحدة', 'دقيقتان', 'دقائق', 'دقيقة'];
+const COUNT__POINTS: [string, string, string, string] = ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'];
+const COUNT__ATTEMPTS: [string, string, string, string] = ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'];
+const ERR_TITLE_SHORT = 'العنوان قصير — 3 أحرف على الأقل.';
+const ERR_TITLE_LONG = 'العنوان طويل — الحد 200 حرف.';
+const ERR_DURATION = 'المدة عدد صحيح بين 5 و 480 دقيقة.';
+const ERR_PASS = 'درجة النجاح نسبة صحيحة بين 0 و 100.';
+const ERR_WINDOW = 'موعد الإغلاق يجب أن يكون بعد موعد الفتح.';
+const ERR_DECISION = 'تعذَّر تنفيذ القرار.';
+const HINT_CALENDAR = 'اختر من تقويم الحقل.';
+const TOGGLE_RANDOM_DESC = 'يُخلط الترتيب لكل طالب عند البدء';
+const TOGGLE_RANDOM_LABEL = 'ترتيب عشوائي للأسئلة';
+const FIELD_OPEN = 'يفتح في (اختياري)';
+const FIELD_CLOSE = 'يغلق في (اختياري)';
+const DESC_HINT = 'تعليمات مختصرة لطلابك…';
+const NO_ATTEMPTS = 'لا محاولات بعد';
+const SAVED_PLAIN = 'حُفظت تعديلات القالب.';
+const NEW_TEMPLATE = 'قالب اختبار جديد';
+const LOADING = 'جارٍ التحميل…';
+const TWO_CHOICES_MIN = 'خياران على الأقل.';
+const COUNT__TEMPLATES: [string, string, string, string] = ['قالب واحد', 'قالبان', 'قوالب', 'قالباً'];
+const COUNT__PENDING_REVIEW: [string, string, string, string] = ['إجابة واحدة', 'إجابتان', 'إجابات', 'إجابة'];
+const PENDING_SUFFIX = ' بانتظار تقييمك';
+const AWAITING_SUFFIX = ' بانتظار تصحيحك';
+const QUEUE_SUFFIX = ' بانتظار قرارك';
+const GENERAL_SCOPE_LABEL = 'عام — كل الكلّيّات';
+const CAP_NOTE = 'تُعرض أول 100 نتيجة — قد تكون هناك المزيد.';
+
 /** Client mirror of the attempts endpoint's authorization (the backend
  *  decideAttemptsAccess + role door): render the grading section only
  *  where the gate can pass — QUALITY never passes the door (it moderates
@@ -238,17 +270,17 @@ export function publishGateReason(
     case 'APPROVED':
       return null;
     case 'PENDING_REVIEW':
-      return 'بانتظار مراجعة الجودة — يُفتح النشر بعد اعتمادها.';
+      return 'بانتظار مراجعة الجودة.';
     case 'REJECTED':
-      return template.moderationNote
-        ? 'رفضته الجودة — طالِع ملاحظتها أدناه وعدّل القالب.'
-        : 'رفضته الجودة — عدّل القالب ليعود إلى المراجعة.';
+      // r353 diet: one wording for both branches — the moderation note
+      // itself renders in the detail header above the gate reason.
+      return 'رفضته الجودة — عدّله ليعود للمراجعة.';
     case 'PUBLISHED':
-      return 'هذا الاختبار منشور بالفعل.';
+      return 'الاختبار منشور بالفعل.';
     case 'CLOSED':
-      return 'هذا الاختبار مُغلق.';
+      return 'الاختبار مُغلق.';
     case 'DRAFT':
-      return 'مسودة لم تُرسل إلى مراجعة الجودة بعد.';
+      return 'مسودة لم تُرسل بعد.';
   }
 }
 
@@ -281,21 +313,21 @@ export type EditTemplateDraftErrors = Partial<Record<'title' | 'durationMin' | '
 export function validateEditTemplateDraft(d: EditTemplateDraftState): EditTemplateDraftErrors {
   const errors: EditTemplateDraftErrors = {};
   const title = d.title.trim();
-  if (title.length < 3) errors.title = 'العنوان قصير — 3 أحرف على الأقل.';
-  else if (title.length > 200) errors.title = 'العنوان طويل — الحد 200 حرف.';
+  if (title.length < 3) errors.title = ERR_TITLE_SHORT;
+  else if (title.length > 200) errors.title = ERR_TITLE_LONG;
   const dur = Number(d.durationMin);
   if (d.durationMin.trim() === '' || !Number.isInteger(dur) || dur < 5 || dur > 480) {
-    errors.durationMin = 'المدة عدد صحيح بين 5 و 480 دقيقة.';
+    errors.durationMin = ERR_DURATION;
   }
   const pass = Number(d.passingScore);
   if (d.passingScore.trim() === '' || !Number.isInteger(pass) || pass < 0 || pass > 100) {
-    errors.passingScore = 'درجة النجاح نسبة صحيحة بين 0 و 100.';
+    errors.passingScore = ERR_PASS;
   }
   if (d.openAt !== '' && d.closeAt !== '') {
     const open = new Date(d.openAt).getTime();
     const close = new Date(d.closeAt).getTime();
     if (!Number.isNaN(open) && !Number.isNaN(close) && close <= open) {
-      errors.window = 'موعد الإغلاق يجب أن يكون بعد موعد الفتح.';
+      errors.window = ERR_WINDOW;
     }
   }
   return errors;
@@ -448,29 +480,29 @@ export function validateQuestionDraft(d: QuestionDraftState): QuestionDraftError
   const errors: QuestionDraftErrors = {};
   if (!d.categoryId) errors.categoryId = 'اختر تصنيف السؤال.';
   const prompt = d.prompt.trim();
-  if (prompt.length < 5) errors.prompt = 'نص السؤال قصير جداً — 5 أحرف على الأقل.';
+  if (prompt.length < 5) errors.prompt = 'نص السؤال قصير — 5 أحرف على الأقل.';
   else if (prompt.length > 2000) errors.prompt = 'نص السؤال طويل — الحد 2000 حرف.';
   if (d.type === 'MCQ' || d.type === 'TRUE_FALSE') {
     if (d.choices.some((c) => c.trim() === '')) errors.choices = 'أكمل نص كل الخيارات.';
-    else if (d.choices.length < 2) errors.choices = 'خياران على الأقل.';
+    else if (d.choices.length < 2) errors.choices = TWO_CHOICES_MIN;
     else if (d.type === 'TRUE_FALSE' && d.choices.length !== 2) {
-      errors.choices = 'سؤال صح أم خطأ له خياران بالضبط.';
+      errors.choices = 'صح أم خطأ: خياران بالضبط.';
     } else if (d.choices.length > 20) errors.choices = 'الحد 20 خياراً.';
     if (d.correctIndex === null || d.correctIndex < 0 || d.correctIndex >= d.choices.length) {
       errors.correct = 'حدِّد الإجابة الصحيحة قبل الحفظ.';
     }
   } else if (d.type === 'SHORT') {
     if (d.modelAnswer.trim() === '') {
-      errors.modelAnswer = 'الإجابة القصيرة تحتاج إجابة نموذجية للتصحيح الآلي.';
+      errors.modelAnswer = 'تحتاج إجابة نموذجية للتصحيح الآلي.';
     }
   }
   const pts = Number(d.points);
   if (d.points.trim() === '' || !Number.isInteger(pts) || pts < 1 || pts > 20) {
-    errors.points = 'النقاط عدد صحيح بين 1 و 20.';
+    errors.points = 'النقاط بين 1 و 20.';
   }
   const tags = normalizeTags(d.tagsRaw);
   if (tags.length > 8) errors.tags = 'الحد 8 وسوم.';
-  else if (tags.some((t) => t.length > 40)) errors.tags = 'كل وسم حتى 40 حرفاً.';
+  else if (tags.some((t) => t.length > 40)) errors.tags = 'الوسم حتى 40 حرفاً.';
   return errors;
 }
 
@@ -521,25 +553,25 @@ export type TemplateDraftErrors = Partial<
 export function validateTemplateDraft(d: TemplateDraftState): TemplateDraftErrors {
   const errors: TemplateDraftErrors = {};
   const title = d.title.trim();
-  if (title.length < 3) errors.title = 'العنوان قصير — 3 أحرف على الأقل.';
-  else if (title.length > 200) errors.title = 'العنوان طويل — الحد 200 حرف.';
-  if (d.scope === 'offering' && !d.offeringId) errors.scope = 'اختر المقرّر الذي يُخصَّص له الاختبار.';
-  if (d.scope === 'faculty' && !d.facultyId) errors.scope = 'اختر الكلّيّة التي يُخصَّص لها الاختبار.';
+  if (title.length < 3) errors.title = ERR_TITLE_SHORT;
+  else if (title.length > 200) errors.title = ERR_TITLE_LONG;
+  if (d.scope === 'offering' && !d.offeringId) errors.scope = 'اختر المقرّر.';
+  if (d.scope === 'faculty' && !d.facultyId) errors.scope = 'اختر الكلّيّة.';
   const dur = Number(d.durationMin);
   if (d.durationMin.trim() === '' || !Number.isInteger(dur) || dur < 5 || dur > 480) {
-    errors.durationMin = 'المدة عدد صحيح بين 5 و 480 دقيقة.';
+    errors.durationMin = ERR_DURATION;
   }
   const pass = Number(d.passingScore);
   if (d.passingScore.trim() === '' || !Number.isInteger(pass) || pass < 0 || pass > 100) {
-    errors.passingScore = 'درجة النجاح نسبة صحيحة بين 0 و 100.';
+    errors.passingScore = ERR_PASS;
   }
-  if (d.questionIds.size < 1) errors.questionIds = 'اختر سؤالاً واحداً على الأقل من البنك.';
-  else if (d.questionIds.size > 60) errors.questionIds = 'الحد 60 سؤالاً في القالب الواحد.';
+  if (d.questionIds.size < 1) errors.questionIds = 'اختر سؤالاً على الأقل.';
+  else if (d.questionIds.size > 60) errors.questionIds = 'الحد 60 سؤالاً.';
   if (d.openAt !== '' && d.closeAt !== '') {
     const open = new Date(d.openAt).getTime();
     const close = new Date(d.closeAt).getTime();
     if (!Number.isNaN(open) && !Number.isNaN(close) && close <= open) {
-      errors.window = 'موعد الإغلاق يجب أن يكون بعد موعد الفتح.';
+      errors.window = ERR_WINDOW;
     }
   }
   return errors;
@@ -620,9 +652,6 @@ export default function ExamAuthoringPage() {
                 every authoring surface with its stage strip. */}
             <span className="hr-brow exa2-brow">مسار الاختبارات</span>
             <h1 className="page-title">بنك الأسئلة والاختبارات</h1>
-            <p className="page-subtitle">
-              تأليف الأسئلة وبناء القوالب، ومتابعة اعتمادها من الجودة حتى النشر.
-            </p>
           </div>
           {/* 4C-a: the build CTA moved down to its tab's section head —
               each tab owns its own action row (the page header stays a
@@ -661,8 +690,8 @@ function PermissionDeniedBlock() {
   const navigate = useNavigate();
   return (
     <PermissionDeniedState
-      title="صلاحية التأليف غير مفعَّلة لحسابك"
-      detail="إنشاء الأسئلة والقوالب يتطلب صلاحية «إنشاء اختبارات» — تواصل مع إدارة المنصة."
+      title="التأليف غير مفعَّل لحسابك"
+      detail="يتطلب صلاحية «إنشاء اختبارات»."
       onBack={() => navigate('/teacher/dashboard')}
     />
   );
@@ -710,17 +739,17 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>قوالب اختباراتي</>}
         desc={
           q.isPending
-            ? 'جارٍ التحميل…'
+            ? LOADING
             : q.data && q.data.length > 0
-              ? `${countAr(q.data.length, ['قالب واحد', 'قالبان', 'قوالب', 'قالباً'])} — يُفتح النشر بعد اعتماد الجودة.`
-              : 'ستظهر قوالبك هنا — ابنِ قالباً من أسئلة البنك المعتمدة.'
+              ? countAr(q.data.length, COUNT__TEMPLATES)
+              : undefined
         }
         actions={
           /* R342-09: the tab's build action rides the accent register
            * (the D8 family law — the ONE ember action per view, the
            * materials/assignments create-button seat). */
           <Button variant="accent" className="hr-cta" onClick={onBuild}>
-            <Icon icon={Plus} size={14} /> قالب اختبار جديد
+            <Icon icon={Plus} size={14} /> {NEW_TEMPLATE}
           </Button>
         }
       />
@@ -731,11 +760,11 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
       ) : !q.data || q.data.length === 0 ? (
         <EmptyState illustration="empty-list"
           icon={FileQuestion}
-          title="لم تُنشئ قوالب اختبارات بعد"
-          description="ابدأ ببناء قالب من أسئلة البنك، ثم أرسله لمراجعة الجودة ونشره لطلابك."
+          title="لم تُنشئ قوالب بعد"
+          description=""
           action={
             <Button variant="primary" onClick={onBuild}>
-              <Icon icon={Plus} size={14} /> قالب اختبار جديد
+              <Icon icon={Plus} size={14} /> {NEW_TEMPLATE}
             </Button>
           }
         />
@@ -751,7 +780,7 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
               continue instead of implying it ends. */}
           {q.data.length >= 100 && (
             <p className="text-xs text-muted exa-cap-note" role="note">
-              تُعرض أول 100 نتيجة — قد تكون هناك المزيد.
+              {CAP_NOTE}
             </p>
           )}
         </>
@@ -763,7 +792,7 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
 function TemplateRow({ template }: { template: ExamTemplateRow }) {
   // A6 P3 (22-a): one label for the general scope everywhere — the row
   // used to say «عام» while the detail said «عام — كل الكلّيّات».
-  const GENERAL_SCOPE = 'عام — كل الكلّيّات';
+  const GENERAL_SCOPE = GENERAL_SCOPE_LABEL;
   const scope = template.offering
     ? `${template.offering.course.name} · ${template.offering.course.code}`
     : template.faculty
@@ -783,11 +812,11 @@ function TemplateRow({ template }: { template: ExamTemplateRow }) {
           <TemplateStatusBadge status={template.status} />
           <span>{scope}</span>
           <span>
-            {countAr(template._count.questions, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])} ·{' '}
-            {countAr(template.durationMin, ['دقيقة واحدة', 'دقيقتان', 'دقائق', 'دقيقة'])}
+            {countAr(template._count.questions, COUNT__QUESTIONS)} ·{' '}
+            {countAr(template.durationMin, COUNT__MINUTES)}
           </span>
           {template._count.attempts > 0 && (
-            <span>{countAr(template._count.attempts, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}</span>
+            <span>{countAr(template._count.attempts, COUNT__ATTEMPTS)}</span>
           )}
         </span>
         {template.status === 'REJECTED' && (
@@ -795,7 +824,7 @@ function TemplateRow({ template }: { template: ExamTemplateRow }) {
             {/* r170b: the fix path is now the template's own تعديل (the
                 edit resubmits it to the queue) — the old copy promised a
                 replacement-template detour that no longer exists. */}
-            رفضته الجودة — افتح القالب للاطلاع على الملاحظات وعدّله ليعود إلى المراجعة.
+            رفضته الجودة — افتحه وعدّله ليعود إلى المراجعة.
           </p>
         )}
       </Link>
@@ -854,7 +883,7 @@ function PublishButton({
     try {
       await publish.mutateAsync(template.id);
       setConfirming(false);
-      toast.success('أصبح الاختبار متاحاً للطلاب حسب نطاقه.', {
+      toast.success('متاح للطلاب حسب نطاقه.', {
         title: 'تمّ نشر الاختبار',
         ...(viewHref ? {
           action: {
@@ -906,19 +935,19 @@ function PublishButton({
         /* A6 P3 (22-a): the tooltip names the consequence — the old
            «النشر متاح بعد اعتماد الجودة» was stale on an APPROVED
            row, where publishing is exactly what is available. */
-        title="النشر يعرض الاختبار للطلاب حسب نطاقه ولا يمكن التراجع عنه"
+        title="النشر نهائي"
       >
         <Icon icon={Send} size={12} /> نشر
       </Button>
       {publish.isError && (
         <span role="alert" className="text-xs exa-error-line exa-error-center">
-          {apiErrorMessage(publish.error, 'تعذَّر النشر — حاول مرة أخرى.')}
+          {apiErrorMessage(publish.error, 'تعذَّر النشر.')}
         </span>
       )}
       <ConfirmDialog
         open={confirming}
         title="نشر الاختبار"
-        message="بعد النشر يظهر الاختبار للطلاب حسب نطاقه ولا يمكن سحبه من هنا. نشر الآن؟"
+        message="يظهر للطلاب ولا رجعة. نشر الآن؟"
         confirmLabel="نشر نهائي"
         onConfirm={onPublish}
         onCancel={() => setConfirming(false)}
@@ -973,7 +1002,7 @@ function QuestionBankSection() {
     <>
       <ExaSectionHead
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>بنك الأسئلة المعتمدة</>}
-        desc="الأسئلة التي اعتمدتها الجودة — سؤال جديد يمرّ على المراجعة أولاً."
+        desc={undefined /* r353 diet: the tab copy states the flow */}
         actions={
           <Button variant="accent" className="hr-cta" onClick={() => setCreating(true)}>
             <Icon icon={Plus} size={14} /> سؤال جديد
@@ -1042,12 +1071,7 @@ function QuestionBankSection() {
       ) : !bank.data || bank.data.length === 0 ? (
         <EmptyState
           icon={filtered ? Search : FileQuestion}
-          title={filtered ? 'لا توجد أسئلة تطابق التصفية' : 'البنك فارغ حتى الآن'}
-          description={
-            filtered
-              ? 'جرّب كلمات بحث مختلفة أو أزل بعض عوامل التصفية.'
-              : 'أنشئ أول سؤال — بعد اعتماده من الجودة يظهر هنا ويصلح للقوالب.'
-          }
+          title={filtered ? 'لا أسئلة تطابق التصفية' : 'البنك فارغ'}
           action={
             !filtered ? (
               <Button variant="primary" onClick={() => setCreating(true)}>
@@ -1058,7 +1082,7 @@ function QuestionBankSection() {
                  الأسطح الشقيقة (admin/students، owner/users) توفر مسح
                  البحث والفلاتر. نفس النمط. */
               <Button variant="ghost" onClick={() => { setQ(''); setDebouncedQ(''); setCategoryId(''); setType(''); setDifficulty(''); }}>
-                <Icon icon={X} size={13} /> مسح البحث والتصفية
+                <Icon icon={X} size={13} /> مسح التصفية
               </Button>
             )
           }
@@ -1079,7 +1103,7 @@ function QuestionBankSection() {
               tab discloses it the same way when the page fills up. */}
           {bank.data.length >= 100 && (
             <p className="text-xs text-muted exa-cap-note" role="note">
-              تُعرض أول 100 نتيجة — قد تكون هناك المزيد.
+              {CAP_NOTE}
             </p>
           )}
         </>
@@ -1130,7 +1154,7 @@ function QuestionBankRow({
                 templates" model. */}
             <Badge color="green" icon={BadgeCheck}>معتمد</Badge>
             <span className="exa-points">
-              {countAr(question.points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}
+              {countAr(question.points, COUNT__POINTS)}
             </span>
             <span className="flex gap-1 items-center">
               <EmojiIcon emoji={question.category.iconEmoji ?? '📚'} size={13} />
@@ -1157,12 +1181,6 @@ function QuestionBankRow({
             <span>أضافها: {question.author}</span>
             {question.tags.length > 0 && <span>الوسوم: {question.tags.join('، ')}</span>}
           </div>
-          <p className="exa-immutable" role="note">
-            <Icon icon={Lock} size={13} />
-            <span>
-              الأسئلة المعتمدة ثابتة — أنشئ سؤالاً جديداً لصياغة معدَّلة.
-            </span>
-          </p>
         </div>
       )}
     </div>
@@ -1271,7 +1289,7 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
           <div className="form-feedback ok" role="status">
             <Icon icon={CheckCircle2} size={15} />
             <span className="flex-1">
-              أُرسل السؤال إلى مراجعة الجودة — يظهر في البنك بعد الاعتماد.
+              أُرسل السؤال إلى مراجعة الجودة.
             </span>
           </div>
         ) : (
@@ -1287,7 +1305,7 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
               label="تصنيف السؤال"
               htmlFor="newq-category"
               error={errors.categoryId}
-              hint={categoriesEmpty ? 'تصنيفات الأسئلة تنشئها إدارة المنصة — تواصل معهم.' : undefined}
+              hint={categoriesEmpty ? 'التصنيفات تنشئها الإدارة.' : undefined}
             >
               <select
                 id="newq-category"
@@ -1297,9 +1315,9 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                 disabled={categories.isPending || categoriesEmpty}
               >
                 {categories.isPending ? (
-                  <option value="">جارٍ التحميل…</option>
+                  <option value="">{LOADING}</option>
                 ) : categoriesEmpty ? (
-                  <option value="">لا توجد تصنيفات بعد</option>
+                  <option value="">لا تصنيفات بعد</option>
                 ) : (
                   <>
                     <option value="">اختر تصنيفاً…</option>
@@ -1313,7 +1331,7 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
               </select>
             </Field>
 
-            <Field label="نوع السؤال" htmlFor="newq-type" hint="النوع يحدد شكل الإجابة وطريقة التصحيح">
+            <Field label="نوع السؤال" htmlFor="newq-type">
               <select
                 id="newq-type"
                 className="input"
@@ -1332,7 +1350,7 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                 className="input"
                 rows={3}
                 maxLength={2000}
-                placeholder="اكتب نص السؤال كما سيظهر للطالب…"
+                placeholder="كما يظهر للطالب…"
                 value={draft.prompt}
                 onChange={(e) => patch({ prompt: e.target.value })}
               />
@@ -1353,13 +1371,12 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                 label="الإجابة النموذجية"
                 htmlFor="newq-model"
                 error={errors.modelAnswer}
-                hint="تُصحَّح إجابة الطالب آلياً بمطابقتها مع هذا النص"
               >
                 <Input
                   id="newq-model"
                   value={draft.modelAnswer}
                   error={!!errors.modelAnswer}
-                  placeholder="مثال: بروتوكول التحكم بالنقل"
+                  placeholder="بروتوكول التحكم بالنقل"
                   onChange={(e) => patch({ modelAnswer: e.target.value })}
                 />
               </Field>
@@ -1369,14 +1386,14 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
               <Field
                 label="معيار التصحيح (اختياري)"
                 htmlFor="newq-rubric"
-                hint="الأسئلة المقالية تُصحَّح يدوياً — يظهر المعيار للمصحح"
+                hint="تُصحَّح يدوياً — يظهر المعيار للمصحح"
               >
                 <textarea
                   id="newq-rubric"
                   className="input"
                   rows={3}
                   maxLength={2000}
-                  placeholder="مثال: يذكر الطالب ثلاث خصائص مع شرح موجز لكل منها…"
+                  placeholder="ثلاث خصائص مع شرح…"
                   value={draft.rubric}
                   onChange={(e) => patch({ rubric: e.target.value })}
                 />
@@ -1413,7 +1430,7 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
               </Field>
             </div>
 
-            <Field label="وسوم (اختياري)" htmlFor="newq-tags" error={errors.tags} hint="افصل بين الوسوم بفاصلة">
+            <Field label="وسوم (اختياري)" htmlFor="newq-tags" error={errors.tags}>
               <Input
                 id="newq-tags"
                 value={draft.tagsRaw}
@@ -1425,7 +1442,7 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
 
             {create.isError && (
               <p role="alert" className="text-xs exa-error-line">
-                {apiErrorMessage(create.error, 'تعذَّر حفظ السؤال — تحقّق من البيانات وحاول مرة أخرى.')}
+                {apiErrorMessage(create.error, 'تعذَّر حفظ السؤال.')}
               </p>
             )}
 
@@ -1660,7 +1677,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
           <div className="form-feedback ok" role="status">
             <Icon icon={CheckCircle2} size={15} />
             <span className="flex-1">
-              أُرسل القالب إلى مراجعة الجودة — بعد الاعتماد يصبح النشر متاحاً.
+              أُرسل القالب إلى مراجعة الجودة.
             </span>
           </div>
         ) : (
@@ -1675,7 +1692,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                 value={draft.title}
                 error={!!errors.title}
                 maxLength={200}
-                placeholder="مثال: اختبار نصفي — الشبكات"
+                placeholder="اختبار نصفي — الشبكات"
                 onChange={(e) => patch({ title: e.target.value })}
               />
             </Field>
@@ -1718,7 +1735,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                 label="المقرّر"
                 htmlFor="tpl-offering"
                 error={errors.scope}
-                hint={offeringsEmpty ? 'لا مقرّرات مسندة إليك هذا الفصل — اختر نطاقاً آخر.' : undefined}
+                hint={offeringsEmpty ? 'لا مقرّرات مسندة إليك.' : undefined}
               >
                 <select
                   id="tpl-offering"
@@ -1728,7 +1745,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                   onChange={(e) => patch({ offeringId: e.target.value })}
                 >
                   {offerings.isPending ? (
-                    <option value="">جارٍ التحميل…</option>
+                    <option value="">{LOADING}</option>
                   ) : offeringsEmpty ? (
                     <option value="">لا مقرّرات بعد</option>
                   ) : (
@@ -1755,7 +1772,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                   onChange={(e) => patch({ facultyId: e.target.value })}
                 >
                   {faculties.isPending ? (
-                    <option value="">جارٍ التحميل…</option>
+                    <option value="">{LOADING}</option>
                   ) : (
                     <>
                       <option value="">اختر الكلّيّة…</option>
@@ -1769,7 +1786,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
             )}
 
             <div className="flex gap-3 flex-wrap">
-              <Field label="المدة (بالدقائق)" htmlFor="tpl-duration" error={errors.durationMin} hint="بين 5 و 480 دقيقة">
+              <Field label="المدة (بالدقائق)" htmlFor="tpl-duration" error={errors.durationMin}>
                 <Input
                   id="tpl-duration"
                   type="number"
@@ -1784,7 +1801,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                   onChange={(e) => patch({ durationMin: e.target.value })}
                 />
               </Field>
-              <Field label="درجة النجاح (%)" htmlFor="tpl-pass" error={errors.passingScore} hint="نسبة من مجموع النقاط">
+              <Field label="درجة النجاح (%)" htmlFor="tpl-pass" error={errors.passingScore}>
                 <Input
                   id="tpl-pass"
                   type="number"
@@ -1802,8 +1819,8 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
             </div>
 
             <ToggleSwitch
-              label="ترتيب عشوائي للأسئلة"
-              description="يُخلط ترتيب الأسئلة لكل طالب عند بدء الاختبار"
+              label={TOGGLE_RANDOM_LABEL}
+              description={TOGGLE_RANDOM_DESC}
               checked={draft.randomized}
               onChange={(randomized) => patch({ randomized })}
             />
@@ -1816,11 +1833,11 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                   the author can verify against (datetime-local values
                   carry no offset — the echo is the same local time). */}
               <Field
-                label="يفتح في (اختياري)"
+                label={FIELD_OPEN}
                 htmlFor="tpl-open"
                 hint={draft.openAt
                   ? `المحدَّد: ${formatDateTimeAr(draft.openAt)}`
-                  : 'اختر من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'}
+                  : HINT_CALENDAR}
               >
                 <input
                   id="tpl-open"
@@ -1832,11 +1849,11 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                 />
               </Field>
               <Field
-                label="يغلق في (اختياري)"
+                label={FIELD_CLOSE}
                 htmlFor="tpl-close"
                 hint={draft.closeAt
                   ? `المحدَّد: ${formatDateTimeAr(draft.closeAt)}`
-                  : 'اختر من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'}
+                  : HINT_CALENDAR}
               >
                 <input
                   id="tpl-close"
@@ -1854,13 +1871,13 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
               </p>
             )}
 
-            <Field label="وصف (اختياري)" htmlFor="tpl-desc" hint="يظهر للطالب قبل بدء الاختبار">
+            <Field label="وصف (اختياري)" htmlFor="tpl-desc">
               <textarea
                 id="tpl-desc"
                 className="input"
                 rows={2}
                 maxLength={2000}
-                placeholder="تعليمات مختصرة لطلابك…"
+                placeholder={DESC_HINT}
                 value={draft.description}
                 onChange={(e) => patch({ description: e.target.value })}
               />
@@ -1870,7 +1887,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
 
             {create.isError && (
               <p role="alert" className="text-xs exa-error-line">
-                {apiErrorMessage(create.error, 'تعذَّر إنشاء القالب — تحقّق من البيانات وحاول مرة أخرى.')}
+                {apiErrorMessage(create.error, 'تعذَّر إنشاء القالب.')}
               </p>
             )}
 
@@ -1952,20 +1969,18 @@ function QuestionPicker({
         {/* Live selection state — count + running points total, the two
             numbers the author balances while building. */}
         <span className="text-xs text-muted" role="status">
-          {countAr(selected.size, ['سؤال مختار واحد', 'سؤالان مختاران', 'أسئلة مختارة', 'سؤالاً مختاراً'])} من 60 ·{' '}
-          {countAr(points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}
+          {countAr(selected.size, ['سؤال مختار', 'سؤالان مختاران', 'أسئلة مختارة', 'سؤالاً مختاراً'])} من 60 ·{' '}
+          {countAr(points, COUNT__POINTS)}
         </span>
       </div>
 
       {/* 3-d: the pick order IS the exam order — the backend assigns each
           template question its order from the pick sequence (order: i+1
           over questionIds), so the author sees the contract while picking.
-          The randomized branch keeps it honest when the shuffle toggle is
-          on (the pick order seeds the per-student shuffle). */}
+          r353 diet: the shuffle half of the old ternary duplicated the
+          toggle's own description beside it — one wording stays. */}
       <p className="text-xs text-muted">
-        {draft.randomized
-          ? 'ترتيب اختيارك يحدّد ترتيب الأسئلة — ويُخلط عشوائياً لكل طالب عند بدئه.'
-          : 'ترتيب اختيارك يحدّد ترتيب الأسئلة.'}
+        ترتيب اختيارك يحدّد ترتيب الأسئلة.
       </p>
 
       <div
@@ -2033,7 +2048,7 @@ function QuestionPicker({
         </div>
       ) : !bank.data || bank.data.length === 0 ? (
         <p className="text-xs text-muted">
-          لا أسئلة معتمدة تطابق البحث — الجديدة تحتاج اعتماد الجودة أولاً.
+          لا أسئلة معتمدة تطابق البحث.
         </p>
       ) : (
         <div
@@ -2059,7 +2074,7 @@ function QuestionPicker({
                     order this question will carry (exa-pick-order,
                     exam-author.css); renumbered as picks change. */}
                 {checked && (
-                  <span className="exa-pick-order" title="ترتيب السؤال في الاختبار">
+                  <span className="exa-pick-order" title="ترتيبه في الاختبار">
                     <span className="visually-hidden">ترتيبه في الاختبار: </span>
                     {pickIndex.get(question.id)}
                   </span>
@@ -2070,7 +2085,7 @@ function QuestionPicker({
                     <Badge>{QTYPE_LABEL[question.type]}</Badge>
                     <Badge color={DIFFICULTY_COLOR[question.difficulty]}>{DIFFICULTY_LABEL[question.difficulty]}</Badge>
                     <span>{question.category.title}</span>
-                    <span>{countAr(question.points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}</span>
+                    <span>{countAr(question.points, COUNT__POINTS)}</span>
                   </div>
                 </div>
               </label>
@@ -2098,9 +2113,9 @@ function ModerationQueueSection() {
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[03]</span>قوالب بانتظار المراجعة</>}
         desc={
           q.isPending
-            ? 'جارٍ التحميل…'
+            ? LOADING
             : q.data && q.data.length > 0
-              ? countAr(q.data.length, ['قالب واحد بانتظار قرارك', 'قالبان بانتظار قرارك', 'قوالب بانتظار قرارك', 'قالباً بانتظار قرارك'])
+              ? countAr(q.data.length, COUNT__TEMPLATES) + QUEUE_SUFFIX
               : undefined
         }
       />
@@ -2112,7 +2127,7 @@ function ModerationQueueSection() {
         <EmptyState illustration="empty-list"
           icon={CheckCircle2}
           title="لا شيء بانتظار المراجعة"
-          description="كل القوالب المرسلة اجتازت المراجعة — الجديدة تظهر هنا فور إرسالها."
+          description=""
         />
       ) : (
         <div className="exa-rows">
@@ -2124,8 +2139,8 @@ function ModerationQueueSection() {
                   <Badge color="purple">{KIND_LABEL[item.kind]}</Badge>
                   {item.offering && <Badge color="brand">{item.offering.course.name}</Badge>}
                   <span>
-                    {countAr(item._count.questions, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])} ·{' '}
-                    {countAr(item.durationMin, ['دقيقة واحدة', 'دقيقتان', 'دقائق', 'دقيقة'])}
+                    {countAr(item._count.questions, COUNT__QUESTIONS)} ·{' '}
+                    {countAr(item.durationMin, COUNT__MINUTES)}
                   </span>
                   <span>قدّمه: {item.author.firstName} {item.author.lastName}</span>
                 </span>
@@ -2154,7 +2169,7 @@ export function ExamTemplateDetailPage() {
       <div className="page">
         <Link to="/teacher/exams" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          العودة إلى بنك الأسئلة والاختبارات
+          العودة إلى الاختبارات
         </Link>
         {q.isPending ? (
           <DetailSkeleton />
@@ -2211,7 +2226,7 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
               ) : template.faculty ? (
                 <span>كلّيّة {template.faculty.name}</span>
               ) : (
-                <span>عام — كل الكلّيّات</span>
+                <span>{GENERAL_SCOPE_LABEL}</span>
               )}
             </div>
             {/* R304/R305: the workflow rail — where this template stands
@@ -2240,14 +2255,13 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
           <section aria-label="أسئلة القالب">
             <ExaSectionHead
               title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>أسئلة القالب</>}
-              count={countAr(template.questions.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])}
-              desc={`مجموع النقاط ${countAr(totalPoints, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}`}
+              count={countAr(template.questions.length, COUNT__QUESTIONS)}
+              desc={`مجموع النقاط ${countAr(totalPoints, COUNT__POINTS)}`}
             />
             {template.questions.length === 0 ? (
               <EmptyState illustration="empty-list"
                 icon={FileQuestion}
-                title="لا أسئلة في هذا القالب"
-                description="ربما أُوقفت أسئلته من البنك بعد بنائه."
+                title="لا أسئلة في القالب"
               />
             ) : (
               <div className="exa-rows">
@@ -2279,11 +2293,11 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
                 ) : template.faculty ? (
                   <>كلّيّة {template.faculty.name}</>
                 ) : (
-                  'عام — كل الكلّيّات'
+                  GENERAL_SCOPE_LABEL
                 )}
               </DetailLine>
               <DetailLine label="المدة">
-                {countAr(template.durationMin, ['دقيقة واحدة', 'دقيقتان', 'دقائق', 'دقيقة'])}
+                {countAr(template.durationMin, COUNT__MINUTES)}
               </DetailLine>
               <DetailLine label="درجة النجاح">
                 <bdi>{template.passingScore}%</bdi>
@@ -2309,8 +2323,8 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
                 {/* P2-1 (5-A7): countAr(0) renders the broken «0 محاولة» —
                     the zero case names the reality. */}
                 {template._count.attempts === 0
-                  ? 'لا محاولات بعد'
-                  : countAr(template._count.attempts, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}
+                  ? NO_ATTEMPTS
+                  : countAr(template._count.attempts, COUNT__ATTEMPTS)}
               </DetailLine>
               {template.description && <DetailLine label="الوصف">{template.description}</DetailLine>}
             </div>
@@ -2351,9 +2365,7 @@ function AuthorActions({ template }: { template: ExamTemplateDetail }) {
     setCloneFailed(false);
     try {
       const copy = await clone.mutateAsync(template.id);
-      toast.success('أُنشئت نسخة بأسئلة القالب وأُرسلت إلى مراجعة الجودة.', {
-        title: 'تمّ الاستنساخ',
-      });
+      toast.success('أُنشئت نسخة للمراجعة.');
       // Straight to the new draft — its detail page is where the author
       // continues (edit the window, retitle, await moderation).
       navigate(`/teacher/exams/${copy.id}`);
@@ -2384,7 +2396,7 @@ function AuthorActions({ template }: { template: ExamTemplateDetail }) {
             loading={clone.isPending}
             disabled={clone.isPending}
             onClick={() => void onClone()}
-            title="نسخة كاملة من القالب بأسئلته — تُرسل إلى مراجعة الجودة"
+            title="نسخة كاملة تُرسل للمراجعة"
           >
             <Icon icon={Copy} size={12} /> {clone.isPending ? 'جارٍ الاستنساخ…' : 'استنساخ'}
           </Button>
@@ -2392,7 +2404,7 @@ function AuthorActions({ template }: { template: ExamTemplateDetail }) {
         <PublishButton template={template} authorId={template.authorId} explainGate />
         {cloneFailed && (
           <p role="alert" className="text-xs exa-error-line">
-            {apiErrorMessage(clone.error, 'تعذَّر الاستنساخ — تحقّق من اتصالك وحاول مرة أخرى.')}
+            {apiErrorMessage(clone.error, 'تعذَّر الاستنساخ.')}
           </p>
         )}
       </div>
@@ -2450,11 +2462,11 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
       // The verdict-reset states (APPROVED/REJECTED) say what saving did
       // to the lifecycle; every other state is a plain in-place edit.
       if (template.status === 'APPROVED' || template.status === 'REJECTED') {
-        toast.success('حُفظ التعديل وعاد القالب إلى المراجعة بمحتواه المحدَّث.', {
+        toast.success('حُفظ التعديل وعاد للمراجعة.', {
           title: 'تمّ حفظ التعديل',
         });
       } else {
-        toast.success('حُفظت تعديلات القالب.', { title: 'تمّ الحفظ' });
+        toast.success(SAVED_PLAIN, { title: 'تمّ الحفظ' });
       }
     } catch {
       /* surfaced inline from update.isError */
@@ -2465,9 +2477,9 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
   // (mirrors decideTemplateEdit, which the backend enforces anyway).
   const resetNotice =
     template.status === 'APPROVED'
-      ? 'حفظ التعديل يُلغي الاعتماد ويعيد القالب إلى المراجعة قبل نشره.'
+      ? 'حفظ التعديل يُلغي الاعتماد ويعيد القالب إلى المراجعة.'
       : template.status === 'REJECTED'
-        ? 'حفظ التعديل يعيد القالب إلى المراجعة بمحتواه المحدَّث.'
+        ? 'حفظ التعديل يعيده إلى المراجعة.'
         : null;
 
   return (
@@ -2490,8 +2502,8 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
             <Icon icon={CheckCircle2} size={15} />
             <span className="flex-1">
               {resetNotice
-                ? 'حُفظ التعديل — القالب الآن بانتظار مراجعة الجودة.'
-                : 'حُفظت التعديلات على القالب.'}
+                ? 'حُفظ التعديل — القالب بانتظار المراجعة.'
+                : SAVED_PLAIN}
             </span>
           </div>
         ) : (
@@ -2501,8 +2513,7 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
             className="exa-form"
           >
             <p className="text-sm text-muted">
-              الأسئلة والنطاق ثابتة بعد الإنشاء — عدّل العرض والتوقيت هنا،
-              أو استنسخ القالب لأسئلة مختلفة.
+              الأسئلة والنطاق ثابتة — عدّل التوقيت أو استنسخ.
             </p>
 
             <Field label="عنوان القالب" htmlFor="edit-tpl-title" error={errors.title}>
@@ -2516,7 +2527,7 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
             </Field>
 
             <div className="flex gap-3 flex-wrap">
-              <Field label="المدة (بالدقائق)" htmlFor="edit-tpl-duration" error={errors.durationMin} hint="بين 5 و 480 دقيقة">
+              <Field label="المدة (بالدقائق)" htmlFor="edit-tpl-duration" error={errors.durationMin}>
                 <Input
                   id="edit-tpl-duration"
                   type="number"
@@ -2531,7 +2542,7 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
                   onChange={(e) => patch({ durationMin: e.target.value })}
                 />
               </Field>
-              <Field label="درجة النجاح (%)" htmlFor="edit-tpl-pass" error={errors.passingScore} hint="نسبة من مجموع النقاط">
+              <Field label="درجة النجاح (%)" htmlFor="edit-tpl-pass" error={errors.passingScore}>
                 <Input
                   id="edit-tpl-pass"
                   type="number"
@@ -2549,19 +2560,19 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
             </div>
 
             <ToggleSwitch
-              label="ترتيب عشوائي للأسئلة"
-              description="يُخلط ترتيب الأسئلة لكل طالب عند بدء الاختبار"
+              label={TOGGLE_RANDOM_LABEL}
+              description={TOGGLE_RANDOM_DESC}
               checked={draft.randomized}
               onChange={(randomized) => patch({ randomized })}
             />
 
             <div className="flex gap-3 flex-wrap">
               <Field
-                label="يفتح في (اختياري)"
+                label={FIELD_OPEN}
                 htmlFor="edit-tpl-open"
                 hint={draft.openAt
                   ? `المحدَّد: ${formatDateTimeAr(draft.openAt)}`
-                  : 'غير محدَّد — يفتح فور النشر. مسح الحقل يزيل الموعد.'}
+                  : 'غير محدَّد.'}
               >
                 <input
                   id="edit-tpl-open"
@@ -2573,11 +2584,11 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
                 />
               </Field>
               <Field
-                label="يغلق في (اختياري)"
+                label={FIELD_CLOSE}
                 htmlFor="edit-tpl-close"
                 hint={draft.closeAt
                   ? `المحدَّد: ${formatDateTimeAr(draft.closeAt)}`
-                  : 'غير محدَّد — بلا إغلاق تلقائي. مسح الحقل يزيل الموعد.'}
+                  : 'غير محدَّد.'}
               >
                 <input
                   id="edit-tpl-close"
@@ -2595,13 +2606,13 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
               </p>
             )}
 
-            <Field label="وصف (اختياري)" htmlFor="edit-tpl-desc" hint="يظهر للطالب قبل بدء الاختبار">
+            <Field label="وصف (اختياري)" htmlFor="edit-tpl-desc">
               <textarea
                 id="edit-tpl-desc"
                 className="input"
                 rows={2}
                 maxLength={2000}
-                placeholder="تعليمات مختصرة لطلابك…"
+                placeholder={DESC_HINT}
                 value={draft.description}
                 onChange={(e) => patch({ description: e.target.value })}
               />
@@ -2616,7 +2627,7 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
 
             {update.isError && (
               <p role="alert" className="text-xs exa-error-line">
-                {apiErrorMessage(update.error, 'تعذَّر حفظ التعديل — تحقّق من البيانات وحاول مرة أخرى.')}
+                {apiErrorMessage(update.error, 'تعذَّر حفظ التعديل.')}
               </p>
             )}
 
@@ -2669,13 +2680,13 @@ function AttemptsSection({ template }: { template: ExamTemplateDetail }) {
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>التصحيح</>}
         desc={
           q.isPending
-            ? 'جارٍ التحميل…'
+            ? LOADING
             : attempts.length > 0
               ? /* P2-1 (5-A7): awaiting can be 0 while attempts exist —
                  * countAr(0) renders the broken «0 محاولة…». */
                 (awaiting === 0
                   ? 'لا محاولات بانتظار تصحيحك'
-                  : countAr(awaiting, ['محاولة واحدة بانتظار تصحيحك', 'محاولتان بانتظار تصحيحك', 'محاولات بانتظار تصحيحك', 'محاولة بانتظار تصحيحك']))
+                  : countAr(awaiting, COUNT__ATTEMPTS) + AWAITING_SUFFIX)
               : undefined
         }
         actions={
@@ -2698,12 +2709,7 @@ function AttemptsSection({ template }: { template: ExamTemplateDetail }) {
       ) : visible.length === 0 ? (
         <EmptyState illustration="empty-list"
           icon={onlyPending ? ClipboardCheck : FileQuestion}
-          title={onlyPending ? 'لا محاولات بانتظار التصحيح' : 'لا محاولات بعد'}
-          description={
-            onlyPending
-              ? 'كل المحاولات المسلَّمة مُصحَّحة — الجديدة تظهر فور تسليمها.'
-              : 'يبدأ الطلاب المحاولات من صفحاتهم — تظهر هنا لحظة بدئها.'
-          }
+          title={onlyPending ? 'لا محاولات بانتظار التصحيح' : NO_ATTEMPTS}
         />
       ) : (
         <div className="exa-rows">
@@ -2759,7 +2765,7 @@ function AttemptRow({ attempt, onGrade }: { attempt: ExamAttemptRow; onGrade: ()
           )}
           {attempt.status === 'SUBMITTED' && attempt.pendingReview > 0 && (
             <span>
-              {countAr(attempt.pendingReview, ['إجابة واحدة بانتظار تقييمك', 'إجابتان بانتظار تقييمك', 'إجابات بانتظار تقييمك', 'إجابة بانتظار تقييمك'])}
+              {countAr(attempt.pendingReview, COUNT__PENDING_REVIEW) + PENDING_SUFFIX}
             </span>
           )}
         </div>
@@ -2816,7 +2822,7 @@ function PendingAnswerCard({
         <div className="flex gap-2 items-center exa-grade-side">
           <Badge>{QTYPE_LABEL[answer.type]}</Badge>
           <span className="text-xs text-muted">
-            {countAr(answer.points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}
+            {countAr(answer.points, COUNT__POINTS)}
           </span>
         </div>
       </div>
@@ -2826,7 +2832,7 @@ function PendingAnswerCard({
           answer.studentAnswer
         ) : (
           <span className="text-xs exa-answer-missing">
-            لم يكتب الطالب إجابة لهذا السؤال — حكمك يحدد درجته.
+            لم يكتب الطالب إجابة لهذا السؤال.
           </span>
         )}
       </div>
@@ -2929,7 +2935,7 @@ function GradeAttemptModal({
         }),
       });
       setDone({ score: result.score, maxScore: result.maxScore });
-      toast.success('اعتُمدت الدرجة النهائية للمحاولة.', { title: 'تمّ التصحيح' });
+      toast.success('اعتُمدت الدرجة النهائية.', { title: 'تمّ التصحيح' });
     } catch {
       /* surfaced inline from grade.isError */
     }
@@ -2954,8 +2960,7 @@ function GradeAttemptModal({
           <div className="form-feedback ok" role="status">
             <Icon icon={CheckCircle2} size={15} />
             <span className="flex-1">
-              اعتُمدت الدرجة النهائية: <bdi className="font-mono">{done.score} / {done.maxScore}</bdi> — سترى
-              المحاولة في القائمة بحالة «{ATTEMPT_STATUS_LABEL.GRADED}».
+              اعتُمدت الدرجة النهائية: <bdi className="font-mono">{done.score} / {done.maxScore}</bdi>.
             </span>
           </div>
         ) : (
@@ -2968,7 +2973,7 @@ function GradeAttemptModal({
               {templateTitle} · الحالة: {ATTEMPT_STATUS_LABEL[attempt.status]}
               {attempt.score !== null && (
                 <>
-                  {' '}· الدرجة الآلية حتى الآن: <bdi className="font-mono">{attempt.score} / {attempt.maxScore}</bdi>
+                  {' '}· الدرجة الآلية: <bdi className="font-mono">{attempt.score} / {attempt.maxScore}</bdi>
                 </>
               )}
             </p>
@@ -2980,7 +2985,7 @@ function GradeAttemptModal({
               >
                 <Icon icon={Info} size={14} />
                 <span>
-                  لا إجابات معلّقة — حفظ التصحيح يعتدّ بالدرجة الآلية كما هي ويُنهي المحاولة.
+                  لا إجابات معلّقة — يُعتدّ بالدرجة الآلية.
                 </span>
               </p>
             ) : (
@@ -3004,12 +3009,12 @@ function GradeAttemptModal({
 
             {validationError && (
               <p role="alert" className="text-xs exa-error-line">
-                حدِّد حكمك — صحيحة أم خاطئة — لكل إجابة معلّقة قبل الحفظ.
+                حدِّد حكم كل إجابة معلّقة قبل الحفظ.
               </p>
             )}
             {grade.isError && (
               <p role="alert" className="text-xs exa-error-line">
-                {apiErrorMessage(grade.error, 'تعذَّر حفظ التصحيح — تحقّق من اتصالك وحاول مرة أخرى.')}
+                {apiErrorMessage(grade.error, 'تعذَّر حفظ التصحيح.')}
               </p>
             )}
 
@@ -3058,7 +3063,7 @@ function TemplateQuestionRow({
           <Badge color={DIFFICULTY_COLOR[q.difficulty]}>{DIFFICULTY_LABEL[q.difficulty]}</Badge>
           {q.category && <span>{q.category.title}</span>}
           <span className="exa-points">
-            {countAr(points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}
+            {countAr(points, COUNT__POINTS)}
             {row.pointsOverride !== null && ' (معدَّلة)'}
           </span>
           {!q.isApproved && <Badge color="red" icon={Ban}>موقوف</Badge>}
@@ -3114,7 +3119,7 @@ function QuestionModerationActions({ questionId, isApproved }: { questionId: str
       {failed && (
         <div className="form-error" role="alert">
           <Icon icon={AlertTriangle} size={14} />
-          <span className="form-error-msg">{apiErrorMessage(failed.error, 'تعذَّر تنفيذ القرار — حاول مرة أخرى.')}</span>
+          <span className="form-error-msg">{apiErrorMessage(failed.error, ERR_DECISION)}</span>
           <button type="button" className="btn ghost sm" onClick={() => void run(failed.approve)}>
             إعادة المحاولة
           </button>
@@ -3158,7 +3163,7 @@ function TemplateModerationPanel({ template }: { template: ExamTemplateDetail })
               className="input"
               rows={2}
               maxLength={500}
-              placeholder="تصل الملاحظة للمؤلف مع قرار الاعتماد أو الرفض…"
+              placeholder="تصل للمؤلف مع القرار…"
               aria-label="ملاحظة المراجعة للمؤلف"
               value={note}
               onChange={(e) => setNote(e.target.value)}
@@ -3183,15 +3188,11 @@ function TemplateModerationPanel({ template }: { template: ExamTemplateDetail })
             </Button>
           </div>
         </>
-      ) : (
-        <p className="exa-panel-sub">
-          يمكنك مراجعة أسئلته أدناه وإيقاف أيّ سؤال غير مناسب.
-        </p>
-      )}
+      ) : null}
       {failed && (
         <div className="form-error tq-feedback" role="alert">
           <Icon icon={AlertTriangle} size={14} />
-          <span className="form-error-msg">{apiErrorMessage(failed.error, 'تعذَّر تنفيذ القرار — تحقّق من اتصالك وحاول مرة أخرى.')}</span>
+          <span className="form-error-msg">{apiErrorMessage(failed.error, ERR_DECISION)}</span>
           <button type="button" className="btn ghost sm" onClick={() => void run(failed.approve)}>
             إعادة المحاولة
           </button>

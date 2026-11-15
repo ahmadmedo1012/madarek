@@ -358,7 +358,7 @@ describe('ExamTemplateDetailPage — r170b author actions', () => {
     await screen.findByRole('heading', { level: 1, name: /قواعد البيانات/ });
     expect(screen.queryByRole('button', { name: /تعديل/ })).toBeNull();
     expect(screen.getByRole('button', { name: /استنساخ/ })).toBeTruthy();
-    expect(screen.getByText(/هذا الاختبار منشور بالفعل/)).toBeTruthy();
+    expect(screen.getByText(/الاختبار منشور بالفعل/)).toBeTruthy();
   });
 
   it('a REJECTED template still offers تعديل (the fix-and-resubmit loop) and names the rejection', async () => {

@@ -194,8 +194,8 @@ describe('OwnerDashboardPage — the polling page (15 s realtime refetch)', () =
     // Wait for every query to settle so the captured baseline is the
     // steady state (healthy band + empty activity feed both require
     // their queries to have answered).
-    await screen.findByText('النظام يعمل بشكل طبيعي');
-    await screen.findByText('لا توجد أحداث بعد');
+    await screen.findByText('النظام مستقرّ');
+    await screen.findByText('لا أحداث');
     expect(screen.getByTestId('chart-doughnut')).toBeInTheDocument();
 
     const beforeCount = chartProps.doughnut.length;

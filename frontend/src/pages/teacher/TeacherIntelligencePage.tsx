@@ -89,9 +89,6 @@ export default function TeacherIntelligencePage() {
         <div className="page-title-block">
           <span className="hr-brow">تحليل لحظي</span>
           <h1 className="page-title">الذكاء الأكاديمي</h1>
-          <p className="page-subtitle">
-            متابعة أداء طلابك بتحليل لحظي للحضور والدرجات، مع توصيات تدخّل.
-          </p>
         </div>
         {/* R342-09 (D8 header-CTA law): the catalog's ONE honest next
          * action on the accent register — the risk panel's suggestions
@@ -100,17 +97,17 @@ export default function TeacherIntelligencePage() {
          * topbar «اسأل AI» hides ≤920px, so without it the first
          * viewport at 390 carries no primary action at all). */}
         <Link to="/teacher/messages" className="btn accent sm hr-cta">
-          <Icon icon={MessageSquare} size={13} /> تواصل مع الطلاب
+          <Icon icon={MessageSquare} size={13} /> راسل الطلاب
         </Link>
       </header>
 
       {/* Global at-risk panel */}
       <Card
-        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>طلاب يحتاجون متابعة</>}
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>طلاب للمتابعة</>}
         icon={AlertTriangle}
         subtitle={
           risks.isPending ? 'جارٍ التحميل…'
-          : risks.data && risks.data.length > 0 ? countAr(risks.data.length, ['طالب موزّع', 'طالبان موزّعان', 'طلاب موزّعون', 'طالباً موزّعاً'])
+          : risks.data && risks.data.length > 0 ? countAr(risks.data.length, ['طالب', 'طالبان', 'طلاب', 'طالباً'])
           : undefined
         }
         actions={(
@@ -125,7 +122,7 @@ export default function TeacherIntelligencePage() {
           <ListSkeleton rows={3} />
         ) : risks.isError ? (
           <ErrorState
-            message="تعذَّر تحميل قائمة المتابعة"
+            message="تعذَّر التحميل."
             error={risks.error}
             onRetry={() => risks.refetch()}
           />
@@ -133,8 +130,7 @@ export default function TeacherIntelligencePage() {
           /* r149 (R3-A1 #6): EmptyState الكنونية بدل اليدوية. */
           <EmptyState
             icon={CheckCircle2}
-            title="جميع طلابك في وضع جيد"
-            description="لا حاجة لتدخّل عاجل."
+            title="الكل مستقر"
           />
         ) : (
           <>
@@ -174,7 +170,7 @@ export default function TeacherIntelligencePage() {
         icon={BookOpen}
         subtitle={
           offerings.isPending ? 'جارٍ التحميل…'
-          : offerings.data && offerings.data.length > 0 ? countAr(offerings.data.length, ['مقرّر واحد هذا الفصل', 'مقرّران هذا الفصل', 'مقرّرات هذا الفصل', 'مقرّراً هذا الفصل'])
+          : offerings.data && offerings.data.length > 0 ? countAr(offerings.data.length, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً']) + ' هذا الفصل'
           : undefined
         }
       >
@@ -182,15 +178,14 @@ export default function TeacherIntelligencePage() {
           <TrackGridSkeleton />
         ) : offerings.isError ? (
           <ErrorState
-            message="تعذَّر تحميل مقرّراتك"
+            message="تعذَّر التحميل."
             error={offerings.error}
             onRetry={() => offerings.refetch()}
           />
         ) : offerings.data.length === 0 ? (
           <EmptyState illustration="empty-courses"
             icon={BookOpen}
-            title="لم تُسند إليك مقرّرات بعد"
-            description="تظهر مقرّراتك هنا فور إسنادها من المسجل العام."
+            title="لا مقرّرات"
           />
         ) : (
           /* r241 (Superlist): the catalog is a LIST — full-width rows with
@@ -279,11 +274,11 @@ function OfferingRow({ offering }: { offering: TeacherOffering }) {
         <span className="tq-row-meta">
           {/* P2-1/P2-4 (5-A7): countAr(0) renders the broken «0 محاضرة» —
               each zero case gets its own honest «لا …» copy. */}
-          <span><Icon icon={Users} size={12} /> {offering._count.enrollments === 0 ? 'لا طلاب' : countAr(offering._count.enrollments, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
-          <span><Icon icon={BookOpen} size={12} /> {offering._count.lectures === 0 ? 'لا محاضرات' : countAr(offering._count.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</span>
-          <span><Icon icon={ClipboardCheck} size={12} /> {offering._count.assignments === 0 ? 'لا واجبات' : countAr(offering._count.assignments, ['واجب واحد', 'واجبان', 'واجبات', 'واجباً'])}</span>
+          <span><Icon icon={Users} size={12} /> {offering._count.enrollments === 0 ? 'لا طلاب' : countAr(offering._count.enrollments, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}</span>
+          <span><Icon icon={BookOpen} size={12} /> {offering._count.lectures === 0 ? 'لا محاضرات' : countAr(offering._count.lectures, ['محاضرة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</span>
+          <span><Icon icon={ClipboardCheck} size={12} /> {offering._count.assignments === 0 ? 'لا واجبات' : countAr(offering._count.assignments, ['واجب', 'واجبان', 'واجبات', 'واجباً'])}</span>
           {offering._count.examTemplates > 0 && (
-            <span><Icon icon={Sparkles} size={12} /> {countAr(offering._count.examTemplates, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}</span>
+            <span><Icon icon={Sparkles} size={12} /> {countAr(offering._count.examTemplates, ['اختبار', 'اختباران', 'اختبارات', 'اختباراً'])}</span>
           )}
         </span>
       </span>
@@ -351,7 +346,7 @@ export function TeacherOfferingDetailPage() {
   // (research review, library, alerts…) is icon-less the same way.
   const tabItems = useMemo(() => {
     const items: Array<{ value: 'students' | 'curriculum' | 'authoring'; label: string }> = [
-      { value: 'students', label: 'الطلاب وتقييم المخاطر' },
+      { value: 'students', label: 'الطلاب والمخاطر' },
       { value: 'curriculum', label: 'مساعد المنهج' },
     ];
     if (canAuthor) items.push({ value: 'authoring', label: 'إدارة المنهج' });
@@ -367,7 +362,7 @@ export function TeacherOfferingDetailPage() {
       <div className="page">
         <Link to="/teacher/intelligence" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          العودة إلى كل مقرّراتي
+          مقرّراتي
         </Link>
         <header className="page-header">
           <div className="page-title-block">
@@ -375,7 +370,7 @@ export function TeacherOfferingDetailPage() {
           </div>
         </header>
         <ErrorState
-          message="تعذَّر تحميل بيانات المقرّر"
+          message="تعذَّر التحميل."
           error={offerings.error}
           onRetry={() => offerings.refetch()}
         />
@@ -389,7 +384,7 @@ export function TeacherOfferingDetailPage() {
       <div className="page">
         <Link to="/teacher/intelligence" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          العودة إلى كل مقرّراتي
+          مقرّراتي
         </Link>
         <header className="page-header">
           <div className="page-title-block">
@@ -399,7 +394,6 @@ export function TeacherOfferingDetailPage() {
         <EmptyState
           icon={BookOpen}
           title="المقرّر غير موجود"
-          description="حُذف العرض أو الرابط غير صحيح."
         />
       </div>
       </div>
@@ -417,7 +411,7 @@ export function TeacherOfferingDetailPage() {
     <div className="page">
       <Link to="/teacher/intelligence" className="back-link">
         <Icon icon={ChevronRight} size={14} />
-        العودة إلى كل مقرّراتي
+        مقرّراتي
       </Link>
 
       {/* Tinted band painted by .track-hero from --track-accent (training.css
@@ -431,7 +425,7 @@ export function TeacherOfferingDetailPage() {
            * heron.css §E): a param route resolves no topbar group kicker, so
            * the surface carries its own classification line — which board this
            * drill-down belongs to. A real classification, never decoration. */}
-          <p className="hr-eyebrow">الذكاء الأكاديمي · تحليل المقرّر</p>
+          <p className="hr-eyebrow">تحليل المقرّر</p>
           <div className="track-hero-cat"><bdi>{offering.course.code}</bdi> · {offering.term}</div>
           <h1 className="track-hero-title">{offering.course.name}</h1>
           <div className="track-hero-meta">
@@ -441,9 +435,9 @@ export function TeacherOfferingDetailPage() {
               <Icon icon={Users} size={11} />{' '}
               {offering._count.enrollments === 0
                 ? 'لا طلاب'
-                : countAr(offering._count.enrollments, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}
+                : countAr(offering._count.enrollments, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}
             </Badge>
-            <Badge>{countAr(offering.course.credits, ['وحدة واحدة', 'وحدتان', 'وحدات', 'وحدة'])}</Badge>
+            <Badge>{countAr(offering.course.credits, ['وحدة', 'وحدتان', 'وحدات', 'وحدة'])}</Badge>
             {offering.room && <Badge>قاعة {offering.room}</Badge>}
             {/* R342-09 (D8 header-CTA law): the ledger's ONE honest next
              * action on the accent register — the offering's grade entry
@@ -455,7 +449,7 @@ export function TeacherOfferingDetailPage() {
               to={`/teacher/grades?offering=${offering.id}`}
               className="btn accent sm hr-cta"
             >
-              <Icon icon={ClipboardCheck} size={13} /> إدخال درجات المقرّر
+              <Icon icon={ClipboardCheck} size={13} /> إدخال الدرجات
             </Link>
           </div>
         </div>
@@ -467,7 +461,7 @@ export function TeacherOfferingDetailPage() {
          * ErrorState replaces the hand-rolled .inline-retry row (the
          * same convention the students/risks sections below use). */
         <ErrorState
-          message="تعذَّر تحميل مؤشرات المقرّر"
+          message="تعذَّر التحميل."
           error={analytics.error}
           onRetry={() => analytics.refetch()}
         />
@@ -479,7 +473,7 @@ export function TeacherOfferingDetailPage() {
             {
               label: 'مسجَّلون',
               value: formatNum(analytics.data.enrolled),
-              trend: 'تسجيلات نشطة في المقرّر',
+              trend: 'تسجيلات نشطة',
               trendTone: 'flat',
             },
             {
@@ -497,7 +491,7 @@ export function TeacherOfferingDetailPage() {
             {
               label: 'نسبة النجاح',
               value: `${formatNum(analytics.data.passRate)}%`,
-              trend: 'طلاب عند 50 فأعلى',
+              trend: 'فوق حدّ 50%',
               trendTone: analytics.data.passRate >= 50 ? 'up' : 'down',
             },
           ]}
@@ -511,20 +505,19 @@ export function TeacherOfferingDetailPage() {
       />
 
       {tab === 'students' && (
-        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>قائمة الطلاب — تحليل لحظي</>} icon={Users}>
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>قائمة الطلاب</>} icon={Users}>
           {students.isPending ? (
             <ListSkeleton rows={4} />
           ) : students.isError ? (
             <ErrorState
-              message="تعذَّر تحميل قائمة الطلاب"
+              message="تعذَّر التحميل."
               error={students.error}
               onRetry={() => students.refetch()}
             />
           ) : students.data.length === 0 ? (
             <EmptyState illustration="empty-list"
               icon={Users}
-              title="لا يوجد طلاب مسجَّلون"
-              description="تظهر قائمة الطلاب فور تسجيلهم في المقرّر."
+              title="لا طلاب"
             />
           ) : (
             <>
@@ -568,7 +561,7 @@ export function TeacherOfferingDetailPage() {
 
       {tab === 'curriculum' && (
         <Card
-          title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>اقتراح هيكل منهج (محاكاة قالبية)</>}
+          title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>اقتراح هيكل المنهج</>}
           icon={Brain}
           actions={
             /* R305: the tab's one primary action rides the ember-flavored
@@ -579,14 +572,14 @@ export function TeacherOfferingDetailPage() {
               onClick={onSuggest}
               disabled={suggest.isPending}
             >
-              {suggest.isPending ? 'جارٍ الاقتراح…' : suggest.data ? 'إعادة الاقتراح' : 'اقتراح هيكل المنهج'}
+              {suggest.isPending ? 'جارٍ الاقتراح…' : suggest.data ? 'إعادة الاقتراح' : 'اقترح الهيكل'}
               <Icon icon={Sparkles} size={13} />
             </button>
           }
         >
           {suggest.isError && (
             <div className="inline-retry" role="alert" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-              <span className="text-sm text-muted">تعذَّر اقتراح هيكل المنهج.</span>
+              <span className="text-sm text-muted">تعذَّر الاقتراح.</span>
               <button type="button" className="btn ghost sm" onClick={onSuggest}>
                 <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
               </button>
@@ -596,8 +589,8 @@ export function TeacherOfferingDetailPage() {
             /* r149 (R3-A1 #6): EmptyState الكنونية — حالة «كيف تبدأ». */
             <EmptyState
               icon={Lightbulb}
-              title="ابدأ باقتراح ذكي"
-              description="اقتراح قالبيّ بمطابقة اسم المقرّر — لا تحليل للمحتوى (محاكاة)."
+              title="ابدأ باقتراح"
+              description="قالبيّ بمطابقة الاسم (محاكاة)."
             />
           )}
           {suggest.data && (
@@ -605,10 +598,10 @@ export function TeacherOfferingDetailPage() {
               <div className="ai-rationale" style={{ ['--track-accent' as never]: accent }}>
                 <div className="text-xs text-muted">{suggest.data.rationale}</div>
                 <div className="flex gap-2 flex-wrap" style={{ marginBlockStart: 'var(--sp-2)' }}>
-                  <Badge>{countAr(suggest.data.outline.length, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])}</Badge>
-                  <Badge color="brand">{countAr(suggest.data.suggestedTotalLectures, ['محاضرة مقترحة واحدة', 'محاضرتان مقترحتان', 'محاضرات مقترحة', 'محاضرة مقترحة'])}</Badge>
+                  <Badge>{countAr(suggest.data.outline.length, ['فصل', 'فصلان', 'فصول', 'فصلاً'])}</Badge>
+                  <Badge color="brand">{countAr(suggest.data.suggestedTotalLectures, ['محاضرة مقترحة', 'محاضرتان مقترحتان', 'محاضرات مقترحة', 'محاضرة مقترحة'])}</Badge>
                   {suggest.data.currentLectureCount > 0 && (
-                    <Badge color="green">{countAr(suggest.data.currentLectureCount, ['محاضرة موجودة واحدة', 'محاضرتان موجودتان', 'محاضرات موجودة', 'محاضرة موجودة'])}</Badge>
+                    <Badge color="green">{countAr(suggest.data.currentLectureCount, ['محاضرة موجودة', 'محاضرتان موجودتان', 'محاضرات موجودة', 'محاضرة موجودة'])}</Badge>
                   )}
                 </div>
               </div>
@@ -617,7 +610,7 @@ export function TeacherOfferingDetailPage() {
                   <div key={i} className="curriculum-chapter">
                     <div className="curriculum-chapter-head" style={{ color: accentInk }}>
                       <span>{ch.title}</span>
-                      <Badge>{countAr(ch.estLectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</Badge>
+                      <Badge>{countAr(ch.estLectures, ['محاضرة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</Badge>
                     </div>
                     <ul className="curriculum-topics">
                       {ch.topics.map((t) => (

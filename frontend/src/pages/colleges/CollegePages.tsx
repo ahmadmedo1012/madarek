@@ -195,6 +195,12 @@ function useDocTitle(title: string | null) {
 
 /* ───────────────────────── Index page ───────────────────────── */
 
+/* The colleges surface's one shared label (R353 copy diet: the back
+ * links, the guest docTitle and the leaderboard CTA repeated it as
+ * three separate literals). */
+const COLLEGES_LABEL = 'كلّيّات الجامعة';
+const LEADERBOARD_CARD_TITLE = 'لوحة المتصدّرين';
+
 /* ── Guest funnel chrome (5-A12 P1-2, r183-B3 funnel split) ─────────
  * The public colleges pages are the university's front door, yet a
  * guest who found their faculty had NO path to registration — 0 auth
@@ -235,9 +241,6 @@ function GuestClosingBand() {
   return (
     <section className="guest-cta-band" aria-labelledby="guest-cta-title">
       <h2 id="guest-cta-title" className="guest-cta-title">هل هذه كلّيتك؟</h2>
-      <p className="guest-cta-note">
-        أنشئ حسابك الجامعي وابدأ رحلتك على مدارك.
-      </p>
       <div className="guest-cta-actions">
         <Link to="/auth/register" state={from} className="btn primary">أنشئ حسابك الجامعي</Link>
         <Link to="/auth" state={from} className="btn ghost">تسجيل الدخول</Link>
@@ -256,7 +259,7 @@ export function CollegesIndexPage() {
   // Guests get no AppShell → no docTitle effect (A12 P2-6). Authed
   // visitors keep the shell's own resolution (NAV_TITLES carries
   // /colleges — same label, one source in nav.ts).
-  useDocTitle(isGuest ? 'كلّيّات الجامعة' : null);
+  useDocTitle(isGuest ? COLLEGES_LABEL : null);
   const inst = useInstitutionScope(); // r180: scoped key
   const q = useQuery({
     queryKey: withInstitutionScope(['colleges'], inst),
@@ -317,8 +320,7 @@ export function CollegesIndexPage() {
           title + [01] gutter index (the inner-public sheet bridge). */}
       <div className="inx-head">
         <PageHeader
-          title="البنية الأكاديمية التجريبية — مؤسسة مدارك النموذجية"
-          description="الكلّيّات والأقسام وقادة كلّ كلّيّة وأبرز طلّابها في سجلّ المؤسّسة المرجعية."
+          title="كلّيّات مؤسسة مدارك النموذجية"
           actions={isGuest ? <GuestJoinRow /> : undefined}
           index="01"
         />
@@ -351,7 +353,7 @@ export function CollegesIndexPage() {
       )}
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && q.data.length === 0 && (
-        <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" description="تظهر هنا حين يضيفها المسجل العام." />
+        <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" />
       )}
 
       {q.data && q.data.length > 0 && (
@@ -362,7 +364,7 @@ export function CollegesIndexPage() {
               التمرير حتى تبقى التصفية مرئية في القائمة الطويلة. */}
           <FilterBar
             sticky
-            search={{ value: state.query, onChange: setQuery, placeholder: 'ابحث عن كلّيّة…' }}
+            search={{ value: state.query, onChange: setQuery, placeholder: 'ابحث…' }}
             filters={(
               /* G: فئة .gallery-chip-strip تعود إلى موضعه المصمَّم (r183-B8)
                  — على الهاتف يصبح الشريط تمريرًا أفقيًا بمحاذاة انطلاق
@@ -412,7 +414,6 @@ export function CollegesIndexPage() {
           {result.total === 0 ? (
             <EmptyState
               title="لم نعثر على نتائج"
-              description="جرّب كلمة بحث مختلفة أو غيّر الحرم الجامعي."
               action={
                 <button type="button" className="btn primary" onClick={clear}>
                   <Icon icon={X} size={14} />
@@ -1029,7 +1030,7 @@ export function CollegesLeaderboardPage() {
       <div className="inx-head">
         <PageHeader
           title="منافسة الكلّيّات"
-          description="مقارنة الكلّيّات على مؤشّرات الأداء الأكاديميّ والنشاط الرقميّ."
+          description="مقارنة الكلّيّات على مؤشّرات الأداء."
           actions={isGuest ? <GuestJoinRow /> : undefined}
           index="01"
         />
@@ -1039,7 +1040,7 @@ export function CollegesLeaderboardPage() {
           is a 25-row × 7-col table — a bare spinner left the page
           structureless until data landed. */}
       {q.isLoading && (
-        <Card title="لوحة المتصدّرين" icon={Trophy}>
+        <Card title={LEADERBOARD_CARD_TITLE} icon={Trophy}>
           <TableSkeleton rows={8} cols={7} />
         </Card>
       )}
@@ -1047,7 +1048,6 @@ export function CollegesLeaderboardPage() {
       {q.data && q.data.colleges.length === 0 && (
         <EmptyState
           title="لوحة منافسة الكلّيّات فارغة"
-          description="النقاط من نشاط الطلاب — تظهر أولى النتائج مع بداية النشاط."
         />
       )}
 
@@ -1062,9 +1062,7 @@ export function CollegesLeaderboardPage() {
           <div className="leaderboard-zero-body">
             <h2 className="leaderboard-zero-title" id="leaderboard-zero-title">اللوحة تنتظر أول نقطة</h2>
             <p className="leaderboard-zero-desc">
-              نقاط المنافسة تُحتسب من نشاط الطلاب المسجّلين — الاختبارات، المعامل،
-              والأبحاث. لا كلّيّة جمعت نقاطًا بعد هذا الفصل، لذا يقف الجميع على خط
-              الانطلاق: أول نشاط مسجّل يفتح الترتيب.
+              لا كلّيّة جمعت نقاطًا بعد — أول نشاط يفتح الترتيب.
             </p>
           </div>
           <div className="leaderboard-zero-actions">
@@ -1077,7 +1075,7 @@ export function CollegesLeaderboardPage() {
       )}
 
       {q.data && q.data.colleges.length > 0 && !(allZero && isGuest) && (
-        <Card title="لوحة المتصدّرين" icon={Trophy}>
+        <Card title={LEADERBOARD_CARD_TITLE} icon={Trophy}>
           <div className="leaderboard-table-wrap">
             {/* tbl-stack (A8 P2-5): collapses to labelled cards on phones
                 — the 720px min-width table used to scroll 398px sideways

@@ -177,7 +177,6 @@ export default function JobsPage() {
     <PageFrame width="default">
       <PageHeader
         title="فرص العمل"
-        description="وظائف وفرص تدريب تجريبية مفتوحة لطلاب وخرّيجي الجامعة (بيانات عرض)."
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
            «مهاراتي» is the growth surface an application rides on,
@@ -207,7 +206,7 @@ export default function JobsPage() {
           !isPending && !isError && jobs.length > 0 ? (
             <BarCount
               n={jobs.length}
-              srLabel={countAr(jobs.length, ['فرصة واحدة مفتوحة', 'فرصتان مفتوحتان', 'فرص مفتوحة', 'فرصةً مفتوحة'])}
+              srLabel={openJobsLabel(jobs.length)}
             />
           ) : undefined
         }
@@ -221,8 +220,7 @@ export default function JobsPage() {
         /* R319 (c3-S2): the empty board is the sheet's reserved-but-empty
            region — the hatched EmptyCell (same honest copy). */
         <EmptyCell
-          label="لا توجد فرص نشطة هذا الأسبوع"
-          note="تُضاف فرص التوظيف والتدريب دوريًا — وسيصلك إشعار الفرص الملائمة لتخصصك."
+          label="لا فرص نشطة"
         />
       ) : (
         <>
@@ -257,7 +255,7 @@ export default function JobsPage() {
               chip register (accent dot = live fact) when a count exists. */}
           <p className="jobs-count" aria-live="polite">
             {filtered.length === 0 ? (
-              'لا توجد فرص ضمن هذا النوع حاليّاً — جرّب نوعاً آخر.'
+              'لا فرص ضمن هذا النوع.'
             ) : (
               <span className="r305s-chip r305s-chip--accent">
                 <span className="r305s-chip-dot" aria-hidden />
@@ -273,8 +271,7 @@ export default function JobsPage() {
             /* R319 (c3-S2): the empty filter bucket — the hatched
                EmptyCell (the CoursesPage filter-bucket precedent). */
             <EmptyCell
-              label="لا توجد فرص ضمن هذا النوع"
-              note="كل الفرص المفتوحة تظهر تحت «الكل»."
+              label="لا فرص ضمن هذا النوع"
             />
           ) : (
             <div className="table-wrap jobs-table-wrap">

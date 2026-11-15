@@ -200,7 +200,7 @@ afterEach(() => {
 /* ── 1 · ProfilePage — the deep identity hero band ───────────────── */
 
 describe('R305 profile — the identity hero is the page’s ONE deep band', () => {
-  it('avatar + eyebrow + name + verified state + meter share the auto-inverting ground', () => {
+  it('avatar + name + verified state + meter share the auto-inverting ground', () => {
     useAuthStore.setState({ user: STUDENT });
     mocks.research = [{ id: 'p1', status: 'PUBLISHED' }];
     const { container } = renderPage(<ProfilePage />);
@@ -209,8 +209,8 @@ describe('R305 profile — the identity hero is the page’s ONE deep band', () 
     expect(band).not.toBeNull();
     // ONE deep band per page — the Heron restraint.
     expect(container.querySelectorAll('.r305s-band--deep')).toHaveLength(1);
-    // The eyebrow classifies the band as the account block.
-    expect(band!.querySelector('.r305s-eyebrow')!.textContent).toBe('الملف الشخصي');
+    // R355 copy diet: explainer cut — the band's «الملف الشخصي» eyebrow
+    // died; the band leads directly with the identity block.
     // Identity: the name at the section register + the bidi-isolated mono email.
     expect(band!.querySelector('.r305p-hero-name')!.textContent).toBe('آمنة العبيدي');
     const mail = band!.querySelector('.r305p-hero-mail bdi.font-mono');

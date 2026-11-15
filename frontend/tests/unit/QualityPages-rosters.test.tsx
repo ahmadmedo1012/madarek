@@ -208,7 +208,7 @@ describe('QualityCoursesPage — ?metric= drill-down (5-B4, 5-A8 §5 row 11)', (
 
     // The subtitle names the drill; the metric column rides the roster.
     expect(await screen.findByText(/مقرّر مكتمل/)).toBeInTheDocument();
-    expect(screen.getByText(/من الأدنى أولا/)).toBeInTheDocument();
+    expect(screen.getByText(/مرتَّبة من الأدنى/)).toBeInTheDocument();
     expect(screen.getByText('معدل الحضور', { selector: 'th' })).toBeInTheDocument();
 
     // 100% for the counted offering (metric + completion columns); an
@@ -252,7 +252,7 @@ describe('QualityProfessorsPage — «بحاجة لمتابعة» filters the ro
     fireEvent.click(toggle);
     expect(await screen.findByText(/خالد/)).toBeInTheDocument();
     expect(screen.queryByText(/سالم/)).toBeNull();
-    expect(screen.getByText('مصفّى: التزام أقلّ من 50%')).toBeInTheDocument();
+    expect(screen.getByText('التزام أقلّ من 50%', { selector: '.hr-chip' })).toBeInTheDocument();
     expect(toggle.getAttribute('aria-pressed')).toBe('true');
 
     // And back — the full roster returns.
@@ -301,7 +301,8 @@ describe('QualityCoursesPage — server-side search + honest total (r183-B5)', (
 
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'لا-شيء' } });
     expect(await screen.findByText('لا نتائج مطابقة', {}, { timeout: 2000 })).toBeInTheDocument();
-    expect(screen.getByText('لم نجد مقرّراً يطابق البحث — جرّب كلمة أوسع.')).toBeInTheDocument();
+    // P-B2 copy cut: the empty state is one line + the clear action.
+    expect(screen.getByRole('button', { name: /مسح البحث/ })).toBeInTheDocument();
   });
 
   it('shows the meta.total count line and the honest «تُعرض أول N» cap note when take truncates', async () => {
@@ -432,9 +433,6 @@ describe('QualityProfessorsPage — zero professors without a search (r299 E5)',
     renderPage(<QualityProfessorsPage />);
 
     expect(await screen.findByText('لا أساتذة بعد')).toBeInTheDocument();
-    expect(
-      screen.getByText('تظهر هيئة التدريس هنا فور إضافة أعضائها.'),
-    ).toBeInTheDocument();
     // The toolbar stays reachable — no header-only table dead end.
     expect(screen.getByRole('searchbox')).toBeInTheDocument();
     expect(document.querySelector('table')).toBeNull();
@@ -507,8 +505,7 @@ describe('QualityAlertsPage — honest cap note + shared empty state (r299 E3/E4
     };
     renderPage(<QualityAlertsPage />);
 
-    expect(await screen.findByText('لا توجد تنبيهات حالياً')).toBeInTheDocument();
-    expect(screen.getByText('كلّ المؤشّرات ضمن النطاق الطبيعيّ.')).toBeInTheDocument();
+    expect(await screen.findByText('لا تنبيهات حالياً')).toBeInTheDocument();
     // The shared primitive — the old hand-rolled .state div is gone.
     expect(document.querySelector('.state.state-empty')).not.toBeNull();
     expect(document.querySelector('.state-icon-success')).toBeNull();

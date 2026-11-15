@@ -244,8 +244,10 @@ describe('ExamTakerPage resume (D5)', () => {
 
     // Live exam bar — not the entry prompt, not the terminal state.
     expect(screen.getByText('اختبار الشبكات', { selector: 'h1' })).toBeTruthy();
-    expect(screen.queryByText('هل أنت مستعد للبدء؟')).toBeNull();
-    expect(screen.queryByText('لقد أكملت هذا الاختبار مسبقاً')).toBeNull();
+    // R355 copy diet: the begin prompt is now the cover eyebrow
+    // «جاهز للبدء؟»; the done-state title reads «أنهيت الاختبار مسبقاً».
+    expect(screen.queryByText('جاهز للبدء؟')).toBeNull();
+    expect(screen.queryByText('أنهيت الاختبار مسبقاً')).toBeNull();
 
     // Saved answers restored into the form.
     expect(screen.getByRole('radio', { name: 'الخيار الثاني' })).toBeChecked();
@@ -268,7 +270,7 @@ describe('ExamTakerPage resume (D5)', () => {
     // The honest terminal screen renders immediately — the list payload
     // already knows the attempt is finished, so no begin action is ever
     // offered for the server to refuse.
-    expect(screen.getByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    expect(screen.getByText('أنهيت الاختبار مسبقاً')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'بدء الاختبار' })).toBeNull();
     expect(screen.getByText('80 / 100')).toBeTruthy();
     expect(screen.getByText('ناجح')).toBeTruthy();
@@ -284,7 +286,7 @@ describe('ExamTakerPage resume (D5)', () => {
 
     renderTaker();
 
-    expect(screen.getByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    expect(screen.getByText('أنهيت الاختبار مسبقاً')).toBeTruthy();
     expect(screen.getByText(/النتيجة قيد الاحتساب/)).toBeTruthy();
     // No fabricated score while the teacher's grading pends.
     expect(screen.queryByText(/\d+ \/ \d+/)).toBeNull();
@@ -305,15 +307,18 @@ describe('ExamTakerPage resume (D5)', () => {
 
     renderTaker();
 
-    expect(screen.getByText('هل أنت مستعد للبدء؟')).toBeTruthy();
+    // R355 copy diet: the begin prompt became the cover eyebrow
+    // «جاهز للبدء؟» (the exam's own title is the h1 now).
+    expect(screen.getByText('جاهز للبدء؟')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'بدء الاختبار' })).toBeTruthy();
-    expect(screen.queryByText('لقد أكملت هذا الاختبار مسبقاً')).toBeNull();
+    expect(screen.queryByText('أنهيت الاختبار مسبقاً')).toBeNull();
     // 6A6-finding-1 (r353 copy diet): the begin note keeps the one
     // rule a student can act on before pressing start — the timer's
     // real behavior. The autosave contract (choices on pick, text on
     // blur, auto-submit at 00:00) now lives where it bites: the
     // per-question save chips + the sub-2-minute urgent note.
-    expect(screen.getByText('المؤقّت يبدأ مع أول ضغطة ولا يتوقف.')).toBeTruthy();
+    // R355 copy diet: «مع أول ضغطة» → «بأول ضغطة».
+    expect(screen.getByText('المؤقّت يبدأ بأول ضغطة ولا يتوقف.')).toBeTruthy();
     expect(screen.queryByText(/الأسئلة تُسجَّل تلقائياً عند تغيير الإجابة/)).toBeNull();
   });
 
@@ -328,8 +333,8 @@ describe('ExamTakerPage resume (D5)', () => {
       fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
     });
 
-    expect(screen.getByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
-    expect(screen.getByText(/لا يمكن إعادة المحاولة بعد التسليم/)).toBeTruthy();
+    // R355 copy diet: the done-state title reads «أنهيت الاختبار مسبقاً».
+    expect(screen.getByText('أنهيت الاختبار مسبقاً')).toBeTruthy();
     expect(screen.queryByPlaceholderText('اكتب إجابتك هنا…')).toBeNull();
   });
 
@@ -429,7 +434,8 @@ describe('ExamTakerPage resume (D5)', () => {
     expect(beginTitle.className).toBe('oex-result-title');
     expect(beginTitle.style.fontSize).toBe('');
     expect(beginTitle.style.lineHeight).toBe('');
-    expect(screen.getByText(/الوقت لم يتوقف — إجاباتك كما تركتها/)).toBeTruthy();
+    // R355 copy diet: «إجاباتك كما تركتها» → «إجاباتك محفوظة».
+    expect(screen.getByText('الوقت لم يتوقف — إجاباتك محفوظة.')).toBeTruthy();
   });
 });
 
@@ -654,7 +660,7 @@ describe('OnlineExamsPage list (D5 reachability)', () => {
 
     // The list header stops lying about retakes — the warning now
     // carves out practice explicitly (r353: shortened, carve-out kept).
-    expect(screen.getByText(/لا إعادة بعد التسليم إلا التدريبية/)).toBeTruthy();
+    // R355 copy diet: explainer cut
 
     // The open-window practice card is startable: a linked retake, the
     // retake badge, and the latest attempt score still visible on both
@@ -1049,7 +1055,9 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     });
 
     expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
-    expect(screen.getByText('المراجعة متاحة بعد اكتمال التصحيح اليدوي.')).toBeTruthy();
+    // R355 copy diet: «متاحة» and «اليدوي» dropped — the promise keeps
+    // its gate (بعد اكتمال التصحيح).
+    expect(screen.getByText('المراجعة بعد اكتمال التصحيح.')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
   });
 
@@ -1060,7 +1068,8 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
 
     renderTaker();
 
-    expect(await screen.findByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    // R355 copy diet: the done-state title reads «أنهيت الاختبار مسبقاً».
+    expect(await screen.findByText('أنهيت الاختبار مسبقاً')).toBeTruthy();
     const toggle = screen.getByRole('button', { name: 'مراجعة الأسئلة' });
     expect(toggle).toHaveAttribute('aria-controls', 'exam-review-att-done');
   });
@@ -1075,8 +1084,10 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     // r164-e: EXPIRED is never graded — the old copy claimed «النتيجة
     // قيد الاحتساب» (a result that can never come). The honest terminal
     // state names what actually happened.
-    expect(await screen.findByText('انتهت مدة هذه المحاولة')).toBeTruthy();
-    expect(screen.getByText(/انتهى الوقت دون تسليم — لا نتيجة ولا إعادة/)).toBeTruthy();
+    // R355 copy diet: «هذه» dropped from the expired title; the note
+    // lost its «انتهى الوقت دون تسليم» head clause.
+    expect(await screen.findByText('انتهت مدة المحاولة')).toBeTruthy();
+    expect(screen.getByText('لا نتيجة ولا إعادة.')).toBeTruthy();
     expect(screen.queryByText(/النتيجة قيد الاحتساب/)).toBeNull();
     expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
   });
@@ -1093,12 +1104,14 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
 
     renderTaker();
 
-    expect(await screen.findByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    // R355 copy diet: the done-state title reads «أنهيت الاختبار مسبقاً».
+    expect(await screen.findByText('أنهيت الاختبار مسبقاً')).toBeTruthy();
     expect(screen.getByText('3 / 10')).toBeTruthy();
     expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
     expect(screen.queryByText('لم يجتز')).toBeNull();
     expect(screen.queryByText('ناجح')).toBeNull();
-    expect(screen.getByText(/درجة أولية آلية — المقالية بانتظار الأستاذ/)).toBeTruthy();
+    // R355 copy diet: «آلية» and «المقالية» dropped from the note.
+    expect(screen.getByText('درجة أولية — بانتظار الأستاذ.')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
   });
 
@@ -1145,7 +1158,8 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
       examFixture({ myAttempt: { id: 'a-done', status: 'GRADED', score: 7, maxScore: 10, submittedAt: '2026-06-01T09:40:00.000Z' } }),
     ];
     const done = renderTaker();
-    const doneH1 = screen.getByText('لقد أكملت هذا الاختبار مسبقاً', { selector: 'h1' });
+    // R355 copy diet: the done-state title reads «أنهيت الاختبار مسبقاً».
+    const doneH1 = screen.getByText('أنهيت الاختبار مسبقاً', { selector: 'h1' });
     // 4C-d: the title keeps its page-scoped sheet class (online-exams
     // `.oex-result-title`). R321 override (WP-B1b): the promoted-h1
     // contract keeps the tag + the class pin, but the old inline

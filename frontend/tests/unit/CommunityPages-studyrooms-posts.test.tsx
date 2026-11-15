@@ -131,7 +131,7 @@ beforeEach(() => {
 describe('CommunityPage — the two r180 tabs exist in the bar', () => {
   it('carries «غرف الدراسة» and «المنشورات» tabs (roving tabindex intact)', () => {
     renderPage();
-    const roomsTab = screen.getByRole('tab', { name: /غرف الدراسة/ });
+    const roomsTab = screen.getByRole('tab', { name: /الغرف/ });
     const postsTab = screen.getByRole('tab', { name: /المنشورات/ });
     expect(roomsTab).toBeInTheDocument();
     expect(postsTab).toBeInTheDocument();
@@ -142,7 +142,7 @@ describe('CommunityPage — the two r180 tabs exist in the bar', () => {
 describe('CommunityPage — «غرف الدراسة» tab', () => {
   it('renders the room cards: name, topic, owner, member count, and the per-isMember buttons', () => {
     renderPage();
-    fireEvent.click(screen.getByRole('tab', { name: /غرف الدراسة/ }));
+    fireEvent.click(screen.getByRole('tab', { name: /الغرف/ }));
 
     // r1 — someone else's room, not a member → «انضمام».
     const joinBtn = screen.getByRole('button', { name: 'انضمام إلى مجموعة مراجعة الشبكات' });
@@ -158,7 +158,7 @@ describe('CommunityPage — «غرف الدراسة» tab', () => {
 
   it('the header shows «إنشاء غرفة» on the rooms tab and it opens the modal', () => {
     renderPage();
-    fireEvent.click(screen.getByRole('tab', { name: /غرف الدراسة/ }));
+    fireEvent.click(screen.getByRole('tab', { name: /الغرف/ }));
     fireEvent.click(screen.getByRole('button', { name: /إنشاء غرفة/ }));
     expect(screen.getByRole('dialog', { name: 'غرفة دراسة جديدة' })).toBeInTheDocument();
     expect(screen.getByLabelText('اسم الغرفة')).toBeInTheDocument();
@@ -167,7 +167,7 @@ describe('CommunityPage — «غرف الدراسة» tab', () => {
 
   it('join/leave fire their mutations with { roomId, name } (the toast + invalidation live in the hooks)', () => {
     renderPage();
-    fireEvent.click(screen.getByRole('tab', { name: /غرف الدراسة/ }));
+    fireEvent.click(screen.getByRole('tab', { name: /الغرف/ }));
     fireEvent.click(screen.getByRole('button', { name: 'انضمام إلى مجموعة مراجعة الشبكات' }));
     expect(h.join.mutate).toHaveBeenCalledWith({ roomId: 'r1', name: 'مجموعة مراجعة الشبكات' });
     fireEvent.click(screen.getByRole('button', { name: 'مغادرة غرفة الخوارزميات — أنت مالكها' }));
@@ -176,7 +176,7 @@ describe('CommunityPage — «غرف الدراسة» tab', () => {
 
   it('create-room modal: a blank name is refused by zod; a valid name posts the payload contract', async () => {
     renderPage();
-    fireEvent.click(screen.getByRole('tab', { name: /غرف الدراسة/ }));
+    fireEvent.click(screen.getByRole('tab', { name: /الغرف/ }));
     fireEvent.click(screen.getByRole('button', { name: /إنشاء غرفة/ }));
 
     // Blank submit → the required-name error, no mutation fired.

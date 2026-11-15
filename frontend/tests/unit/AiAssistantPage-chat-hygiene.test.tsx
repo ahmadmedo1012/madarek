@@ -124,7 +124,7 @@ describe('aiReplyFormat (the markdown-lite formatter)', () => {
     // The real-LLM greeting bubble renders through ReplyText — its
     // plain text has no markup to begin with; the formatter tests above
     // pin the transformation itself.
-    expect(screen.getByText(/مرحبًا! أنا مساعدك الدراسيّ/)).toBeTruthy();
+    expect(screen.getByText(/مرحبًا! أرى بيانات إتقانك لأركّز على فجواتك/)).toBeTruthy();
   });
 });
 
@@ -152,7 +152,7 @@ describe('the privacy disclosure (real-LLM mode only)', () => {
   it('renders the honest external-provider line when a real provider answers', () => {
     renderPage();
     expect(screen.getByText(/إشعار الخصوصيّة/)).toBeTruthy();
-    expect(screen.getByText(/مزوّد ذكاء اصطناعيّ خارجيّ/)).toBeTruthy();
+    expect(screen.getByText(/مزوّد خارجيّ/)).toBeTruthy();
   });
 
   it('never renders in LOCAL mode (nothing leaves the platform)', () => {

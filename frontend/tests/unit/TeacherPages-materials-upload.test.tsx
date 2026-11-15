@@ -160,7 +160,7 @@ describe('MaterialFormModal (file mode) — failure retry (r164-h)', () => {
     mocks.uploadMaterial.error = new Error('network down');
     rerender(<MemoryRouter><MaterialsPage /></MemoryRouter>);
 
-    expect(screen.getByText('تعذّرت إضافة المادة — حاول مرة أخرى.')).toBeInTheDocument();
+    expect(screen.getByText('تعذّرت إضافة المادة.')).toBeInTheDocument();
     // The picked file row survived (the draft is intact).
     expect(screen.getByTitle('lecture-3.pdf')).toBeInTheDocument();
 

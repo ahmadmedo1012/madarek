@@ -92,6 +92,13 @@ const DAY_LABEL: Record<'today' | 'tomorrow', string> = {
   tomorrow: 'غداً',
 };
 
+/* Copy-diet: labels repeated across mutually-exclusive render branches
+ * (pending mirror / error / preview / resolved) live ONCE. */
+const PAGE_TITLE = 'لوحة التحكم';
+const RESUME_EYEBROW = 'أكمل من حيث توقفت';
+const NEXT_EYEBROW = 'الخطوة التالية';
+const MOMENTUM_LABEL = 'زخم الفصل';
+
 function formatDue(iso: string): string {
   const d = new Date(iso);
   const diff = d.getTime() - Date.now();
@@ -393,7 +400,7 @@ function DashResumeHero({ focus }: { focus: ResumeFocus }) {
       <section aria-label="الخطوة التعليمية التالية">
         <div className="dash-resume-card stu-hero r305s-band--deep dash-hero-deep">
           <div className="dash-resume-main">
-            <span className="dash-resume-eyebrow r305s-eyebrow">{focus.continuing ? 'أكمل من حيث توقفت' : 'الخطوة التالية'}</span>
+            <span className="dash-resume-eyebrow r305s-eyebrow">{focus.continuing ? RESUME_EYEBROW : NEXT_EYEBROW}</span>
             <span className="dash-resume-course-name">{focus.courseName}</span>
             <span className="dash-resume-lecture">
               المحاضرة <bdi>{formatInt(focus.ordinal)}</bdi> · {focus.lectureTitle}
@@ -410,7 +417,7 @@ function DashResumeHero({ focus }: { focus: ResumeFocus }) {
             </div>
             {segments && (
               <div className="dash-resume-segments">
-                <span className="ind-microlabel">محاضرات المقرّر</span>
+                <span className="ind-microlabel">محاضرات</span>
                 <div className="dash-resume-segments-row">
                   <SegmentedProgress
                     segments={segments}
@@ -442,9 +449,9 @@ function DashResumeHero({ focus }: { focus: ResumeFocus }) {
     <section aria-label="الخطوة التعليمية التالية">
       <div className="dash-resume-card stu-hero r305s-band--deep dash-hero-deep">
         <div className="dash-resume-main">
-          <span className="dash-resume-eyebrow r305s-eyebrow">{focus.started ? 'أكمل من حيث توقفت' : 'الخطوة التالية'}</span>
+          <span className="dash-resume-eyebrow r305s-eyebrow">{focus.started ? RESUME_EYEBROW : NEXT_EYEBROW}</span>
           <span className="dash-resume-course-name">{focus.title}</span>
-          <span className="dash-resume-lecture">مسار التطوير الذاتي · {focus.started ? <>أنجزت <bdi>{formatInt(focus.progressPct)}%</bdi> من دروسه</> : 'سجّلت فيه ولم تبدأه بعد'}</span>
+          <span className="dash-resume-lecture">مسار التطوير الذاتي · {focus.started ? <>أنجزت <bdi>{formatInt(focus.progressPct)}%</bdi> من دروسه</> : 'لم تبدأه بعد'}</span>
           {/* P2.5 — the same drafting ruler on the training arm (0 stays
               the honest empty register for an unstarted track). */}
           <div className="dash-resume-progress">
@@ -568,7 +575,7 @@ export default function StudentDashboardPage() {
           <header className="pf-page-header" aria-busy="true" aria-live="polite">
             <div className="pf-page-header-main">
               <div className="pf-page-header-text">
-                <h1 className="pf-page-title">لوحة التحكم</h1>
+                <h1 className="pf-page-title">{PAGE_TITLE}</h1>
                 <p className="pf-page-desc">جارٍ تحضير لوحتك…</p>
               </div>
             </div>
@@ -599,7 +606,7 @@ export default function StudentDashboardPage() {
               labeled rule (the Heron annotated divider) above the stat
               line. Same slots, same order, nothing moves at handoff. */}
           <div className="dash-momentum" aria-busy="true">
-            <div className="r305s-rule-labeled" aria-hidden="true">زخم الفصل</div>
+            <div className="r305s-rule-labeled" aria-hidden="true">{MOMENTUM_LABEL}</div>
             <div className="pf-statline" aria-busy="true">
               {[0, 1, 2, 3].map((i) => (
                 <div key={i} className="pf-stat">
@@ -618,7 +625,7 @@ export default function StudentDashboardPage() {
     return (
       <div className="r319s-page">
         <PageFrame width="default">
-          <PageHeader title="لوحة التحكم" />
+          <PageHeader title={PAGE_TITLE} />
           <ErrorState
             message="تعذَّر تحميل لوحة التحكّم"
             error={dash.error}
@@ -638,13 +645,13 @@ export default function StudentDashboardPage() {
       <div className="r319s-page">
         <PageFrame width="default">
           <PageHeader
-            title="لوحة التحكم"
+            title={PAGE_TITLE}
           />
           <div className="card">
             <EmptyState
               icon={Eye}
               title="عرض معاينة"
-              description={`استخدم حساب طالب — أو اختر صفحة كلّيّة.`}
+              description="استخدم حساب طالب."
             />
           </div>
         </PageFrame>
@@ -725,7 +732,7 @@ export default function StudentDashboardPage() {
     const dt = it.whenMs === Number.MAX_SAFE_INTEGER ? null : new Date(it.whenMs);
     const day = dt
       ? formatDate(dt, { weekday: 'long' })
-      : 'موعد غير محدّد';
+      : 'غير محدّد';
     const date = dt ? formatDate(dt, { day: 'numeric', month: 'numeric' }) : '';
     const key = `${day}-${date}`;
     const last = weekGroups[weekGroups.length - 1];
@@ -775,21 +782,21 @@ export default function StudentDashboardPage() {
       label: 'نسبة الحضور',
       value: d.kpi.attendancePct !== null ? <CountIn value={d.kpi.attendancePct} suffix="%" /> : '—',
       hint: d.kpi.attendancePct !== null
-        ? d.kpi.attendancePct >= 80 ? 'مطمئن هذا الفصل' : d.kpi.attendancePct >= 60 ? 'قريب من الحد' : 'تحت الحد — راجع حضورك'
-        : 'لا توجد سجلات بعد',
+        ? d.kpi.attendancePct >= 80 ? 'مطمئن' : d.kpi.attendancePct >= 60 ? 'قريب' : 'تحت الحد'
+        : 'لا سجلات',
       tone: d.kpi.attendancePct === null ? 'neutral' : d.kpi.attendancePct >= 80 ? 'positive' : d.kpi.attendancePct >= 60 ? 'warning' : 'danger',
     },
     {
       label: 'مهام معلّقة',
       value: <CountIn value={d.kpi.pendingAssignmentsCount} />,
-      hint: d.agenda.assignments[0] ? `أقربها ${formatDue(d.agenda.assignments[0].dueAt)}` : 'لا مهام قريبة',
+      hint: d.agenda.assignments[0] ? `أقربها ${formatDue(d.agenda.assignments[0].dueAt)}` : 'لا مهام',
       tone: d.kpi.pendingAssignmentsCount === 0 ? 'positive' : 'neutral',
     },
     {
       label: 'نقاط الإنجاز',
       value: <CountIn value={d.kpi.totalXp} />,
       hint: d.kpi.cohortSize > 1
-        ? `المركز ${d.kpi.rank} من ${d.kpi.cohortSize} على دفعتك`
+        ? `المركز ${d.kpi.rank} من ${d.kpi.cohortSize}`
         : `مستوى ${d.profile.level}`,
       tone: 'neutral',
     },
@@ -802,7 +809,7 @@ export default function StudentDashboardPage() {
             : courseProgressPct >= 50 ? 'على الطريق الصحيح'
             : courseProgressPct === 0 ? 'ابدأ أول محاضرة لتتقدّم'
             : 'تحتاج إلى دفعة إضافيّة'}`
-        : 'لم تُسجّل في مقرّر بعد',
+        : 'لا مقرّرات',
       tone: d.kpi.courseCount === 0 ? 'warning' : courseProgressPct >= 75 ? 'positive' : courseProgressPct === 0 ? 'warning' : 'neutral',
     },
   ];
@@ -833,11 +840,11 @@ export default function StudentDashboardPage() {
     <div className="r319s-page">
       <PageFrame width="default">
         <PageHeader
-          title="لوحة التحكم"
-          eyebrow="مساحة الطالب"
+          title={PAGE_TITLE}
           description={
             <>
-              {greeting}{studentName ? <>، <bdi>{studentName}</bdi></> : null} — {identitySegments.length > 0 ? identitySegments : 'لوحة متابعة تقدّمك الأكاديمي.'}
+              {greeting}{studentName ? <>، <bdi>{studentName}</bdi></> : null}
+              {identitySegments.length > 0 ? <> — {identitySegments}</> : null}
             </>
           }
           meta={
@@ -938,7 +945,6 @@ export default function StudentDashboardPage() {
                CELL — the sheet's reserved-but-empty region (§B2). */
             <EmptyCell
               label="راحة"
-              note="لا حصص اليوم — أسبوعك القادم أدناه، ومقرّراتك في الأسفل."
             />
           }
         />
@@ -965,7 +971,7 @@ export default function StudentDashboardPage() {
                 />
               ) : undefined
             }
-            action={<Link to="/student/courses" className="btn ghost sm">كل المقرّرات</Link>}
+            action={<Link to="/student/courses" className="btn ghost sm">المقرّرات</Link>}
           />
           {enrollments.isPending ? (
             <ListSkeleton rows={2} />
@@ -982,7 +988,6 @@ export default function StudentDashboardPage() {
                catalog link as its ONE action. */
             <EmptyCell
               label="لا مقرّرات بعد"
-              note="لم تُسجَّل بعد — دليل المقرّرات يعرض ما تقدّمه كلّيّتك."
               action={<Link to="/student/catalog" className="btn ghost sm">دليل المقرّرات</Link>}
             />
           ) : (
@@ -996,7 +1001,7 @@ export default function StudentDashboardPage() {
           <SectionBar
             index="04"
             title="فجوات يُنصح بسدّها"
-            action={<Link to="/student/matrix" className="btn ghost sm">المصفوفة الكاملة</Link>}
+            action={<Link to="/student/matrix" className="btn ghost sm">المصفوفة</Link>}
           />
           {gaps.isPending ? (
             <ListSkeleton rows={2} />
@@ -1010,8 +1015,8 @@ export default function StudentDashboardPage() {
             </div>
           ) : topGaps.length === 0 ? (
             <EmptyCell
-              label="لا فجوات بعد"
-              note="لا فجوات بعد — أجب عن نقاط التفاعل لترسم خريطة إتقانك."
+              label="لا فجوات"
+              note="أجب عن نقاط التفاعل."
             />
           ) : (
             <RowList aria-label="أولوية سدّ الفجوات">
@@ -1070,7 +1075,7 @@ export default function StudentDashboardPage() {
           NO daily datum exists in the API yet, so the row renders its
           honest empty register: seven empty ticks, today outlined). */}
       <section aria-label="زخم الفصل" className="dash-momentum">
-        <div className="r305s-rule-labeled" aria-hidden="true">زخم الفصل</div>
+        <div className="r305s-rule-labeled" aria-hidden="true">{MOMENTUM_LABEL}</div>
         <StatLine items={statLineItems} />
         {d.kpi.courseCount > 0 && (
           <CourseBar code="AVG" pct={courseProgressPct} ariaLabel="متوسط إنجاز مقرّراتك الحالية" />
@@ -1090,7 +1095,7 @@ export default function StudentDashboardPage() {
             <span className="ind-microlabel">أسبوع الدراسة</span>
             <StreakTicks
               todayIndex={now.getDay()}
-              note="يُسجَّل تلقائيًا مع كل محاضرة تشاهدها"
+              note="يُسجَّل تلقائيًا."
             />
           </div>
         </div>
@@ -1105,7 +1110,6 @@ export default function StudentDashboardPage() {
           <span className="dash-ai-mark" dir="ltr" aria-hidden="true">AI</span>
           <span className="dash-ai-body">
             <b>المساعد الذكي</b>
-            <span>اسأل عن مقرّر، لخّص محاضرة، أو اطلب خطة مراجعة.</span>
           </span>
           <Icon icon={ArrowLeft} size={14} />
         </Link>
@@ -1123,10 +1127,10 @@ export default function StudentDashboardPage() {
             meta={
               <BarCount
                 n={later.length}
-                srLabel={countAr(later.length, ['التزام واحد قادم', 'التزامان قادمان', 'التزامات قادمة', 'التزاماً قادماً'])}
+                srLabel={countAr(later.length, ['التزام قادم', 'التزامان', 'التزامات', 'التزاماً'])}
               />
             }
-            action={<Link to="/student/calendar" className="btn ghost sm">التقويم الكامل</Link>}
+            action={<Link to="/student/calendar" className="btn ghost sm">التقويم</Link>}
           />
           <RowList aria-label="التزامات الأسبوع القادم">
             {weekGroups.map((g) => (

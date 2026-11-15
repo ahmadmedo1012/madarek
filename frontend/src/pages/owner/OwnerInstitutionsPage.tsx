@@ -63,6 +63,10 @@ const STATUS_LABELS: Record<OwnerInstitution['status'], string> = {
   SUSPENDED: 'معلّقة',
 };
 
+/* Shared silent-server fallback — the toast/AlertRow titles already
+ * name WHICH action failed; this carries only the network fact. */
+const SERVER_SILENT_MSG = 'لم يستجب الخادم.';
+
 /* ── Create form ─────────────────────────────────────────────── */
 
 interface CreateDraft {
@@ -110,7 +114,6 @@ function CreateInstitutionCard({
   return (
     <Card
       title="إنشاء مؤسسة جديدة"
-      subtitle="تُنشأ نشطة — ويعيَّن مسجلها العام بعد ذلك."
       icon={Plus}
     >
       <form
@@ -120,17 +123,16 @@ function CreateInstitutionCard({
           void submit();
         }}
       >
-        <FormField label="اسم المؤسسة" error={nameProblem} hint="مطلوب — كما سيظهر لأعضاء المؤسسة">
+        <FormField label="اسم المؤسسة" error={nameProblem}>
           <input
             className="input"
             type="text"
             value={draft.name}
             onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
-            placeholder="مثلاً: أكاديمية طرابلس للعلوم"
             maxLength={200}
           />
         </FormField>
-        <FormField label="الاسم بالإنجليزية (اختياري)">
+        <FormField label="بالإنجليزية (اختياري)">
           <input
             className="input"
             type="text"
@@ -143,7 +145,7 @@ function CreateInstitutionCard({
         </FormField>
         <FormField
           label="المعرّف (slug — اختياري)"
-          hint="أحرف لاتينية صغيرة وأرقام وشرطات؛ يُشتق تلقائيًا إن تُرك فارغًا"
+          hint="يُشتق تلقائيًا."
         >
           <input
             className="input"
@@ -164,7 +166,7 @@ function CreateInstitutionCard({
             color="red"
             icon={AlertTriangle}
             title="تعذّر إنشاء المؤسسة"
-            description={apiErrorMessage(error, 'لم يستجب الخادم للطلب. إعادة المحاولة.')}
+            description={apiErrorMessage(error, SERVER_SILENT_MSG)}
           />
         )}
       </form>
@@ -345,12 +347,12 @@ function ProvisionAdminModal({
               value={draft.mode}
               onChange={(e) => setDraft((d) => ({ ...d, mode: e.target.value as ProvisionMode }))}
             >
-              <option value="new">مستخدم جديد — يُنشأ حساب بكلمة مرور</option>
-              <option value="existing">مستخدم قائم — يُربط بالمؤسسة</option>
+              <option value="new">مستخدم جديد</option>
+              <option value="existing">مستخدم قائم</option>
             </select>
           </FormField>
 
-          <FormField label="البريد الإلكتروني" error={emailProblem} hint="مطلوب">
+          <FormField label="البريد الإلكتروني" error={emailProblem}>
             <input
               className="input"
               type="email"
@@ -384,7 +386,7 @@ function ProvisionAdminModal({
                   />
                 </FormField>
               </div>
-              <FormField label="كلمة المرور" error={passwordProblem} hint="مطلوبة — 12 حرفًا على الأقل">
+              <FormField label="كلمة المرور" error={passwordProblem} hint="12 حرفًا على الأقل">
                 <PasswordControl
                   value={draft.password}
                   onChange={(v) => setDraft((d) => ({ ...d, password: v }))}
@@ -410,7 +412,7 @@ function ProvisionAdminModal({
             color="red"
             icon={AlertTriangle}
             title="تعذّر تعيين المسجل العام"
-            description={apiErrorMessage(error, 'لم يستجب الخادم للطلب. إعادة المحاولة.')}
+            description={apiErrorMessage(error, SERVER_SILENT_MSG)}
           />
         )}
       </form>
@@ -452,7 +454,7 @@ export function OwnerInstitutionsPage() {
   const onCreate = async (draft: { name: string; nameEn?: string; slug?: string }): Promise<boolean> => {
     try {
       const { institution } = await createM.mutateAsync(draft);
-      toast.success(`أُنشئت «${institution.name}» وهي نشطة الآن.`, { title: 'تمّ إنشاء المؤسسة' });
+      toast.success(`أُنشئت «${institution.name}».`, { title: 'تمّ الإنشاء' });
       return true;
     } catch {
       return false;
@@ -463,11 +465,11 @@ export function OwnerInstitutionsPage() {
   const onToggleStatus = (institution: OwnerInstitution) => {
     const suspending = institution.status === 'ACTIVE';
     setConfirmConfig({
-      title: suspending ? 'تعليق المؤسسة' : 'تنشيط المؤسسة',
+      title: suspending ? 'تعليق' : 'تنشيط',
       confirmLabel: suspending ? 'تعليق المؤسسة' : 'تنشيط المؤسسة',
       message: suspending
         ? `«${institution.name}» — لن يتمكّن أعضاؤها من الوصول حتى تنشيطها.`
-        : `سيستعيد الأعضاء النشطون وصولهم.`,
+        : `سيستعيدون وصولهم.`,
       danger: suspending,
       onConfirm: async () => {
         setConfirmOpen(false);
@@ -477,12 +479,12 @@ export function OwnerInstitutionsPage() {
             onSuccess: () => {
               toast.success(
                 suspending ? `تمّ تعليق «${institution.name}».` : `أُعيد تنشيط «${institution.name}».`,
-                { title: 'تمّ تحديث الحالة' },
+                { title: 'تمّ التحديث' },
               );
             },
             onError: (error) => {
               toast.error(
-                apiErrorMessage(error, 'تعذّر تحديث حالة المؤسسة — حاول مجدداً.'),
+                apiErrorMessage(error, SERVER_SILENT_MSG),
                 { title: 'تعذّر التحديث' },
               );
             },
@@ -510,7 +512,7 @@ export function OwnerInstitutionsPage() {
     try {
       const { user } = await provisionM.mutateAsync({ institutionId: target.id, body });
       toast.success(
-        `تمّ تعيين ${user.firstName} ${user.lastName} مسجلاً عاماً لـ«${target.name}».`,
+        `عُيّن ${user.firstName} ${user.lastName} مسجلاً لـ«${target.name}».`,
         { title: 'تمّ التعيين' },
       );
       setProvisionTarget(null);
@@ -523,7 +525,7 @@ export function OwnerInstitutionsPage() {
   /* ── Membership revoke / restore ────────────────────────── */
   const onRevokeAdmin = (institution: OwnerInstitution, admin: InstitutionAdminRow) => {
     setConfirmConfig({
-      title: 'إلغاء عضوية المسجل العام',
+      title: 'إلغاء العضوية',
       confirmLabel: 'إلغاء العضوية',
       message: `«${admin.firstName} ${admin.lastName}» سيفقد وصوله لسياق المؤسسة فورًا.`,
       danger: true,
@@ -539,7 +541,7 @@ export function OwnerInstitutionsPage() {
             },
             onError: (error) => {
               toast.error(
-                apiErrorMessage(error, 'تعذّر إلغاء العضوية — حاول مجدداً.'),
+                apiErrorMessage(error, SERVER_SILENT_MSG),
                 { title: 'تعذّر الإلغاء' },
               );
             },
@@ -561,7 +563,7 @@ export function OwnerInstitutionsPage() {
         },
         onError: (error) => {
           toast.error(
-            apiErrorMessage(error, 'تعذّرت استعادة العضوية — حاول مجدداً.'),
+            apiErrorMessage(error, SERVER_SILENT_MSG),
             { title: 'تعذّرت الاستعادة' },
           );
         },
@@ -600,7 +602,6 @@ export function OwnerInstitutionsPage() {
           <EmptyState
             icon={Landmark}
             title="لا توجد مؤسسات بعد"
-            description="أنشئ أول مؤسسة تعليمية من النموذج أعلاه لبدء استقبال أعضائها."
           />
         ) : (
           <div className="table-wrap">
@@ -612,9 +613,9 @@ export function OwnerInstitutionsPage() {
                 <tr>
                   <th scope="col">المؤسسة</th>
                   <th scope="col">الحالة</th>
-                  <th scope="col">الأعضاء النشطون</th>
+                  <th scope="col">الأعضاء</th>
                   <th scope="col">الكليات</th>
-                  <th scope="col">المسجلون العامّون</th>
+                  <th scope="col">المسجّلون</th>
                   <th scope="col">تاريخ الإنشاء</th>
                   <th scope="col">إجراءات</th>
                 </tr>
@@ -636,7 +637,7 @@ export function OwnerInstitutionsPage() {
                         {STATUS_LABELS[institution.status]}
                       </Badge>
                     </td>
-                    <td data-label="الأعضاء النشطون">
+                    <td data-label="الأعضاء">
                       {/* r299: the per-cell metric icons died — the column
                           header already names the metric; a 13px icon before
                           every figure was decoration competing with the
@@ -650,9 +651,9 @@ export function OwnerInstitutionsPage() {
                         {formatNum(institution.facultyCount)}
                       </span>
                     </td>
-                    <td data-label="المسجلون العامّون">
+                    <td data-label="المسجّلون">
                       {institution.admins.length === 0 ? (
-                        <span className="text-xs text-subtle">لا مسجلين عامّين بعد</span>
+                        <span className="text-xs text-subtle">لا مسجّلين</span>
                       ) : (
                         <ul className="owner-inst-admins">
                           {institution.admins.map((admin) => (
@@ -699,7 +700,6 @@ export function OwnerInstitutionsPage() {
                         <Link
                           to={`/owner/institutions/${institution.slug}`}
                           className="btn ghost sm"
-                          title={`فتح سياق «${institution.name}» وإعداد بنيتها الأكاديمية`}
                         >
                           <Icon icon={ArrowLeft} size={13} />
                           فتح المؤسسة
@@ -709,7 +709,6 @@ export function OwnerInstitutionsPage() {
                           className="btn ghost sm"
                           onClick={() => setProvisionTarget(institution)}
                           disabled={mutationBusy}
-                          title={`تعيين مسجل عام لـ«${institution.name}»`}
                         >
                           <Icon icon={ShieldCheck} size={13} />
                           تعيين مسجل عام

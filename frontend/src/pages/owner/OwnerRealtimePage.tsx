@@ -17,7 +17,7 @@ import { formatNum, formatTime } from '../../utils/numbers';
 /* countAr lives in lib/format.ts (wave 9-a). */
 
 const ACTIVE_ALERT_FORMS: [string, string, string, string] = [
-  'تنبيه نشط واحد', 'تنبيهان نشطان', 'تنبيهات نشطة', 'تنبيهاً نشطاً',
+  'تنبيه واحد', 'تنبيهان', 'تنبيهات', 'تنبيهاً',
 ];
 
 /** A live tile: label with a pulsing heartbeat dot + a value that
@@ -47,6 +47,12 @@ function tickValue(n: number, label: string) {
   );
 }
 
+/** One strip cell — visible live label + the sr-labelled tick value
+ *  (one literal feeds both; zero rendered change). */
+function liveCell(label: string, n: number) {
+  return { label: liveLabel(label), value: tickValue(n, label) };
+}
+
 export function OwnerRealtimePage() {
   const realtime = useOwnerRealtime();
   const alerts = useOwnerAlerts();
@@ -70,7 +76,6 @@ export function OwnerRealtimePage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="المراقبة الحيّة"
-        description="العمليّات الحيّة في الوقت الفعليّ"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المراقبة الحيّة' }]}
         /* R341 D11: the [02] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
@@ -82,8 +87,8 @@ export function OwnerRealtimePage() {
          * stays in-band. */
         actions={(
           <>
-            <Link to="/owner/alerts" className="btn accent sm">التنبيهات التشغيليّة</Link>
-            <Link to="/owner/system" className="btn ghost sm">النظام والتشغيل</Link>
+            <Link to="/owner/alerts" className="btn accent sm">التنبيهات</Link>
+            <Link to="/owner/system" className="btn ghost sm">النظام</Link>
           </>
         )}
       />
@@ -109,12 +114,12 @@ export function OwnerRealtimePage() {
               {refreshFailed
                 ? 'تعذّر تحديث القراءات — آخر قراءة محفوظة'
                 : alerts.isPending
-                  ? 'جارٍ جلب حالة التنبيهات…'
+                  ? 'جارٍ الجلب…'
                   : alerts.isError
-                    ? 'تعذّر جلب حالة التنبيهات'
+                    ? 'تعذّر جلب التنبيهات'
                     : hasAlerts
-                      ? `يوجد ${countAr(unresolvedAlerts.length, ACTIVE_ALERT_FORMS)}`
-                      : 'النظام يعمل بشكل طبيعيّ'}
+                      ? `${countAr(unresolvedAlerts.length, ACTIVE_ALERT_FORMS)}`
+                      : 'طبيعيّ'}
             </span>
             <div className="owner-live-tools">
               {anyDegraded && (
@@ -148,10 +153,10 @@ export function OwnerRealtimePage() {
               beside every label already says «live»; four identical
               words under four numbers were pure noise. */}
           <section role="status" aria-live="polite"><StatStrip ariaLabel="مؤشرات المراقبة الحيّة للمنصّة" cells={[
-            { label: liveLabel('الجلسات النشطة'), value: tickValue(data.activeSessions, 'الجلسات النشطة') },
-            { label: liveLabel('طلبات AI / دقيقة'), value: tickValue(data.aiRequestsPerMin, 'طلبات AI / دقيقة') },
-            { label: liveLabel('بثّ مباشر'), value: tickValue(data.liveBroadcasts, 'بثّ مباشر') },
-            { label: liveLabel('اختبارات جارية'), value: tickValue(data.activeExams, 'اختبارات جارية') },
+            liveCell('الجلسات النشطة', data.activeSessions),
+            liveCell('طلبات AI / دقيقة', data.aiRequestsPerMin),
+            liveCell('بثّ مباشر', data.liveBroadcasts),
+            liveCell('اختبارات جارية', data.activeExams),
           ]} /></section>
         </>
       )}

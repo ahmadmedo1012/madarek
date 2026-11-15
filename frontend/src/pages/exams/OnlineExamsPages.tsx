@@ -140,7 +140,7 @@ function startErrorAr(error: unknown, exam: MyExam | undefined): string {
   if (detail === 'لم يفتح باب هذا الاختبار بعد' && exam?.openAt) {
     return `لم يفتح باب هذا الاختبار بعد — يفتح ${formatDateTimeAr(exam.openAt)}.`;
   }
-  return apiErrorMessage(error, 'تعذَّر بدء الاختبار — تحقّق من اتصالك.');
+  return apiErrorMessage(error, 'تعذَّر بدء الاختبار.');
 }
 
 /* r165a — a submit answer the backend rejected as TERMINAL. The submit
@@ -293,9 +293,7 @@ export default function OnlineExamsPage() {
       <PageFrame width="default">
         <PatternPageHeader
           index="01"
-          eyebrow="مركز الاختبارات"
-          title="الاختبارات الإلكترونية"
-          description="اختبارات موحَّدة معتمدة — لا إعادة بعد التسليم إلا التدريبية."
+          title="الاختبارات"
           /* R342-08 — the header CTA pair (the D11/D8 measured seat; the
              phone band hides the topbar «اسأل AI» ≤920, D6, and the first
              row's start CTA sits below the phone fold): the exam
@@ -329,7 +327,7 @@ export default function OnlineExamsPage() {
             !q.isPending && !q.isError && available.length > 0 ? (
               <BarCount
                 n={available.length}
-                srLabel={countAr(available.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
+                srLabel={countAr(available.length, ['اختبار', 'اختباران', 'اختبارات', 'اختباراً'])}
               />
             ) : undefined
           }
@@ -359,12 +357,7 @@ export default function OnlineExamsPage() {
                  empty region: the hatched EmptyCell (the §B2 family
                  grammar), same honest copy the old EmptyState carried. */
               <EmptyCell
-                label="لا توجد اختبارات متاحة حالياً"
-                note={
-                  unavailable.length > 0
-                    ? 'مواعيد المغلقة في القائمة أدناه.'
-                    : undefined
-                }
+                label="لا اختبارات متاحة"
               />
             )}
             {/* r241 list semantics (the tq-rows family grammar): each
@@ -394,7 +387,7 @@ export default function OnlineExamsPage() {
               meta={(
                 <BarCount
                   n={unavailable.length}
-                  srLabel={countAr(unavailable.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
+                  srLabel={countAr(unavailable.length, ['اختبار', 'اختباران', 'اختبارات', 'اختباراً'])}
                 />
               )}
             />
@@ -413,7 +406,7 @@ export default function OnlineExamsPage() {
               meta={(
                 <BarCount
                   n={taken.length}
-                  srLabel={countAr(taken.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
+                  srLabel={countAr(taken.length, ['اختبار', 'اختباران', 'اختبارات', 'اختباراً'])}
                 />
               )}
             />
@@ -508,7 +501,7 @@ function ExamCard({ exam, canStart, actNow }: { exam: MyExam; canStart: boolean;
                   burning) on the shared chip register. */
               <span className="r305s-chip r305s-chip--warning">
                 <i className="r305s-chip-dot" aria-hidden />
-                {ws === 'closed' ? 'محاولة قيد التقدم' : 'محاولة قيد التقدم — متابعة'}
+                {'محاولة قيد التقدم'}
               </span>
             )}
             {verdict && (
@@ -641,7 +634,7 @@ function ReviewQuestionRow({ q, index }: { q: AttemptReviewQuestion; index: numb
         <span className="oex-review-label">إجابتك:</span>{' '}
         {answered
           ? (myChoice ?? <span className="oex-review-text">{q.myAnswerText}</span>)
-          : <span className="oex-review-missed">لم تُجب عن هذا السؤال</span>}
+          : <span className="oex-review-missed">لم تُجب</span>}
       </div>
       {/* The released key: MCQ/TRUE_FALSE choice text, SHORT model
           answer. ESSAY rubrics and keyless shorts stay teacher-side
@@ -792,7 +785,7 @@ export function ExamTakerPage() {
   // conservative non-practice copy.
   const finalityNote = listedExam?.kind === 'PRACTICE'
     ? 'بعد التسليم لا تعديل — التدريبية تُعاد لاحقاً.'
-    : 'بعد التسليم لا تعديل ولا إعادة.';
+    : 'التسليم نهائي — لا إعادة.';
 
   const onStart = async () => {
     if (!id) return;
@@ -896,7 +889,7 @@ export function ExamTakerPage() {
         void examsQ.refetch();
         return;
       }
-      setSubmitError(apiErrorMessage(e, 'تعذَّر تسليم الاختبار — حاول مرة أخرى.'));
+      setSubmitError(apiErrorMessage(e, 'تعذَّر تسليم الاختبار.'));
       // A failed manual submit must not block the countdown's later
       // auto-submit — only success settles the attempt (15-e P0-2).
       finishingRef.current = false;
@@ -975,7 +968,7 @@ export function ExamTakerPage() {
   useEffect(() => {
     if (!attempt || autoSubmittedRef.current) return;
     if (secondsLeft > 0 && secondsLeft <= 120 && urgentNote === null) {
-      setUrgentNote('أقلّ من دقيقتين — تسليم تلقائي عند الانتهاء.');
+      setUrgentNote('أقلّ من دقيقتين — تسليم تلقائي.');
     }
   }, [attempt, secondsLeft, urgentNote]);
 
@@ -1142,7 +1135,7 @@ export function ExamTakerPage() {
         <PageFrame width="default">
           <Link to="/student/online-exams" className="back-link">
             <Icon icon={ChevronRight} size={14} />
-            العودة إلى الاختبارات
+            العودة للاختبارات
           </Link>
           {/* R321 B1b — the done moment joins the sheet paper (the Card
               wall is gone); the pinned .oex-result-title h1 seats at
@@ -1162,11 +1155,11 @@ export function ExamTakerPage() {
               <MkIllustration name="exam-complete" size={140} />
             )}
             <h1 className="oex-result-title">
-              {expired ? 'انتهت مدة هذه المحاولة' : 'لقد أكملت هذا الاختبار مسبقاً'}
+              {expired ? 'انتهت مدة المحاولة' : 'أنهيت الاختبار مسبقاً'}
             </h1>
             {expired ? (
               <>
-                <p className="oex-result-note">انتهى الوقت دون تسليم — لا نتيجة ولا إعادة.</p>
+                <p className="oex-result-note">لا نتيجة ولا إعادة.</p>
               </>
             ) : exam && myAttempt && score !== null && score !== undefined ? (
               <>
@@ -1185,17 +1178,15 @@ export function ExamTakerPage() {
                 </div>
                 <p className="oex-result-note">
                   {myAttempt.status === 'SUBMITTED'
-                    ? 'درجة أولية آلية — المقالية بانتظار الأستاذ.'
-                    : 'لا يمكن إعادة المحاولة بعد التسليم.'}
+                    ? 'درجة أولية — بانتظار الأستاذ.'
+                    : 'لا إعادة بعد التسليم.'}
                 </p>
                 {/* 5-D3 (5-B3 hand-off #1 / A6 P2-4): the deep-link
                     done-state offers the same review on a GRADED
                     attempt; anything short of GRADED keeps the honest
                     promise instead of a dead toggle. */}
-                {myAttempt.status === 'GRADED' ? (
+                {myAttempt.status === 'GRADED' && (
                   <ExamReviewSection attemptId={myAttempt.id} />
-                ) : (
-                  <p className="oex-result-note">المراجعة متاحة بعد اكتمال التصحيح.</p>
                 )}
               </>
             ) : examsQ.isPending ? (
@@ -1215,14 +1206,11 @@ export function ExamTakerPage() {
             ) : examsQ.isError ? (
               <div className="form-error" role="alert">
                 <Icon icon={AlertTriangle} size={14} />
-                <span className="form-error-msg">تعذَّر جلب نتيجتك — تحقّق من اتصالك.</span>
-                <button type="button" className="btn ghost sm" onClick={() => void examsQ.refetch()}>إعادة المحاولة</button>
+                <span className="form-error-msg">تعذَّر جلب نتيجتك.</span>
+                <button type="button" className="btn ghost sm" onClick={() => void examsQ.refetch()}>إعادة</button>
               </div>
             ) : (
-              <>
-                <p className="oex-result-note">لا يمكن إعادة المحاولة بعد التسليم.</p>
-                <p className="oex-result-note">النتيجة قيد الاحتساب أو بانتظار تقييم المقالية.</p>
-              </>
+              <p className="oex-result-note">النتيجة قيد الاحتساب أو بانتظار المقالية.</p>
             )}
             <button type="button" className="btn accent" onClick={() => navigate('/student/online-exams')}>
               العودة للقائمة
@@ -1251,7 +1239,7 @@ export function ExamTakerPage() {
         <PageFrame width="default">
           <Link to="/student/online-exams" className="back-link">
             <Icon icon={ChevronRight} size={14} />
-            العودة إلى الاختبارات
+            العودة للاختبارات
           </Link>
           <Reveal as="section" className="oex-cover" aria-labelledby="oex-cover-title">
             <header className="oex-cover-head">
@@ -1261,7 +1249,7 @@ export function ExamTakerPage() {
                     h1 moment and carries the page-index mono label like
                     every pattern-library header on the sheet. */}
                 <span className="page-index" aria-hidden="true" dir="ltr">[01]</span>
-                {hasLiveAttempt ? 'لديك محاولة قيد التقدم' : 'هل أنت مستعد للبدء؟'}
+                {hasLiveAttempt ? 'محاولة قيد التقدم' : 'جاهز للبدء؟'}
               </p>
               {/* PI-REC contract reconciliation: the D5 resume contract
                   pins the begin screen's h1 as the honest resume/ready
@@ -1329,8 +1317,8 @@ export function ExamTakerPage() {
             )}
             <p className="oex-cover-note text-sm text-muted">
               {hasLiveAttempt
-                ? 'الوقت لم يتوقف — إجاباتك كما تركتها.'
-                : 'المؤقّت يبدأ مع أول ضغطة ولا يتوقف.'}
+                ? 'الوقت لم يتوقف — إجاباتك محفوظة.'
+                : 'المؤقّت يبدأ بأول ضغطة ولا يتوقف.'}
             </p>
             <footer className="oex-cover-actions">
               {startError && (
@@ -1386,7 +1374,7 @@ export function ExamTakerPage() {
         <PageFrame width="default">
           <Link to="/student/online-exams" className="back-link">
             <Icon icon={ChevronRight} size={14} />
-            العودة إلى الاختبارات
+            العودة للاختبارات
           </Link>
           {/* R321 B1b — the result moment joins the sheet paper (the
               Card wall is gone); same pinned .oex-result-title seat. */}
@@ -1421,8 +1409,8 @@ export function ExamTakerPage() {
                   2/3–10; countAr speaks the forms (the same grammar the
                   submit dialog and the moderation rows carry). */}
               {result.needsManual > 0
-                ? <>{countAr(result.needsManual, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])} بحاجة لتقييم الأستاذ — الدرجة النهائية بعد المراجعة.</>
-                : 'تم احتساب النتيجة فوراً.'}
+                ? <>{countAr(result.needsManual, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])} بحاجة لتقييم الأستاذ.</>
+                : 'تم الاحتساب فوراً.'}
             </p>
             {/* 5-D3 (5-B3 hand-off #1 / A6 P2-4): the review endpoint
                 ships — the GRADED result offers the per-question
@@ -1430,7 +1418,7 @@ export function ExamTakerPage() {
                 the honest promise replaces the old "not available"
                 note (the key is not released until GRADED). */}
             {awaitingManual ? (
-              <p className="oex-result-note">المراجعة متاحة بعد اكتمال التصحيح اليدوي.</p>
+              <p className="oex-result-note">المراجعة بعد اكتمال التصحيح.</p>
             ) : (
               <ExamReviewSection attemptId={result.attemptId} />
             )}
@@ -1505,7 +1493,7 @@ export function ExamTakerPage() {
             <Icon icon={AlertTriangle} size={13} />
             {failedNumbers.length === 1
               ? `تعذَّر حفظ إجابة السؤال ${failedNumbers[0]} — أعد الإجابة عليه`
-              : `تعذَّر حفظ إجابات الأسئلة ${failedNumbers.slice(0, 3).join(' و')}${failedNumbers.length > 3 ? ' وأخرى' : ''} — أعد الإجابة عليها`}
+              : `تعذَّر حفظ إجابات الأسئلة ${failedNumbers.slice(0, 3).join(' و')}${failedNumbers.length > 3 ? ' وأخرى' : ''} — أعد الإجابة`}
           </span>
         )}
         {/* role=timer names the countdown for assistive tech without
@@ -1569,14 +1557,13 @@ export function ExamTakerPage() {
           meta={(
             <BarCount
               n={attempt.questions.length}
-              srLabel={countAr(attempt.questions.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])}
+              srLabel={countAr(attempt.questions.length, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])}
             />
           )}
         />
         {attempt.questions.length === 0 && (
           <EmptyCell
-            label="لا توجد أسئلة في هذا الاختبار"
-            note="لا أسئلة معتمدة بعد — سلِّم كما هي أو راجع القائمة."
+            label="لا أسئلة في هذا الاختبار"
           />
         )}
         {attempt.questions.length > 0 && (
@@ -1682,7 +1669,7 @@ export function ExamTakerPage() {
                       />
                       {saveState === 'failed'
                         ? overCapQids.has(q.id)
-                          ? 'الإجابة أطول من الحد (4000 حرفًا) — اختصرها ليُحفظ'
+                          ? 'الإجابة أطول من الحد (4000 حرفًا)'
                           : 'تعذَّر الحفظ'
                         : saveState === 'saving'
                           ? 'جارٍ الحفظ…'
@@ -1721,7 +1708,7 @@ export function ExamTakerPage() {
             <Icon icon={unanswered > 0 ? AlertTriangle : CheckCircle2} size={14} />
             {unanswered > 0
               ? countAr(unanswered, ['سؤال واحد بدون إجابة', 'سؤالان بدون إجابة', 'أسئلة بدون إجابة', 'سؤالاً بدون إجابة'])
-              : 'أُجيب عن كل الأسئلة'}
+              : 'أُجيب عن الكل'}
           </span>
         </div>
         <button type="button" className="btn accent hr-cta" onClick={() => setConfirming(true)} disabled={finish.isPending}>
@@ -1738,11 +1725,11 @@ export function ExamTakerPage() {
           unanswered > 0
             /* 22-c (A4 P2-3) counted-noun convention — the dialog speaks
                the same «سؤال واحد بدون إجابة» grammar as the sticky bar. */
-            ? `لديك ${countAr(unanswered, ['سؤال واحد بدون إجابة', 'سؤالان بدون إجابة', 'أسئلة بدون إجابة', 'سؤالاً بدون إجابة'])}. ${finalityNote}`
+            ? `${countAr(unanswered, ['سؤال واحد بدون إجابة', 'سؤالان بدون إجابة', 'أسئلة بدون إجابة', 'سؤالاً بدون إجابة'])}. ${finalityNote}`
             : finalityNote
         }
         confirmLabel="تسليم نهائي"
-        cancelLabel="مراجعة إجاباتي"
+        cancelLabel="مراجعة"
         onConfirm={async () => {
           await submitAttempt();
           setConfirming(false);
@@ -1815,11 +1802,11 @@ function TemplateQuestionsPreview({ templateId }: { templateId: string }) {
       <div className="oex-mod-preview-head">
         <Icon icon={ListChecks} size={13} />
         <span className="text-xs text-muted">
-          أسئلة القالب —{' '}
+          الأسئلة —{' '}
           {tplQ.isPending
             ? 'جارٍ التحميل…'
             : tplQ.data
-              ? countAr(questions.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])
+              ? countAr(questions.length, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])
               : '—'}
         </span>
       </div>
@@ -1829,7 +1816,7 @@ function TemplateQuestionsPreview({ templateId }: { templateId: string }) {
         <div className="form-error" role="alert">
           <Icon icon={AlertTriangle} size={14} />
           <span className="form-error-msg">
-            {apiErrorMessage(tplQ.error, 'تعذَّر تحميل أسئلة القالب — راجع قبل القرار.')}
+            {apiErrorMessage(tplQ.error, 'تعذَّر تحميل أسئلة القالب — راجع أولًا.')}
           </span>
           <button type="button" className="btn ghost sm" onClick={() => void tplQ.refetch()}>
             إعادة المحاولة
@@ -1875,7 +1862,7 @@ function ModerationQuestionRow({
           <Badge color={DIFFICULTY_COLOR[q.difficulty]}>{DIFFICULTY_LABEL[q.difficulty]}</Badge>
           {q.category && <span>{q.category.title}</span>}
           <span>
-            {countAr(points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}
+            {countAr(points, ['نقطة', 'نقطتان', 'نقاط', 'نقطة'])}
             {row.pointsOverride !== null && ' (معدَّلة)'}
           </span>
           {!q.isApproved && <Badge color="red" icon={Ban}>موقوف</Badge>}
@@ -1941,7 +1928,7 @@ export function ExamModerationPage() {
       setOpen(null);
       setNote('');
     } catch (e) {
-      setActionError({ id, approve, message: apiErrorMessage(e, 'تعذَّر تنفيذ القرار — تحقّق من اتصالك.') });
+      setActionError({ id, approve, message: apiErrorMessage(e, 'تعذَّر تنفيذ القرار.') });
     } finally {
       setActing(null);
     }
@@ -1957,7 +1944,6 @@ export function ExamModerationPage() {
    * the pending rows. No decision timestamps exist in the page payload
    * (PENDING queue only), so no «decisions this month» was invented
    * either. */
-  const kpiKnown = !queueQ.isPending && !queueQ.isError;
   const pendingCount = queue?.length ?? 0;
   const questionsAwaiting = (queue ?? []).reduce((sum, item) => sum + item._count.questions, 0);
 
@@ -1976,7 +1962,6 @@ export function ExamModerationPage() {
       </span>
       <PageHeader
         title="مراجعة الاختبارات"
-        subtitle="اعتماد قوالب الاختبارات قبل إتاحتها للطلاب."
         /* R342-11: the header CTA pair (the D10 quality-family grammar,
          * navigation-only — the queue's own decisions live on the rows).
          * The accent seat is the measured hover surface (.has-shell
@@ -2005,22 +1990,10 @@ export function ExamModerationPage() {
           {
             label: 'بانتظار المراجعة',
             value: queueQ.isPending ? '…' : queueQ.isError ? '—' : `${pendingCount}`,
-            trend: kpiKnown ? (pendingCount === 0 ? 'لا شيء ينتظر' : 'تنتظر قرارك') : 'بانتظار البيانات',
-            trendTone: kpiKnown ? (pendingCount > 0 ? 'down' : 'up') : 'flat',
           },
           {
             label: 'أسئلة بانتظار الفحص',
             value: queueQ.isPending ? '…' : queueQ.isError ? '—' : `${questionsAwaiting}`,
-            trend: kpiKnown
-              ? (questionsAwaiting === 0 ? 'لا أسئلة معلّقة' : 'أسئلة القوالب المعلّقة')
-              : 'بانتظار البيانات',
-            trendTone: kpiKnown ? (questionsAwaiting > 0 ? 'down' : 'up') : 'flat',
-          },
-          {
-            label: 'حالة النظام',
-            value: queueQ.isPending ? '…' : queueQ.isError ? 'تعذّر الاتصال' : 'نشط',
-            trend: queueQ.isError ? 'تعذّر جلب الطابور' : kpiKnown ? 'اتصال سليم' : 'بانتظار البيانات',
-            trendTone: queueQ.isError ? 'down' : kpiKnown ? 'up' : 'flat',
           },
         ]}
       />
@@ -2038,7 +2011,7 @@ export function ExamModerationPage() {
              list page's sections use), keeping the exact copy + icon. */
           <EmptyState
             icon={CheckCircle2}
-            title="لا شيء بانتظار المراجعة"
+            title="الطابور فارغ"
           />
         ) : (
           <div className="oex-queue" role="list" aria-label="طابور المراجعة">
@@ -2120,7 +2093,7 @@ export function ExamModerationPage() {
                         className="input oex-mod-note-field"
                         rows={2}
                         maxLength={500}
-                        placeholder="ملاحظات للمؤلف (اختياري)…"
+                        placeholder="ملاحظات (اختياري)…"
                         aria-label="ملاحظات المراجعة للمؤلف"
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
@@ -2154,7 +2127,7 @@ export function ExamModerationPage() {
                             className="btn ghost sm"
                             onClick={() => void runModeration(actionError.id, actionError.approve)}
                           >
-                            إعادة المحاولة
+                            إعادة
                           </button>
                         </div>
                       )}

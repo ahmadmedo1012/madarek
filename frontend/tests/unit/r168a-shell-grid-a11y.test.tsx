@@ -172,8 +172,13 @@ describe('r168a — student dashboard leads its outline with its identity', () =
        (pf-page-title) — same identity contract, one h1 per state: the
        pending mirror carries the literal h1, the error/preview/main
        states pass the title to the PageHeader pattern. */
-    expect(page.match(/<h1 className="pf-page-title">لوحة التحكم<\/h1>/g)?.length).toBe(1);
-    expect(page.match(/title="لوحة التحكم"/g)?.length).toBe(3);
+    /* R355 copy diet: the repeated literal folded into ONE PAGE_TITLE
+       constant — the identity contract is unchanged: the constant IS
+       the nav-label world, the pending mirror renders it as the literal
+       h1, and the error/preview/main states all pass it to PageHeader. */
+    expect(page).toContain("const PAGE_TITLE = 'لوحة التحكم';");
+    expect(page.match(/<h1 className="pf-page-title">\{PAGE_TITLE\}<\/h1>/g)?.length).toBe(1);
+    expect(page.match(/title=\{PAGE_TITLE\}/g)?.length).toBe(3);
     // The greeting rides the masthead description (never a heading).
     expect(page).not.toMatch(/<h2 className="pf-page-title">/);
     // The welcome-hero is gone: no welcome-card anywhere.

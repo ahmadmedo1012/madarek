@@ -63,12 +63,16 @@ function safeBackPath(raw: string | null, role: AppRole): string {
  *  label (never guess a place we cannot name). */
 export function backDestinationLabel(path: string): string {
   if (path.startsWith('/student/research')) return 'بحوثي';
-  if (path.startsWith('/student/library')) return 'المكتبة';
+  if (path.startsWith('/student/library') || path.startsWith('/teacher/library')) return LIBRARY_LABEL;
   if (path.startsWith('/teacher/research')) return 'مراجعة البحوث';
-  if (path.startsWith('/teacher/library')) return 'المكتبة';
   if (path.startsWith('/student/courses') || path.startsWith('/teacher/materials')) return 'المقرر';
   return 'الصفحة السابقة';
 }
+
+/* Shared label constants — one literal each (library branch + both h1
+ * fallbacks read the same words). */
+const LIBRARY_LABEL = 'المكتبة';
+const DOC_FALLBACK_TITLE = 'مستند';
 
 /* P3: the file namespace the viewer fetches from. 'papers' is the
  * legacy default (research PDFs, /files/papers/:filename); 'materials'
@@ -233,7 +237,7 @@ export default function DocumentViewerPage() {
               <Icon icon={ChevronRight} size={14} />
               {backLabel}
             </Link>
-            <h1 className="doc-reader-title">{title ?? 'مستند'}</h1>
+            <h1 className="doc-reader-title">{title ?? DOC_FALLBACK_TITLE}</h1>
           </header>
           <div className="doc-reader">
             <div className="doc-reader-main">
@@ -241,8 +245,8 @@ export default function DocumentViewerPage() {
                 icon={FileQuestion}
                 title={missing ? 'المستند غير محدّد' : 'الملف غير موجود'}
                 description={missing
-                  ? 'الرابط لا يحمل اسم ملف — افتح المستند من بحوثك أو المقرر.'
-                  : 'اسم الملف لا يصلح لعرض PDF — افتح المستند من بحوثك أو المقرر.'}
+                  ? 'الرابط لا يحمل اسم ملف.'
+                  : 'اسم الملف لا يصلح لعرض PDF.'}
               />
             </div>
           </div>
@@ -271,10 +275,10 @@ export default function DocumentViewerPage() {
           <Icon icon={ChevronRight} size={14} />
           {backLabel}
         </Link>
-        <h1 className="doc-reader-title">{title ?? 'مستند'}</h1>
+        <h1 className="doc-reader-title">{title ?? DOC_FALLBACK_TITLE}</h1>
         {numPages > 1 && (
           <span className="rs-count doc-reader-meta">
-            {countAr(numPages, ['صفحة واحدة', 'صفحتان', 'صفحات', 'صفحة'])}
+            {countAr(numPages, ['صفحة', 'صفحتان', 'صفحات', 'صفحة'])}
           </span>
         )}
       </header>
@@ -345,7 +349,6 @@ export default function DocumentViewerPage() {
           onClose={() => setNotesOpen(false)}
           side="bottom"
           ariaLabel="ملاحظات البحث"
-          title="ملاحظات البحث"
         >
           <div className="rs-notes-sheet-body">{annotationsPanel}</div>
         </Sheet>

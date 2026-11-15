@@ -160,7 +160,7 @@ export default function CourseDetailPage() {
       <PageFrame width="default">
         <Link to="/student/courses" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
           <Icon icon={ChevronRight} size={13} />
-          العودة إلى مقرراتي
+          عودة للمقرّرات
         </Link>
         <ErrorState error={error} onRetry={() => refetch()} />
       </PageFrame>
@@ -198,13 +198,13 @@ export default function CourseDetailPage() {
       <PageHeader
         title={data.course.name}
         breadcrumbs={[
-          { label: 'مقرّراتي الدراسية', to: '/student/courses' },
+          { label: 'مقرّراتي', to: '/student/courses' },
           { label: data.course.name },
         ]}
         description={
           <>
             د. {data.teacher.firstName} {data.teacher.lastName} ·{' '}
-            {countAr(data.course.credits, ['ساعة معتمدة واحدة', 'ساعتان معتمدتان', 'ساعات معتمدة', 'ساعة معتمدة'])} · الفصل <bdi>{data.term}</bdi>
+            {countAr(data.course.credits, ['ساعة معتمدة', 'ساعتان معتمدتان', 'ساعات معتمدة', 'ساعة معتمدة'])} · الفصل <bdi>{data.term}</bdi>
           </>
         }
         meta={<><Badge><bdi className="font-mono">{data.course.code}</bdi></Badge> · {data.course.department.name}</>}
@@ -231,9 +231,6 @@ export default function CourseDetailPage() {
             <span className="course-hero-progress-value">{progressValue}%</span>
           </div>
           <ProgressBar value={lecProgress} color={tint} showValue={false} ariaLabel="نسبة إكمال محاضرات المقرر" />
-          <div className="course-hero-progress-note">
-            {countAr(watchedCount, ['محاضرة مكتملة', 'محاضرتان مكتملتان', 'محاضرات مكتملة', 'محاضرة مكتملة'])} من {data.lectures.length}
-          </div>
         </div>
         {/* r164d (course flow): THE primary «التالي» CTA — jumps
             straight to the first unfinished lecture; when nothing is
@@ -269,10 +266,10 @@ export default function CourseDetailPage() {
           KPI wall). */}
       <StatLine
         items={[
-          { label: 'المحاضرات', value: formatInt(data.lectures.length), hint: countAr(watchedCount, ['واحدة مكتملة', 'مكتملتان', 'مكتملة', 'مكتملة']) },
-          { label: 'المواد المرفقة', value: formatInt(data.materials.length), hint: countAr(data.materials.length, ['ملف واحد متاح', 'ملفان متاحان', 'ملفات متاحة', 'ملفاً متاحاً']) },
-          { label: 'الواجبات', value: formatInt(data.assignments.length), hint: 'هذا الفصل' },
-          { label: 'الطلاب', value: formatInt(data._count.enrollments), hint: countAr(data._count.enrollments, ['طالب واحد مسجَّل', 'طالبان مسجَّلان', 'طلاب مسجَّلون', 'طالباً مسجَّلاً']) },
+          { label: 'المحاضرات', value: formatInt(data.lectures.length) },
+          { label: 'المواد المرفقة', value: formatInt(data.materials.length) },
+          { label: 'الواجبات', value: formatInt(data.assignments.length) },
+          { label: 'الطلاب', value: formatInt(data._count.enrollments) },
         ]}
       />
 
@@ -304,7 +301,6 @@ export default function CourseDetailPage() {
         {!data.lectures.length ? (
           <EmptyCell
             label="لم تُرفع محاضرات بعد"
-            note="يضيفها الأستاذ تباعاً مع تقدّم الفصل."
           />
         ) : (
           <>
@@ -335,8 +331,8 @@ export default function CourseDetailPage() {
               <EmptyCell
                 label="لا محاضرات في هذا التصنيف"
                 note={lecFilter === 'done'
-                  ? 'لم تُكمل محاضرة بعد — «تابع من هنا» يقودك لأول غير منتهية.'
-                  : 'كل المحاضرات مكتملة — أنجزت المنهج.'}
+                  ? 'لم تُكمل محاضرة بعد.'
+                  : 'كل المحاضرات مكتملة.'}
               />
             ) : (
           <RevealGroup className="flex-col gap-2">
@@ -428,7 +424,7 @@ export default function CourseDetailPage() {
             data.materials.length > 0 ? (
               <BarCount
                 n={data.materials.length}
-                srLabel={countAr(data.materials.length, ['ملف واحد متاح', 'ملفان متاحان', 'ملفات متاحة', 'ملفاً متاحاً'])}
+                srLabel={countAr(data.materials.length, ['ملف واحد', 'ملفان', 'ملفات', 'ملفاً'])}
               />
             ) : undefined
           }
@@ -437,7 +433,6 @@ export default function CourseDetailPage() {
           {!data.materials.length ? (
             <EmptyCell
               label="الأستاذ لم يرفع مواد بعد"
-              note="تظهر الملفات والمراجع فور رفعها."
             />
           ) : (
             <div className="flex-col gap-2">
@@ -497,7 +492,7 @@ export default function CourseDetailPage() {
             data.schedule.length > 0 ? (
               <BarCount
                 n={data.schedule.length}
-                srLabel={countAr(data.schedule.length, ['حصة أسبوعية واحدة', 'حصتان أسبوعيتان', 'حصص أسبوعية', 'حصة أسبوعية'])}
+                srLabel={countAr(data.schedule.length, ['حصة أسبوعية', 'حصتان', 'حصص', 'حصة'])}
               />
             ) : undefined
           }
@@ -505,8 +500,7 @@ export default function CourseDetailPage() {
         <div className="pf-rowlist">
           {!data.schedule.length ? (
             <EmptyCell
-              label="لم يُنشَر جدول هذا المقرّر بعد"
-              note="يظهر فور تثبيت المواعيد الأسبوعيّة."
+              label="لم يُنشَر الجدول بعد"
             />
           ) : (
             <div className="flex-col gap-2">
@@ -540,11 +534,9 @@ export default function CourseDetailPage() {
           ) : undefined
         }
       />
-      <p className="r305c-sec-note">مواعيد التسليم والوزن في صفحة مقرّراتك.</p>
       {!data.assignments.length ? (
         <EmptyCell
           label="لا توجد واجبات نشطة"
-          note="لا شيء بانتظارك في هذا المقرر — وقت جيد لمراجعة السابقة."
         />
       ) : (
         <RowList aria-label="قائمة واجبات المقرر" density="compact">

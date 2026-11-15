@@ -84,8 +84,7 @@ export function AppDownloadPage() {
   useLegalMeta({
     title: 'تطبيق مدارك — التنزيل والتحديث',
     path: '/app',
-    description:
-      'تنزيل تطبيق مدارك لأندرويد من GitHub — حالة iOS وقنوات التحديث والحد الأدنى للإصدار.',
+    description: 'تنزيل أندرويد، حالة iOS، وقنوات التحديث.',
   });
 
   // The live floor — the same status the app's version gate reads (M0.7).
@@ -129,7 +128,7 @@ export function AppDownloadPage() {
         <div className="ap-header-inner">
           <Link to="/" className="btn ghost sm">
             <Icon icon={ArrowRight} size={14} />
-            العودة إلى الصفحة الرئيسية
+            العودة للرئيسية
           </Link>
           <Link to="/" className="ap-header-brand" aria-label="مدارك — الصفحة الرئيسية">
             <Logo variant="mark" size={22} />
@@ -144,14 +143,10 @@ export function AppDownloadPage() {
             <div className="pf-page-header-text">
               <p className="pf-eyebrow">وثيقة التوزيع</p>
               <h1 className="pf-page-title">تطبيق مدارك — التنزيل والتحديث</h1>
-              <p className="pf-page-desc">
-                تنزيل أندرويد المباشر، حالة iOS، قنوات التحديث، والحد الأدنى للإصدار —
-                قراءة حيّة من الخادم.
-              </p>
             </div>
             <div className="pf-page-actions">
               <a className="ap-cta-primary" href={ANDROID_APK_URL} dir="ltr">
-                تنزيل تطبيق مدارك لأندرويد
+                تنزيل لأندرويد
               </a>
               <Link to="/" className="ap-cta-ghost">الصفحة الرئيسية</Link>
             </div>
@@ -166,26 +161,25 @@ export function AppDownloadPage() {
             </div>
             <div className="ap-cell">
               <p className="ap-p">
-                تنزيل مباشر من GitHub Actions — الإصدار المتجدّد. اسمح بالتثبيت من مصادر
-                غير معروفة أول مرة.
+                اسمح بالتثبيت من مصادر غير معروفة أول مرة.
               </p>
               <p className="ap-p ap-actions">
                 <a className="btn primary sm" href={ANDROID_APK_URL} dir="ltr">
-                  تنزيل تطبيق مدارك لأندرويد
+                  تنزيل لأندرويد
                 </a>
                 <a className="btn ghost sm" href={RELEASE_PAGE_URL} target="_blank" rel="noreferrer" dir="ltr">
                   صفحة الإصدار والتحقّق
                 </a>
               </p>
               {infoState === 'loading' ? (
-                <p className="ap-p ap-p-note">جارٍ قراءة بيانات آخر بناء منشور…</p>
+                <p className="ap-p ap-p-note">جارٍ قراءة بيانات البناء…</p>
               ) : infoState === 'error' ? (
                 <p className="ap-p ap-p-note">
-                  تعذّر قراءة بيانات البناء — زرّ التنزيل أعلاه يبقى المصدر المباشر.
+                  تعذّر قراءة بيانات البناء.
                 </p>
               ) : (
                 <p className="ap-p ap-p-note">
-                  آخر بناء منشور وموثّق:{' '}
+                  آخر بناء:{' '}
                   <span className="ap-mono" dir="ltr">{info?.version ?? '—'}</span>
                   {info?.built_at ? (
                     <>
@@ -205,7 +199,7 @@ export function AppDownloadPage() {
                       <span className="ap-mono" dir="ltr">{formatBytes(info.size_bytes)}</span>
                     </>
                   ) : null}
-                  {' '}· التحقق المستقل:{' '}
+                  {' '}· التحقق:{' '}
                   <span className="ap-mono" dir="ltr">{info?.verified ? 'PASS' : '—'}</span>
                   {' '}· التوقيع:{' '}
                   <span className="ap-mono" dir="ltr">{info?.signing_mode === 'release' ? 'release' : '—'}</span>
@@ -230,7 +224,7 @@ export function AppDownloadPage() {
             <div className="pf-section-header">
               <h2 className="ap-bar" id="app-qr">
                 <span className="ap-bar-index ap-mono" dir="ltr" aria-hidden="true">[03]</span>
-                <span className="ap-bar-title">رمز QR — افتح هذه الصفحة من جوالك</span>
+                <span className="ap-bar-title">رمز QR</span>
               </h2>
             </div>
             <div className="ap-cell">
@@ -243,7 +237,7 @@ export function AppDownloadPage() {
                   loading="lazy"
                 />
                 <p className="ap-p ap-p-note">
-                  امسح الرمز بكاميرا الهاتف — تفتح هذه الصفحة على الجوال.
+                  امسح الرمز بكاميرا هاتفك.
                 </p>
               </div>
             </div>
@@ -253,19 +247,17 @@ export function AppDownloadPage() {
             <div className="pf-section-header">
               <h2 className="ap-bar" id="app-ota">
                 <span className="ap-bar-index ap-mono" dir="ltr" aria-hidden="true">[04]</span>
-                <span className="ap-bar-title">كيف تصل التحديثات؟ (القنوات)</span>
+                <span className="ap-bar-title">قنوات التحديث</span>
               </h2>
             </div>
             <div className="ap-cell">
               <p className="ap-p">
-                الشاشات تتحدّث فوريًا (OTA)، والتغيّرات الأصلية (الأذونات، مكتبات النظام)
-                تصلك كتثبيت جديد من هذه الصفحة.
+                الشاشات تتحدّث فوريًا (OTA)، والأذونات ومكتبات النظام تصلك كتثبيت جديد.
               </p>
               <p className="ap-p">
-                ثلاث قنوات مفتوحة اليوم: <span className="ap-mono" dir="ltr">production</span> للنسخة
-                العامة، <span className="ap-mono" dir="ltr">preview</span> للمعاينة،
-                و<span className="ap-mono" dir="ltr">development</span> للتطوير — جهازك
-                يسحب من قناته فقط.
+                ثلاث قنوات: <span className="ap-mono" dir="ltr">production</span> و
+                <span className="ap-mono" dir="ltr">preview</span> و
+                <span className="ap-mono" dir="ltr">development</span> — جهازك يسحب من قناته فقط.
               </p>
             </div>
           </section>
@@ -274,7 +266,7 @@ export function AppDownloadPage() {
             <div className="pf-section-header">
               <h2 className="ap-bar" id="app-min-version">
                 <span className="ap-bar-index ap-mono" dir="ltr" aria-hidden="true">[05]</span>
-                <span className="ap-bar-title">الحد الأدنى للإصدار — قراءة حيّة</span>
+                <span className="ap-bar-title">الحد الأدنى للإصدار</span>
               </h2>
             </div>
             <div className="ap-cell">
@@ -282,28 +274,28 @@ export function AppDownloadPage() {
                 <p className="ap-p">جارٍ قراءة حالة الخادم…</p>
               ) : statusState === 'error' ? (
                 <p className="ap-p">
-                  تعذّر قراءة الحالة — حدّث الصفحة بعد لحظات.
+                  تعذّر قراءة الحالة — حدّث الصفحة.
                 </p>
               ) : (
                 <>
                   <p className="ap-p">
                     {status?.minAppVersion ? (
                       <>
-                        الخادم يفرض الآن حدًا أدنى{' '}
+                        الحد الأدنى الآن{' '}
                         <span className="ap-mono" dir="ltr">{status.minAppVersion}</span> — الأقدم
-                        يُعاد إلى هذه الصفحة حتى يُحدّث.
+                        يُعاد إلى هنا حتى يُحدّث.
                       </>
                     ) : (
                       <>
-                        لا حدّ أدنى مفروض حاليًا — أي نسخة تعمل. تظهر القيمة هنا فورًا عند فرضه.
+                        لا حدّ أدنى مفروض حاليًا — أي نسخة تعمل.
                       </>
                     )}
                   </p>
                   <p className="ap-p ap-p-note">
-                    إصدار الخادم الحالي: <span className="ap-mono" dir="ltr">{status?.buildId ?? '—'}</span>
+                    إصدار الخادم: <span className="ap-mono" dir="ltr">{status?.buildId ?? '—'}</span>
                     {status?.updateUrl ? (
                       <>
-                        {' '}· رابط التحديث الرسمي: {' '}
+                        {' '}· رابط التحديث: {' '}
                         <span className="ap-mono" dir="ltr">{status.updateUrl}</span>
                       </>
                     ) : null}
@@ -322,17 +314,17 @@ export function AppDownloadPage() {
             </div>
             <div className="ap-cell">
               <p className="ap-p">
-                أندرويد 7.0 أو أحدث، وiOS 15 أو أحدث للتطبيق الأصلي. الواجهة عربية بالكامل
-                بالوضعين الفاتح والداكن. للبلاغ عن مشكلة في التطبيق:
+                أندرويد 7.0+ وiOS 15+، والواجهة عربية بالوضعين الفاتح والداكن.
+                للبلاغ عن مشكلة:
                 {' '}<Link to="/contact" className="ap-link">قناة التواصل</Link>.
               </p>
             </div>
           </section>
 
           <footer className="ap-colophon">
-            <p className="ap-colophon-line">منصّة مستقلّة · عربية أولًا · المصدر الرسمي للتطبيق: GitHub Actions</p>
+            <p className="ap-colophon-line">منصّة مستقلّة · عربية أولًا · المصدر: GitHub Actions</p>
             <p className="ap-colophon-stamp">
-              آخر بناء منشور:{' '}
+              آخر بناء:{' '}
               <span className="ap-mono" dir="ltr">
                 {info?.built_at ? info.built_at.slice(0, 10) : 'انظر صفحة الإصدار'}
               </span>

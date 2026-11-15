@@ -798,7 +798,7 @@ describe('NeedsReviewCard — queue zero-case + grouping (5-B6 / A7 P2-1)', () =
       </MemoryRouter>,
     );
 
-    expect(screen.getByText('لا تسليمات بانتظار درجتك')).toBeInTheDocument();
+    expect(screen.getByText('لا تسليمات بانتظارك')).toBeInTheDocument();
     expect(screen.queryByText(/0 تسليم/)).toBeNull();
   });
 
@@ -1209,7 +1209,7 @@ describe('r180-F2 — GradesPage semester-grade entry', () => {
     });
     const items = useToastStore.getState().items;
     expect(items).toHaveLength(1);
-    expect(items[0]).toMatchObject({ variant: 'success', message: 'حُفظت الدرجات وستظهر لطلاب المقرّر فوراً.' });
+    expect(items[0]).toMatchObject({ variant: 'success', message: 'حُفظت الدرجات.' });
     unmount();
   });
 
@@ -1301,7 +1301,7 @@ describe('r144 — AssignmentFormModal + MaterialFormModal (authoring half)', ()
     // Empty state: the same calendar hint the three exam-authoring
     // siblings carry (ExamAuthorPages «يفتح في / يغلق في»)…
     expect(
-      screen.getByText('اختر من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'),
+      screen.getByText('اختر من التقويم.'),
     ).toBeInTheDocument();
     // …the control is dir="ltr" like its siblings (datetime-local
     // must not be bidi-scrambled by the RTL modal)…
@@ -1311,7 +1311,7 @@ describe('r144 — AssignmentFormModal + MaterialFormModal (authoring half)', ()
     fireEvent.change(due, { target: { value: '2026-12-01T23:59' } });
     expect(screen.getByText(/^المحدَّد: /)).toBeInTheDocument();
     expect(
-      screen.queryByText('اختر من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'),
+      screen.queryByText('اختر من التقويم.'),
     ).toBeNull();
     unmount();
   });
@@ -1520,7 +1520,7 @@ describe('P3 — MaterialFormModal file mode (direct PDF upload)', () => {
     });
     const items = useToastStore.getState().items;
     expect(items).toHaveLength(1);
-    expect(items[0]).toMatchObject({ variant: 'success', message: 'أُضيف الملف إلى المقرّر وسيظهر لطلابه فوراً.' });
+    expect(items[0]).toMatchObject({ variant: 'success', message: 'أُضيف الملف إلى المقرّر.' });
   });
 
   it('link mode keeps the by-link form exactly (type select + https field)', async () => {

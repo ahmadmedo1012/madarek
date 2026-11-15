@@ -153,15 +153,15 @@ describe('r183-B8 — AuthPage conditional sub copy (A5 finding 2)', () => {
   it('a bounced deep-link visitor (state.from) reads the resume-the-journey line', () => {
     renderAuth({ from: { pathname: '/colleges/f1' } });
 
-    expect(screen.getByText('سجّل الدخول للمتابعة إلى الصفحة التي طلبها.')).toBeInTheDocument();
+    expect(screen.getByText('سجّل الدخول للمتابعة إلى صفحتك.')).toBeInTheDocument();
     expect(screen.queryByText(/سجِّل دخولك للوصول إلى مقرَّراتك/)).toBeNull();
   });
 
   it('a plain visit keeps the platform pitch', () => {
     renderAuth(null);
 
-    expect(screen.getByText('سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية.')).toBeInTheDocument();
-    expect(screen.queryByText(/للمتابعة إلى الصفحة التي طلبها/)).toBeNull();
+    expect(screen.getByText('سجِّل دخولك للوصول إلى مقرَّراتك.')).toBeInTheDocument();
+    expect(screen.queryByText(/للمتابعة إلى صفحتك/)).toBeNull();
   });
 
   it('a fabricated state.from (off-app pathname) does NOT earn the resume line', () => {
@@ -169,7 +169,7 @@ describe('r183-B8 — AuthPage conditional sub copy (A5 finding 2)', () => {
     // login flow can actually resume counts.
     renderAuth({ from: { pathname: 'https://evil.example' } });
 
-    expect(screen.getByText('سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية.')).toBeInTheDocument();
+    expect(screen.getByText('سجِّل دخولك للوصول إلى مقرَّراتك.')).toBeInTheDocument();
   });
 });
 

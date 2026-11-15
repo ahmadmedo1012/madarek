@@ -37,19 +37,36 @@ const OPEN_ALERT_FORMS: [string, string, string, string] = [
   'تنبيه مفتوح واحد', 'تنبيهان مفتوحان', 'تنبيهات مفتوحة', 'تنبيهاً مفتوحاً',
 ];
 
+/* Copy-diet: labels repeated across mutually-exclusive render branches
+ * (loading mirror / error / resolved) live ONCE — plus the audit feed's
+ * duplicated verb nouns (login/role/status/course pairs below). */
+const PAGE_TITLE = 'لوحة التحكم الرئيسية';
+const STRIP_TITLE = 'يحتاج انتباهك';
+const STRIP_PENDING_SUBTITLE = 'جارٍ التحقق…';
+const BAND_PENDING_TEXT = 'جارٍ الجلب…';
+const LIVE_MONITOR_LABEL = 'المراقبة الحيّة';
+const USERS_CARD_TITLE = 'توزيع المستخدمين';
+const OPS_CARD_TITLE = 'الحالة التشغيليّة';
+const ENROLL_LABEL = 'تسجيل';
+const L_LOGIN = 'دخول';
+const L_ROLE_CHANGE = 'تغيير صلاحيات';
+const L_STATUS_CHANGE = 'تغيير حالة';
+const L_COURSE_CREATED = 'إنشاء مقرّر';
+const L_COURSE_UPDATED = 'تحديث مقرّر';
+
 /* formatRelativeAr (counted-plural relative time) is imported from
  * lib/format.ts — identical strings to the former local copy. */
 
 const ACTION_LABEL: Record<string, string> = {
-  'user.login': 'تسجيل دخول',
-  'auth.login': 'تسجيل دخول',
-  'user.logout': 'تسجيل خروج',
+  'user.login': L_LOGIN,
+  'auth.login': L_LOGIN,
+  'user.logout': 'خروج',
   'user.created': 'إنشاء حساب',
-  'user.role_changed': 'تغيير صلاحيات',
-  'user.status_changed': 'تعديل حالة الحساب',
-  'course.created': 'إنشاء مقرّر',
-  'course.updated': 'تحديث مقرّر',
-  'enrollment.created': 'تسجيل في مقرّر',
+  'user.role_changed': L_ROLE_CHANGE,
+  'user.status_changed': L_STATUS_CHANGE,
+  'course.created': L_COURSE_CREATED,
+  'course.updated': L_COURSE_UPDATED,
+  'enrollment.created': ENROLL_LABEL,
   'material.uploaded': 'رفع ملف',
   'material.deleted': 'حذف ملف',
   'paper.published': 'نشر بحث',
@@ -57,32 +74,32 @@ const ACTION_LABEL: Record<string, string> = {
   'competition.created': 'إنشاء مسابقة',
   // Real backend audit actions (owner/permissions/teacher routes) —
   // without these the feed shows raw English enums.
-  ROLE_CHANGE: 'تغيير صلاحيات مستخدم',
-  STATUS_CHANGE: 'تعديل حالة الحساب',
+  ROLE_CHANGE: L_ROLE_CHANGE,
+  STATUS_CHANGE: L_STATUS_CHANGE,
   CAPABILITY_OVERRIDE: 'تجاوز صلاحية',
-  USER_SCOPE_CHANGE: 'تعديل نطاق مستخدم',
-  TEACHER_POSITION: 'تعيين موقع أستاذ',
-  TEACHER_VERIFY: 'توثيق أستاذ',
+  USER_SCOPE_CHANGE: 'تعديل نطاق',
+  TEACHER_POSITION: 'تعيين موقع',
+  TEACHER_VERIFY: 'توثيق',
   // The two enrollment audit actions the backend writes (15-a P1-4) —
   // before 17-a2 these rendered raw English in the events table.
-  ENROLLMENT_CREATED: 'تسجيل طالب في مقرّر',
-  ENROLLMENT_REMOVED: 'إلغاء تسجيل طالب',
-  ALERT_RESOLVED: 'حلّ تنبيه تشغيليّ',
-  SETTING_UPDATED: 'تحديث إعداد المنصّة',
+  ENROLLMENT_CREATED: ENROLL_LABEL,
+  ENROLLMENT_REMOVED: 'إلغاء تسجيل',
+  ALERT_RESOLVED: 'حلّ تنبيه',
+  SETTING_UPDATED: 'تحديث إعداد',
   FEATURE_FLAG_TOGGLED: 'تبديل ميزة',
   /* R332 W11 audit P1 (no raw technical strings): the catalog/structure
    * actions the backend writes (catalog/users/routes auditLog.create)
    * had no seat in the map — the events row printed the raw enum.
    * Labels mirror OwnerActivityPage's canonical ACTION_LABEL voice. */
-  COURSE_CREATED: 'إنشاء مقرّر',
-  COURSE_UPDATED: 'تحديث مقرّر',
+  COURSE_CREATED: L_COURSE_CREATED,
+  COURSE_UPDATED: L_COURSE_UPDATED,
   COURSE_DELETED: 'حذف مقرّر',
   DEPARTMENT_CREATED: 'إنشاء قسم',
   FACULTY_CREATED: 'إنشاء كلّيّة',
-  OFFERING_CREATED: 'إنشاء شعبة تدريس',
+  OFFERING_CREATED: 'إنشاء شعبة',
   BULK_IMPORT: 'استيراد جماعي',
-  'theme.update': 'تغيير مظهر المنصّة',
-  'onboarding.complete': 'إكمال جولة التعريف',
+  'theme.update': 'تغيير المظهر',
+  'onboarding.complete': 'إكمال التعريف',
   'milestone.fire': 'تحقيق إنجاز',
 };
 
@@ -92,13 +109,13 @@ const ACTION_LABEL: Record<string, string> = {
  * print the raw Prisma model name for anything outside the map. */
 const RESOURCE_LABELS: Record<string, string> = {
   User: 'مستخدم',
-  TeacherProfile: 'ملف أستاذ',
-  UserPermission: 'صلاحية مستخدم',
-  OperationalAlert: 'تنبيه تشغيليّ',
-  PlatformSetting: 'إعداد منصّة',
+  TeacherProfile: 'ملف',
+  UserPermission: 'صلاحية',
+  OperationalAlert: 'تنبيه',
+  PlatformSetting: 'إعداد',
   FeatureFlag: 'ميزة',
   Course: 'مقرّر',
-  CourseOffering: 'شعبة تدريس',
+  CourseOffering: 'شعبة',
   Department: 'قسم',
   Faculty: 'كلّيّة',
   Enrollment: 'تسجيل',
@@ -136,7 +153,6 @@ interface OwnerActionRow {
   title: string;
   desc: string;
   to: string;
-  hint: string;
 }
 
 const CRITICAL_ALERT_FORMS: [string, string, string, string] = [
@@ -170,7 +186,7 @@ function OwnerActionStrip({ alerts }: { alerts: OperationalAlert[] }) {
   // slot, this pending state, and the resolved strip all occupy the
   // same box.
   if (education.isPending) {
-    return <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />;
+    return <StripSkeleton title={STRIP_TITLE} subtitle={STRIP_PENDING_SUBTITLE} />;
   }
 
   const rows: OwnerActionRow[] = [];
@@ -185,7 +201,6 @@ function OwnerActionStrip({ alerts }: { alerts: OperationalAlert[] }) {
         ? `${countAr(alerts.length, OPEN_ALERT_FORMS)} — منها ${countAr(critical, CRITICAL_ALERT_FORMS)}`
         : countAr(alerts.length, OPEN_ALERT_FORMS),
       to: '/owner/alerts',
-      hint: 'فتح التنبيهات التشغيليّة',
     });
   }
   const idle = education.data?.workloadBuckets.idle ?? 0;
@@ -195,9 +210,8 @@ function OwnerActionStrip({ alerts }: { alerts: OperationalAlert[] }) {
       tone: 'brand',
       icon: GraduationCap,
       title: 'أساتذة بلا حصص تدريس هذا الفصل',
-      desc: `${countAr(idle, IDLE_TEACHER_FORMS)} لم تُسند إليهم مقرّرات — راجع أعباء التدريس`,
+      desc: `${countAr(idle, IDLE_TEACHER_FORMS)} لم تُسند إليهم مقرّرات`,
       to: '/owner/education',
-      hint: 'فتح لوحة التعليم',
     });
   }
 
@@ -208,7 +222,7 @@ function OwnerActionStrip({ alerts }: { alerts: OperationalAlert[] }) {
    * pending StripSkeleton above is untouched (same Card anatomy). */
   return (
     <TodayList
-      title="يحتاج انتباهك"
+      title={STRIP_TITLE}
       items={rows.map((r) => ({
         id: r.key,
         title: r.title,
@@ -305,14 +319,13 @@ export function OwnerDashboardPage() {
     return (
       <OwnerFrame>
         <PatternsPageHeader
-          title="لوحة التحكم الرئيسية"
-          description="نظرة شاملة وإحصائيات حيّة عن المنصة"
+          title={PAGE_TITLE}
         />
         <div className="owner-live-status is-pending" aria-busy="true" aria-live="polite">
           <div className="owner-live-pulse" />
-          <span className="status-text">جارٍ جلب حالة التنبيهات…</span>
+          <span className="status-text">{BAND_PENDING_TEXT}</span>
         </div>
-        <StripSkeleton title="يحتاج انتباهك" subtitle="جارٍ التحقق من حالات تحتاج انتباهك…" />
+        <StripSkeleton title={STRIP_TITLE} subtitle={STRIP_PENDING_SUBTITLE} />
         {/* r253: the KPI placeholder is the StatLine shape (4 flat
             .pf-stat cells) so the pending → resolved handoff moves
             nothing on the new composition. */}
@@ -328,10 +341,10 @@ export function OwnerDashboardPage() {
           ))}
         </div>
         <div className="grid-2-1">
-          <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>توزيع المستخدمين</>}>
+          <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>{USERS_CARD_TITLE}</>}>
             <Skeleton width="100%" height={348} rounded="var(--r-lg)" />
           </Card>
-          <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>الحالة التشغيليّة</>}>
+          <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>{OPS_CARD_TITLE}</>}>
             <Skeleton width="100%" height={348} rounded="var(--r-lg)" />
           </Card>
         </div>
@@ -344,7 +357,7 @@ export function OwnerDashboardPage() {
     return (
       <OwnerFrame>
         <PatternsPageHeader
-          title="لوحة التحكم الرئيسية"
+          title={PAGE_TITLE}
         />
         <ErrorState
           error={stats.error ?? realtime.error}
@@ -383,13 +396,13 @@ export function OwnerDashboardPage() {
 
   const topSegment = segments.reduce((a, b) => (b.value > a.value ? b : a), segments[0] ?? { label: '', value: 0 });
   const chartSummary = data.totalUsers === 0
-    ? 'لا مستخدمين مسجَّلين بعد.'
-    : `${topSegment.label} الفئة الأكبر من مستخدمي المنصّة.`;
+    ? 'لا مستخدمين.'
+    : `${topSegment.label} الفئة الأكبر.`;
 
   const alertBand = alertsQuery.isError ? (
     <div className="owner-live-status is-degraded" role="alert">
       <div className="owner-live-pulse" />
-      <span className="status-text">تعذّر جلب حالة التنبيهات</span>
+      <span className="status-text">تعذّر جلب التنبيهات</span>
       <div className="owner-live-tools">
         <button type="button" className="btn ghost sm" onClick={() => alertsQuery.refetch()}>
           <Icon icon={RefreshCw} size={12} />
@@ -402,10 +415,10 @@ export function OwnerDashboardPage() {
       <div className="owner-live-pulse" />
       <span className="status-text">
         {alertsQuery.isPending
-          ? 'جارٍ جلب حالة التنبيهات…'
+          ? BAND_PENDING_TEXT
           : hasAlerts
             ? countAr(alerts.length, OPEN_ALERT_FORMS)
-            : 'النظام يعمل بشكل طبيعي'}
+            : 'النظام مستقرّ'}
       </span>
       {/* P-G3b — the band carries REAL status content, not a lone dot:
           the live session count (mono, from the realtime query) and the
@@ -425,7 +438,7 @@ export function OwnerDashboardPage() {
   return (
     <OwnerFrame>
       <PatternsPageHeader
-        title="لوحة التحكم الرئيسية"
+        title={PAGE_TITLE}
         /* R342-10: the [01] nav-order gutter numeral — the OWNER_NAV
          * register's first seat, the only page still missing its header
          * numeral after D11 covered the other twelve (realtime [02] …
@@ -433,7 +446,6 @@ export function OwnerDashboardPage() {
          * المستخدمين below is a different register (card order) and
          * stays. */
         index="01"
-        description="نظرة شاملة وإحصائيات حيّة عن المنصة"
         meta={formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })}
         /* D11 (D8/D10 header-CTA precedent): the console's two live
          * surfaces ride the header action slot — the realtime monitor
@@ -446,7 +458,7 @@ export function OwnerDashboardPage() {
           <>
             <Link to="/owner/realtime" className="btn primary sm">
               <Icon icon={Radio} size={13} />
-              المراقبة الحيّة
+              {LIVE_MONITOR_LABEL}
             </Link>
             <Link to="/owner/alerts" className="btn ghost sm">
               <Icon icon={AlertTriangle} size={13} />
@@ -476,30 +488,29 @@ export function OwnerDashboardPage() {
           {
             label: 'الجلسات النشطة',
             value: <bdi>{formatNum(realtimeData.activeSessions)}</bdi>,
-            hint: 'في هذه اللحظة',
           },
           {
             label: 'المقرّرات الدراسية',
             value: <bdi>{formatNum(data.totalCourses)}</bdi>,
-            hint: `${formatNum(data.totalOfferings)} شعبة تدريس فاعلة`,
+            hint: `${formatNum(data.totalOfferings)} شعبة فاعلة`,
           },
           {
             label: 'إجمالي التسجيلات',
             value: <bdi>{formatNum(data.totalEnrollments)}</bdi>,
-            hint: 'تسجيلات مقرّرات تراكمية',
+            hint: 'تراكمية',
           },
         ]}
       />
 
       {/* Chart + Operational status */}
       <div className="grid-2-1">
-        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>توزيع المستخدمين</>}>
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>{USERS_CARD_TITLE}</>}>
           <ChartFrame
             className="owner-chart-container"
             ariaLabel="مخطط دائري يوزّع مستخدمي المنصّة على الأدوار: طلاب وأساتذة وإداريّون وفريق جودة"
             summary={chartSummary}
             table={{
-              caption: 'توزيع المستخدمين حسب الدور',
+              caption: 'توزيع الأدوار',
               columns: ['الدور', 'العدد'],
               rows: segments.map((s) => [s.label, s.value]),
             }}
@@ -508,7 +519,7 @@ export function OwnerDashboardPage() {
           </ChartFrame>
         </Card>
 
-        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>الحالة التشغيليّة</>}>
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>{OPS_CARD_TITLE}</>}>
           <div className="owner-health-list">
             {/* r299: the «حالة المنصة» row died — the live-status band
                 directly above OWNS alert status (same query, same
@@ -521,7 +532,7 @@ export function OwnerDashboardPage() {
                   rows (بثّ/اختبارات/طلبات AI all gate on > 0 since
                   22-b 4-A7 P2-1); green claims actual presence. */}
               <div className={`owner-health-dot ${realtimeData.activeSessions > 0 ? 'green' : 'neutral'}`} />
-              <span className="owner-health-label">جلسات نشطة الآن</span>
+              <span className="owner-health-label">جلسات نشطة</span>
               <span className="owner-health-value">
                 <bdi>{formatNum(realtimeData.activeSessions)}</bdi>
               </span>
@@ -532,7 +543,7 @@ export function OwnerDashboardPage() {
                   neutral (the pending/unknown color), amber stays
                   reserved for real thresholds. */}
               <div className={`owner-health-dot ${realtimeData.liveBroadcasts > 0 ? 'green' : 'neutral'}`} />
-              <span className="owner-health-label">بثّ مباشر جارٍ</span>
+              <span className="owner-health-label">بثّ مباشر</span>
               <span className="owner-health-value">
                 <bdi>{formatNum(realtimeData.liveBroadcasts)}</bdi>
               </span>
@@ -546,14 +557,14 @@ export function OwnerDashboardPage() {
             </div>
             <div className="owner-health-row">
               <div className={`owner-health-dot ${realtimeData.aiRequestsPerMin > 0 ? 'green' : 'neutral'}`} />
-              <span className="owner-health-label">طلبات الذكاء الاصطناعيّ / دقيقة</span>
+              <span className="owner-health-label">طلبات AI / دقيقة</span>
               <span className="owner-health-value">
                 <bdi>{formatNum(realtimeData.aiRequestsPerMin)}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
               <div className={`owner-health-dot ${lastEventAt && !activity.isError ? 'green' : 'neutral'}`} />
-              <span className="owner-health-label">آخر نشاط مسجَّل</span>
+              <span className="owner-health-label">آخر نشاط</span>
               <span className="owner-health-value">{lastActivityLabel}</span>
             </div>
             <div className="owner-health-row">
@@ -578,13 +589,13 @@ export function OwnerDashboardPage() {
           r253: the 4-column table becomes dense RowList rows — one row
           per event (action · actor · resource · relative time), the
           same facts without the grid. */}
-      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[03]</span>الأحداث الأخيرة</>} icon={Clock} subtitle="آخر العمليّات على المنصّة">
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[03]</span>الأحداث الأخيرة</>} icon={Clock}>
         {activity.isPending ? (
           <ListSkeleton rows={6} />
         ) : activity.isError ? (
           <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
         ) : events.length === 0 ? (
-          <EmptyState illustration="empty-list" title="لا توجد أحداث بعد" description="ستظهر أحدث العمليّات هنا فور حدوثها." icon={FileWarning} />
+          <EmptyState illustration="empty-list" title="لا أحداث" icon={FileWarning} />
         ) : (
           <RowList aria-label="الأحداث الأخيرة" density="compact">
             {events.map((ev) => (
@@ -612,11 +623,11 @@ export function OwnerDashboardPage() {
 
       {/* Quick Actions — WS-F6: wired to real /owner/* routes (the old
           four buttons had no onClick and no destination). */}
-      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>إجراءات سريعة</>} icon={ShieldCheck}>
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>إجراءات</>} icon={ShieldCheck}>
         <div className="owner-action-bar">
           <Link to="/owner/realtime" className="btn primary">
             <Icon icon={Radio} size={14} />
-            المراقبة الحيّة
+            {LIVE_MONITOR_LABEL}
           </Link>
           <Link to="/owner/users" className="btn ghost">
             <Icon icon={Users} size={14} />
@@ -624,11 +635,11 @@ export function OwnerDashboardPage() {
           </Link>
           <Link to="/owner/alerts" className="btn ghost">
             <Icon icon={AlertTriangle} size={14} />
-            التنبيهات التشغيليّة
+            التنبيهات
           </Link>
           <Link to="/owner/system" className="btn ghost">
             <Icon icon={Settings} size={14} />
-            المزامنة وإعدادات النظام
+            إعدادات النظام
           </Link>
         </div>
       </Card>

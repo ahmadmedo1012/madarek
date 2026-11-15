@@ -50,6 +50,7 @@ describe('UniversityInfoPage — the curated profile card is retired (R349 U3)',
   it('without a session institution: the honest empty state (nothing invented)', () => {
     useAuthStore.setState({ currentInstitution: null });
     renderPage();
-    expect(screen.getByText('لا توجد مؤسّسة في جلستك')).toBeInTheDocument();
+    // R355 copy diet: the empty-state title tightened — same honest claim.
+    expect(screen.getByText('لا مؤسّسة في جلستك')).toBeInTheDocument();
   });
 });

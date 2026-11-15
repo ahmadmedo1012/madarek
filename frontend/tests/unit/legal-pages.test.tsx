@@ -156,7 +156,7 @@ describe('R320 §D — the 9-page grammar (the Heron public sheet)', () => {
     const titles = bars.map((b) => b.textContent?.replace(/\[\d+\]/g, '').trim());
     expect(titles).toEqual([
       'ما الذي نجمعه', 'لماذا نجمعه', 'أين يُخزَّن', 'مدة الاحتفاظ', 'حقوقك',
-      'الأطراف الثالثة', 'ملفات تعريف الارتباط والتخزين المحلي', 'التواصل', 'آخر تحديث',
+      'الأطراف الثالثة', 'الكوكيز والتخزين', 'التواصل', 'آخر تحديث',
     ]);
   });
 });
@@ -187,8 +187,9 @@ describe('R320 §D — titles + per-page head metadata', () => {
     const ogUrl = mk('meta', { property: 'og:url', content: 'https://madarek.onrender.com/prev' });
 
     const { unmount } = renderPage(PrivacyPage);
+    // R355 copy diet: the privacy meta description tightened to the new copy
     expect(desc.getAttribute('content')).toBe(
-      'ما تجمعه مدارك من بيانات ولماذا وأين تُخزَّن، وحقوقك — من سلوك المنصّة الفعلي.',
+      'ما نجمعه ولماذا وأين يُخزَّن، وحقوقك.',
     );
     expect(canonical.getAttribute('href')).toBe('https://madarek-nine.vercel.app/legal/privacy');
     expect(ogTitle.getAttribute('content')).toBe('سياسة الخصوصية');
@@ -539,7 +540,9 @@ describe('R320 §D — every wiring point', () => {
     const region = src.slice(idx, idx + 600);
     expect(region).toContain('to="/contact"');
     // the old honest prose moved onto the /contact page, not deleted
-    expect(read('src/pages/PublicPages.tsx')).toContain('التسجيل المبكر من صفحة البداية هو قناة التواصل المتاحة حاليًا');
+    // R355 copy diet: same claim (no channel yet, the register form is it), tightened
+    expect(read('src/pages/PublicPages.tsx')).toContain('لا بريد عام بعد');
+    expect(read('src/pages/PublicPages.tsx')).toContain('نموذج إنشاء الحساب الجامعي');
   });
 
   it('ConsentBanner «اعرف أكثر» retargets /capabilities → /legal/cookies', () => {

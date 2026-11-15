@@ -13,7 +13,7 @@
  *   4. STATUS NEVER COLOR ALONE — the paper status chip pairs the tone
  *      dot with the Arabic label (the canonical PAPER_STATUS_TONE
  *      ladder, translated onto the shared chip vocabulary).
- *   5. REGRESSION (scan pending honesty) — «ابدأ الفحص الآن» stays
+ *   5. REGRESSION (scan pending honesty) — «ابدأ الفحص» stays
  *      mounted, disabled, and honestly labelled while its request is
  *      in flight (the old markup VANISHED the button mid-flight: a
  *      state jump with no pending voice and no double-fire guard).
@@ -190,7 +190,7 @@ describe('StudentResearchPage — the submission rail (R305-A7)', () => {
     renderPage();
 
     expect(document.querySelector('.r305rp-res-cta')).toBeNull();
-    expect(screen.getByText('لم ترفع أي بحث بعد')).toBeInTheDocument();
+    expect(screen.getByText('لا بحوث بعد')).toBeInTheDocument(); // R355 copy diet: empty title tightened
     expect(screen.getByRole('button', { name: 'رفع بحث جديد' })).toBeInTheDocument();
   });
 });
@@ -210,14 +210,14 @@ describe('StudentResearchPage — status chips (R305-A7)', () => {
     expect(chip.className).toContain('r305rp-chip--warning');
   });
 
-  it('a published paper reads «مُنشور في المكتبة» on the success chip', () => {
+  it('a published paper reads «منشور» on the success chip', () => {
     mocks.my = {
       data: [paperFixture({ status: 'PUBLISHED', grade: 18, gradedAt: new Date().toISOString(), publishedAt: new Date().toISOString() })],
       isPending: false, isError: false, error: null, refetch: () => undefined,
     };
     renderPage();
 
-    const chip = screen.getByText('مُنشور في المكتبة').closest('.r305rp-chip')!;
+    const chip = screen.getByText('منشور').closest('.r305rp-chip')!; // R355 copy diet: chip label tightened
     expect(chip.className).toContain('r305rp-chip--success');
     expect(chip.querySelector('.r305rp-chip-dot')).not.toBeNull();
   });
@@ -237,7 +237,7 @@ describe('StudentResearchPage — scan pending honesty (R305-A7 regression)', ()
     mocks.my = { data: [paperFixture()], isPending: false, isError: false, error: null, refetch: () => undefined };
     renderPage();
 
-    const scanBtn = screen.getByRole('button', { name: 'ابدأ الفحص الآن' });
+    const scanBtn = screen.getByRole('button', { name: 'ابدأ الفحص' }); // R355 copy diet: «الآن» dropped
     fireEvent.click(scanBtn);
 
     await waitFor(() => expect(mocks.scan.mutateAsync).toHaveBeenCalledTimes(1));
@@ -250,7 +250,7 @@ describe('StudentResearchPage — scan pending honesty (R305-A7 regression)', ()
     expect(mocks.scan.mutateAsync).toHaveBeenCalledTimes(1);
 
     releaseScan({});
-    await waitFor(() => expect(screen.getByRole('button', { name: 'ابدأ الفحص الآن' })).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole('button', { name: 'ابدأ الفحص' })).toBeInTheDocument());
   });
 });
 
@@ -274,7 +274,7 @@ describe('StudentResearchPage — reviewer identity (R305-A7 regression)', () =>
 
     // The GRADED row is settled — its body is collapsed by default; the
     // disclosure opens the verdict block.
-    fireEvent.click(screen.getByRole('button', { name: 'تفاصيل البحث: تحليل أداء قواعد البيانات الموزعة' }));
+    fireEvent.click(screen.getByRole('button', { name: 'تفاصيل: تحليل أداء قواعد البيانات الموزعة' })); // R355 copy diet: «البحث» dropped from expand label
 
     const gradeHead = document.querySelector('.rs-row-grade-head')!;
     expect(gradeHead.textContent).toContain('تقييم الأستاذ');
@@ -289,7 +289,7 @@ describe('StudentResearchPage — reviewer identity (R305-A7 regression)', () =>
     };
     renderPage();
 
-    fireEvent.click(screen.getByRole('button', { name: 'تفاصيل البحث: تحليل أداء قواعد البيانات الموزعة' }));
+    fireEvent.click(screen.getByRole('button', { name: 'تفاصيل: تحليل أداء قواعد البيانات الموزعة' })); // R355 copy diet: «البحث» dropped from expand label
 
     const gradeHead = document.querySelector('.rs-row-grade-head')!;
     expect(gradeHead.textContent).toContain('تقييم الأستاذ:');

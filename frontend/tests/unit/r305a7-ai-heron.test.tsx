@@ -215,7 +215,7 @@ describe('R305-A7 — error panels disclose the envelope support code', () => {
     expect(code.className).toContain('r305ai-err-code');
     expect(code.closest('.chat-error')).not.toBeNull();
     // And the real retry affordance is still there.
-    expect(screen.getByRole('button', { name: 'أعد إرسال سؤالك' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'أعد الإرسال' })).toBeInTheDocument(); // R355 copy diet: retry label tightened
   });
 
   it('a codeless failure renders NO code chip (nothing is invented)', async () => {
@@ -223,7 +223,7 @@ describe('R305-A7 — error panels disclose the envelope support code', () => {
     const { container } = renderPage();
     fireEvent.change(screen.getByLabelText('اكتب سؤالك للمساعد'), { target: { value: 'سؤال شبكة' } });
     fireEvent.click(screen.getByRole('button', { name: 'إرسال' }));
-    expect(await screen.findByText('تعذَّر الاتصال بالمساعد الآن.')).toBeInTheDocument();
+    expect(await screen.findByText('تعذَّر الاتصال بالمساعد.')).toBeInTheDocument(); // R355 copy diet: «الآن» dropped
     expect(container.querySelector('.r305ai-err-code')).toBeNull();
   });
 });

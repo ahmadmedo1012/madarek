@@ -56,7 +56,7 @@ function useDocTitle(title: string | null) {
 const STATUS_LABEL: Record<CompetitionRow['status'], string> = {
   OPEN: 'مفتوحة',
   CLOSED: 'مغلقة',
-  JUDGED: 'تمّ التحكيم',
+  JUDGED: 'محكّمة',
 };
 const STATUS_COLOR: Record<CompetitionRow['status'], 'green' | 'amber' | 'gold'> = {
   OPEN: 'green',
@@ -71,7 +71,7 @@ const ICON_CHOICES = ['🏆', '🎯', '🔬', '💡', '💻', '🎨', '🎤', '�
  * keep the picker announcements in the app's language. */
 const ICON_NAMES_AR: Record<string, string> = {
   '🏆': 'كأس', '🎯': 'هدف', '🔬': 'مجهر', '💡': 'فكرة', // allow-emoji: a11y name map for the admin-picker palette above
-  '💻': 'حاسوب', '🎨': 'لوحة ألوان', '🎤': 'ميكروفون', '📊': 'مخطط بياني', // allow-emoji: a11y name map for the admin-picker palette above
+  '💻': 'حاسوب', '🎨': 'ألوان', '🎤': 'ميكروفون', '📊': 'مخطط', // allow-emoji: a11y name map for the admin-picker palette above
 };
 
 /** JS cadence (not CSS motion): how long the rank-change pulse class
@@ -160,7 +160,6 @@ export function CompetitionsIndexPage() {
       <div className="inx-head">
         <PageHeader
           title="المسابقات الأكاديمية"
-          description="شارك في تحديات المعرفة والابتكار، أو نظِّم مسابقتك الخاصّة."
           actions={
             canRun ? (
               <button type="button" className="btn primary" onClick={() => setCreating(true)}>
@@ -176,9 +175,9 @@ export function CompetitionsIndexPage() {
       {/* r263: شريط أرقام هادئ بدل بطاقات KPI — القيم الصادقة نفسها. */}
       <StatLine
         items={[
-          { label: 'مسابقات مفتوحة', value: kpiValue(stats.open), tone: 'positive' },
+          { label: 'مفتوحة', value: kpiValue(stats.open), tone: 'positive' },
           { label: 'تنتهي قريباً', value: kpiValue(stats.closingSoon), tone: 'warning' },
-          { label: 'إجمالي المشاركات', value: kpiValue(stats.totalEntries) },
+          { label: 'المشاركات', value: kpiValue(stats.totalEntries) },
         ]}
       />
 
@@ -194,7 +193,7 @@ export function CompetitionsIndexPage() {
              compact .pill grade used elsewhere (community/feed). */
           <div className="comp-filter-pills" role="group" aria-label="تصفية المسابقات بحسب الحالة">
             {([
-              ['all', 'الكل'], ['OPEN', 'مفتوحة'], ['CLOSED', 'مغلقة'], ['JUDGED', 'تمّ التحكيم'],
+              ['all', 'الكل'], ['OPEN', 'مفتوحة'], ['CLOSED', 'مغلقة'], ['JUDGED', 'محكّمة'],
             ] as const).map(([v, l]) => (
               <button
                 key={v}
@@ -215,24 +214,22 @@ export function CompetitionsIndexPage() {
        visible.length === 0 ? (
         filter === 'all' ? (
           <EmptyState illustration="empty-community"
-            title="لا توجد مسابقات بعد"
-            description={canRun
-              ? 'ابدأ أوّل تحدٍّ للمعرفة على المنصّة وادعُ الطلاب للمشاركة.'
-              : 'ستظهر المسابقات المتاحة هنا فور إطلاقها من منظّميها.'}
+            title="لا مسابقات"
+            description=""
             action={canRun ? (
               <button type="button" className="btn primary sm" onClick={() => setCreating(true)}>
                 <Icon icon={Plus} size={14} />
-                أنشئ أوّل مسابقة
+                أنشئ مسابقة
               </button>
             ) : undefined}
           />
         ) : (
           <EmptyState illustration="empty-community"
-            title="لا توجد مسابقات في هذه الفئة"
-            description="جرّب فئة أخرى أو اعرض كل المسابقات."
+            title="لا مسابقات"
+            description=""
             action={(
               <button type="button" className="btn ghost sm" onClick={() => setFilter('all')}>
-                عرض كل المسابقات
+                عرض الكل
               </button>
             )}
           />
@@ -264,7 +261,7 @@ export function CompetitionsIndexPage() {
                   <span className="cp-inline">
                     <Icon icon={Award} size={12} />{' '}
                     {c._count.entries === 0
-                      ? (submissionEnded(c) || c.status !== 'OPEN' ? 'لا مشاركات' : 'كن أول المشاركين')
+                      ? (submissionEnded(c) || c.status !== 'OPEN' ? 'لا مشاركات' : 'كن الأول')
                       : `${c._count.entries} مشترك`}
                   </span>
                   {c.prize && (
@@ -370,7 +367,7 @@ export function CompetitionDetailPage() {
           mirrors the colleges detail back. */}
       <Link to="/competitions" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
         <Icon icon={ChevronRight} size={14} />
-        كل المسابقات
+        المسابقات
       </Link>
 
       {/* Hero */}
@@ -396,7 +393,7 @@ export function CompetitionDetailPage() {
             <div>
               <Icon icon={Award} size={13} />{' '}
               {entries.length === 0
-                ? (canEnter ? 'كن أول المشاركين' : 'لا مشاركات')
+                ? (canEnter ? 'كن الأول' : 'لا مشاركات')
                 : <><bdi>{entries.length}</bdi> مشترك</>}
             </div>
             {c.prize && <div><Icon icon={Trophy} size={13} /> {c.prize}</div>}
@@ -417,7 +414,7 @@ export function CompetitionDetailPage() {
                 disabled={closer.isPending}
               >
                 <Icon icon={Lock} size={14} />
-                {closer.isPending ? 'جارٍ الإغلاق…' : 'إغلاق المسابقة'}
+                {closer.isPending ? 'جارٍ…' : 'إغلاق المسابقة'}
               </button>
             )}
             {isOrganizer && c.status === 'CLOSED' && (
@@ -426,10 +423,10 @@ export function CompetitionDetailPage() {
                 className="btn primary"
                 onClick={() => setConfirming('judge')}
                 disabled={judge.isPending || !someScored}
-                title={!someScored ? 'قَيِّم مشاركة واحدة على الأقلّ أوّلاً' : undefined}
+                title={!someScored ? 'قَيِّم أوّلاً' : undefined}
               >
                 <Icon icon={Gavel} size={14} />
-                {judge.isPending ? 'جارٍ النشر…' : allScored ? 'إعلان النتائج' : 'إعلان النتائج (مشاركات بلا تقييم)'}
+                {judge.isPending ? 'جارٍ…' : allScored ? 'إعلان النتائج' : 'إعلان النتائج (بلا تقييم)'}
               </button>
             )}
           </div>
@@ -439,7 +436,7 @@ export function CompetitionDetailPage() {
             <div className="form-error" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
               <Icon icon={AlertTriangle} size={14} />
               <span className="form-error-msg">
-                {closer.isError ? 'تعذَّر إغلاق المسابقة.' : 'تعذَّر إعلان النتائج.'} تحقّق من اتصالك وحاول مرة أخرى.
+                {closer.isError ? 'تعذَّر الإغلاق.' : 'تعذَّر النشر.'}
               </span>
               <button
                 type="button"
@@ -461,8 +458,8 @@ export function CompetitionDetailPage() {
       <Card title="المشاركات" subtitle={`${countAr(entries.length, ['مشاركة واحدة', 'مشاركتان', 'مشاركات', 'مشاركة'])}${isOrganizer ? '' : c.status === 'JUDGED' ? ' · مرتَّبة حسب النتيجة' : ' (يظهر العنوان فقط حتى يتمّ التحكيم)'}`}>
         {entries.length === 0 ? (
           <EmptyState illustration="empty-list"
-            title="لم يشارك أحد بعد"
-            description={canEnter ? 'كن أوّل من يشارك!' : 'انتهت مهلة التقديم على هذه المسابقة.'}
+            title="لا مشاركات"
+            description=""
             action={canEnter ? (
               <button type="button" className="btn primary sm" onClick={() => setEntering(true)}>
                 <Icon icon={Send} size={13} />
@@ -521,7 +518,7 @@ export function CompetitionDetailPage() {
                   )}
                   {e.fileUrl && isOrganizer && (
                     <a href={e.fileUrl} target="_blank" rel="noreferrer" className="comp-entry-file">
-                      <Icon icon={FileText} size={12} /> ملف مُرفَق
+                      <Icon icon={FileText} size={12} /> مرفق
                     </a>
                   )}
                   {isOrganizer && c.status === 'CLOSED' && id && (
@@ -559,7 +556,7 @@ export function CompetitionDetailPage() {
       <ConfirmDialog
         open={confirming === 'close'}
         title="إغلاق المسابقة"
-        message="سيُوقف استقبال المشاركات فوراً، ولا تقديم أو تعديل بعد الإغلاق."
+        message="سيُوقف الاستقبال نهائياً."
         confirmLabel="إغلاق نهائي"
         danger
         onConfirm={async () => {
@@ -578,8 +575,8 @@ export function CompetitionDetailPage() {
         title="إعلان النتائج"
         message={
           allScored
-            ? 'ستُنشر النتائج والترتيب النهائي لجميع المشاركين.'
-            : `${countAr(unscoredCount, ['مشاركة واحدة بلا تقييم', 'مشاركتان بلا تقييم', 'مشاركات بلا تقييم', 'مشاركة بلا تقييم'])} — تترتّب في نهاية اللوحة عند الإعلان.`
+            ? 'ستُنشر النتائج.'
+            : `${countAr(unscoredCount, ['مشاركة', 'مشاركتان', 'مشاركات', 'مشاركة'])} بلا تقييم`
         }
         confirmLabel="إعلان النتائج"
         onConfirm={async () => {
@@ -621,7 +618,7 @@ function ScoreInput({
 
   return (
     <div className="comp-score-input">
-      <label htmlFor={inputId} className="text-xxs text-subtle">التقييم (من 100)</label>
+      <label htmlFor={inputId} className="text-xxs text-subtle">التقييم</label>
       <div className="comp-score-row">
         <input
           id={inputId}
@@ -641,7 +638,7 @@ function ScoreInput({
         {score.isSuccess && currentScore !== null && (
           <span role="status" style={{ color: 'var(--success)', display: 'inline-flex', alignItems: 'center' }}>
             <Icon icon={Check} size={14} />
-            <span className="visually-hidden">تمّ حفظ التقييم</span>
+            <span className="visually-hidden">تمّ الحفظ</span>
           </span>
         )}
       </div>
@@ -650,7 +647,7 @@ function ScoreInput({
       {score.isError && (
         <div className="form-error" id={`${inputId}-err`} role="alert" style={{ marginBlockStart: 'var(--sp-1-5)' /* r157: 6px → token */ }}>
           <Icon icon={AlertTriangle} size={13} />
-          <span className="form-error-msg">تعذَّر حفظ التقييم.</span>
+          <span className="form-error-msg">تعذَّر الحفظ.</span>
           <button type="button" className="btn ghost sm" onClick={save}>إعادة المحاولة</button>
         </div>
       )}
@@ -670,7 +667,7 @@ const createSchema = z.object({
     // inert (the backend blocks entering) but rendered confusingly
     // everywhere — reject it at the form like the live-session create does.
     (d) => new Date(d).getTime() > Date.now(),
-    'يجب أن يكون الموعد النهائي في المستقبل',
+    'الموعد في المستقبل',
   ),
   iconEmoji: z.string().max(8).optional(),
 });
@@ -759,12 +756,12 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         {create.isError && (
-          <div className="form-error" role="alert">تعذَّر إنشاء المسابقة — تحقَّق من البيانات.</div>
+          <div className="form-error" role="alert">تعذَّر الإنشاء.</div>
         )}
         <div className="comp-modal-actions">
           <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>إلغاء</button>
           <button type="submit" className="btn primary" disabled={create.isPending}>
-            {create.isPending ? 'جارٍ الإنشاء…' : 'إنشاء'}
+            {create.isPending ? 'جارٍ…' : 'إنشاء'}
           </button>
         </div>
       </form>
@@ -838,21 +835,21 @@ function EnterCompetitionModal({
           long-form prose; its error state must re-announce on
           re-focus, not only as a one-shot alert). */}
       <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
-        <FormField label="عنوان المشاركة" error={form.formState.errors.title?.message}>
+        <FormField label="العنوان" error={form.formState.errors.title?.message}>
           <input type="text" {...form.register('title')} className="input" />
         </FormField>
-        <FormField label="الوصف / المحتوى" error={form.formState.errors.body?.message}>
+        <FormField label="المحتوى" error={form.formState.errors.body?.message}>
           <textarea rows={6} {...form.register('body')} className="input" style={{ resize: 'vertical' }} />
         </FormField>
-        <FormField label="رابط الملف (اختياري)" error={form.formState.errors.fileUrl?.message}>
+        <FormField label="رابط الملف" error={form.formState.errors.fileUrl?.message}>
           <input type="url" dir="ltr" {...form.register('fileUrl')} placeholder="https://…" className="input" />
         </FormField>
-        {enter.isError && <div className="form-error" role="alert">تعذَّر تقديم المشاركة — تحقَّق من البيانات.</div>}
+        {enter.isError && <div className="form-error" role="alert">تعذَّر الإرسال.</div>}
         <div className="comp-modal-actions">
           <button type="button" className="btn ghost" onClick={requestClose} disabled={enter.isPending}>إلغاء</button>
           <button type="submit" className="btn primary" disabled={enter.isPending}>
             <Icon icon={Send} size={14} />
-            {enter.isPending ? 'جارٍ الإرسال…' : existing ? 'حفظ التعديلات' : 'إرسال'}
+            {enter.isPending ? 'جارٍ…' : existing ? 'حفظ التعديلات' : 'إرسال'}
           </button>
         </div>
       </form>

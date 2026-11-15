@@ -119,19 +119,16 @@ function reviewKpiCells(passed: number, failed: number, readyToPublish: number, 
     {
       label: 'بانتظار تقييمك',
       value: down ? '—' : formatInt(passed),
-      hint: 'بحوث اجتازت الفحص',
       tone: passed > 0 ? 'signal' : 'neutral',
     },
     {
       label: 'تعذّر اجتياز الفحص',
       value: down ? '—' : formatInt(failed),
-      hint: 'لا تحتاج تقييماً',
       tone: failed > 0 ? 'danger' : 'neutral',
     },
     {
       label: 'جاهزة للنشر',
       value: down ? '—' : formatInt(readyToPublish),
-      hint: 'بحوث مُقيَّمة',
       tone: readyToPublish > 0 ? 'positive' : 'neutral',
     },
   ];
@@ -272,8 +269,8 @@ export default function ResearchReviewPage() {
     setGradeErrorCode(null);
     try {
       await grade.mutateAsync({ id: selected.id, grade: draftScore, feedback: draftFeedback || undefined });
-      toast.success('صار البحث مُقيَّماً — انشره في المكتبة من «جاهزة للنشر».', {
-        title: 'تمّ حفظ التقييم',
+      toast.success('انشره من «جاهزة للنشر».', {
+        title: 'تمّ الحفظ',
       });
     } catch (err) {
       setGradeError(apiErrorMessage(err, 'تعذَّر حفظ التقييم — أعد المحاولة.'));
@@ -287,11 +284,11 @@ export default function ResearchReviewPage() {
     setPublishErrorCode(null);
     try {
       await publish.mutateAsync(selected.id);
-      toast.success('أصبح البحث متاحاً للطلاب في مكتبة الجامعة.', {
-        title: 'تمّ نشر البحث',
+      toast.success('متاح للطلاب في المكتبة.', {
+        title: 'تمّ النشر',
       });
     } catch (err) {
-      setPublishError(apiErrorMessage(err, 'تعذَّر نشر البحث — أعد المحاولة.'));
+      setPublishError(apiErrorMessage(err, 'تعذَّر النشر — أعد المحاولة.'));
       setPublishErrorCode(errorCodeOf(err));
     }
   };
@@ -339,7 +336,6 @@ export default function ResearchReviewPage() {
            * teacher pages speak. */
           index="01"
           eyebrow="التدريس · البحث العلمي"
-          description="قائمة بحوث الطلاب للمراجعة، ومنشوراتك العلمية."
           actions={
             /* R342-09 (D8 header-CTA law): the queue's ONE honest next
              * action on the accent register — open the OLDEST waiting
@@ -355,7 +351,7 @@ export default function ResearchReviewPage() {
                 onClick={() => attemptSelect(passed[0]!)}
               >
                 <Icon icon={ClipboardCheck} size={14} />
-                مراجعة أقدم بحث
+                مراجعة الأقدم
               </Button>
             ) : undefined
           }
@@ -377,7 +373,7 @@ export default function ResearchReviewPage() {
               <StatLineSkeleton />
             ) : queue.isError ? (
               <ErrorState
-                message="تعذَّر تحميل قائمة المراجعة"
+                message="تعذَّر تحميل القائمة"
                 error={queue.error}
                 onRetry={() => queue.refetch()}
               />
@@ -397,14 +393,12 @@ export default function ResearchReviewPage() {
                   <section className="flex-col gap-2" aria-label="بانتظار التقييم">
                     <SectionHeader
                       title="بانتظار تقييمك"
-                      description="بحوث اجتازت الفحص التجريبي (محاكاة) — مرتّبة بالأقدم انتظاراً"
                       as="h2"
                     />
                     {passed.length === 0 ? (
                       <EmptyState illustration="empty-research"
                         icon={CheckCircle2}
-                        title="لا بحوث في الانتظار"
-                        description="تظهر هنا بحوث الطلاب فور اجتيازها الفحص (محاكاة)."
+                        title="لا بحوث تنتظر"
                       />
                     ) : (
                       <div className="r305rp-rev-queue">
@@ -419,7 +413,6 @@ export default function ResearchReviewPage() {
                     <section className="flex-col gap-2" aria-label="بحوث رفضها الفحص">
                       <SectionHeader
                         title="رفضها الفحص التجريبي (محاكاة)"
-                        description="بحوث تجاوزت الحدود التجريبية — لا تحتاج تقييماً"
                         as="h2"
                       />
                       <div className="r305rp-rev-queue">
@@ -437,7 +430,6 @@ export default function ResearchReviewPage() {
                     <section className="flex-col gap-2" aria-label="بحوث جاهزة للنشر">
                       <SectionHeader
                         title="مُقيَّمة — جاهزة للنشر"
-                        description="بحوث قُيِّمت ويمكن نشرها في مكتبة الجامعة"
                         as="h2"
                       />
                       <div className="r305rp-rev-queue">
@@ -459,10 +451,7 @@ export default function ResearchReviewPage() {
                       <span className="r305rp-eyebrow">
                         <Icon icon={ClipboardCheck} size={13} /> لوحة المراجعة
                       </span>
-                      <p className="r305rp-rev-empty-title">اختر بحثاً من القائمة</p>
-                      <p className="r305rp-rev-empty-sub">
-                        تظهر نتائج الفحص ونموذج التقييم وملاحظاتك على المستند هنا.
-                      </p>
+                      <p className="r305rp-rev-empty-title">اختر بحثاً</p>
                     </div>
                   )}
                 </div>
@@ -492,7 +481,7 @@ export default function ResearchReviewPage() {
               <ConfirmDialog
                 open
                 title="تعديلات غير محفوظة"
-                message="لديك تقييم لم تحفظه — التبديل أو الإغلاق الآن يتخلّى عنه نهائياً."
+                message="الخروج يتخلّى عن تعديلاتك."
                 confirmLabel="التخلّي عن التعديلات"
                 cancelLabel="متابعة التحرير"
                 danger
@@ -695,11 +684,11 @@ function ReviewWorkspace({
           host's flex rhythm while preserving real form semantics. */}
       <form onSubmit={onSubmitGrade} noValidate style={{ display: 'contents' }}>
         <section className="rs-work-section" aria-label="نتائج الفحص الأوتوماتيكي">
-          <div className="r305rp-kicker"><h4 className="r305rp-kicker-title">نتائج الفحص الأوتوماتيكي</h4></div>
+          <div className="r305rp-kicker"><h4 className="r305rp-kicker-title">نتائج الفحص</h4></div>
           <ScanResults
             plagiarismPct={paper.plagiarismPct}
             aiContentPct={paper.aiContentPct}
-            note="قيم الفحص تجريبية معلنة — ليست قياساً فعلياً."
+            note="قيم تجريبية — ليست قياساً فعلياً."
           />
         </section>
 
@@ -744,7 +733,7 @@ function ReviewWorkspace({
             <textarea
               rows={4}
               className="input"
-              placeholder="اكتب ملاحظاتك على البحث…"
+              placeholder="ملاحظاتك…"
               value={feedback}
               onChange={(e) => onFeedback(e.target.value)}
               disabled={isGraded || gradePending}
@@ -786,7 +775,7 @@ function ReviewWorkspace({
               </div>
             ) : (
               <p className="r305rp-rev-decision-terminal">
-                البحث منشور في المكتبة — لا إجراء متاح عليه هنا.
+                منشور — لا إجراء هنا.
               </p>
             )}
             <div className="r305rp-rev-decision-actions">
@@ -864,9 +853,9 @@ function ReviewNotes({ paperId }: { paperId: string }) {
       )}
       {annotations.isError && (
         <div className="inline-retry" role="alert">
-          <span className="text-xs text-muted">تعذَّر تحميل الملاحظات على البحث.</span>
+          <span className="text-xs text-muted">تعذَّر تحميل الملاحظات.</span>
           <button type="button" className="btn ghost sm" onClick={() => annotations.refetch()}>
-            <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
+            <Icon icon={RefreshCw} size={12} /> إعادة
           </button>
         </div>
       )}
@@ -936,9 +925,8 @@ function MyPublications() {
       <StatLine
         items={[
           {
-            label: 'منشورات في ملفّك',
+            label: 'منشوراتك',
             value: formatInt(publications.length),
-            hint: publications.length === 0 ? 'لم تُسجَّل بعد' : 'في ملفك الأكاديمي',
           },
           {
             label: 'شهادات وجوائز',
@@ -955,8 +943,7 @@ function MyPublications() {
         {publications.length === 0 ? (
           <EmptyState illustration="empty-research"
             icon={Microscope}
-            title="لم تُسجَّل منشورات بعد"
-            description="حدِّث ملفك الأكاديميّ لإضافة بحوثك المنشورة."
+            title="لا منشورات بعد"
             action={
               <RouterLink to="/teacher/profile" className="btn outline sm">
                 <Icon icon={FileText} size={13} />

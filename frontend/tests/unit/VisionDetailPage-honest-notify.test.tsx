@@ -11,13 +11,23 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { VisionDetailPage } from '../../src/pages/vision/VisionPages';
+import { VisionDetailPage, VisionGalleryPage } from '../../src/pages/vision/VisionPages';
 
 function renderDetail(slug = 'ai-predictor') {
   return render(
     <MemoryRouter initialEntries={[`/vision/${slug}`]}>
       <Routes>
         <Route path="/vision/:slug" element={<VisionDetailPage />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+}
+
+function renderGallery() {
+  return render(
+    <MemoryRouter initialEntries={['/vision']}>
+      <Routes>
+        <Route path="/vision" element={<VisionGalleryPage />} />
       </Routes>
     </MemoryRouter>,
   );
@@ -42,6 +52,11 @@ describe('VisionDetailPage — honest notify card (A8 P2-2)', () => {
     expect(screen.queryByText(/سنُعلمك على بريدك الجامعي/)).toBeNull();
     expect(screen.getByText(/قيد التطوير/)).toBeInTheDocument();
     // The card still says what the visitor CAN do: follow the vision page.
-    expect(screen.getByText(/حالة كل ابتكار تُحدَّث هنا فور تغيّرها/)).toBeInTheDocument();
+    // R355 copy diet: the detail card's follow-updates explainer
+    // («حالة كل ابتكار تُحدَّث هنا فور تغيّرها») was cut from the hint —
+    // the surviving element is the gallery page's roadmap note, which
+    // now carries the follow-the-status affordance alone.
+    renderGallery();
+    expect(screen.getByText(/تُحدَّث فور تغيّرها/)).toBeInTheDocument();
   });
 });

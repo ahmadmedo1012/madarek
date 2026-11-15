@@ -136,15 +136,18 @@ describe('R350 F2 — the import wizard', () => {
     const steps = screen.getAllByRole('list', { name: 'خطوات الاستيراد' })[0]!;
     const labels = Array.from(steps.querySelectorAll('.iw-step-label')).map((el) => el.textContent);
     expect(labels).toEqual(['رفع الملف', 'مطابقة الأعمدة', 'المراجعة', 'التأكيد', 'النتيجة']);
-    expect(screen.getByText('اسحب ملف Excel أو CSV هنا')).toBeTruthy();
+    // R355 copy diet: the dropzone title is the short «اسحب الملف هنا»;
+    // the format/size honesty survives in the sub line below.
+    expect(screen.getByText('اسحب الملف هنا')).toBeTruthy();
     expect(screen.getByText(/حتى ١٠ ميغابايت/)).toBeTruthy();
   });
 
   it('parse lands on the mapping step: headers + sample values + confidence + preset chips', async () => {
     renderWithProviders();
     uploadCsv();
-    await waitFor(() => { expect(screen.getByRole('button', { name: /متابعة إلى المطابقة/ })).toBeEnabled(); });
-    fireEvent.click(screen.getByRole('button', { name: /متابعة إلى المطابقة/ }));
+    // R355 copy diet: the advance button lost its «إلى المطابقة» tail.
+    await waitFor(() => { expect(screen.getByRole('button', { name: 'متابعة' })).toBeEnabled(); });
+    fireEvent.click(screen.getByRole('button', { name: 'متابعة' }));
     // step-2 markers: the mapping table's own header + the presets strip
     await waitFor(() => { expect(screen.getByText('عمود الملف')).toBeTruthy(); });
     expect(screen.getByText('سالم العماري')).toBeTruthy();
@@ -166,8 +169,9 @@ describe('R350 F2 — the import wizard', () => {
   it('the duplicate row carries the I-P2 diff (from → to) + the per-row policy select', async () => {
     renderWithProviders();
     uploadCsv();
-    await waitFor(() => { expect(screen.getByRole('button', { name: /متابعة إلى المطابقة/ })).toBeEnabled(); });
-    fireEvent.click(screen.getByRole('button', { name: /متابعة إلى المطابقة/ }));
+    // R355 copy diet: the advance button lost its «إلى المطابقة» tail.
+    await waitFor(() => { expect(screen.getByRole('button', { name: 'متابعة' })).toBeEnabled(); });
+    fireEvent.click(screen.getByRole('button', { name: 'متابعة' }));
     await waitFor(() => { expect(screen.getByText('عمود الملف')).toBeTruthy(); });
     fireEvent.click(screen.getByRole('button', { name: /عرض المراجعة/ }));
     await waitFor(() => { expect(screen.getByText('سياسة الصف')).toBeTruthy(); });
@@ -188,16 +192,23 @@ describe('R350 F2 — the import wizard', () => {
   it('confirm names what will happen; commit carries the policies; the result shows the credentials + rollback', async () => {
     renderWithProviders();
     uploadCsv();
-    await waitFor(() => { expect(screen.getByRole('button', { name: /متابعة إلى المطابقة/ })).toBeEnabled(); });
-    fireEvent.click(screen.getByRole('button', { name: /متابعة إلى المطابقة/ }));
+    // R355 copy diet: the advance button lost its «إلى المطابقة» tail.
+    await waitFor(() => { expect(screen.getByRole('button', { name: 'متابعة' })).toBeEnabled(); });
+    fireEvent.click(screen.getByRole('button', { name: 'متابعة' }));
     await waitFor(() => { expect(screen.getByText('عمود الملف')).toBeTruthy(); });
     fireEvent.click(screen.getByRole('button', { name: /عرض المراجعة/ }));
     await waitFor(() => { expect(screen.getByText('سياسة الصف')).toBeTruthy(); });
-    fireEvent.click(screen.getByRole('button', { name: /متابعة إلى التأكيد/ }));
-    await waitFor(() => { expect(screen.getByText(/ما الذي سيحدث بالضبط/)).toBeTruthy(); });
+    // R355 copy diet: the review→confirm advance is the plain «متابعة»
+    // (lost its «إلى التأكيد» tail).
+    fireEvent.click(screen.getByRole('button', { name: 'متابعة' }));
+    // R355 copy diet: the «ما الذي سيحدث بالضبط» lede was cut — the
+    // confirm list's opening «سيُعالَج …» statement is what names the
+    // action now.
+    await waitFor(() => { expect(screen.getByText(/سيُعالَج/)).toBeTruthy(); });
     // the global policy select + the createIfMissing toggle
     expect(screen.getByLabelText('سياسة التكرار العامة')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: /تثبيت الاستيراد نهائيًا/ }));
+    // R355 copy diet: «تثبيت الاستيراد نهائيًا» → «تثبيت الاستيراد».
+    fireEvent.click(screen.getByRole('button', { name: 'تثبيت الاستيراد' }));
     await waitFor(() => { expect(screen.getByText('TempPass-123456')).toBeTruthy(); });
     // the commit POST carried the body the steps built
     const commitCall = postMock.mock.calls.find((c) => String(c[0]).includes('/commit'))!;
@@ -207,6 +218,7 @@ describe('R350 F2 — the import wizard', () => {
     expect(body.rowPolicies).toEqual({});
     // the one-time credentials sheet + the rollback affordance
     expect(screen.getByText('TempPass-123456')).toBeTruthy();
-    expect(screen.getByRole('button', { name: /التراجع عن المهمة/ })).toBeTruthy();
+    // R355 copy diet: «التراجع عن المهمة» → «التراجع».
+    expect(screen.getByRole('button', { name: 'التراجع' })).toBeTruthy();
   });
 });

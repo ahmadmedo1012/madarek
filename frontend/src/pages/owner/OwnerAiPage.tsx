@@ -83,7 +83,7 @@ export function OwnerAiPage() {
   const barData = useMemo(() => ({
     labels: (data?.byFeature ?? []).map((f) => FEATURE_LABELS[f.feature] ?? f.feature),
     datasets: [{
-      label: 'عدد الطلبات',
+      label: 'الطلبات',
       data: (data?.byFeature ?? []).map((f) => f.count),
       backgroundColor: c.accent,
       borderRadius: 6,
@@ -112,7 +112,6 @@ export function OwnerAiPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="مركز الذكاء الاصطناعيّ"
-        description="مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'مركز الذكاء الاصطناعيّ' }]}
         /* R341 D11: the [09] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
@@ -146,10 +145,10 @@ export function OwnerAiPage() {
           {/* Shape-matched skeletons — one per card the data will fill. */}
           <StatStripSkeleton />
           <div className="owner-ai-chart-grid">
-            <Card title="الطلبات حسب الميزة"><ChartSkeleton height={240} /></Card>
-            <Card title="اتّجاه الاستخدام (7 أيّام)"><ChartSkeleton height={240} /></Card>
+            <Card title="حسب الميزة"><ChartSkeleton height={240} /></Card>
+            <Card title="اتّجاه الاستخدام"><ChartSkeleton height={240} /></Card>
           </div>
-          <Card title="تفاصيل الاستخدام حسب الميزة"><TableSkeleton rows={4} cols={4} /></Card>
+          <Card title="التفاصيل"><TableSkeleton rows={4} cols={4} /></Card>
         </>
       ) : aiMetrics.isError || !data ? (
         <Card>
@@ -166,34 +165,28 @@ export function OwnerAiPage() {
               {
                 label: 'إجمالي الطلبات',
                 value: <bdi>{formatNum(data.totalRequests)}</bdi>,
-                trend: 'تراكميّة على المنصّة',
-                trendTone: 'flat',
               },
               {
                 label: 'إجمالي التوكنات',
                 value: data.totalTokens >= 1_000_000
                   ? <bdi>{(data.totalTokens / 1_000_000).toFixed(1)}M</bdi>
                   : <bdi>{formatNum(data.totalTokens)}</bdi>,
-                trend: 'مقيسة من المزوّد',
-                trendTone: 'flat',
               },
               {
                 label: 'معدّل النجاح',
                 value: <bdi>{Math.round(data.successRate)}%</bdi>,
-                trend: data.successRate >= 90 ? 'تشغيل مستقرّ' : 'راجع الأعطال الأخيرة',
+                trend: data.successRate >= 90 ? 'مستقرّ' : 'راجع الأعطال',
                 trendTone: data.successRate >= 90 ? 'up' : 'down',
               },
               {
                 label: 'متوسّط الاستجابة',
                 value: <bdi>{Math.round(data.avgLatencyMs)}ms</bdi>,
-                trend: 'زمن الردّ المتوسط',
-                trendTone: 'flat',
               },
             ]}
           />
 
           <div className="owner-ai-chart-grid">
-            <Card title="الطلبات حسب الميزة">
+            <Card title="حسب الميزة">
               {data.byFeature.length === 0 ? (
                 <EmptyState illustration="empty-list"
                   icon={Bot}
@@ -206,14 +199,14 @@ export function OwnerAiPage() {
                    * state: metrics arrive with the first recorded
                    * request; the service's availability is decided by
                    * the server's provider configuration. */
-                  description="تظهر المؤشّرات فور تسجيل أول طلب. الجهوزيّة تحدّدها إعدادات المزوّد — الأعلام والإعدادات تُسجَّل ولا تستهلكها بوابة تشغيل."
+                  description="تظهر المؤشّرات فور تسجيل أول طلب. الجهوزيّة تحدّدها إعدادات المزوّد — الأعلام تُسجَّل ولا تستهلكها بوابة تشغيل."
                 />
               ) : (
                 <ChartFrame
                   ariaLabel="مخطط أعمدة — عدد طلبات الذكاء الاصطناعيّ لكل ميزة"
-                  summary={`أكثر الميزات استخداماً: ${FEATURE_LABELS[data.byFeature.reduce((a, b) => (b.count > a.count ? b : a)).feature] ?? '—'}.`}
+                  summary={`الأكثر استخداماً: ${FEATURE_LABELS[data.byFeature.reduce((a, b) => (b.count > a.count ? b : a)).feature] ?? '—'}`}
                   table={{
-                    caption: 'الطلبات حسب الميزة',
+                    caption: 'حسب الميزة',
                     columns: ['الميزة', 'الطلبات'],
                     rows: data.byFeature.map((f) => [FEATURE_LABELS[f.feature] ?? f.feature, f.count]),
                   }}
@@ -224,15 +217,15 @@ export function OwnerAiPage() {
               )}
             </Card>
 
-            <Card title="اتّجاه الاستخدام (7 أيّام)">
+            <Card title="اتّجاه الاستخدام">
               {data.trend.length === 0 ? (
-                <EmptyState illustration="empty-list" title="لا توجد بيانات بعد" description="يُرسم الاتّجاه فور أول طلب." />
+                <EmptyState illustration="empty-list" title="لا بيانات بعد" />
               ) : (
                 <ChartFrame
                   ariaLabel="مخطط خطّي لاتّجاه الاستخدام — الطلبات اليوميّة على مدى 7 أيّام"
-                  summary={`ذروة الاستخدام ${formatNum(Math.max(...data.trend.map((t) => t.count)))} طلب في يوم واحد.`}
+                  summary={`الذروة: ${formatNum(Math.max(...data.trend.map((t) => t.count)))}`}
                   table={{
-                    caption: 'اتّجاه الاستخدام اليومي',
+                    caption: 'الاتّجاه اليومي',
                     columns: ['اليوم', 'الطلبات'],
                     rows: data.trend.map((t) => [t.date, t.count]),
                   }}
@@ -245,7 +238,7 @@ export function OwnerAiPage() {
           </div>
 
           {data.byFeature.length > 0 && (
-            <Card title="تفاصيل الاستخدام حسب الميزة">
+            <Card title="التفاصيل">
               <div className="table-wrap">
                 <table className="table tbl-stack">
                   <thead>
@@ -253,7 +246,7 @@ export function OwnerAiPage() {
                       <th scope="col">الميزة</th>
                       <th scope="col">الطلبات</th>
                       <th scope="col">التوكنات</th>
-                      <th scope="col">الحصة من التوكنات</th>
+                      <th scope="col">الحصة</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -268,8 +261,8 @@ export function OwnerAiPage() {
                           <td className="tbl-strong" data-label="الميزة">{featureLabel(f.feature)}</td>
                           <td className="owner-num" data-label="الطلبات">{formatNum(f.count)}</td>
                           <td className="owner-num" data-label="التوكنات">{formatNum(f.tokens)}</td>
-                          <td data-label="الحصة من التوكنات">
-                            <span className="owner-share" title={`${formatNum(f.tokens)} من ${formatNum(data.totalTokens)} توكن`}>
+                          <td data-label="الحصة">
+                            <span className="owner-share">
                               <span className="owner-share-track" aria-hidden>
                                 <span className="owner-share-fill" style={{ inlineSize: `${share}%` }} />
                               </span>

@@ -60,6 +60,13 @@ const STORAGE_DRIVER_LABEL: Record<string, string> = {
   local: 'محليّ — قرص الخادم',
   s3: 'تخزين كائنات (S3-متوافق)',
 };
+/* Copy-diet: the storage row's label is shared by the pending and
+ * missing-block branches (mutually exclusive renders, one string). */
+const STORAGE_ROW_LABEL = 'حالة التخزين';
+/* r251: the flag-dialog's two direction labels — title and confirmLabel
+ * share ONE string each (was four identical literals). */
+const DISABLE_FLAG_LABEL = 'تعطيل الميزة';
+const ENABLE_FLAG_LABEL = 'تفعيل الميزة';
 
 export function OwnerSystemPage() {
   const flagsQuery = useOwnerFeatureFlags();
@@ -101,13 +108,13 @@ export function OwnerSystemPage() {
     );
     if (failedKeys.size === 0) {
       setEditedSettings({});
-      toast.success('حُفظت الإعدادات المعدَّلة بنجاح.', { title: 'تمّ الحفظ' });
+      toast.success(`حُفظت ${failedSavesLabel(entries.length)}.`, { title: 'تمّ الحفظ' });
     } else {
       setEditedSettings((prev) =>
         Object.fromEntries(Object.entries(prev).filter(([key]) => failedKeys.has(key))),
       );
       toast.error(
-        `تعذّر حفظ ${failedSavesLabel(failedKeys.size)} — أُبقيت قيمه في المحرّر، حاول مجدداً.`,
+        `تعذّر حفظ ${failedSavesLabel(failedKeys.size)}.`,
         // r134 فشل→تعذّر family canon (cross-repo audit): the toast title
         // was the last فشل error verb on this surface.
         { title: 'تعذّر حفظ الإعدادات' },
@@ -161,7 +168,7 @@ export function OwnerSystemPage() {
         ? 'دائمة'
         : storage.reachable === false
           ? 'مهيَّأ لكن يتعذّر الوصول الآن'
-          : 'لم يُتحقق بعد'
+          : 'لم يُتحقق'
       : storage
         ? storage.persistent
           ? 'دائمة'
@@ -194,7 +201,6 @@ export function OwnerSystemPage() {
               </span>
             )}
           </h1>
-          <p className="page-subtitle">إدارة البنية التحتية وحالة الخدمات</p>
         </div>
         {/* D11 (D8/D10 header-CTA precedent): the console's sibling
             board — the operational alerts the health KPI counts
@@ -204,7 +210,7 @@ export function OwnerSystemPage() {
             while visible, and this button covers the «أحتاجها الآن»
             moment after a deploy or a fix). */}
         <div className="row">
-          <Link to="/owner/alerts" className="btn accent sm">التنبيهات التشغيليّة</Link>
+          <Link to="/owner/alerts" className="btn accent sm">التنبيهات</Link>
           <button
             type="button"
             className="btn ghost sm"
@@ -224,8 +230,7 @@ export function OwnerSystemPage() {
           {
             label: 'حالة الخدمة',
             value: serviceValue,
-            trend: 'من حالة الاستعلام الحيّ',
-            trendTone: sysData ? (sysData.alerts.criticalCount > 0 ? 'down' : 'up') : 'flat',
+            trend: sysData ? (sysData.alerts.criticalCount > 0 ? 'down' : 'up') : 'flat',
           },
           {
             label: 'تنبيهات حرجة مفتوحة',
@@ -236,7 +241,7 @@ export function OwnerSystemPage() {
           {
             label: 'أحداث آخر 7 أيام',
             value: sysData ? formatNum(sysData.activity.recentEventsLast7Days) : unknownValue,
-            trend: 'سجلّ تشغيليّ',
+            trend: 'سجلّ',
             trendTone: 'flat',
           },
         ]}
@@ -251,7 +256,7 @@ export function OwnerSystemPage() {
           <div className="owner-health-list">
             <div className="owner-health-row">
               <div className="owner-health-dot neutral" />
-              <span className="owner-health-label">حالة التخزين</span>
+              <span className="owner-health-label">{STORAGE_ROW_LABEL}</span>
               <span className="owner-health-value">…</span>
             </div>
           </div>
@@ -259,7 +264,7 @@ export function OwnerSystemPage() {
           <div className="owner-health-list">
             <div className="owner-health-row">
               <div className="owner-health-dot neutral" />
-              <span className="owner-health-label">حالة التخزين</span>
+              <span className="owner-health-label">{STORAGE_ROW_LABEL}</span>
               {/* sys.isError degrades to '—' (the service KPI above
                   already carries the error + retry); a resolved payload
                   with no storage block is «غير متوفر» — an older
@@ -270,8 +275,8 @@ export function OwnerSystemPage() {
             </div>
             <p className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
               {sys.isError
-                ? 'تعذّر جلب حالة النظام — أعد المحاولة.'
-                : 'نسخة الخادم الحاليّة لا تُصرّح عن حالة تخزين الرفعات بعد.'}
+                ? 'تعذّر جلب الحالة.'
+                : 'لا يُصرّح عن حالة تخزين الرفعات بعد.'}
             </p>
           </div>
         ) : (
@@ -288,7 +293,7 @@ export function OwnerSystemPage() {
             </div>
             <div className="owner-health-row">
               <div className={`owner-health-dot ${storageDot}`} />
-              <span className="owner-health-label">دوام الملفات المرفوعة</span>
+              <span className="owner-health-label">دوام الملفات</span>
               <span className="owner-health-value">{storageValue}</span>
             </div>
             {sysData.storage.driver === 's3' && sysData.storage.reachable === true && (
@@ -300,7 +305,7 @@ export function OwnerSystemPage() {
             )}
             {sysData.storage.driver === 's3' && sysData.storage.reachable === undefined && (
               <p className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
-                لم يتحقّق الخادم من اتصال المخزن — تظهر الحالة بعد أول فحص.
+                لم يُتحقق الاتصال — تظهر الحالة بعد أول فحص.
               </p>
             )}
             {sysData.storage.driver === 's3' && sysData.storage.reachable === false && (
@@ -310,10 +315,8 @@ export function OwnerSystemPage() {
                 title="مخزن الكائنات لا يستجيب — الرفعات الجديدة ستفشل حتى يعود"
                 description={(
                   <>
-                    السائق مهيّأ بـ<bdi>S3</bdi> لكن آخر فحص لم يتلقَّ ردًّا. تحقّق من متغيّرات{' '}
-                    <bdi>S3_*</bdi> في لوحة البيئة ومن حالة المزوّد نفسه — الخطوات الكاملة في{' '}
-                    <bdi>docs/12-deployment.md</bdi>
-                    («تخزين رفعات PDF في الإنتاج — خطوات المالك»).
+                    تحقّق من متغيّرات <bdi>S3_*</bdi> وحالة المزوّد —{' '}
+                    <bdi>docs/12-deployment.md</bdi>.
                   </>
                 )}
               />
@@ -325,10 +328,8 @@ export function OwnerSystemPage() {
                 title="الرفعات لا تنجو من إعادة النشر — يتطلب إعداد تخزين دائم (S3)"
                 description={(
                   <>
-                    أوراق البحث والملفات المرفوعة تُفقد عند كل نشر — دوامها يتطلب
-                    ضبط <code>STORAGE_DRIVER=s3</code> مع متغيّرات <bdi>S3_*</bdi> من لوحة
-                    البيئة — الخطوات الكاملة في <bdi>docs/12-deployment.md</bdi>
-                    («تخزين رفعات PDF في الإنتاج — خطوات المالك»).
+                    الدوام يتطلب ضبط <code>STORAGE_DRIVER=s3</code> مع متغيّرات <bdi>S3_*</bdi> —{' '}
+                    الخطوات: <bdi>docs/12-deployment.md</bdi>.
                   </>
                 )}
               />
@@ -358,13 +359,13 @@ export function OwnerSystemPage() {
             />
           ) : featureFlags.length === 0 ? (
             <EmptyState illustration="empty-list"
-              title="لا توجد أعلام مُعرَّفة"
+              title="لا أعلام مُعرَّفة"
               /* 22-b (4-A7 P2-9): the old copy pointed at "إعدادات النظام"
                * as the creation path — no such affordance exists on this
                * page (the settings editor only edits existing keys), so
                * the empty state names the real state instead of a dead
                * end. */
-              description="لم تُعرَّف أعلام ميزات بعد؛ تُدار حالياً مباشرةً من قاعدة بيانات المنصّة."
+              description="تُدار من قاعدة البيانات."
             />
           ) : (
             <>
@@ -386,7 +387,7 @@ export function OwnerSystemPage() {
               {toggleFlag.isError && (
                 <div className="form-error" role="alert">
                   <span className="form-error-msg">
-                    {`تعذّر تحديث العلم «${toggleFlag.variables?.slug ?? ''}» — القيمة المعروضة هي آخر حالة محفوظة.`}
+                    {`تعذّر تحديث العلم «${toggleFlag.variables?.slug ?? ''}» — المعروضة آخر حالة محفوظة.`}
                   </span>
                   <button type="button" className="btn ghost sm" onClick={retryFlagToggle}>
                     إعادة المحاولة
@@ -410,13 +411,11 @@ export function OwnerSystemPage() {
          * danger only when DISABLING — matching the direction of harm. */}
         <ConfirmDialog
           open={flagConfirm !== null}
-          title={flagConfirm?.enabled ? 'تعطيل الميزة' : 'تفعيل الميزة'}
-          confirmLabel={flagConfirm?.enabled ? 'تعطيل الميزة' : 'تفعيل الميزة'}
+          title={flagConfirm?.enabled ? DISABLE_FLAG_LABEL : ENABLE_FLAG_LABEL}
+          confirmLabel={flagConfirm?.enabled ? DISABLE_FLAG_LABEL : ENABLE_FLAG_LABEL}
           danger={flagConfirm?.enabled ?? false}
           message={flagConfirm
-            ? flagConfirm.enabled
-              ? `هل تريد تعطيل «${flagConfirm.name}»؟ يُسجَّل في سجلّ النشاط ويمكن إعادته من هذه البطاقة.`
-              : `هل تريد تفعيل «${flagConfirm.name}»؟ يُسجَّل في السجلّ ويمكن التراجع من هذه البطاقة.`
+            ? `هل تريد ${flagConfirm.enabled ? 'تعطيل' : 'تفعيل'} «${flagConfirm.name}»؟ يُسجَّل ويمكن التراجع.`
             : ''}
           onConfirm={() => (flagConfirm ? confirmFlagToggle(flagConfirm) : Promise.resolve())}
           onCancel={() => setFlagConfirm(null)}
@@ -426,21 +425,20 @@ export function OwnerSystemPage() {
       {/* Operational alerts — real data, replacing the fake error log.
           An API failure surfaces as an honest error state, never as
           the "لا توجد تنبيهات" empty state. */}
-      <Card title="التنبيهات التشغيلية المفتوحة" icon={AlertTriangle}>
+      <Card title="التنبيهات المفتوحة" icon={AlertTriangle}>
         <div className="owner-list-pad">
           {sys.isPending ? (
             <ListSkeleton rows={3} />
           ) : sys.isError ? (
             <ErrorState
-              message="تعذّر جلب التنبيهات التشغيلية"
+              message="تعذّر جلب التنبيهات"
               error={sys.error}
               onRetry={() => sys.refetch()}
             />
           ) : !sysData || sysData.alerts.open.length === 0 ? (
             <EmptyState illustration="empty-list"
               icon={CheckCircle2}
-              title="لا توجد تنبيهات مفتوحة"
-              description="كل أنظمة المنصّة في حالة طبيعيّة الآن."
+              title="لا تنبيهات مفتوحة"
             />
           ) : (
             sysData.alerts.open.map((alert) => (
@@ -503,8 +501,8 @@ export function OwnerSystemPage() {
             />
           ) : settings.length === 0 ? (
             <EmptyState illustration="empty-list"
-              title="لا توجد إعدادات مُعرَّفة"
-              description="لا توجد إعدادات مخصّصة بعد؛ القيم الافتراضية تعمل."
+              title="لا إعدادات مُعرَّفة"
+              description="القيم الافتراضية تعمل."
             />
           ) : (
             <>

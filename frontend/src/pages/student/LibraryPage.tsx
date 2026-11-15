@@ -54,6 +54,12 @@ const BOOK_UNIT: [string, string, string, string] = ['كتاب واحد', 'كت�
 /* r184: page size for the books list — a paginated envelope, never a
  * silent truncation. */
 const BOOKS_PAGE_SIZE = 24;
+/* Copy-diet: ONE shared plural unit per counted noun (the loan meter's
+ * days, the filtered-results count, the research count) — the four
+ * forms live once instead of per call site. */
+const DAY_UNIT: [string, string, string, string] = ['يوم واحد', 'يومين', 'أيام', 'يوماً'];
+const RESULT_UNIT: [string, string, string, string] = ['نتيجة واحدة', 'نتيجتان', 'نتائج', 'نتيجة'];
+const RESEARCH_UNIT: [string, string, string, string] = ['بحث واحد', 'بحثان', 'بحوث', 'بحوثاً'];
 
 const categoryIcon = (cat: string): LucideIcon =>
   CATEGORIES.find((c) => c.id === cat)?.icon ?? LibraryIcon;
@@ -142,18 +148,16 @@ function BookRow({ book }: { book: Book }) {
     try {
       const loan = await borrow.mutateAsync(book.id);
       // موعد الإرجاع يصل من الخلفية (14 يوماً) — نقوله للطالب فوراً.
-      toast.success(`موعد إرجاع «${book.title}»: ${formatDateAr(loan.dueAt)}.`, {
+      toast.success(`الإرجاع: ${formatDateAr(loan.dueAt)}.`, {
         title: 'تمّت الاستعارة',
       });
     } catch (e) {
       // 409ات الخلفية عربية (ازدواج الاستعارة/نفاد النسخ) — تُعرض كما هي.
-      toast.error(apiErrorMessage(e, 'تعذَّرت الاستعارة — تحقّق من اتصالك.'));
+      toast.error(apiErrorMessage(e, 'تعذَّرت الاستعارة.'));
     }
   };
 
-  const availabilityHint = unavailable
-    ? 'لا توجد نسخ متاحة للاستعارة حالياً'
-    : countAr(book.availableCopies, ['نسخة متاحة واحدة', 'نسختان متاحتان', 'نسخ متاحة', 'نسخة متاحة']);
+  const availabilityHint = unavailable ? 'لا نسخ متاحة' : `${formatInt(book.totalCopies)} نسخة`;
 
   return (
     <RowItem
@@ -193,7 +197,7 @@ function BookRow({ book }: { book: Book }) {
       }
       trailing={
         <span className="rs-book-tail">
-          <span title={book.totalCopies > 0 ? `${availabilityHint} من ${formatInt(book.totalCopies)}` : undefined}>
+          <span title={unavailable ? availabilityHint : book.totalCopies > 0 ? `${formatInt(book.availableCopies)} من ${formatInt(book.totalCopies)} متاحة` : undefined}>
             <StatusChip
               tone={book.availableCopies > 0 ? 'success' : undefined}
               label={book.availableCopies > 0 ? 'متاح' : 'مستعار'}
@@ -228,9 +232,7 @@ function BookRow({ book }: { book: Book }) {
         <div className="lib-book-detail-row">
           <span className="lib-book-detail-k">النسخ</span>
           <span className="lib-book-detail-v">
-            <bdi>{formatInt(book.availableCopies)}</bdi> متاحة من <bdi>{formatInt(book.totalCopies)}</bdi>
-            {' — '}
-            {availabilityHint}
+            <bdi>{formatInt(book.availableCopies)}</bdi> من <bdi>{formatInt(book.totalCopies)}</bdi> متاحة
           </span>
         </div>
         <div className="lib-book-detail-row">
@@ -245,12 +247,12 @@ function BookRow({ book }: { book: Book }) {
         )}
         <div className="lib-book-detail-row">
           <span className="lib-book-detail-k">مدة الاستعارة</span>
-          <span className="lib-book-detail-v">14 يوماً — يصلك موعد الإرجاع في إشعار التأكيد.</span>
+          <span className="lib-book-detail-v">14 يوماً</span>
         </div>
         {unavailable && (
           <div className="lib-book-detail-row">
             <span className="lib-book-detail-k">الحالة</span>
-            <span className="lib-book-detail-v">جميع النسخ مستعارة — جرّب لاحقاً أو استعرض البحوث.</span>
+            <span className="lib-book-detail-v">جميع النسخ مستعارة.</span>
           </div>
         )}
       </div>
@@ -275,10 +277,10 @@ function LoanDue({ loan }: { loan: MyLoan }) {
   const tier = overdue ? 'is-bad' : dueSoon ? 'is-warn' : '';
   const days = Math.abs(Math.round(daysLeft));
   const text = overdue
-    ? `استحقّ منذ ${countAr(days, ['يوم واحد', 'يومين', 'أيام', 'يوماً'])}`
+    ? `منذ ${countAr(days, DAY_UNIT)}`
     : dueSoon
-      ? `ينتهي بعد ${countAr(days, ['يوم واحد', 'يومين', 'أيام', 'يوماً'])}`
-      : `متبقٍ ${countAr(days, ['يوم واحد', 'يومين', 'أيام', 'يوماً'])}`;
+      ? `بعد ${countAr(days, DAY_UNIT)}`
+      : `متبقٍ ${countAr(days, DAY_UNIT)}`;
   return (
     <span className="rs-loan-due">
       <span className="rs-loan-due-track" role="img"
@@ -306,7 +308,7 @@ function LoanRow({ loan }: { loan: MyLoan }) {
   const onReturn = async () => {
     try {
       await returnLoan.mutateAsync(loan.id);
-      toast.success(`أُعيد «${loan.book.title}» إلى المكتبة.`, { title: 'تمّ الإرجاع' });
+      toast.success(`أُعيد «${loan.book.title}».`, { title: 'تمّ الإرجاع' });
     } catch (e) {
       toast.error(apiErrorMessage(e, 'تعذَّر الإرجاع — تحقّق من اتصالك.'));
     }
@@ -349,7 +351,7 @@ function LoanRow({ loan }: { loan: MyLoan }) {
       <div className="flex-col gap-2" style={{ width: '100%' }}>
         <LoanDue loan={loan} />
         <span className="rs-row-meta">
-          <span>موعد الإرجاع: <bdi className="font-mono">{formatDateAr(loan.dueAt)}</bdi></span>
+          <span>الإرجاع: <bdi className="font-mono">{formatDateAr(loan.dueAt)}</bdi></span>
           <span aria-hidden="true">·</span>
           <span>استُعير: {formatDateAr(loan.borrowedAt)}</span>
         </span>
@@ -571,12 +573,12 @@ export default function LibraryPage() {
     ? (researchInUse
       ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ «<bdi>{debouncedQ}</bdi>»</>
       : researchFloorShort
-        ? <>حرف واحد — البحث يبدأ من حرفين</>
-        : <><bdi>{visibleResearch.length}</bdi> بحث منشور</>)
+        ? <>حرف واحد</>
+        : <>{countAr(visibleResearch.length, RESEARCH_UNIT)}</>)
     : (books.isPending
       ? '…'
       : totalBooks !== null
-        ? countAr(totalBooks, booksFiltered ? ['نتيجة واحدة', 'نتيجتان', 'نتائج', 'نتيجة'] : BOOK_UNIT)
+        ? countAr(totalBooks, booksFiltered ? RESULT_UNIT : BOOK_UNIT)
         : '—');
 
   /* The active filter chip — books tab only; the collapsed filter
@@ -608,10 +610,10 @@ export default function LibraryPage() {
         ? 'أكمل البحث'
         : researchSearchActive ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
       description={researchFloorShort
-        ? 'البحث في البحوث يبدأ من حرفين — أضف حرفًا ثانيًا ليبدأ فورًا.'
+        ? 'يلزم حرفان.'
         : researchSearchActive
-          ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
-          : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
+          ? `لا نتائج لـ «${debouncedQ}».`
+          : undefined}
     />
   );
 
@@ -625,24 +627,20 @@ export default function LibraryPage() {
     <PageFrame width="default">
       <PageHeader
         title="المكتبة الإلكترونية"
-        description={
-          /* 22-c (A3 P3-10): honest scope — no «آلاف الكتب» overclaim. */
-          'كتب وبحوث الجامعة المنشورة — للاستعارة الفوريّة والاطّلاع.'
-        }
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
-           «بحوثي العلمية» is the shelf's sibling workflow (your own
-           papers land on the published shelf), «مركز التحميلات» is
+           «بحوثي» is the shelf's sibling workflow (your own
+           papers land on the published shelf), «التحميلات» is
            the files shelf — both real surfaces of this family. */
         actions={(
           <>
             <Link to="/student/research" className="btn primary sm">
               <Icon icon={BookMarked} size={13} />
-              بحوثي العلمية
+              بحوثي
             </Link>
             <Link to="/student/downloads" className="btn ghost sm">
               <Icon icon={Download} size={13} />
-              مركز التحميلات
+              التحميلات
             </Link>
           </>
         )}
@@ -656,7 +654,7 @@ export default function LibraryPage() {
           classifies the block. */}
       <div className="rs-toolbar" role="search">
         <span className="r305rp-eyebrow r305rp-lib-searcheyebrow">
-          {isResearchTab ? 'بحث البحوث' : 'بحث المكتبة'}
+          بحث
         </span>
         <div className="rs-search">
           <span className="rs-search-icon"><Icon icon={Search} size={18} /></span>
@@ -707,7 +705,7 @@ export default function LibraryPage() {
                   <>
                     <BarCount
                       n={openLoans.length}
-                      srLabel={countAr(openLoans.length, ['استعارة واحدة', 'استعارتان', 'استعارات', 'استعارة'])}
+                      srLabel={countAr(openLoans.length, ['استعارة', 'استعارتان', 'استعارات', 'استعارة'])}
                     />
                     {dueSoon > 0 && (
                       <span>· {formatInt(dueSoon)} تنتهي قريباً</span>
@@ -724,7 +722,7 @@ export default function LibraryPage() {
               <div className="r305rp-empty">
                 <span className="r305rp-eyebrow">الحالة</span>
                 <p className="r305rp-lib-loansempty-line">
-                  <strong>لا استعارات نشطة</strong> — اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه (14 يوماً).
+                  <strong>لا استعارات نشطة</strong>
                 </p>
               </div>
             ) : (
@@ -813,7 +811,7 @@ export default function LibraryPage() {
               !books.isPending && !books.isError && totalBooks !== null ? (
                 <BarCount
                   n={totalBooks}
-                  srLabel={countAr(totalBooks, booksFiltered ? ['نتيجة واحدة', 'نتيجتان', 'نتائج', 'نتيجة'] : BOOK_UNIT)}
+                  srLabel={countAr(totalBooks, booksFiltered ? RESULT_UNIT : BOOK_UNIT)}
                 />
               ) : undefined
             }
@@ -825,8 +823,8 @@ export default function LibraryPage() {
               <EmptyState
                 icon={LibraryIcon}
                 illustration={booksFiltered ? 'empty-search' : 'empty-library'}
-                title={booksFiltered ? 'لا توجد كتب تطابق البحث' : 'لا توجد كتب بعد'}
-                description={booksFiltered ? 'جرّب كلمات بحث مختلفة أو إزالة التصنيفات.' : 'ستظهر هنا كتب المكتبة فور توفرها.'}
+                title={booksFiltered ? 'لا كتب مطابقة' : 'لا كتب بعد'}
+                description={booksFiltered ? 'جرّب كلمات أخرى.' : undefined}
               />
             }
           >
@@ -904,7 +902,7 @@ export default function LibraryPage() {
               !researchInUse && !research.isPending && !research.isError && visibleResearch.length > 0 ? (
                 <BarCount
                   n={visibleResearch.length}
-                  srLabel={countAr(visibleResearch.length, ['بحث واحد منشور', 'بحثان منشوران', 'بحوث منشورة', 'بحثاً منشوراً'])}
+                  srLabel={countAr(visibleResearch.length, RESEARCH_UNIT)}
                 />
               ) : undefined
             }
@@ -917,7 +915,7 @@ export default function LibraryPage() {
                     {g.code && <bdi className="font-mono">{g.code}</bdi>}
                     {g.code ? ' — ' : ''}{g.label}
                   </h3>
-                  <span className="rs-group-count">{countAr(g.papers.length, ['بحث واحد', 'بحثان', 'بحوث', 'بحوثاً'])}</span>
+                  <span className="rs-group-count">{countAr(g.papers.length, RESEARCH_UNIT)}</span>
                 </div>
                 <RowList aria-label={`بحوث ${g.label}`}>
                   {g.papers.map((p) => <ResearchHitRow key={p.id} paper={p} hit={null} />)}
@@ -1012,7 +1010,7 @@ function ResearchHitRow({ paper, hit }: {
         hit ? (
           <StatusChip
             tone={hit.matchedIn === 'title' ? 'success' : hit.matchedIn === 'abstract' ? 'gold' : 'info'}
-            label={hit.matchedIn === 'title' ? 'تطابق في العنوان' : hit.matchedIn === 'abstract' ? 'تطابق في الملخص' : 'تطابق في المتن'}
+            label={hit.matchedIn === 'title' ? 'في العنوان' : hit.matchedIn === 'abstract' ? 'في الملخص' : 'في المتن'}
           />
         ) : paper.grade != null ? (
           <StatusChip
@@ -1022,7 +1020,7 @@ function ResearchHitRow({ paper, hit }: {
         ) : undefined
       }
       defaultExpanded
-      expandLabel={`تفاصيل البحث: ${paper.title}`}
+      expandLabel={`تفاصيل ${paper.title}`}
     >
       <div className="flex-col gap-2">
         {/* Snippet when searching (server-sanitized to a <mark>-only
@@ -1043,14 +1041,14 @@ function ResearchHitRow({ paper, hit }: {
             <span>انتحال: <bdi className="font-mono">{formatPct(paper.plagiarismPct)}%</bdi></span>
           )}
           {paper.aiContentPct != null && (
-            <span>ذكاء اصطناعي: <bdi className="font-mono">{formatPct(paper.aiContentPct)}%</bdi></span>
+            <span>AI: <bdi className="font-mono">{formatPct(paper.aiContentPct)}%</bdi></span>
           )}
           {(paper.plagiarismPct != null || paper.aiContentPct != null) && (
             <span>محاكاة</span>
           )}
           <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-1)' }}>
             <Icon icon={ShieldCheck} size={11} strokeWidth={2} />
-            تم التحقق من النشر
+            موثّق
           </span>
         </div>
 

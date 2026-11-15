@@ -4,7 +4,7 @@
  * 1-3. the three profile cards' subtitles ride countAr grammar — the old
  *      `${n} شهادة` / `${n} منشور` / `${n} جائزة` templates broke at 0
  *      («0 شهادة») and at 2; the zero cases now name the reality
- *      («لم تُضف شهادة» / «لم تُضف منشورات» / «لم تُضف جائزة»).
+ *      («لا شهادات» / «لا منشورات» / «لا جوائز»).
  * 4-5. cancelEdit routes through the shared useDiscardGuard (the same
  *      confirm the curriculum builders and both grading modals use):
  *      a dirty cancel confirms first, «متابعة التحرير» keeps the draft,
@@ -103,19 +103,19 @@ describe('TeacherProfilePage — countAr card subtitles (r157 / 6A9)', () => {
     expect(screen.getByText('3 شهادات')).toBeInTheDocument();
   });
 
-  it('zero publications → the honest zero subtitle «لم تُضف منشورات»', () => {
+  it('zero publications → the honest zero subtitle «لا منشورات»', () => {
     mocks.profile.data = teacherProfile();
     renderPage();
 
-    expect(screen.getByText('لم تُضف منشورات')).toBeInTheDocument();
+    expect(screen.getByText('لا منشورات')).toBeInTheDocument();
     expect(screen.queryByText('0 منشور')).toBeNull();
   });
 
-  it('zero awards → the honest zero subtitle «لم تُضف جائزة»', () => {
+  it('zero awards → the honest zero subtitle «لا جوائز»', () => {
     mocks.profile.data = teacherProfile();
     renderPage();
 
-    expect(screen.getByText('لم تُضف جائزة')).toBeInTheDocument();
+    expect(screen.getByText('لا جوائز')).toBeInTheDocument();
     expect(screen.queryByText('0 جائزة')).toBeNull();
   });
 });
@@ -125,7 +125,7 @@ describe('TeacherProfilePage — cancelEdit discard guard (r157 / 6A9)', () => {
     mocks.profile.data = teacherProfile();
     renderPage();
 
-    fireEvent.click(screen.getByRole('button', { name: 'تعديل البيانات الشخصية' }));
+    fireEvent.click(screen.getByRole('button', { name: 'تعديل البيانات' }));
     const bio = screen.getByLabelText('نبذة') as HTMLTextAreaElement;
     fireEvent.change(bio, { target: { value: 'مسودة تعديل جديدة لم تُحفظ بعد.' } });
 
@@ -143,7 +143,7 @@ describe('TeacherProfilePage — cancelEdit discard guard (r157 / 6A9)', () => {
     mocks.profile.data = teacherProfile();
     renderPage();
 
-    fireEvent.click(screen.getByRole('button', { name: 'تعديل البيانات الشخصية' }));
+    fireEvent.click(screen.getByRole('button', { name: 'تعديل البيانات' }));
     fireEvent.change(screen.getByLabelText('نبذة'), { target: { value: 'مسودة ستُتخلّى.' } });
 
     fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }));
@@ -152,7 +152,7 @@ describe('TeacherProfilePage — cancelEdit discard guard (r157 / 6A9)', () => {
     // Edit mode is gone: the header button is back and the ORIGINAL bio
     // (not the draft) renders.
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'تعديل البيانات الشخصية' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'تعديل البيانات' })).toBeInTheDocument();
     });
     expect(screen.getByText('أستاذ هندسة برمجيات مهتم بالتحقق الشكلي.')).toBeInTheDocument();
     expect(screen.queryByLabelText('نبذة')).toBeNull();

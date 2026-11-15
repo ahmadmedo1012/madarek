@@ -115,8 +115,10 @@ describe('CourseDetailPage — hero progress + «التالي» CTA (r164d)', ()
     expect(cta).toHaveAttribute('href', '/student/lectures/l2');
     // The pending-checkpoint context rides the note under the CTA.
     expect(screen.getByText(/تبقى نقاط تفاعل لم تُجب/)).toBeInTheDocument();
-    // Overall progress panel: completed count of the WATCH loop.
-    expect(screen.getByText('محاضرتان مكتملتان من 3')).toBeInTheDocument();
+    // Overall progress: the completed count of the WATCH loop rides the
+    // curriculum bar's counted sr-only meta (the hero note died with the
+    // copy diet — the % value + this phrase carry the same facts).
+    expect(screen.getByText('أكملت محاضرتين من 3 محاضرات')).toBeInTheDocument();
   });
 
   it('CTA notes the next lecture title when the reason is watch-progress, not checkpoints', () => {

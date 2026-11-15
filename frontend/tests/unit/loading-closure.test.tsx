@@ -225,7 +225,8 @@ describe('r172b §4 — admin dashboard pending mirror', () => {
     const { container } = renderPage(<AdminDashboardPage />);
     // The resolved dashboard (its real charts row proves it) with the
     // strip still pending → the skeleton card, not a null hole.
-    expect(screen.getByText('إحصائيات حيّة عن طلاب وأساتذة المنصّة.')).toBeTruthy();
+    // P-B2 copy cut: the dashboard's marketing description is gone — the
+    // resolved markers below prove the page resolved (not the skeleton).
     expect(screen.getByText('توزّع الطلاب حسب الكلّيّة')).toBeTruthy();
     expect(screen.getByText('مؤشرات سريعة')).toBeTruthy();
     const strip = container.querySelector('.stat-strip')?.previousElementSibling;
@@ -252,7 +253,7 @@ describe('r172b §6 — owner dashboard pending mirror', () => {
     // to what the resolved page shows while alerts pend.
     const band = container.querySelector('.owner-live-status.is-pending');
     expect(band).not.toBeNull();
-    expect(within(band as HTMLElement).getByText('جارٍ جلب حالة التنبيهات…')).toBeTruthy();
+    expect(within(band as HTMLElement).getByText('جارٍ الجلب…')).toBeTruthy();
     // Strip slot + KPI + charts pair + the two below-fold card slots
     // (strip + CardSkeleton ×2 are the page's direct .card children).
     expect(screen.getByText('يحتاج انتباهك')).toBeTruthy();

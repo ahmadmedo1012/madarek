@@ -50,7 +50,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearSc
  *  proper one/dual/few/many forms — «نقطة واحدة»، «نقطتان»، «5 نقاط»، «25 نقطة».
  *  Local twin of TrainingPages' helper (lib/format is frozen this wave). */
 function pointsAr(n: number): string {
-  if (n === 1) return 'نقطة واحدة';
+  if (n === 1) return 'نقطة';
   if (n === 2) return 'نقطتان';
   return `${formatNum(n)} ${n <= 10 ? 'نقاط' : 'نقطة'}`;
 }
@@ -83,7 +83,6 @@ export function GamificationPage() {
     <PageFrame width="default">
       <PatternPageHeader
         title="الإنجازات والنقاط"
-        description="تقدّمك ومستواك مقارنة بزملائك في المنصة."
         actions={
           /* 22-c (A5 P3-2): one unit voice — the page mixed «XP»,
              «نقطة/نقاط» and bare «+N». pointsAr everywhere.
@@ -115,15 +114,15 @@ export function GamificationPage() {
             tone: 'signal',
           },
           {
-            label: 'مستوى التطوير الذاتي',
+            label: 'مستوى التطوير',
             value: me ? formatNum(me.level.level) : '—',
-            hint: me ? TIER_LABEL[me.level.tier] : 'لم يبدأ المسار بعد',
+            hint: me ? TIER_LABEL[me.level.tier] : 'لم يبدأ بعد',
             tone: 'neutral',
           },
           {
-            label: 'مركزك على الدفعة',
+            label: 'مركزك بالدفعة',
             value: rank !== null && cohortSize > 1 ? `${formatNum(rank)} من ${formatNum(cohortSize)}` : '—',
-            hint: rank !== null && cohortSize > 1 ? undefined : 'يظهر الترتيب فور توافر الدفعة',
+            hint: rank !== null && cohortSize > 1 ? undefined : 'فور توافر الدفعة',
             tone: 'neutral',
           },
         ]}
@@ -164,32 +163,32 @@ export function GamificationPage() {
                 <span className="r305s-eyebrow">مستوى التقدّم</span>
                 <div className="r305g-level-title">
                   {training.isError
-                    ? 'تعذّر تحميل مستوى التطوير الذاتي'
+                    ? 'تعذّر تحميل المستوى'
                     : me
-                      ? `${TIER_LABEL[me.level.tier]} · المستوى ${me.level.level} في التطوير الذاتي`
+                      ? `${TIER_LABEL[me.level.tier]} · المستوى ${me.level.level}`
                       : 'لم يبدأ مسار التطوير الذاتي بعد'}
                 </div>
                 <div className="r305g-level-sub">
                   {xp !== null ? (
                     <>
                       {pointsAr(xp)}
-                      {rank !== null && cohortSize > 1 && ` · المركز ${formatNum(rank)} من ${formatNum(cohortSize)} على دفعتك`}
+                      {rank !== null && cohortSize > 1 && ` · المركز ${formatNum(rank)} من ${formatNum(cohortSize)}`}
                     </>
                   ) : dash.isError ? (
                     <span className="flex items-center gap-2">
-                      تعذّر تحميل نقاط الإنجاز.
+                      تعذّر تحميل النقاط.
                       <button type="button" className="btn ghost sm" onClick={() => dash.refetch()}>
                         إعادة المحاولة
                       </button>
                     </span>
                   ) : (
-                    'تعذّر تحميل نقاط الإنجاز'
+                    'تعذّر تحميل النقاط'
                   )}
                 </div>
                 {training.isError && (
                   <div style={{ marginBlockEnd: 'var(--sp-2)' }}>
                     <button type="button" className="btn ghost sm" onClick={() => training.refetch()}>
-                      إعادة محاولة تحميل المستوى
+                      إعادة المحاولة
                     </button>
                   </div>
                 )}
@@ -237,7 +236,7 @@ export function GamificationPage() {
               !ach.isPending && !ach.isError && (ach.data?.length ?? 0) > 0 ? (
                 <BarCount
                   n={ach.data!.length}
-                  srLabel={countAr(ach.data!.length, ['إنجاز واحد محقّق', 'إنجازان محقّقان', 'إنجازات محقّقة', 'إنجازاً محقّقاً'])}
+                  srLabel={countAr(ach.data!.length, ['إنجاز', 'إنجازان', 'إنجازات', 'إنجازاً'])}
                 />
               ) : undefined
             }
@@ -251,7 +250,6 @@ export function GamificationPage() {
                    reserved-but-empty region (same copy, same one action). */
                 <EmptyCell
                   label="لا إنجازات بعد"
-                  note="أكمل دروساً ومسارات لتفتح أول إنجاز."
                   action={<Link to="/training" className="btn primary sm">استكشف المسارات</Link>}
                 />
               }
@@ -279,7 +277,7 @@ export function GamificationPage() {
               !lb.isPending && !lb.isError && (lb.data?.length ?? 0) > 0 ? (
                 <BarCount
                   n={lb.data!.length}
-                  srLabel={countAr(lb.data!.length, ['طالب واحد مرتّب', 'طالبان مرتّبان', 'طلاب مرتّبون', 'طالباً مرتّباً'])}
+                  srLabel={countAr(lb.data!.length, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}
                 />
               ) : undefined
             }
@@ -299,9 +297,8 @@ export function GamificationPage() {
           ) : lb.isError ? <ErrorState error={lb.error} onRetry={() => lb.refetch()} /> :
            !lb.data?.length ? (
             <EmptyCell
-              label="لا يوجد ترتيب بعد"
-              note="اكسب النقاط بإكمال الدروس — يظهر ترتيبك فور تسجيل أول نقطة."
-              action={<Link to="/training" className="btn primary sm">ابدأ من التطوير الذاتي</Link>}
+              label="لا ترتيب بعد"
+              action={<Link to="/training" className="btn primary sm">ابدأ التطوير الذاتي</Link>}
             />
           ) : (
             /* same ranked-list grammar as the training achievements page
@@ -360,7 +357,6 @@ export function SkillsPage() {
     <PageFrame width="default">
       <PatternPageHeader
         title="المهارات والشهادات"
-        description="رصد مهاراتك التقنية وتطوّرها مع الوقت."
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
            «التطوير الذاتي» is where skills GROW (the tracks),
@@ -389,7 +385,7 @@ export function SkillsPage() {
           !skills.isPending && !skills.isError && (skills.data?.length ?? 0) > 0 ? (
             <BarCount
               n={skills.data!.length}
-              srLabel={countAr(skills.data!.length, ['مهارة واحدة مُسجَّلة', 'مهارتان مُسجَّلتان', 'مهارات مُسجَّلة', 'مهارةً مُسجَّلة'])}
+              srLabel={countAr(skills.data!.length, ['مهارة', 'مهارتان', 'مهارات', 'مهارةً'])}
             />
           ) : undefined
         }
@@ -416,8 +412,7 @@ export function SkillsPage() {
           /* R319 (c3-S2): the empty map is the sheet's reserved-but-empty
              region — the hatched EmptyCell (same honest copy). */
           <EmptyCell
-            label="لم تُسجَّل أي مهارة بعد"
-            note="تُحتسب تلقائياً من إنجازاتك ومسارات التطوير."
+            label="لا مهارات بعد"
           />
         ) : (
           <div className="grid-1-2" style={{ alignItems: 'center' }}>
@@ -431,7 +426,7 @@ export function SkillsPage() {
               summary={topSkill ? `أعلى إتقان: ${topSkill.skill.name} — ${formatPct1(topSkill.progressPct)}%` : undefined}
               height={300}
               table={{
-                caption: 'مستوى الإتقان لكل مهارة',
+                caption: 'مستوى الإتقان',
                 columns: ['المهارة', 'مستوى الإتقان'],
                 rows: skills.data.map((s) => [s.skill.name, `${formatPct1(s.progressPct)}%`]),
               }}
@@ -555,7 +550,6 @@ export function AlertsPage() {
     <PageFrame width="default">
       <PatternPageHeader
         title="الإشعارات"
-        description="آخر التحديثات والتذكيرات الأكاديمية."
         actions={
           <div className="flex items-center gap-2 flex-wrap">
             {unreadCount > 0 ? (
@@ -591,7 +585,7 @@ export function AlertsPage() {
       {markAllRead.isError && (
         <div className="form-feedback fail" role="alert">
           <Icon icon={X} size={14} />
-          <span className="flex-1">تعذَّر تعليم الإشعارات كمقروءة — أعد المحاولة.</span>
+          <span className="flex-1">تعذَّر تعليم الإشعارات كمقروءة.</span>
           <button
             type="button"
             className="btn ghost sm"
@@ -643,7 +637,7 @@ export function AlertsPage() {
         ) : items.length === 0 ? (
           /* R319 (c3-S2): the hatched EmptyCell — the sheet's
              reserved-but-empty region (same honest copy). */
-          <EmptyCell label="لا توجد إشعارات بعد" note="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
+          <EmptyCell label="لا إشعارات بعد" />
         ) : (
           <div className="np-list">
             {items.map((n) => {
@@ -662,7 +656,7 @@ export function AlertsPage() {
                 <Link
                   to={deepLink}
                   className="text-link"
-                  title="الانتقال إلى مصدر الإشعار"
+                  title="مصدر الإشعار"
                 >
                   {n.title}
                 </Link>
@@ -748,7 +742,7 @@ export function SchedulePage() {
     return (
       <div className="r319s-page">
       <PageFrame width="default">
-        <PatternPageHeader title="الجدول الدراسي" description="جارٍ جمع جدولك…" />
+        <PatternPageHeader title="الجدول الدراسي" />
         {/* R319 (c3-S2): the week strip — the page's genuine today/week
             context (the day rotation below anchors on it). */}
         <WeekStrip />
@@ -822,9 +816,8 @@ export function SchedulePage() {
     <PageFrame width="default">
       <PatternPageHeader
         title="الجدول الدراسي"
-        description="جدولك الأسبوعيّ مع أماكن المحاضرات."
         meta={totalSlots > 0
-          ? countAr(totalSlots, ['حصة واحدة أسبوعياً', 'حصتان أسبوعياً', 'حصص أسبوعياً', 'حصة أسبوعياً'])
+          ? countAr(totalSlots, ['حصة أسبوعياً', 'حصتان أسبوعياً', 'حصص أسبوعياً', 'حصة أسبوعياً'])
           : undefined}
         /* R341 (D7c): the header carries the page's CTA pair — the
             accent primary (the pages.mjs hover axis' measured primary;
@@ -855,8 +848,7 @@ export function SchedulePage() {
            region — the hatched EmptyCell (the old EmptyState's copy,
            kept honest and verbatim). */
         <EmptyCell
-          label="لا يوجد جدول مسجّل"
-          note="تظهر محاضراتك فور تسجيل الجدول لمقرّراتك."
+          label="لا جدول مسجّل"
         />
       ) : (
         /* r299 (final C): day sections on the pattern anatomy —
@@ -918,7 +910,7 @@ export function ResultsPage() {
   if (q.isPending) {
     return (
       <PageFrame width="default">
-        <PatternPageHeader title="النتائج والتقييمات" description="جارٍ جمع درجاتك…" />
+        <PatternPageHeader title="النتائج والتقييمات" />
         {/* 5-C3 (A9 P2-2): bare spinner → the shapes that land (A9 V1
             measured +204px on the spinner→content swap). r299: the
             settled page leads with the StatLine + the chart card, so
@@ -948,7 +940,7 @@ export function ResultsPage() {
       <PageFrame width="default">
         <PatternPageHeader title="النتائج والتقييمات" />
         <ErrorState
-          message="تعذَّر تحميل هذا القسم"
+          message="تعذَّر تحميل القسم"
           error={q.error}
           onRetry={() => q.refetch()}
         />
@@ -985,9 +977,8 @@ export function ResultsPage() {
     <PageFrame width="default">
       <PatternPageHeader
         title="النتائج والتقييمات"
-        description="درجاتك وتحليل أدائك من بياناتك الفعليّة."
         meta={d.headline.courseCount > 0
-          ? <>{countAr(d.headline.courseCount, ['مقرّر واحد مُقيَّم', 'مقرّران مُقيَّمان', 'مقرّرات مُقيَّمة', 'مقرّراً مُقيَّماً'])} هذا الفصل</>
+          ? <>{countAr(d.headline.courseCount, ['مقرّر مُقيَّم', 'مقرّران مُقيَّمان', 'مقرّرات مُقيَّمة', 'مقرّراً مُقيَّماً'])}</>
           : undefined}
         /* R341 (D7c): the page's CTA pair — honest navigation to the
             assessments that produce these grades (the accent primary
@@ -1025,7 +1016,7 @@ export function ResultsPage() {
           {
             label: 'أعلى درجة',
             value: d.headline.highest ? <bdi>{formatPct1(d.headline.highest.gradePct)}%</bdi> : '—',
-            hint: d.headline.highest?.courseName ?? 'لا توجد درجات بعد',
+            hint: d.headline.highest?.courseName ?? 'لا درجات بعد',
             tone: d.headline.highest ? bandTone(d.headline.highest.gradePct) : 'neutral',
           },
           {
@@ -1049,9 +1040,9 @@ export function ResultsPage() {
       {/* 5-A6 P2-9 — the chart card carries its own hook class: on phone
           (≤640px, student.css) it re-orders above the stacked KPI cards
           so the page's one data visualization starts at the fold. */}
-      <Card title="درجاتك حسب المقرّر" icon={Activity} subtitle={hasGrades ? 'النسبة المرجَّحة لكل مقرّر' : 'ستظهر درجاتك هنا فور تسجيلها'} className="results-chart-card">
+      <Card title="درجاتك حسب المقرّر" icon={Activity} subtitle={hasGrades ? 'النسبة المرجَّحة' : undefined} className="results-chart-card">
         {!hasGrades ? (
-          <EmptyState illustration="empty-list" title="لم تُسجَّل أي درجات بعد" description="يبدأ الحساب فور رصد أوّل تقييم في أي مقرّر." />
+          <EmptyState illustration="empty-list" title="لا درجات بعد" />
         ) : (
           // 5-A6 P1-2 — ChartFrame: the canvas gains role=img + an
           // accessible name, a prose summary and a visually-hidden data
@@ -1063,11 +1054,11 @@ export function ResultsPage() {
             summary={
               d.headline.avgGradePct !== null
                 ? `متوسّط درجاتك ${formatPct1(d.headline.avgGradePct)}% عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}`
-                : 'لم تُسجَّل درجات بعد.'
+                : 'لا متوسّط بعد.'
             }
             height={Math.max(180, d.courses.length * 32)}
             table={{
-              caption: 'درجاتك حسب المقرّر بالنسبة المئوية',
+              caption: 'درجاتك حسب المقرّر',
               columns: ['المقرّر', 'الدرجة'],
               rows: d.courses.map((r) => [r.courseName, `${formatPct1(r.gradePct)}%`]),
             }}
@@ -1132,11 +1123,7 @@ export function ResultsPage() {
             />
           )}
       />
-      {pendingSubs.length === 0 ? (
-        <p className="text-sm text-muted" style={{ margin: 0 }}>
-          كل ما سلّمته وتمّ تقييمه في «آخر الواجبات المقيَّمة» أدناه — وسيصلك إشعار بأي درجة.
-        </p>
-      ) : (
+      {pendingSubs.length === 0 ? null : (
         <RowList aria-label="تسليمات بانتظار التقييم">
           {pendingSubs.slice(0, 6).map((p) => {
             const st = submissionStatusAr(p.status);
@@ -1167,7 +1154,7 @@ export function ResultsPage() {
                       <Link
                         to={`/student/courses/${p.offeringId}`}
                         className="btn ghost sm"
-                        title="الرجوع إلى سياق المقرّر حيث يظهر هذا التكليف"
+                        title="الرجوع للمقرّر"
                       >
                         <Icon icon={ArrowLeft} size={13} />
                         المقرّر
@@ -1183,9 +1170,7 @@ export function ResultsPage() {
 
       <div className="grid-2">
         <Card title="تفصيل النتائج" icon={Activity}>
-          {!hasGrades ? (
-            <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>لم تُسجَّل درجات بعد.</p>
-          ) : (
+          {!hasGrades ? null : (
             <div className="flex-col gap-4">
               {d.courses.map((r) => (
                 <ProgressBar
@@ -1204,7 +1189,7 @@ export function ResultsPage() {
 
         <Card title="آخر الواجبات المقيَّمة">
           {d.recentAssignments.length === 0 ? (
-            <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>لا توجد تقييمات حديثة.</p>
+            <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>لا تقييمات حديثة.</p>
           ) : (
             <div className="flex-col gap-2">
               {d.recentAssignments.slice(0, 6).map((a) => {
@@ -1252,7 +1237,7 @@ export function ResultsPage() {
                       <Link
                         to={`/student/courses/${a.offeringId}`}
                         className="btn ghost sm"
-                        title="الرجوع إلى سياق المقرّر حيث يظهر هذا التكليف"
+                        title="الرجوع للمقرّر"
                       >
                         <Icon icon={ArrowLeft} size={13} />
                         المقرّر
@@ -1315,8 +1300,7 @@ export function ArVrPage() {
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       ) : !q.data || q.data.length === 0 ? (
         <EmptyState illustration="empty-list"
-          title="لا توجد تجارب AR/VR بعد"
-          description="ستظهر هنا حين يضيفها المسجل العام."
+          title="لا تجارب AR/VR بعد"
         />
       ) : (
         <RowList aria-label="فهرس تجارب AR/VR">
@@ -1366,7 +1350,6 @@ export function SocialPage() {
     <PageFrame width="default">
       <PatternPageHeader
         title="الشبكة الاجتماعية"
-        description="تواصل مع زملائك وأساتذتك حول المقرّرات والمشاريع."
       />
 
       <div className="grid-2-1">
@@ -1386,7 +1369,7 @@ export function SocialPage() {
                     aria-label="اكتب منشوراً جديداً"
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
-                    placeholder="ماذا يدور في ذهنك؟ (يمكنك استخدام #هاشتاج)"
+                    placeholder="ماذا يدور في ذهنك؟ (#هاشتاج)"
                     rows={2}
                     maxLength={2000}
                   />
@@ -1394,7 +1377,7 @@ export function SocialPage() {
                 {createPost.isError && (
                   <div className="social-compose-error" role="alert">
                     <Icon icon={AlertTriangle} size={14} aria-hidden />
-                    <span>تعذّر نشر المنشور — نصّك ما زال محفوظاً بالأعلى.</span>
+                    <span>تعذّر النشر — نصّك محفوظ بالأعلى.</span>
                     <button type="button" className="btn ghost sm" onClick={publish}>
                       إعادة المحاولة
                     </button>
@@ -1452,7 +1435,6 @@ export function SocialPage() {
                copy, kept honest and verbatim). */
             <EmptyCell
               label="لا منشورات بعد"
-              note="كن أول من يشارك تجربته أو سؤاله."
             />
           ) : (
             posts.data.map((p) => {
@@ -1546,11 +1528,10 @@ export function SocialPage() {
               meta={(
                 <BarCount
                   n={trending.length}
-                  srLabel={countAr(trending.length, ['وسم واحد متداولاً', 'وسمان متداولاان', 'وسوم متداولة', 'وسماً متداولاً'])}
+                  srLabel={countAr(trending.length, ['وسم', 'وسمان', 'وسوم', 'وسماً'])}
                 />
               )}
             />
-            <p className="r319sp-sec-note">الوسوم الأكثر تكراراً في آخر 20 منشوراً محمَّلاً.</p>
             <Card>
             <ol className="trend-list">
               {trending.map((t, i) => (
@@ -1632,7 +1613,6 @@ export function DownloadsPage() {
     <PageFrame width="default">
       <PatternPageHeader
         title="مركز التحميلات"
-        description="ملفّات مقرّراتك في مكان واحد — حالة كل رابط معلَنة."
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
            «مقرّراتي الدراسية» is where the files originate,
@@ -1679,8 +1659,7 @@ export function DownloadsPage() {
           /* R319 (c3-S2): the empty shelf is the sheet's reserved-but-
              empty region — the hatched EmptyCell (same honest copy). */
           <EmptyCell
-            label="لا توجد ملفّات بعد"
-            note="تظهر هنا فور رفع موادّ في مقرّراتك."
+            label="لا ملفّات بعد"
           />
         ) : (
           <div className="table-wrap">
@@ -1763,12 +1742,10 @@ export function UniversityInfoPage() {
         <PatternPageHeader
           eyebrow="خدمات المؤسسة"
           title="عن المؤسّسة"
-          description="مؤسّستك التعليميّة على منصّة مدارك."
         />
         <EmptyState
           illustration="empty-list"
-          title="لا توجد مؤسّسة في جلستك"
-          description="اختر مؤسّستك من قائمة العضويّات ثم عُد هنا."
+          title="لا مؤسّسة في جلستك"
         />
       </PageFrame>
     );
@@ -1784,7 +1761,6 @@ export function UniversityInfoPage() {
       <PatternPageHeader
         eyebrow="خدمات المؤسسة"
         title={inst.name}
-        description="كليّات مؤسّستك المسجَّلة في منصّة مدارك."
         /* R342-08 — the header CTA pair rides the masthead (the
            D11/D8 measured seat; the phone band hides the topbar
            «اسأل AI» ≤920, D6): the university-services family's
@@ -1839,7 +1815,7 @@ export function UniversityInfoPage() {
          * legacy branch's own convention). */
         <Card title="الكليّات" icon={Building2}>
           <ErrorState
-            message="تعذَّر تحميل قائمة الكليّات"
+            message="تعذَّر تحميل الكليّات"
             error={facs.error}
             onRetry={() => facs.refetch()}
           />
@@ -1861,7 +1837,7 @@ export function UniversityInfoPage() {
               ))}
             </div>
           ) : faculties.length === 0 ? (
-            <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" description="لم تُسجَّل كلّيّات في هذه المؤسّسة بعد." />
+            <EmptyState illustration="empty-list" title="لا كلّيّات بعد" />
           ) : (
             <div className="grid-auto-260" style={{ gap: 'var(--sp-2)' }}>
               {faculties.map((f) => (

@@ -88,20 +88,23 @@ describe('AiAssistantPage — the honest-surface config (P4)', () => {
     renderPage();
 
     expect(screen.getByText(/أحلّل بيانات إتقانك محليّاً/)).toBeInTheDocument();
-    expect(
-      screen.getByText('يحلّل بيانات إتقانك محليّاً ويقترح خطوة مذاكرة تالية — مساعد تحليليّ محليّ، لا نموذج لغويّ خارجيّ.'),
-    ).toBeInTheDocument();
+    // R355 copy diet: explainer cut — the surviving local-engine
+    // disclosure is the «مساعد محليّ» chip.
+    expect(screen.getByText('مساعد محليّ')).toBeInTheDocument();
     // The badge stays generic — no model name to claim.
     expect(screen.getByText('AI')).toBeInTheDocument();
-    expect(screen.queryByText(/نموذج لغويّ حقيقيّ/)).toBeNull();
+    expect(screen.queryByText('نموذج خارجيّ')).toBeNull();
   });
 
   it('openai mode: the LLM greeting + LLM subtitle, and the badge names the real model', () => {
     mocks.config = { data: { provider: 'openai', model: 'test-model-name' }, isPending: false, isError: false };
     renderPage();
 
-    expect(screen.getByText(/المدعوم بنموذج لغويّ حقيقيّ/)).toBeInTheDocument();
-    expect(screen.getByText(/مساعدك الدراسيّ مدعوم بنموذج لغويّ حقيقيّ يرى بيانات إتقانك/)).toBeInTheDocument();
+    expect(screen.getByText(/مرحبًا! أرى بيانات إتقانك لأركّز على فجواتك/)).toBeInTheDocument();
+    // R355 copy diet: explainer cut — the surviving real-engine
+    // disclosure is the «نموذج خارجيّ» chip + the provider label.
+    expect(screen.getByText('نموذج خارجيّ')).toBeInTheDocument();
+    expect(screen.getByText('openai')).toBeInTheDocument();
     expect(screen.getByText('test-model-name')).toBeInTheDocument();
     expect(screen.queryByText('AI')).toBeNull();
   });
@@ -110,7 +113,7 @@ describe('AiAssistantPage — the honest-surface config (P4)', () => {
     mocks.config = { data: undefined, isPending: true, isError: false };
     renderPage();
     expect(screen.getByText(/أحلّل بيانات إتقانك محليّاً/)).toBeInTheDocument();
-    expect(screen.queryByText(/نموذج لغويّ حقيقيّ/)).toBeNull();
+    expect(screen.queryByText(/نموذج لغويّ حقيقيّ|نموذج خارجيّ/)).toBeNull();
   });
 
   it('config error also renders the LOCAL copy (honest default)', () => {
@@ -129,7 +132,7 @@ describe('AiAssistantPage — the honest-surface config (P4)', () => {
     // — but only while the user hasn't sent anything.
     mocks.config = { data: { provider: 'openai', model: 'm1' }, isPending: false, isError: false };
     renderPage();
-    expect(screen.getByText(/المدعوم بنموذج لغويّ حقيقيّ/)).toBeInTheDocument();
+    expect(screen.getByText(/مرحبًا! أرى بيانات إتقانك لأركّز على فجواتك/)).toBeInTheDocument();
   });
 
   it('once the user sends a message, the transcript is state-owned — a config flip cannot rewrite history', async () => {
@@ -155,7 +158,7 @@ describe('AiAssistantPage — the honest-surface config (P4)', () => {
     useAuthStore.setState({ user: { ...STUDENT, role: 'TEACHER' as const } });
     mocks.config = { data: { provider: 'openai', model: 'm' }, isPending: false, isError: false };
     renderPage();
-    expect(screen.getByText(/مساعدك المدعوم بنموذج لغويّ حقيقيّ/)).toBeInTheDocument();
+    expect(screen.getByText(/أساعدك في التدريس والتقييم/)).toBeInTheDocument();
     expect(screen.queryByText(/أرى بيانات إتقانك/)).toBeNull();
   });
 

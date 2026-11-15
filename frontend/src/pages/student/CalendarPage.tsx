@@ -238,7 +238,7 @@ export default function StudentCalendarPage() {
             context (the grid's today cell anchors on it). r341 D7a: the
             [01] bar opens the month instrument in the pending mirror
             too — the settled handoff moves nothing (the r172b law). */}
-        <SectionBar index="01" title="مواعيد الشهر" />
+        <SectionBar index="01" title="المواعيد" />
         <WeekStrip />
         <div aria-busy="true" aria-live="polite">
           <CalendarSkeleton />
@@ -253,7 +253,7 @@ export default function StudentCalendarPage() {
       <div className="r319s-page">
       <PageFrame width="default">
         <PageHeader title="التقويم الأكاديمي" />
-        <SectionBar index="01" title="مواعيد الشهر" />
+        <SectionBar index="01" title="المواعيد" />
         <ErrorState
           message="تعذَّر تحميل التقويم الأكاديمي"
           error={failed.error}
@@ -278,9 +278,7 @@ export default function StudentCalendarPage() {
     <PageFrame width="default">
       <PageHeader
         title="التقويم الأكاديمي"
-        description={
-          'كل مواعيدك في نظرة واحدة: الحصص، التسليمات، الاختبارات، والبثّ — بتوقيت ليبيا.'
-        }
+        description="كل مواعيدك في نظرة واحدة — بتوقيت ليبيا."
         /* r341 D7a — the header's action seat: the honest cross-route
            verb on the accent register (the quality pages' «لوحة الجودة»
            precedent). The calendar is a read-only composition — its one
@@ -302,12 +300,12 @@ export default function StudentCalendarPage() {
           events count as its quiet mono meta (countAr for AT). */}
       <SectionBar
         index="01"
-        title="مواعيد الشهر"
+        title="المواعيد"
         meta={
           monthEventCount > 0 ? (
             <BarCount
               n={monthEventCount}
-              srLabel={countAr(monthEventCount, ['يوم واحد له مواعيد', 'يومان لهما مواعيد', 'أيام لها مواعيد', 'يوماً له مواعيد'])}
+              srLabel={countAr(monthEventCount, ['يوم', 'يومان', 'أيام', 'يوماً'])}
             />
           ) : undefined
         }
@@ -430,13 +428,12 @@ export default function StudentCalendarPage() {
                copy, kept honest and verbatim). */
             <EmptyCell
               label="شهر هادئ"
-              note={`لا مواعيد في ${monthTitleAr(view.year, view.month)} — جرّب شهرًا آخر أو راجع جدولك.`}
+              note={`لا مواعيد في ${monthTitleAr(view.year, view.month)}.`}
             />
           ) : selectedEvents.length === 0 ? (
             <EmptyState
               icon={CalendarDays}
               title={selectedKey ? selectedDayLabel(selectedKey) : 'اختر يومًا'}
-              description="لا أحداث في هذا اليوم — اختر يومًا آخر."
             />
           ) : (
             <>
@@ -456,7 +453,7 @@ export default function StudentCalendarPage() {
                       ))}
                     </span>
                   )}
-                  <Badge color="brand">{arUnit(selectedEvents.length, 'حدث واحد', 'حدثان', 'أحداث')}</Badge>
+                  <Badge color="brand">{arUnit(selectedEvents.length, 'حدث', 'حدثان', 'أحداث')}</Badge>
                 </span>
               </header>
               <div className="cal-detail-list">

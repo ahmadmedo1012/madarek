@@ -911,13 +911,13 @@ describe('r164d — completed watch, open checkpoints: the banner (not a wall)',
       ],
     };
     renderPlayer();
-    expect(screen.queryByText(/أنهيت المشاهدة/)).toBeNull();
+    expect(screen.queryByText(/تبقى/)).toBeNull();
   });
 
   it('no banner when the watch is complete AND all checkpoints answered', () => {
     mocks.lecture = completedTwoCheckpointLecture(['cp1', 'cp2']);
     renderPlayer();
-    expect(screen.queryByText(/أنهيت المشاهدة/)).toBeNull();
+    expect(screen.queryByText(/تبقى/)).toBeNull();
     expect(screen.getAllByText(/أُجيب عن 2 من/).length).toBeGreaterThanOrEqual(1);
   });
 
@@ -925,11 +925,11 @@ describe('r164d — completed watch, open checkpoints: the banner (not a wall)',
     mocks.lecture = completedTwoCheckpointLecture(['cp1']);
     renderPlayer();
 
-    const banner = screen.getByText(/أنهيت المشاهدة/);
-    expect(banner).toHaveTextContent(/تبقى/);
+    const banner = screen.getByText(/تبقى/);
+    expect(banner).toBeInTheDocument();
     expect(screen.getAllByText(/أُجيب عن 1 من/).length).toBeGreaterThanOrEqual(1);
 
-    fireEvent.click(screen.getByRole('button', { name: /إلى نقطة التفاعل التالية/ }));
+    fireEvent.click(screen.getByRole('button', { name: /أجب الآن/ }));
 
     // cp1 is answered — cp2 (the FIRST unanswered, trigger-sorted) opens.
     expect(screen.getByRole('dialog', { name: 'نقطة تفاعل: السؤال الثاني' })).toBeInTheDocument();
@@ -960,9 +960,9 @@ describe('r164d — completed watch, open checkpoints: the banner (not a wall)',
     expect(screen.queryByRole('dialog')).toBeNull();
 
     // Watch completes → the banner is the way back to the skipped loop.
-    const banner = screen.getByText(/أنهيت المشاهدة/);
-    expect(banner).toHaveTextContent(/نقطتا تفاعل لم تُجبا/);
-    fireEvent.click(screen.getByRole('button', { name: /إلى نقطة التفاعل التالية/ }));
+    const banner = screen.getByText(/تبقى/);
+    expect(banner).toHaveTextContent(/نقطتا تفاعل/);
+    fireEvent.click(screen.getByRole('button', { name: /أجب الآن/ }));
     expect(screen.getByRole('dialog', { name: 'نقطة تفاعل: السؤال الأول' })).toBeInTheDocument();
   });
 
@@ -977,7 +977,7 @@ describe('r164d — completed watch, open checkpoints: the banner (not a wall)',
       configurable: true,
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /إلى نقطة التفاعل التالية/ }));
+    fireEvent.click(screen.getByRole('button', { name: /أجب الآن/ }));
 
     expect(seeks).toEqual([200]);
     expect(screen.getByRole('dialog', { name: 'نقطة تفاعل: السؤال الثاني' })).toBeInTheDocument();

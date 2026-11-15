@@ -284,7 +284,10 @@ describe("r183-B3/R349-U3 — /student/university is the caller's OWN institutio
     renderUniversity(ANDALUS, ANDALUS_FACULTIES);
 
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('مؤسّسة الأندلس التعليميّة');
-    expect(screen.getByText(/كليّات مؤسّستك المسجَّلة في منصّة مدارك/)).toBeInTheDocument();
+    // R355 copy diet: the scoped-faculties explainer tightened from
+    // «كليّات مؤسّستك المسجَّلة في منصّة مدارك» to the counted line
+    // «… في مؤسّستك» (countAr) — the surviving element, same intent.
+    expect(screen.getByText('كلّيّة واحدة في مؤسّستك')).toBeInTheDocument();
 
     // The reference facts are dropped, never re-attributed.
     expect(screen.queryByText('سنة التأسيس')).toBeNull();

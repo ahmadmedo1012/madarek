@@ -148,8 +148,8 @@ export function OwnerGovernancePage() {
     : null;
   const growthTitle = growthWindow ? `نموّ المستخدمين (${growthWindow})` : 'نموّ المستخدمين';
   const growthAriaLabel = growthWindow
-    ? `مخطط خطّي لنموّ المستخدمين — مستخدمون جدد أسبوعياً على مدى ${growthWindow}`
-    : 'مخطط خطّي لنموّ المستخدمين — مستخدمون جدد أسبوعياً';
+    ? `مخطط نموّ المستخدمين (${growthWindow})`
+    : 'مخطط نموّ المستخدمين';
 
   return (
     /* r305-A8 «Heron»: page-root marker — stat strips, chart containers
@@ -157,7 +157,6 @@ export function OwnerGovernancePage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="الحوكمة المتقدّمة"
-        description="تتبّع الصلاحيات والنموّ وتحليل تسجيلات الدخول"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'الحوكمة المتقدّمة' }]}
         /* R341 D11: the [13] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
@@ -195,19 +194,14 @@ export function OwnerGovernancePage() {
             {
               label: 'تغييرات الصلاحيات',
               value: formatNum(govData.permissionChanges),
-              trend: 'تجاوزات موثّقة في السجلّ',
-              trendTone: 'flat',
             },
             {
               label: 'تغييرات الأدوار',
               value: formatNum(govData.roleChanges),
-              trend: 'تعيينات وتحويلات',
-              trendTone: 'flat',
             },
             {
               label: 'مستخدمون جدد هذا الشهر',
               value: formatNum(govData.newUsersThisMonth),
-              trend: 'من باب التسجيل',
               /* r299: flat, not 'up' — the strip's up/down tones mean
                  delta-vs-baseline (R189); this is a raw monthly count
                  with no comparison payload, so green ink claimed a
@@ -229,14 +223,14 @@ export function OwnerGovernancePage() {
               onRetry={() => governance.refetch()}
             />
           ) : govData.weeklyGrowth.length === 0 ? (
-            <EmptyState illustration="empty-list" title="لا توجد بيانات نموّ بعد" description="يُرسم المنحنى فور تسجيل أول مستخدم." />
+            <EmptyState illustration="empty-list" title="لا نموّ بعد" description="" />
           ) : (
             <ChartFrame
               className="owner-chart-container"
               ariaLabel={growthAriaLabel}
               summary={govData.weeklyGrowth.length === 1
-                ? `أسبوع واحد حتى الآن — ${countAr(govData.weeklyGrowth[0]!.count, ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])} في أسبوعه الأول؛ يُرسم المنحنى فور تسجيل الأسبوع القادم.`
-                : `أعلى نموّ ${countAr(Math.max(...govData.weeklyGrowth.map((w) => w.count)), ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])} في أسبوع واحد.`}
+                ? 'أسبوع واحد فقط.'
+                : `ذروة النموّ: ${countAr(Math.max(...govData.weeklyGrowth.map((w) => w.count)), ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])}`}
               table={{
                 caption: 'نموّ المستخدمين الأسبوعي',
                 columns: ['الأسبوع', 'مستخدمون جدد'],
@@ -250,7 +244,7 @@ export function OwnerGovernancePage() {
 
         {/* r134 فشل→تعذّر family canon: the title pairs the adjectives the
             doughnut legend and the daily table already use (ناجحة/فاشلة). */}
-        <Card title="تسجيلات الدخول: ناجحة / فاشلة">
+        <Card title="تسجيلات الدخول">
           {loginAnalytics.isPending ? (
             <ChartSkeleton height={236} />
           ) : loginAnalytics.isError || !loginData ? (
@@ -260,7 +254,7 @@ export function OwnerGovernancePage() {
               onRetry={() => loginAnalytics.refetch()}
             />
           ) : loginData.total === 0 ? (
-            <EmptyState illustration="empty-list" title="لا توجد محاولات دخول بعد" description="يظهر التوزيع فور أول محاولة دخول." />
+            <EmptyState illustration="empty-list" title="لا محاولات" description="" />
           ) : (
             <ChartFrame
               className="owner-chart-container"
@@ -285,7 +279,7 @@ export function OwnerGovernancePage() {
           its own padding on top of the .page gap (double rhythm) and its
           h3 rule had no <h3> consumer (the Card titles render <span>).
           The Card rides the page's uniform gap like every sibling. */}
-      <Card title="تفاصيل تسجيلات الدخول اليوميّة">
+      <Card title="التسجيلات اليوميّة">
           {loginAnalytics.isPending ? (
             <TableSkeleton rows={5} cols={3} />
           ) : loginAnalytics.isError || !loginData ? (
@@ -295,7 +289,7 @@ export function OwnerGovernancePage() {
               onRetry={() => loginAnalytics.refetch()}
             />
           ) : loginData.daily.length === 0 ? (
-            <EmptyState illustration="empty-list" title="لا توجد بيانات يوميّة" description="تُسجَّل المحاولات يوماً بيوم فور حدوثها." />
+            <EmptyState illustration="empty-list" title="لا بيانات" description="" />
           ) : (
             <div className="table-wrap">
               <table className="table tbl-stack">

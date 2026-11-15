@@ -61,7 +61,6 @@ export default function WebinarsPage() {
     <PageFrame width="default">
       <PageHeader
         title="الندوات وورش العمل"
-        description="جدول البثّ المباشر لمقرّراتك، وروابط الفعاليّات الجامعيّة."
       />
 
       {/* The two MetricCards collapsed into ONE StatLine — counts from
@@ -110,7 +109,7 @@ export default function WebinarsPage() {
             ) : undefined
           }
         />
-        <p className="r319sp-sec-note">البثوث المرتبطة بمقرّراتك — المباشرة منها تُعلَّم بنبضة حمراء</p>
+        <p className="r319sp-sec-note">المباشرة منها تُعلَّم بنبضة حمراء</p>
         {live.isPending ? (
           <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
             {[0, 1, 2].map((i) => (
@@ -131,7 +130,6 @@ export default function WebinarsPage() {
              reserved-but-empty region (same copy, same one action). */
           <EmptyCell
             label="لا توجد جلسات مباشرة مجدولة الآن"
-            note="تجده هنا وفي صفحة البثّ — مع التسجيلات بعد الجلسة."
             action={<Link to="/student/live" className="btn outline sm">زيارة صفحة البثّ</Link>}
           />
         ) : (
@@ -189,7 +187,6 @@ export default function WebinarsPage() {
       <section aria-label="أين أجد الفعاليّات الحقيقيّة؟">
         {/* R319 (c3-S2): [02] — the honest-destinations section's bar. */}
         <SectionBar index="02" title="أين أجد الفعاليّات الحقيقيّة؟" />
-        <p className="r319sp-sec-note">الفعاليّات الرسميّة تُنشر على لوحة المجتمع، وجلسات مقرّراتك تعيش في صفحة البثّ.</p>
         {/* R305 Heron: the two destinations fold from card tiles into the
             copper-edged rails (the shared .r305s-next emphasis) — quiet
             paths, not boxes. */}
@@ -214,7 +211,7 @@ export default function WebinarsPage() {
               <Icon icon={Video} size={16} aria-hidden /> البثّ المباشر
             </div>
             <p className="webinar-dest-desc">
-              جلسات البثّ المباشر الخاصّة بمقرّراتك مع التسجيلات بعد الجلسة.
+              جلسات مقرّراتك مع التسجيلات.
             </p>
             <Link to="/student/live" className="btn primary sm">
               <Icon icon={ArrowLeft} size={13} />

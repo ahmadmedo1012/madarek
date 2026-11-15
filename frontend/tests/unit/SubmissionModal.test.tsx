@@ -78,7 +78,7 @@ describe('SubmitAssignmentModal validation wiring', () => {
 
   it('shows the Arabic error and does NOT submit when both fields are empty', async () => {
     render(<SubmitAssignmentModal assignment={assignment} offeringId="off1" onClose={() => {}} />);
-    fireEvent.click(screen.getByRole('button', { name: 'تسليم الواجب' }));
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ التسليم' }));
     await flush();
 
     expect(screen.getByRole('alert').textContent).toContain('أدخل إجابة نصية أو رابط ملف على الأقل');
@@ -92,7 +92,7 @@ describe('SubmitAssignmentModal validation wiring', () => {
     fireEvent.change(screen.getByLabelText('رابط ملف (اختياري)'), {
       target: { value: 'http://example.com/x.pdf' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'تسليم الواجب' }));
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ التسليم' }));
     await flush();
 
     expect(screen.getByRole('alert').textContent).toContain('https://');
@@ -108,7 +108,7 @@ describe('SubmitAssignmentModal validation wiring', () => {
     fireEvent.change(screen.getByLabelText('إجابتك النصيّة'), {
       target: { value: '  إجابتي على الواجب  ' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'تسليم الواجب' }));
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ التسليم' }));
     await flush();
 
     expect(h.mutateAsync).toHaveBeenCalledTimes(1);
@@ -116,7 +116,7 @@ describe('SubmitAssignmentModal validation wiring', () => {
     expect(screen.getByText('تمّ التسليم بنجاح')).toBeInTheDocument();
     // r164-e: the done state points at the place the timeline continues —
     // the submission lives on the results page until the grade lands.
-    const link = screen.getByRole('link', { name: 'تابع حالة التقييم ودرجتك من صفحة النتائج' });
+    const link = screen.getByRole('link', { name: 'تابع تقييمك في النتائج' }); // R355 copy diet: link copy shortened
     expect(link.getAttribute('href')).toBe('/student/results');
   });
 
@@ -129,7 +129,7 @@ describe('SubmitAssignmentModal validation wiring', () => {
     fireEvent.change(screen.getByLabelText('رابط ملف (اختياري)'), {
       target: { value: '/api/v1/files/papers/p1.pdf' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'تسليم الواجب' }));
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ التسليم' }));
     await flush();
 
     expect(h.mutateAsync).toHaveBeenCalledWith({ textAnswer: undefined, fileUrl: '/api/v1/files/papers/p1.pdf' });
@@ -145,10 +145,10 @@ describe('SubmitAssignmentModal validation wiring', () => {
     fireEvent.change(screen.getByLabelText('إجابتك النصيّة'), {
       target: { value: 'إجابة متأخرة' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'تسليم الواجب' }));
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ التسليم' }));
     await flush();
 
-    expect(screen.getByText('تمّ التسليم — بعد الموعد النهائي')).toBeInTheDocument();
+    expect(screen.getByText('تمّ التسليم متأخرًا')).toBeInTheDocument(); // R355 copy diet: late title shortened
     expect(screen.getByText(/سيُعلَّم التسليم متأخرًا/)).toBeInTheDocument();
   });
 });

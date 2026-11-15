@@ -502,7 +502,7 @@ describe('ExamAuthoringPage — capability gating', () => {
   it('shows the honest permission wall to a holder of neither capability', async () => {
     state.perms = [];
     renderAt('/teacher/exams');
-    expect(await screen.findByText('صلاحية التأليف غير مفعَّلة لحسابك')).toBeInTheDocument();
+    expect(await screen.findByText('التأليف غير مفعَّل لحسابك')).toBeInTheDocument();
     expect(screen.queryByRole('tab', { name: 'بنك الأسئلة' })).toBeNull();
   });
 
@@ -543,7 +543,7 @@ describe('publish gate — APPROVED-only, per the backend', () => {
     await screen.findByText('قرار المراجعة');
     const btn = await screen.findByRole('button', { name: 'نشر' });
     expect(btn).toBeDisabled();
-    expect(screen.getByText('بانتظار مراجعة الجودة — يُفتح النشر بعد اعتمادها.')).toBeTruthy();
+    expect(screen.getByText('بانتظار مراجعة الجودة.')).toBeTruthy();
     fireEvent.click(btn);
     await waitFor(() => {
       expect(postsTo('/exams/templates/t1/publish')).toHaveLength(0);
@@ -640,7 +640,7 @@ describe('CreateQuestionModal — validation before the wire', () => {
     fireEvent.change(within(dialog).getByLabelText('نص السؤال'), { target: { value: 'عرّف عنوان IP' } });
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'حفظ السؤال' }));
-    expect(await within(dialog).findByText(/الإجابة القصيرة تحتاج إجابة نموذجية/)).toBeInTheDocument();
+    expect(await within(dialog).findByText(/تحتاج إجابة نموذجية/)).toBeInTheDocument();
     expect(postsTo('/question-bank')).toHaveLength(0);
 
     fireEvent.change(within(dialog).getByLabelText('الإجابة النموذجية'), { target: { value: 'رقم يعرّف الجهاز في الشبكة' } });
@@ -744,13 +744,14 @@ describe('TemplateBuilderModal — picker sum + payload', () => {
     renderAt('/teacher/exams');
     fireEvent.click(await screen.findByRole('button', { name: 'قالب اختبار جديد' }));
 
-    // The contract is stated up front (randomized defaults ON → the
-    // per-student shuffle note rides the same line).
+    // The contract is stated up front; the per-student shuffle note
+    // rides the randomize toggle's own description beside the picker
+    // (r353 diet: one wording, not two on the same screen).
     expect(
       await screen.findByText(/ترتيب اختيارك يحدّد ترتيب الأسئلة/),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/ويُخلط عشوائياً لكل طالب عند بدئه/),
+      screen.getByText(/يُخلط الترتيب لكل طالب عند البدء/),
     ).toBeInTheDocument();
 
     const q1 = await screen.findByRole('checkbox', { name: /اختيار السؤال: ما هو بروتوكول TCP/ });
@@ -760,14 +761,14 @@ describe('TemplateBuilderModal — picker sum + payload', () => {
 
     // Chips in row order: the first picked row carries 1, the second 2
     // (the live pick sequence — the wire's questionIds array order).
-    let chips = await screen.findAllByTitle('ترتيب السؤال في الاختبار');
+    let chips = await screen.findAllByTitle('ترتيبه في الاختبار');
     expect(chips).toHaveLength(2);
     expect(chips[0]).toHaveTextContent('ترتيبه في الاختبار: 1');
     expect(chips[1]).toHaveTextContent('ترتيبه في الاختبار: 2');
 
     // Unpick the first → the remaining pick renumbers to 1.
     fireEvent.click(q1);
-    chips = screen.getAllByTitle('ترتيب السؤال في الاختبار');
+    chips = screen.getAllByTitle('ترتيبه في الاختبار');
     expect(chips).toHaveLength(1);
     expect(chips[0]).toHaveTextContent('ترتيبه في الاختبار: 1');
   });
@@ -1070,7 +1071,7 @@ describe('GradeAttemptModal — verdicts → payload → finalize', () => {
 
     // Submit with no verdicts → the client mirror of reconcileManualGrades.
     fireEvent.click(within(dialog).getByRole('button', { name: 'حفظ التصحيح واعتماد الدرجة' }));
-    expect(await within(dialog).findByText(/حدِّد حكمك — صحيحة أم خاطئة — لكل إجابة معلّقة/)).toBeInTheDocument();
+    expect(await within(dialog).findByText(/حدِّد حكم كل إجابة معلّقة قبل الحفظ/)).toBeInTheDocument();
     // Flush the microtasks a legitimate submit would need — the block is
     // semantic, not a timing artifact.
     await act(async () => { await Promise.resolve(); });
@@ -1147,7 +1148,7 @@ describe('GradeAttemptModal — verdicts → payload → finalize', () => {
     // Only the first answer gets a verdict → the client mirror blocks.
     fireEvent.click(within(g1).getByRole('button', { name: 'صحيحة' }));
     fireEvent.click(within(dialog).getByRole('button', { name: 'حفظ التصحيح واعتماد الدرجة' }));
-    expect(await within(dialog).findByText(/حدِّد حكمك — صحيحة أم خاطئة — لكل إجابة معلّقة/)).toBeInTheDocument();
+    expect(await within(dialog).findByText(/حدِّد حكم كل إجابة معلّقة قبل الحفظ/)).toBeInTheDocument();
 
     // The undecided card is flagged (data-invalid + aria-invalid on its
     // verdict group); the decided one is not.

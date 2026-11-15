@@ -76,13 +76,13 @@ import '../../styles/student/pages.css';
 import '../../styles/student/community.css';
 
 const SCOPE_LABEL: Record<string, string> = {
-  PLATFORM: 'كل المنصة', FACULTY: 'كلّيّة', DEPARTMENT: 'قسم', OFFERING: 'مقرر',
+  PLATFORM: 'المنصّة', FACULTY: 'كلّيّة', DEPARTMENT: 'قسم', OFFERING: 'مقرر',
 };
 const SCOPE_COLOR: Record<string, 'brand' | 'green' | 'gold' | 'purple'> = {
   PLATFORM: 'brand', FACULTY: 'green', DEPARTMENT: 'purple', OFFERING: 'gold',
 };
 const ROLE_LABEL: Record<string, string> = {
-  STUDENT: 'طالب', TEACHER: 'أستاذ', QUALITY: 'مكتب الجودة',
+  STUDENT: 'طالب', TEACHER: 'أستاذ', QUALITY: 'الجودة',
 };
 /* R320 §B: ADMIN (and any future role) resolves through the shared map —
    the local entries keep the community page's established wording for
@@ -103,7 +103,7 @@ const COMMUNITY_TABS: Array<{ key: CommunityTab; label: string; icon: LucideIcon
   /* r180-F3: غرف الدراسة + المنشورات — نفس شريط التبويبات ونمطه
      (أيقونة Lucide بحجم 13 + تسمية عربية)، ومسار لوحة المفاتيح
      أعلاه (roving tabindex + أسهم RTL) يعمل تلقائيًا مع الإضافات. */
-  { key: 'rooms', label: 'غرف الدراسة', icon: Users },
+  { key: 'rooms', label: 'الغرف', icon: Users },
   { key: 'posts', label: 'المنشورات', icon: MessageCircle },
 ];
 
@@ -176,9 +176,7 @@ export default function CommunityPage() {
           display rung via r321-community.css (≤32px at every band). */}
       <PageHeader
         index="01"
-        eyebrow="الحياة الأكاديمية"
         title="المجتمع الجامعي"
-        description="إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية."
         actions={
           /* R342-11: the ALWAYS-ON header pair (the D7d/D11 measured
            * seat) — the hover axis + every role's phone-band primary.
@@ -192,10 +190,10 @@ export default function CommunityPage() {
            * per-role create verbs (capabilities-gated as before). */
           <>
             <Link to="/competitions" className="btn accent sm">
-              صفحة المسابقات الكاملة
+              المسابقات
             </Link>
             <Link to="/colleges" className="btn ghost sm">
-              كلّيّات الجامعة
+              الكليات
             </Link>
             {tab === 'announcements' && canAnnounce && (
               <button type="button" className="btn primary" onClick={() => setCreatingAnnouncement(true)}>
@@ -246,9 +244,9 @@ export default function CommunityPage() {
           القيم الصادقة نفسها (…/—/formatNum) بلا آبار أيقونات. */}
       <StatLine
         items={[
-          { label: 'إعلانات نشطة', value: annCount, tone: 'signal' },
-          { label: 'مسابقات مفتوحة', value: compsCount },
-          { label: 'فعاليات قادمة', value: eventsCount, tone: 'positive' },
+          { label: 'نشطة', value: annCount, tone: 'signal' },
+          { label: 'مفتوحة', value: compsCount },
+          { label: 'قادمة', value: eventsCount, tone: 'positive' },
         ]}
       />
 
@@ -269,17 +267,17 @@ export default function CommunityPage() {
             meta={!ann.isPending && !ann.isError && (ann.data?.length ?? 0) > 0 ? (
               <BarCount
                 n={ann.data?.length ?? 0}
-                srLabel={countAr(ann.data?.length ?? 0, ['إعلان واحد', 'إعلانان', 'إعلانات', 'إعلان'])}
+                srLabel={countAr(ann.data?.length ?? 0, ['إعلان', 'إعلانان', 'إعلانات', 'إعلان'])}
               />
             ) : undefined}
           />
           {ann.isError ? (
-            <ErrorState message="تعذَّر تحميل الإعلانات" error={ann.error} onRetry={() => ann.refetch()} />
+            <ErrorState message="تعذَّر التحميل." error={ann.error} onRetry={() => ann.refetch()} />
           ) : (
             <RowList
               aria-label="قائمة الإعلانات"
               loading={ann.isPending}
-              empty={<EmptyCell label="لا توجد إعلانات بعد" note="ستظهر هنا إعلانات الجامعة والكليات والأقسام." />}
+              empty={<EmptyCell label="لا إعلانات" />}
             >
               {ann.data?.map((a) => <AnnouncementCard key={a.id} announcement={a} />)}
             </RowList>
@@ -301,17 +299,17 @@ export default function CommunityPage() {
                     StatLine's OPEN-only count keeps its own label. */
               <BarCount
                 n={comps.data?.length ?? 0}
-                srLabel={countAr(comps.data?.length ?? 0, ['مسابقة واحدة', 'مسابقتان', 'مسابقات', 'مسابقة'])}
+                srLabel={countAr(comps.data?.length ?? 0, ['مسابقة', 'مسابقتان', 'مسابقات', 'مسابقة'])}
               />
             ) : undefined}
           />
           {comps.isError ? (
-            <ErrorState message="تعذَّر تحميل المسابقات" error={comps.error} onRetry={() => comps.refetch()} />
+            <ErrorState message="تعذَّر التحميل." error={comps.error} onRetry={() => comps.refetch()} />
           ) : (
             <RowList
               aria-label="قائمة المسابقات"
               loading={comps.isPending}
-              empty={<EmptyCell label="لا توجد مسابقات بعد" note="تظهر المسابقات عند إعلانها." />}
+              empty={<EmptyCell label="لا مسابقات" />}
             >
               {comps.data?.map((c) => <CompetitionCard key={c.id} competition={c} />)}
             </RowList>
@@ -333,17 +331,17 @@ export default function CommunityPage() {
                     StatLine's future-only count keeps its own label. */
               <BarCount
                 n={events.data?.length ?? 0}
-                srLabel={countAr(events.data?.length ?? 0, ['فعاليّة واحدة', 'فعاليّتان', 'فعاليات', 'فعاليّة'])}
+                srLabel={countAr(events.data?.length ?? 0, ['فعاليّة', 'فعاليّتان', 'فعاليات', 'فعاليّة'])}
               />
             ) : undefined}
           />
           {events.isError ? (
-            <ErrorState message="تعذَّر تحميل الفعاليات" error={events.error} onRetry={() => events.refetch()} />
+            <ErrorState message="تعذَّر التحميل." error={events.error} onRetry={() => events.refetch()} />
           ) : (
             <RowList
               aria-label="قائمة الفعاليات"
               loading={events.isPending}
-              empty={<EmptyCell label="لا توجد فعاليات قادمة بعد" note="تظهر الفعاليات عند جدولتها." />}
+              empty={<EmptyCell label="لا فعاليات" />}
             >
               {events.data?.map((e) => <EventCard key={e.id} event={e} />)}
             </RowList>
@@ -404,7 +402,7 @@ function AnnouncementCard({ announcement: a }: { announcement: AnnouncementRow }
           <Badge color={SCOPE_COLOR[a.scope]}>{SCOPE_LABEL[a.scope]}</Badge>
         </>
       }
-      expandLabel={`عرض نص الإعلان: ${a.title}`}
+      expandLabel={`عرض: ${a.title}`}
       defaultExpanded={a.pinned}
     >
       <p style={{ margin: 0 }}>{a.body}</p>
@@ -425,12 +423,12 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
   const hours = Math.max(0, Math.floor(msLeft / 3600000));
   const daysLabel =
     days >= 1
-      ? days === 1 ? 'يوم واحد متبقٍ'
-        : days === 2 ? 'يومان متبقيان'
-          : days <= 10 ? `${days} أيام متبقية`
-            : `${days} يوماً متبقياً`
-      : hours >= 1 ? `تنتهي بعد ${arUnit(hours, 'ساعة', 'ساعتين', 'ساعات')}`
-        : 'تنتهي خلال دقائق';
+      ? days === 1 ? 'يوم'
+        : days === 2 ? 'يومان'
+          : days <= 10 ? `${days} أيام`
+            : `${days} يوماً`
+      : hours >= 1 ? `بعد ${arUnit(hours, 'ساعة', 'ساعتين', 'ساعات')}`
+        : 'قريباً';
   return (
     /* r262 (اتجاه Superlist): صفّ هادئ والعنوان هو باب الصف (عرف
        «الاسم هو باب الصفّ») — رابط حقيقي إلى تفاصيل المسابقة بدل
@@ -452,7 +450,7 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
           ) : c.status === 'CLOSED' ? (
             <Badge color="amber">مغلقة</Badge>
           ) : c.status === 'JUDGED' ? (
-            <Badge color="gold">تمّ التحكيم</Badge>
+            <Badge color="gold">محكّمة</Badge>
           ) : (
             <Badge color="amber">انتهى التقديم</Badge>
           )}
@@ -468,8 +466,8 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
           <span className="cp-inline">
             <Icon icon={Users} size={12} />
             {c._count.entries === 0
-              ? (isOpen ? 'كن أول المشاركين' : 'لا مشاركات')
-              : c._count.entries === 1 ? 'مشترك واحد' : arUnit(c._count.entries, 'مشترك', 'مشتركان', 'مشتركين')}
+              ? (isOpen ? 'كن الأول' : 'لا مشاركات')
+              : arUnit(c._count.entries, 'مشترك', 'مشتركان', 'مشتركين')}
           </span>
         </span>
       }
@@ -525,7 +523,7 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
           {/* 5-B1: the count is GOING-only — «لن أحضر» declines never
               occupied a seat; the tooltip states exactly what the pair
               measures. */}
-          <span title="الحضور المؤكّدون من إجمالي السعة">
+          <span title="من السعة">
             {/* r305 (2-c): عقد الأرقام — formatNum حصرًا (السعة حتى
                 10,000 تصل مجمّعة «1,000» لا خامًا). */}
             <Icon icon={Users} size={11} /> <bdi>{formatNum(e._count.rsvps)} / {formatNum(e.capacity)}</bdi>
@@ -540,7 +538,7 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
           rsvpTo={rsvpTo}
         />
       }
-      expandLabel={`عرض وصف الفعالية: ${e.title}`}
+      expandLabel={`عرض: ${e.title}`}
     >
       <p style={{ margin: 0 }}>{e.description}</p>
     </RowItem>
@@ -586,7 +584,7 @@ function EventRsvpControls({ mine, failed, rsvpPending, rsvpTo }: {
       </button>
       {failed && (
         <span className="event-rsvp-fail" role="alert">
-          <Icon icon={AlertTriangle} size={12} aria-hidden /> تعذّر تسجيل ردّك
+          <Icon icon={AlertTriangle} size={12} aria-hidden /> تعذَّر التسجيل.
         </span>
       )}
     </span>
@@ -694,7 +692,7 @@ const announcementSchema = z.object({
   iconEmoji: z.string().max(8).optional(),
 }).superRefine((data, ctx) => {
   if (data.scope !== 'PLATFORM' && !data.scopeId) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['scopeId'], message: 'مطلوب لهذا النطاق' });
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['scopeId'], message: 'مطلوب' });
   }
 });
 type AnnouncementInputs = z.infer<typeof announcementSchema>;
@@ -703,7 +701,7 @@ const ANN_ICONS = ['📢', '📌', '🎓', '🏆', '⚠️', '✨', '📝', '�
 /* r152a (A6 P3-5): controlled Arabic names so SR announcements stay in
  * the app's language instead of the SR's emoji localization. */
 const ANN_ICON_NAMES_AR: Record<string, string> = {
-  '📢': 'مكبّر صوت', '📌': 'دبوس', '🎓': 'قبعة تخرّج', '🏆': 'كأس', // allow-emoji: a11y name map for the admin-picker palette above
+  '📢': 'مكبّر', '📌': 'دبوس', '🎓': 'قبعة', '🏆': 'كأس', // allow-emoji: a11y name map for the admin-picker palette above
   '⚠️': 'تنبيه', '✨': 'بريق', '📝': 'ملاحظة', '🗓️': 'تقويم', // allow-emoji: a11y name map for the admin-picker palette above
 };
 
@@ -786,7 +784,7 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
                 form.setValue('scopeId', '');
               }}
             >
-              {canPlatform && <option value="PLATFORM">على مستوى المنصّة</option>}
+              {canPlatform && <option value="PLATFORM">المنصّة</option>}
               <option value="FACULTY">كلّيّة</option>
               <option value="DEPARTMENT">قسم</option>
               {canOffering && <option value="OFFERING">مقرر</option>}
@@ -842,17 +840,16 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
             <label className="form-field-label" htmlFor={pinnedId}>تثبيت</label>
             <span className="flex items-center gap-2" style={{ marginBlockStart: 'var(--sp-2)' }}>
               <input id={pinnedId} type="checkbox" {...form.register('pinned')} />
-              <span className="text-sm text-muted">إبقاء الإعلان في أعلى التغذية</span>
             </span>
           </div>
         </div>
 
-        {create.isError && <div className="auth-error">تعذَّر النشر. تحقَّق من البيانات.</div>}
+        {create.isError && <div className="auth-error">تعذَّر النشر.</div>}
 
         <ComposerModalActions
           requestClose={requestClose}
           pending={create.isPending}
-          pendingLabel="جارٍ النشر…"
+          pendingLabel="جارٍ…"
           submitLabel="نشر الإعلان"
         />
     </ComposerModal>
@@ -876,11 +873,11 @@ function OfferingScopeSelect({
   /* 5-C4 (A10 P2-3): the load/empty notices ride the FormField hint
      slot, so aria-describedby covers them too. */
   const hint = offerings.isPending
-    ? 'جارٍ تحميل مقرّراتك…'
+    ? 'جارٍ…'
     : offerings.isError
-      ? 'تعذَّر تحميل المقرّرات.'
+      ? 'تعذَّر التحميل.'
       : (offerings.data?.length ?? 0) === 0
-        ? 'لا توجد مقرّرات مُسنَدة إليك حالياً.'
+        ? 'لا مقرّرات.'
         : undefined;
   return (
     <FormField label="المقرر" id={id} error={error} hint={hint}>
@@ -905,15 +902,15 @@ const eventSchema = z.object({
   capacity: z.coerce.number().int().min(1).max(10_000).default(100),
   iconEmoji: z.string().max(8).optional(),
 }).refine((d) => new Date(d.endsAt) > new Date(d.startsAt), {
-  message: 'النهاية يجب أن تكون بعد البداية', path: ['endsAt'],
+  message: 'النهاية بعد البداية', path: ['endsAt'],
 });
 type EventInputs = z.infer<typeof eventSchema>;
 
 const EVENT_ICONS = ['📅', '🎤', '🎓', '🔬', '⚽', '🎨', '🧑‍🏫', '🤝']; // allow-emoji: admin icon-picker palette
 /* r152a (A6 P3-5): controlled Arabic names for SR announcements. */
 const EVENT_ICON_NAMES_AR: Record<string, string> = {
-  '📅': 'تقويم', '🎤': 'ميكروفون', '🎓': 'قبعة تخرّج', '🔬': 'مجهر', // allow-emoji: a11y name map for the admin-picker palette above
-  '⚽': 'كرة قدم', '🎨': 'لوحة ألوان', '🧑‍🏫': 'مدرّس', '🤝': 'مصافحة', // allow-emoji: a11y name map for the admin-picker palette above
+  '📅': 'تقويم', '🎤': 'ميكروفون', '🎓': 'قبعة', '🔬': 'مجهر', // allow-emoji: a11y name map for the admin-picker palette above
+  '⚽': 'كرة', '🎨': 'ألوان', '🧑‍🏫': 'مدرّس', '🤝': 'مصافحة', // allow-emoji: a11y name map for the admin-picker palette above
 };
 
 function CreateEventModal({ onClose }: { onClose: () => void }) {
@@ -972,7 +969,7 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
           <textarea rows={3} {...form.register('description')} className="auth-input" style={{ resize: 'vertical' }} />
         </FormField>
         <FormField label="المكان" error={form.formState.errors.location?.message}>
-          <input type="text" placeholder="مدرَج الكلّيّة، قاعة 301…" {...form.register('location')} className="auth-input" />
+          <input type="text" placeholder="قاعة 301…" {...form.register('location')} className="auth-input" />
         </FormField>
         <div className="comp-form-row">
           <FormField label="البداية" error={form.formState.errors.startsAt?.message}>
@@ -983,7 +980,7 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
           </FormField>
         </div>
         <div className="comp-form-row">
-          <FormField label="السعة القصوى">
+          <FormField label="السعة">
             <input type="number" min={1} max={10000} {...form.register('capacity')} className="auth-input" />
           </FormField>
           {/* R321 B4: the ×2 palette group rides the ONE shared
@@ -997,12 +994,12 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
             onPick={(ic) => form.setValue('iconEmoji', ic)}
           />
         </div>
-        {create.isError && <div className="auth-error">تعذَّر إنشاء الفعاليّة — تحقَّق من البيانات.</div>}
+        {create.isError && <div className="auth-error">تعذَّر الإنشاء.</div>}
         <ComposerModalActions
           requestClose={requestClose}
           pending={create.isPending}
-          pendingLabel="جارٍ الحفظ…"
-          submitLabel="إنشاء الفعاليّة"
+          pendingLabel="جارٍ…"
+          submitLabel="إنشاء"
         />
     </ComposerModal>
   );

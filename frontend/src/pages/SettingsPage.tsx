@@ -45,16 +45,12 @@ export default function SettingsPage() {
     <PageFrame width="default">
       <PageHeader
         title="إعدادات الحساب"
-        description="مظهرك وكلمة مرورك ومقاعد حسابك — في ورقة واحدة لكل الأدوار."
         eyebrow="الحساب"
       />
 
       {/* ── [01] المظهر ─────────────────────────────────────────── */}
       <section>
         <SectionBar index="01" title="المظهر" />
-        <p className="set-note">
-          اختيارك يُطبَّق فورًا ويُحفظ في ملفك — تجده على أجهزتك الأخرى.
-        </p>
         <Card>
           <div className="set-row">
             <div className="set-row-main">
@@ -73,7 +69,7 @@ export default function SettingsPage() {
       <section>
         <SectionBar index="02" title="تغيير كلمة المرور" />
         <p className="set-note">
-          متاح لكل الأدوار — عند التغيير تُنهى جلسات بقية الأجهزة، وتبقى جلستك مفتوحة.
+          عند التغيير تُنهى جلسات بقية الأجهزة، وتبقى جلستك مفتوحة.
         </p>
         <ChangePasswordCard />
       </section>
@@ -81,7 +77,6 @@ export default function SettingsPage() {
       {/* ── [03] معلومات الحساب والتحقق ─────────────────────────── */}
       <section>
         <SectionBar index="03" title="معلومات الحساب والتحقق" />
-        <p className="set-note">كما تقرؤها الخدمة الآن — لا حاجة لتخمين ما هو محفوظ.</p>
         <Card>
           <div className="set-row">
             <div className="set-row-main">
@@ -132,57 +127,43 @@ export default function SettingsPage() {
       {/* ── [04] الإشعارات (مقعد صادق) ──────────────────────────── */}
       <section>
         <SectionBar index="04" title="الإشعارات" />
-        <p className="set-note">تفضيلات الإشعارات (البريد داخل المنصة وغيرها) غير متاحة بعد.</p>
         <EmptyCell
           label="قريبًا"
-          note={
-            <>
-              التنبيهات عبر الجرس؛ تفضيلات لكل نوع تحتاج أعمدةً لم تُبنَ —
-              تُفتح أول ما تصل.
-            </>
-          }
+          note="التنبيهات عبر الجرس."
         />
       </section>
 
       {/* ── [05] اللغة والأرقام (مقعد صادق) ─────────────────────── */}
       <section>
         <SectionBar index="05" title="اللغة والأرقام" />
-        <p className="set-note">مدارك عربية-أولًا بلغة واحدة اليوم؛ مقعد اللغة محجوز.</p>
         <EmptyCell
           label="العربية (الوحيدة حاليًا)"
-          note="واجهة عربية RTL واحدة؛ لغات بديلة قرار إطلاق لاحق."
+          note="لغات بديلة لاحقًا."
         />
       </section>
 
       {/* ── [06] الجلسات والأجهزة (مقعد صادق) ───────────────────── */}
       <section>
         <SectionBar index="06" title="الجلسات والأجهزة" />
-        <p className="set-note">قائمة الأجهزة النشطة غير متاحة بعد — وسيلة إنهائها الفعّالة متاحة الآن.</p>
         <EmptyCell
           label="قريبًا"
-          note={
-            <>
-              لا واجهة للجلسات بعد — تغيير كلمة المرور (القسم [02]) يُنهي جلسات
-              بقية الأجهزة ويُبقي جلستك الحالية.
-            </>
-          }
+          note="أنهِ بقية الجلسات عبر تغيير كلمة المرور أعلاه."
         />
       </section>
 
       {/* ── [07] بياناتي (مقعد صادق + قناة) ─────────────────────── */}
       <section>
         <SectionBar index="07" title="بياناتي" />
-        <p className="set-note">لا يوجد تصدير ذاتي أو حذف ذاتي بعد — الطلب يصل عبر قناة التواصل.</p>
         <EmptyCell
           label="عبر الطلب"
           note={
             <>
-              لطلب نسخة من بياناتك أو حذف حسابك، استخدم <Link to="/contact">صفحة التواصل</Link> —
-              الطلبات تُنفيذ يدويًا من فريق المنصة في هذه المرحلة التجريبية. ما نجمعه ولماذا موثّق في{' '}
+              لنسخ بياناتك أو حذف حسابك استخدم <Link to="/contact">صفحة التواصل</Link> —
+              تُنفَّذ الطلبات يدويًا. ما نجمعه موثّق في{' '}
               <Link to="/legal/privacy">سياسة الخصوصية</Link>.
             </>
           }
-          action={<Link to="/contact" className="btn lg"><Icon icon={Bell} size={16} />فتح قناة التواصل</Link>}
+          action={<Link to="/contact" className="btn lg"><Icon icon={Bell} size={16} />تواصل معنا</Link>}
         />
       </section>
     </PageFrame>
