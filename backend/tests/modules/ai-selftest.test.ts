@@ -85,7 +85,7 @@ describe('probeProvider', () => {
 
   it('falls through to the next model on a 404 model-not-found', async () => {
     const calls: string[] = [];
-    const fetchImpl = async (url: string, init: RequestInit) => {
+    const fetchImpl = async (_url: string, init: RequestInit) => {
       const method = (init.method as string) ?? 'GET';
       if (method === 'GET') return new Response(JSON.stringify(okModels), { status: 200 });
       const body = JSON.parse(init.body as string) as { model: string };
@@ -106,7 +106,7 @@ describe('probeProvider', () => {
 
   it('stops on a real refusal without trying further models', async () => {
     const calls: string[] = [];
-    const fetchImpl = async (url: string, init: RequestInit) => {
+    const fetchImpl = async (_url: string, init: RequestInit) => {
       const method = (init.method as string) ?? 'GET';
       if (method === 'GET') return new Response(JSON.stringify(okModels), { status: 200 });
       const body = JSON.parse(init.body as string) as { model: string };
