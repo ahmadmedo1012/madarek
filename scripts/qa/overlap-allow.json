@@ -20,6 +20,18 @@
     {
       "match": "div.nf-frame",
       "reason": "R353 P1 — the 404/legal sheets' DRAFTING FRAME, the .auth-frame twin (patterns.css:635, W7 dedup — identical bodies, same layer). Decorative 1px fixed frame, aria-hidden, pointer-transparent; the big-fixed flag measures its inset box, not any ink. Same construction as div.sheet-frame / div.auth-frame."
+    },
+    {
+      "match": "nav.sidebar.collapsed",
+      "reason": "R353 P1 — the AppShell's COLLAPSED sidebar rail (the same global chrome family as the allowlisted header.topbar): the icon-only navigation rail the app pins on content-width viewports by design. Its ~56-64px width measures >6% of a 360-640 viewport by construction, not by defect — it is the platform's primary navigation (the R353 P4 AppShell contract), contains only its own controls, and content scrolls beside it, never under its ink. Proven intentional: every authed page renders inside AppShell; the expanded drawer variant is the same nav at larger size."
+    },
+    {
+      "match": "div.pf-filterbar.sticky",
+      "reason": "R353 P1 — the patterns FilterBar's DOCUMENTED sticky mode (FilterBar.tsx:10-12 'pins it to the top of the app's scroll container', patterns.css:340 'a SOLID paper band + hairline — filters stay readable while rows slide beneath them'): the page's own filter controls, opaque background var(--bg) (occlusion-safe — content under it is genuinely hidden, the probe's coveredBy honors it), z-index 3 inside the scroll container. The >6% viewport fraction at 360x640 (17.4%) is construction (wrapped filter controls on a small viewport), not a defect — the same sticky-toolbars pattern as the allowlisted header.topbar."
+    },
+    {
+      "match": "div.pf-split-detail",
+      "reason": "R353 P1 — the patterns SplitView's sticky DETAIL pane (patterns.css:265, the R353 P4 dvh contract seat): the master-detail layout's right column sticks while the left list scrolls — a grid SIBLING track (grid-template-columns: minmax(320px,420px) + 1fr), so it never paints over the list, it owns its own track; hidden below 920px by design. The >6% viewport fraction at 1024/1440 (12.6-13.9%) is construction (a wide detail column on a 768px-tall viewport), not a cover — the same master-detail sticky pattern as div.jt-map-in (allowlisted R347 D6)."
     }
   ]
 }

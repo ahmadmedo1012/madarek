@@ -86,6 +86,21 @@ const PROBE = () => {
   const tn = [], w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let n; (n = w.nextNode());) {
     if (!n.textContent.trim()) continue; const el = n.parentElement; if (!el || ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(el.tagName)) continue;
+    /* R353 P1b — sr-only/visually-hidden never paint (deliberate a11y
+     * hiding, the same law the clipped check enforces): a fixed element
+     * "covering" an sr-only rect is a phantom pair (fb-fab over the
+     * exams count on /student/exams, 1024x768). Excluded from the text
+     * rect set entirely. */
+    if (el.classList.contains('sr-only') || el.classList.contains('visually-hidden')) continue;
+    /* R353 P1b — a CLOSED <details> paints nothing: the UA hides the
+     * slot content (::details-content content-visibility) but the layout
+     * rects survive getClientRects — collapsed FAQ answers park their
+     * phantom rects on the question headings (1266 phantom pairs on
+     * /help alone in the first full-width crawl). The <summary> itself
+     * stays painted. Same family as .sr-only/occlusion: deliberate
+     * hiding, never a defect. */
+    const dt = el.closest('details');
+    if (dt && !dt.open && !el.closest('summary')) continue;
     if (eff(el) < 0.08) continue;
     const r = document.createRange(); r.selectNodeContents(n);
     for (const b of r.getClientRects()) { if (b.width < 4 || b.height < 6) continue; if (b.bottom < 0 || b.top > vh || b.right < 0 || b.left > vw) continue; const c = clipToAncestors(el, b); if (!c || c.w < 4 || c.h < 6) continue;
@@ -207,7 +222,7 @@ const PROBE = () => {
     const b = { left: bx, top: by, right: bx1, bottom: by1, width: bx1 - bx, height: by1 - by };
     for (const p of tn) { if (el.contains(p.el)) continue; if (inter({ x: b.left, y: b.top, w: b.width, h: b.height }, p) / (p.w * p.h) > 0.3) { if (coveredBy(el, p.el)) continue; res.fixedText.push({ fixed: sel(el), under: sel(p.el), t: p.t }); } }
   }
-  for (const p of tn) { const e = p.el, s = getComputedStyle(e); if (e.classList.contains('sr-only')) continue; /* R353 P1 — sr-only is deliberate a11y hiding (the clip IS the technique), never a clipped defect */ if ((s.overflow !== 'visible') && e.scrollWidth > e.clientWidth + 2 && s.textOverflow !== 'ellipsis' && e.clientWidth > 0) res.clipped.push({ el: sel(e), t: p.t }); }
+  for (const p of tn) { const e = p.el, s = getComputedStyle(e); if (e.classList.contains('sr-only') || e.classList.contains('visually-hidden')) continue; /* R353 P1 — sr-only/visually-hidden are deliberate a11y hiding (the clip IS the technique), never a clipped defect — the visually-hidden twin found on /student/colleges' landmark helpers (32 phantom clips) */ if ((s.overflow !== 'visible') && e.scrollWidth > e.clientWidth + 2 && s.textOverflow !== 'ellipsis' && e.clientWidth > 0) res.clipped.push({ el: sel(e), t: p.t }); }
   res.hoverflow = Math.max(0, document.documentElement.scrollWidth - vw);
   return res;
 };
