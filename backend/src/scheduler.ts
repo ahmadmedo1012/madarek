@@ -11,6 +11,9 @@ import {
   appUrl,
   formatLyDateTime,
 } from './lib/mail-events.js';
+// R353 N — the bell/push twin of the due reminder (see core.ts).
+import { assignmentDueReminderPayload } from './modules/notifications/core.js';
+import { fanOutPush } from './modules/notifications/push.js';
 
 /**
  * Lightweight in-process scheduler.
@@ -269,6 +272,8 @@ const SATISFIED_SUBMISSION_STATUSES = ['SUBMITTED', 'GRADED', 'RETURNED'] as con
 export async function sendAssignmentDueReminders(now: Date = new Date()): Promise<{
   assignments: number;
   queued: number;
+  /** R353 N — bell rows written (the push fan-out rides each; deduped). */
+  bells: number;
 }> {
   const from = new Date(now.getTime() + ASSIGNMENT_DUE_WINDOW_MIN_H * 3_600_000);
   const to = new Date(now.getTime() + ASSIGNMENT_DUE_WINDOW_MAX_H * 3_600_000);
@@ -291,10 +296,11 @@ export async function sendAssignmentDueReminders(now: Date = new Date()): Promis
     },
   });
   let queued = 0;
+  let bells = 0;
   for (const a of assignments) {
     for (const e of a.offering.enrollments) {
       const student = e.student;
-      if (!student.isActive || !isDeliverableEmail(student.email)) continue;
+      if (!student.isActive) continue;
       // Skip students who already satisfied the assignment.
       const satisfied = await prisma.submission.findFirst({
         where: {
@@ -305,6 +311,27 @@ export async function sendAssignmentDueReminders(now: Date = new Date()): Promis
         select: { id: true },
       });
       if (satisfied) continue;
+
+      // R353 N — the bell row + push twin (mail-only until now): the
+      // reminder lands in the inbox (and the push fan-out rides it,
+      // preference/quiet-hours-gated inside fanOutPush, best-effort,
+      // never throws) for every active unsatisfied student — including
+      // those without a deliverable email. Dedupe: title+body are a
+      // pure function of (title, dueAt), so repeat sweeps (cold-start
+      // boots, overlapping ticks) collapse to ONE row per assignment —
+      // the same law as the mail's dedupeKey, expressed on the payload.
+      const payload = assignmentDueReminderPayload(a.title, a.dueAt);
+      const seen = await prisma.notification.findFirst({
+        where: { userId: student.id, title: payload.title, body: payload.body },
+        select: { id: true },
+      });
+      if (!seen) {
+        await prisma.notification.create({ data: { userId: student.id, ...payload } });
+        await fanOutPush([student.id], payload);
+        bells += 1;
+      }
+
+      if (!isDeliverableEmail(student.email)) continue;
       await sendEventMail({
         userId: student.id,
         to: student.email,
@@ -318,7 +345,7 @@ export async function sendAssignmentDueReminders(now: Date = new Date()): Promis
       queued += 1;
     }
   }
-  return { assignments: assignments.length, queued };
+  return { assignments: assignments.length, queued, bells };
 }
 
 /** Never-throw wrapper (the retention contract). */

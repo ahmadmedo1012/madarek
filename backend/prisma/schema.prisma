@@ -2665,19 +2665,30 @@ model EmailVerificationToken {
   @@index([userId])
 }
 
-/// Per-user, per-category email toggles (E3's preference contract).
-/// Categories: security | account | courses | announcements | digest.
-/// ABSENT row = the category's default (security/account: ON and not
-/// user-suppressible for transactional essentials; courses/announcements/
-/// digest: ON until the user opts out — List-Unsubscribe also writes here).
+/// Per-user, per-category toggles (E3's mail preference contract, R353
+/// N's push extension). Mail categories: security | account | courses |
+/// announcements | digest. Push categories (R353 N): URGENT | ACADEMIC |
+/// SYSTEM | SOCIAL — one per NotificationPayload type; they share the
+/// table via the same (userId, category) unique key. ABSENT row = the
+/// category's default (mail: security/account ON and not user-
+/// suppressible for transactional essentials, courses/announcements/
+/// digest ON until opt-out — List-Unsubscribe also writes here; push:
+/// ON, no quiet hours — the fan-out reads the row once per event,
+/// batched, and the bell inbox row is ALWAYS written regardless).
 model NotificationPreference {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation("NotificationPreferences", fields: [userId], references: [id], onDelete: Cascade)
-  category    String
-  emailEnabled Boolean @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation("NotificationPreferences", fields: [userId], references: [id], onDelete: Cascade)
+  category     String
+  emailEnabled Boolean  @default(true)
+  pushEnabled  Boolean  @default(true)
+  /// Quiet-hours window [quietStart, quietEnd), UTC hours 0-23; the
+  /// window is active only when BOTH ends are set (a lone end = off).
+  /// Wrap-around (22→6) is the intended overnight shape.
+  quietStart   Int?
+  quietEnd     Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@unique([userId, category])
 }

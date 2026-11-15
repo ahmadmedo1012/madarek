@@ -1,5 +1,7 @@
 /**
  * r323 B3.3 — notification payloads (pure) — the grammar tests.
+ * R353 N additions: the quiet-hours predicate (every branch) and the
+ * assignment-due reminder payload (the sweep's bell/push twin).
  */
 import { describe, expect, it } from 'vitest';
 import {
@@ -7,9 +9,65 @@ import {
   arabicDayMonth,
   arabicDayMonthTime,
   assignmentCreatedPayload,
+  assignmentDueReminderPayload,
+  isQuietHour,
   liveScheduledPayload,
   materialCreatedPayload,
+  PUSH_CATEGORIES,
 } from '../../src/modules/notifications/core.js';
+
+describe('R353 N — isQuietHour (the [start, end) window, UTC hours)', () => {
+  it('a same-day window: start inclusive, end exclusive', () => {
+    expect(isQuietHour(9, 9, 17)).toBe(true);
+    expect(isQuietHour(16, 9, 17)).toBe(true);
+    expect(isQuietHour(17, 9, 17)).toBe(false); // end NOT quiet
+    expect(isQuietHour(8, 9, 17)).toBe(false);
+  });
+
+  it('a wrap-around window (22→6): 22..23 and 0..5 are quiet', () => {
+    expect(isQuietHour(22, 22, 6)).toBe(true);
+    expect(isQuietHour(23, 22, 6)).toBe(true);
+    expect(isQuietHour(0, 22, 6)).toBe(true);
+    expect(isQuietHour(5, 22, 6)).toBe(true);
+    expect(isQuietHour(6, 22, 6)).toBe(false); // end NOT quiet
+    expect(isQuietHour(12, 22, 6)).toBe(false);
+    expect(isQuietHour(21, 22, 6)).toBe(false);
+  });
+
+  it('start === end is an EMPTY window ([x, x) — muting a category is what pushEnabled=false is for)', () => {
+    expect(isQuietHour(5, 5, 5)).toBe(false);
+    expect(isQuietHour(23, 23, 23)).toBe(false);
+  });
+
+  it('the full-day minus one shape (0→23) is almost everything', () => {
+    expect(isQuietHour(0, 0, 23)).toBe(true);
+    expect(isQuietHour(22, 0, 23)).toBe(true);
+    expect(isQuietHour(23, 0, 23)).toBe(false);
+  });
+});
+
+describe('R353 N — the push category list + the reminder payload', () => {
+  it('the push categories are exactly the NotificationPayload types', () => {
+    expect([...PUSH_CATEGORIES]).toEqual(['URGENT', 'ACADEMIC', 'SYSTEM', 'SOCIAL']);
+  });
+
+  it('the reminder payload is a pure function of (title, dueAt) — the dedupe law', () => {
+    const due = new Date(2026, 10, 15, 23, 59);
+    const a = assignmentDueReminderPayload('بحوث الفصل', due);
+    const b = assignmentDueReminderPayload('بحوث الفصل', due);
+    expect(a).toEqual(b);
+    expect(a.type).toBe('ACADEMIC');
+    expect(a.icon).toBe('⏰');
+    expect(a.title).toBe('تذكير بتسليم تكليف');
+    expect(a.body).toBe(`بحوث الفصل — الاستحقاق 15 نوفمبر، 23:59`);
+    expect(a.link).toBe('/student/assignments');
+  });
+
+  it('the reminder payload truncates a long title to 80 chars', () => {
+    const p = assignmentDueReminderPayload('x'.repeat(120), new Date(2026, 10, 15));
+    expect(p.body.startsWith('x'.repeat(80))).toBe(true);
+  });
+});
 
 describe('arabicDayMonth / arabicDayMonthTime', () => {
   it('formats day + fixed Arabic month (no ICU, no year)', () => {

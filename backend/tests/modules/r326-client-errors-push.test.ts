@@ -13,6 +13,13 @@
  *   DELETE /me/push-devices/:id — own row deleted; another user's row 404
  *   GET  /status             — minAppVersion + updateUrl present (the
  *                              mobile gate reads them)
+ *
+ * R353 N additions (the push preferences):
+ *   GET  /me/push-preferences — the 4 categories (URGENT/ACADEMIC/
+ *                              SYSTEM/SOCIAL), absent = ON, no quiet
+ *                              hours; stored rows merge over the defaults
+ *   PUT  /me/push-preferences — upserts one category (pushEnabled +
+ *                              optional quiet hours 0-23, strict body)
  */
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { AddressInfo } from 'node:net';
@@ -32,6 +39,10 @@ vi.mock('../../src/db.js', () => ({
       findMany: vi.fn(),
       findUnique: vi.fn(),
       delete: vi.fn(),
+    },
+    notificationPreference: {
+      findMany: vi.fn(),
+      upsert: vi.fn(),
     },
   },
   withRetry: vi.fn(),
@@ -251,5 +262,105 @@ describe('GET /api/v1/status — the mobile gate fields', () => {
     const body = (await res.json()) as { data: { minAppVersion: string | null; updateUrl: string } };
     expect(body.data).toHaveProperty('minAppVersion');
     expect(body.data.updateUrl).toMatch(/^https:\/\//);
+  });
+});
+
+describe('R353 N — GET /api/v1/me/push-preferences', () => {
+  it('401s anonymous reads', async () => {
+    const res = await fetch(`${baseUrl}/api/v1/me/push-preferences`);
+    expect(res.status).toBe(401);
+  });
+
+  it('lists the 4 push categories with absent = ON and no quiet hours', async () => {
+    vi.mocked(prisma.notificationPreference.findMany).mockReset().mockResolvedValue([] as never);
+    const res = await fetch(`${baseUrl}/api/v1/me/push-preferences`, {
+      headers: { Authorization: `Bearer ${STUDENT_TOKEN}` },
+    });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { category: string; pushEnabled: boolean; quietStart: number | null; quietEnd: number | null }[] };
+    expect(body.data.map((d) => d.category)).toEqual(['URGENT', 'ACADEMIC', 'SYSTEM', 'SOCIAL']);
+    expect(body.data.every((d) => d.pushEnabled)).toBe(true); // absent = ON
+    expect(body.data.every((d) => d.quietStart === null && d.quietEnd === null)).toBe(true);
+  });
+
+  it('merges the caller’s stored rows over the defaults', async () => {
+    vi.mocked(prisma.notificationPreference.findMany)
+      .mockReset()
+      .mockResolvedValue([
+        { category: 'ACADEMIC', pushEnabled: false, quietStart: 22, quietEnd: 6 },
+      ] as never);
+    const res = await fetch(`${baseUrl}/api/v1/me/push-preferences`, {
+      headers: { Authorization: `Bearer ${STUDENT_TOKEN}` },
+    });
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { category: string; pushEnabled: boolean; quietStart: number | null; quietEnd: number | null }[] };
+    const academic = body.data.find((d) => d.category === 'ACADEMIC')!;
+    expect(academic.pushEnabled).toBe(false);
+    expect(academic.quietStart).toBe(22);
+    expect(academic.quietEnd).toBe(6);
+    expect(body.data.find((d) => d.category === 'SOCIAL')!.pushEnabled).toBe(true);
+  });
+});
+
+describe('R353 N — PUT /api/v1/me/push-preferences', () => {
+  it('401s anonymous writes', async () => {
+    const res = await fetch(`${baseUrl}/api/v1/me/push-preferences`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category: 'ACADEMIC', pushEnabled: false }),
+    });
+    expect(res.status).toBe(401);
+  });
+
+  it('upserts a category with quiet hours, scoped to the caller', async () => {
+    const upsert = vi.mocked(prisma.notificationPreference.upsert);
+    upsert.mockReset().mockResolvedValue({ category: 'ACADEMIC', pushEnabled: false, quietStart: 22, quietEnd: 6 } as never);
+    const res = await fetch(`${baseUrl}/api/v1/me/push-preferences`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${STUDENT_TOKEN}` },
+      body: JSON.stringify({ category: 'ACADEMIC', pushEnabled: false, quietStart: 22, quietEnd: 6 }),
+    });
+    expect(res.status).toBe(200);
+    const call = upsert.mock.calls.at(-1)![0] as {
+      where: { userId_category: { userId: string; category: string } };
+      update: { pushEnabled: boolean; quietStart: number | null; quietEnd: number | null };
+    };
+    expect(call.where.userId_category).toEqual({ userId: 'student-1', category: 'ACADEMIC' });
+    expect(call.update).toEqual({ pushEnabled: false, quietStart: 22, quietEnd: 6 });
+  });
+
+  it('clears the quiet window when the fields are absent (full-state PUT)', async () => {
+    const upsert = vi.mocked(prisma.notificationPreference.upsert);
+    upsert.mockReset().mockResolvedValue({ category: 'SOCIAL', pushEnabled: true, quietStart: null, quietEnd: null } as never);
+    const res = await fetch(`${baseUrl}/api/v1/me/push-preferences`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${STUDENT_TOKEN}` },
+      body: JSON.stringify({ category: 'SOCIAL', pushEnabled: true }),
+    });
+    expect(res.status).toBe(200);
+    const call = upsert.mock.calls.at(-1)![0] as { update: { quietStart: number | null; quietEnd: number | null } };
+    expect(call.update.quietStart).toBeNull();
+    expect(call.update.quietEnd).toBeNull();
+  });
+
+  it('refuses a junk category, out-of-range/misspelled hours, and extra fields (strict) with 400', async () => {
+    vi.mocked(prisma.notificationPreference.upsert).mockReset();
+    const attempts = [
+      { category: 'courses', pushEnabled: false }, // a mail category, not a push one
+      { category: 'ACADEMIC', pushEnabled: false, quietStart: 24 },
+      { category: 'ACADEMIC', pushEnabled: false, quietEnd: -1 },
+      { category: 'ACADEMIC', pushEnabled: false, quietStart: '22' }, // no coercion — a number or nothing
+      { category: 'ACADEMIC', pushEnabled: 'no' },
+      { category: 'ACADEMIC', pushEnabled: false, extra: true },
+    ];
+    for (const body of attempts) {
+      const res = await fetch(`${baseUrl}/api/v1/me/push-preferences`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${STUDENT_TOKEN}` },
+        body: JSON.stringify(body),
+      });
+      expect(res.status, `PUT body ${JSON.stringify(body)} must 400`).toBe(400);
+    }
+    expect(prisma.notificationPreference.upsert).not.toHaveBeenCalled();
   });
 });
