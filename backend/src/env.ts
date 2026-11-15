@@ -136,10 +136,13 @@ const schema = z
     // deployed site.
     MIN_APP_VERSION: z.string().trim().regex(/^\d+\.\d+\.\d+$/, 'MIN_APP_VERSION must be semver (e.g. 1.0.0)').optional(),
     APP_DOWNLOAD_URL: z.string().trim().url().optional(),
-    // ── r326 M2.6 — Expo push fan-out switch ── dark until the project
-    // is fully configured on the Expo dashboard (FCM/APNs credentials);
-    // registration routes are always on, only the send path is gated.
-    PUSH_ENABLED: z.coerce.boolean().default(false),
+    // ── r326 M2.6 — Expo push fan-out switch ── ON by default since
+    // R353 N (the mobile push lane): registration routes are always on,
+    // and the send path no longer needs a dashboard trip to breathe.
+    // z.coerce semantics (unchanged since r326): an UNSET var → true;
+    // any NON-EMPTY string ('false', '0'…) → also true. To dark-launch,
+    // set the var to an EMPTY value: PUSH_ENABLED="".
+    PUSH_ENABLED: z.coerce.boolean().default(true),
     AI_MODELS: z
       .string()
       .trim()

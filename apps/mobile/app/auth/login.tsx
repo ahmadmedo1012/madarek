@@ -12,6 +12,7 @@ import { Field, SecretField } from "@/components/ui/fields";
 import { Hairline, Card } from "@/components/ui/surfaces";
 import { BrandMark } from "@/components/ui/brand";
 import { resolveEntryDestination } from "@/components/ui/boot";
+import { takePendingDeepLink } from "@/lib/push";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 
@@ -62,7 +63,11 @@ export default function SignIn() {
     try {
       const user = await login(String(form.values.identifier).trim(), String(form.values.password));
       haptics.notify("success");
-      router.replace(resolveEntryDestination(user, params.continue, ROLE_HOME) as never);
+      // R353 — a push deep link parked at launch (or a tap while logged
+      // out) consumes HERE, riding the same guard rule as ?continue=:
+      // resolveEntryDestination honors it only when the session can.
+      const deepLink = await takePendingDeepLink();
+      router.replace(resolveEntryDestination(user, deepLink ?? params.continue, ROLE_HOME) as never);
     } catch (err) {
       // humanizeError: Arabic always — API Arabic copy passes through,
       // lockout/rate-limit/network map to honest Arabic sentences.

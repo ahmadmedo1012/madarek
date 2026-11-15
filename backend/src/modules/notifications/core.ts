@@ -17,6 +17,25 @@ export interface NotificationPayload {
   link: string;
 }
 
+/** R353 N — the push preference categories: one per NotificationPayload
+ *  type (the only category axis the push fan-out can see). Stored in
+ *  NotificationPreference.category alongside the mail categories
+ *  (security/account/courses/…); absent row = push ON, no quiet hours. */
+export const PUSH_CATEGORIES = ['URGENT', 'ACADEMIC', 'SYSTEM', 'SOCIAL'] as const;
+export type PushCategory = (typeof PUSH_CATEGORIES)[number];
+
+/** R353 N — is `hour` (UTC, 0-23) inside the quiet window
+ *  [start, end)? Half-open: `end` itself is NOT quiet. A window that
+ *  wraps midnight (start > end, e.g. 22→6) covers start..23 and 0..end-1.
+ *  start === end is an EMPTY window ([x, x) — the mathematically honest
+ *  reading; muting a category outright is what pushEnabled=false is
+ *  for). Pure on purpose: the unit tests pin every branch. */
+export function isQuietHour(hour: number, start: number, end: number): boolean {
+  if (start === end) return false;
+  if (start < end) return hour >= start && hour < end;
+  return hour >= start || hour < end; // wraps midnight
+}
+
 /** Arabic day-month WITHOUT year (the due/start dates the pilot
  *  needs are always within the term — the year is noise in a bell
  *  row). Fixed month names: no ICU dependency, byte-stable in tests. */
@@ -82,6 +101,21 @@ export function examPublishedPayload(
     title: `اختبار جديد: ${examTitle.slice(0, 80)}`,
     body: window,
     link: '/student/online-exams',
+  };
+}
+
+/** R353 N — the assignment-due REMINDER (the daily sweep's bell/push
+ *  twin of the mail): title+body are a pure function of (title, dueAt),
+ *  which the sweep leans on for its dedupe — the same assignment within
+ *  the same window always renders the same row, so repeat sweeps
+ *  collapse via a findFirst on (userId, title, body). */
+export function assignmentDueReminderPayload(title: string, dueAt: Date): NotificationPayload {
+  return {
+    type: 'ACADEMIC',
+    icon: '⏰',
+    title: 'تذكير بتسليم تكليف',
+    body: `${title.slice(0, 80)} — الاستحقاق ${arabicDayMonthTime(dueAt)}`,
+    link: '/student/assignments',
   };
 }
 

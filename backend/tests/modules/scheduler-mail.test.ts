@@ -2,6 +2,9 @@
  * R350 E3 — the scheduler's mail sweeps, pinned:
  *  · sendAssignmentDueReminders — the 12–36h window, the satisfied-
  *    submission skip, the placeholder-email skip, the per-day dedupe key;
+ *  · R353 N — the bell/push twin: Notification rows + fanOutPush ride
+ *    the reminder for EVERY active unsatisfied student (deliverable
+ *    email or not), deduped on the payload (repeat sweeps collapse);
  *  · sendWeeklyDigests — users without enrolments get no digest,
  *    enrolled users get their week's items, the ISO-week dedupe key;
  *  · never-throw wrappers (overlap + error) per the retention contract.
@@ -14,6 +17,7 @@ vi.mock('../../src/db.js', () => {
     assignment: { findMany: vi.fn(async () => []) },
     submission: { findFirst: vi.fn(async () => null) },
     examTemplate: { findMany: vi.fn(async () => []) },
+    notification: { findFirst: vi.fn(async () => null), create: vi.fn(async () => ({ id: 'n1' })) },
     notificationPreference: { findUnique: vi.fn(async () => null) },
     mailOutbox: { count: vi.fn(async () => 0), create: vi.fn(async () => ({ id: 'o1' })), findUnique: vi.fn() },
     mailSuppression: { findFirst: vi.fn(async () => null) },
@@ -23,8 +27,15 @@ vi.mock('../../src/db.js', () => {
 vi.mock('../../src/logger.js', () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
+// R353 N — the push fan-out is push.ts's own suite's business; here we
+// pin the SCHEDULER's contract with it (who gets called, with what).
+vi.mock('../../src/modules/notifications/push.js', () => ({
+  fanOutPush: vi.fn(async () => undefined),
+}));
 
 import { prisma } from '../../src/db.js';
+import { fanOutPush } from '../../src/modules/notifications/push.js';
+import { arabicDayMonthTime } from '../../src/modules/notifications/core.js';
 import {
   sendAssignmentDueReminders,
   sendWeeklyDigests,
@@ -40,6 +51,7 @@ const mocked = prisma as unknown as {
   assignment: { findMany: ReturnType<typeof vi.fn> };
   submission: { findFirst: ReturnType<typeof vi.fn> };
   examTemplate: { findMany: ReturnType<typeof vi.fn> };
+  notification: { findFirst: ReturnType<typeof vi.fn>; create: ReturnType<typeof vi.fn> };
   mailOutbox: { create: ReturnType<typeof vi.fn> };
 };
 
@@ -64,13 +76,19 @@ const baseAssignment = (over: Partial<Parameters<typeof sendAssignmentDueReminde
 beforeEach(() => {
   vi.clearAllMocks();
   mocked.mailOutbox.create.mockResolvedValue({ id: 'o1' });
+  // R353 N — clearAllMocks clears HISTORY but keeps IMPLEMENTATIONS
+  // (a mockResolvedValue from an earlier test survives it); re-pin the
+  // swept defaults so every test starts from the factory state.
+  mocked.submission.findFirst.mockResolvedValue(null);
+  mocked.notification.findFirst.mockResolvedValue(null);
+  mocked.assignment.findMany.mockResolvedValue([]);
 });
 
 describe('R350 E3 — assignment-due reminders', () => {
   it('queries the 12–36h window and queues only deliverable active students', async () => {
     mocked.assignment.findMany.mockResolvedValue([baseAssignment()]);
     const r = await sendAssignmentDueReminders(NOW);
-    expect(r).toEqual({ assignments: 1, queued: 1 });
+    expect(r).toEqual({ assignments: 1, queued: 1, bells: 2 });
     const where = mocked.assignment.findMany.mock.calls[0]![0] as { where: { dueAt: { gte: Date; lte: Date } } };
     const minH = (where.where.dueAt.gte.getTime() - NOW.getTime()) / 3_600_000;
     const maxH = (where.where.dueAt.lte.getTime() - NOW.getTime()) / 3_600_000;
@@ -85,14 +103,16 @@ describe('R350 E3 — assignment-due reminders', () => {
     mocked.assignment.findMany.mockResolvedValue([baseAssignment()]);
     mocked.submission.findFirst.mockResolvedValue({ id: 's1' });
     const r = await sendAssignmentDueReminders(NOW);
-    expect(r).toEqual({ assignments: 1, queued: 0 });
+    expect(r).toEqual({ assignments: 1, queued: 0, bells: 0 });
     expect(mocked.mailOutbox.create).not.toHaveBeenCalled();
+    expect(mocked.notification.create).not.toHaveBeenCalled();
+    expect(fanOutPush).not.toHaveBeenCalled();
   });
 
   it('assignments outside the window never enter the query (the where owns it)', async () => {
     mocked.assignment.findMany.mockResolvedValue([]);
     const r = await sendAssignmentDueReminders(NOW);
-    expect(r).toEqual({ assignments: 0, queued: 0 });
+    expect(r).toEqual({ assignments: 0, queued: 0, bells: 0 });
     expect(OUT_OF_WINDOW.getTime()).toBeGreaterThan(0); // the window constant is pinned above
   });
 
@@ -101,6 +121,34 @@ describe('R350 E3 — assignment-due reminders', () => {
     await expect(sendAssignmentDueReminders(NOW)).rejects.toThrow('db down');
     const ok = await runAssignmentDueSweep('test');
     expect(ok).toBe(false);
+  });
+});
+
+describe('R353 N — the reminder’s bell/push twin', () => {
+  it('writes the Notification row + fanOutPush for every active unsatisfied student (email or not)', async () => {
+    mocked.assignment.findMany.mockResolvedValue([baseAssignment()]);
+    const r = await sendAssignmentDueReminders(NOW);
+    // u1 (deliverable) + u2 (placeholder email — no mail, but the bell
+    // and the push are still owed); u3 is inactive and gets nothing.
+    expect(r.bells).toBe(2);
+    expect(mocked.notification.create).toHaveBeenCalledTimes(2);
+    const rows = mocked.notification.create.mock.calls.map((c) => c[0]!.data as { userId: string; title: string; body: string; link: string; type: string });
+    expect(rows.map((d) => d.userId)).toEqual(['u1', 'u2']);
+    expect(rows[0]!.title).toBe('تذكير بتسليم تكليف');
+    expect(rows[0]!.body).toBe(`بحوث الفصل — الاستحقاق ${arabicDayMonthTime(IN_WINDOW)}`);
+    expect(rows[0]!.link).toBe('/student/assignments');
+    expect(vi.mocked(fanOutPush).mock.calls.map((c) => c[0])).toEqual([['u1'], ['u2']]);
+  });
+
+  it('dedupes on the payload — a repeat sweep (row already seen) writes nothing and pushes nothing', async () => {
+    mocked.assignment.findMany.mockResolvedValue([baseAssignment()]);
+    mocked.notification.findFirst.mockResolvedValue({ id: 'seen' });
+    const r = await sendAssignmentDueReminders(NOW);
+    expect(r.bells).toBe(0);
+    expect(mocked.notification.create).not.toHaveBeenCalled();
+    expect(fanOutPush).not.toHaveBeenCalled();
+    // the mail still rides its own dedupeKey (outbox) — queued: 1
+    expect(r.queued).toBe(1);
   });
 });
 

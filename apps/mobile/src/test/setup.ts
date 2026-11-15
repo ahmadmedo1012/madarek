@@ -96,8 +96,10 @@ jest.mock("expo-notifications", () => ({
   setBadgeCountAsync: jest.fn().mockResolvedValue(undefined),
   addNotificationResponseReceivedListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
   addNotificationReceivedListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
-  AndroidImportance: { HIGH: 4, DEFAULT: 3 },
-  AndroidNotificationVisibility: { PRIVATE: 1 },
+  // R353 — the cold-start launch response read (no launch tap under jest).
+  getLastNotificationResponseAsync: jest.fn().mockResolvedValue(null),
+  AndroidImportance: { HIGH: 6, DEFAULT: 5 },
+  AndroidNotificationVisibility: { PUBLIC: 1 },
 }));
 
 /* ── expo-local-authentication: the R327 C3 biometric lock —
