@@ -37,15 +37,18 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
           set -uo pipefail
+          set +e
           node scripts/qa/ai-eval-providers.mjs eval-report.json | tee eval-table.txt
+          rc=${PIPESTATUS[0]}
+          set -e
           # Unanswered turns (rate limit / quota) are honest evidence —
           # recorded, never fatal. A total block (exit 2) IS fatal.
-          rc=${PIPESTATUS[0]}
           if [ "$rc" -eq 2 ]; then
             echo "::error::eval BLOCKED — no provider credentials reached the runner"
             exit 1
           fi
-          echo "eval finished (rc=$rc — 0 all answered, 1 some unanswered)"
+          echo "eval finished (rc=$rc — 0 all answered, 1 some unanswered; the run is GREEN either way: the report is the deliverable)"
+          exit 0
 
       - name: Table → step summary
         if: always()

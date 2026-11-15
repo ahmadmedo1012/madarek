@@ -128,9 +128,11 @@ const KNOWN_PROVIDERS = {
     modelsEnv: 'AI_GROQ_MODELS',
     // R355 C — llama-3.3-70b-versatile was decommissioned by Groq (404,
     // selftest run 43702927621). The live catalogue (selftest samples)
-    // now centers on the gpt-oss family: 20b = the fast lane (short
-    // tasks), 120b = the larger reasoning fallback within the provider.
-    defaultModels: ['openai/gpt-oss-20b', 'openai/gpt-oss-120b'],
+    // now centers on the gpt-oss family. R355 live-eval routing order:
+    // 120b first (92.6% golden pass @ 726ms avg) over 20b (84.0% @
+    // 479ms) — the accuracy edge wins; both are far under the 15s
+    // timeout class.
+    defaultModels: ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'],
     timeoutMs: AI_PROVIDER_TIMEOUT_MS.groq,
   },
   openrouter: {
