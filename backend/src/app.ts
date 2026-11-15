@@ -11,7 +11,8 @@ import { env } from './env.js';
 import { logger } from './logger.js';
 import { prisma } from './db.js';
 import { compression } from './lib/compression.js';
-import { buildIdFromEnv } from './lib/build-id.js';
+import { resolveBuildId } from './lib/build-id.js';
+import { BUILD_SHA } from './lib/build-sha.generated.js';
 
 import { errorHandler } from './http/middleware/errorHandler.js';
 import { globalRateLimiter } from './http/middleware/rateLimit.js';
@@ -236,14 +237,21 @@ export function createApp() {
   });
 
   // ── Health (no rate limit, no auth) ──────────────────────────
-  // buildId is DERIVED from the platform's deployed-commit env var
-  // (Render injects RENDER_GIT_COMMIT on every git-connected build) —
-  // never a hand-bumped constant. Curl /api/v1/health and compare the
-  // sha with `git rev-parse origin/main` to know exactly which commit
-  // is serving. (r184: the old constant said 'r180-product-completion'
-  // while production was actually serving r183 — a rot the derived id
-  // makes structurally impossible. See lib/build-id.ts.)
-  const BUILD_ID = buildIdFromEnv(env.RENDER_GIT_COMMIT ?? env.VERCEL_GIT_COMMIT_SHA ?? env.GIT_SHA);
+  // buildId is DERIVED, never a hand-bumped constant: the BUILD-TIME
+  // baked sha first (scripts/bake-build-sha.mjs writes the deployment's
+  // own VERCEL_GIT_COMMIT_SHA into lib/build-sha.generated.ts during
+  // the Vercel build — per-deployment truth that cannot go stale), then
+  // the runtime env chain (RENDER_GIT_COMMIT → VERCEL_GIT_COMMIT_SHA →
+  // GIT_SHA). Curl /api/v1/health and compare the sha with `git rev-parse
+  // origin/main` to know exactly which commit is serving. (r184: the old
+  // constant said 'r180-product-completion' while production was serving
+  // r183; R353: a stale project-level RENDER_GIT_COMMIT shadowed three
+  // deploys — baking removed the failure class. See lib/build-id.ts.)
+  const BUILD_ID = resolveBuildId(BUILD_SHA, {
+    RENDER_GIT_COMMIT: env.RENDER_GIT_COMMIT,
+    VERCEL_GIT_COMMIT_SHA: env.VERCEL_GIT_COMMIT_SHA,
+    GIT_SHA: env.GIT_SHA,
+  });
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();
     // Race the DB ping against a 5s timeout so a sleepy Neon

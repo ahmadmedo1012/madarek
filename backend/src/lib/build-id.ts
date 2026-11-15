@@ -55,3 +55,29 @@ export function buildIdFromEnv(
   }
   return 'local-dev';
 }
+
+/**
+ * The full derivation with the BUILD-TIME-Baked sha first (R353 T-lane).
+ *
+ * Precedence: baked (per-deployment truth, written by
+ * scripts/bake-build-sha.mjs during the Vercel build) → the runtime
+ * env chain (RENDER_GIT_COMMIT → VERCEL_GIT_COMMIT_SHA → GIT_SHA) →
+ * the local-dev sentinel. Baked wins over any project env var so a
+ * stale synced variable can never shadow the deployment's own sha
+ * again; when the baked value is the sentinel (local/CI builds), the
+ * env chain behaves exactly as before.
+ */
+export function resolveBuildId(
+  baked: string | undefined,
+  envLike: {
+    RENDER_GIT_COMMIT?: string;
+    VERCEL_GIT_COMMIT_SHA?: string;
+    GIT_SHA?: string;
+  },
+): string {
+  const bakedSha = baked?.trim();
+  if (bakedSha && /^[0-9a-f]{7,64}$/i.test(bakedSha)) {
+    return bakedSha.slice(0, SHA_PREFIX_LEN);
+  }
+  return buildIdFromEnv(buildIdInput(envLike));
+}

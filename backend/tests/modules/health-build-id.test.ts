@@ -11,7 +11,7 @@
  */
 import { describe, it, expect } from 'vitest';
 
-import { buildIdFromEnv } from '../../src/lib/build-id.js';
+import { buildIdFromEnv, resolveBuildId } from '../../src/lib/build-id.js';
 
 describe('buildIdFromEnv (r184 — derived health buildId)', () => {
   it('shortens a full platform sha to the 12-char git-style prefix', () => {
@@ -45,5 +45,50 @@ describe('buildIdFromEnv (r184 — derived health buildId)', () => {
     expect(buildIdFromEnv('  6ca558698d8fbde47e601cd3aa1608a599185678\n')).toBe(
       '6ca558698d8f',
     );
+  });
+});
+
+describe('resolveBuildId (R353 — the build-time-baked sha first)', () => {
+  it('the baked deployment sha wins — a stale project env var can never shadow it', () => {
+    // The R353 incident, pinned: baked truth beats a stale synced
+    // RENDER_GIT_COMMIT (three deploys reported an R352 sha).
+    expect(
+      resolveBuildId('0060fd10c77f', {
+        RENDER_GIT_COMMIT: '03717fca8b92',
+        VERCEL_GIT_COMMIT_SHA: undefined,
+        GIT_SHA: undefined,
+      }),
+    ).toBe('0060fd10c77f');
+  });
+
+  it('the committed local-dev sentinel falls through to the runtime env chain unchanged', () => {
+    expect(
+      resolveBuildId('local-dev', {
+        RENDER_GIT_COMMIT: '6ca558698d8fbde47e601cd3aa1608a599185678',
+      }),
+    ).toBe('6ca558698d8f');
+    expect(
+      resolveBuildId(undefined, { VERCEL_GIT_COMMIT_SHA: 'abc1234def89' }),
+    ).toBe('abc1234def89');
+    expect(resolveBuildId('local-dev', {})).toBe('local-dev');
+  });
+
+  it('a baked lie (non-sha junk) degrades to the env chain — never claims an identity', () => {
+    expect(
+      resolveBuildId('not-a-sha', { GIT_SHA: '0123456' }),
+    ).toBe('0123456');
+  });
+
+  it('a full 40-char baked sha shortens to the 12-char prefix', () => {
+    expect(resolveBuildId('6ca558698d8fbde47e601cd3aa1608a599185678', {})).toBe(
+      '6ca558698d8f',
+    );
+  });
+});
+
+describe('build-sha.generated (the committed sentinel)', () => {
+  it('ships the local-dev sentinel in git — a local server never claims a deployment', async () => {
+    const { BUILD_SHA } = await import('../../src/lib/build-sha.generated.js');
+    expect(BUILD_SHA).toBe('local-dev');
   });
 });
