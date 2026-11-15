@@ -35,6 +35,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const PATHS = {
@@ -43,6 +44,30 @@ const PATHS = {
   shared: join(ROOT, 'frontend/src/styles/shared-design-system.css'),
 };
 const read = (p) => readFileSync(p, 'utf8');
+
+/* R353 P4 — the export pair was DELETED (dead sheets: zero importers,
+ * re-declared --topbar-h: 60px against the canonical 56px — a silent
+ * drift trap for every topbar consumer; see commit 6a96c8f). With both
+ * files gone this gate RETIRES: exit 0, nothing to compare. The full
+ * parity machinery below stays intact and re-activates automatically
+ * if the pair is ever re-added. A HALF-present pair (one file without
+ * the other) is an inconsistent state and fails loudly. */
+const parityExists = existsSync(PATHS.parity);
+const sharedExists = existsSync(PATHS.shared);
+if (!parityExists && !sharedExists) {
+  console.log('RETIRED (R353 P4) — the parity export pair is deleted; nothing to gate.');
+  console.log('  frontend/src/styles/unified-parity.css: absent');
+  console.log('  frontend/src/styles/shared-design-system.css: absent');
+  console.log('PASS — canonical tokens keep their own gates (tokens:build --check + brand tests).');
+  process.exit(0);
+}
+if (parityExists !== sharedExists) {
+  console.error(
+    `INCONSISTENT — the export pair is half-present (parity=${parityExists}, shared=${sharedExists}). ` +
+      'Either restore BOTH files (full parity checks re-activate) or delete BOTH (gate retires).',
+  );
+  process.exit(1);
+}
 
 /* R326 M0.4 — the canonical source is TWO sheets now: the generated
  * shared half + the hand-written remainder, concatenated in import

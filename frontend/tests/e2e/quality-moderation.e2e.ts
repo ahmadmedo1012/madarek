@@ -63,7 +63,7 @@ test.describe('مراجعة قوالب الاختبارات', () => {
     await page.goto('/quality/exam-moderation');
     await expect(page).toHaveTitle('مراجعة الاختبارات · مدارك');
     await expect(page.locator('h1.page-title')).toHaveText('مراجعة الاختبارات');
-    await expect(page.locator('.page-subtitle')).toContainText('صلاحية حصرية لمكتب الجودة');
+    await expect(page.locator('.page-subtitle')).toContainText('اعتماد قوالب الاختبارات قبل إتاحتها للطلاب.');
 
     /* المؤشّرات مشتقّة من الطابور نفسه: قالبان + 3 أسئلة بانتظار الفحص
      * (شريط المؤشّرات الطباعي — StatStrip بدل بطاقات الأيقونات). */
@@ -142,7 +142,7 @@ test.describe('مراجعة قوالب الاختبارات', () => {
     await panel.getByRole('button', { name: 'رفض' }).click();
     const dialog = page.getByRole('dialog', { name: 'رفض قالب الاختبار' });
     await expect(dialog.locator('.owner-confirm-message')).toContainText(
-      'سيُرفض القالب ويُعاد إلى مؤلفه مع ملاحظاتك، ويخرج من قائمة الانتظار. لا يمكن التراجع عن هذا القرار.',
+      'سيُرفض القالب ويُعاد لمؤلفه — لا تراجع.',
     );
     await expect(dialog.getByRole('button', { name: 'مراجعة القالب' })).toBeVisible();
     await dialog.getByRole('button', { name: 'رفض القالب' }).click();

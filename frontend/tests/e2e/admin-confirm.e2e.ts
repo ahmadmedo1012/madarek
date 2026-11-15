@@ -64,7 +64,7 @@ test.describe('حذف مقرّر بصلاحيات إدارية', () => {
     const dialog = page.getByRole('dialog', { name: 'حذف المقرّر' });
     await expect(dialog.locator('.owner-confirm-title')).toHaveText('حذف المقرّر');
     await expect(dialog.locator('.owner-confirm-message')).toContainText(
-      'سيُحذف «مقدمة في الخوارزميات» نهائيًا من السجلّ الجامعي. لا يمكن التراجع عن هذا الإجراء.',
+      'سيُحذف «مقدمة في الخوارزميات» نهائيًا من السجلّ — لا تراجع.',
     );
     await expect(dialog.getByRole('button', { name: 'إلغاء' })).toBeVisible();
     await expect(dialog.getByRole('button', { name: 'حذف نهائي' })).toBeVisible();

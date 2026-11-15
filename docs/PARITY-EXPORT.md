@@ -1,5 +1,7 @@
 # Parity Export — the design-canon gate · بوابة تكافؤ التصميم
 
+> **RETIRED (R353 P4).** The export pair (`frontend/src/styles/unified-parity.css` + `frontend/src/styles/shared-design-system.css`) was **deleted** — dead sheets with zero importers that re-declared `--topbar-h: 60px` against the canonical 56px (a silent drift trap for every topbar consumer; commit `6a96c8f`). `verify-parity-export.mjs` now detects the pair's absence and **exits 0 (RETIRED)**; re-adding BOTH files re-activates the full parity checks automatically. The canonical design source remains `frontend/src/styles/tokens/*`, gated by `tokens:build --check` + the brand/color test suite.
+
 **Contract:** what the Madarek design-canon export pair ([`DESIGN.md`](../DESIGN.md)) is, and what the verify gate enforces.
 
 **One command, four gates:**
