@@ -18,26 +18,50 @@ export interface CorpusEntity {
   staffOnly?: boolean;
   /** the owning institution ('a' | 'b') — cross-institution leak pin. */
   institution: 'a' | 'b' | 'shared';
+  /* r353-F — the identifier arms (the registrar's lookups). Students
+   * carry the User email + the StudentProfile universityId and phone
+   * keys exactly as the route's select returns them; teachers carry the
+   * email. */
+  email?: string;
+  universityId?: string;
+  studentPhoneNormalized?: string;
+  guardianPhoneNormalized?: string;
 }
 
 const A = 'a';
 
-/** Students (User rows: first/last name haystacks). */
+/** Students (User rows: first/last name haystacks + the identifier arms). */
 export const STUDENTS: CorpusEntity[] = [
-  { id: 'st-1', kind: 'student', haystacks: ['محمد', 'المهدي', 'محمد المهدي'], title: 'محمد المهدي', studentVisible: false, institution: A },
-  { id: 'st-2', kind: 'student', haystacks: ['أحمد', 'الطاهر', 'أحمد الطاهر'], title: 'أحمد الطاهر', studentVisible: false, institution: A },
-  { id: 'st-3', kind: 'student', haystacks: ['هدى', 'الفيتوري', 'هدى الفيتوري'], title: 'هدى الفيتوري', studentVisible: false, institution: A },
-  { id: 'st-4', kind: 'student', haystacks: ['سالم', 'القاسم', 'سالم القاسم'], title: 'سالم القاسم', studentVisible: false, institution: A },
-  { id: 'st-5', kind: 'student', haystacks: ['عبدالله', 'السني', 'عبدالله السني'], title: 'عبدالله السني', studentVisible: false, institution: A },
-  { id: 'st-6', kind: 'student', haystacks: ['مريم', 'بن عثمان', 'مريم بن عثمان'], title: 'مريم بن عثمان', studentVisible: false, institution: A },
+  { id: 'st-1', kind: 'student', haystacks: ['محمد', 'المهدي', 'محمد المهدي'], title: 'محمد المهدي', studentVisible: false, institution: A,
+    email: 'mohamed.mahdi@students.madarek.ly', universityId: 'UZ-2024-00001', studentPhoneNormalized: '218912345678', guardianPhoneNormalized: '218912345678' },
+  { id: 'st-2', kind: 'student', haystacks: ['أحمد', 'الطاهر', 'أحمد الطاهر'], title: 'أحمد الطاهر', studentVisible: false, institution: A,
+    email: 'ahmed.taher@students.madarek.ly', universityId: 'UZ-2024-00002', studentPhoneNormalized: '218913456789', guardianPhoneNormalized: null },
+  { id: 'st-3', kind: 'student', haystacks: ['هدى', 'الفيتوري', 'هدى الفيتوري'], title: 'هدى الفيتوري', studentVisible: false, institution: A,
+    email: 'huda.faitouri@students.madarek.ly', universityId: 'UZ-2024-00003', studentPhoneNormalized: '218922223333', guardianPhoneNormalized: null },
+  { id: 'st-4', kind: 'student', haystacks: ['سالم', 'القاسم', 'سالم القاسم'], title: 'سالم القاسم', studentVisible: false, institution: A,
+    email: 'salem.gasem@students.madarek.ly', universityId: '30351', studentPhoneNormalized: null, guardianPhoneNormalized: '218917777888' },
+  { id: 'st-5', kind: 'student', haystacks: ['عبدالله', 'السني', 'عبدالله السني'], title: 'عبدالله السني', studentVisible: false, institution: A,
+    email: 'abdullah.seni@students.madarek.ly', universityId: '30352', studentPhoneNormalized: '218915555666', guardianPhoneNormalized: null },
+  { id: 'st-6', kind: 'student', haystacks: ['مريم', 'بن عثمان', 'مريم بن عثمان'], title: 'مريم بن عثمان', studentVisible: false, institution: A,
+    email: 'mariam.benothman@students.madarek.ly', universityId: '30353', studentPhoneNormalized: '218914444555', guardianPhoneNormalized: null },
   { id: 'st-7', kind: 'student', haystacks: ['فاطمة', 'الشرقاوي', 'فاطمة الشرقاوي'], title: 'فاطمة الشرقاوي', studentVisible: false, institution: 'b' },
   { id: 'st-8', kind: 'student', haystacks: ['عمر', 'المفتي', 'عمر المفتي'], title: 'عمر المفتي', studentVisible: false, institution: 'b' },
+  /* r353-F — the fold-stress roster: the names a plain Libyan keyboard
+   * types wrong (multi-seat hamza words, hamza+ta-marbuta, alif-maqsura). */
+  { id: 'st-9', kind: 'student', haystacks: ['أسامة', 'العبار', 'أسامة العبار'], title: 'أسامة العبار', studentVisible: false, institution: A,
+    email: 'usama.abar@students.madarek.ly', universityId: 'UZ-2024-00009', studentPhoneNormalized: '218918886666', guardianPhoneNormalized: null },
+  { id: 'st-10', kind: 'student', haystacks: ['إبراهيم', 'الفيتوري', 'إبراهيم الفيتوري'], title: 'إبراهيم الفيتوري', studentVisible: false, institution: A,
+    email: 'ibrahim.faitouri@students.madarek.ly', universityId: '30360', studentPhoneNormalized: '218919997777', guardianPhoneNormalized: null },
+  { id: 'st-11', kind: 'student', haystacks: ['مليكة', 'بوزيد', 'مليكة بوزيد'], title: 'مليكة بوزيد', studentVisible: false, institution: A,
+    email: 'malika.bouzid@students.madarek.ly', universityId: '30361', studentPhoneNormalized: '218912223444', guardianPhoneNormalized: '218912223444' },
 ];
 
 /** Teachers. */
 export const TEACHERS: CorpusEntity[] = [
-  { id: 'tc-1', kind: 'teacher', haystacks: ['خالد', 'بن موسى', 'خالد بن موسى'], title: 'خالد بن موسى', studentVisible: false, institution: A },
-  { id: 'tc-2', kind: 'teacher', haystacks: ['نادية', 'البراني', 'نادية البراني'], title: 'نادية البراني', studentVisible: false, institution: A },
+  { id: 'tc-1', kind: 'teacher', haystacks: ['خالد', 'بن موسى', 'خالد بن موسى'], title: 'خالد بن موسى', studentVisible: false, institution: A,
+    email: 'khaled.benmoussa@madarek.ly' },
+  { id: 'tc-2', kind: 'teacher', haystacks: ['نادية', 'البراني', 'نادية البراني'], title: 'نادية البراني', studentVisible: false, institution: A,
+    email: 'nadia.barani@madarek.ly' },
   { id: 'tc-3', kind: 'teacher', haystacks: ['Ibrahim', 'Alfashtaki', 'Ibrahim Alfashtaki'], title: 'Ibrahim Alfashtaki', studentVisible: false, institution: 'b' },
 ];
 
