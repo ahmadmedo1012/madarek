@@ -294,7 +294,7 @@ export function standardQaRoutes(): MockRouteDef[] {
     { method: 'GET', path: '/me/dashboard', json: ok({}) },
     { method: 'GET', path: '/me/resume', json: ok(null) },
     { method: 'PUT', path: '/me/theme', json: ok({ ok: true }) },
-    { method: 'GET', path: '/search/global', json: ok([]) },
+    { method: 'GET', path: '/search/discover', json: ok({ query: '', categories: {}, tookMs: 0 }) },
   ];
 }
 

@@ -1,7 +1,7 @@
 /**
- * GlobalSearch data-flow + combobox-ARIA suite (wave 16-E3).
+ * GlobalSearch data-flow + combobox-ARIA suite (wave 16-E3, r353-F).
  *
- * Covers the three 16-E3 fixes on this file:
+ * Covers the fixes on this file:
  *  1. 15-e P1-3 / 15-d P2-8 — the search lives on the query cache with
  *     an AbortController riding the raw GET; clearing the query
  *     mid-flight can no longer leave a permanent loading row (the old
@@ -14,6 +14,10 @@
  *  3. 15-d P2-8 — a failed fetch renders a retryable error row, never
  *     the "no results" empty state; identical re-searches are served
  *     from the cache without a second GET.
+ *  4. r353-F — the discovery engine wiring: GET /search/discover with
+ *     the 15 typed categories, the role filter riding the backend
+ *     `categories` param (a STUDENT never asks for people/ question
+ *     rows), and the 1-line rows (title + one meta).
  *
  * lib/api is mocked (the module both `api.get` and `unwrap` come from);
  * timers stay real so the 300ms debounce fires inside waitFor's act
@@ -34,29 +38,42 @@ vi.mock('../../src/lib/api', () => ({
 
 import { GlobalSearch } from '../../src/components/layout/GlobalSearch';
 
-interface Hit {
+/* r353-F — the discovery wire: one item shape per /search/discover. */
+interface DiscoverItem {
   id: string;
-  title: string;
-  subtitle: string;
-  iconEmoji: string | null;
-  themeColor: string | null;
-  href: string;
+  kind: string;
+  titleAr: string;
+  subtitleAr: string | null;
+  href: string | null;
 }
 
-const hit = (id: string): Hit => ({
+const hit = (id: string): DiscoverItem => ({
   id,
-  title: `نتيجة ${id}`,
-  subtitle: 'قسم الحاسوب',
-  iconEmoji: null,
-  themeColor: null,
+  kind: 'course',
+  titleAr: `نتيجة ${id}`,
+  subtitleAr: 'قسم الحاسوب',
   href: `/courses/${id}`,
 });
 
-const resultsWith = (courses: Hit[], lectures: Hit[] = []) => ({
-  courses,
-  lectures,
-  papers: [],
-  tracks: [],
+/** The records-only category set an unauthed/STUDENT caller asks for
+ *  (people + the staff question bank are excluded — the backend scope
+ *  nulls those rows for a student, so the pill never requests them). */
+const STUDENT_CATEGORIES = [
+  'institutions', 'faculties', 'departments', 'courses', 'lectures',
+  'materials', 'papers', 'tracks', 'books', 'jobs', 'events', 'announcements',
+];
+
+const discoverUrl = (term: string, categories: string[] = STUDENT_CATEGORIES) =>
+  `/search/discover?q=${encodeURIComponent(term)}` +
+  `&categories=${encodeURIComponent(categories.join(','))}&pageSize=5`;
+
+const resultsWith = (courses: DiscoverItem[], lectures: DiscoverItem[] = []) => ({
+  query: 'هندسة',
+  categories: {
+    courses: { items: courses, total: courses.length },
+    lectures: { items: lectures, total: lectures.length },
+  },
+  tookMs: 1,
 });
 
 function renderSearch() {
@@ -184,7 +201,9 @@ describe('GlobalSearch — stuck-loading fix + abort (15-e P1-3)', () => {
     getMock.mockResolvedValue({ data: { data: resultsWith([hit('a')]) } });
     await type('هندسة');
     expect(getMock).toHaveBeenCalledTimes(1);
-    expect(getMock.mock.calls[0]?.[0]).toBe(`/search/global?q=${encodeURIComponent('هندسة')}`);
+    // r353-F: the discovery endpoint — the records-only categories for
+    // the unauthed store, the term, and the 5-row autocomplete window.
+    expect(getMock.mock.calls[0]?.[0]).toBe(discoverUrl('هندسة'));
     expect(getMock.mock.calls[0]?.[1]?.signal).toBeInstanceOf(AbortSignal);
   });
 });
@@ -225,7 +244,7 @@ describe('GlobalSearch — query-cache migration (15-d P2-8)', () => {
 
 describe('GlobalSearch — quick-action fallback + Escape reset (5-B5, A4 P2-3/P2-4)', () => {
   it('answers index-missing queries with the role\'s nav actions — no dead end', async () => {
-    // «اختبار» has zero rows in /search/global (no exam rows in the
+    // «اختبار» has zero rows in /search/discover (no exam rows in the
     // index) but names two student nav destinations. The desktop pill
     // used to show the bare empty state while ⌘K answered with actions.
     const { useAuthStore } = await import('../../src/stores/auth.store');
@@ -290,5 +309,113 @@ describe('GlobalSearch — quick-action fallback + Escape reset (5-B5, A4 P2-3/P
     // concatenated («هندسةاختبار»). The term must be gone.
     expect(input).toHaveValue('');
     expect(input).toHaveAttribute('aria-expanded', 'false');
+  });
+});
+
+describe('GlobalSearch — the r353-F discovery wiring (/search/discover)', () => {
+  it('a STUDENT asks for the records-only categories — people and the question bank never requested', async () => {
+    const { useAuthStore } = await import('../../src/stores/auth.store');
+    useAuthStore.setState({
+      user: {
+        id: 'u1', email: 's@test.ly', firstName: 'سالم', lastName: 'الزوي',
+        role: 'STUDENT' as const,
+      },
+    });
+    try {
+      renderSearch();
+      getMock.mockResolvedValue({ data: { data: resultsWith([]) } });
+      await type('هندسة');
+      expect(getMock).toHaveBeenCalledTimes(1);
+      const url = getMock.mock.calls[0]?.[0] as string;
+      expect(url.startsWith('/search/discover?')).toBe(true);
+      // The people + staff-bank categories are NEVER requested for a
+      // student (the backend scope would null them anyway — the param
+      // keeps the request honest AND saves the scans).
+      expect(url).not.toContain('students');
+      expect(url).not.toContain('teachers');
+      expect(url).not.toContain('questions');
+      const categoriesParam = decodeURIComponent(url.split('categories=')[1]?.split('&')[0] ?? '');
+      expect(categoriesParam.split(',')).toEqual(STUDENT_CATEGORIES);
+    } finally {
+      useAuthStore.setState({ user: null });
+    }
+  });
+
+  it('an ADMIN asks for ALL fifteen categories (the registrar\'s people lookups)', async () => {
+    const { useAuthStore } = await import('../../src/stores/auth.store');
+    useAuthStore.setState({
+      user: {
+        id: 'u2', email: 'a@test.ly', firstName: 'إدارة', lastName: 'الكلية',
+        role: 'ADMIN' as const,
+      },
+    });
+    try {
+      renderSearch();
+      getMock.mockResolvedValue({
+        data: {
+          data: {
+            query: 'محمد',
+            categories: {
+              students: {
+                items: [{
+                  id: 'stu_1',
+                  kind: 'student',
+                  titleAr: 'محمد المهدي',
+                  subtitleAr: 'UZ-2024-00001 · كلية الهندسة',
+                  href: '/admin/students',
+                }],
+                total: 1,
+              },
+            },
+            tookMs: 2,
+          },
+        },
+      });
+      await type('محمد');
+      expect(getMock).toHaveBeenCalledTimes(1);
+      const url = getMock.mock.calls[0]?.[0] as string;
+      const categoriesParam = decodeURIComponent(url.split('categories=')[1]?.split('&')[0] ?? '');
+      expect(categoriesParam.split(',')).toHaveLength(15);
+      expect(categoriesParam.split(',')).toEqual(expect.arrayContaining(['students', 'teachers', 'questions']));
+      // The student row lands under its labelled group, one line:
+      // title + one meta.
+      const group = screen.getByRole('group', { name: 'الطلاب' });
+      const option = within(group).getByRole('option');
+      expect(option).toHaveTextContent('محمد المهدي');
+      expect(option).toHaveTextContent('UZ-2024-00001 · كلية الهندسة');
+    } finally {
+      useAuthStore.setState({ user: null });
+    }
+  });
+
+  it('a null-href row renders as a plain option — clicking it never navigates', async () => {
+    renderSearch();
+    getMock.mockResolvedValue({
+      data: {
+        data: {
+          query: 'هندسة',
+          categories: {
+            departments: {
+              items: [{
+                id: 'dep_1',
+                kind: 'department',
+                titleAr: 'قسم الهندسة الكهربائية',
+                subtitleAr: 'كلية الهندسة',
+                href: null,
+              }],
+              total: 1,
+            },
+          },
+          tookMs: 1,
+        },
+      },
+    });
+    await type('هندسة');
+    const option = screen.getByRole('option');
+    expect(option).toHaveTextContent('قسم الهندسة الكهربائية');
+    // The plain row stays in the listbox — a click is absorbed, never a
+    // dead navigation (the file-less-paper law).
+    fireEvent.click(option);
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
   });
 });

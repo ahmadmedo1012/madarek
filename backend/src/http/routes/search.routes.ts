@@ -17,12 +17,15 @@ import {
   announcementHitHref,
   bookHitHref,
   candidateTake,
+  emailMatchArms,
   eventHitHref,
   facultyHitHref,
   globalSearchScope,
+  identifierHit,
   institutionHitHref,
   jobHitHref,
   materialHitHref,
+  multiwordHit,
   parseGlobalSearchCategories,
   parseGlobalSearchPagination,
   phoneHit,
@@ -33,9 +36,12 @@ import {
   rankHit,
   studentHitHref,
   teacherHitHref,
+  typoHit,
+  universityIdMatchArm,
   type GlobalSearchCategoryKey,
   type GlobalSearchFacts,
 } from '../../modules/search/global.js';
+import { getGovernanceScope } from '../../lib/governance.js';
 import { unexpiredAnnouncementFilter } from './social.routes.js';
 
 const router = Router();
@@ -424,6 +430,11 @@ interface StudentProfileChip {
   universityId: string;
   studentPhoneNormalized: string | null;
   guardianPhoneNormalized: string | null;
+  // r353-F E5: the per-row privacy gate — a PRIVATE phone never leaves
+  // the DB in a search response, whatever the caller's seat (the
+  // privacy engine's phoneAccess law, lib/profiles/privacy.ts).
+  studentPhoneVisibility: string;
+  guardianPhoneVisibility: string;
   faculty: { name: string } | null;
   institution: { name: string } | null;
 }
@@ -431,6 +442,7 @@ interface StudentRow {
   id: string;
   firstName: string;
   lastName: string;
+  email: string;
   studentProfiles: StudentProfileChip[];
 }
 interface TeacherProfileChip {
@@ -442,6 +454,7 @@ interface TeacherRow {
   id: string;
   firstName: string;
   lastName: string;
+  email: string;
   teacherProfiles: TeacherProfileChip[];
 }
 interface InstitutionRow { id: string; name: string; nameEn: string | null }
@@ -482,14 +495,19 @@ async function gatherGlobalAnnouncementFacts(
   // facts needed (the /announcements/feed OWNER branch).
   if (role === 'OWNER') return {};
   if (role === 'ADMIN' || role === 'QUALITY') {
-    const faculties = await prisma.faculty.findMany({
-      where: { institutionId },
-      select: { id: true, departments: { select: { id: true } } },
-    });
-    const offerings = await prisma.courseOffering.findMany({
-      where: { course: { institutionId } },
-      select: { id: true },
-    });
+    // r353-F bug 4: the two scans are independent — Promise.all cuts
+    // one full cross-region RTT off every keystroke that includes the
+    // announcements category (this endpoint fires per keystroke).
+    const [faculties, offerings] = await Promise.all([
+      prisma.faculty.findMany({
+        where: { institutionId },
+        select: { id: true, departments: { select: { id: true } } },
+      }),
+      prisma.courseOffering.findMany({
+        where: { course: { institutionId } },
+        select: { id: true },
+      }),
+    ]);
     return {
       facultyIds: faculties.map((f) => f.id),
       departmentIds: faculties.flatMap((f) => f.departments.map((d) => d.id)),
@@ -497,16 +515,21 @@ async function gatherGlobalAnnouncementFacts(
     };
   }
   if (role === 'STUDENT') {
-    const profile = await resolveStudentProfile(userId, institutionId);
-    // Only ACTIVE enrollments contribute (the platform-wide convention).
-    const enrollments = await prisma.enrollment.findMany({
-      where: {
-        studentId: userId,
-        status: 'active',
-        offering: { course: { institutionId } },
-      },
-      select: { offeringId: true },
-    });
+    // r353-F bug 4: the profile + enrollments reads are independent —
+    // run them concurrently (the old sequential awaits stacked two
+    // cross-region RTTs onto every student search).
+    const [profile, enrollments] = await Promise.all([
+      resolveStudentProfile(userId, institutionId),
+      // Only ACTIVE enrollments contribute (the platform-wide convention).
+      prisma.enrollment.findMany({
+        where: {
+          studentId: userId,
+          status: 'active',
+          offering: { course: { institutionId } },
+        },
+        select: { offeringId: true },
+      }),
+    ]);
     return {
       facultyIds: profile?.facultyId ? [profile.facultyId] : [],
       departmentIds: profile?.departmentId ? [profile.departmentId] : [],
@@ -514,17 +537,21 @@ async function gatherGlobalAnnouncementFacts(
     };
   }
   // TEACHER — home department's faculty + the offerings they teach.
-  const profile = await resolveTeacherProfile(userId, institutionId);
+  // r353-F bug 4: profile + offerings are independent (the department
+  // read depends on the profile, so it waits for that arm only).
+  const [profile, offerings] = await Promise.all([
+    resolveTeacherProfile(userId, institutionId),
+    prisma.courseOffering.findMany({
+      where: { teacherId: userId, course: { institutionId } },
+      select: { id: true },
+    }),
+  ]);
   const department = profile
     ? await prisma.department.findUnique({
         where: { id: profile.departmentId },
         select: { facultyId: true },
       })
     : null;
-  const offerings = await prisma.courseOffering.findMany({
-    where: { teacherId: userId, course: { institutionId } },
-    select: { id: true },
-  });
   return {
     facultyIds: department?.facultyId ? [department.facultyId] : [],
     departmentIds: profile?.departmentId ? [profile.departmentId] : [],
@@ -575,31 +602,58 @@ router.get('/search/discover', async (req, res, next) => {
       ? await gatherGlobalAnnouncementFacts(role, userId, institutionId!)
       : {};
 
-    const scope = globalSearchScope(role, userId, institutionId, facts);
+    // r353-F E5 — the college-registrar faculty scope: getGovernanceScope
+    // (lib/governance.ts, the users-list convention — an ADMIN/QUALITY
+    // with User.scopeFacultyId sees only their faculty's users there;
+    // the search used to ignore it and leak the whole roster). Only
+    // resolved when a people category is requested AND the role can
+    // hold a scope — a records-only search, or a student/teacher
+    // caller, never pays the extra read.
+    const wantsPeople =
+      categories.includes('students') || categories.includes('teachers');
+    const scopeFacultyId = wantsPeople && (role === 'ADMIN' || role === 'QUALITY')
+      ? await getGovernanceScope(userId)
+      : null;
+
+    const scope = globalSearchScope(role, userId, institutionId, facts, scopeFacultyId);
 
     const ic = (s: string) => ({ contains: s, mode: 'insensitive' as const });
     const take = candidateTake(page, pageSize);
     const want = (k: GlobalSearchCategoryKey) => categories.includes(k) && scope[k] !== null;
 
     // Phone arm — admitted only for the roles the matrix allows, and
-    // only for an actual phone query (null otherwise).
-    const phoneArm = scope.phoneSearch ? phoneMatchArm(plan, institutionId) : null;
+    // only for an actual phone query (null otherwise). The faculty pin
+    // rides the arm's own profile filter (E5 — the scope.students pin
+    // cannot reach inside an OR arm).
+    const phoneArm = scope.phoneSearch ? phoneMatchArm(plan, institutionId, scopeFacultyId) : null;
+
+    // r353-F bugs 2+3 — the registrar's identifier arms: student number
+    // (exact via the (institutionId, universityId) unique index, then
+    // digit-folded contains — «٣٠١» finds the stored «301») and email
+    // (exact via User_email_key, then contains). Both pure builders in
+    // modules/search/global.ts; both null/empty for Arabic queries.
+    const emailArms = emailMatchArms(plan);
+    const universityIdArm = universityIdMatchArm(plan, institutionId, scopeFacultyId);
 
     // Students/teachers profile include: the caller-institution profile
     // (active membership) for institutional roles; the oldest profile
     // for OWNER (platform view, resolveStudentProfile's ordering). The
     // two where-shapes differ — StudentProfile carries a denormalized
     // institutionId, TeacherProfile is reached through the membership.
+    // r353-F E5: a scoped registrar's include is faculty-pinned too, so
+    // the subtitle's faculty is the one the scope proved.
     const studentProfileWhere = institutionId
-      ? { institutionId, membership: { isActive: true } }
+      ? { institutionId, membership: { isActive: true }, ...(scopeFacultyId ? { facultyId: scopeFacultyId } : {}) }
       : undefined;
     const teacherProfileWhere = institutionId
-      ? { membership: { institutionId, isActive: true } }
+      ? { membership: { institutionId, isActive: true }, ...(scopeFacultyId ? { department: { facultyId: scopeFacultyId } } : {}) }
       : undefined;
     const studentProfileSelect = {
       universityId: true,
       studentPhoneNormalized: true,
       guardianPhoneNormalized: true,
+      studentPhoneVisibility: true,
+      guardianPhoneVisibility: true,
       faculty: { select: { name: true } },
       institution: { select: { name: true } },
     };
@@ -638,6 +692,12 @@ router.get('/search/discover', async (req, res, next) => {
                   OR: [
                     ...plan.variants.map((v) => ({ firstName: ic(v) })),
                     ...plan.variants.map((v) => ({ lastName: ic(v) })),
+                    // r353-F bugs 2+3: the registrar's identifier arms —
+                    // email (User_email_key) + student number (the
+                    // (institutionId, universityId) unique index) — both
+                    // carry their own institution/faculty pins.
+                    ...emailArms,
+                    ...(universityIdArm ? [universityIdArm] : []),
                     ...(phoneArm ? [phoneArm] : []),
                   ],
                 },
@@ -649,6 +709,7 @@ router.get('/search/discover', async (req, res, next) => {
               id: true,
               firstName: true,
               lastName: true,
+              email: true,
               studentProfiles: { where: studentProfileWhere, orderBy: { createdAt: 'asc' }, take: 1, select: studentProfileSelect },
             },
           }) as Promise<StudentRow[]>
@@ -662,6 +723,7 @@ router.get('/search/discover', async (req, res, next) => {
                   OR: [
                     ...plan.variants.map((v) => ({ firstName: ic(v) })),
                     ...plan.variants.map((v) => ({ lastName: ic(v) })),
+                    ...emailArms,
                   ],
                 },
               ],
@@ -672,6 +734,7 @@ router.get('/search/discover', async (req, res, next) => {
               id: true,
               firstName: true,
               lastName: true,
+              email: true,
               teacherProfiles: { where: teacherProfileWhere, orderBy: { createdAt: 'asc' }, take: 1, select: teacherProfileSelect },
             },
           }) as Promise<TeacherRow[]>
@@ -738,7 +801,12 @@ router.get('/search/discover', async (req, res, next) => {
                 {
                   OR: [
                     ...plan.variants.map((v) => ({ course: { name: ic(v) } })),
-                    { course: { code: ic(q) } },
+                    // r353-F bug 3: the code arm folds — exact (the
+                    // (institutionId, code) unique index, r350_s3 trgm)
+                    // plus the plan's variants so Arabic-Indic digits
+                    // («٣٠١») contain-match a stored «301».
+                    { course: { code: q } },
+                    ...plan.variants.map((v) => ({ course: { code: ic(v) } })),
                   ],
                 },
               ],
@@ -895,7 +963,9 @@ router.get('/search/discover', async (req, res, next) => {
     // verifier; rankHit orders exact < prefix < substring). A row that
     // only cleared searchHit's RAW arm (exotic case-folds) keeps its
     // page slot at the substring tier. Phone hits rank at the substring
-    // tier — an identifier match, below an exact-name match.
+    // tier — an identifier match, below an exact-name match. r353-F:
+    // the multiword (order-free) and 1-edit-typo arms follow as the
+    // last resorts — the same tiers the search-eval harness models.
     const makeRanker =
       <T>(haystacksOf: (row: T) => string[]): ((row: T) => number) =>
       (row) => {
@@ -904,6 +974,8 @@ router.get('/search/discover', async (req, res, next) => {
           ...haystacks.map((h) => rankHit(normalizeArabicSearch(h ?? ''), qN)),
         );
         if (best === RANK_NONE && searchHit(haystacks, q, qN)) best = RANK_SUBSTRING;
+        if (best === RANK_NONE && multiwordHit(haystacks, plan)) best = RANK_SUBSTRING;
+        if (best === RANK_NONE && typoHit(haystacks, plan)) best = RANK_SUBSTRING;
         return best;
       };
 
@@ -917,6 +989,14 @@ router.get('/search/discover', async (req, res, next) => {
       if (scope.phoneSearch && phoneHit(u.studentProfiles[0], plan)) {
         best = Math.min(best, RANK_SUBSTRING);
       }
+      // r353-F bugs 2+3: identifier hits survive the ranker — an exact
+      // student number/email ranks at the exact tier (the registrar
+      // typed the whole key; that student IS the answer), contains at
+      // the substring tier.
+      const universityIdRank = identifierHit(u.studentProfiles[0]?.universityId, plan);
+      if (universityIdRank !== RANK_NONE) best = Math.min(best, universityIdRank);
+      const emailRank = identifierHit(u.email, plan);
+      if (emailRank !== RANK_NONE) best = Math.min(best, emailRank);
       return best;
     };
 
@@ -1088,11 +1168,17 @@ router.get('/search/discover', async (req, res, next) => {
           : null,
         href: studentHitHref(role),
       };
-      // §10.4/§5: phone fields ONLY for ADMIN/OWNER, ONLY the normalized
-      // columns — the display pair never leaves the DB here.
+      // §10.4/§5 + r353-F E5: phone fields ONLY for the USERS_MANAGE seat
+      // (ADMIN/OWNER — PHONE_FIELDS_ROLES, verified against
+      // lib/permissions.ts), ONLY the normalized columns, and ONLY when
+      // the profile's own visibility setting admits staff — a PRIVATE
+      // phone never leaves the DB in a search response (the privacy
+      // engine's phoneAccess law, lib/profiles/privacy.ts).
       if (scope.phoneFieldsVisible) {
-        item.studentPhoneNormalized = p?.studentPhoneNormalized ?? null;
-        item.guardianPhoneNormalized = p?.guardianPhoneNormalized ?? null;
+        item.studentPhoneNormalized =
+          p?.studentPhoneVisibility === 'PRIVATE' ? null : p?.studentPhoneNormalized ?? null;
+        item.guardianPhoneNormalized =
+          p?.guardianPhoneVisibility === 'PRIVATE' ? null : p?.guardianPhoneNormalized ?? null;
       }
       return item;
     });

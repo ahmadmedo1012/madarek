@@ -45,7 +45,7 @@ import {
   OFFERING_ID,
   OFFERING_LECTURES,
   RESUME,
-  SEARCH_RESULTS,
+  DISCOVER_RESULTS,
   STUDENT_DASHBOARD,
   STUDENT_USER,
   TEACHER_USER,
@@ -134,7 +134,7 @@ export function standardRoutes(): MockRouteDef[] {
     { method: 'PATCH', path: '/notifications/:id/read', json: ok({ ok: true }) },
     { method: 'POST', path: '/notifications/read-all', json: ok({ updated: UNREAD_COUNT }) },
 
-    { method: 'GET', path: '/search/global', json: ok(SEARCH_RESULTS) },
+    { method: 'GET', path: '/search/discover', json: ok(DISCOVER_RESULTS) },
 
     /* r165h: r164c's resume-hero fallback arm reads the training
      * catalog on every student dashboard visit — the integrated tree

@@ -1133,6 +1133,29 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  /* r353-F — the discovery row is ONE line: the title with a single
+     inline meta (subtitleAr) riding the same baseline. The title keeps
+     its ellipsis; the meta takes the remainder and truncates after it,
+     so a long subtitle can never wrap the row taller. */
+  .search-row-line {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-1);
+    min-inline-size: 0;
+  }
+  .search-row-line .search-row-title {
+    flex: 0 1 auto;
+    min-inline-size: 0;
+  }
+  .search-row-meta {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .search-row-arrow {
     color: var(--text-muted);
     flex-shrink: 0;

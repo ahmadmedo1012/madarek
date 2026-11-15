@@ -13,7 +13,7 @@ const page = await (await browser.newContext({ viewport: { width: 1440, height: 
 const errs: string[] = [];
 page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
 const reqs: string[] = [];
-page.on('request', (r) => { if (r.url().includes('/search/global')) reqs.push(r.url()); });
+page.on('request', (r) => { if (r.url().includes('/search/discover')) reqs.push(r.url()); });
 
 await page.goto('http://localhost:5173/auth', { waitUntil: 'networkidle' });
 await page.getByRole('textbox', { name: 'كلمة المرور' }).fill(TEST_PASSWORD);

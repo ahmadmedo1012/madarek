@@ -91,6 +91,11 @@ interface RequestOptions {
   contentType?: string;
   query?: Record<string, string | number | boolean | undefined | null>;
   timeoutMs?: number;
+  /** r353-F — external cancellation: aborts the in-flight request
+   *  (chained onto the internal timeout controller). The debounced
+   *  search hands TanStack's queryFn signal here so a superseded
+   *  keystroke's GET is aborted instead of racing the newer term. */
+  signal?: AbortSignal;
   /** Auth-refresh retry is internal; guards one retry per request. */
   _isRetry?: boolean;
   _skipAuth?: boolean;
@@ -195,10 +200,18 @@ async function tryRefresh(): Promise<boolean> {
 }
 
 export async function api<T>(path: string, opts: RequestOptions = {}): Promise<T> {
-  const { method = "GET", body, rawBody, contentType, query, timeoutMs = 20_000, _isRetry, _skipAuth, _wakeAttempt = 0, _failoverAttempt = false } = opts;
+  const { method = "GET", body, rawBody, contentType, query, timeoutMs = 20_000, signal, _isRetry, _skipAuth, _wakeAttempt = 0, _failoverAttempt = false } = opts;
   const url = buildUrl(path, query);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  // r353-F — chain the caller's signal: an aborted caller aborts the
+  // transport (RN fetch honours the signal), while the internal timer
+  // keeps its own timeout semantics.
+  const onExternalAbort = () => controller.abort();
+  if (signal) {
+    if (signal.aborted) controller.abort();
+    else signal.addEventListener("abort", onExternalAbort, { once: true });
+  }
   const headers: Record<string, string> = {};
   if (rawBody === undefined && body !== undefined) headers["Content-Type"] = "application/json";
   if (contentType) headers["Content-Type"] = contentType;
@@ -226,6 +239,11 @@ export async function api<T>(path: string, opts: RequestOptions = {}): Promise<T
     }
     return await parseEnvelope<T>(res);
   } catch (err) {
+    /* r353-F — a caller-cancelled request (the debounced search's
+       superseded term) is neither a wake case nor a failover case:
+       rethrow the abort so the caller (TanStack) drops the superseded
+       query — never a 3s backoff on a GET nobody awaits anymore. */
+    if (signal?.aborted) throw err;
     /* R350 H4 — the cold-boot wake retry. The free-tier server can take
      * 25–60s to boot; a GET/HEAD that dies on TRANSPORT (timeout /
      * network fault — no HTTP answer) re-enters after a bounded backoff
@@ -279,6 +297,7 @@ export async function api<T>(path: string, opts: RequestOptions = {}): Promise<T
     // R327 A4: the timeout timer MUST be cleared — it was leaking a live
     // 20s handle (and the AbortController) on every request.
     clearTimeout(timer);
+    if (signal) signal.removeEventListener("abort", onExternalAbort);
   }
 }
 
@@ -309,7 +328,8 @@ export async function apiWithCookieCapture<T>(path: string, opts: RequestOptions
   }
 }
 
-export const get = <T>(path: string, query?: RequestOptions["query"]) => api<T>(path, { method: "GET", query });
+export const get = <T>(path: string, query?: RequestOptions["query"], extra?: Partial<RequestOptions>) =>
+  api<T>(path, { method: "GET", query, ...extra });
 export const post = <T>(path: string, body?: unknown, extra?: Partial<RequestOptions>) =>
   api<T>(path, { method: "POST", body, ...extra });
 export const patch = <T>(path: string, body?: unknown) => api<T>(path, { method: "PATCH", body });
