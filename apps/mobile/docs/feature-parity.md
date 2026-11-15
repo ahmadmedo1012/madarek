@@ -22,7 +22,7 @@
 | Reset password | `app/auth/reset-password.tsx` | `POST /auth/reset-password` | ✅ |
 | Institution selection (multi-membership) | `app/select-institution.tsx` | `POST /auth/select-institution` | ✅ |
 | Settings (`/settings`) | `app/settings.tsx` | `PUT /me/theme`, `POST /auth/change-password` | ✅ |
-| Global search | `app/search.tsx` | `GET /search/global` | ✅ |
+| Global search (discovery, 15 categories) | `app/search.tsx` | `GET /search/discover` (r353-F; role-filtered `categories` param, debounced 300ms, abort-on-supersede) | ✅ |
 | Notifications inbox (per role) | `app/{student,teacher,admin,quality,owner}/alerts` + owner `(tabs)/notifications` | `GET /notifications`, `PATCH /notifications/:id/read`, `POST /notifications/read-all` | ✅ (paths fixed by contract-check: mounted at `/api/v1`, not `/me/*`) |
 | Messages (DMs) | `student/messages`, `teacher/messages` | `GET /messages`, `POST /messages`, `POST /messages/read-all` | ✅ |
 | Document viewer (PDF) | `app/document/[filename].tsx` | `GET /files/papers/:f`, `GET /files/materials/:f` (Range, auth) | 🧩 pdf.js in WebView + authenticated cached download |

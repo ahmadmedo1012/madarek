@@ -517,11 +517,47 @@ export interface AiChatResponse {
   remaining?: number | null;
 }
 
-export interface SearchResults {
-  courses: { id: string; name: string; code: string; href: string }[];
-  lectures: { id: string; title: string; href: string }[];
-  papers: { id: string; title: string; href: string }[];
-  tracks: { slug: string; title: string; href: string }[];
+/* ── r353-F — the discovery engine wire (GET /search/discover) ─────── */
+
+/** The 15 discovery kinds (backend GlobalSearchItem.kind). */
+export type DiscoverKind =
+  | "student"
+  | "teacher"
+  | "institution"
+  | "faculty"
+  | "department"
+  | "course"
+  | "lecture"
+  | "material"
+  | "paper"
+  | "track"
+  | "book"
+  | "job"
+  | "event"
+  | "announcement"
+  | "question";
+
+/** One discovery row — titleAr + one meta line + the role-honest href
+ *  (null = a plain row, the file-less-paper law). */
+export interface DiscoverItem {
+  id: string;
+  kind: DiscoverKind;
+  titleAr: string;
+  subtitleAr: string | null;
+  href: string | null;
+}
+
+/** One category's paged answer (only the requested categories ride). */
+export interface DiscoverCategory {
+  items: DiscoverItem[];
+  total: number;
+}
+
+/** The /search/discover envelope. */
+export interface DiscoverResults {
+  query: string;
+  categories: Partial<Record<string, DiscoverCategory>>;
+  tookMs: number;
 }
 
 export interface InviteCode {
