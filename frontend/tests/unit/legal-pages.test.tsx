@@ -14,7 +14,7 @@
  *   · the honesty markers — every page that states an unknown legal
  *     fact renders [يُستكمل قبل الإطلاق] ≥1, and LEGAL-TODO.md mirrors
  *     each marker with its row (18 rows + the §4 build note);
- *   · the REAL facts per page (argon2, Render+Neon, the cookie
+ *   · the REAL facts per page (argon2, Vercel+Neon, the cookie
  *     attributes, the 12-72 policy, the demo-platform honesty…) and
  *     the REAL 9-key storage ledger verbatim, with a source-agreement
  *     check against the actual writers (ConsentBanner/store files);
@@ -253,11 +253,14 @@ describe('R320 §D — honesty markers + the LEGAL-TODO mirror', () => {
 /* ═══ D · the real facts per page ═══════════════════════════════════ */
 
 describe('R320 §D — the real facts (every sentence from real code)', () => {
-  it('privacy: argon2 · Render + Neon · 15m/7d · the opt-in AI provider story', () => {
+  it('privacy: argon2 · Vercel + Neon · 15m/7d · the opt-in AI provider story', () => {
     renderPage(PrivacyPage);
     const text = document.body.textContent ?? '';
     expect(text).toContain('argon2');
-    expect(text).toContain('Render');
+    // R356 Lane 2b: production moved to Vercel (Render is the suspended
+    // standby) — the legal page names the LIVE host, and this pin follows
+    // the same truth (the pin's intent was always "the REAL host").
+    expect(text).toContain('Vercel');
     expect(text).toContain('Neon');
     expect(text).toContain('15m');
     expect(text).toContain('7d');

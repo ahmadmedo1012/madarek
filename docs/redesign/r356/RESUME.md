@@ -143,9 +143,60 @@ announcement created + dumpsys carries the posted notification), evidence bundle
 artifact (retention 30d). Mobile tests green after the additive testID anchor:
 1,250/1,250; tsc clean. (Run URL recorded below once executed.)
 
-### N.5 Evidence
+### N.5 Evidence — the proof run (GREEN, run 43774275945)
 
-(first proof run: pending the push + workflow execution — recorded here with the
-run URL and the artifact link)
+`Push proof (Firebase, real send)` #2 on `c1273d80` — all steps green, ALL assertions
+passed. Artifact: `push-proof-evidence-2` (763 KB — dumpsys, logcat, screenshots,
+device rows, the announcement). The log's evidence chain, verbatim:
 
-## LANE 2..9 — (not started)
+```
+google-services.json OK (project madarek-20141)          ← the secret file, validated in CI
+native Firebase wiring verified (google-services.json + gradle plugin)
+[3/8] Maestro: login to production + open the alerts inbox
+student login: ok
+{"data":[{"id":"cmwih4nzn0001366m7q9t1lg1","platform":"ANDROID","appVersion":"1.0.0",
+ "lastSeenAt":"2026-11-15T23:36:47.219Z","createdAt":"2026-11-15T23:36:47.219Z"}]}
+                                                          ← the emulator REGISTERED on production
+[5/8] the REAL server event: the registrar posts a PLATFORM announcement
+registrar login: ok
+{"data":{"id":"cmwih5fnr0006366ms85dbhp0","scope":"PLATFORM",
+ "title":"إشعار تجريبي — وصلت الإشعارات الفورية (23:37:22)",
+ "body":"اختبار وصول الإشعار الحقيقي من الخادم إلى هذا الجهاز — R356 Lane N", ...}}
+attempt 1: the notification is POSTED (dumpsys)           ← ARRIVED=1 on the FIRST poll (~4s)
+ANDROID devices registered on production: 1
+ANDROID devices after the send: 1                        ← the row SURVIVED = receipt ok
+dumpsys: a Madarek notification is POSTED on the emulator
+ALL PUSH EVIDENCE ASSERTIONS PASSED
+```
+
+Pipeline proven: app (Firebase init via secret google-services.json) → Expo token
+mint on a google_apis emulator → registration on production → registrar's real
+PLATFORM announcement → production `fanOutPush` → Expo push service → FCM v1 (the
+EAS-uploaded service account) → **the emulator's system posted the notification**.
+The FCM-tag logcat grep found 0 lines (the pattern doesn't match the google_apis
+image's delivery tags) — noted honestly; the OS-posted notification (dumpsys) is
+the ground-truth arrival evidence, and the workflow's assertions never gated on
+logcat lines. Run: https://github.com/ahmadmedo1012/madarek/actions/runs/43774275945
+
+### N.6 Lane N verdict: CLOSED
+
+The checklist item in §I (owner-only) is done: push delivered to an emulator from
+the production server, with the full evidence bundle. docs/PUSH-FIREBASE-CHECKLIST.md
+flipped to ✅; docs/HOSTING.md tells the real state; the safe-rollback (delete the
+secret → pre-Firebase builds) is documented.
+
+## LANE 2 — copy QUALITY review (in progress)
+
+### 2a/2b — DONE (the editor read the diet, end to end)
+
+`docs/QA/copy-review/pack.md` (63 files, 2,011 − / 1,499 + Arabic source lines from
+`git diff e83a3da6~1..HEAD`) + `docs/QA/copy-review/REPORT.md` (the verdict). Result:
+the diet was disciplined — grammar clean (it even fixed a pre-existing typo),
+terminology consistent, errors still actionable, empty states 1-line+1-button, no
+English leftovers, no truncated sentences. ONE real finding, fixed: the privacy
+page still named **Render** as the web host (stale before the diet; production is
+Vercel) — fixed to Vercel with the real-facts test pin following the same truth
+(90/90 legal tests green). Legal substance table (purpose/data/retention/rights/
+contact/jurisdiction + the 9-key ledger) verified intact against the pre-diet text.
+
+### 2c — param-route fixtures + ledger re-run (in progress)

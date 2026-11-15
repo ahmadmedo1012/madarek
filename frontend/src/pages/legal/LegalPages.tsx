@@ -78,7 +78,7 @@ export function PrivacyPage() {
       <LegalSectionBar index={3} title="أين يُخزَّن" id="privacy-where" />
       <LegalCell>
         <p className="lg-p">
-          خدمة الويب وقاعدة <CodeRun>PostgreSQL</CodeRun> على <strong>Render</strong> و<strong>Neon</strong>،
+          خدمة الويب وقاعدة <CodeRun>PostgreSQL</CodeRun> على <strong>Vercel</strong> و<strong>Neon</strong>،
           والمرفوعات في مخزن يحدده المشغّل — لا خوادم أخرى.
         </p>
       </LegalCell>
