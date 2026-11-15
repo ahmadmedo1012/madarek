@@ -8,6 +8,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp, type StatusToneName } from "@/design/tokens";
 import { T } from "./text";
@@ -133,13 +134,22 @@ export function Sheet({
   footer?: ReactNode;
 }) {
   const p = usePalette();
+  /* R3 audit P0 — bottom sheets must clear the gesture bar (edge-to-edge
+     Android 15 / iOS home indicator): 0 on nav-bar devices, the inset on
+     gesture-nav ones. One line at the root covers every legacy consumer. */
+  const insets = useSafeAreaInsets();
   return (
     <Modal visible={open} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel="إغلاق" />
       <View
         style={[
           styles.sheet,
-          { backgroundColor: p.surface, borderColor: p.rule, borderTopWidth: StyleSheet.hairlineWidth },
+          {
+            backgroundColor: p.surface,
+            borderColor: p.rule,
+            borderTopWidth: StyleSheet.hairlineWidth,
+            paddingBottom: insets.bottom,
+          },
         ]}
       >
           <View style={[styles.grab, { backgroundColor: p.rule }]} />

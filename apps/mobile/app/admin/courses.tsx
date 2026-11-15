@@ -9,9 +9,10 @@ import { Screen, PageHeader } from "@/components/ui";
 import { StackHeader as NavHeader } from "@/components/shell/AppTopBar";
 import { T, MonoLabel } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
-import { ConfirmDialog, Sheet } from "@/components/ui/surfaces";
+import { ConfirmDialog } from "@/components/ui/surfaces";
+import { AppSheet, SheetTextInput, useSheetMounted } from "@/components/ui/sheet";
 import { RowList, LedgerRow, StatLine } from "@/components/ui/data";
-import { Field, SearchBar, SelectField } from "@/components/ui/fields";
+import { SearchBar, SelectField } from "@/components/ui/fields";
 import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
@@ -84,6 +85,9 @@ export default function AdminCourses() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<CourseRow | null>(null);
   const [offeringCourse, setOfferingCourse] = useState<CourseRow | null>(null);
+  /* Mount-on-demand: the form sheet's native graph loads on first open,
+     never on the signed-out render net (see ui/sheet useSheetMounted). */
+  const draftSheetMounted = useSheetMounted(draft !== null);
 
   const invalidateCourses = () => {
     qc.invalidateQueries({ queryKey: ["admin", "courses"] });
@@ -266,84 +270,119 @@ export default function AdminCourses() {
         )}
       </View>
 
-      {/* Create / edit course sheet */}
-      <Sheet
-        open={draft !== null}
-        onClose={() => {
-          setDraft(null);
-          setEditingId(null);
-        }}
-        title={editingId ? "تعديل المقرّر" : "إضافة مقرّر جديد"}
-        footer={
-          <Button
-            label={
-              createCourse.isPending || updateCourse.isPending
-                ? "جارٍ الحفظ…"
-                : editingId
-                  ? "حفظ التعديلات"
-                  : "إضافة المقرّر"
-            }
-            disabled={
-              !draft ||
-              !draft.code.trim() ||
-              !draft.name.trim() ||
-              (!editingId && !draft.departmentId) ||
-              createCourse.isPending ||
-              updateCourse.isPending
-            }
-            onPress={() => (editingId ? updateCourse.mutate() : createCourse.mutate())}
-          />
-        }
-      >
-        {draft ? (
-          <View style={{ gap: 12 }}>
-            <Field
-              label="كود المقرّر"
-              value={draft.code}
-              onChangeText={(code) => setDraft({ ...draft, code })}
-              placeholder="CS101"
-            />
-            <Field
-              label="اسم المقرّر"
-              value={draft.name}
-              onChangeText={(name) => setDraft({ ...draft, name })}
-              placeholder="مقدمة في علوم الحاسب"
-            />
-            <Field
-              label="الاسم بالإنجليزية (اختياري)"
-              value={draft.nameEn}
-              onChangeText={(nameEn) => setDraft({ ...draft, nameEn })}
-              placeholder="Introduction to Computer Science"
-            />
-            <Field
-              label="الوصف (اختياري)"
-              value={draft.description}
-              onChangeText={(description) => setDraft({ ...draft, description })}
-              placeholder="وصف موجز للمقرّر"
-              multiline
-            />
-            <Field
-              label="الساعات المعتمدة"
-              value={draft.credits}
-              onChangeText={(credits) => setDraft({ ...draft, credits })}
-              hint="بين 1 و10 — الحدّ الذي يقبله الخادم"
-              keyboardType="numeric"
-            />
-            <SelectField
-              label="القسم"
-              value={
-                departmentOptions.find((d) => d.id === draft.departmentId) ?? null
+      {/* Create / edit course sheet — AppSheet + SheetTextInput so the
+          keyboard never covers the form (SelectField's OptionSheet is a
+          native Modal and floats above the sheet). */}
+      {draftSheetMounted ? (
+        <AppSheet
+          open={draft !== null}
+          onClose={() => {
+            setDraft(null);
+            setEditingId(null);
+          }}
+          title={editingId ? "تعديل المقرّر" : "إضافة مقرّر جديد"}
+          snap="lg"
+          scrollable
+          footer={
+            <Button
+              label={
+                createCourse.isPending || updateCourse.isPending
+                  ? "جارٍ الحفظ…"
+                  : editingId
+                    ? "حفظ التعديلات"
+                    : "إضافة المقرّر"
               }
-              options={departmentOptions}
-              onSelect={(id) => setDraft({ ...draft, departmentId: id })}
-              loading={facs.isLoading}
-              placeholder="اختر القسم…"
-              sheetTitle="القسم"
-              emptyLabel="لا توجد أقسام بعد"
+              disabled={
+                !draft ||
+                !draft.code.trim() ||
+                !draft.name.trim() ||
+                (!editingId && !draft.departmentId) ||
+                createCourse.isPending ||
+                updateCourse.isPending
+              }
+              onPress={() => (editingId ? updateCourse.mutate() : createCourse.mutate())}
             />
-          </View>
-        ) : null}
-      </Sheet>
+          }
+        >
+          {draft ? (
+            <View style={{ gap: 12 }}>
+              <View style={{ gap: 6 }}>
+                <T variant="sm" weight="medium" color="secondary">
+                  كود المقرّر
+                </T>
+                <SheetTextInput
+                  accessibilityLabel="كود المقرّر"
+                  value={draft.code}
+                  onChangeText={(code) => setDraft({ ...draft, code })}
+                  placeholder="CS101"
+                />
+              </View>
+              <View style={{ gap: 6 }}>
+                <T variant="sm" weight="medium" color="secondary">
+                  اسم المقرّر
+                </T>
+                <SheetTextInput
+                  accessibilityLabel="اسم المقرّر"
+                  value={draft.name}
+                  onChangeText={(name) => setDraft({ ...draft, name })}
+                  placeholder="مقدمة في علوم الحاسب"
+                />
+              </View>
+              <View style={{ gap: 6 }}>
+                <T variant="sm" weight="medium" color="secondary">
+                  الاسم بالإنجليزية (اختياري)
+                </T>
+                <SheetTextInput
+                  accessibilityLabel="الاسم بالإنجليزية"
+                  value={draft.nameEn}
+                  onChangeText={(nameEn) => setDraft({ ...draft, nameEn })}
+                  placeholder="Introduction to Computer Science"
+                />
+              </View>
+              <View style={{ gap: 6 }}>
+                <T variant="sm" weight="medium" color="secondary">
+                  الوصف (اختياري)
+                </T>
+                <SheetTextInput
+                  accessibilityLabel="الوصف"
+                  value={draft.description}
+                  onChangeText={(description) => setDraft({ ...draft, description })}
+                  placeholder="وصف موجز للمقرّر"
+                  multiline
+                  textAlignVertical="top"
+                  style={{ minHeight: 96 }}
+                />
+              </View>
+              <View style={{ gap: 6 }}>
+                <T variant="sm" weight="medium" color="secondary">
+                  الساعات المعتمدة
+                </T>
+                <SheetTextInput
+                  accessibilityLabel="الساعات المعتمدة"
+                  value={draft.credits}
+                  onChangeText={(credits) => setDraft({ ...draft, credits })}
+                  keyboardType="numeric"
+                />
+                <T variant="xs" color="muted">
+                  بين 1 و10 — الحدّ الذي يقبله الخادم
+                </T>
+              </View>
+              <SelectField
+                label="القسم"
+                value={
+                  departmentOptions.find((d) => d.id === draft.departmentId) ?? null
+                }
+                options={departmentOptions}
+                onSelect={(id) => setDraft({ ...draft, departmentId: id })}
+                loading={facs.isLoading}
+                placeholder="اختر القسم…"
+                sheetTitle="القسم"
+                emptyLabel="لا توجد أقسام بعد"
+              />
+            </View>
+          ) : null}
+        </AppSheet>
+      ) : null}
 
       {/* Offering create sheet */}
       {offeringCourse ? (
@@ -421,10 +460,12 @@ function OfferingSheet({
   }));
 
   return (
-    <Sheet
+    <AppSheet
       open
       onClose={onClose}
       title="فتح شعبة"
+      snap="lg"
+      scrollable
       footer={
         <Button
           label={create.isPending ? "جارٍ الفتح…" : "فتح الشعبة"}
@@ -437,14 +478,21 @@ function OfferingSheet({
         <T variant="body" color="muted">
           سيُدرَّس مقرّر «{course.name}» ({course.code}) في الشعبة الجديدة.
         </T>
-        <Field
-          label="الفصل الدراسي"
-          value={term}
-          onChangeText={setTerm}
-          placeholder="2024-FALL"
-          hint="نص حرّ من 1 إلى 50 حرفًا — مثال: 2024-FALL"
-          maxLength={50}
-        />
+        <View style={{ gap: 6 }}>
+          <T variant="sm" weight="medium" color="secondary">
+            الفصل الدراسي
+          </T>
+          <SheetTextInput
+            accessibilityLabel="الفصل الدراسي"
+            value={term}
+            onChangeText={setTerm}
+            placeholder="2024-FALL"
+            maxLength={50}
+          />
+          <T variant="xs" color="muted">
+            نص حرّ من 1 إلى 50 حرفًا — مثال: 2024-FALL
+          </T>
+        </View>
         <SelectField
           label="الأستاذ"
           value={teacherOptions.find((t) => t.id === teacherId) ?? null}
@@ -455,15 +503,20 @@ function OfferingSheet({
           sheetTitle="أساتذة المؤسسة"
           emptyLabel="لا أساتذة بعد"
         />
-        <Field
-          label="القاعة (اختياري)"
-          value={room}
-          onChangeText={setRoom}
-          placeholder="قاعة A12"
-        />
+        <View style={{ gap: 6 }}>
+          <T variant="sm" weight="medium" color="secondary">
+            القاعة (اختياري)
+          </T>
+          <SheetTextInput
+            accessibilityLabel="القاعة"
+            value={room}
+            onChangeText={setRoom}
+            placeholder="قاعة A12"
+          />
+        </View>
         <StatLine label="السعة" value={num(null, "افتراض الخادم")} hint="أقصى عدد طلاب يمكن تسجيلهم في الشعبة" />
       </View>
-    </Sheet>
+    </AppSheet>
   );
 }
 

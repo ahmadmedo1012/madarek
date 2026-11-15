@@ -949,6 +949,11 @@ export default function ExamTakerScreen() {
                 placeholderTextColor={p.textFaint}
                 multiline
                 maxLength={TEXT_MAX}
+                /* R3 audit P1 — the answer field is body text: cap the OS
+                   font scale (Android multiplies the fixed lineHeight, iOS
+                   does not — 1.5 keeps leading sane) while minHeight lets
+                   the essay grow. */
+                maxFontSizeMultiplier={1.5}
                 style={{
                   minHeight: current.type === "ESSAY" ? 150 : 76,
                   borderWidth: StyleSheet.hairlineWidth,

@@ -162,10 +162,10 @@ const LectureRow = makeRow<Lecture, { index: number }>(({ item, index }) => {
             </View>
           )}
           <View style={{ flex: 1, gap: 2 }}>
-            <T variant="body" weight="bold" numberOfLines={1}>
+            <T variant="body" weight="bold" numberOfLines={1} maxFontSizeMultiplier={1.3}>
               {item.title}
             </T>
-            <T variant="xs" color="muted" numberOfLines={1}>
+            <T variant="xs" color="muted" numberOfLines={1} maxFontSizeMultiplier={1.5}>
               {`${item.durationSec ? mmss(item.durationSec) : "—"} · ${countAr(item._count?.chapters ?? 0, [
                 "فصل واحد",
                 "فصلان",
@@ -248,10 +248,10 @@ const MaterialRow = makeRow<Material, { index: number }>(({ item, index }) => {
             <Icon size={18} color={p.textMuted} />
           </View>
           <View style={{ flex: 1, gap: 2 }}>
-            <T variant="body" weight="bold" numberOfLines={1}>
+            <T variant="body" weight="bold" numberOfLines={1} maxFontSizeMultiplier={1.3}>
               {item.name}
             </T>
-            <T variant="xs" color="muted" numberOfLines={1}>
+            <T variant="xs" color="muted" numberOfLines={1} maxFontSizeMultiplier={1.5}>
               {`${materialTypeLabel(item.type)} · ${sizeLabel(item.sizeBytes)}`}
             </T>
           </View>
@@ -293,13 +293,13 @@ const AnnouncementRow = makeRow<ScopedAnnouncement, { index: number }>(({ item, 
           >
             <Megaphone size={16} color={p.textMuted} />
           </View>
-          <T variant="body" weight="bold" numberOfLines={1} style={{ flex: 1 }}>
+          <T variant="body" weight="bold" numberOfLines={1} style={{ flex: 1 }} maxFontSizeMultiplier={1.3}>
             {item.title}
           </T>
           {item.pinned ? <Badge label="مثبّت" tone="yellow" /> : null}
         </View>
         {item.body ? (
-          <T variant="sm" color="secondary" numberOfLines={3}>
+          <T variant="sm" color="secondary" numberOfLines={3} maxFontSizeMultiplier={1.5}>
             {item.body}
           </T>
         ) : null}
@@ -423,7 +423,7 @@ export default function CourseDetailScreen() {
               <T variant="bodyLg" weight="bold" numberOfLines={2}>
                 {course?.name}
               </T>
-              <T variant="xs" color="muted" numberOfLines={1}>
+              <T variant="xs" color="muted" numberOfLines={1} maxFontSizeMultiplier={1.5}>
                 {course?.department?.name ?? "قسم غير محدَّد"}
                 {course?.faculty ? ` · ${course.faculty.name}` : ""}
               </T>

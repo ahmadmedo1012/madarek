@@ -163,13 +163,13 @@ export default function StudentDashboard() {
               </View>
               <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
                 <View style={{ flex: 1, gap: 2 }}>
-                  <T variant="bodyLg" weight="bold" numberOfLines={1}>
+                  <T variant="bodyLg" weight="bold" numberOfLines={1} maxFontSizeMultiplier={1.3}>
                     {step.title}
                   </T>
                   {/* BidiText — agenda sublines mix times/rooms/Latin
                       course vocabulary; boundary Latin runs must stay put
                       (review-2 P0-1 · T-50). */}
-                  <BidiText variant="sm" color="secondary" numberOfLines={1}>
+                  <BidiText variant="sm" color="secondary" numberOfLines={1} maxFontSizeMultiplier={1.5}>
                     {step.subline}
                   </BidiText>
                 </View>
@@ -258,7 +258,7 @@ export default function StudentDashboard() {
                       accessibilityLabel={s.a11y}
                       style={{ fontSize: 20, fontWeight: "700" }}
                     />
-                    <T variant="xs" color="muted" align="center" numberOfLines={1}>
+                    <T variant="xs" color="muted" align="center" numberOfLines={1} maxFontSizeMultiplier={1.25}>
                       {s.label}
                     </T>
                   </View>
@@ -297,7 +297,7 @@ export default function StudentDashboard() {
               }}
             >
               <a.icon size={20} color={p.text} />
-              <T variant="xs" weight="medium" numberOfLines={1}>
+              <T variant="xs" weight="medium" numberOfLines={1} maxFontSizeMultiplier={1.25}>
                 {a.label}
               </T>
             </PressableScale>
@@ -356,11 +356,11 @@ export default function StudentDashboard() {
                       {`${c.startTime}–${c.endTime}`}
                     </T>
                   </View>
-                  <T variant="sm" weight="bold" numberOfLines={1}>
+                  <T variant="sm" weight="bold" numberOfLines={1} maxFontSizeMultiplier={1.3}>
                     {c.courseName}
                   </T>
                   {c.room ? (
-                    <T variant="xs" color="muted" numberOfLines={1}>
+                    <T variant="xs" color="muted" numberOfLines={1} maxFontSizeMultiplier={1.5}>
                       {`قاعة ${c.room}`}
                     </T>
                   ) : null}
@@ -451,7 +451,7 @@ export default function StudentDashboard() {
                     onPress={() => router.push("/student/assignments" as never)}
                   >
                     <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                      <T variant="body" weight="bold" style={{ flex: 1 }} numberOfLines={1}>
+                      <T variant="body" weight="bold" style={{ flex: 1 }} numberOfLines={1} maxFontSizeMultiplier={1.3}>
                         {a.courseCode ? `${a.title} (${a.courseCode})` : a.title}
                       </T>
                       <Badge label={due.text} tone={due.overdue ? "rose" : "yellow"} />
@@ -476,7 +476,7 @@ export default function StudentDashboard() {
                     accessibilityLabel={`اختبار: ${e.title}`}
                     onPress={() => router.push("/student/online-exams" as never)}
                   >
-                    <T variant="body" weight="bold" numberOfLines={1}>
+                    <T variant="body" weight="bold" numberOfLines={1} maxFontSizeMultiplier={1.3}>
                       {e.title}
                     </T>
                     <T variant="sm" color="muted">
@@ -493,7 +493,7 @@ export default function StudentDashboard() {
                   onPress={() => router.push("/student/live" as never)}
                 >
                   <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                    <T variant="body" weight="bold" style={{ flex: 1 }} numberOfLines={1}>
+                    <T variant="body" weight="bold" style={{ flex: 1 }} numberOfLines={1} maxFontSizeMultiplier={1.3}>
                       {l.title}
                     </T>
                     <Badge label="LIVE" tone="yellow" mono />

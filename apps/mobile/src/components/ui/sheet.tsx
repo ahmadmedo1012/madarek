@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type ComponentProps, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentProps, type ReactNode } from "react";
 import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { Easing } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -618,3 +618,23 @@ export function PickerSheet({
 const styles = StyleSheet.create({
   host: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 },
 });
+
+/**
+ * True once `open` has ever been true. Keeps an AppSheet mounted after its
+ * first open (so the dismiss animation plays) while signed-out render nets
+ * — which never open sheets — never mount the native sheet graph at all
+ * (bottom-sheet → RNGH v3's import-time native install task; see
+ * foundations/sheets.md §lazy-native-graph). AppSheet loads the graph
+ * lazily on first render; this keeps the FIRST render itself from
+ * happening until the user actually opens a sheet.
+ *
+ * `{mounted ? <AppSheet …/> : null}` at every call site that keeps its
+ * sheet state in the screen (no caller-side gating otherwise).
+ */
+export function useSheetMounted(open: boolean): boolean {
+  const [mounted, setMounted] = useState(false);
+  // React-blessed "adjust state during render" (same pattern as the
+  // grades scale adoption) — flips once, then never again.
+  if (open && !mounted) setMounted(true);
+  return mounted;
+}

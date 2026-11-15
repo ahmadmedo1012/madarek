@@ -791,7 +791,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                   >
                     <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                       <MonoLabel>{cueClock(c.triggerSec)}</MonoLabel>
-                      <T variant="sm" style={{ flex: 1 }} numberOfLines={2}>
+                      <T variant="sm" style={{ flex: 1 }} numberOfLines={2} maxFontSizeMultiplier={1.5}>
                         {c.question}
                       </T>
                       {answered ? (
@@ -835,11 +835,12 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                           weight={isActive ? "bold" : "medium"}
                           color={isActive ? "accentInk" : "text"}
                           numberOfLines={1}
+                          maxFontSizeMultiplier={1.3}
                         >
                           {ch.title}
                         </T>
                         {ch.concept ? (
-                          <T variant="xs" color="faint" numberOfLines={1}>
+                          <T variant="xs" color="faint" numberOfLines={1} maxFontSizeMultiplier={1.5}>
                             {ch.concept.name}
                           </T>
                         ) : null}
@@ -929,7 +930,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                   onPress={() => openMaterial(m.url, m.name)}
                 >
                   <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                    <T variant="sm" weight="medium" style={{ flex: 1 }} numberOfLines={1}>
+                    <T variant="sm" weight="medium" style={{ flex: 1 }} numberOfLines={1} maxFontSizeMultiplier={1.5}>
                       {m.name}
                     </T>
                     <T variant="xs" color="muted">

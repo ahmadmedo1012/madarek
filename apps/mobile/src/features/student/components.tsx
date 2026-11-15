@@ -25,8 +25,7 @@ import { sp, type StatusToneName } from "@/design/tokens";
 import { Screen, SectionBar } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
-import { Sheet } from "@/components/ui/surfaces";
-import { Field } from "@/components/ui/fields";
+import { AppSheet, SheetTextInput } from "@/components/ui/sheet";
 import { LedgerRow, ProgressBar, RowList } from "@/components/ui/data";
 import { dateTime, dueLabel, latn, pct } from "@/lib/format";
 import { StackHeader } from "@/components/shell/AppTopBar";
@@ -275,6 +274,66 @@ export interface SubmitTarget {
   courseName?: string | null;
 }
 
+/** Labeled sheet input — SheetTextInput so the sheet tracks the keyboard
+ *  (same shape as the teacher live.tsx SheetField; hint + error support). */
+function SheetField({
+  label,
+  value,
+  onChangeText,
+  hint,
+  error,
+  multiline,
+  placeholder,
+  maxLength,
+  keyboardType,
+  autoCapitalize,
+  autoCorrect,
+  accessibilityLabel,
+}: {
+  label: string;
+  value: string;
+  onChangeText: (v: string) => void;
+  hint?: string | null;
+  error?: string | null;
+  multiline?: boolean;
+  placeholder?: string;
+  maxLength?: number;
+  keyboardType?: "default" | "url" | "email-address" | "numeric" | "phone-pad";
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
+  autoCorrect?: boolean;
+  accessibilityLabel?: string;
+}) {
+  return (
+    <View style={{ gap: sp[6] }}>
+      <T variant="sm" weight="medium" color={error ? "danger" : "secondary"}>
+        {label}
+      </T>
+      <SheetTextInput
+        accessibilityLabel={accessibilityLabel ?? label}
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        keyboardType={keyboardType}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        multiline={multiline}
+        textAlignVertical={multiline ? "top" : undefined}
+        style={multiline ? { minHeight: 120 } : undefined}
+      />
+      {error ? (
+        <T variant="sm" color="danger" accessibilityRole="alert">
+          {error}
+        </T>
+      ) : hint ? (
+        <T variant="xs" color="muted">
+          {hint}
+        </T>
+      ) : null}
+    </View>
+  );
+}
+
 /** «تسليم الواجب» — text answer + optional file URL, web validation copy. */
 export function AssignSubmitSheet({
   open,
@@ -333,10 +392,12 @@ export function AssignSubmitSheet({
   const late = done?.status === "LATE";
 
   return (
-    <Sheet
+    <AppSheet
       open={open}
       onClose={onClose}
       title="تسليم الواجب"
+      snap="lg"
+      scrollable
       footer={
         <View style={{ flexDirection: "row", gap: sp[8] }}>
           <View style={{ flex: 1 }}>
@@ -382,7 +443,7 @@ export function AssignSubmitSheet({
           </View>
         ) : (
           <>
-            <Field
+            <SheetField
               label="إجابتك النصيّة"
               value={textAnswer}
               onChangeText={setTextAnswer}
@@ -391,7 +452,7 @@ export function AssignSubmitSheet({
               placeholder="اكتب إجابتك هنا…"
               maxLength={8000}
             />
-            <Field
+            <SheetField
               label="رابط ملف (اختياري)"
               value={fileUrl}
               onChangeText={setFileUrl}
@@ -410,7 +471,7 @@ export function AssignSubmitSheet({
           </>
         )}
       </View>
-    </Sheet>
+    </AppSheet>
   );
 }
 

@@ -20,10 +20,10 @@ import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { Screen, PageHeader, SectionBar } from "@/components/ui/screen";
-import { Badge, Card, Sheet } from "@/components/ui/surfaces";
+import { Badge, Card } from "@/components/ui/surfaces";
+import { AppSheet, SheetTextInput, useSheetMounted } from "@/components/ui/sheet";
 import { Avatar, LedgerRow, RowList, StatLine } from "@/components/ui/data";
 import { Button } from "@/components/ui/pressables";
-import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { arCount } from "@/features/teacher/components";
@@ -109,6 +109,9 @@ export default function TeacherProfile() {
   const qc = useQueryClient();
   const user = useSession((s) => s.user);
   const [editing, setEditing] = useState(false);
+  /* Mount-on-demand: the bio editor's native sheet graph loads on first
+     open, never on the signed-out render net (see ui/sheet). */
+  const editMounted = useSheetMounted(editing);
 
   const profile = useQuery({
     queryKey: ["teacher", "profile", scope],
@@ -315,44 +318,78 @@ export default function TeacherProfile() {
         </>
       )}
 
-      {/* تحرير السيرة — the four backend-accepted fields (updateProfileSchema). */}
-      <Sheet open={editing} onClose={() => setEditing(false)} title="تحرير السيرة">
-        <Field
-          label="نبذة"
-          value={bio}
-          onChangeText={setBio}
-          multiline
-          placeholder="اكتب نبذة عن خبرتك الأكاديمية والبحثية وأهم اهتماماتك العلمية…"
-          accessibilityLabel="نبذة"
-        />
-        <Field
-          label="موقع المكتب"
-          value={officeLocation}
-          onChangeText={setOfficeLocation}
-          placeholder="مثال: مبنى الكلّيّة - مكتب 305"
-          accessibilityLabel="موقع المكتب"
-        />
-        <Field
-          label="ساعات العمل"
-          value={officeHours}
-          onChangeText={setOfficeHours}
-          placeholder="مثال: الأحد والثلاثاء 10-12"
-          accessibilityLabel="ساعات العمل"
-        />
-        <Field
-          label="الموقع الإلكتروني"
-          value={websiteUrl}
-          onChangeText={setWebsiteUrl}
-          placeholder="https://example.com/profile"
-          accessibilityLabel="الموقع الإلكتروني"
-        />
-        {saveError ? (
-          <T variant="sm" color="danger">
-            {saveError}
-          </T>
-        ) : null}
-        <Button label="حفظ" loading={save.isPending} onPress={() => save.mutate()} />
-      </Sheet>
+      {/* تحرير السيرة — the four backend-accepted fields (updateProfileSchema).
+          AppSheet + SheetTextInput so the keyboard never covers the fields. */}
+      {editMounted ? (
+        <AppSheet
+          open={editing}
+          onClose={() => setEditing(false)}
+          title="تحرير السيرة"
+          snap="lg"
+          scrollable
+          footer={
+            <Button label="حفظ" loading={save.isPending} onPress={() => save.mutate()} />
+          }
+        >
+          <View style={{ gap: sp[12] }}>
+            <View style={{ gap: sp[6] }}>
+              <T variant="sm" weight="medium" color="secondary">
+                نبذة
+              </T>
+              <SheetTextInput
+                accessibilityLabel="نبذة"
+                value={bio}
+                onChangeText={setBio}
+                multiline
+                placeholder="اكتب نبذة عن خبرتك الأكاديمية والبحثية وأهم اهتماماتك العلمية…"
+                textAlignVertical="top"
+                style={{ minHeight: 120 }}
+              />
+            </View>
+            <View style={{ gap: sp[6] }}>
+              <T variant="sm" weight="medium" color="secondary">
+                موقع المكتب
+              </T>
+              <SheetTextInput
+                accessibilityLabel="موقع المكتب"
+                value={officeLocation}
+                onChangeText={setOfficeLocation}
+                placeholder="مثال: مبنى الكلّيّة - مكتب 305"
+              />
+            </View>
+            <View style={{ gap: sp[6] }}>
+              <T variant="sm" weight="medium" color="secondary">
+                ساعات العمل
+              </T>
+              <SheetTextInput
+                accessibilityLabel="ساعات العمل"
+                value={officeHours}
+                onChangeText={setOfficeHours}
+                placeholder="مثال: الأحد والثلاثاء 10-12"
+              />
+            </View>
+            <View style={{ gap: sp[6] }}>
+              <T variant="sm" weight="medium" color="secondary">
+                الموقع الإلكتروني
+              </T>
+              <SheetTextInput
+                accessibilityLabel="الموقع الإلكتروني"
+                value={websiteUrl}
+                onChangeText={setWebsiteUrl}
+                placeholder="https://example.com/profile"
+                keyboardType="url"
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            </View>
+            {saveError ? (
+              <T variant="sm" color="danger">
+                {saveError}
+              </T>
+            ) : null}
+          </View>
+        </AppSheet>
+      ) : null}
     </Screen>
   );
 }
