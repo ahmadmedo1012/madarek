@@ -144,7 +144,7 @@ export function OwnerAlertsPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="التنبيهات التشغيليّة"
-        description="إدارة ومراقبة التنبيهات والحوادث التشغيليّة — مباشرة من سجلّ المنصّة."
+        description="إدارة ومراقبة التنبيهات التشغيليّة — من سجلّ المنصّة."
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'التنبيهات التشغيليّة' }]}
         /* R341 D11: the [11] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
@@ -202,7 +202,7 @@ export function OwnerAlertsPage() {
           <EmptyState illustration="empty-list"
             icon={CheckCircle2}
             title="لا توجد تنبيهات مفتوحة"
-            description="كل أنظمة المنصّة تعمل بشكل طبيعيّ — تابع آخر العمليّات من سجلّ النشاط."
+            description="كل الأنظمة طبيعيّة — تابع آخر العمليّات من سجلّ النشاط."
             action={(
               <Link to="/owner/activity" className="btn ghost sm">
                 <Icon icon={Activity} size={12} />
@@ -279,7 +279,7 @@ export function OwnerAlertsPage() {
         confirmLabel="حلّ التنبيه"
         danger
         message={resolveTarget
-          ? `سيُغلَق التنبيه «${resolveTarget.title}» نهائيًّا، ويُسجَّل الحل باسمك في سجلّ النشاط. إذا استمر السبب الذي أنشأه فقد يُرفع تنبيه جديد. لا يمكن التراجع عن الإغلاق من هذه الصفحة.`
+          ? `سيُغلَق التنبيه نهائيًّا ويُسجَّل الحل باسمك؛ إذا استمر السبب فقد يُرفع تنبيه جديد — لا تراجع من هذه الصفحة.`
           : ''}
         onConfirm={() => (resolveTarget ? confirmResolve(resolveTarget) : Promise.resolve())}
         onCancel={() => setResolveTarget(null)}

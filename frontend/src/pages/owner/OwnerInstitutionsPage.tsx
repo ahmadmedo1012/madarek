@@ -466,7 +466,7 @@ export function OwnerInstitutionsPage() {
       title: suspending ? 'تعليق المؤسسة' : 'تنشيط المؤسسة',
       confirmLabel: suspending ? 'تعليق المؤسسة' : 'تنشيط المؤسسة',
       message: suspending
-        ? `لن يتمكّن أعضاؤها من الوصول إلى سياق المؤسسة حتى تُنشَّط مجددًا.`
+        ? `«${institution.name}» — لن يتمكّن أعضاؤها من الوصول حتى تنشيطها.`
         : `سيستعيد الأعضاء النشطون وصولهم.`,
       danger: suspending,
       onConfirm: async () => {
@@ -525,7 +525,7 @@ export function OwnerInstitutionsPage() {
     setConfirmConfig({
       title: 'إلغاء عضوية المسجل العام',
       confirmLabel: 'إلغاء العضوية',
-      message: `سيفقد وصوله إلى سياق هذه المؤسسة فورًا.`,
+      message: `«${admin.firstName} ${admin.lastName}» سيفقد وصوله لسياق المؤسسة فورًا.`,
       danger: true,
       onConfirm: async () => {
         setConfirmOpen(false);

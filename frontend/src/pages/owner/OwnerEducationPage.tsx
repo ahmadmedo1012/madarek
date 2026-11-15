@@ -180,7 +180,7 @@ export function OwnerEducationPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="النظرة التعليميّة"
-        description="إحصائيات حيّة عن المقرّرات وأعضاء هيئة التدريس والطلاب"
+        description="إحصائيات المقرّرات وهيئة التدريس والطلاب"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'النظرة التعليميّة' }]}
         /* R341 D11: the [08] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
@@ -213,7 +213,7 @@ export function OwnerEducationPage() {
 
       <Card title="المقرّرات حسب الكلّيّة" subtitle="عدد المقرّرات المُدرَّجة في كل كلّيّة">
         {byFaculty.length === 0 ? (
-          <EmptyState illustration="empty-courses" title="لا مقرّرات بعد" description="ستظهر هنا حين تُسجَّل مقرّرات على نظام الكلّيّات." />
+          <EmptyState illustration="empty-courses" title="لا مقرّرات بعد" description="تظهر حين تُسجَّل مقرّرات على الكلّيّات." />
         ) : (
           <ChartFrame
             ariaLabel="مخطط أعمدة أفقي — عدد المقرّرات في كل كلّيّة"
@@ -232,7 +232,7 @@ export function OwnerEducationPage() {
 
       <Card title="أكثر المقرّرات تسجيلاً">
         {topCourses.length === 0 ? (
-          <EmptyState illustration="empty-list" title="لا تسجيلات بعد" description="ستظهر المقرّرات الأكثر تسجيلاً فور تسجيل الطلاب في العروض." />
+          <EmptyState illustration="empty-list" title="لا تسجيلات بعد" description="تظهر فور تسجيل الطلاب في العروض." />
         ) : (
           <div className="table-wrap">
             <table className="table tbl-stack">
@@ -265,10 +265,10 @@ export function OwnerEducationPage() {
 
       <Card
         title="توزيع حِمل أعضاء هيئة التدريس"
-        subtitle="نسبة الأساتذة حسب عدد العروض التي يُدرِّسونها هذا الفصل"
+        subtitle="الأساتذة حسب عدد العروض هذا الفصل"
       >
         {totalTeachers === 0 ? (
-          <EmptyState illustration="empty-list" title="لا يوجد أساتذة بعد" description="يُحسب التوزيع فور إسناد أوّل عرض لمقرّر." />
+          <EmptyState illustration="empty-list" title="لا يوجد أساتذة بعد" description="يُحسب التوزيع فور إسناد أول عرض." />
         ) : (
           <div className="owner-workload">
             {buckets.map((b, i) => (
@@ -287,7 +287,7 @@ export function OwnerEducationPage() {
 
       <Card title="اتّجاه الحضور" subtitle="آخر 6 أشهر — يُحسب من سجلات الحضور الفعليّة">
         {!trendHasData ? (
-          <EmptyState illustration="empty-list" title="لا توجد سجلّات حضور بعد" description="يبدأ الحساب فور تسجيل أوّل جلسة حضور على المنصّة." />
+          <EmptyState illustration="empty-list" title="لا توجد سجلّات حضور بعد" description="يبدأ الحساب فور أول جلسة حضور." />
         ) : (
           <ChartFrame
             ariaLabel="مخطط خطّي لاتّجاه نسبة الحضور الشهريّة على مدى آخر ستة أشهر"

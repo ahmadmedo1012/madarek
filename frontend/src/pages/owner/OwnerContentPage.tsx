@@ -121,8 +121,7 @@ export function OwnerContentPage() {
       <div className="grid-2">
         <Card title="الإعلانات الرسميّة" icon={Bell}>
           <p className="owner-card-lead">
-            إنشاء وبثّ الإعلانات على مستوى المنصّة أو الكلّيّة أو القسم — مع نطاق محدّد، وأيقونة،
-            وخيار التثبيت في أعلى القائمة.
+            إنشاء وبثّ الإعلانات على مستوى المنصّة أو الكلّيّة أو القسم — مع أيقونة وخيار تثبيت.
           </p>
           <Link to="/community" className="btn primary sm">
             <Icon icon={ArrowLeft} size={13} />
@@ -132,8 +131,7 @@ export function OwnerContentPage() {
 
         <Card title="ميزات المنصّة" icon={ToggleRight}>
           <p className="owner-card-lead">
-            تشغيل وإطفاء الميزات (المعامل الافتراضيّة، البثّ المباشر، الاختبارات...) عبر نظام أعلام
-            الميزات — تُسجَّل الحالة وتُوثَّق في سجلّ النشاط، ولا تستهلكها أيّ بوابة تشغيل بعد:
+            تشغيل الميزات عبر نظام الأعلام — تُسجَّل وتُوثَّق في السجلّ، ولا تستهلكها بوابة تشغيل:
             الميزات تعمل بحالاتها المضمّنة في الشيفرة.
           </p>
           <Link to="/owner/system" className="btn primary sm">

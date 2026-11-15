@@ -182,7 +182,7 @@ export default function FeedbackInboxPage() {
     <div className="page">
       <PageHeader
         title="صندوق التغذية الراجعة"
-        description="كل «أبلغ عن مشكلة / اقتراح» وصل من مستخدمي المنصّة — مع سياقه الكامل."
+        description="كل «أبلغ عن مشكلة / اقتراح» — بسياقه الكامل."
         eyebrow="المنصّة · التشغيل"
         /* R341 D11: the [12] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
@@ -200,7 +200,7 @@ export default function FeedbackInboxPage() {
         }
       />
 
-      <Card title="التقارير" subtitle="الحالة تتحرّك باتجاه واحد: مفتوح → قيد المراجعة → أُصلح أو مُستبعد.">
+      <Card title="التقارير" subtitle="مفتوح → قيد المراجعة → أُصلح أو مُستبعد.">
         <div className="fb-status-actions" style={{ marginInlineStart: 0, marginBottom: 'var(--sp-2-5)' }}>
           {FILTERS.map((f) => (
             <button
@@ -226,7 +226,7 @@ export default function FeedbackInboxPage() {
           <EmptyState
             icon={Inbox}
             title="لا تقارير هنا"
-            description="عندما يرسل مستخدم «أبلغ عن مشكلة / اقتراح» يظهر تقريره في هذا الصندوق بسياقه الكامل."
+            description="يظهر تقريره هنا بسياقه الكامل."
           />
         ) : (
           <div className="fb-inbox">
@@ -264,8 +264,8 @@ export default function FeedbackInboxPage() {
         title="أخطاء تطبيق الجوّال"
         subtitle={
           errMeta
-            ? `${errMeta.unreviewed} خطأً غير مراجَع — تصل تلقائيًا من التطبيق عند حدوث انهيار أو خلل.`
-            : 'تقارير الأعطال التي يرسلها تطبيق الجوّال تلقائيًا مع مسارها وجهازها وإصدارها.'
+            ? `${errMeta.unreviewed} خطأً غير مراجَع — تصل تلقائيًا من التطبيق.`
+            : 'تقارير الأعطال من تطبيق الجوّال تلقائيًا.'
         }
       >
         <div className="fb-status-actions" style={{ marginInlineStart: 0, marginBottom: 'var(--sp-2-5)' }}>
@@ -296,7 +296,7 @@ export default function FeedbackInboxPage() {
           <EmptyState
             icon={Smartphone}
             title="لا أخطاء تطبيق هنا"
-            description="عندما ينهار التطبيق أو يتعثّر، يصل التقرير هنا تلقائيًا — لا يحتاج المستخدم شيئًا."
+            description="يصل التقرير هنا تلقائيًا — لا يُطلب من المستخدم شيء."
           />
         ) : (
           <div className="fb-inbox">

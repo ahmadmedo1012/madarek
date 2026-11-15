@@ -221,7 +221,7 @@ export function OwnerUsersPage() {
     setConfirmConfig({
       title: 'تغيير الدور',
       confirmLabel: 'تغيير الدور',
-      message: `هل تريد تغيير دور «${user.firstName} ${user.lastName}» من ${ROLE_LABELS[user.role] ?? user.role} إلى ${ROLE_LABELS[role]}؟${insts ? ` عضويته النشطة: ${insts}.` : ' لا عضوية مؤسسة نشطة لهذا الحساب.'}`,
+      message: `تغيير دور «${user.firstName} ${user.lastName}» من ${ROLE_LABELS[user.role] ?? user.role} إلى ${ROLE_LABELS[role]}؟${insts ? ` عضويته النشطة: ${insts}.` : ' لا عضوية مؤسسة نشطة لهذا الحساب.'}`,
       danger: isSensitive,
       onConfirm: async () => {
         await runAttempt({ kind: 'role', user, role });
@@ -237,8 +237,8 @@ export function OwnerUsersPage() {
       title: user.isActive ? 'تعطيل الحساب' : 'تفعيل الحساب',
       confirmLabel: user.isActive ? 'تعطيل الحساب' : 'تفعيل الحساب',
       message: user.isActive
-        ? `هل تريد تعطيل حساب «${user.firstName} ${user.lastName}»؟ لن يتمكّن من الدخول إلى المنصّة.`
-        : `هل تريد إعادة تفعيل حساب «${user.firstName} ${user.lastName}»؟ سيتمكّن من الدخول مجدداً.`,
+        ? `«${user.firstName} ${user.lastName}» لن يتمكّن من الدخول.`
+        : `«${user.firstName} ${user.lastName}» سيتمكّن من الدخول مجدداً.`,
       danger: user.isActive,
       onConfirm: async () => {
         await runAttempt({ kind: 'status', user });
@@ -395,7 +395,7 @@ export function OwnerUsersPage() {
               title={hasActiveFilters ? 'لا نتائج مطابقة' : 'لا يوجد مستخدمون بعد'}
               description={hasActiveFilters
                 ? 'لم نجد حسابات تطابق البحث أو الدور المحدّد.'
-                : 'ستظهر الحسابات هنا فور تسجيل أوّل مستخدم في المنصّة.'}
+                : 'تظهر الحسابات فور تسجيل أول مستخدم.'}
               action={hasActiveFilters ? (
                 <button type="button" className="btn ghost sm" onClick={clearFilters}>
                   <Icon icon={X} size={13} />

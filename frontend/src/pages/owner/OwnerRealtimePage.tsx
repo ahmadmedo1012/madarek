@@ -70,7 +70,7 @@ export function OwnerRealtimePage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="المراقبة الحيّة"
-        description="مراقبة العمليّات الحيّة للمنصّة في الوقت الفعليّ"
+        description="العمليّات الحيّة في الوقت الفعليّ"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المراقبة الحيّة' }]}
         /* R341 D11: the [02] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
