@@ -1,0 +1,67 @@
+# R354 V2 — the AI provider REALITY probe, from the only vantage point
+# that matters: the production Vercel function (fra1).
+#
+# The sandbox (and any single machine) cannot prove a provider key
+# works — geo-blocks 403 Groq and Gemini refuses regions. The backend
+# route POST /api/v1/internal/ai-selftest runs INSIDE the deployed
+# function: every provider in the resolved chain gets a /models probe
+# + a 1-token completion. This workflow just triggers it (CRON_SECRET
+# belt) and prints the table — the RESUME evidence for provider
+# routing decisions (lane C1).
+#
+# Owner-only by construction: workflow_dispatch requires write access.
+name: AI self-test
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  selftest:
+    name: Probe providers from inside the production function
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: POST /api/v1/internal/ai-selftest (fra1)
+        run: |
+          set -euo pipefail
+          CODE=$(curl -s -o selftest.json -w '%{http_code}' --max-time 90 \
+            -X POST -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ vars.TICK_TARGET_URL }}/api/v1/internal/ai-selftest" || echo 000)
+          echo "HTTP $CODE"
+          cat selftest.json | jq . || cat selftest.json
+          if [ "$CODE" != "200" ]; then
+            echo "::error::self-test endpoint answered HTTP $CODE"
+            exit 1
+          fi
+
+      - name: Markdown table → step summary
+        if: always()
+        run: |
+          jq -r '
+            "### AI self-test (ran inside the production function)",
+            "",
+            "aiMode: \(.data.report.aiMode) · region: \(.data.report.region // "unknown") · providers: \(.data.report.providerCount) · budget: \(.data.report.totalBudgetMs)ms",
+            "",
+            "| provider | models | completion | model | latency | error |",
+            "|---|---|---|---|---|---|",
+            (.data.report.probes[] |
+              "| \(.provider) " +
+              "| \(if .modelsList and .modelsList.ok then "✅ \(.modelsList.status) (\(.modelsList.latencyMs)ms)" elif .modelsList then "❌ \(.modelsList.status)" else "—" end) " +
+              "| \(if .completion and .completion.ok then "✅ \(.completion.status) (\(.completion.latencyMs)ms)" elif .completion then "❌ \(.completion.status)" else "—" end) " +
+              "| \(.completion.model // "—") " +
+              "| \((.completion.latencyMs // .modelsList.latencyMs // 0) // 0)ms " +
+              "| \(.error // "") |"
+            )
+          ' selftest.json > "$GITHUB_STEP_SUMMARY" 2>/dev/null || echo "(summary generation skipped — raw JSON above)"
+
+      - name: Upload the raw report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-selftest-report
+          path: selftest.json
+          if-no-files-found: ignore
+          retention-days: 30

@@ -137,8 +137,11 @@ const schema = z
     MIN_APP_VERSION: z.string().trim().regex(/^\d+\.\d+\.\d+$/, 'MIN_APP_VERSION must be semver (e.g. 1.0.0)').optional(),
     APP_DOWNLOAD_URL: z.string().trim().url().optional(),
     // ── r326 M2.6 — Expo push fan-out switch ── ON by default since
-    // R353 N (the mobile push lane): registration routes are always on,
-    // and the send path no longer needs a dashboard trip to breathe.
+    // R353 N (the mobile push lane; R354 N2 ratifies the same default —
+    // HOSTING.md's documented contract). Registration routes are always
+    // on, and the send path is a no-op without registered device tokens
+    // (an empty devices table makes this harmless); the in-app
+    // notification center keeps working either way.
     // z.coerce semantics (unchanged since r326): an UNSET var → true;
     // any NON-EMPTY string ('false', '0'…) → also true. To dark-launch,
     // set the var to an EMPTY value: PUSH_ENABLED="".

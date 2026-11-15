@@ -1703,7 +1703,12 @@ async function main() {
     STUDENT: ['EXAMS_TAKE'],
     TEACHER: ['RESEARCH_GRADE_OWN', 'RESEARCH_PUBLISH', 'EXAMS_AUTHOR', 'CURRICULUM_EDIT_OWN', 'ANNOUNCE_FACULTY', 'COMPETITIONS_RUN', 'EVENTS_RUN'],
     ADMIN: ['USERS_MANAGE', 'ROLES_ASSIGN', 'TEACHERS_VERIFY', 'ANNOUNCE_PLATFORM', 'ANNOUNCE_FACULTY', 'COMPETITIONS_RUN', 'EVENTS_RUN', 'CURRICULUM_EDIT_ANY', 'RESEARCH_PUBLISH'],
-    QUALITY: ['QUALITY_VIEW', 'QUALITY_REPORT', 'EXAMS_MODERATE', 'ANNOUNCE_FACULTY'],
+    // R353 E2 exams-office split (migration 20261114200000): EXAMS_MODERATE
+    // belongs to EXAMS_CONTROLLER staff seats via UserPermission grants,
+    // NOT to the QUALITY role — the migration deletes the seeded
+    // RolePermission row, so the seed must not resurrect it (R354 E2
+    // drift fix; mirrors DEFAULT_ROLE_CAPABILITIES in lib/permissions.ts).
+    QUALITY: ['QUALITY_VIEW', 'QUALITY_REPORT', 'ANNOUNCE_FACULTY'],
     // Mirrors ROLE_CAPS.OWNER in src/lib/permissions.ts — Record<Role, …>
     // requires every enum member, and the RolePermission table should
     // reflect the owner's full capability set too.
