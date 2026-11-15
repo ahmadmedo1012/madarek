@@ -100,11 +100,11 @@ test.describe('المكتبة الإلكترونية — الاستعارة وا
     await bookCard.getByRole('button', { name: 'استعارة البرمجة بلغة C' }).click();
     const borrowToast = page.locator('.toast-success');
     await expect(borrowToast.locator('.toast-title')).toHaveText('تمّت الاستعارة');
-    await expect(borrowToast.locator('.toast-desc')).toContainText('موعد إرجاع «البرمجة بلغة C»');
+    await expect(borrowToast.locator('.toast-desc')).toContainText('الإرجاع:'); // R355 copy diet: the dieted toast names the date
     const loanRowEl = loansCard.locator('.pf-row', { hasText: 'البرمجة بلغة C' });
     await expect(loanRowEl).toBeVisible();
     await expect(loanRowEl).toContainText('نشطة');
-    await expect(loanRowEl).toContainText('موعد الإرجاع:');
+    await expect(loanRowEl).toContainText('الإرجاع:');
     await expect(loansCard).not.toContainText('لا استعارات نشطة');
 
     /* النسخة الوحيدة انتهت: الشارة «مستعار» والزرّ معطّل. */

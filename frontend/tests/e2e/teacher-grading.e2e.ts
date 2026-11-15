@@ -127,7 +127,7 @@ test.describe('حلقة تصحيح الأستاذ', () => {
     /* الصف المصحّح خرج من الطابور والعدّ تراجع — إعادة الجلب بعد
      * الإبطال هي المسار المرسّخ. */
     const queueCard = page.locator('.card', { hasText: 'تسليمات بانتظار التقييم' });
-    await expect(queueCard).toContainText('تسليم واحد بانتظار درجتك');
+    await expect(queueCard).toContainText('تسليم بانتظار درجتك');
     await expect(page.locator('.list-row', { hasText: 'مروة البراني' })).toHaveCount(0);
     await expect(page.locator('.list-row', { hasText: 'سالم قدّور' })).toBeVisible();
 

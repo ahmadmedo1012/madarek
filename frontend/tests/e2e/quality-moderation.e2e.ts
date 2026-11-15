@@ -63,7 +63,8 @@ test.describe('مراجعة قوالب الاختبارات', () => {
     await page.goto('/quality/exam-moderation');
     await expect(page).toHaveTitle('مراجعة الاختبارات · مدارك');
     await expect(page.locator('h1.page-title')).toHaveText('مراجعة الاختبارات');
-    await expect(page.locator('.page-subtitle')).toContainText('اعتماد قوالب الاختبارات قبل إتاحتها للطلاب.');
+    // R355 copy diet: the moderation page's subtitle was cut — the queue's purpose
+    // now lives in the brow («طابور الاعتماد») + the page title pin above.
 
     /* المؤشّرات مشتقّة من الطابور نفسه: قالبان + 3 أسئلة بانتظار الفحص
      * (شريط المؤشّرات الطباعي — StatStrip بدل بطاقات الأيقونات). */
@@ -94,7 +95,7 @@ test.describe('مراجعة قوالب الاختبارات', () => {
     await quizRow.getByRole('button', { name: 'مراجعة' }).click();
     const panel = page.getByRole('region', { name: 'مراجعة اختبار قصير — الوحدة الرابعة' });
     await expect(panel).toBeVisible();
-    await expect(panel).toContainText('أسئلة القالب — سؤالان');
+    await expect(panel).toContainText('الأسئلة — سؤالان');
     /* السؤال الأول: نصّ + نوع + صعوبة + مفتاح الإجابة (يظهر لمراجع
      * الجودة من الخلفية — canSeeAnswers). */
     const mcq = panel.locator('.list-row', { hasText: 'ما التعقيد الزمني للبحث الثنائي' });
@@ -132,7 +133,7 @@ test.describe('مراجعة قوالب الاختبارات', () => {
     const finalRow = page.locator('.oex-mod-row', { hasText: 'اختبار نهائي — الشبكات' });
     await finalRow.getByRole('button', { name: 'مراجعة' }).click();
     const panel = page.getByRole('region', { name: 'مراجعة اختبار نهائي — الشبكات' });
-    await expect(panel).toContainText('أسئلة القالب — سؤال واحد');
+    await expect(panel).toContainText('الأسئلة — سؤال');
     await expect(panel.locator('.list-row', { hasText: 'بروتوكول TCP' })).toContainText('صح أم خطأ');
 
     const note = 'تغطية نصف المنهج فقط — أعِد بناء النطاق.';

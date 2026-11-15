@@ -101,14 +101,14 @@ test.describe('المساعد الذكيّ — رحلة محادثة كاملة'
     /* السطح الصادق للنمط المحليّ: العنوان الفرعي + شارة AI العامة
      * (لا اسم نموذج يُدَّعى)، وتحية الملحّن المحليّ. */
     await expect(
-      page.getByText('يحلّل بيانات إتقانك محليّاً ويقترح خطوة مذاكرة تالية — مساعد تحليليّ محليّ، لا نموذج لغويّ خارجيّ.'),
+      page.getByText('مساعد محليّ'),
     ).toBeVisible();
     await expect(page.locator('.badge', { hasText: 'AI' })).toBeVisible();
     await expect(page.getByText(/أحلّل بيانات إتقانك محليّاً/)).toBeVisible();
     /* لا بطاقات فجوات (قائمة فارغة صادقة) ولا محادثات سابقة —
      * (G: الحالة الفارغة على عقد EmptyState؛ النص نفسه عنوان + وصف). */
-    await expect(page.getByText('لا توجد محادثات سابقة بعد')).toBeVisible();
-    await expect(page.getByText('ابدأ بأول سؤال وستظهر محادثاتك هنا.')).toBeVisible();
+    await expect(page.getByText('لا محادثات سابقة بعد')).toBeVisible();
+    // R355 copy diet: the empty-state explainer line was cut — the label pin above carries the contract.
 
     /* الإرسال — فقّة السؤال تظهر فورًا، ثم الردّ بفقّته. */
     await page.getByLabel('اكتب سؤالك للمساعد').fill(QUESTION);

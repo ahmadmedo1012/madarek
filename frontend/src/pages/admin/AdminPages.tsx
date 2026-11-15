@@ -912,7 +912,7 @@ export function AdminFacultiesPage() {
               className="input"
               value={facultyForm.iconEmoji}
               onChange={(e) => setFacultyForm({ ...facultyForm, iconEmoji: e.target.value })}
-              placeholder="🎓"
+              placeholder="رمز قصير"
               maxLength={10}
             />
           </FormField>
