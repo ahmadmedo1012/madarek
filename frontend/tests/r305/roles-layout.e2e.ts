@@ -116,7 +116,7 @@ test.describe('الطالب المسجَّل — أسطح الهيكل', () => {
     await page.goto('/vision');
     // Static roadmap data (lib/vision) — the authored statement is the h1.
     await expect(page.getByRole('heading', { level: 1 })).toContainText('ابتكاراً قادماً');
-    await expect(page.getByText('المسار التقني للمنصة')).toBeVisible();
+    await expect(page.getByText('نظرة على المسار التقني')).toBeVisible();
   });
 });
 

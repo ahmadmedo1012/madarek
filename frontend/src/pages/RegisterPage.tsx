@@ -475,7 +475,7 @@ export default function RegisterPage() {
                       compressed to one line — the appointment channel is
                       the message; the enumeration of seats lives in the
                       FAQ/onboarding, not the chooser. */}
-                  <span>تعيين القيادة والمسجلين يتم عبر دعوة من المالك/الإدارة</span>
+                  <span>تعيين القيادة والمسجلين يتم عبر دعوة من مالك المنصة</span>
                 </div>
 
                 {/* R341/D1 — the returning-visitor door at the chooser
