@@ -339,6 +339,10 @@ jobs:
       # ratchet, or a stale entry (the same contract verify.sh step 3.7
       # runs locally).
       - run: node scripts/gates/copy-budget.mjs
+      # R355 P3 — the mobile twin (docs/QA/copy-budget-mobile.json):
+      # every apps/mobile screen/sheet under a per-screen ceiling;
+      # same born-under-the-law + no-growth contract.
+      - run: node scripts/gates/copy-budget-mobile.mjs
       - run: bash scripts/check-icons.sh
       - run: bash scripts/check-motion-tokens.sh
       # CSP pin drift guard (dependency-free): r133 changed the inline

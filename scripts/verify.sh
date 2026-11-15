@@ -93,6 +93,14 @@ else
   fail "copy-budget"; rg '^OVER|^✗|over ceiling' /tmp/verify-copybudget.log | head -10; tail -8 /tmp/verify-copybudget.log
 fi
 
+# 3.75 mobile copy-budget ratchet (R355 P3 — same law for apps/mobile)
+step "copy-budget-mobile (Arabic words per screen vs ratchet)"
+if node scripts/gates/copy-budget-mobile.mjs > /tmp/verify-copybudget-mobile.log 2>&1; then
+  ok "copy-budget-mobile $(grep -oE 'arabic words: [0-9]+.*' /tmp/verify-copybudget-mobile.log | head -1)"
+else
+  fail "copy-budget-mobile"; rg '^OVER|^✗|over ceiling|NO-RATCHET' /tmp/verify-copybudget-mobile.log | head -10; tail -8 /tmp/verify-copybudget-mobile.log
+fi
+
 # 3.8 release publish regression (R355 A — the rolling-release law:
 # upload → verify-landed → prune → final assert; hermetic, no network)
 step "release publish script (rolling-release regression)"
