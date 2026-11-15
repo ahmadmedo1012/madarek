@@ -16,7 +16,7 @@ import { Role } from '@prisma/client';
 
 vi.mock('../../src/db.js', () => {
   const p = {
-    user: { findMany: vi.fn(async () => []) },
+    user: { findMany: vi.fn(async () => []), findUnique: vi.fn(async () => null) },
     institution: { findMany: vi.fn(async () => []) },
     faculty: { findMany: vi.fn(async () => []) },
     department: { findMany: vi.fn(async () => []) },
@@ -62,6 +62,7 @@ const mocked = prisma as unknown as {
   question: { findMany: ReturnType<typeof vi.fn> };
   enrollment: { findMany: ReturnType<typeof vi.fn> };
   faculty: { findMany: ReturnType<typeof vi.fn> };
+  user: { findUnique: ReturnType<typeof vi.fn> };
 };
 
 const INST = 'inst-1';
@@ -90,6 +91,10 @@ async function discover(userId: string, role: Role, q = 'شبكات'): Promise<D
 
 describe('R350 S3 — GET /search/discover: the new record kinds', () => {
   it('the default envelope carries all fifteen categories', async () => {
+    // r353-F E5: the ADMIN caller asks for every category → the people
+    // arms trigger the governance-scope read (user.findUnique); the
+    // default mock resolves null (unscoped registrar — institution-wide).
+    mocked.user.findUnique.mockResolvedValue({ role: Role.ADMIN, scopeFacultyId: null });
     const data = await discover('admin_1', Role.ADMIN);
     expect(Object.keys(data.categories).sort()).toEqual([
       'announcements', 'books', 'courses', 'departments', 'events',
@@ -142,6 +147,7 @@ describe('R350 S3 — GET /search/discover: the new record kinds', () => {
   });
 
   it('expired jobs never surface (the unexpired filter rides the scan where)', async () => {
+    mocked.user.findUnique.mockResolvedValue({ role: Role.ADMIN, scopeFacultyId: null });
     mocked.job.findMany.mockImplementation(async (args: { where?: { AND?: unknown[] } }) => {
       // pin the shape: the scan's AND carries the expiry OR clause
       const and = (args as { where?: { AND?: Record<string, unknown>[] } }).where?.AND ?? [];

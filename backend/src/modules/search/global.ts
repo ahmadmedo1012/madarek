@@ -26,7 +26,7 @@
  * included) on every emitted row.
  */
 import type { Prisma, Role } from '@prisma/client';
-import { normalizeArabicSearch, stripAlPrefix } from './normalize.js';
+import { normalizeArabicSearch, stripAlPrefix, stripCliticPrefix } from './normalize.js';
 import { normalizePhone } from '../../lib/phones.js';
 
 // ─────────────────────────────────────────────────────────────────
@@ -100,11 +100,26 @@ export interface GlobalQueryPlan {
   /** The normalized form minus a leading ال (prefix-tolerance arm). */
   noAl: string;
   /**
-   * DB `contains` variants — the raw q plus its normalized twin (deduped),
-   * so a hamza/alif-variant query still hits the raw-text trigram indexes
-   * (the exact `variants` construction of the existing /search/global).
+   * DB `contains` variants — EVERY raw-text form the SQL fetch tries
+   * (r353-F, the reverse-fold fix): the raw q, its normalized twin, the
+   * ال-stripped + ال-prefixed twins (so «الشبكات» finds «شبكات الحاسوب»
+   * AND «شبكات» finds «الشبكات» — `noAl` used to be computed and never
+   * used in any WHERE), the clitic-stripped twin, the REVERSE-folded
+   * hamza/ة/ى forms of the query (so typing «احمد» still hits the raw
+   * trigram index of a stored «أحمد» — the normalizer folds the STORED
+   * side only at the JS re-verify, the SQL arm needs the query side
+   * expanded), and the per-word arms of a multiword query (word-order
+   * freedom at the fetch stage — «المهدي محمد» fetches «محمد المهدي»).
+   * Deduped, ≥2 chars, hard-capped, deterministic order.
    */
   variants: string[];
+  /**
+   * True when the raw query is pure ASCII (letters/digits/email
+   * punctuation) — the identifier arms (email / student number) are
+   * admitted only then; an Arabic name query never burns ILIKE arms on
+   * columns that cannot carry Arabic.
+   */
+  asciiLike: boolean;
   /** Digit characters (ASCII + Arabic-Indic) in the raw query. */
   digits: number;
   /**
@@ -117,16 +132,200 @@ export interface GlobalQueryPlan {
   isPhoneQuery: boolean;
 }
 
+/* ── Reverse-fold variant expansion (r353-F bug 1) ─────────────────
+ *
+ * THE BUG this block kills: `variants = [raw, normalized]` only ever
+ * tried the query's OWN forms. The canonical normalizer folds the
+ * STORED text (أ→ا, ة→ه, ى→ي) at the JS re-verify — but the SQL
+ * `contains` fetch runs against the RAW columns, so a query typed with
+ * the plain keyboard forms («احمد») never fetched a row stored with
+ * the orthographic forms («أحمد»): the candidate never reached the JS
+ * half that would have matched it. The fix expands the QUERY side:
+ * every foldable position regenerates the forms the stored data may
+ * carry. Bounded and deterministic (pure — pinned by unit tests):
+ *
+ *  · ا → أ / إ / آ  (the alif-hamza seats)
+ *  · ه → ة          (ta-marbuta)
+ *  · ي → ى          (alif maqsura)
+ *  · و → ؤ          (waw-hamza)
+ *
+ * Per WORD: ≤2 foldable positions → the full cartesian (a name like
+ * «اسامه» regenerates «أسامة» — TWO seats in one word); ≥3 →
+ * Hamming-1 substitutions only (the near-miss classes that matter;
+ * full cartesian on «الخوارزميات» would mint 3^5 strings for nothing).
+ * Across words: single-word substitutions always; the cross-word
+ * cartesian only while the query's TOTAL foldable positions stay ≤2. */
+
+/** The orthographic forms each plain keyboard letter may be stored as. */
+const REVERSE_FOLDS: Readonly<Record<string, readonly string[]>> = {
+  'ا': ['أ', 'إ', 'آ'],
+  'ه': ['ة'],
+  // ي regenerates BOTH the alif-maqsura (ى) and the ya-hamza (ئ) seats.
+  'ي': ['ى', 'ئ'],
+  'و': ['ؤ'],
+};
+
+/** Full cartesian up to this many foldable positions per word. */
+const REVERSE_FOLD_CARTESIAN_MAX = 3;
+/** Safety cap on the variant list handed to the SQL builder. */
+const MAX_VARIANTS = 40;
+/** Per-word arms are capped at this many query words (bounded fetch). */
+const MAX_WORD_ARMS = 6;
+/** Reverse folds contributed per WORD arm (the whole-query arms carry more). */
+const MAX_WORD_FOLDS = 8;
+
+function foldablePositions(word: string): number[] {
+  const positions: number[] = [];
+  for (let i = 0; i < word.length; i++) {
+    if (REVERSE_FOLDS[word[i]!] !== undefined) positions.push(i);
+  }
+  return positions;
+}
+
+function substitute(word: string, at: number, withChar: string): string {
+  return word.slice(0, at) + withChar + word.slice(at + 1);
+}
+
+/** The reverse-folded forms of ONE normalized word (never includes the word itself). */
+function reverseFoldWord(word: string): string[] {
+  const positions = foldablePositions(word);
+  if (positions.length === 0) return [];
+  const out = new Set<string>();
+  const emitPair = (i: number, j: number): void => {
+    const a = REVERSE_FOLDS[word[i]!]!;
+    const b = REVERSE_FOLDS[word[j]!]!;
+    for (const altA of a) for (const altB of b) {
+      out.add(substitute(substitute(word, i, altA), j, altB));
+    }
+  };
+  if (positions.length <= REVERSE_FOLD_CARTESIAN_MAX) {
+    // Full cartesian — covers multi-seat words («اسامه» → «أسامة»).
+    const expand = (idx: number, acc: string): void => {
+      if (out.size >= 32) return; // the per-word safety valve
+      if (idx === positions.length) {
+        if (acc !== word) out.add(acc);
+        return;
+      }
+      const at = positions[idx]!;
+      expand(idx + 1, substitute(acc, at, acc[at]!));
+      for (const alt of REVERSE_FOLDS[acc[at]!]!) expand(idx + 1, substitute(acc, at, alt));
+    };
+    expand(0, word);
+  } else {
+    // Long foldable words: single substitutions, PLUS the cartesian over
+    // the LAST TWO foldable positions — the Arabic orthography seats
+    // cluster word-finally («…ية» endings need ي→ئ AND ه→ة together:
+    // plain «كهربائيه» must regenerate the stored «كهربائية»).
+    for (const at of positions) {
+      for (const alt of REVERSE_FOLDS[word[at]!]!) out.add(substitute(word, at, alt));
+    }
+    const lastTwo = positions.slice(-2);
+    if (lastTwo.length === 2) emitPair(lastTwo[0]!, lastTwo[1]!);
+  }
+  return [...out];
+}
+
+/** The reverse-folded forms of a whole (possibly multiword) normalized query. */
+export function reverseFoldVariants(normalized: string): string[] {
+  const words = normalized.split(/\s+/).filter(Boolean);
+  if (words.length === 0) return [];
+  const perWord = words.map(reverseFoldWord);
+  if (perWord.every((v) => v.length === 0)) return [];
+  const out = new Set<string>();
+
+  // (a) one word substituted at a time — covers the single hamza-bearing
+  // word inside an otherwise plain query.
+  for (let i = 0; i < words.length; i++) {
+    for (const variant of perWord[i]!) {
+      const copy = [...words];
+      copy[i] = variant;
+      out.add(copy.join(' '));
+    }
+  }
+
+  // (b) cross-word cartesian, only while the whole query stays small —
+  // covers «احمد ابراهيم» against a stored «أحمد إبراهيم».
+  const totalPositions = words.reduce((n, w) => n + foldablePositions(w).length, 0);
+  if (totalPositions <= REVERSE_FOLD_CARTESIAN_MAX) {
+    const expand = (idx: number, acc: string[]): void => {
+      if (idx === words.length) {
+        out.add(acc.join(' '));
+        return;
+      }
+      expand(idx + 1, [...acc, words[idx]!]);
+      for (const variant of perWord[idx]!) expand(idx + 1, [...acc, variant]);
+    };
+    expand(0, []);
+    out.delete(words.join(' '));
+  }
+  return [...out];
+}
+
+/** True when the raw query is pure ASCII identifier text (email / student-number shapes). */
+const ASCII_LIKE = /^[A-Za-z0-9@._+-]+(?: [A-Za-z0-9@._+-]+)*$/;
+
 /**
- * Plan one global-search query: the normalized form, both al-prefix
- * variants, and — when the query is digits-heavy — the E1 phone key.
+ * Plan one global-search query: the normalized form, the ال/clitic
+ * prefix arms, the REVERSE-folded forms (the r353-F fix), the per-word
+ * arms, and — when the query is digits-heavy — the E1 phone key.
  * Pure; the route calls this once per request.
  */
 export function planGlobalQuery(q: string): GlobalQueryPlan {
   const raw = q;
   const normalized = normalizeArabicSearch(raw);
   const noAl = stripAlPrefix(normalized);
-  const variants = normalized !== raw ? [raw, normalized] : [raw];
+
+  const variants = new Set<string>();
+  const add = (v: string): void => {
+    const trimmed = v.trim();
+    if (trimmed.length >= 2) variants.add(trimmed);
+  };
+  add(raw);
+  add(normalized);
+  // ال both directions + the clitic family — the fetch-stage halves of
+  // the ال tolerance the JS matcher (matchVariants) always had. Arabic
+  // queries only: an ال-prefixed Latin identifier is garbage, and the
+  // identifier arms lean on the variants list too.
+  if (/[\u0600-\u06FF]/.test(normalized)) {
+    if (noAl !== normalized) {
+      add(noAl); // «الشبكات» → «شبكات» (finds «شبكات الحاسوب»)
+    } else {
+      add(`ال${noAl}`); // «شبكات» → «الشبكات» (finds «الشبكات المتقدمة»)
+    }
+    const cliticStripped = stripCliticPrefix(normalized);
+    if (cliticStripped !== normalized) {
+      add(cliticStripped);
+      const cliticNoAl = stripAlPrefix(cliticStripped);
+      add(cliticNoAl);
+      if (cliticNoAl === cliticStripped) add(`ال${cliticNoAl}`); // re-attach the article
+    }
+  }
+  const words = normalized.split(/\s+/).filter((w) => w.length >= 3);
+  if (words.length >= 2 && words.length <= MAX_WORD_ARMS) {
+    // Per-word arms FIRST (the 40-variant cap must never slice them
+    // away): each word alone — clitic-stripped — with its reverse
+    // folds. 3+ letter words only: a 2-letter preposition arm («في»)
+    // would match half the corpus; «مريم بن عثمان» still fetches
+    // through its two long words. This is what makes the multiword
+    // fetch order-free («المهدي محمد» fetches «محمد المهدي»; «احمد
+    // ابراهيم» fetches the stored «أحمد إبراهيم» through the per-word
+    // hamza forms). The JS re-verify stays strict (multiwordHit), so
+    // the fetch may widen but the emitted rows never loosen.
+    for (const word of words) {
+      add(word);
+      const wordStripped = stripAlPrefix(stripCliticPrefix(word));
+      add(wordStripped);
+      for (const v of reverseFoldWord(wordStripped).slice(0, MAX_WORD_FOLDS)) add(v);
+    }
+  } else if (words.length === 1) {
+    // Single-word queries: the whole-word reverse folds (the cartesian
+    // lives here — «اسامه» regenerates «أسامة»). Multiword queries get
+    // their folds per word above instead — the whole-phrase forms would
+    // explode the variant budget for nothing.
+    for (const base of new Set([normalized, noAl])) {
+      for (const v of reverseFoldVariants(base)) add(v);
+    }
+  }
 
   const digits = (raw.match(ANY_DIGIT) ?? []).length;
   const significant = raw.replace(/\s/g, '').length;
@@ -140,7 +339,8 @@ export function planGlobalQuery(q: string): GlobalQueryPlan {
     raw,
     normalized,
     noAl,
-    variants,
+    variants: [...variants].slice(0, MAX_VARIANTS),
+    asciiLike: raw.trim().length > 0 && ASCII_LIKE.test(raw.trim()),
     digits,
     phoneDigits: phone ? phone.normalized : null,
     isPhoneQuery: phone !== null,
@@ -180,6 +380,181 @@ export function rankHit(haystackNormalized: string, qNormalized: string): number
     else if (haystackNormalized.includes(arm)) best = Math.min(best, RANK_SUBSTRING);
   }
   return best;
+}
+
+/* ── r353-F — the fetch-stage companions the contiguous matcher never
+ * had. All three are pure, tier at RANK_SUBSTRING, and only ever run
+ * as the LAST resort (after rankHit + searchHit both missed), so they
+ * widen which candidates survive — never which tier anything else
+ * earns. Each mirrors an established frontend matcher
+ * (frontend/src/lib/search.ts — matchesQueryTokens / withinOneEdit):
+ * the two engines answer the same query the same way. ─────────────── */
+
+/** Bounded 1-edit tolerance: one substitution, one adjacent-letter
+ * transposition, or one insertion/deletion. Port of the frontend
+ * matcher's `withinOneEdit` (frontend/src/lib/search.ts) — the two
+ * implementations must stay in lockstep. */
+export function withinOneEdit(a: string, b: string): boolean {
+  if (a === b) return true;
+  if (Math.abs(a.length - b.length) > 1) return false;
+  if (a.length === b.length) {
+    // One substitution, or one adjacent transposition (which shows up
+    // as TWO differing positions — «طالب» vs «طلاب»).
+    const diffs: number[] = [];
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) {
+        if (diffs.length === 2) return false;
+        diffs.push(i);
+      }
+    }
+    if (diffs.length === 1) return true;
+    const d1 = diffs[0];
+    const d2 = diffs[1];
+    return (
+      d1 !== undefined && d2 !== undefined && d2 === d1 + 1 && a[d1] === b[d2] && a[d2] === b[d1]
+    );
+  }
+  // Length differs by one: a single insertion/deletion.
+  const [short, long] = a.length < b.length ? [a, b] : [b, a];
+  let i = 0;
+  let j = 0;
+  let skipped = false;
+  while (i < short.length && j < long.length) {
+    if (short[i] === long[j]) {
+      i++;
+      j++;
+      continue;
+    }
+    if (skipped) return false;
+    skipped = true;
+    j++;
+  }
+  return true;
+}
+
+/** The plan's query words, ال-stripped and ≥2 chars (the multiword arm
+ * never arms 1-letter particles — «في» must not leak in). */
+function planWords(plan: GlobalQueryPlan): string[] {
+  return plan.normalized
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => stripAlPrefix(w))
+    .filter((w) => w.length >= 2);
+}
+
+/** The plan's query words RAW (no ال-strip) — the typo arm needs the
+ * full word: stripping can shrink a 4-letter word below the 1-edit
+ * floor («المتي» → «متي» would never reach withinOneEdit). */
+function planWordsRaw(plan: GlobalQueryPlan): string[] {
+  return plan.normalized.split(/\s+/).filter((w) => w.length >= 2);
+}
+
+/** Word-level, word-ORDER-free re-verification: every query word is
+ * contained somewhere in the folded haystacks — «المهدي محمد» matches
+ * a stored «محمد المهدي» the contiguous matcher can never hit. */
+export function multiwordHit(haystacks: readonly string[], plan: GlobalQueryPlan): boolean {
+  const words = planWords(plan);
+  if (words.length < 2) return false;
+  const blob = haystacks
+    .map((h) => normalizeArabicSearch(h ?? ''))
+    .join(' \n ');
+  return words.every((w) => blob.includes(w));
+}
+
+/** 1-edit typo re-verification: every query word matches SOME haystack
+ * token by exact equality (2-letter kinship particles like «بن»),
+ * containment (3+ letters), or within one edit (4+ letters, the same
+ * floor the frontend matcher uses — tried against the token both
+ * with and without its ال, since an edited word can lose the very
+ * prefix the stripper keys on). The last-resort arm — «هندسي» still
+ * finds «هندسة» once the candidate reached the window (through any
+ * arm, e.g. a sibling field). */
+export function typoHit(haystacks: readonly string[], plan: GlobalQueryPlan): boolean {
+  const words = planWordsRaw(plan);
+  if (words.length === 0) return false;
+  const tokens = haystacks
+    .flatMap((h) => normalizeArabicSearch(h ?? '').split(/\s+/))
+    .filter(Boolean);
+  return words.every((word) =>
+    tokens.some((token) => {
+      if (word === token) return true;
+      const shorter = Math.min(word.length, token.length);
+      if (shorter >= 3 && (token.includes(word) || word.includes(token))) return true;
+      if (word.length < 4 || token.length < 4) return false;
+      const bare = stripAlPrefix(token);
+      return withinOneEdit(word, token) || withinOneEdit(word, bare);
+    }),
+  );
+}
+
+/* ── r353-F — the identifier arms (email / student number). The
+ * registrar's #1 lookups: a student number typed verbatim must ride
+ * the (institutionId, universityId) unique index, an email must ride
+ * User_email_key — not a trigram scan. Pure where-builders + the JS
+ * re-verifiers the fetched rows need (a row fetched by identifier has
+ * a name that matches nothing — without these, rankAndPaginate would
+ * drop every identifier hit on the floor). ────────────────────────── */
+
+/** The email arms: exact (User_email_key) + insensitive contains —
+ * admitted only for ASCII-shaped queries (an Arabic name query can
+ * never match an email, and the contains arm has no index). */
+export function emailMatchArms(plan: GlobalQueryPlan): Prisma.UserWhereInput[] {
+  if (!plan.asciiLike) return [];
+  return [
+    { email: plan.raw },
+    { email: { contains: plan.raw, mode: 'insensitive' } },
+  ];
+}
+
+/**
+ * The student-number arm: exact via the (institutionId, universityId)
+ * unique index (institution-pinned callers only — the index is
+ * composite), then insensitive contains over the plan's variants (the
+ * digit fold: «٣٠١» contains-matches a stored «301»). The faculty pin
+ * rides the same profile filter so a scoped registrar's phone/number
+ * arm can never fetch out-of-faculty rows.
+ */
+export function universityIdMatchArm(
+  plan: GlobalQueryPlan,
+  institutionId: string | null,
+  facultyId?: string | null,
+): Prisma.UserWhereInput | null {
+  if (!plan.asciiLike && plan.digits < 2) return null;
+  const profileWhere: Prisma.StudentProfileWhereInput = {
+    ...(institutionId ? { institutionId } : {}),
+    ...(facultyId ? { facultyId } : {}),
+    OR: [
+      // Exact fast path — only meaningful under the institution pin
+      // (the unique index is (institutionId, universityId)).
+      ...(institutionId ? [{ universityId: plan.raw }] : []),
+      ...plan.variants.map((v) => ({ universityId: { contains: v, mode: 'insensitive' as const } })),
+    ],
+  };
+  return { studentProfiles: { some: profileWhere } };
+}
+
+/**
+ * JS re-verification for an identifier-fetched candidate (email or
+ * student number): exact equality ranks at RANK_EXACT (the registrar
+ * typed the whole number — that student IS the answer), contains at
+ * RANK_SUBSTRING. Folds digits + case + the Arabic fold classes on
+ * the VALUE side, so «٣٠١» / «uz-2024-00001» / «أحمد@…» all resolve.
+ */
+export function identifierHit(
+  value: string | null | undefined,
+  plan: GlobalQueryPlan,
+): number {
+  if (!value) return RANK_NONE;
+  const folded = normalizeArabicSearch(value);
+  const needles = [plan.raw.toLowerCase(), plan.normalized, ...(plan.noAl !== plan.normalized ? [plan.noAl] : [])]
+    .filter((n) => n.length >= 2);
+  for (const needle of needles) {
+    if (folded === needle) return RANK_EXACT;
+  }
+  for (const needle of needles) {
+    if (folded.includes(needle)) return RANK_SUBSTRING;
+  }
+  return RANK_NONE;
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -301,11 +676,33 @@ function emptyScope(): GlobalSearchScope {
 }
 
 /**
+ * The roles whose seat carries USERS_MANAGE (DEFAULT_ROLE_CAPABILITIES,
+ * lib/permissions.ts) — the ONLY callers phone FIELDS are ever returned
+ * for (r353-F E5: the seat is the permissions-matrix reality, not an
+ * ad-hoc role list; QUALITY holds no USERS_MANAGE, so a quality search
+ * stays name-only even when the phone SEARCH arm is shared).
+ */
+export const PHONE_FIELDS_ROLES: readonly Role[] = ['ADMIN', 'OWNER'];
+
+/**
  * The §10.4 permission matrix as where-filters. PURE and DB-free — the
  * handler resolves the caller's VERIFIED institution context first
  * (`resolveCallerInstitutionScope`; 403 INSTITUTION_CONTEXT_REQUIRED for
  * a contextless institutional role — profile-scoping.ts's fail-closed
  * law) and gathers the announcement facts, then hands both here.
+ *
+ * `scopeFacultyId` (r353-F E5 — the college-registrar fix): an
+ * ADMIN/QUALITY caller scoped to one faculty (User.scopeFacultyId, the
+ * getGovernanceScope/buildScopedUserWhere convention of
+ * lib/governance.ts) gets the people arms narrowed to that faculty —
+ * the search used to ignore the scope and show the whole institution
+ * roster while the users list stayed narrowed. The pin rides the SAME
+ * profile `some` clause as the institution pin (STRONGER than
+ * buildScopedUserWhere's separate clauses: the one profile that proves
+ * institution membership must also carry the faculty — a user with
+ * profiles in two faculties of the same institution can never be
+ * matched by the "other" profile). Non-people categories stay
+ * institution-wide (the users-list analogy covers people/roster only).
  *
  * Matrix:
  *  · STUDENT   → NO people (students/teachers null). Records only:
@@ -319,9 +716,10 @@ function emptyScope(): GlobalSearchScope {
  *                (name-only); own taught offerings; own announcements.
  *  · ADMIN     → their institution's full roster (students via active
  *                StudentProfiles in the institution, teachers via active
- *                TeacherProfiles), institution records, institution
+ *                TeacherProfiles), narrowed to their faculty when
+ *                scopeFacultyId is set; institution records, institution
  *                courses, institution announcements. Phone search YES,
- *                phone fields YES.
+ *                phone fields YES (the USERS_MANAGE seat).
  *  · QUALITY   → the same institution roster NAME-ONLY: phone search
  *                YES (the registrar's «من هذا الرقم؟» lookup is shared)
  *                but phone fields NEVER returned.
@@ -339,6 +737,7 @@ export function globalSearchScope(
   userId: string,
   institutionId: string | null,
   facts: GlobalSearchFacts = {},
+  scopeFacultyId: string | null = null,
 ): GlobalSearchScope {
   // OWNER — platform-wide oversight, no membership, no context to scope by.
   if (role === 'OWNER') {
@@ -449,17 +848,34 @@ export function globalSearchScope(
   }
 
   if (role === 'ADMIN' || role === 'QUALITY') {
+    // r353-F E5 — the college-registrar faculty pin. Rides the SAME
+    // profile `some` as the institution pin (see the function doc): the
+    // one profile proving institution membership must also carry the
+    // caller's faculty. Teachers pin through their home department's
+    // faculty — the buildScopedUserWhere association shapes.
+    const faculty = typeof scopeFacultyId === 'string' && scopeFacultyId.length > 0 ? scopeFacultyId : null;
     return {
       // The institution roster: users holding an ACTIVE profile in the
       // caller's institution (the resolveStudentProfile /
       // resolveTeacherProfile membership convention).
       students: {
         role: 'STUDENT',
-        studentProfiles: { some: { institutionId: inst, membership: { isActive: true } } },
+        studentProfiles: {
+          some: {
+            institutionId: inst,
+            membership: { isActive: true },
+            ...(faculty ? { facultyId: faculty } : {}),
+          },
+        },
       },
       teachers: {
         role: 'TEACHER',
-        teacherProfiles: { some: { membership: { institutionId: inst, isActive: true } } },
+        teacherProfiles: {
+          some: {
+            membership: { institutionId: inst, isActive: true },
+            ...(faculty ? { department: { facultyId: faculty } } : {}),
+          },
+        },
       },
       institutions,
       faculties,
@@ -479,7 +895,10 @@ export function globalSearchScope(
       // The staff bank (approved questions only).
       questions,
       phoneSearch: true,
-      phoneFieldsVisible: role === 'ADMIN',
+      // r353-F E5: the USERS_MANAGE seat (PHONE_FIELDS_ROLES, verified
+      // against lib/permissions.ts DEFAULT_ROLE_CAPABILITIES) — ADMIN
+      // and OWNER only; QUALITY searches phones but never sees them.
+      phoneFieldsVisible: (PHONE_FIELDS_ROLES as readonly string[]).includes(role),
     };
   }
 
@@ -493,6 +912,10 @@ export function globalSearchScope(
  * E1-normalized digits. The arm re-pins the institution inside the
  * relation filter so a phone hit can never cross institutions (OWNER —
  * institutionId null — searches every institution by design).
+ * r353-F E5: an optional `facultyId` rides the same `some` clause (the
+ * scoped registrar's phone arm can never fetch out-of-faculty rows —
+ * the scope.students pin would not reach into this arm's own profile
+ * filter).
  *
  * Sibling privacy (documented by design, §5): a shared family phone
  * finds BOTH siblings — that is the registrar's use case («من هذا
@@ -501,15 +924,18 @@ export function globalSearchScope(
 export function phoneMatchArm(
   plan: GlobalQueryPlan,
   institutionId: string | null,
+  facultyId?: string | null,
 ): Prisma.UserWhereInput | null {
   if (!plan.isPhoneQuery || !plan.phoneDigits) return null;
   const contains = { contains: plan.phoneDigits };
   const profileWhere: Prisma.StudentProfileWhereInput = {
+    ...(institutionId ? { institutionId } : {}),
+    ...(facultyId ? { facultyId } : {}),
     OR: [{ studentPhoneNormalized: contains }, { guardianPhoneNormalized: contains }],
   };
   return {
     studentProfiles: {
-      some: institutionId ? { institutionId, ...profileWhere } : profileWhere,
+      some: profileWhere,
     },
   };
 }

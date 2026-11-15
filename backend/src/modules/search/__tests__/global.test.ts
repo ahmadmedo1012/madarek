@@ -28,15 +28,19 @@ import {
   RANK_PREFIX,
   RANK_SUBSTRING,
   RANK_EXACT,
+  PHONE_FIELDS_ROLES,
   announcementHitHref,
   bookHitHref,
   candidateTake,
+  emailMatchArms,
   eventHitHref,
   facultyHitHref,
   globalSearchScope,
+  identifierHit,
   institutionHitHref,
   jobHitHref,
   materialHitHref,
+  multiwordHit,
   parseGlobalSearchCategories,
   parseGlobalSearchPagination,
   phoneHit,
@@ -47,6 +51,9 @@ import {
   rankHit,
   studentHitHref,
   teacherHitHref,
+  typoHit,
+  universityIdMatchArm,
+  withinOneEdit,
 } from '../global.js';
 
 // ─────────────────────────────────────────────────────────────────
@@ -54,12 +61,16 @@ import {
 // ─────────────────────────────────────────────────────────────────
 
 describe('planGlobalQuery — Arabic fold + al-prefix + variants', () => {
-  it('normalizes through the canonical normalizer (diacritics/hamza/ة folds)', () => {
+  it('normalizes through the canonical normalizer (diacritics/hamza/ة folds) and keeps both base forms FIRST', () => {
     const plan = planGlobalQuery('الخَوَارِزْمِيَات');
     expect(plan.normalized).toBe('الخوارزميات');
-    // The raw string differs from its normalized twin → both ride the
-    // DB contains variants (the /search/global variants construction).
-    expect(plan.variants).toEqual(['الخَوَارِزْمِيَات', 'الخوارزميات']);
+    // r353-F: the variants list grew past the old [raw, normalized] —
+    // the ال/clitic arms, the reverse folds and the per-word arms follow
+    // the two base forms (order is deterministic; the head stays raw →
+    // normalized so the trigram-friendly exact forms are tried first).
+    expect(plan.variants[0]).toBe('الخَوَارِزْمِيَات');
+    expect(plan.variants[1]).toBe('الخوارزميات');
+    expect(plan.variants).toContain('خوارزميات'); // the noAl arm
   });
 
   it('carries the ال-stripped arm (noAl)', () => {
@@ -67,14 +78,120 @@ describe('planGlobalQuery — Arabic fold + al-prefix + variants', () => {
     expect(planGlobalQuery('مبروك').noAl).toBe('مبروك'); // no prefix → unchanged
   });
 
-  it('dedupes variants when the raw query is already normalized', () => {
-    expect(planGlobalQuery('احمد').variants).toEqual(['احمد']);
+  it('dedupes the base forms when the raw query is already normalized (the fold arms follow)', () => {
+    // r353-F: the reverse folds are the point — «احمد» must also try
+    // the hamza-bearing forms the stored roster may carry.
+    expect(planGlobalQuery('احمد').variants[0]).toBe('احمد');
+    expect(new Set(planGlobalQuery('احمد').variants).size).toBe(planGlobalQuery('احمد').variants.length);
     expect(planGlobalQuery('cisco').variants).toEqual(['cisco']);
     expect(planGlobalQuery('Cisco').variants).toEqual(['Cisco', 'cisco']);
   });
 
   it('keeps the raw query byte-identical (the envelope echoes it)', () => {
     expect(planGlobalQuery('  أحمد ').raw).toBe('  أحمد ');
+  });
+});
+
+describe('planGlobalQuery — r353-F bug 1: the REVERSE-FOLD gap (typed «احمد» vs stored «أحمد»)', () => {
+  it('a plain-alif query regenerates the hamza-bearing forms the stored data may carry', () => {
+    const plan = planGlobalQuery('احمد');
+    expect(plan.variants).toContain('أحمد');
+    expect(plan.variants).toContain('إحمد');
+    expect(plan.variants).toContain('آحمد');
+  });
+
+  it('a plain ه query regenerates ة, a plain ي regenerates ى, a plain و regenerates ؤ', () => {
+    expect(planGlobalQuery('مدرسه').variants).toContain('مدرسة');
+    expect(planGlobalQuery('مستشفي').variants).toContain('مستشفى');
+    expect(planGlobalQuery('مسؤول').variants).toContain('مسؤول'); // و → ؤ
+  });
+
+  it('multi-seat words regenerate the full cartesian (≤3 foldable positions)', () => {
+    // «اسامه» (plain keyboard) must regenerate «أسامة» (both seats).
+    expect(planGlobalQuery('اسامه').variants).toContain('أسامة');
+    expect(planGlobalQuery('اسامه').variants).toContain('أسامه'); // single-seat forms too
+    expect(planGlobalQuery('اسامه').variants).toContain('اسامة');
+  });
+
+  it('cross-word hamza seats: the per-word folds fetch «أحمد إبراهيم» from «احمد ابراهيم»', () => {
+    const plan = planGlobalQuery('احمد ابراهيم');
+    // The whole-query cartesian is skipped for multiword queries (the
+    // per-word arms subsume it — each word matches alone, wherever it
+    // lives in the stored name).
+    expect(plan.variants).toContain('أحمد');
+    expect(plan.variants).toContain('إبراهيم');
+  });
+
+  it('small cross-word pairs cover through the per-word arms («احمد سالم» → «أحمد» + «سألم»)', () => {
+    const plan = planGlobalQuery('احمد سالم');
+    expect(plan.variants).toContain('أحمد');
+    expect(plan.variants).toContain('سألم');
+  });
+
+  it('long foldable queries degrade to Hamming-1 (bounded, never a 3^k explosion)', () => {
+    // «الخوارزميات» carries 5 foldable positions → substitutions only.
+    const plan = planGlobalQuery('الخوارزميات');
+    expect(plan.variants).toContain('الخوارزميأت'); // single-seat substitution…
+    expect(plan.variants).not.toContain('أخوإرزميآت'); // …never the cartesian
+    expect(plan.variants.length).toBeLessThanOrEqual(40); // the hard cap
+  });
+
+  it('hamza-bearing QUERIES still find plain-alif data (the forward fold — unchanged)', () => {
+    const plan = planGlobalQuery('أحمد');
+    expect(plan.variants).toContain('احمد'); // the normalized twin
+  });
+});
+
+describe('planGlobalQuery — r353-F bug 1b: the ال arms (noAl was computed but never used)', () => {
+  it('«الشبكات» also tries «شبكات» — so it finds a stored «شبكات الحاسوب»', () => {
+    const plan = planGlobalQuery('الشبكات');
+    expect(plan.noAl).toBe('شبكات');
+    expect(plan.variants).toContain('شبكات');
+  });
+
+  it('«شبكات» also tries «الشبكات» — so it finds a stored «الشبكات المتقدمة»', () => {
+    expect(planGlobalQuery('شبكات').variants).toContain('الشبكات');
+  });
+
+  it('clitic-prefixed queries strip to the base word (والـ بالـ للـ فالـ كالـ)', () => {
+    const plan = planGlobalQuery('والشبكات');
+    expect(plan.variants).toContain('شبكات');
+    expect(plan.variants).toContain('الشبكات');
+  });
+
+  it('multiword queries add per-word arms (order-free fetch: «المهدي محمد» fetches «محمد المهدي»)', () => {
+    const plan = planGlobalQuery('المهدي محمد');
+    expect(plan.variants).toContain('المهدي');
+    expect(plan.variants).toContain('مهدي');
+    expect(plan.variants).toContain('محمد');
+  });
+
+  it('single-letter and 2-letter preposition words never arm (the «في»/«و» leak guard)', () => {
+    const plan = planGlobalQuery('ملتقى الذكاء الاصطناعي في ليبيا');
+    expect(plan.variants).not.toContain('في');
+    expect(plan.variants).not.toContain('و');
+  });
+});
+
+describe('planGlobalQuery — r353-F bug 3: the digit fold reaches every arm', () => {
+  it('Arabic-Indic digits fold in the variants (the code/university-id contains arms)', () => {
+    const plan = planGlobalQuery('٣٠١');
+    expect(plan.normalized).toBe('301');
+    expect(plan.variants).toContain('301');
+  });
+
+  it('hyphenated student numbers survive as typed AND folded', () => {
+    const plan = planGlobalQuery('UZ-2024-00001');
+    expect(plan.variants).toContain('UZ-2024-00001');
+    expect(plan.asciiLike).toBe(true);
+  });
+
+  it('asciiLike gates the identifier arms — Arabic queries never burn them', () => {
+    expect(planGlobalQuery('احمد').asciiLike).toBe(false);
+    expect(planGlobalQuery('احمد 2024').asciiLike).toBe(false);
+    expect(planGlobalQuery('ahmed@madarek.ly').asciiLike).toBe(true);
+    expect(planGlobalQuery('30351').asciiLike).toBe(true);
+    expect(planGlobalQuery('CS301').asciiLike).toBe(true);
   });
 });
 
@@ -425,6 +542,22 @@ describe('phoneMatchArm / phoneHit (§5)', () => {
     });
   });
 
+  it('r353-F E5: a faculty-scoped registrar\'s phone arm carries the faculty pin (no out-of-faculty fetch)', () => {
+    const arm = phoneMatchArm(planGlobalQuery('0912345678'), INST, 'fac_eng');
+    expect(arm).toEqual({
+      studentProfiles: {
+        some: {
+          institutionId: INST,
+          facultyId: 'fac_eng',
+          OR: [
+            { studentPhoneNormalized: { contains: '218912345678' } },
+            { guardianPhoneNormalized: { contains: '218912345678' } },
+          ],
+        },
+      },
+    });
+  });
+
   it('phoneHit verifies the fetched profile (student OR guardian column)', () => {
     const plan = planGlobalQuery('0912345678');
     expect(phoneHit({ studentPhoneNormalized: '218912345678', guardianPhoneNormalized: null }, plan)).toBe(true);
@@ -434,6 +567,190 @@ describe('phoneMatchArm / phoneHit (§5)', () => {
     expect(phoneHit({ studentPhoneNormalized: '218200000000', guardianPhoneNormalized: null }, plan)).toBe(false);
     expect(phoneHit(undefined, plan)).toBe(false);
     expect(phoneHit({ studentPhoneNormalized: '218912345678', guardianPhoneNormalized: null }, planGlobalQuery('أحمد'))).toBe(false);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────
+//  r353-F — the registrar's identifier arms (bugs 2+3)
+// ─────────────────────────────────────────────────────────────────
+
+describe('emailMatchArms / universityIdMatchArm (the exact-key fast paths)', () => {
+  it('email arms: exact (User_email_key) + insensitive contains — ASCII queries only', () => {
+    expect(emailMatchArms(planGlobalQuery('ahmed@madarek.ly'))).toEqual([
+      { email: 'ahmed@madarek.ly' },
+      { email: { contains: 'ahmed@madarek.ly', mode: 'insensitive' } },
+    ]);
+    // An Arabic name query never burns the (unindexed) email ILIKE arm.
+    expect(emailMatchArms(planGlobalQuery('احمد'))).toEqual([]);
+  });
+
+  it('universityId arm: exact (the (institutionId, universityId) unique index) + digit-folded contains', () => {
+    const arm = universityIdMatchArm(planGlobalQuery('UZ-2024-00001'), INST, 'fac_eng');
+    const blob = JSON.stringify(arm);
+    // The exact fast path + the case-folded contains path, pinned inside
+    // the institution+faculty profile some.
+    expect(arm).toEqual({
+      studentProfiles: {
+        some: {
+          institutionId: INST,
+          facultyId: 'fac_eng',
+          OR: expect.arrayContaining([
+            { universityId: 'UZ-2024-00001' },
+            { universityId: { contains: 'UZ-2024-00001', mode: 'insensitive' } },
+            { universityId: { contains: 'uz-2024-00001', mode: 'insensitive' } },
+          ]),
+        },
+      },
+    });
+    // The variants list also carries the ال-free base forms only for
+    // Arabic queries — an ASCII id never gets an ال-prefixed twin.
+    expect(blob).not.toContain('ال');
+  });
+
+  it('Arabic-Indic digits fold into the universityId contains arm («٣٠١» finds «301»)', () => {
+    const arm = universityIdMatchArm(planGlobalQuery('٣٠١'), INST);
+    expect(JSON.stringify(arm)).toContain('"contains":"301"');
+  });
+
+  it('OWNER drops the exact arm (the unique index is composite) but keeps contains', () => {
+    const arm = universityIdMatchArm(planGlobalQuery('30351'), null);
+    expect(arm).not.toBeNull();
+    expect(JSON.stringify(arm)).not.toContain('"universityId":"30351"');
+    expect(JSON.stringify(arm)).toContain('"contains":"30351"');
+  });
+
+  it('an Arabic name query admits no universityId arm (dead ILIKE guard)', () => {
+    expect(universityIdMatchArm(planGlobalQuery('احمد'), INST)).toBeNull();
+  });
+});
+
+describe('identifierHit — the JS re-verification for identifier-fetched rows', () => {
+  it('an exact student number ranks EXACT (the registrar typed the whole key)', () => {
+    expect(identifierHit('UZ-2024-00001', planGlobalQuery('UZ-2024-00001'))).toBe(RANK_EXACT);
+    expect(identifierHit('uz-2024-00001', planGlobalQuery('UZ-2024-00001'))).toBe(RANK_EXACT);
+  });
+
+  it('a partial number ranks SUBSTRING; Arabic-Indic digits fold', () => {
+    expect(identifierHit('UZ-2024-00001', planGlobalQuery('2024'))).toBe(RANK_SUBSTRING);
+    expect(identifierHit('UZ-2024-00001', planGlobalQuery('٠٠٠٠١'))).toBe(RANK_SUBSTRING);
+    expect(identifierHit('UZ-2024-00001', planGlobalQuery('٢٠٢٤'))).toBe(RANK_SUBSTRING);
+  });
+
+  it('an exact email ranks EXACT; a partial email SUBSTRING', () => {
+    expect(identifierHit('ahmed.taher@students.madarek.ly', planGlobalQuery('ahmed.taher@students.madarek.ly'))).toBe(RANK_EXACT);
+    expect(identifierHit('ahmed.taher@students.madarek.ly', planGlobalQuery('ahmed.taher'))).toBe(RANK_SUBSTRING);
+    expect(identifierHit('ahmed.taher@students.madarek.ly', planGlobalQuery('@students.madarek.ly'))).toBe(RANK_SUBSTRING);
+  });
+
+  it('an Arabic name query never matches an identifier (the fold classes cannot collide)', () => {
+    expect(identifierHit('UZ-2024-00001', planGlobalQuery('احمد'))).toBe(RANK_NONE);
+    expect(identifierHit('ahmed@madarek.ly', planGlobalQuery('شبكات'))).toBe(RANK_NONE);
+    expect(identifierHit(null, planGlobalQuery('30351'))).toBe(RANK_NONE);
+    expect(identifierHit(undefined, planGlobalQuery('30351'))).toBe(RANK_NONE);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────
+//  r353-F — the multiword (order-free) + 1-edit-typo rank arms
+// ─────────────────────────────────────────────────────────────────
+
+describe('multiwordHit / typoHit / withinOneEdit (the last-resort rank arms)', () => {
+  it('withinOneEdit: substitution, transposition, insert, delete — bounded to one edit', () => {
+    expect(withinOneEdit('طالب', 'طلاب')).toBe(true);   // transposition
+    expect(withinOneEdit('محمد', 'محمذ')).toBe(true);   // substitution
+    expect(withinOneEdit('محمد', 'محمدد')).toBe(true);  // insertion
+    expect(withinOneEdit('محمد', 'محد')).toBe(true);    // deletion
+    expect(withinOneEdit('محمد', 'محنذ')).toBe(false);  // two edits
+    expect(withinOneEdit('محمد', 'محمد')).toBe(true);   // identical
+  });
+
+  it('multiwordHit: «المهدي محمد» matches the stored «محمد المهدي» (order-free)', () => {
+    const plan = planGlobalQuery('المهدي محمد');
+    expect(multiwordHit(['محمد', 'المهدي', 'محمد المهدي'], plan)).toBe(true);
+    expect(multiwordHit(['محمد علي'], plan)).toBe(false); // one word missing
+  });
+
+  it('multiwordHit never fires for single-word queries (the substring contract owns those)', () => {
+    expect(multiwordHit(['محمد المهدي'], planGlobalQuery('محمد'))).toBe(false);
+  });
+
+  it('typoHit: «هندسي» matches «هندسة» — and «طلاب» matches «الطالب»', () => {
+    expect(typoHit(['هندسة البرمجيات'], planGlobalQuery('هندسي'))).toBe(true);
+    expect(typoHit(['الطالب'], planGlobalQuery('طلاب'))).toBe(true);
+    expect(typoHit(['قواعد البيانات'], planGlobalQuery('هندسي'))).toBe(false);
+  });
+
+  it('typoHit is gated to 4+ letter words (a 1-edit near-miss on a 3-letter word is noise)', () => {
+    expect(typoHit(['شبك'], planGlobalQuery('شبح'))).toBe(false);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────
+//  r353-F E5 — the college-registrar faculty scope + the phone-fields seat
+// ─────────────────────────────────────────────────────────────────
+
+describe('r353-F E5 — globalSearchScope: the scopeFacultyId pin (the users-list mirror)', () => {
+  const FAC = 'fac_eng';
+
+  it('a scoped ADMIN sees ONLY their faculty\'s students (the same profile some as the institution pin)', () => {
+    const scope = globalSearchScope(Role.ADMIN, USER, INST, {}, FAC);
+    expect(scope.students).toEqual({
+      role: 'STUDENT',
+      studentProfiles: {
+        some: { institutionId: INST, membership: { isActive: true }, facultyId: FAC },
+      },
+    });
+  });
+
+  it('a scoped ADMIN sees ONLY teachers homed in their faculty (department → faculty chain)', () => {
+    const scope = globalSearchScope(Role.ADMIN, USER, INST, {}, FAC);
+    expect(scope.teachers).toEqual({
+      role: 'TEACHER',
+      teacherProfiles: {
+        some: { membership: { institutionId: INST, isActive: true }, department: { facultyId: FAC } },
+      },
+    });
+  });
+
+  it('the same pin applies to a scoped QUALITY caller (the users list narrows both seats)', () => {
+    const scope = globalSearchScope(Role.QUALITY, USER, INST, {}, FAC);
+    expect(scope.students).toEqual(globalSearchScope(Role.ADMIN, USER, INST, {}, FAC).students);
+    expect(scope.teachers).toEqual(globalSearchScope(Role.ADMIN, USER, INST, {}, FAC).teachers);
+  });
+
+  it('an UNSCOPED admin keeps the institution-wide roster (byte-identical to the pre-E5 shape)', () => {
+    expect(globalSearchScope(Role.ADMIN, USER, INST, {}, null).students).toEqual(
+      globalSearchScope(Role.ADMIN, USER, INST, {}).students,
+    );
+    expect(globalSearchScope(Role.ADMIN, USER, INST, {}, undefined).teachers).toEqual(
+      globalSearchScope(Role.ADMIN, USER, INST, {}).teachers,
+    );
+  });
+
+  it('the faculty pin changes NOTHING for STUDENT/TEACHER callers (their arms are ownership-pinned already)', () => {
+    expect(globalSearchScope(Role.STUDENT, USER, INST, {}, FAC).students).toBeNull();
+    expect(globalSearchScope(Role.TEACHER, USER, INST, {}, FAC).courses).toEqual({ teacherId: USER });
+  });
+
+  it('non-people categories stay institution-wide for a scoped registrar (the users-list analogy covers people/roster)', () => {
+    const scoped = globalSearchScope(Role.ADMIN, USER, INST, {}, FAC);
+    const unscoped = globalSearchScope(Role.ADMIN, USER, INST, {});
+    expect(scoped.courses).toEqual(unscoped.courses);
+    expect(scoped.faculties).toEqual(unscoped.faculties);
+    expect(scoped.announcements).toEqual(unscoped.announcements);
+  });
+});
+
+describe('r353-F E5 — phoneFieldsVisible is the USERS_MANAGE seat (lib/permissions.ts)', () => {
+  it('PHONE_FIELDS_ROLES is pinned to ADMIN + OWNER (the DEFAULT_ROLE_CAPABILITIES USERS_MANAGE holders)', () => {
+    expect(PHONE_FIELDS_ROLES).toEqual(['ADMIN', 'OWNER']);
+  });
+
+  it('ADMIN and OWNER get phone fields; QUALITY never does (even with the shared phone SEARCH arm)', () => {
+    expect(globalSearchScope(Role.ADMIN, USER, INST, {}).phoneFieldsVisible).toBe(true);
+    expect(globalSearchScope(Role.OWNER, USER, null, {}).phoneFieldsVisible).toBe(true);
+    expect(globalSearchScope(Role.QUALITY, USER, INST, {}).phoneFieldsVisible).toBe(false);
+    expect(globalSearchScope(Role.QUALITY, USER, INST, {}).phoneSearch).toBe(true); // the lookup stays shared
   });
 });
 
