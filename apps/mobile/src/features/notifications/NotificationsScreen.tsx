@@ -20,8 +20,8 @@
  * it owns the home-indicator inset at the bottom and shows a back affordance
  * (RTL: arrow points right = the physical back edge).
  */
-import { useCallback, useMemo, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Linking, Pressable, StyleSheet, View } from "react-native";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -41,7 +41,7 @@ import { haptics } from "@/haptics";
 import { humanizeError } from "@/lib/errors";
 import { fromNow, latn } from "@/lib/format";
 import { toast } from "@/components/ui/toast";
-import { currentPermission, requestAndRegisterPush } from "@/lib/push";
+import { currentPermission, markInboxOpened, requestAndRegisterPush } from "@/lib/push";
 import {
   groupNotificationsByDay,
   notificationIconUrl,
@@ -72,6 +72,12 @@ export function NotificationsScreen({
   });
   const markRead = useMarkRead();
   const markAll = useMarkAllRead();
+
+  // R353 — opening the inbox is the badge eraser (the backend sends
+  // badge:1 per push; the moment the user SEES the feed, the count is 0).
+  useEffect(() => {
+    markInboxOpened();
+  }, []);
 
   const unread = list.meta?.unread ?? 0;
 
@@ -308,9 +314,15 @@ const NotificationRow = makeRow<
   },
 );
 
-/** R327 C3 — the value-shown push ask: only when permission is not yet
- *  granted, one honest sentence + one button. Never at first open. */
-function PushActivationCard() {
+/** R327 C3 / R353 — the value-shown push ask: only when permission is
+ *  not yet granted, ONE honest sentence (≤12 words) + ONE action. Never
+ *  at first open. R353 honest-failure states: denied → the OS settings
+ *  button; granted-but-unregistered → the retry line (never a silent
+ *  swallow — the client reports registration failures).
+ *  Exported for the push net (push-registrar.test.tsx): the full inbox
+ *  screen is untestable under jest (FlashList/skeleton act scopes never
+ *  close), but this card is a small, provider-light tree. */
+export function PushActivationCard() {
   const p = usePalette();
   const qc = useQueryClient();
   const perm = useQuery({
@@ -319,13 +331,16 @@ function PushActivationCard() {
     staleTime: 60_000,
   });
   const [busy, setBusy] = useState(false);
+  const [regFailed, setRegFailed] = useState(false);
   const state = perm.data;
-  if (state === "granted" || state === "unavailable" || state === undefined) return null;
+  if (state === "unavailable" || state === undefined) return null;
+  if (state === "granted" && !regFailed) return null;
 
   const go = async () => {
     setBusy(true);
     try {
-      await requestAndRegisterPush();
+      const result = await requestAndRegisterPush();
+      setRegFailed(result.state === "granted" && !result.registered);
     } finally {
       setBusy(false);
       void qc.invalidateQueries({ queryKey: ["push", "permission"] });
@@ -347,14 +362,30 @@ function PushActivationCard() {
       <T variant="body" weight="bold">إشعارات فورية على جهازك</T>
       <T variant="sm" color="muted">
         {state === "denied"
-          ? "الإشعارات مقفلة من إعدادات النظام — فعّلها لمدارك من هناك لتصلك الإعلانات والدرجات لحظة صدورها."
-          : "فعّلها لتصلك الإعلانات والدرجات والتكاليف لحظة صدورها — لا رسائل إعلانية، وتلغيها متى شئت."}
+          ? "الإشعارات مقفلة من إعدادات النظام — افتحها من هناك."
+          : regFailed
+            ? "منحت الإذن، لكن تعذّر تسجيل الجهاز."
+            : "فعّل الإشعارات لتصلك الإعلانات والدرجات لحظة صدورها."}
       </T>
-      {state !== "denied" ? (
+      {state === "denied" ? (
         <View style={{ alignSelf: "flex-start" }}>
-          <Button label={busy ? "جارٍ التفعيل…" : "تفعيل الإشعارات"} kind="accent" small onPress={go} />
+          <Button
+            label="فتح إعدادات النظام"
+            kind="ghost"
+            small
+            onPress={() => void Linking.openSettings().catch(() => undefined)}
+          />
         </View>
-      ) : null}
+      ) : (
+        <View style={{ alignSelf: "flex-start" }}>
+          <Button
+            label={busy ? "جارٍ التفعيل…" : regFailed ? "إعادة المحاولة" : "تفعيل الإشعارات"}
+            kind="accent"
+            small
+            onPress={go}
+          />
+        </View>
+      )}
     </View>
   );
 }

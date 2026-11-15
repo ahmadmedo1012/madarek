@@ -10,7 +10,7 @@
  * (RowList), muted group headers, every row keeps its 48px target.
  */
 import { Fragment, useEffect, useState } from "react";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 import { router } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { LucideIcon } from "lucide-react-native";
@@ -210,13 +210,18 @@ export default function StudentProfile() {
     }
   };
 
-  /* Notifications — permission is requested ONLY from this value-shown seat. */
+  /* Notifications — permission is requested ONLY from this value-shown
+     seat (R353: the denied row gains the OS-settings button; a granted
+     but unregistered outcome renders the honest retry row). */
   const [pushState, setPushState] = useState<PushPermissionState | null>(null);
+  const [pushRegFailed, setPushRegFailed] = useState(false);
   useEffect(() => {
     void currentPermission().then(setPushState);
   }, []);
   const enablePush = async () => {
-    setPushState(await requestAndRegisterPush());
+    const result = await requestAndRegisterPush();
+    setPushState(result.state);
+    setPushRegFailed(result.state === "granted" && !result.registered);
   };
 
   const [confirmLogout, setConfirmLogout] = useState(false);
@@ -370,19 +375,45 @@ export default function StudentProfile() {
             </View>
           </Card>
         ) : null}
-        {pushState === "granted" ? (
+        {pushState === "granted" && !pushRegFailed ? (
           <Card style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
             <Check size={20} color={p.textMuted} />
             <T variant="body" weight="medium" style={{ flex: 1 }}>
               الإشعارات مفعّلة — تصلك التنبيهات على هذا الجهاز.
             </T>
           </Card>
+        ) : pushState === "granted" && pushRegFailed ? (
+          // R353 — the honest retry seat: permission exists, registration
+          // did not (no token yet / the POST failed). Never silent.
+          <Card style={{ gap: sp[8] }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+              <Bell size={20} color={p.textMuted} />
+              <T variant="sm" color="muted" style={{ flex: 1 }}>
+                منحت الإذن، لكن تعذّر تسجيل الجهاز.
+              </T>
+            </View>
+            <View style={{ alignSelf: "flex-start" }}>
+              <Button label="إعادة المحاولة" kind="primary" small onPress={() => void enablePush()} />
+            </View>
+          </Card>
         ) : pushState === "denied" ? (
-          <Card style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
-            <Bell size={20} color={p.textMuted} />
-            <T variant="sm" color="muted" style={{ flex: 1 }}>
-              الإشعارات معطّلة من إعدادات النظام — فعّلها لتصلك التنبيهات، ويبقى صندوق الوارد داخل التطبيق يعمل دائمًا.
-            </T>
+          // R353 — OS-level denial is fixable only in settings: one honest
+          // line + the deep link there (the in-app prompt can never return).
+          <Card style={{ gap: sp[8] }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+              <Bell size={20} color={p.textMuted} />
+              <T variant="sm" color="muted" style={{ flex: 1 }}>
+                الإشعارات معطّلة من إعدادات النظام — افتحها من هناك.
+              </T>
+            </View>
+            <View style={{ alignSelf: "flex-start" }}>
+              <Button
+                label="فتح إعدادات النظام"
+                kind="ghost"
+                small
+                onPress={() => void Linking.openSettings().catch(() => undefined)}
+              />
+            </View>
           </Card>
         ) : pushState === "undetermined" ? (
           <Card style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
