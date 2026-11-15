@@ -37,7 +37,7 @@
  */
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { AddressInfo } from 'node:net';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Role } from '@prisma/client';
@@ -50,7 +50,7 @@ vi.mock('../../src/db.js', () => {
   const proxy: Record<string, unknown> = {};
   const handler: ProxyHandler<Record<string, unknown>> = {
     get(target, prop) {
-      if (prop in target) return target[prop];
+      if (typeof prop !== 'string' || prop in target) return target[prop as string];
       if (prop === 'withRetry' || prop === 'prisma') return undefined;
       const model = new Proxy(
         {},
@@ -75,7 +75,6 @@ import { createApp } from '../../src/app.js';
 import { signAccessToken } from '../../src/lib/jwt.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const ROUTES_DIR = join(HERE, '..', '..', 'src', 'http', 'routes');
 const APP_TS = join(HERE, '..', '..', 'src', 'app.ts');
 
 // shared/ is a separate workspace — parse the matrix from source (the
@@ -84,8 +83,8 @@ const APP_TS = join(HERE, '..', '..', 'src', 'app.ts');
 const REPO_ROOT = join(HERE, '..', '..', '..');
 const MATRIX_SRC = readFileSync(join(REPO_ROOT, 'shared', 'permissions-matrix.ts'), 'utf8');
 const MATRIX_SEATS_BLOCK = MATRIX_SRC.match(/export const MATRIX_SEATS[^=]*=\s*\[([\s\S]*?)\]\s*as const;/)?.[1] ?? '';
-const MATRIX_SEATS = [...MATRIX_SEATS_BLOCK.matchAll(/'([^']+)'/g)].map((m) => m[1]);
-const MATRIX_RESOURCES = [...new Set([...MATRIX_SRC.matchAll(/resource:\s*'([^']*)'/g)].map((m) => m[1]))];
+const MATRIX_SEATS = [...MATRIX_SEATS_BLOCK.matchAll(/'([^']+)'/g)].map((m) => m[1] ?? '');
+const MATRIX_RESOURCES = [...new Set([...MATRIX_SRC.matchAll(/resource:\s*'([^']*)'/g)].map((m) => m[1] ?? ''))];
 const MATRIX_RESOURCES_SET = new Set(MATRIX_RESOURCES);
 
 // ── Part A: the static inventory ──────────────────────────────────────
@@ -107,14 +106,15 @@ function mountTable(): Map<string, { file: string; prefix: string }> {
   const reImport = /import\s+(?:\{([^}]+)\}|([A-Za-z_$][\w$]*))\s+from\s+'(\.[^']*routes[^']*)'/g;
   let m: RegExpExecArray | null;
   while ((m = reImport.exec(src))) {
-    const file = m[3].replace(/\.js$/, '.ts');
+    const file = (m[3] ?? '').replace(/\.js$/, '.ts');
     if (m[1]) for (const name of m[1].split(',')) imports.set(name.trim(), file);
     else if (m[2]) imports.set(m[2], file);
   }
   const table = new Map<string, { file: string; prefix: string }>();
   const reUse = /app\.use\(\s*'([^']*)'\s*,\s*([A-Za-z_$][\w$]*)\s*\)/g;
   while ((m = reUse.exec(src))) {
-    const [, prefix, name] = m;
+    const prefix = m[1] ?? '';
+    const name = m[2] ?? '';
     const file = imports.get(name);
     if (file && (file.includes('routes') || file.includes('router'))) {
       table.set(name, { file, prefix: prefix.replace(/\/$/, '') });
@@ -178,7 +178,7 @@ function splitArgs(args: string): string[] {
     if (!inStr && c === '/' && args[i + 1] === '*') { inBlock = true; i++; continue; }
     if (inStr) {
       cur += c;
-      if (c === '\\') { cur += args[++i] ?? ''; continue; }
+      if (c === '\\') { cur += args[i + 1] ?? ''; i++; continue; }
       if (c === inStr) inStr = null;
       continue;
     }
@@ -202,7 +202,8 @@ function scanRouteFile(file: string, mountPrefix: string): RouteEntry[] {
   const declRe = /(?:\b[A-Za-z_$][\w$]*[Rr]outer|\brouter)\.(use|get|post|patch|put|delete)\s*\(/g;
   let m: RegExpExecArray | null;
   while ((m = declRe.exec(src))) {
-    const verb = m[1];
+    const verb = m[1] ?? '';
+    if (!verb) continue;
     const call = extractCall(src, m.index + m[0].length - 1);
     if (!call) continue;
     const args = splitArgs(call.args);
@@ -231,9 +232,9 @@ function scanRouteFile(file: string, mountPrefix: string): RouteEntry[] {
     const caps = new Set<string>();
     for (const mw of effective) {
       const ro = mw.match(/requireRole\s*\(/);
-      if (ro) for (const x of mw.matchAll(/Role\.([A-Z_]+)/g)) roles.add(x[1]);
+      if (ro) for (const x of mw.matchAll(/Role\.([A-Z_]+)/g)) roles.add(x[1] ?? '');
       const ca = mw.match(/requireCapability\s*\(/);
-      if (ca) for (const x of mw.matchAll(/'([A-Z][A-Z_]+)'/g)) caps.add(x[1]);
+      if (ca) for (const x of mw.matchAll(/'([A-Z][A-Z_]+)'/g)) caps.add(x[1] ?? '');
     }
     const flat = effective.join(' | ');
     entries.push({
@@ -253,8 +254,10 @@ function buildInventory(): RouteEntry[] {
   const table = mountTable();
   const seen = new Set<string>();
   const out: RouteEntry[] = [];
-  for (const { file, prefix } of table.values()) {
-    if (seen.has(file)) continue;
+  for (const entry of table.values()) {
+    const file = entry?.file ?? '';
+    const prefix = entry?.prefix ?? '';
+    if (!file || seen.has(file)) continue;
     seen.add(file);
     try {
       // import specifiers in app.ts are relative to src/app.ts
@@ -279,8 +282,11 @@ function buildInventory(): RouteEntry[] {
     const appRe = /app\.(get|post|patch|put|delete)\(\s*'(\/api\/[^']*)'/g;
     let am: RegExpExecArray | null;
     while ((am = appRe.exec(appSrc))) {
+      const method = am[1] ?? 'get';
+      const apiPath = am[2] ?? '';
+      if (!apiPath) continue;
       out.push({
-        file: 'app.ts', method: am[1].toUpperCase(), path: am[2],
+        file: 'app.ts', method: method.toUpperCase(), path: apiPath,
         auth: false, optionalAuth: false, roles: [], caps: [],
       });
     }
@@ -560,7 +566,7 @@ describe('R355 E2 — the behavioral gate matrix (live)', () => {
     // staffRole/position claims the routes read from the DB layer.
     // The belt pins: every seat's BASE role is one of the five.
     for (const seat of MATRIX_SEATS) {
-      const base = seat.split('+')[0] as Role;
+      const base = (seat?.split('+')[0] ?? '') as Role;
       expect(ALL_ROLES).toContain(base);
     }
   });

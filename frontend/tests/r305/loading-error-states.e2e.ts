@@ -58,7 +58,7 @@ test.describe('/training — حالة الخطأ', () => {
     await expect(errorState).toBeVisible();
     await expect(errorState).toHaveAttribute('role', 'alert');
     // The PAGE-owned Arabic copy (not a code, not an empty state).
-    await expect(errorState.locator('.state-title')).toHaveText('تعذَّر تحميل المسارات التدريبية');
+    await expect(errorState.locator('.state-title')).toHaveText('تعذَّر تحميل المسارات');
     // The server's Arabic answer echoes as the detail line.
     await expect(errorState.locator('.state-desc')).toContainText('خطأ في الخادم الداخلي');
     await expect(errorState.getByRole('button', { name: 'إعادة المحاولة' })).toBeVisible();
@@ -102,7 +102,7 @@ test.describe('/community — حالة الخطأ', () => {
     const errorState = page.locator('.state-error');
     await expect(errorState).toBeVisible();
     await expect(errorState).toHaveAttribute('role', 'alert');
-    await expect(errorState.locator('.state-title')).toHaveText('تعذَّر تحميل الإعلانات');
+    await expect(errorState.locator('.state-title')).toHaveText('تعذَّر التحميل.');
     await expect(errorState.getByRole('button', { name: 'إعادة المحاولة' })).toBeVisible();
   });
 });

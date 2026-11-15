@@ -1305,7 +1305,7 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
               label="تصنيف السؤال"
               htmlFor="newq-category"
               error={errors.categoryId}
-              hint={categoriesEmpty ? 'التصنيفات تنشئها الإدارة.' : undefined}
+              hint={categoriesEmpty ? 'من المسجل العام.' : undefined}
             >
               <select
                 id="newq-category"
