@@ -471,10 +471,11 @@ export default function RegisterPage() {
 
                 <div className="role-invitation-note" role="note">
                   <Icon icon={LockIcon} size={13} />
-                  <span>
-                    المناصب القياديّة (عميد، رئيس قسم) والمسجل العام وضمان الجودة تُمنح بالتعيين، وليست
-                    متاحة للتسجيل الذاتيّ. تواصل مع المسجل العام في جامعتك للحصول على الوصول.
-                  </span>
+                  {/* R353 E4 (copy diet): the 24-word leadership paragraph
+                      compressed to one line — the appointment channel is
+                      the message; the enumeration of seats lives in the
+                      FAQ/onboarding, not the chooser. */}
+                  <span>تعيين القيادة والمسجلين يتم عبر دعوة من المالك/الإدارة</span>
                 </div>
 
                 {/* R341/D1 — the returning-visitor door at the chooser
