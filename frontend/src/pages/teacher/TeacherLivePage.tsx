@@ -165,7 +165,7 @@ export default function TeacherLivePage() {
           <span className="hr-brow">التعليم المتزامن</span>
           <h1 className="page-title">إدارة البث المباشر</h1>
           <p className="page-subtitle">
-            جدولة المحاضرات الحية وتشغيلها وإيقافها. الطلاب يرون فقط الجلسات الخاصة بمقرّراتهم.
+            جدولة المحاضرات الحية وتشغيلها — الطلاب يرون جلسات مقرّراتهم فقط.
           </p>
         </div>
         <button
@@ -274,7 +274,7 @@ export default function TeacherLivePage() {
                     id="live-when"
                     hint={form.scheduledAt
                       ? <>المحدَّد: {formatDateTimeAr(form.scheduledAt)}</>
-                      : 'اختر التاريخ والوقت من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'}
+                      : 'اختر من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'}
                   >
                     <input
                       type="datetime-local"
@@ -362,7 +362,7 @@ export default function TeacherLivePage() {
 
           {/* Live now */}
           {live.length > 0 && (
-            <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>مباشرة الآن</>} icon={Radio} subtitle="جلسات نشطة — يمكنك إنهاؤها من هنا">
+            <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>مباشرة الآن</>} icon={Radio} subtitle="جلسات نشطة — أنهِها من هنا">
               <div className="flex-col gap-2">
                 {live.map((s) => (
                   <SessionRow

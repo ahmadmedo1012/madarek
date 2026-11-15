@@ -204,7 +204,7 @@ export default function TeacherProfilePage() {
     } catch (err) {
       // Keep the edit open with the entered values; the Arabic error
       // renders inline so the teacher can retry without losing work.
-      setSaveError(apiErrorMessage(err, 'تعذَّر حفظ تعديلات الملف — تحقّق من اتصالك ثم أعد المحاولة.'));
+      setSaveError(apiErrorMessage(err, 'تعذَّر حفظ التعديلات — أعد المحاولة.'));
     }
   };
 
@@ -216,7 +216,7 @@ export default function TeacherProfilePage() {
           <span className="hr-brow">هيئة التدريس</span>
           <h1 className="page-title">الملف الأكاديمي</h1>
           <p className="page-subtitle">
-            ملفك الأكاديمي كما يظهر للمسجل العام، مكتب الجودة، والطلاب. حدّثه باستمرار ليعكس نشاطك العلمي.
+            ملفك كما يظهر للمسجل العام والجودة والطلاب — حدّثه ليعكس نشاطك العلمي.
           </p>
         </div>
         {!editing ? (
@@ -330,7 +330,7 @@ export default function TeacherProfilePage() {
             <textarea
               className="input"
               rows={5}
-              placeholder="اكتب نبذة عن خبرتك الأكاديمية والبحثية وأهم اهتماماتك العلمية…"
+              placeholder="نبذة عن خبرتك الأكاديمية واهتماماتك العلمية…"
               value={draft.bio}
               onChange={(e) => setDraft({ ...draft, bio: e.target.value })}
             />
@@ -338,7 +338,7 @@ export default function TeacherProfilePage() {
         ) : profile.bio ? (
           <p className="profile-bio">{profile.bio}</p>
         ) : (
-          <div className="text-sm text-muted">لم تُضف نبذة بعد. اضغط «تعديل» لإضافة وصف عن خلفيتك الأكاديمية.</div>
+          <div className="text-sm text-muted">لم تُضف نبذة بعد — اضغط «تعديل» لإضافتها.</div>
         )}
       </Card>
 

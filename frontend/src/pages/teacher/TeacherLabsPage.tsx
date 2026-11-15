@@ -114,8 +114,8 @@ export default function TeacherLabsPage() {
           <span className="hr-brow">التعلّم العملي</span>
           <h1 className="page-title">المعامل الافتراضية</h1>
           <p className="page-subtitle">
-            استعرض المعامل الافتراضية المتاحة على المنصة. يمكنك توجيه طلابك لها كمكمّل عملي
-            للمحاضرات. الطلاب يدخلون المعمل كمشاركين، بينما تبقى أنت المسؤول عن سياق التعلّم.
+            وجّه طلابك للمعامل كمكمّل عملي — يدخلون كمشاركين، وأنت
+            المسؤول عن سياق التعلّم.
           </p>
         </div>
         {/* R342-09 (D8 header-CTA law — the schedule-page precedent for a
@@ -179,8 +179,8 @@ export default function TeacherLabsPage() {
           <div className="hr-note">
             <Icon icon={AlertCircle} size={16} />
             <div className="text-xs">
-              <strong>تنويه أكاديمي:</strong> المعامل الافتراضية هي بيئات محاكاة معتمدة في الجامعة.
-              استخدمها لتعزيز فهم الطلاب للمحتوى النظري — ليست بديلاً عن المختبر الواقعي.
+              <strong>تنويه:</strong> المعامل بيئات محاكاة معتمدة — لتعزيز فهم النظري،
+              ليست بديلاً عن المختبر الواقعي.
             </div>
           </div>
 
