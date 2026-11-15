@@ -16,6 +16,11 @@
  * in CI) into `backend/dist`, and this ESM entry imports the compiled
  * app — zero TS in the function builder's path.
  *
+ * R353 function-bundle cache bust: this file's content changes when
+ * the baked build sha pipeline changes so the compiled function is
+ * never served from a stale bundle (the ccd21539 incident: dist was
+ * baked but the running function still reported the old value).
+ *
  * `createApp()` (backend/src/app.ts) is a PURE factory — no `listen`,
  * no SIGTERM, no scheduler timers (those live in backend/src/server.ts,
  * the local/Render entry, NOT imported here). Static SPA serving is
