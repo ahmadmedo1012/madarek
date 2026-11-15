@@ -152,6 +152,7 @@ jobs:
           MADAREK_VERSION_CODE: ${{ github.run_number }}
         run: |
           set -euo pipefail
+          mkdir -p build
           rm -rf android
           npx expo prebuild --platform android --no-install 2>&1 | tee build/prebuild-push.log
           test -d android
