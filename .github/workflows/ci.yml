@@ -27,6 +27,19 @@ env:
   NODE_VERSION: '22'
 
 jobs:
+  # R355 A — the rolling-release publish logic is a shell script; this
+  # is its hermetic regression test (stubbed `gh`, no network): upload
+  # ordering (upload → verify-landed → prune → final assert), the
+  # basename purge rule, and the loud-failure law (never a green job
+  # over an empty release). Guards android-latest + sidestore-latest.
+  release-scripts:
+    name: Release scripts (publish regression)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/ci/publish-rolling-release.test.sh
+
   lint:
     name: Lint (eslint, src trees)
     runs-on: ubuntu-24.04

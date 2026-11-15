@@ -54,9 +54,15 @@ permissions:
   contents: read
   actions: read
 
+# R355 A — the publish is serialized and NEVER cancelled mid-flight.
+# `cancel-in-progress` on push let a newer push cancel a run that was
+# inside the publish job (the purge/upload window) — a cancelled
+# publish can leave the public release half-updated. Runs now queue
+# instead (GitHub keeps at most one pending run per group, so a burst
+# of pushes collapses to the newest pending run).
 concurrency:
   group: android-release-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'push' }}
+  cancel-in-progress: false
 
 env:
   CI: "1"

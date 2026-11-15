@@ -50,12 +50,28 @@ jobs:
           echo "main HEAD: $HEAD"
 
           check_release() {
-            local TAG="$1" PLATFORM="$2"
+            local TAG="$1" PLATFORM="$2" BINARY="$3"
             local INFO COMMIT VERDICT DETAIL
+            # R355 A — an EMPTY release (or one missing its binary) is an
+            # OUTAGE, not staleness: users cannot download the app at all.
+            # That fails this run LOUDLY; the issue-net below stays for the
+            # stale-commit (assets present but lagging source) case only.
+            local ASSET_NAMES
+            ASSET_NAMES=$(curl -sfL -H "Authorization: Bearer ${GH_TOKEN}" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/${TAG}" \
+              | jq -r '.assets[].name' 2>/dev/null || true)
+            if [ -z "$ASSET_NAMES" ]; then
+              echo "::error::${TAG} has NO assets — the public download is broken (outage shape, R355 A)"
+              exit 1
+            fi
+            if ! printf '%s\n' "$ASSET_NAMES" | grep -qxF "$BINARY"; then
+              echo "::error::${TAG} is missing its binary asset ${BINARY} — the public download is broken (outage shape, R355 A)"
+              exit 1
+            fi
             INFO=$(curl -sfL "https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/build-info.json" || true)
             if [ -z "$INFO" ]; then
               echo "$PLATFORM=stale" >> "$GITHUB_OUTPUT"
-              echo "$PLATFORM: build-info.json unreadable or release missing (${TAG})"
+              echo "$PLATFORM: build-info.json unreadable (${TAG})"
               return
             fi
             COMMIT=$(echo "$INFO" | jq -r '.commit // empty')
@@ -80,8 +96,8 @@ jobs:
             fi
           }
 
-          check_release android-latest android
-          check_release sidestore-latest ios
+          check_release android-latest android Madarek.apk
+          check_release sidestore-latest ios Madarek.ipa
 
       - name: Alert on stale releases
         if: steps.assert.outputs.android == 'stale' || steps.assert.outputs.ios == 'stale'

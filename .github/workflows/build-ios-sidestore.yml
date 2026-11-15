@@ -47,9 +47,12 @@ permissions:
   contents: read
   actions: read
 
+# R355 A — same law as Android: the publish is serialized and NEVER
+# cancelled mid-flight (a cancelled publish can leave the release
+# half-updated). Runs queue; at most one pending run is kept.
 concurrency:
   group: ios-sidestore-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'push' }}
+  cancel-in-progress: false
 
 env:
   CI: "1"

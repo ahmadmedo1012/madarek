@@ -93,6 +93,15 @@ else
   fail "copy-budget"; rg '^OVER|^✗|over ceiling' /tmp/verify-copybudget.log | head -10; tail -8 /tmp/verify-copybudget.log
 fi
 
+# 3.8 release publish regression (R355 A — the rolling-release law:
+# upload → verify-landed → prune → final assert; hermetic, no network)
+step "release publish script (rolling-release regression)"
+if bash scripts/ci/publish-rolling-release.test.sh > /tmp/verify-release.log 2>&1; then
+  ok "release publish $(grep -oE 'ALL GREEN \([0-9]+ assertions\)' /tmp/verify-release.log | head -1)"
+else
+  fail "release publish"; tail -12 /tmp/verify-release.log
+fi
+
 if [[ $FAST -eq 1 ]]; then
   step "--fast mode: stopping here"
   [[ $FAIL -eq 0 ]] && echo "verify.sh: FAST PASS" || echo "verify.sh: FAIL"
