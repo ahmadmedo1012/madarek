@@ -42,7 +42,10 @@ test.describe('الزائر — الأسطح العامة', () => {
   test('صفحة التسجيل /auth/register: خطوة «من أنت؟»', async ({ page }) => {
     await page.goto('/auth/register');
     await expect(page.locator('h1.auth-form-title')).toHaveText('من أنت؟');
-    await expect(page.locator('.auth-form-sub')).toContainText('اختر نوع الحساب');
+    // R355 copy diet: the chooser's subtitle was cut — the named role-card
+    // group (aria-label «نوع الحساب») carries the question context.
+    await expect(page.locator('.role-card-grid')).toHaveAttribute('role', 'group');
+    await expect(page.locator('.role-card-grid')).toHaveAttribute('aria-label', 'نوع الحساب');
   });
 
   test('صفحة 404 المصمّمة على المسار الصريح', async ({ page }) => {
