@@ -320,6 +320,12 @@ jobs:
       # generated logo asset's committed bytes hash-pinned; a hand-edited
       # PNG/SVG cannot ship silently.
       - run: node scripts/brand/build-assets.mjs --check
+      # R353 lane P2 — the copy-budget ratchet (dependency-free): the
+      # per-page Arabic-copy ceiling set in docs/QA/copy-budget.json;
+      # fails on any page over its ceiling, a page missing from the
+      # ratchet, or a stale entry (the same contract verify.sh step 3.7
+      # runs locally).
+      - run: node scripts/gates/copy-budget.mjs
       - run: bash scripts/check-icons.sh
       - run: bash scripts/check-motion-tokens.sh
       # CSP pin drift guard (dependency-free): r133 changed the inline

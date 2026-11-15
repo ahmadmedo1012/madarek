@@ -340,7 +340,7 @@ describe('R305-A8 danger hierarchy — destructive verbs ride the new vocabulary
     expect(zoneEl.closest('.modal-card')).not.toBeNull(); // portals to body
     expect(within(zoneEl).getByText('التسجيلات الحالية')).toBeInTheDocument();
     // The zone names the consequence — the note is the quiet red fence.
-    expect(within(zoneEl).getByText(/يحذف تسجيل الطالب في المقرّر وتقدُّمه فيه نهائيًا/)).toBeInTheDocument();
+    expect(within(zoneEl).getByText(/إلغاء التسجيل يحذف تسجيل الطالب وتقدُّمه نهائيًا/)).toBeInTheDocument();
     // …and the confirm gate behind them is untouched (AdminStudents-
     // enrollment.test.tsx owns the full dialog contract; this proves
     // the zone did not break the flow).

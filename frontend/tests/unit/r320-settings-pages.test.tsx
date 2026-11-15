@@ -259,6 +259,6 @@ describe('R320 cycle-3 — the routed error sheets (P2-3/4/5)', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'مدارك في صيانة قصيرة' })).toBeInTheDocument();
     // r324 X10: the `MM [01]` code eyebrow is retired with the sweep
     expect(screen.queryByText('MM [01]')).toBeNull();
-    expect(screen.getByText(/لا تُفتح تلقائيًا في الوضع الحالي/)).toBeInTheDocument();
+    expect(screen.getByText(/تُستخدم خلال نوافذ الصيانة المخطّطة فقط/)).toBeInTheDocument();
   });
 });

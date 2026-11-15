@@ -55,13 +55,13 @@ const LINKS: AcademicLink[] = [
   {
     key: 'research-gate',
     title: 'ResearchGate',
-    description: 'منصة عالمية لمشاركة البحوث ومتابعتها — يمكنك حفظ رابط ملفك هنا للرجوع إليه.',
+    description: 'منصة عالمية لمشاركة البحوث — احفظ رابط ملفك هنا.',
     hint: 'https://www.researchgate.net/profile/...',
   },
   {
     key: 'google-scholar',
     title: 'Google Scholar',
-    description: 'فهرس البحوث العلمي الأشهر، يعرض منشوراتك مع الاستشهادات الدولية.',
+    description: 'فهرس البحوث الأشهر — منشوراتك مع الاستشهادات.',
     hint: 'https://scholar.google.com/citations?user=...',
   },
   {
@@ -201,7 +201,7 @@ export default function ProfilePage() {
     <PageFrame width="default">
       <PageHeader
         title="ملفي الشخصي"
-        description="معلوماتك الأكاديمية، حساباتك العلمية، وإنجازاتك في المنصة."
+        description="معلوماتك الأكاديمية وحساباتك العلمية وإنجازاتك."
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
            «الإنجازات والشهادات» is the growth surface this page's
@@ -353,7 +353,7 @@ export default function ProfilePage() {
           {profile.isError && (
             <div className="fact-error" role="status">
               <Icon icon={AlertCircle} size={13} />
-              <span>تعذّر تحميل بياناتك الدراسية من الخادم — الحقول أعلاه تُعرض “—” حتّى يعود الاتصال.</span>
+              <span>تعذّر تحميل بياناتك — الحقول تُعرض “—” حتى يعود الاتصال.</span>
               <button type="button" className="btn ghost sm" onClick={() => profile.refetch()}>
                 إعادة المحاولة
               </button>
@@ -390,7 +390,7 @@ export default function ProfilePage() {
               </span>
             )}
           />
-          <p className="r319sp-sec-note">روابطك الأكاديمية للرجوع السريع — تُحفظ في متصفّحك فقط ولا تُرسَل إلى الجامعة.</p>
+          <p className="r319sp-sec-note">روابطك للرجوع السريع — تُحفظ في متصفّحك فقط، لا تُرسَل للجامعة.</p>
           <Card>
           <div className="flex-col gap-3">
             {LINKS.map((l) => {
@@ -561,7 +561,7 @@ export default function ProfilePage() {
       {tab !== 'data' && (
         <section aria-label="تغيير كلمة المرور">
           <SectionBar index="04" title="تغيير كلمة المرور" />
-          <p className="r319sp-sec-note">عند التغيير تُنهى جلساتك على بقية الأجهزة، وتبقى جلستك الحالية مفتوحة.</p>
+          <p className="r319sp-sec-note">عند التغيير تُنهى جلسات بقية الأجهزة، وتبقى جلستك مفتوحة.</p>
           <ChangePasswordCard />
         </section>
       )}

@@ -259,7 +259,7 @@ describe('404 way-back (r164b → r188)', () => {
 
     expect(container.querySelectorAll('.nf-actions .btn.primary')).toHaveLength(1);
 
-    const home = screen.getByRole('link', { name: /العودة إلى الرئيسية/ });
+    const home = screen.getByRole('link', { name: /العودة للرئيسية/ });
     // r315 C4-D content-anchored pin: the 404 way-back label dropped its
     // display tashkeel («تصفّح الكلّيّات» → «تصفح الكليات») per the
     // zero-tashkeel-on-display-text canon — same string as the landing's.

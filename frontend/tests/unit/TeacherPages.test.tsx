@@ -1301,7 +1301,7 @@ describe('r144 — AssignmentFormModal + MaterialFormModal (authoring half)', ()
     // Empty state: the same calendar hint the three exam-authoring
     // siblings carry (ExamAuthorPages «يفتح في / يغلق في»)…
     expect(
-      screen.getByText('اختر من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'),
+      screen.getByText('اختر من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'),
     ).toBeInTheDocument();
     // …the control is dir="ltr" like its siblings (datetime-local
     // must not be bidi-scrambled by the RTL modal)…
@@ -1311,7 +1311,7 @@ describe('r144 — AssignmentFormModal + MaterialFormModal (authoring half)', ()
     fireEvent.change(due, { target: { value: '2026-12-01T23:59' } });
     expect(screen.getByText(/^المحدَّد: /)).toBeInTheDocument();
     expect(
-      screen.queryByText('اختر من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'),
+      screen.queryByText('اختر من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'),
     ).toBeNull();
     unmount();
   });

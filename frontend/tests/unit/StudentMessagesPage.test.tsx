@@ -254,7 +254,7 @@ describe('StudentMessagesPage — compose recipients (r171a)', () => {
     render(<MemoryRouter><StudentMessagesPage /></MemoryRouter>);
 
     fireEvent.click(screen.getByRole('button', { name: 'رسالة جديدة' }));
-    expect(screen.getByText(/لا يوجد مستلمون متاحون بعد/)).toBeInTheDocument();
+    expect(screen.getByText(/لا مستلمين بعد — ردّ على رسالة واردة/)).toBeInTheDocument();
   });
 
   it('a filled draft sends the TRIMMED body to the picked teacher and closes the modal', async () => {

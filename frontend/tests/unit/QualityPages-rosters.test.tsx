@@ -301,7 +301,7 @@ describe('QualityCoursesPage — server-side search + honest total (r183-B5)', (
 
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'لا-شيء' } });
     expect(await screen.findByText('لا نتائج مطابقة', {}, { timeout: 2000 })).toBeInTheDocument();
-    expect(screen.getByText('لم نجد مقرّراً يطابق البحث — جرّب كلمة أوسع أو امسح البحث.')).toBeInTheDocument();
+    expect(screen.getByText('لم نجد مقرّراً يطابق البحث — جرّب كلمة أوسع.')).toBeInTheDocument();
   });
 
   it('shows the meta.total count line and the honest «تُعرض أول N» cap note when take truncates', async () => {
@@ -433,7 +433,7 @@ describe('QualityProfessorsPage — zero professors without a search (r299 E5)',
 
     expect(await screen.findByText('لا أساتذة بعد')).toBeInTheDocument();
     expect(
-      screen.getByText('ستظهر هيئة التدريس ومؤشراتها هنا فور إضافة أعضائها إلى المؤسسة.'),
+      screen.getByText('تظهر هيئة التدريس هنا فور إضافة أعضائها.'),
     ).toBeInTheDocument();
     // The toolbar stays reachable — no header-only table dead end.
     expect(screen.getByRole('searchbox')).toBeInTheDocument();

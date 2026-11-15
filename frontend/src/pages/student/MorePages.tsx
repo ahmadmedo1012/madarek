@@ -251,7 +251,7 @@ export function GamificationPage() {
                    reserved-but-empty region (same copy, same one action). */
                 <EmptyCell
                   label="لا إنجازات بعد"
-                  note="أكمل دروساً ومسارات في التطوير الذاتي لتفتح أول إنجاز."
+                  note="أكمل دروساً ومسارات لتفتح أول إنجاز."
                   action={<Link to="/training" className="btn primary sm">استكشف المسارات</Link>}
                 />
               }
@@ -300,7 +300,7 @@ export function GamificationPage() {
            !lb.data?.length ? (
             <EmptyCell
               label="لا يوجد ترتيب بعد"
-              note="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
+              note="اكسب النقاط بإكمال الدروس — يظهر ترتيبك فور تسجيل أول نقطة."
               action={<Link to="/training" className="btn primary sm">ابدأ من التطوير الذاتي</Link>}
             />
           ) : (
@@ -417,7 +417,7 @@ export function SkillsPage() {
              region — the hatched EmptyCell (same honest copy). */
           <EmptyCell
             label="لم تُسجَّل أي مهارة بعد"
-            note="تُحتسب المهارات تلقائياً من إنجازاتك الأكاديمية ومسارات التطوير."
+            note="تُحتسب تلقائياً من إنجازاتك ومسارات التطوير."
           />
         ) : (
           <div className="grid-1-2" style={{ alignItems: 'center' }}>
@@ -591,7 +591,7 @@ export function AlertsPage() {
       {markAllRead.isError && (
         <div className="form-feedback fail" role="alert">
           <Icon icon={X} size={14} />
-          <span className="flex-1">تعذَّر تعليم الإشعارات كمقروءة — تحقّق من اتصالك ثم أعد المحاولة.</span>
+          <span className="flex-1">تعذَّر تعليم الإشعارات كمقروءة — أعد المحاولة.</span>
           <button
             type="button"
             className="btn ghost sm"
@@ -856,7 +856,7 @@ export function SchedulePage() {
            kept honest and verbatim). */
         <EmptyCell
           label="لا يوجد جدول مسجّل"
-          note="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول مقرّراتك."
+          note="تظهر محاضراتك فور تسجيل الجدول لمقرّراتك."
         />
       ) : (
         /* r299 (final C): day sections on the pattern anatomy —
@@ -985,7 +985,7 @@ export function ResultsPage() {
     <PageFrame width="default">
       <PatternPageHeader
         title="النتائج والتقييمات"
-        description="تفاصيل درجاتك وتحليل أدائك بناءً على بياناتك الفعليّة."
+        description="درجاتك وتحليل أدائك من بياناتك الفعليّة."
         meta={d.headline.courseCount > 0
           ? <>{countAr(d.headline.courseCount, ['مقرّر واحد مُقيَّم', 'مقرّران مُقيَّمان', 'مقرّرات مُقيَّمة', 'مقرّراً مُقيَّماً'])} هذا الفصل</>
           : undefined}
@@ -1134,7 +1134,7 @@ export function ResultsPage() {
       />
       {pendingSubs.length === 0 ? (
         <p className="text-sm text-muted" style={{ margin: 0 }}>
-          كل ما سلّمته وتمّ تقييمه يظهر في «آخر الواجبات المقيَّمة» أدناه — وسيصلك إشعار لحظة رصد أي درجة جديدة.
+          كل ما سلّمته وتمّ تقييمه في «آخر الواجبات المقيَّمة» أدناه — وسيصلك إشعار بأي درجة.
         </p>
       ) : (
         <RowList aria-label="تسليمات بانتظار التقييم">
@@ -1286,7 +1286,7 @@ export function ArVrPage() {
         index="01"
         eyebrow="المعامل والتقنيات"
         title="تجارب AR / VR"
-        description="فهرس تجارب AR/VR للمقرّرات العمليّة — التشغيل غير متاح بعد."
+        description="فهرس تجارب AR/VR للمقرّرات العمليّة — غير متاح بعد."
         /* R342-08 — the [01] numeral + eyebrow seat this page on the
            family grammar (live/map's header precedent), and the CTA
            pair rides the masthead (the D11/D8 measured seat; the
@@ -1632,7 +1632,7 @@ export function DownloadsPage() {
     <PageFrame width="default">
       <PatternPageHeader
         title="مركز التحميلات"
-        description="ملفّات مقرّراتك في مكان واحد — وحالة كل رابط معلَنة."
+        description="ملفّات مقرّراتك في مكان واحد — حالة كل رابط معلَنة."
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
            «مقرّراتي الدراسية» is where the files originate,
@@ -1680,7 +1680,7 @@ export function DownloadsPage() {
              empty region — the hatched EmptyCell (same honest copy). */
           <EmptyCell
             label="لا توجد ملفّات بعد"
-            note="ستظهر هنا فور رفع موادّ في أيٍّ من مقرّراتك المسجَّلة."
+            note="تظهر هنا فور رفع موادّ في مقرّراتك."
           />
         ) : (
           <div className="table-wrap">
@@ -1768,7 +1768,7 @@ export function UniversityInfoPage() {
         <EmptyState
           illustration="empty-list"
           title="لا توجد مؤسّسة في جلستك"
-          description="اختر مؤسّستك من قائمة العضويّات ثم عُد إلى هذه الصفحة."
+          description="اختر مؤسّستك من قائمة العضويّات ثم عُد هنا."
         />
       </PageFrame>
     );
@@ -1784,7 +1784,7 @@ export function UniversityInfoPage() {
       <PatternPageHeader
         eyebrow="خدمات المؤسسة"
         title={inst.name}
-        description="مؤسّستك التعليميّة على منصّة مدارك — تعرض هذه الصفحة الكليّات المسجَّلة في مؤسّستك."
+        description="كليّات مؤسّستك المسجَّلة في منصّة مدارك."
         /* R342-08 — the header CTA pair rides the masthead (the
            D11/D8 measured seat; the phone band hides the topbar
            «اسأل AI» ≤920, D6): the university-services family's

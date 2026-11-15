@@ -52,7 +52,7 @@ export function HostingUsageCard() {
         <div className="settings-row">
           <div>
             <div className="settings-label">لوحة الاستخدام</div>
-            <div className="settings-value">بيانات الاستخدام غير متاحة الآن — راجع لوحة Vercel مباشرة.</div>
+            <div className="settings-value">بيانات الاستخدام غير متاحة — راجع Vercel.</div>
           </div>
         </div>
       ) : (

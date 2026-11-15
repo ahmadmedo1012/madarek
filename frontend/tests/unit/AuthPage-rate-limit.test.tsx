@@ -158,7 +158,7 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
 
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent('تعذَّر تسجيل الدخول');
-    expect(alert).toHaveTextContent('اتصالك بالشبكة');
+    expect(alert).toHaveTextContent('اتصالك');
     // The raw Latin transport prose never reaches the RTL UI.
     expect(alert).not.toHaveTextContent('Network Error');
   });

@@ -70,7 +70,7 @@ describe('r168b — landing copy claims only what ships', () => {
     /* R313 override (WP-A1 · D7): the capability-matrix proof copy
      * moved OFF the landing onto /capabilities (the 9-section
      * re-composition) — the same sentence, pinned on its new home. */
-    expect(read('src/pages/capabilities/CapabilityPages.tsx')).toContain('كل رقم يُحسب من حالة الميزات في النظام');
+    expect(read('src/pages/capabilities/CapabilityPages.tsx')).toContain('كل رقم من حالة الميزات في النظام');
     // r191 operator gate: the rejected wording must never resurface on
     // user-facing surfaces (صُنعت في ليبيا + ما يُشحن اليوم).
     expect(page).not.toContain('صُنعت في ليبيا');
@@ -109,7 +109,7 @@ describe('r168b — landing copy claims only what ships', () => {
 describe('r168b — research scan honesty + modal validation', () => {
   it('the page subtitle and explainer step 2 label the simulation', () => {
     const page = stripJsx(read('src/pages/student/ResearchPage.tsx'));
-    expect(page).toContain('محاكاة حتى تفعيل كشف حقيقي');
+    expect(page).toContain('فحص الانتحال (محاكاة)');
     const step2 = page.match(/n: 2, title: 'فحص أوتوماتيكي', desc: '[^']*'/)?.[0] ?? '';
     expect(step2).toContain('محاكاة');
     expect(page).not.toContain('أربع مراحل أوتوماتيكية بالكامل');
@@ -128,7 +128,7 @@ describe('r168b — AR/VR page subtitle is a catalog disclosure', () => {
   it('the subtitle names the index + unavailable launch', () => {
     const page = stripJsx(read('src/pages/student/MorePages.tsx'));
     expect(page).not.toContain('محتوى تفاعليّ ثلاثيّ الأبعاد');
-    expect(page).toContain('فهرس تجارب AR/VR للمقرّرات العمليّة — التشغيل غير متاح بعد');
+    expect(page).toContain('فهرس تجارب AR/VR للمقرّرات العمليّة — غير متاح بعد.');
   });
 });
 
@@ -136,7 +136,7 @@ describe('r168b — training certificates are honest records', () => {
   it('subtitle + KPI + badges drop accreditation claims', () => {
     const page = stripJsx(read('src/pages/student/TrainingPages.tsx'));
     expect(page).not.toContain('شهادة معتمدة');
-    expect(page).toContain('سجلّ إتمام موثَّق من المنصة');
+    expect(page).toContain('سجلّ إتمام موثَّق');
     expect(page).not.toContain('معتمدة من المنصة');
     expect(page).not.toContain('ساعة معتمدة');
     expect(page).toContain('ساعات تقديرية');

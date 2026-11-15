@@ -108,7 +108,7 @@ describe('R351 X5 — HostingUsageCard (the admin settings seat)', () => {
     vi.mocked(fetch).mockImplementation(() => Promise.resolve(new Response('not found', { status: 404 })));
     mount();
     await waitFor(
-      () => expect(screen.getByText('بيانات الاستخدام غير متاحة الآن — راجع لوحة Vercel مباشرة.')).toBeTruthy(),
+      () => expect(screen.getByText('بيانات الاستخدام غير متاحة — راجع Vercel.')).toBeTruthy(),
       { timeout: 4000 },
     );
   });

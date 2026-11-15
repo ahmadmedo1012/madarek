@@ -747,7 +747,7 @@ describe('TemplateBuilderModal — picker sum + payload', () => {
     // The contract is stated up front (randomized defaults ON → the
     // per-student shuffle note rides the same line).
     expect(
-      await screen.findByText(/ترتيب اختيارك يحدّد ترتيب الأسئلة في الاختبار/),
+      await screen.findByText(/ترتيب اختيارك يحدّد ترتيب الأسئلة/),
     ).toBeInTheDocument();
     expect(
       screen.getByText(/ويُخلط عشوائياً لكل طالب عند بدئه/),
@@ -1169,7 +1169,7 @@ describe('GradeAttemptModal — verdicts → payload → finalize', () => {
     state.attempts = [attemptFixture({ pendingReview: 0, pendingAnswers: [] })];
     const dialog = await openGradeModal();
 
-    expect(within(dialog).getByText(/لا إجابات معلّقة في هذه المحاولة/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/لا إجابات معلّقة/)).toBeInTheDocument();
     fireEvent.click(within(dialog).getByRole('button', { name: 'اعتماد الدرجة النهائية' }));
     await waitFor(() => {
       expect(postsTo('/exams/attempts/at1/grade')).toHaveLength(1);

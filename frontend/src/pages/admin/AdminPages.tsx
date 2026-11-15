@@ -398,7 +398,7 @@ export function AdminDashboardPage() {
           ) : topByStudents.length === 1 && topFaculty ? (
             <div className="flex-col gap-3">
               <p className="text-sm text-muted">
-                كلّيّة واحدة فقط لديها طلاب مسجَّلون حالياً؛ يظهر المخطط التفصيليّ عند تعدُّد الكلّيّات.
+                كلّيّة واحدة لديها طلاب — يظهر التفصيل عند تعدُّد الكلّيّات.
               </p>
               <Stat
                 label="أعلى كلّيّة عدداً للطلاب"
@@ -501,7 +501,7 @@ export function AdminDashboardPage() {
         ) : (
           <ChartFrame
             ariaLabel="نشاط الإنتاج العلمي في الأشهر الستة الأخيرة — أبحاث مقدَّمة ومقيَّمة ومنشورة شهرياً"
-            summary="مقارنة حركة البحوث المرفوعة والمقيَّمة والمنشورة على مدى الأشهر الستة الأخيرة."
+            summary="حركة البحوث المرفوعة والمقيَّمة والمنشورة — ستة أشهر الأخيرة."
             height={240}
             table={{
               caption: 'نشاط الإنتاج العلمي شهرياً',
@@ -906,7 +906,7 @@ export function AdminFacultiesPage() {
           <FormField
             label="المدينة"
             id="faculty-city"
-            hint="الكلّيّات تتميّز بالاسم داخل كل مدينة — الاسم نفسه في مدينة أخرى لا يُعدّ تكرارًا"
+            hint="الكلّيّات تتميّز بالاسم داخل كل مدينة"
           >
             <input
               className="input"
@@ -1384,7 +1384,7 @@ export function AdminReportsPage() {
                     <th scope="col">البحث</th>
                     <th scope="col">الطالب</th>
                     <th scope="col">الحالة</th>
-                    <th scope="col" className="admin-table-num" style={{ width: 110 }} title="قيمة محاكاة تجريبية — ليست قياساً فعلياً حتى تفعيل كشف حقيقي">نسبة الاقتباس <span className="text-xxs text-subtle">محاكاة</span></th>
+                    <th scope="col" className="admin-table-num" style={{ width: 110 }} title="قيمة محاكاة — ليست قياساً فعلياً">نسبة الاقتباس <span className="text-xxs text-subtle">محاكاة</span></th>
                     <th scope="col" style={{ width: 130 }}>تاريخ الرفع</th>
                   </tr>
                 </thead>
@@ -1412,7 +1412,7 @@ export function AdminReportsPage() {
           <EmptyState illustration="empty-list"
             icon={ClipboardCheck}
             title="لا توجد تسجيلات بعد"
-            description="ستظهر المقرّرات الأعلى تسجيلاً هنا فور تسجيل الطلاب في مقرّراتهم."
+            description="تظهر هنا فور تسجيل الطلاب في مقرّراتهم."
           />
         ) : (
           <div className="table-wrap">
@@ -1880,7 +1880,7 @@ export function AdminCoursesPage() {
           <FormField
             label="الساعات المعتمدة"
             id="course-credits"
-            hint="بين 1 و10 — الحدّ الذي يقبله الخادم؛ الزرّ يبقى معطّلًا خارجه"
+            hint="بين 1 و10 — الزرّ معطّل خارجه"
           >
             <input
               className="input"
@@ -1960,7 +1960,7 @@ export function AdminCoursesPage() {
           <FormField
             label="الأستاذ"
             id="offering-teacher"
-            hint="أساتذة مؤسستك فقط — لا تُسند الشُّعب إلا لعضو هيئة تدريس نشط فيها"
+            hint="أساتذة مؤسستك فقط — لا تُسند الشُّعب إلا لنشط فيها"
           >
             <select
               className="input"
@@ -2050,7 +2050,7 @@ export function AdminCoursesPage() {
         open={confirmingDelete !== null}
         title="حذف المقرّر"
         message={confirmingDelete
-          ? `سيُحذف «${confirmingDelete.name}» نهائيًا من السجلّ الجامعي. لا يمكن التراجع عن هذا الإجراء.`
+          ? `سيُحذف «${confirmingDelete.name}» نهائيًا من السجلّ — لا تراجع.`
           : ''}
         confirmLabel="حذف نهائي"
         danger

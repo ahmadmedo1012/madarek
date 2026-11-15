@@ -508,7 +508,7 @@ export function SubmitAssignmentModal({
             </div>
             <p className="text-xs" style={{ color: 'var(--text-muted)', lineHeight: 'var(--lh-base)' }}>
               {late
-                ? 'استُلمت إجابتك وسيُعلَّم تسليمك كمتأخر؛ الحسم النهائي يعود إلى أستاذ المقرّر.'
+                ? 'استُلمت إجابتك وسيُعلَّم التسليم متأخرًا؛ الحسم لأستاذ المقرّر.'
                 : 'استُلمت إجابتك وستظهر للأستاذ بانتظار التقييم.'}
             </p>
             {/* r164-e (assessment loop): the timeline's next step is a
@@ -547,7 +547,7 @@ export function SubmitAssignmentModal({
             <FormField
               label="رابط ملف (اختياري)"
               id="submit-file"
-              hint="رابط خارجي اختياري يبدأ بـ https:// إن توفّر لديك (مثل ملف على Drive) — إجابتك النصيّة وحدها تكفي للتسليم."
+              hint="رابط خارجي يبدأ بـ https:// إن توفّر — نصك وحده يكفي للتسليم."
             >
               <input
                 type="text"

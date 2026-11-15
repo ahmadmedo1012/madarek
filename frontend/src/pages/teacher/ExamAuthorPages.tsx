@@ -241,7 +241,7 @@ export function publishGateReason(
       return 'بانتظار مراجعة الجودة — يُفتح النشر بعد اعتمادها.';
     case 'REJECTED':
       return template.moderationNote
-        ? 'رفضته الجودة — طالِع ملاحظتها أدناه، وعدّل القالب ليعود إلى المراجعة.'
+        ? 'رفضته الجودة — طالِع ملاحظتها أدناه وعدّل القالب.'
         : 'رفضته الجودة — عدّل القالب ليعود إلى المراجعة.';
     case 'PUBLISHED':
       return 'هذا الاختبار منشور بالفعل.';
@@ -621,7 +621,7 @@ export default function ExamAuthoringPage() {
             <span className="hr-brow exa2-brow">مسار الاختبارات</span>
             <h1 className="page-title">بنك الأسئلة والاختبارات</h1>
             <p className="page-subtitle">
-              تأليف الأسئلة وبناء قوالب الاختبارات الموحَّدة، ومتابعة اعتمادها من الجودة حتى النشر.
+              تأليف الأسئلة وبناء القوالب، ومتابعة اعتمادها من الجودة حتى النشر.
             </p>
           </div>
           {/* 4C-a: the build CTA moved down to its tab's section head —
@@ -662,7 +662,7 @@ function PermissionDeniedBlock() {
   return (
     <PermissionDeniedState
       title="صلاحية التأليف غير مفعَّلة لحسابك"
-      detail="إنشاء الأسئلة وقوالب الاختبارات يتطلب صلاحية «إنشاء اختبارات» — تواصل مع إدارة المنصة لمنحها."
+      detail="إنشاء الأسئلة والقوالب يتطلب صلاحية «إنشاء اختبارات» — تواصل مع إدارة المنصة."
       onBack={() => navigate('/teacher/dashboard')}
     />
   );
@@ -732,7 +732,7 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
         <EmptyState illustration="empty-list"
           icon={FileQuestion}
           title="لم تُنشئ قوالب اختبارات بعد"
-          description="ابدأ ببناء قالب من أسئلة البنك المعتمدة، ثم أرسله لمراجعة الجودة ونشره لطلابك."
+          description="ابدأ ببناء قالب من أسئلة البنك، ثم أرسله لمراجعة الجودة ونشره لطلابك."
           action={
             <Button variant="primary" onClick={onBuild}>
               <Icon icon={Plus} size={14} /> قالب اختبار جديد
@@ -918,7 +918,7 @@ function PublishButton({
       <ConfirmDialog
         open={confirming}
         title="نشر الاختبار"
-        message="بعد النشر يظهر الاختبار للطلاب حسب نطاقه (المقرّر أو الكلّيّة) ولا يمكن سحبه من هذه الصفحة. هل تريد النشر الآن؟"
+        message="بعد النشر يظهر الاختبار للطلاب حسب نطاقه ولا يمكن سحبه من هنا. نشر الآن؟"
         confirmLabel="نشر نهائي"
         onConfirm={onPublish}
         onCancel={() => setConfirming(false)}
@@ -973,7 +973,7 @@ function QuestionBankSection() {
     <>
       <ExaSectionHead
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>بنك الأسئلة المعتمدة</>}
-        desc="الأسئلة التي اعتمدتها الجودة وتصلح لبناء القوالب — إنشاء سؤال جديد يمرّ على المراجعة أولاً."
+        desc="الأسئلة التي اعتمدتها الجودة — سؤال جديد يمرّ على المراجعة أولاً."
         actions={
           <Button variant="accent" className="hr-cta" onClick={() => setCreating(true)}>
             <Icon icon={Plus} size={14} /> سؤال جديد
@@ -1046,7 +1046,7 @@ function QuestionBankSection() {
           description={
             filtered
               ? 'جرّب كلمات بحث مختلفة أو أزل بعض عوامل التصفية.'
-              : 'أنشئ أول سؤال — بعد اعتماده من الجودة سيظهر هنا ويصبح متاحاً للقوالب.'
+              : 'أنشئ أول سؤال — بعد اعتماده من الجودة يظهر هنا ويصلح للقوالب.'
           }
           action={
             !filtered ? (
@@ -1160,7 +1160,7 @@ function QuestionBankRow({
           <p className="exa-immutable" role="note">
             <Icon icon={Lock} size={13} />
             <span>
-              الأسئلة المعتمدة ثابتة — لا تُعدَّل بعد الاعتماد. أنشئ سؤالاً جديداً لصياغة معدَّلة.
+              الأسئلة المعتمدة ثابتة — أنشئ سؤالاً جديداً لصياغة معدَّلة.
             </span>
           </p>
         </div>
@@ -1271,7 +1271,7 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
           <div className="form-feedback ok" role="status">
             <Icon icon={CheckCircle2} size={15} />
             <span className="flex-1">
-              أُرسل السؤال إلى مراجعة الجودة — سيظهر في البنك ويصبح متاحاً للقوالب بعد الاعتماد.
+              أُرسل السؤال إلى مراجعة الجودة — يظهر في البنك بعد الاعتماد.
             </span>
           </div>
         ) : (
@@ -1287,7 +1287,7 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
               label="تصنيف السؤال"
               htmlFor="newq-category"
               error={errors.categoryId}
-              hint={categoriesEmpty ? 'تصنيفات الأسئلة تنشئها إدارة المنصة — تواصل معهم لإضافتها.' : undefined}
+              hint={categoriesEmpty ? 'تصنيفات الأسئلة تنشئها إدارة المنصة — تواصل معهم.' : undefined}
             >
               <select
                 id="newq-category"
@@ -1660,7 +1660,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
           <div className="form-feedback ok" role="status">
             <Icon icon={CheckCircle2} size={15} />
             <span className="flex-1">
-              أُرسل القالب إلى مراجعة الجودة — بعد الاعتماد يصبح زر النشر متاحاً في قوالبك.
+              أُرسل القالب إلى مراجعة الجودة — بعد الاعتماد يصبح النشر متاحاً.
             </span>
           </div>
         ) : (
@@ -1820,7 +1820,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                 htmlFor="tpl-open"
                 hint={draft.openAt
                   ? `المحدَّد: ${formatDateTimeAr(draft.openAt)}`
-                  : 'اختر من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'}
+                  : 'اختر من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'}
               >
                 <input
                   id="tpl-open"
@@ -1836,7 +1836,7 @@ function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; c
                 htmlFor="tpl-close"
                 hint={draft.closeAt
                   ? `المحدَّد: ${formatDateTimeAr(draft.closeAt)}`
-                  : 'اختر من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'}
+                  : 'اختر من تقويم الحقل — الصيغة تتبع إعدادات المتصفح.'}
               >
                 <input
                   id="tpl-close"
@@ -1964,8 +1964,8 @@ function QuestionPicker({
           on (the pick order seeds the per-student shuffle). */}
       <p className="text-xs text-muted">
         {draft.randomized
-          ? 'ترتيب اختيارك يحدّد ترتيب الأسئلة في الاختبار — ويُخلط عشوائياً لكل طالب عند بدئه.'
-          : 'ترتيب اختيارك يحدّد ترتيب الأسئلة في الاختبار.'}
+          ? 'ترتيب اختيارك يحدّد ترتيب الأسئلة — ويُخلط عشوائياً لكل طالب عند بدئه.'
+          : 'ترتيب اختيارك يحدّد ترتيب الأسئلة.'}
       </p>
 
       <div
@@ -2033,7 +2033,7 @@ function QuestionPicker({
         </div>
       ) : !bank.data || bank.data.length === 0 ? (
         <p className="text-xs text-muted">
-          لا توجد أسئلة معتمدة تطابق البحث — أسئلة جديدة تحتاج اعتماد الجودة أولاً قبل ظهورها هنا.
+          لا أسئلة معتمدة تطابق البحث — الجديدة تحتاج اعتماد الجودة أولاً.
         </p>
       ) : (
         <div
@@ -2112,7 +2112,7 @@ function ModerationQueueSection() {
         <EmptyState illustration="empty-list"
           icon={CheckCircle2}
           title="لا شيء بانتظار المراجعة"
-          description="كل قوالب الاختبارات المرسلة اجتازت المراجعة — ستظهر القوالب الجديدة هنا فور إرسالها."
+          description="كل القوالب المرسلة اجتازت المراجعة — الجديدة تظهر هنا فور إرسالها."
         />
       ) : (
         <div className="exa-rows">
@@ -2351,7 +2351,7 @@ function AuthorActions({ template }: { template: ExamTemplateDetail }) {
     setCloneFailed(false);
     try {
       const copy = await clone.mutateAsync(template.id);
-      toast.success('أُنشئت نسخة كاملة بأسئلة القالب وأُرسلت إلى مراجعة الجودة.', {
+      toast.success('أُنشئت نسخة بأسئلة القالب وأُرسلت إلى مراجعة الجودة.', {
         title: 'تمّ الاستنساخ',
       });
       // Straight to the new draft — its detail page is where the author
@@ -2450,7 +2450,7 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
       // The verdict-reset states (APPROVED/REJECTED) say what saving did
       // to the lifecycle; every other state is a plain in-place edit.
       if (template.status === 'APPROVED' || template.status === 'REJECTED') {
-        toast.success('حُفظ التعديل وعاد القالب إلى مراجعة الجودة بمحتواه المحدَّث.', {
+        toast.success('حُفظ التعديل وعاد القالب إلى المراجعة بمحتواه المحدَّث.', {
           title: 'تمّ حفظ التعديل',
         });
       } else {
@@ -2465,9 +2465,9 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
   // (mirrors decideTemplateEdit, which the backend enforces anyway).
   const resetNotice =
     template.status === 'APPROVED'
-      ? 'حفظ التعديل يُلغي الاعتماد الحالي ويعيد القالب إلى مراجعة الجودة قبل نشره.'
+      ? 'حفظ التعديل يُلغي الاعتماد ويعيد القالب إلى المراجعة قبل نشره.'
       : template.status === 'REJECTED'
-        ? 'حفظ التعديل يعيد القالب إلى مراجعة الجودة بمحتواه المحدَّث.'
+        ? 'حفظ التعديل يعيد القالب إلى المراجعة بمحتواه المحدَّث.'
         : null;
 
   return (
@@ -2501,8 +2501,8 @@ function EditTemplateModal({ template, onClose }: { template: ExamTemplateDetail
             className="exa-form"
           >
             <p className="text-sm text-muted">
-              الأسئلة ونوع الاختبار ونطاقه ثابتة بعد الإنشاء — عدّل بيانات العرض والتوقيت هنا،
-              أو استنسخ القالب لنسخة تُبنى عليها أسئلة مختلفة.
+              الأسئلة والنطاق ثابتة بعد الإنشاء — عدّل العرض والتوقيت هنا،
+              أو استنسخ القالب لأسئلة مختلفة.
             </p>
 
             <Field label="عنوان القالب" htmlFor="edit-tpl-title" error={errors.title}>
@@ -2701,8 +2701,8 @@ function AttemptsSection({ template }: { template: ExamTemplateDetail }) {
           title={onlyPending ? 'لا محاولات بانتظار التصحيح' : 'لا محاولات بعد'}
           description={
             onlyPending
-              ? 'كل المحاولات المسلَّمة مُصحَّحة — ستظهر المحاولات الجديدة هنا فور تسليمها.'
-              : 'يبدأ الطلاب المحاولات من صفحة الاختبارات الخاصة بهم؛ تظهر محاولاتهم هنا لحظة بدئها.'
+              ? 'كل المحاولات المسلَّمة مُصحَّحة — الجديدة تظهر فور تسليمها.'
+              : 'يبدأ الطلاب المحاولات من صفحاتهم — تظهر هنا لحظة بدئها.'
           }
         />
       ) : (
@@ -2980,8 +2980,7 @@ function GradeAttemptModal({
               >
                 <Icon icon={Info} size={14} />
                 <span>
-                  لا إجابات معلّقة في هذه المحاولة (أسئلتها المقالية تركت بلا إجابة) — حفظ التصحيح يعتدّ بالدرجة
-                  الآلية كما هي ويُنهي المحاولة.
+                  لا إجابات معلّقة — حفظ التصحيح يعتدّ بالدرجة الآلية كما هي ويُنهي المحاولة.
                 </span>
               </p>
             ) : (

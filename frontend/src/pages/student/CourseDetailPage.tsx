@@ -304,7 +304,7 @@ export default function CourseDetailPage() {
         {!data.lectures.length ? (
           <EmptyCell
             label="لم تُرفع محاضرات بعد"
-            note="سيقوم الأستاذ بإضافة المحاضرات تباعاً مع تقدّم الفصل."
+            note="يضيفها الأستاذ تباعاً مع تقدّم الفصل."
           />
         ) : (
           <>
@@ -335,8 +335,8 @@ export default function CourseDetailPage() {
               <EmptyCell
                 label="لا محاضرات في هذا التصنيف"
                 note={lecFilter === 'done'
-                  ? 'لم تُكمل محاضرة كاملة بعد — «تابع من هنا» يقودك إلى أول محاضرة غير منتهية.'
-                  : 'كل محاضرات المقرر مكتملة عندك — أنجزت المنهج كاملاً.'}
+                  ? 'لم تُكمل محاضرة بعد — «تابع من هنا» يقودك لأول غير منتهية.'
+                  : 'كل المحاضرات مكتملة — أنجزت المنهج.'}
               />
             ) : (
           <RevealGroup className="flex-col gap-2">
@@ -437,7 +437,7 @@ export default function CourseDetailPage() {
           {!data.materials.length ? (
             <EmptyCell
               label="الأستاذ لم يرفع مواد بعد"
-              note="ستظهر هنا الملفات والمراجع فور رفعها — العروض التقديمية، أوراق العمل، والقراءات."
+              note="تظهر الملفات والمراجع فور رفعها."
             />
           ) : (
             <div className="flex-col gap-2">
@@ -506,7 +506,7 @@ export default function CourseDetailPage() {
           {!data.schedule.length ? (
             <EmptyCell
               label="لم يُنشَر جدول هذا المقرّر بعد"
-              note="سيظهر هنا فور تثبيت مواعيد المحاضرات الأسبوعيّة."
+              note="يظهر فور تثبيت المواعيد الأسبوعيّة."
             />
           ) : (
             <div className="flex-col gap-2">
@@ -540,11 +540,11 @@ export default function CourseDetailPage() {
           ) : undefined
         }
       />
-      <p className="r305c-sec-note">مواعيد التسليم ووزن كل واجب في درجة المقرر — التسليم من صفحة مقرّراتك.</p>
+      <p className="r305c-sec-note">مواعيد التسليم والوزن في صفحة مقرّراتك.</p>
       {!data.assignments.length ? (
         <EmptyCell
           label="لا توجد واجبات نشطة"
-          note="حالياً لا شيء بانتظارك في هذا المقرر. وقت جيد لمراجعة المحاضرات السابقة."
+          note="لا شيء بانتظارك في هذا المقرر — وقت جيد لمراجعة السابقة."
         />
       ) : (
         <RowList aria-label="قائمة واجبات المقرر" density="compact">

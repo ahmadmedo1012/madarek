@@ -559,7 +559,7 @@ export function CompetitionDetailPage() {
       <ConfirmDialog
         open={confirming === 'close'}
         title="إغلاق المسابقة"
-        message="سيتم إيقاف استقبال المشاركات الجديدة فوراً، ولن يستطيع الطلاب التقديم أو تعديل مشاركاتهم بعد الإغلاق."
+        message="سيُوقف استقبال المشاركات فوراً، ولا تقديم أو تعديل بعد الإغلاق."
         confirmLabel="إغلاق نهائي"
         danger
         onConfirm={async () => {
@@ -578,8 +578,8 @@ export function CompetitionDetailPage() {
         title="إعلان النتائج"
         message={
           allScored
-            ? 'ستُنشر النتائج والترتيب النهائي وتصبح مرئية لجميع المشاركين.'
-            : `${countAr(unscoredCount, ['مشاركة واحدة بلا تقييم', 'مشاركتان بلا تقييم', 'مشاركات بلا تقييم', 'مشاركة بلا تقييم'])} — ستترتّب في نهاية اللوحة عند الإعلان.`
+            ? 'ستُنشر النتائج والترتيب النهائي لجميع المشاركين.'
+            : `${countAr(unscoredCount, ['مشاركة واحدة بلا تقييم', 'مشاركتان بلا تقييم', 'مشاركات بلا تقييم', 'مشاركة بلا تقييم'])} — تترتّب في نهاية اللوحة عند الإعلان.`
         }
         confirmLabel="إعلان النتائج"
         onConfirm={async () => {
@@ -759,7 +759,7 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         {create.isError && (
-          <div className="form-error" role="alert">تعذَّر إنشاء المسابقة. تحقَّق من البيانات وحاول مرة أخرى.</div>
+          <div className="form-error" role="alert">تعذَّر إنشاء المسابقة — تحقَّق من البيانات.</div>
         )}
         <div className="comp-modal-actions">
           <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>إلغاء</button>
@@ -847,7 +847,7 @@ function EnterCompetitionModal({
         <FormField label="رابط الملف (اختياري)" error={form.formState.errors.fileUrl?.message}>
           <input type="url" dir="ltr" {...form.register('fileUrl')} placeholder="https://…" className="input" />
         </FormField>
-        {enter.isError && <div className="form-error" role="alert">تعذَّر تقديم المشاركة. تحقَّق من البيانات وحاول مرة أخرى.</div>}
+        {enter.isError && <div className="form-error" role="alert">تعذَّر تقديم المشاركة — تحقَّق من البيانات.</div>}
         <div className="comp-modal-actions">
           <button type="button" className="btn ghost" onClick={requestClose} disabled={enter.isPending}>إلغاء</button>
           <button type="submit" className="btn primary" disabled={enter.isPending}>

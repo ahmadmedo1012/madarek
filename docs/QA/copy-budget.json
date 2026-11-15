@@ -1,0 +1,525 @@
+{
+  "pages": {
+    "admin/AdminExtraPages.tsx": {
+      "baseline": 340,
+      "class": "authed",
+      "max": 321,
+      "wave2": 204
+    },
+    "admin/AdminGovernancePages.tsx": {
+      "baseline": 443,
+      "class": "authed",
+      "max": 412,
+      "wave2": 266
+    },
+    "admin/AdminMailPage.tsx": {
+      "baseline": 244,
+      "class": "authed",
+      "max": 212,
+      "wave2": 147
+    },
+    "admin/AdminPages.tsx": {
+      "baseline": 922,
+      "class": "authed",
+      "max": 886,
+      "wave2": 554
+    },
+    "admin/ImportWizardPage.tsx": {
+      "baseline": 381,
+      "class": "authed",
+      "max": 359,
+      "wave2": 229
+    },
+    "admin/ops/HostingUsage.tsx": {
+      "baseline": 28,
+      "class": "authed",
+      "max": 25
+    },
+    "admin/PeoplePages.tsx": {
+      "baseline": 404,
+      "class": "authed",
+      "max": 388,
+      "wave2": 243
+    },
+    "admin/TablePaginationFooter.tsx": {
+      "baseline": 7,
+      "class": "authed",
+      "max": 7
+    },
+    "AppDownloadPage.tsx": {
+      "baseline": 340,
+      "class": "public",
+      "max": 202
+    },
+    "auth/ForgotPasswordPage.tsx": {
+      "baseline": 117,
+      "class": "public",
+      "max": 102,
+      "wave2": 88
+    },
+    "auth/ResetPasswordPage.tsx": {
+      "baseline": 182,
+      "class": "public",
+      "max": 162,
+      "wave2": 137
+    },
+    "AuthPage.tsx": {
+      "baseline": 160,
+      "class": "public",
+      "max": 144,
+      "wave2": 120
+    },
+    "BrandPage.tsx": {
+      "baseline": 226,
+      "class": "dev-exempt",
+      "max": null
+    },
+    "capabilities/CapabilityPages.tsx": {
+      "baseline": 119,
+      "class": "public",
+      "max": 109,
+      "wave2": 90
+    },
+    "colleges/CollegePages.tsx": {
+      "baseline": 308,
+      "class": "public",
+      "max": 298,
+      "wave2": 231
+    },
+    "community/CommunityPages.tsx": {
+      "baseline": 271,
+      "class": "authed",
+      "max": 260,
+      "wave2": 163
+    },
+    "competitions/CompetitionsPages.tsx": {
+      "baseline": 291,
+      "class": "authed",
+      "max": 278,
+      "wave2": 175
+    },
+    "DesignPage.tsx": {
+      "baseline": 624,
+      "class": "dev-exempt",
+      "max": null
+    },
+    "DocumentViewerPage.tsx": {
+      "baseline": 54,
+      "class": "authed",
+      "max": 48,
+      "wave2": 33
+    },
+    "Error403Page.tsx": {
+      "baseline": 36,
+      "class": "public",
+      "max": 27
+    },
+    "Error500Page.tsx": {
+      "baseline": 41,
+      "class": "public",
+      "max": 30
+    },
+    "exams/OnlineExamsPages.tsx": {
+      "baseline": 685,
+      "class": "authed",
+      "max": 543,
+      "wave2": 411
+    },
+    "LandingPage.tsx": {
+      "baseline": 3,
+      "class": "public",
+      "max": 3
+    },
+    "legal/LegalPages.tsx": {
+      "baseline": 1503,
+      "class": "public",
+      "max": 1309,
+      "wave2": 1128
+    },
+    "legal/LegalSheet.tsx": {
+      "baseline": 27,
+      "class": "public",
+      "max": 24
+    },
+    "MaintenancePage.tsx": {
+      "baseline": 40,
+      "class": "public",
+      "max": 23
+    },
+    "NotFoundPage.tsx": {
+      "baseline": 37,
+      "class": "public",
+      "max": 27
+    },
+    "owner/FeedbackInboxPage.tsx": {
+      "baseline": 147,
+      "class": "authed",
+      "max": 115,
+      "wave2": 89
+    },
+    "owner/OwnerActivityPage.tsx": {
+      "baseline": 204,
+      "class": "authed",
+      "max": 193,
+      "wave2": 123
+    },
+    "owner/OwnerAiPage.tsx": {
+      "baseline": 146,
+      "class": "authed",
+      "max": 134,
+      "wave2": 88
+    },
+    "owner/OwnerAlertsPage.tsx": {
+      "baseline": 116,
+      "class": "authed",
+      "max": 103,
+      "wave2": 70
+    },
+    "owner/OwnerContentPage.tsx": {
+      "baseline": 87,
+      "class": "authed",
+      "max": 71,
+      "wave2": 53
+    },
+    "owner/OwnerDashboardPage.tsx": {
+      "baseline": 312,
+      "class": "authed",
+      "max": 309,
+      "wave2": 188
+    },
+    "owner/OwnerEducationPage.tsx": {
+      "baseline": 221,
+      "class": "authed",
+      "max": 206,
+      "wave2": 133
+    },
+    "owner/OwnerGovernancePage.tsx": {
+      "baseline": 172,
+      "class": "authed",
+      "max": 169,
+      "wave2": 104
+    },
+    "owner/OwnerInstitutionDetailPage.tsx": {
+      "baseline": 456,
+      "class": "authed",
+      "max": 419,
+      "wave2": 274
+    },
+    "owner/OwnerInstitutionsPage.tsx": {
+      "baseline": 301,
+      "class": "authed",
+      "max": 280,
+      "wave2": 181
+    },
+    "owner/OwnerPages.tsx": {
+      "baseline": 0,
+      "class": "barrel-exempt",
+      "max": null
+    },
+    "owner/OwnerRealtimePage.tsx": {
+      "baseline": 65,
+      "class": "authed",
+      "max": 63,
+      "wave2": 39
+    },
+    "owner/OwnerSystemPage.tsx": {
+      "baseline": 330,
+      "class": "authed",
+      "max": 304,
+      "wave2": 198
+    },
+    "owner/OwnerUsersPage.tsx": {
+      "baseline": 159,
+      "class": "authed",
+      "max": 145,
+      "wave2": 96
+    },
+    "PlatesPage.tsx": {
+      "baseline": 289,
+      "class": "dev-exempt",
+      "max": null
+    },
+    "PublicPages.tsx": {
+      "baseline": 545,
+      "class": "public",
+      "max": 495,
+      "wave2": 409
+    },
+    "quality/QualityPages.tsx": {
+      "baseline": 744,
+      "class": "authed",
+      "max": 681,
+      "wave2": 447
+    },
+    "RegisterPage.tsx": {
+      "baseline": 341,
+      "class": "public",
+      "max": 326,
+      "wave2": 256
+    },
+    "SettingsPage.tsx": {
+      "baseline": 232,
+      "class": "authed",
+      "max": 183,
+      "wave2": 140
+    },
+    "student/AiAssistantPage.tsx": {
+      "baseline": 474,
+      "class": "authed",
+      "max": 474,
+      "wave2": 285
+    },
+    "student/CalendarPage.tsx": {
+      "baseline": 94,
+      "class": "authed",
+      "max": 85,
+      "wave2": 57
+    },
+    "student/CampusMapPage.tsx": {
+      "baseline": 87,
+      "class": "authed",
+      "max": 79,
+      "wave2": 53
+    },
+    "student/CatalogPage.tsx": {
+      "baseline": 110,
+      "class": "authed",
+      "max": 101,
+      "wave2": 66
+    },
+    "student/CourseDetailPage.tsx": {
+      "baseline": 239,
+      "class": "authed",
+      "max": 215,
+      "wave2": 144
+    },
+    "student/CoursesPage.tsx": {
+      "baseline": 203,
+      "class": "authed",
+      "max": 194,
+      "wave2": 122
+    },
+    "student/DashboardPage.tsx": {
+      "baseline": 326,
+      "class": "authed",
+      "max": 275,
+      "wave2": 196
+    },
+    "student/JobsPage.tsx": {
+      "baseline": 135,
+      "class": "authed",
+      "max": 122,
+      "wave2": 81
+    },
+    "student/LabsPage.tsx": {
+      "baseline": 281,
+      "class": "authed",
+      "max": 276,
+      "wave2": 169
+    },
+    "student/LecturePlayerPage.tsx": {
+      "baseline": 192,
+      "class": "authed",
+      "max": 183,
+      "wave2": 116
+    },
+    "student/LibraryPage.tsx": {
+      "baseline": 331,
+      "class": "authed",
+      "max": 309,
+      "wave2": 199
+    },
+    "student/LivePage.tsx": {
+      "baseline": 148,
+      "class": "authed",
+      "max": 125,
+      "wave2": 89
+    },
+    "student/MatrixPage.tsx": {
+      "baseline": 167,
+      "class": "authed",
+      "max": 154,
+      "wave2": 101
+    },
+    "student/MessagesPage.tsx": {
+      "baseline": 50,
+      "class": "authed",
+      "max": 26
+    },
+    "student/MoocPage.tsx": {
+      "baseline": 79,
+      "class": "authed",
+      "max": 67,
+      "wave2": 48
+    },
+    "student/MorePages.tsx": {
+      "baseline": 690,
+      "class": "authed",
+      "max": 660,
+      "wave2": 414
+    },
+    "student/PaymentPage.tsx": {
+      "baseline": 156,
+      "class": "authed",
+      "max": 143,
+      "wave2": 94
+    },
+    "student/ProfilePage.tsx": {
+      "baseline": 186,
+      "class": "authed",
+      "max": 169,
+      "wave2": 112
+    },
+    "student/ResearchPage.tsx": {
+      "baseline": 369,
+      "class": "authed",
+      "max": 336,
+      "wave2": 222
+    },
+    "student/TrainingPages.tsx": {
+      "baseline": 359,
+      "class": "authed",
+      "max": 340,
+      "wave2": 216
+    },
+    "student/WebinarsPage.tsx": {
+      "baseline": 123,
+      "class": "authed",
+      "max": 104,
+      "wave2": 74
+    },
+    "teacher/ExamAuthorPages.tsx": {
+      "baseline": 1331,
+      "class": "authed",
+      "max": 1261,
+      "wave2": 799
+    },
+    "teacher/ResearchReviewPage.tsx": {
+      "baseline": 306,
+      "class": "authed",
+      "max": 285,
+      "wave2": 184
+    },
+    "teacher/TeacherDashboardPage.tsx": {
+      "baseline": 277,
+      "class": "authed",
+      "max": 262,
+      "wave2": 167
+    },
+    "teacher/TeacherIntelligencePage.tsx": {
+      "baseline": 285,
+      "class": "authed",
+      "max": 271,
+      "wave2": 171
+    },
+    "teacher/TeacherLabsPage.tsx": {
+      "baseline": 110,
+      "class": "authed",
+      "max": 90,
+      "wave2": 66
+    },
+    "teacher/TeacherLivePage.tsx": {
+      "baseline": 176,
+      "class": "authed",
+      "max": 169,
+      "wave2": 106
+    },
+    "teacher/TeacherPages.tsx": {
+      "baseline": 1117,
+      "class": "authed",
+      "max": 974,
+      "wave2": 671
+    },
+    "teacher/TeacherProfilePage.tsx": {
+      "baseline": 267,
+      "class": "authed",
+      "max": 252,
+      "wave2": 161
+    },
+    "vision/VisionPages.tsx": {
+      "baseline": 136,
+      "class": "public",
+      "max": 126,
+      "wave2": 102
+    }
+  },
+  "meta": {
+    "generated": "r353 copy wave 1 (lane P2 task 3-c) — each enforced page carries its wave-1 landing (max); pages still above the 0.60/0.75 formula carry it as wave2 and are cut further in copy wave 2",
+    "rule": "wave-1 landed ceilings over the census baselines; formula targets: authed = max(25, ceil(0.60*baseline)), public = max(25, ceil(0.75*baseline)) — kept per page in wave2",
+    "law": "ceilings only move DOWN — a page over its ceiling is cut, never is a ceiling raised; a new page is born under a ceiling (same PR adds its entry); a deleted page removes its entry",
+    "baselineTotalArabic": 21504,
+    "ratchetedPages": 72,
+    "sumMaxArabic": 18522,
+    "wave2": {
+      "legal/LegalPages.tsx": 1128,
+      "teacher/ExamAuthorPages.tsx": 799,
+      "teacher/TeacherPages.tsx": 671,
+      "admin/AdminPages.tsx": 554,
+      "quality/QualityPages.tsx": 447,
+      "student/MorePages.tsx": 414,
+      "exams/OnlineExamsPages.tsx": 411,
+      "PublicPages.tsx": 409,
+      "owner/OwnerInstitutionDetailPage.tsx": 274,
+      "admin/AdminGovernancePages.tsx": 266,
+      "admin/PeoplePages.tsx": 243,
+      "admin/ImportWizardPage.tsx": 229,
+      "student/ResearchPage.tsx": 222,
+      "student/TrainingPages.tsx": 216,
+      "RegisterPage.tsx": 256,
+      "admin/AdminExtraPages.tsx": 204,
+      "student/LibraryPage.tsx": 199,
+      "owner/OwnerSystemPage.tsx": 198,
+      "student/DashboardPage.tsx": 196,
+      "owner/OwnerDashboardPage.tsx": 188,
+      "colleges/CollegePages.tsx": 231,
+      "teacher/ResearchReviewPage.tsx": 184,
+      "owner/OwnerInstitutionsPage.tsx": 181,
+      "competitions/CompetitionsPages.tsx": 175,
+      "teacher/TeacherIntelligencePage.tsx": 171,
+      "student/LabsPage.tsx": 169,
+      "teacher/TeacherDashboardPage.tsx": 167,
+      "community/CommunityPages.tsx": 163,
+      "teacher/TeacherProfilePage.tsx": 161,
+      "admin/AdminMailPage.tsx": 147,
+      "student/CourseDetailPage.tsx": 144,
+      "SettingsPage.tsx": 140,
+      "owner/OwnerEducationPage.tsx": 133,
+      "owner/OwnerActivityPage.tsx": 123,
+      "student/CoursesPage.tsx": 122,
+      "student/LecturePlayerPage.tsx": 116,
+      "student/ProfilePage.tsx": 112,
+      "auth/ResetPasswordPage.tsx": 137,
+      "teacher/TeacherLivePage.tsx": 106,
+      "owner/OwnerGovernancePage.tsx": 104,
+      "student/MatrixPage.tsx": 101,
+      "AuthPage.tsx": 120,
+      "owner/OwnerUsersPage.tsx": 96,
+      "student/PaymentPage.tsx": 94,
+      "student/LivePage.tsx": 89,
+      "owner/FeedbackInboxPage.tsx": 89,
+      "owner/OwnerAiPage.tsx": 88,
+      "vision/VisionPages.tsx": 102,
+      "student/JobsPage.tsx": 81,
+      "student/WebinarsPage.tsx": 74,
+      "capabilities/CapabilityPages.tsx": 90,
+      "auth/ForgotPasswordPage.tsx": 88,
+      "owner/OwnerAlertsPage.tsx": 70,
+      "teacher/TeacherLabsPage.tsx": 66,
+      "student/CatalogPage.tsx": 66,
+      "student/CalendarPage.tsx": 57,
+      "student/CampusMapPage.tsx": 53,
+      "owner/OwnerContentPage.tsx": 53,
+      "student/MoocPage.tsx": 48,
+      "owner/OwnerRealtimePage.tsx": 39,
+      "DocumentViewerPage.tsx": 33,
+      "student/AiAssistantPage.tsx": 285
+    },
+    "deferredPages": {
+      "student/AiAssistantPage.tsx": {
+        "currentCeiling": 474,
+        "nextWaveCeiling": 285,
+        "reason": "owned by another author in copy wave 1; its ratchet lands with copy wave 2 when that file's cut merges"
+      }
+    }
+  }
+}

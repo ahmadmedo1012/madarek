@@ -40,7 +40,7 @@ import { join } from 'node:path';
 // The PHYSICAL test-account table (Playwright's TS loader cannot follow
 // the repo-root shared/testAccounts.ts re-export shim — see the
 // auth-storage.ts header for the verified reason). One table, no copy.
-import { TEST_PASSWORD, testAccountForJob } from '../../../../../backend/src/modules/auth/test-accounts.data';
+import { TEST_ACCOUNTS, TEST_PASSWORD } from '../../../../../backend/src/modules/auth/test-accounts.data';
 
 export const API_BASE = (process.env.MADAREK_E2E_API_URL ?? 'http://localhost:4000').replace(/\/+$/, '');
 export const WEB_ORIGIN = (process.env.MADAREK_E2E_BASE_URL ?? 'http://localhost:5173').replace(/\/+$/, '');
@@ -49,24 +49,36 @@ export type FlowRole =
   | 'STUDENT' | 'STUDENT2' | 'TEACHER' | 'HEAD' | 'DEAN' | 'VICEDEAN'
   | 'ADMIN' | 'FACULTY' | 'QUALITY' | 'OWNER';
 
-/** Job label per role — keys into the shared @test.ly table. */
-const FLOW_JOBS: Record<FlowRole, string> = {
-  STUDENT: 'طالب',
-  STUDENT2: 'طالب ثانٍ (للرسائل/المجتمع)',
-  TEACHER: 'أستاذ',
-  HEAD: 'رئيس قسم',
-  DEAN: 'عميد',
-  VICEDEAN: 'نائب عميد',
-  ADMIN: 'المسجل العام',
-  FACULTY: 'مسجل كلية (نطاق كلية)',
-  QUALITY: 'أخصائي جودة',
-  OWNER: 'مالك المنصة',
+/** Email per role (R353 E2 — pinned by EMAIL, not job label: labels
+ * are display data and drifted with the staff-office split; emails
+ * are the stable seeder key). Verified against the shared table so
+ * seeder drift fails loudly here, never mid-flow. */
+const FLOW_EMAILS: Record<FlowRole, string> = {
+  STUDENT: 'student@test.ly',
+  STUDENT2: 'student2@test.ly',
+  TEACHER: 'teacher@test.ly',
+  HEAD: 'head@test.ly',
+  DEAN: 'dean@test.ly',
+  VICEDEAN: 'vicedean@test.ly',
+  ADMIN: 'registrar@test.ly',
+  FACULTY: 'faculty@test.ly',
+  QUALITY: 'quality@test.ly',
+  OWNER: 'owner@test.ly',
 };
 
 export const FLOW_PASSWORD = TEST_PASSWORD;
 
-export const flowEmail = (role: FlowRole): string =>
-  testAccountForJob(FLOW_JOBS[role])!.email;
+export const flowEmail = (role: FlowRole): string => {
+  const email = FLOW_EMAILS[role];
+  const hit = TEST_ACCOUNTS.find((a) => a.email === email);
+  if (!hit) {
+    throw new Error(
+      `live flows: seeder drift — ${email} is not in TEST_ACCOUNTS ` +
+        `(backend/src/modules/auth/test-accounts.data.ts).`,
+    );
+  }
+  return hit.email;
+};
 
 /** The login response's `data` payload (issueTokens shape). */
 export interface FlowSession {

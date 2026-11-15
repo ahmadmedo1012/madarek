@@ -141,8 +141,8 @@ describe('OwnerContentPage — the flags card claim (r165g)', () => {
 
   it('says the honest thing instead: recorded + audited, no runtime consumer yet', () => {
     renderPage(<OwnerContentPage />);
-    expect(screen.getByText(/تُسجَّل الحالة وتُوثَّق في سجلّ النشاط/)).toBeInTheDocument();
-    expect(screen.getByText(/لا تستهلكها أيّ بوابة تشغيل بعد/)).toBeInTheDocument();
+    expect(screen.getByText(/تُسجَّل وتُوثَّق في السجلّ/)).toBeInTheDocument();
+    expect(screen.getByText(/ولا تستهلكها بوابة تشغيل/)).toBeInTheDocument();
   });
 });
 
@@ -151,18 +151,18 @@ describe('OwnerSystemPage — flags + settings honest caveats (r165g)', () => {
     renderPage(<OwnerSystemPage />);
     await screen.findByText('البثّ المباشر');
     expect(
-      screen.getByText(/تُحفَظ حالة كل علم في قاعدة البيانات وتُوثَّق في سجلّ النشاط/),
+      screen.getByText(/تُحفَظ حالة كل علم وتُوثَّق في السجلّ/),
     ).toBeInTheDocument();
-    expect(screen.getByText(/لا تستهلكها أيّ بوابة تشغيل بعد/)).toBeInTheDocument();
+    expect(screen.getByText(/لا بوابة تشغيل تستهلكها، فلا يتغيّر سلوك المنصّة/)).toBeInTheDocument();
   });
 
   it('the settings editor carries the same caveat (saving writes the row, nothing consumes it)', async () => {
     renderPage(<OwnerSystemPage />);
     await screen.findByDisplayValue('الفصل الخريفيّ 2026');
     expect(
-      screen.getByText(/تُحفَظ القيمة في قاعدة البيانات وتُوثَّق في سجلّ النشاط/),
+      screen.getByText(/تُحفَظ القيمة في قاعدة البيانات وتُوثَّق في السجلّ/),
     ).toBeInTheDocument();
-    expect(screen.getByText(/لا يستهلكها مسار تشغيل بعد/)).toBeInTheDocument();
+    expect(screen.getByText(/لا بوابة تشغيل تستهلكها بعد/)).toBeInTheDocument();
   });
 
   it('no immediate-effect claim anywhere on the page (toggles, editor, notes)', async () => {
@@ -192,10 +192,10 @@ describe('OwnerAiPage — the empty state stops selling flags (r165g)', () => {
 
   it('states the real truth: metrics arrive with the first request; availability is the server provider config', async () => {
     renderPage(<OwnerAiPage />);
-    expect(await screen.findByText(/تظهر مؤشّرات الاستخدام هنا فور تسجيل أوّل طلب/)).toBeInTheDocument();
-    expect(screen.getByText(/جهوزيّة خدمة الذكاء الاصطناعيّ تحدّدها إعدادات المزوّد على الخادم/)).toBeInTheDocument();
+    expect(await screen.findByText(/تظهر المؤشّرات فور تسجيل أول طلب/)).toBeInTheDocument();
+    expect(screen.getByText(/الجهوزيّة تحدّدها إعدادات المزوّد/)).toBeInTheDocument();
     // ...and flags/settings are recorded but unconsumed.
-    expect(screen.getByText(/تُسجَّل ولا يستهلكها أيّ مسار تشغيل بعد/)).toBeInTheDocument();
+    expect(screen.getByText(/تُسجَّل ولا تستهلكها بوابة تشغيل/)).toBeInTheDocument();
   });
 });
 

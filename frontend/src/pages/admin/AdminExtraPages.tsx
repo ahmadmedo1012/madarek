@@ -150,7 +150,7 @@ export function AdminStudentsPage() {
     <PageFrame width="default">
       <PatternsPageHeader
         title="إدارة الطلاب"
-        description="قائمة الطلاب المسجَّلين في الجامعة، مع البحث والتصفية حسب الكلّيّة."
+        description="الطلاب المسجَّلون في الجامعة، مع البحث والتصفية حسب الكلّيّة."
         index="05"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الطلاب' }]}
         meta={studentsQ.data
@@ -341,7 +341,7 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
         <div className="r305ao-danger-zone" style={{ marginBlockEnd: 'var(--sp-4)' }}>
           <div className="r305ao-danger-zone-title">التسجيلات الحالية</div>
           <p className="r305ao-danger-zone-note">
-            إلغاء التسجيل يحذف تسجيل الطالب في المقرّر وتقدُّمه فيه نهائيًا — يمرّ كل إلغاء على تأكيد صريح قبل التنفيذ.
+            إلغاء التسجيل يحذف تسجيل الطالب وتقدُّمه نهائيًا — كل إلغاء يمرّ على تأكيد صريح.
           </p>
           {enrollments.isPending ? (
             <div className="flex-col gap-2"><Skeleton width="100%" height={40} /><Skeleton width="100%" height={40} /></div>
@@ -431,7 +431,7 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
         open={confirmingDrop !== null}
         title="إلغاء التسجيل"
         message={confirmingDrop
-          ? `سيُحذف تسجيل الطالب في «${confirmingDrop.courseName}» وتقدُّمه نهائيًا. لا يمكن التراجع عن هذا الإجراء.`
+          ? `سيُحذف تسجيل الطالب في «${confirmingDrop.courseName}» وتقدُّمه نهائيًا — لا تراجع.`
           : ''}
         confirmLabel="إلغاء نهائي"
         danger
@@ -485,7 +485,7 @@ export function AdminDigitalPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="التحوّل الرقميّ"
-        description="مؤشّرات تبنّي المنصّة الرقميّة عبر مكوّنات الجامعة."
+        description="مؤشّرات تبنّي المنصّة عبر مكوّنات الجامعة."
         index="06"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'التحوّل الرقميّ' }]}
         actions={(
@@ -616,7 +616,7 @@ export function AdminSettingsPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="إعدادات المنصّة"
-        description="إعدادات تشغيليّة على مستوى الجامعة. تفعيل المعدِّلات الفرديّة قيد التطوير."
+        description="إعدادات تشغيليّة على مستوى الجامعة."
         index="09"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'إعدادات المنصّة' }]}
         actions={(
@@ -689,7 +689,7 @@ export function AdminSettingsPage() {
 
         <Card title="عمليّات النظام" icon={RefreshCw}>
           <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            عمليّات تنفيذيّة على مستوى المنصّة. للتنفيذ الفعليّ، استخدم لوحة المالك.
+            عمليّات تنفيذيّة — للتنفيذ الفعليّ استخدم لوحة المالك.
           </p>
           <div className="settings-actions">
             {/* r155c: أُزيل زر «مزامنة بيانات الجامعة» المعطَّل — كانت

@@ -411,7 +411,7 @@ describe('OwnerInstitutionsPage — the destructive verbs ride .r305ao-btn-dange
 
     fireEvent.click(screen.getByRole('button', { name: 'تعليق' }));
     const dialog = screen.getByRole('dialog');
-    expect(within(dialog).getByText(/هل تريد تعليق «مؤسسة مدارك النموذجية»/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/«مؤسسة مدارك النموذجية» — لن يتمكّن أعضاؤها من الوصول حتى تنشيطها/)).toBeInTheDocument();
   });
 });
 

@@ -203,7 +203,7 @@ export function OwnerActivityPage() {
       <PageFrame width="default">
         <PatternsPageHeader
           title="سجل النشاط والمراقبة"
-          description="جميع العمليّات المنفَّذة على المنصّة — حيّة من سجلّ التدقيق"
+          description="العمليّات المنفَّذة — حيّة من سجلّ التدقيق"
           breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'سجلّ النشاط' }]}
           /* R341 D11: the [05] nav-order gutter numeral (OWNER_NAV
            * register — the D10 quality precedent). */
@@ -262,8 +262,8 @@ export function OwnerActivityPage() {
             <EmptyState illustration="empty-list"
               title={filter === 'all' ? 'لا توجد أحداث مسجَّلة بعد' : 'لا أحداث في هذا التبويب'}
               description={filter === 'all'
-                ? 'تُسجَّل الأحداث تلقائياً فور أول عمليّة على المنصّة.'
-                : 'جرِّب تبويباً آخر لمتابعة أنواع مختلفة من الأحداث.'}
+                ? 'تُسجَّل الأحداث فور أول عمليّة.'
+                : 'جرِّب تبويباً آخر.'}
               action={filter === 'all' && (
                 <button type="button" className="btn ghost sm" onClick={() => activity.refetch()}>
                   <Icon icon={RefreshCw} size={12} />

@@ -90,7 +90,7 @@ export default function TeacherIntelligencePage() {
           <span className="hr-brow">تحليل لحظي</span>
           <h1 className="page-title">الذكاء الأكاديمي</h1>
           <p className="page-subtitle">
-            متابعة أداء طلابك مدعومة بتحليل لحظي للحضور والدرجات والمتابعة، مع توصيات تدخّل ذكية.
+            متابعة أداء طلابك بتحليل لحظي للحضور والدرجات، مع توصيات تدخّل.
           </p>
         </div>
         {/* R342-09 (D8 header-CTA law): the catalog's ONE honest next
@@ -190,7 +190,7 @@ export default function TeacherIntelligencePage() {
           <EmptyState illustration="empty-courses"
             icon={BookOpen}
             title="لم تُسند إليك مقرّرات بعد"
-            description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل المسجل العام."
+            description="تظهر مقرّراتك هنا فور إسنادها من المسجل العام."
           />
         ) : (
           /* r241 (Superlist): the catalog is a LIST — full-width rows with
@@ -399,7 +399,7 @@ export function TeacherOfferingDetailPage() {
         <EmptyState
           icon={BookOpen}
           title="المقرّر غير موجود"
-          description="ربما حُذف هذا العرض أو أن الرابط غير صحيح."
+          description="حُذف العرض أو الرابط غير صحيح."
         />
       </div>
       </div>
@@ -524,7 +524,7 @@ export function TeacherOfferingDetailPage() {
             <EmptyState illustration="empty-list"
               icon={Users}
               title="لا يوجد طلاب مسجَّلون"
-              description="ستظهر قائمة الطلاب هنا فور تسجيلهم في المقرّر."
+              description="تظهر قائمة الطلاب فور تسجيلهم في المقرّر."
             />
           ) : (
             <>
@@ -597,7 +597,7 @@ export function TeacherOfferingDetailPage() {
             <EmptyState
               icon={Lightbulb}
               title="ابدأ باقتراح ذكي"
-              description="اقتراح قالبيّ لهيكل منهج بمطابقة اسم المقرّر — لا تحليل ذكيّ للمحتوى (محاكاة حتى نموذج حقيقي)."
+              description="اقتراح قالبيّ بمطابقة اسم المقرّر — لا تحليل للمحتوى (محاكاة)."
             />
           )}
           {suggest.data && (

@@ -115,7 +115,7 @@ export default function LivePage() {
         index="01"
         eyebrow="المعامل والتقنيات"
         title="البث المباشر"
-        description="الجلسات الحيّة لمقرّراتك المسجَّلة — انضمّ للبثّ المباشر، وستجد التسجيلات هنا بعد انتهاء كل جلسة."
+        description="الجلسات الحيّة لمقرّراتك — انضمّ مباشرة، والتسجيلات هنا بعد كل جلسة."
         /* R342-08 — the header CTA pair joins the live-status chip
            (the D11/D8 measured seat; the phone band hides the topbar
            «اسأل AI» ≤920, D6): «الندوات وورش العمل» carries the
@@ -221,7 +221,7 @@ export default function LivePage() {
           {list.length === 0 ? (
             <EmptyCell
               label="لا توجد بثوث بعد"
-              note="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
+              note="تظهر الجلسة تلقائياً حال نشرها من أساتذتك."
             />
           ) : (
             <>
@@ -247,7 +247,7 @@ export default function LivePage() {
                   empty={(
                     <EmptyCell
                       label="لا بثّ مباشرة الآن"
-                      note="لا توجد جلسات نشطة لمقرراتك في هذه اللحظة؛ راجع الجلسات القادمة في القائمة أدناه."
+                      note="لا جلسات نشطة الآن — القادمة في القائمة أدناه."
                     />
                   )}
                 >
@@ -282,7 +282,7 @@ export default function LivePage() {
                   empty={(
                     <EmptyCell
                       label="لا توجد جلسات مجدولة"
-                      note="لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك."
+                      note="يظهر هنا أي بثّ يجدوله أساتذتك."
                     />
                   )}
                 >

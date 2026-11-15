@@ -206,7 +206,7 @@ export function OwnerAiPage() {
                    * state: metrics arrive with the first recorded
                    * request; the service's availability is decided by
                    * the server's provider configuration. */
-                  description="تظهر مؤشّرات الاستخدام هنا فور تسجيل أوّل طلب. جهوزيّة خدمة الذكاء الاصطناعيّ تحدّدها إعدادات المزوّد على الخادم — أعلام الميزات وإعدادات المنصّة تُسجَّل ولا يستهلكها أيّ مسار تشغيل بعد."
+                  description="تظهر المؤشّرات فور تسجيل أول طلب. الجهوزيّة تحدّدها إعدادات المزوّد — الأعلام والإعدادات تُسجَّل ولا تستهلكها بوابة تشغيل."
                 />
               ) : (
                 <ChartFrame
@@ -226,7 +226,7 @@ export function OwnerAiPage() {
 
             <Card title="اتّجاه الاستخدام (7 أيّام)">
               {data.trend.length === 0 ? (
-                <EmptyState illustration="empty-list" title="لا توجد بيانات بعد" description="يُرسم الاتّجاه فور تسجيل أوّل طلب." />
+                <EmptyState illustration="empty-list" title="لا توجد بيانات بعد" description="يُرسم الاتّجاه فور أول طلب." />
               ) : (
                 <ChartFrame
                   ariaLabel="مخطط خطّي لاتّجاه الاستخدام — الطلبات اليوميّة على مدى 7 أيّام"

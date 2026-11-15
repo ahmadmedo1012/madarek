@@ -108,7 +108,7 @@ function axError(status: number, code?: string, message?: string): AxiosError<{ 
 
 const NO_DEPARTMENTS_TEXT =
   // R320 override: «تواصل مع إدارة الجامعة» → «تواصل مع المسجل العام» (§B rename).
-  'لا توجد أقسام مسجّلة في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع المسجل العام.';
+  'لا أقسام في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع المسجل العام.';
 
 function renderPage() {
   return render(
@@ -269,7 +269,7 @@ describe('RegisterPage — server-error contract (r157 F5 / D17-3)', () => {
 
     const banner = screen.getByRole('alert');
     expect(banner).toHaveTextContent('تعذَّر إنشاء الحساب');
-    expect(banner).toHaveTextContent('اتصالك بالشبكة');
+    expect(banner).toHaveTextContent('اتصالك');
     // The raw Latin transport prose never renders in the RTL UI.
     expect(banner).not.toHaveTextContent('Network Error');
     expect(screen.queryByRole('link', { name: 'سجِّل الدخول' })).toBeNull();

@@ -112,8 +112,8 @@ export default function PaymentPage() {
               the neutral panel well. */}
           <div className="r305s-next r305p-rail">
             <p className="text-sm text-muted" style={{ margin: 0, lineHeight: 'var(--lh-loose)' }}>
-              تكامل الدفع الإلكترونيّ مع نظام الخزينة الجامعيّة قيد التطوير، والمنصّة لا تعرض
-              أيّ مبالغ تقديريّة. رصيدك الفعليّ وسجلّ سدادك مصدرهما مكتب الشؤون الماليّة —
+              تكامل الدفع قيد التطوير ولا تُعرض مبالغ تقديريّة — رصيدك وسجلّ سدادك
+              من مكتب الشؤون الماليّة.
               حتّى ذلك الحين، خُطواتك اليوم:
             </p>
           </div>
@@ -190,7 +190,7 @@ export default function PaymentPage() {
             </div>
           </div>
           <p className="text-xxs text-subtle" style={{ marginBlockStart: 'var(--sp-3)', lineHeight: 1.6 }}>
-            الساعات المعتمدة من الإدارة. قد تتغيّر خلال فترات الاختبارات والإجازات الرسميّة.
+            الساعات من الإدارة — قد تتغيّر خلال الاختبارات والإجازات.
           </p>
         </Card>
         </div>
@@ -199,7 +199,7 @@ export default function PaymentPage() {
       <SectionBar index="06" title="إعلانات الإدارة الماليّة" />
       <Card>
         <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>
-          الإعلانات الرسميّة الخاصّة بالرسوم والمواعيد تُنشر على لوحة المجتمع الجامعيّ.
+          الإعلانات الرسميّة للرسوم والمواعيد تُنشر على لوحة المجتمع.
         </p>
         <Link to="/community" className="btn primary sm">
           <Icon icon={ArrowLeft} size={13} />

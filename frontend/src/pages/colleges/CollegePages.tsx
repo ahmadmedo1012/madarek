@@ -236,7 +236,7 @@ function GuestClosingBand() {
     <section className="guest-cta-band" aria-labelledby="guest-cta-title">
       <h2 id="guest-cta-title" className="guest-cta-title">هل هذه كلّيتك؟</h2>
       <p className="guest-cta-note">
-        أنشئ حسابك الجامعي وابدأ رحلتك الأكاديميّة على منصّة مدارك.
+        أنشئ حسابك الجامعي وابدأ رحلتك على مدارك.
       </p>
       <div className="guest-cta-actions">
         <Link to="/auth/register" state={from} className="btn primary">أنشئ حسابك الجامعي</Link>
@@ -318,7 +318,7 @@ export function CollegesIndexPage() {
       <div className="inx-head">
         <PageHeader
           title="البنية الأكاديمية التجريبية — مؤسسة مدارك النموذجية"
-          description="استكشف الكلّيّات والأقسام في سجلّ المؤسّسة المرجعية للعرض، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطها."
+          description="الكلّيّات والأقسام وقادة كلّ كلّيّة وأبرز طلّابها في سجلّ المؤسّسة المرجعية."
           actions={isGuest ? <GuestJoinRow /> : undefined}
           index="01"
         />
@@ -351,7 +351,7 @@ export function CollegesIndexPage() {
       )}
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && q.data.length === 0 && (
-        <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" description="ستظهر الكلّيّات هنا حين يضيفها المسجل العام." />
+        <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" description="تظهر هنا حين يضيفها المسجل العام." />
       )}
 
       {q.data && q.data.length > 0 && (
@@ -1047,7 +1047,7 @@ export function CollegesLeaderboardPage() {
       {q.data && q.data.colleges.length === 0 && (
         <EmptyState
           title="لوحة منافسة الكلّيّات فارغة"
-          description="تُحتسب النقاط من نشاط الطلاب المسجّل؛ ستظهر أولى النتائج مع بداية النشاط هذا الفصل."
+          description="النقاط من نشاط الطلاب — تظهر أولى النتائج مع بداية النشاط."
         />
       )}
 

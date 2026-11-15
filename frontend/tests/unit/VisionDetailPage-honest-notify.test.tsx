@@ -42,6 +42,6 @@ describe('VisionDetailPage — honest notify card (A8 P2-2)', () => {
     expect(screen.queryByText(/سنُعلمك على بريدك الجامعي/)).toBeNull();
     expect(screen.getByText(/قيد التطوير/)).toBeInTheDocument();
     // The card still says what the visitor CAN do: follow the vision page.
-    expect(screen.getByText(/تابع صفحة الرؤية/)).toBeInTheDocument();
+    expect(screen.getByText(/حالة كل ابتكار تُحدَّث هنا فور تغيّرها/)).toBeInTheDocument();
   });
 });

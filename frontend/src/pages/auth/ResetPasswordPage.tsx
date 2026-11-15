@@ -57,11 +57,11 @@ type ResetInputs = z.infer<typeof resetFormSchema>;
  * are indistinguishable by design (PAGES-GAP §5: no token-oracle). */
 const INVALID_TOKEN_TITLE = 'الرابط غير صالح أو انتهت صلاحيته';
 const INVALID_TOKEN_BODY =
-  'روابط الاستعادة تُستخدم مرة واحدة وتنتهي صلاحيتها بعد ٣٠ دقيقة — اطلب رابطًا جديدًا وأعد المحاولة.';
+  'روابط الاستعادة تُستخدم مرة وتنتهي بعد ٣٠ دقيقة — اطلب رابطًا جديدًا.';
 
 /** Generic refusal ONLY for failures the server never answered (network). */
 const GENERIC_RESET_ERROR =
-  'تعذّر تحديث كلمة المرور — تحقّق من اتصالك بالشبكة ثم أعد المحاولة.';
+  'تعذّر التحديث — تحقّق من اتصالك ثم أعد المحاولة.';
 
 /** Success → back to the login sheet: fast enough to feel guided, slow
  * enough to read the confirmation (2.4s). */
@@ -132,7 +132,7 @@ export default function ResetPasswordPage() {
                 <span className="auth-meta">(تمّ بنجاح)</span>
                 <h1 className="auth-form-title">تمّ تغيير كلمة المرور</h1>
                 <p className="auth-form-sub">
-                  كلمة المرور الجديدة أصبحت سارية، وأُبطلت كل الجلسات المفتوحة على جميع الأجهزة — سجّل الدخول من جديد للمتابعة.
+                  كلمة المرور الجديدة سارية، وأُبطلت كل الجلسات على جميع الأجهزة — سجّل الدخول من جديد.
                 </p>
               </div>
               {/* The redirect fires 2.4s after success (setTimeout above);
@@ -180,7 +180,7 @@ export default function ResetPasswordPage() {
                 <span className="auth-meta">(كلمة مرور جديدة)</span>
                 <h1 className="auth-form-title">عيّن كلمة مرور جديدة</h1>
                 <p className="auth-form-sub">
-                  اختر كلمة مرور قوية لحسابك — من ١٢ إلى ٧٢ حرفًا، ليست من الكلمات الشائعة.
+                  اختر كلمة مرور قوية — من ١٢ إلى ٧٢ حرفًا، ليست من الشائعة.
                 </p>
               </div>
 
@@ -237,7 +237,7 @@ export default function ResetPasswordPage() {
                     12–72 + the common-password blocklist — nothing
                     invented, nothing hidden. */}
                 <div className="fp-mail-note" role="note">
-                  السياسة الفعلية: ١٢ حرفًا على الأقل و٧٢ كحدّ أقصى، وألا تكون من الكلمات الشائعة (تُرفض مثل password123). تعمل القاعدة نفسها في التسجيل وتغيير كلمة المرور.
+                  السياسة: ١٢ حرفًا على الأقل و٧٢ كحدّ أقصى، وليست من الكلمات الشائعة — كما في التسجيل والتغيير.
                 </div>
 
                 {resetPassword.isError && (

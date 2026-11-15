@@ -165,7 +165,7 @@ describe('OwnerSystemPage — storage card, s3 unverified (fields absent)', () =
     expect(screen.queryByText(/لا تنجو من إعادة النشر/)).toBeNull();
     // The amber unknown dot + the explaining note.
     expect(document.querySelector('.owner-health-dot.amber')).not.toBeNull();
-    expect(screen.getByText(/تظهر الحالة هنا بعد أوّل فحص/)).toBeInTheDocument();
+    expect(screen.getByText(/تظهر الحالة بعد أول فحص/)).toBeInTheDocument();
   });
 });
 

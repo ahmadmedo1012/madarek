@@ -311,7 +311,7 @@ export function AdminTeachersPage() {
     <PageFrame width="wide">
       <PatternsPageHeader
         title="إدارة الأساتذة"
-        description="توثيق الملفات الأكاديمية واقتراح المقرّرات الأنسب لكل أستاذ بناء على تخصصه ودرجته العلمية وشهاداته."
+        description="توثيق الملفات الأكاديمية واقتراح المقرّرات الأنسب لكل أستاذ."
         index="02"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الأساتذة' }]}
         actions={(
@@ -551,7 +551,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
             <EmptyState
               icon={Briefcase}
               title="لا توجد مقرّرات مطابقة بعد"
-              description="أضف كلمات مفتاحية إلى ملف الأستاذ لتوليد اقتراحات أدق."
+              description="أضف كلمات مفتاحية لملف الأستاذ لتوليد اقتراحات أدق."
             />
           )}
         </div>
@@ -569,7 +569,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
         open={verifyConfirm}
         title="توثيق الأستاذ"
         confirmLabel="توثيق"
-        message={`هل تريد توثيق «${data.teacher.name}»؟ سيحمل شارة التوثيق، ويظهر كمدرّس مؤهّل في المقرّرات المقترحة، ويُسجَّل الإجراء في سجلّ النشاط.`}
+        message={`سيحمل «${data.teacher.name}» شارة التوثيق ويظهر كمدرّس مؤهّل في الاقتراحات — ويُسجَّل في سجلّ النشاط.`}
         onConfirm={async () => {
           try {
             await verify.mutateAsync({ id: teacherId, verified: true });
@@ -645,7 +645,7 @@ function PositionAssignmentCard({
   };
 
   return (
-    <Card title="المنصب القياديّ" icon={Crown} subtitle="يُمنح المنصب بالتعيين الإداريّ — يضاف فوق دور الأستاذ ولا يستبدله">
+    <Card title="المنصب القياديّ" icon={Crown} subtitle="يُمنح بالتعيين الإداريّ — فوق دور الأستاذ ولا يستبدله">
       {teacher.position && teacher.appointedAt && (
         <div className="text-xxs text-subtle" style={{ marginBlockEnd: 'var(--sp-2)' }}>
           تمّ التعيين في {formatDate(teacher.appointedAt, { dateStyle: 'medium' })}
@@ -799,7 +799,7 @@ function ScopeAssignmentCard({
         <strong className="text-sm">نطاق صلاحيّة {roleLabel}</strong>
       </div>
       <p className="gov-scope-note">
-        النطاق الافتراضيّ على مستوى الجامعة. يمكن قَصره على كلّيّة واحدة فقط للحدّ من نطاق الإشراف.
+        النطاق الافتراضيّ على مستوى الجامعة — يمكن قَصره على كلّيّة واحدة.
       </p>
       <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
         <FormField label="النطاق" id={`scope-${userId}`}>
@@ -1041,7 +1041,7 @@ export function AdminPermissionsPage() {
           * meta line carries the role + email facts. */}
       <PageHeader
         title={<>{data.user.firstName} {data.user.lastName}</>}
-        subtitle="إدارة صلاحيات هذا المستخدم: الدور الافتراضي، والاستثناءات اليدوية، والنطاق."
+        subtitle="الدور الافتراضي، والاستثناءات، والنطاق."
         meta={<>{roleLabel} · <bdi>{data.user.email}</bdi></>}
       />
 
@@ -1077,7 +1077,7 @@ export function AdminPermissionsPage() {
             color="amber"
             icon={ShieldCheck}
             title="هذه صلاحياتك أنت — لا يمكن تعديلها من هنا"
-            description="حرس الحاكمية يمنع تعديل صلاحياتك بنفسك (خطأ 403 من الخادم)؛ اطلب من مالك أو إداري آخر تطبيق التغيير من صفحتك هذه."
+            description="حرس الحاكمية يمنع تعديل صلاحياتك بنفسك (403) — اطلب من مالك أو إداري آخر تطبيق التغيير."
           />
         )}
 

@@ -110,13 +110,13 @@ type StepDir = 'forward' | 'back';
  *  DID answer, its own Arabic message shows verbatim (authErrorView,
  *  r157 F5 / D17-3), and a 409 adds the login link. */
 const GENERIC_REGISTER_ERROR =
-  'تعذَّر إنشاء الحساب. راجع البيانات المدخلة وتأكَّد من اتصالك بالشبكة ثم أعد المحاولة.';
+  'تعذَّر إنشاء الحساب — راجع البيانات وتأكَّد من اتصالك ثم أعد المحاولة.';
 
 /** r157 F5: honest empty state for a faculty whose department list is
  *  empty — 21 of 25 live faculties ship zero departments; the old dead
  *  select promised a choice that does not exist. */
 const NO_DEPARTMENTS_TEXT =
-  'لا توجد أقسام مسجّلة في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع المسجل العام.';
+  'لا أقسام في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع المسجل العام.';
 
 /** r305 (2-a): the institution lookup gets the same honesty contract
  *  (audit 0-b P0-4 — never a silently empty select): a ready-but-empty
@@ -910,7 +910,7 @@ function TeacherForm({ form, error, isPending, faculties, institutions, institut
       <div className="role-invitation-note" role="note">
         <Icon icon={Building2} size={13} />
         <span>
-          المنصب القياديّ (عميد، رئيس قسم) يُحدَّد بقرار إداريّ بعد التحقّق من الملف الأكاديميّ.
+          المنصب القياديّ يُحدَّد بقرار إداريّ بعد التحقّق من الملف.
         </span>
       </div>
 

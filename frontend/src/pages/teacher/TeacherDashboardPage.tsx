@@ -282,7 +282,7 @@ export function TeacherDashboardPage() {
       <PageHeader
         title="لوحة الأستاذ"
         eyebrow="التدريس · متابعات اليوم"
-        description="كل ما يحتاج تدخّلك اليوم — في تيار واحد، مرتّب حسب الأولوية."
+        description="كل ما يحتاج تدخّلك اليوم — تيار واحد مرتّب بالأولوية."
         meta={
           <>
             {WEEKDAY_NAMES_AR[new Date().getDay()]} · {formatDate(new Date(), { day: 'numeric', month: 'long' })}
@@ -360,8 +360,8 @@ export function TeacherDashboardPage() {
               title="لا تتوفّر بيانات كافية بعد لرسم الاتجاه"
               description={
                 coverage.weeksRecorded === 0
-                  ? 'لم يُسجَّل أي أسبوع حتى الآن — يُرسم المخطط تلقائياً بعد اكتمال أسبوعين على الأقل.'
-                  : `${countAr(coverage.weeksRecorded, ['أسبوع واحد مسجَّل', 'أسبوعان مسجَّلان', 'أسابيع مسجَّلة', 'أسبوعاً مسجَّلاً'])} حتى الآن — يُرسم المخطط تلقائياً بعد اكتمال أسبوعين على الأقل.`
+                  ? 'لم يُسجَّل أسبوع بعد — يُرسم المخطط بعد أسبوعين على الأقل.'
+                  : `${countAr(coverage.weeksRecorded, ['أسبوع واحد مسجَّل', 'أسبوعان مسجَّلان', 'أسابيع مسجَّلة', 'أسبوعاً مسجَّلاً'])} حتى الآن — يُرسم بعد أسبوعين على الأقل.`
               }
             />
             {/* The real data points stay available to screen readers
@@ -565,7 +565,7 @@ function PendingGradingQueue({ index, entries }: { index: string; entries: Teach
            * named, its line closed by the green status chip. */
           <div className="hr-empty">
             <strong>لا انتظار — كل التسليمات مُقيَّمة</strong>
-            <span>ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك.</span>
+            <span>تظهر الجديدة فور وصولها.</span>
             <span className="hr-chip" data-tone="ok">مكتمل</span>
           </div>
         ) : (
@@ -660,7 +660,7 @@ function TodayLectures({ index }: { index: string }) {
           emptyState={
             <RowItem
               title="لا محاضرات اليوم"
-              meta="جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ."
+              meta="جدول اليوم فارغ — استرح أو راجع الأسبوعيّ."
               trailing={<span className="hr-chip" data-tone="ok">يوم مفتوح</span>}
             />
           }
@@ -702,7 +702,7 @@ function AtRiskShortcuts({ index }: { index: string }) {
           {top.length === 0 ? (
             <RowItem
               title="جميع طلابك في وضع جيد"
-              meta="لا مؤشّرات خطر حاليّاً — ستظهر هنا أقصر طرق المتابعة فور رصدها."
+              meta="لا مؤشّرات خطر — تظهر هنا أقصر طرق المتابعة فور رصدها."
               trailing={<span className="hr-chip" data-tone="ok">مستقر</span>}
             />
           ) : (

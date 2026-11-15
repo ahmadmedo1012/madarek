@@ -168,8 +168,7 @@ export default function MatrixPage() {
       <PageHeader
         title="المصفوفة التعليمية"
         description={
-          'خريطة معرفيّة شخصيّة لكل مفهوم درسته. كل خلية تعكس درجة إتقانك، ' +
-          'بناءً على نقاط التفاعل في المحاضرات والاختبارات.'
+          'خريطة معرفيّة لكل مفهوم درسته — كل خلية تعكس إتقانك من التفاعل والاختبارات.'
         }
         meta={matrix.data && totalConcepts > 0
           ? <>{countAr(totalConcepts, ['مفهوم واحد مُقاس', 'مفهومان مُقاسان', 'مفاهيم مُقاسة', 'مفهوماً مُقاساً'])} عبر {countAr(mappedCourses.length, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}</>
@@ -227,7 +226,7 @@ export default function MatrixPage() {
             ) : undefined
           }
         />
-        <p className="r319sp-sec-note">ابدأ بسدّ هذه الفجوات — حيث تتوفّر توصية، يأخذك الصفّ مباشرة إلى المحاضرة المناسبة</p>
+        <p className="r319sp-sec-note">ابدأ بسدّ الفجوات — الصفّ يأخذك مباشرة إلى المحاضرة المناسبة</p>
         {gaps.isPending ? (
           <RowList aria-label="قائمة الفجوات ذات الأولوية" loading />
         ) : gaps.isError ? (
@@ -277,7 +276,7 @@ export default function MatrixPage() {
            the sheet's reserved-but-empty region. */
         <EmptyCell
           label="لم تتشكّل مصفوفتك بعد"
-          note="شاهد أول محاضرة وأجب عن نقاط التفاعل فيها، وستبدأ المصفوفة برسم خريطة معرفتك تلقائياً."
+          note="شاهد أول محاضرة وأجب عن نقاط التفاعل — سترسم المصفوفة خريطتك تلقائياً."
         />
       ) : (
         <div className="flex-col gap-4">

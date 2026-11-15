@@ -227,7 +227,7 @@ describe('OwnerInstitutionsPage — status toggle (r178)', () => {
 
     // The confirm dialog names the institution before the danger lands.
     const dialog = screen.getByRole('dialog');
-    expect(within(dialog).getByText(/هل تريد تعليق «مؤسسة مدارك النموذجية»/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/«مؤسسة مدارك النموذجية» — لن يتمكّن أعضاؤها من الوصول حتى تنشيطها/)).toBeInTheDocument();
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'تعليق المؤسسة' }));
 
@@ -259,7 +259,7 @@ describe('OwnerInstitutionsPage — membership revoke (r178)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'إلغاء العضوية' }));
 
     const dialog = screen.getByRole('dialog');
-    expect(within(dialog).getByText(/هل تريد إلغاء عضوية «إداري تجريبي»/)).toBeInTheDocument();
+    expect(within(dialog).getByText(/«إداري تجريبي» سيفقد وصوله لسياق المؤسسة فورًا/)).toBeInTheDocument();
 
     // The dialog's confirm shares the row action's name — pick the one
     // INSIDE the dialog (the row button stays rendered behind it).

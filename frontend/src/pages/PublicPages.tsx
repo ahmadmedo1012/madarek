@@ -37,15 +37,15 @@ export function AboutPage() {
   useLegalMeta({
     title: 'عن مدارك',
     path: '/about',
-    description: 'منصّة تعليمية تقنية مستقلّة، عربية أولًا — البيان كاملًا كما هو في صفحة البداية، بلا إضافات.',
+    description: 'منصّة تعليمية تقنية مستقلّة، عربية أولًا — بيان الاستقلال، بلا إضافات.',
   });
 
   /* R341 D2 — rebuilt on the pattern library (the r340 T-D1a recipe):
    * the pf-page/pf-page-header frame + the about sheet's own ab-*
    * grammar (about.css). Same chrome laws as the guest sheets: the
    * skip link first, GuestSheetChrome's frame + grain, the sticky
-   * guest header, ONE h1, and the honest colophon — every word below
-   * is the SAME text the lg sheet carried (tests are law). */
+   * guest header, ONE h1, and the honest colophon — every claim
+   * below is the lg sheet's statement, dieted (r353). */
   return (
     <div className="ab">
       <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
@@ -88,13 +88,14 @@ export function AboutPage() {
               </h2>
             </div>
             <div className="ab-cell">
-              {/* The landing's own identity paragraph, VERBATIM
-                  (LandingPage.tsx:1346-1350 — the r188 honesty pin keeps
-                  «اصطناعية بالكامل» contiguous on one source line; the same
-                  discipline holds here). LEGAL-TODO row 14: nothing may be
-                  added about who builds مدارك until the owner states it. */}
+              {/* The landing's identity paragraph, dieted (r353) to its
+                  three claims — independent, Arabic-first, artificial
+                  demo data. The full no-affiliation clause stays
+                  verbatim on the landing footer + /legal/terms.
+                  LEGAL-TODO row 14: nothing may be added about who
+                  builds مدارك until the owner states it. */}
               <p className="ab-p ab-p-statement">
-                منصّة تعليمية تقنية مستقلّة، عربية أولًا. لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها؛ وبيانات العرض داخلها تخصّ «مؤسسة مدارك النموذجية» — مؤسسة اصطناعية بالكامل لأغراض العرض.
+                منصّة تعليمية تقنية مستقلّة، عربية أولًا — بيانات العرض اصطناعية بالكامل.
               </p>
             </div>
           </section>
@@ -148,7 +149,7 @@ export function AboutPage() {
           </section>
 
           <footer className="ab-colophon">
-            <p className="ab-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل</p>
+            <p className="ab-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية</p>
             <p className="ab-colophon-stamp">
               آخر تحديث: <span className="ab-mono" dir="ltr">{LEGAL_UPDATED}</span>
             </p>
@@ -177,8 +178,8 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     a: showPilotAccounts ? (
       <>
         بحسابات الاختبار الموزّعة على المختبرين: بريد ينتهي بـ <bdi className="hp-code hp-mono" dir="ltr">@test.ly</bdi> وكلمة المرور <bdi className="hp-code hp-mono" dir="ltr">12345678</bdi> —
-        حساب واحد لكل دور، معروضة في لوحة «حسابات تجريبية» على صفحة الدخول في بيئة التطوير (زر «تعبئة»
-        يملأ الحقول ثم «دخول» يدخل بها).
+        حساب واحد لكل دور، معروضة في لوحة «حسابات تجريبية» على صفحة الدخول في بيئة التطوير
+        (زر «تعبئة» ثم «دخول»).
       </>
     ) : (
       <>
@@ -231,8 +232,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'هل يمكن تخفيف الحركة في الواجهة؟',
     a: (
       <>
-        نعم: فعّل «تقليل الحركة» في إعدادات نظامك وستنهار كل حركات الواجهة إلى ظهور هادئ — لا يحتاج
-        أي إعداد داخل المنصّة.
+        نعم: فعّل «تقليل الحركة» في نظامك — وستنهار الحركات إلى ظهور هادئ.
       </>
     ),
   },
@@ -240,8 +240,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'كيف أبدّل المظهر الفاتح والداكن؟',
     a: (
       <>
-        بمفتاح المظهر في الشريط الجانبي داخل المنصّة، وعلى الشاشات الصغيرة من أعلى صفحة البداية —
-        واختيارك يُحفظ على جهازك ويُستعاد في الزيارة التالية.
+        بمفتاح المظهر في الشريط الجانبي — واختيارك يُحفظ على جهازك ويُستعاد في الزيارة التالية.
       </>
     ),
   },
@@ -353,7 +352,7 @@ export function HelpPage() {
           </div>
 
           <footer className="hp-colophon">
-            <p className="hp-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل</p>
+            <p className="hp-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية</p>
             <p className="hp-colophon-stamp">
               آخر تحديث: <span className="hp-mono" dir="ltr">{LEGAL_UPDATED}</span>
             </p>
@@ -392,8 +391,7 @@ export function ContactPage() {
       <LegalSectionBar index={2} title="ما لا نملكه بعد" id="contact-none" />
       <LegalCell>
         <p className="lg-p">
-          لا بريد عام، ولا هاتف، ولا حسابات اجتماعية للمنصّة اليوم. أي قناة تُضاف فعلًا ستُعلن هنا أولًا —
-          ولن نطلب منك بيانات عبر أي طريق غير هذا المكان.
+          لا قنوات تواصل اليوم — أي قناة تُعلن هنا، ولن نطلب بياناتك عبر أي طريق غير هذا المكان.
         </p>
       </LegalCell>
 

@@ -351,7 +351,7 @@ export function QualityDashboardPage() {
           لوحة الجودة
         </h1>
         <p className="page-subtitle">
-          بناء نظام تعليمي فعّال عبر تطوير الأداء الأكاديمي والإداري والتقني — وفقاً لمتطلبات الاعتماد المحلية والدولية.
+          تطوير الأداء الأكاديمي والإداري والتقني — وفق متطلبات الاعتماد المحلية والدولية.
         </p>
         <p className="page-header-meta">
           {formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })} · قراءة لحظية للمؤشرات
@@ -504,8 +504,8 @@ export function QualityDashboardPage() {
             title="النشاط الأسبوعي"
             subtitle={
               e.weeklyActiveEstimated
-                ? 'عدد الجلسات اليومية النشطة على المنصة — منحنى تقديري لحدّة البيانات'
-                : 'عدد الجلسات اليومية النشطة على المنصة'
+                ? 'عدد الجلسات اليومية النشطة — منحنى تقديري لحدّة البيانات'
+                : 'عدد الجلسات اليومية النشطة'
             }
             icon={TrendingUp}
           >
@@ -576,7 +576,7 @@ export function QualityDashboardPage() {
                 تأخير <bdi>{Math.round(e.attendance.lateRate)}%</bdi> · غياب <bdi>{Math.round(e.attendance.absentRate)}%</bdi>
               </p>
               <p className="text-xs text-subtle">
-                كل السجلات تقريباً بوضع واحد؛ يظهر المخطط الدائريّ فور تنوّع حالات الحضور.
+                كل السجلات بوضع واحد — يظهر المخطط فور تنوّع الحالات.
               </p>
             </div>
           ) : (
@@ -720,7 +720,7 @@ export function QualityCoursesPage() {
           <p className="page-subtitle">
             {metric
               ? `${metricLabel} لكل مقرّر · مرتَّبة من الأدنى أولاً`
-              : 'تتبّع جودة كل مقرّر: المحاضرات، الملفات، الواجبات، التسجيلات.'}
+              : 'تتبّع جودة كل مقرّر: المحاضرات، الملفات، الواجبات.'}
           </p>
         </div>
         {/* 4C-b: the oversight read-only cue (the sector has no authoring). */}
@@ -740,8 +740,8 @@ export function QualityCoursesPage() {
          icon={BookOpen}
          title={debouncedQ ? 'لا نتائج مطابقة' : 'لا توجد مقرّرات نشطة بعد'}
          description={debouncedQ
-           ? 'لم نجد مقرّراً يطابق البحث — جرّب كلمة أوسع أو امسح البحث.'
-           : 'ستظهر المقرّرات وعروضها الدراسية هنا فور اعتمادها وربطها بالفصل الحاليّ.'}
+           ? 'لم نجد مقرّراً يطابق البحث — جرّب كلمة أوسع.'
+           : 'تظهر المقرّرات هنا فور اعتمادها وربطها بالفصل.'}
          action={debouncedQ ? (
            <button type="button" className="btn ghost sm" onClick={clearSearch}>
              <Icon icon={X} size={13} />
@@ -814,7 +814,7 @@ export function QualityCoursesPage() {
                   {/* A8 P2-4: this is an estimated completion index, not
                       a measured “quality” — renamed + weights surfaced so
                       the number names its own formula. */}
-                  <th scope="col" title="تقدير اكتمال المحتوى: كل محاضرة 20 نقطة، كل ملف 5، كل واجب 10 — بحدّ أقصى 100">اكتمال المحتوى</th>
+                  <th scope="col" title="كل محاضرة 20 نقطة، كل ملف 5، كل واجب 10 — بحدّ أقصى 100">اكتمال المحتوى</th>
                 </tr>
               </thead>
               <tbody>
@@ -1000,7 +1000,7 @@ export function QualityProfessorsPage() {
           <p className="page-subtitle">
             رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.
             {p.data.data.some((t) => t.satisfactionEstimated || t.responseHoursEstimated)
-              ? ' رضا الطلاب وزمن الاستجابة قيم تقديرية حتى تفعيل قياسها الفعلي.'
+              ? ' رضا الطلاب وزمن الاستجابة قيم تقديرية حتى تفعيل قياسها.'
               : ''}
           </p>
         </div>
@@ -1116,7 +1116,7 @@ export function QualityProfessorsPage() {
               illustration="empty-list"
               icon={School}
               title="لا أساتذة بعد"
-              description="ستظهر هيئة التدريس ومؤشراتها هنا فور إضافة أعضائها إلى المؤسسة."
+              description="تظهر هيئة التدريس هنا فور إضافة أعضائها."
             />
           )
         ) : (
@@ -1145,8 +1145,8 @@ export function QualityProfessorsPage() {
                 {!compact && <th scope="col">الرتبة</th>}
                 {!compact ? <th scope="col">المقرّرات</th> : <th scope="col" title="المقرّرات التي يدرّسها والملفات المرفوعة">النشاط التعليميّ</th>}
                 {!compact && <th scope="col">الملفات المرفوعة</th>}
-                <th scope="col" title="قيمة تقديرية — ليست قياساً فعلياً حتى تفعيل استطلاعات الطلاب">رضا الطلاب <span className="text-xxs text-subtle">تقديري</span></th>
-                <th scope="col" title="قيمة تقديرية — ليست قياساً فعلياً حتى تفعيل قياس أزمنة الردّ">زمن الاستجابة <span className="text-xxs text-subtle">تقديري</span></th>
+                <th scope="col" title="قيمة تقديرية — ليست قياساً فعلياً">رضا الطلاب <span className="text-xxs text-subtle">تقديري</span></th>
+                <th scope="col" title="قيمة تقديرية — ليست قياساً فعلياً">زمن الاستجابة <span className="text-xxs text-subtle">تقديري</span></th>
                 <th scope="col">الالتزام</th>
               </tr>
             </thead>
@@ -1329,7 +1329,7 @@ export function QualityEngagementPage() {
         <Card
           title="النشاط الأسبوعي"
           icon={TrendingUp}
-          subtitle={d.weeklyActiveEstimated ? 'عدد الجلسات اليومية النشطة · بيانات تقديرية لحدّة النشاط المسجَّل' : undefined}
+          subtitle={d.weeklyActiveEstimated ? 'عدد الجلسات اليومية · بيانات تقديرية' : undefined}
         >
           <ChartFrame
             ariaLabel="مخطط أعمدة للنشاط الأسبوعي — عدد الجلسات النشطة يومياً"
@@ -1424,7 +1424,7 @@ export function QualityCurriculumPage() {
           <span className="page-index" aria-hidden="true" dir="ltr">[06]</span>
           مراجعة المناهج
         </h1>
-        <p className="page-subtitle">شجرة الكلّيّات والأقسام والمقرّرات، مع مؤشرات اكتمال المحتوى.</p>
+        <p className="page-subtitle">شجرة الكلّيّات والأقسام والمقرّرات، مع مؤشرات الاكتمال.</p>
       </div>
       {/* R341 D10: the header CTA pair (navigation-only, the D8 grammar). */}
       <div className="qlt-header-badges">
@@ -1631,7 +1631,7 @@ const QUALITY_DASHBOARDS: Array<{
     to: '/quality/professors',
     icon: School,
     title: 'تقييم الأساتذة',
-    desc: 'رضا الطلاب، زمن الاستجابة، والالتزام بمعايير المنصة لكل عضو هيئة تدريس.',
+    desc: 'رضا الطلاب، زمن الاستجابة، والالتزام بمعايير المنصة.',
   },
   {
     to: '/quality/engagement',
@@ -1660,7 +1660,7 @@ export function QualityReportsPage() {
             <span className="page-index" aria-hidden="true" dir="ltr">[07]</span>
             تقارير الجودة
           </h1>
-          <p className="page-subtitle">لوحات حيّة بدلاً من تقارير ثابتة — تُحدَّث مع كل عمليّة على المنصّة.</p>
+          <p className="page-subtitle">لوحات حيّة — تُحدَّث مع كل عمليّة على المنصّة.</p>
         </div>
         {/* R341 D10: the header CTA pair (navigation-only, the D8 grammar) —
             the export card below is still pending, so the pair points at
@@ -1704,8 +1704,7 @@ export function QualityReportsPage() {
         {/* R305 Heron (§D): the honest pending disclosure rides the §0
             note box (copy unchanged). */}
         <p className="qlt-note hr-note">
-          إصدار التقارير القابلة للتحميل قيد التطوير. حاليّاً يمكنك الاعتماد على اللوحات الحيّة أعلاه — كلّ
-          الأرقام تُحدَّث فوريّاً مع البيانات في قاعدة المنصّة.
+          إصدار التقارير القابلة للتحميل قيد التطوير — اللوحات الحيّة أعلاه تُحدَّث فوريًا مع بيانات المنصّة.
         </p>
       </Card>
       </div>
@@ -1744,7 +1743,7 @@ export function QualityAlertsPage() {
             <span className="page-index" aria-hidden="true" dir="ltr">[09]</span>
             تنبيهات الجودة
           </h1>
-          <p className="page-subtitle">أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريّاً من بيانات المنصّة.</p>
+          <p className="page-subtitle">أحداث تستوجب تدخّل فريق الجودة — من بيانات المنصّة.</p>
         </div>
         <div className="qlt-header-badges">
           {q.data && q.data.counts.critical > 0 && (
@@ -1824,7 +1823,7 @@ export function QualityAlertsPage() {
             ))}
           </div>
           {visibleAlerts.length === 0 ? (
-            <p className="qlt-empty-note hr-note">لا تنبيهات بهذه الشدّة حاليّاً — اختر شدّة أخرى أو أعد التصفية إلى «الكل».</p>
+            <p className="qlt-empty-note hr-note">لا تنبيهات بهذه الشدّة — اختر شدّة أخرى أو «الكل».</p>
           ) : (
             <>
               {/* 4C-b: oversight rows — leading severity edge (2px inline-start:

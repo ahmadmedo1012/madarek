@@ -65,7 +65,7 @@ function rateLimitMessage(error: unknown): string {
  *  DID answer, its own Arabic message shows verbatim (authErrorView,
  *  r157 F5 / D17-3). */
 const GENERIC_LOGIN_ERROR =
-  'تعذَّر تسجيل الدخول. تحقَّق من البريد وكلمة المرور وتأكَّد من اتصالك بالشبكة، ثم أعد المحاولة.';
+  'تعذَّر تسجيل الدخول — تحقَّق من البريد وكلمة المرور واتصالك.';
 
 const loginSchema = z.object({
   // Validation-first «مطلوب» (r157 F5): empty / whitespace-only input is
@@ -296,7 +296,7 @@ export default function AuthPage() {
                 <span className="auth-meta">(اختيار المؤسسة)</span>
                 <h1 className="auth-form-title">اختر مؤسستك</h1>
                 <p className="auth-form-sub">
-                  حسابك عضو في أكثر من مؤسسة تعليمية — اختر المؤسسة التي ستعمل ضمنها في هذه الجلسة.
+                  حسابك عضو في أكثر من مؤسسة — اختر مؤسسة هذه الجلسة.
                 </p>
               </div>
 
@@ -579,7 +579,7 @@ export default function AuthPage() {
                   </button>
                 </div>
                 <p className="auth-demo-hint-body">
-                  حساب واحد لكل دور — اضغط «تعبئة» لملء الحقول ثم «دخول» لتسجيل الدخول.
+                  حساب واحد لكل دور — «تعبئة» ثم «دخول».
                 </p>
                 {/* R320 §C — the hairline-cell account table (Heron sheet
                     grammar: 1px hairline rows, square cells, radius 0,

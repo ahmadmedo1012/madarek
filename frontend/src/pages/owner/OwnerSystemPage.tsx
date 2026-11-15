@@ -300,7 +300,7 @@ export function OwnerSystemPage() {
             )}
             {sysData.storage.driver === 's3' && sysData.storage.reachable === undefined && (
               <p className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
-                لم يتحقّق الخادم من اتصال المخزن بعد — تظهر الحالة هنا بعد أوّل فحص.
+                لم يتحقّق الخادم من اتصال المخزن — تظهر الحالة بعد أول فحص.
               </p>
             )}
             {sysData.storage.driver === 's3' && sysData.storage.reachable === false && (
@@ -325,7 +325,7 @@ export function OwnerSystemPage() {
                 title="الرفعات لا تنجو من إعادة النشر — يتطلب إعداد تخزين دائم (S3)"
                 description={(
                   <>
-                    أوراق البحث وملفات المقرّرات المرفوعة ستُفقد عند كل نشر جديد. دوامها يتطلب
+                    أوراق البحث والملفات المرفوعة تُفقد عند كل نشر — دوامها يتطلب
                     ضبط <code>STORAGE_DRIVER=s3</code> مع متغيّرات <bdi>S3_*</bdi> من لوحة
                     البيئة — الخطوات الكاملة في <bdi>docs/12-deployment.md</bdi>
                     («تخزين رفعات PDF في الإنتاج — خطوات المالك»).
@@ -401,8 +401,7 @@ export function OwnerSystemPage() {
             middleware, or scheduler reads FeatureFlag at runtime, so
             the card must not imply an immediate behavioral effect. */}
         <p className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
-          تُحفَظ حالة كل علم في قاعدة البيانات وتُوثَّق في سجلّ النشاط — لا تستهلكها
-          أيّ بوابة تشغيل بعد، فلا يتغيّر سلوك المنصّة بتغييرها.
+          تُحفَظ حالة كل علم وتُوثَّق في السجلّ — لا بوابة تشغيل تستهلكها، فلا يتغيّر سلوك المنصّة.
         </p>
         {/* r251: change confirmation — the dialog names the flag, the
          * direction (تفعيل/تعطيل), and the honest consequence: the
@@ -416,8 +415,8 @@ export function OwnerSystemPage() {
           danger={flagConfirm?.enabled ?? false}
           message={flagConfirm
             ? flagConfirm.enabled
-              ? `هل تريد تعطيل «${flagConfirm.name}»؟ سيُسجَّل الإجراء في سجلّ النشاط، ويمكن إعادته في أي وقت من هذه البطاقة.`
-              : `هل تريد تفعيل «${flagConfirm.name}»؟ سيُسجَّل الإجراء في سجلّ النشاط، ويمكن التراجع عنه من هذه البطاقة.`
+              ? `هل تريد تعطيل «${flagConfirm.name}»؟ يُسجَّل في سجلّ النشاط ويمكن إعادته من هذه البطاقة.`
+              : `هل تريد تفعيل «${flagConfirm.name}»؟ يُسجَّل في السجلّ ويمكن التراجع من هذه البطاقة.`
             : ''}
           onConfirm={() => (flagConfirm ? confirmFlagToggle(flagConfirm) : Promise.resolve())}
           onCancel={() => setFlagConfirm(null)}
@@ -541,8 +540,7 @@ export function OwnerSystemPage() {
             writes the registry row, it does not change platform
             behavior. */}
         <p className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
-          تُحفَظ القيمة في قاعدة البيانات وتُوثَّق في سجلّ النشاط — لا يستهلكها
-          مسار تشغيل بعد؛ سلوك المنصّة يبقى بقيمه المضمّنة في الشيفرة.
+          تُحفَظ القيمة في قاعدة البيانات وتُوثَّق في السجلّ — لا بوابة تشغيل تستهلكها بعد.
         </p>
       </Card>
     </div>

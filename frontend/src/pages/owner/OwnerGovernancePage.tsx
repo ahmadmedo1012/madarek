@@ -229,13 +229,13 @@ export function OwnerGovernancePage() {
               onRetry={() => governance.refetch()}
             />
           ) : govData.weeklyGrowth.length === 0 ? (
-            <EmptyState illustration="empty-list" title="لا توجد بيانات نموّ بعد" description="سيُرسم المنحنى فور تسجيل أوّل مستخدم." />
+            <EmptyState illustration="empty-list" title="لا توجد بيانات نموّ بعد" description="يُرسم المنحنى فور تسجيل أول مستخدم." />
           ) : (
             <ChartFrame
               className="owner-chart-container"
               ariaLabel={growthAriaLabel}
               summary={govData.weeklyGrowth.length === 1
-                ? `أسبوع واحد من البيانات حتى الآن — ${countAr(govData.weeklyGrowth[0]!.count, ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])} في أسبوعه الأول، ويُرسم المنحنى فور تسجيل الأسبوع القادم.`
+                ? `أسبوع واحد حتى الآن — ${countAr(govData.weeklyGrowth[0]!.count, ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])} في أسبوعه الأول؛ يُرسم المنحنى فور تسجيل الأسبوع القادم.`
                 : `أعلى نموّ ${countAr(Math.max(...govData.weeklyGrowth.map((w) => w.count)), ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])} في أسبوع واحد.`}
               table={{
                 caption: 'نموّ المستخدمين الأسبوعي',
@@ -260,7 +260,7 @@ export function OwnerGovernancePage() {
               onRetry={() => loginAnalytics.refetch()}
             />
           ) : loginData.total === 0 ? (
-            <EmptyState illustration="empty-list" title="لا توجد محاولات دخول بعد" description="سيظهر التوزيع فور أوّل محاولة تسجيل دخول." />
+            <EmptyState illustration="empty-list" title="لا توجد محاولات دخول بعد" description="يظهر التوزيع فور أول محاولة دخول." />
           ) : (
             <ChartFrame
               className="owner-chart-container"

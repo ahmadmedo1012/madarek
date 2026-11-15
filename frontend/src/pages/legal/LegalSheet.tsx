@@ -116,7 +116,7 @@ export function LegalSheet({
         <div className="lg-header-inner">
           <Link to="/" className="btn ghost sm">
             <Icon icon={ArrowRight} size={14} />
-            العودة إلى الصفحة الرئيسية
+            العودة للرئيسية
           </Link>
           <Link to="/" className="lg-header-brand" aria-label="مدارك — الصفحة الرئيسية">
             <Logo variant="mark" size={22} />
@@ -142,7 +142,7 @@ export function LegalSheet({
           {children}
 
           <footer className="lg-colophon">
-            <p className="lg-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل</p>
+            <p className="lg-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية</p>
             <p className="lg-colophon-stamp">
               آخر تحديث: <span className="lg-mono" dir="ltr">{updated}</span>
             </p>

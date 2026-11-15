@@ -118,7 +118,7 @@ export default function TrainingCatalogPage() {
     <PageFrame>
       <PageHeader
         title="التطوير الذاتي"
-        description="مسارات تدريبية مصمَّمة بعناية لتناسب احتياجاتك الأكاديمية والمهنية. أكمل مساراً لتحصل على سجلّ إتمام موثَّق من المنصة."
+        description="مسارات تدريبية لاحتياجاتك الأكاديمية والمهنية — أكمل مساراً لتحصل على سجلّ إتمام موثَّق."
       />
 
       {/* My summary — KPI band + level progress. Pending → shape-matched
@@ -236,7 +236,7 @@ export default function TrainingCatalogPage() {
             icon={BookOpen}
             title={filter === 'all' ? 'لا توجد مسارات منشورة بعد' : 'لا توجد مسارات في هذه الفئة بعد'}
             illustration="empty-courses"
-            description="ستظهر المسارات الجديدة هنا فور نشرها من فريق الجامعة."
+            description="تظهر المسارات هنا فور نشرها من فريق الجامعة."
           />
         </Card>
       ) : (
@@ -603,7 +603,7 @@ export function TrainingLessonPage() {
       }
     } catch (err: unknown) {
       // Arabic-first guard (15-j P0-1): an English API message never renders raw.
-      setFeedback({ ok: false, msg: apiErrorMessage(err, 'تعذّر احتساب الدرس — تحقّق من اتصالك وحاول مرة أخرى.') });
+      setFeedback({ ok: false, msg: apiErrorMessage(err, 'تعذّر احتساب الدرس — أعد المحاولة.') });
     }
   };
 
@@ -777,7 +777,7 @@ export function AchievementsPage() {
           انضبط على تركيب العائلة الواحد. */}
       <PageHeader
         title="الإنجازات"
-        description="رحلتك في التطوير الذاتي — نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء."
+        description="نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء."
         tabs={
           /* Tabs — manual role/aria annotation (the tabs carry icons, which the
               shared Tabs primitive's string-only labels don't support yet).
@@ -883,7 +883,7 @@ export function AchievementsPage() {
             /* R319 (c3-S2): the hatched EmptyCell (same copy + action). */
             <EmptyCell
               label="لم تحصل على شهادات بعد"
-              note="أكمل أول مسار تدريبي للحصول على شهادتك الأولى."
+              note="أكمل أول مسار لشهادتك الأولى."
               action={<Link to="/training" className="btn primary sm">تصفح المسارات</Link>}
             />
           ) : (
@@ -941,7 +941,7 @@ export function AchievementsPage() {
               /* R319 (c3-S2): the hatched EmptyCell (same copy + action). */
               <EmptyCell
                 label="لا يوجد ترتيب بعد"
-                note="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
+                note="اكسب النقاط بإكمال الدروس — يظهر ترتيبك فور أول نقطة."
                 action={<Link to="/training" className="btn primary sm">ابدأ من التطوير الذاتي</Link>}
               />
             ) : (

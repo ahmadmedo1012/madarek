@@ -308,11 +308,12 @@ describe('ExamTakerPage resume (D5)', () => {
     expect(screen.getByText('هل أنت مستعد للبدء؟')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'بدء الاختبار' })).toBeTruthy();
     expect(screen.queryByText('لقد أكملت هذا الاختبار مسبقاً')).toBeNull();
-    // 6A6-finding-1: the begin copy tells the real autosave contract —
-    // choices save on pick, text saves on leaving the field, and the
-    // exam auto-submits when the clock runs out.
-    expect(screen.getByText(/تُسجَّل إجابات الاختيار فور اختيارها، والإجابات النصية عند مغادرة الحقل/)).toBeTruthy();
-    expect(screen.getByText(/ويُسلَّم الاختبار تلقائياً عند انتهاء الوقت/)).toBeTruthy();
+    // 6A6-finding-1 (r353 copy diet): the begin note keeps the one
+    // rule a student can act on before pressing start — the timer's
+    // real behavior. The autosave contract (choices on pick, text on
+    // blur, auto-submit at 00:00) now lives where it bites: the
+    // per-question save chips + the sub-2-minute urgent note.
+    expect(screen.getByText('المؤقّت يبدأ مع أول ضغطة ولا يتوقف.')).toBeTruthy();
     expect(screen.queryByText(/الأسئلة تُسجَّل تلقائياً عند تغيير الإجابة/)).toBeNull();
   });
 
@@ -428,7 +429,7 @@ describe('ExamTakerPage resume (D5)', () => {
     expect(beginTitle.className).toBe('oex-result-title');
     expect(beginTitle.style.fontSize).toBe('');
     expect(beginTitle.style.lineHeight).toBe('');
-    expect(screen.getByText(/الوقت لم يتوقف منذ البدء/)).toBeTruthy();
+    expect(screen.getByText(/الوقت لم يتوقف — إجاباتك كما تركتها/)).toBeTruthy();
   });
 });
 
@@ -652,8 +653,8 @@ describe('OnlineExamsPage list (D5 reachability)', () => {
     );
 
     // The list header stops lying about retakes — the warning now
-    // carves out practice explicitly.
-    expect(screen.getByText(/لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية/)).toBeTruthy();
+    // carves out practice explicitly (r353: shortened, carve-out kept).
+    expect(screen.getByText(/لا إعادة بعد التسليم إلا التدريبية/)).toBeTruthy();
 
     // The open-window practice card is startable: a linked retake, the
     // retake badge, and the latest attempt score still visible on both
@@ -661,10 +662,10 @@ describe('OnlineExamsPage list (D5 reachability)', () => {
     // The startable practice row is a real link inside its listitem
     // wrapper (the retake badge names it apart from the shut-window
     // twin below).
-    const card = screen.getByRole('link', { name: /تدريبي — إعادة المحاولة متاحة/ });
+    const card = screen.getByRole('link', { name: /تدريبي — إعادة متاحة/ });
     expect(card.getAttribute('href')).toBe('/student/online-exams/practice');
     expect(card.closest('[role="listitem"]')).not.toBeNull();
-    expect(screen.getByText('تدريبي — إعادة المحاولة متاحة')).toBeTruthy();
+    expect(screen.getByText('تدريبي — إعادة متاحة')).toBeTruthy();
     expect(screen.getAllByText('7 / 10')).toHaveLength(2);
 
     // …while the shut-window one keeps the honest «أغلق باب التسليم»
@@ -849,7 +850,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     });
     expect(mocks.finish).toHaveBeenCalledTimes(1);
     expect(mocks.finish).toHaveBeenCalledWith('a1');
-    expect(screen.getByText('مبروك — لقد اجتزت الاختبار!')).toBeTruthy();
+    expect(screen.getByText('مبروك — اجتزت الاختبار!')).toBeTruthy();
   });
 
   it('submit stops waiting for a hung save after the flush timeout (15-e P0-1)', async () => {
@@ -911,7 +912,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     // The blur really happened — the field no longer owns focus — and
     // the real result screen rendered.
     expect(document.activeElement).not.toBe(draft);
-    expect(screen.getByText('مبروك — لقد اجتزت الاختبار!')).toBeTruthy();
+    expect(screen.getByText('مبروك — اجتزت الاختبار!')).toBeTruthy();
   });
 
   it('a manual submit settles the attempt — no second finish, timer + beforeunload torn down (15-e P0-2)', async () => {
@@ -926,7 +927,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
 
     await confirmSubmit();
     expect(mocks.finish).toHaveBeenCalledTimes(1);
-    expect(screen.getByText('مبروك — لقد اجتزت الاختبار!')).toBeTruthy();
+    expect(screen.getByText('مبروك — اجتزت الاختبار!')).toBeTruthy();
 
     // The countdown interval and the beforeunload listener retired with
     // the attempt…
@@ -985,7 +986,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
     // 22-c counted nouns — needsManual 2 renders the dual «سؤالان», not
     // the broken «2 سؤال».
-    expect(screen.getByText(/سؤالان بحاجة لتقييم يدوي من الأستاذ/)).toBeTruthy();
+    expect(screen.getByText(/سؤالان بحاجة لتقييم الأستاذ/)).toBeTruthy();
     expect(screen.queryByText('لم يجتز')).toBeNull();
     expect(screen.queryByText('ناجح')).toBeNull();
   });
@@ -1022,7 +1023,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     await startExam();
     await confirmSubmit();
 
-    expect(screen.getByText('مبروك — لقد اجتزت الاختبار!')).toBeTruthy();
+    expect(screen.getByText('مبروك — اجتزت الاختبار!')).toBeTruthy();
     // Collapsed by default — the verdict stays the moment.
     const toggle = screen.getByRole('button', { name: 'مراجعة الأسئلة' });
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
@@ -1048,7 +1049,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     });
 
     expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
-    expect(screen.getByText('ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح اليدوي.')).toBeTruthy();
+    expect(screen.getByText('المراجعة متاحة بعد اكتمال التصحيح اليدوي.')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
   });
 
@@ -1075,7 +1076,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     // قيد الاحتساب» (a result that can never come). The honest terminal
     // state names what actually happened.
     expect(await screen.findByText('انتهت مدة هذه المحاولة')).toBeTruthy();
-    expect(screen.getByText(/انتهى وقت المحاولة دون تسليم — لا تُحتسب لها نتيجة/)).toBeTruthy();
+    expect(screen.getByText(/انتهى الوقت دون تسليم — لا نتيجة ولا إعادة/)).toBeTruthy();
     expect(screen.queryByText(/النتيجة قيد الاحتساب/)).toBeNull();
     expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
   });
@@ -1097,7 +1098,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
     expect(screen.queryByText('لم يجتز')).toBeNull();
     expect(screen.queryByText('ناجح')).toBeNull();
-    expect(screen.getByText(/درجتك الأولية من الأسئلة الآلية/)).toBeTruthy();
+    expect(screen.getByText(/درجة أولية آلية — المقالية بانتظار الأستاذ/)).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
   });
 
@@ -1121,7 +1122,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
       fireEvent.click(screen.getByRole('button', { name: 'تسليم الاختبار' }));
     });
     expect(
-      screen.getByText(/بعد التسليم لا يمكنك تعديل إجاباتك — يمكنك بدء محاولة تدريبية جديدة لاحقاً./),
+      screen.getByText(/بعد التسليم لا تعديل — التدريبية تُعاد لاحقاً./),
     ).toBeTruthy();
     expect(screen.queryByText(/أو إعادة المحاولة/)).toBeNull();
   });
@@ -1172,7 +1173,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'تسليم نهائي' }));
     });
-    const resultH1 = screen.getByText('مبروك — لقد اجتزت الاختبار!', { selector: 'h1' });
+    const resultH1 = screen.getByText('مبروك — اجتزت الاختبار!', { selector: 'h1' });
     expect(resultH1.className).toBe('oex-result-title');
     // R321 override (WP-B1b) — same seat as the done twin: the sheet
     // owns the size (see the pin above).
@@ -1272,7 +1273,7 @@ describe('exam window visibility (15-h P1-5)', () => {
 
     // Not-yet-open and closed exams keep their own dated group, carry
     // their schedule chips, and are not presented as startable links.
-    expect(screen.getByText('اختبارات غير متاحة الآن')).toBeTruthy();
+    expect(screen.getByText('غير متاحة الآن')).toBeTruthy();
     expect(screen.getByText(/يفتح /)).toBeTruthy();
     expect(screen.getByText('أغلق باب التسليم')).toBeTruthy();
     expect(screen.queryByRole('link', { name: /اختبار لاحق/ })).toBeNull();

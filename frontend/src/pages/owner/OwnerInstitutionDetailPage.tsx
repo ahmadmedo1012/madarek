@@ -144,7 +144,7 @@ function OwnerFacultyCard({
           <span className="admin-faculty-name">{faculty.name}</span>
           {duplicateCount > 1 && (
             <span
-              title={`${duplicateCount} سجلات متطابقة بلا محتوى في قاعدة البيانات — تُعرض هنا مجمّعةً في بطاقة واحدة، والسجلات كما هي`}
+              title={`${duplicateCount} سجلات متطابقة بلا محتوى — مجمّعة هنا، والسجلات كما هي`}
             >
               <Badge>سجلّ مكرّر ×{duplicateCount}</Badge>
             </span>
@@ -428,7 +428,7 @@ export function OwnerInstitutionDetailPage() {
           <EmptyState
             icon={Landmark}
             title="المؤسسة غير موجودة"
-            description="قد تكون حُذفت أو تغيّر معرّفها. عد إلى قائمة المؤسسات واخترها من هناك."
+            description="حُذفت أو تغيّر معرّفها — عد إلى قائمة المؤسسات واخترها."
             action={(
               <Link to="/owner/institutions" className="btn primary sm">
                 <Icon icon={ArrowLeft} size={13} />
@@ -518,7 +518,7 @@ export function OwnerInstitutionDetailPage() {
           color="amber"
           icon={AlertTriangle}
           title="هذه المؤسسة معلّقة"
-          description="التعديلات الأكاديمية (كليات، أقسام، مقرّرات، شُعب) متاحة للمؤسسات النشطة فقط. فعّل المؤسسة من قائمة المؤسسات أولًا."
+          description="التعديلات الأكاديمية للمؤسسات النشطة فقط — فعّل المؤسسة من قائمة المؤسسات أولًا."
         />
       )}
 
@@ -599,7 +599,7 @@ export function OwnerInstitutionDetailPage() {
                           {entry.duplicateCount > 1 && (
                             <>
                               {' · '}
-                              <span title={`${entry.duplicateCount} سجلات متطابقة بلا محتوى في قاعدة البيانات — تُعرض هنا مجمّعةً، والسجلات كما هي`}>
+                              <span title={`${entry.duplicateCount} سجلات متطابقة بلا محتوى — مجمّعة، والسجلات كما هي`}>
                                 سجلّ مكرّر ×{entry.duplicateCount}
                               </span>
                             </>
@@ -625,7 +625,7 @@ export function OwnerInstitutionDetailPage() {
               <EmptyState
                 icon={Building2}
                 title="لا كليات بعد في هذه المؤسسة"
-                description="أنشئ أول كلّيّة من الزر أعلاه — بعدها يمكنك إضافة الأقسام والمقرّرات وشُعبها."
+                description="أنشئ أول كلّيّة من الزر أعلاه — بعدها الأقسام والمقرّرات والشُّعب."
               />
             )}
           </div>
@@ -680,7 +680,7 @@ export function OwnerInstitutionDetailPage() {
                       <EmptyState
                         icon={BookOpen}
                         title="لا مقرّرات بعد"
-                        description="أضف أول مقرّر بعد إنشاء كلّيّة وقسم له — الشُّعب تُفتح من صف المقرّر."
+                        description="أضف أول مقرّر بعد إنشاء كلّيّة وقسم — الشُّعب من صف المقرّر."
                       />
                     </td>
                   </tr>
@@ -787,7 +787,7 @@ export function OwnerInstitutionDetailPage() {
           <FormField
             label="المدينة"
             id="owner-faculty-city"
-            hint="مطلوب — الكلّيّات تتميّز بالاسم داخل كل مدينة؛ الزرّ يبقى معطّلًا بدونه"
+            hint="مطلوب — الكلّيّات تتميّز بالاسم داخل كل مدينة"
           >
             <input
               className="input"
@@ -934,7 +934,7 @@ export function OwnerInstitutionDetailPage() {
           <FormField
             label="الساعات المعتمدة"
             id="owner-course-credits"
-            hint="بين 1 و10 — الحدّ الذي يقبله الخادم؛ الزرّ يبقى معطّلًا خارجه"
+            hint="بين 1 و10 — الزرّ معطّل خارجه"
           >
             <input
               className="input"
@@ -1005,7 +1005,7 @@ export function OwnerInstitutionDetailPage() {
           <FormField
             label="الأستاذ"
             id="owner-offering-teacher"
-            hint="أساتذة هذه المؤسسة فقط — لا تُسند الشُّعب إلا لعضو هيئة تدريس نشط فيها"
+            hint="أساتذة هذه المؤسسة فقط — لا تُسند الشُّعب إلا لنشط فيها"
           >
             <select
               className="input"

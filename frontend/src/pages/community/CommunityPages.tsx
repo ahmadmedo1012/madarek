@@ -178,7 +178,7 @@ export default function CommunityPage() {
         index="01"
         eyebrow="الحياة الأكاديمية"
         title="المجتمع الجامعي"
-        description="إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية. المساحة الرسمية للحياة الأكاديمية اليومية."
+        description="إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية."
         actions={
           /* R342-11: the ALWAYS-ON header pair (the D7d/D11 measured
            * seat) — the hover axis + every role's phone-band primary.
@@ -311,7 +311,7 @@ export default function CommunityPage() {
             <RowList
               aria-label="قائمة المسابقات"
               loading={comps.isPending}
-              empty={<EmptyCell label="لا توجد مسابقات بعد" note="ستظهر هنا تحديات المعرفة والابتكار عند إعلانها." />}
+              empty={<EmptyCell label="لا توجد مسابقات بعد" note="تظهر المسابقات عند إعلانها." />}
             >
               {comps.data?.map((c) => <CompetitionCard key={c.id} competition={c} />)}
             </RowList>
@@ -343,7 +343,7 @@ export default function CommunityPage() {
             <RowList
               aria-label="قائمة الفعاليات"
               loading={events.isPending}
-              empty={<EmptyCell label="لا توجد فعاليات قادمة بعد" note="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها." />}
+              empty={<EmptyCell label="لا توجد فعاليات قادمة بعد" note="تظهر الفعاليات عند جدولتها." />}
             >
               {events.data?.map((e) => <EventCard key={e.id} event={e} />)}
             </RowList>
@@ -997,7 +997,7 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
             onPick={(ic) => form.setValue('iconEmoji', ic)}
           />
         </div>
-        {create.isError && <div className="auth-error">تعذَّر إنشاء الفعاليّة. تحقَّق من البيانات.</div>}
+        {create.isError && <div className="auth-error">تعذَّر إنشاء الفعاليّة — تحقَّق من البيانات.</div>}
         <ComposerModalActions
           requestClose={requestClose}
           pending={create.isPending}

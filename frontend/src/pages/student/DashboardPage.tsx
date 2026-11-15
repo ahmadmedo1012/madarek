@@ -639,15 +639,12 @@ export default function StudentDashboardPage() {
         <PageFrame width="default">
           <PageHeader
             title="لوحة التحكم"
-            description="معاينة لوحة الطالب — يحتاج هذا العرض إلى ملف طالب فعليّ."
           />
           <div className="card">
             <EmptyState
               icon={Eye}
               title="عرض معاينة"
-              description={`لوحة التحكّم هذه مخصّصة للطلّاب. أنت مسجَّل دخول كحساب ${
-                user?.role === 'OWNER' ? 'مالك المنصّة' : 'إداريّ'
-              }، لذلك تظهر لك صفحة معاينة فارغة. للاطّلاع على لوحة طالب حقيقيّة، استخدم حساب طالب مسجَّل أو زر صفحة كلّيّة من قائمة الكلّيّات.`}
+              description={`استخدم حساب طالب — أو اختر صفحة كلّيّة.`}
             />
           </div>
         </PageFrame>
@@ -941,7 +938,7 @@ export default function StudentDashboardPage() {
                CELL — the sheet's reserved-but-empty region (§B2). */
             <EmptyCell
               label="راحة"
-              note="لا حصص أو مهام أو اختبارات اليوم — أسبوعك القادم أدناه، ومقرّراتك تنتظرك في الأسفل."
+              note="لا حصص اليوم — أسبوعك القادم أدناه، ومقرّراتك في الأسفل."
             />
           }
         />
@@ -985,7 +982,7 @@ export default function StudentDashboardPage() {
                catalog link as its ONE action. */
             <EmptyCell
               label="لا مقرّرات بعد"
-              note="لم تُسجَّل في مقرّرات هذا الفصل بعد — دليل المقرّرات يعرض ما تقدّمه كلّيّتك."
+              note="لم تُسجَّل بعد — دليل المقرّرات يعرض ما تقدّمه كلّيّتك."
               action={<Link to="/student/catalog" className="btn ghost sm">دليل المقرّرات</Link>}
             />
           ) : (
@@ -1014,7 +1011,7 @@ export default function StudentDashboardPage() {
           ) : topGaps.length === 0 ? (
             <EmptyCell
               label="لا فجوات بعد"
-              note="لا فجوات مكتشفة بعد — أجب عن نقاط التفاعل في محاضراتك لترسم خريطة إتقانك."
+              note="لا فجوات بعد — أجب عن نقاط التفاعل لترسم خريطة إتقانك."
             />
           ) : (
             <RowList aria-label="أولوية سدّ الفجوات">
@@ -1093,7 +1090,7 @@ export default function StudentDashboardPage() {
             <span className="ind-microlabel">أسبوع الدراسة</span>
             <StreakTicks
               todayIndex={now.getDay()}
-              note="يُسجَّل تلقائيًا مع كل محاضرة تشاهدها — سجل الأسبوع يُعرض هنا"
+              note="يُسجَّل تلقائيًا مع كل محاضرة تشاهدها"
             />
           </div>
         </div>

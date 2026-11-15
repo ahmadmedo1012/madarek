@@ -136,7 +136,7 @@ export function PeopleDirectoryPage() {
     <PageFrame width="default">
       <PageHeader
         title="الدليل"
-        description="دليل التواصل المؤسسي: الطلاب والمدرّسون مع أرقام التواصل — وفق إعدادات الظهور لكل ملف."
+        description="الطلاب والمدرّسون مع أرقام التواصل — وفق إعدادات الظهور."
         actions={(
           <>
             {canEditFields && (
@@ -410,7 +410,7 @@ function FieldEditorPanel() {
         <div>
           <b className="text-sm">الحقول المخصصة للمؤسسة</b>
           <p className="text-xxs text-subtle">
-            حقول إضافية يظهر ملؤها في ملفات الطلاب والمدرّسين — تُدار هنا وتُعرض حيث صُمّمت.
+            حقول إضافية تُدار هنا وتُعرض في ملفات الطلاب والمدرّسين.
           </p>
         </div>
         <div className="r349p-fe-actions">
@@ -581,7 +581,7 @@ function FieldForm({ initial, onDone }: { initial: Partial<FieldDefinition>; onD
 
   const pending = create.isPending || update.isPending;
   const failure = (create.isError || update.isError)
-    ? 'تعذّر الحفظ — تحقّق من المفتاح والترتيب (قد يكونا محجوزين لحقل آخر)'
+    ? 'تعذّر الحفظ — تحقّق من المفتاح والترتيب (قد يكونان محجوزين)'
     : error;
 
   return (
@@ -1043,7 +1043,7 @@ function NotesTab({ id }: { id: string }) {
   if (q.isPending) return <Card><ListSkeleton rows={4} /></Card>;
   if (q.isError) return <Card><ErrorState error={q.error} message="تعذّر تحميل السجل" onRetry={() => q.refetch()} /></Card>;
   if (!q.data?.length) {
-    return <Card><EmptyCell label="سجل فارغ" note="لم يُقرأ هذا الملف ولم يُعدّل بعد — كل لمسة ستُسجّل هنا." /></Card>;
+    return <Card><EmptyCell label="سجل فارغ" note="لم يُقرأ ولم يُعدّل بعد — كل لمسة ستُسجّل هنا." /></Card>;
   }
   return (
     <Card>
@@ -1063,7 +1063,7 @@ function NotesTab({ id }: { id: string }) {
         ))}
       </div>
       <p className="r349p-note">
-        هذا سجل اللمسات على الملف (قراءة/تعديل/تصدير) — لا يحمل أي قيم بيانات شخصية.
+        سجل اللمسات على الملف (قراءة/تعديل/تصدير) — بلا قيم بيانات شخصية.
       </p>
     </Card>
   );

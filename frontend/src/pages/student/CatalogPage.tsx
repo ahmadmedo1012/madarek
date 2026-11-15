@@ -185,7 +185,7 @@ export default function CatalogPage() {
           .r305c-note anatomy lives in the family sheet, tokens only). */}
       <div role="note" className="r305c-note">
         <span><Icon icon={Info} size={15} /></span>
-        <span>التسجيل في المقرّرات يتم عبر مكتب المسجل العام — تواصل مع مؤسستك.</span>
+        <span>التسجيل عبر مكتب المسجل العام — تواصل مع مؤسستك.</span>
       </div>
 
       {/* Search bar — the LibraryPage GlobalSearch grammar: aria-label,
@@ -223,7 +223,7 @@ export default function CatalogPage() {
           <EmptyState
             icon={BookOpen}
             title="لم تُحدَّد مؤسستك بعد"
-            description="اختر مؤسستك من مبدّل المؤسسة في الشريط الأعلى لعرض دليل مقرّراتها."
+            description="اختر مؤسستك من مبدّل المؤسسة أعلاه لعرض دليلها."
           />
         </Card>
       ) : catalog.isPending ? (
@@ -237,7 +237,7 @@ export default function CatalogPage() {
             label={searching ? 'لا توجد مقرّرات تطابق البحث' : 'لا توجد مقرّرات بعد'}
             note={searching
               ? `لم نجد مقرّراً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
-              : 'لم تُضف مقرّرات إلى دليل مؤسستك حتى الآن — ستظهر هنا فور إضافتها من المسجل العام.'}
+              : 'لم تُضف مقرّرات لدليل مؤسستك بعد — تظهر فور إضافتها من المسجل العام.'}
           />
         </Card>
       ) : (
