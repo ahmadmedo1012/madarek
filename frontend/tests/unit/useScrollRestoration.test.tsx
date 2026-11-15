@@ -34,12 +34,6 @@ const flushFrames = async (n: number) => {
   for (let i = 0; i < n; i += 1) await flushFrame();
 };
 
-const sleep = (ms: number) =>
-  act(
-    async () =>
-      await new Promise<void>((resolve) => setTimeout(resolve, ms)),
-  );
-
 function Harness() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   useScrollRestoration(scrollerRef);
@@ -192,23 +186,40 @@ describe('useScrollRestoration', () => {
  * jsdom has no layout, so these two tests install a CLAMPING scrollTo
  * stub (faithful to a real scroller) scoped to themselves, with
  * clientHeight/scrollHeight defined on the scroller node.
+ *
+ * r356-L1: the short→tall flip used to ride a wall-clock
+ * setTimeout(20ms), but the assertion right after POP observes the
+ * SHORT state through a one-rAF flush (~16ms nominal) — a ~4ms margin
+ * that loses under worker load: CI run 43759156058 failed exactly
+ * this way on a docs-only commit, and 3/10 local runs under 2-core
+ * CPU stress reproduced the identical assertion. The payload landing
+ * is now TEST-CONTROLLED (the page stays SHORT until `land()` says
+ * the payload arrived) — same states, same assertions, no clock.
  */
 describe('useScrollRestoration — POP restores through the late content height (r305-A4)', () => {
   /** Shared, mutable "layout": the scroller reads these via getters. */
   function makeLateHarness() {
     const layout = { contentHeight: 100, clientHeight: 600 };
 
-    // The destination mounts SHORT (Suspense fallback / pre-data state)
-    // and grows once its payload lands (~20ms after mount).
+    // The destination's payload landing is test-controlled (r356-L1):
+    // the page stays SHORT until `land()` fires — the timing of the
+    // flip is the test's decision, not a wall-clock race (see the
+    // describe-block header).
+    let landPayload: (() => void) | null = null;
+
+    // The destination mounts SHORT (Suspense fallback / pre-data
+    // state) and grows once its payload lands.
     function LateHeightPage() {
       const [tall, setTall] = useState(false);
       useEffect(() => {
         layout.contentHeight = 100;
-        const t = setTimeout(() => {
+        landPayload = () => {
           layout.contentHeight = 2000;
           setTall(true);
-        }, 20);
-        return () => clearTimeout(t);
+        };
+        return () => {
+          landPayload = null;
+        };
       }, []);
       return <div>{tall ? 'late list tall' : 'late list short'}</div>;
     }
@@ -241,6 +252,9 @@ describe('useScrollRestoration — POP restores through the late content height 
             <LateHarness />
           </MemoryRouter>,
         ),
+      /** The destination's payload lands NOW (idempotent no-op while
+       *  unmounted — the remount after POP re-arms it). */
+      land: () => act(() => landPayload?.()),
     };
   }
 
@@ -265,12 +279,13 @@ describe('useScrollRestoration — POP restores through the late content height 
   }
 
   it('re-applies the stored offset once the destination height arrives', async () => {
-    const { layout, mountLate } = makeLateHarness();
+    const { layout, mountLate, land } = makeLateHarness();
     mountLate();
     const remove = installClampingStub(layout);
     try {
-      // Wait out the first mount's short→tall flip, then scroll for real.
-      await sleep(40);
+      // Land the first mount's payload, then scroll for real.
+      land();
+      await flushFrame();
       scrollToPosition(800);
 
       // PUSH to /detail → top; read a bit; then browser-back to /list.
@@ -286,8 +301,8 @@ describe('useScrollRestoration — POP restores through the late content height 
       expect(scrollerOf().textContent).toContain('late list short');
       expect(scrollerOf().scrollTop).toBe(0);
 
-      // The payload lands (~20ms) → the restore completes on its own.
-      await sleep(40);
+      // The payload lands → the restore completes on its own.
+      land();
       await flushFrames(6);
       expect(scrollerOf().textContent).toContain('late list tall');
       expect(scrollerOf().scrollTop).toBe(800);
@@ -297,11 +312,12 @@ describe('useScrollRestoration — POP restores through the late content height 
   });
 
   it('stands down the moment the user scrolls the container themselves', async () => {
-    const { layout, mountLate } = makeLateHarness();
+    const { layout, mountLate, land } = makeLateHarness();
     mountLate();
     const remove = installClampingStub(layout);
     try {
-      await sleep(40);
+      land();
+      await flushFrame();
       scrollToPosition(800);
       fireEvent.click(document.querySelector<HTMLButtonElement>('button')!);
       await flushFrame();
@@ -316,7 +332,7 @@ describe('useScrollRestoration — POP restores through the late content height 
       el.scrollTop = 120;
       fireEvent.scroll(el);
 
-      await sleep(40);
+      land();
       await flushFrames(6);
       expect(scrollerOf().textContent).toContain('late list tall');
       expect(scrollerOf().scrollTop).toBe(120);
