@@ -11,7 +11,8 @@
 import { Router } from 'express';
 import { prisma } from '../../db.js';
 import { env } from '../../env.js';
-import { buildIdFromEnv } from '../../lib/build-id.js';
+import { resolveBuildId } from '../../lib/build-id.js';
+import { BUILD_SHA } from '../../lib/build-sha.generated.js';
 import { logger } from '../../logger.js';
 /* R353 C2 — the AI mode label: 'chain' when ≥2 providers are
  * configured (the multi-provider failover chain), else the historical
@@ -20,7 +21,20 @@ import { getAiChain, isChainMode } from '../../lib/ai/providers.js';
 
 const router = Router();
 
-const BUILD_ID = buildIdFromEnv(env.RENDER_GIT_COMMIT ?? env.GIT_SHA);
+/**
+ * R353 — the SAME derived buildId as /api/v1/health: the build-time
+ * baked sha first (see lib/build-id.ts + scripts/bake-build-sha.mjs),
+ * then the runtime env chain. Evaluated AT REQUEST TIME (a memoized
+ * getter, not a boot-frozen const) because the Vercel entry fills
+ * process.env.GIT_SHA from api/build-sha.json AFTER this module loads
+ * but BEFORE the first request.
+ */
+const BUILD_ID = () =>
+  resolveBuildId(BUILD_SHA, {
+    RENDER_GIT_COMMIT: env.RENDER_GIT_COMMIT,
+    VERCEL_GIT_COMMIT_SHA: env.VERCEL_GIT_COMMIT_SHA,
+    GIT_SHA: process.env.GIT_SHA ?? env.GIT_SHA,
+  });
 /** The boot-frozen AI mode label (mode NAMES only — never keys). */
 const AI_MODE_LABEL = isChainMode(getAiChain()) ? 'chain' : env.AI_PROVIDER;
 
@@ -79,7 +93,7 @@ router.get('/status', async (_req, res) => {
       storageDriver: env.STORAGE_DRIVER,
       aiMode: AI_MODE_LABEL,
       mailProvider: env.MAIL_PROVIDER,
-      buildId: BUILD_ID,
+      buildId: BUILD_ID(),
       serverTime: new Date().toISOString(),
       tick,
       // r326 M0.7 — the mobile minimum-version gate: the native app

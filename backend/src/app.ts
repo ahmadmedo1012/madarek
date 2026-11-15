@@ -7,7 +7,6 @@ import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
-import { readFileSync } from 'node:fs';
 import { env } from './env.js';
 import { logger } from './logger.js';
 import { prisma } from './db.js';
@@ -257,38 +256,6 @@ export function createApp() {
     // zod-parsed env was already frozen by then. (R353 layer 2.)
     GIT_SHA: process.env.GIT_SHA ?? env.GIT_SHA,
   });
-  /* TEMPORARY R353 diagnostics (public, no secrets) — pinpoints which
-   * bake layer survives the function bundle. REMOVE once /health
-   * reports the true sha. */
-  app.get('/api/v1/build-debug', (_req, res) => {
-    let inlined = 'NOT-FOUND';
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const own = readFileSync(new URL(import.meta.url), 'utf8');
-      inlined = own.match(/BUILD_SHA\s*=\s*'([^']*)'/)?.[1] ?? 'NO-MATCH';
-    } catch {
-      inlined = 'READ-THREW';
-    }
-    let jsonState = 'READ-THREW';
-    try {
-      jsonState = readFileSync(
-        // the api/ sibling of this compiled file is not present in the
-        // bundle — this read tells us whether it is.
-        new URL('../../api/build-sha.json', import.meta.url),
-        'utf8',
-      ).slice(0, 100);
-    } catch (e) {
-      jsonState = `MISSING: ${(e as NodeJS.ErrnoException).code ?? 'unknown'}`;
-    }
-    res.json({
-      layer1_imported_BUILD_SHA: BUILD_SHA,
-      layer1_inlined_nearby: inlined,
-      layer2_env_GIT_SHA: process.env.GIT_SHA ?? null,
-      layer2_json_state: jsonState,
-      entryMetaUrl: import.meta.url,
-    });
-  });
-
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();
     // Race the DB ping against a 5s timeout so a sleepy Neon
