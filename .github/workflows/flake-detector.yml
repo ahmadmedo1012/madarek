@@ -1,0 +1,129 @@
+# R356 L1 — the nightly flake detector.
+#
+# The R356 hand-over opened with a red HEAD whose only failure was a
+# TIMING-DEPENDENT unit test (useScrollRestoration r305-A4: a 20ms
+# wall-clock flip racing a one-rAF flush — failed on CI run 43759156058
+# for a docs-only commit, reproduced 3/10 under 2-core CPU stress,
+# root-caused and fixed by making the payload landing test-controlled).
+#
+# A flake that only shows under load is invisible to a single CI pass:
+# main can be "green" on the pushed SHA and still carry a test that
+# fails 30% of the time on a busy runner. This workflow runs the
+# frontend unit suite THREE times on main every night:
+#
+#   · all 3 green              → green; auto-close any open episode
+#   · pass/fail DIVERGENCE     → a flake — open/update the rolling
+#                                `flake-detector` issue and fail LOUD
+#   · all 3 fail               → red main (CI should have caught it) —
+#                                also loud + issue (different message)
+#
+# The rolling-issue law is the same as release-freshness / tick-watch:
+# one open issue per device, comment on repeats, auto-close on green.
+name: Flake detector
+
+on:
+  schedule:
+    - cron: '17 3 * * *' # nightly 03:17 UTC (off-peak, after freshness)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: flake-detector
+  cancel-in-progress: false
+
+env:
+  RUNS: '3'
+
+jobs:
+  flake-scan:
+    name: Frontend unit suite x3 (divergence = flake)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - name: Run the frontend unit suite three times
+        id: runs
+        run: |
+          set -euo pipefail
+          PASS=0
+          FAIL=0
+          RESULTS=""
+          for i in $(seq 1 "$RUNS"); do
+            echo "::group::suite run $i/$RUNS"
+            if npm --prefix frontend run test > "suite-$i.log" 2>&1; then
+              PASS=$((PASS+1)); RESULTS="$RESULTS run$i=pass"
+            else
+              FAIL=$((FAIL+1)); RESULTS="$RESULTS run$i=fail"
+            fi
+            echo "::endgroup::"
+            SUMMARY=$(grep -E '^ +Tests ' "suite-$i.log" | tail -1 || echo "(no summary)")
+            echo "run $i: $RESULTS — $SUMMARY"
+            if [ "${RESULTS#*run$i=fail}" != "$RESULTS" ]; then
+              echo "----- failing tests (run $i) -----"
+              grep -E 'FAIL |AssertionError|Expected:|Received:|Timeout' "suite-$i.log" | head -40 || true
+            fi
+          done
+          echo "pass=$PASS fail=$FAIL" >> "$GITHUB_OUTPUT"
+          echo "VERDICT: $PASS/$RUNS passed, $FAIL/$RUNS failed"
+          # Divergence (some pass, some fail) = FLAKE — the target of
+          # this detector. All-fail = red main (CI's job, but loud too).
+          if [ "$PASS" -gt 0 ] && [ "$FAIL" -gt 0 ]; then
+            echo "verdict=flake" >> "$GITHUB_OUTPUT"
+          elif [ "$FAIL" -eq 0 ]; then
+            echo "verdict=green" >> "$GITHUB_OUTPUT"
+          else
+            echo "verdict=red-main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Alert (flake or red main)
+        if: steps.runs.outputs.verdict == 'flake' || steps.runs.outputs.verdict == 'red-main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERDICT: ${{ steps.runs.outputs.verdict }}
+          PASS: ${{ steps.runs.outputs.pass }}
+          FAIL: ${{ steps.runs.outputs.fail }}
+        run: |
+          set -euo pipefail
+          STAMP="$(date -u +%FT%TZ)"
+          if [ "$VERDICT" = flake ]; then
+            TITLE="flake-detector: frontend suite غير مستقر — $PASS/$RUNS فقط"
+            BODY="اختبار الواجهة فشل في بعض التشغيلات ونجح في أخرى (flake) — هذا يعني أن main قد يبدو أخضر وهو يحمل اختبارًا غير مستقر.
+          النتيجة: $PASS نجاح / $FAIL فشل من $RUNS تشغيلات — $STAMP
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          هذا إشعار آلي من flake-detector.yml (R356 L1). أصلح السبب الجذري — لا تُضعف الاختبار."
+          else
+            TITLE="flake-detector: frontend suite أحمر في كل التشغيلات — main مكسور"
+            BODY="فشلت كل التشغيلات ($FAIL/$RUNS) — main نفسه أحمر الليلة (كان يفترض أن تلتقطه CI).
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          هذا إشعار آلي من flake-detector.yml (R356 L1)."
+          fi
+          gh label create flake-detector --color D93F0B --description "flaky frontend suite (R356 L1)" 2>/dev/null || true
+          ISSUE_URL=$(gh issue list --repo "$GITHUB_REPOSITORY" --label flake-detector --state open --json url --jq '.[0].url' || true)
+          if [ -n "$ISSUE_URL" ] && [ "$ISSUE_URL" != "null" ]; then
+            gh issue comment "$ISSUE_URL" --repo "$GITHUB_REPOSITORY" --body "ما زال قائمًا — $STAMP
+
+          $BODY"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --label flake-detector \
+              --title "$TITLE" --body "$BODY"
+          fi
+          exit 1
+
+      - name: Auto-close green episodes
+        if: steps.runs.outputs.verdict == 'green'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for ISSUE in $(gh issue list --repo "$GITHUB_REPOSITORY" --label flake-detector --state open --json number --jq '.[].number' || true); do
+            gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" \
+              --comment "المجموعة مستقرة (3/3 أخضر) — إغلاق تلقائي $(date -u +%FT%TZ)."
+          done
