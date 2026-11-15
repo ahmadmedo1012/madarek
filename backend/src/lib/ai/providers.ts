@@ -126,7 +126,11 @@ const KNOWN_PROVIDERS = {
     baseUrl: 'https://api.groq.com/openai/v1',
     keyEnv: 'GROQ_API_KEY',
     modelsEnv: 'AI_GROQ_MODELS',
-    defaultModels: ['llama-3.3-70b-versatile'],
+    // R355 C — llama-3.3-70b-versatile was decommissioned by Groq (404,
+    // selftest run 43702927621). The live catalogue (selftest samples)
+    // now centers on the gpt-oss family: 20b = the fast lane (short
+    // tasks), 120b = the larger reasoning fallback within the provider.
+    defaultModels: ['openai/gpt-oss-20b', 'openai/gpt-oss-120b'],
     timeoutMs: AI_PROVIDER_TIMEOUT_MS.groq,
   },
   openrouter: {
