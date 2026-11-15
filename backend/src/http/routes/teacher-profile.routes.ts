@@ -193,11 +193,13 @@ router.patch(
 // below stay — visibility-logic.test.ts pins them and the live router
 // reuses the same transition contract via modules/live/core.js.
 
-const lifecycleSchema = z.object({
+// R354 V3 lint-merge: the value is only referenced as a TYPE after the
+// shadowed handlers died — the eslint unused-vars law wants the _ prefix.
+const _lifecycleSchema = z.object({
   action: z.enum(['START', 'END', 'CANCEL']),
 }).strict();
 
-export type LiveSessionAction = z.infer<typeof lifecycleSchema>['action'];
+export type LiveSessionAction = z.infer<typeof _lifecycleSchema>['action'];
 
 // A session can only move FORWARD through its lifecycle:
 //   SCHEDULED → LIVE (START) | CANCELLED (CANCEL)

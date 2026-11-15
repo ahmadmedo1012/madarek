@@ -64,15 +64,37 @@ Symptom: `/api/v1/status` reported `03717fca8b92` (an R352 sha) across three R35
 - **96 golden Arabic cases** (target ≥80): A curriculum Q&A 20, B student-context 12, C leakage/jailbreak 16, D role boundaries 10, E hallucination traps 18, F Arabic-quality shapes 20. **42 scored offline** (the local composer + guards — CI-ratcheted), 54 live-only (the golden-run runner, exit-2 BLOCKED without creds — the ai-eval-live convention).
 - The deterministic AI seams (composer, guards, prompt builders) exported and pinned; 11/11 suite green.
 
+### 10. The completion session (2026-11-15, commits 7268672..2ecba74+)
+**CI red → green (three onion layers):**
+- `7268672` — parity gate RETIRES (the export pair was deliberately deleted in P4; the script now exits 0 with a loud message, re-activates if the pair returns) + 3 E2E realignments (copy-diet dialog texts) + ai.css gap token. CI on 9e6ccfe had: parity ENOENT, admin-confirm, quality-moderation ×2.
+- `0ddf853` — the gates the parity fix unmasked: RegisterPage note joins the one-term law («مالك المنصة»), r305 vision assertion rides the diet copy. rename-ledger + all 8 design gates PASS.
+- `99dfe80` — **deploy-vercel.yml rebuilt on reality**: every recent production deployment was created by the Vercel GitHub integration (proof: one READY deployment per sha incl. shas whose workflow died pre-deploy); the workflow's pin step 404'd since RENDER_GIT_COMMIT was deleted (obsolete — the bake works). Now: CI-wait → poll /health until buildId == sha → live smoke. No double deploy.
+- `2ecba74` merge family — R354's V2/V3 integrated (selftest route + the richer Firebase checklist won the add/add), lint touch-up (`_lifecycleSchema`).
+
+**LANE N — the whole lane landed (backend `d63df6a`-family + mobile):**
+- Backend: receipts processing + dead-token pruning via receipt errors, NotificationPreference += pushEnabled/quietStart/quietEnd (migration `20261116090000_r353_n_push_prefs`, additive, applied by the deploy — pre-migration backup: NotificationPreference was EMPTY, 46-migration ledger recorded), GET/PUT /me/push-preferences, quiet hours [start,end) UTC with wrap-around (pure isQuietHour, branch-pinned), PUSH_ENABLED default true, the reminder sweep now writes bell rows + pushes (it was mail-ONLY), collapseId + subtitle + stable data.link. 61/61 new/adjacent tests; backend 2537 passed on the merged tree.
+- Mobile: channels-before-ask (alerts=HIGH+sound+PUBLIC, default=DEFAULT fallback — Android 8+ auto-creation would bake silent settings exactly when FCM lands), honest registration outcomes (granted-but-unregistered → retry card; OS denial → one line + open-settings button), guarded deep links (cold-start parked → entry routers consume via resolveEntryDestination; warm tap routes/parks), badge law (inbox open = eraser, foreground re-clear), foreground presentation unmuted. 22 new tests; mobile 1250 passed.
+- **The push truth (R354 V3 ratified + this session's evidence)**: Android pushes remain BLOCKED on FCM v1 credentials — the ONE owner page is docs/PUSH-FIREBASE-CHECKLIST.md (Arabic, ~15 min). Everything else ships.
+
+**LANE P1 — the page ledger COMPLETED (`d71969b`):**
+- **110 route-crawls** (public 28 incl. the 5 headline surfaces at the FULL 5 widths, student 36, teacher 19, admin/registrar 14, quality 10, owner 13) × light+dark, hermetic per-role seeds, 981 evidence screenshots → `docs/QA/page-ledger.md`.
+- **Verdict: ZERO overlaps/clips/horizontal-scroll on every crawled page, every role, every width.** The ONE real defect (landing anno-2 title kissing the plan's «المكتبة والبحوث» label at 1024×768) FIXED in journey.css (the 992-1439 band moves anno-2 down one rung; the conformance spec skips annotation geometry) and re-verified clean at all 5 widths × both themes.
+- 4 probe false-positive classes closed in the probe (closed `<details>` phantoms ×1266 on /help, sr-only/visually-hidden in the text set, 2 more), 3 intentional-chrome allowlist entries with written reasons (8 total).
+
+**LANE C4 live — the provider table (48 golden turns through production):**
+- `scripts/qa/ai-eval-prod.mjs` + `docs/redesign/r353/AI-EVAL-LIVE.md`: gemini-2.5-flash WORKS from Vercel (16 turns, ~5.4s avg, best Arabic) — **the owner's unusual-shape key is VALID; NO new key needed**. Gemini free-tier 429s under load → breaker → chain walks (as designed). OpenRouter free 50/day wall. 12/12 hallucination traps refused politely across both arms. Local composer: honest terminal fallback, always answers.
+- **The Groq mystery CLOSED (R354 V2 selftest + this session)**: the key is VALID (models list 200 from inside the production function) — `llama-3.3-70b-versatile` is DECOMMISSIONED (404). Fixed: `AI_GROQ_MODELS=openai/gpt-oss-20b,qwen/qwen3.8-27b` set on Vercel (production+preview) — live ids from the selftest's own sample. The legacy `AI_MODELS` dead slug (`nvidia/nemotron-3-super-120b-a12b:free` → 404) also removed (REST-API patched after a CLI-stdin corruption was caught and repaired).
+
 ## Verification summary (this session's gates)
-- `verify.sh --fast`: PASS on the merged main (frontend tsc + vitest 3054+ + bundle gate + CSS ratchet + identity + brand + copy-budget).
-- Backend full suite (worktrees): 2432-2440 passed (F lane), 2451 (C lane), search eval 22 suites.
-- Mobile jest: 1228 passed (R3 lane).
-- Production: `/api/v1/status` buildId = HEAD, `aiMode: chain`, db ok.
+- `verify.sh --fast`: PASS on the merged main (frontend tsc + vitest 3072 + bundle 768.5/774 KB + CSS ratchet + identity + brand + copy-budget).
+- Backend full suite: **2537 passed | 19 skipped** (129 files + the DB-gated contract suite) on the merged tree.
+- Mobile jest: **1250 passed** (49 suites).
+- Production: buildId = HEAD, `aiMode: chain`, db ok, migration applied.
 
 ## Open items (owner actions first)
-1. **Firebase checklist** (push on Android): the ONE page — docs/PUSH-FIREBASE-CHECKLIST.md. ~10 minutes in the Firebase console; then we do the EAS upload + rebuild.
-2. **A fresh Gemini key** (this one is geo-blocked/unusual shape `AQ.Ab8…` — rejected from this sandbox; Groq key also 403 from here — both need validation from Vercel/the owner's machine; the chain falls back automatically meanwhile).
-3. Copy wave 2 completion (the ratchet protects every cut already made).
-4. The full P1 ledger verdict table (crawl results this session; the harness is now re-runnable in CI).
-5. R352 carry-over queue (lane G accounts, remaining A, W/T/V/Q, Z alias) — untouched this round by priority.
+1. **Firebase checklist** (push on Android): the ONE page — docs/PUSH-FIREBASE-CHECKLIST.md. ~15 minutes in the Firebase console; then we do the EAS upload + rebuild + emulator proof.
+2. ~~A fresh Gemini key~~ CLOSED — the key is valid from production (16 live turns + the R354 selftest from fra1). Groq: key valid, models fixed (live ids now set).
+3. Copy wave 2: enforced at −8.7% (19,637 Arabic words vs 21,504 baseline); the ratchet protects every cut. The ≥40% target stays open for the next diet wave.
+4. ~~The full P1 ledger~~ COMPLETED — docs/QA/page-ledger.md (110 crawls, zero defects).
+5. Param-route fixtures for the ledger's 13 unresolved detail routes (honest 501 states today).
+6. R352 carry-over queue (lane G accounts, remaining A, W/T/V/Q, Z alias) — untouched this round by priority.

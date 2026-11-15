@@ -25,13 +25,14 @@
 
 | المتغيّر | النطاق | ملاحظات |
 |---|---|---|
-| `GEMINI_API_KEY` + `AI_GEMINI_MODELS` | production + preview | الطراز الافتراضي `gemini-2.5-flash`؛ المهام الطويلة/العربية الدقيقة |
-| `GROQ_API_KEY` + `AI_GROQ_MODELS` | production + preview | الافتراضي `llama-3.3-70b-versatile`؛ السريع/القصير |
-| `OPENROUTER_API_KEY` + `AI_OPENROUTER_MODELS` | اختياري | احتياط ثالث |
+| `GEMINI_API_KEY` + `AI_GEMINI_MODELS` | production + preview | الطراز الافتراضي `gemini-2.5-flash`؛ المهام الطويلة/العربية الدقيقة — **مُتحقَّق حيًّا من الإنتاج (R353/R354: 16+ دورًا ناجحًا + selftest من fra1)** |
+| `GROQ_API_KEY` + `AI_GROQ_MODELS` | production + preview | المفتاح سليم؛ الطراز الافتراضي القديم `llama-3.3-70b-versatile` **موقوف من Groq (404)** — المضبوط حيًّا: `openai/gpt-oss-20b,qwen/qwen3.8-27b` |
+| `OPENROUTER_API_KEY` + `AI_OPENROUTER_MODELS` | اختياري | احتياط ثالث — الحصّة المجانية 50 طلبًا/يوم |
+| `AI_MODELS` (القديم) | production + preview | درع openrouter الأخير — `cohere/north-mini-code:free,dots-studio/dots-3-note-preview:free` (أُزيل الطراز الميت `nvidia/nemotron-3-super-120b-a12b:free`) |
 | `AI_PROVIDERS` | اختياري (JSON) | يلغي القائمة الفردية إن وُجد — `[{"id","baseUrl","apiKeyEnv","models","timeoutMs"}]` |
 
 - قاطع دائرة لكل مزوّد (3 إخفاقات متتالية ← إغلاق 60 ثانية)؛ ميزانية الدوران 50 ثانية (سقف Vercel Hobby 60 ثانية)؛ `AiTelemetry.provider` يسجّل من أجاب فعلًا؛ `/ai/config` يعرض السلسلة بلا أسرار؛ `/api/v1/status` يقول `aiMode: chain`.
-- **تحقق المفاتيح من هذا الصندوق مستحيل** (حجب جغرافي: Groq 403، Gemini FAILED_PRECONDITION) — الاختبارات كلها عبر مزوّدات وهمية محلية؛ جدول التقييم الحي يتطلب التشغيل من Vercel أو جهاز المالك (`node scripts/ai-eval/golden-run.mjs`).
+- **التحقق الحي تم من الإنتاج** (R353 C4): 48 سؤالًا ذهبيًّا عبر `/ai/chat` الحقيقي — `node scripts/qa/ai-eval-prod.mjs` (الجدول الكامل في `docs/redesign/r353/AI-EVAL-LIVE.md`)؛ وفحص المزوّدات من داخل الدالة نفسها: `POST /api/v1/internal/ai-selftest` (سير عمل `ai-selftest.yml` — يتطلب CRON_SECRET). التحقق من صندوق التطوير يبقى مستحيلًا (حجب جغرافي للـ IP).
 
 ### الإشعارات (R353 N) — حالة الدفع الفعلية
 
