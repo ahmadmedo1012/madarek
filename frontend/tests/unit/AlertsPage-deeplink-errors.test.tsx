@@ -188,7 +188,7 @@ describe('AlertsPage — mark-all error banner (r165d D3)', () => {
     expect(banner).toHaveClass('form-feedback');
     expect(banner).toHaveClass('fail');
     expect(banner.textContent).toContain('تعذَّر تعليم الإشعارات كمقروءة');
-    expect(banner.textContent).toContain('تحقّق من اتصالك ثم أعد المحاولة');
+    expect(banner.textContent).toContain('أعد المحاولة');
   });
 
   it('«إعادة المحاولة» re-fires the SAME bulk mutation', () => {

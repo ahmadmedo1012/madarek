@@ -333,7 +333,7 @@ describe('ExamTemplateDetailPage — r170b author actions', () => {
     renderDetail('tpl-pending-1');
     fireEvent.click(await screen.findByRole('button', { name: /تعديل/ }));
 
-    expect(await screen.findByText(/يُلغي الاعتماد الحالي ويعيد القالب إلى مراجعة الجودة/)).toBeTruthy();
+    expect(await screen.findByText(/حفظ التعديل يُلغي الاعتماد ويعيد القالب إلى المراجعة/)).toBeTruthy();
   });
 
   it('the clone button posts and navigates to the new draft', async () => {

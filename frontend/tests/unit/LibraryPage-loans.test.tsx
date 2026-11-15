@@ -219,7 +219,7 @@ describe('LibraryPage — active loans list + return action', () => {
     await waitFor(() => expect(toast.error).toHaveBeenCalledTimes(1));
     // Non-API failure → the caller's Arabic fallback, never Latin prose.
     expect(toast.error).toHaveBeenCalledWith(
-      'تعذَّر الإرجاع — تحقّق من اتصالك وحاول مرة أخرى.',
+      'تعذَّر الإرجاع — تحقّق من اتصالك.',
     );
   });
 

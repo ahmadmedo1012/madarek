@@ -200,7 +200,7 @@ describe('ResultsPage — تسليمات بانتظار التقييم (the time
     renderPage();
 
     expect(screen.getByText('لا شيء بانتظار تقييم الأستاذ حالياً')).toBeTruthy();
-    expect(screen.getByText(/سيصلك إشعار لحظة رصد أي درجة جديدة/)).toBeTruthy();
+    expect(screen.getByText(/وسيصلك إشعار بأي درجة/)).toBeTruthy();
   });
 });
 

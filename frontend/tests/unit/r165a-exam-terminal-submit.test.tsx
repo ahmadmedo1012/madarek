@@ -292,6 +292,6 @@ describe('ExamTakerPage terminal submit answers (r165a)', () => {
     mocks.finish.mockResolvedValueOnce({ score: 8, maxScore: 10, status: 'GRADED', needsManual: 0, passed: true });
     await confirmSubmit();
     expect(mocks.finish).toHaveBeenCalledTimes(2);
-    expect(screen.getByText('مبروك — لقد اجتزت الاختبار!')).toBeTruthy();
+    expect(screen.getByText('مبروك — اجتزت الاختبار!')).toBeTruthy();
   });
 });

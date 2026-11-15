@@ -284,7 +284,7 @@ describe("r183-B3/R349-U3 — /student/university is the caller's OWN institutio
     renderUniversity(ANDALUS, ANDALUS_FACULTIES);
 
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('مؤسّسة الأندلس التعليميّة');
-    expect(screen.getByText(/مؤسّستك التعليميّة على منصّة مدارك/)).toBeInTheDocument();
+    expect(screen.getByText(/كليّات مؤسّستك المسجَّلة في منصّة مدارك/)).toBeInTheDocument();
 
     // The reference facts are dropped, never re-attributed.
     expect(screen.queryByText('سنة التأسيس')).toBeNull();

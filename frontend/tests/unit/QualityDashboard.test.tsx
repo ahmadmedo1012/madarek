@@ -184,7 +184,7 @@ describe('QualityDashboardPage — real payload, no fabricated KPIs', () => {
 
     // The subtitle equals the resolved header's copy — nothing moves on
     // the pending → resolved handoff.
-    expect(screen.getByText(/بناء نظام تعليمي فعّال/)).toBeInTheDocument();
+    expect(screen.getByText(/تطوير الأداء الأكاديمي والإداري والتقني/)).toBeInTheDocument();
     expect(screen.queryByText(/رؤية لحظية لسير العملية التعليمية/)).toBeNull();
   });
 });

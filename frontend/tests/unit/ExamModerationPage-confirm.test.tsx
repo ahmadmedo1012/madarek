@@ -78,7 +78,7 @@ describe('ExamModerationPage — reject is confirmed before it fires (A8 P2-3)',
 
     fireEvent.click(screen.getByRole('button', { name: /^رفض$/ }));
     expect(await screen.findByText('رفض قالب الاختبار')).toBeInTheDocument();
-    expect(screen.getByText(/لا يمكن التراجع عن هذا القرار/)).toBeInTheDocument();
+    expect(screen.getByText(/سيُرفض القالب ويُعاد لمؤلفه — لا تراجع/)).toBeInTheDocument();
     expect(mocks.moderate).not.toHaveBeenCalled();
   });
 

@@ -359,7 +359,7 @@ describe('AdminDashboardPage — action strip + navigable KPIs (§6 steps 1/3)',
     await screen.findByText('هيئة التدريس');
 
     // Only كلية الهندسة has students → one bar would carry no signal.
-    expect(await screen.findByText(/كلّيّة واحدة فقط لديها طلاب مسجَّلون/)).toBeInTheDocument();
+    expect(await screen.findByText(/كلّيّة واحدة لديها طلاب/)).toBeInTheDocument();
     const drill = screen.getByRole('link', { name: /عرض طلاب الكلّيّة/ });
     expect(drill.getAttribute('href')).toBe('/admin/students?facultyId=f1');
   });

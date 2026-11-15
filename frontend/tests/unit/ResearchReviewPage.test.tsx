@@ -281,7 +281,7 @@ describe('ReviewWorkspace — error language (15-j P0-1)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'تأكيد التقييم' }));
 
     const alert = await screen.findByRole('alert');
-    expect(alert).toHaveTextContent('تعذَّر حفظ التقييم — تحقّق من اتصالك ثم أعد المحاولة.');
+    expect(alert).toHaveTextContent('تعذَّر حفظ التقييم — أعد المحاولة.');
     expect(alert).not.toHaveTextContent('Already submitted');
     // The workspace stays put — the failure is never silent and the
     // draft is never destroyed by it.
