@@ -19,6 +19,7 @@ backend/scripts/*
 !backend/scripts/migrate-deploy.mjs
 !backend/scripts/storage-to-blob.mjs
 !backend/scripts/db-diagnostics.mjs
+!backend/scripts/bake-build-sha.mjs
 scripts/*
 !scripts/warn-node-env.mjs
 *.md
