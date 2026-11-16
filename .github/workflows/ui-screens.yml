@@ -141,10 +141,8 @@ jobs:
             adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
             adb shell wm dismiss-keyguard || true
             adb shell settings put system font_scale "$FONT_SCALE"
-            if [ "$VIEWPORT" = small-360x640 ]; then
-              adb shell wm size 360x640
-              adb shell wm density 160
-            fi
+            test "$VIEWPORT" != small-360x640 || adb shell wm size 360x640
+            test "$VIEWPORT" != small-360x640 || adb shell wm density 160
             adb install -r "$APK"
             adb shell am start -n ly.madarek.mobile/.MainActivity
             sleep 8
@@ -154,8 +152,7 @@ jobs:
               > apps/mobile/build/screens/profile.txt
             # the flow writes into the CWD; keep it inside the workspace so
             # the upload step can find the shots
-            maestro test "$FLOW" -e THEME_LABEL="$THEME_LABEL" --test-output-dir apps/mobile/build/screens \
-              || { echo "::warning::the walk ended early — capturing what exists"; }
+            maestro test "$FLOW" -e THEME_LABEL="$THEME_LABEL" --test-output-dir apps/mobile/build/screens
             adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
             adb logcat -d > apps/mobile/build/screens/logcat.log
             ls -l apps/mobile/build/screens || true
