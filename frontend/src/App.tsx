@@ -63,6 +63,7 @@ const RegisterPage = lazy(() => import('./pages/RegisterPage'));
  * same GuestRoute seat (authed visitors bounce to their role home;
  * a signed-in visitor has no business resetting a password here). */
 const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'));
+const VerifyEmailPage = lazy(() => import('./pages/auth/VerifyEmailPage'));
 const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
 
 const StudentDashboardPage = lazy(() => import('./pages/student/DashboardPage'));
@@ -390,6 +391,9 @@ export function AppRoutes() {
               guest sheets live INSIDE the GuestRoute block. */}
           <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+          {/* r357 L2 — the emailed verification link lands here (the API
+              route exists since R350 E3; the SPA page did not). */}
+          <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
         </Route>
         {/* /auth is the canonical login route; /login is a legacy alias. */}
         <Route path={ROUTES.login} element={<Navigate to={ROUTES.auth} replace />} />

@@ -73,9 +73,56 @@ the new gate did NOT excuse it — the law works both ways).
 
 (the follow-up sha's runs appended once concluded)
 
+### 1.6 The follow-up sha's runs (1aa08883, rebased over the UI agent's PR #49 merge)
+
+- CI **success** (run 43812830583) — the typecheck repair landed green.
+- **Deploy Vercel success** (run 43812830590) — the FIRST live exercise of the new law:
+  verify job log shows `attempt 28/84: pass — CI green on this sha` (the new script's output),
+  then the buildId wait + live smoke green. Run URL:
+  https://github.com/ahmadmedo1012/madarek/actions/runs/43812830590
+- Size gate success (43812830514), deadcode success (43812830533).
+- `buildId` on production: `{"ok":true,"buildId":"1aa088837f73"}` == HEAD (2026-11-16 06:0x UTC).
+- Android — release APK: in progress at check time (no apps/mobile change in these shas;
+  final all-green check happens in L9).
+- NOT MINE, recorded for coordination: "UI screens (emulator, manual)" run 43813713084 failed
+  on 1aa08883 — `maestro test "$FLOW"` saw an empty FLOW ("Flow path does not exist:
+  …/madarek/"). That workflow is the UI agent's own QA deliverable (R357-UI A5); they are
+  actively iterating (new branch `wip/r358-ui`, fresh dispatches at 06:03 UTC). Left to them;
+  L7 needs its APK screens — revisit there if still broken.
+
 ## LANE 2 — accounts & student data on production
 
-(placeholder — evidence recorded as the lane lands)
+### 2.1 The surface build (commit 00ad0aa3, this session)
+
+Everything the R357 review found missing (its L2 map), closed in one commit:
+
+- `/auth/verify-email` SPA page — the API route existed since R350 E3; the emailed link 404'd
+  on the SPA. Now a real page (PAGE_TITLES + copy-budget born under the law 43/45).
+- Student photo: client WebP (canvas 640px/0.82, PNG fallback) → presigned client-direct PUT
+  (`profile-media` namespace) → confirm sniffs actual bytes; reads stream through
+  auth-checked routes (`/me/profile/photo`, `/people/:id/photo`) — no public URL, by design.
+- Important documents: `StudentDocument` model + migration
+  `20261116120000_r357_l2_student_documents`; ticket/confirm/list/delete + SHORT-LIVED
+  SIGNED read URLs — HMAC-SHA256(`doc:<id>:<exp>`) keyed by `JWT_ACCESS_SECRET`, 5-min TTL,
+  constant-time compare (`lib/doc-urls.ts`); the consumer mounts in `public-doc.routes.ts`
+  BEFORE the bare-/api/v1 routers (profiles/search would 401 a sessionless request).
+- Photo-ZIP bulk attach (registrar): presigned zip transport (20 MB, ImportUpload ticket
+  gate — an arbitrary key is a read primitive over the store and dies at the gate),
+  adm-zip unpack, pure planner `lib/photo-zip.ts` (stem = university-id; ambiguous =
+  refusal, never last-wins), one `photos-zip.apply` audit row.
+- Phone-search audit (the r356 gap): `/directory?phone=` + `/search/discover` phone queries
+  write `search.phone` rows — LENGTHS ONLY, never the number.
+- Deliberate NON-builds, stated once: guardian accounts stay contact-fields only (the
+  owner has not confirmed guardian accounts); phone LOGIN is not built — phone is a
+  search/directory identifier, not a credential (unverified-phone login would be a
+  takeover vector; needs SMS verification first — none exists today); staff registration
+  stays invitation/admin-created (the register guard is by design).
+
+Local gates: `verify.sh --fast` FAST PASS; backend vitest **2588 passed / 19 skipped**;
+23 new tests (`r357-l2-pure` 12: the doc-URL law, the zip planner, the sniffers;
+`r357-l2-routes` 11: honest 503s, key-shape gates, audit rows, signed-consumer 403/404).
+
+(e2e-on-production evidence: §2.2, once the workflow runs)
 
 ## LANE 3 — mail
 

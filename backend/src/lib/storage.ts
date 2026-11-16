@@ -68,7 +68,11 @@ export interface StorageDriver {
 // design (deleted on commit + pruned after 24 h by the tick): the blob
 // is only the client-direct TRANSPORT that keeps 10 MB rosters out of
 // the function body (Vercel ≈4.5 MB request cap).
-export const STORAGE_NAMESPACES = ['papers', 'materials', 'lectures', 'imports'] as const;
+// r357 L2: 'profile-media' — student photos, important documents and
+// the registrar's photo-ZIP transport. Private objects, NEVER public
+// URLs: photos/documents stream through access-checked routes and
+// documents additionally ride short-lived signed URLs.
+export const STORAGE_NAMESPACES = ['papers', 'materials', 'lectures', 'imports', 'profile-media'] as const;
 export type StorageNamespace = (typeof STORAGE_NAMESPACES)[number];
 
 /**
@@ -158,6 +162,14 @@ export function storageKeyIsValid(key: string): boolean {
     // driver on ALL three drivers — proven live on the local stack
     // (audits/evidence/r327/p4/b2/).
     return isVideoFilename(filename) || filename.toLowerCase().endsWith('.vtt');
+  }
+  if (namespace === 'profile-media') {
+    // r357 L2 — student photos (webp/png), important documents
+    // (pdf/webp/png) and the registrar's transient photo-ZIP transport.
+    // Bare filenames, server-minted cuid stems (the ticket routes mint
+    // the key; the ext is the one the presign scoped). The zip is
+    // consumed once by the process route and never read back.
+    return /^c[0-9a-f]{32}\.(webp|png|pdf|zip)$/i.test(filename);
   }
   return false;
 }

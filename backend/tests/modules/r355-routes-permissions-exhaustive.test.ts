@@ -324,6 +324,7 @@ const PUBLIC_ROUTES: Readonly<Record<string, string>> = {
   'POST /api/v1/me/milestones/:id/fire': 'internal service-token gate (x-internal-service-token; fail-closed without INTERNAL_SERVICE_TOKEN)',
   'POST /api/v1/internal/tick': 'cron probe — CRON_SECRET bearer gate inside',
   'POST /api/v1/internal/ai-selftest': 'AI provider probe — CRON_SECRET bearer gate inside (owner-only by construction)',
+  'GET /api/v1/files/documents/:id': 'r357 L2 signed document read — the HMAC signature IS the credential (5-min TTL, constant-time compare, lib/doc-urls.ts)',
 };
 
 // ── Part B: the route → matrix-resource map ───────────────────────────

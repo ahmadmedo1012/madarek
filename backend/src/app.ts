@@ -47,6 +47,10 @@ import permissionsRoutes from './http/routes/permissions.routes.js';
 import searchRoutes from './http/routes/search.routes.js';
 import teacherProfileRoutes from './http/routes/teacher-profile.routes.js';
 import filesRoutes from './http/routes/files.routes.js';
+// r357 L2 — the signed-URL document consumer: mounts BEFORE the
+// bare-/api/v1 routers with their router-wide authMiddleware (a
+// signed URL carries no session — profiles/search would 401 it).
+import publicDocRoutes from './http/routes/public-doc.routes.js';
 import statusRoutes from './http/routes/status.routes.js';
 import ownerRoutes from './http/routes/owner.routes.js';
 import collegesRoutes from './http/routes/colleges.routes.js';
@@ -311,6 +315,10 @@ export function createApp() {
   // regardless of rate-limit pressure on the API (it is a tiny,
   // secret-free SELECT 1 + mode names).
   app.use('/api/v1', statusRoutes);
+
+  // r357 L2 — signed document reads: BEFORE every authed router (see
+  // the import block note). One route, HMAC-verified, minutes-scale TTL.
+  app.use('/api/v1/files', publicDocRoutes);
 
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/users', usersRoutes);

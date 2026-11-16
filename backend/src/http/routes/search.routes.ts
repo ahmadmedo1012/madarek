@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { Prisma } from '@prisma/client';
 import type { Role } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -43,6 +44,21 @@ import {
 } from '../../modules/search/global.js';
 import { getGovernanceScope } from '../../lib/governance.js';
 import { unexpiredAnnouncementFilter } from './social.routes.js';
+
+/** r357 L2 — one audit row (the profiles.routes convention, copied so
+ * this surface does not import the whole router for one helper). */
+async function audit(
+  userId: string,
+  institutionId: string | null,
+  action: string,
+  resourceType: string,
+  resourceId: string,
+  metadata: Prisma.InputJsonValue,
+): Promise<void> {
+  await prisma.auditLog.create({
+    data: { userId, institutionId, action, resourceType, resourceId, metadata },
+  });
+}
 
 const router = Router();
 router.use(authMiddleware);
@@ -626,6 +642,14 @@ router.get('/search/discover', async (req, res, next) => {
     // rides the arm's own profile filter (E5 — the scope.students pin
     // cannot reach inside an OR arm).
     const phoneArm = scope.phoneSearch ? phoneMatchArm(plan, institutionId, scopeFacultyId) : null;
+
+    // r357 L2 — a phone search on /search/discover IS audited (the
+    // /directory + /people/:id convention: LENGTHS ONLY, no values).
+    if (scope.phoneSearch && plan.isPhoneQuery) {
+      await audit(userId, institutionId, 'search.phone', 'DiscoverQuery', 'discover', {
+        surface: 'discover', digits: plan.phoneDigits?.length ?? 0, categories,
+      });
+    }
 
     // r353-F bugs 2+3 — the registrar's identifier arms: student number
     // (exact via the (institutionId, universityId) unique index, then

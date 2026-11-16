@@ -629,6 +629,8 @@ model StudentProfile {
 
   // master-E1 — قيم الحقول المخصصة المرتبطة بهذا الملف.
   fieldValues FieldValue[]
+  // r357 L2 — الوثائق المهمة (signed-URL reads).
+  documents StudentDocument[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -645,6 +647,29 @@ model StudentProfile {
   // r349-P1 — مطابقة الرقم الوطني عبر الهاش (الاستيراد/الدليل) بلا
   // فهرسة الخام ولا تعريضه في سجلات الاستعلام.
   @@index([nationalIdHash])
+}
+
+// ─── r357 L2 — الوثائق المهمة للطالب (signed-URL reads) ──────────────
+// كل وثيقة كائن خاص في التخزين (Blob/مسار خاص)؛ القراءة تمرّ دائمًا عبر
+// رابط موقّع قصير العمر (lib/doc-urls.ts) ولا يوجد عنوان عام لأي وثيقة.
+model StudentDocument {
+  id               String   @id @default(cuid())
+  studentProfileId String
+  /// العنوان كما كتبه الطالب/الموظف — نص عربي قصير
+  titleAr          String   @db.VarChar(160)
+  /// نوع الوثيقة (تصنيف حر من قائمة مسموحة)
+  kind             String   @db.VarChar(40)
+  /// مفتاح التخزين تحت مساحة profile-media/ (لا عنوان عام)
+  storageKey       String   @unique
+  contentType      String   @db.VarChar(80)
+  sizeBytes        Int
+  uploadedBy       String
+  institutionId    String?
+  createdAt        DateTime @default(now())
+
+  studentProfile StudentProfile @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+
+  @@index([studentProfileId])
 }
 
 model TeacherProfile {

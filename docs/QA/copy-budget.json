@@ -379,6 +379,11 @@
       "baseline": 136,
       "class": "public",
       "max": 74
+    },
+    "auth/VerifyEmailPage.tsx": {
+      "baseline": 43,
+      "class": "public",
+      "max": 45
     }
   },
   "meta": {

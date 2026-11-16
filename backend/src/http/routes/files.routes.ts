@@ -23,6 +23,11 @@ import { MAX_PRESIGN_EXPIRES_SEC } from '../../lib/storage-presign.js';
 
 const router = Router();
 
+// r357 L2 — the signed-URL consumer GET /files/documents/:id lives in
+// public-doc.routes.ts (mounted BEFORE this file in app.ts): this
+// router's router-wide authMiddleware would 401 it — a signed URL
+// carries no session by design.
+
 router.use(authMiddleware);
 
 // ─── Pure guard layer (tests/modules/files-guard.test.ts) ──────────

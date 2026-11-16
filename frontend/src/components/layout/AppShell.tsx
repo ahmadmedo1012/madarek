@@ -102,6 +102,8 @@ const PAGE_TITLES: Record<string, string> = {
   '/500': 'خطأ في الخادم',
   '/403': 'غير مصرّح',
   '/maintenance': 'صيانة دورية',
+  /* r357 L2 — the emailed verification link's landing page (guest). */
+  '/auth/verify-email': 'تأكيد البريد الإلكتروني',
 };
 
 const DYNAMIC_TITLES: Array<[RegExp, string]> = [

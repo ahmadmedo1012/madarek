@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { Response } from 'express';
 import { z } from 'zod';
 import { Prisma, Role } from '@prisma/client';
 import ExcelJS from 'exceljs';
@@ -13,6 +14,17 @@ import {
   resolveCallerInstitutionScope,
 } from '../../lib/profile-scoping.js';
 import { normalizePhone } from '../../lib/phones.js';
+import {
+  buildStorageKey,
+  generateStorageId,
+  getStorage,
+  storageKeyIsValid,
+  VercelBlobDriver,
+} from '../../lib/storage.js';
+import { mintDocSignature } from '../../lib/doc-urls.js';
+import { planPhotoZip, PHOTO_ZIP_MAX_ENTRIES } from '../../lib/photo-zip.js';
+import { env } from '../../env.js';
+import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { prepareNationalId } from '../../lib/profiles/national-id.js';
 import {
   canViewPeople,
@@ -703,6 +715,14 @@ router.get('/directory', validate(directoryQuerySchema, 'query'), async (req, re
     // columns (prefix match — the registrar types half a number).
     const phoneDigits = phone ? phone.replace(/\D/g, '') : '';
 
+    // r357 L2 — a phone search on the directory IS audited (no values:
+    // length + which arms matched, the people.read convention).
+    if (phoneDigits.length >= 4) {
+      await audit(req.user!.id, scope, 'search.phone', 'DirectoryQuery', phoneDigits.slice(0, 3), {
+        surface: 'directory', digits: phoneDigits.length, kind,
+      } as Prisma.InputJsonValue);
+    }
+
     if (kind === 'student') {
       const teacherRoster = role === Role.TEACHER
         ? { some: { offering: { teacherId: req.user!.id, course: { department: { faculty: { institutionId: scope } } } } } }
@@ -1244,4 +1264,398 @@ router.delete(
   },
 );
 
+/* ════════════════════════════════════════════════════════════
+   r357 L2 — student photo · important documents · photo-ZIP ·
+   the rest of this file is the accounts/student-data lane.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── pure guards (exported for tests) ─────────────────────────── */
+
+/** Sniff the actual bytes: 'webp' | 'png' | null — never the
+ *  client's claim. WebP = RIFF….WEBP; PNG = \x89PNG\r\n\x1a\n. */
+export function sniffImageKind(buf: Buffer): 'webp' | 'png' | null {
+  if (buf.length >= 12 && buf.readUInt32BE(0) === 0x52494646 && buf.toString('ascii', 8, 12) === 'WEBP') return 'webp';
+  if (buf.length >= 8 && buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47 && buf[4] === 0x0d && buf[5] === 0x0a && buf[6] === 0x1a && buf[7] === 0x0a) return 'png';
+  return null;
+}
+
+/** \u0000PDF- start. */
+export function sniffPdfMagic(buf: Buffer): boolean {
+  return buf.length >= 5 && buf.toString('ascii', 0, 5) === '%PDF-';
+}
+
+const PHOTO_EXT: Record<string, string> = { 'image/webp': 'webp', 'image/png': 'png' };
+const DOC_TYPES: Record<string, string> = {
+  'application/pdf': 'pdf',
+  'image/png': 'png',
+  'image/webp': 'webp',
+};
+const PHOTO_MAX_BYTES = 2 * 1024 * 1024;
+const DOC_MAX_BYTES = 10 * 1024 * 1024;
+const PHOTO_ZIP_MAX_BYTES = 20 * 1024 * 1024;
+const PRESIGN_TTL_MS = 10 * 60_000;
+
+function presignUnsupported(): AppError {
+  return new AppError('INTERNAL', 'الرفع المباشر يتطلب تخزين Blob مهيّأً — الوضع الحالي لا يدعمه', 503);
+}
+
+async function requireBlobDriver() {
+  const storage = getStorage();
+  if (!(storage instanceof VercelBlobDriver)) throw presignUnsupported();
+  return storage;
+}
+
+const mediaLimiter = createRouteLimiter({ max: 30 });
+
+/* ── student photo (client WebP; PNG accepted as the e2e/fallback) ── */
+
+const photoTicketSchema = z.object({
+  contentType: z.enum(['image/webp', 'image/png']),
+  sizeBytes: z.number().int().positive().max(PHOTO_MAX_BYTES),
+});
+
+router.post('/me/profile/photo-ticket', mediaLimiter, validate(photoTicketSchema, 'body'), async (req, res, next) => {
+  try {
+    if (req.user!.role !== Role.STUDENT) throw AppError.forbidden('صورة الملف تُرفع من حساب الطالب نفسه');
+    const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!scope) throw institutionContextRequiredError();
+    const profile = await withRetry(() => prisma.studentProfile.findFirst({
+      where: { userId: req.user!.id, institutionId: scope }, select: { id: true },
+    }));
+    if (!profile) throw AppError.notFound('لا يوجد ملف طالب لهذا المستخدم في مؤسسته الحالية');
+
+    const storage = await requireBlobDriver();
+    const ext = PHOTO_EXT[req.body.contentType as keyof typeof PHOTO_EXT];
+    const key = buildStorageKey('profile-media', `${generateStorageId()}.${ext}`);
+    const { uploadUrl } = await storage.presignClientPut(key, {
+      allowedContentType: req.body.contentType as string,
+      maximumSizeInBytes: PHOTO_MAX_BYTES,
+      validUntilMs: Date.now() + PRESIGN_TTL_MS,
+    });
+    res.json({ data: { mode: 'client-upload' as const, key, uploadUrl, validUntilMs: Date.now() + PRESIGN_TTL_MS } });
+  } catch (e) { next(e); }
+});
+
+const photoConfirmSchema = z.object({ key: z.string().min(6).max(120) });
+
+router.post('/me/profile/photo-confirm', mediaLimiter, validate(photoConfirmSchema, 'body'), async (req, res, next) => {
+  try {
+    if (req.user!.role !== Role.STUDENT) throw AppError.forbidden();
+    const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!scope) throw institutionContextRequiredError();
+    const profile = await withRetry(() => prisma.studentProfile.findFirst({
+      where: { userId: req.user!.id, institutionId: scope },
+      select: { id: true, profileImageUrl: true },
+    }));
+    if (!profile) throw AppError.notFound('لا يوجد ملف طالب لهذا المستخدم في مؤسسته الحالية');
+
+    const key = req.body.key as string;
+    if (!storageKeyIsValid(key) || !key.startsWith('profile-media/') || /\.(zip)$/.test(key)) {
+      throw AppError.badRequest('مفتاح الرفع غير صالح');
+    }
+    const storage = await requireBlobDriver();
+    const stat = await storage.stat(key);
+    if (!stat || stat.size > PHOTO_MAX_BYTES) throw AppError.badRequest('حجم الصورة خارج الحدود');
+    const buf = await storage.get(key);
+    if (!buf) throw AppError.badRequest('الصورة لم تصل إلى التخزين — أعد المحاولة');
+    const kind = sniffImageKind(buf);
+    if (!kind || !key.endsWith(`.${kind}`)) {
+      throw AppError.badRequest('المحتوى ليس صورة WebP/PNG سليمة');
+    }
+
+    const previous = profile.profileImageUrl;
+    await withRetry(() => prisma.studentProfile.update({
+      where: { id: profile.id },
+      data: { profileImageUrl: key }, select: { id: true },
+    }));
+    // best-effort: retire the previous object (a stale orphan is not a leak vector).
+    if (previous && previous.startsWith('profile-media/') && previous !== key) { void storage.delete(previous); }
+
+    await audit(req.user!.id, scope, 'profile.photo-set', 'StudentProfile', profile.id, {
+      contentType: `image/${kind}`, sizeBytes: stat.size,
+    } as Prisma.InputJsonValue);
+    res.json({ data: { key, sizeBytes: stat.size } });
+  } catch (e) { next(e); }
+});
+
+/** Stream the caller's own photo (auth-checked; never a public URL). */
+async function streamProfilePhoto(res: Response, key: string): Promise<void> {
+  const storage = getStorage();
+  const buf = await storage.get(key);
+  if (!buf) throw AppError.notFound('الصورة غير موجودة');
+  const kind = sniffImageKind(buf);
+  const ct = kind === 'webp' ? 'image/webp' : kind === 'png' ? 'image/png' : 'application/octet-stream';
+  res.setHeader('Content-Type', ct);
+  res.setHeader('Cache-Control', 'private, max-age=60');
+  res.end(buf);
+}
+
+router.get('/me/profile/photo', async (req, res, next) => {
+  try {
+    const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!scope) throw institutionContextRequiredError();
+    const profile = await withRetry(() => prisma.studentProfile.findFirst({
+      where: { userId: req.user!.id, institutionId: scope }, select: { profileImageUrl: true },
+    }));
+    const key = profile?.profileImageUrl ?? null;
+    if (!key || !key.startsWith('profile-media/')) throw AppError.notFound('لا توجد صورة مرفوعة');
+    await streamProfilePhoto(res, key);
+  } catch (e) { next(e); }
+});
+
+/** Staff read of one student's photo (same gates as /people/:id). */
+router.get('/people/:id/photo', async (req, res, next) => {
+  try {
+    const role = req.user!.role;
+    if (!canViewPeople(role)) throw AppError.forbidden();
+    const scope = await callerInstitutionOrThrow(req.user!.id, role, req.user!.institutionId);
+    const profile = await withRetry(() => prisma.studentProfile.findUnique({
+      where: { id: req.params.id }, select: { id: true, institutionId: true, profileImageUrl: true },
+    }));
+    if (!profile || profile.institutionId !== scope || !profile.profileImageUrl?.startsWith('profile-media/')) {
+      throw AppError.notFound('لا توجد صورة مرفوعة');
+    }
+    await audit(req.user!.id, scope, 'people.photo-read', 'StudentProfile', profile.id, {} as Prisma.InputJsonValue);
+    await streamProfilePhoto(res, profile.profileImageUrl);
+  } catch (e) { next(e); }
+});
+
+/* ── important documents (signed URLs) ───────────────────────── */
+
+const DOC_KINDS = ['passport', 'certificate', 'national-id', 'transcript', 'other'] as const;
+
+const docTicketSchema = z.object({
+  titleAr: z.string().trim().min(2).max(160),
+  kind: z.enum(DOC_KINDS),
+  contentType: z.enum(['application/pdf', 'image/png', 'image/webp']),
+  sizeBytes: z.number().int().positive().max(DOC_MAX_BYTES),
+});
+
+router.post('/me/documents/ticket', mediaLimiter, validate(docTicketSchema, 'body'), async (req, res, next) => {
+  try {
+    if (req.user!.role !== Role.STUDENT) throw AppError.forbidden('الوثائق تُرفع من حساب الطالب نفسه');
+    const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!scope) throw institutionContextRequiredError();
+    const profile = await withRetry(() => prisma.studentProfile.findFirst({
+      where: { userId: req.user!.id, institutionId: scope }, select: { id: true },
+    }));
+    if (!profile) throw AppError.notFound('لا يوجد ملف طالب لهذا المستخدم في مؤسسته الحالية');
+
+    const storage = await requireBlobDriver();
+    const ext = DOC_TYPES[req.body.contentType as keyof typeof DOC_TYPES];
+    const key = buildStorageKey('profile-media', `${generateStorageId()}.${ext}`);
+    const { uploadUrl } = await storage.presignClientPut(key, {
+      allowedContentType: req.body.contentType as string,
+      maximumSizeInBytes: DOC_MAX_BYTES,
+      validUntilMs: Date.now() + PRESIGN_TTL_MS,
+    });
+    res.json({ data: { mode: 'client-upload' as const, key, uploadUrl, validUntilMs: Date.now() + PRESIGN_TTL_MS } });
+  } catch (e) { next(e); }
+});
+
+const docConfirmSchema = z.object({
+  key: z.string().min(6).max(120),
+  titleAr: z.string().trim().min(2).max(160),
+  kind: z.enum(DOC_KINDS),
+});
+
+router.post('/me/documents/confirm', mediaLimiter, validate(docConfirmSchema, 'body'), async (req, res, next) => {
+  try {
+    if (req.user!.role !== Role.STUDENT) throw AppError.forbidden();
+    const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!scope) throw institutionContextRequiredError();
+    const profile = await withRetry(() => prisma.studentProfile.findFirst({
+      where: { userId: req.user!.id, institutionId: scope }, select: { id: true },
+    }));
+    if (!profile) throw AppError.notFound('لا يوجد ملف طالب لهذا المستخدم في مؤسسته الحالية');
+
+    const key = req.body.key as string;
+    if (!storageKeyIsValid(key) || !key.startsWith('profile-media/') || /\.(zip)$/.test(key)) {
+      throw AppError.badRequest('مفتاح الرفع غير صالح');
+    }
+    const storage = await requireBlobDriver();
+    const stat = await storage.stat(key);
+    if (!stat || stat.size > DOC_MAX_BYTES) throw AppError.badRequest('حجم الوثيقة خارج الحدود');
+    const buf = await storage.get(key);
+    if (!buf) throw AppError.badRequest('الوثيقة لم تصل إلى التخزين — أعد المحاولة');
+    const ext = key.slice(key.lastIndexOf('.') + 1).toLowerCase();
+    const ok = ext === 'pdf' ? sniffPdfMagic(buf) : (sniffImageKind(buf) !== null && key.endsWith(`.${sniffImageKind(buf)}`));
+    if (!ok) throw AppError.badRequest('المحتوى لا يطابق النوع المعلن');
+
+    const row = await withRetry(() => prisma.studentDocument.create({
+      data: {
+        studentProfileId: profile.id,
+        titleAr: req.body.titleAr as string,
+        kind: req.body.kind as string,
+        storageKey: key,
+        contentType: ext === 'pdf' ? 'application/pdf' : `image/${sniffImageKind(buf)}`,
+        sizeBytes: stat.size,
+        uploadedBy: req.user!.id,
+        institutionId: scope,
+      },
+      select: { id: true, createdAt: true },
+    }));
+    await audit(req.user!.id, scope, 'document.attach', 'StudentDocument', row.id, {
+      kind: req.body.kind as string, sizeBytes: stat.size,
+    } as Prisma.InputJsonValue);
+    res.status(201).json({ data: row });
+  } catch (e) { next(e); }
+});
+
+router.get('/me/documents', async (req, res, next) => {
+  try {
+    const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!scope) throw institutionContextRequiredError();
+    const profile = await withRetry(() => prisma.studentProfile.findFirst({
+      where: { userId: req.user!.id, institutionId: scope }, select: { id: true },
+    }));
+    if (!profile) throw AppError.notFound('لا يوجد ملف طالب لهذا المستخدم في مؤسسته الحالية');
+    const docs = await withRetry(() => prisma.studentDocument.findMany({
+      where: { studentProfileId: profile.id },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true, titleAr: true, kind: true, contentType: true, sizeBytes: true, createdAt: true },
+    }));
+    res.json({ data: docs });
+  } catch (e) { next(e); }
+});
+
+router.delete('/me/documents/:id', mediaLimiter, async (req, res, next) => {
+  try {
+    const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!scope) throw institutionContextRequiredError();
+    const profile = await withRetry(() => prisma.studentProfile.findFirst({
+      where: { userId: req.user!.id, institutionId: scope }, select: { id: true },
+    }));
+    if (!profile) throw AppError.notFound('لا يوجد ملف طالب لهذا المستخدم في مؤسسته الحالية');
+    const row = await withRetry(() => prisma.studentDocument.findUnique({ where: { id: req.params.id } }));
+    if (!row || row.studentProfileId !== profile.id) throw AppError.notFound();
+    await withRetry(() => prisma.studentDocument.delete({ where: { id: row.id } }));
+    try { (await requireBlobDriver()).delete(row.storageKey); } catch { /* best-effort */ }
+    await audit(req.user!.id, scope, 'document.delete', 'StudentDocument', row.id, {
+      kind: row.kind, sizeBytes: row.sizeBytes,
+    } as Prisma.InputJsonValue);
+    res.json({ data: { deleted: true } });
+  } catch (e) { next(e); }
+});
+
+router.get('/me/documents/:id/url', mediaLimiter, async (req, res, next) => {
+  try {
+    const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (!scope) throw institutionContextRequiredError();
+    const profile = await withRetry(() => prisma.studentProfile.findFirst({
+      where: { userId: req.user!.id, institutionId: scope }, select: { id: true },
+    }));
+    if (!profile) throw AppError.notFound('لا يوجد ملف طالب لهذا المستخدم في مؤسسته الحالية');
+    const row = await withRetry(() => prisma.studentDocument.findUnique({ where: { id: req.params.id } }));
+    if (!row || row.studentProfileId !== profile.id) throw AppError.notFound();
+
+    const { exp, sig } = mintDocSignature(env.JWT_ACCESS_SECRET, row.id);
+    const rawOrigin =
+      typeof req.headers.origin === 'string' && /^https?:\/\/[^/]+/.test(req.headers.origin)
+        ? req.headers.origin
+        : (env.APP_ORIGIN ?? 'http://localhost:5173');
+    const url = `${rawOrigin.replace(/\/+$/, '')}/api/v1/files/documents/${row.id}?exp=${exp}&sig=${encodeURIComponent(sig)}`;
+    await audit(req.user!.id, scope, 'document.url-mint', 'StudentDocument', row.id, {} as Prisma.InputJsonValue);
+    res.json({ data: { url, expiresAt: new Date(exp * 1000).toISOString() } });
+  } catch (e) { next(e); }
+});
+
+/* ── photo-ZIP bulk attach (registrar) ────────────────────────── */
+
+const PHOTO_ZIP_TYPES: Record<string, string> = { '.zip': 'application/zip' };
+
+const zipTicketSchema = z.object({
+  filename: z.string().min(1).max(255),
+  sizeBytes: z.number().int().positive().max(PHOTO_ZIP_MAX_BYTES),
+});
+
+router.post('/people/photos-zip/upload-ticket', mediaLimiter, requireRole(Role.ADMIN, Role.OWNER), validate(zipTicketSchema, 'body'), async (req, res, next) => {
+  try {
+    const scope = await callerInstitutionOrThrow(req.user!.id, req.user!.role, req.user!.institutionId);
+    const baseName = (req.body.filename as string).split(/[\\/]/).pop() ?? '';
+    const ext = baseName.slice(baseName.lastIndexOf('.')).toLowerCase();
+    const contentType = PHOTO_ZIP_TYPES[ext];
+    if (!contentType) throw AppError.badRequest('الملف يجب أن يكون أرشيف zip');
+    const storage = await requireBlobDriver();
+    const key = buildStorageKey('profile-media', `${generateStorageId()}.zip`);
+    const validUntilMs = Date.now() + PRESIGN_TTL_MS;
+    const { uploadUrl } = await storage.presignClientPut(key, {
+      allowedContentType: contentType,
+      maximumSizeInBytes: PHOTO_ZIP_MAX_BYTES,
+      validUntilMs,
+    });
+    await withRetry(() => prisma.importUpload.create({
+      data: { key, sizeBytes: req.body.sizeBytes as number, mintedBy: req.user!.id, institutionId: scope },
+    }));
+    res.json({ data: { mode: 'client-upload' as const, key, uploadUrl, validUntilMs } });
+  } catch (e) { next(e); }
+});
+
+const zipProcessSchema = z.object({ storageKey: z.string().min(6).max(120) });
+
+router.post('/people/photos-zip/process', mediaLimiter, requireRole(Role.ADMIN, Role.OWNER), validate(zipProcessSchema, 'body'), async (req, res, next) => {
+  try {
+    const scope = await callerInstitutionOrThrow(req.user!.id, req.user!.role, req.user!.institutionId);
+    const key = req.body.storageKey as string;
+    // the ticket gate: ONLY a key this server minted (an ImportUpload
+    // row, not yet consumed) — an arbitrary key is a read primitive
+    // over the whole store and dies here.
+    if (!storageKeyIsValid(key) || !key.startsWith('profile-media/') || !key.endsWith('.zip')) {
+      throw AppError.badRequest('مفتاح الأرشيف غير صالح');
+    }
+    const ticket = await withRetry(() => prisma.importUpload.findUnique({ where: { key } }));
+    if (!ticket || ticket.consumedAt) throw AppError.badRequest('مفتاح الأرشيف غير معروف — ابدأ الرفع من جديد');
+
+    const storage = await requireBlobDriver();
+    const buf = await storage.get(key);
+    if (!buf || buf.length > PHOTO_ZIP_MAX_BYTES) throw AppError.badRequest('الأرشيف لم يصل أو حجمه خارج الحدود');
+
+    const { default: AdmZip } = await import('adm-zip');
+    const zip = new AdmZip(buf);
+    const rawEntries = zip.getEntries();
+    if (rawEntries.length > PHOTO_ZIP_MAX_ENTRIES) {
+      throw AppError.badRequest(`الأرشيف يحوي أكثر من ${PHOTO_ZIP_MAX_ENTRIES} ملفًا — قسّمه`);
+    }
+    const entries: { name: string; sizeBytes: number; bytes: Buffer }[] = rawEntries
+      .filter((e) => !e.isDirectory)
+      .map((e) => ({ name: e.entryName, sizeBytes: e.header.size, bytes: e.getData() }));
+
+    const students = await withRetry(() => prisma.studentProfile.findMany({
+      where: { institutionId: scope },
+      select: { universityId: true, id: true },
+    }));
+    const plan = planPhotoZip(
+      entries.map((e) => ({ name: e.name, sizeBytes: e.sizeBytes })),
+      students.map((s) => ({ universityId: s.universityId, profileId: s.id })),
+    );
+
+    let attached = 0;
+    for (const v of plan.verdicts) {
+      if (v.kind !== 'attach') continue;
+      const entry = entries.find((e) => e.name === v.entry);
+      if (!entry) continue;
+      const objectKey = buildStorageKey('profile-media', `${generateStorageId()}${v.ext}`);
+      await storage.put(objectKey, entry.bytes);
+      await withRetry(() => prisma.studentProfile.update({
+        where: { id: v.profileId },
+        data: { profileImageUrl: objectKey },
+        select: { id: true },
+      }));
+      attached += 1;
+    }
+
+    // transient by design: the archive is consumed once.
+    await withRetry(() => prisma.importUpload.update({ where: { key }, data: { consumedAt: new Date() } }));
+    void storage.delete(key);
+    await withRetry(() => prisma.importUpload.delete({ where: { key } }));
+
+    await audit(req.user!.id, scope, 'photos-zip.apply', 'StudentProfile', scope, {
+      entries: plan.counts.entries, attached, ambiguous: plan.counts.ambiguous, unmatched: plan.counts.unmatched,
+    } as Prisma.InputJsonValue);
+    res.json({ data: { counts: { ...plan.counts, attached }, verdicts: plan.verdicts } });
+  } catch (e) { next(e); }
+});
+
+// r357 L2 — the export lives at the END: every L2 route above must
+// register on the SAME router instance before the app mounts it.
 export default router;

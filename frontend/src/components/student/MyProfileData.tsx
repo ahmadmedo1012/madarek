@@ -10,6 +10,9 @@ import { Icon } from '../Icon';
 import { useMyProfile } from '../../hooks/useResources';
 import { usePatchMyProfile, type StudentProfileView, type CustomFieldValue, type PatchMyProfileInput } from '../../hooks/resources/people';
 import { checkLibyanPhone, foldDigits } from '../../lib/phone-validation';
+/* r357 L2 — the media surface (photo + documents) rides at the end of
+ * the same section: functional card, no visual polish claims. */
+import MyMedia from './MyMedia';
 
 /**
  * r349-P3 — «بياناتي واتصالي»: the student's real file, six sections
@@ -340,6 +343,7 @@ export default function MyProfileData() {
           كلمة المرور تُدار من «إعدادات الحساب» — تغييرها يُنهي جلساتك على بقية الأجهزة.
         </p>
       </Card>
+      <MyMedia />
     </section>
   );
 }

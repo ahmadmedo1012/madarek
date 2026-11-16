@@ -42,6 +42,8 @@ vi.mock('../../src/db.js', () => {
       findMany: vi.fn(async () => []),
       findFirst: vi.fn(async () => ({ id: 'm-1', institutionId: 'inst-1', isActive: true })),
     },
+    // r357 L2 — phone queries on /search/discover write an audit row.
+    auditLog: { create: vi.fn(async () => ({})) },
   };
   return { prisma: p, withRetry: vi.fn() };
 });
