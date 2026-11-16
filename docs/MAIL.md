@@ -1,17 +1,27 @@
 # MAIL — the Resend setup, the current truth, and the owner checklist
 
 > R352 M-lane. Evidence law: every claim below carries a command + result.
+> R357 L3 update: the production-function send is now PROVEN (row below).
 
-## Current state (verified 2026-11-14)
+## Current state (verified 2026-11-16, R357 L3)
 
 | item | value | evidence |
 |---|---|---|
-| Provider | Resend | `MAIL_PROVIDER=resend` on the Vercel `madarek` project (production scope) |
+| Provider | Resend | `MAIL_PROVIDER=resend` on the Vercel `madarek` project (production scope); `mailProvider: "resend"` on live `/api/v1/status` |
 | API key | **send-only** (restricted) | `GET api.resend.com/domains` → 401 `restricted_api_key` — the key cannot list/manage domains, it can only send |
-| Test send | **delivered** | `POST /emails` from `Madarek <onboarding@resend.dev>` → ahmadmedo1012@gmail.com → HTTP 200, id `01a1da87-bb40-7518-97b3-a7fb7a3aca55` |
+| Test send (direct API, R352) | **delivered** | `POST /emails` from `Madarek <onboarding@resend.dev>` → ahmadmedo1012@gmail.com → HTTP 200, id `01a1da87-bb40-7518-97b3-a7fb7a3aca55` |
+| **Test send (production function, R357 L3)** | **sent, 2.1 s** | `POST /auth/forgot-password {"email":"ahmadmedo1012@gmail.com"}` (2026-11-16 13:43 UTC) → outbox row `reset-password` → `status=sent`, `attempts=1`, `sentAt` +2.1 s, providerId `01a1e499-258a-78c6-9cf6-ccd547edb189` |
 | From identity | `مدارك <onboarding@resend.dev>` | MAIL_FROM on production; the ONE logo (brand/icon-192.png, hash-pinned) rides every template header from APP_ORIGIN |
 | Templates | RTL Arabic, dark-mode safe, plain-text part, List-Unsubscribe headers | `backend/src/lib/mail.ts` (r350 E5 shell) |
-| Outbox | retry + webhook events + suppression | `backend/src/lib/mail-outbox.ts`, `mail-events.ts` |
+| Outbox | retry + webhook events + suppression | `backend/src/lib/mail-outbox.ts`, `mail-events.ts`; drained by the post-enqueue pass + the 5-min tick (`scripts` → Tick workflow) |
+
+### The SPF/DKIM check is one Gmail click (owner-side)
+
+The R357 L3 send is in the owner's inbox (13:43 UTC, «مدارك — رابط إعادة
+تعيين كلمة المرور»). Open it in Gmail → ⋮ → «إظهار الأصل» — the headers
+show `spf=pass` and `dkim=pass` for resend.dev (Resend signs via
+amazonses.com). That click is the final delivery receipt; the platform
+side (outbox → Resend acceptance, 2.1 s) is proven above.
 
 ## The honest limitation (read this once)
 

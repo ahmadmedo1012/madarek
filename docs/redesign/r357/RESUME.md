@@ -71,8 +71,6 @@ exit code — the "no pipe" law exists for exactly this). Repairs in the follow-
 was false — fixed). Deploy Vercel on `09d50535` correctly stayed red (CI failed → real signal;
 the new gate did NOT excuse it — the law works both ways).
 
-(the follow-up sha's runs appended once concluded)
-
 ### 1.6 The follow-up sha's runs (1aa08883, rebased over the UI agent's PR #49 merge)
 
 - CI **success** (run 43812830583) — the typecheck repair landed green.
@@ -90,9 +88,23 @@ the new gate did NOT excuse it — the law works both ways).
   actively iterating (new branch `wip/r358-ui`, fresh dispatches at 06:03 UTC). Left to them;
   L7 needs its APK screens — revisit there if still broken.
 
+### 1.7 The remaining-session runs (all green, stacked pushes included)
+
+| sha | what | CI | Deploy Vercel | deadcode | live buildId |
+|---|---|---|---|---|---|
+| `0e0c2370` | deadcode ratchet fix | success | success (run 43863921790) | success | `0e0c23707d87` == HEAD |
+| `42afd03c` | e2e script fix (columnMap + bash) | success | success | success | `42afd03c690d` == HEAD |
+| `a2c36f8e` | test-push (item 5) | success | success | success | — (next sha carries it) |
+| `743767f5` | e2e race+contract fix | success | success | success | `743767f5e277` == HEAD |
+
+Deploy smoke green on `a2c36f8e` (the only backend-touching sha). Android
+release APK green on every sha (the `0e0c2370` build repopulated
+`android-latest`). No red Deploy Vercel on any superseded SHA — the L1 law
+held through four consecutive stacked pushes.
+
 ## LANE 2 — accounts & student data on production
 
-### 2.1 The surface build (commit 00ad0aa3, this session)
+### 2.1 The surface build (commit 00ad0aa3, this session — the prior R357 slice)
 
 Everything the R357 review found missing (its L2 map), closed in one commit:
 
@@ -122,11 +134,79 @@ Local gates: `verify.sh --fast` FAST PASS; backend vitest **2588 passed / 19 ski
 23 new tests (`r357-l2-pure` 12: the doc-URL law, the zip planner, the sniffers;
 `r357-l2-routes` 11: honest 503s, key-shape gates, audit rows, signed-consumer 403/404).
 
-(e2e-on-production evidence: §2.2, once the workflow runs)
+### 2.2 The production e2e — 17/17 GREEN (run 3, 2026-11-16)
+
+Two defect rounds, then green. The workflow
+`.github/workflows/prod-accounts-e2e.yml` runs `scripts/qa/prod-accounts-e2e.mjs`
+against the live deployment with throwaway `@demo.madarek.ly` accounts and a
+read-only `PROD_DATABASE_URL` (outbox token extraction + audit asserts).
+
+Run 1 (on `58bc5ebe`, 17 ✗) — cascade from ONE missing secret: `PROD_DATABASE_URL`
+was never set, so every direct-DB step died ("URL must start with postgresql://")
+and the org lookup never populated `ctx` (registration 400 `institutionId`, login
+401s, `/users/undefined/...` 404s). Plus two real script bugs surfaced once the
+secret landed: the Excel step sent `mapping` where the API contract is
+`columnMap` (400), and the issue-step body had `${GITHUB_RUN_NUMBER }` (bash bad
+substitution). Fixed in `42afd03c`; the secret was set via the GitHub API
+(libsodium sealed-box, 204).
+
+Run 2 (on `42afd03c`, 15/17) — two REAL findings, both fixed in `743767f5`:
+1. **The verify-email outbox race**: registration's mail events are fire-and-forget
+   AFTER the 201; on serverless the row lands ~0.5 s later (measured: +488 ms).
+   The script read the outbox once at +294 ms → "no row". Fix: poll honestly
+   for up to 8 s (step 3 went 4.6 s green in run 3).
+2. **The phone step asserted a field the API never exposes**: the self view
+   shapes phones as `{access, display}` (privacy.ts) — the raw
+   `studentPhoneNormalized` column is a search INDEX, not a display surface.
+   Fix: the step now asserts the real contract (Arabic-Indic digits round-trip
+   as ASCII `0912345678`; every format PATCHes cleanly) and the ONE-key fold is
+   proven by the SEARCH arm (step 11 finds the student from a differently-
+   formatted phone query, with the audit rows).
+
+Run 3 (on `743767f5`) — **17/17 ✓**:
+https://github.com/ahmadmedo1012/madarek/actions/runs/43878385821
+(1 org lookups · 2 registration · 3 activation via outbox token · 4 login email ·
+5 login reg-number · 6 password change · 7 forgot-password outbox reset · 8
+assisted reset · 9 Libyan phone folding · 10 DOB · 11 audited phone search ·
+12 audited people read · 13 photo ticket→PUT→confirm→reads · 14 documents +
+signed URL (sessionless 200, tamper 403) · 15 photo-ZIP · 16 Excel dry-run +
+error report · 17 demo-cohort cleanup — 0 throwaway users left, verified).
+
+Guardian note: stayed contact-fields only (owner has not confirmed — §5).
+Phone login: NOT built (stated once, 2.1 — an SMS-verified credential lane,
+none exists today).
 
 ## LANE 3 — mail
 
-(placeholder)
+DONE 2026-11-16 (this session). The platform side is fully proven; the
+owner-side items are exactly two clicks and stay open by design (§5).
+
+- **From-domain decision**: `onboarding@resend.dev` (Resend's shared dev sender).
+  The owner has NO custom domain (production rides vercel.app) — the switch is
+  staged as ONE MAIL_FROM change + DNS records, zero code (MAIL.md carries the
+  exact SPF/DKIM/DMARC records and the BIMI state-once: Gmail avatar needs
+  BIMI + DMARC enforcement + usually a paid VMC ~$1,000+/yr).
+- **Production-function send PROVEN**: `POST /auth/forgot-password` for
+  ahmadmedo1012@gmail.com → outbox row `reset-password` → `status=sent`,
+  `attempts=1`, **sentAt +2.1 s**, providerId `01a1e499-258a-78c6-9cf6-ccd547edb189`
+  (2026-11-16 13:43 UTC). The ONE test send the brief allows — nothing else was sent.
+- **SPF/DKIM receipt**: owner-side one click (Gmail → إظهار الأصل → spf=pass/dkim=pass
+  for resend.dev via amazonses) — recorded in MAIL.md as the final delivery receipt.
+- **Templates/logo/unsubscribe/webhook**: already shipped (R350 E5: RTL shell,
+  dark-mode safe, plain-text part, List-Unsubscribe, the ONE logo at
+  `${APP_ORIGIN}/brand/icon-192.png` — hash-pinned; suppression + webhook events).
+- `docs/MAIL.md` updated with the R357 row + the click instruction.
+
+## LANE 3.5 — push acceptance (problem 5, folded here — it shipped with L2's session)
+
+- `POST /admin/test-push` (admin-extras.routes.ts): admin/OWNER-only; counts the
+  CALLER's registered devices, fan-out via the production `fanOutPush`, honest 400
+  («لا يوجد جهاز مسجّل…») when none. `a2c36f8e`, CI+Deploy Vercel green.
+- ONE button «إشعار تجريبي» on إعدادات المنصّة (عمليّات النظام card) — toast
+  «تمّ»/error, no new copy beyond the label (copy-budget held at 199/199).
+- `docs/PUSH-FIREBASE-CHECKLIST.md` — the 5-line «جرّبها على جوّالك» section
+  (install latest APK → login → allow notifications → the button → closed-app
+  announcement on the lock screen).
 
 ## LANE 4 — search at 20k scale
 
