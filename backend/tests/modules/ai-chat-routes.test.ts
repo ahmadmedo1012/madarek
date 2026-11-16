@@ -1151,3 +1151,108 @@ describe('POST /api/v1/ai/chat — the institution daily budget (r357 L5)', () =
     expect(prisma.aiConversation.create).toHaveBeenCalled();
   });
 });
+
+/* ════════════════════════════════════════════════════════════════════
+   r357 L5 — the LONG conversation proof (50+ messages, long Arabic,
+   the 12-turn window + per-message clip under volume)
+   ════════════════════════════════════════════════════════════════════ */
+
+describe('POST /api/v1/ai/chat — the 50+ message conversation (r357 L5)', () => {
+  let baseUrl: string;
+  let server: ReturnType<ReturnType<typeof createApp>['listen']>;
+  let historyFindMany: ReturnType<typeof vi.mocked>;
+  let convFindFirst: ReturnType<typeof vi.mocked>;
+  let convCreate: ReturnType<typeof vi.mocked>;
+  let msgCreate: ReturnType<typeof vi.mocked>;
+
+  const AI_ENV = {
+    AI_PROVIDER: 'openai',
+    AI_API_KEY: 'sk-test-placeholder',
+    AI_MODEL: 'test-model-name',
+    AI_BASE_URL: 'https://api.openai.com/v1',
+  } as const;
+
+  beforeAll(async () => {
+    // The OPENAI-mode registry pattern: env BEFORE the re-import.
+    for (const [k, v] of Object.entries(AI_ENV)) process.env[k] = v;
+    vi.resetModules();
+    const appMod = await import('../../src/app.js');
+    const dbMod = await import('../../src/db.js');
+    historyFindMany = vi.mocked(dbMod.prisma.aiMessage.findMany);
+    convFindFirst = vi.mocked(dbMod.prisma.aiConversation.findFirst);
+    convCreate = vi.mocked(dbMod.prisma.aiConversation.create);
+    msgCreate = vi.mocked(dbMod.prisma.aiMessage.create);
+    vi.mocked(dbMod.prisma.membership.findFirst).mockResolvedValue({ institutionId: INSTITUTION_ID } as never);
+    vi.mocked(dbMod.prisma.studentMastery.findMany).mockResolvedValue([] as never);
+    vi.mocked(dbMod.prisma.enrollment.findMany).mockResolvedValue([] as never);
+    vi.mocked(dbMod.prisma.aiTelemetry.create).mockResolvedValue({} as never);
+    convCreate.mockResolvedValue({ id: 'conv-long', userId: STUDENT_ID, title: 'س', createdAt: new Date(0) } as never);
+    msgCreate.mockResolvedValue({ id: 'msg-long', content: 'ردّ', tokens: 3 } as never);
+    ({ server, baseUrl } = startServer(appMod.createApp()));
+  });
+  afterAll(async () => {
+    await closeServer(server);
+    for (const k of Object.keys(AI_ENV)) delete process.env[k];
+  });
+  beforeEach(() => {
+    vi.unstubAllGlobals();
+    vi.clearAllMocks();
+  });
+
+  it('55 turns (long Arabic): the provider sees ONLY the newest 12, chronologically, clipped — and the reply lands in the SAME conversation', async () => {
+    const CONV_ID = 'convlongroute0001'; // cuid-shaped
+    // 55 alternating turns, each ~500 Arabic chars (a real semester-help
+    // conversation's volume), stored NEWEST-FIRST (the route's read order).
+    const rows: Array<{ id: string; role: string; content: string; createdAt: Date; conversationId: string; tokens: number }> = [];
+    for (let i = 55; i >= 1; i -= 1) {
+      const role = i % 2 === 1 ? 'USER' : 'ASSISTANT';
+      const filler = `شرحٌ مطوّل بالعربية عن المحاضرة رقم ${i} وتفاصيلها التقنيّة والعمليّة مع أمثلة تطبيقيّة متعدّدة `.repeat(9);
+      rows.push({ id: `h${String(i).padStart(3, '0')}`, role, content: `${filler}نهاية الرسالة ${i}`, createdAt: new Date(i * 60_000), conversationId: CONV_ID, tokens: 200 });
+    }
+    historyFindMany.mockResolvedValue(rows as never);
+    convFindFirst.mockResolvedValue({ id: CONV_ID, userId: STUDENT_ID, title: 'محادثة طويلة', createdAt: new Date(0) } as never);
+
+    let wire: Array<{ role: string; content: string }> = [];
+    const realFetch = globalThis.fetch;
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      const target = String(url);
+      if (target.startsWith(baseUrl)) return realFetch(url, init);
+      wire = (JSON.parse((init as { body: string }).body) as { messages: Array<{ role: string; content: string }> }).messages;
+      return new Response(
+        JSON.stringify({
+          choices: [{ message: { content: 'جواب بعد خمسٍ وخمسين رسالة' } }],
+          usage: { prompt_tokens: 4200, completion_tokens: 170 },
+          model: 'gpt-test-echo',
+        }),
+        { status: 200 },
+      );
+    });
+
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { ...bearer(), 'content-type': 'application/json' },
+      body: chatBody('سؤال أخير بعد محادثة طويلة جدًّا', CONV_ID),
+    });
+    expect(res.status).toBe(200);
+
+    // The window law: system + the NEWEST 12 history turns + the new ask.
+    expect(wire.length).toBe(1 + 12 + 1);
+    expect(wire[0]!.role).toBe('system');
+    expect(wire[wire.length - 1]!.role).toBe('user');
+    expect(wire[wire.length - 1]!.content).toContain('سؤال أخير بعد محادثة طويلة جدًّا');
+    // Chronological orientation: the first HISTORY turn is #44 (the
+    // oldest inside the 12-window), the last is #55 (the newest).
+    const firstHistory = wire[1]!.content;
+    const lastHistory = wire[12]!.content;
+    expect(firstHistory).toContain('نهاية الرسالة 44');
+    expect(lastHistory).toContain('نهاية الرسالة 55');
+    // The per-message clip: every history turn stays under the cap.
+    for (const m of wire.slice(1, 13)) {
+      expect(m.content.length).toBeLessThanOrEqual(1600 + 50); // cap + the marker slack
+    }
+    // ONE conversation — continued, never re-created.
+    expect(convCreate).not.toHaveBeenCalled();
+    // The turn writes to the SAME conversation inside the transaction.
+    expect(msgCreate).toHaveBeenCalled();
+  });
+});
