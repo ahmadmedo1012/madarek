@@ -57,7 +57,7 @@ async function aiStatusBlock(): Promise<Record<string, unknown>> {
     const row = await prisma.aiBudget.findUnique({ where: { monthKey: aiMonthKey() }, select: { usedTokens: true } });
     monthBudget = { monthKey: aiMonthKey(), usedTokens: row?.usedTokens ?? 0 };
   } catch {
-    monthBudget = null; // honest: the counter is unreadable right now
+    // honest: the counter is unreadable right now — monthBudget stays null
   }
   /* r357 L5 — the cross-instance verdict (best-effort: a telemetry
    * read failure degrades to null, never a false down). */
@@ -66,7 +66,7 @@ async function aiStatusBlock(): Promise<Record<string, unknown>> {
     const verdict = await assessProviderHealth(prisma);
     allProvidersDownSince = verdict.downSince?.toISOString() ?? null;
   } catch {
-    allProvidersDownSince = null;
+    // a telemetry read failure degrades to null, never a false down
   }
   return {
     mode: AI_MODE_LABEL,
