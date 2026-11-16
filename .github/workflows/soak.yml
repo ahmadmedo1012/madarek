@@ -1,0 +1,82 @@
+# r357 L8 — the standing soak probe.
+#
+# The 24-hour soak the lane demands, made STANDING: every 15 minutes
+# the live production origin answers four probes — health, a REAL
+# login, a role-scoped search, and the AI config surface. Any failure
+# opens ONE rolling issue (`soak` label — open once, comment on
+# repeats, auto-close on the next green cycle). The first 24 h of
+# evidence accumulates in the run history; uptime = green/(green+red)
+# over any window.
+name: Soak probe
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: soak
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    name: health + login + search + ai (madarek-app)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: The four probes
+        env:
+          BASE: https://madarek-app.vercel.app
+        run: |
+          set -uo pipefail
+          FAILS=0
+          # 1. health
+          H=$(curl -s --max-time 20 "$BASE/api/v1/health" | jq -r '.ok // false')
+          echo "health ok=$H"; [ "$H" = "true" ] || FAILS=$((FAILS+1))
+          # 2. a real login (the documented registrar seat)
+          TOKEN=$(curl -s --max-time 20 -X POST "$BASE/api/v1/auth/login" \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"registrar@test.ly","password":"12345678"}' \
+            | jq -r '.data.accessToken // empty')
+          echo "login token=${TOKEN:0:10}…"; [ -n "$TOKEN" ] || FAILS=$((FAILS+1))
+          # 3. a role-scoped search
+          if [ -n "$TOKEN" ]; then
+            S=$(curl -s --max-time 20 --get "$BASE/api/v1/search/discover" \
+              --data-urlencode "q=أحمد" --data-urlencode "categories=students" \
+              -H "Authorization: Bearer $TOKEN" | jq -r '.data.tookMs != null')
+            echo "search answered=$S"; [ "$S" = "true" ] || FAILS=$((FAILS+1))
+          else
+            FAILS=$((FAILS+1))
+          fi
+          # 4. the AI surface (config — no tokens spent)
+          A=$(curl -s --max-time 20 "$BASE/api/v1/ai/config" -H "Authorization: Bearer $TOKEN" | jq -r '.data.mode != null')
+          echo "ai config answered=$A"; [ "$A" = "true" ] || FAILS=$((FAILS+1))
+          echo "fails=$FAILS"
+          exit $([ "$FAILS" = "0" ] && echo 0 || echo 1)
+      - name: Open/update the rolling issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          BODY="فشل مسبار السوك. السجل: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          OPEN=$(gh issue list --repo "$GITHUB_REPOSITORY" --label soak --state open --json number --jq 'length')
+          if [ "$OPEN" = "0" ]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "مسبار السوك أحمر — run $GITHUB_RUN_NUMBER" --body "$BODY" --label soak
+          else
+            N=$(gh issue list --repo "$GITHUB_REPOSITORY" --label soak --state open --json number --jq '.[0].number')
+            gh issue comment --repo "$GITHUB_REPOSITORY" "$N" --body "$BODY"
+          fi
+      - name: Auto-close on green
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          for N in $(gh issue list --repo "$GITHUB_REPOSITORY" --label soak --state open --json number --jq '.[].number'); do
+            gh issue close --repo "$GITHUB_REPOSITORY" "$N" --comment "المنصة تجيب من جديد — run $GITHUB_RUN_NUMBER"
+          done
