@@ -9,7 +9,22 @@
  */
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { TechnicalPlate } from '../../src/components/illustrations/technical/TechnicalPlate';
+import {
+  TechnicalPlate,
+  type TechnicalPlateProps,
+  type TechnicalPlateVariant,
+} from '../../src/components/illustrations/technical/TechnicalPlate';
+
+/* The variant census — a Record keyed by the union forces every new
+ * plate to register here (the compiler rejects a missing key), so a
+ * plate can never join the family untested. */
+const VARIANT_CENSUS: Record<TechnicalPlateVariant, true> = {
+  knowledge: true,
+  progress: true,
+  pathway: true,
+  document: true,
+};
+const VARIANTS = Object.keys(VARIANT_CENSUS) as TechnicalPlateVariant[];
 
 describe('R360 · TechnicalPlate', () => {
   it('is decorative by default — aria-hidden, one SVG, the family grammar classes', () => {
@@ -33,6 +48,27 @@ describe('R360 · TechnicalPlate', () => {
     expect(container.querySelector('.tp-dim')).not.toBeNull();
     expect(container.querySelector('.tp-note')).not.toBeNull();
     expect(container.querySelector('.tp-title')).not.toBeNull();
+  });
+
+  it.each(VARIANTS)('%s — mounts the shared chrome exactly once', (variant) => {
+    const props: TechnicalPlateProps = { variant };
+    const { container } = render(<TechnicalPlate {...props} />);
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.classList.contains('technical-plate')).toBe(true);
+    expect(root.classList.contains(`technical-plate--${variant}`)).toBe(true);
+    expect(container.querySelectorAll('svg')).toHaveLength(1);
+    /* the chrome the family mounts from sheetChrome — frame, grid,
+     * north and the title block are chrome-exclusive (the geometry can
+     * never draw them), while the note layer is SHARED: the header note
+     * plus whatever reading notes the instrument geometry carries. */
+    expect(container.querySelectorAll('.tp-frame')).toHaveLength(1);
+    expect(container.querySelectorAll('.tp-grid')).toHaveLength(1);
+    expect(container.querySelectorAll('.tp-north')).toHaveLength(1);
+    expect(container.querySelectorAll('.tp-title')).toHaveLength(1);
+    const notes = Array.from(container.querySelectorAll('.tp-note'));
+    expect(notes.length).toBeGreaterThanOrEqual(1);
+    expect(notes.some((n) => n.textContent?.includes('MADAREK'))).toBe(true);
+    expect(container.querySelector('.tp-title text')?.textContent).toBe('MADAREK');
   });
 
   it('knowledge — the concept net: hull, edges, the isolate in signal ink', () => {
@@ -104,7 +140,7 @@ describe('R360 · TechnicalPlate', () => {
   });
 
   it('mounts every variant without the label ever leaking into the tree', () => {
-    for (const variant of ['knowledge', 'progress', 'pathway', 'document'] as const) {
+    for (const variant of VARIANTS) {
       const { container } = render(<TechnicalPlate variant={variant} />);
       const root = container.firstElementChild as HTMLElement;
       expect(root.getAttribute('aria-hidden')).toBe('true');

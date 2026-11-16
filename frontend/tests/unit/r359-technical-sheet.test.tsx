@@ -9,7 +9,20 @@
  */
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { TechnicalSheet } from '../../src/components/illustrations/technical/TechnicalSheet';
+import {
+  TechnicalSheet,
+  type TechnicalSheetProps,
+  type TechnicalSheetVariant,
+} from '../../src/components/illustrations/technical/TechnicalSheet';
+
+/* The variant census — a Record keyed by the union forces every new
+ * variant to register here (the compiler rejects a missing key), so a
+ * sheet cut can never join the family untested. */
+const VARIANT_CENSUS: Record<TechnicalSheetVariant, true> = {
+  plan: true,
+  elevation: true,
+};
+const VARIANTS = Object.keys(VARIANT_CENSUS) as TechnicalSheetVariant[];
 
 describe('R359 · TechnicalSheet', () => {
   it('is decorative by default — aria-hidden, one SVG, named layers', () => {
@@ -25,6 +38,18 @@ describe('R359 · TechnicalSheet', () => {
     expect(container.querySelector('.tp-dim')).not.toBeNull();
     expect(container.querySelector('.tp-note')).not.toBeNull();
     expect(container.querySelector('.tp-title')).not.toBeNull();
+  });
+
+  it.each(VARIANTS)('%s — mounts the shared chrome exactly once', (variant) => {
+    const props: TechnicalSheetProps = { variant };
+    const { container } = render(<TechnicalSheet {...props} />);
+    expect(container.querySelectorAll('svg')).toHaveLength(1);
+    expect(container.querySelectorAll('.tp-frame')).toHaveLength(1);
+    expect(container.querySelectorAll('.tp-grid')).toHaveLength(1);
+    expect(container.querySelectorAll('.tp-north')).toHaveLength(1);
+    expect(container.querySelectorAll('.tp-note')).toHaveLength(1);
+    expect(container.querySelectorAll('.tp-title')).toHaveLength(1);
+    expect(container.querySelector(`.technical-sheet--${variant}`)).not.toBeNull();
   });
 
   it('renders the plan cut + dimension chain in the plan variant', () => {

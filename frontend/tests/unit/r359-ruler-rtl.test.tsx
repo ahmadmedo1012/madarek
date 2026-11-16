@@ -25,7 +25,14 @@ describe('R359 · RulerGauge numerals — RTL anchoring', () => {
 
   it('positions 100 on the inline-start axis (transform folds it inward)', () => {
     const { container } = render(<RulerGauge value={100} />);
-    const last = container.querySelectorAll<HTMLElement>('.ind-ruler-num')[4];
+    const numerals = container.querySelectorAll<HTMLElement>('.ind-ruler-num');
+    expect(numerals).toHaveLength(5);
+    const last = numerals[4];
+    /* the honest guard the strict index access demands — the length
+     * assert above is the contract; this narrows the element for the
+     * style reads below (r362: the branch's original `last.getAttribute`
+     * failed typecheck with TS18048). */
+    if (!last) throw new Error('the 100 numeral did not render');
     const style = last.getAttribute('style') ?? '';
     expect(style).toContain('inset-inline-start: 100%');
     expect(style).toContain('transform: translateX(100%)');

@@ -25,8 +25,12 @@
  *  · Decorative by default (aria-hidden, focusable=false); pass
  *    `label` to promote the plate to a described role="img".
  */
-import { useId } from 'react';
 import { DimChain } from './TechnicalSheet';
+import {
+  SheetNorth,
+  SheetSurface,
+  SheetTitleBlock,
+} from './sheetChrome';
 import '../../../styles/technical-sheet.css';
 import '../../../styles/technical-plates.css';
 
@@ -40,9 +44,6 @@ export interface TechnicalPlateProps {
   label?: string;
   className?: string;
 }
-
-const GRID_X = Array.from({ length: 9 }, (_, i) => 40 + i * 40);
-const GRID_Y = Array.from({ length: 13 }, (_, i) => 40 + i * 40);
 
 /* The per-variant title block + header note (drawing-internal text is
  * Latin mono — the technical register; the plate never carries Arabic
@@ -86,49 +87,15 @@ export function TechnicalPlate({
   label,
   className,
 }: TechnicalPlateProps) {
-  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, '');
-  const titleId = `tp-title-${uid}`;
-  const descId = `tp-desc-${uid}`;
   const meta = PLATE_META[variant];
 
-  const classes = [
-    'technical-sheet',
-    'technical-plate',
-    `technical-plate--${variant}`,
-  ];
-  if (className) classes.push(className);
-
-  const a11y = label
-    ? { role: 'img' as const, 'aria-labelledby': `${titleId} ${descId}` }
-    : { 'aria-hidden': true as const, focusable: 'false' as const };
-
   return (
-    <div className={classes.join(' ')} {...a11y}>
-      <svg viewBox="0 0 400 560" preserveAspectRatio="xMidYMid meet" focusable="false">
-        {label && (
-          <>
-            <title id={titleId}>لوحة رسم هندسية</title>
-            <desc id={descId}>{label}</desc>
-          </>
-        )}
-
-        {/* ── 00 · sheet frame + registration crosses ─────────────── */}
-        <g className="tp-frame" aria-hidden>
-          <rect x="8" y="8" width="384" height="544" />
-          <path d="M8 20v-12h12M392 20v-12h-12M8 540v12h12M392 540v12h-12" />
-        </g>
-
-        {/* ── 01 · background grid ────────────────────────────────── */}
-        <g className="tp-grid" aria-hidden>
-          {GRID_X.map((x) => (
-            <line key={`gx-${x}`} x1={x} y1="24" x2={x} y2="472" pathLength={1} />
-          ))}
-          {GRID_Y.map((y) => (
-            <line key={`gy-${y}`} x1="24" y1={y} x2="376" y2={y} pathLength={1} />
-          ))}
-        </g>
-
-        {variant === 'knowledge' && <KnowledgeGeometry />}
+    <SheetSurface
+      label={label}
+      className={className}
+      baseClasses={['technical-sheet', 'technical-plate', `technical-plate--${variant}`]}
+    >
+      {variant === 'knowledge' && <KnowledgeGeometry />}
         {variant === 'progress' && <ProgressGeometry />}
         {variant === 'pathway' && <PathwayGeometry />}
         {variant === 'document' && <DocumentGeometry />}
@@ -143,42 +110,12 @@ export function TechnicalPlate({
           </text>
           <line x1="32" y1="74" x2="368" y2="74" pathLength={1} />
           {/* north marker */}
-          <g className="tp-north">
-            <circle cx="344" cy="46" r="11" />
-            <path d="M344 38v16M338 46h12" />
-            <path d="M344 38l-4 7h8z" />
-          </g>
-          <text className="tp-text" x="344" y="72" textAnchor="middle">
-            N
-          </text>
+          <SheetNorth />
         </g>
 
         {/* ── 08 · title block ────────────────────────────────────── */}
-        <g className="tp-title" aria-hidden>
-          <line x1="24" y1="488" x2="376" y2="488" pathLength={1} />
-          <line x1="196" y1="488" x2="196" y2="536" pathLength={1} />
-          <line x1="300" y1="488" x2="300" y2="536" pathLength={1} />
-          <text className="tp-text tp-text--strong" x="32" y="508">
-            MADAREK
-          </text>
-          <text className="tp-text" x="32" y="524">
-            SMART LEARNING
-          </text>
-          <text className="tp-text" x="204" y="508">
-            {meta.code}
-          </text>
-          <text className="tp-text" x="204" y="524">
-            01 / 04
-          </text>
-          <text className="tp-text" x="308" y="508">
-            {meta.name}
-          </text>
-          <text className="tp-text" x="308" y="524">
-            {meta.scale}
-          </text>
-        </g>
-      </svg>
-    </div>
+        <SheetTitleBlock code={meta.code} name={meta.name} scale={meta.scale} />
+    </SheetSurface>
   );
 }
 
