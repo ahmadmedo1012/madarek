@@ -211,6 +211,11 @@ export const TEACHER_NAV: NavGroup[] = [
   },
   {
     label: 'البحث والمحاضرة',
+    /* r357-ui A2: low-frequency family — ONE toggle row by default
+       (the student drawer's r183-B7 accordion, applied to every role).
+       Auto-expands while one of its routes is the active page, so the
+       sidebar's single active marker never hides behind a closed header. */
+    collapsed: true,
     items: [
       { to: ROUTES.teacherResearch, icon: Microscope, label: 'البحث العلمي' },
       /* 5-B5 (A4 P3-1/P3-2): «البث المباشر» is the STUDENT viewing
@@ -225,6 +230,11 @@ export const TEACHER_NAV: NavGroup[] = [
   },
   {
     label: 'حسابي',
+    /* r357-ui A2: low-frequency family — ONE toggle row by default
+       (the student drawer's r183-B7 accordion, applied to every role).
+       Auto-expands while one of its routes is the active page, so the
+       sidebar's single active marker never hides behind a closed header. */
+    collapsed: true,
     items: [
       { to: ROUTES.teacherProfile, icon: UserCircle, label: 'الملف الأكاديمي' },
       /* 5-B5 (A4 P1-3): «الرسائل» was a full orphan (URL-only). */
@@ -278,6 +288,11 @@ export const ADMIN_NAV: NavGroup[] = [
   },
   {
     label: 'النظام',
+    /* r357-ui A2: low-frequency family — ONE toggle row by default
+       (the student drawer's r183-B7 accordion, applied to every role).
+       Auto-expands while one of its routes is the active page, so the
+       sidebar's single active marker never hides behind a closed header. */
+    collapsed: true,
     items: [
       { to: ROUTES.adminStudents, icon: GraduationCap, label: 'إدارة الطلاب' },
       /* r349-P3b (LANE P): the contact directory — the staff's phone
@@ -329,6 +344,11 @@ export const QUALITY_NAV: NavGroup[] = [
   },
   {
     label: 'المراجعة والتقارير',
+    /* r357-ui A2: low-frequency family — ONE toggle row by default
+       (the student drawer's r183-B7 accordion, applied to every role).
+       Auto-expands while one of its routes is the active page, so the
+       sidebar's single active marker never hides behind a closed header. */
+    collapsed: true,
     items: [
       { to: ROUTES.qualityExamModeration, icon: ClipboardCheck, label: 'مراجعة الاختبارات' },
       { to: ROUTES.qualityCurriculum, icon: ListChecks, label: 'مراجعة المناهج' },
@@ -375,6 +395,11 @@ export const OWNER_NAV: NavGroup[] = [
   },
   {
     label: 'المنصة',
+    /* r357-ui A2: low-frequency family — ONE toggle row by default
+       (the student drawer's r183-B7 accordion, applied to every role).
+       Auto-expands while one of its routes is the active page, so the
+       sidebar's single active marker never hides behind a closed header. */
+    collapsed: true,
     items: [
       { to: ROUTES.ownerContent, icon: Palette, label: 'المحتوى والعلامة التجارية' },
       { to: ROUTES.ownerSystem, icon: Settings, label: 'النظام والتشغيل' },
@@ -386,6 +411,11 @@ export const OWNER_NAV: NavGroup[] = [
   },
   {
     label: 'المراقبة والتحليل',
+    /* r357-ui A2: low-frequency family — ONE toggle row by default
+       (the student drawer's r183-B7 accordion, applied to every role).
+       Auto-expands while one of its routes is the active page, so the
+       sidebar's single active marker never hides behind a closed header. */
+    collapsed: true,
     items: [
       { to: ROUTES.ownerAi, icon: Bot, label: 'مركز الذكاء الاصطناعي', badge: { text: 'AI', tone: 'gold' } },
       /* r165d (D2): صندوق الإشعارات الشخصي للمالك — وجهة الجرس الكاملة

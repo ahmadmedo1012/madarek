@@ -1,19 +1,19 @@
 import type { ComponentType } from "react";
 import Activity from "lucide-react-native/icons/activity";
-import BarChart3 from "lucide-react-native/icons/chart-column";
 import Bell from "lucide-react-native/icons/bell";
 import BookOpen from "lucide-react-native/icons/book-open";
-import CalendarDays from "lucide-react-native/icons/calendar-days";
-import ClipboardList from "lucide-react-native/icons/clipboard-list";
-import FileSearch from "lucide-react-native/icons/file-search";
+import Bot from "lucide-react-native/icons/bot";
+import Brain from "lucide-react-native/icons/brain";
+import Calendar from "lucide-react-native/icons/calendar";
+import CircleUser from "lucide-react-native/icons/circle-user";
+import FileText from "lucide-react-native/icons/file-text";
+import GraduationCap from "lucide-react-native/icons/graduation-cap";
 import Home from "lucide-react-native/icons/house";
-import Landmark from "lucide-react-native/icons/landmark";
-import LineChart from "lucide-react-native/icons/chart-line";
+import ListChecks from "lucide-react-native/icons/list-checks";
 import Network from "lucide-react-native/icons/network";
-import Scale from "lucide-react-native/icons/scale";
-import ScrollText from "lucide-react-native/icons/scroll-text";
-import Sparkles from "lucide-react-native/icons/sparkles";
-import User from "lucide-react-native/icons/user";
+import Radio from "lucide-react-native/icons/radio";
+import School from "lucide-react-native/icons/school";
+import ShieldCheck from "lucide-react-native/icons/shield-check";
 import Users from "lucide-react-native/icons/users";
 import type { AppRole } from "@/api/types";
 
@@ -52,37 +52,42 @@ export const ROLE_TABS: Record<AppRole, RoleTab[]> = {
   STUDENT: [
     { name: "dashboard", path: "/student/dashboard", label: "الرئيسية", icon: Home },
     { name: "courses", path: "/student/courses", label: "مقرراتي", icon: BookOpen },
-    { name: "ai", path: "/student/ai", label: "المساعد", icon: Sparkles },
+    /* r357-ui A2 — one glyph per destination across every menu: the tab
+       bar now wears the SAME lucide glyph `lib/nav.ts` gives that route
+       (bot / circle-user were Sparkles / User). The bar's short labels
+       stay (5-B5: shortening is fine, renaming is not) — only the glyph
+       drifted, and a route must never show two icons on one screen. */
+    { name: "ai", path: "/student/ai", label: "المساعد", icon: Bot },
     { name: "alerts", path: "/student/alerts", label: "الإشعارات", icon: Bell, inbox: true },
-    { name: "profile", path: "/student/profile", label: "حسابي", icon: User },
+    { name: "profile", path: "/student/profile", label: "حسابي", icon: CircleUser },
   ],
   TEACHER: [
     { name: "dashboard", path: "/teacher/dashboard", label: "اللوحة", icon: Home },
-    { name: "schedule", path: "/teacher/schedule", label: "الجدول", icon: CalendarDays },
+    { name: "schedule", path: "/teacher/schedule", label: "الجدول", icon: Calendar },
     { name: "students", path: "/teacher/students", label: "الطلاب", icon: Users },
-    { name: "intelligence", path: "/teacher/intelligence", label: "التحليلات", icon: LineChart },
-    { name: "profile", path: "/teacher/profile", label: "حسابي", icon: User },
+    { name: "intelligence", path: "/teacher/intelligence", label: "التحليلات", icon: Brain },
+    { name: "profile", path: "/teacher/profile", label: "حسابي", icon: CircleUser },
   ],
   ADMIN: [
     { name: "dashboard", path: "/admin/dashboard", label: "اللوحة", icon: Home },
-    { name: "faculties", path: "/admin/faculties", label: "الكلّيات", icon: Landmark },
-    { name: "students", path: "/admin/students", label: "الطلاب", icon: Users },
-    { name: "teachers", path: "/admin/teachers", label: "الأساتذة", icon: ScrollText },
-    { name: "reports", path: "/admin/reports", label: "التقارير", icon: BarChart3 },
+    { name: "faculties", path: "/admin/faculties", label: "الكلّيات", icon: Network },
+    { name: "students", path: "/admin/students", label: "الطلاب", icon: GraduationCap },
+    { name: "teachers", path: "/admin/teachers", label: "الأساتذة", icon: School },
+    { name: "reports", path: "/admin/reports", label: "التقارير", icon: FileText },
   ],
   QUALITY: [
     { name: "dashboard", path: "/quality/dashboard", label: "اللوحة", icon: Home },
     { name: "courses", path: "/quality/courses", label: "المقررات", icon: BookOpen },
-    { name: "curriculum", path: "/quality/curriculum", label: "المناهج", icon: ClipboardList },
-    { name: "engagement", path: "/quality/engagement", label: "التفاعل", icon: Network },
-    { name: "reports", path: "/quality/reports", label: "التقارير", icon: FileSearch },
+    { name: "curriculum", path: "/quality/curriculum", label: "المناهج", icon: ListChecks },
+    { name: "engagement", path: "/quality/engagement", label: "التفاعل", icon: Activity },
+    { name: "reports", path: "/quality/reports", label: "التقارير", icon: FileText },
   ],
   OWNER: [
     // R331 copy fix: «الحواكمة» (typo) → «الحوكمة» — web BottomNav parity.
     { name: "dashboard", path: "/owner/dashboard", label: "اللوحة", icon: Home },
     { name: "users", path: "/owner/users", label: "المستخدمون", icon: Users },
-    { name: "realtime", path: "/owner/realtime", label: "الحيّ", icon: Activity },
+    { name: "realtime", path: "/owner/realtime", label: "الحيّ", icon: Radio },
     { name: "notifications", path: "/owner/notifications", label: "الإشعارات", icon: Bell, inbox: true },
-    { name: "governance", path: "/owner/governance", label: "الحوكمة", icon: Scale },
+    { name: "governance", path: "/owner/governance", label: "الحوكمة", icon: ShieldCheck },
   ],
 };
