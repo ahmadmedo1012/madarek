@@ -64,6 +64,7 @@ jobs:
 
       - name: Resolve the APK artifact run
         id: src
+        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
@@ -81,6 +82,7 @@ jobs:
             -q '"commit=" + .headSha[0:8] + " conclusion=" + .conclusion'
 
       - name: Download the verified x86_64 APK
+        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
