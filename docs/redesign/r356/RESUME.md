@@ -185,9 +185,9 @@ the production server, with the full evidence bundle. docs/PUSH-FIREBASE-CHECKLI
 flipped to ✅; docs/HOSTING.md tells the real state; the safe-rollback (delete the
 secret → pre-Firebase builds) is documented.
 
-## LANE 2 — copy QUALITY review (in progress)
+## LANE 2 — copy QUALITY review (2a/2b/2c DONE)
 
-### 2a/2b — DONE (the editor read the diet, end to end)
+### 2a/2b — the editor read the diet, end to end (DONE)
 
 `docs/QA/copy-review/pack.md` (63 files, 2,011 − / 1,499 + Arabic source lines from
 `git diff e83a3da6~1..HEAD`) + `docs/QA/copy-review/REPORT.md` (the verdict). Result:
@@ -199,4 +199,41 @@ Vercel) — fixed to Vercel with the real-facts test pin following the same trut
 (90/90 legal tests green). Legal substance table (purpose/data/retention/rights/
 contact/jurisdiction + the 9-key ledger) verified intact against the pre-diet text.
 
-### 2c — param-route fixtures + ledger re-run (in progress)
+### 2c — DONE: every parametrized route crawls its real layout; the full post-diet ledger re-run is ZERO findings
+
+The fixture set (api-fixtures.ts Lane 2c block + mock-transport routes): training
+track + lesson, exam-taker start/answer/submit, teacher template list + details +
+question bank, offering analytics + students + risks, people directory/person/
+fields/history, admin users + permission overrides, the owner institution tree,
+competition + college details. tsc clean; 3,072/3,072 unit tests green.
+
+The full re-crawl (R353 P1's exercise, re-executed): **129 route-crawls**
+(29 public + 39 student + 21 teacher + 16 admin + 10 quality + 14 owner — the
+param routes included) × 4–5 widths × light+dark → **ZERO findings** (23 chunk
+files at /tmp/r356/final-*.json, all `[]`). Two intentional-chrome allowlist
+entries with written reasons: `div.r349p-savebar` (the people editor's sticky
+save toolbar — first surfaced by the now-crawlable populated editor) and
+`div.auth-grain` (the sheets' paper-grain film — a lazy-mount race on a
+404-rendering path). `/document/:filename` stays an honest-error-state crawl
+(the PDF bytes live under /files/**, outside the /api/** mock's reach).
+
+Mid-flight collision handled: PR #48 (r354-ui: cascade slabs, topbar clamp,
+contrast) merged into main during this session — my commit rebased cleanly on
+`600c943a`, the SPA rebuilt, and a spot re-check on the MERGED tree (landing +
+legal + auth + student ×3 + admin person + teacher intelligence + owner
+institution) re-confirmed zero findings. The r321 rename ledger gained a keep
+row for the review pack (verbatim historical quotes — it had tripped the design
+gate on `c83f6d67`; root-caused, not bypassed).
+
+### 2c residuals (honest)
+
+- The top-20 REAL-app crawl (production accounts) and the APK-screen emulator
+  sweep ride the next session's emulator block — the push-proof workflow
+  (Lane N) already proves the emulator + production path end-to-end, and the
+  CI smoke covers the APK's alive-flow per build; the full per-screen sweep is
+  the remaining tail.
+- Lane 2d (navigation: ≤7 sidebar items per role, no destination reachable
+  from 3 menus, menus from the permission matrix) — not yet re-audited this
+  session.
+
+## LANE 2 — copy QUALITY review (2a/2b/2c DONE)
