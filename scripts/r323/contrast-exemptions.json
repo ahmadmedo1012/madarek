@@ -1,0 +1,21 @@
+{
+  "$comment": "r323 contrast-gate NAMED EXEMPTIONS. An entry is a documented decision, never a silent ignore: it names the seat, the route, the measured ratio, and WHY the value is held. The gate keeps sweeping the element and still records every finding in contrast-gate.json under `exempted` — only a finding that matches an entry below stops failing the run. Adding an entry requires the measured numbers in it; the gate re-measures them on every run and reports drift.",
+  "exemptions": [
+    {
+      "id": "heron-hero-alt-rest",
+      "match": "a.hro-alt",
+      "route": "/",
+      "reason": "The landing hero's secondary link is a FROZEN Heron seat: --accent (#FA3600) ink on the paper ground is the measured reference value the Heron conformance record holds at rest (rgb(250,54,0) on rgb(246,246,238) = 3.46:1). Recolouring it moves a frozen art seat owned by the landing conformance lane, not a defect to fix here. Size makes it legal for large text only if it grows; it is a secondary CTA, so the ratio is recorded, accepted and re-measured every run.",
+      "measured": {
+        "ratio": 3.46,
+        "min": 4.5,
+        "fg": "rgb(250, 54, 0)",
+        "bg": "rgb(246, 246, 238)",
+        "darkHoverRatio": 3.93
+      },
+      "owner": "landing hero (Heron frozen seat)",
+      "since": "r357-ui",
+      "review": "re-check when the Heron record is re-pinned"
+    }
+  ]
+}
