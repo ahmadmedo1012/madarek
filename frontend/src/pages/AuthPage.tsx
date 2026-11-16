@@ -9,6 +9,7 @@ import {
   FlaskConical, X,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
+import { TechnicalSheet } from '../components/illustrations/technical/TechnicalSheet';
 import { Logo } from '../brand';
 import { useLogin, useSelectInstitution } from '../hooks/useAuth';
 import { listPublicInstitutions } from '../lib/api';
@@ -258,6 +259,7 @@ export default function AuthPage() {
         <span className="auth-mark auth-mark-br" />
       </div>
       <div className="auth-grain" aria-hidden="true" />
+      <TechnicalSheet className="tech-sheet-auth" />
 
       {/* imm-5 a11y fix (axe "all content in landmarks" — was a bare
           div): the page-level chrome reads as banner / contentinfo

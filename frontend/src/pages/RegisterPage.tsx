@@ -8,6 +8,7 @@ import {
   Eye, EyeOff, Check,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
+import { TechnicalSheet } from '../components/illustrations/technical/TechnicalSheet';
 import { useRegister } from '../hooks/useAuth';
 import { useFaculties } from '../hooks/useResources';
 import { useInstitutions } from '../hooks/useInstitutions';
@@ -318,6 +319,7 @@ export default function RegisterPage() {
         <span className="auth-mark auth-mark-br" />
       </div>
       <div className="auth-grain" aria-hidden="true" />
+      <TechnicalSheet className="tech-sheet-auth" />
 
       {/* a11y: page-level chrome as a banner landmark (matches AuthPage's
           imm-5 fix — axe "all content in landmarks"). */}
