@@ -137,8 +137,6 @@ jobs:
             test '${{ matrix.viewport }}' != small-360x640 || adb shell wm size 360x640
             test '${{ matrix.viewport }}' != small-360x640 || adb shell wm density 160
             adb install -r '${{ runner.temp }}/apk/Madarek-x86_64.apk'
-            adb shell am start -n ly.madarek.mobile/.MainActivity
-            sleep 8
             mkdir -p apps/mobile/build/screens
             printf 'role=%s\ntheme=%s\nfont_scale=%s\nviewport=%s\n' '${{ matrix.role }}' '${{ matrix.theme }}' '${{ matrix.font_scale }}' '${{ matrix.viewport }}' > apps/mobile/build/screens/profile.txt
             # the flow writes into the CWD; keep it inside the workspace so
