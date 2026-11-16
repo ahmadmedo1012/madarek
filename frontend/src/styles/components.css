@@ -536,22 +536,12 @@
     border: 1px solid var(--rule);
     cursor: pointer;
     white-space: nowrap;
-  }
-  /* r294 (polish v6+v8+v13+v15 fold): the pill interaction truth —
-     the v15 overrides-layer transition beat every earlier copy; the
-     v13 4-prop group owned .tab; v6's press-snap duration tweak
-     survives inside the :active states. All polish copies deleted. */
-  .pill {
     transition:
       background var(--motion-duration-short) var(--ease),
       color var(--motion-duration-short) var(--ease),
       border-color var(--motion-duration-short) var(--ease),
       transform var(--motion-duration-short) var(--ease),
       box-shadow var(--motion-duration-medium) var(--ease);
-  }
-  .pill.on {
-    /* soft accent selection halo — interaction state, not elevation */
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
   }
   @media (hover: hover) and (pointer: fine) {
     .pill:hover { transform: translateY(var(--hover-lift)); }
@@ -560,10 +550,6 @@
   .pill:active:not(.on) {
     /* v6 press-snap: the press hop rides the micro duration */
     transition-duration: var(--motion-duration-micro);
-  }
-  .tab {
-    /* R329 (gate:clean): the transition seat is polish.css's .tab rule
-       (color+background) — this components-layer list was inert. */
   }
   /* R319 (C2-G2 · §C3): the .tab.on soft accent selection halo is
      RETIRED (the old `box-shadow: 0 0 0 4px accent 14%` wash) — the
@@ -580,6 +566,8 @@
     background: var(--neutral-900);
     color: var(--neutral-50);
     border-color: var(--neutral-900);
+    /* soft accent selection halo — interaction state, not elevation */
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
   }
   [data-theme="dark"] .pill.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 
@@ -860,6 +848,57 @@
   /* R313 (D16): the zebra-on-hover wash is RETIRED — paper + hairlines
      only; hover affordance stays with the row-action reveal below. */
 
+  .table-wrap {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  .table-wrap:focus-visible {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+  }
+  .table-wrap.sticky {
+    max-block-size: 70dvh;
+    overflow: auto;
+  }
+  .table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    color: var(--text);
+    font-size: var(--type-body-size);
+    text-align: start;
+  }
+  .table th,
+  .table td {
+    padding: var(--sp-2) var(--sp-3);
+    border-block-end: 1px solid var(--rule);
+    text-align: start;
+    vertical-align: middle;
+  }
+  .table thead th {
+    color: var(--text-secondary);
+    background: var(--surface-2);
+    font-size: var(--type-label-size);
+    font-weight: var(--fw-semibold);
+    white-space: nowrap;
+  }
+  .table-wrap.sticky thead th {
+    position: sticky;
+    inset-block-start: 0;
+  }
+  .table tbody tr:last-child > * { border-block-end: 0; }
+  .table .tbl-strong { font-weight: var(--fw-semibold); }
+  .table .tbl-num {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
   /* Emphasized cell — the leading name/title column of the tables
      (9 live usages; was referenced but undefined → silent no-op). */
 
@@ -896,6 +935,50 @@
        r-md container corner on the same box the desktop gives r-lg. */
     /* Cards don't zebra — parity with the old overrides-layer home
        (the wrap-scroller's hover never applied to stacked cards). */
+    .table-wrap:not(.sticky) { box-shadow: inset 0 0 0 1px var(--rule); }
+    .card-title {
+      font-size: var(--type-body-size-lg);
+      line-height: var(--type-headline-line-height);
+    }
+    .table.tbl-stack {
+      display: block;
+      border-spacing: 0;
+    }
+    .table.tbl-stack thead {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      padding: 0;
+      margin: calc(-1 * var(--sp-0-5));
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .table.tbl-stack tbody { display: grid; gap: var(--sp-2); }
+    .table.tbl-stack tr {
+      display: grid;
+      gap: 0 var(--sp-4);
+      padding-inline: var(--sp-3);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-md);
+      background: var(--surface);
+    }
+    .table.tbl-stack td {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--sp-3);
+      min-inline-size: 0;
+      padding: var(--sp-2) 0;
+    }
+    .table.tbl-stack td[data-label]::before {
+      content: attr(data-label);
+      flex: 0 1 auto;
+      color: var(--text-muted);
+      font-size: var(--type-label-size);
+    }
+    .table.tbl-stack td > :last-child { min-inline-size: 0; }
     @media (hover: hover) and (pointer: fine) {
     }
   }
@@ -1057,7 +1140,9 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center;
     padding: var(--sp-9) var(--sp-6);
+    padding-block: var(--sp-7);
     gap: var(--sp-2);
+    border-radius: var(--r-lg);
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1066,15 +1151,13 @@
      ║  order preserved so the computed cascade is byte-identical)    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* ── Empty states — softer + breathing ──────────────────────── */
-  .state {
-    padding-block: var(--sp-7);
-    /* r304 fold (ex «final-visual-system»): boxed states (the banner
-       variants and any well-backed instance) take the r-lg container
-       corner — same geometry family as tables and RowLists. */
-    border-radius: var(--r-lg);
-  }
   .state-icon {
     transition: transform var(--motion-duration-reveal) var(--ease-out);
+    inline-size: 56px; block-size: 56px;
+    border-radius: var(--r-xl);
+    background: var(--c-grey-bg); color: var(--c-grey-deep);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-block-end: var(--sp-3);
   }
   @media (hover: hover) and (pointer: fine) {
     .state:hover .state-icon {
@@ -1125,13 +1208,6 @@
      ║  faint skeleton block so the layout doesn't feel broken.      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
 
-  .state-icon {
-    inline-size: 56px; block-size: 56px;
-    border-radius: var(--r-xl);
-    background: var(--c-grey-bg); color: var(--c-grey-deep);
-    display: inline-flex; align-items: center; justify-content: center;
-    margin-block-end: var(--sp-3);
-  }
   /* 012-design-graphics-uplift T089 — bespoke illustration block
      replaces the icon on opt-in surfaces. Sized to give the scene
      room to breathe without dominating the empty/error layout. */

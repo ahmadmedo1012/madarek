@@ -453,10 +453,12 @@ function compactRoleNav(role: AppRole, groups: NavGroup[]): NavGroup[] {
     if (!item) throw new Error(`${role} navigation spine is missing ${to}`);
     return item;
   });
+  const firstGroup = groups[0];
+  if (!firstGroup) throw new Error(`${role} navigation groups are missing`);
   const visible = new Set(spine.map((item) => item.to));
   const overflow = items.filter((item) => !visible.has(item.to));
   groups.splice(0, groups.length, ...[
-    { label: groups[0].label, items: spine },
+    { label: firstGroup.label, items: spine },
     ...(overflow.length ? [{ label: 'المزيد', collapsed: true, items: overflow }] : []),
   ]);
   return groups;
