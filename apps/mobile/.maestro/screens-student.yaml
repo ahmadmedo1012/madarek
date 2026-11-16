@@ -2,12 +2,12 @@
 appId: ly.madarek.mobile
 name: "R358 screens — student"
 ---
-- launchApp:
-    clearState: true
+- launchApp
 - extendedWaitUntil:
     visible:
       id: "welcome-title"
     timeout: 120000
+- takeScreenshot: "screens/00-welcome"
 - scrollUntilVisible:
     element:
       id: "welcome-cta"
@@ -19,6 +19,7 @@ name: "R358 screens — student"
     visible:
       id: "login-email"
     timeout: 30000
+- takeScreenshot: "screens/01-login"
 - tapOn:
     id: "login-email"
 - inputText: "student@test.ly"
@@ -36,38 +37,39 @@ name: "R358 screens — student"
 - extendedWaitUntil:
     visible: "الإعدادات"
     timeout: 30000
+- takeScreenshot: "screens/02-settings"
 - tapOn: "${THEME_LABEL}"
 - openLink: "madarek://student/dashboard"
 - extendedWaitUntil:
     visible:
       id: "role-tab-bar"
     timeout: 30000
-- takeScreenshot: "screens/student-01-dashboard"
+- takeScreenshot: "screens/student-03-dashboard"
 - tapOn:
     id: "tab-courses"
 - extendedWaitUntil:
     visible:
       id: "tab-courses"
     timeout: 30000
-- takeScreenshot: "screens/student-02-courses"
+- takeScreenshot: "screens/student-04-courses"
 - tapOn:
     id: "tab-ai"
 - extendedWaitUntil:
     visible:
       id: "tab-ai"
     timeout: 30000
-- takeScreenshot: "screens/student-03-ai"
+- takeScreenshot: "screens/student-05-ai"
 - tapOn:
     id: "tab-alerts"
 - extendedWaitUntil:
     visible:
       id: "tab-alerts"
     timeout: 30000
-- takeScreenshot: "screens/student-04-alerts"
+- takeScreenshot: "screens/student-06-alerts"
 - tapOn:
     id: "tab-profile"
 - extendedWaitUntil:
     visible:
       id: "tab-profile"
     timeout: 30000
-- takeScreenshot: "screens/student-05-profile"
+- takeScreenshot: "screens/student-07-profile"

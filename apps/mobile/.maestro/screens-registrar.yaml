@@ -2,12 +2,12 @@
 appId: ly.madarek.mobile
 name: "R358 screens — registrar"
 ---
-- launchApp:
-    clearState: true
+- launchApp
 - extendedWaitUntil:
     visible:
       id: "welcome-title"
     timeout: 120000
+- takeScreenshot: "screens/00-welcome"
 - scrollUntilVisible:
     element:
       id: "welcome-cta"
@@ -19,6 +19,7 @@ name: "R358 screens — registrar"
     visible:
       id: "login-email"
     timeout: 30000
+- takeScreenshot: "screens/01-login"
 - tapOn:
     id: "login-email"
 - inputText: "registrar@test.ly"
@@ -36,38 +37,39 @@ name: "R358 screens — registrar"
 - extendedWaitUntil:
     visible: "الإعدادات"
     timeout: 30000
+- takeScreenshot: "screens/02-settings"
 - tapOn: "${THEME_LABEL}"
 - openLink: "madarek://admin/dashboard"
 - extendedWaitUntil:
     visible:
       id: "role-tab-bar"
     timeout: 30000
-- takeScreenshot: "screens/registrar-01-dashboard"
+- takeScreenshot: "screens/registrar-03-dashboard"
 - tapOn:
     id: "tab-faculties"
 - extendedWaitUntil:
     visible:
       id: "tab-faculties"
     timeout: 30000
-- takeScreenshot: "screens/registrar-02-faculties"
+- takeScreenshot: "screens/registrar-04-faculties"
 - tapOn:
     id: "tab-students"
 - extendedWaitUntil:
     visible:
       id: "tab-students"
     timeout: 30000
-- takeScreenshot: "screens/registrar-03-students"
+- takeScreenshot: "screens/registrar-05-students"
 - tapOn:
     id: "tab-teachers"
 - extendedWaitUntil:
     visible:
       id: "tab-teachers"
     timeout: 30000
-- takeScreenshot: "screens/registrar-04-teachers"
+- takeScreenshot: "screens/registrar-06-teachers"
 - tapOn:
     id: "tab-reports"
 - extendedWaitUntil:
     visible:
       id: "tab-reports"
     timeout: 30000
-- takeScreenshot: "screens/registrar-05-reports"
+- takeScreenshot: "screens/registrar-07-reports"

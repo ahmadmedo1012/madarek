@@ -2,12 +2,12 @@
 appId: ly.madarek.mobile
 name: "R358 screens — quality"
 ---
-- launchApp:
-    clearState: true
+- launchApp
 - extendedWaitUntil:
     visible:
       id: "welcome-title"
     timeout: 120000
+- takeScreenshot: "screens/00-welcome"
 - scrollUntilVisible:
     element:
       id: "welcome-cta"
@@ -19,6 +19,7 @@ name: "R358 screens — quality"
     visible:
       id: "login-email"
     timeout: 30000
+- takeScreenshot: "screens/01-login"
 - tapOn:
     id: "login-email"
 - inputText: "quality@test.ly"
@@ -36,38 +37,39 @@ name: "R358 screens — quality"
 - extendedWaitUntil:
     visible: "الإعدادات"
     timeout: 30000
+- takeScreenshot: "screens/02-settings"
 - tapOn: "${THEME_LABEL}"
 - openLink: "madarek://quality/dashboard"
 - extendedWaitUntil:
     visible:
       id: "role-tab-bar"
     timeout: 30000
-- takeScreenshot: "screens/quality-01-dashboard"
+- takeScreenshot: "screens/quality-03-dashboard"
 - tapOn:
     id: "tab-courses"
 - extendedWaitUntil:
     visible:
       id: "tab-courses"
     timeout: 30000
-- takeScreenshot: "screens/quality-02-courses"
+- takeScreenshot: "screens/quality-04-courses"
 - tapOn:
     id: "tab-curriculum"
 - extendedWaitUntil:
     visible:
       id: "tab-curriculum"
     timeout: 30000
-- takeScreenshot: "screens/quality-03-curriculum"
+- takeScreenshot: "screens/quality-05-curriculum"
 - tapOn:
     id: "tab-engagement"
 - extendedWaitUntil:
     visible:
       id: "tab-engagement"
     timeout: 30000
-- takeScreenshot: "screens/quality-04-engagement"
+- takeScreenshot: "screens/quality-06-engagement"
 - tapOn:
     id: "tab-reports"
 - extendedWaitUntil:
     visible:
       id: "tab-reports"
     timeout: 30000
-- takeScreenshot: "screens/quality-05-reports"
+- takeScreenshot: "screens/quality-07-reports"
