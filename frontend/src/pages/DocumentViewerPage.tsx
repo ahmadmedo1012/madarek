@@ -13,6 +13,12 @@ import { ROLE_HOME } from '../lib/nav';
 import { useAuthStore, type AppRole } from '../stores/auth.store';
 import { isViewerFilenameParam } from '../components/pdf/loadError';
 import { PageFrame } from '../components/patterns';
+/* r360: the working-drawing family — the refusal branch's quiet
+ * companion. The plate draws the sheet the reader WOULD have measured
+ * (an A4 with its text block, figure and table in construction ink) —
+ * decorative chrome in the free margin, ≥1024px only, never in the
+ * a11y tree (the EmptyState copy is the content). */
+import { TechnicalPlate } from '../components/illustrations/technical/TechnicalPlate';
 import '../styles/pdf.css';
 import '../styles/shared/research-heron.css';
 import '../styles/research.css';
@@ -241,13 +247,16 @@ export default function DocumentViewerPage() {
           </header>
           <div className="doc-reader">
             <div className="doc-reader-main">
-              <EmptyState
-                icon={FileQuestion}
-                title={missing ? 'المستند غير محدّد' : 'الملف غير موجود'}
-                description={missing
-                  ? 'الرابط لا يحمل اسم ملف.'
-                  : 'اسم الملف لا يصلح لعرض PDF.'}
-              />
+              <div className="tech-plate-host">
+                <TechnicalPlate variant="document" className="tech-plate-margin" />
+                <EmptyState
+                  icon={FileQuestion}
+                  title={missing ? 'المستند غير محدّد' : 'الملف غير موجود'}
+                  description={missing
+                    ? 'الرابط لا يحمل اسم ملف.'
+                    : 'اسم الملف لا يصلح لعرض PDF.'}
+                />
+              </div>
             </div>
           </div>
         </PageFrame>

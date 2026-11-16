@@ -38,8 +38,15 @@ export interface TechnicalSheetProps {
 const GRID_X = Array.from({ length: 9 }, (_, i) => 40 + i * 40);
 const GRID_Y = Array.from({ length: 13 }, (_, i) => 40 + i * 40);
 
-/** A dimension chain: extension ticks + one mono numeral. */
-function DimChain({
+/**
+ * A dimension chain: extension ticks + one mono numeral.
+ *
+ * r360: exported for the TechnicalPlate siblings — the working-drawing
+ * family shares this one chain primitive instead of duplicating it
+ * (the jscpd ratchet would catch the copy; the family shares ONE ink
+ * grammar, so it shares the chain too).
+ */
+export function DimChain({
   x1,
   y1,
   x2,

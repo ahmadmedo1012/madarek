@@ -285,6 +285,15 @@
  * there is real margin for it (≥1280px). Below that the plate would
  * crowd the 620–720px form, so it is not rendered at all — the frame
  * and grain already carry the sheet on small screens. */
+/* r360 fix: the sheet-in animation fills `both`, so its final
+ * opacity:1 keyframe permanently beats any declared opacity on the
+ * animated root — the quieting rides the un-animated svg child
+ * instead (0.9 × the root's fade = the intended plate presence).
+ * Same fix applied to the plate seats in technical-plates.css. */
+.tech-sheet-auth svg {
+  opacity: 0.9;
+}
+
 .tech-sheet-auth {
   position: fixed;
   inset-block-start: 50%;
@@ -292,7 +301,6 @@
   z-index: 0;
   inline-size: min(22vw, 340px);
   translate: 0 -50%;
-  opacity: 0.9;
 }
 
 @media (max-width: 1399px) {

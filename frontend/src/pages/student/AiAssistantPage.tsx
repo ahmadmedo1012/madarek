@@ -31,6 +31,12 @@ import { SectionBar, BarCount, StatusChip, EmptyCell } from '../../components/st
 /* G النهائية: الترويسة على عقد patterns — السطح محادثة موطّنة داخل
    إطار العائلة نفسه (PageFrame/PageHeader) لا ودجات دردشة عامة. */
 import { PageFrame, PageHeader } from '../../components/patterns';
+/* r360: the working-drawing family — the idle workspace's concept net:
+ * while the transcript holds only the greeting, the assistant's field
+ * (three measured clusters, linked nodes, the isolate in signal ink —
+ * the gap it will look for) waits under the bubble, ≥720px only,
+ * decorative. Unmounts the moment real work arrives (greetingOnly). */
+import { TechnicalPlate } from '../../components/illustrations/technical/TechnicalPlate';
 import { Link } from 'react-router-dom';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
@@ -1119,6 +1125,13 @@ export default function AiAssistantPage() {
                       )}
                     </div>
                   ))}
+                  {/* r360: the idle plate — the concept net while the
+                      workspace waits for its first question. greetingOnly
+                      is exactly the no-work-yet state; the first send
+                      grows the transcript and the drawing leaves. */}
+                  {greetingOnly && (
+                    <TechnicalPlate variant="knowledge" className="tech-plate-idle" />
+                  )}
                   {convLoad.phase === 'error' && (
                     <div className="chat-msg bot">
                       <RoleLabel who="bot" />
