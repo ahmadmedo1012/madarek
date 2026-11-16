@@ -32,6 +32,14 @@
     {
       "match": "div.pf-split-detail",
       "reason": "R353 P1 — the patterns SplitView's sticky DETAIL pane (patterns.css:265, the R353 P4 dvh contract seat): the master-detail layout's right column sticks while the left list scrolls — a grid SIBLING track (grid-template-columns: minmax(320px,420px) + 1fr), so it never paints over the list, it owns its own track; hidden below 920px by design. The >6% viewport fraction at 1024/1440 (12.6-13.9%) is construction (a wide detail column on a 768px-tall viewport), not a cover — the same master-detail sticky pattern as div.jt-map-in (allowlisted R347 D6)."
+    },
+    {
+      "match": "div.r349p-savebar",
+      "reason": "R356 Lane 2c — the people page's STICKY SAVE TOOLBAR (profile-data.css:251, role=toolbar, R349's own design): the field/file editor's save+cancel actions pin to the scroll container's bottom while the form scrolls above — the same sticky-action-bar pattern as the allowlisted div.pf-filterbar.sticky (page's own controls, opaque background, z-index inside the scroll container, FAB-lane-aware padding-inline-end 76px per its own R349-P5 fix). First surfaced by the param-route fixtures (the /admin/people/:id crawl — the populated editor layout was never crawlable before); its 60px bar measures 6.4-8.3% of 360-390px viewports by construction, not by defect."
+    },
+    {
+      "match": "div.auth-grain",
+      "reason": "R356 Lane 2c — the auth/legal/404 sheets' PAPER GRAIN FILM (patterns.css:686, the r314 recipe: feTurbulence data-URI + 24px micro-dot grid, mix-blend-mode multiply, z-index 0, pointer-events none): a static decorative TEXTURE under the flowing content — the same proven-intentional fixed-decor family as div.sheet-frame / div.auth-frame (allowlisted R313/R353). inset:0 BY CONSTRUCTION (it is the paper's grain, not a cover); it paints texture, never ink or controls, and reduced-motion has nothing to collapse (static). Surfaced by the Lane 2c crawl only as a lazy-mount race on one 404-rendering path (the same page crawled clean when the chunk landed earlier) — allowlisting the film, not hiding a defect: text-on-text/clipped/overflow findings are never filtered."
     }
   ]
 }

@@ -31,25 +31,48 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
+  ADMIN_COURSES,
+  ADMIN_USERS_PAGE,
+  COLLEGE_DETAIL,
+  COMPETITION_DETAIL,
   DB_OFFERING_LECTURES,
+  DIRECTORY_PAGE,
   ENROLLMENTS,
+  EXAM_START_PAYLOAD,
+  EXAM_SUBMIT_RESULT,
+  EXAM_TEMPLATE_ROWS,
   FACULTIES,
+  FIELD_DEFINITIONS,
   LECTURE_DETAIL,
   LOCKED_EMAIL,
   LOGIN_FAILED_MESSAGE,
   LOGIN_LOCKED_MESSAGE,
+  MODERATION_TEMPLATE_FINAL,
+  MODERATION_TEMPLATE_QUIZ,
   MY_EXAMS,
   MY_PROFILE,
   NOTIFICATIONS,
+  OFFERING_ANALYTICS,
   OFFERING_FULL,
   OFFERING_ID,
   OFFERING_LECTURES,
+  OWNER_FACULTIES,
+  OWNER_INSTITUTIONS,
+  OWNER_TEACHERS,
+  PERSON_HISTORY,
   RESUME,
   DISCOVER_RESULTS,
   STUDENT_DASHBOARD,
+  STUDENT_PERSON,
   STUDENT_USER,
+  TEACHER_OFFERINGS,
+  TEACHER_PERMISSIONS,
+  TEACHER_RISKS,
+  TEACHER_STUDENTS,
   TEACHER_USER,
   TRAINING_CATALOG,
+  TRAINING_TRACK,
+  TRAINING_TRACK_SLUG,
   UNREAD_COUNT,
   VALID_LOGIN,
   meProfile,
@@ -144,6 +167,61 @@ export function standardRoutes(): MockRouteDef[] {
      * lecture), so the training arm never renders — an empty list is
      * the truthful payload, not a stub. */
     { method: 'GET', path: '/training/catalog', json: ok(TRAINING_CATALOG) },
+
+    /* ── R356 Lane 2c — the param-route fixtures (the ledger's
+     * honest-501 follow-up): populated detail payloads so every
+     * parameterized route crawls its REAL layout, not its empty
+     * state. See api-fixtures.ts's Lane 2c block for shapes. ── */
+
+    /* /student/training/:slug (+ /lesson/:lessonId reuses the track) */
+    { method: 'GET', path: `/training/tracks/${TRAINING_TRACK_SLUG}`, json: ok(TRAINING_TRACK) },
+    { method: 'POST', path: '/training/tracks/:slug/enroll', json: ok({ ok: true }) },
+    { method: 'POST', path: '/training/lessons/:lessonId/complete', json: ok({ ok: true }) },
+    { method: 'GET', path: '/training/me', json: ok({ points: 120, level: { level: 2, tier: 'BRONZE', toNext: 80, pctIntoLevel: 40 }, badgeCount: 1, certificateCount: 0, tracksEnrolled: 1, tracksCompleted: 0, recentBadges: [] }) },
+
+    /* /student/online-exams/:id — the taker flow (entry screen rides
+     * /exams/me above; start/answer/submit give the crawler the full
+     * question-taking layout when it drives the flow). */
+    { method: 'POST', path: '/exams/templates/exm_e2e_quiz3/start', json: ok(EXAM_START_PAYLOAD) },
+    { method: 'POST', path: '/exams/attempts/:attemptId/answer', json: ok({ ok: true }) },
+    { method: 'POST', path: '/exams/attempts/:attemptId/submit', json: ok(EXAM_SUBMIT_RESULT) },
+
+    /* /teacher/exams/:templateId — the list + the two template details
+     * (the moderation fixtures ARE ExamTemplateDetail shapes). */
+    { method: 'GET', path: '/exams/templates', json: ok(EXAM_TEMPLATE_ROWS) },
+    { method: 'GET', path: '/exams/templates/tpl_e2e_quiz4', json: ok(MODERATION_TEMPLATE_QUIZ) },
+    { method: 'GET', path: '/exams/templates/tpl_e2e_final_net', json: ok(MODERATION_TEMPLATE_FINAL) },
+    { method: 'GET', path: '/exams/templates/:id/attempts', json: ok([]) },
+    { method: 'GET', path: '/question-bank', json: pageOf([], { limit: 50 }) },
+    { method: 'GET', path: '/question-bank/categories', json: ok([]) },
+
+    /* /teacher/intelligence/:offeringId */
+    { method: 'GET', path: '/teacher/me/offerings', json: ok(TEACHER_OFFERINGS) },
+    { method: 'GET', path: `/teacher/offerings/${OFFERING_ID}/analytics`, json: ok(OFFERING_ANALYTICS) },
+    { method: 'GET', path: `/teacher/offerings/${OFFERING_ID}/students`, json: ok(TEACHER_STUDENTS) },
+    { method: 'GET', path: '/teacher/risks', json: ok(TEACHER_RISKS) },
+
+    /* /admin/people/:id — the directory + person + fields + history */
+    { method: 'GET', path: '/people', json: DIRECTORY_PAGE },
+    { method: 'GET', path: '/people/:id', json: ok(STUDENT_PERSON) },
+    { method: 'GET', path: '/people/:id/history', json: ok(PERSON_HISTORY) },
+    { method: 'GET', path: '/field-definitions', json: ok(FIELD_DEFINITIONS) },
+    { method: 'POST', path: '/people/:id/contact-request', json: ok({ ok: true }) },
+    { method: 'PATCH', path: '/people/:id', json: ok({ ok: true }) },
+
+    /* /admin/permissions/:id — the users roster + one user's caps */
+    { method: 'GET', path: '/admin/users', json: ADMIN_USERS_PAGE },
+    { method: 'GET', path: '/admin/users/:id/permissions', json: ok(TEACHER_PERMISSIONS) },
+
+    /* /owner/institutions/:slug — the console list + the per-slug tree */
+    { method: 'GET', path: '/owner/institutions', json: ok(OWNER_INSTITUTIONS) },
+    { method: 'GET', path: '/admin/faculties', json: ok(OWNER_FACULTIES) },
+    { method: 'GET', path: '/admin/courses', json: ADMIN_COURSES },
+    { method: 'GET', path: '/owner/users', json: OWNER_TEACHERS },
+
+    /* /competitions/:id + /colleges/:id (public details) */
+    { method: 'GET', path: '/competitions/:id', json: ok(COMPETITION_DETAIL) },
+    { method: 'GET', path: '/colleges/:id', json: ok(COLLEGE_DETAIL) },
   ];
 }
 

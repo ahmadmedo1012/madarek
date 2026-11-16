@@ -115,6 +115,11 @@
       "file": "backend/prisma/seed-demo-r330.ts",
       "phrase": "الإدارة",
       "reason": "R330 demo content data (the documented «course topics» keep category): the academic subject «مبادئ الإدارة» — course name, its lectures/exams, and the teacher's bio — a field of study, never the المسجل العام role label"
+    },
+    {
+      "file": "docs/QA/copy-review/pack.md",
+      "phrase": "",
+      "reason": "R356 Lane 2a — the copy-diet review pack quotes BEFORE/AFTER source lines VERBATIM (git diff e83a3da6~1..HEAD over the 63 diet files); its «الإدارة» occurrences are historical quotes of the R320-kept PaymentPage finance-office copy (itself on this ledger), inside a frozen evidence document — not live copy"
     }
   ]
 }

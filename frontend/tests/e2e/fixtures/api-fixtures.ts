@@ -1068,3 +1068,345 @@ export const OFFERING_LECTURES_WITH_CHECKPOINT = [
   },
 ];
 
+
+/* ═════════════════════════════════════════════════════════════════
+ * R356 Lane 2c — the 17 param-route fixtures (the ledger's honest-501
+ * follow-up): populated detail payloads for every parameterized route
+ * the page ledger listed as uncrawlable (docs/QA/page-ledger.md).
+ * Shapes mirror the frontend hooks' interfaces verbatim.
+ * ═════════════════════════════════════════════════════════════════ */
+
+/* ── /student/training/:slug (+ /lesson/:lessonId) ──────────────── */
+export const TRAINING_TRACK_SLUG = 'study-skills-e2e';
+export const TRAINING_TRACK = {
+  id: 'trk_e2e_study',
+  slug: TRAINING_TRACK_SLUG,
+  title: 'مهارات المذاكرة الفعّالة',
+  titleEn: 'Effective Study Skills',
+  summary: 'خطط مذاكرة واقعية، تكرار متباعد، واسترجاع فعّال قبل الاختبارات.',
+  category: 'STUDY_SKILLS',
+  level: 'BEGINNER',
+  iconEmoji: '🧭',
+  themeColor: null,
+  estMinutes: 45,
+  pointsAward: 120,
+  enrolled: true,
+  isCompleted: false,
+  completedAt: null,
+  lessons: [
+    {
+      id: 'les_e2e_plan',
+      order: 1,
+      title: 'خطة الأسبوع',
+      summary: 'توزيع المقررات على أيام الأسبوع بأهداف قابلة للقياس.',
+      contentMarkdown: '## الخطة\nابدأ بأصعب مقرر في أنشط ساعة لك.\n\n- جلسات 25 دقيقة مع راحة 5\n- مراجعة يوم الجمعة',
+      estMinutes: 20,
+      pointsAward: 50,
+      quizQuestion: 'كم مدة جلسة التركيز المقترحة؟',
+      isCompleted: true,
+    },
+    {
+      id: 'les_e2e_recall',
+      order: 2,
+      title: 'الاسترجاع الفعّال',
+      summary: 'اختبر نفسك بدل إعادة القراءة السلبية.',
+      contentMarkdown: '## الاسترجاع\nأغلق الكتاب واكتب ما تتذكره، ثم قارن.',
+      estMinutes: 25,
+      pointsAward: 70,
+      quizQuestion: null,
+      isCompleted: false,
+    },
+  ],
+};
+
+/* ── /teacher/exams/:templateId (list + reuse of the moderation
+ *    template details already shipped above) ───────────────────── */
+export const EXAM_TEMPLATE_ROWS = [
+  {
+    id: 'tpl_e2e_quiz4',
+    title: 'اختبار قصير — المصفوفات',
+    kind: 'QUIZ',
+    status: 'PUBLISHED',
+    durationMin: 15,
+    passingScore: 60,
+    openAt: iso(-24),
+    closeAt: iso(24 * 5),
+    offering: { id: OFFERING_ID, course: { name: 'مقدمة في الخوارزميات', code: 'CS-201', iconEmoji: null } },
+    faculty: { name: 'كلية الهندسة' },
+    author: { firstName: 'سالم', lastName: 'الفتني' },
+    _count: { questions: 4, attempts: 12 },
+  },
+  {
+    id: 'tpl_e2e_final_net',
+    title: 'اختبار نهائي — الشبكات',
+    kind: 'FINAL',
+    status: 'PENDING_REVIEW',
+    durationMin: 120,
+    passingScore: 50,
+    openAt: null,
+    closeAt: null,
+    offering: null,
+    faculty: { name: 'كلية الهندسة' },
+    author: { firstName: 'سالم', lastName: 'الفتني' },
+    _count: { questions: 1, attempts: 0 },
+  },
+];
+
+/* ── /teacher/intelligence/:offeringId ─────────────────────────── */
+export const TEACHER_OFFERINGS = [
+  {
+    id: OFFERING_ID,
+    term: '2026-FALL',
+    room: 'قاعة A-12',
+    capacity: 60,
+    course: { id: 'crs_e2e_algorithms', code: 'CS-201', name: 'مقدمة في الخوارزميات', iconEmoji: null, themeColor: null, credits: 3 },
+    _count: { enrollments: 42, assignments: 3, lectures: 8, examTemplates: 2 },
+    schedule: [{ id: 'sch_e2e_1', dayOfWeek: 0, startTime: '09:00', endTime: '10:30', room: 'قاعة A-12' }],
+  },
+];
+export const OFFERING_ANALYTICS = {
+  enrolled: 42,
+  totalSessions: 8,
+  overallAttendance: 78,
+  avgGrade: 74,
+  passRate: 82,
+  assignmentCount: 3,
+  examCount: 2,
+};
+export const TEACHER_STUDENTS = [
+  {
+    studentId: 'usr_e2e_amna',
+    name: 'آمنة الفيتوري',
+    universityId: '2026001',
+    avatarInitials: 'آف',
+    avatarColor: '#4F8EF7',
+    attendancePct: 92,
+    absences: 1,
+    lateCount: 0,
+    avgGrade: 88,
+    watchPct: 71,
+    riskScore: 12,
+    riskLevel: 'OK',
+    signals: [],
+    suggestion: 'أداء ثابت — شجّعيها على مسارات التطوير الذاتي.',
+  },
+  {
+    studentId: 'usr_e2e_moh',
+    name: 'محمد القذافي',
+    universityId: '2026002',
+    avatarInitials: 'مق',
+    avatarColor: '#B45DE0',
+    attendancePct: 54,
+    absences: 6,
+    lateCount: 3,
+    avgGrade: 49,
+    watchPct: 22,
+    riskScore: 71,
+    riskLevel: 'AT_RISK',
+    signals: ['غياب متكرر', 'درجة تحت الحد'],
+    suggestion: 'راسله واقترح جلسة متابعة أسبوعية.',
+  },
+];
+export const TEACHER_RISKS = [
+  {
+    studentId: 'usr_e2e_moh',
+    name: 'محمد القذافي',
+    avatarInitials: 'مق',
+    avatarColor: '#B45DE0',
+    riskScore: 71,
+    riskLevel: 'AT_RISK',
+    signals: ['غياب متكرر', 'درجة تحت الحد'],
+    suggestion: 'راسله واقترح جلسة متابعة أسبوعية.',
+    offeringId: OFFERING_ID,
+    courseName: 'مقدمة في الخوارزميات',
+    courseIcon: null,
+    courseColor: null,
+  },
+];
+
+/* ── /admin/people/:id (+ directory + fields + history) ─────────── */
+const PHONE_VISIBLE = { access: 'VISIBLE', display: '+218910000001', canRequestContact: false };
+export const STUDENT_PERSON = {
+  id: 'spr_e2e_amna',
+  userId: 'usr_e2e_amna',
+  kind: 'student',
+  nameAr: 'آمنة الفيتوري',
+  nameEn: 'Amna Alfituri',
+  fatherName: 'علي',
+  grandfatherName: 'يوسف',
+  motherName: null,
+  dateOfBirth: '2004-04-12',
+  birthPlace: 'طرابلس',
+  gender: 'FEMALE',
+  city: 'طرابلس',
+  address: null,
+  profileImageUrl: null,
+  universityId: '2026001',
+  phone: PHONE_VISIBLE,
+  phoneVisibility: 'INSTITUTION_STAFF',
+  guardianPhoneVisibility: 'INSTITUTION_STAFF',
+  additionalPhone: null,
+  guardian: { name: 'علي الفيتوري', relationship: 'الأب', phone: { access: 'VISIBLE', display: '+218910000009', canRequestContact: false } },
+  emergencyContact: { name: null, phone: null },
+  nationalId: { access: 'MASKED', value: '1190****7' },
+  nationalIdPresent: true,
+  academic: {
+    stage: null, grade: null, section: null, previousSchool: null, transferStatus: null,
+    studyType: 'MORNING', enrollmentStatus: 'ACTIVE', secondarySchool: null,
+    secondarySchoolBranch: null, secondarySchoolPercent: null, admissionYear: 2026,
+  },
+  user: { id: 'usr_e2e_amna', firstName: 'آمنة', lastName: 'الفيتوري', email: 'amna@test.ly', avatarColor: '#4F8EF7', avatarInitials: 'آف', isActive: true },
+  customFields: [{ key: 'bus_route', labelAr: 'خط الحافلة', type: 'TEXT', value: 'الخط 3 — طريق المطار' }],
+  faculty: { id: 'fac_e2e_eng', name: 'كلية الهندسة', nameEn: 'Engineering' },
+  department: { id: 'dep_e2e_cs', name: 'قسم علوم الحاسوب', nameEn: 'Computer Science' },
+  year: 1,
+};
+export const DIRECTORY_PAGE = {
+  data: [STUDENT_PERSON],
+  meta: { page: 1, limit: 20, total: 1, totalPages: 1 },
+};
+export const FIELD_DEFINITIONS = [
+  {
+    id: 'fd_e2e_bus',
+    institutionId: 'inst_e2e_zu',
+    key: 'bus_route',
+    labelAr: 'خط الحافلة',
+    labelEn: 'Bus route',
+    entity: 'STUDENT',
+    type: 'TEXT',
+    required: false,
+    options: null,
+    validation: null,
+    visibleTo: { roles: ['ADMIN'] },
+    searchable: false,
+    importKeyAr: 'خط الحافلة',
+    importKeyEn: 'bus route',
+    sortOrder: 1,
+  },
+];
+export const PERSON_HISTORY = [
+  { id: 'aud_e2e_1', action: 'people.read', metadata: { universityId: '2026001' }, createdAt: iso(-2), user: { firstName: 'المسجل', lastName: 'العام' } },
+  { id: 'aud_e2e_2', action: 'people.update', metadata: { fields: ['phone'] }, createdAt: iso(-26), user: null },
+];
+
+/* ── /admin/permissions/:id ────────────────────────────────────── */
+export const ADMIN_USERS_PAGE = {
+  data: [
+    { id: 'usr_e2e_amna', email: 'amna@test.ly', role: 'STUDENT', firstName: 'آمنة', lastName: 'الفيتوري', isActive: true, scopeFacultyId: null, memberships: [] },
+    { id: 'usr_e2e_teacher', email: 'teacher@test.ly', role: 'TEACHER', firstName: 'سالم', lastName: 'الفتني', isActive: true, scopeFacultyId: null, memberships: [] },
+  ],
+  meta: { page: 1, limit: 20, total: 2, totalPages: 1 },
+};
+export const TEACHER_PERMISSIONS = {
+  user: {
+    id: 'usr_e2e_teacher',
+    email: 'teacher@test.ly',
+    role: 'TEACHER',
+    firstName: 'سالم',
+    lastName: 'الفتني',
+    scopeFacultyId: null,
+    scopeFaculty: null,
+  },
+  roleDefaults: ['EXAMS_AUTHOR', 'ANNOUNCE_FACULTY', 'RESEARCH_PUBLISH'],
+  effective: ['EXAMS_AUTHOR', 'ANNOUNCE_FACULTY', 'RESEARCH_PUBLISH', 'QUALITY_VIEW'],
+  overrides: [
+    { id: 'ovr_e2e_1', capability: 'QUALITY_VIEW', grant: true, reason: 'طلب القسم', grantedAt: iso(-24 * 10) },
+  ],
+};
+
+/* ── /owner/institutions/:slug ─────────────────────────────────── */
+export const OWNER_INSTITUTIONS = [
+  {
+    id: 'inst_e2e_zu',
+    name: 'مؤسسة مدارك النموذجية',
+    nameEn: 'Madarek Model Institution',
+    slug: 'zu',
+    status: 'ACTIVE',
+    createdAt: iso(-24 * 120),
+    updatedAt: iso(-24 * 2),
+    activeMembershipCount: 8,
+    facultyCount: 2,
+    admins: [
+      { userId: 'usr_e2e_reg', email: 'registrar@test.ly', firstName: 'المسجل', lastName: 'العام', membershipId: 'mem_e2e_1', isActive: true },
+    ],
+  },
+];
+export const OWNER_FACULTIES = [
+  {
+    id: 'fac_e2e_eng',
+    name: 'كلية الهندسة',
+    nameEn: 'Engineering',
+    iconEmoji: '⚙️',
+    city: 'طرابلس',
+    departmentCount: 1,
+    studentCount: 42,
+    teacherCount: 3,
+    courseCount: 2,
+    departments: [
+      { id: 'dep_e2e_cs', name: 'قسم علوم الحاسوب', students: 42, teachers: 2, courses: 2 },
+    ],
+  },
+];
+export const OWNER_TEACHERS = {
+  data: [
+    { id: 'usr_e2e_teacher', email: 'teacher@test.ly', firstName: 'سالم', lastName: 'الفتني' },
+  ],
+};
+
+/* ── /competitions/:id (public) ────────────────────────────────── */
+export const COMPETITION_DETAIL = {
+  id: 'cmp_e2e_ai',
+  title: 'تحدي الذكاء الاصطناعي الطلابي',
+  description: 'ابنِ نموذجًا يحل مسائل الفصل الأول — التقويم على العرض التقديمي والتقرير.',
+  category: 'برمجة',
+  prize: 'فرصة تدريب صيفية',
+  deadline: iso(24 * 14),
+  status: 'OPEN',
+  iconEmoji: '🏆',
+  themeColor: '#FA3600',
+  organizer: { firstName: 'المسجل', lastName: 'العام', role: 'ADMIN' },
+  _count: { entries: 2 },
+  organizerId: 'usr_e2e_reg',
+  entries: [
+    {
+      id: 'ent_e2e_1',
+      title: 'نموذج تنبؤ الحضور',
+      submittedAt: iso(-48),
+      score: null,
+      user: { firstName: 'آمنة', lastName: 'الفيتوري', avatarColor: '#4F8EF7', avatarInitials: 'آف' },
+    },
+  ],
+};
+
+/* ── /colleges/:id (public) ────────────────────────────────────── */
+export const COLLEGE_DETAIL = {
+  id: 'clg_e2e_eng',
+  name: 'كلية الهندسة',
+  nameEn: 'Engineering',
+  iconEmoji: '⚙️',
+  city: 'طرابلس',
+  stats: { studentCount: 420, teacherCount: 28, departmentCount: 3, courseCount: 12 },
+  departments: [
+    { id: 'dep_e2e_cs', name: 'قسم علوم الحاسوب', studentCount: 180, teacherCount: 12, courseCount: 6 },
+    { id: 'dep_e2e_civ', name: 'قسم الهندسة المدنية', studentCount: 140, teacherCount: 9, courseCount: 4 },
+  ],
+};
+
+/* ── /student/online-exams/:id — the taker flow (start/answer/finish) */
+export const EXAM_START_PAYLOAD = {
+  attemptId: 'att_e2e_quiz3',
+  expiresAt: iso(0.25),
+  durationMin: 15,
+  title: 'اختبار قصير — الوحدة الثالثة',
+  questions: [
+    { id: 'q_e2e_1', type: 'MCQ', prompt: 'ما التعقيد الزمني للبحث الثنائي؟', choices: ['O(1)', 'O(log n)', 'O(n)', 'O(n log n)'], points: 5 },
+    { id: 'q_e2e_2', type: 'TRUE_FALSE', prompt: 'الخوارزمية الجشعة تضمن الحل الأمثل دائمًا.', choices: ['صح', 'خطأ'], points: 5 },
+  ],
+};
+export const EXAM_SUBMIT_RESULT = {
+  score: 10,
+  maxScore: 10,
+  status: 'SUBMITTED',
+  needsManual: 0,
+  passed: true,
+};

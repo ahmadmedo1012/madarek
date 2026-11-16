@@ -1,5 +1,14 @@
 # Page Ledger — R353 P1 · سجلّ الصفحات
 
+> **R356 Lane 2c re-run (2026-11-16, sha `c83f6d67` + the Lane 2c fixture work):**
+> the FULL crawl re-executed after the R355 copy diet, with fixtures for every
+> parametrized route — **129 route-crawls · ZERO findings** (every route × role ×
+> 4–5 widths × light+dark). The 17 param routes below are RESOLVED (populated
+> detail layouts crawled clean); two intentional-chrome entries joined the written
+> allowlist (`div.r349p-savebar`, `div.auth-grain` — reasons in
+> `scripts/qa/overlap-allow.json`). The full result set: `/tmp/r356/final-*.json`
+> (23 chunk files, all `[]`).
+
 **The "open every page literally" crawl.** Every authed route per role + every public surface, crawled with the hermetic per-role harness (`scripts/qa/overlap.mjs --seed <role>` — the mock API seeds the role's session, no backend needed), at **360×640 / 768×1024 / 1024×768 / 1440×900** (the 5 headline public surfaces also at **390×844**) × **light + dark**, scrolled stop-by-stop, probed for: text-on-text, text-on-media, fixed-over-text, big-fixed covers, clipped text, horizontal overflow.
 
 - Date: 2026-11-15 · sha `99dfe80` (+ the two probe commits in this branch) · **110 route-crawls · 981 evidence screenshots** (`/tmp/p1/shots-*`, one PNG per route×width×theme at the top stop — re-crawl any time with the commands below).
@@ -23,9 +32,9 @@
 
 **Route total: 110 crawls (104 unique routes + /settings ×2 seeds + the 5-width public re-verification).**
 
-## Unresolved param routes (no mock fixture — honest 501 state, listed not guessed)
+## Unresolved param routes — RESOLVED in R356 Lane 2c
 
-`/student/online-exams/:id` · `/student/training/:slug` · `/student/training/:slug/lesson/:lessonId` · `/teacher/exams/:templateId` · `/teacher/intelligence/:offeringId` · `/admin/people/:id` · `/admin/permissions/:id` · `/owner/institutions/:slug` · `/colleges/:id` · `/competitions/:id` · `/vision/:slug` · `/document/:filename` · `/auth/reset-password` (needs a token query). The mock transport answers 501 for their detail endpoints — the pages render their honest empty/error state (itself crawled clean via the list routes), but the populated detail layout needs fixtures to be honestly crawlable. **Fixture follow-up queued.**
+`/student/online-exams/exm_e2e_quiz3` · `/student/training/study-skills-e2e` (+ `/lesson/les_e2e_recall`) · `/teacher/exams/tpl_e2e_quiz4` · `/teacher/intelligence/offr_e2e_algorithms` · `/admin/people/spr_e2e_amna` · `/admin/permissions/usr_e2e_teacher` · `/owner/institutions/zu` · `/colleges/clg_e2e_eng` · `/competitions/cmp_e2e_ai` · `/vision/ai-predictor` (+ `/vision/voice-assistant`) · `/auth/reset-password?token=…` · `/document/:filename` — every parametrized route now has a populated fixture (the Lane 2c block in `frontend/tests/e2e/fixtures/api-fixtures.ts` + the routes in `mock-transport.ts`), and each crawled its REAL detail layout clean at 4–5 widths × light/dark. `/document/:filename` remains an honest-error-state crawl by design (the PDF bytes live under `/files/**`, outside the `/api/**` mock transport's reach — the viewer's error layout is the truthful hermetic state).
 
 ## Honest 501s inside crawled routes (the page renders its empty state — clean)
 
