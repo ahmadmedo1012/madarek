@@ -19,6 +19,7 @@ import {
   bookHitHref,
   candidateTake,
   emailMatchArms,
+  multiwordNameArm,
   eventHitHref,
   facultyHitHref,
   globalSearchScope,
@@ -657,6 +658,11 @@ router.get('/search/discover', async (req, res, next) => {
     // (exact via User_email_key, then contains). Both pure builders in
     // modules/search/global.ts; both null/empty for Arabic queries.
     const emailArms = emailMatchArms(plan);
+    // r357 L4 — the conjunctive per-word arm for multiword name queries
+    // (null for single-word: the flat OR below stays). Computed once,
+    // used by both people scans.
+    const multiwordArmStudents = multiwordNameArm(plan, ['firstName', 'lastName']);
+    const multiwordArmTeachers = multiwordArmStudents; // same name fields — one plan, one shape
     const universityIdArm = universityIdMatchArm(plan, institutionId, scopeFacultyId);
 
     // Students/teachers profile include: the caller-institution profile
@@ -712,7 +718,14 @@ router.get('/search/discover', async (req, res, next) => {
             where: {
               AND: [
                 scope.students!,
-                {
+                /* r357 L4 — multiword queries fetch through the
+                 * CONJUNCTIVE per-word arm (multiwordNameArm): the flat
+                 * variants OR + this name-ordered window was a broken
+                 * fetch at scale (the window filled with alphabetical
+                 * single-word matches and the strict re-verify killed
+                 * them all — R@5=0.000 at 20k). Single-word queries
+                 * keep the flat OR (plus the identifier arms). */
+                multiwordArmStudents ?? {
                   OR: [
                     ...plan.variants.map((v) => ({ firstName: ic(v) })),
                     ...plan.variants.map((v) => ({ lastName: ic(v) })),
@@ -720,9 +733,9 @@ router.get('/search/discover', async (req, res, next) => {
                     // email (User_email_key) + student number (the
                     // (institutionId, universityId) unique index) — both
                     // carry their own institution/faculty pins.
-                    ...emailArms,
-                    ...(universityIdArm ? [universityIdArm] : []),
-                    ...(phoneArm ? [phoneArm] : []),
+                  ...emailArms,
+                  ...(universityIdArm ? [universityIdArm] : []),
+                  ...(phoneArm ? [phoneArm] : []),
                   ],
                 },
               ],
@@ -743,7 +756,9 @@ router.get('/search/discover', async (req, res, next) => {
             where: {
               AND: [
                 scope.teachers!,
-                {
+                /* r357 L4 — the same conjunctive multiword arm as the
+                 * students scan (the same window defect, the same fix). */
+                multiwordArmTeachers ?? {
                   OR: [
                     ...plan.variants.map((v) => ({ firstName: ic(v) })),
                     ...plan.variants.map((v) => ({ lastName: ic(v) })),

@@ -114,6 +114,21 @@ export interface GlobalQueryPlan {
    */
   variants: string[];
   /**
+   * r357 L4 — per-word variant GROUPS for a multiword query (empty for
+   * single-word queries): wordVariants[i] is the fold group of the
+   * i-th ≥3-letter word (the word, its clitic/ال-stripped form, its
+   * reverse folds — the same arms `variants` carries flat). The
+   * people scans build the CONJUNCTIVE fetch from these groups: every
+   * word must match SOME name field. The flat `variants` OR was a
+   * name-ordered window over 20k students — a two-word query fetched
+   * the alphabetically-first 100 single-word matches and the strict
+   * multiword re-verify killed them all (the true targets sat beyond
+   * the window; measured R@5=0.000 at 20k). The conjunction is a
+   * SUPERSET of what the re-verify keeps (it ignores <3-letter words,
+   * the re-verify re-adds them) — the fetch narrows, the law holds.
+   */
+  wordVariants: string[][];
+  /**
    * True when the raw query is pure ASCII (letters/digits/email
    * punctuation) — the identifier arms (email / student number) are
    * admitted only then; an Arabic name query never burns ILIKE arms on
@@ -301,6 +316,7 @@ export function planGlobalQuery(q: string): GlobalQueryPlan {
     }
   }
   const words = normalized.split(/\s+/).filter((w) => w.length >= 3);
+  const wordVariants: string[][] = [];
   if (words.length >= 2 && words.length <= MAX_WORD_ARMS) {
     // Per-word arms FIRST (the 40-variant cap must never slice them
     // away): each word alone — clitic-stripped — with its reverse
@@ -315,7 +331,12 @@ export function planGlobalQuery(q: string): GlobalQueryPlan {
       add(word);
       const wordStripped = stripAlPrefix(stripCliticPrefix(word));
       add(wordStripped);
-      for (const v of reverseFoldWord(wordStripped).slice(0, MAX_WORD_FOLDS)) add(v);
+      const group = [word, wordStripped];
+      for (const v of reverseFoldWord(wordStripped).slice(0, MAX_WORD_FOLDS)) {
+        add(v);
+        group.push(v);
+      }
+      wordVariants.push([...new Set(group)]);
     }
   } else if (words.length === 1) {
     // Single-word queries: the whole-word reverse folds (the cartesian
@@ -340,6 +361,7 @@ export function planGlobalQuery(q: string): GlobalQueryPlan {
     normalized,
     noAl,
     variants: [...variants].slice(0, MAX_VARIANTS),
+    wordVariants,
     asciiLike: raw.trim().length > 0 && ASCII_LIKE.test(raw.trim()),
     digits,
     phoneDigits: phone ? phone.normalized : null,
@@ -504,6 +526,36 @@ export function emailMatchArms(plan: GlobalQueryPlan): Prisma.UserWhereInput[] {
     { email: plan.raw },
     { email: { contains: plan.raw, mode: 'insensitive' } },
   ];
+}
+
+/**
+ * r357 L4 — the CONJUNCTIVE multiword name arm. For a query with ≥2
+ * long words, the fetch requires EVERY word's fold group to match some
+ * name field (OR within a group — any field, any fold; AND across
+ * groups). Returns null for single-word queries (the flat-variants OR
+ * stays right for them). The identifier/email/phone arms stay as
+ * sibling arms of the OR the route composes — a multiword name query
+ * never carries them (ASCII-only by construction), so the conjunction
+ * is the whole name predicate.
+ *
+ * Why: the flat-variants OR + the name-ordered candidate window is a
+ * broken fetch at scale — the window (100 rows, firstName ASC) fills
+ * with the alphabetically-first single-word matches and the strict
+ * multiword re-verify drops them ALL (measured R@5=0.000 on a 20k
+ * corpus; the true «أحمد المصري» rows sat beyond the window). The
+ * conjunction fetches the precise candidate superset — typically a
+ * handful of rows — and the re-verify keeps its law unchanged.
+ */
+export function multiwordNameArm(
+  plan: GlobalQueryPlan,
+  nameFields: readonly string[],
+): Prisma.UserWhereInput | null {
+  if (plan.wordVariants.length < 2) return null;
+  return {
+    AND: plan.wordVariants.map((group) => ({
+      OR: group.flatMap((v) => nameFields.map((f) => ({ [f]: { contains: v, mode: 'insensitive' } }))),
+    })),
+  } as Prisma.UserWhereInput;
 }
 
 /**

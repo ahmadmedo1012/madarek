@@ -253,3 +253,96 @@ describe('r353-F — GET /search/discover: the registrar workflows', () => {
     expect(item).not.toHaveProperty('guardianPhoneNormalized');
   });
 });
+
+describe('r357 L4 — the conjunctive multiword fetch (the 20k-window defect)', () => {
+  it('a multiword name query fetches with AND-across-words (every word must match some name field)', async () => {
+    mocked.user.findUnique.mockResolvedValue({ role: Role.ADMIN, scopeFacultyId: null });
+    let studentsScan = null as null | Record<string, unknown>;
+    mocked.user.findMany.mockImplementation(async (args: unknown) => {
+      const a = args as { where?: Record<string, unknown>; select?: Record<string, unknown> };
+      if (a.select && 'studentProfiles' in a.select) {
+        studentsScan = JSON.parse(JSON.stringify(a.where));
+        return [studentRow()];
+      }
+      return [];
+    });
+
+    const data = await discover('admin_1', Role.ADMIN, 'محمد المهدي');
+    expect(studentsScan).not.toBeNull();
+    // The name predicate is the CONJUNCTIVE arm: an AND array where each
+    // group is the OR over ONE word's fold group × {firstName,lastName}.
+    // (Failing-before witness: the old where was a FLAT OR over every
+    // variant — at 20k students the name-ordered 100-row window filled
+    // with single-word matches and the strict re-verify killed them
+    // all: R@5=0.000, measured in the r357 L4 harness.)
+    const and = (studentsScan as { AND?: unknown[] }).AND as unknown[];
+    expect(Array.isArray(and)).toBe(true);
+    // AND[0] = the role/profile scope; AND[1] = the conjunctive name arm.
+    const nameArm = and![1] as { AND: { OR: { firstName?: { contains: string } }[] }[] };
+    expect(Array.isArray(nameArm.AND)).toBe(true);
+    expect(nameArm.AND!.length).toBe(2); // one group per ≥3-letter word
+    const firstGroupBlobs = nameArm.AND![0]!.OR.map((c) => c.firstName?.contains ?? '');
+    const secondGroupBlobs = nameArm.AND![1]!.OR.flatMap((c) => [c.firstName?.contains ?? '', (c as unknown as { lastName?: { contains: string } }).lastName?.contains ?? '']);
+    expect(firstGroupBlobs).toContain('محمد');
+    expect(secondGroupBlobs).toContain('المهدي');
+    // The rows still flow through the ranker (the re-verify law).
+    expect(data.categories.students!.items).toHaveLength(1);
+    expect(data.categories.students!.items[0]!.titleAr).toBe('محمد المهدي');
+  });
+
+  it('a single-word query keeps the flat-variants OR (no conjunction)', async () => {
+    mocked.user.findUnique.mockResolvedValue({ role: Role.ADMIN, scopeFacultyId: null });
+    let studentsScan = null as null | Record<string, unknown>;
+    mocked.user.findMany.mockImplementation(async (args: unknown) => {
+      const a = args as { where?: Record<string, unknown>; select?: Record<string, unknown> };
+      if (a.select && 'studentProfiles' in a.select) {
+        studentsScan = JSON.parse(JSON.stringify(a.where));
+        return [studentRow()];
+      }
+      return [];
+    });
+
+    await discover('admin_1', Role.ADMIN, 'محمد');
+    const and = (studentsScan as { AND?: unknown[] }).AND as unknown[];
+    const nameArm = and![1] as { OR?: unknown[]; AND?: unknown[] };
+    expect(Array.isArray(nameArm.OR)).toBe(true); // the flat variants OR
+    expect(nameArm.AND).toBeUndefined(); // no conjunctive group
+  });
+
+  it('the teachers scan carries the same conjunctive arm (same defect, same fix)', async () => {
+    mocked.user.findUnique.mockResolvedValue({ role: Role.ADMIN, scopeFacultyId: null });
+    let teachersScan = null as null | Record<string, unknown>;
+    mocked.user.findMany.mockImplementation(async (args: unknown) => {
+      const a = args as { where?: Record<string, unknown>; select?: Record<string, unknown> };
+      if (a.select && 'teacherProfiles' in a.select) {
+        teachersScan = JSON.parse(JSON.stringify(a.where));
+        return [];
+      }
+      return [];
+    });
+
+    await discover('admin_1', Role.ADMIN, 'سالم البوسيفي');
+    expect(teachersScan).not.toBeNull();
+    const and = (teachersScan as { AND?: unknown[] }).AND as unknown[];
+    const nameArm = and![1] as { AND?: unknown[] };
+    expect(Array.isArray(nameArm.AND)).toBe(true);
+  });
+
+  it('wordVariants: the plan groups the per-word folds (superset of the re-verify words)', async () => {
+    // Pure-plan law, pinned through the same import the route uses.
+    const { planGlobalQuery } = await import('../../src/modules/search/global.js');
+    const plan = planGlobalQuery('أحمد المصري');
+    expect(plan.wordVariants.length).toBe(2);
+    expect(plan.wordVariants[0]).toContain('أحمد');
+    expect(plan.wordVariants[1]).toContain('المصري');
+    // The folds ride INSIDE their word's group (the flat variants stay
+    // flat for the single-word + record scans).
+    expect(plan.wordVariants[0]).toContain('احمد');
+    // Single-word: no groups.
+    expect(planGlobalQuery('محمد').wordVariants).toEqual([]);
+    // 2-letter words are excluded from the groups (the «بن» law) but
+    // stay in the re-verify — the fetch superset holds.
+    const bin = planGlobalQuery('مريم بن عثمان');
+    expect(bin.wordVariants.length).toBe(2); // مريم + عثمان only
+  });
+});
