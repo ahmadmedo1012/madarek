@@ -13,7 +13,8 @@
  *     silent last-wins;
  *   · the per-entry verdict + the summary the route returns and audits.
  */
-export interface ZipEntryInput {
+/** One ZIP entry as the planner sees it (internal — the route maps adm-zip rows to this). */
+interface ZipEntryInput {
   /** Raw entry name as it appears in the ZIP (any case). */
   name: string;
   sizeBytes: number;

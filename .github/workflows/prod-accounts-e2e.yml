@@ -36,22 +36,36 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Poll /api/v1/health until buildId matches
+        # r357 L1 law: supersede-tolerant. A docs/workflow-only push (this
+        # workflow's own paths never fire Deploy Vercel) leaves the live
+        # build at an OLDER sha that already carries the accounts surface —
+        # accept this sha's deployment OR the current main tip's (main only
+        # moves forward; both contain the e2e'd code).
         run: |
           set -euo pipefail
           SHORT="${{ github.sha }}"
           SHORT="${SHORT:0:12}"
           for attempt in $(seq 1 60); do
+            MAIN=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/commits/main" \
+              | jq -r '.sha // empty' 2>/dev/null | cut -c1-12 || true)
             BODY=$(curl -s --max-time 20 "$BASE/api/v1/health" || echo '{}')
             GOT=$(echo "$BODY" | jq -r '.buildId // ""')
             OK=$(echo "$BODY" | jq -r '.ok // false')
-            echo "attempt $attempt → buildId=$GOT ok=$OK (want $SHORT)"
-            if [ "$GOT" = "$SHORT" ] && [ "$OK" = "true" ]; then
-              echo "the ${SHORT} deployment is LIVE"
-              exit 0
+            echo "attempt $attempt → buildId=$GOT ok=$OK (want $SHORT, main tip $MAIN)"
+            if [ "$OK" = "true" ]; then
+              if [ "$GOT" = "$SHORT" ]; then
+            echo "the ${SHORT} deployment is LIVE"
+            exit 0
+              fi
+              if [ -n "$MAIN" ] && [ "$GOT" = "$MAIN" ]; then
+            echo "superseded-tolerant: live buildId=$GOT is the newer main tip; it contains this sha — proceeding"
+            exit 0
+              fi
             fi
             sleep 15
           done
-          echo "::error::the ${SHORT} deployment never became live"
+          echo "::error::neither $SHORT nor the main tip became the live build"
           exit 1
 
   e2e:
