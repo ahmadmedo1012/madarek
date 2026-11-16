@@ -17,6 +17,10 @@ import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
+/* r361: the working-drawing family — the empty roster's companion: the
+ * concept net (the class as a network — no students, no links yet) in
+ * the card's free margin, ≥1024px only, decorative. */
+import { TechnicalPlate } from '../../components/illustrations/technical/TechnicalPlate';
 import {
   useTeacherOfferings,
   useTeacherStudents,
@@ -540,7 +544,10 @@ export function AttendancePage() {
           ) : stuQ.isError ? (
             <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
           ) : students.length === 0 ? (
-            <EmptyState title="لا طلاب" description="" illustration="empty-list" />
+            <>
+              <TechnicalPlate variant="knowledge" className="tech-plate-margin" />
+              <EmptyState title="لا طلاب" description="" illustration="empty-list" />
+            </>
           ) : (
             <div className="flex-col gap-2">
               {/* 4C-c: the sticky session summary — present/late/absent/
