@@ -64,7 +64,6 @@ jobs:
 
       - name: Resolve the APK artifact run
         id: src
-        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
@@ -82,7 +81,6 @@ jobs:
             -q '"commit=" + .headSha[0:8] + " conclusion=" + .conclusion'
 
       - name: Download the verified x86_64 APK
-        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
@@ -118,13 +116,6 @@ jobs:
 
       - name: Walk the selected role and capture every tab
         uses: reactivecircus/android-emulator-runner@v2
-        env:
-          APK: ${{ runner.temp }}/apk/Madarek-x86_64.apk
-          FLOW: apps/mobile/.maestro/screens-${{ matrix.role }}.yaml
-          VIEWPORT: ${{ matrix.viewport }}
-          THEME: ${{ matrix.theme }}
-          THEME_LABEL: ${{ matrix.theme_label }}
-          FONT_SCALE: ${{ matrix.font_scale }}
         with:
           api-level: 34
           arch: x86_64
@@ -140,19 +131,17 @@ jobs:
             adb wait-for-device
             adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
             adb shell wm dismiss-keyguard || true
-            adb shell settings put system font_scale "$FONT_SCALE"
-            test "$VIEWPORT" != small-360x640 || adb shell wm size 360x640
-            test "$VIEWPORT" != small-360x640 || adb shell wm density 160
-            adb install -r "$APK"
+            adb shell settings put system font_scale '${{ matrix.font_scale }}'
+            test '${{ matrix.viewport }}' != small-360x640 || adb shell wm size 360x640
+            test '${{ matrix.viewport }}' != small-360x640 || adb shell wm density 160
+            adb install -r '${{ runner.temp }}/apk/Madarek-x86_64.apk'
             adb shell am start -n ly.madarek.mobile/.MainActivity
             sleep 8
             mkdir -p apps/mobile/build/screens
-            printf 'role=%s\ntheme=%s\nfont_scale=%s\nviewport=%s\n' \
-              '${{ matrix.role }}' "$THEME" "$FONT_SCALE" "$VIEWPORT" \
-              > apps/mobile/build/screens/profile.txt
+            printf 'role=%s\ntheme=%s\nfont_scale=%s\nviewport=%s\n' '${{ matrix.role }}' '${{ matrix.theme }}' '${{ matrix.font_scale }}' '${{ matrix.viewport }}' > apps/mobile/build/screens/profile.txt
             # the flow writes into the CWD; keep it inside the workspace so
             # the upload step can find the shots
-            maestro test "$FLOW" -e THEME_LABEL="$THEME_LABEL" --test-output-dir apps/mobile/build/screens
+            maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.theme_label }}" --test-output-dir apps/mobile/build/screens
             adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
             adb logcat -d > apps/mobile/build/screens/logcat.log
             ls -l apps/mobile/build/screens || true
