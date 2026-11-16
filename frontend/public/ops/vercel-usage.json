@@ -1,17 +1,9 @@
 {
-  "generatedAt": "2026-11-14T13:25:02.036Z",
+  "generatedAt": "2026-11-16T14:22:57.200Z",
   "windowDays": 7,
   "origin": "https://madarek-nine.vercel.app",
-  "deployments7d": 7,
+  "deployments7d": 83,
   "deploymentsPerDay": [
-    {
-      "date": "2026-11-08",
-      "count": 0
-    },
-    {
-      "date": "2026-11-09",
-      "count": 0
-    },
     {
       "date": "2026-11-10",
       "count": 0
@@ -30,17 +22,25 @@
     },
     {
       "date": "2026-11-14",
-      "count": 7
+      "count": 21
+    },
+    {
+      "date": "2026-11-15",
+      "count": 31
+    },
+    {
+      "date": "2026-11-16",
+      "count": 31
     }
   ],
   "maxDay": {
-    "date": "2026-11-14",
-    "count": 7,
-    "pctOfLimit": 7
+    "date": "2026-11-15",
+    "count": 31,
+    "pctOfLimit": 31
   },
   "freshness": {
-    "liveBuildId": "2d513a46d75d",
-    "mainHead": "2d513a46d75d",
+    "liveBuildId": "11eb369f7c86",
+    "mainHead": "11eb369f7c86",
     "current": true
   },
   "plan": {
