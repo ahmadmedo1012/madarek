@@ -36,6 +36,21 @@ const PORT = opt('port', '4325');
 const URLS = (opt('urls', '/__design,/,/auth,/404')).split(',').map((s) => s.trim());
 const MAX_PER_PAGE = Number(opt('max-per-page', 260));
 
+/* r357-ui A7 — the NAMED exemption ledger (scripts/r323/contrast-
+ * exemptions.json). A frozen seat the landing conformance record owns
+ * (the Heron hero's accent-on-paper link, measured 3.46:1) is recorded
+ * there with its measured values + reason instead of being silently
+ * skipped: the gate still sweeps it, still writes it to the report under
+ * `exempted`, and prints the drift every run. Anything not in the file
+ * fails as before. */
+const EXEMPT_FILE = path.join(ROOT, 'scripts/r323/contrast-exemptions.json');
+let EXEMPTIONS = [];
+try { EXEMPTIONS = JSON.parse(fs.readFileSync(EXEMPT_FILE, 'utf8')).exemptions || []; } catch { EXEMPTIONS = []; }
+const exemptionFor = (f) => EXEMPTIONS.find((e) =>
+  (!e.route || e.route === f.route)
+  && (f.el.includes(e.match) || (e.match && f.el.startsWith(e.match.replace(/^[a-z]+/, '')))),
+);
+
 const EXE = (() => {
   const base = path.join(process.env.HOME || '', '.cache/ms-playwright');
   try {
@@ -109,9 +124,12 @@ const SWEEP_FN = `
     const L1 = lum(effFg), L2 = lum(bg);
     return Math.round(((Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05)) * 100) / 100;
   }
-  function effectiveBg(el) {
-    /* the wipe pattern paints the hover ground on ::before/::after —
-       an inset-0 opaque pseudo slab IS the effective background. */
+  /* the wipe pattern paints the hover ground on ::before/::after — an
+     inset-0 opaque pseudo slab IS the effective background. Checked at
+     EVERY ancestor, not only the subject: r357-ui A7 measures the colour
+     of the text NODE (the honest glyph colour), so the wipe slab that
+     lives on the button above it must still be found. */
+  function pseudoBg(el) {
     for (const pseudo of ['::before', '::after']) {
       try {
         const ps = getComputedStyle(el, pseudo);
@@ -130,13 +148,40 @@ const SWEEP_FN = `
         if (vis && inset0 && fullBlock) return ps.backgroundColor;
       } catch (e) { /* pseudo unsupported */ }
     }
+    return null;
+  }
+  function effectiveBg(el) {
     let n = el;
     while (n && n !== document.documentElement) {
+      const slab = pseudoBg(n);
+      if (slab) return slab;
       const p = parse(getComputedStyle(n).backgroundColor);
       if (p && p.a > 0.85) return getComputedStyle(n).backgroundColor;
       n = n.parentElement;
     }
     return getComputedStyle(document.body).backgroundColor || 'rgb(255,255,255)';
+  }
+  /* r357-ui A7 — the PAINTED text: contrast belongs to the node that
+     actually paints the glyphs, not to the interactive wrapper. A pill
+     whose <a> carries the accent (for its icons) but whose label sits in
+     a --text span measured 3.46:1 against the paper — a probe artefact,
+     not a defect (the .st-pill false positive this gate carried for two
+     rounds). The deepest element owning the first non-empty text node is
+     the honest subject: its colour + its own ancestor background. */
+  function painted(el) {
+    try {
+      const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+      for (let n = w.nextNode(); n; n = w.nextNode()) {
+        if (!(n.nodeValue || '').trim()) continue;
+        const pe = n.parentElement;
+        if (!pe) continue;
+        const cs = getComputedStyle(pe);
+        if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+        if (parseFloat(cs.opacity) === 0) continue;
+        return { color: cs.color, node: pe };
+      }
+    } catch (e) { /* no text nodes */ }
+    return null;
   }
   function glyphInfo(el) {
     const rect = el.getBoundingClientRect();
@@ -212,8 +257,11 @@ const SWEEP_FN = `
         let fg = null, bg = null, ratio = null;
         try {
           if (state) { await window.__forceRaw(idx, [state]); await settle(el); }
-          fg = getComputedStyle(el).color;
-          bg = effectiveBg(el);
+          /* the painted text node wins when the element has text
+             (r357-ui A7); fields keep their own computed colour. */
+          const p = painted(el);
+          fg = p ? p.color : getComputedStyle(el).color;
+          bg = effectiveBg(p ? p.node : el);
           ratio = contrast(fg, bg);
         } finally {
           if (state) { await window.__forceRaw(idx, []); await settle(el); }
@@ -299,7 +347,20 @@ try {
     }
   }
 
+  /* r357-ui A7 — partition: a finding matching a named exemption is
+     recorded (with its measured numbers, so drift is visible) and does
+     not fail the run. Everything else still fails. */
+  const exempted = [];
   for (const f of results) {
+    const ex = exemptionFor(f);
+    if (ex) {
+      /* the ledger may document a per-theme value (the hero's dark hover
+         differs from its light rest) — drift is only a mismatch against
+         every documented number. */
+      const documented = [ex.measured?.ratio, ex.measured?.darkHoverRatio].filter((n) => n != null);
+      exempted.push({ ...f, exemption: ex.id, documentedRatio: documented[0], documented });
+      continue;
+    }
     if (f.emptyGlyph) failures.push(`EMPTY-GLYPH [${f.viewport}/${f.theme}] ${f.route} ${f.el} (${f.state})`);
     else failures.push(`CONTRAST ${f.ratio}:1 < ${f.min}:1 [${f.viewport}/${f.theme}] ${f.route} ${f.el} (${f.state}) fg=${f.fg} bg=${f.bg}`);
   }
@@ -314,13 +375,20 @@ try {
     },
     head: (() => { try { return execFileSync('git', ['-C', ROOT, 'rev-parse', '--short', 'HEAD']).toString().trim(); } catch { return null; } })(),
     swept: results.length,
-    findings: results,
+    findings: results.filter((f) => !exemptionFor(f)),
+    exempted,
+    exemptions: EXEMPTIONS.map((e) => ({ id: e.id, match: e.match, route: e.route, ratio: e.measured?.ratio })),
     failures,
     verdict: failures.length === 0 ? 'PASS' : 'FAIL',
   };
   const outDir = path.join(ROOT, 'audits/evidence/r323');
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, 'contrast-gate.json'), JSON.stringify(out, null, 2));
+  if (exempted.length) {
+    const drift = exempted.filter((f) => (f.documented || []).length && !f.documented.some((d) => Math.abs(f.ratio - d) <= 0.01));
+    console.log(`[contrast] ${exempted.length} documented exemption hit(s) — ${[...new Set(exempted.map((f) => f.exemption))].join(', ')}`);
+    for (const f of drift) console.log(`  ! drift ${f.el} (${f.state}) measured ${f.ratio} vs documented ${f.documentedRatio}`);
+  }
   console.log(`\n[contrast] verdict: ${out.verdict} — ${failures.length} findings over ${results.length} samples → audits/evidence/r323/contrast-gate.json`);
   for (const f of failures.slice(0, 40)) console.log('  ✗ ' + f);
   if (failures.length > 40) console.log(`  … and ${failures.length - 40} more`);

@@ -606,6 +606,23 @@ section.chapters {
   }
 }
 
+/* R357-UI A6 — the SHORT tablet window (1024×600 and friends). The 601–700
+   band is where the 75.7% seat above stops working: the stack is shorter,
+   so 75.7% lands the card's mono title «[04] المكتبة» on the plan's own
+   «المكتبة والبحوث» label (probe @1024×600, scroll 5040: svg text
+   x 596–693 / y 1988–1998 vs title x 366–564 … card right edge 618 — a
+   22×10px kiss, detector frac 1.0). One rung UP clears the label with ~15px
+   of paper between them; nothing else is seated in that band (anno-1 sits at
+   30.2%, anno-3 at 65.5% inline-start).
+   The annotation seats are NOT part of the frozen record (the conformance
+   spec skips annotation geometry — same clause the 75.7% fix above used), so
+   this moves a callout, never a measured parameter. */
+@media (min-width: 992px) and (max-width: 1439px) and (max-height: 700px) {
+  .jt-anno-2 {
+    inset-block-start: 70.2%;
+  }
+}
+
 .jt-anno-t {
   font-family: var(--font-mono);
   font-size: 0.75em;

@@ -1,0 +1,74 @@
+# R357-UI — A5 evidence: walk the app's real screens on the CI emulator.
+#
+# The mobile shell (top bar, tab bar, safe areas, sheets, empty/loading
+# states, font scale) had never been SEEN by anyone: no emulator runs on
+# the author's machine, and unit tests cannot see layout. This flow walks
+# the student's five tabs and captures one screenshot per stop, so the
+# screens come back as CI artifacts (a contact sheet is cut from them).
+#
+# Anchors are testIDs only — the r349-P5b lesson: Arabic TEXT anchors do
+# not resolve reliably in Maestro on Android, resource-ids do. The login
+# uses the seeded student account against the production API the release
+# build bakes in (the same path smoke-alive.yaml already walks).
+appId: ly.madarek.mobile
+name: "R357 screens — the student shell"
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: "welcome-title"
+    timeout: 120000
+- scrollUntilVisible:
+    element:
+      id: "welcome-cta"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: "welcome-cta"
+- extendedWaitUntil:
+    visible:
+      id: "login-email"
+    timeout: 30000
+- tapOn:
+    id: "login-email"
+- inputText: "student@test.ly"
+- tapOn:
+    id: "login-password"
+- inputText: "12345678"
+- tapOn:
+    id: "login-submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab-courses"
+    timeout: 120000
+# 01 — dashboard (the home tab is selected after login)
+- takeScreenshot: screens/01-dashboard
+- tapOn:
+    id: "tab-courses"
+- extendedWaitUntil:
+    visible:
+      id: "tab-courses"
+    timeout: 30000
+- takeScreenshot: screens/02-courses
+- tapOn:
+    id: "tab-ai"
+- extendedWaitUntil:
+    visible:
+      id: "tab-ai"
+    timeout: 30000
+- takeScreenshot: screens/03-ai
+- tapOn:
+    id: "tab-alerts"
+- extendedWaitUntil:
+    visible:
+      id: "tab-alerts"
+    timeout: 30000
+- takeScreenshot: screens/04-alerts
+- tapOn:
+    id: "tab-profile"
+- extendedWaitUntil:
+    visible:
+      id: "tab-profile"
+    timeout: 30000
+- takeScreenshot: screens/05-profile

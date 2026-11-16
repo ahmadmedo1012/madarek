@@ -1,0 +1,136 @@
+# R357-UI — A5: real screenshots of the mobile shell, from the CI emulator.
+#
+# WHY this exists: the mobile UI is the one surface nobody could look at.
+# The author's machine cannot run an emulator, unit tests cannot see
+# layout, and the release smoke only proves "the app is alive" — never
+# what it looks like. This workflow is MANUAL (workflow_dispatch), takes
+# the x86_64 APK the Android release workflow already built and verified,
+# installs it on the same API-34 emulator image, walks the student shell
+# with Maestro and uploads the screenshots as an artifact. Downloading the
+# artifact and cutting it into a contact sheet is the only step left.
+#
+# Deliberately NOT a gate: it never blocks a PR, never touches production,
+# never re-signs anything. It downloads an existing artifact and reads.
+name: UI screens (emulator, manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "build-android.yml run id to take the APK from (blank = latest successful)"
+        required: false
+        default: ""
+      flow:
+        description: "Maestro flow under apps/mobile/.maestro"
+        required: false
+        default: "screens-student.yaml"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: ui-screens-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  screens:
+    name: Walk the shell and capture screens
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve the APK artifact run
+        id: src
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          RUN="${{ inputs.run_id }}"
+          if [ -z "$RUN" ]; then
+            RUN=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow build-android.yml \
+              --status success --limit 1 --json databaseId -q '.[0].databaseId')
+          fi
+          if [ -z "$RUN" ] || [ "$RUN" = "null" ]; then
+            echo "::error::no successful build-android run found — dispatch 'Android — release APK' first"
+            exit 1
+          fi
+          echo "run=$RUN" >> "$GITHUB_OUTPUT"
+          gh run view "$RUN" --repo "$GITHUB_REPOSITORY" --json headSha,conclusion \
+            -q '"commit=" + .headSha[0:8] + " conclusion=" + .conclusion'
+
+      - name: Download the verified x86_64 APK
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/apk"
+          gh run download "${{ steps.src.outputs.run }}" --repo "$GITHUB_REPOSITORY" \
+            -n android-release-candidate -D "$RUNNER_TEMP/apk"
+          ls -l "$RUNNER_TEMP/apk"
+          # the emulator's ABI is x86_64 — the arm64 release APK will not install
+          test -f "$RUNNER_TEMP/apk/Madarek-x86_64.apk" || {
+            echo "::error::Madarek-x86_64.apk missing from the artifact"; exit 1; }
+          cat "$RUNNER_TEMP/apk/build-info.json" || true
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install Maestro
+        run: |
+          set -euo pipefail
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+          "$HOME/.maestro/bin/maestro" --version
+
+      - name: KVM for the emulator
+        run: |
+          set -euo pipefail
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm
+
+      - name: Walk the shell (API 34, 1080×2340, dark and light)
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          APK: ${{ runner.temp }}/apk/Madarek-x86_64.apk
+          FLOW: apps/mobile/.maestro/${{ inputs.flow }}
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          force-avd-creation: false
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
+          pre-emulator-launch-script: |
+            printf 'hw.lcd.width=1080\nhw.lcd.height=2340\nhw.lcd.density=420\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"
+          script: |
+            set -euo pipefail
+            mkdir -p apps/mobile/build
+            adb wait-for-device
+            adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
+            adb shell wm dismiss-keyguard || true
+            adb install -r "$APK"
+            adb shell am start -n ly.madarek.mobile/.MainActivity
+            sleep 8
+            # the flow writes into the CWD; keep it inside the workspace so
+            # the upload step can find the shots
+            maestro test "$FLOW" --test-output-dir apps/mobile/build/screens \
+              || { echo "::warning::the walk ended early — capturing what exists"; }
+            adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
+            adb logcat -d > apps/mobile/build/screens/logcat.log
+            ls -l apps/mobile/build/screens || true
+
+      - name: Upload the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-screens-${{ github.run_number }}
+          path: apps/mobile/build/screens
+          if-no-files-found: warn
+          retention-days: 14
