@@ -208,9 +208,17 @@ jobs:
             adb shell settings put global window_animation_scale 1.0
             adb shell settings put global transition_animation_scale 1.0
             adb shell settings put global animator_duration_scale 1.0
+            # Run 19: the 360x640 + density + font-scale changes ANR'd the
+            # system launcher on 3 of 20 jobs, and the system «Close app /
+            # Wait» sheet covered the app while it rendered fine behind
+            # it. Hide the system error sheets for the capture (standard
+            # emulator CI practice).
+            adb shell settings put global hide_error_dialogs 1
             adb shell settings put system font_scale '${{ matrix.profile.font_scale }}'
             test '${{ matrix.profile.viewport }}' != small-360x640 || adb shell wm size 360x640
             test '${{ matrix.profile.viewport }}' != small-360x640 || adb shell wm density 160
+            sleep 4
+            adb shell wm dismiss-keyguard || true
             adb install -r '${{ runner.temp }}/apk/Madarek-x86_64.apk'
             adb shell am start -n ly.madarek.mobile/.MainActivity
             sleep 20
