@@ -55,6 +55,25 @@
     box-shadow: var(--shadow-card);
   }
   .card.flush   { padding: 0; overflow: clip; }
+
+  /* ── StatStrip — the ledger band's missing layout ────────────────
+     The primitive's own contract comments (CollegePages: «auto-fit
+     grid matches any count: no empty cells, no orphan spans», heron-
+     admin-owner: «cells keep the internal hairline dividers») describe
+     a layout the stylesheet never shipped — cells fell back to stacked
+     blocks, so deep-band strips rendered as a mostly-empty surface
+     with a thin stat column at 1440 (A5 rubric: density/hierarchy).
+     One base rule restores the documented grammar: auto-fit columns
+     for any cell count, hairline cell dividers, no tile walls. */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(176px, 100%), 1fr));
+  }
+  .stat-cell {
+    padding: var(--sp-3) var(--sp-4);
+    border-inline-start: 1px solid var(--rule);
+  }
+  .stat-cell:first-child { border-inline-start: 0; }
   /* r294 (polish v8 fold): cursor-follow spotlight — a quiet radial
      wash fades in on hover over every non-flush card. The centre is
      static (JS-free: no --cx/--cy tracking — the heavier pointer
