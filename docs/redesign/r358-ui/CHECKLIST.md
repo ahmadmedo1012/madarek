@@ -10,7 +10,7 @@ Evidence is required on each checked line. Unticked items must be explicitly ski
 ## A2 — Navigation
 - [x] New ≤8 always-visible destinations per role; all other census destinations reachable in ≤2 clicks; preserve census, labels, permissions; web/mobile parity; nested active state. `npx tsx scripts/qa/nav-audit.ts --json`: 8 destinations + one overflow toggle per role; original route census retained.
 - [x] Rewrite `nav-coverage.test.ts` with stricter ≤8 and ≤2-click assertions; `cd frontend && TZ=UTC npx vitest run tests/unit/nav-coverage.test.ts` — 17 passed. Commit message will explain owner requirement and retained census/reachability.
-- [ ] Run `scripts/qa/nav-audit.ts`; five roles ≤8, glyph drift 0, duplicates measured; record table and web light/dark 1440 + 390 drawer sheet. Measured rows: STUDENT 34/9/0/5; TEACHER 23/9/0/5; ADMIN 15/9/0/5; QUALITY 13/9/0/5; OWNER 16/9/0/5 (destinations/visible rows/glyph drift/duplicate destinations). Contact sheets pending.
+- [x] `npx tsx scripts/qa/nav-audit.ts --json`: STUDENT 34/8/26/2/0/5; TEACHER 23/8/15/2/0/5; ADMIN 15/8/7/2/0/5; QUALITY 13/8/5/2/0/5; OWNER 16/8/8/2/0/5 (census/visible/overflow/max clicks/glyph drift/duplicate destinations). Web sidebar and 390 drawer, both themes: [desktop sheet](evidence/web/A2-nav-desktop-light-dark.png), [drawer sheet](evidence/web/A2-nav-drawers-light-dark-390.png).
 
 ## A3 — Web component consistency
 - [ ] Buttons: sizes, states, loading, icon-only, disabled, danger/success slabs in both themes.
