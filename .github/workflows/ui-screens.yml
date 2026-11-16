@@ -20,12 +20,6 @@ on:
         description: "build-android.yml run id to take the APK from (blank = latest successful)"
         required: false
         default: ""
-      role:
-        description: "Role to capture (all runs the five-role matrix)"
-        type: choice
-        options: [all, student, teacher, registrar, quality, owner]
-        required: true
-        default: all
 
 permissions:
   contents: read
@@ -38,7 +32,6 @@ concurrency:
 jobs:
   screens:
     name: "Capture ${{ matrix.role }} — ${{ matrix.profile }}"
-    if: ${{ inputs.role == 'all' || inputs.role == matrix.role }}
     strategy:
       fail-fast: false
       max-parallel: 4
