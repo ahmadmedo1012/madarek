@@ -126,7 +126,7 @@ function RootNavigator() {
 }
 
 export default function RootLayout() {
-  const [loaded] = useFonts(fontMap as unknown as Record<string, number>);
+  const [loaded, fontError] = useFonts(fontMap as unknown as Record<string, number>);
   const hydrate = useSession((s) => s.hydrate);
   // R326 M1.3(e): the direction is baked natively before the first
   // React root (plugins/force-rtl-android.js — r349-P4), so the boot
@@ -134,6 +134,9 @@ export default function RootLayout() {
   // screens, and — since the old controlled reload is retired — no
   // reloaded-context dead render pipeline (the smoke's bare-paper bug).
   const [rtlReady, setRtlReady] = useState(false);
+  useEffect(() => {
+    console.info("R358_BOOT", JSON.stringify({ loaded, fontError: fontError?.message ?? null, rtlReady }));
+  }, [loaded, fontError, rtlReady]);
   // R326 M0.7 — the server-issued minimum-version floor: below it, the
   // blocking gate replaces the app (nothing runs under the floor).
   const gate = useVersionGate();
