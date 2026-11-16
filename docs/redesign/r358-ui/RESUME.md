@@ -6,7 +6,13 @@ Branch: `wip/r358-ui` from `origin/main` at `1aa08883`. Visual-only lane; screen
 - Manual-only workflow captures five roles × four profiles (light/dark standard; light/dark at 1.3 on 360×640). It builds a throwaway APK and uses ephemeral local Postgres/API; no production endpoint or release publication.
 - First legacy workflow dispatch 43813713084 failed before artifact; unsafe production-API capture run 43883296880 was canceled before jobs started.
 - Preview build failed on 43885258561 because `ubuntu-latest` lacked the expected SDK path. Workflow is pinned to repo-required `ubuntu-24.04`.
-- Safe baseline dispatch 43886460275 uses main APK source: preview APK build succeeded at 15:29 UTC; role/profile screenshot jobs are still running/queued. Download artifacts when the run completes. Earlier SDK lookup runs 43884733615, 43885258561, 43885548054 failed before capture.
+- Safe baseline dispatch 43886460275 uses main APK source: preview APK build succeeded at 15:29 UTC; the run was canceled when the fresh dispatch started (concurrency), so no main-source sheets exist yet — the before/after pair must come from a later main-source rerun.
+- Run 43898742777 (branch `f2d3ab8b`, app_ref=current): APK artifact `ui-screens-preview-apk-43898742777` built green, but all four student capture jobs failed at the first Maestro assertion (`id: welcome-title is visible`, 120s timeout). Artifacts `ui-screens-18-student-*` downloaded and analyzed:
+  - `launch-20s.png` and the Maestro step screenshot show the app paper ground with the faint drafting grid rendered — the app DID reach `/auth` — while every `entering`-animated seat (illustration band, brand row, `welcome-title`, CTA) stayed invisible for 2 minutes.
+  - The screen-hierarchy dump holds no app text nodes; logcat shows a clean boot (`R358_BOOT … loaded:true, rtlReady:true`, no JS exception, API reachable at 10.0.2.2:4000, one harmless `expo-updates` remote check 400 and one `/media` 404).
+  - Root cause: `disable-animations: true` sets `animator_duration_scale 0.0` after boot; Reanimated 4 (`DurationScale.effectiveScale`) freezes entering animations at scale 0, so their content never becomes visible. Not a `wip/r358-ui` regression — the branch's only mobile source change is the `R358_BOOT` log line (diff vs main).
+- Fix: `.github/workflows/ui-screens.yml` drops `disable-animations: true` and re-asserts the three system animation scales to 1.0 in the capture script before app launch (boot stays fast via `-no-boot-anim`). `-no-window`/SwiftShader unchanged.
+- Known capture-environment limitation (recorded, not a code defect): the hermetic backend runs with `serveStatic=false` in development, so `/media/illustrations/**` 404s — the auth hero band captures as empty reserved space; production serves these from the web origin.
 - Flow YAML and workflow YAML parse passed. No production endpoint or release publication was used.
 
 ## A2 — navigation

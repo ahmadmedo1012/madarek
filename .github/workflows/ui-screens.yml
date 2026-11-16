@@ -111,6 +111,14 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     needs: preview-apk
+    # R358 A1: NO `disable-animations: true` here. It zeroes
+    # animator_duration_scale after boot, and on RN 0.88 + Reanimated 4
+    # an entering animation at scale 0 never reaches its final state —
+    # every `entering` view (welcome title, CTA, role tabs) stays
+    # invisible forever. That blank shell is exactly why run
+    # 43898742777's student captures failed at the first assertion.
+    # Boot speed is preserved by -no-boot-anim; the capture must see the
+    # app exactly as users do (the script below re-asserts the scales).
     services:
       postgres:
         image: postgres:16
@@ -182,7 +190,6 @@ jobs:
           arch: x86_64
           target: google_apis
           force-avd-creation: false
-          disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
           pre-emulator-launch-script: |
             printf 'hw.lcd.width=1080\nhw.lcd.height=2340\nhw.lcd.density=420\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"
@@ -194,6 +201,13 @@ jobs:
             adb wait-for-device
             adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
             adb shell wm dismiss-keyguard || true
+            # Re-assert the system animation scales explicitly: the app's
+            # motion pipeline (Reanimated 4 entering animations) must run
+            # for its content to become visible at all. See the job-level
+            # note above; -no-boot-anim keeps the boot itself fast.
+            adb shell settings put global window_animation_scale 1.0
+            adb shell settings put global transition_animation_scale 1.0
+            adb shell settings put global animator_duration_scale 1.0
             adb shell settings put system font_scale '${{ matrix.profile.font_scale }}'
             test '${{ matrix.profile.viewport }}' != small-360x640 || adb shell wm size 360x640
             test '${{ matrix.profile.viewport }}' != small-360x640 || adb shell wm density 160
