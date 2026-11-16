@@ -38,7 +38,8 @@ name: "R358 screens — owner"
     visible: "الإعدادات"
     timeout: 30000
 - takeScreenshot: "screens/02-settings"
-- tapOn: "${THEME_LABEL}"
+- tapOn:
+    id: "seg-${THEME_ID}"
 - openLink: "madarek://owner/dashboard"
 - extendedWaitUntil:
     visible:

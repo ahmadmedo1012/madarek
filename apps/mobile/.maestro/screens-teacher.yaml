@@ -38,7 +38,8 @@ name: "R358 screens — teacher"
     visible: "الإعدادات"
     timeout: 30000
 - takeScreenshot: "screens/02-settings"
-- tapOn: "${THEME_LABEL}"
+- tapOn:
+    id: "seg-${THEME_ID}"
 - openLink: "madarek://teacher/dashboard"
 - extendedWaitUntil:
     visible:
