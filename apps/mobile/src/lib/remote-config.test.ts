@@ -55,7 +55,7 @@ describe("R352 R1 — the hermetic pin", () => {
     expect(mod.isRemoteConfigDisabled()).toBe(true);
     expect(mod.getActiveOrigin()).toBe("http://10.0.2.2:4000");
     const fetchMock = jest.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ apiOrigins: ["https://madarek-nine.vercel.app"] }), { status: 200 }),
+      new Response(JSON.stringify({ apiOrigins: ["https://madarek-app.vercel.app"] }), { status: 200 }),
     );
     getItem.mockResolvedValueOnce(JSON.stringify({ apiOrigins: ["https://cached.example"] }));
     const loaded = await mod.loadRemoteConfig();
@@ -66,7 +66,7 @@ describe("R352 R1 — the hermetic pin", () => {
   });
 
   it("EXPO_PUBLIC_DISABLE_REMOTE_CONFIG pins even a production-shaped baked base", async () => {
-    process.env.EXPO_PUBLIC_API_BASE_URL = "https://madarek-nine.vercel.app/api/v1";
+    process.env.EXPO_PUBLIC_API_BASE_URL = "https://madarek-app.vercel.app/api/v1";
     process.env.EXPO_PUBLIC_DISABLE_REMOTE_CONFIG = "1";
     const mod = freshModule();
     expect(mod.isRemoteConfigDisabled()).toBe(true);
@@ -74,7 +74,7 @@ describe("R352 R1 — the hermetic pin", () => {
       new Response(JSON.stringify({ apiOrigins: ["https://elsewhere.example"] }), { status: 200 }),
     );
     const loaded = await mod.loadRemoteConfig();
-    expect(loaded.apiOrigins).toEqual(["https://madarek-nine.vercel.app"]);
+    expect(loaded.apiOrigins).toEqual(["https://madarek-app.vercel.app"]);
     expect(fetchMock).not.toHaveBeenCalled();
     fetchMock.mockRestore();
   });
@@ -87,7 +87,7 @@ describe("R352 R1 — the hermetic pin", () => {
   });
 
   it("a production baked base KEEPS the remote config enabled", () => {
-    process.env.EXPO_PUBLIC_API_BASE_URL = "https://madarek-nine.vercel.app/api/v1";
+    process.env.EXPO_PUBLIC_API_BASE_URL = "https://madarek-app.vercel.app/api/v1";
     const mod = freshModule();
     expect(mod.isRemoteConfigDisabled()).toBe(false);
     expect(mod.getApiOrigins()).toEqual([...FALLBACK_ORIGINS]);
@@ -121,17 +121,17 @@ describe("the origin list + failover marking", () => {
 
   it("starts on the bundled fallback (the Vercel origin first since the X4 cutover)", () => {
     expect(getApiOrigins()).toEqual([...FALLBACK_ORIGINS]);
-    expect(FALLBACK_ORIGINS[0]).toBe("https://madarek-nine.vercel.app");
+    expect(FALLBACK_ORIGINS[0]).toBe("https://madarek-app.vercel.app");
     expect(getActiveOrigin()).toBe(FALLBACK_ORIGINS[0]);
   });
 
-  it("markOriginFailed advances to the next healthy origin (the Render standby), then null", () => {
-    expect(markOriginFailed("https://madarek-nine.vercel.app")).toBe("https://madarek.onrender.com");
-    expect(getActiveOrigin()).toBe("https://madarek.onrender.com");
-    expect(markOriginFailed("https://madarek.onrender.com")).toBeNull();
+  it("markOriginFailed advances to the failover origin (madarek-nine), then null", () => {
+    expect(markOriginFailed("https://madarek-app.vercel.app")).toBe("https://madarek-nine.vercel.app");
+    expect(getActiveOrigin()).toBe("https://madarek-nine.vercel.app");
+    expect(markOriginFailed("https://madarek-nine.vercel.app")).toBeNull();
     // Everything failed: the active base falls back to the first origin
     // (the caller's own retry/wake logic owns the rest).
-    expect(getActiveOrigin()).toBe("https://madarek-nine.vercel.app");
+    expect(getActiveOrigin()).toBe("https://madarek-app.vercel.app");
   });
 });
 

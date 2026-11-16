@@ -27,7 +27,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BASE: https://madarek-nine.vercel.app/api/v1
+  BASE: https://madarek-app.vercel.app/api/v1
 
 jobs:
   wait-for-deploy:
@@ -98,7 +98,7 @@ jobs:
           # candidate URLs, parse defensively, and SKIP (warn) when the
           # live spec isn't exposed as JSON. The additive-only contract
           # itself is enforced by the repo's contract tests.
-          curl -sfL --max-time 30 "https://madarek-nine.vercel.app/openapi.json" -o live1.json || true
+          curl -sfL --max-time 30 "https://madarek-app.vercel.app/openapi.json" -o live1.json || true
           curl -sfL --max-time 30 "$BASE/openapi.json" -o live2.json || true
           python3 - <<'EOF' || echo "::warning::live openapi not exposed as JSON — skipping (repo contract tests own the gate)"
           import json, sys
@@ -140,7 +140,7 @@ jobs:
           npm ci --no-audit --no-fund >/dev/null 2>&1
           npx playwright install chromium --with-deps >/dev/null 2>&1
           popd >/dev/null
-          node scripts/qa/live-smoke.mjs "https://madarek-nine.vercel.app"
+          node scripts/qa/live-smoke.mjs "https://madarek-app.vercel.app"
       - name: Open an issue on failure
         if: failure()
         uses: actions/github-script@v7

@@ -1,0 +1,73 @@
+# r357 L6/L8 — the nightly E4 per-seat replay.
+#
+# The CI e2e job runs the hermetic journeys on every push; this
+# workflow adds the NIGHTLY leg the E4 lane demands: the per-seat
+# "day in the life" suite (r357-e4-day-in-life.e2e.ts) + the full
+# hermetic e2e suite replay on a quiet calendar (regressions that
+# only surface under runner variance, plus the standing proof that
+# main's journeys stay green between pushes).
+#
+# Rolling-issue law (release-freshness / tick-watch / flake-detector):
+# on failure open ONE `e4-nightly` issue; comment on repeats; auto-
+# close on the next green run.
+name: E4 nightly
+
+on:
+  schedule:
+    - cron: '41 2 * * *' # nightly 02:41 UTC (before the flake detector)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: e4-nightly
+  cancel-in-progress: false
+
+jobs:
+  replay:
+    name: The per-seat journeys + the hermetic e2e suite
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+      - run: npm ci
+      - name: Install Playwright chromium
+        working-directory: frontend
+        run: npx playwright install chromium --with-deps
+      - name: The E4 per-seat day (r357 L6)
+        working-directory: frontend
+        run: npx playwright test tests/e2e/r357-e4-day-in-life.e2e.ts --reporter=line
+      - name: The full hermetic suite (the replay leg, r357 L8)
+        working-directory: frontend
+        run: npm run test:e2e
+      - name: Open/update the rolling issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          OPEN=$(gh issue list --repo "$GITHUB_REPOSITORY" --label e4-nightly --state open --json number --jq 'length')
+          BODY="فشل إعادة تشغيل رحلات المقاعد الليليّة. السجل الكامل: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          if [ "$OPEN" = "0" ]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" \
+              --title "رحلات المقاعد الليليّة حمراء — run $GITHUB_RUN_NUMBER" \
+              --body "$BODY" --label e4-nightly
+          else
+            NUMBER=$(gh issue list --repo "$GITHUB_REPOSITORY" --label e4-nightly --state open --json number --jq '.[0].number')
+            gh issue comment --repo "$GITHUB_REPOSITORY" "$NUMBER" --body "$BODY"
+          fi
+      - name: Auto-close the rolling issue on green
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          for NUMBER in $(gh issue list --repo "$GITHUB_REPOSITORY" --label e4-nightly --state open --json number --jq '.[].number'); do
+            gh issue close --repo "$GITHUB_REPOSITORY" "$NUMBER" --comment "أخضر مرة أخرى — run $GITHUB_RUN_NUMBER"
+          done

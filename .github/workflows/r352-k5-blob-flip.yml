@@ -60,7 +60,7 @@ jobs:
       VTOKEN: ${{ secrets.VERCEL_TOKEN }}
       # gh CLI resolves the repo from GH_REPO (no checkout in this job)
       GH_REPO: ${{ github.repository }}
-      TARGET: https://madarek-nine.vercel.app
+      TARGET: https://madarek-app.vercel.app
       DRIVER: ${{ inputs.flip_back == true && 'postgres' || 'vercel-blob' }}
     steps:
       - name: Preflight — the env inventory (fail early, never half-flip)

@@ -158,7 +158,7 @@ jobs:
         run: npx eas-cli@latest update --branch production --auto --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-          EXPO_PUBLIC_API_BASE_URL: https://madarek-nine.vercel.app/api/v1
+          EXPO_PUBLIC_API_BASE_URL: https://madarek-app.vercel.app/api/v1
           # Must match the channel/fingerprint embedded by the raw native
           # workflows (build-ios-sidestore.yml / build-android.yml).
           EXPO_UPDATES_CHANNEL: production
@@ -166,7 +166,7 @@ jobs:
         run: npx eas-cli@latest update --branch preview --auto --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-          EXPO_PUBLIC_API_BASE_URL: https://madarek-nine.vercel.app/api/v1
+          EXPO_PUBLIC_API_BASE_URL: https://madarek-app.vercel.app/api/v1
 
   eas-build:
     name: EAS Build (manual preview/store cut)

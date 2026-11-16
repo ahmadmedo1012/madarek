@@ -10,9 +10,9 @@
 | الطبقة | المزوّد | الخطة | ملاحظات |
 |---|---|---|---|
 | الويب (SPA) | Vercel — مشروع `madarek` | Hobby (مجانية) | `frontend/dist` عبر CDN — دائمًا متاح، لا sleeps |
-| **رابطا الإنتاج** | `madarek-app.vercel.app` (+ الأصل `madarek-nine.vercel.app` احتياطًا) | — | R355: كلاهما يخدم الإنتاج مباشرة (تحقّق حيّ: 200 + buildId متطابق). الرابط `madarek.vercel.app` محجوز لجهة أخرى. التحويل الكامل للأصل القانوني (canonical/OG/CORS/افتراضيات التطبيق) بجلسة قادمة بارتكاز واحد |
+| **رابطا الإنتاج** | `madarek-app.vercel.app` (**القانونيّ — R357**) + `madarek-nine.vercel.app` (احتياط) | — | R357 L6: التحويل الكامل تم بارتكاز واحد — canonical/OG/sitemap/robots/CORS/افتراضيات التطبيق وسير العمل كلها تشير إلى `madarek-app`؛ `madarek-nine` يبقى يخدم الإنتاج كمسار فشل، وأصل Render الميت أُزيل من الافتراضيات |
 | الـ API (Express) | Vercel Function واحد (`api/main.mjs` — أعيدت تسميته R353 بعد تجميد كاش الدالة) | نفس المشروع | `regions: fra1`، `maxDuration 60s`، ذاكرة 1 GB؛ buildId يُخبز وقت البناء (ثلاث طبقات: ثابت tsc + `api/build-sha.json` + `/build-sha.txt`) |
-| قاعدة البيانات | Neon — `ep-icy-mode…eu-central-1/neondb` (قاعدة المالك الأصلية) | Free | عبر الرابط المُجمِّع (pooler) — القياس بعد fra1: dbLatency وسيطًا **2 ms** |
+| قاعدة البيانات | Neon — مشروع المالك `ep-icy-mode…` فرانكفورت (eu-central-1، عبر pooler) | Free | القياس الحيّ (R357): `dbLatency` وسيطًا **2–13 ms** من الدالة؛ حصة Free 0.5 GB تكفي بيانات العرض التجريبيّة |
 | البريد | Resend (`onboarding@resend.dev`) | Free | **يُسلِّم لعنوان المالك فقط** حتى توثيق نطاق — التفاصيل في `docs/MAIL.md` |
 | ملفات التحميل | Vercel Blob — مخزن `tadmora-private-files` | متصل بالمشروع | `STORAGE_DRIVER=vercel-blob`؛ ترحيل صفوف `BinaryObject` القديمة يركب كل بناء (`backend/scripts/storage-to-blob.mjs`) |
 | مرآة الإعداد البعيد | GitHub Pages (`gh-pages`) | — | `config/app.json` (apiOrigins) — مرآة ثانية دائمة التاح |

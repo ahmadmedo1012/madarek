@@ -115,7 +115,7 @@ jobs:
         # way the smoke below proves the LIVE production build.
         run: |
           set -euo pipefail
-          URL="https://madarek-nine.vercel.app"
+          URL="https://madarek-app.vercel.app"
           WANT="${{ github.sha }}"
           SHORT="${WANT:0:12}"
           for attempt in $(seq 1 60); do
@@ -144,7 +144,7 @@ jobs:
       - name: Live smoke on the production URL
         run: |
           set -euo pipefail
-          URL="https://madarek-nine.vercel.app"
+          URL="https://madarek-app.vercel.app"
           # Wake-tolerant: 502/503 = still deploying, keep trying.
           for attempt in $(seq 1 12); do
             CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$URL/api/v1/health" || echo 000)

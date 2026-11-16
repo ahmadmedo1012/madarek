@@ -42,7 +42,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  TARGET: ${{ vars.TICK_TARGET_URL || 'https://madarek-nine.vercel.app' }}
+  TARGET: ${{ vars.TICK_TARGET_URL || 'https://madarek-app.vercel.app' }}
   STALE_MINUTES: "30"
 
 jobs:

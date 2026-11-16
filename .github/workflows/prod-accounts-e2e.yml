@@ -27,7 +27,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BASE: https://madarek-nine.vercel.app
+  BASE: https://madarek-app.vercel.app
 
 jobs:
   wait-for-deploy:

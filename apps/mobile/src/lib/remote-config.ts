@@ -55,8 +55,8 @@ export const CONFIG_SOURCES = [
  * see docs/RELEASE.md for the rollback recipe).
  */
 export const FALLBACK_ORIGINS = [
+  "https://madarek-app.vercel.app",
   "https://madarek-nine.vercel.app",
-  "https://madarek.onrender.com",
 ] as const;
 
 /** The baked build-time API base (empty when the app used the default). */

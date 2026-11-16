@@ -58,9 +58,9 @@ env:
   ANDROID_TARGET_SDK: "36"
   ANDROID_BUILD_TOOLS: "37.0.0"
   ANDROID_NDK: "27.1.12297006"
-  EXPO_PUBLIC_API_BASE_URL: "https://madarek-nine.vercel.app/api/v1"
+  EXPO_PUBLIC_API_BASE_URL: "https://madarek-app.vercel.app/api/v1"
   EXPO_UPDATES_CHANNEL: "production"
-  API_BASE: "https://madarek-nine.vercel.app/api/v1"
+  API_BASE: "https://madarek-app.vercel.app/api/v1"
 
 jobs:
   push-proof:
