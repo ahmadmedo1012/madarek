@@ -41,7 +41,7 @@ API, copy or backend file touched**:
 | contrast gate findings | 14 | **0** (+10 documented exemption hits on the frozen hero seat) |
 | text-on-text at `/` 1024×600 | 6 (2 stops) | **0** (also 0 at 1024×768) |
 | icon drift across the three menus | 23 (4+5+5+5+4) | **0** |
-| default visible sidebar rows (student/teacher/admin/quality/owner) | 19/23/15/13/16 | ****19/12/7/5/7** |
+| default visible sidebar rows (student/teacher/admin/quality/owner) | 19/23/15/13/16 | **19/12/7/5/7** |
 | Arabic string parity | — | **identical** |
 | mobile jest | 1250 | **1250** (49 suites) |
 | nav unit suite | 78 | **78** (nav-coverage + r305-nav-maps + route-titles + rename-belt) |
