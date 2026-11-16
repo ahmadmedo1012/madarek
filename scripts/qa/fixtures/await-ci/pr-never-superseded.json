@@ -1,0 +1,9 @@
+{
+  "sha": "4911ab22ffffffffffffffffffffffffffffff",
+  "mainTip": "dce338aaffffffffffffffffffffffffffffff",
+  "event": "pull_request",
+  "ref": "refs/pull/49/merge",
+  "runs": [
+    { "name": "CI", "status": "in_progress", "conclusion": null, "created_at": "2026-11-20T10:00:00Z", "id": 5 }
+  ]
+}

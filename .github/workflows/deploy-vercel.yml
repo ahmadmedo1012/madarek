@@ -59,28 +59,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # The gates: CI (the full matrix) must be green on the SAME sha.
+  # The gates: CI (the full matrix) must be green on the SAME sha —
+  # R357 L1: SUPERSEDE-AWARE. The old inline loop read a cancelled CI
+  # run (cancelled by a newer main push's per-ref concurrency — a
+  # docs-only push counts) as "concluded without success" and turned
+  # this workflow red on healthy shas (c83f6d67, 600c943a, aa7cb126).
+  # The law now: a cancelled run is not a conclusion; a sha superseded
+  # on main exits green with a notice; otherwise the latest
+  # non-cancelled CI run decides. Logic + tests + dry-run fixtures:
+  # scripts/qa/await-ci.mjs and scripts/qa/fixtures/await-ci/.
   verify:
     name: CI green on this sha
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - name: Wait for the CI workflow conclusion
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wait for the CI workflow conclusion (supersede-aware)
         run: |
           set -euo pipefail
-          for attempt in $(seq 1 90); do
-            STATUS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              "https://api.github.com/repos/${{ github.repository }}/actions/runs?head_sha=${{ github.sha }}&per_page=20" \
-              | jq -r '[.workflow_runs[] | select(.name == "CI")] | sort_by(.created_at) | last | "\(.status) \(.conclusion // "-")"')
-            echo "CI: $STATUS (attempt $attempt)"
-            case "$STATUS" in
-              completed\ success) exit 0 ;;
-              completed\ *) echo "::error::CI concluded without success: $STATUS"; exit 1 ;;
-            esac
-            sleep 20
-          done
-          echo "::error::CI did not conclude within the wait window"
-          exit 1
+          node scripts/qa/await-ci.mjs \
+            --repo "${{ github.repository }}" \
+            --sha "${{ github.sha }}" \
+            --event "${{ github.event_name }}" \
+            --ref "${{ github.ref }}" \
+            --token "${{ secrets.GITHUB_TOKEN }}" \
+            --max-minutes 28 --poll-seconds 20
 
   deploy:
     name: await the git-integration deploy + live smoke
@@ -102,23 +108,37 @@ jobs:
         # deployment sha into /api/v1/health's buildId. Poll until they
         # match — proof that THIS push's deployment is the one serving
         # (not a stale lambda, not a previous sha).
+        # R357 L1: SUPERSEDE-TOLERANT. Stacked pushes can race this
+        # sha's deployment out of the live slot; the step also accepts
+        # the CURRENT main tip's buildId (main only moves forward, so
+        # that deployment contains this push as an ancestor). Either
+        # way the smoke below proves the LIVE production build.
         run: |
           set -euo pipefail
           URL="https://madarek-nine.vercel.app"
           WANT="${{ github.sha }}"
           SHORT="${WANT:0:12}"
           for attempt in $(seq 1 60); do
+            MAIN=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/commits/main" \
+              | jq -r '.sha // empty' 2>/dev/null | cut -c1-12 || true)
             BODY=$(curl -s --max-time 20 "$URL/api/v1/health" || echo '{}')
             GOT=$(echo "$BODY" | jq -r '.buildId // ""')
             OK=$(echo "$BODY" | jq -r '.ok // false')
-            echo "attempt $attempt → buildId=$GOT ok=$OK (want $SHORT)"
-            if [ "$GOT" = "$SHORT" ] && [ "$OK" = "true" ]; then
-              echo "the ${SHORT} deployment is LIVE and healthy"
-              exit 0
+            echo "attempt $attempt → buildId=$GOT ok=$OK (want $SHORT, main tip $MAIN)"
+            if [ "$OK" = "true" ]; then
+              if [ "$GOT" = "$SHORT" ]; then
+            echo "the ${SHORT} deployment is LIVE and healthy"
+            exit 0
+              fi
+              if [ -n "$MAIN" ] && [ "$GOT" = "$MAIN" ]; then
+            echo "superseded-tolerant: live buildId=$GOT is the newer main tip — this push rides main history; smoking it"
+            exit 0
+              fi
             fi
             sleep 15
           done
-          echo "::error::the ${SHORT} deployment never became the live production build"
+          echo "::error::neither ${SHORT} nor the current main tip became the live production build"
           exit 1
 
       - name: Live smoke on the production URL
