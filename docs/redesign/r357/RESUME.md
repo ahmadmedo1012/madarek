@@ -638,10 +638,37 @@ record: #48 (`merge/r354-ui`) and #49 (`merge/r357-ui`) both merged;
 
 ### 9.1 The final all-green check
 
-Runs on this record's OWN sha once its workflows conclude — verdict
-table appended in the closing commit (the last edit of the file).
-Verified so far this session: every pushed sha went green individually
-(`e8490cac` CI+Deploy Vercel green — the CSP repair; `f923d224` CI+Size+
-deadcode green, docs/workflow-only so Deploy paths correctly did not
-fire); `android-latest` freshness is checked in the closing commit
-against the final HEAD.
+The closing state, verified live (2026-11-16 ~18:00 UTC):
+
+| check | verdict | evidence |
+|---|---|---|
+| CI on the final content sha `c8feb49c` | **success** | all jobs (incl. Design gates — the CSP repair held) |
+| Size gate / deadcode on `c8feb49c` | **success / success** | runs on the sha |
+| Android — release APK on `c8feb49c` | **success** | run 43908837902's successor; APK 59 MB |
+| `android-latest.build-info.json.commit` | **`c8feb49c2c6a` == HEAD** | verified: true, smoke: pass, downloadable |
+| Soak probe (standing, dispatched) | **success** | run 43919468400 — 4/4 probes (health, real login, role-scoped search, ai config) |
+| Deploy smoke | **success** | last backend-touching sha `e8490cac` |
+| Deploy Vercel (the L1 law) | **success** | `e8490cac` — no red on any superseded sha this session |
+| iOS sidestore (last mobile-touching sha) | **success** | run 43897497946 |
+| tick-watch / vercel-usage-watch | **success / success** | last completed runs |
+| live buildId (both origins) | **`c8feb49c2c6a` == HEAD** | madarek-app + madarek-nine (failover) |
+
+The soak's first live dispatch caught two REAL defects (fixed in
+`c8feb49c`): the probe asserted `/ai/config .data.mode` (that field is
+`/status`'s ai block; `/ai/config` answers `.data.provider`), and the
+rolling-issue step needed the `soak` label created first. The re-run
+on the fix: 4/4 green — the standing probe now guards production every
+15 minutes.
+
+### 9.2 The session's commits (this continuation)
+
+| sha | what |
+|---|---|
+| `e8490cac` | fix(csp): the `c362f3a8` wrong-constant repair — Design gates red → green |
+| `f923d224` | feat(qa): the L8 package — UAT + Arabic handover + standing soak + demo dataset (Neon branch, 380+60 students, surgical reset) + PITR drill + the L4–L8 records |
+| `a4d10dbe` | docs(r357): the Lighthouse record + the L9 sweep verdicts |
+| `c8feb49c` | fix(qa): the soak probe's two first-dispatch defects |
+
+**RESUME complete.** The owner-side items that stay open are exactly
+§5's (DNS/mail-domain, the uncertain seats, the physical-phone push
+confirmation) plus the two honest perf notes in UI-FINDINGS.md.
