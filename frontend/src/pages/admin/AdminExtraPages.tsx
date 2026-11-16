@@ -5,7 +5,7 @@ import {
   ShieldCheck, Server,
   Radio, Settings,
   Download, RefreshCw, Mail, X,
-  GraduationCap, UserMinus, AlertCircle, BookOpen, FileText,
+  GraduationCap, UserMinus, AlertCircle, BookOpen, FileText, BellRing,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
@@ -615,6 +615,21 @@ export function AdminSettingsPage() {
     retry: 1,
   });
   const dbOk = health.isSuccess && health.data?.ok === true;
+  /* r357 item 5 — the owner-visible push acceptance: ONE working button
+   * that sends a real test push to the CALLER's own registered devices
+   * (POST /admin/test-push). The honest answers ride the toast. */
+  const [testPushBusy, setTestPushBusy] = useState(false);
+  const sendTestPush = async () => {
+    setTestPushBusy(true);
+    try {
+      await unwrap<{ sent: number }>(api.post('/admin/test-push'));
+      toast.success('تمّ');
+    } catch (e) {
+      toast.error(apiErrorMessage(e, 'تعذّر'));
+    } finally {
+      setTestPushBusy(false);
+    }
+  };
 
   return (
     <div className="page r305ao">
@@ -661,10 +676,10 @@ export function AdminSettingsPage() {
               <div className="settings-label">قاعدة البيانات</div>
               <div className="settings-value">
                 {health.isPending
-                  ? 'جارٍ التحقق…'
+                  ? 'تحقّق…'
                   : dbOk
                     ? `زمن الاستجابة ${health.data!.dbLatencyMs} مث`
-                    : 'تعذّر التحقق'}
+                    : 'تعذّر'}
               </div>
             </div>
             {!health.isPending && (
@@ -692,7 +707,7 @@ export function AdminSettingsPage() {
 
         <Card title="عمليّات النظام" icon={RefreshCw}>
           <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            التنفيذ من لوحة المالك.
+            لوحة المالك.
           </p>
           <div className="settings-actions">
             {/* r155c: أُزيل زر «مزامنة بيانات الجامعة» المعطَّل — كانت
@@ -711,6 +726,10 @@ export function AdminSettingsPage() {
             <button type="button" className="btn ghost sm" disabled>
               <Icon icon={Radio} size={14} />
               فحص الصحّة
+            </button>
+            <button type="button" className="btn accent sm" onClick={sendTestPush} disabled={testPushBusy}>
+              <Icon icon={BellRing} size={14} />
+              إشعار تجريبي
             </button>
           </div>
         </Card>

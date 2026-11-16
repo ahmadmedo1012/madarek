@@ -8,6 +8,7 @@ import { validate } from '../validate.js';
 import { buildMeta, paginationSchema } from '../../lib/pagination.js';
 import { buildScopedUserWhere, getGovernanceScope } from '../../lib/governance.js';
 import { resolveCallerInstitutionScope, institutionContextRequiredError } from '../../lib/profile-scoping.js';
+import { fanOutPush } from '../../modules/notifications/push.js';
 // Decimal→Number serializer for ResearchPaper rows — exported by the
 // research-owning route module (learning.routes) and reused here so the
 // admin projection serializes Decimals exactly like /research/queue.
@@ -214,6 +215,35 @@ router.get('/papers', validate(papersQuerySchema, 'query'), async (req, res, nex
       prisma.researchPaper.count({ where }),
     ]);
     res.json({ data: decToNum(data), meta: buildMeta(page, limit, total) });
+  } catch (e) { next(e); }
+});
+
+/**
+ * POST /admin/test-push (r357 item 5 — the owner-visible push acceptance).
+ *
+ * Sends ONE real push to the CALLER's own registered devices via the
+ * production fan-out (fanOutPush — best-effort by law: a disabled or
+ * muted push logs and returns; `sent` is the registered-device count,
+ * the honest upper bound). Admin/OWNER only (the router's gate).
+ * 400 with a short Arabic message when the caller has no device.
+ */
+router.post('/test-push', async (req, res, next) => {
+  try {
+    const devices = await prisma.pushDevice.count({ where: { userId: req.user!.id } });
+    if (devices === 0) {
+      res.status(400).json({
+        error: { code: 'NO_DEVICE', message: 'لا يوجد جهاز مسجّل لحسابك — سجّل الدخول من التطبيق واسمح بالإشعارات أولًا' },
+      });
+      return;
+    }
+    await fanOutPush([req.user!.id], {
+      type: 'SYSTEM',
+      icon: '⚙️',
+      title: 'إشعار تجريبي من مدارك',
+      body: 'إذا وصلك هذا الإشعار فالربط مع Firebase يعمل.',
+      link: '/admin/settings',
+    });
+    res.json({ data: { sent: devices } });
   } catch (e) { next(e); }
 });
 
