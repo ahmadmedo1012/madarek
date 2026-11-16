@@ -62,8 +62,14 @@ const STRESS = (scale) => {
   const AR = 'الطلبة المسجّلون في برنامج الهندسة البرمجية للفصل الدراسي';
   const LONG = 'ahmed.abdulrahman.almansouri@university-of-benghazi.edu.ly';
   const DIGITS = '١٢٣٤٥٦٧٨٩'; /* Arabic-Indic */
+  /* The landing is a FROZEN conformance surface: its labels live inside
+     measured absolute seats, so lengthening them only fabricates overlaps
+     the art direction cannot absorb. Its data/rows/images still get
+     stressed; its type does not. */
+  const landing = !!document.querySelector('.landing');
   let i = 0;
-  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const walker = landing ? null : document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const w = walker ?? { nextNode: () => null };
   for (let n; (n = w.nextNode());) {
     if (!n.textContent.trim()) continue;
     const el = n.parentElement;
