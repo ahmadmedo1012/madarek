@@ -785,7 +785,13 @@
     .topbar-actions .btn.primary.sm { display: none; }
   }
 
-  .topbar-actions { display: flex; align-items: center; gap: var(--sp-2); }
+  /* R354-UI-2 — the actions cluster may never push the shell: a long
+     user name (a real Libyan full name + patronymic, a long email) grew
+     .topbar-user to 586px and the whole document overflowed by 305px at
+     1024×600 (measured under the stress crawl). Strength: the cluster
+     and its user chip shrink; the name ellipsises (the .topbar-scope /
+     .topbar-inst-name rule above is the same contract). */
+  .topbar-actions { display: flex; align-items: center; gap: var(--sp-2); min-inline-size: 0; }
 
   /* r178 (multi-institution): the institution switcher's menu rows.
      The trigger is the chrome's existing .btn ghost; each row is a
@@ -804,8 +810,10 @@
     color: var(--text-muted);
   }
 
-  .topbar-user { position: relative; }
+  .topbar-user { position: relative; min-inline-size: 0; }
   .topbar-user-trigger {
+    min-inline-size: 0;
+    max-inline-size: 100%;
     display: inline-flex;
     align-items: center;
     gap: var(--sp-2);
@@ -828,6 +836,13 @@
   }
   .topbar-user-name {
     font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text);
+    /* R354-UI-2 — the name is chrome, not signal: clamp it like the
+       scope chip (24ch) and let the ellipsis carry the rest. */
+    min-inline-size: 0;
+    max-inline-size: 22ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     /* r155d: was 1 — the single-line box clipped Arabic descenders on the
        13px semibold (the same defect class notifications.css documents
        on .bottom-nav-label); --lh-snug (1.2) is the documented floor. */

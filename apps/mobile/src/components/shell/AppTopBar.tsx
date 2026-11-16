@@ -72,7 +72,10 @@ export function AppTopBar({ alertsPath }: { alertsPath: string }) {
                 start: 12,
                 minWidth: 16,
                 height: 16,
-                borderRadius: 8,
+                // R354-UI-2 — the count chip is the shell's square grammar
+                // (TabBar's badge + the web .nav-badge are square on a
+                // hairline); this one alone was a 8dp pill.
+                borderRadius: 0,
                 backgroundColor: p.accent,
                 alignItems: "center",
                 justifyContent: "center",
