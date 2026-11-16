@@ -37,7 +37,7 @@ concurrency:
 jobs:
   preview-apk:
     name: Build branch preview APK
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     env:
       EXPO_PUBLIC_API_BASE_URL: http://10.0.2.2:4000/api/v1
@@ -125,7 +125,7 @@ jobs:
           - { id: dark-standard, theme: dark, theme_label: "داكن", font_scale: '1.0', viewport: standard }
           - { id: light-a11y-small, theme: light, theme_label: "فاتح", font_scale: '1.3', viewport: small-360x640 }
           - { id: dark-a11y-small, theme: dark, theme_label: "داكن", font_scale: '1.3', viewport: small-360x640 }
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     needs: preview-apk
     services:
