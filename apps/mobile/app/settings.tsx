@@ -290,7 +290,7 @@ export default function Settings() {
 
       {/* [03] الحساب — الهويّة والحقائق كما تقرؤها الخدمة الآن */}
       <View style={{ gap: sp[8] }}>
-        <GroupHeader index={2} title="الحساب" />
+        <GroupHeader index={3} title="الحساب" />
         <RowList>
           <LedgerRow>
             <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>

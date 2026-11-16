@@ -505,6 +505,13 @@ export function Segmented({
             key={o.id}
             accessibilityRole="tab"
             accessibilityState={{ selected: active }}
+            /* R358 A1: the emulator capture's text-based tap lands on the
+             * inner TextView (non-clickable) and never reaches this
+             * Pressable — review-1 T8 flagged the same miss years ago.
+             * A stable per-option testID lets the QA flow tap the
+             * clickable node itself (the id-tap path that demonstrably
+             * works: login/tab-bar taps all fired). */
+            testID={`seg-${o.id}`}
             onPress={() => onSelect(o.id)}
             style={{
               flex: 1,

@@ -1,0 +1,76 @@
+# R358 role capture: quality; selected appearance is set through account settings.
+appId: ly.madarek.mobile
+name: "R358 screens — quality"
+---
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: "welcome-title"
+    timeout: 120000
+- takeScreenshot: "screens/00-welcome"
+- scrollUntilVisible:
+    element:
+      id: "welcome-cta"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: "welcome-cta"
+- extendedWaitUntil:
+    visible:
+      id: "login-email"
+    timeout: 30000
+- takeScreenshot: "screens/01-login"
+- tapOn:
+    id: "login-email"
+- inputText: "quality@test.ly"
+- hideKeyboard
+- tapOn:
+    id: "login-password"
+- inputText: "12345678"
+- tapOn:
+    id: "login-submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab-dashboard"
+    timeout: 120000
+- openLink: "madarek://settings"
+- extendedWaitUntil:
+    visible: "الإعدادات"
+    timeout: 30000
+- takeScreenshot: "screens/02-settings"
+- tapOn:
+    id: "seg-${THEME_ID}"
+- openLink: "madarek://quality/dashboard"
+- extendedWaitUntil:
+    visible:
+      id: "role-tab-bar"
+    timeout: 30000
+- takeScreenshot: "screens/quality-03-dashboard"
+- tapOn:
+    id: "tab-courses"
+- extendedWaitUntil:
+    visible:
+      id: "tab-courses"
+    timeout: 30000
+- takeScreenshot: "screens/quality-04-courses"
+- tapOn:
+    id: "tab-curriculum"
+- extendedWaitUntil:
+    visible:
+      id: "tab-curriculum"
+    timeout: 30000
+- takeScreenshot: "screens/quality-05-curriculum"
+- tapOn:
+    id: "tab-engagement"
+- extendedWaitUntil:
+    visible:
+      id: "tab-engagement"
+    timeout: 30000
+- takeScreenshot: "screens/quality-06-engagement"
+- tapOn:
+    id: "tab-reports"
+- extendedWaitUntil:
+    visible:
+      id: "tab-reports"
+    timeout: 30000
+- takeScreenshot: "screens/quality-07-reports"

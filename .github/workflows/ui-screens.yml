@@ -3,27 +3,28 @@
 # WHY this exists: the mobile UI is the one surface nobody could look at.
 # The author's machine cannot run an emulator, unit tests cannot see
 # layout, and the release smoke only proves "the app is alive" — never
-# what it looks like. This workflow is MANUAL (workflow_dispatch), takes
-# the x86_64 APK the Android release workflow already built and verified,
-# installs it on the same API-34 emulator image, walks the student shell
-# with Maestro and uploads the screenshots as an artifact. Downloading the
-# artifact and cutting it into a contact sheet is the only step left.
+# what it looks like. This workflow is MANUAL (workflow_dispatch), builds
+# a throwaway APK from current/main source, runs against runner-local
+# Postgres and API, and walks each selected role shell with Maestro.
 #
-# Deliberately NOT a gate: it never blocks a PR, never touches production,
-# never re-signs anything. It downloads an existing artifact and reads.
+# Deliberately NOT a gate: it never blocks a PR or publishes a release.
 name: UI screens (emulator, manual)
 
 on:
   workflow_dispatch:
     inputs:
-      run_id:
-        description: "build-android.yml run id to take the APK from (blank = latest successful)"
-        required: false
-        default: ""
-      flow:
-        description: "Maestro flow under apps/mobile/.maestro"
-        required: false
-        default: "screens-student.yaml"
+      role:
+        description: "Role to capture (all by default)"
+        type: choice
+        options: [all, student, teacher, registrar, quality, owner]
+        required: true
+        default: all
+      app_ref:
+        description: "App source for this capture set"
+        type: choice
+        options: [current, main]
+        required: true
+        default: current
 
 permissions:
   contents: read
@@ -31,48 +32,135 @@ permissions:
 
 concurrency:
   group: ui-screens-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  screens:
-    name: Walk the shell and capture screens
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
+  preview-apk:
+    name: Build branch preview APK
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      EXPO_PUBLIC_API_BASE_URL: http://10.0.2.2:4000/api/v1
+      EXPO_PUBLIC_DISABLE_REMOTE_CONFIG: "1"
     steps:
       - uses: actions/checkout@v4
-
-      - name: Resolve the APK artifact run
-        id: src
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          ref: ${{ inputs.app_ref == 'main' && 'main' || github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+          accept-android-sdk-licenses: true
+          log-accepted-android-sdk-licenses: false
+      - name: Install Android SDK packages
         run: |
           set -euo pipefail
-          RUN="${{ inputs.run_id }}"
-          if [ -z "$RUN" ]; then
-            RUN=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow build-android.yml \
-              --status success --limit 1 --json databaseId -q '.[0].databaseId')
-          fi
-          if [ -z "$RUN" ] || [ "$RUN" = "null" ]; then
-            echo "::error::no successful build-android run found — dispatch 'Android — release APK' first"
-            exit 1
-          fi
-          echo "run=$RUN" >> "$GITHUB_OUTPUT"
-          gh run view "$RUN" --repo "$GITHUB_REPOSITORY" --json headSha,conclusion \
-            -q '"commit=" + .headSha[0:8] + " conclusion=" + .conclusion'
-
-      - name: Download the verified x86_64 APK
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          sdkmanager --sdk_root="$ANDROID_HOME" --install \
+            "platform-tools" "platforms;android-37.0" "build-tools;37.0.0" "ndk;27.1.12297006"
+      - name: Install mobile dependencies and generate Android project
+        working-directory: apps/mobile
         run: |
           set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/apk"
-          gh run download "${{ steps.src.outputs.run }}" --repo "$GITHUB_REPOSITORY" \
-            -n android-release-candidate -D "$RUNNER_TEMP/apk"
-          ls -l "$RUNNER_TEMP/apk"
-          # the emulator's ABI is x86_64 — the arm64 release APK will not install
-          test -f "$RUNNER_TEMP/apk/Madarek-x86_64.apk" || {
-            echo "::error::Madarek-x86_64.apk missing from the artifact"; exit 1; }
-          cat "$RUNNER_TEMP/apk/build-info.json" || true
+          npm ci --no-audit --no-fund
+          npx expo prebuild --platform android --no-install
+          sed -i 's|<application |<application android:usesCleartextTraffic="true" |' android/app/src/main/AndroidManifest.xml
+          if grep -q '^reactNativeArchitectures=' android/gradle.properties; then
+            sed -i 's|^reactNativeArchitectures=.*|reactNativeArchitectures=x86_64|' android/gradle.properties
+          else
+            echo 'reactNativeArchitectures=x86_64' >> android/gradle.properties
+          fi
+          printf 'sdk.dir=%s\n' "$ANDROID_HOME" > android/local.properties
+      - name: Build branch APK against local backend
+        working-directory: apps/mobile
+        env:
+          MADAREK_VERSION_CODE: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          (cd android && ./gradlew :app:assembleRelease --no-daemon)
+          mkdir -p build/screens-apk
+          cp android/app/build/outputs/apk/release/app-release.apk build/screens-apk/Madarek-x86_64.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-screens-preview-apk-${{ github.run_id }}
+          path: apps/mobile/build/screens-apk/Madarek-x86_64.apk
+          retention-days: 3
+
+  screens:
+    name: "Capture ${{ matrix.role }} — ${{ matrix.profile.id }}"
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        role: ${{ fromJSON(inputs.role == 'all' && '["student","teacher","registrar","quality","owner"]' || format('["{0}"]', inputs.role)) }}
+        profile:
+          - { id: light-standard, theme: light, theme_label: "فاتح", font_scale: '1.0', viewport: standard }
+          - { id: dark-standard, theme: dark, theme_label: "داكن", font_scale: '1.0', viewport: standard }
+          - { id: light-a11y-small, theme: light, theme_label: "فاتح", font_scale: '1.3', viewport: small-360x640 }
+          - { id: dark-a11y-small, theme: dark, theme_label: "داكن", font_scale: '1.3', viewport: small-360x640 }
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    needs: preview-apk
+    # R358 A1: NO `disable-animations: true` here. It zeroes
+    # animator_duration_scale after boot, and on RN 0.88 + Reanimated 4
+    # an entering animation at scale 0 never reaches its final state —
+    # every `entering` view (welcome title, CTA, role tabs) stays
+    # invisible forever. That blank shell is exactly why run
+    # 43898742777's student captures failed at the first assertion.
+    # Boot speed is preserved by -no-boot-anim; the capture must see the
+    # app exactly as users do (the script below re-asserts the scales).
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: madarek
+          POSTGRES_PASSWORD: madarek
+          POSTGRES_DB: madarek_screens
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U madarek"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://madarek:madarek@localhost:5432/madarek_screens
+      JWT_ACCESS_SECRET: ci-only-access-secret-0123456789abcdef0123456789abcdef
+      JWT_REFRESH_SECRET: ci-only-refresh-secret-0123456789abcdef0123456789abcd
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ui-screens-preview-apk-${{ github.run_id }}
+          path: ${{ runner.temp }}/apk
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Start hermetic backend for screenshots
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npm run build -w backend
+          npm run db:deploy
+          npm run db:seed
+          DATABASE_URL="$DATABASE_URL" JWT_ACCESS_SECRET="$JWT_ACCESS_SECRET" JWT_REFRESH_SECRET="$JWT_REFRESH_SECRET" PORT=4000 MADAREK_TEST_ACCOUNTS=1 nohup node backend/dist/server.js > "$RUNNER_TEMP/backend.log" 2>&1 &
+          for i in $(seq 1 60); do
+            curl -fsS http://localhost:4000/api/v1/health | grep -q '"ok":true' && exit 0
+            sleep 2
+          done
+          tail -50 "$RUNNER_TEMP/backend.log"
+          exit 1
 
       - uses: actions/setup-java@v4
         with:
@@ -95,42 +183,61 @@ jobs:
           sudo udevadm trigger --name-match=kvm
           ls -l /dev/kvm
 
-      - name: Walk the shell (API 34, 1080×2340, dark and light)
+      - name: Walk the selected role and capture every tab
         uses: reactivecircus/android-emulator-runner@v2
-        env:
-          APK: ${{ runner.temp }}/apk/Madarek-x86_64.apk
-          FLOW: apps/mobile/.maestro/${{ inputs.flow }}
         with:
           api-level: 34
           arch: x86_64
           target: google_apis
           force-avd-creation: false
-          disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
           pre-emulator-launch-script: |
             printf 'hw.lcd.width=1080\nhw.lcd.height=2340\nhw.lcd.density=420\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"
           script: |
-            set -euo pipefail
+            # android-emulator-runner executes this field with /bin/sh.
+            # Keep the script POSIX so every role/profile can start.
+            set -eu
             mkdir -p apps/mobile/build
             adb wait-for-device
             adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
             adb shell wm dismiss-keyguard || true
-            adb install -r "$APK"
+            # Re-assert the system animation scales explicitly: the app's
+            # motion pipeline (Reanimated 4 entering animations) must run
+            # for its content to become visible at all. See the job-level
+            # note above; -no-boot-anim keeps the boot itself fast.
+            adb shell settings put global window_animation_scale 1.0
+            adb shell settings put global transition_animation_scale 1.0
+            adb shell settings put global animator_duration_scale 1.0
+            # Run 19: the 360x640 + density + font-scale changes ANR'd the
+            # system launcher on 3 of 20 jobs, and the system «Close app /
+            # Wait» sheet covered the app while it rendered fine behind
+            # it. Hide the system error sheets for the capture (standard
+            # emulator CI practice).
+            adb shell settings put global hide_error_dialogs 1
+            adb shell settings put system font_scale '${{ matrix.profile.font_scale }}'
+            test '${{ matrix.profile.viewport }}' != small-360x640 || adb shell wm size 360x640
+            test '${{ matrix.profile.viewport }}' != small-360x640 || adb shell wm density 160
+            sleep 4
+            adb shell wm dismiss-keyguard || true
+            adb install -r '${{ runner.temp }}/apk/Madarek-x86_64.apk'
             adb shell am start -n ly.madarek.mobile/.MainActivity
-            sleep 8
+            sleep 20
+            mkdir -p apps/mobile/build/screens
+            adb exec-out screencap -p > apps/mobile/build/screens/launch-20s.png
+            adb logcat -d > apps/mobile/build/screens/logcat-before-maestro.log
+            printf 'role=%s\ntheme=%s\nfont_scale=%s\nviewport=%s\n' '${{ matrix.role }}' '${{ matrix.profile.theme }}' '${{ matrix.profile.font_scale }}' '${{ matrix.profile.viewport }}' > apps/mobile/build/screens/profile.txt
             # the flow writes into the CWD; keep it inside the workspace so
             # the upload step can find the shots
-            maestro test "$FLOW" --test-output-dir apps/mobile/build/screens \
-              || { echo "::warning::the walk ended early — capturing what exists"; }
+            maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens
             adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
-            adb logcat -d > apps/mobile/build/screens/logcat.log
+            adb logcat -d > apps/mobile/build/screens/logcat-after-maestro.log
             ls -l apps/mobile/build/screens || true
 
       - name: Upload the screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ui-screens-${{ github.run_number }}
+          name: ui-screens-${{ github.run_number }}-${{ matrix.role }}-${{ matrix.profile.id }}
           path: apps/mobile/build/screens
           if-no-files-found: warn
           retention-days: 14

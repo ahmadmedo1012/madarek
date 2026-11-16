@@ -1,0 +1,76 @@
+# R358 role capture: teacher; selected appearance is set through account settings.
+appId: ly.madarek.mobile
+name: "R358 screens — teacher"
+---
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: "welcome-title"
+    timeout: 120000
+- takeScreenshot: "screens/00-welcome"
+- scrollUntilVisible:
+    element:
+      id: "welcome-cta"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: "welcome-cta"
+- extendedWaitUntil:
+    visible:
+      id: "login-email"
+    timeout: 30000
+- takeScreenshot: "screens/01-login"
+- tapOn:
+    id: "login-email"
+- inputText: "teacher@test.ly"
+- hideKeyboard
+- tapOn:
+    id: "login-password"
+- inputText: "12345678"
+- tapOn:
+    id: "login-submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab-dashboard"
+    timeout: 120000
+- openLink: "madarek://settings"
+- extendedWaitUntil:
+    visible: "الإعدادات"
+    timeout: 30000
+- takeScreenshot: "screens/02-settings"
+- tapOn:
+    id: "seg-${THEME_ID}"
+- openLink: "madarek://teacher/dashboard"
+- extendedWaitUntil:
+    visible:
+      id: "role-tab-bar"
+    timeout: 30000
+- takeScreenshot: "screens/teacher-03-dashboard"
+- tapOn:
+    id: "tab-schedule"
+- extendedWaitUntil:
+    visible:
+      id: "tab-schedule"
+    timeout: 30000
+- takeScreenshot: "screens/teacher-04-schedule"
+- tapOn:
+    id: "tab-students"
+- extendedWaitUntil:
+    visible:
+      id: "tab-students"
+    timeout: 30000
+- takeScreenshot: "screens/teacher-05-students"
+- tapOn:
+    id: "tab-intelligence"
+- extendedWaitUntil:
+    visible:
+      id: "tab-intelligence"
+    timeout: 30000
+- takeScreenshot: "screens/teacher-06-intelligence"
+- tapOn:
+    id: "tab-profile"
+- extendedWaitUntil:
+    visible:
+      id: "tab-profile"
+    timeout: 30000
+- takeScreenshot: "screens/teacher-07-profile"
