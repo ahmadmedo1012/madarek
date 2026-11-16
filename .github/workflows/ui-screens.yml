@@ -187,7 +187,9 @@ jobs:
           pre-emulator-launch-script: |
             printf 'hw.lcd.width=1080\nhw.lcd.height=2340\nhw.lcd.density=420\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"
           script: |
-            set -euo pipefail
+            # android-emulator-runner executes this field with /bin/sh.
+            # Keep the script POSIX so every role/profile can start.
+            set -eu
             mkdir -p apps/mobile/build
             adb wait-for-device
             adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
