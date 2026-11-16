@@ -587,11 +587,27 @@ through the wrong constant) — Design gates red. Repaired `e8490cac`:
 each hash back in its own constant + the R357 pin-refresh comment.
 CI + Deploy Vercel green on `e8490cac`.
 
+DONE (Lighthouse, the same session — measured with the REAL mobile
+preset on the canonical origin, two pages AUTHED via the login API +
+the mdrk-auth substrate, the same law as the top-20 crawl;
+`lighthouse@13.6.0` + puppeteer-core over the playwright chromium):
+
+| page (mobile) | perf | a11y | best-practices | seo | LCP | TBT |
+|---|---|---|---|---|---|---|
+| `/` landing | 78 | 87 | 100 | 100 | 3.0 s | 670 ms |
+| `/auth/login` | **95** | 100 | 100 | 92 | 3.0 s | 40 ms |
+| `/colleges` | **97** | 100 | 100 | 92 | 2.3 s | 130 ms |
+| `/student/dashboard` | 78 | 100 | 100 | 57* | 3.9 s | 410 ms |
+| `/admin/people` | **94** | 100 | 100 | 57* | 3.0 s | 20 ms |
+
+3/5 meet the ≥ 90 bar. The two below (landing, student-dashboard) are
+TBT-bound (hydration main-thread work; opportunities are modest —
+unused-css −150/−250 ms, unused-js −150 ms each) — **record-only per the
+brief; both handed to the UI agent** in UI-FINDINGS.md. (*the 57 SEO on
+authed pages is by-design — a dashboard is not a public document; the
+SPA's public SEO story lives on the guest pages, which score 92–100.)
+
 OPEN (stated honestly, not hidden):
-- **Lighthouse ≥ 90 on the 5 headline pages**: not measured yet (the local
-  browser budget went to the top-20 crawl); the crawl's zero-findings +
-  the hermetic e2e cover function, not perf — the numbers are recorded
-  below once run (visual fixes → the UI agent).
 - **The pg_dump operator drill**: `db-backup.mjs`/`db-restore.mjs` logic
   is CI-pinned but running them needs pg_dump/pg_restore on a real
   operator machine (absent here; the Neon-native drill above covers the
@@ -599,4 +615,33 @@ OPEN (stated honestly, not hidden):
 
 ## LANE 9 — branch sweep (last)
 
-(placeholder)
+DONE 2026-11-16 (this session). The brief's 9 stale branches
+(`wip/r354-ui`, `wip/all-d-ci-abi-order`, `wip/p1-profiles-foundation`,
+`wip/r349-smoke-diagnostics`, `wip/x0-keepwarm-window`, `wip/x1-vercel-spike`,
+`wip/x3-remote-config`, `wip/x4-cutover`, `pr/45`) were ALREADY gone when
+this session reached the sweep (verified via the GitHub API
+`GET /branches?per_page=100` + a pruned fetch — the remote holds exactly
+four refs). The four, with verdicts:
+
+- `main` — the trunk.
+- `gh-pages` — the config-pages mirror; KEPT per the brief.
+- `wip/r358-ui` — the UI agent's ACTIVE branch (19 unique commits: the
+  emulator-capture QA line, responsive shared-table fixes, navigation
+  evidence). No open PR. NOT deleted — §3: their lane, they merge via PR.
+- `feat/heronai-uiux-overhaul` — the UI program's next rounds
+  (r359/r360/r361 «working drawings», pushed 2026-11-16). Active,
+  unmerged (3 unique commits). NOT mine to delete or merge.
+
+Open PRs at sweep time: ZERO (verified). The historical merges for the
+record: #48 (`merge/r354-ui`) and #49 (`merge/r357-ui`) both merged;
+`pr/45`'s head `wip/r342-integration` merged in #45.
+
+### 9.1 The final all-green check
+
+Runs on this record's OWN sha once its workflows conclude — verdict
+table appended in the closing commit (the last edit of the file).
+Verified so far this session: every pushed sha went green individually
+(`e8490cac` CI+Deploy Vercel green — the CSP repair; `f923d224` CI+Size+
+deadcode green, docs/workflow-only so Deploy paths correctly did not
+fire); `android-latest` freshness is checked in the closing commit
+against the final HEAD.
