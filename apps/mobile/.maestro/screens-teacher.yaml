@@ -23,9 +23,9 @@ name: "R358 screens — teacher"
 - tapOn:
     id: "login-email"
 - inputText: "teacher@test.ly"
+- hideKeyboard
 - tapOn:
     id: "login-password"
-- hideKeyboard
 - inputText: "12345678"
 - tapOn:
     id: "login-submit"
