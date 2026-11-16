@@ -156,6 +156,38 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   §2b — THE MONO GUTTER INDEX ON THE DESKTOP EXPANDED RAIL (r360)
+   ═══════════════════════════════════════════════════════════════════
+   layout.css already ships the instrument voice — the [01]… decimal-
+   leading-zero counter in each section label's start gutter (the LRI/
+   PDI isolates keep the Latin bracket run from mirroring inside the
+   RTL line) — but scoped to the ≤920px DRAWER band only. The desktop
+   expanded rail, the surface a signed-in user stares at all day, read
+   without the annotation: the same sections numbered on the phone and
+   anonymous on the workstation. This block extends the EXACT recipe
+   (same counters, same muted voice) to the desktop band, expanded
+   only — the collapsed icon rail keeps icon-only labels (a numeral
+   above a 17px icon with no context is noise, and the §2 grid centers
+   the brand + footer to one axis).
+
+   Selector discipline mirrors the drawer block: counter-reset on the
+   .sidebar-nav wrapper, counter-increment on every .nav-group (the
+   accordion toggle IS the .nav-section-label in the collapsible
+   groups, so the ::before lands inside the flex row ahead of the
+   label span — no DOM change, the §10 :nth-child stagger selectors
+   are untouched). Unlayered = outranks the layered mono-md seat the
+   same way the drawer's copy does.
+   */
+@media (min-width: 921px) {
+  .sidebar:not(.collapsed) .sidebar-nav { counter-reset: nav-section; }
+  .sidebar:not(.collapsed) .nav-group { counter-increment: nav-section; }
+  .sidebar:not(.collapsed) .nav-section-label::before {
+    content: "\2066[" counter(nav-section, decimal-leading-zero) "]\2069\00a0";
+    color: var(--text-faint);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    §3 — ONE ACTIVE MARKER (A4: «كل مسار له علامة جانبية واحدة»)
    ═══════════════════════════════════════════════════════════════════
    The active nav row is exactly ONE signal (R313 WP-F · D16): the
