@@ -340,13 +340,13 @@ try {
     must(parse && parse.headers, 'parse returned no headers');
     const preview = await apiOk('/import/preview', {
       method: 'POST', token: ctx.registrarToken,
-      body: { storageKey: ticket.key, entity: 'STUDENT', institutionId: ctx.instId, mapping: parse.suggestedMapping ?? parse.mapping },
+      body: { storageKey: ticket.key, entity: 'STUDENT', institutionId: ctx.instId, columnMap: parse.suggestedMap },
     });
     const rows = preview?.rows ?? preview?.lines ?? [];
     must(rows.length === 3, `preview rows=${rows.length}`);
-    const bad = rows.find((r) => String(r.universityId ?? r['رقم القيد'] ?? '').includes(`${RUN}04`)) ?? rows[2];
-    must(bad && (bad.status === 'error' || bad.verdict === 'error' || bad.valid === false), `the bad row was not refused: ${JSON.stringify(bad).slice(0, 120)}`);
-    return `dry-run: ${rows.length} rows, the bad phone refused (${bad?.detail ?? bad?.error ?? '?'})`;
+    const bad = rows[2];
+    must(bad && bad.status === 'error', `the bad row was not refused: ${JSON.stringify(bad).slice(0, 120)}`);
+    return `dry-run: ${rows.length} rows, the bad phone refused (${bad?.errorsAr?.[0] ?? '?'})`;
   });
 
   await step('cleanup: the demo-cohort sweep removes every throwaway', async () => {

@@ -102,5 +102,5 @@ jobs:
         run: |
           gh issue create --repo "$GITHUB_REPOSITORY" \
             --title "Prod accounts e2e RED — run $GITHUB_RUN_NUMBER" \
-            --body "The nightly accounts e2e failed. Transcript artifact: prod-accounts-e2e-${GITHUB_RUN_NUMBER }. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            --body "The nightly accounts e2e failed. Transcript artifact: prod-accounts-e2e-${GITHUB_RUN_NUMBER}. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
             --label ci-red || true
