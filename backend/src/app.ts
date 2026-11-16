@@ -131,7 +131,7 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  * (dark #282828 / light #F6F6EE — the warm vintage paper, owner
  * decision; audits/evidence/r313/reference/digest.json); the metas and
  * the boot plate moved with it. */
-const THEME_BOOTSTRAP_SHA256 = 'w8MW8JWfqH8XvXZujtxAyA/pl+9DQNiEnfdWoVPa3wY=';
+const THEME_BOOTSTRAP_SHA256 = 'jEZ9yPBzXBwMFxHwFlLFqiKKy+HtK9TOGA7FRviqIMc=';
 /* r188: pin refreshed — the JSON-LD block now describes the INDEPENDENT
  * Madarek platform alone (WebSite node; the retired legacy university
  * `about` node is gone — the only demo-data story is the explicitly
@@ -140,7 +140,10 @@ const THEME_BOOTSTRAP_SHA256 = 'w8MW8JWfqH8XvXZujtxAyA/pl+9DQNiEnfdWoVPa3wY=';
 // r191: pin refreshed — the JSON-LD description dropped the rejected
 // provenance slogan with the meta copy fix.
 // R351 X4: pin refreshed — the JSON-LD url/logo moved to the Vercel origin (the origin flip).
-const JSON_LD_SHA256 = '1MZqzUngi6d2K8Okt5DYMoo8uAUErYQOQhUS4k0mxic=';
+// R357: pin refreshed — the JSON-LD url moved again with the alias decision (madarek-app is
+// the canonical origin; c362f3a8 pasted this hash into the WRONG constant — THEME_BOOTSTRAP
+// never changed — this commit puts each hash back in its own constant).
+const JSON_LD_SHA256 = 'w8MW8JWfqH8XvXZujtxAyA/pl+9DQNiEnfdWoVPa3wY=';
 
 export function createApp() {
   const app = express();
