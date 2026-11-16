@@ -41,7 +41,7 @@ red while its git-integration deploy was perfectly fine. Reds observed by the R3
 
 ### 1.3 Audit: the last 5 main SHAs (Deploy Vercel + Deploy smoke, green or superseded)
 
-Command: `actions/runs?head_sha=<full>` filtered to CI / Deploy Vercel / Deploy smoke / Size gate / deadcode (2026-11-21, this session):
+Command: `actions/runs?head_sha=<full>` filtered to CI / Deploy Vercel / Deploy smoke / Size gate / deadcode (2026-11-16, this session):
 
 - `dce338aa` (docs, tip): CI **success** (run 43798314304), Size gate success, deadcode success. No Deploy Vercel run (docs-only push — correct, its paths never fire). No Deploy smoke run (no backend change — correct). → GREEN.
 - `aa7cb126` (qa): CI **cancelled** — all 11 jobs cancelled (run 43798283494) by the `dce338aa` push (per-ref concurrency). Deploy Vercel **failure** (run 43798283486) — THE defect: the old gate read the cancel as "concluded without success". Classification: **superseded**; the deploy itself was fine (buildId reached dce338aa). Fixed for the future by this commit (the gate would now exit green with a `::notice::`).
@@ -62,7 +62,16 @@ main HEAD `dce338aa` == buildId `dce338aaffba`. DB ok, 7 ms.
 
 ### 1.5 The fix sha's own runs
 
-(filled once CI + Deploy Vercel conclude on the fix commit)
+`09d50535` (the fix itself) went **CI red once**: `Typecheck (src + tests)` —
+`tests/unit/r357-await-ci.test.ts(27): TS7006 ×4` (implicit-any params on a test helper).
+Root cause: `verify.sh --fast` typechecked the base tsconfig (src only) — the tests tree was
+never covered locally, so the error sailed through (and `| tail` on my verify run masked the
+exit code — the "no pipe" law exists for exactly this). Repairs in the follow-up commit: typed helper + `verify.sh` step 1 now runs BOTH `tsconfig.json` and
+`tsconfig.test.json` (matches CI's `typecheck:tests`; the stale "tests tree included" comment
+was false — fixed). Deploy Vercel on `09d50535` correctly stayed red (CI failed → real signal;
+the new gate did NOT excuse it — the law works both ways).
+
+(the follow-up sha's runs appended once concluded)
 
 ## LANE 2 — accounts & student data on production
 

@@ -36,9 +36,12 @@ step() { printf '\n\033[1m▶ %s\033[0m\n' "$1"; }
 fail() { printf '\033[31m✗ FAIL: %s\033[0m\n' "$1"; FAIL=1; }
 ok()   { printf '\033[32m✓ %s\033[0m\n' "$1"; }
 
-# 1. typecheck (frontend tests tree included — CI runs the same)
-step "tsc (frontend)"
-if (cd frontend && npx tsc --noEmit -p tsconfig.json); then ok "tsc"; else fail "tsc"; fi
+# 1. typecheck (frontend src tree AND the tests tree — CI runs both;
+#    R357 lesson: the base tsconfig includes src only, so a tests-only
+#    TS error (implicit any in a test helper) sailed through --fast and
+#    went red in CI's `typecheck:tests`. Never again.)
+step "tsc (frontend + tests)"
+if (cd frontend && npx tsc --noEmit -p tsconfig.json && npx tsc --noEmit -p tsconfig.test.json); then ok "tsc"; else fail "tsc"; fi
 
 # 2. unit tests
 step "vitest (frontend unit)"

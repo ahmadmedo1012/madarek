@@ -19,12 +19,19 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 import { decide } from '../../../scripts/qa/await-ci.mjs';
+import type { CiRunRecord } from '../../../scripts/qa/await-ci.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const SCRIPT = path.resolve(here, '../../../scripts/qa/await-ci.mjs');
 const FIXTURES = path.resolve(here, '../../../scripts/qa/fixtures/await-ci');
 
-const run = (name, status, conclusion, created_at, id = 1) => ({
+const run = (
+  name: string,
+  status: string,
+  conclusion: string | null,
+  created_at: string,
+  id = 1,
+): CiRunRecord => ({
   name,
   status,
   conclusion,
