@@ -1,0 +1,92 @@
+# r357 L2 — the PRODUCTION accounts/student-data e2e (throwaway + cleanup).
+#
+# Runs the full accounts lane against the live deployment with
+# throwaway @demo.madarek.ly accounts (cleanup = the demo-cohort sweep):
+# registration → outbox verify link → login by email AND reg-number →
+# password change / forgot / assisted reset → Libyan phone folding +
+# audited phone search (directory + discover) → photo (client-direct
+# presign) → DOB → important documents (signed URLs) → photo-ZIP bulk
+# attach → Excel import dry-run — then the sweep.
+#
+# The outbox token extraction + audit asserts need READ-ONLY production
+# DB access: secret PROD_DATABASE_URL (never printed, never committed).
+# Every write goes through the public API exactly like a browser.
+name: Prod accounts e2e
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '43 3 * * *'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: prod-accounts-e2e
+  cancel-in-progress: true
+
+env:
+  BASE: https://madarek-nine.vercel.app
+
+jobs:
+  wait-for-deploy:
+    name: Wait for the live build (buildId == ${{ github.sha }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Poll /api/v1/health until buildId matches
+        run: |
+          set -euo pipefail
+          SHORT="${{ github.sha }}"
+          SHORT="${SHORT:0:12}"
+          for attempt in $(seq 1 60); do
+            BODY=$(curl -s --max-time 20 "$BASE/api/v1/health" || echo '{}')
+            GOT=$(echo "$BODY" | jq -r '.buildId // ""')
+            OK=$(echo "$BODY" | jq -r '.ok // false')
+            echo "attempt $attempt → buildId=$GOT ok=$OK (want $SHORT)"
+            if [ "$GOT" = "$SHORT" ] && [ "$OK" = "true" ]; then
+              echo "the ${SHORT} deployment is LIVE"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::the ${SHORT} deployment never became live"
+          exit 1
+
+  e2e:
+    name: Run the accounts e2e (throwaway, cleaned up)
+    needs: wait-for-deploy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+      - name: Install (workspaces — backend prisma generate rides postinstall)
+        run: npm ci
+      - name: The e2e (transcript at $RUNNER_TEMP/transcript.json)
+        env:
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+        run: |
+          set -euo pipefail
+          node scripts/qa/prod-accounts-e2e.mjs --base "$BASE" --out "$RUNNER_TEMP/transcript.json"
+      - name: Upload the transcript
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prod-accounts-e2e-${{ github.run_number }}
+          path: ${{ runner.temp }}/transcript.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Open an issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "Prod accounts e2e RED — run $GITHUB_RUN_NUMBER" \
+            --body "The nightly accounts e2e failed. Transcript artifact: prod-accounts-e2e-${GITHUB_RUN_NUMBER }. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            --label ci-red || true
