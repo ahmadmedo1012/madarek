@@ -36,12 +36,12 @@ step() { printf '\n\033[1m▶ %s\033[0m\n' "$1"; }
 fail() { printf '\033[31m✗ FAIL: %s\033[0m\n' "$1"; FAIL=1; }
 ok()   { printf '\033[32m✓ %s\033[0m\n' "$1"; }
 
-# 1. typecheck (frontend src tree AND the tests tree — CI runs both;
-#    R357 lesson: the base tsconfig includes src only, so a tests-only
-#    TS error (implicit any in a test helper) sailed through --fast and
-#    went red in CI's `typecheck:tests`. Never again.)
-step "tsc (frontend + tests)"
-if (cd frontend && npx tsc --noEmit -p tsconfig.json && npx tsc --noEmit -p tsconfig.test.json); then ok "tsc"; else fail "tsc"; fi
+# 1. typecheck (BOTH workspaces, src AND tests trees — CI runs all
+#    four; the R357 lesson TWICE: first the frontend tests tree, then
+#    the backend one — a backend tests-only TS error sailed through
+#    --fast exactly the same way. Never again, either workspace.)
+step "tsc (frontend + backend, src + tests)"
+if (cd frontend && npx tsc --noEmit -p tsconfig.json && npx tsc --noEmit -p tsconfig.test.json) && (cd backend && npx tsc --noEmit -p tsconfig.json && npx tsc --noEmit -p tsconfig.test.json); then ok "tsc"; else fail "tsc"; fi
 
 # 2. unit tests
 step "vitest (frontend unit)"

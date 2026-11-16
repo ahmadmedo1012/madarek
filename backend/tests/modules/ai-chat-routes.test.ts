@@ -1160,10 +1160,10 @@ describe('POST /api/v1/ai/chat — the institution daily budget (r357 L5)', () =
 describe('POST /api/v1/ai/chat — the 50+ message conversation (r357 L5)', () => {
   let baseUrl: string;
   let server: ReturnType<ReturnType<typeof createApp>['listen']>;
-  let historyFindMany: ReturnType<typeof vi.mocked>;
-  let convFindFirst: ReturnType<typeof vi.mocked>;
-  let convCreate: ReturnType<typeof vi.mocked>;
-  let msgCreate: ReturnType<typeof vi.mocked>;
+  let historyFindMany: Mock;
+  let convFindFirst: Mock;
+  let convCreate: Mock;
+  let msgCreate: Mock;
 
   const AI_ENV = {
     AI_PROVIDER: 'openai',
