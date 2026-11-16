@@ -429,6 +429,19 @@
     --_btn-shadow: none;
   }
 
+  /* R354-UI: the resting slab the variant always documented (tokens.css
+     «Label ink ON A --danger FILL … consumed by .btn.danger»). Without
+     it the label painted --danger-fg (#191918 ink) on whatever ground
+     sat behind the button: 1.19:1 on the dark paper at /__design and on
+     every confirm/delete row. Wipe stays the dark mix below. */
+  .btn.danger {
+    --_btn-bg: var(--danger);
+    --_btn-fg: var(--danger-fg);
+    --_btn-bd: var(--danger);
+    --_btn-wipe: var(--primary);
+    --_btn-wipe-fg: var(--primary-fg);
+    --_btn-shadow: none;
+  }
   [data-theme='dark'] .btn.danger {
     --_btn-wipe: color-mix(in oklab, var(--danger) 86%, var(--white));
   }
@@ -1842,6 +1855,17 @@
      --c-mint-ink #82CB99 so the foreground flips to ink #191918
      (9.10:1). R313 (D4): the brighten pair moves onto the wipe vars
      (same mixes, colour-swap grammar). ── */
+  /* R354-UI: the same missing slab — the comment above promises a
+     --success-ink ground in both themes, but only the dark foreground
+     was ever declared, so the variant rendered as ink-on-paper. */
+  .btn.success {
+    --_btn-bg: var(--success-ink);
+    --_btn-fg: var(--white);
+    --_btn-bd: var(--success-ink);
+    --_btn-wipe: var(--primary);
+    --_btn-wipe-fg: var(--primary-fg);
+    --_btn-shadow: none;
+  }
   [data-theme='dark'] .btn.success {
     --_btn-fg: var(--warm-ink);
     --_btn-wipe: color-mix(in oklab, var(--success-ink) 86%, var(--white));

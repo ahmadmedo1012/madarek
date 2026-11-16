@@ -41,6 +41,8 @@ const bps = (a.bps || '1440x900,390x844').split(',').map(s => s.split('x').map(N
 const themes = (a.themes || 'light,dark').split(',');
 const out = a.out || '/tmp/r346/overlap.json';
 const storage = a.storage || null;   /* R349 P5 — Playwright storageState for authed routes */
+const stress = a.stress === '1' || a.stress === 'true';  /* R354-UI-2 — hostile content pass (see STRESS below) */
+const fontScale = Number(a.fontscale || 0);              /* R354-UI-2 — 1.3 / 2 => html font-size 130% / 200% */
 const seedRole = a.seed || null;      /* R353 P1 — hermetic per-role session (mock API) */
 const shotsDir = a.shots || null;    /* R349 P5 — evidence PNGs (route at top per bp×theme) */
 const MIN_FRAC = Number(a.minfrac || 0.2);
@@ -50,6 +52,66 @@ const ALLOW_FILE = path.join(path.dirname(fileURLToPath(import.meta.url)), 'over
 let ALLOW = [];
 try { ALLOW = (JSON.parse(fs.readFileSync(ALLOW_FILE, 'utf8')).entries || []).map(e => e.match); } catch { ALLOW = []; }
 const allowed = (sel) => ALLOW.some(m => typeof m === 'string' && m && sel.startsWith(m));
+/* ── R354-UI-2 · STRESS — hostile content, applied in-page before the
+ * probe. A clean mock crawl only proves the happy path; the owner's
+ * complaints are the real-world shapes (long Arabic names, unbroken
+ * emails, 100-row tables, 99+ badges, a 200% zoom). Nothing here
+ * changes React state — it mutates rendered text/rows/images so the
+ * EXISTING detectors meet realistic content. */
+const STRESS = (scale) => {
+  const AR = 'الطلبة المسجّلون في برنامج الهندسة البرمجية للفصل الدراسي';
+  const LONG = 'ahmed.abdulrahman.almansouri@university-of-benghazi.edu.ly';
+  const DIGITS = '١٢٣٤٥٦٧٨٩'; /* Arabic-Indic */
+  /* The landing is a FROZEN conformance surface: its labels live inside
+     measured absolute seats, so lengthening them only fabricates overlaps
+     the art direction cannot absorb. Its data/rows/images still get
+     stressed; its type does not. */
+  const landing = !!document.querySelector('.landing');
+  let i = 0;
+  const walker = landing ? null : document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const w = walker ?? { nextNode: () => null };
+  for (let n; (n = w.nextNode());) {
+    if (!n.textContent.trim()) continue;
+    const el = n.parentElement;
+    if (!el || ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(el.tagName)) continue;
+    const t = n.textContent.trim();
+    if (/^\s*[\d١٢٣٤٥٦٧٨٩.,%$\/:-]+\s*$/.test(t)) continue; /* numeric cells: leave the numbers alone */
+    i += 1;
+    if (i % 5 === 0) n.textContent = `${t} ${AR.slice(0, 34)} — ${AR}`;
+    else if (i % 7 === 0) n.textContent = `${t} ${LONG}`;
+    else if (i % 11 === 0) n.textContent = `${t} ${DIGITS}`;
+    else if (el.matches('h1,h2,h3,.pf-page-title,.topbar-title')) n.textContent = `${t} ${AR}`;
+  }
+  /* 100+ rows: clone the last row of every table and the last few list rows */
+  for (const tb of document.querySelectorAll('tbody')) {
+    const rows = tb.querySelectorAll('tr'); if (!rows.length) continue;
+    const last = rows[rows.length - 1];
+    for (let k = 0; k < 100; k++) tb.appendChild(last.cloneNode(true));
+  }
+  for (const list of document.querySelectorAll('ul,ol,[role="list"]')) {
+    const items = list.querySelectorAll(':scope > li, :scope > [role="listitem"]');
+    if (!items.length || items.length > 60) continue;
+    const last = items[items.length - 1];
+    for (let k = 0; k < 20; k++) list.appendChild(last.cloneNode(true));
+  }
+  /* broken media + a monstrous avatar */
+  document.querySelectorAll('img').forEach((img, k) => {
+    if (k % 3 === 0) img.src = '/__stress-missing.png';
+    if (k % 9 === 0) { img.style.inlineSize = '320px'; img.style.blockSize = '320px'; }
+  });
+  /* 99+ badges on every unread chip — LEAF text only (a container whose
+     textContent is replaced loses its children and manufactures layout
+     damage that no real data could): short, childless, chip-shaped. */
+  document.querySelectorAll('[class*="badge"],[class*="count"],[class*="unread"]').forEach((el) => {
+    if (el.children.length || el.matches('input,textarea')) return;
+    const t = el.textContent.trim();
+    if (!t || t.length > 6) return;
+    el.textContent = '99+';
+  });
+  if (scale > 0) document.documentElement.style.fontSize = `${scale * 100}%`;
+  window.dispatchEvent(new Event('resize'));
+};
+
 const PROBE = () => {
   const MEDIA = __MEDIA__;
   const vw = innerWidth, vh = innerHeight, res = { text: [], media: [], fixed: [], clipped: [], hoverflow: 0 };
@@ -224,6 +286,26 @@ const PROBE = () => {
   }
   for (const p of tn) { const e = p.el, s = getComputedStyle(e); if (e.classList.contains('sr-only') || e.classList.contains('visually-hidden')) continue; /* R353 P1 — sr-only/visually-hidden are deliberate a11y hiding (the clip IS the technique), never a clipped defect — the visually-hidden twin found on /student/colleges' landmark helpers (32 phantom clips) */ if ((s.overflow !== 'visible') && e.scrollWidth > e.clientWidth + 2 && s.textOverflow !== 'ellipsis' && e.clientWidth > 0) res.clipped.push({ el: sel(e), t: p.t }); }
   res.hoverflow = Math.max(0, document.documentElement.scrollWidth - vw);
+  /* R354-UI-2 — WHICH element overflows: when the document grows past the
+   * viewport, name the widest in-flow offenders (clipped by vw, top 6), so
+   * a finding is actionable without a second debugging pass. Ignore
+   * pointer decorations and parked off-screen chrome (cursor readouts). */
+  res.overflowEls = [];
+  if (res.hoverflow > 1) {
+    for (const el of document.querySelectorAll('body *')) {
+      const s = getComputedStyle(el);
+      if (s.position === 'fixed' || s.visibility === 'hidden' || s.display === 'none') continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < 8 || r.height < 8) continue;
+      /* RTL overflows to the LEFT: the document starts scrolled to the
+       * inline start, so the offender's rect sits at negative x, not past
+       * the viewport's right edge. Both sides count. */
+      if (r.right <= vw + 1 && r.left >= -1) continue;
+      res.overflowEls.push({ el: sel(el), left: Math.round(r.left), right: Math.round(r.right), w: Math.round(r.width), of: s.overflowX });
+    }
+    res.overflowEls.sort((a, b) => b.w - a.w);
+    res.overflowEls = res.overflowEls.slice(0, 6);
+  }
   return res;
 };
 /* ── R353 P1 — the hermetic per-role seed (the pages-*.mjs method) ── */
@@ -301,6 +383,13 @@ const run = async () => {
        * more before the evidence shot so it shows DATA, not the first
        * pending frame (the first P5 run shot the directory's skeleton). */
       await p.waitForTimeout(2500);
+      if (stress) {
+        await p.evaluate(`(${STRESS.toString()})(${fontScale})`).catch(() => {});
+        await p.waitForTimeout(600);
+      } else if (fontScale) {
+        await p.evaluate((s) => { document.documentElement.style.fontSize = `${s * 100}%`; window.dispatchEvent(new Event('resize')); }, fontScale).catch(() => {});
+        await p.waitForTimeout(400);
+      }
       if (shotsDir) {
         fs.mkdirSync(shotsDir, { recursive: true });
         const slug = r.split('?')[0].split('/').filter(Boolean).join('-') || 'root';
