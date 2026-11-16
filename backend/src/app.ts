@@ -131,7 +131,7 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  * (dark #282828 / light #F6F6EE — the warm vintage paper, owner
  * decision; audits/evidence/r313/reference/digest.json); the metas and
  * the boot plate moved with it. */
-const THEME_BOOTSTRAP_SHA256 = 'jEZ9yPBzXBwMFxHwFlLFqiKKy+HtK9TOGA7FRviqIMc=';
+const THEME_BOOTSTRAP_SHA256 = 'w8MW8JWfqH8XvXZujtxAyA/pl+9DQNiEnfdWoVPa3wY=';
 /* r188: pin refreshed — the JSON-LD block now describes the INDEPENDENT
  * Madarek platform alone (WebSite node; the retired legacy university
  * `about` node is gone — the only demo-data story is the explicitly

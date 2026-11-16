@@ -402,7 +402,7 @@ describe('callProviderChain — cross-provider failover (fetch stubbed)', () => 
     expect(orBody.model).toBe('m-1'); // pinned per attempt — the models array NEVER rides a chain attempt
     expect(orBody.models).toBeUndefined();
     const orHeaders = orCall.init.headers as Record<string, string>;
-    expect(orHeaders['HTTP-Referer']).toBe('https://madarek-nine.vercel.app');
+    expect(orHeaders['HTTP-Referer']).toBe('https://madarek-app.vercel.app');
     expect(orHeaders['X-Title']).toBe('Madarek');
   });
 
