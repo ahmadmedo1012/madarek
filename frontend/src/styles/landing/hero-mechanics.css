@@ -436,6 +436,10 @@
   font-size: var(--fs-body);
   font-weight: 500;
   line-height: 1.35;
+  /* R354-UI: the REST ink stays the measured Heron seat (rgb(250,54,0),
+     3.46:1 — a documented AA-large/link exception the hero spec froze).
+     Changing it would trade a conformance seat for a token, so only the
+     chrome below (preloader) and the error-sheet CTAs were re-seated. */
   color: var(--accent);
   text-underline-offset: 0.35em;
   text-decoration: underline transparent;
