@@ -133,11 +133,18 @@ try {
   });
 
   await step('activation: the outbox carries the verify link; the token claims; the SPA page exists', async () => {
-    const row = await prisma.mailOutbox.findFirst({
-      where: { to: studentEmail, template: 'verify-email' },
-      orderBy: { createdAt: 'desc' },
-      select: { html: true, subject: true },
-    });
+    /* The registration's mail events are fire-and-forget AFTER the 201 —
+     * on serverless the row can land a beat later (measured: +0.5 s on
+     * the live deployment). Poll honestly for up to 8 s before failing. */
+    let row = null;
+    for (let i = 0; i < 32 && !row; i++) {
+      row = await prisma.mailOutbox.findFirst({
+        where: { to: studentEmail, template: 'verify-email' },
+        orderBy: { createdAt: 'desc' },
+        select: { html: true, subject: true },
+      });
+      if (!row) await new Promise((r) => setTimeout(r, 250));
+    }
     must(row, 'no verify-email outbox row for the throwaway');
     const m = /verify-email\?token=([A-Za-z0-9_-]+)/.exec(row.html);
     must(m, 'verify token not found in the outbox html');
@@ -207,17 +214,26 @@ try {
     return 'assisted reset ok';
   });
 
-  await step('phone on profile: four Libyan formats fold to one E.164 key', async () => {
+  await step('phone on profile: four Libyan formats fold to one searchable key', async () => {
+    /* The self view never exposes the raw normalized column (it is a
+     * search index, not a display surface — phones.ts). The honest
+     * API-visible proof: the Arabic-Indic form round-trips as ASCII
+     * digits, every format PATCHes cleanly, and the ONE-key fold is
+     * proven by the SEARCH arm (the next step finds the student from a
+     * differently-formatted query). */
     await apiOk('/me/profile', {
       method: 'PATCH', token: ctx.accessToken,
       body: { studentPhone: '٠٩١٢٣٤٥٦٧٨' }, // Arabic-Indic digits
     });
+    let me = await apiOk('/me/profile', { token: ctx.accessToken });
+    let phone = me?.student?.profile?.phone;
+    must(phone?.access === 'VISIBLE' && phone?.display === '0912345678', `arabic-digit display=${JSON.stringify(phone)}`);
     await apiOk('/me/profile', { method: 'PATCH', token: ctx.accessToken, body: { studentPhone: '+218 91 234 5678' } });
     await apiOk('/me/profile', { method: 'PATCH', token: ctx.accessToken, body: { studentPhone: '00218-912345678' } });
-    const me = await apiOk('/me/profile', { token: ctx.accessToken });
-    const norm = me?.student?.profile?.studentPhoneNormalized ?? me?.student?.studentPhoneNormalized ?? null;
-    must(norm === '+218912345678', `normalized=${norm}`);
-    return 'studentPhoneNormalized=+218912345678';
+    me = await apiOk('/me/profile', { token: ctx.accessToken });
+    phone = me?.student?.profile?.phone;
+    must(phone?.display === '00218-912345678', `final display=${JSON.stringify(phone)}`);
+    return 'arabic-digit fold → 0912345678; the E.164 fold is the search arm (next step)';
   });
 
   await step('DOB self-edit + read-back', async () => {
