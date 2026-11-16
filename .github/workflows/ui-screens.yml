@@ -58,10 +58,33 @@ jobs:
           distribution: temurin
           java-version: "17"
       - uses: gradle/actions/setup-gradle@v4
+      - name: Configure Android SDK
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          if [ ! -d "$SDK_ROOT" ]; then
+            for candidate in "$HOME/Android/Sdk" /opt/android-sdk /usr/lib/android-sdk; do
+              if [ -d "$candidate" ]; then SDK_ROOT="$candidate"; break; fi
+            done
+          fi
+          test -d "$SDK_ROOT"
+          for dir in "$SDK_ROOT"/cmdline-tools/*/bin; do
+            if [ -x "$dir/sdkmanager" ]; then
+              echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+              echo "$dir" >> "$GITHUB_PATH"
+              echo "$SDK_ROOT/platform-tools" >> "$GITHUB_PATH"
+              break
+            fi
+          done
+          command -v sdkmanager
       - name: Install Android SDK packages
         run: |
           set -euo pipefail
-          sdkmanager --install "platform-tools" "platforms;android-37" "build-tools;37.0.0" "ndk;27.1.12297006"
+          set +o pipefail
+          yes | sdkmanager --sdk_root="$ANDROID_HOME" --licenses >/dev/null || true
+          set -o pipefail
+          sdkmanager --sdk_root="$ANDROID_HOME" --install \
+            "platform-tools" "platforms;android-37.0" "build-tools;37.0.0" "ndk;27.1.12297006"
       - name: Install mobile dependencies and generate Android project
         working-directory: apps/mobile
         run: |
