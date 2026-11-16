@@ -1,0 +1,72 @@
+# R358 role capture: owner; selected appearance is set through account settings.
+appId: ly.madarek.mobile
+name: "R358 screens — owner"
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: "welcome-title"
+    timeout: 120000
+- scrollUntilVisible:
+    element:
+      id: "welcome-cta"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: "welcome-cta"
+- extendedWaitUntil:
+    visible:
+      id: "login-email"
+    timeout: 30000
+- tapOn:
+    id: "login-email"
+- inputText: "owner@test.ly"
+- tapOn:
+    id: "login-password"
+- inputText: "12345678"
+- tapOn:
+    id: "login-submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab-dashboard"
+    timeout: 120000
+- openLink: "madarek://settings"
+- extendedWaitUntil:
+    visible: "الإعدادات"
+    timeout: 30000
+- tapOn: "${THEME_LABEL}"
+- openLink: "madarek://owner/dashboard"
+- extendedWaitUntil:
+    visible:
+      id: "role-tab-bar"
+    timeout: 30000
+- takeScreenshot: "screens/owner-01-dashboard"
+- tapOn:
+    id: "tab-users"
+- extendedWaitUntil:
+    visible:
+      id: "tab-users"
+    timeout: 30000
+- takeScreenshot: "screens/owner-02-users"
+- tapOn:
+    id: "tab-realtime"
+- extendedWaitUntil:
+    visible:
+      id: "tab-realtime"
+    timeout: 30000
+- takeScreenshot: "screens/owner-03-realtime"
+- tapOn:
+    id: "tab-notifications"
+- extendedWaitUntil:
+    visible:
+      id: "tab-notifications"
+    timeout: 30000
+- takeScreenshot: "screens/owner-04-notifications"
+- tapOn:
+    id: "tab-governance"
+- extendedWaitUntil:
+    visible:
+      id: "tab-governance"
+    timeout: 30000
+- takeScreenshot: "screens/owner-05-governance"

@@ -1,0 +1,72 @@
+# R358 role capture: registrar; selected appearance is set through account settings.
+appId: ly.madarek.mobile
+name: "R358 screens — registrar"
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: "welcome-title"
+    timeout: 120000
+- scrollUntilVisible:
+    element:
+      id: "welcome-cta"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: "welcome-cta"
+- extendedWaitUntil:
+    visible:
+      id: "login-email"
+    timeout: 30000
+- tapOn:
+    id: "login-email"
+- inputText: "registrar@test.ly"
+- tapOn:
+    id: "login-password"
+- inputText: "12345678"
+- tapOn:
+    id: "login-submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab-dashboard"
+    timeout: 120000
+- openLink: "madarek://settings"
+- extendedWaitUntil:
+    visible: "الإعدادات"
+    timeout: 30000
+- tapOn: "${THEME_LABEL}"
+- openLink: "madarek://admin/dashboard"
+- extendedWaitUntil:
+    visible:
+      id: "role-tab-bar"
+    timeout: 30000
+- takeScreenshot: "screens/registrar-01-dashboard"
+- tapOn:
+    id: "tab-faculties"
+- extendedWaitUntil:
+    visible:
+      id: "tab-faculties"
+    timeout: 30000
+- takeScreenshot: "screens/registrar-02-faculties"
+- tapOn:
+    id: "tab-students"
+- extendedWaitUntil:
+    visible:
+      id: "tab-students"
+    timeout: 30000
+- takeScreenshot: "screens/registrar-03-students"
+- tapOn:
+    id: "tab-teachers"
+- extendedWaitUntil:
+    visible:
+      id: "tab-teachers"
+    timeout: 30000
+- takeScreenshot: "screens/registrar-04-teachers"
+- tapOn:
+    id: "tab-reports"
+- extendedWaitUntil:
+    visible:
+      id: "tab-reports"
+    timeout: 30000
+- takeScreenshot: "screens/registrar-05-reports"

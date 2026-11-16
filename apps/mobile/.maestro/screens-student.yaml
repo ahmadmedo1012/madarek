@@ -1,17 +1,6 @@
-# R357-UI — A5 evidence: walk the app's real screens on the CI emulator.
-#
-# The mobile shell (top bar, tab bar, safe areas, sheets, empty/loading
-# states, font scale) had never been SEEN by anyone: no emulator runs on
-# the author's machine, and unit tests cannot see layout. This flow walks
-# the student's five tabs and captures one screenshot per stop, so the
-# screens come back as CI artifacts (a contact sheet is cut from them).
-#
-# Anchors are testIDs only — the r349-P5b lesson: Arabic TEXT anchors do
-# not resolve reliably in Maestro on Android, resource-ids do. The login
-# uses the seeded student account against the production API the release
-# build bakes in (the same path smoke-alive.yaml already walks).
+# R358 role capture: student; selected appearance is set through account settings.
 appId: ly.madarek.mobile
-name: "R357 screens — the student shell"
+name: "R358 screens — student"
 ---
 - launchApp:
     clearState: true
@@ -40,35 +29,44 @@ name: "R357 screens — the student shell"
     id: "login-submit"
 - extendedWaitUntil:
     visible:
-      id: "tab-courses"
+      id: "tab-dashboard"
     timeout: 120000
-# 01 — dashboard (the home tab is selected after login)
-- takeScreenshot: screens/01-dashboard
+- openLink: "madarek://settings"
+- extendedWaitUntil:
+    visible: "الإعدادات"
+    timeout: 30000
+- tapOn: "${THEME_LABEL}"
+- openLink: "madarek://student/dashboard"
+- extendedWaitUntil:
+    visible:
+      id: "role-tab-bar"
+    timeout: 30000
+- takeScreenshot: "screens/student-01-dashboard"
 - tapOn:
     id: "tab-courses"
 - extendedWaitUntil:
     visible:
       id: "tab-courses"
     timeout: 30000
-- takeScreenshot: screens/02-courses
+- takeScreenshot: "screens/student-02-courses"
 - tapOn:
     id: "tab-ai"
 - extendedWaitUntil:
     visible:
       id: "tab-ai"
     timeout: 30000
-- takeScreenshot: screens/03-ai
+- takeScreenshot: "screens/student-03-ai"
 - tapOn:
     id: "tab-alerts"
 - extendedWaitUntil:
     visible:
       id: "tab-alerts"
     timeout: 30000
-- takeScreenshot: screens/04-alerts
+- takeScreenshot: "screens/student-04-alerts"
 - tapOn:
     id: "tab-profile"
 - extendedWaitUntil:
     visible:
       id: "tab-profile"
     timeout: 30000
-- takeScreenshot: screens/05-profile
+- takeScreenshot: "screens/student-05-profile"

@@ -20,10 +20,12 @@ on:
         description: "build-android.yml run id to take the APK from (blank = latest successful)"
         required: false
         default: ""
-      flow:
-        description: "Maestro flow under apps/mobile/.maestro"
-        required: false
-        default: "screens-student.yaml"
+      role:
+        description: "Role to capture (all runs the five-role matrix)"
+        type: choice
+        options: [all, student, teacher, registrar, quality, owner]
+        required: true
+        default: all
 
 permissions:
   contents: read
@@ -35,7 +37,33 @@ concurrency:
 
 jobs:
   screens:
-    name: Walk the shell and capture screens
+    name: "Capture ${{ matrix.role }} — ${{ matrix.profile }}"
+    if: ${{ inputs.role == 'all' || inputs.role == matrix.role }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - { role: student, profile: light-standard, theme: light, theme_label: "فاتح", font_scale: '1.0', viewport: standard }
+          - { role: student, profile: dark-standard, theme: dark, theme_label: "داكن", font_scale: '1.0', viewport: standard }
+          - { role: student, profile: light-a11y-small, theme: light, theme_label: "فاتح", font_scale: '1.3', viewport: small-360x640 }
+          - { role: student, profile: dark-a11y-small, theme: dark, theme_label: "داكن", font_scale: '1.3', viewport: small-360x640 }
+          - { role: teacher, profile: light-standard, theme: light, theme_label: "فاتح", font_scale: '1.0', viewport: standard }
+          - { role: teacher, profile: dark-standard, theme: dark, theme_label: "داكن", font_scale: '1.0', viewport: standard }
+          - { role: teacher, profile: light-a11y-small, theme: light, theme_label: "فاتح", font_scale: '1.3', viewport: small-360x640 }
+          - { role: teacher, profile: dark-a11y-small, theme: dark, theme_label: "داكن", font_scale: '1.3', viewport: small-360x640 }
+          - { role: registrar, profile: light-standard, theme: light, theme_label: "فاتح", font_scale: '1.0', viewport: standard }
+          - { role: registrar, profile: dark-standard, theme: dark, theme_label: "داكن", font_scale: '1.0', viewport: standard }
+          - { role: registrar, profile: light-a11y-small, theme: light, theme_label: "فاتح", font_scale: '1.3', viewport: small-360x640 }
+          - { role: registrar, profile: dark-a11y-small, theme: dark, theme_label: "داكن", font_scale: '1.3', viewport: small-360x640 }
+          - { role: quality, profile: light-standard, theme: light, theme_label: "فاتح", font_scale: '1.0', viewport: standard }
+          - { role: quality, profile: dark-standard, theme: dark, theme_label: "داكن", font_scale: '1.0', viewport: standard }
+          - { role: quality, profile: light-a11y-small, theme: light, theme_label: "فاتح", font_scale: '1.3', viewport: small-360x640 }
+          - { role: quality, profile: dark-a11y-small, theme: dark, theme_label: "داكن", font_scale: '1.3', viewport: small-360x640 }
+          - { role: owner, profile: light-standard, theme: light, theme_label: "فاتح", font_scale: '1.0', viewport: standard }
+          - { role: owner, profile: dark-standard, theme: dark, theme_label: "داكن", font_scale: '1.0', viewport: standard }
+          - { role: owner, profile: light-a11y-small, theme: light, theme_label: "فاتح", font_scale: '1.3', viewport: small-360x640 }
+          - { role: owner, profile: dark-a11y-small, theme: dark, theme_label: "داكن", font_scale: '1.3', viewport: small-360x640 }
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -95,11 +123,15 @@ jobs:
           sudo udevadm trigger --name-match=kvm
           ls -l /dev/kvm
 
-      - name: Walk the shell (API 34, 1080×2340, dark and light)
+      - name: Walk the selected role and capture every tab
         uses: reactivecircus/android-emulator-runner@v2
         env:
           APK: ${{ runner.temp }}/apk/Madarek-x86_64.apk
-          FLOW: apps/mobile/.maestro/${{ inputs.flow }}
+          FLOW: apps/mobile/.maestro/screens-${{ matrix.role }}.yaml
+          VIEWPORT: ${{ matrix.viewport }}
+          THEME: ${{ matrix.theme }}
+          THEME_LABEL: ${{ matrix.theme_label }}
+          FONT_SCALE: ${{ matrix.font_scale }}
         with:
           api-level: 34
           arch: x86_64
@@ -115,12 +147,21 @@ jobs:
             adb wait-for-device
             adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
             adb shell wm dismiss-keyguard || true
+            adb shell settings put system font_scale "$FONT_SCALE"
+            if [ "$VIEWPORT" = small-360x640 ]; then
+              adb shell wm size 360x640
+              adb shell wm density 160
+            fi
             adb install -r "$APK"
             adb shell am start -n ly.madarek.mobile/.MainActivity
             sleep 8
+            mkdir -p apps/mobile/build/screens
+            printf 'role=%s\ntheme=%s\nfont_scale=%s\nviewport=%s\n' \
+              '${{ matrix.role }}' "$THEME" "$FONT_SCALE" "$VIEWPORT" \
+              > apps/mobile/build/screens/profile.txt
             # the flow writes into the CWD; keep it inside the workspace so
             # the upload step can find the shots
-            maestro test "$FLOW" --test-output-dir apps/mobile/build/screens \
+            maestro test "$FLOW" -e THEME_LABEL="$THEME_LABEL" --test-output-dir apps/mobile/build/screens \
               || { echo "::warning::the walk ended early — capturing what exists"; }
             adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
             adb logcat -d > apps/mobile/build/screens/logcat.log
@@ -130,7 +171,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ui-screens-${{ github.run_number }}
+          name: ui-screens-${{ github.run_number }}-${{ matrix.role }}-${{ matrix.profile }}
           path: apps/mobile/build/screens
           if-no-files-found: warn
           retention-days: 14
