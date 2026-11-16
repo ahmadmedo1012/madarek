@@ -438,13 +438,38 @@ export const OWNER_NAV: NavGroup[] = [
   },
 ];
 
-export const NAV_BY_ROLE: Record<AppRole, NavGroup[]> = {
-  STUDENT: STUDENT_NAV,
-  TEACHER: TEACHER_NAV,
-  ADMIN: ADMIN_NAV,
-  QUALITY: QUALITY_NAV,
-  OWNER: OWNER_NAV,
+const ALWAYS_VISIBLE: Record<AppRole, string[]> = {
+  STUDENT: ['/student/dashboard', '/student/courses', '/student/schedule', '/student/results', '/student/library', '/student/ai', '/student/messages', '/student/alerts'],
+  TEACHER: ['/teacher/dashboard', '/teacher/schedule', '/teacher/students', '/teacher/grades', '/teacher/materials', '/teacher/intelligence', '/teacher/messages', '/teacher/alerts'],
+  ADMIN: ['/admin/dashboard', '/admin/teachers', '/admin/students', '/admin/faculties', '/admin/courses', '/admin/reports', '/admin/alerts', '/admin/settings'],
+  QUALITY: ['/quality/dashboard', '/quality/courses', '/quality/engagement', '/quality/curriculum', '/quality/reports', '/quality/exam-moderation', '/quality/professors', '/quality/alerts'],
+  OWNER: ['/owner/dashboard', '/owner/users', '/owner/realtime', '/owner/institutions', '/owner/activity', '/owner/notifications', '/owner/alerts', '/owner/governance'],
 };
+
+function compactRoleNav(role: AppRole, groups: NavGroup[]): NavGroup[] {
+  const items = groups.flatMap((group) => group.items);
+  const spine = ALWAYS_VISIBLE[role].map((to) => {
+    const item = items.find((candidate) => candidate.to === to);
+    if (!item) throw new Error(`${role} navigation spine is missing ${to}`);
+    return item;
+  });
+  const visible = new Set(spine.map((item) => item.to));
+  const overflow = items.filter((item) => !visible.has(item.to));
+  groups.splice(0, groups.length, ...[
+    { label: groups[0].label, items: spine },
+    ...(overflow.length ? [{ label: 'المزيد', collapsed: true, items: overflow }] : []),
+  ]);
+  return groups;
+}
+
+export const NAV_BY_ROLE: Record<AppRole, NavGroup[]> = {
+  STUDENT: compactRoleNav('STUDENT', STUDENT_NAV),
+  TEACHER: compactRoleNav('TEACHER', TEACHER_NAV),
+  ADMIN: compactRoleNav('ADMIN', ADMIN_NAV),
+  QUALITY: compactRoleNav('QUALITY', QUALITY_NAV),
+  OWNER: compactRoleNav('OWNER', OWNER_NAV),
+};
+
 
 /* ───────────────────────────────────────────────────────────────────
    ROLE_HOME — the single map for guard redirects (ProtectedRoute,
