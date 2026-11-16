@@ -21,6 +21,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: tick
@@ -54,3 +55,29 @@ jobs:
           done
           echo "::error::tick did not answer 200 after 3 attempts"
           exit 1
+
+      # r357 L5 — issue-on-all-providers-down: /status's ai block
+      # carries the cross-instance verdict (allProvidersDownSince, ISO
+      # or null — telemetry-backed, see lib/ai/provider-health.ts).
+      # When every provider has been down > 5 min, open ONE GitHub
+      # issue (deduped by the ai-providers-down label + open state).
+      - name: Open an issue if every AI provider is down
+        if: ${{ vars.TICK_TARGET_URL != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          DOWN_SINCE=$(curl -sS --max-time 30 "${{ vars.TICK_TARGET_URL }}/api/v1/status" \
+            | jq -r '.data.ai.allProvidersDownSince // empty' 2>/dev/null || true)
+          if [ -z "$DOWN_SINCE" ]; then
+            echo "AI providers healthy (or verdict unreadable) — no issue"
+            exit 0
+          fi
+          if gh issue list --repo "$GITHUB_REPOSITORY" --label ai-providers-down --state open --json number --jq 'length' | grep -qv '^0$'; then
+            echo "an ai-providers-down issue is already open — not duplicating"
+            exit 0
+          fi
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "كل مزوّدي الذكاء الاصطناعي متوقفون (منذ $DOWN_SINCE)" \
+            --body "أرسلت \`/status\`_verdict: allProvidersDownSince=$DOWN_SINCE\`. راجع حدود الاستخدام المجانية (Gemini/Groq) في \`docs/HOSTING.md\`. يُغلق هذا الإصدار تلقائيًا عندما يتعافى المزوّدون." \
+            --label ai-providers-down || true

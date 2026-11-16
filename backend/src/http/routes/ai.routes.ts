@@ -43,8 +43,10 @@ import {
 } from '../../lib/ai/providers.js';
 import {
   consumeDailyAskQuota,
+  consumeInstitutionAskQuota,
   recordMonthlyUsage,
   AI_DAILY_LIMIT_ENV,
+  AI_INST_DAILY_LIMIT_ENV,
   type AiQuotaState,
 } from '../../lib/ai/quota.js';
 import {
@@ -745,6 +747,26 @@ async function recordBudgetBestEffort(tokens: number): Promise<void> {
   }
 }
 
+/* r357 L5 — the per-INSTITUTION daily budget, the same fail-open
+ * ruling: a counter outage degrades to the standing bounds (per-user
+ * quota + rate limiter), never a chat outage. */
+async function consumeInstitutionQuotaBestEffort(institutionId: string): Promise<AiQuotaState> {
+  try {
+    return await consumeInstitutionAskQuota(prisma, institutionId);
+  } catch (err) {
+    logger.warn(
+      { err },
+      `AI institution quota store unavailable — failing OPEN (${AI_INST_DAILY_LIMIT_ENV} cost control degraded; per-user quota still bounds)`,
+    );
+    return { allowed: true, used: 0, remaining: 0, limit: 0 };
+  }
+}
+
+/** The honest Arabic 429 body for a spent INSTITUTION daily budget
+ * (the campus's whole day is spent — the FE renders it verbatim). */
+const institutionQuotaMessage = (limit: number): string =>
+  `وصلت مؤسّستك الحدّ اليوميّ لأسئلة المساعد (${limit} سؤالًا) — عُد غدًا أو تواصل مع إدارة المؤسّسة.`;
+
 /** The honest Arabic 429 body for a spent daily quota (the FE renders
  * it verbatim in the «وصلتَ حدّ اليوم» state card). */
 const dailyQuotaMessage = (limit: number): string =>
@@ -1124,6 +1146,17 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
     const quota = await consumeQuotaBestEffort(userId);
     if (!quota.allowed) {
       throw AppError.tooMany(dailyQuotaMessage(quota.limit));
+    }
+    /* r357 L5 — the per-INSTITUTION daily budget (default 1000): one
+     * campus cannot eat the platform's whole free tier while another
+     * is mid-lesson. Institutional context is REQUIRED for students/
+     * teachers (requireChatInstitution above); an OWNER/platform chat
+     * has no institution row — only the per-user + month bounds apply. */
+    if (chatInstitutionId) {
+      const instQuota = await consumeInstitutionQuotaBestEffort(chatInstitutionId);
+      if (!instQuota.allowed) {
+        throw AppError.tooMany(institutionQuotaMessage(instQuota.limit));
+      }
     }
 
     /* P4 mode switch: openai mode (or R353 C2 chain mode) loads the

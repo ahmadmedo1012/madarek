@@ -187,3 +187,72 @@ describe('recordMonthlyUsage (fake store)', () => {
     });
   });
 });
+
+/* ════════════════════════════════════════════════════════════════════
+   r357 L5 — the per-INSTITUTION daily ask budget
+   ════════════════════════════════════════════════════════════════════ */
+
+import {
+  AI_INST_DAILY_LIMIT_DEFAULT,
+  AI_INST_DAILY_LIMIT_MAX,
+  consumeInstitutionAskQuota,
+  parseAiInstDailyLimit,
+  type AiInstQuotaStore,
+} from '../../src/lib/ai/quota.js';
+
+describe('parseAiInstDailyLimit (r357 L5 — defensive AI_INST_DAILY_LIMIT_DEFAULT parse)', () => {
+  it('undefined / garbage / zero / negative → the default 1000', () => {
+    for (const raw of [undefined, '', 'abc', '0', '-5']) {
+      expect(parseAiInstDailyLimit(raw)).toBe(AI_INST_DAILY_LIMIT_DEFAULT);
+    }
+  });
+  it('a valid value passes; above the clamp it caps at 10000', () => {
+    expect(parseAiInstDailyLimit('250')).toBe(250);
+    expect(parseAiInstDailyLimit(String(AI_INST_DAILY_LIMIT_MAX + 999))).toBe(AI_INST_DAILY_LIMIT_MAX);
+  });
+  it('the default is GENEROUS vs. the per-user 25 (a campus of 40 seats × 25 asks must not trip it)', () => {
+    expect(AI_INST_DAILY_LIMIT_DEFAULT).toBeGreaterThanOrEqual(40 * AI_DAILY_LIMIT_DEFAULT);
+  });
+});
+
+function fakeInstQuotaStore(seed: { dayKey: string; used: number } | null) {
+  let row = seed;
+  const store: AiInstQuotaStore = {
+    aiInstitutionQuota: {
+      async updateMany(args) {
+        if (row && row.dayKey !== args.where.dayKey.not) {
+          row = { ...row, dayKey: args.data.dayKey, used: args.data.used };
+          return { count: 1 };
+        }
+        return { count: 0 };
+      },
+      async upsert(args) {
+        if (!row) row = { ...args.create };
+        else row = { ...row, used: row.used + 1 };
+        return { used: row.used };
+      },
+    },
+  };
+  return { store, row: () => row };
+}
+
+describe('consumeInstitutionAskQuota (fake store — the per-user law, per campus)', () => {
+  it('a fresh institution counts from 1 and is allowed', async () => {
+    const f = fakeInstQuotaStore(null);
+    const s = await consumeInstitutionAskQuota(f.store, 'inst-1', { now: NOW, limit: 3 });
+    expect(s).toEqual({ allowed: true, used: 1, remaining: 2, limit: 3 });
+    expect(f.row()).toMatchObject({ institutionId: 'inst-1', dayKey: TODAY, used: 1 });
+  });
+
+  it('a stale-day row is CAS-reset BEFORE the increment (the roll-over)', async () => {
+    const f = fakeInstQuotaStore({ dayKey: '2026-10-28', used: 999 });
+    const s = await consumeInstitutionAskQuota(f.store, 'inst-1', { now: NOW, limit: 3 });
+    expect(s).toEqual({ allowed: true, used: 1, remaining: 2, limit: 3 });
+  });
+
+  it('over the limit → allowed:false with the honest remaining:0 (a campus cannot eat the platform)', async () => {
+    const f = fakeInstQuotaStore({ dayKey: TODAY, used: 3 });
+    const s = await consumeInstitutionAskQuota(f.store, 'inst-1', { now: NOW, limit: 3 });
+    expect(s).toEqual({ allowed: false, used: 4, remaining: 0, limit: 3 });
+  });
+});

@@ -437,17 +437,32 @@ export class AiProviderBreakers {
     return now - s.openedAt < s.cooldownMs ? 'open' : 'half-open';
   }
 
-  /** A provider failure — opens the breaker at the threshold. */
-  recordFailure(id: string, now: number): void {
+  /** A provider failure — opens the breaker at the threshold. r357 L5:
+   * a failure carrying the provider's own Retry-After (a 429) opens
+   * with cooldown = max(jittered default, Retry-After) — the chain
+   * skips the provider until the SERVER said it may be asked again. */
+  recordFailure(id: string, now: number, retryAfterMs?: number): void {
     const s =
       this.states.get(id) ??
       ({ consecutiveFailures: 0, openedAt: null, cooldownMs: this.config.cooldownMs } satisfies BreakerState);
     s.consecutiveFailures += 1;
     if (s.consecutiveFailures >= this.config.threshold) {
       s.openedAt = now;
-      s.cooldownMs = this.jitteredCooldown();
+      const base = this.jitteredCooldown();
+      s.cooldownMs = retryAfterMs !== undefined ? Math.max(base, retryAfterMs) : base;
     }
     this.states.set(id, s);
+  }
+
+  /** r357 L5 — the in-process quota/health view /status exposes (NO
+   * secrets: ids, verdicts, and the remaining cooldown only). */
+  snapshot(now: number = Date.now()): Record<string, { verdict: BreakerVerdict; cooldownRemainingMs: number }> {
+    const out: Record<string, { verdict: BreakerVerdict; cooldownRemainingMs: number }> = {};
+    for (const [id, s] of this.states) {
+      const verdict = this.consult(id, now);
+      out[id] = { verdict, cooldownRemainingMs: s.openedAt === null ? 0 : Math.max(0, s.cooldownMs - (now - s.openedAt)) };
+    }
+    return out;
   }
 
   /** A provider success — the provider is healthy again (closed). */
@@ -625,8 +640,19 @@ export async function runProviderChain<T>(
     if (answered !== null) return answered;
     // The provider was ATTEMPTED and did not answer → a breaker
     // failure. (Pre-empted-before-attempt and breaker-skipped are
-    // NOT provider failures — see the runner header.)
-    if (attempted) breakers.recordFailure(spec.id, now());
+    // NOT provider failures — see the runner header.) r357 L5: a
+    // 429's Retry-After rides the failure — the breaker honors the
+    // provider's own word over the generic cooldown.
+    if (attempted) {
+      const retryAfter = lastError instanceof AiProviderError ? lastError.retryAfterMs : undefined;
+      if (retryAfter !== undefined) {
+        log(
+          { provider: spec.id, retryAfterMs: retryAfter },
+          'AI chain: rate-limited with Retry-After — breaker cooldown honors the provider',
+        );
+      }
+      breakers.recordFailure(spec.id, now(), retryAfter);
+    }
   }
 
   if (lastError !== undefined) throw lastError;

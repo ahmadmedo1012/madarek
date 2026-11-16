@@ -36,6 +36,12 @@ vi.mock('../../src/db.js', () => {
     enrollment: { findMany: vi.fn() },
     courseOffering: { findMany: vi.fn() },
     operationalAlert: { create: vi.fn() },
+    /* r357 L5 — the quota stores (per-user + per-institution). Default
+     * vi.fn()s return undefined → the consume helpers throw → the
+     * best-effort wrappers FAIL OPEN (the historical test behavior).
+     * The institution-gate test provides real shapes. */
+    aiQuota: { updateMany: vi.fn(), upsert: vi.fn() },
+    aiInstitutionQuota: { updateMany: vi.fn(), upsert: vi.fn() },
     $queryRaw: vi.fn(),
   };
   p.$transaction = vi.fn(async (fn: (tx: unknown) => Promise<unknown>) => fn(p));
@@ -1078,5 +1084,70 @@ describe('GET/DELETE /api/v1/ai/conversations* — institution scoping (r179)', 
       where: { id: 'conv-scoped-1', userId: STUDENT_ID, institutionId: INSTITUTION_ID },
     });
     expect(convDelete).toHaveBeenCalledWith({ where: { id: 'conv-scoped-1' } });
+  });
+});
+
+/* ════════════════════════════════════════════════════════════════════
+   r357 L5 — the per-INSTITUTION daily budget gate (route level)
+   ════════════════════════════════════════════════════════════════════ */
+
+describe('POST /api/v1/ai/chat — the institution daily budget (r357 L5)', () => {
+  let baseUrl: string;
+  let server: ReturnType<ReturnType<typeof createApp>['listen']>;
+
+  beforeAll(() => {
+    ({ server, baseUrl } = startServer(createApp()));
+  });
+  afterAll(async () => {
+    await closeServer(server);
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(prisma.membership.findFirst).mockResolvedValue({ institutionId: INSTITUTION_ID } as never);
+    vi.mocked(prisma.studentMastery.findMany).mockResolvedValue([] as never);
+    vi.mocked(prisma.enrollment.findMany).mockResolvedValue([] as never);
+    // The per-user quota allows (used 1 of 25).
+    vi.mocked(prisma.aiQuota.upsert).mockResolvedValue({ used: 1 } as never);
+    vi.mocked(prisma.aiQuota.updateMany).mockResolvedValue({ count: 0 } as never);
+  });
+
+  it('an over-budget INSTITUTION gets the honest campus 429 BEFORE any provider/DB write (failing-before: this gate did not exist)', async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    vi.mocked(prisma.aiInstitutionQuota.updateMany).mockResolvedValue({ count: 0 } as never);
+    // The campus already spent its day (default limit 1000).
+    vi.mocked(prisma.aiInstitutionQuota.upsert).mockResolvedValue({ used: 1_001 } as never);
+
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${signAccessToken(STUDENT_ID, 'STUDENT', INSTITUTION_ID)}` },
+      body: chatBody('سؤال داخل حرم مستنفد'),
+    });
+    expect(res.status).toBe(429);
+    const body = (await res.json()) as { error?: { message?: string } };
+    expect(body.error?.message).toContain('مؤسّستك');
+    // Nothing was written — the conversation never started.
+    expect(prisma.aiConversation.create).not.toHaveBeenCalled();
+    expect(prisma.aiMessage.create).not.toHaveBeenCalled();
+    // The CAS roll-over ran with TODAY's key (the fake store's contract).
+    expect(vi.mocked(prisma.aiInstitutionQuota.updateMany).mock.calls[0]?.[0]).toMatchObject({
+      where: { institutionId: INSTITUTION_ID, dayKey: { not: today } },
+    });
+  });
+
+  it('a campus UNDER budget chats normally (the gate never bites the healthy path)', async () => {
+    vi.mocked(prisma.aiInstitutionQuota.updateMany).mockResolvedValue({ count: 0 } as never);
+    vi.mocked(prisma.aiInstitutionQuota.upsert).mockResolvedValue({ used: 42 } as never);
+    vi.mocked(prisma.aiConversation.create).mockResolvedValue({ id: 'conv-ok', userId: STUDENT_ID, title: 'س', createdAt: new Date(0) } as never);
+    vi.mocked(prisma.aiMessage.create).mockResolvedValue({ id: 'msg-ok', content: 'ردّ', tokens: 0 } as never);
+    vi.mocked(prisma.aiTelemetry.create).mockResolvedValue({} as never);
+
+    const res = await fetch(`${baseUrl}/api/v1/ai/chat`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${signAccessToken(STUDENT_ID, 'STUDENT', INSTITUTION_ID)}` },
+      body: chatBody('سؤال داخل ميزانية الحرم'),
+    });
+    expect(res.status).toBe(200);
+    expect(prisma.aiConversation.create).toHaveBeenCalled();
   });
 });

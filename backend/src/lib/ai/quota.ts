@@ -141,3 +141,66 @@ export async function recordMonthlyUsage(
     update: { usedTokens: { increment: tokens } },
   });
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   r357 L5 — the per-INSTITUTION daily ask budget
+   ════════════════════════════════════════════════════════════════════ */
+
+/**
+ * The default per-institution daily ask quota. Generous vs. the
+ * per-user 25 (a demo-day campus with 40 seats × 25 asks = 1000 — the
+ * institution cap must not bite before the per-user caps already
+ * did); it exists to stop ONE campus from eating the platform's whole
+ * free tier while another campus is mid-lesson. Clamped 1..10000.
+ */
+export const AI_INST_DAILY_LIMIT_DEFAULT = 1_000;
+export const AI_INST_DAILY_LIMIT_MAX = 10_000;
+export const AI_INST_DAILY_LIMIT_ENV = 'AI_INST_DAILY_LIMIT_DEFAULT';
+
+/** Parse AI_INST_DAILY_LIMIT_DEFAULT defensively (the per-user law). */
+export function parseAiInstDailyLimit(raw: string | undefined): number {
+  const n = Number.parseInt(raw ?? '', 10);
+  if (!Number.isFinite(n) || n < 1) return AI_INST_DAILY_LIMIT_DEFAULT;
+  return Math.min(n, AI_INST_DAILY_LIMIT_MAX);
+}
+
+/** The structural Prisma subset the institution quota needs. */
+export interface AiInstQuotaStore {
+  aiInstitutionQuota: {
+    updateMany(args: {
+      where: { institutionId: string; dayKey: { not: string } };
+      data: { dayKey: string; used: number };
+    }): Promise<{ count: number }>;
+    upsert(args: {
+      where: { institutionId: string };
+      create: { institutionId: string; dayKey: string; used: number };
+      update: { used: { increment: number } };
+    }): Promise<{ used: number }>;
+  };
+}
+
+/**
+ * Consume ONE ask from the institution's daily budget — the same CAS
+ * roll-over + upsert-increment + judge shape as the per-user quota.
+ * Fails OPEN on a store error (the route wraps this best-effort, same
+ * as consumeQuotaBestEffort: a counter outage is never a chat outage).
+ */
+export async function consumeInstitutionAskQuota(
+  store: AiInstQuotaStore,
+  institutionId: string,
+  opts?: { now?: Date; limit?: number },
+): Promise<AiQuotaState> {
+  const limit = opts?.limit ?? parseAiInstDailyLimit(process.env[AI_INST_DAILY_LIMIT_ENV]);
+  const today = aiDayKey(opts?.now);
+  await store.aiInstitutionQuota.updateMany({
+    where: { institutionId, dayKey: { not: today } },
+    data: { dayKey: today, used: 0 },
+  });
+  const row = await store.aiInstitutionQuota.upsert({
+    where: { institutionId },
+    create: { institutionId, dayKey: today, used: 1 },
+    update: { used: { increment: 1 } },
+  });
+  const used = row.used;
+  return { allowed: used <= limit, used, remaining: Math.max(0, limit - used), limit };
+}

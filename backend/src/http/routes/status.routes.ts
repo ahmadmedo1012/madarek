@@ -17,7 +17,13 @@ import { logger } from '../../logger.js';
 /* R353 C2 — the AI mode label: 'chain' when ≥2 providers are
  * configured (the multi-provider failover chain), else the historical
  * env label. Boot-frozen like everything AI (memoized in providers.ts). */
-import { getAiChain, isChainMode } from '../../lib/ai/providers.js';
+import { getAiChain, isChainMode, aiProviderBreakers } from '../../lib/ai/providers.js';
+/* r357 L5 — the quota knobs for the honest /status AI block (no
+ * secrets: the configured limits + the platform month budget only). */
+import { AI_DAILY_LIMIT_ENV, parseAiDailyLimit, aiMonthKey } from '../../lib/ai/quota.js';
+/* r357 L5 — the cross-instance all-providers-down verdict (telemetry-
+ * backed; the tick workflow reads it to open the GitHub issue). */
+import { assessProviderHealth } from '../../lib/ai/provider-health.js';
 
 const router = Router();
 
@@ -37,6 +43,40 @@ const BUILD_ID = () =>
   });
 /** The boot-frozen AI mode label (mode NAMES only — never keys). */
 const AI_MODE_LABEL = isChainMode(getAiChain()) ? 'chain' : env.AI_PROVIDER;
+
+/* r357 L5 — the honest AI health/quota block (NO secrets):
+ * provider ids + model counts, the in-process breaker verdicts, the
+ * per-user daily ask limit, and the platform month token budget.
+ * Best-effort: a budget-read outage degrades to nulls, never a red
+ * status. */
+async function aiStatusBlock(): Promise<Record<string, unknown>> {
+  const chain = getAiChain();
+  const providers = chain.providers.map((p) => ({ id: p.id, models: p.models.length, tasks: p.tasks }));
+  let monthBudget: { monthKey: string; usedTokens: number } | null = null;
+  try {
+    const row = await prisma.aiBudget.findUnique({ where: { monthKey: aiMonthKey() }, select: { usedTokens: true } });
+    monthBudget = { monthKey: aiMonthKey(), usedTokens: row?.usedTokens ?? 0 };
+  } catch {
+    monthBudget = null; // honest: the counter is unreadable right now
+  }
+  /* r357 L5 — the cross-instance verdict (best-effort: a telemetry
+   * read failure degrades to null, never a false down). */
+  let allProvidersDownSince: string | null = null;
+  try {
+    const verdict = await assessProviderHealth(prisma);
+    allProvidersDownSince = verdict.downSince?.toISOString() ?? null;
+  } catch {
+    allProvidersDownSince = null;
+  }
+  return {
+    mode: AI_MODE_LABEL,
+    providers,
+    breakers: aiProviderBreakers.snapshot(),
+    dailyAskLimitPerUser: parseAiDailyLimit(process.env[AI_DAILY_LIMIT_ENV]),
+    monthBudget,
+    allProvidersDownSince,
+  };
+}
 
 router.get('/status', async (_req, res) => {
   const start = Date.now();
@@ -92,6 +132,9 @@ router.get('/status', async (_req, res) => {
       // Mode names only — never endpoints, keys, or counts.
       storageDriver: env.STORAGE_DRIVER,
       aiMode: AI_MODE_LABEL,
+      /* r357 L5 — the quota-aware AI block (the mode label above stays
+       * for the existing consumers; the block carries the detail). */
+      ai: await aiStatusBlock(),
       mailProvider: env.MAIL_PROVIDER,
       buildId: BUILD_ID(),
       serverTime: new Date().toISOString(),

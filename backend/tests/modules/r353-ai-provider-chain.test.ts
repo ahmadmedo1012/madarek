@@ -655,3 +655,110 @@ describe('streamProviderChain — SSE failover (fetch stubbed)', () => {
     expect(calls).toHaveLength(1); // gemini only — groq never dialed
   });
 });
+
+/* ════════════════════════════════════════════════════════════════════
+   r357 L5 — the Retry-After law + the breaker snapshot
+   ════════════════════════════════════════════════════════════════════ */
+
+describe('r357 L5 — parseRetryAfterMs (the provider\'s own word, clamped)', () => {
+  it('delta-seconds parse to ms; 0 floors at 1s (a 0 must not slam the door)', async () => {
+    const { parseRetryAfterMs, RETRY_AFTER_MIN_MS } = await import('../../src/lib/ai.js');
+    expect(parseRetryAfterMs('30')).toBe(30_000);
+    expect(parseRetryAfterMs('0')).toBe(RETRY_AFTER_MIN_MS);
+    expect(parseRetryAfterMs('  120 ')).toBe(120_000);
+  });
+
+  it('an HTTP-date parses against nowMs; a past date floors at 1s', async () => {
+    const { parseRetryAfterMs, RETRY_AFTER_MIN_MS } = await import('../../src/lib/ai.js');
+    const now = Date.UTC(2026, 10, 16, 12, 0, 0);
+    expect(parseRetryAfterMs(new Date(now + 45_000).toUTCString(), now)).toBe(45_000);
+    expect(parseRetryAfterMs(new Date(now - 60_000).toUTCString(), now)).toBe(RETRY_AFTER_MIN_MS);
+  });
+
+  it('a daily-cap "come back tomorrow" clamps at 10 min; garbage/absent is null', async () => {
+    const { parseRetryAfterMs, RETRY_AFTER_MAX_MS } = await import('../../src/lib/ai.js');
+    expect(parseRetryAfterMs('86400')).toBe(RETRY_AFTER_MAX_MS);
+    expect(parseRetryAfterMs('soon')).toBeNull();
+    expect(parseRetryAfterMs('')).toBeNull();
+    expect(parseRetryAfterMs(null)).toBeNull();
+    expect(parseRetryAfterMs(undefined)).toBeNull();
+  });
+});
+
+describe('r357 L5 — the breaker honors Retry-After over the generic cooldown', () => {
+  it('a 429 failure with Retry-After opens with cooldown = max(jittered base, Retry-After)', () => {
+    const b = new AiProviderBreakers({ threshold: 1, cooldownMs: 60_000 }, () => 0.0); // jitter → 45s
+    b.recordFailure('gemini', 0, 300_000); // the provider said "5 minutes"
+    expect(b.consult('gemini', 44_999)).toBe('open' as BreakerVerdict);
+    expect(b.consult('gemini', 45_000)).toBe('open' as BreakerVerdict); // NOT half-open — Retry-After still rules
+    expect(b.consult('gemini', 299_999)).toBe('open' as BreakerVerdict);
+    expect(b.consult('gemini', 300_000)).toBe('half-open' as BreakerVerdict);
+  });
+
+  it('a Retry-After SHORTER than the jittered base never SHORTENS the cooldown', () => {
+    const b = new AiProviderBreakers({ threshold: 1, cooldownMs: 60_000 }, () => 1.0); // jitter → 75s
+    b.recordFailure('groq', 0, 5_000); // 5s < 75s → the base wins
+    expect(b.consult('groq', 5_000)).toBe('open' as BreakerVerdict);
+    expect(b.consult('groq', 74_999)).toBe('open' as BreakerVerdict);
+    expect(b.consult('groq', 75_000)).toBe('half-open' as BreakerVerdict);
+  });
+
+  it('a failure WITHOUT Retry-After keeps the historical jittered cooldown', () => {
+    const b = new AiProviderBreakers({ threshold: 1, cooldownMs: 60_000 }, () => 0.5); // → 60s
+    b.recordFailure('openrouter', 0, undefined);
+    expect(b.consult('openrouter', 59_999)).toBe('open' as BreakerVerdict);
+    expect(b.consult('openrouter', 60_000)).toBe('half-open' as BreakerVerdict);
+  });
+
+  it('snapshot() exposes verdicts + remaining cooldown, never secrets', () => {
+    const b = new AiProviderBreakers({ threshold: 1, cooldownMs: 60_000 }, () => 0.5);
+    b.recordFailure('gemini', 0, 120_000);
+    const snap = b.snapshot(30_000);
+    expect(snap.gemini).toEqual({ verdict: 'open', cooldownRemainingMs: 90_000 });
+    expect(JSON.stringify(snap)).not.toMatch(/key|token|secret/i);
+    // a clean breaker is absent from the snapshot (nothing to say)
+    expect(snap.groq).toBeUndefined();
+  });
+});
+
+describe('r357 L5 — the chain runner carries the 429\'s Retry-After to the breaker', () => {
+  it('gemini 429s with Retry-After 120s → the NEXT turn skips gemini for that long and groq answers', async () => {
+    const breakers = new AiProviderBreakers({ threshold: 1, cooldownMs: 60_000 }, () => 0.5);
+    let t = 0;
+    const calls: string[] = [];
+    const gemini = SPEC({ id: 'gemini', baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai/', apiKey: 'k1', models: ['m1'] });
+    const groq = SPEC({ id: 'groq', baseUrl: 'https://api.groq.com/openai/v1', apiKey: 'k2', models: ['g1'] });
+    const chain = CHAIN([gemini, groq]);
+
+    // Turn 1: gemini refuses with a 429 + Retry-After 120s; groq answers.
+    await runProviderChain(
+      chain,
+      'chat',
+      async (spec) => {
+        calls.push(spec.id);
+        if (spec.id === 'gemini') {
+          throw new AiProviderError('provider HTTP 429: quota', 'rate_limited', 429, 120_000);
+        }
+        return 'ok';
+      },
+      { log: () => undefined, sleep: async () => {}, breakers, now: () => (t += 1) },
+    );
+
+    // Turn 2 (inside the Retry-After window): gemini is skipped whole.
+    const second: string[] = [];
+    const out = await runProviderChain(
+      chain,
+      'chat',
+      async (spec) => {
+        second.push(spec.id);
+        return 'groq-reply';
+      },
+      { log: () => undefined, sleep: async () => {}, breakers, now: () => (t += 1) },
+    );
+    expect(second).toEqual(['groq']); // gemini never dialed — the provider's word ruled
+    expect(out.providerId).toBe('groq');
+    // And the first turn DID dial gemini twice (the r176a same-model
+    // bounded retry) then groq — the failover worked.
+    expect(calls).toEqual(['gemini', 'gemini', 'groq']);
+  });
+});

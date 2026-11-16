@@ -2479,6 +2479,20 @@ model AiQuota {
   @@index([dayKey])
 }
 
+// r357 L5 — one row per INSTITUTION per day: the per-institution ask
+// budget (a single campus's demo day cannot eat the whole platform's
+// free tier). Same CAS roll-over shape as AiQuota (dayKey ≠ today → 0).
+// Platform-level chat (no institution context) has no row — only the
+// per-user quota and the month budget apply there.
+model AiInstitutionQuota {
+  id             String @id @default(cuid())
+  institutionId  String @unique
+  dayKey         String
+  used           Int    @default(0)
+
+  @@index([dayKey])
+}
+
 // One row per MONTH: the platform-wide token budget counter.
 // `monthKey` ('YYYY-MM') is unique — the month roll-over starts a fresh
 // row. usedTokens accumulates REAL provider usage (input + output from

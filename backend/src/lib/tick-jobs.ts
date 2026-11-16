@@ -24,10 +24,27 @@ import { drainOutbox } from './mail-outbox.js';
 import { runLoginEventRetentionSweep, runAssignmentDueSweep, runWeeklyDigestSweep } from '../scheduler.js';
 import { pruneRateLimitHits } from './rate-limit-store.js';
 import { pruneImportUploads } from '../http/routes/import.routes.js';
+/* r357 L5 — the all-providers-down guard (cross-instance, telemetry-
+ * backed; raises the throttled AI_ALL_PROVIDERS_DOWN alert). */
+import { raiseAllProvidersDownAlertIfDown } from './ai/provider-health.js';
+import { raiseOperationalAlert } from './operational-alerts.js';
 
 export async function runPlatformTick(label: string): Promise<TickReport> {
   return runTick(prisma, {
-    tick: () => drainOutbox(),
+    tick: async () => {
+      // The outbox drain + the AI provider-health guard, allSettled:
+      // one failing must not skip the other.
+      const [drain, aiHealth] = await Promise.allSettled([
+        drainOutbox(),
+        raiseAllProvidersDownAlertIfDown(prisma, (input) =>
+          raiseOperationalAlert(prisma, input as Parameters<typeof raiseOperationalAlert>[1]),
+        ),
+      ]);
+      return {
+        drained: drain.status === 'fulfilled' ? drain.value : { error: String(drain.reason) },
+        aiAllProvidersDown: aiHealth.status === 'fulfilled' ? aiHealth.value.allDown : null,
+      };
+    },
     'tick-daily': async () => {
       // allSettled: one failing sweep must not skip the others.
       const [retention, due, prune, importPrune] = await Promise.allSettled([

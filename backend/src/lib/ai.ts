@@ -447,12 +447,47 @@ export type AiFailureKind =
 export class AiProviderError extends Error {
   readonly status?: number;
   readonly kind: AiFailureKind;
-  constructor(message: string, kind: AiFailureKind, status?: number) {
+  /** r357 L5 — the provider's own Retry-After (429), parsed to ms and
+   * clamped; absent when the provider sent none (or a garbage value).
+   * The chain's breaker rides it: the provider is skipped until the
+   * SERVER said it may be asked again — never a fixed guess. */
+  readonly retryAfterMs?: number;
+  constructor(message: string, kind: AiFailureKind, status?: number, retryAfterMs?: number) {
     super(message);
     this.name = 'AiProviderError';
     this.kind = kind;
     this.status = status;
+    this.retryAfterMs = retryAfterMs;
   }
+}
+
+/** The clamp window for a provider's Retry-After: ≥1s (a 0 must not
+ * slam the door), ≤10 min (a daily-cap "come back tomorrow" would pin
+ * a breaker past every student's session — the half-open probe
+ * re-checks cheaply instead). r357 L5. */
+export const RETRY_AFTER_MIN_MS = 1_000;
+export const RETRY_AFTER_MAX_MS = 10 * 60_000;
+
+/** Parse a Retry-After header value: delta-seconds ("30") or an
+ * HTTP-date; null for absent/empty/garbage. Pure (nowMs injectable).
+ * r357 L5. */
+export function parseRetryAfterMs(
+  raw: string | null | undefined,
+  nowMs: number = Date.now(),
+): number | null {
+  if (typeof raw !== 'string' || raw.trim() === '') return null;
+  const trimmed = raw.trim();
+  if (/^\d+$/.test(trimmed)) {
+    const ms = Number.parseInt(trimmed, 10) * 1_000;
+    return Math.min(RETRY_AFTER_MAX_MS, Math.max(RETRY_AFTER_MIN_MS, ms));
+  }
+  const at = Date.parse(trimmed);
+  if (Number.isFinite(at)) {
+    const ms = at - nowMs;
+    if (ms <= 0) return RETRY_AFTER_MIN_MS; // already past — the floor
+    return Math.min(RETRY_AFTER_MAX_MS, Math.max(RETRY_AFTER_MIN_MS, ms));
+  }
+  return null;
 }
 
 /** Map ANY error thrown by the provider path to a failure kind — the
@@ -710,10 +745,14 @@ export async function callOpenAiCompatible(
     // Body excerpt goes to the LOG only (client-safe rule,
     // AppError.internal). r176a: also carries the classified kind —
     // 429 is rate_limited, other 4xx provider_rejected, 5xx
-    // provider_error.
+    // provider_error. r357 L5: a 429 carries the provider's own
+    // Retry-After (parsed + clamped) so the chain's breaker honors
+    // the server's word, not a generic cooldown guess.
     const kind: AiFailureKind =
       res.status === 429 ? 'rate_limited' : res.status >= 500 ? 'provider_error' : 'provider_rejected';
-    throw new AiProviderError(`provider HTTP ${res.status}: ${bodyText.slice(0, 300)}`, kind, res.status);
+    const retryAfterMs =
+      res.status === 429 ? (parseRetryAfterMs(res.headers.get('retry-after')) ?? undefined) : undefined;
+    throw new AiProviderError(`provider HTTP ${res.status}: ${bodyText.slice(0, 300)}`, kind, res.status, retryAfterMs);
   }
 
   let payload: unknown;
@@ -881,10 +920,13 @@ export async function streamOpenAiCompatible(
     const bodyText = await res.text().catch(() => '');
     const kind: AiFailureKind =
       res.status === 429 ? 'rate_limited' : res.status >= 500 ? 'provider_error' : 'provider_rejected';
+    const retryAfterMs =
+      res.status === 429 ? (parseRetryAfterMs(res.headers.get('retry-after')) ?? undefined) : undefined;
     throw new AiProviderError(
       `provider stream HTTP ${res.status}: ${bodyText.slice(0, 300)}`,
       kind,
       res.status,
+      retryAfterMs,
     );
   }
   if (!res.body) {
