@@ -53,7 +53,7 @@ jobs:
             FAILS=$((FAILS+1))
           fi
           # 4. the AI surface (config — no tokens spent)
-          A=$(curl -s --max-time 20 "$BASE/api/v1/ai/config" -H "Authorization: Bearer $TOKEN" | jq -r '.data.mode != null')
+          A=$(curl -s --max-time 20 "$BASE/api/v1/ai/config" -H "Authorization: Bearer $TOKEN" | jq -r '.data.provider != null')
           echo "ai config answered=$A"; [ "$A" = "true" ] || FAILS=$((FAILS+1))
           echo "fails=$FAILS"
           exit $([ "$FAILS" = "0" ] && echo 0 || echo 1)
@@ -63,6 +63,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
+          # the label must exist before the issue can carry it (first failure creates it)
+          gh label create soak --repo "$GITHUB_REPOSITORY" --color B60205 --description 'standing soak probe failures' 2>/dev/null || true
           BODY="فشل مسبار السوك. السجل: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           OPEN=$(gh issue list --repo "$GITHUB_REPOSITORY" --label soak --state open --json number --jq 'length')
           if [ "$OPEN" = "0" ]; then
