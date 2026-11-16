@@ -25,7 +25,7 @@ import { useAuthStore } from '../../stores/auth.store';
 export const PHOTO_MAX_BYTES = 2 * 1024 * 1024;
 export const PHOTO_MAX_EDGE = 640;
 
-export interface ConvertedPhoto {
+interface ConvertedPhoto {
   blob: Blob;
   contentType: 'image/webp' | 'image/png';
 }
