@@ -161,7 +161,7 @@ export default function TeacherDashboard() {
       <AppTopBar alertsPath="/teacher/alerts" />
       <PageHeader
         title="لوحة الأستاذ"
-        kicker="كل ما يحتاج تدخّلك اليوم — في تيار واحد، مرتّب حسب الأولوية."
+        kicker="تدخّلات اليوم بالأولوية."
       />
 
       {/* إحصاءات الفصل — hierarchy: one hero card, no card grid.
@@ -171,8 +171,8 @@ export default function TeacherDashboard() {
           <Card>
             <EmptyState
               icon={<ClipboardCheck size={22} color={p.textMuted} />}
-              title="لا بيانات فصلية بعد"
-              message="لا طلاب مسجّلين لديك حاليًا — عند تسجيل الطلاب في شُعَبك ستظهر هنا معدلات الدرجات ونسب الحضور أسبوعًا بعد أسبوع."
+              title="لا بيانات فصلية"
+              message="لا طلاب بعد."
             />
           </Card>
         </Animated.View>
@@ -195,7 +195,7 @@ export default function TeacherDashboard() {
               accessibilityLabel={
                 kpi?.attendancePct != null
                   ? `نسبة الحضور ${pct(kpi.attendancePct)}`
-                  : "لا بيانات حضور بعد"
+                  : "لا بيانات حضور"
               }
             >
               <T variant="sm" weight="bold">
@@ -259,7 +259,7 @@ export default function TeacherDashboard() {
           pendingTotal > 0 ? (
             <Badge
               label={arCount(pendingTotal, [
-                "تسليم واحد بانتظار التصحيح",
+                "تسليم بانتظار التصحيح",
                 "تسليمان بانتظار التصحيح",
                 "تسليمات بانتظار التصحيح",
                 "تسليماً بانتظار التصحيح",
@@ -302,7 +302,7 @@ export default function TeacherDashboard() {
         <Card>
           <T variant="body" color="muted">
             {arCount(pendingTotal, [
-              "تسليم واحد بانتظار درجتك",
+              "تسليم بانتظار درجتك",
               "تسليمان بانتظار درجتك",
               "تسليمات بانتظار درجتك",
               "تسليماً بانتظار درجتك",
@@ -312,8 +312,8 @@ export default function TeacherDashboard() {
       ) : (
         <EmptyState
           room="exam-hall"
-          title="لا انتظار — كل التسليمات مُقيَّمة"
-          message="ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك."
+          title="كل التسليمات مُقيَّمة"
+          message="التسليمات فور وصولها."
           actionLabel="فتح التكاليف"
           onAction={() => router.push("/teacher/assignments" as never)}
         />
@@ -331,7 +331,7 @@ export default function TeacherDashboard() {
           <EmptyState
             room="lecture-hall"
             title="لا محاضرات اليوم"
-            message="جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ."
+            message="فارغ — راجع الأسبوعيّ."
             actionLabel="الجدول الأسبوعيّ"
             onAction={() => router.push("/teacher/schedule" as never)}
           />
@@ -387,7 +387,7 @@ export default function TeacherDashboard() {
 
       {/* Trend — SVG-free View bars, honestly floored at ≥2 points. */}
       <Animated.View entering={entering(4)} style={{ gap: sp[8] }}>
-        <SectionBar index={3} title="اتجاه الأداء والحضور" />
+        <SectionBar index={3} title="الأداء والحضور" />
         <Card>
         <T variant="sm" color="muted">
           متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية
@@ -395,8 +395,8 @@ export default function TeacherDashboard() {
         {!trendDrawable ? (
           <EmptyState
             icon={<LineChart size={22} color={p.textMuted} />}
-            title="لا تتوفّر بيانات كافية بعد لرسم الاتجاه"
-            message="لم يُسجَّل أي أسبوع حتى الآن — يُرسم المخطط تلقائيًا بعد اكتمال أسبوعين على الأقل."
+            title="لا بيانات كافية بعد."
+            message="يُرسم بعد أسبوعين على الأقل."
           />
         ) : (
           <View style={{ gap: sp[10], paddingTop: sp[8] }}>
@@ -423,8 +423,8 @@ export default function TeacherDashboard() {
           <Badge
             label={
               visible.length === 0
-                ? "لا عناصر تحتاج متابعة"
-                : arCount(visible.length, ["عنصر يحتاج متابعة", "عنصران يحتاجان متابعة", "عناصر تحتاج متابعة", "عنصراً يحتاج متابعة"])
+                ? "لا عناصر للمتابعة"
+                : arCount(visible.length, ["عنصر للمتابعة", "عنصران للمتابعة", "عناصر للمتابعة", "عنصرًا للمتابعة"])
             }
             tone={visible.length === 0 ? "mint" : "yellow"}
           />
@@ -446,8 +446,8 @@ export default function TeacherDashboard() {
       {visible.length === 0 ? (
         <EmptyState
           room="building"
-          title="لا متطلبات الآن — أحسنت!"
-          message="سيظهر هنا أي عنصر جديد يحتاج متابعتك فور وصوله."
+          title="لا متطلبات — أحسنت!"
+          message="تظهر فور وصولها."
         />
       ) : (
         <RowList>
@@ -492,8 +492,8 @@ export default function TeacherDashboard() {
         {offerings.length === 0 ? (
           <EmptyState
             room="library"
-            title="لم تُسند إليك مقرّرات بعد"
-            message="ستظهر مقرّراتك وشُعَبك هنا فور إسنادها من إدارة شؤون الأساتذة."
+            title="لم تُسند إليك مقرّرات"
+            message="تظهر فور إسنادها."
           />
         ) : (
         <RowList>

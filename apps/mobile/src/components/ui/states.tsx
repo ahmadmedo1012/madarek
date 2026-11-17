@@ -16,6 +16,7 @@ import { T } from "./text";
 import { Button } from "./pressables";
 import { Boot, InlineBusy, usePulseStyle } from "./boot";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
+import { NO_FILES, RETRY } from "@/lib/copy";
 
 /** Skeleton — drafting pulse block (paper rhythm, reduced-motion safe). */
 export function Skeleton({ w = "100%", h = 16, style }: { w?: number | string; h?: number; style?: StyleProp<ViewStyle> }) {
@@ -130,26 +131,26 @@ interface RoomSheet {
 const ROOMS: Record<EmptyRoom, RoomSheet> = {
   "exam-hall": {
     Art: PlanExamHall,
-    title: "لا توجد امتحانات بعد",
-    message: "عند نشر الامتحانات ستظهر هنا.",
-    a11y: "مخطط قاعة اختبار فارغة",
+    title: "لا امتحانات بعد",
+    message: "تظهر هنا فور نشرها.",
+    a11y: "قاعة اختبار فارغة",
   },
   library: {
     Art: PlanLibrary,
-    title: "لا توجد ملفات",
-    message: "الملفات المشتركة معك ستظهر هنا.",
-    a11y: "مخطط مكتبة فارغة",
+    title: NO_FILES,
+    message: "تظهر هنا عند مشاركتها.",
+    a11y: "مكتبة فارغة",
   },
   "lecture-hall": {
     Art: PlanLectureHall,
-    title: "لا توجد محاضرات",
-    message: "ستظهر المحاضرات هنا بمجرد إضافتها.",
-    a11y: "مخطط قاعة محاضرات فارغة",
+    title: "لا محاضرات",
+    message: "تظهر هنا فور إضافتها.",
+    a11y: "قاعة محاضرات فارغة",
   },
   building: {
     Art: PlanBuilding,
-    title: "لا يوجد محتوى",
-    message: "سيظهر المحتوى هنا بمجرد إضافته.",
+    title: "لا محتوى",
+    message: "يظهر هنا فور إضافته.",
     a11y: "مخطط مبنى فارغ",
   },
 };
@@ -196,7 +197,7 @@ export function EmptyState({
 }) {
   const p = usePalette();
   const sheet = room ? ROOMS[room] : undefined;
-  const resolvedTitle = title ?? sheet?.title ?? "لا يوجد محتوى بعد";
+  const resolvedTitle = title ?? sheet?.title ?? "لا محتوى بعد";
   const resolvedMessage = message ?? sheet?.message;
   const resolvedArt = art ?? (sheet ? <sheet.Art width={216} accessibilityLabel={sheet.a11y} /> : null);
   return (
@@ -279,7 +280,7 @@ export function ErrorState({
         تعذّر تحميل البيانات
       </T>
       <T variant="body" color="muted" align={compact ? "right" : "center"}>
-        {message ?? "حدث خطأ أثناء الاتصال بالخادم."}
+        {message ?? "تعذّر الاتصال بالخادم."}
       </T>
       {onRetry || onReport ? (
         <View
@@ -291,7 +292,7 @@ export function ErrorState({
             flexWrap: "wrap",
           }}
         >
-          {onRetry ? <Button label="إعادة المحاولة" kind="ghost" onPress={onRetry} small /> : null}
+          {onRetry ? <Button label={RETRY} kind="ghost" onPress={onRetry} small /> : null}
           {onReport ? <Button label="إبلاغ عن مشكلة" kind="ghost" onPress={onReport} small /> : null}
         </View>
       ) : null}
@@ -307,7 +308,7 @@ export function ErrorState({
  */
 export function OfflineState({
   title = "أنت غير متصل بالإنترنت",
-  message = "لا توجد نسخة محفوظة من هذه الصفحة — سيتم تحميلها عند عودة الاتصال.",
+  message = "لا نسخة محفوظة — عند عودة الاتصال.",
   onRetry,
 }: {
   title?: string;
@@ -347,7 +348,7 @@ export function OfflineState({
       </T>
       {onRetry ? (
         <View style={{ marginTop: sp[8], minWidth: 200 }}>
-          <Button label="إعادة المحاولة" kind="ghost" onPress={onRetry} small />
+          <Button label={RETRY} kind="ghost" onPress={onRetry} small />
         </View>
       ) : null}
     </View>
@@ -360,7 +361,7 @@ export function OfflineBanner({ visible }: { visible: boolean }) {
   if (!visible) return null;
   return (
     <View
-      accessibilityLabel="لا يوجد اتصال بالإنترنت"
+      accessibilityLabel="لا اتصال بالإنترنت"
       style={{
         backgroundColor: warn.bg,
         borderWidth: StyleSheet.hairlineWidth,

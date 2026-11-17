@@ -52,11 +52,11 @@ export default function QualityExamModeration() {
       examsApi.moderateTemplate(payload.id, { approve: payload.approve, note: payload.note || undefined }),
     onSuccess: (_d, payload) => {
       qc.invalidateQueries({ queryKey: ["exams", "moderation-queue"] });
-      toast.success(payload.approve ? "اعتُمد القالب وأُتيح للطلاب." : "رُفض القالب.");
+      toast.success(payload.approve ? "اعتُمد وأُتيح." : "رُفض القالب.");
       setTarget(null);
       setNote("");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر تنفيذ القرار"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر التنفيذ"),
   });
 
   const moderateQuestion = useMutation({
@@ -68,7 +68,7 @@ export default function QualityExamModeration() {
       setTarget(null);
       setNote("");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر تنفيذ القرار"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر التنفيذ"),
   });
 
   const runModeration = (t: ModerationTarget, approve: boolean) => {
@@ -92,7 +92,7 @@ export default function QualityExamModeration() {
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader
           title="مراجعة الاختبارات"
-          kicker="مراجعة قوالب الاختبارات الموحَّدة قبل اعتمادها وإتاحتها للطلاب — صلاحية حصرية لمكتب الجودة."
+          kicker="مراجعة القوالب — حصرية."
         />
 
         <RowList>
@@ -105,7 +105,7 @@ export default function QualityExamModeration() {
             <StatLine
               label="أسئلة بانتظار الفحص"
               value={num(queue.data ? questionsAwaiting : null, "…")}
-              hint="مجموع أسئلة القوالب المعلّقة"
+              hint="أسئلة القوالب"
             />
           </LedgerRow>
         </RowList>
@@ -123,7 +123,7 @@ export default function QualityExamModeration() {
             <EmptyState
               icon={<CheckCircle2 size={22} color={tones.mint.ink} />}
               title="لا شيء بانتظار المراجعة"
-              message="كل قوالب الاختبارات المتاحة للطلاب اجتازت المراجعة."
+              message="كلها اجتازت المراجعة."
             />
           ) : (
             <RowList>
@@ -182,8 +182,8 @@ export default function QualityExamModeration() {
           ) : pendingQuestions.length === 0 ? (
             <EmptyState
               icon={<ClipboardCheck size={22} color={p.textMuted} />}
-              title="لا أسئلة بانتظار الاعتماد حالياً"
-              message="لا يعرض مسار بنك الأسئلة أسئلة غير معتمدة في هذا الطابور بعد."
+              title="لا أسئلة بانتظار الاعتماد"
+              message="لا أسئلة غير معتمدة."
             />
           ) : (
             <RowList>
@@ -221,13 +221,13 @@ export default function QualityExamModeration() {
             {target?.title ?? ""}
           </T>
           <T variant="xs" color="muted">
-            {target?.kind === "template" ? "قالب اختبار" : "سؤال من بنك الأسئلة"}
+            {target?.kind === "template" ? "قالب اختبار" : "سؤال من البنك"}
           </T>
           <Field
-            label="ملاحظة المراجعة (اختياري)"
+            label="ملاحظة (اختياري)"
             value={note}
             onChangeText={setNote}
-            placeholder="ملاحظة تُحفظ مع القرار"
+            placeholder="ملاحظة مع القرار"
             multiline
           />
           <Button

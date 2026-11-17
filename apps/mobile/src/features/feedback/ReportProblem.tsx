@@ -15,6 +15,7 @@ import { toast } from "@/components/ui/toast";
 import { PressableScale } from "@/motion";
 import { haptics } from "@/haptics";
 import { humanizeError } from "@/lib/errors";
+import { REPORT_PROBLEM, SENDING } from "@/lib/copy";
 
 /**
  * ReportProblemSheet — «أبلغ عن مشكلة / اقتراح» (B3.6 pilot loop → R331
@@ -41,7 +42,7 @@ export function ReportProblemSheet({ open, onClose }: { open: boolean; onClose: 
       post("/feedback", { kind, note: note.trim(), route: pathname, role: user?.role ?? undefined }),
     onSuccess: () => {
       haptics.notify("success");
-      toast.success("وصلتنا ملاحظتك — شكرًا لمساعدتك في تحسين مدارك.", "ملاحظة الطيار");
+      toast.success("وصلتنا ملاحظتك — شكرًا لمساعدتك.", "ملاحظة الطيار");
       setNote("");
       setError(null);
       onClose();
@@ -55,7 +56,7 @@ export function ReportProblemSheet({ open, onClose }: { open: boolean; onClose: 
   const onSubmit = () => {
     if (note.trim().length < 10) {
       haptics.notify("error");
-      setError("اشرح الملاحظة في 10 أحرف على الأقل حتى نفهمها ونصلحها.");
+      setError("اشرحها في 10 أحرف على الأقل لنفهمها.");
       return;
     }
     setError(null);
@@ -66,13 +67,13 @@ export function ReportProblemSheet({ open, onClose }: { open: boolean; onClose: 
     <AppSheet
       open={open}
       onClose={onClose}
-      title="الإبلاغ عن مشكلة"
+      title={REPORT_PROBLEM}
       snap="lg"
       dynamic={false}
       scrollable
       footer={
         <Button
-          label={submit.isPending ? "جارٍ الإرسال…" : "إرسال الملاحظة"}
+          label={submit.isPending ? SENDING : "إرسال الملاحظة"}
           kind="primary"
           loading={submit.isPending}
           disabled={note.trim().length < 10}

@@ -26,6 +26,7 @@ import {
   minutesAr,
   pointsAr,
 } from "@/features/common/components";
+import { PATH_REMOVED, SELF_DEV, SENDING } from "@/lib/copy";
 
 interface CompleteLessonResult {
   newlyCompleted?: boolean;
@@ -57,28 +58,28 @@ export default function TrainingLesson() {
       qc.invalidateQueries({ queryKey: ["training"] });
       const r = res as CompleteLessonResult | null;
       if (r?.newlyCompleted === false) {
-        toast.info("تم احتساب هذا الدرس مسبقًا.");
+        toast.info("احتُسب الدرس مسبقًا.");
       } else if (r?.pointsAwarded && r.pointsAwarded > 0) {
         haptics.notify("success");
         toast.success(`أحسنت! حصلت على ${pointsAr(r.pointsAwarded)}.`, "درس مكتمل");
       } else {
         haptics.notify("success");
-        toast.success("تمّ احتساب الدرس.", "درس مكتمل");
+        toast.success("احتُسب الدرس.", "درس مكتمل");
       }
       router.back();
     },
     onError: (e) =>
-      toast.error(apiMessage(e, "تعذّر احتساب الدرس — تحقّق من اتصالك وحاول مرة أخرى.")),
+      toast.error(apiMessage(e, "تعذّر الاحتساب.")),
   });
 
   if (!params.slug || !params.lessonId) {
     // R327 A4: broken deep link → honest state, never a white screen.
     return (
       <Screen scroll>
-        <StackHeader title="درس" kicker="التطوير الذاتي" />
+        <StackHeader title="درس" kicker={SELF_DEV} />
         <EmptyState
           title="الرابط غير مكتمل"
-          message="لا يوجد درس في هذا الرابط — افتح المسار من قائمة التطوير الذاتي."
+          message="لا درس — افتح المسار."
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -88,7 +89,7 @@ export default function TrainingLesson() {
   if (q.isLoading) {
     return (
       <Screen scroll>
-        <StackHeader title="درس" kicker="التطوير الذاتي" />
+        <StackHeader title="درس" kicker={SELF_DEV} />
         <SkeletonList rows={5} />
       </Screen>
     );
@@ -96,9 +97,9 @@ export default function TrainingLesson() {
   if (q.isError) {
     return (
       <Screen scroll>
-        <StackHeader title="درس" kicker="التطوير الذاتي" />
+        <StackHeader title="درس" kicker={SELF_DEV} />
         {isUnauthError(q.error) ? (
-          <SignInPrompt message="دروس التطوير الذاتي تحتاج حسابًا — سجّل الدخول لقراءتها واحتساب تقدّمك." />
+          <SignInPrompt message="سجّل الدخول لقراءة الدروس." />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )}
@@ -109,10 +110,10 @@ export default function TrainingLesson() {
     // Success-but-null — honest emptiness, never a white screen (R327 A4).
     return (
       <Screen scroll>
-        <StackHeader title="درس" kicker="التطوير الذاتي" />
+        <StackHeader title="درس" kicker={SELF_DEV} />
         <EmptyState
-          title="لا توجد بيانات لهذا المسار"
-          message="ربما أُزيل المسار أو أن الرابط قديم."
+          title="لا بيانات للمسار"
+          message={PATH_REMOVED}
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -130,7 +131,7 @@ export default function TrainingLesson() {
         <StackHeader title="درس" kicker={track.title} />
         <EmptyState
           title="الدرس غير موجود"
-          message="ربما تم حذفه أو أن الرابط غير صحيح."
+          message="حُذف أو رابط خاطئ."
           actionLabel="عودة إلى المسار"
           onAction={() => router.push(`/training/${track.slug}` as never)}
         />
@@ -144,7 +145,7 @@ export default function TrainingLesson() {
 
   const onComplete = () => {
     if (lesson.quizQuestion && !quizAnswer.trim()) {
-      toast.error("أجب عن سؤال التحقق أولًا.");
+      toast.error("أجب عن التحقق أولًا.");
       return;
     }
     complete.mutate();
@@ -215,7 +216,7 @@ export default function TrainingLesson() {
       {/* Actions */}
       {!alreadyDone ? (
         <Button
-          label={complete.isPending ? "جارٍ الإرسال…" : "إكمال الدرس"}
+          label={complete.isPending ? SENDING : "إكمال الدرس"}
           kind="primary"
           loading={complete.isPending}
           onPress={onComplete}

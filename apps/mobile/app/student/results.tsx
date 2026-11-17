@@ -38,7 +38,7 @@ export function resultsShareText(data: {
   avgGradePct: number | null;
   courses: { courseName: string; gradePct: number | null }[];
 }): string {
-  const lines = ["ملخص نتائجي — منصة مدرَك"];
+  const lines = ["نتائجي — مدرَك"];
   if (data.avgGradePct !== null) lines.push(`المتوسط العام: ${pct(data.avgGradePct)}`);
   const graded = data.courses.filter((c) => c.gradePct !== null);
   for (const c of graded.slice(0, 5)) lines.push(`• ${c.courseName}: ${pct(c.gradePct)}`);
@@ -73,14 +73,14 @@ export default function ResultsScreen() {
         message: resultsShareText({ avgGradePct: headline.avgGradePct, courses }),
       });
     } catch {
-      setShareError("تعذّرت المشاركة — حاول مرة أخرى.");
+      setShareError("تعذّرت المشاركة.");
     }
   }, [courses, headline]);
 
   return (
     <PushFrame
       title="النتائج"
-      kicker="تفاصيل درجاتك وتحليل أدائك بناءً على بياناتك الفعليّة"
+      kicker="درجاتك وتحليل أدائك."
       refreshing={feed.isFetching && !feed.isLoading}
       onRefresh={() => void feed.refetch()}
     >
@@ -90,8 +90,8 @@ export default function ResultsScreen() {
         <ErrorState message={humanizeError(feed.error)} onRetry={() => void feed.refetch()} />
       ) : !hasGrades ? (
         <EmptyState
-          title="لم تُسجَّل أي درجات بعد"
-          message="يبدأ الحساب فور رصد أوّل تقييم في أي مقرّر."
+          title="لا درجات بعد"
+          message="يبدأ فور أول تقييم."
         />
       ) : (
         <>
@@ -143,7 +143,7 @@ export default function ResultsScreen() {
             </View>
           ) : null}
 
-          <SectionBar index={1} title="تفصيل النتائج حسب المقرّر" />
+          <SectionBar index={1} title="حسب المقرّر" />
           <View style={{ gap: sp[12] }}>
             {courses.map((c) => (
               <Card key={c.offeringId} style={{ gap: sp[8] }}>

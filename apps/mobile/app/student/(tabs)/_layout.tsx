@@ -3,6 +3,7 @@ import { RoleTabBar } from "@/components/shell/TabBar";
 import { ROLE_TABS } from "@/components/shell/roleTabs";
 import { useImmersiveTabBar } from "@/components/shell/immersive";
 import { usePalette } from "@/design/theme";
+import { useResponsive } from "@/hooks/useResponsive";
 
 /**
  * /student/(tabs) — THE persistent tab shell (R331 A-App-Shell). The bar
@@ -26,14 +27,30 @@ import { usePalette } from "@/design/theme";
  *  · `useImmersiveTabBar()` — the route-driven hide policy (lecture
  *    player / exam runner / chat composer keyboard): the bar ANIMATES
  *    off-screen, never unmounts. Wired HERE, never in screen files.
+ *
+ * R366 A5 — the responsive shell axis: bottom bar on compact phones, side
+ * RAIL on ≥600dp windows (foldables open, landscape phones, tablets — M3
+ * navigation-rail guidance). `tabBarPosition: "left"` is the LOGICAL start
+ * side — the navigator's RTL row handling pins the rail to the right edge
+ * under the app's forced RTL; RoleTabBar flips its own axis to match, so
+ * every Maestro anchor (tab-*, role-tab-bar) works on both axes.
  */
 export default function StudentTabsLayout() {
   const p = usePalette();
   const immersiveHidden = useImmersiveTabBar();
+  const { wide } = useResponsive();
   return (
     <Tabs
-      tabBar={(props) => <RoleTabBar {...props} role="STUDENT" hidden={immersiveHidden} />}
+      tabBar={(props) => (
+        <RoleTabBar
+          {...props}
+          role="STUDENT"
+          hidden={immersiveHidden}
+          orientation={wide ? "vertical" : "horizontal"}
+        />
+      )}
       screenOptions={{
+        tabBarPosition: wide ? "left" : "bottom",
         headerShown: false,
         lazy: true,
         animation: "fade",

@@ -59,6 +59,7 @@ import {
   threadMessages,
   type Correspondent,
 } from "@/features/messages/logic";
+import { SENDING } from "@/lib/copy";
 
 const LIMIT = 30;
 
@@ -122,11 +123,11 @@ export function MessagesUI({ onBack }: { onBack?: () => void } = {}) {
     onSuccess: () => {
       haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["me", "messages"] });
-      toast.success("عُلّمت كل الرسائل كمقروءة.");
+      toast.success("عُلّمت كلها كمقروءة.");
     },
     onError: (e) => {
       haptics.notify("error");
-      toast.error(humanizeError(e), "تعذَّر التعليم كمقروء");
+      toast.error(humanizeError(e), "تعذّر التعليم");
     },
   });
 
@@ -174,7 +175,7 @@ export function MessagesUI({ onBack }: { onBack?: () => void } = {}) {
         </View>
         {unread > 0 ? (
           <IconButton
-            accessibilityLabel="تعليم الكل كمقروء"
+            accessibilityLabel="تعليم الكل"
             onPress={() => readAll.mutate()}
             disabled={readAll.isPending}
           >
@@ -206,7 +207,7 @@ export function MessagesUI({ onBack }: { onBack?: () => void } = {}) {
         loadMoreError={list.loadMoreError}
         onRetryLoadMore={list.retryLoadMore}
         emptyTitle="لا رسائل بعد"
-        emptyMessage="ستظهر هنا الرسائل الواردة فور وصولها — ويمكنك الردّ عليها من هنا."
+        emptyMessage="الرسائل الواردة — يمكنك الردّ عليها."
         contentPadding={{ horizontal: 16, top: 12, bottom: 24 }}
       />
 
@@ -292,7 +293,7 @@ function ThreadSheet({
   const send = useMutation({
     mutationFn: async () => {
       const body = reply.trim();
-      if (body === "") throw new ApiError("EMPTY", "اكتب نص الرسالة قبل الإرسال.", 400);
+      if (body === "") throw new ApiError("EMPTY", "اكتب الرسالة قبل الإرسال.", 400);
       return studentApi.sendMessage({ toUserId: user.id, body });
     },
     onSuccess: () => {
@@ -352,7 +353,7 @@ function ThreadSheet({
                 />
               </View>
               <Button
-                label={send.isPending ? "جارٍ الإرسال…" : "إرسال"}
+                label={send.isPending ? SENDING : "إرسال"}
                 kind="accent"
                 small
                 loading={send.isPending}

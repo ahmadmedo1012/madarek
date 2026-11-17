@@ -138,7 +138,7 @@ export function BiometricGate({ children }: { children: ReactNode }) {
         <T variant="body" color="muted" align="center" style={{ paddingHorizontal: sp[24] }}>
           {busy
             ? "بانتظار بصمتك…"
-            : "لم تُفتح بعد — اضغط «فتح القفل» للمحاولة مرة أخرى."}
+            : "اضغط «فتح القفل» للمحاولة."}
         </T>
         {!busy ? (
           <>

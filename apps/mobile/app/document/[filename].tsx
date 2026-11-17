@@ -131,7 +131,7 @@ export default function DocumentViewer() {
     },
     onError: (e) => {
       haptics.notify("error");
-      toast.error(humanizeError(e), "تعذّر إضافة التعليق");
+      toast.error(humanizeError(e), "تعذّر الإضافة");
     },
   });
   const delAnn = useMutation({
@@ -151,7 +151,7 @@ export default function DocumentViewer() {
         setAttempt({
           path: remotePath,
           file,
-          error: "لا يوجد عارض PDF على هذا الجهاز — جرّب مشاركة الملف.",
+          error: "لا عارض PDF — جرّب مشاركة الملف.",
         });
       }
     }
@@ -167,7 +167,7 @@ export default function DocumentViewer() {
     try {
       await Sharing.shareAsync(file.uri, { mimeType: "application/pdf", dialogTitle: title });
     } catch {
-      toast.error("تعذّرت المشاركة — أعد المحاولة.");
+      toast.error("تعذّرت المشاركة.");
     }
   };
 
@@ -187,7 +187,7 @@ export default function DocumentViewer() {
           seat; the kicker keeps the namespace label. */}
       <StackHeader
         title={title}
-        kicker={ns === "papers" ? "بحوث · ملفات PDF" : "مواد تدريسية · ملفات PDF"}
+        kicker={ns === "papers" ? "بحوث · ملفات PDF" : "ملفات PDF"}
         right={<Badge label="PDF" tone="grey" mono />}
       />
       <View style={{ gap: sp[12], paddingTop: sp[12] }}>
@@ -239,7 +239,7 @@ export default function DocumentViewer() {
               <View style={{ flex: 1 }}>
                 <T variant="body" weight="bold">تعليقات المراجعة</T>
                 <T variant="sm" color="muted">
-                  {annotations.data ? `${latn(annotations.data.length)} تعليقًا مرتبطًا بصفحات البحث` : "مراجعة الأستاذ على الصفحات"}
+                  {annotations.data ? `${latn(annotations.data.length)} تعليقًا مرتبطًا بصفحات البحث` : "مراجعة الأستاذ"}
                 </T>
               </View>
               <Button label="إدارة" kind="ghost" small onPress={() => setAnnOpen(true)} />
@@ -265,7 +265,7 @@ export default function DocumentViewer() {
           title={title}
           actions={[
             {
-              label: "مشاركة أو حفظ الملف",
+              label: "مشاركة/حفظ الملف",
               onPress: () => {
                 void shareFile();
               },
@@ -286,7 +286,7 @@ export default function DocumentViewer() {
         <AppSheet
           open={annOpen}
           onClose={() => setAnnOpen(false)}
-          title="تعليقات على الصفحات"
+          title="تعليقات الصفحات"
           snap="lg"
         >
           <View style={{ gap: sp[12] }}>
@@ -306,7 +306,7 @@ export default function DocumentViewer() {
                   accessibilityLabel="نص التعليق"
                   value={newComment}
                   onChangeText={setNewComment}
-                  placeholder="اكتب تعليق المراجعة…"
+                  placeholder="تعليق المراجعة…"
                 />
               </View>
             </View>

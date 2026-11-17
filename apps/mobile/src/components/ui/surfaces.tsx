@@ -107,7 +107,15 @@ export function Badge({
         style,
       ]}
     >
-      <T variant={mono ? "monoSm" : "sm"} weight="bold" style={{ color: t.ink }}>
+      <T
+        variant={mono ? "monoSm" : "sm"}
+        weight="bold"
+        numberOfLines={1}
+        /* R366 A5 (fs2 evidence): chips are fixed-geometry chrome — the
+           label caps its font growth instead of wrapping/overflowing. */
+        maxFontSizeMultiplier={1.3}
+        style={{ color: t.ink }}
+      >
         {label}
       </T>
     </View>
@@ -231,7 +239,7 @@ export function OptionSheet({
   onSelect,
   selectedId,
   loading,
-  emptyLabel = "لا توجد خيارات",
+  emptyLabel = "لا خيارات",
 }: {
   open: boolean;
   onClose: () => void;

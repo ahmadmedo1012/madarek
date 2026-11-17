@@ -37,6 +37,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { ScrollBody } from "@/features/student/components";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
+import { SAVE_FAILED, SAVING, STUDENT_FILE_UNLINKED } from "@/lib/copy";
 
 const STUDY_TYPE_LABELS: Record<string, string> = {
   MORNING: "صباحي",
@@ -126,7 +127,7 @@ export default function StudentMyData() {
       toast.success("حُفظت بيانات الاتصال");
       setRevealed(false);
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر الحفظ"),
+    onError: (e) => toast.error(humanizeError(e), SAVE_FAILED),
   });
 
   const setVisibility = (visibility: "INSTITUTION_STAFF" | "PRIVATE") => {
@@ -140,7 +141,7 @@ export default function StudentMyData() {
       <ScrollBody refreshing={profile.isFetching && !profile.isLoading} onRefresh={() => profile.refetch()}>
         <PageHeader
           title="بياناتي واتصالي"
-          kicker="ملفك كما تحمله المؤسّسة — عدّل ما يخصّك، وراجع الإدارة في البقيّة."
+          kicker="بيانات المؤسسة — عدّل ما يخصّك."
         />
 
         {profile.isLoading ? (
@@ -154,8 +155,8 @@ export default function StudentMyData() {
           />
         ) : !view || !draft ? (
           <EmptyState
-            title="لا يوجد ملف طالب بعد"
-            message="لم يُربَط ملف طالب بحسابك — تواصل مع شؤون الطلاب، وبمجرد اعتماده تظهر بياناتك الكاملة هنا."
+            title="لا ملف طالب بعد"
+            message={STUDENT_FILE_UNLINKED}
           />
         ) : (
           <>
@@ -214,7 +215,7 @@ export default function StudentMyData() {
                     label="جهة الطوارئ"
                     value={draft.emergencyContactName}
                     onChangeText={(v) => setDraft({ ...draft, emergencyContactName: v })}
-                    placeholder="اسم جهة الاتصال عند الطوارئ"
+                    placeholder="جهة الاتصال للطوارئ"
                   />
                   <Field
                     label="هاتف الطوارئ"
@@ -230,7 +231,7 @@ export default function StudentMyData() {
                   />
                   <View style={{ flexDirection: "row", gap: sp[8] }}>
                     <Button
-                      label={save.isPending ? "جارٍ الحفظ…" : "حفظ"}
+                      label={save.isPending ? SAVING : "حفظ"}
                       loading={save.isPending}
                       disabled={!dirty || invalid}
                       style={{ flex: 1 }}
@@ -261,7 +262,7 @@ export default function StudentMyData() {
                   <StatLine label="جهة الطوارئ" value={view.emergencyContact.name ?? "—"} />
                   <StatLine label="هاتف الطوارئ" value={view.emergencyContact.phone ?? "—"} />
                   <Button
-                    label="تعديل بيانات الاتصال"
+                    label="بيانات الاتصال"
                     kind="ghost"
                     onPress={() => setRevealed(true)}
                   />
@@ -336,7 +337,7 @@ export default function StudentMyData() {
             </Card>
 
             {/* [05] الوثائق — the institution's custom fields. */}
-            <SectionBar index={5} title="الوثائق وبيانات المؤسسة" />
+            <SectionBar index={5} title="الوثائق والمؤسسة" />
             <Card style={{ gap: sp[6] }}>
               {customFields.length ? (
                 customFields.map((f) => <StatLine key={f.key} label={f.labelAr} value={fmtCustomValue(f)} />)
@@ -359,7 +360,7 @@ export default function StudentMyData() {
               <VisOption
                 active={view.phoneVisibility === "INSTITUTION_STAFF"}
                 title="طاقم مؤسستي"
-                description="أساتذتي وإدارة مؤسستي يرون رقمي — هوائية التواصل الطبيعية."
+                description="الأساتذة والإدارة يرون رقمي."
                 disabled={save.isPending}
                 onPress={() => setVisibility("INSTITUTION_STAFF")}
                 icon={<Eye size={16} color={p.text} />}
@@ -367,7 +368,7 @@ export default function StudentMyData() {
               <VisOption
                 active={view.phoneVisibility === "PRIVATE"}
                 title="خاص بي فقط"
-                description="يظهر مقنّعًا للطاقم، ومن يحتاجه يرسل لي طلب تواصل أقرّه بنفسي."
+                description="مقنّع للطاقم — الطلب بموافقتي."
                 disabled={save.isPending}
                 onPress={() => setVisibility("PRIVATE")}
                 icon={<EyeOff size={16} color={p.text} />}

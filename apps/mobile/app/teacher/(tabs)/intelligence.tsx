@@ -158,7 +158,7 @@ export default function TeacherIntelligence() {
   const suggest = useMutation({
     mutationFn: () => teacherApi.curriculumSuggest(effectiveId),
     onSuccess: () => {
-      toast.success("وصل الاقتراح — قالبيّ ومحاكى كما هو معلن.");
+      toast.success("قالبيّ ومحاكى.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الاقتراح"),
   });
@@ -192,19 +192,19 @@ export default function TeacherIntelligence() {
       <Animated.View entering={entering(0)}>
       <PageHeader
         title="الذكاء الأكاديمي"
-        kicker="متابعة أداء طلابك مدعومة بتحليل لحظي للحضور والدرجات والمتابعة، مع توصيات تدخّل ذكية."
+        kicker="تحليل لحظي مع توصيات تدخّل."
       />
 
-      {/* طلاب يحتاجون متابعة — the global at-risk panel. */}
-      <SectionBar index={1} title="طلاب يحتاجون متابعة" />
+      {/* طلاب للمتابعة — the global at-risk panel. */}
+      <SectionBar index={1} title="طلاب للمتابعة" />
       {risks.isLoading ? (
         <SkeletonList rows={3} />
       ) : risks.isError ? (
         <ErrorState message={humanizeError(risks.error)} onRetry={() => risks.refetch()} compact />
       ) : riskRows.length === 0 ? (
         <EmptyState
-          title="جميع طلابك في وضع جيد"
-          message="لا حاجة لتدخّل عاجل."
+          title="كل طلابك في وضع جيد"
+          message="لا حاجة لتدخّل."
         />
       ) : (
         <View style={{ gap: sp[8] }}>
@@ -312,7 +312,7 @@ export default function TeacherIntelligence() {
             </Card>
           )}
 
-          {/* اقتراح هيكل المنهج — محاكاة معلنة. */}
+          {/* هيكل المنهج — محاكاة معلنة. */}
           <Card>
             <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
               <View style={{ flex: 1 }}>
@@ -324,7 +324,7 @@ export default function TeacherIntelligence() {
               اقتراح قالبيّ لهيكل منهج بمطابقة اسم المقرّر — لا تحليل ذكيّ للمحتوى (محاكاة حتى نموذج حقيقي).
             </T>
             <Button
-              label={suggest.data ? "إعادة الاقتراح" : "اقتراح هيكل المنهج"}
+              label={suggest.data ? "إعادة الاقتراح" : "هيكل المنهج"}
               icon={<Sparkles size={16} color={p.primaryFg} />}
               kind="accent"
               loading={suggest.isPending}
@@ -336,7 +336,7 @@ export default function TeacherIntelligence() {
             />
             {suggest.isError ? (
               <T variant="sm" color="danger" style={{ paddingTop: sp[8] }}>
-                تعذَّر اقتراح هيكل المنهج.
+                تعذَّر هيكل المنهج.
               </T>
             ) : null}
             {suggest.data ? (

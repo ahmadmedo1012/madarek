@@ -28,6 +28,7 @@ import {
   examStartable,
   examWindowState,
 } from "@/features/student/more";
+import { RETRY } from "@/lib/copy";
 
 /* ── pure helpers (unit-pinned in src/test/exam-runner.test.tsx) ─────── */
 
@@ -140,7 +141,7 @@ function ExamRowInner({ item: exam, last, now }: ExamRowProps) {
       ? "متابعة"
       : examStartable(exam) && ws === "open"
         ? exam.myAttempt && exam.kind === "PRACTICE"
-          ? "إعادة المحاولة"
+          ? RETRY
           : "ابدأ"
         : "عرض التفاصيل";
 
@@ -283,12 +284,12 @@ export default function OnlineExamsScreen() {
             <EmptyState
               fill
               room="exam-hall"
-              title={filter === "all" ? undefined : "لا توجد اختبارات هنا"}
+              title={filter === "all" ? undefined : "لا اختبارات هنا"}
               message={
                 filter === "available"
-                  ? "لا توجد اختبارات متاحة حالياً — ستظهر فور اعتماد مكتب الجودة ومقرريك الاختبارات."
+                  ? "تظهر فور اعتماد الجودة."
                   : filter === "taken"
-                    ? "ستظهر اختباراتك المنجزة في هذه القائمة."
+                    ? "المنجزة هنا."
                     : undefined
               }
             />

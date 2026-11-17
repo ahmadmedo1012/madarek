@@ -168,7 +168,7 @@ describe("PickerSheet", () => {
     const view = await render(
       <PickerSheet open onClose={jest.fn()} title="اختر" options={[]} onSelect={jest.fn()} />,
     );
-    await waitFor(() => view.getByText("لا توجد خيارات"));
+    await waitFor(() => view.getByText("لا خيارات"));
   });
 
   test("loading state renders before options arrive", async () => {

@@ -26,6 +26,7 @@ import { toast } from "@/components/ui/toast";
 import { authenticate, biometricAvailable, getBiometricLockEnabled, setBiometricLockEnabled } from "@/lib/biometric";
 import type { SessionResponse } from "@/api/types";
 import Constants from "expo-constants";
+import { LOGOUT_THIS_DEVICE_ONLY, REPORT_PROBLEM, SAVING } from "@/lib/copy";
 
 /** /settings — the SHARED settings surface (every role). R341 M3: the
  *  30-row wall of boxed one-per-setting cards is dead — rows are grouped
@@ -89,13 +90,13 @@ export default function Settings() {
     setBioBusy(true);
     try {
       if (next) {
-        const ok = await authenticate("أكّد تفعيل قفل التطبيق");
+        const ok = await authenticate("أكّد تفعيل القفل");
         if (!ok) return; // refused → the toggle stays off
       }
       await setBiometricLockEnabled(next);
       setBioOn(next);
       toast.success(
-        next ? "سيُطلب فتح القفل عند كل فتح بارد للتطبيق." : "أُلغي قفل التطبيق.",
+        next ? "يُطلب القفل عند كل فتح بارد." : "أُلغي القفل.",
         "الأمان",
       );
     } finally {
@@ -131,11 +132,11 @@ export default function Settings() {
         rows.map((r) => (r.category === row.category ? { ...r, emailEnabled: row.emailEnabled } : r)),
       );
       toast.success(
-        next ? "ستصلك رسائل هذه الفئة على بريدك." : "أوقفت رسائل هذه الفئة.",
+        next ? "رسائلها تصلك على بريدك." : "أوقفت رسائل الفئة.",
         "البريد",
       );
     } catch (err) {
-      toast.error((err as ApiError).message ?? "تعذّر حفظ التفضيل.", "البريد");
+      toast.error((err as ApiError).message ?? "تعذّر الحفظ.", "البريد");
     } finally {
       setMailPrefsBusy(null);
     }
@@ -164,11 +165,11 @@ export default function Settings() {
   const changePassword = async () => {
     setPwError(null);
     if (newPassword.length < 12 || newPassword.length > 72) {
-      setPwError("كلمة المرور الجديدة يجب ألا تقل عن 12 حرفًا ولا تتجاوز 72.");
+      setPwError("بين 12 و72 حرفًا.");
       return;
     }
     if (newPassword !== confirm) {
-      setPwError("كلمتا المرور غير متطابقتين.");
+      setPwError("غير متطابقتين.");
       return;
     }
     setBusy(true);
@@ -181,9 +182,9 @@ export default function Settings() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirm("");
-      toast.success("تم تغيير كلمة المرور — انتهت جلسات أجهزتك الأخرى.", "كلمة المرور");
+      toast.success("غُيّرت كلمة المرور.", "كلمة المرور");
     } catch (err) {
-      setPwError((err as ApiError).message ?? "تعذّر تغيير كلمة المرور.");
+      setPwError((err as ApiError).message ?? "تعذّر التغيير.");
     } finally {
       setBusy(false);
     }
@@ -254,7 +255,7 @@ export default function Settings() {
         </RowList>
       </View>
 
-      {/* [02] البريد — تفضيلات إشعارات البريد الإلكتروني (E3/E6) */}
+      {/* [02] البريد — تفضيلات إشعارات البريد (E3/E6) */}
       {mailPrefs.length > 0 ? (
         <View style={{ gap: sp[8] }}>
           <GroupHeader index={2} title="البريد" />
@@ -375,12 +376,12 @@ export default function Settings() {
         <Card style={{ gap: sp[10] }}>
           <Field label="كلمة المرور الحالية" value={currentPassword} onChangeText={setCurrentPassword} secureTextEntry autoCorrect={false} />
           <SecretField label="كلمة المرور الجديدة" value={newPassword} onChangeText={setNewPassword} hint="12 حرفًا على الأقل." />
-          <SecretField label="تأكيد كلمة المرور الجديدة" value={confirm} onChangeText={setConfirm} onSubmitEditing={changePassword} />
+          <SecretField label="تأكيد كلمة المرور" value={confirm} onChangeText={setConfirm} onSubmitEditing={changePassword} />
           {pwError ? <T variant="sm" color="danger">{pwError}</T> : null}
           <T variant="xs" color="faint">
             تغيير كلمة المرور ينهي جلساتك على جميع الأجهزة الأخرى.
           </T>
-          <Button label={busy ? "جارٍ الحفظ…" : "حفظ كلمة المرور"} onPress={changePassword} loading={busy} />
+          <Button label={busy ? SAVING : "حفظ كلمة المرور"} onPress={changePassword} loading={busy} />
         </Card>
       </View>
 
@@ -397,7 +398,7 @@ export default function Settings() {
               haptics.selection();
               router.push("/report");
             }}
-            accessibilityLabel="الإبلاغ عن مشكلة"
+            accessibilityLabel={REPORT_PROBLEM}
           >
             <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
               <Flag size={20} color={p.textMuted} />
@@ -431,7 +432,7 @@ export default function Settings() {
         open={confirmLogout}
         onClose={() => setConfirmLogout(false)}
         title="تسجيل الخروج؟"
-        message="ستنتهي جلستك على هذا الجهاز فقط — تُحفظ جلسات أجهزتك الأخرى."
+        message={LOGOUT_THIS_DEVICE_ONLY}
         confirmLabel="خروج"
         destructive
         onConfirm={async () => {

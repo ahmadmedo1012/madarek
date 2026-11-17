@@ -10,6 +10,7 @@ import { T } from "@/components/ui/text";
 import { Field } from "@/components/ui/fields";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
+import { SENDING } from "@/lib/copy";
 
 /**
  * /auth/forgot-password — always-200 request (the API never confirms
@@ -37,7 +38,7 @@ export default function ForgotPassword() {
         email: String(form.values.email).trim(),
       });
       haptics.notify("success");
-      setMessage(res.message ?? "إن كان البريد مسجّلًا فستصلك رسالة تحتوي رابط إعادة التعيين.");
+      setMessage(res.message ?? "إن كان مسجّلًا فستصلك رسالة بالرابط.");
       setDevLink(res.devInbox?.url ?? null);
     } catch (err) {
       setError(humanizeError(err));
@@ -52,7 +53,7 @@ export default function ForgotPassword() {
       <AppStatusBar />
       <FormScreen
         onSubmit={submit}
-        submitLabel={busy ? "جارٍ الإرسال…" : "إرسال رابط الاستعادة"}
+        submitLabel={busy ? SENDING : "إرسال الرابط"}
         submitLoading={busy}
         submitKind="accent"
         error={error}
@@ -78,7 +79,7 @@ export default function ForgotPassword() {
         <Field
           {...form.field("email")}
           fieldId="email"
-          label="البريد الإلكتروني"
+          label="البريد"
           purpose="email"
           required
         />

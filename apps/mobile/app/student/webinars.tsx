@@ -21,6 +21,7 @@ import { EmptyState } from "@/components/ui/states";
 import { dateTime, num, weekdayOf } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { LIVE_STATUS, SectionNote, countAr } from "@/features/student/more";
+import { UNKNOWN_STATUS } from "@/lib/copy";
 
 /**
  * /student/webinars — ندوات قادمة (web WebinarsPage parity): the honest
@@ -61,9 +62,9 @@ export default function WebinarsScreen() {
         emptySlot={
           <EmptyState
             icon={<CalendarClock size={24} color={p.textFaint} />}
-            title="لا توجد جلسات مباشرة مجدولة الآن"
-            message="عندما يبدأ أستاذك بثّاً مباشراً ستجده هنا وفي صفحة البثّ — مع التسجيلات بعد انتهاء الجلسة."
-            actionLabel="زيارة صفحة البثّ"
+            title="لا جلسات مجدولة الآن"
+            message="بثوث مباشرة وتسجيلات بعد الجلسة."
+            actionLabel="صفحة البثّ"
             onAction={() => router.push("/student/live" as never)}
           />
         }
@@ -107,7 +108,7 @@ export default function WebinarsScreen() {
 
 function UpcomingRow({ session }: { session: LiveSession }) {
   const p = usePalette();
-  const status = LIVE_STATUS[session.status] ?? { label: "حالة غير معروفة", tone: "grey" as const };
+  const status = LIVE_STATUS[session.status] ?? { label: UNKNOWN_STATUS, tone: "grey" as const };
   const course = session.offering?.course;
   return (
     <LedgerRow accessibilityLabel={`جلسة قادمة: ${session.title}`}>

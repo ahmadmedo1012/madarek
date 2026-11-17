@@ -153,7 +153,7 @@ describe("useFormValidation — the Arabic zod adapter", () => {
     await act(async () => {
       result.current.blur("email");
     });
-    expect(result.current.errorFor("email")).toBe("بريد إلكتروني غير صالح");
+    expect(result.current.errorFor("email")).toBe("بريد غير صالح");
     await act(async () => {
       result.current.setValue("email", "student@test.ly");
     });
@@ -170,7 +170,7 @@ describe("useFormValidation — the Arabic zod adapter", () => {
     await act(async () => {
       result.current.blur("email");
     });
-    expect(result.current.errorFor("email")).toBe("بريد إلكتروني غير صالح");
+    expect(result.current.errorFor("email")).toBe("بريد غير صالح");
   });
 
   it("min/max fallbacks arabize plain zod schemas", async () => {

@@ -21,6 +21,7 @@ import {
   type FacultyNode,
   type OfferingPickRow,
 } from "@/features/governance/components";
+import { CREATING, REGISTRAR_DASHBOARD } from "@/lib/copy";
 
 interface InviteRow {
   id: string;
@@ -87,17 +88,17 @@ const [maxUses, setMaxUses] = useState("1");
       setDays("7");
       setMaxUses("1");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر إنشاء الدعوة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الإنشاء"),
   });
 
   const remove = useMutation({
     mutationFn: (id: string) => adminApi.deleteInvite(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "invites"] });
-      toast.success("حُذف كود الدعوة.", "تمّ الحذف");
+      toast.success("حُذف الكود.", "تمّ الحذف");
       setDeleting(null);
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر حذف الدعوة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الحذف"),
   });
 
   const facultyOptions = (facs.data ?? []).map((f) => ({ id: f.id, label: f.name }));
@@ -114,9 +115,9 @@ const [maxUses, setMaxUses] = useState("1");
 
   return (
     <Screen scroll>
-      <StackHeader title="دعوات التسجيل" kicker="لوحة المسجل العام" />
+      <StackHeader title="دعوات التسجيل" kicker={REGISTRAR_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="دعوات التسجيل" kicker="أكواد انضمام للطلاب والأساتذة، بنطاق واحد على الأكثر وصلاحية محدّدة." />
+        <PageHeader title="دعوات التسجيل" kicker="أكواد انضمام بنطاق وصلاحية." />
 
         <Button
           label="دعوة جديدة"
@@ -131,8 +132,8 @@ const [maxUses, setMaxUses] = useState("1");
           <ErrorState message={humanizeError(invites.error)} onRetry={() => invites.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title="لا توجد دعوات بعد"
-            message="أنشئ أول دعوة من الزر أعلاه لمشاركة كود الانضمام."
+            title="لا دعوات بعد"
+            message="أنشئ أول دعوة."
             actionLabel="دعوة جديدة"
             onAction={() => setCreateOpen(true)}
           />
@@ -182,7 +183,7 @@ const [maxUses, setMaxUses] = useState("1");
         title="دعوة جديدة"
         footer={
           <Button
-            label={create.isPending ? "جارٍ الإنشاء…" : "إنشاء الدعوة"}
+            label={create.isPending ? CREATING : "إنشاء الدعوة"}
             disabled={
               create.isPending ||
               (scopeKind !== "none" && !scopeId) ||

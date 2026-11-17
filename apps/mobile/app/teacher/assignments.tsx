@@ -29,6 +29,7 @@ import {
   OfferingPicker,
   useTeacherOfferings,
 } from "@/features/teacher/components";
+import { CREATING } from "@/lib/copy";
 
 /** Wire shape of /teacher/me/pending-submissions (teacher-dashboard.routes.ts). */
 type PendingWire = Submission & {
@@ -116,7 +117,7 @@ export default function Assignments() {
     mutationFn: async () => {
       const value = Number(score);
       if (score.trim() === "" || Number.isNaN(value)) throw new Error("أدخل درجة صحيحة.");
-      if (value < 0) throw new Error("لا يمكن أن تكون الدرجة سالبة.");
+      if (value < 0) throw new Error("الدرجة ليست سالبة.");
       if (gradeTarget?.maxScore != null && value > gradeTarget.maxScore) {
         throw new Error(`الدرجة يجب ألّا تتجاوز ${latn(gradeTarget.maxScore)}.`);
       }
@@ -129,7 +130,7 @@ export default function Assignments() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "pending-submissions"] });
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.", "تمّ التقييم");
+      toast.success("حُفظت — بإشعار للطالب.", "تمّ التقييم");
       setGradeTarget(null);
       setScore("");
       setFeedback("");
@@ -142,15 +143,15 @@ export default function Assignments() {
     mutationFn: async () => {
       const effId = offeringId || offerings[0]?.id || "";
       if (effId === "") throw new Error("اختر المقرّر أولاً.");
-      if (title.trim().length < 2) throw new Error("العنوان حرفان على الأقل.");
-      if (!dueDate) throw new Error("حدّد الموعد النهائي للتسليم.");
+      if (title.trim().length < 2) throw new Error("العنوان: حرفان على الأقل.");
+      if (!dueDate) throw new Error("حدّد الموعد النهائي.");
       const when = `${dueDate}T${dueTime.trim() === "" ? "23:59" : dueTime}`;
       const t = Date.parse(when);
-      if (Number.isNaN(t)) throw new Error("قيمة الموعد النهائي غير صالحة.");
+      if (Number.isNaN(t)) throw new Error("الموعد غير صالح.");
       const w = Number(weight);
       const mx = Number(maxScore);
       if (Number.isNaN(w) || w < 0 || w > 100) throw new Error("الوزن بين 0 و100.");
-      if (Number.isNaN(mx) || mx <= 0) throw new Error("الدرجة العظمى أكبر من صفر.");
+      if (Number.isNaN(mx) || mx <= 0) throw new Error("العظمى أكبر من صفر.");
       return teacherApi.createAssignment(effId, {
         title: title.trim(),
         description: description.trim() || undefined,
@@ -163,7 +164,7 @@ export default function Assignments() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "assignments"] });
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("أُنشئ الواجب وسيظهر لطلاب المقرّر فوراً.", "تمّ الإنشاء");
+      toast.success("أُنشئ — يظهر فورًا.", "تمّ الإنشاء");
       setCreating(false);
       setTitle("");
       setType("HOMEWORK");
@@ -185,7 +186,7 @@ export default function Assignments() {
       <StackHeader title="الواجبات والاختبارات" />
       <PageHeader
         title="الواجبات والاختبارات"
-        kicker="كلّ الواجبات الموزَّعة على مقرّراتك، والتسليمات بانتظار تقييمك."
+        kicker="واجباتك والتسليمات بانتظارك."
       />
       <SectionBar
         index={1}
@@ -199,7 +200,7 @@ export default function Assignments() {
       ) : pending.isError ? (
         <ErrorState message={humanizeError(pending.error)} onRetry={() => pending.refetch()} />
       ) : pendingRows.length === 0 ? (
-        <EmptyState title="لا تسليمات بانتظار التصحيح" message="ستظهر هنا تسليمات طلابك فور وصولها." />
+        <EmptyState title="لا تسليمات بانتظارك" message="تسليمات طلابك فور وصولها." />
       ) : (
         <RowList>
           {pendingRows.map((s, i) => (
@@ -246,8 +247,8 @@ export default function Assignments() {
         <ErrorState message={humanizeError(assignments.error)} onRetry={() => assignments.refetch()} />
       ) : assignmentRows.length === 0 ? (
         <EmptyState
-          title="لا توجد واجبات بعد"
-          message="أنشئ أول واجب بزر «واجب جديد» بالأعلى — سيظهر لطلاب المقرّر فوراً."
+          title="لا واجبات بعد"
+          message="أنشئ أول واجب."
         />
       ) : (
         <RowList>
@@ -305,7 +306,7 @@ export default function Assignments() {
             ) : null}
             {gradeTarget.fileUrl ? (
               <Button
-                label="فتح الملف في العارض"
+                label="فتح الملف"
                 kind="ghost"
                 small
                 onPress={() => {
@@ -336,10 +337,10 @@ export default function Assignments() {
               accessibilityLabel="الدرجة"
             />
             <Field
-              label="ملاحظات للطالب (اختياري)"
+              label="ملاحظات (اختياري)"
               value={feedback}
               onChangeText={setFeedback}
-              placeholder="اكتب ملاحظاتك على الإجابة…"
+              placeholder="ملاحظاتك على الإجابة…"
               accessibilityLabel="ملاحظات للطالب"
             />
             {gradeError ? (
@@ -369,7 +370,7 @@ export default function Assignments() {
               setTitle(v);
               setCreateError(null);
             }}
-            placeholder="مثال: واجب الأسبوع الأول — مقدمة في الموضوع"
+            placeholder="مثال: واجب الأسبوع الأول"
             accessibilityLabel="عنوان الواجب"
           />
           <SelectField
@@ -419,7 +420,7 @@ export default function Assignments() {
             label="الوصف (اختياري)"
             value={description}
             onChangeText={setDescription}
-            placeholder="تعليمات التسليم، المراجع، معايير التقييم…"
+            placeholder="التعليمات والمعايير…"
             accessibilityLabel="الوصف"
           />
           {createError ? (
@@ -428,7 +429,7 @@ export default function Assignments() {
             </T>
           ) : null}
           <Button
-            label={create.isPending ? "جارٍ الإنشاء…" : "إنشاء الواجب"}
+            label={create.isPending ? CREATING : "إنشاء الواجب"}
             kind="accent"
             loading={create.isPending}
             disabled={offerings.length === 0}

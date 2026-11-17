@@ -27,6 +27,7 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
+import { RETRY } from "@/lib/copy";
 
 /** PREFERRED_CONTACT labels (web PeoplePages parity). */
 const PREFERRED_LABELS: Record<string, string> = {
@@ -178,7 +179,7 @@ export function PersonContactSheet({
           <T variant="body" color="muted">
             {humanizeError(person.error)}
           </T>
-          <Button small kind="ghost" label="إعادة المحاولة" onPress={() => person.refetch()} />
+          <Button small kind="ghost" label={RETRY} onPress={() => person.refetch()} />
         </View>
       ) : data ? (
         <View style={{ gap: sp[12] }}>

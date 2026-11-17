@@ -90,7 +90,7 @@ function PostCard({
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={reacted ? "إزالة الإعجاب" : "أعجبني بهذا المنشور"}
+          accessibilityLabel={reacted ? "إزالة الإعجاب" : "أعجبني"}
           accessibilityState={{ selected: reacted }}
           onPress={() => onToggle(post)}
           disabled={disabled}
@@ -144,7 +144,7 @@ export default function SocialScreen() {
       void qc.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (e) => {
-      toast.error(humanizeError(e), "تعذّر تسجيل الإعجاب");
+      toast.error(humanizeError(e), "تعذّر الإعجاب");
     },
   });
   const unreact = useMutation({
@@ -153,7 +153,7 @@ export default function SocialScreen() {
       void qc.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (e) => {
-      toast.error(humanizeError(e), "تعذّر إلغاء الإعجاب");
+      toast.error(humanizeError(e), "تعذّر الإلغاء");
     },
   });
 
@@ -187,7 +187,7 @@ export default function SocialScreen() {
       toast.success("تم نشر منشورك.", "تمّ النشر");
       setComposerOpen(false);
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر نشر المنشور"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر النشر"),
   });
 
   const likeBusy = react.isPending || unreact.isPending;
@@ -215,7 +215,7 @@ export default function SocialScreen() {
         refetch={feed.refetch}
         isRefetching={feed.isRefetching}
         emptyTitle="لا منشورات بعد"
-        emptyMessage="كن أول من يشارك تجربته أو سؤاله."
+        emptyMessage="كن أول المشاركين."
         ListHeaderComponent={
           <View style={{ paddingHorizontal: sp[16], paddingVertical: sp[8] }}>
             <T variant="sm" color="muted">
@@ -298,7 +298,7 @@ function ComposeSheet({
           label="نص المنشور"
           value={body}
           onChangeText={setBody}
-          placeholder="ماذا يدور في ذهنك؟"
+          placeholder="ماذا في ذهنك؟"
           multiline
           maxLength={2000}
         />
@@ -307,7 +307,7 @@ function ComposeSheet({
           value={hashtags}
           onChangeText={setHashtags}
           placeholder="مثال: برمجة، تصميم"
-          hint="أدخل الوسوم مفصولة بفواصل."
+          hint="وسوم بفواصل."
         />
         <T variant="xs" color="faint">
           لا تُرفع الصور من التطبيق بعد — يُعرض ما يرسله الخادم من روابط فقط.

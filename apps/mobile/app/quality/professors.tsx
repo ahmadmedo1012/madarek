@@ -14,6 +14,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { clamp01, initials, latn } from "@/lib/format";
 import { countAr, type ProfessorRow } from "@/features/governance/components";
+import { QUALITY_SECTOR, READ_ONLY } from "@/lib/copy";
 
 const ROSTER_CAP = 100;
 
@@ -36,12 +37,12 @@ export default function QualityProfessors() {
 
   return (
     <Screen scroll>
-      <StackHeader title="تقييم الأساتذة" kicker="قطاع ضمان الجودة" />
+      <StackHeader title="تقييم الأساتذة" kicker={QUALITY_SECTOR} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader
           title="تقييم الأساتذة"
-          kicker="رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة."
-          right={<Badge label="قراءة فقط" tone="grey" />}
+          kicker="الرضا والاستجابة والالتزام."
+          right={<Badge label={READ_ONLY} tone="grey" />}
         />
 
         {rows.some((t) => t.satisfactionEstimated || t.responseHoursEstimated) ? (
@@ -60,7 +61,7 @@ export default function QualityProfessors() {
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا أساتذة بعد"
-            message="ستظهر هيئة التدريس ومؤشراتها هنا فور إضافة أعضائها إلى المؤسسة."
+            message="تظهر فور إضافتها."
           />
         ) : (
           <>

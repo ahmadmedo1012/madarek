@@ -171,7 +171,7 @@ export function FormScreen({
       await onSubmit();
     } catch (err) {
       setSubmitError(
-        err instanceof Error && err.message ? err.message : "تعذّر إتمام العملية — حاول مرة أخرى.",
+        err instanceof Error && err.message ? err.message : "تعذّر الإتمام — حاول مجددًا.",
       );
     } finally {
       setBusy(false);
@@ -329,7 +329,7 @@ interface IssueLike {
 
 export const AR_MESSAGES = {
   required: "هذا الحقل مطلوب",
-  email: "بريد إلكتروني غير صالح",
+  email: "بريد غير صالح",
   url: "رابط غير صالح",
   phone: "رقم هاتف غير صالح",
   minChars: (n: number) => `يجب أن يكون ${n} حرفًا على الأقل`,
@@ -374,7 +374,7 @@ export function arabizeIssue(issue: IssueLike): string {
 /**
  * Arabic-first zod rule factories — the vocabulary every form shares.
  * `ar.email()` reads: required first («هذا الحقل مطلوب»), then the format
- * check («بريد إلكتروني غير صالح»).
+ * check («بريد غير صالح»).
  */
 export const ar = {
   required: (msg: string = AR_MESSAGES.required) => z.string().trim().min(1, { message: msg }),
@@ -395,7 +395,7 @@ export const ar = {
       .trim()
       .min(3, { message: AR_MESSAGES.minChars(3) })
       .max(30, { message: AR_MESSAGES.maxChars(30) })
-      .regex(/^[a-z0-9._-]+$/, { message: "يُسمح بالحروف اللاتينية الصغيرة والأرقام و . _ - فقط" }),
+      .regex(/^[a-z0-9._-]+$/, { message: "لاتينية صغيرة وأرقام و . _ - فقط" }),
   phone: () => z.string().trim().regex(/^\+?\d{8,15}$/, { message: AR_MESSAGES.phone }),
   length: (min: number, max?: number) =>
     z

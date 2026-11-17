@@ -32,6 +32,8 @@ import {
   type AuditRow,
   type OwnerStatsRow,
 } from "@/features/governance/components";
+import { OWNER_DASHBOARD } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 interface OwnerAlert {
   id: string;
@@ -82,7 +84,7 @@ export default function OwnerDashboard() {
   return (
     <Screen scroll>
       <AppTopBar alertsPath="/owner/alerts" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
         <Animated.View entering={entering(0)}>
           <T variant="h2" weight="bold">
             لوحة التحكم الرئيسية
@@ -93,9 +95,9 @@ export default function OwnerDashboard() {
         </Animated.View>
 
         {stats.isLoading ? (
-          <Animated.View entering={entering(1)} style={{ gap: 8 }}>
+          <Animated.View entering={entering(1)} style={{ gap: sp[8] }}>
             <Skeleton h={132} />
-            <View style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flexDirection: "row", gap: sp[8] }}>
               <Skeleton h={72} />
               <Skeleton h={72} />
             </View>
@@ -105,17 +107,17 @@ export default function OwnerDashboard() {
             <ErrorState message={humanizeError(stats.error)} onRetry={() => stats.refetch()} />
           </Animated.View>
         ) : s ? (
-          <Animated.View entering={entering(1)} style={{ gap: 8 }}>
+          <Animated.View entering={entering(1)} style={{ gap: sp[8] }}>
             <MetricHero
-              label="إجمالي مستخدمي المنصّة"
+              label="مستخدمو المنصّة"
               value={s.totalUsers ?? null}
               hint={countAr(s.totalUsers ?? 0, ["حساب واحد", "حسابان", "حسابات", "حساباً"])}
             />
-            <View style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flexDirection: "row", gap: sp[8] }}>
               <MetricTile label="الطلاب" value={s.students ?? null} />
               <MetricTile label="الأساتذة" value={s.teachers ?? null} />
             </View>
-            <View style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flexDirection: "row", gap: sp[8] }}>
               <MetricTile label="المقرّرات" value={s.totalCourses ?? null} />
               <MetricTile label="التسجيلات" value={s.totalEnrollments ?? null} />
             </View>
@@ -135,7 +137,7 @@ export default function OwnerDashboard() {
             }
           />
           {alerts.isLoading ? (
-            <View style={{ gap: 8 }}>
+            <View style={{ gap: sp[8] }}>
               <Skeleton h={44} />
               <Skeleton h={44} />
             </View>
@@ -144,11 +146,11 @@ export default function OwnerDashboard() {
           ) : alertRows.length === 0 ? (
             <EmptyState
               room="building"
-              title="النظام يعمل بشكل طبيعي"
-              message="لا تنبيهات تشغيليّة مفتوحة حاليًا — ستظهر التنبيهات والحوادث هنا فور رصدها."
+              title="النظام طبيعيّ"
+              message="لا تنبيهات — تظهر فور رصدها."
             />
           ) : (
-            <View style={{ gap: 12 }}>
+            <View style={{ gap: sp[12] }}>
               <RowList>
                 {alertRows.slice(0, 3).map((a, i, arr) => (
                   <LedgerRow
@@ -158,7 +160,7 @@ export default function OwnerDashboard() {
                       (a.severity != null && SEVERITY_LABEL[a.severity]) || "تشغيليّ"
                     }: ${a.title ?? "بدون عنوان"} · ${fromNow(a.createdAt)}`}
                   >
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                       <SeverityChip severity={a.severity} />
                       <T variant="xs" color="faint">
                         {fromNow(a.createdAt)}
@@ -187,9 +189,9 @@ export default function OwnerDashboard() {
           ) : activity.isError ? (
             <ErrorState message={humanizeError(activity.error)} onRetry={() => activity.refetch()} compact />
           ) : events.length === 0 ? (
-            <EmptyState title="لا توجد أحداث بعد" message="ستظهر أحدث العمليّات هنا فور حدوثها." />
+            <EmptyState title="لا أحداث بعد" message="أحدث العمليّات فور حدوثها." />
           ) : (
-            <View style={{ gap: 12 }}>
+            <View style={{ gap: sp[12] }}>
               <DataList
                 data={events}
                 renderItem={({ item }) => <EventRow item={item} />}
@@ -200,7 +202,7 @@ export default function OwnerDashboard() {
                 scrollProps={{ nestedScrollEnabled: true }}
               />
               <Button
-                label="سجلّ النشاط الكامل"
+                label="سجلّ النشاط"
                 kind="ghost"
                 small
                 onPress={() => router.push("/owner/activity" as never)}
@@ -210,7 +212,7 @@ export default function OwnerDashboard() {
         </Animated.View>
 
         <Animated.View entering={entering(4)}>
-          <SectionBar index={3} title="لوحة المالك" />
+          <SectionBar index={3} title={OWNER_DASHBOARD} />
           <RowList>
             <LedgerRow
               onPress={() => {
@@ -219,7 +221,7 @@ export default function OwnerDashboard() {
               }}
               accessibilityLabel="المؤسسات"
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
                 <Landmark size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
@@ -238,7 +240,7 @@ export default function OwnerDashboard() {
               }}
               accessibilityLabel="سجلّ النشاط"
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
                 <Activity size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
@@ -257,7 +259,7 @@ export default function OwnerDashboard() {
               }}
               accessibilityLabel="التنبيهات التشغيليّة"
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
                 <TriangleAlert size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
@@ -276,7 +278,7 @@ export default function OwnerDashboard() {
               }}
               accessibilityLabel="مركز الذكاء الاصطناعيّ"
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
                 <Bot size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
@@ -295,7 +297,7 @@ export default function OwnerDashboard() {
               }}
               accessibilityLabel="النظرة التعليميّة"
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
                 <FileText size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
@@ -314,7 +316,7 @@ export default function OwnerDashboard() {
               }}
               accessibilityLabel="النظام والتشغيل"
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
                 <Settings size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
@@ -331,14 +333,14 @@ export default function OwnerDashboard() {
                 haptics.selection();
                 router.push("/owner/content" as never);
               }}
-              accessibilityLabel="المحتوى والعلامة التجاريّة"
+              accessibilityLabel="المحتوى والعلامة"
               last
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
                 <Palette size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
-                    المحتوى والعلامة التجاريّة
+                    المحتوى والعلامة
                   </T>
                   <T variant="xs" color="muted">
                     الهويّة البصريّة وأصول العلامة

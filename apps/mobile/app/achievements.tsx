@@ -30,6 +30,7 @@ import {
   countAr,
   isUnauthError,
 } from "@/features/common/components";
+import { SELF_DEV } from "@/lib/copy";
 
 type Tab = "badges" | "certs" | "leaderboard";
 
@@ -76,7 +77,7 @@ export default function Achievements() {
 
   return (
     <Screen scroll>
-      <StackHeader title="الإنجازات" kicker="التطوير الذاتي" />
+      <StackHeader title="الإنجازات" kicker={SELF_DEV} />
       <T variant="body" color="secondary">
         رحلتك في التطوير الذاتي — نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء.
       </T>
@@ -99,15 +100,15 @@ export default function Achievements() {
           <SkeletonList rows={6} rowHeight={90} />
         ) : badges.isError ? (
           isUnauthError(badges.error) ? (
-            <SignInPrompt message="أوسمتك وإنجازاتك تحتاج حسابًا — سجّل الدخول لعرضها." />
+            <SignInPrompt message="سجّل الدخول للأوسمة." />
           ) : (
             <ErrorState message={humanizeError(badges.error)} onRetry={() => badges.refetch()} />
           )
         ) : (badges.data ?? []).length === 0 ? (
           <EmptyState
             art={<Illustration id="r342/why-cycle" width={342} />}
-            title="لا توجد أوسمة بعد"
-            message="ابدأ بدروس التطوير الذاتي لتحصد أول وسام."
+            title="لا أوسمة بعد"
+            message="ابدأ بدروس التطوير لأول وسام."
             icon={<Award size={20} color={p.textMuted} />}
             actionLabel="تصفّح المسارات"
             onAction={() => router.push("/training" as never)}
@@ -126,14 +127,14 @@ export default function Achievements() {
           <SkeletonList rows={4} rowHeight={84} />
         ) : certs.isError ? (
           isUnauthError(certs.error) ? (
-            <SignInPrompt message="شهاداتك تحتاج حسابًا — سجّل الدخول لعرضها." />
+            <SignInPrompt message="سجّل الدخول للشهادات." />
           ) : (
             <ErrorState message={humanizeError(certs.error)} onRetry={() => certs.refetch()} />
           )
         ) : (certs.data ?? []).length === 0 ? (
           <EmptyState
-            title="لم تحصل على شهادات بعد"
-            message="أكمل أول مسار تدريبي للحصول على شهادتك الأولى."
+            title="لا شهادات بعد"
+            message="أكمل أول مسار لشهادتك."
             actionLabel="تصفّح المسارات"
             onAction={() => router.push("/training" as never)}
           />
@@ -180,14 +181,14 @@ export default function Achievements() {
           <SkeletonList rows={8} />
         ) : board.isError ? (
           isUnauthError(board.error) ? (
-            <SignInPrompt message="لوحة المتصدّرين تحتاج حسابًا — سجّل الدخول لعرضها." />
+            <SignInPrompt message="سجّل الدخول للمتصدّرين." />
           ) : (
             <ErrorState message={humanizeError(board.error)} onRetry={() => board.refetch()} />
           )
         ) : (board.data ?? []).length === 0 ? (
           <EmptyState
-            title="لا يوجد ترتيب بعد"
-            message="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
+            title="لا ترتيب بعد"
+            message="اكسب النقاط — ترتيبك يظهر مع أول نقطة."
             actionLabel="ابدأ من التطوير الذاتي"
             onAction={() => router.push("/training" as never)}
           />

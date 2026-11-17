@@ -42,6 +42,7 @@ import {
   materialCourseName,
   openMaterial,
 } from "@/features/student/components";
+import { NO_FILES } from "@/lib/copy";
 
 const MATERIAL_TYPE_LABEL: Record<string, string> = {
   PDF: "PDF",
@@ -109,7 +110,7 @@ const MaterialRowItem = makeRow<
           {materialTypeIcon(m.type, p.textSecondary)}
         </View>
         <View style={{ flex: 1, gap: 2 }}>
-          <T variant="body" weight="bold" numberOfLines={1}>
+          <T variant="body" weight="bold" numberOfLines={2}>
             {m.name}
           </T>
           <T variant="sm" color="muted" numberOfLines={1}>
@@ -160,7 +161,7 @@ export default function MaterialsScreen() {
   return (
     <Screen scroll={false} padded={false}>
       <AppStatusBar />
-      <StackHeader title="موادي التعليمية" kicker="ملفّات مقرّراتك في مكان واحد" />
+      <StackHeader title="موادي التعليمية" kicker="ملفات مقرّراتك معًا" />
       <View style={{ flex: 1 }}>
         <DataList
           data={filtered}
@@ -176,7 +177,7 @@ export default function MaterialsScreen() {
             <View style={{ gap: sp[8] }}>
               <SectionBar
                 index={1}
-                title={filterActive ? "ملفّات حديثة — مُصفّاة" : "ملفّات حديثة"}
+                title={filterActive ? "حديثة — مُصفّاة" : "ملفّات حديثة"}
                 action={
                   <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                     {rows.length > 0 ? (
@@ -222,8 +223,8 @@ export default function MaterialsScreen() {
           emptySlot={
             <EmptyState
               room="library"
-              title="لا توجد ملفات"
-              message="ستظهر هنا فور رفع موادّ في أيٍّ من مقرّراتك المسجَّلة."
+              title={NO_FILES}
+              message="تظهر فور رفع أي مواد."
             />
           }
           contentPadding={{ horizontal: 20, bottom: 24 }}

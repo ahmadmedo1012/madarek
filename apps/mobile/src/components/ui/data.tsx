@@ -20,6 +20,7 @@ import { latn, num } from "@/lib/format";
 import type { PageMeta, Paginated } from "@/api/types";
 import { T } from "./text";
 import { EmptyState, ErrorState, Refreshable, Skeleton, SkeletonList } from "./states";
+import { NO_DATA } from "@/lib/copy";
 
 /** StatLine — mono drafting metric row: label · value. */
 export function StatLine({
@@ -89,7 +90,10 @@ export function KpiCard({
         style,
       ]}
     >
-      <T variant="sm" color="muted" numberOfLines={1}>
+      {/* R366 A5 a11y-small/fs2 evidence fix: single-line labels ellipsized
+          mid-word at 360dp tiles (student a11y review) and fs2 KpiCards
+          (registrar fs2 review). Two lines + a font-scale cap wrap instead. */}
+      <T variant="sm" color="muted" numberOfLines={2} maxFontSizeMultiplier={1.25}>
         {label}
       </T>
       <View style={{ flexDirection: "row", alignItems: "baseline", gap: 2 }}>
@@ -415,7 +419,7 @@ export function DataList<T>(props: DataListProps<T>) {
   }
   if (rows.length === 0) {
     const empty =
-      emptySlot ?? <EmptyState title={emptyTitle ?? "لا توجد بيانات بعد"} message={emptyMessage} />;
+      emptySlot ?? <EmptyState title={emptyTitle ?? NO_DATA} message={emptyMessage} />;
     if (!refetch) {
       return (
         <View style={[{ paddingHorizontal: padX ?? sp[16] }, style]} testID={testID}>

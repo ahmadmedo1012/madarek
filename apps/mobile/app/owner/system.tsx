@@ -24,10 +24,12 @@ import {
   textOf,
   type SystemRow,
 } from "@/features/governance/components";
+import { OWNER_DASHBOARD, SAVED, SAVE_FAILED, SAVING, UPDATE_FAILED } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 /** Storage drivers → Arabic labels (web OwnerSystemPage parity). */
 const STORAGE_DRIVER_LABEL: Record<string, string> = {
-  local: "محليّ — قرص الخادم",
+  local: "محليّ (قرص الخادم)",
   s3: "تخزين كائنات (S3-متوافق)",
 };
 /** Unknown driver codes read «تعريف غير معروف» — never the raw env code. */
@@ -76,9 +78,9 @@ export default function OwnerSystem() {
       ownerApi.setSetting(payload.key, payload.value),
     onSuccess: (_d, payload) => {
       qc.invalidateQueries({ queryKey: ["owner", "settings"] });
-      toast.success(`حُفظ الإعداد «${payload.key}».`, "تمّ الحفظ");
+      toast.success(`حُفظ الإعداد «${payload.key}».`, SAVED);
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ الإعداد"),
+    onError: (e) => toast.error(humanizeError(e), SAVE_FAILED),
   });
 
   const setFlag = useMutation({
@@ -93,7 +95,7 @@ export default function OwnerSystem() {
         "أعلام الميزات",
       );
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث العلم"),
+    onError: (e) => toast.error(humanizeError(e), UPDATE_FAILED),
   });
 
   const s = sys.data;
@@ -104,12 +106,12 @@ export default function OwnerSystem() {
       ? storage?.reachable === true
         ? { label: "دائمة", tone: "mint" as const, note: storage.checkedAt ? `آخر تحقّق: ${fromNow(storage.checkedAt)}` : null }
         : storage?.reachable === false
-          ? { label: "مهيَّأ لكن يتعذّر الوصول الآن", tone: "rose" as const, note: "الرفعات الجديدة ستفشل حتى يعود المخزن." }
-          : { label: "لم يُتحقق بعد", tone: "yellow" as const, note: "لم يتحقّق الخادم من اتصال المخزن بعد." }
+          ? { label: "مهيَّأ لكن يتعذّر الوصول", tone: "rose" as const, note: "ستفشل حتى يعود المخزن." }
+          : { label: "لم يُتحقق بعد", tone: "yellow" as const, note: "لم يُتحقّق من اتصاله." }
       : driver
         ? storage?.persistent
           ? { label: "دائمة", tone: "mint" as const, note: null }
-          : { label: "لا تنجو من إعادة النشر", tone: "yellow" as const, note: "أوراق البحث وملفات المقرّرات المرفوعة ستُفقد عند كل نشر جديد — دوامها يتطلب تخزين كائنات (S3)." }
+          : { label: "لا تنجو من النشر", tone: "yellow" as const, note: "ستُفقد عند كل نشر — يتطلب تخزين كائنات (S3)." }
         : null;
 
   const settingRows = Array.isArray(settings.data) ? settings.data : [];
@@ -117,9 +119,9 @@ export default function OwnerSystem() {
 
   return (
     <Screen scroll>
-      <StackHeader title="النظام والتشغيل" kicker="لوحة المالك" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="النظام والتشغيل" kicker="إدارة البنية التحتية وحالة الخدمات وإعدادات المنصّة" />
+      <StackHeader title="النظام والتشغيل" kicker={OWNER_DASHBOARD} />
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
+        <PageHeader title="النظام والتشغيل" kicker="البنية والخدمات" />
 
         {/* [01] حالة الخدمة */}
         <View>
@@ -138,7 +140,7 @@ export default function OwnerSystem() {
                 <StatLine
                   label="حالة الخدمة"
                   value={sys.isError ? "تعذّر الاتصال" : s ? "متصل" : null}
-                  hint="من حالة الاستعلام الحيّ"
+                  hint="من الاستعلام الحيّ"
                 />
                 <StatLine
                   label="تنبيهات حرجة مفتوحة"
@@ -164,15 +166,15 @@ export default function OwnerSystem() {
           )}
         </View>
 
-        {/* [02] تخزين الرفعات (PDF) */}
+        {/* [02] تخزين الرفعات */}
         <View>
-          <SectionBar index={2} title="تخزين الرفعات (PDF)" />
+          <SectionBar index={2} title="تخزين الرفعات" />
           {sys.isLoading ? (
             <SkeletonList rows={2} rowHeight={48} />
           ) : !storage ? (
             <RowList>
               <LedgerRow last>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                   <HardDrive size={18} color={p.textMuted} />
                   <T variant="body" color="muted">
                     {sys.isError ? "—" : "غير متوفر"}
@@ -180,15 +182,15 @@ export default function OwnerSystem() {
                 </View>
                 <T variant="xs" color="faint">
                   {sys.isError
-                    ? "تعذّر جلب حالة النظام — أعد المحاولة من بطاقة حالة الخدمة."
-                    : "نسخة الخادم الحاليّة لا تُصرّح عن حالة تخزين الرفعات بعد."}
+                    ? "تعذّر الجلب — أعد المحاولة."
+                    : "لا تُصرّح عن التخزين بعد."}
                 </T>
               </LedgerRow>
             </RowList>
           ) : (
             <RowList>
               <LedgerRow last>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
                   <T variant="sm" color="muted">
                     السائق
                   </T>
@@ -197,7 +199,7 @@ export default function OwnerSystem() {
                     tone={driver === "s3" ? "sky" : driver === "local" ? "yellow" : "grey"}
                   />
                 </View>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
                   <T variant="sm" color="muted">
                     دوام الملفات المرفوعة
                   </T>
@@ -240,7 +242,7 @@ export default function OwnerSystem() {
                     accessibilityLabel={`تعديل الإعداد ${row.key}`}
                     last={i === settingRows.length - 1}
                   >
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
                       <MonoLabel>{row.key}</MonoLabel>
                       {row.category ? <Badge label={settingCategoryLabel(row.category)} tone="grey" /> : null}
                     </View>
@@ -260,7 +262,7 @@ export default function OwnerSystem() {
 
         {/* [04] أعلام الميزات */}
         <View>
-          <SectionBar index={4} title="أعلام الميزات (Feature Flags)" />
+          <SectionBar index={4} title="أعلام الميزات" />
           {flags.isLoading ? (
             <SkeletonList rows={3} rowHeight={56} />
           ) : flags.isError ? (
@@ -272,15 +274,15 @@ export default function OwnerSystem() {
           ) : flagRows.length === 0 ? (
             <EmptyState
               icon={<Settings size={22} color={p.textMuted} />}
-              title="لا توجد أعلام مُعرَّفة"
-              message="لم تُعرَّف أعلام ميزات بعد؛ تُدار حالياً مباشرةً من قاعدة بيانات المنصّة."
+              title="لا أعلام معرَّفة"
+              message="لا أعلام — تُدار من قاعدة البيانات."
             />
           ) : (
             <RowList>
               {flagRows.map((f, i) => (
                 <LedgerRow key={f.slug} last={i === flagRows.length - 1}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-                    <View style={{ flex: 1, gap: 2 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
+                    <View style={{ flex: 1, gap: sp[2] }}>
                       <T variant="body" weight="bold" numberOfLines={1}>
                         {f.name ?? f.slug}
                       </T>
@@ -311,7 +313,7 @@ export default function OwnerSystem() {
         {s?.alerts?.openCount != null && s.alerts.openCount > 0 ? (
           <T variant="xs" color="faint">
             {countAr(s.alerts.openCount, [
-              "تنبيه مفتوح واحد",
+              "تنبيه مفتوح",
               "تنبيهان مفتوحان",
               "تنبيهات مفتوحة",
               "تنبيهاً مفتوحاً",
@@ -382,17 +384,17 @@ function SettingEditSheet({
 
   return (
     <Sheet open={open} onClose={onClose} title={draft ? `تعديل «${draft.key}»` : "تعديل الإعداد"}>
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: sp[12] }}>
         {draft ? <MonoLabel>{draft.key}</MonoLabel> : null}
         <Field
           label="قيمة الإعداد"
           value={value}
           onChangeText={setValue}
-          hint="تُحفَظ كما هي (نصّ) وتُوثَّق في سجلّ النشاط"
+          hint="تُحفظ نصًّا وتوثَّق."
           autoCorrect={false}
         />
         <Button
-          label={setSetting.isPending ? "جارٍ الحفظ…" : "حفظ الإعداد"}
+          label={setSetting.isPending ? SAVING : "حفظ الإعداد"}
           kind="primary"
           disabled={!canSave}
           onPress={() => {

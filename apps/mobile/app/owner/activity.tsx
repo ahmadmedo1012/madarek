@@ -18,6 +18,7 @@ import {
   textOf,
   type AuditRow,
 } from "@/features/governance/components";
+import { OWNER_DASHBOARD } from "@/lib/copy";
 
 const PAGE_LIMIT = 30;
 
@@ -39,7 +40,7 @@ function metadataSummary(metadata: unknown): string | null {
 }
 
 /**
- * Pushed: /owner/activity — «سجلّ النشاط والمراقبة» (web OwnerActivityPage
+ * Pushed: /owner/activity — «سجلّ النشاط» (web OwnerActivityPage
  * parity): the platform audit trail, paginated — action as a mono chip
  * with its Arabic label, the actor, an exact timestamp, and an honest
  * metadata summary per event.
@@ -79,9 +80,9 @@ export default function OwnerActivity() {
 
   return (
     <Screen scroll={false} padded={false}>
-      <StackHeader title="سجلّ النشاط والمراقبة" kicker="لوحة المالك" />
+      <StackHeader title="سجلّ النشاط" kicker={OWNER_DASHBOARD} />
       <View style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
-        <PageHeader title="سجلّ النشاط والمراقبة" kicker="جميع العمليّات المنفَّذة على المنصّة — حيّة من سجلّ التدقيق" />
+        <PageHeader title="سجلّ النشاط" kicker="كل العمليّات — من سجلّ التدقيق" />
       </View>
       <View style={{ flex: 1 }}>
         <DataList
@@ -101,8 +102,8 @@ export default function OwnerActivity() {
           hasNextPage={feed.hasNextPage}
           loadMoreError={feed.loadMoreError}
           onRetryLoadMore={feed.retryLoadMore}
-          emptyTitle="لا توجد أحداث مسجَّلة بعد"
-          emptyMessage="تُسجَّل الأحداث تلقائياً فور أول عمليّة على المنصّة."
+          emptyTitle="لا أحداث بعد"
+          emptyMessage="تُسجَّل فور أول عمليّة."
           contentPadding={{ horizontal: 20, bottom: 24 }}
         />
       </View>

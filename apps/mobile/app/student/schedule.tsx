@@ -11,7 +11,7 @@
  *     fill) / «التالية» (next, accentSoft) / «انتهت» (done, grey) — from
  *     the Tripoli clock (useNow ticks every minute, render stays pure);
  *   · EmptyState rooms: building when there is no schedule at all,
- *     lecture-hall «لا توجد محاضرات اليوم» for an empty day;
+ *     lecture-hall «لا محاضرات اليوم» for an empty day;
  *   · errors through humanizeError (never raw error.message).
  */
 
@@ -34,6 +34,7 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { countAr } from "@/features/student/more";
 import { tripoliDow } from "@/features/student/components";
+import { LIVE_NOW } from "@/lib/copy";
 
 interface DaySlot {
   dow: number;
@@ -195,7 +196,7 @@ export default function ScheduleScreen() {
     <Screen scroll={false} padded={false}>
       <StackHeader
         title="الجدول الأسبوعي"
-        kicker={countAr(totalSlots, ["حصة أسبوعياً واحدة", "حصتان أسبوعياً", "حصص أسبوعياً", "حصة أسبوعياً"])}
+        kicker={countAr(totalSlots, ["حصة أسبوعيًا", "حصتان أسبوعياً", "حصص أسبوعياً", "حصة أسبوعياً"])}
       />
       {/* The week strip — day chips, today outlined in the one accent. */}
       <ScrollView
@@ -238,14 +239,14 @@ export default function ScheduleScreen() {
           nothingAtAll ? (
             <EmptyState
               room="building"
-              title="لا يوجد جدول مسجّل"
-              message="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول لمقرّراتك."
+              title="لا جدول مسجّل"
+              message="تظهر فور تسجيل الجدول."
             />
           ) : (
             <EmptyState
               room="lecture-hall"
-              title={Number(selected) === todayDow ? "لا توجد محاضرات اليوم" : "لا حصص في هذا اليوم"}
-              message="اختر يوماً آخر من الشريط أعلاه أو راجع مقرّراتك."
+              title={Number(selected) === todayDow ? "لا محاضرات اليوم" : "لا حصص اليوم"}
+              message="اختر يومًا آخر."
             />
           )
         }
@@ -338,7 +339,7 @@ function DaySectionHeader({ dow, todayDow }: { dow: number; todayDow: number }) 
 /* ── one class row ───────────────────────────────────────────────────── */
 
 const STATUS_META: Record<SlotStatus, { label: string }> = {
-  live: { label: "مباشرة الآن" },
+  live: { label: LIVE_NOW },
   next: { label: "التالية" },
   done: { label: "انتهت" },
 };
@@ -362,10 +363,13 @@ const SlotRow = makeRow<DaySlot, { status: SlotStatus | null }>(({ item: s, stat
         gap: sp[2],
       })}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+      {/* R366 A5 (fs2 evidence): the row WRAPS at large font scales — the
+          time anchor and status chip never truncate, the title takes two
+          lines before it ever ellipsizes. */}
+      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
         <MonoLabel>{`${s.startTime}–${s.endTime}`}</MonoLabel>
-        <View style={{ flex: 1 }}>
-          <T variant="body" weight="bold" numberOfLines={1}>
+        <View style={{ flex: 1, minWidth: 140 }}>
+          <T variant="body" weight="bold" numberOfLines={2}>
             {`${s.courseCode} — ${s.courseName}`}
           </T>
         </View>

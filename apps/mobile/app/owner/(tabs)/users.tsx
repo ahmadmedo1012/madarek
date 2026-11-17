@@ -21,6 +21,7 @@ import type { Paginated } from "@/api/types";
 import { ROLE_LABELS } from "@/auth/session";
 import { initials } from "@/lib/format";
 import { RoleChip, UserAvatar, avatarUrlOf, type OwnerUserRow } from "@/features/governance/components";
+import { SEARCH_NAME_OR_EMAIL, UPDATE_FAILED } from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -99,7 +100,7 @@ export default function OwnerUsers() {
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو البريد الإلكتروني…"
+          placeholder={SEARCH_NAME_OR_EMAIL}
           onClear={() => setQ("")}
         />
 
@@ -125,11 +126,11 @@ export default function OwnerUsers() {
           hasNextPage={directory.hasNextPage}
           loadMoreError={directory.loadMoreError}
           onRetryLoadMore={directory.retryLoadMore}
-          emptyTitle={hasFilters ? "لا نتائج مطابقة" : "لا يوجد مستخدمون بعد"}
+          emptyTitle={hasFilters ? "لا نتائج مطابقة" : "لا مستخدمون بعد"}
           emptyMessage={
             hasFilters
-              ? "لم نجد حسابات تطابق البحث أو الدور المحدّد."
-              : "ستظهر الحسابات هنا فور تسجيل أوّل مستخدم في المنصّة."
+              ? "لا حسابات للبحث."
+              : "تظهر فور أول مستخدم."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />
@@ -209,14 +210,14 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
     mutationFn: (isActive: boolean) => ownerApi.setUserStatus(user.id, isActive),
     onSuccess: (_d, isActive) => {
       qc.invalidateQueries({ queryKey: ["owner", "users"] });
-      toast.success(isActive ? `أُعيد تفعيل حساب «${name}».` : `عُطِّل حساب «${name}».`, "تمّ تحديث الحالة");
+      toast.success(isActive ? `أُعيد تفعيل حساب «${name}».` : `عُطِّل حساب «${name}».`, "حُدِّثت الحالة");
       setStatusConfirm(false);
       onClose();
     },
     onError: (e) => {
       setStatusConfirm(false);
       // The API's own Arabic message lands here (e.g. the last-active-owner guard).
-      toast.error(humanizeError(e), "تعذّر تحديث حالة الحساب");
+      toast.error(humanizeError(e), UPDATE_FAILED);
     },
   });
 

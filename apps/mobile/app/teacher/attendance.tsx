@@ -22,6 +22,7 @@ import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { OfferingPicker, toRosterEntry, useTeacherOfferings } from "@/features/teacher/components";
+import { SAVED } from "@/lib/copy";
 
 type AttStatus = "PRESENT" | "LATE" | "ABSENT" | "EXCUSED";
 
@@ -137,7 +138,7 @@ export default function Attendance() {
 
   const save = useMutation({
     mutationFn: async () => {
-      if (!date) throw new Error("حدّد تاريخ الجلسة قبل الحفظ.");
+      if (!date) throw new Error("حدّد التاريخ قبل الحفظ.");
       return teacherApi.attendance(effectiveId, {
         date: new Date(`${date}T12:00:00`).toISOString(),
         topic: topic.trim() || undefined,
@@ -149,7 +150,7 @@ export default function Attendance() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("تمّ حفظ سجلّ الحضور لهذا التاريخ.", "تمّ الحفظ");
+      toast.success("حُفظ سجلّ اليوم.", SAVED);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الحفظ"),
   });
@@ -159,7 +160,7 @@ export default function Attendance() {
       <StackHeader title="الحضور والغياب" />
       <PageHeader
         title="الحضور والغياب"
-        kicker="سجِّل الحضور لكلّ محاضرة. يحفظ سجلّاً واحداً لكلّ تاريخ في قاعدة البيانات."
+        kicker="سجِّل الحضور — سجلّ لكل تاريخ."
       />
 
       {/* الجلسة — offering + date + topic. */}
@@ -169,7 +170,7 @@ export default function Attendance() {
       ) : offs.isError ? (
         <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} compact />
       ) : offerings.length === 0 ? (
-        <EmptyState title="لا توجد مقرّرات" message="ستظهر المقرّرات هنا حين تُسنَد إليك." />
+        <EmptyState title="لا مقرّرات" message="تظهر فور إسنادها." />
       ) : (
         <>
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
@@ -188,7 +189,7 @@ export default function Attendance() {
             label="الموضوع (اختياريّ)"
             value={topic}
             onChangeText={setTopic}
-            placeholder="مثال: مقدّمة في UML"
+            placeholder="مثال: مقدّمة UML"
             accessibilityLabel="الموضوع"
           />
 
@@ -207,7 +208,7 @@ export default function Attendance() {
           ) : roster.isError ? (
             <ErrorState message={humanizeError(roster.error)} onRetry={() => roster.refetch()} />
           ) : rows.length === 0 ? (
-            <EmptyState title="لا يوجد طلاب" message="لا توجد تسجيلات نشطة في هذا المقرّر بعد." />
+            <EmptyState title="لا طلاب" message="لا تسجيلات نشطة بعد." />
           ) : (
             <>
               <RowList>
@@ -281,7 +282,7 @@ export default function Attendance() {
                 disabled={effectiveId === "" || rows.length === 0}
                 onPress={() => {
                   if (!date) {
-                    setDateError("حدّد تاريخ الجلسة قبل الحفظ.");
+                    setDateError("حدّد التاريخ قبل الحفظ.");
                     return;
                   }
                   save.mutate();

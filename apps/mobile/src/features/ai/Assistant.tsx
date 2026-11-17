@@ -55,6 +55,7 @@ import {
   type AssistantRole,
   type ChatTurn,
 } from "./logic";
+import { RETRY } from "@/lib/copy";
 
 /**
  * Assistant — the AI academic assistant (R334 3-f, full chat UX).
@@ -544,8 +545,8 @@ export function Assistant({
                 isError={history.isError}
                 errorMessage={humanizeError(history.error)}
                 onRetry={() => void history.refetch()}
-                emptyTitle="لا توجد محادثات سابقة"
-                emptyMessage="ابدأ أول سؤال — ستظهر محادثاتك هنا."
+                emptyTitle="لا محادثات سابقة"
+                emptyMessage="ابدأ أول سؤال."
                 refetch={() => void history.refetch()}
                 isRefetching={history.isRefetching}
                 renderItem={({ item }) => (
@@ -712,7 +713,7 @@ function TurnBubble({
           </T>
           {canRetry ? (
             <Button
-              label="إعادة المحاولة"
+              label={RETRY}
               kind="ghost"
               small
               onPress={onRetry}
@@ -740,7 +741,7 @@ function TurnBubble({
             <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6], paddingTop: sp[4] }}>
               {turn.status === "streaming" ? <Skeleton width={10} height={14} radius={2} /> : null}
               <T variant="xs" color="faint">
-                {turn.status === "streaming" ? "يكتب…" : "أُوقف الردّ — لم يُحفظ في السجلّ"}
+                {turn.status === "streaming" ? "يكتب…" : "أُوقف الردّ — لم يُحفظ."}
               </T>
             </View>
           ) : null}

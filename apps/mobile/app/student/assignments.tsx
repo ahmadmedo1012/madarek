@@ -36,10 +36,11 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { countAr } from "@/features/student/more";
 import { AssignSubmitSheet, type SubmitTarget } from "@/features/student/components";
+import { QUIZ_LABEL } from "@/lib/copy";
 
 const ASSIGNMENT_KIND_LABEL: Record<string, string> = {
   HOMEWORK: "واجب",
-  QUIZ: "اختبار قصير",
+  QUIZ: QUIZ_LABEL,
   PROJECT: "مشروع",
   EXAM: "اختبار",
 };
@@ -141,7 +142,7 @@ export default function AssignmentsScreen() {
 
   return (
     <Screen scroll={false} padded={false}>
-      <StackHeader title="التكاليف" kicker="واجباتك المستحقة فعلياً ولم تُسلّمها بعد" />
+      <StackHeader title="التكاليف" kicker="المستحق ولم يُسلّم" />
       <DataList
         data={pending as AssignmentLike[]}
         renderItem={(info) => (
@@ -173,7 +174,7 @@ export default function AssignmentsScreen() {
           </View>
         }
         emptyTitle="لا تكاليف بانتظارك"
-        emptyMessage="ستظهر هنا التكليفات المستحقة فور إضافتها من أساتذة مقرّراتك."
+        emptyMessage="تظهر فور إضافتها."
         contentPadding={{ horizontal: 16, top: 12, bottom: 24 }}
         extraData={now}
       />

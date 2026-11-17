@@ -11,6 +11,7 @@ import { qualityApi } from "@/api/quality";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { AR_DAYS, latn, num } from "@/lib/format";
 import { HonestLedger, PAPER_STATUS_LABEL, UNKNOWN_LABEL, countAr, numOf } from "@/features/governance/components";
+import { READ_ONLY } from "@/lib/copy";
 
 interface EngagementPayload {
   attendance?: { presentRate?: number; lateRate?: number; absentRate?: number; total?: number };
@@ -51,7 +52,7 @@ export default function QualityEngagement() {
               نسب الحضور، إكمال المحاضرات، النقاط المتفاعلة.
             </T>
           </View>
-          <Badge label="قراءة فقط" tone="grey" />
+          <Badge label={READ_ONLY} tone="grey" />
         </View>
 
         {engagement.isLoading ? (
@@ -74,8 +75,8 @@ export default function QualityEngagement() {
                   />
                   <StatLine label="نسبة التأخر" value={`${latn(Math.round(d.attendance?.lateRate ?? 0))}%`} />
                   <StatLine label="نسبة الغياب" value={`${latn(Math.round(d.attendance?.absentRate ?? 0))}%`} />
-                  <StatLine label="معدل إكمال المحاضرات" value={`${latn(Math.round(d.videos?.completionRate ?? 0))}%`} />
-                  <StatLine label="إجمالي الطلاب" value={num(numOf(d.totalStudents))} />
+                  <StatLine label="إكمال المحاضرات" value={`${latn(Math.round(d.videos?.completionRate ?? 0))}%`} />
+                  <StatLine label="الطلاب" value={num(numOf(d.totalStudents))} />
                   <StatLine
                     label="التسجيلات"
                     value={countAr(d.enrollments ?? 0, ["تسجيل واحد", "تسجيلان", "تسجيلات", "تسجيلاً"])}

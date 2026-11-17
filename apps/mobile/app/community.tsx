@@ -37,6 +37,7 @@ import {
   isUnauthError,
   membersAr,
 } from "@/features/common/components";
+import { CREATING } from "@/lib/copy";
 
 type Tab = "posts" | "announcements" | "events" | "rooms";
 
@@ -149,7 +150,7 @@ function PostsPanel({ header }: { header: ReactNode }) {
     mutationFn: ({ postId, kind, on }: { postId: string; kind: "like" | "save"; on: boolean }) =>
       on ? socialApi.react(postId, kind) : socialApi.unreact(postId, kind),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["community", "posts", scope] }),
-    onError: (e) => toast.error(apiMessage(e, "تعذّر تسجيل تفاعلك.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر التفاعل.")),
   });
 
   const publish = useMutation({
@@ -164,7 +165,7 @@ function PostsPanel({ header }: { header: ReactNode }) {
       haptics.notify("success");
       toast.success("تم نشر منشورك.");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر نشر المنشور — نصّك ما زال محفوظًا.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر النشر.")),
   });
 
   const posts = q.data ?? [];
@@ -183,7 +184,7 @@ function PostsPanel({ header }: { header: ReactNode }) {
         {header}
         {user ? (
           <Button
-            label="اكتب منشورًا جديدًا"
+            label="منشور جديد"
             kind="ghost"
             icon={<Plus size={16} color={p.text} />}
             onPress={() => setComposing(true)}
@@ -206,7 +207,7 @@ function PostsPanel({ header }: { header: ReactNode }) {
         emptySlot={
           <EmptyState
             title="لا منشورات بعد"
-            message="كن أول من يشارك تجربته أو سؤاله."
+            message="كن أول المشاركين."
             icon={<MessageCircle size={20} color={p.textMuted} />}
             actionLabel={user ? "اكتب منشورًا" : undefined}
             onAction={user ? () => setComposing(true) : undefined}
@@ -255,7 +256,7 @@ function PostsPanel({ header }: { header: ReactNode }) {
             />
             {publish.isError ? (
               <T variant="sm" color="danger">
-                {apiMessage(publish.error, "تعذّر نشر المنشور.")}
+                {apiMessage(publish.error, "تعذّر النشر.")}
               </T>
             ) : null}
           </View>
@@ -317,7 +318,7 @@ const PostCard = makeRow<
               />
             }
             onPress={() => onReact(post, "like", my !== "like")}
-            accessibilityLabel={my === "like" ? "إزالة الإعجاب" : "أعجبني بهذا المنشور"}
+            accessibilityLabel={my === "like" ? "إزالة الإعجاب" : "أعجبني"}
           />
           <Button
             label={counts.save > 0 ? latn(counts.save) : "حفظ"}
@@ -360,8 +361,8 @@ function AnnouncementsPanel() {
     <View style={{ gap: sp[8] }}>
       {rows.length === 0 ? (
         <EmptyState
-          title="لا توجد إعلانات بعد"
-          message="ستظهر هنا إعلانات الجامعة والكليات والأقسام."
+          title="لا إعلانات بعد"
+          message="إعلانات الجامعة والكليات."
         />
       ) : (
         <RowList>
@@ -418,7 +419,7 @@ function EventsPanel() {
       socialApi.rsvp(eventId, status),
     onMutate: () => haptics.selection(),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["community", "events", scope] }),
-    onError: (e) => toast.error(apiMessage(e, "تعذّر تسجيل ردّك.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر الردّ.")),
   });
 
   if (q.isLoading) return <SkeletonList rows={4} rowHeight={84} />;
@@ -431,8 +432,8 @@ function EventsPanel() {
     <View style={{ gap: sp[8] }}>
       {rows.length === 0 ? (
         <EmptyState
-          title="لا توجد فعاليات قادمة بعد"
-          message="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها."
+          title="لا فعاليات قادمة بعد"
+          message="الفعاليات عند جدولتها."
         />
       ) : (
         rows.map((e: CampusEvent) => (
@@ -568,9 +569,9 @@ function RoomsPanel() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["community", "rooms", scope] });
       haptics.notify("success");
-      toast.success("انضممت إلى الغرفة.");
+      toast.success("انضممت.");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر الانضمام إلى الغرفة.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر الانضمام.")),
   });
   const leave = useMutation({
     mutationFn: (id: string) => socialApi.leaveRoom(id),
@@ -579,7 +580,7 @@ function RoomsPanel() {
       haptics.selection();
       toast.info("غادرت الغرفة.");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّرت مغادرة الغرفة.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّرت المغادرة.")),
   });
   const create = useMutation({
     mutationFn: () => socialApi.createStudyRoom({ name: name.trim(), topic: topic.trim() || undefined }),
@@ -589,9 +590,9 @@ function RoomsPanel() {
       setName("");
       setTopic("");
       haptics.notify("success");
-      toast.success("أُنشئت غرفتك الدراسية.");
+      toast.success("أُنشئت غرفتك.");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر إنشاء الغرفة.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر الإنشاء.")),
   });
 
   if (q.isLoading) return <SkeletonList rows={4} rowHeight={72} />;
@@ -613,8 +614,8 @@ function RoomsPanel() {
 
       {rows.length === 0 ? (
         <EmptyState
-          title="لا توجد غرف دراسة بعد"
-          message="أنشئ أول غرفة دراسية وادعُ زملاءك للانضمام إليها."
+          title="لا غرف دراسة بعد"
+          message="أنشئ أول غرفة."
         />
       ) : (
         <RowList>
@@ -638,7 +639,7 @@ function RoomsPanel() {
         <AppSheet
           open={creating}
           onClose={() => setCreating(false)}
-          title="غرفة دراسة جديدة"
+          title="غرفة جديدة"
           snap="lg"
           footer={
             <View style={{ flexDirection: "row", gap: sp[8] }}>
@@ -647,7 +648,7 @@ function RoomsPanel() {
               </View>
               <View style={{ flex: 1 }}>
                 <Button
-                  label={create.isPending ? "جارٍ الإنشاء…" : "إنشاء الغرفة"}
+                  label={create.isPending ? CREATING : "إنشاء الغرفة"}
                   loading={create.isPending}
                   disabled={!name.trim()}
                   onPress={() => create.mutate()}
@@ -666,7 +667,7 @@ function RoomsPanel() {
                 accessibilityLabel="اسم الغرفة"
                 value={name}
                 onChangeText={setName}
-                placeholder="مجموعة مراجعة الشبكات…"
+                placeholder="مراجعة الشبكات…"
                 maxLength={120}
               />
             </View>
@@ -678,13 +679,13 @@ function RoomsPanel() {
                 accessibilityLabel="موضوع الغرفة"
                 value={topic}
                 onChangeText={setTopic}
-                placeholder="ما الذي ستدرسونه معًا؟"
+                placeholder="ماذا ستدرسون؟"
                 maxLength={300}
               />
             </View>
             {create.isError ? (
               <T variant="sm" color="danger">
-                {apiMessage(create.error, "تعذّر إنشاء الغرفة.")}
+                {apiMessage(create.error, "تعذّر الإنشاء.")}
               </T>
             ) : null}
           </View>

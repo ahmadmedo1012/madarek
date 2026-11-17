@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/pressables";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { arCount } from "@/features/teacher/components";
+import { REPORT_PROBLEM, SAVED } from "@/lib/copy";
 
 /** Wire shape of GET /me/teacher-profile (teacher-profile.routes.ts). */
 type TeacherProfileWire = {
@@ -97,7 +98,7 @@ const MENU_GROUPS: { title: string; items: { label: string; to: string }[] }[] =
     title: "الدعم",
     items: [
       // R331 A-App-Shell — the report loop entry (replaces the removed floating FAB).
-      { label: "الإبلاغ عن مشكلة", to: "/report" },
+      { label: REPORT_PROBLEM, to: "/report" },
       { label: "الإعدادات", to: "/settings" },
     ],
   },
@@ -138,7 +139,7 @@ export default function TeacherProfile() {
       qc.invalidateQueries({ queryKey: ["teacher", "profile"] });
       setEditing(false);
       setSaveError(null);
-      toast.success("تمّ حفظ تعديلات ملفك الأكاديمي.", "تمّ الحفظ");
+      toast.success("حُفظت التعديلات.", SAVED);
     },
     onError: (e) => {
       setSaveError(humanizeError(e));
@@ -156,7 +157,7 @@ export default function TeacherProfile() {
       <AppTopBar alertsPath="/teacher/alerts" />
       <PageHeader
         title="الملف الأكاديمي"
-        kicker="ملفك الأكاديمي كما يظهر للمسجل العام، مكتب الجودة، والطلاب."
+        kicker="للمسجل والجودة والطلاب."
       />
 
       {profile.isLoading ? (
@@ -165,8 +166,8 @@ export default function TeacherProfile() {
         <ErrorState message={humanizeError(profile.error)} onRetry={() => profile.refetch()} />
       ) : !me ? (
         <EmptyState
-          title="لا يوجد ملف أستاذ مرتبط بهذا الحساب"
-          message="تواصل مع المسجل العام لربط ملفك الأكاديمي بهذا الحساب."
+          title="لا ملف أستاذ مرتبط"
+          message="رابطه عبر المسجل."
         />
       ) : (
         <>
@@ -213,8 +214,8 @@ export default function TeacherProfile() {
           {/* Workload — the wire's own numbers. */}
           {me.workload ? (
             <Card>
-              <StatLine label="المقرّرات هذا الفصل" value={latn(me.workload.courseCount)} />
-              <StatLine label="إجمالي الطلاب" value={latn(me.workload.totalEnrolled)} hint="مسجَّلون في مقرّراتك" />
+              <StatLine label="مقرّرات الفصل" value={latn(me.workload.courseCount)} />
+              <StatLine label="الطلاب" value={latn(me.workload.totalEnrolled)} hint="في مقرّراتك" />
               {me.yearsExperience !== null && me.yearsExperience !== undefined ? (
                 <StatLine
                   label="سنوات الخبرة"
@@ -341,7 +342,7 @@ export default function TeacherProfile() {
                 value={bio}
                 onChangeText={setBio}
                 multiline
-                placeholder="اكتب نبذة عن خبرتك الأكاديمية والبحثية وأهم اهتماماتك العلمية…"
+                placeholder="نبذة عن خبرتك العلمية…"
                 textAlignVertical="top"
                 style={{ minHeight: 120 }}
               />
@@ -354,7 +355,7 @@ export default function TeacherProfile() {
                 accessibilityLabel="موقع المكتب"
                 value={officeLocation}
                 onChangeText={setOfficeLocation}
-                placeholder="مثال: مبنى الكلّيّة - مكتب 305"
+                placeholder="مثال: مبنى الكلية - 305"
               />
             </View>
             <View style={{ gap: sp[6] }}>

@@ -223,7 +223,7 @@ export function GapList({
   if (rows.length === 0) {
     return (
       <T variant="sm" color="muted">
-        {emptyNote ?? "لا فجوات مكتشفة بعد — أجب عن نقاط التفاعل في محاضراتك لترسم خريطة إتقانك."}
+        {emptyNote ?? "أجب عن نقاط التفاعل لترسم خريطة إتقانك."}
       </T>
     );
   }
@@ -378,11 +378,11 @@ export function AssignSubmitSheet({
     const text = textAnswer.trim();
     const file = fileUrl.trim();
     if (!text && !file) {
-      setValidationError("أدخل إجابة نصية أو رابط ملف على الأقل قبل التسليم.");
+      setValidationError("أدخل إجابة أو رابطًا قبل التسليم.");
       return;
     }
     if (file && !(/^https?:\/\//.test(file) || file.startsWith("/api/v1/files/papers/"))) {
-      setValidationError("رابط الملف يجب أن يبدأ بـ https:// — وإجابتك النصيّة وحدها تكفي للتسليم.");
+      setValidationError("يبدأ بـ https:// — والنصّ يكفي.");
       return;
     }
     setValidationError(null);
@@ -433,12 +433,12 @@ export function AssignSubmitSheet({
             }}
           >
             <T variant="body" weight="bold" style={{ color: late ? tones.yellow.deep : tones.mint.deep }}>
-              {late ? "تمّ التسليم — بعد الموعد النهائي" : "تمّ التسليم بنجاح"}
+              {late ? "تمّ التسليم — بعد الموعد" : "تمّ التسليم بنجاح"}
             </T>
             <T variant="sm" style={{ color: late ? tones.yellow.deep : tones.mint.deep }}>
               {late
-                ? "استُلمت إجابتك وسيُعلَّم تسليمك كمتأخر؛ الحسم النهائي يعود إلى أستاذ المقرّر."
-                : "استُلمت إجابتك وستظهر للأستاذ بانتظار التقييم."}
+                ? "استُلمت كمتأخر — الحسم للأستاذ."
+                : "استُلمت إجابتك — بانتظار التقييم."}
             </T>
           </View>
         ) : (
@@ -456,7 +456,7 @@ export function AssignSubmitSheet({
               label="رابط ملف (اختياري)"
               value={fileUrl}
               onChangeText={setFileUrl}
-              hint="رابط خارجي اختياري يبدأ بـ https:// (مثل ملف على Drive) — إجابتك النصيّة وحدها تكفي للتسليم."
+              hint="رابط https:// (مثل Drive) — النصّ يكفي."
               keyboardType="url"
               autoCapitalize="none"
               autoCorrect={false}

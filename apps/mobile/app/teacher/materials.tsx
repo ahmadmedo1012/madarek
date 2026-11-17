@@ -24,6 +24,7 @@ import { Field, Segmented, SelectField } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { MATERIAL_TYPE_LABEL, OfferingPicker, useTeacherOfferings } from "@/features/teacher/components";
+import { ADDED } from "@/lib/copy";
 
 type MaterialWire = {
   id: string;
@@ -70,7 +71,7 @@ export default function Materials() {
     mutationFn: async () => {
       if (effectiveOfferingId === "") throw new Error("اختر المقرّر أولاً.");
       if (name.trim().length < 1) throw new Error("اسم الملف مطلوب.");
-      if (!/^https:\/\//.test(url.trim())) throw new Error("الرابط يجب أن يبدأ بـ https://");
+      if (!/^https:\/\//.test(url.trim())) throw new Error("يبدأ بـ https://");
       return teacherApi.addMaterial(effectiveOfferingId, {
         name: name.trim(),
         description: description.trim() || undefined,
@@ -81,7 +82,7 @@ export default function Materials() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "materials"] });
-      toast.success("أُضيف الملف إلى المقرّر وسيظهر لطلابه فوراً.", "تمّت الإضافة");
+      toast.success("أُضيف — يظهر فورًا.", ADDED);
       setSheetOpen(false);
       resetForm();
     },
@@ -92,7 +93,7 @@ export default function Materials() {
     mutationFn: async () => {
       if (effectiveOfferingId === "") throw new Error("اختر المقرّر أولاً.");
       if (name.trim().length < 1) throw new Error("اسم الملف مطلوب.");
-      if (!file) throw new Error("اختر ملف PDF للرفع.");
+      if (!file) throw new Error("اختر ملف PDF.");
       await validatePdf(file);
       setProgress(0);
       const path =
@@ -102,7 +103,7 @@ export default function Materials() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "materials"] });
-      toast.success("أُضيف الملف إلى المقرّر وسيظهر لطلابه فوراً.", "تمّت الإضافة");
+      toast.success("أُضيف — يظهر فورًا.", ADDED);
       setSheetOpen(false);
       resetForm();
     },
@@ -128,7 +129,7 @@ export default function Materials() {
       <StackHeader title="الملفات التعليمية" />
       <PageHeader
         title="الملفات التعليمية"
-        kicker="ملفّاتك المرفوعة على مقرّراتك — مع عدد المشاهدات والتحميلات الفعليّ."
+        kicker="ملفاتك — المشاهدات والتحميلات."
       />
       <SectionBar
         index={1}
@@ -143,8 +144,8 @@ export default function Materials() {
         <ErrorState message={humanizeError(materials.error)} onRetry={() => materials.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
-          title="لم ترفع ملفات بعد"
-          message="أضف أول مادة بزر «إضافة مادة» بالأعلى — سيظهر لطلاب المقرّر فوراً."
+          title="لا ملفات بعد"
+          message="أضف أول مادة."
           actionLabel="إضافة مادة"
           onAction={() => setSheetOpen(true)}
         />
@@ -199,7 +200,7 @@ export default function Materials() {
           label="اسم المادة"
           value={name}
           onChangeText={(v) => setName(v)}
-          placeholder="مثال: محاضرة الأسبوع الثالث — الشرائح"
+          placeholder="مثال: شرائح الأسبوع الثالث"
           accessibilityLabel="اسم المادة"
         />
         {mode === "pdf" ? (
@@ -225,7 +226,7 @@ export default function Materials() {
             <T variant="sm" color="muted">
               {file
                 ? `تم اختيار الملف — جاهز للرفع (${sizeLabel(file.size)})`
-                : "ملفات PDF فقط، بحد أقصى 20 ميغابايت."}
+                : "PDF فقط — 20 ميغابايت كحدّ أقصى."}
             </T>
             {uploadPdf.isPending ? (
               <View style={{ gap: sp[4] }}>
@@ -256,7 +257,7 @@ export default function Materials() {
               label="الحجم بالبايت (اختياري)"
               value={sizeBytes}
               onChangeText={setSizeBytes}
-              hint="عدد البايتات كما يظهر على خدمة الملفات"
+              hint="البايتات من خدمة الملفات"
               keyboardType="number-pad"
               accessibilityLabel="الحجم بالبايت"
             />
@@ -266,7 +267,7 @@ export default function Materials() {
           label="الوصف (اختياري)"
           value={description}
           onChangeText={setDescription}
-          placeholder="وصف مختصر يساعد الطالب على معرفة محتوى المادة…"
+          placeholder="وصف محتوى المادة…"
           accessibilityLabel="الوصف"
         />
         {error ? (

@@ -1,6 +1,6 @@
 /**
  * research-review — البحث العلمي. Web parity: ResearchReviewPage — the
- * triage queue (بانتظار تقييمك / رفضها الفحص التجريبي (محاكاة) /
+ * triage queue (بانتظار تقييمك / رفضها الفحص (محاكاة) /
  * مُقيَّمة — جاهزة للنشر), the review sheet (abstract, the declared
  * simulated scan cells, grade 0–20 + التقدير, publish with ConfirmDialog,
  * the PDF reader deep link).
@@ -25,6 +25,7 @@ import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { PAPER_STATUS_MAP, StatusBadge } from "@/features/teacher/components";
+import { SAVING } from "@/lib/copy";
 
 const NO_PAPERS: Awaited<ReturnType<typeof researchApi.queue>> = [];
 
@@ -79,13 +80,13 @@ export default function ResearchReview() {
       if (!selected) return null;
       const n = Number(score);
       if (score.trim() === "" || Number.isNaN(n) || n < 0 || n > 20) {
-        throw new Error("الدرجة رقم بين 0 و20.");
+        throw new Error("الدرجة 0–20.");
       }
       return researchApi.grade(selected.id, { grade: n, feedback: feedback.trim() || undefined });
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["research", "queue"] });
-      toast.success("صار البحث مُقيَّماً؛ يمكنك نشره في المكتبة من قسم «جاهزة للنشر».", "تمّ حفظ التقييم");
+      toast.success("مُقيَّم — انشره من «جاهزة».", "تمّ حفظ التقييم");
       setSelected(null);
       setScore("");
       setFeedback("");
@@ -100,7 +101,7 @@ export default function ResearchReview() {
       qc.invalidateQueries({ queryKey: ["research", "queue"] });
       setSelected(null);
       setConfirmPublish(false);
-      toast.success("أصبح البحث متاحاً للطلاب في مكتبة الجامعة.", "تمّ نشر البحث");
+      toast.success("أصبح متاحًا في المكتبة.", "تمّ نشر البحث");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
@@ -159,7 +160,7 @@ export default function ResearchReview() {
   return (
     <Screen scroll>
       <StackHeader title="البحث العلمي" />
-      <PageHeader title="البحث العلمي" kicker="قائمة بحوث الطلاب للمراجعة، ومنشوراتك العلمية." />
+      <PageHeader title="البحث العلمي" kicker="بحوث للمراجعة ومنشوراتك." />
 
       {queue.isLoading ? (
         <SkeletonList rows={5} />
@@ -170,15 +171,15 @@ export default function ResearchReview() {
           {/* The honest KPI trio. */}
           <View style={{ flexDirection: "row", gap: sp[8] }}>
             <KpiCard label="بانتظار تقييمك" value={passed.length} />
-            <KpiCard label="تعذّر اجتياز الفحص" value={failed.length} />
+            <KpiCard label="تعذّر الفحص" value={failed.length} />
             <KpiCard label="جاهزة للنشر" value={graded.length} />
           </View>
 
           <SectionBar index={1} title="بانتظار تقييمك" />
           {passed.length === 0 ? (
             <EmptyState
-              title="لا بحوث في الانتظار"
-              message="ستظهر هنا بحوث الطلاب فور اجتيازها الفحص التجريبي (محاكاة) للانتحال والمحتوى الآلي."
+              title="لا بحوث بالانتظار"
+              message="تظهر فور اجتياز الفحص."
             />
           ) : (
             <RowList>
@@ -190,7 +191,7 @@ export default function ResearchReview() {
 
           {failed.length > 0 ? (
             <>
-              <SectionBar index={2} title="رفضها الفحص التجريبي (محاكاة)" />
+              <SectionBar index={2} title="رفضها الفحص (محاكاة)" />
               <RowList>
                 {failed.map((p) => (
                   <QueueRow key={p.id} paper={p} />
@@ -251,7 +252,7 @@ export default function ResearchReview() {
             </Card>
 
             {selected.fileUrl ? (
-              <Button label="قراءة البحث وكتابة ملاحظات" kind="ghost" small onPress={() => openPaper(selected)} />
+              <Button label="قراءة وملاحظات" kind="ghost" small onPress={() => openPaper(selected)} />
             ) : null}
 
             {selected.status !== "GRADED" && selected.status !== "PUBLISHED" ? (
@@ -273,7 +274,7 @@ export default function ResearchReview() {
                   label="ملاحظات للطالب"
                   value={feedback}
                   onChangeText={setFeedback}
-                  placeholder="اكتب ملاحظاتك على البحث…"
+                  placeholder="ملاحظاتك على البحث…"
                   accessibilityLabel="ملاحظات للطالب"
                 />
                 {gradeError ? (
@@ -282,7 +283,7 @@ export default function ResearchReview() {
                   </T>
                 ) : null}
                 <Button
-                  label={grade.isPending ? "جارٍ الحفظ…" : "تأكيد التقييم"}
+                  label={grade.isPending ? SAVING : "تأكيد التقييم"}
                   kind="accent"
                   loading={grade.isPending}
                   onPress={() => {
@@ -316,7 +317,7 @@ export default function ResearchReview() {
       <ConfirmDialog
         open={confirmPublish}
         title="نشر البحث"
-        message="سيصبح البحث متاحاً للطلاب في مكتبة الجامعة. هل تريد النشر الآن؟"
+        message="سيصبح متاحًا في المكتبة. النشر؟"
         confirmLabel="نشر"
         loading={publish.isPending}
         onConfirm={() => selected && publish.mutate(selected.id)}

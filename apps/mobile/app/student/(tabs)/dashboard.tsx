@@ -48,9 +48,9 @@ let onboardingFired = false;
 
 /** Quick actions — the four doors students open most (PressableScale tiles). */
 const QUICK_ACTIONS: { icon: typeof CalendarClock; label: string; href: string; a11y: string }[] = [
-  { icon: CalendarClock, label: "الجدول", href: "/student/schedule", a11y: "افتح الجدول الأسبوعي" },
+  { icon: CalendarClock, label: "الجدول", href: "/student/schedule", a11y: "الجدول الأسبوعي" },
   { icon: ClipboardList, label: "التكاليف", href: "/student/assignments", a11y: "افتح التكاليف" },
-  { icon: ClipboardCheck, label: "الاختبارات", href: "/student/online-exams", a11y: "افتح الاختبارات الإلكترونية" },
+  { icon: ClipboardCheck, label: "الاختبارات", href: "/student/online-exams", a11y: "الاختبارات الإلكترونية" },
   { icon: Library, label: "المكتبة", href: "/student/library", a11y: "افتح المكتبة" },
 ];
 
@@ -181,7 +181,13 @@ export default function StudentDashboard() {
                     progress={(step.progressPct ?? 0) / 100}
                     accessibilityLabel={`تقدّم المحاضرة ${pct(step.progressPct)}`}
                   >
-                    <T variant="xs" weight="bold">
+                    {/* R366 A5 fs2 evidence fix: the ring is a fixed 44dp
+                        circle — an uncapped label doubles at font-scale 2.0
+                        and the digits collide with the arc (VLM before-set,
+                        «أرقام هذا الفصل» card). 1.25 keeps the value legible
+                        inside the ring at every scale (same cap family as the
+                        schedule/calendar rows). */}
+                    <T variant="xs" weight="bold" maxFontSizeMultiplier={1.25}>
                       {fmt(pct(step.progressPct))}
                     </T>
                   </RingProgress>
@@ -199,7 +205,7 @@ export default function StudentDashboard() {
 
         {/* Stats band — numeral hierarchy: ring + CountUp trio */}
         <Animated.View entering={entering(2)}>
-          <SectionBar index={1} title="أرقامك هذا الفصل" />
+          <SectionBar index={1} title="أرقامك" />
           {dash.isLoading ? (
             <Card style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
               <Skeleton width={64} height={64} radius={32} />
@@ -223,11 +229,14 @@ export default function StudentDashboard() {
                 progress={(kpi.attendancePct ?? 0) / 100}
                 accessibilityLabel={
                   kpi.attendancePct === null
-                    ? "لا بيانات حضور بعد"
+                    ? "لا بيانات حضور"
                     : `نسبة الحضور ${pct(kpi.attendancePct)}`
                 }
               >
-                <T variant="sm" weight="bold">
+                {/* R366 A5 fs2 evidence fix: same ring-overflow class as the
+                    step card — the 64dp attendance ring caps its inner value
+                    at 1.25 so font-scale 2.0 cannot push digits into the arc. */}
+                <T variant="sm" weight="bold" maxFontSizeMultiplier={1.25}>
                   {kpi.attendancePct === null ? "—" : fmt(pct(kpi.attendancePct))}
                 </T>
               </RingProgress>
@@ -258,7 +267,10 @@ export default function StudentDashboard() {
                       accessibilityLabel={s.a11y}
                       style={{ fontSize: 20, fontWeight: "700" }}
                     />
-                    <T variant="xs" color="muted" align="center" numberOfLines={1} maxFontSizeMultiplier={1.25}>
+                    {/* R366 A5 a11y-small evidence fix (AV21): 30%-basis
+                        tiles at 360dp+fs1.3 ellipsized «تكليفات معلّقة»
+                        mid-word; two lines wrap it whole. */}
+                    <T variant="xs" color="muted" align="center" numberOfLines={2} maxFontSizeMultiplier={1.25}>
                       {s.label}
                     </T>
                   </View>
@@ -325,7 +337,7 @@ export default function StudentDashboard() {
               horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ gap: sp[8] }}
-              accessibilityLabel="شريط حصص اليوم وغدًا"
+              accessibilityLabel="حصص اليوم وغدًا"
             >
               {stripClasses.map((c) => (
                 <PressableScale
@@ -412,7 +424,7 @@ export default function StudentDashboard() {
               !dash.isLoading && !dash.isError && agenda && agendaTotal > 0 ? (
                 <BarCount
                   n={agendaTotal}
-                  a11y={countAr(agendaTotal, ["التزام قريب واحد", "التزامان قريبان", "التزامات قريبة", "التزاماً قريباً"])}
+                  a11y={countAr(agendaTotal, ["التزام قريب", "التزامان قريبان", "التزامات قريبة", "التزاماً قريباً"])}
                 />
               ) : undefined
             }
@@ -510,14 +522,14 @@ export default function StudentDashboard() {
         {d && kpi && kpi.courseCount === 0 && agenda && agenda.classes.length === 0 ? (
           <EmptyState
             room="lecture-hall"
-            title="لوحتك تنتظر أول مقرر"
-            message="لم تُسجَّل في مقررات بعد — بمجرد اعتماد تسجيلك من شؤون الطلاب سترى جدولك وواجباتك هنا."
+            title="تنتظر أول مقرر"
+            message="لم تُسجَّل — البيانات بعد الاعتماد."
           />
         ) : null}
 
         {d && agenda && agenda.classes.length > 0 ? (
           <T variant="xs" color="faint">
-            {countAr(agenda.classes.length, ["حصة واحدة في الأجندة", "حصتان في الأجندة", "حصص في الأجندة", "حصة في الأجندة"])}
+            {countAr(agenda.classes.length, ["حصة في الأجندة", "حصتان في الأجندة", "حصص في الأجندة", "حصة في الأجندة"])}
           </T>
         ) : null}
       </ScrollBody>

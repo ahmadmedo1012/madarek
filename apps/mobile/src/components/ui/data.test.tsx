@@ -219,7 +219,7 @@ describe("DataList first-load states", () => {
 
   it("empty → EmptyState with the generic Arabic default", async () => {
     const { getByText } = await render(<DataList<Notice> data={[]} {...LIST_PROPS} />);
-    expect(getByText("لا توجد بيانات بعد")).toBeTruthy();
+    expect(getByText("لا بيانات بعد")).toBeTruthy();
   });
 
   it("emptyTitle/emptyMessage customize the default; emptySlot replaces it", async () => {

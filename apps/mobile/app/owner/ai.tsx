@@ -15,6 +15,7 @@ import { usePalette, useStatusTones } from "@/design/theme";
 import { latn } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { numOf, type AiMetricsRow } from "@/features/governance/components";
+import { OWNER_DASHBOARD } from "@/lib/copy";
 
 /** AI feature keys → Arabic labels (web OwnerAiPage FEATURE_LABELS parity). */
 const FEATURE_LABELS: Record<string, string> = {
@@ -30,9 +31,9 @@ function featureLabel(feature?: string): string {
 }
 
 /**
- * Pushed: /owner/ai — «مركز الذكاء الاصطناعيّ» (web OwnerAiPage parity):
+ * Pushed: /owner/ai — «مركز الذكاء» (web OwnerAiPage parity):
  * usage metrics as honest StatLines and the provider badge verbatim —
- * `local` discloses the template composer («مزوّد محلي (قالبيّ)»), a real
+ * `local` discloses the template composer («مزوّد محليّ»), a real
  * model name renders as itself. No badge before the config answers.
  */
 export default function OwnerAi() {
@@ -53,12 +54,12 @@ export default function OwnerAi() {
   return (
     <Screen scroll>
       <StackHeader
-        title="مركز الذكاء الاصطناعيّ"
-        kicker="لوحة المالك"
+        title="مركز الذكاء"
+        kicker={OWNER_DASHBOARD}
         right={
           cfg.data ? (
             cfg.data.provider === "local" ? (
-              <Badge label="مزوّد محلي (قالبيّ)" tone="yellow" />
+              <Badge label="مزوّد محليّ" tone="yellow" />
             ) : (
               <Badge label={cfg.data.model || cfg.data.provider} tone="mint" mono={false} />
             )
@@ -66,7 +67,7 @@ export default function OwnerAi() {
         }
       />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="مركز الذكاء الاصطناعيّ" kicker="مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ" />
+        <PageHeader title="مركز الذكاء" kicker="استخدام وأداء الذكاء." />
 
         {metrics.isLoading ? (
           <SkeletonList rows={4} rowHeight={48} />
@@ -80,12 +81,12 @@ export default function OwnerAi() {
               <RowList>
                 <LedgerRow last>
                   <StatLine
-                    label="إجمالي الطلبات"
+                    label="الطلبات"
                     value={numOf(m?.totalRequests)}
-                    hint="تراكميّة على المنصّة"
+                    hint="تراكميّة"
                   />
                   <StatLine
-                    label="إجمالي التوكنات"
+                    label="التوكنات"
                     value={numOf(m?.totalTokens)}
                     hint="مقيسة من المزوّد"
                   />
@@ -96,14 +97,14 @@ export default function OwnerAi() {
                       m?.successRate != null
                         ? m.successRate >= 90
                           ? "تشغيل مستقرّ"
-                          : "راجع الأعطال الأخيرة"
+                          : "الأعطال الأخيرة"
                         : null
                     }
                   />
                   <StatLine
                     label="متوسّط الاستجابة"
                     value={m?.avgLatencyMs != null ? `${latn(Math.round(m.avgLatencyMs))}ms` : null}
-                    hint="زمن الردّ المتوسط"
+                    hint="زمن الردّ"
                   />
                 </LedgerRow>
               </RowList>
@@ -115,8 +116,8 @@ export default function OwnerAi() {
               {(m?.byFeature ?? []).length === 0 ? (
                 <EmptyState
                   icon={<Bot size={22} color={p.textMuted} />}
-                  title="لا توجد طلبات لعرضها"
-                  message="تظهر مؤشّرات الاستخدام هنا فور تسجيل أوّل طلب."
+                  title="لا طلبات بعد"
+                  message="تظهر فور أول طلب."
                 />
               ) : (
                 <RowList>
@@ -135,7 +136,7 @@ export default function OwnerAi() {
 
             {/* [03] اتّجاه الاستخدام */}
             <View>
-              <SectionBar index={3} title="اتّجاه الاستخدام (7 أيّام)" />
+              <SectionBar index={3} title="الاتجاه (7 أيام)" />
               {(m?.trend ?? []).length === 0 ? (
                 <T variant="body" color="muted">
                   لا توجد بيانات بعد — يُرسم الاتّجاه فور تسجيل أوّل طلب.

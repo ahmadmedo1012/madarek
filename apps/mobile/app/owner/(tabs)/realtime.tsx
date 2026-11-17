@@ -17,7 +17,7 @@ const POLL_MS = 15_000;
 /** Known /owner/realtime keys → Arabic labels (web OwnerRealtimePage parity). */
 const REALTIME_LABELS: Record<string, string> = {
   activeSessions: "الجلسات النشطة",
-  aiRequestsPerMin: "طلبات الذكاء الاصطناعيّ / دقيقة",
+  aiRequestsPerMin: "طلبات AI / دقيقة",
   liveBroadcasts: "بثّ مباشر جارٍ",
   activeExams: "اختبارات جارية",
 };
@@ -77,7 +77,7 @@ export default function OwnerRealtime() {
           ) : (
             <Badge label="تحديث حيّ" tone="mint" />
           )}
-          <Badge label="يُحدَّث كل 15 ثانية" tone="grey" />
+          <Badge label="كل 15 ثانية" tone="grey" />
           {rt.data ? (
             <T variant="sm" color="faint">
               آخر تحديث: {timeOf(updatedAt)}

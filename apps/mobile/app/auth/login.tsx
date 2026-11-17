@@ -27,7 +27,7 @@ const DEMO_PASSWORD = "12345678";
 const SHOW_DEMO = __DEV__ || process.env.EXPO_PUBLIC_SHOW_TEST_ACCOUNTS === "1";
 
 const schema = z.object({
-  identifier: z.string().trim().min(1, { message: "أدخل البريد الإلكتروني أو رقم التسجيل." }),
+  identifier: z.string().trim().min(1, { message: "أدخل البريد أو الرقم." }),
   password: z.string().min(1, { message: "أدخل كلمة المرور." }),
 });
 
@@ -90,8 +90,25 @@ export default function SignIn() {
         error={error}
         footer={
           <View style={{ gap: sp[12] }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-              <Pressable accessibilityRole="link" onPress={() => router.push("/auth/forgot-password")}>
+            {/* R366 A5 fs2 evidence fix (before-set VLM, teacher-fs2): at
+                font-scale 2.0 the two links outgrew the row width and
+                collided under the submit button. Wrap + gap keeps both
+                tappable at every scale; each link pads its own tap area. */}
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                alignItems: "center",
+                rowGap: sp[8],
+                gap: sp[8],
+              }}
+            >
+              <Pressable
+                accessibilityRole="link"
+                onPress={() => router.push("/auth/forgot-password")}
+                style={{ paddingVertical: sp[4] }}
+              >
                 <T variant="sm" color="secondary">نسيت كلمة المرور؟</T>
               </Pressable>
               <Pressable
@@ -103,6 +120,7 @@ export default function SignIn() {
                       : "/auth/register",
                   )
                 }
+                style={{ paddingVertical: sp[4] }}
               >
                 <T variant="sm" color="secondary">إنشاء حساب جديد</T>
               </Pressable>
@@ -127,7 +145,7 @@ export default function SignIn() {
           <Field
             {...form.field("identifier")}
             fieldId="identifier"
-            label="البريد الإلكتروني أو رقم التسجيل"
+            label="البريد أو رقم التسجيل"
             testID="login-email"
             purpose="username"
             inputMode="email"

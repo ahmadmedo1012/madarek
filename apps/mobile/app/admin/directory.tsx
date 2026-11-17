@@ -101,7 +101,7 @@ export default function AdminDirectory() {
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو رقم الهاتف…"
+          placeholder="بالاسم أو الهاتف…"
           onClear={() => {
             haptics.selection();
             setQ("");
@@ -129,11 +129,11 @@ export default function AdminDirectory() {
           hasNextPage={directory.hasNextPage}
           loadMoreError={directory.loadMoreError}
           onRetryLoadMore={directory.retryLoadMore}
-          emptyTitle={appliedQ ? "لا توجد نتائج" : "لا يوجد ملفات بعد"}
+          emptyTitle={appliedQ ? "لا نتائج" : "لا ملفات بعد"}
           emptyMessage={
             appliedQ
-              ? "جرّب تعديل البحث أو البحث برقم الهاتف (أوّله تكفي)."
-              : "ستظهر الملفات فور اعتماد أوّل طالب أو مدرّس في النظام."
+              ? "جرّب بالهاتف (أوله يكفي)."
+              : "تظهر فور اعتماد أول حساب."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />

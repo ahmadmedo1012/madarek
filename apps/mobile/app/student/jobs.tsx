@@ -95,9 +95,9 @@ export default function JobsScreen() {
     onSuccess: (_res, jobId) => {
       setJustApplied((prev) => ({ ...prev, [jobId]: true }));
       void qc.invalidateQueries({ queryKey: ["jobs"] });
-      toast.success("وصل طلبك إلى صاحب الفرصة.", "تمّ التقديم");
+      toast.success("وصل طلبك.", "تمّ التقديم");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر إرسال طلب التقديم"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر إرسال الطلب"),
   });
 
   return (
@@ -124,8 +124,8 @@ export default function JobsScreen() {
         emptySlot={
           <EmptyState
             icon={<Briefcase size={24} color={p.textFaint} />}
-            title="لا توجد فرص نشطة هذا الأسبوع"
-            message="نضيف فرص التوظيف والتدريب بشكل دوري — ستصلك إشعارات الفرص الملائمة لتخصصك تلقائياً."
+            title="لا فرص هذا الأسبوع"
+            message="فرص دورية بإشعارات لتخصصك."
           />
         }
         ListHeaderComponent={
@@ -148,7 +148,7 @@ export default function JobsScreen() {
           }}
         >
           <T variant="xs" color="faint">
-            {`${countAr(rows.length, ["فرصة واحدة مفتوحة", "فرصتان مفتوحتان", "فرص مفتوحة", "فرصة مفتوحة"])} · ${latn(rows.filter((j) => j.myApplication).length)} قدّمت عليها`}
+            {`${countAr(rows.length, ["فرصة مفتوحة", "فرصتان مفتوحتان", "فرص مفتوحة", "فرصة مفتوحة"])} · ${latn(rows.filter((j) => j.myApplication).length)} قدّمت عليها`}
           </T>
         </View>
       ) : null}

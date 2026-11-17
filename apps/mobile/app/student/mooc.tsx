@@ -66,7 +66,7 @@ export default function MoocScreen() {
   const open = (url: string | null | undefined) => {
     if (!url) return;
     void WebBrowser.openBrowserAsync(url).catch(() => {
-      void Linking.openURL(url).catch(() => toast.error("تعذّر فتح المتصفح الخارجي."));
+      void Linking.openURL(url).catch(() => toast.error("تعذّر فتح المتصفح."));
     });
   };
 
@@ -86,8 +86,8 @@ export default function MoocScreen() {
         emptySlot={
           <EmptyState
             icon={<GraduationCap size={24} color={p.textFaint} />}
-            title="لا توجد دورات خارجية مرتبطة"
-            message="يربط المسجل العام دورات Coursera وedX المعتمدة بمقرّراتك؛ راجع المرشد الأكاديمي."
+            title="لا دورات مرتبطة"
+            message="دورات Coursera وedX — راجع المرشد."
           />
         }
         ListHeaderComponent={
@@ -99,7 +99,7 @@ export default function MoocScreen() {
               <Card style={{ gap: sp[4] }}>
                 <T variant="sm" weight="bold">{`الدورات المتاحة: ${num(rows.length)}`}</T>
                 <T variant="xs" color="muted">
-                  {countAr(rows.length, ["دورة خارجية واحدة", "دورتان خارجيتان", "دورات خارجية", "دورة خارجية"])} مرتبطة بالمقرّرات — التسجيل خارج التطبيق.
+                  {countAr(rows.length, ["دورة خارجية", "دورتان خارجيتان", "دورات خارجية", "دورة خارجية"])} مرتبطة بالمقرّرات — التسجيل خارج التطبيق.
                 </T>
               </Card>
             ) : null}

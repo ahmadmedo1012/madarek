@@ -104,7 +104,7 @@ const CatalogCard = makeRow<
         ) : null}
         {item.credits != null && item.credits > 0 ? (
           <T variant="xs" color="faint">
-            {countAr(item.credits, ["ساعة معتمدة واحدة", "ساعتان معتمدتان", "ساعات معتمدة", "ساعة معتمدة"])}
+            {countAr(item.credits, ["ساعة معتمدة", "ساعتان معتمدتان", "ساعات معتمدة", "ساعة معتمدة"])}
           </T>
         ) : null}
       </PressableScale>
@@ -269,7 +269,7 @@ export default function CatalogScreen() {
                 <SearchBar
                   value={q}
                   onChange={setQ}
-                  placeholder="ابحث باسم المقرّر أو رمزه…"
+                  placeholder="بالاسم أو الرمز…"
                   onClear={() => {
                     setQ("");
                     setTerm("");
@@ -318,8 +318,8 @@ export default function CatalogScreen() {
         {!slug ? (
           <EmptyState
             icon={<BookOpen size={22} color={p.textMuted} />}
-            title="لم تُحدَّد مؤسستك بعد"
-            message="اختر مؤسستك من مبدّل المؤسسة لعرض دليل مقرّراتها."
+            title="لم تُحدَّد مؤسستك"
+            message="اختر مؤسستك أولًا."
           />
         ) : (
           <DataList
@@ -342,16 +342,16 @@ export default function CatalogScreen() {
             emptySlot={
               filtering ? (
                 <EmptyState
-                  title="لا توجد مقرّرات تطابق البحث"
-                  message="لم نجد مقرّراً يطابق شروطك — جرّب كلمات أخرى أو أعد ضبط التصفية."
+                  title="لا مطابقات للبحث"
+                  message="لا مطابقات."
                   actionLabel="إزالة التصفية"
                   onAction={resetFilters}
                 />
               ) : (
                 <EmptyState
                   room="library"
-                  title="لا توجد مقرّرات"
-                  message="لم تُضف مقرّرات إلى دليل مؤسستك حتى الآن — ستظهر هنا فور إضافتها من المسجل العام."
+                  title="لا مقرّرات"
+                  message="لا مقرّرات — تظهر فور الإضافة."
                 />
               )
             }
@@ -436,12 +436,12 @@ export default function CatalogScreen() {
               <T variant="sm" color="secondary">
                 {card.credits != null && card.credits > 0
                   ? countAr(card.credits, [
-                      "ساعة معتمدة واحدة",
+                      "ساعة معتمدة",
                       "ساعتان معتمدتان",
                       "ساعات معتمدة",
                       "ساعة معتمدة",
                     ])
-                  : "بلا ساعات معتمدة مسجَّلة"}
+                  : "بلا ساعات معتمدة"}
               </T>
               {card.nameEn ? (
                 <T variant="xs" color="faint">

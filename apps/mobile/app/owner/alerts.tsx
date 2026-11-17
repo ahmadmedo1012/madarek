@@ -16,6 +16,7 @@ import { ownerApi } from "@/api/owner";
 import { useStatusTones } from "@/design/theme";
 import { dateTime, latn } from "@/lib/format";
 import { SeverityChip, alertCategoryLabel } from "@/features/governance/components";
+import { OWNER_DASHBOARD } from "@/lib/copy";
 
 interface OwnerAlertRow {
   id: string;
@@ -48,9 +49,9 @@ export default function OwnerAlerts() {
     mutationFn: (id: string) => ownerApi.resolveAlert(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["owner", "alerts"] });
-      toast.success("أُغلق التنبيه وسُجّلت العمليّة في سجلّ النشاط.", "تمّ حلّ التنبيه");
+      toast.success("أُغلق وسُجِّلت العمليّة.", "تمّ حلّ التنبيه");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر حلّ التنبيه"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الحلّ"),
   });
 
   const rows = Array.isArray(alerts.data) ? alerts.data : [];
@@ -60,9 +61,9 @@ export default function OwnerAlerts() {
 
   return (
     <Screen scroll>
-      <StackHeader title="التنبيهات التشغيليّة" kicker="لوحة المالك" />
+      <StackHeader title="التنبيهات التشغيليّة" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="التنبيهات التشغيليّة" kicker="إدارة ومراقبة التنبيهات والحوادث التشغيليّة — مباشرة من سجلّ المنصّة." />
+        <PageHeader title="التنبيهات التشغيليّة" kicker="التنبيهات والحوادث التشغيليّة." />
 
         {alerts.isLoading ? (
           <SkeletonList rows={4} />
@@ -71,14 +72,14 @@ export default function OwnerAlerts() {
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<CheckCircle2 size={22} color={tones.mint.ink} />}
-            title="لا توجد تنبيهات مفتوحة"
-            message="كل أنظمة المنصّة تعمل بشكل طبيعيّ — تابع آخر العمليّات من سجلّ النشاط."
+            title="لا تنبيهات مفتوحة"
+            message="كل الأنظمة طبيعيّة."
           />
         ) : (
           <View style={{ gap: 16 }}>
             <RowList>
               <LedgerRow last>
-                <StatLine label="تنبيهات مفتوحة" value={latn(rows.length)} hint="ضمن الحدّ الأقصى للعرض" />
+                <StatLine label="تنبيهات مفتوحة" value={latn(rows.length)} hint="ضمن الحدّ" />
                 <StatLine label="حرجة" value={latn(critical)} hint="تستوجب قرارًا" />
                 <StatLine label="تحذيرات" value={latn(warning)} hint="تحتاج متابعة" />
                 <StatLine label="معلومات" value={latn(info)} hint="للمتابعة فقط" />
@@ -129,7 +130,7 @@ export default function OwnerAlerts() {
 
       <ConfirmDialog
         open={resolveTarget !== null}
-        title="حلّ التنبيه التشغيليّ"
+        title="حلّ التنبيه"
         confirmLabel="معالجة"
         danger
         message={

@@ -30,6 +30,7 @@ import {
   type OfferingPickRow,
   type StudentEnrollmentRow,
 } from "@/features/governance/components";
+import { SEARCH_NAME_OR_EMAIL } from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -93,7 +94,7 @@ export default function AdminStudents() {
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو البريد…"
+          placeholder={SEARCH_NAME_OR_EMAIL}
           onClear={() => {
             haptics.selection();
             setQ("");
@@ -124,11 +125,11 @@ export default function AdminStudents() {
           hasNextPage={users.hasNextPage}
           loadMoreError={users.loadMoreError}
           onRetryLoadMore={users.retryLoadMore}
-          emptyTitle={appliedQ ? "لا توجد نتائج" : "لا يوجد طلاب بعد"}
+          emptyTitle={appliedQ ? "لا نتائج" : "لا طلاب بعد"}
           emptyMessage={
             appliedQ
-              ? "جرّب تعديل البحث لعرض نتائج أوسع."
-              : "ستظهر القائمة فور تسجيل أوّل طالب في النظام."
+              ? "جرّب بحثًا أوسع."
+              : "تظهر فور تسجيل أول طالب."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />
@@ -155,14 +156,14 @@ const StudentRow = makeRow<AdminUserRow, { onSelect: (row: AdminUserRow) => void
       onPress={() => onSelect(item)}
       accessibilityLabel={`بيانات وتسجيلات ${item.firstName} ${item.lastName}`}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
         <UserAvatar
           url={avatarUrlOf(item)}
           initials={item.avatarInitials ?? initials(item.firstName, item.lastName)}
           color={item.avatarColor}
           size={36}
         />
-        <View style={{ flex: 1, gap: 2 }}>
+        <View style={{ flex: 1, gap: sp[2] }}>
           <T variant="body" weight="bold" numberOfLines={1}>
             {item.firstName} {item.lastName}
           </T>
@@ -216,7 +217,7 @@ function EnrollmentManager({
     onSuccess: () => {
       invalidate(student.id);
       onChanged();
-      toast.success("تمّ التسجيل في المقرّر");
+      toast.success("تمّ التسجيل");
       setPicked(null);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر التسجيل"),
@@ -227,7 +228,7 @@ function EnrollmentManager({
     onSuccess: () => {
       invalidate(student.id);
       onChanged();
-      toast.success("تمّ إلغاء التسجيل");
+      toast.success("أُلغي التسجيل");
       setConfirming(null);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر إلغاء التسجيل"),
@@ -248,7 +249,7 @@ function EnrollmentManager({
 
   return (
     <Sheet open onClose={onClose} title={`تسجيلات ${student.firstName} ${student.lastName}`}>
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
           إلغاء التسجيل يحذف تسجيل الطالب في المقرّر وتقدُّمه فيه نهائيًا — يمرّ كل إلغاء على تأكيد صريح قبل التنفيذ.
         </T>
@@ -257,7 +258,7 @@ function EnrollmentManager({
           التسجيلات الحالية
         </T>
         {enrollments.isLoading ? (
-          <View style={{ gap: 8 }}>
+          <View style={{ gap: sp[8] }}>
             <Skeleton h={44} />
             <Skeleton h={44} />
           </View>
@@ -268,7 +269,7 @@ function EnrollmentManager({
             لا تسجيلات حاليًا.
           </T>
         ) : (
-          <View style={{ gap: 8 }}>
+          <View style={{ gap: sp[8] }}>
             {(enrollments.data ?? []).map((e) => (
               <LedgerRow
                 key={e.id}
@@ -278,7 +279,7 @@ function EnrollmentManager({
                     : ""
                 }`}
               >
-                <View style={{ gap: 4 }}>
+                <View style={{ gap: sp[4] }}>
                   <T variant="body" weight="medium">
                     {e.offering?.course?.name ?? "—"}
                   </T>
@@ -287,7 +288,7 @@ function EnrollmentManager({
                     {e.offering?.teacher?.lastName ?? ""}
                   </T>
                   {typeof e.progressPct === "number" ? (
-                    <View style={{ paddingTop: 4 }}>
+                    <View style={{ paddingTop: sp[4] }}>
                       <ProgressBar ratio={clamp01(e.progressPct / 100)} label="التقدُّم" />
                       <T variant="xs" color="faint">
                         التقدُّم {latn(Math.round(e.progressPct))}%
@@ -295,7 +296,7 @@ function EnrollmentManager({
                     </View>
                   ) : null}
                 </View>
-                <View style={{ flexDirection: "row", paddingTop: 8 }}>
+                <View style={{ flexDirection: "row", paddingTop: sp[8] }}>
                   <Button
                     label="إلغاء التسجيل"
                     kind="ghost"
@@ -321,7 +322,7 @@ function EnrollmentManager({
             لا توجد مقرّرات متاحة للتسجيل.
           </T>
         ) : (
-          <View style={{ gap: 8 }}>
+          <View style={{ gap: sp[8] }}>
             <SelectField
               label="اختر المقرّر"
               value={options.find((o) => o.id === picked) ?? null}

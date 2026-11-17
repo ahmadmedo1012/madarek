@@ -49,6 +49,7 @@ import {
   lecturesProgress,
   type ScopedAnnouncement,
 } from "@/features/student/coursesLogic";
+import { NO_FILES, REPORT_PROBLEM } from "@/lib/copy";
 
 /* ══ shared bits ══════════════════════════════════════════════════════ */
 
@@ -179,8 +180,8 @@ const LectureRow = makeRow<Lecture, { index: number }>(({ item, index }) => {
         {pending > 0 ? (
           <T variant="xs" color="muted">
             {countAr(pending, [
-              "نقطة تفاعل متبقية واحدة",
-              "نقطتا تفاعل متبقيتان",
+              "نقطة متبقية",
+              "نقطتان متبقيتان",
               "نقاط تفاعل متبقية",
               "نقطة تفاعل متبقية",
             ])}
@@ -492,13 +493,13 @@ export default function CourseDetailScreen() {
             keyExtractor={(l) => l.id}
             refetch={() => full.refetch()}
             isRefetching={full.isRefetching}
-            emptyTitle="لا توجد محاضرات"
-            emptyMessage="لم تُرفع محاضرات بعد — سيضيفها الأستاذ تباعاً مع تقدّم الفصل."
+            emptyTitle="لا محاضرات"
+            emptyMessage="لا محاضرات — يضيفها الأستاذ تباعًا."
             emptySlot={
               <EmptyState
                 room="lecture-hall"
-                title="لا توجد محاضرات"
-                message="لم تُرفع محاضرات بعد — سيضيفها الأستاذ تباعاً مع تقدّم الفصل."
+                title="لا محاضرات"
+                message="لا محاضرات — يضيفها الأستاذ تباعًا."
               />
             }
             contentPadding={{ horizontal: 20, bottom: 24 }}
@@ -510,13 +511,13 @@ export default function CourseDetailScreen() {
             keyExtractor={(m) => m.id}
             refetch={() => full.refetch()}
             isRefetching={full.isRefetching}
-            emptyTitle="لا توجد ملفات"
-            emptyMessage="ستظهر مواد المقرّر هنا فور رفع الأستاذ لها."
+            emptyTitle={NO_FILES}
+            emptyMessage="تظهر فور رفعها."
             emptySlot={
               <EmptyState
                 room="library"
-                title="لا توجد ملفات"
-                message="ستظهر مواد المقرّر هنا فور رفع الأستاذ لها."
+                title={NO_FILES}
+                message="تظهر فور رفع الأستاذ."
               />
             }
             contentPadding={{ horizontal: 20, bottom: 24 }}
@@ -532,13 +533,13 @@ export default function CourseDetailScreen() {
             onRetry={() => announcements.refetch()}
             refetch={() => announcements.refetch()}
             isRefetching={announcements.isRefetching}
-            emptyTitle="لا توجد إعلانات"
-            emptyMessage="ستظهر إعلانات هذا المقرّر هنا فور نشرها."
+            emptyTitle="لا إعلانات"
+            emptyMessage="تظهر فور نشرها."
             emptySlot={
               <EmptyState
                 room="building"
-                title="لا توجد إعلانات"
-                message="ستظهر إعلانات هذا المقرّر هنا فور نشرها."
+                title="لا إعلانات"
+                message="تظهر فور نشرها."
               />
             }
             contentPadding={{ horizontal: 20, bottom: 24 }}
@@ -558,7 +559,7 @@ export default function CourseDetailScreen() {
               onPress: () => void shareCourse(),
             },
             {
-              label: "الإبلاغ عن مشكلة",
+              label: REPORT_PROBLEM,
               icon: <Flag size={18} color={p.text} />,
               onPress: () => router.push("/report" as never),
             },
