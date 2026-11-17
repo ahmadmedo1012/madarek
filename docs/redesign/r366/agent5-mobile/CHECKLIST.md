@@ -13,11 +13,11 @@ Baseline (measured on this branch before any change):
 
 ## L1 — Evidence pipeline first (cheap, drives everything)
 
-- [x] Dispatch ui-screens before-set on `main` — student run 44091736405 + owner 44091879110 (both later failed on the R362 line-by-line bug, see RESUME); the FIXED before-set: run **44098062444** (all roles × extended profiles, app_ref=main) + queued core teacher/registrar/quality via the dispatch poller
+- [x] Dispatch ui-screens before-set on `main` — the FIXED before-set extended: run **44098062444** GREEN on ALL 20 jobs (5 roles × 4 extended profiles, app_ref=main); artifacts downloaded, 20 contact sheets cut, full VLM defect review + triage table in RESUME.md (session 2). Core-profile before-sets: teacher via 44102959939 (light-a11y-small job died on a corrupt SDK system-image zip — infra flake, AVD never booted, zero screenshots; log in /home/z/.r366/teacher-light-a11y.log — re-covered by the queued all:core:main), registrar via 44109069839, remaining roles via the chain2 all:core:main rerun
 - [x] ui-screens.yml extended (commit 8c3f3cc): tablet 800×1280@160, landscape 2340×1080@420, fs 2.0, dark tablet — twin `screens-extended` job behind `profile_set` input; standard viewport ≈411dp (Pixel-class, already the default AVD) and 360×640 small already existed. RTL: app forces RTL internally (I18nManager.forceRTL) — device locale doesn't change direction; noted in RESUME
 - [x] +35 deep stops across the five flows (12–19 shots per profile); every deep link validated against the 112-route tree (0 bad links; achievements fixed to root route)
 - [x] student extended artifacts downloaded (fs2/tablet/landscape), 3 contact sheets, VLM defect review — table in RESUME.md; 5 fixes committed (32ead51)
-- [ ] After-set: dispatch extended workflow on this branch; download artifacts; contact sheets; defect re-check (PENDING — before-set still running; after-set queued after code freeze)
+- [ ] After-set: dispatch extended workflow on this branch; download artifacts; contact sheets; defect re-check (IN FLIGHT — after-set 44110540931 pending behind registrar-core 44109069839, branch tip f67d745; chain2 then runs after-core + before-core; board + queueing law in RESUME.md session 2)
 
 ## L2 — UI kit & shell at the root
 

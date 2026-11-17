@@ -96,3 +96,89 @@ Run 44098062444 (fixed scripts; app_ref=main, my flows) — student jobs GREEN:
 - fs2: 457 frames, 87.96% janky, p50 81ms — swiftshader software rendering; usable ONLY as
   the before/after relative baseline (same harness), NOT against the ≤5% device target.
   Tablet/landscape gfxinfo.txt captured in artifacts for the same comparison.
+
+## 2026-11-17 — L1 BEFORE-SET: full all-roles evidence (run 44098062444)
+
+Session continuation. Run 44098062444 (app_ref=main, extended, role=all) finished GREEN
+on all 20 capture jobs + preview APK. Board state around it:
+
+- Previous session's dispatch poller (`/home/z/.r366/dispatch-poller.sh`) was found STILL
+  RUNNING; it had dispatched 44102959939 (teacher:core:main — 4 core jobs, GREEN except
+  light-a11y-small) and 44109069839 (registrar:core:main, in progress). The poller was
+  killed and its remaining queue consolidated into a new sequential chain
+  (`chain2.sh`: after-core → before-core-all) after the manually-dispatched after-set.
+- 44102959939 teacher light-a11y-small FAILURE root-caused from the job log: the
+  emulator's `system-images;android-34;google_apis;x86_64` zip failed to prepare
+  ("Error on ZipFile unknown archive") → the AVD never booted → the walk step died
+  before ANY screenshot existed (no artifact uploaded). GitHub infra flake, not an
+  app/flow failure; the queued all:core:main rerun re-covers that profile.
+- GitHub queueing lesson (documented for future runs): in a per-ref concurrency group
+  the NEWEST QUEUED run supersedes (cancels) older queued ones — three rapid dispatches
+  collapse into one. All dispatches after this note go ONE AT A TIME.
+
+### Artifacts + sheets
+
+- All 21 artifacts downloaded (`/home/z/a5-work/before/`): 20 capture jobs + preview
+  APK (19,247,754 bytes — matches the CHECKLIST's before-APK figure exactly).
+- 20 before contact sheets cut (`sheets/before/sheet-<role>-<profile>.jpg`, 12 cells
+  each, cells ≤480px; prologue 00–03 always kept; beyond 12 an evenly-spaced sample —
+  the SAME subset is reused for the after sheets, so the comparison is honest).
+  Previous session's 5 sheets (student ×4 + teacher-fs2, `/home/z/.r366/sheets/`) kept
+  as provenance; the final committed L6 set is the 40-sheet ledger (20 before + 20 after).
+
+### VLM defect review (20 sheets + 20 full-res verifications)
+
+Defect classes, triaged against code ground truth (TabBar is in layout flow — no
+overlay possible; StackHeader back is ArrowRight in RTL by construction; "local-logo"
+is the honest provider badge, verbatim by design):
+
+| Class | Verdict | Action |
+|---|---|---|
+| "Last row cut by tab bar / screen edge" on scrollable lists (student library/my-data/gamification, teacher students/intelligence/attendance/assignments/materials, quality dashboard/reports/engagement, registrar faculties/directory/digital, owner system/dashboard) | FALSE POSITIVE — mid-scroll state on Screen(scroll) bodies; tab bar sits in layout flow below content | none (logged) |
+| RTL chevron direction (registrar landscape back arrows "point wrong", quality professors header arrow, student calendar chevron) | FALSE POSITIVE — StackHeader renders ArrowRight (back = right in RTL); landscape reads contradicted the tablet reads of the same screens | none (code-cited) |
+| Ring inner label collides with the arc at fs2 (student dashboard «أرقام هذا الفصل» 44dp ring + attendance 64dp ring; two independent VLM reads) | REAL | FIXED — maxFontSizeMultiplier 1.25 on both inner labels (commit 18a7213) |
+| Login footer links «نسيت كلمة المرور؟/إنشاء حساب جديد» collide at fs2 (previous session's teacher-fs2 review) | REAL | FIXED — wrap + gap + tap padding (commit f67d745) |
+| Teachers search placeholder truncated at fs2 («ابحث بالاسم أو البريد الإلكترون..») | REAL on main; ALREADY fixed on branch by the copy diet (SEARCH_NAME_OR_EMAIL now «ابحث بالاسم أو البريد…») | after-set proves |
+| Settings numerals Segmented chip truncated at fs2 («٠١٢٣ عربية-هن..») | REAL on main; ALREADY fixed on branch (770906f chip geometry) | after-set proves |
+| Calendar weekday labels / schedule rows / materials titles at fs2 | REAL on main; ALREADY fixed on branch (32ead51, 770906f) | after-set proves |
+| Tablet phone-stretch + landscape portrait-squeeze | REAL on main; ALREADY fixed on branch (de01bd3 rail + column) | after-set proves |
+| Owner realtime card label "طلبات الذكاء الا..." truncated | UNREPRODUCIBLE — StatLine labels wrap by construction (no numberOfLines); the only AI-ish label is «طلبات AI / دقيقة» which fits; VLM misread | none (logged) |
+| «مزوّد: local» raw provider id in AI header (fs2/tablet reads) | INTENTIONAL — the honest provider badge renders the id verbatim by design (capture env = local backend); not a layout defect | none (logged) |
+| Registrar dashboard badge overlaps timeline (dark-tablet) | FALSE POSITIVE (full-res verify: NOT) | none |
+| Status-bar overlap (student calendar dark-tablet) | FALSE POSITIVE (full-res verify: NO-OVERLAP) | none |
+
+### Before-metrics (all 20 jobs; swiftshader harness — relative baseline only)
+
+```
+JOB                              FRAMES  JANKY%   DISPLAYED
+owner-dark-tablet                  443   74.04   +3s779ms
+owner-light-fs2                    374   91.44   +3s460ms
+owner-light-landscape               445   73.71   +3s241ms
+owner-light-tablet                  528   57.77   (no line*)
+quality-dark-tablet                409   60.15   +2s382ms
+quality-light-fs2                  315   83.49   +2s472ms
+quality-light-landscape             350   69.43   +3s475ms
+quality-light-tablet               427   57.14   +2s34ms
+registrar-dark-tablet              546   53.30   +2s536ms
+registrar-light-fs2                444   79.73   +1s993ms
+registrar-light-landscape           487   65.09   +2s543ms
+registrar-light-tablet             558   53.41   +2s652ms
+student-dark-tablet                624   63.46   +4s106ms
+student-light-fs2                  457   87.96   +5s891ms (first-boot path)
+student-light-landscape             549   71.77   +2s971ms
+student-light-tablet               626   55.91   +2s491ms
+teacher-dark-tablet                451   77.61   +6s201ms
+teacher-light-fs2                  407   86.98   +2s74ms
+teacher-light-landscape             438   74.89   +2s633ms
+teacher-light-tablet               546   55.49   +2s656ms
+```
+* owner-light-tablet: the Displayed line fell outside the logcat window (first-boot
+rotation); gfxinfo intact. After-set will report the same columns for the delta.
+
+### CI board at this point (dispatch order = execution order)
+
+1. 44109069839 registrar:core:main — in progress (poller's last dispatch)
+2. 44110540931 all:extended:current (AFTER-SET) — pending, dispatched manually;
+   branch tip at dispatch = f67d745 (ring caps + login links wrap included)
+3. chain2: all:core:current (after-core)
+4. chain2: all:core:main (before-core, re-covers teacher a11y-small too)
