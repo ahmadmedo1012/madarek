@@ -354,6 +354,11 @@ const SVG_KIDS = {
   "hpf-29": ["hpf-30", "hpf-31"], "hpf-34": ["hpf-35", "hpf-36"], "hpf-39": ["hpf-40", "hpf-41"],
   "hpf-44": ["hpf-45", "hpf-46"], "hpf-55": ["hpf-56"], "hpf-65": ["hpf-66"],
 };
+/* the nesting families: the plate-dark trio nests like the spec tree (the
+ * opacity-0 parent carries the box; the flat layout broke the opacity
+ * inheritance and painted the tag text at rest — the overlap law). The
+ * rebased insets live in hero-plate.css's curated tail. */
+const NESTED_IN = { "hpf-19": "hpf-18", "hpf-20": "hpf-19" };
 const svgDone = new Set();
 const seatRow = (s) => {
   if (s.tag === "path") return null; // paths render inside their svg
