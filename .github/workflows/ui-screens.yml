@@ -42,6 +42,15 @@ jobs:
     env:
       EXPO_PUBLIC_API_BASE_URL: http://10.0.2.2:4000/api/v1
       EXPO_PUBLIC_DISABLE_REMOTE_CONFIG: "1"
+      # R362 — the media-origin override: the hermetic backend serves the
+      # API but not the web's static /media tree (serveStatic is
+      # prod-gated; forcing prod breaks HTTP cookies on the emulator), so
+      # every prior capture's hero band rendered as empty reserved space
+      # (the R358 "startup messages" finding). The screens job mounts a
+      # static fixture for frontend/public on :4100; the app reads this
+      # origin for illustrations (unset in retail builds — no product
+      # behavior change).
+      EXPO_PUBLIC_MEDIA_ORIGIN: http://10.0.2.2:4100
     steps:
       - uses: actions/checkout@v4
         with:
@@ -162,6 +171,25 @@ jobs:
           tail -50 "$RUNNER_TEMP/backend.log"
           exit 1
 
+      # R362 — the /media fixture: the app's illustrations (hero bands,
+      # empty-state rooms) load from the WEB origin, which the hermetic
+      # backend cannot serve (see the preview-apk note). frontend/public
+      # holds the byte-synced illustration twins the retail web serves —
+      # mounting them on :4100 completes the capture environment so the
+      # screenshots finally show the art instead of reserved space.
+      # python3's http.server needs no extra dependencies and guesses
+      # webp content types correctly on 24.04.
+      - name: Serve the web /media tree for illustrations
+        run: |
+          set -euo pipefail
+          test -d frontend/public/media
+          (cd frontend/public && nohup python3 -m http.server 4100 --bind 127.0.0.1 > "$RUNNER_TEMP/media.log" 2>&1 &)
+          for i in $(seq 1 15); do
+            curl -fsS -o /dev/null http://127.0.0.1:4100/media/manifest.json && break
+            sleep 1
+          done
+          curl -fsS -o /dev/null http://127.0.0.1:4100/media/manifest.json
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -190,6 +218,16 @@ jobs:
           arch: x86_64
           target: google_apis
           force-avd-creation: false
+          # R362 — the headroom the release smoke already runs with
+          # (build-android.yml): the a11y-small profiles (360x640 +
+          # density 160 + font-scale 1.3) ANR'd the system launcher on
+          # 3 of 20 run-19 jobs under the default 2-core/2GB emulator —
+          # the system «Close app / Wait» sheet then covered the app
+          # while it rendered fine behind it (hide_error_dialogs hid the
+          # symptom; this treats the cause).
+          cores: 3
+          ram-size: 3072M
+          heap-size: 512M
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
           pre-emulator-launch-script: |
             printf 'hw.lcd.width=1080\nhw.lcd.height=2340\nhw.lcd.density=420\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"
@@ -208,6 +246,19 @@ jobs:
             adb shell settings put global window_animation_scale 1.0
             adb shell settings put global transition_animation_scale 1.0
             adb shell settings put global animator_duration_scale 1.0
+            # R362 — ASSERT the scales, don't just set them: a zero scale
+            # (the old disable-animations class) freezes every entering
+            # animation at opacity 0 and the capture dies at the first
+            # assertion with a blank shell — the run-43898742777 failure
+            # mode. Failing LOUDLY here names the actual cause instead of
+            # a 120s welcome-title timeout three steps later.
+            for scale_name in window_animation_scale transition_animation_scale animator_duration_scale; do
+              scale_value=$(adb shell settings get global "$scale_name" | tr -d '\r')
+              if [ "$scale_value" != "1.0" ]; then
+                echo "FAIL: $scale_name=$scale_value (expected 1.0 — Reanimated 4 entering animations never finish at 0)"
+                exit 1
+              fi
+            done
             # Run 19: the 360x640 + density + font-scale changes ANR'd the
             # system launcher on 3 of 20 jobs, and the system «Close app /
             # Wait» sheet covered the app while it rendered fine behind
@@ -227,8 +278,21 @@ jobs:
             adb logcat -d > apps/mobile/build/screens/logcat-before-maestro.log
             printf 'role=%s\ntheme=%s\nfont_scale=%s\nviewport=%s\n' '${{ matrix.role }}' '${{ matrix.profile.theme }}' '${{ matrix.profile.font_scale }}' '${{ matrix.profile.viewport }}' > apps/mobile/build/screens/profile.txt
             # the flow writes into the CWD; keep it inside the workspace so
-            # the upload step can find the shots
+            # the upload step can find the shots. R362 — ONE retry on the
+            # documented flake class (GitHub's emulator/API startup hiccups
+            # still killed branch-tip runs): the flows run clearState, so a
+            # retry starts from the same deterministic welcome-sheet state.
+            # A second consecutive failure is a real red and stays red.
+            set +e
             maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens
+            maestro_status=$?
+            set -e
+            if [ "$maestro_status" -ne 0 ]; then
+              echo "::warning::maestro attempt 1 failed (exit $maestro_status) — one retry from clean app state"
+              adb shell am force-stop ly.madarek.mobile || true
+              sleep 3
+              maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens
+            fi
             adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
             adb logcat -d > apps/mobile/build/screens/logcat-after-maestro.log
             ls -l apps/mobile/build/screens || true

@@ -91,16 +91,21 @@ export function PageHeader({
   mono,
   right,
   compact,
+  testID,
 }: {
   title: string;
   kicker?: string;
   mono?: string;
   right?: ReactNode;
   compact?: boolean;
+  /** Stable e2e anchor (Maestro): RTL text matching proved unreliable —
+   * the settings capture flow pins this id instead of «الإعدادات». */
+  testID?: string;
 }) {
   const p = usePalette();
   return (
     <View
+      testID={testID}
       style={{
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: p.rule,

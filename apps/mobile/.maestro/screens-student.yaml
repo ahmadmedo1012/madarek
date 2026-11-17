@@ -2,7 +2,12 @@
 appId: ly.madarek.mobile
 name: "R358 screens — student"
 ---
-- launchApp
+# R362 — clearState: every run starts from the welcome sheet (fresh
+# session + default light theme), which makes a flaky-emulator RETRY
+# possible (a warm relaunch would land on the dashboard and fail the
+# very first assertion). Matches smoke-alive's cold-boot pattern.
+- launchApp:
+    clearState: true
 - extendedWaitUntil:
     visible:
       id: "welcome-title"
@@ -35,11 +40,22 @@ name: "R358 screens — student"
     timeout: 120000
 - openLink: "madarek://settings"
 - extendedWaitUntil:
-    visible: "الإعدادات"
+    visible:
+      id: "settings-title"
     timeout: 30000
-- takeScreenshot: "screens/02-settings"
+- takeScreenshot: "screens/02-settings-before-theme"
 - tapOn:
     id: "seg-${THEME_ID}"
+# R362 — the applied-theme evidence: the settings screen re-renders in
+# the new theme instantly (zustand, no reload); this shot + the
+# before-shot are the pair a reviewer compares. The wait also proves
+# the theme switch did not unmount the screen (its own regression
+# class from R358's seg-tap fix).
+- extendedWaitUntil:
+    visible:
+      id: "settings-title"
+    timeout: 10000
+- takeScreenshot: "screens/03-settings-after-theme"
 - openLink: "madarek://student/dashboard"
 - extendedWaitUntil:
     visible:

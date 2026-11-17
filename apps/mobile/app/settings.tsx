@@ -193,7 +193,7 @@ export default function Settings() {
 
   return (
     <Screen scroll>
-      <PageHeader title="الإعدادات" kicker="مدارك" />
+      <PageHeader title="الإعدادات" kicker="مدارك" testID="settings-title" />
 
       {/* [01] التفضيلات — مظهرك وأرقامك وملمس التفاعل، مقاعد متطابقة مع الملف */}
       <View style={{ gap: sp[8] }}>
