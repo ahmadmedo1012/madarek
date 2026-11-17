@@ -445,6 +445,14 @@ jobs:
             test '${{ matrix.profile.viewport }}' != tablet-800x1280 || adb shell wm size 800x1280
             test '${{ matrix.profile.viewport }}' != tablet-800x1280 || adb shell wm density 160
             test '${{ matrix.profile.viewport }}' != landscape-2340x1080 || adb shell wm size 2340x1080
+            # R366 A5 — LANDSCAPE ROTATION (one-liners, line-safe): the config.ini
+            # hw.lcd panel swap proved NOT honored by this action/image combo
+            # (run 39 landscape shots still measured 1080x2340 portrait), so the
+            # system-level rotation is applied as well — the standard CI way to
+            # force landscape: lock auto-rotate off, request landscape. The
+            # settings settle during the `sleep 4` below, before the app starts.
+            test '${{ matrix.profile.viewport }}' != landscape-2340x1080 || adb shell settings put system accelerometer_rotation 0
+            test '${{ matrix.profile.viewport }}' != landscape-2340x1080 || adb shell settings put system user_rotation 1
             sleep 4
             adb shell wm dismiss-keyguard || true
             adb install -r '${{ runner.temp }}/apk/Madarek-x86_64.apk'
