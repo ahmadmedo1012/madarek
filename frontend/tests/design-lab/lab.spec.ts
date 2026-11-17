@@ -20,8 +20,14 @@
  *   · THEME FLIP — data-theme flips the computed ground;
  *   · SCREENSHOTS — one deterministic element screenshot per section
  *     × theme × width (baselines under __screenshots__; regenerate
- *     deliberately: `npx playwright test --project=design-lab
- *     --update-snapshots` and review the diff).
+ *     deliberately and review the diff — `npm run test:design-lab --
+ *     --update-snapshots`, i.e. THE SAME FULL invocation shape as the
+ *     assert run, never a `-g`-filtered subset and never from an
+ *     empty snapshots dir: Playwright's new-snapshot path takes a
+ *     single capture while the compare path stabilises on its second
+ *     — section [17] (the live bottom-stack specimen) is the one
+ *     section whose capture differs between those two paths, and a
+ *     `-g`-shaped regeneration desynchronises the whole cell).
  *
  * Runs on the Vite dev server (`npm run test:design-lab`) — the lab
  * route is unguarded and backend-free.
@@ -39,6 +45,18 @@ const FREEZE = `(() => {
   document.head.appendChild(st);
 })()`;
 
+/* §R325 demo layers (banner + fab) are position:fixed — while any
+   section is captured they land INSIDE that section's frame and can
+   occlude specimens that are not theirs. A section's baseline must
+   show that section's content only, so the fixed layers stay hidden
+   for sections [01..16] and reappear for [17] (their own specimen). */
+const HIDE_FIXED = `(() => {
+  let st = document.getElementById('r366-hide-fixed');
+  if (!st) { st = document.createElement('style'); st.id = 'r366-hide-fixed'; document.head.appendChild(st); }
+  st.textContent = '.r323d-stackdemo-banner, .r323d-stackdemo-fab { visibility: hidden !important; }';
+})()`;
+const SHOW_FIXED = `(() => { document.getElementById('r366-hide-fixed')?.remove(); })()`;
+
 async function openLab(page: Page, theme: string): Promise<void> {
   await page.addInitScript((t) => {
     localStorage.setItem('madarek-theme', JSON.stringify({ state: { mode: t, modeUpdatedAt: 1 }, version: 2 }));
@@ -50,6 +68,13 @@ async function openLab(page: Page, theme: string): Promise<void> {
 }
 
 const sectionAt = (page: Page, i: number): Locator => page.locator('.r323d-section').nth(i);
+
+/* the shape PROBE_FN returns — pinned so the string form stays typed */
+interface LabProbe {
+  tinySans: string[];
+  roundControls: string[];
+  sections: number;
+}
 
 /* in-page probes (computed-style matrix — deterministic, no pixels) */
 const PROBE_FN = `(() => {
@@ -96,12 +121,12 @@ for (const theme of THEMES) {
       });
 
       test('the type floor holds (sans >= 13px, mono >= 11px)', async ({ page }) => {
-        const probe = await page.evaluate(PROBE_FN);
+        const probe = await page.evaluate<LabProbe>(PROBE_FN);
         expect(probe.tinySans, `sub-floor text: ${probe.tinySans.slice(0, 6).join(', ')}`).toEqual([]);
       });
 
       test('radius discipline: controls resolve 0', async ({ page }) => {
-        const probe = await page.evaluate(PROBE_FN);
+        const probe = await page.evaluate<LabProbe>(PROBE_FN);
         expect(probe.roundControls, `round controls: ${probe.roundControls.slice(0, 6).join(', ')}`).toEqual([]);
       });
 
@@ -132,6 +157,25 @@ for (const theme of THEMES) {
         for (let i = 0; i < count; i++) {
           const sec = sectionAt(page, i);
           await sec.scrollIntoViewIfNeeded();
+          if (i < SECTIONS - 1) {
+            await page.evaluate(HIDE_FIXED);
+          } else {
+            await page.evaluate(SHOW_FIXED);
+            /* §R325 bottom-stack demo — the readout is interval-driven
+               (400ms) and its text width re-wraps the button row, so a
+               capture can land on the `total 0px` placeholder frame.
+               Capture only the SETTLED state: the same value on three
+               consecutive 400ms polls (= stable across 2+ ticks). */
+            await page.waitForFunction(() => {
+              const el = document.querySelector<HTMLElement>('.r323d-readout');
+              if (!el) return false;
+              const v = el.textContent ?? '';
+              if (el.dataset.r366Settled === v) return true;
+              el.dataset.r366Settled = el.dataset.r366Prev ?? '';
+              el.dataset.r366Prev = v;
+              return false;
+            }, undefined, { polling: 400, timeout: 10_000 });
+          }
           await expect(sec).toHaveScreenshot(`lab-${String(i + 1).padStart(2, '0')}-${theme}-${width}.png`, {
             maxDiffPixelRatio: 0.02,
             animations: 'disabled',
