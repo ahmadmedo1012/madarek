@@ -721,11 +721,16 @@
        pdf.css's page-number/search inputs are handed off with it. */
     font-size: max(16px, var(--type-body-size));
     color: var(--text);
-    /* R313 (WP-D · D16): the Heron input recipe — TRANSPARENT ground
-       (the paper IS the field), 1px #B3B3AF hairline (--border-strong),
-       radius 0 (token ladder). No fills, no wells. */
+    /* R313 (WP-D · D16) + R366 (Agent 3 · WCAG 1.4.11): the Heron input
+       recipe — TRANSPARENT ground (the paper IS the field), square
+       radius, no fills, no wells. The 1px boundary rides the CONTROL
+       seat --input-border (light #72726F — the reference's own mid
+       step — 4.83:1 on the card ground; the retired --border-strong
+       hairline #B3B3AF measured 2.1:1, under the 3:1 non-text floor
+       for control boundaries). Hover steps one rung darker
+       (--input-border-hover); focus stays the D16 signal orange. */
     background: transparent;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--input-border);
     border-radius: var(--r-md);
     /* R313 (D16): the reference's border-color .45s transition — the
        nearest motion rung is --t-slow (500ms). */
@@ -735,7 +740,7 @@
   textarea { padding-block: var(--sp-3); block-size: auto; min-block-size: 96px; resize: vertical; line-height: var(--lh-base); }
   @media (hover: hover) and (pointer: fine) {
     .input:hover,
-    input:hover, textarea:hover, select:hover { border-color: var(--border-strong); }
+    input:hover, textarea:hover, select:hover { border-color: var(--input-border-hover); }
   }
   /* R313 (D16): focus = the reference's #ED4C1F signal border (measured
      live on the footer-subscribe input; the token source is off-limits
@@ -877,10 +882,12 @@
     margin: 0;
     padding: 0;
     background: transparent;
-    /* R313 (D16): 1px hairline (--rule-strong), transparent ground —
-       square checkbox (radius rung is 0), circle radio (the one
-       sanctioned circular primitive at 50%). */
-    border: 1px solid var(--rule-strong);
+    /* R313 (D16) + R366 (Agent 3 · 1.4.11): the unchecked box boundary
+       joins the input control seat --input-border (the old 1px
+       --rule-strong hairline measured 2.1:1 — under the 3:1 floor for
+       identifying the control). Square checkbox (radius rung is 0),
+       circle radio (the one sanctioned circular primitive at 50%). */
+    border: 1px solid var(--input-border);
     cursor: pointer;
     flex-shrink: 0;
     display: inline-flex;
