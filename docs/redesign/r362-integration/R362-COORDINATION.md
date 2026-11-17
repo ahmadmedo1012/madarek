@@ -63,6 +63,7 @@ never directly on `main` or `integration/r362-final-unification`.
 ### Integrator (Agent 1) — owned
 - `integration/r362-final-unification`, the merge order, all conflict resolution
 - `scripts/deadcode/` (baseline re-pins are integrator-committed)
+- `frontend/tests/audit/` (the surface inventory + drift gate infrastructure; findings analysis and list harvests are integrator-committed)
 - `.github/workflows/ci.yml`, `deadcode.yml`, `size-gate.yml`
 - `docs/redesign/r362-integration/`
 - cross-agent shared decisions (this file)

@@ -96,7 +96,10 @@ restores the recipe the comments still promise.
 | Icons | `scripts/check-icons.sh` | PASS |
 | Stylelint | `npx stylelint src/styles/components.css` | 0 errors (5 pre-existing warnings) |
 | Build + bundle | `npm --prefix frontend run build` + `scripts/check-bundle-size.mjs` | PASS — **754.0 KB gz total** vs 770 KB ceiling (heron branch was 754.4; the chrome extraction bought 0.4 KB back) |
-| E2E (browser) | targeted subset (shell/nav/theme/auth) | see §5 for the final tally |
+| E2E (browser, full 177) | CI job «E2E (hermetic browser journeys)» on 4bdb9ae6 | **success** |
+| E2E iOS (real WebKit) | CI job «E2E iOS (real WebKit, iPhone 13)» on 4bdb9ae6 | **success** — validates the retained grouped-nav contract (the r358 branch's 4 iOS failures were the compact-nav break) |
+| Conformance gate | CI job on 4bdb9ae6 | **success** |
+| Surface drift | CI job on 4bdb9ae6 | failed: ad-hoc-motion-duration × 444 — the tp-draw cascade consumes `--t-cinema`, whose generated value moved 720→900ms after the r164 list entry; fixed in 7f8db357 by folding the current rung per the list's own r164/r190/r331/R341 convention; detector unit tests 21/21 |
 
 ## 4 · Environment note (recorded for honesty)
 
