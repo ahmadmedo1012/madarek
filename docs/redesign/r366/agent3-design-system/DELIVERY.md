@@ -1,9 +1,56 @@
 # DELIVERY — R366 · Agent 3 · Design System
 
 Branch `agent/r366-design-system` · base `7a097457` (origin/main) ·
-15 commits · 100 files changed (+2050 / −69). Every box in CHECKLIST.md
-is ticked with its executed proof; this is the summary for the
-integrator.
+16 commits (15 + the audit pass) · 100 files changed (+2114 / −73).
+Every box in CHECKLIST.md is ticked with its executed proof; this is
+the summary for the integrator.
+
+## The audit pass (f323ce16) — three defects found and fixed
+
+The owner-ordered re-audit re-ran every claimed gate and found the
+delivery was NOT as clean as its checklist said:
+
+1. **typecheck:tests was RED** — TS18046 x4 on the new suite (the
+   string-form `page.evaluate(PROBE_FN)` returned `unknown`); the
+   DELIVERY's "typecheck clean" claim was wrong for the tests
+   project. Fixed with a typed `LabProbe` interface; the FULL
+   `npm run typecheck` is green.
+2. **The design-lab screenshots were not deterministic** — three
+   stacked root causes, each proven then fixed:
+   - `/__design` rode the guest Lenis engine (the route list never
+     excluded the labs), and Lenis 1.1.5 ignores external instant
+     scrolls mid-glide — Playwright's CDP scrollIntoViewIfNeeded
+     left the page at a timing-dependent position. Root fix:
+     `SPECIMEN_SURFACE_PREFIXES` in App.tsx (cross-boundary, 2
+     functions + 1 prefix list, additive): /__design, /__brand,
+     /__plates scroll native.
+   - The §R325 readout flips `total 0px` → `total 175px` on its
+     first 400ms tick and its width re-wraps the button row; the
+     spec now waits for the settled value (3 × 400ms polls stable)
+     before capturing section [17].
+   - The demo banner/fab (position:fixed) landed INSIDE other
+     sections' captures and occluded specimens (the EMPTY CELL card
+     sat under the banner — 100% pixel template match). The spec
+     keeps them `visibility:hidden` for [01..16] and shows them for
+     their own [17].
+3. **All 68 committed baselines carried stale banner pixels** — the
+   overlay sat over a same-colour surface (#2E2E2E on #2E2E2E), the
+   diff measured 0.39% — under the 0.02 ratio — so update mode never
+   rewrote a passing baseline. Regeneration lesson (now documented
+   in the spec header): baseline updates MUST run in the same full
+   invocation shape as the assert run (`npm run test:design-lab --
+   --update-snapshots`); the `-g`-filtered and empty-dir paths take
+   Playwright's new-snapshot single-capture route, which diverges
+   from the assert path on section [17]. All 68 baselines were
+   regenerated clean via the full-invocation compare path and
+   template-scanned: zero banner signatures in [01..16].
+
+Post-audit gate state: design-lab **27/27 in two consecutive full
+runs** · unit 3155/3155 + backend 2658 · typecheck + eslint clean ·
+stylelint ratchet green (counters held 41/68/29) · tokens PASS ·
+color-audit 0 FAIL · contrast-gate PASS · copy gates clean ·
+type-stress 36/36 · cls-probe 0.0204 (unchanged — the Agent-2 Lenis
+scrollbar flip, REQUEST R1) · hover-guard 48 (other agents' files).
 
 ## What landed (by lane)
 
