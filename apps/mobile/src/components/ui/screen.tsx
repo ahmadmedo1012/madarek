@@ -14,6 +14,7 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
+import { CONTENT_MAX_WIDTH, useResponsive } from "@/hooks/useResponsive";
 import { T , MonoLabel } from "./text";
 
 export interface ScreenProps {
@@ -24,21 +25,36 @@ export interface ScreenProps {
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
   keyboardShouldPersistTaps?: "always" | "never" | "handled";
+  /**
+   * R366 A5 — opt OUT of the responsive content column. On ≥600dp windows
+   * (foldables open, landscape phones, tablets) the content column centres
+   * at CONTENT_MAX_WIDTH so Arabic prose and cards keep their reading
+   * measure instead of stretching 600–800dp edge-to-edge; the paper
+   * background stays full-bleed either way. Full-bleed compositions
+   * (welcome hero, immersive players, map surfaces) pass `wide`.
+   */
+  wide?: boolean;
 }
 
 /**
  * PageFrame — paper ground, safe areas, optional scroll.
  * The Heron drafting sheet: background = paper, no decorative chrome.
  */
-export function Screen({ children, scroll = true, padded = true, style, contentContainerStyle, keyboardShouldPersistTaps = "handled" }: ScreenProps) {
+export function Screen({ children, scroll = true, padded = true, style, contentContainerStyle, keyboardShouldPersistTaps = "handled", wide = false }: ScreenProps) {
   const p = usePalette();
   const insets = useSafeAreaInsets();
+  const { wide: isWideWindow } = useResponsive();
   const base: StyleProp<ViewStyle> = [
     { flex: 1, backgroundColor: p.bg },
     { paddingTop: insets.top, paddingBottom: insets.bottom },
     style,
   ];
-  const inner: StyleProp<ViewStyle> = [{ flexGrow: 1, gap: sp[16] }, contentContainerStyle];
+  // R366 A5 — the responsive content column (see ScreenProps.wide).
+  // Caller contentContainerStyle stays LAST so a screen can still
+  // override the cap for a bespoke composition.
+  const column: StyleProp<ViewStyle> =
+    isWideWindow && !wide ? { width: "100%", maxWidth: CONTENT_MAX_WIDTH, alignSelf: "center" } : null;
+  const inner: StyleProp<ViewStyle> = [{ flexGrow: 1, gap: sp[16] }, column, contentContainerStyle];
   if (scroll) {
     return (
       <View style={base}>
@@ -59,22 +75,26 @@ export function Screen({ children, scroll = true, padded = true, style, contentC
   }
   return (
     <View style={base}>
-      {padded ? <View style={styles.pad}>{children}</View> : children}
+      {padded ? <View style={[styles.pad, column]}>{children}</View> : children}
     </View>
   );
 }
 
 /** Non-scrolling page for forms/centered layouts. */
-export function FormScreen({ children, style }: ScreenProps) {
+export function FormScreen({ children, style, wide = false }: ScreenProps) {
   const p = usePalette();
   const insets = useSafeAreaInsets();
+  const { wide: isWideWindow } = useResponsive();
+  // R366 A5 — forms centre in the same readable column as Screen bodies.
+  const column: StyleProp<ViewStyle> =
+    isWideWindow && !wide ? { width: "100%", maxWidth: CONTENT_MAX_WIDTH, alignSelf: "center" } : null;
   return (
     <KeyboardAvoidingView
       style={[{ flex: 1, backgroundColor: p.bg }, style]}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <SafeAreaView style={{ flex: 1, paddingTop: Math.max(0, insets.top - sp[8]) }} edges={["top"]}>
-        {children}
+        <View style={[{ flex: 1 }, column]}>{children}</View>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

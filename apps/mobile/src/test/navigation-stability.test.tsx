@@ -266,11 +266,66 @@ describe("selection indicator — ONE transform-only dot per bar", () => {
     expect(src).not.toMatch(/borderBottomWidth:\s*active/);
     expect(src).not.toContain("borderBottomWidth: active ?");
     // the dot's animated style is transform-only (UI thread, no layout pass)
-    expect(src).toContain("transform: [{ translateX: dotX.value }]");
+    // on BOTH axes (R366 A5: translateX on the bottom bar, translateY on
+    // the side rail — the worklet returns one transform, never a layout
+    // property)
+    expect(src).toContain("transform: [{ translateY: dotOffset.value }]");
+    expect(src).toContain("transform: [{ translateX: dotOffset.value }]");
+    expect(src).not.toContain("transform: [{ width: dotOffset.value }]");
   });
 });
 
 /* ── 3c. R334 3-a — the immersive-hide policy ───────────────────────── */
+
+/* ── R366 A5 — the responsive shell axis (bottom bar ⇄ side rail) ───── */
+
+describe("responsive shell axis — bottom bar on phones, rail on ≥600dp windows", () => {
+  test.each(["student", "teacher", "admin", "quality", "owner"])(
+    "%s/(tabs): the layout flips axis with the window class (source contract)",
+    (slug) => {
+      const src = readFileSync(join(APP, slug, "(tabs)", "_layout.tsx"), "utf8");
+      expect(src).toContain('tabBarPosition: wide ? "left" : "bottom"');
+      expect(src).toContain('orientation={wide ? "vertical" : "horizontal"}');
+    },
+  );
+
+  test("the TabBar source flips layout axis and dot travel per orientation", () => {
+    const src = readFileSync(join(ROOT, "src", "components", "shell", "TabBar.tsx"), "utf8");
+    expect(src).toContain('flexDirection: rail ? "column" : "row"');
+    // the rail dot anchors on the START (screen) edge and travels on Y
+    expect(src).toMatch(/rail[\s\S]{0,400}top: 0,\s*\n\s*start: 3/);
+    // the rail item keeps a ≥44pt target
+    expect(src).toContain("RAIL_ITEM_MIN_HEIGHT = 60");
+    expect(src).toContain("export const RAIL_WIDTH = 88");
+  });
+
+  test("the rail renders the same tablist, five tabs, labels and ONE dot", async () => {
+    const routes = ROLE_TABS.STUDENT.map((t) => ({ key: `student-${t.name}`, name: t.name }));
+    const navigateToTab = jest.fn();
+    const bar = await render(
+      <SafeAreaProvider>
+        <RoleTabBar
+          state={{ index: 0, routes }}
+          navigateToTab={navigateToTab}
+          insets={{ top: 24, bottom: 0, left: 0, right: 0 }}
+          role="STUDENT"
+          orientation="vertical"
+        />
+      </SafeAreaProvider>,
+    );
+    expect(bar.queryAllByTestId("role-tab-bar")).toHaveLength(1);
+    expect(bar.getAllByRole("tab")).toHaveLength(5);
+    for (const tab of ROLE_TABS.STUDENT) {
+      expect(bar.getByRole("tab", { name: tab.label })).toBeTruthy();
+    }
+    expect(bar.getByRole("tab", { name: "الرئيسية" }).props.accessibilityState.selected).toBe(true);
+    expect(bar.queryAllByTestId("tab-indicator-dot", { hidden: true })).toHaveLength(1);
+    // navigation still fires exactly once per inactive-tab press on the rail
+    await fireEvent.press(bar.getByRole("tab", { name: "مقرراتي" }));
+    expect(navigateToTab).toHaveBeenCalledTimes(1);
+    await bar.unmount();
+  });
+});
 
 describe("immersive-hide policy (route-driven; the bar NEVER unmounts)", () => {
   test("lecture player + exam RUNNER hide; exam LIST keeps the bar", () => {
