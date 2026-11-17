@@ -181,7 +181,13 @@ export default function StudentDashboard() {
                     progress={(step.progressPct ?? 0) / 100}
                     accessibilityLabel={`تقدّم المحاضرة ${pct(step.progressPct)}`}
                   >
-                    <T variant="xs" weight="bold">
+                    {/* R366 A5 fs2 evidence fix: the ring is a fixed 44dp
+                        circle — an uncapped label doubles at font-scale 2.0
+                        and the digits collide with the arc (VLM before-set,
+                        «أرقام هذا الفصل» card). 1.25 keeps the value legible
+                        inside the ring at every scale (same cap family as the
+                        schedule/calendar rows). */}
+                    <T variant="xs" weight="bold" maxFontSizeMultiplier={1.25}>
                       {fmt(pct(step.progressPct))}
                     </T>
                   </RingProgress>
@@ -227,7 +233,10 @@ export default function StudentDashboard() {
                     : `نسبة الحضور ${pct(kpi.attendancePct)}`
                 }
               >
-                <T variant="sm" weight="bold">
+                {/* R366 A5 fs2 evidence fix: same ring-overflow class as the
+                    step card — the 64dp attendance ring caps its inner value
+                    at 1.25 so font-scale 2.0 cannot push digits into the arc. */}
+                <T variant="sm" weight="bold" maxFontSizeMultiplier={1.25}>
                   {kpi.attendancePct === null ? "—" : fmt(pct(kpi.attendancePct))}
                 </T>
               </RingProgress>
