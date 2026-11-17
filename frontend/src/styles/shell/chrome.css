@@ -266,6 +266,42 @@
    §R325.k violator by inheritance); it joins the app page register
    (--app-t-page 320ms ≤ 350, RM-instant via the same-sheet :root
    collapse in r325-app.css + notifications.css's own kill). */
+
+/* R366 (Agent 2 · L4 — the dock-clearance root fix): the phone dock is
+   a FIXED overlay over the `.content` scroller, so the last visible
+   rows at rest painted BEHIND it (measured under stress at 320×600:
+   nav.bottom-nav over «د. ليلى الفيتوري · محاضرتان», both themes —
+   and the same class fires with any tall real-world row). The per-page
+   clearance paddings (.page's polish v22 §F rule — and the .pf-page
+   mirror I first reached for) only protect the scroll END, never the
+   at-rest viewport. The class-killing fix is ONE rule, ONE place: the
+   scroller's box ENDS above the dock (the dock then overlays only
+   empty margin — never text, at any width, any zoom, any stress).
+   Trade-off, accepted: while the dock slides away on scroll-down
+   (useHideOnScroll), the margin band stays — it reads as the sheet's
+   bottom breathing room on the page paper, not a hole. The dock's
+   own hide/show motion is untouched (transform-only, as pinned). */
+@media (max-width: 920px) {
+  .content {
+    margin-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4)); /* spacing-gate: allow — the dock band (measured dock 78px at 390px), same numbers as the .page clearance rule it generalises */
+  }
+}
+/* R366 (Agent 2 · L4 — the 200 % text-scale finding): the phone-band
+   title box is polish v22's deliberate 2-line clamp (A4 P3-8 — the
+   title attribute carries the full name), but at 200 % text scale the
+   doubled lines outgrow the pinned bar and the box painted OVER the
+   page's h1 — measured BOTH bands: phone .topbar-title rect y −34..89
+   vs the bar 0..56 (the 2-line clamp), desktop y −49..104 height 153px
+   (the flex row's chips stack past the bar). The bar's pinned height
+   stays (polish §A9: nothing below it may shift per-route); the TITLE
+   box is now hard-capped AT the bar on EVERY band so it can never
+   paint outside it: normal scale is unchanged (the title sits far
+   under the cap), extreme scales clip inside the bar where the
+   tooltip + the page h1 still carry the full name. */
+.topbar .topbar-title {
+  max-block-size: var(--topbar-h);
+  overflow: hidden;
+}
 .bottom-nav {
   background: var(--app-bg);
   border-block-start-color: var(--app-line);
