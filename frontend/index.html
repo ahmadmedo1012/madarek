@@ -20,6 +20,14 @@
          (style-src 'unsafe-inline'). -->
     <style>html{min-height:100%}</style>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- R366 (Agent 2 · L1): the favicon fallback ladder — SVG first
+         (modern Chromium/Firefox), PNG per-size for Safari/legacy
+         (paper-plated, favicon stroke ratio, legible on dark tabs),
+         then the 16/32/48 ICO for the long tail. One mark, every seat. -->
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <!-- R320 §D (PAGES-GAP P2-8): the web-app identity — the manifest
          (مدارك · ar · rtl · standalone · the paper ground #F6F6EE) with
          the maskable PNG icons rendered from the one brand mark, and

@@ -3,6 +3,10 @@
   "entries": {
     "shared/brand/mark.svg": "0cc87cf66b8d3cd25b0f8c157bc618609d1fcb7f51a8a7f12c6fd428af28e297",
     "frontend/public/favicon.svg": "c6773c529fb1a552a53dba1cb2ee585223602c17aa7373f1445d4ec3540490d2",
+    "frontend/public/favicon.ico": "2357baa9dc19b137336404c497bc7c704d3d5fbd0f0764ef0a6774e0814914e9",
+    "frontend/public/favicon-16.png": "9c8dd04af494f2e90fc986dbd30ff19383dd1f557471c3d07ad588687f1248c8",
+    "frontend/public/favicon-32.png": "db318a27975feb354573fe8eb19cf2ad5dd1ee7e74b9681009258fa56850938e",
+    "frontend/public/favicon-48.png": "cf9e2a51760a5db8801009afa2ea6e0abc26eede441021fe7e0510012de00a8b",
     "frontend/public/brand/mark.svg": "d8efb0b2583339932a8e787b1b8dc140b2679119c67c9b5ecff00efe8a8d5757",
     "frontend/public/brand/madarek-mark.svg": "d8efb0b2583339932a8e787b1b8dc140b2679119c67c9b5ecff00efe8a8d5757",
     "frontend/public/brand/lockup.svg": "8c7e734d428b7004d9fe34454e3b3a78ead1a5374abbaeb295bf8b1c6c0c119b",
@@ -11,6 +15,7 @@
     "frontend/public/brand/icon-180.png": "7a4b415eb6d87009fe8f3bcc3d14dec4921c726df0641d4356928b627382e65f",
     "frontend/public/brand/icon-192.png": "66976e60023ea541e1de35e6630136617e2ea40ac3f1f7e179e74b83155dce04",
     "frontend/public/brand/icon-512.png": "cef04debdf08031613c21d743b9d5ad29354e8b4ba67832cdc0d552a9febe01f",
+    "frontend/public/brand/email-logo.png": "92ef5f25e02c2e313374f6f58f49b60972a0a4c0d0891e76b0c4cac8676fab5d",
     "frontend/public/brand/madarek-og.jpg": "f622d84bbf30e7a4cfb7a992347827636ec5434b2784b44812fe8b21bd946b75",
     "apps/mobile/assets/images/icon.png": "c10c9a07b9a66036b0ec3534a647c2dcbffa22f237b582f053a63557b4fa9970",
     "apps/mobile/assets/images/adaptive-foreground.png": "f6f61a08fdbfedeb322540715d8e4dcde93eb0dc3db473fc7861edfcccb61b5a",
