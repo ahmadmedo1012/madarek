@@ -852,10 +852,26 @@ function isDocumentSurface(pathname: string): boolean {
   return DOCUMENT_SURFACE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
+/* R366 (Agent 3) — SPECIMEN surfaces: the /__* engineering sheets
+ * (brand, component lab, plates). They are machine-measured surfaces
+ * (the design-lab Playwright matrix, the contrast gate's sweep), and
+ * an animated scroller there is an active hazard: Lenis 1.1.5 ignores
+ * external instant scrolls while a glide is in flight, so a CDP
+ * scrollIntoViewIfNeeded fired mid-glide leaves the page at a
+ * timing-dependent position — nondeterministic screenshots. Native
+ * scrolling only; the marketing engine never mounts here. */
+const SPECIMEN_SURFACE_PREFIXES = ['/__design', '/__brand', '/__plates'] as const;
+
+function isSpecimenSurface(pathname: string): boolean {
+  return SPECIMEN_SURFACE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
 function isGuestWindowSurface(pathname: string, hasUser: boolean): boolean {
   if (isShellSurface(pathname)) return false;
   /* documents scroll natively — the engine never mounts there. */
   if (isDocumentSurface(pathname)) return false;
+  /* specimen sheets scroll natively — deterministic measurement. */
+  if (isSpecimenSurface(pathname)) return false;
   /* signed-in visitors never see the guest surfaces: '/' and '/auth*'
      bounce to the role home, '/colleges*' renders inside AppShell. */
   if (

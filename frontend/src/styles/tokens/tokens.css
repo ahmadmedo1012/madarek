@@ -145,13 +145,19 @@
        re-key touches colors/radii/motion only; the reference's BT
        Grotesk is not licensed so the OFL stacks below carry the voice —
        audit: docs/redesign/r305-heron-reference-spec.md §4) ────────── */
-    --font-sans:    'IBM Plex Sans Arabic', 'Tajawal', system-ui, -apple-system,
-                    'Segoe UI', Roboto, sans-serif;
+    --font-sans:    'IBM Plex Sans Arabic', 'IBM Plex Sans Arabic Fallback', system-ui,
+                    -apple-system, 'Segoe UI', Roboto, sans-serif;
+    /* R366 (Agent 3 · L2): the phantom 'Tajawal' rung is RETIRED (never
+       self-hosted, zero local installs — it only inserted a metric
+       stranger between the webfont and the system). The metric-
+       compatible fallback face (fonts.css, ascent 108.5/descent 41.5
+       overrides) holds every line-height: normal box through the swap. */
     /* Alexandria — the Arabic-native geometric display voice (r190).
        Display headings speak Alexandria 600/700 (500 available for
        lighter display accents — real woff2 files ship); body stays
        Plex Sans Arabic. */
-    --font-display: 'Alexandria', 'IBM Plex Sans Arabic', system-ui, sans-serif;
+    --font-display: 'Alexandria', 'Alexandria Fallback', 'IBM Plex Sans Arabic',
+                    'IBM Plex Sans Arabic Fallback', system-ui, sans-serif;
     /* The mono stack falls back per-script: Latin/digits mono (Geist
        Mono — the reference's own instrument voice, R313; IBM Plex Mono
        the self-hosted fallback), Arabic continues in the brand face
@@ -708,9 +714,12 @@
 
 
     /* Label ink ON A --danger FILL: r305 — the danger fill is the coral
-       #F15534 and warm-ink labels read 5.10:1 (white would be 3.45:1).
+       family; warm-ink labels carried 5.10:1 on the old #F15534. R366
+       (Agent 3, CVD audit): --danger follows the tuned rose ink
+       #E5481F, and #191918 dropped to 4.42:1 — the label deepens two
+       steps to #101010 (4.78:1, visually identical warm-black).
        Consumed by .btn.danger + notif-badge via --_btn-fg. */
-    --danger-fg:   var(--warm-ink);
+    --danger-fg:   #101010;
 
     --brand-purple:  var(--c-lavender-ink);
     /* r305 — the achievement gold re-claims the retired copper seat
@@ -780,16 +789,31 @@
 
     --chart-text: var(--text-muted);  /* 5.74:1 on the paper — AA */
     --chart-grid: rgba(40,40,40,0.08);
-    --chart-1: var(--accent);   /* series 1 = the orange signal (3.53:1 — clears the 3:1 non-text bar) */
+    /* R366 (Agent 3, CVD audit): series 1 leaves the raw --accent for
+       DATA-VIS — under deuteranopia #FA3600 measured 2.91:1 on the warm
+       paper (the brand accent itself stays frozen; this is the series
+       seat only). #E84000: 3.74:1 normal · 3.20:1 deuteranopia · 5.37:1
+       protanopia — the signal voice, one step deeper. */
+    --chart-1: #E84000;   /* series 1 = the orange signal (data-vis seat) */
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
-    --chart-4: var(--c-rose-ink);
+    /* R366 (Agent 3, CVD audit): series 4 leaves the rose-ink triad —
+       red-oranges collapse against the warm paper AND against series 1
+       under CVD (the old #F15534: 2.76:1 deuteranopia, ΔE76 5.4 from
+       the signal). The warm UMBER #8C4A2F fits the vintage-paper
+       palette: 5.70:1 deuteranopia · ΔE76 23.9/31.6 from series 1
+       (protan/deutan) · 32.5 from the series amber. */
+    --chart-4: #8C4A2F;
     --chart-5: var(--c-lavender-ink);
     /* The series amber (#A6791F = 3.67:1 on the paper — clears the 3:1
        non-text bar). The gold DISCIPLINE (--gold achievements only) is
        untouched: chart series colors are a data-vis palette. */
     --chart-6: #A6791F;
-    --chart-7: #2273A0;   /* cyan-blue series — 4.90:1 on paper */
+    /* R366 (Agent 3, CVD audit): series 7 retunes steel-blue → teal —
+       the old #2273A0 sat ΔE76 7.1 from series 3 (sky-ink), 5.8 under
+       protanopia. #0F7B8A: 4.58:1 on paper, ΔE76 20.5/13.2/11.5
+       (normal/protan/deutan) from series 3. */
+    --chart-7: #0F7B8A;   /* teal series — 4.58:1 on paper, CVD-safe */
     --chart-8: #A65D8A;   /* mauve — 4.33:1 */
 
     /* r305 — the auth ambient wash re-keys to the orange seat (the
@@ -956,7 +980,10 @@
     --chart-4: var(--c-rose-ink);
     --chart-5: var(--c-lavender-ink);
     --chart-6: #E8C064;   /* amber (lifted for dark) — 8.53:1 */
-    --chart-7: #6FB3D9;   /* cyan-blue (lifted for dark) — 6.41:1 */
+    /* R366 (Agent 3, CVD audit): dark series 7 retunes with the light
+       seat — #6FB3D9 sat ΔE76 8.6 from dark sky-ink #93C2E9. The teal
+       #4FC4CF: 7.11:1 on the night ground, ΔE76 25.2 from series 3. */
+    --chart-7: #4FC4CF;   /* teal (lifted for dark) — 7.11:1, CVD-safe */
     --chart-8: #D18AB4;   /* mauve (lifted for dark) — 5.62:1 */
 
     /* The night wash re-keys to the luminous ember tier. */
@@ -1256,7 +1283,7 @@
       --gold:           #B57438;
       /* text-safe inks: dark maps them to the -ink shades; light uses
          the deeper -deep shades so status text stays ≥4.5:1 on paper */
-      --accent-ink:  #C72E00;
+      --accent-ink:  #C12B00;   /* R366: synced with the tuned semantic seat (4.74:1 on accent-soft) */
       --success-ink: var(--c-mint-deep);
       --warning-ink: var(--c-yellow-deep);
       --danger-ink:  var(--c-rose-deep);
@@ -1421,4 +1448,49 @@
      it at 500 and re-keying it to 40 would demote every live toast
      under every dropdown in the app. See the mapping table above. */
   --z-header: 90;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   R366 (Agent 3 · design system) — additive seats for the perfection
+   program. Append-only: no token above is renamed, removed or re-keyed.
+   Changelog for consumers: docs/redesign/r366/agent3-design-system/
+   TOKENS-CHANGELOG.md.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer tokens {
+
+  :root {
+    /* ─── The touch-target floor (§7 matrix · the 44px law) ───────────
+       Coarse-pointer hit areas resolve through this seat so the floor
+       is one number, not 400 local minimums. Equals shared
+       design-tokens.json touchFloor (the mobile contract). */
+    --touch-target: 44px;
+
+    /* ─── Text-over-imagery contract (the guaranteed-legible pair) ───
+       Any Arabic text painted over photography/illustration consumes
+       BOTH: the ink AND the scrim that guarantees it. The flat floor
+       is MEASURED against the worst legal pixel — pure #FFFFFF —
+       0.62 × #141414 over white composites to #6D6D6D: 5.15:1 with
+       the #FFFFFF ink (AA body text with margin; gradients may go
+       stronger, never below). Theme-invariant on purpose: imagery is
+       the same pixels in both themes. Consumers: hero media, cards
+       with image headers, the landing story bands. */
+    --text-on-image-ink: #FFFFFF;
+    --scrim-text: rgb(20 20 20 / 0.62);
+    /* The sunken well — the ONE inset surface (read-only digests,
+       code blocks, quota wells): one step BELOW the card ground. */
+    --surface-sunken: var(--neutral-100);
+  }
+
+  :root[data-theme="dark"] {
+    --surface-sunken: var(--neutral-50);
+  }
+
+  /* The page-transition rung joins the reduced-motion kill (the
+     raw block above predates it; append-only belt for the new rung). */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --t-page: 0ms;
+    }
+  }
 }

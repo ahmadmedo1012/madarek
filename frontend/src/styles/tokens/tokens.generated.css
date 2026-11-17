@@ -52,6 +52,7 @@
     --t-slow: 500ms;
     --t-slower: 650ms;
     --t-cinema: 900ms;
+    --t-page: 500ms;
     --t-sheet-exit: 835ms;
     --t-guest-reveal: 700ms;
     --ease: cubic-bezier(0.23, 1, 0.32, 1);
@@ -74,13 +75,13 @@
     --neutral-900: #282828;
 
     /* The 9 section families — soft ground · saturated ink · deep text */
-    --c-peach-bg: #FCE5DE;  --c-peach-ink: #F15534;  --c-peach-deep: #9C2B0F;
+    --c-peach-bg: #FCE5DE;  --c-peach-ink: #E5481F;  --c-peach-deep: #9C2B0F;
     --c-mint-bg: #E3EBE1;  --c-mint-ink: #3F8F5C;  --c-mint-deep: #1B5430;
     --c-lavender-bg: #ECE6FA;  --c-lavender-ink: #8A6FE0;  --c-lavender-deep: #3F2D7A;
     --c-sky-bg: #E1E9F0;  --c-sky-ink: #4A7FA8;  --c-sky-deep: #1F4968;
     --c-yellow-bg: #F5EBD6;  --c-yellow-ink: #A8750F;  --c-yellow-deep: #5E420C;
-    --c-rose-bg: #F9E3DC;  --c-rose-ink: #F15534;  --c-rose-deep: #8C230A;
-    --c-sand-bg: #F1ECDF;  --c-sand-ink: #B59868;  --c-sand-deep: #5A4623;
+    --c-rose-bg: #F9E3DC;  --c-rose-ink: #E5481F;  --c-rose-deep: #8C230A;
+    --c-sand-bg: #F1ECDF;  --c-sand-ink: #8F7A54;  --c-sand-deep: #5A4623;
     --c-grey-bg: #ECEDEB;  --c-grey-ink: #626260;  --c-grey-deep: #282828;
     --c-copper-bg: #FCE3D9;  --c-copper-ink: #FA3600;  --c-copper-deep: #A32400;
 
@@ -106,6 +107,8 @@
     --text-on-dark: var(--neutral-50);
     --border: var(--neutral-200);
     --border-strong: var(--neutral-300);
+    --input-border: var(--neutral-500);
+    --input-border-hover: #626260;
     --rule: var(--neutral-300);
     --rule-strong: var(--border-strong);
     --accent: var(--c-copper-ink);
@@ -113,7 +116,7 @@
     --accent-soft: var(--c-copper-bg);
     --accent-strong: var(--c-copper-deep);
     --accent-fg: #FFFFFF;
-    --accent-ink: #C72E00;
+    --accent-ink: #C12B00;
     --success: var(--c-mint-ink);
     --success-soft: var(--c-mint-bg);
     --success-ink: var(--c-mint-deep);
@@ -176,11 +179,13 @@
     --text-strong: var(--neutral-900);
     --text-secondary: var(--neutral-700);
     --text-muted: var(--neutral-500);
-    --text-faint: #A2A29D;
+    --text-faint: #ADADA8;
     --text-on-accent: var(--warm-ink);
     --text-on-dark: var(--neutral-900);
     --border: var(--neutral-200);
     --border-strong: var(--neutral-300);
+    --input-border: var(--neutral-400);
+    --input-border-hover: var(--neutral-500);
     --rule: var(--neutral-200);
     --rule-strong: var(--border-strong);
     --accent: var(--c-copper-ink);

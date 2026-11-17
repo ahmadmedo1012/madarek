@@ -46,7 +46,7 @@
       "peach": {
         "light": {
           "bg": "#FCE5DE",
-          "ink": "#F15534",
+          "ink": "#E5481F",
           "deep": "#9C2B0F"
         },
         "dark": {
@@ -106,7 +106,7 @@
       "rose": {
         "light": {
           "bg": "#F9E3DC",
-          "ink": "#F15534",
+          "ink": "#E5481F",
           "deep": "#8C230A"
         },
         "dark": {
@@ -118,7 +118,7 @@
       "sand": {
         "light": {
           "bg": "#F1ECDF",
-          "ink": "#B59868",
+          "ink": "#8F7A54",
           "deep": "#5A4623"
         },
         "dark": {
@@ -172,6 +172,8 @@
         "textOnDark": "neutral.50",
         "border": "neutral.200",
         "borderStrong": "neutral.300",
+        "inputBorder": "neutral.500",
+        "inputBorderHover": "#626260",
         "rule": "neutral.300",
         "ruleStrong": "borderStrong",
         "accent": "triad.copper.ink",
@@ -179,7 +181,7 @@
         "accentSoft": "triad.copper.bg",
         "accentStrong": "triad.copper.deep",
         "accentFg": "#FFFFFF",
-        "accentInk": "#C72E00",
+        "accentInk": "#C12B00",
         "success": "triad.mint.ink",
         "successSoft": "triad.mint.bg",
         "successInk": "triad.mint.deep",
@@ -210,11 +212,13 @@
         "textStrong": "neutral.900",
         "textSecondary": "neutral.700",
         "textMuted": "neutral.500",
-        "textFaint": "#A2A29D",
+        "textFaint": "#ADADA8",
         "textOnAccent": "brand.warmInk",
         "textOnDark": "neutral.900",
         "border": "neutral.200",
         "borderStrong": "neutral.300",
+        "inputBorder": "neutral.400",
+        "inputBorderHover": "neutral.500",
         "rule": "neutral.200",
         "ruleStrong": "borderStrong",
         "accent": "triad.copper.ink",
@@ -343,6 +347,7 @@
     "slow": 500,
     "slower": 650,
     "cinema": 900,
+    "page": 500,
     "sheetExit": 835,
     "guestReveal": 700,
     "ease": [

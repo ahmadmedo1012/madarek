@@ -249,3 +249,45 @@
 html {
   font-family: var(--font-sans);
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+   R366 (Agent 3 · L2) — the METRIC-COMPATIBLE FALLBACK BELT (CLS).
+   ─────────────────────────────────────────────────────────────────────
+   Measured problem: --font-sans carried a PHANTOM 'Tajawal' (never
+   self-hosted, zero local installs in practice) between the webfont
+   and the system stack, and the system Arabic faces have different
+   vertical metrics — IBM Plex Sans Arabic's line box is 150.0 % of
+   the em (hhea ascent 108.5 % + descent 41.5 %, fontTools on the
+   shipped woff2), while the system seats range 118.5–187.4 % (Rubik
+   118.5 % · Readex Pro 125.0 % · Cairo 187.4 %). Under font-display:
+   swap on slow networks the swap reflow measured CLS 0.0204 on `/`
+   (scripts/gates/cls-probe.mjs, Slow 4G + 4× CPU, 390×844).
+
+   The belt: named FALLBACK faces with the webfont's exact metrics
+   (ascent-/descent-/line-gap-override) so every `line-height: normal`
+   seat keeps its box through the swap; the two preloads cover the
+   critical path, numeric line-heights cover the rest. The phantom
+   'Tajawal' rung is RETIRED from the stacks (tokens.css value tune).
+   ═════════════════════════════════════════════════════════════════════ */
+
+@font-face {
+  font-family: 'IBM Plex Sans Arabic Fallback';
+  src: local('Segoe UI'), local('Geeza Pro'), local('Noto Sans Arabic'), local('Arial');
+  /* Plex Sans Arabic metrics (fontTools, shipped 400 arabic woff2):
+     ascender 1085/1000 · descender 415/1000 · line-gap 0. */
+  ascent-override: 108.5%;
+  descent-override: 41.5%;
+  line-gap-override: 0%;
+  size-adjust: 100%;
+}
+
+@font-face {
+  font-family: 'Alexandria Fallback';
+  src: local('Segoe UI'), local('Geeza Pro'), local('Noto Sans Arabic'), local('Arial');
+  /* Alexandria metrics (fontTools, shipped 600 arabic woff2):
+     ascender 968/1000 · descender 251/1000 · line-gap 0. */
+  ascent-override: 96.8%;
+  descent-override: 25.1%;
+  line-gap-override: 0%;
+  size-adjust: 100%;
+}

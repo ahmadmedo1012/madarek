@@ -1442,13 +1442,22 @@ a.pf-row-link {
   .auth-register-link.auth-primary-link {
     border-block-end: 1px solid transparent;
   }
-  .auth-register-link.auth-primary-link:hover,
   .auth-register-link.auth-primary-link:focus-visible {
     /* paired-state (r319 E9): background rides explicitly — a state
-       rule never sets color XOR background (the B1 ghost). */
+       rule never sets color XOR background (the B1 ghost). R366
+     (Agent 3 · hover-guard): the hover twin is SPLIT into the
+       hover-capable media block — focus-visible stays unwrapped
+       (focus is universal), hover never sticky-taps on touch. */
     background: transparent;
     color: var(--accent-strong);
     border-block-end-color: var(--accent);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .auth-register-link.auth-primary-link:hover {
+      background: transparent;
+      color: var(--accent-strong);
+      border-block-end-color: var(--accent);
+    }
   }
 
   /* ══ 5b · THE CONSENT LINE (R320 §D · c2-LEGAL) — the policy-consent
