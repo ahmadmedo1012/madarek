@@ -14,14 +14,14 @@
  * per role; the single source of truth for navigation remains nav.ts.
  */
 
-export interface GuardProbe {
+interface GuardProbe {
   /** Canonical guarded route for the prefix. */
   path: string;
   /** The prefix every foreign role bounces off. */
   prefix: string;
 }
 
-export interface GuardMatrix {
+interface GuardMatrix {
   probes: GuardProbe[];
   /** ROLE_HOME — the guard's redirect destination per role. */
   home: Record<'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER', string>;

@@ -235,7 +235,7 @@ export const SWEEP_ROUTES: readonly SweepRoute[] = [
  * signed-out; 'ANY'/'STUDENT_AND_TEACHER' ride the STUDENT session —
  * the labs widening is separately pinned for TEACHER by the sweep's
  * second pass over that one route). */
-export type LoginRole = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER';
+type LoginRole = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER';
 
 export function loginRoleFor(role: SweepRole): LoginRole | null {
   switch (role) {
