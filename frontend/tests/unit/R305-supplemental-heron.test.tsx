@@ -279,7 +279,9 @@ describe('R305 gamification — the level statement is the ONE deep band', () =>
   it('the empty-training state is honest inside the same band (no fabricated tier)', () => {
     const { container } = renderPage(<GamificationPage />);
     const level = container.querySelector('.r305s-band--deep .r305g-level');
-    expect(level!.textContent).toContain('لم يبدأ مسار التطوير الذاتي بعد');
+    /* r366 (2-e): the diet kept the honest state — the level title
+     * (مستوى التقدّم) names the path; the state line says فقط لم يبدأ بعد. */
+    expect(level!.textContent).toContain('لم يبدأ بعد');
   });
 
   it('the gold discipline: the sheet never consumes var(--gold); UniversityInfo membership rows lost the gold badge', () => {

@@ -262,7 +262,7 @@ describe('R305 schedule — day sections + the honest week load', () => {
 
     expect(container.querySelectorAll('section.schedule-day')).toHaveLength(2);
     // The meta line speaks the REAL slot count (countAr dual form).
-    expect(screen.getByText('حصتان أسبوعياً')).toBeTruthy();
+    expect(screen.getByText('حصتان')).toBeTruthy();
     // The rows keep the r299 RowList anatomy with the slot facts.
     expect(container.querySelectorAll('.pf-rowlist .pf-row')).toHaveLength(2);
   });
