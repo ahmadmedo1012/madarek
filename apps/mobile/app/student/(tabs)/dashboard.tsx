@@ -267,7 +267,10 @@ export default function StudentDashboard() {
                       accessibilityLabel={s.a11y}
                       style={{ fontSize: 20, fontWeight: "700" }}
                     />
-                    <T variant="xs" color="muted" align="center" numberOfLines={1} maxFontSizeMultiplier={1.25}>
+                    {/* R366 A5 a11y-small evidence fix (AV21): 30%-basis
+                        tiles at 360dp+fs1.3 ellipsized «تكليفات معلّقة»
+                        mid-word; two lines wrap it whole. */}
+                    <T variant="xs" color="muted" align="center" numberOfLines={2} maxFontSizeMultiplier={1.25}>
                       {s.label}
                     </T>
                   </View>
