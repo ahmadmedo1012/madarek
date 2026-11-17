@@ -891,6 +891,13 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
           spellCheck={false}
         />
         <span className="cmd-input-esc"><span className="kbd" dir="ltr">Esc</span></span>
+        {/* r366 (2-f): the phone sheet's visible exit — Esc is
+            impossible without a hardware keyboard and a full-screen
+            sheet must never trap the reader. Keyboard band keeps the
+            Esc hint (CSS owns the swap). */}
+        <button type="button" className="cmd-input-close" onClick={onClose} aria-label="إغلاق البحث">
+          <Icon icon={X} size={16} />
+        </button>
       </div>
 
       <div className="cmd-list" role="listbox" id={listboxId} aria-label="الأوامر والنتائج">
@@ -972,6 +979,17 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
             <div className="search-empty-title">
               {debounced ? `لم نعثر على أوامر تطابق «${debounced}»` : 'لا توجد أوامر متاحة'}
             </div>
+            {/* r366 (2-f): the no-result moment is a door, not a wall —
+                the SAME suggestion pills the pill surface offers ride
+                here (one tap refills the query; the dead end is gone). */}
+            {debounced && (
+              <div className="search-empty-tips">
+                جرّب: <button type="button" className="search-tip-pill" onClick={() => setQuery('هندسة')}>هندسة</button>
+                <button type="button" className="search-tip-pill" onClick={() => setQuery('بحث')}>بحث</button>
+                <button type="button" className="search-tip-pill" onClick={() => setQuery('برمجة')}>برمجة</button>
+                <button type="button" className="search-tip-pill" onClick={() => setQuery('حرم المعرفة')}>حرم المعرفة</button>
+              </div>
+            )}
             <div className="search-empty-hint">
               جرّب كلمة من اسم المقرّر أو وجهة من القائمة الجانبية.
             </div>

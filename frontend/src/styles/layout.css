@@ -1470,6 +1470,21 @@
      the same class of bug. */
   .cmd-input:focus:not(:focus-visible) { outline: none; }
   .cmd-input-esc { color: var(--text-muted); flex-shrink: 0; display: inline-flex; }
+  /* r366 (2-f): the phone sheet's close seat — hidden on the keyboard
+     band (the Esc hint owns dismissal there); the phone band swaps it
+     in (components.css owns the swap point with the sheet geometry). */
+  .cmd-input-close {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    inline-size: 44px;
+    block-size: 44px;
+    margin-inline-end: calc(var(--sp-1) * -1);
+    color: var(--text-secondary);
+    border-radius: var(--r-sm);
+  }
+  .cmd-input-close:active { background: var(--surface-3); color: var(--text); }
   .cmd-list {
     min-block-size: 0;
     overflow-y: auto;
