@@ -35,7 +35,7 @@ the file, the exact change and the measured reason.
 
 ---
 
-# REQUESTS — Agent 3 (design system) → Agent 2 (Shell, Navigation, Motion & Logo) — hover-guard findings
+## R3 — hover-guard: 1 unguarded `:hover` rule in shell/chrome.css
 
 R366 · filed by Agent 3. `node scripts/r320/hover-guard-lint.mjs`
 reports **1 unguarded `:hover` rules in YOUR files** (a `:hover`
