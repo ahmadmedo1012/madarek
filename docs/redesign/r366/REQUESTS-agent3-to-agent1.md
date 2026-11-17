@@ -61,3 +61,22 @@ styles/technical-interactive.css:150  .cf-svg .ti-node:hover .ti-station,
 styles/technical-interactive.css:156  .cf-svg .ti-node:hover .ti-gate line,
 styles/technical-interactive.css:162  .cf-svg .ti-node:hover .ti-ring,
 ```
+
+
+---
+
+## Copy-style census (R366 L4b) — 3 finding(s) in YOUR files
+
+`node scripts/gates/copy-budget.mjs --style` (report mode — the
+machine-checkable rules of docs/DESIGN-COPY-GUIDE-AR.md). The
+design-system files are already clean (enforced); these are yours:
+
+```
+[double space] pages/BrandPage.tsx:286 — «T</span> </h2> <div className="r323b-dd"> <div> <span classN»
+[title>4] pages/Error403Page.tsx:28 — «هذه الصفحة خارج نطاق صلاحياتك»
+[title>4] pages/PlatesPage.tsx:352 — «إجابة صحيحة — تابع المشاهدة»
+```
+
+Fix per the guide (DESIGN-COPY-GUIDE-AR.md §7); the gate will start
+enforcing your files when your lane adopts it (coordinate with the
+integrator — never edit another agent's files).

@@ -504,7 +504,7 @@ export default function DesignPage(): React.JSX.Element {
             <LedgerPanel title="سجلّ الأسبوع" tag="06" ariaLabel="سجلّ الأسبوع">
               <LedgerRow
                 lead="09:00"
-                title="محاضرة قواعد البيانات — التطبيع"
+                title="محاضرة قواعد البيانات"
                 subtitle="القاعة بـ2 · د. الطرابلسي"
                 tail={<StatusChip label="LIVE" tone="live" />}
               />
@@ -517,7 +517,7 @@ export default function DesignPage(): React.JSX.Element {
               <LedgerRow
                 leadLabel="أسبوع 7"
                 lead="W07"
-                title="ورشة المشاريع — مناقشة أولى"
+                title="ورشة المشاريع"
                 tail={<StatusChip label="GRADED" tone="done" />}
               />
             </LedgerPanel>

@@ -31,6 +31,27 @@
  * identity guard.
  *
  * ==================================================================
+ *  R366 (Agent 3 · L4b) — THE STYLE MODE: --style [report|enforce]
+ *
+ *  The quality layer over the quantity layer: the machine-checkable
+ *  rules of docs/DESIGN-COPY-GUIDE-AR.md applied to the SAME lexer
+ *  harvest (per-string, with attr context + line numbers):
+ *    title/heading <= 4 words · hint/error/description/placeholder/
+ *    message/tooltip <= 12 words · confirmLabel/cancelLabel/submit-
+ *    Label/okLabel/pendingLabel <= 2 words · banned fillers (يرجى/
+ *    الرجاء/من فضلك/حدث خطأ ما/…) · marketing adjectives inside app
+ *    chrome · Arabic-Indic digits ٠-٩ · trailing ellipsis/punctuation
+ *    on titles and button labels · standalone «تأكيد» as a
+ *    destructive confirm.
+ *
+ *  REPORT (default): prints every finding, exits 0 — the census that
+ *  sizes the cleanup. ENFORCE: exits 1 ONLY for findings in the
+ *  design-system-owned files (components/patterns/** + the /__design
+ *  lab page); other agents' files stay report-only until their lanes
+ *  adopt the standard (file a REQUEST — never edit their files).
+ *  The word ceilings are NEVER touched by this mode.
+ *==================================================================
+ * ==================================================================
  *  HEURISTIC (copied verbatim from the baseline census count.mjs — a
  *  lexer approximation, not a compiler; ~95% right, not perfect):
  *
@@ -156,8 +177,11 @@ function countWords(text) {
   return { ar, la };
 }
 
-/** Scan one file. Returns per-bucket word counts (see HEURISTIC above). */
-function scanFile(src) {
+/** Scan one file. Returns per-bucket word counts (see HEURISTIC above).
+ * R366 style mode: pass a `harvest` array to also collect every
+ * counted string with its attr context, RAW text (pre-normalisation)
+ * and line number — the budget maths itself is untouched. */
+function scanFile(src, harvest = null) {
   const n = src.length;
   const masked = src.split('');
   const buckets = {
@@ -167,13 +191,15 @@ function scanFile(src) {
   let i = 0;
   let inImport = false;
   let lastWord = '';
+  const lineOf = (idx) => src.slice(0, idx).split('\n').length;
 
   const maskRange = (a, b) => {
     for (let k = a; k < b; k++) if (masked[k] !== '\n') masked[k] = ' ';
   };
-  const record = (bucket, text) => {
+  const record = (bucket, text, attr = null, raw = null, idx = 0, tpl = false) => {
     const { ar, la } = countWords(text);
     buckets[bucket].ar += ar; buckets[bucket].la += la;
+    if (harvest && (ar > 0 || la > 0)) harvest.push({ bucket, attr, text, raw: raw ?? text, line: lineOf(idx), tpl });
   };
 
   while (i < n) {
@@ -234,12 +260,12 @@ function scanFile(src) {
       maskRange(start + 1, i - 1);
       const text = statics.replace(/\s+/g, ' ').trim();
       if (!text || inImport) continue;
-      if (ARIA_PROPS.has(attr)) { record('aria', text); continue; }
+      if (ARIA_PROPS.has(attr)) { record('aria', text, attr, statics, start, true); continue; }
       if (STRIP_PROPS.has(attr)) continue;
-      if (attr && (VISIBLE_PROPS.has(attr) || AR.test(text))) record('props', text);
+      if (attr && (VISIBLE_PROPS.has(attr) || AR.test(text))) record('props', text, attr, statics, start, true);
       else if (!attr) {
         if (/^[\w$@][\w$@/.-]*$/.test(text) && /[\/.@]/.test(text)) continue; // module path
-        record('plain', text);
+        record('plain', text, null, statics, start, true);
       }
       continue;
     }
@@ -259,12 +285,12 @@ function scanFile(src) {
       const attr = attrLookback(src, start);
       const t = text.replace(/\s+/g, ' ').trim();
       if (!t) continue;
-      if (ARIA_PROPS.has(attr)) { record('aria', t); continue; }
+      if (ARIA_PROPS.has(attr)) { record('aria', t, attr, text, start); continue; }
       if (STRIP_PROPS.has(attr)) continue;
-      if (attr && (VISIBLE_PROPS.has(attr) || AR.test(t))) record('props', t);
+      if (attr && (VISIBLE_PROPS.has(attr) || AR.test(t))) record('props', t, attr, text, start);
       else if (!attr) {
         if (/^[\w$@][\w$@/.-]*$/.test(t) && /[\/.@]/.test(t)) continue; // module path
-        record('plain', t);
+        record('plain', t, null, text, start);
       }
       continue;
     }
@@ -287,6 +313,74 @@ function scanFile(src) {
 }
 
 // ---- run ----
+if (process.argv.includes('--style')) {
+  /* R366 · the STYLE MODE — see the header block. Report by default;
+   * `--style enforce` fails ONLY on design-system-owned files. */
+  const ENFORCE = process.argv.includes('enforce');
+  const STYLE_ROOTS = [
+    join(REPO_ROOT, 'frontend', 'src', 'pages'),
+    join(REPO_ROOT, 'frontend', 'src', 'components'),
+  ];
+  const OWNED = (rel) => rel.startsWith('components/patterns/') || rel === 'pages/DesignPage.tsx';
+
+  const TITLE_ATTRS = new Set(['title', 'heading']);
+  const HELPER_ATTRS = new Set(['hint', 'error', 'description', 'placeholder', 'note', 'summary', 'caption', 'message', 'tooltip', 'emptyText', 'subtitle']);
+  const BUTTON_ATTRS = new Set(['confirmLabel', 'cancelLabel', 'submitLabel', 'okLabel', 'pendingLabel']);
+  const FILLERS = ['يرجى', 'الرجاء', 'من فضلك', 'حدث خطأ ما', 'Oops', 'بنجاح!', 'مرحبًا بك في', 'أحسنت!'];
+  const MARKETING = ['مذهل', 'رائع', 'ثوري', 'فريد من نوعه'];
+  const AR_INDIC = /[\u0660-\u0669]/;
+  const words = (t) => t.split(/\s+/).filter(Boolean).length;
+
+  const findings = [];
+  for (const root of STYLE_ROOTS) {
+    for (const f of walk(root)) {
+      const rel = relative(join(REPO_ROOT, 'frontend', 'src'), f).split('\\').join('/');
+      const harvest = [];
+      scanFile(readFileSync(f, 'utf8'), harvest);
+      for (const h of harvest) {
+        const isAr = AR.test(h.text);
+        if (!isAr && !/^[A-Za-z]/.test(h.text)) continue;
+        const at = `${rel}:${h.line}`;
+        const W = words(h.text);
+        if (h.attr && TITLE_ATTRS.has(h.attr) && isAr && W > 4)
+          findings.push({ rule: `title>${4}`, at, text: h.text, owned: OWNED(rel) });
+        if (h.attr && HELPER_ATTRS.has(h.attr) && isAr && W > 12)
+          findings.push({ rule: 'helper>12', at, text: h.text, owned: OWNED(rel) });
+        if (h.attr && BUTTON_ATTRS.has(h.attr) && isAr && W > 2)
+          findings.push({ rule: 'button>2', at, text: h.text, owned: OWNED(rel) });
+        for (const f2 of FILLERS) if (h.text.includes(f2))
+          findings.push({ rule: `filler «${f2}»`, at, text: h.text, owned: OWNED(rel) });
+        for (const mk of MARKETING) if (h.text.includes(mk))
+          findings.push({ rule: `marketing «${mk}»`, at, text: h.text, owned: OWNED(rel) });
+        if (isAr && AR_INDIC.test(h.text))
+          findings.push({ rule: 'arabic-indic digits', at, text: h.text, owned: OWNED(rel) });
+        if (isAr && h.attr && (TITLE_ATTRS.has(h.attr) || BUTTON_ATTRS.has(h.attr)) && /[!؟،؛…]$/.test(h.text.trim()))
+          findings.push({ rule: 'trailing punctuation', at, text: h.text, owned: OWNED(rel) });
+        if (h.attr === 'confirmLabel' && h.text.trim() === 'تأكيد')
+          findings.push({ rule: 'standalone تأكيد confirm', at, text: h.text, owned: OWNED(rel) });
+        /* templates: the scanner substitutes ONE space per ${...}
+         * junction — a raw double-space there is usually an
+         * interpolation artifact, not authored copy. */
+        if (!h.tpl && /  +/.test(h.raw) && isAr)
+          findings.push({ rule: 'double space', at, text: h.text, owned: OWNED(rel) });
+      }
+    }
+  }
+  const mine = findings.filter((f) => f.owned);
+  const theirs = findings.filter((f) => !f.owned);
+  console.log(`[copy-style] ${findings.length} style finding(s) — ${mine.length} in design-system files, ${theirs.length} in other agents' files (report-only)`);
+  for (const f of findings.slice(0, 60)) {
+    console.log(`  ${f.owned ? (ENFORCE ? '✗' : '·') : '·'} [${f.rule}] ${f.at} — «${f.text.slice(0, 60)}»`);
+  }
+  if (findings.length > 60) console.log(`  … and ${findings.length - 60} more`);
+  if (ENFORCE && mine.length) {
+    console.error(`\n✖ copy-style ENFORCE — ${mine.length} finding(s) in design-system files`);
+    process.exit(1);
+  }
+  console.log(`\n✔ copy-style ${ENFORCE ? 'ENFORCE' : 'REPORT'} — ${ENFORCE ? 'design-system files clean' : 'census only'}`);
+  process.exit(0);
+}
+
 const ratchet = JSON.parse(readFileSync(RATCHET_PATH, 'utf8'));
 const ratchetPages = ratchet.pages ?? {};
 const files = walk(ROOT).sort();
