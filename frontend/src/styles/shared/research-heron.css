@@ -642,6 +642,78 @@
   .r305rp .r305ai-list li { margin: 0; }
   .r305rp .ai-engine-tag { margin-block-start: var(--sp-1-5); }
 
+  /* ── R362 (§F code rendering) — fenced blocks + inline code chips ──
+     The assistant's programming answers: LTR mono inside the RTL
+     ledger. The block scrolls ITS OWN axis (overflow-x: auto — a wide
+     line never pushes the chat surface), the header carries the
+     language token + the copy verb, and dark/light ride the same
+     surface tokens as every other block. */
+  .r305rp .r305ai-code-wrap {
+    margin-block: var(--sp-2);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    overflow: hidden; /* the head + pre share the radius */
+    max-inline-size: 100%;
+  }
+  .r305rp .r305ai-code-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-1-5) var(--sp-3);
+    border-block-end: 1px solid var(--surface-divider);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem; /* 11px — the mono micro-label register */
+    color: var(--text-subtle);
+  }
+  .r305rp .r305ai-code-lang { letter-spacing: 0.04em; }
+  .r305rp .r305ai-code-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    padding: var(--sp-1) var(--sp-2);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--text-secondary);
+    font: inherit;
+    cursor: pointer;
+    min-block-size: 24px;
+  }
+  .r305rp .r305ai-code-copy:hover { background: var(--surface-3); color: var(--text-strong); }
+  .r305rp .r305ai-code-copy:focus-visible {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+  }
+  .r305rp .r305ai-code {
+    margin: 0;
+    padding: var(--sp-3);
+    overflow-x: auto; /* the block owns its width — never the page */
+    direction: ltr;
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.7;
+    color: var(--text-strong);
+    tab-size: 2;
+    unicode-bidi: isolate;
+  }
+  .r305rp .r305ai-code code {
+    font: inherit;
+    white-space: pre; /* long lines scroll, not wrap (code shape) */
+  }
+  .r305rp .r305ai-code-inline {
+    direction: ltr;
+    unicode-bidi: embed;
+    font-family: var(--font-mono);
+    font-size: 0.85em; /* scales with the line's rhythm */
+    padding: 0.08em 0.35em;
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+    border: 1px solid var(--surface-divider);
+  }
+
   /* ── D3 · error panels — message + support code + real retry ───── */
 
   /* ── D4 · the pending row — dots + a truthful status line ──────── */

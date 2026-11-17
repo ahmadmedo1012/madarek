@@ -2283,7 +2283,12 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
           {canGradeHere && <AttemptsSection template={template} />}
         </div>
 
-        <aside className="exa-aside" aria-label="تفاصيل القالب">
+        {/* R362 (§F a11y, the Sidebar/AnnotationsPanel precedent — r143
+            T1-f F3 / final-research D): a labeled <section> (region), not
+            <aside> — the detail rail renders INSIDE the shell's <main>
+            landmark and axe's complementary-is-top-level rule fires for
+            an aside nested there (same live catch as the AI side rail). */}
+        <section className="exa-aside" aria-label="تفاصيل القالب">
           <section className="exa-panel">
             <h2 className="exa-panel-title">تفاصيل القالب</h2>
             <div className="exa-facts">
@@ -2331,7 +2336,7 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
           </section>
 
           {canModerate && <TemplateModerationPanel template={template} />}
-        </aside>
+        </section>
       </div>
     </>
   );
