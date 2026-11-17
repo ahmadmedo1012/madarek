@@ -140,8 +140,8 @@ export default function MatrixScreen() {
       ) : courses.length === 0 ? (
         <EmptyState
           art={<Illustration id="r342/problem-03-mastery" width={216} />}
-          title="لم تتشكّل مصفوفتك بعد"
-          message="شاهد محاضرة وأجب عن نقاط التفاعل — ترسم المصفوفة خريطتك."
+          title="لم تتشكل بعد"
+          message="أجب عن نقاط التفاعل — ترسم المصفوفة خريطتك."
         />
       ) : (
         <>

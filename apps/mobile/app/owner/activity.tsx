@@ -39,7 +39,7 @@ function metadataSummary(metadata: unknown): string | null {
 }
 
 /**
- * Pushed: /owner/activity — «سجلّ النشاط والمراقبة» (web OwnerActivityPage
+ * Pushed: /owner/activity — «سجلّ النشاط» (web OwnerActivityPage
  * parity): the platform audit trail, paginated — action as a mono chip
  * with its Arabic label, the actor, an exact timestamp, and an honest
  * metadata summary per event.
@@ -79,9 +79,9 @@ export default function OwnerActivity() {
 
   return (
     <Screen scroll={false} padded={false}>
-      <StackHeader title="سجلّ النشاط والمراقبة" kicker="لوحة المالك" />
+      <StackHeader title="سجلّ النشاط" kicker="لوحة المالك" />
       <View style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
-        <PageHeader title="سجلّ النشاط والمراقبة" kicker="كل العمليّات — حيّة من سجلّ التدقيق" />
+        <PageHeader title="سجلّ النشاط" kicker="كل العمليّات — من سجلّ التدقيق" />
       </View>
       <View style={{ flex: 1 }}>
         <DataList
@@ -101,7 +101,7 @@ export default function OwnerActivity() {
           hasNextPage={feed.hasNextPage}
           loadMoreError={feed.loadMoreError}
           onRetryLoadMore={feed.retryLoadMore}
-          emptyTitle="لا توجد أحداث مسجَّلة بعد"
+          emptyTitle="لا أحداث بعد"
           emptyMessage="تُسجَّل الأحداث فور أول عمليّة."
           contentPadding={{ horizontal: 20, bottom: 24 }}
         />

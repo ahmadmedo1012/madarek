@@ -48,9 +48,9 @@ let onboardingFired = false;
 
 /** Quick actions — the four doors students open most (PressableScale tiles). */
 const QUICK_ACTIONS: { icon: typeof CalendarClock; label: string; href: string; a11y: string }[] = [
-  { icon: CalendarClock, label: "الجدول", href: "/student/schedule", a11y: "افتح الجدول الأسبوعي" },
+  { icon: CalendarClock, label: "الجدول", href: "/student/schedule", a11y: "الجدول الأسبوعي" },
   { icon: ClipboardList, label: "التكاليف", href: "/student/assignments", a11y: "افتح التكاليف" },
-  { icon: ClipboardCheck, label: "الاختبارات", href: "/student/online-exams", a11y: "افتح الاختبارات الإلكترونية" },
+  { icon: ClipboardCheck, label: "الاختبارات", href: "/student/online-exams", a11y: "الاختبارات الإلكترونية" },
   { icon: Library, label: "المكتبة", href: "/student/library", a11y: "افتح المكتبة" },
 ];
 
@@ -325,7 +325,7 @@ export default function StudentDashboard() {
               horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ gap: sp[8] }}
-              accessibilityLabel="شريط حصص اليوم وغدًا"
+              accessibilityLabel="حصص اليوم وغدًا"
             >
               {stripClasses.map((c) => (
                 <PressableScale
@@ -510,14 +510,14 @@ export default function StudentDashboard() {
         {d && kpi && kpi.courseCount === 0 && agenda && agenda.classes.length === 0 ? (
           <EmptyState
             room="lecture-hall"
-            title="لوحتك تنتظر أول مقرر"
-            message="لم تُسجَّل بعد — بعد الاعتماد تظهر بياناتك هنا."
+            title="تنتظر أول مقرر"
+            message="لم تُسجَّل — البيانات تظهر بعد الاعتماد."
           />
         ) : null}
 
         {d && agenda && agenda.classes.length > 0 ? (
           <T variant="xs" color="faint">
-            {countAr(agenda.classes.length, ["حصة واحدة في الأجندة", "حصتان في الأجندة", "حصص في الأجندة", "حصة في الأجندة"])}
+            {countAr(agenda.classes.length, ["حصة في الأجندة", "حصتان في الأجندة", "حصص في الأجندة", "حصة في الأجندة"])}
           </T>
         ) : null}
       </ScrollBody>

@@ -52,7 +52,7 @@ export default function QualityExamModeration() {
       examsApi.moderateTemplate(payload.id, { approve: payload.approve, note: payload.note || undefined }),
     onSuccess: (_d, payload) => {
       qc.invalidateQueries({ queryKey: ["exams", "moderation-queue"] });
-      toast.success(payload.approve ? "اعتُمد القالب وأُتيح للطلاب." : "رُفض القالب.");
+      toast.success(payload.approve ? "اعتُمد وأُتيح للطلاب." : "رُفض القالب.");
       setTarget(null);
       setNote("");
     },
@@ -92,7 +92,7 @@ export default function QualityExamModeration() {
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader
           title="مراجعة الاختبارات"
-          kicker="مراجعة القوالب قبل اعتمادها — صلاحية حصرية للجودة."
+          kicker="مراجعة القوالب — صلاحية حصرية."
         />
 
         <RowList>
@@ -105,7 +105,7 @@ export default function QualityExamModeration() {
             <StatLine
               label="أسئلة بانتظار الفحص"
               value={num(queue.data ? questionsAwaiting : null, "…")}
-              hint="مجموع أسئلة القوالب المعلّقة"
+              hint="أسئلة القوالب المعلّقة"
             />
           </LedgerRow>
         </RowList>
@@ -123,7 +123,7 @@ export default function QualityExamModeration() {
             <EmptyState
               icon={<CheckCircle2 size={22} color={tones.mint.ink} />}
               title="لا شيء بانتظار المراجعة"
-              message="كل القوالب المتاحة اجتازت المراجعة."
+              message="كل القوالب اجتازت المراجعة."
             />
           ) : (
             <RowList>
@@ -182,8 +182,8 @@ export default function QualityExamModeration() {
           ) : pendingQuestions.length === 0 ? (
             <EmptyState
               icon={<ClipboardCheck size={22} color={p.textMuted} />}
-              title="لا أسئلة بانتظار الاعتماد حالياً"
-              message="لا أسئلة غير معتمدة في هذا الطابور."
+              title="لا أسئلة بانتظار الاعتماد"
+              message="لا أسئلة غير معتمدة."
             />
           ) : (
             <RowList>
@@ -227,7 +227,7 @@ export default function QualityExamModeration() {
             label="ملاحظة المراجعة (اختياري)"
             value={note}
             onChangeText={setNote}
-            placeholder="ملاحظة تُحفظ مع القرار"
+            placeholder="ملاحظة مع القرار"
             multiline
           />
           <Button

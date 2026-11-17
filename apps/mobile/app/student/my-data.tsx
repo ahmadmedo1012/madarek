@@ -140,7 +140,7 @@ export default function StudentMyData() {
       <ScrollBody refreshing={profile.isFetching && !profile.isLoading} onRefresh={() => profile.refetch()}>
         <PageHeader
           title="بياناتي واتصالي"
-          kicker="بياناتك من المؤسّسة — عدّل ما يخصّك، والإدارة للبقيّة."
+          kicker="بيانات المؤسّسة — عدّل ما يخصّك."
         />
 
         {profile.isLoading ? (
@@ -155,7 +155,7 @@ export default function StudentMyData() {
         ) : !view || !draft ? (
           <EmptyState
             title="لا يوجد ملف طالب بعد"
-            message="لم يُربَط ملف طالب — تواصل مع شؤون الطلاب، وبعد الاعتماد تظهر بياناتك."
+            message="لم يُربط ملف طالب — البيانات بعد الاعتماد."
           />
         ) : (
           <>
@@ -214,7 +214,7 @@ export default function StudentMyData() {
                     label="جهة الطوارئ"
                     value={draft.emergencyContactName}
                     onChangeText={(v) => setDraft({ ...draft, emergencyContactName: v })}
-                    placeholder="اسم جهة الاتصال عند الطوارئ"
+                    placeholder="جهة الاتصال عند الطوارئ"
                   />
                   <Field
                     label="هاتف الطوارئ"
@@ -336,7 +336,7 @@ export default function StudentMyData() {
             </Card>
 
             {/* [05] الوثائق — the institution's custom fields. */}
-            <SectionBar index={5} title="الوثائق وبيانات المؤسسة" />
+            <SectionBar index={5} title="الوثائق والمؤسسة" />
             <Card style={{ gap: sp[6] }}>
               {customFields.length ? (
                 customFields.map((f) => <StatLine key={f.key} label={f.labelAr} value={fmtCustomValue(f)} />)
@@ -359,7 +359,7 @@ export default function StudentMyData() {
               <VisOption
                 active={view.phoneVisibility === "INSTITUTION_STAFF"}
                 title="طاقم مؤسستي"
-                description="الأساتذة والإدارة يرون رقمي — قناة التواصل الطبيعية."
+                description="الأساتذة والإدارة يرون رقمي."
                 disabled={save.isPending}
                 onPress={() => setVisibility("INSTITUTION_STAFF")}
                 icon={<Eye size={16} color={p.text} />}
@@ -367,7 +367,7 @@ export default function StudentMyData() {
               <VisOption
                 active={view.phoneVisibility === "PRIVATE"}
                 title="خاص بي فقط"
-                description="يظهر مقنّعًا للطاقم — طلب التواصل يحتاج موافقتي."
+                description="مقنّع للطاقم — الطلب بموافقتي."
                 disabled={save.isPending}
                 onPress={() => setVisibility("PRIVATE")}
                 icon={<EyeOff size={16} color={p.text} />}

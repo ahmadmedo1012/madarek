@@ -52,7 +52,7 @@ export default function LabsScreen() {
     mutationFn: ({ labId, name }: { labId: string; name: string }) => studentApi.recordLab(labId, name),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["me", "lab-sessions"] });
-      toast.success("سُجّلت جلسة المعمل في سجلّك.", "تمّ تسجيل الجلسة");
+      toast.success("سُجّلت في سجلّك.", "تمّ تسجيل الجلسة");
       setExpSheet(null);
       setLabSheet(null);
     },
@@ -200,7 +200,7 @@ export default function LabsScreen() {
             label="اسم التجربة"
             value={expSheet?.name ?? ""}
             onChangeText={(t) => setExpSheet((prev) => (prev ? { ...prev, name: t } : prev))}
-            hint="اسم التجربة كما تكتبه في السجلّ."
+            hint="كما تكتبه في السجلّ."
           />
         </View>
       </Sheet>

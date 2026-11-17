@@ -72,7 +72,7 @@ export default function OwnerInstitutions() {
     <Screen scroll>
       <StackHeader title="المؤسسات" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="المؤسسات" kicker="إدارة المؤسسات التعليمية على المنصّة" />
+        <PageHeader title="المؤسسات" kicker="إدارة المؤسسات التعليمية" />
 
         <Button
           label="مؤسسة جديدة"
@@ -93,7 +93,7 @@ export default function OwnerInstitutions() {
           ) : rows.length === 0 ? (
             <EmptyState
               title="لا توجد مؤسسات بعد"
-              message="أنشئ أول مؤسسة لبدء استقبال أعضائها."
+              message="أنشئ أول مؤسسة."
             />
           ) : (
             <View style={{ gap: 12 }}>
@@ -198,7 +198,7 @@ function CreateInstitutionSheet({
   const [draft, setDraft] = useState<CreateDraft>(EMPTY_DRAFT);
   const pending = create.isPending;
   const nameProblem =
-    draft.name.length > 0 && draft.name.trim().length < 2 ? "الاسم قصير جدًا — حرفان على الأقل" : undefined;
+    draft.name.length > 0 && draft.name.trim().length < 2 ? "حرفان على الأقل" : undefined;
   const canSubmit = draft.name.trim().length >= 2 && !pending;
 
   const submit = async () => {
@@ -228,7 +228,7 @@ function CreateInstitutionSheet({
           onChangeText={(v) => setDraft((d) => ({ ...d, name: v }))}
           placeholder="مثلاً: أكاديمية طرابلس للعلوم"
           error={nameProblem}
-          hint="مطلوب — كما سيظهر لأعضاء المؤسسة"
+          hint="كما يظهر للأعضاء"
         />
         <Field
           label="الاسم بالإنجليزية (اختياري)"
@@ -242,7 +242,7 @@ function CreateInstitutionSheet({
           value={draft.slug}
           onChangeText={(v) => setDraft((d) => ({ ...d, slug: v }))}
           placeholder="inst-example"
-          hint="لاتينية صغيرة وأرقام وشرطات — يُشتق تلقائيًا."
+          hint="لاتينية صغيرة وأرقام وشرطات."
           autoCorrect={false}
         />
         <Button

@@ -187,7 +187,7 @@ export default function Achievements() {
         ) : (board.data ?? []).length === 0 ? (
           <EmptyState
             title="لا يوجد ترتيب بعد"
-            message="اكسب النقاط بالدروس والمسارات — يظهر ترتيبك مع أول نقطة."
+            message="اكسب النقاط بالدروس والمسارات — ترتيبك يظهر مع أول نقطة."
             actionLabel="ابدأ من التطوير الذاتي"
             onAction={() => router.push("/training" as never)}
           />

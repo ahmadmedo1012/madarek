@@ -9,7 +9,7 @@
  *    fullscreen — platform limitation of expo-video), immersive auto-hide
  *    of the chrome while playing (3.2s timer),
  *  - resume-seek to the saved high-water mark (watchedSec − 3s, once)
- *    + the «استأنفنا من حيث توقفت» toast,
+ *    + the «استأنفنا من توقفت» toast,
  *  - 10s watch reporting while playing (high-water never regresses;
  *    completed only at ≥95% share / on ended; final flush on unmount).
  *    Offline resilience mirrors the exam-queue semantics: the newest
@@ -359,7 +359,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
           const target = Math.max(0, we.watchedSec - 3);
           const dur2 = player.duration;
           seekPlayer(player, clampSeek(target, dur2));
-          toast.info("استأنفنا من حيث توقفت", "استئناف المشاهدة");
+          toast.info("استأنفنا من توقفت", "استئناف المشاهدة");
         }
       }
     });
@@ -565,7 +565,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
       const res = await fetch(url, {
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       });
-      if (!res.ok) throw new Error("تعذّر تحميل النص المكتوب");
+      if (!res.ok) throw new Error("تعذّر تحميل النص");
       return parseVttCues(await res.text());
     },
   });
@@ -712,14 +712,14 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
           <Card style={{ gap: sp[8] }}>
             <T variant="body" weight="bold">
               {`أنهيت المشاهدة — تبقى ${countAr(checkpoints.length - checkpointsAnswered, [
-                "نقطة تفاعل واحدة لم تُجب",
-                "نقطتا تفاعل لم تُجبا",
+                "نقطة لم تُجب",
+                "نقطتان لم تُجبا",
                 "نقاط تفاعل لم تُجب",
                 "نقطة تفاعل لم تُجب",
               ])}`}
             </T>
             <Button
-              label="إلى نقطة التفاعل التالية"
+              label="للنقطة التالية"
               kind="primary"
               small
               onPress={() => openCheckpointExplicit(firstUnanswered)}
@@ -868,7 +868,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
               </T>
             ) : cues.length === 0 ? (
               <T variant="sm" color="muted">
-                {transcriptPending ? "يُولَّد النص الآن — عد بعد قليل." : "لا مقاطع في هذا النص."}
+                {transcriptPending ? "يُولَّد النص الآن — عد بعد قليل." : "لا مقاطع في النص."}
               </T>
             ) : (
               <>
@@ -903,7 +903,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                   contentPadding={{ bottom: 4 }}
                   windowing={{ initialNumToRender: 8, maxToRenderPerBatch: 8, windowSize: 9 }}
                   scrollProps={{ nestedScrollEnabled: true, showsVerticalScrollIndicator: true }}
-                  emptyTitle="لا نتائج مطابقة في هذا النص."
+                  emptyTitle="لا نتائج في النص."
                   emptyMessage="جرّب كلمة أخرى."
                 />
               </>
@@ -1255,8 +1255,8 @@ function VideoStage({
       {/* Tap layer — always alive so a hidden chrome can be summoned */}
       <Pressable
         style={StyleSheet.absoluteFill}
-        accessibilityLabel="إظهار أو إخفاء أدوات التحكم"
-        accessibilityHint="نقرتان على أحد جانبي الفيديو يرجع أو يتقدّم عشر ثوانٍ"
+        accessibilityLabel="إظهار/إخفاء الأدوات"
+        accessibilityHint="نقرتان على الجانب = عشر ثوانٍ"
         onPress={(e) => handleTap(e.nativeEvent.locationX)}
       />
 

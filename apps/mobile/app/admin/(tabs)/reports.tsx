@@ -83,7 +83,7 @@ export default function AdminReports() {
                 <View>
                   <SectionBar index={nextIndex()} title="حركة البحوث العلمية" />
                   {!trend || trend.length === 0 ? (
-                    <EmptyState title="لا توجد بيانات نشر بعد" message="ستظهر حركة البحوث هنا بعد رفع أول بحث." />
+                    <EmptyState title="لا توجد بيانات نشر بعد" message="تظهر الحركة بعد رفع أول بحث." />
                   ) : (
                     <RowList>
                       {trend.map((m, i) => (

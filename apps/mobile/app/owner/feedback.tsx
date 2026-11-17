@@ -78,7 +78,7 @@ export default function OwnerFeedback() {
       toast.success(`انتقل التقرير إلى «${FEEDBACK_STATUS_LABEL[payload.status] ?? payload.status}».`);
       setSelected(null);
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث حالة التقرير"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر التحديث"),
   });
 
   const rows = inbox.data?.rows ?? [];
@@ -87,7 +87,7 @@ export default function OwnerFeedback() {
     <Screen scroll>
       <StackHeader title="صندوق التغذية الراجعة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="صندوق التغذية الراجعة" kicker="كل ما وصل من «أبلغ عن مشكلة» — بسياقه الكامل." />
+        <PageHeader title="صندوق التغذية الراجعة" kicker="كل ما وصل من «أبلغ عن مشكلة»." />
 
         <Segmented
           options={STATUS_FILTERS}
@@ -104,8 +104,8 @@ export default function OwnerFeedback() {
           <ErrorState message={humanizeError(inbox.error)} onRetry={() => inbox.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title={status === "all" ? "لا تقارير هنا" : "لا تقارير في هذه الحالة"}
-            message="تقارير «أبلغ عن مشكلة» تصل هنا بسياقها الكامل."
+            title={status === "all" ? "لا تقارير هنا" : "لا تقارير"}
+            message="تقارير «أبلغ عن مشكلة» بسياقها."
           />
         ) : (
           <View style={{ gap: 12 }}>

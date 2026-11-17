@@ -386,7 +386,7 @@ export default function CalendarScreen() {
           {daySheet.events.length === 0 ? (
             <EmptyState
               room="library"
-              title="لا أحداث في هذا اليوم"
+              title="لا أحداث اليوم"
               message="اختر يومًا آخر من الشبكة."
             />
           ) : (

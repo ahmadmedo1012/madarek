@@ -160,7 +160,7 @@ export default function MaterialsScreen() {
   return (
     <Screen scroll={false} padded={false}>
       <AppStatusBar />
-      <StackHeader title="موادي التعليمية" kicker="ملفّات مقرّراتك في مكان واحد" />
+      <StackHeader title="موادي التعليمية" kicker="ملفات مقرّراتك معًا" />
       <View style={{ flex: 1 }}>
         <DataList
           data={filtered}
@@ -176,7 +176,7 @@ export default function MaterialsScreen() {
             <View style={{ gap: sp[8] }}>
               <SectionBar
                 index={1}
-                title={filterActive ? "ملفّات حديثة — مُصفّاة" : "ملفّات حديثة"}
+                title={filterActive ? "حديثة — مُصفّاة" : "ملفّات حديثة"}
                 action={
                   <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                     {rows.length > 0 ? (

@@ -48,7 +48,7 @@ export default function OwnerAlerts() {
     mutationFn: (id: string) => ownerApi.resolveAlert(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["owner", "alerts"] });
-      toast.success("أُغلق التنبيه وسُجِّلت العمليّة.", "تمّ حلّ التنبيه");
+      toast.success("أُغلق وسُجِّلت العمليّة.", "تمّ حلّ التنبيه");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر حلّ التنبيه"),
   });
@@ -62,7 +62,7 @@ export default function OwnerAlerts() {
     <Screen scroll>
       <StackHeader title="التنبيهات التشغيليّة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="التنبيهات التشغيليّة" kicker="التنبيهات والحوادث التشغيليّة — من سجلّ المنصّة." />
+        <PageHeader title="التنبيهات التشغيليّة" kicker="التنبيهات والحوادث التشغيليّة." />
 
         {alerts.isLoading ? (
           <SkeletonList rows={4} />
@@ -72,13 +72,13 @@ export default function OwnerAlerts() {
           <EmptyState
             icon={<CheckCircle2 size={22} color={tones.mint.ink} />}
             title="لا توجد تنبيهات مفتوحة"
-            message="كل الأنظمة طبيعيّة — تابع العمليّات من السجلّ."
+            message="كل الأنظمة طبيعيّة."
           />
         ) : (
           <View style={{ gap: 16 }}>
             <RowList>
               <LedgerRow last>
-                <StatLine label="تنبيهات مفتوحة" value={latn(rows.length)} hint="ضمن الحدّ الأقصى للعرض" />
+                <StatLine label="تنبيهات مفتوحة" value={latn(rows.length)} hint="ضمن الحدّ" />
                 <StatLine label="حرجة" value={latn(critical)} hint="تستوجب قرارًا" />
                 <StatLine label="تحذيرات" value={latn(warning)} hint="تحتاج متابعة" />
                 <StatLine label="معلومات" value={latn(info)} hint="للمتابعة فقط" />
@@ -129,7 +129,7 @@ export default function OwnerAlerts() {
 
       <ConfirmDialog
         open={resolveTarget !== null}
-        title="حلّ التنبيه التشغيليّ"
+        title="حلّ التنبيه"
         confirmLabel="معالجة"
         danger
         message={

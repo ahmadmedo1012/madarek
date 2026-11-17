@@ -104,7 +104,7 @@ export default function AdminTeachers() {
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو البريد الإلكتروني…"
+          placeholder="ابحث بالاسم أو البريد…"
           onClear={() => setQ("")}
         />
       </View>
@@ -124,10 +124,10 @@ export default function AdminTeachers() {
           hasNextPage={roster.hasNextPage}
           loadMoreError={roster.loadMoreError}
           onRetryLoadMore={roster.retryLoadMore}
-          emptyTitle={appliedQ ? "لا نتائج مطابقة" : "لم يتم تسجيل أساتذة بعد"}
+          emptyTitle={appliedQ ? "لا نتائج مطابقة" : "لا أساتذة بعد"}
           emptyMessage={
             appliedQ
-              ? "لم نجد أساتذة تطابق البحث الحالي."
+              ? "لا أساتذة تطابق البحث."
               : "تظهر القائمة فور تسجيل أول أستاذ."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}

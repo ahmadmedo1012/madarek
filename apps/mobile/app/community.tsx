@@ -164,7 +164,7 @@ function PostsPanel({ header }: { header: ReactNode }) {
       haptics.notify("success");
       toast.success("تم نشر منشورك.");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر نشر المنشور — نصّك ما زال محفوظًا.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر النشر — نصّك محفوظ.")),
   });
 
   const posts = q.data ?? [];
@@ -206,7 +206,7 @@ function PostsPanel({ header }: { header: ReactNode }) {
         emptySlot={
           <EmptyState
             title="لا منشورات بعد"
-            message="كن أول من يشارك تجربته أو سؤاله."
+            message="كن أول المشاركين."
             icon={<MessageCircle size={20} color={p.textMuted} />}
             actionLabel={user ? "اكتب منشورًا" : undefined}
             onAction={user ? () => setComposing(true) : undefined}
@@ -361,7 +361,7 @@ function AnnouncementsPanel() {
       {rows.length === 0 ? (
         <EmptyState
           title="لا توجد إعلانات بعد"
-          message="إعلانات الجامعة والكليات تظهر هنا."
+          message="إعلانات الجامعة والكليات."
         />
       ) : (
         <RowList>
@@ -432,7 +432,7 @@ function EventsPanel() {
       {rows.length === 0 ? (
         <EmptyState
           title="لا توجد فعاليات قادمة بعد"
-          message="الفعاليات تظهر هنا عند جدولتها."
+          message="الفعاليات عند جدولتها."
         />
       ) : (
         rows.map((e: CampusEvent) => (
@@ -570,7 +570,7 @@ function RoomsPanel() {
       haptics.notify("success");
       toast.success("انضممت إلى الغرفة.");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر الانضمام إلى الغرفة.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر الانضمام.")),
   });
   const leave = useMutation({
     mutationFn: (id: string) => socialApi.leaveRoom(id),
@@ -579,7 +579,7 @@ function RoomsPanel() {
       haptics.selection();
       toast.info("غادرت الغرفة.");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّرت مغادرة الغرفة.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّرت المغادرة.")),
   });
   const create = useMutation({
     mutationFn: () => socialApi.createStudyRoom({ name: name.trim(), topic: topic.trim() || undefined }),

@@ -85,8 +85,8 @@ function AlertsBoard({ onInbox }: { onInbox: () => void }) {
           <ErrorState message={humanizeError(alerts.error)} onRetry={() => alerts.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title="لا توجد تنبيهات حالياً"
-            message="كلّ المؤشّرات ضمن النطاق الطبيعيّ."
+            title="لا تنبيهات حاليًا"
+            message="المؤشّرات ضمن النطاق."
           />
         ) : (
           <>

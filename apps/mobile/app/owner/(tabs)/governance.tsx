@@ -65,7 +65,7 @@ export default function OwnerGovernance() {
                 <StatLine
                   label="تغييرات الصلاحيات"
                   value={numOf(g?.permissionChanges)}
-                  hint="تجاوزات موثّقة في السجلّ"
+                  hint="تجاوزات موثّقة"
                 />
                 <StatLine
                   label="تغييرات الأدوار"
@@ -73,7 +73,7 @@ export default function OwnerGovernance() {
                   hint="تعيينات وتحويلات"
                 />
                 <StatLine
-                  label="مستخدمون جدد هذا الشهر"
+                  label="جدد هذا الشهر"
                   value={numOf(g?.newUsersThisMonth)}
                   hint="من باب التسجيل"
                 />
@@ -84,7 +84,7 @@ export default function OwnerGovernance() {
 
         {/* [02] Weekly signup growth */}
         <View>
-          <SectionBar index={2} title="نموّ المستخدمين الأسبوعيّ" />
+          <SectionBar index={2} title="النموّ الأسبوعيّ" />
           {gov.isLoading ? (
             <SkeletonList rows={3} rowHeight={48} />
           ) : gov.isError ? null : (g?.weeklyGrowth ?? []).length === 0 ? (
@@ -115,8 +115,8 @@ export default function OwnerGovernance() {
             />
           ) : !la || numOf(la.total) === 0 ? (
             <EmptyState
-              title="لا توجد محاولات دخول بعد"
-              message="يظهر التوزيع فور أول دخول."
+              title="لا محاولات دخول بعد"
+              message="التوزيع يظهر فور أول دخول."
             />
           ) : (
             <RowList>
@@ -131,7 +131,7 @@ export default function OwnerGovernance() {
 
         {/* [04] Daily login detail */}
         <View>
-          <SectionBar index={4} title="تفاصيل تسجيلات الدخول اليوميّة" />
+          <SectionBar index={4} title="تسجيلات الدخول اليوميّة" />
           {logins.isLoading ? (
             <SkeletonList rows={4} rowHeight={48} />
           ) : logins.isError ? null : (la?.daily ?? []).length === 0 ? (
@@ -160,7 +160,7 @@ export default function OwnerGovernance() {
         {/* [05] Failure reasons */}
         {(la?.topReasons ?? []).length > 0 ? (
           <View>
-            <SectionBar index={5} title="أسباب تعذّر تسجيل الدخول" />
+            <SectionBar index={5} title="أسباب تعذّر الدخول" />
             <RowList>
               {(la?.topReasons ?? []).map((r, i, arr) => (
                 <LedgerRow key={r.reason ?? i} last={i === arr.length - 1}>

@@ -107,7 +107,7 @@ export default function CompetitionDetail() {
       <Screen scroll>
         <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
         <EmptyState
-          title="لا توجد بيانات لهذه المسابقة"
+          title="لا بيانات بعد"
           message="ربما انتهت — شاهد الجارية."
           actionLabel="عرض المسابقات"
           onAction={() => router.push("/competitions" as never)}
@@ -129,7 +129,7 @@ export default function CompetitionDetail() {
 
   const submit = () => {
     if (!title.trim() || !body.trim()) {
-      toast.error("العنوان والوصف مطلوبان لتقديم المشاركة.");
+      toast.error("العنوان والوصف مطلوبان.");
       return;
     }
     enter.mutate();
@@ -210,7 +210,7 @@ export default function CompetitionDetail() {
       {entries.length === 0 ? (
         <EmptyState
           title="لم يشارك أحد بعد"
-          message={canEnter ? "كن أوّل من يشارك!" : "انتهت مهلة التقديم على هذه المسابقة."}
+          message={canEnter ? "كن أوّل من يشارك!" : "انتهت مهلة التقديم."}
           actionLabel={canEnter ? "قدّم مشاركتك" : undefined}
           onAction={canEnter ? () => setEntering(true) : undefined}
         />
@@ -293,7 +293,7 @@ export default function CompetitionDetail() {
           />
           {enter.isError ? (
             <T variant="sm" color="danger">
-              {apiMessage(enter.error, "تعذّر تقديم المشاركة.")}
+              {apiMessage(enter.error, "تعذّر التقديم.")}
             </T>
           ) : null}
         </View>

@@ -168,7 +168,7 @@ export default function Settings() {
       return;
     }
     if (newPassword !== confirm) {
-      setPwError("كلمتا المرور غير متطابقتين.");
+      setPwError("غير متطابقتين.");
       return;
     }
     setBusy(true);
@@ -181,9 +181,9 @@ export default function Settings() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirm("");
-      toast.success("غُيّرت كلمة المرور — انتهت الجلسات الأخرى.", "كلمة المرور");
+      toast.success("غُيّرت — انتهت الجلسات الأخرى.", "كلمة المرور");
     } catch (err) {
-      setPwError((err as ApiError).message ?? "تعذّر تغيير كلمة المرور.");
+      setPwError((err as ApiError).message ?? "تعذّر التغيير.");
     } finally {
       setBusy(false);
     }

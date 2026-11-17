@@ -111,7 +111,7 @@ export default function QualityDashboard() {
           <Animated.View entering={entering(1)}>
             <EmptyState
               title="لا توجد مؤشرات بعد"
-              message="تظهر المؤشرات فور توفر بيانات أكاديمية."
+              message="تظهر فور توفر البيانات."
               actionLabel="تحديث"
               onAction={() => overview.refetch()}
             />
@@ -122,7 +122,7 @@ export default function QualityDashboard() {
               <MetricHero
                 label="الطلاب النشطون"
                 value={numOf(users.STUDENT)}
-                hint="وفق آخر قراءة من قطاع الجودة"
+                hint="آخر قراءة من الجودة"
                 progress={presentRate}
               />
               <View style={{ flexDirection: "row", gap: 8 }}>
@@ -141,7 +141,7 @@ export default function QualityDashboard() {
                 <EmptyState
                   room="lecture-hall"
                   title="لا سجلّات حضور بعد"
-                  message="تظهر السجلّات فور رصد أول حصة."
+                  message="تظهر فور رصد أول حصة."
                 />
               ) : (
                 <RowList>
@@ -151,7 +151,7 @@ export default function QualityDashboard() {
                         key={key}
                         label={ATTENDANCE_KEY_LABEL[key] ?? "سجلّات أخرى"}
                         value={num(numOf(value))}
-                        hint={key in ATTENDANCE_KEY_LABEL ? undefined : "فئة حضور غير مصنَّفة"}
+                        hint={key in ATTENDANCE_KEY_LABEL ? undefined : "حضور غير مصنَّف"}
                       />
                     ))}
                     {presentRate !== null ? (

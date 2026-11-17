@@ -42,8 +42,8 @@ export default function ArScreen() {
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<Headset size={24} color={p.textFaint} />}
-          title="لا توجد تجارب AR/VR بعد"
-          message="ستظهر هنا حين يضيفها المسجل العام."
+          title="لا تجارب AR/VR بعد"
+          message="تظهر حين يضيفها المسجل."
         />
       ) : (
         <RowList>

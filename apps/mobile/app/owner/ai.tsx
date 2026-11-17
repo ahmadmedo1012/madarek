@@ -66,7 +66,7 @@ export default function OwnerAi() {
         }
       />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="مركز الذكاء الاصطناعيّ" kicker="مراقبة استخدام وأداء الذكاء الاصطناعيّ." />
+        <PageHeader title="مركز الذكاء الاصطناعيّ" kicker="استخدام وأداء الذكاء الاصطناعيّ." />
 
         {metrics.isLoading ? (
           <SkeletonList rows={4} rowHeight={48} />
@@ -82,7 +82,7 @@ export default function OwnerAi() {
                   <StatLine
                     label="إجمالي الطلبات"
                     value={numOf(m?.totalRequests)}
-                    hint="تراكميّة على المنصّة"
+                    hint="تراكميّة"
                   />
                   <StatLine
                     label="إجمالي التوكنات"
@@ -96,7 +96,7 @@ export default function OwnerAi() {
                       m?.successRate != null
                         ? m.successRate >= 90
                           ? "تشغيل مستقرّ"
-                          : "راجع الأعطال الأخيرة"
+                          : "الأعطال الأخيرة"
                         : null
                     }
                   />
@@ -115,7 +115,7 @@ export default function OwnerAi() {
               {(m?.byFeature ?? []).length === 0 ? (
                 <EmptyState
                   icon={<Bot size={22} color={p.textMuted} />}
-                  title="لا توجد طلبات لعرضها"
+                  title="لا طلبات بعد"
                   message="تظهر المؤشرات فور أول طلب."
                 />
               ) : (
@@ -135,7 +135,7 @@ export default function OwnerAi() {
 
             {/* [03] اتّجاه الاستخدام */}
             <View>
-              <SectionBar index={3} title="اتّجاه الاستخدام (7 أيّام)" />
+              <SectionBar index={3} title="الاتجاه (7 أيام)" />
               {(m?.trend ?? []).length === 0 ? (
                 <T variant="body" color="muted">
                   لا توجد بيانات بعد — يُرسم الاتّجاه فور تسجيل أوّل طلب.

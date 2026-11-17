@@ -92,7 +92,7 @@ export default function AdminDashboard() {
             <MetricHero
               label="الطلاب المسجَّلون"
               value={s.totalStudents ?? null}
-              hint="إجمالي حسابات الطلاب في هذه المؤسّسة"
+              hint="حسابات الطلاب في المؤسّسة"
             />
             <View style={{ flexDirection: "row", gap: 8 }}>
               <MetricTile label="الأساتذة" value={s.totalTeachers ?? null} />
@@ -151,10 +151,10 @@ export default function AdminDashboard() {
           <View style={{ gap: 8 }}>
             {(
               [
-                [BookOpen, "إدارة المقرّرات", "المقرّرات والشُّعب مع البحث والإضافة", "/admin/courses"],
-                [ShieldCheck, "التحوّل الرقميّ", "مؤشّرات تبنّي المنصّة الرقميّة", "/admin/digital"],
-                [Inbox, "دعوات التسجيل", "أكواد الانضمام للطلاب والأساتذة", "/admin/invites"],
-                [FileText, "صندوق التغذية الراجعة", "تقارير المستخدمين وسياقها الكامل", "/admin/feedback"],
+                [BookOpen, "إدارة المقرّرات", "المقرّرات والشُّعب والبحث", "/admin/courses"],
+                [ShieldCheck, "التحوّل الرقميّ", "مؤشّرات التبنّي الرقميّ", "/admin/digital"],
+                [Inbox, "دعوات التسجيل", "أكواد انضمام الطلاب والأساتذة", "/admin/invites"],
+                [FileText, "صندوق التغذية الراجعة", "تقارير المستخدمين وسياقها", "/admin/feedback"],
               ] as const
             ).map(([Icon, title, sub, href], i, arr) => (
               <LedgerRow

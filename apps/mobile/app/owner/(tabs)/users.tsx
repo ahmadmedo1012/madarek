@@ -99,7 +99,7 @@ export default function OwnerUsers() {
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو البريد الإلكتروني…"
+          placeholder="ابحث بالاسم أو البريد…"
           onClear={() => setQ("")}
         />
 
@@ -125,11 +125,11 @@ export default function OwnerUsers() {
           hasNextPage={directory.hasNextPage}
           loadMoreError={directory.loadMoreError}
           onRetryLoadMore={directory.retryLoadMore}
-          emptyTitle={hasFilters ? "لا نتائج مطابقة" : "لا يوجد مستخدمون بعد"}
+          emptyTitle={hasFilters ? "لا نتائج مطابقة" : "لا مستخدمون بعد"}
           emptyMessage={
             hasFilters
-              ? "لا حسابات تطابق البحث أو الدور."
-              : "تظهر الحسابات فور تسجيل أول مستخدم."
+              ? "لا حسابات تطابق البحث."
+              : "تظهر الحسابات فور أول مستخدم."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />

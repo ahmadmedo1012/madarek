@@ -52,7 +52,7 @@ export default function QualityCourses() {
           <ErrorState message={humanizeError(courses.error)} onRetry={() => courses.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title="لا توجد مقرّرات نشطة بعد"
+            title="لا مقرّرات نشطة"
             message="تظهر المقرّرات وعروضها فور اعتمادها."
           />
         ) : (

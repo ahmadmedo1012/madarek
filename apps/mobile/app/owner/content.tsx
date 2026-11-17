@@ -15,11 +15,11 @@ import { usePalette } from "@/design/theme";
 /** The brand asset register (frontend/public/brand) — SVG sources named
  *  verbatim; the mobile app draws its own vector BrandMark twin. */
 const BRAND_ASSETS: { file: string; label: string }[] = [
-  { file: "mark.svg", label: "رمز العلامة المربَّع (المعوّل)" },
-  { file: "madarek-mark.svg", label: "الرمز المستقلّ للويب" },
+  { file: "mark.svg", label: "الرمز المربَّع (المعوّل)" },
+  { file: "madarek-mark.svg", label: "رمز الويب" },
   { file: "wordmark.svg", label: "الكتابة (مدارك)" },
-  { file: "lockup.svg", label: "الدمج الأفقيّ — رمز + كتابة" },
-  { file: "lockup-stacked.svg", label: "الدمج المركَّب — رمز فوق كتابة" },
+  { file: "lockup.svg", label: "أفقيّ — رمز + كتابة" },
+  { file: "lockup-stacked.svg", label: "مركَّب — رمز فوق كتابة" },
 ];
 
 /**
@@ -35,7 +35,7 @@ export default function OwnerContent() {
     <Screen scroll>
       <StackHeader title="المحتوى والعلامة التجاريّة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="المحتوى والعلامة التجاريّة" kicker="الهويّة البصريّة وأصول العلامة" />
+        <PageHeader title="المحتوى والعلامة التجاريّة" kicker="الهويّة وأصول العلامة" />
 
         <Card>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
@@ -53,7 +53,7 @@ export default function OwnerContent() {
         </Card>
 
         <View>
-          <SectionBar index={1} title="أصول العلامة الرسميّة" />
+          <SectionBar index={1} title="أصول العلامة" />
           <RowList>
             {BRAND_ASSETS.map((a, i) => (
               <LedgerRow key={a.file} last={i === BRAND_ASSETS.length - 1}>
@@ -87,7 +87,7 @@ export default function OwnerContent() {
         </Card>
 
         <View>
-          <SectionBar index={2} title="إدارة المحتوى التفصيلية" />
+          <SectionBar index={2} title="إدارة المحتوى" />
           <Card>
             <View style={{ gap: 8 }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
@@ -97,11 +97,11 @@ export default function OwnerContent() {
                 </T>
               </View>
               <T variant="sm" color="muted">
-                إدارة المحتوى التفصيلية (بثّ الإعلانات، أعلام الميزات، صياغة الصفحة الرئيسيّة) تُدار
+                إدارة المحتوى (بثّ الإعلانات، أعلام الميزات، صياغة الصفحة الرئيسيّة) تُدار
                 من لوحة الويب — التطبيق يعرض هوية المنصّة كما هي معرَّفة في الشيفرة والتصميم.
               </T>
               <Button
-                label="عن مدارك — الهويّة والمنصّة"
+                label="عن مدارك — الهويّة"
                 kind="ghost"
                 small
                 icon={<ArrowRight size={14} color={p.text} />}
@@ -120,7 +120,7 @@ export default function OwnerContent() {
                 وطريقها.
               </T>
               <Button
-                label="فتح صندوق التغذية الراجعة"
+                label="صندوق التغذية الراجعة"
                 kind="ghost"
                 small
                 icon={<ArrowRight size={14} color={p.text} />}

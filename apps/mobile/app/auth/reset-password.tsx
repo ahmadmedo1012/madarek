@@ -36,7 +36,7 @@ export default function ResetPassword() {
   const submit = async () => {
     if (busy || done) return;
     if (token.length < 40) {
-      setError("رابط الاستعادة غير صالح أو مفقود.");
+      setError("رابط الاستعادة غير صالح.");
       haptics.notify("error");
       return;
     }
@@ -77,7 +77,7 @@ export default function ResetPassword() {
         submitLoading={busy}
         submitKind="accent"
         error={error}
-        success={done ? "تم التعيين — انتهت جلساتك الأخرى وسيُعادك للدخول." : null}
+        success={done ? "تم التعيين — انتهت الجلسات وسيُعادك للدخول." : null}
       >
         <T variant="h2" weight="bold">تعيين كلمة مرور جديدة</T>
         {done ? (
@@ -94,7 +94,7 @@ export default function ResetPassword() {
               fieldId="password"
               label="كلمة المرور الجديدة"
               purpose="newPassword"
-              hint="12 حرفًا على الأقل — حتى 72."
+              hint="بين 12 و72 حرفًا."
               required
             />
             <SecretField

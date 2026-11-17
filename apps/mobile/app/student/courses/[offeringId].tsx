@@ -179,8 +179,8 @@ const LectureRow = makeRow<Lecture, { index: number }>(({ item, index }) => {
         {pending > 0 ? (
           <T variant="xs" color="muted">
             {countAr(pending, [
-              "نقطة تفاعل متبقية واحدة",
-              "نقطتا تفاعل متبقيتان",
+              "نقطة متبقية",
+              "نقطتان متبقيتان",
               "نقاط تفاعل متبقية",
               "نقطة تفاعل متبقية",
             ])}
@@ -498,7 +498,7 @@ export default function CourseDetailScreen() {
               <EmptyState
                 room="lecture-hall"
                 title="لا توجد محاضرات"
-                message="لم تُرفع محاضرات بعد — سيضيفها الأستاذ تباعاً مع تقدّم الفصل."
+                message="لا محاضرات — يضيفها الأستاذ تباعًا."
               />
             }
             contentPadding={{ horizontal: 20, bottom: 24 }}
@@ -516,7 +516,7 @@ export default function CourseDetailScreen() {
               <EmptyState
                 room="library"
                 title="لا توجد ملفات"
-                message="ستظهر مواد المقرّر هنا فور رفع الأستاذ لها."
+                message="تظهر فور رفع الأستاذ."
               />
             }
             contentPadding={{ horizontal: 20, bottom: 24 }}
@@ -538,7 +538,7 @@ export default function CourseDetailScreen() {
               <EmptyState
                 room="building"
                 title="لا توجد إعلانات"
-                message="ستظهر إعلانات هذا المقرّر هنا فور نشرها."
+                message="تظهر فور نشرها."
               />
             }
             contentPadding={{ horizontal: 20, bottom: 24 }}

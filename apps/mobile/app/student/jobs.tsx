@@ -95,9 +95,9 @@ export default function JobsScreen() {
     onSuccess: (_res, jobId) => {
       setJustApplied((prev) => ({ ...prev, [jobId]: true }));
       void qc.invalidateQueries({ queryKey: ["jobs"] });
-      toast.success("وصل طلبك إلى صاحب الفرصة.", "تمّ التقديم");
+      toast.success("وصل طلبك لصاحب الفرصة.", "تمّ التقديم");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر إرسال طلب التقديم"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر إرسال الطلب"),
   });
 
   return (
@@ -124,8 +124,8 @@ export default function JobsScreen() {
         emptySlot={
           <EmptyState
             icon={<Briefcase size={24} color={p.textFaint} />}
-            title="لا توجد فرص نشطة هذا الأسبوع"
-            message="فرص دورية — تصلك إشعارات الملائم لتخصصك."
+            title="لا فرص هذا الأسبوع"
+            message="فرص دورية — إشعارات الملائم لتخصصك."
           />
         }
         ListHeaderComponent={

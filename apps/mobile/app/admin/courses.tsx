@@ -144,7 +144,7 @@ export default function AdminCourses() {
     },
     onError: (e) =>
       toast.error(
-        humanizeError(e) || "تعذّر حذف المقرّر — قد تكون له شُعب أو مفاهيم مرتبطة.",
+        humanizeError(e) || "تعذّر الحذف — له شُعب أو مفاهيم مرتبطة.",
         "فشل الحذف",
       ),
   });
@@ -195,7 +195,7 @@ export default function AdminCourses() {
         ) : rows.length === 0 ? (
           <EmptyState
             title={appliedQ ? "لا توجد نتائج" : "لا توجد مقرّرات بعد"}
-            message={appliedQ ? "جرّب تعديل البحث لعرض نتائج أوسع." : "أضف أول مقرّر من الزر أعلاه."}
+            message={appliedQ ? "جرّب بحثًا أوسع." : "أضف أول مقرّر."}
             actionLabel={appliedQ ? "مسح البحث" : undefined}
             onAction={appliedQ ? () => setQ("") : undefined}
           />
@@ -514,7 +514,7 @@ function OfferingSheet({
             placeholder="قاعة A12"
           />
         </View>
-        <StatLine label="السعة" value={num(null, "افتراض الخادم")} hint="أقصى عدد طلاب يمكن تسجيلهم في الشعبة" />
+        <StatLine label="السعة" value={num(null, "افتراض الخادم")} hint="أقصى طلاب الشعبة" />
       </View>
     </AppSheet>
   );

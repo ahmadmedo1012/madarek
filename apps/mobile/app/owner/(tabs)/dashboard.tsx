@@ -107,7 +107,7 @@ export default function OwnerDashboard() {
         ) : s ? (
           <Animated.View entering={entering(1)} style={{ gap: 8 }}>
             <MetricHero
-              label="إجمالي مستخدمي المنصّة"
+              label="مستخدمو المنصّة"
               value={s.totalUsers ?? null}
               hint={countAr(s.totalUsers ?? 0, ["حساب واحد", "حسابان", "حسابات", "حساباً"])}
             />
@@ -144,8 +144,8 @@ export default function OwnerDashboard() {
           ) : alertRows.length === 0 ? (
             <EmptyState
               room="building"
-              title="النظام يعمل بشكل طبيعي"
-              message="لا تنبيهات مفتوحة — تظهر الحوادث هنا فور رصدها."
+              title="النظام طبيعيّ"
+              message="لا تنبيهات — الحوادث تظهر فور رصدها."
             />
           ) : (
             <View style={{ gap: 12 }}>
@@ -187,7 +187,7 @@ export default function OwnerDashboard() {
           ) : activity.isError ? (
             <ErrorState message={humanizeError(activity.error)} onRetry={() => activity.refetch()} compact />
           ) : events.length === 0 ? (
-            <EmptyState title="لا توجد أحداث بعد" message="ستظهر أحدث العمليّات هنا فور حدوثها." />
+            <EmptyState title="لا توجد أحداث بعد" message="أحدث العمليّات تظهر فور حدوثها." />
           ) : (
             <View style={{ gap: 12 }}>
               <DataList

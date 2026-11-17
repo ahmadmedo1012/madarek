@@ -66,7 +66,7 @@ export default function MoocScreen() {
   const open = (url: string | null | undefined) => {
     if (!url) return;
     void WebBrowser.openBrowserAsync(url).catch(() => {
-      void Linking.openURL(url).catch(() => toast.error("تعذّر فتح المتصفح الخارجي."));
+      void Linking.openURL(url).catch(() => toast.error("تعذّر فتح المتصفح."));
     });
   };
 
@@ -86,8 +86,8 @@ export default function MoocScreen() {
         emptySlot={
           <EmptyState
             icon={<GraduationCap size={24} color={p.textFaint} />}
-            title="لا توجد دورات خارجية مرتبطة"
-            message="يربط المسجل دورات Coursera وedX بمقرّراتك — راجع المرشد."
+            title="لا دورات مرتبطة"
+            message="دورات Coursera وedX — راجع المرشد."
           />
         }
         ListHeaderComponent={

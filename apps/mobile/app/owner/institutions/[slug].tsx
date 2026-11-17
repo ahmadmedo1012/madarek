@@ -76,7 +76,7 @@ export default function OwnerInstitutionDetail() {
         <View style={{ paddingTop: 16 }}>
           <EmptyState
             title="المؤسسة غير موجودة"
-            message="لا مؤسسة بهذا المعرّف — ربما حُذفت."
+            message="لا مؤسسة بهذا المعرّف."
             actionLabel="رجوع إلى القائمة"
             onAction={() => router.push("/owner/institutions" as never)}
           />
@@ -102,7 +102,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       ownerApi.updateInstitution(inst.id, payload),
     onSuccess: () => {
       invalidate();
-      toast.success("حُفظت أسماء المؤسسة.", "بيانات المؤسسة");
+      toast.success("حُفظ الاسم.", "بيانات المؤسسة");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ الأسماء"),
   });
@@ -130,7 +130,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
         "تمّ التعيين",
       );
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر تعيين المسجل العام"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تعيين المسجل"),
   });
 
   const revoke = useMutation({
@@ -148,7 +148,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       invalidate();
       toast.success(`أُعيدت العضوية في «${inst.name}».`, "تمّت الاستعادة");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّرت استعادة العضوية"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّرت الاستعادة"),
   });
 
   const members = numOf(inst.activeMembershipCount ?? inst.membersCount);
@@ -289,7 +289,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
 
       <ConfirmDialog
         open={revokeTarget !== null}
-        title="إلغاء عضوية المسجل العام"
+        title="إلغاء عضوية المسجل"
         confirmLabel="إلغاء العضوية"
         danger
         loading={revoke.isPending}
@@ -306,7 +306,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       />
       <ConfirmDialog
         open={restoreTarget !== null}
-        title="استعادة عضوية المسجل العام"
+        title="استعادة عضوية المسجل"
         confirmLabel="استعادة"
         loading={restore.isPending}
         message={
@@ -339,7 +339,7 @@ function RenameSheet({
 }) {
   const [name, setName] = useState(inst.name ?? "");
   const [nameEn, setNameEn] = useState(inst.nameEn ?? "");
-  const nameProblem = name.length > 0 && name.trim().length < 2 ? "الاسم قصير جدًا — حرفان على الأقل" : undefined;
+  const nameProblem = name.length > 0 && name.trim().length < 2 ? "حرفان على الأقل" : undefined;
   const canSubmit = name.trim().length >= 2 && !rename.isPending;
 
   const submit = async () => {
@@ -360,7 +360,7 @@ function RenameSheet({
           value={name}
           onChangeText={setName}
           error={nameProblem}
-          hint="كما سيظهر لأعضاء المؤسسة"
+          hint="كما يظهر للأعضاء"
         />
         <Field
           label="الاسم بالإنجليزية (اختياري)"
@@ -434,7 +434,7 @@ function ProvisionSheet({
           value={email}
           onChangeText={setEmail}
           error={emailProblem}
-          hint="مطلوب — لحساب مسجَّل على المنصّة"
+          hint="حساب مسجَّل على المنصّة"
           autoCorrect={false}
           autoCapitalize="none"
           keyboardType="email-address"

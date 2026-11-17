@@ -165,7 +165,7 @@ export default function SelectInstitution() {
             art={<Illustration id="r342/role-registrar" width={216} />}
             room="building"
             title="لا عضوية نشطة بعد"
-            message="لا عضوية مفعّلة — تواصل مع إدارة مؤسّستك ثم عُد للدخول."
+            message="لا عضوية مفعّلة — تواصل مع الإدارة."
             actionLabel="تسجيل الخروج"
             onAction={() => void doLogout()}
           />

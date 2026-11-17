@@ -66,7 +66,7 @@ export default function LiveScreen() {
       toast.success("سُجّل حضورك.", "تمّ الانضمام");
       const url = res?.session?.joinUrl ?? null;
       if (url) {
-        void Linking.openURL(url).catch(() => toast.error("تعذّر فتح الغرفة الخارجية."));
+        void Linking.openURL(url).catch(() => toast.error("تعذّر فتح الغرفة."));
       }
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر الانضمام"),
@@ -86,7 +86,7 @@ export default function LiveScreen() {
       ) : list.length === 0 ? (
         <EmptyState
           title="لا توجد بثوث بعد"
-          message="لا بثوث لمقرّراتك — الجلسات الجديدة تظهر هنا."
+          message="لا بثوث — الجلسات تظهر هنا."
         />
       ) : (
         <View style={{ gap: sp[16] }}>
@@ -94,15 +94,15 @@ export default function LiveScreen() {
             title="مباشرة الآن"
             sessions={live}
             emptyLabel="لا بثّ مباشرة الآن"
-            emptyNote="لا جلسات نشطة — راجع القادمة أدناه."
+            emptyNote="لا جلسات نشطة — راجع القادمة."
             onJoin={live.length > 0 ? (id) => join.mutate(id) : undefined}
             joinPending={join.isPending ? join.variables ?? null : null}
           />
           <SessionSection
             title="جلسات قادمة"
             sessions={upcoming}
-            emptyLabel="لا توجد جلسات مجدولة"
-            emptyNote="سيظهر هنا أي بثّ يجدوله أساتذتك."
+            emptyLabel="لا جلسات مجدولة"
+            emptyNote="أي بثّ يجدوله أساتذتك يظهر هنا."
           />
           {ended.length > 0 ? (
             <SessionSection title="جلسات منتهية" sessions={ended} emptyLabel="" emptyNote="" />

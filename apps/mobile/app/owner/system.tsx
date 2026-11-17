@@ -104,8 +104,8 @@ export default function OwnerSystem() {
       ? storage?.reachable === true
         ? { label: "دائمة", tone: "mint" as const, note: storage.checkedAt ? `آخر تحقّق: ${fromNow(storage.checkedAt)}` : null }
         : storage?.reachable === false
-          ? { label: "مهيَّأ لكن يتعذّر الوصول الآن", tone: "rose" as const, note: "الرفعات الجديدة ستفشل حتى يعود المخزن." }
-          : { label: "لم يُتحقق بعد", tone: "yellow" as const, note: "لم يتحقّق الخادم من اتصال المخزن بعد." }
+          ? { label: "مهيَّأ لكن يتعذّر الوصول الآن", tone: "rose" as const, note: "الرفعات ستفشل حتى يعود." }
+          : { label: "لم يُتحقق بعد", tone: "yellow" as const, note: "لم يُتحقّق من اتصال المخزن." }
       : driver
         ? storage?.persistent
           ? { label: "دائمة", tone: "mint" as const, note: null }
@@ -119,7 +119,7 @@ export default function OwnerSystem() {
     <Screen scroll>
       <StackHeader title="النظام والتشغيل" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="النظام والتشغيل" kicker="البنية التحتية وحالة الخدمات" />
+        <PageHeader title="النظام والتشغيل" kicker="البنية والخدمات" />
 
         {/* [01] حالة الخدمة */}
         <View>
@@ -138,7 +138,7 @@ export default function OwnerSystem() {
                 <StatLine
                   label="حالة الخدمة"
                   value={sys.isError ? "تعذّر الاتصال" : s ? "متصل" : null}
-                  hint="من حالة الاستعلام الحيّ"
+                  hint="من الاستعلام الحيّ"
                 />
                 <StatLine
                   label="تنبيهات حرجة مفتوحة"
@@ -181,7 +181,7 @@ export default function OwnerSystem() {
                 <T variant="xs" color="faint">
                   {sys.isError
                     ? "تعذّر جلب الحالة — أعد المحاولة."
-                    : "الخادم لا يُصرّح عن حالة التخزين بعد."}
+                    : "لا تُصرّح عن حالة التخزين بعد."}
                 </T>
               </LedgerRow>
             </RowList>
@@ -272,8 +272,8 @@ export default function OwnerSystem() {
           ) : flagRows.length === 0 ? (
             <EmptyState
               icon={<Settings size={22} color={p.textMuted} />}
-              title="لا توجد أعلام مُعرَّفة"
-              message="لا أعلام ميزات معرَّفة — تُدار من قاعدة البيانات."
+              title="لا أعلام معرَّفة"
+              message="لا أعلام — تُدار من قاعدة البيانات."
             />
           ) : (
             <RowList>
@@ -388,7 +388,7 @@ function SettingEditSheet({
           label="قيمة الإعداد"
           value={value}
           onChangeText={setValue}
-          hint="تُحفَظ كما هي (نصّ) وتُوثَّق في سجلّ النشاط"
+          hint="تُحفَظ نصًّا وتُوثَّق في السجلّ"
           autoCorrect={false}
         />
         <Button

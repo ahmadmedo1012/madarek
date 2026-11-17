@@ -127,7 +127,7 @@ export default function AdminStudents() {
           emptyTitle={appliedQ ? "لا توجد نتائج" : "لا يوجد طلاب بعد"}
           emptyMessage={
             appliedQ
-              ? "جرّب تعديل البحث لعرض نتائج أوسع."
+              ? "جرّب بحثًا أوسع."
               : "تظهر القائمة فور تسجيل أول طالب."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}

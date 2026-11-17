@@ -234,7 +234,7 @@ export default function StudentProfile() {
         refreshing={profile.isFetching && !profile.isLoading}
         onRefresh={() => profile.refetch()}
       >
-        <PageHeader title="حسابي" kicker="هويّتك الأكاديمية وخدمات الطالب." />
+        <PageHeader title="حسابي" kicker="هويّتك وخدمات الطالب." />
 
         {/* الهويّة — the block the shell pulled out of the top bar */}
         <Card style={{ gap: sp[10] }}>
@@ -285,7 +285,7 @@ export default function StudentProfile() {
           <EmptyState
             icon={<ScrollText size={22} color={p.textMuted} />}
             title="لا يوجد ملف طالب بعد"
-            message="لم يُربَط ملف طالب بحسابك — تواصل مع شؤون الطلاب، وبعد الاعتماد تظهر بياناتك هنا."
+            message="لم يُربط ملف طالب — البيانات تظهر بعد الاعتماد."
           />
         ) : (
           <>

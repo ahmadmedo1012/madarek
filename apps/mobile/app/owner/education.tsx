@@ -45,7 +45,7 @@ export default function OwnerEducation() {
     <Screen scroll>
       <StackHeader title="النظرة التعليميّة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="النظرة التعليميّة" kicker="إحصائيات حيّة عن المقرّرات والأساتذة والطلاب." />
+        <PageHeader title="النظرة التعليميّة" kicker="إحصائيات حيّة للمقرّرات والأساتذة والطلاب." />
 
         {edu.isLoading ? (
           <SkeletonList rows={5} rowHeight={48} />
@@ -61,7 +61,7 @@ export default function OwnerEducation() {
                   <StatLine label="إجمالي المقرّرات" value={numOf(e?.totals?.totalCourses)} />
                   <StatLine label="عدد الأساتذة" value={numOf(e?.totals?.teachers)} />
                   <StatLine label="العروض النشطة" value={numOf(e?.totals?.totalOfferings)} />
-                  <StatLine label="متوسط التسجيل في العرض" value={numOf(e?.totals?.avgEnrolment)} />
+                  <StatLine label="متوسط التسجيل" value={numOf(e?.totals?.avgEnrolment)} />
                 </LedgerRow>
               </RowList>
             </View>
@@ -117,9 +117,9 @@ export default function OwnerEducation() {
               )}
             </View>
 
-            {/* [04] توزيع حِمل أعضاء هيئة التدريس */}
+            {/* [04] حِمل هيئة التدريس */}
             <View>
-              <SectionBar index={4} title="توزيع حِمل أعضاء هيئة التدريس" />
+              <SectionBar index={4} title="حِمل هيئة التدريس" />
               {totalTeachers === 0 ? (
                 <T variant="body" color="muted">
                   لا يوجد أساتذة بعد — يُحسب التوزيع فور إسناد أوّل عرض لمقرّر.

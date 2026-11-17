@@ -56,17 +56,17 @@ export default function AdminDigital() {
   const components: { label: string; value: number | null | undefined }[] = [
     { label: "اختبارات منشورة", value: d?.onlineExams },
     { label: "محاولات أداء", value: d?.examAttempts },
-    { label: "جلسات معامل افتراضيّة", value: d?.labSessions },
+    { label: "جلسات المعامل", value: d?.labSessions },
     { label: "جلسات بثّ مباشر", value: d?.liveSessions },
     { label: "تسجيلات MOOC", value: d?.moocEnrollments },
-    { label: "أوراق علميّة في النظام", value: d?.researchPapers },
+    { label: "أوراق علميّة", value: d?.researchPapers },
   ];
 
   return (
     <Screen scroll>
       <StackHeader title="التحوّل الرقميّ" kicker="لوحة المسجل العام" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="التحوّل الرقميّ" kicker="مؤشّرات تبنّي المنصّة الرقميّة عبر مكوّنات الجامعة." />
+        <PageHeader title="التحوّل الرقميّ" kicker="مؤشّرات التبنّي الرقميّ عبر الجامعة." />
 
         {metrics.isLoading ? (
           <SkeletonList rows={5} />
@@ -79,10 +79,10 @@ export default function AdminDigital() {
           <>
             <RowList>
               <LedgerRow last>
-                <StatLine label="إجمالي الحسابات" value={latn(d.totalUsers ?? 0)} hint="كل الأدوار في الجامعة" />
+                <StatLine label="إجمالي الحسابات" value={latn(d.totalUsers ?? 0)} hint="كل الأدوار" />
                 <StatLine label="حسابات نشطة" value={latn(d.activeUsers ?? 0)} hint="من إجمالي الحسابات" />
                 <StatLine label="نسبة التبنّي" value={`${latn(Math.round(d.adoptionPct ?? 0))}%`} hint="حصة الحسابات النشطة" />
-                <StatLine label="ملفات تعليمية مرفوعة" value={latn(d.materialsUploaded ?? 0)} />
+                <StatLine label="ملفات مرفوعة" value={latn(d.materialsUploaded ?? 0)} />
               </LedgerRow>
             </RowList>
 

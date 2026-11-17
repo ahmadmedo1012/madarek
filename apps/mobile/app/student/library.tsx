@@ -239,7 +239,7 @@ function BooksTab() {
       haptics.notify("success");
       const dueAt = (res as { dueAt?: string } | null)?.dueAt ?? null;
       toast.success(
-        dueAt ? `موعد إرجاع الكتاب: ${fullDate(dueAt)}.` : "تمّت الاستعارة — الموعد في «استعاراتي».",
+        dueAt ? `موعد إرجاع الكتاب: ${fullDate(dueAt)}.` : "استُعير — الموعد في «استعاراتي».",
         "تمّت الاستعارة",
       );
     },
@@ -362,8 +362,8 @@ function BooksTab() {
             title={debouncedQ || availability !== "all" ? "لا توجد كتب مطابقة" : "لا توجد ملفات"}
             message={
               debouncedQ || availability !== "all"
-                ? "جرّب كلمات أخرى أو أعد ضبط التصفية."
-                : "الكتب والملفات تظهر هنا فور توفرها."
+                ? "جرّب كلمات أخرى أو أعد الضبط."
+                : "الكتب والملفات فور توفرها."
             }
           />
         }
@@ -511,7 +511,7 @@ function ResearchTab() {
   const openPaper = (paper: PublishedPaper) => {
     const filename = paper.fileUrl ? paper.fileUrl.split("/").pop() ?? "" : "";
     if (!filename) {
-      toast.error("لا يوجد ملف مرتبط بهذا البحث.");
+      toast.error("لا ملف مرتبط.");
       return;
     }
     router.push({
@@ -544,7 +544,7 @@ function ResearchTab() {
             <SearchBar
               value={q}
               onChange={setQ}
-              placeholder="ابحث في عنوان البحث، الملخص، أو المحتوى الكامل…"
+              placeholder="ابحث في العنوان أو الملخص أو المحتوى…"
               onClear={() => {
                 setQ("");
                 setDebouncedQ("");
@@ -574,7 +574,7 @@ function ResearchTab() {
             message={
               debouncedQ
                 ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
-                : "بحوث الطلاب تظهر هنا فور إجازتها."
+                : "بحوث الطلاب فور إجازتها."
             }
           />
         }

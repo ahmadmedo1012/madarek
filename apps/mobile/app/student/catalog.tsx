@@ -318,7 +318,7 @@ export default function CatalogScreen() {
         {!slug ? (
           <EmptyState
             icon={<BookOpen size={22} color={p.textMuted} />}
-            title="لم تُحدَّد مؤسستك بعد"
+            title="لم تُحدَّد مؤسستك"
             message="اختر مؤسستك لعرض دليلها."
           />
         ) : (
@@ -342,8 +342,8 @@ export default function CatalogScreen() {
             emptySlot={
               filtering ? (
                 <EmptyState
-                  title="لا توجد مقرّرات تطابق البحث"
-                  message="لا مطابقات — جرّب كلمات أخرى أو أعد الضبط."
+                  title="لا مطابقات للبحث"
+                  message="لا مطابقات — أعد الضبط."
                   actionLabel="إزالة التصفية"
                   onAction={resetFilters}
                 />
@@ -351,7 +351,7 @@ export default function CatalogScreen() {
                 <EmptyState
                   room="library"
                   title="لا توجد مقرّرات"
-                  message="لا مقرّرات في الدليل بعد — تظهر فور إضافتها."
+                  message="لا مقرّرات — تظهر فور إضافتها."
                 />
               )
             }
@@ -441,7 +441,7 @@ export default function CatalogScreen() {
                       "ساعات معتمدة",
                       "ساعة معتمدة",
                     ])
-                  : "بلا ساعات معتمدة مسجَّلة"}
+                  : "بلا ساعات معتمدة"}
               </T>
               {card.nameEn ? (
                 <T variant="xs" color="faint">
