@@ -159,6 +159,76 @@ describe('nav.ts — 5-B5 IA fixes (A4 P1-3 + P2-1/P2-2/P2-7 + 5-B4 hand-off)', 
   });
 });
 
+describe('R362 B1 — the recalculated census (all five role families)', () => {
+  // The B1 compact-spine brief (docs/redesign/r362-shell-nav/
+  // B1-COMPACT-SPINE.md) recalculated the live inventory via
+  // scripts/qa/nav-audit.ts: 34 + 23 + 15 + 13 + 16 permitted
+  // destinations. Only the student census (34) had a pin — a silent
+  // add/remove for the other four roles (the exact class of drift
+  // 4-A14 P1-1 fixed) failed nothing. These pins make every role's
+  // census a conscious decision again: growth or shrinkage must
+  // update the pin AND re-verify reachability (orphan guards) +
+  // resolveTitle coverage above.
+  const CENSUS: Array<[string, ReturnType<typeof Object>, number]> = [
+    ['STUDENT', STUDENT_NAV, 34],
+    ['TEACHER', TEACHER_NAV, 23],
+    ['ADMIN', ADMIN_NAV, 15],
+    ['QUALITY', QUALITY_NAV, 13],
+    ['OWNER', OWNER_NAV, 16],
+  ];
+  for (const [role, nav, count] of CENSUS) {
+    it(`the ${role} census is exactly ${count} destinations`, () => {
+      expect(allDestinations(nav), role).toHaveLength(count);
+    });
+  }
+});
+
+describe('R362 B1 — the spine ceilings (no junk drawer, no silent regrowth)', () => {
+  // The B1 verdict: the drawer spine is role-measured, never a
+  // uniform row-count. Three roles already live under the ≤8
+  // always-visible spine the brief explored (ADMIN 6, QUALITY 4,
+  // OWNER 5); STUDENT (15) and TEACHER (10) stay above it BY
+  // MEASUREMENT — cutting to ≤8 would demote routes pinned as
+  // high-frequency cores by the r183-B7 spine test above (calendar,
+  // results, messages, alerts…) to save ≈0.9 swipe, a trade the
+  // brief rejects. The ceilings below are the anti-regrowth
+  // ratchets: each role's always-visible count is pinned with the
+  // same +1 conscious-slack the student ≤16 pin has always carried
+  // (actual 15). Crossing one must be a conscious re-pin with a
+  // measured reason — never the 26-item «المزيد» junk drawer B1
+  // forbids (the 9-item group ceiling above is the intra-group twin).
+  const SPINE: Array<[string, ReturnType<typeof Object>, number, number]> = [
+    // [role, nav, always-visible ceiling, actual]
+    ['STUDENT', STUDENT_NAV, 16, 15],
+    ['TEACHER', TEACHER_NAV, 11, 10],
+    ['ADMIN', ADMIN_NAV, 7, 6],
+    ['QUALITY', QUALITY_NAV, 5, 4],
+    ['OWNER', OWNER_NAV, 6, 5],
+  ];
+  for (const [role, nav, ceiling, actual] of SPINE) {
+    it(`the ${role} always-visible spine stays ≤${ceiling} (actual ${actual})`, () => {
+      const visible = (nav as Array<{ items: unknown[]; collapsed?: boolean }>)
+        .filter((g) => !g.collapsed)
+        .reduce((n, g) => n + g.items.length, 0);
+      expect(visible, role).toBeLessThanOrEqual(ceiling);
+    });
+  }
+
+  it('the four non-student roles keep their shipped collapsed-family sets (drift guards)', () => {
+    // Mirrors the student's four-family drift guard above: the exact
+    // collapsed sets the shipped re-cuts measured. A family that
+    // un-collapses adds its whole item count to the default drawer —
+    // the exact regrowth these pins exist to force through review.
+    const collapsedOf = (nav: ReturnType<typeof Object>) =>
+      (nav as Array<{ label: string; collapsed?: boolean }>)
+        .filter((g) => g.collapsed).map((g) => g.label);
+    expect(collapsedOf(TEACHER_NAV)).toEqual(['البحث والمحاضرة', 'حسابي']);
+    expect(collapsedOf(ADMIN_NAV)).toEqual(['النظام']);
+    expect(collapsedOf(QUALITY_NAV)).toEqual(['المراجعة والتقارير']);
+    expect(collapsedOf(OWNER_NAV)).toEqual(['المنصة', 'المراقبة والتحليل']);
+  });
+});
+
 describe('STUDENT_NAV — the r183-B7 drawer re-cut (A4 P2-3: 33 items / 3.2 screens → ≤2)', () => {
   // A4 live-measured the student drawer at 390×844: 33 items / 5 groups,
   // .sidebar-nav scrollHeight 1749px vs 546px clientHeight = 3.2 screens
