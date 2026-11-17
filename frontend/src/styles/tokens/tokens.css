@@ -145,13 +145,19 @@
        re-key touches colors/radii/motion only; the reference's BT
        Grotesk is not licensed so the OFL stacks below carry the voice —
        audit: docs/redesign/r305-heron-reference-spec.md §4) ────────── */
-    --font-sans:    'IBM Plex Sans Arabic', 'Tajawal', system-ui, -apple-system,
-                    'Segoe UI', Roboto, sans-serif;
+    --font-sans:    'IBM Plex Sans Arabic', 'IBM Plex Sans Arabic Fallback', system-ui,
+                    -apple-system, 'Segoe UI', Roboto, sans-serif;
+    /* R366 (Agent 3 · L2): the phantom 'Tajawal' rung is RETIRED (never
+       self-hosted, zero local installs — it only inserted a metric
+       stranger between the webfont and the system). The metric-
+       compatible fallback face (fonts.css, ascent 108.5/descent 41.5
+       overrides) holds every line-height: normal box through the swap. */
     /* Alexandria — the Arabic-native geometric display voice (r190).
        Display headings speak Alexandria 600/700 (500 available for
        lighter display accents — real woff2 files ship); body stays
        Plex Sans Arabic. */
-    --font-display: 'Alexandria', 'IBM Plex Sans Arabic', system-ui, sans-serif;
+    --font-display: 'Alexandria', 'Alexandria Fallback', 'IBM Plex Sans Arabic',
+                    'IBM Plex Sans Arabic Fallback', system-ui, sans-serif;
     /* The mono stack falls back per-script: Latin/digits mono (Geist
        Mono — the reference's own instrument voice, R313; IBM Plex Mono
        the self-hosted fallback), Arabic continues in the brand face

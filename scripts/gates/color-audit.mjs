@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * r366 color-audit.mjs — Agent 3 L1: the TOKEN-LEVEL colour audit.
+ * r366 color-audit.mjs (scripts/gates/) — Agent 3 L1: the TOKEN-LEVEL colour audit.
  *
  * Sweeps the shipped token cascade itself (tokens.generated.css +
  * tokens.css, parsed and var()-resolved exactly as the browser
