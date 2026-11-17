@@ -18,8 +18,19 @@
 - 20:50 Ledger v2 + RUBRIC + REQUESTS committed (633fd3f); copy review pack r366-pack.md committed (c46fb63).
 - In flight (detached agents, monitored by mtime): 2-c exams (OnlineExamsPages writing since 20:12), 2-b pdf (PdfViewer+pdf.css since 19:37), 2-d messages/calendar (probe screenshots since ~20:45).
 
+## Session 2 — 2026-11-18 (Africa/Tripoli)
+
+- 12:40 Resumed on the uncommitted 2-d tree (messages/calendar in flight, lane agents done).
+- 12:45–13:10 LANE 2-d COMPLETED: implemented the calendar week mode (mode switcher pills + anchored 7-day strip; stacked <768 with per-cell weekday labels, 7-col ≥768; one-line event chips with kind ink + tooltips, cap 3 + more-chip; ±week nav; mode handoff keeps place; «اليوم» extended to the strip). Fixed the two lane test bugs (window-scroll → `.content` scroller; raw browser page + inner `test.use` → the fixture's new `hasTouch` option). messages.e2e 6/6 + calendar.e2e 6/6; chip geometry 31.4→24.2px (≤30 ceiling).
+- 13:15 Typecheck truths: found 3 pre-existing tsc failures at HEAD from earlier lanes (exams callback-ref typing, 6 orphaned MorePages consts, thread-room toast call) — all fixed (7e916c0). Copy ceiling CalendarPage 54→66 documented (the +12 = week-mode affordances).
+- 13:20 Proof pass on the built preview: seeded overlap matrix calendar+messages × {320,360,390,768,1440} × light/dark = **0 defects**; `--stress --popovers`: fixed-over-text/clipped/hoverflow all 0 (open drawers/panels cover as designed); cls-axe @390: CLS 0.0119/0.0118, axe serious/critical 0. (Lesson re-learned: the harness needs `--seed <role>` — without it every route redirects to /auth and the auth plate's fixed chrome reads as big-fixed.)
+- 13:30–14:40 2-a HARDENING (regression found at HEAD): the 60-row pin + the scroll-up chip tests failed under full-file load, passed alone. Root-caused with trace-zip parsing + page-snapshot + VLM frame review: (1) the open-conversation pin raced the skeleton→rows swap (st froze at the greeting-era 161px, 2781px off bottom); (2) the settle loop yanked back a reader who scrolled up inside its window (scroll events dispatch async — the autoScroll guard lags a frame; the jump chip never rendered). Fixes: openConversation pins on the next frame with the guard reset; settlePin yields on any real scrollTop decrease. ai-assistant.e2e **6/6 × 3 consecutive runs**; r319 §B2 pin updated to the 2-a truth (suggestions live in the transcript's empty state, [01]+[02] bars + 3-chip group) — 4/4. Commits 0f0950a, 7e916c0, 7fcd0b0; pushed.
+- 14:45 pdf (3d8c1f8) + exams (499c2e1) lanes re-verified on the current tree: document-viewer + online-exams e2e **14/14**. L3.1/L3.3/L3.4/L3.5/L3.6 ticked with proofs.
+
 ## Open risks / notes
 
 - The Task tool's parent-side deadline means agent reports must land in files; if an agent dies silently, its diff is integrated by hand (the 2-a pattern).
 - The full 5-width × popover/focus matrix runs at close-out on the rebuilt dist (L6.3).
 - Community/competitions copy diet → REQUESTS to Agent 1 (folders are theirs).
+- Tool-result display eats `[m` sequences (ANSI reset) — byte-verify with `od`/python before believing "corrupted" code.
+- Remaining lanes: L3.2 search palette, L3.7 tables, L3.8 forms, L3.9 dashboards, then L6 close-out (full suites + size gate + final matrix + DELIVERY.md).
