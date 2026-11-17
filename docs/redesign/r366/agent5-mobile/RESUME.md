@@ -246,3 +246,38 @@ rotation); gfxinfo intact. After-set will report the same columns for the delta.
   3. after-ext-v2 (all/extended/current) — with the landscape panel fix; fills
      the owner-dark-tablet hole and re-proves all four extended profiles
   4. before-ext-v2 (all/extended/main) — the TRUE landscape before-set
+
+## 2026-11-17 — landscape harness, attempts 2+3; a11y-core evidence
+
+### Attempt 2 (run 39, after-ext-v2) FAILED — rotation fix follows
+
+- Run 39 (after-ext-v2, branch 09c07bf) completed 21/21 GREEN but the pixel audit
+  showed the landscape shots STILL 1080×2340 PORTRAIT: the pre-launch config.ini
+  `hw.lcd.width/height` swap is NOT honored by this action/image combo (the panel
+  comes from the system image, not late config.ini appends). The run's
+  tablet/fs2/dark-tablet evidence remains valid (those profiles never depended on
+  the landscape geometry); only its landscape subset is unusable.
+- Fix (commit 593f84e): the standard CI rotation — `settings put system
+  accelerometer_rotation 0` + `settings put system user_rotation 1`, applied
+  profile-conditionally (one-liners, line-safe) in the extended job's script,
+  BEFORE app start; settles during the existing `sleep 4`. Both mechanisms now
+  ship (hw.lcd panel swap + rotation lock); after-ext-v3 dispatched from 593f84e.
+- The prematurely dispatched before-ext-v2 (sent before v2 verification) was
+  CANCELLED within 2 minutes (it never started); the re-queue is
+  after-ext-v3 → before-ext-v3.
+- after2 preview-APK artifact download glitched (UNZIP-FAIL) — retried separately;
+  the APK-size pair of record stays the measured v1 pair (19,247,754 → 17,991,084).
+
+### Core-profile evidence (runs 36 after-core / 38 before-core)
+
+- after-core (44127328335): 21/21 green. a11y-small review (10 working sheets,
+  360×640@160+fs1.3 × light/dark × all roles): one REAL defect found+fixed —
+  stat-tile labels ellipsized mid-word («تكليفات معلّقة» etc.); FIXED at the kit
+  level (KpiCard numberOfLines 1→2 + cap 1.25, commit 09c07bf) and the dashboard
+  trio (same change). Full-res proofs: teacher attendance "garble" = NO-OVERLAP
+  (normal table mid-scroll, AV22); active-tab dot "covering" the icon = misread
+  (the dot is 6dp at the bar's outer edge — geometry pinned by tests; the active
+  icon is accent-FILLED, which the VLM read as a covering circle, AV23).
+- teacher light-a11y-small re-covered GREEN in run 38 (17 shots at 360×640 —
+  pixel-verified), closing the run-30 infra flake (corrupt SDK zip).
+- before-core metrics + after-core metrics tables extracted (the L6 core delta).
