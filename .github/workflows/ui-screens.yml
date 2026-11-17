@@ -293,6 +293,7 @@ jobs:
             # still killed branch-tip runs): the flows run clearState, so a
             # retry starts from the same deterministic welcome-sheet state.
             # A second consecutive failure is a real red and stays red.
+            adb shell dumpsys gfxinfo ly.madarek.mobile reset > /dev/null 2>&1 || true
             set +e
             maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens
             maestro_status=$?
@@ -305,6 +306,7 @@ jobs:
             fi
             adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
             adb logcat -d > apps/mobile/build/screens/logcat-after-maestro.log
+            adb shell dumpsys gfxinfo ly.madarek.mobile > apps/mobile/build/screens/gfxinfo.txt 2>&1 || true
             ls -l apps/mobile/build/screens || true
 
       - name: Upload the screenshots
@@ -453,6 +455,7 @@ jobs:
             adb exec-out screencap -p > apps/mobile/build/screens/launch-20s.png
             adb logcat -d > apps/mobile/build/screens/logcat-before-maestro.log
             printf 'role=%s\ntheme=%s\nfont_scale=%s\nviewport=%s\n' '${{ matrix.role }}' '${{ matrix.profile.theme }}' '${{ matrix.profile.font_scale }}' '${{ matrix.profile.viewport }}' > apps/mobile/build/screens/profile.txt
+            adb shell dumpsys gfxinfo ly.madarek.mobile reset > /dev/null 2>&1 || true
             set +e
             maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens
             maestro_status=$?
@@ -465,6 +468,7 @@ jobs:
             fi
             adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
             adb logcat -d > apps/mobile/build/screens/logcat-after-maestro.log
+            adb shell dumpsys gfxinfo ly.madarek.mobile > apps/mobile/build/screens/gfxinfo.txt 2>&1 || true
             ls -l apps/mobile/build/screens || true
       - name: Upload the screenshots
         if: always()
