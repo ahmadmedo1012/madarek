@@ -110,7 +110,7 @@ export default function QualityDashboard() {
         ) : !data ? null : !hasAnyData ? (
           <Animated.View entering={entering(1)}>
             <EmptyState
-              title="لا توجد مؤشرات بعد"
+              title="لا مؤشرات بعد"
               message="تظهر فور توفر البيانات."
               actionLabel="تحديث"
               onAction={() => overview.refetch()}

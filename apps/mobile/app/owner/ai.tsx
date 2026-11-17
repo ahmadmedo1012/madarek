@@ -80,12 +80,12 @@ export default function OwnerAi() {
               <RowList>
                 <LedgerRow last>
                   <StatLine
-                    label="إجمالي الطلبات"
+                    label="الطلبات"
                     value={numOf(m?.totalRequests)}
                     hint="تراكميّة"
                   />
                   <StatLine
-                    label="إجمالي التوكنات"
+                    label="التوكنات"
                     value={numOf(m?.totalTokens)}
                     hint="مقيسة من المزوّد"
                   />

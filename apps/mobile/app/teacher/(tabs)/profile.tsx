@@ -214,7 +214,7 @@ export default function TeacherProfile() {
           {me.workload ? (
             <Card>
               <StatLine label="المقرّرات هذا الفصل" value={latn(me.workload.courseCount)} />
-              <StatLine label="إجمالي الطلاب" value={latn(me.workload.totalEnrolled)} hint="مسجَّلون في مقرّراتك" />
+              <StatLine label="الطلاب" value={latn(me.workload.totalEnrolled)} hint="مسجَّلون في مقرّراتك" />
               {me.yearsExperience !== null && me.yearsExperience !== undefined ? (
                 <StatLine
                   label="سنوات الخبرة"

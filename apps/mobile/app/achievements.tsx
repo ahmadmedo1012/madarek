@@ -106,7 +106,7 @@ export default function Achievements() {
         ) : (badges.data ?? []).length === 0 ? (
           <EmptyState
             art={<Illustration id="r342/why-cycle" width={342} />}
-            title="لا توجد أوسمة بعد"
+            title="لا أوسمة بعد"
             message="ابدأ بدروس التطوير الذاتي لأول وسام."
             icon={<Award size={20} color={p.textMuted} />}
             actionLabel="تصفّح المسارات"
@@ -186,7 +186,7 @@ export default function Achievements() {
           )
         ) : (board.data ?? []).length === 0 ? (
           <EmptyState
-            title="لا يوجد ترتيب بعد"
+            title="لا ترتيب بعد"
             message="اكسب النقاط بالدروس والمسارات — ترتيبك يظهر مع أول نقطة."
             actionLabel="ابدأ من التطوير الذاتي"
             onAction={() => router.push("/training" as never)}

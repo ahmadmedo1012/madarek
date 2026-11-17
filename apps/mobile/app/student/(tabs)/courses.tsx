@@ -337,12 +337,12 @@ export default function StudentCourses() {
       onRetry={() => feed.refetch()}
       refetch={() => feed.refetch()}
       isRefetching={feed.isRefetching}
-      emptyTitle="لا توجد مقرّرات"
+      emptyTitle="لا مقرّرات"
       emptyMessage="لم تُسجَّل بعد — الإضافة عبر شؤون الطلاب."
       emptySlot={
         filteredEmpty ? (
           <EmptyState
-            title="لا توجد مقرّرات تطابق التصفية"
+            title="لا مقرّرات تطابق التصفية"
             message="خفّف الشروط أو أعد ضبطها."
             actionLabel="إزالة التصفية"
             onAction={() => setFilters(NO_COURSE_FILTERS)}
@@ -351,7 +351,7 @@ export default function StudentCourses() {
           <EmptyState
             art={<Illustration id="r342/role-student" width={216} />}
             room="library"
-            title="لا توجد مقرّرات"
+            title="لا مقرّرات"
             message="لم تُسجَّل في مقرّرات بعد — الإضافة تتم عبر إدارة شؤون الطلاب وستظهر هنا فور اعتماد تسجيلك."
             actionLabel="دليل المقرّرات"
             onAction={() => router.push("/student/catalog" as never)}
@@ -375,12 +375,12 @@ export default function StudentCourses() {
       onRetry={() => feed.refetch()}
       refetch={() => feed.refetch()}
       isRefetching={feed.isRefetching}
-      emptyTitle="لا توجد مقرّرات"
+      emptyTitle="لا مقرّرات"
       emptyMessage="لم تُسجَّل في مقرّرات بعد — الإضافة تتم عبر إدارة شؤون الطلاب وستظهر هنا فور اعتماد تسجيلك."
       emptySlot={
         filteredEmpty ? (
           <EmptyState
-            title="لا توجد مقرّرات تطابق التصفية"
+            title="لا مقرّرات تطابق التصفية"
             message="جرّب تخفيف الشروط أو أعد ضبطها لعرض كل مقرّراتك."
             actionLabel="إزالة التصفية"
             onAction={() => setFilters(NO_COURSE_FILTERS)}
@@ -389,7 +389,7 @@ export default function StudentCourses() {
           <EmptyState
             art={<Illustration id="r342/role-student" width={216} />}
             room="library"
-            title="لا توجد مقرّرات"
+            title="لا مقرّرات"
             message="لم تُسجَّل في مقرّرات بعد — الإضافة تتم عبر إدارة شؤون الطلاب وستظهر هنا فور اعتماد تسجيلك."
             actionLabel="دليل المقرّرات"
             onAction={() => router.push("/student/catalog" as never)}

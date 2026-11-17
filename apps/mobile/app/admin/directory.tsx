@@ -129,7 +129,7 @@ export default function AdminDirectory() {
           hasNextPage={directory.hasNextPage}
           loadMoreError={directory.loadMoreError}
           onRetryLoadMore={directory.retryLoadMore}
-          emptyTitle={appliedQ ? "لا توجد نتائج" : "لا يوجد ملفات بعد"}
+          emptyTitle={appliedQ ? "لا نتائج" : "لا ملفات بعد"}
           emptyMessage={
             appliedQ
               ? "جرّب برقم الهاتف (أوله يكفي)."

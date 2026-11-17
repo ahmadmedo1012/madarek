@@ -194,7 +194,7 @@ export default function AdminCourses() {
           <ErrorState message={humanizeError(courses.error)} onRetry={() => courses.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title={appliedQ ? "لا توجد نتائج" : "لا توجد مقرّرات بعد"}
+            title={appliedQ ? "لا نتائج" : "لا مقرّرات بعد"}
             message={appliedQ ? "جرّب بحثًا أوسع." : "أضف أول مقرّر."}
             actionLabel={appliedQ ? "مسح البحث" : undefined}
             onAction={appliedQ ? () => setQ("") : undefined}
@@ -377,7 +377,7 @@ export default function AdminCourses() {
                 loading={facs.isLoading}
                 placeholder="اختر القسم…"
                 sheetTitle="القسم"
-                emptyLabel="لا توجد أقسام بعد"
+                emptyLabel="لا أقسام بعد"
               />
             </View>
           ) : null}

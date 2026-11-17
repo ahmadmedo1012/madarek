@@ -71,7 +71,7 @@ export default function OwnerAlerts() {
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<CheckCircle2 size={22} color={tones.mint.ink} />}
-            title="لا توجد تنبيهات مفتوحة"
+            title="لا تنبيهات مفتوحة"
             message="كل الأنظمة طبيعيّة."
           />
         ) : (

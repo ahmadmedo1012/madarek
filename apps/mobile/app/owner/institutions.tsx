@@ -92,7 +92,7 @@ export default function OwnerInstitutions() {
             />
           ) : rows.length === 0 ? (
             <EmptyState
-              title="لا توجد مؤسسات بعد"
+              title="لا مؤسسات بعد"
               message="أنشئ أول مؤسسة."
             />
           ) : (

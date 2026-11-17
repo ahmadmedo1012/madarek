@@ -126,7 +126,7 @@ export default function AdminDashboard() {
             hasNextPage={papers.hasNextPage}
             loadMoreError={papers.loadMoreError}
             onRetryLoadMore={papers.retryLoadMore}
-            emptyTitle="لا توجد بحوث بعد"
+            emptyTitle="لا بحوث بعد"
             emptyMessage="تظهر البحوث فور رفع أول بحث."
             loadingSlot={
               <View style={{ gap: 8, paddingTop: 8 }}>

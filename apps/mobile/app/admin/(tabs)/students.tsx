@@ -124,7 +124,7 @@ export default function AdminStudents() {
           hasNextPage={users.hasNextPage}
           loadMoreError={users.loadMoreError}
           onRetryLoadMore={users.retryLoadMore}
-          emptyTitle={appliedQ ? "لا توجد نتائج" : "لا يوجد طلاب بعد"}
+          emptyTitle={appliedQ ? "لا نتائج" : "لا طلاب بعد"}
           emptyMessage={
             appliedQ
               ? "جرّب بحثًا أوسع."

@@ -55,7 +55,7 @@ export default function CompetitionsIndex() {
         )
       ) : rows.length === 0 ? (
         <EmptyState
-          title="لا توجد مسابقات بعد"
+          title="لا مسابقات بعد"
           message="تظهر المسابقات فور إطلاقها."
           icon={<Trophy size={20} color={p.textMuted} />}
         />

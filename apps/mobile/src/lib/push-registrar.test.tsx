@@ -267,14 +267,14 @@ describe("PushActivationCard — the honest failure seats", () => {
     mockPostRejects = true;
     await fireEvent.press(tree.getByRole("button", { name: "تفعيل الإشعارات" }));
     await flushAsyncWork(10);
-    expect(tree.queryByText("منحت الإذن، لكن تعذّر تسجيل الجهاز.")).not.toBeNull();
+    expect(tree.queryByText("مُنح الإذن — تعذّر تسجيل الجهاز.")).not.toBeNull();
     expect(tree.queryByRole("button", { name: "إعادة المحاولة" })).not.toBeNull();
 
     // The retry succeeds → the card disappears (granted + registered).
     mockPostRejects = false;
     await fireEvent.press(tree.getByRole("button", { name: "إعادة المحاولة" }));
     await flushAsyncWork(10);
-    expect(tree.queryByText("منحت الإذن، لكن تعذّر تسجيل الجهاز.")).toBeNull();
+    expect(tree.queryByText("مُنح الإذن — تعذّر تسجيل الجهاز.")).toBeNull();
   });
 
   it("granted + registered → no card at all", async () => {

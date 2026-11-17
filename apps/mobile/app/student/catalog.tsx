@@ -350,7 +350,7 @@ export default function CatalogScreen() {
               ) : (
                 <EmptyState
                   room="library"
-                  title="لا توجد مقرّرات"
+                  title="لا مقرّرات"
                   message="لا مقرّرات — تظهر فور إضافتها."
                 />
               )

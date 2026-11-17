@@ -284,7 +284,7 @@ export default function StudentProfile() {
         ) : !student ? (
           <EmptyState
             icon={<ScrollText size={22} color={p.textMuted} />}
-            title="لا يوجد ملف طالب بعد"
+            title="لا ملف طالب بعد"
             message="لم يُربط ملف طالب — البيانات تظهر بعد الاعتماد."
           />
         ) : (

@@ -61,7 +61,7 @@ export default function CollegesIndex() {
         <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
       ) : colleges.length === 0 ? (
         <EmptyState
-          title="لا توجد كلّيّات بعد"
+          title="لا كلّيّات بعد"
           message="تظهر الكليات حين يضيفها المسجل العام."
           icon={<Landmark size={20} color={p.textMuted} />}
         />

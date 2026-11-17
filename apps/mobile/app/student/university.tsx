@@ -102,7 +102,7 @@ export default function UniversityScreen() {
       ) : faculties.length === 0 ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
-          title="لا توجد كليّات بعد"
+          title="لا كليّات بعد"
           message="لا كليات في المؤسسة بعد."
         />
       ) : (

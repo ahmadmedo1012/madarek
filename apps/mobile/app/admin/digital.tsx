@@ -79,7 +79,7 @@ export default function AdminDigital() {
           <>
             <RowList>
               <LedgerRow last>
-                <StatLine label="إجمالي الحسابات" value={latn(d.totalUsers ?? 0)} hint="كل الأدوار" />
+                <StatLine label="الحسابات" value={latn(d.totalUsers ?? 0)} hint="كل الأدوار" />
                 <StatLine label="حسابات نشطة" value={latn(d.activeUsers ?? 0)} hint="من إجمالي الحسابات" />
                 <StatLine label="نسبة التبنّي" value={`${latn(Math.round(d.adoptionPct ?? 0))}%`} hint="حصة الحسابات النشطة" />
                 <StatLine label="ملفات مرفوعة" value={latn(d.materialsUploaded ?? 0)} />

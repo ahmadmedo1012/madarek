@@ -203,7 +203,7 @@ export default function TrainingTrack() {
       </T>
       {lessons.length === 0 ? (
         <EmptyState
-          title="لا توجد دروس بعد"
+          title="لا دروس بعد"
           message="لا دروس في المسار بعد."
           icon={<BookOpen size={20} color={p.textMuted} />}
         />

@@ -342,7 +342,7 @@ export default function Exams() {
             placeholder="اختر تصنيفاً…"
             loading={categories.isLoading}
             sheetTitle="تصنيف السؤال"
-            emptyLabel="لا توجد تصنيفات بعد"
+            emptyLabel="لا تصنيفات بعد"
           />
           <SelectField
             label="نوع السؤال"

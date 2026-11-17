@@ -75,7 +75,7 @@ export default function QualityEngagement() {
                   <StatLine label="نسبة التأخر" value={`${latn(Math.round(d.attendance?.lateRate ?? 0))}%`} />
                   <StatLine label="نسبة الغياب" value={`${latn(Math.round(d.attendance?.absentRate ?? 0))}%`} />
                   <StatLine label="معدل إكمال المحاضرات" value={`${latn(Math.round(d.videos?.completionRate ?? 0))}%`} />
-                  <StatLine label="إجمالي الطلاب" value={num(numOf(d.totalStudents))} />
+                  <StatLine label="الطلاب" value={num(numOf(d.totalStudents))} />
                   <StatLine
                     label="التسجيلات"
                     value={countAr(d.enrollments ?? 0, ["تسجيل واحد", "تسجيلان", "تسجيلات", "تسجيلاً"])}

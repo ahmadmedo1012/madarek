@@ -212,7 +212,7 @@ export function NetworkBanner() {
 
   const offline = phase === "offline";
   const tone = offline ? tones.yellow : tones.mint;
-  const a11yLabel = offline ? "لا يوجد اتصال بالإنترنت" : "عاد الاتصال";
+  const a11yLabel = offline ? "لا اتصال بالإنترنت" : "عاد الاتصال";
   const label = offline
     ? "لا اتصال — ستُعاد المحاولة تلقائيًا"
     : "عاد الاتصال";

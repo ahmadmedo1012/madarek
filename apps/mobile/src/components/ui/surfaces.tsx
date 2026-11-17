@@ -231,7 +231,7 @@ export function OptionSheet({
   onSelect,
   selectedId,
   loading,
-  emptyLabel = "لا توجد خيارات",
+  emptyLabel = "لا خيارات",
 }: {
   open: boolean;
   onClose: () => void;

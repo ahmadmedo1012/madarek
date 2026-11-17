@@ -300,7 +300,7 @@ export default function TeacherLive() {
             }
           />
           {scheduled.length === 0 ? (
-            <EmptyState fill title="لا توجد جلسات قادمة" message="أنشئ أول جلسة." actionLabel="جلسة جديدة" onAction={() => setCreating(true)} />
+            <EmptyState fill title="لا جلسات قادمة" message="أنشئ أول جلسة." actionLabel="جلسة جديدة" onAction={() => setCreating(true)} />
           ) : (
             <RowList>
               {scheduled.map((s) => (

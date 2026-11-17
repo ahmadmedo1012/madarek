@@ -360,7 +360,7 @@ function AnnouncementsPanel() {
     <View style={{ gap: sp[8] }}>
       {rows.length === 0 ? (
         <EmptyState
-          title="لا توجد إعلانات بعد"
+          title="لا إعلانات بعد"
           message="إعلانات الجامعة والكليات."
         />
       ) : (
@@ -431,7 +431,7 @@ function EventsPanel() {
     <View style={{ gap: sp[8] }}>
       {rows.length === 0 ? (
         <EmptyState
-          title="لا توجد فعاليات قادمة بعد"
+          title="لا فعاليات قادمة بعد"
           message="الفعاليات عند جدولتها."
         />
       ) : (
@@ -613,7 +613,7 @@ function RoomsPanel() {
 
       {rows.length === 0 ? (
         <EmptyState
-          title="لا توجد غرف دراسة بعد"
+          title="لا غرف دراسة بعد"
           message="أنشئ أول غرفة وادعُ زملاءك."
         />
       ) : (

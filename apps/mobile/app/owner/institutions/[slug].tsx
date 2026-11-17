@@ -430,7 +430,7 @@ function ProvisionSheet({
           مرور يُدار من لوحة الويب.
         </T>
         <Field
-          label="البريد الإلكتروني"
+          label="البريد"
           value={email}
           onChangeText={setEmail}
           error={emailProblem}

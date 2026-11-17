@@ -61,7 +61,7 @@ export default function VisionIndex() {
 
       {total === 0 ? (
         <EmptyState
-          title="لا توجد ابتكارات معروضة بعد"
+          title="لا ابتكارات معروضة بعد"
           message="خارطة الطريق تظهر هنا حين تُنشر."
           icon={<Sparkles size={20} color={p.textMuted} />}
         />

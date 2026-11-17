@@ -78,7 +78,7 @@ export default function ForgotPassword() {
         <Field
           {...form.field("email")}
           fieldId="email"
-          label="البريد الإلكتروني"
+          label="البريد"
           purpose="email"
           required
         />

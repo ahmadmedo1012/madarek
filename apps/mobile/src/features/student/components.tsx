@@ -378,11 +378,11 @@ export function AssignSubmitSheet({
     const text = textAnswer.trim();
     const file = fileUrl.trim();
     if (!text && !file) {
-      setValidationError("أدخل إجابة أو رابط ملف قبل التسليم.");
+      setValidationError("أدخل إجابة أو رابطًا قبل التسليم.");
       return;
     }
     if (file && !(/^https?:\/\//.test(file) || file.startsWith("/api/v1/files/papers/"))) {
-      setValidationError("الرابط يبدأ بـ https:// — والنصّ وحده يكفي.");
+      setValidationError("يبدأ بـ https:// — والنصّ يكفي.");
       return;
     }
     setValidationError(null);
@@ -433,11 +433,11 @@ export function AssignSubmitSheet({
             }}
           >
             <T variant="body" weight="bold" style={{ color: late ? tones.yellow.deep : tones.mint.deep }}>
-              {late ? "تمّ التسليم — بعد الموعد النهائي" : "تمّ التسليم بنجاح"}
+              {late ? "تمّ التسليم — بعد الموعد" : "تمّ التسليم بنجاح"}
             </T>
             <T variant="sm" style={{ color: late ? tones.yellow.deep : tones.mint.deep }}>
               {late
-                ? "استُلمت كمتأخر — الحسم النهائي للأستاذ."
+                ? "استُلمت كمتأخر — الحسم للأستاذ."
                 : "استُلمت إجابتك — بانتظار التقييم."}
             </T>
           </View>
@@ -456,7 +456,7 @@ export function AssignSubmitSheet({
               label="رابط ملف (اختياري)"
               value={fileUrl}
               onChangeText={setFileUrl}
-              hint="رابط https:// اختياري (مثل Drive) — النصّ وحده يكفي."
+              hint="رابط https:// (مثل Drive) — النصّ يكفي."
               keyboardType="url"
               autoCapitalize="none"
               autoCorrect={false}

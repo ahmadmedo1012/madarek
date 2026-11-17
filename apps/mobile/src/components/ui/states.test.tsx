@@ -37,9 +37,9 @@ function collectProp(node: JsonNode | JsonNode[], prop: string): unknown[] {
 }
 
 describe("EmptyState (R334 room variants)", () => {
-  it("stages the exam hall: plan sheet + «لا توجد امتحانات بعد»", async () => {
+  it("stages the exam hall: plan sheet + «لا امتحانات بعد»", async () => {
     const { getByText, toJSON } = await render(<EmptyState room="exam-hall" />);
-    expect(getByText("لا توجد امتحانات بعد")).toBeTruthy();
+    expect(getByText("لا امتحانات بعد")).toBeTruthy();
     // the R330 plan sheet is in the tree — react-native-svg serializes the
     // shared 320×220 drafting viewBox as vbWidth/vbHeight host props.
     expect(collectProp(toJSON(), "vbWidth")).toContain(320);
@@ -47,19 +47,19 @@ describe("EmptyState (R334 room variants)", () => {
     expect(collectProp(toJSON(), "accessibilityLabel")).toContain("مخطط قاعة اختبار فارغة");
   });
 
-  it("stages the library: «لا توجد ملفات»", async () => {
+  it("stages the library: «لا ملفات»", async () => {
     const { getByText } = await render(<EmptyState room="library" />);
-    expect(getByText("لا توجد ملفات")).toBeTruthy();
+    expect(getByText("لا ملفات")).toBeTruthy();
   });
 
-  it("stages the lecture hall: «لا توجد محاضرات»", async () => {
+  it("stages the lecture hall: «لا محاضرات»", async () => {
     const { getByText } = await render(<EmptyState room="lecture-hall" />);
-    expect(getByText("لا توجد محاضرات")).toBeTruthy();
+    expect(getByText("لا محاضرات")).toBeTruthy();
   });
 
-  it("stages the building: «لا يوجد محتوى»", async () => {
+  it("stages the building: «لا محتوى»", async () => {
     const { getByText } = await render(<EmptyState room="building" />);
-    expect(getByText("لا يوجد محتوى")).toBeTruthy();
+    expect(getByText("لا محتوى")).toBeTruthy();
   });
 
   it("explicit title/message override the room defaults", async () => {
@@ -67,7 +67,7 @@ describe("EmptyState (R334 room variants)", () => {
       <EmptyState room="library" title="رفّك خالٍ" message="لم تُرفع مواد بعد." />,
     );
     expect(getByText("رفّك خالٍ")).toBeTruthy();
-    expect(queryByText("لا توجد ملفات")).toBeNull();
+    expect(queryByText("لا ملفات")).toBeNull();
     expect(getByText("لم تُرفع مواد بعد.")).toBeTruthy();
   });
 

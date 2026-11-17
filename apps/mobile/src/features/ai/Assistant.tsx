@@ -544,7 +544,7 @@ export function Assistant({
                 isError={history.isError}
                 errorMessage={humanizeError(history.error)}
                 onRetry={() => void history.refetch()}
-                emptyTitle="لا توجد محادثات سابقة"
+                emptyTitle="لا محادثات سابقة"
                 emptyMessage="ابدأ أول سؤال — ستظهر محادثاتك هنا."
                 refetch={() => void history.refetch()}
                 isRefetching={history.isRefetching}

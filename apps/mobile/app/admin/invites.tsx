@@ -131,7 +131,7 @@ const [maxUses, setMaxUses] = useState("1");
           <ErrorState message={humanizeError(invites.error)} onRetry={() => invites.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title="لا توجد دعوات بعد"
+            title="لا دعوات بعد"
             message="أنشئ أول دعوة لمشاركة الكود."
             actionLabel="دعوة جديدة"
             onAction={() => setCreateOpen(true)}

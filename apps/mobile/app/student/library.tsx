@@ -359,7 +359,7 @@ function BooksTab() {
           <EmptyState
             art={<Illustration id="r342/journey-library" width={240} />}
             room="library"
-            title={debouncedQ || availability !== "all" ? "لا توجد كتب مطابقة" : "لا توجد ملفات"}
+            title={debouncedQ || availability !== "all" ? "لا كتب مطابقة" : "لا ملفات"}
             message={
               debouncedQ || availability !== "all"
                 ? "جرّب كلمات أخرى أو أعد الضبط."
@@ -570,7 +570,7 @@ function ResearchTab() {
         emptySlot={
           <EmptyState
             room="library"
-            title={debouncedQ ? "لا توجد نتائج للبحث" : "لا توجد ملفات"}
+            title={debouncedQ ? "لا نتائج للبحث" : "لا ملفات"}
             message={
               debouncedQ
                 ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`

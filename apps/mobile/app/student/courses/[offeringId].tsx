@@ -492,12 +492,12 @@ export default function CourseDetailScreen() {
             keyExtractor={(l) => l.id}
             refetch={() => full.refetch()}
             isRefetching={full.isRefetching}
-            emptyTitle="لا توجد محاضرات"
+            emptyTitle="لا محاضرات"
             emptyMessage="لا محاضرات — يضيفها الأستاذ تباعًا."
             emptySlot={
               <EmptyState
                 room="lecture-hall"
-                title="لا توجد محاضرات"
+                title="لا محاضرات"
                 message="لا محاضرات — يضيفها الأستاذ تباعًا."
               />
             }
@@ -510,12 +510,12 @@ export default function CourseDetailScreen() {
             keyExtractor={(m) => m.id}
             refetch={() => full.refetch()}
             isRefetching={full.isRefetching}
-            emptyTitle="لا توجد ملفات"
+            emptyTitle="لا ملفات"
             emptyMessage="تظهر المواد فور رفع الأستاذ."
             emptySlot={
               <EmptyState
                 room="library"
-                title="لا توجد ملفات"
+                title="لا ملفات"
                 message="تظهر فور رفع الأستاذ."
               />
             }
@@ -532,12 +532,12 @@ export default function CourseDetailScreen() {
             onRetry={() => announcements.refetch()}
             refetch={() => announcements.refetch()}
             isRefetching={announcements.isRefetching}
-            emptyTitle="لا توجد إعلانات"
+            emptyTitle="لا إعلانات"
             emptyMessage="تظهر الإعلانات فور نشرها."
             emptySlot={
               <EmptyState
                 room="building"
-                title="لا توجد إعلانات"
+                title="لا إعلانات"
                 message="تظهر فور نشرها."
               />
             }

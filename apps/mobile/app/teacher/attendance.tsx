@@ -169,7 +169,7 @@ export default function Attendance() {
       ) : offs.isError ? (
         <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} compact />
       ) : offerings.length === 0 ? (
-        <EmptyState title="لا توجد مقرّرات" message="تظهر المقرّرات حين تُسنَد إليك." />
+        <EmptyState title="لا مقرّرات" message="تظهر المقرّرات حين تُسنَد إليك." />
       ) : (
         <>
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
@@ -207,7 +207,7 @@ export default function Attendance() {
           ) : roster.isError ? (
             <ErrorState message={humanizeError(roster.error)} onRetry={() => roster.refetch()} />
           ) : rows.length === 0 ? (
-            <EmptyState title="لا يوجد طلاب" message="لا تسجيلات نشطة بعد." />
+            <EmptyState title="لا طلاب" message="لا تسجيلات نشطة بعد." />
           ) : (
             <>
               <RowList>

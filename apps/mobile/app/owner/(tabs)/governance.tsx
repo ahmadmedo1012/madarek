@@ -123,7 +123,7 @@ export default function OwnerGovernance() {
               <LedgerRow last>
                 <StatLine label="محاولات ناجحة" value={numOf(la.successCount)} />
                 <StatLine label="محاولات فاشلة" value={numOf(la.failureCount)} tone="danger" />
-                <StatLine label="إجمالي المحاولات" value={numOf(la.total)} />
+                <StatLine label="المحاولات" value={numOf(la.total)} />
               </LedgerRow>
             </RowList>
           )}

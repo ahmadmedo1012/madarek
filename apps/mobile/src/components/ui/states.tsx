@@ -130,25 +130,25 @@ interface RoomSheet {
 const ROOMS: Record<EmptyRoom, RoomSheet> = {
   "exam-hall": {
     Art: PlanExamHall,
-    title: "لا توجد امتحانات بعد",
+    title: "لا امتحانات بعد",
     message: "عند نشر الامتحانات ستظهر هنا.",
     a11y: "مخطط قاعة اختبار فارغة",
   },
   library: {
     Art: PlanLibrary,
-    title: "لا توجد ملفات",
+    title: "لا ملفات",
     message: "الملفات المشتركة معك ستظهر هنا.",
     a11y: "مخطط مكتبة فارغة",
   },
   "lecture-hall": {
     Art: PlanLectureHall,
-    title: "لا توجد محاضرات",
+    title: "لا محاضرات",
     message: "ستظهر المحاضرات هنا بمجرد إضافتها.",
     a11y: "مخطط قاعة محاضرات فارغة",
   },
   building: {
     Art: PlanBuilding,
-    title: "لا يوجد محتوى",
+    title: "لا محتوى",
     message: "سيظهر المحتوى هنا بمجرد إضافته.",
     a11y: "مخطط مبنى فارغ",
   },
@@ -196,7 +196,7 @@ export function EmptyState({
 }) {
   const p = usePalette();
   const sheet = room ? ROOMS[room] : undefined;
-  const resolvedTitle = title ?? sheet?.title ?? "لا يوجد محتوى بعد";
+  const resolvedTitle = title ?? sheet?.title ?? "لا محتوى بعد";
   const resolvedMessage = message ?? sheet?.message;
   const resolvedArt = art ?? (sheet ? <sheet.Art width={216} accessibilityLabel={sheet.a11y} /> : null);
   return (
@@ -360,7 +360,7 @@ export function OfflineBanner({ visible }: { visible: boolean }) {
   if (!visible) return null;
   return (
     <View
-      accessibilityLabel="لا يوجد اتصال بالإنترنت"
+      accessibilityLabel="لا اتصال بالإنترنت"
       style={{
         backgroundColor: warn.bg,
         borderWidth: StyleSheet.hairlineWidth,

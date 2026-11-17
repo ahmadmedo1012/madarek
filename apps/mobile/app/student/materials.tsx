@@ -222,7 +222,7 @@ export default function MaterialsScreen() {
           emptySlot={
             <EmptyState
               room="library"
-              title="لا توجد ملفات"
+              title="لا ملفات"
               message="تظهر فور رفع مواد في مقرّراتك."
             />
           }

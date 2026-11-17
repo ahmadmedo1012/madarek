@@ -254,7 +254,7 @@ export default function Settings() {
         </RowList>
       </View>
 
-      {/* [02] البريد — تفضيلات إشعارات البريد الإلكتروني (E3/E6) */}
+      {/* [02] البريد — تفضيلات إشعارات البريد (E3/E6) */}
       {mailPrefs.length > 0 ? (
         <View style={{ gap: sp[8] }}>
           <GroupHeader index={2} title="البريد" />

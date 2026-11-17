@@ -238,7 +238,7 @@ export default function ScheduleScreen() {
           nothingAtAll ? (
             <EmptyState
               room="building"
-              title="لا يوجد جدول مسجّل"
+              title="لا جدول مسجّل"
               message="تظهر المحاضرات فور تسجيل الجدول."
             />
           ) : (

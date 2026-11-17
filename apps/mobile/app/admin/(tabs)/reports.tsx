@@ -59,7 +59,7 @@ export default function AdminReports() {
         ) : reports.isError ? (
           <ErrorState message={humanizeError(reports.error)} onRetry={() => reports.refetch()} />
         ) : !reports.data || typeof reports.data !== "object" ? (
-          <EmptyState title="لا توجد بيانات بعد" message="تظهر التقارير فور توفر البيانات." />
+          <EmptyState title="لا بيانات بعد" message="تظهر التقارير فور توفر البيانات." />
         ) : (
           (() => {
             const payload = reports.data as Record<string, unknown>;
@@ -83,7 +83,7 @@ export default function AdminReports() {
                 <View>
                   <SectionBar index={nextIndex()} title="حركة البحوث العلمية" />
                   {!trend || trend.length === 0 ? (
-                    <EmptyState title="لا توجد بيانات نشر بعد" message="تظهر الحركة بعد رفع أول بحث." />
+                    <EmptyState title="لا بيانات نشر بعد" message="تظهر الحركة بعد رفع أول بحث." />
                   ) : (
                     <RowList>
                       {trend.map((m, i) => (
@@ -105,7 +105,7 @@ export default function AdminReports() {
                   <SectionBar index={nextIndex()} title="أكثر المقرّرات تسجيلاً" />
                   {!topCourses || topCourses.length === 0 ? (
                     <EmptyState
-                      title="لا توجد تسجيلات بعد"
+                      title="لا تسجيلات بعد"
                       message="تظهر هنا فور تسجيل الطلاب."
                     />
                   ) : (

@@ -154,7 +154,7 @@ export default function StudentMyData() {
           />
         ) : !view || !draft ? (
           <EmptyState
-            title="لا يوجد ملف طالب بعد"
+            title="لا ملف طالب بعد"
             message="لم يُربط ملف طالب — البيانات بعد الاعتماد."
           />
         ) : (

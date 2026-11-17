@@ -58,7 +58,7 @@ export default function OwnerEducation() {
               <SectionBar index={1} title="الإجماليات" />
               <RowList>
                 <LedgerRow last>
-                  <StatLine label="إجمالي المقرّرات" value={numOf(e?.totals?.totalCourses)} />
+                  <StatLine label="المقرّرات" value={numOf(e?.totals?.totalCourses)} />
                   <StatLine label="عدد الأساتذة" value={numOf(e?.totals?.teachers)} />
                   <StatLine label="العروض النشطة" value={numOf(e?.totals?.totalOfferings)} />
                   <StatLine label="متوسط التسجيل" value={numOf(e?.totals?.avgEnrolment)} />

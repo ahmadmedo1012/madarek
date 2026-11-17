@@ -111,11 +111,11 @@ export function NotificationsScreen({
     markAll.mutate(undefined, {
       onSuccess: () => {
         haptics.notify("success");
-        toast.success("عُلّمت كل التنبيهات كمقروءة.");
+        toast.success("عُلّمت كلها كمقروءة.");
       },
       onError: (e) => {
         haptics.notify("error");
-        toast.error(humanizeError(e), "تعذّر التعليم كمقروء");
+        toast.error(humanizeError(e), "تعذّر التعليم");
       },
     });
   };
@@ -165,7 +165,7 @@ export function NotificationsScreen({
           {unread > 0 ? (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="تعليم الكل كمقروء"
+              accessibilityLabel="تعليم الكل"
               onPress={onMarkAll}
               disabled={markAll.isPending}
               style={{ minHeight: 44, justifyContent: "center" }}
@@ -216,8 +216,8 @@ export function NotificationsScreen({
             <PushActivationCard />
             <EmptyState
               room="building"
-              title="لا توجد تنبيهات"
-              message="الإعلانات والدرجات والرسائل تظهر لحظة صدورها."
+              title="لا تنبيهات"
+              message="الإعلانات والدرجات لحظة صدورها."
             />
           </>
         }
@@ -367,7 +367,7 @@ export function PushActivationCard() {
         {state === "denied"
           ? "مقفلة من إعدادات النظام — افتحها من هناك."
           : regFailed
-            ? "منحت الإذن، لكن تعذّر تسجيل الجهاز."
+            ? "مُنح الإذن — تعذّر تسجيل الجهاز."
             : "فعّل الإشعارات لتصلك لحظة صدورها."}
       </T>
       {state === "denied" ? (

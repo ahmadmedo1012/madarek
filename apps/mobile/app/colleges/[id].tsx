@@ -19,7 +19,7 @@ import { apiMessage } from "@/features/common/components";
 
 /** Known stat keys → Arabic labels (honest: unmapped keys render raw). */
 const STAT_LABELS: Record<string, string> = {
-  studentCount: "إجمالي الطلاب",
+  studentCount: "الطلاب",
   teacherCount: "هيئة التدريس",
   departmentCount: "عدد الأقسام",
   courseCount: "عدد المقرّرات",

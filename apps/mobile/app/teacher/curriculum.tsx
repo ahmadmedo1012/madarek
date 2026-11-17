@@ -179,7 +179,7 @@ export default function Curriculum() {
             <ErrorState message={humanizeError(lectures.error)} onRetry={() => lectures.refetch()} />
           ) : rows.length === 0 ? (
             <EmptyState
-              title="لا توجد محاضرات بعد"
+              title="لا محاضرات بعد"
               message="أضف أول محاضرة."
               actionLabel="محاضرة جديدة"
               onAction={() => openLectureForm(null)}

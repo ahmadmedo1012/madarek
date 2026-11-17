@@ -258,7 +258,7 @@ export default function Register() {
           </View>
         </View>
         <Field
-          label="البريد الإلكتروني"
+          label="البريد"
           value={email}
           onChangeText={setEmail}
           purpose="email"

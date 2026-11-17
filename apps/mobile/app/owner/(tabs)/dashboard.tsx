@@ -187,7 +187,7 @@ export default function OwnerDashboard() {
           ) : activity.isError ? (
             <ErrorState message={humanizeError(activity.error)} onRetry={() => activity.refetch()} compact />
           ) : events.length === 0 ? (
-            <EmptyState title="لا توجد أحداث بعد" message="أحدث العمليّات تظهر فور حدوثها." />
+            <EmptyState title="لا أحداث بعد" message="أحدث العمليّات تظهر فور حدوثها." />
           ) : (
             <View style={{ gap: 12 }}>
               <DataList

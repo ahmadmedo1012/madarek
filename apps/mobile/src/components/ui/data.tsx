@@ -415,7 +415,7 @@ export function DataList<T>(props: DataListProps<T>) {
   }
   if (rows.length === 0) {
     const empty =
-      emptySlot ?? <EmptyState title={emptyTitle ?? "لا توجد بيانات بعد"} message={emptyMessage} />;
+      emptySlot ?? <EmptyState title={emptyTitle ?? "لا بيانات بعد"} message={emptyMessage} />;
     if (!refetch) {
       return (
         <View style={[{ paddingHorizontal: padX ?? sp[16] }, style]} testID={testID}>

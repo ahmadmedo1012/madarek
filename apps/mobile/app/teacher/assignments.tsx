@@ -246,7 +246,7 @@ export default function Assignments() {
         <ErrorState message={humanizeError(assignments.error)} onRetry={() => assignments.refetch()} />
       ) : assignmentRows.length === 0 ? (
         <EmptyState
-          title="لا توجد واجبات بعد"
+          title="لا واجبات بعد"
           message="أنشئ أول واجب."
         />
       ) : (

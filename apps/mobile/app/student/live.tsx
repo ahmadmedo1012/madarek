@@ -85,7 +85,7 @@ export default function LiveScreen() {
         <ErrorState message={humanizeError(feed.error)} onRetry={() => feed.refetch()} />
       ) : list.length === 0 ? (
         <EmptyState
-          title="لا توجد بثوث بعد"
+          title="لا بثوث بعد"
           message="لا بثوث — الجلسات تظهر هنا."
         />
       ) : (

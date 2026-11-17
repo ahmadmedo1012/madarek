@@ -379,13 +379,13 @@ export default function Grades() {
           ) : roster.isError ? (
             <ErrorState message={humanizeError(roster.error)} onRetry={() => roster.refetch()} />
           ) : rows.length === 0 ? (
-            <EmptyState fill title="لا يوجد طلاب" message="لا تسجيلات في المقرّر." />
+            <EmptyState fill title="لا طلاب" message="لا تسجيلات في المقرّر." />
           ) : (
             <DataList
               data={rows}
               renderItem={renderRow}
               keyExtractor={rosterKeyExtractor}
-              emptyTitle="لا يوجد طلاب"
+              emptyTitle="لا طلاب"
               emptyMessage="لا تسجيلات في المقرّر."
               contentPadding={{ horizontal: 20, bottom: 24 }}
             />

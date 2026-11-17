@@ -13,22 +13,22 @@
       "max": 18
     },
     "apps/mobile/app/achievements.tsx": {
-      "max": 108
+      "max": 106
     },
     "apps/mobile/app/admin/(tabs)/_layout.tsx": {
       "max": 0
     },
     "apps/mobile/app/admin/(tabs)/dashboard.tsx": {
-      "max": 76
+      "max": 75
     },
     "apps/mobile/app/admin/(tabs)/faculties.tsx": {
       "max": 119
     },
     "apps/mobile/app/admin/(tabs)/reports.tsx": {
-      "max": 70
+      "max": 67
     },
     "apps/mobile/app/admin/(tabs)/students.tsx": {
-      "max": 112
+      "max": 110
     },
     "apps/mobile/app/admin/(tabs)/teachers.tsx": {
       "max": 118
@@ -40,19 +40,19 @@
       "max": 2
     },
     "apps/mobile/app/admin/courses.tsx": {
-      "max": 177
+      "max": 174
     },
     "apps/mobile/app/admin/digital.tsx": {
-      "max": 59
+      "max": 58
     },
     "apps/mobile/app/admin/directory.tsx": {
-      "max": 45
+      "max": 43
     },
     "apps/mobile/app/admin/feedback.tsx": {
       "max": 3
     },
     "apps/mobile/app/admin/invites.tsx": {
-      "max": 107
+      "max": 106
     },
     "apps/mobile/app/admin/permissions/[id].tsx": {
       "max": 100
@@ -61,7 +61,7 @@
       "max": 0
     },
     "apps/mobile/app/auth/forgot-password.tsx": {
-      "max": 37
+      "max": 36
     },
     "apps/mobile/app/auth/index.tsx": {
       "max": 27
@@ -70,28 +70,28 @@
       "max": 49
     },
     "apps/mobile/app/auth/register.tsx": {
-      "max": 136
+      "max": 135
     },
     "apps/mobile/app/auth/reset-password.tsx": {
       "max": 57
     },
     "apps/mobile/app/colleges/[id].tsx": {
-      "max": 49
+      "max": 48
     },
     "apps/mobile/app/colleges/index.tsx": {
-      "max": 38
+      "max": 37
     },
     "apps/mobile/app/colleges/leaderboard.tsx": {
       "max": 40
     },
     "apps/mobile/app/community.tsx": {
-      "max": 178
+      "max": 175
     },
     "apps/mobile/app/competitions/[id].tsx": {
       "max": 123
     },
     "apps/mobile/app/competitions/index.tsx": {
-      "max": 32
+      "max": 31
     },
     "apps/mobile/app/contact.tsx": {
       "max": 44
@@ -112,10 +112,10 @@
       "max": 0
     },
     "apps/mobile/app/owner/(tabs)/dashboard.tsx": {
-      "max": 141
+      "max": 140
     },
     "apps/mobile/app/owner/(tabs)/governance.tsx": {
-      "max": 82
+      "max": 81
     },
     "apps/mobile/app/owner/(tabs)/notifications.tsx": {
       "max": 2
@@ -133,25 +133,25 @@
       "max": 44
     },
     "apps/mobile/app/owner/ai.tsx": {
-      "max": 80
+      "max": 78
     },
     "apps/mobile/app/owner/alerts.tsx": {
-      "max": 64
+      "max": 63
     },
     "apps/mobile/app/owner/content.tsx": {
       "max": 133
     },
     "apps/mobile/app/owner/education.tsx": {
-      "max": 99
+      "max": 98
     },
     "apps/mobile/app/owner/feedback.tsx": {
       "max": 68
     },
     "apps/mobile/app/owner/institutions.tsx": {
-      "max": 87
+      "max": 86
     },
     "apps/mobile/app/owner/institutions/[slug].tsx": {
-      "max": 221
+      "max": 220
     },
     "apps/mobile/app/owner/system.tsx": {
       "max": 239
@@ -166,10 +166,10 @@
       "max": 67
     },
     "apps/mobile/app/quality/(tabs)/dashboard.tsx": {
-      "max": 94
+      "max": 93
     },
     "apps/mobile/app/quality/(tabs)/engagement.tsx": {
-      "max": 61
+      "max": 60
     },
     "apps/mobile/app/quality/(tabs)/reports.tsx": {
       "max": 79
@@ -205,13 +205,13 @@
       "max": 2
     },
     "apps/mobile/app/student/(tabs)/courses.tsx": {
-      "max": 146
+      "max": 140
     },
     "apps/mobile/app/student/(tabs)/dashboard.tsx": {
       "max": 123
     },
     "apps/mobile/app/student/(tabs)/profile.tsx": {
-      "max": 218
+      "max": 217
     },
     "apps/mobile/app/student/_layout.tsx": {
       "max": 0
@@ -226,10 +226,10 @@
       "max": 57
     },
     "apps/mobile/app/student/catalog.tsx": {
-      "max": 107
+      "max": 106
     },
     "apps/mobile/app/student/courses/[offeringId].tsx": {
-      "max": 102
+      "max": 96
     },
     "apps/mobile/app/student/gamification.tsx": {
       "max": 67
@@ -244,16 +244,16 @@
       "max": 199
     },
     "apps/mobile/app/student/library.tsx": {
-      "max": 175
+      "max": 171
     },
     "apps/mobile/app/student/live.tsx": {
-      "max": 112
+      "max": 111
     },
     "apps/mobile/app/student/map.tsx": {
       "max": 54
     },
     "apps/mobile/app/student/materials.tsx": {
-      "max": 44
+      "max": 43
     },
     "apps/mobile/app/student/matrix.tsx": {
       "max": 111
@@ -265,7 +265,7 @@
       "max": 56
     },
     "apps/mobile/app/student/my-data.tsx": {
-      "max": 181
+      "max": 180
     },
     "apps/mobile/app/student/online-exams.tsx": {
       "max": 95
@@ -283,7 +283,7 @@
       "max": 45
     },
     "apps/mobile/app/student/schedule.tsx": {
-      "max": 44
+      "max": 43
     },
     "apps/mobile/app/student/skills.tsx": {
       "max": 41
@@ -292,7 +292,7 @@
       "max": 78
     },
     "apps/mobile/app/student/university.tsx": {
-      "max": 67
+      "max": 66
     },
     "apps/mobile/app/student/webinars.tsx": {
       "max": 52
@@ -307,10 +307,10 @@
       "max": 112
     },
     "apps/mobile/app/teacher/(tabs)/profile.tsx": {
-      "max": 139
+      "max": 138
     },
     "apps/mobile/app/teacher/(tabs)/schedule.tsx": {
-      "max": 24
+      "max": 23
     },
     "apps/mobile/app/teacher/(tabs)/students.tsx": {
       "max": 10
@@ -325,28 +325,28 @@
       "max": 2
     },
     "apps/mobile/app/teacher/assignments.tsx": {
-      "max": 160
+      "max": 159
     },
     "apps/mobile/app/teacher/attendance.tsx": {
-      "max": 74
+      "max": 72
     },
     "apps/mobile/app/teacher/curriculum.tsx": {
-      "max": 294
+      "max": 293
     },
     "apps/mobile/app/teacher/exams.tsx": {
-      "max": 235
+      "max": 234
     },
     "apps/mobile/app/teacher/exams/[templateId].tsx": {
       "max": 291
     },
     "apps/mobile/app/teacher/grades.tsx": {
-      "max": 98
+      "max": 96
     },
     "apps/mobile/app/teacher/labs.tsx": {
       "max": 79
     },
     "apps/mobile/app/teacher/live.tsx": {
-      "max": 175
+      "max": 174
     },
     "apps/mobile/app/teacher/materials.tsx": {
       "max": 112
@@ -361,7 +361,7 @@
       "max": 15
     },
     "apps/mobile/app/training/[slug].tsx": {
-      "max": 85
+      "max": 84
     },
     "apps/mobile/app/training/[slug]/lesson/[lessonId].tsx": {
       "max": 110
@@ -373,7 +373,7 @@
       "max": 45
     },
     "apps/mobile/app/vision/index.tsx": {
-      "max": 62
+      "max": 61
     },
     "apps/mobile/src/brand/Logo.tsx": {
       "max": 1
@@ -421,7 +421,7 @@
       "max": 7
     },
     "apps/mobile/src/components/ui/data.tsx": {
-      "max": 10
+      "max": 9
     },
     "apps/mobile/src/components/ui/fields.tsx": {
       "max": 16
@@ -439,13 +439,13 @@
       "max": 0
     },
     "apps/mobile/src/components/ui/sheet.tsx": {
-      "max": 13
+      "max": 12
     },
     "apps/mobile/src/components/ui/states.tsx": {
-      "max": 99
+      "max": 93
     },
     "apps/mobile/src/components/ui/surfaces.tsx": {
-      "max": 10
+      "max": 9
     },
     "apps/mobile/src/components/ui/text.tsx": {
       "max": 0
@@ -463,7 +463,7 @@
       "max": 0
     },
     "apps/mobile/src/features/ai/Assistant.tsx": {
-      "max": 109
+      "max": 108
     },
     "apps/mobile/src/features/ai/Markdown.tsx": {
       "max": 5
@@ -481,22 +481,22 @@
       "max": 39
     },
     "apps/mobile/src/features/governance/components.tsx": {
-      "max": 462
+      "max": 431
     },
     "apps/mobile/src/features/messages/MessagesUI.tsx": {
-      "max": 75
+      "max": 69
     },
     "apps/mobile/src/features/notifications/NotificationsScreen.tsx": {
-      "max": 62
+      "max": 55
     },
     "apps/mobile/src/features/student/components.tsx": {
-      "max": 135
+      "max": 128
     },
     "apps/mobile/src/features/student/more.tsx": {
       "max": 81
     },
     "apps/mobile/src/features/teacher/components.tsx": {
-      "max": 196
+      "max": 187
     },
     "apps/mobile/src/lib/biometric.tsx": {
       "max": 35
@@ -505,7 +505,7 @@
       "max": 3
     },
     "apps/mobile/src/lib/resilience/network.tsx": {
-      "max": 13
+      "max": 12
     },
     "apps/mobile/src/lib/updates.tsx": {
       "max": 34
