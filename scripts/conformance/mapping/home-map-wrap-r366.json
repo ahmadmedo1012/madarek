@@ -1,0 +1,188 @@
+{
+  "_readme": "R366 L1 (Agent 1) — the ledger icon measured seats: the four chapter icons (lucide glyphs, 27px windows) + their internal paths, stamped with data-spec on mount (JourneyScene — the footer data-spec-hover precedent, a measurement hook only) and bound to the spec icon windows where every check passes.",
+  "explicit": [
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+      "spec": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+      "ours": "map.row3icop3",
+      "bps": [
+        "390"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[2] > div[1] > div[3] > div[1] > div[2]",
+      "spec": "home-map-wrap > div[1] > div[2] > div[1] > div[3] > div[1] > div[2]",
+      "ours": "map.row4",
+      "bps": [
+        "390"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[2] > div[1] > div[3] > div[1] > div[2] > div[1]",
+      "spec": "home-map-wrap > div[2] > div[1] > div[3] > div[1] > div[2] > div[1]",
+      "ours": "map.row4rule",
+      "bps": [
+        "390"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+      "spec": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+      "ours": "map.row3icop2",
+      "bps": [
+        "1024",
+        "1440",
+        "768"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "spec": "home-map-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "ours": "map.main",
+      "bps": [
+        "1024"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > svg[1]",
+      "spec": "home-map-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > svg[1]",
+      "ours": "map.row1icosvg",
+      "bps": [
+        "1024",
+        "1440",
+        "1920"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "spec": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "ours": "map.row1icop2",
+      "bps": [
+        "1024",
+        "1440",
+        "1920"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+      "spec": "home-map-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+      "ours": "map.row1icop1",
+      "bps": [
+        "1024",
+        "1440",
+        "1920"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > svg[1]",
+      "spec": "home-map-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > svg[1]",
+      "ours": "map.row2icosvg",
+      "bps": [
+        "1024",
+        "1440",
+        "1920"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+      "spec": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+      "ours": "map.row2icop1",
+      "bps": [
+        "1440",
+        "1920"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > svg[1]",
+      "spec": "home-map-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > svg[1]",
+      "ours": "map.row3icosvg",
+      "bps": [
+        "1024",
+        "1440",
+        "1920"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "spec": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "ours": "map.row3icop1",
+      "bps": [
+        "1024",
+        "1440",
+        "1920"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[4] > div[3] > div[1] > div[1] > svg[1]",
+      "spec": "home-map-wrap > div[1] > div[4] > div[3] > div[1] > div[1] > svg[1]",
+      "ours": "map.row4icosvg",
+      "bps": [
+        "1024",
+        "1440",
+        "1920"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "spec": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "ours": "map.row4icop3",
+      "bps": [
+        "1024",
+        "1440",
+        "1920"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+      "spec": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[2]",
+      "ours": "map.row4icop1",
+      "bps": [
+        "1024",
+        "1440",
+        "1920"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[3]",
+      "spec": "home-map-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[3]",
+      "ours": "map.row4icop2",
+      "bps": [
+        "1024",
+        "1440",
+        "1920"
+      ],
+      "_note": "R366 L1 — the ledger icon glyph + internal paths at the spec windows (JourneyScene ds stamps)"
+    }
+  ]
+}

@@ -166,3 +166,29 @@ Re-ran the evidence commands for 5 random ticked boxes:
    stops-with-defects=0 ✓
 5. L5.1 (edge390) → the scoped 390 run → edge390 fails 0 ✓
 All five re-proved on the final tree.
+
+## Session 2 — the verification + continuation (owner-requested)
+
+Re-proved the 5 audit boxes, then continued the L1 work with a CALIBRATED
+pairing simulator (faithful to run.mjs within 7 measured checks) and a
+strict honest-conversion analyzer (every excused spec element tested
+against every free our-element with the real tolerance functions):
+
+| section | before | after | the work |
+|---|---|---|---|
+| home-map-wrap | 31.8 % | **35.4 %** (+546 meas, 99.8 % pass) | the 4 chapter icons + paths, ds-stamped (JourneyScene mount hook) + 16 bps-scoped bindings |
+| footer | 40.9 % | **41.5 %** (+102 meas, 88.8→89.2 % pass) | the form row rebuilt at the census's full-bleed seat (358×40/374×48), the square 40×40/44/48 go button at the MIRRORED inline-end seat, the c1sub panel transparent (the frozen census's own record — the T-06f grey was the 1px rules), 6 form-family bindings, the acct LH 1.35 fix |
+| home-platform-wrap | 40.4 % | **41.1 %** | the 9 parked-seat geometry unskips |
+| home-intro-wrap | 37.6 % | **38.2 %** | the 3 tween-residue plumbing unskips |
+| **OVERALL** | 52.1 % / 93.8 % | **52.7 % / 93.9 % PASS** | scroll 30/30 · panel 60/60 · edge390 0 · all caps held |
+
+Gates re-proven after the changes: conformance 93.9 % PASS · scroll-feel
+30/30 · panel 60/60 · overlap (CI parity) 0 defects · size-gate GREEN ·
+stylelint 44 ≤ 45 (ratchet DOWN — 2 duplicates merged) · check-colors
+--strict OK (the 4 hero-plate allows moved inline) · raw-css/icons/motion
+OK · copy-budget CLEAN · identity OK · lint 0 errors · **unit 3155/3155**.
+
+The honest ceilings stand (evidence/l1-session2-table.md): the 60/65
+targets need the authored-SVG map artwork rebuild, the content-contract
+resolution on footer, and the cursor-interactive decision (REQUESTS R3 to
+Agent 3 + a new REQUESTS note for Agent 2's cursor system).

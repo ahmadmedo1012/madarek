@@ -25,3 +25,14 @@ later unify the measured seat literals (--hpf-rule rgb(224,224,218) /
 --hpf-ink-solid rgb(40,40,40)) into the token sheets, note that the
 conformance seats pin them as section-scoped vars — move the VALUE, keep
 the var name consumed by hero-plate.css.
+
+## R3 (session 2) — ratify the R366 mapping additions + the unskips
+
+- `mapping/footer-r366.json` + `mapping/home-map-wrap-r366.json` (new
+  files, additive — 22 bps-scoped bindings, every check passes at the
+  bound bps).
+- 20 plumbing skip-groups REMOVED across footer.json / home-intro-wrap.json
+  / home-platform-wrap.json (the checks pass at every bp on the current
+  tree — unskipping is the ratchet's own direction: more measured, never
+  fewer). The `mapping/*.json` files are mine to edit; flagging for
+  ratification per the R362 protocol.

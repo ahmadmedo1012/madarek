@@ -25,3 +25,16 @@ The web hero now carries the Heron plate furniture (rulers/pins/brackets —
 `HeroPlate.tsx`). This is web-only; no mobile screen changed. Recorded here
 only because the hero art files you consume (hero-campus) were part of the
 diet above.
+
+## R3 (session 2) — the cursor-interactive divergence (new)
+
+The frozen spec records button/anchor INNER elements (svg/paths/divs) as
+`interactive: true` (the reference inherits cursor:pointer from the CTA).
+Our canvas-cursor design (R333 P-D) sets cursor:none globally, so the
+conformance `interactive` check reads false on those innards even though
+they sit inside real CTAs. Affected: the footer go-button icon chain, the
+platform CTA icon paths (9 near-miss conversions blocked), the map icon
+stamps. The ask: either the instrument stamps cursor:pointer on
+interactive innards while the canvas cursor is live (a measurement hook,
+like the data-spec-hover precedent), or the check's reading is adapted —
+your call with the owner. Nothing changed unilaterally on your files.

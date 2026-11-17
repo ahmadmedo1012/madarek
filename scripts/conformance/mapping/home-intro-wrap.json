@@ -6099,37 +6099,26 @@
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
-      "reason": "R338 T-03i plumbing: heuristic-glued div.none tween-residue window (alternate window-head recording) — no design counterpart; the real boxes are explicitly bound and measured"
+      "reason": "R338 T-03i plumbing: heuristic-glued div.none tween-residue window (alternate window-head recording) — no design counterpart; the real boxes are explicitly bound and measured — R366 L1: tag+tc+type+color unskipped (the checks pass at every bp on the current tree)"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
-      "reason": "R338 T-03i plumbing: heuristic-glued div.none tween-residue window — no design counterpart; the real boxes are explicitly bound and measured"
+      "reason": "R338 T-03i plumbing: heuristic-glued div.none tween-residue window — no design counterpart; the real boxes are explicitly bound and measured — R366 L1: tag+tc+type+color unskipped (the checks pass at every bp on the current tree)"
     },
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > div[1]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
-        "color"
+        "type"
       ],
-      "reason": "R338 T-03i2 plumbing: heuristic-glued div.none tween-residue window under the 390-stacked media band (div[2] arm) — no design counterpart; the real boxes are explicitly bound and measured"
+      "reason": "R338 T-03i2 plumbing: heuristic-glued div.none tween-residue window under the 390-stacked media band (div[2] arm) — no design counterpart; the real boxes are explicitly bound and measured — R366 L1: tag+tc+color unskipped (the checks pass at every bp on the current tree)"
     }
   ]
 }

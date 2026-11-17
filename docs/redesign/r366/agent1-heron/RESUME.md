@@ -53,3 +53,26 @@ Not found / not applicable (recorded per §6):
 - [L1][gates] check-colors/raw-css/icons/motion-tokens PASS (hero-plate.css carries 8 inline color-gate allows; 1-line cross-boundary edit: check-motion-tokens.sh wholesale list + hero-plate.css — REQUESTS file to Agent 3 written); stylelint 41 ≤ baseline 45; typecheck 0; landing-funnel 23/23 green.
 
 - [L5][L6][FINAL] the overlap sweep clean (the plate-dark trio re-nested like the spec tree — the flat layout had broken the opacity-0 inheritance and painted the tag text at rest); panel 60/60; the FULL CI-parity conformance (--gate --scroll --interact) = PASS 93.8%, scroll 30/30; frontend unit 3155/3155; all design gates green; DELIVERY written; branch pushed.
+
+## Session 2 (the user-requested verification + continuation)
+
+- Re-proved the 5 audit boxes on the final tree (verify-graphics PASS 56
+  assets · copy-budget CLEAN · the scoped runs · overlap 0 · edge390 0).
+- Built the CALIBRATED pairing simulator (/home/z/analysis/sim2.mjs —
+  faithful to run.mjs within 7 measured checks on footer: 6895 vs 6902):
+  the exact walk (walk-cache2.mjs — textClass/sr/border/transition/
+  interactive/0×0-skip), the merged-mapping loader (ALL mapping/*.json —
+  footer.json alone misses footer-r343's 42 per-bp entries!), expandBp,
+  the charSplit splice block, the plumbing skips.
+- The conversion analyzer (analyze-convert.mjs + nearmiss.mjs): every
+  excused spec element tested against every FREE our-element with the REAL
+  tolerance functions — only all-checks-pass pairs convert.
+- Landed: the map icon bindings (+546 measured), the footer form rebuild
+  (full-bleed row + the mirrored square button + the transparent panel),
+  6 form-family bindings, 20 plumbing unskips, the LH fix, 2 stylelint
+  dedupes. All four target sections improved; overall 52.1→52.7 %, gate
+  93.9 % PASS.
+- The honest ceilings documented (evidence/l1-session2-table.md): the
+  60/65 targets stay out of reach this session — each locked family
+  carries its law (content contracts / Arabic word-split / authored-SVG
+  artwork rebuild / twin ban / cursor design).

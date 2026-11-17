@@ -2554,73 +2554,65 @@
       "section": "footer",
       "heron": "footer > div[1] > div[1] > div[3] > div[2] > div[1] > svg[1]",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
-      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law) — R366 L1: color unskipped (the checks pass at every bp on the current tree)"
     },
     {
       "section": "footer",
       "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[1]",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
-      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law) — R366 L1: color unskipped (the checks pass at every bp on the current tree)"
     },
     {
       "section": "footer",
       "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[2]",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
-      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law) — R366 L1: color unskipped (the checks pass at every bp on the current tree)"
     },
     {
       "section": "footer",
       "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[3]",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
-      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law) — R366 L1: color unskipped (the checks pass at every bp on the current tree)"
     },
     {
       "section": "footer",
       "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[4]",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
-      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law) — R366 L1: color unskipped (the checks pass at every bp on the current tree)"
     },
     {
       "section": "footer",
       "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[5]",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
-      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law) — R366 L1: color unskipped (the checks pass at every bp on the current tree)"
     },
     {
       "section": "footer",
       "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[6]",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
-      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law) — R366 L1: color unskipped (the checks pass at every bp on the current tree)"
     },
     {
       "section": "footer",
       "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[7]",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
-      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law) — R366 L1: color unskipped (the checks pass at every bp on the current tree)"
     },
     {
       "section": "footer",

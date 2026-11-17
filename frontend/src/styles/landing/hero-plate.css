@@ -35,14 +35,10 @@
    * Arabic floor of the reference's own 1.35 box) — the census seat */
   font-size: 1.6rem;
   line-height: 2.16rem;
-  /* color-gate: allow — the frozen seat ink, measured */
-  --hpf-ink: rgba(40, 40, 40, 0.72);
-  /* color-gate: allow — the frozen corner/tag ink, measured */
-  --hpf-ink-solid: rgb(40, 40, 40);
-  /* color-gate: allow — the frozen hairline, measured */
-  --hpf-rule: rgb(224, 224, 218);
-  /* color-gate: allow — the frozen pin dot, measured */
-  --hpf-dot: rgb(255, 255, 255);
+  --hpf-ink: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen seat ink, measured */
+  --hpf-ink-solid: rgb(40, 40, 40); /* color-gate: allow — the frozen corner/tag ink, measured */
+  --hpf-rule: rgb(224, 224, 218); /* color-gate: allow — the frozen hairline, measured */
+  --hpf-dot: rgb(255, 255, 255); /* color-gate: allow — the frozen pin dot, measured */
 }
 .hpf-1, .hpf-2 { position: relative; display: flow-root; inline-size: 100%; block-size: 100%; } /* flow-root: the hpf-3 top-margin stays inside hpf-2 (no collapse-through — the chain seats at the section top like the frozen wrap) */
 .hpf-3 {
