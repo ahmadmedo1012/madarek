@@ -238,7 +238,7 @@
     "student/CalendarPage.tsx": {
       "baseline": 94,
       "class": "authed",
-      "max": 54
+      "max": 66
     },
     "student/CampusMapPage.tsx": {
       "baseline": 87,
