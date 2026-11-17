@@ -1217,7 +1217,12 @@ a.pf-row-link {
     inset-block: 0;
     inset-inline-start: 0;
     inline-size: 100%;
-    background: var(--accent);
+    /* R323 A5 §2 (contrast-gate) → R362 (Agent 4) tokenized: the
+       wipe's ground rides --accent-fill-aa (tokens.css) — light
+       resolves the same R318 AA seat the button system rides (white
+       on #DB3A00 = 4.548:1), dark its own passing ember; the old
+       allowlisted literal + [data-theme='light'] override retired. */
+    background: var(--accent-fill-aa);
     /* parked one width beyond the INLINE-START edge — --motion-direction
        mirrors the sign under [dir="rtl"] so the wipe always enters from
        the reading edge (the step-panel keyframes' own token contract;
@@ -1231,19 +1236,10 @@ a.pf-row-link {
     .auth-submit:not(:disabled):hover,
     .auth-submit:not(:disabled):focus-visible {
       color: var(--accent-fg);
-      border-color: var(--accent);
-    }
-  }
-  /* R323 A5 §2 (contrast-gate): the wipe's raw --accent ground fails AA
-     under the white label in light (3.76:1) — the same documented R318
-     AA seat the button system rides (white on #DB3A00 = 4.55:1). */
-  [data-theme='light'] .auth-submit::before {
-    background: #DB3A00; /* color-gate: allow — R318 AA seat, documented */
-  }
-  @media (hover: hover) and (pointer: fine) {
-    [data-theme='light'] .auth-submit:not(:disabled):hover,
-    [data-theme='light'] .auth-submit:not(:disabled):focus-visible {
-      border-color: #DB3A00; /* color-gate: allow — R318 AA seat, documented */
+      /* R362: the AA fill seat also carries the hover border (the
+         raw --accent ground fails AA under the white label in light —
+         3.76:1; --accent-fill-aa resolves 4.548:1 light / 4.79:1 dark). */
+      border-color: var(--accent-fill-aa);
     }
   }
   @media (hover: hover) and (pointer: fine) {

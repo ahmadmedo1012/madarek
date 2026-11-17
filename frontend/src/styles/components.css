@@ -368,11 +368,16 @@
      retired; #FA3600 + white label is the reference's CTA seat —
      documented AA exception, small Arabic labels ride weight ≥600).
      Hover swaps to the INK wipe (--primary/--primary-fg, both themes
-     resolve: light #282828+white · dark white slab + warm ink). */
+     resolve: light #282828+white · dark white slab + warm ink).
+     R362 (Agent 4): the FILL rides the tokenized AA seat
+     --accent-fill-aa (tokens.css) — light resolves the R318 darkened
+     ground #DB3A00 (white label 4.548:1), dark its own passing ember
+     #FF5A1F (4.79:1) — retiring the four allowlisted literals and
+     the [data-theme='light'] override blocks in this same commit. */
   .btn.primary {
-    --_btn-bg: var(--accent);
+    --_btn-bg: var(--accent-fill-aa);
     --_btn-fg: var(--accent-fg);
-    --_btn-bd: var(--accent);
+    --_btn-bd: var(--accent-fill-aa);
     --_btn-wipe: var(--primary);
     --_btn-wipe-fg: var(--primary-fg);
     --_btn-shadow: none;
@@ -385,40 +390,26 @@
 
   /* ── ACCENT / GOLD — the same signal slab as primary (R313: the
      sheen, the light hover-brighten mix and the dark metal gradient
-     are retired — no gradients, no shadows; the ink wipe owns hover). */
+     are retired — no gradients, no shadows; the ink wipe owns hover).
+     R362: rides --accent-fill-aa like primary (the R323 A5 §2
+     two-orange split stays closed — one seat, both variants). */
   .btn.accent,
   .btn.gold {
-    --_btn-bg: var(--accent);
+    --_btn-bg: var(--accent-fill-aa);
     --_btn-fg: var(--accent-fg);
-    --_btn-bd: var(--accent);
+    --_btn-bd: var(--accent-fill-aa);
     --_btn-wipe: var(--primary);
     --_btn-wipe-fg: var(--primary-fg);
     --_btn-shadow: none;
   }
 
-  /* R318 §B (defect-gate contrast) — the light-theme accent slab
-     deepens to the minimum AA seat: white on #FA3600 measures 3.755:1
-     (gate: «أنشئ حسابك الجامعي» 3.76:1 at every light cell); #DB3A00
-     is the least-shift ground that clears 4.5:1 (4.548:1, computed by
-     scripts/r318/gate-lib.mjs contrastRatio). Dark keeps its own token
-     seat (4.79:1 — passes) untouched.
-     R323 A5 §2 (contrast-gate finding): `.btn.primary` had diverged
-     from `.accent/.gold` and kept the 3.76:1 ground — the two-orange
-     split the round-1 reviewers (R3#3) flagged is now closed for the
-     WHOLE button system: the AA seat covers primary too. */
-  [data-theme='light'] .btn.primary,
-  [data-theme='light'] .btn.accent,
-  [data-theme='light'] .btn.gold {
-    --_btn-bg: #DB3A00; /* spacing-gate/color-gate: allow — R318 AA seat, documented */
-    --_btn-bd: #DB3A00; /* color-gate: allow — R318 AA seat, same documented ground */
-  }
-
-  /* R323 A5 §2 (contrast-gate): `.btn.outline`'s HOVER WIPE paints the
-     raw accent (#FA3600) under a white label — 3.76:1. The wipe ground
-     takes the same AA seat; --_btn-wipe-fg stays white. */
-  [data-theme='light'] .btn.outline {
-    --_btn-wipe: #DB3A00; /* color-gate: allow — R318 AA seat, documented */
-  }
+  /* (R318 §B / R323 A5 §2 — the light-theme #DB3A00 override blocks
+     are RETIRED in R362: the AA ground is tokenized as
+     --accent-fill-aa in tokens.css and consumed unconditionally above,
+     so the [data-theme='light'] re-declarations and their allowlisted
+     literals carry no information the token does not. Contrast stays
+     pinned: white on #DB3A00 = 4.548:1 light · white on #FF5A1F =
+     4.79:1 dark — both ≥ 4.5 AA.) */
 
   /* r157 (audit 6A11 #3): the in-flight freeze — a busy button never
      wipes/lifts under the cursor (the hover rules above are
@@ -438,12 +429,15 @@
   /* R313 (D4): outline becomes the SECONDARY seat — the reference's
      #282828 slab + white label + 1px #B3B3AF hairline (--primary /
      --primary-fg / --border-strong; dark resolves to the white slab +
-     warm ink + dark hairline). Hover = the ACCENT wipe (header-cta). */
+     warm ink + dark hairline). Hover = the ACCENT wipe (header-cta).
+     R362: consumes the --secondary/-fg role seats (tokens.css) and
+     the AA wipe ground — the R323 A5 §2 light override is retired
+     with the other literals. */
   .btn.outline {
-    --_btn-bg: var(--primary);
-    --_btn-fg: var(--primary-fg);
+    --_btn-bg: var(--secondary);
+    --_btn-fg: var(--secondary-fg);
     --_btn-bd: var(--border-strong);
-    --_btn-wipe: var(--accent);
+    --_btn-wipe: var(--accent-fill-aa);
     --_btn-wipe-fg: var(--accent-fg);
     --_btn-shadow: none;
   }
@@ -762,14 +756,33 @@
      fell to UA defaults (synthetic-probe: UA grey wash, cursor
      default, per-element inconsistency). The shared recipe: opacity
      + not-allowed + a surface-2 ground so the control reads "locked"
-     in BOTH themes (checkbox/radio already carried this via
-     polish.css's forms block). Pointer-events stay on so the
-     not-allowed cursor renders; focus is already blocked by the UA. */
+     in BOTH themes. R362 (Agent 4) RESTORE: the r333 WAVE 7 dead-pool
+     deletion stripped this rule body while keeping the contract
+     comment (the "polish.css's forms block" it leaned on was itself
+     deleted by the r294 fold) — every disabled field on ImportWizard/
+     PeoplePages/community fell back to UA defaults since. Body
+     restored verbatim from the pre-purge recipe (a584543c^) with one
+     upgrade: the ground rides the new --state-disabled-bg seat.
+     Pointer-events stay on so the not-allowed cursor renders; focus
+     is already blocked by the UA. NOTE: `input:disabled` also matches
+     checkbox/radio (same element type) — the locked box gets the same
+     opacity + wash, exactly as pre-purge; a checked disabled box keeps
+     its accent fill (:checked specificity wins). */
+  .input:disabled,
+  input:disabled, textarea:disabled, select:disabled,
+  .input[aria-disabled="true"],
+  input[aria-disabled="true"],
+  textarea[aria-disabled="true"],
+  select[aria-disabled="true"] {
+    opacity: var(--state-input-disabled-opacity);
+    cursor: not-allowed;
+    background: var(--state-disabled-bg);
+  }
 
   /* ── Topbar search pill (wave 2-b — audit 0-c P0-1) ──────────────────
      The input itself is the pill: surface-1 ground, hairline --border,
      --r-full. One focus treatment — the shared input focus language
-     (polish v15's accent border + soft halo, and the v22
+     (the R313 D16 signal border via --input-focus-signal, and the v22
      :focus-visible ring, which resolves border-radius: inherit from
      the .topbar-search wrapper). The wrapper (.topbar-search,
      layout.css) positions the icon / kbd hint / clear chrome on top.
@@ -803,8 +816,9 @@
     .topbar-search input:hover { border-color: var(--state-card-hover-border); }
   }
   /* No pill-specific :focus rule: the pill joins the app-wide input
-     focus language — polish v15's accent border + soft halo (overrides
-     layer beats anything here) and the v22 :focus-visible ring, which
+     focus language — the shared hairline recipe above (the R313 D16
+     signal border via --input-focus-signal; polish v15's duplicate
+     literal retired in R362) and the v22 :focus-visible ring, which
      resolves border-radius: inherit from the .topbar-search wrapper. */
   @media (max-width: 640px) {
     /* 44px touch target on phones. The topbar hides the search at
@@ -843,16 +857,73 @@
      ║  CHECKBOXES + RADIOS — R313 (D16): square, hairline, accent   ║
      ║  (r294 polish v8 fold: the whole family lived only in the     ║
      ║  polish bundle — sole definition, clean move)                 ║
+     ║  R362 (Agent 4) RESTORE: the r333 WAVE 7 dead-pool deletion   ║
+     ║  stripped every rule body beneath this banner while the       ║
+     ║  r294/r295 worklog and the scoped islands (heron-admin-owner  ║
+     ║  «the accent checked state is the platform canon              ║
+     ║  (components.css)») still point here as the owner — native    ║
+     ║  checkboxes on ImportWizard/PeoplePages/community/ExamAuthor ║
+     ║  rendered UA defaults since. Body restored from the           ║
+     ║  pre-purge recipe (a584543c^); the accent-checked canon this  ║
+     ║  sheet always documented is live again, both themes           ║
+     ║  (token-pure), focus rides the universal :focus-visible ring. ║
      ╚═══════════════════════════════════════════════════════════════╝ */
+  input[type="checkbox"],
+  input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    inline-size: 18px;
+    block-size: 18px;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    /* R313 (D16): 1px hairline (--rule-strong), transparent ground —
+       square checkbox (radius rung is 0), circle radio (the one
+       sanctioned circular primitive at 50%). */
+    border: 1px solid var(--rule-strong);
+    cursor: pointer;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--t-clean);
+    position: relative;
+  }
+  input[type="checkbox"] { border-radius: var(--r-xs); }
+  input[type="radio"]    { border-radius: 50%; }
 
   @media (hover: hover) and (pointer: fine) {
+    input[type="checkbox"]:hover,
+    input[type="radio"]:hover {
+      border-color: var(--accent);
+    }
   }
 
+  input[type="checkbox"]:checked,
+  input[type="radio"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
 
   /* Checkmark — drawn with a clip-path triangle (no SVG, no font) */
+  input[type="checkbox"]:checked::after {
+    content: "";
+    inline-size: 10px;
+    block-size: 6px;
+    border: solid var(--accent-fg);
+    border-width: 0 0 2px 2px;
+    transform: rotate(-45deg) translate(1px, -1px);
+    margin-block-start: calc(-1 * var(--sp-0-5));
+  }
 
   /* Radio dot */
-
+  input[type="radio"]:checked::after {
+    content: "";
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: 50%;
+    background: var(--accent-fg);
+  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  TABLE                                                         ║
@@ -924,12 +995,22 @@
   /* Opt-in sticky header: the wrap becomes the capped scroll container
      so the pinned header never slides under the sticky topbar. */
 
-  /* CSS-only action reveal: actions parked in the last cell (e.g. a
+  /* CSS-only action reveal: actions parked in the last cell (a
      .table-row-actions cluster of icon buttons) stay hidden until the
      row is hovered — or focused, so keyboard paths stay visible.
-     Touch devices (hover: none) show them persistently. */
-  @media (hover: hover) and (pointer: fine) {
+     Touch devices (hover: none) show them persistently.
+     R362 (Agent 4) RESTORE: same WAVE 7 deletion class as the rest of
+     this repair — OwnerInstitutions/OwnerInstitutionDetail/JobsPage/
+     DesignPage render the class today. Body verbatim from a584543c^. */
+  .table-row-actions {
+    opacity: 0;
+    transition: opacity var(--t-fast) var(--ease);
   }
+  @media (hover: hover) and (pointer: fine) {
+    .table tbody tr:hover .table-row-actions,
+    .table tbody tr:focus-within .table-row-actions { opacity: 1; }
+  }
+  @media (hover: none) { .table-row-actions { opacity: 1; } }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  MOBILE — the .table fallback ladder (≤640)                    ║
@@ -1005,15 +1086,70 @@
   /* Pagination footer of the table system. NOTE (13-17): OwnerUsersPage
      finished the ruling-#5 migration — it renders .table-pagination with
      ChevronLeft/ChevronRight icons, and the legacy .owner-pagination
-     block (owner.css) was deleted with the rest of the dead sweep. */
-  @media (hover: hover) and (pointer: fine) {
+     block (owner.css) was deleted with the rest of the dead sweep.
+     R362 (Agent 4) RESTORE: the same WAVE 7 deletion stripped the
+     recipe bodies while the five live consumers (OwnerUsers,
+     OwnerInstitutions, OwnerInstitutionDetail, OwnerActivity,
+     admin/TablePaginationFooter) kept rendering the markup — only
+     scoped islands (.r305ao et al) stayed styled. Body restored from
+     a584543c^ with the R362 seat upgrade: hover wash → --state-hover-bg,
+     the current page → the --state-selected-* triad (light: accent
+     soft/ink/border · dark: ember-tinted, both first-class). */
+  .table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border-block-start: 1px solid var(--rule);
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
   }
+  .table-pagination-actions { display: flex; align-items: center; gap: var(--sp-2); }
+  .table-pagination-actions button {
+    min-inline-size: 36px;
+    block-size: 36px;
+    padding-inline: var(--sp-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: var(--type-label-size);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .table-pagination-actions button:hover:not(:disabled) {
+      background: var(--state-hover-bg);
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+  }
+  .table-pagination-actions button.active,
+  .table-pagination-actions button[aria-current="page"] {
+    background: var(--state-selected-bg);
+    color: var(--state-selected-ink);
+    border-color: var(--state-selected-border);
+    font-weight: var(--fw-semibold);
+  }
+  .table-pagination-actions button:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
   @media (max-width: 640px) {
     /* 44px touch targets on phones (craft floor). */
+    .table-pagination-actions button { min-inline-size: 44px; min-block-size: 44px; }
     /* r151b (R5-A4 probe): the 7×44px button cluster (25 pages of the
        papers roster) measured 329px wide inside a 274px wrap at 360 —
        «التالي» was cut off the RTL leading edge. Wrap the cluster so
        the buttons reflow onto a second line instead of overflowing. */
+    .table-pagination-actions { flex-wrap: wrap; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
