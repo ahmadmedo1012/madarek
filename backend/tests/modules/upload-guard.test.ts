@@ -341,8 +341,14 @@ describe('GET /files/materials/:filename wiring (gated material serving)', () =>
     // ADMIN/QUALITY oversight is institution-bound (no per-row grant
     // inside the predicate); OWNER bypasses the row lookup entirely
     // via the platform-wide path.
+    // r363: the slice is bounded to the materials ROUTE HANDLER (it
+    // previously ran to end-of-file, which was fine until sibling
+    // code — the r363 lectures predicate — landed after this route;
+    // the pinned property is about THIS handler, not the whole file).
     const routeStart = filesRouteSource.indexOf("router.get('/materials/:filename'");
-    const routeSlice = filesRouteSource.slice(routeStart);
+    const handlerEnd = filesRouteSource.indexOf('catch (e) { next(e); }', routeStart);
+    expect(handlerEnd).toBeGreaterThan(routeStart);
+    const routeSlice = filesRouteSource.slice(routeStart, handlerEnd);
     expect(routeSlice).not.toContain('isPaperOversightRole(role)'); // moved into the where builder
     expect(filesRouteSource).toMatch(/\.\.\.\(isPaperOversightRole\(role\)/);
   });
