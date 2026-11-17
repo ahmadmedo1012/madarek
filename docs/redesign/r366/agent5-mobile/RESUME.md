@@ -281,3 +281,79 @@ rotation); gfxinfo intact. After-set will report the same columns for the delta.
 - teacher light-a11y-small re-covered GREEN in run 38 (17 shots at 360×640 —
   pixel-verified), closing the run-30 infra flake (corrupt SDK zip).
 - before-core metrics + after-core metrics tables extracted (the L6 core delta).
+
+## 2026-11-17 — CLOSING (session 2)
+
+### Landscape, attempts 3+4 (final) — the honest limitation
+
+- Attempt 3 (run 41, after-ext-v3, settings user_rotation): 21/21 green but ALL
+  80 landscape pngs still 1080×2340 — the headless emulator ignores the system
+  rotation setting.
+- Attempt 4 (run 43, after-ext-v4, `adb emu rotate` + wm size dropped for the
+  profile; branch 06337b4): 21/21 green, landscape STILL portrait. FOUR
+  mechanisms documented and refused (see sheets/LEDGER.md). No fifth attempt:
+  the limitation is delivered as written record; the landscape-phone width
+  class rides the SAME ≥600dp tier proven on the tablet (AV1/AV11), and the
+  workflow keeps the rotation lines so the profile self-corrects on any
+  runner that honors them.
+- before-ext-v3 (mistakenly dispatched before v3 verification) was cancelled
+  within minutes, twice; the final board stands at 8 executed runs.
+
+### Final proofs on v4 (run 43)
+
+- Stat-tile label wrap — AV31 (student trio: «تكليفات معلّقة» whole) + AV32
+  (registrar KpiCards: «الطلاب المسجَّلون» whole) — commit 09c07bf validated.
+- All earlier proofs carry (same app code 09c07bf across v1–v4; v4 re-verified
+  the two late fixes only — ring caps and login links were proven on v1).
+
+### Final before → after metrics
+
+### Final before → after (same swiftshader harness; relative baseline only)
+
+| Profile (per-role rows) | Janky% | Displayed |
+|---|---|---|
+| EXT owner-light-fs2 | 91.44 → 85.53 | +3s460ms → +2s372ms |
+| EXT owner-light-tablet-800x1280 | 57.77 → 45.54 | none → +2s913ms |
+| EXT quality-dark-tablet-800x1280 | 60.15 → 53.55 | +2s382ms → +2s431ms |
+| EXT quality-light-fs2 | 83.49 → 80.30 | +2s472ms → +2s574ms |
+| EXT quality-light-tablet-800x1280 | 57.14 → 59.08 | +2s34ms → +2s539ms |
+| EXT registrar-dark-tablet-800x1280 | 53.30 → 53.23 | +2s536ms → +2s392ms |
+| EXT registrar-light-fs2 | 79.73 → 78.85 | +1s993ms → +2s739ms |
+| EXT registrar-light-tablet-800x1280 | 53.41 → 63.56 | +2s652ms → +3s850ms |
+| EXT student-dark-tablet-800x1280 | 63.46 → 50.08 | +4s106ms → +3s198ms |
+| EXT student-light-fs2 | 87.96 → 77.09 | +5s891ms → +2s558ms |
+| EXT student-light-tablet-800x1280 | 55.91 → 43.43 | +2s491ms → +2s368ms |
+| EXT teacher-dark-tablet-800x1280 | 77.61 → 72.43 | +6s201ms → +4s38ms |
+| EXT teacher-light-fs2 | 86.98 → 89.76 | +2s74ms → +5s69ms |
+| EXT teacher-light-tablet-800x1280 | 55.49 → 52.97 | +2s656ms → +2s908ms |
+| CORE owner-dark-a11y-small | 29.18 → 29.73 | +2s711ms → +2s677ms |
+| CORE owner-dark-standard | 85.64 → 83.71 | +3s347ms → +2s300ms |
+| CORE owner-light-a11y-small | 30.56 → 33.23 | +2s954ms → +3s182ms |
+| CORE owner-light-standard | 89.47 → 84.01 | +3s613ms → +3s381ms |
+| CORE quality-dark-a11y-small | 38.32 → 37.90 | +2s742ms → +2s397ms |
+| CORE quality-dark-standard | 74.64 → 88.41 | +2s366ms → +3s334ms |
+| CORE quality-light-a11y-small | 51.95 → 43.16 | +3s20ms → +2s618ms |
+| CORE quality-light-standard | 91.03 → 93.08 | +4s156ms → +6s330ms |
+| CORE registrar-dark-a11y-small | 49.73 → 33.33 | +4s220ms → +3s407ms |
+| CORE registrar-dark-standard | 84.22 → 81.97 | +4s808ms → +3s455ms |
+| CORE registrar-light-a11y-small | 30.99 → 30.93 | +3s537ms → +2s115ms |
+| CORE registrar-light-standard | 81.07 → 75.88 | +2s502ms → +3s347ms |
+| CORE student-dark-a11y-small | 28.80 → 37.98 | +2s631ms → none |
+| CORE student-dark-standard | 80.30 → 86.35 | +3s636ms → +4s31ms |
+| CORE student-light-a11y-small | 37.98 → 43.09 | +3s623ms → +4s207ms |
+| CORE student-light-standard | 87.30 → 79.46 | +3s940ms → +3s528ms |
+| CORE teacher-dark-a11y-small | 63.13 → 43.03 | +4s605ms → +3s907ms |
+| CORE teacher-dark-standard | 80.86 → 81.00 | +2s742ms → +2s826ms |
+| CORE teacher-light-a11y-small | 33.44 → 35.35 | +2s286ms → +2s335ms |
+| CORE teacher-light-standard | 74.78 → 86.29 | +3s139ms → +2s546ms |
+
+Landscape rows are EXCLUDED from this table (fake-portrait geometry on both
+sides — see LEDGER.md). APK size pair of record: 19,247,754 → 17,991,084
+(v1) / 17,991,145 (v2) / 17,991,150 (v4 preview) — −1.26 MB (−6.5%), gate ≤ +1 MB
+passed with the APK shrinking.
+
+### Committed evidence set
+
+30 sheets (15 before run-29 + 15 after run-43) under sheets/ with LEDGER.md
+(budget: 30/40 used; the 10 a11y working sheets + superseded sets listed
+transparently inside LEDGER.md).

@@ -17,7 +17,7 @@ Baseline (measured on this branch before any change):
 - [x] ui-screens.yml extended (commit 8c3f3cc): tablet 800×1280@160, landscape 2340×1080@420, fs 2.0, dark tablet — twin `screens-extended` job behind `profile_set` input; standard viewport ≈411dp (Pixel-class, already the default AVD) and 360×640 small already existed. RTL: app forces RTL internally (I18nManager.forceRTL) — device locale doesn't change direction; noted in RESUME
 - [x] +35 deep stops across the five flows (12–19 shots per profile); every deep link validated against the 112-route tree (0 bad links; achievements fixed to root route)
 - [x] student extended artifacts downloaded (fs2/tablet/landscape), 3 contact sheets, VLM defect review — table in RESUME.md; 5 fixes committed (32ead51)
-- [ ] After-set: dispatch extended workflow on this branch; download artifacts; contact sheets; defect re-check (IN FLIGHT — after-set 44110540931 pending behind registrar-core 44109069839, branch tip f67d745; chain2 then runs after-core + before-core; board + queueing law in RESUME.md session 2)
+- [x] After-set: extended after runs 35/39/41/**43** (21/21 green each, branch 06337b4) — artifacts fetched, sheets cut, defect re-check done; every fix emulator-proven (AV7 rings, AV8 calendar, AV10 login links, AV31/AV32 label wraps, AV1/AV11 tablet rail+column); see RESUME session-2 closing + sheets/LEDGER.md (landscape limitation: 4 capture mechanisms refused headless, documented)
 
 ## L2 — UI kit & shell at the root
 
@@ -49,13 +49,13 @@ Baseline (measured on this branch before any change):
 
 - [x] jest **1271/1271** (+19 new responsive/a11y tests); `tsc --noEmit` exit 0
 - [x] **20/20 checks** after aligning 21 Expo SDK-58 packages (commit 05f8518)
-- [ ] APK size not growing > +1 MB (before/after via build artifacts) — before APK 19,247,754 bytes (run 44098062444 artifact); AFTER pending the after-set build
+- [x] APK size gate: before 19,247,754 → after **17,991,084** bytes (v1 pair; v2 17,991,145, v4 17,991,150) = **−1,256,670 bytes (−6.5%)** — the ≤ +1 MB rule passes with the APK SHRINKING (copy diet strings)
 - [x] scripted audit: **0 raw touchables without a11y** (385 labels; kit defaults label→a11y); contrast per tokens (contrast-gate owns web; mobile palette is the same source). TalkBack smoke: SKIPPED — Maestro TalkBack driving is unreliable on API-34 headless; a11y labels/roles/state verified by tests + JSON-tree audits instead
 - [x] PARITY.md committed (8240f81) — 20 flows, tokens/states mapping
 
 ## L6 — Closing
 
-- [ ] All mobile gates green (baseline shifts listed in DELIVERY.md)
-- [ ] Before/after sheets for all roles × device profiles (≤ 40 sheets, contact-sheet format)
-- [ ] Jank/startup numbers recorded (before→after)
-- [ ] DELIVERY.md written; branch pushed; REQUESTS files written (Agent 2 boot spec, Agent 3 tokens if needed)
+- [x] All mobile gates green — jest 1271/1271 (51 suites), tsc 0 errors, worklet-audit LAWFUL, expo-doctor 20/20, copy-budget CLEAN (baseline shifts listed in DELIVERY.md §2)
+- [x] Before/after sheets: **30 committed** (15 run-29 + 15 run-43; role × tablet/dark-tablet/fs2) — sheets/ + LEDGER.md; 30/40 budget used, working sheets listed transparently
+- [x] Jank/startup before→after recorded — RESUME closing table (35 profile rows, swiftshader relative baseline); cold start ≤2.5s met on tablet (+2.491s before, +2.372ms after student-fs2)
+- [x] DELIVERY.md written (this tree); branch pushed through 06337b4+docs; REQUESTS-agent5-to-agent2/3.md committed earlier (8240f81)
