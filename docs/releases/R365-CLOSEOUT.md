@@ -9,7 +9,7 @@ already unified on `main`. Every number below was re-measured from this machine 
 | Repository | `ahmadmedo1012/madarek` (public, default branch `main`) |
 | Verified `main` | `7a097457bdddba1d414bcab5d299abcf71c9bad6` — `docs(r364): record the post-merge truth …` |
 | PR #52 (R364 unification) | merged; every `agent/*` and `integration/*` branch is now an ancestor of `main` (0 commits ahead) |
-| Open pull requests | **0** (PR #50 closed — see §2) |
+| Open pull requests before this round | **0** — PR #50 closed as superseded (§2); this round ships as **PR #54** |
 | Ruleset `main — verified before merge (R364)` | **active**: pull request required, 13 required contexts, deletion and non-fast-forward blocked, repository-admin bypass |
 
 ## 1 · Live production verification (GET/HEAD only, no writes)
@@ -130,9 +130,11 @@ column, not a different event.
 `registrar@test.ly` (also two active memberships), called `/api/v1/search/discover`
 without selecting an institution, received `INSTITUTION_CONTEXT_REQUIRED`, and opened
 issue #51. The probe now follows the picker flow exactly like the web client and the
-deploy smoke. Verified by running the same sequence against production:
-`multi-membership seat — selecting <institution> (the picker flow)` →
-`search answered=true` → `ai config answered=true` → `fails=0`.
+deploy smoke, then verified in the real workflow: a dispatched run on the fix
+(`44084061933`) reports `health ok=true`, `multi-membership seat — selecting … (the
+picker flow)`, `search answered=true`, `ai config answered=true`, exit 0 — and the
+workflow's own auto-close step closed the standing issue #51. Locally the same
+sequence printed `fails=0`.
 
 ## 4 · Remaining blockers — external, and honestly separated
 
@@ -147,7 +149,7 @@ needs credentials, DNS, billing or an account decision (exact steps in
 | 2 | Transactional mail dead | **P1** | `MailOutbox`: **118 failed** (dead letters), **36 queued**, **1 stuck in `sending`**, 4 sent; `MAIL_FROM` still the shared Resend test sender; the provided Resend key is send-only, so domain status cannot be read from CI |
 | 3 | No scheduled off-site backup, no proven restore | **P1** | no backup workflow exists; `npm run db:backup` / `db:restore` are operator tools that deliberately do not upload; dumps must **not** be public GitHub artifacts in this public repository |
 | 4 | Render standby suspended, rollback window lapsing ~2026-11-28 | **P1** | `madarek.onrender.com` → `503`; `render.yaml` still declares `autoDeploy: true` and `MADAREK_TEST_ACCOUNTS: '1'` |
-| 5 | GitHub cron starvation | **P1/P2** | `tick.yml` is scheduled `*/5` but produced 11 runs in ~2.5 days (≈4.4/day, worst gap ~9 h); `soak.yml` `*/15` produced 4 runs in 4 days |
+| 5 | GitHub cron starvation | **P1/P2** | `tick.yml` is scheduled `*/5` but produced 11 runs in ~2.5 days (≈4.4/day, worst gap ~9.8 h); `soak.yml` `*/15` produced 4 runs in ~15 hours (expected ~60) |
 | 6 | Demo data drift (`MADAREK_TEST_ACCOUNTS` in production) | P2 | diagnosed above; needs an explicit keep/remove decision |
 
 ## 5 · Verdict
