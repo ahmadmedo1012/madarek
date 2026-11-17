@@ -2,6 +2,8 @@ import { View } from "react-native";
 import { humanizeError } from "@/lib/errors";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
+import ClipboardCheck from "lucide-react-native/icons/clipboard-check";
+import Star from "lucide-react-native/icons/star";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
 import { T } from "@/components/ui/text";
@@ -11,6 +13,7 @@ import { RowList, LedgerRow, StatLine } from "@/components/ui/data";
 import { Skeleton, SkeletonList, ErrorState } from "@/components/ui/states";
 import { qualityApi } from "@/api/quality";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { fromNow, latn, num } from "@/lib/format";
 import {
   SeverityChip,
@@ -22,6 +25,7 @@ import {
 
 /** (tabs) Quality reports — composite (web QualityReportsPage + dashboard sections). */
 export default function QualityReports() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const overview = useQuery({
     queryKey: ["quality", "overview", scope],
@@ -64,7 +68,7 @@ export default function QualityReports() {
               تقارير الجودة
             </T>
             <T variant="body" color="muted">
-              لوحات حيّة بدلاً من تقارير ثابتة — تُحدَّث مع كل عمليّة على المنصّة.
+              لوحات حيّة تُحدَّث مع كل عمليّة.
             </T>
           </View>
           <Badge label="قراءة فقط" tone="grey" />
@@ -174,9 +178,45 @@ export default function QualityReports() {
           )}
         </View>
 
+        {/* R362 — the sector's WORKFLOW screens get a home: exam
+            moderation and professor evaluation were fully built but had
+            ZERO inbound links (deep-link/search-only orphans). They ride
+            the ledger rhythm like every other menu row. */}
+        <View>
+          <SectionBar index={4} title="أدوات القطاع" />
+          <RowList>
+            <LedgerRow
+              onPress={() => router.push("/quality/exam-moderation" as never)}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <ClipboardCheck size={18} color={p.accentInk} />
+                <T variant="body" weight="medium">
+                  مراجعة الاختبارات
+                </T>
+              </View>
+              <T variant="sm" color="muted">
+                اعتماد أو رفض القوالب والأسئلة قبل النشر.
+              </T>
+            </LedgerRow>
+            <LedgerRow
+              last
+              onPress={() => router.push("/quality/professors" as never)}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <Star size={18} color={p.accentInk} />
+                <T variant="body" weight="medium">
+                  تقييم الأساتذة
+                </T>
+              </View>
+              <T variant="sm" color="muted">
+                التزام الهيئة بالمناهج ومؤشرات الأداء.
+              </T>
+            </LedgerRow>
+          </RowList>
+        </View>
+
         <T variant="xs" color="faint">
-          إصدار التقارير القابلة للتحميل (PDF/Excel) قيد التطوير. حاليّاً يمكنك الاعتماد على اللوحات الحيّة — كلّ
-          الأرقام تُحدَّث فوريًّا مع البيانات في قاعدة المنصّة.
+          التقارير القابلة للتحميل (PDF/Excel) قيد التطوير — الأرقام أعلاه حيّة.
         </T>
       </View>
     </Screen>

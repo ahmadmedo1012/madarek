@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { del, get, patch, post } from "@/api/client";
-import type { AppNotification, Message, Paginated } from "@/api/types";
+import { get, patch, post } from "@/api/client";
+import type { AppNotification, Paginated } from "@/api/types";
 
 /**
  * Notifications & messages — the real in-app inbox (backend has no remote
@@ -57,41 +57,11 @@ export function safeDeepLink(link: string | null | undefined): string | null {
   return link;
 }
 
-export function useMessages(page = 1, limit = 30) {
-  return useQuery({
-    queryKey: ["messages", page],
-    queryFn: () => get<Paginated<Message>>("/me/messages", { page, limit }),
-    placeholderData: (prev) => prev,
-  });
-}
-
-export function useSendMessage() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (payload: { toUserId: string; body: string }) => post<Message>("/me/messages", payload),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["messages"] });
-      qc.invalidateQueries({ queryKey: ["notifications"] });
-    },
-  });
-}
-
-export function useMarkAllMessagesRead() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: () => post("/me/messages/read-all"),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["messages"] });
-    },
-  });
-}
-
-export function useDeleteConversation() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (messageId: string) => del(`/me/messages/${messageId}`),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["messages"] });
-    },
-  });
-}
+/* R362 — the four `/me/messages/*` hooks that used to live here are
+ * deleted: the generated OpenAPI registers no `/me/messages` routes
+ * (the live inbox rides `/messages` via studentApi — MessagesUI), so
+ * every exported hook was a latent 404 landmine consumed by nothing.
+ * `useUnreadCount` above now reads real `meta.unread`: the R362
+ * envelope passthrough stopped stripping the paginated sibling, so
+ * the tab/top-bar badges render for the first time since the
+ * key-presence unwrap landed. */

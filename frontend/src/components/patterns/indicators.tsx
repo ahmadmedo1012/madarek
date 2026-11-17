@@ -212,20 +212,29 @@ export function RulerGauge({
       </span>
       <span className="ind-ruler-numerals" aria-hidden="true">
         {[0, 25, 50, 75, 100].map((n) => (
-          <bdi
+          /* R325.l RTL seal: the POSITIONING span inherits the sheet's
+             direction (so `inset-inline-start` resolves against the RTL
+             ruler, the same axis the ticks ride); the <bdi dir="ltr">
+             inside only isolates the numeral's own digits. Putting
+             dir="ltr" on the positioned element made its inline-start
+             resolve as `left` while the ticks resolved as `right`, which
+             pushed the 100 numeral past the container's inline-end edge
+             (the clipped reading R359 caught in the student hero). */
+          <span
             key={n}
-            className="ind-mono ind-ruler-num"
-            dir="ltr"
+            className="ind-ruler-num"
             style={{
               insetInlineStart: `${n}%`,
-              /* RTL anchoring: the numeral's inline-start edge rides the
-                 tick — center the middle numerals on their tick and fold
-                 the two edge numerals inward so they never overflow. */
+              /* The numeral's inline-start edge rides the tick — center
+                 the middle numerals and fold the two edge numerals
+                 inward so nothing overflows the ruler. */
               transform: n === 0 ? undefined : n === 100 ? 'translateX(100%)' : 'translateX(50%)',
             }}
           >
-            {n}
-          </bdi>
+            <bdi className="ind-mono" dir="ltr">
+              {n}
+            </bdi>
+          </span>
         ))}
       </span>
     </span>

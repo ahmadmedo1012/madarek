@@ -31,6 +31,12 @@ import { SectionBar, BarCount, StatusChip, EmptyCell } from '../../components/st
 /* G النهائية: الترويسة على عقد patterns — السطح محادثة موطّنة داخل
    إطار العائلة نفسه (PageFrame/PageHeader) لا ودجات دردشة عامة. */
 import { PageFrame, PageHeader } from '../../components/patterns';
+/* r360: the working-drawing family — the idle workspace's concept net:
+ * while the transcript holds only the greeting, the assistant's field
+ * (three measured clusters, linked nodes, the isolate in signal ink —
+ * the gap it will look for) waits under the bubble, ≥720px only,
+ * decorative. Unmounts the moment real work arrives (greetingOnly). */
+import { TechnicalPlate } from '../../components/illustrations/technical/TechnicalPlate';
 import { Link } from 'react-router-dom';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
@@ -60,7 +66,7 @@ import {
   type AiCitation,
 } from '../../lib/ai-stream';
 import { queryClient } from '../../lib/queryClient';
-import { formatReplyBlocks } from './aiReplyFormat';
+import { formatReplyBlocks, splitInlineCode, type InlineSpan } from './aiReplyFormat';
 import '../../styles/ai.css'; /* r261: سطح المحادثة المركّز — البنية الجديدة فقط (.ai-layout/.ai-surface/.ai-gaps/.ai-composer) */
 import '../../styles/shared/research-heron.css'; /* R305-A7 «Heron»: لغة العائلة التقنيّة — يُستورد مباشرة بعد ai.css (عقد §0) */
 /* R319 (c3-S2): the sheet system — the §B2 component anatomy + the
@@ -234,21 +240,92 @@ function Multiline({ children }: { children: string }) {
   );
 }
 
-/** The assistant bubble's formatter-rendered content (r176c). */
+/* R362 (§F code rendering) — the inline `` `code` `` chip: an LTR mono
+ * run inside an RTL line (bidi plain text scrambles identifiers like
+ * fetch_user(); the embed keeps them legible). Pure span mapping, no
+ * HTML interpretation — the splitter (aiReplyFormat) only splits. */
+function InlineSpans({ line }: { line: string }) {
+  const spans: InlineSpan[] = splitInlineCode(line);
+  if (spans.length === 0) return null;
+  return (
+    <>
+      {spans.map((span, i) =>
+        'code' in span ? (
+          <code key={i} className="r305ai-code-inline" dir="ltr">
+            {span.code}
+          </code>
+        ) : (
+          <span key={i}>{span.text}</span>
+        ),
+      )}
+    </>
+  );
+}
+
+/* R362 (§F code rendering) — one fenced block: LTR, mono, horizontally
+ * scrollable (never a page-wide overflow), with its own copy verb —
+ * the code the assistant just produced is the thing a programming
+ * student most often lifts. The copy mirrors copyAnswer's honest
+ * pattern (no clipboard → no-op, no fake flash). */
+function CodeBlock({ lang, lines }: { lang: string | null; lines: string[] }) {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<number | null>(null);
+  useEffect(() => () => {
+    if (timer.current !== null) window.clearTimeout(timer.current);
+  }, []);
+  const copy = () => {
+    const clip = navigator.clipboard;
+    if (!clip) return;
+    clip
+      .writeText(lines.join('\n'))
+      .then(() => {
+        setCopied(true);
+        if (timer.current !== null) window.clearTimeout(timer.current);
+        timer.current = window.setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => undefined);
+  };
+  return (
+    <div className="r305ai-code-wrap">
+      <div className="r305ai-code-head" dir="ltr">
+        <span className="r305ai-code-lang">{lang ?? 'code'}</span>
+        <button
+          type="button"
+          className="r305ai-code-copy"
+          onClick={copy}
+          aria-label={copied ? 'تم النسخ' : 'نسخ الكود'}
+        >
+          <Icon icon={copied ? Check : Copy} size={12} />
+        </button>
+      </div>
+      <pre className="r305ai-code" dir="ltr">
+        <code>{lines.join('\n')}</code>
+      </pre>
+    </div>
+  );
+}
+
+/** The assistant bubble's formatter-rendered content (r176c).
+ *  R362 (§F): fenced code blocks render as LTR mono blocks; inline
+ *  `` `code` `` runs inside text/list lines render as mono chips. */
 function ReplyText({ text }: { text: string }) {
   return (
     <>
       {formatReplyBlocks(text).map((block, i) =>
-        block.kind === 'list' ? (
+        block.kind === 'code' ? (
+          <CodeBlock key={i} lang={block.lang} lines={block.lines} />
+        ) : block.kind === 'list' ? (
           <ul key={i} className="r305ai-list">
             {block.items.map((item, j) => (
-              <li key={j}>{item}</li>
+              <li key={j}>
+                <InlineSpans line={item} />
+              </li>
             ))}
           </ul>
         ) : (
           block.lines.map((line, j) => (
             <p key={`${i}-${j}`} className={line ? 'r305ai-line' : 'r305ai-line r305ai-line--breath'}>
-              {line}
+              <InlineSpans line={line} />
             </p>
           ))
         ),
@@ -378,6 +455,25 @@ export default function AiAssistantPage() {
       lastFocusedRef.current = null;
     }
   }, [busy]);
+
+  /* R362 (§F keyboard): Escape stops an in-flight stream — the stop
+   * button's keyboard parity. The listener mounts ONLY while a stream
+   * is live (idle phases never intercept Esc: the key keeps its native
+   * meaning for dialogs/composer elsewhere on the page), and it never
+   * swallows the event when a control above this page owns it (an open
+   * modal/sheet closes first — stopPropagation on their handlers keeps
+   * this a page-level fallback, which is the correct precedence). */
+  useEffect(() => {
+    if (streamPhase === 'idle') return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !e.defaultPrevented) {
+        e.preventDefault();
+        abortRef.current?.abort();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [streamPhase]);
 
   /* r176c (C3): auto-scroll only when the user is AT (or near ≤80px)
    * the bottom. A student who scrolled up to reread a definition must
@@ -750,7 +846,7 @@ export default function AiAssistantPage() {
     } catch (err) {
       // The transcript stays as-is; the affordance to re-open rides
       // the same id so retry retries the same conversation.
-      setConvLoad({ phase: 'error', id, message: apiErrorMessage(err, 'تعذَّر فتح المحادثة.') });
+      setConvLoad({ phase: 'error', id, message: apiErrorMessage(err, 'تعذّر فتحها.') });
     }
   };
 
@@ -1119,6 +1215,13 @@ export default function AiAssistantPage() {
                       )}
                     </div>
                   ))}
+                  {/* r360: the idle plate — the concept net while the
+                      workspace waits for its first question. greetingOnly
+                      is exactly the no-work-yet state; the first send
+                      grows the transcript and the drawing leaves. */}
+                  {greetingOnly && (
+                    <TechnicalPlate variant="knowledge" className="tech-plate-idle" />
+                  )}
                   {convLoad.phase === 'error' && (
                     <div className="chat-msg bot">
                       <RoleLabel who="bot" />
@@ -1262,9 +1365,8 @@ export default function AiAssistantPage() {
                     type="button"
                     className="btn accent chat-send ai-stop"
                     onClick={stopStreaming}
-                    aria-label="إيقاف التوليد"
-                    title="إيقاف التوليد"
-                  >
+                    aria-label="إيقاف التوليد (Esc)"
+                            >
                     <Icon icon={Square} size={14} />
                   </button>
                 ) : (
@@ -1306,8 +1408,14 @@ export default function AiAssistantPage() {
           {/* r164g — conversation management: list/switch/clear with the
               current-conversation indicator and a two-step delete confirm
               (clearing an exchange is irreversible — no accidental loss).
-              r261: العمود الجانبي يهبط أسفل السطح على الجوال (ai-layout). */}
-          <aside className="ai-side">
+              r261: العمود الجانبي يهبط أسفل السطح على الجوال (ai-layout).
+              R362 (§F a11y, the Sidebar/AnnotationsPanel precedent — r143
+              T1-f F3 / final-research D): a labeled <section> (region),
+              not <aside> — the rail renders INSIDE the shell's <main>
+              landmark, and axe's landmark-complementary-is-top-level
+              rule fires for a complementary landmark nested in main
+              (caught live by the r362 mobile states sweep at 360px). */}
+          <section className="ai-side" aria-label="محادثاتك وأسئلة مقترحة">
             {/* R319 (c3-S2): the sidebar's headings join the §B2 title-bar
                 register — [02] محادثاتك (the honest conversation count as
                 mono meta; the new-conversation door rides the bar's action
@@ -1371,7 +1479,7 @@ export default function AiAssistantPage() {
                         color="red"
                         icon={AlertCircle}
                         title="تعذَّر حذف المحادثة"
-                        description={apiErrorMessage(delConversation.error, 'لم تُحذف المحادثة.')}
+                        description={apiErrorMessage(delConversation.error, 'لم تُحذف.')}
                       />
                     </div>
                   )}
@@ -1460,7 +1568,7 @@ export default function AiAssistantPage() {
                 ))}
               </div>
             </Card>
-          </aside>
+          </section>
         </div>
       </PageFrame>
     </div>

@@ -44,7 +44,7 @@ import { RootSheetModalProvider } from "@/components/shell/SheetModalHost";
 import { haptics } from "@/haptics";
 import { loadRemoteConfig } from "../src/lib/remote-config";
 import { warmBackend } from "../src/api/client";
-import { ToastHost } from "@/components/ui/toast";
+import { ToastHost, toast } from "@/components/ui/toast";
 import { useSession } from "@/auth/session";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { installGlobalErrorHandlers, crumb } from "@/lib/telemetry";
@@ -71,6 +71,20 @@ const BOOT_T0 = Date.now();
 const bootMs = (mark: string) => `boot: ${mark} +${Date.now() - BOOT_T0}ms`;
 
 crumb(bootMs("app JS evaluated"));
+
+/* R362 — the toast haptics seat, finally wired. The queue engine has
+ * carried an onShow slot since R334 ("the lead wires haptics there")
+ * but nothing in production ever registered — only tests touched it.
+ * Registered at the ROOT (not in ToastHost) because the slot is single
+ * and the component-library tests own it during jest runs; jest never
+ * imports this file. Feedback toasts buzz through the same gated,
+ * throttled, kill-switchable module as every other haptic; info
+ * toasts stay silent (nothing happened worth a buzz). */
+toast.onShow((t) => {
+  if (t.kind === "success") haptics.notify("success");
+  else if (t.kind === "warning") haptics.notify("warning");
+  else if (t.kind === "error") haptics.notify("error");
+});
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 

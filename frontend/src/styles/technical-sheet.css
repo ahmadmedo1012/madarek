@@ -1,0 +1,310 @@
+/* technical-sheet.css — r359 · the app-side drafting plate.
+ *
+ * One drawing surface, layered in draw order: frame → grid → construction
+ * → envelope → partitions → fixtures → dimensions → annotations → markers
+ * → title block. Ink is currentColor (quiet page ink) with --grid-line for
+ * the construction field and --app-signal for the ONE marker. No fills,
+ * no shadows, no gradients; hairlines only (the sheet grammar).
+ *
+ * Motion: a single stroke-draw cascade (--t-cinema) plus a paper fade.
+ * Under prefers-reduced-motion the drawing is already complete — no
+ * animation, no dash offset, nothing to wait for.
+ */
+
+.technical-sheet {
+  color: var(--border-strong);
+  display: block;
+  inline-size: 100%;
+  pointer-events: none;
+  animation: tp-sheet-in var(--t-slow) var(--ease-out) both;
+}
+
+.technical-sheet svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+
+.technical-sheet svg [stroke],
+.technical-sheet svg line,
+.technical-sheet svg path,
+.technical-sheet svg circle,
+.technical-sheet svg rect {
+  vector-effect: non-scaling-stroke;
+}
+
+/* ── ink ladder ──────────────────────────────────────────────────── */
+.tp-frame {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1px;
+  opacity: 0.55;
+}
+
+.tp-grid line {
+  stroke: var(--grid-line);
+  stroke-width: 1px;
+  opacity: 0.28;
+}
+
+.tp-construct line,
+.tp-construct circle,
+.tp-construct path {
+  fill: none;
+  stroke: var(--grid-line);
+  stroke-width: 1px;
+  opacity: 0.5;
+}
+
+.tp-envelope rect,
+.tp-envelope line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4px;
+  opacity: 0.8;
+}
+
+.tp-partition line,
+.tp-partition path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1px;
+  opacity: 0.58;
+}
+
+.tp-fixture rect,
+.tp-fixture line,
+.tp-fixture path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1px;
+  opacity: 0.4;
+}
+
+.tp-stipple circle {
+  fill: currentColor;
+  opacity: 0.4;
+}
+
+.tp-dim line {
+  stroke: currentColor;
+  stroke-width: 1px;
+  opacity: 0.5;
+}
+
+.tp-note line {
+  stroke: currentColor;
+  stroke-width: 1px;
+  opacity: 0.35;
+}
+
+/* Annotation ink is real text, not linework: it must clear 4.5:1 on the
+ * paper (and its dark flip), so it rides --text-secondary at full
+ * opacity. The faintness of the plate lives in the hairlines, never in
+ * unreadable labels. */
+.tp-note text,
+.tp-title text {
+  fill: var(--text-secondary);
+  opacity: 1;
+}
+
+.tp-text {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-sm);
+  letter-spacing: 0;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.tp-text--strong {
+  fill: var(--text-secondary);
+  font-weight: var(--fw-semibold);
+}
+
+.tp-text--dim {
+  fill: var(--text-secondary);
+}
+
+.tp-north circle,
+.tp-north path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1px;
+  opacity: 0.6;
+}
+
+.tp-title line {
+  stroke: currentColor;
+  stroke-width: 1px;
+  opacity: 0.4;
+}
+
+.tp-mark circle,
+.tp-mark path {
+  fill: none;
+  stroke: var(--app-signal);
+  stroke-width: 1.6px;
+}
+
+.tp-mark circle {
+  fill: var(--app-signal);
+  stroke: none;
+}
+
+.tp-cut line,
+.tp-cut path {
+  fill: none;
+  stroke: var(--app-signal);
+  stroke-width: 1px;
+  opacity: 0.6;
+}
+
+/* The cut LINE is the signal; its A–A labels are reading text, so they
+ * stay on the ink ladder (the orange remains a geometry marker). */
+.tp-cut text {
+  fill: var(--text-secondary);
+}
+
+/* ── the stroke-draw cascade ─────────────────────────────────────── */
+.technical-sheet .tp-line,
+.technical-sheet .tp-grid line,
+.technical-sheet .tp-construct line,
+.technical-sheet .tp-construct circle,
+.technical-sheet .tp-construct path,
+.technical-sheet .tp-dim line,
+.technical-sheet .tp-cut line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: tp-draw var(--t-cinema) var(--ease-out) forwards;
+}
+
+.technical-sheet .tp-grid line {
+  animation-delay: calc(var(--t-fast) * 0.5);
+}
+
+.technical-sheet .tp-construct line,
+.technical-sheet .tp-construct circle,
+.technical-sheet .tp-construct path {
+  animation-delay: calc(var(--t-fast) * 1);
+}
+
+.technical-sheet .tp-envelope rect,
+.technical-sheet .tp-envelope line {
+  animation-delay: calc(var(--t-fast) * 1.5);
+}
+
+.technical-sheet .tp-partition line,
+.technical-sheet .tp-partition path {
+  animation-delay: calc(var(--t-fast) * 2);
+}
+
+.technical-sheet .tp-fixture rect,
+.technical-sheet .tp-fixture line {
+  animation-delay: calc(var(--t-fast) * 2.5);
+}
+
+.technical-sheet .tp-dim line {
+  animation-delay: calc(var(--t-fast) * 3);
+}
+
+.technical-sheet .tp-cut line {
+  animation-delay: calc(var(--t-fast) * 3.5);
+}
+
+.technical-sheet .tp-note,
+.technical-sheet .tp-title,
+.technical-sheet .tp-mark {
+  animation: tp-fade var(--t-slow) var(--ease-out) both;
+}
+
+.technical-sheet .tp-note {
+  animation-delay: calc(var(--t-fast) * 2.5);
+}
+
+.technical-sheet .tp-title {
+  animation-delay: calc(var(--t-fast) * 3);
+}
+
+.technical-sheet .tp-mark {
+  animation-delay: calc(var(--t-fast) * 3.5);
+}
+
+@keyframes tp-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes tp-sheet-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tp-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .technical-sheet,
+  .technical-sheet .tp-line,
+  .technical-sheet .tp-grid line,
+  .technical-sheet .tp-construct line,
+  .technical-sheet .tp-construct circle,
+  .technical-sheet .tp-construct path,
+  .technical-sheet .tp-envelope rect,
+  .technical-sheet .tp-envelope line,
+  .technical-sheet .tp-partition line,
+  .technical-sheet .tp-partition path,
+  .technical-sheet .tp-fixture rect,
+  .technical-sheet .tp-fixture line,
+  .technical-sheet .tp-dim line,
+  .technical-sheet .tp-cut line,
+  .technical-sheet .tp-note,
+  .technical-sheet .tp-title,
+  .technical-sheet .tp-mark {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* ── the auth seat — a drawing in the sheet's free margin ─────────── */
+/* Guest surfaces (login / register / recovery) carry one technical
+ * plate in the inline-end margin. It is decorative chrome: fixed,
+ * pointer-transparent, behind the form column, and only mounted where
+ * there is real margin for it (≥1280px). Below that the plate would
+ * crowd the 620–720px form, so it is not rendered at all — the frame
+ * and grain already carry the sheet on small screens. */
+/* r360 fix: the sheet-in animation fills `both`, so its final
+ * opacity:1 keyframe permanently beats any declared opacity on the
+ * animated root — the quieting rides the un-animated svg child
+ * instead (0.9 × the root's fade = the intended plate presence).
+ * Same fix applied to the plate seats in technical-plates.css. */
+.tech-sheet-auth svg {
+  opacity: 0.9;
+}
+
+.tech-sheet-auth {
+  position: fixed;
+  inset-block-start: 50%;
+  inset-inline-end: var(--sp-5);
+  z-index: 0;
+  inline-size: min(22vw, 340px);
+  translate: 0 -50%;
+}
+
+@media (max-width: 1399px) {
+  .tech-sheet-auth {
+    display: none;
+  }
+}

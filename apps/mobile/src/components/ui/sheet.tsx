@@ -7,8 +7,10 @@ import X from "lucide-react-native/icons/x";
 import type { BottomSheetFooterProps } from "@gorhom/bottom-sheet";
 import { usePalette } from "@/design/theme";
 import { heronEase, motion, sp, touchFloor } from "@/design/tokens";
+import { scaledTouchFloor } from "@/design/type";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
 import { T } from "./text";
+import { InlineBusy } from "./boot";
 import { Button } from "./pressables";
 import { Hairline } from "./surfaces";
 
@@ -445,7 +447,7 @@ export function ActionSheet({
                 a.onPress();
               }}
               style={({ pressed }) => ({
-                minHeight: touchFloor,
+                minHeight: scaledTouchFloor(),
                 justifyContent: "center",
                 backgroundColor: pressed ? p.surfaceHover : "transparent",
                 paddingHorizontal: sp[12],
@@ -556,9 +558,17 @@ export function PickerSheet({
   return (
     <AppSheet open={open} onClose={onClose} title={title} snap="md" dynamic>
       {loading ? (
-        <T variant="body" color="muted">
-          جارٍ التحميل…
-        </T>
+        /* R362 — same loading vocabulary as OptionSheet: InlineBusy
+           with the progressbar role, not bare muted text. */
+        <View
+          accessibilityRole="progressbar"
+          style={{ minHeight: 48, justifyContent: "center", alignItems: "center" }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <InlineBusy size={12} color={p.textMuted} />
+            <T variant="sm" color="muted">جارٍ التحميل…</T>
+          </View>
+        </View>
       ) : options.length === 0 ? (
         <T variant="body" color="muted">
           {emptyLabel}
@@ -579,7 +589,7 @@ export function PickerSheet({
                     onClose();
                   }}
                   style={({ pressed }) => ({
-                    minHeight: touchFloor,
+                    minHeight: scaledTouchFloor(),
                     justifyContent: "center",
                     backgroundColor: pressed ? p.surfaceHover : "transparent",
                     paddingHorizontal: sp[12],

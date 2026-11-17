@@ -25,6 +25,10 @@ import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR, formatDateTimeAr } from '
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
 import { PageFrame, PageHeader as PatternPageHeader, RowList, RowItem, StatLine } from '../../components/patterns';
+/* r360: the working-drawing family — the no-grades-yet companion: the
+ * mastery ladder (five measured levels, the signal on the current one)
+ * in the chart card's free margin, ≥1024px only, decorative. */
+import { TechnicalPlate } from '../../components/illustrations/technical/TechnicalPlate';
 /* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar, the
  * BarCount meta, the mono status chip, the hatched empty cell + the
  * today week strip (the pages-B sweep's shared barrel for this file's
@@ -1042,7 +1046,10 @@ export function ResultsPage() {
           so the page's one data visualization starts at the fold. */}
       <Card title="درجاتك حسب المقرّر" icon={Activity} subtitle={hasGrades ? 'النسبة المرجَّحة' : undefined} className="results-chart-card">
         {!hasGrades ? (
-          <EmptyState illustration="empty-list" title="لا درجات بعد" />
+          <>
+            <TechnicalPlate variant="progress" className="tech-plate-margin" />
+            <EmptyState illustration="empty-list" title="لا درجات بعد" />
+          </>
         ) : (
           // 5-A6 P1-2 — ChartFrame: the canvas gains role=img + an
           // accessible name, a prose summary and a visually-hidden data

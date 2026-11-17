@@ -43,6 +43,10 @@ import { useEntityPageTitle } from '../../components/layout/AppShell';
 /* R319 (c3-S2) — the §B2 kit: the hatched empty cell (the AchievementsPage
  * tab panels' honest empties). */
 import { EmptyCell } from '../../components/student';
+/* r360: the working-drawing family — the empty catalogue's companion:
+ * the route survey (waypoints, station dots, the goal in signal ink)
+ * drawn in the card's free margin, ≥1024px only, decorative. */
+import { TechnicalPlate } from '../../components/illustrations/technical/TechnicalPlate';
 import '../../styles/training.css'; // training surfaces + shared families this module owns (D11 css split, 12-15)
 /* R305 Heron: the shared student vocabulary + the supplemental family's
    page-scoped refinements (the achievements deep strip — §2 of that sheet). */
@@ -240,7 +244,8 @@ export default function TrainingCatalogPage() {
         <Card>
           {/* r305 (2-c): خريطة العصبة — «المقرّرات empty-courses» لمحتوى
               التعلّم (كانت empty-community)؛ أرضية المجتمع تبقى على
-              أسطح المجتمع فقط. */}
+              أسطح المجتمع فقط. r360: + المسح المساري في الهامش. */}
+          <TechnicalPlate variant="pathway" className="tech-plate-margin" />
           <EmptyState
             icon={BookOpen}
             title="لا مسارات بعد"

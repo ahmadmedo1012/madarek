@@ -102,6 +102,24 @@ import { TEST_PASSWORD } from '../src/modules/auth/test-accounts.data.js';
 const prisma = new PrismaClient();
 
 async function main() {
+  // ─── r363 (audit A-1/E-11) — production demo-content gate ──────
+  // The demo corpus AND ensureTestAccounts plant publicly documented
+  // credentials — including a platform OWNER on owner@test.ly /
+  // 12345678 — and the root build chains db:deploy → db:seed on every
+  // deploy, so production received (and re-healed) those accounts
+  // silently. Seeding demo content in production is now an EXPLICIT
+  // operator opt-in: MADAREK_TEST_ACCOUNTS=1 (the same switch the boot
+  // path already honours — src/server.ts). Dev and test environments
+  // bootstrap exactly as before (NODE_ENV != production).
+  const isProd = process.env.NODE_ENV === 'production';
+  const allowDemoContent = !isProd || process.env.MADAREK_TEST_ACCOUNTS === '1';
+  if (!allowDemoContent) {
+    console.log(
+      'ℹ بذرة r363: بيئة إنتاج بلا MADAREK_TEST_ACCOUNTS=1 — لا تُزرع حسابات العرض المعروفة ولا بيانات العرض التوضيحية؛ اضبط المتغير صراحةً لتفعيلها / production install: demo corpus and documented @test.ly accounts are NOT seeded. Set MADAREK_TEST_ACCOUNTS=1 to opt in deliberately.',
+    );
+    return;
+  }
+
   // ─── r183 — established-database guard ────────────────────────
   // A NORMAL redeploy must never touch an established database: with
   // any users present the seed skips ENTIRELY (zero writes). Fresh
@@ -2027,9 +2045,15 @@ async function main() {
 // file). Deploy-time seeding on Render runs with NODE_ENV=production
 // BY DESIGN; the only deliberately repeating writes are the
 // documented demo-password resets and catalogue metadata refreshes.
+// r363 (audit A-1): "BY DESIGN" is now conditional — the demo corpus
+// and the documented @test.ly accounts land in production ONLY when
+// the operator opts in with MADAREK_TEST_ACCOUNTS=1 (see the gate at
+// the top of main()); without it a production seed is a no-op.
 if (process.env.NODE_ENV === 'production') {
   console.log(
-    'ℹ بذرة r183: إنشاء-فقط عند التشغيل الأولي أو الواعي (FORCE) — كلمات مرور العرض تُضبط للقيمة الموثقة في مسار FORCE فقط، والقاعدة المؤسَّسة تُتخطى بالكامل في النشر العادي.',
+    process.env.MADAREK_TEST_ACCOUNTS === '1'
+      ? 'ℹ بذرة r183: إنشاء-فقط عند التشغيل الأولي أو الواعي (FORCE) — كلمات مرور العرض تُضبط للقيمة الموثقة في مسار FORCE فقط، والقاعدة المؤسَّسة تُتخطى بالكامل في النشر العادي. (MADAREK_TEST_ACCOUNTS=1 — محتوى العرض مفعَّل صراحةً.)'
+      : 'ℹ بذرة r363: بيئة إنتاج بلا MADAREK_TEST_ACCOUNTS=1 — البذرة لا تكتب شيئًا (لا حسابات عرض ولا بيانات توضيحية). / production without the opt-in: the seed writes nothing.',
   );
 }
 

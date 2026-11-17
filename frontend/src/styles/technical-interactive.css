@@ -1,0 +1,259 @@
+/* technical-interactive.css — r362 (Agent 3) · the interactive family.
+ *
+ * The r359 sheet grammar (technical-sheet.css) owns the tp-* ink
+ * ladder; this sheet owns ONLY what that family never had:
+ *  · the scroll-draw engine — one progress var per drawing (--cf-p /
+ *    --cr-p, written imperatively by the landing band's driver) mapped
+ *    to a local --dp, then derived per element through windowed
+ *    stroke-dashoffset (solid strokes, pathLength=1) or opacity
+ *    (dashed guides, whose own dasharray the draw technique would
+ *    clobber). Default progress is 1: JS-off, pre-driver, and
+ *    reduced-motion all ship the COMPLETE drawing — the reveal
+ *    family's never-hide law, inherited verbatim.
+ *  · the interactive states — node activation (hover / focus-visible /
+ *    aria-pressed), the pointer instrument (guides, crosshair, mono
+ *    coordinate readout), and the measurement chains. Ink for the
+ *    interaction rides the ink ladder (heavier stroke, full opacity);
+ *    the signal orange stays reserved for the drawing's ONE marker,
+ *    the crosshair, and the live measurement line — the family's
+ *    sparing-signal law, kept.
+ *
+ * Gate compliance (the family's own contract, re-asserted):
+ *  · colors: var() only — no literal anywhere in this sheet.
+ *  · type: the tp-text class carries the mono register; nothing here
+ *    sizes text.
+ *  · radius: none (square corners are the sheet grammar).
+ *  · spacing: none (SVG geometry; the section sheet owns seats).
+ *  · motion: every duration/easing consumes the --t- and --ease- rungs;
+ *    transitions animate paint only (opacity, stroke-width); the
+ *    reduced-motion belt completes every drawing and freezes the
+ *    interactive transitions — interactions stay live, motionless.
+ */
+
+/* ── the roots: quiet ink + the per-drawing progress mapping ─────── */
+.cf-sheet {
+  color: var(--border-strong);
+  display: block;
+  inline-size: 100%;
+  --dp: var(--cf-p, 1);
+}
+
+.cr-sheet {
+  color: var(--border-strong);
+  display: block;
+  inline-size: 100%;
+  --dp: var(--cr-p, 1);
+}
+
+.cf-svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+  cursor: crosshair;
+}
+
+.cf-svg line,
+.cf-svg path,
+.cf-svg circle,
+.cf-svg rect,
+.cf-svg [stroke],
+.cf-svg [vector-effect] {
+  vector-effect: non-scaling-stroke;
+}
+
+/* ── the family's rungs, extended to the elements the r359 sheet never
+ * drew (path envelopes, station circles). Same ink-ladder values as
+ * technical-sheet.css — scoped here so the r359/r360 plates' bytes stay
+ * untouched (the family extends, never rewrites). */
+.cf-svg .tp-envelope path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4px;
+  opacity: 0.8;
+}
+
+.cf-svg .ti-station {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4px;
+}
+
+/* ── the scroll-draw engine ──────────────────────────────────────── */
+/* The engine's law: px-TYPED bounds. Chrome drops clamp() over var()
+ * tokens when the bounds stay unitless — the value coerces to px at
+ * the property but the bounds stay numbers, the types mismatch, and
+ * the clamp silently falls away (verified live: calc(1 - clamp(...))
+ * computed to -3.92px instead of 0). The * 1px middle term types the
+ * whole comparison; the bounds hold. dasharray 1 + pathLength 1 keep
+ * the offset in the same unit space (1 user unit = the whole path). */
+.cf-sheet .ti-draw,
+.cr-sheet .ti-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1px - clamp(0px, (var(--dp, 1) - var(--a, 0)) / var(--b, 1) * 1px, 1px));
+}
+
+/* the fade lane: bare arithmetic — opacity's USED value bounds itself
+ * at [0,1] by spec, so the clamp's absence can never overshoot into
+ * paint; clamp over var() is the same unreliable quirk, dropped. */
+.cf-sheet .ti-fade,
+.cr-sheet .ti-fade {
+  opacity: calc((var(--dp, 1) - var(--a, 0)) / var(--b, 1));
+}
+
+/* ── the pointer law: every chrome layer is pointer-transparent.
+ * Only the stations own the pointer — the measurement chains, the
+ * annotation ink, the signal mark and the readout render ABOVE the
+ * stations (draw order), and opacity:0 does NOT remove hit-testing,
+ * so without this they would steal the hover right off the stations. */
+.cf-svg .ti-meas,
+.cf-svg .tp-note,
+.cf-svg .tp-mark,
+.cf-svg .ti-readout,
+.cf-svg text {
+  pointer-events: none;
+}
+
+/* ── the node seats: hover / focus-visible / activation ──────────── */
+.cf-svg .ti-node {
+  cursor: pointer;
+}
+
+.cf-svg .ti-hit {
+  fill: none;
+  stroke: none;
+  pointer-events: all;
+}
+
+/* ── the measurement chains: the datum's live answer ────────────── */
+.cf-svg .ti-meas line {
+  stroke: var(--app-signal);
+  stroke-width: 1.2px;
+  fill: none;
+}
+
+.cf-svg .ti-station,
+.cf-svg .ti-gate line {
+  transition: stroke-width var(--t-fast) var(--ease-out);
+}
+
+.cf-svg .ti-ring {
+  opacity: 0;
+  stroke: var(--app-signal);
+  stroke-width: 1.2px;
+  fill: none;
+  transition: opacity var(--t-fast) var(--ease-out);
+}
+
+.cf-svg .ti-node:hover .ti-station,
+.cf-svg .ti-node:focus-visible .ti-station,
+.cf-svg .ti-node[aria-pressed='true'] .ti-station {
+  stroke-width: 2.4px;
+}
+
+.cf-svg .ti-node:hover .ti-gate line,
+.cf-svg .ti-node:focus-visible .ti-gate line,
+.cf-svg .ti-node[aria-pressed='true'] .ti-gate line {
+  stroke-width: 2.4px;
+}
+
+.cf-svg .ti-node:hover .ti-ring,
+.cf-svg .ti-node:focus-visible .ti-ring,
+.cf-svg .ti-node[aria-pressed='true'] .ti-ring {
+  opacity: 1;
+}
+
+/* ── the legs: activation re-inks the connections the node owns ──── */
+.cf-field[data-active='C1'] .ti-leg[data-nodes~='C1'],
+.cf-field[data-active='C2'] .ti-leg[data-nodes~='C2'],
+.cf-field[data-active='C3'] .ti-leg[data-nodes~='C3'],
+.cf-field[data-active='C4'] .ti-leg[data-nodes~='C4'],
+.cr-route[data-active='G1'] .ti-leg[data-nodes~='G1'],
+.cr-route[data-active='G2'] .ti-leg[data-nodes~='G2'],
+.cr-route[data-active='G3'] .ti-leg[data-nodes~='G3'],
+.cr-route[data-active='G4'] .ti-leg[data-nodes~='G4'],
+.cr-route[data-active='T'] .ti-leg[data-nodes~='T'] {
+  stroke: currentColor;
+  stroke-width: 1.8px;
+  opacity: 1;
+}
+
+/* ── the measurement chains: the datum's live answer (reveal) ────── */
+.cf-svg .ti-meas {
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease-out);
+}
+
+.cf-field[data-active='C1'] .ti-meas[data-node='C1'],
+.cf-field[data-active='C2'] .ti-meas[data-node='C2'],
+.cf-field[data-active='C3'] .ti-meas[data-node='C3'],
+.cf-field[data-active='C4'] .ti-meas[data-node='C4'] {
+  opacity: 1;
+}
+
+/* ── the pointer instrument: guides + crosshair + readout ────────── */
+.cf-svg .ti-guides {
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease-out);
+}
+
+.cf-svg[data-point='on'] .ti-guides {
+  opacity: 1;
+}
+
+.cf-svg .ti-guide {
+  stroke: currentColor;
+  stroke-width: 1px;
+  opacity: 0.32;
+  fill: none;
+}
+
+.cf-svg .ti-guide--v {
+  transform: translateX(calc(var(--ti-x, 0) * 1px));
+}
+
+.cf-svg .ti-guide--h {
+  transform: translateY(calc(var(--ti-y, 0) * 1px));
+}
+
+.cf-svg .ti-plus {
+  stroke: var(--app-signal);
+  stroke-width: 1.4px;
+  fill: none;
+  transform: translate(calc(var(--ti-x, 0) * 1px), calc(var(--ti-y, 0) * 1px));
+}
+
+.cf-svg .ti-readout {
+  fill: var(--text-secondary);
+}
+
+/* coarse pointers never see the instrument — there is no pointer to
+ * track; the nodes stay tappable, the drawing stays complete. */
+@media (hover: none) {
+  .cf-svg .ti-guides,
+  .cf-svg .ti-readout {
+    display: none;
+  }
+}
+
+/* ── the reduced-motion belt: the complete, motionless sheet ─────── */
+@media (prefers-reduced-motion: reduce) {
+  .cf-sheet .ti-draw,
+  .cr-sheet .ti-draw {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+
+  .cf-sheet .ti-fade,
+  .cr-sheet .ti-fade {
+    opacity: 1;
+  }
+
+  .cf-svg .ti-station,
+  .cf-svg .ti-gate line,
+  .cf-svg .ti-ring,
+  .cf-svg .ti-meas,
+  .cf-svg .ti-guides {
+    transition: none;
+  }
+}

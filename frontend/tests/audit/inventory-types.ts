@@ -227,4 +227,15 @@ export const KNOWN_DURATIONS_MS: ReadonlyArray<number> = [
   // the frozen spec's measured value, not an ad-hoc literal; ×90
   // findings on `/` until folded in — same convention as r164/r190.
   300,
+  // r362 integration: --t-cinema's CURRENT rung. The r164 entry above
+  // folded the token at its then-value 720ms; the generated ladder has
+  // since moved --t-cinema to 900ms (tokens.generated.css), and no
+  // audited surface consumed it until the r359–r361 working-drawing
+  // family (TechnicalSheet on /auth + /auth/register, TechnicalPlate
+  // on the student/quality/teacher surfaces) drew its tp-draw stroke
+  // cascade with it — animation-only, consumers reference the token,
+  // never a re-spelled value; ×444 findings until folded in. The 720
+  // rung above is now orphaned (no consumer resolves to it) — it
+  // retires with the next list harvest.
+  900,
 ];

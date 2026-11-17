@@ -340,6 +340,13 @@ export default function ExamTakerScreen() {
   const [confirmEverOpened, setConfirmEverOpened] = useState(false);
   if (navOpen && !navEverOpened) setNavEverOpened(true);
   if (confirming && !confirmEverOpened) setConfirmEverOpened(true);
+  /* R362 — the exit guard: the back arrow / edge swipe popped a LIVE
+     attempt with zero confirmation (submit had a confirm; exit had
+     none). The guard sheet rides the same mount-on-first-open latch as
+     the navigator + submit confirms. */
+  const [exitOpen, setExitOpen] = useState(false);
+  const [exitEverOpened, setExitEverOpened] = useState(false);
+  if (exitOpen && !exitEverOpened) setExitEverOpened(true);
 
   const startedRef = useRef(false);
   const autoSubmittedRef = useRef(false);
@@ -383,7 +390,7 @@ export default function ExamTakerScreen() {
         if (detail === "لم يفتح باب هذا الاختبار بعد" && listedExam?.openAt) {
           setStartError(`لم يفتح باب هذا الاختبار بعد — يفتح ${dateTime(listedExam.openAt)}.`);
         } else {
-          setStartError(detail || "تعذَّر بدء الاختبار — تحقّق من اتصالك وحاول مرة أخرى.");
+          setStartError(detail || "تعذَّر بدء الاختبار — تحقّق من اتصالك.");
         }
       }
     })();
@@ -682,8 +689,8 @@ export default function ExamTakerScreen() {
 
   const finalityNote =
     listedExam?.kind === "PRACTICE"
-      ? "بعد التسليم لا يمكنك تعديل إجاباتك — يمكنك بدء محاولة تدريبية جديدة لاحقاً."
-      : "بعد التسليم لا يمكنك تعديل إجاباتك أو إعادة المحاولة.";
+      ? "بعد التسليم لا تعديل — يمكنك بدء محاولة تدريبية لاحقاً."
+      : "بعد التسليم لا تعديل ولا إعادة.";
 
   /* ── render: post-submit result ─────────────────────────────────── */
   if (result) {
@@ -710,7 +717,7 @@ export default function ExamTakerScreen() {
             <EmptyState
               icon={<Hourglass size={28} color={tones.yellow.ink} />}
               title="انتهت مدة هذه المحاولة"
-              message="انتهى وقت المحاولة دون تسليم — لا تُحتسب لها نتيجة ولا يمكن إعادتها."
+              message="انتهى الوقت دون تسليم — لا نتيجة ولا إعادة."
             />
             <Button label="العودة للقائمة" onPress={() => router.push("/student/online-exams" as never)} />
           </>
@@ -744,7 +751,7 @@ export default function ExamTakerScreen() {
             <EmptyState
               icon={<CheckCircle2 size={28} color={tones.mint.ink} />}
               title="لقد أكملت هذا الاختبار مسبقاً"
-              message="لا يمكن إعادة المحاولة بعد التسليم — راجع نتيجتك من قائمة الاختبارات."
+              message="لا إعادة بعد التسليم — راجع نتيجتك من الاختبارات."
             />
             <Button label="العودة للقائمة" onPress={() => router.push("/student/online-exams" as never)} />
           </>
@@ -791,6 +798,7 @@ export default function ExamTakerScreen() {
       <StackHeader
         title={attempt.title ?? listedExam?.title ?? "الاختبار"}
         kicker={`${latn(total)} سؤال · أُجيب عن ${latn(answeredCount)}`}
+        onBack={() => setExitOpen(true)}
         right={
           <ExamCountdown
             expiresAtMs={clock.expiresAtMs}
@@ -852,7 +860,7 @@ export default function ExamTakerScreen() {
         {total === 0 || !current ? (
           <EmptyState
             title="لا توجد أسئلة في هذا الاختبار"
-            message="لم يُعتمد أي سؤال لهذه الورقة بعد — يمكنك تسليم المحاولة كما هي."
+            message="لم يُعتمد سؤال بعد — يمكنك تسليم المحاولة كما هي."
           />
         ) : (
           <Card style={{ gap: sp[10] }}>
@@ -1193,6 +1201,27 @@ export default function ExamTakerScreen() {
           destructive
           loading={submitting}
           onConfirm={() => void submitAttempt()}
+        />
+      ) : null}
+
+      {/* R362 — exit confirmation: leaving a live attempt is recoverable
+          (answers autosave; IN_PROGRESS attempts resume from the exam
+          center), but the user deserves to KNOW that before the pop —
+          the bare back arrow read as data loss. Cold deep links (no
+          history under the runner) land on the exam list. */}
+      {exitEverOpened ? (
+        <ConfirmSheet
+          open={exitOpen}
+          onClose={() => setExitOpen(false)}
+          title="مغادرة الاختبار؟"
+          message="إجاباتك محفوظة — يمكنك إكمال المحاولة قبل انتهاء الوقت."
+          confirmLabel="مغادرة"
+          destructive
+          onConfirm={() => {
+            setExitOpen(false);
+            if (router.canGoBack()) router.back();
+            else router.replace("/student/online-exams" as never);
+          }}
         />
       ) : null}
     </Screen>

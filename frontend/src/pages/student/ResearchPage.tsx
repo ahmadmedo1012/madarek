@@ -9,6 +9,7 @@ import {
 import { FormField, ProgressBar } from '../../components/primitives';
 import { ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
+import { UploadDropZone } from '../../components/pdf/UploadDropZone';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
 import { validatePdfFileDeep, pdfUploadErrorMessage } from '../../lib/pdfUpload';
@@ -714,21 +715,28 @@ function UploadModal({
           </select>
         </FormField>
 
-        <FormField
-          label="ملف البحث (PDF، اختياري)"
-          id={fileId}
-          hint="PDF فقط، حتى 20 ميغابايت."
-          error={fileError ?? undefined}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            className="input upload-file-input"
-            accept="application/pdf,.pdf"
-            onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
-            disabled={isPending}
-          />
-        </FormField>
+        {/* R362 (§G upload experience): the field region is ALSO a drop
+            target — a dropped file routes through the SAME pickFile
+            path (deep validation + the same inline error seat + the
+            same progress bar); the native input stays the keyboard /
+            screen-reader control. */}
+        <UploadDropZone onFile={pickFile} disabled={isPending}>
+          <FormField
+            label="ملف البحث (PDF، اختياري)"
+            id={fileId}
+            hint="PDF فقط، حتى 20 ميغابايت."
+            error={fileError ?? undefined}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="input upload-file-input"
+              accept="application/pdf,.pdf"
+              onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
+              disabled={isPending}
+            />
+          </FormField>
+        </UploadDropZone>
 
         {/* P3: the picked-file row — name + a 44px remove target. */}
         {file && (

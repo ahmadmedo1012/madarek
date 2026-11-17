@@ -623,14 +623,24 @@ router.post(
 
       // One transaction: the cohort lands whole or not at all — a
       // half-created class is the worst possible registrar outcome.
+      // r363 (audit E-1): argon2 hashing runs BEFORE the transaction —
+      // ~100 ms per row inside the default 5 s interactive-transaction
+      // timeout aborted real imports with P2028 (500-row cohort ≈ 50 s
+      // of hashing while holding row locks); the native threadpool
+      // self-throttles the parallel hashing, the transaction now only
+      // does the writes.
+      const prepared = await Promise.all(
+        okRows.map(async (row) => {
+          const tempPassword = generateTempPassword();
+          return { row, tempPassword, passwordHash: await hashPassword(tempPassword) };
+        }),
+      );
       const created = await prisma.$transaction(async (tx) => {
         const sheet: { name: string; email: string; universityId: string; tempPassword: string }[] = [];
         // R350 E3 — activation mail payload per created account (sent
         // post-commit; the sheet stays the registrar's fallback).
         const activation: { userId: string; email: string; name: string; tempPassword: string }[] = [];
-        for (const row of okRows) {
-          const tempPassword = generateTempPassword();
-          const passwordHash = await hashPassword(tempPassword);
+        for (const { row, tempPassword, passwordHash } of prepared) {
           const user = await tx.user.create({
             data: {
               email: row.email!,
@@ -703,6 +713,10 @@ router.post(
         }
       })();
 
+      // r363 (audit C-9): the sheet carries plaintext one-time temp
+      // passwords — the response must never sit in any shared/proxy
+      // cache. Body shape unchanged.
+      res.setHeader('Cache-Control', 'no-store');
       res.status(201).json({
         data: {
           created: created.sheet.length,
@@ -726,12 +740,49 @@ router.post(
   requireRole(Role.ADMIN, Role.OWNER),
   async (req, res, next) => {
     try {
+      const id = req.params.id!;
+      const actor = req.user!;
+      // r363 (audit B-1): an ADMIN minting a reset link for another user
+      // is a governance act — the target must hold an ACTIVE membership
+      // in the caller's DB-verified institution (403 otherwise) and sit
+      // inside the caller's faculty scope, exactly like PATCH /users/:id
+      // above. Before this guard any unscoped ADMIN of institution A
+      // could mint a one-time takeover link for ANY active account
+      // platform-wide (including the platform OWNER or institution B's
+      // admins). OWNER keeps the platform-wide path; self-mint stays
+      // free (it is equivalent to the authenticated forgot-password
+      // flow for an account you already control).
+      if (actor.id !== id && actor.role === Role.ADMIN) {
+        const callerInstitution = await resolveCallerInstitutionScope(actor.id, actor.institutionId);
+        if (!callerInstitution) throw institutionContextRequiredError();
+        const targetMembership = await prisma.membership.findFirst({
+          where: {
+            userId: id,
+            institutionId: callerInstitution,
+            isActive: true,
+            institution: { status: 'ACTIVE' },
+          },
+          select: { id: true },
+        });
+        if (!targetMembership) {
+          throw AppError.forbidden('هذا المستخدم ليس عضواً في مؤسستك');
+        }
+        const target = await loadGovernanceTarget(id, callerInstitution);
+        if (!target) throw AppError.notFound('المستخدم غير موجود');
+        const scopeFacultyId = await getGovernanceScope(actor.id);
+        assertWithinScope(scopeFacultyId, target);
+      }
       const { mintResetTokenForUser } = await import('../../modules/auth/password-reset.service.js');
-      const token = await mintResetTokenForUser(req.params.id!, req.user!.id);
+      const token = await mintResetTokenForUser(id, actor.id);
+      // r363 (audit A-3 sibling): production URLs come from APP_ORIGIN
+      // only — the Origin echo was a poisoning vector on this
+      // handed-out link too. Dev/test keeps the proxy convenience.
       const rawOrigin =
-        (typeof req.headers.origin === 'string' && /^https?:\/\/[^/]+/.test(req.headers.origin)
+        env.NODE_ENV !== 'production' &&
+        typeof req.headers.origin === 'string' &&
+        /^https?:\/\/[^/]+/.test(req.headers.origin)
           ? req.headers.origin
-          : (env.APP_ORIGIN ?? 'http://localhost:5173'));
+          : (env.APP_ORIGIN ?? 'http://localhost:5173');
       const url = `${rawOrigin.replace(/\/+$/, '')}/auth/reset-password?token=${encodeURIComponent(token)}`;
       res.status(201).json({
         data: {

@@ -23,6 +23,10 @@ import { ErrorState, EmptyState, ChartSkeleton, ListSkeleton, TableSkeleton, Ske
 import { useCompactRosterBand, COURSE_UNIT } from '../admin/AdminPages'; // R341 deadcode reconciliation — one definition (see the Professor Evaluation note)
 import { CountIn } from '../../components/motion/CountIn';
 import { Icon } from '../../components/Icon';
+/* r361: the working-drawing family — the quality dashboard's no-courses
+ * companion: the mastery ladder (the measurement instrument this very
+ * family reads) in the card's free margin, ≥1024px only, decorative. */
+import { TechnicalPlate } from '../../components/illustrations/technical/TechnicalPlate';
 import { api, unwrap } from '../../lib/api';
 import { formatRelativeArShort, WEEKDAY_NAMES_AR, countAr } from '../../lib/format';
 import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15)
@@ -730,7 +734,7 @@ export function QualityCoursesPage() {
         <Card title="المقرّرات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={8} /></Card>
       ) :
        c.isError ? <ErrorState message="تعذّر تحميل المقرّرات" error={c.error} onRetry={() => c.refetch()} /> :
-       !courses?.length ? <Card><EmptyState
+       !courses?.length ? <Card><TechnicalPlate variant="progress" className="tech-plate-margin" /><EmptyState
          illustration="empty-list"
          icon={BookOpen}
          title={debouncedQ ? 'لا نتائج مطابقة' : 'لا مقرّرات'}

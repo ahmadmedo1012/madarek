@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { Link } from 'react-router-dom';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { Icon } from '../../components/Icon';
+import { TechnicalSheet } from '../../components/illustrations/technical/TechnicalSheet';
 import { Logo } from '../../brand';
 import { useRequestPasswordReset } from '../../hooks/useAuth';
 import { useThemeSync } from '../../components/layout/ThemeToggle';
@@ -80,6 +81,7 @@ export default function ForgotPasswordPage() {
         <span className="auth-mark auth-mark-br" />
       </div>
       <div className="auth-grain" aria-hidden="true" />
+      <TechnicalSheet className="tech-sheet-auth" />
 
       <header className="auth-top">
         <Link to="/auth" className="auth-back-home">

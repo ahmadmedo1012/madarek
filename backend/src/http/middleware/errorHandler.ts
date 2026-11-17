@@ -5,6 +5,7 @@ import { logger } from '../../logger.js';
 import { prisma } from '../../db.js';
 import { AppError, type ErrorCode } from '../../lib/errors.js';
 import { raiseOperationalAlert } from '../../lib/operational-alerts.js';
+import { requestIdOf } from './requestId.js';
 
 /**
  * Final error middleware. Order matters: register LAST.
@@ -17,7 +18,7 @@ import { raiseOperationalAlert } from '../../lib/operational-alerts.js';
  * write alert rows — the feed must reflect server faults, not client
  * noise any user can mint at will.
  */
-export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
+export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // Headers already flushed (e.g. a response stream crashed mid-write):
   // a JSON error status can no longer be sent — writing one would throw
   // into Express's default handler. Delegate instead; it logs the error
@@ -29,7 +30,7 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
 
   if (err instanceof AppError) {
     if (err.status >= 500) {
-      logger.error({ err }, 'Unhandled AppError');
+      logger.error({ err, requestId: requestIdOf(req) }, 'Unhandled AppError');
       void raiseOperationalAlert(prisma, {
         severity: 'error',
         code: `APP_${err.code}`,
@@ -95,7 +96,7 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
     res.status(rejectStatus).json({ error: envelope });
     return;
   }
-  logger.error({ err }, 'Unhandled error');
+  logger.error({ err, requestId: requestIdOf(req) }, 'Unhandled error');
   // Unhandled error → 500 → also feed the OWNER operational alert board.
   void raiseOperationalAlert(prisma, {
     severity: 'error',

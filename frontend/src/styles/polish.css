@@ -1606,22 +1606,16 @@
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  INPUT / SELECT / TEXTAREA — R313 (WP-D · D16)                 ║
-     ║  Heron focus recipe: the #ED4C1F signal border, hairline-only  ║
-     ║  (the accent HALO is retired — no box-shadows on fields).      ║
+     ║  R362 (Agent 4) — RETIRED DUPLICATE: the overrides layer        ║
+     ║  carried this v15 mirror (transition + the raw #ED4C1F focus   ║
+     ║  border) two rounds after the value was tokenized as           ║
+     ║  --input-focus-signal (R353 P4) and one round after the       ║
+     ║  components.css INPUTS section became the sole recipe owner.   ║
+     ║  Identical computed values, so deleting the twin changes       ║
+     ║  nothing rendered — it removes the last raw focus literal      ║
+     ║  and the stale "token seat pending" note. components.css owns  ║
+     ║  the input focus language end-to-end now.                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .input,
-  input[type="text"], input[type="search"], input[type="email"],
-  input[type="password"], input[type="number"], input[type="url"],
-  input[type="tel"], input[type="date"], input[type="time"],
-  textarea, select {
-    /* R313 (D16): the reference's .45s border-color transition — the
-       nearest motion rung (--t-slow, 500ms). */
-    transition: border-color var(--t-slow) var(--ease);
-  }
-  .input:focus,
-  input:focus, textarea:focus, select:focus {
-    border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (live digest inputs.focus; token seat pending — worklog note) */
-  }
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗

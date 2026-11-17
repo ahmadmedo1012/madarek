@@ -35,6 +35,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Check from "lucide-react-native/icons/check";
 import CheckCheck from "lucide-react-native/icons/check-check";
 import Send from "lucide-react-native/icons/send";
+import ArrowRight from "lucide-react-native/icons/arrow-right";
 import { ApiError } from "@/api/client";
 import { studentApi } from "@/api/student";
 import type { Message } from "@/api/types";
@@ -93,7 +94,7 @@ function MutedChip({ label }: { label: string }) {
  *  natively; disk caching is on by default). */
 const GREY_BLURHASH = "LG[[{0000000000000000000000";
 
-export function MessagesUI() {
+export function MessagesUI({ onBack }: { onBack?: () => void } = {}) {
   const p = usePalette();
   const qc = useQueryClient();
   const insets = useSafeAreaInsets();
@@ -152,13 +153,23 @@ export function MessagesUI() {
           backgroundColor: p.surface,
         }}
       >
+        {/* R362 — pushed instances (/student/messages, /teacher/messages)
+            get a back affordance: the custom header had none, so the only
+            way out was the edge swipe / hardware back — inconsistent with
+            every other pushed screen. The RTL back arrow points right
+            (IconButton child, same grammar as StackHeader). */}
+        {onBack ? (
+          <IconButton accessibilityLabel="رجوع" onPress={onBack}>
+            <ArrowRight size={22} color={p.text} />
+          </IconButton>
+        ) : null}
         <View style={{ flex: 1, gap: 0 }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
             <T variant="h4" weight="bold">الرسائل</T>
             {unread > 0 ? <MutedChip label={`${latn(unread > 99 ? 99 : unread)} غير مقروءة`} /> : null}
           </View>
           <T variant="xs" color="muted">
-            كل رسالة وصلتك أو أرسلتها عبر المنصّة — ردّ على الواردة من هنا.
+            كل رسالة وصلتك أو أرسلتها عبر المنصّة — ردّ على الواردة.
           </T>
         </View>
         {unread > 0 ? (

@@ -10,8 +10,10 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePalette, useStatusTones } from "@/design/theme";
+import { scaledTouchFloor } from "@/design/type";
 import { sp, type StatusToneName } from "@/design/tokens";
 import { T } from "./text";
+import { InlineBusy } from "./boot";
 import { Button } from "./pressables";
 
 /** Hairline divider — the Heron separator. */
@@ -244,7 +246,19 @@ export function OptionSheet({
   return (
     <Sheet open={open} onClose={onClose} title={title}>
       {loading ? (
-        <T variant="body" color="muted">جارٍ التحميل…</T>
+        /* R362 — the busy seat joins the kit's loading vocabulary
+           (InlineBusy + progressbar role), not bare muted text: a
+           picker that is fetching reads as WORKING to screen readers,
+           matching Button/LoadingState. */
+        <View
+          accessibilityRole="progressbar"
+          style={{ minHeight: 48, justifyContent: "center", alignItems: "center" }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <InlineBusy size={12} color={p.textMuted} />
+            <T variant="sm" color="muted">جارٍ التحميل…</T>
+          </View>
+        </View>
       ) : options.length === 0 ? (
         <T variant="body" color="muted">{emptyLabel}</T>
       ) : (
@@ -258,7 +272,8 @@ export function OptionSheet({
               onClose();
             }}
             style={({ pressed }) => ({
-              minHeight: 48,
+              /* R362 — scaled row floor (the type module's own law). */
+              minHeight: Math.max(48, scaledTouchFloor()),
               justifyContent: "center",
               backgroundColor: pressed ? p.surfaceHover : "transparent",
               paddingHorizontal: sp[8],

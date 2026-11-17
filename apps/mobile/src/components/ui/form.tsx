@@ -184,6 +184,11 @@ export function FormScreen({
   const actionBar = (
     <View style={[{ gap: sp[12] }, actionStyle]}>
       {shownError ? (
+        /* R362 — the error banner joins the FEEDBACK family (rose): the
+           old accentInk/accentSoft wash read as brand-orange — the same
+           hue as the primary CTA — exactly the semantic.ts law
+           ("danger is a feedback tone, never an accent"). Border/icon
+           ride the saturated fill; the text seat is the AA ink. */
         <View
           accessibilityRole="alert"
           style={{
@@ -191,14 +196,14 @@ export function FormScreen({
             alignItems: "flex-start",
             gap: sp[8],
             borderWidth: StyleSheet.hairlineWidth,
-            borderColor: p.accentInk,
-            backgroundColor: p.accentSoft,
+            borderColor: tones.rose.ink,
+            backgroundColor: tones.rose.bg,
             paddingHorizontal: sp[12],
             paddingVertical: sp[10],
           }}
         >
-          <TriangleAlert size={15} color={p.accentInk} />
-          <T variant="sm" style={{ flex: 1, color: p.accentInk }}>
+          <TriangleAlert size={15} color={tones.rose.ink} />
+          <T variant="sm" style={{ flex: 1, color: tones.rose.deep }}>
             {shownError}
           </T>
         </View>

@@ -22,6 +22,25 @@ export const AUDIT_ROUTES = [
   '/',                        // HomeRedirect → landing for guests
   '/auth',                    // login
   '/auth/register',           // registration
+  // R362 (Agent 5 recalibration): the auth-recovery sheets + the
+  // public marketing/legal sheets + /app joined the sweep — they are
+  // real renderable routes (multi-line <Route> rows in App.tsx the
+  // original table predated). /admin/sync was REMOVED (fictional — no
+  // such route exists in the router; WS-F6's recalibration note).
+  '/auth/forgot-password',
+  '/auth/reset-password',
+  '/auth/verify-email',
+  '/capabilities',
+  '/legal/privacy',
+  '/legal/terms',
+  '/legal/cookies',
+  '/legal/accessibility',
+  '/legal/security',
+  '/legal/data',
+  '/about',
+  '/help',
+  '/contact',
+  '/app',
   '/404',                     // NotFoundPage
 
   // ── student (STUDENT-guarded) ──────────────────────────────────
@@ -93,7 +112,6 @@ export const AUDIT_ROUTES = [
   '/admin/students',
   '/admin/teachers',
   '/admin/permissions/:id',
-  '/admin/sync',
   '/admin/community',
   '/admin/faculties',
   '/admin/courses',
@@ -102,8 +120,13 @@ export const AUDIT_ROUTES = [
   '/admin/reports',
   '/admin/settings',
   '/admin/alerts',
+  // R362: the registrar console surfaces the original table missed.
+  '/admin/directory',
+  '/admin/people/:id',
+  '/admin/mail',
+  '/admin/import',
 
-  // ── quality (QUALITY/ADMIN-guarded) ────────────────────────────
+  // ── quality (QUALITY-guarded) ─────────────────────────────────
   '/quality/dashboard',
   '/quality/courses',
   '/quality/professors',
@@ -115,7 +138,7 @@ export const AUDIT_ROUTES = [
   '/quality/community',
   '/quality/notifications',
 
-  // ── owner (OWNER-guarded) ──────────────────────────────────────
+  // ── owner (OWNER-guarded) ─────────────────────────────────────
   '/owner/dashboard',
   '/owner/users',
   '/owner/activity',
@@ -129,6 +152,8 @@ export const AUDIT_ROUTES = [
   '/owner/institutions',
   '/owner/institutions/:slug',
   '/owner/notifications',
+  // R362: the pilot feedback inbox (r323 B3.6).
+  '/owner/feedback',
 
   // ── shared (any authenticated role; swept as STUDENT) ──────────
   '/vision',
@@ -139,6 +164,8 @@ export const AUDIT_ROUTES = [
   '/colleges/:id',
   '/competitions',
   '/competitions/:id',
+  // R362: the any-auth account settings door (R320 cycle-3 P2-1).
+  '/settings',
 ] as const;
 
 export type AuditRoute = typeof AUDIT_ROUTES[number];

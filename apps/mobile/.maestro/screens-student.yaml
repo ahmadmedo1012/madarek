@@ -1,24 +1,18 @@
-# R357-UI — A5 evidence: walk the app's real screens on the CI emulator.
-#
-# The mobile shell (top bar, tab bar, safe areas, sheets, empty/loading
-# states, font scale) had never been SEEN by anyone: no emulator runs on
-# the author's machine, and unit tests cannot see layout. This flow walks
-# the student's five tabs and captures one screenshot per stop, so the
-# screens come back as CI artifacts (a contact sheet is cut from them).
-#
-# Anchors are testIDs only — the r349-P5b lesson: Arabic TEXT anchors do
-# not resolve reliably in Maestro on Android, resource-ids do. The login
-# uses the seeded student account against the production API the release
-# build bakes in (the same path smoke-alive.yaml already walks).
+# R358 role capture: student; selected appearance is set through account settings.
 appId: ly.madarek.mobile
-name: "R357 screens — the student shell"
+name: "R358 screens — student"
 ---
+# R362 — clearState: every run starts from the welcome sheet (fresh
+# session + default light theme), which makes a flaky-emulator RETRY
+# possible (a warm relaunch would land on the dashboard and fail the
+# very first assertion). Matches smoke-alive's cold-boot pattern.
 - launchApp:
     clearState: true
 - extendedWaitUntil:
     visible:
       id: "welcome-title"
     timeout: 120000
+- takeScreenshot: "screens/00-welcome"
 - scrollUntilVisible:
     element:
       id: "welcome-cta"
@@ -30,9 +24,11 @@ name: "R357 screens — the student shell"
     visible:
       id: "login-email"
     timeout: 30000
+- takeScreenshot: "screens/01-login"
 - tapOn:
     id: "login-email"
 - inputText: "student@test.ly"
+- hideKeyboard
 - tapOn:
     id: "login-password"
 - inputText: "12345678"
@@ -40,35 +36,57 @@ name: "R357 screens — the student shell"
     id: "login-submit"
 - extendedWaitUntil:
     visible:
-      id: "tab-courses"
+      id: "tab-dashboard"
     timeout: 120000
-# 01 — dashboard (the home tab is selected after login)
-- takeScreenshot: screens/01-dashboard
+- openLink: "madarek://settings"
+- extendedWaitUntil:
+    visible:
+      id: "settings-title"
+    timeout: 30000
+- takeScreenshot: "screens/02-settings-before-theme"
+- tapOn:
+    id: "seg-${THEME_ID}"
+# R362 — the applied-theme evidence: the settings screen re-renders in
+# the new theme instantly (zustand, no reload); this shot + the
+# before-shot are the pair a reviewer compares. The wait also proves
+# the theme switch did not unmount the screen (its own regression
+# class from R358's seg-tap fix).
+- extendedWaitUntil:
+    visible:
+      id: "settings-title"
+    timeout: 10000
+- takeScreenshot: "screens/03-settings-after-theme"
+- openLink: "madarek://student/dashboard"
+- extendedWaitUntil:
+    visible:
+      id: "role-tab-bar"
+    timeout: 30000
+- takeScreenshot: "screens/student-03-dashboard"
 - tapOn:
     id: "tab-courses"
 - extendedWaitUntil:
     visible:
       id: "tab-courses"
     timeout: 30000
-- takeScreenshot: screens/02-courses
+- takeScreenshot: "screens/student-04-courses"
 - tapOn:
     id: "tab-ai"
 - extendedWaitUntil:
     visible:
       id: "tab-ai"
     timeout: 30000
-- takeScreenshot: screens/03-ai
+- takeScreenshot: "screens/student-05-ai"
 - tapOn:
     id: "tab-alerts"
 - extendedWaitUntil:
     visible:
       id: "tab-alerts"
     timeout: 30000
-- takeScreenshot: screens/04-alerts
+- takeScreenshot: "screens/student-06-alerts"
 - tapOn:
     id: "tab-profile"
 - extendedWaitUntil:
     visible:
       id: "tab-profile"
     timeout: 30000
-- takeScreenshot: screens/05-profile
+- takeScreenshot: "screens/student-07-profile"

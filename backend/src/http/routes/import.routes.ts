@@ -145,14 +145,29 @@ function decodeFile(fileBase64: string): Buffer {
  * consumed): a client-supplied arbitrary key would be a read primitive
  * over the whole store. The row's declared size bounds the read, and
  * the key re-passes the driver-side belt.
+ *
+ * r363 (audit D-5): pass the CALLER to bind the ticket to its minter —
+ * a key learned by another registrar must not become their read
+ * primitive over a foreign roster (PII). OWNER keeps the platform-wide
+ * read. The refusal reuses the unknown-key message — no existence
+ * oracle for a foreign ticket. Callers that pass no caller (legacy
+ * internal/tests) skip the binding.
  */
-export async function readUploadByKey(storageKey: string): Promise<Buffer> {
+export async function readUploadByKey(
+  storageKey: string,
+  caller?: { id: string; role: string },
+): Promise<Buffer> {
   if (!storageKeyIsValid(storageKey) || !storageKey.startsWith('imports/')) {
     throw AppError.badRequest('مفتاح الرفع غير صالح');
   }
   const ticket = await prisma.importUpload.findUnique({ where: { key: storageKey } });
   if (!ticket) throw AppError.badRequest('مفتاح الرفع غير معروف — ابدأ الرفع من جديد');
   if (ticket.consumedAt) throw AppError.badRequest('هذا الملف مُستهلك بالفعل — ارفعه مرة أخرى');
+  if (caller && caller.role !== 'OWNER' && ticket.mintedBy !== caller.id) {
+    // Same envelope as an unknown key — a foreign ticket's existence is
+    // not the caller's business.
+    throw AppError.badRequest('مفتاح الرفع غير معروف — ابدأ الرفع من جديد');
+  }
   const storage = getStorage();
   const buf = await storage.get(storageKey);
   if (buf === null) throw AppError.badRequest('الملف المرفوع لم يصل إلى التخزين — أعد المحاولة');
@@ -163,9 +178,33 @@ export async function readUploadByKey(storageKey: string): Promise<Buffer> {
 }
 
 /** The parse/preview/commit file loader: inline base64 OR storage key. */
-export async function loadFileBuffer(body: { fileBase64?: string; storageKey?: string }): Promise<Buffer> {
-  if (body.storageKey) return readUploadByKey(body.storageKey);
+export async function loadFileBuffer(
+  body: { fileBase64?: string; storageKey?: string },
+  caller?: { id: string; role: string },
+): Promise<Buffer> {
+  if (body.storageKey) return readUploadByKey(body.storageKey, caller);
   return decodeFile(body.fileBase64!);
+}
+
+/**
+ * r363 (audit B-4) — an ImportJob is tenant-scoped state (rows carry
+ * student PII; commit/rollback WRITE into the job's institution). The
+ * old `await resolveInstitutionId(req, job.institutionId)` calls
+ * DISCARDED the result, so the guard compared nothing: an ADMIN of
+ * institution A could read, commit, or roll back institution B's
+ * jobs. This helper makes the comparison explicit — a foreign job is
+ * a 404 (no existence leak), OWNER keeps the platform-wide path.
+ */
+async function assertJobInCallerScope(
+  req: Request,
+  job: { institutionId: string },
+): Promise<void> {
+  if (req.user!.role === Role.OWNER) return;
+  const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+  if (scope === null) throw institutionContextRequiredError();
+  if (scope !== job.institutionId) {
+    throw AppError.notFound('مهمة الاستيراد غير موجودة');
+  }
 }
 
 /** The transient-upload horizon: a ticket older than this is dead (the
@@ -342,7 +381,7 @@ router.post(
     try {
       const { institutionId, entity, sheetName, presetId } = req.body as z.infer<typeof fileBodySchema>;
       const instId = await resolveInstitutionId(req, institutionId);
-      const buf = await loadFileBuffer(req.body as { fileBase64?: string; storageKey?: string });
+      const buf = await loadFileBuffer(req.body as { fileBase64?: string; storageKey?: string }, req.user!);
       const sheets = detectFormat(buf) === 'XLSX' ? await listSheets(buf) : [];
       const grid = await loadGrid(buf, sheetName);
       if (grid.headers.length === 0) throw AppError.badRequest('الملف بلا ترويسة — الصف الأول يجب أن يحمل أسماء الأعمدة');
@@ -435,7 +474,7 @@ router.post(
     try {
       const { institutionId, entity, columnMap, createIfMissing, sheetName } = req.body as z.infer<typeof previewBodySchema>;
       const instId = await resolveInstitutionId(req, institutionId);
-      const buf = await loadFileBuffer(req.body as { fileBase64?: string; storageKey?: string });
+      const buf = await loadFileBuffer(req.body as { fileBase64?: string; storageKey?: string }, req.user!);
       const grid = await loadGrid(buf, sheetName);
       const { full, metas } = await customFields(instId, entity);
       const map = applyMappingProfile(grid.headers, columnMap as unknown as MappingProfile, metas);
@@ -639,7 +678,7 @@ router.post(
       const { duplicatePolicy, chunkSize, storageKey, sheetName, rowPolicies } = req.body as z.infer<typeof commitBodySchema>;
       const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
       if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
-      await resolveInstitutionId(req, job.institutionId);
+      await assertJobInCallerScope(req, job);
       if (job.status === 'COMPLETED') {
         throw AppError.badRequest('المهمة مكتملة بالفعل');
       }
@@ -658,7 +697,7 @@ router.post(
 
       // Re-read the source file and re-validate against the SAVED map —
       // the commit is grounded in the same bytes the preview judged.
-      const buf = await loadFileBuffer(req.body as { fileBase64?: string; storageKey?: string });
+      const buf = await loadFileBuffer(req.body as { fileBase64?: string; storageKey?: string }, req.user!);
       const grid = await loadGrid(buf, sheetName);
       const { full, metas } = await customFields(job.institutionId, job.entity as ImportEntity);
       const map = applyMappingProfile(grid.headers, job.columnMap as unknown as MappingProfile, metas);
@@ -716,10 +755,30 @@ router.post(
        * I-P2: action (CREATED|UPDATED|SKIPPED) + before (the update's
        * before-image) ride along so the rollback knows what to undo. */
       const rowOutcomes: { line: number; status: 'OK' | 'SKIPPED' | 'ERROR'; resultRef?: string; errorAr?: string; action?: 'CREATED' | 'UPDATED' | 'SKIPPED'; before?: object }[] = [];
+      /* r363 (audit E-1): argon2 runs BEFORE the chunk transactions —
+       * ~100 ms per row inside Prisma's default 5 s interactive-tx
+       * budget aborted real imports with P2028 (a 200-row chunk ≈ 20 s
+       * of hashing alone) while holding row locks. One temp password +
+       * hash per OK row, keyed by line; rows that end up UPDATED or
+       * SKIPPED by the duplicate policy simply never consume theirs. */
+      const preparedCredentials = new Map<number, { tempPassword: string; passwordHash: string }>();
+      await Promise.all(
+        okRows.map(async (row) => {
+          const tempPassword = generateTempPassword();
+          preparedCredentials.set(row.line, {
+            tempPassword,
+            passwordHash: await hashPassword(tempPassword),
+          });
+        }),
+      );
       for (let i = 0; i < okRows.length; i += chunkSize) {
         const chunk = okRows.slice(i, i + chunkSize);
         rowOutcomes.length = 0;
 
+        // r363 (audit E-1): an honest budget for the interactive chunk —
+        // hundreds of sequential per-row round trips legitimately exceed
+        // the 5 s default; P2028 now only fires on a genuinely stuck
+        // chunk (the commit stays resumable by design).
         await prisma.$transaction(async (tx) => {
           for (const row of chunk) {
             const m = row.mapped as {
@@ -803,13 +862,14 @@ router.post(
               rowOutcomes.push({ line: row.line, status: 'ERROR', errorAr: `البريد «${email}» مستخدم بحساب آخر` });
               continue;
             }
-            const tempPassword = generateTempPassword();
+            const prepared = preparedCredentials.get(row.line)!;
+            const tempPassword = prepared.tempPassword;
             const user = await tx.user.create({
               data: {
                 email,
                 firstName: m.firstName,
                 lastName: m.lastName,
-                passwordHash: await hashPassword(tempPassword),
+                passwordHash: prepared.passwordHash,
                 role: Role.STUDENT,
               },
             });
@@ -898,7 +958,7 @@ router.post(
               },
             });
           }
-        });
+        }, { timeout: 30_000, maxWait: 10_000 });
 
         await prisma.importJob.update({
           where: { id: job.id },
@@ -1027,7 +1087,7 @@ router.get(
     try {
       const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
       if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
-      await resolveInstitutionId(req, job.institutionId);
+      await assertJobInCallerScope(req, job);
       res.json({ data: job });
     } catch (e) {
       next(e);
@@ -1058,7 +1118,7 @@ router.post(
     try {
       const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
       if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
-      await resolveInstitutionId(req, job.institutionId);
+      await assertJobInCallerScope(req, job);
       if (job.status !== 'COMPLETED') throw AppError.badRequest('التراجع متاح للمهام المكتملة فقط');
       if (job.rolledBackAt) throw AppError.badRequest('هذه المهمة مردودة بالفعل — لا يمكن التراجع مرتين');
       if (Date.now() - job.updatedAt.getTime() > ROLLBACK_WINDOW_MS) {
@@ -1186,7 +1246,7 @@ router.get(
     try {
       const job = await prisma.importJob.findUnique({ where: { id: req.params.id } });
       if (!job) throw AppError.notFound('مهمة الاستيراد غير موجودة');
-      await resolveInstitutionId(req, job.institutionId);
+      await assertJobInCallerScope(req, job);
       const rows = await prisma.importRow.findMany({ where: { jobId: job.id }, orderBy: { line: 'asc' } });
       const buf = await buildImportReport(
         rows.map((r) => {

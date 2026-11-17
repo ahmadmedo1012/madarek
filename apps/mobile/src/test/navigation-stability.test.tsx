@@ -333,10 +333,33 @@ describe("AppTopBar — compact policy (identity moved to Profile)", () => {
     const src = readFileSync(join(ROOT, "src", "components", "shell", "AppTopBar.tsx"), "utf8");
     expect(src).toContain('accessibilityLabel="البحث"');
     expect(src).toContain("الإشعارات");
-    // the identity block + avatar/settings button are gone from the chrome
+    // the identity block + avatar button are gone from the chrome
     expect(src).not.toContain("currentInstitution");
     expect(src).not.toContain("initials");
-    expect(src).not.toContain('router.push("/settings")');
+  });
+
+  /* R362 — the settings seat is ROLE-GATED, not removed: ADMIN, QUALITY
+   * and OWNER have no Profile tab, so without a gear their shells had no
+   * path to /settings at all (no logout, no theme, no password change —
+   * trapped in-session). The gate below is the contract: the seat exists,
+   * it is keyed to exactly the three Profile-less roles, and STUDENT and
+   * TEACHER (who own the Profile tab) stay out of it. */
+  test("the settings gear exists for exactly the Profile-less roles (R362)", () => {
+    const src = readFileSync(join(ROOT, "src", "components", "shell", "AppTopBar.tsx"), "utf8");
+    expect(src).toContain("SETTINGS_SEAT_ROLES");
+    expect(src).toMatch(/SETTINGS_SEAT_ROLES = new Set\(\["ADMIN", "QUALITY", "OWNER"\]\)/);
+    expect(src).toContain('accessibilityLabel="الإعدادات"');
+    // the seat renders conditionally — never for every role
+    expect(src).toMatch(/\{showSettings \? \(/);
+  });
+
+  /* R362 — StackHeader's back must never strand a cold deep link: with
+   * empty history the old bare router.back() no-opped (or exited). The
+   * fallback lands on the role home. */
+  test("StackHeader backs through history, falling back to the role home (R362)", () => {
+    const src = readFileSync(join(ROOT, "src", "components", "shell", "AppTopBar.tsx"), "utf8");
+    expect(src).toContain("router.canGoBack()");
+    expect(src).toContain("ROLE_HOME[role]");
   });
 });
 
