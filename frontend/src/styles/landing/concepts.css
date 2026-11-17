@@ -1,0 +1,361 @@
+/* concepts.css — r362 (Agent 3) · the concepts band's seats.
+ *
+ * [05·ب] حقل المفاهيم — the band between the product proof and the
+ * why strip: the drawing language the whole page speaks, made
+ * explicit. Two acts — the triangulation net that CONSTRUCTS under
+ * scroll and answers the pointer (ConceptField), and the gated
+ * learning route whose stages the copy list drives (RouteSurvey).
+ * The drawings' own ink rides the tp-* grammar (technical-sheet.css
+ * + technical-interactive.css, imported by the drawing modules); this
+ * sheet owns only the section's structure: rules, the editorial
+ * head, the act grids, the annotation/stage ledgers, the honest
+ * disclosure.
+ *
+ * Conventions (pm/why precedent): full-bleed section with edge rules;
+ * soft ink at the family's measured 72% (light keeps the literal —
+ * the conformance twin — the dark arm re-points at the flipping
+ * token); display title on the D2 rung; Arabic line-height floor
+ * 1.35×; no raw hex outside the gated soft-ink literal; no radius
+ * (square corners are the sheet grammar); motion only through the
+ * token rungs (the reveal family's own classes drive the entrances —
+ * nothing here animates).
+ */
+
+.cf-section {
+  /* the drawing progress vars — DEFAULT 1: the complete sheet. The
+   * section's driver overrides both imperatively (inline, same
+   * element — the only write that beats this default), and ONLY when
+   * motion is allowed; reduced-motion and JS-off keep the finished
+   * drawing (the family law). */
+  --cf-p: 1;
+  --cr-p: 1;
+  /* the family's soft-ink register (pm/why precedent). */
+  --cf-soft-ink: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen 72% soft-ink measure the pm/why sections carry (light arm keeps the literal; the dark arm below re-points at the flipping token) */
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  color: var(--cf-soft-ink);
+  font-size: 1.6rem;
+  line-height: 2.16rem; /* the family's Arabic floor rung (1.35×) */
+}
+
+[data-theme='dark'] .cf-section {
+  --cf-soft-ink: color-mix(in srgb, var(--text) 72%, transparent);
+}
+
+.cf-section *,
+.cf-section *::before,
+.cf-section *::after {
+  box-sizing: border-box;
+}
+
+/* ── the band's chrome: edge rules, outer wrappers ────────────────── */
+.cf-toprule,
+.cf-bottomrule {
+  block-size: 1px;
+  background: var(--rule-strong);
+}
+
+.cf-outer,
+.cf-frame {
+  display: block;
+}
+
+.cf-inner {
+  display: block;
+  padding-block: 5.6rem 6.4rem;
+}
+
+/* ── the editorial head: title lane + side rail ───────────────────── */
+.cf-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 46rem);
+  align-items: start;
+  padding-inline: 3.2rem;
+}
+
+.cf-titleblock {
+  min-inline-size: 0;
+  margin-block-start: 3.2rem;
+}
+
+.cf-kicker {
+  margin-block-end: 1.6rem;
+  inline-size: fit-content;
+}
+
+.cf-kicker-text {
+  display: inline;
+  font-size: 1.4rem;
+  line-height: 1.96rem;
+  font-weight: 500;
+}
+
+.cf-title {
+  margin: 0;
+  inline-size: min(45rem, 100%);
+  font-family: var(--font-display);
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.35; /* the ar-floor rung (why.css precedent) */
+  letter-spacing: 0; /* Arabic joins forbid tracking */
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.cf-side {
+  position: relative;
+  padding-inline-start: 3.2rem;
+  margin-block-start: 4.8rem;
+}
+
+.cf-side-rule {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: 0.4rem;
+  inline-size: 0.12rem; /* the 1px hairline at rem scale */
+  background: var(--rule-strong);
+}
+
+.cf-lede {
+  margin: 0;
+  max-inline-size: 39.6rem;
+  font: inherit;
+  color: inherit;
+}
+
+/* ── the band: two acts around a centre rule ──────────────────────── */
+.cf-band {
+  display: block;
+  padding-block: 4rem 0;
+}
+
+.cf-bandrule {
+  block-size: 1px;
+  background: var(--rule-strong);
+  margin-block: 4.8rem;
+  margin-inline: 3.2rem;
+}
+
+.cf-act {
+  display: grid;
+  grid-template-columns: minmax(0, 46rem) minmax(0, 1fr);
+  gap: 4.8rem;
+  padding-inline: 3.2rem;
+  align-items: center;
+}
+
+/* the mirrored composition: the route act leads with the drawing. */
+.cf-act--route {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 46rem);
+}
+
+.cf-act-label {
+  margin-block-end: 1.2rem;
+  font-size: 1.4rem;
+  line-height: 1.96rem;
+  font-weight: 500;
+}
+
+.cf-act-title {
+  margin: 0 0 1.6rem;
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.cf-act-text {
+  margin: 0;
+  max-inline-size: 42rem;
+  font: inherit;
+  color: inherit;
+}
+
+/* the art seat: the drawing column fills its lane; the svg's own
+ * auto-height (technical-interactive.css) reserves the box — no CLS,
+ * no absolute stacking, nothing over text (the overlap law). */
+.cf-act-art {
+  position: relative;
+  min-inline-size: 0;
+}
+
+/* ── act I's annotation ledger: the survey's reading key ─────────── */
+.cf-annotlist {
+  list-style: none;
+  margin: 3.2rem 0 0;
+  padding: 0;
+}
+
+.cf-annot {
+  display: grid;
+  grid-template-columns: 8.8rem minmax(0, 1fr);
+  gap: 1.6rem;
+  padding-block: 1.6rem;
+}
+
+.cf-annot + .cf-annot {
+  border-block-start: 1px solid var(--rule);
+}
+
+.cf-annot-code {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-sm);
+  line-height: 2.16rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--cf-soft-ink);
+}
+
+.cf-annot-body {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+}
+
+.cf-annot-body strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ── act II's stage ledger: the route's reading key + the touch seats
+ * (44px buttons that drive the drawing's gate highlight — the SVG
+ * station bodies stay small on phones; the rows are the honest
+ * primary control, the drawing answers them). */
+.cf-stagelist {
+  margin: 3.2rem 0 0;
+}
+
+.cf-stage {
+  display: grid;
+  grid-template-columns: 5.6rem minmax(0, 1fr);
+  gap: 1.6rem;
+  align-items: start;
+  inline-size: 100%;
+  min-block-size: 4.4rem; /* the 44px touch floor */
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.cf-stage + .cf-stage {
+  border-block-start: 1px solid var(--rule);
+}
+
+.cf-stage-code {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-sm);
+  line-height: 2.16rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  padding-block-start: 1.1rem;
+  color: var(--cf-soft-ink);
+}
+
+.cf-stage-body {
+  padding-block: 1.1rem 1.3rem;
+}
+
+.cf-stage-name {
+  display: block;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cf-stage-note {
+  display: block;
+  font: inherit;
+  color: inherit;
+}
+
+/* the driven highlight: the row answers the gate (ink only — the
+ * signal discipline is the drawing's own). */
+.cf-stage[aria-pressed='true'] .cf-stage-code,
+.cf-stage[aria-pressed='true'] .cf-stage-name {
+  color: var(--text);
+}
+
+.cf-stage:focus-visible {
+  outline: 0.12rem solid var(--app-signal);
+  outline-offset: 0.4rem;
+}
+
+/* ── the honest disclosure: the band's last line ──────────────────── */
+.cf-disclose {
+  margin: 4.8rem 0 0;
+  padding-inline: 3.2rem;
+  font-size: 1.4rem;
+  line-height: 1.96rem;
+  color: var(--cf-soft-ink);
+}
+
+/* ── responsive: recompose, never shrink unreadable ───────────────── */
+@media (max-width: 1100px) {
+  .cf-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cf-side {
+    margin-block-start: 2.4rem;
+    padding-inline-start: 2.4rem;
+    max-inline-size: 42rem;
+  }
+
+  .cf-act,
+  .cf-act--route {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3.2rem;
+  }
+
+  /* the drawing leads its act below the wide band — the composition
+   * recomposes around the copy, the drawing never shrinks away. */
+  .cf-act-art {
+    order: 2;
+  }
+}
+
+@media (max-width: 767px) {
+  .cf-inner {
+    padding-block: 3.2rem 4rem;
+  }
+
+  .cf-head,
+  .cf-act,
+  .cf-act--route {
+    padding-inline: 1.6rem;
+  }
+
+  .cf-bandrule,
+  .cf-disclose {
+    margin-inline: 1.6rem;
+  }
+
+  .cf-side {
+    padding-inline-start: 1.6rem;
+    max-inline-size: none;
+  }
+
+  .cf-act {
+    gap: 2.4rem;
+  }
+
+  .cf-annot {
+    grid-template-columns: 7.2rem minmax(0, 1fr);
+    gap: 1.2rem;
+  }
+
+  .cf-stage {
+    grid-template-columns: 4.8rem minmax(0, 1fr);
+    gap: 1.2rem;
+  }
+}

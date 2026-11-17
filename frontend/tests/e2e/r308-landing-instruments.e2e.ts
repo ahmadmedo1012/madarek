@@ -172,3 +172,232 @@ test.describe('R308 — the static belt', () => {
     await expect(page.locator('.hi-marker')).toHaveCount(3);
   });
 });
+
+/* ═══ R362 (Agent 3) — the concepts band's instruments ═════════════
+ *
+ * The [05·ب] band is the r362 deliverable's landing seat: the
+ * triangulation net that CONSTRUCTS under scroll and answers the
+ * pointer (ConceptField), and the gated route whose stages the
+ * section's ledger drives (RouteSurvey). Three contracts pinned:
+ *
+ *  1. CONSTRUCTION — the driver writes --cf-p / --cr-p across the
+ *     band's traversal; the field's envelope is UNDRAWN before its
+ *     window and DRAWN after it; the route's legs complete with it.
+ *  2. INTERACTION — station hover re-inks the legs and draws the
+ *     measurement chain; TAP persists after the pointer leaves
+ *     (two channels, the r331 model); the stage ledger rows mirror
+ *     into the drawing; the live coordinate readout tracks the
+ *     pointer.
+ *  3. THE NEVER-HIDE LAW — under reduced motion the driver never
+ *     writes (no inline --cf-p) and the belt completes every layer
+ *     (dashoffset 0, opacity 1); interactions stay live. On 360/
+ *     390/430 the band recomposes (the drawing stacks under its
+ *     copy), the stage rows keep the 44px touch floor, and nothing
+ *     overflows the viewport. */
+const gotoBand = async (page: import('@playwright/test').Page) => {
+  await page.goto('/');
+  await expect(page.locator('.pl')).toHaveCount(0, { timeout: 30000 });
+  await expect(page.locator('.cf-section .cf-title')).toBeVisible();
+};
+
+test.describe('R362 · the concepts band — construction', () => {
+  test('the field draws across the band traversal; the route completes after it', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await gotoBand(page);
+    await page.locator('.cf-section').scrollIntoViewIfNeeded();
+
+    /* mid-band: the field's window is [0.02, 0.08] — by traversal .5
+     * the envelope must be fully drawn (offset 0). */
+    await page.evaluate(() => {
+      document.querySelector('.cf-section')!.scrollIntoView({ block: 'center' });
+    });
+    await page.waitForTimeout(400);
+    const envelopeOffsetMid = await page.evaluate(() => {
+      const el = document.querySelector<SVGPathElement>('.cf-field .tp-envelope path')!;
+      return getComputedStyle(el).strokeDashoffset;
+    });
+    expect(parseFloat(envelopeOffsetMid)).toBeLessThanOrEqual(0.01);
+
+    /* the route: the band's END — the disclosure's bottom at the
+     * viewport bottom (the deterministic deep seat). */
+    await page.evaluate(() => {
+      document.querySelector('.cf-disclose')!.scrollIntoView({ block: 'end' });
+    });
+    await page.waitForTimeout(400);
+    const routeState = await page.evaluate(() => {
+      const sec = document.querySelector<HTMLElement>('.cf-section')!;
+      const legs = document.querySelectorAll<SVGLineElement>('.cr-route .ti-leg')!;
+      return {
+        p: sec.style.getPropertyValue('--cr-p'),
+        lastLegOffset: getComputedStyle(legs[legs.length - 1]!).strokeDashoffset,
+      };
+    });
+    expect(parseFloat(routeState.p)).toBeGreaterThanOrEqual(0.45);
+    expect(parseFloat(routeState.lastLegOffset)).toBeLessThanOrEqual(0.01);
+  });
+});
+
+test.describe('R362 · the concepts band — interaction', () => {
+  test('station hover re-inks the legs and draws the measurement; tap persists; the ledger mirrors', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await gotoBand(page);
+
+    /* the stations are real buttons with Arabic names. */
+    const c2 = page.locator('.cf-field .ti-node[data-id="C2"]');
+    await expect(c2).toHaveAttribute('aria-label', 'التطبيقات العملية');
+
+    /* hover: legs re-ink + the measurement chain draws. */
+    await c2.hover();
+    await page.waitForTimeout(250);
+    const hoverState = await page.evaluate(() => {
+      const root = document.querySelector<HTMLElement>('.cf-field')!;
+      const meas = root.querySelector<SVGGElement>('.ti-meas[data-node="C2"]')!;
+      const leg = root.querySelector<SVGLineElement>('.ti-leg[data-nodes~="C2"]')!;
+      return {
+        active: root.getAttribute('data-active'),
+        measOpacity: getComputedStyle(meas).opacity,
+        legWidth: getComputedStyle(leg).strokeWidth,
+        measText: meas.querySelector('text')?.textContent ?? '',
+      };
+    });
+    expect(hoverState.active).toBe('C2');
+    expect(parseFloat(hoverState.measOpacity)).toBeGreaterThan(0.9);
+    expect(parseFloat(hoverState.legWidth)).toBeGreaterThan(1.5);
+    expect(hoverState.measText).toContain('d ');
+
+    /* tap: click, move away — the pin persists (two channels). */
+    await c2.click();
+    await page.mouse.move(300, 150);
+    await page.waitForTimeout(250);
+    const tapState = await page.evaluate(() => {
+      const root = document.querySelector<HTMLElement>('.cf-field')!;
+      const node = root.querySelector('.ti-node[data-id="C2"]')!;
+      return {
+        active: root.getAttribute('data-active'),
+        pressed: node.getAttribute('aria-pressed'),
+      };
+    });
+    expect(tapState.active).toBe('C2');
+    expect(tapState.pressed).toBe('true');
+
+    /* the stage ledger: a row tap mirrors into the route drawing. */
+    const g3row = page.locator('.cf-stage').nth(2);
+    await g3row.scrollIntoViewIfNeeded();
+    await g3row.click();
+    await page.waitForTimeout(250);
+    const mirror = await page.evaluate(() => {
+      const route = document.querySelector<HTMLElement>('.cr-route')!;
+      const leg = route.querySelector<SVGLineElement>('.ti-leg[data-nodes~="G3"]')!;
+      const row = document.querySelectorAll('.cf-stage')[2]!;
+      return {
+        routeActive: route.getAttribute('data-active'),
+        legWidth: getComputedStyle(leg).strokeWidth,
+        rowPressed: row.getAttribute('aria-pressed'),
+      };
+    });
+    expect(mirror.routeActive).toBe('G3');
+    expect(parseFloat(mirror.legWidth)).toBeGreaterThan(1.5);
+    expect(mirror.rowPressed).toBe('true');
+
+    /* the pointer instrument: the readout tracks the pointer inside
+     * the field (fine-pointer desktop). */
+    await page.evaluate(() => {
+      document.querySelector('.cf-act .cf-act-art')!.scrollIntoView({ block: 'center' });
+    });
+    await page.waitForTimeout(200);
+    const box = (await page.locator('.cf-field svg').boundingBox())!;
+    await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
+    await page.waitForTimeout(250);
+    const readout = await page.evaluate(
+      () => document.querySelector<SVGTextElement>('.cf-field .ti-readout')?.textContent ?? '',
+    );
+    expect(readout).toMatch(/X \d{3} · Y \d{3}/);
+    expect(readout).not.toBe('X 000 · Y 000');
+  });
+});
+
+test.describe('R362 · the concepts band — the never-hide law', () => {
+  test.use({ reducedMotion: 'reduce' });
+
+  test('reduced motion: the driver never writes, the belt completes, interactions live', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await gotoBand(page);
+    /* scroll THROUGH the band (native — Lenis never inits under RM),
+     * then prove the driver stayed silent while the belt holds. */
+    await page.evaluate(() => {
+      window.scrollTo({ top: document.querySelector('.cf-section')!.getBoundingClientRect().top + window.scrollY + 600, behavior: 'instant' as ScrollBehavior });
+    });
+    await page.waitForTimeout(400);
+    const rm = await page.evaluate(() => {
+      const sec = document.querySelector<HTMLElement>('.cf-section')!;
+      const env = document.querySelector<SVGPathElement>('.cf-field .tp-envelope path')!;
+      const grid = document.querySelector<SVGGElement>('.cf-field .tp-grid')!;
+      const legs = document.querySelectorAll<SVGLineElement>('.cr-route .ti-leg')!;
+      return {
+        wrote: sec.style.getPropertyValue('--cf-p') || sec.style.getPropertyValue('--cr-p'),
+        envDash: getComputedStyle(env).strokeDasharray,
+        envOffset: getComputedStyle(env).strokeDashoffset,
+        gridOpacity: getComputedStyle(grid).opacity,
+        lastLegOffset: getComputedStyle(legs[legs.length - 1]!).strokeDashoffset,
+      };
+    });
+    expect(rm.wrote).toBe(''); /* the driver bails — no inline var */
+    expect(parseFloat(rm.envOffset)).toBe(0);
+    expect(rm.envDash).not.toBe('1px'); /* the belt lifts the dash */
+    expect(parseFloat(rm.gridOpacity)).toBeGreaterThan(0.9);
+    expect(parseFloat(rm.lastLegOffset)).toBe(0);
+
+    /* interactions stay live under reduced motion. */
+    const row = page.locator('.cf-stage').first();
+    await row.scrollIntoViewIfNeeded();
+    await row.click();
+    await page.waitForTimeout(250);
+    const routeActive = await page.evaluate(
+      () => document.querySelector<HTMLElement>('.cr-route')!.getAttribute('data-active'),
+    );
+    expect(routeActive).toBe('G1');
+  });
+});
+
+test.describe('R362 · the concepts band — mobile recomposition', () => {
+  for (const vp of [
+    { width: 360, height: 740 },
+    { width: 390, height: 844 },
+    { width: 430, height: 932 },
+  ]) {
+    test(`recomposes at ${vp.width}px — full drawing, 44px rows, no overflow`, async ({ page }) => {
+      await page.setViewportSize(vp);
+      await gotoBand(page);
+      await page.evaluate(() => {
+        document.querySelector('.cf-section')!.scrollIntoView({ block: 'start' });
+      });
+      await page.waitForTimeout(400);
+
+      /* both drawings render in-flow; the stage rows keep the touch floor. */
+      await expect(page.locator('.cf-field svg')).toBeVisible();
+      await expect(page.locator('.cr-route svg')).toBeVisible();
+
+      const rows = await page.evaluate(() => {
+        return Array.from(document.querySelectorAll<HTMLElement>('.cf-stage')).map((r) => r.getBoundingClientRect().height);
+      });
+      expect(rows.length).toBe(5);
+      for (const h of rows) expect(h).toBeGreaterThanOrEqual(44);
+
+      /* the ledger row still drives the drawing (click drives the same
+       * row toggle; the 44px floor above is the touch honesty). */
+      await page.locator('.cf-stage').nth(1).scrollIntoViewIfNeeded();
+      await page.locator('.cf-stage').nth(1).click();
+      await page.waitForTimeout(250);
+      const active = await page.evaluate(
+        () => document.querySelector<HTMLElement>('.cr-route')!.getAttribute('data-active'),
+      );
+      expect(active).toBe('G2');
+
+      /* no horizontal overflow at the narrow band. */
+      const overflow = await page.evaluate(
+        () => document.scrollingElement!.scrollWidth - window.innerWidth,
+      );
+      expect(Math.max(0, overflow)).toBeLessThanOrEqual(1);
+    });
+  }
+});

@@ -1,13 +1,13 @@
 {
- "generatedAt": "2026-11-11T00:47:38.308Z",
+ "generatedAt": "2026-11-17T06:00:13.289Z",
  "engine": "chromium",
- "url": "http://localhost:5173/",
- "specDir": "/home/z/madarek/docs/redesign/r335/heron-spec",
+ "url": "http://127.0.0.1:5303",
+ "specDir": "/home/z/madarek-r362-heron/docs/redesign/r335/heron-spec",
  "summary": {
-  "total": 59643,
-  "pass": 55456,
-  "fail": 4187,
-  "passRate": 93,
+  "total": 58537,
+  "pass": 54742,
+  "fail": 3795,
+  "passRate": 93.5,
   "exceptionUses": 192,
   "exceptionRate": 0.3,
   "exceptionCap": "<5%",
@@ -25,22 +25,22 @@
     "heuristicShareCap": "50% of pairs (FAIL(heuristic))"
    },
    "overall": {
-    "measured": 58616,
-    "offBookEst": 69260,
+    "measured": 58502,
+    "offBookEst": 69336,
     "coveragePct": 45.8,
     "offBookPct": 54.2
    },
    "sections": {
     "chrome": {
-     "measured": 1409,
+     "measured": 1367,
      "skipped": 310,
-     "excused": 6,
-     "offBookEst": 382,
-     "pairs": 120,
-     "heur": 15,
-     "coverage": 78.7,
-     "offBookPct": 21.3,
-     "heurPct": 12.5
+     "excused": 9,
+     "offBookEst": 418,
+     "pairs": 117,
+     "heur": 12,
+     "coverage": 76.6,
+     "offBookPct": 23.4,
+     "heurPct": 10.3
     },
     "footer": {
      "measured": 6902,
@@ -76,14 +76,14 @@
      "heurPct": 79.7
     },
     "home-intro-wrap": {
-     "measured": 9793,
-     "skipped": 3496,
-     "excused": 1048,
-     "offBookEst": 16072,
-     "pairs": 946,
+     "measured": 9721,
+     "skipped": 3488,
+     "excused": 1052,
+     "offBookEst": 16112,
+     "pairs": 938,
      "heur": 11,
-     "coverage": 37.9,
-     "offBookPct": 62.1,
+     "coverage": 37.6,
+     "offBookPct": 62.4,
      "heurPct": 1.2
     },
     "home-map-wrap": {
@@ -152,11 +152,11 @@
     }
    ]
   },
-  "unmatchedOmitted": 4250,
-  "skippedOmitted": 4666,
-  "totalSkipped": 14660,
+  "unmatchedOmitted": 4257,
+  "skippedOmitted": 4662,
+  "totalSkipped": 14652,
   "edge390": {
-   "fails": 2,
+   "fails": 0,
    "tolerance": "±2px vs the spec's recorded 390 section-root gutter",
    "note": "content edge = visible-content union (fully-inside descendants), root content box as fallback; spec gutter from the section root's x/w"
   }
@@ -192,44 +192,44 @@
     "missing": null
    },
    "1024": {
-    "passRate": 89.4,
-    "n": 341,
-    "pass": 305,
-    "fail": 36,
+    "passRate": 90.2,
+    "n": 327,
+    "pass": 295,
+    "fail": 32,
     "exceptions": 0,
     "explicit": 14,
     "dataSpec": 14,
-    "heuristic": 2,
+    "heuristic": 1,
     "unmatched": 0,
-    "excused": 1,
+    "excused": 2,
     "skipped": 88,
     "missing": null
    },
    "1440": {
-    "passRate": 93.3,
-    "n": 341,
-    "pass": 318,
-    "fail": 23,
+    "passRate": 94.2,
+    "n": 327,
+    "pass": 308,
+    "fail": 19,
     "exceptions": 0,
     "explicit": 14,
     "dataSpec": 14,
-    "heuristic": 2,
+    "heuristic": 1,
     "unmatched": 0,
-    "excused": 1,
+    "excused": 2,
     "skipped": 88,
     "missing": null
    },
    "1920": {
-    "passRate": 93.3,
-    "n": 341,
-    "pass": 318,
-    "fail": 23,
+    "passRate": 93.9,
+    "n": 327,
+    "pass": 307,
+    "fail": 20,
     "exceptions": 0,
     "explicit": 14,
     "dataSpec": 14,
-    "heuristic": 2,
+    "heuristic": 1,
     "unmatched": 0,
-    "excused": 1,
+    "excused": 2,
     "skipped": 88,
     "missing": null
    }
@@ -452,45 +452,45 @@
   },
   "home-intro-wrap": {
    "390": {
-    "passRate": 87.2,
-    "n": 1308,
-    "pass": 1141,
-    "fail": 167,
+    "passRate": 87.7,
+    "n": 1314,
+    "pass": 1152,
+    "fail": 162,
     "exceptions": 3,
     "explicit": 0,
-    "dataSpec": 117,
+    "dataSpec": 115,
     "heuristic": 2,
     "unmatched": 0,
-    "excused": 167,
-    "skipped": 326,
+    "excused": 165,
+    "skipped": 344,
     "missing": null
    },
    "768": {
-    "passRate": 89.4,
-    "n": 2293,
-    "pass": 2050,
-    "fail": 243,
+    "passRate": 89.7,
+    "n": 2254,
+    "pass": 2021,
+    "fail": 233,
     "exceptions": 7,
     "explicit": 0,
-    "dataSpec": 222,
+    "dataSpec": 219,
     "heuristic": 3,
     "unmatched": 1,
-    "excused": 196,
-    "skipped": 884,
+    "excused": 199,
+    "skipped": 873,
     "missing": null
    },
    "1024": {
-    "passRate": 96.9,
-    "n": 2134,
-    "pass": 2067,
-    "fail": 67,
+    "passRate": 97.6,
+    "n": 2095,
+    "pass": 2044,
+    "fail": 51,
     "exceptions": 7,
     "explicit": 1,
-    "dataSpec": 203,
+    "dataSpec": 200,
     "heuristic": 2,
     "unmatched": 0,
-    "excused": 223,
-    "skipped": 780,
+    "excused": 226,
+    "skipped": 765,
     "missing": null
    },
    "1440": {
@@ -768,10 +768,10 @@
     "missing": null
    },
    "1024": {
-    "passRate": 91.1,
+    "passRate": 91,
     "n": 1907,
-    "pass": 1738,
-    "fail": 169,
+    "pass": 1735,
+    "fail": 172,
     "exceptions": 8,
     "explicit": 0,
     "dataSpec": 131,
@@ -782,10 +782,10 @@
     "missing": null
    },
    "1440": {
-    "passRate": 93,
+    "passRate": 92.9,
     "n": 1907,
-    "pass": 1774,
-    "fail": 133,
+    "pass": 1771,
+    "fail": 136,
     "exceptions": 8,
     "explicit": 0,
     "dataSpec": 131,
@@ -885,28 +885,6 @@
  },
  "failures": [
   {
-   "section": "home-intro-wrap",
-   "bp": "390",
-   "kind": "edge390",
-   "heronPath": "(home-intro-wrap left gutter — spec section root x/w @390)",
-   "oursSelector": "div#statement.st-section",
-   "mode": "page",
-   "expected": "left gutter 8px (±2px)",
-   "actual": "2px (Δ-6px; visible-content-union)",
-   "delta": -6
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "390",
-   "kind": "edge390",
-   "heronPath": "(home-intro-wrap right gutter — spec section root x/w @390)",
-   "oursSelector": "div#statement.st-section",
-   "mode": "page",
-   "expected": "right gutter 8px (±2px)",
-   "actual": "0.6px (Δ-7.4px; visible-content-union)",
-   "delta": -7.4
-  },
-  {
    "section": "home-usecase-wrap",
    "bp": "1920",
    "kind": "y",
@@ -925,8 +903,8 @@
    "oursSelector": "#ds:footer.col1",
    "mode": "data-spec",
    "expected": 0,
-   "actual": -12964,
-   "delta": 12964
+   "actual": -15178,
+   "delta": 15178
   },
   {
    "section": "home-why-wrap",
@@ -936,8 +914,8 @@
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 842,
-   "actual": -11535,
-   "delta": 12377
+   "actual": -13600,
+   "delta": 14442
   },
   {
    "section": "home-why-wrap",
@@ -947,8 +925,8 @@
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 842,
-   "actual": -11535,
-   "delta": 12377
+   "actual": -13600,
+   "delta": 14442
   },
   {
    "section": "home-cta-wrap",
@@ -958,8 +936,96 @@
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 712,
-   "actual": -10550,
-   "delta": 11262
+   "actual": -12617,
+   "delta": 13329
+  },
+  {
+   "section": "footer",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -851,
+   "actual": -13526,
+   "delta": 12675
+  },
+  {
+   "section": "footer",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -851,
+   "actual": -13526,
+   "delta": 12675
+  },
+  {
+   "section": "home-cta-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": -12617,
+   "delta": 12617
+  },
+  {
+   "section": "home-cta-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": -12617,
+   "delta": 12617
+  },
+  {
+   "section": "home-cta-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[4] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": -12617,
+   "delta": 12617
+  },
+  {
+   "section": "home-cta-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": -12617,
+   "delta": 12617
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 631,
+   "actual": -10918,
+   "delta": 11549
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 631,
+   "actual": -10918,
+   "delta": 11549
   },
   {
    "section": "home-usecase-wrap",
@@ -973,92 +1039,15 @@
    "delta": 10952
   },
   {
-   "section": "footer",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[1] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": -851,
-   "actual": -11459,
-   "delta": 10608
-  },
-  {
-   "section": "footer",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": -851,
-   "actual": -11459,
-   "delta": 10608
-  },
-  {
-   "section": "home-cta-wrap",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": -10550,
-   "delta": 10550
-  },
-  {
-   "section": "home-cta-wrap",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": -10550,
-   "delta": 10550
-  },
-  {
-   "section": "home-cta-wrap",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[4] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": -10550,
-   "delta": 10550
-  },
-  {
-   "section": "home-cta-wrap",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": -10550,
-   "delta": 10550
-  },
-  {
    "section": "home-why-wrap",
-   "bp": "1440",
+   "bp": "768",
    "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[3] > div[3] > div[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 631,
-   "actual": -9367,
-   "delta": 9998
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 631,
-   "actual": -9367,
-   "delta": 9998
+   "expected": 516,
+   "actual": -10369,
+   "delta": 10885
   },
   {
    "section": "home-usecase-wrap",
@@ -1070,17 +1059,6 @@
    "expected": -9148,
    "actual": 505,
    "delta": 9653
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[1] > div[3] > div[3] > div[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 516,
-   "actual": -8155,
-   "delta": 8671
   },
   {
    "section": "home-why-wrap",
@@ -1231,8 +1209,8 @@
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 344,
-   "actual": -1463,
-   "delta": 1807
+   "actual": -1462,
+   "delta": 1806
   },
   {
    "section": "home-hero-wrap",
@@ -1417,8 +1395,8 @@
    "oursSelector": "#hm:svg.none",
    "mode": "heuristic",
    "expected": -830,
-   "actual": 361,
-   "delta": 1191
+   "actual": 362,
+   "delta": 1192
   },
   {
    "section": "home-why-wrap",
@@ -1925,6 +1903,17 @@
    "delta": 725
   },
   {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 721,
+   "delta": 721
+  },
+  {
    "section": "home-why-wrap",
    "bp": "1024",
    "kind": "x-mirror",
@@ -1966,6 +1955,17 @@
    "mode": "heuristic",
    "expected": 7,
    "actual": 720,
+   "delta": 713
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[4]",
+   "oursSelector": "#ds:roles.rowrule2.8",
+   "mode": "data-spec",
+   "expected": 713,
+   "actual": 0,
    "delta": 713
   },
   {
@@ -2415,8 +2415,8 @@
    "oursSelector": "#ds:intro.dupcard.5",
    "mode": "data-spec",
    "expected": 57,
-   "actual": 688,
-   "delta": 631
+   "actual": 685,
+   "delta": 628
   },
   {
    "section": "home-cta-wrap",
@@ -2546,8 +2546,8 @@
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 1219,
-   "actual": 642,
-   "delta": 577
+   "actual": 641,
+   "delta": 578
   },
   {
    "section": "home-cta-wrap",
@@ -2776,6 +2776,17 @@
    "expected": 922,
    "actual": 409,
    "delta": 513
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[4]",
+   "oursSelector": "#ds:roles.rowrule2.8",
+   "mode": "data-spec",
+   "expected": 507,
+   "actual": 0,
+   "delta": 507
   },
   {
    "section": "home-intro-wrap",
@@ -3257,8 +3268,8 @@
    "oursSelector": "#ds:footer.bgroup.2",
    "mode": "data-spec",
    "expected": 151,
-   "actual": 595,
-   "delta": 444
+   "actual": 594,
+   "delta": 443
   },
   {
    "section": "home-why-wrap",
@@ -3367,8 +3378,8 @@
    "oursSelector": "#ds:intro.dupcard.4",
    "mode": "data-spec",
    "expected": 57,
-   "actual": 484,
-   "delta": 427
+   "actual": 482,
+   "delta": 425
   },
   {
    "section": "footer",
@@ -3558,17 +3569,6 @@
    "delta": 396
   },
   {
-   "section": "home-intro-wrap",
-   "bp": "768",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-   "oursSelector": "#ds:ucard.fateh-science",
-   "mode": "data-spec",
-   "expected": 441,
-   "actual": 46,
-   "delta": 395
-  },
-  {
    "section": "home-why-wrap",
    "bp": "768",
    "kind": "y",
@@ -3721,17 +3721,6 @@
    "expected": 422,
    "actual": 797,
    "delta": 375
-  },
-  {
-   "section": "chrome",
-   "bp": "1920",
-   "kind": "x-mirror",
-   "heronPath": "chrome > header[1] > div[1] > div[2] > div[1] > div[1] > a[1]",
-   "oursSelector": "#hm:a.none",
-   "mode": "heuristic",
-   "expected": 903,
-   "actual": 529,
-   "delta": 374
   },
   {
    "section": "home-why-wrap",
@@ -4009,6 +3998,28 @@
    "delta": 354.5
   },
   {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "kind": "w",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 374,
+   "actual": 20,
+   "delta": 354
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "kind": "h",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 374,
+   "actual": 20,
+   "delta": 354
+  },
+  {
    "section": "home-platform-wrap",
    "bp": "390",
    "kind": "w",
@@ -4023,8 +4034,8 @@
    "section": "home-intro-wrap",
    "bp": "390",
    "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#ds:intro.dupcard.2",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+   "oursSelector": "#ds:intro.dupcard.3",
    "mode": "data-spec",
    "expected": 455,
    "actual": 102,
@@ -4108,22 +4119,22 @@
    "delta": 350
   },
   {
-   "section": "home-intro-wrap",
-   "bp": "390",
+   "section": "home-usecase-wrap",
+   "bp": "1440",
    "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:ucard.fateh-science",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[4]",
+   "oursSelector": "#ds:roles.rowrule2.8",
    "mode": "data-spec",
-   "expected": 558,
-   "actual": 209,
-   "delta": 349
+   "expected": 350,
+   "actual": 0,
+   "delta": 349.5
   },
   {
    "section": "home-intro-wrap",
    "bp": "390",
    "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-   "oursSelector": "#ds:intro.dupcard.3",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#ds:intro.dupcard.2",
    "mode": "data-spec",
    "expected": 455,
    "actual": 106,
@@ -5538,17 +5549,6 @@
    "delta": 285
   },
   {
-   "section": "chrome",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "chrome > header[1] > div[1] > div[2] > div[1] > div[1] > a[1]",
-   "oursSelector": "#hm:a.none",
-   "mode": "heuristic",
-   "expected": 677,
-   "actual": 394,
-   "delta": 283.5
-  },
-  {
    "section": "home-why-wrap",
    "bp": "1920",
    "kind": "w",
@@ -5692,17 +5692,6 @@
    "delta": 273
   },
   {
-   "section": "home-intro-wrap",
-   "bp": "768",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[4] > div[1] > img[1]",
-   "oursSelector": "#ds:intro.dupcard.5",
-   "mode": "data-spec",
-   "expected": 109,
-   "actual": 379,
-   "delta": 270
-  },
-  {
    "section": "home-cta-wrap",
    "bp": "768",
    "kind": "y",
@@ -5813,6 +5802,17 @@
    "delta": 268
   },
   {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[4] > div[1] > img[1]",
+   "oursSelector": "#ds:intro.dupcard.5",
+   "mode": "data-spec",
+   "expected": 109,
+   "actual": 376,
+   "delta": 267
+  },
+  {
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "x-mirror",
@@ -5844,17 +5844,6 @@
    "expected": 73,
    "actual": 338,
    "delta": 265
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "768",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:ucard.omu-agri",
-   "mode": "data-spec",
-   "expected": 441,
-   "actual": 177,
-   "delta": 264
   },
   {
    "section": "footer",
@@ -6066,28 +6055,6 @@
    "delta": 255.77
   },
   {
-   "section": "home-intro-wrap",
-   "bp": "1024",
-   "kind": "bg",
-   "heronPath": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:ucard.omu-agri",
-   "mode": "data-spec",
-   "expected": "rgb(250, 54, 0)",
-   "actual": "rgba(0, 0, 0, 0)",
-   "delta": 255.77
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1024",
-   "kind": "bg",
-   "heronPath": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:ucard.fateh-science",
-   "mode": "data-spec",
-   "expected": "rgb(250, 54, 0)",
-   "actual": "rgba(0, 0, 0, 0)",
-   "delta": 255.77
-  },
-  {
    "section": "home-why-wrap",
    "bp": "1024",
    "kind": "bg",
@@ -6163,6 +6130,17 @@
    "expected": 251,
    "actual": 1,
    "delta": 250
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[4]",
+   "oursSelector": "#ds:roles.rowrule2.8",
+   "mode": "data-spec",
+   "expected": 249,
+   "actual": 0,
+   "delta": 248.5
   },
   {
    "section": "home-cta-wrap",
@@ -6330,17 +6308,6 @@
    "delta": 237
   },
   {
-   "section": "home-intro-wrap",
-   "bp": "1024",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:ucard.omu-agri",
-   "mode": "data-spec",
-   "expected": 416,
-   "actual": 179,
-   "delta": 237
-  },
-  {
    "section": "footer",
    "bp": "1920",
    "kind": "y",
@@ -6427,17 +6394,6 @@
    "expected": 1193,
    "actual": 963,
    "delta": 230
-  },
-  {
-   "section": "chrome",
-   "bp": "1024",
-   "kind": "x-mirror",
-   "heronPath": "chrome > header[1] > div[1] > div[2] > div[1] > div[1] > a[1]",
-   "oursSelector": "#hm:a.none",
-   "mode": "heuristic",
-   "expected": 482,
-   "actual": 254,
-   "delta": 228
   },
   {
    "section": "footer",
@@ -6627,6 +6583,17 @@
    "delta": 214
   },
   {
+   "section": "footer",
+   "bp": "768",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#ds:footer.sublabel",
+   "mode": "data-spec",
+   "expected": 22,
+   "actual": 236,
+   "delta": 214
+  },
+  {
    "section": "home-why-wrap",
    "bp": "768",
    "kind": "x-mirror",
@@ -6645,17 +6612,6 @@
    "oursSelector": "footer.fo-footer",
    "expected": 0.79,
    "actual": 1.003,
-   "delta": 213
-  },
-  {
-   "section": "footer",
-   "bp": "768",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#ds:footer.sublabel",
-   "mode": "data-spec",
-   "expected": 22,
-   "actual": 235,
    "delta": 213
   },
   {
@@ -7923,14 +7879,25 @@
   },
   {
    "section": "home-intro-wrap",
-   "bp": "1024",
-   "kind": "y",
-   "heronPath": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
-   "oursSelector": "#ds:ucard.garyounis-1",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:intro.cell.1",
    "mode": "data-spec",
-   "expected": 244,
-   "actual": 427,
+   "expected": 440,
+   "actual": 623,
    "delta": 183
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+   "oursSelector": "#ds:intro.dupcard.1",
+   "mode": "data-spec",
+   "expected": 330,
+   "actual": 512,
+   "delta": 182
   },
   {
    "section": "home-cta-wrap",
@@ -7955,17 +7922,6 @@
    "delta": 182
   },
   {
-   "section": "home-intro-wrap",
-   "bp": "768",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:intro.cell.1",
-   "mode": "data-spec",
-   "expected": 440,
-   "actual": 621,
-   "delta": 181
-  },
-  {
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "h",
@@ -7985,17 +7941,6 @@
    "mode": "heuristic",
    "expected": 182,
    "actual": 2,
-   "delta": 180
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "768",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-   "oursSelector": "#ds:intro.dupcard.1",
-   "mode": "data-spec",
-   "expected": 330,
-   "actual": 510,
    "delta": 180
   },
   {
@@ -8043,17 +7988,6 @@
   },
   {
    "section": "footer",
-   "bp": "1024",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 252,
-   "actual": 77,
-   "delta": 175
-  },
-  {
-   "section": "footer",
    "bp": "768",
    "kind": "x-mirror",
    "heronPath": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[2]",
@@ -8062,6 +7996,17 @@
    "expected": 182,
    "actual": 7,
    "delta": 174.5
+  },
+  {
+   "section": "footer",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 252,
+   "actual": 78,
+   "delta": 174
   },
   {
    "section": "footer",
@@ -8262,17 +8207,6 @@
    "delta": 167
   },
   {
-   "section": "home-intro-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
-   "oursSelector": "#ds:intro.dupcard.5",
-   "mode": "data-spec",
-   "expected": 352,
-   "actual": 519,
-   "delta": 167
-  },
-  {
    "section": "chrome",
    "bp": "768",
    "kind": "h",
@@ -8314,6 +8248,17 @@
    "mode": "data-spec",
    "expected": 49,
    "actual": 211,
+   "delta": 162
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
+   "oursSelector": "#ds:intro.dupcard.5",
+   "mode": "data-spec",
+   "expected": 352,
+   "actual": 514,
    "delta": 162
   },
   {
@@ -8647,17 +8592,6 @@
    "delta": 155
   },
   {
-   "section": "home-intro-wrap",
-   "bp": "768",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[1] > img[1]",
-   "oursSelector": "#ds:intro.dupcard.3",
-   "mode": "data-spec",
-   "expected": 220,
-   "actual": 66,
-   "delta": 154
-  },
-  {
    "section": "home-cta-wrap",
    "bp": "390",
    "kind": "w",
@@ -8667,17 +8601,6 @@
    "expected": 152,
    "actual": 306,
    "delta": 154
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1024",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:ucard.fateh-science",
-   "mode": "data-spec",
-   "expected": 536,
-   "actual": 383,
-   "delta": 153
   },
   {
    "section": "home-cta-wrap",
@@ -8711,6 +8634,17 @@
    "expected": 828,
    "actual": 675,
    "delta": 153
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[1] > img[1]",
+   "oursSelector": "#ds:intro.dupcard.3",
+   "mode": "data-spec",
+   "expected": 220,
+   "actual": 68,
+   "delta": 152
   },
   {
    "section": "footer",
@@ -8831,17 +8765,6 @@
    "mode": "heuristic",
    "expected": 165,
    "actual": 18,
-   "delta": 147
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:intro.cell.1",
-   "mode": "data-spec",
-   "expected": 558,
-   "actual": 411,
    "delta": 147
   },
   {
@@ -8968,6 +8891,17 @@
   {
    "section": "footer",
    "bp": "1024",
+   "kind": "y",
+   "heronPath": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[1]",
+   "oursSelector": "#ds:footer.social.1",
+   "mode": "data-spec",
+   "expected": 184,
+   "actual": 328,
+   "delta": 144
+  },
+  {
+   "section": "footer",
+   "bp": "1024",
    "kind": "h",
    "heronPath": "footer > footer[1] > div[1] > div[1] > div[3]",
    "oursSelector": "#ds:footer.col3",
@@ -9010,17 +8944,6 @@
    "delta": 144
   },
   {
-   "section": "footer",
-   "bp": "1024",
-   "kind": "y",
-   "heronPath": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[1]",
-   "oursSelector": "#ds:footer.social.1",
-   "mode": "data-spec",
-   "expected": 184,
-   "actual": 327,
-   "delta": 143
-  },
-  {
    "section": "home-hero-wrap",
    "bp": "768",
    "kind": "x-mirror",
@@ -9035,23 +8958,12 @@
    "section": "home-intro-wrap",
    "bp": "390",
    "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
-   "oursSelector": "#ds:ucard.garyounis-classic",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:intro.cell.1",
    "mode": "data-spec",
    "expected": 558,
-   "actual": 416,
-   "delta": 142
-  },
-  {
-   "section": "chrome",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "chrome > header[1] > div[1] > div[2] > div[1] > div[1] > a[1]",
-   "oursSelector": "#hm:a.none",
-   "mode": "heuristic",
-   "expected": 42,
-   "actual": 182,
-   "delta": 140
+   "actual": 415,
+   "delta": 143
   },
   {
    "section": "footer",
@@ -9315,17 +9227,6 @@
    "mode": "heuristic",
    "expected": 0,
    "actual": 133,
-   "delta": 133
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1024",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
-   "oursSelector": "#ds:ucard.garyounis-1",
-   "mode": "data-spec",
-   "expected": 157,
-   "actual": 24,
    "delta": 133
   },
   {
@@ -9668,9 +9569,115 @@
    "expected": 678,
    "actual": 553,
    "delta": 125
+  },
+  {
+   "section": "footer",
+   "bp": "768",
+   "kind": "y",
+   "heronPath": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "#ds:footer.lglinks.3",
+   "mode": "data-spec",
+   "expected": 251,
+   "actual": 126,
+   "delta": 125
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 6,
+   "actual": 131,
+   "delta": 125
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[2]",
+   "mode": "explicit",
+   "expected": 193,
+   "actual": 68,
+   "delta": 125
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "oursSelector": "#ds:footer.bgroup.2",
+   "mode": "data-spec",
+   "expected": 441,
+   "actual": 317,
+   "delta": 124
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "#ds:intro.titlebox",
+   "mode": "data-spec",
+   "expected": 356,
+   "actual": 480,
+   "delta": 124
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-intro-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > h2[1]",
+   "oursSelector": "#ds:intro.h2",
+   "mode": "data-spec",
+   "expected": 356,
+   "actual": 480,
+   "delta": 124
+  },
+  {
+   "section": "footer",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+   "oursSelector": "#ds:footer.lglabel.3",
+   "mode": "data-spec",
+   "expected": 176,
+   "actual": 54,
+   "delta": 122.5
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 131,
+   "actual": 253,
+   "delta": 122.5
+  },
+  {
+   "section": "footer",
+   "bp": "768",
+   "kind": "y",
+   "heronPath": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 173,
+   "actual": 295,
+   "delta": 122
   }
  ],
  "unmatchedReport": [
+  {
+   "section": "chrome",
+   "bp": "1920",
+   "heronPath": "chrome > header[1] > div[1] > div[2] > div[1] > div[1] > a[1]",
+   "excused": true,
+   "reason": "T-10 chrome internal without a bound counterpart in our seat register (her btn-fill/label-icon scaffolding around the bound seats) — reported, never silently dropped"
+  },
   {
    "section": "chrome",
    "bp": "1920",
@@ -11763,13 +11770,6 @@
    "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[1]",
    "excused": true,
    "reason": "vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); this bp's chrome geometry not yet matched - H1-d sweep"
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "heronPath": "home-hero-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > svg[1]",
-   "excused": true,
-   "reason": "vector chrome - per-node counterpart built + bound at 1440/390 (R341 H1-b); this bp's chrome geometry not yet matched - H1-d sweep"
   }
  ],
  "skippedReport": [
@@ -13795,8 +13795,8 @@
   "home-intro-wrap": {
    "specLeft": 8,
    "specRight": 8,
-   "ourLeft": 2,
-   "ourRight": 0.6,
+   "ourLeft": 8,
+   "ourRight": 8,
    "rootContentBox": {
     "l": 8,
     "r": 8
@@ -13806,8 +13806,8 @@
     "w": 374
    },
    "via": "visible-content-union",
-   "failLeft": true,
-   "failRight": true
+   "failLeft": false,
+   "failRight": false
   },
   "home-map-wrap": {
    "specLeft": 8,
@@ -13904,23 +13904,13 @@
   "pass": 0,
   "fail": 5
  },
- "interact": {
-  "pass": 625,
-  "fail": 317,
-  "hoverChecked": 696
- },
- "patterns": {
-  "pass": 11,
-  "fail": 39,
-  "checked": 54
- },
  "panel": {
   "pass": 60,
   "fail": 0,
   "deadVoid": {
    "footer@390": {
     "bp": "390",
-    "worstGapPx": 414,
+    "worstGapPx": 456,
     "limitPx": 506
    },
    "home-cta-wrap@390": {
@@ -13965,7 +13955,7 @@
    },
    "footer@768": {
     "bp": "768",
-    "worstGapPx": 481,
+    "worstGapPx": 535,
     "limitPx": 540
    },
    "home-cta-wrap@768": {
@@ -14010,7 +14000,7 @@
    },
    "footer@1440": {
     "bp": "1440",
-    "worstGapPx": 396,
+    "worstGapPx": 506,
     "limitPx": 540
    },
    "home-cta-wrap@1440": {
@@ -14060,6 +14050,11 @@
     "found": 2,
     "excluded": 2
    },
+   "home-intro-wrap@390": {
+    "bp": "390",
+    "found": 2,
+    "excluded": 2
+   },
    "home-problem-wrap@390": {
     "bp": "390",
     "found": 4,
@@ -14076,11 +14071,6 @@
     "excluded": 0
    },
    "home-cta-wrap@390": {
-    "bp": "390",
-    "found": 0,
-    "excluded": 0
-   },
-   "home-intro-wrap@390": {
     "bp": "390",
     "found": 0,
     "excluded": 0
@@ -14105,17 +14095,17 @@
     "found": 1,
     "excluded": 1
    },
+   "home-intro-wrap@768": {
+    "bp": "768",
+    "found": 2,
+    "excluded": 2
+   },
    "footer@768": {
     "bp": "768",
     "found": 0,
     "excluded": 0
    },
    "home-cta-wrap@768": {
-    "bp": "768",
-    "found": 0,
-    "excluded": 0
-   },
-   "home-intro-wrap@768": {
     "bp": "768",
     "found": 0,
     "excluded": 0
@@ -14145,6 +14135,11 @@
     "found": 0,
     "excluded": 0
    },
+   "home-intro-wrap@1440": {
+    "bp": "1440",
+    "found": 2,
+    "excluded": 2
+   },
    "footer@1440": {
     "bp": "1440",
     "found": 0,
@@ -14156,11 +14151,6 @@
     "excluded": 0
    },
    "home-hero-wrap@1440": {
-    "bp": "1440",
-    "found": 0,
-    "excluded": 0
-   },
-   "home-intro-wrap@1440": {
     "bp": "1440",
     "found": 0,
     "excluded": 0
@@ -14200,9 +14190,9 @@
       "visible": true,
       "rect": {
        "l": 8,
-       "t": 12718,
+       "t": 14785,
        "r": 382,
-       "b": 12812
+       "b": 14879
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14212,9 +14202,9 @@
       "visible": true,
       "rect": {
        "l": 8,
-       "t": 7051,
+       "t": 8084,
        "r": 382,
-       "b": 7145
+       "b": 8178
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14245,9 +14235,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 14037,
+       "t": 16252,
        "r": 761,
-       "b": 14095
+       "b": 16309
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14257,9 +14247,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 7598,
+       "t": 8706,
        "r": 761,
-       "b": 7656
+       "b": 8763
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14271,7 +14261,7 @@
        "l": 7,
        "t": 1160,
        "r": 761,
-       "b": 1218
+       "b": 1217
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14290,9 +14280,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 15718,
+       "t": 17268,
        "r": 1433,
-       "b": 15772
+       "b": 17322
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14302,9 +14292,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 8613,
+       "t": 9388,
        "r": 1433,
-       "b": 8667
+       "b": 9442
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14314,9 +14304,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 1509,
+       "t": 1508,
        "r": 1433,
-       "b": 1563
+       "b": 1562
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14351,7 +14341,7 @@
   "skipped": []
  },
  "provenance": {
-  "file": "chromium-20261111-005301-full.json",
+  "file": "chromium-20261117-060252-full.json",
   "scope": "full",
   "fullMatrix": true,
   "sections": "10/10",
@@ -14359,6 +14349,6 @@
   "engine": "chromium",
   "dark": false,
   "gate": true,
-  "url": "http://localhost:5173/"
+  "url": "http://127.0.0.1:5303"
  }
 }
