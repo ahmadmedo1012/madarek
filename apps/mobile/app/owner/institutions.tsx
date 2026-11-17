@@ -23,6 +23,7 @@ import {
   type InstitutionRow,
 } from "@/features/governance/components";
 import { CREATING, OWNER_DASHBOARD } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 
 /**
@@ -72,7 +73,7 @@ export default function OwnerInstitutions() {
   return (
     <Screen scroll>
       <StackHeader title="المؤسسات" kicker={OWNER_DASHBOARD} />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
         <PageHeader title="المؤسسات" kicker="إدارة المؤسسات التعليمية" />
 
         <Button
@@ -97,7 +98,7 @@ export default function OwnerInstitutions() {
               message="أنشئ أول مؤسسة."
             />
           ) : (
-            <View style={{ gap: 12 }}>
+            <View style={{ gap: sp[12] }}>
               <RowList>
                 {rows.map((inst, i) => {
                   const members = numOf(inst.activeMembershipCount ?? inst.membersCount);
@@ -109,7 +110,7 @@ export default function OwnerInstitutions() {
                       accessibilityLabel={`فتح المؤسسة ${inst.name}`}
                       last={i === rows.length - 1}
                     >
-                      <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
                         <InstitutionStatusChip status={inst.status} />
                         {inst.createdAt ? (
                           <T variant="xs" color="faint">
@@ -117,8 +118,8 @@ export default function OwnerInstitutions() {
                           </T>
                         ) : null}
                       </View>
-                      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                        <View style={{ flex: 1, gap: 2 }}>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+                        <View style={{ flex: 1, gap: sp[2] }}>
                           <T variant="body" weight="bold" numberOfLines={1}>
                             {inst.name}
                           </T>
@@ -131,7 +132,7 @@ export default function OwnerInstitutions() {
                         </View>
                       </View>
                       {members !== null || faculties !== null ? (
-                        <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
+                        <View style={{ flexDirection: "row", gap: sp[8], flexWrap: "wrap" }}>
                           {members !== null ? (
                             <T variant="xs" color="faint">
                               {countAr(members, ["عضو نشط واحد", "عضوان نشطان", "أعضاء نشطون", "عضواً نشطاً"])}
@@ -219,7 +220,7 @@ function CreateInstitutionSheet({
 
   return (
     <Sheet open={open} onClose={onClose} title="مؤسسة جديدة">
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
           أضف مؤسسة تعليمية إلى المنصّة — تُنشأ نشطة ويمكن تعيين مسجلها العام بعد ذلك.
         </T>

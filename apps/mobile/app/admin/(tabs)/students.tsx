@@ -156,14 +156,14 @@ const StudentRow = makeRow<AdminUserRow, { onSelect: (row: AdminUserRow) => void
       onPress={() => onSelect(item)}
       accessibilityLabel={`بيانات وتسجيلات ${item.firstName} ${item.lastName}`}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
         <UserAvatar
           url={avatarUrlOf(item)}
           initials={item.avatarInitials ?? initials(item.firstName, item.lastName)}
           color={item.avatarColor}
           size={36}
         />
-        <View style={{ flex: 1, gap: 2 }}>
+        <View style={{ flex: 1, gap: sp[2] }}>
           <T variant="body" weight="bold" numberOfLines={1}>
             {item.firstName} {item.lastName}
           </T>
@@ -249,7 +249,7 @@ function EnrollmentManager({
 
   return (
     <Sheet open onClose={onClose} title={`تسجيلات ${student.firstName} ${student.lastName}`}>
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
           إلغاء التسجيل يحذف تسجيل الطالب في المقرّر وتقدُّمه فيه نهائيًا — يمرّ كل إلغاء على تأكيد صريح قبل التنفيذ.
         </T>
@@ -258,7 +258,7 @@ function EnrollmentManager({
           التسجيلات الحالية
         </T>
         {enrollments.isLoading ? (
-          <View style={{ gap: 8 }}>
+          <View style={{ gap: sp[8] }}>
             <Skeleton h={44} />
             <Skeleton h={44} />
           </View>
@@ -269,7 +269,7 @@ function EnrollmentManager({
             لا تسجيلات حاليًا.
           </T>
         ) : (
-          <View style={{ gap: 8 }}>
+          <View style={{ gap: sp[8] }}>
             {(enrollments.data ?? []).map((e) => (
               <LedgerRow
                 key={e.id}
@@ -279,7 +279,7 @@ function EnrollmentManager({
                     : ""
                 }`}
               >
-                <View style={{ gap: 4 }}>
+                <View style={{ gap: sp[4] }}>
                   <T variant="body" weight="medium">
                     {e.offering?.course?.name ?? "—"}
                   </T>
@@ -288,7 +288,7 @@ function EnrollmentManager({
                     {e.offering?.teacher?.lastName ?? ""}
                   </T>
                   {typeof e.progressPct === "number" ? (
-                    <View style={{ paddingTop: 4 }}>
+                    <View style={{ paddingTop: sp[4] }}>
                       <ProgressBar ratio={clamp01(e.progressPct / 100)} label="التقدُّم" />
                       <T variant="xs" color="faint">
                         التقدُّم {latn(Math.round(e.progressPct))}%
@@ -296,7 +296,7 @@ function EnrollmentManager({
                     </View>
                   ) : null}
                 </View>
-                <View style={{ flexDirection: "row", paddingTop: 8 }}>
+                <View style={{ flexDirection: "row", paddingTop: sp[8] }}>
                   <Button
                     label="إلغاء التسجيل"
                     kind="ghost"
@@ -322,7 +322,7 @@ function EnrollmentManager({
             لا توجد مقرّرات متاحة للتسجيل.
           </T>
         ) : (
-          <View style={{ gap: 8 }}>
+          <View style={{ gap: sp[8] }}>
             <SelectField
               label="اختر المقرّر"
               value={options.find((o) => o.id === picked) ?? null}

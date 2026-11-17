@@ -24,6 +24,7 @@ import {
   type InstitutionRow,
 } from "@/features/governance/components";
 import { OWNER_DASHBOARD, SAVE_FAILED, SAVING } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 type AdminRow = NonNullable<InstitutionRow["admins"]>[number];
 
@@ -51,7 +52,7 @@ export default function OwnerInstitutionDetail() {
     return (
       <Screen scroll>
         <StackHeader title="المؤسسة" kicker={OWNER_DASHBOARD} />
-        <View style={{ paddingTop: 16 }}>
+        <View style={{ paddingTop: sp[16] }}>
           <SkeletonList rows={5} />
         </View>
       </Screen>
@@ -61,7 +62,7 @@ export default function OwnerInstitutionDetail() {
     return (
       <Screen scroll>
         <StackHeader title="المؤسسة" kicker={OWNER_DASHBOARD} />
-        <View style={{ paddingTop: 16 }}>
+        <View style={{ paddingTop: sp[16] }}>
           <ErrorState
             message={humanizeError(listing.error)}
             onRetry={() => listing.refetch()}
@@ -74,7 +75,7 @@ export default function OwnerInstitutionDetail() {
     return (
       <Screen scroll>
         <StackHeader title="المؤسسة" kicker={OWNER_DASHBOARD} />
-        <View style={{ paddingTop: 16 }}>
+        <View style={{ paddingTop: sp[16] }}>
           <EmptyState
             title="المؤسسة غير موجودة"
             message="لا مؤسسة بهذا المعرّف."
@@ -159,8 +160,8 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
   return (
     <Screen scroll>
       <StackHeader title={inst.name} kicker={inst.slug} />
-      <View style={{ gap: 16, paddingTop: 16 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
           <InstitutionStatusChip status={inst.status} />
           {members !== null ? (
             <T variant="sm" color="muted">
@@ -235,8 +236,8 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
             <RowList>
               {admins.map((a, i) => (
                 <LedgerRow key={a.membershipId ?? a.userId ?? i} last={i === admins.length - 1}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                    <View style={{ flex: 1, gap: 2 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+                    <View style={{ flex: 1, gap: sp[2] }}>
                       <T variant="body" weight="bold" numberOfLines={1}>
                         {`${a.firstName ?? ""} ${a.lastName ?? ""}`.trim() || "—"}
                       </T>
@@ -355,7 +356,7 @@ function RenameSheet({
 
   return (
     <Sheet open={open} onClose={onClose} title="تعديل الأسماء">
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: sp[12] }}>
         <Field
           label="اسم المؤسسة"
           value={name}
@@ -425,7 +426,7 @@ function ProvisionSheet({
 
   return (
     <Sheet open={open} onClose={onClose} title="تجهيز مسجل عام">
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
           يُربط الحساب القائم (بالبريد) بدور المسجل العام داخل هذه المؤسسة فقط — إنشاء حساب جديد بكلمة
           مرور يُدار من لوحة الويب.

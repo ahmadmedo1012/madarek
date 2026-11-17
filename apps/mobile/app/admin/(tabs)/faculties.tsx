@@ -24,6 +24,7 @@ import {
   type FacultyNode,
 } from "@/features/governance/components";
 import { ADDED } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 /** (tabs) Faculties & departments — «الكلّيّات والأقسام» (web AdminFacultiesPage parity). */
 export default function AdminFaculties() {
@@ -87,8 +88,8 @@ export default function AdminFaculties() {
   return (
     <Screen scroll>
       <AppTopBar alertsPath="/admin/alerts" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
           <View style={{ flex: 1 }}>
             <T variant="h2" weight="bold">
               الكلّيّات والأقسام
@@ -106,10 +107,10 @@ export default function AdminFaculties() {
           />
         </View>
 
-        <View style={{ flexDirection: "row", gap: 8 }}>
+        <View style={{ flexDirection: "row", gap: sp[8] }}>
           <StatLine label="الكلّيّات" value={num(facs.data?.length ?? null, "…")} />
         </View>
-        <View style={{ flexDirection: "row", gap: 8 }}>
+        <View style={{ flexDirection: "row", gap: sp[8] }}>
           <StatLine label="الأقسام" value={num(totalDepts, "…")} hint="عبر الكلّيّات" />
         </View>
 
@@ -120,13 +121,13 @@ export default function AdminFaculties() {
           ) : facs.isError ? (
             <ErrorState message={humanizeError(facs.error)} onRetry={() => facs.refetch()} />
           ) : facs.data && facs.data.length > 0 ? (
-            <View style={{ gap: 8 }}>
+            <View style={{ gap: sp[8] }}>
               {facs.data.map((f) => {
                 const depts = f.departments ?? [];
                 const open = expanded.has(f.id);
                 return (
                   <Card key={f.id}>
-                    <View style={{ gap: 4 }}>
+                    <View style={{ gap: sp[4] }}>
                       <T variant="bodyLg" weight="bold">
                         {f.iconEmoji ? `${f.iconEmoji} ` : ""}
                         {f.name}
@@ -147,9 +148,9 @@ export default function AdminFaculties() {
                       <LedgerRow
                         onPress={() => toggle(f.id)}
                         accessibilityLabel={open ? `طيّ أقسام ${f.name}` : `توسيع أقسام ${f.name}`}
-                        style={{ marginTop: 8 }}
+                        style={{ marginTop: sp[8] }}
                       >
-                        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                           <T variant="sm" weight="bold" style={{ flex: 1 }}>
                             {open ? "طيّ الأقسام" : "توسيع الأقسام"}
                           </T>
@@ -158,7 +159,7 @@ export default function AdminFaculties() {
                       </LedgerRow>
                     ) : null}
                     {open && depts.length > 0 ? (
-                      <View style={{ paddingTop: 4 }}>
+                      <View style={{ paddingTop: sp[4] }}>
                         <RowList>
                           {depts.map((d, i) => (
                             <LedgerRow key={d.id} last={i === depts.length - 1}>
@@ -175,7 +176,7 @@ export default function AdminFaculties() {
                         </RowList>
                       </View>
                     ) : null}
-                    <View style={{ paddingTop: 8 }}>
+                    <View style={{ paddingTop: sp[8] }}>
                       <Button
                         label="قسم جديد"
                         kind="ghost"
@@ -211,7 +212,7 @@ export default function AdminFaculties() {
           />
         }
       >
-        <View style={{ gap: 12 }}>
+        <View style={{ gap: sp[12] }}>
           <Field
             label="اسم الكلّيّة"
             value={fName}
@@ -253,7 +254,7 @@ export default function AdminFaculties() {
           />
         }
       >
-        <View style={{ gap: 12 }}>
+        <View style={{ gap: sp[12] }}>
           <T variant="body" color="muted">
             سيُضاف القسم إلى «{deptTarget?.name}».
           </T>

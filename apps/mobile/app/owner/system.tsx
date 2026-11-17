@@ -25,6 +25,7 @@ import {
   type SystemRow,
 } from "@/features/governance/components";
 import { OWNER_DASHBOARD, SAVED, SAVE_FAILED, SAVING, UPDATE_FAILED } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 /** Storage drivers → Arabic labels (web OwnerSystemPage parity). */
 const STORAGE_DRIVER_LABEL: Record<string, string> = {
@@ -119,7 +120,7 @@ export default function OwnerSystem() {
   return (
     <Screen scroll>
       <StackHeader title="النظام والتشغيل" kicker={OWNER_DASHBOARD} />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
         <PageHeader title="النظام والتشغيل" kicker="البنية والخدمات" />
 
         {/* [01] حالة الخدمة */}
@@ -173,7 +174,7 @@ export default function OwnerSystem() {
           ) : !storage ? (
             <RowList>
               <LedgerRow last>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                   <HardDrive size={18} color={p.textMuted} />
                   <T variant="body" color="muted">
                     {sys.isError ? "—" : "غير متوفر"}
@@ -189,7 +190,7 @@ export default function OwnerSystem() {
           ) : (
             <RowList>
               <LedgerRow last>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
                   <T variant="sm" color="muted">
                     السائق
                   </T>
@@ -198,7 +199,7 @@ export default function OwnerSystem() {
                     tone={driver === "s3" ? "sky" : driver === "local" ? "yellow" : "grey"}
                   />
                 </View>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
                   <T variant="sm" color="muted">
                     دوام الملفات المرفوعة
                   </T>
@@ -241,7 +242,7 @@ export default function OwnerSystem() {
                     accessibilityLabel={`تعديل الإعداد ${row.key}`}
                     last={i === settingRows.length - 1}
                   >
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
                       <MonoLabel>{row.key}</MonoLabel>
                       {row.category ? <Badge label={settingCategoryLabel(row.category)} tone="grey" /> : null}
                     </View>
@@ -280,8 +281,8 @@ export default function OwnerSystem() {
             <RowList>
               {flagRows.map((f, i) => (
                 <LedgerRow key={f.slug} last={i === flagRows.length - 1}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-                    <View style={{ flex: 1, gap: 2 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
+                    <View style={{ flex: 1, gap: sp[2] }}>
                       <T variant="body" weight="bold" numberOfLines={1}>
                         {f.name ?? f.slug}
                       </T>
@@ -383,7 +384,7 @@ function SettingEditSheet({
 
   return (
     <Sheet open={open} onClose={onClose} title={draft ? `تعديل «${draft.key}»` : "تعديل الإعداد"}>
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: sp[12] }}>
         {draft ? <MonoLabel>{draft.key}</MonoLabel> : null}
         <Field
           label="قيمة الإعداد"

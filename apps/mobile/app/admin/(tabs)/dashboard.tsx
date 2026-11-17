@@ -56,7 +56,7 @@ export default function AdminDashboard() {
   return (
     <Screen scroll>
       <AppTopBar alertsPath="/admin/alerts" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
         <Animated.View entering={entering(0)}>
           <T variant="h2" weight="bold">
             لوحة {ROLE_LABELS[user?.role ?? "ADMIN"] ?? "المسجل العام"}
@@ -68,13 +68,13 @@ export default function AdminDashboard() {
 
         {stats.isLoading ? (
           /* skeleton with real geometry: hero slab + 2×2 tiles */
-          <Animated.View entering={entering(1)} style={{ gap: 8 }}>
+          <Animated.View entering={entering(1)} style={{ gap: sp[8] }}>
             <Skeleton h={132} />
-            <View style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flexDirection: "row", gap: sp[8] }}>
               <Skeleton h={72} />
               <Skeleton h={72} />
             </View>
-            <View style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flexDirection: "row", gap: sp[8] }}>
               <Skeleton h={72} />
               <Skeleton h={72} />
             </View>
@@ -89,17 +89,17 @@ export default function AdminDashboard() {
             />
           </Animated.View>
         ) : s ? (
-          <Animated.View entering={entering(1)} style={{ gap: 8 }}>
+          <Animated.View entering={entering(1)} style={{ gap: sp[8] }}>
             <MetricHero
               label="الطلاب المسجَّلون"
               value={s.totalStudents ?? null}
               hint="حسابات الطلاب"
             />
-            <View style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flexDirection: "row", gap: sp[8] }}>
               <MetricTile label="الأساتذة" value={s.totalTeachers ?? null} />
               <MetricTile label="المقرّرات" value={s.totalCourses ?? null} />
             </View>
-            <View style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flexDirection: "row", gap: sp[8] }}>
               <MetricTile label="الشُّعب" value={s.totalOfferings ?? null} />
               <MetricTile label="الكلّيات والأقسام" value={(s.totalFaculties ?? 0) + (s.totalDepartments ?? 0)} />
             </View>
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
             emptyTitle="لا بحوث بعد"
             emptyMessage={APPEARS_AFTER_FIRST_UPLOAD}
             loadingSlot={
-              <View style={{ gap: 8, paddingTop: 8 }}>
+              <View style={{ gap: sp[8], paddingTop: sp[8] }}>
                 <Skeleton h={64} />
                 <Skeleton h={64} />
               </View>
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
             contentPadding={{ bottom: 8 }}
           />
           {papers.items.length >= 10 ? (
-            <View style={{ alignItems: "flex-start", paddingTop: 8 }}>
+            <View style={{ alignItems: "flex-start", paddingTop: sp[8] }}>
               <Button label="تقرير البحوث" kind="ghost" small onPress={() => router.push("/admin/reports" as never)} />
             </View>
           ) : null}
@@ -149,7 +149,7 @@ export default function AdminDashboard() {
 
         <Animated.View entering={entering(3)}>
           <SectionBar index={2} title="صفحات المسجل" />
-          <View style={{ gap: 8 }}>
+          <View style={{ gap: sp[8] }}>
             {(
               [
                 [BookOpen, "إدارة المقرّرات", "المقرّرات والشُّعب والبحث", "/admin/courses"],
@@ -167,7 +167,7 @@ export default function AdminDashboard() {
                 accessibilityLabel={title}
                 last={i === arr.length - 1}
               >
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
                   <Icon size={18} color={p.textMuted} />
                   <View style={{ flex: 1 }}>
                     <T variant="body" weight="bold">
@@ -200,7 +200,7 @@ const PaperRowView = makeRow<PaperRow>(({ item }) => (
     <T variant="body" weight="bold" numberOfLines={1}>
       {item.title}
     </T>
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6], flexWrap: "wrap" }}>
       <PaperStatusChip status={item.status} />
       <T variant="xs" color="muted">
         {item.student ? `${item.student.firstName ?? ""} ${item.student.lastName ?? ""}`.trim() : "—"}
@@ -209,7 +209,7 @@ const PaperRowView = makeRow<PaperRow>(({ item }) => (
         · {fromNow(item.uploadedAt)}
       </T>
     </View>
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
       <T variant="xs" color="muted">
         الاقتباس (محاكاة):
       </T>

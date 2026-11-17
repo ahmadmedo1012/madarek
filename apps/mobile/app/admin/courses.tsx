@@ -29,6 +29,7 @@ import {
   type FacultyNode,
 } from "@/features/governance/components";
 import { ADDED, REGISTRAR_DASHBOARD, SAVED, SAVING } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 const PAGE_LIMIT = 20;
 
@@ -159,7 +160,7 @@ export default function AdminCourses() {
   return (
     <Screen scroll>
       <NavHeader title="إدارة المقرّرات" kicker={REGISTRAR_DASHBOARD} />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
         <PageHeader
           title="إدارة المقرّرات"
           kicker={
@@ -201,12 +202,12 @@ export default function AdminCourses() {
             onAction={appliedQ ? () => setQ("") : undefined}
           />
         ) : (
-          <View style={{ gap: 12 }}>
+          <View style={{ gap: sp[12] }}>
             <RowList>
               {rows.map((c, i) => (
                 <LedgerRow key={c.id} last={i === rows.length - 1}>
-                  <View style={{ gap: 4 }}>
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                  <View style={{ gap: sp[4] }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                       <View style={{ flex: 1 }}>
                         <T variant="body" weight="bold" numberOfLines={1}>
                           {c.name}
@@ -223,7 +224,7 @@ export default function AdminCourses() {
                       {latn(c.offeringCount ?? 0)} شعبة
                     </T>
                   </View>
-                  <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap", paddingTop: 8 }}>
+                  <View style={{ flexDirection: "row", gap: sp[8], flexWrap: "wrap", paddingTop: sp[8] }}>
                     <Button
                       label="شعبة جديدة"
                       kind="ghost"
@@ -306,8 +307,8 @@ export default function AdminCourses() {
           }
         >
           {draft ? (
-            <View style={{ gap: 12 }}>
-              <View style={{ gap: 6 }}>
+            <View style={{ gap: sp[12] }}>
+              <View style={{ gap: sp[6] }}>
                 <T variant="sm" weight="medium" color="secondary">
                   كود المقرّر
                 </T>
@@ -318,7 +319,7 @@ export default function AdminCourses() {
                   placeholder="CS101"
                 />
               </View>
-              <View style={{ gap: 6 }}>
+              <View style={{ gap: sp[6] }}>
                 <T variant="sm" weight="medium" color="secondary">
                   اسم المقرّر
                 </T>
@@ -329,7 +330,7 @@ export default function AdminCourses() {
                   placeholder="مثال: علوم الحاسب"
                 />
               </View>
-              <View style={{ gap: 6 }}>
+              <View style={{ gap: sp[6] }}>
                 <T variant="sm" weight="medium" color="secondary">
                   الاسم بالإنجليزية (اختياري)
                 </T>
@@ -340,7 +341,7 @@ export default function AdminCourses() {
                   placeholder="Introduction to Computer Science"
                 />
               </View>
-              <View style={{ gap: 6 }}>
+              <View style={{ gap: sp[6] }}>
                 <T variant="sm" weight="medium" color="secondary">
                   الوصف (اختياري)
                 </T>
@@ -354,7 +355,7 @@ export default function AdminCourses() {
                   style={{ minHeight: 96 }}
                 />
               </View>
-              <View style={{ gap: 6 }}>
+              <View style={{ gap: sp[6] }}>
                 <T variant="sm" weight="medium" color="secondary">
                   الساعات المعتمدة
                 </T>
@@ -475,11 +476,11 @@ function OfferingSheet({
         />
       }
     >
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: sp[12] }}>
         <T variant="body" color="muted">
           سيُدرَّس مقرّر «{course.name}» ({course.code}) في الشعبة الجديدة.
         </T>
-        <View style={{ gap: 6 }}>
+        <View style={{ gap: sp[6] }}>
           <T variant="sm" weight="medium" color="secondary">
             الفصل الدراسي
           </T>
@@ -504,7 +505,7 @@ function OfferingSheet({
           sheetTitle="أساتذة المؤسسة"
           emptyLabel="لا أساتذة بعد"
         />
-        <View style={{ gap: 6 }}>
+        <View style={{ gap: sp[6] }}>
           <T variant="sm" weight="medium" color="secondary">
             القاعة (اختياري)
           </T>

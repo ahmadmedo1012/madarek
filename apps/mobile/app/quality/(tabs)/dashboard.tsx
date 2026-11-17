@@ -75,10 +75,10 @@ export default function QualityDashboard() {
   return (
     <Screen scroll>
       <AppTopBar alertsPath="/quality/alerts" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
         <Animated.View
           entering={entering(0)}
-          style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+          style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}
         >
           <View style={{ flex: 1 }}>
             <T variant="h2" weight="bold">
@@ -93,9 +93,9 @@ export default function QualityDashboard() {
         </Animated.View>
 
         {overview.isLoading ? (
-          <Animated.View entering={entering(1)} style={{ gap: 8 }}>
+          <Animated.View entering={entering(1)} style={{ gap: sp[8] }}>
             <Skeleton h={132} />
-            <View style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flexDirection: "row", gap: sp[8] }}>
               <Skeleton h={72} />
               <Skeleton h={72} />
             </View>
@@ -119,18 +119,18 @@ export default function QualityDashboard() {
           </Animated.View>
         ) : (
           <>
-            <Animated.View entering={entering(1)} style={{ gap: 8 }}>
+            <Animated.View entering={entering(1)} style={{ gap: sp[8] }}>
               <MetricHero
                 label="الطلاب النشطون"
                 value={numOf(users.STUDENT)}
                 hint="آخر قراءة من الجودة"
                 progress={presentRate}
               />
-              <View style={{ flexDirection: "row", gap: 8 }}>
+              <View style={{ flexDirection: "row", gap: sp[8] }}>
                 <MetricTile label="هيئة التدريس" value={numOf(users.TEACHER)} />
                 <MetricTile label="المقرّرات" value={numOf(data.courses)} />
               </View>
-              <View style={{ flexDirection: "row", gap: 8 }}>
+              <View style={{ flexDirection: "row", gap: sp[8] }}>
                 <MetricTile label="الشُّعب" value={numOf(data.offerings)} />
                 <MetricTile label="المحاضرات" value={numOf(data.lectures)} />
               </View>
@@ -187,7 +187,7 @@ export default function QualityDashboard() {
                           PAPER_STATUS_LABEL[key] ?? "حالة أخرى"
                         }: ${num(numOf(value))}`}
                       >
-                        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                           <Badge
                             label={PAPER_STATUS_LABEL[key] ?? "حالة أخرى"}
                             tone={PAPER_STATUS_TONE[key] ?? "grey"}
@@ -216,7 +216,7 @@ export default function QualityDashboard() {
 
             <Animated.View
               entering={entering(5)}
-              style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
+              style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}
             >
               <Eye size={12} color={p.textFaint} />
               <T variant="xs" color="faint">

@@ -12,6 +12,7 @@ import { Card, Badge } from "@/components/ui/surfaces";
 import { RowList, LedgerRow } from "@/components/ui/data";
 import { usePalette } from "@/design/theme";
 import { FEEDBACK, OWNER_DASHBOARD } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 /** The brand asset register (frontend/public/brand) — SVG sources named
  *  verbatim; the mobile app draws its own vector BrandMark twin. */
@@ -35,13 +36,13 @@ export default function OwnerContent() {
   return (
     <Screen scroll>
       <StackHeader title="المحتوى والعلامة التجاريّة" kicker={OWNER_DASHBOARD} />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
         <PageHeader title="المحتوى والعلامة التجاريّة" kicker="الهويّة وأصول العلامة" />
 
         <Card>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
             <BrandMark size={44} />
-            <View style={{ flex: 1, gap: 2 }}>
+            <View style={{ flex: 1, gap: sp[2] }}>
               <T variant="body" weight="bold">
                 علامة مدارك
               </T>
@@ -72,8 +73,8 @@ export default function OwnerContent() {
         </View>
 
         <Card>
-          <View style={{ gap: 8 }}>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          <View style={{ gap: sp[8] }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
               <Info size={16} color={p.textMuted} />
               <T variant="body" weight="bold" style={{ flex: 1 }}>
                 قيد التطوير
@@ -90,8 +91,8 @@ export default function OwnerContent() {
         <View>
           <SectionBar index={2} title="إدارة المحتوى" />
           <Card>
-            <View style={{ gap: 8 }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <View style={{ gap: sp[8] }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                 <Palette size={16} color={p.textMuted} />
                 <T variant="body" weight="bold" style={{ flex: 1 }}>
                   الإعلانات وأعلام الميزات
@@ -115,7 +116,7 @@ export default function OwnerContent() {
         <View>
           <SectionBar index={3} title={FEEDBACK} />
           <Card>
-            <View style={{ gap: 8 }}>
+            <View style={{ gap: sp[8] }}>
               <T variant="sm" color="muted">
                 صندوق تقارير «أبلغ عن مشكلة / اقتراح» الواردة من مستخدمي المنصّة، مع حالتها الكاملة
                 وطريقها.
