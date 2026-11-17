@@ -88,8 +88,8 @@ jobs:
             -d '{"email":"student@test.ly","password":"12345678"}')
           TOK=$(printf '%s' "$LOGIN" | python3 -c 'import json,sys; print(json.load(sys.stdin)["data"]["accessToken"])')
           # R364 — a demo seat may legitimately hold MORE THAN ONE active
-          # membership (seen live 2026-11-17: student@test.ly holds the demo
-          # and the showcase institution). Login then answers with NO
+          # membership (seen live 2026-11-17: student@test.ly is enrolled in
+          # two active institutions). Login then answers with NO
           # institution context, and the dashboard fail-closes with
           # 403 INSTITUTION_CONTEXT_REQUIRED — the product's documented
           # picker flow (AuthPage → POST /auth/select-institution), not a
