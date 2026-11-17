@@ -45,6 +45,11 @@ export const ASSETS = [
   'shared/brand/mark.svg',
   // web statics (scripts/r323/brand-assets.mjs + wordmark-build-r323.mjs)
   'frontend/public/favicon.svg',
+  // R366 Agent 2 · L1 emission set (writer: scripts/r318/logo-audit.mjs --emit)
+  'frontend/public/favicon.ico',
+  'frontend/public/favicon-16.png',
+  'frontend/public/favicon-32.png',
+  'frontend/public/favicon-48.png',
   'frontend/public/brand/mark.svg',
   'frontend/public/brand/madarek-mark.svg',
   'frontend/public/brand/lockup.svg',
@@ -53,6 +58,7 @@ export const ASSETS = [
   'frontend/public/brand/icon-180.png',
   'frontend/public/brand/icon-192.png',
   'frontend/public/brand/icon-512.png',
+  'frontend/public/brand/email-logo.png',
   'frontend/public/brand/madarek-og.jpg',
   // mobile rasters (scripts/brand/build-app-icons.mjs)
   'apps/mobile/assets/images/icon.png',

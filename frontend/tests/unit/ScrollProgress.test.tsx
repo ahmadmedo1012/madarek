@@ -24,6 +24,21 @@ import { render, fireEvent, act } from '@testing-library/react';
 
 import { ScrollProgress } from '../../src/components/layout/ScrollProgress';
 
+/**
+ * R366 (Agent 2 · L2): the bar's paint is rAF-BATCHED — one coalesced
+ * layout read + direct style write per animation frame, zero React
+ * renders during scroll (the old per-event setState re-rendered the
+ * shell chrome every scroll frame; measured 10–13 dropped frames > 50 ms
+ * at 4×-throttled CPU before the fix). The pins below assert the SAME
+ * values — they just flush the pending animation frame before reading
+ * the bar's style, the way a real frame paints it.
+ */
+const flushFrame = async () => {
+  await act(async () => {
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+  });
+};
+
 /* ── controllable matchMedia ─────────────────────────────────────── */
 let rmMatches = false;
 const rmListeners = new Set<(e: { matches: boolean }) => void>();
@@ -120,7 +135,7 @@ describe('ScrollProgress — scroller retarget (r157, 6A4-2)', () => {
     expect(el.scrollTop).toBe(0);
   });
 
-  it('derives its progress from the .content scroller, not the document', () => {
+  it('derives its progress from the .content scroller, not the document', async () => {
     const el = mountContentScroller(2000, 500); // scrollable range: 1500px
     render(<ScrollProgress />);
     const node = document.querySelector('.scroll-progress') as HTMLElement;
@@ -128,17 +143,19 @@ describe('ScrollProgress — scroller retarget (r157, 6A4-2)', () => {
     // Half the range: 750/1500 = 0.5.
     el.scrollTop = 750;
     fireEvent.scroll(el);
+    await flushFrame();
     expect(node.style.transform).toBe(`scaleX(${750 / 1500})`);
     expect(node.style.opacity).toBe('1');
 
     // Sub-1% scroll keeps the bar invisible.
     el.scrollTop = 5;
     fireEvent.scroll(el);
+    await flushFrame();
     expect(node.style.transform).toBe(`scaleX(${5 / 1500})`);
     expect(node.style.opacity).toBe('0');
   });
 
-  it('never listens to the window — the old dead-chrome wiring must not return', () => {
+  it('never listens to the window — the old dead-chrome wiring must not return', async () => {
     const el = mountContentScroller(2000, 500);
     const { unmount } = render(<ScrollProgress />);
     const node = document.querySelector('.scroll-progress') as HTMLElement;
@@ -146,12 +163,14 @@ describe('ScrollProgress — scroller retarget (r157, 6A4-2)', () => {
     // Move the scroller to a visible state first…
     el.scrollTop = 1000;
     fireEvent.scroll(el);
+    await flushFrame();
     expect(node.style.transform).toBe(`scaleX(${1000 / 1500})`);
 
     // …then fire a WINDOW scroll event: the retargeted component must
     // not react (the pre-r157 listener lived here and never fired
     // because the document never scrolls).
     fireEvent.scroll(window);
+    await flushFrame();
     expect(node.style.transform).toBe(`scaleX(${1000 / 1500})`);
 
     // Cleanup discipline: the .content listener is removed on unmount.
@@ -162,6 +181,7 @@ describe('ScrollProgress — scroller retarget (r157, 6A4-2)', () => {
     // And scrolling after unmount updates nothing.
     el.scrollTop = 1400;
     fireEvent.scroll(el);
+    await flushFrame();
     expect(node.style.transform).toBe(`scaleX(${1000 / 1500})`);
   });
 
