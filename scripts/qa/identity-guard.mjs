@@ -95,6 +95,7 @@ const MARK_PATTERN = {
 const MARK_SANCTIONED = new Set([
   'frontend/src/brand/mark.ts',
   'docs/brand.md', // R349 B4: the brand CANON — states the geometry it governs (same class as mark.ts)
+  'docs/LOGO-SPEC.md', // R366 Agent 2 · L1: the R366 logo canon (construction/optical ramps/surface audit) — the same canon class as docs/brand.md, states only the geometry it governs
   'apps/mobile/src/brand/mark.ts',
   'shared/brand/mark.svg',
   'frontend/public/favicon.svg',

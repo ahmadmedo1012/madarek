@@ -3,6 +3,14 @@
 > R366 cross-boundary requests, each with the exact evidence and the
 > precise change asked for. None of these were edited unilaterally.
 
+## R0 · `scripts/gates/css-coverage.mjs` is broken at HEAD (pre-existing)
+
+`cd frontend && npx tsx ../scripts/gates/css-coverage.mjs` crashes:
+`ReferenceError: join is not defined` at line 55 — the `node:path`
+`join` import is missing. Reproduced on the base commit `7a097457`
+(identical crash — not introduced by this branch). Your gate, your fix:
+one import line.
+
 ## R1 · KPI indicator collision at 200 % text scale (the `ind-*` family)
 
 **What**: the KPI indicator family (`bdi.ind-mono` numerals +
