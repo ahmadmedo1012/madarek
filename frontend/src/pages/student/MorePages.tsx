@@ -71,14 +71,8 @@ const RESULTS_TITLE = 'النتائج والتقييمات';
 const GRADES_SUMMARY = 'ملخّص الدرجات';
 const GRADES_BY_COURSE = 'درجاتك حسب المقرّر';
 const NO_GRADES = 'لا درجات بعد';
-const UNI_SERVICES = 'خدمات المؤسسة';
 const MASTERY_LABEL = 'مستوى الإتقان';
 const COURSES_AR: [string, string, string, string] = ['مقرّر', 'مقرّرين', 'مقرّرات', 'مقرّراً'];
-const FILE_COL = 'الملفّ';
-const COURSE_COL = 'المقرّر';
-const TYPE_COL = 'النوع';
-const SIZE_COL = 'الحجم';
-const DATE_COL = 'التاريخ';
 const PENDING_SUBS = 'تسليمات بانتظار التقييم';
 
 /* ─── Gamification ─────────────────────────────────────────── */

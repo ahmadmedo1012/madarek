@@ -783,7 +783,7 @@ export function ExamTakerPage() {
      * (measured live). The callback observes the real element the
      * moment it mounts and re-observes on any swap. */
   const roRef = useRef<ResizeObserver | null>(null);
-  const attachBar = (el: HTMLElement | null) => {
+  const attachBar = (el: HTMLDivElement | null) => {
     barRef.current = el;
     roRef.current?.disconnect();
     roRef.current = null;
