@@ -154,13 +154,6 @@ describe('r363 — B-2: POST /admin/users/:id/role institution guard', () => {
 });
 
 describe('r363 — B-3: POST /admin/users/:id/scope institution binding', () => {
-  const post = (body: unknown, token: string) =>
-    fetch(`${baseUrl}/api/v1/admin/users/${TARGET_A}/scope`, {
-      method: 'POST',
-      headers: { ...authAs(ADMIN_A, Role.ADMIN, 'inst-a'), authorization: `Bearer ${token}` },
-      body: JSON.stringify(body),
-    });
-
   it('rejects a scopeFacultyId belonging to a foreign institution (400)', async () => {
     (prisma.faculty.findUnique as ReturnType<typeof vi.fn>).mockResolvedValue({ id: 'cb222222222222222222222b2', institutionId: 'inst-b' });
     const res = await fetch(`${baseUrl}/api/v1/admin/users/${TARGET_A}/scope`, {
