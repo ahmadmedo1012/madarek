@@ -266,6 +266,12 @@
     align-items: center;
     justify-content: center;
     gap: var(--sp-2);
+    /* r366 (2-g): a button is ATOMIC — it never shrinks inside a flex
+     * row (measured live: /admin/courses at 360 squeezed a «حذف» ghost
+     * to 56px client vs 59px content and its own overflow:hidden ate
+     * the last glyph). Wrapping is the row's honest answer to pressure,
+     * never glyph clipping. */
+    flex-shrink: 0;
     block-size: 40px;
     padding-inline: var(--sp-5);
     font-size: var(--type-label-size);

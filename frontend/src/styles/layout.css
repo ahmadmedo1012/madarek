@@ -704,6 +704,11 @@
   .topbar-title {
     font-family: var(--font-display);
     font-size: var(--fs-h3);
+    /* r366 (2-g): ONE line, always — at extreme text scale a wrapped
+     * title balloons the band (2 × 61px measured) and the overflow
+     * paints over the page's first row. The end clips honestly (the
+     * full name rides the document title). */
+    white-space: nowrap;
     /* r294 (polish v8 fold): semibold — the polish pages-layer bump
        overrode bold as the rendered truth. */
     font-weight: var(--fw-semibold);
