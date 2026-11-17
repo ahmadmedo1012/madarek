@@ -87,7 +87,7 @@ export default function MoocScreen() {
           <EmptyState
             icon={<GraduationCap size={24} color={p.textFaint} />}
             title="لا توجد دورات خارجية مرتبطة"
-            message="يربط المسجل العام دورات Coursera وedX المعتمدة بمقرّراتك؛ راجع المرشد الأكاديمي."
+            message="يربط المسجل دورات Coursera وedX بمقرّراتك — راجع المرشد."
           />
         }
         ListHeaderComponent={

@@ -64,7 +64,7 @@ export default function TeacherSchedule() {
       ) : days.length === 0 ? (
         <EmptyState
           title="لا يوجد جدول مسجَّل"
-          message="ستظهر محاضراتك هنا فور تسجيل الجداول لمقرّراتك من قِبَل المسجل العام."
+          message="تظهر المحاضرات فور تسجيل الجداول."
         />
       ) : (
         days.map((d, di) => (

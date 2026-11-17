@@ -575,7 +575,7 @@ export function OfferingRoster({
     return (
       <EmptyState
         title="لا يوجد طلاب مسجّلون"
-        message="لا توجد تسجيلات نشطة في هذا المقرّر بعد."
+        message="لا تسجيلات نشطة بعد."
       />
     );
   }
@@ -613,7 +613,7 @@ export function OfferingRoster({
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         emptyTitle="لا نتائج مطابقة"
-        emptyMessage="جرّب كلمة بحث أخرى أو أعد تعيين التصفية."
+        emptyMessage="جرّب كلمة أخرى أو أعد التصفية."
         contentPadding={{ horizontal: 20, bottom: 24 }}
       />
 

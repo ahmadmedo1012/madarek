@@ -95,7 +95,7 @@ export default function Settings() {
       await setBiometricLockEnabled(next);
       setBioOn(next);
       toast.success(
-        next ? "سيُطلب فتح القفل عند كل فتح بارد للتطبيق." : "أُلغي قفل التطبيق.",
+        next ? "يُطلب القفل عند كل فتح بارد." : "أُلغي قفل التطبيق.",
         "الأمان",
       );
     } finally {
@@ -164,7 +164,7 @@ export default function Settings() {
   const changePassword = async () => {
     setPwError(null);
     if (newPassword.length < 12 || newPassword.length > 72) {
-      setPwError("كلمة المرور الجديدة يجب ألا تقل عن 12 حرفًا ولا تتجاوز 72.");
+      setPwError("بين 12 و72 حرفًا.");
       return;
     }
     if (newPassword !== confirm) {
@@ -181,7 +181,7 @@ export default function Settings() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirm("");
-      toast.success("تم تغيير كلمة المرور — انتهت جلسات أجهزتك الأخرى.", "كلمة المرور");
+      toast.success("غُيّرت كلمة المرور — انتهت الجلسات الأخرى.", "كلمة المرور");
     } catch (err) {
       setPwError((err as ApiError).message ?? "تعذّر تغيير كلمة المرور.");
     } finally {

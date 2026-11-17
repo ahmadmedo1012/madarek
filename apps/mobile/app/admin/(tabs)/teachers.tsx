@@ -128,7 +128,7 @@ export default function AdminTeachers() {
           emptyMessage={
             appliedQ
               ? "لم نجد أساتذة تطابق البحث الحالي."
-              : "ستظهر القائمة فور تسجيل أول أستاذ في النظام."
+              : "تظهر القائمة فور تسجيل أول أستاذ."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />

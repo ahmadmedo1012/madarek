@@ -45,7 +45,7 @@ export default function OwnerEducation() {
     <Screen scroll>
       <StackHeader title="النظرة التعليميّة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="النظرة التعليميّة" kicker="إحصائيات حيّة عن المقرّرات وأعضاء هيئة التدريس والطلاب" />
+        <PageHeader title="النظرة التعليميّة" kicker="إحصائيات حيّة عن المقرّرات والأساتذة والطلاب." />
 
         {edu.isLoading ? (
           <SkeletonList rows={5} rowHeight={48} />

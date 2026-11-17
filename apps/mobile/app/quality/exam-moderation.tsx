@@ -92,7 +92,7 @@ export default function QualityExamModeration() {
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader
           title="مراجعة الاختبارات"
-          kicker="مراجعة قوالب الاختبارات الموحَّدة قبل اعتمادها وإتاحتها للطلاب — صلاحية حصرية لمكتب الجودة."
+          kicker="مراجعة القوالب قبل اعتمادها — صلاحية حصرية للجودة."
         />
 
         <RowList>
@@ -123,7 +123,7 @@ export default function QualityExamModeration() {
             <EmptyState
               icon={<CheckCircle2 size={22} color={tones.mint.ink} />}
               title="لا شيء بانتظار المراجعة"
-              message="كل قوالب الاختبارات المتاحة للطلاب اجتازت المراجعة."
+              message="كل القوالب المتاحة اجتازت المراجعة."
             />
           ) : (
             <RowList>
@@ -183,7 +183,7 @@ export default function QualityExamModeration() {
             <EmptyState
               icon={<ClipboardCheck size={22} color={p.textMuted} />}
               title="لا أسئلة بانتظار الاعتماد حالياً"
-              message="لا يعرض مسار بنك الأسئلة أسئلة غير معتمدة في هذا الطابور بعد."
+              message="لا أسئلة غير معتمدة في هذا الطابور."
             />
           ) : (
             <RowList>

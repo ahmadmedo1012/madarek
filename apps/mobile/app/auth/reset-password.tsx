@@ -61,7 +61,7 @@ export default function ResetPassword() {
       const human = humanizeError(err);
       // Specific Arabic API copy passes through; the generic bucket gets
       // this flow's own honest sentence (expired/used link).
-      setError(human === GENERIC_AR ? "تعذّر تعيين كلمة المرور — قد يكون الرابط منتهيًا أو مستخدمًا." : human);
+      setError(human === GENERIC_AR ? "تعذّر التعيين — الرابط منتهٍ أو مستخدم." : human);
       haptics.notify("error");
     } finally {
       setBusy(false);
@@ -77,7 +77,7 @@ export default function ResetPassword() {
         submitLoading={busy}
         submitKind="accent"
         error={error}
-        success={done ? "تم تعيين كلمة المرور — انتهت جلساتك الأخرى وسيُعادك التطبيق إلى تسجيل الدخول الآن." : null}
+        success={done ? "تم التعيين — انتهت جلساتك الأخرى وسيُعادك للدخول." : null}
       >
         <T variant="h2" weight="bold">تعيين كلمة مرور جديدة</T>
         {done ? (

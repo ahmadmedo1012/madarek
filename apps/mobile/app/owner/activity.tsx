@@ -81,7 +81,7 @@ export default function OwnerActivity() {
     <Screen scroll={false} padded={false}>
       <StackHeader title="سجلّ النشاط والمراقبة" kicker="لوحة المالك" />
       <View style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
-        <PageHeader title="سجلّ النشاط والمراقبة" kicker="جميع العمليّات المنفَّذة على المنصّة — حيّة من سجلّ التدقيق" />
+        <PageHeader title="سجلّ النشاط والمراقبة" kicker="كل العمليّات — حيّة من سجلّ التدقيق" />
       </View>
       <View style={{ flex: 1 }}>
         <DataList
@@ -102,7 +102,7 @@ export default function OwnerActivity() {
           loadMoreError={feed.loadMoreError}
           onRetryLoadMore={feed.retryLoadMore}
           emptyTitle="لا توجد أحداث مسجَّلة بعد"
-          emptyMessage="تُسجَّل الأحداث تلقائياً فور أول عمليّة على المنصّة."
+          emptyMessage="تُسجَّل الأحداث فور أول عمليّة."
           contentPadding={{ horizontal: 20, bottom: 24 }}
         />
       </View>

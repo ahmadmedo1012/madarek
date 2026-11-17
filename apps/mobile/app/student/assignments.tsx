@@ -141,7 +141,7 @@ export default function AssignmentsScreen() {
 
   return (
     <Screen scroll={false} padded={false}>
-      <StackHeader title="التكاليف" kicker="واجباتك المستحقة فعلياً ولم تُسلّمها بعد" />
+      <StackHeader title="التكاليف" kicker="المستحق فعلياً ولم يُسلَّم بعد" />
       <DataList
         data={pending as AssignmentLike[]}
         renderItem={(info) => (
@@ -173,7 +173,7 @@ export default function AssignmentsScreen() {
           </View>
         }
         emptyTitle="لا تكاليف بانتظارك"
-        emptyMessage="ستظهر هنا التكليفات المستحقة فور إضافتها من أساتذة مقرّراتك."
+        emptyMessage="تظهر التكليفات فور إضافتها."
         contentPadding={{ horizontal: 16, top: 12, bottom: 24 }}
         extraData={now}
       />

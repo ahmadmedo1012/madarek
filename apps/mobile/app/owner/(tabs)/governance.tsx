@@ -116,7 +116,7 @@ export default function OwnerGovernance() {
           ) : !la || numOf(la.total) === 0 ? (
             <EmptyState
               title="لا توجد محاولات دخول بعد"
-              message="سيظهر التوزيع فور أوّل محاولة تسجيل دخول."
+              message="يظهر التوزيع فور أول دخول."
             />
           ) : (
             <RowList>

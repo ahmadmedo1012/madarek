@@ -78,14 +78,14 @@ export default function TrainingIndex() {
         <SkeletonList rows={5} rowHeight={76} />
       ) : q.isError ? (
         isUnauthError(q.error) ? (
-          <SignInPrompt message="مسارات التطوير الذاتي تحتاج حسابًا — سجّل الدخول لتصفّحها وتتبّع تقدّمك." />
+          <SignInPrompt message="سجّل الدخول لتصفّح المسارات وتتبّع تقدّمك." />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )
       ) : tracks.length === 0 ? (
         <EmptyState
           title="لا توجد مسارات منشورة بعد"
-          message="ستظهر المسارات الجديدة هنا فور نشرها من فريق الجامعة."
+          message="المسارات الجديدة تظهر فور نشرها."
           icon={<BookOpen size={20} color={p.textMuted} />}
         />
       ) : (

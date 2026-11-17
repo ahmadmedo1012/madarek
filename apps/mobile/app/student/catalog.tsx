@@ -319,7 +319,7 @@ export default function CatalogScreen() {
           <EmptyState
             icon={<BookOpen size={22} color={p.textMuted} />}
             title="لم تُحدَّد مؤسستك بعد"
-            message="اختر مؤسستك من مبدّل المؤسسة لعرض دليل مقرّراتها."
+            message="اختر مؤسستك لعرض دليلها."
           />
         ) : (
           <DataList
@@ -343,7 +343,7 @@ export default function CatalogScreen() {
               filtering ? (
                 <EmptyState
                   title="لا توجد مقرّرات تطابق البحث"
-                  message="لم نجد مقرّراً يطابق شروطك — جرّب كلمات أخرى أو أعد ضبط التصفية."
+                  message="لا مطابقات — جرّب كلمات أخرى أو أعد الضبط."
                   actionLabel="إزالة التصفية"
                   onAction={resetFilters}
                 />
@@ -351,7 +351,7 @@ export default function CatalogScreen() {
                 <EmptyState
                   room="library"
                   title="لا توجد مقرّرات"
-                  message="لم تُضف مقرّرات إلى دليل مؤسستك حتى الآن — ستظهر هنا فور إضافتها من المسجل العام."
+                  message="لا مقرّرات في الدليل بعد — تظهر فور إضافتها."
                 />
               )
             }

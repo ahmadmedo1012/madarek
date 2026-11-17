@@ -192,7 +192,7 @@ export default function TeacherIntelligence() {
       <Animated.View entering={entering(0)}>
       <PageHeader
         title="الذكاء الأكاديمي"
-        kicker="متابعة أداء طلابك مدعومة بتحليل لحظي للحضور والدرجات والمتابعة، مع توصيات تدخّل ذكية."
+        kicker="تحليل لحظي للحضور والدرجات مع توصيات تدخّل."
       />
 
       {/* طلاب يحتاجون متابعة — the global at-risk panel. */}

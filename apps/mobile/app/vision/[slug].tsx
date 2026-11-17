@@ -37,7 +37,7 @@ export default function VisionDetail() {
         <StackHeader title="الابتكار" kicker="الرؤية" />
         <EmptyState
           title="المفهوم غير موجود"
-          message="ربما تغيّر الرابط أو أُزيل هذا المفهوم من خارطة الطريق."
+          message="تغيّر الرابط أو أُزيل المفهوم."
           actionLabel="العودة إلى الابتكارات"
           onAction={() => router.push("/vision")}
         />

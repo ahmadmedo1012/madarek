@@ -13,25 +13,25 @@
       "max": 18
     },
     "apps/mobile/app/achievements.tsx": {
-      "max": 121
+      "max": 108
     },
     "apps/mobile/app/admin/(tabs)/_layout.tsx": {
       "max": 0
     },
     "apps/mobile/app/admin/(tabs)/dashboard.tsx": {
-      "max": 85
+      "max": 82
     },
     "apps/mobile/app/admin/(tabs)/faculties.tsx": {
-      "max": 132
+      "max": 119
     },
     "apps/mobile/app/admin/(tabs)/reports.tsx": {
-      "max": 78
+      "max": 72
     },
     "apps/mobile/app/admin/(tabs)/students.tsx": {
-      "max": 117
+      "max": 115
     },
     "apps/mobile/app/admin/(tabs)/teachers.tsx": {
-      "max": 125
+      "max": 123
     },
     "apps/mobile/app/admin/_layout.tsx": {
       "max": 0
@@ -46,22 +46,22 @@
       "max": 67
     },
     "apps/mobile/app/admin/directory.tsx": {
-      "max": 53
+      "max": 46
     },
     "apps/mobile/app/admin/feedback.tsx": {
       "max": 3
     },
     "apps/mobile/app/admin/invites.tsx": {
-      "max": 116
+      "max": 107
     },
     "apps/mobile/app/admin/permissions/[id].tsx": {
-      "max": 105
+      "max": 100
     },
     "apps/mobile/app/auth/_layout.tsx": {
       "max": 0
     },
     "apps/mobile/app/auth/forgot-password.tsx": {
-      "max": 40
+      "max": 38
     },
     "apps/mobile/app/auth/index.tsx": {
       "max": 27
@@ -73,31 +73,31 @@
       "max": 152
     },
     "apps/mobile/app/auth/reset-password.tsx": {
-      "max": 71
+      "max": 61
     },
     "apps/mobile/app/colleges/[id].tsx": {
-      "max": 55
+      "max": 52
     },
     "apps/mobile/app/colleges/index.tsx": {
-      "max": 39
+      "max": 38
     },
     "apps/mobile/app/colleges/leaderboard.tsx": {
-      "max": 46
+      "max": 41
     },
     "apps/mobile/app/community.tsx": {
       "max": 192
     },
     "apps/mobile/app/competitions/[id].tsx": {
-      "max": 147
+      "max": 131
     },
     "apps/mobile/app/competitions/index.tsx": {
-      "max": 41
+      "max": 32
     },
     "apps/mobile/app/contact.tsx": {
       "max": 44
     },
     "apps/mobile/app/document/[filename].tsx": {
-      "max": 96
+      "max": 92
     },
     "apps/mobile/app/help.tsx": {
       "max": 35
@@ -106,16 +106,16 @@
       "max": 5
     },
     "apps/mobile/app/legal/[doc].tsx": {
-      "max": 20
+      "max": 17
     },
     "apps/mobile/app/owner/(tabs)/_layout.tsx": {
       "max": 0
     },
     "apps/mobile/app/owner/(tabs)/dashboard.tsx": {
-      "max": 150
+      "max": 147
     },
     "apps/mobile/app/owner/(tabs)/governance.tsx": {
-      "max": 91
+      "max": 89
     },
     "apps/mobile/app/owner/(tabs)/notifications.tsx": {
       "max": 2
@@ -124,31 +124,31 @@
       "max": 51
     },
     "apps/mobile/app/owner/(tabs)/users.tsx": {
-      "max": 157
+      "max": 152
     },
     "apps/mobile/app/owner/_layout.tsx": {
       "max": 0
     },
     "apps/mobile/app/owner/activity.tsx": {
-      "max": 55
+      "max": 49
     },
     "apps/mobile/app/owner/ai.tsx": {
-      "max": 90
+      "max": 86
     },
     "apps/mobile/app/owner/alerts.tsx": {
-      "max": 86
+      "max": 75
     },
     "apps/mobile/app/owner/content.tsx": {
       "max": 143
     },
     "apps/mobile/app/owner/education.tsx": {
-      "max": 106
+      "max": 104
     },
     "apps/mobile/app/owner/feedback.tsx": {
-      "max": 87
+      "max": 78
     },
     "apps/mobile/app/owner/institutions.tsx": {
-      "max": 107
+      "max": 99
     },
     "apps/mobile/app/owner/institutions/[slug].tsx": {
       "max": 233
@@ -160,13 +160,13 @@
       "max": 0
     },
     "apps/mobile/app/quality/(tabs)/courses.tsx": {
-      "max": 59
+      "max": 54
     },
     "apps/mobile/app/quality/(tabs)/curriculum.tsx": {
-      "max": 69
+      "max": 67
     },
     "apps/mobile/app/quality/(tabs)/dashboard.tsx": {
-      "max": 112
+      "max": 100
     },
     "apps/mobile/app/quality/(tabs)/engagement.tsx": {
       "max": 61
@@ -181,19 +181,19 @@
       "max": 39
     },
     "apps/mobile/app/quality/exam-moderation.tsx": {
-      "max": 134
+      "max": 122
     },
     "apps/mobile/app/quality/professors.tsx": {
-      "max": 51
+      "max": 43
     },
     "apps/mobile/app/search.tsx": {
-      "max": 37
+      "max": 32
     },
     "apps/mobile/app/select-institution.tsx": {
-      "max": 68
+      "max": 56
     },
     "apps/mobile/app/settings.tsx": {
-      "max": 214
+      "max": 203
     },
     "apps/mobile/app/student/(tabs)/_layout.tsx": {
       "max": 0
@@ -205,10 +205,10 @@
       "max": 2
     },
     "apps/mobile/app/student/(tabs)/courses.tsx": {
-      "max": 159
+      "max": 146
     },
     "apps/mobile/app/student/(tabs)/dashboard.tsx": {
-      "max": 137
+      "max": 130
     },
     "apps/mobile/app/student/(tabs)/profile.tsx": {
       "max": 225
@@ -220,25 +220,25 @@
       "max": 36
     },
     "apps/mobile/app/student/assignments.tsx": {
-      "max": 86
+      "max": 80
     },
     "apps/mobile/app/student/calendar.tsx": {
-      "max": 66
+      "max": 59
     },
     "apps/mobile/app/student/catalog.tsx": {
-      "max": 133
+      "max": 118
     },
     "apps/mobile/app/student/courses/[offeringId].tsx": {
-      "max": 129
+      "max": 118
     },
     "apps/mobile/app/student/gamification.tsx": {
-      "max": 70
+      "max": 67
     },
     "apps/mobile/app/student/jobs.tsx": {
-      "max": 57
+      "max": 51
     },
     "apps/mobile/app/student/labs.tsx": {
-      "max": 101
+      "max": 95
     },
     "apps/mobile/app/student/lectures/[lectureId].tsx": {
       "max": 214
@@ -247,70 +247,70 @@
       "max": 185
     },
     "apps/mobile/app/student/live.tsx": {
-      "max": 134
+      "max": 117
     },
     "apps/mobile/app/student/map.tsx": {
-      "max": 72
+      "max": 59
     },
     "apps/mobile/app/student/materials.tsx": {
-      "max": 51
+      "max": 47
     },
     "apps/mobile/app/student/matrix.tsx": {
-      "max": 119
+      "max": 114
     },
     "apps/mobile/app/student/messages.tsx": {
       "max": 0
     },
     "apps/mobile/app/student/mooc.tsx": {
-      "max": 65
+      "max": 62
     },
     "apps/mobile/app/student/my-data.tsx": {
       "max": 197
     },
     "apps/mobile/app/student/online-exams.tsx": {
-      "max": 104
+      "max": 98
     },
     "apps/mobile/app/student/online-exams/[templateId].tsx": {
       "max": 320
     },
     "apps/mobile/app/student/payment.tsx": {
-      "max": 57
+      "max": 49
     },
     "apps/mobile/app/student/research.tsx": {
       "max": 222
     },
     "apps/mobile/app/student/results.tsx": {
-      "max": 61
+      "max": 53
     },
     "apps/mobile/app/student/schedule.tsx": {
-      "max": 52
+      "max": 45
     },
     "apps/mobile/app/student/skills.tsx": {
-      "max": 46
+      "max": 44
     },
     "apps/mobile/app/student/social.tsx": {
       "max": 83
     },
     "apps/mobile/app/student/university.tsx": {
-      "max": 76
+      "max": 72
     },
     "apps/mobile/app/student/webinars.tsx": {
-      "max": 63
+      "max": 54
     },
     "apps/mobile/app/teacher/(tabs)/_layout.tsx": {
       "max": 0
     },
     "apps/mobile/app/teacher/(tabs)/dashboard.tsx": {
-      "max": 198
+      "max": 188
     },
     "apps/mobile/app/teacher/(tabs)/intelligence.tsx": {
-      "max": 122
+      "max": 116
     },
     "apps/mobile/app/teacher/(tabs)/profile.tsx": {
-      "max": 158
+      "max": 148
     },
     "apps/mobile/app/teacher/(tabs)/schedule.tsx": {
-      "max": 31
+      "max": 25
     },
     "apps/mobile/app/teacher/(tabs)/students.tsx": {
       "max": 13
@@ -328,10 +328,10 @@
       "max": 185
     },
     "apps/mobile/app/teacher/attendance.tsx": {
-      "max": 89
+      "max": 79
     },
     "apps/mobile/app/teacher/curriculum.tsx": {
-      "max": 320
+      "max": 313
     },
     "apps/mobile/app/teacher/exams.tsx": {
       "max": 269
@@ -340,40 +340,40 @@
       "max": 325
     },
     "apps/mobile/app/teacher/grades.tsx": {
-      "max": 135
+      "max": 122
     },
     "apps/mobile/app/teacher/labs.tsx": {
-      "max": 94
+      "max": 86
     },
     "apps/mobile/app/teacher/live.tsx": {
       "max": 190
     },
     "apps/mobile/app/teacher/materials.tsx": {
-      "max": 144
+      "max": 135
     },
     "apps/mobile/app/teacher/messages.tsx": {
       "max": 0
     },
     "apps/mobile/app/teacher/research-review.tsx": {
-      "max": 149
+      "max": 130
     },
     "apps/mobile/app/teacher/students/[offeringId].tsx": {
       "max": 15
     },
     "apps/mobile/app/training/[slug].tsx": {
-      "max": 115
+      "max": 97
     },
     "apps/mobile/app/training/[slug]/lesson/[lessonId].tsx": {
-      "max": 136
+      "max": 122
     },
     "apps/mobile/app/training/index.tsx": {
-      "max": 72
+      "max": 64
     },
     "apps/mobile/app/vision/[slug].tsx": {
-      "max": 52
+      "max": 47
     },
     "apps/mobile/app/vision/index.tsx": {
-      "max": 64
+      "max": 62
     },
     "apps/mobile/src/brand/Logo.tsx": {
       "max": 1
@@ -403,7 +403,7 @@
       "max": 6
     },
     "apps/mobile/src/components/shell/RoleGate.tsx": {
-      "max": 14
+      "max": 10
     },
     "apps/mobile/src/components/shell/SheetModalHost.tsx": {
       "max": 0
@@ -415,7 +415,7 @@
       "max": 0
     },
     "apps/mobile/src/components/ui/boot.tsx": {
-      "max": 12
+      "max": 9
     },
     "apps/mobile/src/components/ui/brand.tsx": {
       "max": 7
@@ -442,7 +442,7 @@
       "max": 13
     },
     "apps/mobile/src/components/ui/states.tsx": {
-      "max": 104
+      "max": 99
     },
     "apps/mobile/src/components/ui/surfaces.tsx": {
       "max": 10
@@ -472,40 +472,40 @@
       "max": 83
     },
     "apps/mobile/src/features/common/components.tsx": {
-      "max": 40
+      "max": 36
     },
     "apps/mobile/src/features/feedback/ReportProblem.tsx": {
-      "max": 49
+      "max": 43
     },
     "apps/mobile/src/features/governance/FeedbackInbox.tsx": {
-      "max": 45
+      "max": 39
     },
     "apps/mobile/src/features/governance/components.tsx": {
       "max": 462
     },
     "apps/mobile/src/features/messages/MessagesUI.tsx": {
-      "max": 79
+      "max": 75
     },
     "apps/mobile/src/features/notifications/NotificationsScreen.tsx": {
-      "max": 67
+      "max": 62
     },
     "apps/mobile/src/features/student/components.tsx": {
-      "max": 164
+      "max": 135
     },
     "apps/mobile/src/features/student/more.tsx": {
       "max": 81
     },
     "apps/mobile/src/features/teacher/components.tsx": {
-      "max": 202
+      "max": 196
     },
     "apps/mobile/src/lib/biometric.tsx": {
-      "max": 40
+      "max": 35
     },
     "apps/mobile/src/lib/push.tsx": {
       "max": 3
     },
     "apps/mobile/src/lib/resilience/network.tsx": {
-      "max": 16
+      "max": 13
     },
     "apps/mobile/src/lib/updates.tsx": {
       "max": 34

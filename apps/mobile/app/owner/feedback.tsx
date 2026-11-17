@@ -87,7 +87,7 @@ export default function OwnerFeedback() {
     <Screen scroll>
       <StackHeader title="صندوق التغذية الراجعة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="صندوق التغذية الراجعة" kicker="كل «أبلغ عن مشكلة / اقتراح» وصل من مستخدمي المنصّة — مع سياقه الكامل." />
+        <PageHeader title="صندوق التغذية الراجعة" kicker="كل ما وصل من «أبلغ عن مشكلة» — بسياقه الكامل." />
 
         <Segmented
           options={STATUS_FILTERS}
@@ -105,7 +105,7 @@ export default function OwnerFeedback() {
         ) : rows.length === 0 ? (
           <EmptyState
             title={status === "all" ? "لا تقارير هنا" : "لا تقارير في هذه الحالة"}
-            message="عندما يرسل مستخدم «أبلغ عن مشكلة / اقتراح» يظهر تقريره في هذا الصندوق بسياقه الكامل."
+            message="تقارير «أبلغ عن مشكلة» تصل هنا بسياقها الكامل."
           />
         ) : (
           <View style={{ gap: 12 }}>

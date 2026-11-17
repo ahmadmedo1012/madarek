@@ -64,7 +64,7 @@ export default function UniversityScreen() {
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
           title="لا توجد مؤسّسة في جلستك"
-          message="اختر مؤسّستك من قائمة العضويّات ثم عُد إلى هذه الصفحة."
+          message="اختر مؤسّستك من العضويّات ثم عُد."
         />
       </PushFrame>
     );

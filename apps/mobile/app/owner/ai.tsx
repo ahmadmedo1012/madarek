@@ -66,7 +66,7 @@ export default function OwnerAi() {
         }
       />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="مركز الذكاء الاصطناعيّ" kicker="مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ" />
+        <PageHeader title="مركز الذكاء الاصطناعيّ" kicker="مراقبة استخدام وأداء الذكاء الاصطناعيّ." />
 
         {metrics.isLoading ? (
           <SkeletonList rows={4} rowHeight={48} />
@@ -116,7 +116,7 @@ export default function OwnerAi() {
                 <EmptyState
                   icon={<Bot size={22} color={p.textMuted} />}
                   title="لا توجد طلبات لعرضها"
-                  message="تظهر مؤشّرات الاستخدام هنا فور تسجيل أوّل طلب."
+                  message="تظهر المؤشرات فور أول طلب."
                 />
               ) : (
                 <RowList>

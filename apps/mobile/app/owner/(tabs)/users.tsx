@@ -128,8 +128,8 @@ export default function OwnerUsers() {
           emptyTitle={hasFilters ? "لا نتائج مطابقة" : "لا يوجد مستخدمون بعد"}
           emptyMessage={
             hasFilters
-              ? "لم نجد حسابات تطابق البحث أو الدور المحدّد."
-              : "ستظهر الحسابات هنا فور تسجيل أوّل مستخدم في المنصّة."
+              ? "لا حسابات تطابق البحث أو الدور."
+              : "تظهر الحسابات فور تسجيل أول مستخدم."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />

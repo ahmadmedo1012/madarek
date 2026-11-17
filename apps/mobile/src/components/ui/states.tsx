@@ -307,7 +307,7 @@ export function ErrorState({
  */
 export function OfflineState({
   title = "أنت غير متصل بالإنترنت",
-  message = "لا توجد نسخة محفوظة من هذه الصفحة — سيتم تحميلها عند عودة الاتصال.",
+  message = "لا نسخة محفوظة — التحميل عند عودة الاتصال.",
   onRetry,
 }: {
   title?: string;

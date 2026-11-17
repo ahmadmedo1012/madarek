@@ -195,7 +195,7 @@ export default function CalendarScreen() {
     <>
       <PushFrame
         title="التقويم"
-        kicker="كل مواعيدك في نظرة واحدة — بتوقيت ليبيا"
+        kicker="كل مواعيدك — بتوقيت ليبيا"
         refreshing={(enrollments.isFetching || dash.isFetching) && !loading}
         onRefresh={() => {
           void enrollments.refetch();
@@ -387,7 +387,7 @@ export default function CalendarScreen() {
             <EmptyState
               room="library"
               title="لا أحداث في هذا اليوم"
-              message="اختر يومًا آخر من الشبكة — أو راجع جدولك ومقرّراتك."
+              message="اختر يومًا آخر من الشبكة."
             />
           ) : (
             <RowList>

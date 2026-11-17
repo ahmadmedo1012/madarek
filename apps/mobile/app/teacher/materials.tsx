@@ -81,7 +81,7 @@ export default function Materials() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "materials"] });
-      toast.success("أُضيف الملف إلى المقرّر وسيظهر لطلابه فوراً.", "تمّت الإضافة");
+      toast.success("أُضيف الملف — يظهر لطلابه فورًا.", "تمّت الإضافة");
       setSheetOpen(false);
       resetForm();
     },
@@ -128,7 +128,7 @@ export default function Materials() {
       <StackHeader title="الملفات التعليمية" />
       <PageHeader
         title="الملفات التعليمية"
-        kicker="ملفّاتك المرفوعة على مقرّراتك — مع عدد المشاهدات والتحميلات الفعليّ."
+        kicker="ملفاتك على مقرّراتك — المشاهدات والتحميلات الفعليّة."
       />
       <SectionBar
         index={1}
@@ -144,7 +144,7 @@ export default function Materials() {
       ) : rows.length === 0 ? (
         <EmptyState
           title="لم ترفع ملفات بعد"
-          message="أضف أول مادة بزر «إضافة مادة» بالأعلى — سيظهر لطلاب المقرّر فوراً."
+          message="أضف أول مادة — تظهر لطلاب المقرّر فورًا."
           actionLabel="إضافة مادة"
           onAction={() => setSheetOpen(true)}
         />

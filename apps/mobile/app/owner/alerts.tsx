@@ -48,7 +48,7 @@ export default function OwnerAlerts() {
     mutationFn: (id: string) => ownerApi.resolveAlert(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["owner", "alerts"] });
-      toast.success("أُغلق التنبيه وسُجّلت العمليّة في سجلّ النشاط.", "تمّ حلّ التنبيه");
+      toast.success("أُغلق التنبيه وسُجِّلت العمليّة.", "تمّ حلّ التنبيه");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر حلّ التنبيه"),
   });
@@ -62,7 +62,7 @@ export default function OwnerAlerts() {
     <Screen scroll>
       <StackHeader title="التنبيهات التشغيليّة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="التنبيهات التشغيليّة" kicker="إدارة ومراقبة التنبيهات والحوادث التشغيليّة — مباشرة من سجلّ المنصّة." />
+        <PageHeader title="التنبيهات التشغيليّة" kicker="التنبيهات والحوادث التشغيليّة — من سجلّ المنصّة." />
 
         {alerts.isLoading ? (
           <SkeletonList rows={4} />
@@ -72,7 +72,7 @@ export default function OwnerAlerts() {
           <EmptyState
             icon={<CheckCircle2 size={22} color={tones.mint.ink} />}
             title="لا توجد تنبيهات مفتوحة"
-            message="كل أنظمة المنصّة تعمل بشكل طبيعيّ — تابع آخر العمليّات من سجلّ النشاط."
+            message="كل الأنظمة طبيعيّة — تابع العمليّات من السجلّ."
           />
         ) : (
           <View style={{ gap: 16 }}>

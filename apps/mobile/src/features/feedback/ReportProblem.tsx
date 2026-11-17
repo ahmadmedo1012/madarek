@@ -41,7 +41,7 @@ export function ReportProblemSheet({ open, onClose }: { open: boolean; onClose: 
       post("/feedback", { kind, note: note.trim(), route: pathname, role: user?.role ?? undefined }),
     onSuccess: () => {
       haptics.notify("success");
-      toast.success("وصلتنا ملاحظتك — شكرًا لمساعدتك في تحسين مدارك.", "ملاحظة الطيار");
+      toast.success("وصلتنا ملاحظتك — شكرًا لمساعدتك.", "ملاحظة الطيار");
       setNote("");
       setError(null);
       onClose();
@@ -55,7 +55,7 @@ export function ReportProblemSheet({ open, onClose }: { open: boolean; onClose: 
   const onSubmit = () => {
     if (note.trim().length < 10) {
       haptics.notify("error");
-      setError("اشرح الملاحظة في 10 أحرف على الأقل حتى نفهمها ونصلحها.");
+      setError("اشرحها في 10 أحرف على الأقل لنفهمها.");
       return;
     }
     setError(null);

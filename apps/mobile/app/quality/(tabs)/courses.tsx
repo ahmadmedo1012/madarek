@@ -53,7 +53,7 @@ export default function QualityCourses() {
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا توجد مقرّرات نشطة بعد"
-            message="ستظهر المقرّرات وعروضها الدراسية هنا فور اعتمادها وربطها بالفصل الحاليّ."
+            message="تظهر المقرّرات وعروضها فور اعتمادها."
           />
         ) : (
           <>

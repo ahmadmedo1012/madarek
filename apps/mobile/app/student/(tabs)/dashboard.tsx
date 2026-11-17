@@ -511,7 +511,7 @@ export default function StudentDashboard() {
           <EmptyState
             room="lecture-hall"
             title="لوحتك تنتظر أول مقرر"
-            message="لم تُسجَّل في مقررات بعد — بمجرد اعتماد تسجيلك من شؤون الطلاب سترى جدولك وواجباتك هنا."
+            message="لم تُسجَّل بعد — بعد الاعتماد تظهر بياناتك هنا."
           />
         ) : null}
 

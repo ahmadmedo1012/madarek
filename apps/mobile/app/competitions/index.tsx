@@ -49,14 +49,14 @@ export default function CompetitionsIndex() {
         <SkeletonList rows={5} />
       ) : q.isError ? (
         isUnauthError(q.error) ? (
-          <SignInPrompt message="المسابقات تحتاج حسابًا — سجّل الدخول لعرضها والمشاركة فيها." />
+          <SignInPrompt message="سجّل الدخول للمشاركة." />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )
       ) : rows.length === 0 ? (
         <EmptyState
           title="لا توجد مسابقات بعد"
-          message="ستظهر المسابقات المتاحة هنا فور إطلاقها من منظّميها."
+          message="تظهر المسابقات فور إطلاقها."
           icon={<Trophy size={20} color={p.textMuted} />}
         />
       ) : (

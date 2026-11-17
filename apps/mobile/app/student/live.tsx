@@ -27,8 +27,8 @@ function joinHint(s: LiveSession): string {
   const scheduled = new Date(s.scheduledAt).getTime();
   const opensAt = scheduled - JOIN_WINDOW_MS;
   const now = Date.now();
-  if (s.status === "LIVE") return "على الهواء الآن — انضمّ قبل انتهاء الجلسة.";
-  if (now >= opensAt) return "باب الانضمام مفتوح — يبدأ البث عند الموعد.";
+  if (s.status === "LIVE") return "على الهواء — انضمّ قبل الانتهاء.";
+  if (now >= opensAt) return "الانضمام مفتوح — البث عند الموعد.";
   const waitMs = opensAt - now;
   if (waitMs <= 60 * 60 * 1000) return `يفتح الانضمام بعد ${fmtClock(waitMs / 1000)} (قبل الموعد بـ10 دقائق).`;
   return `يفتح الانضمام ${dateTime(new Date(opensAt).toISOString())} (قبل الموعد بـ10 دقائق).`;
@@ -86,7 +86,7 @@ export default function LiveScreen() {
       ) : list.length === 0 ? (
         <EmptyState
           title="لا توجد بثوث بعد"
-          message="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
+          message="لا بثوث لمقرّراتك — الجلسات الجديدة تظهر هنا."
         />
       ) : (
         <View style={{ gap: sp[16] }}>
@@ -94,7 +94,7 @@ export default function LiveScreen() {
             title="مباشرة الآن"
             sessions={live}
             emptyLabel="لا بثّ مباشرة الآن"
-            emptyNote="لا توجد جلسات نشطة لمقرراتك في هذه اللحظة؛ راجع الجلسات القادمة أدناه."
+            emptyNote="لا جلسات نشطة — راجع القادمة أدناه."
             onJoin={live.length > 0 ? (id) => join.mutate(id) : undefined}
             joinPending={join.isPending ? join.variables ?? null : null}
           />

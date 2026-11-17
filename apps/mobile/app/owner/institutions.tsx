@@ -93,7 +93,7 @@ export default function OwnerInstitutions() {
           ) : rows.length === 0 ? (
             <EmptyState
               title="لا توجد مؤسسات بعد"
-              message="أنشئ أول مؤسسة تعليمية من الزر أعلاه لبدء استقبال أعضائها."
+              message="أنشئ أول مؤسسة لبدء استقبال أعضائها."
             />
           ) : (
             <View style={{ gap: 12 }}>
@@ -242,7 +242,7 @@ function CreateInstitutionSheet({
           value={draft.slug}
           onChangeText={(v) => setDraft((d) => ({ ...d, slug: v }))}
           placeholder="inst-example"
-          hint="أحرف لاتينية صغيرة وأرقام وشرطات؛ يُشتق تلقائيًا إن تُرك فارغًا"
+          hint="لاتينية صغيرة وأرقام وشرطات — يُشتق تلقائيًا."
           autoCorrect={false}
         />
         <Button

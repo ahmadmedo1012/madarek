@@ -249,7 +249,7 @@ describe("PushActivationCard — the honest failure seats", () => {
   it("denied → ONE honest Arabic line + the OS settings button", async () => {
     mockPermission = { granted: false, canAskAgain: false };
     const tree = await mountSettled(() => <PushActivationCard />);
-    expect(tree.queryByText("الإشعارات مقفلة من إعدادات النظام — افتحها من هناك.")).not.toBeNull();
+    expect(tree.queryByText("مقفلة من إعدادات النظام — افتحها من هناك.")).not.toBeNull();
     const settings = tree.getByRole("button", { name: "فتح إعدادات النظام" });
     await fireEvent.press(settings);
     expect(linkingSpy).toHaveBeenCalled();
@@ -258,7 +258,7 @@ describe("PushActivationCard — the honest failure seats", () => {
   it("undetermined → the enable ask; a failed registration renders the retry line, and the retry can succeed", async () => {
     mockPermission = { granted: false, canAskAgain: true };
     const tree = await mountSettled(() => <PushActivationCard />);
-    expect(tree.queryByText("فعّل الإشعارات لتصلك الإعلانات والدرجات لحظة صدورها.")).not.toBeNull();
+    expect(tree.queryByText("فعّل الإشعارات لتصلك لحظة صدورها.")).not.toBeNull();
 
     // The ask grants, the token mints, the registration POST fails.
     mockAskResult = { granted: true, canAskAgain: true };

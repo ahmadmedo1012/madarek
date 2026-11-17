@@ -49,7 +49,7 @@ export default function TeacherLabs() {
       studentApi.recordLab(labId, experimentName),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["me", "lab-sessions"] });
-      toast.success("سُجّلت جلسة معمل (معاينة كطالب) — تظهر في سجل جلساتك.", "معاينة المعمل");
+      toast.success("سُجّلت جلسة معاينة — في سجل جلساتك.", "معاينة المعمل");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر تسجيل الجلسة"),
   });
@@ -61,7 +61,7 @@ export default function TeacherLabs() {
       <StackHeader title="المعامل الافتراضية" />
       <PageHeader
         title="المعامل الافتراضية"
-        kicker="استعرض المعامل المتاحة على المنصة ووجّه طلابك إليها كمكمّل عملي للمحاضرات."
+        kicker="المعامل المتاحة — وجّه طلابك إليها كمكمّل عملي."
       />
 
       {/* التنويه الأكاديمي — web parity, verbatim. */}
@@ -83,7 +83,7 @@ export default function TeacherLabs() {
       ) : rows.length === 0 ? (
         <EmptyState
           title="لم تُضف معامل بعد"
-          message="تواصل مع إدارة المنصة لإضافة معامل لكليتك."
+          message="تواصل مع الإدارة لإضافة معامل كليتك."
         />
       ) : (
         <RowList>

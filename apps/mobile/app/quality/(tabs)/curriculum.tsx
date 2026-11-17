@@ -75,7 +75,7 @@ export default function QualityCurriculum() {
         ) : facs.length === 0 ? (
           <EmptyState
             title="لا مناهج بعد"
-            message="ستظهر شجرة المناهج هنا فور إنشاء الكلّيّات والمقرّرات."
+            message="تظهر الشجرة فور إنشاء الكليات والمقرّرات."
           />
         ) : (
           facs.map((f) => {

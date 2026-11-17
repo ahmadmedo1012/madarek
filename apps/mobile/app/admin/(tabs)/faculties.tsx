@@ -190,7 +190,7 @@ export default function AdminFaculties() {
           ) : (
             <EmptyState
               title="لا كليات بعد"
-              message="أنشئ أول كلّيّة من الزر أعلاه — بعدها يمكنك إضافة الأقسام والمقرّرات."
+              message="أنشئ أول كلّيّة — ثم أضف الأقسام والمقرّرات."
               actionLabel="كلية جديدة"
               onAction={() => setFacultyOpen(true)}
             />
@@ -228,7 +228,7 @@ export default function AdminFaculties() {
             value={fCity}
             onChangeText={setFCity}
             placeholder="حرم المعرفة"
-            hint="الكلّيّات تتميّز بالاسم داخل كل مدينة — الاسم نفسه في مدينة أخرى لا يُعدّ تكرارًا"
+            hint="الاسم يتميّز داخل مدينته فقط."
           />
           <Field
             label="رمز تعبيري (اختياري)"

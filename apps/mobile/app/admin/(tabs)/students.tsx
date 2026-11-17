@@ -128,7 +128,7 @@ export default function AdminStudents() {
           emptyMessage={
             appliedQ
               ? "جرّب تعديل البحث لعرض نتائج أوسع."
-              : "ستظهر القائمة فور تسجيل أوّل طالب في النظام."
+              : "تظهر القائمة فور تسجيل أول طالب."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />

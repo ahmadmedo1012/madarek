@@ -59,7 +59,7 @@ export default function AdminReports() {
         ) : reports.isError ? (
           <ErrorState message={humanizeError(reports.error)} onRetry={() => reports.refetch()} />
         ) : !reports.data || typeof reports.data !== "object" ? (
-          <EmptyState title="لا توجد بيانات بعد" message="ستظهر التقارير فور توفّر بيانات المؤسسة." />
+          <EmptyState title="لا توجد بيانات بعد" message="تظهر التقارير فور توفر البيانات." />
         ) : (
           (() => {
             const payload = reports.data as Record<string, unknown>;
@@ -106,7 +106,7 @@ export default function AdminReports() {
                   {!topCourses || topCourses.length === 0 ? (
                     <EmptyState
                       title="لا توجد تسجيلات بعد"
-                      message="ستظهر المقرّرات الأعلى تسجيلاً هنا فور تسجيل الطلاب في مقرّراتهم."
+                      message="تظهر هنا فور تسجيل الطلاب."
                     />
                   ) : (
                     <RowList>

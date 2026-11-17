@@ -22,7 +22,7 @@ export default function PaymentScreen() {
 
       <EmptyState
         icon={<Wallet size={26} color={p.textFaint} />}
-        title="لا توجد رسوم أو بيانات مالية مسجّلة في النظام بعد — هذه الصفحة قيد التطوير."
+        title="لا رسوم مسجّلة — الصفحة قيد التطوير."
       />
 
       <Card style={{ gap: sp[8] }}>

@@ -85,7 +85,7 @@ export default function ResearchReview() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["research", "queue"] });
-      toast.success("صار البحث مُقيَّماً؛ يمكنك نشره في المكتبة من قسم «جاهزة للنشر».", "تمّ حفظ التقييم");
+      toast.success("البحث مُقيَّم — انشره من «جاهزة للنشر».", "تمّ حفظ التقييم");
       setSelected(null);
       setScore("");
       setFeedback("");
@@ -100,7 +100,7 @@ export default function ResearchReview() {
       qc.invalidateQueries({ queryKey: ["research", "queue"] });
       setSelected(null);
       setConfirmPublish(false);
-      toast.success("أصبح البحث متاحاً للطلاب في مكتبة الجامعة.", "تمّ نشر البحث");
+      toast.success("أصبح متاحًا في مكتبة الجامعة.", "تمّ نشر البحث");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
@@ -159,7 +159,7 @@ export default function ResearchReview() {
   return (
     <Screen scroll>
       <StackHeader title="البحث العلمي" />
-      <PageHeader title="البحث العلمي" kicker="قائمة بحوث الطلاب للمراجعة، ومنشوراتك العلمية." />
+      <PageHeader title="البحث العلمي" kicker="بحوث الطلاب للمراجعة ومنشوراتك." />
 
       {queue.isLoading ? (
         <SkeletonList rows={5} />
@@ -178,7 +178,7 @@ export default function ResearchReview() {
           {passed.length === 0 ? (
             <EmptyState
               title="لا بحوث في الانتظار"
-              message="ستظهر هنا بحوث الطلاب فور اجتيازها الفحص التجريبي (محاكاة) للانتحال والمحتوى الآلي."
+              message="تظهر البحوث فور اجتياز فحص الانتحال والمحتوى."
             />
           ) : (
             <RowList>
@@ -316,7 +316,7 @@ export default function ResearchReview() {
       <ConfirmDialog
         open={confirmPublish}
         title="نشر البحث"
-        message="سيصبح البحث متاحاً للطلاب في مكتبة الجامعة. هل تريد النشر الآن؟"
+        message="سيصبح متاحًا في المكتبة. النشر الآن؟"
         confirmLabel="نشر"
         loading={publish.isPending}
         onConfirm={() => selected && publish.mutate(selected.id)}

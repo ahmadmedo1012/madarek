@@ -215,7 +215,7 @@ const SLOW_AFTER_MS = 6000;
 
 export function Boot({
   label = "جارٍ التحميل…",
-  slowLabel = "الخادم يستيقظ… قد يستغرق لحظات ثم يبدأ العمل.",
+  slowLabel = "الخادم يستيقظ… لحظات ويبدأ العمل.",
   onRetry,
   size = 120,
 }: {

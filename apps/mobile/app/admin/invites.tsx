@@ -116,7 +116,7 @@ const [maxUses, setMaxUses] = useState("1");
     <Screen scroll>
       <StackHeader title="دعوات التسجيل" kicker="لوحة المسجل العام" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="دعوات التسجيل" kicker="أكواد انضمام للطلاب والأساتذة، بنطاق واحد على الأكثر وصلاحية محدّدة." />
+        <PageHeader title="دعوات التسجيل" kicker="أكواد انضمام بنطاق وصلاحية محدّدة." />
 
         <Button
           label="دعوة جديدة"
@@ -132,7 +132,7 @@ const [maxUses, setMaxUses] = useState("1");
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا توجد دعوات بعد"
-            message="أنشئ أول دعوة من الزر أعلاه لمشاركة كود الانضمام."
+            message="أنشئ أول دعوة لمشاركة الكود."
             actionLabel="دعوة جديدة"
             onAction={() => setCreateOpen(true)}
           />

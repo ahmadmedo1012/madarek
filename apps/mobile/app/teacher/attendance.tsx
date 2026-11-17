@@ -159,7 +159,7 @@ export default function Attendance() {
       <StackHeader title="الحضور والغياب" />
       <PageHeader
         title="الحضور والغياب"
-        kicker="سجِّل الحضور لكلّ محاضرة. يحفظ سجلّاً واحداً لكلّ تاريخ في قاعدة البيانات."
+        kicker="سجِّل الحضور — سجلّ واحد لكل تاريخ."
       />
 
       {/* الجلسة — offering + date + topic. */}
@@ -207,7 +207,7 @@ export default function Attendance() {
           ) : roster.isError ? (
             <ErrorState message={humanizeError(roster.error)} onRetry={() => roster.refetch()} />
           ) : rows.length === 0 ? (
-            <EmptyState title="لا يوجد طلاب" message="لا توجد تسجيلات نشطة في هذا المقرّر بعد." />
+            <EmptyState title="لا يوجد طلاب" message="لا تسجيلات نشطة بعد." />
           ) : (
             <>
               <RowList>

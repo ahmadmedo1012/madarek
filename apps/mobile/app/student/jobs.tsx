@@ -125,7 +125,7 @@ export default function JobsScreen() {
           <EmptyState
             icon={<Briefcase size={24} color={p.textFaint} />}
             title="لا توجد فرص نشطة هذا الأسبوع"
-            message="نضيف فرص التوظيف والتدريب بشكل دوري — ستصلك إشعارات الفرص الملائمة لتخصصك تلقائياً."
+            message="فرص دورية — تصلك إشعارات الملائم لتخصصك."
           />
         }
         ListHeaderComponent={

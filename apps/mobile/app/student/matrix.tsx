@@ -141,7 +141,7 @@ export default function MatrixScreen() {
         <EmptyState
           art={<Illustration id="r342/problem-03-mastery" width={216} />}
           title="لم تتشكّل مصفوفتك بعد"
-          message="شاهد أول محاضرة وأجب عن نقاط التفاعل فيها، وستبدأ المصفوفة برسم خريطة معرفتك تلقائياً."
+          message="شاهد محاضرة وأجب عن نقاط التفاعل — ترسم المصفوفة خريطتك."
         />
       ) : (
         <>

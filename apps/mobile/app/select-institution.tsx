@@ -156,7 +156,7 @@ export default function SelectInstitution() {
         {needle && rows.length === 0 ? (
           <EmptyState
             title="لا مؤسّسة تطابق بحثك"
-            message="جرّب اسمًا آخر — أو امسح البحث لعرض جميع عضوياتك النشطة."
+            message="جرّب اسمًا آخر أو امسح البحث."
           />
         ) : null}
 
@@ -165,7 +165,7 @@ export default function SelectInstitution() {
             art={<Illustration id="r342/role-registrar" width={216} />}
             room="building"
             title="لا عضوية نشطة بعد"
-            message="لم تُفعَّل أي عضوية مؤسّسة على حسابك — تواصل مع إدارة مؤسّستك لإتمام التفعيل، ثم عُد إلى تسجيل الدخول."
+            message="لا عضوية مفعّلة — تواصل مع إدارة مؤسّستك ثم عُد للدخول."
             actionLabel="تسجيل الخروج"
             onAction={() => void doLogout()}
           />

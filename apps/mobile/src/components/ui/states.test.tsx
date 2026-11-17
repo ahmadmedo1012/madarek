@@ -103,7 +103,7 @@ describe("OfflineState", () => {
     const { getByText } = await render(<OfflineState />);
     expect(getByText("أنت غير متصل بالإنترنت")).toBeTruthy();
     expect(
-      getByText("لا توجد نسخة محفوظة من هذه الصفحة — سيتم تحميلها عند عودة الاتصال."),
+      getByText("لا نسخة محفوظة — التحميل عند عودة الاتصال."),
     ).toBeTruthy();
   });
 

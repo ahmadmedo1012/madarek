@@ -40,7 +40,7 @@ export default function QualityProfessors() {
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader
           title="تقييم الأساتذة"
-          kicker="رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة."
+          kicker="الرضا والاستجابة والالتزام بالمعايير."
           right={<Badge label="قراءة فقط" tone="grey" />}
         />
 
@@ -60,7 +60,7 @@ export default function QualityProfessors() {
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا أساتذة بعد"
-            message="ستظهر هيئة التدريس ومؤشراتها هنا فور إضافة أعضائها إلى المؤسسة."
+            message="تظهر الهيئة ومؤشراتها فور إضافتها."
           />
         ) : (
           <>

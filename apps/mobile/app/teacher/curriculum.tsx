@@ -73,7 +73,7 @@ export default function Curriculum() {
   const saveLecture = useMutation({
     mutationFn: async () => {
       if (title.trim().length < 2) throw new Error("عنوان المحاضرة مطلوب.");
-      if (videoUrl.trim() === "") throw new Error("رابط الفيديو مطلوب — https:// أو مسار ملف داخل المنصة.");
+      if (videoUrl.trim() === "") throw new Error("مطلوب — https:// أو مسار ملف.");
       const dur = durationSec.trim() === "" ? undefined : Number(durationSec);
       if (dur !== undefined && (Number.isNaN(dur) || dur < 1)) throw new Error("المدة يجب أن تكون ثانية واحدة على الأقل.");
       if (editing) {
@@ -400,7 +400,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
     mutationFn: () => learningApi.generateTranscript(lectureId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["learning", "lecture", lectureId] });
-      toast.success("بدأ توليد النص المكتوب — تابع حالته من شريحة النص.", "توليد النص");
+      toast.success("بدأ التوليد — تابع حالته في الشريحة.", "توليد النص");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر بدء التوليد"),
   });

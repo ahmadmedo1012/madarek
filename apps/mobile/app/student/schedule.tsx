@@ -239,13 +239,13 @@ export default function ScheduleScreen() {
             <EmptyState
               room="building"
               title="لا يوجد جدول مسجّل"
-              message="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول لمقرّراتك."
+              message="تظهر المحاضرات فور تسجيل الجدول."
             />
           ) : (
             <EmptyState
               room="lecture-hall"
               title={Number(selected) === todayDow ? "لا توجد محاضرات اليوم" : "لا حصص في هذا اليوم"}
-              message="اختر يوماً آخر من الشريط أعلاه أو راجع مقرّراتك."
+              message="اختر يومًا آخر من الشريط."
             />
           )
         }

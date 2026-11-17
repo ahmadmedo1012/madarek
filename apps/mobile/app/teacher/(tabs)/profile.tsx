@@ -156,7 +156,7 @@ export default function TeacherProfile() {
       <AppTopBar alertsPath="/teacher/alerts" />
       <PageHeader
         title="الملف الأكاديمي"
-        kicker="ملفك الأكاديمي كما يظهر للمسجل العام، مكتب الجودة، والطلاب."
+        kicker="ملفك كما يظهر للمسجل والجودة والطلاب."
       />
 
       {profile.isLoading ? (
@@ -166,7 +166,7 @@ export default function TeacherProfile() {
       ) : !me ? (
         <EmptyState
           title="لا يوجد ملف أستاذ مرتبط بهذا الحساب"
-          message="تواصل مع المسجل العام لربط ملفك الأكاديمي بهذا الحساب."
+          message="تواصل مع المسجل العام لربط ملفك."
         />
       ) : (
         <>
@@ -341,7 +341,7 @@ export default function TeacherProfile() {
                 value={bio}
                 onChangeText={setBio}
                 multiline
-                placeholder="اكتب نبذة عن خبرتك الأكاديمية والبحثية وأهم اهتماماتك العلمية…"
+                placeholder="نبذة عن خبرتك واهتماماتك العلمية…"
                 textAlignVertical="top"
                 style={{ minHeight: 120 }}
               />

@@ -99,7 +99,7 @@ export default function Achievements() {
           <SkeletonList rows={6} rowHeight={90} />
         ) : badges.isError ? (
           isUnauthError(badges.error) ? (
-            <SignInPrompt message="أوسمتك وإنجازاتك تحتاج حسابًا — سجّل الدخول لعرضها." />
+            <SignInPrompt message="سجّل الدخول لعرض أوسمتك." />
           ) : (
             <ErrorState message={humanizeError(badges.error)} onRetry={() => badges.refetch()} />
           )
@@ -107,7 +107,7 @@ export default function Achievements() {
           <EmptyState
             art={<Illustration id="r342/why-cycle" width={342} />}
             title="لا توجد أوسمة بعد"
-            message="ابدأ بدروس التطوير الذاتي لتحصد أول وسام."
+            message="ابدأ بدروس التطوير الذاتي لأول وسام."
             icon={<Award size={20} color={p.textMuted} />}
             actionLabel="تصفّح المسارات"
             onAction={() => router.push("/training" as never)}
@@ -126,14 +126,14 @@ export default function Achievements() {
           <SkeletonList rows={4} rowHeight={84} />
         ) : certs.isError ? (
           isUnauthError(certs.error) ? (
-            <SignInPrompt message="شهاداتك تحتاج حسابًا — سجّل الدخول لعرضها." />
+            <SignInPrompt message="سجّل الدخول لعرض شهاداتك." />
           ) : (
             <ErrorState message={humanizeError(certs.error)} onRetry={() => certs.refetch()} />
           )
         ) : (certs.data ?? []).length === 0 ? (
           <EmptyState
             title="لم تحصل على شهادات بعد"
-            message="أكمل أول مسار تدريبي للحصول على شهادتك الأولى."
+            message="أكمل أول مسار لتحصل على شهادتك."
             actionLabel="تصفّح المسارات"
             onAction={() => router.push("/training" as never)}
           />
@@ -180,14 +180,14 @@ export default function Achievements() {
           <SkeletonList rows={8} />
         ) : board.isError ? (
           isUnauthError(board.error) ? (
-            <SignInPrompt message="لوحة المتصدّرين تحتاج حسابًا — سجّل الدخول لعرضها." />
+            <SignInPrompt message="سجّل الدخول لعرض المتصدّرين." />
           ) : (
             <ErrorState message={humanizeError(board.error)} onRetry={() => board.refetch()} />
           )
         ) : (board.data ?? []).length === 0 ? (
           <EmptyState
             title="لا يوجد ترتيب بعد"
-            message="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
+            message="اكسب النقاط بالدروس والمسارات — يظهر ترتيبك مع أول نقطة."
             actionLabel="ابدأ من التطوير الذاتي"
             onAction={() => router.push("/training" as never)}
           />

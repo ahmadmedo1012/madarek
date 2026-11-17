@@ -73,7 +73,7 @@ export default function CampusMapScreen() {
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
           title="لم تُحدَّد مؤسستك بعد"
-          message="اختر مؤسستك من مبدّل المؤسسة لعرض خريطة كليّاتها."
+          message="اختر مؤسستك لعرض خريطتها."
         />
       ) : faculties.isLoading ? (
         <SkeletonList rows={5} rowHeight={64} />
@@ -81,7 +81,7 @@ export default function CampusMapScreen() {
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
           title="لا كليات مسجّلة في مؤسّستك بعد"
-          message="لم تُضف كليّات لمؤسّستك الحالية حتى الآن — ستظهر هنا فور تسجيلها من إدارة المؤسّسة."
+          message="لا كليات — تظهر فور تسجيلها."
         />
       ) : (
         <>

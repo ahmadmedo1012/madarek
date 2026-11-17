@@ -179,7 +179,7 @@ export default function CollegeDetail() {
       {programs.length === 0 && faculties.length === 0 && statEntries.length === 0 && !isGuest ? (
         <EmptyState
           title="لا توجد بيانات لهذه الكلّيّة بعد"
-          message="تُحدَّث بياناتها مع بدء التسجيل وإضافة الأقسام والبرامج."
+          message="تُحدَّث مع التسجيل وإضافة الأقسام."
         />
       ) : null}
     </Screen>

@@ -338,12 +338,12 @@ export default function StudentCourses() {
       refetch={() => feed.refetch()}
       isRefetching={feed.isRefetching}
       emptyTitle="لا توجد مقرّرات"
-      emptyMessage="لم تُسجَّل في مقرّرات بعد — الإضافة تتم عبر إدارة شؤون الطلاب وستظهر هنا فور اعتماد تسجيلك."
+      emptyMessage="لم تُسجَّل بعد — الإضافة عبر شؤون الطلاب."
       emptySlot={
         filteredEmpty ? (
           <EmptyState
             title="لا توجد مقرّرات تطابق التصفية"
-            message="جرّب تخفيف الشروط أو أعد ضبطها لعرض كل مقرّراتك."
+            message="خفّف الشروط أو أعد ضبطها."
             actionLabel="إزالة التصفية"
             onAction={() => setFilters(NO_COURSE_FILTERS)}
           />

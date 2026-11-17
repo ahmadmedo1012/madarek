@@ -331,7 +331,7 @@ export default function TeacherDashboard() {
           <EmptyState
             room="lecture-hall"
             title="لا محاضرات اليوم"
-            message="جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ."
+            message="جدول اليوم فارغ — راجع الأسبوعيّ."
             actionLabel="الجدول الأسبوعيّ"
             onAction={() => router.push("/teacher/schedule" as never)}
           />
@@ -395,7 +395,7 @@ export default function TeacherDashboard() {
         {!trendDrawable ? (
           <EmptyState
             icon={<LineChart size={22} color={p.textMuted} />}
-            title="لا تتوفّر بيانات كافية بعد لرسم الاتجاه"
+            title="لا بيانات كافية للاتجاه بعد."
             message="يُرسم المخطط بعد أسبوعين على الأقل."
           />
         ) : (
@@ -493,7 +493,7 @@ export default function TeacherDashboard() {
           <EmptyState
             room="library"
             title="لم تُسند إليك مقرّرات بعد"
-            message="ستظهر مقرّراتك وشُعَبك هنا فور إسنادها من إدارة شؤون الأساتذة."
+            message="تظهر مقرّراتك وشُعَبك فور إسنادها."
           />
         ) : (
         <RowList>

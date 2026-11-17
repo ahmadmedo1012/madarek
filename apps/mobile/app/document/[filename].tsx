@@ -151,7 +151,7 @@ export default function DocumentViewer() {
         setAttempt({
           path: remotePath,
           file,
-          error: "لا يوجد عارض PDF على هذا الجهاز — جرّب مشاركة الملف.",
+          error: "لا عارض PDF — جرّب مشاركة الملف.",
         });
       }
     }

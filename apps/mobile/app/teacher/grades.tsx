@@ -152,7 +152,7 @@ export default function Grades() {
         throw new Error("اختر طالبًا من القائمة أولًا.");
       }
       if (!focusDirty) {
-        throw new Error("أدخل درجة أو ملاحظة لهذا الطالب قبل الحفظ.");
+        throw new Error("أدخل درجة أو ملاحظة قبل الحفظ.");
       }
       const value = Number(focusDraft.score);
       if (focusDraft.score.trim() === "" || Number.isNaN(value)) throw new Error("أدخل درجة صحيحة.");
@@ -241,14 +241,14 @@ export default function Grades() {
       <View style={{ paddingHorizontal: sp[20], gap: sp[12] }}>
         <PageHeader
           title="درجات الطلاب"
-          kicker="صحِّح طالبًا بعد طالب — اسحب لانتقال التالي أو اختر من القائمة."
+          kicker="صحِّح طالبًا طالبًا — اسحب للانتقال."
         />
         {offs.isLoading ? (
           <SkeletonList rows={4} />
         ) : offs.isError ? (
           <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} />
         ) : offerings.length === 0 ? (
-          <EmptyState fill title="لا مقرّرات" message="حدّد أحد مقرّراتك لعرض درجات طلابه — ستظهر هنا فور إسناد مقرّر لك." />
+          <EmptyState fill title="لا مقرّرات" message="اختر مقرّرًا — تظهر درجات طلابه فور إسناده." />
         ) : (
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
         )}

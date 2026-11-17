@@ -132,8 +132,8 @@ export default function AdminDirectory() {
           emptyTitle={appliedQ ? "لا توجد نتائج" : "لا يوجد ملفات بعد"}
           emptyMessage={
             appliedQ
-              ? "جرّب تعديل البحث أو البحث برقم الهاتف (أوّله تكفي)."
-              : "ستظهر الملفات فور اعتماد أوّل طالب أو مدرّس في النظام."
+              ? "جرّب البحث برقم الهاتف (أوله يكفي)."
+              : "تظهر الملفات فور اعتماد أول حساب."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />

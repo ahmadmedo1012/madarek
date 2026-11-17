@@ -68,7 +68,7 @@ export default function TrainingLesson() {
       router.back();
     },
     onError: (e) =>
-      toast.error(apiMessage(e, "تعذّر احتساب الدرس — تحقّق من اتصالك وحاول مرة أخرى.")),
+      toast.error(apiMessage(e, "تعذّر الاحتساب — تحقّق من اتصالك.")),
   });
 
   if (!params.slug || !params.lessonId) {
@@ -78,7 +78,7 @@ export default function TrainingLesson() {
         <StackHeader title="درس" kicker="التطوير الذاتي" />
         <EmptyState
           title="الرابط غير مكتمل"
-          message="لا يوجد درس في هذا الرابط — افتح المسار من قائمة التطوير الذاتي."
+          message="لا درس في الرابط — افتح المسار."
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -98,7 +98,7 @@ export default function TrainingLesson() {
       <Screen scroll>
         <StackHeader title="درس" kicker="التطوير الذاتي" />
         {isUnauthError(q.error) ? (
-          <SignInPrompt message="دروس التطوير الذاتي تحتاج حسابًا — سجّل الدخول لقراءتها واحتساب تقدّمك." />
+          <SignInPrompt message="سجّل الدخول لقراءة الدروس واحتساب تقدّمك." />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )}

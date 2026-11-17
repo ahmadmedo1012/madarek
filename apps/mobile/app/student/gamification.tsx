@@ -168,7 +168,7 @@ export default function GamificationScreen() {
         ) : (badges.data ?? []).length === 0 ? (
           <EmptyState
             title="لا أوسمة بعد"
-            message="أكمل دروساً ومسارات في التطوير الذاتي لتفتح أول وسام."
+            message="أكمل دروس التطوير الذاتي لأول وسام."
           />
         ) : (
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[8] }}>

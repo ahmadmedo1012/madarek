@@ -111,7 +111,7 @@ export default function QualityDashboard() {
           <Animated.View entering={entering(1)}>
             <EmptyState
               title="لا توجد مؤشرات بعد"
-              message="ستظهر مؤشرات الجودة هنا فور توفّر بيانات أكاديمية في المؤسّسة."
+              message="تظهر المؤشرات فور توفر بيانات أكاديمية."
               actionLabel="تحديث"
               onAction={() => overview.refetch()}
             />
@@ -141,7 +141,7 @@ export default function QualityDashboard() {
                 <EmptyState
                   room="lecture-hall"
                   title="لا سجلّات حضور بعد"
-                  message="ستظهر سجلّات الحضور هنا فور رصد أول حصة في أي شعبة."
+                  message="تظهر السجلّات فور رصد أول حصة."
                 />
               ) : (
                 <RowList>
@@ -173,7 +173,7 @@ export default function QualityDashboard() {
                 <EmptyState
                   room="library"
                   title="لا بحوث بعد"
-                  message="ستظهر البحوث هنا فور رفع أول بحث إلى المنصّة."
+                  message="تظهر البحوث فور رفع أول بحث."
                 />
               ) : (
                 <RowList>

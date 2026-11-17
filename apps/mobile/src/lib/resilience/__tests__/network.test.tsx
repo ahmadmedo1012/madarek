@@ -96,7 +96,7 @@ describe("NetworkBanner", () => {
     await act(async () => {
       NetInfoMock.__setState({ isConnected: false });
     });
-    await waitFor(() => getByText("لا يوجد اتصال بالإنترنت — سيتم إعادة المحاولة تلقائيًا"));
+    await waitFor(() => getByText("لا اتصال — ستُعاد المحاولة تلقائيًا"));
     expect(toJSON()).not.toBeNull();
   });
 
@@ -105,7 +105,7 @@ describe("NetworkBanner", () => {
     await act(async () => {
       NetInfoMock.__setState({ isConnected: false });
     });
-    await waitFor(() => getByText(/لا يوجد اتصال بالإنترنت/));
+    await waitFor(() => getByText(/لا اتصال/));
     await act(async () => {
       NetInfoMock.__setState({ isConnected: true });
     });

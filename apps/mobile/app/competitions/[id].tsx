@@ -64,7 +64,7 @@ export default function CompetitionDetail() {
       setTitle("");
       setBody("");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر تقديم المشاركة. تحقّق من البيانات وحاول مرة أخرى.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر التقديم — تحقّق من البيانات.")),
   });
 
   if (!params.id) {
@@ -74,7 +74,7 @@ export default function CompetitionDetail() {
         <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
         <EmptyState
           title="الرابط غير مكتمل"
-          message="لا توجد مسابقة في هذا الرابط — اختر واحدة من قائمة المسابقات."
+          message="لا مسابقة في الرابط — اختر من القائمة."
           actionLabel="عرض المسابقات"
           onAction={() => router.push("/competitions" as never)}
         />
@@ -94,7 +94,7 @@ export default function CompetitionDetail() {
       <Screen scroll>
         <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
         {isUnauthError(q.error) ? (
-          <SignInPrompt message="المسابقات تحتاج حسابًا — سجّل الدخول لعرضها والمشاركة فيها." />
+          <SignInPrompt message="سجّل الدخول للمشاركة." />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )}
@@ -108,7 +108,7 @@ export default function CompetitionDetail() {
         <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
         <EmptyState
           title="لا توجد بيانات لهذه المسابقة"
-          message="ربما انتهت أو أُزيلت — شاهد المسابقات الجارية."
+          message="ربما انتهت — شاهد الجارية."
           actionLabel="عرض المسابقات"
           onAction={() => router.push("/competitions" as never)}
         />

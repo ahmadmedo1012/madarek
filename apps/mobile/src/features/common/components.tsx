@@ -94,7 +94,7 @@ export function submissionEnded(c: Pick<Competition, "status" | "deadline">): bo
 
 /** Sign-in EmptyState for guests hitting auth-walled data. */
 export function SignInPrompt({
-  message = "هذا القسم يحتاج حسابًا — سجّل الدخول لعرض المحتوى والمشاركة.",
+  message = "سجّل الدخول لعرض المحتوى والمشاركة.",
 }: {
   message?: string;
 }) {

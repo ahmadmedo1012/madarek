@@ -86,7 +86,7 @@ export default function LabsScreen() {
         <EmptyState
           icon={<FlaskConical size={24} color={p.textFaint} />}
           title="لا معامل متاحة"
-          message="لم تُسجّل معامل في دليل المنصّة بعد — ستظهر هنا فور إضافتها."
+          message="لا معامل في الدليل — تظهر فور إضافتها."
         />
       ) : (
         <RowList>
@@ -200,7 +200,7 @@ export default function LabsScreen() {
             label="اسم التجربة"
             value={expSheet?.name ?? ""}
             onChangeText={(t) => setExpSheet((prev) => (prev ? { ...prev, name: t } : prev))}
-            hint="يُسجَّل اسم التجربة كما تكتبه في سجلّ جلساتك."
+            hint="اسم التجربة كما تكتبه في السجلّ."
           />
         </View>
       </Sheet>

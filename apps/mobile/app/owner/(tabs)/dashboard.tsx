@@ -145,7 +145,7 @@ export default function OwnerDashboard() {
             <EmptyState
               room="building"
               title="النظام يعمل بشكل طبيعي"
-              message="لا تنبيهات تشغيليّة مفتوحة حاليًا — ستظهر التنبيهات والحوادث هنا فور رصدها."
+              message="لا تنبيهات مفتوحة — تظهر الحوادث هنا فور رصدها."
             />
           ) : (
             <View style={{ gap: 12 }}>

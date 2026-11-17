@@ -53,7 +53,7 @@ export default function TrainingTrack() {
       qc.invalidateQueries({ queryKey: ["training"] });
       toast.success("سُجّلت في المسار — بالتوفيق!");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر التسجيل في المسار — تحقّق من اتصالك وأعد المحاولة.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر التسجيل — تحقّق من اتصالك.")),
   });
 
   if (!params.slug) {
@@ -64,7 +64,7 @@ export default function TrainingTrack() {
         <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
         <EmptyState
           title="الرابط غير مكتمل"
-          message="لا يوجد مسار في هذا الرابط — اختر مساراً من قائمة التطوير الذاتي."
+          message="لا مسار في الرابط — اختر من القائمة."
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -84,7 +84,7 @@ export default function TrainingTrack() {
       <Screen scroll>
         <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
         {isUnauthError(q.error) ? (
-          <SignInPrompt message="مسارات التطوير الذاتي تحتاج حسابًا — سجّل الدخول لتتبّع تقدّمك." />
+          <SignInPrompt message="سجّل الدخول لتتبّع تقدّمك." />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )}
@@ -191,7 +191,7 @@ export default function TrainingTrack() {
           />
           <T variant="sm" color="muted">
             {isCompleted
-              ? "هذا المسار مكتمل — سجلّ الإتمام جاهز في صفحة الإنجازات."
+              ? "المسار مكتمل — الإتمام في الإنجازات."
               : `${latn(completedCount)} / ${lessonsAr(lessons.length)} مكتمل`}
           </T>
         </Card>

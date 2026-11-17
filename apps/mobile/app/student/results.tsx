@@ -80,7 +80,7 @@ export default function ResultsScreen() {
   return (
     <PushFrame
       title="النتائج"
-      kicker="تفاصيل درجاتك وتحليل أدائك بناءً على بياناتك الفعليّة"
+      kicker="درجاتك وتحليل أدائك الفعليّ."
       refreshing={feed.isFetching && !feed.isLoading}
       onRefresh={() => void feed.refetch()}
     >
@@ -91,7 +91,7 @@ export default function ResultsScreen() {
       ) : !hasGrades ? (
         <EmptyState
           title="لم تُسجَّل أي درجات بعد"
-          message="يبدأ الحساب فور رصد أوّل تقييم في أي مقرّر."
+          message="يبدأ الحساب فور أول تقييم."
         />
       ) : (
         <>

@@ -217,7 +217,7 @@ export function NotificationsScreen({
             <EmptyState
               room="building"
               title="لا توجد تنبيهات"
-              message="ستظهر هنا إعلانات المقرّرات والدرجات والرسائل لحظة صدورها."
+              message="الإعلانات والدرجات والرسائل تظهر لحظة صدورها."
             />
           </>
         }
@@ -365,10 +365,10 @@ export function PushActivationCard() {
       <T variant="body" weight="bold">إشعارات فورية على جهازك</T>
       <T variant="sm" color="muted">
         {state === "denied"
-          ? "الإشعارات مقفلة من إعدادات النظام — افتحها من هناك."
+          ? "مقفلة من إعدادات النظام — افتحها من هناك."
           : regFailed
             ? "منحت الإذن، لكن تعذّر تسجيل الجهاز."
-            : "فعّل الإشعارات لتصلك الإعلانات والدرجات لحظة صدورها."}
+            : "فعّل الإشعارات لتصلك لحظة صدورها."}
       </T>
       {state === "denied" ? (
         <View style={{ alignSelf: "flex-start" }}>

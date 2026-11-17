@@ -192,7 +192,7 @@ export default function AdminPermissions() {
             <StatLine
               label="قدرات مُعروضة من الخادم"
               value={num(permissions.data?.effective?.length ?? null)}
-              hint="عدد الصلاحيات الفعّالة التي أجاب عنها الخادم لهذا المستخدم"
+              hint="الصلاحيات الفعّالة من الخادم."
             />
           </>
         )}

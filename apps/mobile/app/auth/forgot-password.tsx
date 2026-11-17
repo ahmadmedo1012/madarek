@@ -37,7 +37,7 @@ export default function ForgotPassword() {
         email: String(form.values.email).trim(),
       });
       haptics.notify("success");
-      setMessage(res.message ?? "إن كان البريد مسجّلًا فستصلك رسالة تحتوي رابط إعادة التعيين.");
+      setMessage(res.message ?? "إن كان البريد مسجّلًا فستصلك رسالة برابط التعيين.");
       setDevLink(res.devInbox?.url ?? null);
     } catch (err) {
       setError(humanizeError(err));

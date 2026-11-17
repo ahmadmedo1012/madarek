@@ -206,7 +206,7 @@ export function MessagesUI({ onBack }: { onBack?: () => void } = {}) {
         loadMoreError={list.loadMoreError}
         onRetryLoadMore={list.retryLoadMore}
         emptyTitle="لا رسائل بعد"
-        emptyMessage="ستظهر هنا الرسائل الواردة فور وصولها — ويمكنك الردّ عليها من هنا."
+        emptyMessage="الرسائل الواردة تظهر هنا ويمكنك الردّ عليها."
         contentPadding={{ horizontal: 16, top: 12, bottom: 24 }}
       />
 
