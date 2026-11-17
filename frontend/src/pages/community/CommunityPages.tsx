@@ -75,6 +75,12 @@ import '../../styles/student/pages.css';
  * r321-exams.css contract); family-unique rules only. */
 import '../../styles/student/community.css';
 
+/* R366 L4 copy diet: the boards' shared status strings — one home
+ * each (تعذَّر التحميل ran three times; جارٍ… and اختر… twice). */
+const LOAD_FAILED = 'تعذَّر التحميل.';
+const PENDING_LABEL = 'جارٍ…';
+const CHOOSE_LABEL = 'اختر…';
+
 const SCOPE_LABEL: Record<string, string> = {
   PLATFORM: 'المنصّة', FACULTY: 'كلّيّة', DEPARTMENT: 'قسم', OFFERING: 'مقرر',
 };
@@ -95,6 +101,11 @@ const roleBadgeLabel = (role: string): string =>
    fold of the identical local copies this page shared with MorePages. */
 
 type CommunityTab = 'announcements' | 'competitions' | 'events' | 'rooms' | 'posts';
+
+/* The composer titles — the header buttons and the modal heads said
+ * the same words (one label per intent). */
+const NEW_ANNOUNCEMENT = 'إعلان جديد';
+const NEW_EVENT = 'فعاليّة جديدة';
 
 const COMMUNITY_TABS: Array<{ key: CommunityTab; label: string; icon: LucideIcon }> = [
   { key: 'announcements', label: 'الإعلانات', icon: Megaphone },
@@ -198,13 +209,13 @@ export default function CommunityPage() {
             {tab === 'announcements' && canAnnounce && (
               <button type="button" className="btn primary" onClick={() => setCreatingAnnouncement(true)}>
                 <Icon icon={Plus} size={14} />
-                إعلان جديد
+                {NEW_ANNOUNCEMENT}
               </button>
             )}
             {tab === 'events' && canRunEvents && (
               <button type="button" className="btn primary" onClick={() => setCreatingEvent(true)}>
                 <Icon icon={Plus} size={14} />
-                فعاليّة جديدة
+                {NEW_EVENT}
               </button>
             )}
             {tab === 'rooms' && canCreateRoom && (
@@ -272,7 +283,7 @@ export default function CommunityPage() {
             ) : undefined}
           />
           {ann.isError ? (
-            <ErrorState message="تعذَّر التحميل." error={ann.error} onRetry={() => ann.refetch()} />
+            <ErrorState message={LOAD_FAILED} error={ann.error} onRetry={() => ann.refetch()} />
           ) : (
             <RowList
               aria-label="قائمة الإعلانات"
@@ -304,7 +315,7 @@ export default function CommunityPage() {
             ) : undefined}
           />
           {comps.isError ? (
-            <ErrorState message="تعذَّر التحميل." error={comps.error} onRetry={() => comps.refetch()} />
+            <ErrorState message={LOAD_FAILED} error={comps.error} onRetry={() => comps.refetch()} />
           ) : (
             <RowList
               aria-label="قائمة المسابقات"
@@ -336,7 +347,7 @@ export default function CommunityPage() {
             ) : undefined}
           />
           {events.isError ? (
-            <ErrorState message="تعذَّر التحميل." error={events.error} onRetry={() => events.refetch()} />
+            <ErrorState message={LOAD_FAILED} error={events.error} onRetry={() => events.refetch()} />
           ) : (
             <RowList
               aria-label="قائمة الفعاليات"
@@ -760,7 +771,7 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
        were byte-near twins (the jscpd-cited self-clones); each form
        keeps only what is truly its own (fields + palettes + copy). */
     <ComposerModal
-      title="إعلان جديد"
+      title={NEW_ANNOUNCEMENT}
       requestClose={requestClose}
       escapeLocked={escapeLocked}
       pending={create.isPending}
@@ -784,10 +795,12 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
                 form.setValue('scopeId', '');
               }}
             >
-              {canPlatform && <option value="PLATFORM">المنصّة</option>}
-              <option value="FACULTY">كلّيّة</option>
-              <option value="DEPARTMENT">قسم</option>
-              {canOffering && <option value="OFFERING">مقرر</option>}
+              {/* R366 L4: one home per string — the options read the same
+                  map the scope badge renders (SCOPE_LABEL). */}
+              {canPlatform && <option value="PLATFORM">{SCOPE_LABEL.PLATFORM}</option>}
+              <option value="FACULTY">{SCOPE_LABEL.FACULTY}</option>
+              <option value="DEPARTMENT">{SCOPE_LABEL.DEPARTMENT}</option>
+              {canOffering && <option value="OFFERING">{SCOPE_LABEL.OFFERING}</option>}
             </select>
           </FormField>
           {(scope === 'FACULTY' || scope === 'DEPARTMENT') && (
@@ -796,7 +809,7 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
               error={form.formState.errors.scopeId?.message}
             >
               <select {...form.register('scopeId')} className="auth-input">
-                <option value="">اختر…</option>
+                <option value="">{CHOOSE_LABEL}</option>
                 {scope === 'FACULTY' && facs.data?.map((f) => (
                   <option key={f.id} value={f.id}>{f.name}</option>
                 ))}
@@ -849,7 +862,7 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
         <ComposerModalActions
           requestClose={requestClose}
           pending={create.isPending}
-          pendingLabel="جارٍ…"
+          pendingLabel={PENDING_LABEL}
           submitLabel="نشر الإعلان"
         />
     </ComposerModal>
@@ -873,16 +886,16 @@ function OfferingScopeSelect({
   /* 5-C4 (A10 P2-3): the load/empty notices ride the FormField hint
      slot, so aria-describedby covers them too. */
   const hint = offerings.isPending
-    ? 'جارٍ…'
+    ? PENDING_LABEL
     : offerings.isError
-      ? 'تعذَّر التحميل.'
+      ? LOAD_FAILED
       : (offerings.data?.length ?? 0) === 0
         ? 'لا مقرّرات.'
         : undefined;
   return (
     <FormField label="المقرر" id={id} error={error} hint={hint}>
       <select className="auth-input" {...registration}>
-        <option value="">اختر…</option>
+        <option value="">{CHOOSE_LABEL}</option>
         {offerings.data?.map((o) => (
           <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
         ))}
@@ -897,8 +910,8 @@ const eventSchema = z.object({
   title: z.string().min(3, 'العنوان قصير').max(200),
   description: z.string().min(10, 'الوصف قصير').max(4000),
   location: z.string().min(2, 'حدِّد المكان').max(200),
-  startsAt: z.string().min(1, 'حدِّد بداية الفعاليّة'),
-  endsAt: z.string().min(1, 'حدِّد نهاية الفعاليّة'),
+  startsAt: z.string().min(1, 'حدِّد البداية'),
+  endsAt: z.string().min(1, 'حدِّد النهاية'),
   capacity: z.coerce.number().int().min(1).max(10_000).default(100),
   iconEmoji: z.string().max(8).optional(),
 }).refine((d) => new Date(d.endsAt) > new Date(d.startsAt), {
@@ -953,7 +966,7 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
        were byte-near twins (the jscpd-cited self-clones); each form
        keeps only what is truly its own (fields + palettes + copy). */
     <ComposerModal
-      title="فعاليّة جديدة"
+      title={NEW_EVENT}
       requestClose={requestClose}
       escapeLocked={escapeLocked}
       pending={create.isPending}
@@ -998,7 +1011,7 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
         <ComposerModalActions
           requestClose={requestClose}
           pending={create.isPending}
-          pendingLabel="جارٍ…"
+          pendingLabel={PENDING_LABEL}
           submitLabel="إنشاء"
         />
     </ComposerModal>

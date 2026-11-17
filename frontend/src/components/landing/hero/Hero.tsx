@@ -52,6 +52,7 @@ import { Icon } from '../../Icon';
 import { HERO_WORK_ITEMS } from '../../../data/landing-ledger';
 import { HeroInkWindow } from '../HeroInkWindow';
 import { HeroInspect } from '../cursor/HeroInspect';
+import { HeroPlate } from './HeroPlate';
 import '../../../styles/landing/hero-mechanics.css';
 import { BRAND_LABEL, LOGIN, REGISTER } from '../copy';
 
@@ -82,123 +83,115 @@ const LEAD_LINES = [
 const WORK_SEAT_ORD = ['1', '2', '5', '7', '4', '6'] as const;
 
 export function Hero() {
-  /* R347 D4 — the noise chrome is retired; the art band is ONE calm
-   * ink elevation and the content band carries the fold (headline +
-   * lead + the ONE CTA pair + the work strip). */
+  /* R366 L1 — the hero rides the measured wrapper chain (HeroPlate): the
+   * plate seat (700-box) hosts the ONE calm ink elevation (R347 D4) plus
+   * the measured plate furniture (the reference's own calm register — see
+   * HeroPlate), and the measured closing band (133-box) hosts the content
+   * collage + the work strip. The section slides under the in-flow
+   * masthead (hero-mechanics.css) so the census root matches the frozen
+   * wrap — the D4 fold geometry is now the measured one. */
   return (
     <section className="fo-hero hro" aria-label={BRAND_LABEL}>
-      {/* ══ [1] THE ART BAND — R347 D4: ONE calm artwork. The reference's
-          own hero (live capture) is a line-drawing elevation over paper
-          and nothing else; our ink elevation rides with the checkpoint
-          stations alone — the dashed rulers, the ± registration marks,
-          the measure graticule, the deco [0x] cards, the edge frame and
-          the grid/vector chrome layers are retired with their elements
-          (they buried the drawing; the owner's R347 D4 directive). The
-          stations' crosshair instrument chrome is hover-only (invisible
-          at rest — hero.css gates it with the readout). ══ */}
-      <div className="hro-art">
-        <div className="bp-stage hro-stage" data-cursor="none">
-          {/* the ink — the whole frontal elevation on transparent
-              paper, drawn in by the staged ink-in belt. */}
-          <HeroInkWindow />
-          {/* R347 D4 — the checkpoint stations («محطات الفحص», the
-              lecture-checkpoints feature + the r308/r309 e2e contract)
-              STAY: the instrument's crosshair chrome is hover-only
-              (invisible at rest); the stations are the drawing's own
-              content, not noise. */}
-          <HeroInspect />
-        </div>
-      </div>
-
-      {/* ══ [2] THE CONTENT BAND — R342-02: the measured closing collage of
-          the fold — title cell (the 2-line H1, reading-start) ‖ sub cell
-          (the lead paragraph + the register CTA under it) ‖ alt cell (the
-          login secondary, accent ink); the work strip closes the band as
-          an absolutely-seated row inside the sub/alt column's lower zone
-          (the spec's own overlap — the h1's box-bottom is the fold's
-          last line, the subjects run under the short columns). ══ */}
-      <div className="hro-content">
-        <div className="hro-title-cell">
-          <h1 className="hro-title fo-hero-title">
-            {TITLE_LINES.map((line, i) => (
-              <Fragment key={line}>
-                {/* the whitespace text node between mask lines is the
-                    accessible-text seam: display:block masks render no
-                    box for it (visually inert), but textContent keeps
-                    the natural sentence spacing — screen readers and
-                    text pins read «من المحاضرة إلى الإتقان», not glue */}
-                {i > 0 ? ' ' : null}
-                <span className="hro-lmask">
-                  <span className="hro-line">{line}</span>
-                </span>
-              </Fragment>
-            ))}
-          </h1>
-        </div>
-
-        <div className="hro-sub-cell">
-          {/* div, not p — the reference's lead is a measured div box (T-11c) */}
-          <div className="hro-lead">
-            {LEAD_LINES.map((line, i) => (
-              <Fragment key={line}>
-                {i > 0 ? ' ' : null}
-                <span className="hro-lmask">
-                  <span className="hro-line">{line}</span>
-                </span>
-              </Fragment>
-            ))}
-          </div>
-
-          {/* the funnel contract (r164b → r188, kept byte-identical):
-              ONE primary «أنشئ حسابك الجامعي» → /auth/register, styled as
-              the reference's own hero CTA seat (a 600-weight text link
-              with the arrow glyph — the editorial voice; the .btn mass
-              era ends with the R342 seat). */}
-          <div className="hro-actions fo-hero-actions">
-            <Link to="/auth/register" className="hro-cta fo-hero-cta" data-spec-hover="3">
-              {REGISTER}
-              <Icon icon={ArrowLeft} size={16} aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
-
-        {/* the alt cell — the login secondary in its own measured column
-            (the spec's a[2]: accent ink, the text row + the arrow glyph
-            stacked — the tall link box at the fold's inline-end edge) */}
-        <div className="hro-alt-cell">
-          <Link to="/auth" className="hro-alt" data-spec-hover="0">
-            {LOGIN}
-            <Icon icon={ArrowLeft} size={16} aria-hidden="true" />
-          </Link>
-        </div>
-      </div>
-
-      {/* ══ [3] THE WORK STRIP — the six honest live-capability
-          subjects (the reference's home-hero-work band ≈ Heron's own
-          numbered boot list): ONE static row ≥1200 (space-between, zero
-          mask), a snap-scrolling strip below — riding the work-card rise
-          (3.2rem · 1s p3.out). ══ */}
-      <div className="hro-work fo-hero-work" aria-label="قدرات مدارك العاملة اليوم">
-        <div className="hro-work-track">
-          {/* divs, not spans — the instrument asserts the reference's
-              measured div boxes (T-11c) */}
-          {HERO_WORK_ITEMS.map((cap, i) => (
-            <div
-              key={cap}
-              className="hro-work-item"
-              /* r338 T-13b — the census twin seat (heron's strip items
-                 carry hover twins at the recorded bps; tabIndex -1 keeps
-                 the programmatic-focus parity path without turning the
-                 labels into tab stops — the strip stays decorative) */
-              tabIndex={-1}
-              data-spec-hover={WORK_SEAT_ORD[i]}
-            >
-              <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
-              {cap}
+      <HeroPlate
+        art={
+          /* ══ [1] THE ART — R347 D4: ONE calm artwork. The ink elevation
+              rides with the checkpoint stations alone («محطات الفحص» —
+              the lecture-checkpoints feature + the r308/r309 e2e
+              contract; the crosshair chrome stays hover-only, invisible
+              at rest). ══ */
+          <div className="hro-art">
+            <div className="bp-stage hro-stage" data-cursor="none">
+              <HeroInkWindow />
+              <HeroInspect />
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        }
+        band={
+          <>
+            {/* ══ [2] THE CONTENT BAND — R342-02: the measured closing
+                collage — title cell (the 2-line H1, reading-start) ‖ sub
+                cell (the lead + the register CTA) ‖ alt cell (the login
+                secondary, accent ink). ══ */}
+            <div className="hro-content">
+              <div className="hro-title-cell">
+                <h1 className="hro-title fo-hero-title">
+                  {TITLE_LINES.map((line, i) => (
+                    <Fragment key={line}>
+                      {/* the whitespace text node between mask lines is
+                          the accessible-text seam: display:block masks
+                          render no box for it (visually inert), but
+                          textContent keeps the natural sentence spacing */}
+                      {i > 0 ? ' ' : null}
+                      <span className="hro-lmask">
+                        <span className="hro-line">{line}</span>
+                      </span>
+                    </Fragment>
+                  ))}
+                </h1>
+              </div>
+
+              <div className="hro-sub-cell">
+                {/* div, not p — the reference's lead is a measured div box (T-11c) */}
+                <div className="hro-lead">
+                  {LEAD_LINES.map((line, i) => (
+                    <Fragment key={line}>
+                      {i > 0 ? ' ' : null}
+                      <span className="hro-lmask">
+                        <span className="hro-line">{line}</span>
+                      </span>
+                    </Fragment>
+                  ))}
+                </div>
+
+                {/* the funnel contract (r164b → r188, kept byte-identical):
+                    ONE primary «أنشئ حسابك الجامعي» → /auth/register, the
+                    reference's own hero CTA seat (600-weight text link +
+                    the arrow glyph — the editorial voice). */}
+                <div className="hro-actions fo-hero-actions">
+                  <Link to="/auth/register" className="hro-cta fo-hero-cta" data-spec-hover="3">
+                    {REGISTER}
+                    <Icon icon={ArrowLeft} size={16} aria-hidden="true" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* the alt cell — the login secondary in its own measured
+                  column (the spec's a[2]: accent ink, the text row + the
+                  arrow glyph stacked at the fold's inline-start edge) */}
+              <div className="hro-alt-cell">
+                <Link to="/auth" className="hro-alt" data-spec-hover="0">
+                  {LOGIN}
+                  <Icon icon={ArrowLeft} size={16} aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+
+            {/* ══ [3] THE WORK STRIP — the six honest live-capability
+                subjects (the reference's numbered boot list): ONE static
+                row ≥1200, a snap-scrolling strip below. ══ */}
+            <div className="hro-work fo-hero-work" aria-label="قدرات مدارك العاملة اليوم">
+              <div className="hro-work-track">
+                {/* divs, not spans — the instrument asserts the reference's
+                    measured div boxes (T-11c) */}
+                {HERO_WORK_ITEMS.map((cap, i) => (
+                  <div
+                    key={cap}
+                    className="hro-work-item"
+                    /* r338 T-13b — the census twin seat (tabIndex -1 keeps
+                       the programmatic-focus parity path without turning
+                       the labels into tab stops — the strip stays decorative) */
+                    tabIndex={-1}
+                    data-spec-hover={WORK_SEAT_ORD[i]}
+                  >
+                    <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
+                    {cap}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        }
+      />
     </section>
   );
 }

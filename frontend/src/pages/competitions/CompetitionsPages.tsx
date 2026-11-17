@@ -53,6 +53,20 @@ function useDocTitle(title: string | null) {
   }, [title]);
 }
 
+/* R366 L4 copy diet — one home per repeated action label (the hero
+ * CTAs, the modal heads and the confirm dialogs said the same words). */
+const NEW_COMPETITION = 'مسابقة جديدة';
+const PENDING_LABEL = 'جارٍ…';
+const CLOSE_COMPETITION = 'إغلاق المسابقة';
+const PUBLISH_RESULTS = 'إعلان النتائج';
+const EDIT_MY_ENTRY = 'تعديل مشاركتي';
+const SUBMIT_ENTRY = 'تقديم مشاركة';
+const NO_ENTRIES = 'لا مشاركات';
+const BE_FIRST = 'كن الأول';
+const RETRY_LABEL = 'إعادة المحاولة';
+const CANCEL_LABEL = 'إلغاء';
+const ENDED_SUBMISSION = 'انتهى التقديم';
+
 const STATUS_LABEL: Record<CompetitionRow['status'], string> = {
   OPEN: 'مفتوحة',
   CLOSED: 'مغلقة',
@@ -164,7 +178,7 @@ export function CompetitionsIndexPage() {
             canRun ? (
               <button type="button" className="btn primary" onClick={() => setCreating(true)}>
                 <Icon icon={Plus} size={14} />
-                مسابقة جديدة
+                {NEW_COMPETITION}
               </button>
             ) : undefined
           }
@@ -193,7 +207,10 @@ export function CompetitionsIndexPage() {
              compact .pill grade used elsewhere (community/feed). */
           <div className="comp-filter-pills" role="group" aria-label="تصفية المسابقات بحسب الحالة">
             {([
-              ['all', 'الكل'], ['OPEN', 'مفتوحة'], ['CLOSED', 'مغلقة'], ['JUDGED', 'محكّمة'],
+              ['all', 'الكل'],
+              ['OPEN', STATUS_LABEL.OPEN],
+              ['CLOSED', STATUS_LABEL.CLOSED],
+              ['JUDGED', STATUS_LABEL.JUDGED],
             ] as const).map(([v, l]) => (
               <button
                 key={v}
@@ -248,7 +265,7 @@ export function CompetitionsIndexPage() {
               trailing={
                 <span className="cp-trail">
                   {submissionEnded(c) ? (
-                    <Badge color="amber">انتهى التقديم</Badge>
+                    <Badge color="amber">{ENDED_SUBMISSION}</Badge>
                   ) : (
                     <Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>
                   )}
@@ -261,7 +278,7 @@ export function CompetitionsIndexPage() {
                   <span className="cp-inline">
                     <Icon icon={Award} size={12} />{' '}
                     {c._count.entries === 0
-                      ? (submissionEnded(c) || c.status !== 'OPEN' ? 'لا مشاركات' : 'كن الأول')
+                      ? (submissionEnded(c) || c.status !== 'OPEN' ? NO_ENTRIES : BE_FIRST)
                       : `${c._count.entries} مشترك`}
                   </span>
                   {c.prize && (
@@ -379,7 +396,7 @@ export function CompetitionDetailPage() {
             {/* P2-3: the badge carries the DERIVED state — «مفتوحة» only
                 while submissions are actually possible. */}
             {submissionEnded ? (
-              <Badge color="amber">انتهى التقديم</Badge>
+              <Badge color="amber">{ENDED_SUBMISSION}</Badge>
             ) : (
               <Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>
             )}
@@ -393,7 +410,7 @@ export function CompetitionDetailPage() {
             <div>
               <Icon icon={Award} size={13} />{' '}
               {entries.length === 0
-                ? (canEnter ? 'كن الأول' : 'لا مشاركات')
+                ? (canEnter ? BE_FIRST : NO_ENTRIES)
                 : <><bdi>{entries.length}</bdi> مشترك</>}
             </div>
             {c.prize && <div><Icon icon={Trophy} size={13} /> {c.prize}</div>}
@@ -403,7 +420,7 @@ export function CompetitionDetailPage() {
             {canEnter && (
               <button type="button" className="btn primary" onClick={() => setEntering(true)}>
                 <Icon icon={Send} size={14} />
-                {myEntry ? 'تعديل مشاركتي' : 'شارك الآن'}
+                {myEntry ? EDIT_MY_ENTRY : 'شارك الآن'}
               </button>
             )}
             {isOrganizer && c.status === 'OPEN' && (
@@ -414,7 +431,7 @@ export function CompetitionDetailPage() {
                 disabled={closer.isPending}
               >
                 <Icon icon={Lock} size={14} />
-                {closer.isPending ? 'جارٍ…' : 'إغلاق المسابقة'}
+                {closer.isPending ? PENDING_LABEL : CLOSE_COMPETITION}
               </button>
             )}
             {isOrganizer && c.status === 'CLOSED' && (
@@ -426,7 +443,7 @@ export function CompetitionDetailPage() {
                 title={!someScored ? 'قَيِّم أوّلاً' : undefined}
               >
                 <Icon icon={Gavel} size={14} />
-                {judge.isPending ? 'جارٍ…' : allScored ? 'إعلان النتائج' : 'إعلان النتائج (بلا تقييم)'}
+                {judge.isPending ? PENDING_LABEL : allScored ? PUBLISH_RESULTS : `${PUBLISH_RESULTS} (بلا تقييم)`}
               </button>
             )}
           </div>
@@ -443,7 +460,7 @@ export function CompetitionDetailPage() {
                 className="btn ghost sm"
                 onClick={() => (closer.isError ? closer.mutate() : judge.mutate())}
               >
-                إعادة المحاولة
+                {RETRY_LABEL}
               </button>
             </div>
           )}
@@ -455,10 +472,10 @@ export function CompetitionDetailPage() {
           rank chips with medal treatment, entrance stagger via --lb-i,
           tabular points), OPEN/CLOSED keep the comp-entry rows with
           the organizer scoring affordances. */}
-      <Card title="المشاركات" subtitle={`${countAr(entries.length, ['مشاركة واحدة', 'مشاركتان', 'مشاركات', 'مشاركة'])}${isOrganizer ? '' : c.status === 'JUDGED' ? ' · مرتَّبة حسب النتيجة' : ' (يظهر العنوان فقط حتى يتمّ التحكيم)'}`}>
+      <Card title="المشاركات" subtitle={`${countAr(entries.length, ['مشاركة', 'مشاركتان', 'مشاركات', 'مشاركة'])}${isOrganizer ? '' : c.status === 'JUDGED' ? ' · حسب النتيجة' : ' (العنوان فقط حتى التحكيم)'}`}>
         {entries.length === 0 ? (
           <EmptyState illustration="empty-list"
-            title="لا مشاركات"
+            title={NO_ENTRIES}
             description=""
             action={canEnter ? (
               <button type="button" className="btn primary sm" onClick={() => setEntering(true)}>
@@ -555,7 +572,7 @@ export function CompetitionDetailPage() {
           confirms first (audit 0-e P1-30: it fired bare before). */}
       <ConfirmDialog
         open={confirming === 'close'}
-        title="إغلاق المسابقة"
+        title={CLOSE_COMPETITION}
         message="سيُوقف الاستقبال نهائياً."
         confirmLabel="إغلاق نهائي"
         danger
@@ -572,13 +589,13 @@ export function CompetitionDetailPage() {
       {/* Publishing results is public and permanent — confirm too. */}
       <ConfirmDialog
         open={confirming === 'judge'}
-        title="إعلان النتائج"
+        title={PUBLISH_RESULTS}
         message={
           allScored
             ? 'ستُنشر النتائج.'
             : `${countAr(unscoredCount, ['مشاركة', 'مشاركتان', 'مشاركات', 'مشاركة'])} بلا تقييم`
         }
-        confirmLabel="إعلان النتائج"
+        confirmLabel={PUBLISH_RESULTS}
         onConfirm={async () => {
           try {
             await judge.mutateAsync();
@@ -648,7 +665,7 @@ function ScoreInput({
         <div className="form-error" id={`${inputId}-err`} role="alert" style={{ marginBlockStart: 'var(--sp-1-5)' /* r157: 6px → token */ }}>
           <Icon icon={AlertTriangle} size={13} />
           <span className="form-error-msg">تعذَّر الحفظ.</span>
-          <button type="button" className="btn ghost sm" onClick={save}>إعادة المحاولة</button>
+          <button type="button" className="btn ghost sm" onClick={save}>{RETRY_LABEL}</button>
         </div>
       )}
     </div>
@@ -705,12 +722,12 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
     <Modal
       open
       onClose={requestClose}
-      ariaLabel="مسابقة جديدة"
+      ariaLabel={NEW_COMPETITION}
       closeOnOverlayClick={!create.isPending}
       closeOnEscape={!escapeLocked}
     >
       <header className="comp-modal-head">
-        <h2>مسابقة جديدة</h2>
+        <h2>{NEW_COMPETITION}</h2>
         <button type="button" className="comp-modal-close" onClick={requestClose} aria-label="إغلاق" disabled={create.isPending}>
           <Icon icon={X} size={16} />
         </button>
@@ -759,9 +776,9 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
           <div className="form-error" role="alert">تعذَّر الإنشاء.</div>
         )}
         <div className="comp-modal-actions">
-          <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>إلغاء</button>
+          <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>{CANCEL_LABEL}</button>
           <button type="submit" className="btn primary" disabled={create.isPending}>
-            {create.isPending ? 'جارٍ…' : 'إنشاء'}
+            {create.isPending ? PENDING_LABEL : 'إنشاء'}
           </button>
         </div>
       </form>
@@ -820,12 +837,12 @@ function EnterCompetitionModal({
     <Modal
       open
       onClose={requestClose}
-      ariaLabel={existing ? 'تعديل مشاركتي' : 'تقديم مشاركة'}
+      ariaLabel={existing ? EDIT_MY_ENTRY : SUBMIT_ENTRY}
       closeOnOverlayClick={!enter.isPending}
       closeOnEscape={!escapeLocked}
     >
       <header className="comp-modal-head">
-        <h2>{existing ? 'تعديل مشاركتي' : 'تقديم مشاركة'}</h2>
+        <h2>{existing ? EDIT_MY_ENTRY : SUBMIT_ENTRY}</h2>
         <button type="button" className="comp-modal-close" onClick={requestClose} aria-label="إغلاق" disabled={enter.isPending}>
           <Icon icon={X} size={16} />
         </button>
@@ -846,10 +863,10 @@ function EnterCompetitionModal({
         </FormField>
         {enter.isError && <div className="form-error" role="alert">تعذَّر الإرسال.</div>}
         <div className="comp-modal-actions">
-          <button type="button" className="btn ghost" onClick={requestClose} disabled={enter.isPending}>إلغاء</button>
+          <button type="button" className="btn ghost" onClick={requestClose} disabled={enter.isPending}>{CANCEL_LABEL}</button>
           <button type="submit" className="btn primary" disabled={enter.isPending}>
             <Icon icon={Send} size={14} />
-            {enter.isPending ? 'جارٍ…' : existing ? 'حفظ التعديلات' : 'إرسال'}
+            {enter.isPending ? PENDING_LABEL : existing ? 'حفظ التعديلات' : 'إرسال'}
           </button>
         </div>
       </form>

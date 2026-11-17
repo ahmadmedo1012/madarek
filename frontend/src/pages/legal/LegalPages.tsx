@@ -13,10 +13,16 @@
  * docs/redesign/r320/LEGAL-TODO.md (rows 1-18) — the two can never
  * drift apart. Arabic display strings carry no tashkeel; Latin runs
  * (keys, cookie names, routes) ride dir=ltr mono <bdi> runs.
+ *
+ * R366 L4 copy diet: the prose tightened to one line per substance
+ * point (the R355 method — every fact kept, every filler dropped);
+ * the section bars, the storage ledger and every pinned fact are
+ * unchanged.
  */
 import { Link } from 'react-router-dom';
 import {
   CodeRun,
+  CONTACT_CHANNEL,
   LegalCell,
   LegalSectionBar,
   LegalSheet,
@@ -34,60 +40,66 @@ export const LEGAL_UPDATED = '2026-10-27';
  * a deliberate act (edit this list IN THE SAME COMMIT, with the page). */
 export const SECURITY_MARKER_KEYS = ['argon2', '12-72', '15m', '7d', '403', 'CSP'] as const;
 
+/* R366 L4: the page titles — one const per page (the meta head and the
+ * sheet h1 carried the same words as two literals). */
+const PRIVACY_TITLE = 'سياسة الخصوصية';
+const TERMS_TITLE = 'شروط الاستخدام';
+const COOKIES_TITLE = 'ملفات تعريف الارتباط والتخزين المحلي';
+const A11Y_TITLE = 'بيان إمكانية الوصول';
+const SECURITY_TITLE = 'الأمن والإفصاح المسؤول';
+const DATA_TITLE = 'البيانات وبيانات العرض';
 /* ═══ [L-01] سياسة الخصوصية ═════════════════════════════════════════ */
 
 export function PrivacyPage() {
   useLegalMeta({
-    title: 'سياسة الخصوصية',
+    title: PRIVACY_TITLE,
     path: '/legal/privacy',
     description: 'ما نجمعه ولماذا وأين يُخزَّن، وحقوقك.',
   });
 
   return (
     <LegalSheet
-      title="سياسة الخصوصية"
-      lede="من السلوك الفعلي — لا وعود."
+      title={PRIVACY_TITLE}
       updated={LEGAL_UPDATED}
     >
       <LegalSectionBar index={1} title="ما الذي نجمعه" id="privacy-collect" />
       <LegalCell>
         <ul className="lg-list">
-          <li>الحساب: <strong>البريد والاسم والدور</strong> ولون الصورة الرمزية.</li>
+          <li>الحساب: <strong>البريد والاسم والدور</strong> ولون الصورة.</li>
           <li>للطالب: الكلية والقسم والسنة ورقم التسجيل.</li>
           <li>للأستاذ: المسمّى الأكاديمي.</li>
         </ul>
         <p className="lg-p">
-          <strong>كلمة المرور لا تُخزَّن نصًا أبدًا</strong> — تُجزَّأ عبر <CodeRun>argon2</CodeRun>.
+          كلمة المرور تُجزَّأ بـ <CodeRun>argon2</CodeRun> — لا تُخزَّن نصًا.
         </p>
         <p className="lg-p">
-          وما تكتبه يُخزَّن مع حسابك: الرسائل، محادثات المساعد، بحوثك وموادك، وإجابات الاختبارات — وسجلّ تدقيق.
+          ومحتواك: الرسائل ومحادثات المساعد والبحوث والمواد والإجابات وسجلّ تدقيق.
         </p>
       </LegalCell>
 
       <LegalSectionBar index={2} title="لماذا نجمعه" id="privacy-why" />
       <LegalCell>
-        <p className="lg-p">لغرض واحد: تشغيل منصّة تعليمية تجريبية.</p>
+        <p className="lg-p">غرض واحد: تشغيل منصّة تعليمية تجريبية.</p>
         <ul className="lg-list">
           <li>تسجيل المقررات والتقدّم والمصفوفة.</li>
-          <li>الرسائل مع الأساتذة والزملاء.</li>
-          <li>تصحيح الاختبارات وحفظ المواد.</li>
-          <li>لا نبيع بياناتك ولا نشاركها، ولا تحليلات ولا إعلانات.</li>
+          <li>الرسائل وتصحيح الاختبارات وحفظ المواد.</li>
+          <li>لا بيع ولا مشاركة ولا تحليلات ولا إعلانات.</li>
         </ul>
       </LegalCell>
 
       <LegalSectionBar index={3} title="أين يُخزَّن" id="privacy-where" />
       <LegalCell>
         <p className="lg-p">
-          خدمة الويب وقاعدة <CodeRun>PostgreSQL</CodeRun> على <strong>Vercel</strong> و<strong>Neon</strong>،
-          والمرفوعات في مخزن يحدده المشغّل — لا خوادم أخرى.
+          الويب وقاعدة <CodeRun>PostgreSQL</CodeRun> على <strong>Vercel</strong> و<strong>Neon</strong>،
+          والمرفوعات في مخزن يحدده المشغّل.
         </p>
       </LegalCell>
 
       <LegalSectionBar index={4} title="مدة الاحتفاظ" id="privacy-retention" />
       <LegalCell>
         <p className="lg-p">
-          رمز الوصول خلال <CodeRun>15m</CodeRun> ورمز التحديث خلال
-          <CodeRun> 7d</CodeRun>، وسجل قرارك يبقى حتى تغييره. سياسة الاحتفاظ الكاملة
+          رمز الوصول <CodeRun>15m</CodeRun> ورمز التحديث
+          <CodeRun> 7d</CodeRun>، وقرارك يبقى حتى تغييره؛ سياسة الاحتفاظ
           وطلب الحذف <PendingTag />.
         </p>
       </LegalCell>
@@ -95,7 +107,7 @@ export function PrivacyPage() {
       <LegalSectionBar index={5} title="حقوقك" id="privacy-rights" />
       <LegalCell>
         <p className="lg-p">
-          عدّل ملفك وكلمة مرورك أي وقت — التغيير يُنهي جلساتك على كل الأجهزة.
+          عدّل ملفك وكلمة مرورك متى شئت؛ التغيير يُنهي الجلسات.
           وللتصدير أو الحذف: قناة التواصل (08) — الآلية <PendingTag />.
         </p>
       </LegalCell>
@@ -103,20 +115,20 @@ export function PrivacyPage() {
       <LegalSectionBar index={6} title="الأطراف الثالثة" id="privacy-third-parties" />
       <LegalCell>
         <p className="lg-p">
-          المساعد الذكي — ميزة اختيارية عبر مزوّد متوافق مع <CodeRun>OpenAI</CodeRun>
+          المساعد الذكي اختياري — مزوّد متوافق مع <CodeRun>OpenAI</CodeRun>
           يحدده المشغّل (<CodeRun>openai</CodeRun>/<CodeRun>openrouter</CodeRun>/<CodeRun>groq</CodeRun>).
         </p>
         <ul className="lg-list">
-          <li>عند التعطيل: أداة محلية داخل الخادم، لا إرسال للخارج.</li>
-          <li>المزوّد الفعلي وشروط معالجته للمحادثات <PendingTag />.</li>
+          <li>عند التعطيل: أداة محلية داخل الخادم — لا إرسال للخارج.</li>
+          <li>المزوّد الفعلي وشروطه <PendingTag />.</li>
         </ul>
       </LegalCell>
 
       <LegalSectionBar index={7} title="الكوكيز والتخزين" id="privacy-storage" />
       <LegalCell>
         <p className="lg-p">
-          <strong>كوكي واحد</strong> و<strong> تسعة مفاتيح تخزين محلي</strong> —
-          ما يُحذف عند الرفض في
+          <strong>كوكي واحد</strong> و<strong> تسعة مفاتيح</strong> —
+          والتفصيل في
           <Link to="/legal/cookies" className="lg-link">صفحة التخزين</Link>.
         </p>
       </LegalCell>
@@ -124,14 +136,13 @@ export function PrivacyPage() {
       <LegalSectionBar index={8} title="التواصل" id="privacy-contact" />
       <LegalCell>
         <p className="lg-p">
-          القناة اليوم: التسجيل المبكر — لا بريد عام (التفاصيل في
-          <Link to="/contact" className="lg-link">صفحة التواصل</Link>).
+          التسجيل المبكر هو القناة — لا بريد عام (<Link to="/contact" className="lg-link">صفحة التواصل</Link>).
         </p>
       </LegalCell>
 
       <LegalSectionBar index={9} title="آخر تحديث" id="privacy-updated" />
       <LegalCell>
-        <p className="lg-p">تُراجع قبل الإطلاق وقبل أي تعديل جوهري.</p>
+        <p className="lg-p">تُراجع قبل الإطلاق وعند أي تعديل جوهري.</p>
       </LegalCell>
     </LegalSheet>
   );
@@ -141,20 +152,19 @@ export function PrivacyPage() {
 
 export function TermsPage() {
   useLegalMeta({
-    title: 'شروط الاستخدام',
+    title: TERMS_TITLE,
     path: '/legal/terms',
-    description: 'ما المنصّة وما ليست — وقواعد الحساب والمحتوى.',
+    description: 'ما هي وما ليست.',
   });
   return (
     <LegalSheet
-      title="شروط الاستخدام"
-      lede="ما هي مدارك، وما ليست."
+      title={TERMS_TITLE}
       updated={LEGAL_UPDATED}
     >
       <LegalSectionBar index={1} title="ما هي مدارك" id="terms-what" />
       <LegalCell>
         <p className="lg-p">
-          مدارك منصّة تعليمية تقنية مستقلّة، عربية أولًا — لا تنتمي إلى مؤسّسة تعليمية ولا تمثّلها.
+          منصّة تعليمية تقنية مستقلّة، عربية أولًا — لا تنتمي لمؤسّسة تعليمية ولا تمثّلها.
         </p>
         <p className="lg-p">
           <strong>مدارك ليست جامعة معتمدة ولا تمنح درجات</strong> — محتواها عرض تجريبي
@@ -165,18 +175,19 @@ export function TermsPage() {
       <LegalSectionBar index={2} title="الحساب" id="terms-account" />
       <LegalCell>
         <p className="lg-p">
-          كلمة المرور بين <CodeRun>12</CodeRun> و<CodeRun>72</CodeRun> محرفًا، وتُرفض الشائعة في قائمة المنع. أنت مسؤول عن حسابك وعمّا يُكتب منه.
+          كلمة المرور بين <CodeRun>12</CodeRun> و<CodeRun>72</CodeRun> محرفًا، والشائعة مرفوضة.
+          أنت مسؤول عن حسابك وما يُكتب منه.
         </p>
         <p className="lg-p">
-          للتجربة ننشر <strong>حسابات اختبار</strong> على <CodeRun>@test.ly</CodeRun> بكلمة مرور
-          معروفة — لا بيانات حقيقية ولا خصوصية.
+          حسابات التجربة على <CodeRun>@test.ly</CodeRun> بكلمة مرور معروفة —
+          لا بيانات حقيقية ولا خصوصية.
         </p>
       </LegalCell>
 
       <LegalSectionBar index={3} title="المحتوى" id="terms-content" />
       <LegalCell>
         <p className="lg-p">
-          ما ترفعه وتكتبه يبقى لك — والفصل بينه وبين بيانات العرض في
+          ما ترفعه وتكتبه يبقى لك — والفصل في
           <Link to="/legal/data" className="lg-link">صفحة البيانات</Link>.
         </p>
       </LegalCell>
@@ -184,24 +195,18 @@ export function TermsPage() {
       <LegalSectionBar index={4} title="الخدمة كما هي" id="terms-as-is" />
       <LegalCell>
         <p className="lg-p">
-          المنصّة تجريبية وتُقدَّم <strong>«كما هي»</strong>: قد تتغير الميزات أو تتوقف دون إشعار —
-          ولا ضمانات استمرارية أو خلوًّا من الأخطاء.
+          المنصّة تجريبية وتُقدَّم <strong>«كما هي»</strong>: قد تتغيّر الميزات أو تتوقف
+          دون إشعار، بلا ضمانات.
         </p>
       </LegalCell>
 
-      <LegalSectionBar index={5} title="المشغّل والقانون الحاكم" id="terms-operator" />
+      {/* R366 L4: the operator + governing-law + changes sections folded
+          into one bar — three one-line facts, one heading. */}
+      <LegalSectionBar index={5} title="المشغّل والقانون" id="terms-operator" />
       <LegalCell>
         <p className="lg-p">
-          تُشغَّل اليوم كمشروع تجريبي مستقل؛ الهوية القانونية للمشغّل <PendingTag />، والقانون
-          الحاكم <PendingTag />.
-        </p>
-      </LegalCell>
-
-      <LegalSectionBar index={6} title="تعديل الشروط" id="terms-changes" />
-      <LegalCell>
-        <p className="lg-p">
-          قد نحدّثها — المرجع آخر تحديث أسفل الصفحة:
-          {' '}<CodeRun>{LEGAL_UPDATED}</CodeRun>.
+          تُشغَّل كمشروع تجريبي مستقل؛ الهوية القانونية للمشغّل والقانون
+          الحاكم <PendingTag /> — وقد تُحدَّث.
         </p>
       </LegalCell>
     </LegalSheet>
@@ -212,37 +217,39 @@ export function TermsPage() {
 
 /** The REAL storage inventory — PAGES-GAP §2, each row cited to its
  * writer. The table the cookies page is WRITTEN FROM: same keys, same
- * purposes, same purge story as the code. */
+ * purposes, same purge story as the code.
+ * R366 L4: the purposes tightened to their noun core (the R355 review
+ * kept them verbatim; the diet now carries the same facts in fewer
+ * words — the key, what it stores, and the purge truth are unchanged). */
 export const STORAGE_LEDGER = [
-  { key: 'madarek.consent', purpose: 'قرار لافتة التخزين (موافق/أرفض)', kind: 'أساسي', purge: 'هو القرار نفسه' },
-  { key: 'madarek.consent.record', purpose: 'القرار مع طابعه الزمني (JSON)', kind: 'أساسي', purge: 'لا' },
-  { key: 'madarek-theme', purpose: 'المظهر: فاتح أو داكن أو النظام', kind: 'أساسي', purge: 'لا' },
-  { key: 'mdrk-theme-profile', purpose: 'ذاكرة المظهر قبل التحميل', kind: 'أساسي', purge: 'لا' },
-  { key: 'mdrk-auth', purpose: 'جلسة الدخول: المستخدم والرمز وسياق المؤسسة', kind: 'أساسي', purge: 'لا' },
-  { key: 'mdrk-ui', purpose: 'طيّ الشريط وآخر اللوحات (4)', kind: 'تفضيل', purge: 'نعم' },
-  { key: 'mdrk-doc-side-w', purpose: 'عرض اللوحة الجانبية في العارض', kind: 'تفضيل', purge: 'نعم' },
-  { key: 'mdrk-academic-links', purpose: 'روابطك الأكاديمية — بياناتك أنت', kind: 'بيانات مستخدم', purge: 'لا تُدمَّر أبدًا' },
-  { key: 'mdrk-auth::probe', purpose: 'فحص التخزين — يُكتب ويُحذف فورًا', kind: 'عابر', purge: 'ينظّف نفسه' },
+  { key: 'madarek.consent', purpose: 'قرار اللافتة (موافق/أرفض)', kind: 'أساسي', purge: 'هو نفسه' },
+  { key: 'madarek.consent.record', purpose: 'القرار ووقته', kind: 'أساسي', purge: 'لا' },
+  { key: 'madarek-theme', purpose: 'المظهر: فاتح/داكن/النظام', kind: 'أساسي', purge: 'لا' },
+  { key: 'mdrk-theme-profile', purpose: 'مظهر ما قبل التحميل', kind: 'أساسي', purge: 'لا' },
+  { key: 'mdrk-auth', purpose: 'جلسة الدخول والمؤسسة', kind: 'أساسي', purge: 'لا' },
+  { key: 'mdrk-ui', purpose: 'طيّ الشريط واللوحات', kind: 'تفضيل', purge: 'نعم' },
+  { key: 'mdrk-doc-side-w', purpose: 'عرض اللوحة الجانبية', kind: 'تفضيل', purge: 'نعم' },
+  { key: 'mdrk-academic-links', purpose: 'روابطك الأكاديمية', kind: 'بيانات مستخدم', purge: 'لا تُدمَّر' },
+  { key: 'mdrk-auth::probe', purpose: 'فحص يُحذف فورًا', kind: 'عابر', purge: 'ينظّف نفسه' },
 ] as const;
 
 export function CookiesPage() {
   useLegalMeta({
-    title: 'ملفات تعريف الارتباط والتخزين المحلي',
+    title: COOKIES_TITLE,
     path: '/legal/cookies',
-    description: 'الكوكي الوحيد ومفاتيح التخزين التسعة — الجدول الكامل.',
+    description: 'الكوكي الوحيد وجدول المفاتيح.',
   });
 
   return (
     <LegalSheet
-      title="ملفات تعريف الارتباط والتخزين المحلي"
-      lede="كوكي واحد وتسعة مفاتيح تخزين — لا تحليلات ولا تتبّع."
+      title={COOKIES_TITLE}
       updated={LEGAL_UPDATED}
     >
       <LegalSectionBar index={1} title="المبدأ" id="cookies-principle" />
       <LegalCell>
         <p className="lg-p">
-          التخزين المحلي يبقى على جهازك — لا يُرسل للخادم إلا ما يلزم طلبك،
-          والخطوط مستضافة داخل المنصّة.
+          التخزين محلي على جهازك، ولا يُرسل للخادم إلا ما يلزم طلبك؛
+          والخطوط مستضافة داخليًا — لا تحليلات ولا تتبّع.
         </p>
       </LegalCell>
 
@@ -250,7 +257,7 @@ export function CookiesPage() {
       <LegalCell>
         <div className="lg-table-wrap">
           <table className="lg-table">
-            <caption className="lg-table-caption">مفاتيح التخزين المحلي</caption>
+            <caption className="lg-table-caption">مفاتيح التخزين</caption>
             <thead>
               <tr>
                 <th scope="col">المفتاح</th>
@@ -264,54 +271,49 @@ export function CookiesPage() {
                 /* R321 §A4 — data-label feeds the ≤767 card
                  * transformation (legal.css §5): each td names its
                  * column so the mono ::before can carry the label when
-                 * the thead is re-seated as per-row card lines. */
+                 * the thead is re-seated as per-row card lines.
+                 * R366 L4: the card labels shortened to the noun (the
+                 * column header keeps the full question). */
                 <tr key={row.key}>
-                  <td className="lg-table-key" dir="ltr" data-label="المفتاح">{row.key}</td>
-                  <td data-label="الغرض">{row.purpose}</td>
-                  <td data-label="الصنف">{row.kind}</td>
-                  <td data-label="يُحذف عند الرفض؟">{row.purge}</td>
+                  <td className="lg-table-key" dir="ltr" data-label="مفتاح">{row.key}</td>
+                  <td data-label="غرض">{row.purpose}</td>
+                  <td data-label="صنف">{row.kind}</td>
+                  <td data-label="يُحذف؟">{row.purge}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
         <p className="lg-p">
-          «يُحذف عند الرفض»: تُمسح مفاتيح التفضيلات — وتبقى بياناتك (القسم 04).
+          الرفض يحذف التفضيلات فقط — وبياناتك تبقى (القسم 04).
         </p>
       </LegalCell>
 
       <LegalSectionBar index={3} title="الكوكي الوحيد" id="cookies-the-cookie" />
       <LegalCell>
         <p className="lg-p">
-          كوكي واحد فقط: <CodeRun>mdrk_refresh</CodeRun> — رمز تحديث الجلسة، <CodeRun>httpOnly</CodeRun>
-          و<CodeRun>sameSite=strict</CodeRun>، محصور في المسار <CodeRun>/api/v1/auth</CodeRun>،
-          وينتهي خلال <CodeRun>7d</CodeRun> مع دوران الرمز. حذفه يسجّل خروجك من الجهاز.
+          كوكي واحد: <CodeRun>mdrk_refresh</CodeRun> — رمز تحديث الجلسة، <CodeRun>httpOnly</CodeRun>
+          و<CodeRun>sameSite=strict</CodeRun> في <CodeRun>/api/v1/auth</CodeRun>،
+          وينتهي خلال <CodeRun>7d</CodeRun>. حذفه يُخرجك من الجهاز.
         </p>
       </LegalCell>
 
       <LegalSectionBar index={4} title="عند الرفض" id="cookies-reject" />
       <LegalCell>
         <p className="lg-p">
-          عند الرفض تُحذف مفاتيح التفضيلات <CodeRun>mdrk-ui</CodeRun> و<CodeRun>mdrk-doc-side-w</CodeRun>
-          وتُشتق من جديد، ويُحفظ قرار الرفض حتى لا تُسأل مجددًا.
+          تُحذف عند الرفض مفاتيح التفضيلات <CodeRun>mdrk-ui</CodeRun> و<CodeRun>mdrk-doc-side-w</CodeRun>؛
+          وقرارك يُحفظ فلا تُسأل مجددًا.
         </p>
         <p className="lg-p">
-          أما <CodeRun>mdrk-academic-links</CodeRun> <strong>فلا يُمس عند الرفض
-          أبدًا</strong>: بياناتك التي كتبتَها تبقى ملكك.
+          أما <CodeRun>mdrk-academic-links</CodeRun> <strong>فلا يُمس عند الرفض</strong>:
+          بياناتك التي كتبتَها تبقى ملكك.
         </p>
       </LegalCell>
 
       <LegalSectionBar index={5} title="المتصفح" id="cookies-browser" />
       <LegalCell>
         <p className="lg-p">
-          امسح التخزين والكوكيز من إعدادات متصفحك متى شئت.
-        </p>
-      </LegalCell>
-
-      <LegalSectionBar index={6} title="آخر تحديث" id="cookies-updated" />
-      <LegalCell>
-        <p className="lg-p">
-          الجدول يُحدَّث مع أي مفتاح جديد.
+          امسح التخزين والكوكيز من إعدادات متصفحك.
         </p>
       </LegalCell>
     </LegalSheet>
@@ -322,25 +324,24 @@ export function CookiesPage() {
 
 export function AccessibilityPage() {
   useLegalMeta({
-    title: 'بيان إمكانية الوصول',
+    title: A11Y_TITLE,
     path: '/legal/accessibility',
-    description: 'ما يُطبَّق فعلًا — لوحة مفاتيح، تقليل الحركة، تباين.',
+    description: 'ما يُطبَّق فعلًا.',
   });
 
   return (
     <LegalSheet
-      title="بيان إمكانية الوصول"
-      lede="ما يشحنه التطبيق فعلًا — لا ادّعاء اجتياز قبل حدوثه."
+      title={A11Y_TITLE}
       updated={LEGAL_UPDATED}
     >
-      <LegalSectionBar index={1} title="ما نطبّقه اليوم" id="a11y-ships" />
+      <LegalSectionBar index={1} title="ما نطبّقه" id="a11y-ships" />
       <LegalCell>
         <ul className="lg-list">
-          <li>عربية أولًا: الواجهة <CodeRun>rtl</CodeRun> من الأساس.</li>
-          <li>روابط «تخطَّ إلى المحتوى» في كل سطح، وتنقّل بلوحة المفاتيح وحلقات تركيز ظاهرة.</li>
-          <li>أرضية لمس <CodeRun>44px</CodeRun> للأهداف التفاعلية على الشاشات الصغيرة.</li>
-          <li>احترام «تقليل الحركة» في النظام — حركات هادئة.</li>
-          <li>بوابات تباين ضمن فحوص التكامل، فاتحًا وداكنًا.</li>
+          <li>الواجهة عربية <CodeRun>rtl</CodeRun> من الأساس.</li>
+          <li>روابط تخطٍّ في كل سطح، وتنقّل بلوحة المفاتيح بحلقات تركيز.</li>
+          <li>أرضية لمس <CodeRun>44px</CodeRun> للأهداف التفاعلية.</li>
+          <li>احترام «تقليل الحركة» في النظام.</li>
+          <li>بوابات تباين في فحوص التكامل.</li>
           <li><CodeRun>IBM Plex Sans Arabic</CodeRun> للنص و<CodeRun>Geist Mono</CodeRun> للأرقام والرموز.</li>
         </ul>
       </LegalCell>
@@ -356,7 +357,7 @@ export function AccessibilityPage() {
       <LegalSectionBar index={3} title="الإبلاغ عن عائق" id="a11y-report" />
       <LegalCell>
         <p className="lg-p">
-          إن واجهت عائقًا فأخبرنا عبر <Link to="/contact" className="lg-link">قناة التواصل</Link>.
+          واجهت عائقًا؟ أخبرنا عبر <Link to="/contact" className="lg-link">{CONTACT_CHANNEL}</Link>.
         </p>
       </LegalCell>
     </LegalSheet>
@@ -367,26 +368,25 @@ export function AccessibilityPage() {
 
 export function SecurityPage() {
   useLegalMeta({
-    title: 'الأمن والإفصاح المسؤول',
+    title: SECURITY_TITLE,
     path: '/legal/security',
-    description: 'الضوابط المطبَّقة فعلًا — التجزئة، دوران الجلسات، الحدود.',
+    description: 'الضوابط المطبَّقة فعلًا.',
   });
 
   return (
     <LegalSheet
-      title="الأمن والإفصاح المسؤول"
-      lede="الضوابط التي يشحنها النظام فعلًا."
+      title={SECURITY_TITLE}
       updated={LEGAL_UPDATED}
     >
       <LegalSectionBar index={1} title="الضوابط المطبَّقة" id="sec-controls" />
       <LegalCell>
         <ul className="lg-list">
-          <li>كلمات المرور تُجزَّأ بـ <CodeRun>argon2</CodeRun>، وسياستها <CodeRun>12-72</CodeRun> محرفًا مع قائمة منع.</li>
-          <li>رمز وصول قصير (<CodeRun>15m</CodeRun>) ورمز تحديث (<CodeRun>7d</CodeRun>) يدور عند كل تجديد، وتغيير كلمة المرور يُبطل جلسات كل الأجهزة.</li>
-          <li>رمز التحديث في كوكي <CodeRun>httpOnly</CodeRun> و<CodeRun>sameSite=strict</CodeRun> محصور في <CodeRun>/api/v1/auth</CodeRun> — لا يقرؤه سكربت في الصفحة.</li>
+          <li>كلمات المرور تُجزَّأ بـ <CodeRun>argon2</CodeRun> (<CodeRun>12-72</CodeRun> محرفًا) والشائعة مرفوضة.</li>
+          <li>رمز وصول (<CodeRun>15m</CodeRun>) ورمز تحديث (<CodeRun>7d</CodeRun>) يدور عند كل تجديد؛ تغيير كلمة المرور يُبطل الجلسات.</li>
+          <li>رمز التحديث في كوكي <CodeRun>httpOnly</CodeRun> و<CodeRun>sameSite=strict</CodeRun> في <CodeRun>/api/v1/auth</CodeRun> — لا يقرؤه سكربت.</li>
           <li>تحديد معدل المحاولات لكل IP، وقفل الحساب مؤقتًا بعد الفشل المتكرر.</li>
-          <li>الأذونات تُفرض في الخادم لكل مسار حسب الدور — المرفوض يعيد <CodeRun>403</CodeRun> من الخادم نفسه.</li>
-          <li>رؤوس سياسة أمان المحتوى (<CodeRun>CSP</CodeRun>) تُرسل مع الصفحة.</li>
+          <li>الأذونات تُفرض في الخادم حسب الدور؛ والمرفوض يعيد <CodeRun>403</CodeRun>.</li>
+          <li>رؤوس سياسة أمان المحتوى (<CodeRun>CSP</CodeRun>) مع كل صفحة.</li>
         </ul>
       </LegalCell>
 
@@ -394,14 +394,14 @@ export function SecurityPage() {
       <LegalCell>
         <p className="lg-p">
           لا شهادة <CodeRun>ISO</CodeRun> ولا <CodeRun>SOC</CodeRun> ولا اعتماد <CodeRun>GDPR</CodeRun> اليوم —
-          وإن أُضيف اعتماد فسيُعلن مع وثيقته.
+          وأي اعتماد يُعلن مع وثيقته.
         </p>
       </LegalCell>
 
       <LegalSectionBar index={3} title="الإفصاح المسؤول" id="sec-disclosure" />
       <LegalCell>
         <p className="lg-p">
-          رصدت ثغرة؟ بلّغنا عبر <Link to="/contact" className="lg-link">قناة التواصل</Link>.
+          رصدت ثغرة؟ بلّغنا عبر <Link to="/contact" className="lg-link">{CONTACT_CHANNEL}</Link>.
           سياسة الإفصاح (النطاق والاستجابة والملاذ الآمن)
           <PendingTag />.
         </p>
@@ -414,50 +414,48 @@ export function SecurityPage() {
 
 export function DataPage() {
   useLegalMeta({
-    title: 'البيانات وبيانات العرض',
+    title: DATA_TITLE,
     path: '/legal/data',
-    description: 'الفصل بين البيانات الاصطناعية المبذورة وبياناتك الحقيقية.',
+    description: 'بيانات العرض مقابل بياناتك.',
   });
 
   return (
     <LegalSheet
-      title="البيانات وبيانات العرض"
-      lede="ما الاصطناعي للعرض، وما كتبته أنت؟"
+      title={DATA_TITLE}
       updated={LEGAL_UPDATED}
     >
       <LegalSectionBar index={1} title="النوعان" id="data-types" />
       <LegalCell>
         <p className="lg-p">
-          <strong>بيانات مبذورة اصطناعية بالكامل:</strong> «مؤسسة مدارك النموذجية» بكلياتها ومقرراتها،
-          والمستخدمون التجريبيون وحسابات <CodeRun>@test.ly</CodeRun> ونتائجهم —
-          ولا تمثّل أحدًا حقيقيًا.
+          <strong>بيانات مبذورة اصطناعية بالكامل:</strong> «مؤسسة مدارك النموذجية» بكلياتها ومقرراتها
+          وحسابات <CodeRun>@test.ly</CodeRun> ونتائجها —
+          لا تمثّل أحدًا حقيقيًا.
         </p>
         <p className="lg-p">
-          <strong>بياناتك الحقيقية:</strong> ما تدخله عند التسجيل، وما تكتبه أو ترفعه —
-          رسائلك، بحوثك، موادك، إجاباتك.
+          <strong>بياناتك الحقيقية:</strong> ما تدخله عند التسجيل وما تكتبه وترفعه.
         </p>
       </LegalCell>
 
       <LegalSectionBar index={2} title="كيف تعرف الفرق" id="data-ledger" />
       <LegalCell>
         <p className="lg-p">
-          سجلّ القدرات <Link to="/capabilities" className="lg-link">«ما يعمل اليوم»</Link> يفصل الحقيقي
-          من المحاكاة — والمنطق نفسه للبيانات: ما لم يُذكر حقيقيًا فهو عرض.
+          سجلّ القدرات <Link to="/capabilities" className="lg-link">«ما يعمل اليوم»</Link> يفصل
+          الحقيقي من المحاكاة — وما لم يُذكر فهو عرض.
         </p>
       </LegalCell>
 
-      <LegalSectionBar index={3} title="أين تُخزَّن ومدة الاحتفاظ" id="data-retention" />
+      <LegalSectionBar index={3} title="التخزين والاحتفاظ" id="data-retention" />
       <LegalCell>
         <p className="lg-p">
-          النوعان في مكان واحد (التفصيل في <Link to="/legal/privacy" className="lg-link">سياسة الخصوصية</Link>).
-          وجميع البيانات بيانات عرض حتى استكمال سياسة الاحتفاظ <PendingTag />.
+          النوعان في مكان واحد (<Link to="/legal/privacy" className="lg-link">سياسة الخصوصية</Link>)؛
+          وكله عرض حتى استكمال سياسة الاحتفاظ <PendingTag />.
         </p>
       </LegalCell>
 
       <LegalSectionBar index={4} title="الأطراف الثالثة" id="data-third" />
       <LegalCell>
         <p className="lg-p">
-          المساعد الأكاديمي وحده قد يغادر الخادم — والتفصيل في سياسة الخصوصية.
+          المساعد الأكاديمي وحده قد يغادر الخادم (التفصيل في الخصوصية).
         </p>
       </LegalCell>
     </LegalSheet>

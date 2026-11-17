@@ -43,7 +43,7 @@
     "AppDownloadPage.tsx": {
       "baseline": 340,
       "class": "public",
-      "max": 128
+      "max": 97
     },
     "auth/ForgotPasswordPage.tsx": {
       "baseline": 117,
@@ -68,22 +68,22 @@
     "capabilities/CapabilityPages.tsx": {
       "baseline": 119,
       "class": "public",
-      "max": 83
+      "max": 50
     },
     "colleges/CollegePages.tsx": {
       "baseline": 308,
       "class": "public",
-      "max": 228
+      "max": 166
     },
     "community/CommunityPages.tsx": {
       "baseline": 271,
       "class": "authed",
-      "max": 159
+      "max": 140
     },
     "competitions/CompetitionsPages.tsx": {
       "baseline": 291,
       "class": "authed",
-      "max": 171
+      "max": 138
     },
     "DesignPage.tsx": {
       "baseline": 624,
@@ -118,12 +118,12 @@
     "legal/LegalPages.tsx": {
       "baseline": 1503,
       "class": "public",
-      "max": 848
+      "max": 627
     },
     "legal/LegalSheet.tsx": {
       "baseline": 27,
       "class": "public",
-      "max": 24
+      "max": 21
     },
     "MaintenancePage.tsx": {
       "baseline": 40,
@@ -213,7 +213,7 @@
     "PublicPages.tsx": {
       "baseline": 545,
       "class": "public",
-      "max": 336
+      "max": 212
     },
     "quality/QualityPages.tsx": {
       "baseline": 744,
@@ -328,7 +328,7 @@
     "student/TrainingPages.tsx": {
       "baseline": 359,
       "class": "authed",
-      "max": 210
+      "max": 183
     },
     "student/WebinarsPage.tsx": {
       "baseline": 123,
@@ -378,7 +378,7 @@
     "vision/VisionPages.tsx": {
       "baseline": 136,
       "class": "public",
-      "max": 74
+      "max": 37
     },
     "auth/VerifyEmailPage.tsx": {
       "baseline": 43,

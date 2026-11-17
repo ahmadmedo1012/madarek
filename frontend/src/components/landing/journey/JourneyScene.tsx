@@ -53,7 +53,7 @@ import { LECTURE_INTERACTIVE, MASTERY_SCORE_LINE } from '../copy';
  * standing, no drift, no camera (the driver writes it idempotently;
  * the journey.css RM belt holds the no-JS case).
  */
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { LearningPlanDrawing, PLAN_VB } from '../LearningPlanDrawing';
 import { Icon } from '../../Icon';
 import {
@@ -346,6 +346,27 @@ export function JourneyScene() {
   const colElRef = useRef<HTMLElement | null>(null);
   const layerElsRef = useRef<SVGGElement[][]>([]);
   const camDirtyRef = useRef(false);
+
+  /* R366 L1 (Agent 1) — the ledger icon seats: the chapter icons (lucide
+   * glyphs at the measured 27px windows) receive their data-spec stamps
+   * here on mount — the Footer data-spec-hover precedent: a measurement
+   * hook ONLY (no styles, no behaviour). The stamps give the conformance
+   * runner explicit handles for each icon svg and its internal paths
+   * (mapping/home-map-wrap-r366.json binds the spec's own icon windows
+   * to them). */
+  useEffect(() => {
+    const root = trackRef.current;
+    if (!root) return;
+    root.querySelectorAll<HTMLElement>('.jt-cms-row').forEach((row, i) => {
+      const svg = row.querySelector('svg');
+      if (!svg) return;
+      svg.setAttribute('data-spec', `map.row${i + 1}icosvg`);
+      let p = 0;
+      for (const child of Array.from(svg.children)) {
+        if (child.tagName.toLowerCase() === 'path') child.setAttribute('data-spec', `map.row${i + 1}icop${++p}`);
+      }
+    });
+  }, []);
 
   /* ── The ONE scroll driver (zero React renders per tick) ────────── */
   useSheetScroll(

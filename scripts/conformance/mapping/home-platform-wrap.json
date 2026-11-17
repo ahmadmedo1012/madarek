@@ -4390,83 +4390,62 @@
   {
    "section": "home-platform-wrap",
    "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[1] > div[3]",
-   "skip": [
-    "geometry"
-   ],
    "bps": [
     "1024",
     "1440",
     "1920"
    ],
-   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat."
+   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat. — R366 L1: geometry unskipped (the checks pass at every bp on the current tree)"
   },
   {
    "section": "home-platform-wrap",
    "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[2] > div[3]",
-   "skip": [
-    "geometry"
-   ],
    "bps": [
     "1024",
     "1440",
     "1920"
    ],
-   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat."
+   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat. — R366 L1: geometry unskipped (the checks pass at every bp on the current tree)"
   },
   {
    "section": "home-platform-wrap",
    "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2]",
-   "skip": [
-    "geometry"
-   ],
    "bps": [
     "768"
    ],
-   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat."
+   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat. — R366 L1: geometry unskipped (the checks pass at every bp on the current tree)"
   },
   {
    "section": "home-platform-wrap",
    "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[1]",
-   "skip": [
-    "geometry"
-   ],
    "bps": [
     "768"
    ],
-   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat."
+   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat. — R366 L1: geometry unskipped (the checks pass at every bp on the current tree)"
   },
   {
    "section": "home-platform-wrap",
    "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[2]",
-   "skip": [
-    "geometry"
-   ],
    "bps": [
     "768"
    ],
-   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat."
+   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat. — R366 L1: geometry unskipped (the checks pass at every bp on the current tree)"
   },
   {
    "section": "home-platform-wrap",
    "heron": "home-platform-wrap > div[1] > section[1]",
-   "skip": [
-    "geometry"
-   ],
    "bps": [
     "390"
    ],
-   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat."
+   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat. — R366 L1: geometry unskipped (the checks pass at every bp on the current tree)"
   },
   {
    "section": "home-platform-wrap",
    "heron": "home-platform-wrap > div[1] > section[1] > div[2]",
-   "skip": [
-    "geometry"
-   ],
    "bps": [
     "390"
    ],
-   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat."
+   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat. — R366 L1: geometry unskipped (the checks pass at every bp on the current tree)"
   },
   {
    "section": "home-platform-wrap",
@@ -4482,24 +4461,18 @@
   {
    "section": "home-platform-wrap",
    "heron": "home-platform-wrap > div[1] > section[1] > div[3]",
-   "skip": [
-    "geometry"
-   ],
    "bps": [
     "390"
    ],
-   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat."
+   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat. — R366 L1: geometry unskipped (the checks pass at every bp on the current tree)"
   },
   {
    "section": "home-platform-wrap",
    "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1]",
-   "skip": [
-    "geometry"
-   ],
    "bps": [
     "390"
    ],
-   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat."
+   "reason": "T-08c5: off-page parked image-column seat — both engines park the ≤991/1024 image column off-page (y ≈ −7.2k…−10.9k); the exact off-page offset is engine bookkeeping, not observable design (loop-translation precedent, T-08c4). Content/type/colour stay measured on the same seat. — R366 L1: geometry unskipped (the checks pass at every bp on the current tree)"
   }
  ]
 }

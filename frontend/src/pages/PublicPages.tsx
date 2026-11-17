@@ -9,6 +9,11 @@
  * in LEGAL-TODO), the help page's nine answers each cite a real
  * surface, and the contact page invents NO channel — the early-access
  * register form IS the channel today, stated plainly.
+ *
+ * R366 L4 copy diet: the help answers are 1-2 lines each (same facts,
+ * same cited surfaces), and the about/help chrome rides the shared
+ * copy consts from LegalSheet (skip link, back link, brand word,
+ * colophon) — one home per repeated string.
  */
 import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
@@ -17,10 +22,16 @@ import { Icon } from '../components/Icon';
 import { Logo } from '../brand';
 import { GuestSheetChrome } from '../components/layout/GuestSheetChrome';
 import {
+  BACK_HOME,
+  BRAND_WORD,
+  COLOPHON_LINE,
+  CONTACT_CHANNEL,
   LegalCell,
   LegalSectionBar,
   LegalSheet,
   PendingTag,
+  SKIP_LINK,
+  UPDATED_LABEL,
   useLegalMeta,
 } from './legal/LegalSheet';
 import { LEGAL_UPDATED } from './legal/LegalPages';
@@ -31,13 +42,21 @@ import { LEGAL_UPDATED } from './legal/LegalPages';
 import '../styles/about.css';
 import '../styles/help.css';
 
+/* R366 L4: one home per repeated string — the page titles (meta + h1),
+ * the capabilities CTA (about + help + faq8) and the contact channel
+ * (help CTA + faq3 twice). */
+const ABOUT_TITLE = 'عن مدارك';
+const HELP_TITLE = 'المساعدة والأسئلة الشائعة';
+const CONTACT_TITLE = 'التواصل والتسجيل المبكر';
+const CAPABILITIES_CTA = 'سجلّ القدرات';
+
 /* ═══ [C-04] عن مدارك ═══════════════════════════════════════════════ */
 
 export function AboutPage() {
   useLegalMeta({
-    title: 'عن مدارك',
+    title: ABOUT_TITLE,
     path: '/about',
-    description: 'منصّة تعليمية تقنية مستقلّة، عربية أولًا.',
+    description: 'منصّة تعليمية عربية مستقلّة.',
   });
 
   /* R341 D2 — rebuilt on the pattern library (the r340 T-D1a recipe):
@@ -48,18 +67,18 @@ export function AboutPage() {
    * below is the lg sheet's statement, dieted (r353). */
   return (
     <div className="ab">
-      <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
+      <a href="#main" className="skip-link">{SKIP_LINK}</a>
       <GuestSheetChrome />
 
       <header className="ab-header">
         <div className="ab-header-inner">
           <Link to="/" className="btn ghost sm">
             <Icon icon={ArrowRight} size={14} />
-            العودة إلى الرئيسية
+            {BACK_HOME}
           </Link>
           <Link to="/" className="ab-header-brand" aria-label="مدارك — الصفحة الرئيسية">
             <Logo variant="mark" size={22} />
-            مدارك
+            {BRAND_WORD}
           </Link>
         </div>
       </header>
@@ -69,11 +88,10 @@ export function AboutPage() {
           <div className="pf-page-header">
             <div className="pf-page-header-text">
               <p className="pf-eyebrow">بيان المنصّة</p>
-              <h1 className="pf-page-title">عن مدارك</h1>
+              <h1 className="pf-page-title">{ABOUT_TITLE}</h1>
             </div>
             <div className="pf-page-actions">
-              <Link to="/capabilities" className="ab-cta-primary">سجلّ القدرات</Link>
-              <Link to="/" className="ab-cta-ghost">الصفحة الرئيسية</Link>
+              <Link to="/capabilities" className="ab-cta-primary">{CAPABILITIES_CTA}</Link>
             </div>
           </div>
 
@@ -106,8 +124,8 @@ export function AboutPage() {
             </div>
             <div className="ab-cell">
               <p className="ab-p">
-                المحاضرات التفاعلية، الاختبارات، مصفوفة الإتقان، مكتبة البحوث، الرسائل
-                والإشعارات، والجدول الأسبوعي — التفصيل في
+                المحاضرات، الاختبارات، مصفوفة الإتقان، البحوث، الرسائل،
+                والجدول — التفصيل في
                 <Link to="/capabilities" className="ab-link">صفحة السجلّ</Link>.
               </p>
             </div>
@@ -122,7 +140,7 @@ export function AboutPage() {
             </div>
             <div className="ab-cell">
               <p className="ab-p">
-                لم يُعلن المالك عن نفسه بعد —
+                لم يُعلن المالك بعد —
                 <span className="ab-pending">[يُستكمل قبل الإطلاق]</span>.
               </p>
             </div>
@@ -132,23 +150,23 @@ export function AboutPage() {
             <div className="pf-section-header">
               <h2 className="ab-bar" id="about-data">
                 <span className="ab-bar-index ab-mono" dir="ltr" aria-hidden="true">[04]</span>
-                <span className="ab-bar-title">البيانات</span>
+                <span className="ab-bar-title">البيانات والسياسات</span>
               </h2>
             </div>
             <div className="ab-cell">
               <p className="ab-p">
-                الفصل بين بيانات العرض وبياناتك الحقيقية في
-                {' '}<Link to="/legal/data" className="ab-link">صفحة البيانات</Link>،
-                والسياسات في <Link to="/legal/privacy" className="ab-link">سياسة الخصوصية</Link> و
-                <Link to="/legal/terms" className="ab-link">شروط الاستخدام</Link>.
+                بيانات العرض مقابل بياناتك في
+                {' '}<Link to="/legal/data" className="ab-link">صفحة البيانات</Link>؛
+                والسياسات: <Link to="/legal/privacy" className="ab-link">الخصوصية</Link> و
+                <Link to="/legal/terms" className="ab-link">الشروط</Link>.
               </p>
             </div>
           </section>
 
           <footer className="ab-colophon">
-            <p className="ab-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية</p>
+            <p className="ab-colophon-line">{COLOPHON_LINE}</p>
             <p className="ab-colophon-stamp">
-              آخر تحديث: <span className="ab-mono" dir="ltr">{LEGAL_UPDATED}</span>
+              {UPDATED_LABEL} <span className="ab-mono" dir="ltr">{LEGAL_UPDATED}</span>
             </p>
           </footer>
         </div>
@@ -163,6 +181,7 @@ export function AboutPage() {
  * the five roles, the honest password-reset truth, the noscript line,
  * the reduced-motion paths, the theme toggle, the storage ledger, the
  * capability ledger, the print stylesheet. No invented support channels.
+ * R366 L4: each answer is 1-2 lines — same facts, fewer words.
  *
  * r324 X15 — the pilot CREDENTIALS (@test.ly / the shared password)
  * ride `showPilotAccounts`: true on dev/preview builds and on a prod
@@ -174,40 +193,37 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'كيف أجرّب المنصّة؟',
     a: showPilotAccounts ? (
       <>
-        بريد ينتهي بـ <bdi className="hp-code hp-mono" dir="ltr">@test.ly</bdi> وكلمة المرور <bdi className="hp-code hp-mono" dir="ltr">12345678</bdi> —
-        حساب لكل دور، في لوحة «حسابات تجريبية» على صفحة الدخول (زر «تعبئة» ثم «دخول»).
+        بريد <bdi className="hp-code hp-mono" dir="ltr">@test.ly</bdi> وكلمة المرور <bdi className="hp-code hp-mono" dir="ltr">12345678</bdi> —
+        لكل دور حساب في لوحة «حسابات تجريبية» بصفحة الدخول.
       </>
     ) : (
       <>
-        تُوزّع حسابات التجربة على المختبرين مع كل مرحلة — استخدم الحساب الذي وصلك،
-        وإن لم يصل فانتظر فتح التسجيل من
+        استخدم الحساب الذي وصلك، أو انتظر فتح التسجيل من
         {' '}<Link to="/auth/register" className="hp-link">نموذج إنشاء الحساب</Link>.
       </>
     ),
   },
   {
-    q: 'ما الأدوار المتاحة في المنصّة؟',
+    q: 'ما الأدوار المتاحة؟',
     a: (
       <>
-        خمسة أدوار: <strong>طالب</strong> و<strong>أستاذ</strong> (ومعه رئيس قسم وعميد)
-        و<strong>إدارة</strong> (المسجل العام ومسجل كلية) و<strong>أخصائي جودة</strong> و<strong>مالك
-        المنصّة</strong> — الصلاحيات مفروضة في الخادم.
+        خمسة أدوار: <strong>طالب</strong>، <strong>أستاذ</strong> (ورئيس قسم وعميد)،
+        <strong>إدارة</strong> (المسجل العام ومسجل كلية)، <strong>أخصائي جودة</strong>، و<strong>مالك</strong>.
       </>
     ),
   },
   {
-    q: 'نسيت كلمة المرور — ماذا أفعل؟',
+    q: 'نسيت كلمة المرور؟',
     a: showPilotAccounts ? (
       <>
-        لا يوجد بريد يُرسَل من المنصّة بعد. حسابات <bdi className="hp-code hp-mono" dir="ltr">@test.ly</bdi> كلمة مرورها معروفة
-        (<bdi className="hp-code hp-mono" dir="ltr">12345678</bdi>) فتُملأ من صفحة الدخول؛ حسابك الخاص؟ فالطريق
-        <Link to="/contact" className="hp-link">قناة التواصل</Link>.
+        لا يوجد بريد يُرسَل من المنصّة بعد. كلمة مرور <bdi className="hp-code hp-mono" dir="ltr">@test.ly</bdi>
+        معروفة (<bdi className="hp-code hp-mono" dir="ltr">12345678</bdi>)؛
+        لحسابك الخاص: <Link to="/contact" className="hp-link">{CONTACT_CHANNEL}</Link>.
       </>
     ) : (
       <>
-        لا يوجد بريد يُرسَل من المنصّة بعد. حساب تجريبي؟ ادخل ببياناته من
-        {' '}<Link to="/auth" className="hp-link">صفحة الدخول</Link>؛ حسابك الخاص؟ فالطريق
-        <Link to="/contact" className="hp-link">قناة التواصل</Link>.
+        لا يوجد بريد يُرسَل من المنصّة بعد. للحساب الخاص:
+        {' '}<Link to="/contact" className="hp-link">{CONTACT_CHANNEL}</Link>.
       </>
     ),
   },
@@ -215,9 +231,9 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'ما المتصفحات المدعومة؟',
     a: (
       <>
-        المتصفحات الحديثة (<bdi>Chrome</bdi> و<bdi>Edge</bdi> و<bdi>Firefox</bdi>
-        و<bdi>Safari</bdi>) مع تشغيل الجافاسكربت — وإن
-        عُطّلت فستقابلك رسالة تطلب التفعيل وإعادة التحميل.
+        <bdi>Chrome</bdi> و<bdi>Edge</bdi> و<bdi>Firefox</bdi>
+        و<bdi>Safari</bdi> مع الجافاسكربت — وإن عُطّلت فستقابلك رسالة
+        بالتفعيل وإعادة التحميل.
       </>
     ),
   },
@@ -233,7 +249,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'كيف أبدّل المظهر؟',
     a: (
       <>
-        بمفتاح المظهر في الشريط الجانبي — ويُحفظ اختيارك على جهازك.
+        مفتاح المظهر في الشريط الجانبي.
       </>
     ),
   },
@@ -241,26 +257,26 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'ماذا تكتبون على جهازي؟',
     a: (
       <>
-        كوكي واحد وتسعة مفاتيح تخزين — الجدول الكامل وما يُحذف عند الرفض في
+        كوكي واحد وتسعة مفاتيح — والتفصيل في
         {' '}<Link to="/legal/cookies" className="hp-link">صفحة التخزين المحلي</Link>.
       </>
     ),
   },
   {
-    q: 'ما يعمل فعلًا وما هو محاكاة؟',
+    q: 'ما يعمل وما هو محاكاة؟',
     a: (
       <>
-        سجلّ القدرات يفصل: <Link to="/capabilities" className="hp-link">«ما يعمل اليوم»</Link> — وما هو
-        محاكاة أو قيد التطوير موسوم كذلك.
+        سجلّ القدرات <Link to="/capabilities" className="hp-link">«ما يعمل اليوم»</Link> يفصل —
+        والمحاكاة موسومة.
       </>
     ),
   },
   {
-    q: 'هل يمكن طباعة السياسات؟',
+    q: 'هل تُطبع السياسات؟',
     a: (
       <>
-        نعم — صفحات <bdi className="hp-code hp-mono" dir="ltr">/legal/*</bdi> تُطبع كوثيقة بعمود واحد: النص
-        والإطارات الحاكمة وتاريخ آخر تحديث.
+        نعم — <bdi className="hp-code hp-mono" dir="ltr">/legal/*</bdi> بعمود
+        واحد مع تاريخ آخر تحديث.
       </>
     ),
   },
@@ -268,9 +284,9 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
 
 export function HelpPage() {
   useLegalMeta({
-    title: 'المساعدة والأسئلة الشائعة',
+    title: HELP_TITLE,
     path: '/help',
-    description: 'إجابات قصيرة — كل جواب يشير إلى سطح حقيقي في المنصّة.',
+    description: 'إجابات قصيرة تشير إلى أسطح حقيقية.',
   });
 
   /* r324 X15 — the credential-bearing FAQ variants render on dev/preview
@@ -297,18 +313,18 @@ export function HelpPage() {
    * heading), so the accordion and the document outline coexist. */
   return (
     <div className="hp">
-      <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
+      <a href="#main" className="skip-link">{SKIP_LINK}</a>
       <GuestSheetChrome />
 
       <header className="hp-header">
         <div className="hp-header-inner">
           <Link to="/" className="btn ghost sm">
             <Icon icon={ArrowRight} size={14} />
-            العودة إلى الرئيسية
+            {BACK_HOME}
           </Link>
           <Link to="/" className="hp-header-brand" aria-label="مدارك — الصفحة الرئيسية">
             <Logo variant="mark" size={22} />
-            مدارك
+            {BRAND_WORD}
           </Link>
         </div>
       </header>
@@ -318,14 +334,11 @@ export function HelpPage() {
           <div className="pf-page-header">
             <div className="pf-page-header-text">
               <p className="pf-eyebrow">أسئلة الزوّار</p>
-              <h1 className="pf-page-title">المساعدة والأسئلة الشائعة</h1>
-              <p className="pf-page-desc">
-                تسعة أسئلة — وكل جواب مما يعمل اليوم.
-              </p>
+              <h1 className="pf-page-title">{HELP_TITLE}</h1>
             </div>
             <div className="pf-page-actions">
-              <Link to="/capabilities" className="hp-cta-primary">سجلّ القدرات</Link>
-              <Link to="/contact" className="hp-cta-ghost">قناة التواصل</Link>
+              <Link to="/capabilities" className="hp-cta-primary">{CAPABILITIES_CTA}</Link>
+              <Link to="/contact" className="hp-cta-ghost">{CONTACT_CHANNEL}</Link>
             </div>
           </div>
 
@@ -345,9 +358,9 @@ export function HelpPage() {
           </div>
 
           <footer className="hp-colophon">
-            <p className="hp-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية</p>
+            <p className="hp-colophon-line">{COLOPHON_LINE}</p>
             <p className="hp-colophon-stamp">
-              آخر تحديث: <span className="hp-mono" dir="ltr">{LEGAL_UPDATED}</span>
+              {UPDATED_LABEL} <span className="hp-mono" dir="ltr">{LEGAL_UPDATED}</span>
             </p>
           </footer>
         </div>
@@ -360,30 +373,29 @@ export function HelpPage() {
 
 export function ContactPage() {
   useLegalMeta({
-    title: 'التواصل والتسجيل المبكر',
+    title: CONTACT_TITLE,
     path: '/contact',
-    description: 'قناة التواصل — التسجيل المبكر، بلا بريد مخترع.',
+    description: 'التسجيل المبكر هو القناة.',
   });
 
   return (
     <LegalSheet
-      title="التواصل والتسجيل المبكر"
-      lede="لا نخترع قنوات — هذه المتاحة اليوم."
+      title={CONTACT_TITLE}
       updated={LEGAL_UPDATED}
     >
       <LegalSectionBar index={1} title="القناة المتاحة" id="contact-channel" />
       <LegalCell>
         <p className="lg-p">
           لا بريد عام بعد — قدّم طلبك من
-          {' '}<Link to="/auth/register" className="lg-link">نموذج إنشاء الحساب الجامعي</Link>،
-          وما يصل عبره يقرؤه المشغّل.
+          {' '}<Link to="/auth/register" className="lg-link">نموذج إنشاء الحساب الجامعي</Link>؛
+          ويقرؤه المشغّل.
         </p>
       </LegalCell>
 
       <LegalSectionBar index={2} title="ما لا نملكه بعد" id="contact-none" />
       <LegalCell>
         <p className="lg-p">
-          أي قناة تُعلن هنا — ولن نطلب بياناتك عبر طريق غيره.
+          لن نطلب بياناتك إلا عبر ما يُعلن هنا.
         </p>
       </LegalCell>
 
@@ -397,7 +409,7 @@ export function ContactPage() {
       <LegalSectionBar index={4} title="الأمور الأمنية" id="contact-security" />
       <LegalCell>
         <p className="lg-p">
-          بلاغات الثغرات عبر القناة نفسها — وسياسة الإفصاح المسؤول في
+          بلاغات الثغرات عبر القناة نفسها — والسياسة في
           {' '}<Link to="/legal/security" className="lg-link">صفحة الأمن</Link>.
         </p>
       </LegalCell>
