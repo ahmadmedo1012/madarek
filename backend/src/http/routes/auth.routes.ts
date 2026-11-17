@@ -392,13 +392,17 @@ router.post(
       const data: { message: string; devInbox?: { mode: 'test'; url: string } } = {
         message: 'إذا كان البريد مسجلًا فستصلك رسالة خلال دقائق',
       };
-      if (token && isTestAccountEmail(email)) {
+      if (token && isTestAccountEmail(email) && env.NODE_ENV !== 'production') {
         // Test-mode link — @test.ly demo accounts only (reasoning in the
-        // route docblock above). Origin comes from the requesting web
-        // app itself (the browser always sends Origin on cross-origin
-        // POSTs — dev Vite → API), validated to http(s) shape so a
-        // garbage header can never reach the URL; the default is the
-        // Vite dev port for direct curl-style callers.
+        // route docblock above), and never in production (r363, audit A-2:
+        // the raw single-use reset token must not ride an unauthenticated
+        // JSON response outside dev/test — combined with the documented
+        // demo password that was an unauthenticated account takeover).
+        // Origin comes from the requesting web app itself (the browser
+        // always sends Origin on cross-origin POSTs — dev Vite → API),
+        // validated to http(s) shape so a garbage header can never reach
+        // the URL; the default is the Vite dev port for direct curl-style
+        // callers.
         const rawOrigin =
           typeof req.headers.origin === 'string' && /^https?:\/\/[^/]+/.test(req.headers.origin)
             ? req.headers.origin
@@ -417,8 +421,16 @@ router.post(
        * flipping the provider on drains the backlog); a cap refusal is
        * logged, never leaked. The response stays the SAME generic 200. */
       if (token !== null) {
+        // r363 (audit A-3): in production the emailed reset URL is built
+        // from env.APP_ORIGIN ONLY — the request Origin header is
+        // attacker-controlled and was a reset-link poisoning vector
+        // (victim receives a link pointing at the attacker's origin;
+        // one click leaks the raw token). The Origin echo remains for
+        // dev/test only (the local Vite proxy flow).
         const rawOrigin =
-          typeof req.headers.origin === 'string' && /^https?:\/\/[^/]+/.test(req.headers.origin)
+          env.NODE_ENV !== 'production' &&
+          typeof req.headers.origin === 'string' &&
+          /^https?:\/\/[^/]+/.test(req.headers.origin)
             ? req.headers.origin
             : (env.APP_ORIGIN ?? 'http://localhost:5173');
         const resetUrl = `${rawOrigin.replace(/\/+$/, '')}/auth/reset-password?token=${encodeURIComponent(token)}`;

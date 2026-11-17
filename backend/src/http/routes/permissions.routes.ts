@@ -395,6 +395,27 @@ router.post(
       if ((req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY) && !callerInstitution) {
         throw institutionContextRequiredError();
       }
+      // r363 (audit B-2): the role surface must enforce the SAME
+      // target-membership guard as the capability-override sibling above
+      // — without it an unscoped ADMIN of institution A promoted or
+      // demoted ANY platform account (institution B's ADMIN included):
+      // cross-tenant privilege injection + denial of governance.
+      // The TEACHER-provisioning leg already re-checked membership via
+      // resolveProvisionInstitution; every other transition did not.
+      if (callerInstitution) {
+        const targetMembership = await prisma.membership.findFirst({
+          where: {
+            userId: id,
+            institutionId: callerInstitution,
+            isActive: true,
+            institution: { status: 'ACTIVE' },
+          },
+          select: { id: true },
+        });
+        if (!targetMembership) {
+          throw AppError.forbidden('هذا المستخدم ليس عضواً في مؤسستك');
+        }
+      }
       const target = await prisma.user.findUnique({
         where: { id },
         select: {

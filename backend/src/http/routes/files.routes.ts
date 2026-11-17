@@ -3,6 +3,7 @@ import express, { Router } from 'express';
 import type { Request, Response } from 'express';
 import { Prisma, Role } from '@prisma/client';
 import { prisma } from '../../db.js';
+import { withRetry } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { createRouteLimiter } from '../middleware/rateLimit.js';
@@ -649,6 +650,45 @@ router.get('/materials/:filename', async (req, res, next) => {
 // — the small-file fallback is the existing materials-style flow, and
 // the UI surfaces the exact Arabic message below.
 
+/**
+ * The institution-aware grant predicate for serving a LECTURE video or
+ * transcript sidecar (r363, audit B-6/D-1 — the route previously served
+ * to ANY authenticated user, any institution). The filename resolves
+ * through the Lecture table on BOTH URL columns — videoUrl for uploaded
+ * videos (`lectures/c<uuid>.<ext>`) and transcriptUrl for the STT
+ * sidecar (`lectures/<lectureId>.vtt`, minted by transcriptServingPathFor)
+ * — chained offering → course → department → faculty → institution and
+ * compared INSIDE the query against the caller's VERIFIED institution
+ * (a foreign-institution filename matches nothing → 404, no existence
+ * oracle). Grants mirror accessibleMaterialWhere: the offering's
+ * teacher, an actively enrolled student, or ADMIN/QUALITY oversight of
+ * the SAME institution. Exported for DB-free unit tests.
+ */
+export function accessibleLectureWhere(
+  filename: string,
+  role: Role,
+  userId: string,
+  callerInstitutionId: string,
+): Prisma.LectureWhereInput {
+  return {
+    OR: [
+      { videoUrl: { endsWith: `/${filename}` } },
+      { transcriptUrl: { endsWith: `/${filename}` } },
+    ],
+    offering: {
+      course: { department: { faculty: { institutionId: callerInstitutionId } } },
+      ...(isPaperOversightRole(role)
+        ? {} // ADMIN/QUALITY: same-institution oversight, no per-row grant.
+        : {
+            OR: [
+              { teacherId: userId },
+              { enrollments: { some: { studentId: userId, status: 'active' } } },
+            ],
+          }),
+    },
+  };
+}
+
 /** Single presigned PUT cap (browser streams it in one request). */
 export const MAX_SINGLE_UPLOAD_BYTES = 100 * 1024 * 1024;
 /** Multipart object cap — 4 GB is a pilot-honest bound, far below S3's 5 TB. */
@@ -761,6 +801,17 @@ router.post('/uploads/presign', uploadPresignLimiter, requireRole(Role.TEACHER, 
     const id = generateStorageId();
     const key = buildStorageKey('lectures', `${id}${ext}`);
 
+    // r363 (audit D-12): the minted key is BOUND to its presigner — an
+    // ImportUpload ticket (the established namespace-agnostic ledger,
+    // pruned after 24 h by the daily tick) records who may complete this
+    // upload; /uploads/complete and the serving gate's preview branch
+    // both verify it. Without the row a leaked key could be completed or
+    // probed by any teacher/admin platform-wide.
+    const scope = await requireFileInstitutionScope(req.user!.id, req.user!.role, req.user!.institutionId);
+    await withRetry(() => prisma.importUpload.create({
+      data: { key, sizeBytes, mintedBy: req.user!.id, institutionId: scope },
+    }));
+
     if (multipart) {
       const partCount = Math.min(Math.ceil(sizeBytes / MULTIPART_PART_SIZE), MAX_MULTIPART_PARTS);
       const uploadId = await storage.createMultipartUpload(key);
@@ -803,6 +854,15 @@ router.post('/uploads/complete', uploadPresignLimiter, requireRole(Role.TEACHER,
     const { key, uploadId, parts } = parsed.data;
     if (!mintedLectureKeyIsValid(key)) throw AppError.badRequest('مفتاح التخزين غير صالح');
 
+    // r363 (audit D-12): the completer must be the PRESIGNER — the
+    // ticket minted at presign binds the key; a foreign teacher's key
+    // (leaked from a client, logs, or a support ticket) is refused with
+    // the same invalid-key envelope (no existence oracle).
+    const ticket = await prisma.importUpload.findUnique({ where: { key } });
+    if (!ticket || ticket.mintedBy !== req.user!.id) {
+      throw AppError.badRequest('مفتاح التخزين غير صالح');
+    }
+
     const storage = getStorage();
     if (!(storage instanceof S3Driver)) {
       throw presignUnsupported();
@@ -818,6 +878,17 @@ router.post('/uploads/complete', uploadPresignLimiter, requireRole(Role.TEACHER,
     const info = await storage.stat(key);
     if (info === null) throw AppError.notFound('لم يُعثر على الملف المرفوع');
 
+    // r363 (audit D-12): the completed upload becomes the presigner's
+    // PREVIEW window — the serving gate accepts a consumed ticket
+    // minted by the SAME caller until the Lecture row lands (and the
+    // 24 h tick prune bounds the window). Best-effort: a missing row is
+    // the prune's business, never a completion failure.
+    try {
+      await prisma.importUpload.update({ where: { key }, data: { consumedAt: new Date() } });
+    } catch {
+      /* pruned mid-flight — the row is optional from here on */
+    }
+
     res.json({
       url: lectureFilenameToServingPath(key.slice('lectures/'.length)),
       sizeBytes: info.size,
@@ -826,10 +897,25 @@ router.post('/uploads/complete', uploadPresignLimiter, requireRole(Role.TEACHER,
 });
 
 /**
- * GET /lectures/:filename — the lecture video serving route.
- * Any authenticated user (course-level visibility stays enforced where it
- * exists today — the same stance the platform's public video URLs took;
- * the route exists so pilot uploads survive the ephemeral disk).
+ * GET /lectures/:filename — the lecture video + transcript serving route.
+ *
+ * r363 (audit B-6/D-1): the route previously served to ANY authenticated
+ * user of ANY institution ("course-level visibility stays enforced where
+ * it exists today" — it existed nowhere on this path). The gate now
+ * mirrors the papers/materials family:
+ *  - the caller's institution context is DB-verified
+ *    (requireFileInstitutionScope — 403 without one, forged claims 403);
+ *  - the filename must resolve through the Lecture table with the grant
+ *    predicate INSIDE the query (offering teacher / actively enrolled
+ *    student / same-institution ADMIN-QUALITY oversight —
+ *    accessibleLectureWhere); a foreign-institution filename is a 404
+ *    indistinguishable from a missing file (no existence oracle);
+ *  - the pre-save PREVIEW window: the uploader who just completed a
+ *    direct upload (no Lecture row yet) streams their OWN bytes — a
+ *    COMPLETED ImportUpload ticket minted by THIS caller (presign mints
+ *    it, complete consumes it, the 24 h tick prune bounds it);
+ *  - the platform OWNER keeps the row-less platform-wide fast path.
+ * Serving behavior per driver is unchanged:
  *  - s3 driver → 302 to a 10-minute presigned GET (the browser then
  *    streams WITH range support straight from the store).
  *  - local/postgres → streamed through the backend, single-range aware
@@ -841,6 +927,26 @@ router.get('/lectures/:filename', async (req, res, next) => {
     const filename = req.params.filename!;
     if (!isServableLectureFile(filename)) throw AppError.badRequest('اسم الملف غير صالح');
     const key = buildStorageKey('lectures', filename);
+
+    // ── Access gate (r363): the authorizing Lecture row (or the ──────
+    // caller's own completed upload ticket) must live in the caller's
+    // verified institution — OWNER alone serves platform-wide.
+    const uid = req.user!.id;
+    const role = req.user!.role;
+    const callerInstitutionId = await requireFileInstitutionScope(uid, role, req.user!.institutionId);
+    if (callerInstitutionId !== null) {
+      const accessible = await prisma.lecture.findFirst({
+        where: accessibleLectureWhere(filename, role, uid, callerInstitutionId),
+        select: { id: true },
+      });
+      if (!accessible) {
+        // The pre-save preview window (see the route docblock).
+        const ticket = await prisma.importUpload.findUnique({ where: { key } });
+        const previewOwnUpload = ticket !== null && ticket.consumedAt !== null && ticket.mintedBy === uid;
+        if (!previewOwnUpload) throw AppError.notFound(FILE_NOT_FOUND_MESSAGE);
+      }
+    }
+
     const storage = getStorage();
 
     if (storage instanceof S3Driver) {
