@@ -259,13 +259,11 @@ jobs:
             # assertion with a blank shell — the run-43898742777 failure
             # mode. Failing LOUDLY here names the actual cause instead of
             # a 120s welcome-title timeout three steps later.
-            for scale_name in window_animation_scale transition_animation_scale animator_duration_scale; do
-              scale_value=$(adb shell settings get global "$scale_name" | tr -d '\r')
-              if [ "$scale_value" != "1.0" ]; then
-                echo "FAIL: $scale_name=$scale_value (expected 1.0 — Reanimated 4 entering animations never finish at 0)"
-                exit 1
-              fi
-            done
+            # ONE LINE: the runner executes this field line-by-line (sh -c
+            # per line) — multi-line for/if blocks are a syntax error there.
+            # The assert loop runs INSIDE the device shell (single quotes);
+            # adb propagates the non-zero exit to the step.
+            adb shell 'for s in window_animation_scale transition_animation_scale animator_duration_scale; do v=$(settings get global $s); if [ "$v" != "1.0" ]; then echo "FAIL: $s=$v (expected 1.0)"; exit 1; fi; done'
             # Run 19: the 360x640 + density + font-scale changes ANR'd the
             # system launcher on 3 of 20 jobs, and the system «Close app /
             # Wait» sheet covered the app while it rendered fine behind
@@ -294,16 +292,11 @@ jobs:
             # retry starts from the same deterministic welcome-sheet state.
             # A second consecutive failure is a real red and stays red.
             adb shell dumpsys gfxinfo ly.madarek.mobile reset > /dev/null 2>&1 || true
-            set +e
-            maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens
-            maestro_status=$?
-            set -e
-            if [ "$maestro_status" -ne 0 ]; then
-              echo "::warning::maestro attempt 1 failed (exit $maestro_status) — one retry from clean app state"
-              adb shell am force-stop ly.madarek.mobile || true
-              sleep 3
-              maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens
-            fi
+            # ONE LINE (line-by-line runner): attempt 1 || one clean retry —
+            # clearState makes the retry deterministic; a second failure is
+            # a real red and stays red (the || group's exit code is the
+            # retry's).
+            maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens || { echo "::warning::maestro attempt 1 failed — one retry from clean app state"; adb shell am force-stop ly.madarek.mobile || true; sleep 3; maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens; }
             adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
             adb logcat -d > apps/mobile/build/screens/logcat-after-maestro.log
             adb shell dumpsys gfxinfo ly.madarek.mobile > apps/mobile/build/screens/gfxinfo.txt 2>&1 || true
@@ -432,13 +425,9 @@ jobs:
             adb shell settings put global window_animation_scale 1.0
             adb shell settings put global transition_animation_scale 1.0
             adb shell settings put global animator_duration_scale 1.0
-            for scale_name in window_animation_scale transition_animation_scale animator_duration_scale; do
-              scale_value=$(adb shell settings get global "$scale_name" | tr -d '\r')
-              if [ "$scale_value" != "1.0" ]; then
-                echo "FAIL: $scale_name=$scale_value (expected 1.0)"
-                exit 1
-              fi
-            done
+            # ONE LINE: the runner executes this field line-by-line (sh -c
+            # per line) — the assert loop runs inside the device shell.
+            adb shell 'for s in window_animation_scale transition_animation_scale animator_duration_scale; do v=$(settings get global $s); if [ "$v" != "1.0" ]; then echo "FAIL: $s=$v (expected 1.0)"; exit 1; fi; done'
             adb shell settings put global hide_error_dialogs 1
             adb shell settings put system font_scale '${{ matrix.profile.font_scale }}'
             test '${{ matrix.profile.viewport }}' != small-360x640 || adb shell wm size 360x640
@@ -456,16 +445,11 @@ jobs:
             adb logcat -d > apps/mobile/build/screens/logcat-before-maestro.log
             printf 'role=%s\ntheme=%s\nfont_scale=%s\nviewport=%s\n' '${{ matrix.role }}' '${{ matrix.profile.theme }}' '${{ matrix.profile.font_scale }}' '${{ matrix.profile.viewport }}' > apps/mobile/build/screens/profile.txt
             adb shell dumpsys gfxinfo ly.madarek.mobile reset > /dev/null 2>&1 || true
-            set +e
-            maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens
-            maestro_status=$?
-            set -e
-            if [ "$maestro_status" -ne 0 ]; then
-              echo "::warning::maestro attempt 1 failed (exit $maestro_status) — one retry from clean app state"
-              adb shell am force-stop ly.madarek.mobile || true
-              sleep 3
-              maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens
-            fi
+            # ONE LINE (line-by-line runner): attempt 1 || one clean retry —
+            # clearState makes the retry deterministic; a second failure is
+            # a real red and stays red (the || group's exit code is the
+            # retry's).
+            maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens || { echo "::warning::maestro attempt 1 failed — one retry from clean app state"; adb shell am force-stop ly.madarek.mobile || true; sleep 3; maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens; }
             adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
             adb logcat -d > apps/mobile/build/screens/logcat-after-maestro.log
             adb shell dumpsys gfxinfo ly.madarek.mobile > apps/mobile/build/screens/gfxinfo.txt 2>&1 || true
