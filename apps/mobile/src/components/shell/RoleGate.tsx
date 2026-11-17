@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from "react";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import { useSession, ROLE_HOME } from "@/auth/session";
 import { toast } from "@/components/ui/toast";
 import { LoadingScreen } from "@/components/ui/states";
@@ -16,6 +16,13 @@ export function RoleGate({ allow, children }: { allow: AppRole[]; children: Reac
   const user = useSession((s) => s.user);
   const isHydrated = useSession((s) => s.isHydrated);
   const sessionEpoch = useSession((s) => s.sessionEpoch);
+  /* R362 — the docblock always CLAIMED intent preservation but the bare
+     replace dropped it: a guest tapping a madarek:// deep link was dumped
+     on the welcome screen and the target was lost after login. The login
+     flow already consumes `?continue=` (resolveEntryDestination), so the
+     gate now hands it the requested path. Excluded: /auth itself and the
+     root / (the boot screen owns that handoff). */
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!isHydrated || !user) return;
@@ -36,7 +43,11 @@ export function RoleGate({ allow, children }: { allow: AppRole[]; children: Reac
     return <LoadingScreen label="جارٍ تهيئة الجلسة…" />;
   }
   if (!user) {
-    router.replace("/auth");
+    if (pathname && pathname !== "/" && !pathname.startsWith("/auth")) {
+      router.replace({ pathname: "/auth", params: { continue: pathname } } as never);
+    } else {
+      router.replace("/auth" as never);
+    }
     return <LaunchSheet label="مدارك" />;
   }
   if (!allow.includes(user.role)) {

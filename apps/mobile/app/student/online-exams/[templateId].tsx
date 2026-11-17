@@ -340,6 +340,13 @@ export default function ExamTakerScreen() {
   const [confirmEverOpened, setConfirmEverOpened] = useState(false);
   if (navOpen && !navEverOpened) setNavEverOpened(true);
   if (confirming && !confirmEverOpened) setConfirmEverOpened(true);
+  /* R362 — the exit guard: the back arrow / edge swipe popped a LIVE
+     attempt with zero confirmation (submit had a confirm; exit had
+     none). The guard sheet rides the same mount-on-first-open latch as
+     the navigator + submit confirms. */
+  const [exitOpen, setExitOpen] = useState(false);
+  const [exitEverOpened, setExitEverOpened] = useState(false);
+  if (exitOpen && !exitEverOpened) setExitEverOpened(true);
 
   const startedRef = useRef(false);
   const autoSubmittedRef = useRef(false);
@@ -791,6 +798,7 @@ export default function ExamTakerScreen() {
       <StackHeader
         title={attempt.title ?? listedExam?.title ?? "الاختبار"}
         kicker={`${latn(total)} سؤال · أُجيب عن ${latn(answeredCount)}`}
+        onBack={() => setExitOpen(true)}
         right={
           <ExamCountdown
             expiresAtMs={clock.expiresAtMs}
@@ -1193,6 +1201,27 @@ export default function ExamTakerScreen() {
           destructive
           loading={submitting}
           onConfirm={() => void submitAttempt()}
+        />
+      ) : null}
+
+      {/* R362 — exit confirmation: leaving a live attempt is recoverable
+          (answers autosave; IN_PROGRESS attempts resume from the exam
+          center), but the user deserves to KNOW that before the pop —
+          the bare back arrow read as data loss. Cold deep links (no
+          history under the runner) land on the exam list. */}
+      {exitEverOpened ? (
+        <ConfirmSheet
+          open={exitOpen}
+          onClose={() => setExitOpen(false)}
+          title="مغادرة الاختبار؟"
+          message="إجاباتك محفوظة تلقائيًا — يمكنك العودة لإكمال المحاولة قبل انتهاء الوقت من مركز الاختبارات."
+          confirmLabel="مغادرة"
+          destructive
+          onConfirm={() => {
+            setExitOpen(false);
+            if (router.canGoBack()) router.back();
+            else router.replace("/student/online-exams" as never);
+          }}
         />
       ) : null}
     </Screen>

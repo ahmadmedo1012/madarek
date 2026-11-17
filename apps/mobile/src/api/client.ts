@@ -43,17 +43,6 @@ export function warmBackend(): void {
   void fetch(`${apiBase()}/health`, { method: "GET" }).catch(() => undefined);
 }
 
-/** True when the failure class justifies an origin switch: transport
- *  (nothing reached the app) or the platform proxy's 502/503/504 (the
- *  app never processed the request). A 4xx/5xx FROM the app is an
- *  answered refusal — failover must never retry it elsewhere. */
-function isFailoverClass(err: unknown, status?: number): boolean {
-  if (status !== undefined && (status === 502 || status === 503 || status === 504)) return true;
-  // fetch throws TypeError on network faults (RN surfaces "Network
-  // request failed"); ApiError/AbortError are answered/timeout classes.
-  return err instanceof TypeError;
-}
-
 export class ApiError extends Error {
   code: string;
   status: number;
