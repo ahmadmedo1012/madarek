@@ -78,8 +78,9 @@
 
 /* the mobile band (<=767): the measured 828-wrap composition */
 @media (max-width: 767px) {
-  /* the measured 8px sheet gutters too (the 390 wrap box: 8..382 inside 390) */
-  .hro-chain { block-size: calc(100svh - 1.61rem); margin-inline: 0.8rem; }
+  /* the measured 8px sheet gutters too (the 390 wrap box: 8..382 inside
+     390) — inline-size:auto or the base 100% would over-ride the margins */
+  .hro-chain { block-size: calc(100svh - 1.61rem); margin-inline: 0.8rem; inline-size: auto; }
   .hpf-3 { margin-block-start: 4.44rem; block-size: calc(100% - 4.56rem); }
   .hpf-5 { block-size: calc(100% - 36.79rem); }
   .hpf-6 { block-size: 100%; }

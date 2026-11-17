@@ -544,8 +544,15 @@
 
 /* <1200px — the snap-scrolling strip (R328 H3): whole items settle at
    the rest edges, zero mid-glyph crop */@media (max-width: 1199px) {
-  .hro-work {
+  .hro .hro-work {
     overflow-x: auto;
+    /* R366 L1 — the mobile strip rides the chain's measured 8px sheet
+       gutters (the edge390 census seat): the bandhost's own width is the
+       law, the old 7px own-margins over-extended the RTL overflow box.
+       .hro .hro-work (the 949 precedent) — hero.css loads AFTER this
+       sheet, the bare class loses the cascade */
+    margin-inline: 0;
+    max-inline-size: 100%;
     scroll-snap-type: x mandatory;
     /* R341 H1-c edge gutters — the snap rest edge sits a measured 32px
        (--sp-7) inside the SCROLLPORT so a settled whole item keeps a
