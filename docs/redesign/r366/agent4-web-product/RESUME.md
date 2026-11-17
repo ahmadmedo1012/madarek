@@ -26,6 +26,22 @@
 - 13:20 Proof pass on the built preview: seeded overlap matrix calendar+messages × {320,360,390,768,1440} × light/dark = **0 defects**; `--stress --popovers`: fixed-over-text/clipped/hoverflow all 0 (open drawers/panels cover as designed); cls-axe @390: CLS 0.0119/0.0118, axe serious/critical 0. (Lesson re-learned: the harness needs `--seed <role>` — without it every route redirects to /auth and the auth plate's fixed chrome reads as big-fixed.)
 - 13:30–14:40 2-a HARDENING (regression found at HEAD): the 60-row pin + the scroll-up chip tests failed under full-file load, passed alone. Root-caused with trace-zip parsing + page-snapshot + VLM frame review: (1) the open-conversation pin raced the skeleton→rows swap (st froze at the greeting-era 161px, 2781px off bottom); (2) the settle loop yanked back a reader who scrolled up inside its window (scroll events dispatch async — the autoScroll guard lags a frame; the jump chip never rendered). Fixes: openConversation pins on the next frame with the guard reset; settlePin yields on any real scrollTop decrease. ai-assistant.e2e **6/6 × 3 consecutive runs**; r319 §B2 pin updated to the 2-a truth (suggestions live in the transcript's empty state, [01]+[02] bars + 3-chip group) — 4/4. Commits 0f0950a, 7e916c0, 7fcd0b0; pushed.
 - 14:45 pdf (3d8c1f8) + exams (499c2e1) lanes re-verified on the current tree: document-viewer + online-exams e2e **14/14**. L3.1/L3.3/L3.4/L3.5/L3.6 ticked with proofs.
+- 15:00–15:40 LANE 2-f SEARCH COMPLETED (commit 005e8a0): the palette's phone band became a full-screen sheet (edge-to-edge, dvh-honest, no radius/border/shadow ≤640px) with a visible 44px close button (Esc hint stays on the keyboard band — CSS owns the swap); the no-result moment gained the same suggestion pills the pill surface offers. global-search.e2e extended 1→5 tests: the ≥2-char gate + exactly-one-request + the student category filter, no-result pills refill, the recents rail (zero duplicated rows), and the sheet geometry contract. 5/5.
+- 15:45–16:30 LANES 2-g TABLES+FORMS AT THE ROOT (commit 8a4d938): (1) `.btn` is atomic — flex-shrink: 0 (a squeezed «حذف» clipped its glyph at 360; measured 56px client vs 59px content); (2) the topbar GROWS with its text — min-block-size: var(--topbar-h); block-size: auto in base.css AND polish.css (the override that owns the last word), title nowrap (the fixed 56px band spilled its rem-scaled title 33px over the page's eyebrow at 200% text scale — 20 text-on-text findings). The stress walker now exempts authored short control labels (TYPE, not data — the landing-exemption class). Fontscale-2 matrices (teacher/student/admin form+table routes × {360,390,768} × light/dark): **0 defects** (was 20+4). e2e after the geometry change: messages+calendar+notifications 18/18; shell-chrome+shell-heron+global-search 44/44. Gates: tsc clean, copy-budget CLEAN, stylelint ratchet green, bundle 763.7 KB gz vs the 770 ceiling.
+
+## HANDOFF — where the next agent picks up (2026-11-18 16:30)
+
+State: branch `agent/r366-web-product` @ 8a4d938 (pushed), tree CLEAN, dev :5173 + preview :4173 running (preview serves the 23:4x build WITH all fixes — restart it after any rebuild; a stale preview once cost a false-negative verification round).
+
+Done this session: L3.1–L3.8 all ticked with inline proofs. L2 copy diet at 8577 ownable words (ratcheted). Instruments extended: overlap.mjs (workers/popovers/focus/contrast/reducedmotion + the short-label stress exemption), e2e fixture (hasTouch), cls-axe.mjs.
+
+Remaining, in order:
+1. **L3.9 Dashboards** — card rhythm/charts at 360/colour-blind palettes on /student/dashboard, /teacher/dashboard, /admin/dashboard, /quality/dashboard, /owner/dashboard: run the seeded overlap matrix + contrast gate + cls-axe per role (the pattern is in this session's log), fix at the root if anything surfaces, tick with proofs.
+2. **L4.3** — sweep images for lazy+dimensions (riding L3.9).
+3. **L5.2 Lighthouse** — 5 app pages, a11y ≥95 / perf ≥80 on 4G-throttled mobile, recorded (needs a quiet machine; the CLS+axe fallback is already banked).
+4. **L6 close-out** — full frontend unit suite (`TZ=UTC npx vitest run` in frontend/), full e2e sweep, conformance runner (`node scripts/conformance/run.mjs` — floor 91.6%, never weaken), size-gate + all design gates on the final build, the full 5-width × popover/focus matrix on the rebuilt dist (L1.3/L6.3), rubric Σ + before/after tables into the ledger, DELIVERY.md, push. Do NOT open PRs or merge.
+
+Key gotchas learned: (a) always `--seed <role>` on overlap runs or every route redirects to /auth; (b) rebuild → RESTART the preview before verifying; (c) Playwright trace zips answer race questions faster than re-runs (parse 0-trace.trace + error-context.md; VLM on extracted jpeg frames catches what numbers miss); (d) `[m` in tool output is an ANSI-reset display artifact — byte-verify with od/python before believing "corrupted" source; (e) subagent reports die at the parent deadline — have them write report files, integrate diffs by hand.
 
 ## Open risks / notes
 
@@ -33,4 +49,4 @@
 - The full 5-width × popover/focus matrix runs at close-out on the rebuilt dist (L6.3).
 - Community/competitions copy diet → REQUESTS to Agent 1 (folders are theirs).
 - Tool-result display eats `[m` sequences (ANSI reset) — byte-verify with `od`/python before believing "corrupted" code.
-- Remaining lanes: L3.2 search palette, L3.7 tables, L3.8 forms, L3.9 dashboards, then L6 close-out (full suites + size gate + final matrix + DELIVERY.md).
+- The remaining work lives in the HANDOFF section above (L3.9 → L4.3 → L5.2 → L6 close-out).
