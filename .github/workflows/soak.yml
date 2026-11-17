@@ -38,11 +38,29 @@ jobs:
           H=$(curl -s --max-time 20 "$BASE/api/v1/health" | jq -r '.ok // false')
           echo "health ok=$H"; [ "$H" = "true" ] || FAILS=$((FAILS+1))
           # 2. a real login (the documented registrar seat)
-          TOKEN=$(curl -s --max-time 20 -X POST "$BASE/api/v1/auth/login" \
+          LOGIN=$(curl -s --max-time 20 -X POST "$BASE/api/v1/auth/login" \
             -H 'Content-Type: application/json' \
-            -d '{"email":"registrar@test.ly","password":"12345678"}' \
-            | jq -r '.data.accessToken // empty')
+            -d '{"email":"registrar@test.ly","password":"12345678"}')
+          TOKEN=$(printf '%s' "$LOGIN" | jq -r '.data.accessToken // empty')
           echo "login token=${TOKEN:0:10}…"; [ -n "$TOKEN" ] || FAILS=$((FAILS+1))
+          # 2b. r365 — a seat with MORE THAN ONE active membership must pick an
+          #     institution before a role-scoped call. The documented registrar
+          #     seat holds two active demo memberships, and the product is
+          #     fail-closed by design (r349): without a selection a scoped call
+          #     answers INSTITUTION_CONTEXT_REQUIRED. Follow the same picker
+          #     flow the web client (AuthPage → POST /auth/select-institution)
+          #     and the deploy smoke use, then probe. This is data drift, not a
+          #     product fault — the probe must not call it one.
+          if [ -n "$TOKEN" ]; then
+            SEL=$(printf '%s' "$LOGIN" | jq -r '(.data.user.memberships // []) as $m | if ($m | length) > 1 then $m[0].institutionId else "" end')
+            if [ -n "$SEL" ] && [ "$SEL" != "null" ]; then
+              echo "multi-membership seat — selecting $SEL (the picker flow)"
+              TOKEN=$(curl -s --max-time 20 -X POST "$BASE/api/v1/auth/select-institution" \
+                -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+                -d "{\"institutionId\":\"$SEL\"}" | jq -r '.data.accessToken // empty')
+              [ -n "$TOKEN" ] || FAILS=$((FAILS+1))
+            fi
+          fi
           # 3. a role-scoped search
           if [ -n "$TOKEN" ]; then
             S=$(curl -s --max-time 20 --get "$BASE/api/v1/search/discover" \
