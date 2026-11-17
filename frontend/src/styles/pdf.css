@@ -151,11 +151,42 @@
 
 /* The resizable geometry: the side column takes --doc-side-w (set from
    DocumentViewerPage state); the panel fills it. The default restores
-   the shipped 320px when the variable is absent. */
-.doc-reader-side { inline-size: var(--doc-side-w, 320px); }
+   the shipped 320px when the variable is absent.
+
+   r366-2b: the split surface itself lives HERE (an earlier note pointed
+   at research.css, which never carried it — the reader shipped stacked,
+   display: block, with the rail UNDER the viewer and past the locked
+   viewport's fold). The reader is a flex ROW: the canvas column and the
+   annotations rail sit BESIDE each other inside the viewport-locked
+   page; the rail is a flex COLUMN so its list owns the scroll and the
+   panel can never stretch the workspace. */
+.doc-reader {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: var(--sp-2);
+  flex: 1;
+  min-block-size: 0;
+}
+.doc-reader-main {
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+}
+.doc-reader-side {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+  inline-size: var(--doc-side-w, 320px);
+}
 .doc-reader-side .annotations-panel {
   inline-size: 100%;
   width: 100%;
+  flex: 1;
+  min-block-size: 0;
 }
 @media (max-width: 920px) {
   .doc-reader-side { inline-size: auto; }
@@ -350,6 +381,85 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ─── The results fold (r366-2b) ─────────────────────────────────
+   One row per hit page, scrolling INSIDE the viewer surface: the list
+   owns its overflow and a bounded block-size, so a long walk (many hit
+   pages) never stretches the reader — the canvas keeps the space the
+   fold leaves it. An empty walk says so in ONE line (.pdf-search-empty)
+   — never a fake counter. */
+.pdf-search-results {
+  list-style: none;
+  margin: 0;
+  padding: var(--sp-1-5) var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  overflow-y: auto;
+  max-block-size: min(36dvh, 288px);
+  background: var(--surface-1);
+  border-block-end: 1px solid var(--border);
+  scrollbar-width: thin;
+}
+.pdf-search-results li { margin: 0; }
+.pdf-search-result {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  inline-size: 100%;
+  padding: var(--sp-1-5) var(--sp-2);
+  border: 0;
+  background: transparent;
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  text-align: start;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pdf-search-result:hover { background: var(--surface-2); }
+}
+.pdf-search-result:active { background: var(--surface-2); }
+.pdf-search-result:focus-visible {
+  outline: var(--sp-0-5) solid var(--state-focus-ring-color);
+  outline-offset: calc(var(--sp-0-5) * -1);
+}
+/* The active hit row: the surface-2 fill + the accent-ink page label —
+   the same quiet-state grammar as the toolbar's pressed toggles. */
+.pdf-search-result[aria-current='true'] { background: var(--surface-2); }
+.pdf-search-result-page {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-semibold);
+  color: var(--accent-ink, var(--accent));
+  white-space: nowrap;
+}
+.pdf-search-result-count {
+  flex-shrink: 0;
+  font-size: var(--fs-xxs);
+  color: var(--text-subtle);
+  white-space: nowrap;
+}
+.pdf-search-result-snippet {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+/* The honest one-line answer to an empty walk. */
+.pdf-search-empty {
+  margin: 0;
+  padding: var(--sp-1-5) var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  background: var(--surface-1);
+  border-block-end: 1px solid var(--border);
+}
+
 /* Canvas area */
 .pdf-canvas-wrap {
   flex: 1;
@@ -379,10 +489,12 @@
 /* Shape-matched loading placeholder — mirrors the .pdf-page frame
    with a heading block + text-line texture (static, no keyframes:
    the initial paper wait is calm, and reduced-motion is trivially
-   safe). */
+   safe). r366-2b: the skeleton takes the FULL wrap width with the same
+   A4 ratio the fit-width render will occupy (the old 620px cap made
+   the canvas land ~250px wider than its ghost on a desktop split —
+   a visible shift on every load). The wrap scrolls both identically. */
 .pdf-page-skeleton {
-  width: min(100%, 620px);
-  max-height: 100%;
+  width: 100%;
   aspect-ratio: 210 / 297;
   background: var(--surface-1);
   border: 1px solid var(--border);
@@ -496,7 +608,16 @@
   .pdf-btn.sm { width: 44px; height: 44px; }
   .pdf-scale-pill { min-width: 64px; padding: 0 var(--sp-2); height: 44px; }
   .pdf-pageinfo input { height: 44px; }
+  /* r366-2b: the page indicator collapses to its compact form on the
+     phone band — the «صفحة» word folds away (the input + «من N» total
+     carry the whole contract), so the nav cluster never crowds the
+     zoom cluster on a wrapped toolbar line. */
+  .pdf-pageinfo-word { display: none; }
   .pdf-canvas-wrap { padding: var(--sp-2); }
+  /* The results fold keeps its 44px touch floor on phones (rows are
+     jump targets, not prose). */
+  .pdf-search-result { min-block-size: 44px; align-items: center; }
+  .pdf-search-empty { min-block-size: 44px; display: flex; align-items: center; }
 }
 @media (max-width: 640px) and (pointer: coarse) {
   .pdf-touch-hint { display: inline-flex; }
@@ -723,10 +844,10 @@
 }
 
 /* ─── Reader page chrome ──────────────────────────────────
-   r199: the split surface (.doc-reader) moved to research.css — the
-   4B family sheet shared by the research/library pages. What stays
-   here is the reader's own chrome: the quiet head and the notes-sheet
-   embedding. */
+   The split surface (.doc-reader row + .doc-reader-main/.doc-reader-side
+   columns + the resize strip) lives in the resizable-geometry block at
+   the top of this sheet. What stays here is the reader's own chrome:
+   the quiet head, the notes Sheet embedding and the viewport lock. */
 .doc-reader-head {
   display: flex;
   flex-direction: row;
@@ -762,6 +883,41 @@
   background: transparent;
 }
 
+/* The floating trigger that summons the notes Sheet (r366-2b): fixed,
+   44px+ thumb target, inline-START corner — the feedback seat (AppShell
+   .fb-fab) already owns the inline-end one, and in RTL the start corner
+   is the reading thumb's home. It rides ABOVE the phone dock with the
+   same clearance the feedback seat keeps (72px + safe-area, on top of
+   the bottom-stack offset when other floating layers are up). */
+.doc-notes-fab {
+  position: fixed;
+  inset-inline-start: var(--sp-3);
+  inset-block-end: calc(var(--app-bottom-stack, 0px) + 72px + env(safe-area-inset-bottom, 0px));
+  z-index: 60; /* the feedback seat's rung: over page content, under every overlay */
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  min-block-size: 44px;
+  padding-inline: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  background: var(--primary);
+  color: var(--primary-fg);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .doc-notes-fab:hover { border-color: var(--border-strong); }
+}
+.doc-notes-fab:active { background: var(--primary-strong, var(--primary)); }
+.doc-notes-fab:focus-visible {
+  outline: var(--sp-0-5) solid var(--state-focus-ring-color);
+  outline-offset: var(--sp-0-5);
+}
+
 @media (max-width: 920px) {
   .doc-reader-title { font-size: var(--fs-body-lg); }
 }
@@ -795,6 +951,34 @@
      canvas area, which scrolls its paper like every document reader. */
   block-size: 100%;
 }
+
+/* r366-2b — the lock has to start AT the fold. The shell's content
+   column carries the page gutter as block padding; around a page that
+   is already calc(100dvh − topbar) tall that gutter pushed the reader
+     (and the annotations rail) ~96px past the viewport — the page
+   scrolled inside its own "locked" frame. The column yields its BLOCK
+   padding for this route only (pages layer over base): the page starts
+   under the topbar and ends exactly at the fold. Inline gutters stay
+   (desktop keeps its framed margin); the phone band narrows them to a
+   hairline so the reader owns the width. */
+.content-inner:has(> .document-viewer-page) {
+  padding-block: 0;
+}
+@media (max-width: 920px) {
+  .content-inner:has(> .document-viewer-page) {
+    padding-inline: var(--sp-2);
+  }
+}
+
+/* r366-2b — the reader's own floors. The generic .pdf-viewer.fill
+   (600px) and .pdf-canvas-wrap (400px) minimums belong to embedded
+   mounts; inside the viewport-locked reader they would force the page
+   to scroll under its own lock on short viewports (a 568px phone has
+   ~450px for the viewer after the head). Scoped to this route the
+   viewer takes exactly the space the lock leaves — the canvas keeps
+   its internal scroll either way. */
+.document-viewer-page .pdf-viewer.fill { min-block-size: 0; }
+.document-viewer-page .pdf-canvas-wrap { min-block-size: 0; }
 
 /* ─── Print — the paper, not the chrome ────────────────────
    Scoped to the document-viewer route only. The GLOBAL print
