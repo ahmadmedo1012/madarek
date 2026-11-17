@@ -93,16 +93,18 @@ no 3D canvases, no poster displays, no competing art direction anywhere.
 
 | Token | Light | Dark | Register |
 |---|---|---|---|
-| `--bg` | blueprint paper `#F6F8FA` | charcoal `#282828` | the grounds |
+| `--bg` | warm vintage paper `#F6F6EE` (R313) | charcoal `#282828` | the grounds |
 | `--surface` | `#FFFFFF` | `#2E2E2E` | 1.06/1.09 elevation step |
-| `--text` | graphite `#282828` (13.85 AAA) | paper `#F6F8FA` | primary ink |
-| `--text-secondary` / `--text-muted` / `--text-faint` | `#414140` / `#626260` / `#72726F` | `#C9C9C5` / `#B4B4B0` / `#A2A29D` | the ink ramp (9.6 → 4.5) |
+| `--text` | graphite `#282828` (13.57 AAA) | paper twin `#F6F6EE` (R324 X22) | primary ink |
+| `--text-secondary` / `--text-muted` / `--text-faint` | `#414140` / `#62625F` / `#666660` | `#C9C9C5` / `#B4B4B0` / `#A2A29D` | the ink ramp (9.6 → 4.5; faint clears 4.5 on every ground) |
 | `--accent` | `#FA3600` (3.53 — UI/large only) | `#FF5A1F` | the signal fill |
-| `--accent-ink` | `#C72E00` (**5.16 AA text**) | `#FF5A1F` | signal TEXT (links, numerals, emphasis) |
+| `--accent-fill-aa` | `#DB3A00` (white label **4.548 AA**) | `#FF5A1F` (4.79) | the AA ACTION-FILL seat (R318 ruling, tokenized R362) — every filled CTA |
+| `--accent-ink` | `#C72E00` (**5.16 AA text**) | `#FF6B33` (4.79) | signal TEXT (links, numerals, emphasis) |
 | `--accent-soft` / `--accent-strong` | `#FCE3D9` / `#A32400` | `#432015` / `#FFC5AE` | tint wells / deep ink |
-| `--accent-fg` (labels ON the fill) | `--warm-ink #191918` (4.69 — white 3.76 banned) | `--warm-ink` | the fill-label law |
+| `--accent-fg` (labels ON the fill) | `#FFFFFF` (R313: the reference's white-on-fill labels, AA-large with weight ≥600) | `--warm-ink` | the fill-label law |
 | `--primary` / `--primary-fg` | charcoal slab `#282828` + white (14.74) | white slab + warm-ink | PRIMARY CTAs (the reference recipe) |
-| `--border` / `--rule` / `--grid-line` | `#E0E0DA` / `#C8C8C8` / `#B3B3AF` | `#4A4A48` / `#4A4A48` / `#5C5C5A` | the hairline tiers (`--grid-line` decorative on light) |
+| `--secondary` / `--secondary-fg` | the `--primary` pair | the `--primary` pair | SECONDARY actions (`.btn.outline`, R362) |
+| `--border` / `--rule` / `--grid-line` | `#E0E0DA` / `#B3B3AF` / `#B3B3AF` | `#6F6F6B` / `#6F6F6B` / `#85857F` | the hairline tiers (`--grid-line` decorative on light) |
 | `--gold` / `--gold-ink` / `--gold-soft` | `#B57438` / `#8F5A28` / yellow-bg | `#E0A067` / `#F2B782` | **achievements/status gold ONLY** — never a second accent |
 | `--state-focus-ring-color` | `#C72E00` (≥3:1 every adjacent surface) | `#FF6B33` | the ONE focus ring (base.css) |
 
@@ -112,6 +114,13 @@ computed triads, deep-vs-bg ≥4.5 both themes; danger rhymes with the coral `#F
 values under a legacy name — brand consumers prefer the `--accent-*` semantic aliases;
 **gold semantics use the gold role**, never the copper seat). Role accents (student → owner)
 all ≥3.0 vs `--bg`. Charts: series 1 = the signal; square markers; gold = achievement series.
+
+**R362 state seats** (the complete interaction-state map, all pure `var()` aliases over the
+roles above, so both themes resolve first-class): `--secondary`/`--secondary-fg` (secondary
+actions) · `--state-selected-{bg,ink,border}` (picked rows/cells/chips/current page) ·
+`--state-hover-bg` (the one interactive surface wash) · `--state-disabled-{bg,ink,border}`
+(locked controls; opacity rides the `--state-*-disabled-opacity` rungs). Focus stays the ONE
+ring family (`--state-focus-ring-*`), active/pressed stays the press-scale register.
 
 **Forbidden:** retired spellings are FORBIDDEN needles in the parity gate (ultramarine,
 teal, warm-paper, the retired night ramp, **`--poster-*`** — the r306 retirement).
@@ -268,10 +277,13 @@ contract is enforced by `r170*`/`r305a7-a11y` test belts + axe in dev.
 
 `main.tsx` cascade: `fonts → tokens → motion → base → components → layout → patterns →
 auth → notifications → student → polish` (landing.css rides the LandingPage chunk;
-pdf/owner/training/colleges ride their lazy consumers). One token source (tokens.css) +
-the synchronized export (unified-parity.css, verified by the parity gate). The patterns
-contract owns the page grammar; polish.css remains the overrides layer for the shared
-library. No unlayered bolt-on sheets.
+pdf/owner/training/colleges ride their lazy consumers). One token pair —
+`shared/design-tokens.json` (source) → `tokens.generated.css` (R326 M0.4, drift-gated by
+`tokens:check`) composed by the hand-written `tokens.css` seats (R362 added the state seat
+map + `--accent-fill-aa` there); the r127 parity-export pair (`unified-parity.css` +
+`shared-design-system.css`) was RETIRED in R353 P4 and its gate now self-reports RETIRED.
+The patterns contract owns the page grammar; polish.css remains the overrides layer for the
+shared library. No unlayered bolt-on sheets.
 
 ## 10. Gates & history
 
