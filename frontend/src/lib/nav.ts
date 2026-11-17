@@ -32,11 +32,24 @@ export interface NavGroup {
   items: NavItem[];
   /* r183-B7 (A4 P2-3, the 3.2-screen student drawer): groups marked
    * `collapsed` render as ONE toggle row by default (Sidebar.tsx) —
-   * the drawer's default scrollHeight stays ≤2 screens at 390px
    * while every route keeps its sidebar home. The group auto-expands
    * while one of its routes is the active page, and one tap opens it
    * any time. The icon rail (desktop `collapsed` sidebar) ignores
-   * the flag — it renders every item as an icon anyway. */
+   * the flag — it renders every item as an icon anyway.
+   *
+   * R362 B1 (truth repair on the re-cut's own metric): the original
+   * claim «the drawer's default scrollHeight stays ≤2 screens at
+   * 390px» no longer holds under that comment's own formula
+   * (scrollHeight ÷ clientHeight). The pinned-footer rework (4-A2
+   * P1-2) shrank the .sidebar-nav scroller to 334px clientHeight, and
+   * the live measurement (390×844 iPhone-13 rig, the same harness
+   * r319-shell-states B1b drives) reads 19 default rows → 1105px
+   * scrollHeight = 3.31 scroller screens ≈ 1.31 × the 844px drawer
+   * viewport. The re-cut's real, still-true achievements: the
+   * pre-re-cut 33-item list scrolled 1749px — the re-cut list is 37%
+   * shorter, and the account cluster is pinned OUT of the scroll.
+   * The B1 verdict (docs/redesign/r362-shell-nav/B1-COMPACT-SPINE.md)
+   * keeps the spine role-measured, never a uniform row-count. */
   collapsed?: boolean;
 }
 
