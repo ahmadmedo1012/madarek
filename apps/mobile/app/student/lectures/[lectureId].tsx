@@ -195,7 +195,7 @@ export default function LecturePlayerScreen() {
         <AppStatusBar />
         <EmptyState
           title="لم يتم تحديد محاضرة"
-          message="الرابط لا يتضمّن محاضرة — اختر محاضرة من المقرّر للمتابعة."
+          message="لا محاضرة في الرابط — اختر من المقرّر."
           actionLabel="العودة إلى مقرراتي"
           onAction={() => router.push("/student/courses" as never)}
         />
@@ -868,7 +868,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
               </T>
             ) : cues.length === 0 ? (
               <T variant="sm" color="muted">
-                {transcriptPending ? "يُولَّد نص هذه المحاضرة الآن — عد بعد قليل." : "لا مقاطع في هذا النص."}
+                {transcriptPending ? "يُولَّد النص الآن — عد بعد قليل." : "لا مقاطع في هذا النص."}
               </T>
             ) : (
               <>
@@ -1443,7 +1443,7 @@ function SeekBar({
       onLayout={(e) => (widthRef.current = e.nativeEvent.layout.width)}
       accessibilityRole="adjustable"
       accessibilityLabel="شريط تقدّم المحاضرة"
-      accessibilityHint="اسحب للانتقال — نقرتان مزدوجتان على جانبي الفيديو يقدّمان أو يؤخّران عشر ثوانٍ"
+      accessibilityHint="اسحب للانتقال — نقرتان على الجانب = عشر ثوانٍ"
       onAccessibilityAction={(e) => {
         const step = e.nativeEvent.actionName === "increment" ? 10 : e.nativeEvent.actionName === "decrement" ? -10 : 0;
         if (step !== 0) player.seekBy(step);

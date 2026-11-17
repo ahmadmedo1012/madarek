@@ -140,7 +140,7 @@ export default function StudentMyData() {
       <ScrollBody refreshing={profile.isFetching && !profile.isLoading} onRefresh={() => profile.refetch()}>
         <PageHeader
           title="بياناتي واتصالي"
-          kicker="ملفك كما تحمله المؤسّسة — عدّل ما يخصّك، وراجع الإدارة في البقيّة."
+          kicker="بياناتك من المؤسّسة — عدّل ما يخصّك، والإدارة للبقيّة."
         />
 
         {profile.isLoading ? (
@@ -155,7 +155,7 @@ export default function StudentMyData() {
         ) : !view || !draft ? (
           <EmptyState
             title="لا يوجد ملف طالب بعد"
-            message="لم يُربَط ملف طالب بحسابك — تواصل مع شؤون الطلاب، وبمجرد اعتماده تظهر بياناتك الكاملة هنا."
+            message="لم يُربَط ملف طالب — تواصل مع شؤون الطلاب، وبعد الاعتماد تظهر بياناتك."
           />
         ) : (
           <>
@@ -359,7 +359,7 @@ export default function StudentMyData() {
               <VisOption
                 active={view.phoneVisibility === "INSTITUTION_STAFF"}
                 title="طاقم مؤسستي"
-                description="أساتذتي وإدارة مؤسستي يرون رقمي — هوائية التواصل الطبيعية."
+                description="الأساتذة والإدارة يرون رقمي — قناة التواصل الطبيعية."
                 disabled={save.isPending}
                 onPress={() => setVisibility("INSTITUTION_STAFF")}
                 icon={<Eye size={16} color={p.text} />}
@@ -367,7 +367,7 @@ export default function StudentMyData() {
               <VisOption
                 active={view.phoneVisibility === "PRIVATE"}
                 title="خاص بي فقط"
-                description="يظهر مقنّعًا للطاقم، ومن يحتاجه يرسل لي طلب تواصل أقرّه بنفسي."
+                description="يظهر مقنّعًا للطاقم — طلب التواصل يحتاج موافقتي."
                 disabled={save.isPending}
                 onPress={() => setVisibility("PRIVATE")}
                 icon={<EyeOff size={16} color={p.text} />}

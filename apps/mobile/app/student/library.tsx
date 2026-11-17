@@ -239,7 +239,7 @@ function BooksTab() {
       haptics.notify("success");
       const dueAt = (res as { dueAt?: string } | null)?.dueAt ?? null;
       toast.success(
-        dueAt ? `موعد إرجاع الكتاب: ${fullDate(dueAt)}.` : "تمّت الاستعارة — راجع «استعاراتي» لموعد الإرجاع.",
+        dueAt ? `موعد إرجاع الكتاب: ${fullDate(dueAt)}.` : "تمّت الاستعارة — الموعد في «استعاراتي».",
         "تمّت الاستعارة",
       );
     },
@@ -362,8 +362,8 @@ function BooksTab() {
             title={debouncedQ || availability !== "all" ? "لا توجد كتب مطابقة" : "لا توجد ملفات"}
             message={
               debouncedQ || availability !== "all"
-                ? "جرّب كلمات بحث مختلفة أو أعد ضبط التصفية."
-                : "ستظهر هنا كتب المكتبة وملفاتها فور توفرها."
+                ? "جرّب كلمات أخرى أو أعد ضبط التصفية."
+                : "الكتب والملفات تظهر هنا فور توفرها."
             }
           />
         }
@@ -574,7 +574,7 @@ function ResearchTab() {
             message={
               debouncedQ
                 ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
-                : "ستظهر هنا بحوث الطلاب المنشورة وملفاتها فور إجازتها."
+                : "بحوث الطلاب تظهر هنا فور إجازتها."
             }
           />
         }

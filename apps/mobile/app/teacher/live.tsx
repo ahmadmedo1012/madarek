@@ -144,7 +144,7 @@ export default function TeacherLive() {
     onSuccess: () => {
       haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["live", "sessions"] });
-      toast.success("جُدولت الجلسة وستظهر لطلاب المقرّر.", "تمّت الجدولة");
+      toast.success("جُدولت — تظهر لطلاب المقرّر.", "تمّت الجدولة");
       setCreating(false);
       setTitle("");
       setTopic("");
@@ -167,8 +167,8 @@ export default function TeacherLive() {
       haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["live", "sessions"] });
       setConfirmAction(null);
-      if (vars.action === "START") toast.success("بدأ البث الآن — الطلاب يرون الجلسة مباشرة.", "بدء البث");
-      else if (vars.action === "END") toast.success("انتهى البث — أصبحت الجلسة في السجل.", "انتهاء البث");
+      if (vars.action === "START") toast.success("بدأ البث — الطلاب يشاهدون مباشرة.", "بدء البث");
+      else if (vars.action === "END") toast.success("انتهى البث — الجلسة في السجل.", "انتهاء البث");
       else toast.success("أُلغيت الجلسة.", "إلغاء الجلسة");
     },
     onError: (e) => {
@@ -244,7 +244,7 @@ export default function TeacherLive() {
       <StackHeader title="إدارة البث المباشر" />
       <PageHeader
         title="إدارة البث المباشر"
-        kicker="جدولة المحاضرات الحية وتشغيلها وإيقافها. الطلاب يرون فقط الجلسات الخاصة بمقرّراتهم."
+        kicker="جدولة الجلسات الحية وتشغيلها — الطلاب يرون جلسات مقرّراتهم فقط."
       />
       <SectionBar
         index={1}

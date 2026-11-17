@@ -129,7 +129,7 @@ export default function Assignments() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "pending-submissions"] });
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.", "تمّ التقييم");
+      toast.success("حُفظت الدرجة — سيصل الطالب إشعار.", "تمّ التقييم");
       setGradeTarget(null);
       setScore("");
       setFeedback("");
@@ -163,7 +163,7 @@ export default function Assignments() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "assignments"] });
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("أُنشئ الواجب وسيظهر لطلاب المقرّر فوراً.", "تمّ الإنشاء");
+      toast.success("أُنشئ — يظهر لطلاب المقرّر فورًا.", "تمّ الإنشاء");
       setCreating(false);
       setTitle("");
       setType("HOMEWORK");
@@ -185,7 +185,7 @@ export default function Assignments() {
       <StackHeader title="الواجبات والاختبارات" />
       <PageHeader
         title="الواجبات والاختبارات"
-        kicker="كلّ الواجبات الموزَّعة على مقرّراتك، والتسليمات بانتظار تقييمك."
+        kicker="واجبات مقرّراتك والتسليمات بانتظار تقييمك."
       />
       <SectionBar
         index={1}
@@ -199,7 +199,7 @@ export default function Assignments() {
       ) : pending.isError ? (
         <ErrorState message={humanizeError(pending.error)} onRetry={() => pending.refetch()} />
       ) : pendingRows.length === 0 ? (
-        <EmptyState title="لا تسليمات بانتظار التصحيح" message="ستظهر هنا تسليمات طلابك فور وصولها." />
+        <EmptyState title="لا تسليمات بانتظار التصحيح" message="تسليمات طلابك تظهر هنا فور وصولها." />
       ) : (
         <RowList>
           {pendingRows.map((s, i) => (
@@ -247,7 +247,7 @@ export default function Assignments() {
       ) : assignmentRows.length === 0 ? (
         <EmptyState
           title="لا توجد واجبات بعد"
-          message="أنشئ أول واجب بزر «واجب جديد» بالأعلى — سيظهر لطلاب المقرّر فوراً."
+          message="أنشئ أول واجب — يظهر لطلاب المقرّر فورًا."
         />
       ) : (
         <RowList>

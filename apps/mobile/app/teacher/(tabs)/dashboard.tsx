@@ -161,7 +161,7 @@ export default function TeacherDashboard() {
       <AppTopBar alertsPath="/teacher/alerts" />
       <PageHeader
         title="لوحة الأستاذ"
-        kicker="كل ما يحتاج تدخّلك اليوم — في تيار واحد، مرتّب حسب الأولوية."
+        kicker="ما يحتاج تدخّلك اليوم، مرتّبًا بالأولوية."
       />
 
       {/* إحصاءات الفصل — hierarchy: one hero card, no card grid.
@@ -172,7 +172,7 @@ export default function TeacherDashboard() {
             <EmptyState
               icon={<ClipboardCheck size={22} color={p.textMuted} />}
               title="لا بيانات فصلية بعد"
-              message="لا طلاب مسجّلين لديك حاليًا — عند تسجيل الطلاب في شُعَبك ستظهر هنا معدلات الدرجات ونسب الحضور أسبوعًا بعد أسبوع."
+              message="لا طلاب لديك — تظهر المعدلات والحضور هنا بعد تسجيلهم في شُعَبك."
             />
           </Card>
         </Animated.View>
@@ -313,7 +313,7 @@ export default function TeacherDashboard() {
         <EmptyState
           room="exam-hall"
           title="لا انتظار — كل التسليمات مُقيَّمة"
-          message="ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك."
+          message="تظهر التسليمات الجديدة هنا فور وصولها."
           actionLabel="فتح التكاليف"
           onAction={() => router.push("/teacher/assignments" as never)}
         />
@@ -396,7 +396,7 @@ export default function TeacherDashboard() {
           <EmptyState
             icon={<LineChart size={22} color={p.textMuted} />}
             title="لا تتوفّر بيانات كافية بعد لرسم الاتجاه"
-            message="لم يُسجَّل أي أسبوع حتى الآن — يُرسم المخطط تلقائيًا بعد اكتمال أسبوعين على الأقل."
+            message="يُرسم المخطط بعد أسبوعين على الأقل."
           />
         ) : (
           <View style={{ gap: sp[10], paddingTop: sp[8] }}>
@@ -447,7 +447,7 @@ export default function TeacherDashboard() {
         <EmptyState
           room="building"
           title="لا متطلبات الآن — أحسنت!"
-          message="سيظهر هنا أي عنصر جديد يحتاج متابعتك فور وصوله."
+          message="يظهر أي عنصر جديد هنا فور وصوله."
         />
       ) : (
         <RowList>

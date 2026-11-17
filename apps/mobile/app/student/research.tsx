@@ -79,7 +79,7 @@ export default function ResearchScreen() {
           art={<Illustration id="r342/problem-04-research" width={216} />}
           icon={<FileText size={24} color={p.textFaint} />}
           title="لم ترفع أي بحث بعد"
-          message="ابدأ برفع أول بحث لك ليتم فحصه ثم تقييمه من قبل الأستاذ."
+          message="ارفع أول بحث — يُفحص ثم يُقيَّم."
           actionLabel="رفع بحث جديد"
           onAction={() => setUploadOpen(true)}
         />
@@ -320,7 +320,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
       } catch {
         // The paper row exists — the scan can be started again from its row.
       }
-      toast.success("سيخضع البحث لفحص الانتحال ثم يصل إلى أستاذك للتقييم.", "تمّ رفع البحث");
+      toast.success("فحص انتحال ثم تقييم الأستاذ.", "تمّ رفع البحث");
       setTitle("");
       setAbstractText("");
       setOfferingId(null);
@@ -379,7 +379,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
           label="الملخّص (اختياري)"
           value={abstractText}
           onChangeText={setAbstractText}
-          placeholder="اكتب ملخصاً مختصراً عن الفكرة، المنهج، والنتائج…"
+          placeholder="ملخص عن الفكرة والمنهج والنتائج…"
           multiline
         />
         <SelectField

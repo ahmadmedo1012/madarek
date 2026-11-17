@@ -131,7 +131,7 @@ export default function Settings() {
         rows.map((r) => (r.category === row.category ? { ...r, emailEnabled: row.emailEnabled } : r)),
       );
       toast.success(
-        next ? "ستصلك رسائل هذه الفئة على بريدك." : "أوقفت رسائل هذه الفئة.",
+        next ? "رسائل الفئة تصلك على بريدك." : "أوقفت رسائل الفئة.",
         "البريد",
       );
     } catch (err) {

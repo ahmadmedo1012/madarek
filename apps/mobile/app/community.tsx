@@ -361,7 +361,7 @@ function AnnouncementsPanel() {
       {rows.length === 0 ? (
         <EmptyState
           title="لا توجد إعلانات بعد"
-          message="ستظهر هنا إعلانات الجامعة والكليات والأقسام."
+          message="إعلانات الجامعة والكليات تظهر هنا."
         />
       ) : (
         <RowList>
@@ -432,7 +432,7 @@ function EventsPanel() {
       {rows.length === 0 ? (
         <EmptyState
           title="لا توجد فعاليات قادمة بعد"
-          message="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها."
+          message="الفعاليات تظهر هنا عند جدولتها."
         />
       ) : (
         rows.map((e: CampusEvent) => (
@@ -614,7 +614,7 @@ function RoomsPanel() {
       {rows.length === 0 ? (
         <EmptyState
           title="لا توجد غرف دراسة بعد"
-          message="أنشئ أول غرفة دراسية وادعُ زملاءك للانضمام إليها."
+          message="أنشئ أول غرفة وادعُ زملاءك."
         />
       ) : (
         <RowList>
