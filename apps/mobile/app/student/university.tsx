@@ -60,10 +60,10 @@ export default function UniversityScreen() {
     /* Null context (the multi-membership pre-selection edge): the
      * honest empty state — nothing is invented. */
     return (
-      <PushFrame title="عن المؤسّسة" kicker="مؤسّستك التعليميّة على منصّة مدارك">
+      <PushFrame title="عن المؤسّسة" kicker="مؤسستك على مدارك">
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
-          title="لا توجد مؤسّسة في جلستك"
+          title="لا مؤسسة في جلستك"
           message="اختر مؤسّستك من العضويّات ثم عُد."
         />
       </PushFrame>
@@ -103,7 +103,7 @@ export default function UniversityScreen() {
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
           title="لا توجد كليّات بعد"
-          message="لم تُسجَّل كلّيّات في هذه المؤسّسة بعد."
+          message="لا كليات في المؤسسة بعد."
         />
       ) : (
         <>

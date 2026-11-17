@@ -78,14 +78,14 @@ export default function TrainingIndex() {
         <SkeletonList rows={5} rowHeight={76} />
       ) : q.isError ? (
         isUnauthError(q.error) ? (
-          <SignInPrompt message="سجّل الدخول لتصفّح المسارات وتتبّع تقدّمك." />
+          <SignInPrompt message="سجّل الدخول لتصفّح المسارات." />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )
       ) : tracks.length === 0 ? (
         <EmptyState
-          title="لا توجد مسارات منشورة بعد"
-          message="المسارات الجديدة تظهر فور نشرها."
+          title="لا مسارات بعد"
+          message="المسارات تظهر فور نشرها."
           icon={<BookOpen size={20} color={p.textMuted} />}
         />
       ) : (

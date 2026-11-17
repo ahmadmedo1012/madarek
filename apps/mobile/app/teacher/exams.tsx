@@ -41,9 +41,9 @@ type QuestionCategory = { id: string; title?: string; name?: string };
 /** Web publishGateReason — the per-status honesty for the gated publish. */
 function publishGateReason(status: string): string | null {
   if (status === "PENDING_REVIEW" || status === "DRAFT") {
-    return "النشر يُفتح بعد اعتماد الجودة.";
+    return "النشر بعد اعتماد الجودة.";
   }
-  if (status === "REJECTED") return "مرفوض من الجودة — لا يمكن نشره.";
+  if (status === "REJECTED") return "مرفوض من الجودة.";
   if (status === "PUBLISHED" || status === "CLOSED") return "منشور بالفعل.";
   return null;
 }
@@ -86,7 +86,7 @@ export default function Exams() {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       qc.invalidateQueries({ queryKey: ["exams", "template", publishTarget?.id] });
       setPublishTarget(null);
-      toast.success("نُشر وسيظهر للطلاب حسب نطاقه.", "تمّ نشر الاختبار");
+      toast.success("نُشر حسب النطاق.", "تمّ نشر الاختبار");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
@@ -105,22 +105,22 @@ export default function Exams() {
 
   const createQuestion = useMutation({
     mutationFn: async () => {
-      if (prompt.trim().length < 3) throw new Error("اكتب نص السؤال كما سيظهر للطالب.");
+      if (prompt.trim().length < 3) throw new Error("نص السؤال كما يظهر للطالب.");
       const pts = Number(points);
       if (points.trim() === "" || Number.isNaN(pts) || pts < 1 || pts > 20) {
-        throw new Error("النقاط عدد بين 1 و20.");
+        throw new Error("النقاط بين 1 و20.");
       }
       let correctAnswer: unknown = undefined;
       if (type === "MCQ") {
         const filled = choices.map((c) => c.trim()).filter((c) => c !== "");
-        if (filled.length < 2) throw new Error("خياران على الأقل لسؤال الاختيار من متعدد.");
-        if (correctIndex === null || correctIndex >= filled.length) throw new Error("حدِّد الإجابة الصحيحة قبل الحفظ.");
+        if (filled.length < 2) throw new Error("خياران على الأقل للمتعدد.");
+        if (correctIndex === null || correctIndex >= filled.length) throw new Error("حدِّد الصحيحة قبل الحفظ.");
         correctAnswer = correctIndex;
       } else if (type === "TRUE_FALSE") {
-        if (correctIndex === null) throw new Error("حدِّد الإجابة الصحيحة (صواب أو خطأ).");
+        if (correctIndex === null) throw new Error("حدِّد الصحيحة (صواب/خطأ).");
         correctAnswer = correctIndex;
       } else if (type === "SHORT") {
-        if (modelAnswer.trim() === "") throw new Error("الإجابة النموذجية مطلوبة للأسئلة القصيرة.");
+        if (modelAnswer.trim() === "") throw new Error("الإجابة النموذجية مطلوبة للقصيرة.");
         correctAnswer = modelAnswer.trim();
       }
       return examsApi.createQuestion({
@@ -140,7 +140,7 @@ export default function Exams() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["exams", "question-bank"] });
       toast.success(
-        "أُرسل للجودة — يظهر في البنك بعد الاعتماد.",
+        "أُرسل للجودة — يظهر بعد الاعتماد.",
         "أُرسل السؤال",
       );
       setCreating(false);
@@ -170,7 +170,7 @@ export default function Exams() {
       <Animated.View entering={entering(0)}>
       <PageHeader
         title="بنك الأسئلة والاختبارات"
-        kicker="تأليف الأسئلة وبناء قوالب الاختبارات حتى النشر."
+        kicker="تأليف الأسئلة وبناء القوالب."
       />
       <Segmented
         options={[
@@ -194,8 +194,8 @@ export default function Exams() {
           ) : (templates.data ?? []).length === 0 ? (
             <EmptyState
               art={<Illustration id="r342/role-teacher" width={216} />}
-              title="لم تُنشئ قوالب اختبارات بعد"
-              message="ابنِ قالباً من أسئلة البنك (البناء من لوحة الويب) ثم أرسله للجودة والنشر."
+              title="لا قوالب بعد"
+              message="ابنِ قالبًا من البنك (من لوحة الويب) ثم أرسله للجودة."
             />
           ) : (
             <RowList>
@@ -277,11 +277,11 @@ export default function Exams() {
             <ErrorState message={humanizeError(bank.error)} onRetry={() => bank.refetch()} />
           ) : bankRows.length === 0 ? (
             <EmptyState
-              title={q.trim() !== "" ? "لا توجد أسئلة تطابق البحث" : "البنك فارغ حتى الآن"}
+              title={q.trim() !== "" ? "لا أسئلة تطابق البحث" : "البنك فارغ حتى الآن"}
               message={
                 q.trim() !== ""
-                  ? "جرّب كلمات بحث مختلفة أو أزل عوامل التصفية."
-                  : "أنشئ أول سؤال — يظهر هنا بعد اعتماد الجودة."
+                  ? "جرّب كلمات أخرى أو أزل التصفية."
+                  : "أنشئ أول سؤال — يظهر بعد اعتماد الجودة."
               }
             />
           ) : (
@@ -369,7 +369,7 @@ export default function Exams() {
               setQError(null);
             }}
             multiline
-            placeholder="اكتب نص السؤال كما سيظهر للطالب…"
+            placeholder="نص السؤال كما يظهر للطالب…"
             accessibilityLabel="نص السؤال"
           />
           {type === "MCQ" ? (
@@ -436,7 +436,7 @@ export default function Exams() {
               label="الإجابة النموذجية"
               value={modelAnswer}
               onChangeText={setModelAnswer}
-              hint="تُصحَّح إجابة الطالب آلياً بمطابقتها مع هذا النص"
+              hint="تُصحَّح آليًا بمطابقة هذا النص"
               accessibilityLabel="الإجابة النموذجية"
             />
           ) : null}

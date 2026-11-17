@@ -36,7 +36,7 @@ export default function TeacherStudents() {
           haptics on the offering picker; the true-empty offering case is
           the kit EmptyState (library room), not a bare Card. */}
       <Animated.View entering={entering(0)} style={{ paddingHorizontal: sp[20], gap: sp[16] }}>
-        <PageHeader title="قائمة الطلاب" kicker="جميع الطلاب المسجَّلين في مقرّراتك." />
+        <PageHeader title="قائمة الطلاب" kicker="طلاب مقرّراتك." />
         {offs.isLoading ? (
           <SkeletonList rows={4} />
         ) : offs.isError ? (

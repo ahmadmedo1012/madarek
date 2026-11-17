@@ -42,7 +42,7 @@ export default function SkillsScreen() {
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<Gauge size={24} color={p.textFaint} />}
-          title="لم تُسجَّل أي مهارة بعد"
+          title="لا مهارات بعد"
           message="تُحتسب تلقائيًا من إنجازاتك ومسارات التطوير."
         />
       ) : (
@@ -51,7 +51,7 @@ export default function SkillsScreen() {
             <SkillCard key={s.id} name={s.name} level={s.level} progressPct={s.progressPct} />
           ))}
           <T variant="xs" color="faint">
-            {countAr(rows.length, ["مهارة واحدة مُسجَّلة", "مهارتان مُسجَّلتان", "مهارات مُسجَّلة", "مهارةً مُسجَّلة"])}
+            {countAr(rows.length, ["مهارة مسجّلة", "مهارتان مُسجَّلتان", "مهارات مُسجَّلة", "مهارةً مُسجَّلة"])}
           </T>
         </View>
       )}

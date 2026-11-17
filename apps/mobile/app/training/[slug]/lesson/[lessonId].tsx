@@ -57,7 +57,7 @@ export default function TrainingLesson() {
       qc.invalidateQueries({ queryKey: ["training"] });
       const r = res as CompleteLessonResult | null;
       if (r?.newlyCompleted === false) {
-        toast.info("تم احتساب هذا الدرس مسبقًا.");
+        toast.info("احتُسب الدرس مسبقًا.");
       } else if (r?.pointsAwarded && r.pointsAwarded > 0) {
         haptics.notify("success");
         toast.success(`أحسنت! حصلت على ${pointsAr(r.pointsAwarded)}.`, "درس مكتمل");
@@ -68,7 +68,7 @@ export default function TrainingLesson() {
       router.back();
     },
     onError: (e) =>
-      toast.error(apiMessage(e, "تعذّر الاحتساب — تحقّق من اتصالك.")),
+      toast.error(apiMessage(e, "تعذّر الاحتساب — تحقّق من الاتصال.")),
   });
 
   if (!params.slug || !params.lessonId) {
@@ -98,7 +98,7 @@ export default function TrainingLesson() {
       <Screen scroll>
         <StackHeader title="درس" kicker="التطوير الذاتي" />
         {isUnauthError(q.error) ? (
-          <SignInPrompt message="سجّل الدخول لقراءة الدروس واحتساب تقدّمك." />
+          <SignInPrompt message="سجّل الدخول لقراءة الدروس." />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )}
@@ -111,8 +111,8 @@ export default function TrainingLesson() {
       <Screen scroll>
         <StackHeader title="درس" kicker="التطوير الذاتي" />
         <EmptyState
-          title="لا توجد بيانات لهذا المسار"
-          message="ربما أُزيل المسار أو أن الرابط قديم."
+          title="لا بيانات للمسار"
+          message="أُزيل المسار أو الرابط قديم."
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -130,7 +130,7 @@ export default function TrainingLesson() {
         <StackHeader title="درس" kicker={track.title} />
         <EmptyState
           title="الدرس غير موجود"
-          message="ربما تم حذفه أو أن الرابط غير صحيح."
+          message="حُذف أو الرابط غير صحيح."
           actionLabel="عودة إلى المسار"
           onAction={() => router.push(`/training/${track.slug}` as never)}
         />
@@ -144,7 +144,7 @@ export default function TrainingLesson() {
 
   const onComplete = () => {
     if (lesson.quizQuestion && !quizAnswer.trim()) {
-      toast.error("أجب عن سؤال التحقق أولًا.");
+      toast.error("أجب عن التحقق أولًا.");
       return;
     }
     complete.mutate();

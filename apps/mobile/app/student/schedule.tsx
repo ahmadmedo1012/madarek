@@ -11,7 +11,7 @@
  *     fill) / «التالية» (next, accentSoft) / «انتهت» (done, grey) — from
  *     the Tripoli clock (useNow ticks every minute, render stays pure);
  *   · EmptyState rooms: building when there is no schedule at all,
- *     lecture-hall «لا توجد محاضرات اليوم» for an empty day;
+ *     lecture-hall «لا محاضرات اليوم» for an empty day;
  *   · errors through humanizeError (never raw error.message).
  */
 
@@ -244,7 +244,7 @@ export default function ScheduleScreen() {
           ) : (
             <EmptyState
               room="lecture-hall"
-              title={Number(selected) === todayDow ? "لا توجد محاضرات اليوم" : "لا حصص في هذا اليوم"}
+              title={Number(selected) === todayDow ? "لا محاضرات اليوم" : "لا حصص في هذا اليوم"}
               message="اختر يومًا آخر من الشريط."
             />
           )

@@ -52,7 +52,7 @@ export default function ResearchScreen() {
     mutationFn: (id: string) => researchApi.scan(id),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["research"] });
-      toast.success("اكتمل الفحص — النتائج معروضة على البحث.", "فحص النزاهة");
+      toast.success("اكتمل الفحص — النتائج على البحث.", "فحص النزاهة");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر إجراء الفحص"),
   });
@@ -79,7 +79,7 @@ export default function ResearchScreen() {
           art={<Illustration id="r342/problem-04-research" width={216} />}
           icon={<FileText size={24} color={p.textFaint} />}
           title="لم ترفع أي بحث بعد"
-          message="ارفع أول بحث — يُفحص ثم يُقيَّم."
+          message="ارفع أول بحث."
           actionLabel="رفع بحث جديد"
           onAction={() => setUploadOpen(true)}
         />
@@ -372,8 +372,8 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
           label="عنوان البحث (مطلوب)"
           value={title}
           onChangeText={setTitle}
-          placeholder="مثال: تطبيق أنماط التصميم في تطبيقات الويب"
-          error={title.trim().length > 0 && title.trim().length < 3 ? "يجب أن يكون 3 أحرف على الأقل." : undefined}
+          placeholder="مثال: أنماط التصميم في الويب"
+          error={title.trim().length > 0 && title.trim().length < 3 ? "3 أحرف على الأقل." : undefined}
         />
         <Field
           label="الملخّص (اختياري)"
@@ -383,7 +383,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
           multiline
         />
         <SelectField
-          label="المقرّر الأكاديمي المرتبط (اختياري)"
+          label="المقرّر المرتبط (اختياري)"
           value={selectedOffering}
           options={offeringOptions}
           onSelect={(id) => {
@@ -392,7 +392,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
           }}
           loading={enrollments.isLoading}
           sheetTitle="مقرراتك المسجَّلة"
-          emptyLabel="لا توجد مقررات مسجَّلة"
+          emptyLabel="لا مقرّرات مسجّلة"
         />
 
         <View style={{ gap: sp[6] }}>

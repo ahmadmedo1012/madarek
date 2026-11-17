@@ -283,12 +283,12 @@ export default function OnlineExamsScreen() {
             <EmptyState
               fill
               room="exam-hall"
-              title={filter === "all" ? undefined : "لا توجد اختبارات هنا"}
+              title={filter === "all" ? undefined : "لا اختبارات هنا"}
               message={
                 filter === "available"
-                  ? "لا اختبارات متاحة — تظهر فور اعتماد الجودة."
+                  ? "لا اختبارات — تظهر فور اعتماد الجودة."
                   : filter === "taken"
-                    ? "المنجزة تظهر في هذه القائمة."
+                    ? "المنجزة في هذه القائمة."
                     : undefined
               }
             />

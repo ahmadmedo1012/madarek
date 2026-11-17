@@ -215,7 +215,7 @@ export default function SocialScreen() {
         refetch={feed.refetch}
         isRefetching={feed.isRefetching}
         emptyTitle="لا منشورات بعد"
-        emptyMessage="كن أول من يشارك تجربته أو سؤاله."
+        emptyMessage="كن أول المشاركين."
         ListHeaderComponent={
           <View style={{ paddingHorizontal: sp[16], paddingVertical: sp[8] }}>
             <T variant="sm" color="muted">
@@ -307,7 +307,7 @@ function ComposeSheet({
           value={hashtags}
           onChangeText={setHashtags}
           placeholder="مثال: برمجة، تصميم"
-          hint="أدخل الوسوم مفصولة بفواصل."
+          hint="وسوم مفصولة بفواصل."
         />
         <T variant="xs" color="faint">
           لا تُرفع الصور من التطبيق بعد — يُعرض ما يرسله الخادم من روابط فقط.

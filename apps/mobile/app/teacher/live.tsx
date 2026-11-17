@@ -128,10 +128,10 @@ export default function TeacherLive() {
     mutationFn: async () => {
       const effId = offeringId || offerings[0]?.id || "";
       if (effId === "") throw new Error("اختر مقرراً أولاً.");
-      if (title.trim().length < 3) throw new Error("عنوان الجلسة حرفان على الأقل.");
+      if (title.trim().length < 3) throw new Error("العنوان: حرفان على الأقل.");
       if (!schedDate) throw new Error("حدّد موعد الجلسة.");
       const t = Date.parse(`${schedDate}T${schedTime.trim() === "" ? "09:00" : schedTime}`);
-      if (Number.isNaN(t)) throw new Error("قيمة الموعد غير صالحة.");
+      if (Number.isNaN(t)) throw new Error("الموعد غير صالح.");
       return liveApi.create({
         offeringId: effId,
         title: title.trim(),
@@ -167,14 +167,14 @@ export default function TeacherLive() {
       haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["live", "sessions"] });
       setConfirmAction(null);
-      if (vars.action === "START") toast.success("بدأ البث — الطلاب يشاهدون مباشرة.", "بدء البث");
-      else if (vars.action === "END") toast.success("انتهى البث — الجلسة في السجل.", "انتهاء البث");
+      if (vars.action === "START") toast.success("بدأ البث — مباشر الآن.", "بدء البث");
+      else if (vars.action === "END") toast.success("انتهى — في السجلّ.", "انتهاء البث");
       else toast.success("أُلغيت الجلسة.", "إلغاء الجلسة");
     },
     onError: (e) => {
       haptics.notify("error");
       setConfirmAction(null);
-      toast.error(humanizeError(e), "تعذَّر تحديث حالة الجلسة");
+      toast.error(humanizeError(e), "تعذّر التحديث");
     },
   });
 
@@ -215,7 +215,7 @@ export default function TeacherLive() {
             <T variant="xs" color="muted" numberOfLines={1}>
               {session.offering?.course?.code ?? ""}
               {session.topic ? ` · ${session.topic}` : ""} · {dateTime(session.scheduledAt)}
-              {enrolled !== undefined ? ` · ${arCount(enrolled, ["طالب واحد في المقرّر", "طالبان في المقرّر", "طلاب المقرّر", "طالباً في المقرّر"])}` : ""}
+              {enrolled !== undefined ? ` · ${arCount(enrolled, ["طالب في المقرّر", "طالبان في المقرّر", "طلاب المقرّر", "طالباً في المقرّر"])}` : ""}
             </T>
           </View>
           <StatusBadge status={session.status} map={LIVE_STATUS_MAP} />
@@ -244,7 +244,7 @@ export default function TeacherLive() {
       <StackHeader title="إدارة البث المباشر" />
       <PageHeader
         title="إدارة البث المباشر"
-        kicker="جدولة الجلسات الحية وتشغيلها — الطلاب يرون جلسات مقرّراتهم فقط."
+        kicker="جدولة الجلسات وتشغيلها — لطلاب مقرّراتك."
       />
       <SectionBar
         index={1}
@@ -300,7 +300,7 @@ export default function TeacherLive() {
             }
           />
           {scheduled.length === 0 ? (
-            <EmptyState fill title="لا توجد جلسات قادمة" message="أنشئ جلسة جديدة لتظهر هنا." actionLabel="جلسة جديدة" onAction={() => setCreating(true)} />
+            <EmptyState fill title="لا توجد جلسات قادمة" message="أنشئ أول جلسة." actionLabel="جلسة جديدة" onAction={() => setCreating(true)} />
           ) : (
             <RowList>
               {scheduled.map((s) => (
@@ -369,7 +369,7 @@ export default function TeacherLive() {
               setTitle(v);
               setCreateError(null);
             }}
-            placeholder="مثال: شرح الوحدة الثالثة — التعلم الآلي"
+            placeholder="مثال: شرح الوحدة الثالثة"
             accessibilityLabel="عنوان الجلسة"
           />
           <SheetField

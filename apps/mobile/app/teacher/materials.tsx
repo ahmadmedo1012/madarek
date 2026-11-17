@@ -70,7 +70,7 @@ export default function Materials() {
     mutationFn: async () => {
       if (effectiveOfferingId === "") throw new Error("اختر المقرّر أولاً.");
       if (name.trim().length < 1) throw new Error("اسم الملف مطلوب.");
-      if (!/^https:\/\//.test(url.trim())) throw new Error("الرابط يجب أن يبدأ بـ https://");
+      if (!/^https:\/\//.test(url.trim())) throw new Error("يبدأ بـ https://");
       return teacherApi.addMaterial(effectiveOfferingId, {
         name: name.trim(),
         description: description.trim() || undefined,
@@ -81,7 +81,7 @@ export default function Materials() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "materials"] });
-      toast.success("أُضيف الملف — يظهر لطلابه فورًا.", "تمّت الإضافة");
+      toast.success("أُضيف — يظهر فورًا.", "تمّت الإضافة");
       setSheetOpen(false);
       resetForm();
     },
@@ -102,7 +102,7 @@ export default function Materials() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "materials"] });
-      toast.success("أُضيف الملف إلى المقرّر وسيظهر لطلابه فوراً.", "تمّت الإضافة");
+      toast.success("أُضيف — يظهر فورًا.", "تمّت الإضافة");
       setSheetOpen(false);
       resetForm();
     },
@@ -128,7 +128,7 @@ export default function Materials() {
       <StackHeader title="الملفات التعليمية" />
       <PageHeader
         title="الملفات التعليمية"
-        kicker="ملفاتك على مقرّراتك — المشاهدات والتحميلات الفعليّة."
+        kicker="ملفات مقرّراتك — المشاهدات والتحميلات."
       />
       <SectionBar
         index={1}
@@ -144,7 +144,7 @@ export default function Materials() {
       ) : rows.length === 0 ? (
         <EmptyState
           title="لم ترفع ملفات بعد"
-          message="أضف أول مادة — تظهر لطلاب المقرّر فورًا."
+          message="أضف أول مادة."
           actionLabel="إضافة مادة"
           onAction={() => setSheetOpen(true)}
         />
@@ -199,7 +199,7 @@ export default function Materials() {
           label="اسم المادة"
           value={name}
           onChangeText={(v) => setName(v)}
-          placeholder="مثال: محاضرة الأسبوع الثالث — الشرائح"
+          placeholder="مثال: شرائح الأسبوع الثالث"
           accessibilityLabel="اسم المادة"
         />
         {mode === "pdf" ? (
@@ -225,7 +225,7 @@ export default function Materials() {
             <T variant="sm" color="muted">
               {file
                 ? `تم اختيار الملف — جاهز للرفع (${sizeLabel(file.size)})`
-                : "ملفات PDF فقط، بحد أقصى 20 ميغابايت."}
+                : "PDF فقط — 20 ميغابايت كحدّ أقصى."}
             </T>
             {uploadPdf.isPending ? (
               <View style={{ gap: sp[4] }}>
@@ -256,7 +256,7 @@ export default function Materials() {
               label="الحجم بالبايت (اختياري)"
               value={sizeBytes}
               onChangeText={setSizeBytes}
-              hint="عدد البايتات كما يظهر على خدمة الملفات"
+              hint="البايتات كما في خدمة الملفات"
               keyboardType="number-pad"
               accessibilityLabel="الحجم بالبايت"
             />
@@ -266,7 +266,7 @@ export default function Materials() {
           label="الوصف (اختياري)"
           value={description}
           onChangeText={setDescription}
-          placeholder="وصف مختصر يساعد الطالب على معرفة محتوى المادة…"
+          placeholder="وصف مختصر لمحتوى المادة…"
           accessibilityLabel="الوصف"
         />
         {error ? (

@@ -56,7 +56,7 @@ export default function TeacherSchedule() {
   return (
     <Screen scroll>
       <AppTopBar alertsPath="/teacher/alerts" />
-      <PageHeader title="جدول المحاضرات" kicker="جدولك الأسبوعيّ مع القاعات والأوقات." />
+      <PageHeader title="جدول المحاضرات" kicker="جدولك مع القاعات والأوقات." />
       {offs.isLoading ? (
         <SkeletonList rows={5} />
       ) : offs.isError ? (

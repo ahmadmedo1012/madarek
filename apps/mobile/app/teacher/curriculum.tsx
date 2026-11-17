@@ -72,7 +72,7 @@ export default function Curriculum() {
 
   const saveLecture = useMutation({
     mutationFn: async () => {
-      if (title.trim().length < 2) throw new Error("عنوان المحاضرة مطلوب.");
+      if (title.trim().length < 2) throw new Error("العنوان مطلوب.");
       if (videoUrl.trim() === "") throw new Error("مطلوب — https:// أو مسار ملف.");
       const dur = durationSec.trim() === "" ? undefined : Number(durationSec);
       if (dur !== undefined && (Number.isNaN(dur) || dur < 1)) throw new Error("المدة يجب أن تكون ثانية واحدة على الأقل.");
@@ -93,7 +93,7 @@ export default function Curriculum() {
     },
     onSuccess: () => {
       invalidate();
-      toast.success(editing ? "حُفظت تعديلات المحاضرة." : "أُضيفت المحاضرة إلى المنهج.", "تمّ الحفظ");
+      toast.success(editing ? "حُفظت التعديلات." : "أُضيفت المحاضرة.", "تمّ الحفظ");
       setAdding(false);
       setEditing(null);
       setTitle("");
@@ -110,7 +110,7 @@ export default function Curriculum() {
     onSuccess: () => {
       invalidate();
       setDeleteTarget(null);
-      toast.success("حُذفت المحاضرة من المنهج.", "تمّ الحذف");
+      toast.success("حُذفت المحاضرة.", "تمّ الحذف");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الحذف"),
   });
@@ -119,7 +119,7 @@ export default function Curriculum() {
     mutationFn: (orderedIds: string[]) => learningApi.reorderLectures(effectiveId, orderedIds),
     onSuccess: () => {
       invalidate();
-      toast.success("حُدِّث ترتيب المحاضرات.");
+      toast.success("حُدِّث الترتيب.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر إعادة الترتيب"),
   });
@@ -180,7 +180,7 @@ export default function Curriculum() {
           ) : rows.length === 0 ? (
             <EmptyState
               title="لا توجد محاضرات بعد"
-              message="أضف أول محاضرة بعنوان ورابط."
+              message="أضف أول محاضرة."
               actionLabel="محاضرة جديدة"
               onAction={() => openLectureForm(null)}
             />
@@ -255,7 +255,7 @@ export default function Curriculum() {
           label="المدة بالثواني (اختياري)"
           value={durationSec}
           onChangeText={setDurationSec}
-          hint="مثال: 2700 لمدة 45 دقيقة"
+          hint="مثال: 2700 = 45 دقيقة"
           keyboardType="number-pad"
           accessibilityLabel="المدة بالثواني"
         />
@@ -333,12 +333,12 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       if (chStart.trim() === "" || chEnd.trim() === "" || Number.isNaN(start) || Number.isNaN(end)) {
         throw new Error("البداية والنهاية ثوانٍ رقمية.");
       }
-      if (end <= start) throw new Error("نهاية الفصل يجب أن تكون بعد بدايته.");
+      if (end <= start) throw new Error("النهاية بعد البداية.");
       return learningApi.addChapter(lectureId, { title: chTitle.trim(), startSec: start, endSec: end });
     },
     onSuccess: () => {
       invalidateLecture();
-      toast.success("أُضيف الفصل إلى المحاضرة.", "تمّت الإضافة");
+      toast.success("أُضيف الفصل.", "تمّت الإضافة");
       setChapterSheet(false);
       setChTitle("");
       setChStart("");
@@ -375,7 +375,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
     },
     onSuccess: () => {
       invalidateLecture();
-      toast.success("أُضيف سؤال التفاعل إلى المحاضرة.", "تمّت الإضافة");
+      toast.success("أُضيف سؤال التفاعل.", "تمّت الإضافة");
       setCpSheet(false);
       setCpTrigger("");
       setCpQuestion("");
@@ -400,7 +400,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
     mutationFn: () => learningApi.generateTranscript(lectureId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["learning", "lecture", lectureId] });
-      toast.success("بدأ التوليد — تابع حالته في الشريحة.", "توليد النص");
+      toast.success("بدأ التوليد — تابع في الشريحة.", "توليد النص");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر بدء التوليد"),
   });

@@ -158,7 +158,7 @@ export default function TeacherIntelligence() {
   const suggest = useMutation({
     mutationFn: () => teacherApi.curriculumSuggest(effectiveId),
     onSuccess: () => {
-      toast.success("وصل الاقتراح — قالبيّ ومحاكى كما هو معلن.");
+      toast.success("الاقتراح قالبيّ ومحاكى.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الاقتراح"),
   });
@@ -203,7 +203,7 @@ export default function TeacherIntelligence() {
         <ErrorState message={humanizeError(risks.error)} onRetry={() => risks.refetch()} compact />
       ) : riskRows.length === 0 ? (
         <EmptyState
-          title="جميع طلابك في وضع جيد"
+          title="كل طلابك في وضع جيد"
           message="لا حاجة لتدخّل عاجل."
         />
       ) : (

@@ -51,9 +51,9 @@ export default function TrainingTrack() {
     mutationFn: () => trainingApi.enroll(params.slug),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["training"] });
-      toast.success("سُجّلت في المسار — بالتوفيق!");
+      toast.success("سُجّلت — بالتوفيق!");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر التسجيل — تحقّق من اتصالك.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر التسجيل — تحقّق من الاتصال.")),
   });
 
   if (!params.slug) {
@@ -64,7 +64,7 @@ export default function TrainingTrack() {
         <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
         <EmptyState
           title="الرابط غير مكتمل"
-          message="لا مسار في الرابط — اختر من القائمة."
+          message="لا مسار — اختر من القائمة."
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -98,8 +98,8 @@ export default function TrainingTrack() {
       <Screen scroll>
         <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
         <EmptyState
-          title="لا توجد بيانات لهذا المسار"
-          message="ربما أُزيل المسار أو أن الرابط قديم."
+          title="لا بيانات للمسار"
+          message="أُزيل المسار أو الرابط قديم."
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -191,7 +191,7 @@ export default function TrainingTrack() {
           />
           <T variant="sm" color="muted">
             {isCompleted
-              ? "المسار مكتمل — الإتمام في الإنجازات."
+              ? "مكتمل — الإتمام في الإنجازات."
               : `${latn(completedCount)} / ${lessonsAr(lessons.length)} مكتمل`}
           </T>
         </Card>
@@ -204,7 +204,7 @@ export default function TrainingTrack() {
       {lessons.length === 0 ? (
         <EmptyState
           title="لا توجد دروس بعد"
-          message="لم تُضَف دروس إلى هذا المسار حتى الآن."
+          message="لا دروس في المسار بعد."
           icon={<BookOpen size={20} color={p.textMuted} />}
         />
       ) : (

@@ -138,7 +138,7 @@ export default function TeacherProfile() {
       qc.invalidateQueries({ queryKey: ["teacher", "profile"] });
       setEditing(false);
       setSaveError(null);
-      toast.success("تمّ حفظ تعديلات ملفك الأكاديمي.", "تمّ الحفظ");
+      toast.success("حُفظت التعديلات.", "تمّ الحفظ");
     },
     onError: (e) => {
       setSaveError(humanizeError(e));
@@ -156,7 +156,7 @@ export default function TeacherProfile() {
       <AppTopBar alertsPath="/teacher/alerts" />
       <PageHeader
         title="الملف الأكاديمي"
-        kicker="ملفك كما يظهر للمسجل والجودة والطلاب."
+        kicker="كما يظهر للمسجل والجودة والطلاب."
       />
 
       {profile.isLoading ? (
@@ -165,8 +165,8 @@ export default function TeacherProfile() {
         <ErrorState message={humanizeError(profile.error)} onRetry={() => profile.refetch()} />
       ) : !me ? (
         <EmptyState
-          title="لا يوجد ملف أستاذ مرتبط بهذا الحساب"
-          message="تواصل مع المسجل العام لربط ملفك."
+          title="لا ملف أستاذ مرتبط"
+          message="تواصل مع المسجل لربط ملفك."
         />
       ) : (
         <>
@@ -354,7 +354,7 @@ export default function TeacherProfile() {
                 accessibilityLabel="موقع المكتب"
                 value={officeLocation}
                 onChangeText={setOfficeLocation}
-                placeholder="مثال: مبنى الكلّيّة - مكتب 305"
+                placeholder="مثال: مبنى الكلية - 305"
               />
             </View>
             <View style={{ gap: sp[6] }}>

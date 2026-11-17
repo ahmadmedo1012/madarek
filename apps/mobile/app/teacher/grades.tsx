@@ -143,20 +143,20 @@ export default function Grades() {
       const mx = Number(maxScore);
       const wt = Number(weight);
       if (maxScore.trim() === "" || Number.isNaN(mx) || !Number.isInteger(mx) || mx < 1 || mx > 100) {
-        throw new Error("الدرجة العظمى عدد صحيح بين 1 و100.");
+        throw new Error("العظمى عدد صحيح 1–100.");
       }
       if (weight.trim() === "" || Number.isNaN(wt) || !Number.isInteger(wt) || wt < 0 || wt > 100) {
-        throw new Error("الوزن عدد صحيح بين 0 و100.");
+        throw new Error("الوزن عدد صحيح 0–100.");
       }
       if (!focus || !focusDraft) {
-        throw new Error("اختر طالبًا من القائمة أولًا.");
+        throw new Error("اختر طالبًا أولًا.");
       }
       if (!focusDirty) {
         throw new Error("أدخل درجة أو ملاحظة قبل الحفظ.");
       }
       const value = Number(focusDraft.score);
       if (focusDraft.score.trim() === "" || Number.isNaN(value)) throw new Error("أدخل درجة صحيحة.");
-      if (value < 0) throw new Error("لا يمكن أن تكون الدرجة سالبة.");
+      if (value < 0) throw new Error("الدرجة ليست سالبة.");
       if (value > mx) throw new Error(`الدرجة يجب ألّا تتجاوز ${latn(mx)}.`);
       return teacherApi.upsertGrades(effectiveId, [
         {
@@ -203,7 +203,7 @@ export default function Grades() {
       setScaleTouched(false);
       setFormError(null);
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("حُفظت الدرجة وستظهر للطالب فوراً.", "تمّ الحفظ");
+      toast.success("حُفظت — تظهر للطالب فورًا.", "تمّ الحفظ");
       moveTo(1); // auto-advance: grade the next student.
     },
     onError: (e) => {
@@ -248,7 +248,7 @@ export default function Grades() {
         ) : offs.isError ? (
           <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} />
         ) : offerings.length === 0 ? (
-          <EmptyState fill title="لا مقرّرات" message="اختر مقرّرًا — تظهر درجات طلابه فور إسناده." />
+          <EmptyState fill title="لا مقرّرات" message="اختر مقرّرًا لدرجات طلابه." />
         ) : (
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
         )}
@@ -276,7 +276,7 @@ export default function Grades() {
                     setMaxScore(v);
                     setScaleTouched(true);
                   }}
-                  hint="1–100 — تُعتمد من المسجَّل لهذا النوع"
+                  hint="1–100 — حسب النوع"
                   keyboardType="number-pad"
                   accessibilityLabel="الدرجة العظمى"
                 />
@@ -348,7 +348,7 @@ export default function Grades() {
                         [draftKey(focus.id)]: { score: focusDraft?.score ?? "", feedback: v },
                       }))
                     }
-                    placeholder="ملاحظة قصيرة تصل الطالب مع الدرجة…"
+                    placeholder="ملاحظة تصل الطالب مع الدرجة…"
                     accessibilityLabel={`ملاحظات ${focus?.name ?? ""}`}
                   />
                   {formError ? (
@@ -379,14 +379,14 @@ export default function Grades() {
           ) : roster.isError ? (
             <ErrorState message={humanizeError(roster.error)} onRetry={() => roster.refetch()} />
           ) : rows.length === 0 ? (
-            <EmptyState fill title="لا يوجد طلاب" message="لا توجد تسجيلات في هذا المقرّر بعد." />
+            <EmptyState fill title="لا يوجد طلاب" message="لا تسجيلات في المقرّر." />
           ) : (
             <DataList
               data={rows}
               renderItem={renderRow}
               keyExtractor={rosterKeyExtractor}
               emptyTitle="لا يوجد طلاب"
-              emptyMessage="لا توجد تسجيلات في هذا المقرّر بعد."
+              emptyMessage="لا تسجيلات في المقرّر."
               contentPadding={{ horizontal: 20, bottom: 24 }}
             />
           )}

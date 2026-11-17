@@ -61,7 +61,7 @@ export default function WebinarsScreen() {
         emptySlot={
           <EmptyState
             icon={<CalendarClock size={24} color={p.textFaint} />}
-            title="لا توجد جلسات مباشرة مجدولة الآن"
+            title="لا جلسات مجدولة الآن"
             message="بثوث أساتذتك المباشرة والتسجيلات بعد الجلسة."
             actionLabel="زيارة صفحة البثّ"
             onAction={() => router.push("/student/live" as never)}
