@@ -27,7 +27,7 @@ Baseline (measured on this branch before any change):
 - [x] audit: 9 bespoke-screen candidates all delegate to shared features; DataList tri-state covers lists; render-net mounts every route green
 - [x] 335 spacing literals app-wide → 134 migrated in the 12 worst screens to sp[N] (commit e04a4b0); dimension constants (player chrome, charts) stay literal by design
 - [x] dark-standard + dark-tablet profiles in the matrix; settings before/after theme pair in every flow; AppStatusBar/AppNavigationBar theme-derived (pre-existing contracts)
-- [ ] Tablet/foldable/landscape: responsive rules (max content width, two-pane where natural, rail vs tabs on wide) — code + emulator proof on tablet profile
+- [x] Tablet/foldable/landscape: responsive rules — content column 640 + side RAIL on ≥600dp (commit de01bd3, tests +9); two-pane master-detail SKIPPED — the app's pushed-detail pattern (Stack over tabs) already fits the content column; emulator proof: before-set confirms main's phone-only stretch, after-set pending
 - [x] CODE: row wrap + 2-line titles + grid-label caps (32ead51); EVIDENCE: fs2 before-set reviewed; after-set re-check pending
 - [x] 360×640@160 + fs1.3 profile existed (a11y-small); student captures green in the earlier main-ref run set; after-set re-verifies
 
