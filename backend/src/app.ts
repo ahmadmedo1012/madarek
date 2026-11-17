@@ -14,6 +14,7 @@ import { compression } from './lib/compression.js';
 import { resolveBuildId } from './lib/build-id.js';
 import { BUILD_SHA } from './lib/build-sha.generated.js';
 
+import { requestId } from './http/middleware/requestId.js';
 import { errorHandler } from './http/middleware/errorHandler.js';
 import { globalRateLimiter } from './http/middleware/rateLimit.js';
 
@@ -149,6 +150,11 @@ export function createApp() {
   const app = express();
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
+  /* R364 — every request carries an id (echoed as x-request-id) so a
+     5xx can be named in a serverless log that will soon be gone. Mounted
+     before every router and the rate limiter: even a throttled request
+     answers with the id that was refused. */
+  app.use(requestId);
 
   app.use(
     helmet({
