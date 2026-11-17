@@ -223,7 +223,7 @@ describe('R305-A7 — error panels disclose the envelope support code', () => {
     const { container } = renderPage();
     fireEvent.change(screen.getByLabelText('اكتب سؤالك للمساعد'), { target: { value: 'سؤال شبكة' } });
     fireEvent.click(screen.getByRole('button', { name: 'إرسال' }));
-    expect(await screen.findByText('تعذَّر الاتصال بالمساعد.')).toBeInTheDocument(); // R355 copy diet: «الآن» dropped
+    expect(await screen.findByText('تعذَّر الاتصال.')).toBeInTheDocument(); // r366 copy diet: «بالمساعد» dropped — the row sits in the assistant's own log
     expect(container.querySelector('.r305ai-err-code')).toBeNull();
   });
 });

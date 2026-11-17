@@ -233,7 +233,7 @@
     "student/AiAssistantPage.tsx": {
       "baseline": 474,
       "class": "authed",
-      "max": 244
+      "max": 181
     },
     "student/CalendarPage.tsx": {
       "baseline": 94,
