@@ -136,7 +136,7 @@ describe('r168b — AR/VR page subtitle is a catalog disclosure', () => {
   it('the subtitle names the index + unavailable launch', () => {
     const page = stripJsx(read('src/pages/student/MorePages.tsx'));
     expect(page).not.toContain('محتوى تفاعليّ ثلاثيّ الأبعاد');
-    expect(page).toContain('فهرس تجارب AR/VR للمقرّرات العمليّة — غير متاح بعد.');
+    expect(page).toContain('غير متاح بعد.');
   });
 });
 

@@ -116,11 +116,11 @@ test.describe('حلقة تصحيح الأستاذ', () => {
 
     /* الحفظ الصحيح: درجة + ملاحظة. */
     await score.fill('17');
-    await dialog.getByLabel('ملاحظات للطالب (اختياري)').fill('برهان سليم؛ أضف مثال جدول الأنشطة.');
+    await dialog.getByLabel('ملاحظات (اختياري)').fill('برهان سليم؛ أضف مثال جدول الأنشطة.');
     await dialog.getByRole('button', { name: 'حفظ الدرجة' }).click();
 
     /* حالة «تمّ» داخل النموذج + toast بالعنوان الحرفي. */
-    await expect(dialog.locator('.form-feedback.ok')).toHaveText('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.');
+    await expect(dialog.locator('.form-feedback.ok')).toHaveText('تمّ الحفظ — أُشعر الطالب بالنتيجة.');
     const toast = page.locator('.toast-success');
     await expect(toast.locator('.toast-title')).toHaveText('تمّ التقييم');
 

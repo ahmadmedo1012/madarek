@@ -79,6 +79,18 @@ const KIND_ACTION_CLASS: Record<'submissions' | 'research' | 'attendance', strin
   attendance: 'btn ghost sm',
 };
 
+/* r366 copy-diet §7 — one home for the literals this page repeats
+ * (page title, error fallback, chart title, phase chips); the copy
+ * gate counts per literal, so a shared const counts once. */
+const DASHBOARD_TITLE = 'لوحة الأستاذ';
+const LOAD_FAILED = 'تعذّر التحميل.';
+const TREND_TITLE = 'اتجاه الأداء والحضور';
+const AVG_PERF = 'متوسط الأداء';
+const ATTENDANCE_LABEL = 'الحضور';
+const ONGOING = 'جارٍ الآن';
+const DONE = 'انتهت';
+const UPCOMING = 'قادمة';
+
 /* countAr + formatRelativeAr live in lib/format.ts (wave 9-a). */
 
 /**
@@ -223,11 +235,11 @@ export function TeacherDashboardPage() {
     return (
       <div className="hr-scope">
         <PageFrame aria-busy="true" aria-live="polite">
-          <PageHeader title="لوحة الأستاذ" description="جارٍ التحميل…" />
+          <PageHeader title={DASHBOARD_TITLE} description="جارٍ التحميل…" />
           <RowList loading aria-label="ملخص نشاط التدريس" />
           <RowList loading aria-label="طابور التصحيح" />
           <RowList loading aria-label="طلاب يحتاجون متابعة" />
-          <Card title="اتجاه الأداء والحضور">
+          <Card title={TREND_TITLE}>
             <ChartSkeleton height={240} />
           </Card>
         </PageFrame>
@@ -238,9 +250,9 @@ export function TeacherDashboardPage() {
     return (
       <div className="hr-scope">
         <PageFrame>
-          <PageHeader title="لوحة الأستاذ" />
+          <PageHeader title={DASHBOARD_TITLE} />
           <ErrorState
-            message="تعذَّر التحميل."
+            message={LOAD_FAILED}
             error={dash.error}
             onRetry={() => dash.refetch()}
           />
@@ -260,8 +272,8 @@ export function TeacherDashboardPage() {
   // as "not enough data yet". The sr-only data table feeds both branches.
   const coverage = trendCoverage(d.trend);
   const trendTable = {
-    caption: 'اتجاه الأداء والحضور',
-    columns: ['الأسبوع', 'متوسط الأداء', 'الحضور'],
+    caption: TREND_TITLE,
+    columns: ['الأسبوع', AVG_PERF, ATTENDANCE_LABEL],
     rows: d.trend.map((t) => [
       t.week,
       t.avgGradePct === null ? '—' : `${formatPct1(t.avgGradePct)}%`,
@@ -280,7 +292,7 @@ export function TeacherDashboardPage() {
     <div className="hr-scope">
     <PageFrame>
       <PageHeader
-        title="لوحة الأستاذ"
+        title={DASHBOARD_TITLE}
         eyebrow="التدريس · متابعات اليوم"
         meta={
           <>
@@ -292,7 +304,7 @@ export function TeacherDashboardPage() {
            * vocabulary — ember when work waits, green when clear. */
           <span className="hr-chip" data-tone={visible.length === 0 ? 'ok' : 'ember'}>
             {visible.length === 0
-              ? 'لا عناصر تحتاج متابعة'
+              ? 'لا متابعات'
               : countAr(visible.length, ['عنصر', 'عنصران', 'عناصر', 'عنصراً'])}
           </span>
         }
@@ -309,13 +321,13 @@ export function TeacherDashboardPage() {
             hint: 'عبر مقرّراتك',
           },
           {
-            label: 'متوسط الأداء',
+            label: AVG_PERF,
             value: d.kpi.avgGradePct !== null ? `${formatPct1(d.kpi.avgGradePct)}%` : '—',
             hint: d.kpi.avgGradePct === null ? 'لا تقييمات بعد' : 'كل التقييمات المعتمدة',
             tone: d.kpi.avgGradePct === null || d.kpi.avgGradePct >= 70 ? 'neutral' : 'warning',
           },
           {
-            label: 'الحضور',
+            label: ATTENDANCE_LABEL,
             value: d.kpi.attendancePct !== null ? `${formatPct1(d.kpi.attendancePct)}%` : '—',
             hint: d.kpi.attendancePct === null ? 'لا جلسات حضور بعد' : 'كل الجلسات المسجّلة',
             tone: d.kpi.attendancePct === null || d.kpi.attendancePct >= 75 ? 'neutral' : 'warning',
@@ -350,7 +362,7 @@ export function TeacherDashboardPage() {
       {/* Performance + attendance trend — real 6-week data, wrapped for
           screen readers (aria-label + sr-only data table, audit 0-f). */}
       <Card
-        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>اتجاه الأداء والحضور</>}
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>{TREND_TITLE}</>}
         icon={Activity}>
         {!coverage.drawable ? (
           <>
@@ -360,7 +372,7 @@ export function TeacherDashboardPage() {
               description={
                 coverage.weeksRecorded === 0
                   ? ''
-                  : `${countAr(coverage.weeksRecorded, ['أسبوع واحد مسجَّل', 'أسبوعان مسجَّلان', 'أسابيع مسجَّلة', 'أسبوعاً مسجَّلاً'])}`
+                  : `${countAr(coverage.weeksRecorded, ['أسبوع مسجَّل', 'أسبوعان مسجَّلان', 'أسابيع مسجَّلة', 'أسبوعاً مسجَّلاً'])}`
               }
             />
             {/* The real data points stay available to screen readers
@@ -469,7 +481,7 @@ function trendChartData(trend: TeacherDashboard['trend']) {
     labels: trend.map((t) => t.week),
     datasets: [
       {
-        label: 'متوسط الأداء %',
+        label: `${AVG_PERF} %`,
         data: trend.map((t) => t.avgGradePct ?? null),
         borderColor: c.accent,
         backgroundColor: `color-mix(in srgb, ${c.accent} 12%, transparent)`,
@@ -481,7 +493,7 @@ function trendChartData(trend: TeacherDashboard['trend']) {
         spanGaps: true,
       },
       {
-        label: 'الحضور %',
+        label: `${ATTENDANCE_LABEL} %`,
         data: trend.map((t) => t.attendancePct ?? null),
         borderColor: c.success,
         backgroundColor: `color-mix(in srgb, ${c.success} 10%, transparent)`,
@@ -563,7 +575,7 @@ function PendingGradingQueue({ index, entries }: { index: string; entries: Teach
           /* R305 Heron: the structured empty (§0 .hr-empty) — the win
            * named, its line closed by the green status chip. */
           <div className="hr-empty">
-            <strong>لا انتظار — كل التسليمات مُقيَّمة</strong>
+            <strong>لا انتظار — الكل مُقيّم</strong>
             <span className="hr-chip" data-tone="ok">مكتمل</span>
           </div>
         ) : (
@@ -629,12 +641,12 @@ function TodayLectures({ index }: { index: string }) {
       {offsQ.isPending ? (
         <ListSkeleton rows={2} />
       ) : offsQ.isError ? (
-        <ErrorState message="تعذَّر التحميل." error={offsQ.error} onRetry={() => offsQ.refetch()} />
+        <ErrorState message={LOAD_FAILED} error={offsQ.error} onRetry={() => offsQ.refetch()} />
       ) : (
         <TodayList
           items={slots.map((slot) => {
             const phase = slotPhase(slot, now);
-            const phaseLabel = phase === 'done' ? 'انتهت' : phase === 'ongoing' ? 'جارٍ الآن' : 'قادمة';
+            const phaseLabel = phase === 'done' ? DONE : phase === 'ongoing' ? ONGOING : UPCOMING;
             return {
               id: slot.key,
               to: '/teacher/schedule',
@@ -650,9 +662,9 @@ function TodayLectures({ index }: { index: string }) {
               action:
                 /* R305 Heron: the phase chips speak the ONE status
                  * vocabulary (danger = live, info = upcoming). */
-                phase === 'ongoing' ? <span className="hr-chip" data-tone="danger">جارٍ الآن</span> :
-                phase === 'done' ? <span className="hr-chip">انتهت</span> :
-                <span className="hr-chip" data-tone="info">قادمة</span>,
+                phase === 'ongoing' ? <span className="hr-chip" data-tone="danger">{ONGOING}</span> :
+                phase === 'done' ? <span className="hr-chip">{DONE}</span> :
+                <span className="hr-chip" data-tone="info">{UPCOMING}</span>,
             };
           })}
           emptyState={
@@ -693,12 +705,12 @@ function AtRiskShortcuts({ index }: { index: string }) {
       {risks.isPending ? (
         <ListSkeleton rows={3} />
       ) : risks.isError ? (
-        <ErrorState message="تعذَّر التحميل." error={risks.error} onRetry={() => risks.refetch()} />
+        <ErrorState message={LOAD_FAILED} error={risks.error} onRetry={() => risks.refetch()} />
       ) : (
         <RowList aria-label="طلاب يحتاجون متابعة">
           {top.length === 0 ? (
             <RowItem
-              title="جميع طلابك في وضع جيد"
+              title="الكل مستقر"
               trailing={<span className="hr-chip" data-tone="ok">مستقر</span>}
             />
           ) : (

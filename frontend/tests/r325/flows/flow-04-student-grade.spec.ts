@@ -90,9 +90,9 @@ test('F4 · student submits → teacher grades → student sees grade + notifica
       const modal = page.getByRole('dialog', { name: `تقييم تسليم ${title}` });
       await expect(modal).toBeVisible();
       await modal.getByLabel('الدرجة (من 0 إلى 100)').fill('88');
-      await modal.getByLabel('ملاحظات للطالب (اختياري)').fill(feedback);
+      await modal.getByLabel('ملاحظات (اختياري)').fill(feedback);
       await modal.getByRole('button', { name: 'حفظ الدرجة' }).click();
-      await expect(modal.getByText('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.')).toBeVisible({ timeout: 20_000 });
+      await expect(modal.getByText('تمّ الحفظ — أُشعر الطالب بالنتيجة.')).toBeVisible({ timeout: 20_000 });
       await flowShot(page, 'flow-04-teacher-graded');
     } finally {
       await close();

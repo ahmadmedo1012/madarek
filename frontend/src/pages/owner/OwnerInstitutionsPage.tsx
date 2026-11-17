@@ -575,7 +575,7 @@ export function OwnerInstitutionsPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="المؤسسات"
-        description="إدارة المؤسسات التعليمية على المنصّة"
+        /* r366 (2-e): the description restated the title — cut. */
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المؤسسات' }]}
         /* R341 D11: the [04] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). The page's primary

@@ -240,7 +240,9 @@ export default function StudentCoursesPage() {
     <PageFrame width="default">
       <PageHeader
         title="مقرّراتي الدراسية"
-        description="جميع المقرّرات التي سجّلت فيها هذا الفصل."
+        /* r366 (2-e): the r173a summary-line contract keeps exactly one
+         * subtitle — the restatement tightened to it, not removed. */
+        description="مقرّراتك هذا الفصل."
       />
 
       {isPending ? (

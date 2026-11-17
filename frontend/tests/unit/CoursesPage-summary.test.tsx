@@ -120,7 +120,9 @@ describe('StudentCoursesPage — the light single-line summary (r173a)', () => {
     const header = document.querySelector('header.pf-page-header') as HTMLElement;
     expect(header).not.toBeNull();
     expect(within(header).getByRole('heading', { level: 1, name: 'مقرّراتي الدراسية' }));
-    expect(header.textContent).toContain('جميع المقرّرات التي سجّلت فيها هذا الفصل');
+    /* r366 (2-e): the restatement tightened to one short subtitle. */
+    expect(header.textContent).toContain('مقرّراتك هذا الفصل.');
+    expect(header.textContent).not.toContain('جميع المقرّرات التي سجّلت');
     // The header block carries nothing else — no stats, no chips.
     expect(header.querySelectorAll('p, .badge, .pill, .metric')).toHaveLength(1);
   });

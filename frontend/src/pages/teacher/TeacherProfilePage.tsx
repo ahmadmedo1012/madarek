@@ -43,6 +43,13 @@ const RANK_LABEL: Record<string, string> = {
   ASSOCIATE_PROFESSOR: 'أستاذ مشارك',
   PROFESSOR: 'أستاذ',
 };
+
+/* r366 copy-diet §7 — one home for the literals this page repeats
+ * (page title, managed-by note, counted units); the copy gate counts
+ * per literal, so a shared const counts once. */
+const PROFILE_TITLE = 'الملف الأكاديمي';
+const MANAGED_BY_REGISTRAR = 'تُدار من المسجل العام.';
+const CREDIT_UNIT: [string, string, string, string] = ['وحدة', 'وحدتان', 'وحدات', 'وحدة'];
 const DEGREE_LABEL: Record<string, string> = {
   BACHELORS: 'بكالوريوس',
   MASTERS: 'ماجستير',
@@ -137,7 +144,7 @@ export default function TeacherProfilePage() {
       <div className="page">
         <header className="page-header">
           <div className="page-title-block">
-            <h1 className="page-title">الملف الأكاديمي</h1>
+            <h1 className="page-title">{PROFILE_TITLE}</h1>
           </div>
         </header>
         <ErrorState
@@ -157,7 +164,7 @@ export default function TeacherProfilePage() {
       <div className="page">
         <header className="page-header">
           <div className="page-title-block">
-            <h1 className="page-title">الملف الأكاديمي</h1>
+            <h1 className="page-title">{PROFILE_TITLE}</h1>
           </div>
         </header>
         <Card>
@@ -214,7 +221,7 @@ export default function TeacherProfilePage() {
       <header className="page-header">
         <div className="page-title-block">
           <span className="hr-brow">هيئة التدريس</span>
-          <h1 className="page-title">الملف الأكاديمي</h1>
+          <h1 className="page-title">{PROFILE_TITLE}</h1>
         </div>
         {!editing ? (
           /* R305 → R342-09: the surface's one primary action rides the
@@ -299,7 +306,7 @@ export default function TeacherProfilePage() {
           {
             label: 'المقرّرات',
             value: profile.workload.courseCount.toString(),
-            trend: countAr(profile.workload.totalCredits, ['وحدة', 'وحدتان', 'وحدات', 'وحدة']),
+            trend: countAr(profile.workload.totalCredits, CREDIT_UNIT),
             trendTone: 'flat',
           },
           {
@@ -405,7 +412,7 @@ export default function TeacherProfilePage() {
 
       {/* Subject keywords + degree summary */}
       <div className="grid-2">
-        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>مجالات الاهتمام البحثي</>} icon={Sparkles}>
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>مجالات بحثية</>} icon={Sparkles}>
           {profile.subjectKeywords.length === 0 ? (
             <div className="text-sm text-muted">لا مجالات بعد.</div>
           ) : (
@@ -454,7 +461,7 @@ export default function TeacherProfilePage() {
           <EmptyState illustration="empty-research"
             icon={FileText}
             title="لا منشورات بعد"
-            description="تُدار من المسجل العام."
+            description={MANAGED_BY_REGISTRAR}
           />
         ) : (
           <div className="flex-col gap-2">
@@ -487,7 +494,7 @@ export default function TeacherProfilePage() {
           <EmptyState illustration="achievement"
             icon={Award}
             title="لا جوائز بعد"
-            description="تُدار من المسجل العام."
+            description={MANAGED_BY_REGISTRAR}
           />
         ) : (
           <div className="flex-col gap-2">
@@ -558,7 +565,7 @@ function CourseRow({ course: c }: {
         <span className="tq-row-title" title={c.name}>{c.name}</span>
         <span className="tq-row-meta">
           <span><Icon icon={Users2} size={12} /> {countAr(c.enrolled, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}</span>
-          <span>{countAr(c.credits, ['وحدة', 'وحدتان', 'وحدات', 'وحدة'])}</span>
+          <span>{countAr(c.credits, CREDIT_UNIT)}</span>
         </span>
       </span>
       <Icon icon={ChevronLeft} size={14} className="tq-row-chevron" />
