@@ -58,7 +58,7 @@ export function HeroPlateFurniture() {
       <span className="hpf-17" data-spec="hpf-17">قياس</span>
       <div className="hpf-18" data-spec="hpf-18" />
       <div className="hpf-19" data-spec="hpf-19" />
-      <div className="hpf-20" data-spec="hpf-20">قاعة المحاضرة ٠١ — قيد القياس</div>
+      <div className="hpf-20" data-spec="hpf-20">قاعة المحاضرة ٠١<br />— قيد القياس</div>
       <div className="hpf-24" data-spec="hpf-24" />
       <div className="hpf-37" data-spec="hpf-37" />
       <div className="hpf-38" data-spec="hpf-38" />

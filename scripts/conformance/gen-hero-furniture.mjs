@@ -311,9 +311,13 @@ for (const s of seats) {
   // carries its measured tablet row
   {
     const o = s.xf["768"];
-    if (o) {
+    if (o && !(o.vr.w === 0 && o.vr.h === 0)) {
       const row = rowFor(s, "768", o);
       if (row) css += `@media (min-width: 768px) and (max-width: 991px) { .${s.key} { ${row}; } }\n`;
+    } else {
+      // the seat is absent/collapsed in the tablet census — hide it there
+      // (the desktop geometry would render off-screen; the panel's hClip law)
+      css += `@media (min-width: 768px) and (max-width: 991px) { .${s.key} { display: none; } }\n`;
     }
   }
   if (s.iRule === "perbp" || s.bRule === "perbp" || s.wRule === "perbp" || s.hRule === "perbp") {
@@ -337,7 +341,7 @@ writeFileSync(join(OUT, "hero-plate.css"), css);
 // ── HeroPlate.tsx (placement law + curated text map + svg paths) ───────────
 const SEAT_TEXT = {
   "hpf-14": "٠١", "hpf-15": "محور", "hpf-16": "٠٢", "hpf-17": "قياس",
-  "hpf-20": "قاعة المحاضرة ٠١ — قيد القياس",
+  "hpf-20": "قاعة المحاضرة ٠١|— قيد القياس",
   "hpf-58": "محاضرة", "hpf-59": "جلسة تفاعلية بنقاط فحص مقيسة",
   "hpf-68": "مكتبة", "hpf-69": "بحوث مفهرسة تبقى",
 };
@@ -358,7 +362,7 @@ const seatRow = (s) => {
     return `      <svg className="${s.key}" data-spec="${s.key}" viewBox="0 0 ${s.box1440.w} ${s.box1440.h}" aria-hidden="true">\n${kids}\n      </svg>`;
   }
   if (s.key === "hpf-47") return null; // hpf-47 IS the art frame (rendered by the wrapper)
-  const txt = SEAT_TEXT[s.key];
+  const txt = SEAT_TEXT[s.key] ? SEAT_TEXT[s.key].replace(/\|/g, "<br />") : null;
   return `      <${s.tag} className="${s.key}" data-spec="${s.key}"${txt ? `>${txt}</${s.tag}>` : " />"}`;
 };
 const inArt = (s) => s.iRule === "artpct" || s.bRule === "artpct" || s.key === "hpf-47"; // = anchorOf

@@ -117,13 +117,16 @@
 @media (min-width: 768px) and (max-width: 991px) { .hpf-8 { inset-inline-start: 21.5rem; inset-block-start: 47.22%; inline-size: 0.43rem; block-size: 0.43rem; } }
 @media (max-width: 767px) { .hpf-8 { display: none; } }
 .hpf-9 { position: absolute; inset-inline-start: 85.56rem; inset-block-start: 0rem; inline-size: 0.12rem; block-size: calc(100% - 0rem); background-color: var(--hpf-rule); opacity: 0.2; }
+@media (min-width: 768px) and (max-width: 991px) { .hpf-9 { display: none; } }
 @media (max-width: 767px) { .hpf-9 { display: none; } }
 .hpf-10 { position: absolute; inset-inline-start: 81.96rem; inset-block-start: 49.3%; inline-size: 0.96rem; block-size: 0.96rem; color: var(--accent); }
 @media (min-width: 768px) and (max-width: 991px) { .hpf-10 { display: none; } }
 @media (max-width: 767px) { .hpf-10 { display: none; } }
 .hpf-11 { position: absolute; inset-inline-start: 82.2rem; inset-block-start: 49.3%; inline-size: 0.24rem; block-size: 0.96rem; background-color: var(--accent); color: var(--accent); }
+@media (min-width: 768px) and (max-width: 991px) { .hpf-11 { display: none; } }
 @media (max-width: 767px) { .hpf-11 { display: none; } }
 .hpf-12 { position: absolute; inset-inline-start: 81.96rem; inset-block-start: 49.77%; inline-size: 0.96rem; block-size: 0.24rem; background-color: var(--accent); color: var(--accent); }
+@media (min-width: 768px) and (max-width: 991px) { .hpf-12 { display: none; } }
 @media (max-width: 767px) { .hpf-12 { display: none; } }
 .hpf-13 { position: absolute; inset-inline-start: 80.04rem; inset-block-start: 48.22%; inline-size: 4.8rem; block-size: 2.64rem; }
 @media (min-width: 768px) and (max-width: 991px) { .hpf-13 { display: none; } }
@@ -132,11 +135,13 @@
 @media (min-width: 768px) and (max-width: 991px) { .hpf-14 { display: none; } }
 @media (max-width: 767px) { .hpf-14 { display: none; } }
 .hpf-15 { position: absolute; inset-inline-start: 81.24rem; inset-block-start: 48.22%; inline-size: 2.4rem; block-size: 1.2rem; font-size: 1rem; line-height: 1.35rem; font-weight: var(--fw-medium); color: var(--hpf-ink); }
+@media (min-width: 768px) and (max-width: 991px) { .hpf-15 { display: none; } }
 @media (max-width: 767px) { .hpf-15 { display: none; } }
 .hpf-16 { position: absolute; inset-inline-start: 80.04rem; inset-block-start: 49.92%; inline-size: 4.8rem; block-size: 1.32rem; font-size: 1rem; line-height: 1.35rem; font-weight: var(--fw-medium); color: var(--hpf-ink); }
 @media (min-width: 768px) and (max-width: 991px) { .hpf-16 { display: none; } }
 @media (max-width: 767px) { .hpf-16 { display: none; } }
 .hpf-17 { position: absolute; inset-inline-start: 81.24rem; inset-block-start: 49.92%; inline-size: 2.4rem; block-size: 1.2rem; font-size: 1rem; line-height: 1.35rem; font-weight: var(--fw-medium); color: var(--hpf-ink); }
+@media (min-width: 768px) and (max-width: 991px) { .hpf-17 { display: none; } }
 @media (max-width: 767px) { .hpf-17 { display: none; } }
 .hpf-18 { position: absolute; inset-inline-start: 74.64rem; inset-block-start: 47.3%; inline-size: 15.6rem; block-size: 4.2rem; background-color: var(--hpf-ink-solid); color: var(--hpf-dot); opacity: 0; }
 @media (min-width: 768px) and (max-width: 991px) { .hpf-18 { display: none; } }
@@ -145,6 +150,7 @@
 @media (min-width: 768px) and (max-width: 991px) { .hpf-19 { display: none; } }
 @media (max-width: 767px) { .hpf-19 { display: none; } }
 .hpf-20 { position: absolute; inset-inline-start: 75.36rem; inset-block-start: 48.22%; inline-size: 14.04rem; block-size: 2.64rem; color: var(--hpf-dot); font-size: 1rem; line-height: 1.35rem; font-weight: var(--fw-medium); }
+@media (min-width: 768px) and (max-width: 991px) { .hpf-20 { display: none; } }
 @media (max-width: 767px) { .hpf-20 { display: none; } }
 .hpf-21 { position: absolute; inset-inline-start: 1.2rem; inset-block-start: 1.2rem; inline-size: 168.84rem; block-size: 81.6rem; }
 @media (min-width: 768px) and (max-width: 991px) { .hpf-21 { inset-inline-start: 1.19rem; inset-block-start: 1.19rem; inline-size: 79.38rem; block-size: 62.22rem; } }
@@ -252,6 +258,7 @@
 @media (min-width: 768px) and (max-width: 991px) { .hpf-53 { inset-inline-start: 21.5rem; inset-block-start: 47.22%; inline-size: 0.43rem; block-size: 0.43rem; } }
 @media (max-width: 767px) { .hpf-53 { display: none; } }
 .hpf-54 { position: absolute; inset-inline-start: 59.04rem; inset-block-start: 64.45%; inline-size: 0.6rem; block-size: 0.6rem; }
+@media (min-width: 768px) and (max-width: 991px) { .hpf-54 { display: none; } }
 @media (max-width: 767px) { .hpf-54 { display: none; } }
 .hpf-55 { position: absolute; inset-inline-start: 59.04rem; inset-block-start: 64.45%; inline-size: 0.6rem; block-size: 0.6rem; }
 @media (min-width: 768px) and (max-width: 991px) { .hpf-55 { inset-inline-start: 21.5rem; inset-block-start: 47.22%; inline-size: 0.43rem; block-size: 0.43rem; } }
