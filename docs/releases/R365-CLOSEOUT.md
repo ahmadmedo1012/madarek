@@ -108,9 +108,10 @@ in production), so a second row for the same pair is impossible. Production hold
 46 users / 53 memberships / 5 institutions, and all 53 memberships are active.
 
 What actually happened: the demo student (`student@test.ly`) is active in **two
-different institutions** — the legacy `inst-ulara-showcase` (created 2026-11-09) and
-`inst-madarek-demo` (created 2026-11-16) — so `resolveDefaultContext` correctly refuses
-to auto-select (`r349` fail-closed rule) and the client must show the institution picker.
+different institutions** — the legacy `ulara` demo institution (created 2026-11-09)
+and `inst-madarek-demo` (created 2026-11-16) — so `resolveDefaultContext` correctly
+refuses to auto-select (`r349` fail-closed rule) and the client must show the
+institution picker.
 
 Sources of the reactivation, traced in code and configuration:
 
@@ -130,7 +131,7 @@ column, not a different event.
 without selecting an institution, received `INSTITUTION_CONTEXT_REQUIRED`, and opened
 issue #51. The probe now follows the picker flow exactly like the web client and the
 deploy smoke. Verified by running the same sequence against production:
-`multi-membership seat — selecting inst-ulara-showcase (the picker flow)` →
+`multi-membership seat — selecting <institution> (the picker flow)` →
 `search answered=true` → `ai config answered=true` → `fails=0`.
 
 ## 4 · Remaining blockers — external, and honestly separated
