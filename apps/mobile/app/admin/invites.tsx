@@ -87,17 +87,17 @@ const [maxUses, setMaxUses] = useState("1");
       setDays("7");
       setMaxUses("1");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر إنشاء الدعوة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الإنشاء"),
   });
 
   const remove = useMutation({
     mutationFn: (id: string) => adminApi.deleteInvite(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "invites"] });
-      toast.success("حُذف كود الدعوة.", "تمّ الحذف");
+      toast.success("حُذف الكود.", "تمّ الحذف");
       setDeleting(null);
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر حذف الدعوة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الحذف"),
   });
 
   const facultyOptions = (facs.data ?? []).map((f) => ({ id: f.id, label: f.name }));
@@ -116,7 +116,7 @@ const [maxUses, setMaxUses] = useState("1");
     <Screen scroll>
       <StackHeader title="دعوات التسجيل" kicker="لوحة المسجل العام" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="دعوات التسجيل" kicker="أكواد انضمام بنطاق وصلاحية محدّدة." />
+        <PageHeader title="دعوات التسجيل" kicker="أكواد انضمام بنطاق وصلاحية." />
 
         <Button
           label="دعوة جديدة"
@@ -132,7 +132,7 @@ const [maxUses, setMaxUses] = useState("1");
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا دعوات بعد"
-            message="أنشئ أول دعوة لمشاركة الكود."
+            message="أنشئ أول دعوة."
             actionLabel="دعوة جديدة"
             onAction={() => setCreateOpen(true)}
           />

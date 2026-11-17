@@ -30,9 +30,9 @@ function featureLabel(feature?: string): string {
 }
 
 /**
- * Pushed: /owner/ai — «مركز الذكاء الاصطناعيّ» (web OwnerAiPage parity):
+ * Pushed: /owner/ai — «مركز الذكاء» (web OwnerAiPage parity):
  * usage metrics as honest StatLines and the provider badge verbatim —
- * `local` discloses the template composer («مزوّد محلي (قالبيّ)»), a real
+ * `local` discloses the template composer («مزوّد محليّ»), a real
  * model name renders as itself. No badge before the config answers.
  */
 export default function OwnerAi() {
@@ -53,12 +53,12 @@ export default function OwnerAi() {
   return (
     <Screen scroll>
       <StackHeader
-        title="مركز الذكاء الاصطناعيّ"
+        title="مركز الذكاء"
         kicker="لوحة المالك"
         right={
           cfg.data ? (
             cfg.data.provider === "local" ? (
-              <Badge label="مزوّد محلي (قالبيّ)" tone="yellow" />
+              <Badge label="مزوّد محليّ" tone="yellow" />
             ) : (
               <Badge label={cfg.data.model || cfg.data.provider} tone="mint" mono={false} />
             )
@@ -66,7 +66,7 @@ export default function OwnerAi() {
         }
       />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="مركز الذكاء الاصطناعيّ" kicker="استخدام وأداء الذكاء الاصطناعيّ." />
+        <PageHeader title="مركز الذكاء" kicker="استخدام وأداء الذكاء." />
 
         {metrics.isLoading ? (
           <SkeletonList rows={4} rowHeight={48} />
@@ -103,7 +103,7 @@ export default function OwnerAi() {
                   <StatLine
                     label="متوسّط الاستجابة"
                     value={m?.avgLatencyMs != null ? `${latn(Math.round(m.avgLatencyMs))}ms` : null}
-                    hint="زمن الردّ المتوسط"
+                    hint="زمن الردّ"
                   />
                 </LedgerRow>
               </RowList>
@@ -116,7 +116,7 @@ export default function OwnerAi() {
                 <EmptyState
                   icon={<Bot size={22} color={p.textMuted} />}
                   title="لا طلبات بعد"
-                  message="تظهر المؤشرات فور أول طلب."
+                  message="تظهر فور أول طلب."
                 />
               ) : (
                 <RowList>

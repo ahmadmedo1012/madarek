@@ -99,19 +99,19 @@ export default function Register() {
     const errs: Record<string, string> = {};
     if (!firstName.trim()) errs.firstName = "الاسم الأول مطلوب.";
     if (!lastName.trim()) errs.lastName = "اسم العائلة مطلوب.";
-    if (!/^\S+@\S+\.\S+$/.test(email.trim())) errs.email = "بريد إلكتروني غير صالح.";
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) errs.email = "بريد غير صالح.";
     if (password.length < 12) errs.password = "12 حرفًا على الأقل (حتى 72).";
-    else if (password.length > 72) errs.password = "كلمة المرور أطول من الحد (72 حرفًا).";
+    else if (password.length > 72) errs.password = "أطول من 72 حرفًا.";
     if (!institutionId) errs.institution = "اختر المؤسّسة.";
     if (!facultyId) errs.faculty = "اختر الكلية.";
     if (role === "STUDENT") {
-      if (!universityId.trim()) errs.universityId = "رقم التسجيل الجامعي مطلوب.";
+      if (!universityId.trim()) errs.universityId = "رقم التسجيل مطلوب.";
       if (!year) errs.year = "اختر السنة.";
     } else {
       if (!specialty.trim()) errs.specialty = "التخصّص مطلوب.";
       if (!rank) errs.rank = "اختر الرتبة.";
     }
-    if (inviteCode.trim() && !inviteCheck.data?.ok) errs.inviteCode = inviteCheck.data?.message ?? "رمز الدعوة غير صالح.";
+    if (inviteCode.trim() && !inviteCheck.data?.ok) errs.inviteCode = inviteCheck.data?.message ?? "رمز غير صالح.";
     setFieldErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -270,7 +270,7 @@ export default function Register() {
           onChangeText={setPassword}
           purpose="newPassword"
           error={fieldErrors.password}
-          hint="12 حرفًا على الأقل — تجنّب الشائعة."
+          hint="12+ حرفًا — تجنّب الشائعة."
         />
         <SelectField
           label="المؤسّسة"
@@ -309,7 +309,7 @@ export default function Register() {
         />
         {role === "STUDENT" ? (
           <>
-            <Field label="رقم التسجيل الجامعي" value={universityId} onChangeText={setUniversityId} error={fieldErrors.universityId} />
+            <Field label="رقم التسجيل" value={universityId} onChangeText={setUniversityId} error={fieldErrors.universityId} />
             <SelectField
               label="السنة الدراسية"
               value={year ? { id: year, label: YEARS.find((y) => y.id === year)?.label ?? "" } : null}
@@ -323,7 +323,7 @@ export default function Register() {
           <>
             <Field label="التخصّص" value={specialty} onChangeText={setSpecialty} error={fieldErrors.specialty} />
             <SelectField
-              label="الرتبة الأكاديمية"
+              label="الرتبة"
               value={rank ? { id: rank, label: RANKS.find((r) => r.id === rank)?.label ?? "" } : null}
               options={RANKS}
               onSelect={setRank}

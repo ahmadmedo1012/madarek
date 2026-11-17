@@ -211,7 +211,7 @@ function ViewToggle({ view, onChange }: { view: CourseView; onChange: (v: Course
   return (
     <View
       accessibilityRole="tablist"
-      accessibilityLabel="طريقة عرض المقرّرات"
+      accessibilityLabel="طريقة العرض"
       style={{ flexDirection: "row", borderWidth: StyleSheet.hairlineWidth, borderColor: p.border }}
     >
       {VIEW_OPTIONS.map(({ key, label, Icon }) => {
@@ -313,7 +313,7 @@ export default function StudentCourses() {
   const filtered = useMemo(() => applyCourseFilters(rows, filters), [rows, filters]);
   const filteredEmpty = rows.length > 0 && filtered.length === 0;
   const activeCount = activeCourseFilterCount(filters);
-  const enrolledLabel = countAr(rows.length, ["مقرّر مسجَّل واحد", "مقرّران مسجَّلان", "مقرّرات مسجَّلة", "مقرّراً مسجَّلاً"]);
+  const enrolledLabel = countAr(rows.length, ["مقرّر مسجّل", "مقرّران مسجَّلان", "مقرّرات مسجَّلة", "مقرّراً مسجَّلاً"]);
 
   const setDraftAction = (action: CourseFilterAction) => {
     haptics.selection();
@@ -342,7 +342,7 @@ export default function StudentCourses() {
       emptySlot={
         filteredEmpty ? (
           <EmptyState
-            title="لا مقرّرات تطابق التصفية"
+            title="لا مطابقات للتصفية"
             message="خفّف الشروط أو أعد ضبطها."
             actionLabel="إزالة التصفية"
             onAction={() => setFilters(NO_COURSE_FILTERS)}
@@ -352,7 +352,7 @@ export default function StudentCourses() {
             art={<Illustration id="r342/role-student" width={216} />}
             room="library"
             title="لا مقرّرات"
-            message="لم تُسجَّل في مقرّرات بعد — الإضافة تتم عبر إدارة شؤون الطلاب وستظهر هنا فور اعتماد تسجيلك."
+            message="لم تُسجَّل — الإضافة عبر شؤون الطلاب."
             actionLabel="دليل المقرّرات"
             onAction={() => router.push("/student/catalog" as never)}
           />
@@ -376,12 +376,12 @@ export default function StudentCourses() {
       refetch={() => feed.refetch()}
       isRefetching={feed.isRefetching}
       emptyTitle="لا مقرّرات"
-      emptyMessage="لم تُسجَّل في مقرّرات بعد — الإضافة تتم عبر إدارة شؤون الطلاب وستظهر هنا فور اعتماد تسجيلك."
+      emptyMessage="لم تُسجَّل — الإضافة عبر شؤون الطلاب."
       emptySlot={
         filteredEmpty ? (
           <EmptyState
-            title="لا مقرّرات تطابق التصفية"
-            message="جرّب تخفيف الشروط أو أعد ضبطها لعرض كل مقرّراتك."
+            title="لا مطابقات للتصفية"
+            message="خفّف الشروط أو أعد ضبطها."
             actionLabel="إزالة التصفية"
             onAction={() => setFilters(NO_COURSE_FILTERS)}
           />
@@ -390,7 +390,7 @@ export default function StudentCourses() {
             art={<Illustration id="r342/role-student" width={216} />}
             room="library"
             title="لا مقرّرات"
-            message="لم تُسجَّل في مقرّرات بعد — الإضافة تتم عبر إدارة شؤون الطلاب وستظهر هنا فور اعتماد تسجيلك."
+            message="لم تُسجَّل — الإضافة عبر شؤون الطلاب."
             actionLabel="دليل المقرّرات"
             onAction={() => router.push("/student/catalog" as never)}
           />
@@ -411,7 +411,7 @@ export default function StudentCourses() {
             stays the trailing control. */}
         <SectionBar
           index={1}
-          title="مقرّراتي الدراسية"
+          title="مقرّراتي"
           action={
             <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
               <BarCount n={rows.length} a11y={enrolledLabel} />

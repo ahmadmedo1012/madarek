@@ -43,7 +43,7 @@ export default function SkillsScreen() {
         <EmptyState
           icon={<Gauge size={24} color={p.textFaint} />}
           title="لا مهارات بعد"
-          message="تُحتسب تلقائيًا من إنجازاتك ومسارات التطوير."
+          message="تُحتسب من إنجازاتك ومسارات التطوير."
         />
       ) : (
         <View style={{ gap: sp[8] }}>

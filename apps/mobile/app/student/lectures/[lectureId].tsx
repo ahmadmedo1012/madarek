@@ -9,7 +9,7 @@
  *    fullscreen — platform limitation of expo-video), immersive auto-hide
  *    of the chrome while playing (3.2s timer),
  *  - resume-seek to the saved high-water mark (watchedSec − 3s, once)
- *    + the «استأنفنا من توقفت» toast,
+ *    + the «من حيث توقفت» toast,
  *  - 10s watch reporting while playing (high-water never regresses;
  *    completed only at ≥95% share / on ended; final flush on unmount).
  *    Offline resilience mirrors the exam-queue semantics: the newest
@@ -194,9 +194,9 @@ export default function LecturePlayerScreen() {
       <ScrollFrame title="محاضرة">
         <AppStatusBar />
         <EmptyState
-          title="لم يتم تحديد محاضرة"
-          message="لا محاضرة في الرابط — اختر من المقرّر."
-          actionLabel="العودة إلى مقرراتي"
+          title="لا محاضرة محددة"
+          message="لا محاضرة — اختر من المقرّر."
+          actionLabel="إلى مقرراتي"
           onAction={() => router.push("/student/courses" as never)}
         />
       </ScrollFrame>
@@ -359,7 +359,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
           const target = Math.max(0, we.watchedSec - 3);
           const dur2 = player.duration;
           seekPlayer(player, clampSeek(target, dur2));
-          toast.info("استأنفنا من توقفت", "استئناف المشاهدة");
+          toast.info("من حيث توقفت", "استئناف المشاهدة");
         }
       }
     });
@@ -656,7 +656,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
             <T variant="body" color="danger">
               تعذّر تحميل الفيديو — تحقّق من اتصالك ثم أعد المحاولة.
             </T>
-            <Button label="إعادة تحميل الفيديو" kind="ghost" small onPress={loadSource} />
+            <Button label="إعادة التحميل" kind="ghost" small onPress={loadSource} />
           </Card>
         ) : null}
 
@@ -669,7 +669,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
             </T>
             {checkpoints.length > 0 ? (
               <Badge
-                label={countAr(checkpoints.length, ["نقطة تفاعل واحدة", "نقطتا تفاعل", "نقاط تفاعل", "نقطة تفاعل"])}
+                label={countAr(checkpoints.length, ["نقطة تفاعل", "نقطتا تفاعل", "نقاط تفاعل", "نقطة تفاعل"])}
                 tone="sky"
               />
             ) : null}
@@ -698,7 +698,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
           {checkpoints.length > 0 ? (
             <T variant="xs" color={allAnswered ? "muted" : "accentInk"}>
               {`أُجيب عن ${fmt(checkpointsAnswered)} من ${countAr(checkpoints.length, [
-                "نقطة تفاعل واحدة",
+                "نقطة تفاعل",
                 "نقطتا تفاعل",
                 "نقاط تفاعل",
                 "نقطة تفاعل",
@@ -868,14 +868,14 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
               </T>
             ) : cues.length === 0 ? (
               <T variant="sm" color="muted">
-                {transcriptPending ? "يُولَّد النص الآن — عد بعد قليل." : "لا مقاطع في النص."}
+                {transcriptPending ? "يُولَّد النص — عد بعد قليل." : "لا مقاطع في النص."}
               </T>
             ) : (
               <>
                 <SearchBar
                   value={cueQuery}
                   onChange={setCueQuery}
-                  placeholder="ابحث في النص المكتوب…"
+                  placeholder="ابحث في النص…"
                 />
                 {/* M5 — virtualized cue list (nested, height-capped):
                     FULL data in, windowed views out. The old shape mounted
@@ -1050,7 +1050,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                 }}
               >
                 <T variant="body" weight="bold" style={{ color: reveal.correct ? tones.mint.deep : tones.rose.deep }}>
-                  {reveal.correct ? "إجابة صحيحة!" : "ليست الإجابة الصحيحة."}
+                  {reveal.correct ? "إجابة صحيحة!" : "إجابة غير صحيحة."}
                 </T>
                 {reveal.explanation ? (
                   <T variant="sm" style={{ color: reveal.correct ? tones.mint.deep : tones.rose.deep }}>
@@ -1442,7 +1442,7 @@ function SeekBar({
       {...pan.panHandlers}
       onLayout={(e) => (widthRef.current = e.nativeEvent.layout.width)}
       accessibilityRole="adjustable"
-      accessibilityLabel="شريط تقدّم المحاضرة"
+      accessibilityLabel="شريط التقدّم"
       accessibilityHint="اسحب للانتقال — نقرتان على الجانب = عشر ثوانٍ"
       onAccessibilityAction={(e) => {
         const step = e.nativeEvent.actionName === "increment" ? 10 : e.nativeEvent.actionName === "decrement" ? -10 : 0;

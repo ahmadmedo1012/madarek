@@ -253,7 +253,7 @@ function BooksTab() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["library"] });
       haptics.notify("success");
-      toast.success("أُعيد الكتاب إلى المكتبة.", "تمّ الإرجاع");
+      toast.success("أُعيد الكتاب.", "تمّ الإرجاع");
     },
     onError: (e) => {
       haptics.notify("error");
@@ -273,7 +273,7 @@ function BooksTab() {
       <SearchBar
         value={q}
         onChange={setQ}
-        placeholder="ابحث عن كتاب أو مؤلف…"
+        placeholder="كتابًا أو مؤلفًا…"
         onClear={() => {
           setQ("");
           setQuery({ q: "", page: 1 });
@@ -362,7 +362,7 @@ function BooksTab() {
             title={debouncedQ || availability !== "all" ? "لا كتب مطابقة" : "لا ملفات"}
             message={
               debouncedQ || availability !== "all"
-                ? "جرّب كلمات أخرى أو أعد الضبط."
+                ? "لا مطابقات — جرّب كلمات أخرى."
                 : "الكتب والملفات فور توفرها."
             }
           />
@@ -461,16 +461,16 @@ const PaperRow = makeRow<PublishedPaper, { last: boolean; snippet: string | null
           </View>
         )}
         {paper.fileUrl ? (
-          // M9 — web parity: «اقرأ البحث كاملاً» is the web's .btn.primary.sm
+          // M9 — web parity: «اقرأ كاملاً» is the web's .btn.primary.sm
           // (charcoal slab), not orange text — the accent leaves the rows.
           <View style={{ alignSelf: "flex-start" }}>
             <Button
-              label="اقرأ البحث كاملاً"
+              label="اقرأ كاملاً"
               kind="primary"
               small
               onPress={() => onOpen(paper)}
               icon={<FileText size={13} color={p.primaryFg} />}
-              accessibilityLabel={`اقرأ البحث كاملاً: ${paper.title}`}
+              accessibilityLabel={`اقرأ كاملاً: ${paper.title}`}
             />
           </View>
         ) : null}
@@ -544,7 +544,7 @@ function ResearchTab() {
             <SearchBar
               value={q}
               onChange={setQ}
-              placeholder="ابحث في العنوان أو الملخص أو المحتوى…"
+              placeholder="في العنوان أو الملخص…"
               onClear={() => {
                 setQ("");
                 setDebouncedQ("");

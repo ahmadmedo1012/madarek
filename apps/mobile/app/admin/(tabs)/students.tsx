@@ -128,7 +128,7 @@ export default function AdminStudents() {
           emptyMessage={
             appliedQ
               ? "جرّب بحثًا أوسع."
-              : "تظهر القائمة فور تسجيل أول طالب."
+              : "تظهر فور تسجيل أول طالب."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />
@@ -216,7 +216,7 @@ function EnrollmentManager({
     onSuccess: () => {
       invalidate(student.id);
       onChanged();
-      toast.success("تمّ التسجيل في المقرّر");
+      toast.success("تمّ التسجيل");
       setPicked(null);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر التسجيل"),
@@ -227,7 +227,7 @@ function EnrollmentManager({
     onSuccess: () => {
       invalidate(student.id);
       onChanged();
-      toast.success("تمّ إلغاء التسجيل");
+      toast.success("أُلغي التسجيل");
       setConfirming(null);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر إلغاء التسجيل"),

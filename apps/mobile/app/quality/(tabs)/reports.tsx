@@ -107,7 +107,7 @@ export default function QualityReports() {
                   hint={countAr(eng?.attendance?.total ?? 0, ["سجل واحد", "سجلان", "سجلات", "سجلاً"])}
                 />
                 <StatLine
-                  label="معدل إكمال المحاضرات"
+                  label="إكمال المحاضرات"
                   value={`${latn(Math.round(eng?.videos?.completionRate ?? 0))}%`}
                 />
                 <StatLine
@@ -169,7 +169,7 @@ export default function QualityReports() {
                 ))}
               </RowList>
               <Button
-                label="عرض كل التنبيهات"
+                label="كل التنبيهات"
                 kind="ghost"
                 small
                 onPress={() => router.push("/quality/alerts" as never)}

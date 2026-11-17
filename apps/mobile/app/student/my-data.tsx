@@ -140,7 +140,7 @@ export default function StudentMyData() {
       <ScrollBody refreshing={profile.isFetching && !profile.isLoading} onRefresh={() => profile.refetch()}>
         <PageHeader
           title="بياناتي واتصالي"
-          kicker="بيانات المؤسّسة — عدّل ما يخصّك."
+          kicker="بيانات المؤسسة — عدّل ما يخصّك."
         />
 
         {profile.isLoading ? (
@@ -214,7 +214,7 @@ export default function StudentMyData() {
                     label="جهة الطوارئ"
                     value={draft.emergencyContactName}
                     onChangeText={(v) => setDraft({ ...draft, emergencyContactName: v })}
-                    placeholder="جهة الاتصال عند الطوارئ"
+                    placeholder="جهة الاتصال للطوارئ"
                   />
                   <Field
                     label="هاتف الطوارئ"
@@ -261,7 +261,7 @@ export default function StudentMyData() {
                   <StatLine label="جهة الطوارئ" value={view.emergencyContact.name ?? "—"} />
                   <StatLine label="هاتف الطوارئ" value={view.emergencyContact.phone ?? "—"} />
                   <Button
-                    label="تعديل بيانات الاتصال"
+                    label="بيانات الاتصال"
                     kind="ghost"
                     onPress={() => setRevealed(true)}
                   />

@@ -286,9 +286,9 @@ export default function OnlineExamsScreen() {
               title={filter === "all" ? undefined : "لا اختبارات هنا"}
               message={
                 filter === "available"
-                  ? "لا اختبارات — تظهر فور اعتماد الجودة."
+                  ? "تظهر فور اعتماد الجودة."
                   : filter === "taken"
-                    ? "المنجزة في هذه القائمة."
+                    ? "المنجزة هنا."
                     : undefined
               }
             />

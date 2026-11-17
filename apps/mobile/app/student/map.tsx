@@ -63,7 +63,7 @@ export default function CampusMapScreen() {
   return (
     <PushFrame
       title="خريطة الكليات"
-      kicker="كليات مؤسستك بحسب المدينة"
+      kicker="كليات مؤسستك بالمدينة"
       refreshing={faculties.isFetching && !faculties.isLoading}
       onRefresh={() => faculties.refetch()}
     >
@@ -73,7 +73,7 @@ export default function CampusMapScreen() {
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
           title="لم تُحدَّد مؤسستك"
-          message="اختر مؤسستك لعرض خريطتها."
+          message="اختر مؤسستك أولًا."
         />
       ) : faculties.isLoading ? (
         <SkeletonList rows={5} rowHeight={64} />
@@ -81,7 +81,7 @@ export default function CampusMapScreen() {
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
           title="لا كليات بعد"
-          message="لا كليات — تظهر فور إضافتها."
+          message="لا كليات — تظهر فور الإضافة."
         />
       ) : (
         <>

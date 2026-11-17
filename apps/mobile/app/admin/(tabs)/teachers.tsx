@@ -98,7 +98,7 @@ export default function AdminTeachers() {
         <StatLine
           label="عدد الأساتذة"
           value={num(count.data?.rows ? (count.data.meta?.total ?? count.data.rows.length) : null, "…")}
-          hint={count.isLoading ? "قراءة عدّاد الخادم…" : "في هذه المؤسّسة"}
+          hint={count.isLoading ? "قراءة العدّاد…" : "في هذه المؤسّسة"}
         />
 
         <SearchBar
@@ -128,7 +128,7 @@ export default function AdminTeachers() {
           emptyMessage={
             appliedQ
               ? "لا أساتذة تطابق البحث."
-              : "تظهر القائمة فور تسجيل أول أستاذ."
+              : "تظهر فور تسجيل أول أستاذ."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />
@@ -201,9 +201,9 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
     onSuccess: (_d, verified) => {
       qc.invalidateQueries({ queryKey: ["admin", "users"] });
       qc.invalidateQueries({ queryKey: ["admin", "teachers"] });
-      toast.success(verified ? `تمّ توثيق «${teacher.firstName} ${teacher.lastName}».` : "أُلغي توثيق الأستاذ.");
+      toast.success(verified ? `تمّ توثيق «${teacher.firstName} ${teacher.lastName}».` : "أُلغي التوثيق.");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث التوثيق"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر التحديث"),
   });
 
   const [position, setPosition] = useState<PositionChoice>(
@@ -348,7 +348,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
 
       <ConfirmDialog
         open={unverifyConfirm}
-        title="إلغاء توثيق الأستاذ"
+        title="إلغاء التوثيق"
         message={`سيُفقد «${teacher.firstName} ${teacher.lastName}» شارة التوثيق، ويُسجَّل الإجراء في سجلّ النشاط.`}
         confirmLabel="إلغاء التوثيق"
         danger

@@ -61,7 +61,7 @@ export default function AdminPermissions() {
           : `سُحبت صلاحية «${CAPABILITY_LABEL[payload.capability] ?? payload.capability}».`,
       );
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث الصلاحية"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر التحديث"),
   });
 
   const currentScopeFaculty = target?.scopeFaculty ?? null;
@@ -76,7 +76,7 @@ export default function AdminPermissions() {
       qc.invalidateQueries({ queryKey: ["admin", "users"] });
       toast.success("تمّ حفظ النطاق.", "نطاق العمل");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ النطاق"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الحفظ"),
   });
 
   const facultyOptions = (facs.data ?? []).map((f) => ({ id: f.id, label: f.name }));
@@ -190,9 +190,9 @@ export default function AdminPermissions() {
             </View>
 
             <StatLine
-              label="قدرات مُعروضة من الخادم"
+              label="قدرات من الخادم"
               value={num(permissions.data?.effective?.length ?? null)}
-              hint="الصلاحيات الفعّالة من الخادم."
+              hint="الفعّالة من الخادم."
             />
           </>
         )}

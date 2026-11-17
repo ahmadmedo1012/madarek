@@ -195,7 +195,7 @@ export default function CalendarScreen() {
     <>
       <PushFrame
         title="التقويم"
-        kicker="كل مواعيدك — بتوقيت ليبيا"
+        kicker="مواعيدك — بتوقيت ليبيا"
         refreshing={(enrollments.isFetching || dash.isFetching) && !loading}
         onRefresh={() => {
           void enrollments.refetch();
@@ -367,7 +367,7 @@ export default function CalendarScreen() {
             </T>
           ) : (
             <T variant="xs" color="faint">
-              {countAr(monthEventCells, ["يوم واحد له مواعيد", "يوماً لهما مواعيد", "أيام لها مواعيد", "يومًا له مواعيد"])}
+              {countAr(monthEventCells, ["يوم له مواعيد", "يوماً لهما مواعيد", "أيام لها مواعيد", "يومًا له مواعيد"])}
             </T>
           )}
         </>
@@ -387,7 +387,7 @@ export default function CalendarScreen() {
             <EmptyState
               room="library"
               title="لا أحداث اليوم"
-              message="اختر يومًا آخر من الشبكة."
+              message="اختر يومًا آخر."
             />
           ) : (
             <RowList>

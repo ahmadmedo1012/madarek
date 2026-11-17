@@ -102,7 +102,7 @@ export default function OwnerActivity() {
           loadMoreError={feed.loadMoreError}
           onRetryLoadMore={feed.retryLoadMore}
           emptyTitle="لا أحداث بعد"
-          emptyMessage="تُسجَّل الأحداث فور أول عمليّة."
+          emptyMessage="تُسجَّل فور أول عمليّة."
           contentPadding={{ horizontal: 20, bottom: 24 }}
         />
       </View>

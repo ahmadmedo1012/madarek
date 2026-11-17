@@ -171,8 +171,8 @@ export default function TeacherDashboard() {
           <Card>
             <EmptyState
               icon={<ClipboardCheck size={22} color={p.textMuted} />}
-              title="لا بيانات فصلية بعد"
-              message="لا طلاب — المعدلات والحضور بعد تسجيلهم."
+              title="لا بيانات فصلية"
+              message="لا طلاب بعد."
             />
           </Card>
         </Animated.View>
@@ -195,7 +195,7 @@ export default function TeacherDashboard() {
               accessibilityLabel={
                 kpi?.attendancePct != null
                   ? `نسبة الحضور ${pct(kpi.attendancePct)}`
-                  : "لا بيانات حضور بعد"
+                  : "لا بيانات حضور"
               }
             >
               <T variant="sm" weight="bold">
@@ -313,7 +313,7 @@ export default function TeacherDashboard() {
         <EmptyState
           room="exam-hall"
           title="كل التسليمات مُقيَّمة"
-          message="التسليمات الجديدة فور وصولها."
+          message="التسليمات فور وصولها."
           actionLabel="فتح التكاليف"
           onAction={() => router.push("/teacher/assignments" as never)}
         />
@@ -331,7 +331,7 @@ export default function TeacherDashboard() {
           <EmptyState
             room="lecture-hall"
             title="لا محاضرات اليوم"
-            message="جدول اليوم فارغ — راجع الأسبوعيّ."
+            message="فارغ — راجع الأسبوعيّ."
             actionLabel="الجدول الأسبوعيّ"
             onAction={() => router.push("/teacher/schedule" as never)}
           />
@@ -387,7 +387,7 @@ export default function TeacherDashboard() {
 
       {/* Trend — SVG-free View bars, honestly floored at ≥2 points. */}
       <Animated.View entering={entering(4)} style={{ gap: sp[8] }}>
-        <SectionBar index={3} title="اتجاه الأداء والحضور" />
+        <SectionBar index={3} title="الأداء والحضور" />
         <Card>
         <T variant="sm" color="muted">
           متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية
@@ -395,8 +395,8 @@ export default function TeacherDashboard() {
         {!trendDrawable ? (
           <EmptyState
             icon={<LineChart size={22} color={p.textMuted} />}
-            title="لا بيانات كافية للاتجاه بعد."
-            message="يُرسم المخطط بعد أسبوعين على الأقل."
+            title="لا بيانات كافية بعد."
+            message="يُرسم بعد أسبوعين على الأقل."
           />
         ) : (
           <View style={{ gap: sp[10], paddingTop: sp[8] }}>
@@ -424,7 +424,7 @@ export default function TeacherDashboard() {
             label={
               visible.length === 0
                 ? "لا عناصر للمتابعة"
-                : arCount(visible.length, ["عنصر يحتاج متابعة", "عنصران للمتابعة", "عناصر تحتاج متابعة", "عنصراً يحتاج متابعة"])
+                : arCount(visible.length, ["عنصر للمتابعة", "عنصران للمتابعة", "عناصر للمتابعة", "عنصرًا للمتابعة"])
             }
             tone={visible.length === 0 ? "mint" : "yellow"}
           />
@@ -446,8 +446,8 @@ export default function TeacherDashboard() {
       {visible.length === 0 ? (
         <EmptyState
           room="building"
-          title="لا متطلبات الآن — أحسنت!"
-          message="العناصر الجديدة تظهر فور وصولها."
+          title="لا متطلبات — أحسنت!"
+          message="تظهر فور وصولها."
         />
       ) : (
         <RowList>
@@ -492,7 +492,7 @@ export default function TeacherDashboard() {
         {offerings.length === 0 ? (
           <EmptyState
             room="library"
-            title="لم تُسند إليك مقرّرات بعد"
+            title="لم تُسند إليك مقرّرات"
             message="تظهر فور إسنادها."
           />
         ) : (

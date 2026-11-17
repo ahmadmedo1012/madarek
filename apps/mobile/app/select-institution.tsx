@@ -155,8 +155,8 @@ export default function SelectInstitution() {
 
         {needle && rows.length === 0 ? (
           <EmptyState
-            title="لا مؤسّسة تطابق بحثك"
-            message="جرّب اسمًا آخر أو امسح البحث."
+            title="لا مطابقات"
+            message="جرّب اسمًا آخر."
           />
         ) : null}
 

@@ -52,9 +52,9 @@ export default function ResearchScreen() {
     mutationFn: (id: string) => researchApi.scan(id),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["research"] });
-      toast.success("اكتمل الفحص — النتائج على البحث.", "فحص النزاهة");
+      toast.success("اكتمل الفحص.", "فحص النزاهة");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذَّر إجراء الفحص"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الفحص"),
   });
 
   return (
@@ -78,7 +78,7 @@ export default function ResearchScreen() {
         <EmptyState
           art={<Illustration id="r342/problem-04-research" width={216} />}
           icon={<FileText size={24} color={p.textFaint} />}
-          title="لم ترفع أي بحث بعد"
+          title="لم ترفع بحثًا بعد"
           message="ارفع أول بحث."
           actionLabel="رفع بحث جديد"
           onAction={() => setUploadOpen(true)}
@@ -369,7 +369,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
     >
       <View style={{ gap: sp[12] }}>
         <Field
-          label="عنوان البحث (مطلوب)"
+          label="العنوان (مطلوب)"
           value={title}
           onChangeText={setTitle}
           placeholder="مثال: أنماط التصميم في الويب"
@@ -379,7 +379,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
           label="الملخّص (اختياري)"
           value={abstractText}
           onChangeText={setAbstractText}
-          placeholder="ملخص عن الفكرة والمنهج والنتائج…"
+          placeholder="الفكرة والمنهج والنتائج…"
           multiline
         />
         <SelectField
@@ -391,7 +391,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
             setOfferingId(id);
           }}
           loading={enrollments.isLoading}
-          sheetTitle="مقرراتك المسجَّلة"
+          sheetTitle="مقرراتك"
           emptyLabel="لا مقرّرات مسجّلة"
         />
 

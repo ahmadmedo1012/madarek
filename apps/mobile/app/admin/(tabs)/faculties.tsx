@@ -64,7 +64,7 @@ export default function AdminFaculties() {
       setFCity("");
       setFEmoji("");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّرت إضافة الكلّيّة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر إضافة الكلّيّة"),
   });
 
   const createDepartment = useMutation({
@@ -75,7 +75,7 @@ export default function AdminFaculties() {
       setDeptTarget(null);
       setDName("");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّرت إضافة القسم"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر إضافة القسم"),
   });
 
   const { expanded, toggle } = useExpanded();
@@ -190,7 +190,7 @@ export default function AdminFaculties() {
           ) : (
             <EmptyState
               title="لا كليات بعد"
-              message="أنشئ أول كلّيّة — ثم أضف الأقسام والمقرّرات."
+              message="أنشئ أول كلّيّة."
               actionLabel="كلية جديدة"
               onAction={() => setFacultyOpen(true)}
             />
@@ -201,7 +201,7 @@ export default function AdminFaculties() {
       <Sheet
         open={facultyOpen}
         onClose={() => setFacultyOpen(false)}
-        title="إضافة كلّيّة جديدة"
+        title="كلّيّة جديدة"
         footer={
           <Button
             label={createFaculty.isPending ? "جارٍ الإضافة…" : "إضافة الكلّيّة"}
@@ -228,7 +228,7 @@ export default function AdminFaculties() {
             value={fCity}
             onChangeText={setFCity}
             placeholder="حرم المعرفة"
-            hint="الاسم يتميّز داخل مدينته فقط."
+            hint="الاسم يتميّز داخل مدينته."
           />
           <Field
             label="رمز تعبيري (اختياري)"

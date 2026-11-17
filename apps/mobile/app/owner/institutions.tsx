@@ -61,7 +61,7 @@ export default function OwnerInstitutions() {
       qc.invalidateQueries({ queryKey: ["owner", "institutions"] });
       toast.success(
         `أُنشئت «${inst?.name ?? "المؤسسة"}» وهي نشطة الآن.`,
-        "تمّ إنشاء المؤسسة",
+        "أُنشئت",
       );
     },
   });
@@ -217,7 +217,7 @@ function CreateInstitutionSheet({
   };
 
   return (
-    <Sheet open={open} onClose={onClose} title="إنشاء مؤسسة جديدة">
+    <Sheet open={open} onClose={onClose} title="مؤسسة جديدة">
       <View style={{ gap: 12 }}>
         <T variant="sm" color="muted">
           أضف مؤسسة تعليمية إلى المنصّة — تُنشأ نشطة ويمكن تعيين مسجلها العام بعد ذلك.
@@ -226,7 +226,7 @@ function CreateInstitutionSheet({
           label="اسم المؤسسة"
           value={draft.name}
           onChangeText={(v) => setDraft((d) => ({ ...d, name: v }))}
-          placeholder="مثلاً: أكاديمية طرابلس للعلوم"
+          placeholder="مثال: أكاديمية طرابلس"
           error={nameProblem}
           hint="كما يظهر للأعضاء"
         />

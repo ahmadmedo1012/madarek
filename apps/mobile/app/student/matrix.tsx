@@ -132,7 +132,7 @@ export default function MatrixScreen() {
         )}
       </View>
 
-      {/* مصفوفتك حسب المقرّر */}
+      {/* مصفوفتك بالمقرّر */}
       {matrix.isLoading ? (
         <SkeletonList rows={5} rowHeight={72} />
       ) : matrix.isError ? (
@@ -146,10 +146,10 @@ export default function MatrixScreen() {
       ) : (
         <>
           <View style={{ gap: sp[8] }}>
-            <SectionBar index={2} title="مصفوفتك حسب المقرّر" />
+            <SectionBar index={2} title="مصفوفتك بالمقرّر" />
             {totalConcepts > 0 ? (
               <T variant="xs" color="muted">
-                {countAr(totalConcepts, ["مفهوم واحد مُقاس", "مفهومان مُقاسان", "مفاهيم مُقاسة", "مفهوماً مُقاساً"])}
+                {countAr(totalConcepts, ["مفهوم مُقاس", "مفهومان مُقاسان", "مفاهيم مُقاسة", "مفهوماً مُقاساً"])}
               </T>
             ) : null}
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ minHeight: 44 }}>

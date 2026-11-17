@@ -511,7 +511,7 @@ export default function CourseDetailScreen() {
             refetch={() => full.refetch()}
             isRefetching={full.isRefetching}
             emptyTitle="لا ملفات"
-            emptyMessage="تظهر المواد فور رفع الأستاذ."
+            emptyMessage="تظهر فور رفعها."
             emptySlot={
               <EmptyState
                 room="library"
@@ -533,7 +533,7 @@ export default function CourseDetailScreen() {
             refetch={() => announcements.refetch()}
             isRefetching={announcements.isRefetching}
             emptyTitle="لا إعلانات"
-            emptyMessage="تظهر الإعلانات فور نشرها."
+            emptyMessage="تظهر فور نشرها."
             emptySlot={
               <EmptyState
                 room="building"

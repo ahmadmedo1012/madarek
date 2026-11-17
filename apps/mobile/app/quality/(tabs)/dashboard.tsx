@@ -140,8 +140,8 @@ export default function QualityDashboard() {
               {Object.keys(attendance).length === 0 ? (
                 <EmptyState
                   room="lecture-hall"
-                  title="لا سجلّات حضور بعد"
-                  message="تظهر فور رصد أول حصة."
+                  title="لا سجلّات بعد"
+                  message="تظهر فور أول حصة."
                 />
               ) : (
                 <RowList>
@@ -156,7 +156,7 @@ export default function QualityDashboard() {
                     ))}
                     {presentRate !== null ? (
                       <StatLine
-                        label="نسبة الحضور الفعلية"
+                        label="نسبة الحضور"
                         value={`${num(Math.round(presentRate * 100))}%`}
                         hint={countAr(attTotal, ["سجل واحد", "سجلان", "سجلات", "سجلاً"])}
                         tone="accent"
@@ -173,7 +173,7 @@ export default function QualityDashboard() {
                 <EmptyState
                   room="library"
                   title="لا بحوث بعد"
-                  message="تظهر البحوث فور رفع أول بحث."
+                  message="تظهر فور أول بحث."
                 />
               ) : (
                 <RowList>

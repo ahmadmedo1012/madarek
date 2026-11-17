@@ -12,7 +12,7 @@ import { numOf, type EducationRow } from "@/features/governance/components";
 
 /** Workload buckets → Arabic labels (web OwnerEducationPage parity). */
 const BUCKETS: { key: keyof NonNullable<EducationRow["workloadBuckets"]>; label: string }[] = [
-  { key: "idle", label: "بدون عرض هذا الفصل" },
+  { key: "idle", label: "بلا عرض هذا الفصل" },
   { key: "one", label: "عرض واحد" },
   { key: "two", label: "عرضان" },
   { key: "three", label: "3 عروض" },
@@ -45,7 +45,7 @@ export default function OwnerEducation() {
     <Screen scroll>
       <StackHeader title="النظرة التعليميّة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="النظرة التعليميّة" kicker="إحصائيات حيّة للمقرّرات والأساتذة والطلاب." />
+        <PageHeader title="النظرة التعليميّة" kicker="إحصائيات حيّة للمقرّرات والطلاب." />
 
         {edu.isLoading ? (
           <SkeletonList rows={5} rowHeight={48} />
@@ -84,9 +84,9 @@ export default function OwnerEducation() {
               )}
             </View>
 
-            {/* [03] أكثر المقرّرات تسجيلاً */}
+            {/* [03] الأكثر تسجيلًا */}
             <View>
-              <SectionBar index={3} title="أكثر المقرّرات تسجيلاً" />
+              <SectionBar index={3} title="الأكثر تسجيلًا" />
               {(e?.topCourses ?? []).length === 0 ? (
                 <T variant="body" color="muted">
                   لا تسجيلات بعد — ستظهر المقرّرات الأكثر تسجيلاً فور تسجيل الطلاب في العروض.

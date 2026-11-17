@@ -200,7 +200,7 @@ export default function StudentProfile() {
     setBioBusy(true);
     try {
       if (next) {
-        const ok = await authenticate("أكّد تفعيل قفل التطبيق");
+        const ok = await authenticate("أكّد تفعيل القفل");
         if (!ok) return; // refused → the toggle stays off
       }
       await setBiometricLockEnabled(next);
@@ -259,7 +259,7 @@ export default function StudentProfile() {
           {activeMemberships.length > 0 ? (
             <T variant="xs" color="faint">
               {countAr(activeMemberships.length, [
-                "عضوية واحدة نشطة",
+                "عضوية نشطة",
                 "عضويتان نشطتان",
                 "عضويات نشطة",
                 "عضوية نشطة",
@@ -285,7 +285,7 @@ export default function StudentProfile() {
           <EmptyState
             icon={<ScrollText size={22} color={p.textMuted} />}
             title="لا ملف طالب بعد"
-            message="لم يُربط ملف طالب — البيانات تظهر بعد الاعتماد."
+            message="لم يُربط ملف طالب — البيانات بعد الاعتماد."
           />
         ) : (
           <>
@@ -408,7 +408,7 @@ export default function StudentProfile() {
             </View>
             <View style={{ alignSelf: "flex-start" }}>
               <Button
-                label="فتح إعدادات النظام"
+                label="إعدادات النظام"
                 kind="ghost"
                 small
                 onPress={() => void Linking.openSettings().catch(() => undefined)}
@@ -472,7 +472,7 @@ export default function StudentProfile() {
           open={confirmLogout}
           onClose={() => setConfirmLogout(false)}
           title="تسجيل الخروج؟"
-          message="ستنتهي جلستك على هذا الجهاز فقط — تُحفظ جلسات أجهزتك الأخرى."
+          message="هذا الجهاز فقط — بقية جلساتك محفوظة."
           confirmLabel="خروج"
           destructive
           onConfirm={async () => {

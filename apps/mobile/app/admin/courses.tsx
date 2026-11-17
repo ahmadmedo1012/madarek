@@ -144,7 +144,7 @@ export default function AdminCourses() {
     },
     onError: (e) =>
       toast.error(
-        humanizeError(e) || "تعذّر الحذف — له شُعب أو مفاهيم مرتبطة.",
+        humanizeError(e) || "تعذّر الحذف — مرتبط بشُعب أو مفاهيم.",
         "فشل الحذف",
       ),
   });
@@ -164,7 +164,7 @@ export default function AdminCourses() {
           kicker={
             courses.data
               ? countAr(courses.data.meta?.total ?? rows.length, UNIT.course) + " في الجامعة"
-              : "قراءة سجلّ المقرّرات…"
+              : "قراءة السجلّ…"
           }
         />
 
@@ -280,7 +280,7 @@ export default function AdminCourses() {
             setDraft(null);
             setEditingId(null);
           }}
-          title={editingId ? "تعديل المقرّر" : "إضافة مقرّر جديد"}
+          title={editingId ? "تعديل المقرّر" : "مقرّر جديد"}
           snap="lg"
           scrollable
           footer={
@@ -325,7 +325,7 @@ export default function AdminCourses() {
                   accessibilityLabel="اسم المقرّر"
                   value={draft.name}
                   onChangeText={(name) => setDraft({ ...draft, name })}
-                  placeholder="مقدمة في علوم الحاسب"
+                  placeholder="مثال: علوم الحاسب"
                 />
               </View>
               <View style={{ gap: 6 }}>
@@ -347,7 +347,7 @@ export default function AdminCourses() {
                   accessibilityLabel="الوصف"
                   value={draft.description}
                   onChangeText={(description) => setDraft({ ...draft, description })}
-                  placeholder="وصف موجز للمقرّر"
+                  placeholder="وصف المقرّر"
                   multiline
                   textAlignVertical="top"
                   style={{ minHeight: 96 }}
@@ -450,7 +450,7 @@ function OfferingSheet({
       );
       onClose();
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر فتح الشعبة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر فتحها"),
   });
 
   const teacherOptions = (teachers.data?.rows ?? []).map((t) => ({

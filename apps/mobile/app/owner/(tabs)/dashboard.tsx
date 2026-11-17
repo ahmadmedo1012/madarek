@@ -145,7 +145,7 @@ export default function OwnerDashboard() {
             <EmptyState
               room="building"
               title="النظام طبيعيّ"
-              message="لا تنبيهات — الحوادث تظهر فور رصدها."
+              message="لا تنبيهات — تظهر فور رصدها."
             />
           ) : (
             <View style={{ gap: 12 }}>
@@ -187,7 +187,7 @@ export default function OwnerDashboard() {
           ) : activity.isError ? (
             <ErrorState message={humanizeError(activity.error)} onRetry={() => activity.refetch()} compact />
           ) : events.length === 0 ? (
-            <EmptyState title="لا أحداث بعد" message="أحدث العمليّات تظهر فور حدوثها." />
+            <EmptyState title="لا أحداث بعد" message="أحدث العمليّات فور حدوثها." />
           ) : (
             <View style={{ gap: 12 }}>
               <DataList
@@ -200,7 +200,7 @@ export default function OwnerDashboard() {
                 scrollProps={{ nestedScrollEnabled: true }}
               />
               <Button
-                label="سجلّ النشاط الكامل"
+                label="سجلّ النشاط"
                 kind="ghost"
                 small
                 onPress={() => router.push("/owner/activity" as never)}
@@ -331,14 +331,14 @@ export default function OwnerDashboard() {
                 haptics.selection();
                 router.push("/owner/content" as never);
               }}
-              accessibilityLabel="المحتوى والعلامة التجاريّة"
+              accessibilityLabel="المحتوى والعلامة"
               last
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                 <Palette size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
-                    المحتوى والعلامة التجاريّة
+                    المحتوى والعلامة
                   </T>
                   <T variant="xs" color="muted">
                     الهويّة البصريّة وأصول العلامة

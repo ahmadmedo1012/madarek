@@ -60,11 +60,11 @@ export default function UniversityScreen() {
     /* Null context (the multi-membership pre-selection edge): the
      * honest empty state — nothing is invented. */
     return (
-      <PushFrame title="عن المؤسّسة" kicker="مؤسستك على مدارك">
+      <PushFrame title="عن المؤسّسة" kicker="مؤسستك">
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
           title="لا مؤسسة في جلستك"
-          message="اختر مؤسّستك من العضويّات ثم عُد."
+          message="اختر مؤسستك ثم عُد."
         />
       </PushFrame>
     );
@@ -82,7 +82,7 @@ export default function UniversityScreen() {
       <Card>
         <StatLine label="الاسم الرسميّ" value={institution.name} />
         <StatLine label="الاسم بالإنجليزيّة" value={institution.nameEn ?? "—"} />
-        <StatLine label="المعرّف على المنصّة" value={institution.slug} />
+        <StatLine label="المعرّف" value={institution.slug} />
       </Card>
 
       {/* ── 02 · الكليّات المسجَّلة في مؤسستك ── */}
@@ -103,7 +103,7 @@ export default function UniversityScreen() {
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
           title="لا كليّات بعد"
-          message="لا كليات في المؤسسة بعد."
+          message="لا كليات بعد."
         />
       ) : (
         <>
@@ -141,7 +141,7 @@ export default function UniversityScreen() {
       <SectionBar index={membershipIndex} title="عضويّتك" />
       <Card>
         <StatLine label="المؤسسة الحالية" value={institution.name} />
-        <StatLine label="المعرّف على المنصّة" value={institution.slug} />
+        <StatLine label="المعرّف" value={institution.slug} />
         <StatLine
           label="دورك في المؤسّسة"
           value={

@@ -27,7 +27,7 @@ import {
 
 /** Storage drivers → Arabic labels (web OwnerSystemPage parity). */
 const STORAGE_DRIVER_LABEL: Record<string, string> = {
-  local: "محليّ — قرص الخادم",
+  local: "محليّ (قرص الخادم)",
   s3: "تخزين كائنات (S3-متوافق)",
 };
 /** Unknown driver codes read «تعريف غير معروف» — never the raw env code. */
@@ -78,7 +78,7 @@ export default function OwnerSystem() {
       qc.invalidateQueries({ queryKey: ["owner", "settings"] });
       toast.success(`حُفظ الإعداد «${payload.key}».`, "تمّ الحفظ");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ الإعداد"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الحفظ"),
   });
 
   const setFlag = useMutation({
@@ -93,7 +93,7 @@ export default function OwnerSystem() {
         "أعلام الميزات",
       );
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث العلم"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر التحديث"),
   });
 
   const s = sys.data;
@@ -104,12 +104,12 @@ export default function OwnerSystem() {
       ? storage?.reachable === true
         ? { label: "دائمة", tone: "mint" as const, note: storage.checkedAt ? `آخر تحقّق: ${fromNow(storage.checkedAt)}` : null }
         : storage?.reachable === false
-          ? { label: "مهيَّأ لكن يتعذّر الوصول الآن", tone: "rose" as const, note: "الرفعات ستفشل حتى يعود." }
-          : { label: "لم يُتحقق بعد", tone: "yellow" as const, note: "لم يُتحقّق من اتصال المخزن." }
+          ? { label: "مهيَّأ لكن يتعذّر الوصول", tone: "rose" as const, note: "ستفشل حتى يعود المخزن." }
+          : { label: "لم يُتحقق بعد", tone: "yellow" as const, note: "لم يُتحقّق من اتصاله." }
       : driver
         ? storage?.persistent
           ? { label: "دائمة", tone: "mint" as const, note: null }
-          : { label: "لا تنجو من إعادة النشر", tone: "yellow" as const, note: "الرفعات ستُفقد عند كل نشر — دوامها يتطلب تخزين كائنات (S3)." }
+          : { label: "لا تنجو من النشر", tone: "yellow" as const, note: "ستُفقد عند كل نشر — يتطلب تخزين كائنات (S3)." }
         : null;
 
   const settingRows = Array.isArray(settings.data) ? settings.data : [];
@@ -164,9 +164,9 @@ export default function OwnerSystem() {
           )}
         </View>
 
-        {/* [02] تخزين الرفعات (PDF) */}
+        {/* [02] تخزين الرفعات */}
         <View>
-          <SectionBar index={2} title="تخزين الرفعات (PDF)" />
+          <SectionBar index={2} title="تخزين الرفعات" />
           {sys.isLoading ? (
             <SkeletonList rows={2} rowHeight={48} />
           ) : !storage ? (
@@ -180,8 +180,8 @@ export default function OwnerSystem() {
                 </View>
                 <T variant="xs" color="faint">
                   {sys.isError
-                    ? "تعذّر جلب الحالة — أعد المحاولة."
-                    : "لا تُصرّح عن حالة التخزين بعد."}
+                    ? "تعذّر الجلب — أعد المحاولة."
+                    : "لا تُصرّح عن التخزين بعد."}
                 </T>
               </LedgerRow>
             </RowList>
@@ -260,7 +260,7 @@ export default function OwnerSystem() {
 
         {/* [04] أعلام الميزات */}
         <View>
-          <SectionBar index={4} title="أعلام الميزات (Feature Flags)" />
+          <SectionBar index={4} title="أعلام الميزات" />
           {flags.isLoading ? (
             <SkeletonList rows={3} rowHeight={56} />
           ) : flags.isError ? (
@@ -311,7 +311,7 @@ export default function OwnerSystem() {
         {s?.alerts?.openCount != null && s.alerts.openCount > 0 ? (
           <T variant="xs" color="faint">
             {countAr(s.alerts.openCount, [
-              "تنبيه مفتوح واحد",
+              "تنبيه مفتوح",
               "تنبيهان مفتوحان",
               "تنبيهات مفتوحة",
               "تنبيهاً مفتوحاً",
@@ -388,7 +388,7 @@ function SettingEditSheet({
           label="قيمة الإعداد"
           value={value}
           onChangeText={setValue}
-          hint="تُحفَظ نصًّا وتُوثَّق في السجلّ"
+          hint="تُحفظ نصًّا وتوثَّق."
           autoCorrect={false}
         />
         <Button

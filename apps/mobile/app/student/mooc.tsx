@@ -99,7 +99,7 @@ export default function MoocScreen() {
               <Card style={{ gap: sp[4] }}>
                 <T variant="sm" weight="bold">{`الدورات المتاحة: ${num(rows.length)}`}</T>
                 <T variant="xs" color="muted">
-                  {countAr(rows.length, ["دورة خارجية واحدة", "دورتان خارجيتان", "دورات خارجية", "دورة خارجية"])} مرتبطة بالمقرّرات — التسجيل خارج التطبيق.
+                  {countAr(rows.length, ["دورة خارجية", "دورتان خارجيتان", "دورات خارجية", "دورة خارجية"])} مرتبطة بالمقرّرات — التسجيل خارج التطبيق.
                 </T>
               </Card>
             ) : null}

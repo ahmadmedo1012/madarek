@@ -15,11 +15,11 @@ import { usePalette } from "@/design/theme";
 /** The brand asset register (frontend/public/brand) — SVG sources named
  *  verbatim; the mobile app draws its own vector BrandMark twin. */
 const BRAND_ASSETS: { file: string; label: string }[] = [
-  { file: "mark.svg", label: "الرمز المربَّع (المعوّل)" },
+  { file: "mark.svg", label: "الرمز (المعوّل)" },
   { file: "madarek-mark.svg", label: "رمز الويب" },
   { file: "wordmark.svg", label: "الكتابة (مدارك)" },
-  { file: "lockup.svg", label: "أفقيّ — رمز + كتابة" },
-  { file: "lockup-stacked.svg", label: "مركَّب — رمز فوق كتابة" },
+  { file: "lockup.svg", label: "أفقيّ: رمز + كتابة" },
+  { file: "lockup-stacked.svg", label: "مركَّب: رمز فوق كتابة" },
 ];
 
 /**
@@ -120,7 +120,7 @@ export default function OwnerContent() {
                 وطريقها.
               </T>
               <Button
-                label="صندوق التغذية الراجعة"
+                label="التغذية الراجعة"
                 kind="ghost"
                 small
                 icon={<ArrowRight size={14} color={p.text} />}

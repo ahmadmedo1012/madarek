@@ -199,7 +199,7 @@ export default function StudentDashboard() {
 
         {/* Stats band — numeral hierarchy: ring + CountUp trio */}
         <Animated.View entering={entering(2)}>
-          <SectionBar index={1} title="أرقامك هذا الفصل" />
+          <SectionBar index={1} title="أرقامك" />
           {dash.isLoading ? (
             <Card style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
               <Skeleton width={64} height={64} radius={32} />
@@ -223,7 +223,7 @@ export default function StudentDashboard() {
                 progress={(kpi.attendancePct ?? 0) / 100}
                 accessibilityLabel={
                   kpi.attendancePct === null
-                    ? "لا بيانات حضور بعد"
+                    ? "لا بيانات حضور"
                     : `نسبة الحضور ${pct(kpi.attendancePct)}`
                 }
               >
@@ -412,7 +412,7 @@ export default function StudentDashboard() {
               !dash.isLoading && !dash.isError && agenda && agendaTotal > 0 ? (
                 <BarCount
                   n={agendaTotal}
-                  a11y={countAr(agendaTotal, ["التزام قريب واحد", "التزامان قريبان", "التزامات قريبة", "التزاماً قريباً"])}
+                  a11y={countAr(agendaTotal, ["التزام قريب", "التزامان قريبان", "التزامات قريبة", "التزاماً قريباً"])}
                 />
               ) : undefined
             }
@@ -511,7 +511,7 @@ export default function StudentDashboard() {
           <EmptyState
             room="lecture-hall"
             title="تنتظر أول مقرر"
-            message="لم تُسجَّل — البيانات تظهر بعد الاعتماد."
+            message="لم تُسجَّل — البيانات بعد الاعتماد."
           />
         ) : null}
 

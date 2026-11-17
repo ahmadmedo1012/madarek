@@ -131,7 +131,7 @@ export default function DocumentViewer() {
     },
     onError: (e) => {
       haptics.notify("error");
-      toast.error(humanizeError(e), "تعذّر إضافة التعليق");
+      toast.error(humanizeError(e), "تعذّر الإضافة");
     },
   });
   const delAnn = useMutation({
@@ -265,7 +265,7 @@ export default function DocumentViewer() {
           title={title}
           actions={[
             {
-              label: "مشاركة أو حفظ الملف",
+              label: "مشاركة/حفظ الملف",
               onPress: () => {
                 void shareFile();
               },
@@ -286,7 +286,7 @@ export default function DocumentViewer() {
         <AppSheet
           open={annOpen}
           onClose={() => setAnnOpen(false)}
-          title="تعليقات على الصفحات"
+          title="تعليقات الصفحات"
           snap="lg"
         >
           <View style={{ gap: sp[12] }}>
@@ -306,7 +306,7 @@ export default function DocumentViewer() {
                   accessibilityLabel="نص التعليق"
                   value={newComment}
                   onChangeText={setNewComment}
-                  placeholder="اكتب تعليق المراجعة…"
+                  placeholder="تعليق المراجعة…"
                 />
               </View>
             </View>

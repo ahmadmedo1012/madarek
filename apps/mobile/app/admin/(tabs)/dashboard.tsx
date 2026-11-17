@@ -92,7 +92,7 @@ export default function AdminDashboard() {
             <MetricHero
               label="الطلاب المسجَّلون"
               value={s.totalStudents ?? null}
-              hint="حسابات الطلاب في المؤسّسة"
+              hint="حسابات الطلاب"
             />
             <View style={{ flexDirection: "row", gap: 8 }}>
               <MetricTile label="الأساتذة" value={s.totalTeachers ?? null} />
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
             loadMoreError={papers.loadMoreError}
             onRetryLoadMore={papers.retryLoadMore}
             emptyTitle="لا بحوث بعد"
-            emptyMessage="تظهر البحوث فور رفع أول بحث."
+            emptyMessage="تظهر فور رفع أول بحث."
             loadingSlot={
               <View style={{ gap: 8, paddingTop: 8 }}>
                 <Skeleton h={64} />
@@ -141,20 +141,20 @@ export default function AdminDashboard() {
           />
           {papers.items.length >= 10 ? (
             <View style={{ alignItems: "flex-start", paddingTop: 8 }}>
-              <Button label="تقرير البحوث الكامل" kind="ghost" small onPress={() => router.push("/admin/reports" as never)} />
+              <Button label="تقرير البحوث" kind="ghost" small onPress={() => router.push("/admin/reports" as never)} />
             </View>
           ) : null}
         </Animated.View>
 
         <Animated.View entering={entering(3)}>
-          <SectionBar index={2} title="صفحات المسجل العام" />
+          <SectionBar index={2} title="صفحات المسجل" />
           <View style={{ gap: 8 }}>
             {(
               [
                 [BookOpen, "إدارة المقرّرات", "المقرّرات والشُّعب والبحث", "/admin/courses"],
-                [ShieldCheck, "التحوّل الرقميّ", "مؤشّرات التبنّي الرقميّ", "/admin/digital"],
-                [Inbox, "دعوات التسجيل", "أكواد انضمام الطلاب والأساتذة", "/admin/invites"],
-                [FileText, "صندوق التغذية الراجعة", "تقارير المستخدمين وسياقها", "/admin/feedback"],
+                [ShieldCheck, "التحوّل الرقميّ", "التبنّي الرقميّ", "/admin/digital"],
+                [Inbox, "دعوات التسجيل", "أكواد الانضمام", "/admin/invites"],
+                [FileText, "التغذية الراجعة", "تقارير المستخدمين", "/admin/feedback"],
               ] as const
             ).map(([Icon, title, sub, href], i, arr) => (
               <LedgerRow

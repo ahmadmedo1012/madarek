@@ -50,7 +50,7 @@ export default function OwnerAlerts() {
       qc.invalidateQueries({ queryKey: ["owner", "alerts"] });
       toast.success("أُغلق وسُجِّلت العمليّة.", "تمّ حلّ التنبيه");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر حلّ التنبيه"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الحلّ"),
   });
 
   const rows = Array.isArray(alerts.data) ? alerts.data : [];

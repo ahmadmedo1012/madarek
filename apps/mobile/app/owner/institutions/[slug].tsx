@@ -104,7 +104,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       invalidate();
       toast.success("حُفظ الاسم.", "بيانات المؤسسة");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ الأسماء"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الحفظ"),
   });
 
   const provision = useMutation({
@@ -137,9 +137,9 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
     mutationFn: (membershipId: string) => ownerApi.revokeMembership(inst.id, membershipId),
     onSuccess: () => {
       invalidate();
-      toast.success(`أُلغيت العضوية في «${inst.name}».`, "تمّ إلغاء العضوية");
+      toast.success(`أُلغيت العضوية في «${inst.name}».`, "أُلغيت العضوية");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر إلغاء العضوية"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الإلغاء"),
   });
 
   const restore = useMutation({
@@ -289,7 +289,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
 
       <ConfirmDialog
         open={revokeTarget !== null}
-        title="إلغاء عضوية المسجل"
+        title="إلغاء العضوية"
         confirmLabel="إلغاء العضوية"
         danger
         loading={revoke.isPending}
@@ -306,7 +306,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       />
       <ConfirmDialog
         open={restoreTarget !== null}
-        title="استعادة عضوية المسجل"
+        title="استعادة العضوية"
         confirmLabel="استعادة"
         loading={restore.isPending}
         message={
@@ -367,7 +367,7 @@ function RenameSheet({
           value={nameEn}
           onChangeText={setNameEn}
           autoCorrect={false}
-          hint="فارغ = يبقى كما هو"
+          hint="فارغ = كما هو"
         />
         <Button
           label={rename.isPending ? "جارٍ الحفظ…" : "حفظ الأسماء"}
@@ -402,7 +402,7 @@ function ProvisionSheet({
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const emailProblem =
-    email.length > 0 && !/.+@.+\..+/.test(email.trim()) ? "بريد إلكتروني غير صالح" : undefined;
+    email.length > 0 && !/.+@.+\..+/.test(email.trim()) ? "بريد غير صالح" : undefined;
   const canSubmit = /.+@.+\..+/.test(email.trim()) && !provision.isPending;
 
   const submit = async () => {
@@ -434,7 +434,7 @@ function ProvisionSheet({
           value={email}
           onChangeText={setEmail}
           error={emailProblem}
-          hint="حساب مسجَّل على المنصّة"
+          hint="حساب مسجّل"
           autoCorrect={false}
           autoCapitalize="none"
           keyboardType="email-address"
@@ -442,7 +442,7 @@ function ProvisionSheet({
         <Field label="الاسم الأول" value={firstName} onChangeText={setFirstName} />
         <Field label="اللقب" value={lastName} onChangeText={setLastName} />
         <Button
-          label={provision.isPending ? "جارٍ التعيين…" : "تعيين المسجل العام"}
+          label={provision.isPending ? "جارٍ التعيين…" : "تعيين المسجل"}
           kind="primary"
           disabled={!canSubmit}
           onPress={() => {

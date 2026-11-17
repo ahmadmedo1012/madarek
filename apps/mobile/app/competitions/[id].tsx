@@ -59,12 +59,12 @@ export default function CompetitionDetail() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["competitions"] });
       haptics.notify("success");
-      toast.success("وصلت مشاركتك — بالتوفيق!", "المشاركة");
+      toast.success("وصلت — بالتوفيق!", "المشاركة");
       setEntering(false);
       setTitle("");
       setBody("");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر التقديم — تحقّق من البيانات.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر التقديم.")),
   });
 
   if (!params.id) {
@@ -74,7 +74,7 @@ export default function CompetitionDetail() {
         <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
         <EmptyState
           title="الرابط غير مكتمل"
-          message="لا مسابقة في الرابط — اختر من القائمة."
+          message="لا مسابقة — اختر من القائمة."
           actionLabel="عرض المسابقات"
           onAction={() => router.push("/competitions" as never)}
         />
@@ -210,7 +210,7 @@ export default function CompetitionDetail() {
       {entries.length === 0 ? (
         <EmptyState
           title="لم يشارك أحد بعد"
-          message={canEnter ? "كن أوّل من يشارك!" : "انتهت مهلة التقديم."}
+          message={canEnter ? "كن أوّل المشاركين!" : "انتهت المهلة."}
           actionLabel={canEnter ? "قدّم مشاركتك" : undefined}
           onAction={canEnter ? () => setEntering(true) : undefined}
         />
@@ -280,7 +280,7 @@ export default function CompetitionDetail() {
             label="عنوان المشاركة"
             value={title}
             onChangeText={setTitle}
-            placeholder="عنوان قصير لمشاركتك"
+            placeholder="عنوان المشاركة"
           />
           <Field
             label="الوصف / المحتوى"

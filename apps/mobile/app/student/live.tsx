@@ -27,8 +27,8 @@ function joinHint(s: LiveSession): string {
   const scheduled = new Date(s.scheduledAt).getTime();
   const opensAt = scheduled - JOIN_WINDOW_MS;
   const now = Date.now();
-  if (s.status === "LIVE") return "على الهواء — انضمّ قبل الانتهاء.";
-  if (now >= opensAt) return "الانضمام مفتوح — البث عند الموعد.";
+  if (s.status === "LIVE") return "على الهواء — انضمّ الآن.";
+  if (now >= opensAt) return "الانضمام مفتوح — البث بالموعد.";
   const waitMs = opensAt - now;
   if (waitMs <= 60 * 60 * 1000) return `يفتح الانضمام بعد ${fmtClock(waitMs / 1000)} (قبل الموعد بـ10 دقائق).`;
   return `يفتح الانضمام ${dateTime(new Date(opensAt).toISOString())} (قبل الموعد بـ10 دقائق).`;
@@ -66,7 +66,7 @@ export default function LiveScreen() {
       toast.success("سُجّل حضورك.", "تمّ الانضمام");
       const url = res?.session?.joinUrl ?? null;
       if (url) {
-        void Linking.openURL(url).catch(() => toast.error("تعذّر فتح الغرفة."));
+        void Linking.openURL(url).catch(() => toast.error("تعذّر الفتح."));
       }
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر الانضمام"),
@@ -86,7 +86,7 @@ export default function LiveScreen() {
       ) : list.length === 0 ? (
         <EmptyState
           title="لا بثوث بعد"
-          message="لا بثوث — الجلسات تظهر هنا."
+          message="لا بثوث بعد."
         />
       ) : (
         <View style={{ gap: sp[16] }}>
@@ -94,7 +94,7 @@ export default function LiveScreen() {
             title="مباشرة الآن"
             sessions={live}
             emptyLabel="لا بثّ مباشرة الآن"
-            emptyNote="لا جلسات نشطة — راجع القادمة."
+            emptyNote="لا جلسات نشطة."
             onJoin={live.length > 0 ? (id) => join.mutate(id) : undefined}
             joinPending={join.isPending ? join.variables ?? null : null}
           />
@@ -102,7 +102,7 @@ export default function LiveScreen() {
             title="جلسات قادمة"
             sessions={upcoming}
             emptyLabel="لا جلسات مجدولة"
-            emptyNote="أي بثّ يجدوله أساتذتك يظهر هنا."
+            emptyNote="بثوث أساتذتك تظهر هنا."
           />
           {ended.length > 0 ? (
             <SessionSection title="جلسات منتهية" sessions={ended} emptyLabel="" emptyNote="" />
@@ -184,7 +184,7 @@ function SessionSection({
                       kind="ghost"
                       small
                       onPress={() => {
-                        void Linking.openURL(s.recordingUrl!).catch(() => toast.error("تعذّر فتح التسجيل."));
+                        void Linking.openURL(s.recordingUrl!).catch(() => toast.error("تعذّر الفتح."));
                       }}
                       icon={<ExternalLink size={14} color={p.text} />}
                     />

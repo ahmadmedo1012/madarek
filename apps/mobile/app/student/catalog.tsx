@@ -104,7 +104,7 @@ const CatalogCard = makeRow<
         ) : null}
         {item.credits != null && item.credits > 0 ? (
           <T variant="xs" color="faint">
-            {countAr(item.credits, ["ساعة معتمدة واحدة", "ساعتان معتمدتان", "ساعات معتمدة", "ساعة معتمدة"])}
+            {countAr(item.credits, ["ساعة معتمدة", "ساعتان معتمدتان", "ساعات معتمدة", "ساعة معتمدة"])}
           </T>
         ) : null}
       </PressableScale>
@@ -269,7 +269,7 @@ export default function CatalogScreen() {
                 <SearchBar
                   value={q}
                   onChange={setQ}
-                  placeholder="ابحث باسم المقرّر أو رمزه…"
+                  placeholder="بالاسم أو الرمز…"
                   onClear={() => {
                     setQ("");
                     setTerm("");
@@ -319,7 +319,7 @@ export default function CatalogScreen() {
           <EmptyState
             icon={<BookOpen size={22} color={p.textMuted} />}
             title="لم تُحدَّد مؤسستك"
-            message="اختر مؤسستك لعرض دليلها."
+            message="اختر مؤسستك أولًا."
           />
         ) : (
           <DataList
@@ -343,7 +343,7 @@ export default function CatalogScreen() {
               filtering ? (
                 <EmptyState
                   title="لا مطابقات للبحث"
-                  message="لا مطابقات — أعد الضبط."
+                  message="لا مطابقات."
                   actionLabel="إزالة التصفية"
                   onAction={resetFilters}
                 />
@@ -351,7 +351,7 @@ export default function CatalogScreen() {
                 <EmptyState
                   room="library"
                   title="لا مقرّرات"
-                  message="لا مقرّرات — تظهر فور إضافتها."
+                  message="لا مقرّرات — تظهر فور الإضافة."
                 />
               )
             }
@@ -436,7 +436,7 @@ export default function CatalogScreen() {
               <T variant="sm" color="secondary">
                 {card.credits != null && card.credits > 0
                   ? countAr(card.credits, [
-                      "ساعة معتمدة واحدة",
+                      "ساعة معتمدة",
                       "ساعتان معتمدتان",
                       "ساعات معتمدة",
                       "ساعة معتمدة",

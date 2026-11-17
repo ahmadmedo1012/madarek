@@ -89,13 +89,13 @@ export default function Settings() {
     setBioBusy(true);
     try {
       if (next) {
-        const ok = await authenticate("أكّد تفعيل قفل التطبيق");
+        const ok = await authenticate("أكّد تفعيل القفل");
         if (!ok) return; // refused → the toggle stays off
       }
       await setBiometricLockEnabled(next);
       setBioOn(next);
       toast.success(
-        next ? "يُطلب القفل عند كل فتح بارد." : "أُلغي قفل التطبيق.",
+        next ? "يُطلب القفل عند كل فتح بارد." : "أُلغي القفل.",
         "الأمان",
       );
     } finally {
@@ -131,11 +131,11 @@ export default function Settings() {
         rows.map((r) => (r.category === row.category ? { ...r, emailEnabled: row.emailEnabled } : r)),
       );
       toast.success(
-        next ? "رسائل الفئة تصلك على بريدك." : "أوقفت رسائل الفئة.",
+        next ? "رسائلها تصلك على بريدك." : "أوقفت رسائل الفئة.",
         "البريد",
       );
     } catch (err) {
-      toast.error((err as ApiError).message ?? "تعذّر حفظ التفضيل.", "البريد");
+      toast.error((err as ApiError).message ?? "تعذّر الحفظ.", "البريد");
     } finally {
       setMailPrefsBusy(null);
     }
@@ -181,7 +181,7 @@ export default function Settings() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirm("");
-      toast.success("غُيّرت — انتهت الجلسات الأخرى.", "كلمة المرور");
+      toast.success("غُيّرت كلمة المرور.", "كلمة المرور");
     } catch (err) {
       setPwError((err as ApiError).message ?? "تعذّر التغيير.");
     } finally {
@@ -375,7 +375,7 @@ export default function Settings() {
         <Card style={{ gap: sp[10] }}>
           <Field label="كلمة المرور الحالية" value={currentPassword} onChangeText={setCurrentPassword} secureTextEntry autoCorrect={false} />
           <SecretField label="كلمة المرور الجديدة" value={newPassword} onChangeText={setNewPassword} hint="12 حرفًا على الأقل." />
-          <SecretField label="تأكيد كلمة المرور الجديدة" value={confirm} onChangeText={setConfirm} onSubmitEditing={changePassword} />
+          <SecretField label="تأكيد كلمة المرور" value={confirm} onChangeText={setConfirm} onSubmitEditing={changePassword} />
           {pwError ? <T variant="sm" color="danger">{pwError}</T> : null}
           <T variant="xs" color="faint">
             تغيير كلمة المرور ينهي جلساتك على جميع الأجهزة الأخرى.
@@ -431,7 +431,7 @@ export default function Settings() {
         open={confirmLogout}
         onClose={() => setConfirmLogout(false)}
         title="تسجيل الخروج؟"
-        message="ستنتهي جلستك على هذا الجهاز فقط — تُحفظ جلسات أجهزتك الأخرى."
+        message="هذا الجهاز فقط — بقية جلساتك محفوظة."
         confirmLabel="خروج"
         destructive
         onConfirm={async () => {

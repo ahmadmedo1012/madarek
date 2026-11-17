@@ -195,7 +195,7 @@ export default function ScheduleScreen() {
     <Screen scroll={false} padded={false}>
       <StackHeader
         title="الجدول الأسبوعي"
-        kicker={countAr(totalSlots, ["حصة أسبوعياً واحدة", "حصتان أسبوعياً", "حصص أسبوعياً", "حصة أسبوعياً"])}
+        kicker={countAr(totalSlots, ["حصة أسبوعيًا", "حصتان أسبوعياً", "حصص أسبوعياً", "حصة أسبوعياً"])}
       />
       {/* The week strip — day chips, today outlined in the one accent. */}
       <ScrollView
@@ -239,13 +239,13 @@ export default function ScheduleScreen() {
             <EmptyState
               room="building"
               title="لا جدول مسجّل"
-              message="تظهر المحاضرات فور تسجيل الجدول."
+              message="تظهر فور تسجيل الجدول."
             />
           ) : (
             <EmptyState
               room="lecture-hall"
-              title={Number(selected) === todayDow ? "لا محاضرات اليوم" : "لا حصص في هذا اليوم"}
-              message="اختر يومًا آخر من الشريط."
+              title={Number(selected) === todayDow ? "لا محاضرات اليوم" : "لا حصص اليوم"}
+              message="اختر يومًا آخر."
             />
           )
         }

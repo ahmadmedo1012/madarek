@@ -101,7 +101,7 @@ export default function AdminDirectory() {
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو رقم الهاتف…"
+          placeholder="بالاسم أو الهاتف…"
           onClear={() => {
             haptics.selection();
             setQ("");
@@ -132,8 +132,8 @@ export default function AdminDirectory() {
           emptyTitle={appliedQ ? "لا نتائج" : "لا ملفات بعد"}
           emptyMessage={
             appliedQ
-              ? "جرّب برقم الهاتف (أوله يكفي)."
-              : "تظهر الملفات فور اعتماد أول حساب."
+              ? "جرّب بالهاتف (أوله يكفي)."
+              : "تظهر فور اعتماد أول حساب."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />

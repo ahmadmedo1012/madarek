@@ -116,7 +116,7 @@ export default function OwnerGovernance() {
           ) : !la || numOf(la.total) === 0 ? (
             <EmptyState
               title="لا محاولات دخول بعد"
-              message="التوزيع يظهر فور أول دخول."
+              message="يظهر فور أول دخول."
             />
           ) : (
             <RowList>
@@ -131,7 +131,7 @@ export default function OwnerGovernance() {
 
         {/* [04] Daily login detail */}
         <View>
-          <SectionBar index={4} title="تسجيلات الدخول اليوميّة" />
+          <SectionBar index={4} title="تسجيلات الدخول" />
           {logins.isLoading ? (
             <SkeletonList rows={4} rowHeight={48} />
           ) : logins.isError ? null : (la?.daily ?? []).length === 0 ? (

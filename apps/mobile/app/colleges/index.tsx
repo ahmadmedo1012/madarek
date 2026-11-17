@@ -62,7 +62,7 @@ export default function CollegesIndex() {
       ) : colleges.length === 0 ? (
         <EmptyState
           title="لا كلّيّات بعد"
-          message="تظهر الكليات حين يضيفها المسجل العام."
+          message="تظهر حين يضيفها المسجل."
           icon={<Landmark size={20} color={p.textMuted} />}
         />
       ) : (

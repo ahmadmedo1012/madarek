@@ -50,7 +50,7 @@ function statusBadgeTone(status: string): "mint" | "grey" | "yellow" | "sky" {
 }
 
 /**
- * Pushed: /owner/feedback — «صندوق التغذية الراجعة» (web FeedbackInboxPage
+ * Pushed: /owner/feedback — «التغذية الراجعة» (web FeedbackInboxPage
  * parity): every «أبلغ عن مشكلة / اقتراح» with its context, a status
  * filter, and a per-report sheet whose Segmented moves the row through the
  * one-way status grammar → socialApi.updateFeedback.
@@ -85,9 +85,9 @@ export default function OwnerFeedback() {
 
   return (
     <Screen scroll>
-      <StackHeader title="صندوق التغذية الراجعة" kicker="لوحة المالك" />
+      <StackHeader title="التغذية الراجعة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="صندوق التغذية الراجعة" kicker="كل ما وصل من «أبلغ عن مشكلة»." />
+        <PageHeader title="التغذية الراجعة" kicker="كل التقارير الواردة." />
 
         <Segmented
           options={STATUS_FILTERS}
@@ -105,7 +105,7 @@ export default function OwnerFeedback() {
         ) : rows.length === 0 ? (
           <EmptyState
             title={status === "all" ? "لا تقارير هنا" : "لا تقارير"}
-            message="تقارير «أبلغ عن مشكلة» بسياقها."
+            message="تقارير بسياقها الكامل."
           />
         ) : (
           <View style={{ gap: 12 }}>

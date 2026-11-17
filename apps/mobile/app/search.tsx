@@ -119,7 +119,7 @@ export default function Search() {
         <EmptyState
           art={<Illustration id="r342/journey-route" width={342} accessibilityLabel="مسارات البحث" />}
           title="ابحث في المنصّة"
-          message="حرفان — نتائج فورية من مقرّراتك ومكتبتك."
+          message="حرفان — نتائج فورية."
         />
       ) : results.isLoading ? (
         <SkeletonList rows={4} />

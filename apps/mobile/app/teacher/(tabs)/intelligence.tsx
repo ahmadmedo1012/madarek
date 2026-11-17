@@ -158,7 +158,7 @@ export default function TeacherIntelligence() {
   const suggest = useMutation({
     mutationFn: () => teacherApi.curriculumSuggest(effectiveId),
     onSuccess: () => {
-      toast.success("الاقتراح قالبيّ ومحاكى.");
+      toast.success("قالبيّ ومحاكى.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الاقتراح"),
   });
@@ -312,7 +312,7 @@ export default function TeacherIntelligence() {
             </Card>
           )}
 
-          {/* اقتراح هيكل المنهج — محاكاة معلنة. */}
+          {/* هيكل المنهج — محاكاة معلنة. */}
           <Card>
             <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
               <View style={{ flex: 1 }}>
@@ -324,7 +324,7 @@ export default function TeacherIntelligence() {
               اقتراح قالبيّ لهيكل منهج بمطابقة اسم المقرّر — لا تحليل ذكيّ للمحتوى (محاكاة حتى نموذج حقيقي).
             </T>
             <Button
-              label={suggest.data ? "إعادة الاقتراح" : "اقتراح هيكل المنهج"}
+              label={suggest.data ? "إعادة الاقتراح" : "هيكل المنهج"}
               icon={<Sparkles size={16} color={p.primaryFg} />}
               kind="accent"
               loading={suggest.isPending}
@@ -336,7 +336,7 @@ export default function TeacherIntelligence() {
             />
             {suggest.isError ? (
               <T variant="sm" color="danger" style={{ paddingTop: sp[8] }}>
-                تعذَّر اقتراح هيكل المنهج.
+                تعذَّر هيكل المنهج.
               </T>
             ) : null}
             {suggest.data ? (

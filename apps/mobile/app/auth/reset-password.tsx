@@ -25,7 +25,7 @@ export default function ResetPassword() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const form = useFormValidation({
-    schema: z.object({ password: ar.password(12, 72), confirm: ar.required("أدخل تأكيد كلمة المرور.") }),
+    schema: z.object({ password: ar.password(12, 72), confirm: ar.required("أدخل التأكيد.") }),
   });
 
   /* The token rides the URL (single-use, 30-min) — derived, never state:
@@ -36,7 +36,7 @@ export default function ResetPassword() {
   const submit = async () => {
     if (busy || done) return;
     if (token.length < 40) {
-      setError("رابط الاستعادة غير صالح.");
+      setError("الرابط غير صالح.");
       haptics.notify("error");
       return;
     }
@@ -46,7 +46,7 @@ export default function ResetPassword() {
     }
     const password = String(form.values.password);
     if (password !== String(form.values.confirm)) {
-      setError("كلمتا المرور غير متطابقتين.");
+      setError("غير متطابقتين.");
       haptics.notify("error");
       return;
     }
@@ -61,7 +61,7 @@ export default function ResetPassword() {
       const human = humanizeError(err);
       // Specific Arabic API copy passes through; the generic bucket gets
       // this flow's own honest sentence (expired/used link).
-      setError(human === GENERIC_AR ? "تعذّر التعيين — الرابط منتهٍ أو مستخدم." : human);
+      setError(human === GENERIC_AR ? "تعذّر — الرابط منتهٍ أو مستخدم." : human);
       haptics.notify("error");
     } finally {
       setBusy(false);
@@ -77,7 +77,7 @@ export default function ResetPassword() {
         submitLoading={busy}
         submitKind="accent"
         error={error}
-        success={done ? "تم التعيين — انتهت الجلسات وسيُعادك للدخول." : null}
+        success={done ? "تم — انتهت الجلسات وسيُعادك للدخول." : null}
       >
         <T variant="h2" weight="bold">تعيين كلمة مرور جديدة</T>
         {done ? (

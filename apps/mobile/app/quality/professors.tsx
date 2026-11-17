@@ -36,7 +36,7 @@ export default function QualityProfessors() {
 
   return (
     <Screen scroll>
-      <StackHeader title="تقييم الأساتذة" kicker="قطاع ضمان الجودة" />
+      <StackHeader title="تقييم الأساتذة" kicker="ضمان الجودة" />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader
           title="تقييم الأساتذة"

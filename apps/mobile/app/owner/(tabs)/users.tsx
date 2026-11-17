@@ -128,8 +128,8 @@ export default function OwnerUsers() {
           emptyTitle={hasFilters ? "لا نتائج مطابقة" : "لا مستخدمون بعد"}
           emptyMessage={
             hasFilters
-              ? "لا حسابات تطابق البحث."
-              : "تظهر الحسابات فور أول مستخدم."
+              ? "لا حسابات للبحث."
+              : "تظهر فور أول مستخدم."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />
@@ -209,14 +209,14 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
     mutationFn: (isActive: boolean) => ownerApi.setUserStatus(user.id, isActive),
     onSuccess: (_d, isActive) => {
       qc.invalidateQueries({ queryKey: ["owner", "users"] });
-      toast.success(isActive ? `أُعيد تفعيل حساب «${name}».` : `عُطِّل حساب «${name}».`, "تمّ تحديث الحالة");
+      toast.success(isActive ? `أُعيد تفعيل حساب «${name}».` : `عُطِّل حساب «${name}».`, "حُدِّثت الحالة");
       setStatusConfirm(false);
       onClose();
     },
     onError: (e) => {
       setStatusConfirm(false);
       // The API's own Arabic message lands here (e.g. the last-active-owner guard).
-      toast.error(humanizeError(e), "تعذّر تحديث حالة الحساب");
+      toast.error(humanizeError(e), "تعذّر التحديث");
     },
   });
 

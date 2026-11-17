@@ -81,9 +81,9 @@ export default function AdminReports() {
                 </View>
 
                 <View>
-                  <SectionBar index={nextIndex()} title="حركة البحوث العلمية" />
+                  <SectionBar index={nextIndex()} title="حركة البحوث" />
                   {!trend || trend.length === 0 ? (
-                    <EmptyState title="لا بيانات نشر بعد" message="تظهر الحركة بعد رفع أول بحث." />
+                    <EmptyState title="لا بيانات نشر بعد" message="تظهر فور رفع أول بحث." />
                   ) : (
                     <RowList>
                       {trend.map((m, i) => (
@@ -118,7 +118,7 @@ export default function AdminReports() {
                           <T variant="xs" color="muted">
                             {c.code ?? "—"} ·{" "}
                             {countAr(c.enrollments ?? 0, [
-                              "طالب مسجَّل واحد",
+                              "طالب مسجّل",
                               "طالبان مسجَّلان",
                               "طلاب مسجَّلون",
                               "طالباً مسجَّلاً",

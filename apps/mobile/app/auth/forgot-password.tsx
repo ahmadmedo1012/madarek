@@ -37,7 +37,7 @@ export default function ForgotPassword() {
         email: String(form.values.email).trim(),
       });
       haptics.notify("success");
-      setMessage(res.message ?? "إن كان مسجّلًا فستصلك رسالة برابط التعيين.");
+      setMessage(res.message ?? "إن كان مسجّلًا فستصلك رسالة بالرابط.");
       setDevLink(res.devInbox?.url ?? null);
     } catch (err) {
       setError(humanizeError(err));
@@ -52,7 +52,7 @@ export default function ForgotPassword() {
       <AppStatusBar />
       <FormScreen
         onSubmit={submit}
-        submitLabel={busy ? "جارٍ الإرسال…" : "إرسال رابط الاستعادة"}
+        submitLabel={busy ? "جارٍ الإرسال…" : "إرسال الرابط"}
         submitLoading={busy}
         submitKind="accent"
         error={error}

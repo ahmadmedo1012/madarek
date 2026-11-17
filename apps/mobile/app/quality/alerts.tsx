@@ -64,7 +64,7 @@ function AlertsBoard({ onInbox }: { onInbox: () => void }) {
 
   return (
     <Screen scroll>
-      <StackHeader title="تنبيهات الجودة" kicker="قطاع ضمان الجودة" />
+      <StackHeader title="تنبيهات الجودة" kicker="ضمان الجودة" />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <T variant="body" color="muted">
           أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريًا من بيانات المنصّة.

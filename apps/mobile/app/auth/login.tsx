@@ -27,7 +27,7 @@ const DEMO_PASSWORD = "12345678";
 const SHOW_DEMO = __DEV__ || process.env.EXPO_PUBLIC_SHOW_TEST_ACCOUNTS === "1";
 
 const schema = z.object({
-  identifier: z.string().trim().min(1, { message: "أدخل البريد أو رقم التسجيل." }),
+  identifier: z.string().trim().min(1, { message: "أدخل البريد أو الرقم." }),
   password: z.string().min(1, { message: "أدخل كلمة المرور." }),
 });
 

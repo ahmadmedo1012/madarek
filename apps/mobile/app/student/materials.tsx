@@ -223,7 +223,7 @@ export default function MaterialsScreen() {
             <EmptyState
               room="library"
               title="لا ملفات"
-              message="تظهر فور رفع مواد في مقرّراتك."
+              message="تظهر فور رفع أي مواد."
             />
           }
           contentPadding={{ horizontal: 20, bottom: 24 }}

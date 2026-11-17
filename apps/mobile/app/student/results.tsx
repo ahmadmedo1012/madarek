@@ -80,7 +80,7 @@ export default function ResultsScreen() {
   return (
     <PushFrame
       title="النتائج"
-      kicker="درجاتك وتحليل أدائك الفعليّ."
+      kicker="درجاتك وتحليل أدائك."
       refreshing={feed.isFetching && !feed.isLoading}
       onRefresh={() => void feed.refetch()}
     >
@@ -91,7 +91,7 @@ export default function ResultsScreen() {
       ) : !hasGrades ? (
         <EmptyState
           title="لا درجات بعد"
-          message="يبدأ الحساب فور أول تقييم."
+          message="يبدأ فور أول تقييم."
         />
       ) : (
         <>
@@ -143,7 +143,7 @@ export default function ResultsScreen() {
             </View>
           ) : null}
 
-          <SectionBar index={1} title="النتائج حسب المقرّر" />
+          <SectionBar index={1} title="حسب المقرّر" />
           <View style={{ gap: sp[12] }}>
             {courses.map((c) => (
               <Card key={c.offeringId} style={{ gap: sp[8] }}>

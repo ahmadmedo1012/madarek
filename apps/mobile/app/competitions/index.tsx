@@ -34,14 +34,14 @@ export default function CompetitionsIndex() {
 
   return (
     <Screen scroll>
-      <StackHeader title="المسابقات" kicker="تحديات المعرفة والابتكار" />
+      <StackHeader title="المسابقات" kicker="تحديات المعرفة" />
 
       <View style={{ gap: sp[4], paddingBottom: sp[8] }}>
         <T variant="h3" weight="bold">
           المسابقات الأكاديمية
         </T>
         <T variant="body" color="secondary">
-          شارك في تحديات المعرفة والابتكار، أو نظِّم مسابقتك الخاصّة.
+          شارك في تحديات المعرفة، أو نظِّم مسابقتك الخاصّة.
         </T>
       </View>
 
@@ -56,7 +56,7 @@ export default function CompetitionsIndex() {
       ) : rows.length === 0 ? (
         <EmptyState
           title="لا مسابقات بعد"
-          message="تظهر المسابقات فور إطلاقها."
+          message="تظهر فور إطلاقها."
           icon={<Trophy size={20} color={p.textMuted} />}
         />
       ) : (

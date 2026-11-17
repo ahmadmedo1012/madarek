@@ -80,8 +80,8 @@ export default function AdminDigital() {
             <RowList>
               <LedgerRow last>
                 <StatLine label="الحسابات" value={latn(d.totalUsers ?? 0)} hint="كل الأدوار" />
-                <StatLine label="حسابات نشطة" value={latn(d.activeUsers ?? 0)} hint="من إجمالي الحسابات" />
-                <StatLine label="نسبة التبنّي" value={`${latn(Math.round(d.adoptionPct ?? 0))}%`} hint="حصة الحسابات النشطة" />
+                <StatLine label="حسابات نشطة" value={latn(d.activeUsers ?? 0)} hint="من الإجمالي" />
+                <StatLine label="نسبة التبنّي" value={`${latn(Math.round(d.adoptionPct ?? 0))}%`} hint="حصة النشطة" />
                 <StatLine label="ملفات مرفوعة" value={latn(d.materialsUploaded ?? 0)} />
               </LedgerRow>
             </RowList>
@@ -123,7 +123,7 @@ export default function AdminDigital() {
                       ? "جارٍ التحقق…"
                       : dbOk
                         ? `متصلة · زمن الاستجابة ${latn(health.data?.dbLatencyMs ?? 0)} مث`
-                        : "تعذّر التحقق من الاتصال"}
+                        : "تعذّر التحقق"}
                   </T>
                 </View>
                 {!health.isLoading ? (

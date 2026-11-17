@@ -18,11 +18,11 @@ export default function PaymentScreen() {
   const p = usePalette();
   return (
     <Screen scroll>
-      <StackHeader title="الشؤون المالية" kicker="حالة رسومك الجامعية" />
+      <StackHeader title="الشؤون المالية" kicker="رسومك الجامعية" />
 
       <EmptyState
         icon={<Wallet size={26} color={p.textFaint} />}
-        title="لا رسوم مسجّلة — الصفحة قيد التطوير."
+        title="لا رسوم — الصفحة قيد التطوير."
       />
 
       <Card style={{ gap: sp[8] }}>
