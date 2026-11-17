@@ -412,7 +412,9 @@ export function SelectField({
         })}
       >
         <View style={{ flex: 1 }}>
-          <T variant="body" color={value ? "text" : "muted"}>
+          {/* R366 A5 (fs2 evidence): long course labels wrap to a second
+              line instead of colliding with the chevron. */}
+          <T variant="body" color={value ? "text" : "muted"} numberOfLines={2}>
             {value ? value.label : placeholder}
           </T>
         </View>
@@ -556,7 +558,16 @@ export function Segmented({
               paddingHorizontal: sp[8],
             }}
           >
-            <T variant="sm" weight="bold" style={{ color: active ? p.primaryFg : p.textSecondary }} numberOfLines={1}>
+            <T
+              variant="sm"
+              weight="bold"
+              numberOfLines={1}
+              /* R366 A5 (fs2 evidence): segment pills are equal-flex
+                 chrome — cap label growth so no option collapses to a
+                 single letter at 2x. */
+              maxFontSizeMultiplier={1.3}
+              style={{ color: active ? p.primaryFg : p.textSecondary }}
+            >
               {o.label}
             </T>
           </Pressable>
