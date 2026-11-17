@@ -182,3 +182,67 @@ rotation); gfxinfo intact. After-set will report the same columns for the delta.
    branch tip at dispatch = f67d745 (ring caps + login links wrap included)
 3. chain2: all:core:current (after-core)
 4. chain2: all:core:main (before-core, re-covers teacher a11y-small too)
+
+## 2026-11-17 — AFTER-SET v1 (run 44110540931) + the landscape harness discovery
+
+### After-set v1 (extended, all roles, branch tip incl. f67d745)
+
+- All 21 jobs GREEN except ONE job cancelled mid-flight by an external actor (see
+  below): `owner — dark-tablet` (no artifact). The other 19 capture artifacts +
+  preview APK downloaded; 19 after sheets cut (same 12-cell selection as before);
+  VLM review + 13 full-res verifications.
+- **Fixes PROVEN by full-res verification (the positive proofs)**:
+  - Ring inner labels at fs2 — RINGS-OK (commit 18a7213 validated; AV7)
+  - Calendar weekday labels at fs2 — LABELS-OK (32ead51 validated; AV8)
+  - Login footer links at fs2 — LINKS-OK, fully separated (f67d745 validated; AV10)
+  - Tablet rail + content column — RAIL-INTACT + RAIL-AND-COLUMN-OK (de01bd3
+    validated; AV1/AV11 — rail on the START (right) edge under forced RTL, orange
+    active dot, content column centered)
+- **APK size**: before 19,247,754 → after **17,991,084 bytes (−1,256,670 / −6.5%)**
+  (same ui-screens preview-APK pipeline both sides). The ≤ +1 MB gate PASSES with
+  the budget actually SHRINKING (the copy diet's shorter strings are the likely
+  driver).
+- After-metrics (gfxinfo + Displayed) table cut for all 19 jobs — the L6
+  before→after delta table assembles at closing.
+- Pre-existing (before-equal, closed): quality dashboard stat cards render label
+  without numeric value in the hermetic capture env — full-res verified on BOTH
+  sets (data state, not a layout regression; quality KPI endpoints return nulls
+  under MADAREK_TEST_ACCOUNTS=1 — noted for the backend owner, not mobile).
+- VLM false-positive classes on the after sheets (same families as before,
+  re-confirmed and closed): mid-scroll bottom clips on scrollable lists; RTL
+  chevron direction (code: StackHeader ArrowRight); system status-bar clock at
+  fs2 (system chrome, outside app control); quality rail "clipped" (AV1:
+  RAIL-INTACT — misread of the hairline edge).
+
+### THE LANDSCAPE HARNESS BUG (pixel-verified, fixed in 015d1ab)
+
+- PIL dimension audit: every "landscape-2340x1080" shot in runs 29 (before) and
+  35 (after) measures **1080×2340 PORTRAIT** — `wm size 2340x1080` is SILENTLY
+  IGNORED on the portrait-native AVD panel. Portrait-shaped overrides work
+  (800×1280 tablet and 360×640 small both apply), landscape-shaped ones do not.
+- Consequence: ALL "landscape" evidence to date (both sessions' reviews) was
+  portrait shots mislabeled landscape. No app bug exists — at 1080×2340@420 the
+  window is 411dp (compact) and the bottom bar IS the correct M3 shell for that
+  width; the rail engages from 600dp (proven on the 800dp tablet).
+- Fix (commit 015d1ab): the AVD panel itself is created landscape before first
+  boot via a profile-conditional `hw.lcd.width/height` in pre-emulator-launch
+  (one line, line-safe; density stays 420 → 2340px/2.625 = 891dp → rail tier).
+  Both jobs' pre-launch blocks got the conditional (identical behavior for the
+  core profiles which are never landscape).
+
+### CI board incident + revised plan (one at a time, NO watchdog)
+
+- A 30-min cron watchdog (created as session-death insurance) fired as a parallel
+  agent instance, raced my manual dispatch (duplicate after-core 34s apart) and
+  is the plausible canceller of the owner-dark-tablet job (cancelled between
+  16:25–16:35 while all sibling jobs stayed green). The watchdog was DELETED; my
+  duplicate after-core run was cancelled; the watchdog's own dispatch
+  (44127328335) became THE after-core run. Lesson recorded: schedule-driven
+  agents and inline polling must never both own a dispatch board.
+- Revised queue (ONE AT A TIME; GitHub keeps only the newest QUEUED run per
+  concurrency group — older queued entries get superseded/cancelled):
+  1. 44127328335 after-core (all/core/current) — running
+  2. before-core (all/core/main) — re-covers teacher light-a11y-small too
+  3. after-ext-v2 (all/extended/current) — with the landscape panel fix; fills
+     the owner-dark-tablet hole and re-proves all four extended profiles
+  4. before-ext-v2 (all/extended/main) — the TRUE landscape before-set
