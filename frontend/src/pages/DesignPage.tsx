@@ -308,7 +308,7 @@ export default function DesignPage(): React.JSX.Element {
                 <Input defaultValue="CS301 · قواعد البيانات — للقراءة فقط" readOnly aria-label="مقرر للقراءة فقط" />
                 <div
                   className="r323d-readonly-well"
-                  style={{ background: 'var(--surface-sunken)', border: '1px solid var(--rule)', padding: 'var(--sp-3)', color: 'var(--text-secondary)', fontSize: '0.8125rem' }}
+                  style={{ background: 'var(--surface-sunken)', border: '1px solid var(--rule)', padding: 'var(--sp-3)', color: 'var(--text-secondary)', fontSize: 'max(13px, 0.8125rem)' }}
                 >
                   المُعاد النهائي 2.0 · 96 نقطة · فصل خريف 2025
                 </div>

@@ -21,13 +21,13 @@
 }
 .r323d-wordmark {
   font-family: var(--font-family, inherit);
-  font-size: 1.5rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ font-weight: 600; letter-spacing: 0;
+  font-size: max(13px, 1.5rem); /* r366 (Agent 3, cross-boundary floor): lab chrome obeys the 13px floor */ font-weight: 600; letter-spacing: 0;
   margin: 0;
 }
 .r323d-theme { display: flex; gap: var(--sp-2); }
 .r323d-sub {
   margin: var(--sp-2-5) 0 0;
-  font-size: 0.875rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ line-height: 1.7;
+  font-size: max(13px, 0.875rem); /* r366 (Agent 3, cross-boundary floor): lab chrome obeys the 13px floor */ line-height: 1.7;
   color: var(--text-secondary);
   max-width: 62ch;
 }
@@ -42,9 +42,9 @@
      (was accent ink: the index is wayfinding, not signal). */
   font-size: var(--fs-mono-md); color: var(--text-muted);
 }
-.r323d-title { font-size: 1.0625rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ font-weight: 600; margin: 0; }
+.r323d-title { font-size: max(13px, 1.0625rem); /* r366 (Agent 3, cross-boundary floor): the lab's own chrome obeys the 13px sans floor it exhibits */ font-weight: 600; margin: 0; }
 .r323d-note {
-  font-size: 0.75rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ color: var(--text-secondary);
+  font-size: max(11px, 0.75rem); /* r366 floor: the 11px mono floor */ color: var(--text-secondary);
   font-family: var(--font-mono, ui-monospace, monospace);
 }
 
@@ -63,7 +63,7 @@
 .r323d-cell-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .r323d-cell-label {
   font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.6875rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ color: var(--text-secondary);
+  font-size: max(11px, 0.6875rem); /* r366 floor: the 11px mono floor */ color: var(--text-secondary);
   border-top: 1px solid var(--border); padding-block-start: var(--sp-2);
 }
 
@@ -72,8 +72,8 @@
 .r323d-stack { display: flex; flex-direction: column; gap: var(--sp-2-5); align-items: flex-start; }
 /* the stack variant that owns the full cell width (skeleton/alert columns) */
 .r323d-fill { align-items: stretch; inline-size: 100%; }
-.r323d-inline { display: inline-flex; align-items: center; gap: var(--sp-1-5); font-size: 0.875rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ }
-.r323d-p { margin: 0; font-size: 0.875rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ line-height: 1.7; }
+.r323d-inline { display: inline-flex; align-items: center; gap: var(--sp-1-5); font-size: max(13px, 0.875rem); /* r366 (Agent 3, cross-boundary floor): the lab's inline labels obey the 13px sans floor */ }
+.r323d-p { margin: 0; font-size: max(13px, 0.875rem); /* r366 (Agent 3, cross-boundary floor): lab chrome obeys the 13px floor */ line-height: 1.7; }
 .r323d-mt { margin-block-start: var(--sp-3); }
 
 /* ── §R325.f — the chip-dot axis (hollow / ink / signal) ─────────
@@ -217,7 +217,7 @@
   margin-block-start: var(--sp-9); padding-block-start: 14px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data */
   border-top: 1px solid var(--border);
   font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.6875rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ color: var(--text-secondary);
+  font-size: max(11px, 0.6875rem); /* r366 floor: the 11px mono floor */ color: var(--text-secondary);
 }
 
 @media (max-width: 480px) {

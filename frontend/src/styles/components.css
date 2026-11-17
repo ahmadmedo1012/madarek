@@ -489,6 +489,10 @@
   @media (pointer: coarse) {
     .icon-btn { min-inline-size: 44px; min-block-size: 44px; }
     .btn { min-block-size: 44px; }
+    /* R366 (Agent 3 · L3b root fix): the PILL joins the coarse floor —
+       the lab matrix measured the filter/segment pills at 37px, under
+       the 44px touch law (WCAG 2.5.8 best practice; --touch-target). */
+    .pill { min-block-size: var(--touch-target, 44px); }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2775,6 +2779,10 @@
     color: var(--text);
   }
   .ledger-what { font-size: var(--type-body-size); min-inline-size: 0; }
+  /* R366 (Agent 3 · the 13px floor): the LedgerRow subtitle <small>
+     defaulted to 0.8em of the row body and measured 11.1px on the
+     fluid desktop root — under the Arabic sans floor. Explicit floor. */
+  .ledger-what small { font-size: max(13px, 0.8em); line-height: var(--lh-base); }
 
   /* ── 3 · The stat strip — the typographic KPI replacement ───────
      label (mono) over value (metric role) over trend note. No icon

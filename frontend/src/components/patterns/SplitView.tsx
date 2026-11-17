@@ -42,7 +42,7 @@ export function SplitView({
   const desktopDetail = detailOpen && hasDetail
     ? detail
     : emptyDetail ?? (
-        {/* r366 copy-guide: the title law (<= 4 words) — «لا عنصر محدد» */}
+        /* r366 copy-guide: the title law (<= 4 words) — «لا عنصر محدد» */
         <EmptyState
           title="لا عنصر محدد"
           description="اختر عنصرًا من القائمة لتظهر تفاصيله هنا."
