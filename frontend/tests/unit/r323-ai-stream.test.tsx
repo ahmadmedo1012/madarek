@@ -417,7 +417,9 @@ describe('AiAssistantPage — SSE consumption (r323 B1.1)', () => {
     await send('سؤال أُوقف');
 
     // The stop button owns the send slot while the stream is in flight.
-    fireEvent.click(await screen.findByRole('button', { name: 'إيقاف التوليد' }));
+    // R362 (§F keyboard): the stop verb's accessible name now carries the
+    // Esc shortcut hint («إيقاف التوليد (Esc)») — the pin follows the label.
+    fireEvent.click(await screen.findByRole('button', { name: 'إيقاف التوليد (Esc)' }));
 
     // The partial answer STAYS (it was really shown), but untagged and
     // un-rateable: the server persisted nothing for an aborted turn.

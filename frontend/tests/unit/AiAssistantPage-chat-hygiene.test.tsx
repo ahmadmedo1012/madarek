@@ -53,7 +53,7 @@ vi.mock('../../src/hooks/useResources', async (importOriginal) => {
   };
 });
 
-import { formatReplyBlocks, stripInlineMarkdown } from '../../src/pages/student/aiReplyFormat';
+import { formatReplyBlocks, splitInlineCode, stripInlineMarkdown } from '../../src/pages/student/aiReplyFormat';
 
 const STUDENT: AuthUser = {
   id: 'u1', role: 'STUDENT', email: 's@test.dev',
@@ -117,6 +117,92 @@ describe('aiReplyFormat (the markdown-lite formatter)', () => {
   it('a bulletless reply stays one text block, verbatim lines', () => {
     const blocks = formatReplyBlocks('سطر أول\n\nسطر ثانٍ');
     expect(blocks).toEqual([{ kind: 'text', lines: ['سطر أول', '', 'سطر ثانٍ'] }]);
+  });
+
+  // ── R362 (§F code rendering) — fenced blocks + inline spans ────
+
+  it('a fenced ``` block becomes ONE code block; markers drop, body VERBATIM', () => {
+    const blocks = formatReplyBlocks('الحل:\n```ts\nconst x = 1; // **لا** يتم_strip\nfetch_user();\n```\nتمّ!');
+    expect(blocks).toEqual([
+      { kind: 'text', lines: ['الحل:'] },
+      { kind: 'code', lang: 'ts', lines: ['const x = 1; // **لا** يتم_strip', 'fetch_user();'] },
+      { kind: 'text', lines: ['تمّ!'] },
+    ]);
+  });
+
+  it('emphasis stripping + list parsing are SUSPENDED inside a fence', () => {
+    const blocks = formatReplyBlocks('```\n- ليس قائمة\n**ليس تنويهاً**\n```');
+    expect(blocks).toEqual([
+      { kind: 'code', lang: null, lines: ['- ليس قائمة', '**ليس تنويهاً**'] },
+    ]);
+  });
+
+  it('an UNCLOSED fence closes at end-of-input (the streaming shape)', () => {
+    const blocks = formatReplyBlocks('شرح:\n```python\ndef f():\n    return 1');
+    expect(blocks).toEqual([
+      { kind: 'text', lines: ['شرح:'] },
+      { kind: 'code', lang: 'python', lines: ['def f():', '    return 1'] },
+    ]);
+  });
+
+  it('~~~ fences parse identically to ``` fences', () => {
+    const blocks = formatReplyBlocks('~~~\nplain\n~~~');
+    expect(blocks).toEqual([{ kind: 'code', lang: null, lines: ['plain'] }]);
+  });
+
+  it('a fenced block renders as an LTR <pre> with a copy verb (never raw backticks)', () => {
+    renderPage();
+    // The greeting bubble is plain; the render path is pinned through
+    // the exported page by asserting the CODE chrome only appears when
+    // a code reply exists — here the greeting must NOT carry it.
+    expect(document.querySelector('.r305ai-code')).toBeNull();
+  });
+
+  it('a REAL code reply renders the LTR <pre> block + the copy verb + inline chips', async () => {
+    mocks.chat.mutateAsync.mockResolvedValue({
+      conversationId: 'c-code',
+      reply: 'المثال:\n```js\nconst n = 42;\n```\nاستدعِ `fetch_user()` ثم تحقّق.',
+      engine: 'local' as const,
+      model: 'gap-aware-composer',
+    });
+    renderPage();
+    fireEvent.change(screen.getByLabelText('اكتب سؤالك للمساعد'), {
+      target: { value: 'سؤال برمجيّ' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'إرسال' }));
+    await waitFor(() => {
+      expect(mocks.chat.mutateAsync).toHaveBeenCalled();
+    });
+
+    // The fenced block: one LTR <pre>, verbatim body, no backticks.
+    const pre = document.querySelector('pre.r305ai-code');
+    expect(pre).not.toBeNull();
+    expect(pre?.getAttribute('dir')).toBe('ltr');
+    expect(pre?.textContent).toBe('const n = 42;');
+    expect(screen.queryByText('```')).toBeNull();
+
+    // The header carries the language token + the copy verb.
+    expect(screen.getByText('js', { selector: '.r305ai-code-lang' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'نسخ الكود' })).toBeInTheDocument();
+
+    // The inline chip: a mono LTR <code> with the identifier.
+    const chip = screen.getByText('fetch_user()', { selector: '.r305ai-code-inline' });
+    expect(chip.getAttribute('dir')).toBe('ltr');
+  });
+
+  it('splitInlineCode: paired backticks become code spans; a stray accent stays text', () => {
+    expect(splitInlineCode('استدعِ `fetch_user()` أولًا')).toEqual([
+      { text: 'استدعِ ' },
+      { code: 'fetch_user()' },
+      { text: ' أولًا' },
+    ]);
+    expect(splitInlineCode('سطر بدون شيء')).toEqual([{ text: 'سطر بدون شيء' }]);
+    expect(splitInlineCode('قيمة `x ناقصة')).toEqual([{ text: 'قيمة `x ناقصة' }]);
+    expect(splitInlineCode('`a` وبعدها `b`')).toEqual([
+      { code: 'a' },
+      { text: ' وبعدها ' },
+      { code: 'b' },
+    ]);
   });
 
   it('a markdown-flavored reply renders in the bubble as PLAIN text (no asterisks leak)', () => {

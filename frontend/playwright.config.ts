@@ -164,6 +164,24 @@ export default defineConfig({
       },
     },
     {
+      // R362 (Agent 5) — the COMPLETE real-stack route sweep: every
+      // renderable route (tests/r362/sweep-routes.ts, parity-pinned by
+      // tests/unit/r362-sweep-table.test.ts) visited by its owning
+      // role against the live stack, proving resolution / render /
+      // title / API-error hygiene per route. Wrong-role guard bounces
+      // and the responsive/theme passes live in the same directory.
+      // Reach it via: npm run test:r362 (needs dev:full + seeded DB).
+      name: 'r362',
+      testDir: './tests/r362',
+      testMatch: /\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 800 },
+        colorScheme: 'light',
+        locale: 'ar',
+      },
+    },
+    {
       // r325 P4(a) — the REAL-STACK flow walks (tests/r325/flows/*.spec.ts,
       // the FLOWS.md rehearsal). Unlike the hermetic `e2e` project these
       // specs ride the LIVE local stack (backend :4000 + seeded Postgres)
