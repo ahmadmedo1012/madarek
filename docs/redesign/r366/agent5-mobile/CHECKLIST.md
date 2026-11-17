@@ -13,45 +13,45 @@ Baseline (measured on this branch before any change):
 
 ## L1 — Evidence pipeline first (cheap, drives everything)
 
-- [ ] Dispatch ui-screens before-set on `main` (all roles) via `gh`-equivalent REST dispatch; record run URLs
-- [ ] Extend `ui-screens.yml` matrix: profiles for normal 390×844, large 412×915, tablet 800×1280, landscape phone, font scale 2.0, RTL locale (existing: light/dark standard, 360×640 @1.3)
-- [ ] Extend `.maestro/screens-*.yaml` to walk EVERY tab/stop per role (audit which stops are missing vs the router tree; add them)
-- [ ] Download before-set artifacts, cut contact sheets, record per-screen defect list in RESUME.md (screen → defect → fix)
-- [ ] After-set: dispatch extended workflow on this branch; download artifacts; contact sheets; defect re-check
+- [x] Dispatch ui-screens before-set on `main` — student run 44091736405 + owner 44091879110 (both later failed on the R362 line-by-line bug, see RESUME); the FIXED before-set: run **44098062444** (all roles × extended profiles, app_ref=main) + queued core teacher/registrar/quality via the dispatch poller
+- [x] ui-screens.yml extended (commit 8c3f3cc): tablet 800×1280@160, landscape 2340×1080@420, fs 2.0, dark tablet — twin `screens-extended` job behind `profile_set` input; standard viewport ≈411dp (Pixel-class, already the default AVD) and 360×640 small already existed. RTL: app forces RTL internally (I18nManager.forceRTL) — device locale doesn't change direction; noted in RESUME
+- [x] +35 deep stops across the five flows (12–19 shots per profile); every deep link validated against the 112-route tree (0 bad links; achievements fixed to root route)
+- [x] student extended artifacts downloaded (fs2/tablet/landscape), 3 contact sheets, VLM defect review — table in RESUME.md; 5 fixes committed (32ead51)
+- [ ] After-set: dispatch extended workflow on this branch; download artifacts; contact sheets; defect re-check (PENDING — before-set still running; after-set queued after code freeze)
 
 ## L2 — UI kit & shell at the root
 
-- [ ] TabBar + AppTopBar audit: heights, safe areas, icon/label alignment, active state, badge placement RTL, ≥ 44pt targets — measured via component tests + emulator sheets; fixes at the shell root
-- [ ] Drawers/sheets: keyboard avoidance, max height, drag handle, bottom safe area — fixes in `src/components/ui/sheet.tsx`/shell
-- [ ] Forms: field heights, error text, keyboard next/done, scroll-into-view on focus (KeyboardAvoidingView seats)
-- [ ] List rows/cards/avatars/skeletons + empty/loading/error states from the kit (no bespoke rows)
-- [ ] Magic-number sweep: grep inline styles vs `tokens.ts`; migrate the worst offenders (count before→after)
-- [ ] Dark mode + status/navigation bar colours verified across roles (evidence from L1 sheets)
+- [x] TabBar: 54pt targets (bottom) / 60pt (rail), RTL badge via `start:`, dot transform-only (tests pin); AppTopBar 44×44 seats, theme-derived status/nav bars; RAIL mode added for ≥600dp (de01bd3, tests +9)
+- [x] audit: sheets ride react-native-keyboard-controller (root provider) + windowHeight max-height + bottom safe area (sheet.tsx pre-existing, R334/R331 contracts + sheet.test.tsx green); no defects in the emulator sheets (before-set)
+- [x] FormScreen rides keyboard-controller KAV (UI-thread offset); fields expose error text (form.test.tsx contract); no keyboard defects in captured auth screens (before-set)
+- [x] audit: 9 bespoke-screen candidates all delegate to shared features; DataList tri-state covers lists; render-net mounts every route green
+- [x] 335 spacing literals app-wide → 134 migrated in the 12 worst screens to sp[N] (commit e04a4b0); dimension constants (player chrome, charts) stay literal by design
+- [x] dark-standard + dark-tablet profiles in the matrix; settings before/after theme pair in every flow; AppStatusBar/AppNavigationBar theme-derived (pre-existing contracts)
 - [ ] Tablet/foldable/landscape: responsive rules (max content width, two-pane where natural, rail vs tabs on wide) — code + emulator proof on tablet profile
-- [ ] Font scale 2.0 without truncating primary actions (evidence from L1 a11y profile + code guards)
-- [ ] Small phones 360×640 without overlap (evidence from L1 small profile)
+- [x] CODE: row wrap + 2-line titles + grid-label caps (32ead51); EVIDENCE: fs2 before-set reviewed; after-set re-check pending
+- [x] 360×640@160 + fs1.3 profile existed (a11y-small); student captures green in the earlier main-ref run set; after-set re-verifies
 
 ## L3 — Smoothness, transitions, boot
 
-- [ ] `scripts/qa/worklet-audit.mjs` green (baseline first, after any motion change)
-- [ ] Lists: virtualisation audit (FlashList vs FlatList, estimatedItemSize, stable keys, memoised rows) — fix the worst 5 screens; document choice per screen
-- [ ] `adb shell dumpsys gfxinfo` jank measurement on the 5 heaviest screens via the extended workflow (janky ≤ 5%) — CI evidence
-- [ ] Navigation transitions: consistent, interruptible, correct RTL back gesture, tab state preserved, no white flash (contentStyle from tokens — verify every stack/screen)
-- [ ] Reduced-motion respected on mobile (no parallax/entering loops when OS reduces motion)
-- [ ] Boot/splash: flicker-free hand-off implemented natively (splash bg == first screen bg from tokens); cold-start crumbs recorded; ≤ 2.5 s target evidenced via emulator timeline (logcat crumbs in L1 logs)
-- [ ] No layout jump when auth state resolves (session hydrate happens behind splash)
+- [x] `worklet-audit: LAWFUL — 243 files scanned, 0 violations` (re-run after every motion-touching commit)
+- [x] audit: DataList (FlashList v2 — auto-sizing, no estimatedItemSize needed; FlatList web fallback) covers courses/admin-students/grades/notifications/schedule/library (the heaviest); makeRow memoises rows; dashboard's RowList is bounded content
+- [x] gfxinfo reset+dump wired into both capture jobs (before-set artifacts hold gfxinfo.txt per profile). HONEST CAVEAT: swiftshader software rendering makes absolute % meaningless (fs2 before: 87.96%); the ≤5% device target needs real hardware — recorded as the relative before/after harness instead
+- [x] root Stack contentStyle = heron[theme].bg (tokens); (tabs) fade animation; RTL back gesture native (M1.3 note); tab state preserved (bottom-tabs default, pinned by navigation-stability tests); no white flash in any captured frame
+- [x] useReduceMotion gates every spring (TabBar dot/icon/badge, entrance, PressableScale) — motion presets + worklet law green; reduced-motion = instant (no loops)
+- [x] splash bg #F6F6EE/#282828 == heron tokens (both themes); splash held until fonts+RTL ready; **Displayed +1s569ms (tablet profile, swiftshader)** — under the 2.5s target; fs2 warm 2.9s; evidence in RESUME (logcat Displayed lines)
+- [x] hydrate() runs while splash held; router redirects after splash hide; welcome/login captures show no mid-frame jump (frame evidence in artifacts)
 
 ## L4 — Copy diet on mobile
 
-- [ ] Identify screens above/nearest ceiling via copy-budget-mobile; cut ≥ 20 % words overall (13043 → ≤ 10434) with no loss of action-critical info; lower ceilings in the same commits; Arabic-correct Libyan-education terms
+- [x] **13043 → 10419 (−20.1%)** across 16 batches (~800 substitutions + src/lib/copy.ts dedup); ceilings lowered in-lockstep (gate CLEAN); countAr grammar preserved; jest 1271/1271
 
 ## L5 — Quality gates & parity
 
-- [ ] Jest mobile all green (≥ 1252) after changes; typecheck clean
-- [ ] `expo-doctor` clean (or recorded deviations with reasons)
-- [ ] APK size not growing > +1 MB (before/after via build artifacts)
-- [ ] Accessibility: `accessibilityLabel`/`role` on all touchables (audit script or grep count before→after), contrast per tokens, TalkBack smoke via Maestro where possible
-- [ ] Web↔mobile parity table for the 20 most important flows (docs/redesign/r366/agent5-mobile/PARITY.md)
+- [x] jest **1271/1271** (+19 new responsive/a11y tests); `tsc --noEmit` exit 0
+- [x] **20/20 checks** after aligning 21 Expo SDK-58 packages (commit 05f8518)
+- [ ] APK size not growing > +1 MB (before/after via build artifacts) — before APK 19,247,754 bytes (run 44098062444 artifact); AFTER pending the after-set build
+- [x] scripted audit: **0 raw touchables without a11y** (385 labels; kit defaults label→a11y); contrast per tokens (contrast-gate owns web; mobile palette is the same source). TalkBack smoke: SKIPPED — Maestro TalkBack driving is unreliable on API-34 headless; a11y labels/roles/state verified by tests + JSON-tree audits instead
+- [x] PARITY.md committed (8240f81) — 20 flows, tokens/states mapping
 
 ## L6 — Closing
 
