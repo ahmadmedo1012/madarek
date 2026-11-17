@@ -525,12 +525,24 @@ export default function AiAssistantPage() {
    * window closes. */
   const settlePin = () => {
     const deadline = performance.now() + 1600;
+    /* r366 (2-a hardening): a DECREASE in scrollTop between frames is
+     * user intent — the browser dispatches scroll events ASYNC (next
+     * frame), so the autoScroll guard lags one step behind a user who
+     * scrolls up inside the settle window; without this guard the loop
+     * read the stale true, re-pinned, and yanked the reader back to the
+     * bottom (measured live: the jump chip never rendered). Programmatic
+     * corrections only ever move the offset DOWN-WARD-toward-bottom (an
+     * increase); height realization keeps it equal. Yield on any real
+     * decrease and let the dispatched event retire the loop. */
+    let lastSt = -1;
     const step = () => {
       const el = scroller.current;
       if (!el || !autoScroll.current || performance.now() > deadline) return;
       if (el.scrollHeight - el.scrollTop - el.clientHeight > 1) {
+        if (lastSt >= 0 && el.scrollTop < lastSt - 1) return;
         el.scrollTop = el.scrollHeight;
       }
+      lastSt = el.scrollTop;
       requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
@@ -886,6 +898,19 @@ export default function AiAssistantPage() {
       setConversationId(id);
       setMessages(transcriptFromRows(rows, greeting));
       setConvLoad({ phase: 'idle' });
+      /* r366 (2-a hardening): an opened transcript ALWAYS starts at the
+       * newest message — reset the near-bottom guard (a stray scroll
+       * event during the skeleton swap must not strand the log) and
+       * pin on the NEXT FRAME, when the committed rows hold their real
+       * layout (the messages-effect pin raced the skeleton→rows swap
+       * on loaded machines: measured stranded 2781px, st frozen at the
+       * greeting-era 161px). The settle loop then absorbs the lazy
+       * rows' height realization. */
+      autoScroll.current = true;
+      requestAnimationFrame(() => {
+        pinToBottom(false);
+        settlePin();
+      });
     } catch (err) {
       // The transcript stays as-is; the affordance to re-open rides
       // the same id so retry retries the same conversation.
