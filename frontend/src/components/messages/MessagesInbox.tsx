@@ -14,9 +14,10 @@
 // page-header: the primitives PageHeader renders the exact same
 // page-header/page-title-block/page-title/page-subtitle markup the
 // teacher page's local copy rendered for a string subtitle.
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { Send, X, MailOpen, Reply, ChevronRight, ChevronLeft } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Send, X, MailOpen, Reply, ChevronRight, ChevronLeft, ArrowRight } from 'lucide-react';
 import { UserAvatar, PageHeader } from '../primitives';
 import { ErrorState, ListSkeleton } from '../primitives/States';
 /* R319 (c3-S2) — the §B2 kit rides the SHARED inbox (role-neutral, the
@@ -26,9 +27,10 @@ import { ErrorState, ListSkeleton } from '../primitives/States';
  * grammar — the sheet system is cross-role. */
 import { SectionBar, BarCount, StatusChip, EmptyCell } from '../student';
 import { Icon } from '../Icon';
-import { useMyMessages, useMarkAllMessagesRead, apiErrorMessage, type MessageRow } from '../../hooks/useResources';
+import { useMyMessages, useMarkAllMessagesRead, useSendMessage, apiErrorMessage, type MessageRow } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { countAr, formatRelativeArShort, formatDateTimeAr } from '../../lib/format';
+import { toast } from '../../lib/toast';
 import { formatDate } from '../../utils/numbers';
 /* The §B2 component anatomy (the .r319s-bar / .r319s-chip / .r319s-empty
  * registers) — owned HERE so both role inboxes draw the same sheet
@@ -228,6 +230,183 @@ export interface ComposeRenderArgs {
   onClose: () => void;
 }
 
+/* ── r366 (2-d): the THREAD ROOM ──────────────────────────────────
+ *
+ * The inbox's flat log answered "what arrived"; answering rode the
+ * compose modal with no conversation context. The row itself now
+ * opens the conversation as a ROOM: on the phone band (<768) it
+ * replaces the list (a fixed full-viewport surface — the list stays
+ * mounted in flow behind it, so the back trip restores the exact
+ * scroll position); on desktop it renders as a centered column over
+ * a dimmed page. The room owns: the only vertical scroller (the
+ * bubble list), a pinned composer, and instant bottom-pinning — the
+ * AI-surface lesson applied verbatim (no smooth flights under
+ * content-visibility; overflow-anchor off in CSS; a settle window
+ * after each arrival). */
+interface ThreadParty {
+  id: string;
+  name: string;
+}
+
+function ThreadRoom({
+  party,
+  rows,
+  meId,
+  onClose,
+}: {
+  party: ThreadParty;
+  rows: MessageRow[];
+  meId: string | null;
+  onClose: () => void;
+}) {
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const [draft, setDraft] = useState('');
+  const send = useSendMessage();
+
+  /* Oldest → newest (the server page is newest-first). */
+  const ordered = useMemo(() => [...rows].reverse(), [rows]);
+
+  const autoScroll = useRef(true);
+  const settleRef = useRef(0);
+  const pinToBottom = () => {
+    const el = listRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  };
+  const settlePin = () => {
+    cancelAnimationFrame(settleRef.current);
+    const deadline = performance.now() + 1200;
+    const step = () => {
+      const el = listRef.current;
+      if (!el || !autoScroll.current || performance.now() > deadline) return;
+      if (el.scrollHeight - el.scrollTop - el.clientHeight > 1) el.scrollTop = el.scrollHeight;
+      settleRef.current = requestAnimationFrame(step);
+    };
+    settleRef.current = requestAnimationFrame(step);
+  };
+  useEffect(() => {
+    pinToBottom();
+    settlePin();
+    return () => cancelAnimationFrame(settleRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [party.id]);
+  useEffect(() => {
+    if (autoScroll.current) { pinToBottom(); settlePin(); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ordered.length]);
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => { if (autoScroll.current) pinToBottom(); });
+    ro.observe(el);
+    return () => ro.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onListScroll = () => {
+    const el = listRef.current;
+    if (!el) return;
+    autoScroll.current = el.scrollHeight - el.scrollTop - el.clientHeight <= 80;
+  };
+
+  /* Esc closes ONLY an empty draft (a half-written reply is never
+   * eaten by an escape reflex). */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !e.defaultPrevented && draft.trim() === '') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [draft, onClose]);
+
+  const submit = async () => {
+    const body = draft.trim();
+    if (!body || send.isPending) return;
+    setDraft('');
+    autoScroll.current = true;
+    try {
+      await send.mutateAsync({ toUserId: party.id, body });
+      pinToBottom();
+      settlePin();
+    } catch {
+      setDraft(body); /* the draft comes back — nothing is lost */
+      toast.error('تعذّر إرسال الردّ.');
+    }
+  };
+
+  /* r366 (2-d): PORTAL to <body> — the page's entrance layers (Reveal)
+   * carry transforms, and a transformed ancestor becomes the containing
+   * block of a fixed child: the room would then span the PAGE height
+   * (measured 6154px behind a 60-row list) instead of the viewport.
+   * The portal escapes every ancestor, exactly like the notification
+   * panel's own portal. */
+  if (typeof document === 'undefined') return null;
+  return createPortal(
+    <div className="msg-thread" role="dialog" aria-modal="true" aria-label={'محادثة ' + party.name}>
+      <header className="msg-thread-head">
+        <button type="button" className="btn ghost sm" onClick={onClose}>
+          <Icon icon={ArrowRight} size={14} />
+          العودة إلى الرسائل
+        </button>
+        <span className="msg-thread-name">{party.name}</span>
+        <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق المحادثة" disabled={send.isPending}>
+          <Icon icon={X} size={16} />
+        </button>
+      </header>
+      <div
+        className="msg-thread-list"
+        ref={listRef}
+        onScroll={onListScroll}
+        aria-label={`رسائل ${party.name}`}
+      >
+        {ordered.map((m) => {
+          const out = m.fromUser?.id === meId;
+          return (
+            <div key={m.id} className={`msg-bubble-row${out ? ' msg-out' : ''}`}>
+              <div className="msg-bubble">{m.body}</div>
+              <time className="msg-bubble-time" title={formatDateTimeAr(m.createdAt)}>{formatRelativeArShort(m.createdAt)}</time>
+            </div>
+          );
+        })}
+      </div>
+      <div className="msg-thread-composer">
+        <textarea
+          className="input msg-thread-input"
+          rows={1}
+          placeholder="اكتب ردّك…"
+          value={draft}
+          maxLength={MESSAGE_MAX_CHARS}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            /* Enter sends (Shift+Enter keeps the newline) — the send
+             * button stays the phone path. */
+            if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+              e.preventDefault();
+              void submit();
+            }
+          }}
+          disabled={send.isPending}
+          aria-label="نص الردّ"
+        />
+        <button
+          type="button"
+          className="btn primary"
+          onClick={() => void submit()}
+          disabled={send.isPending || draft.trim().length === 0}
+        >
+          {send.isPending ? 'جارٍ الإرسال…' : <><Icon icon={Send} size={13} /> إرسال الردّ</>}
+        </button>
+      </div>
+      {send.isError && (
+        <div className="msg-thread-error" role="alert">
+          <Icon icon={X} size={14} /> {sendErrorMessage(send.error)}
+        </div>
+      )
+      }
+    </div>,
+    document.body,
+  );
+}
+
 /** The role-agnostic DM inbox — pagination, unread badge + mark-all
  * sweep, rows, reply doors and the compose mount. The role page owns
  * ONLY the copy (title/subtitle) and the compose modal's recipient
@@ -258,6 +437,10 @@ export function MessagesInbox({
    * carries the reply preset (the clicked row's sender). Mounting (not
    * open-proping) the modal resets the draft between opens. */
   const [compose, setCompose] = useState<{ preset: { id: string; name: string } | null } | null>(null);
+  /* r366 (2-d): the open thread (null = closed). The room renders over
+   * the list — the list stays mounted, so its scroll position survives
+   * the round trip untouched. */
+  const [thread, setThread] = useState<ThreadParty | null>(null);
   const messages = q.data?.data ?? [];
   /* Cheap map over ≤30 loaded rows — no memo (an unmemoized dep would
    * add a 19th exhaustive-deps warning over the documented baseline). */
@@ -343,7 +526,7 @@ export function MessagesInbox({
           />
         ) : (
           <>
-            <div className="flex-col gap-2">
+            <div className="flex-col gap-2 msg-list">
               {/* r173a: the rows run under day-group headers. The header
                   is aria-hidden — presentational organization only: the
                   day IS already readable per row (the relative stamp +
@@ -371,32 +554,34 @@ export function MessagesInbox({
                       : null;
                     return (
                       <div key={m.id} className="list-row">
-                        <UserAvatar
-                          initials={`${other.firstName[0] ?? ''}${other.lastName[0] ?? ''}`}
-                          color={other.avatarColor ?? undefined}
-                          size={32}
-                        />
-                        <div className="list-row-body">
-                          <div className="list-row-title" style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
-                            <span style={{ fontWeight: unreadRow ? 600 : undefined }}>{other.firstName} {other.lastName}</span>
-                            {/* R319 (c3-S2): the row's read state rides the
-                                §B2 mono chip register — square hairline
-                                ink, never a color-only Badge. */}
-                            {unreadRow && <StatusChip label="UNREAD" tone="new" />}
+                        {/* r366 (2-d): the row's main area opens the THREAD ROOM - a real
+                            button (keyboard + AT), with the reply door and stamp as
+                            siblings (never nested interactives). */}
+                        <button
+                          type="button"
+                          className="msg-row-open"
+                          onClick={() => setThread({ id: other.id, name: other.firstName + ' ' + other.lastName })}
+                          aria-label={'فتح محادثة ' + other.firstName + ' ' + other.lastName}
+                        >
+                          <UserAvatar
+                            initials={(other.firstName[0] ?? '') + (other.lastName[0] ?? '')}
+                            color={other.avatarColor ?? undefined}
+                            size={32}
+                          />
+                          <div className="list-row-body">
+                            <div className="list-row-title" style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
+                              <span style={{ fontWeight: unreadRow ? 600 : undefined }}>{other.firstName} {other.lastName}</span>
+                              {unreadRow && <StatusChip label="UNREAD" tone="new" />}
+                            </div>
+                            <div className="list-row-sub msg-body" title={m.body}>
+                              {incoming ? '' : 'أنت: '}{m.body}
+                            </div>
                           </div>
-                          {/* 5-B6 messages craft: the body clamps to one line —
-                              30 rows of arbitrary prose otherwise rag the log's
-                              rhythm — and the full text rides the title attribute
-                              (no truncation without a tooltip). */}
-                          <div className="list-row-sub msg-body" title={m.body}>
-                            {incoming ? '' : 'أنت: '}{m.body}
-                          </div>
-                        </div>
-                        {/* P3-2 parity: the relative stamp carries the full
-                            date on hover like the exam-attempt rows. r170a:
-                            the trailing cluster (stamp + reply) keeps the
-                            action inside the row's end edge — the thumb's
-                            natural landing spot in RTL. */}
+                        </button>
+                        {/* P3-2 parity: the relative stamp carries the full date on
+                            hover like the exam-attempt rows. r170a: the trailing
+                            cluster (stamp + reply) keeps the action inside the row's
+                            end edge. */}
                         <div className="flex items-center gap-2">
                           <div className="text-xxs text-subtle" title={formatDateTimeAr(m.createdAt)}>{formatRelativeArShort(m.createdAt)}</div>
                           {incoming && (
@@ -404,7 +589,7 @@ export function MessagesInbox({
                               type="button"
                               className="btn ghost sm"
                               onClick={() => setCompose({ preset: replyPreset })}
-                              aria-label={`ردّ على رسالة ${replyPreset?.name}`}
+                              aria-label={'ردّ على رسالة ' + (replyPreset?.name ?? '')}
                             >
                               <Icon icon={Reply} size={13} /> ردّ
                             </button>
@@ -457,6 +642,19 @@ export function MessagesInbox({
        * between opens (the discard guard owns mid-session closes). The
        * role page renders its own modal through renderCompose. */}
       {compose && renderCompose({ preset: compose.preset, correspondents, onClose: () => setCompose(null) })}
+      {/* r366 (2-d): the thread room — over the list, never unmounting
+       * it (the scroll-position contract). */}
+      {thread && (
+        <ThreadRoom
+          party={thread}
+          rows={messages.filter((m) => {
+            const other = m.toUser?.id === meId ? m.fromUser : m.toUser;
+            return other?.id === thread.id;
+          })}
+          meId={meId}
+          onClose={() => setThread(null)}
+        />
+      )}
     </div>
   );
 }

@@ -555,6 +555,7 @@ export default function AiAssistantPage() {
       if (!el || !autoScroll.current || performance.now() > deadline) return;
       if (el.scrollTop < lastTop - 320) return; // deliberate upward move
       if (el.scrollHeight - el.scrollTop - el.clientHeight > 1) {
+        if (lastSt >= 0 && el.scrollTop < lastSt - 1) return;
         el.scrollTop = el.scrollHeight;
       }
       lastTop = el.scrollTop;
@@ -913,6 +914,19 @@ export default function AiAssistantPage() {
       setConversationId(id);
       setMessages(transcriptFromRows(rows, greeting));
       setConvLoad({ phase: 'idle' });
+      /* r366 (2-a hardening): an opened transcript ALWAYS starts at the
+       * newest message — reset the near-bottom guard (a stray scroll
+       * event during the skeleton swap must not strand the log) and
+       * pin on the NEXT FRAME, when the committed rows hold their real
+       * layout (the messages-effect pin raced the skeleton→rows swap
+       * on loaded machines: measured stranded 2781px, st frozen at the
+       * greeting-era 161px). The settle loop then absorbs the lazy
+       * rows' height realization. */
+      autoScroll.current = true;
+      requestAnimationFrame(() => {
+        pinToBottom(false);
+        settlePin();
+      });
     } catch (err) {
       // The transcript stays as-is; the affordance to re-open rides
       // the same id so retry retries the same conversation.
