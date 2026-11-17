@@ -24,7 +24,7 @@ import Eye from "lucide-react-native/icons/eye";
 import EyeOff from "lucide-react-native/icons/eye-off";
 import Search from "lucide-react-native/icons/search";
 import X from "lucide-react-native/icons/x";
-import { usePalette } from "@/design/theme";
+import { usePalette, useStatusTones } from "@/design/theme";
 import { sp, touchFloor } from "@/design/tokens";
 import { T } from "./text";
 import { OptionSheet } from "./surfaces";
@@ -187,6 +187,7 @@ export function Field({
   ...input
 }: FieldProps) {
   const p = usePalette();
+  const tones = useStatusTones();
   const ctx = useContext(FormFieldsContext);
   const [focused, setFocused] = useState(false);
   const [show, setShow] = useState(false);
@@ -261,7 +262,11 @@ export function Field({
             {
               backgroundColor: p.surface,
               borderWidth: focused ? 1 : StyleSheet.hairlineWidth,
-              borderColor: error ? p.accentInk : focused ? p.text : p.rule,
+              /* R362 — the error border joins the error LABEL's rose
+                 (T color="danger"): the field used to outline errors in
+                 orange accentInk while labelling them in rose — two
+                 hues inside one component. */
+              borderColor: error ? tones.rose.ink : focused ? p.text : p.rule,
               paddingHorizontal: sp[12],
               paddingLeft: leadingWidth ? leadingWidth + sp[8] : sp[12],
               minHeight: 48,
@@ -376,6 +381,7 @@ export function SelectField({
   emptyLabel?: string;
 }) {
   const p = usePalette();
+  const tones = useStatusTones();
   const [open, setOpen] = useState(false);
   return (
     <View style={{ gap: sp[6] }}>
@@ -385,6 +391,10 @@ export function SelectField({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={label}
+        /* R362 — expanded joins the a11y state: a combobox-style picker
+           must announce whether its sheet is open (VoiceOver/TalkBack
+           read "موسّع/مطوي" instead of a bare button). */
+        accessibilityState={open ? { expanded: true } : undefined}
         disabled={disabled}
         onPress={() => setOpen(true)}
         style={({ pressed }) => ({
@@ -393,7 +403,8 @@ export function SelectField({
           gap: sp[8],
           backgroundColor: pressed ? p.surfaceHover : p.surface,
           borderWidth: StyleSheet.hairlineWidth,
-          borderColor: error ? p.accentInk : p.rule,
+          /* R362 — rose error border (matches the label + Field). */
+          borderColor: error ? tones.rose.ink : p.rule,
           paddingHorizontal: sp[12],
           minHeight: 48,
           opacity: disabled ? 0.5 : 1,
@@ -465,8 +476,20 @@ export function SearchBar({
         style={{ flex: 1, color: p.text, fontSize: 15, textAlign: "right", paddingVertical: 12 }}
       />
       {value.length > 0 ? (
-        <Pressable accessibilityRole="button" accessibilityLabel="مسح البحث" onPress={() => (onClear ? onClear() : onChange(""))} style={{ width: 32, height: 32, alignItems: "center", justifyContent: "center" }}>
-          <X size={16} color={p.textMuted} />
+        /* R362 — the clear control was the kit's only sub-44pt touch
+           target (32×32, no hitSlop): it sits beside a live keyboard —
+           the hardest tap in the app. 44×44 seat with generous hitSlop
+           on the leading edge (the input keeps its own hit area). */
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="مسح البحث"
+          onPress={() => (onClear ? onClear() : onChange(""))}
+          /* hitSlop is PHYSICAL (no logical props): under the app's
+             forced RTL the trailing X sits at the physical left edge. */
+          hitSlop={{ top: 10, bottom: 10, left: 12 }}
+          style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}
+        >
+          <X size={18} color={p.textMuted} />
         </Pressable>
       ) : null}
     </View>
@@ -488,6 +511,11 @@ export function Segmented({
   const p = usePalette();
   return (
     <View
+      /* R362 — the container completes the tab semantics: the options
+         already declare role="tab" + selected state; without a tablist
+         parent, screen readers announce orphaned tabs. RoleTabBar has
+         carried this since R334 — the field-grade control now matches. */
+      accessibilityRole="tablist"
       style={[
         {
           flexDirection: "row",
