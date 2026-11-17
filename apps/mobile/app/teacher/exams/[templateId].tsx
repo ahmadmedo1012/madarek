@@ -33,6 +33,7 @@ import {
   StatusBadge,
   arCount,
 } from "@/features/teacher/components";
+import { AWAITING_QUALITY_APPROVAL, SAVED } from "@/lib/copy";
 
 /** Wire shape of GET /exams/templates/:id (the ExamTemplateQuestion join rows). */
 type TemplateQuestionWire = {
@@ -128,7 +129,7 @@ export default function ExamTemplateDetail() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["exams", "template", id] });
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
-      toast.success("حُفظت التعديلات.", "تمّ الحفظ");
+      toast.success("حُفظت التعديلات.", SAVED);
       setEditing(false);
       setEditError(null);
     },
@@ -295,10 +296,10 @@ export default function ExamTemplateDetail() {
       {t.status !== "APPROVED" ? (
         <T variant="sm" color="muted">
           {t.status === "PENDING_REVIEW"
-            ? "النشر بعد اعتماد الجودة."
+            ? AWAITING_QUALITY_APPROVAL
             : t.status === "PUBLISHED" || t.status === "CLOSED"
               ? "منشور بالفعل."
-              : "النشر بعد اعتماد الجودة."}
+              : AWAITING_QUALITY_APPROVAL}
         </T>
       ) : null}
       <Card>

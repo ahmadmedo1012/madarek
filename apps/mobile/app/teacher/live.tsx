@@ -43,6 +43,7 @@ import {
   useSheetMounted,
   useTeacherOfferings,
 } from "@/features/teacher/components";
+import { CREATING, LIVE_NOW, UPDATE_FAILED } from "@/lib/copy";
 
 const NO_SESSIONS: Awaited<ReturnType<typeof liveApi.sessions>> = [];
 
@@ -174,7 +175,7 @@ export default function TeacherLive() {
     onError: (e) => {
       haptics.notify("error");
       setConfirmAction(null);
-      toast.error(humanizeError(e), "تعذّر التحديث");
+      toast.error(humanizeError(e), UPDATE_FAILED);
     },
   });
 
@@ -260,14 +261,14 @@ export default function TeacherLive() {
       ) : (
         <>
           <View style={{ flexDirection: "row", gap: sp[8] }}>
-            <KpiCard label="مباشرة الآن" value={live.length} tone={live.length > 0 ? "accent" : undefined} />
+            <KpiCard label={LIVE_NOW} value={live.length} tone={live.length > 0 ? "accent" : undefined} />
             <KpiCard label="مجدولة" value={scheduled.length} />
             <KpiCard label="منتهية" value={past.length} />
           </View>
 
           {live.length > 0 ? (
             <>
-              <SectionBar index={2} title="مباشرة الآن" />
+              <SectionBar index={2} title={LIVE_NOW} />
               <RowList>
                 {live.map((s) => (
                   <SessionRow
@@ -343,7 +344,7 @@ export default function TeacherLive() {
         scrollable
         footer={
           <Button
-            label={create.isPending ? "جارٍ الإنشاء…" : "جدولة الجلسة"}
+            label={create.isPending ? CREATING : "جدولة الجلسة"}
             kind="accent"
             loading={create.isPending}
             disabled={offerings.length === 0}

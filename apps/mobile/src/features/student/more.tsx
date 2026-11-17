@@ -11,6 +11,7 @@ import { T } from "@/components/ui/text";
 import { latn, pct } from "@/lib/format";
 import type { StatusToneName } from "@/design/tokens";
 import type { ExamTemplateRow } from "@/api/exams";
+import { LIVE_NOW, QUIZ_LABEL } from "@/lib/copy";
 
 /* ── Arabic counted nouns (web countAr four-form grammar) ────────── */
 export function countAr(n: number, forms: [string, string, string, string]): string {
@@ -28,7 +29,7 @@ export function pointsAr(n: number): string {
 
 /* ── Exam kinds ──────────────────────────────────────────────────── */
 export const KIND_LABEL: Record<string, string> = {
-  QUIZ: "اختبار قصير",
+  QUIZ: QUIZ_LABEL,
   MIDTERM: "نصفي",
   FINAL: "نهائي",
   PRACTICE: "تدريبي",
@@ -173,7 +174,7 @@ export const JOB_TYPE_LABEL: Record<string, string> = {
 
 /* ── Live sessions ────────────────────────────────────────────────── */
 export const LIVE_STATUS: Record<string, { label: string; tone: StatusToneName }> = {
-  LIVE: { label: "مباشرة الآن", tone: "copper" },
+  LIVE: { label: LIVE_NOW, tone: "copper" },
   SCHEDULED: { label: "مجدولة", tone: "sky" },
   ENDED: { label: "انتهت", tone: "grey" },
   CANCELLED: { label: "ملغاة", tone: "rose" },

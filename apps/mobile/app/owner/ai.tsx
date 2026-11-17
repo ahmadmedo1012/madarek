@@ -15,6 +15,7 @@ import { usePalette, useStatusTones } from "@/design/theme";
 import { latn } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { numOf, type AiMetricsRow } from "@/features/governance/components";
+import { OWNER_DASHBOARD } from "@/lib/copy";
 
 /** AI feature keys → Arabic labels (web OwnerAiPage FEATURE_LABELS parity). */
 const FEATURE_LABELS: Record<string, string> = {
@@ -54,7 +55,7 @@ export default function OwnerAi() {
     <Screen scroll>
       <StackHeader
         title="مركز الذكاء"
-        kicker="لوحة المالك"
+        kicker={OWNER_DASHBOARD}
         right={
           cfg.data ? (
             cfg.data.provider === "local" ? (

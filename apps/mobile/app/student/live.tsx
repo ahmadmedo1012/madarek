@@ -19,6 +19,7 @@ import { toast } from "@/components/ui/toast";
 import { dateTime, num } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { LIVE_STATUS, SectionNote, countAr, fmtClock } from "@/features/student/more";
+import { LIVE_NOW, UNKNOWN_STATUS } from "@/lib/copy";
 
 /** The backend opens the join window 10 minutes before the scheduled time. */
 const JOIN_WINDOW_MS = 10 * 60 * 1000;
@@ -91,7 +92,7 @@ export default function LiveScreen() {
       ) : (
         <View style={{ gap: sp[16] }}>
           <SessionSection
-            title="مباشرة الآن"
+            title={LIVE_NOW}
             sessions={live}
             emptyLabel="لا بثّ مباشرة الآن"
             emptyNote="لا جلسات نشطة."
@@ -144,7 +145,7 @@ function SessionSection({
       ) : (
         <RowList>
           {sessions.map((s, i) => {
-            const status = LIVE_STATUS[s.status] ?? { label: "حالة غير معروفة", tone: "grey" as const };
+            const status = LIVE_STATUS[s.status] ?? { label: UNKNOWN_STATUS, tone: "grey" as const };
             const course = s.offering?.course;
             return (
               <LedgerRow key={s.id} last={i === sessions.length - 1} accessibilityLabel={`جلسة: ${s.title}`}>

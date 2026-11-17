@@ -34,6 +34,7 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { countAr } from "@/features/student/more";
 import { tripoliDow } from "@/features/student/components";
+import { LIVE_NOW } from "@/lib/copy";
 
 interface DaySlot {
   dow: number;
@@ -338,7 +339,7 @@ function DaySectionHeader({ dow, todayDow }: { dow: number; todayDow: number }) 
 /* ── one class row ───────────────────────────────────────────────────── */
 
 const STATUS_META: Record<SlotStatus, { label: string }> = {
-  live: { label: "مباشرة الآن" },
+  live: { label: LIVE_NOW },
   next: { label: "التالية" },
   done: { label: "انتهت" },
 };

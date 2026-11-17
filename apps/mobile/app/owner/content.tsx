@@ -11,6 +11,7 @@ import { BrandMark } from "@/components/ui/brand";
 import { Card, Badge } from "@/components/ui/surfaces";
 import { RowList, LedgerRow } from "@/components/ui/data";
 import { usePalette } from "@/design/theme";
+import { FEEDBACK, OWNER_DASHBOARD } from "@/lib/copy";
 
 /** The brand asset register (frontend/public/brand) — SVG sources named
  *  verbatim; the mobile app draws its own vector BrandMark twin. */
@@ -33,7 +34,7 @@ export default function OwnerContent() {
   const p = usePalette();
   return (
     <Screen scroll>
-      <StackHeader title="المحتوى والعلامة التجاريّة" kicker="لوحة المالك" />
+      <StackHeader title="المحتوى والعلامة التجاريّة" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader title="المحتوى والعلامة التجاريّة" kicker="الهويّة وأصول العلامة" />
 
@@ -112,7 +113,7 @@ export default function OwnerContent() {
         </View>
 
         <View>
-          <SectionBar index={3} title="التغذية الراجعة" />
+          <SectionBar index={3} title={FEEDBACK} />
           <Card>
             <View style={{ gap: 8 }}>
               <T variant="sm" color="muted">
@@ -120,7 +121,7 @@ export default function OwnerContent() {
                 وطريقها.
               </T>
               <Button
-                label="التغذية الراجعة"
+                label={FEEDBACK}
                 kind="ghost"
                 small
                 icon={<ArrowRight size={14} color={p.text} />}

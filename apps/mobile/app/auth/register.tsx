@@ -16,6 +16,7 @@ import { Field, SecretField, SelectField } from "@/components/ui/fields";
 import { BrandMark } from "@/components/ui/brand";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
+import { CREATING } from "@/lib/copy";
 
 interface InstitutionRow { id: string; name: string; slug: string }
 interface FacultyRow { id: string; name: string; departments: { id: string; name: string }[] }
@@ -219,7 +220,7 @@ export default function Register() {
       <AppStatusBar />
       <FormScreen
         onSubmit={submit}
-        submitLabel={busy ? "جارٍ الإنشاء…" : "إنشاء الحساب"}
+        submitLabel={busy ? CREATING : "إنشاء الحساب"}
         submitLoading={busy}
         submitKind="accent"
         error={error}

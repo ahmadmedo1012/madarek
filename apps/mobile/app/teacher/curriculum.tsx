@@ -25,6 +25,7 @@ import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { OfferingPicker, arCount, useTeacherOfferings } from "@/features/teacher/components";
+import { ADDED, NO_COURSES_ASSIGNED, SAVED, SAVING } from "@/lib/copy";
 
 const TRANSCRIPT_LABEL: Record<string, string> = {
   NONE: "بلا نص",
@@ -93,7 +94,7 @@ export default function Curriculum() {
     },
     onSuccess: () => {
       invalidate();
-      toast.success(editing ? "حُفظت التعديلات." : "أُضيفت المحاضرة.", "تمّ الحفظ");
+      toast.success(editing ? "حُفظت التعديلات." : "أُضيفت المحاضرة.", SAVED);
       setAdding(false);
       setEditing(null);
       setTitle("");
@@ -155,7 +156,7 @@ export default function Curriculum() {
         offs.isLoading ? (
           <SkeletonList rows={3} />
         ) : (
-          <EmptyState title="لم تُسند إليك مقرّرات بعد" message="ستظهر فور إسنادها." />
+          <EmptyState title={NO_COURSES_ASSIGNED} message="ستظهر فور إسنادها." />
         )
       ) : (
         <>
@@ -265,7 +266,7 @@ export default function Curriculum() {
           </T>
         ) : null}
         <Button
-          label={saveLecture.isPending ? "جارٍ الحفظ…" : editing ? "حفظ التعديلات" : "إضافة المحاضرة"}
+          label={saveLecture.isPending ? SAVING : editing ? "حفظ التعديلات" : "إضافة المحاضرة"}
           kind="accent"
           loading={saveLecture.isPending}
           disabled={effectiveId === ""}
@@ -338,7 +339,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
     },
     onSuccess: () => {
       invalidateLecture();
-      toast.success("أُضيف الفصل.", "تمّت الإضافة");
+      toast.success("أُضيف الفصل.", ADDED);
       setChapterSheet(false);
       setChTitle("");
       setChStart("");
@@ -375,7 +376,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
     },
     onSuccess: () => {
       invalidateLecture();
-      toast.success("أُضيف سؤال التفاعل.", "تمّت الإضافة");
+      toast.success("أُضيف سؤال التفاعل.", ADDED);
       setCpSheet(false);
       setCpTrigger("");
       setCpQuestion("");
@@ -530,7 +531,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
           </T>
         ) : null}
         <Button
-          label={addChapter.isPending ? "جارٍ الحفظ…" : "إضافة الفصل"}
+          label={addChapter.isPending ? SAVING : "إضافة الفصل"}
           kind="accent"
           loading={addChapter.isPending}
           onPress={() => {
@@ -612,7 +613,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
           </T>
         ) : null}
         <Button
-          label={addCheckpoint.isPending ? "جارٍ الحفظ…" : "إضافة السؤال"}
+          label={addCheckpoint.isPending ? SAVING : "إضافة السؤال"}
           kind="accent"
           loading={addCheckpoint.isPending}
           onPress={() => {

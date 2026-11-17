@@ -16,6 +16,7 @@ import { StatLine, RowList, LedgerRow } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { apiMessage } from "@/features/common/components";
+import { MODEL_INSTITUTION, NO_DATA } from "@/lib/copy";
 
 /** Known stat keys → Arabic labels (honest: unmapped keys render raw). */
 const STAT_LABELS: Record<string, string> = {
@@ -53,7 +54,7 @@ export default function CollegeDetail() {
   if (q.isLoading) {
     return (
       <Screen scroll>
-        <StackHeader title="كلّيّة" kicker="مؤسسة مدارك النموذجية" />
+        <StackHeader title="كلّيّة" kicker={MODEL_INSTITUTION} />
         <SkeletonList rows={5} />
       </Screen>
     );
@@ -61,7 +62,7 @@ export default function CollegeDetail() {
   if (q.isError || !q.data) {
     return (
       <Screen scroll>
-        <StackHeader title="كلّيّة" kicker="مؤسسة مدارك النموذجية" />
+        <StackHeader title="كلّيّة" kicker={MODEL_INSTITUTION} />
         <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
       </Screen>
     );
@@ -77,7 +78,7 @@ export default function CollegeDetail() {
 
   return (
     <Screen scroll>
-      <StackHeader title={c.name} kicker={c.city ?? "مؤسسة مدارك النموذجية"} />
+      <StackHeader title={c.name} kicker={c.city ?? MODEL_INSTITUTION} />
 
       {/* Identity band — the honest eyebrow (web parity). */}
       <View style={{ gap: sp[4], paddingBottom: sp[8] }}>
@@ -178,7 +179,7 @@ export default function CollegeDetail() {
 
       {programs.length === 0 && faculties.length === 0 && statEntries.length === 0 && !isGuest ? (
         <EmptyState
-          title="لا بيانات بعد"
+          title={NO_DATA}
           message="تُحدَّث مع التسجيل والأقسام."
         />
       ) : null}

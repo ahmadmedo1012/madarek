@@ -21,6 +21,7 @@ import {
   type FacultyNode,
   type OfferingPickRow,
 } from "@/features/governance/components";
+import { CREATING, REGISTRAR_DASHBOARD } from "@/lib/copy";
 
 interface InviteRow {
   id: string;
@@ -114,7 +115,7 @@ const [maxUses, setMaxUses] = useState("1");
 
   return (
     <Screen scroll>
-      <StackHeader title="دعوات التسجيل" kicker="لوحة المسجل العام" />
+      <StackHeader title="دعوات التسجيل" kicker={REGISTRAR_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader title="دعوات التسجيل" kicker="أكواد انضمام بنطاق وصلاحية." />
 
@@ -182,7 +183,7 @@ const [maxUses, setMaxUses] = useState("1");
         title="دعوة جديدة"
         footer={
           <Button
-            label={create.isPending ? "جارٍ الإنشاء…" : "إنشاء الدعوة"}
+            label={create.isPending ? CREATING : "إنشاء الدعوة"}
             disabled={
               create.isPending ||
               (scopeKind !== "none" && !scopeId) ||

@@ -35,13 +35,14 @@ import {
   StatusBadge,
   arCount,
 } from "@/features/teacher/components";
+import { AWAITING_QUALITY_APPROVAL, PUBLISH_FINAL_CONFIRM, SENDING } from "@/lib/copy";
 
 type QuestionCategory = { id: string; title?: string; name?: string };
 
 /** Web publishGateReason — the per-status honesty for the gated publish. */
 function publishGateReason(status: string): string | null {
   if (status === "PENDING_REVIEW" || status === "DRAFT") {
-    return "النشر بعد اعتماد الجودة.";
+    return AWAITING_QUALITY_APPROVAL;
   }
   if (status === "REJECTED") return "مرفوض من الجودة.";
   if (status === "PUBLISHED" || status === "CLOSED") return "منشور بالفعل.";
@@ -320,7 +321,7 @@ export default function Exams() {
       <ConfirmDialog
         open={publishTarget !== null}
         title="نشر الاختبار"
-        message="النشر نهائي حسب النطاق. النشر الآن؟"
+        message={PUBLISH_FINAL_CONFIRM}
         confirmLabel="نشر نهائي"
         loading={publish.isPending}
         onConfirm={() => publishTarget && publish.mutate(publishTarget.id)}
@@ -466,7 +467,7 @@ export default function Exams() {
             </T>
           ) : null}
           <Button
-            label={createQuestion.isPending ? "جارٍ الإرسال…" : "إرسال السؤال"}
+            label={createQuestion.isPending ? SENDING : "إرسال السؤال"}
             kind="accent"
             loading={createQuestion.isPending}
             onPress={() => {

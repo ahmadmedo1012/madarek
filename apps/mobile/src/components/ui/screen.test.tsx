@@ -21,19 +21,21 @@ function setWindow(width: number, height: number) {
   Dimensions.set({ window: { width, height, scale: 2, fontScale: 1 } });
 }
 
+/** A node in the test-renderer host JSON tree (loose shape). */
 interface JsonNode {
   type?: string;
   props?: Record<string, unknown>;
-  children?: (JsonNode | null)[];
+  children?: unknown[];
 }
 
 /** Collect every node in the rendered tree (host JSON) matching a predicate. */
-function collect(root: JsonNode | null, match: (n: JsonNode) => boolean): JsonNode[] {
+function collect(root: unknown, match: (n: JsonNode) => boolean): JsonNode[] {
   const out: JsonNode[] = [];
-  const walk = (node: JsonNode | null) => {
-    if (!node) return;
-    if (match(node)) out.push(node);
-    for (const child of node.children ?? []) walk(child);
+  const walk = (node: unknown) => {
+    if (!node || typeof node !== "object") return;
+    const n = node as JsonNode;
+    if (match(n)) out.push(n);
+    for (const child of n.children ?? []) walk(child);
   };
   walk(root);
   return out;
@@ -93,8 +95,8 @@ describe("Screen — the responsive content column", () => {
         <T>محتوى</T>
       </Screen>,
     );
-    const root = tree.toJSON() as JsonNode;
-    expect(flat(root.props?.style).maxWidth).toBeUndefined();
+    const root = tree.toJSON() as JsonNode | null;
+    expect(flat(root?.props?.style).maxWidth).toBeUndefined();
     const scroll = collect(root, (n) => n.type === "RCTScrollView")[0];
     expect(flat(scroll.props?.contentContainerStyle).maxWidth).toBe(640);
   });
@@ -106,8 +108,8 @@ describe("Screen — the responsive content column", () => {
         <T>محتوى</T>
       </Screen>,
     );
-    const root = tree.toJSON() as JsonNode;
-    expect(flat(root.props?.style).maxWidth).toBeUndefined();
+    const root = tree.toJSON() as JsonNode | null;
+    expect(flat(root?.props?.style).maxWidth).toBeUndefined();
     const capped = collect(root, (n) => flat(n.props?.style).maxWidth === 640);
     expect(capped).toHaveLength(1);
     expect(flat(capped[0].props?.style).alignSelf).toBe("center");

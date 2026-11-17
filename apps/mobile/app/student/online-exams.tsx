@@ -28,6 +28,7 @@ import {
   examStartable,
   examWindowState,
 } from "@/features/student/more";
+import { RETRY } from "@/lib/copy";
 
 /* ── pure helpers (unit-pinned in src/test/exam-runner.test.tsx) ─────── */
 
@@ -140,7 +141,7 @@ function ExamRowInner({ item: exam, last, now }: ExamRowProps) {
       ? "متابعة"
       : examStartable(exam) && ws === "open"
         ? exam.myAttempt && exam.kind === "PRACTICE"
-          ? "إعادة المحاولة"
+          ? RETRY
           : "ابدأ"
         : "عرض التفاصيل";
 

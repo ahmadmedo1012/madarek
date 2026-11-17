@@ -22,6 +22,7 @@ import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { OfferingPicker, toRosterEntry, useTeacherOfferings } from "@/features/teacher/components";
+import { SAVED } from "@/lib/copy";
 
 type AttStatus = "PRESENT" | "LATE" | "ABSENT" | "EXCUSED";
 
@@ -149,7 +150,7 @@ export default function Attendance() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("حُفظ سجلّ اليوم.", "تمّ الحفظ");
+      toast.success("حُفظ سجلّ اليوم.", SAVED);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الحفظ"),
   });

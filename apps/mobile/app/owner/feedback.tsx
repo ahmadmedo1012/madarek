@@ -22,6 +22,7 @@ import {
   feedbackStatusLabel,
   pageOf,
 } from "@/features/governance/components";
+import { FEEDBACK, OWNER_DASHBOARD, UPDATE_FAILED } from "@/lib/copy";
 
 const PAGE_LIMIT = 30;
 
@@ -78,16 +79,16 @@ export default function OwnerFeedback() {
       toast.success(`انتقل التقرير إلى «${FEEDBACK_STATUS_LABEL[payload.status] ?? payload.status}».`);
       setSelected(null);
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر التحديث"),
+    onError: (e) => toast.error(humanizeError(e), UPDATE_FAILED),
   });
 
   const rows = inbox.data?.rows ?? [];
 
   return (
     <Screen scroll>
-      <StackHeader title="التغذية الراجعة" kicker="لوحة المالك" />
+      <StackHeader title={FEEDBACK} kicker={OWNER_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="التغذية الراجعة" kicker="كل التقارير الواردة." />
+        <PageHeader title={FEEDBACK} kicker="كل التقارير الواردة." />
 
         <Segmented
           options={STATUS_FILTERS}

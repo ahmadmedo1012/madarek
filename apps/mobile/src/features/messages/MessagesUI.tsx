@@ -59,6 +59,7 @@ import {
   threadMessages,
   type Correspondent,
 } from "@/features/messages/logic";
+import { SENDING } from "@/lib/copy";
 
 const LIMIT = 30;
 
@@ -352,7 +353,7 @@ function ThreadSheet({
                 />
               </View>
               <Button
-                label={send.isPending ? "جارٍ الإرسال…" : "إرسال"}
+                label={send.isPending ? SENDING : "إرسال"}
                 kind="accent"
                 small
                 loading={send.isPending}

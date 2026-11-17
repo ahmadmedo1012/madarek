@@ -20,6 +20,7 @@ import { latn, num } from "@/lib/format";
 import type { PageMeta, Paginated } from "@/api/types";
 import { T } from "./text";
 import { EmptyState, ErrorState, Refreshable, Skeleton, SkeletonList } from "./states";
+import { NO_DATA } from "@/lib/copy";
 
 /** StatLine — mono drafting metric row: label · value. */
 export function StatLine({
@@ -415,7 +416,7 @@ export function DataList<T>(props: DataListProps<T>) {
   }
   if (rows.length === 0) {
     const empty =
-      emptySlot ?? <EmptyState title={emptyTitle ?? "لا بيانات بعد"} message={emptyMessage} />;
+      emptySlot ?? <EmptyState title={emptyTitle ?? NO_DATA} message={emptyMessage} />;
     if (!refetch) {
       return (
         <View style={[{ paddingHorizontal: padX ?? sp[16] }, style]} testID={testID}>

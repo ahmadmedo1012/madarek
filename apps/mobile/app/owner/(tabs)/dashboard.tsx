@@ -32,6 +32,7 @@ import {
   type AuditRow,
   type OwnerStatsRow,
 } from "@/features/governance/components";
+import { OWNER_DASHBOARD } from "@/lib/copy";
 
 interface OwnerAlert {
   id: string;
@@ -210,7 +211,7 @@ export default function OwnerDashboard() {
         </Animated.View>
 
         <Animated.View entering={entering(4)}>
-          <SectionBar index={3} title="لوحة المالك" />
+          <SectionBar index={3} title={OWNER_DASHBOARD} />
           <RowList>
             <LedgerRow
               onPress={() => {

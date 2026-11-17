@@ -21,6 +21,7 @@ import { toast } from "@/components/ui/toast";
 import { haptics } from "@/haptics";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { SignInPrompt, apiMessage, competitionStatus, isUnauthError, submissionEnded } from "@/features/common/components";
+import { NO_DATA, SENDING } from "@/lib/copy";
 
 interface EntryRow {
   id: string;
@@ -107,7 +108,7 @@ export default function CompetitionDetail() {
       <Screen scroll>
         <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
         <EmptyState
-          title="لا بيانات بعد"
+          title={NO_DATA}
           message="ربما انتهت — شاهد الجارية."
           actionLabel="عرض المسابقات"
           onAction={() => router.push("/competitions" as never)}
@@ -266,7 +267,7 @@ export default function CompetitionDetail() {
             </View>
             <View style={{ flex: 1 }}>
               <Button
-                label={enter.isPending ? "جارٍ الإرسال…" : "إرسال"}
+                label={enter.isPending ? SENDING : "إرسال"}
                 onPress={submit}
                 loading={enter.isPending}
                 small

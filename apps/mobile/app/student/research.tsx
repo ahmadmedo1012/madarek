@@ -28,6 +28,7 @@ import { fullDate, latn } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { PAPER_STATUS_LABEL, PAPER_STATUS_TONE, SectionNote, scanLine } from "@/features/student/more";
+import { UNKNOWN_STATUS } from "@/lib/copy";
 
 /**
  * /student/research — بحوثي (web ResearchPage parity): paper rows with the
@@ -94,7 +95,7 @@ export default function ResearchScreen() {
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6], flexWrap: "wrap" }}>
                 <Badge
-                  label={PAPER_STATUS_LABEL[paper.status] ?? "حالة غير معروفة"}
+                  label={PAPER_STATUS_LABEL[paper.status] ?? UNKNOWN_STATUS}
                   tone={PAPER_STATUS_TONE[paper.status] ?? "grey"}
                 />
                 {paper.plagiarismPct != null || paper.aiContentPct != null ? <SimulatedBadge /> : null}
@@ -155,7 +156,7 @@ function DetailSheet({
       <View style={{ gap: sp[12] }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6], flexWrap: "wrap" }}>
           <Badge
-            label={PAPER_STATUS_LABEL[paper.status] ?? "حالة غير معروفة"}
+            label={PAPER_STATUS_LABEL[paper.status] ?? UNKNOWN_STATUS}
             tone={PAPER_STATUS_TONE[paper.status] ?? "grey"}
           />
           <SimulatedBadge note="الفحص" />

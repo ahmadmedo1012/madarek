@@ -42,6 +42,7 @@ import {
   materialCourseName,
   openMaterial,
 } from "@/features/student/components";
+import { NO_FILES } from "@/lib/copy";
 
 const MATERIAL_TYPE_LABEL: Record<string, string> = {
   PDF: "PDF",
@@ -222,7 +223,7 @@ export default function MaterialsScreen() {
           emptySlot={
             <EmptyState
               room="library"
-              title="لا ملفات"
+              title={NO_FILES}
               message="تظهر فور رفع أي مواد."
             />
           }

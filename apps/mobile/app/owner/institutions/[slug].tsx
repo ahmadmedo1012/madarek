@@ -23,6 +23,7 @@ import {
   numOf,
   type InstitutionRow,
 } from "@/features/governance/components";
+import { OWNER_DASHBOARD, SAVE_FAILED, SAVING } from "@/lib/copy";
 
 type AdminRow = NonNullable<InstitutionRow["admins"]>[number];
 
@@ -49,7 +50,7 @@ export default function OwnerInstitutionDetail() {
   if (listing.isLoading) {
     return (
       <Screen scroll>
-        <StackHeader title="المؤسسة" kicker="لوحة المالك" />
+        <StackHeader title="المؤسسة" kicker={OWNER_DASHBOARD} />
         <View style={{ paddingTop: 16 }}>
           <SkeletonList rows={5} />
         </View>
@@ -59,7 +60,7 @@ export default function OwnerInstitutionDetail() {
   if (listing.isError) {
     return (
       <Screen scroll>
-        <StackHeader title="المؤسسة" kicker="لوحة المالك" />
+        <StackHeader title="المؤسسة" kicker={OWNER_DASHBOARD} />
         <View style={{ paddingTop: 16 }}>
           <ErrorState
             message={humanizeError(listing.error)}
@@ -72,7 +73,7 @@ export default function OwnerInstitutionDetail() {
   if (!inst) {
     return (
       <Screen scroll>
-        <StackHeader title="المؤسسة" kicker="لوحة المالك" />
+        <StackHeader title="المؤسسة" kicker={OWNER_DASHBOARD} />
         <View style={{ paddingTop: 16 }}>
           <EmptyState
             title="المؤسسة غير موجودة"
@@ -104,7 +105,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       invalidate();
       toast.success("حُفظ الاسم.", "بيانات المؤسسة");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر الحفظ"),
+    onError: (e) => toast.error(humanizeError(e), SAVE_FAILED),
   });
 
   const provision = useMutation({
@@ -370,7 +371,7 @@ function RenameSheet({
           hint="فارغ = كما هو"
         />
         <Button
-          label={rename.isPending ? "جارٍ الحفظ…" : "حفظ الأسماء"}
+          label={rename.isPending ? SAVING : "حفظ الأسماء"}
           kind="primary"
           disabled={!canSubmit}
           onPress={() => {

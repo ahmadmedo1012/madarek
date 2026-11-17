@@ -30,6 +30,7 @@ import {
   type OfferingPickRow,
   type StudentEnrollmentRow,
 } from "@/features/governance/components";
+import { SEARCH_NAME_OR_EMAIL } from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -93,7 +94,7 @@ export default function AdminStudents() {
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو البريد…"
+          placeholder={SEARCH_NAME_OR_EMAIL}
           onClear={() => {
             haptics.selection();
             setQ("");

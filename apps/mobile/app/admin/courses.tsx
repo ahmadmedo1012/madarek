@@ -28,6 +28,7 @@ import {
   type CourseRow,
   type FacultyNode,
 } from "@/features/governance/components";
+import { ADDED, REGISTRAR_DASHBOARD, SAVED, SAVING } from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -107,7 +108,7 @@ export default function AdminCourses() {
       }),
     onSuccess: () => {
       invalidateCourses();
-      toast.success(`أُضيف مقرّر «${draft?.name}» إلى السجلّ.`, "تمّت الإضافة");
+      toast.success(`أُضيف مقرّر «${draft?.name}» إلى السجلّ.`, ADDED);
       setDraft(null);
       setEditingId(null);
     },
@@ -128,7 +129,7 @@ export default function AdminCourses() {
     },
     onSuccess: () => {
       invalidateCourses();
-      toast.success(`حُفظت تعديلات «${draft?.name}».`, "تمّ الحفظ");
+      toast.success(`حُفظت تعديلات «${draft?.name}».`, SAVED);
       setDraft(null);
       setEditingId(null);
     },
@@ -157,7 +158,7 @@ export default function AdminCourses() {
 
   return (
     <Screen scroll>
-      <NavHeader title="إدارة المقرّرات" kicker="لوحة المسجل العام" />
+      <NavHeader title="إدارة المقرّرات" kicker={REGISTRAR_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader
           title="إدارة المقرّرات"
@@ -287,7 +288,7 @@ export default function AdminCourses() {
             <Button
               label={
                 createCourse.isPending || updateCourse.isPending
-                  ? "جارٍ الحفظ…"
+                  ? SAVING
                   : editingId
                     ? "حفظ التعديلات"
                     : "إضافة المقرّر"

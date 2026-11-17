@@ -36,10 +36,11 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { countAr } from "@/features/student/more";
 import { AssignSubmitSheet, type SubmitTarget } from "@/features/student/components";
+import { QUIZ_LABEL } from "@/lib/copy";
 
 const ASSIGNMENT_KIND_LABEL: Record<string, string> = {
   HOMEWORK: "واجب",
-  QUIZ: "اختبار قصير",
+  QUIZ: QUIZ_LABEL,
   PROJECT: "مشروع",
   EXAM: "اختبار",
 };

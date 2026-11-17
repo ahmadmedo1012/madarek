@@ -36,6 +36,7 @@ import { heronEase } from "@/design/tokens.generated";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
 import { T } from "./text";
 import { Button } from "./pressables";
+import { RETRY } from "@/lib/copy";
 
 const EASE = Easing.bezier(heronEase[0], heronEase[1], heronEase[2], heronEase[3]);
 const CYCLE = 520;
@@ -248,7 +249,7 @@ export function Boot({
           {slow && slowLabel ? slowLabel : label}
         </T>
         {slow && onRetry ? (
-          <Button label="إعادة المحاولة" kind="ghost" small onPress={onRetry} />
+          <Button label={RETRY} kind="ghost" small onPress={onRetry} />
         ) : null}
       </View>
     </View>

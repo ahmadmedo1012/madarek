@@ -22,6 +22,7 @@ import {
   numOf,
   type QualityAlertsPayload,
 } from "@/features/governance/components";
+import { READ_ONLY } from "@/lib/copy";
 
 /** (tabs) Quality reports — composite (web QualityReportsPage + dashboard sections). */
 export default function QualityReports() {
@@ -71,7 +72,7 @@ export default function QualityReports() {
               لوحات حيّة تُحدَّث مع كل عمليّة.
             </T>
           </View>
-          <Badge label="قراءة فقط" tone="grey" />
+          <Badge label={READ_ONLY} tone="grey" />
         </View>
 
         <View>

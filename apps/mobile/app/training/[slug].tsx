@@ -28,6 +28,7 @@ import {
   pointsAr,
 } from "@/features/common/components";
 import { TRAINING_CATEGORY_LABEL, TRAINING_LEVEL_LABEL } from "./index";
+import { PATH_REMOVED, SELF_DEV } from "@/lib/copy";
 
 /**
  * /training/[slug] — track detail: hero facts, honest progress (completed
@@ -61,7 +62,7 @@ export default function TrainingTrack() {
     // `return null` here was a white screen (the exact M1 crash class).
     return (
       <Screen scroll>
-        <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
+        <StackHeader title="مسار تدريبي" kicker={SELF_DEV} />
         <EmptyState
           title="الرابط غير مكتمل"
           message="لا مسار — اختر من القائمة."
@@ -74,7 +75,7 @@ export default function TrainingTrack() {
   if (q.isLoading) {
     return (
       <Screen scroll>
-        <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
+        <StackHeader title="مسار تدريبي" kicker={SELF_DEV} />
         <SkeletonList rows={5} />
       </Screen>
     );
@@ -82,7 +83,7 @@ export default function TrainingTrack() {
   if (q.isError) {
     return (
       <Screen scroll>
-        <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
+        <StackHeader title="مسار تدريبي" kicker={SELF_DEV} />
         {isUnauthError(q.error) ? (
           <SignInPrompt message="سجّل الدخول لتتبّع تقدّمك." />
         ) : (
@@ -96,10 +97,10 @@ export default function TrainingTrack() {
     // never a white screen (R327 A4).
     return (
       <Screen scroll>
-        <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
+        <StackHeader title="مسار تدريبي" kicker={SELF_DEV} />
         <EmptyState
           title="لا بيانات للمسار"
-          message="أُزيل المسار أو الرابط قديم."
+          message={PATH_REMOVED}
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -133,7 +134,7 @@ export default function TrainingTrack() {
     <Screen scroll>
       <StackHeader
         title={track.title}
-        kicker={track.category ? TRAINING_CATEGORY_LABEL[track.category] ?? track.category : "التطوير الذاتي"}
+        kicker={track.category ? TRAINING_CATEGORY_LABEL[track.category] ?? track.category : SELF_DEV}
       />
 
       {/* Hero */}

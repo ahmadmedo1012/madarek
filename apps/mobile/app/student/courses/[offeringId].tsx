@@ -49,6 +49,7 @@ import {
   lecturesProgress,
   type ScopedAnnouncement,
 } from "@/features/student/coursesLogic";
+import { NO_FILES, REPORT_PROBLEM } from "@/lib/copy";
 
 /* ══ shared bits ══════════════════════════════════════════════════════ */
 
@@ -510,12 +511,12 @@ export default function CourseDetailScreen() {
             keyExtractor={(m) => m.id}
             refetch={() => full.refetch()}
             isRefetching={full.isRefetching}
-            emptyTitle="لا ملفات"
+            emptyTitle={NO_FILES}
             emptyMessage="تظهر فور رفعها."
             emptySlot={
               <EmptyState
                 room="library"
-                title="لا ملفات"
+                title={NO_FILES}
                 message="تظهر فور رفع الأستاذ."
               />
             }
@@ -558,7 +559,7 @@ export default function CourseDetailScreen() {
               onPress: () => void shareCourse(),
             },
             {
-              label: "الإبلاغ عن مشكلة",
+              label: REPORT_PROBLEM,
               icon: <Flag size={18} color={p.text} />,
               onPress: () => router.push("/report" as never),
             },

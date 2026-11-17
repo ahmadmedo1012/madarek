@@ -15,6 +15,7 @@ import { toast } from "@/components/ui/toast";
 import { PressableScale } from "@/motion";
 import { haptics } from "@/haptics";
 import { humanizeError } from "@/lib/errors";
+import { REPORT_PROBLEM, SENDING } from "@/lib/copy";
 
 /**
  * ReportProblemSheet — «أبلغ عن مشكلة / اقتراح» (B3.6 pilot loop → R331
@@ -66,13 +67,13 @@ export function ReportProblemSheet({ open, onClose }: { open: boolean; onClose: 
     <AppSheet
       open={open}
       onClose={onClose}
-      title="الإبلاغ عن مشكلة"
+      title={REPORT_PROBLEM}
       snap="lg"
       dynamic={false}
       scrollable
       footer={
         <Button
-          label={submit.isPending ? "جارٍ الإرسال…" : "إرسال الملاحظة"}
+          label={submit.isPending ? SENDING : "إرسال الملاحظة"}
           kind="primary"
           loading={submit.isPending}
           disabled={note.trim().length < 10}

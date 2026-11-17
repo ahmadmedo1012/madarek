@@ -55,6 +55,7 @@ import {
   type AssistantRole,
   type ChatTurn,
 } from "./logic";
+import { RETRY } from "@/lib/copy";
 
 /**
  * Assistant — the AI academic assistant (R334 3-f, full chat UX).
@@ -712,7 +713,7 @@ function TurnBubble({
           </T>
           {canRetry ? (
             <Button
-              label="إعادة المحاولة"
+              label={RETRY}
               kind="ghost"
               small
               onPress={onRetry}

@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/pressables";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { arCount } from "@/features/teacher/components";
+import { REPORT_PROBLEM, SAVED } from "@/lib/copy";
 
 /** Wire shape of GET /me/teacher-profile (teacher-profile.routes.ts). */
 type TeacherProfileWire = {
@@ -97,7 +98,7 @@ const MENU_GROUPS: { title: string; items: { label: string; to: string }[] }[] =
     title: "الدعم",
     items: [
       // R331 A-App-Shell — the report loop entry (replaces the removed floating FAB).
-      { label: "الإبلاغ عن مشكلة", to: "/report" },
+      { label: REPORT_PROBLEM, to: "/report" },
       { label: "الإعدادات", to: "/settings" },
     ],
   },
@@ -138,7 +139,7 @@ export default function TeacherProfile() {
       qc.invalidateQueries({ queryKey: ["teacher", "profile"] });
       setEditing(false);
       setSaveError(null);
-      toast.success("حُفظت التعديلات.", "تمّ الحفظ");
+      toast.success("حُفظت التعديلات.", SAVED);
     },
     onError: (e) => {
       setSaveError(humanizeError(e));

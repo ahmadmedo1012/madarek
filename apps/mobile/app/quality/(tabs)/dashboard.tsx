@@ -24,6 +24,7 @@ import {
   countAr,
   numOf,
 } from "@/features/governance/components";
+import { READ_ONLY } from "@/lib/copy";
 
 const ATTENDANCE_KEY_LABEL: Record<string, string> = {
   PRESENT: "سجلّات حضور",
@@ -88,7 +89,7 @@ export default function QualityDashboard() {
               الاعتماد المحلية والدولية.
             </T>
           </View>
-          <Badge label="قراءة فقط" tone="grey" />
+          <Badge label={READ_ONLY} tone="grey" />
         </Animated.View>
 
         {overview.isLoading ? (

@@ -16,6 +16,7 @@ import { ownerApi } from "@/api/owner";
 import { useStatusTones } from "@/design/theme";
 import { dateTime, latn } from "@/lib/format";
 import { SeverityChip, alertCategoryLabel } from "@/features/governance/components";
+import { OWNER_DASHBOARD } from "@/lib/copy";
 
 interface OwnerAlertRow {
   id: string;
@@ -60,7 +61,7 @@ export default function OwnerAlerts() {
 
   return (
     <Screen scroll>
-      <StackHeader title="التنبيهات التشغيليّة" kicker="لوحة المالك" />
+      <StackHeader title="التنبيهات التشغيليّة" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader title="التنبيهات التشغيليّة" kicker="التنبيهات والحوادث التشغيليّة." />
 

@@ -16,6 +16,7 @@ import { T } from "./text";
 import { Button } from "./pressables";
 import { Boot, InlineBusy, usePulseStyle } from "./boot";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
+import { NO_FILES, RETRY } from "@/lib/copy";
 
 /** Skeleton — drafting pulse block (paper rhythm, reduced-motion safe). */
 export function Skeleton({ w = "100%", h = 16, style }: { w?: number | string; h?: number; style?: StyleProp<ViewStyle> }) {
@@ -136,7 +137,7 @@ const ROOMS: Record<EmptyRoom, RoomSheet> = {
   },
   library: {
     Art: PlanLibrary,
-    title: "لا ملفات",
+    title: NO_FILES,
     message: "تظهر هنا عند مشاركتها.",
     a11y: "مكتبة فارغة",
   },
@@ -291,7 +292,7 @@ export function ErrorState({
             flexWrap: "wrap",
           }}
         >
-          {onRetry ? <Button label="إعادة المحاولة" kind="ghost" onPress={onRetry} small /> : null}
+          {onRetry ? <Button label={RETRY} kind="ghost" onPress={onRetry} small /> : null}
           {onReport ? <Button label="إبلاغ عن مشكلة" kind="ghost" onPress={onReport} small /> : null}
         </View>
       ) : null}
@@ -347,7 +348,7 @@ export function OfflineState({
       </T>
       {onRetry ? (
         <View style={{ marginTop: sp[8], minWidth: 200 }}>
-          <Button label="إعادة المحاولة" kind="ghost" onPress={onRetry} small />
+          <Button label={RETRY} kind="ghost" onPress={onRetry} small />
         </View>
       ) : null}
     </View>

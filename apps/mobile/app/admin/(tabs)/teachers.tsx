@@ -28,6 +28,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { initials, num } from "@/lib/format";
 import { pageOf, textOf, UserAvatar, avatarUrlOf, type FacultyNode } from "@/features/governance/components";
+import { SAVING, SEARCH_NAME_OR_EMAIL, UPDATE_FAILED } from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -104,7 +105,7 @@ export default function AdminTeachers() {
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو البريد…"
+          placeholder={SEARCH_NAME_OR_EMAIL}
           onClear={() => setQ("")}
         />
       </View>
@@ -203,7 +204,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
       qc.invalidateQueries({ queryKey: ["admin", "teachers"] });
       toast.success(verified ? `تمّ توثيق «${teacher.firstName} ${teacher.lastName}».` : "أُلغي التوثيق.");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر التحديث"),
+    onError: (e) => toast.error(humanizeError(e), UPDATE_FAILED),
   });
 
   const [position, setPosition] = useState<PositionChoice>(
@@ -334,7 +335,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
           <Button
             label={
               setPositionM.isPending
-                ? "جارٍ الحفظ…"
+                ? SAVING
                 : position === "NONE"
                   ? "إلغاء التعيين"
                   : `تعيين ${POSITION_LABELS[position] ?? ""}`

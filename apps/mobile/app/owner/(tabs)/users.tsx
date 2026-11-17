@@ -21,6 +21,7 @@ import type { Paginated } from "@/api/types";
 import { ROLE_LABELS } from "@/auth/session";
 import { initials } from "@/lib/format";
 import { RoleChip, UserAvatar, avatarUrlOf, type OwnerUserRow } from "@/features/governance/components";
+import { SEARCH_NAME_OR_EMAIL, UPDATE_FAILED } from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -99,7 +100,7 @@ export default function OwnerUsers() {
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو البريد…"
+          placeholder={SEARCH_NAME_OR_EMAIL}
           onClear={() => setQ("")}
         />
 
@@ -216,7 +217,7 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
     onError: (e) => {
       setStatusConfirm(false);
       // The API's own Arabic message lands here (e.g. the last-active-owner guard).
-      toast.error(humanizeError(e), "تعذّر التحديث");
+      toast.error(humanizeError(e), UPDATE_FAILED);
     },
   });
 

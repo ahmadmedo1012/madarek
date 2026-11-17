@@ -19,6 +19,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { latn, num } from "@/lib/format";
 import { CAPABILITY_LABEL, type FacultyNode } from "@/features/governance/components";
+import { REGISTRAR_DASHBOARD, SAVE_FAILED, SAVING, UPDATE_FAILED } from "@/lib/copy";
 
 /**
  * Pushed: /admin/permissions/[id] — the per-user capability editor
@@ -61,7 +62,7 @@ export default function AdminPermissions() {
           : `سُحبت صلاحية «${CAPABILITY_LABEL[payload.capability] ?? payload.capability}».`,
       );
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر التحديث"),
+    onError: (e) => toast.error(humanizeError(e), UPDATE_FAILED),
   });
 
   const currentScopeFaculty = target?.scopeFaculty ?? null;
@@ -76,7 +77,7 @@ export default function AdminPermissions() {
       qc.invalidateQueries({ queryKey: ["admin", "users"] });
       toast.success("تمّ حفظ النطاق.", "نطاق العمل");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر الحفظ"),
+    onError: (e) => toast.error(humanizeError(e), SAVE_FAILED),
   });
 
   const facultyOptions = (facs.data ?? []).map((f) => ({ id: f.id, label: f.name }));
@@ -87,7 +88,7 @@ export default function AdminPermissions() {
     <Screen scroll>
       <StackHeader
         title={target ? `${target.firstName} ${target.lastName}` : "إدارة الصلاحيات"}
-        kicker="لوحة المسجل العام"
+        kicker={REGISTRAR_DASHBOARD}
       />
       <View style={{ gap: 16, paddingTop: 16 }}>
         {target ? (
@@ -182,7 +183,7 @@ export default function AdminPermissions() {
                   />
                 ) : null}
                 <Button
-                  label={setScope.isPending ? "جارٍ الحفظ…" : "حفظ النطاق"}
+                  label={setScope.isPending ? SAVING : "حفظ النطاق"}
                   disabled={setScope.isPending || (scopeMode === "FACULTY" && !scopeFacultyId)}
                   onPress={() => setScope.mutate()}
                 />

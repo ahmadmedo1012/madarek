@@ -36,6 +36,7 @@ import { CountUp, RingProgress } from "@/motion";
 import { fonts } from "@/design/fonts";
 import { type as typeScale } from "@/design/tokens";
 import { latn } from "@/lib/format";
+import { QUIZ_LABEL } from "@/lib/copy";
 
 /* ══════════════════════ Counted Arabic plurals ═══════════════════ */
 
@@ -401,7 +402,7 @@ export function PaperStatusChip({ status }: { status?: string | null }) {
 
 /** Exam kinds (lib/courseMeta.ts EXAM_KIND_LABEL parity). */
 export const EXAM_KIND_LABEL: Record<string, string> = {
-  QUIZ: "اختبار قصير",
+  QUIZ: QUIZ_LABEL,
   MIDTERM: "نصفي",
   FINAL: "نهائي",
   PRACTICE: "تدريبي",

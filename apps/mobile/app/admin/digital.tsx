@@ -13,6 +13,7 @@ import { get } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { latn } from "@/lib/format";
+import { REGISTRAR_DASHBOARD } from "@/lib/copy";
 
 interface DigitalPayload {
   totalUsers?: number | null;
@@ -64,7 +65,7 @@ export default function AdminDigital() {
 
   return (
     <Screen scroll>
-      <StackHeader title="التحوّل الرقميّ" kicker="لوحة المسجل العام" />
+      <StackHeader title="التحوّل الرقميّ" kicker={REGISTRAR_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader title="التحوّل الرقميّ" kicker="مؤشّرات التبنّي الرقميّ عبر الجامعة." />
 

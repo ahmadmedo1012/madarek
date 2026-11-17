@@ -26,6 +26,7 @@ import {
   minutesAr,
   pointsAr,
 } from "@/features/common/components";
+import { PATH_REMOVED, SELF_DEV, SENDING } from "@/lib/copy";
 
 interface CompleteLessonResult {
   newlyCompleted?: boolean;
@@ -75,7 +76,7 @@ export default function TrainingLesson() {
     // R327 A4: broken deep link → honest state, never a white screen.
     return (
       <Screen scroll>
-        <StackHeader title="درس" kicker="التطوير الذاتي" />
+        <StackHeader title="درس" kicker={SELF_DEV} />
         <EmptyState
           title="الرابط غير مكتمل"
           message="لا درس — افتح المسار."
@@ -88,7 +89,7 @@ export default function TrainingLesson() {
   if (q.isLoading) {
     return (
       <Screen scroll>
-        <StackHeader title="درس" kicker="التطوير الذاتي" />
+        <StackHeader title="درس" kicker={SELF_DEV} />
         <SkeletonList rows={5} />
       </Screen>
     );
@@ -96,7 +97,7 @@ export default function TrainingLesson() {
   if (q.isError) {
     return (
       <Screen scroll>
-        <StackHeader title="درس" kicker="التطوير الذاتي" />
+        <StackHeader title="درس" kicker={SELF_DEV} />
         {isUnauthError(q.error) ? (
           <SignInPrompt message="سجّل الدخول لقراءة الدروس." />
         ) : (
@@ -109,10 +110,10 @@ export default function TrainingLesson() {
     // Success-but-null — honest emptiness, never a white screen (R327 A4).
     return (
       <Screen scroll>
-        <StackHeader title="درس" kicker="التطوير الذاتي" />
+        <StackHeader title="درس" kicker={SELF_DEV} />
         <EmptyState
           title="لا بيانات للمسار"
-          message="أُزيل المسار أو الرابط قديم."
+          message={PATH_REMOVED}
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -215,7 +216,7 @@ export default function TrainingLesson() {
       {/* Actions */}
       {!alreadyDone ? (
         <Button
-          label={complete.isPending ? "جارٍ الإرسال…" : "إكمال الدرس"}
+          label={complete.isPending ? SENDING : "إكمال الدرس"}
           kind="primary"
           loading={complete.isPending}
           onPress={onComplete}

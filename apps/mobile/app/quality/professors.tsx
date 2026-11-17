@@ -14,6 +14,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { clamp01, initials, latn } from "@/lib/format";
 import { countAr, type ProfessorRow } from "@/features/governance/components";
+import { QUALITY_SECTOR, READ_ONLY } from "@/lib/copy";
 
 const ROSTER_CAP = 100;
 
@@ -36,12 +37,12 @@ export default function QualityProfessors() {
 
   return (
     <Screen scroll>
-      <StackHeader title="تقييم الأساتذة" kicker="ضمان الجودة" />
+      <StackHeader title="تقييم الأساتذة" kicker={QUALITY_SECTOR} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader
           title="تقييم الأساتذة"
           kicker="الرضا والاستجابة والالتزام."
-          right={<Badge label="قراءة فقط" tone="grey" />}
+          right={<Badge label={READ_ONLY} tone="grey" />}
         />
 
         {rows.some((t) => t.satisfactionEstimated || t.responseHoursEstimated) ? (

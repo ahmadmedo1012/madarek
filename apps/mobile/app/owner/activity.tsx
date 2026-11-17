@@ -18,6 +18,7 @@ import {
   textOf,
   type AuditRow,
 } from "@/features/governance/components";
+import { OWNER_DASHBOARD } from "@/lib/copy";
 
 const PAGE_LIMIT = 30;
 
@@ -79,7 +80,7 @@ export default function OwnerActivity() {
 
   return (
     <Screen scroll={false} padded={false}>
-      <StackHeader title="سجلّ النشاط" kicker="لوحة المالك" />
+      <StackHeader title="سجلّ النشاط" kicker={OWNER_DASHBOARD} />
       <View style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
         <PageHeader title="سجلّ النشاط" kicker="كل العمليّات — من سجلّ التدقيق" />
       </View>

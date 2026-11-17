@@ -27,6 +27,7 @@ import { AppSheet, FilterSheet, SheetTextInput, useSheetMounted } from "@/compon
 import { Avatar, DataList, LedgerRow, makeRow, ProgressBar, StatLine } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
+import { LIVE_NOW, QUIZ_LABEL, SAVED } from "@/lib/copy";
 
 /* ─── Arabic counted nouns (web lib/format.countAr parity) ─────────── */
 
@@ -42,7 +43,7 @@ export function arCount(n: number, forms: [string, string, string, string]): str
 
 export const ASSIGNMENT_KIND_LABEL: Record<string, string> = {
   HOMEWORK: "واجب",
-  QUIZ: "اختبار قصير",
+  QUIZ: QUIZ_LABEL,
   PROJECT: "مشروع",
   EXAM: "اختبار",
 };
@@ -68,7 +69,7 @@ export const GRADE_KIND_LABEL: Record<string, string> = {
 export const GRADE_KINDS = Object.keys(GRADE_KIND_LABEL);
 
 export const EXAM_KIND_LABEL: Record<string, string> = {
-  QUIZ: "اختبار قصير",
+  QUIZ: QUIZ_LABEL,
   MIDTERM: "نصفي",
   FINAL: "نهائي",
   PRACTICE: "تدريبي",
@@ -141,7 +142,7 @@ export const PAPER_STATUS_TONE: Record<string, StatusToneName> = {
 
 export const LIVE_STATUS_LABEL: Record<string, string> = {
   SCHEDULED: "مجدولة",
-  LIVE: "مباشرة الآن",
+  LIVE: LIVE_NOW,
   ENDED: "منتهية",
   CANCELLED: "ملغاة",
 };
@@ -458,7 +459,7 @@ function QuickGradeForm({
     onSuccess: () => {
       haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("حُفظت — تظهر للطالب.", "تمّ الحفظ");
+      toast.success("حُفظت — تظهر للطالب.", SAVED);
       onDone();
     },
     onError: (e) => {

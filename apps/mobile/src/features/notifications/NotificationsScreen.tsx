@@ -49,6 +49,7 @@ import {
 } from "@/features/notifications/grouping";
 import { safeDeepLink, useMarkAllRead, useMarkRead } from "@/hooks/useNotifications";
 import type { AppNotification, Paginated } from "@/api/types";
+import { RETRY } from "@/lib/copy";
 
 const FEED_LIMIT = 30;
 
@@ -382,7 +383,7 @@ export function PushActivationCard() {
       ) : (
         <View style={{ alignSelf: "flex-start" }}>
           <Button
-            label={busy ? "جارٍ التفعيل…" : regFailed ? "إعادة المحاولة" : "تفعيل الإشعارات"}
+            label={busy ? "جارٍ التفعيل…" : regFailed ? RETRY : "تفعيل الإشعارات"}
             kind="accent"
             small
             onPress={go}

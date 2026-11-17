@@ -16,6 +16,7 @@ import {
   useExpanded,
   type CurriculumFaculty,
 } from "@/features/governance/components";
+import { READ_ONLY } from "@/lib/copy";
 
 type Level = "strong" | "weak" | "poor";
 const LEVEL_LABEL: Record<Level, string> = { strong: "مكتمل", weak: "جزئي", poor: "متأخر" };
@@ -59,7 +60,7 @@ export default function QualityCurriculum() {
               شجرة الكلّيّات والأقسام والمقرّرات، مع مؤشرات اكتمال المحتوى.
             </T>
           </View>
-          <Badge label="قراءة فقط" tone="grey" />
+          <Badge label={READ_ONLY} tone="grey" />
         </View>
 
         <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>

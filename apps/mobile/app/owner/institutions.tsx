@@ -22,6 +22,7 @@ import {
   numOf,
   type InstitutionRow,
 } from "@/features/governance/components";
+import { CREATING, OWNER_DASHBOARD } from "@/lib/copy";
 
 
 /**
@@ -70,7 +71,7 @@ export default function OwnerInstitutions() {
 
   return (
     <Screen scroll>
-      <StackHeader title="المؤسسات" kicker="لوحة المالك" />
+      <StackHeader title="المؤسسات" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader title="المؤسسات" kicker="إدارة المؤسسات التعليمية" />
 
@@ -246,7 +247,7 @@ function CreateInstitutionSheet({
           autoCorrect={false}
         />
         <Button
-          label={pending ? "جارٍ الإنشاء…" : "إنشاء المؤسسة"}
+          label={pending ? CREATING : "إنشاء المؤسسة"}
           kind="primary"
           icon={<Plus size={14} color={p.primaryFg} />}
           disabled={!canSubmit}

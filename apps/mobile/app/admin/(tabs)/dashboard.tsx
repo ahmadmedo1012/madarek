@@ -28,6 +28,7 @@ import {
   PaperStatusChip,
   type PaperRow,
 } from "@/features/governance/components";
+import { APPEARS_AFTER_FIRST_UPLOAD, FEEDBACK } from "@/lib/copy";
 
 /** (tabs) Admin dashboard — «لوحة المسجل العام» (web AdminDashboardPage parity).
  *  Metric hierarchy: ONE hero (students) + supporting tiles — not a flat grid.
@@ -127,7 +128,7 @@ export default function AdminDashboard() {
             loadMoreError={papers.loadMoreError}
             onRetryLoadMore={papers.retryLoadMore}
             emptyTitle="لا بحوث بعد"
-            emptyMessage="تظهر فور رفع أول بحث."
+            emptyMessage={APPEARS_AFTER_FIRST_UPLOAD}
             loadingSlot={
               <View style={{ gap: 8, paddingTop: 8 }}>
                 <Skeleton h={64} />
@@ -154,7 +155,7 @@ export default function AdminDashboard() {
                 [BookOpen, "إدارة المقرّرات", "المقرّرات والشُّعب والبحث", "/admin/courses"],
                 [ShieldCheck, "التحوّل الرقميّ", "التبنّي الرقميّ", "/admin/digital"],
                 [Inbox, "دعوات التسجيل", "أكواد الانضمام", "/admin/invites"],
-                [FileText, "التغذية الراجعة", "تقارير المستخدمين", "/admin/feedback"],
+                [FileText, FEEDBACK, "تقارير المستخدمين", "/admin/feedback"],
               ] as const
             ).map(([Icon, title, sub, href], i, arr) => (
               <LedgerRow

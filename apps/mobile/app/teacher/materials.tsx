@@ -24,6 +24,7 @@ import { Field, Segmented, SelectField } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { MATERIAL_TYPE_LABEL, OfferingPicker, useTeacherOfferings } from "@/features/teacher/components";
+import { ADDED } from "@/lib/copy";
 
 type MaterialWire = {
   id: string;
@@ -81,7 +82,7 @@ export default function Materials() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "materials"] });
-      toast.success("أُضيف — يظهر فورًا.", "تمّت الإضافة");
+      toast.success("أُضيف — يظهر فورًا.", ADDED);
       setSheetOpen(false);
       resetForm();
     },
@@ -102,7 +103,7 @@ export default function Materials() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "materials"] });
-      toast.success("أُضيف — يظهر فورًا.", "تمّت الإضافة");
+      toast.success("أُضيف — يظهر فورًا.", ADDED);
       setSheetOpen(false);
       resetForm();
     },

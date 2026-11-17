@@ -11,6 +11,7 @@ import { SecretField } from "@/components/ui/fields";
 import { Card } from "@/components/ui/surfaces";
 import { humanizeError, GENERIC_AR } from "@/lib/errors";
 import { haptics } from "@/haptics";
+import { SAVING } from "@/lib/copy";
 
 /**
  * /auth/reset-password?token=… — single-use 30-min token, on the form
@@ -73,7 +74,7 @@ export default function ResetPassword() {
       <AppStatusBar />
       <FormScreen
         onSubmit={done ? undefined : submit}
-        submitLabel={busy ? "جارٍ الحفظ…" : "حفظ كلمة المرور"}
+        submitLabel={busy ? SAVING : "حفظ كلمة المرور"}
         submitLoading={busy}
         submitKind="accent"
         error={error}

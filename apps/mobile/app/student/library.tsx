@@ -30,6 +30,7 @@ import { haptics } from "@/haptics";
 import { humanizeError } from "@/lib/errors";
 import { fullDate, latn, num } from "@/lib/format";
 import { SectionNote, scanLine } from "@/features/student/more";
+import { NO_FILES } from "@/lib/copy";
 
 type PublishedPaper = ResearchPaper & {
   offering?: { course: { code: string; name: string } } | null;
@@ -359,7 +360,7 @@ function BooksTab() {
           <EmptyState
             art={<Illustration id="r342/journey-library" width={240} />}
             room="library"
-            title={debouncedQ || availability !== "all" ? "لا كتب مطابقة" : "لا ملفات"}
+            title={debouncedQ || availability !== "all" ? "لا كتب مطابقة" : NO_FILES}
             message={
               debouncedQ || availability !== "all"
                 ? "لا مطابقات — جرّب كلمات أخرى."
@@ -570,7 +571,7 @@ function ResearchTab() {
         emptySlot={
           <EmptyState
             room="library"
-            title={debouncedQ ? "لا نتائج للبحث" : "لا ملفات"}
+            title={debouncedQ ? "لا نتائج للبحث" : NO_FILES}
             message={
               debouncedQ
                 ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`

@@ -29,6 +29,7 @@ import {
   OfferingPicker,
   useTeacherOfferings,
 } from "@/features/teacher/components";
+import { CREATING } from "@/lib/copy";
 
 /** Wire shape of /teacher/me/pending-submissions (teacher-dashboard.routes.ts). */
 type PendingWire = Submission & {
@@ -428,7 +429,7 @@ export default function Assignments() {
             </T>
           ) : null}
           <Button
-            label={create.isPending ? "جارٍ الإنشاء…" : "إنشاء الواجب"}
+            label={create.isPending ? CREATING : "إنشاء الواجب"}
             kind="accent"
             loading={create.isPending}
             disabled={offerings.length === 0}

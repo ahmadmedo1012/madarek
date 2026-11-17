@@ -10,6 +10,7 @@ import { T } from "@/components/ui/text";
 import { Field } from "@/components/ui/fields";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
+import { SENDING } from "@/lib/copy";
 
 /**
  * /auth/forgot-password — always-200 request (the API never confirms
@@ -52,7 +53,7 @@ export default function ForgotPassword() {
       <AppStatusBar />
       <FormScreen
         onSubmit={submit}
-        submitLabel={busy ? "جارٍ الإرسال…" : "إرسال الرابط"}
+        submitLabel={busy ? SENDING : "إرسال الرابط"}
         submitLoading={busy}
         submitKind="accent"
         error={error}

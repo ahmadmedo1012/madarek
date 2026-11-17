@@ -37,6 +37,7 @@ import {
   isUnauthError,
   membersAr,
 } from "@/features/common/components";
+import { CREATING } from "@/lib/copy";
 
 type Tab = "posts" | "announcements" | "events" | "rooms";
 
@@ -647,7 +648,7 @@ function RoomsPanel() {
               </View>
               <View style={{ flex: 1 }}>
                 <Button
-                  label={create.isPending ? "جارٍ الإنشاء…" : "إنشاء الغرفة"}
+                  label={create.isPending ? CREATING : "إنشاء الغرفة"}
                   loading={create.isPending}
                   disabled={!name.trim()}
                   onPress={() => create.mutate()}

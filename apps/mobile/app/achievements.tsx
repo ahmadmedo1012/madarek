@@ -30,6 +30,7 @@ import {
   countAr,
   isUnauthError,
 } from "@/features/common/components";
+import { SELF_DEV } from "@/lib/copy";
 
 type Tab = "badges" | "certs" | "leaderboard";
 
@@ -76,7 +77,7 @@ export default function Achievements() {
 
   return (
     <Screen scroll>
-      <StackHeader title="الإنجازات" kicker="التطوير الذاتي" />
+      <StackHeader title="الإنجازات" kicker={SELF_DEV} />
       <T variant="body" color="secondary">
         رحلتك في التطوير الذاتي — نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء.
       </T>

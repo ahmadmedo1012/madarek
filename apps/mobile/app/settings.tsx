@@ -26,6 +26,7 @@ import { toast } from "@/components/ui/toast";
 import { authenticate, biometricAvailable, getBiometricLockEnabled, setBiometricLockEnabled } from "@/lib/biometric";
 import type { SessionResponse } from "@/api/types";
 import Constants from "expo-constants";
+import { LOGOUT_THIS_DEVICE_ONLY, REPORT_PROBLEM, SAVING } from "@/lib/copy";
 
 /** /settings — the SHARED settings surface (every role). R341 M3: the
  *  30-row wall of boxed one-per-setting cards is dead — rows are grouped
@@ -380,7 +381,7 @@ export default function Settings() {
           <T variant="xs" color="faint">
             تغيير كلمة المرور ينهي جلساتك على جميع الأجهزة الأخرى.
           </T>
-          <Button label={busy ? "جارٍ الحفظ…" : "حفظ كلمة المرور"} onPress={changePassword} loading={busy} />
+          <Button label={busy ? SAVING : "حفظ كلمة المرور"} onPress={changePassword} loading={busy} />
         </Card>
       </View>
 
@@ -397,7 +398,7 @@ export default function Settings() {
               haptics.selection();
               router.push("/report");
             }}
-            accessibilityLabel="الإبلاغ عن مشكلة"
+            accessibilityLabel={REPORT_PROBLEM}
           >
             <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
               <Flag size={20} color={p.textMuted} />
@@ -431,7 +432,7 @@ export default function Settings() {
         open={confirmLogout}
         onClose={() => setConfirmLogout(false)}
         title="تسجيل الخروج؟"
-        message="هذا الجهاز فقط — بقية جلساتك محفوظة."
+        message={LOGOUT_THIS_DEVICE_ONLY}
         confirmLabel="خروج"
         destructive
         onConfirm={async () => {

@@ -23,6 +23,7 @@ import {
   useExpanded,
   type FacultyNode,
 } from "@/features/governance/components";
+import { ADDED } from "@/lib/copy";
 
 /** (tabs) Faculties & departments — «الكلّيّات والأقسام» (web AdminFacultiesPage parity). */
 export default function AdminFaculties() {
@@ -57,7 +58,7 @@ export default function AdminFaculties() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "faculties"] });
       qc.invalidateQueries({ queryKey: ["admin", "stats"] });
-      toast.success(`أُضيفت كلّيّة «${fName.trim()}».`, "تمّت الإضافة");
+      toast.success(`أُضيفت كلّيّة «${fName.trim()}».`, ADDED);
       setFacultyOpen(false);
       setFName("");
       setFNameEn("");
@@ -71,7 +72,7 @@ export default function AdminFaculties() {
     mutationFn: () => adminApi.createDepartment({ facultyId: deptTarget!.id, name: dName.trim() }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "faculties"] });
-      toast.success(`أُضيف قسم «${dName.trim()}» إلى «${deptTarget?.name}».`, "تمّت الإضافة");
+      toast.success(`أُضيف قسم «${dName.trim()}» إلى «${deptTarget?.name}».`, ADDED);
       setDeptTarget(null);
       setDName("");
     },

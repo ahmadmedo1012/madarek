@@ -39,6 +39,7 @@ import {
   useTeacherOfferings,
 } from "@/features/teacher/components";
 import { isDirtyDraft, nextIndex, parseGradeRows } from "@/features/teacher/wire";
+import { SAVED } from "@/lib/copy";
 
 type Draft = { score: string; feedback: string };
 
@@ -203,7 +204,7 @@ export default function Grades() {
       setScaleTouched(false);
       setFormError(null);
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("حُفظت — تظهر فورًا.", "تمّ الحفظ");
+      toast.success("حُفظت — تظهر فورًا.", SAVED);
       moveTo(1); // auto-advance: grade the next student.
     },
     onError: (e) => {

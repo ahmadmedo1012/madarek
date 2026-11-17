@@ -23,6 +23,7 @@ import {
   lessonsAr,
   pointsAr,
 } from "@/features/common/components";
+import { SELF_DEV } from "@/lib/copy";
 
 /** Training category labels (web TrainingPages CATEGORY_LABEL, verbatim). */
 export const TRAINING_CATEGORY_LABEL: Record<string, string> = {
@@ -63,7 +64,7 @@ export default function TrainingIndex() {
 
   return (
     <Screen scroll>
-      <StackHeader title="التطوير الذاتي" kicker="مسارات تدريبية" />
+      <StackHeader title={SELF_DEV} kicker="مسارات تدريبية" />
 
       <View style={{ gap: sp[4], paddingBottom: sp[8] }}>
         <T variant="h3" weight="bold">

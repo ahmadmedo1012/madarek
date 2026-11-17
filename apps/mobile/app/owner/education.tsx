@@ -9,6 +9,7 @@ import { SkeletonList, ErrorState } from "@/components/ui/states";
 import { ownerApi } from "@/api/owner";
 import { clamp01, latn } from "@/lib/format";
 import { numOf, type EducationRow } from "@/features/governance/components";
+import { OWNER_DASHBOARD } from "@/lib/copy";
 
 /** Workload buckets → Arabic labels (web OwnerEducationPage parity). */
 const BUCKETS: { key: keyof NonNullable<EducationRow["workloadBuckets"]>; label: string }[] = [
@@ -43,7 +44,7 @@ export default function OwnerEducation() {
 
   return (
     <Screen scroll>
-      <StackHeader title="النظرة التعليميّة" kicker="لوحة المالك" />
+      <StackHeader title="النظرة التعليميّة" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader title="النظرة التعليميّة" kicker="إحصائيات حيّة للمقرّرات والطلاب." />
 

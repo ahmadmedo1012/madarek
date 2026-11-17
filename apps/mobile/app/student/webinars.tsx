@@ -21,6 +21,7 @@ import { EmptyState } from "@/components/ui/states";
 import { dateTime, num, weekdayOf } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { LIVE_STATUS, SectionNote, countAr } from "@/features/student/more";
+import { UNKNOWN_STATUS } from "@/lib/copy";
 
 /**
  * /student/webinars — ندوات قادمة (web WebinarsPage parity): the honest
@@ -107,7 +108,7 @@ export default function WebinarsScreen() {
 
 function UpcomingRow({ session }: { session: LiveSession }) {
   const p = usePalette();
-  const status = LIVE_STATUS[session.status] ?? { label: "حالة غير معروفة", tone: "grey" as const };
+  const status = LIVE_STATUS[session.status] ?? { label: UNKNOWN_STATUS, tone: "grey" as const };
   const course = session.offering?.course;
   return (
     <LedgerRow accessibilityLabel={`جلسة قادمة: ${session.title}`}>

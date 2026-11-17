@@ -69,6 +69,7 @@ import { unregisterPushDevices, currentPermission, requestAndRegisterPush, type 
 import { authenticate, biometricAvailable, getBiometricLockEnabled, setBiometricLockEnabled } from "@/lib/biometric";
 import { ScrollBody } from "@/features/student/components";
 import { countAr } from "@/features/student/more";
+import { LOGOUT_THIS_DEVICE_ONLY, REPORT_PROBLEM, RETRY, STUDENT_FILE_UNLINKED } from "@/lib/copy";
 
 /** The hub — every student surface one tap away (route list = web paths),
  *  R341 M4: the wall of 28 flat rows is grouped by concern; routes and
@@ -142,7 +143,7 @@ const MENU_GROUPS: { title: string; items: { icon: LucideIcon; label: string; to
       { icon: CircleHelp, label: "دليل الاستخدام", to: "/help" },
       { icon: Settings, label: "الإعدادات", to: "/settings" },
       // The old standalone «الإبلاغ عن مشكلة» card, seated with its concern.
-      { icon: Flag, label: "الإبلاغ عن مشكلة", to: "/report" },
+      { icon: Flag, label: REPORT_PROBLEM, to: "/report" },
     ],
   },
 ];
@@ -285,7 +286,7 @@ export default function StudentProfile() {
           <EmptyState
             icon={<ScrollText size={22} color={p.textMuted} />}
             title="لا ملف طالب بعد"
-            message="لم يُربط ملف طالب — البيانات بعد الاعتماد."
+            message={STUDENT_FILE_UNLINKED}
           />
         ) : (
           <>
@@ -393,7 +394,7 @@ export default function StudentProfile() {
               </T>
             </View>
             <View style={{ alignSelf: "flex-start" }}>
-              <Button label="إعادة المحاولة" kind="primary" small onPress={() => void enablePush()} />
+              <Button label={RETRY} kind="primary" small onPress={() => void enablePush()} />
             </View>
           </Card>
         ) : pushState === "denied" ? (
@@ -472,7 +473,7 @@ export default function StudentProfile() {
           open={confirmLogout}
           onClose={() => setConfirmLogout(false)}
           title="تسجيل الخروج؟"
-          message="هذا الجهاز فقط — بقية جلساتك محفوظة."
+          message={LOGOUT_THIS_DEVICE_ONLY}
           confirmLabel="خروج"
           destructive
           onConfirm={async () => {

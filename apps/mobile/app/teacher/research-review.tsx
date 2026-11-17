@@ -25,6 +25,7 @@ import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { PAPER_STATUS_MAP, StatusBadge } from "@/features/teacher/components";
+import { SAVING } from "@/lib/copy";
 
 const NO_PAPERS: Awaited<ReturnType<typeof researchApi.queue>> = [];
 
@@ -282,7 +283,7 @@ export default function ResearchReview() {
                   </T>
                 ) : null}
                 <Button
-                  label={grade.isPending ? "جارٍ الحفظ…" : "تأكيد التقييم"}
+                  label={grade.isPending ? SAVING : "تأكيد التقييم"}
                   kind="accent"
                   loading={grade.isPending}
                   onPress={() => {

@@ -10,6 +10,7 @@ import { adminApi } from "@/api/admin";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { latn } from "@/lib/format";
 import { countAr, HonestLedger } from "@/features/governance/components";
+import { APPEARS_AFTER_FIRST_UPLOAD, NO_DATA } from "@/lib/copy";
 
 interface TrendMonth {
   month?: string | null;
@@ -59,7 +60,7 @@ export default function AdminReports() {
         ) : reports.isError ? (
           <ErrorState message={humanizeError(reports.error)} onRetry={() => reports.refetch()} />
         ) : !reports.data || typeof reports.data !== "object" ? (
-          <EmptyState title="لا بيانات بعد" message="تظهر التقارير فور توفر البيانات." />
+          <EmptyState title={NO_DATA} message="تظهر التقارير فور توفر البيانات." />
         ) : (
           (() => {
             const payload = reports.data as Record<string, unknown>;
@@ -83,7 +84,7 @@ export default function AdminReports() {
                 <View>
                   <SectionBar index={nextIndex()} title="حركة البحوث" />
                   {!trend || trend.length === 0 ? (
-                    <EmptyState title="لا بيانات نشر بعد" message="تظهر فور رفع أول بحث." />
+                    <EmptyState title="لا بيانات نشر بعد" message={APPEARS_AFTER_FIRST_UPLOAD} />
                   ) : (
                     <RowList>
                       {trend.map((m, i) => (

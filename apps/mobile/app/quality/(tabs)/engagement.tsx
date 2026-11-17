@@ -11,6 +11,7 @@ import { qualityApi } from "@/api/quality";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { AR_DAYS, latn, num } from "@/lib/format";
 import { HonestLedger, PAPER_STATUS_LABEL, UNKNOWN_LABEL, countAr, numOf } from "@/features/governance/components";
+import { READ_ONLY } from "@/lib/copy";
 
 interface EngagementPayload {
   attendance?: { presentRate?: number; lateRate?: number; absentRate?: number; total?: number };
@@ -51,7 +52,7 @@ export default function QualityEngagement() {
               نسب الحضور، إكمال المحاضرات، النقاط المتفاعلة.
             </T>
           </View>
-          <Badge label="قراءة فقط" tone="grey" />
+          <Badge label={READ_ONLY} tone="grey" />
         </View>
 
         {engagement.isLoading ? (

@@ -37,6 +37,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { ScrollBody } from "@/features/student/components";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
+import { SAVE_FAILED, SAVING, STUDENT_FILE_UNLINKED } from "@/lib/copy";
 
 const STUDY_TYPE_LABELS: Record<string, string> = {
   MORNING: "صباحي",
@@ -126,7 +127,7 @@ export default function StudentMyData() {
       toast.success("حُفظت بيانات الاتصال");
       setRevealed(false);
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر الحفظ"),
+    onError: (e) => toast.error(humanizeError(e), SAVE_FAILED),
   });
 
   const setVisibility = (visibility: "INSTITUTION_STAFF" | "PRIVATE") => {
@@ -155,7 +156,7 @@ export default function StudentMyData() {
         ) : !view || !draft ? (
           <EmptyState
             title="لا ملف طالب بعد"
-            message="لم يُربط ملف طالب — البيانات بعد الاعتماد."
+            message={STUDENT_FILE_UNLINKED}
           />
         ) : (
           <>
@@ -230,7 +231,7 @@ export default function StudentMyData() {
                   />
                   <View style={{ flexDirection: "row", gap: sp[8] }}>
                     <Button
-                      label={save.isPending ? "جارٍ الحفظ…" : "حفظ"}
+                      label={save.isPending ? SAVING : "حفظ"}
                       loading={save.isPending}
                       disabled={!dirty || invalid}
                       style={{ flex: 1 }}

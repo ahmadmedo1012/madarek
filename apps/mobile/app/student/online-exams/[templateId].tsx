@@ -42,6 +42,7 @@ import {
   pointsAr,
   restoreSavedAnswers,
 } from "@/features/student/more";
+import { SAVE_FAILED, SAVING } from "@/lib/copy";
 
 /** Bound on flushing in-flight saves before submit (web SUBMIT_FLUSH_MS). */
 const SUBMIT_FLUSH_MS = 10_000;
@@ -133,7 +134,7 @@ export function deriveNavigatorCells(
 export function navCellA11y(cell: NavCell): string {
   const parts = [`السؤال ${latn(cell.index + 1)}`];
   if (cell.current) parts.push("الحالي");
-  if (cell.failed) parts.push("تعذّر الحفظ");
+  if (cell.failed) parts.push(SAVE_FAILED);
   else if (cell.answered) parts.push("مُجاب");
   else parts.push("بدون إجابة");
   if (cell.flagged) parts.push("معلَّم للمراجعة");
@@ -1022,9 +1023,9 @@ export default function ExamTakerScreen() {
                     {chip === "failed"
                       ? (answers[current.id]?.answerText ?? "").length > TEXT_MAX
                         ? "تجاوزت 4000 حرف — اختصر ليُحفظ"
-                        : "تعذّر الحفظ"
+                        : SAVE_FAILED
                       : chip === "saving"
-                        ? "جارٍ الحفظ…"
+                        ? SAVING
                         : chip === "queued"
                           ? "بانتظار الاتصال"
                           : "تم الحفظ"}
@@ -1118,7 +1119,7 @@ export default function ExamTakerScreen() {
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[12], paddingBottom: sp[12] }}>
             <NavLegend dotColor={p.accentSoft} ringColor={p.accentInk} label="مُجاب" />
             <NavLegend dotColor={p.surface} ringColor={p.accentInk} label="معلَّم للمراجعة" flag />
-            <NavLegend dotColor={p.surface} ringColor={tones.rose.ink} label="تعذّر الحفظ" />
+            <NavLegend dotColor={p.surface} ringColor={tones.rose.ink} label={SAVE_FAILED} />
             <NavLegend dotColor={p.surface} ringColor={p.border} label="بدون إجابة" />
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[8], paddingBottom: sp[8] }}>

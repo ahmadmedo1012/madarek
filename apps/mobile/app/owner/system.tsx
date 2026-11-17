@@ -24,6 +24,7 @@ import {
   textOf,
   type SystemRow,
 } from "@/features/governance/components";
+import { OWNER_DASHBOARD, SAVED, SAVE_FAILED, SAVING, UPDATE_FAILED } from "@/lib/copy";
 
 /** Storage drivers → Arabic labels (web OwnerSystemPage parity). */
 const STORAGE_DRIVER_LABEL: Record<string, string> = {
@@ -76,9 +77,9 @@ export default function OwnerSystem() {
       ownerApi.setSetting(payload.key, payload.value),
     onSuccess: (_d, payload) => {
       qc.invalidateQueries({ queryKey: ["owner", "settings"] });
-      toast.success(`حُفظ الإعداد «${payload.key}».`, "تمّ الحفظ");
+      toast.success(`حُفظ الإعداد «${payload.key}».`, SAVED);
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر الحفظ"),
+    onError: (e) => toast.error(humanizeError(e), SAVE_FAILED),
   });
 
   const setFlag = useMutation({
@@ -93,7 +94,7 @@ export default function OwnerSystem() {
         "أعلام الميزات",
       );
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر التحديث"),
+    onError: (e) => toast.error(humanizeError(e), UPDATE_FAILED),
   });
 
   const s = sys.data;
@@ -117,7 +118,7 @@ export default function OwnerSystem() {
 
   return (
     <Screen scroll>
-      <StackHeader title="النظام والتشغيل" kicker="لوحة المالك" />
+      <StackHeader title="النظام والتشغيل" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <PageHeader title="النظام والتشغيل" kicker="البنية والخدمات" />
 
@@ -392,7 +393,7 @@ function SettingEditSheet({
           autoCorrect={false}
         />
         <Button
-          label={setSetting.isPending ? "جارٍ الحفظ…" : "حفظ الإعداد"}
+          label={setSetting.isPending ? SAVING : "حفظ الإعداد"}
           kind="primary"
           disabled={!canSave}
           onPress={() => {
