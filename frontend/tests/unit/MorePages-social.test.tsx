@@ -145,7 +145,7 @@ describe('SocialPage — viewerReacted (the honest heart state)', () => {
 
     // The un-reacted post stays pressable.
     const fresh = within(articleOf('منشور لم أتفاعل معه')).getByRole('button', {
-      name: 'أعجبني بهذا المنشور',
+      name: 'أعجبني', // R366-final: cfc1dc85's copy diet shortened the label (3w → 1w, style law button≤2)
     });
     expect(fresh).toHaveAttribute('aria-pressed', 'false');
     expect(fresh).not.toHaveAttribute('aria-disabled');
@@ -163,7 +163,7 @@ describe('SocialPage — viewerReacted (the honest heart state)', () => {
   it('clicking like on an un-reacted post sends the reaction', () => {
     renderPage();
     const fresh = within(articleOf('منشور لم أتفاعل معه')).getByRole('button', {
-      name: 'أعجبني بهذا المنشور',
+      name: 'أعجبني', // R366-final: cfc1dc85's copy diet shortened the label (3w → 1w, style law button≤2)
     });
     fireEvent.click(fresh);
     expect(h.react.mutate).toHaveBeenCalledTimes(1);
@@ -189,7 +189,7 @@ describe('SocialPage — viewerReacted (the honest heart state)', () => {
 
   it('an un-reacted heart cannot be un-liked (the guard reads the effective state)', () => {
     renderPage();
-    fireEvent.click(within(articleOf('منشور لم أتفاعل معه')).getByRole('button', { name: 'أعجبني بهذا المنشور' }));
+    fireEvent.click(within(articleOf('منشور لم أتفاعل معه')).getByRole('button', { name: 'أعجبني' })); // R366-final: cfc1dc85's copy diet shortened the label
     expect(h.apiDelete).not.toHaveBeenCalled();
   });
 });

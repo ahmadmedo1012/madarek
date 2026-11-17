@@ -10,7 +10,8 @@
  * الصدق في الاتجاهين)، والمحادثة الجديدة تدخل قائمة «محادثاتك» عبر
  * إبطال React Query الحقيقي، والشكل على السلك حرفيّ { message } فقط.
  */
-import { test, expect, type Page } from './fixtures/e2e';
+import { test, expect } from './fixtures/e2e';
+import type { Page } from '@playwright/test';
 import { FIXED_NOW_ISO } from './fixtures/api-fixtures';
 import { installStatefulApi, statefulOk } from './fixtures/mock-transport';
 

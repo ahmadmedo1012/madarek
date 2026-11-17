@@ -254,15 +254,35 @@
 .ai-suggest-chip { max-inline-size: 100%; }
 
 /* r366 (2-a): the desktop rail never outgrows the conversation surface
-   — a long conversation list scrolls INSIDE its own border (the same
-   height budget the surface clamps to, minus the section bar and the
-   card's padding), so the page body never grows a scrollbar under the
-   shell: inside the surface the transcript is the only vertical
-   scroller, and the rail owns its. Phones keep the document flow —
-   the rail rides below the surface in the single column. */
+   — with the [03] suggestions section restored (R366-final, the r319
+   §B2 three-bar grammar), the RAIL carries the height budget: it
+   clamps to the surface's own seat (+ the --sp-7 furniture
+   allowance) and the conversations card flexes to the room that
+   remains, its list staying the rail's only scroller — so the page
+   body never grows a scrollbar under the shell, the transcript
+   stays the surface's only vertical scroller, and the §B2 register
+   keeps its three bars. Phones keep the document flow — the rail
+   rides below the surface in the single column. */
 @media (min-width: 981px) {
+  .ai-side {
+    max-block-size: calc(clamp(380px, 64dvh, 640px) + var(--sp-7));
+  }
+  /* the bars and the suggestions card keep their natural height —
+     only the conversations card (the one owning the list) absorbs
+     the shrink. :has() — not :first-of-type: the bars are divs too,
+     so the card is never the first div child. */
+  .ai-side > .r319s-bar,
+  .ai-side > .card:has(.ai-suggest-list) { flex: none; }
+  .ai-side > .card:has(.ai-conv-list) {
+    flex: 1 1 auto;
+    min-block-size: 0;
+    display: flex;
+    flex-direction: column;
+  }
   .ai-conv-list {
-    max-block-size: calc(clamp(320px, 60dvh, 780px) - var(--sp-9) * 2);
+    max-block-size: none;
+    flex: 1 1 auto;
+    min-block-size: 120px;
     overflow-y: auto;
     overscroll-behavior: contain;
   }

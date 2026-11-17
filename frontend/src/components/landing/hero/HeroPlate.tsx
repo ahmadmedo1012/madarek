@@ -41,8 +41,11 @@ export function HeroPlate({ art, band }: { art: ReactNode; band: ReactNode }) {
   );
 }
 
-/** The plate furniture — the measured seats (hero-plate.css). */
-export function HeroPlateFurniture() {
+/** The plate furniture — the measured seats (hero-plate.css).
+ * R366-final: module-private (no `export`) — nothing outside this
+ * file renders it, and the stray export was the deadcode ratchet's
+ * +1 unusedExports regression. */
+function HeroPlateFurniture() {
   return (
     <div className="hro-plate-furniture" aria-hidden="true">
       {/* the art frame — the frozen img box; hosts the artwork-tracking seats */}

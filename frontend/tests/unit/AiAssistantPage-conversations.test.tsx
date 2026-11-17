@@ -182,7 +182,14 @@ describe('AiAssistantPage — pending-state honesty (r164g)', () => {
         <AiAssistantPage />
       </MemoryRouter>,
     );
-    expect(screen.getByRole('button', { name: 'ما المفاهيم التي أحتاج مراجعتها؟' })).toBeDisabled();
+    // R366-final: the starter now lives on TWO surfaces — the greeting
+    // chips in the transcript AND the restored [03] sidebar list (r319
+    // §B2) — every instance of the ask must disable while a reply is
+    // pending (the assertion covers both, not one).
+    expect(screen.getAllByRole('button', { name: 'ما المفاهيم التي أحتاج مراجعتها؟' }).length).toBeGreaterThan(0);
+    for (const b of screen.getAllByRole('button', { name: 'ما المفاهيم التي أحتاج مراجعتها؟' })) {
+      expect(b).toBeDisabled();
+    }
     mocks.chat.isPending = false;
     rerender(
       <MemoryRouter>
@@ -379,7 +386,10 @@ describe('AiAssistantPage — role-aware suggestions (r164g)', () => {
     mocks.conversations = { data: [CONV1], isPending: false, isError: false, refetch: () => undefined };
     useAuthStore.setState({ user: { ...STUDENT, role: 'TEACHER' as const } });
     renderPage();
-    expect(screen.getByText('كيف أقيّم فهم الطلاب؟')).toBeInTheDocument();
+    // R366-final: the starters render on two surfaces (greeting chips
+    // + the [03] sidebar list) — assert EVERY instance, then the
+    // mastery question is absent from both.
+    expect(screen.getAllByText('كيف أقيّم فهم الطلاب؟').length).toBeGreaterThan(0);
     expect(screen.queryByText('ما المفاهيم التي أحتاج مراجعتها؟')).toBeNull();
     // No mastery-awareness chip either — nothing is invented.
     expect(screen.queryByText('واعٍ بمستوى إتقانك')).toBeNull();

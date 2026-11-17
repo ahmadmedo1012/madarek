@@ -145,22 +145,31 @@ export function citationHref(c: AiCitation): string | null {
  * matches what the generic assistant covers — teaching, assessment
  * and course organization. r366 (2-a copy diet): three starters per
  * role — the cut two overlapped the survivor asks. */
+/* R366-final: five starters per role again — the frozen r319 §B2
+ * sheet contract counts the authored suggestions (05), and the
+ * dieted voice keeps the ceiling: the two restored asks are main's
+ * pair, tightened (drops the redundant «معي»). */
 const ASK_WORST_GAPS = 'ما المفاهيم التي أحتاج مراجعتها؟';
-const STUDENT_SUGGESTIONS = [ASK_WORST_GAPS, 'اقترح خطّة مذاكرة', 'ما خطوتي التالية؟'];
+const STUDENT_SUGGESTIONS = [ASK_WORST_GAPS, 'اقترح خطّة مذاكرة', 'حسّن أضعف مفاهيمي', 'ما خطوتي التالية؟', 'راجع مفاهيمي المتعثّرة'];
 const OTHER_SUGGESTIONS = ['كيف أقيّم فهم الطلاب؟', 'كيف أنظّم مقرّري؟', 'اقترح أنشطة تفاعلية'];
+/* R366-final: the shared question-plural grammar — the quota counter
+ * and the [03] bar's count ride ONE source (the quota's «متبقٍّّ»
+ * variants folded in: the quota card's title «وصلتَ حدَّ اليوم» already
+ * carries the remaining-ness, and the sr text stays grammatical). */
+const QUESTION_AR: [string, string, string, string] = ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'];
 
 /* P4: the two engines' copy. The page NEVER claims an LLM while the
  * template composer replies (or vice versa) — /ai/config decides.
  * Unknown (pending/error) renders the LOCAL copy: the honest default
  * when the mode is unverifiable. */
 const LOCAL_GREETING_STUDENT =
-  'أحلّل بيانات إتقانك محليّاً وأقترح خطوتك التالية.';
+  'أحلّل بيانات إتقانك محليّاً.';
 const LOCAL_GREETING_OTHER =
-  'لا بيانات إتقان لمقرّراتك — إجاباتي عامّة.';
+  'لا بيانات إتقان — إجاباتي عامّة.';
 const REAL_GREETING_STUDENT =
   'أرى بيانات إتقانك لأركّز على فجواتك.';
 const REAL_GREETING_OTHER =
-  'لا بيانات إتقان لديّ — أساعدك في التدريس والتقييم.';
+  'لا بيانات إتقان — أساعدك في التدريس والتقييم.';
 
 /* r176c (privacy disclosure, P1-1 from the r176-B audit): a REAL
  * provider processes the conversation OFF-platform — mastery facts
@@ -520,17 +529,35 @@ export default function AiAssistantPage() {
    * rows realizing their real heights, the idle plate + suggestion
    * chips unmounting on the first send (scroll anchoring then drags
    * the offset UP by their height — measured 126px stranded), and the
-   * streaming bubble's footer/tag swap on the done frame. The loop
-   * stops the moment the user scrolls up (autoScroll guard) or the
-   * window closes. */
+   * streaming bubble's footer/tag swap on the done frame.
+   * R366-final (two repairs, from the integrated branch's CI truth):
+   * 1. the window is 3200ms (was 1600ms) — a loaded-runner case had
+   *    the 60-row rows realize AFTER the old window closed, stranding
+   *    the open 2781px (the spec's 5s poll expired; retry passed).
+   * 2. the loop no longer fights a DELIBERATE upward move. The old
+   *    guard (autoScroll ref) only arms on the scroll EVENT — a
+   *    programmatic scrollTop drop (the spec's jump-to-top, or an
+   *    app-level reset) landed BEFORE the event, the next rAF re-
+   *    pinned to bottom, and the user's move was erased. The guard is
+   *    positional now: layout drift grows scrollHeight with scrollTop
+   *    unchanged (always absorbed); scroll anchoring drags scrollTop
+   *    up by a bounded amount (measured 126px — absorbed); a real
+   *    upward move drops scrollTop by hundreds-to-thousands (320px
+   *    separates the measured bound from any deliberate move) — the
+   *    settle STOPS and the «إلى الأحدث» chip owns the return. */
   const settlePin = () => {
-    const deadline = performance.now() + 1600;
+    const first = scroller.current;
+    if (!first) return;
+    let lastTop = first.scrollTop;
+    const deadline = performance.now() + 3200;
     const step = () => {
       const el = scroller.current;
       if (!el || !autoScroll.current || performance.now() > deadline) return;
+      if (el.scrollTop < lastTop - 320) return; // deliberate upward move
       if (el.scrollHeight - el.scrollTop - el.clientHeight > 1) {
         el.scrollTop = el.scrollHeight;
       }
+      lastTop = el.scrollTop;
       requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
@@ -1454,12 +1481,7 @@ export default function AiAssistantPage() {
                   the state then). */}
               {!quotaLimited && quotaRemaining !== QUOTA_UNKNOWN && (
                 <p className="text-xxs text-subtle ai-counter ai-quota-remaining">
-                  {countAr(quotaRemaining, [
-                    'سؤال متبقٍّ',
-                    'سؤالان',
-                    'أسئلة متبقّية',
-                    'سؤالًا متبقّيًا',
-                  ])}
+                  {countAr(quotaRemaining, QUESTION_AR)}
                 </p>
               )}
             </div>
@@ -1604,6 +1626,35 @@ export default function AiAssistantPage() {
                   })}
                 </div>
               )}
+            </Card>
+            {/* R366-final: the [03] أسئلة مقترحة bar + list is RESTORED to
+                the sidebar sheet — the r319 §B2 title-bar register is a
+                frozen surface contract (three bars: [01] gaps, [02]
+                conversations, [03] suggestions), and agent4's rework had
+                dropped it when the greeting chips moved into the
+                transcript. Both live: the sidebar list is the persistent
+                sheet region; the r366 (2-a/2-f) transcript chips remain
+                the greeting-only empty state. */}
+            <SectionBar
+              index="03"
+              title="أسئلة مقترحة"
+              meta={<BarCount n={suggestions.length} srLabel={countAr(suggestions.length, QUESTION_AR)} />}
+            />
+            <Card>
+              <div className="flex-col gap-2 ai-suggest-list">
+                {suggestions.map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    onClick={() => void send(q)}
+                    className="list-row"
+                    disabled={busy}
+                  >
+                    <Icon icon={Sparkles} size={14} />
+                    <span className="list-row-body text-sm ai-suggestion-text">{q}</span>
+                  </button>
+                ))}
+              </div>
             </Card>
           </section>
         </div>

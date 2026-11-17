@@ -278,7 +278,7 @@ describe('the auto-scroll near-bottom guard', () => {
     });
     return {
       writes,
-      onScroller: (root: HTMLElement) => writes.filter((w) => w.el.classList.contains('chat-area')),
+      onScroller: (root: HTMLElement) => writes.filter((w) => w.el.classList.contains('chat-area') && root.contains(w.el)),
       restore: () => Object.defineProperty(ownerProto, 'scrollTop', original),
     };
   };

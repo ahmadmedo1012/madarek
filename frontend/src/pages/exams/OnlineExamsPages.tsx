@@ -781,9 +781,11 @@ export function ExamTakerPage() {
    * first), so a mount-scoped [] effect met a null ref and never
    * re-ran — barH stayed 0 and the rem fallback kept covering cards
      * (measured live). The callback observes the real element the
-     * moment it mounts and re-observes on any swap. */
+     * moment it mounts and re-observes on any swap. (R366-final: the
+     * param is the ref target's own type — HTMLDivElement — the loose
+     * HTMLElement failed typecheck against barRef's divergence.) */
   const roRef = useRef<ResizeObserver | null>(null);
-  const attachBar = (el: HTMLElement | null) => {
+  const attachBar = (el: HTMLDivElement | null) => {
     barRef.current = el;
     roRef.current?.disconnect();
     roRef.current = null;

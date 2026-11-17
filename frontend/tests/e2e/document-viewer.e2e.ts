@@ -65,7 +65,10 @@ const NOTE = {
 };
 
 /** Serve the real PDF (+ optionally the annotations list) on the page. */
-async function serveViewerDoc(page: Parameters<typeof installStatefulApi>[1], withNotes: boolean) {
+// R366-final: parameter index [0] — installStatefulApi's FIRST param is
+// the Page (the [1] misindex typed `page` as the routes array and broke
+// every call site's typecheck).
+async function serveViewerDoc(page: Parameters<typeof installStatefulApi>[0], withNotes: boolean) {
   const routes: StatefulMockRoute[] = [
     {
       method: 'GET',

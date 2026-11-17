@@ -2781,8 +2781,11 @@
   .ledger-what { font-size: var(--type-body-size); min-inline-size: 0; }
   /* R366 (Agent 3 · the 13px floor): the LedgerRow subtitle <small>
      defaulted to 0.8em of the row body and measured 11.1px on the
-     fluid desktop root — under the Arabic sans floor. Explicit floor. */
-  .ledger-what small { font-size: max(13px, 0.8em); line-height: var(--lh-base); }
+     fluid desktop root — under the Arabic sans floor. R366-final:
+     the floor now consumes the canonical --fs-xxs rung (13px, the
+     ladder's smallest sans step) instead of a raw literal, so the
+     seat stays measured AND token-sourced. */
+  .ledger-what small { font-size: max(var(--fs-xxs), 0.8em); line-height: var(--lh-base); }
 
   /* ── 3 · The stat strip — the typographic KPI replacement ───────
      label (mono) over value (metric role) over trend note. No icon
