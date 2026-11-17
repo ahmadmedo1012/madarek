@@ -1,11 +1,13 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { create } from "zustand";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CheckCircle2 from "lucide-react-native/icons/circle-check";
 import CircleAlert from "lucide-react-native/icons/circle-alert";
 import Info from "lucide-react-native/icons/info";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp } from "@/design/tokens";
+import { T } from "./text";
 
 /**
  * R334 2-c — toast with a QUEUE.
@@ -143,6 +145,7 @@ export function ToastHost() {
   const hide = useToastStore((s) => s.hide);
   const p = usePalette();
   const tones = useStatusTones();
+  const insets = useSafeAreaInsets();
   const t = toasts[0];
   const tone = t ? toneForKind(t.kind, tones) : null;
   return (
@@ -155,14 +158,21 @@ export function ToastHost() {
         right: 0,
         zIndex: 9999,
         alignItems: "center",
-        paddingTop: 60,
+        /* R362 — the hardcoded 60pt seat clipped under tall notches
+           (iPhone Dynamic Island ≈ 59pt inset) and floated too high on
+           flat status bars. The safe-area inset + a breathing gap, with
+           the old 60pt as the floor — never closer to the edge than
+           before, no longer overlapping the hardware. */
+        paddingTop: Math.max(insets.top + sp[8], 60),
       }}
     >
       {t && tone ? (
         <Pressable
           key={t.id}
+          accessibilityRole="button"
           accessibilityLiveRegion="polite"
           accessibilityLabel={`${t.title ? `${t.title}. ` : ""}${t.message}`}
+          accessibilityHint="انقر لإخفاء التنبيه"
           onPress={hide}
           style={[
             styles.toast,
@@ -176,11 +186,16 @@ export function ToastHost() {
           {iconForKind(t.kind, tone.ink)}
           <View style={{ flex: 1, gap: 1 }}>
             {t.title ? (
-              <Text style={{ fontFamily: "Body-Bold", fontSize: 13, color: tone.deep }}>
+              /* R362 — raw Text with string-literal families routed
+                 through T like every other text seat in the app (weight
+                 + size + rtl handling for free). */
+              <T variant="sm" weight="bold" style={{ color: tone.deep }}>
                 {t.title}
-              </Text>
+              </T>
             ) : null}
-            <Text style={{ fontFamily: "Body-Regular", fontSize: 13, color: p.text }}>{t.message}</Text>
+            <T variant="sm" style={{ color: p.text }}>
+              {t.message}
+            </T>
           </View>
         </Pressable>
       ) : null}

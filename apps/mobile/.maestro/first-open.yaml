@@ -1,10 +1,18 @@
 # first-open — أولاً: يفتح التطبيق بارداً ولا ينهار.
 # The very first proof: cold launch reaches the welcome sheet.
+# R362 — the anchors are IDS now: the old text anchors («منصّة التعليم
+# الذكي» + «تسجيل الدخول») died with the R345 welcome redesign (the
+# subtitle moved to the login screen; the CTA is «ابدأ الآن»), and RTL
+# text matching is unreliable on Maestro-Android anyway (smoke-alive's
+# documented law — ids only).
 appId: ly.madarek.mobile
 name: "01 — أول فتح (بدون انهيار)"
 ---
-- launchApp
+- launchApp:
+    clearState: true
 - extendedWaitUntil:
-    visible: "منصّة التعليم الذكي"
+    visible:
+      id: "welcome-title"
     timeout: 60000
-- assertVisible: "تسجيل الدخول"
+- assertVisible:
+    id: "welcome-cta"

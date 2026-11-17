@@ -40,8 +40,20 @@ import Constants from "expo-constants";
 export default function Settings() {
   const p = usePalette();
   const user = useSession((s) => s.user);
+  const isHydrated = useSession((s) => s.isHydrated);
   const logout = useSession((s) => s.logout);
   const setSession = useSession((s) => s.setSession);
+
+  /* R362 — the guest guard: /settings is a session surface (identity
+     rows, password change, logout), but a guest deep link rendered it
+     with "—" placeholders and a working logout sheet. Hydrated guests
+     are bounced to /auth with their intent preserved, matching every
+     role-gated route. */
+  useEffect(() => {
+    if (isHydrated && !user) {
+      router.replace({ pathname: "/auth", params: { continue: "/settings" } } as never);
+    }
+  }, [isHydrated, user]);
   const preference = useThemePreference();
   const qc = useQueryClient();
   const { numerals, setNumerals } = useNumerals();
@@ -181,7 +193,7 @@ export default function Settings() {
 
   return (
     <Screen scroll>
-      <PageHeader title="الإعدادات" kicker="مدارك" />
+      <PageHeader title="الإعدادات" kicker="مدارك" testID="settings-title" />
 
       {/* [01] التفضيلات — مظهرك وأرقامك وملمس التفاعل، مقاعد متطابقة مع الملف */}
       <View style={{ gap: sp[8] }}>

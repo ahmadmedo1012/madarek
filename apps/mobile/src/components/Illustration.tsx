@@ -20,8 +20,21 @@ import { useTheme, usePalette, useSemanticTheme } from "@/design/theme";
 import { ILLUSTRATIONS, type IllustrationSpec } from "@/media/illustrations.generated";
 import { API_BASE } from "@/api/client";
 
-/** The web origin that serves /media/** (API_BASE minus /api/v1). */
-const WEB_ORIGIN = API_BASE.replace(/\/api\/v1\/?$/, "");
+/** The web origin that serves /media/** (API_BASE minus /api/v1).
+ *
+ * R362 — the capture-origin override: the hermetic CI backend serves
+ * the API but not the web's static /media tree (serveStatic is
+ * prod-gated, and forcing prod breaks HTTP cookies on the emulator),
+ * so every capture's hero band rendered as empty reserved space. The
+ * capture APK now bakes EXPO_PUBLIC_MEDIA_ORIGIN and the workflow
+ * mounts a static fixture for frontend/public on that origin — no
+ * product behavior changes (the override is unset in every retail
+ * build; installed builds keep deriving the origin from API_BASE, and
+ * remote-config failover keeps working exactly as before). */
+const MEDIA_ORIGIN = (
+  (process.env.EXPO_PUBLIC_MEDIA_ORIGIN as string | undefined) ||
+  API_BASE.replace(/\/api\/v1\/?$/, "")
+).replace(/\/+$/, "");
 
 export interface IllustrationProps {
   /** the register id, e.g. "r342/role-student" */
@@ -49,7 +62,7 @@ export function Illustration({ id, width, height, framed, accessibilityLabel }: 
 
   return (
     <Image
-      source={{ uri: `${WEB_ORIGIN}${path}` }}
+      source={{ uri: `${MEDIA_ORIGIN}${path}` }}
       contentFit="cover"
       transition={200}
       recyclingKey={`${id}-${theme}`}

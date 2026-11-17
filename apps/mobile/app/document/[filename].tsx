@@ -15,6 +15,7 @@ import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { AppStatusBar } from "@/design/statusbar";
 import { Screen } from "@/components/ui/screen";
+import { StackHeader } from "@/components/shell/AppTopBar";
 import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
 import { Card, Hairline, Badge } from "@/components/ui/surfaces";
@@ -179,18 +180,17 @@ export default function DocumentViewer() {
   return (
     <Screen scroll>
       <AppStatusBar />
-      <View style={{ gap: sp[12] }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-          <View style={{ flex: 1, gap: 0 }}>
-            <T variant="xs" color="muted">
-              {ns === "papers" ? "بحوث · ملفات PDF" : "مواد تدريسية · ملفات PDF"}
-            </T>
-            <T variant="h4" weight="bold" numberOfLines={2}>
-              {title}
-            </T>
-          </View>
-          <Badge label="PDF" tone="grey" mono />
-        </View>
+      {/* R362 — a real back affordance: this is a PUSHED route (from
+          research/materials rows) but had no StackHeader — the only way
+          out was the edge swipe / hardware back, inconsistent with every
+          other pushed screen. The PDF badge rides the header's right
+          seat; the kicker keeps the namespace label. */}
+      <StackHeader
+        title={title}
+        kicker={ns === "papers" ? "بحوث · ملفات PDF" : "مواد تدريسية · ملفات PDF"}
+        right={<Badge label="PDF" tone="grey" mono />}
+      />
+      <View style={{ gap: sp[12], paddingTop: sp[12] }}>
         <Hairline />
 
         <Card style={{ gap: sp[8], alignItems: "flex-start" }}>

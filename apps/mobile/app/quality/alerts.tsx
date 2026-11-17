@@ -3,7 +3,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
-import { Screen, PageHeader } from "@/components/ui";
+import { Screen } from "@/components/ui";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { T } from "@/components/ui/text";
 import { Badge } from "@/components/ui/surfaces";
@@ -25,12 +25,23 @@ import {
  * Pushed: /quality/alerts — the quality bell target: BOTH boards in one
  * screen (Segmented «عملياتي/البريد»): the operational alert board
  * (qualityApi.alerts) and the personal inbox (NotificationsScreen).
+ * R362: the inbox segment now renders stacked with a back that returns
+ * to the BOARD (the segment's natural parent — not a route pop), and the
+ * board drops its duplicated PageHeader title (StackHeader already
+ * carries «تنبيهات الجودة»; the description lives under it as body copy).
  */
 export default function QualityAlerts() {
   const [tab, setTab] = useState<"board" | "inbox">("board");
 
   if (tab === "inbox") {
-    return <NotificationsScreen title="بريدي" kicker="بريدك" />;
+    return (
+      <NotificationsScreen
+        title="بريدي"
+        kicker="بريدك"
+        stacked
+        onBack={() => setTab("board")}
+      />
+    );
   }
   return <AlertsBoard onInbox={() => setTab("inbox")} />;
 }
@@ -55,10 +66,9 @@ function AlertsBoard({ onInbox }: { onInbox: () => void }) {
     <Screen scroll>
       <StackHeader title="تنبيهات الجودة" kicker="قطاع ضمان الجودة" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader
-          title="تنبيهات الجودة"
-          kicker="أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريًا من بيانات المنصّة."
-        />
+        <T variant="body" color="muted">
+          أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريًا من بيانات المنصّة.
+        </T>
 
         <Segmented
           options={[

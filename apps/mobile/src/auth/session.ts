@@ -9,6 +9,9 @@ import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setToken, getToken } from "@/lib/tokenStorage";
 import { apiWithCookieCapture, post, registerAuthBridge, get as apiGet } from "@/api/client";
+import { queryClient } from "@/lib/queryClient";
+import { queryCachePersister } from "@/lib/resilience/persistence";
+import { clearAnswerQueue } from "@/lib/resilience/queue";
 import type { AuthUser, SessionResponse } from "@/api/types";
 
 const KEY_USER = "mdrk-mobile-user";
@@ -108,6 +111,21 @@ export const useSession = create<SessionState>((set, get) => ({
       AsyncStorage.removeItem(KEY_USER).catch(() => undefined),
       AsyncStorage.removeItem(KEY_INST).catch(() => undefined),
     ]);
+    // R362 — session-boundary data hygiene. The old clear wiped tokens and
+    // the user row, but left THREE user-scoped stores on the device:
+    //   · the in-memory TanStack cache — the expiry path (onSessionExpired)
+    //     never cleared it, so user A's rows could surface to user B on a
+    //     shared device for non-institution-scoped keys ("notifications",
+    //     "messages", "session"). The explicit logout screens clear it; the
+    //     expiry path now does too — this seat is the single chokepoint.
+    //   · the 24h PERSISTED query cache (AsyncStorage) — outlived the
+    //     session by design-for-offline, but must not outlive the USER.
+    //   · the offline exam-answer queue — its own docstring says "logout
+    //     hygiene", yet nothing outside tests ever called it. Queued
+    //     answers from a previous account must never flush into a new one.
+    queryClient.clear();
+    void queryCachePersister.removeClient();
+    void clearAnswerQueue();
     set((s) => ({
       user: null,
       accessToken: null,

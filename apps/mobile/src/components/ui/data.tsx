@@ -13,7 +13,8 @@ import {
 } from "react-native";
 import { FlashList, type FlashListProps, type RenderTarget } from "@shopify/flash-list";
 import { useInfiniteQuery, type InfiniteData, type UseInfiniteQueryResult } from "@tanstack/react-query";
-import { usePalette } from "@/design/theme";
+import { usePalette, useStatusTones } from "@/design/theme";
+import { scaledTouchFloor } from "@/design/type";
 import { sp, type Spacing } from "@/design/tokens";
 import { latn, num } from "@/lib/format";
 import type { PageMeta, Paginated } from "@/api/types";
@@ -33,8 +34,12 @@ export function StatLine({
   tone?: "accent" | "danger" | "gold";
 }) {
   const p = usePalette();
+  const tones = useStatusTones();
+  /* R362 — tone="danger" reads the ROSE feedback family (the old
+     accentInk made a danger stat the brand orange — indistinguishable
+     from tone="accent"). */
   const color =
-    tone === "accent" ? p.accentInk : tone === "gold" ? p.goldInk : tone === "danger" ? p.accentInk : p.text;
+    tone === "accent" ? p.accentInk : tone === "gold" ? p.goldInk : tone === "danger" ? tones.rose.deep : p.text;
   return (
     <View style={{ minHeight: 44, justifyContent: "center", paddingVertical: sp[6] }}>
       <View style={{ flexDirection: "row", alignItems: "baseline", gap: sp[8] }}>
@@ -192,7 +197,11 @@ export function LedgerRow({
     {
       paddingHorizontal: sp[16],
       paddingVertical: sp[12],
-      minHeight: 48,
+      /* R362 — the app's own type law ("rows that must stay tappable
+         scale via scaledTouchFloor()") finally applies here: the fixed
+         48 clamped every ledger row at 1.3+ font scales while its text
+         grew. 48 stays the 100% floor; the scaled floor wins above it. */
+      minHeight: Math.max(48, scaledTouchFloor()),
       gap: sp[4],
       borderBottomWidth: last ? 0 : StyleSheet.hairlineWidth,
       borderColor: p.border,

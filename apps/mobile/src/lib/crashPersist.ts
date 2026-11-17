@@ -146,7 +146,17 @@ export async function initCrashPersistence(): Promise<void> {
     const q = await readQueue();
     if (q.length > 0) {
       await writeQueue([]);
-      for (const r of q) {
+      // R362 — serialize the drain against telemetry's 1s rate limiter.
+      // The old tight loop fired every report within the same
+      // millisecond, and the limiter's early `return` (no queueing on
+      // that path!) silently dropped all but the FIRST report — after
+      // the queue had already been cleared, so the rest vanished for
+      // good. One call per window (the limiter stamps `lastSendAt`
+      // synchronously at call time, so spacing the CALLS is enough);
+      // the drain is a boot-time background task and never blocks UI.
+      for (let i = 0; i < q.length; i++) {
+        if (i > 0) await new Promise((resolve) => setTimeout(resolve, 1100));
+        const r = q[i];
         void reportClientError({
           kind: r.kind,
           message: `[queued ${r.queuedAt}] ${r.message}`,

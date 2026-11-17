@@ -30,7 +30,7 @@ export interface ScreenProps {
  * PageFrame — paper ground, safe areas, optional scroll.
  * The Heron drafting sheet: background = paper, no decorative chrome.
  */
-export function Screen({ children, scroll = true, padded = true, style, contentContainerStyle }: ScreenProps) {
+export function Screen({ children, scroll = true, padded = true, style, contentContainerStyle, keyboardShouldPersistTaps = "handled" }: ScreenProps) {
   const p = usePalette();
   const insets = useSafeAreaInsets();
   const base: StyleProp<ViewStyle> = [
@@ -45,7 +45,12 @@ export function Screen({ children, scroll = true, padded = true, style, contentC
         <ScrollView
           contentContainerStyle={[inner, padded && styles.pad]}
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
+          /* R362 — the prop is finally LIVE: it was declared in
+             ScreenProps but never destructured, so every caller's
+             override silently fell back to the hardcoded "handled".
+             Default stays "handled" (taps outside inputs dismiss the
+             keyboard first — the form contract). */
+          keyboardShouldPersistTaps={keyboardShouldPersistTaps}
         >
           {children}
         </ScrollView>
@@ -86,16 +91,21 @@ export function PageHeader({
   mono,
   right,
   compact,
+  testID,
 }: {
   title: string;
   kicker?: string;
   mono?: string;
   right?: ReactNode;
   compact?: boolean;
+  /** Stable e2e anchor (Maestro): RTL text matching proved unreliable —
+   * the settings capture flow pins this id instead of «الإعدادات». */
+  testID?: string;
 }) {
   const p = usePalette();
   return (
     <View
+      testID={testID}
       style={{
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: p.rule,
