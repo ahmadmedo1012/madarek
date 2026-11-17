@@ -14,6 +14,7 @@ import { InviteCodesCard } from '../../components/teacher/InvitesCard';
 import { BatchEnrollModal } from '../../components/teacher/BatchEnrollModal';
 import { Card, Badge, ProgressBar, UserAvatar, FormField, Pill } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
+import { UploadDropZone } from '../../components/pdf/UploadDropZone';
 import { ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
@@ -1354,20 +1355,27 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
 
           {mode === 'file' ? (
             <>
-              <FormField
-                label="ملف PDF"
-                hint="PDF فقط — حتى 20 ميغابايت."
-                error={validationError && name.trim().length >= 1 && effectiveOfferingId ? validationError : undefined}
-              >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  className="input upload-file-input"
-                  accept="application/pdf,.pdf"
-                  onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
-                  disabled={pending}
-                />
-              </FormField>
+              {/* R362 (§G upload experience): the field region is ALSO a
+                  drop target — a dropped file routes through the SAME
+                  pickFile path (the same validatePdfFile guard + the
+                  same inline validationError seat); the native input
+                  stays the keyboard / screen-reader control. */}
+              <UploadDropZone onFile={pickFile} disabled={pending}>
+                <FormField
+                  label="ملف PDF"
+                  hint="PDF فقط — حتى 20 ميغابايت."
+                  error={validationError && name.trim().length >= 1 && effectiveOfferingId ? validationError : undefined}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    className="input upload-file-input"
+                    accept="application/pdf,.pdf"
+                    onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
+                    disabled={pending}
+                  />
+                </FormField>
+              </UploadDropZone>
               {file && (
                 <div className="upload-file-field">
                   <Icon icon={FileText} size={14} className="text-muted" />

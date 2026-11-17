@@ -914,11 +914,65 @@
      picker (ResearchPage.tsx UploadModal + TeacherPages.tsx
      MaterialFormModal file mode); the .upload-file-* family below
      styles what replaced it. The .upload-error alert below stays live
-     — ResearchPage.tsx.) */
-  /* P3: the picked-file row — the file's name sits in a surface-2 chip
-     beside a 44px remove target (the touch floor; .btn.sm alone renders
-     below it). Shared by the student upload modal and the teacher
-     material modal's file mode. */
+     — ResearchPage.tsx.)
+     R362 (Agent 5, §G upload experience): the .upload-file-* family
+     itself had been swept out while both modals kept consuming the
+     classes — the picked-file chip rendered unstyled (bare flex-less
+     div). Restored with the documented anatomy (surface-2 chip + a
+     44px remove target), plus the UploadDropZone family (.upload-drop
+     + the standing hint + the drag-over affordance — components/pdf/
+     UploadDropZone.tsx, the drag-and-drop half of the two pick paths). */
+  .upload-file-field {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--surface-2);
+    border: 1px solid var(--surface-border, var(--border));
+    border-radius: var(--r-xs);
+    min-block-size: 44px; /* the touch floor */
+  }
+  .upload-file-name {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    direction: ltr; /* filenames are machine identifiers — LTR embed */
+    unicode-bidi: isolate;
+    font-size: var(--fs-sm);
+    color: var(--text);
+  }
+  .upload-file-remove { flex-shrink: 0; }
+  /* The drop region: wraps the native input's FormField. The standing
+     hint is one quiet line under the field; the affordance paints only
+     while a file drag is live over the region (data-over). */
+  .upload-drop { padding-block-start: var(--sp-1); }
+  .upload-drop-hint {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1-5);
+    margin: var(--sp-1-5) 0 0;
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+    transition: color var(--motion-duration-short) ease;
+  }
+  .upload-drop[data-over='true'] {
+    /* accent-tinted wash + the accent border while the drag is live —
+       color-mix keeps both themes legible (never a raw accent under
+       text). */
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+    outline: 1px dashed var(--accent);
+    outline-offset: var(--sp-1);
+    border-radius: var(--r-xs);
+  }
+  .upload-drop[data-over='true'] .upload-drop-hint {
+    color: var(--accent-ink, var(--accent));
+  }
+  .upload-drop[data-disabled='true'] {
+    opacity: 0.55;
+    pointer-events: none; /* an in-flight upload is not replaceable */
+  }
   /* ── Process explainer tiles ── */
   /* ═══ Library — research cards, search-stagger, skeletons ═══ */
   /* ── r186: typographic book jackets ─────────────────────────────
