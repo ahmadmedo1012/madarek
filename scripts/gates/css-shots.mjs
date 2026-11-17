@@ -27,6 +27,7 @@
  * (route slugged: "/" → home, "/login" → login …). Prints each path.
  */
 import { mkdirSync, readdirSync, existsSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 
@@ -38,7 +39,7 @@ const BASES = (process.env.CSS_SHOTS_BASES ?? 'wt=http://localhost:5173,main=htt
   });
 const ROUTES = (process.env.CSS_SHOTS_ROUTES ?? '/,/login,/about').split(',');
 const VPS = (process.env.CSS_SHOTS_VPS ?? '1440,390').split(',').map(Number);
-const OUT = process.env.CSS_SHOTS_OUT ?? '/home/z/heron-lab/css-shots';
+const OUT = process.env.CSS_SHOTS_OUT ?? join(tmpdir(), 'madarek-css-coverage', 'css-shots');
 const SETTLE_MS = Number(process.env.CSS_SHOTS_SETTLE ?? 2000);
 
 const slug = (r) => (r === '/' ? 'home' : r.replace(/^[/?&]+|\/+/g, (m) => (m === '/' ? '-' : '-')).replace(/-+$/, '') || 'home');

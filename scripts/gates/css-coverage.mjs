@@ -42,6 +42,7 @@
  * CSS_COVERAGE_FRESH=1 to discard the checkpoint and start over.
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
@@ -51,7 +52,7 @@ import { ROLE_USERS } from '../../frontend/tests/e2e/fixtures/api-fixtures.ts';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const BASE = (process.env.CSS_COVERAGE_URL ?? 'http://localhost:5173').replace(/\/+$/, '');
-const FULL_OUT = process.env.CSS_COVERAGE_FULL ?? '/home/z/heron-lab/css-coverage-full.json';
+const FULL_OUT = process.env.CSS_COVERAGE_FULL ?? join(tmpdir(), 'madarek-css-coverage', 'css-coverage-full.json');
 const SUMMARY_OUT = resolve(HERE, '../../docs/redesign/r331/css-coverage.json');
 const CKPT_OUT = FULL_OUT.replace(/\.json$/, '') + '.ckpt.json';
 
