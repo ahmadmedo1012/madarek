@@ -132,6 +132,7 @@ export const motion = {
   slow: 500,
   slower: 650,
   cinema: 900,
+  page: 500,
   sheetExit: 835,
   guestReveal: 700,
 } as const;

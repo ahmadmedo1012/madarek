@@ -52,6 +52,7 @@
     --t-slow: 500ms;
     --t-slower: 650ms;
     --t-cinema: 900ms;
+    --t-page: 500ms;
     --t-sheet-exit: 835ms;
     --t-guest-reveal: 700ms;
     --ease: cubic-bezier(0.23, 1, 0.32, 1);

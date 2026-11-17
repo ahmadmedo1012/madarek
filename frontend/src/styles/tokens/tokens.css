@@ -1422,3 +1422,48 @@
      under every dropdown in the app. See the mapping table above. */
   --z-header: 90;
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+   R366 (Agent 3 · design system) — additive seats for the perfection
+   program. Append-only: no token above is renamed, removed or re-keyed.
+   Changelog for consumers: docs/redesign/r366/agent3-design-system/
+   TOKENS-CHANGELOG.md.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer tokens {
+
+  :root {
+    /* ─── The touch-target floor (§7 matrix · the 44px law) ───────────
+       Coarse-pointer hit areas resolve through this seat so the floor
+       is one number, not 400 local minimums. Equals shared
+       design-tokens.json touchFloor (the mobile contract). */
+    --touch-target: 44px;
+
+    /* ─── Text-over-imagery contract (the guaranteed-legible pair) ───
+       Any Arabic text painted over photography/illustration consumes
+       BOTH: the ink AND the scrim that guarantees it. The flat floor
+       is MEASURED against the worst legal pixel — pure #FFFFFF —
+       0.62 × #141414 over white composites to #6D6D6D: 5.15:1 with
+       the #FFFFFF ink (AA body text with margin; gradients may go
+       stronger, never below). Theme-invariant on purpose: imagery is
+       the same pixels in both themes. Consumers: hero media, cards
+       with image headers, the landing story bands. */
+    --text-on-image-ink: #FFFFFF;
+    --scrim-text: rgb(20 20 20 / 0.62);
+    /* The sunken well — the ONE inset surface (read-only digests,
+       code blocks, quota wells): one step BELOW the card ground. */
+    --surface-sunken: var(--neutral-100);
+  }
+
+  :root[data-theme="dark"] {
+    --surface-sunken: var(--neutral-50);
+  }
+
+  /* The page-transition rung joins the reduced-motion kill (the
+     raw block above predates it; append-only belt for the new rung). */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --t-page: 0ms;
+    }
+  }
+}
