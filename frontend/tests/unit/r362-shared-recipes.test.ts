@@ -114,7 +114,11 @@ describe('r362 · the restored shared recipes (components.css)', () => {
     const body = base![1];
     expect(body).toContain('inline-size: 18px');
     expect(body).toContain('block-size: 18px');
-    expect(body).toContain('border: 1px solid var(--rule-strong)');
+    /* R366 (Agent 3 · WCAG 1.4.11): the unchecked box boundary rides
+       the CONTROL seat --input-border (3:1+ on every ground; the old
+       --rule-strong hairline measured 2.1:1 — under the non-text floor
+       for identifying the control). */
+    expect(body).toContain('border: 1px solid var(--input-border)');
     expect(body).toContain('transition: var(--t-clean)');
     expect(componentsClean).toMatch(/input\[type="checkbox"\]\s*\{\s*border-radius:\s*var\(--r-xs\);\s*\}/);
     expect(componentsClean).toMatch(/input\[type="radio"\]\s*\{\s*border-radius:\s*50%;\s*\}/);

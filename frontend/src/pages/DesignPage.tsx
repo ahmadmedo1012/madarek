@@ -300,6 +300,30 @@ export default function DesignPage(): React.JSX.Element {
             <Cell label="Input — disabled">
               <Input defaultValue="رقم جامعي ثابت" disabled aria-label="رقم جامعي" />
             </Cell>
+            {/* r366 (Agent 3 · the state matrix): the read-only digest —
+                the sunken well + a readOnly field, swept by the state
+                contrast gate as its own state family. */}
+            <Cell label="‎r366 — قراءة فقط (‏readonly digest)">
+              <div className="r323d-stack">
+                <Input defaultValue="CS301 · قواعد البيانات — للقراءة فقط" readOnly aria-label="مقرر للقراءة فقط" />
+                <div
+                  className="r323d-readonly-well"
+                  style={{ background: 'var(--surface-sunken)', border: '1px solid var(--rule)', padding: 'var(--sp-3)', color: 'var(--text-secondary)', fontSize: '0.8125rem' }}
+                >
+                  المُعاد النهائي 2.0 · 96 نقطة · فصل خريف 2025
+                </div>
+              </div>
+            </Cell>
+            {/* r366 (Agent 3 · the state matrix): selectable chips carrying
+                the REAL aria-selected contract — the gate's selected state
+                needs a specimen inside the first viewport band. */}
+            <Cell label="‎r366 — تحديد (aria-selected)">
+              <div className="r323d-row">
+                <button type="button" className="pill on" aria-selected="true">الفصل الحالي</button>
+                <button type="button" className="pill" aria-selected="false">فصل سابق</button>
+                <button type="button" className="pill" aria-selected="false">كل الفصول</button>
+              </div>
+            </Cell>
             <Cell label="select · checkbox · radio">
               <div className="r323d-stack">
                 <select className="select" aria-label="القسم">
