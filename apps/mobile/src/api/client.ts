@@ -150,7 +150,7 @@ async function parseEnvelope<T>(res: Response): Promise<T> {
       throw new ApiError("BAD_JSON", "استجابة غير صالحة من الخادم", res.status, text.slice(0, 200));
     }
   }
-  const obj = parsed as { error?: { code?: string; message?: string; details?: unknown }; data?: unknown } | null;
+  const obj = parsed as { error?: { code?: string; message?: string; details?: unknown }; data?: unknown; meta?: unknown } | null;
   if (!res.ok) {
     const code = obj?.error?.code ?? (res.status === 401 ? "UNAUTHENTICATED" : "HTTP_ERROR");
     const message = obj?.error?.message ?? `فشل الطلب (رمز ${res.status})`;
@@ -163,6 +163,24 @@ async function parseEnvelope<T>(res: Response): Promise<T> {
   // undefined" — the post-login white-screen class on real devices
   // (e.g. /me/resume legitimately returns { data: null } for fresh users).
   if (obj !== null && typeof obj === "object" && "data" in obj) {
+    // R362 — paginated passthrough: the backend's paginated contract is
+    // `{ data: T[], meta }` (a TOP-LEVEL meta sibling), but the unwrap
+    // below resolved such bodies to the bare rows — silently dropping
+    // the meta. Every `meta`-aware consumer degraded: unread badges
+    // read 0 forever (useUnreadCount's `res.meta?.unread`), list
+    // pagination lost real totals, and admin dashboards read
+    // `res.data` off what was already bare rows. The fix: when BOTH
+    // keys are present and `data` is an array, resolve the WHOLE
+    // `{ data, meta }` object — exactly the `Paginated<T>` shape the
+    // typed consumers expect. Non-paginated bodies are untouched:
+    // `{ data: null }` → null, `{ data: T }` → T, and endpoints that
+    // send no meta (the OpenAPI pins it to list endpoints) keep the
+    // bare-rows/array behavior. List consumers normalize both shapes
+    // by design (`normalizePage` in ui/data.tsx, `pageOf` in
+    // governance/components.tsx), so this only RESTORES information.
+    if (Array.isArray(obj.data) && obj.meta !== null && typeof obj.meta === "object") {
+      return obj as T;
+    }
     return obj.data as T;
   }
   return obj as T;
@@ -171,6 +189,12 @@ async function parseEnvelope<T>(res: Response): Promise<T> {
 /** Single-flight refresh — concurrent 401s share one /auth/refresh call. */
 let refreshInFlight: Promise<boolean> | null = null;
 
+/* R362 — the refresh POST is a fetch with NO timeout: a wedged origin
+ * hangs the single-flight promise forever, and every concurrent 401
+ * shares it — the whole session layer is stuck past recovery. Same
+ * timeout class as the main transport (20s), cleared in `finally`. */
+const REFRESH_TIMEOUT_MS = 20_000;
+
 async function tryRefresh(): Promise<boolean> {
   const bridge = authBridge;
   if (!bridge) return false;
@@ -178,11 +202,14 @@ async function tryRefresh(): Promise<boolean> {
     refreshInFlight = (async () => {
       const cookie = bridge.getRefreshCookie();
       if (!cookie) return false;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), REFRESH_TIMEOUT_MS);
       try {
         const res = await fetch(`${apiBase()}/auth/refresh`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Cookie: `mdrk_refresh=${cookie}` },
           body: "{}",
+          signal: controller.signal,
         });
         if (!res.ok) return false;
         const data = await parseEnvelope<{ user: unknown; accessToken: string }>(res);
@@ -192,6 +219,7 @@ async function tryRefresh(): Promise<boolean> {
       } catch {
         return false;
       } finally {
+        clearTimeout(timer);
         refreshInFlight = null;
       }
     })();
@@ -311,20 +339,32 @@ export async function apiWithCookieCapture<T>(path: string, opts: RequestOptions
   if (token && !opts._skipAuth) headers["Authorization"] = `Bearer ${token}`;
   const cookie = authBridge?.getRefreshCookie();
   if (cookie) headers["Cookie"] = `mdrk_refresh=${cookie}`;
+  // R362 — this is the login/register/select-institution transport, and
+  // it had NO timeout: a cold serverless origin could hang the submit
+  // button indefinitely (warmBackend is fire-and-forget and only a
+  // courtesy). Same AbortController discipline as `api()`: internal
+  // timeout, timer cleared in `finally`. The dead 401 fall-through that
+  // used to sit here (an empty `if` that never refreshed anything) is
+  // gone — auth-family paths never refresh-retry by design.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), opts.timeoutMs ?? 20_000);
   try {
     const res = await fetch(url, {
       method: opts.method ?? "GET",
       headers,
       body: opts.rawBody !== undefined ? opts.rawBody : opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+      signal: controller.signal,
     });
-    if (res.status === 401 && path.startsWith("/auth/") === false) {
-      // fall through to envelope handling
-    }
     const data = await parseEnvelope<T>(res);
     return { data, refreshCookie: extractRefreshCookie(res) };
   } catch (err) {
     if (err instanceof ApiError) throw err;
+    if ((err as { name?: string })?.name === "AbortError") {
+      throw new ApiError("TIMEOUT", "انتهت مهلة الطلب — الخادم بطيء، أعد المحاولة", 0);
+    }
     throw new ApiError(NETWORK_ERROR, networkMessage, 0);
+  } finally {
+    clearTimeout(timer);
   }
 }
 
