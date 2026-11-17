@@ -45,19 +45,22 @@
   --hro-rise-dur: 1s;        /* rise duration             */
 }
 
-/* ══ [1] THE BAND — grid rows [art 1fr | content auto | work auto],
+/* ══ [1] THE BAND — R366 L1: the section rides the measured wrapper chain
+   (hero-plate.css); it slides UNDER the in-flow masthead (R347 D2 keeps
+   its flow box — net flow unchanged, the page below does not move), so
+   the census root lands at the sheet-frame inset like the frozen wrap and
+   the measured closing band returns inside the fold (the D4 geometry,
+   now the measured one).
    the measured 100svh-class fold (887px @1440×900) + the consent
    card's bottom-stack reserve (R328 H1 — unchanged contract).
    R332 W1: position:relative — the band is the bg-border frame's
    containing block (Heron's bgBorderFrame is inset 1.2rem of the hero
    wrap, over the full-bleed drawing — never around an inner box). ═════ */.fo-hero.hro {
   position: relative;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto auto;
-  block-size: calc(100svh - 63px - 13px); /* R347 D4: the r342 formula was calibrated for the FIXED header (an overlay that took no flow space); with the masthead IN FLOW (R347 D2) the section gives up its 63px (7px frame + 56px bar) or the content band's last 36px sink under the fold at 1440x900 - the headline and CTAs were partly cut off (the owner's D4) */
-  align-content: stretch;
+  display: block;
+  block-size: calc(100svh - 1.56rem); /* R347 D4: the r342 formula was calibrated for the FIXED header (an overlay that took no flow space); with the masthead IN FLOW (R347 D2) the section gives up its 63px (7px frame + 56px bar) or the content band's last 36px sink under the fold at 1440x900 - the headline and CTAs were partly cut off (the owner's D4) */
+  margin-block-start: -56px; /* spacing-gate: allow — the measured in-flow masthead seat (56px ≥992) the wrap slides under; net flow unchanged */
   padding-block: 0;
-  padding-block-end: 14px; /* R342-02: the L1-c consent is an IN-FLOW TAIL BAND (page bottom) — the hero's fold can never sit under it, so the R328 corner-card reserve retires; the 14px seam stays */
 }
 
 /* the grid floor (R328 H1/H3 — min-width:auto would inflate every
@@ -268,8 +271,12 @@
   align-items: start;
 }
 
-/* the H1 cell — the reading-start column (inline-start in RTL) */.hro-title-cell {
+/* the H1 cell — the reading-start column (inline-start in RTL); R366 L1:
+   the measured h1 rung (the 780px band seat = band-top + 20px) rides the
+   cell's own offset (the sub/alt columns start at the band top — the
+   spec's own collage) */.hro-title-cell {
   min-inline-size: 0;
+  margin-block-start: 2.4rem;
 }
 
 /* the display title — the spec's own h1 rung: 5.6rem / 700 / the Arabic
@@ -371,6 +378,10 @@
   gap: var(--sp-5);
   flex: 0 0 auto;
   margin-block-start: 0.84rem; /* the measured seat under the lead */
+  /* R366 L1 — the measured CTA rung: 69px (8.28rem) inboard of the lead's
+     reading edge (the mirrored spec seat: a[1] at 69px from the lead's
+     LTR left edge = our inline-start edge) */
+  padding-inline-start: 8.28rem;
 }
 
 .landing.intro-draw .hro-actions {
@@ -479,9 +490,9 @@
 
 @media (min-width: 1024px) {
   .hro-work {
-    position: absolute; /* the section's own closing row — the [art 1fr][content auto] grid ends above it */
-    inset-block-end: 14px; /* the measured seam seat (the L1-c tail band can never reach the fold) */
-    inset-inline: 7px 0;
+    position: absolute; /* the bandhost's own closing row (R366 L1 — the measured work-strip seat) */
+    inset-block-end: 0.36rem; /* the measured strip seat (the items' 867px rung inside the 760..893 band) */
+    inset-inline: 0.84rem 0;
     margin-inline: 0;
   }
 }
@@ -832,11 +843,11 @@
   --hro-flare: var(--accent-ink);
 }
 
-/* [S] the band seat — measured 0.981–0.988vh per breakpoint */@media (max-width: 767px) { .hro.fo-hero { block-size: calc(100svh - 63px - 16px); } } /* R347 D4: the fold holds the collage - the 63px in-flow masthead (R347 D2) is given up; block-size caps it, the art row flexes */
-@media (min-width: 768px) and (max-width: 1023px) { .hro.fo-hero { block-size: calc(100svh - 63px - 16px); } }
-@media (min-width: 1024px) and (max-width: 1439px) { .hro.fo-hero { block-size: calc(100svh - 63px - 9px); } }
-@media (min-width: 1440px) and (max-width: 1919px) { .hro.fo-hero { block-size: calc(100svh - 63px - 13px); } }
-@media (min-width: 1920px) { .hro.fo-hero { block-size: calc(100svh - 63px - 17px); } }
+/* [S] the band seat — R366 L1: the measured wrap heights ride the chain
+   (hero-plate.css); the belts here carry only the measured masthead
+   slide (the 46px tablet bar · the 50px mobile bar — both measured) */
+@media (max-width: 767px) { .hro.fo-hero { margin-block-start: -50px; /* spacing-gate: allow — the measured 50px mobile masthead seat */ } }
+@media (min-width: 768px) and (max-width: 991px) { .hro.fo-hero { margin-block-start: -46px; /* spacing-gate: allow — the measured 46px tablet masthead seat */ } }
 
 /* [T] the display title — measured fs (31.76/36.83px, 3.241vw ≥1024)
    with the Arabic line-height floor max(heronLh, 1.35×fs) */section.fo-hero .hro-title.fo-hero-title { font-size: 31.76px; line-height: 1.35; }
