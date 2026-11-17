@@ -394,6 +394,38 @@
     --state-btn-disabled-opacity: 0.55;
     --state-input-loading-cursor: progress;
 
+    /* ─── R362 (Agent 4) — the complete state seat map ──────────────
+       Additive ALIAS seats only (no raw values, no new namespaces):
+       they compose the canonical theme roles at use-time exactly like
+       --state-card-hover-border above, so both themes resolve first-
+       class without a second system. Consumers landed in the same
+       round: .btn.outline (secondary action), the restored shared
+       recipes (disabled text controls, table pagination selected/
+       hover states — components.css). The full state→seat map this
+       completes: backgrounds/surfaces/text/borders → the generated
+       semantic roles; primary action → --primary/-fg; SECONDARY
+       action → --secondary/-fg (the outline slab pair); success/
+       warning/error(danger)/information → the --*-soft/-ink triads;
+       disabled → these seats + the two opacity rungs; selected →
+       these seats (+ --state-card-selected-ring above); focus → the
+       focus-ring family above; active/pressed → the press-scale
+       register (--press-scale and friends). */
+    /* Secondary action — the quiet alternative to the primary slab
+       (the .btn.outline recipe): ink slab + label, hairline edge. */
+    --secondary:      var(--primary);
+    --secondary-fg:   var(--primary-fg);
+    /* Selected — a picked row/cell/chip/current page. */
+    --state-selected-bg:     var(--accent-soft);
+    --state-selected-ink:    var(--accent-ink);
+    --state-selected-border: var(--accent);
+    /* Hover — the one interactive surface wash rows/cells take. */
+    --state-hover-bg: var(--surface-2);
+    /* Disabled — the locked-control ground/ink/edge (opacity rides
+       the --state-input/btn-disabled-opacity rungs above). */
+    --state-disabled-bg:     var(--surface-2);
+    --state-disabled-ink:    var(--text-faint);
+    --state-disabled-border: var(--border);
+
     --state-loading-spinner-size:  1em;
     --state-loading-spinner-stroke: 2px;
 
@@ -598,11 +630,15 @@
        4.5 on every light text ground (warm, unlike the retired cool
        #626260 granite). */
     /* R313 — faint is one step FAINTER than muted, re-derived warm on
-       the new paper: #70706A = 4.59:1 bg · 4.98:1 surface — AA where
-       it carries text; deliberately under AA on --accent-soft and
-       inset wells — faint never carries text there (contract unchanged
-       from r304/r305; the retired cool #72726F measured 4.44 on the
-       new ground and dipped under the floor). */
+       the new paper. R362 truth repair: the shipped value is #666660
+       (source: shared/design-tokens.json → tokens.generated.css) —
+       5.32:1 bg · 5.78:1 surface · 5.04:1 surface-2 · 4.99:1 surface-3,
+       clearing 4.5 on EVERY light text ground. The #70706A this
+       comment used to quote measures 4.59/4.98 but DIPS UNDER AA on
+       the inset wells (4.34 surface-2 · 4.30 surface-3); deliberately
+       under AA on --accent-soft — faint never carries text there
+       (contract unchanged from r304/r305; the print remap below is
+       aligned to the same shipped value in this round). */
     /* R313 — labels on the orange fill read WHITE (the reference's own
        recipe, measured on every button; 3.76:1 = AA-large). The r305
        warm-ink-only rule is SUPERSEDED. AA EXCEPTION: small Arabic
@@ -655,6 +691,15 @@
        --accent-soft). Dark re-keys the ring to its luminous hover tier
        (see the night block). */
     --state-focus-ring-color: #C72E00;
+
+    /* R362 (Agent 4) — the AA ACTION-FILL seat, tokenized from the
+       R318/R323 contrast-gate ruling that lived as four allowlisted
+       #DB3A00 literals in components.css/patterns.css (white label
+       4.548:1 — the least-shift orange ground that clears AA; the
+       raw --accent #FA3600 measures 3.755:1 under white and stays a
+       large-text/UI tone). Dark keeps its own passing seat (ember
+       #FF5A1F = 4.79:1 with white) — no override needed there. */
+    --accent-fill-aa: #DB3A00;
 
     /* Status INK tokens for TEXT usages — the deep "text-on-pastel"
        shades of the same families (all ≥7.2:1 on their tints and ≥7:1
@@ -829,6 +874,13 @@
        near-black ground · 4.32:1 on the worst raised surface — clears
        the ≥3:1 ring rule). */
     --state-focus-ring-color: var(--accent-hover);
+
+    /* R362 (Agent 4) — the AA action-fill seat resolves the theme's
+       own passing ground (ember #FF5A1F + white = 4.79:1): the light
+       block carries the darkened #DB3A00 exception, the night needs
+       none. Consumed unconditionally by the button/auth-submit fills
+       so the [data-theme='light'] override blocks retire. */
+    --accent-fill-aa: var(--accent);
 
     /* Night -ink family: the status inks clear AA on the night ground
        (mint 7.69, yellow 7.87, rose 6.97, sky 6.87 on --bg), so -ink maps
@@ -1188,13 +1240,14 @@
       --c-copper-bg:    #FCE3D9;  --c-copper-ink:   #FA3600;  --c-copper-deep:   #A32400;
       /* literals the dark block hardcodes (not chained to neutrals) */
       --text-muted:     #62625F;
-      --text-faint:     #70706A;
+      --text-faint:     #666660;   /* R362: aligned to the shipped light value (was #70706A — see the faint note above) */
       --text-on-accent: #FFFFFF;
       --accent-hover:   #D92F00;
       --accent-fg:      #FFFFFF;
       /* print rides the orange seat */
       --accent:          #FA3600;
       --accent-strong:   #A32400;
+      --accent-fill-aa:  #DB3A00;   /* R362: the AA action-fill seat joins the print light-lock */
       --state-focus-ring-color: #C72E00;
       --border-faint:   rgba(40,40,40,0.06);
       --surface-border: rgba(40,40,40,0.06);
