@@ -108,7 +108,7 @@
     "exams/OnlineExamsPages.tsx": {
       "baseline": 685,
       "class": "authed",
-      "max": 405
+      "max": 402
     },
     "LandingPage.tsx": {
       "baseline": 3,
