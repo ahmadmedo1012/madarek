@@ -54,10 +54,13 @@ export interface E2eOptions {
    *  explicit option fixture so the custom context fixture below can
    *  forward it (the built-in one is not a registered parameter here). */
   reducedMotion: 'reduce' | 'no-preference';
-  /** r366 (2-d): touch emulation forwarding — the platform's 44px touch
-   * floor (components.css gates .btn on pointer:coarse) is only
-   * measurable in a hasTouch context. */
-  hasTouch: boolean;
+  /* r366 (2-d): touch emulation — hasTouch rides the BUILT-IN
+   * PlaywrightTestOptions option (re-registering it here made the
+   * extend typing reject the option tuple: a built-in name cannot be
+   * re-declared as a custom option fixture). The context fixture
+   * below destructures the built-in value and forwards it into
+   * newContext so the 44px touch floor (components.css gates .btn on
+   * pointer:coarse) is measurable in a hasTouch context. */
 }
 
 const BASE_URL = process.env.MADAREK_E2E_BASE_URL ?? 'http://localhost:5173';
@@ -88,7 +91,6 @@ export const test = base.extend<E2eOptions>({
      option fixture and forwarded into newContext below. Specs keep the
      standard spelling `test.use({ reducedMotion: 'reduce' })`. */
   reducedMotion: ['no-preference', { option: true }],
-  hasTouch: [false, { option: true }],
 
   context: async (
     { browser, e2eRole, apiOverrides, themeSeed, viewport, locale, colorScheme, reducedMotion, hasTouch },
@@ -115,7 +117,7 @@ export const test = base.extend<E2eOptions>({
       // for reduced motion silently ran without the emulation
       // (matchMedia stayed false and the 0.01ms belts never armed).
       reducedMotion: reducedMotion as 'reduce' | 'no-preference' | null | undefined,
-      hasTouch: hasTouch as boolean | null | undefined,
+      hasTouch,
       // Deterministic wall clock for new Date().getHours() (greeting)
       // and date formatting (ar-LY) — runner TZ can vary.
       timezoneId: 'UTC',

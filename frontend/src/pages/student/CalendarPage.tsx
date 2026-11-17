@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ComponentProps } from 'react';
 import { Link } from 'react-router-dom';
 import {
   CalendarDays, ChevronLeft, ChevronRight,
@@ -527,6 +527,18 @@ export default function StudentCalendarPage() {
              * chips (kind ink on the inline-start edge; ellipsis + full
              * title on the tooltip; a «+n أخرى» chip caps the stack —
              * the detail list below stays the full ledger). */
+            /* r366-final: the week and month cells share the button's
+             * identity/press contract — ONE props seat, spread at both
+             * render sites (the jscpd ratchet counts one copy). */
+            const cellButtonProps = {
+              'data-in-month': cell.inMonth,
+              'data-weekend': isWeekend || undefined,
+              'data-today': isToday || undefined,
+              'data-selected': selectedKey === cell.key || undefined,
+              'aria-pressed': selectedKey === cell.key,
+              'aria-label': `${dayName} ${cell.day}${eventCount > 0 ? ` — ${arUnit(eventCount, 'حدث واحد', 'حدثان', 'أحداث')}` : ''}`,
+              onClick: () => setSelectedKey(cell.key),
+            } as ComponentProps<'button'>;
             if (mode === 'week') {
               const shown = dayEvents.slice(0, WEEK_CHIP_CAP);
               const rest = dayEvents.length - shown.length;
@@ -535,13 +547,7 @@ export default function StudentCalendarPage() {
                   key={cell.key}
                   type="button"
                   className="cal-cell"
-                  data-in-month={cell.inMonth}
-                  data-weekend={isWeekend || undefined}
-                  data-today={isToday || undefined}
-                  data-selected={selectedKey === cell.key || undefined}
-                  aria-pressed={selectedKey === cell.key}
-                  aria-label={`${dayName} ${cell.day}${eventCount > 0 ? ` — ${arUnit(eventCount, 'حدث واحد', 'حدثان', 'أحداث')}` : ''}`}
-                  onClick={() => setSelectedKey(cell.key)}
+                  {...cellButtonProps}
                 >
                   <span className="cal-week-dayhead">
                     <span className="cal-day-num">{cell.day}</span>
@@ -573,13 +579,7 @@ export default function StudentCalendarPage() {
                 key={cell.key}
                 type="button"
                 className="cal-cell"
-                data-in-month={cell.inMonth}
-                data-weekend={isWeekend || undefined}
-                data-today={isToday || undefined}
-                data-selected={selectedKey === cell.key || undefined}
-                aria-pressed={selectedKey === cell.key}
-                aria-label={`${dayName} ${cell.day}${eventCount > 0 ? ` — ${arUnit(eventCount, 'حدث واحد', 'حدثان', 'أحداث')}` : ''}`}
-                onClick={() => setSelectedKey(cell.key)}
+                {...cellButtonProps}
               >
                 <span className="cal-day-num">{cell.day}</span>
                 {kindCount > 0 && (

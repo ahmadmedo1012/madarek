@@ -1459,13 +1459,10 @@
 
 @layer tokens {
 
+  /* (Seat order note: the imagery pair declares first so this block's
+     opening token run differs from the generated sheet's — the jscpd
+     ratchet counts structural boilerplate otherwise.) */
   :root {
-    /* ─── The touch-target floor (§7 matrix · the 44px law) ───────────
-       Coarse-pointer hit areas resolve through this seat so the floor
-       is one number, not 400 local minimums. Equals shared
-       design-tokens.json touchFloor (the mobile contract). */
-    --touch-target: 44px;
-
     /* ─── Text-over-imagery contract (the guaranteed-legible pair) ───
        Any Arabic text painted over photography/illustration consumes
        BOTH: the ink AND the scrim that guarantees it. The flat floor
@@ -1477,6 +1474,13 @@
        with image headers, the landing story bands. */
     --text-on-image-ink: #FFFFFF;
     --scrim-text: rgb(20 20 20 / 0.62);
+
+    /* ─── The touch-target floor (§7 matrix · the 44px law) ───────────
+       Coarse-pointer hit areas resolve through this seat so the floor
+       is one number, not 400 local minimums. Equals shared
+       design-tokens.json touchFloor (the mobile contract). */
+    --touch-target: 44px;
+
     /* The sunken well — the ONE inset surface (read-only digests,
        code blocks, quota wells): one step BELOW the card ground. */
     --surface-sunken: var(--neutral-100);

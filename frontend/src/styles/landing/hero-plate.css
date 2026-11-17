@@ -735,46 +735,4 @@
 @media (prefers-reduced-motion: reduce) {
   .hro-plate, .hro-plate * { transition: none; animation: none; }
 }
-/* the plate-dark trio nests like the spec tree (hpf-18's opacity-0 box
-   carries 19/20 — the flat layout broke the opacity inheritance and
-   painted the tag text at rest, tripping the overlap law). The children
-   rebase to the parent box (the same-box +7/+7 seats). */
-.hpf-18 > .hpf-19 { inset-inline: 0; inset-block: 0; inline-size: 100%; block-size: 100%; }
-.hpf-19 > .hpf-20 { inset-inline-start: 0.84rem; inset-block-start: 0.84rem; }
-@media (min-width: 768px) and (max-width: 991px) {
-  .hpf-18 > .hpf-19, .hpf-19 > .hpf-20 { display: block; }
-}
 
-/* reduced motion: the furniture is static chrome — nothing animates */
-@media (prefers-reduced-motion: reduce) {
-  .hro-plate, .hro-plate * { transition: none; animation: none; }
-}
-/* the plate-dark trio nests like the spec tree (hpf-18's opacity-0 box
-   carries 19/20 — the flat layout broke the opacity inheritance and
-   painted the tag text at rest, tripping the overlap law). The children
-   rebase to the parent box (the same-box +7/+7 seats). */
-.hpf-18 > .hpf-19 { inset-inline: 0; inset-block: 0; inline-size: 100%; block-size: 100%; }
-.hpf-19 > .hpf-20 { inset-inline-start: 0.84rem; inset-block-start: 0.84rem; }
-@media (min-width: 768px) and (max-width: 991px) {
-  .hpf-18 > .hpf-19, .hpf-19 > .hpf-20 { display: block; }
-}
-
-/* reduced motion: the furniture is static chrome — nothing animates */
-@media (prefers-reduced-motion: reduce) {
-  .hro-plate, .hro-plate * { transition: none; animation: none; }
-}
-
-/* the plate-dark trio nests like the spec tree (hpf-18's opacity-0 box
-   carries 19/20 — the flat layout broke the opacity inheritance and
-   painted the tag text at rest, tripping the overlap law). The children
-   rebase to the parent box (the same-box +7/+7 seats). */
-.hpf-18 > .hpf-19 { inset-inline: 0; inset-block: 0; inline-size: 100%; block-size: 100%; }
-.hpf-19 > .hpf-20 { inset-inline-start: 0.84rem; inset-block-start: 0.84rem; }
-@media (min-width: 768px) and (max-width: 991px) {
-  .hpf-18 > .hpf-19, .hpf-19 > .hpf-20 { display: block; }
-}
-
-/* reduced motion: the furniture is static chrome — nothing animates */
-@media (prefers-reduced-motion: reduce) {
-  .hro-plate, .hro-plate * { transition: none; animation: none; }
-}

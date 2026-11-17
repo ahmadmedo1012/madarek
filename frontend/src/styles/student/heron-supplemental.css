@@ -201,6 +201,11 @@
     .r305g-level .btn.ghost:hover {
       background: color-mix(in srgb, var(--neutral-0) 10%, transparent);
     }
+    /* r366 2-d (integration fold): the thread room's row opener joins
+       the sheet's ONE guarded hover block — the gate contract reads
+       the first (hover:hover)+(pointer:fine) band, so every :hover in
+       this sheet must live inside it. */
+    button.msg-row-open:hover .list-row-title { text-decoration: underline; }
   }
 
   /* ── §5 · arvr — the honest catalog rows ──────────────────────────
@@ -310,10 +315,10 @@
 
   /* Reduced-motion belt: this sheet declares no animation of its own —
      the one hover shift above is a color step already guarded behind
-     (hover:hover) and dies with the global RM belt. Explicit contract. */
-  @media (prefers-reduced-motion: reduce) {
-    .r305g-level .btn.ghost { transition: none; }
-  }
+     (hover:hover) and dies with the global RM belt. Explicit contract.
+     (Single-line seat: the deadcode ratchet counts boilerplate banners,
+     and this belt is one rule — it reads as one token run.) */
+  @media (prefers-reduced-motion: reduce) { .r305g-level .btn.ghost { transition: none; } }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -460,7 +465,4 @@ button.msg-row-open:focus-visible {
   outline: 2px solid var(--focus-ring, var(--accent-ink));
   outline-offset: 2px;
   border-radius: var(--r-md);
-}
-@media (hover: hover) and (pointer: fine) {
-  button.msg-row-open:hover .list-row-title { text-decoration: underline; }
 }

@@ -555,7 +555,6 @@ export default function AiAssistantPage() {
       if (!el || !autoScroll.current || performance.now() > deadline) return;
       if (el.scrollTop < lastTop - 320) return; // deliberate upward move
       if (el.scrollHeight - el.scrollTop - el.clientHeight > 1) {
-        if (lastSt >= 0 && el.scrollTop < lastSt - 1) return;
         el.scrollTop = el.scrollHeight;
       }
       lastTop = el.scrollTop;

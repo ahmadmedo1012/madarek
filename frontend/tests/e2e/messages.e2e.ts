@@ -88,7 +88,7 @@ async function installMessagesApi(page: import('@playwright/test').Page) {
     {
       method: 'POST',
       pattern: '**/api/v1/messages**',
-      fulfill: async ({ route, url }) => {
+      fulfill: async ({ route }) => {
         const body = route.request().postDataJSON() as { toUserId: string; body: string };
         state.send(body.toUserId, body.body);
         state.unread = 0;
