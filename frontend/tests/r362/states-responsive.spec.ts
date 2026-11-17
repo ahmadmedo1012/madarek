@@ -47,7 +47,6 @@ const SLICE: Array<{ role: 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER'
 async function openMobile(
   browser: import('@playwright/test').Browser,
   role: 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER',
-  path: string,
 ): Promise<{ page: Page; close: () => Promise<void> }> {
   const session = await sessionForRole(role);
   const context = await browser.newContext({
@@ -84,7 +83,7 @@ async function openMobile(
 for (const { role, path } of SLICE) {
   test(`states · ${path} [${role}] · mobile 360 + dark + keyboard + rtl`, async ({ browser }) => {
     test.setTimeout(90_000);
-    const { page, close } = await openMobile(browser, role, path);
+    const { page, close } = await openMobile(browser, role);
     const consoleErrors: string[] = [];
     page.on('console', (m) => {
       if (m.type() !== 'error') return;

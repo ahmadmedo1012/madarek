@@ -51,7 +51,12 @@ const ONLY = process.env.R362_ONLY
   ? new Set(process.env.R362_ONLY.split(',').map((s) => s.trim()).filter(Boolean))
   : null;
 const ROLES = process.env.R362_ROLE
-  ? new Set(process.env.R362_ROLE.split(',').map((s) => s.trim().filter(Boolean).toUpperCase()))
+  ? new Set(
+      process.env.R362_ROLE.split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((s) => s.toUpperCase()),
+    )
   : null;
 
 const ROUTES_UNDER_TEST = SWEEP_ROUTES.filter(

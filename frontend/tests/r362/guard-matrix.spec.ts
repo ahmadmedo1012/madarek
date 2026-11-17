@@ -27,7 +27,7 @@
 import { expect, test } from '@playwright/test';
 
 import { flowPage } from '../r325/flows/fixtures/live';
-import { ROLE_HOME_MAP, type GuardProbe } from './guard-matrix-routes';
+import { ROLE_HOME_MAP } from './guard-matrix-routes';
 
 /** A page factory that yields a SIGNED-OUT context (guest pass). */
 async function guestPage(browser: import('@playwright/test').Browser) {
