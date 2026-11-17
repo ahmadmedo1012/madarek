@@ -97,7 +97,7 @@ export function planAnswerSave(isOnline: boolean): "direct" | "queue" {
 
 /** «لديك سؤالان بدون إجابة.» — the confirm-sheet warning (web grammar). */
 export function unansweredNoteAr(n: number): string {
-  return `لديك ${countAr(n, ["سؤال بلا إجابة", "سؤالان بلا إجابة", "أسئلة بلا إجابة", "سؤالاً بلا إجابة"])}.`;
+  return `لديك ${countAr(n, ["سؤال واحد بدون إجابة", "سؤالان بدون إجابة", "أسئلة بدون إجابة", "سؤالاً بدون إجابة"])}.`;
 }
 
 /** One navigator cell: every state the grid needs, derived purely. */
@@ -689,8 +689,8 @@ export default function ExamTakerScreen() {
 
   const finalityNote =
     listedExam?.kind === "PRACTICE"
-      ? "بعد التسليم لا تعديل لإجاباتك — يمكنك بدء محاولة تدريبية لاحقاً."
-      : "بعد التسليم لا يمكنك تعديل إجاباتك أو إعادة المحاولة.";
+      ? "بعد التسليم لا تعديل — يمكنك بدء محاولة تدريبية لاحقاً."
+      : "بعد التسليم لا تعديل ولا إعادة.";
 
   /* ── render: post-submit result ─────────────────────────────────── */
   if (result) {
