@@ -44,6 +44,14 @@ import { Chapters } from '../components/landing/sections/Chapters';
  * product-proof strip (three REAL captures) lives inside
  * sections/Product.tsx — the Vite-asset imports ride the section. */
 import { Product } from '../components/landing/sections/Product';
+/* r362 (Agent 3) — [05·ب] the concepts band: the drawing language
+ * made explicit — the triangulation net that constructs under
+ * scroll and answers the pointer, then the gated route the stage
+ * ledger drives. Self-contained (the driver lives inside, like
+ * Chapters/Why); its sheets ride the section's own modules
+ * (concepts.css + the technical-interactive family) — nothing in the
+ * composer's cascade below changes. */
+import { Concepts } from '../components/landing/sections/Concepts';
 import { Footer } from '../components/landing/sections/Footer';
 // R323 (A3 · defects 1+9): FooterArt (FooterMarkArt/WordmarkArt) is
 // retired — the giant footer wordmark is <Logo variant="wordmark"> now
@@ -499,6 +507,13 @@ export default function LandingPage() {
         {/* ═══ [5] product — the ONE drawn product frame + the real
             capture proof strip (self-contained in the section). */}
         <Product />
+
+        {/* ═══ [5·ب] concepts — r362 (Agent 3): the drawing-language
+            band — the net that constructs under scroll, the gated
+            route, the live pointer instrument. Unmapped by the frozen
+            Heron spec (an ORIGINAL Madarek band); its geometry rides
+            the tp-* family grammar. */}
+        <Concepts />
 
         {/* ═══ [6] why — the Watch/Check/Test/Master stage strip (the
             cross-fade scrub lives inside WhyScene). */}
