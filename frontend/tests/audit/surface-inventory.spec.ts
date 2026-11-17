@@ -252,7 +252,14 @@ function roleForRoute(route: string): SweepRole {
   if (route.startsWith('/owner/')) return 'OWNER';
   // Shared, any-authenticated surfaces — swept as STUDENT.
   if (route.startsWith('/vision') || route.startsWith('/document') || route.startsWith('/colleges') || route.startsWith('/competitions')) return 'STUDENT';
-  return 'guest'; // '/', '/auth', '/auth/register', '/404'
+  // R362: the any-auth account settings door (nav.ts carries it for
+  // every role; swept as STUDENT like the other shared surfaces).
+  if (route.startsWith('/settings')) return 'STUDENT';
+  // R362: the auth-recovery sheets + the public marketing/legal
+  // sheets + /app are guest surfaces (GuestRoute / GuestReveal in
+  // App.tsx) — the default guest branch below owns them, exactly like
+  // '/' and '/auth'.
+  return 'guest'; // '/', '/auth', '/auth/register', '/404', '/auth/*', '/capabilities', '/legal/*', '/about', '/help', '/contact', '/app'
 }
 
 interface Session {
