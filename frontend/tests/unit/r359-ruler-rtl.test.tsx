@@ -33,8 +33,14 @@ describe('R359 · RulerGauge numerals — RTL anchoring', () => {
      * style reads below (r362: the branch's original `last.getAttribute`
      * failed typecheck with TS18048). */
     if (!last) throw new Error('the 100 numeral did not render');
-    const style = last.getAttribute('style') ?? '';
-    expect(style).toContain('inset-inline-start: 100%');
-    expect(style).toContain('transform: translateX(100%)');
+    /* R366-final (A2→A3 R1): the numerals ride the 0.5/1/1/1/0.5 GRID
+     * now — the guarantee this pin protects (the 100 reading never
+     * overflows the ruler's inline-end edge) is delivered structurally:
+     * the numerals row is the grid, the last cell folds flush via
+     * justify-self: end, and NO inline positioning exists to drift.
+     * The old mechanism (inset-inline-start + translateX) is gone. */
+    expect(last.getAttribute('style')).toBeNull();
+    const row = container.querySelector('.ind-ruler-numerals');
+    expect(row).not.toBeNull();
   });
 });

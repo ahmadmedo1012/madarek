@@ -38,6 +38,11 @@
   font-size: var(--fs-sm);
   color: var(--text-muted);
   margin-block-end: var(--sp-2);
+  /* R366-final (A2→A3 R1): the label wraps IN ITS OWN BOX at any text
+     scale — a stress-lengthened Arabic label never shares line space
+     with the instrument below. */
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
 }
 
 /* ── 1 · RulerGauge — any 0–100 datum as a ruled ruler ─────────────────
@@ -82,16 +87,29 @@
   background: var(--app-signal);
 }
 .ind-ruler-numerals {
-  position: relative;
-  block-size: 13px;
+  /* R366-final (A2→A3 R1): the 0.5/1/1/1/0.5 grid — the three middle
+     cells' centers land exactly on the 25/50/75 ticks, the edge cells
+     fold flush; the row is CONTENT-SIZED (the old fixed 13px row let
+     200%-scaled numerals escape into the microlabel block below —
+     measured 0.36 overlap fraction at 1440×900). container-type lets
+     the minor-numerals thin when the ruler crowds (12rem is root-
+     relative, so the threshold scales WITH the text scale — triggers
+     at 1024@200% only, never at 1440@200% or 100/130%). */
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 1fr 1fr 0.5fr;
+  font-size: var(--fs-mono-sm);
+  container-type: inline-size;
 }
 .ind-ruler-num {
-  position: absolute;
-  inset-block-start: 0;
-  font-size: var(--fs-mono-sm);
+  justify-self: center;
   line-height: 1;
   color: var(--text-muted);
   white-space: nowrap;
+}
+.ind-ruler-num:first-child { justify-self: start; }
+.ind-ruler-num:last-child { justify-self: end; }
+@container (inline-size < 12rem) {
+  .ind-ruler-num--minor { visibility: hidden; }
 }
 /* R327 F (red team, measured): the indicator seats rode the PAGE ramp
    (--text-muted) — on a deep band's INVERTED pole (the .r305s-band--deep
@@ -371,6 +389,10 @@
 .dash-resume-segments {
   margin-block-start: var(--sp-3);
   max-inline-size: 420px;
+  /* R366-final (A2→A3 R1): the label row and the instrument row own
+     separate grid rows — they never share line space at any scale. */
+  display: grid;
+  grid-template-rows: auto auto;
 }
 .dash-resume-segments-row {
   display: flex;

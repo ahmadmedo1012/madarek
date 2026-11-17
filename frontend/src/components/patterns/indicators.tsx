@@ -212,25 +212,18 @@ export function RulerGauge({
       </span>
       <span className="ind-ruler-numerals" aria-hidden="true">
         {[0, 25, 50, 75, 100].map((n) => (
-          /* R325.l RTL seal: the POSITIONING span inherits the sheet's
-             direction (so `inset-inline-start` resolves against the RTL
-             ruler, the same axis the ticks ride); the <bdi dir="ltr">
-             inside only isolates the numeral's own digits. Putting
-             dir="ltr" on the positioned element made its inline-start
-             resolve as `left` while the ticks resolved as `right`, which
-             pushed the 100 numeral past the container's inline-end edge
-             (the clipped reading R359 caught in the student hero). */
-          <span
-            key={n}
-            className="ind-ruler-num"
-            style={{
-              insetInlineStart: `${n}%`,
-              /* The numeral's inline-start edge rides the tick — center
-                 the middle numerals and fold the two edge numerals
-                 inward so nothing overflows the ruler. */
-              transform: n === 0 ? undefined : n === 100 ? 'translateX(100%)' : 'translateX(50%)',
-            }}
-          >
+          /* R366-final (A2→A3 R1 — 200% text-scale collisions): the
+             numerals ride a 0.5/1/1/1/0.5 GRID now, not absolute
+             anchors — the three middle cells' CENTERS land exactly on
+             the 25/50/75 ticks, the edge cells fold flush (start/end),
+             and the row is content-sized so a 200%-scaled numeral can
+             never escape its box into the microlabel block below
+             (measured: the fixed 13px row let 39px-tall text overlap
+             «محاضرات» by 0.36 fraction). RTL-safe by construction
+             (logical justify-self); the <bdi dir="ltr"> still isolates
+             each numeral's digits. The 25/75 minors thin under
+             crowding via the container query in indicators.css. */
+          <span key={n} className={n % 50 === 25 ? 'ind-ruler-num ind-ruler-num--minor' : 'ind-ruler-num'}>
             <bdi className="ind-mono" dir="ltr">
               {n}
             </bdi>

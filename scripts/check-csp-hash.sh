@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 # check-csp-hash.sh — CSP inline-script pin drift guard (R3-W2-5).
 #
-# backend/src/app.ts pins the sha256 of the TWO inline <script> blocks
+# backend/src/app.ts pins the sha256 of the THREE inline <script> blocks
 # in frontend/index.html inside its helmet script-src:
 #   1. the theme bootstrap (attribute-less <script>) — pre-paint theme
 #      resolver; a stale pin means production browsers block it and
 #      dark-theme users get a light flash;
-#   2. the JSON-LD structured-data block (<script type="application/
+#   2. the lenis pre-paint resolver (R366-final A3→A2 R1) — the
+#      scrollbar-flip CLS fix; a stale pin means production browsers
+#      block it and the landing reflows when the engine boots;
+#   3. the JSON-LD structured-data block (<script type="application/
 #      ld+json">) — a missing pin silently drops schema.org metadata.
 #
 # This guard recomputes both hashes from frontend/index.html exactly
@@ -35,19 +38,24 @@ pins_output="$(node -e '
 const fs = require("fs");
 const crypto = require("crypto");
 const html = fs.readFileSync(process.argv[1], "utf8");
-// The theme bootstrap is the only attribute-less <script> in the file.
-const boot = html.match(/<script>([\s\S]*?)<\/script>/);
+// R366-final: THREE pinned blocks — the theme bootstrap and the lenis
+// pre-paint resolver are the two attribute-less <script> blocks
+// (in document order), plus the JSON-LD block.
+const boots = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
 const ld = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
-if (!boot || !ld) {
+if (boots.length !== 2 || !ld) {
   console.error(
-    "check-csp-hash: could not locate the theme bootstrap and/or JSON-LD " +
-    "inline <script> block in frontend/index.html — if a block was removed, " +
-    "update backend/src/app.ts script-src pins and this guard together."
+    "check-csp-hash: expected the theme bootstrap + lenis pre-paint resolver " +
+    "(two attribute-less <script> blocks) and the JSON-LD block in " +
+    "frontend/index.html — found " + boots.length + " plain block(s). If a block " +
+    "was added/removed, update backend/src/app.ts script-src pins and this " +
+    "guard together."
   );
   process.exit(1);
 }
 const pin = (s) => crypto.createHash("sha256").update(s).digest("base64");
-console.log("theme-bootstrap " + pin(boot[1]));
+console.log("theme-bootstrap " + pin(boots[0]));
+console.log("lenis-prepaint " + pin(boots[1]));
 console.log("json-ld " + pin(ld[1]));
 ' "$INDEX_HTML")" || exit 1
 

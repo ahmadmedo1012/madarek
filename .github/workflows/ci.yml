@@ -381,6 +381,25 @@ jobs:
       # is «المسجل العام», the governance bucket is «الحوكمة»).
       # Dependency-free (node:fs only).
       - run: node scripts/r321/rename-ledger-scan.mjs
+      # ── R366 (Agent 3) — the four NEW design gates, wired by the
+      # R366-final integration. All dependency-free (node:fs/path/url
+      # only), all measured green on the integration tree. ──
+      # L2 — the web↔mobile token parity gate: the generated halves must
+      # carry identical seat values (24 colour seats × 2 themes · 19
+      # spacing rungs · radius · 9 motion rungs + ease).
+      - run: node scripts/tokens/parity.mjs
+      # L1 — the R366 token-level colour audit: 768 foreground/background
+      # pairs, WCAG 2.2 + APCA + CVD-simulated, 0 findings.
+      - run: node scripts/gates/color-audit.mjs
+      # L4b — the copy-style law in ENFORCE mode: the machine-checkable
+      # rules of DESIGN-COPY-GUIDE-AR.md over the same lexer harvest;
+      # exits 1 only for design-system-owned files (the other lanes stay
+      # report-only until they adopt the standard).
+      - run: node scripts/gates/copy-budget.mjs --style enforce
+      # L3 — the type-stress gate: 36 viewport probes (4 widths × 3 text
+      # scales × 3 routes) under the long-word/bidi/zoom matrix — zero
+      # horizontal overflow.
+      - run: node scripts/gates/type-stress.mjs
 
   conform-gate:
     name: Conformance gate (frozen Heron spec, ratchet)

@@ -172,6 +172,47 @@
         );
       })();
     </script>
+    <!-- R366-final (A3→A2 R1): the lenis scrollbar flip, resolved
+         PRE-PAINT. The engine sets html[data-lenis-on] when it boots
+         on a guest surface; base.css hides the classic scrollbar with
+         it — but the attribute landed after first paint, the scrollbar
+         vanished mid-view, and the reflow measured 0.0118 CLS on '/'
+         (the page's total 0.0204 sat 0.0004 over budget). This script
+         mirrors isGuestWindowSurface's predicate (App.tsx) and the
+         engine's own guards (reduced-motion NEVER inits) so the
+         attribute exists from the first layout pass; the engine's
+         setAttribute is then a no-op and no reflow occurs. Signed-in
+         visitors on '/', '/auth*', '/login', '/colleges*' bounce to
+         their role home — the authed shell keeps its scrollbar — so
+         the persisted 'mdrk-auth' user suppresses the attribute there.
+         Route predicates duplicated by design: the theme bootstrap
+         above sets the same precedent (pre-paint concerns can't wait
+         for the bundle); check-csp-hash.sh pins this block's sha256 in
+         backend/src/app.ts exactly like the theme resolver's. -->
+    <script>
+      (function () {
+        try {
+          if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          var path = location.pathname;
+          var under = function (list) {
+            return list.some(function (p) { return path === p || path.indexOf(p + '/') === 0; });
+          };
+          if (under(['/student', '/teacher', '/admin', '/quality', '/owner', '/vision', '/document', '/competitions', '/community', '/training', '/achievements'])) return;
+          if (under(['/legal'])) return;
+          if (under(['/__design', '/__brand', '/__plates'])) return;
+          var hasUser = false;
+          try {
+            var raw = localStorage.getItem('mdrk-auth');
+            hasUser = !!(raw && JSON.parse(raw).state && JSON.parse(raw).state.user);
+          } catch (e) { /* storage denied — treat as guest */ }
+          if (hasUser && (path === '/' || path === '/auth' || path === '/auth/register' || path === '/login' || path.indexOf('/colleges') === 0)) return;
+          document.documentElement.setAttribute('data-lenis-on', '');
+        } catch (e) {
+          /* the engine's own init still flips the attribute — only the
+             CLS optimization is lost, never the behavior. */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root">
