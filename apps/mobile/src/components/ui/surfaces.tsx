@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePalette, useStatusTones } from "@/design/theme";
+import { scaledTouchFloor } from "@/design/type";
 import { sp, type StatusToneName } from "@/design/tokens";
 import { T } from "./text";
 import { InlineBusy } from "./boot";
@@ -271,7 +272,8 @@ export function OptionSheet({
               onClose();
             }}
             style={({ pressed }) => ({
-              minHeight: 48,
+              /* R362 — scaled row floor (the type module's own law). */
+              minHeight: Math.max(48, scaledTouchFloor()),
               justifyContent: "center",
               backgroundColor: pressed ? p.surfaceHover : "transparent",
               paddingHorizontal: sp[8],

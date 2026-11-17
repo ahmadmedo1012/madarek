@@ -7,6 +7,7 @@ import X from "lucide-react-native/icons/x";
 import type { BottomSheetFooterProps } from "@gorhom/bottom-sheet";
 import { usePalette } from "@/design/theme";
 import { heronEase, motion, sp, touchFloor } from "@/design/tokens";
+import { scaledTouchFloor } from "@/design/type";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
 import { T } from "./text";
 import { InlineBusy } from "./boot";
@@ -446,7 +447,7 @@ export function ActionSheet({
                 a.onPress();
               }}
               style={({ pressed }) => ({
-                minHeight: touchFloor,
+                minHeight: scaledTouchFloor(),
                 justifyContent: "center",
                 backgroundColor: pressed ? p.surfaceHover : "transparent",
                 paddingHorizontal: sp[12],
@@ -588,7 +589,7 @@ export function PickerSheet({
                     onClose();
                   }}
                   style={({ pressed }) => ({
-                    minHeight: touchFloor,
+                    minHeight: scaledTouchFloor(),
                     justifyContent: "center",
                     backgroundColor: pressed ? p.surfaceHover : "transparent",
                     paddingHorizontal: sp[12],

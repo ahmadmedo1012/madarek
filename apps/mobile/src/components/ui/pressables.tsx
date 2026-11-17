@@ -9,6 +9,7 @@ import {
 import { haptics } from "@/haptics";
 import { usePalette, useSemanticTheme } from "@/design/theme";
 import { sp, touchFloor } from "@/design/tokens";
+import { scaledTouchFloor } from "@/design/type";
 import { T } from "./text";
 
 import { InlineBusy, useStableFlag } from "./boot";
@@ -187,6 +188,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: sp[16],
-    minHeight: touchFloor,
+    /* R362 — the scaled floor: at 1.3+ font scales the fixed height
+       (36/48) clamped the button while its label grew. minHeight wins
+       over height in Yoga when the scale pushes it higher, so the
+       100% geometry is untouched and large-font users get taller
+       buttons instead of clipped labels. */
+    minHeight: scaledTouchFloor(),
   },
 });

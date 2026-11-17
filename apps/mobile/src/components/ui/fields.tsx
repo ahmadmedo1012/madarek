@@ -26,6 +26,7 @@ import Search from "lucide-react-native/icons/search";
 import X from "lucide-react-native/icons/x";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp, touchFloor } from "@/design/tokens";
+import { scaledTouchFloor } from "@/design/type";
 import { T } from "./text";
 import { OptionSheet } from "./surfaces";
 import { InlineBusy } from "./boot";
@@ -543,7 +544,10 @@ export function Segmented({
             onPress={() => onSelect(o.id)}
             style={{
               flex: 1,
-              minHeight: touchFloor,
+              /* R362 — the scaled floor (same law as Button/LedgerRow):
+                 the segment pills clamped at 44 while their Arabic
+                 labels grew at 1.3+. */
+              minHeight: scaledTouchFloor(),
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: active ? p.primary : "transparent",
