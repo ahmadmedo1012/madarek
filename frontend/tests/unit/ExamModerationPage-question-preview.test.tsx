@@ -213,7 +213,8 @@ describe('ExamModerationPage — question preview (r155b)', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: 'مراجعة' }));
 
-    expect(await screen.findByText('لا أسئلة في هذا القالب')).toBeInTheDocument();
+    // R366-final copy-style: title ≤ 4 words — «هذا» cut.
+    expect(await screen.findByText('لا أسئلة في القالب')).toBeInTheDocument();
   });
 
   it('the KPI strip derives from the queue itself — honest in every state, «نموذج الجودة» gone (6A9-finding-8 / R190)', () => {

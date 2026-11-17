@@ -372,5 +372,9 @@
       "display": 36
     }
   },
+  "layout": {
+    "$doc": "R366-final (A5→A3 R1): the shared LAYOUT seats — theme-invariant viewport geometry, same value in light and dark. contentMaxWidth = the readable content-column clamp (px) on wide viewports (web --layout-content-max-width · mobile layout.contentMaxWidth, consumed by useResponsive's CONTENT_MAX_WIDTH); beyond it the ground stays full-bleed and only the content column centres.",
+    "contentMaxWidth": 640
+  },
   "touchFloor": 44
 }

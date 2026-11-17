@@ -160,8 +160,13 @@ describe('QualityCoursesPage — mobile collapse + honest completion (A8 P1-1, P
 
     expect(screen.queryByText('الجودة')).toBeNull();
     const header = screen.getByText('اكتمال المحتوى', { selector: 'th' });
-    expect(header.getAttribute('title')).toContain('20');
-    expect(header.getAttribute('title')).toContain('10');
+    // R366-final copy-style: the formula moved from the native title attr
+    // to the shared Tooltip (the guide's «؟» affordance) — focus opens it
+    // immediately; the weights assert inside the tooltip's portal.
+    fireEvent.focus(header);
+    const tip = screen.getByRole('tooltip');
+    expect(tip.textContent).toContain('20');
+    expect(tip.textContent).toContain('10');
   });
 
   it('renders a NEUTRAL «لا محتوى بعد» for zero-content offerings — never a red 0%', async () => {

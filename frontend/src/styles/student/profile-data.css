@@ -23,7 +23,12 @@
   transition: opacity var(--t-fast) var(--ease-out);
 }
 
-.r349p-editable:hover .r349p-edit-btn,
+@media (hover: hover) and (pointer: fine) {
+  .r349p-editable:hover .r349p-edit-btn {
+    opacity: 1;
+  }
+}
+
 .r349p-editable:focus-within .r349p-edit-btn {
   opacity: 1;
 }
@@ -112,8 +117,10 @@
     background-color var(--t-fast) var(--ease-out);
 }
 
-.r349p-vis-option:hover:not(:disabled) {
-  border-color: var(--accent, var(--primary));
+@media (hover: hover) and (pointer: fine) {
+  .r349p-vis-option:hover:not(:disabled) {
+    border-color: var(--accent, var(--primary));
+  }
 }
 
 .r349p-vis-option--active {
@@ -210,8 +217,10 @@
   text-decoration: none;
 }
 
-.r349p-dir-name:hover {
-  text-decoration: underline;
+@media (hover: hover) and (pointer: fine) {
+  .r349p-dir-name:hover {
+    text-decoration: underline;
+  }
 }
 
 /* The directory-row meta + the field-editor row meta share one sheet. */

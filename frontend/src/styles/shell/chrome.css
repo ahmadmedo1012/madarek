@@ -395,7 +395,7 @@
     border-block-end-color: var(--accent-strong);
   }
 }
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
   .has-shell .btn.accent:hover,
   .has-shell .btn.primary:hover {
     transform: none;

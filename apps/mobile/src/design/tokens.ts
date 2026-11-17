@@ -19,6 +19,7 @@
 import {
   heron as heronData,
   heronEase,
+  layout,
   motion as motionData,
   radius,
   sp,
@@ -140,4 +141,4 @@ export const motion = {
   durationNav: 240,
 } as const;
 
-export { sp, heronEase, radius, touchFloor };
+export { sp, heronEase, radius, touchFloor, layout };

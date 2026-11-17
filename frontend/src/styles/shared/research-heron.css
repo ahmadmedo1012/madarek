@@ -681,7 +681,9 @@
     cursor: pointer;
     min-block-size: 24px;
   }
-  .r305rp .r305ai-code-copy:hover { background: var(--surface-3); color: var(--text-strong); }
+  @media (hover: hover) and (pointer: fine) {
+    .r305rp .r305ai-code-copy:hover { background: var(--surface-3); color: var(--text-strong); }
+  }
   .r305rp .r305ai-code-copy:focus-visible {
     outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
     outline-offset: var(--state-focus-ring-offset);

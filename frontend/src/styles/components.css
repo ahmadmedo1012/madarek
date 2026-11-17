@@ -992,6 +992,9 @@
   .table-wrap.sticky thead th {
     position: sticky;
     inset-block-start: 0;
+    /* R366-final A2→A4 R1 — contain the pinned header's paint so long
+       table scrolls repaint only the rows, never the sticky thead. */
+    contain: paint;
   }
   .table tbody tr:last-child > * { border-block-end: 0; }
   .table .tbl-strong { font-weight: var(--fw-semibold); }
@@ -1518,6 +1521,20 @@
      الخلايا الأخرى. عائلة الجداول هنا .table (و.tbl-* معدّلات خلايا). */
   .hide-on-mobile { display: revert; }
   @media (max-width: 640px) { .hide-on-mobile { display: none; } }
+
+  /* R366-final A2→A4 R1 — .below-fold: opt-in rendering hint for
+     below-fold dashboard cards / course grids at ≥1024 viewports.
+     The browser skips layout + paint while the block is off-screen
+     (content-visibility: auto) and reserves a 320px placeholder via
+     contain-intrinsic-size so scrollbar geometry stays stable; the
+     `auto` keyword lets the browser swap in the measured height
+     after first render. NOT applied anywhere yet — adoption is a
+     measured change for a later pass (each surface lands with its
+     own CLS check). */
+  .below-fold {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 320px;
+  }
 
   .kbd {
     display: inline-flex; align-items: center; justify-content: center;

@@ -53,7 +53,8 @@ export function InviteCodesCard({ offeringId }: { offeringId?: string | null }) 
   };
 
   return (
-    <Card title="أكواد الدعوة" subtitle="كود واحد يُسجّل الطلاب في هذا المقرّر ذاتيًا — صلاحية محدودة وعدد محدود.">
+    // R366-final copy-style: subtitle ≤ 12 words — both limits kept.
+    <Card title="أكواد الدعوة" subtitle="كود واحد يُسجّل الطلاب في المقرّر ذاتيًا — صلاحية وعدد محدودان.">
       <div className="inv-form">
         <label className="inv-field">
           <span>الصلاحية</span>
@@ -84,7 +85,7 @@ export function InviteCodesCard({ offeringId }: { offeringId?: string | null }) 
         <p className="inv-note">جارٍ تحميل الأكواد…</p>
       ) : scoped.length === 0 ? (
         <EmptyState
-          title="لا أكواد لهذا المقرّر بعد"
+          title="لا أكواد بعد"
           description="ولّد كودًا وشاركه مع طلابك — يسجّلون به أنفسهم في المقرّر مباشرة."
         />
       ) : (

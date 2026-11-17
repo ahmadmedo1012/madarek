@@ -183,7 +183,8 @@ describe('TeacherLivePage — create-form discard guard (E / 3-a)', () => {
     // Explicit discard is the only way out with a dirty draft.
     fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }));
     await screen.findByRole('dialog', { name: 'تعديلات غير محفوظة' });
-    fireEvent.click(screen.getByRole('button', { name: 'التخلّي عن التعديلات' }));
+    // R366-final copy-style: confirm label ≤ 2 words (تأكيد+noun).
+    fireEvent.click(screen.getByRole('button', { name: 'تأكيد التخلّي' }));
     await waitFor(() => {
       expect(screen.queryByRole('button', { name: 'جدولة الجلسة' })).toBeNull();
     });

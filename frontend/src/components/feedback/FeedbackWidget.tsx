@@ -175,7 +175,7 @@ export function FeedbackWidget() {
                   onChange={(e) => setNote(e.target.value)}
                   rows={5}
                   maxLength={2000}
-                  placeholder="اكتب وصفًا واضحًا — الخطوات التي أدّت إلى المشكلة تساعدنا على إصلاحها أسرع."
+                  placeholder="وصف واضح — الخطوات التي أدّت إلى المشكلة تساعدنا على الإصلاح."
                 />
               </label>
 

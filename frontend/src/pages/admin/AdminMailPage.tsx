@@ -116,7 +116,7 @@ function ProviderStatusCard() {
     <Card
       title="حالة المزوّد"
       icon={Activity}
-      subtitle={`المزوّد: ${data.provider} — المُرسِل: ${data.from} · الحدود اليومية: ${data.caps.recipientDaily} للمستلم و${data.caps.institutionDaily} للمؤسسة · إعادة المحاولة: ${data.retryScheduleMin.join('، ')} دقيقة`}
+      subtitle={`المزوّد: ${data.provider} — المُرسِل: ${data.from} · الحدود اليومية: ${data.caps.recipientDaily} للمستلم، ${data.caps.institutionDaily} للمؤسسة · إعادة المحاولة: ${data.retryScheduleMin.join('، ')} دقيقة`}
       actions={
         <span className={data.configured ? 'pill on' : 'pill'}>
           {data.configured ? 'مضبوط' : 'غير مضبوط'}

@@ -340,7 +340,7 @@ export function LectureAuthoringList({
         <ConfirmDialog
           open
           title="حذف المحاضرة"
-          message={`سيتم حذف "${deleting.title}" مع كل فصولها وأسئلتها التفاعلية نهائياً. لا يمكن التراجع عن هذا الإجراء.`}
+          message={`سيُحذف "${deleting.title}" مع فصولها وأسئلتها نهائيًا. لا يمكن التراجع.`}
           confirmLabel="حذف نهائي"
           danger
           onConfirm={confirmDelete}

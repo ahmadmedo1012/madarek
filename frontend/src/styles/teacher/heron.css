@@ -556,7 +556,9 @@
   font-weight: var(--fw-medium);
   cursor: pointer;
 }
-.r321x-taker .oex-qmap-toggle:hover { background: var(--surface-2); color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .r321x-taker .oex-qmap-toggle:hover { background: var(--surface-2); color: var(--text); }
+}
 .r321x-taker .oex-qmap-toggle:focus-visible { outline: 2px solid var(--focus-ring, var(--accent-ink)); outline-offset: 2px; }
 
 @media (max-width: 640px) {

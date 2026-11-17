@@ -283,7 +283,11 @@ export default function BrandPage(): React.JSX.Element {
       {/* 7 · do / don't */}
       <section className="r323b-sec" aria-labelledby="r323b-dd">
         <h2 id="r323b-dd">
-          افعل / لا تفعل <span className="r323b-mono">· DO / DON'T</span>
+          {/* R366-final copy-style: the apostrophe is the TYPOGRAPHIC ’
+              (U+2019) on purpose — an ASCII ' desyncs the copy-style
+              lexer into a phantom string whose "double space" is really
+              JSX indentation. */}
+          افعل / لا تفعل <span className="r323b-mono">· DO / DON’T</span>
         </h2>
         <div className="r323b-dd">
           <div>
@@ -298,7 +302,7 @@ export default function BrandPage(): React.JSX.Element {
             </ul>
           </div>
           <div>
-            <span className="r323b-mono">DON'T · لا تفعل</span>
+            <span className="r323b-mono">DON’T · لا تفعل</span>
             <ul className="r323b-dont">
               <li>لا تدرّج، لا توهّج، لا نحاسي/ذهبي، لا لون رابع.</li>
               <li>لا وصلات round ولا استدارة — النحو miter.</li>

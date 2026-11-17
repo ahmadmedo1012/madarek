@@ -795,7 +795,16 @@
 }
 
 /* 0 — the login secondary (color+bd, every recorded bp):
- * ink rgb(40,40,40) → the measured ember */.hro .hro-alt:is(:hover, :focus-within),
+ * ink rgb(40,40,40) → the measured ember */
+@media (hover: hover) and (pointer: fine) {
+  .hro .hro-alt:hover {
+    color: var(--hro-seat-ink);
+    border-bottom-color: var(--hro-seat-ink);
+    transform: var(--hro-seat-lift);
+  }
+}
+
+.hro .hro-alt:focus-within,
 .hro .hro-alt.probe-hover {
   color: var(--hro-seat-ink);
   border-bottom-color: var(--hro-seat-ink);
@@ -804,7 +813,17 @@
 
 /* 3 — the register primary (color+bg at 1920, bg+bd below, bd at
  * ≤768 — every recorded bp a change): the measured ghost flip —
- * accent fill washes to transparent, ink warms to the paper blush */.hro .hro-cta:is(:hover, :focus-within),
+ * accent fill washes to transparent, ink warms to the paper blush */
+@media (hover: hover) and (pointer: fine) {
+  .hro .hro-cta:hover {
+    color: var(--hro-seat-ghost);
+    background-color: transparent;
+    border-color: var(--hro-seat-ink);
+    transform: var(--hro-seat-lift);
+  }
+}
+
+.hro .hro-cta:focus-within,
 .hro .hro-cta.probe-hover {
   color: var(--hro-seat-ghost);
   background-color: transparent;
@@ -823,44 +842,74 @@
  * tabIndex -1 in Hero.tsx: programmatically focusable, never a tab
  * stop — the strip stays decorative chrome) */
 
-.hro .hro-work-item[data-spec-hover="1"]:hover,
+@media (hover: hover) and (pointer: fine) {
+  .hro .hro-work-item[data-spec-hover="1"]:hover {
+    color: var(--hro-seat-ink);
+    transform: var(--hro-seat-lift);
+  }
+}
+
 .hro .hro-work-item[data-spec-hover="1"].probe-hover {
   color: var(--hro-seat-ink);
   transform: var(--hro-seat-lift);
 }
 
+/* 2 — recorded 768/1024/1440 only (NOCHANGE at 1920) */
+@media (min-width: 768px) and (max-width: 1440px) and (hover: hover) and (pointer: fine) {
+  .hro .hro-work-item[data-spec-hover="2"]:hover {
+    color: var(--hro-seat-ink);
+    transform: var(--hro-seat-lift);
+  }
+}
+
 @media (min-width: 768px) and (max-width: 1440px) {
-  /* 2 — recorded 768/1024/1440 only (NOCHANGE at 1920) */
-  .hro .hro-work-item[data-spec-hover="2"]:hover,
   .hro .hro-work-item[data-spec-hover="2"].probe-hover {
     color: var(--hro-seat-ink);
     transform: var(--hro-seat-lift);
   }
 }
 
-@media (min-width: 1024px) {
-  /* 4 + 6 — recorded ≥1024 (6 carries the tr lift) */
+/* 4 + 6 — recorded ≥1024 (6 carries the tr lift) */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
   .hro .hro-work-item[data-spec-hover="4"]:hover,
+  .hro .hro-work-item[data-spec-hover="6"]:hover {
+    color: var(--hro-seat-ink);
+    transform: var(--hro-seat-lift);
+  }
+}
+
+@media (min-width: 1024px) {
   .hro .hro-work-item[data-spec-hover="4"].probe-hover,
-  .hro .hro-work-item[data-spec-hover="6"]:hover,
   .hro .hro-work-item[data-spec-hover="6"].probe-hover {
     color: var(--hro-seat-ink);
     transform: var(--hro-seat-lift);
   }
 }
 
+/* 5 — recorded ≥1440 */
+@media (min-width: 1440px) and (hover: hover) and (pointer: fine) {
+  .hro .hro-work-item[data-spec-hover="5"]:hover {
+    color: var(--hro-seat-ink);
+    transform: var(--hro-seat-lift);
+  }
+}
+
 @media (min-width: 1440px) {
-  /* 5 — recorded ≥1440 */
-  .hro .hro-work-item[data-spec-hover="5"]:hover,
   .hro .hro-work-item[data-spec-hover="5"].probe-hover {
     color: var(--hro-seat-ink);
     transform: var(--hro-seat-lift);
   }
 }
 
+/* 7 — recorded at 1920 only */
+@media (min-width: 1920px) and (hover: hover) and (pointer: fine) {
+  .hro .hro-work-item[data-spec-hover="7"]:hover {
+    color: var(--hro-seat-ink);
+    transform: var(--hro-seat-lift);
+  }
+}
+
 @media (min-width: 1920px) {
-  /* 7 — recorded at 1920 only */
-  .hro .hro-work-item[data-spec-hover="7"]:hover,
   .hro .hro-work-item[data-spec-hover="7"].probe-hover {
     color: var(--hro-seat-ink);
     transform: var(--hro-seat-lift);
@@ -868,33 +917,58 @@
 }
 
 /* the stage chrome seats (deco cards, ± dmarks, graticule measures) —
- * never focus-walked, so pure bp-gated hover twins */@media (min-width: 1024px) {
-  .hro :is([data-spec-hover="8"], [data-spec-hover="11"], [data-spec-hover="16"]):hover,
+ * never focus-walked, so pure bp-gated hover twins */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .hro :is([data-spec-hover="8"], [data-spec-hover="11"], [data-spec-hover="16"]):hover {
+    color: var(--hro-seat-ink);
+    transform: var(--hro-seat-lift);
+  }
+}
+
+@media (min-width: 1024px) {
   .hro :is([data-spec-hover="8"], [data-spec-hover="11"], [data-spec-hover="16"]).probe-hover {
     color: var(--hro-seat-ink);
     transform: var(--hro-seat-lift);
   }
 }
 
+@media (min-width: 1440px) and (hover: hover) and (pointer: fine) {
+  .hro :is([data-spec-hover="12"]):hover {
+    color: var(--hro-seat-ink);
+    transform: var(--hro-seat-lift);
+  }
+}
+
 @media (min-width: 1440px) {
-  .hro :is([data-spec-hover="12"]):hover,
   .hro :is([data-spec-hover="12"]).probe-hover {
     color: var(--hro-seat-ink);
     transform: var(--hro-seat-lift);
   }
 }
 
+/* 19 — recorded at 1024/1440 only */
+@media (min-width: 1024px) and (max-width: 1440px) and (hover: hover) and (pointer: fine) {
+  .hro :is([data-spec-hover="19"]):hover {
+    color: var(--hro-seat-ink);
+    transform: var(--hro-seat-lift);
+  }
+}
+
 @media (min-width: 1024px) and (max-width: 1440px) {
-  /* 19 — recorded at 1024/1440 only */
-  .hro :is([data-spec-hover="19"]):hover,
   .hro :is([data-spec-hover="19"]).probe-hover {
     color: var(--hro-seat-ink);
     transform: var(--hro-seat-lift);
   }
 }
 
+@media (min-width: 1920px) and (hover: hover) and (pointer: fine) {
+  .hro :is([data-spec-hover="9"], [data-spec-hover="13"], [data-spec-hover="14"], [data-spec-hover="15"], [data-spec-hover="17"], [data-spec-hover="18"], [data-spec-hover="20"]):hover {
+    color: var(--hro-seat-ink);
+    transform: var(--hro-seat-lift);
+  }
+}
+
 @media (min-width: 1920px) {
-  .hro :is([data-spec-hover="9"], [data-spec-hover="13"], [data-spec-hover="14"], [data-spec-hover="15"], [data-spec-hover="17"], [data-spec-hover="18"], [data-spec-hover="20"]):hover,
   .hro :is([data-spec-hover="9"], [data-spec-hover="13"], [data-spec-hover="14"], [data-spec-hover="15"], [data-spec-hover="17"], [data-spec-hover="18"], [data-spec-hover="20"]).probe-hover {
     color: var(--hro-seat-ink);
     transform: var(--hro-seat-lift);

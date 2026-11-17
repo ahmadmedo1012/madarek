@@ -463,7 +463,9 @@ describe('Lecture deletion — ConfirmDialog gating', () => {
 
     const dialog = await screen.findByRole('dialog', { name: 'حذف المحاضرة' });
     expect(dialog).toBeInTheDocument();
-    expect(screen.getByText(/سيتم حذف "المحاضرة الأولى: مدخل الشبكات"/)).toBeInTheDocument();
+    // R366-final copy-style: helper ≤ 12 words — سيتم حذف → سيُحذف,
+    // «عن هذا الإجراء» cut; the irreversible flag stays.
+    expect(screen.getByText(/سيُحذف "المحاضرة الأولى: مدخل الشبكات"/)).toBeInTheDocument();
     // cancel keeps everything intact — no DELETE call yet in either case
     const { api } = await import('../../src/lib/api');
     expect(api.delete).not.toHaveBeenCalled();
@@ -560,7 +562,8 @@ describe('Authoring forms — dirty-close discard guard (12-13)', () => {
     // Explicit discard closes the form.
     fireEvent.click(screen.getByRole('button', { name: 'إغلاق' }));
     await screen.findByRole('dialog', { name: 'تعديلات غير محفوظة' });
-    fireEvent.click(screen.getByRole('button', { name: 'التخلّي عن التعديلات' }));
+    // R366-final copy-style: confirm label ≤ 2 words (تأكيد+noun).
+    fireEvent.click(screen.getByRole('button', { name: 'تأكيد التخلّي' }));
     await waitFor(() => {
       expect(screen.queryByRole('dialog', { name: 'محاضرة جديدة' })).toBeNull();
     });

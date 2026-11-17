@@ -275,7 +275,13 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
    arrow nudge) — rides the :focus-within arm too: keyboard parity
    with the wash flip below (r172a §3: zero :focus-visible rules in
    the landing family — the seat itself holding focus matches). */
-.fo-cta .btn.accent:is(:hover, :focus-within) .fo-cta-ricon,
+@media (hover: hover) and (pointer: fine) {
+  .fo-cta .btn.accent:hover .fo-cta-ricon {
+    transform: translateX(-100%);
+  }
+}
+
+.fo-cta .btn.accent:focus-within .fo-cta-ricon,
 .fo-cta .btn.accent.probe-hover .fo-cta-ricon {
   transform: translateX(-100%);
 }
@@ -703,7 +709,14 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
    the 0.48s chevron slide carries the motion). The :focus-within arm
    rides the same seat — keyboard parity: the base.css 2px solid
    rgb(199,46,0) ring draws on top of the inverted slab. */
-.fo-cta .btn.accent:is(:hover, :focus-within) .fo-cta-rbtn,
+@media (hover: hover) and (pointer: fine) {
+  .fo-cta .btn.accent:hover .fo-cta-rbtn {
+    background: var(--primary);
+    color: var(--primary-fg);
+  }
+}
+
+.fo-cta .btn.accent:focus-within .fo-cta-rbtn,
 .fo-cta .btn.accent.probe-hover .fo-cta-rbtn {
   background: var(--primary);
   color: var(--primary-fg);
@@ -714,16 +727,29 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
    keyboard pass, and the seats nudge under the ring exactly as they
    drift under the cursor (the hero's ungated focus-arm pattern). */
 @media (min-width: 769px) {
-  .fo-cta .btn.accent:is(:hover, :focus-within),
+  .fo-cta .btn.accent:focus-within,
   .fo-cta .btn.accent.probe-hover {
     transform: translateX(-0.1875rem);
     border-block-end-color: var(--accent-strong);
   }
 
-  .fo-cta .btn.ghost:is(:hover, :focus-within),
+  .fo-cta .btn.ghost:focus-within,
   .fo-cta .btn.ghost.probe-hover,
-  .fo-cta .fo-text-link:is(:hover, :focus-within),
+  .fo-cta .fo-text-link:focus-within,
   .fo-cta .fo-text-link.probe-hover {
+    transform: translateX(-0.1875rem);
+    border-block-end-color: var(--accent);
+  }
+}
+
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+  .fo-cta .btn.accent:hover {
+    transform: translateX(-0.1875rem);
+    border-block-end-color: var(--accent-strong);
+  }
+
+  .fo-cta .btn.ghost:hover,
+  .fo-cta .fo-text-link:hover {
     transform: translateX(-0.1875rem);
     border-block-end-color: var(--accent);
   }
@@ -764,23 +790,42 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
   inset-block-end: -1px; /* overlay the 1px rest underline exactly */
 }
 
-.fo-cta .btn.ghost:is(:hover, :focus-within)::after,
+@media (hover: hover) and (pointer: fine) {
+  .fo-cta .btn.ghost:hover::after,
+  .fo-cta .fo-text-link:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+.fo-cta .btn.ghost:focus-within::after,
 .fo-cta .btn.ghost.probe-hover::after,
-.fo-cta .fo-text-link:is(:hover, :focus-within)::after,
+.fo-cta .fo-text-link:focus-within::after,
 .fo-cta .fo-text-link.probe-hover::after {
   transform: scaleX(1);
 }
 
 @media (max-width: 768px) {
-  .fo-cta .btn.accent:is(:hover, :focus-within),
+  .fo-cta .btn.accent:focus-within,
   .fo-cta .btn.accent.probe-hover {
     border-block-end-color: var(--accent-ink);
   }
 
-  .fo-cta .btn.ghost:is(:hover, :focus-within),
+  .fo-cta .btn.ghost:focus-within,
   .fo-cta .btn.ghost.probe-hover,
-  .fo-cta .fo-text-link:is(:hover, :focus-within),
+  .fo-cta .fo-text-link:focus-within,
   .fo-cta .fo-text-link.probe-hover {
+    color: var(--rule-strong);
+    border-block-end-color: var(--rule-strong);
+  }
+}
+
+@media (max-width: 768px) and (hover: hover) and (pointer: fine) {
+  .fo-cta .btn.accent:hover {
+    border-block-end-color: var(--accent-ink);
+  }
+
+  .fo-cta .btn.ghost:hover,
+  .fo-cta .fo-text-link:hover {
     color: var(--rule-strong);
     border-block-end-color: var(--rule-strong);
   }
@@ -809,7 +854,13 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
   position: relative;
 }
 
-.fo-link-account:is(:hover, :focus-within),
+@media (hover: hover) and (pointer: fine) {
+  .fo-link-account:hover {
+    color: var(--accent);
+  }
+}
+
+.fo-link-account:focus-within,
 .fo-link-account.probe-hover {
   color: var(--accent);
 }
@@ -826,8 +877,14 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
     pointer-events: none;
   }
 
-  .fo-link-account:is(:hover, :focus-within)::before,
+  .fo-link-account:focus-within::before,
   .fo-link-account.probe-hover::before {
+    background: var(--accent);
+  }
+}
+
+@media (max-width: 768px) and (hover: hover) and (pointer: fine) {
+  .fo-link-account:hover::before {
     background: var(--accent);
   }
 }
@@ -876,23 +933,40 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
 }
 
 @media (max-width: 768px) {
-  .cg-cloud-link:hover,
   .cg-cloud-link.probe-hover {
     color: var(--accent-ink);
     border-block-end-color: var(--accent);
   }
 }
 
+@media (max-width: 768px) and (hover: hover) and (pointer: fine) {
+  .cg-cloud-link:hover {
+    color: var(--accent-ink);
+    border-block-end-color: var(--accent);
+  }
+}
+
 @media (min-width: 769px) {
-  .cg-cloud-link[data-spec-hover="14"]:hover,
   .cg-cloud-link[data-spec-hover="14"].probe-hover {
     transform: translateX(-0.1875rem);
   }
 }
 
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+  .cg-cloud-link[data-spec-hover="14"]:hover {
+    transform: translateX(-0.1875rem);
+  }
+}
+
 @media (min-width: 1500px), (max-width: 1100px) {
-  .cg-cloud-link[data-spec-hover="2"]:hover,
   .cg-cloud-link[data-spec-hover="2"].probe-hover {
+    background-color: var(--rule-strong);
+  }
+}
+
+@media (min-width: 1500px) and (hover: hover) and (pointer: fine),
+  (max-width: 1100px) and (hover: hover) and (pointer: fine) {
+  .cg-cloud-link[data-spec-hover="2"]:hover {
     background-color: var(--rule-strong);
   }
 }

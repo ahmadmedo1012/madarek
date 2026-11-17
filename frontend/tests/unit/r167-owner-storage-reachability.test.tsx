@@ -14,8 +14,10 @@
  *     naming the damage (new uploads fail) and the documented fix —
  *     never a green durability claim.
  *   - s3 + fields absent   → amber «لم يُتحقق بعد» (the honest unknown).
- *   - local                → the r164-i amber ephemeral warning, byte
- *     for byte unchanged (regression pin).
+ *   - local                → the r164-i amber ephemeral warning (the
+ *     R366-final copy-style pass re-formed it: title ≤ 4 words, the
+ *     consequence + fix clause moved into the description — every
+ *     fact still asserted below).
  *
  * Harness: the r164i pattern — lib/api mocked at the module boundary
  * with per-URL fixtures, a real QueryClient, MemoryRouter.
@@ -123,9 +125,10 @@ describe('OwnerSystemPage — storage card, s3 + reachable:false', () => {
     expect(screen.getByText('مهيَّأ لكن يتعذّر الوصول الآن')).toBeInTheDocument();
     expect(screen.queryByText('دائمة')).toBeNull();
     // The alert names the damage and the fix path.
-    expect(
-      screen.getByText('مخزن الكائنات لا يستجيب — الرفعات الجديدة ستفشل حتى يعود'),
-    ).toBeInTheDocument();
+    // R366-final copy-style: title ≤ 4 words — the damage clause moved
+    // into the description; both halves still asserted.
+    expect(screen.getByText('مخزن الكائنات لا يستجيب')).toBeInTheDocument();
+    expect(screen.getByText(/الرفعات الجديدة ستفشل حتى يعود/)).toBeInTheDocument();
     expect(screen.getByText(/S3_\*/)).toBeInTheDocument();
     expect(screen.getByText(/docs\/12-deployment\.md/)).toBeInTheDocument();
     // The LOCAL-driver warning family must NOT fire (persistent stays true).
@@ -183,9 +186,11 @@ describe('OwnerSystemPage — storage card, local (unchanged by r167)', () => {
 
     expect(await screen.findByText('محليّ — قرص الخادم')).toBeInTheDocument();
     expect(screen.getByText('لا تنجو من إعادة النشر')).toBeInTheDocument();
-    expect(
-      screen.getByText('الرفعات لا تنجو من إعادة النشر — يتطلب إعداد تخزين دائم (S3)'),
-    ).toBeInTheDocument();
+    // R366-final copy-style: title ≤ 4 words — the r164-i consequence +
+    // fix clause moved into the description; every fact still asserted.
+    expect(screen.getByText('تخزين مؤقّت للرفعات')).toBeInTheDocument();
+    expect(screen.getByText(/الرفعات لا تنجو من إعادة النشر/)).toBeInTheDocument();
+    expect(screen.getByText(/يتطلب إعداد تخزين دائم/)).toBeInTheDocument();
     // The r167 surfaces never appear for local.
     expect(screen.queryByText(/آخر تحقّق:/)).toBeNull();
     expect(screen.queryByText(/لم يُتحقق بعد/)).toBeNull();

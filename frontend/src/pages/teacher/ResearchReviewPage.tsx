@@ -482,7 +482,7 @@ export default function ResearchReviewPage() {
                 open
                 title="تعديلات غير محفوظة"
                 message="الخروج يتخلّى عن تعديلاتك."
-                confirmLabel="التخلّي عن التعديلات"
+                confirmLabel="تأكيد التخلّي"
                 cancelLabel="متابعة التحرير"
                 danger
                 onConfirm={() => {

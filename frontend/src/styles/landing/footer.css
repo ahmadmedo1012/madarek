@@ -213,7 +213,9 @@
   stroke-width: 1.7;
   vector-effect: non-scaling-stroke;
 }
-.fo-go:hover { color: var(--accent); border-color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-go:hover { color: var(--accent); border-color: var(--accent); }
+}
 /* (r172a §3 — the go button's ring also delegates to base.css) */
 
 /* ── col2: the wide index — 3 mono-labelled groups up, 3 seats down ── */
@@ -244,8 +246,10 @@
   cursor: pointer; /* the census's interactive label seats */
   line-height: 18px; /* R343: the transformed floor 1.35x13.33 (the a-seat keeps its own 17.33 box; merged from the second rule — the stylelint duplicate) */
 }
-.fo-link:hover,
-.fo-link:hover .fo-link-t { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-link:hover,
+  .fo-link:hover .fo-link-t { color: var(--accent); }
+}
 .fo-link-accent,
 .fo-link-accent .fo-link-t { color: var(--accent); }
 .fo-biglink {
@@ -266,7 +270,9 @@
   color: inherit;
   cursor: pointer;
 }
-.fo-biglink:hover { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-biglink:hover { color: var(--accent); }
+}
 /* R342-07 — the CHANNELS grid: the census's 2×3 single-line link seats
    (99×26 boxes, 91×17 labels) — the retired two-line socials rode the
    same door routes. */
@@ -291,8 +297,10 @@
   color: var(--text);
   cursor: pointer;
 }
-.fo-social:hover,
-.fo-social:hover .fo-social-t { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-social:hover,
+  .fo-social:hover .fo-social-t { color: var(--accent); }
+}
 
 /* ── col3: the drawn construction mark (our OWN geometry) ─────────── */
 .fo-col3 {
@@ -424,7 +432,9 @@
   text-decoration: none;
   transition: color 0.3s ease;
 }
-.fo-legal-a:hover { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-legal-a:hover { color: var(--accent); }
+}
 .fo-mono {
   font-family: var(--font-mono);
   font-size: calc(var(--fu) * 11.67);
@@ -455,7 +465,9 @@
   min-block-size: 44px;
   transition: color 0.4s ease; /* the census legal-link transition seat */
 }
-.fo-legal-link:hover { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-legal-link:hover { color: var(--accent); }
+}
 .fo-legal-sep { color: var(--rule-strong); }
 /* r339 T-12 — the separator's night seat: --rule-strong flips to
    #85857F in dark — 3.97:1 on the #282828 ground, under the 4.5:1

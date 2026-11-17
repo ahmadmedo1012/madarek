@@ -106,7 +106,8 @@ describe('CompetitionsIndexPage — migrated create-competition modal', () => {
     expect(screen.getByRole('dialog', { name: 'تعديلات غير محفوظة' })).toBeInTheDocument();
     expect(screen.getByRole('dialog', { name: 'مسابقة جديدة' })).toBeInTheDocument();
     // Confirming the discard closes both dialogs.
-    fireEvent.click(screen.getByRole('button', { name: 'التخلّي عن التعديلات' }));
+    // R366-final copy-style: confirm label ≤ 2 words (تأكيد+noun).
+    fireEvent.click(screen.getByRole('button', { name: 'تأكيد التخلّي' }));
     expect(screen.queryByRole('dialog', { name: 'تعديلات غير محفوظة' })).toBeNull();
     expect(screen.queryByRole('dialog', { name: 'مسابقة جديدة' })).toBeNull();
   });

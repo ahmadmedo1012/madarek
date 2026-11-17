@@ -320,7 +320,9 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.ai-citation-link:hover { text-decoration: none; }
+@media (hover: hover) and (pointer: fine) {
+  .ai-citation-link:hover { text-decoration: none; }
+}
 .ai-citation-text { color: var(--text-muted); }
 
 /* ── G (عقد r290 نفسه): أرضية اللمس 44px لأدوات المحادثة على كل جهاز

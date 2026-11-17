@@ -410,7 +410,10 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
           <div className="state-icon state-icon-success">
             <Icon icon={CheckCircle2} size={28} />
           </div>
-          <div className="text-2xl font-bold" style={{ color: 'var(--text)', marginTop: 'var(--sp-3)' }}>أحسنت!</div>
+          {/* R366-final copy-style: «أحسنت!» is a banned gamified
+              exclamation (guide §5) — the quiet completion word matches
+              the state's own aria-label; the sub-line carries the rest. */}
+          <div className="text-2xl font-bold" style={{ color: 'var(--text)', marginTop: 'var(--sp-3)' }}>اكتملت</div>
           <div className="text-sm text-muted" style={{ maxWidth: 460, marginTop: 'var(--sp-2)' }}>
             أكملت «<bdi>{exp.title}</bdi>» — أُحتسبت في إحصائيّاتك.
           </div>

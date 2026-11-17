@@ -149,7 +149,7 @@ describe('ReviewWorkspace — the selection discard guard (15-e P1-6, r304 recom
     expect(screen.getByLabelText('ملاحظات للطالب')).toHaveValue('مراجعة أولية للبحث');
   });
 
-  it('explicit discard («التخلّي عن التعديلات») performs the switch — the draft is abandoned, not silently kept', async () => {
+  it('explicit discard («تأكيد التخلّي») performs the switch — the draft is abandoned, not silently kept', async () => {
     mocks.queue.data = [PAPER, PAPER_2];
     renderPage();
     await selectPaper(PAPER.title, 'بانتظار التقييم');
@@ -158,7 +158,8 @@ describe('ReviewWorkspace — the selection discard guard (15-e P1-6, r304 recom
     fireEvent.click(queueRow(PAPER_2.title, 'بانتظار التقييم'));
 
     await screen.findByRole('dialog', { name: 'تعديلات غير محفوظة' });
-    fireEvent.click(screen.getByRole('button', { name: 'التخلّي عن التعديلات' }));
+    // R366-final copy-style: confirm label ≤ 2 words (تأكيد+noun).
+    fireEvent.click(screen.getByRole('button', { name: 'تأكيد التخلّي' }));
 
     await waitFor(() => {
       expect(screen.queryByRole('dialog', { name: 'تعديلات غير محفوظة' })).toBeNull();

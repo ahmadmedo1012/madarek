@@ -8,7 +8,7 @@
  * 4-5. cancelEdit routes through the shared useDiscardGuard (the same
  *      confirm the curriculum builders and both grading modals use):
  *      a dirty cancel confirms first, «متابعة التحرير» keeps the draft,
- *      «التخلّي عن التعديلات» actually discards it. The hook is defined
+ *      «تأكيد التخلّي» actually discards it. The hook is defined
  *      BEFORE the pending/error early returns (hook-order stability —
  *      pinned by the fact that the page renders at all after the guard
  *      wiring, with a resolved profile).
@@ -139,7 +139,7 @@ describe('TeacherProfilePage — cancelEdit discard guard (r157 / 6A9)', () => {
     expect(screen.getByLabelText('نبذة')).toHaveValue('مسودة تعديل جديدة لم تُحفظ بعد.');
   });
 
-  it('«التخلّي عن التعديلات» actually discards — edit mode closes, the saved profile value returns', async () => {
+  it('«تأكيد التخلّي» actually discards — edit mode closes, the saved profile value returns', async () => {
     mocks.profile.data = teacherProfile();
     renderPage();
 
@@ -147,7 +147,8 @@ describe('TeacherProfilePage — cancelEdit discard guard (r157 / 6A9)', () => {
     fireEvent.change(screen.getByLabelText('نبذة'), { target: { value: 'مسودة ستُتخلّى.' } });
 
     fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }));
-    fireEvent.click(screen.getByRole('button', { name: 'التخلّي عن التعديلات' }));
+    // R366-final copy-style: confirm label ≤ 2 words (تأكيد+noun).
+    fireEvent.click(screen.getByRole('button', { name: 'تأكيد التخلّي' }));
 
     // Edit mode is gone: the header button is back and the ORIGINAL bio
     // (not the draft) renders.

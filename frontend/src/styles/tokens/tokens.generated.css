@@ -56,6 +56,9 @@
     --t-sheet-exit: 835ms;
     --t-guest-reveal: 700ms;
     --ease: cubic-bezier(0.23, 1, 0.32, 1);
+
+    /* ── Layout — R366-final (A5→A3 R1): the shared, theme-invariant viewport geometry ── */
+    --layout-content-max-width: 640px;
   }
 
   /* LIGHT THEME — the Heron blueprint paper */

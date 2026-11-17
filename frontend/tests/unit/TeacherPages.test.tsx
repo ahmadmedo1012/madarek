@@ -550,7 +550,8 @@ describe('GradeSubmissionModal — discard guard (15-e P1-6)', () => {
     // Explicit discard is the only way out with a dirty draft
     fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }));
     await screen.findByRole('dialog', { name: 'تعديلات غير محفوظة' });
-    fireEvent.click(screen.getByRole('button', { name: 'التخلّي عن التعديلات' }));
+    // R366-final copy-style: confirm label ≤ 2 words (تأكيد+noun).
+    fireEvent.click(screen.getByRole('button', { name: 'تأكيد التخلّي' }));
     await waitFor(() => {
       expect(screen.queryByRole('dialog', { name: 'تقييم تسليم مشروع UML' })).toBeNull();
     });

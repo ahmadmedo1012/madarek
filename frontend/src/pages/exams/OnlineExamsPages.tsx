@@ -1937,7 +1937,7 @@ function TemplateQuestionsPreview({ templateId }: { templateId: string }) {
         <EmptyState
           illustration="empty-list"
           icon={FileText}
-          title="لا أسئلة في هذا القالب"
+          title="لا أسئلة في القالب"
         />
       ) : (
         <div className="flex-col">

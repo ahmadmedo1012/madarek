@@ -154,9 +154,11 @@ describe('OwnerSystemPage — storage block (r164-l additive field, defensive re
     renderPage(<OwnerSystemPage />);
     expect(await screen.findByText('محليّ — قرص الخادم')).toBeInTheDocument();
     expect(screen.getByText('لا تنجو من إعادة النشر')).toBeInTheDocument();
-    expect(
-      screen.getByText('الرفعات لا تنجو من إعادة النشر — يتطلب إعداد تخزين دائم (S3)'),
-    ).toBeInTheDocument();
+    // R366-final copy-style: title ≤ 4 words — the consequence + fix
+    // clause moved into the description; every fact still asserted.
+    expect(screen.getByText('تخزين مؤقّت للرفعات')).toBeInTheDocument();
+    expect(screen.getByText(/الرفعات لا تنجو من إعادة النشر/)).toBeInTheDocument();
+    expect(screen.getByText(/يتطلب إعداد تخزين دائم/)).toBeInTheDocument();
     // The fix is named: the env var + the documented owner step.
     expect(screen.getByText(/STORAGE_DRIVER=s3/)).toBeInTheDocument();
     expect(screen.getByText(/docs\/12-deployment\.md/)).toBeInTheDocument();

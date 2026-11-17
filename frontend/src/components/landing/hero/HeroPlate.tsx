@@ -55,13 +55,16 @@ function HeroPlateFurniture() {
       <div className="hpf-11" data-spec="hpf-11" />
       <div className="hpf-12" data-spec="hpf-12" />
       <div className="hpf-13" data-spec="hpf-13" />
-      <div className="hpf-14" data-spec="hpf-14">٠١</div>
+      {/* R366-final copy-style: Latin digits (guide §4 — the pinned
+          locale ar-LY-u-nu-latn); the numerals are design chrome, the
+          meaning unchanged. */}
+      <div className="hpf-14" data-spec="hpf-14">01</div>
       <span className="hpf-15" data-spec="hpf-15">محور</span>
-      <div className="hpf-16" data-spec="hpf-16">٠٢</div>
+      <div className="hpf-16" data-spec="hpf-16">02</div>
       <span className="hpf-17" data-spec="hpf-17">قياس</span>
       <div className="hpf-18" data-spec="hpf-18">
         <div className="hpf-19" data-spec="hpf-19">
-          <div className="hpf-20" data-spec="hpf-20">قاعة المحاضرة ٠١<br />— قيد القياس</div>
+          <div className="hpf-20" data-spec="hpf-20">قاعة المحاضرة 01<br />— قيد القياس</div>
         </div>
       </div>
       <div className="hpf-24" data-spec="hpf-24" />

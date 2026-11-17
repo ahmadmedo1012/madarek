@@ -146,3 +146,8 @@ export const radius = {
 } as const;
 
 export const touchFloor = 44;
+
+// R366-final (A5→A3 R1): the shared layout seats — theme-invariant viewport geometry.
+export const layout = {
+  contentMaxWidth: 640,
+} as const;

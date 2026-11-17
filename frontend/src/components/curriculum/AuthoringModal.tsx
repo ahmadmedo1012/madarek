@@ -306,7 +306,7 @@ export function useDiscardGuard({
       open
       title="تعديلات غير محفوظة"
       message="لديك تعديلات لم تُحفظ بعد. الإغلاق الآن يتخلّى عنها نهائياً."
-      confirmLabel="التخلّي عن التعديلات"
+      confirmLabel="تأكيد التخلّي"
       cancelLabel="متابعة التحرير"
       danger
       onConfirm={() => {

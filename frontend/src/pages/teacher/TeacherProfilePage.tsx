@@ -76,7 +76,7 @@ export default function TeacherProfilePage() {
    * (the same confirm the curriculum builders and both grading modals
    * use): the four inline fields are minutes of typing the old cancel
    * dropped silently. Dirty → confirm → «متابعة التحرير» keeps the
-   * draft, «التخلّي عن التعديلات» discards it.
+   * draft, «تأكيد التخلّي» discards it.
    *
    * HOOK ORDER: this block runs BEFORE the pending/error/no-profile
    * early returns below — a hook after an early return is the LabsPage

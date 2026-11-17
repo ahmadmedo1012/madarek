@@ -25,7 +25,7 @@ export default function Error403Page() {
   const home = role ? ROLE_HOME[role] : '/';
   return (
     <ErrorSheetPage
-      title="هذه الصفحة خارج نطاق صلاحياتك"
+      title="خارج نطاق صلاحياتك"
       lead="صفحة لا يفتحها دورك — ربّما تغيّر الرابط أو أنها لدور آخر."
       illustration="forbidden"
       kicker="غير مصرّح"
