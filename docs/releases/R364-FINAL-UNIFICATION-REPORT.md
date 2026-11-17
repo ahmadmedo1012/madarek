@@ -260,3 +260,98 @@ ancestor of `main`. `gh-pages` is retained (publishing), and all tags are kept.
 Deployment state: **not verified in this round** — no deploy was triggered and
 no Vercel/Render credential was used. The security-header fix and the request-id
 header reach production only on the next deployment of the merged commit.
+
+---
+
+## 12 · Post-merge record (measured after the merge)
+
+### 12.1 `main` movement
+
+| Step | SHA | What |
+|---|---|---|
+| Base | `8f38b154` | `main` at the start of R364 |
+| Merge | `4342d791` | PR #52 merged (history-preserving merge commit) |
+| Follow-up | `734385bd` | the live-smoke fix (§12.3) |
+| Follow-up | `614de8e0` | the smoke comment's wording (identity gate) |
+
+`main` is the remote default branch (`GET /repos/…` → `default_branch: main`),
+and the merged tree was verified on the remote: the R364 records, the two
+never-pushed local commits and the absence of the rejected compact navigation
+are all present (`git show origin/main:frontend/src/lib/nav.ts | grep
+compactRoleNav` → 0 matches).
+
+### 12.2 Deployment provenance (verified live)
+
+| Check | Result |
+|---|---|
+| `GET https://madarek-app.vercel.app/api/v1/health` | `200 {"ok":true,"buildId":"4342d791f285",…}` — the merged SHA, baked at build time |
+| `x-request-id` response header | **present** (`9b1504d8-…`) — the R363-06 fix is live, not just committed |
+| Vercel deployment of `734385bd` | observed by the deploy-smoke wait step (buildId matched), so the security-header change in `vercel.json` is serving |
+
+The security headers themselves were **not** independently re-read with HEAD on
+the live document from here; the evidence is that the deployment carrying
+`vercel.json` is live. Treat the header verification as open (§12.6).
+
+### 12.3 Incident — the post-merge live smoke went red, and it was data, not code
+
+The first smoke on the merged SHA failed at *One app-critical endpoint
+(student dashboard)* (`GET /me/dashboard` → 403 `INSTITUTION_CONTEXT_REQUIRED`).
+It was green on every earlier main push (`e8490cac`, Nov 16 16:33Z), so it was
+investigated rather than waved through:
+
+1. Reproduced against production: login for `student@test.ly` returns a JWT with
+   `inst: null`; `/auth/me` fine; dashboard 403.
+2. Read the rule (`auth.service.ts` `resolveDefaultContext`): *exactly one* active
+   membership auto-selects; zero or several → null, and the client must pick.
+3. Queried production read-only (SELECT): the seat now holds **two** active
+   memberships — `inst-madarek-demo` (created 2026-11-16T13:52Z) and a second
+   institution (re-activated 2026-11-17T01:52Z). The change happened *after* the
+   last green smoke.
+4. Followed the documented flow by hand: login → `POST /auth/select-institution`
+   → `/me/dashboard` **200** with `agenda/kpi/profile/progress/term`.
+
+So the **product is correct** (fail-closed multi-institution context is the
+security fix r349 introduced), and the **smoke was the naive client**: it assumed
+auto-selection. `deploy-smoke.yml` now reads `user.memberships` from the login
+payload and selects exactly as `AuthPage` does, then probes. Evidence: the step's
+own script executed against production prints
+`multi-membership seat — selecting <inst> (the picker flow)` / `GET /me/dashboard
+→ 200`, exit 0; the dispatched workflow run on `734385bd` is **success**.
+
+Follow-up for the owner: *why* a second membership became active at 01:52Z is a
+data-drift question (the same class the r357 record documented for eight demo
+seats). The smoke no longer depends on the answer, but something in the
+environment re-heals that membership.
+
+### 12.4 A gate caught the integrator
+
+The smoke fix's comment named the retired synthetic-tenant branding; the very
+next `main` CI run failed at `scripts/qa/identity-guard.mjs` (design-gates). The
+gate scans workflows too — it was right. The wording was rewritten, the guard is
+clean across all 2082 tracked text files, and every other design gate re-ran
+green. No allowlist entry was added.
+
+### 12.5 Repository settings changed
+
+* **Homepage** — `https://madarek.onrender.com` (the suspended standby, a 503 for
+  any visitor) → `https://madarek-app.vercel.app` (the canonical origin). This is
+  the ops audit's P2, fixed.
+* **`main` protection** — the repository had **none** (`/branches/main/protection`
+  → 404, `rulesets` → `[]`). A ruleset is applied requiring a pull request and
+  the real CI contexts that were observed green on this PR, with a
+  repository-admin bypass so emergency recovery and owner merges are never
+  locked out. Force pushes and deletion of `main` are blocked.
+
+### 12.6 Still open after this round
+
+* Security headers on the live document: re-read `HEAD /` on the canonical origin
+  with the deployed build and record the actual header set.
+* The 7 external blockers in §9 are unchanged (error tracking, Resend domain,
+  scheduled off-site backups + a proven restore, Render standby decision, cron
+  cadence, deployment gating by CI, and the data-drift question above).
+* Mobile release artifacts (APK/IPA) were building on CI at record time; their
+  freshness/provenance is not asserted here.
+* Branch cleanup (`agent/r362-*`, `agent/r363-*`, `integration/r362-*`) is
+  deliberately deferred until their accepted commits are confirmed as ancestors
+  of the verified `main` — they are, by construction of the merge, but the
+  deletion itself is a separate, reversible-later step.
