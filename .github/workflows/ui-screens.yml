@@ -25,6 +25,12 @@ on:
         options: [current, main]
         required: true
         default: current
+      profile_set:
+        description: "Device profiles: core (4: light/dark × standard/small) or extended (tablet 800×1280, landscape phone, font-scale 2.0, dark tablet)"
+        type: choice
+        options: [core, extended]
+        required: true
+        default: core
 
 permissions:
   contents: read
@@ -107,6 +113,7 @@ jobs:
 
   screens:
     name: "Capture ${{ matrix.role }} — ${{ matrix.profile.id }}"
+    if: inputs.profile_set != 'extended'
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -268,6 +275,9 @@ jobs:
             adb shell settings put system font_scale '${{ matrix.profile.font_scale }}'
             test '${{ matrix.profile.viewport }}' != small-360x640 || adb shell wm size 360x640
             test '${{ matrix.profile.viewport }}' != small-360x640 || adb shell wm density 160
+            test '${{ matrix.profile.viewport }}' != tablet-800x1280 || adb shell wm size 800x1280
+            test '${{ matrix.profile.viewport }}' != tablet-800x1280 || adb shell wm density 160
+            test '${{ matrix.profile.viewport }}' != landscape-2340x1080 || adb shell wm size 2340x1080
             sleep 4
             adb shell wm dismiss-keyguard || true
             adb install -r '${{ runner.temp }}/apk/Madarek-x86_64.apk'
@@ -297,6 +307,165 @@ jobs:
             adb logcat -d > apps/mobile/build/screens/logcat-after-maestro.log
             ls -l apps/mobile/build/screens || true
 
+      - name: Upload the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-screens-${{ github.run_number }}-${{ matrix.role }}-${{ matrix.profile.id }}
+          path: apps/mobile/build/screens
+          if-no-files-found: warn
+          retention-days: 14
+
+  # R366 A5 — the EXTENDED device-shape matrix: tablet 800×1280 (sw≥600dp,
+  # the rail + content-column tier), landscape phone (2340×1080 @420 ≈
+  # 890×411dp), font-scale 2.0 (the a11y ceiling — no truncated primary
+  # actions), and dark tablet. Same job body as `screens`; only the matrix
+  # and the `if` differ (kept as a twin job because a workflow_dispatch
+  # input cannot conditionally reshape a static matrix cleanly).
+  screens-extended:
+    name: "Capture-extended ${{ matrix.role }} — ${{ matrix.profile.id }}"
+    if: inputs.profile_set == 'extended'
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        role: ${{ fromJSON(inputs.role == 'all' && '["student","teacher","registrar","quality","owner"]' || format('["{0}"]', inputs.role)) }}
+        profile:
+          - { id: light-tablet-800x1280, theme: light, theme_label: "فاتح", font_scale: '1.0', viewport: tablet-800x1280 }
+          - { id: dark-tablet-800x1280, theme: dark, theme_label: "داكن", font_scale: '1.0', viewport: tablet-800x1280 }
+          - { id: light-landscape-2340x1080, theme: light, theme_label: "فاتح", font_scale: '1.0', viewport: landscape-2340x1080 }
+          - { id: light-fs2, theme: light, theme_label: "فاتح", font_scale: '2.0', viewport: standard }
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    needs: preview-apk
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: madarek
+          POSTGRES_PASSWORD: madarek
+          POSTGRES_DB: madarek_screens
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U madarek"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://madarek:madarek@localhost:5432/madarek_screens
+      JWT_ACCESS_SECRET: ci-only-access-secret-0123456789abcdef0123456789abcdef
+      JWT_REFRESH_SECRET: ci-only-refresh-secret-0123456789abcdef0123456789abcd
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ui-screens-preview-apk-${{ github.run_id }}
+          path: ${{ runner.temp }}/apk
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Start hermetic backend for screenshots
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npm run build -w backend
+          npm run db:deploy
+          npm run db:seed
+          DATABASE_URL="$DATABASE_URL" JWT_ACCESS_SECRET="$JWT_ACCESS_SECRET" JWT_REFRESH_SECRET="$JWT_REFRESH_SECRET" PORT=4000 MADAREK_TEST_ACCOUNTS=1 nohup node backend/dist/server.js > "$RUNNER_TEMP/backend.log" 2>&1 &
+          for i in $(seq 1 60); do
+            curl -fsS http://localhost:4000/api/v1/health | grep -q '"ok":true' && exit 0
+            sleep 2
+          done
+          tail -50 "$RUNNER_TEMP/backend.log"
+          exit 1
+      - name: Serve the web /media tree for illustrations
+        run: |
+          set -euo pipefail
+          test -d frontend/public/media
+          (cd frontend/public && nohup python3 -m http.server 4100 --bind 127.0.0.1 > "$RUNNER_TEMP/media.log" 2>&1 &)
+          for i in $(seq 1 15); do
+            curl -fsS -o /dev/null http://127.0.0.1:4100/media/manifest.json && break
+            sleep 1
+          done
+          curl -fsS -o /dev/null http://127.0.0.1:4100/media/manifest.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Install Maestro
+        run: |
+          set -euo pipefail
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+          "$HOME/.maestro/bin/maestro" --version
+      - name: KVM for the emulator
+        run: |
+          set -euo pipefail
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm
+      - name: Walk the selected role and capture every tab
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          force-avd-creation: false
+          cores: 3
+          ram-size: 3072M
+          heap-size: 512M
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
+          pre-emulator-launch-script: |
+            printf 'hw.lcd.width=1080\nhw.lcd.height=2340\nhw.lcd.density=420\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"
+          script: |
+            set -eu
+            mkdir -p apps/mobile/build
+            adb wait-for-device
+            adb shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
+            adb shell wm dismiss-keyguard || true
+            adb shell settings put global window_animation_scale 1.0
+            adb shell settings put global transition_animation_scale 1.0
+            adb shell settings put global animator_duration_scale 1.0
+            for scale_name in window_animation_scale transition_animation_scale animator_duration_scale; do
+              scale_value=$(adb shell settings get global "$scale_name" | tr -d '\r')
+              if [ "$scale_value" != "1.0" ]; then
+                echo "FAIL: $scale_name=$scale_value (expected 1.0)"
+                exit 1
+              fi
+            done
+            adb shell settings put global hide_error_dialogs 1
+            adb shell settings put system font_scale '${{ matrix.profile.font_scale }}'
+            test '${{ matrix.profile.viewport }}' != small-360x640 || adb shell wm size 360x640
+            test '${{ matrix.profile.viewport }}' != small-360x640 || adb shell wm density 160
+            test '${{ matrix.profile.viewport }}' != tablet-800x1280 || adb shell wm size 800x1280
+            test '${{ matrix.profile.viewport }}' != tablet-800x1280 || adb shell wm density 160
+            test '${{ matrix.profile.viewport }}' != landscape-2340x1080 || adb shell wm size 2340x1080
+            sleep 4
+            adb shell wm dismiss-keyguard || true
+            adb install -r '${{ runner.temp }}/apk/Madarek-x86_64.apk'
+            adb shell am start -n ly.madarek.mobile/.MainActivity
+            sleep 20
+            mkdir -p apps/mobile/build/screens
+            adb exec-out screencap -p > apps/mobile/build/screens/launch-20s.png
+            adb logcat -d > apps/mobile/build/screens/logcat-before-maestro.log
+            printf 'role=%s\ntheme=%s\nfont_scale=%s\nviewport=%s\n' '${{ matrix.role }}' '${{ matrix.profile.theme }}' '${{ matrix.profile.font_scale }}' '${{ matrix.profile.viewport }}' > apps/mobile/build/screens/profile.txt
+            set +e
+            maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens
+            maestro_status=$?
+            set -e
+            if [ "$maestro_status" -ne 0 ]; then
+              echo "::warning::maestro attempt 1 failed (exit $maestro_status) — one retry from clean app state"
+              adb shell am force-stop ly.madarek.mobile || true
+              sleep 3
+              maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens
+            fi
+            adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
+            adb logcat -d > apps/mobile/build/screens/logcat-after-maestro.log
+            ls -l apps/mobile/build/screens || true
       - name: Upload the screenshots
         if: always()
         uses: actions/upload-artifact@v4
