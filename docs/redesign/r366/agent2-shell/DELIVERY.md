@@ -122,11 +122,40 @@ green, scroll-feel 30/30).
   is page-content style/layout (cross-lane, evidenced + routed); my
   shell chrome side is render-free.
 
+## L6+1 — the re-verification pass (owner request; fresh, final tree)
+
+Every gate re-run from scratch on 2026-11-17 after the L6 push —
+"written ≠ done" applied to my own records:
+
+- **Green fresh**: logo audit 23/0 · scroll-feel 30/30 · conformance FULL
+  matrix **93.5% gate PASS** vs floor 91.6 (production preview; provenance
+  `chromium-20261117-164026-full.json` — NO shift vs the R364 baseline) ·
+  unit **3155/3155** (245 s) · r305 shell suite **76/76** (the "46/46" line
+  was an undercount of the same suite) · functional e2e **21/21**
+  (parity + navigation-resilience + loader-overlap) · nav-audit green ·
+  every static gate green (stylelint ratchet all axes DOWN, size-gate,
+  tokens, identity, worklet, copy-budget ×2) · lint **0 errors** ·
+  `typecheck:tests` **exit 0**.
+- **Found & fixed (3)**: (1) `typecheck:tests` had never been run
+  in-session — 5 TS errors in my own r366 specs, fixed; (2) the
+  scroll-trace ratchet pins violated the spec's own ≥1.4×-over-maxima
+  law (two fresh serial runs failed different surfaces each —
+  shared-host CPU noise, hard INP/CLS budgets held on both) — 10 pins
+  recalibrated to the documented law, run 3 → **8/8**, the reasoning and
+  old→new table live in the spec header; (3) the branch's remote push
+  re-confirmed on origin (the local clone just lacked the tracking ref
+  — refspec fixed, upstream set).
+- **Net branch delta**: `frontend/tests/e2e/r366-scroll-trace.e2e.ts`
+  (pins + comments + 2 type fixes), `frontend/tests/e2e/
+  r366-scroll-parity.e2e.ts` (3 type fixes), this records update. No
+  runtime/src changes — the app bytes are identical to L6.
+
 ## How to re-verify (every number above)
 
 ```bash
 cd frontend && npm ci && npx vite build
 node ../scripts/r318/logo-audit.mjs          # 23 surfaces, 0 failures
+npx tsc --noEmit -p tsconfig.test.json      # exit 0 (the L6+1 gate that was missing)
 npx playwright test tests/e2e/r366-scroll-parity.e2e.ts tests/e2e/r366-navigation-resilience.e2e.ts --project=e2e --workers=1
 npx playwright test tests/e2e/r366-scroll-trace.e2e.ts --project=e2e --workers=1   # vs a vite preview build
 npx vitest run                              # 3155/3155

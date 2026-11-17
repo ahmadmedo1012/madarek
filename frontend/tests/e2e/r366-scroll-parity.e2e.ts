@@ -35,8 +35,6 @@ import { test, expect } from './fixtures/e2e';
  * leak the STUDENT session into the guest suites and render the shell
  * instead of the landing.) */
 
-const ENGINE = () => (window as { __mdrkLenis?: { options?: Record<string, unknown>; isScrolling: boolean; targetScroll: number } }).__mdrkLenis;
-
 /* ═══ 1–2 · the guest engine: touch parity + reduced-motion ═════════ */
 
 test.describe('guest scroll engine — Lenis parity', () => {
@@ -336,9 +334,11 @@ test.describe('guest anchors — clear of the sticky header', () => {
       })();
       return { found: true, top: r.top, headerBottom, hash: window.location.hash };
     });
-    expect(probe.found).toBe(true);
+    if (!probe.found) throw new Error('#chapters target missing after the engine jump');
     expect(probe.hash).toContain('chapters');
-    expect(probe.top).toBeGreaterThanOrEqual(probe.headerBottom - 2);
+    // headerBottom's evaluate type collapses to optional — the runtime
+    // fallback is 0 (no header found), mirrored here at the type level.
+    expect(probe.top).toBeGreaterThanOrEqual((probe.headerBottom ?? 0) - 2);
   });
 
   test('native anchor jump under reduced-motion lands the same clearance', async ({ page }) => {
@@ -359,7 +359,7 @@ test.describe('guest anchors — clear of the sticky header', () => {
       const h = document.querySelector('.fo-header, header');
       return { found: true, top: r.top, headerBottom: h ? h.getBoundingClientRect().bottom : 0 };
     });
-    expect(probe.found).toBe(true);
-    expect(probe.top).toBeGreaterThanOrEqual(probe.headerBottom - 2);
+    if (!probe.found) throw new Error('#chapters target missing after the native jump');
+    expect(probe.top).toBeGreaterThanOrEqual((probe.headerBottom ?? 0) - 2);
   });
 });

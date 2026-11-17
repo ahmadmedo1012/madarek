@@ -41,7 +41,29 @@ CI URL, metric before→after, or artifact path). Written/pushed ≠ done.
 
 - [x] Gates green — unit **3155/3155**; shell e2e 46/46 + loader 19/19; scroll-feel 30/30; overlap stress ZERO ×5 roles; check-colors/icons/motion-tokens/raw-css OK; tokens:check OK; identity-guard CLEAN; worklet-audit LAWFUL (241 files); stylelint-gate ratchet green (rawHex 36→29, rawZIndex 79→68, importantDeclarations 52→41 — all DOWN); copy-budget + copy-budget-mobile CLEAN; size-gate GREEN; bundle gate PASS (entry 66.0→66.1 KB gz, total 760.0→760.0 — net +0.1 KB vs base, ≤ +2 KB budget); baseline shifts: NONE
 - [x] Contact sheets — 4 sheets (≤ 40): `audits/evidence/r366/contact-sheets/{landing-matrix,auth-matrix,shell-student-matrix,logo-seats}.{jpg}`
-- [x] DELIVERY written · branch pushed — `docs/redesign/r366/agent2-shell/DELIVERY.md` + branch `agent/r366-shell-motion-logo`
+- [x] DELIVERY written · branch pushed — `docs/redesign/r366/agent2-shell/DELIVERY.md` + branch `agent/r366-shell-motion-logo` (re-verified on origin at `429b81d`; the local repo lacked the remote-tracking ref — `git fetch` refspec was main-only; fixed and upstream set)
+
+## L6+1 — the re-verification pass (owner request: re-read, audit, prove)
+
+Every gate re-run FRESH on the final tree (2026-11-17, post-L6, single-invocation
+server pattern — the sandbox reaps daemons between tool calls):
+
+- [x] logo audit — `node scripts/r318/logo-audit.mjs` → **23 surfaces, 0 failures** (fresh)
+- [x] static gates — tokens:check OK · check:colors OK · check:icons OK · check:motion-tokens OK · check:raw-css PASS · identity-guard CLEAN (2088 files) · worklet-audit LAWFUL (241 files, 0 violations) · copy-budget CLEAN · copy-budget-mobile CLEAN · stylelint-gate **ratchet green** (errors 45→40, important 52→41, rawZ 79→68, rawHex 36→29 — all DOWN) · size-gate GREEN (rules 1–3 ok)
+- [x] scroll-feel — `node scripts/conformance/scroll.mjs feel` → **{"pass": 30, "fail": 0}** (fresh, dev server)
+- [x] conformance FULL matrix — `node scripts/conformance/run.mjs --gate --url http://localhost:5344` (production preview, `npm run build` first: tsc -b + vite, 22.8 s clean) → **TOTAL 54741/58537 = 93.5% · gate PASS (floor 91.6)** — identical to the R364 baseline: NO shift; provenance `scripts/conformance/results/chromium-20261117-164026-full.json`
+- [x] nav-audit — `npx tsx scripts/qa/nav-audit.ts` → 0 icon drift, 0 duplicate glyphs, documented label variants only
+- [x] unit — `npx vitest run` → **3155/3155** (245 s)
+- [x] shell suite — `npx playwright test tests/r305` → **76/76** (3.2 m; the earlier "46/46" line was an undercount of the same suite — the fresh full run is the number)
+- [x] functional e2e — parity + navigation-resilience + r323-loader-overlap → **21/21** (re-run after the L6+1 spec edits; 2.3 m)
+- [x] scroll-trace — 8/8 PASS **after the L6+1 ratchet recalibration** (run 3, serial, production preview; see below)
+- [x] lint — `npm run lint` → **0 errors** (16 pre-existing warnings, ungated by the repo's own posture); the sandbox's root node_modules was missing the eslint stack (`@eslint/js`, `eslint`, `eslint-plugin-react-hooks`, `typescript-eslint`) — installed with `--no-save`, then the tree restored with `npm ci` (lockfile untouched on disk, `git status` clean)
+
+### L6+1 — defects the re-verification found and fixed
+
+1. **`typecheck:tests` had never been run in-session** — 5 TS errors in MY r366 specs (parity: unused `ENGINE` + 2× possibly-undefined `headerBottom`; trace: `hadRecentInput` cast + `eventP75` `number|undefined`). Fixed; `npx tsc --noEmit -p tsconfig.test.json` now exits **0**.
+2. **The trace ratchet pins violated the spec's own ≥1.4×-over-observed-maxima law** — the 14:21 evidence predated the L3/L4 commits, and two fresh serial runs on the final tree failed DIFFERENT surfaces each (courses@390 worstFrame 103 vs pin 100; then library@1440 worstLoaf 143.4 vs pin 130 while courses@390 read 59 — shared-host CPU noise, not regression; every hard INP/CLS budget held on BOTH runs). All 16 LoAF/frame pins now carry ≥1.4× over the all-time maxima (10 lines moved, old→new table in the spec header); hard budgets untouched; run 3 → **8/8**. The "8/8" claimed at L2/L6 had only held in the quiet calibration window.
+3. Environment slip during the pass: an `npm install --no-package-lock` re-resolved the tree and bumped Playwright off its pin (browser launch failed instantly); `npm ci` restored the lockfile-exact tree and the batch re-ran green. The lockfile file itself was never modified.
 
 ## Record hygiene
 
