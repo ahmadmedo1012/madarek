@@ -124,7 +124,7 @@ name: "R358 screens — student"
     timeout: 8000
 - takeScreenshot: "screens/student-13-messages"
 
-- openLink: "madarek://student/achievements"
+- openLink: "madarek://achievements"
 - waitForAnimationToEnd:
     timeout: 8000
 - takeScreenshot: "screens/student-14-achievements"

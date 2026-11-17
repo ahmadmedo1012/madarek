@@ -110,7 +110,7 @@ const MaterialRowItem = makeRow<
           {materialTypeIcon(m.type, p.textSecondary)}
         </View>
         <View style={{ flex: 1, gap: 2 }}>
-          <T variant="body" weight="bold" numberOfLines={1}>
+          <T variant="body" weight="bold" numberOfLines={2}>
             {m.name}
           </T>
           <T variant="sm" color="muted" numberOfLines={1}>

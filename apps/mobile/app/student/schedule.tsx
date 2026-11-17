@@ -363,10 +363,13 @@ const SlotRow = makeRow<DaySlot, { status: SlotStatus | null }>(({ item: s, stat
         gap: sp[2],
       })}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+      {/* R366 A5 (fs2 evidence): the row WRAPS at large font scales — the
+          time anchor and status chip never truncate, the title takes two
+          lines before it ever ellipsizes. */}
+      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
         <MonoLabel>{`${s.startTime}–${s.endTime}`}</MonoLabel>
-        <View style={{ flex: 1 }}>
-          <T variant="body" weight="bold" numberOfLines={1}>
+        <View style={{ flex: 1, minWidth: 140 }}>
+          <T variant="body" weight="bold" numberOfLines={2}>
             {`${s.courseCode} — ${s.courseName}`}
           </T>
         </View>

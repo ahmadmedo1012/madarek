@@ -270,7 +270,7 @@ export default function CalendarScreen() {
           <View style={{ flexDirection: "row" }}>
             {AR_DAYS.map((name) => (
               <View key={name} style={{ flex: 1, alignItems: "center", paddingVertical: 4 }}>
-                <T variant="xs" color="muted" numberOfLines={1}>
+                <T variant="xs" color="muted" numberOfLines={1} maxFontSizeMultiplier={1.3}>
                   {name}
                 </T>
               </View>
@@ -329,12 +329,12 @@ export default function CalendarScreen() {
                             backgroundColor: p.accent,
                           }}
                         >
-                          <T variant="sm" weight="bold" color="onAccent">
+                          <T variant="sm" weight="bold" color="onAccent" maxFontSizeMultiplier={1.3}>
                             {formatNumber(cell.day)}
                           </T>
                         </View>
                       ) : (
-                        <T variant="sm" style={{ color: dayInk }}>
+                        <T variant="sm" style={{ color: dayInk }} maxFontSizeMultiplier={1.3}>
                           {formatNumber(cell.day)}
                         </T>
                       )}
