@@ -192,11 +192,11 @@ export default function TeacherIntelligence() {
       <Animated.View entering={entering(0)}>
       <PageHeader
         title="الذكاء الأكاديمي"
-        kicker="تحليل لحظي للحضور والدرجات مع توصيات تدخّل."
+        kicker="تحليل لحظي مع توصيات تدخّل."
       />
 
-      {/* طلاب يحتاجون متابعة — the global at-risk panel. */}
-      <SectionBar index={1} title="طلاب يحتاجون متابعة" />
+      {/* طلاب للمتابعة — the global at-risk panel. */}
+      <SectionBar index={1} title="طلاب للمتابعة" />
       {risks.isLoading ? (
         <SkeletonList rows={3} />
       ) : risks.isError ? (
@@ -204,7 +204,7 @@ export default function TeacherIntelligence() {
       ) : riskRows.length === 0 ? (
         <EmptyState
           title="كل طلابك في وضع جيد"
-          message="لا حاجة لتدخّل عاجل."
+          message="لا حاجة لتدخّل."
         />
       ) : (
         <View style={{ gap: sp[8] }}>

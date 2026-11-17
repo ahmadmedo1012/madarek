@@ -37,14 +37,14 @@ function collectProp(node: JsonNode | JsonNode[], prop: string): unknown[] {
 }
 
 describe("EmptyState (R334 room variants)", () => {
-  it("stages the exam hall: plan sheet + «لا امتحانات بعد»", async () => {
+  it("stages the exam hall: plan sheet + «تظهر هنا فور نشرها.»", async () => {
     const { getByText, toJSON } = await render(<EmptyState room="exam-hall" />);
-    expect(getByText("لا امتحانات بعد")).toBeTruthy();
+    expect(getByText("تظهر هنا فور نشرها.")).toBeTruthy();
     // the R330 plan sheet is in the tree — react-native-svg serializes the
     // shared 320×220 drafting viewBox as vbWidth/vbHeight host props.
     expect(collectProp(toJSON(), "vbWidth")).toContain(320);
     expect(collectProp(toJSON(), "vbHeight")).toContain(220);
-    expect(collectProp(toJSON(), "accessibilityLabel")).toContain("مخطط قاعة اختبار فارغة");
+    expect(collectProp(toJSON(), "accessibilityLabel")).toContain("قاعة اختبار فارغة");
   });
 
   it("stages the library: «لا ملفات»", async () => {
@@ -103,7 +103,7 @@ describe("OfflineState", () => {
     const { getByText } = await render(<OfflineState />);
     expect(getByText("أنت غير متصل بالإنترنت")).toBeTruthy();
     expect(
-      getByText("لا نسخة محفوظة — التحميل عند عودة الاتصال."),
+      getByText("لا نسخة محفوظة — عند عودة الاتصال."),
     ).toBeTruthy();
   });
 

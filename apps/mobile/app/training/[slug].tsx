@@ -53,7 +53,7 @@ export default function TrainingTrack() {
       qc.invalidateQueries({ queryKey: ["training"] });
       toast.success("سُجّلت — بالتوفيق!");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر التسجيل — تحقّق من الاتصال.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر التسجيل.")),
   });
 
   if (!params.slug) {
@@ -204,7 +204,7 @@ export default function TrainingTrack() {
       {lessons.length === 0 ? (
         <EmptyState
           title="لا دروس بعد"
-          message="لا دروس في المسار بعد."
+          message="لا دروس بعد."
           icon={<BookOpen size={20} color={p.textMuted} />}
         />
       ) : (

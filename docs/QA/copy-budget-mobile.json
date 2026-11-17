@@ -304,13 +304,13 @@
       "max": 150
     },
     "apps/mobile/app/teacher/(tabs)/intelligence.tsx": {
-      "max": 109
+      "max": 105
     },
     "apps/mobile/app/teacher/(tabs)/profile.tsx": {
-      "max": 138
+      "max": 131
     },
     "apps/mobile/app/teacher/(tabs)/schedule.tsx": {
-      "max": 23
+      "max": 21
     },
     "apps/mobile/app/teacher/(tabs)/students.tsx": {
       "max": 10
@@ -325,46 +325,46 @@
       "max": 2
     },
     "apps/mobile/app/teacher/assignments.tsx": {
-      "max": 159
+      "max": 154
     },
     "apps/mobile/app/teacher/attendance.tsx": {
-      "max": 72
+      "max": 67
     },
     "apps/mobile/app/teacher/curriculum.tsx": {
-      "max": 293
+      "max": 278
     },
     "apps/mobile/app/teacher/exams.tsx": {
-      "max": 234
+      "max": 213
     },
     "apps/mobile/app/teacher/exams/[templateId].tsx": {
-      "max": 291
+      "max": 273
     },
     "apps/mobile/app/teacher/grades.tsx": {
-      "max": 96
+      "max": 89
     },
     "apps/mobile/app/teacher/labs.tsx": {
-      "max": 79
+      "max": 74
     },
     "apps/mobile/app/teacher/live.tsx": {
-      "max": 174
+      "max": 167
     },
     "apps/mobile/app/teacher/materials.tsx": {
-      "max": 112
+      "max": 107
     },
     "apps/mobile/app/teacher/messages.tsx": {
       "max": 0
     },
     "apps/mobile/app/teacher/research-review.tsx": {
-      "max": 117
+      "max": 113
     },
     "apps/mobile/app/teacher/students/[offeringId].tsx": {
       "max": 15
     },
     "apps/mobile/app/training/[slug].tsx": {
-      "max": 84
+      "max": 79
     },
     "apps/mobile/app/training/[slug]/lesson/[lessonId].tsx": {
-      "max": 110
+      "max": 103
     },
     "apps/mobile/app/training/index.tsx": {
       "max": 59
@@ -427,7 +427,7 @@
       "max": 16
     },
     "apps/mobile/src/components/ui/form.tsx": {
-      "max": 65
+      "max": 60
     },
     "apps/mobile/src/components/ui/markdown.tsx": {
       "max": 0
@@ -442,7 +442,7 @@
       "max": 12
     },
     "apps/mobile/src/components/ui/states.tsx": {
-      "max": 93
+      "max": 83
     },
     "apps/mobile/src/components/ui/surfaces.tsx": {
       "max": 9
@@ -463,7 +463,7 @@
       "max": 0
     },
     "apps/mobile/src/features/ai/Assistant.tsx": {
-      "max": 108
+      "max": 103
     },
     "apps/mobile/src/features/ai/Markdown.tsx": {
       "max": 5

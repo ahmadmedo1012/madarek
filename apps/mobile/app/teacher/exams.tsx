@@ -86,7 +86,7 @@ export default function Exams() {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       qc.invalidateQueries({ queryKey: ["exams", "template", publishTarget?.id] });
       setPublishTarget(null);
-      toast.success("نُشر حسب النطاق.", "تمّ نشر الاختبار");
+      toast.success("نُشر حسب النطاق.", "نُشر");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
@@ -105,7 +105,7 @@ export default function Exams() {
 
   const createQuestion = useMutation({
     mutationFn: async () => {
-      if (prompt.trim().length < 3) throw new Error("نص السؤال كما يظهر للطالب.");
+      if (prompt.trim().length < 3) throw new Error("كما يظهر للطالب.");
       const pts = Number(points);
       if (points.trim() === "" || Number.isNaN(pts) || pts < 1 || pts > 20) {
         throw new Error("النقاط بين 1 و20.");
@@ -120,7 +120,7 @@ export default function Exams() {
         if (correctIndex === null) throw new Error("حدِّد الصحيحة (صواب/خطأ).");
         correctAnswer = correctIndex;
       } else if (type === "SHORT") {
-        if (modelAnswer.trim() === "") throw new Error("الإجابة النموذجية مطلوبة للقصيرة.");
+        if (modelAnswer.trim() === "") throw new Error("النموذجية مطلوبة للقصيرة.");
         correctAnswer = modelAnswer.trim();
       }
       return examsApi.createQuestion({
@@ -140,7 +140,7 @@ export default function Exams() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["exams", "question-bank"] });
       toast.success(
-        "أُرسل للجودة — يظهر بعد الاعتماد.",
+        "أُرسل — يظهر بعد الاعتماد.",
         "أُرسل السؤال",
       );
       setCreating(false);
@@ -195,7 +195,7 @@ export default function Exams() {
             <EmptyState
               art={<Illustration id="r342/role-teacher" width={216} />}
               title="لا قوالب بعد"
-              message="ابنِ قالبًا من البنك (من لوحة الويب) ثم أرسله للجودة."
+              message="ابنِ قالبًا (من لوحة الويب) ثم أرسله للجودة."
             />
           ) : (
             <RowList>
@@ -277,11 +277,11 @@ export default function Exams() {
             <ErrorState message={humanizeError(bank.error)} onRetry={() => bank.refetch()} />
           ) : bankRows.length === 0 ? (
             <EmptyState
-              title={q.trim() !== "" ? "لا أسئلة تطابق البحث" : "البنك فارغ حتى الآن"}
+              title={q.trim() !== "" ? "لا أسئلة تطابق البحث" : "البنك فارغ"}
               message={
                 q.trim() !== ""
                   ? "جرّب كلمات أخرى أو أزل التصفية."
-                  : "أنشئ أول سؤال — يظهر بعد اعتماد الجودة."
+                  : "أنشئ أول سؤال — بعد الاعتماد."
               }
             />
           ) : (
@@ -320,7 +320,7 @@ export default function Exams() {
       <ConfirmDialog
         open={publishTarget !== null}
         title="نشر الاختبار"
-        message="بعد النشر يظهر الاختبار للطلاب حسب نطاقه ولا يمكن سحبه. النشر الآن؟"
+        message="النشر نهائي حسب النطاق. النشر الآن؟"
         confirmLabel="نشر نهائي"
         loading={publish.isPending}
         onConfirm={() => publishTarget && publish.mutate(publishTarget.id)}
@@ -369,7 +369,7 @@ export default function Exams() {
               setQError(null);
             }}
             multiline
-            placeholder="نص السؤال كما يظهر للطالب…"
+            placeholder="كما يظهر للطالب…"
             accessibilityLabel="نص السؤال"
           />
           {type === "MCQ" ? (
@@ -436,7 +436,7 @@ export default function Exams() {
               label="الإجابة النموذجية"
               value={modelAnswer}
               onChangeText={setModelAnswer}
-              hint="تُصحَّح آليًا بمطابقة هذا النص"
+              hint="تُصحَّح بمطابقة هذا النص"
               accessibilityLabel="الإجابة النموذجية"
             />
           ) : null}

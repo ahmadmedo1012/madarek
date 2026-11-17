@@ -1,6 +1,6 @@
 /**
  * research-review — البحث العلمي. Web parity: ResearchReviewPage — the
- * triage queue (بانتظار تقييمك / رفضها الفحص التجريبي (محاكاة) /
+ * triage queue (بانتظار تقييمك / رفضها الفحص (محاكاة) /
  * مُقيَّمة — جاهزة للنشر), the review sheet (abstract, the declared
  * simulated scan cells, grade 0–20 + التقدير, publish with ConfirmDialog,
  * the PDF reader deep link).
@@ -85,7 +85,7 @@ export default function ResearchReview() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["research", "queue"] });
-      toast.success("مُقيَّم — انشره من «جاهزة للنشر».", "تمّ حفظ التقييم");
+      toast.success("مُقيَّم — انشره من «جاهزة».", "تمّ حفظ التقييم");
       setSelected(null);
       setScore("");
       setFeedback("");
@@ -170,14 +170,14 @@ export default function ResearchReview() {
           {/* The honest KPI trio. */}
           <View style={{ flexDirection: "row", gap: sp[8] }}>
             <KpiCard label="بانتظار تقييمك" value={passed.length} />
-            <KpiCard label="تعذّر اجتياز الفحص" value={failed.length} />
+            <KpiCard label="تعذّر الفحص" value={failed.length} />
             <KpiCard label="جاهزة للنشر" value={graded.length} />
           </View>
 
           <SectionBar index={1} title="بانتظار تقييمك" />
           {passed.length === 0 ? (
             <EmptyState
-              title="لا بحوث في الانتظار"
+              title="لا بحوث بالانتظار"
               message="تظهر فور اجتياز الفحص."
             />
           ) : (
@@ -190,7 +190,7 @@ export default function ResearchReview() {
 
           {failed.length > 0 ? (
             <>
-              <SectionBar index={2} title="رفضها الفحص التجريبي (محاكاة)" />
+              <SectionBar index={2} title="رفضها الفحص (محاكاة)" />
               <RowList>
                 {failed.map((p) => (
                   <QueueRow key={p.id} paper={p} />

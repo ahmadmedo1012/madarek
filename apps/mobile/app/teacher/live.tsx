@@ -129,7 +129,7 @@ export default function TeacherLive() {
       const effId = offeringId || offerings[0]?.id || "";
       if (effId === "") throw new Error("اختر مقرراً أولاً.");
       if (title.trim().length < 3) throw new Error("العنوان: حرفان على الأقل.");
-      if (!schedDate) throw new Error("حدّد موعد الجلسة.");
+      if (!schedDate) throw new Error("حدّد الموعد.");
       const t = Date.parse(`${schedDate}T${schedTime.trim() === "" ? "09:00" : schedTime}`);
       if (Number.isNaN(t)) throw new Error("الموعد غير صالح.");
       return liveApi.create({
@@ -144,7 +144,7 @@ export default function TeacherLive() {
     onSuccess: () => {
       haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["live", "sessions"] });
-      toast.success("جُدولت — تظهر لطلاب المقرّر.", "تمّت الجدولة");
+      toast.success("جُدولت — لطلاب المقرّر.", "تمّت الجدولة");
       setCreating(false);
       setTitle("");
       setTopic("");
@@ -244,7 +244,7 @@ export default function TeacherLive() {
       <StackHeader title="إدارة البث المباشر" />
       <PageHeader
         title="إدارة البث المباشر"
-        kicker="جدولة الجلسات وتشغيلها — لطلاب مقرّراتك."
+        kicker="جدولة الجلسات — لطلاب مقرّراتك."
       />
       <SectionBar
         index={1}
@@ -293,7 +293,7 @@ export default function TeacherLive() {
             action={
               scheduled.length > 0 ? (
                 <Badge
-                  label={arCount(scheduled.length, ["جلسة مجدولة واحدة", "جلستان مجدولتان", "جلسات مجدولة", "جلسة مجدولة"])}
+                  label={arCount(scheduled.length, ["جلسة مجدولة", "جلستان مجدولتان", "جلسات مجدولة", "جلسة مجدولة"])}
                   tone="yellow"
                 />
               ) : undefined
@@ -369,7 +369,7 @@ export default function TeacherLive() {
               setTitle(v);
               setCreateError(null);
             }}
-            placeholder="مثال: شرح الوحدة الثالثة"
+            placeholder="مثال: الوحدة الثالثة"
             accessibilityLabel="عنوان الجلسة"
           />
           <SheetField
@@ -380,7 +380,7 @@ export default function TeacherLive() {
             accessibilityLabel="الموضوع الفرعي"
           />
           <SheetField
-            label="موعد الجلسة — التاريخ"
+            label="موعد الجلسة (تاريخ)"
             value={schedDate}
             onChangeText={(v) => {
               setSchedDate(v);
@@ -390,7 +390,7 @@ export default function TeacherLive() {
             accessibilityLabel="تاريخ الجلسة"
           />
           <SheetField
-            label="موعد الجلسة — الوقت"
+            label="موعد الجلسة (وقت)"
             value={schedTime}
             onChangeText={setSchedTime}
             hint="بصيغة HH:MM"
@@ -407,7 +407,7 @@ export default function TeacherLive() {
             label="وصف (اختياري)"
             value={description}
             onChangeText={setDescription}
-            placeholder="الموضوعات التي ستغطّيها الجلسة…"
+            placeholder="موضوعات الجلسة…"
             accessibilityLabel="الوصف"
           />
           {createError ? (

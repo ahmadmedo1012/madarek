@@ -73,9 +73,9 @@ export default function Curriculum() {
   const saveLecture = useMutation({
     mutationFn: async () => {
       if (title.trim().length < 2) throw new Error("العنوان مطلوب.");
-      if (videoUrl.trim() === "") throw new Error("مطلوب — https:// أو مسار ملف.");
+      if (videoUrl.trim() === "") throw new Error("مطلوب: https:// أو مسار ملف.");
       const dur = durationSec.trim() === "" ? undefined : Number(durationSec);
-      if (dur !== undefined && (Number.isNaN(dur) || dur < 1)) throw new Error("المدة يجب أن تكون ثانية واحدة على الأقل.");
+      if (dur !== undefined && (Number.isNaN(dur) || dur < 1)) throw new Error("ثانية واحدة على الأقل.");
       if (editing) {
         return learningApi.updateLecture(editing.id, {
           title: title.trim(),
@@ -121,7 +121,7 @@ export default function Curriculum() {
       invalidate();
       toast.success("حُدِّث الترتيب.");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذَّر إعادة الترتيب"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الترتيب"),
   });
 
   const move = (index: number, dir: -1 | 1) => {
@@ -150,7 +150,7 @@ export default function Curriculum() {
   return (
     <Screen scroll>
       <StackHeader title="بناء المنهج" />
-      <PageHeader title="بناء المنهج" kicker="محاضرات وفصول وأسئلة تفاعلية." />
+      <PageHeader title="بناء المنهج" kicker="محاضرات وفصول وأسئلة." />
       {offerings.length === 0 ? (
         offs.isLoading ? (
           <SkeletonList rows={3} />
@@ -242,7 +242,7 @@ export default function Curriculum() {
           label="رابط الفيديو"
           value={videoUrl}
           onChangeText={setVideoUrl}
-          hint="رابط https:// أو مسار ملف داخل المنصة"
+          hint="https:// أو مسار ملف داخل المنصة"
           accessibilityLabel="رابط الفيديو"
         />
         <Field
@@ -361,10 +361,10 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
     mutationFn: async () => {
       if (cpQuestion.trim().length < 3) throw new Error("نص السؤال مطلوب.");
       const trigger = Number(cpTrigger);
-      if (cpTrigger.trim() === "" || Number.isNaN(trigger) || trigger < 0) throw new Error("موضع السؤال ثوانٍ ≥ 0.");
+      if (cpTrigger.trim() === "" || Number.isNaN(trigger) || trigger < 0) throw new Error("ثوانٍ ≥ 0.");
       const opts = cpOptions.map((o) => o.trim()).filter((o) => o !== "");
       if (opts.length < 2) throw new Error("خياران على الأقل.");
-      if (cpCorrect === null || cpCorrect >= opts.length) throw new Error("حدِّد الإجابة الصحيحة قبل الحفظ.");
+      if (cpCorrect === null || cpCorrect >= opts.length) throw new Error("حدِّد الصحيحة قبل الحفظ.");
       return learningApi.addCheckpoint(lectureId, {
         triggerSec: trigger,
         question: cpQuestion.trim(),
@@ -400,9 +400,9 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
     mutationFn: () => learningApi.generateTranscript(lectureId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["learning", "lecture", lectureId] });
-      toast.success("بدأ التوليد — تابع في الشريحة.", "توليد النص");
+      toast.success("بدأ — تابعه في الشريحة.", "توليد النص");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذَّر بدء التوليد"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر البدء"),
   });
 
   if (detail.isLoading) return <SkeletonList rows={2} />;
@@ -556,7 +556,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
           label="موضع السؤال (بالثواني)"
           value={cpTrigger}
           onChangeText={setCpTrigger}
-          hint="يظهر عند هذه اللحظة"
+          hint="عند هذه اللحظة"
           keyboardType="number-pad"
           accessibilityLabel="موضع السؤال"
         />
@@ -603,7 +603,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
           label="الشرح (اختياري)"
           value={cpExplanation}
           onChangeText={setCpExplanation}
-          hint="يظهر للطالب بعد الإجابة"
+          hint="بعد الإجابة"
           accessibilityLabel="الشرح"
         />
         {cpError ? (

@@ -56,7 +56,7 @@ export default function TeacherSchedule() {
   return (
     <Screen scroll>
       <AppTopBar alertsPath="/teacher/alerts" />
-      <PageHeader title="جدول المحاضرات" kicker="جدولك مع القاعات والأوقات." />
+      <PageHeader title="جدول المحاضرات" kicker="جدولك بالقاعات والأوقات." />
       {offs.isLoading ? (
         <SkeletonList rows={5} />
       ) : offs.isError ? (
@@ -64,7 +64,7 @@ export default function TeacherSchedule() {
       ) : days.length === 0 ? (
         <EmptyState
           title="لا جدول مسجَّل"
-          message="تظهر المحاضرات فور تسجيل الجداول."
+          message="تظهر فور تسجيل الجداول."
         />
       ) : (
         days.map((d, di) => (

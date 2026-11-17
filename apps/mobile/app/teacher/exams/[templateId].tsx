@@ -107,13 +107,13 @@ export default function ExamTemplateDetail() {
   const update = useMutation({
     mutationFn: async () => {
       const dur = Number(durationMin);
-      if (Number.isNaN(dur) || dur < 5 || dur > 480) throw new Error("بين 5 و480 دقيقة.");
+      if (Number.isNaN(dur) || dur < 5 || dur > 480) throw new Error("بين 5 و480.");
       const pass = Number(passingScore);
-      if (Number.isNaN(pass) || pass < 0 || pass > 100) throw new Error("درجة النجاح نسبة بين 0 و100.");
+      if (Number.isNaN(pass) || pass < 0 || pass > 100) throw new Error("نسبة بين 0 و100.");
       const toIsoOrNull = (date: string, time: string) => {
         if (date.trim() === "") return null;
         const t = Date.parse(`${date}T${time.trim() === "" ? "12:00" : time}`);
-        if (Number.isNaN(t)) throw new Error("قيمة تاريخ غير صالحة.");
+        if (Number.isNaN(t)) throw new Error("تاريخ غير صالح.");
         return new Date(t).toISOString();
       };
       return examsApi.updateTemplate(id, {
@@ -143,7 +143,7 @@ export default function ExamTemplateDetail() {
       qc.invalidateQueries({ queryKey: ["exams", "template", id] });
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       setConfirmPublish(false);
-      toast.success("نُشر حسب النطاق.", "تمّ نشر الاختبار");
+      toast.success("نُشر حسب النطاق.", "نُشر");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
@@ -166,7 +166,7 @@ export default function ExamTemplateDetail() {
     mutationFn: async () => {
       const pending = grading?.pendingAnswers ?? [];
       if (pending.some((a) => verdicts[a.answerId] === undefined)) {
-        throw new Error("صحّح الإجابات المعلّقة قبل الإنهاء.");
+        throw new Error("صحّح المعلّقة قبل الإنهاء.");
       }
       return examsApi.gradeAttempt(grading!.id, pending.map((a) => ({
         answerId: a.answerId,
@@ -176,7 +176,7 @@ export default function ExamTemplateDetail() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["exams", "template", id, "attempts"] });
-      toast.success("اعتُمدت الدرجة النهائية.", "تمّ التصحيح");
+      toast.success("اعتُمدت الدرجة.", "تمّ التصحيح");
       setGrading(null);
       setVerdicts({});
       setNotes({});
@@ -220,7 +220,7 @@ export default function ExamTemplateDetail() {
     return (
       <Screen scroll>
         <StackHeader title="قالب الاختبار" />
-        <EmptyState title="القالب غير موجود" message="حُذف أو رابط غير صحيح." />
+        <EmptyState title="القالب غير موجود" message="حُذف أو رابط خاطئ." />
       </Screen>
     );
   }
@@ -232,7 +232,7 @@ export default function ExamTemplateDetail() {
           the detail block takes the kit stagger; edit/save presses fire
           through the throttled haptics door. */}
       <Animated.View entering={entering(0)}>
-      <PageHeader title={t.title} kicker="مسودة ← مراجعة الجودة ← اعتماد ← نشر." />
+      <PageHeader title={t.title} kicker="مسودة ← جودة ← اعتماد ← نشر." />
 
       <View style={{ flexDirection: "row", gap: sp[6], flexWrap: "wrap", alignItems: "center" }}>
         <StatusBadge status={t.status} map={EXAM_STATUS_MAP} />
@@ -312,7 +312,7 @@ export default function ExamTemplateDetail() {
       {/* أسئلة القالب. */}
       <SectionBar index={2} title="أسئلة القالب" />
       {questions.length === 0 ? (
-        <EmptyState title="لا أسئلة في القالب" message="ربما أُوقفت أسئلته." />
+        <EmptyState title="لا أسئلة فيه" message="ربما أُوقفت أسئلته." />
       ) : (
         <RowList>
           {questions.map((q, i) => (
@@ -354,7 +354,7 @@ export default function ExamTemplateDetail() {
       ) : attemptRows.length === 0 ? (
         <EmptyState
           title="لا محاولات بعد"
-          message="محاولات الطلاب تظهر هنا لحظة بدئها."
+          message="محاولاتهم تظهر لحظة بدئها."
         />
       ) : (
         <RowList>
@@ -397,7 +397,7 @@ export default function ExamTemplateDetail() {
       <ConfirmDialog
         open={confirmPublish}
         title="نشر الاختبار"
-        message="النشر نهائي حسب النطاق. النشر الآن؟"
+        message="النشر نهائي. النشر الآن؟"
         confirmLabel="نشر نهائي"
         loading={publish.isPending}
         onConfirm={() => publish.mutate()}
@@ -422,7 +422,7 @@ export default function ExamTemplateDetail() {
           label="درجة النجاح (%)"
           value={passingScore}
           onChangeText={setPassingScore}
-          hint="نسبة من مجموع النقاط"
+          hint="من مجموع النقاط"
           keyboardType="number-pad"
           accessibilityLabel="درجة النجاح"
         />
@@ -441,7 +441,7 @@ export default function ExamTemplateDetail() {
           label="تاريخ الفتح (اختياري)"
           value={openDate}
           onChangeText={setOpenDate}
-          hint="YYYY-MM-DD — بلا تاريخ يفتح فور النشر"
+          hint="بلا تاريخ يفتح فور النشر"
           accessibilityLabel="تاريخ الفتح"
         />
         <Field
@@ -551,7 +551,7 @@ export default function ExamTemplateDetail() {
               </T>
             ) : null}
             <Button
-              label={gradeAttempt.isPending ? "جارٍ اعتماد الدرجة…" : "حفظ واعتماد الدرجة"}
+              label={gradeAttempt.isPending ? "جارٍ الاعتماد…" : "حفظ واعتماد"}
               kind="accent"
               loading={gradeAttempt.isPending}
               onPress={() => {

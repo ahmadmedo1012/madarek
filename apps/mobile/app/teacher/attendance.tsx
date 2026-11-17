@@ -149,7 +149,7 @@ export default function Attendance() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("حُفظ سجلّ هذا التاريخ.", "تمّ الحفظ");
+      toast.success("حُفظ سجلّ اليوم.", "تمّ الحفظ");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الحفظ"),
   });
@@ -159,7 +159,7 @@ export default function Attendance() {
       <StackHeader title="الحضور والغياب" />
       <PageHeader
         title="الحضور والغياب"
-        kicker="سجِّل الحضور — سجلّ واحد لكل تاريخ."
+        kicker="سجِّل الحضور — سجلّ لكل تاريخ."
       />
 
       {/* الجلسة — offering + date + topic. */}
@@ -169,7 +169,7 @@ export default function Attendance() {
       ) : offs.isError ? (
         <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} compact />
       ) : offerings.length === 0 ? (
-        <EmptyState title="لا مقرّرات" message="تظهر المقرّرات حين تُسنَد إليك." />
+        <EmptyState title="لا مقرّرات" message="تظهر فور إسنادها." />
       ) : (
         <>
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
@@ -188,7 +188,7 @@ export default function Attendance() {
             label="الموضوع (اختياريّ)"
             value={topic}
             onChangeText={setTopic}
-            placeholder="مثال: مقدّمة في UML"
+            placeholder="مثال: مقدّمة UML"
             accessibilityLabel="الموضوع"
           />
 

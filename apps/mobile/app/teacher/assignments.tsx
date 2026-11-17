@@ -129,7 +129,7 @@ export default function Assignments() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "pending-submissions"] });
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("حُفظت — سيصل الطالب إشعار.", "تمّ التقييم");
+      toast.success("حُفظت — بإشعار للطالب.", "تمّ التقييم");
       setGradeTarget(null);
       setScore("");
       setFeedback("");
@@ -305,7 +305,7 @@ export default function Assignments() {
             ) : null}
             {gradeTarget.fileUrl ? (
               <Button
-                label="فتح الملف في العارض"
+                label="فتح الملف"
                 kind="ghost"
                 small
                 onPress={() => {
@@ -336,7 +336,7 @@ export default function Assignments() {
               accessibilityLabel="الدرجة"
             />
             <Field
-              label="ملاحظات للطالب (اختياري)"
+              label="ملاحظات (اختياري)"
               value={feedback}
               onChangeText={setFeedback}
               placeholder="ملاحظاتك على الإجابة…"
@@ -419,7 +419,7 @@ export default function Assignments() {
             label="الوصف (اختياري)"
             value={description}
             onChangeText={setDescription}
-            placeholder="التعليمات والمراجع والمعايير…"
+            placeholder="التعليمات والمعايير…"
             accessibilityLabel="الوصف"
           />
           {createError ? (

@@ -63,12 +63,12 @@ export default function TrainingLesson() {
         toast.success(`أحسنت! حصلت على ${pointsAr(r.pointsAwarded)}.`, "درس مكتمل");
       } else {
         haptics.notify("success");
-        toast.success("تمّ احتساب الدرس.", "درس مكتمل");
+        toast.success("احتُسب الدرس.", "درس مكتمل");
       }
       router.back();
     },
     onError: (e) =>
-      toast.error(apiMessage(e, "تعذّر الاحتساب — تحقّق من الاتصال.")),
+      toast.error(apiMessage(e, "تعذّر الاحتساب.")),
   });
 
   if (!params.slug || !params.lessonId) {
@@ -78,7 +78,7 @@ export default function TrainingLesson() {
         <StackHeader title="درس" kicker="التطوير الذاتي" />
         <EmptyState
           title="الرابط غير مكتمل"
-          message="لا درس في الرابط — افتح المسار."
+          message="لا درس — افتح المسار."
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -130,7 +130,7 @@ export default function TrainingLesson() {
         <StackHeader title="درس" kicker={track.title} />
         <EmptyState
           title="الدرس غير موجود"
-          message="حُذف أو الرابط غير صحيح."
+          message="حُذف أو رابط خاطئ."
           actionLabel="عودة إلى المسار"
           onAction={() => router.push(`/training/${track.slug}` as never)}
         />

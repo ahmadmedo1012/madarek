@@ -203,7 +203,7 @@ export default function Grades() {
       setScaleTouched(false);
       setFormError(null);
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("حُفظت — تظهر للطالب فورًا.", "تمّ الحفظ");
+      toast.success("حُفظت — تظهر فورًا.", "تمّ الحفظ");
       moveTo(1); // auto-advance: grade the next student.
     },
     onError: (e) => {
@@ -241,14 +241,14 @@ export default function Grades() {
       <View style={{ paddingHorizontal: sp[20], gap: sp[12] }}>
         <PageHeader
           title="درجات الطلاب"
-          kicker="صحِّح طالبًا طالبًا — اسحب للانتقال."
+          kicker="اسحب للانتقال بين الطلاب."
         />
         {offs.isLoading ? (
           <SkeletonList rows={4} />
         ) : offs.isError ? (
           <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} />
         ) : offerings.length === 0 ? (
-          <EmptyState fill title="لا مقرّرات" message="اختر مقرّرًا لدرجات طلابه." />
+          <EmptyState fill title="لا مقرّرات" message="اختر مقرّرًا أولًا." />
         ) : (
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
         )}
@@ -339,7 +339,7 @@ export default function Grades() {
                     </View>
                   </View>
                   <Field
-                    label="ملاحظات للطالب (اختياري)"
+                    label="ملاحظات (اختياري)"
                     value={focusDraft?.feedback ?? ""}
                     onChangeText={(v) =>
                       focus &&
@@ -348,7 +348,7 @@ export default function Grades() {
                         [draftKey(focus.id)]: { score: focusDraft?.score ?? "", feedback: v },
                       }))
                     }
-                    placeholder="ملاحظة تصل الطالب مع الدرجة…"
+                    placeholder="ملاحظة تصل مع الدرجة…"
                     accessibilityLabel={`ملاحظات ${focus?.name ?? ""}`}
                   />
                   {formError ? (
@@ -379,14 +379,14 @@ export default function Grades() {
           ) : roster.isError ? (
             <ErrorState message={humanizeError(roster.error)} onRetry={() => roster.refetch()} />
           ) : rows.length === 0 ? (
-            <EmptyState fill title="لا طلاب" message="لا تسجيلات في المقرّر." />
+            <EmptyState fill title="لا طلاب" message="لا تسجيلات فيه." />
           ) : (
             <DataList
               data={rows}
               renderItem={renderRow}
               keyExtractor={rosterKeyExtractor}
               emptyTitle="لا طلاب"
-              emptyMessage="لا تسجيلات في المقرّر."
+              emptyMessage="لا تسجيلات فيه."
               contentPadding={{ horizontal: 20, bottom: 24 }}
             />
           )}

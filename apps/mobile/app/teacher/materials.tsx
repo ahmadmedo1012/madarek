@@ -92,7 +92,7 @@ export default function Materials() {
     mutationFn: async () => {
       if (effectiveOfferingId === "") throw new Error("اختر المقرّر أولاً.");
       if (name.trim().length < 1) throw new Error("اسم الملف مطلوب.");
-      if (!file) throw new Error("اختر ملف PDF للرفع.");
+      if (!file) throw new Error("اختر ملف PDF.");
       await validatePdf(file);
       setProgress(0);
       const path =
@@ -128,7 +128,7 @@ export default function Materials() {
       <StackHeader title="الملفات التعليمية" />
       <PageHeader
         title="الملفات التعليمية"
-        kicker="ملفات مقرّراتك — المشاهدات والتحميلات."
+        kicker="ملفاتك — المشاهدات والتحميلات."
       />
       <SectionBar
         index={1}
@@ -143,7 +143,7 @@ export default function Materials() {
         <ErrorState message={humanizeError(materials.error)} onRetry={() => materials.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
-          title="لم ترفع ملفات بعد"
+          title="لا ملفات بعد"
           message="أضف أول مادة."
           actionLabel="إضافة مادة"
           onAction={() => setSheetOpen(true)}
@@ -256,7 +256,7 @@ export default function Materials() {
               label="الحجم بالبايت (اختياري)"
               value={sizeBytes}
               onChangeText={setSizeBytes}
-              hint="البايتات كما في خدمة الملفات"
+              hint="البايتات من خدمة الملفات"
               keyboardType="number-pad"
               accessibilityLabel="الحجم بالبايت"
             />
@@ -266,7 +266,7 @@ export default function Materials() {
           label="الوصف (اختياري)"
           value={description}
           onChangeText={setDescription}
-          placeholder="وصف مختصر لمحتوى المادة…"
+          placeholder="وصف محتوى المادة…"
           accessibilityLabel="الوصف"
         />
         {error ? (

@@ -545,7 +545,7 @@ export function Assistant({
                 errorMessage={humanizeError(history.error)}
                 onRetry={() => void history.refetch()}
                 emptyTitle="لا محادثات سابقة"
-                emptyMessage="ابدأ أول سؤال — ستظهر محادثاتك هنا."
+                emptyMessage="ابدأ أول سؤال."
                 refetch={() => void history.refetch()}
                 isRefetching={history.isRefetching}
                 renderItem={({ item }) => (
@@ -740,7 +740,7 @@ function TurnBubble({
             <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6], paddingTop: sp[4] }}>
               {turn.status === "streaming" ? <Skeleton width={10} height={14} radius={2} /> : null}
               <T variant="xs" color="faint">
-                {turn.status === "streaming" ? "يكتب…" : "أُوقف الردّ — لم يُحفظ في السجلّ"}
+                {turn.status === "streaming" ? "يكتب…" : "أُوقف الردّ — لم يُحفظ."}
               </T>
             </View>
           ) : null}

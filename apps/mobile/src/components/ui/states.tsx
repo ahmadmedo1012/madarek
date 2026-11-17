@@ -131,25 +131,25 @@ const ROOMS: Record<EmptyRoom, RoomSheet> = {
   "exam-hall": {
     Art: PlanExamHall,
     title: "لا امتحانات بعد",
-    message: "عند نشر الامتحانات ستظهر هنا.",
-    a11y: "مخطط قاعة اختبار فارغة",
+    message: "تظهر هنا فور نشرها.",
+    a11y: "قاعة اختبار فارغة",
   },
   library: {
     Art: PlanLibrary,
     title: "لا ملفات",
-    message: "الملفات المشتركة معك ستظهر هنا.",
-    a11y: "مخطط مكتبة فارغة",
+    message: "تظهر هنا عند مشاركتها.",
+    a11y: "مكتبة فارغة",
   },
   "lecture-hall": {
     Art: PlanLectureHall,
     title: "لا محاضرات",
-    message: "ستظهر المحاضرات هنا بمجرد إضافتها.",
-    a11y: "مخطط قاعة محاضرات فارغة",
+    message: "تظهر هنا فور إضافتها.",
+    a11y: "قاعة محاضرات فارغة",
   },
   building: {
     Art: PlanBuilding,
     title: "لا محتوى",
-    message: "سيظهر المحتوى هنا بمجرد إضافته.",
+    message: "يظهر هنا فور إضافته.",
     a11y: "مخطط مبنى فارغ",
   },
 };
@@ -279,7 +279,7 @@ export function ErrorState({
         تعذّر تحميل البيانات
       </T>
       <T variant="body" color="muted" align={compact ? "right" : "center"}>
-        {message ?? "حدث خطأ أثناء الاتصال بالخادم."}
+        {message ?? "تعذّر الاتصال بالخادم."}
       </T>
       {onRetry || onReport ? (
         <View
@@ -307,7 +307,7 @@ export function ErrorState({
  */
 export function OfflineState({
   title = "أنت غير متصل بالإنترنت",
-  message = "لا نسخة محفوظة — التحميل عند عودة الاتصال.",
+  message = "لا نسخة محفوظة — عند عودة الاتصال.",
   onRetry,
 }: {
   title?: string;

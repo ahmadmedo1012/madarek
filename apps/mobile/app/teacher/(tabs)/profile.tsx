@@ -156,7 +156,7 @@ export default function TeacherProfile() {
       <AppTopBar alertsPath="/teacher/alerts" />
       <PageHeader
         title="الملف الأكاديمي"
-        kicker="كما يظهر للمسجل والجودة والطلاب."
+        kicker="للمسجل والجودة والطلاب."
       />
 
       {profile.isLoading ? (
@@ -166,7 +166,7 @@ export default function TeacherProfile() {
       ) : !me ? (
         <EmptyState
           title="لا ملف أستاذ مرتبط"
-          message="تواصل مع المسجل لربط ملفك."
+          message="رابطه عبر المسجل."
         />
       ) : (
         <>
@@ -213,8 +213,8 @@ export default function TeacherProfile() {
           {/* Workload — the wire's own numbers. */}
           {me.workload ? (
             <Card>
-              <StatLine label="المقرّرات هذا الفصل" value={latn(me.workload.courseCount)} />
-              <StatLine label="الطلاب" value={latn(me.workload.totalEnrolled)} hint="مسجَّلون في مقرّراتك" />
+              <StatLine label="مقرّرات الفصل" value={latn(me.workload.courseCount)} />
+              <StatLine label="الطلاب" value={latn(me.workload.totalEnrolled)} hint="في مقرّراتك" />
               {me.yearsExperience !== null && me.yearsExperience !== undefined ? (
                 <StatLine
                   label="سنوات الخبرة"
@@ -341,7 +341,7 @@ export default function TeacherProfile() {
                 value={bio}
                 onChangeText={setBio}
                 multiline
-                placeholder="نبذة عن خبرتك واهتماماتك العلمية…"
+                placeholder="نبذة عن خبرتك العلمية…"
                 textAlignVertical="top"
                 style={{ minHeight: 120 }}
               />
