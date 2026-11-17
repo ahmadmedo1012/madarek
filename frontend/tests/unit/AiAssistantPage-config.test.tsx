@@ -100,7 +100,7 @@ describe('AiAssistantPage — the honest-surface config (P4)', () => {
     mocks.config = { data: { provider: 'openai', model: 'test-model-name' }, isPending: false, isError: false };
     renderPage();
 
-    expect(screen.getByText(/مرحبًا! أرى بيانات إتقانك لأركّز على فجواتك/)).toBeInTheDocument();
+    expect(screen.getByText(/أرى بيانات إتقانك لأركّز على فجواتك/)).toBeInTheDocument(); // r366 copy diet: «مرحبًا!» dropped
     // R355 copy diet: explainer cut — the surviving real-engine
     // disclosure is the «نموذج خارجيّ» chip + the provider label.
     expect(screen.getByText('نموذج خارجيّ')).toBeInTheDocument();
@@ -132,7 +132,7 @@ describe('AiAssistantPage — the honest-surface config (P4)', () => {
     // — but only while the user hasn't sent anything.
     mocks.config = { data: { provider: 'openai', model: 'm1' }, isPending: false, isError: false };
     renderPage();
-    expect(screen.getByText(/مرحبًا! أرى بيانات إتقانك لأركّز على فجواتك/)).toBeInTheDocument();
+    expect(screen.getByText(/أرى بيانات إتقانك لأركّز على فجواتك/)).toBeInTheDocument(); // r366 copy diet: «مرحبًا!» dropped
   });
 
   it('once the user sends a message, the transcript is state-owned — a config flip cannot rewrite history', async () => {

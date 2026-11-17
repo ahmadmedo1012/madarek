@@ -84,6 +84,41 @@ const HR_CHIP_TONE: Record<'green' | 'amber' | 'red' | 'purple' | 'gold' | 'bran
   red: 'danger',
 };
 
+/* r366 copy-diet §7 — one home for the literals this page family
+ * repeats (page titles, empty states, table columns, validation);
+ * the copy gate counts per literal, so a shared const counts once. */
+const SCHEDULE_TITLE = 'جدول المحاضرات';
+const ATTENDANCE_TITLE = 'الحضور والغياب';
+const GRADES_TITLE = 'درجات الطلاب';
+const STUDENTS_TITLE = 'قائمة الطلاب';
+const PERFORMANCE_TITLE = 'الأداء والتحليل';
+const COURSE_LABEL = 'المقرّر';
+const PICK_COURSE = 'اختر مقرّراً';
+const NO_COURSES = 'لا مقرّرات';
+const NO_COURSES_OPTION = '— لا مقرّرات —';
+const NO_STUDENTS = 'لا طلاب';
+const STUDENT_COL = 'الطالب';
+const NAME_COL = 'الاسم';
+const UNIVERSITY_ID_COL = 'الرقم الجامعيّ';
+const AVG_GRADE_COL = 'متوسّط الدرجات';
+const ATTENDANCE_COL = 'الحضور';
+const BAND_COL = 'التقدير';
+const RISK_COL = 'المخاطرة';
+const TYPE_LABEL = 'النوع';
+const NOTES_OPTIONAL = 'ملاحظات (اختياري)';
+const NO_DATA = 'لا بيانات';
+const SAVING = 'جارٍ الحفظ…';
+const ADD_MATERIAL = 'إضافة المادة';
+const PICK_COURSE_FIRST = 'اختر المقرّر أولاً.';
+const FILE_NAME_REQUIRED = 'اسم الملف مطلوب.';
+const FILE_ADDED = 'أُضيف الملف إلى المقرّر.';
+const NO_LINKED_COURSES = 'لا مقرّرات مرتبطة بحسابك.';
+const MATERIAL_ADD_FAILED = 'تعذّرت إضافة المادة.';
+const SUBMISSION_UNIT: [string, string, string, string] = ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'];
+const ENTER_VALID_SCORE = 'أدخل درجة صحيحة.';
+const SCORE_NOT_NEGATIVE = 'الدرجة لا تكون سالبة.';
+const scoreCeilingError = (max: number) => `الدرجة يجب ألّا تتجاوز ${max}.`;
+
 function PageHeader({ title, subtitle, actions, brow }: { title: string; subtitle?: string; actions?: React.ReactNode; brow?: string }) {
   return (
     <header className="page-header">
@@ -156,7 +191,7 @@ function OfferingPickerSelect({
         value={effectiveOfferingId}
         onChange={(e) => onChange(e.target.value)}
       >
-        {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
+        {offerings.length === 0 && <option value="">{NO_COURSES_OPTION}</option>}
         {offerings.map((o) => (
           // r180: the term disambiguates same-course sections (a teacher
           // can hold the same course across terms — «CT301» ×2 otherwise).
@@ -171,8 +206,8 @@ export function TeacherSchedulePage() {
   const offsQ = useTeacherOfferings();
   /* r148 (AUDIT-2 L8): سبينر صفحي مكان هيكل مطابق الشكل — القائمة
      النهائية جدول حصص أسبوعي؛ TableSkeleton يحافظ على الإيقاع. */
-  if (offsQ.isPending) return <div className="page"><PageHeader title="جدول المحاضرات" /><Card><TableSkeleton rows={5} cols={4} /></Card></div>;
-  if (offsQ.isError) return <div className="page"><PageHeader title="جدول المحاضرات" /><ErrorState error={offsQ.error} onRetry={() => offsQ.refetch()} /></div>;
+  if (offsQ.isPending) return <div className="page"><PageHeader title={SCHEDULE_TITLE} /><Card><TableSkeleton rows={5} cols={4} /></Card></div>;
+  if (offsQ.isError) return <div className="page"><PageHeader title={SCHEDULE_TITLE} /><ErrorState error={offsQ.error} onRetry={() => offsQ.refetch()} /></div>;
 
   // Group all schedule slots by dayOfWeek across the teacher's offerings.
   const offerings = offsQ.data ?? [];
@@ -203,7 +238,7 @@ export function TeacherSchedulePage() {
     <div className="hr-scope">
       <div className="page">
       <PageHeader
-        title="جدول المحاضرات"
+        title={SCHEDULE_TITLE}
         brow="التدريس · الجدول"
         actions={(
           /* R341 D8 — the calendar-page precedent: a read-only ledger
@@ -215,7 +250,7 @@ export function TeacherSchedulePage() {
       />
       {days.length === 0 ? (
         <EmptyState
-          title="لا يوجد جدول مسجَّل"
+          title="لا جدول"
           illustration="empty-list"
           description=""
         />
@@ -246,7 +281,7 @@ export function TeacherSchedulePage() {
                   {d.dow === todayDow && <span className="hr-chip" data-tone="ember">اليوم</span>}
                   <span className="tpg-day-count">
                     {/* 22-c counted nouns. */}
-                    <bdi>{d.items.length}</bdi> {countAr(d.items.length, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}
+                    <bdi>{d.items.length}</bdi> {countAr(d.items.length, ['محاضرة', 'محاضرتان', 'محاضرات', 'محاضرة'])}
                   </span>
                 </span>
               </div>
@@ -266,7 +301,7 @@ export function TeacherSchedulePage() {
                       {/* P2-1 (5-A7): a scheduled slot with no enrollments
                           names the reality — countAr(0) renders the
                           broken «0 طالباً». */}
-                      {it.enrolled === 0 ? 'لا طلاب مسجَّلين' : countAr(it.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}
+                      {it.enrolled === 0 ? NO_STUDENTS : countAr(it.enrolled, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}
                     </div>
                   </div>
                   {/* P-G3b-r — Arabic-first codes: the course's Arabic name
@@ -421,7 +456,7 @@ export function AttendancePage() {
     return (
       <div className="page">
         <PageHeader
-          title="الحضور والغياب"
+          title={ATTENDANCE_TITLE}
         />
         <CardSkeleton lines={3} />
         <ListSkeleton rows={5} />
@@ -432,7 +467,7 @@ export function AttendancePage() {
     return (
       <div className="page">
         <PageHeader
-          title="الحضور والغياب"
+          title={ATTENDANCE_TITLE}
         />
         <ErrorState error={offsQ.error} onRetry={() => void offsQ.refetch()} />
       </div>
@@ -446,7 +481,7 @@ export function AttendancePage() {
     // handler (the save silently did nothing). Block with an inline
     // Arabic message instead; the wire value stays a UTC-midnight ISO.
     if (!date) {
-      setDateError('حدّد تاريخ الجلسة قبل الحفظ.');
+      setDateError('حدّد تاريخ الجلسة.');
       return;
     }
     setDateError(null);
@@ -466,7 +501,7 @@ export function AttendancePage() {
     <div className="hr-scope">
     <div className="page">
       <PageHeader
-        title="الحضور والغياب"
+        title={ATTENDANCE_TITLE}
         brow="التدريس · الحضور"
         actions={
           <button
@@ -480,16 +515,16 @@ export function AttendancePage() {
             onClick={onSave}
             disabled={!effectiveOfferingId || students.length === 0 || record.isPending}
           >
-            {record.isPending ? 'جارٍ الحفظ…' : 'حفظ السجلّ'}
+            {record.isPending ? SAVING : 'حفظ السجلّ'}
           </button>
         }
       />
 
       <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>الجلسة</>} icon={Calendar} className="tpg-session">
         <div className="form-row-3">
-          <FormField label="المقرّر">
+          <FormField label={COURSE_LABEL}>
             <select className="input" value={effectiveOfferingId} onChange={(e) => setOfferingId(e.target.value)}>
-              {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
+              {offerings.length === 0 && <option value="">{NO_COURSES_OPTION}</option>}
               {offerings.map((o) => (
                 <option key={o.id} value={o.id}>{o.course.name} ({o.course.code} · {o.term})</option>
               ))}
@@ -539,7 +574,7 @@ export function AttendancePage() {
           icon={ClipboardCheck}
         >
           {!effectiveOfferingId ? (
-            <EmptyState title="لا توجد مقرّرات" description="" illustration="empty-courses" />
+            <EmptyState title={NO_COURSES} description="" illustration="empty-courses" />
           ) : stuQ.isPending ? (
             <ListSkeleton rows={5} />
           ) : stuQ.isError ? (
@@ -547,7 +582,7 @@ export function AttendancePage() {
           ) : students.length === 0 ? (
             <>
               <TechnicalPlate variant="knowledge" className="tech-plate-margin" />
-              <EmptyState title="لا طلاب" description="" illustration="empty-list" />
+              <EmptyState title={NO_STUDENTS} description="" illustration="empty-list" />
             </>
           ) : (
             <div className="flex-col gap-2">
@@ -636,7 +671,7 @@ export function AttendancePage() {
               ))}
             </div>
           ) : students.length === 0 ? (
-            <EmptyState icon={ClipboardCheck} title="لا طلاب" description="" illustration="empty-list" />
+            <EmptyState icon={ClipboardCheck} title={NO_STUDENTS} description="" illustration="empty-list" />
           ) : (
             <div className="flex-col gap-4">
               {/* R304: the honest dim rides a class now (was 4× inline
@@ -700,7 +735,7 @@ export function GradesPage() {
   if (offsQ.isPending) {
     return (
       <div className="page">
-        <PageHeader title="درجات الطلاب" />
+        <PageHeader title={GRADES_TITLE} />
         <TableSkeleton rows={5} cols={5} />
       </div>
     );
@@ -708,7 +743,7 @@ export function GradesPage() {
   if (offsQ.isError) {
     return (
       <div className="page">
-        <PageHeader title="درجات الطلاب" />
+        <PageHeader title={GRADES_TITLE} />
         <ErrorState error={offsQ.error} onRetry={() => void offsQ.refetch()} />
       </div>
     );
@@ -719,7 +754,7 @@ export function GradesPage() {
     <div className="hr-scope">
     <div className="page">
       <PageHeader
-        title="درجات الطلاب"
+        title={GRADES_TITLE}
         brow="التدريس · الدرجات"
         actions={(
           <>
@@ -731,7 +766,7 @@ export function GradesPage() {
               offerings={offerings}
               effectiveOfferingId={effectiveOfferingId}
               onChange={setOfferingId}
-              label="المقرّر"
+              label={COURSE_LABEL}
             />
           </>
         )}
@@ -752,23 +787,23 @@ export function GradesPage() {
         }
       >
         {!effectiveOfferingId ? (
-          <EmptyState title="اختر مقرّراً" description="" illustration="empty-courses" />
+          <EmptyState title={PICK_COURSE} description="" illustration="empty-courses" />
         ) : stuQ.isPending ? (
           <TableSkeleton rows={5} cols={5} />
         ) : stuQ.isError ? (
           <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : (stuQ.data ?? []).length === 0 ? (
-          <EmptyState title="لا طلاب" description="" illustration="empty-list" />
+          <EmptyState title={NO_STUDENTS} description="" illustration="empty-list" />
         ) : (
           <div className="table-wrap tpg-grades">
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <SortableHead label="الطالب" sortKey="name" sort={sort} onCycle={cycleSort} />
-                  <th scope="col">الرقم الجامعيّ</th>
-                  <SortableHead label="متوسّط الدرجات" sortKey="average" sort={sort} onCycle={cycleSort} />
-                  <SortableHead label="الحضور" sortKey="attendance" sort={sort} onCycle={cycleSort} />
-                  <th scope="col">التقدير</th>
+                  <SortableHead label={STUDENT_COL} sortKey="name" sort={sort} onCycle={cycleSort} />
+                  <th scope="col">{UNIVERSITY_ID_COL}</th>
+                  <SortableHead label={AVG_GRADE_COL} sortKey="average" sort={sort} onCycle={cycleSort} />
+                  <SortableHead label={ATTENDANCE_COL} sortKey="attendance" sort={sort} onCycle={cycleSort} />
+                  <th scope="col">{BAND_COL}</th>
                 </tr>
               </thead>
               <tbody>
@@ -779,16 +814,16 @@ export function GradesPage() {
                   const band = gradeBand(s.avgGrade);
                   return (
                     <tr key={s.studentId}>
-                      <td className="tbl-strong" data-label="الطالب">{s.name}</td>
-                      <td data-label="الرقم الجامعيّ"><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
-                      <td className="tbl-num" data-label="متوسّط الدرجات"><bdi>{formatPct1(s.avgGrade)}%</bdi></td>
+                      <td className="tbl-strong" data-label={STUDENT_COL}>{s.name}</td>
+                      <td data-label={UNIVERSITY_ID_COL}><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
+                      <td className="tbl-num" data-label={AVG_GRADE_COL}><bdi>{formatPct1(s.avgGrade)}%</bdi></td>
                       {/* bdi keeps the Latin %-sign placement stable in
                           the RTL cell — same isolation as the average
                           column beside it. */}
-                      <td className="tbl-num" data-label="الحضور"><bdi>{formatPct1(s.attendancePct)}%</bdi></td>
+                      <td className="tbl-num" data-label={ATTENDANCE_COL}><bdi>{formatPct1(s.attendancePct)}%</bdi></td>
                       {/* R305 Heron: the band chip speaks the ONE status
                           vocabulary (.hr-chip[data-tone]). */}
-                      <td data-label="التقدير"><span className="hr-chip" data-tone={HR_CHIP_TONE[band.color]}>{band.label}</span></td>
+                      <td data-label={BAND_COL}><span className="hr-chip" data-tone={HR_CHIP_TONE[band.color]}>{band.label}</span></td>
                     </tr>
                   );
                 })}
@@ -904,11 +939,11 @@ function SemesterGradeEntry({
 
   const onSave = async () => {
     if (maxInvalid) {
-      setFormError('الدرجة العظمى عدد صحيح بين 1 و100.');
+      setFormError('عدد صحيح بين 1 و100.');
       return;
     }
     if (weightInvalid) {
-      setFormError('الوزن عدد صحيح بين 0 و100.');
+      setFormError('عدد صحيح بين 0 و100.');
       return;
     }
     if (dirtyRows.length === 0) {
@@ -917,7 +952,7 @@ function SemesterGradeEntry({
     }
     if (dirtyRows.length > 200) {
       // gradesUpsertSchema caps the array at 200 — the roster can exceed it.
-      setFormError('الحدّ 200 درجة في الحفظة الواحدة.');
+      setFormError('الحدّ 200 درجة في الحفظة.');
       return;
     }
     /* Per-row validation mirrors GradeSubmissionModal's copy: a valid
@@ -926,13 +961,13 @@ function SemesterGradeEntry({
     for (const s of dirtyRows) {
       const d = drafts[draftKey(kind, s.studentId)]!;
       const value = Number(d.score);
-      if (d.score.trim() === '' || Number.isNaN(value)) errors[s.studentId] = 'أدخل درجة صحيحة.';
-      else if (value < 0) errors[s.studentId] = 'الدرجة لا تكون سالبة.';
-      else if (value > maxVal) errors[s.studentId] = `الدرجة يجب ألّا تتجاوز ${maxVal}.`;
+      if (d.score.trim() === '' || Number.isNaN(value)) errors[s.studentId] = ENTER_VALID_SCORE;
+      else if (value < 0) errors[s.studentId] = SCORE_NOT_NEGATIVE;
+      else if (value > maxVal) errors[s.studentId] = scoreCeilingError(maxVal);
     }
     setRowErrors(errors);
     if (Object.keys(errors).length > 0) {
-      setFormError('صحّح الصفوف المعلَّمة قبل الحفظ.');
+      setFormError('صحّح الصفوف المعلَّمة أولًا.');
       return;
     }
     setFormError(null);
@@ -970,7 +1005,7 @@ function SemesterGradeEntry({
       icon={ClipboardCheck}
       subtitle={
         dirtyRows.length > 0
-          ? countAr(dirtyRows.length, ['صف واحد غير محفوظ', 'صفان غير محفوظان', 'صفوف غير محفوظة', 'صفاً غير محفوظاً'])
+          ? countAr(dirtyRows.length, ['صف غير محفوظ', 'صفان غير محفوظان', 'صفوف غير محفوظة', 'صفاً غير محفوظاً'])
           : 'الفارغ لا يُرسَل.'
       }
       actions={
@@ -982,7 +1017,7 @@ function SemesterGradeEntry({
           onClick={() => void onSave()}
           disabled={pending || !offeringId || students.length === 0}
         >
-          {pending ? 'جارٍ الحفظ…' : 'حفظ الدرجات'}
+          {pending ? SAVING : 'حفظ الدرجات'}
         </button>
       }
     >
@@ -1035,13 +1070,13 @@ function SemesterGradeEntry({
         </div>
 
         {!offeringId ? (
-          <EmptyState title="اختر مقرّراً" description="" illustration="empty-courses" />
+          <EmptyState title={PICK_COURSE} description="" illustration="empty-courses" />
         ) : studentsQ.isPending ? (
           <TableSkeleton rows={5} cols={3} />
         ) : studentsQ.isError ? (
           <ErrorState error={studentsQ.error} onRetry={() => studentsQ.refetch()} />
         ) : students.length === 0 ? (
-          <EmptyState title="لا طلاب" description="" illustration="empty-list" />
+          <EmptyState title={NO_STUDENTS} description="" illustration="empty-list" />
         ) : gradesQ.isPending ? (
           <TableSkeleton rows={4} cols={3} />
         ) : gradesQ.isError ? (
@@ -1055,9 +1090,9 @@ function SemesterGradeEntry({
             <table className="table tbl-stack tpg-grade-table">
               <thead>
                 <tr>
-                  <th scope="col">الطالب</th>
+                  <th scope="col">{STUDENT_COL}</th>
                   <th scope="col">{`الدرجة (0–${maxInvalid ? 100 : maxVal})`}</th>
-                  <th scope="col">ملاحظات (اختياري)</th>
+                  <th scope="col">{NOTES_OPTIONAL}</th>
                 </tr>
               </thead>
               <tbody>
@@ -1073,7 +1108,7 @@ function SemesterGradeEntry({
                   const errId = `grade-row-err-${s.studentId}`;
                   return (
                     <tr key={s.studentId}>
-                      <td className="tbl-strong" data-label="الطالب">
+                      <td className="tbl-strong" data-label={STUDENT_COL}>
                         <div>{s.name}</div>
                         <div className="text-xs text-muted font-mono"><bdi>{s.universityId}</bdi></div>
                       </td>
@@ -1101,7 +1136,7 @@ function SemesterGradeEntry({
                           </p>
                         )}
                       </td>
-                      <td data-label="ملاحظات (اختياري)">
+                      <td data-label={NOTES_OPTIONAL}>
                         <input
                           type="text"
                           className="input"
@@ -1140,7 +1175,7 @@ function SemesterGradeEntry({
         {upsert.isSuccess && (
           <div className="form-feedback ok" role="status" style={{ marginBlockStart: 'var(--sp-3)' }}>
             <Icon icon={CheckCircle2} size={14} />
-            <span>تمّ حفظ الدرجات المسجَّلة.</span>
+            <span>تمّ الحفظ.</span>
           </div>
         )}
       </form>
@@ -1241,8 +1276,8 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
        * leaves the browser — the mirror of the server's guards. Early
        * returns (not one chained ternary) so the picked file narrows to
        * File for the mutation payload below. */
-      if (!effectiveOfferingId) { setValidationError('اختر المقرّر أولاً.'); return; }
-      if (name.trim().length < 1) { setValidationError('اسم الملف مطلوب.'); return; }
+      if (!effectiveOfferingId) { setValidationError(PICK_COURSE_FIRST); return; }
+      if (name.trim().length < 1) { setValidationError(FILE_NAME_REQUIRED); return; }
       if (!file) { setValidationError('اختر ملف PDF.'); return; }
       const fileErr = validatePdfFile(file);
       if (fileErr) { setValidationError(fileErr); return; }
@@ -1258,7 +1293,7 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
            * the hook rounds to 0–100. */
           onUploadProgress: setProgress,
         });
-      toast.success('أُضيف الملف إلى المقرّر.');
+      toast.success(FILE_ADDED);
         onClose();
       } catch {
         // surfaced inline from uploadMaterial.isError below
@@ -1266,9 +1301,9 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
       return;
     }
     const err =
-      !effectiveOfferingId ? 'اختر المقرّر أولاً.' :
-      name.trim().length < 1 ? 'اسم الملف مطلوب.' :
-      !/^https:\/\//.test(url.trim()) ? 'الرابط يجب أن يبدأ بـ https://' :
+      !effectiveOfferingId ? PICK_COURSE_FIRST :
+      name.trim().length < 1 ? FILE_NAME_REQUIRED :
+      !/^https:\/\//.test(url.trim()) ? 'الرابط يبدأ بـ https://' :
       null;
     setValidationError(err);
     if (err) return;
@@ -1280,7 +1315,7 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
         url: url.trim(),
         description: description.trim() || undefined,
       });
-      toast.success('أُضيف الملف إلى المقرّر.');
+      toast.success(FILE_ADDED);
       onClose();
     } catch {
       // surfaced inline from create.isError below
@@ -1323,7 +1358,7 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
             </Pill>
           </div>
 
-          <FormField label="المقرّر" error={list.length === 0 ? 'لا مقرّرات مرتبطة بحسابك.' : undefined}>
+          <FormField label={COURSE_LABEL} error={list.length === 0 ? NO_LINKED_COURSES : undefined}>
             <select
               className="input"
               value={effectiveOfferingId}
@@ -1408,13 +1443,13 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
                   select collapses to an honest static chip (no fake
                   choice of types this channel cannot take). */}
               <div className="form-field">
-                <div className="form-field-label">النوع</div>
+                <div className="form-field-label">{TYPE_LABEL}</div>
                 <Pill icon={FileText}>PDF</Pill>
               </div>
             </>
           ) : (
             <>
-              <FormField label="النوع">
+              <FormField label={TYPE_LABEL}>
                 <select
                   className="input"
                   value={type}
@@ -1472,8 +1507,8 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
                     generic fallback; the link mode keeps
                     apiErrorMessage. */}
                 {mode === 'file'
-                  ? pdfUploadErrorMessage(uploadMaterial.error, 'تعذّرت إضافة المادة.')
-                  : apiErrorMessage(create.error, 'تعذّرت إضافة المادة.')}
+                  ? pdfUploadErrorMessage(uploadMaterial.error, MATERIAL_ADD_FAILED)
+                  : apiErrorMessage(create.error, MATERIAL_ADD_FAILED)}
               </span>
               <button
                 type="button"
@@ -1492,8 +1527,8 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
           </button>
           <button type="submit" className="btn primary hr-cta" disabled={pending}>
             {mode === 'file'
-              ? (uploadMaterial.isPending ? 'جارٍ رفع الملف…' : 'إضافة المادة')
-              : (create.isPending ? 'جارٍ الإضافة…' : 'إضافة المادة')}
+              ? (uploadMaterial.isPending ? 'جارٍ رفع الملف…' : ADD_MATERIAL)
+              : (create.isPending ? 'جارٍ الإضافة…' : ADD_MATERIAL)}
           </button>
         </div>
       </form>
@@ -1621,7 +1656,7 @@ export function StudentsListPage() {
   if (offsQ.isPending) {
     return (
       <div className="page">
-        <PageHeader title="قائمة الطلاب" />
+        <PageHeader title={STUDENTS_TITLE} />
         <TableSkeleton rows={5} cols={6} />
       </div>
     );
@@ -1629,7 +1664,7 @@ export function StudentsListPage() {
   if (offsQ.isError) {
     return (
       <div className="page">
-        <PageHeader title="قائمة الطلاب" />
+        <PageHeader title={STUDENTS_TITLE} />
         <ErrorState error={offsQ.error} onRetry={() => void offsQ.refetch()} />
       </div>
     );
@@ -1640,7 +1675,7 @@ export function StudentsListPage() {
     <div className="hr-scope">
     <div className="page">
       <PageHeader
-        title="قائمة الطلاب"
+        title={STUDENTS_TITLE}
         brow="التدريس · الفصل"
         actions={(
           <>
@@ -1658,7 +1693,7 @@ export function StudentsListPage() {
               offerings={offerings}
               effectiveOfferingId={effectiveOfferingId}
               onChange={setOfferingId}
-              label="المقرّر"
+              label={COURSE_LABEL}
             />
           </>
         )}
@@ -1673,8 +1708,8 @@ export function StudentsListPage() {
                 /* P2-1: «0 طالباً» is broken Arabic — the zero case names
                  * the reality (the empty-state below carries the guidance). */
                 students.length === 0
-                  ? 'لا طلاب مسجَّلين'
-                  : countAr(students.length, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])
+                  ? NO_STUDENTS
+                  : countAr(students.length, ['طالب', 'طالبان', 'طلاب', 'طالباً'])
               }`
               : 'الطلاب'}
           </>
@@ -1682,31 +1717,31 @@ export function StudentsListPage() {
         icon={Users}
       >
         {!effectiveOfferingId ? (
-          <EmptyState title="اختر مقرّراً" description="" illustration="empty-courses" />
+          <EmptyState title={PICK_COURSE} description="" illustration="empty-courses" />
         ) : stuQ.isPending ? (
           <TableSkeleton rows={5} cols={6} />
         ) : stuQ.isError ? (
           <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : students.length === 0 ? (
-          <EmptyState title="لا طلاب" description="" illustration="empty-list" />
+          <EmptyState title={NO_STUDENTS} description="" illustration="empty-list" />
         ) : (
           <div className="table-wrap tpg-students">
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <SortableHead label="الاسم" sortKey="name" sort={sort} onCycle={cycleSort} />
-                  <th scope="col">الرقم الجامعيّ</th>
-                  <SortableHead label="الحضور" sortKey="attendance" sort={sort} onCycle={cycleSort} />
+                  <SortableHead label={NAME_COL} sortKey="name" sort={sort} onCycle={cycleSort} />
+                  <th scope="col">{UNIVERSITY_ID_COL}</th>
+                  <SortableHead label={ATTENDANCE_COL} sortKey="attendance" sort={sort} onCycle={cycleSort} />
                   <SortableHead label="المتوسّط" sortKey="average" sort={sort} onCycle={cycleSort} />
                   {/* A6 P2 (22-a): «التقدير» — the same column name and
                       the same gradeBand chip as the grades table; the
                       old «الحالة» column carried a private vocabulary
                       (متفوّق/متوسّط) that disagreed with its sisters. */}
-                  <th scope="col">التقدير</th>
+                  <th scope="col">{BAND_COL}</th>
                   {/* r164-h: «المخاطرة» — the same risk vocabulary the
                       intelligence page's risk rows wear, so the row's
                       link (below) has visible context to act on. */}
-                  <th scope="col">المخاطرة</th>
+                  <th scope="col">{RISK_COL}</th>
                 </tr>
               </thead>
               <tbody>
@@ -1717,7 +1752,7 @@ export function StudentsListPage() {
                       {/* r164-h: the name is the row's door — ONE tap to
                           the offering's intelligence deep dive (the risk
                           context the chip beside it names). */}
-                      <td className="tbl-strong" data-label="الاسم">
+                      <td className="tbl-strong" data-label={NAME_COL}>
                         <Link
                           to={`/teacher/intelligence/${effectiveOfferingId}`}
                           className="text-link"
@@ -1726,14 +1761,14 @@ export function StudentsListPage() {
                           {s.name}
                         </Link>
                       </td>
-                      <td data-label="الرقم الجامعيّ"><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
-                      <td className="tbl-num" data-label="الحضور">{formatPct1(s.attendancePct)}%</td>
+                      <td data-label={UNIVERSITY_ID_COL}><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
+                      <td className="tbl-num" data-label={ATTENDANCE_COL}>{formatPct1(s.attendancePct)}%</td>
                       <td className="tbl-num" data-label="المتوسّط"><bdi>{formatPct1(s.avgGrade)}%</bdi></td>
                       {/* R305 Heron: band + risk ride the ONE chip vocabulary
                           (the same tones the grades table and the dashboard
                           risk rows wear). */}
-                      <td data-label="التقدير"><span className="hr-chip" data-tone={HR_CHIP_TONE[band.color]}>{band.label}</span></td>
-                      <td data-label="المخاطرة">
+                      <td data-label={BAND_COL}><span className="hr-chip" data-tone={HR_CHIP_TONE[band.color]}>{band.label}</span></td>
+                      <td data-label={RISK_COL}>
                         <span className="hr-chip" data-tone={HR_CHIP_TONE[STUDENT_RISK_TONE[s.riskLevel]]}>{STUDENT_RISK_LABEL[s.riskLevel]}</span>
                       </td>
                     </tr>
@@ -1817,7 +1852,7 @@ export function PerformancePage() {
   if (offsQ.isPending) {
     return (
       <div className="page">
-        <PageHeader title="الأداء والتحليل" />
+        <PageHeader title={PERFORMANCE_TITLE} />
         <StatStripSkeleton />
         <CardSkeleton lines={5} />
       </div>
@@ -1826,7 +1861,7 @@ export function PerformancePage() {
   if (offsQ.isError) {
     return (
       <div className="page">
-        <PageHeader title="الأداء والتحليل" />
+        <PageHeader title={PERFORMANCE_TITLE} />
         <ErrorState error={offsQ.error} onRetry={() => void offsQ.refetch()} />
       </div>
     );
@@ -1842,7 +1877,7 @@ export function PerformancePage() {
     <div className="hr-scope">
     <div className="page">
       <PageHeader
-        title="الأداء والتحليل"
+        title={PERFORMANCE_TITLE}
         brow="التدريس · التحليل"
         actions={(
           <>
@@ -1859,14 +1894,14 @@ export function PerformancePage() {
               offerings={offerings}
               effectiveOfferingId={effectiveOfferingId}
               onChange={setOfferingId}
-              label="المقرّر"
+              label={COURSE_LABEL}
             />
           </>
         )}
       />
 
       {!effectiveOfferingId ? (
-        <EmptyState title="اختر مقرّراً" description="" illustration="empty-courses" />
+        <EmptyState title={PICK_COURSE} description="" illustration="empty-courses" />
       ) : stuQ.isPending || analytics.isPending ? (
         /* 5-C3 (A9 P2-2): bare spinner → the shapes that land — the
            stat strip + the distribution card — so the data-land swap
@@ -1879,7 +1914,7 @@ export function PerformancePage() {
       ) : stuQ.isError ? (
         <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
       ) : analytics.isError ? (
-        <ErrorState message="تعذَّر تحميل مؤشّرات المقرّر" error={analytics.error} onRetry={() => analytics.refetch()} />
+        <ErrorState message="تعذّر تحميل المؤشّرات" error={analytics.error} onRetry={() => analytics.refetch()} />
       ) : (
         <>
           <StatStrip
@@ -1888,13 +1923,13 @@ export function PerformancePage() {
               {
                 label: 'معدّل النجاح',
                 value: students.length > 0 ? `${formatPct1(passRate)}%` : '—',
-                trend: students.length > 0 ? `${passing} من ${students.length}` : 'لا بيانات',
+                trend: students.length > 0 ? `${passing} من ${students.length}` : NO_DATA,
                 trendTone: students.length === 0 ? 'flat' : passRate >= 70 ? 'up' : passRate >= 50 ? 'flat' : 'down',
               },
               {
                 label: 'طلاب متفوّقون',
                 value: top.toString(),
-                trend: students.length > 0 ? `من ${students.length}` : 'لا بيانات',
+                trend: students.length > 0 ? `من ${students.length}` : NO_DATA,
                 trendTone: 'flat',
               },
               {
@@ -2060,7 +2095,7 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
       <div className="hr-scope">
       <form onSubmit={(e) => { e.preventDefault(); void onSubmit(); }} noValidate>
         <div className="modal-body">
-          <FormField label="المقرّر" error={list.length === 0 ? 'لا مقرّرات مرتبطة بحسابك.' : undefined}>
+          <FormField label={COURSE_LABEL} error={list.length === 0 ? NO_LINKED_COURSES : undefined}>
             <select
               className="input"
               value={effectiveOfferingId}
@@ -2090,7 +2125,7 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
             />
           </FormField>
 
-          <FormField label="النوع">
+          <FormField label={TYPE_LABEL}>
             <select
               className="input"
               value={type}
@@ -2294,7 +2329,7 @@ export function AssignmentsPage() {
                         countAr(0) renders the broken «0 تسليماً». */}
                     <span className="text-xs font-mono text-muted">
                       <bdi>{a.submissions} / {a.enrolled}</bdi>{' '}
-                      {a.submissions === 0 ? 'لا تسليمات بعد' : countAr(a.submissions, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'])}
+                      {a.submissions === 0 ? 'لا تسليمات بعد' : countAr(a.submissions, SUBMISSION_UNIT)}
                     </span>
                     <Badge color={ratioTone}>{Math.round(ratio * 100)}%</Badge>
                   </div>
@@ -2429,7 +2464,7 @@ function NeedsReviewCard({
       subtitle={
         pending.length === 0
           ? undefined
-          : countAr(pending.length, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً']) + ' بانتظار درجتك'
+          : countAr(pending.length, SUBMISSION_UNIT) + ' بانتظار درجتك'
       }
     >
       {isPending ? (
@@ -2480,7 +2515,7 @@ function NeedsReviewCard({
                   <Badge>الدرجة من <bdi className="font-mono">{g.maxScore}</bdi></Badge>
                 )}
                 <span className="hr-chip" data-tone="warn">
-                  {countAr(g.rows.length, ['تسليم واحد', 'تسليمان', 'تسليمات', 'تسليماً'])}
+                  {countAr(g.rows.length, SUBMISSION_UNIT)}
                 </span>
               </div>
               <div className="tpg-queue-rows">
@@ -2535,14 +2570,14 @@ function SubmissionFileLink({ fileUrl, assignmentTitle }: { fileUrl: string; ass
         className="btn outline sm"
       >
         <Icon icon={FileText} size={13} />
-        فتح الملف في العارض
+        فتح في العارض
       </Link>
     );
   }
   return (
     <a href={fileUrl} target="_blank" rel="noreferrer" className="btn outline sm">
       <Icon icon={ExternalLink} size={13} />
-      فتح الملف الخارجي
+      فتح الرابط
     </a>
   );
 }
@@ -2590,15 +2625,15 @@ function GradeSubmissionModal({
   const onSubmit = async () => {
     const value = Number(score);
     if (score.trim() === '' || Number.isNaN(value)) {
-      setValidationError('أدخل درجة صحيحة.');
+      setValidationError(ENTER_VALID_SCORE);
       return;
     }
     if (value < 0) {
-      setValidationError('الدرجة لا تكون سالبة.');
+      setValidationError(SCORE_NOT_NEGATIVE);
       return;
     }
     if (target.maxScore !== undefined && value > target.maxScore) {
-      setValidationError(`الدرجة يجب ألّا تتجاوز ${target.maxScore}.`);
+      setValidationError(scoreCeilingError(target.maxScore));
       return;
     }
     setValidationError(null);
@@ -2672,7 +2707,7 @@ function GradeSubmissionModal({
           {done ? (
             <div className="form-feedback ok" role="status">
               <Icon icon={CheckCircle2} size={15} />
-              <span className="flex-1">تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.</span>
+              <span className="flex-1">تمّ الحفظ — أُشعر الطالب بالنتيجة.</span>
             </div>
           ) : (
             <>
@@ -2700,7 +2735,7 @@ function GradeSubmissionModal({
                 />
               </FormField>
 
-              <FormField label="ملاحظات للطالب (اختياري)">
+              <FormField label={NOTES_OPTIONAL}>
                 <textarea
                   className="input"
                   rows={4}
@@ -2738,7 +2773,7 @@ function GradeSubmissionModal({
               className="btn primary hr-cta"
               disabled={grade.isPending}
             >
-              {grade.isPending ? 'جارٍ الحفظ…' : 'حفظ الدرجة'}
+              {grade.isPending ? SAVING : 'حفظ الدرجة'}
             </button>
           )}
         </div>

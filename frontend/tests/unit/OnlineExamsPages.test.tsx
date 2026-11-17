@@ -473,7 +473,8 @@ describe('Exam taker ergonomics (5-A6 P2-2/P2-3)', () => {
     });
     expect(within(map).getByRole('button', { name: 'السؤال 1 من 2 — مُجاب' })).toBeTruthy();
     expect(within(map).getByRole('button', { name: 'السؤال 2 من 2 — بدون إجابة' })).toBeTruthy();
-    expect(screen.getByText('محفوظة')).toBeTruthy();
+    /* r366 (2-c): the calm autosave pair — يُحفَظ تلقائيًا / تم الحفظ. */
+    expect(screen.getByText('تم الحفظ')).toBeTruthy();
     expect(screen.getByText('سؤال واحد بدون إجابة')).toBeTruthy();
   });
 
@@ -1222,7 +1223,9 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
       fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
     });
 
-    expect(screen.getByText(/لم يفتح باب هذا الاختبار بعد — يفتح /)).toBeTruthy();
+    /* r366 (2-c): the enrichment adds only the WHEN — the server's own
+     * line already carries the not-open state. */
+    expect(screen.getByText(/^يفتح .+\.$/)).toBeTruthy();
     // The enriched copy won — not the generic refusal fallback.
     expect(screen.queryByText(/تحقّق من اتصالك/)).toBeNull();
   });

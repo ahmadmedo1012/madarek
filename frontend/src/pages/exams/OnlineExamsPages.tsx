@@ -11,7 +11,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ClipboardCheck, Clock, CheckCircle2, AlertTriangle, ChevronRight, ChevronDown, ChevronLeft,
   FileText, Hourglass, CalendarClock, ArrowLeft, Check,
-  ListChecks, Info, Ban, BarChart3, Compass,
+  ListChecks, Info, Ban, BarChart3, Compass, Map as MapIcon,
 } from 'lucide-react';
 import { Card, Badge, PageHeader } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
@@ -138,7 +138,10 @@ export function examWindowState(
 function startErrorAr(error: unknown, exam: MyExam | undefined): string {
   const detail = apiErrorDetailRaw(error);
   if (detail === 'لم يفتح باب هذا الاختبار بعد' && exam?.openAt) {
-    return `لم يفتح باب هذا الاختبار بعد — يفتح ${formatDateTimeAr(exam.openAt)}.`;
+    /* r366 (2-c): the server's own line already said «لم يفتح باب هذا
+     * الاختبار بعد» — the enriched state adds only the WHEN (the exam
+     * card's title names the exam). */
+    return `يفتح ${formatDateTimeAr(exam.openAt)}.`;
   }
   return apiErrorMessage(error, 'تعذَّر بدء الاختبار.');
 }
@@ -758,6 +761,73 @@ export function ExamTakerPage() {
   // One assertive screen-reader announcement when the remaining time
   // crosses into the urgent window (never per-tick — that would spam).
   const [urgentNote, setUrgentNote] = useState<string | null>(null);
+  /* ── r366 (brief 2-c) — the taker as geometry-honest product ──
+   * The sticky bar's PAINTED height is the one truth every jump math
+   * must track: the rem-constant scroll-margin could not follow the
+   * bar re-wrapping (390×320: bar 236px vs 10rem ≈ 140px — the bar
+   * covered the card it scrolled to). barRef + ResizeObserver measure
+   * the real height; the reading drives (a) the per-card inline
+   * scroll-margin (scroll-margin-block-start = barH + gap, an inline
+   * style so it outranks the rem fallbacks in patterns.css) and (b)
+   * the IntersectionObserver band top below. jsdom ships no
+   * ResizeObserver and rect 0 — barH stays 0 there and the CSS
+   * fallback + the old band constants hold (unit pins unaffected). */
+  const barRef = useRef<HTMLDivElement | null>(null);
+  /* barH carries the FULL sticky span (app-topbar offset + painted
+   * height) — the one number every clearance math needs. */
+  const [barH, setBarH] = useState(0);
+  /* r366 (2-c) — the measured bar rides a CALLBACK REF, not an effect:
+   * the bar renders only in the ACTIVE phase (the entry screen mounts
+   * first), so a mount-scoped [] effect met a null ref and never
+   * re-ran — barH stayed 0 and the rem fallback kept covering cards
+     * (measured live). The callback observes the real element the
+     * moment it mounts and re-observes on any swap. */
+  const roRef = useRef<ResizeObserver | null>(null);
+  const attachBar = (el: HTMLElement | null) => {
+    barRef.current = el;
+    roRef.current?.disconnect();
+    roRef.current = null;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const measure = () => {
+      /* the sticky seat: the bar sticks BELOW the app topbar (its CSS
+       * `top`), so a card aligned to the scrollport top clears the
+       * bar's FULL sticky span — stickyTop + painted height + a 12px
+       * breathing gap. */
+      const stickyTop = parseFloat(getComputedStyle(el).top) || 0;
+      setBarH(Math.round(stickyTop + el.offsetHeight));
+    };
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    roRef.current = ro;
+    measure();
+  };
+  // Phone band (≤640): the question palette collapses behind ONE toggle
+  // and opens as a sheet docked under the bar — the always-on 44px dot
+  // row made the bar ~180px on a 320px viewport. jsdom's matchMedia
+  // stub reports matches:false, so unit tests keep the desktop map.
+  const [isPhone, setIsPhone] = useState(
+    () => typeof window !== 'undefined'
+      && typeof window.matchMedia === 'function'
+      && window.matchMedia('(max-width: 640px)').matches,
+  );
+  const [qmapOpen, setQmapOpen] = useState(false);
+
+  /* r366 (2-c) — the measured-bar effects: (a) the PAINTED bar height
+   * drives every jump math (the rem-constant scroll-margin could not
+   * follow the bar re-wrapping: 390×320 measured bar 236px vs the
+   * 10rem ≈ 140px margin — the bar covered the card it scrolled to);
+   * (b) the phone band rides the live matchMedia so a resize crossing
+   * 640px re-seats the map without a reload. jsdom ships no
+   * ResizeObserver — barH stays 0 there and the CSS fallback holds
+   * (unit pins unaffected). */
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mq = window.matchMedia('(max-width: 640px)');
+    const onChange = () => setIsPhone(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
 
   // D5 orientation: if the exams list already knows this student has an
   // IN_PROGRESS attempt, the entry screen speaks the truth — the timer
@@ -1467,7 +1537,7 @@ export function ExamTakerPage() {
           العودة إلى الاختبارات
         </Link>
       )}
-      <div className="oex-bar">
+      <div className="oex-bar" ref={attachBar}>
         <div className="oex-bar-main">
           <h1 className="oex-bar-title">{attempt.title}</h1>
           {/* 5-A6 P2-2 — answered progress rides the bar subline so the
@@ -1496,6 +1566,21 @@ export function ExamTakerPage() {
               : `تعذَّر حفظ إجابات الأسئلة ${failedNumbers.slice(0, 3).join(' و')}${failedNumbers.length > 3 ? ' وأخرى' : ''} — أعد الإجابة`}
           </span>
         )}
+        {/* r366 (2-c) — phone band: the question map rides behind ONE
+            toggle (44px target) and opens as a sheet docked under the
+            bar; the always-on dot row is a desktop affordance. */}
+        {isPhone && (
+          <button
+            type="button"
+            className="oex-qmap-toggle"
+            aria-expanded={qmapOpen}
+            aria-controls="oex-qmap"
+            onClick={() => setQmapOpen((v) => !v)}
+          >
+            <Icon icon={MapIcon} size={14} />
+            خريطة الأسئلة
+          </button>
+        )}
         {/* role=timer names the countdown for assistive tech without
             announcing every tick; the urgency threshold crossing is
             announced once via the live region below. */}
@@ -1511,7 +1596,13 @@ export function ExamTakerPage() {
             save-failed states at a glance, click or keyboard to jump.
             flex-basis 100% wraps it onto its own bar row (the bar already
             wraps at 320px — 5-A5 measured the slot). */}
-        <nav className="oex-qmap" aria-label="خريطة الأسئلة">
+        {(!isPhone || qmapOpen) && (
+          <nav
+            id="oex-qmap"
+            className={`oex-qmap${isPhone ? ' sheet' : ''}`}
+            aria-label="خريطة الأسئلة"
+            style={isPhone && barH > 0 ? { top: `${barH + 4}px` } : undefined}
+          >
           {attempt.questions.map((q, i) => {
             const qFailed = failedQids.has(q.id);
             const qAnswered = isAnswered(q.id);
@@ -1523,13 +1614,17 @@ export function ExamTakerPage() {
                 className={`oex-qmap-dot${qAnswered ? ' answered' : ''}${qFailed ? ' failed' : ''}${qCurrent ? ' current' : ''}`}
                 aria-current={qCurrent ? 'true' : undefined}
                 aria-label={`السؤال ${i + 1} من ${attempt.questions.length} — ${qFailed ? 'تعذَّر الحفظ' : qAnswered ? 'مُجاب' : 'بدون إجابة'}`}
-                onClick={() => jumpToQuestion(q.id)}
+                onClick={() => {
+                  jumpToQuestion(q.id);
+                  if (isPhone) setQmapOpen(false);
+                }}
               >
                 <bdi>{i + 1}</bdi>
               </button>
             );
           })}
-        </nav>
+          </nav>
+        )}
         {/* 5-A6 plan-6 — the time-consumed hairline: the window draining
             from the inline-start edge; color-only urgency below two
             minutes (the documented no-pulse decision stands). */}
@@ -1583,7 +1678,17 @@ export function ExamTakerPage() {
              programmatic focus (tabIndex -1 keeps it out of tab order;
              scroll-margin clears the sticky bar). */
           return (
-            <div key={q.id} id={`exam-q-${q.id}`} className="oex-q" tabIndex={-1}>
+            <div
+              key={q.id}
+              id={`exam-q-${q.id}`}
+              className="oex-q"
+              tabIndex={-1}
+              /* r366 (2-c): the MEASURED sticky span (topbar offset +
+                 bar height) + a 12px breathing gap — the inline style
+                 outranks the rem fallback in patterns.css and follows
+                 the bar re-wrapping live. */
+              style={barH > 0 ? { scrollMarginBlockStart: `${barH + 12}px` } : undefined}
+            >
               <div className="oex-q-card">
                 {/* 15-g P1-5 — the prompt is the accessible name of both
                     answer fields: number + prompt ids are referenced by the
@@ -1660,8 +1765,12 @@ export function ExamTakerPage() {
                     )}
                   </>
                 )}
-                {saveState && (
-                  <div className="oex-q-foot">
+                {/* r366 (2-c): the footer is ALWAYS mounted with its
+                    height RESERVED — the chip appearing on the first save
+                    used to grow the card mid-answer (measured ~24px
+                    shift). The calm pair: يُحفَظ تلقائيًا / تم الحفظ. */}
+                <div className="oex-q-foot">
+                  {saveState && (
                     <span className={`oex-q-state ${saveState}`}>
                       <Icon
                         icon={saveState === 'failed' ? AlertTriangle : saveState === 'saving' ? Clock : CheckCircle2}
@@ -1672,11 +1781,11 @@ export function ExamTakerPage() {
                           ? 'الإجابة أطول من الحد (4000 حرفًا)'
                           : 'تعذَّر الحفظ'
                         : saveState === 'saving'
-                          ? 'جارٍ الحفظ…'
-                          : 'محفوظة'}
+                          ? 'يُحفَظ تلقائيًا'
+                          : 'تم الحفظ'}
                     </span>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           );

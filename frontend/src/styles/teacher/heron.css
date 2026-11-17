@@ -528,6 +528,75 @@
 
 /* [§C-END] */
 
+/* ── r366 (2-c) — the taker's phone band + measured-bar geometry ──
+   Agent 4 additions (this sheet loads AFTER patterns.css in the
+   taker's import graph, and the selectors below are equal-or-higher
+   specificity, so the R304 anatomy there stays the base):
+
+   1. .oex-qmap-toggle — the phone-band door for the question map
+      (44px touch floor, the bar's own surface grammar).
+   2. .oex-qmap.sheet — the map as a floating sheet docked under the
+      MEASURED bar (inline top from barH); the always-on dot row made
+      the bar ~180px on a 320px viewport.
+   3. .oex-q-foot — the reserved footer floor: the autosave chip
+      appears inside an always-mounted row (no mid-answer card growth;
+      measured ~24px shift before). */
+.r321x-taker .oex-qmap-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding-inline: var(--sp-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+.r321x-taker .oex-qmap-toggle:hover { background: var(--surface-2); color: var(--text); }
+.r321x-taker .oex-qmap-toggle:focus-visible { outline: 2px solid var(--focus-ring, var(--accent-ink)); outline-offset: 2px; }
+
+@media (max-width: 640px) {
+  .r321x-taker .oex-qmap.sheet {
+    position: fixed;
+    inset-inline: var(--sp-4);
+    z-index: var(--z-sheet);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    box-shadow: var(--elev-3);
+    padding: var(--sp-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    max-block-size: min(40dvh, 320px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+/* The reserved autosave row — same height whether the chip is there. */
+.r321x-taker .oex-q-card .oex-q-foot {
+  min-block-size: 26px;
+  align-items: flex-end;
+}
+
+/* r366 (2-c) — the trailing clearance: the LAST question card, taller
+   than the viewport at the phone band, could never scroll clear of the
+   sticky bar (at max scroll its top rode ~190px above the frame — the
+   timer covered the question it had just jumped to, measured live).
+   The tail gives every card the room to align at its scroll-margin;
+   38dvh reads as the honest breathing space after the paper ends. */
+.r321x-taker .oex-qlist::after {
+  content: '';
+  display: block;
+  block-size: min(38dvh, 260px);
+}
+
+
 /* ────────────────────────────────────────────────────────────────────
    §D · qlt2- — Quality oversight boards (Agent 2-c)
    File: QualityPages.tsx

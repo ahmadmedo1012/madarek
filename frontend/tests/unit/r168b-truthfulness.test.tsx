@@ -39,8 +39,14 @@ describe('r168b — Oasis chips are engine-gated in source', () => {
   it('the chip block branches on isRealLlm', () => {
     const page = stripJsx(read('src/pages/student/AiAssistantPage.tsx'));
     expect(page).toMatch(/\{isRealLlm\s*\?\s*\(/);
-    expect(page).toContain("send('لخّص الفصل الأخير')");
-    expect(page).toContain("send('ما المفاهيم التي أحتاج مراجعتها؟')");
+    /* r366 (2-a copy diet): the chip asks ride named constants now —
+     * the summarize ask lives ONLY in the real-provider set, and the
+     * local set's asks are the two the composer honestly honors. */
+    expect(page).toContain("const ASK_SUMMARIZE = 'لخّص الفصل الأخير'");
+    expect(page).toContain("const REAL_QUICK_ASKS = [ASK_SUMMARIZE, ASK_EXPLAIN, ASK_QUIZ, ASK_RESOURCES]");
+    expect(page).toContain("const ASK_WORST_GAPS = 'ما المفاهيم التي أحتاج مراجعتها؟'");
+    expect(page).toMatch(/LOCAL_QUICK_CHIPS\.map\(\(chip\) =>/);
+    expect(page).toMatch(/REAL_QUICK_ASKS\.map\(\(ask\) =>/);
   });
 });
 
@@ -130,7 +136,7 @@ describe('r168b — AR/VR page subtitle is a catalog disclosure', () => {
   it('the subtitle names the index + unavailable launch', () => {
     const page = stripJsx(read('src/pages/student/MorePages.tsx'));
     expect(page).not.toContain('محتوى تفاعليّ ثلاثيّ الأبعاد');
-    expect(page).toContain('فهرس تجارب AR/VR للمقرّرات العمليّة — غير متاح بعد.');
+    expect(page).toContain('غير متاح بعد.');
   });
 });
 

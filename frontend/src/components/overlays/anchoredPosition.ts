@@ -84,10 +84,25 @@ function computeAnchoredPosition(
   }
 
   // Vertical — prefer below, flip above only when it buys real room.
-  const roomBelow = vh - pad - r.bottom - gap;
+  // r366 (2-d): an anchor that sits INSIDE a sticky/fixed bar (the
+  // bell in the topbar) must hang the panel below the BAR, not just
+  // below the anchor — the button's box ends ~2px above the bar's
+  // border-box, and a panel anchored to the button kissed the bar's
+  // bottom edge (measured: panel.top 53.5 vs bar.bottom 55.5). The
+  // bar wins whenever it extends further.
+  let anchorBottom = r.bottom;
+  for (let e = anchor.parentElement; e && e !== document.body; e = e.parentElement) {
+    const s = getComputedStyle(e);
+    if (s.position === 'fixed' || s.position === 'sticky') {
+      const br = e.getBoundingClientRect();
+      if (br.bottom > anchorBottom) anchorBottom = br.bottom;
+      break; /* the nearest bar is the honest boundary */
+    }
+  }
+  const roomBelow = vh - pad - anchorBottom - gap;
   const roomAbove = r.top - pad - gap;
   const flip = ph > roomBelow && roomAbove > roomBelow;
-  let top = flip ? r.top - gap - ph : r.bottom + gap;
+  let top = flip ? r.top - gap - ph : anchorBottom + gap;
   const maxTop = Math.max(pad, vh - pad - ph);
   top = Math.min(Math.max(top, pad), maxTop);
 

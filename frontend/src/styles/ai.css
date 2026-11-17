@@ -97,7 +97,17 @@
   min-inline-size: 0;
 }
 @media (max-width: 760px) {
-  .ai-surface { block-size: clamp(300px, 64dvh, 640px); } /* R353 C1 (W5) */
+  /* r366 (2-a · 2b): the keyboard-open floor. 64dvh of a 320px-tall
+     visual viewport is ~205px — the old 300px floor left the reading
+     window at ~42px once the head (≈119px) and the composer (≈137px)
+     took their honest share. 380px keeps the transcript a ≥4-line
+     reading window (~124px) at 390×320; the taller surface simply
+     scrolls the page (the browser keeps the focused composer in view),
+     and dvh keeps tracking the live viewport everywhere else. */
+  .ai-surface { block-size: clamp(380px, 64dvh, 640px); }
+  /* r366 (2-a): the band compacts its block padding on phones — every
+     pixel of the reading window is borrowed from the chrome above it. */
+  .ai-surface-head { padding-block: var(--sp-2); }
 }
 .ai-surface-head {
   display: flex;
@@ -123,13 +133,60 @@
      inherit it (same ruling as the player's .page-index fix). */
   color: inherit;
 }
+/* r366 (2-a): the head's inner structure — the title row over the
+   disclosure-chip row, with controlled gaps (these classes rendered
+   on bare block flow until now; the chips leaned on incidental
+   whitespace). */
+.r305ai-head-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  flex: 1;
+  min-inline-size: 0;
+}
+.r305ai-head-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1-5);
+}
 /* السجلّ يملأ المسافة بين الرأس والمرسِل — يلغي سقف student.css
    (480px) المضبوط لأجرئ بطاقة-داخل-شبكة؛ الخصوصية أعلى (محدّدان). */
 .ai-surface .chat-area {
   flex: 1;
   min-block-size: 0;
   max-block-size: none;
+  /* r366 (2-a): scroll anchoring OFF inside the transcript. The
+     browser's anchoring compensates layout shifts ABOVE the viewport
+     (the idle plate + suggestion chips unmounting on the first send,
+     content-visibility rows realizing their real heights) by dragging
+     scrollTop — and each drag fires a scroll event that the pin
+     logic reads as «the user scrolled away», killing the bottom pin
+     mid-settle (measured: stranded 126px after a reply, 2030px after
+     a 60-row open). With anchoring off, layout shifts leave the
+     offset alone; the settle loop corrects in the next frame and the
+     only scroll events left are the corrections themselves and real
+     user scrolls. */
+  overflow-anchor: none;
+  /* r366 (2-a): the legacy student.css .chat-area ships
+     scroll-behavior:smooth — which per CSSOM ALSO animates programmatic
+     scrollTop assignments. A pin must LAND, not fly: under
+     content-visibility the smooth flight chases realizing rows,
+     oscillates, and strands the offset (measured live). Instant on
+     this surface; the chip and effect pins rely on it. */
+  scroll-behavior: auto;
   padding: var(--sp-5) var(--sp-4) var(--sp-3);
+}
+
+/* r366 (2-a · 2e): 50+ messages render lazily — every row carries the
+   rendering license (content-visibility: auto) with a GENEROUS
+   intrinsic placeholder (--sp-12 = 96px ≥ a two-line bubble row), so
+   the estimated scrollHeight only ever SHRINKS toward the real layout
+   as rows enter the viewport: a pin to the estimated bottom clamps to
+   the true bottom and never lands short. `auto` remembers each row's
+   real size once rendered, keeping the scrollbar stable on re-visits. */
+.ai-surface .chat-area .chat-msg {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--sp-12);
 }
 
 /* R353 C1 — the jump-to-latest chip: rides above the transcript's last
@@ -183,6 +240,33 @@
 .ai-bubble-skeleton { background: var(--surface-2); }
 .ai-conv-error-pad { padding: var(--sp-2); }
 .ai-suggestion-text { color: var(--text-muted); }
+
+/* r366 (2-f): the empty state's suggestion chips — the starter asks
+   ride the transcript only while the greeting is the sole row; they
+   reuse the composer's chip grammar, wrapped under the greeting line
+   (the first send unmounts the whole group). */
+.ai-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding-inline: var(--sp-1);
+}
+.ai-suggest-chip { max-inline-size: 100%; }
+
+/* r366 (2-a): the desktop rail never outgrows the conversation surface
+   — a long conversation list scrolls INSIDE its own border (the same
+   height budget the surface clamps to, minus the section bar and the
+   card's padding), so the page body never grows a scrollbar under the
+   shell: inside the surface the transcript is the only vertical
+   scroller, and the rail owns its. Phones keep the document flow —
+   the rail rides below the surface in the single column. */
+@media (min-width: 981px) {
+  .ai-conv-list {
+    max-block-size: calc(clamp(320px, 60dvh, 780px) - var(--sp-9) * 2);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
 /* ── R353 C3 — «المصادر»: قائمة المصادر المرقّمة تحت ردّ مؤسَّس (تكافؤ
    الويب مع شارات المصادر في تطبيق الجوال). كتلة هادئة بلا ضجيج: عنوان
    صغير خافت + بنود مرقّمة؛ الروابط الداخلية تفتح داخل التطبيق والروابط
@@ -228,6 +312,11 @@
   .ai-surface .chat-send { min-inline-size: 44px; min-block-size: 44px; }
   .ai-surface .ai-quick-chip { min-block-size: 44px; }
   .ai-surface .chat-retry { min-block-size: 44px; }
+  /* r366 (2-a): the remaining icon verbs on this surface — the
+     jump-to-latest chip and the code block's copy verb rode under the
+     44px floor (32px / 24px boxes) on real touch devices. */
+  .ai-surface .ai-jump { min-block-size: 44px; }
+  .ai-surface .r305ai-code-copy { min-inline-size: 44px; min-block-size: 44px; }
 }
 /* شريط الرقائق يرث من student.css؛ هنا نُسقط حشوه العمودي الزائد
    داخل الصندوق المضبوط ونخفف حده العلوي (المرسِل يوفر الفاصل). */

@@ -210,7 +210,7 @@ describe('aiReplyFormat (the markdown-lite formatter)', () => {
     // The real-LLM greeting bubble renders through ReplyText — its
     // plain text has no markup to begin with; the formatter tests above
     // pin the transformation itself.
-    expect(screen.getByText(/مرحبًا! أرى بيانات إتقانك لأركّز على فجواتك/)).toBeTruthy();
+    expect(screen.getByText(/أرى بيانات إتقانك لأركّز على فجواتك/)).toBeTruthy(); // r366 copy diet: «مرحبًا!» dropped
   });
 });
 
@@ -251,17 +251,56 @@ describe('the privacy disclosure (real-LLM mode only)', () => {
 // ─── C3: the auto-scroll guard ────────────────────────────────────
 
 describe('the auto-scroll near-bottom guard', () => {
-  it('scrolls on mount (fresh conversation, user at the bottom)', () => {
-    renderPage();
-    expect(HTMLElement.prototype.scrollTo).toHaveBeenCalled();
+  /* r366 (2-a): the programmatic pin is an INSTANT scrollTop assignment
+   * (scrollTo with smooth flights proved unstable under
+   * content-visibility realization). The contract is asserted on the
+   * WRITE itself: a mounted at-bottom surface pins (the offset is
+   * written), a scrolled-up reader is never written to. */
+  const spyScrollTopWrites = () => {
+    const writes: Array<{ el: HTMLElement; v: number }> = [];
+    /* jsdom defines scrollTop on Element.prototype (not HTMLElement's
+     * own) — walk the chain, spy where it lives, restore exactly there. */
+    let proto: object = HTMLElement.prototype;
+    let desc = Object.getOwnPropertyDescriptor(proto, 'scrollTop');
+    while (!desc) {
+      proto = Object.getPrototypeOf(proto) as object;
+      if (!proto || proto === Object.prototype) break;
+      desc = Object.getOwnPropertyDescriptor(proto, 'scrollTop');
+    }
+    const owner = proto as object;
+    const fallback = { configurable: true, writable: true, value: 0 } as PropertyDescriptor;
+    const original = desc ?? fallback;
+    const ownerProto = desc ? owner : HTMLElement.prototype;
+    Object.defineProperty(ownerProto, 'scrollTop', {
+      configurable: true,
+      get() { return original.get ? original.get!.call(this) : 0; },
+      set(this: HTMLElement, v: number) { writes.push({ el: this, v }); if (original.set) original.set!.call(this, v); },
+    });
+    return {
+      writes,
+      onScroller: (root: HTMLElement) => writes.filter((w) => w.el.classList.contains('chat-area')),
+      restore: () => Object.defineProperty(ownerProto, 'scrollTop', original),
+    };
+  };
+
+  it('pins on mount (fresh conversation, user at the bottom)', () => {
+    const spy = spyScrollTopWrites();
+    try {
+      const view = renderPage();
+      // The mount pin wrote the transcript scroller's offset.
+      expect(spy.onScroller(view.container).length).toBeGreaterThan(0);
+    } finally {
+      spy.restore();
+    }
   });
 
-  it('does NOT scroll while the user is scrolled UP (mocked geometry)', async () => {
+  it('does NOT pin while the user is scrolled UP (mocked geometry)', async () => {
     // Scroller geometry: content 1000px, viewport 800 → the bottom is
     // scrollTop 200. A user at scrollTop 0 is 200px above the bottom
     // (past the ≤80px near-bottom band).
     Object.defineProperty(HTMLElement.prototype, 'scrollHeight', { configurable: true, value: 1000 });
     Object.defineProperty(HTMLElement.prototype, 'clientHeight', { configurable: true, value: 800 });
+    const spy = spyScrollTopWrites();
     try {
       const view = renderPage();
       const scroller = view.container.querySelector('.chat-area') as HTMLElement | null;
@@ -270,14 +309,15 @@ describe('the auto-scroll near-bottom guard', () => {
         Object.defineProperty(scroller, 'scrollTop', { configurable: true, value: 0 });
         fireEvent.scroll(scroller); // the user scrolled UP — the guard disengages
       }
-      (HTMLElement.prototype.scrollTo as ReturnType<typeof vi.fn>).mockClear();
+      spy.writes.length = 0;
       // A typing change re-renders but lands no message — while the
-      // user is up, no scroll call may happen.
+      // user is up, no pin write may happen on the scroller.
       const input = screen.getByLabelText('اكتب سؤالك للمساعد') as HTMLInputElement;
       fireEvent.change(input, { target: { value: 'سؤال' } });
       await waitFor(() => expect(input.value).toBe('سؤال'));
-      expect(HTMLElement.prototype.scrollTo).not.toHaveBeenCalled();
+      expect(spy.onScroller(view.container)).toHaveLength(0);
     } finally {
+      spy.restore();
       // jsdom's defaults: getters return 0 — safe to leave, but be tidy.
       delete (HTMLElement.prototype as unknown as Record<string, unknown>).scrollHeight;
       delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientHeight;

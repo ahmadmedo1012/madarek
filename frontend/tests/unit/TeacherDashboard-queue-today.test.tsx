@@ -233,7 +233,7 @@ describe('TeacherDashboardPage — the daily-work trio (r164-h)', () => {
 
     renderDashboard();
 
-    expect(screen.getByText('لا انتظار — كل التسليمات مُقيَّمة')).toBeInTheDocument();
+    expect(screen.getByText('لا انتظار — الكل مُقيّم')).toBeInTheDocument();
   });
 
   it('renders the today strip from the schedule — today\'s slot only, linking into /teacher/schedule', () => {
@@ -297,7 +297,7 @@ describe('TeacherDashboardPage — the daily-work trio (r164-h)', () => {
 
     renderDashboard();
 
-    expect(screen.getByText('جميع طلابك في وضع جيد')).toBeInTheDocument();
+    expect(screen.getByText('الكل مستقر')).toBeInTheDocument();
   });
 });
 

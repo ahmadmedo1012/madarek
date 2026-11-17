@@ -470,7 +470,7 @@ describe('AttendancePage — roll-call date guard (15-h P1-6)', () => {
 
     // The old code threw RangeError inside the handler — the save silently
     // did nothing. Now: a role=alert message and no mutation.
-    expect(screen.getByRole('alert')).toHaveTextContent('حدّد تاريخ الجلسة قبل الحفظ.');
+    expect(screen.getByRole('alert')).toHaveTextContent('حدّد تاريخ الجلسة.');
     expect(mocks.record.mutate).not.toHaveBeenCalled();
 
     // The invalid state is announced on the input itself
@@ -521,14 +521,14 @@ describe('GradeSubmissionModal — discard guard (15-e P1-6)', () => {
     seedGradeFeed();
     await openGradeModal();
 
-    fireEvent.change(screen.getByLabelText('ملاحظات للطالب (اختياري)'), {
+    fireEvent.change(screen.getByLabelText('ملاحظات (اختياري)'), {
       target: { value: 'إجابة جيّدة لكن تحتاج توثيقاً أوسع' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }));
 
     await screen.findByRole('dialog', { name: 'تعديلات غير محفوظة' });
     // The draft survives behind the confirm — never silently dropped
-    expect(screen.getByLabelText('ملاحظات للطالب (اختياري)')).toHaveValue('إجابة جيّدة لكن تحتاج توثيقاً أوسع');
+    expect(screen.getByLabelText('ملاحظات (اختياري)')).toHaveValue('إجابة جيّدة لكن تحتاج توثيقاً أوسع');
 
     // Esc while the confirm is stacked cancels the discard only — the
     // grading modal (Esc-locked underneath) stays open
@@ -562,13 +562,13 @@ describe('GradeSubmissionModal — discard guard (15-e P1-6)', () => {
     await openGradeModal();
 
     fireEvent.change(screen.getByLabelText('الدرجة (من 0 إلى 10)'), { target: { value: '8' } });
-    fireEvent.change(screen.getByLabelText('ملاحظات للطالب (اختياري)'), { target: { value: 'أحسنت' } });
+    fireEvent.change(screen.getByLabelText('ملاحظات (اختياري)'), { target: { value: 'أحسنت' } });
     fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجة' }));
 
     await waitFor(() => {
       expect(mocks.grade.mutateAsync).toHaveBeenCalledWith({ grade: 8, feedback: 'أحسنت' });
     });
-    expect(await screen.findByText('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.')).toBeInTheDocument();
+    expect(await screen.findByText('تمّ الحفظ — أُشعر الطالب بالنتيجة.')).toBeInTheDocument();
 
     // A landed save makes the draft "saved" — closing must not prompt.
     // (Header ✕ and the footer button share the name إغلاق here; both
@@ -613,7 +613,7 @@ describe('GradeSubmissionModal — FormField aria wiring (23-b)', () => {
     // the form (success card replaces it).
     fireEvent.change(screen.getByLabelText('الدرجة (من 0 إلى 10)'), { target: { value: '8' } });
     fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجة' }));
-    expect(await screen.findByText('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.')).toBeInTheDocument();
+    expect(await screen.findByText('تمّ الحفظ — أُشعر الطالب بالنتيجة.')).toBeInTheDocument();
     expect(screen.queryByRole('alert')).toBeNull();
   });
 
@@ -621,9 +621,9 @@ describe('GradeSubmissionModal — FormField aria wiring (23-b)', () => {
     seedGradeFeed();
     await openGradeModal();
 
-    const feedback = screen.getByLabelText('ملاحظات للطالب (اختياري)') as HTMLTextAreaElement;
+    const feedback = screen.getByLabelText('ملاحظات (اختياري)') as HTMLTextAreaElement;
     fireEvent.change(feedback, { target: { value: 'أحسنت' } });
-    expect(screen.getByLabelText('ملاحظات للطالب (اختياري)')).toHaveValue('أحسنت');
+    expect(screen.getByLabelText('ملاحظات (اختياري)')).toHaveValue('أحسنت');
   });
 });
 
@@ -682,7 +682,7 @@ describe('GradeSubmissionModal — the answer surface (5-B6 / A7 P1-2)', () => {
 
     // The file link mirrors the research flow: /document/ viewer with
     // the assignment title + a back path to the assignments page.
-    const fileLink = screen.getByRole('link', { name: 'فتح الملف في العارض' });
+    const fileLink = screen.getByRole('link', { name: 'فتح في العارض' });
     expect(fileLink.getAttribute('href')).toContain('/document/hw1-answer.pdf');
     expect(fileLink.getAttribute('href')).toContain(
       `title=${encodeURIComponent('مشروع UML')}`,
@@ -699,7 +699,7 @@ describe('GradeSubmissionModal — the answer surface (5-B6 / A7 P1-2)', () => {
     // The pre-hand-off payload (no textAnswer/fileUrl): no answer
     // block, and — critically — no fabricated "empty answer" message.
     expect(screen.queryByText('إجابة الطالب')).toBeNull();
-    expect(screen.queryByRole('link', { name: 'فتح الملف في العارض' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'فتح في العارض' })).toBeNull();
     // The grading fields still work
     expect(screen.getByLabelText('الدرجة (من 0 إلى 10)')).toBeInTheDocument();
   });
@@ -715,7 +715,7 @@ describe('GradeSubmissionModal — the answer surface (5-B6 / A7 P1-2)', () => {
     mocks.assignments = [ASSIGNMENT];
     await openGradeModal();
 
-    const external = screen.getByRole('link', { name: 'فتح الملف الخارجي' });
+    const external = screen.getByRole('link', { name: 'فتح الرابط' });
     expect(external).toHaveAttribute('href', 'https://cdn.example.com/hw.pdf');
     expect(external).toHaveAttribute('target', '_blank');
   });
@@ -738,7 +738,7 @@ describe('GradeSubmissionModal — form + next-submission flow (5-B6 / A7 P2-2)'
     await waitFor(() => {
       expect(mocks.grade.mutateAsync).toHaveBeenCalledWith({ grade: 8, feedback: undefined });
     });
-    expect(await screen.findByText('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.')).toBeInTheDocument();
+    expect(await screen.findByText('تمّ الحفظ — أُشعر الطالب بالنتيجة.')).toBeInTheDocument();
   });
 
   it('grades one submission, then «تقييم التالي» opens the next one with a fresh draft', async () => {
@@ -753,8 +753,10 @@ describe('GradeSubmissionModal — form + next-submission flow (5-B6 / A7 P2-2)'
     // Two groups: one per assignment, each with its own ceiling chip
     expect(await screen.findByText('مشروع UML')).toBeInTheDocument();
     expect(screen.getByText('تمرين الشبكات')).toBeInTheDocument();
-    // One pending submission per group → two «تسليم واحد» count chips
-    expect(screen.getAllByText('تسليم واحد')).toHaveLength(2);
+    // One pending submission per group → two «تسليم» count chips
+    // (scoped to the queue's .hr-chip so the list rows' counted nouns
+    // — also «تسليم» after the r366 diet — don't count here.)
+    expect(screen.getAllByText('تسليم', { selector: '.hr-chip' })).toHaveLength(2);
 
     fireEvent.click(screen.getAllByRole('button', { name: 'تصحيح' })[0]!);
     await screen.findByRole('dialog', { name: 'تقييم تسليم مشروع UML' });
@@ -781,7 +783,7 @@ describe('GradeSubmissionModal — form + next-submission flow (5-B6 / A7 P2-2)'
 
     fireEvent.change(screen.getByLabelText('الدرجة (من 0 إلى 10)'), { target: { value: '8' } });
     fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجة' }));
-    await screen.findByText('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.');
+    await screen.findByText('تمّ الحفظ — أُشعر الطالب بالنتيجة.');
 
     expect(screen.queryByRole('button', { name: 'تقييم التالي' })).toBeNull();
   });
@@ -877,7 +879,7 @@ describe('NeedsReviewCard — the pending-submissions queue (r157 / 6A8)', () =>
 
     fireEvent.change(screen.getByLabelText('الدرجة (من 0 إلى 10)'), { target: { value: '8' } });
     fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجة' }));
-    await screen.findByText('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.');
+    await screen.findByText('تمّ الحفظ — أُشعر الطالب بالنتيجة.');
 
     // GradeSubmissionModal refreshes ['teacher','me','pending-submissions']
     // after the save (useGradeSubmission only covers the dashboards).
@@ -944,7 +946,7 @@ describe('AssignmentsPage + TeacherSchedulePage — countAr zero-cases (5-B6 / A
     expect(screen.queryByText('0 تسليماً')).toBeNull();
   });
 
-  it('renders «لا طلاب مسجَّلين» on an empty scheduled slot — never «0 طالباً»', () => {
+  it('renders «لا طلاب» on an empty scheduled slot — never «0 طالباً»', () => {
     mocks.offerings = [{
       ...OFFERING,
       _count: { ...OFFERING._count, enrollments: 0 },
@@ -962,7 +964,7 @@ describe('AssignmentsPage + TeacherSchedulePage — countAr zero-cases (5-B6 / A
       screen.getByText((_c, el) =>
         el instanceof HTMLElement
         && el.classList.contains('list-row-sub')
-        && (el.textContent ?? '').replace(/\s+/g, ' ').trim() === 'قاعة 12 · لا طلاب مسجَّلين',
+        && (el.textContent ?? '').replace(/\s+/g, ' ').trim() === 'قاعة 12 · لا طلاب',
       ),
     ).toBeInTheDocument();
     expect(screen.queryByText('0 طالباً')).toBeNull();
@@ -1226,7 +1228,7 @@ describe('r180-F2 — GradesPage semester-grade entry', () => {
     await waitFor(() => {
       expect(screen.getByText('الدرجة يجب ألّا تتجاوز 100.')).toBeInTheDocument();
     });
-    expect(screen.getByText('صحّح الصفوف المعلَّمة قبل الحفظ.')).toBeInTheDocument();
+    expect(screen.getByText('صحّح الصفوف المعلَّمة أولًا.')).toBeInTheDocument();
     expect(mocks.upsertGrades.mutateAsync).not.toHaveBeenCalled();
     unmount();
   });
@@ -1396,7 +1398,7 @@ describe('r144 — AssignmentFormModal + MaterialFormModal (authoring half)', ()
     fireEvent.click(screen.getByRole('button', { name: 'إضافة المادة' }));
 
     await waitFor(() => {
-      expect(screen.getByText('الرابط يجب أن يبدأ بـ https://')).toBeInTheDocument();
+      expect(screen.getByText('الرابط يبدأ بـ https://')).toBeInTheDocument();
     });
     expect(mocks.createMaterial.mutateAsync).not.toHaveBeenCalled();
     unmount();

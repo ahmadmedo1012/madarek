@@ -108,7 +108,7 @@
     "exams/OnlineExamsPages.tsx": {
       "baseline": 685,
       "class": "authed",
-      "max": 405
+      "max": 402
     },
     "LandingPage.tsx": {
       "baseline": 3,
@@ -183,7 +183,7 @@
     "owner/OwnerInstitutionsPage.tsx": {
       "baseline": 301,
       "class": "authed",
-      "max": 178
+      "max": 173
     },
     "owner/OwnerPages.tsx": {
       "baseline": 0,
@@ -233,7 +233,7 @@
     "student/AiAssistantPage.tsx": {
       "baseline": 474,
       "class": "authed",
-      "max": 244
+      "max": 181
     },
     "student/CalendarPage.tsx": {
       "baseline": 94,
@@ -258,7 +258,7 @@
     "student/CoursesPage.tsx": {
       "baseline": 203,
       "class": "authed",
-      "max": 119
+      "max": 115
     },
     "student/DashboardPage.tsx": {
       "baseline": 326,
@@ -308,7 +308,7 @@
     "student/MorePages.tsx": {
       "baseline": 690,
       "class": "authed",
-      "max": 410
+      "max": 356
     },
     "student/PaymentPage.tsx": {
       "baseline": 156,
@@ -348,7 +348,7 @@
     "teacher/TeacherDashboardPage.tsx": {
       "baseline": 277,
       "class": "authed",
-      "max": 150
+      "max": 120
     },
     "teacher/TeacherIntelligencePage.tsx": {
       "baseline": 285,
@@ -368,12 +368,12 @@
     "teacher/TeacherPages.tsx": {
       "baseline": 1117,
       "class": "authed",
-      "max": 589
+      "max": 450
     },
     "teacher/TeacherProfilePage.tsx": {
       "baseline": 267,
       "class": "authed",
-      "max": 152
+      "max": 139
     },
     "vision/VisionPages.tsx": {
       "baseline": 136,
