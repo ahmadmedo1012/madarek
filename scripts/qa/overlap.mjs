@@ -96,6 +96,13 @@ const STRESS = (scale) => {
     if (!el || ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(el.tagName)) continue;
     const t = n.textContent.trim();
     if (/^\s*[\d١٢٣٤٥٦٧٨٩.,%$\/:-]+\s*$/.test(t)) continue; /* numeric cells: leave the numbers alone */
+    /* r366: authored control labels are TYPE, not data — the same class
+     * as the landing exemption above. A «حذف»/«حفظ» verb is a compile-time
+     * constant; lengthening it fabricates clipping no real datum could
+     * produce (hostile data lands in cells, links and row bodies — those
+     * keep getting stressed). Short labels only: a row-button CARRYING
+     * data (a person's name, a file title) is long enough to stay in. */
+    if (t.length <= 16 && el.closest('button, [role="button"], .btn, .search-tip-pill, .pill')) continue;
     i += 1;
     if (i % 5 === 0) n.textContent = `${t} ${AR.slice(0, 34)} — ${AR}`;
     else if (i % 7 === 0) n.textContent = `${t} ${LONG}`;

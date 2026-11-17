@@ -480,8 +480,14 @@
        64px, so every var(--topbar-h) sticky consumer (pdf viewer,
        colleges toolbar) floated 4px low. The token now carries the
        real rendered height (60px); this override stays the last word
-       on the bar's box without forking the value. */
-    block-size: var(--topbar-h);
+       on the bar's box without forking the value.
+       r366 (2-g): the band GROWS with its text — a fixed 56px box with
+       rem-scaled type spilled the title over the page's first row at
+       the 200% text-scale pass (title measured 123px tall, painting
+       33px over the page's eyebrow). 56px stays the FLOOR; the band is
+       sticky + in flow, so the page follows the grown band naturally. */
+    min-block-size: var(--topbar-h);
+    block-size: auto;
     /* Increase opacity so the page-title underneath never bleeds through.
        The user reported page titles appearing cut by the topbar — that
        was caused by the previous 86% mix being too transparent against

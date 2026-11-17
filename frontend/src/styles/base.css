@@ -333,7 +333,15 @@
     position: sticky;
     inset-block-start: 0;
     z-index: var(--z-dropdown);
-    block-size: var(--topbar-h);
+    /* r366 (2-g): the band GROWS with its text. A fixed 56px box with
+     * rem-scaled type spilled the title over the page's first row at
+     * the 200% text-scale pass (measured: title ballooned to 123px —
+     * two wrapped lines at 51px — painting 33px over the eyebrow).
+     * The §R325 56px chrome height stays as the FLOOR; content flow
+     * follows the grown band (sticky, in flow), so nothing slides
+     * under it. */
+    min-block-size: var(--topbar-h);
+    block-size: auto;
     backdrop-filter: blur(var(--glass-blur)) saturate(140%);
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
     /* R329 (gate:clean): background + border-block-end + transition
@@ -391,7 +399,7 @@
     /* R325 P2.3: was a raw 60px — the phone band re-joins the token so
        the §R325 56px chrome height holds at every band (--topbar-h now
        aliases --app-topbar-h, tokens.css). */
-    .topbar { block-size: var(--topbar-h); }
+    .topbar { min-block-size: var(--topbar-h); block-size: auto; }
   }
 
   /* ─── PAGE primitive ───────────────────────────────────────────────

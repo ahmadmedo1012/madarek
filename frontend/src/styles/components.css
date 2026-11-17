@@ -266,6 +266,12 @@
     align-items: center;
     justify-content: center;
     gap: var(--sp-2);
+    /* r366 (2-g): a button is ATOMIC — it never shrinks inside a flex
+     * row (measured live: /admin/courses at 360 squeezed a «حذف» ghost
+     * to 56px client vs 59px content and its own overflow:hidden ate
+     * the last glyph). Wrapping is the row's honest answer to pressure,
+     * never glyph clipping. */
+    flex-shrink: 0;
     block-size: 40px;
     padding-inline: var(--sp-5);
     font-size: var(--type-label-size);
@@ -1865,6 +1871,25 @@
     overflow: clip;
     display: flex; flex-direction: column;
     animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  /* r366 (2-f): the phone band's full-screen sheet. A floating card on
+     12vh headroom with rounded chrome is a desktop idiom; on a phone
+     the palette IS the screen — edge-to-edge, dvh-honest under the
+     soft keyboard (the list is the only scroller), and the input row
+     swaps its Esc hint for the visible close button (a full-screen
+     sheet must never trap a touch-only reader). */
+  @media (max-width: 640px) {
+    .cmd-palette-overlay { padding: 0; }
+    .cmd-palette-card {
+      inline-size: 100%;
+      min-block-size: 100dvh;
+      max-block-size: 100dvh;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+    }
+    .cmd-input-esc { display: none; }
+    .cmd-input-close { display: inline-flex; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
