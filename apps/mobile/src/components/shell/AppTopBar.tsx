@@ -82,7 +82,7 @@ export function AppTopBar({ alertsPath }: { alertsPath: string }) {
       </Pressable>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={unread > 0 ? `الإشعارات — ${latn(unread)} غير مقروءة` : "الإشعارات"}
+        accessibilityLabel={unread > 0 ? `الإشعارات — ${latn(unread)}` : "الإشعارات"}
         onPress={() => router.push(alertsPath as never)}
         style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center", borderRadius: 0 }}
       >

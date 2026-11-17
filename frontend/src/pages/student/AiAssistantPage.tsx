@@ -66,7 +66,7 @@ import {
   type AiCitation,
 } from '../../lib/ai-stream';
 import { queryClient } from '../../lib/queryClient';
-import { formatReplyBlocks, splitInlineCode } from './aiReplyFormat';
+import { formatReplyBlocks, splitInlineCode, type InlineSpan } from './aiReplyFormat';
 import '../../styles/ai.css'; /* r261: سطح المحادثة المركّز — البنية الجديدة فقط (.ai-layout/.ai-surface/.ai-gaps/.ai-composer) */
 import '../../styles/shared/research-heron.css'; /* R305-A7 «Heron»: لغة العائلة التقنيّة — يُستورد مباشرة بعد ai.css (عقد §0) */
 /* R319 (c3-S2): the sheet system — the §B2 component anatomy + the
@@ -245,7 +245,7 @@ function Multiline({ children }: { children: string }) {
  * fetch_user(); the embed keeps them legible). Pure span mapping, no
  * HTML interpretation — the splitter (aiReplyFormat) only splits. */
 function InlineSpans({ line }: { line: string }) {
-  const spans = splitInlineCode(line);
+  const spans: InlineSpan[] = splitInlineCode(line);
   if (spans.length === 0) return null;
   return (
     <>
@@ -296,7 +296,6 @@ function CodeBlock({ lang, lines }: { lang: string | null; lines: string[] }) {
           aria-label={copied ? 'تم النسخ' : 'نسخ الكود'}
         >
           <Icon icon={copied ? Check : Copy} size={12} />
-          {copied ? 'copied' : 'copy'}
         </button>
       </div>
       <pre className="r305ai-code" dir="ltr">
@@ -847,7 +846,7 @@ export default function AiAssistantPage() {
     } catch (err) {
       // The transcript stays as-is; the affordance to re-open rides
       // the same id so retry retries the same conversation.
-      setConvLoad({ phase: 'error', id, message: apiErrorMessage(err, 'تعذَّر فتح المحادثة.') });
+      setConvLoad({ phase: 'error', id, message: apiErrorMessage(err, 'تعذّر فتحها.') });
     }
   };
 
@@ -1367,8 +1366,7 @@ export default function AiAssistantPage() {
                     className="btn accent chat-send ai-stop"
                     onClick={stopStreaming}
                     aria-label="إيقاف التوليد (Esc)"
-                    title="إيقاف التوليد (Esc)"
-                  >
+                            >
                     <Icon icon={Square} size={14} />
                   </button>
                 ) : (
@@ -1481,7 +1479,7 @@ export default function AiAssistantPage() {
                         color="red"
                         icon={AlertCircle}
                         title="تعذَّر حذف المحادثة"
-                        description={apiErrorMessage(delConversation.error, 'لم تُحذف المحادثة.')}
+                        description={apiErrorMessage(delConversation.error, 'لم تُحذف.')}
                       />
                     </div>
                   )}

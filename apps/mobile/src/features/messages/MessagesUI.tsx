@@ -169,7 +169,7 @@ export function MessagesUI({ onBack }: { onBack?: () => void } = {}) {
             {unread > 0 ? <MutedChip label={`${latn(unread > 99 ? 99 : unread)} غير مقروءة`} /> : null}
           </View>
           <T variant="xs" color="muted">
-            كل رسالة وصلتك أو أرسلتها عبر المنصّة — ردّ على الواردة من هنا.
+            كل رسالة وصلتك أو أرسلتها عبر المنصّة — ردّ على الواردة.
           </T>
         </View>
         {unread > 0 ? (

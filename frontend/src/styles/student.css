@@ -955,7 +955,7 @@
     margin: var(--sp-1-5) 0 0;
     font-size: var(--fs-xs);
     color: var(--text-subtle);
-    transition: color var(--motion-duration-short) ease;
+    transition: color var(--motion-duration-short) var(--motion-ease-standard);
   }
   .upload-drop[data-over='true'] {
     /* accent-tinted wash + the accent border while the drag is live —

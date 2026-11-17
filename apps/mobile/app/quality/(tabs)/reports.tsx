@@ -68,7 +68,7 @@ export default function QualityReports() {
               تقارير الجودة
             </T>
             <T variant="body" color="muted">
-              لوحات حيّة بدلاً من تقارير ثابتة — تُحدَّث مع كل عمليّة على المنصّة.
+              لوحات حيّة تُحدَّث مع كل عمليّة.
             </T>
           </View>
           <Badge label="قراءة فقط" tone="grey" />
@@ -187,7 +187,6 @@ export default function QualityReports() {
           <RowList>
             <LedgerRow
               onPress={() => router.push("/quality/exam-moderation" as never)}
-              accessibilityLabel="مراجعة الاختبارات — قائمة مراجعة قوالب وأسئلة الاختبارات"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                 <ClipboardCheck size={18} color={p.accentInk} />
@@ -196,13 +195,12 @@ export default function QualityReports() {
                 </T>
               </View>
               <T variant="sm" color="muted">
-                اعتماد أو رفض قوالب وأسئلة الاختبارات قبل نشرها للطلاب.
+                اعتماد أو رفض القوالب والأسئلة قبل النشر.
               </T>
             </LedgerRow>
             <LedgerRow
               last
               onPress={() => router.push("/quality/professors" as never)}
-              accessibilityLabel="تقييم الأساتذة — التزام هيئة التدريس ومؤشرات أدائها"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                 <Star size={18} color={p.accentInk} />
@@ -211,15 +209,14 @@ export default function QualityReports() {
                 </T>
               </View>
               <T variant="sm" color="muted">
-                التزام هيئة التدريس بالمناهج ومؤشرات الأداء والتقييم.
+                التزام الهيئة بالمناهج ومؤشرات الأداء.
               </T>
             </LedgerRow>
           </RowList>
         </View>
 
         <T variant="xs" color="faint">
-          إصدار التقارير القابلة للتحميل (PDF/Excel) قيد التطوير. حاليّاً يمكنك الاعتماد على اللوحات الحيّة — كلّ
-          الأرقام تُحدَّث فوريًّا مع البيانات في قاعدة المنصّة.
+          التقارير القابلة للتحميل (PDF/Excel) قيد التطوير — الأرقام أعلاه حيّة.
         </T>
       </View>
     </Screen>

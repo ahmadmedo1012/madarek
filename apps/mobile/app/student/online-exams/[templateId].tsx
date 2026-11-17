@@ -97,7 +97,7 @@ export function planAnswerSave(isOnline: boolean): "direct" | "queue" {
 
 /** «لديك سؤالان بدون إجابة.» — the confirm-sheet warning (web grammar). */
 export function unansweredNoteAr(n: number): string {
-  return `لديك ${countAr(n, ["سؤال واحد بدون إجابة", "سؤالان بدون إجابة", "أسئلة بدون إجابة", "سؤالاً بدون إجابة"])}.`;
+  return `لديك ${countAr(n, ["سؤال بلا إجابة", "سؤالان بلا إجابة", "أسئلة بلا إجابة", "سؤالاً بلا إجابة"])}.`;
 }
 
 /** One navigator cell: every state the grid needs, derived purely. */
@@ -390,7 +390,7 @@ export default function ExamTakerScreen() {
         if (detail === "لم يفتح باب هذا الاختبار بعد" && listedExam?.openAt) {
           setStartError(`لم يفتح باب هذا الاختبار بعد — يفتح ${dateTime(listedExam.openAt)}.`);
         } else {
-          setStartError(detail || "تعذَّر بدء الاختبار — تحقّق من اتصالك وحاول مرة أخرى.");
+          setStartError(detail || "تعذَّر بدء الاختبار — تحقّق من اتصالك.");
         }
       }
     })();
@@ -689,7 +689,7 @@ export default function ExamTakerScreen() {
 
   const finalityNote =
     listedExam?.kind === "PRACTICE"
-      ? "بعد التسليم لا يمكنك تعديل إجاباتك — يمكنك بدء محاولة تدريبية جديدة لاحقاً."
+      ? "بعد التسليم لا تعديل لإجاباتك — يمكنك بدء محاولة تدريبية لاحقاً."
       : "بعد التسليم لا يمكنك تعديل إجاباتك أو إعادة المحاولة.";
 
   /* ── render: post-submit result ─────────────────────────────────── */
@@ -717,7 +717,7 @@ export default function ExamTakerScreen() {
             <EmptyState
               icon={<Hourglass size={28} color={tones.yellow.ink} />}
               title="انتهت مدة هذه المحاولة"
-              message="انتهى وقت المحاولة دون تسليم — لا تُحتسب لها نتيجة ولا يمكن إعادتها."
+              message="انتهى الوقت دون تسليم — لا نتيجة ولا إعادة."
             />
             <Button label="العودة للقائمة" onPress={() => router.push("/student/online-exams" as never)} />
           </>
@@ -751,7 +751,7 @@ export default function ExamTakerScreen() {
             <EmptyState
               icon={<CheckCircle2 size={28} color={tones.mint.ink} />}
               title="لقد أكملت هذا الاختبار مسبقاً"
-              message="لا يمكن إعادة المحاولة بعد التسليم — راجع نتيجتك من قائمة الاختبارات."
+              message="لا إعادة بعد التسليم — راجع نتيجتك من الاختبارات."
             />
             <Button label="العودة للقائمة" onPress={() => router.push("/student/online-exams" as never)} />
           </>
@@ -860,7 +860,7 @@ export default function ExamTakerScreen() {
         {total === 0 || !current ? (
           <EmptyState
             title="لا توجد أسئلة في هذا الاختبار"
-            message="لم يُعتمد أي سؤال لهذه الورقة بعد — يمكنك تسليم المحاولة كما هي."
+            message="لم يُعتمد سؤال بعد — يمكنك تسليم المحاولة كما هي."
           />
         ) : (
           <Card style={{ gap: sp[10] }}>
@@ -1214,7 +1214,7 @@ export default function ExamTakerScreen() {
           open={exitOpen}
           onClose={() => setExitOpen(false)}
           title="مغادرة الاختبار؟"
-          message="إجاباتك محفوظة تلقائيًا — يمكنك العودة لإكمال المحاولة قبل انتهاء الوقت من مركز الاختبارات."
+          message="إجاباتك محفوظة — يمكنك إكمال المحاولة قبل انتهاء الوقت."
           confirmLabel="مغادرة"
           destructive
           onConfirm={() => {

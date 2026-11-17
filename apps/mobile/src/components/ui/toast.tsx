@@ -172,7 +172,6 @@ export function ToastHost() {
           accessibilityRole="button"
           accessibilityLiveRegion="polite"
           accessibilityLabel={`${t.title ? `${t.title}. ` : ""}${t.message}`}
-          accessibilityHint="انقر لإخفاء التنبيه"
           onPress={hide}
           style={[
             styles.toast,
