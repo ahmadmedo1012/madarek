@@ -84,9 +84,23 @@ jobs:
           done
       - name: One app-critical endpoint (student dashboard)
         run: |
-          TOK=$(curl -sf -X POST "$BASE/auth/login" -H 'Content-Type: application/json' \
-            -d '{"email":"student@test.ly","password":"12345678"}' \
-            | python3 -c 'import json,sys; print(json.load(sys.stdin)["data"]["accessToken"])')
+          LOGIN=$(curl -sf -X POST "$BASE/auth/login" -H 'Content-Type: application/json' \
+            -d '{"email":"student@test.ly","password":"12345678"}')
+          TOK=$(printf '%s' "$LOGIN" | python3 -c 'import json,sys; print(json.load(sys.stdin)["data"]["accessToken"])')
+          # R364 — a demo seat may legitimately hold MORE THAN ONE active
+          # membership (seen live 2026-11-17: student@test.ly holds the demo
+          # and the showcase institution). Login then answers with NO
+          # institution context, and the dashboard fail-closes with
+          # 403 INSTITUTION_CONTEXT_REQUIRED — the product's documented
+          # picker flow (AuthPage → POST /auth/select-institution), not a
+          # fault. Follow it exactly as the web client does, then probe.
+          SEL=$(printf '%s' "$LOGIN" | python3 -c 'import json,sys; m=(json.load(sys.stdin)["data"]["user"].get("memberships") or []); print(m[0]["institutionId"] if len(m)>1 else "")')
+          if [ -n "$SEL" ]; then
+            echo "multi-membership seat — selecting $SEL (the picker flow)"
+            TOK=$(curl -sf -X POST "$BASE/auth/select-institution" -H "Authorization: Bearer $TOK" \
+              -H 'Content-Type: application/json' -d "{\"institutionId\":\"$SEL\"}" \
+              | python3 -c 'import json,sys; print(json.load(sys.stdin)["data"]["accessToken"])')
+          fi
           CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 \
             -H "Authorization: Bearer $TOK" "$BASE/me/dashboard")
           echo "GET /me/dashboard → $CODE"
