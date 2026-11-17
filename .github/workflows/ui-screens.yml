@@ -237,7 +237,12 @@ jobs:
           heap-size: 512M
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
           pre-emulator-launch-script: |
-            printf 'hw.lcd.width=1080\nhw.lcd.height=2340\nhw.lcd.density=420\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"
+            # R366 A5 — LANDSCAPE PANEL FIX (one line, line-safe): `wm size 2340x1080`
+            # post-boot is silently ignored on the portrait-native AVD (runs 29/35
+            # "landscape" shots measured 1080x2340 PORTRAIT — pixel-verified), so the
+            # panel itself is landscape before first boot. Portrait-shaped overrides
+            # (800x1280, 360x640) DO work post-boot and keep the wm path below.
+            printf 'hw.lcd.width=%s\nhw.lcd.height=%s\nhw.lcd.density=420\n' "$([ '${{ matrix.profile.viewport }}' = landscape-2340x1080 ] && echo 2340 || echo 1080)" "$([ '${{ matrix.profile.viewport }}' = landscape-2340x1080 ] && echo 1080 || echo 2340)" >> "$ANDROID_AVD_HOME/test.avd/config.ini"
           script: |
             # android-emulator-runner executes this field with /bin/sh.
             # Keep the script POSIX so every role/profile can start.
@@ -415,7 +420,12 @@ jobs:
           heap-size: 512M
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
           pre-emulator-launch-script: |
-            printf 'hw.lcd.width=1080\nhw.lcd.height=2340\nhw.lcd.density=420\n' >> "$ANDROID_AVD_HOME/test.avd/config.ini"
+            # R366 A5 — LANDSCAPE PANEL FIX (one line, line-safe): `wm size 2340x1080`
+            # post-boot is silently ignored on the portrait-native AVD (runs 29/35
+            # "landscape" shots measured 1080x2340 PORTRAIT — pixel-verified), so the
+            # panel itself is landscape before first boot. Portrait-shaped overrides
+            # (800x1280, 360x640) DO work post-boot and keep the wm path below.
+            printf 'hw.lcd.width=%s\nhw.lcd.height=%s\nhw.lcd.density=420\n' "$([ '${{ matrix.profile.viewport }}' = landscape-2340x1080 ] && echo 2340 || echo 1080)" "$([ '${{ matrix.profile.viewport }}' = landscape-2340x1080 ] && echo 1080 || echo 2340)" >> "$ANDROID_AVD_HOME/test.avd/config.ini"
           script: |
             set -eu
             mkdir -p apps/mobile/build
