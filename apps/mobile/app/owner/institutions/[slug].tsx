@@ -76,7 +76,7 @@ export default function OwnerInstitutionDetail() {
         <View style={{ paddingTop: 16 }}>
           <EmptyState
             title="المؤسسة غير موجودة"
-            message="لم نعثر على مؤسسة بهذا المعرّف — ربما حُذفت أو تغيّر معرّفها."
+            message="لا مؤسسة بهذا المعرّف — ربما حُذفت."
             actionLabel="رجوع إلى القائمة"
             onAction={() => router.push("/owner/institutions" as never)}
           />
@@ -367,7 +367,7 @@ function RenameSheet({
           value={nameEn}
           onChangeText={setNameEn}
           autoCorrect={false}
-          hint="يُترك فارغاً للإبقاء على قيمته الحالية كما هي"
+          hint="فارغ = يبقى كما هو"
         />
         <Button
           label={rename.isPending ? "جارٍ الحفظ…" : "حفظ الأسماء"}

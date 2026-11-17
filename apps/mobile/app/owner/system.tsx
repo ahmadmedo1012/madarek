@@ -109,7 +109,7 @@ export default function OwnerSystem() {
       : driver
         ? storage?.persistent
           ? { label: "دائمة", tone: "mint" as const, note: null }
-          : { label: "لا تنجو من إعادة النشر", tone: "yellow" as const, note: "أوراق البحث وملفات المقرّرات المرفوعة ستُفقد عند كل نشر جديد — دوامها يتطلب تخزين كائنات (S3)." }
+          : { label: "لا تنجو من إعادة النشر", tone: "yellow" as const, note: "الرفعات ستُفقد عند كل نشر — دوامها يتطلب تخزين كائنات (S3)." }
         : null;
 
   const settingRows = Array.isArray(settings.data) ? settings.data : [];
@@ -119,7 +119,7 @@ export default function OwnerSystem() {
     <Screen scroll>
       <StackHeader title="النظام والتشغيل" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="النظام والتشغيل" kicker="إدارة البنية التحتية وحالة الخدمات وإعدادات المنصّة" />
+        <PageHeader title="النظام والتشغيل" kicker="البنية التحتية وحالة الخدمات" />
 
         {/* [01] حالة الخدمة */}
         <View>
@@ -180,8 +180,8 @@ export default function OwnerSystem() {
                 </View>
                 <T variant="xs" color="faint">
                   {sys.isError
-                    ? "تعذّر جلب حالة النظام — أعد المحاولة من بطاقة حالة الخدمة."
-                    : "نسخة الخادم الحاليّة لا تُصرّح عن حالة تخزين الرفعات بعد."}
+                    ? "تعذّر جلب الحالة — أعد المحاولة."
+                    : "الخادم لا يُصرّح عن حالة التخزين بعد."}
                 </T>
               </LedgerRow>
             </RowList>
@@ -273,7 +273,7 @@ export default function OwnerSystem() {
             <EmptyState
               icon={<Settings size={22} color={p.textMuted} />}
               title="لا توجد أعلام مُعرَّفة"
-              message="لم تُعرَّف أعلام ميزات بعد؛ تُدار حالياً مباشرةً من قاعدة بيانات المنصّة."
+              message="لا أعلام ميزات معرَّفة — تُدار من قاعدة البيانات."
             />
           ) : (
             <RowList>

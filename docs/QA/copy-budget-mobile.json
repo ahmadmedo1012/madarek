@@ -151,10 +151,10 @@
       "max": 107
     },
     "apps/mobile/app/owner/institutions/[slug].tsx": {
-      "max": 242
+      "max": 233
     },
     "apps/mobile/app/owner/system.tsx": {
-      "max": 273
+      "max": 253
     },
     "apps/mobile/app/quality/(tabs)/_layout.tsx": {
       "max": 0
@@ -172,13 +172,13 @@
       "max": 61
     },
     "apps/mobile/app/quality/(tabs)/reports.tsx": {
-      "max": 80
+      "max": 79
     },
     "apps/mobile/app/quality/_layout.tsx": {
       "max": 0
     },
     "apps/mobile/app/quality/alerts.tsx": {
-      "max": 41
+      "max": 39
     },
     "apps/mobile/app/quality/exam-moderation.tsx": {
       "max": 134
@@ -271,7 +271,7 @@
       "max": 104
     },
     "apps/mobile/app/student/online-exams/[templateId].tsx": {
-      "max": 334
+      "max": 320
     },
     "apps/mobile/app/student/payment.tsx": {
       "max": 57
@@ -331,13 +331,13 @@
       "max": 89
     },
     "apps/mobile/app/teacher/curriculum.tsx": {
-      "max": 367
+      "max": 320
     },
     "apps/mobile/app/teacher/exams.tsx": {
-      "max": 302
+      "max": 269
     },
     "apps/mobile/app/teacher/exams/[templateId].tsx": {
-      "max": 349
+      "max": 325
     },
     "apps/mobile/app/teacher/grades.tsx": {
       "max": 135
@@ -400,7 +400,7 @@
       "max": 0
     },
     "apps/mobile/src/components/shell/AppTopBar.tsx": {
-      "max": 7
+      "max": 6
     },
     "apps/mobile/src/components/shell/RoleGate.tsx": {
       "max": 14
@@ -484,7 +484,7 @@
       "max": 462
     },
     "apps/mobile/src/features/messages/MessagesUI.tsx": {
-      "max": 80
+      "max": 79
     },
     "apps/mobile/src/features/notifications/NotificationsScreen.tsx": {
       "max": 67

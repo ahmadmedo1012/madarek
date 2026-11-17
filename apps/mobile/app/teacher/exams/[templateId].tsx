@@ -143,7 +143,7 @@ export default function ExamTemplateDetail() {
       qc.invalidateQueries({ queryKey: ["exams", "template", id] });
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       setConfirmPublish(false);
-      toast.success("نُشر الاختبار وسيظهر للطلاب حسب نطاقه.", "تمّ نشر الاختبار");
+      toast.success("نُشر وسيظهر للطلاب حسب نطاقه.", "تمّ نشر الاختبار");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
@@ -220,7 +220,7 @@ export default function ExamTemplateDetail() {
     return (
       <Screen scroll>
         <StackHeader title="قالب الاختبار" />
-        <EmptyState title="القالب غير موجود" message="ربما حُذف هذا القالب أو أن الرابط غير صحيح." />
+        <EmptyState title="القالب غير موجود" message="حُذف القالب أو الرابط غير صحيح." />
       </Screen>
     );
   }
@@ -232,7 +232,7 @@ export default function ExamTemplateDetail() {
           the detail block takes the kit stagger; edit/save presses fire
           through the throttled haptics door. */}
       <Animated.View entering={entering(0)}>
-      <PageHeader title={t.title} kicker="دورة حياة القالب: مسودة ← مراجعة الجودة ← الاعتماد ← النشر للطلاب." />
+      <PageHeader title={t.title} kicker="مسودة ← مراجعة الجودة ← اعتماد ← نشر." />
 
       <View style={{ flexDirection: "row", gap: sp[6], flexWrap: "wrap", alignItems: "center" }}>
         <StatusBadge status={t.status} map={EXAM_STATUS_MAP} />
@@ -295,7 +295,7 @@ export default function ExamTemplateDetail() {
       {t.status !== "APPROVED" ? (
         <T variant="sm" color="muted">
           {t.status === "PENDING_REVIEW"
-            ? "بانتظار مراجعة الجودة — يُفتح النشر بعد اعتمادها."
+            ? "النشر يُفتح بعد اعتماد الجودة."
             : t.status === "PUBLISHED" || t.status === "CLOSED"
               ? "القالب منشور بالفعل."
               : "النشر متاح بعد اعتماد الجودة."}
@@ -312,7 +312,7 @@ export default function ExamTemplateDetail() {
       {/* أسئلة القالب. */}
       <SectionBar index={2} title="أسئلة القالب" />
       {questions.length === 0 ? (
-        <EmptyState title="لا أسئلة في هذا القالب" message="ربما أُوقفت أسئلته من البنك بعد بنائه." />
+        <EmptyState title="لا أسئلة في هذا القالب" message="ربما أُوقفت أسئلته من البنك." />
       ) : (
         <RowList>
           {questions.map((q, i) => (
@@ -354,7 +354,7 @@ export default function ExamTemplateDetail() {
       ) : attemptRows.length === 0 ? (
         <EmptyState
           title="لا محاولات بعد"
-          message="يبدأ الطلاب المحاولات من صفحة الاختبارات الخاصة بهم؛ تظهر محاولاتهم هنا لحظة بدئها."
+          message="تبدأ محاولات الطلاب من صفحتهم وتظهر هنا لحظة بدئها."
         />
       ) : (
         <RowList>
@@ -397,7 +397,7 @@ export default function ExamTemplateDetail() {
       <ConfirmDialog
         open={confirmPublish}
         title="نشر الاختبار"
-        message="بعد النشر يظهر الاختبار للطلاب حسب نطاقه (المقرّر أو الكلّيّة) ولا يمكن سحبه من هذه الصفحة. هل تريد النشر الآن؟"
+        message="بعد النشر يظهر الاختبار للطلاب حسب نطاقه ولا يمكن سحبه. النشر الآن؟"
         confirmLabel="نشر نهائي"
         loading={publish.isPending}
         onConfirm={() => publish.mutate()}

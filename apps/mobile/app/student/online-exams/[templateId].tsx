@@ -1214,7 +1214,7 @@ export default function ExamTakerScreen() {
           open={exitOpen}
           onClose={() => setExitOpen(false)}
           title="مغادرة الاختبار؟"
-          message="إجاباتك محفوظة — يمكنك إكمال المحاولة قبل انتهاء الوقت."
+          message="إجاباتك محفوظة — أكمل قبل انتهاء الوقت."
           confirmLabel="مغادرة"
           destructive
           onConfirm={() => {
@@ -1380,7 +1380,7 @@ function ResultBody({
         }
         message={
           awaitingManual
-            ? "درجتك الأولية من الأسئلة الآلية — الدرجات المقالية بانتظار تقييم الأستاذ."
+            ? "درجتك الأولية آلية — المقالية بانتظار التصحيح."
             : "تم احتساب النتيجة."
         }
       />

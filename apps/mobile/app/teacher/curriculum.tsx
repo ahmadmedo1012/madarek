@@ -150,19 +150,19 @@ export default function Curriculum() {
   return (
     <Screen scroll>
       <StackHeader title="بناء المنهج" />
-      <PageHeader title="بناء المنهج" kicker="محاضرات المقرّر وفصولها ومحطات الفحص والنص المكتوب." />
+      <PageHeader title="بناء المنهج" kicker="محاضرات وفصول وأسئلة تفاعلية." />
       {offerings.length === 0 ? (
         offs.isLoading ? (
           <SkeletonList rows={3} />
         ) : (
-          <EmptyState title="لم تُسند إليك مقرّرات بعد" message="ستظهر مقرّراتك هنا فور إسنادها من قِبَل المسجل العام." />
+          <EmptyState title="لم تُسند إليك مقرّرات بعد" message="ستظهر فور إسنادها." />
         )
       ) : (
         <>
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
           <Card>
             <T variant="sm" color="muted">
-              رفع الفيديو يتم حاليًا من لوحة الويب — هنا إدارة الروابط (رابط https أو مسار ملف داخل المنصة). الرفع المباشر يحتاج خادم تخزين S3.
+              إدارة الروابط هنا — رفع الفيديو من لوحة الويب.
             </T>
           </Card>
 
@@ -180,7 +180,7 @@ export default function Curriculum() {
           ) : rows.length === 0 ? (
             <EmptyState
               title="لا توجد محاضرات بعد"
-              message="ابدأ بإضافة أول محاضرة: عنوان، رابط فيديو، ومدة اختيارية."
+              message="أضف أول محاضرة بعنوان ورابط."
               actionLabel="محاضرة جديدة"
               onAction={() => openLectureForm(null)}
             />
@@ -242,7 +242,7 @@ export default function Curriculum() {
           label="رابط الفيديو"
           value={videoUrl}
           onChangeText={setVideoUrl}
-          hint="رابط خارجي يبدأ بـ https:// أو مسار ملف داخل المنصة (/api/v1/files/papers/)"
+          hint="رابط https:// أو مسار ملف داخل المنصة"
           accessibilityLabel="رابط الفيديو"
         />
         <Field
@@ -279,7 +279,7 @@ export default function Curriculum() {
       <ConfirmDialog
         open={deleteTarget !== null}
         title="حذف المحاضرة"
-        message={`سيُحذف «${deleteTarget?.title ?? ""}» مع فصولها وأسئلتها التفاعلية نهائيًا. هل تريد الحذف؟`}
+        message={`سيُحذف «${deleteTarget?.title ?? ""}» نهائيًا مع فصولها وأسئلتها. المتابعة؟`}
         confirmLabel="حذف نهائي"
         danger
         loading={deleteLecture.isPending}
@@ -450,7 +450,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       />
       {chapters.length === 0 ? (
         <Card>
-          <T variant="sm" color="muted">لا فصول بعد — قسّم المحاضرة إلى فصول بزمن بداية ونهاية.</T>
+          <T variant="sm" color="muted">قسّم المحاضرة بزمن بداية ونهاية.</T>
         </Card>
       ) : (
         <RowList>
@@ -480,7 +480,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       />
       {checkpoints.length === 0 ? (
         <Card>
-          <T variant="sm" color="muted">لا أسئلة تفاعلية بعد — تظهر للطالب عند نقطة زمنية داخل المحاضرة.</T>
+          <T variant="sm" color="muted">تظهر للطالب عند نقطة زمنية.</T>
         </Card>
       ) : (
         <RowList>
@@ -549,7 +549,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
             setCpQuestion(v);
             setCpError(null);
           }}
-          placeholder="سؤال يظهر للطالب عند نقطة زمنية داخل المحاضرة"
+          placeholder="سؤال يظهر أثناء المحاضرة"
           accessibilityLabel="نص السؤال"
         />
         <Field

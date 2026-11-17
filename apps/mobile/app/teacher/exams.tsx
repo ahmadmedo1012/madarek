@@ -41,7 +41,7 @@ type QuestionCategory = { id: string; title?: string; name?: string };
 /** Web publishGateReason — the per-status honesty for the gated publish. */
 function publishGateReason(status: string): string | null {
   if (status === "PENDING_REVIEW" || status === "DRAFT") {
-    return "بانتظار مراجعة الجودة — يُفتح النشر بعد اعتمادها.";
+    return "النشر يُفتح بعد اعتماد الجودة.";
   }
   if (status === "REJECTED") return "مرفوض من الجودة — لا يمكن نشره.";
   if (status === "PUBLISHED" || status === "CLOSED") return "منشور بالفعل.";
@@ -86,7 +86,7 @@ export default function Exams() {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       qc.invalidateQueries({ queryKey: ["exams", "template", publishTarget?.id] });
       setPublishTarget(null);
-      toast.success("نُشر الاختبار وسيظهر للطلاب حسب نطاقه.", "تمّ نشر الاختبار");
+      toast.success("نُشر وسيظهر للطلاب حسب نطاقه.", "تمّ نشر الاختبار");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
@@ -140,7 +140,7 @@ export default function Exams() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["exams", "question-bank"] });
       toast.success(
-        "أُرسل السؤال إلى مراجعة الجودة — سيظهر في البنك ويصبح متاحاً للقوالب بعد الاعتماد.",
+        "أُرسل للجودة — يظهر في البنك بعد الاعتماد.",
         "أُرسل السؤال",
       );
       setCreating(false);
@@ -170,7 +170,7 @@ export default function Exams() {
       <Animated.View entering={entering(0)}>
       <PageHeader
         title="بنك الأسئلة والاختبارات"
-        kicker="تأليف الأسئلة وبناء قوالب الاختبارات الموحَّدة، ومتابعة اعتمادها من الجودة حتى النشر."
+        kicker="تأليف الأسئلة وبناء قوالب الاختبارات حتى النشر."
       />
       <Segmented
         options={[
@@ -195,7 +195,7 @@ export default function Exams() {
             <EmptyState
               art={<Illustration id="r342/role-teacher" width={216} />}
               title="لم تُنشئ قوالب اختبارات بعد"
-              message="ستظهر قوالبك هنا — ابنِ قالباً من أسئلة البنك المعتمدة (البناء يتم حاليًا من لوحة الويب)، ثم أرسله لمراجعة الجودة ونشره."
+              message="ابنِ قالباً من أسئلة البنك (البناء من لوحة الويب) ثم أرسله للجودة والنشر."
             />
           ) : (
             <RowList>
@@ -281,7 +281,7 @@ export default function Exams() {
               message={
                 q.trim() !== ""
                   ? "جرّب كلمات بحث مختلفة أو أزل عوامل التصفية."
-                  : "أنشئ أول سؤال — بعد اعتماده من الجودة سيظهر هنا ويصبح متاحاً للقوالب."
+                  : "أنشئ أول سؤال — يظهر هنا بعد اعتماد الجودة."
               }
             />
           ) : (
@@ -320,7 +320,7 @@ export default function Exams() {
       <ConfirmDialog
         open={publishTarget !== null}
         title="نشر الاختبار"
-        message="بعد النشر يظهر الاختبار للطلاب حسب نطاقه (المقرّر أو الكلّيّة) ولا يمكن سحبه من هذه الصفحة. هل تريد النشر الآن؟"
+        message="بعد النشر يظهر الاختبار للطلاب حسب نطاقه ولا يمكن سحبه. النشر الآن؟"
         confirmLabel="نشر نهائي"
         loading={publish.isPending}
         onConfirm={() => publishTarget && publish.mutate(publishTarget.id)}
