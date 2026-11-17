@@ -10,6 +10,12 @@ import { RevealCssClass } from '../../hooks/useReveal';
 /* c3-W6 (K-I extension): the guest sheet chrome — same grammar as
  * /auth + /campus (fixed frame + corner marks + grain film). */
 import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
+/* R366 L4 copy diet: the shared public-sheet chrome copy (skip link,
+ * back-home link, brand word) — one home per string, in LegalSheet. */
+import { BACK_HOME, BRAND_WORD, SKIP_LINK } from '../legal/LegalSheet';
+/* R366 L4: the registry link's label — the CTA and the section lede
+ * said the same two words. */
+const COLLEGES_GATE = 'بوابة الكليات';
 // patterns.css §10 (r341/D9) — the guest sub-page sheet (ex
 // campus.css, deleted): the honest capability matrix (ما يعمل اليوم) +
 // the status pairs (إلى أين) moved here VERBATIM from the landing when
@@ -35,18 +41,18 @@ export function CapabilitiesPage() {
 
   return (
     <div className="cu">
-      <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
+      <a href="#main" className="skip-link">{SKIP_LINK}</a>
       <GuestSheetChrome />
 
       <header className="cu-header">
         <div className="cu-header-inner">
           <Link to="/" className="btn ghost sm">
             <Icon icon={ArrowRight} size={14} />
-            العودة إلى الصفحة الرئيسية
+            {BACK_HOME}
           </Link>
           <Link to="/" className="cu-header-brand" aria-label="مدارك — الصفحة الرئيسية">
             <Logo variant="mark" size={22} />
-            مدارك
+            {BRAND_WORD}
           </Link>
         </div>
       </header>
@@ -67,7 +73,7 @@ export function CapabilitiesPage() {
                 registry section below keeps the data + the disclosure. */}
             <RevealCssClass as="div" className="pf-page-actions" delay={3}>
               <Link to="/competitions" className="btn accent" aria-label="المسابقات — تحديات مدارك">المسابقات</Link>
-              <Link to="/colleges" className="btn ghost">بوابة الكليات</Link>
+              <Link to="/colleges" className="btn ghost">{COLLEGES_GATE}</Link>
             </RevealCssClass>
           </div>
 
@@ -88,10 +94,10 @@ export function CapabilitiesPage() {
           <div className="cu-head pf-page-header-text">
             <span className="fo-eyebrow"><span className="fo-mono" dir="ltr">[02]</span> إلى أين</span>
             <RevealCssClass as="h2" className="cu-title" delay={1} id="cap-vision-title">
-              نحو تعليمٍ <em>يعرف كلَّ طالب</em>
+              تعليمٌ <em>يعرف كلَّ طالب</em>
             </RevealCssClass>
             <RevealCssClass as="p" className="cu-lede" delay={2}>
-              كل حالة أدناه كما هي في النظام اليوم.
+              كل حالة كما في النظام.
             </RevealCssClass>
           </div>
 
@@ -115,9 +121,6 @@ export function CapabilitiesPage() {
             <RevealCssClass as="h2" className="cu-title" delay={1} id="cap-colleges-title">
               {formatInt(colleges.length)} كلية في {formatInt(campusCount)} أحرام
             </RevealCssClass>
-            <RevealCssClass as="p" className="cu-lede" delay={2}>
-              بنية الكليات كاملة داخل المنصّة — والسجلّ التفاعلي في صفحة الكلّيّات.
-            </RevealCssClass>
           </div>
 
           <RevealCssClass as="div" className="cu-registry" delay={2}>
@@ -127,15 +130,8 @@ export function CapabilitiesPage() {
                 <dd className="fo-meta-v">مؤسسة مدارك النموذجية</dd>
               </div>
               <div className="fo-meta-row">
-                <dt className="fo-meta-k">الكليات</dt>
-                <dd className="fo-meta-v">
-                  <span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> في{' '}
-                  <span className="fo-mono" dir="ltr">{formatInt(campusCount)}</span> أحرام
-                </dd>
-              </div>
-              <div className="fo-meta-row">
                 <dt className="fo-meta-k">الحالة</dt>
-                <dd className="fo-meta-v">بيانات اصطناعية بالكامل للعرض</dd>
+                <dd className="fo-meta-v">بيانات اصطناعية للعرض</dd>
               </div>
             </dl>
             {/* D9: the registry actions moved UP to the page head (the
@@ -144,8 +140,7 @@ export function CapabilitiesPage() {
           </RevealCssClass>
 
           <p className="cu-foot">
-            بيانات العرض تخصّ «مؤسسة مدارك النموذجية» الاصطناعية — ومدارك منصّة
-            مستقلّة لا تنتمي لأيّ مؤسّسة تعليمية.
+            مدارك منصّة مستقلّة لا تنتمي لمؤسّسة تعليمية.
           </p>
         </section>
       </main>
