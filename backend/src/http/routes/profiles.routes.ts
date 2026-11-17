@@ -1605,6 +1605,13 @@ router.post('/people/photos-zip/process', mediaLimiter, requireRole(Role.ADMIN, 
     }
     const ticket = await withRetry(() => prisma.importUpload.findUnique({ where: { key } }));
     if (!ticket || ticket.consumedAt) throw AppError.badRequest('مفتاح الأرشيف غير معروف — ابدأ الرفع من جديد');
+    // r363 (audit D-5): the ticket is bound to its MINTER — another
+    // registrar's key never becomes this caller's write primitive over
+    // a foreign roster's photos. Same envelope as an unknown key (no
+    // existence oracle). OWNER keeps the platform-wide path.
+    if (req.user!.role !== Role.OWNER && ticket.mintedBy !== req.user!.id) {
+      throw AppError.badRequest('مفتاح الأرشيف غير معروف — ابدأ الرفع من جديد');
+    }
 
     const storage = await requireBlobDriver();
     const buf = await storage.get(key);

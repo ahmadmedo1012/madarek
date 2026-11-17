@@ -1081,6 +1081,33 @@ router.post(
   validate(assignScopeSchema),
   async (req, res, next) => {
     try {
+      // r363 (audit B-3): an institutional actor rewrites another
+      // user's governance scope — the write is institution-bound:
+      //   · the caller needs their DB-verified institution context
+      //     (the ROLES_ASSIGN capability alone is platform-wide);
+      //   · the target must hold an ACTIVE membership in that
+      //     institution (403 — a cross-institution scope tamper could
+      //     widen a foreign institution's ADMIN to university-wide or
+      //     funnel their oversight onto the caller's faculty);
+      //   · a non-null scopeFacultyId must belong to the caller's
+      //     institution (never a foreign faculty id).
+      // OWNER keeps the platform-wide path.
+      const callerInstitution =
+        req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY
+          ? await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId)
+          : null;
+      if ((req.user!.role === Role.ADMIN || req.user!.role === Role.QUALITY) && !callerInstitution) {
+        throw institutionContextRequiredError();
+      }
+      if (callerInstitution && req.body.scopeFacultyId !== null) {
+        const faculty = await prisma.faculty.findUnique({
+          where: { id: req.body.scopeFacultyId as string },
+          select: { id: true, institutionId: true },
+        });
+        if (!faculty || faculty.institutionId !== callerInstitution) {
+          throw AppError.badRequest('الكلية المحددة لا تنتمي إلى مؤسستك');
+        }
+      }
       const target = await prisma.user.findUnique({
         where: { id: req.params.id! },
         select: { id: true, role: true, scopeFacultyId: true },
@@ -1092,6 +1119,20 @@ router.post(
         throw AppError.badRequest(
           `تعيين النطاق يخص ${ROLE_LABEL_PLURAL_OBLIQUE.ADMIN} وأخصائيي الجودة فقط`,
         );
+      }
+      if (callerInstitution) {
+        const targetMembership = await prisma.membership.findFirst({
+          where: {
+            userId: target.id,
+            institutionId: callerInstitution,
+            isActive: true,
+            institution: { status: 'ACTIVE' },
+          },
+          select: { id: true },
+        });
+        if (!targetMembership) {
+          throw AppError.forbidden('هذا المستخدم ليس عضواً في مؤسستك');
+        }
       }
       // Fresh actor-scope read (never trust a client-side claim): the
       // guard must reflect the actor's CURRENT reach, and self-changes
