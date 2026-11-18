@@ -119,3 +119,20 @@ These three findings are the honest state of Task 1: the measurement
 foundation is laid (targets verified on both sides), the product tuning
 (reveal lines, durations, preloader, pointer) is the next increment and is
 NOT claimed done by this record.
+
+### The measured tuning matrix (the next increment's concrete spec)
+
+| seat | reference visual onset (×H) | ours (Task 0) | the lever |
+|---|---:|---:|---|
+| home-why-wrap | −0.78 (elements animate off-screen) | onset undetected | the scene family needs an EARLY line (≈ +70 % vh root expansion) |
+| home-intro-wrap | −0.8 | undetected (ambient crawl masks it) | the beat family's entry line |
+| home-map-wrap | −0.1 | −0.1 ✓ matched | none |
+| home-problem-wrap | −0.34 (top ~258 px into view) | −1.1 (top ~108 px into view) | the items line: −12 % → ≈ −28 % for the problem family |
+| home-usecase-wrap | +0.2 (after the top passes) | undetected | the rows family rides later |
+| home-platform-wrap / cta / footer | no pre-entry motion | −1.0 / undetected | their families play at/after entry |
+
+The two global IO buckets (`OBSERVER_ROOT_MARGIN_LINES` −15 %,
+`OBSERVER_ROOT_MARGIN_ITEMS` −12 % in `frontend/src/lib/reveals.ts`) cannot
+express this heterogeneity — the next increment restructures them per family
+and re-measures our onsets against this table. No such product change is
+claimed done by this record.
