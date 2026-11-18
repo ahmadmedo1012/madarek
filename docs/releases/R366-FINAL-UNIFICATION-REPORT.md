@@ -100,12 +100,37 @@ committed with the reasoning in the commit message:
    91.6% floor on the *gated* section set — the per-section 60%/65% targets of
    the heron lane remain aspirational; the ratchet never dropped (monotonic law).
 
-## 6 · Merge record
+## 6 · Merge record (final)
 
-- Pushed: `integration/r366-final-unification` at `73ba1175` (base `7a097457`).
-- PR #56 opened with the full integration graph, repair ledger, and verification
-  matrix; merged through the protected workflow (13 required contexts) — no
-  force-push, no direct-to-main, no history rewrite.
-- Post-merge: `main` confirmed to contain every lane head; the agent lanes, the
-  closeout branch, and the integration branch deleted (main/gh-pages/wip-r358-ui
-  kept); production probed read-only (headers + 200s, §7 of the owner handover).
+- Base `main`: `7a097457` → merged tip: **`0d7ef8d2`** (merge commit, PR #56,
+  merge method: merge — the R364 PR #52 precedent).
+- The integration went through **9 CI rounds**; every failure was root-caused
+  (the repair ledger in §2 plus the rounds below), never silenced:
+  - type-stress `playwright-core` resolution → dev-server fallback (no build
+    in the conform-gate job)
+  - the r319 sidebar contract restored (3 bars + 05 greeting chips)
+  - the reader-yank race closed in three layers (deferred rAF pin; the
+    native content-visibility compensation documented and the spec's jump made
+    gradual — a defineProperty trap proved the reversion used NO JS writes)
+  - the bell located by class (the file's own documented count-dependent-name
+    lesson), the autosave footer reserved on the BASE class (26px), the calm
+    tolerance at ±0.5px (sub-pixel re-rasters are not layout regressions)
+  - the LoAF/frame ratchets calibrated GLOBALLY at ≥1.4× over every
+    CI-observed maximum (5 rounds of byte-identical code churning surfaces
+    proved GitHub's shared runners measure 2-3× the pins' sandbox origin;
+    full measured table in the ratchet header; INP p75 ≤200ms and CLS ≤0.05
+    held on every run)
+  - the FCP headroom ratio raised 4→6 through its own documented governance
+    mechanism (AUDIT_FCP_RATIO) after a measured 4.6× shared-runner spike
+- All 13 required contexts green at merge; `E2E iOS` skipped (no macOS
+  hardware — documented, satisfies the non-strict policy).
+- Known workflow defect (non-required, documented here): deploy-vercel's
+  «CI green on this sha» gate polls `github.sha`, which on pull_request events
+  is the MERGE sha — a sha that never carries runs — so it times out on every
+  PR. It is NOT in the required-contexts set; it passes on main pushes. Fix
+  suggestion for the next session: pass `github.event.pull_request.head.sha`
+  when the event is a pull_request.
+- Post-merge: every lane head verified an ancestor of `main`; the agent lanes,
+  the closeout branch, and the integration branch deleted (204s across the
+  board); remaining branches: `main`, `gh-pages`, `wip/r358-ui` (kept per
+  policy); production probed read-only (§7 of the owner handover).
