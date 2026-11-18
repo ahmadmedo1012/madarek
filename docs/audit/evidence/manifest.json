@@ -1,94 +1,433 @@
 {
- "generatedAt": "2026-11-18T14:41:30.560Z",
- "state": "entry — section root top at viewport top, viewport clip, animations disabled at capture",
+ "generatedAt": "2026-11-18T16:33:54.070Z",
+ "state": "named states (entry/mid30/mid60/exit/end) per pairs.mjs — a pair is matched only when both sides reached the same declared state within ±2 px; crops are section∩viewport clips",
  "profile": {
-  "browser": "chromium 156.0.8078.4",
+  "browser": "chromium 143.0.7499.4",
   "playwright": "1.60.0",
-  "node": "v22.22.1",
+  "node": "v24.22.3",
   "dpr": 1,
   "reducedMotion": "no-preference",
+  "local": "http://localhost:5300",
+  "reference": "https://heronaiapp.com/",
   "settle": "fonts.ready → preloader gone → two identical document heights → 2 rAF",
-  "local": "http://localhost:5301",
-  "reference": "https://heronaiapp.com/"
+  "cropRule": "section box ∩ viewport at the named state (pairs.mjs law)",
+  "states": [
+   "entry",
+   "mid30",
+   "mid60",
+   "exit"
+  ]
+ },
+ "census": {
+  "390": {
+   "maxOffset": 11075,
+   "bestStep": {
+    "footer": 18,
+    "home-cta-wrap": 17,
+    "home-hero-wrap": 0,
+    "home-intro-wrap": 1,
+    "home-map-wrap": 4,
+    "home-platform-wrap": 12,
+    "home-problem-wrap": 3,
+    "home-usecase-wrap": 15,
+    "home-why-wrap": 14
+   },
+   "contentTopsDiagnostic": {
+    "footer": 10184,
+    "home-cta-wrap": 9683,
+    "home-hero-wrap": 8,
+    "home-intro-wrap": 836,
+    "home-map-wrap": 2553,
+    "home-platform-wrap": 7372,
+    "home-problem-wrap": 1683,
+    "home-usecase-wrap": 8736,
+    "home-why-wrap": 7930
+   },
+   "heights": {
+    "chrome": 50,
+    "footer": 1265,
+    "home-cta-wrap": 500,
+    "home-hero-wrap": 828,
+    "home-intro-wrap": 847,
+    "home-map-wrap": 4819,
+    "home-platform-wrap": 969,
+    "home-problem-wrap": 869,
+    "home-usecase-wrap": 997,
+    "home-why-wrap": 807
+   },
+   "steps": 24,
+   "anchor0": 8,
+   "triggerPairing": {
+    "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
+    "viewport": [
+     390,
+     844
+    ],
+    "bySection": {
+     "home-intro-wrap": {
+      "triggers": 4,
+      "minStart": 0,
+      "maxEnd": 2079,
+      "achievedEntryOffset": 834,
+      "sectionHeight": 847,
+      "startFracOfSection": -1
+     },
+     "home-problem-wrap": {
+      "triggers": 3,
+      "minStart": 423,
+      "maxEnd": 2948,
+      "achievedEntryOffset": 1681,
+      "sectionHeight": 869,
+      "startFracOfSection": -1.4
+     },
+     "home-map-wrap": {
+      "triggers": 1,
+      "minStart": 1292,
+      "maxEnd": 7767,
+      "achievedEntryOffset": 2551,
+      "sectionHeight": 4819,
+      "startFracOfSection": -0.3
+     },
+     "home-platform-wrap": {
+      "triggers": 2,
+      "minStart": 6111,
+      "maxEnd": 8284,
+      "achievedEntryOffset": 7374,
+      "sectionHeight": 969,
+      "startFracOfSection": -1.3
+     },
+     "home-why-wrap": {
+      "triggers": 6,
+      "minStart": 6628,
+      "maxEnd": 9090,
+      "achievedEntryOffset": 8343,
+      "sectionHeight": 807,
+      "startFracOfSection": -2.1
+     },
+     "home-usecase-wrap": {
+      "triggers": 1,
+      "minStart": 7434,
+      "maxEnd": 10038,
+      "achievedEntryOffset": 9146,
+      "sectionHeight": 997,
+      "startFracOfSection": -1.7
+     },
+     "home-cta-wrap": {
+      "triggers": 2,
+      "minStart": 8976,
+      "maxEnd": 10124,
+      "achievedEntryOffset": 10147,
+      "sectionHeight": 500,
+      "startFracOfSection": -2.3
+     },
+     "footer": {
+      "triggers": 7,
+      "minStart": 9346,
+      "maxEnd": 11363,
+      "achievedEntryOffset": 10645,
+      "sectionHeight": 1265,
+      "startFracOfSection": -1
+     }
+    },
+    "unpairedRoots": [],
+    "spaceValidation": {
+     "achievedEntryOffsetMinusStartMedian": 1263,
+     "spread": 881,
+     "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
+    }
+   }
+  },
+  "1440": {
+   "maxOffset": 13257,
+   "bestStep": {
+    "footer": 24,
+    "home-cta-wrap": 21,
+    "home-hero-wrap": 0,
+    "home-intro-wrap": 2,
+    "home-map-wrap": 4,
+    "home-platform-wrap": 14,
+    "home-problem-wrap": 3,
+    "home-usecase-wrap": 20,
+    "home-why-wrap": 16
+   },
+   "contentTopsDiagnostic": {
+    "footer": 11651,
+    "home-cta-wrap": 10953,
+    "home-hero-wrap": 7,
+    "home-intro-wrap": 893,
+    "home-map-wrap": 2358,
+    "home-platform-wrap": 8658,
+    "home-problem-wrap": 1616,
+    "home-usecase-wrap": 10067,
+    "home-why-wrap": 9368
+   },
+   "heights": {
+    "chrome": 56,
+    "footer": 711,
+    "home-cta-wrap": 698,
+    "home-hero-wrap": 887,
+    "home-intro-wrap": 723,
+    "home-map-wrap": 6300,
+    "home-platform-wrap": 710,
+    "home-problem-wrap": 743,
+    "home-usecase-wrap": 887,
+    "home-why-wrap": 2487
+   },
+   "steps": 27,
+   "anchor0": 7,
+   "triggerPairing": {
+    "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
+    "viewport": [
+     1440,
+     900
+    ],
+    "bySection": {
+     "home-intro-wrap": {
+      "triggers": 4,
+      "minStart": 0,
+      "maxEnd": 2053,
+      "achievedEntryOffset": 891,
+      "sectionHeight": 723,
+      "startFracOfSection": -1.2
+     },
+     "home-problem-wrap": {
+      "triggers": 3,
+      "minStart": 279,
+      "maxEnd": 2795,
+      "achievedEntryOffset": 1614,
+      "sectionHeight": 743,
+      "startFracOfSection": -1.8
+     },
+     "home-map-wrap": {
+      "triggers": 1,
+      "minStart": 1021,
+      "maxEnd": 9095,
+      "achievedEntryOffset": 2356,
+      "sectionHeight": 6300,
+      "startFracOfSection": -0.2
+     },
+     "home-platform-wrap": {
+      "triggers": 4,
+      "minStart": 7321,
+      "maxEnd": 9805,
+      "achievedEntryOffset": 8659,
+      "sectionHeight": 710,
+      "startFracOfSection": -1.9
+     },
+     "home-why-wrap": {
+      "triggers": 6,
+      "minStart": 8031,
+      "maxEnd": 10486,
+      "achievedEntryOffset": 9366,
+      "sectionHeight": 1145,
+      "startFracOfSection": -1.2
+     },
+     "home-usecase-wrap": {
+      "triggers": 1,
+      "minStart": 8712,
+      "maxEnd": 11373,
+      "achievedEntryOffset": 11855,
+      "sectionHeight": 887,
+      "startFracOfSection": -3.5
+     },
+     "home-cta-wrap": {
+      "triggers": 4,
+      "minStart": 9942,
+      "maxEnd": 11627,
+      "achievedEntryOffset": 12740,
+      "sectionHeight": 698,
+      "startFracOfSection": -4
+     },
+     "footer": {
+      "triggers": 18,
+      "minStart": 10640,
+      "maxEnd": 12338,
+      "achievedEntryOffset": 13440,
+      "sectionHeight": 711,
+      "startFracOfSection": -3.9
+     }
+    },
+    "unpairedRoots": [],
+    "spaceValidation": {
+     "achievedEntryOffsetMinusStartMedian": 1338,
+     "spread": 2252,
+     "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
+    }
+   }
+  }
  },
  "masks": {
-  "policy": "preregistered from the frozen reference spec's text elements (tc≠none), grown 4 px, windowed to the capture viewport; Arabic glyphs are never required to match English ones and no mask may be chosen after seeing a score",
-  "source": "docs/redesign/r335/heron-spec/<section>.<bp>.json",
+  "policy": "entry: preregistered frozen-spec text rects (tc≠none, in-viewport, box-relative). Non-entry: live reference text rects recorded at capture before scoring. Masks always derive from the reference side, never ours, and no mask is chosen after seeing a score.",
   "shareCap": 0.55,
   "chromeCropBottomPx": 60,
-  "chromeCropReason": "the reference's consent bar overlays the bottom ~50 px of every crop and did not dismiss under click in headless; both sides lose the same band",
-  "invalidPairs": []
+  "chromeBandRule": "applied only to crops that reach the viewport bottom (the reference's persistent consent bar), symmetric on both sides, recorded per row",
+  "storagePolicy": "crops wider than 480px are stored halved (colour box-average, deterministic; scale recorded per row) to respect the docs/ size gates (tracked file ≤500KB, push ≤5MB); every score runs on the STORED files so --score-only reproduces E from the committed evidence alone"
  },
- "requiredTargets": [
-  "chrome@1440",
-  "chrome@390",
-  "footer@1440",
-  "footer@390",
-  "home-cta-wrap@1440",
-  "home-cta-wrap@390",
-  "home-hero-wrap@1440",
-  "home-hero-wrap@390",
-  "home-intro-wrap@1440",
-  "home-intro-wrap@390",
-  "home-map-wrap@1440",
-  "home-map-wrap@390",
-  "home-platform-wrap@1440",
-  "home-platform-wrap@390",
-  "home-problem-wrap@1440",
-  "home-problem-wrap@390",
-  "home-usecase-wrap@1440",
-  "home-usecase-wrap@390",
-  "home-why-wrap@1440",
-  "home-why-wrap@390"
+ "requiredPairs": [
+  "chrome@1440:entry",
+  "chrome@1440:mid30",
+  "chrome@1440:mid60",
+  "chrome@1440:exit",
+  "footer@1440:entry",
+  "footer@1440:mid30",
+  "footer@1440:mid60",
+  "footer@1440:exit",
+  "home-cta-wrap@1440:entry",
+  "home-cta-wrap@1440:mid30",
+  "home-cta-wrap@1440:mid60",
+  "home-cta-wrap@1440:exit",
+  "home-hero-wrap@1440:entry",
+  "home-hero-wrap@1440:mid30",
+  "home-hero-wrap@1440:mid60",
+  "home-hero-wrap@1440:exit",
+  "home-intro-wrap@1440:entry",
+  "home-intro-wrap@1440:mid30",
+  "home-intro-wrap@1440:mid60",
+  "home-intro-wrap@1440:exit",
+  "home-map-wrap@1440:entry",
+  "home-map-wrap@1440:mid30",
+  "home-map-wrap@1440:mid60",
+  "home-map-wrap@1440:exit",
+  "home-platform-wrap@1440:entry",
+  "home-platform-wrap@1440:mid30",
+  "home-platform-wrap@1440:mid60",
+  "home-platform-wrap@1440:exit",
+  "home-problem-wrap@1440:entry",
+  "home-problem-wrap@1440:mid30",
+  "home-problem-wrap@1440:mid60",
+  "home-problem-wrap@1440:exit",
+  "home-usecase-wrap@1440:entry",
+  "home-usecase-wrap@1440:mid30",
+  "home-usecase-wrap@1440:mid60",
+  "home-usecase-wrap@1440:exit",
+  "home-why-wrap@1440:entry",
+  "home-why-wrap@1440:mid30",
+  "home-why-wrap@1440:mid60",
+  "home-why-wrap@1440:exit",
+  "chrome@390:entry",
+  "chrome@390:mid30",
+  "chrome@390:mid60",
+  "chrome@390:exit",
+  "footer@390:entry",
+  "footer@390:mid30",
+  "footer@390:mid60",
+  "footer@390:exit",
+  "home-cta-wrap@390:entry",
+  "home-cta-wrap@390:mid30",
+  "home-cta-wrap@390:mid60",
+  "home-cta-wrap@390:exit",
+  "home-hero-wrap@390:entry",
+  "home-hero-wrap@390:mid30",
+  "home-hero-wrap@390:mid60",
+  "home-hero-wrap@390:exit",
+  "home-intro-wrap@390:entry",
+  "home-intro-wrap@390:mid30",
+  "home-intro-wrap@390:mid60",
+  "home-intro-wrap@390:exit",
+  "home-map-wrap@390:entry",
+  "home-map-wrap@390:mid30",
+  "home-map-wrap@390:mid60",
+  "home-map-wrap@390:exit",
+  "home-platform-wrap@390:entry",
+  "home-platform-wrap@390:mid30",
+  "home-platform-wrap@390:mid60",
+  "home-platform-wrap@390:exit",
+  "home-problem-wrap@390:entry",
+  "home-problem-wrap@390:mid30",
+  "home-problem-wrap@390:mid60",
+  "home-problem-wrap@390:exit",
+  "home-usecase-wrap@390:entry",
+  "home-usecase-wrap@390:mid30",
+  "home-usecase-wrap@390:mid60",
+  "home-usecase-wrap@390:exit",
+  "home-why-wrap@390:entry",
+  "home-why-wrap@390:mid30",
+  "home-why-wrap@390:mid60",
+  "home-why-wrap@390:exit"
  ],
- "capturedTargets": [
-  "chrome@1440",
-  "footer@1440",
-  "home-cta-wrap@1440",
-  "home-hero-wrap@1440",
-  "home-intro-wrap@1440",
-  "home-map-wrap@1440",
-  "home-platform-wrap@1440",
-  "home-problem-wrap@1440",
-  "home-usecase-wrap@1440",
-  "home-why-wrap@1440",
-  "chrome@390",
-  "footer@390",
-  "home-cta-wrap@390",
-  "home-hero-wrap@390",
-  "home-intro-wrap@390",
-  "home-map-wrap@390",
-  "home-platform-wrap@390",
-  "home-problem-wrap@390",
-  "home-usecase-wrap@390",
-  "home-why-wrap@390"
+ "coveredPairs": [
+  "chrome@1440:entry",
+  "footer@1440:entry",
+  "home-cta-wrap@1440:entry",
+  "home-cta-wrap@1440:mid30",
+  "home-cta-wrap@1440:mid60",
+  "home-hero-wrap@1440:entry",
+  "home-hero-wrap@1440:mid30",
+  "home-hero-wrap@1440:mid60",
+  "home-intro-wrap@1440:entry",
+  "home-intro-wrap@1440:mid30",
+  "home-intro-wrap@1440:mid60",
+  "home-map-wrap@1440:entry",
+  "home-map-wrap@1440:mid30",
+  "home-map-wrap@1440:mid60",
+  "home-map-wrap@1440:exit",
+  "home-platform-wrap@1440:entry",
+  "home-platform-wrap@1440:mid30",
+  "home-platform-wrap@1440:mid60",
+  "home-problem-wrap@1440:entry",
+  "home-problem-wrap@1440:mid30",
+  "home-problem-wrap@1440:mid60",
+  "home-usecase-wrap@1440:entry",
+  "home-usecase-wrap@1440:mid30",
+  "home-usecase-wrap@1440:mid60",
+  "home-why-wrap@1440:entry",
+  "home-why-wrap@1440:mid30",
+  "home-why-wrap@1440:mid60",
+  "chrome@390:entry",
+  "footer@390:entry",
+  "footer@390:mid30",
+  "home-cta-wrap@390:entry",
+  "home-cta-wrap@390:mid30",
+  "home-cta-wrap@390:mid60",
+  "home-hero-wrap@390:entry",
+  "home-hero-wrap@390:mid30",
+  "home-intro-wrap@390:entry",
+  "home-intro-wrap@390:mid30",
+  "home-intro-wrap@390:mid60",
+  "home-map-wrap@390:entry",
+  "home-map-wrap@390:mid30",
+  "home-map-wrap@390:mid60",
+  "home-platform-wrap@390:entry",
+  "home-platform-wrap@390:mid30",
+  "home-platform-wrap@390:mid60",
+  "home-platform-wrap@390:exit",
+  "home-problem-wrap@390:entry",
+  "home-problem-wrap@390:mid30",
+  "home-problem-wrap@390:mid60",
+  "home-usecase-wrap@390:entry",
+  "home-usecase-wrap@390:mid30",
+  "home-usecase-wrap@390:mid60",
+  "home-usecase-wrap@390:exit",
+  "home-why-wrap@390:entry",
+  "home-why-wrap@390:mid30",
+  "home-why-wrap@390:mid60"
  ],
- "missingTargets": [],
+ "invalidPairs": [
+  {
+   "target": "footer@390:mid60",
+   "status": "missing",
+   "reason": "local: state mid60 needs scroll 13496 > document end 13272 — inaccessible locally (recorded, not scored)"
+  },
+  {
+   "target": "home-hero-wrap@390:mid60",
+   "status": "invalid-mask-share",
+   "reason": "mask share 74.9 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
+  },
+  {
+   "target": "home-map-wrap@390:exit",
+   "status": "invalid-mask-share",
+   "reason": "mask share 63.7 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
+  }
+ ],
  "dials": {
-  "E": 56.7,
-  "T": 100,
-  "Q": 85,
-  "E_note": "100 × mean SSIM outside masks",
-  "T_note": "verified matched pairs / required pairs",
-  "Q_note": "Q = passing verified samples / verified samples. Settle family = frames a section's subtree keeps changing after its scroll stops (tolerance ≤2). Magnitude parity stays unverified (no sampled tween values in the frozen spec)."
+  "E": 51.8,
+  "T": 94.8,
+  "Q": 95
  },
  "validate": {
-  "completeEither": true,
-  "completeBoth": true,
-  "E_meets_gate": false,
-  "T_meets_gate": true,
-  "sections_meeting_E_floor": [],
-  "sections_below_E_floor": [
-   "chrome (47.2)",
-   "footer (52)",
-   "home-cta-wrap (62.2)",
-   "home-hero-wrap (50.3)",
-   "home-intro-wrap (41)",
-   "home-map-wrap (68.3)",
-   "home-platform-wrap (57.2)",
-   "home-problem-wrap (68.5)",
-   "home-usecase-wrap (53.5)",
-   "home-why-wrap (67.5)"
-  ]
+  "everyPairValidOrExplicit": true,
+  "noCoordinateViolations": true,
+  "motionTracesPresent": true,
+  "rejections": []
  }
 }

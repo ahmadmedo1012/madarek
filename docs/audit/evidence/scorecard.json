@@ -1,325 +1,747 @@
 {
- "generatedAt": "2026-11-18T14:41:30.559Z",
+ "generatedAt": "2026-11-18T16:33:54.068Z",
  "formula": {
-  "E": "100 × mean SSIM over 8×8 windows outside preregistered text masks",
-  "T": "100 × verified matched pairs / required pairs",
-  "Q": "100 × passing approved samples / total samples"
+  "E": "100 × mean SSIM over 8×8 windows outside preregistered text masks, per section∩viewport crop",
+  "T": "100 × verified matched state pairs / required state pairs (pairs.mjs law: same named state on both sides, ±2 px)",
+  "Q": "100 × passing verified samples / verified samples (settle only; trigger baseline recorded, unscored)"
  },
  "viewports": [
   "1440=1440x900",
-  "390=390x844"
+  "390=390x844",
+  "768=768x900",
+  "1024=1024x900",
+  "1920=1920x1080"
  ],
- "required": 20,
- "covered": 20,
- "referenceUnavailable": false,
- "T_reason": null,
- "E": 56.7,
- "T": 100,
+ "states": [
+  "entry",
+  "mid30",
+  "mid60",
+  "exit"
+ ],
+ "required": 58,
+ "coincident": 22,
+ "covered": 55,
+ "E": 51.8,
+ "T": 94.8,
+ "T_note": "T = scored / required, required excludes protocol-coincident states (duplicates, fixed chrome, END collapse — reasons carried in invalidRows); every other gap stays in the denominator",
+ "invalidRows": [
+  {
+   "target": "footer@390:mid60",
+   "status": "missing",
+   "reason": "local: state mid60 needs scroll 13496 > document end 13272 — inaccessible locally (recorded, not scored)"
+  },
+  {
+   "target": "home-hero-wrap@390:mid60",
+   "status": "invalid-mask-share",
+   "reason": "mask share 74.9 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
+  },
+  {
+   "target": "home-map-wrap@390:exit",
+   "status": "invalid-mask-share",
+   "reason": "mask share 63.7 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
+  }
+ ],
+ "coincidentRows": [
+  {
+   "target": "chrome@1440:mid30",
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "target": "chrome@1440:mid60",
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "target": "chrome@1440:exit",
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "target": "footer@1440:mid30",
+   "reason": "local: pair is END — non-entry states coincide with the document end"
+  },
+  {
+   "target": "footer@1440:mid60",
+   "reason": "local: pair is END — non-entry states coincide with the document end"
+  },
+  {
+   "target": "footer@1440:exit",
+   "reason": "local: pair is END — non-entry states coincide with the document end"
+  },
+  {
+   "target": "home-cta-wrap@1440:exit",
+   "reason": "local: duplicate state — delta 432 px sits within 100 px of an already-recorded state for this 1332 px section"
+  },
+  {
+   "target": "home-hero-wrap@1440:exit",
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 887 px section"
+  },
+  {
+   "target": "home-intro-wrap@1440:exit",
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 723 px section"
+  },
+  {
+   "target": "home-platform-wrap@1440:exit",
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 712 px section"
+  },
+  {
+   "target": "home-problem-wrap@1440:exit",
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 746 px section"
+  },
+  {
+   "target": "home-usecase-wrap@1440:exit",
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 886 px section"
+  },
+  {
+   "target": "home-why-wrap@1440:exit",
+   "reason": "local: duplicate state — delta 1588 px sits within 100 px of an already-recorded state for this 2488 px section"
+  },
+  {
+   "target": "chrome@390:mid30",
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "target": "chrome@390:mid60",
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "target": "chrome@390:exit",
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "target": "footer@390:exit",
+   "reason": "local: duplicate state — delta 395 px sits within 100 px of an already-recorded state for this 1239 px section"
+  },
+  {
+   "target": "home-cta-wrap@390:exit",
+   "reason": "local: duplicate state — delta 65 px sits within 100 px of an already-recorded state for this 909 px section"
+  },
+  {
+   "target": "home-hero-wrap@390:exit",
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 830 px section"
+  },
+  {
+   "target": "home-intro-wrap@390:exit",
+   "reason": "local: duplicate state — delta 8 px sits within 100 px of an already-recorded state for this 852 px section"
+  },
+  {
+   "target": "home-problem-wrap@390:exit",
+   "reason": "local: duplicate state — delta 41 px sits within 100 px of an already-recorded state for this 885 px section"
+  },
+  {
+   "target": "home-why-wrap@390:exit",
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 807 px section"
+  }
+ ],
  "Q": {
-  "overall": 85,
+  "overall": 95,
   "families": {
    "390": {
     "settle": {
      "samples": 10,
-     "pass": 8,
-     "rate": 80
+     "pass": 9,
+     "rate": 90
+    },
+    "triggerBaseline": {
+     "samples": 10,
+     "scored": 0,
+     "note": "recorded only — never counted as a Q pass or failure (verified-only rule)"
     }
    },
    "1440": {
     "settle": {
      "samples": 10,
-     "pass": 9,
-     "rate": 90
+     "pass": 10,
+     "rate": 100
+    },
+    "triggerBaseline": {
+     "samples": 10,
+     "scored": 0,
+     "note": "recorded only — never counted as a Q pass or failure (verified-only rule)"
     }
    }
   },
-  "verifiedSamples": 20,
-  "unverified": {
-   "family": "trigger",
-   "samples": 20,
-   "reason": "frozen trigger `start` lives in the reference's ScrollTrigger scroll space; the scroll-jacked stage exposes no offset to the document layout, so it cannot be normalised without a live reference trace. Measured our-side onsets are recorded in capture.json for the Task 3 work-list.",
-   "measuredOurOnsets": [
-    {
-     "section": "chrome",
-     "bp": "390",
-     "ourOnsetFrac": null,
-     "refTriggerStartPx": null
-    },
-    {
-     "section": "footer",
-     "bp": "390",
-     "ourOnsetFrac": -0.3,
-     "refTriggerStartPx": 10247
-    },
-    {
-     "section": "home-cta-wrap",
-     "bp": "390",
-     "ourOnsetFrac": null,
-     "refTriggerStartPx": 9727
-    },
-    {
-     "section": "home-hero-wrap",
-     "bp": "390",
-     "ourOnsetFrac": -0.4,
-     "refTriggerStartPx": null
-    },
-    {
-     "section": "home-intro-wrap",
-     "bp": "390",
-     "ourOnsetFrac": null,
-     "refTriggerStartPx": 0
-    },
-    {
-     "section": "home-map-wrap",
-     "bp": "390",
-     "ourOnsetFrac": 0,
-     "refTriggerStartPx": 1303
-    },
-    {
-     "section": "home-platform-wrap",
-     "bp": "390",
-     "ourOnsetFrac": -0.4,
-     "refTriggerStartPx": 6122
-    },
-    {
-     "section": "home-problem-wrap",
-     "bp": "390",
-     "ourOnsetFrac": null,
-     "refTriggerStartPx": 433
-    },
-    {
-     "section": "home-usecase-wrap",
-     "bp": "390",
-     "ourOnsetFrac": null,
-     "refTriggerStartPx": 7898
-    },
-    {
-     "section": "home-why-wrap",
-     "bp": "390",
-     "ourOnsetFrac": null,
-     "refTriggerStartPx": 7091
-    },
-    {
-     "section": "chrome",
-     "bp": "1440",
-     "ourOnsetFrac": null,
-     "refTriggerStartPx": null
-    },
-    {
-     "section": "footer",
-     "bp": "1440",
-     "ourOnsetFrac": -0.4,
-     "refTriggerStartPx": 12446
-    },
-    {
-     "section": "home-cta-wrap",
-     "bp": "1440",
-     "ourOnsetFrac": -0.3,
-     "refTriggerStartPx": 11748
-    },
-    {
-     "section": "home-hero-wrap",
-     "bp": "1440",
-     "ourOnsetFrac": -0.4,
-     "refTriggerStartPx": null
-    },
-    {
-     "section": "home-intro-wrap",
-     "bp": "1440",
-     "ourOnsetFrac": null,
-     "refTriggerStartPx": 0
-    },
-    {
-     "section": "home-map-wrap",
-     "bp": "1440",
-     "ourOnsetFrac": 0.1,
-     "refTriggerStartPx": 1021
-    },
-    {
-     "section": "home-platform-wrap",
-     "bp": "1440",
-     "ourOnsetFrac": -0.5,
-     "refTriggerStartPx": 7321
-    },
-    {
-     "section": "home-problem-wrap",
-     "bp": "1440",
-     "ourOnsetFrac": null,
-     "refTriggerStartPx": 279
-    },
-    {
-     "section": "home-usecase-wrap",
-     "bp": "1440",
-     "ourOnsetFrac": null,
-     "refTriggerStartPx": 10518
-    },
-    {
-     "section": "home-why-wrap",
-     "bp": "1440",
-     "ourOnsetFrac": null,
-     "refTriggerStartPx": 8031
-    }
-   ]
-  },
-  "note": "Q = passing verified samples / verified samples. Settle family = frames a section's subtree keeps changing after its scroll stops (tolerance ≤2). Magnitude parity stays unverified (no sampled tween values in the frozen spec)."
+  "verifiedRule": "Q = passing verified samples / verified samples. Only the settle family is verified and scored; the trigger family is a paired BASELINE (live reference trigger table, census-space-validated + our measured onsets) recorded for Task 1 — never counted as a pass. Magnitude parity stays unverified (no sampled tween values).",
+  "triggerBaseline": [
+   {
+    "section": "chrome",
+    "bp": "390",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 0,
+    "refTriggerStartPx": null,
+    "refTriggerEndPx": null,
+    "refTriggerFracOfSection": null,
+    "resolution": "±1 of section height (18 steps over 17.68×H span)",
+    "pass": null,
+    "note": "no live trigger rooted at this section — named gap, not a pass"
+   },
+   {
+    "section": "footer",
+    "bp": "390",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 7,
+    "refTriggerStartPx": 9346,
+    "refTriggerEndPx": 11363,
+    "refTriggerFracOfSection": -1,
+    "resolution": "±0.1 of section height (18 steps over 1.48×H span)",
+    "pass": null,
+    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+   },
+   {
+    "section": "home-cta-wrap",
+    "bp": "390",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 2,
+    "refTriggerStartPx": 8976,
+    "refTriggerEndPx": 10124,
+    "refTriggerFracOfSection": -2.3,
+    "resolution": "±0.1 of section height (18 steps over 1.73×H span)",
+    "pass": null,
+    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+   },
+   {
+    "section": "home-hero-wrap",
+    "bp": "390",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 0,
+    "refTriggerStartPx": null,
+    "refTriggerEndPx": null,
+    "refTriggerFracOfSection": null,
+    "resolution": "±0.1 of section height (18 steps over 1.82×H span)",
+    "pass": null,
+    "note": "no live trigger rooted at this section — named gap, not a pass"
+   },
+   {
+    "section": "home-intro-wrap",
+    "bp": "390",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 4,
+    "refTriggerStartPx": 0,
+    "refTriggerEndPx": 2079,
+    "refTriggerFracOfSection": -1,
+    "resolution": "±0.1 of section height (18 steps over 1.70×H span)",
+    "pass": null,
+    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+   },
+   {
+    "section": "home-map-wrap",
+    "bp": "390",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": -0.1,
+    "refTriggers": 1,
+    "refTriggerStartPx": 1292,
+    "refTriggerEndPx": 7767,
+    "refTriggerFracOfSection": -0.3,
+    "resolution": "±0.1 of section height (18 steps over 0.98×H span)",
+    "pass": null,
+    "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+   },
+   {
+    "section": "home-platform-wrap",
+    "bp": "390",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": -0.5,
+    "refTriggers": 2,
+    "refTriggerStartPx": 6111,
+    "refTriggerEndPx": 8284,
+    "refTriggerFracOfSection": -1.3,
+    "resolution": "±0.1 of section height (18 steps over 1.68×H span)",
+    "pass": null,
+    "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+   },
+   {
+    "section": "home-problem-wrap",
+    "bp": "390",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 3,
+    "refTriggerStartPx": 423,
+    "refTriggerEndPx": 2948,
+    "refTriggerFracOfSection": -1.4,
+    "resolution": "±0.1 of section height (18 steps over 1.75×H span)",
+    "pass": null,
+    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+   },
+   {
+    "section": "home-usecase-wrap",
+    "bp": "390",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 1,
+    "refTriggerStartPx": 7434,
+    "refTriggerEndPx": 10038,
+    "refTriggerFracOfSection": -1.7,
+    "resolution": "±0.1 of section height (18 steps over 1.62×H span)",
+    "pass": null,
+    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+   },
+   {
+    "section": "home-why-wrap",
+    "bp": "390",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 6,
+    "refTriggerStartPx": 6628,
+    "refTriggerEndPx": 9090,
+    "refTriggerFracOfSection": -2.1,
+    "resolution": "±0.1 of section height (18 steps over 1.55×H span)",
+    "pass": null,
+    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+   },
+   {
+    "section": "chrome",
+    "bp": "1440",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 0,
+    "refTriggerStartPx": null,
+    "refTriggerEndPx": null,
+    "refTriggerFracOfSection": null,
+    "resolution": "±0.9 of section height (18 steps over 16.88×H span)",
+    "pass": null,
+    "note": "no live trigger rooted at this section — named gap, not a pass"
+   },
+   {
+    "section": "footer",
+    "bp": "1440",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 18,
+    "refTriggerStartPx": 10640,
+    "refTriggerEndPx": 12338,
+    "refTriggerFracOfSection": -3.9,
+    "resolution": "±0.1 of section height (18 steps over 1.80×H span)",
+    "pass": null,
+    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+   },
+   {
+    "section": "home-cta-wrap",
+    "bp": "1440",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 4,
+    "refTriggerStartPx": 9942,
+    "refTriggerEndPx": 11627,
+    "refTriggerFracOfSection": -4,
+    "resolution": "±0.1 of section height (18 steps over 1.48×H span)",
+    "pass": null,
+    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+   },
+   {
+    "section": "home-hero-wrap",
+    "bp": "1440",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 0,
+    "refTriggerStartPx": null,
+    "refTriggerEndPx": null,
+    "refTriggerFracOfSection": null,
+    "resolution": "±0.1 of section height (18 steps over 1.82×H span)",
+    "pass": null,
+    "note": "no live trigger rooted at this section — named gap, not a pass"
+   },
+   {
+    "section": "home-intro-wrap",
+    "bp": "1440",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 4,
+    "refTriggerStartPx": 0,
+    "refTriggerEndPx": 2053,
+    "refTriggerFracOfSection": -1.2,
+    "resolution": "±0.1 of section height (18 steps over 2.04×H span)",
+    "pass": null,
+    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+   },
+   {
+    "section": "home-map-wrap",
+    "bp": "1440",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": -0.1,
+    "refTriggers": 1,
+    "refTriggerStartPx": 1021,
+    "refTriggerEndPx": 9095,
+    "refTriggerFracOfSection": -0.2,
+    "resolution": "±0.1 of section height (18 steps over 0.94×H span)",
+    "pass": null,
+    "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+   },
+   {
+    "section": "home-platform-wrap",
+    "bp": "1440",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": -1,
+    "refTriggers": 4,
+    "refTriggerStartPx": 7321,
+    "refTriggerEndPx": 9805,
+    "refTriggerFracOfSection": -1.9,
+    "resolution": "±0.1 of section height (18 steps over 2.06×H span)",
+    "pass": null,
+    "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+   },
+   {
+    "section": "home-problem-wrap",
+    "bp": "1440",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": -1.1,
+    "refTriggers": 3,
+    "refTriggerStartPx": 279,
+    "refTriggerEndPx": 2795,
+    "refTriggerFracOfSection": -1.8,
+    "resolution": "±0.1 of section height (18 steps over 2.01×H span)",
+    "pass": null,
+    "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+   },
+   {
+    "section": "home-usecase-wrap",
+    "bp": "1440",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 1,
+    "refTriggerStartPx": 8712,
+    "refTriggerEndPx": 11373,
+    "refTriggerFracOfSection": -3.5,
+    "resolution": "±0.1 of section height (18 steps over 1.82×H span)",
+    "pass": null,
+    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+   },
+   {
+    "section": "home-why-wrap",
+    "bp": "1440",
+    "family": "trigger-baseline",
+    "ourOnsetFrac": null,
+    "refTriggers": 6,
+    "refTriggerStartPx": 8031,
+    "refTriggerEndPx": 10486,
+    "refTriggerFracOfSection": -1.2,
+    "resolution": "±0.1 of section height (18 steps over 1.08×H span)",
+    "pass": null,
+    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+   }
+  ]
  },
  "perSection": {
   "chrome": {
-   "E": 47.2,
+   "E": 60.8,
    "T": 100,
    "pairs": 2,
    "covered": 2,
-   "perViewport": {
-    "390": {
-     "E": 47.8,
+   "coincident": 6,
+   "states": {
+    "1440:entry": {
+     "E": 48.6,
      "status": "scored"
     },
-    "1440": {
-     "E": 46.5,
+    "390:entry": {
+     "E": 73,
      "status": "scored"
     }
    }
   },
   "footer": {
-   "E": 52,
-   "T": 100,
-   "pairs": 2,
-   "covered": 2,
-   "perViewport": {
-    "390": {
-     "E": 55.8,
+   "E": 43.6,
+   "T": 75,
+   "pairs": 4,
+   "covered": 3,
+   "coincident": 4,
+   "states": {
+    "1440:entry": {
+     "E": 22.8,
      "status": "scored"
     },
-    "1440": {
-     "E": 48.1,
+    "390:entry": {
+     "E": 54.9,
      "status": "scored"
+    },
+    "390:mid30": {
+     "E": 53,
+     "status": "scored"
+    },
+    "390:mid60": {
+     "E": null,
+     "status": "missing"
     }
    }
   },
   "home-cta-wrap": {
-   "E": 62.2,
+   "E": 70.4,
    "T": 100,
-   "pairs": 2,
-   "covered": 2,
-   "perViewport": {
-    "390": {
-     "E": 56.3,
+   "pairs": 6,
+   "covered": 6,
+   "coincident": 2,
+   "states": {
+    "1440:entry": {
+     "E": 77.1,
      "status": "scored"
     },
-    "1440": {
-     "E": 68,
+    "1440:mid30": {
+     "E": 80.4,
+     "status": "scored"
+    },
+    "1440:mid60": {
+     "E": 67,
+     "status": "scored"
+    },
+    "390:entry": {
+     "E": 64,
+     "status": "scored"
+    },
+    "390:mid30": {
+     "E": 72.1,
+     "status": "scored"
+    },
+    "390:mid60": {
+     "E": 61.9,
      "status": "scored"
     }
    }
   },
   "home-hero-wrap": {
-   "E": 50.3,
-   "T": 100,
-   "pairs": 2,
-   "covered": 2,
-   "perViewport": {
-    "390": {
-     "E": 51.2,
+   "E": 45.6,
+   "T": 83.3,
+   "pairs": 6,
+   "covered": 5,
+   "coincident": 2,
+   "states": {
+    "1440:entry": {
+     "E": 45.2,
      "status": "scored"
     },
-    "1440": {
-     "E": 49.4,
+    "1440:mid30": {
+     "E": 32.1,
      "status": "scored"
+    },
+    "1440:mid60": {
+     "E": 34.5,
+     "status": "scored"
+    },
+    "390:entry": {
+     "E": 53.2,
+     "status": "scored"
+    },
+    "390:mid30": {
+     "E": 62.9,
+     "status": "scored"
+    },
+    "390:mid60": {
+     "E": null,
+     "status": "invalid-mask-share"
     }
    }
   },
   "home-intro-wrap": {
-   "E": 41,
+   "E": 31.4,
    "T": 100,
-   "pairs": 2,
-   "covered": 2,
-   "perViewport": {
-    "390": {
-     "E": 32.9,
+   "pairs": 6,
+   "covered": 6,
+   "coincident": 2,
+   "states": {
+    "1440:entry": {
+     "E": 35.7,
      "status": "scored"
     },
-    "1440": {
-     "E": 49.1,
+    "1440:mid30": {
+     "E": 22.1,
+     "status": "scored"
+    },
+    "1440:mid60": {
+     "E": 23.1,
+     "status": "scored"
+    },
+    "390:entry": {
+     "E": 30.4,
+     "status": "scored"
+    },
+    "390:mid30": {
+     "E": 31.2,
+     "status": "scored"
+    },
+    "390:mid60": {
+     "E": 45.9,
      "status": "scored"
     }
    }
   },
   "home-map-wrap": {
-   "E": 68.3,
-   "T": 100,
-   "pairs": 2,
-   "covered": 2,
-   "perViewport": {
-    "390": {
-     "E": 62.7,
+   "E": 52,
+   "T": 87.5,
+   "pairs": 8,
+   "covered": 7,
+   "coincident": 0,
+   "states": {
+    "1440:entry": {
+     "E": 54.8,
      "status": "scored"
     },
-    "1440": {
-     "E": 73.8,
+    "1440:mid30": {
+     "E": 53.3,
      "status": "scored"
+    },
+    "1440:mid60": {
+     "E": 47.6,
+     "status": "scored"
+    },
+    "1440:exit": {
+     "E": 40,
+     "status": "scored"
+    },
+    "390:entry": {
+     "E": 68.7,
+     "status": "scored"
+    },
+    "390:mid30": {
+     "E": 51.2,
+     "status": "scored"
+    },
+    "390:mid60": {
+     "E": 48.2,
+     "status": "scored"
+    },
+    "390:exit": {
+     "E": null,
+     "status": "invalid-mask-share"
     }
    }
   },
   "home-platform-wrap": {
-   "E": 57.2,
+   "E": 48.7,
    "T": 100,
-   "pairs": 2,
-   "covered": 2,
-   "perViewport": {
-    "390": {
-     "E": 43.1,
+   "pairs": 7,
+   "covered": 7,
+   "coincident": 1,
+   "states": {
+    "1440:entry": {
+     "E": 55.3,
      "status": "scored"
     },
-    "1440": {
-     "E": 71.2,
+    "1440:mid30": {
+     "E": 59.3,
+     "status": "scored"
+    },
+    "1440:mid60": {
+     "E": 55.6,
+     "status": "scored"
+    },
+    "390:entry": {
+     "E": 43.6,
+     "status": "scored"
+    },
+    "390:mid30": {
+     "E": 42.1,
+     "status": "scored"
+    },
+    "390:mid60": {
+     "E": 44.1,
+     "status": "scored"
+    },
+    "390:exit": {
+     "E": 41,
      "status": "scored"
     }
    }
   },
   "home-problem-wrap": {
-   "E": 68.5,
+   "E": 64.5,
    "T": 100,
-   "pairs": 2,
-   "covered": 2,
-   "perViewport": {
-    "390": {
-     "E": 57,
+   "pairs": 6,
+   "covered": 6,
+   "coincident": 2,
+   "states": {
+    "1440:entry": {
+     "E": 71.6,
      "status": "scored"
     },
-    "1440": {
-     "E": 79.9,
+    "1440:mid30": {
+     "E": 66.1,
+     "status": "scored"
+    },
+    "1440:mid60": {
+     "E": 59.2,
+     "status": "scored"
+    },
+    "390:entry": {
+     "E": 66.1,
+     "status": "scored"
+    },
+    "390:mid30": {
+     "E": 63.8,
+     "status": "scored"
+    },
+    "390:mid60": {
+     "E": 60.2,
      "status": "scored"
     }
    }
   },
   "home-usecase-wrap": {
-   "E": 53.5,
+   "E": 44.5,
    "T": 100,
-   "pairs": 2,
-   "covered": 2,
-   "perViewport": {
-    "390": {
-     "E": 39.7,
+   "pairs": 7,
+   "covered": 7,
+   "coincident": 1,
+   "states": {
+    "1440:entry": {
+     "E": 53.1,
      "status": "scored"
     },
-    "1440": {
-     "E": 67.2,
+    "1440:mid30": {
+     "E": 43.3,
+     "status": "scored"
+    },
+    "1440:mid60": {
+     "E": 33.2,
+     "status": "scored"
+    },
+    "390:entry": {
+     "E": 44.4,
+     "status": "scored"
+    },
+    "390:mid30": {
+     "E": 42.4,
+     "status": "scored"
+    },
+    "390:mid60": {
+     "E": 57.7,
+     "status": "scored"
+    },
+    "390:exit": {
+     "E": 37.7,
      "status": "scored"
     }
    }
   },
   "home-why-wrap": {
-   "E": 67.5,
+   "E": 59.4,
    "T": 100,
-   "pairs": 2,
-   "covered": 2,
-   "perViewport": {
-    "390": {
-     "E": 50.2,
+   "pairs": 6,
+   "covered": 6,
+   "coincident": 2,
+   "states": {
+    "1440:entry": {
+     "E": 70.3,
      "status": "scored"
     },
-    "1440": {
-     "E": 84.8,
+    "1440:mid30": {
+     "E": 74.8,
+     "status": "scored"
+    },
+    "1440:mid60": {
+     "E": 66.4,
+     "status": "scored"
+    },
+    "390:entry": {
+     "E": 55.8,
+     "status": "scored"
+    },
+    "390:mid30": {
+     "E": 51.8,
+     "status": "scored"
+    },
+    "390:mid60": {
+     "E": 37,
      "status": "scored"
     }
    }
@@ -327,792 +749,4021 @@
  },
  "rows": [
   {
-   "section": "chrome",
+   "key": "chrome",
    "bp": "1440",
+   "state": "entry",
+   "target": "chrome@1440:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/chrome.1440.entry.png",
+    "top": 7,
+    "state": "entry",
+    "declaredTop": 7,
+    "scrollY": 0,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 7,
+     "w": 713,
+     "h": 28,
+     "touchesBottom": false,
+     "captureW": 1426,
+     "captureH": 56,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/chrome.1440.entry.png",
+    "top": 7,
+    "state": "entry",
+    "declaredTop": 7,
+    "offset": 0,
+    "targetOffset": 0,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 7,
+     "w": 713,
+     "h": 28,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 56,
+     "storageScale": 2
+    }
+   },
    "localSelector": "header.fo-header",
    "referenceSelector": "header.header",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/chrome.1440.png",
-    "w": 1440,
-    "h": 900
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/chrome.1440.png",
-    "native": {
-     "w": 1440,
-     "h": 900
-    },
-    "normalizedTo": "1440x840",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 1440,
-    "h": 840,
-    "chromeCropBottomPx": 60
-   },
-   "E": 46.5,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 47,
-   "structuralDiffPct": 19.7,
    "masks": {
     "count": 10,
     "specTextElements": 10,
-    "maskedShare": 0,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/chrome.1440.json text elements (tc≠none)"
-   }
+    "source": "frozen chrome.1440 text elements (tc≠none, in-viewport), box 1427×56",
+    "maskedShare": 0.5
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 14,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 48.6,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 56.3,
+   "structuralDiffPct": 10.9
   },
   {
-   "section": "footer",
+   "key": "chrome",
    "bp": "1440",
+   "state": "mid30",
+   "target": "chrome@1440:mid30",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "key": "chrome",
+   "bp": "1440",
+   "state": "mid60",
+   "target": "chrome@1440:mid60",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "key": "chrome",
+   "bp": "1440",
+   "state": "exit",
+   "target": "chrome@1440:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "key": "footer",
+   "bp": "1440",
+   "state": "entry",
+   "target": "footer@1440:entry",
+   "declared": "end",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/footer.1440.end.png",
+    "top": 547,
+    "state": "end-clamped",
+    "scrollY": 15754,
+    "targetY": 15754,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 547,
+     "w": 713,
+     "h": 176,
+     "touchesBottom": true,
+     "captureW": 1426,
+     "captureH": 353,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/footer.1440.end.png",
+    "top": 183,
+    "state": "end-clamped",
+    "offset": 13257,
+    "targetOffset": 13257,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 183,
+     "w": 713,
+     "h": 355,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 711,
+     "storageScale": 2
+    }
+   },
    "localSelector": "footer.fo-footer",
    "referenceSelector": "footer.footer",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/footer.1440.png",
-    "w": 1440,
-    "h": 900
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/footer.1440.png",
-    "native": {
-     "w": 1440,
-     "h": 900
-    },
-    "normalizedTo": "1440x840",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 1440,
-    "h": 840,
-    "chromeCropBottomPx": 60
-   },
-   "E": 48.1,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 50.3,
-   "structuralDiffPct": 30.5,
    "masks": {
     "count": 77,
     "specTextElements": 77,
-    "maskedShare": 0.1,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/footer.1440.json text elements (tc≠none)"
-   }
+    "source": "frozen footer.1440 text elements (tc≠none, in-viewport), box 1427×711",
+    "maskedShare": 0.2
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 28,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 22.8,
+   "ssim_unmasked": 0.2,
+   "E_unmasked": 19.5,
+   "structuralDiffPct": 11.6
   },
   {
-   "section": "home-cta-wrap",
+   "key": "footer",
    "bp": "1440",
+   "state": "mid30",
+   "target": "footer@1440:mid30",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: pair is END — non-entry states coincide with the document end"
+  },
+  {
+   "key": "footer",
+   "bp": "1440",
+   "state": "mid60",
+   "target": "footer@1440:mid60",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: pair is END — non-entry states coincide with the document end"
+  },
+  {
+   "key": "footer",
+   "bp": "1440",
+   "state": "exit",
+   "target": "footer@1440:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: pair is END — non-entry states coincide with the document end"
+  },
+  {
+   "key": "home-cta-wrap",
+   "bp": "1440",
+   "state": "entry",
+   "target": "home-cta-wrap@1440:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-cta-wrap.1440.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 14969,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1440,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-cta-wrap.1440.entry.png",
+    "top": 2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 12740,
+    "targetOffset": 12740,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 2,
+     "w": 713,
+     "h": 349,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 698,
+     "storageScale": 2
+    }
+   },
    "localSelector": "section#vision.fo-cta",
    "referenceSelector": "div.cta-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-cta-wrap.1440.png",
-    "w": 1440,
-    "h": 900
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-cta-wrap.1440.png",
-    "native": {
-     "w": 1440,
-     "h": 900
-    },
-    "normalizedTo": "1440x840",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 1440,
-    "h": 840,
-    "chromeCropBottomPx": 60
-   },
-   "E": 68,
-   "ssim_unmasked": 0.7,
-   "E_unmasked": 66.9,
-   "structuralDiffPct": 8.4,
    "masks": {
-    "count": 8,
-    "specTextElements": 8,
-    "maskedShare": 0.1,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-cta-wrap.1440.json text elements (tc≠none)"
-   }
+    "count": 0,
+    "specTextElements": 0,
+    "source": "frozen home-cta-wrap.1440 text elements (tc≠none, in-viewport), box 1×1",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 114,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 77.1,
+   "ssim_unmasked": 0.8,
+   "E_unmasked": 77.1,
+   "structuralDiffPct": 5.9
   },
   {
-   "section": "home-hero-wrap",
+   "key": "home-cta-wrap",
    "bp": "1440",
+   "state": "mid30",
+   "target": "home-cta-wrap@1440:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-cta-wrap.1440.mid30.png",
+    "top": 270,
+    "state": "position",
+    "scrollY": 14699,
+    "targetY": 14699,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 270,
+     "w": 720,
+     "h": 315,
+     "touchesBottom": true,
+     "captureW": 1440,
+     "captureH": 630,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-cta-wrap.1440.mid30.png",
+    "top": -206,
+    "state": "position",
+    "offset": 12948,
+    "targetOffset": 12949,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 246,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 492,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section#vision.fo-cta",
+   "referenceSelector": "div.cta-wrap",
+   "masks": {
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 63,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 80.4,
+   "ssim_unmasked": 0.8,
+   "E_unmasked": 80.7,
+   "structuralDiffPct": 4.3
+  },
+  {
+   "key": "home-cta-wrap",
+   "bp": "1440",
+   "state": "mid60",
+   "target": "home-cta-wrap@1440:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-cta-wrap.1440.mid60.png",
+    "top": -129,
+    "state": "position",
+    "scrollY": 15098,
+    "targetY": 15098,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1440,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-cta-wrap.1440.mid60.png",
+    "top": -416,
+    "state": "position",
+    "offset": 13158,
+    "targetOffset": 13159,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 141,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 282,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section#vision.fo-cta",
+   "referenceSelector": "div.cta-wrap",
+   "masks": {
+    "count": 0,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 10,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 67,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 67,
+   "structuralDiffPct": 6.3
+  },
+  {
+   "key": "home-cta-wrap",
+   "bp": "1440",
+   "state": "exit",
+   "target": "home-cta-wrap@1440:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 432 px sits within 100 px of an already-recorded state for this 1332 px section"
+  },
+  {
+   "key": "home-hero-wrap",
+   "bp": "1440",
+   "state": "entry",
+   "target": "home-hero-wrap@1440:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-hero-wrap.1440.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 7,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 443,
+     "touchesBottom": false,
+     "captureW": 1440,
+     "captureH": 887,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-hero-wrap.1440.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 7,
+    "targetOffset": 7,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 443,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 886,
+     "storageScale": 2
+    }
+   },
    "localSelector": "section.fo-hero",
    "referenceSelector": "div.home-hero-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-hero-wrap.1440.png",
-    "w": 1440,
-    "h": 900
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-hero-wrap.1440.png",
-    "native": {
-     "w": 1440,
-     "h": 900
-    },
-    "normalizedTo": "1440x840",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 1440,
-    "h": 840,
-    "chromeCropBottomPx": 60
-   },
-   "E": 49.4,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 48.7,
-   "structuralDiffPct": 17.6,
    "masks": {
-    "count": 14,
-    "specTextElements": 14,
-    "maskedShare": 0,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-hero-wrap.1440.json text elements (tc≠none)"
-   }
+    "count": 19,
+    "specTextElements": 19,
+    "source": "frozen home-hero-wrap.1440 text elements (tc≠none, in-viewport), box 1427×887",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 219,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 45.2,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 41.3,
+   "structuralDiffPct": 19.7
   },
   {
-   "section": "home-intro-wrap",
+   "key": "home-hero-wrap",
    "bp": "1440",
+   "state": "mid30",
+   "target": "home-hero-wrap@1440:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-hero-wrap.1440.mid30.png",
+    "top": -266,
+    "state": "position",
+    "scrollY": 273,
+    "targetY": 273,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 310,
+     "touchesBottom": false,
+     "captureW": 1440,
+     "captureH": 621,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-hero-wrap.1440.mid30.png",
+    "top": -264,
+    "state": "position",
+    "offset": 271,
+    "targetOffset": 273,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 311,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 622,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section.fo-hero",
+   "referenceSelector": "div.home-hero-wrap",
+   "masks": {
+    "count": 2,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 153,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 32.1,
+   "ssim_unmasked": 0.3,
+   "E_unmasked": 32.3,
+   "structuralDiffPct": 29.2
+  },
+  {
+   "key": "home-hero-wrap",
+   "bp": "1440",
+   "state": "mid60",
+   "target": "home-hero-wrap@1440:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-hero-wrap.1440.mid60.png",
+    "top": -532,
+    "state": "position",
+    "scrollY": 539,
+    "targetY": 539,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 177,
+     "touchesBottom": false,
+     "captureW": 1440,
+     "captureH": 355,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-hero-wrap.1440.mid60.png",
+    "top": -530,
+    "state": "position",
+    "offset": 537,
+    "targetOffset": 539,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 178,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 356,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section.fo-hero",
+   "referenceSelector": "div.home-hero-wrap",
+   "masks": {
+    "count": 1,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 87,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 34.5,
+   "ssim_unmasked": 0.3,
+   "E_unmasked": 33.7,
+   "structuralDiffPct": 21.9
+  },
+  {
+   "key": "home-hero-wrap",
+   "bp": "1440",
+   "state": "exit",
+   "target": "home-hero-wrap@1440:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 887 px section"
+  },
+  {
+   "key": "home-intro-wrap",
+   "bp": "1440",
+   "state": "entry",
+   "target": "home-intro-wrap@1440:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-intro-wrap.1440.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 894,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 712,
+     "h": 361,
+     "touchesBottom": false,
+     "captureW": 1425,
+     "captureH": 723,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-intro-wrap.1440.entry.png",
+    "top": 2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 891,
+    "targetOffset": 891,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 2,
+     "w": 713,
+     "h": 361,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 723,
+     "storageScale": 2
+    }
+   },
    "localSelector": "div#statement.st-section",
    "referenceSelector": "div.home-intro-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-intro-wrap.1440.png",
-    "w": 1440,
-    "h": 900
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-intro-wrap.1440.png",
-    "native": {
-     "w": 1440,
-     "h": 900
-    },
-    "normalizedTo": "1440x840",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 1440,
-    "h": 840,
-    "chromeCropBottomPx": 60
-   },
-   "E": 49.1,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 46.2,
-   "structuralDiffPct": 23,
    "masks": {
     "count": 131,
     "specTextElements": 131,
-    "maskedShare": 0.1,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-intro-wrap.1440.json text elements (tc≠none)"
-   }
+    "source": "frozen home-intro-wrap.1440 text elements (tc≠none, in-viewport), box 1427×723",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 180,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 35.7,
+   "ssim_unmasked": 0.3,
+   "E_unmasked": 32,
+   "structuralDiffPct": 28.9
   },
   {
-   "section": "home-map-wrap",
+   "key": "home-intro-wrap",
    "bp": "1440",
+   "state": "mid30",
+   "target": "home-intro-wrap@1440:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-intro-wrap.1440.mid30.png",
+    "top": -217,
+    "state": "position",
+    "scrollY": 1111,
+    "targetY": 1111,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 712,
+     "h": 253,
+     "touchesBottom": false,
+     "captureW": 1425,
+     "captureH": 506,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-intro-wrap.1440.mid30.png",
+    "top": -214,
+    "state": "position",
+    "offset": 1107,
+    "targetOffset": 1108,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 254,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 509,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "div#statement.st-section",
+   "referenceSelector": "div.home-intro-wrap",
+   "masks": {
+    "count": 0,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 126,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 22.1,
+   "ssim_unmasked": 0.2,
+   "E_unmasked": 22.1,
+   "structuralDiffPct": 45
+  },
+  {
+   "key": "home-intro-wrap",
+   "bp": "1440",
+   "state": "mid60",
+   "target": "home-intro-wrap@1440:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-intro-wrap.1440.mid60.png",
+    "top": -434,
+    "state": "position",
+    "scrollY": 1328,
+    "targetY": 1328,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 712,
+     "h": 144,
+     "touchesBottom": false,
+     "captureW": 1425,
+     "captureH": 289,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-intro-wrap.1440.mid60.png",
+    "top": -431,
+    "state": "position",
+    "offset": 1324,
+    "targetOffset": 1325,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 146,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 292,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "div#statement.st-section",
+   "referenceSelector": "div.home-intro-wrap",
+   "masks": {
+    "count": 0,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 72,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 23.1,
+   "ssim_unmasked": 0.2,
+   "E_unmasked": 23.1,
+   "structuralDiffPct": 39.9
+  },
+  {
+   "key": "home-intro-wrap",
+   "bp": "1440",
+   "state": "exit",
+   "target": "home-intro-wrap@1440:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 723 px section"
+  },
+  {
+   "key": "home-map-wrap",
+   "bp": "1440",
+   "state": "entry",
+   "target": "home-map-wrap@1440:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 2363,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1440,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-map-wrap.1440.entry.png",
+    "top": 2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 2356,
+    "targetOffset": 2356,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 2,
+     "w": 713,
+     "h": 449,
+     "touchesBottom": true,
+     "captureW": 1427,
+     "captureH": 898,
+     "storageScale": 2
+    }
+   },
    "localSelector": "section#chapters.chapters",
    "referenceSelector": "div.home-map-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-map-wrap.1440.png",
-    "w": 1440,
-    "h": 900
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.png",
-    "native": {
-     "w": 1440,
-     "h": 900
-    },
-    "normalizedTo": "1440x840",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 1440,
-    "h": 840,
-    "chromeCropBottomPx": 60
-   },
-   "E": 73.8,
-   "ssim_unmasked": 0.7,
-   "E_unmasked": 71.7,
-   "structuralDiffPct": 5.6,
    "masks": {
-    "count": 20,
-    "specTextElements": 20,
-    "maskedShare": 0.1,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-map-wrap.1440.json text elements (tc≠none)"
-   }
+    "count": 13,
+    "specTextElements": 13,
+    "source": "frozen home-map-wrap.1440 text elements (tc≠none, in-viewport), box 1427×900",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 163,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 54.8,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 52.7,
+   "structuralDiffPct": 9.2
   },
   {
-   "section": "home-platform-wrap",
+   "key": "home-map-wrap",
    "bp": "1440",
+   "state": "mid30",
+   "target": "home-map-wrap@1440:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.mid30.png",
+    "top": -1890,
+    "state": "position",
+    "scrollY": 4253,
+    "targetY": 4253,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1440,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-map-wrap.1440.mid30.png",
+    "top": -1889,
+    "state": "position",
+    "offset": 4247,
+    "targetOffset": 4246,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1427,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "masks": {
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 163,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 53.3,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 52.5,
+   "structuralDiffPct": 10.1
+  },
+  {
+   "key": "home-map-wrap",
+   "bp": "1440",
+   "state": "mid60",
+   "target": "home-map-wrap@1440:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.mid60.png",
+    "top": -3780,
+    "state": "position",
+    "scrollY": 6143,
+    "targetY": 6143,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1440,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-map-wrap.1440.mid60.png",
+    "top": -3779,
+    "state": "position",
+    "offset": 6137,
+    "targetOffset": 6136,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1427,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "masks": {
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 163,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 47.6,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 47.2,
+   "structuralDiffPct": 11.9
+  },
+  {
+   "key": "home-map-wrap",
+   "bp": "1440",
+   "state": "exit",
+   "target": "home-map-wrap@1440:exit",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.exit.png",
+    "top": -5400,
+    "state": "position",
+    "scrollY": 7763,
+    "targetY": 7763,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1440,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-map-wrap.1440.exit.png",
+    "top": -5399,
+    "state": "position",
+    "offset": 7757,
+    "targetOffset": 7756,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1427,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "masks": {
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 163,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 40,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 38.8,
+   "structuralDiffPct": 14.5
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "1440",
+   "state": "entry",
+   "target": "home-platform-wrap@1440:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-platform-wrap.1440.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 8663,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 355,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 711,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.1440.entry.png",
+    "top": -1,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 8659,
+    "targetOffset": 8659,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 354,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 709,
+     "storageScale": 2
+    }
+   },
    "localSelector": "section#product.pr-section",
    "referenceSelector": "div.home-platform-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.1440.png",
-    "w": 1440,
-    "h": 900
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-platform-wrap.1440.png",
-    "native": {
-     "w": 1440,
-     "h": 900
-    },
-    "normalizedTo": "1440x840",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 1440,
-    "h": 840,
-    "chromeCropBottomPx": 60
-   },
-   "E": 71.2,
-   "ssim_unmasked": 0.7,
-   "E_unmasked": 71.1,
-   "structuralDiffPct": 7.2,
    "masks": {
     "count": 10,
     "specTextElements": 10,
-    "maskedShare": 0,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-platform-wrap.1440.json text elements (tc≠none)"
-   }
+    "source": "frozen home-platform-wrap.1440 text elements (tc≠none, in-viewport), box 1427×710",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 177,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 55.3,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 56,
+   "structuralDiffPct": 9.4
   },
   {
-   "section": "home-problem-wrap",
+   "key": "home-platform-wrap",
    "bp": "1440",
+   "state": "mid30",
+   "target": "home-platform-wrap@1440:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-platform-wrap.1440.mid30.png",
+    "top": -214,
+    "state": "position",
+    "scrollY": 8877,
+    "targetY": 8877,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 248,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 497,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.1440.mid30.png",
+    "top": -213,
+    "state": "position",
+    "offset": 8871,
+    "targetOffset": 8872,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 248,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 497,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "masks": {
+    "count": 0,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 124,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 59.3,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 59.3,
+   "structuralDiffPct": 9.2
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "1440",
+   "state": "mid60",
+   "target": "home-platform-wrap@1440:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-platform-wrap.1440.mid60.png",
+    "top": -427,
+    "state": "position",
+    "scrollY": 9090,
+    "targetY": 9090,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 142,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 284,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.1440.mid60.png",
+    "top": -426,
+    "state": "position",
+    "offset": 9084,
+    "targetOffset": 9085,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 142,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 284,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "masks": {
+    "count": 0,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 71,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 55.6,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 55.6,
+   "structuralDiffPct": 11
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "1440",
+   "state": "exit",
+   "target": "home-platform-wrap@1440:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 712 px section"
+  },
+  {
+   "key": "home-problem-wrap",
+   "bp": "1440",
+   "state": "entry",
+   "target": "home-problem-wrap@1440:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-problem-wrap.1440.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 1617,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 373,
+     "touchesBottom": false,
+     "captureW": 1440,
+     "captureH": 746,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-problem-wrap.1440.entry.png",
+    "top": 2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 1614,
+    "targetOffset": 1614,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 2,
+     "w": 713,
+     "h": 371,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 743,
+     "storageScale": 2
+    }
+   },
    "localSelector": "section#live.pm-section",
    "referenceSelector": "div.home-problem-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-problem-wrap.1440.png",
-    "w": 1440,
-    "h": 900
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-problem-wrap.1440.png",
-    "native": {
-     "w": 1440,
-     "h": 900
-    },
-    "normalizedTo": "1440x840",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 1440,
-    "h": 840,
-    "chromeCropBottomPx": 60
-   },
-   "E": 79.9,
-   "ssim_unmasked": 0.7,
-   "E_unmasked": 70,
-   "structuralDiffPct": 2.6,
    "masks": {
     "count": 19,
     "specTextElements": 19,
-    "maskedShare": 0.2,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-problem-wrap.1440.json text elements (tc≠none)"
-   }
+    "source": "frozen home-problem-wrap.1440 text elements (tc≠none, in-viewport), box 1427×743",
+    "maskedShare": 0.2
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 184,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 71.6,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 60.8,
+   "structuralDiffPct": 0.7
   },
   {
-   "section": "home-usecase-wrap",
+   "key": "home-problem-wrap",
    "bp": "1440",
+   "state": "mid30",
+   "target": "home-problem-wrap@1440:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-problem-wrap.1440.mid30.png",
+    "top": -224,
+    "state": "position",
+    "scrollY": 1841,
+    "targetY": 1841,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 261,
+     "touchesBottom": false,
+     "captureW": 1440,
+     "captureH": 522,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-problem-wrap.1440.mid30.png",
+    "top": -220,
+    "state": "position",
+    "offset": 1836,
+    "targetOffset": 1837,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 261,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 522,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section#live.pm-section",
+   "referenceSelector": "div.home-problem-wrap",
+   "masks": {
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 129,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 66.1,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 66.1,
+   "structuralDiffPct": 6.6
+  },
+  {
+   "key": "home-problem-wrap",
+   "bp": "1440",
+   "state": "mid60",
+   "target": "home-problem-wrap@1440:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-problem-wrap.1440.mid60.png",
+    "top": -448,
+    "state": "position",
+    "scrollY": 2065,
+    "targetY": 2065,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 149,
+     "touchesBottom": false,
+     "captureW": 1440,
+     "captureH": 298,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-problem-wrap.1440.mid60.png",
+    "top": -443,
+    "state": "position",
+    "offset": 2059,
+    "targetOffset": 2060,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 149,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 299,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section#live.pm-section",
+   "referenceSelector": "div.home-problem-wrap",
+   "masks": {
+    "count": 2,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.2
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 73,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 59.2,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 56.7,
+   "structuralDiffPct": 7.3
+  },
+  {
+   "key": "home-problem-wrap",
+   "bp": "1440",
+   "state": "exit",
+   "target": "home-problem-wrap@1440:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 746 px section"
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "1440",
+   "state": "entry",
+   "target": "home-usecase-wrap@1440:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1440.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 14083,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 720,
+     "h": 443,
+     "touchesBottom": false,
+     "captureW": 1440,
+     "captureH": 886,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1440.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 11855,
+    "targetOffset": 11855,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 443,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 887,
+     "storageScale": 2
+    }
+   },
    "localSelector": "section#roles.rl-section",
    "referenceSelector": "div.home-usecase-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1440.png",
-    "w": 1440,
-    "h": 900
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1440.png",
-    "native": {
-     "w": 1440,
-     "h": 900
-    },
-    "normalizedTo": "1440x840",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 1440,
-    "h": 840,
-    "chromeCropBottomPx": 60
-   },
-   "E": 67.2,
-   "ssim_unmasked": 0.7,
-   "E_unmasked": 65.8,
-   "structuralDiffPct": 24.6,
    "masks": {
-    "count": 25,
-    "specTextElements": 25,
-    "maskedShare": 0.1,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-usecase-wrap.1440.json text elements (tc≠none)"
-   }
+    "count": 27,
+    "specTextElements": 27,
+    "source": "frozen home-usecase-wrap.1440 text elements (tc≠none, in-viewport), box 1427×887",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 219,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 53.1,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 49.8,
+   "structuralDiffPct": 26.1
   },
   {
-   "section": "home-why-wrap",
+   "key": "home-usecase-wrap",
    "bp": "1440",
+   "state": "mid30",
+   "target": "home-usecase-wrap@1440:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid30.png",
+    "top": 404,
+    "state": "position",
+    "scrollY": 13679,
+    "targetY": 13679,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 404,
+     "w": 720,
+     "h": 248,
+     "touchesBottom": true,
+     "captureW": 1440,
+     "captureH": 496,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1440.mid30.png",
+    "top": -264,
+    "state": "position",
+    "offset": 12119,
+    "targetOffset": 12121,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 311,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 623,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "masks": {
+    "count": 0,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 63,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 43.3,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 43.3,
+   "structuralDiffPct": 24.1
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "1440",
+   "state": "mid60",
+   "target": "home-usecase-wrap@1440:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid60.png",
+    "top": 138,
+    "state": "position",
+    "scrollY": 13945,
+    "targetY": 13945,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 138,
+     "w": 720,
+     "h": 381,
+     "touchesBottom": true,
+     "captureW": 1440,
+     "captureH": 762,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1440.mid60.png",
+    "top": -530,
+    "state": "position",
+    "offset": 12385,
+    "targetOffset": 12387,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 178,
+     "touchesBottom": false,
+     "captureW": 1427,
+     "captureH": 357,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "masks": {
+    "count": 0,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 29,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 33.2,
+   "ssim_unmasked": 0.3,
+   "E_unmasked": 33.2,
+   "structuralDiffPct": 31.2
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "1440",
+   "state": "exit",
+   "target": "home-usecase-wrap@1440:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 886 px section"
+  },
+  {
+   "key": "home-why-wrap",
+   "bp": "1440",
+   "state": "entry",
+   "target": "home-why-wrap@1440:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-why-wrap.1440.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 10925,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1427,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-why-wrap.1440.entry.png",
+    "top": 2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 9366,
+    "targetOffset": 9366,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 2,
+     "w": 713,
+     "h": 449,
+     "touchesBottom": true,
+     "captureW": 1427,
+     "captureH": 898,
+     "storageScale": 2
+    }
+   },
    "localSelector": "section.wy-section",
    "referenceSelector": "div.home-why-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-why-wrap.1440.png",
-    "w": 1440,
-    "h": 900
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-why-wrap.1440.png",
-    "native": {
-     "w": 1440,
-     "h": 900
-    },
-    "normalizedTo": "1440x840",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 1440,
-    "h": 840,
-    "chromeCropBottomPx": 60
-   },
-   "E": 84.8,
-   "ssim_unmasked": 0.8,
-   "E_unmasked": 81.4,
-   "structuralDiffPct": 6,
-   "masks": {
-    "count": 12,
-    "specTextElements": 12,
-    "maskedShare": 0.1,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-why-wrap.1440.json text elements (tc≠none)"
-   }
-  },
-  {
-   "section": "chrome",
-   "bp": "390",
-   "localSelector": "header.fo-header",
-   "referenceSelector": "header.header",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/chrome.390.png",
-    "w": 390,
-    "h": 844
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/chrome.390.png",
-    "native": {
-     "w": 390,
-     "h": 844
-    },
-    "normalizedTo": "390x784",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 390,
-    "h": 784,
-    "chromeCropBottomPx": 60
-   },
-   "E": 47.8,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 47.8,
-   "structuralDiffPct": 14.8,
-   "masks": {
-    "count": 1,
-    "specTextElements": 1,
-    "maskedShare": 0,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/chrome.390.json text elements (tc≠none)"
-   }
-  },
-  {
-   "section": "footer",
-   "bp": "390",
-   "localSelector": "footer.fo-footer",
-   "referenceSelector": "footer.footer",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/footer.390.png",
-    "w": 390,
-    "h": 844
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/footer.390.png",
-    "native": {
-     "w": 390,
-     "h": 844
-    },
-    "normalizedTo": "390x784",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 390,
-    "h": 784,
-    "chromeCropBottomPx": 60
-   },
-   "E": 55.8,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 51.7,
-   "structuralDiffPct": 5,
-   "masks": {
-    "count": 26,
-    "specTextElements": 26,
-    "maskedShare": 0.5,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/footer.390.json text elements (tc≠none)"
-   }
-  },
-  {
-   "section": "home-cta-wrap",
-   "bp": "390",
-   "localSelector": "section#vision.fo-cta",
-   "referenceSelector": "div.cta-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-cta-wrap.390.png",
-    "w": 390,
-    "h": 844
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-cta-wrap.390.png",
-    "native": {
-     "w": 390,
-     "h": 844
-    },
-    "normalizedTo": "390x784",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 390,
-    "h": 784,
-    "chromeCropBottomPx": 60
-   },
-   "E": 56.3,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 52.9,
-   "structuralDiffPct": 11.6,
    "masks": {
     "count": 4,
     "specTextElements": 4,
-    "maskedShare": 0.1,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-cta-wrap.390.json text elements (tc≠none)"
-   }
+    "source": "frozen home-why-wrap.1440 text elements (tc≠none, in-viewport), box 1427×900",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 164,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 70.3,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 67.8,
+   "structuralDiffPct": 8.3
   },
   {
-   "section": "home-hero-wrap",
+   "key": "home-why-wrap",
+   "bp": "1440",
+   "state": "mid30",
+   "target": "home-why-wrap@1440:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-why-wrap.1440.mid30.png",
+    "top": -746,
+    "state": "position",
+    "scrollY": 11671,
+    "targetY": 11671,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1427,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-why-wrap.1440.mid30.png",
+    "top": -340,
+    "state": "position",
+    "offset": 9708,
+    "targetOffset": 9710,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1427,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section.wy-section",
+   "referenceSelector": "div.home-why-wrap",
+   "masks": {
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 165,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 74.8,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 74.8,
+   "structuralDiffPct": 7.9
+  },
+  {
+   "key": "home-why-wrap",
+   "bp": "1440",
+   "state": "mid60",
+   "target": "home-why-wrap@1440:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-why-wrap.1440.mid60.png",
+    "top": -1493,
+    "state": "position",
+    "scrollY": 12418,
+    "targetY": 12418,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1427,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-why-wrap.1440.mid60.png",
+    "top": -683,
+    "state": "position",
+    "offset": 10051,
+    "targetOffset": 10053,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 713,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 1427,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section.wy-section",
+   "referenceSelector": "div.home-why-wrap",
+   "masks": {
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 356,
+    "h": 165,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 66.4,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 66.4,
+   "structuralDiffPct": 9.5
+  },
+  {
+   "key": "home-why-wrap",
+   "bp": "1440",
+   "state": "exit",
+   "target": "home-why-wrap@1440:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 1588 px sits within 100 px of an already-recorded state for this 2488 px section"
+  },
+  {
+   "key": "chrome",
    "bp": "390",
+   "state": "entry",
+   "target": "chrome@390:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/chrome.390.entry.png",
+    "top": 7,
+    "state": "entry",
+    "declaredTop": 7,
+    "scrollY": 0,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 7,
+     "w": 376,
+     "h": 50,
+     "touchesBottom": false,
+     "captureW": 376,
+     "captureH": 50,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/chrome.390.entry.png",
+    "top": 8,
+    "state": "entry",
+    "declaredTop": 8,
+    "offset": 0,
+    "targetOffset": 0,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 8,
+     "w": 374,
+     "h": 50,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 50,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "header.fo-header",
+   "referenceSelector": "header.header",
+   "masks": {
+    "count": 1,
+    "specTextElements": 1,
+    "source": "frozen chrome.390 text elements (tc≠none, in-viewport), box 374×50",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 50,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 73,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 71,
+   "structuralDiffPct": 7.9
+  },
+  {
+   "key": "chrome",
+   "bp": "390",
+   "state": "mid30",
+   "target": "chrome@390:mid30",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "key": "chrome",
+   "bp": "390",
+   "state": "mid60",
+   "target": "chrome@390:mid60",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "key": "chrome",
+   "bp": "390",
+   "state": "exit",
+   "target": "chrome@390:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: fixed chrome — every state coincides with rest"
+  },
+  {
+   "key": "footer",
+   "bp": "390",
+   "state": "entry",
+   "target": "footer@390:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/footer.390.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 13476,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/footer.390.entry.png",
+    "top": 1,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 10645,
+    "targetOffset": 10645,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 1,
+     "w": 374,
+     "h": 843,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 843,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "footer.fo-footer",
+   "referenceSelector": "footer.footer",
+   "masks": {
+    "count": 31,
+    "specTextElements": 31,
+    "source": "frozen footer.390 text elements (tc≠none, in-viewport), box 374×844",
+    "maskedShare": 0.5
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 783,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 54.9,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 55.1,
+   "structuralDiffPct": 5.5
+  },
+  {
+   "key": "footer",
+   "bp": "390",
+   "state": "mid30",
+   "target": "footer@390:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/footer.390.mid30.png",
+    "top": 351,
+    "state": "position",
+    "scrollY": 13125,
+    "targetY": 13125,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 351,
+     "w": 374,
+     "h": 493,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 493,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/footer.390.mid30.png",
+    "top": -377,
+    "state": "position",
+    "offset": 11023,
+    "targetOffset": 11025,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "footer.fo-footer",
+   "referenceSelector": "footer.footer",
+   "masks": {
+    "count": 25,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.2
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 433,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 53,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 51.4,
+   "structuralDiffPct": 8.6
+  },
+  {
+   "key": "footer",
+   "bp": "390",
+   "state": "mid60",
+   "target": "footer@390:mid60",
+   "status": "missing",
+   "reason": "local: state mid60 needs scroll 13496 > document end 13272 — inaccessible locally (recorded, not scored)"
+  },
+  {
+   "key": "footer",
+   "bp": "390",
+   "state": "exit",
+   "target": "footer@390:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 395 px sits within 100 px of an already-recorded state for this 1239 px section"
+  },
+  {
+   "key": "home-cta-wrap",
+   "bp": "390",
+   "state": "entry",
+   "target": "home-cta-wrap@390:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-cta-wrap.390.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 12567,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 390,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 390,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-cta-wrap.390.entry.png",
+    "top": -2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 10147,
+    "targetOffset": 10147,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 499,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 499,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#vision.fo-cta",
+   "referenceSelector": "div.cta-wrap",
+   "masks": {
+    "count": 0,
+    "specTextElements": 0,
+    "source": "frozen home-cta-wrap.390 text elements (tc≠none, in-viewport), box 1×1",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 439,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 64,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 64,
+   "structuralDiffPct": 13.5
+  },
+  {
+   "key": "home-cta-wrap",
+   "bp": "390",
+   "state": "mid30",
+   "target": "home-cta-wrap@390:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-cta-wrap.390.mid30.png",
+    "top": 450,
+    "state": "position",
+    "scrollY": 12117,
+    "targetY": 12117,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 450,
+     "w": 390,
+     "h": 394,
+     "touchesBottom": true,
+     "captureW": 390,
+     "captureH": 394,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-cta-wrap.390.mid30.png",
+    "top": -151,
+    "state": "position",
+    "offset": 10296,
+    "targetOffset": 10297,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 350,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 350,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#vision.fo-cta",
+   "referenceSelector": "div.cta-wrap",
+   "masks": {
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.2
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 290,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 72.1,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 68.4,
+   "structuralDiffPct": 10
+  },
+  {
+   "key": "home-cta-wrap",
+   "bp": "390",
+   "state": "mid60",
+   "target": "home-cta-wrap@390:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-cta-wrap.390.mid60.png",
+    "top": 178,
+    "state": "position",
+    "scrollY": 12389,
+    "targetY": 12389,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 178,
+     "w": 390,
+     "h": 666,
+     "touchesBottom": true,
+     "captureW": 390,
+     "captureH": 666,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-cta-wrap.390.mid60.png",
+    "top": -301,
+    "state": "position",
+    "offset": 10446,
+    "targetOffset": 10447,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 200,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 200,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#vision.fo-cta",
+   "referenceSelector": "div.cta-wrap",
+   "masks": {
+    "count": 0,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 140,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 61.9,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 61.9,
+   "structuralDiffPct": 13.3
+  },
+  {
+   "key": "home-cta-wrap",
+   "bp": "390",
+   "state": "exit",
+   "target": "home-cta-wrap@390:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 65 px sits within 100 px of an already-recorded state for this 909 px section"
+  },
+  {
+   "key": "home-hero-wrap",
+   "bp": "390",
+   "state": "entry",
+   "target": "home-hero-wrap@390:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-hero-wrap.390.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 7,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 390,
+     "h": 830,
+     "touchesBottom": false,
+     "captureW": 390,
+     "captureH": 830,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-hero-wrap.390.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 8,
+    "targetOffset": 8,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 828,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 828,
+     "storageScale": 1
+    }
+   },
    "localSelector": "section.fo-hero",
    "referenceSelector": "div.home-hero-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-hero-wrap.390.png",
-    "w": 390,
-    "h": 844
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-hero-wrap.390.png",
-    "native": {
-     "w": 390,
-     "h": 844
-    },
-    "normalizedTo": "390x784",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 390,
-    "h": 784,
-    "chromeCropBottomPx": 60
-   },
-   "E": 51.2,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 46.2,
-   "structuralDiffPct": 11.2,
-   "masks": {
-    "count": 5,
-    "specTextElements": 5,
-    "maskedShare": 0.2,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-hero-wrap.390.json text elements (tc≠none)"
-   }
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "390",
-   "localSelector": "div#statement.st-section",
-   "referenceSelector": "div.home-intro-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-intro-wrap.390.png",
-    "w": 390,
-    "h": 844
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-intro-wrap.390.png",
-    "native": {
-     "w": 390,
-     "h": 844
-    },
-    "normalizedTo": "390x784",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 390,
-    "h": 784,
-    "chromeCropBottomPx": 60
-   },
-   "E": 32.9,
-   "ssim_unmasked": 0.3,
-   "E_unmasked": 28.9,
-   "structuralDiffPct": 25.9,
-   "masks": {
-    "count": 129,
-    "specTextElements": 129,
-    "maskedShare": 0.2,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-intro-wrap.390.json text elements (tc≠none)"
-   }
-  },
-  {
-   "section": "home-map-wrap",
-   "bp": "390",
-   "localSelector": "section#chapters.chapters",
-   "referenceSelector": "div.home-map-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-map-wrap.390.png",
-    "w": 390,
-    "h": 844
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-map-wrap.390.png",
-    "native": {
-     "w": 390,
-     "h": 844
-    },
-    "normalizedTo": "390x784",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 390,
-    "h": 784,
-    "chromeCropBottomPx": 60
-   },
-   "E": 62.7,
-   "ssim_unmasked": 0.6,
-   "E_unmasked": 60.5,
-   "structuralDiffPct": 9.4,
-   "masks": {
-    "count": 17,
-    "specTextElements": 17,
-    "maskedShare": 0.1,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-map-wrap.390.json text elements (tc≠none)"
-   }
-  },
-  {
-   "section": "home-platform-wrap",
-   "bp": "390",
-   "localSelector": "section#product.pr-section",
-   "referenceSelector": "div.home-platform-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.390.png",
-    "w": 390,
-    "h": 844
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.png",
-    "native": {
-     "w": 390,
-     "h": 844
-    },
-    "normalizedTo": "390x784",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 390,
-    "h": 784,
-    "chromeCropBottomPx": 60
-   },
-   "E": 43.1,
-   "ssim_unmasked": 0.4,
-   "E_unmasked": 40.8,
-   "structuralDiffPct": 12.2,
-   "masks": {
-    "count": 7,
-    "specTextElements": 7,
-    "maskedShare": 0.2,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-platform-wrap.390.json text elements (tc≠none)"
-   }
-  },
-  {
-   "section": "home-problem-wrap",
-   "bp": "390",
-   "localSelector": "section#live.pm-section",
-   "referenceSelector": "div.home-problem-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-problem-wrap.390.png",
-    "w": 390,
-    "h": 844
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-problem-wrap.390.png",
-    "native": {
-     "w": 390,
-     "h": 844
-    },
-    "normalizedTo": "390x784",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 390,
-    "h": 784,
-    "chromeCropBottomPx": 60
-   },
-   "E": 57,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 51.5,
-   "structuralDiffPct": 7.4,
-   "masks": {
-    "count": 19,
-    "specTextElements": 19,
-    "maskedShare": 0.2,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-problem-wrap.390.json text elements (tc≠none)"
-   }
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "390",
-   "localSelector": "section#roles.rl-section",
-   "referenceSelector": "div.home-usecase-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.390.png",
-    "w": 390,
-    "h": 844
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.png",
-    "native": {
-     "w": 390,
-     "h": 844
-    },
-    "normalizedTo": "390x784",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 390,
-    "h": 784,
-    "chromeCropBottomPx": 60
-   },
-   "E": 39.7,
-   "ssim_unmasked": 0.4,
-   "E_unmasked": 38.8,
-   "structuralDiffPct": 20.3,
    "masks": {
     "count": 8,
     "specTextElements": 8,
-    "maskedShare": 0.3,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-usecase-wrap.390.json text elements (tc≠none)"
-   }
+    "source": "frozen home-hero-wrap.390 text elements (tc≠none, in-viewport), box 374×828",
+    "maskedShare": 0.3
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 796,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 53.2,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 45.4,
+   "structuralDiffPct": 11
   },
   {
-   "section": "home-why-wrap",
+   "key": "home-hero-wrap",
    "bp": "390",
+   "state": "mid30",
+   "target": "home-hero-wrap@390:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-hero-wrap.390.mid30.png",
+    "top": -249,
+    "state": "position",
+    "scrollY": 256,
+    "targetY": 256,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 390,
+     "h": 581,
+     "touchesBottom": false,
+     "captureW": 390,
+     "captureH": 581,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-hero-wrap.390.mid30.png",
+    "top": -246,
+    "state": "position",
+    "offset": 254,
+    "targetOffset": 256,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 582,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 582,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section.fo-hero",
+   "referenceSelector": "div.home-hero-wrap",
+   "masks": {
+    "count": 8,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.5
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 557,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 62.9,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 46.5,
+   "structuralDiffPct": 3.8
+  },
+  {
+   "key": "home-hero-wrap",
+   "bp": "390",
+   "state": "mid60",
+   "target": "home-hero-wrap@390:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-hero-wrap.390.mid60.png",
+    "top": -498,
+    "state": "position",
+    "scrollY": 505,
+    "targetY": 505,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 390,
+     "h": 332,
+     "touchesBottom": false,
+     "captureW": 390,
+     "captureH": 332,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-hero-wrap.390.mid60.png",
+    "top": -496,
+    "state": "position",
+    "offset": 504,
+    "targetOffset": 505,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 332,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 332,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section.fo-hero",
+   "referenceSelector": "div.home-hero-wrap",
+   "masks": {
+    "count": 8,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.7
+   },
+   "status": "invalid-mask-share",
+   "reason": "mask share 74.9 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 318,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": null,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 41,
+   "structuralDiffPct": 2.8
+  },
+  {
+   "key": "home-hero-wrap",
+   "bp": "390",
+   "state": "exit",
+   "target": "home-hero-wrap@390:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 830 px section"
+  },
+  {
+   "key": "home-intro-wrap",
+   "bp": "390",
+   "state": "entry",
+   "target": "home-intro-wrap@390:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-intro-wrap.390.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 837,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-intro-wrap.390.entry.png",
+    "top": 2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 834,
+    "targetOffset": 834,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 2,
+     "w": 374,
+     "h": 842,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 842,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "div#statement.st-section",
+   "referenceSelector": "div.home-intro-wrap",
+   "masks": {
+    "count": 130,
+    "specTextElements": 130,
+    "source": "frozen home-intro-wrap.390 text elements (tc≠none, in-viewport), box 374×844",
+    "maskedShare": 0.2
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 782,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 30.4,
+   "ssim_unmasked": 0.3,
+   "E_unmasked": 28.5,
+   "structuralDiffPct": 28.7
+  },
+  {
+   "key": "home-intro-wrap",
+   "bp": "390",
+   "state": "mid30",
+   "target": "home-intro-wrap@390:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-intro-wrap.390.mid30.png",
+    "top": -256,
+    "state": "position",
+    "scrollY": 1093,
+    "targetY": 1093,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 678,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 678,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-intro-wrap.390.mid30.png",
+    "top": -250,
+    "state": "position",
+    "offset": 1086,
+    "targetOffset": 1088,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 597,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 597,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "div#statement.st-section",
+   "referenceSelector": "div.home-intro-wrap",
+   "masks": {
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 597,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 31.2,
+   "ssim_unmasked": 0.3,
+   "E_unmasked": 30.9,
+   "structuralDiffPct": 22.6
+  },
+  {
+   "key": "home-intro-wrap",
+   "bp": "390",
+   "state": "mid60",
+   "target": "home-intro-wrap@390:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-intro-wrap.390.mid60.png",
+    "top": -511,
+    "state": "position",
+    "scrollY": 1348,
+    "targetY": 1348,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 423,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 423,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-intro-wrap.390.mid60.png",
+    "top": -504,
+    "state": "position",
+    "offset": 1340,
+    "targetOffset": 1342,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 343,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 343,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "div#statement.st-section",
+   "referenceSelector": "div.home-intro-wrap",
+   "masks": {
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 343,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 45.9,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 43.5,
+   "structuralDiffPct": 11.5
+  },
+  {
+   "key": "home-intro-wrap",
+   "bp": "390",
+   "state": "exit",
+   "target": "home-intro-wrap@390:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 8 px sits within 100 px of an already-recorded state for this 852 px section"
+  },
+  {
+   "key": "home-map-wrap",
+   "bp": "390",
+   "state": "entry",
+   "target": "home-map-wrap@390:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-map-wrap.390.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 2656,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 390,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 390,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-map-wrap.390.entry.png",
+    "top": 2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 2551,
+    "targetOffset": 2551,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 2,
+     "w": 374,
+     "h": 842,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 842,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "masks": {
+    "count": 18,
+    "specTextElements": 18,
+    "source": "frozen home-map-wrap.390 text elements (tc≠none, in-viewport), box 374×844",
+    "maskedShare": 0.3
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 749,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 68.7,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 65.4,
+   "structuralDiffPct": 6.3
+  },
+  {
+   "key": "home-map-wrap",
+   "bp": "390",
+   "state": "mid30",
+   "target": "home-map-wrap@390:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-map-wrap.390.mid30.png",
+    "top": -1230,
+    "state": "position",
+    "scrollY": 3886,
+    "targetY": 3886,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 390,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 390,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-map-wrap.390.mid30.png",
+    "top": -1446,
+    "state": "position",
+    "offset": 3999,
+    "targetOffset": 3997,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "masks": {
+    "count": 21,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.3
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 749,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 51.2,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 47.3,
+   "structuralDiffPct": 10.5
+  },
+  {
+   "key": "home-map-wrap",
+   "bp": "390",
+   "state": "mid60",
+   "target": "home-map-wrap@390:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-map-wrap.390.mid60.png",
+    "top": -2541,
+    "state": "position",
+    "scrollY": 5197,
+    "targetY": 5197,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 390,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 390,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-map-wrap.390.mid60.png",
+    "top": -2891,
+    "state": "position",
+    "offset": 5444,
+    "targetOffset": 5442,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "masks": {
+    "count": 21,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.2
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 749,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 48.2,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 43.3,
+   "structuralDiffPct": 11.1
+  },
+  {
+   "key": "home-map-wrap",
+   "bp": "390",
+   "state": "exit",
+   "target": "home-map-wrap@390:exit",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-map-wrap.390.exit.png",
+    "top": -3446,
+    "state": "position",
+    "scrollY": 6102,
+    "targetY": 6102,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 390,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 390,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-map-wrap.390.exit.png",
+    "top": -3974,
+    "state": "position",
+    "offset": 6527,
+    "targetOffset": 6526,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "masks": {
+    "count": 26,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.6
+   },
+   "status": "invalid-mask-share",
+   "reason": "mask share 63.7 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 749,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": null,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 38.6,
+   "structuralDiffPct": 5.6
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "390",
+   "state": "entry",
+   "target": "home-platform-wrap@390:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 7392,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.390.entry.png",
+    "top": -2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 7374,
+    "targetOffset": 7374,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "masks": {
+    "count": 8,
+    "specTextElements": 8,
+    "source": "frozen home-platform-wrap.390 text elements (tc≠none, in-viewport), box 374×844",
+    "maskedShare": 0.3
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 784,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 43.6,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 42.6,
+   "structuralDiffPct": 12.2
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "390",
+   "state": "mid30",
+   "target": "home-platform-wrap@390:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.mid30.png",
+    "top": 147,
+    "state": "position",
+    "scrollY": 7245,
+    "targetY": 7245,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 147,
+     "w": 374,
+     "h": 697,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 697,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.390.mid30.png",
+    "top": -291,
+    "state": "position",
+    "offset": 7663,
+    "targetOffset": 7665,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 678,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 678,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "masks": {
+    "count": 9,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.4
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 618,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 42.1,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 42.1,
+   "structuralDiffPct": 9.5
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "390",
+   "state": "mid60",
+   "target": "home-platform-wrap@390:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.mid60.png",
+    "top": -151,
+    "state": "position",
+    "scrollY": 7543,
+    "targetY": 7543,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 810,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 810,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.390.mid60.png",
+    "top": -581,
+    "state": "position",
+    "offset": 7953,
+    "targetOffset": 7955,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 388,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 388,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "masks": {
+    "count": 5,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.4
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 388,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 44.1,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 41.1,
+   "structuralDiffPct": 7.8
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "390",
+   "state": "exit",
+   "target": "home-platform-wrap@390:exit",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.exit.png",
+    "top": 295,
+    "state": "position",
+    "scrollY": 7097,
+    "targetY": 7097,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 295,
+     "w": 374,
+     "h": 549,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 549,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.390.exit.png",
+    "top": -127,
+    "state": "position",
+    "offset": 7499,
+    "targetOffset": 7499,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 842,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 842,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "masks": {
+    "count": 10,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.4
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 489,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 41,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 41.4,
+   "structuralDiffPct": 11
+  },
+  {
+   "key": "home-problem-wrap",
+   "bp": "390",
+   "state": "entry",
+   "target": "home-problem-wrap@390:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-problem-wrap.390.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 1771,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 376,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 376,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-problem-wrap.390.entry.png",
+    "top": 2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 1681,
+    "targetOffset": 1681,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 2,
+     "w": 374,
+     "h": 842,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 842,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#live.pm-section",
+   "referenceSelector": "div.home-problem-wrap",
+   "masks": {
+    "count": 10,
+    "specTextElements": 10,
+    "source": "frozen home-problem-wrap.390 text elements (tc≠none, in-viewport), box 374×844",
+    "maskedShare": 0.4
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 780,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 66.1,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 54.7,
+   "structuralDiffPct": 4.6
+  },
+  {
+   "key": "home-problem-wrap",
+   "bp": "390",
+   "state": "mid30",
+   "target": "home-problem-wrap@390:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-problem-wrap.390.mid30.png",
+    "top": -184,
+    "state": "position",
+    "scrollY": 1955,
+    "targetY": 1955,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 376,
+     "h": 701,
+     "touchesBottom": false,
+     "captureW": 376,
+     "captureH": 701,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-problem-wrap.390.mid30.png",
+    "top": -257,
+    "state": "position",
+    "offset": 1940,
+    "targetOffset": 1942,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 613,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 613,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#live.pm-section",
+   "referenceSelector": "div.home-problem-wrap",
+   "masks": {
+    "count": 8,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.3
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 613,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 63.8,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 56.9,
+   "structuralDiffPct": 5.6
+  },
+  {
+   "key": "home-problem-wrap",
+   "bp": "390",
+   "state": "mid60",
+   "target": "home-problem-wrap@390:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-problem-wrap.390.mid60.png",
+    "top": -449,
+    "state": "position",
+    "scrollY": 2220,
+    "targetY": 2220,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 376,
+     "h": 436,
+     "touchesBottom": false,
+     "captureW": 376,
+     "captureH": 436,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-problem-wrap.390.mid60.png",
+    "top": -517,
+    "state": "position",
+    "offset": 2200,
+    "targetOffset": 2202,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 353,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 353,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#live.pm-section",
+   "referenceSelector": "div.home-problem-wrap",
+   "masks": {
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.3
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 353,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
+   },
+   "E": 60.2,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 53.2,
+   "structuralDiffPct": 6
+  },
+  {
+   "key": "home-problem-wrap",
+   "bp": "390",
+   "state": "exit",
+   "target": "home-problem-wrap@390:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 41 px sits within 100 px of an already-recorded state for this 885 px section"
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "390",
+   "state": "entry",
+   "target": "home-usecase-wrap@390:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 11538,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 376,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 376,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.390.entry.png",
+    "top": 2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 9146,
+    "targetOffset": 9146,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 2,
+     "w": 374,
+     "h": 842,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 842,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "masks": {
+    "count": 9,
+    "specTextElements": 9,
+    "source": "frozen home-usecase-wrap.390 text elements (tc≠none, in-viewport), box 374×844",
+    "maskedShare": 0.3
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 780,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 44.4,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 44,
+   "structuralDiffPct": 20.3
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "390",
+   "state": "mid30",
+   "target": "home-usecase-wrap@390:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.mid30.png",
+    "top": 414,
+    "state": "position",
+    "scrollY": 11124,
+    "targetY": 11124,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 414,
+     "w": 376,
+     "h": 430,
+     "touchesBottom": true,
+     "captureW": 376,
+     "captureH": 430,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.390.mid30.png",
+    "top": -295,
+    "state": "position",
+    "offset": 9443,
+    "targetOffset": 9445,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 702,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 702,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "masks": {
+    "count": 9,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.4
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 368,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 42.4,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 39.1,
+   "structuralDiffPct": 18.6
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "390",
+   "state": "mid60",
+   "target": "home-usecase-wrap@390:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.mid60.png",
+    "top": 106,
+    "state": "position",
+    "scrollY": 11432,
+    "targetY": 11432,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 106,
+     "w": 376,
+     "h": 738,
+     "touchesBottom": true,
+     "captureW": 376,
+     "captureH": 738,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.390.mid60.png",
+    "top": -594,
+    "state": "position",
+    "offset": 9742,
+    "targetOffset": 9744,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 403,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 403,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "masks": {
+    "count": 7,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.4
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 343,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 57.7,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 53.6,
+   "structuralDiffPct": 6.9
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "390",
+   "state": "exit",
+   "target": "home-usecase-wrap@390:exit",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.exit.png",
+    "top": 538,
+    "state": "position",
+    "scrollY": 11000,
+    "targetY": 11000,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 538,
+     "w": 376,
+     "h": 306,
+     "touchesBottom": true,
+     "captureW": 376,
+     "captureH": 306,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.390.exit.png",
+    "top": -151,
+    "state": "position",
+    "offset": 9299,
+    "targetOffset": 9299,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "masks": {
+    "count": 10,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.3
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 244,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 37.7,
+   "ssim_unmasked": 0.3,
+   "E_unmasked": 34,
+   "structuralDiffPct": 20.8
+  },
+  {
+   "key": "home-why-wrap",
+   "bp": "390",
+   "state": "entry",
+   "target": "home-why-wrap@390:entry",
+   "declared": "entry",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-why-wrap.390.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "scrollY": 10420,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-why-wrap.390.entry.png",
+    "top": -2,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 8343,
+    "targetOffset": 8343,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 805,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 805,
+     "storageScale": 1
+    }
+   },
    "localSelector": "section.wy-section",
    "referenceSelector": "div.home-why-wrap",
-   "status": "scored",
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-why-wrap.390.png",
-    "w": 390,
-    "h": 844
-   },
-   "local": {
-    "path": "docs/audit/evidence/primary/local/home-why-wrap.390.png",
-    "native": {
-     "w": 390,
-     "h": 844
-    },
-    "normalizedTo": "390x784",
-    "heightRatio": 1
-   },
-   "crop": {
-    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
-    "w": 390,
-    "h": 784,
-    "chromeCropBottomPx": 60
-   },
-   "E": 50.2,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 47.1,
-   "structuralDiffPct": 13.6,
    "masks": {
-    "count": 11,
-    "specTextElements": 11,
-    "maskedShare": 0.1,
-    "window": 8,
-    "growPx": 4,
-    "source": "docs/redesign/r335/heron-spec/home-why-wrap.390.json text elements (tc≠none)"
-   }
+    "count": 5,
+    "specTextElements": 5,
+    "source": "frozen home-why-wrap.390 text elements (tc≠none, in-viewport), box 374×807",
+    "maskedShare": 0.3
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 745,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 55.8,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 49.4,
+   "structuralDiffPct": 12
+  },
+  {
+   "key": "home-why-wrap",
+   "bp": "390",
+   "state": "mid30",
+   "target": "home-why-wrap@390:mid30",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-why-wrap.390.mid30.png",
+    "top": 170,
+    "state": "position",
+    "scrollY": 10250,
+    "targetY": 10250,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 170,
+     "w": 374,
+     "h": 674,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 674,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-why-wrap.390.mid30.png",
+    "top": -243,
+    "state": "position",
+    "offset": 8584,
+    "targetOffset": 8585,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 564,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 564,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section.wy-section",
+   "referenceSelector": "div.home-why-wrap",
+   "masks": {
+    "count": 3,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 504,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 51.8,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 51.8,
+   "structuralDiffPct": 19.6
+  },
+  {
+   "key": "home-why-wrap",
+   "bp": "390",
+   "state": "mid60",
+   "target": "home-why-wrap@390:mid60",
+   "declared": "position",
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-why-wrap.390.mid60.png",
+    "top": -72,
+    "state": "position",
+    "scrollY": 10492,
+    "targetY": 10492,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 844,
+     "touchesBottom": true,
+     "captureW": 374,
+     "captureH": 844,
+     "storageScale": 1
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-why-wrap.390.mid60.png",
+    "top": -485,
+    "state": "position",
+    "offset": 8826,
+    "targetOffset": 8827,
+    "clip": {
+     "ok": true,
+     "x": 8,
+     "y": 0,
+     "w": 374,
+     "h": 322,
+     "touchesBottom": false,
+     "captureW": 374,
+     "captureH": 322,
+     "storageScale": 1
+    }
+   },
+   "localSelector": "section.wy-section",
+   "referenceSelector": "div.home-why-wrap",
+   "masks": {
+    "count": 2,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 374,
+    "h": 262,
+    "storedScale": {
+     "reference": 1,
+     "local": 1
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 37,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 38.8,
+   "structuralDiffPct": 27.4
+  },
+  {
+   "key": "home-why-wrap",
+   "bp": "390",
+   "state": "exit",
+   "target": "home-why-wrap@390:exit",
+   "status": "coincident",
+   "coincident": true,
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 807 px section"
   }
  ],
- "missing": [],
  "gates": {
   "E_overall_min": 90,
   "E_section_min": 88,
   "T_overall_min": 95,
   "T_section_min": 90,
-  "maskShareMax": 0.55
+  "maskShareMax": 0.55,
+  "repeatVarianceMax": 1
  }
 }

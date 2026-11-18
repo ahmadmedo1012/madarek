@@ -1,0 +1,146 @@
+{
+ "generatedAt": "2026-11-18T16:44:58.334Z",
+ "rule": "same-state entry pairs captured twice; |ΔE| ≤ 1 point",
+ "variance": [
+  {
+   "target": "chrome@1440",
+   "E1": 56.5,
+   "E2": 56.5,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "footer@1440",
+   "E1": 34.7,
+   "E2": 34.7,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-cta-wrap@1440",
+   "E1": 75.2,
+   "E2": 75.2,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-hero-wrap@1440",
+   "E1": 41.2,
+   "E2": 41.2,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-intro-wrap@1440",
+   "E1": 31.8,
+   "E2": 31.8,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-map-wrap@1440",
+   "E1": 58.5,
+   "E2": 58.5,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-platform-wrap@1440",
+   "E1": 56,
+   "E2": 56,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-problem-wrap@1440",
+   "E1": 60.9,
+   "E2": 60.9,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-usecase-wrap@1440",
+   "E1": 49.8,
+   "E2": 49.7,
+   "delta": 0.1,
+   "ok": true
+  },
+  {
+   "target": "home-why-wrap@1440",
+   "E1": 71.2,
+   "E2": 71.2,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "chrome@390",
+   "E1": 71,
+   "E2": 71,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "footer@390",
+   "E1": 54.2,
+   "E2": 54.2,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-cta-wrap@390",
+   "E1": 59.9,
+   "E2": 59.9,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-hero-wrap@390",
+   "E1": 45.4,
+   "E2": 45.4,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-intro-wrap@390",
+   "E1": 29.9,
+   "E2": 29.9,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-map-wrap@390",
+   "E1": 63.1,
+   "E2": 63.1,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-platform-wrap@390",
+   "E1": 40.7,
+   "E2": 40.7,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-problem-wrap@390",
+   "E1": 52.3,
+   "E2": 52.3,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-usecase-wrap@390",
+   "E1": 43,
+   "E2": 43,
+   "delta": 0,
+   "ok": true
+  },
+  {
+   "target": "home-why-wrap@390",
+   "E1": 48.1,
+   "E2": 48.3,
+   "delta": 0.2,
+   "ok": true
+  }
+ ]
+}

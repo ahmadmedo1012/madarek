@@ -1,41 +1,17 @@
 {
- "generatedAt": "2026-11-18T14:43:23.496Z",
- "url": "http://localhost:5301/",
+ "generatedAt": "2026-11-18T16:32:08.770Z",
+ "url": "http://localhost:5300/",
  "profile": {
-  "browser": "chromium 156.0.8078.4",
-  "node": "v26.13.1"
+  "browser": "chromium 143.0.7499.4",
+  "node": "v24.22.3"
  },
  "sizes": {
   "320": {
    "viewport": "320x640",
    "overflow": 0,
    "clipped": [],
-   "collisions": [
-    {
-     "section": "home-hero-wrap",
-     "a": "span.hro-line",
-     "b": "span.hro-line",
-     "share": 100,
-     "aText": "من المحاضرة إلى الإتقان",
-     "bText": "محاضرات تفاعلية، ومصفوفة"
-    }
-   ],
-   "unreachable": [
-    {
-     "section": "chrome",
-     "action": "button.fo-burger",
-     "coveredBy": "div.pl",
-     "coveringBox": "320x640",
-     "actionBox": "79x44"
-    },
-    {
-     "section": "home-hero-wrap",
-     "action": "button.hi-marker",
-     "coveredBy": "div.pl",
-     "coveringBox": "320x640",
-     "actionBox": "44x44"
-    }
-   ],
+   "collisions": [],
+   "unreachable": [],
    "sections": [
     {
      "key": "chrome",
@@ -77,29 +53,15 @@
      "key": "home-why-wrap",
      "height": 916
     }
-   ]
+   ],
+   "unreachableTransient": 0
   },
   "360": {
    "viewport": "360x740",
    "overflow": 0,
    "clipped": [],
    "collisions": [],
-   "unreachable": [
-    {
-     "section": "chrome",
-     "action": "button.fo-burger",
-     "coveredBy": "div.pl",
-     "coveringBox": "360x740",
-     "actionBox": "83x46"
-    },
-    {
-     "section": "home-hero-wrap",
-     "action": "button.hi-marker",
-     "coveredBy": "div.pl",
-     "coveringBox": "360x740",
-     "actionBox": "44x44"
-    }
-   ],
+   "unreachable": [],
    "sections": [
     {
      "key": "chrome",
@@ -141,29 +103,15 @@
      "key": "home-why-wrap",
      "height": 1031
     }
-   ]
+   ],
+   "unreachableTransient": 0
   },
   "390": {
    "viewport": "390x844",
    "overflow": 0,
    "clipped": [],
    "collisions": [],
-   "unreachable": [
-    {
-     "section": "chrome",
-     "action": "button.fo-burger",
-     "coveredBy": "div.pl",
-     "coveringBox": "390x844",
-     "actionBox": "86x50"
-    },
-    {
-     "section": "home-hero-wrap",
-     "action": "button.hi-marker",
-     "coveredBy": "div.pl",
-     "coveringBox": "390x844",
-     "actionBox": "44x44"
-    }
-   ],
+   "unreachable": [],
    "sections": [
     {
      "key": "chrome",
@@ -205,29 +153,15 @@
      "key": "home-why-wrap",
      "height": 1118
     }
-   ]
+   ],
+   "unreachableTransient": 0
   },
   "412": {
    "viewport": "412x915",
    "overflow": 0,
    "clipped": [],
    "collisions": [],
-   "unreachable": [
-    {
-     "section": "chrome",
-     "action": "button.fo-burger",
-     "coveredBy": "div.pl",
-     "coveringBox": "412x915",
-     "actionBox": "88x52"
-    },
-    {
-     "section": "home-hero-wrap",
-     "action": "button.hi-marker",
-     "coveredBy": "div.pl",
-     "coveringBox": "412x915",
-     "actionBox": "44x44"
-    }
-   ],
+   "unreachable": [],
    "sections": [
     {
      "key": "chrome",
@@ -269,7 +203,8 @@
      "key": "home-why-wrap",
      "height": 1181
     }
-   ]
+   ],
+   "unreachableTransient": 0
   },
   "1440": {
    "viewport": "1440x900",
@@ -291,24 +226,25 @@
      "share": 100,
      "aText": "02",
      "bText": "قياس"
-    }
-   ],
-   "unreachable": [
-    {
-     "section": "chrome",
-     "action": "button.theme-toggle-option.is-active",
-     "coveredBy": "div.pl",
-     "coveringBox": "1440x900",
-     "actionBox": "30x44"
     },
     {
      "section": "home-hero-wrap",
-     "action": "button.hi-marker",
-     "coveredBy": "div.pl",
-     "coveringBox": "1440x900",
-     "actionBox": "44x44"
+     "a": "span.hro-line",
+     "b": "div.hro-work-item",
+     "share": 33,
+     "aText": "من المحاضرة إلى الإتقان",
+     "bText": "المحاضرات التفاعلية"
+    },
+    {
+     "section": "home-hero-wrap",
+     "a": "span.hro-line",
+     "b": "span.fo-mono",
+     "share": 100,
+     "aText": "من المحاضرة إلى الإتقان",
+     "bText": "[ 01 ]"
     }
    ],
+   "unreachable": [],
    "sections": [
     {
      "key": "chrome",
@@ -350,7 +286,8 @@
      "key": "home-why-wrap",
      "height": 3158
     }
-   ]
+   ],
+   "unreachableTransient": 0
   },
   "640x360": {
    "viewport": "640x360",
@@ -414,7 +351,8 @@
      "key": "home-why-wrap",
      "height": 1937
     }
-   ]
+   ],
+   "unreachableTransient": 0
   },
   "844x390": {
    "viewport": "844x390",
@@ -471,7 +409,8 @@
      "key": "home-why-wrap",
      "height": 2654
     }
-   ]
+   ],
+   "unreachableTransient": 0
   }
  },
  "map": {
