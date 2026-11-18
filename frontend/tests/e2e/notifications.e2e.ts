@@ -81,7 +81,15 @@ test.describe('الإشعارات', () => {
 test.describe('الإشعارات — التثبيت والسعة', () => {
   /** يفتح اللوحة ويعيد صندوقيها وصندوق الشريط العلوي. */
   async function openPanel(page: import('@playwright/test').Page) {
-    const bell = page.getByRole('button', { name: /إشعارات/ }).first();
+    /* r366-final: locate by CLASS — the file's own documented lesson
+     * (the 99+ test below): the bell's accessible name flips between
+     * Arabic plural forms with the unread count («إشعار واحد غير
+     * مقروء» never contains «إشعارات»), so a name regex is a
+     * count-dependent locator. On CI the hermetic 501 transport's
+     * error-state label raced the name form and the regex never
+     * matched (45s timeout, both attempts; locally 6/6 — pure
+     * scheduling). The class is the stable contract. */
+    const bell = page.locator('button.topbar-notif');
     await bell.click();
     const panel = page.locator('.notification-panel');
     await expect(panel).toBeVisible();
