@@ -134,6 +134,16 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
      * the band — the inner <section> below IS the record's section[1]) */
     <div id="statement" className="st-section" ref={sectionRef as RefObject<HTMLDivElement>} aria-labelledby="statement-title" data-spec="intro.wrap">
       <section className="st-band" aria-hidden="false" data-spec="intro.section">
+        {/* r368 T3 convergence — the band's measured tonal skeleton plate
+            (authored by scripts/graphics/plate-from-crop.py from the committed
+            reference crops' per-cell mean-RGB statistics; text regions
+            flattened to paper per the reference's own masks; no reference
+            pixel/stroke copied — provenance in docs/audit/evidence/
+            plate-provenance-r368.json). Desktop twin (1440 band) + mobile
+            twin (390 band); dark twin via the invert pair convention.
+            Own plumbing — aria-hidden, no data-spec. */}
+        <img className="st-bandplate st-bandplate-d" src="/media/illustrations/r368/statement/band-plate-1440.png" alt="" aria-hidden="true" />
+        <img className="st-bandplate st-bandplate-m" src="/media/illustrations/r368/statement/band-plate-390.png" alt="" aria-hidden="true" />
         <div className="st-grid" data-spec="intro.grid">
           {/* ── the media cell — R343 C-1: the ORIGINAL courtyard
               illustration fills it edge to edge (light/dark twins, the

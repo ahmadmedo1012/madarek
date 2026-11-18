@@ -1,0 +1,46 @@
+{
+ "plates": [
+  {
+   "seat": "home-intro-wrap",
+   "bp": "1440",
+   "file": "band-plate-1440.png",
+   "grid": 8,
+   "quant": 4,
+   "tol": 3,
+   "band": {
+    "w": 1427,
+    "h": 723
+   },
+   "paperRGB": [
+    246,
+    246,
+    239
+   ],
+   "masks": 131,
+   "bytes": 16652,
+   "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-intro-wrap",
+   "bp": "390",
+   "file": "band-plate-390.png",
+   "grid": 4,
+   "quant": 4,
+   "tol": 3,
+   "band": {
+    "w": 374,
+    "h": 847
+   },
+   "paperRGB": [
+    247,
+    247,
+    241
+   ],
+   "masks": 138,
+   "bytes": 18730,
+   "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  }
+ ]
+}

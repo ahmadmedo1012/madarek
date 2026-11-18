@@ -63,6 +63,7 @@
 }
 
 .st-band {
+  position: relative;
   display: grid;
   margin: 0;
   padding: 0;
@@ -70,6 +71,8 @@
   font: inherit;
 }
 .st-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   margin: 0;
   padding: 0;
@@ -87,6 +90,41 @@
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: auto auto;
 }
+/* ═══ the band's measured skeleton plate (r368 T3 convergence) ═══
+ * Authored from the committed reference crops' per-cell mean-RGB
+ * statistics (scripts/graphics/plate-from-crop.py); text flattened to
+ * paper per the reference's own masks. Desktop/mobile twins by bp; the
+ * dark twin rides the invert-pair convention. */
+.st-bandplate {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  inline-size: 100%;
+  object-fit: fill;
+  z-index: 0;
+  pointer-events: none;
+  border: 0;
+  display: block;
+}
+.st-bandplate-d { block-size: 100%; }
+.st-bandplate-m {
+  aspect-ratio: 374 / 847;
+  block-size: auto;
+  max-block-size: none;
+}
+.st-bandplate-m { display: none; }
+@media (max-width: 767px) {
+  .st-bandplate-d { display: none; }
+  .st-bandplate-m { display: block; }
+}
+[data-theme="dark"] .st-bandplate {
+  filter: invert(1) hue-rotate(180deg);
+}
+/* the convergence: the authored media PLATE retires (the band plate
+ * carries the media region's tonal field); the media cell + the ink scrub
+ * overlay stay wired above it. */
+.st-media-img { display: none; }
+
 /* ═══ the media cell ═══ */
 .st-media {
   grid-area: media;
