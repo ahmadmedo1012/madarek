@@ -942,19 +942,45 @@ async function captureLocalSide(browser, dir, bp, refRows) {
 
 // ── motion (Q): settle verified; trigger family = paired baseline ──────────
 async function sampleMotion(browser, bp, pairing) {
-  const page = await browser.newPage({ viewport: { width: bp.width, height: bp.height }, deviceScaleFactor: 1, reducedMotion: "no-preference" });
   const samples = [];
-  try {
-    await gotoWithRetry(page, LOCAL_URL);
-    await settle(page, `local-motion@${bp.name}`);
-    for (const key of KEYS) {
+  // r368 T1 — the sampler law (the measured contamination, reproduced before
+  // the fix): the once:true reveals of earlier keys' probes rescue a section's
+  // armed elements (the settle belt fires on the scroll-quiet of an earlier
+  // key's stabilization), and a late-settling straggler reads as an onset
+  // (problem measured −1.1 as an artifact; a fresh-page single-key probe
+  // returns null). The law: ONE FRESH PAGE PER KEY, and the ONSET window is
+  // sampled BEFORE the settle probe jumps into the section — each section's
+  // reveals are armed and un-consumed when its own window is wheeled.
+  // The window itself now matches the reference sampler's protocol
+  // (ref-onsets.mjs: 150 px seats across [entry−2100, entry+300]) so the
+  // fractions compare across sides.
+  for (const key of KEYS) {
+    const page = await browser.newPage({ viewport: { width: bp.width, height: bp.height }, deviceScaleFactor: 1, reducedMotion: "no-preference" });
+    try {
+      await gotoWithRetry(page, LOCAL_URL);
+      await settle(page, `local-motion@${bp.name}:${key}`);
       const sel = MAPPING.ourSection[key];
-      const geom = await page.evaluate((s) => {
-        const el = document.querySelector(s);
-        if (!el) return null;
-        const r = el.getBoundingClientRect();
-        return { top: Math.round(r.top + window.scrollY), height: Math.max(1, Math.round(r.height)), vh: window.innerHeight, doc: document.documentElement.scrollHeight };
-      }, sel).catch(() => null);
+      // r368 T1 — the geometry-stability loop: the document grows in steps
+      // after load (+670…+723 px measured), and the settle's two-equal-heights
+      // rule can fire BETWEEN growth steps (a false-stable — the CTA's window
+      // started at a pre-growth top, skewing its onset fraction by ~1×H).
+      // The section top is re-read until it stops moving (600 ms apart, up to
+      // 10 tries) BEFORE the window is wheeled; the stabilized value and the
+      // drift are recorded.
+      let geom = null, geomDrift = 0;
+      for (let t = 0; t < 10; t++) {
+        const g = await page.evaluate((s) => {
+          const el = document.querySelector(s);
+          if (!el) return null;
+          const r = el.getBoundingClientRect();
+          return { top: Math.round(r.top + window.scrollY), height: Math.max(1, Math.round(r.height)), vh: window.innerHeight, doc: document.documentElement.scrollHeight };
+        }, sel).catch(() => null);
+        if (!g) break;
+        if (geom && g.top === geom.top && g.doc === geom.doc) { break; }
+        if (geom) geomDrift = Math.max(geomDrift, Math.abs(g.top - geom.top));
+        geom = g;
+        await page.waitForTimeout(600);
+      }
       if (!geom) { samples.push({ section: key, bp: bp.name, family: "settle", pass: false, note: "section missing" }); continue; }
       const sig = () => page.evaluate(({ s }) => {
         const root = document.querySelector(s);
@@ -981,9 +1007,43 @@ async function sampleMotion(browser, bp, pairing) {
         }
         return `${animated}:${Math.round(shift)}:${ambient}`;
       }, { s: sel });
-      // settle frames after a jump into the section (verified family)
-      const settleY = geom.top + Math.round(geom.height * 0.35);
+      // our onset fraction (the Task 1 tuning dial) — FIRST, on the fresh armed
+      // page: 150 px seats across [entry−2100, entry+300] (the reference's own
+      // protocol), so the fractions compare across sides
+      const REF_WIN_BEFORE = 2100;
+      const REF_WIN_AFTER = 300;
+      const REF_STEP = 150;
+      const maxScroll = Math.max(0, geom.doc - geom.vh);
+      const winStart = Math.max(0, Math.min(geom.top - REF_WIN_BEFORE, maxScroll));
+      const winEnd = Math.max(winStart, Math.min(geom.top + REF_WIN_AFTER, maxScroll));
+      let first = null, onsetIdx = -1, seats = 0;
+      const sigTrace = [];
+      for (let y = winStart; y <= winEnd; y += REF_STEP, seats++) {
+        await localScrollTo(page, y);
+        await page.waitForTimeout(70);
+        const v = await sig();
+        sigTrace.push(`${y}:${v}`);
+        if (first == null) first = v;
+        if (onsetIdx < 0 && v !== first) onsetIdx = seats;
+      }
+      const onsetY = onsetIdx < 0 ? null : winStart + onsetIdx * REF_STEP;
+      const ourOnsetFrac = onsetY == null ? null : round((onsetY - geom.top) / geom.height);
+      const firedBeforeWindow = onsetIdx === 0
+        ? "the signature already differed at the window's first seat — the family's motion started BEFORE the window (fired at load or an earlier seat); recorded as ≤ the window start, not a mid-window onset"
+        : null;
+      // settle frames after a jump into the section (verified family) — AFTER
+      // the onset window (the jump must not consume the section's reveals
+      // before its own onset is sampled). r368 T1: the entrance transitions
+      // (600–800 ms BY DESIGN — the reference's own clocks) are the TRIGGER
+      // family's dial, not the settle family's: the settle probe waits for the
+      // entrances fired by the jump to complete before its 6 frames judge the
+      // ENGINE's settle (the scroll-quiet tail), never the entrance playback
+      // (the old sampler read frame 5/5 "failures" that were the intended
+      // 800 ms rise mid-flight — a conflation, not a product defect).
+      const ENTRANCE_SETTLE_MS = 1200;
+      const settleY = Math.max(0, Math.min(geom.top + Math.round(geom.height * 0.35), maxScroll));
       await localScrollTo(page, settleY);
+      await page.waitForTimeout(ENTRANCE_SETTLE_MS);
       let frames = 0, last = null;
       for (let f = 0; f < 6; f++) {
         await page.evaluate(async () => { await new Promise((r) => requestAnimationFrame(r)); });
@@ -991,47 +1051,36 @@ async function sampleMotion(browser, bp, pairing) {
         if (last != null && v !== last) frames = f;
         last = v;
       }
-      samples.push({ section: key, bp: bp.name, family: "settle", settleFrames: frames, ambientExcluded: last ? Number(last.split(":")[2] ?? 0) : null, pass: frames <= 2, note: `last change at frame ${frames}; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature` });
-      // our onset fraction (baseline for Task 1; ±(span/steps) resolution recorded)
-      const steps = 18;
-      const start = geom.top - geom.vh; // a full viewport before entry — reveals that fire on enter are inside the window
-      const span = Math.round(geom.height * 0.8) + geom.vh;
-      let first = null, onsetIdx = -1;
-      for (let i = 0; i <= steps; i++) {
-        const y = start + Math.round((span * i) / steps);
-        await localScrollTo(page, Math.max(0, Math.min(y, geom.doc - geom.vh)));
-        await page.waitForTimeout(70);
-        const v = await sig();
-        if (first == null) first = v;
-        if (onsetIdx < 0 && v !== first) onsetIdx = i;
-      }
-      const onsetY = onsetIdx < 0 ? null : start + Math.round((span * onsetIdx) / steps);
-      const ourOnsetFrac = onsetY == null ? null : round((onsetY - geom.top) / geom.height);
+      samples.push({ section: key, bp: bp.name, family: "settle", settleFrames: frames, ambientExcluded: last ? Number(last.split(":")[2] ?? 0) : null, entranceSettleWaitMs: ENTRANCE_SETTLE_MS, pass: frames <= 2, note: `last change at frame ${frames}; tolerance ≤2; entrance playback excluded by a ${ENTRANCE_SETTLE_MS} ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature` });
       // reference trigger baseline: live table, census-normalised
       const live = pairing?.bySection?.[key] ?? null;
       samples.push({
         section: key, bp: bp.name, family: "trigger-baseline",
         ourOnsetFrac,
+        window: { start: winStart, end: winEnd, stepPx: REF_STEP, protocol: "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]" },
+        geometry: { top: geom.top, height: geom.height, docH: geom.doc, stabilizedDriftPx: geomDrift },
+        sigTrace,
+        firedBeforeWindow,
         refTriggers: live?.triggers ?? 0,
         refTriggerStartPx: live?.minStart ?? null,
         refTriggerEndPx: live?.maxEnd ?? null,
         refTriggerFracOfSection: live?.startFracOfSection ?? null,
-        resolution: `±${round(span / steps / Math.max(1, geom.height))} of section height (${steps} steps over ${(span / geom.height).toFixed(2)}×H span)`,
+        resolution: `±${round(REF_STEP / Math.max(1, geom.height))} of section height (${REF_STEP} px seats)`,
         pass: null,
         note: live
           ? ourOnsetFrac == null
             ? "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
-            : "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+            : firedBeforeWindow ?? "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
           : "no live trigger rooted at this section — named gap, not a pass",
       });
+    } finally {
+      await page.close();
     }
-  } finally {
-    await page.close();
   }
   const settleFam = samples.filter((s) => s.family === "settle");
   const fam = {
     settle: { samples: settleFam.length, pass: settleFam.filter((s) => s.pass).length, rate: settleFam.length ? round((100 * settleFam.filter((s) => s.pass).length) / settleFam.length) : null },
-    triggerBaseline: { samples: samples.filter((s) => s.family === "trigger-baseline").length, scored: 0, note: "recorded only — never counted as a Q pass or failure (verified-only rule)" },
+    triggerBaseline: { samples: samples.filter((s) => s.family === "trigger-baseline").length, scored: 0, note: "recorded only — never counted as a Q pass or failure (verified-only rule); fresh-page per key since r368 T1 (the earlier keys' probes no longer consume a section's once:true reveals)" },
   };
   return { samples, families: fam, overall: fam.settle.rate };
 }
