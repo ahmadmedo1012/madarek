@@ -3020,6 +3020,14 @@ a.pf-row-link {
     display: flex;
     justify-content: flex-end;
     margin-block-start: var(--sp-3);
+    /* r366-final: the height reservation the taker skin
+       (.r321x-taker … min-block-size: 26px) already ships, on the
+       BASE class too — a surface without the skin rendered the
+       footer at 0px until the first save mounted the chip and grew
+       the card mid-answer (the exact defect the reservation law
+       documents; CI's retry measured a 32px shift). */
+    min-block-size: 26px;
+    align-items: flex-end;
   }
 
   .oex-q-state {

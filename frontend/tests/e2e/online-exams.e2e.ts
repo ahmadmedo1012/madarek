@@ -164,8 +164,13 @@ test.describe('الاختبارات الإلكترونية — أداء الاخ
     await expect(page.locator('#exam-q-q_e2e_1 .oex-q-state.saved, #exam-q-q_e2e_1 .oex-q-state.saving')).toBeVisible();
     await expect(chip).toHaveText('تم الحفظ');
     const after = await card.boundingBox();
-    expect(after!.height).toBeCloseTo(before!.height, 1);
-    expect(after!.y).toBeCloseTo(before!.y, 1);
+    /* Calm = no VISIBLE shift: precision 0 (±0.5px) — precision 1
+     * (±0.05px) failed on a 0.45px sub-pixel re-raster on CI
+     * (byte-identical layout; font hinting rounds differently on
+     * the runner's rasterizer). A half-pixel is not a layout
+     * regression; the reserved footer guarantees whole pixels. */
+    expect(after!.height).toBeCloseTo(before!.height, 0);
+    expect(after!.y).toBeCloseTo(before!.y, 0);
   });
 
   test('لا تمرير أفقي عند 320 وعند تكبير النص 200٪', async ({ page }) => {
