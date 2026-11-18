@@ -1,13 +1,13 @@
 {
- "generatedAt": "2026-11-17T23:24:55.865Z",
+ "generatedAt": "2026-11-18T00:24:32.932Z",
  "engine": "chromium",
  "url": "http://localhost:5173/",
  "specDir": "/home/z/madarek/docs/redesign/r335/heron-spec",
  "summary": {
-  "total": 70530,
-  "pass": 66247,
-  "fail": 4283,
-  "passRate": 93.9,
+  "total": 69537,
+  "pass": 65614,
+  "fail": 3923,
+  "passRate": 94.4,
   "exceptionUses": 193,
   "exceptionRate": 0.3,
   "exceptionCap": "<5%",
@@ -789,10 +789,10 @@
     "missing": null
    },
    "1920": {
-    "passRate": 95,
+    "passRate": 95.2,
     "n": 1896,
-    "pass": 1802,
-    "fail": 94,
+    "pass": 1805,
+    "fail": 91,
     "exceptions": 2,
     "explicit": 0,
     "dataSpec": 131,
@@ -1686,17 +1686,6 @@
    "expected": 977,
    "actual": 3,
    "delta": 974
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[4]",
-   "oursSelector": "#ds:roles.rowrule2.8",
-   "mode": "data-spec",
-   "expected": 951,
-   "actual": 0,
-   "delta": 951
   },
   {
    "section": "home-intro-wrap",
@@ -2661,8 +2650,8 @@
    "oursSelector": "#ds:intro.dupcard.5",
    "mode": "data-spec",
    "expected": 57,
-   "actual": 685,
-   "delta": 628
+   "actual": 683,
+   "delta": 626
   },
   {
    "section": "home-cta-wrap",
@@ -3573,17 +3562,6 @@
    "delta": 470
   },
   {
-   "section": "home-usecase-wrap",
-   "bp": "1920",
-   "kind": "x-mirror",
-   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[4]",
-   "oursSelector": "#ds:roles.rowrule2.8",
-   "mode": "data-spec",
-   "expected": 467,
-   "actual": 0,
-   "delta": 466.5
-  },
-  {
    "section": "footer",
    "bp": "1920",
    "kind": "x-mirror",
@@ -3877,8 +3855,8 @@
    "oursSelector": "#ds:intro.dupcard.4",
    "mode": "data-spec",
    "expected": 57,
-   "actual": 481,
-   "delta": 424
+   "actual": 480,
+   "delta": 423
   },
   {
    "section": "home-why-wrap",
@@ -4752,6 +4730,17 @@
   {
    "section": "home-intro-wrap",
    "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#ds:intro.dupcard.2",
+   "mode": "data-spec",
+   "expected": 455,
+   "actual": 101,
+   "delta": 354
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "390",
    "kind": "w",
    "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]",
    "oursSelector": "#hm:svg.none",
@@ -4794,17 +4783,6 @@
    "delta": 352
   },
   {
-   "section": "home-intro-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-   "oursSelector": "#ds:intro.dupcard.3",
-   "mode": "data-spec",
-   "expected": 455,
-   "actual": 103,
-   "delta": 352
-  },
-  {
    "section": "home-cta-wrap",
    "bp": "768",
    "kind": "y",
@@ -4814,17 +4792,6 @@
    "expected": 635,
    "actual": 986,
    "delta": 351
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#ds:intro.dupcard.2",
-   "mode": "data-spec",
-   "expected": 455,
-   "actual": 105,
-   "delta": 350
   },
   {
    "section": "home-problem-wrap",
@@ -4891,6 +4858,17 @@
    "expected": 350,
    "actual": 0,
    "delta": 349.5
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+   "oursSelector": "#ds:intro.dupcard.3",
+   "mode": "data-spec",
+   "expected": 455,
+   "actual": 106,
+   "delta": 349
   },
   {
    "section": "home-usecase-wrap",
@@ -6631,6 +6609,17 @@
    "delta": 269
   },
   {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[4] > div[1] > img[1]",
+   "oursSelector": "#ds:intro.dupcard.5",
+   "mode": "data-spec",
+   "expected": 109,
+   "actual": 378,
+   "delta": 269
+  },
+  {
    "section": "home-platform-wrap",
    "bp": "390",
    "kind": "y",
@@ -6738,17 +6727,6 @@
    "mode": "heuristic",
    "expected": 202,
    "actual": 468,
-   "delta": 266
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "768",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[4] > div[1] > img[1]",
-   "oursSelector": "#ds:intro.dupcard.5",
-   "mode": "data-spec",
-   "expected": 109,
-   "actual": 375,
    "delta": 266
   },
   {
@@ -9048,17 +9026,6 @@
    "delta": 184
   },
   {
-   "section": "home-intro-wrap",
-   "bp": "768",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:intro.cell.1",
-   "mode": "data-spec",
-   "expected": 440,
-   "actual": 624,
-   "delta": 184
-  },
-  {
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "x-mirror",
@@ -9067,17 +9034,6 @@
    "mode": "heuristic",
    "expected": 291,
    "actual": 108,
-   "delta": 183
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "768",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-   "oursSelector": "#ds:intro.dupcard.1",
-   "mode": "data-spec",
-   "expected": 330,
-   "actual": 513,
    "delta": 183
   },
   {
@@ -9092,6 +9048,17 @@
    "delta": 182
   },
   {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:intro.cell.1",
+   "mode": "data-spec",
+   "expected": 440,
+   "actual": 621,
+   "delta": 181
+  },
+  {
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "h",
@@ -9100,6 +9067,17 @@
    "mode": "heuristic",
    "expected": 0,
    "actual": 180,
+   "delta": 180
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+   "oursSelector": "#ds:intro.dupcard.1",
+   "mode": "data-spec",
+   "expected": 330,
+   "actual": 510,
    "delta": 180
   },
   {
@@ -9399,6 +9377,17 @@
    "delta": 168
   },
   {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
+   "oursSelector": "#ds:intro.dupcard.5",
+   "mode": "data-spec",
+   "expected": 352,
+   "actual": 519,
+   "delta": 167
+  },
+  {
    "section": "chrome",
    "bp": "768",
    "kind": "h",
@@ -9430,17 +9419,6 @@
    "expected": 391,
    "actual": 227,
    "delta": 164.5
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
-   "oursSelector": "#ds:intro.dupcard.5",
-   "mode": "data-spec",
-   "expected": 352,
-   "actual": 515,
-   "delta": 163
   },
   {
    "section": "footer",
@@ -9660,6 +9638,28 @@
    "mode": "data-spec",
    "expected": 271,
    "actual": 430,
+   "delta": 159
+  },
+  {
+   "section": "footer",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[4]",
+   "oursSelector": "#ds:footer.scright",
+   "mode": "data-spec",
+   "expected": 271,
+   "actual": 430,
+   "delta": 159
+  },
+  {
+   "section": "footer",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[3]",
+   "oursSelector": "#ds:footer.legal",
+   "mode": "data-spec",
+   "expected": 476,
+   "actual": 635,
    "delta": 159
   }
  ],
@@ -13786,7 +13786,7 @@
   "home-intro-wrap": {
    "specLeft": 8,
    "specRight": 8,
-   "ourLeft": 8,
+   "ourLeft": 6.2,
    "ourRight": 8,
    "rootContentBox": {
     "l": 8,
@@ -13894,16 +13894,6 @@
  "scrollCurves": {
   "pass": 0,
   "fail": 5
- },
- "interact": {
-  "pass": 625,
-  "fail": 317,
-  "hoverChecked": 696
- },
- "patterns": {
-  "pass": 11,
-  "fail": 40,
-  "checked": 55
  },
  "panel": {
   "pass": 60,
@@ -14342,7 +14332,7 @@
   "skipped": []
  },
  "provenance": {
-  "file": "chromium-20261117-233024-full.json",
+  "file": "chromium-20261118-002709-full.json",
   "scope": "full",
   "fullMatrix": true,
   "sections": "10/10",

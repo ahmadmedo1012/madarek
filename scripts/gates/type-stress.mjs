@@ -10,13 +10,20 @@
  *
  * Usage: node scripts/gates/type-stress.mjs [--routes /__design,/,/auth]
  */
-import { chromium } from 'playwright-core';
+import { createRequire } from 'node:module';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+/* R366-final (CI repair): the design-gates job installs NOTHING — the
+ * gate set is dependency-free by contract. playwright-core lives in the
+ * FRONTEND workspace's node_modules (hoisted or local), so resolve it
+ * from there; a bare specifier works only when a root install exists
+ * (local verify.sh) and failed on CI with ERR_MODULE_NOT_FOUND. */
+const require = createRequire(path.join(ROOT, 'frontend', 'package.json'));
+const { chromium } = require('playwright-core');
 const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 ? args[i + 1] : d; };
 const BASE = opt('base-url', 'http://127.0.0.1:4328');
