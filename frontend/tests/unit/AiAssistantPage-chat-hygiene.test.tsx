@@ -283,10 +283,16 @@ describe('the auto-scroll near-bottom guard', () => {
     };
   };
 
-  it('pins on mount (fresh conversation, user at the bottom)', () => {
+  it('pins on mount (fresh conversation, user at the bottom)', async () => {
     const spy = spyScrollTopWrites();
     try {
       const view = renderPage();
+      /* R366-final: the mount pin rides the NEXT animation frame (the
+       * deferred-pin law — scroll events dispatch before rAF callbacks,
+       * so a stale at-bottom flag can never yank a reader who just
+       * jumped up). Flush that frame before asserting the write. */
+      await new Promise((r) => requestAnimationFrame(() => r(null)));
+      await new Promise((r) => setTimeout(r, 0));
       // The mount pin wrote the transcript scroller's offset.
       expect(spy.onScroller(view.container).length).toBeGreaterThan(0);
     } finally {
