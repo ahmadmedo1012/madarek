@@ -92,6 +92,7 @@ import * as T from "./tolerances.mjs";
 import { feel as scrollFeel, assert as scrollCurves } from "./scroll.mjs";
 import { interact as interactStates, patterns as patternCheck } from "./interact.mjs";
 import { panel as panelChecks } from "./panel.mjs";
+import { COVERAGE_FLOOR, COVERAGE_FLOORS, OFF_BOOK_CAP, HEURISTIC_CAP, HEURISTIC_CAPS, evaluateGates, effectiveThresholds, applyGateVerdict } from "./gates.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const WORKTREE = join(__dirname, "..", "..");
@@ -147,52 +148,15 @@ const COVERAGE_REVIEW = {};
   ${bad.join("\n  ")}`);
 }
 
-// r339 T-02b — honesty-gate thresholds (risk-based; see the audit's fix list).
-// R347 re-key (each with its written reason — the defect fix legitimately
-// changed the live contract; the floors only rise from here):
-//   home-intro-wrap 37 (D1: the ink-roll twins + their A-I1 bindings
-//     carried 3.1pts of intro coverage; the twins are deleted at the
-//     cause — the visible double-print outranks the metric)
-//   home-hero-wrap 11 (D4: the drafting noise chrome's 198 binding
-//     entries deleted with their elements — ONE calm artwork)
-//   home-platform-wrap 20 (R347-Z · D8 family, R346 §3: the marquee
-//     loop copies C/D/E are deleted — conformance twins that stacked 5
-//     pr-label/pr-title copies on one seat (detector text-on-text
-//     frac=1). Their 47 explicit bindings became honest noCounterpart
-//     excusals; the section's measured share fell 56.1%→22.5% BY THE
-//     EXCUSAL, not by unmapped work. The only "lift" would be re-adding
-//     banned twins — refused. The visible defect outranks the metric.)
-//   home-map-wrap 30 (R347-Z · the scroll-state re-key, the gate
-//     recovery's own arithmetic: the frozen spec recorded the
-//     reference's map band MID-ANIMATION — its scroll-driven stacked
-//     track still translated by the end-of-scroll progress at capture
-//     (step rows at sr.y −4835/−885, visually ABOVE the section root —
-//     only possible mid-transform). The R342-04 measured-seat rebuild
-//     + the R347-B calm-sheet seat replaced the whole stack with the
-//     single pinned stage: those records have NO honest counterpart.
-//     438 noHeuristic excusals + 690 legacy flags later the section's
-//     measured share fell 69.2%→31.8% BY THE EXCUSAL, not by unmapped
-//     work — the only "lift" would be re-adding the overflowing-stack
-//     anatomy the D6 defect round removed, or binding fake twins to
-//     the old records — both refused. heur 59.2%→0% (the section
-//     finally clears the heuristic cap it rode since the re-seat).
-//     The floor only rises from here.)
-const COVERAGE_FLOORS = { "home-intro-wrap": 37, "home-hero-wrap": 11, "home-platform-wrap": 20, "home-map-wrap": 30 };
-const COVERAGE_FLOOR = 40;   // % measured below which a section fails FAIL(coverage)
-const OFF_BOOK_CAP = 70;     // % off-book at/above which a section fails FAIL(off-book) unless reviewed
-const HEURISTIC_CAP = 50;    // % heuristic-paired share at/above which a section fails FAIL(heuristic)
-// R347 D4 re-key: the hero's explicit pool shrank 208→10 pairs with the
-// noise retirement, so the section's stable ~39 heuristic-glued pairs
-// (the depth-6 path-collision mass the r344 note already documented as
-// "not honestly fixable by CSS") now exceed half the pool BY ARITHMETIC,
-// not by new glue. Per-section cap with the written reason; every other
-// section keeps 50.
-// R347-Z re-key (same arithmetic as the hero's): the platform's explicit
-//   pool shrank 160→113 pairs with the loop-copy twin deletion (R346 §3,
-//   D8 family) — the section's stable heuristic-glued mass (the wrapper-
-//   crossover soup the r338 note already documented) now exceeds half the
-//   pool BY ARITHMETIC, not by new glue. 58.5% measured; cap 65.
-const HEURISTIC_CAPS = { "home-hero-wrap": 80, "home-platform-wrap": 65 };
+// r339 T-02b — honesty-gate thresholds. r368 T1: the values + their R347
+// re-key reasons now live in gates.mjs (extracted so every documented limit
+// has a failing fixture in gates.test.mjs); this file only applies them.
+// R347 reasons, unchanged: intro 37 (ink-roll twins deleted at the cause),
+// hero 11 (drafting-noise chrome retired), platform 20 (marquee loop copies
+// C/D/E deleted as banned conformance twins), map 30 (the spec captured the
+// reference band mid-animation — the replaced stack has no honest
+// counterpart). Heuristic caps: hero 80 / platform 65, both arithmetic from
+// the shrunken explicit pools, never new glue. The floors only rise from here.
 const DARK_INK_FLOOR = 4.5;  // WCAG AA contrast for EVERY text-bearing node in --dark
 const EDGE390_TOL = 2;       // px tolerance on the spec's recorded 390 side gutters
 
@@ -558,6 +522,20 @@ function isLineContainerPath(p) {
 
 // ── runner ───────────────────────────────────────────────────────────────────
 const browser = await (ENGINE === "webkit" ? webkit : chromium).launch({ headless: true });
+// r368 T1 — the pinned profile travels with the blob. Task 1 of the fidelity
+// plan requires "result provenance records current SHA/profile": the audit
+// could not tell which tree or browser build produced the committed run, and
+// Node v26 sat outside the supported range with no trace in the artifact.
+const BROWSER_VERSION = browser.version();
+const PROFILE = (() => {
+  const { execSync } = createRequire(import.meta.url)("node:child_process");
+  let sha = null, dirty = null;
+  try { sha = execSync("git rev-parse HEAD", { cwd: WORKTREE, encoding: "utf8" }).trim(); } catch { sha = null; }
+  try { dirty = execSync("git status --porcelain", { cwd: WORKTREE, encoding: "utf8" }).trim().length > 0; } catch { dirty = null; }
+  let playwright = null;
+  try { playwright = createRequire(join(WORKTREE, "frontend", "package.json"))("playwright/package.json").version; } catch { playwright = null; }
+  return { node: process.version, sha, dirtyTree: dirty, browser: `${ENGINE} ${BROWSER_VERSION}`, playwright, dpr: 1, viewportModel: BPS.map((b) => `${b.name}=${b.width}x${b.height}`).join(","), platform: `${process.platform}/${process.arch}` };
+})();
 const results = { generatedAt: new Date().toISOString(), engine: ENGINE, url: URL, specDir: SPEC_DIR, summary: {}, sections: {}, failures: [], unmatchedReport: [], skippedReport: [], darkInkReport: [], sectionEdges: {} };
 let totalPass = 0, totalFail = 0, exceptionUses = 0;
 let darkPass = 0, darkFail = 0, darkContrast = 0, darkContrastSkipped = 0;
@@ -1288,19 +1266,7 @@ for (const key of SECTIONS_WANTED) {
 // r339 T-02b — honesty gates (fire on any GATED run, scoped or full, for the
 // sections in the run — scoping cannot mask them, same law as the exception
 // cap). ADDITIVE failure modes; none of them can ever be tuned to pass.
-const gateFailures = [];
-const reviewedEscapes = [];
-for (const [key, a] of Object.entries(sectionAgg)) {
-  const FLOOR = COVERAGE_FLOORS[key] ?? COVERAGE_FLOOR; /* R347 re-key: the per-section map above, each with its written reason */
-  if (a.coverage < FLOOR) gateFailures.push({ gate: "coverage", section: key, value: `${a.coverage}%`, threshold: `< ${FLOOR}% measured (coverage floor — no escape; lift it with section work)` });
-  if (a.offBookPct >= OFF_BOOK_CAP) {
-    const review = COVERAGE_REVIEW[key];
-    if (review) reviewedEscapes.push({ section: key, offBookPct: a.offBookPct, owner: review.owner, reason: review.reason });
-    else gateFailures.push({ gate: "off-book", section: key, value: `${a.offBookPct}%`, threshold: `≥ ${OFF_BOOK_CAP}% off-book (excused×${GROUP_CHECKS_SUM}+skipped est.) — escape only via a written review in coverage-review.json` });
-  }
-  const HCAP = HEURISTIC_CAPS[key] ?? HEURISTIC_CAP; /* R347 re-key: the per-section map above, with its written reason */
-  if (a.heurPct != null && a.heurPct >= HCAP) gateFailures.push({ gate: "heuristic", section: key, value: `${a.heurPct}%`, threshold: `≥ ${HCAP}% heuristic-paired — explicit data-spec binding is achievable (intro/usecase ≈0.8%)` });
-}
+const { gateFailures, reviewedEscapes } = evaluateGates(sectionAgg, COVERAGE_REVIEW);
 // r339 T-02 audit — the exception cap was a printed label only; enforce it
 // AFTER the scoped-run label so no scoping can mask a cap breach:
 // exceptions.json is "TRUE waivers only", hard cap <5% on ANY gated run.
@@ -1321,7 +1287,7 @@ if (GATE && gateFailures.length) {
   console.error(`gate breach(es) — r339 T-02b honesty gates:
   ${gateFailures.map((f) => `${f.gate}: ${f.section} — ${f.value} ${f.threshold}`).join("\n  ")}`);
 }
-if (failParts.length) gateVerdict = `FAIL(${failParts.join("+")})`;
+gateVerdict = applyGateVerdict(gateVerdict, failParts);
 if (RATCHET_UPDATE && !FULL_SCOPE) {
   console.error("--ratchet refused: run is section- or bp-scoped (" + SECTIONS_WANTED.length + "/" + SECTIONS.length + " sections, " + BPS_WANTED.length + "/" + BPS.length + " bps) — the ratchet may only be raised from a full-matrix run that writes a fresh full-matrix results.json in the same invocation");
   process.exit(2);
@@ -1343,7 +1309,13 @@ results.summary = {
   const ob = Object.values(sectionAgg).reduce((a, s) => a + s.offBookEst, 0);
   results.summary.coverage = {
     formula: `coverage = measured / (measured + offBookEst); offBookEst = suppressedChecks + excusedElements × ${GROUP_CHECKS_SUM} (GROUP_CHECKS sum = checks per fully-measured element; conservative — the 5 unskippable per-element checks are not counted). Section cells only; scroll/interact extensions are not coverage-scored.`,
-    thresholds: { coverageFloor: `${COVERAGE_FLOOR}% measured (FAIL(coverage), no escape)`, offBookCap: `${OFF_BOOK_CAP}% (FAIL(off-book) unless reviewed in coverage-review.json with written reason + owner task)`, heuristicShareCap: `${HEURISTIC_CAP}% of pairs (FAIL(heuristic))` },
+    // r368 T1 — DISCLOSURE: the R347 per-section re-keys were applied by the
+    // gate while this block printed only the base numbers, so the artifact read
+    // "intro 38.2% < 40% floor, gate: PASS" and the T-368 audit had to call the
+    // contract untruthful. `policy.effective` names the limit ACTUALLY applied
+    // to each section, with its written reason; `base` keeps the defaults.
+    thresholds: { coverageFloor: `${COVERAGE_FLOOR}% measured (FAIL(coverage), no escape) — see policy.effective for R347 per-section re-keys`, offBookCap: `${OFF_BOOK_CAP}% (FAIL(off-book) unless reviewed in coverage-review.json with written reason + owner task)`, heuristicShareCap: `${HEURISTIC_CAP}% of pairs (FAIL(heuristic)) — see policy.effective` },
+    policy: (() => { const eff = effectiveThresholds(sectionAgg); return { base: eff.base, effective: eff.sections, note: eff.note }; })(),
     overall: { measured: meas, offBookEst: ob, coveragePct: meas + ob ? Math.round((meas / (meas + ob)) * 1000) / 10 : 0, offBookPct: meas + ob ? Math.round((ob / (meas + ob)) * 1000) / 10 : 0 },
     sections: sectionAgg,
     gateFailures,
@@ -1428,14 +1400,18 @@ console.log("-".repeat(70));
 console.log(`TOTAL ${totalPass}/${total} = ${rate}%  ·  exceptions ${exceptionUses} (${exRate}%, cap 5%)  ·  no-counterpart FAILs ${results.summary.unmatchedFailures}  ·  failures listed: ${results.failures.length}  ·  skipped (counted) ${totalSkipped}`);
 // r339 T-02b — coverage table beside the pass-rate (risk-fix #1): a rate is
 // only readable next to the share of the surface it was measured on.
-console.log(`coverage = measured/(measured+off-book est.)  ·  floor ${COVERAGE_FLOOR}%  ·  off-book cap ${OFF_BOOK_CAP}% (escape: coverage-review.json)  ·  heuristic cap ${HEURISTIC_CAP}%`);
+console.log(`coverage = measured/(measured+off-book est.)  ·  floor ${COVERAGE_FLOOR}% (base)  ·  off-book cap ${OFF_BOOK_CAP}% (escape: coverage-review.json)  ·  heuristic cap ${HEURISTIC_CAP}% (base)  ·  R347 re-keys shown per section below`);
 for (const [key, a] of Object.entries(sectionAgg)) {
   const flags = [
     a.coverage < (COVERAGE_FLOORS[key] ?? COVERAGE_FLOOR) && "⚠coverage",
     a.offBookPct >= OFF_BOOK_CAP && (COVERAGE_REVIEW[key] ? `off-book(reviewed:${COVERAGE_REVIEW[key].owner})` : "⚠off-book"),
     a.heurPct != null && a.heurPct >= (HEURISTIC_CAPS[key] ?? HEURISTIC_CAP) && "⚠heuristic",
   ].filter(Boolean);
-  console.log(`  ${key.padEnd(22)} cov ${String(a.coverage + "%").padStart(6)}  off-book ${String(a.offBookPct + "%").padStart(6)}  heur ${a.heurPct == null ? "   —" : String(a.heurPct + "%").padStart(6)}  (meas ${a.measured}, skip ${a.skipped}, exc ${a.excused}×${GROUP_CHECKS_SUM})${flags.length ? "  " + flags.join(" ") : ""}`);
+  // r368 T1 — print the EFFECTIVE limits (a re-keyed section shows its own
+  // floor/cap, so no reader can mistake the base number for the governing one).
+  const eff = effectiveThresholds({ [key]: a }).sections[key];
+  const limits = `floor ${eff.coverageFloor}${eff.coverageRekey ? "*" : ""}/cap ${eff.heuristicCap}${eff.heuristicRekey ? "*" : ""}`;
+  console.log(`  ${key.padEnd(22)} cov ${String(a.coverage + "%").padStart(6)}  off-book ${String(a.offBookPct + "%").padStart(6)}  heur ${a.heurPct == null ? "   —" : String(a.heurPct + "%").padStart(6)}  (meas ${a.measured}, skip ${a.skipped}, exc ${a.excused}×${GROUP_CHECKS_SUM})  ${limits}${eff.coverageRekey || eff.heuristicRekey ? " (R347 re-key: see summary.coverage.policy)" : ""}${flags.length ? "  " + flags.join(" ") : ""}`);
 }
 console.log(`OVERALL coverage ${results.summary.coverage.overall.coveragePct}%  ·  off-book ${results.summary.coverage.overall.offBookPct}%  ·  edge390 fails ${edge390Fails}${edge390Fails ? " — " + Object.entries(results.sectionEdges).filter(([, r]) => r.failLeft || r.failRight).map(([k, r]) => `${k}(L${r.failLeft ? "✗" : "✓"}/R${r.failRight ? "✗" : "✓"})`).join(" ") : ""}`);
 const topKinds = {};
@@ -1482,7 +1458,7 @@ console.log("results → " + OUT);
   const pad = (n) => String(n).padStart(2, "0");
   const stamp = `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}-${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}`;
   const provName = `${ENGINE}-${stamp}-${scopeName}.json`;
-  results.provenance = { file: provName, scope: scopeName, fullMatrix: FULL_SCOPE, sections: `${SECTIONS_WANTED.length}/${SECTIONS.length}`, bps: `${BPS_WANTED.length}/${BPS.length}`, engine: ENGINE, dark: DARK, gate: GATE, url: URL };
+  results.provenance = { file: provName, scope: scopeName, fullMatrix: FULL_SCOPE, sections: `${SECTIONS_WANTED.length}/${SECTIONS.length}`, bps: `${BPS_WANTED.length}/${BPS.length}`, engine: ENGINE, dark: DARK, gate: GATE, url: URL, profile: PROFILE };
   const blob = JSON.stringify(results, null, 1);
   writeFileSync(OUT, blob); // re-write with the provenance block included
   mkdirSync(join(__dirname, "results"), { recursive: true });
