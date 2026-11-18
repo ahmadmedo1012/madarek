@@ -14,6 +14,8 @@ Before implementation, make a reviewed decision on SSIM tooling and masks, expla
 
 ## Task 1 — Make the conformance contract truthful
 
+**Status:** DONE (r368 execution, `exec/r368-heron-fidelity`). Root cause: the gate was correct and its *disclosure* was not — the R347 per-section re-keys (intro 37, hero 11, platform 20, map 30; heuristic caps hero 80, platform 65) were applied by the code while `summary.coverage.thresholds` still printed the base 40/50, so the committed artifact read "intro 38.2 % < 40 % floor, gate: PASS". Fix: thresholds + reasons extracted to `scripts/conformance/gates.mjs` (pure), `summary.coverage.policy.effective` emits the limit actually applied per section with its written reason, console prints `floor 37*/cap 50` etc., and provenance now records git SHA, Node, browser build, Playwright version and DPR. Verification: `node --test scripts/conformance/gates.test.mjs` → 10/10 (one failing fixture per documented limit, incl. a review that may not lift the coverage floor); `node scripts/conformance/run.mjs --url http://localhost:5301 --gate` → full 10×5 matrix, `gate PASS`, 94.4 %, `gateFailures []`, reproducible twice. No floor, cap or ratchet was lowered.
+
 **Objective:** Resolve why the recorded report shows intro/map below the 40% coverage floor and platform heuristic share above the 50% cap while `gateFailures` is empty. Establish a supported runtime and fresh reproducible run.
 
 **Owned files:** Lead only: `scripts/conformance/run.mjs`, `scripts/conformance/pages.mjs`, `scripts/conformance/ratchet.json` only if the existing documented policy requires a monotonic update; focused tests under `scripts/conformance/` if needed; `docs/audit/evidence/manifest.json` for environment/run metadata. Never lower a floor or ratchet.

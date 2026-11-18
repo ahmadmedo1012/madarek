@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-18T00:24:32.932Z",
+ "generatedAt": "2026-11-18T10:28:49.166Z",
  "engine": "chromium",
- "url": "http://localhost:5173/",
- "specDir": "/home/z/madarek/docs/redesign/r335/heron-spec",
+ "url": "http://localhost:5301",
+ "specDir": "/home/rh2011/Projects/madarek/docs/redesign/r335/heron-spec",
  "summary": {
   "total": 69537,
   "pass": 65614,
@@ -20,9 +20,79 @@
   "coverage": {
    "formula": "coverage = measured / (measured + offBookEst); offBookEst = suppressedChecks + excusedElements × 12 (GROUP_CHECKS sum = checks per fully-measured element; conservative — the 5 unskippable per-element checks are not counted). Section cells only; scroll/interact extensions are not coverage-scored.",
    "thresholds": {
-    "coverageFloor": "40% measured (FAIL(coverage), no escape)",
+    "coverageFloor": "40% measured (FAIL(coverage), no escape) — see policy.effective for R347 per-section re-keys",
     "offBookCap": "70% (FAIL(off-book) unless reviewed in coverage-review.json with written reason + owner task)",
-    "heuristicShareCap": "50% of pairs (FAIL(heuristic))"
+    "heuristicShareCap": "50% of pairs (FAIL(heuristic)) — see policy.effective"
+   },
+   "policy": {
+    "base": {
+     "coverageFloor": 40,
+     "offBookCap": 70,
+     "heuristicCap": 50
+    },
+    "effective": {
+     "chrome": {
+      "coverageFloor": 40,
+      "heuristicCap": 50,
+      "coverageRekey": null,
+      "heuristicRekey": null
+     },
+     "footer": {
+      "coverageFloor": 40,
+      "heuristicCap": 50,
+      "coverageRekey": null,
+      "heuristicRekey": null
+     },
+     "home-cta-wrap": {
+      "coverageFloor": 40,
+      "heuristicCap": 50,
+      "coverageRekey": null,
+      "heuristicRekey": null
+     },
+     "home-hero-wrap": {
+      "coverageFloor": 11,
+      "heuristicCap": 80,
+      "coverageRekey": "R347 D4 — drafting-noise chrome and its 198 binding entries retired (ONE calm artwork)",
+      "heuristicRekey": "R347 D4 — explicit pool 208→10 pairs by the noise retirement; the stable ~39 heuristic-glued pairs exceed half by arithmetic, not by new glue"
+     },
+     "home-intro-wrap": {
+      "coverageFloor": 37,
+      "heuristicCap": 50,
+      "coverageRekey": "R347 D1 — ink-roll twins + A-I1 bindings deleted at the cause (visible double-print outranks the metric)",
+      "heuristicRekey": null
+     },
+     "home-map-wrap": {
+      "coverageFloor": 30,
+      "heuristicCap": 50,
+      "coverageRekey": "R347-Z — spec captured the reference map band mid-animation; the replaced stack has no honest counterpart (438 noHeuristic excusals)",
+      "heuristicRekey": null
+     },
+     "home-platform-wrap": {
+      "coverageFloor": 20,
+      "heuristicCap": 65,
+      "coverageRekey": "R347-Z D8 — marquee loop copies C/D/E deleted as banned conformance twins; 47 bindings became noCounterpart excusals",
+      "heuristicRekey": "R347-Z — explicit pool 160→113 pairs by the twin deletion; the stable wrapper-crossover mass exceeds half by arithmetic"
+     },
+     "home-problem-wrap": {
+      "coverageFloor": 40,
+      "heuristicCap": 50,
+      "coverageRekey": null,
+      "heuristicRekey": null
+     },
+     "home-usecase-wrap": {
+      "coverageFloor": 40,
+      "heuristicCap": 50,
+      "coverageRekey": null,
+      "heuristicRekey": null
+     },
+     "home-why-wrap": {
+      "coverageFloor": 40,
+      "heuristicCap": 50,
+      "coverageRekey": null,
+      "heuristicRekey": null
+     }
+    },
+    "note": "coverageFloor/heuristicCap are the EFFECTIVE per-section limits (R347 re-keys, each with its written reason in the same entry); base holds the un-re-keyed defaults. A report that prints base alone contradicts the gate."
    },
    "overall": {
     "measured": 69502,
@@ -149,7 +219,7 @@
   "skippedOmitted": 4403,
   "totalSkipped": 13976,
   "edge390": {
-   "fails": 0,
+   "fails": 1,
    "tolerance": "±2px vs the spec's recorded 390 section-root gutter",
    "note": "content edge = visible-content union (fully-inside descendants), root content box as fallback; spec gutter from the section root's x/w"
   }
@@ -273,8 +343,8 @@
    "1440": {
     "passRate": 90,
     "n": 1636,
-    "pass": 1473,
-    "fail": 163,
+    "pass": 1472,
+    "fail": 164,
     "exceptions": 24,
     "explicit": 0,
     "dataSpec": 121,
@@ -445,10 +515,10 @@
   },
   "home-intro-wrap": {
    "390": {
-    "passRate": 87.7,
+    "passRate": 87.6,
     "n": 1342,
-    "pass": 1177,
-    "fail": 165,
+    "pass": 1176,
+    "fail": 166,
     "exceptions": 3,
     "explicit": 0,
     "dataSpec": 115,
@@ -473,10 +543,10 @@
     "missing": null
    },
    "1024": {
-    "passRate": 97.5,
+    "passRate": 97.4,
     "n": 2123,
-    "pass": 2069,
-    "fail": 54,
+    "pass": 2067,
+    "fail": 56,
     "exceptions": 7,
     "explicit": 1,
     "dataSpec": 200,
@@ -489,8 +559,8 @@
    "1440": {
     "passRate": 98.3,
     "n": 2057,
-    "pass": 2022,
-    "fail": 35,
+    "pass": 2023,
+    "fail": 34,
     "exceptions": 7,
     "explicit": 0,
     "dataSpec": 196,
@@ -775,10 +845,10 @@
     "missing": null
    },
    "1440": {
-    "passRate": 92.9,
+    "passRate": 93,
     "n": 1907,
-    "pass": 1771,
-    "fail": 136,
+    "pass": 1774,
+    "fail": 133,
     "exceptions": 8,
     "explicit": 0,
     "dataSpec": 131,
@@ -877,6 +947,17 @@
   }
  },
  "failures": [
+  {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "kind": "edge390",
+   "heronPath": "(home-intro-wrap left gutter — spec section root x/w @390)",
+   "oursSelector": "div#statement.st-section",
+   "mode": "page",
+   "expected": "left gutter 8px (±2px)",
+   "actual": "5.3px (Δ-2.7px; visible-content-union)",
+   "delta": -2.7
+  },
   {
    "section": "home-usecase-wrap",
    "bp": "1920",
@@ -1465,8 +1546,8 @@
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": -830,
-   "actual": 344,
-   "delta": 1174
+   "actual": 345,
+   "delta": 1175
   },
   {
    "section": "home-why-wrap",
@@ -2116,17 +2197,6 @@
    "delta": 715
   },
   {
-   "section": "home-usecase-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[4]",
-   "oursSelector": "#ds:roles.rowrule2.8",
-   "mode": "data-spec",
-   "expected": 713,
-   "actual": 0,
-   "delta": 713
-  },
-  {
    "section": "home-cta-wrap",
    "bp": "390",
    "kind": "y",
@@ -2632,6 +2702,17 @@
    "delta": 636
   },
   {
+   "section": "home-intro-wrap",
+   "bp": "1024",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+   "oursSelector": "#ds:intro.dupcard.5",
+   "mode": "data-spec",
+   "expected": 57,
+   "actual": 693,
+   "delta": 636
+  },
+  {
    "section": "home-why-wrap",
    "bp": "1024",
    "kind": "y",
@@ -2641,17 +2722,6 @@
    "expected": -264,
    "actual": 372,
    "delta": 636
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1024",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-   "oursSelector": "#ds:intro.dupcard.5",
-   "mode": "data-spec",
-   "expected": 57,
-   "actual": 683,
-   "delta": 626
   },
   {
    "section": "home-cta-wrap",
@@ -2840,17 +2910,6 @@
    "delta": 576
   },
   {
-   "section": "footer",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[3] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1219,
-   "actual": 649,
-   "delta": 570
-  },
-  {
    "section": "home-cta-wrap",
    "bp": "1920",
    "kind": "y",
@@ -2937,6 +2996,17 @@
    "expected": 40,
    "actual": 597,
    "delta": 557.5
+  },
+  {
+   "section": "footer",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1219,
+   "actual": 662,
+   "delta": 557
   },
   {
    "section": "home-cta-wrap",
@@ -3573,6 +3643,17 @@
    "delta": 464
   },
   {
+   "section": "footer",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "oursSelector": "#ds:footer.bgroup.2",
+   "mode": "data-spec",
+   "expected": 151,
+   "actual": 615,
+   "delta": 464
+  },
+  {
    "section": "home-usecase-wrap",
    "bp": "1440",
    "kind": "h",
@@ -3659,17 +3740,6 @@
    "expected": 0,
    "actual": 453,
    "delta": 453
-  },
-  {
-   "section": "footer",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
-   "oursSelector": "#ds:footer.bgroup.2",
-   "mode": "data-spec",
-   "expected": 151,
-   "actual": 603,
-   "delta": 452
   },
   {
    "section": "home-problem-wrap",
@@ -3804,15 +3874,15 @@
    "delta": 434
   },
   {
-   "section": "home-usecase-wrap",
-   "bp": "1920",
+   "section": "home-intro-wrap",
+   "bp": "1024",
    "kind": "x-mirror",
-   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 969,
-   "actual": 537,
-   "delta": 432.5
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#ds:intro.dupcard.4",
+   "mode": "data-spec",
+   "expected": 57,
+   "actual": 490,
+   "delta": 433
   },
   {
    "section": "footer",
@@ -3822,8 +3892,19 @@
    "oursSelector": "#ds:footer.bgroup.2",
    "mode": "data-spec",
    "expected": 70,
-   "actual": 502,
-   "delta": 432
+   "actual": 503,
+   "delta": 433
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 969,
+   "actual": 537,
+   "delta": 432.5
   },
   {
    "section": "home-cta-wrap",
@@ -3846,17 +3927,6 @@
    "expected": 655,
    "actual": 231,
    "delta": 424
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "1024",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#ds:intro.dupcard.4",
-   "mode": "data-spec",
-   "expected": 57,
-   "actual": 480,
-   "delta": 423
   },
   {
    "section": "home-why-wrap",
@@ -4730,17 +4800,6 @@
   {
    "section": "home-intro-wrap",
    "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#ds:intro.dupcard.2",
-   "mode": "data-spec",
-   "expected": 455,
-   "actual": 101,
-   "delta": 354
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "390",
    "kind": "w",
    "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]",
    "oursSelector": "#hm:svg.none",
@@ -4770,6 +4829,17 @@
    "expected": 374,
    "actual": 20,
    "delta": 354
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#ds:intro.dupcard.2",
+   "mode": "data-spec",
+   "expected": 455,
+   "actual": 102,
+   "delta": 353
   },
   {
    "section": "home-why-wrap",
@@ -4847,17 +4917,6 @@
    "expected": 0,
    "actual": 350,
    "delta": 350
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[4]",
-   "oursSelector": "#ds:roles.rowrule2.8",
-   "mode": "data-spec",
-   "expected": 350,
-   "actual": 0,
-   "delta": 349.5
   },
   {
    "section": "home-intro-wrap",
@@ -6412,6 +6471,17 @@
   },
   {
    "section": "footer",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 282,
+   "delta": 282
+  },
+  {
+   "section": "footer",
    "bp": "1024",
    "kind": "y",
    "heronPath": "footer > footer[1] > div[1] > div[1] > div[3] > div[3]",
@@ -6576,17 +6646,6 @@
    "delta": 273
   },
   {
-   "section": "footer",
-   "bp": "1440",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[1] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": 271,
-   "delta": 271
-  },
-  {
    "section": "home-hero-wrap",
    "bp": "1024",
    "kind": "y",
@@ -6606,17 +6665,6 @@
    "mode": "heuristic",
    "expected": 363,
    "actual": 632,
-   "delta": 269
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "768",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[4] > div[1] > img[1]",
-   "oursSelector": "#ds:intro.dupcard.5",
-   "mode": "data-spec",
-   "expected": 109,
-   "actual": 378,
    "delta": 269
   },
   {
@@ -6705,6 +6753,17 @@
    "mode": "data-spec",
    "expected": 1017,
    "actual": 749,
+   "delta": 268
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[4] > div[1] > img[1]",
+   "oursSelector": "#ds:intro.dupcard.5",
+   "mode": "data-spec",
+   "expected": 109,
+   "actual": 377,
    "delta": 268
   },
   {
@@ -6851,17 +6910,6 @@
    "delta": 261.5
   },
   {
-   "section": "footer",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "footer > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
-   "oursSelector": "#hm:div.short",
-   "mode": "heuristic",
-   "expected": 581,
-   "actual": 320,
-   "delta": 261
-  },
-  {
    "section": "home-problem-wrap",
    "bp": "1024",
    "kind": "x-mirror",
@@ -6871,6 +6919,17 @@
    "expected": 386,
    "actual": 125,
    "delta": 260.5
+  },
+  {
+   "section": "footer",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "footer > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "oursSelector": "#hm:div.short",
+   "mode": "heuristic",
+   "expected": 581,
+   "actual": 321,
+   "delta": 260
   },
   {
    "section": "footer",
@@ -7851,6 +7910,17 @@
    "delta": 211
   },
   {
+   "section": "footer",
+   "bp": "768",
+   "kind": "y",
+   "heronPath": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > form[1]",
+   "oursSelector": "#hm:form.none",
+   "mode": "heuristic",
+   "expected": 70,
+   "actual": 281,
+   "delta": 211
+  },
+  {
    "section": "chrome",
    "bp": "390",
    "kind": "h",
@@ -7860,17 +7930,6 @@
    "expected": 211,
    "actual": 0,
    "delta": 211
-  },
-  {
-   "section": "footer",
-   "bp": "768",
-   "kind": "y",
-   "heronPath": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > form[1]",
-   "oursSelector": "#hm:form.none",
-   "mode": "heuristic",
-   "expected": 70,
-   "actual": 280,
-   "delta": 210
   },
   {
    "section": "home-why-wrap",
@@ -7926,6 +7985,17 @@
    "expected": 131,
    "actual": 338,
    "delta": 207
+  },
+  {
+   "section": "footer",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[1]",
+   "oursSelector": "#ds:footer.social.1",
+   "mode": "data-spec",
+   "expected": 345,
+   "actual": 551,
+   "delta": 206
   },
   {
    "section": "footer",
@@ -8742,17 +8812,6 @@
    "delta": 194.5
   },
   {
-   "section": "footer",
-   "bp": "1920",
-   "kind": "y",
-   "heronPath": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[1]",
-   "oursSelector": "#ds:footer.social.1",
-   "mode": "data-spec",
-   "expected": 345,
-   "actual": 539,
-   "delta": 194
-  },
-  {
    "section": "home-cta-wrap",
    "bp": "1440",
    "kind": "w",
@@ -8783,17 +8842,6 @@
    "mode": "heuristic",
    "expected": 193,
    "actual": 0,
-   "delta": 193
-  },
-  {
-   "section": "footer",
-   "bp": "390",
-   "kind": "y",
-   "heronPath": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
-   "oursSelector": "#ds:footer.bgroup.1",
-   "mode": "data-spec",
-   "expected": 705,
-   "actual": 512,
    "delta": 193
   },
   {
@@ -8864,6 +8912,17 @@
   },
   {
    "section": "footer",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 190,
+   "delta": 190
+  },
+  {
+   "section": "footer",
    "bp": "1440",
    "kind": "h",
    "heronPath": "footer > footer[1] > div[1] > div[1] > div[1]",
@@ -8894,17 +8953,6 @@
    "expected": 355,
    "actual": 545,
    "delta": 190
-  },
-  {
-   "section": "footer",
-   "bp": "1920",
-   "kind": "y",
-   "heronPath": "footer > footer[1] > div[1] > div[1] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": 189,
-   "delta": 189
   },
   {
    "section": "footer",
@@ -9037,6 +9085,17 @@
    "delta": 183
   },
   {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:intro.cell.1",
+   "mode": "data-spec",
+   "expected": 440,
+   "actual": 622,
+   "delta": 182
+  },
+  {
    "section": "home-cta-wrap",
    "bp": "390",
    "kind": "x-mirror",
@@ -9051,11 +9110,22 @@
    "section": "home-intro-wrap",
    "bp": "768",
    "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:intro.cell.1",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+   "oursSelector": "#ds:intro.dupcard.1",
    "mode": "data-spec",
-   "expected": 440,
-   "actual": 621,
+   "expected": 330,
+   "actual": 511,
+   "delta": 181
+  },
+  {
+   "section": "footer",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "oursSelector": "#ds:footer.bgroup.1",
+   "mode": "data-spec",
+   "expected": 705,
+   "actual": 524,
    "delta": 181
   },
   {
@@ -9067,17 +9137,6 @@
    "mode": "heuristic",
    "expected": 0,
    "actual": 180,
-   "delta": 180
-  },
-  {
-   "section": "home-intro-wrap",
-   "bp": "768",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
-   "oursSelector": "#ds:intro.dupcard.1",
-   "mode": "data-spec",
-   "expected": 330,
-   "actual": 510,
    "delta": 180
   },
   {
@@ -9223,6 +9282,28 @@
    "delta": 172
   },
   {
+   "section": "footer",
+   "bp": "768",
+   "kind": "y",
+   "heronPath": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > input[1]",
+   "oursSelector": "#hm:input.none",
+   "mode": "heuristic",
+   "expected": 173,
+   "actual": 345,
+   "delta": 172
+  },
+  {
+   "section": "footer",
+   "bp": "768",
+   "kind": "y",
+   "heronPath": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > button[2]",
+   "oursSelector": "#hm:button.none",
+   "mode": "heuristic",
+   "expected": 173,
+   "actual": 345,
+   "delta": 172
+  },
+  {
    "section": "home-problem-wrap",
    "bp": "768",
    "kind": "x-mirror",
@@ -9253,28 +9334,6 @@
    "mode": "heuristic",
    "expected": 1,
    "actual": 172,
-   "delta": 171
-  },
-  {
-   "section": "footer",
-   "bp": "768",
-   "kind": "y",
-   "heronPath": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > input[1]",
-   "oursSelector": "#hm:input.none",
-   "mode": "heuristic",
-   "expected": 173,
-   "actual": 344,
-   "delta": 171
-  },
-  {
-   "section": "footer",
-   "bp": "768",
-   "kind": "y",
-   "heronPath": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > button[2]",
-   "oursSelector": "#hm:button.none",
-   "mode": "heuristic",
-   "expected": 173,
-   "actual": 344,
    "delta": 171
   },
   {
@@ -9657,6 +9716,17 @@
    "kind": "y",
    "heronPath": "footer > footer[1] > div[1] > div[3]",
    "oursSelector": "#ds:footer.legal",
+   "mode": "data-spec",
+   "expected": 476,
+   "actual": 635,
+   "delta": 159
+  },
+  {
+   "section": "footer",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "footer > footer[1] > div[1] > div[3] > div[1]",
+   "oursSelector": "#ds:footer.legall",
    "mode": "data-spec",
    "expected": 476,
    "actual": 635,
@@ -13786,7 +13856,7 @@
   "home-intro-wrap": {
    "specLeft": 8,
    "specRight": 8,
-   "ourLeft": 6.2,
+   "ourLeft": 5.3,
    "ourRight": 8,
    "rootContentBox": {
     "l": 8,
@@ -13797,7 +13867,7 @@
     "w": 374
    },
    "via": "visible-content-union",
-   "failLeft": false,
+   "failLeft": true,
    "failRight": false
   },
   "home-map-wrap": {
@@ -14036,15 +14106,10 @@
    }
   },
   "hClip": {
-   "home-hero-wrap@390": {
-    "bp": "390",
-    "found": 2,
-    "excluded": 2
-   },
    "home-intro-wrap@390": {
     "bp": "390",
-    "found": 2,
-    "excluded": 2
+    "found": 4,
+    "excluded": 4
    },
    "home-problem-wrap@390": {
     "bp": "390",
@@ -14062,6 +14127,11 @@
     "excluded": 0
    },
    "home-cta-wrap@390": {
+    "bp": "390",
+    "found": 0,
+    "excluded": 0
+   },
+   "home-hero-wrap@390": {
     "bp": "390",
     "found": 0,
     "excluded": 0
@@ -14193,9 +14263,9 @@
       "visible": true,
       "rect": {
        "l": 8,
-       "t": 8060,
+       "t": 8120,
        "r": 382,
-       "b": 8153
+       "b": 8213
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14205,9 +14275,9 @@
       "visible": true,
       "rect": {
        "l": 8,
-       "t": 1385,
+       "t": 1505,
        "r": 382,
-       "b": 1478
+       "b": 1598
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14238,9 +14308,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 8683,
+       "t": 8725,
        "r": 761,
-       "b": 8740
+       "b": 8782
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14250,9 +14320,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 1160,
+       "t": 1245,
        "r": 761,
-       "b": 1217
+       "b": 1302
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14283,9 +14353,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 9392,
+       "t": 9433,
        "r": 1433,
-       "b": 9446
+       "b": 9487
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14295,9 +14365,9 @@
       "visible": true,
       "rect": {
        "l": 7,
-       "t": 1509,
+       "t": 1591,
        "r": 1433,
-       "b": 1563
+       "b": 1645
       },
       "footerOverlap": false,
       "ctaOverlap": false
@@ -14332,7 +14402,7 @@
   "skipped": []
  },
  "provenance": {
-  "file": "chromium-20261118-002709-full.json",
+  "file": "chromium-20261118-103109-full.json",
   "scope": "full",
   "fullMatrix": true,
   "sections": "10/10",
@@ -14340,6 +14410,16 @@
   "engine": "chromium",
   "dark": false,
   "gate": true,
-  "url": "http://localhost:5173/"
+  "url": "http://localhost:5301",
+  "profile": {
+   "node": "v22.22.1",
+   "sha": "84e0a0dd5d39503ef43b2d2be672153553e951bf",
+   "dirtyTree": true,
+   "browser": "chromium 156.0.8078.4",
+   "playwright": "1.60.0",
+   "dpr": 1,
+   "viewportModel": "1920=1920x1080,1440=1440x900,1024=1024x768,768=768x900,390=390x844",
+   "platform": "linux/x64"
+  }
  }
 }
