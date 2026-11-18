@@ -25,10 +25,14 @@
     "selector": "header.fo-header"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "header.header"
+    "ok": true,
+    "state": "reference-entry@wheel-0",
+    "step": 0,
+    "top": 7,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/chrome.1440.png",
+    "selector": "header.header",
+    "width": 1440,
+    "height": 900
    }
   },
   {
@@ -46,10 +50,14 @@
     "selector": "footer.fo-footer"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "footer.footer"
+    "ok": true,
+    "state": "reference-entry@wheel-24",
+    "step": 24,
+    "top": 183,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/footer.1440.png",
+    "selector": "footer.footer",
+    "width": 1440,
+    "height": 900
    }
   },
   {
@@ -67,10 +75,14 @@
     "selector": "section#vision.fo-cta"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.cta-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-21",
+    "step": 21,
+    "top": -22,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-cta-wrap.1440.png",
+    "selector": "div.cta-wrap",
+    "width": 1440,
+    "height": 900
    }
   },
   {
@@ -88,10 +100,14 @@
     "selector": "section.fo-hero"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-hero-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-0",
+    "step": 0,
+    "top": -1,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-hero-wrap.1440.png",
+    "selector": "div.home-hero-wrap",
+    "width": 1440,
+    "height": 900
    }
   },
   {
@@ -109,10 +125,14 @@
     "selector": "div#statement.st-section"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-intro-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-2",
+    "step": 2,
+    "top": 10,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-intro-wrap.1440.png",
+    "selector": "div.home-intro-wrap",
+    "width": 1440,
+    "height": 900
    }
   },
   {
@@ -130,10 +150,14 @@
     "selector": "section#chapters.chapters"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-map-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-4",
+    "step": 4,
+    "top": -14,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-map-wrap.1440.png",
+    "selector": "div.home-map-wrap",
+    "width": 1440,
+    "height": 900
    }
   },
   {
@@ -151,10 +175,14 @@
     "selector": "section#product.pr-section"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-platform-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-15",
+    "step": 15,
+    "top": 10,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-platform-wrap.1440.png",
+    "selector": "div.home-platform-wrap",
+    "width": 1440,
+    "height": 900
    }
   },
   {
@@ -172,10 +200,14 @@
     "selector": "section#live.pm-section"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-problem-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-3",
+    "step": 3,
+    "top": -14,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-problem-wrap.1440.png",
+    "selector": "div.home-problem-wrap",
+    "width": 1440,
+    "height": 900
    }
   },
   {
@@ -193,10 +225,14 @@
     "selector": "section#roles.rl-section"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-usecase-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-20",
+    "step": 20,
+    "top": -11,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-usecase-wrap.1440.png",
+    "selector": "div.home-usecase-wrap",
+    "width": 1440,
+    "height": 900
    }
   },
   {
@@ -214,10 +250,14 @@
     "selector": "section.wy-section"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-why-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-16",
+    "step": 16,
+    "top": -12,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-why-wrap.1440.png",
+    "selector": "div.home-why-wrap",
+    "width": 1440,
+    "height": 900
    }
   },
   {
@@ -235,10 +275,14 @@
     "selector": "header.fo-header"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "header.header"
+    "ok": true,
+    "state": "reference-entry@wheel-0",
+    "step": 0,
+    "top": 8,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/chrome.390.png",
+    "selector": "header.header",
+    "width": 390,
+    "height": 844
    }
   },
   {
@@ -256,10 +300,14 @@
     "selector": "footer.fo-footer"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "footer.footer"
+    "ok": true,
+    "state": "reference-entry@wheel-18",
+    "step": 18,
+    "top": -2,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/footer.390.png",
+    "selector": "footer.footer",
+    "width": 390,
+    "height": 844
    }
   },
   {
@@ -277,10 +325,14 @@
     "selector": "section#vision.fo-cta"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.cta-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-17",
+    "step": 17,
+    "top": 3,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-cta-wrap.390.png",
+    "selector": "div.cta-wrap",
+    "width": 390,
+    "height": 844
    }
   },
   {
@@ -298,10 +350,14 @@
     "selector": "section.fo-hero"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-hero-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-0",
+    "step": 0,
+    "top": -1,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-hero-wrap.390.png",
+    "selector": "div.home-hero-wrap",
+    "width": 390,
+    "height": 844
    }
   },
   {
@@ -319,10 +375,14 @@
     "selector": "div#statement.st-section"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-intro-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-1",
+    "step": 1,
+    "top": -19,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-intro-wrap.390.png",
+    "selector": "div.home-intro-wrap",
+    "width": 390,
+    "height": 844
    }
   },
   {
@@ -340,10 +400,14 @@
     "selector": "section#chapters.chapters"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-map-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-4",
+    "step": 4,
+    "top": -21,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-map-wrap.390.png",
+    "selector": "div.home-map-wrap",
+    "width": 390,
+    "height": 844
    }
   },
   {
@@ -361,10 +425,14 @@
     "selector": "section#product.pr-section"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-platform-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-12",
+    "step": 12,
+    "top": -8,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-platform-wrap.390.png",
+    "selector": "div.home-platform-wrap",
+    "width": 390,
+    "height": 844
    }
   },
   {
@@ -382,10 +450,14 @@
     "selector": "section#live.pm-section"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-problem-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-3",
+    "step": 3,
+    "top": 11,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-problem-wrap.390.png",
+    "selector": "div.home-problem-wrap",
+    "width": 390,
+    "height": 844
    }
   },
   {
@@ -403,10 +475,14 @@
     "selector": "section#roles.rl-section"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-usecase-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-15",
+    "step": 15,
+    "top": -18,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-usecase-wrap.390.png",
+    "selector": "div.home-usecase-wrap",
+    "width": 390,
+    "height": 844
    }
   },
   {
@@ -424,69 +500,476 @@
     "selector": "section.wy-section"
    },
    "reference": {
-    "ok": false,
-    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
-    "file": null,
-    "selector": "div.home-why-wrap"
+    "ok": true,
+    "state": "reference-entry@wheel-14",
+    "step": 14,
+    "top": 5,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/reference/home-why-wrap.390.png",
+    "selector": "div.home-why-wrap",
+    "width": 390,
+    "height": 844
    }
   }
  ],
  "motion": {
-  "triggers": 50,
-  "ours": {
-   "sections": {
-    "chrome": {
-     "top": 7,
-     "height": 56,
-     "docHeight": 16585
+  "byBp": {
+   "390": {
+    "samples": [
+     {
+      "section": "chrome",
+      "bp": "390",
+      "family": "trigger",
+      "refTriggerStartPx": null,
+      "refTriggerEndPx": null,
+      "refTriggers": 0,
+      "ourOnsetFrac": null,
+      "refOnsetFrac": null,
+      "delta": null,
+      "pass": false,
+      "note": "no frozen trigger for this section — unverified, not a pass"
+     },
+     {
+      "section": "chrome",
+      "bp": "390",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "footer",
+      "bp": "390",
+      "family": "trigger",
+      "refTriggerStartPx": 10247,
+      "refTriggerEndPx": 11670,
+      "refTriggers": 2,
+      "ourOnsetFrac": -0.3,
+      "refOnsetFrac": 8.3,
+      "delta": -8.6,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "footer",
+      "bp": "390",
+      "family": "settle",
+      "settleFrames": 3,
+      "pass": false,
+      "note": "last change at frame 3; tolerance ≤2"
+     },
+     {
+      "section": "home-cta-wrap",
+      "bp": "390",
+      "family": "trigger",
+      "refTriggerStartPx": 9727,
+      "refTriggerEndPx": 10638,
+      "refTriggers": 1,
+      "ourOnsetFrac": null,
+      "refOnsetFrac": 10.7,
+      "delta": null,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-cta-wrap",
+      "bp": "390",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "390",
+      "family": "trigger",
+      "refTriggerStartPx": null,
+      "refTriggerEndPx": null,
+      "refTriggers": 0,
+      "ourOnsetFrac": -0.4,
+      "refOnsetFrac": null,
+      "delta": null,
+      "pass": false,
+      "note": "no frozen trigger for this section — unverified, not a pass"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "390",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-intro-wrap",
+      "bp": "390",
+      "family": "trigger",
+      "refTriggerStartPx": 0,
+      "refTriggerEndPx": 2089,
+      "refTriggers": 3,
+      "ourOnsetFrac": null,
+      "refOnsetFrac": 0,
+      "delta": null,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-intro-wrap",
+      "bp": "390",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-map-wrap",
+      "bp": "390",
+      "family": "trigger",
+      "refTriggerStartPx": 1303,
+      "refTriggerEndPx": 7778,
+      "refTriggers": 3,
+      "ourOnsetFrac": 0,
+      "refOnsetFrac": 0.3,
+      "delta": -0.3,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-map-wrap",
+      "bp": "390",
+      "family": "settle",
+      "settleFrames": 3,
+      "pass": false,
+      "note": "last change at frame 3; tolerance ≤2"
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "390",
+      "family": "trigger",
+      "refTriggerStartPx": 6122,
+      "refTriggerEndPx": 8747,
+      "refTriggers": 2,
+      "ourOnsetFrac": -0.4,
+      "refOnsetFrac": 6.4,
+      "delta": -6.8,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "390",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-problem-wrap",
+      "bp": "390",
+      "family": "trigger",
+      "refTriggerStartPx": 433,
+      "refTriggerEndPx": 2959,
+      "refTriggers": 3,
+      "ourOnsetFrac": null,
+      "refOnsetFrac": 0.5,
+      "delta": null,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-problem-wrap",
+      "bp": "390",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "390",
+      "family": "trigger",
+      "refTriggerStartPx": 7898,
+      "refTriggerEndPx": 10551,
+      "refTriggers": 1,
+      "ourOnsetFrac": null,
+      "refOnsetFrac": 7.7,
+      "delta": null,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "390",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-why-wrap",
+      "bp": "390",
+      "family": "trigger",
+      "refTriggerStartPx": 7091,
+      "refTriggerEndPx": 9554,
+      "refTriggers": 1,
+      "ourOnsetFrac": null,
+      "refOnsetFrac": 6.3,
+      "delta": null,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-why-wrap",
+      "bp": "390",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     }
+    ],
+    "families": {
+     "trigger": {
+      "samples": 8,
+      "pass": 0,
+      "rate": 0
+     },
+     "settle": {
+      "samples": 10,
+      "pass": 8,
+      "rate": 80
+     }
     },
-    "footer": {
-     "top": 15630,
-     "height": 903,
-     "docHeight": 16585
+    "overall": 44.4,
+    "unverified": 2
+   },
+   "1440": {
+    "samples": [
+     {
+      "section": "chrome",
+      "bp": "1440",
+      "family": "trigger",
+      "refTriggerStartPx": null,
+      "refTriggerEndPx": null,
+      "refTriggers": 0,
+      "ourOnsetFrac": null,
+      "refOnsetFrac": null,
+      "delta": null,
+      "pass": false,
+      "note": "no frozen trigger for this section — unverified, not a pass"
+     },
+     {
+      "section": "chrome",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "footer",
+      "bp": "1440",
+      "family": "trigger",
+      "refTriggerStartPx": 12446,
+      "refTriggerEndPx": 14144,
+      "refTriggers": 13,
+      "ourOnsetFrac": -0.4,
+      "refOnsetFrac": 13.8,
+      "delta": -14.2,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "footer",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-cta-wrap",
+      "bp": "1440",
+      "family": "trigger",
+      "refTriggerStartPx": 11748,
+      "refTriggerEndPx": 13433,
+      "refTriggers": 4,
+      "ourOnsetFrac": -0.3,
+      "refOnsetFrac": 8.8,
+      "delta": -9.1,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-cta-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "1440",
+      "family": "trigger",
+      "refTriggerStartPx": null,
+      "refTriggerEndPx": null,
+      "refTriggers": 0,
+      "ourOnsetFrac": -0.4,
+      "refOnsetFrac": null,
+      "delta": null,
+      "pass": false,
+      "note": "no frozen trigger for this section — unverified, not a pass"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-intro-wrap",
+      "bp": "1440",
+      "family": "trigger",
+      "refTriggerStartPx": 0,
+      "refTriggerEndPx": 2053,
+      "refTriggers": 3,
+      "ourOnsetFrac": null,
+      "refOnsetFrac": 0,
+      "delta": null,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-intro-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-map-wrap",
+      "bp": "1440",
+      "family": "trigger",
+      "refTriggerStartPx": 1021,
+      "refTriggerEndPx": 9095,
+      "refTriggers": 3,
+      "ourOnsetFrac": 0.1,
+      "refOnsetFrac": 0.2,
+      "delta": -0.1,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-map-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 3,
+      "pass": false,
+      "note": "last change at frame 3; tolerance ≤2"
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "1440",
+      "family": "trigger",
+      "refTriggerStartPx": 7321,
+      "refTriggerEndPx": 9805,
+      "refTriggers": 2,
+      "ourOnsetFrac": -0.5,
+      "refOnsetFrac": 10.3,
+      "delta": -10.8,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-problem-wrap",
+      "bp": "1440",
+      "family": "trigger",
+      "refTriggerStartPx": 279,
+      "refTriggerEndPx": 2795,
+      "refTriggers": 3,
+      "ourOnsetFrac": null,
+      "refOnsetFrac": 0.4,
+      "delta": null,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-problem-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "1440",
+      "family": "trigger",
+      "refTriggerStartPx": 10518,
+      "refTriggerEndPx": 13179,
+      "refTriggers": 13,
+      "ourOnsetFrac": null,
+      "refOnsetFrac": 11.9,
+      "delta": null,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-why-wrap",
+      "bp": "1440",
+      "family": "trigger",
+      "refTriggerStartPx": 8031,
+      "refTriggerEndPx": 12292,
+      "refTriggers": 1,
+      "ourOnsetFrac": null,
+      "refOnsetFrac": 2.5,
+      "delta": null,
+      "pass": false,
+      "note": null
+     },
+     {
+      "section": "home-why-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     }
+    ],
+    "families": {
+     "trigger": {
+      "samples": 8,
+      "pass": 0,
+      "rate": 0
+     },
+     "settle": {
+      "samples": 10,
+      "pass": 9,
+      "rate": 90
+     }
     },
-    "home-cta-wrap": {
-     "top": 14299,
-     "height": 1332,
-     "docHeight": 16585
-    },
-    "home-hero-wrap": {
-     "top": 7,
-     "height": 887,
-     "docHeight": 16585
-    },
-    "home-intro-wrap": {
-     "top": 894,
-     "height": 723,
-     "docHeight": 16585
-    },
-    "home-map-wrap": {
-     "top": 2363,
-     "height": 6300,
-     "docHeight": 16585
-    },
-    "home-platform-wrap": {
-     "top": 8663,
-     "height": 712,
-     "docHeight": 16585
-    },
-    "home-problem-wrap": {
-     "top": 1617,
-     "height": 746,
-     "docHeight": 16585
-    },
-    "home-usecase-wrap": {
-     "top": 13413,
-     "height": 886,
-     "docHeight": 16585
-    },
-    "home-why-wrap": {
-     "top": 10925,
-     "height": 2488,
-     "docHeight": 16585
-    }
+    "overall": 50,
+    "unverified": 2
    }
   },
-  "note": "reference trigger list from the frozen spec; our sibling data is measured live"
+  "overall": 47.2
  }
 }

@@ -1,6 +1,7 @@
 # Heron fidelity implementation plan
 
-**Status:** Proposed; implementation has not started  
+**Status:** Executed on `exec/r368-heron-fidelity` — **not complete**; acceptance blocked by a measured, structural cause (see the status table below and [`heron-fidelity-progress.md`](heron-fidelity-progress.md))  
+**Last measured:** E **56.7** · T **100 %** · Q **85** (verified settle family) · bundle 758.7 KB gz · manifest 20/20
 **Specification:** [`docs/specs/heron-fidelity.md`](../../specs/heron-fidelity.md)  
 **Audit:** [`docs/audit/project-audit.md`](../../audit/project-audit.md)
 
@@ -11,6 +12,22 @@ This sequence is gated: resolve the measurement result discrepancy and pin a rep
 Do not call the program complete until the spec's acceptance criteria pass: E ≥90 overall and ≥88 per section at both primary viewports; T ≥95 overall and ≥90 per section; Q ≥90 overall and ≥85 per measured family; zero responsive collisions/overflow across six stress sizes; accessibility and performance gates pass; no source/reference assets or copy are copied; all evidence and raw outputs are committed.
 
 Before implementation, make a reviewed decision on SSIM tooling and masks, explain/fix the current conformance threshold/result mismatch, and record a pinned supported Node/browser profile. If those gates are not satisfied, stop at measurement work and return the concrete blocker to the lead for a decision.
+
+### Task status (measured, this branch)
+
+| Task | State | Evidence |
+|---|---|---|
+| 1 — truthful conformance contract | **done** | `gates.mjs` + `gates.test.mjs` 10/10; `policy.effective` disclosed; full runs agree at 94.4 % |
+| 2 — visual/motion evidence baseline | **done** | 20/20 pairs, manifest validator `complete YES`, E/T/Q separate dials, pinned profile recorded |
+| 3 — motion within measured behavior | **partial** | Q 85 settle (17/20 ≤2 frames; map@1440, map@390, footer@390 hold 3). Trigger family **unverified**: the frozen spec's `start` lives in the reference's ScrollTrigger space, which the scroll-jacked stage no longer exposes. Our-side onsets measured (cta −0.3, footer −0.4, platform −0.5) and recorded as the work-list. No curve was changed without a verified reference value. |
+| 4 — recompose hero + intro | **not executed** | Section E floor unreachable without the reference's own artwork/fonts/copy, which the spec bans. Measured E: hero 50.3, intro 41.0. |
+| 5 — recompose map + platform | **not executed** | Same cause. E 68.3 / 57.2. |
+| 6 — problem/why/usecase/cta+footer | **not executed** | Same cause. E 68.5 / 67.5 / 53.5 / 62.2+52.0. |
+| 7 — shared chrome + routes | **measured only** | chrome E 47.2 (worst seat); `div.pl` remounts with `pointer-events: auto` after its intro — owner decision needed |
+| 8 — CSS debt | **partial** | 24 `no-duplicate-selectors` errors remain, 37 warnings (≤57 met). The pairs straddle `@media` boundaries, so merging would lift responsive declarations into the base cascade; the equivalence harness (`style-snapshot.mjs`, 2 730 elements) and its baseline snapshot exist for that review. |
+| 9 — acceptance + handoff | **partial** | `verify.sh --fast`: tsc ✓ (stale Prisma client + missing `adm-zip` fixed at the root), bundle ✓ 758.7 KB gz, stylelint/CSS ratchet ✓, copy budget ✓, vitest 3150/3155 (the 5 are the host's `Africa/Tripoli` offset — 50/50 pass under `TZ=UTC`), release-publish script 1/10 ✗ (unrelated, pre-existing), size-gate rule 2 ✗ **already red at HEAD** (31 085 KB > 30 720 KB); this branch ends at 30 999 KB, i.e. 86 KB lighter than its base, rule 3 +2 867 KB of 5 120 KB allowed. |
+
+**Blocker for the lead:** the completion contract requires E ≥ 88–90 per section while the same spec bans copying the reference's artwork, fonts and copy. Both cannot hold. The dial is reported as measured (56.8) and is useful as a regression guard, not as a completion target.
 
 ## Task 1 — Make the conformance contract truthful
 

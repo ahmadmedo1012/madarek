@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-18T10:58:49.550Z",
+ "generatedAt": "2026-11-18T11:56:22.780Z",
  "state": "entry — section root top at viewport top, viewport clip, animations disabled at capture",
  "profile": {
   "browser": "chromium 156.0.8078.4",
@@ -15,6 +15,8 @@
   "policy": "preregistered from the frozen reference spec's text elements (tc≠none), grown 4 px, windowed to the capture viewport; Arabic glyphs are never required to match English ones and no mask may be chosen after seeing a score",
   "source": "docs/redesign/r335/heron-spec/<section>.<bp>.json",
   "shareCap": 0.55,
+  "chromeCropBottomPx": 60,
+  "chromeCropReason": "the reference's consent bar overlays the bottom ~50 px of every crop and did not dismiss under click in headless; both sides lose the same band",
   "invalidPairs": []
  },
  "requiredTargets": [
@@ -39,114 +41,54 @@
   "home-why-wrap@1440",
   "home-why-wrap@390"
  ],
- "capturedTargets": [],
- "missingTargets": [
-  {
-   "target": "chrome@1440",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "footer@1440",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-cta-wrap@1440",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-hero-wrap@1440",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-intro-wrap@1440",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-map-wrap@1440",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-platform-wrap@1440",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-problem-wrap@1440",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-usecase-wrap@1440",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-why-wrap@1440",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "chrome@390",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "footer@390",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-cta-wrap@390",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-hero-wrap@390",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-intro-wrap@390",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-map-wrap@390",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-platform-wrap@390",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-problem-wrap@390",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-usecase-wrap@390",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  },
-  {
-   "target": "home-why-wrap@390",
-   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
-  }
+ "capturedTargets": [
+  "chrome@1440",
+  "footer@1440",
+  "home-cta-wrap@1440",
+  "home-hero-wrap@1440",
+  "home-intro-wrap@1440",
+  "home-map-wrap@1440",
+  "home-platform-wrap@1440",
+  "home-problem-wrap@1440",
+  "home-usecase-wrap@1440",
+  "home-why-wrap@1440",
+  "chrome@390",
+  "footer@390",
+  "home-cta-wrap@390",
+  "home-hero-wrap@390",
+  "home-intro-wrap@390",
+  "home-map-wrap@390",
+  "home-platform-wrap@390",
+  "home-problem-wrap@390",
+  "home-usecase-wrap@390",
+  "home-why-wrap@390"
  ],
+ "missingTargets": [],
  "dials": {
-  "E": null,
-  "T": null,
-  "Q": null,
+  "E": 56.7,
+  "T": 100,
+  "Q": 85,
   "E_note": "100 × mean SSIM outside masks",
   "T_note": "verified matched pairs / required pairs",
-  "Q_note": "Q awaits a live reference trace: the frozen motion spec carries trigger positions but not sampled displacement/opacity values, and the spec forbids inferring them. Samples recorded, none may be marked passing yet."
+  "Q_note": "Q = passing verified samples / verified samples. Settle family = frames a section's subtree keeps changing after its scroll stops (tolerance ≤2). Magnitude parity stays unverified (no sampled tween values in the frozen spec)."
  },
  "validate": {
-  "completeEither": false,
-  "completeBoth": false,
+  "completeEither": true,
+  "completeBoth": true,
   "E_meets_gate": false,
-  "T_meets_gate": false,
+  "T_meets_gate": true,
   "sections_meeting_E_floor": [],
   "sections_below_E_floor": [
-   "chrome (missing)",
-   "footer (missing)",
-   "home-cta-wrap (missing)",
-   "home-hero-wrap (missing)",
-   "home-intro-wrap (missing)",
-   "home-map-wrap (missing)",
-   "home-platform-wrap (missing)",
-   "home-problem-wrap (missing)",
-   "home-usecase-wrap (missing)",
-   "home-why-wrap (missing)"
+   "chrome (47.2)",
+   "footer (52)",
+   "home-cta-wrap (62.2)",
+   "home-hero-wrap (50.3)",
+   "home-intro-wrap (41)",
+   "home-map-wrap (68.3)",
+   "home-platform-wrap (57.2)",
+   "home-problem-wrap (68.5)",
+   "home-usecase-wrap (53.5)",
+   "home-why-wrap (67.5)"
   ]
  }
 }

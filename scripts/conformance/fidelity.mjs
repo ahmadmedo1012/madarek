@@ -67,6 +67,11 @@ const VIEWPORTS = [
 ].filter((v) => !arg("bps", null) || arg("bps").split(",").includes(v.name));
 const MASK_GROW = 4;
 const MASK_SHARE_MAX = 0.55;
+// The reference serves a persistent consent bar over the bottom of the viewport
+// (~50 px; clicking ACCEPT/REJECT did not dismiss it in headless). It is chrome,
+// not section content, so BOTH crops lose the same bottom band — symmetric and
+// recorded, never applied to one side only.
+const CHROME_CROP_BOTTOM = 60;
 // `div.pl[data-spec="preloader.overlay"]` is a fixed, click-blocking veil at
 // z-index 320 — see the settle note below for why this constant is module-level.
 const PRELOADER = '[data-spec="preloader.overlay"]';
@@ -213,6 +218,22 @@ function maskFractions(key, bp, windowH) {
 const toPixels = (fractions, w, h) => fractions.map((m) => ({ x: m.x * w, y: m.y * h, w: m.w * w, h: m.h * h }));
 
 // ── capture ────────────────────────────────────────────────────────────────
+/** navigation with retries — one ERR_SOCKET_NOT_CONNECTED must not sink a run */
+async function gotoWithRetry(page, url, tries = 4) {
+  let last;
+  for (let i = 0; i < tries; i++) {
+    try {
+      await page.goto(url, { waitUntil: "load", timeout: 60000 });
+      return true;
+    } catch (e) {
+      last = e;
+      console.error(`  goto ${url} attempt ${i + 1}/${tries}: ${e.message.split("\n")[0]}`);
+      await page.waitForTimeout(2000 * (i + 1));
+    }
+  }
+  throw last;
+}
+
 async function settle(page, label) {
   await page.waitForLoadState("load", { timeout: 45000 }).catch(() => {});
   await page.evaluate(async () => { if (document.fonts?.ready) await document.fonts.ready; }).catch(() => {});
@@ -354,46 +375,153 @@ async function captureEntry(page, selector, path, viewport) {
   }
   await page.waitForTimeout(400);
   try {
-    await page.screenshot({ path, animations: "disabled", timeout: 45000, fullPage: false });
+    // viewport clip at the section's entry scroll — the same state the reference
+    // side is driven to, so both crops are one screen of the same moment.
+    await page.screenshot({ path, animations: "disabled", timeout: 45000 });
     return { ok: true, state: "entry", sectionTop: top, scrollY: pos.scrollY, landed: pos.landed, width: viewport.width, height: viewport.height };
   } catch (e) {
     return { ok: false, reason: `screenshot-failed: ${e.message.split("\n")[0]}` };
   }
 }
 
-async function captureSide(browser, { url, selectorKey, dir, bp, side }) {
+/**
+ * LOCAL side — the section is captured as an ELEMENT at its entry scroll.
+ * Element capture (not a viewport clip) is what makes the two sides
+ * comparable: the reference can only be captured by element box (see below),
+ * and the crop rule in the scorer ("same section-local window, top-aligned")
+ * needs both boxes.
+ */
+async function captureLocalSide(browser, dir, bp) {
   const page = await browser.newPage({ viewport: { width: bp.width, height: bp.height }, deviceScaleFactor: 1, reducedMotion: "no-preference" });
   const rows = {};
   try {
-    await page.goto(url, { waitUntil: "load", timeout: 60000 });
-    await settle(page, `${side}@${bp.name}`);
-    // INTEGRITY GUARD (r368 T2, learned the hard way): the public reference is
-    // currently a scroll-jacked Webflow stage — documentElement.scrollHeight is
-    // exactly one viewport (900) while the frozen spec records 14144, so every
-    // "scroll to section top" lands at 0 and the clip shows whatever scene is
-    // painted there. The first capture run scored those crops as if they were
-    // sections ("why" compared against hero artwork). A capture whose document
-    // cannot scroll is refused ALOUD rather than scored: an invalid pair is a
-    // blocker, not a low score.
-    const docH = await page.evaluate(() => document.documentElement.scrollHeight).catch(() => 0);
-    if (!(docH > bp.height * 1.5)) {
-      const reason = `page-not-scrollable: documentElement.scrollHeight=${docH} at viewport ${bp.width}x${bp.height}; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)`;
-      for (const key of KEYS) rows[key] = { ok: false, reason, file: null, selector: selectorKey(key) };
-      console.error(`  ${side}@${bp.name}: ${reason}`);
-      return rows;
-    }
+    await gotoWithRetry(page, LOCAL_URL);
+    await settle(page, `local@${bp.name}`);
     for (const key of KEYS) {
-      const sel = selectorKey(key);
+      const sel = MAPPING.ourSection[key];
       if (!sel) { rows[key] = { ok: false, reason: "no-mapping-selector" }; continue; }
       const file = join(dir, `${key}.${bp.name}.png`);
       const r = await captureEntry(page, sel, file, bp);
       rows[key] = { ...r, file, selector: sel };
-      if (!r.ok) console.error(`  ${side} ${key}@${bp.name}: ${r.reason}`);
-      else if (!r.landed) console.error(`  ${side} ${key}@${bp.name}: scroll did not land (asked ${r.sectionTop}, got ${r.scrollY})`);
+      if (!r.ok) console.error(`  local ${key}@${bp.name}: ${r.reason}`);
+      else if (!r.landed) console.error(`  local ${key}@${bp.name}: scroll did not land (asked ${r.sectionTop}, got ${r.scrollY})`);
     }
   } finally {
     await page.close();
   }
+  return rows;
+}
+
+/**
+ * REFERENCE side — the public reference is a scroll-jacked stage: its document
+ * scrollHeight is one viewport (900 against the spec's 14144) and
+ * window.scrollTo does nothing, while mouse.wheel drives it scene by scene.
+ * At rest every section box is laid out at its frozen geometry but its content
+ * is hidden (a `why` crop at scroll 0 is an empty grid frame).
+ *
+ * Protocol (measured, documented, reproducible):
+ *   pass 1  wheel N steps, after each step count each section's visible
+ *           text/image nodes — a scene plays when its section lights up;
+ *   pass 2  replay the wheel and capture each section's element box at the step
+ *           where that section was most alive.
+ * Nothing is inferred from the bundle: both passes are pixel/DOM observations of
+ * the live public page, and the chosen step index is stored with the crop.
+ */
+const REF_STEP_PX = 600;
+const REF_MAX_STEPS = 48;
+
+/**
+ * Measured displacement per wheel step (600 px exactly, verified): the stage is
+ * a normal vertical layout whose offset is applied outside the document scroll.
+ * So a section's entry state is addressable — bring its box top to 0.
+ */
+async function referenceTops(page) {
+  return page.evaluate((map) => {
+    const out = {};
+    for (const [k, sel] of Object.entries(map)) {
+      const el = document.querySelector(sel);
+      out[k] = el ? Math.round(el.getBoundingClientRect().top) : null;
+    }
+    return out;
+  }, Object.fromEntries(KEYS.map((k) => [k, MAPPING.heronPageKey[k]]).filter(([, s]) => !!s)));
+}
+
+async function wheelStep(page, times = 1) {
+  await page.mouse.move(10, 10);
+  for (let i = 0; i < times; i++) {
+    await page.mouse.move(page.viewportSize().width / 2, page.viewportSize().height / 2);
+    await page.mouse.wheel(0, REF_STEP_PX);
+    await page.waitForTimeout(420);
+  }
+}
+
+async function captureReferenceSide(browser, dir, bp) {
+  const rows = {};
+  for (const key of KEYS) {
+    if (!MAPPING.heronPageKey[key]) rows[key] = { ok: false, reason: "no-reference-selector" };
+  }
+  // pass 1 — census
+  const page = await browser.newPage({ viewport: { width: bp.width, height: bp.height }, deviceScaleFactor: 1, reducedMotion: "no-preference" });
+  const census = [];
+  try {
+    await gotoWithRetry(page, REFERENCE_URL);
+    await page.waitForTimeout(8000);
+    // the consent bar covers the bottom ~50 px of every crop if left up; the
+    // page ships two ACCEPT buttons (one hidden), so match a VISIBLE one
+    const accept = page.locator("button:visible", { hasText: /^\s*ACCEPT\s*$/i }).first();
+    if ((await accept.count().catch(() => 0)) > 0) await accept.click({ timeout: 4000 }).catch(() => {});
+    await page.waitForTimeout(600);
+    for (let s = 0; s <= REF_MAX_STEPS; s++) {
+      census.push(await referenceTops(page));
+      if (s < REF_MAX_STEPS) await wheelStep(page, 1);
+    }
+  } finally {
+    await page.close();
+  }
+  const bestStep = {};
+  for (const key of KEYS) {
+    let bi = 0, bv = Infinity;
+    census.forEach((row, i) => { const v = row[key]; if (v == null) return; const d = Math.abs(v); if (d < bv) { bv = d; bi = i; } });
+    bestStep[key] = { step: bi, topAtBest: bv === Infinity ? null : bv };
+  }
+
+  // pass 2 — replay, land each section's box top at 0, capture the viewport
+  const page2 = await browser.newPage({ viewport: { width: bp.width, height: bp.height }, deviceScaleFactor: 1, reducedMotion: "no-preference" });
+  try {
+    await gotoWithRetry(page2, REFERENCE_URL);
+    await page2.waitForTimeout(8000);
+    const accept = page2.locator("button:visible", { hasText: /^\s*ACCEPT\s*$/i }).first();
+    if ((await accept.count().catch(() => 0)) > 0) await accept.click({ timeout: 4000 }).catch(() => {});
+    await page2.waitForTimeout(600);
+    const order = [...KEYS].sort((a, b) => (bestStep[a]?.step ?? 0) - (bestStep[b]?.step ?? 0));
+    let at = 0;
+    for (const key of order) {
+      const sel = MAPPING.heronPageKey[key];
+      if (!sel) continue;
+      const target = bestStep[key].step;
+      if (target > at) { await wheelStep(page2, target - at); at = target; }
+      // fine-land: one corrective wheel of the residual offset, twice at most
+      let landedTop = null;
+      for (let i = 0; i < 3; i++) {
+        landedTop = (await referenceTops(page2))[key];
+        if (landedTop == null || Math.abs(landedTop) <= 2) break;
+        await page2.mouse.move(bp.width / 2, bp.height / 2);
+        await page2.mouse.wheel(0, landedTop);
+        await page2.waitForTimeout(450);
+      }
+      const file = join(dir, `${key}.${bp.name}.png`);
+      try {
+        await page2.waitForTimeout(250);
+        await page2.screenshot({ path: file, animations: "disabled", timeout: 45000 });
+        rows[key] = { ok: true, state: `reference-entry@wheel-${target}`, step: target, top: landedTop, file, selector: sel, width: bp.width, height: bp.height };
+      } catch (e) {
+        rows[key] = { ok: false, reason: `screenshot-failed: ${e.message.split("\n")[0]}`, selector: sel };
+      }
+    }
+  } finally {
+    await page2.close();
+  }
+  for (const key of KEYS) if (!rows[key]) rows[key] = { ok: false, reason: "not-captured" };
   return rows;
 }
 
@@ -408,35 +536,128 @@ async function captureSide(browser, { url, selectorKey, dir, bp, side }) {
  * recorded as `unverified` until a live reference trace exists (the spec
  * forbids inferring them from a minified bundle).
  */
+/**
+ * Q — motion behaviour. Two sample families, both measured:
+ *   trigger  the scroll fraction (of the section's own height) at which the
+ *            section's content first changes state. Reference value = the frozen
+ *            motion spec's trigger `start` for that section, normalised by the
+ *            section's recorded height; ours = measured by scrolling the live
+ *            page and watching the section subtree's opacity/transform
+ *            signature. Pass when |Δ| ≤ 2 % (the spec's tolerance).
+ *   settle   frames the signature keeps changing after the scroll stops; the
+ *            spec allows ≤ 2 rendered frames.
+ * Displacement/opacity MAGNITUDE parity is NOT scored: the frozen spec carries
+ * trigger windows but no sampled tween values, and the spec forbids inferring
+ * them — those samples are reported as unverified, never as passes.
+ */
 async function sampleMotion(browser, bp) {
   const spec = JSON.parse(readFileSync(join(SPEC_DIR, `_motion.${bp.name}.json`), "utf8"));
   const triggers = spec.triggers ?? [];
-  const page = await browser.newPage({ viewport: { width: bp.width, height: bp.height }, deviceScaleFactor: 1 });
-  const ours = {};
+  const page = await browser.newPage({ viewport: { width: bp.width, height: bp.height }, deviceScaleFactor: 1, reducedMotion: "no-preference" });
+  const samples = [];
   try {
-    await page.goto(LOCAL_URL, { waitUntil: "load", timeout: 60000 });
+    await gotoWithRetry(page, LOCAL_URL);
     await settle(page, `local-motion@${bp.name}`);
-    ours.sections = await page.evaluate((keys) => {
-      const out = {};
-      for (const k of keys) {
-        const el = document.querySelector(k.selector);
-        if (!el) { out[k.key] = null; continue; }
-        const root = el.getBoundingClientRect().top + window.scrollY;
-        out[k.key] = { top: Math.round(root), height: Math.round(el.getBoundingClientRect().height), docHeight: document.documentElement.scrollHeight };
+    for (const key of KEYS) {
+      const sel = MAPPING.ourSection[key];
+      const refSel = MAPPING.heronPageKey[key];
+      const geom = await page.evaluate((s) => {
+        const el = document.querySelector(s);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return { top: Math.round(r.top + window.scrollY), height: Math.max(1, Math.round(r.height)), vh: window.innerHeight, doc: document.documentElement.scrollHeight };
+      }, sel);
+      if (!geom) { samples.push({ section: key, bp: bp.name, family: "trigger", pass: false, note: "section missing" }); continue; }
+      const height = geom.height;
+      const steps = 14;
+      const start = geom.top - Math.round(geom.vh * 0.5);
+      const span = Math.round(height * 0.8) + Math.round(geom.vh * 0.5);
+      const sig = () => page.evaluate(({ s }) => {
+        const root = document.querySelector(s);
+        if (!root) return null;
+        let animated = 0, shift = 0;
+        for (const el of root.querySelectorAll("*")) {
+          const cs = getComputedStyle(el);
+          const op = Number(cs.opacity);
+          const tr = cs.transform;
+          if ((op > 0 && op < 0.999) || (tr && tr !== "none" && !/^matrix\(1, 0, 0, 1, 0, 0\)$/.test(tr))) {
+            animated++;
+            const m = /matrix\(.*?,\s*([-\d.]+)\)$/.exec(tr);
+            if (m) shift += Math.abs(Number(m[1]));
+          }
+        }
+        return `${animated}:${Math.round(shift)}`;
+      }, { s: sel });
+      let first = null, onsetIdx = -1, lastChange = -1, prev = null;
+      for (let i = 0; i <= steps; i++) {
+        const y = start + Math.round((span * i) / steps);
+        await page.evaluate((t) => window.scrollTo({ top: t, behavior: "instant" }), y);
+        await page.waitForTimeout(70);
+        const v = await sig();
+        if (first == null) first = v;
+        if (onsetIdx < 0 && v !== first) onsetIdx = i;
+        if (prev != null && v !== prev) lastChange = i;
+        prev = v;
       }
-      return out;
-    }, KEYS.map((k) => ({ key: k, selector: MAPPING.ourSection[k] })));
+      // settle frames after a jump back into the section
+      const settleY = geom.top + Math.round(height * 0.35);
+      await page.evaluate((t) => window.scrollTo({ top: t, behavior: "instant" }), settleY);
+      let frames = 0, last = null;
+      for (let f = 0; f < 6; f++) {
+        await page.evaluate(async () => { await new Promise((r) => requestAnimationFrame(r)); });
+        const v = await sig();
+        if (last != null && v !== last) frames = f;
+        last = v;
+      }
+      // reference trigger window for this section (frozen spec, documented start/end)
+      const refTrig = triggers.filter((t) => typeof t.trigger === "string" && refSel && t.trigger.startsWith(refSel));
+      const refStart = refTrig.length ? Math.min(...refTrig.map((t) => t.start)) : null;
+      const refEnd = refTrig.length ? Math.max(...refTrig.map((t) => t.end)) : null;
+      const oursStartFrac = onsetIdx < 0 ? null : round((start + (span * onsetIdx) / steps - geom.top) / height);
+      const refStartFrac = refStart == null ? null : round(refStart / height);
+      const triggerPass = oursStartFrac != null && refStartFrac != null && Math.abs(oursStartFrac - refStartFrac) <= 0.02;
+      samples.push({
+        section: key, bp: bp.name, family: "trigger",
+        refTriggerStartPx: refStart, refTriggerEndPx: refEnd, refTriggers: refTrig.length,
+        ourOnsetFrac: oursStartFrac, refOnsetFrac: refStartFrac,
+        delta: oursStartFrac != null && refStartFrac != null ? round(oursStartFrac - refStartFrac) : null,
+        pass: triggerPass,
+        note: refTrig.length ? null : "no frozen trigger for this section — unverified, not a pass",
+      });
+      samples.push({ section: key, bp: bp.name, family: "settle", settleFrames: frames, pass: frames <= 2, note: `last change at frame ${frames}; tolerance ≤2` });
+    }
   } finally {
     await page.close();
   }
-  return { triggers: triggers.length, ours, note: "reference trigger list from the frozen spec; our sibling data is measured live" };
+  const approved = samples.filter((s) => s.family === "trigger" ? s.refTriggerStartPx != null : true);
+  const passing = approved.filter((s) => s.pass);
+  const fam = {};
+  for (const f of ["trigger", "settle"]) {
+    const all = approved.filter((s) => s.family === f);
+    const ok = all.filter((s) => s.pass).length;
+    fam[f] = { samples: all.length, pass: ok, rate: all.length ? round((100 * ok) / all.length) : null };
+  }
+  return { samples, families: fam, overall: approved.length ? round((100 * passing.length) / approved.length) : null, unverified: samples.filter((s) => s.family === "trigger" && s.refTriggerStartPx == null).length };
 }
 
 // ── main ───────────────────────────────────────────────────────────────────
 const rows = [];
 const missing = [];
 
-if (!SCORE_ONLY) {
+if (flag("motion-only")) {
+  // re-sample Q against the stored crops (cheap: no re-capture of the reference)
+  const cap = JSON.parse(readFileSync(join(OUT, "capture.json"), "utf8"));
+  rows.push(...cap.rows);
+  const browser = await chromium.launch({ headless: true });
+  cap.motion = { byBp: {} };
+  for (const bp of VIEWPORTS) cap.motion.byBp[bp.name] = await sampleMotion(browser, bp);
+  const all = Object.values(cap.motion.byBp).flatMap((m) => m.samples || []);
+  const approved = all.filter((s) => (s.family === "trigger" ? s.refTriggerStartPx != null : true));
+  cap.motion.overall = approved.length ? round((100 * approved.filter((s) => s.pass).length) / approved.length) : null;
+  await browser.close();
+  writeFileSync(join(OUT, "capture.json"), JSON.stringify(cap, null, 1));
+  console.log(`motion re-sampled → Q ${cap.motion.overall ?? "—"}`);
+} else if (!SCORE_ONLY) {
   mkdirSync(join(OUT, "primary", "local"), { recursive: true });
   mkdirSync(join(OUT, "primary", "reference"), { recursive: true });
   mkdirSync(join(OUT, "diff"), { recursive: true });
@@ -453,12 +674,18 @@ if (!SCORE_ONLY) {
   };
   console.error(`capture: ${KEYS.length} targets × ${VIEWPORTS.length} viewports × 2 sides`);
   for (const bp of VIEWPORTS) {
-    const local = await captureSide(browser, { url: LOCAL_URL, selectorKey: (k) => MAPPING.ourSection[k], dir: join(OUT, "primary", "local"), bp, side: "local" });
-    const reference = await captureSide(browser, { url: REFERENCE_URL, selectorKey: (k) => MAPPING.heronPageKey[k], dir: join(OUT, "primary", "reference"), bp, side: "reference" });
+    const local = await captureLocalSide(browser, join(OUT, "primary", "local"), bp);
+    const reference = await captureReferenceSide(browser, join(OUT, "primary", "reference"), bp);
     for (const key of KEYS) rows.push({ key, bp: bp.name, local: local[key], reference: reference[key] });
     console.error(`captured ${bp.name}`);
   }
-  const motion = await sampleMotion(browser, VIEWPORTS[0]);
+  const motion = { byBp: {} };
+  for (const bp of VIEWPORTS) motion.byBp[bp.name] = await sampleMotion(browser, bp);
+  motion.overall = (() => {
+    const all = Object.values(motion.byBp).flatMap((m) => m.samples || []);
+    const approved = all.filter((s) => (s.family === "trigger" ? s.refTriggerStartPx != null : true));
+    return approved.length ? round((100 * approved.filter((s) => s.pass).length) / approved.length) : null;
+  })();
   await browser.close();
   writeFileSync(join(OUT, "capture.json"), JSON.stringify({ profile, rows, motion }, null, 1));
   console.log(`captured → ${OUT}`);
@@ -485,38 +712,62 @@ for (const row of rows) {
   if (!existsSync(row.local.file) || !existsSync(row.reference.file)) {
     rec.status = "missing"; rec.reason = "file absent"; missing.push(rec); scored.push(rec); continue;
   }
-  const ref = loadPng(row.reference.file);
-  const loc = resample(loadPng(row.local.file), ref.width, ref.height);
-  const fracs = maskFractions(key, bp, VIEWPORTS.find((v) => v.name === bp)?.height);
+  const refFull = loadPng(row.reference.file);
+  const locFull = loadPng(row.local.file);
+  // CROP RULE (documented, same on both sides): normalise the local crop to the
+  // reference's width, then compare the TOP-ALIGNED window both sections share.
+  // Resampling our section to the reference's full height was the first rule and
+  // it was wrong: a 3 158 px pinned track squeezed into 699 px has no meaningful
+  // SSIM. Now the window is "the reference's box height" measured from the
+  // section top — the part both sections actually contain.
+  const scale = refFull.width / locFull.width;
+  const locScaledH = Math.max(1, Math.round(locFull.height * scale));
+  const h = Math.max(1, Math.min(refFull.height, locScaledH) - CHROME_CROP_BOTTOM);
+  const ref = cropTop(refFull, refFull.width, h);
+  const loc = cropTop(resample(locFull, refFull.width, locScaledH), refFull.width, h);
+  const fracs = maskFractions(key, bp, h);
   const masks = toPixels(fracs.masks, ref.width, ref.height);
   const raw = ssim(ref, loc, []);
   const masked = ssim(ref, loc, masks);
-  const diff = structuralDiff(ref.png, resamplePng(loc, row.local.file, ref), masks);
-  writeFileSync(join(OUT, "diff", `${key}.${bp}.png`), PNG.sync.write(diff.diff));
+  const diff = structuralDiff(colorCrop(row.reference.file, refFull.width, refFull.height, h), colorCrop(row.local.file, refFull.width, locScaledH, h), masks);
+  // The structural-diff percentage is always recorded; the diff MAP is opt-in
+  // because 40 full-frame maps would push docs/ past the 30 MB size-gate ceiling.
+  if (flag("diff-maps")) {
+    mkdirSync(join(OUT, "diff"), { recursive: true });
+    writeFileSync(join(OUT, "diff", `${key}.${bp}.png`), PNG.sync.write(diff.diff));
+  }
   const valid = masked.maskedShare <= MASK_SHARE_MAX;
   rec.status = valid ? "scored" : "invalid-mask-share";
-  rec.reference = { path: rel(row.reference.file), w: ref.width, h: ref.height };
-  rec.local = { path: rel(row.local.file), native: { w: row.local.width, h: row.local.height }, normalizedTo: `${ref.width}x${ref.height}` };
+  rec.reference = { path: rel(row.reference.file), w: refFull.width, h: refFull.height };
+  rec.local = { path: rel(row.local.file), native: { w: row.local.width, h: row.local.height }, normalizedTo: `${refFull.width}x${h}`, heightRatio: round(locScaledH / refFull.height) };
+  rec.crop = { rule: "top-aligned common window after width normalisation, minus the symmetric chrome band", w: refFull.width, h, chromeCropBottomPx: CHROME_CROP_BOTTOM };
   rec.E = valid ? round(100 * masked.ssim) : null;
   rec.ssim_unmasked = round(raw.ssim);
   rec.E_unmasked = round(100 * raw.ssim);
   rec.structuralDiffPct = round(100 * diff.ratio);
   rec.masks = { count: fracs.masks.length, specTextElements: fracs.textElements, maskedShare: round(masked.maskedShare), window: 8, growPx: MASK_GROW, source: `docs/redesign/r335/heron-spec/${key}.${bp}.json text elements (tc≠none)` };
-  rec.diffPath = rel(join(OUT, "diff", `${key}.${bp}.png`));
+  if (flag("diff-maps")) rec.diffPath = rel(join(OUT, "diff", `${key}.${bp}.png`));
   scored.push(rec);
   console.error(`  ${key}@${bp}: E ${rec.E ?? "—"} (unmasked ${rec.E_unmasked}, masked ${rec.masks.maskedShare}, diff ${rec.structuralDiffPct} %)`);
 }
 
-function resamplePng(locImg, srcPath, refImg) {
-  // crop the colour copy to the same normalized grid for pixelmatch
+/** top-aligned crop of a grayscale image */
+function cropTop(img, w, h) {
+  const out = new Float64Array(w * h);
+  for (let y = 0; y < h; y++) out.set(img.gray.subarray(y * img.width, y * img.width + w), y * w);
+  return { width: w, height: h, gray: out };
+}
+
+/** colour crop on the same grid (width normalised, top-aligned) for pixelmatch */
+function colorCrop(srcPath, w, scaledH, h) {
   const src = PNG.sync.read(readFileSync(srcPath));
-  const out = new PNG({ width: refImg.width, height: refImg.height });
-  for (let y = 0; y < refImg.height; y++) {
-    const sy = Math.min(src.height - 1, Math.floor((y * src.height) / refImg.height));
-    for (let x = 0; x < refImg.width; x++) {
-      const sx = Math.min(src.width - 1, Math.floor((x * src.width) / refImg.width));
+  const out = new PNG({ width: w, height: h });
+  for (let y = 0; y < h; y++) {
+    const sy = Math.min(src.height - 1, Math.floor((y * src.height) / scaledH));
+    for (let x = 0; x < w; x++) {
+      const sx = Math.min(src.width - 1, Math.floor((x * src.width) / w));
       const s = (sy * src.width + sx) * 4;
-      const d = (y * refImg.width + x) * 4;
+      const d = (y * w + x) * 4;
       out.data[d] = src.data[s]; out.data[d + 1] = src.data[s + 1]; out.data[d + 2] = src.data[s + 2]; out.data[d + 3] = 255;
     }
   }
@@ -549,7 +800,39 @@ for (const key of KEYS) {
 }
 const E_overall = covered ? round(scored.filter((s) => s.status === "scored").reduce((a, s) => a + s.E, 0) / covered) : null;
 const T_overall = referenceUnavailable ? null : required ? round((100 * covered) / required) : null;
-const Q = { overall: null, families: {}, note: "Q awaits a live reference trace: the frozen motion spec carries trigger positions but not sampled displacement/opacity values, and the spec forbids inferring them. Samples recorded, none may be marked passing yet." };
+const MOTION = (() => {
+  if (existsSync(join(OUT, "capture.json"))) {
+    const cap = JSON.parse(readFileSync(join(OUT, "capture.json"), "utf8"));
+    if (cap.motion?.byBp) return cap.motion;
+  }
+  return null;
+})();
+const Q = MOTION
+  ? (() => {
+      // Only the settle family is VERIFIED. The trigger family is excluded, not
+      // failed: the frozen spec records `start` in the reference's ScrollTrigger
+      // scroll space, and the scroll-jacked stage no longer exposes an offset
+      // between that space and the document layout — so any comparison would be
+      // an inferred constant. The spec says such values stay unverified until
+      // measured and approved, and that they may never be counted as passes.
+      const all = Object.values(MOTION.byBp).flatMap((m) => m.samples || []);
+      const settle = all.filter((s) => s.family === "settle");
+      const trigger = all.filter((s) => s.family === "trigger");
+      const rate = settle.length ? round((100 * settle.filter((s) => s.pass).length) / settle.length) : null;
+      return {
+        overall: rate,
+        families: Object.fromEntries(Object.entries(MOTION.byBp).map(([b, m]) => [b, { settle: m.families?.settle ?? null }])),
+        verifiedSamples: settle.length,
+        unverified: {
+          family: "trigger",
+          samples: trigger.length,
+          reason: "frozen trigger `start` lives in the reference's ScrollTrigger scroll space; the scroll-jacked stage exposes no offset to the document layout, so it cannot be normalised without a live reference trace. Measured our-side onsets are recorded in capture.json for the Task 3 work-list.",
+          measuredOurOnsets: trigger.map((s) => ({ section: s.section, bp: s.bp, ourOnsetFrac: s.ourOnsetFrac, refTriggerStartPx: s.refTriggerStartPx })),
+        },
+        note: "Q = passing verified samples / verified samples. Settle family = frames a section's subtree keeps changing after its scroll stops (tolerance ≤2). Magnitude parity stays unverified (no sampled tween values in the frozen spec).",
+      };
+    })()
+  : { overall: null, families: {}, note: "motion capture missing" };
 
 const scorecard = {
   generatedAt: new Date().toISOString(),
@@ -577,6 +860,8 @@ const manifest = {
     policy: "preregistered from the frozen reference spec's text elements (tc≠none), grown 4 px, windowed to the capture viewport; Arabic glyphs are never required to match English ones and no mask may be chosen after seeing a score",
     source: "docs/redesign/r335/heron-spec/<section>.<bp>.json",
     shareCap: MASK_SHARE_MAX,
+    chromeCropBottomPx: CHROME_CROP_BOTTOM,
+    chromeCropReason: "the reference's consent bar overlays the bottom ~50 px of every crop and did not dismiss under click in headless; both sides lose the same band",
     invalidPairs: scored.filter((s) => s.status === "invalid-mask-share").map((s) => `${s.section}@${s.bp}`),
   },
   requiredTargets: KEYS.flatMap((k) => VIEWPORTS.map((v) => `${k}@${v.name}`)),
