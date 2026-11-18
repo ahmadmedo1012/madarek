@@ -572,8 +572,20 @@ export default function AiAssistantPage() {
 
   useEffect(() => {
     if (!autoScroll.current) return;
-    pinToBottom(false);
-    settlePin();
+    /* R366-final (the deferred pin — the 2-a race closed at the root):
+     * scroll events dispatch BEFORE rAF callbacks in the rendering
+     * steps (HTML spec order), so a reader who jumped to the top —
+     * programmatically or not — retires the stale autoScroll flag
+     * before this frame's pin fires; the at-bottom reader pins one
+     * frame later (the specs' poll tolerances absorb the 16ms). The
+     * old immediate pin raced the pending event: on CI scheduling the
+     * reply's effect ran before the dispatch, read the stale true, and
+     * yanked the top-reader to the bottom (dist 0, chip never shown). */
+    requestAnimationFrame(() => {
+      if (!autoScroll.current) return;
+      pinToBottom(false);
+      settlePin();
+    });
   }, [messages, chat.isPending, reducedMotion]);
 
   /* R353 C1: viewport changes (rotate, soft keyboard, devtools) resize

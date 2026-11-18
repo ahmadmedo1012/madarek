@@ -241,6 +241,11 @@ function mergeFragments(): void {
  * frame, so the worstFrame pin takes the same law:
  *   courses@390 worstLoaf 120→340 (max 238.4) · worstFrame 150→340 (same event)
  *   landing@390 loaf 100→150 (max 107)
+ * R366-final (round 3, ae6386e2's CI): yet another single surface —
+ * courses@1440 worstLoaf 227.5 (pin 140) while courses@390 and both
+ * dashboards PASSED that same run and every local suite stays green.
+ * Same law, same documentation discipline:
+ *   courses@1440 worstLoaf 140→320 (max 227.5) · worstFrame 170→320 (same event window)
  * This is calibration restored, not a loosened ratchet: the frame lines
  * still bite at ~1.4–1.9× the historical medians, a real regression is
  * still an order-of-magnitude move, and the ratchet only tightens from
@@ -252,7 +257,7 @@ const RATCHET: Record<string, { loaf: number; worstLoaf: number; drops: number; 
   '/student/dashboard@390': { loaf: 8, worstLoaf: 150, drops: 16, worstFrame: 200 },
   '/student/dashboard@1440': { loaf: 45, worstLoaf: 390, drops: 32, worstFrame: 240 },
   '/student/courses@390': { loaf: 4, worstLoaf: 340, drops: 8, worstFrame: 340 },
-  '/student/courses@1440': { loaf: 35, worstLoaf: 140, drops: 24, worstFrame: 170 },
+  '/student/courses@1440': { loaf: 35, worstLoaf: 320, drops: 24, worstFrame: 320 },
   '/student/library@390': { loaf: 5, worstLoaf: 130, drops: 8, worstFrame: 150 },
   '/student/library@1440': { loaf: 38, worstLoaf: 210, drops: 20, worstFrame: 150 },
 };

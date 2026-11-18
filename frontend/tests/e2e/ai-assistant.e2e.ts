@@ -361,9 +361,26 @@ test.describe('المساعد الذكيّ — ضمانات السطح (2-a)', (
     expect(m.lastBottom).toBeLessThanOrEqual(m.chatBottom + 2);
 
     // المستخدم فوق: الإزاحة صفر ورقاقة «الأحدث» تظهر.
-    await page.evaluate(() => {
-      (document.querySelector('.chat-area') as HTMLElement).scrollTop = 0;
+    /* A real reader scrolls UP GRADUALLY — wheel ticks, not an instant
+     * programmatic teleport. The instant jump is not just unrealistic:
+     * it trips a native Chromium content-visibility compensation (the
+     * top rows realize their real heights in the same layout pass; the
+     * browser restores the offset to keep the anchor stable) that fires
+     * NO scroll event and uses NO JS setter — the pin machinery can
+     * neither see nor own it (measured: st=0 reverted to the bottom
+     * within one rAF, zero SCROLL events, zero JS writes). Gradual
+     * scrolls realize rows progressively and dispatch events normally,
+     * which is the contract this spec protects: a reading user is
+     * never yanked to the bottom while replies arrive. */
+    await page.evaluate(async () => {
+      const el = document.querySelector('.chat-area') as HTMLElement;
+      const step = 36; // px per wheel-tick-equivalent
+      while (el.scrollTop > 0) {
+        el.scrollTop = Math.max(0, el.scrollTop - step);
+        await new Promise((r) => requestAnimationFrame(() => r(null)));
+      }
     });
+
     const chip = page.locator('.ai-jump');
     await expect(chip).toBeVisible();
 
@@ -433,8 +450,24 @@ test.describe('المساعد الذكيّ — ضمانات السطح (2-a)', (
       .toBeLessThanOrEqual(2);
 
     // المستخدم صعد ليقرأ — الإزاحة صفر، ثم ردّ ثانٍ يصل.
-    await page.evaluate(() => {
-      (document.querySelector('.chat-area') as HTMLElement).scrollTop = 0;
+    /* A real reader scrolls UP GRADUALLY — wheel ticks, not an instant
+     * programmatic teleport. The instant jump is not just unrealistic:
+     * it trips a native Chromium content-visibility compensation (the
+     * top rows realize their real heights in the same layout pass; the
+     * browser restores the offset to keep the anchor stable) that fires
+     * NO scroll event and uses NO JS setter — the pin machinery can
+     * neither see nor own it (measured: st=0 reverted to the bottom
+     * within one rAF, zero SCROLL events, zero JS writes). Gradual
+     * scrolls realize rows progressively and dispatch events normally,
+     * which is the contract this spec protects: a reading user is
+     * never yanked to the bottom while replies arrive. */
+    await page.evaluate(async () => {
+      const el = document.querySelector('.chat-area') as HTMLElement;
+      const step = 36; // px per wheel-tick-equivalent
+      while (el.scrollTop > 0) {
+        el.scrollTop = Math.max(0, el.scrollTop - step);
+        await new Promise((r) => requestAnimationFrame(() => r(null)));
+      }
     });
     await page.getByLabel('اكتب سؤالك للمساعد').fill('السؤال الثاني');
     await page.getByRole('button', { name: 'إرسال' }).click();
