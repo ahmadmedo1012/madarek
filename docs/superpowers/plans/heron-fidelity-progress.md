@@ -557,3 +557,34 @@ T/Q hold: T 98.3% (the pair law, unchanged), Q settle 100.
    completed: usecase's geometry match ≤5px + 239/241 tests); the three
    context-deadline agents' partial edits compile (tsc clean) and stylelint
    improved vs HEAD (22 problems vs 31 at HEAD — no new lint debt).
+
+## Task 3 — wave 2 increment: the hero mass restored, the interim ledger
+
+Two root-caused fixes on top of wave 1 (the wave-1 interim state is the
+baseline for this increment):
+
+1. **The hero's ink mass restored at the measured tone.** The wave-1 agent's
+   partial work had left `.hro .hro-art .bp-svg .bp-fill { fill: none }` in
+   hero-mechanics.css — the elevation's volumes rendered as line-work with NO
+   mass (216–245 luminance) where the reference's central ink mass reads
+   127–204. Restored: `.bp-fill` carries the section-scoped measured var
+   `--hro-mass-fill` (rgb(158,156,148) light / inverted dark), the
+   stipple/hatch opacities densified (0.85/0.7 → 0.95/0.92), and the measured
+   LEFT LIGHT MARGIN is carried by a paper wash over the art's first ~15%
+   (the reference's mass sits center-right; its crop's cols 0–1 read
+   201–244 light). hero @1440: entry 39.9 → 40.9, mid30 26.1 → 27.9,
+   mid60 22.4 → 27.7 (overall 29.5 → 32.2 @1440; full 2-bp hero 41.1 → 42.8).
+   The hero's pre-wave baseline (45.3) is not yet recovered — the agent's
+   stage re-anchor remains net-negative ~2.5 points; the next increment is
+   the geometry surgery (keep the stress fixes, re-seat the stage).
+2. **The usecase mobile plate seat biased** (object-position 78%/45% at
+   ≤767px — the reference's mobile slides carry their darker right half):
+   390 overall 43.6 → 48.5 (entry/exit +0.2/+0.8, mid30 +0.5).
+
+Interim full scorecard (10 seats, both bps, reference side reused from the
+committed baseline): **E 53 · T 98.3% · Q 100 · stress 7/7** — intro 42.6 ·
+footer 46.7 · hero 42.8 · platform 48.6 · usecase 43.6→~47 (with the 390
+bias, 1440 unchanged) · why/cta/map/chrome/problem at baseline. Every seat
+remains below its ≥88 floor: the convergence loop (per-seat block-profile
+tuning + the ink-reveal scrub + the mid-state tonal work) is the recorded
+continuation.

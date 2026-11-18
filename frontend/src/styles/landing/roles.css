@@ -152,6 +152,14 @@
 @media (min-width: 1440px) {
   .rl-slide img { inset: -1.35%; inline-size: 102.7%; block-size: 102.7%; }
 }
+/* r368 T3 mobile plate seat — the 390 band shows the plate's mid-lower
+ * region (the reference's mobile slides carry their own darker right
+ * half: crop cols 5–6 read 98–133); the cover crop centers on the
+ * plate's lighter middle, so the mobile belt biases the crop toward
+ * the plate's measured darker right portion. */
+@media (max-width: 767px) {
+  .rl-slide img { object-position: 78% 45%; }
+}
 @media (min-width: 992px) and (max-width: 1439px) {
   .rl-slide { transform: scale(1.0394); }
   .rl-slide.is-active { transform: scale(1.0343); }

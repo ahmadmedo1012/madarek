@@ -201,8 +201,28 @@
 .hro .hro-art .bp-svg .bp-signal {
   stroke-width: 2.4;
 }
+/* r368 T3 — the measured left light margin: the reference's hero mass
+ * sits center-right (its crop's cols2–6 = 127–210; cols0–1 = 201–244
+ * light paper — the image's own left quarter is light content). Our
+ * elevation's ink spans edge-to-edge; the paper wash over the left
+ * ~15% carries the measured light margin without touching the
+ * artwork itself. */
+.hro .hro-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to right, var(--bg) 0%, rgba(0, 0, 0, 0) 15%);
+  z-index: 1;
+}
+
 .hro .hro-art .bp-svg .bp-fill {
-  fill: none;
+  /* r368 T3 — the mass RESTORED at the measured reference tone: the
+   * reference's central ink mass reads 127–204 luminance (the crop's
+   * 8×8 profile); the fill:none era left the band at 216–245 — the E
+   * regression's direct cause. The section-scoped var holds the
+   * measured value (hero.css .hro block). */
+  fill: var(--hro-mass-fill);
 }
 
 /* r368 T3 — the unified warm paper: the drawing's structural grid

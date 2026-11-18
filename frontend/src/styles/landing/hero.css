@@ -179,6 +179,19 @@
   block-size: auto;
 }
 
+/* r368 T3 — the hero plate's MEASURED mass tones (the reference's central
+ * ink mass reads 127–204 luminance over the drawing band; our thin line-work
+ * read 216–245 — the E 45.3→41.1 regression's root). The section-scoped vars
+ * hold the measured values per the design law. */
+.hro {
+  --hro-mass-fill: rgb(158, 156, 148); /* color-gate: allow — the measured reference hero-mass tone (r368 T3) */
+  --hro-mass-hatch: rgb(120, 118, 110); /* color-gate: allow — the measured hatch tone (r368 T3) */
+}
+[data-theme="dark"] .hro {
+  --hro-mass-fill: rgb(97, 96, 92); /* color-gate: allow — the inverted-pair mass (the dark paper) */
+  --hro-mass-hatch: rgb(135, 134, 128); /* color-gate: allow — the inverted-pair hatch */
+}
+
 /* the drawing's own ink system — zero raw colors, every class rides
  * the canonical tokens so the artwork follows both themes.
  * R310 adds the drafting hierarchy: bp-ink-2 (the primary mass
@@ -189,7 +202,7 @@
 .bp-dash-2 { stroke-width: 1.5; }
 .bp-signal { stroke: var(--accent); stroke-width: 1.5; fill: none; }
 .bp-signal-fill { fill: var(--accent); stroke: none; }
-.bp-fill { fill: var(--surface); stroke: var(--text); stroke-width: 1.5; }
+.bp-fill { fill: var(--hro-mass-fill); stroke: var(--text); stroke-width: 1.5; }
 
 /* the mono technical voice — coordinates, dimensions, axis letters.
  * Latin micro-labels ride the mono family, tabular, LTR. */.bp-micro {
@@ -212,9 +225,9 @@
 }
 
 /* the texture patterns — the reference's stipple/hatch as line work */.bp-stipple-dot { fill: var(--grid-line); }
-.bp-stipple-fill { fill: url(#bp-stipple-elv); stroke: none; opacity: 0.85; }
+.bp-stipple-fill { fill: url(#bp-stipple-elv); stroke: none; opacity: 0.95; }
 .bp-hatch-line { stroke: var(--grid-line); stroke-width: 1; }
-.bp-hatch-fill { fill: url(#bp-hatch-elv); stroke: none; opacity: 0.7; }
+.bp-hatch-fill { fill: url(#bp-hatch-elv); stroke: none; opacity: 0.92; }
 
 /* the structural grid — the faintest drafting layer */.bp-gridline {
   stroke: var(--grid-line);
