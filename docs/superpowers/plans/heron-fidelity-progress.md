@@ -259,3 +259,131 @@ chromium-1223→1200 symlink fallback, local vite on strict :5300, live referenc
 `repeatability.json` is committed — the established pattern); the modified
 primary crops re-commit in place (push delta ≈ 4 MB, within the +5 MB docs/
 per-push budget).
+
+## Task 1 — increment 1: the per-family reveal lines + the honest sampler (measured)
+
+The committed matrix's next increment ("restructures [the two global IO
+buckets] per family and re-measures our onsets against this table") landed —
+with two corrections the measurement itself forced, both recorded here.
+
+### The methodology correction (measured, then applied)
+
+The crossing law was derived and validated live before any line moved: an
+element at section-relative offset `d` crosses an IO line `L` at scroll
+`E + d − L` (onset frac `(d−L)/H`), on LIVE geometry only — the load-time
+snapshot drifts +670…+723 px. A 40px-step fresh-page wheel reproduced the
+predicted crossings within ±40px (`.pm-col` predicted −0.78 / measured −0.77;
+`.st-plabel` −0.28 / −0.24; `.wy-h2w` −0.26 / −0.24).
+
+Two committed-matrix corrections followed from the same measurements:
+
+1. **The matrix's lever arithmetic assumed d≈25 for the problem columns; the
+   measured d is 209** (@1440). With d=209, the committed −28% line would seat
+   the family at −0.59×H, not the intended target. The targets stand; the
+   lever values were re-derived from the measured d.
+2. **The reference's "visual onsets" for the reveal families are SETTLE
+   artifacts, not starts** (problem: its sigs drop 18→15 at −0.34×H — three
+   columns finishing ~500ms of transitions that began ≈1290 sampler-px
+   earlier — exactly the trigger table's start −1.8×H, re-confirmed by the
+   settle arithmetic). The physically-faithful target for a reveal LINE is the
+   reference's START (the census-validated trigger table the matrix itself
+   carried); tuning to the settle numbers would seat our transitions at
+   sampler-rate-dependent positions and produce user-visible behavior the
+   reference does not have. The intro/why/map/usecase onsets (continuous
+   scrub/engagement moments) remain the visual targets. This correction is
+   recorded against the matrix's own heterogeneity table — the family
+   structure stands; only the arithmetic basis changed.
+
+### The restructured lines (frontend/src/lib/reveals.ts)
+
+| family | line | the target it encodes |
+|---|---|---|
+| problem (`.pm-col` + `.pm-artzone .pm-art`) | `0px 0px 72% 0px` | the table's start −1.8×H: transitions begin ≈650px below the fold — the columns are mid-reveal as they enter view (the measured reference behavior) |
+| intro beats (`.st-*`) | `0px 0px 66% 0px` | the reference's band enters WITH the page (its beats are mid-flight at the stage top — measured); the +66% root fires our beats at load |
+| usecase rows (`.rl-row`) | `0px 0px -77% 0px` | the measured visual onset +0.2×H: the rows reveal in the viewport's top quarter |
+| CTA + platform cards + footer rise + usecase rules | `0px 0px -100% 0px` | "at/after entry" — the reference shows no pre-entry motion for these families; elements reveal as their tops pass the viewport top |
+
+The why scene family's early line (≈+70% vh) is NOT in reveals.ts — the why
+seat's elements arm through their own files (useReveal/WhyScene): the lever is
+recorded here and lands with the why seat's Task-3 work (the file-ownership
+law; the same handoff applies to the platform/CTA section-internal drivers
+below).
+
+### The instrument defects found and fixed while measuring (scripts/conformance/fidelity.mjs)
+
+1. **The onset sampler was contaminated by the probe order** (reproduced before
+   the fix: a full key-sequence replication matched the instrument's recorded
+   problem onset −1.1 exactly, while a single-key fresh-page probe of the same
+   section returns null): the once:true reveals of earlier keys' probes rescue
+   a section's armed elements, and late-settling stragglers read as onsets. The
+   law now: ONE FRESH PAGE PER KEY, the onset window sampled BEFORE the settle
+   probe.
+2. **The settle family conflated entrance playback with scroll-settle** (the
+   honest re-measure read Q=70 with "failures" that were the intended 600–800ms
+   entrances mid-flight): the settle probe now waits out the entrance playback
+   (1200ms) before its 6 frames judge the engine's settle — the entrance clocks
+   are the trigger family's dial.
+3. **The sampler's geometry could be read pre-growth** (the CTA's window
+   started at a pre-growth top — the doc's growth steps fooled the
+   two-equal-heights settle rule): a geometry-stability loop re-reads the
+   section top until it stops moving (drift recorded per sample).
+4. The window now matches the reference sampler's own protocol
+   (ref-onsets.mjs: 150px seats across [entry−2100, entry+300]) so the
+   fractions compare across sides; every onset sample carries its seat sig
+   trace as reviewable evidence.
+
+### The re-measured onsets (the tuning dial, fresh-page, geometry-stabilized)
+
+| section | before (closure baseline) | after (this increment) | the target | verdict |
+|---|---:|---:|---|---|
+| home-problem-wrap@1440 | −0.78 (derived; the recorded −1.1 was an artifact) | **−1.8** | the table's start −1.8 | **exact** |
+| home-intro-wrap@1440 | −0.24 (derived) | **−1.0** | visual −0.8 (±0.2 resolution) | within resolution |
+| home-intro-wrap@390 | — | **−0.8** | −0.8 | **exact** |
+| home-map-wrap@390 | −0.1 | **0** | −0.1 (±0.1) | within resolution |
+| home-cta-wrap@390 | +0.06 (stale-D derived) | **+0.2** | at/after entry | ✓ |
+| home-map-wrap@1440 | −0.1 (artifact) | **null** | −0.1 | the journey scrub engages beyond +300 past entry at 1440 — recorded gap (the sig trace: constant through the window) |
+| home-usecase-wrap@1440 | null | **−2.2** | +0.2 | the ROWS' own line seats at +0.2 (crossing formula, live d) — the section's first-change driver is an earlier-firing element outside reveals.ts (the sig trace is committed; the usecase seat's Task-3 owner inherits it) |
+| home-why-wrap@1440 | null | **−0.2** | −0.78 | the why head rides the useReveal belt (the seat's own files) — the recorded Task-3 handoff |
+| home-platform-wrap@1440 | −1.0 (artifact) | **−1.1** | at/after entry | the platform's belt elements (Product/Live files) — the Task-3 handoff |
+| home-cta-wrap@1440 | −0.36 (live-D derived) | **−1.5** | at/after entry | the CTA section's internal driver (the colleges' reveals) — the Task-3 handoff |
+| footer@1440 | — | **−0.2** | at/after entry | near-entry; the footer's census-pinned seats ride their recorded transitions |
+
+### The checks (this increment's actual runs)
+
+```bash
+node --test scripts/conformance/pairs.test.mjs scripts/conformance/gates.test.mjs   # 38/38
+TZ=UTC npx vitest run tests/motion/RevealsFamilyLines.test.ts (frontend)            # 9/9 (NEW focused suite)
+npm run typecheck                                                                  # PASS (both workspaces + tests; the backend's
+                                                                                     # worktree needed the AGENTS.md hardlink re-copy of
+                                                                                     # the generated prisma client — an environment fix)
+npx eslint src/lib/reveals.ts                                                      # 0 problems
+bash scripts/check-motion-tokens.sh                                                # PASS (3 allowlisted brand debts, pre-existing)
+npm run build -w frontend                                                          # built in 6.82s
+node scripts/check-bundle-size.mjs                                                 # PASS — 762.6 KB gz total / entry 66.1 / pdf 95.7
+PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers node scripts/conformance/modality.mjs \
+  --url http://localhost:5301/ --out docs/audit/evidence/modality.json              # PASS — mouse/touch/keyboard: every tracked
+                                                                                     # target fully visible; reduced-motion: no armed class
+PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers node scripts/conformance/fidelity.mjs \
+  --local http://localhost:5301 --bps 1440,390 --out docs/audit/evidence --validate # E 53 · T 98.3 % · Q 100 · exit 0
+PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers node scripts/conformance/stress.mjs \
+  --url http://localhost:5301/ --out docs/audit/evidence/stress.json                # 4/7 clean, 0 overflow — the three product defects unchanged
+```
+
+Q's settle family reads 100 (20/20) under the corrected protocol (ambient
+loops excluded; entrance playback excluded by the wait). E stays 53 — the
+composition work is Tasks 2–3; T stays 98.3 % (57/58, the pair law).
+
+### The residuals (honest)
+
+1. The late-section onset drivers (usecase −2.2, cta@1440 −1.5, platform −1.1,
+   why −0.2) live in the seats' own files (the belts/pins/colleges the
+   r333 module never owned) — named Task-3 handoffs, each with its sig trace
+   committed.
+2. The real touchscreen swipe trace (the Q touch family's own dial) — the
+   modality probe covers the coarse-pointer page config + the seam driver; a
+   swipe-driven trace is the recorded residual.
+3. LoAF <50ms on a pinned production build — not yet traced (needs the
+   production-build trace run; recorded as the next increment's check with
+   the build now verified).
+4. map@1440's scrub engages beyond +300 past entry — the journey stage's pin
+   geometry (Task-3's map seat).
