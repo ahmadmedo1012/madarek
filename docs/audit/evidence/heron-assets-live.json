@@ -1,0 +1,2555 @@
+{
+  "capturedAt": "2026-11-18T14:49:32.673Z",
+  "capture": "desktop 1440x900; wheel traversed through footer before inventory; live public DOM only",
+  "viewport": [
+    1440,
+    900
+  ],
+  "imageElements": [
+    {
+      "index": 0,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6b2e33f9a255a16702aabb_load.svg",
+      "format": "svg",
+      "loaded": true,
+      "natural": [
+        3000,
+        1845
+      ],
+      "display": [
+        0,
+        0
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "0.32",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 1232,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "loading-bg bg-global",
+          "position": "absolute",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "loading loaded",
+          "position": "fixed",
+          "zIndex": "2147483647",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "loading-wrap",
+          "class": "web-component",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a703ca7b25c47076637c631_4f993b1a199968429382e85294f3e6d1_Full.webp",
+      "format": "webp",
+      "loaded": true,
+      "natural": [
+        2060,
+        1037
+      ],
+      "display": [
+        1373,
+        647
+      ],
+      "objectFit": "contain",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 307804,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-hero-img-inner",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-hero-img bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-hero-img-wrap",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a69a23dcc24456128e2afe3_image%20345.avif",
+      "format": "avif",
+      "loaded": true,
+      "natural": [
+        1766,
+        1766
+      ],
+      "display": [
+        713,
+        723
+      ],
+      "objectFit": "contain",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 50233,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "ink-mask-img main",
+          "position": "relative",
+          "zIndex": "1",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "ink-mask w-variant-72855a58-688b-8b57-148e-265e4d03bc5e",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a634f5e18b19cdfe5aaf7e7_Logo%20partner-11.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        214,
+        107
+      ],
+      "display": [
+        93,
+        47
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 3236,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item w-dyn-item swiper-slide",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "saturate(0)",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-list w-dyn-items swiper-wrapper",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, -429.984, 0)"
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a634f8490f683f582b7c815_Logo%20partner-12.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        215,
+        107
+      ],
+      "display": [
+        93,
+        46
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 5746,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item w-dyn-item swiper-slide",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "saturate(0)",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-list w-dyn-items swiper-wrapper",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, -429.984, 0)"
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a634fa421f5ab60c373150c_Logo%20partner-13.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        214,
+        107
+      ],
+      "display": [
+        93,
+        47
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 4933,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item w-dyn-item swiper-slide swiper-slide-prev",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "saturate(0)",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-list w-dyn-items swiper-wrapper",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, -429.984, 0)"
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a634fb5d19a05a393885a50_Logo%20partner-14.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        214,
+        107
+      ],
+      "display": [
+        93,
+        47
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 3679,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item w-dyn-item swiper-slide swiper-slide-active",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "saturate(0)",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-list w-dyn-items swiper-wrapper",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, -429.984, 0)"
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a63503b2a4d020430c23b00_Logo%20partner-15.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        214,
+        107
+      ],
+      "display": [
+        93,
+        47
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 3770,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item w-dyn-item swiper-slide swiper-slide-next",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "saturate(0)",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-list w-dyn-items swiper-wrapper",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, -429.984, 0)"
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a63504c77c27729e0ddbb11_Logo%20partner-16.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        214,
+        107
+      ],
+      "display": [
+        93,
+        47
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 5163,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item w-dyn-item swiper-slide",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "saturate(0)",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-list w-dyn-items swiper-wrapper",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, -429.984, 0)"
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6350857d1202ebd68239df_Logo%20partner-17.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        214,
+        107
+      ],
+      "display": [
+        93,
+        47
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 4412,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item w-dyn-item swiper-slide",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "saturate(0)",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-list w-dyn-items swiper-wrapper",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, -429.984, 0)"
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6350b8134d3cc5f515c4db_Logo%20partner-18.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        214,
+        107
+      ],
+      "display": [
+        93,
+        47
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 4266,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-item w-dyn-item swiper-slide",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "saturate(0)",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-intro-logo-list w-dyn-items swiper-wrapper",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, -429.984, 0)"
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c77_kk.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        1734,
+        1676
+      ],
+      "display": [
+        963,
+        853
+      ],
+      "objectFit": "contain",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 15967,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-map-main-img-inner",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-map-main-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-map-main-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, 0, 0)"
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c29_ll.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        2312,
+        2234
+      ],
+      "display": [
+        963,
+        853
+      ],
+      "objectFit": "contain",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 22544,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-map-main-img-inner",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-map-main-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-map-main-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, 0, 0)"
+        }
+      ]
+    },
+    {
+      "index": 13,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c84_fff.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        2312,
+        2234
+      ],
+      "display": [
+        963,
+        853
+      ],
+      "objectFit": "contain",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 26561,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-map-main-img-inner",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-map-main-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-map-main-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, 0, 0)"
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c5e_Dimensions.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        2312,
+        2234
+      ],
+      "display": [
+        963,
+        853
+      ],
+      "objectFit": "contain",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 28998,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-map-main-img-inner",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-map-main-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-map-main-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, 0, 0)"
+        }
+      ]
+    },
+    {
+      "index": 15,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a66fd66235c9b3dc9658cce_b7a2ba681bb6f203cb6b6f354b9db94f_solution1.jpg",
+      "format": "jpg",
+      "loaded": false,
+      "natural": [
+        0,
+        0
+      ],
+      "display": [
+        0,
+        0
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": null,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-platform-content-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-platform-content-inner grid bg-global",
+          "position": "sticky",
+          "zIndex": "auto",
+          "opacity": "0",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-platform-content",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 16,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a66fd6676c8ee4725207aaa_c250d7593ed0b070d3eb6aa486953f89_solution2.avif",
+      "format": "avif",
+      "loaded": false,
+      "natural": [
+        0,
+        0
+      ],
+      "display": [
+        0,
+        0
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": null,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-platform-content-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-platform-content-inner grid bg-global",
+          "position": "sticky",
+          "zIndex": "auto",
+          "opacity": "0",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-platform-content",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 17,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a69a34e15d1eb4aadac9ae6_b03ba3ff201b6aa651aadafe895f2928_Before-1.avif",
+      "format": "avif",
+      "loaded": true,
+      "natural": [
+        1440,
+        870
+      ],
+      "display": [
+        599,
+        354
+      ],
+      "objectFit": "contain",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 9370,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "ink-mask-img main",
+          "position": "relative",
+          "zIndex": "1",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "ink-mask w-variant-72855a58-688b-8b57-148e-265e4d03bc5e",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-platform-img-item-wrap",
+          "position": "absolute",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 18,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a69a34ee521ff1cc6d69306_95fbf6e81134860c2ab2e4e9f5b9c723_Before.avif",
+      "format": "avif",
+      "loaded": true,
+      "natural": [
+        2880,
+        1740
+      ],
+      "display": [
+        599,
+        354
+      ],
+      "objectFit": "contain",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 11282,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "ink-mask-img main",
+          "position": "relative",
+          "zIndex": "1",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "ink-mask w-variant-72855a58-688b-8b57-148e-265e4d03bc5e",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-platform-img-item-wrap",
+          "position": "absolute",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 19,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a670fa1cfadff37a55ba10b_8b74c365290a3a568eb43a2526db7de5_Illust%20why%20us%20section%20(1).jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1116,
+        1116
+      ],
+      "display": [
+        464,
+        464
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 40448,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-img-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img item-left bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item grid",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 20,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6875a79d14cd95a2ee4f14_box-1.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        328,
+        190
+      ],
+      "display": [
+        137,
+        79
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 5709,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-img-box-content",
+          "position": "relative",
+          "zIndex": "3",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img-box box-1",
+          "position": "absolute",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img item-left bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 21,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6875a7aadcc2ec708b1cfe_box-2.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        432,
+        240
+      ],
+      "display": [
+        179,
+        99
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 6315,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-img-box-content",
+          "position": "relative",
+          "zIndex": "3",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(0.996003, 0, 0, 0.996003, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img-box box-2",
+          "position": "absolute",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img item-left bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 22,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6715f67b405f421aeee3d4_1d0ff022380f5c6528ed6d4cd29accf8_Illust%20why%20us%20section.jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1116,
+        1116
+      ],
+      "display": [
+        464,
+        464
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 40890,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-img-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img item-right bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item grid",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 23,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a687b0f1d1ada1f534fc126_box-3.png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        320,
+        320
+      ],
+      "display": [
+        133,
+        133
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 6670,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-img-box-content",
+          "position": "relative",
+          "zIndex": "3",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img-box box-3",
+          "position": "absolute",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img item-right bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 24,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a857d63d8e9eceab3a8a191_f4cd8364f148923074b6f17ed50f6efc_fff%20(1).png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        510,
+        432
+      ],
+      "display": [
+        212,
+        180
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 11873,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-card-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-card card-1 bg-global",
+          "position": "absolute",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img item-right bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 25,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a672441c43e84bf175b8fc9_f0abac54ab792d099695bd11ba88c3a0_Illust%20why%20us%20section%20(1).jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1116,
+        1116
+      ],
+      "display": [
+        464,
+        464
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 17648,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-img-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img item-left bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item grid",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 26,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a672d855c5776ffd13a0b9b_660f6807d3ea3c427c195ecf4c16359d_Frame%202087327319%20(1).jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1440,
+        887
+      ],
+      "display": [
+        323,
+        199
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 13258,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-img-child-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img-child bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(0.906542, 0, 0, 0.906542, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img-main-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 27,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a672d855c5776ffd13a0b9f_61fddc00f08323cea212d4479c223bf4_Frame%202087327318%20(1).jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1440,
+        885
+      ],
+      "display": [
+        356,
+        219
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 12146,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-img-child-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img-child bg-global active",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img-main-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 28,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a672d85516d2cebabe5ae10_8c825758515cc7b9420562a48360bf3a_Frame%201707479505%20(1).jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1440,
+        887
+      ],
+      "display": [
+        323,
+        199
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 13880,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-img-child-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img-child bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(0.906542, 0, 0, 0.906542, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img-main-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 29,
+      "url": "https://cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a857fd09f73ba800be8cc97_img%20(1).png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        326,
+        210
+      ],
+      "display": [
+        136,
+        87
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": null,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-card-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-card card-2 bg-global",
+          "position": "absolute",
+          "zIndex": "5",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img item-left bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 30,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6731092c23e6c739091db5_43da788ecab201c1c711273e28d8f0b4_Illust%20why%20us%20section.jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1116,
+        1116
+      ],
+      "display": [
+        464,
+        464
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 26643,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-img-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img item-right bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item grid",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 31,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a68855841a36e195bf762fd_c8a3e64c6db5d262e6b0b63a70464e28_box-6.jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        274,
+        218
+      ],
+      "display": [
+        114,
+        91
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 8523,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-why-item-card-inner",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-card card-3 bg-global",
+          "position": "absolute",
+          "zIndex": "5",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-why-item-img item-right bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 32,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0ceefb143418aa79a36c_Architects.jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1284,
+        1676
+      ],
+      "display": [
+        786,
+        975
+      ],
+      "objectFit": "cover",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "matrix(1.1002, 0, 0, 1.1002, 0, 0)",
+      "transferBytes": 127694,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-usecase-img-item active w-dyn-item",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-list bg-global w-dyn-items",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-cms w-dyn-list",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 33,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0cff693690449c2a54b9_INTERIOR%20DESIGNERS.jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1284,
+        1676
+      ],
+      "display": [
+        817,
+        1014
+      ],
+      "objectFit": "cover",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "matrix(1.0997, 0, 0, 1.0997, 0, 0)",
+      "transferBytes": 184065,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-usecase-img-item w-dyn-item",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "0",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "matrix(1.04, 0, 0, 1.04, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-list bg-global w-dyn-items",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-cms w-dyn-list",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 34,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d3fdae4423c35ceaaf0_LANDSCAPE%20ARCHITECTS.jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1284,
+        1676
+      ],
+      "display": [
+        817,
+        1014
+      ],
+      "objectFit": "cover",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "matrix(1.0997, 0, 0, 1.0997, 0, 0)",
+      "transferBytes": 292894,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-usecase-img-item w-dyn-item",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "0",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "matrix(1.04, 0, 0, 1.04, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-list bg-global w-dyn-items",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-cms w-dyn-list",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 35,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d16d3c763bf20214c62_ENGINEERS.jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1284,
+        1676
+      ],
+      "display": [
+        817,
+        1014
+      ],
+      "objectFit": "cover",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "matrix(1.0997, 0, 0, 1.0997, 0, 0)",
+      "transferBytes": 187972,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-usecase-img-item w-dyn-item",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "0",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "matrix(1.04, 0, 0, 1.04, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-list bg-global w-dyn-items",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-cms w-dyn-list",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 36,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d3219ade09c800cc210_BIM%20MANAGERS.jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1284,
+        1676
+      ],
+      "display": [
+        817,
+        1014
+      ],
+      "objectFit": "cover",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "matrix(1.0997, 0, 0, 1.0997, 0, 0)",
+      "transferBytes": 227159,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-usecase-img-item w-dyn-item",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "0",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "matrix(1.04, 0, 0, 1.04, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-list bg-global w-dyn-items",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-cms w-dyn-list",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 37,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d0a19ade09c800cb98e_DRAFTERS.jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1284,
+        1676
+      ],
+      "display": [
+        817,
+        1014
+      ],
+      "objectFit": "cover",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "matrix(1.0997, 0, 0, 1.0997, 0, 0)",
+      "transferBytes": 256673,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-usecase-img-item w-dyn-item",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "0",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "matrix(1.04, 0, 0, 1.04, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-list bg-global w-dyn-items",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-cms w-dyn-list",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 38,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d1f7a4f92b6351bc4e0_DESIGN%20LEADS.jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1284,
+        1676
+      ],
+      "display": [
+        817,
+        1014
+      ],
+      "objectFit": "cover",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "matrix(1.0997, 0, 0, 1.0997, 0, 0)",
+      "transferBytes": 335107,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-usecase-img-item w-dyn-item",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "0",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "matrix(1.04, 0, 0, 1.04, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-list bg-global w-dyn-items",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-cms w-dyn-list",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 39,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bc0/6a6c0d2ae7585ba74aa3b09f_MALL%20FIRMS.jpg",
+      "format": "jpg",
+      "loaded": true,
+      "natural": [
+        1284,
+        1676
+      ],
+      "display": [
+        817,
+        1014
+      ],
+      "objectFit": "cover",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "matrix(1.0997, 0, 0, 1.0997, 0, 0)",
+      "transferBytes": 159004,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "home-usecase-img-item w-dyn-item",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "0",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "matrix(1.04, 0, 0, 1.04, 0, 0)"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-list bg-global w-dyn-items",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "home-usecase-img-cms w-dyn-list",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 40,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6ad84d47e6be3956e3a35a_cta-sketch.webp",
+      "format": "webp",
+      "loaded": true,
+      "natural": [
+        1704,
+        952
+      ],
+      "display": [
+        713,
+        386
+      ],
+      "objectFit": "contain",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 30954,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "ink-mask-img main",
+          "position": "relative",
+          "zIndex": "1",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "ink-mask w-variant-72855a58-688b-8b57-148e-265e4d03bc5e",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "cta-deco-item-img-inner",
+          "position": "absolute",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 41,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a67432f15ab968d9acb8af4_cta-mb.webp",
+      "format": "webp",
+      "loaded": false,
+      "natural": [
+        0,
+        0
+      ],
+      "display": [
+        0,
+        0
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": null,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "cta-deco-item-img-inner on-mb",
+          "position": "absolute",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "cta-deco-item-img",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "multiply",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "cta-deco-item item-center bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 42,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a685b5a07a3038b09d2a9d4_7eae2a6d059ebb6121966d2839ba80ee_logo-sketch.svg",
+      "format": "svg",
+      "loaded": true,
+      "natural": [
+        32,
+        33
+      ],
+      "display": [
+        215,
+        222
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 57746,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "footer-logo-inner sketch",
+          "position": "absolute",
+          "zIndex": "2",
+          "opacity": "0",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "footer-logo",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "footer-main grid",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 43,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c0a_7a1f4c59a32ecf47588f364258cddcaf_footer1.avif",
+      "format": "avif",
+      "loaded": true,
+      "natural": [
+        2571,
+        566
+      ],
+      "display": [
+        0,
+        0
+      ],
+      "objectFit": "cover",
+      "position": "static",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 8927,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "footer-img-item hidden-dsk",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "darken",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "footer-img-inner bg-global",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "footer-img-wrap",
+          "position": "relative",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    },
+    {
+      "index": 44,
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a698acae521ff1cc6cba1f2_3a9b60f8f07a704746b20978dd8d73d1_Frame%20484%20(1).png",
+      "format": "png",
+      "loaded": true,
+      "natural": [
+        3428,
+        754
+      ],
+      "display": [
+        1427,
+        314
+      ],
+      "objectFit": "contain",
+      "position": "absolute",
+      "zIndex": "auto",
+      "opacity": "1",
+      "filter": "none",
+      "mixBlendMode": "normal",
+      "transform": "none",
+      "transferBytes": 52272,
+      "layers": [
+        {
+          "tag": "div",
+          "class": "ink-mask-img main",
+          "position": "relative",
+          "zIndex": "1",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "ink-mask",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        },
+        {
+          "tag": "div",
+          "class": "hidden-tb",
+          "position": "static",
+          "zIndex": "auto",
+          "opacity": "1",
+          "filter": "none",
+          "mixBlendMode": "normal",
+          "transform": "none"
+        }
+      ]
+    }
+  ],
+  "inlineSvgCount": 144,
+  "svgUseCount": 0,
+  "canvasCount": 0,
+  "resourceAssetUrls": [
+    {
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/68f73a0fbae6fa626a19135c/6900476d411e3ea05889428f_bg.svg",
+      "transferBytes": 53130,
+      "encodedBodyBytes": 52830
+    },
+    {
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6b2e33f9a255a16702aabb_load.svg",
+      "transferBytes": 1232,
+      "encodedBodyBytes": 932
+    },
+    {
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a703ca7b25c47076637c631_4f993b1a199968429382e85294f3e6d1_Full.webp",
+      "transferBytes": 307804,
+      "encodedBodyBytes": 307504
+    },
+    {
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a69a23dcc24456128e2afe3_image%20345.avif",
+      "transferBytes": 50233,
+      "encodedBodyBytes": 49933
+    },
+    {
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a63248e9e2e27200fb0efcf_609974a6d6c317e394b965e56b552669_image%20330.avif",
+      "transferBytes": 117436,
+      "encodedBodyBytes": 117136
+    },
+    {
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a69a34e15d1eb4aadac9ae6_b03ba3ff201b6aa651aadafe895f2928_Before-1.avif",
+      "transferBytes": 9370,
+      "encodedBodyBytes": 9070
+    },
+    {
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a69a34ee521ff1cc6d69306_95fbf6e81134860c2ab2e4e9f5b9c723_Before.avif",
+      "transferBytes": 11282,
+      "encodedBodyBytes": 10982
+    },
+    {
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6ad84d47e6be3956e3a35a_cta-sketch.webp",
+      "transferBytes": 30954,
+      "encodedBodyBytes": 30654
+    },
+    {
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3cc4_615801a3aaf9bfaa3a8ac5c616b665eb_cta%20image.webp",
+      "transferBytes": 84650,
+      "encodedBodyBytes": 84350
+    },
+    {
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c0a_7a1f4c59a32ecf47588f364258cddcaf_footer1.avif",
+      "transferBytes": 8927,
+      "encodedBodyBytes": 8627
+    },
+    {
+      "url": "https://cdn.prod.website-files.com/68f73a0fbae6fa626a19135c/6900476d411e3ea05889428f_bg.svg",
+      "transferBytes": null,
+      "encodedBodyBytes": null
+    },
+    {
+      "url": "https://cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a6ad1c2da777b5f8ae08567_ic-dash.svg",
+      "transferBytes": null,
+      "encodedBodyBytes": null
+    },
+    {
+      "url": "https://cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c93_bg-border-grid.svg",
+      "transferBytes": null,
+      "encodedBodyBytes": null
+    },
+    {
+      "url": "https://cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c91_bg-border.svg",
+      "transferBytes": null,
+      "encodedBodyBytes": null
+    },
+    {
+      "url": "https://cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3be0_border2.svg",
+      "transferBytes": null,
+      "encodedBodyBytes": null
+    },
+    {
+      "url": "https://cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c0e_border.svg",
+      "transferBytes": null,
+      "encodedBodyBytes": null
+    },
+    {
+      "url": "https://cdn.prod.website-files.com/68f73a0fbae6fa626a19135c/68faf70718094e7433046fcc_bg-deco.svg",
+      "transferBytes": null,
+      "encodedBodyBytes": null
+    },
+    {
+      "url": "https://cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a4b5161f0d11f1602cc3c8e_border-black.svg",
+      "transferBytes": null,
+      "encodedBodyBytes": null
+    },
+    {
+      "url": "https://d3e54v103j8qbb.cloudfront.net/img/webflow-badge-icon-d2.89e12c322e.svg",
+      "transferBytes": null,
+      "encodedBodyBytes": null
+    },
+    {
+      "url": "https://d3e54v103j8qbb.cloudfront.net/img/webflow-badge-text-d2.c82cec3b78.svg",
+      "transferBytes": null,
+      "encodedBodyBytes": null
+    },
+    {
+      "url": "https://heronai-bp.netlify.app/assets/pixel-mask.svg",
+      "transferBytes": null,
+      "encodedBodyBytes": null
+    },
+    {
+      "url": "https://heronaiapp.com/cdn.prod.website-files.com/6a4b5161f0d11f1602cc3bbf/6a685b5a07a3038b09d2a9d4_7eae2a6d059ebb6121966d2839ba80ee_logo-sketch.svg",
+      "transferBytes": 57746,
+      "encodedBodyBytes": 57446
+    }
+  ]
+}

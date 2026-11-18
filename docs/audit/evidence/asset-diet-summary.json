@@ -1,0 +1,78 @@
+{
+  "method": "git blob before R366 L2 vs current file; rendered side-by-side evidence under asset-diet/; no asset copied into product",
+  "samples": [
+    {
+      "path": "frontend/public/media/illustrations/r342/statement/statement-courtyard-light.webp",
+      "before": {
+        "commit": "96296552^",
+        "bytes": 228598,
+        "width": 1200,
+        "height": 1200
+      },
+      "after": {
+        "commit": "9634b24f current source tree",
+        "bytes": 56988,
+        "width": 780,
+        "height": 780
+      },
+      "byteReductionPct": 75.1,
+      "pixelAlpha": "not applicable (opaque WebP source)"
+    },
+    {
+      "path": "frontend/public/media/illustrations/r342/problems/problem-03-mastery-light.webp",
+      "before": {
+        "commit": "96296552^",
+        "bytes": 153646,
+        "width": 1200,
+        "height": 1200
+      },
+      "after": {
+        "commit": "9634b24f current source tree",
+        "bytes": 58240,
+        "width": 780,
+        "height": 780
+      },
+      "byteReductionPct": 62.1,
+      "pixelAlpha": "not applicable (opaque WebP source)"
+    },
+    {
+      "path": "frontend/public/media/illustrations/r342/journey/journey-route-dark.webp",
+      "before": {
+        "commit": "96296552^",
+        "bytes": 99342,
+        "width": 1600,
+        "height": 813
+      },
+      "after": {
+        "commit": "9634b24f current source tree",
+        "bytes": 61034,
+        "width": 1600,
+        "height": 814
+      },
+      "byteReductionPct": 38.6,
+      "pixelAlpha": "not applicable (opaque WebP source)"
+    },
+    {
+      "path": "frontend/public/media/illustrations/r342/why/why-cycle-light.webp",
+      "before": {
+        "commit": "96296552^",
+        "bytes": 81118,
+        "width": 1600,
+        "height": 813
+      },
+      "after": {
+        "commit": "9634b24f current source tree",
+        "bytes": 58944,
+        "width": 1600,
+        "height": 814
+      },
+      "byteReductionPct": 27.3,
+      "pixelAlpha": "not applicable (opaque WebP source)"
+    }
+  ],
+  "limits": [
+    "sample only, not all 38 recompressed files",
+    "display-size fidelity is not a screenshot-level perceptual metric",
+    "the CSS Rendered dimensions are not inferred from native dimensions"
+  ]
+}

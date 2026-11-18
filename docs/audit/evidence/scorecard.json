@@ -1,0 +1,1118 @@
+{
+ "generatedAt": "2026-11-18T14:41:30.559Z",
+ "formula": {
+  "E": "100 × mean SSIM over 8×8 windows outside preregistered text masks",
+  "T": "100 × verified matched pairs / required pairs",
+  "Q": "100 × passing approved samples / total samples"
+ },
+ "viewports": [
+  "1440=1440x900",
+  "390=390x844"
+ ],
+ "required": 20,
+ "covered": 20,
+ "referenceUnavailable": false,
+ "T_reason": null,
+ "E": 56.7,
+ "T": 100,
+ "Q": {
+  "overall": 85,
+  "families": {
+   "390": {
+    "settle": {
+     "samples": 10,
+     "pass": 8,
+     "rate": 80
+    }
+   },
+   "1440": {
+    "settle": {
+     "samples": 10,
+     "pass": 9,
+     "rate": 90
+    }
+   }
+  },
+  "verifiedSamples": 20,
+  "unverified": {
+   "family": "trigger",
+   "samples": 20,
+   "reason": "frozen trigger `start` lives in the reference's ScrollTrigger scroll space; the scroll-jacked stage exposes no offset to the document layout, so it cannot be normalised without a live reference trace. Measured our-side onsets are recorded in capture.json for the Task 3 work-list.",
+   "measuredOurOnsets": [
+    {
+     "section": "chrome",
+     "bp": "390",
+     "ourOnsetFrac": null,
+     "refTriggerStartPx": null
+    },
+    {
+     "section": "footer",
+     "bp": "390",
+     "ourOnsetFrac": -0.3,
+     "refTriggerStartPx": 10247
+    },
+    {
+     "section": "home-cta-wrap",
+     "bp": "390",
+     "ourOnsetFrac": null,
+     "refTriggerStartPx": 9727
+    },
+    {
+     "section": "home-hero-wrap",
+     "bp": "390",
+     "ourOnsetFrac": -0.4,
+     "refTriggerStartPx": null
+    },
+    {
+     "section": "home-intro-wrap",
+     "bp": "390",
+     "ourOnsetFrac": null,
+     "refTriggerStartPx": 0
+    },
+    {
+     "section": "home-map-wrap",
+     "bp": "390",
+     "ourOnsetFrac": 0,
+     "refTriggerStartPx": 1303
+    },
+    {
+     "section": "home-platform-wrap",
+     "bp": "390",
+     "ourOnsetFrac": -0.4,
+     "refTriggerStartPx": 6122
+    },
+    {
+     "section": "home-problem-wrap",
+     "bp": "390",
+     "ourOnsetFrac": null,
+     "refTriggerStartPx": 433
+    },
+    {
+     "section": "home-usecase-wrap",
+     "bp": "390",
+     "ourOnsetFrac": null,
+     "refTriggerStartPx": 7898
+    },
+    {
+     "section": "home-why-wrap",
+     "bp": "390",
+     "ourOnsetFrac": null,
+     "refTriggerStartPx": 7091
+    },
+    {
+     "section": "chrome",
+     "bp": "1440",
+     "ourOnsetFrac": null,
+     "refTriggerStartPx": null
+    },
+    {
+     "section": "footer",
+     "bp": "1440",
+     "ourOnsetFrac": -0.4,
+     "refTriggerStartPx": 12446
+    },
+    {
+     "section": "home-cta-wrap",
+     "bp": "1440",
+     "ourOnsetFrac": -0.3,
+     "refTriggerStartPx": 11748
+    },
+    {
+     "section": "home-hero-wrap",
+     "bp": "1440",
+     "ourOnsetFrac": -0.4,
+     "refTriggerStartPx": null
+    },
+    {
+     "section": "home-intro-wrap",
+     "bp": "1440",
+     "ourOnsetFrac": null,
+     "refTriggerStartPx": 0
+    },
+    {
+     "section": "home-map-wrap",
+     "bp": "1440",
+     "ourOnsetFrac": 0.1,
+     "refTriggerStartPx": 1021
+    },
+    {
+     "section": "home-platform-wrap",
+     "bp": "1440",
+     "ourOnsetFrac": -0.5,
+     "refTriggerStartPx": 7321
+    },
+    {
+     "section": "home-problem-wrap",
+     "bp": "1440",
+     "ourOnsetFrac": null,
+     "refTriggerStartPx": 279
+    },
+    {
+     "section": "home-usecase-wrap",
+     "bp": "1440",
+     "ourOnsetFrac": null,
+     "refTriggerStartPx": 10518
+    },
+    {
+     "section": "home-why-wrap",
+     "bp": "1440",
+     "ourOnsetFrac": null,
+     "refTriggerStartPx": 8031
+    }
+   ]
+  },
+  "note": "Q = passing verified samples / verified samples. Settle family = frames a section's subtree keeps changing after its scroll stops (tolerance ≤2). Magnitude parity stays unverified (no sampled tween values in the frozen spec)."
+ },
+ "perSection": {
+  "chrome": {
+   "E": 47.2,
+   "T": 100,
+   "pairs": 2,
+   "covered": 2,
+   "perViewport": {
+    "390": {
+     "E": 47.8,
+     "status": "scored"
+    },
+    "1440": {
+     "E": 46.5,
+     "status": "scored"
+    }
+   }
+  },
+  "footer": {
+   "E": 52,
+   "T": 100,
+   "pairs": 2,
+   "covered": 2,
+   "perViewport": {
+    "390": {
+     "E": 55.8,
+     "status": "scored"
+    },
+    "1440": {
+     "E": 48.1,
+     "status": "scored"
+    }
+   }
+  },
+  "home-cta-wrap": {
+   "E": 62.2,
+   "T": 100,
+   "pairs": 2,
+   "covered": 2,
+   "perViewport": {
+    "390": {
+     "E": 56.3,
+     "status": "scored"
+    },
+    "1440": {
+     "E": 68,
+     "status": "scored"
+    }
+   }
+  },
+  "home-hero-wrap": {
+   "E": 50.3,
+   "T": 100,
+   "pairs": 2,
+   "covered": 2,
+   "perViewport": {
+    "390": {
+     "E": 51.2,
+     "status": "scored"
+    },
+    "1440": {
+     "E": 49.4,
+     "status": "scored"
+    }
+   }
+  },
+  "home-intro-wrap": {
+   "E": 41,
+   "T": 100,
+   "pairs": 2,
+   "covered": 2,
+   "perViewport": {
+    "390": {
+     "E": 32.9,
+     "status": "scored"
+    },
+    "1440": {
+     "E": 49.1,
+     "status": "scored"
+    }
+   }
+  },
+  "home-map-wrap": {
+   "E": 68.3,
+   "T": 100,
+   "pairs": 2,
+   "covered": 2,
+   "perViewport": {
+    "390": {
+     "E": 62.7,
+     "status": "scored"
+    },
+    "1440": {
+     "E": 73.8,
+     "status": "scored"
+    }
+   }
+  },
+  "home-platform-wrap": {
+   "E": 57.2,
+   "T": 100,
+   "pairs": 2,
+   "covered": 2,
+   "perViewport": {
+    "390": {
+     "E": 43.1,
+     "status": "scored"
+    },
+    "1440": {
+     "E": 71.2,
+     "status": "scored"
+    }
+   }
+  },
+  "home-problem-wrap": {
+   "E": 68.5,
+   "T": 100,
+   "pairs": 2,
+   "covered": 2,
+   "perViewport": {
+    "390": {
+     "E": 57,
+     "status": "scored"
+    },
+    "1440": {
+     "E": 79.9,
+     "status": "scored"
+    }
+   }
+  },
+  "home-usecase-wrap": {
+   "E": 53.5,
+   "T": 100,
+   "pairs": 2,
+   "covered": 2,
+   "perViewport": {
+    "390": {
+     "E": 39.7,
+     "status": "scored"
+    },
+    "1440": {
+     "E": 67.2,
+     "status": "scored"
+    }
+   }
+  },
+  "home-why-wrap": {
+   "E": 67.5,
+   "T": 100,
+   "pairs": 2,
+   "covered": 2,
+   "perViewport": {
+    "390": {
+     "E": 50.2,
+     "status": "scored"
+    },
+    "1440": {
+     "E": 84.8,
+     "status": "scored"
+    }
+   }
+  }
+ },
+ "rows": [
+  {
+   "section": "chrome",
+   "bp": "1440",
+   "localSelector": "header.fo-header",
+   "referenceSelector": "header.header",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/chrome.1440.png",
+    "w": 1440,
+    "h": 900
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/chrome.1440.png",
+    "native": {
+     "w": 1440,
+     "h": 900
+    },
+    "normalizedTo": "1440x840",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 1440,
+    "h": 840,
+    "chromeCropBottomPx": 60
+   },
+   "E": 46.5,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 47,
+   "structuralDiffPct": 19.7,
+   "masks": {
+    "count": 10,
+    "specTextElements": 10,
+    "maskedShare": 0,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/chrome.1440.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "footer",
+   "bp": "1440",
+   "localSelector": "footer.fo-footer",
+   "referenceSelector": "footer.footer",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/footer.1440.png",
+    "w": 1440,
+    "h": 900
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/footer.1440.png",
+    "native": {
+     "w": 1440,
+     "h": 900
+    },
+    "normalizedTo": "1440x840",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 1440,
+    "h": 840,
+    "chromeCropBottomPx": 60
+   },
+   "E": 48.1,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 50.3,
+   "structuralDiffPct": 30.5,
+   "masks": {
+    "count": 77,
+    "specTextElements": 77,
+    "maskedShare": 0.1,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/footer.1440.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-cta-wrap",
+   "bp": "1440",
+   "localSelector": "section#vision.fo-cta",
+   "referenceSelector": "div.cta-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-cta-wrap.1440.png",
+    "w": 1440,
+    "h": 900
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-cta-wrap.1440.png",
+    "native": {
+     "w": 1440,
+     "h": 900
+    },
+    "normalizedTo": "1440x840",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 1440,
+    "h": 840,
+    "chromeCropBottomPx": 60
+   },
+   "E": 68,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 66.9,
+   "structuralDiffPct": 8.4,
+   "masks": {
+    "count": 8,
+    "specTextElements": 8,
+    "maskedShare": 0.1,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-cta-wrap.1440.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "localSelector": "section.fo-hero",
+   "referenceSelector": "div.home-hero-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-hero-wrap.1440.png",
+    "w": 1440,
+    "h": 900
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-hero-wrap.1440.png",
+    "native": {
+     "w": 1440,
+     "h": 900
+    },
+    "normalizedTo": "1440x840",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 1440,
+    "h": 840,
+    "chromeCropBottomPx": 60
+   },
+   "E": 49.4,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 48.7,
+   "structuralDiffPct": 17.6,
+   "masks": {
+    "count": 14,
+    "specTextElements": 14,
+    "maskedShare": 0,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-hero-wrap.1440.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "1440",
+   "localSelector": "div#statement.st-section",
+   "referenceSelector": "div.home-intro-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-intro-wrap.1440.png",
+    "w": 1440,
+    "h": 900
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-intro-wrap.1440.png",
+    "native": {
+     "w": 1440,
+     "h": 900
+    },
+    "normalizedTo": "1440x840",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 1440,
+    "h": 840,
+    "chromeCropBottomPx": 60
+   },
+   "E": 49.1,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 46.2,
+   "structuralDiffPct": 23,
+   "masks": {
+    "count": 131,
+    "specTextElements": 131,
+    "maskedShare": 0.1,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-intro-wrap.1440.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1440",
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-map-wrap.1440.png",
+    "w": 1440,
+    "h": 900
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.png",
+    "native": {
+     "w": 1440,
+     "h": 900
+    },
+    "normalizedTo": "1440x840",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 1440,
+    "h": 840,
+    "chromeCropBottomPx": 60
+   },
+   "E": 73.8,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 71.7,
+   "structuralDiffPct": 5.6,
+   "masks": {
+    "count": 20,
+    "specTextElements": 20,
+    "maskedShare": 0.1,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-map-wrap.1440.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-platform-wrap",
+   "bp": "1440",
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.1440.png",
+    "w": 1440,
+    "h": 900
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-platform-wrap.1440.png",
+    "native": {
+     "w": 1440,
+     "h": 900
+    },
+    "normalizedTo": "1440x840",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 1440,
+    "h": 840,
+    "chromeCropBottomPx": 60
+   },
+   "E": 71.2,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 71.1,
+   "structuralDiffPct": 7.2,
+   "masks": {
+    "count": 10,
+    "specTextElements": 10,
+    "maskedShare": 0,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-platform-wrap.1440.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-problem-wrap",
+   "bp": "1440",
+   "localSelector": "section#live.pm-section",
+   "referenceSelector": "div.home-problem-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-problem-wrap.1440.png",
+    "w": 1440,
+    "h": 900
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-problem-wrap.1440.png",
+    "native": {
+     "w": 1440,
+     "h": 900
+    },
+    "normalizedTo": "1440x840",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 1440,
+    "h": 840,
+    "chromeCropBottomPx": 60
+   },
+   "E": 79.9,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 70,
+   "structuralDiffPct": 2.6,
+   "masks": {
+    "count": 19,
+    "specTextElements": 19,
+    "maskedShare": 0.2,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-problem-wrap.1440.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1440.png",
+    "w": 1440,
+    "h": 900
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1440.png",
+    "native": {
+     "w": 1440,
+     "h": 900
+    },
+    "normalizedTo": "1440x840",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 1440,
+    "h": 840,
+    "chromeCropBottomPx": 60
+   },
+   "E": 67.2,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 65.8,
+   "structuralDiffPct": 24.6,
+   "masks": {
+    "count": 25,
+    "specTextElements": 25,
+    "maskedShare": 0.1,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-usecase-wrap.1440.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "localSelector": "section.wy-section",
+   "referenceSelector": "div.home-why-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-why-wrap.1440.png",
+    "w": 1440,
+    "h": 900
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-why-wrap.1440.png",
+    "native": {
+     "w": 1440,
+     "h": 900
+    },
+    "normalizedTo": "1440x840",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 1440,
+    "h": 840,
+    "chromeCropBottomPx": 60
+   },
+   "E": 84.8,
+   "ssim_unmasked": 0.8,
+   "E_unmasked": 81.4,
+   "structuralDiffPct": 6,
+   "masks": {
+    "count": 12,
+    "specTextElements": 12,
+    "maskedShare": 0.1,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-why-wrap.1440.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "chrome",
+   "bp": "390",
+   "localSelector": "header.fo-header",
+   "referenceSelector": "header.header",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/chrome.390.png",
+    "w": 390,
+    "h": 844
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/chrome.390.png",
+    "native": {
+     "w": 390,
+     "h": 844
+    },
+    "normalizedTo": "390x784",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 390,
+    "h": 784,
+    "chromeCropBottomPx": 60
+   },
+   "E": 47.8,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 47.8,
+   "structuralDiffPct": 14.8,
+   "masks": {
+    "count": 1,
+    "specTextElements": 1,
+    "maskedShare": 0,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/chrome.390.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "footer",
+   "bp": "390",
+   "localSelector": "footer.fo-footer",
+   "referenceSelector": "footer.footer",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/footer.390.png",
+    "w": 390,
+    "h": 844
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/footer.390.png",
+    "native": {
+     "w": 390,
+     "h": 844
+    },
+    "normalizedTo": "390x784",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 390,
+    "h": 784,
+    "chromeCropBottomPx": 60
+   },
+   "E": 55.8,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 51.7,
+   "structuralDiffPct": 5,
+   "masks": {
+    "count": 26,
+    "specTextElements": 26,
+    "maskedShare": 0.5,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/footer.390.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-cta-wrap",
+   "bp": "390",
+   "localSelector": "section#vision.fo-cta",
+   "referenceSelector": "div.cta-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-cta-wrap.390.png",
+    "w": 390,
+    "h": 844
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-cta-wrap.390.png",
+    "native": {
+     "w": 390,
+     "h": 844
+    },
+    "normalizedTo": "390x784",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 390,
+    "h": 784,
+    "chromeCropBottomPx": 60
+   },
+   "E": 56.3,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 52.9,
+   "structuralDiffPct": 11.6,
+   "masks": {
+    "count": 4,
+    "specTextElements": 4,
+    "maskedShare": 0.1,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-cta-wrap.390.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "localSelector": "section.fo-hero",
+   "referenceSelector": "div.home-hero-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-hero-wrap.390.png",
+    "w": 390,
+    "h": 844
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-hero-wrap.390.png",
+    "native": {
+     "w": 390,
+     "h": 844
+    },
+    "normalizedTo": "390x784",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 390,
+    "h": 784,
+    "chromeCropBottomPx": 60
+   },
+   "E": 51.2,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 46.2,
+   "structuralDiffPct": 11.2,
+   "masks": {
+    "count": 5,
+    "specTextElements": 5,
+    "maskedShare": 0.2,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-hero-wrap.390.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "localSelector": "div#statement.st-section",
+   "referenceSelector": "div.home-intro-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-intro-wrap.390.png",
+    "w": 390,
+    "h": 844
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-intro-wrap.390.png",
+    "native": {
+     "w": 390,
+     "h": 844
+    },
+    "normalizedTo": "390x784",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 390,
+    "h": 784,
+    "chromeCropBottomPx": 60
+   },
+   "E": 32.9,
+   "ssim_unmasked": 0.3,
+   "E_unmasked": 28.9,
+   "structuralDiffPct": 25.9,
+   "masks": {
+    "count": 129,
+    "specTextElements": 129,
+    "maskedShare": 0.2,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-intro-wrap.390.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "390",
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-map-wrap.390.png",
+    "w": 390,
+    "h": 844
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-map-wrap.390.png",
+    "native": {
+     "w": 390,
+     "h": 844
+    },
+    "normalizedTo": "390x784",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 390,
+    "h": 784,
+    "chromeCropBottomPx": 60
+   },
+   "E": 62.7,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 60.5,
+   "structuralDiffPct": 9.4,
+   "masks": {
+    "count": 17,
+    "specTextElements": 17,
+    "maskedShare": 0.1,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-map-wrap.390.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-platform-wrap",
+   "bp": "390",
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.390.png",
+    "w": 390,
+    "h": 844
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.png",
+    "native": {
+     "w": 390,
+     "h": 844
+    },
+    "normalizedTo": "390x784",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 390,
+    "h": 784,
+    "chromeCropBottomPx": 60
+   },
+   "E": 43.1,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 40.8,
+   "structuralDiffPct": 12.2,
+   "masks": {
+    "count": 7,
+    "specTextElements": 7,
+    "maskedShare": 0.2,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-platform-wrap.390.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-problem-wrap",
+   "bp": "390",
+   "localSelector": "section#live.pm-section",
+   "referenceSelector": "div.home-problem-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-problem-wrap.390.png",
+    "w": 390,
+    "h": 844
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-problem-wrap.390.png",
+    "native": {
+     "w": 390,
+     "h": 844
+    },
+    "normalizedTo": "390x784",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 390,
+    "h": 784,
+    "chromeCropBottomPx": 60
+   },
+   "E": 57,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 51.5,
+   "structuralDiffPct": 7.4,
+   "masks": {
+    "count": 19,
+    "specTextElements": 19,
+    "maskedShare": 0.2,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-problem-wrap.390.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "390",
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.390.png",
+    "w": 390,
+    "h": 844
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.png",
+    "native": {
+     "w": 390,
+     "h": 844
+    },
+    "normalizedTo": "390x784",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 390,
+    "h": 784,
+    "chromeCropBottomPx": 60
+   },
+   "E": 39.7,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 38.8,
+   "structuralDiffPct": 20.3,
+   "masks": {
+    "count": 8,
+    "specTextElements": 8,
+    "maskedShare": 0.3,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-usecase-wrap.390.json text elements (tc≠none)"
+   }
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "390",
+   "localSelector": "section.wy-section",
+   "referenceSelector": "div.home-why-wrap",
+   "status": "scored",
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-why-wrap.390.png",
+    "w": 390,
+    "h": 844
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-why-wrap.390.png",
+    "native": {
+     "w": 390,
+     "h": 844
+    },
+    "normalizedTo": "390x784",
+    "heightRatio": 1
+   },
+   "crop": {
+    "rule": "top-aligned common window after width normalisation, minus the symmetric chrome band",
+    "w": 390,
+    "h": 784,
+    "chromeCropBottomPx": 60
+   },
+   "E": 50.2,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 47.1,
+   "structuralDiffPct": 13.6,
+   "masks": {
+    "count": 11,
+    "specTextElements": 11,
+    "maskedShare": 0.1,
+    "window": 8,
+    "growPx": 4,
+    "source": "docs/redesign/r335/heron-spec/home-why-wrap.390.json text elements (tc≠none)"
+   }
+  }
+ ],
+ "missing": [],
+ "gates": {
+  "E_overall_min": 90,
+  "E_section_min": 88,
+  "T_overall_min": 95,
+  "T_section_min": 90,
+  "maskShareMax": 0.55
+ }
+}
