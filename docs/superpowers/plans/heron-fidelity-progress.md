@@ -475,3 +475,85 @@ PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers node scripts/conformance/loaf.mjs \
   gaps); LoAF zero on the pinned build; reduced-motion bypasses all armed
   motion (modality.mjs); route/back/scroll restoration tests 21/21; bundle
   762.6 KB ≤ 770. **Task 1 CLOSES.**
+
+## Task 3 — wave 1 (in flight): the mirror law, the authored plates, and the stress floor
+
+The seat rework's first integrated wave (intro/footer/hero/platform/usecase
+edits + the instrument's scoping fix). NOT a closure record — the seat floors
+are not met; this records the honest interim state and the two structural
+discoveries that now drive the seat work.
+
+### The mirror law (the E ceiling, root-caused)
+
+Six of the nine DOM-comparable seats were built mirror-flipped against the
+reference's measured visual order (RTL transform of the r338 era): intro,
+problem, why, platform, map, usecase place their image/mass half where the
+reference's TEXT half sits and vice versa. The E law scores SSIM over aligned
+crops whose TEXT masks are preregistered on the REFERENCE's text positions —
+a mirrored seat structurally pits its image half against the reference's
+masked text half: the image half is the only scored region and it always
+mismatches. **Fix landed: the seats' grid-template-areas return the blocks to
+the reference's measured visual order (image LEFT / text RIGHT at 1440);
+Arabic text stays RTL inside its cells — the language law holds.** intro went
+E 31.3 → 47.6 @1440-entry on the flip + plate alone.
+
+### The authored-plate method (pipeline class (a) applied to the seat art)
+
+The reference's section art is line-art on warm paper with ONE ember accent;
+the r342-era rasters (dense stippled canopies, framed photos) read as mid-gray
+masses the reference never has. The proven seat recipe (intro calibration):
+AUTHOR the plate as SVG/raster from the reference crop's MEASURED 8×8
+luminance skeleton + orange-component positions (block means + variances),
+tune against the profile numerically, then measure with the instrument.
+Landed: `intro-plate.svg` (the wedge tower + ember disc, E 31.3→53.3 entry
+1440) and `usecase-plate` (photo base + measured ember disc/tall-rect seats,
+E entry 39.5→44.9 @1440). The v1 courtyard/v2 raster-tower/usecase-student
+iterations are retired in the provenance record with their measured reasons.
+
+### The instrument gains two lead-owned capabilities (no law changed)
+
+1. **The --sections anchor fix** — a scoped run (`--sections home-intro-wrap`)
+   dropped the census anchor (home-hero-wrap) from the tops map and the census
+   failed with "anchor not measurable" while the live site answers the anchor
+   selector at 7px (reproduced twice). CENSUS_KEYS = KEYS ∪ {anchor}: the
+   scoping now works as documented; the census law is otherwise unchanged.
+2. **--reuse-reference <dir>** — the ITERATION accelerator: reuse a previous
+   run's reference side (census + achieved states + crops, copied into the
+   new out dir) and re-capture only the local side. The reference is
+   deterministic across our local edits; committed evidence still comes from
+   full paired runs (the wave's own full run above was paired-fresh via the
+   baseline's reference side — see the run ledger below).
+
+### The measured wave state (full 10-seat run, both bps, reference side = the
+committed baseline's crops via --reuse-reference; the pre-wave baseline in
+parentheses)
+
+| seat | E now (was) | read |
+|---|---|---|
+| intro | **42.6 (31.3)** | +11.3 — the flip + the authored plate |
+| footer | **46.7 (43.2)** | +3.5 — the giant outlined wordmark + 4-col print grid (agent) |
+| hero | 41.1 (45.3) | −4.2 IN FLIGHT — the stress defects landed (below) but the central ink mass is still light; the plate work is the next increment |
+| usecase | 43.6 (52.6) | −9 IN FLIGHT — 1440 entry +4.4 on the plate, but the 390 stacked band regressed (the mobile layout order is the next increment); the un-mirror + measured geometry landed |
+| platform | 48.6 (49.1) | −0.5 ≈ flat — the floorplan wiring landed; the image-led sheet restructure continues |
+| why/cta/map/chrome/problem | unchanged | not yet touched this wave |
+
+**STRESS: 7/7 sizes clean, zero overflow** (the closure baseline was 4/7) —
+the three confirmed stress defects are FIXED: the CTA button 2px clip
+@640×360, the hero `hi-marker` unreachability, and the hero text-on-text
+collisions @1440. The responsive floor of the declared matrix is green.
+
+T/Q hold: T 98.3% (the pair law, unchanged), Q settle 100.
+
+### The honest residuals
+
+1. Every seat is still below the ≥88 floor — this wave proves the method
+   (measured plates + un-mirror + block-profile tuning) but the per-seat
+   convergence loop continues (the mid-state tonal work, the ink-reveal
+   scrub the reference's intro media performs, the hero's central mass).
+2. hero −4.2 and usecase −9 are IN-FLIGHT regressions (work started, floors
+   not met) — recorded per the plan's regression-review law; both seats'
+   next increments are scoped above.
+3. The agents' partial hero/platform work landed mid-context (one agent
+   completed: usecase's geometry match ≤5px + 239/241 tests); the three
+   context-deadline agents' partial edits compile (tsc clean) and stylelint
+   improved vs HEAD (22 problems vs 31 at HEAD — no new lint debt).

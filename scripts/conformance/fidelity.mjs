@@ -52,7 +52,7 @@
  *   PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers (symlinked to chromium-1200).
  */
 import { createRequire } from "node:module";
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, copyFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -77,6 +77,11 @@ const arg = (n, d) => {
 const flag = (n) => process.argv.includes(`--${n}`);
 
 const OUT = join(ROOT, arg("out", "docs/audit/evidence"));
+/* R368 T3 — the ITERATION accelerator: reuse a previous run's REFERENCE side
+ * (census + crops + achieved states) and re-capture only the LOCAL side. The
+ * reference is deterministic across our local edits; committed evidence still
+ * comes from full paired runs — this flag exists for seat-work iteration. */
+const REUSE = arg("reuse-reference", null) ? join(ROOT, arg("reuse-reference")) : null;
 const LOCAL_URL = arg("local", "http://localhost:5300/");
 const REFERENCE_URL = arg("reference", "https://heronaiapp.com/");
 const SCORE_ONLY = flag("score-only");
@@ -515,7 +520,15 @@ async function liveTextMasks(page, sel, clip) {
   }, { s: sel, clip, grow: MASK_GROW }).catch(() => []);
 }
 
-// ── REFERENCE side: the wheel-driven stage protocol ────────────────────────
+// ── REFERENCE side: the wheel-driven stage protocol ──────────────────────
+/* R368 T3 scoping law: the census ANCHORS on home-hero-wrap, so a --sections
+ * run must always keep the anchor in the tops map even when the hero is not
+ * in the scored KEYS — otherwise the anchor is "not measurable" by the
+ * run's own scoping (reproduced before this fix: --sections home-intro-wrap
+ * alone fails the census with anchor null while the live site answers the
+ * anchor selector at 7px). CENSUS_KEYS = KEYS ∪ {anchor}; nothing else in
+ * the census law changes — bestStep still iterates the scored KEYS only. */
+const CENSUS_KEYS = Array.from(new Set([...KEYS, "home-hero-wrap"])).filter((k) => MAPPING.heronPageKey[k]);
 const refTops = (page) => page.evaluate((map) => {
   const out = {};
   for (const [k, sel] of Object.entries(map)) {
@@ -523,7 +536,7 @@ const refTops = (page) => page.evaluate((map) => {
     out[k] = el ? Math.round(el.getBoundingClientRect().top) : null;
   }
   return out;
-}, Object.fromEntries(KEYS.map((k) => [k, MAPPING.heronPageKey[k]]).filter(([, s]) => !!s)));
+}, Object.fromEntries(CENSUS_KEYS.map((k) => [k, MAPPING.heronPageKey[k]]).filter(([, s]) => !!s)));
 
 const refBoxes = (page) => page.evaluate((map) => {
   const out = {};
@@ -1103,26 +1116,51 @@ async function runCapture(outDir, opts = {}) {
   const capRows = [];
   const censuses = {};
   const pairings = {};
+  const reuseCap = REUSE ? JSON.parse(readFileSync(join(REUSE, "capture.json"), "utf8")) : null;
   for (const bp of VIEWPORTS) {
-    const cpage = await browser.newPage({ viewport: { width: bp.width, height: bp.height }, deviceScaleFactor: 1, reducedMotion: "no-preference" });
     let census = null;
-    try {
-      await gotoWithRetry(cpage, REFERENCE_URL);
-      await cpage.waitForTimeout(8000);
-      const accept = cpage.locator("button:visible", { hasText: /^\s*ACCEPT\s*$/i }).first();
-      if ((await accept.count().catch(() => 0)) > 0) await accept.click({ timeout: 4000 }).catch(() => {});
-      await cpage.waitForTimeout(600);
-      census = await referenceCensus(cpage);
-    } finally {
-      await cpage.close();
-    }
-    if (census.error) {
-      console.error(`  reference census failed @${bp.name}: ${census.error}`);
-      census = { maxOffset: null, bestStep: {}, contentTopsDiagnostic: {}, heights: {}, anchor0: null };
+    let reference = null;
+    if (reuseCap) {
+      // ITERATION mode: the reference side is reused verbatim (census + rows +
+      // crops copied into this run's reference dir so every path stays valid);
+      // the pair law judges the LOCAL side against the same achieved states.
+      const prev = reuseCap.census?.[bp.name] ?? {};
+      census = { maxOffset: prev.maxOffset, bestStep: prev.bestStep, contentTopsDiagnostic: prev.contentTopsDiagnostic, heights: prev.heights, anchor0: prev.anchor0, steps: prev.steps };
+      reference = {};
+      for (const row of reuseCap.rows || []) {
+        if (row.bp !== bp.name || !KEYS.includes(row.key) || !row.reference) continue;
+        const clone = JSON.parse(JSON.stringify(row.reference));
+        for (const st of Object.values(clone.states ?? {})) {
+          if (st?.file) {
+            const base = String(st.file).split("/").pop();
+            const newFile = join(outDir, "reference", base);
+            copyFileSync(st.file, newFile);
+            st.file = newFile;
+          }
+        }
+        reference[row.key] = clone;
+      }
+      console.error(`  reference side REUSED @${bp.name} from ${REUSE}`);
+    } else {
+      const cpage = await browser.newPage({ viewport: { width: bp.width, height: bp.height }, deviceScaleFactor: 1, reducedMotion: "no-preference" });
+      try {
+        await gotoWithRetry(cpage, REFERENCE_URL);
+        await cpage.waitForTimeout(8000);
+        const accept = cpage.locator("button:visible", { hasText: /^\s*ACCEPT\s*$/i }).first();
+        if ((await accept.count().catch(() => 0)) > 0) await accept.click({ timeout: 4000 }).catch(() => {});
+        await cpage.waitForTimeout(600);
+        census = await referenceCensus(cpage);
+      } finally {
+        await cpage.close();
+      }
+      if (census.error) {
+        console.error(`  reference census failed @${bp.name}: ${census.error}`);
+        census = { maxOffset: null, bestStep: {}, contentTopsDiagnostic: {}, heights: {}, anchor0: null };
+      }
+      // reference FIRST: its achieved entry states decide the pair declarations
+      reference = await captureReferenceSide(browser, join(outDir, "reference"), bp, census);
     }
     censuses[bp.name] = { maxOffset: census.maxOffset, bestStep: census.bestStep, contentTopsDiagnostic: census.contentTopsDiagnostic, heights: census.heights, steps: census.steps, anchor0: census.anchor0 };
-    // reference FIRST: its achieved entry states decide the pair declarations
-    const reference = await captureReferenceSide(browser, join(outDir, "reference"), bp, census);
     // trigger pairing from the live inventory, normalised by the ACHIEVED entry
     // offsets (the census's first-sighting tops are diagnostics, never drivers)
     pairings[bp.name] = buildTriggerPairing(bp, reference);

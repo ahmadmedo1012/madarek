@@ -86,16 +86,19 @@ const CAPABILITY_REGISTER = [
   'سجلّ القسم والكلية',
 ] as const;
 
-/* The media cell's art — R343 C-1: the retired Commons photograph is
- * replaced by the R342 ORIGINAL courtyard illustration (ASSET-CONTRACT
- * §3.2: 1200×1200 light/dark twins, the informative alt is the
- * contract's own wording). */
+/* The media cell's art — r368 T3 iteration 3: the AUTHORED SVG plate
+ * (pipeline class (a): line art is procedural by default). The plate's
+ * every block is a measured tonal seat from the reference's own crop
+ * skeleton — media/illustrations/r368/statement/intro-plate.svg carries
+ * the provenance header; the v1 courtyard (wrong silhouette) and v2
+ * raster tower (dark core at the wrong column) are retired in the
+ * provenance record (docs/audit/evidence/asset-provenance-r368.json). */
 const MEDIA_ART = {
-  light: '/media/illustrations/r342/statement/statement-courtyard-light.webp',
-  dark: '/media/illustrations/r342/statement/statement-courtyard-dark.webp',
-  alt: 'المقطع المعماري لقلب الحرم الجامعي: فناء داخلي تُحيط به أروقة مقوسة وفي مركزه شجرة المعرفة — رسم حبر أصلي لمنصّة مدارك',
-  width: 1200,
-  height: 1200,
+  light: '/media/illustrations/r368/statement/intro-plate.svg',
+  dark: '/media/illustrations/r368/statement/intro-plate.svg',
+  alt: 'رسم أصلي: برج معرفي عمودي بشرائح رأسية على ورق دافئ، ودائرة جمرٍ تلامس كتفه الأيمن',
+  width: 713,
+  height: 723,
 } as const;
 
 /** One arrow glyph — the census nest (svg > path), shared by the pill

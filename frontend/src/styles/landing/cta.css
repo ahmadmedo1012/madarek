@@ -983,3 +983,22 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
     block-size: 0;
   }
 }
+
+/* ── r368 T3 (hero seat) — stress (a): the finale register CTA's rbtn
+   flex line rides 1.6rem padding + 1.6rem gap of its own horizontal
+   furniture; at 640×360 the 15.32rem button shell is 2px short of the
+   label + icons row's natural width (scrollWidth 251 > clientWidth
+   249 — the r368 stress clip row, measured on a.btn.accent «أنشئ
+   حسابك الجامعي»). 1.4rem/1.4rem at ≤640 buys ~6px of slack (the
+   ≥2px the stress spec demands); the visual delta is sub-glyph.
+   Scoped to the button's OWN section sheet, never the global .btn
+   component — the row was assigned to the hero seat under the belief
+   it was the hero CTA; the measured element is this finale button
+   (the hero's own CTA is the .hro-cta text link, which carries no
+   overflow box and clips nowhere). ── */
+@media (max-width: 640px) {
+  .fo-cta .btn.accent .fo-cta-rbtn {
+    padding-inline-start: 1.4rem;
+    gap: 1.4rem;
+  }
+}

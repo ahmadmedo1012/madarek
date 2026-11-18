@@ -817,23 +817,23 @@
     "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
    },
    {
-    "id": "r368/intro-courtyard",
+    "id": "r368/intro-tower",
     "type": "illustration",
     "slot": "home-intro-wrap",
-    "nameAr": "intro-courtyard",
-    "altAr": "رسم معماري بالحبر لساحة جامعية بإسقاط أمامي على ورق دافئ، مع دائرة برتقالية وحيدة تلامس زاوية الرسم",
+    "nameAr": "intro-tower",
+    "altAr": "رسم معماري أصلي بالحبر لبرج حديث عالٍ بشرائح رأسية على ورق دافئ، ودائرة برتقالية كبيرة تلامس كتف البرج الأيمن",
     "assets": {
-     "light": "/media/illustrations/r368/statement/intro-courtyard-light.webp",
-     "dark": "/media/illustrations/r368/statement/intro-courtyard-dark.webp"
+     "light": "/media/illustrations/r368/statement/intro-tower-light.webp",
+     "dark": "/media/illustrations/r368/statement/intro-tower-dark.webp"
     },
     "intrinsic": {
      "light": [
-      1024,
-      1024
+      864,
+      1152
      ],
      "dark": [
-      1024,
-      1024
+      864,
+      1152
      ]
     },
     "decorative": true,
@@ -869,23 +869,23 @@
     "contract": "docs/redesign/r342/ASSET-CONTRACT.md"
    },
    {
-    "id": "r368/usecase-student",
+    "id": "r368/usecase-plate",
     "type": "illustration",
     "slot": "home-usecase-wrap",
-    "nameAr": "usecase-student",
-    "altAr": "طالب جامعي لحيتة داكنة يكتب على حاسوبه المحمول في غرفة هادئة يضيئها ضوء نهاري طبيعي",
+    "nameAr": "usecase-plate",
+    "altAr": "لوحة أصليّة: مشهد معماري رمادي عالي التفاصيل تتقدّمه دائرة جمرٍ وشرائطه الرأسية — مقاعد الاستخدام في المنصّة",
     "assets": {
-     "light": "/media/illustrations/r368/roles/usecase-student-light.webp",
-     "dark": "/media/illustrations/r368/roles/usecase-student-dark.webp"
+     "light": "/media/illustrations/r368/roles/usecase-plate-light.webp",
+     "dark": "/media/illustrations/r368/roles/usecase-plate-dark.webp"
     },
     "intrinsic": {
      "light": [
-      768,
-      1344
+      802,
+      1070
      ],
      "dark": [
-      768,
-      1344
+      802,
+      1070
      ]
     },
     "decorative": false,

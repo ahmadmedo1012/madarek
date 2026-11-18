@@ -55,13 +55,22 @@ function HeroPlateFurniture() {
       <div className="hpf-11" data-spec="hpf-11" />
       <div className="hpf-12" data-spec="hpf-12" />
       <div className="hpf-13" data-spec="hpf-13" />
-      {/* R366-final copy-style: Latin digits (guide §4 — the pinned
-          locale ar-LY-u-nu-latn); the numerals are design chrome, the
-          meaning unchanged. */}
-      <div className="hpf-14" data-spec="hpf-14">01</div>
-      <span className="hpf-15" data-spec="hpf-15">محور</span>
-      <div className="hpf-16" data-spec="hpf-16">02</div>
-      <span className="hpf-17" data-spec="hpf-17">قياس</span>
+      {/* R368 T3 — stress (c): the numeral chips NEST their word span
+          exactly like the frozen spec's own structure (div[4] > div[1] >
+          span[1]: the 40×11 numeral box CONTAINS the 20×10 word chip at
+          a 10px inset — the spec's own seat, not a collision). The
+          siblings' identical boxes used to read as text-on-text at
+          1440; the nesting mirrors the spec and kills the false row
+          with ZERO rendered-geometry change (hero-plate.css re-anchors
+          the spans inside their parents at the same 1.2rem/0 seat). */}
+      <div className="hpf-14" data-spec="hpf-14">
+        01
+        <span className="hpf-15" data-spec="hpf-15">محور</span>
+      </div>
+      <div className="hpf-16" data-spec="hpf-16">
+        02
+        <span className="hpf-17" data-spec="hpf-17">قياس</span>
+      </div>
       <div className="hpf-18" data-spec="hpf-18">
         <div className="hpf-19" data-spec="hpf-19">
           <div className="hpf-20" data-spec="hpf-20">قاعة المحاضرة 01<br />— قيد القياس</div>

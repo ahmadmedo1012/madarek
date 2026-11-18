@@ -1,27 +1,47 @@
-/* ══ r338 T-08c — المنصّة فعليًا (pass-3 rewrite on the frozen heron
- * spec docs/redesign/r335/heron-spec/home-platform-wrap.<bp>.json).
- * Every geometry/type/colour value below is MEASURED from the spec
- * (rem-exact on the site's fluid root: 11.11px @1920 · 8.33 @1440 ·
- * 9.2 @768 · 9.925 @390), never heron source.
+/* ══ r368 T3 — المنصّة فعليًا (the image-led un-mirrored rewrite on the
+ * frozen heron spec docs/redesign/r335/heron-spec/home-platform-wrap.
+ * <bp>.json + the reference fidelity crops). Every geometry/type/
+ * colour value below is MEASURED from the spec (rem-exact on the
+ * site's fluid root: 11.11px @1920 · 8.33 @1440 · 9.2 @768 · 9.925
+ * @390), never heron source.
  *
  * MEASURED GRAMMAR — the band is a hairline-ruled sheet:
  *   · top/bottom 1px rules rgb(179,179,175) + a 3-col row grid ≥992
  *     (head 25.24% | images 42.16% | side 32.6% — 481/802/619 @1920,
  *     rem-exact 361/601/464 @1440), rows 42.57rem ×2 (473+473 @1920).
+ *   · R368 UN-MIRROR: the column ORDER flips to the reference's own
+ *     VISUAL order (frozen @1440: head x7-368 LEFT · imgs x367-968
+ *     left-of-center · side x969-1433 RIGHT; heron's own 768 fold: img
+ *     LEFT, text RIGHT). Declaration 'side | imgs | head': RTL renders
+ *     col1 at the RIGHT (the Arabic reading START) and col3 at the
+ *     LEFT — the same flip statement.css landed for the intro seat. The
+ *     r338-era mirror placed the image column against the reference's
+ *     text half under the fidelity E law (SSIM over aligned regions)
+ *     — the measured E ceiling this rework removes.
  *   · TWO platform items: ≥992 the row copies cross-fade on the SAME
  *     measured rects (heron's marquee pair); ≤991 each item takes a
- *     row (768: img 377 | head 85 + side 169; 390: img 226 + head 87
- *     + side 161 stacked, rows 474/474).
- *   · head cell 17.37rem: label 1.4rem/lh1.4 rgb(180,180,176) @3.15rem,
- *     title 3.2rem/lh1 (label-top→title-top 9rem), ruled block/end.
- *   · side cell: long text 1.6rem/lh1.3 ink-72, then the CTA strip
- *     4.77rem (rule + two 1.4rem/lh1.4 lines + dual circular 4.5rem
- *     arrows with 2rem line-art) and the dark hover menu 56.16×14.04rem.
+ *     row (768: img 377 LEFT | head 85 + side 169 RIGHT; 390: img 226
+ *     + head 87 + side stacked, rows 474/474 — the img sits FIRST).
+ *   · head cell 17.37rem: the utility label (r368: the mono rung
+ *     --fs-mono-md — the reference's own label step 11.67 @1440)
+ *     under the ONE display line 3.2rem/lh1 (the frozen spec's
+ *     biggest text, 26.67 @1440), ruled block/end.
+ *   · the DARK SPEC PANEL (r368): the frozen spec's ONE dark ground
+ *     (rgb(40,40,40) @1440 x969 y8723 w480 h120 = x67.3% y9.2% w33.6%
+ *     h16.9% of the band) becomes the visible spec panel — the
+ *     student-dashboard capture strip + the three spec lines — in the
+ *     side cell's flow under the text (~20px under its measured y: the
+ *     static stack clears the text's tail; heron's own menu OVERLAYS
+ *     that zone on hover). ≤991 display:none — heron's own census
+ *     carries no menu node at 768/390.
+ *   · side cell: the long text 1.6rem/lh1.3 ink-72, then the spec
+ *     panel, then the CTA strip (rule + two 1.4rem/lh1.4 lines +
+ *     dual square 4.5rem arrow rings with 2rem line-art).
  *   · ≥992 the per-row image and ≤991 the central image column both
  *     collapse to 0×0 — heron's own census state at those bps.
  * COLOURS: section-scoped MEASURED vars per the r338 ADDENDUM 9 TOKEN
- * RULING (the global --accent stays rgb(199,46,0) until T-25 unifies
- * it); literals also serialize as the spec's own rgb() strings. The
+ * RULING (the global --accent stays rgb(199,46,0) until the unification
+ * task); literals also serialize as the spec's own rgb() strings. The
  * dark theme re-points them at the flipping house tokens (the light
  * spec is never re-pinned; dark = internal consistency only). ══ */
 
@@ -105,7 +125,7 @@ html[data-theme='dark'] .pr-section .pr-cta {
 .pr-cell-rule.is-top { inset-block-start: 0; }
 .pr-cell-rule.is-end { inset-block-end: 0; }
 
-/* ── the head cell — label + title on heron's body-voice wrappers ── */
+/* ── the head cell — the utility label + the display line ─────────── */
 .pr-section .pr-head {
   position: relative;
   display: block;
@@ -117,11 +137,16 @@ html[data-theme='dark'] .pr-section .pr-cta {
 }
 
 .pr-section .pr-label {
-  /* r338 T-08c1 — the measured heron label node IS the base voice
-   * (fs 17.78 · lh 23.11 · gray rgb(180,180,176) · fw 500 @1920;
-   * 15.88/20.64 @390 — i.e. fs 1.6rem on the fluid root at every
-   * bp), NOT a 1.4rem sub-voice. lh inherits the floored 1.35. */
-  font-size: 1.6rem;
+  /* r368 T3 — the reference's type-contrast system: a TINY UTILITY
+   * MONO label over the one display line. The mono rung IS the
+   * reference's own measured label step (fs 11.67 @1440 · 13.89 @390
+   * = --fs-mono-md); the label's muted ink stays the measured
+   * rgb(180,180,176). The r338 base-voice seat (1.6rem, the 1920
+   * measure) retires with this rework — the utility rung reads the
+   * reference's 1440/390 crops (the fidelity bps). */
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-md);
+  font-variant-numeric: tabular-nums;
   font-weight: 500;
   color: var(--pr-label);
 }
@@ -149,7 +174,7 @@ html[data-theme='dark'] .pr-section .pr-cta {
   text-wrap: balance;
 }
 
-/* ── the side cell — the long text + the CTA strip ────────────────── */
+/* ── the side cell — the long text → the dark spec panel → the CTA ── */
 .pr-section .pr-side {
   position: relative;
   display: flex;
@@ -170,9 +195,78 @@ html[data-theme='dark'] .pr-section .pr-cta {
   color: var(--pr-ink-72);
 }
 
+/* ── the DARK SPEC PANEL (r368) — the reference's measured dark-menu
+ * seat: the frozen spec's ONE dark ground (rgb(40,40,40) div @1440
+ * x969 y8723 w480 h120 = x67.3% y9.2% w33.6% h16.9% of the band). The
+ * r338 hover-only menu becomes the visible spec panel: the
+ * student-dashboard capture strip over the assistant's three spec
+ * lines (the reference's own dark tooltip carries a header bar +
+ * small gray body lines + ONE orange line — the question line).
+ * The panel spans the side cell's width (heron's own menu hangs 16px
+ * past the sheet edge — a hover artifact; the static panel clips to
+ * the column) and sits in the flow under the side text: ~20px under
+ * its measured y — the static stack clears the text's tail, where the
+ * reference's own menu simply OVERLAYS on hover. */
+.pr-section .pr-menu {
+  position: relative;
+  display: grid;
+  gap: 0.45rem;
+  align-content: start;
+  padding: 1.1rem 2.7rem;
+  background: var(--pr-ink);
+  block-size: 14.04rem; /* 156 @1920 · 120 @1440 — the measured menu box */
+  color: var(--pr-ink); /* the paired container = heron's solid ink (measured) */
+}
+
+/* the capture strip — the spec panel's product screenshot (the
+ * student dashboard, object-fit cover from its 1280×800 ground). The
+ * strip's 4.2rem share of the measured 14.04rem panel is our
+ * adaptation (the reference's own tooltip is text-only; ours proves
+ * the product). The dark arm rides the CSS dark filter — the
+ * statement seat's SVG-plate idiom (no dark product twin exists —
+ * the why seat keeps its captures unfiltered; this panel's capture
+ * needs the treatment to stay readable when the ground flips to the
+ * night paper). */
+.pr-section .pr-menu-shot {
+  display: block;
+  inline-size: 100%;
+  block-size: 4.2rem;
+  object-fit: cover;
+  object-position: top; /* the dashboard's own chrome leads the crop */
+}
+
+html[data-theme='dark'] .pr-section .pr-menu-shot {
+  filter: invert(1) hue-rotate(180deg); /* the dark-arm capture treatment, noted */
+}
+
+.pr-section .pr-menu-k,
+.pr-section .pr-menu-q,
+.pr-section .pr-menu-a {
+  font-size: 1.4rem;
+  /* lh 2.16rem = the floored heron menu voice (1.35 × its 1.6rem
+   * fs) at every bp — absolute so our 1.4rem text still matches */
+  line-height: 2.16rem;
+}
+
+.pr-section .pr-menu-k {
+  font-weight: 600;
+  color: var(--bg); /* readable cream on the dark panel (our adaptation) */
+}
+.pr-section .pr-menu-q {
+  font-weight: 500;
+  color: var(--pr-cta); /* the reference's own orange tooltip line (measured accent) */
+}
+.pr-section .pr-menu-a {
+  font-weight: 500;
+  opacity: 0.72;
+  color: var(--bg);
+}
+
 /* the CTA strip — heron's a[2]: rule + body(row[line1 + dual arrows],
- * line2). The anchor itself carries the measured orange; the inner
- * rows carry the full ink (both measured). */
+ * line2). The anchor itself carries the measured orange (heron's own
+ * a[2] + its first two wrapper divs measure rgb(250,54,0) — the seat's
+ * ONE saturated accent, computed on the wrappers exactly as the census
+ * records it); the inner rows carry the full ink (both measured). */
 .pr-section .pr-cta {
   position: relative;
   display: block;
@@ -218,7 +312,7 @@ html[data-theme='dark'] .pr-section .pr-cta {
   display: flex;
 }
 
-/* heron's dual circular arrows — two tangent 50×50 rings (measured
+/* heron's dual square arrow rings — two tangent 50×50 boxes (measured
  * 37 @1440 · 41 @768), each centring 22×22 line-art (17/18 measured) */
 .pr-section .pr-cta-ic {
   inline-size: 4.5rem;
@@ -245,70 +339,34 @@ html[data-theme='dark'] .pr-section .pr-cta {
   block-size: 2rem;
 }
 
-/* the dark hover menu — heron's a[2] > div[2] > div[1] > div[1]:
- * 624×156 rgb(40,40,40) hanging 52px above the strip (measured).
- * The assistant panel; opens on hover/focus, rect never moves. */
-/* r338 T-08c1 — the measured heron menu nodes carry the SOLID ink
- * rgb(40,40,40) (their readable light text lives outside the walked
- * census tree); our panel matches the ink on the paired container
- * and keeps the readable cream on the inner text spans. */
-.pr-section .pr-menu {
-  position: absolute;
-  inset-inline-start: 0;
-  inset-block-start: -4.68rem;
-  inline-size: 56.16rem;
-  block-size: 14.04rem;
-  display: grid;
-  gap: 0.9rem;
-  align-content: start;
-  padding: 1.44rem 2.7rem;
-  background: var(--pr-ink);
-  color: var(--pr-ink); /* the paired container = heron's solid ink (measured) */
-  visibility: hidden; /* r338 T-08c2 — the spec measures opacity 1 on this
-     node, so the rest state is visibility-only (layout + opacity stay
-     measured); the reveal is the hover/focus flip below */
-  transition: opacity 0.3s ease, visibility 0.3s ease; /* motion-token: allow — heron-measured menu fade */
-  z-index: 1;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .pr-section .pr-cta:hover .pr-menu {
-    opacity: 1;
-    visibility: visible;
-  }
-}
-
-.pr-cta:focus-within .pr-menu {
-  opacity: 1;
-  visibility: visible;
-}
-
-.pr-section .pr-menu-k,
-.pr-section .pr-menu-q,
-.pr-section .pr-menu-a {
-  font-size: 1.4rem;
-  /* lh 2.16rem = the floored heron menu voice (1.35 × its 1.6rem
-   * fs) at every bp — absolute so our 1.4rem text still matches */
-  line-height: 2.16rem;
-  color: var(--bg); /* readable cream on the dark panel (our adaptation) */
-}
-
-.pr-section .pr-menu-k { font-weight: 600; }
-.pr-section .pr-menu-q { font-weight: 500; }
-.pr-section .pr-menu-a { font-weight: 500; opacity: 0.72; }
-
 /* the per-row image — ≥992 display:none (heron's own 0×0 census) */
 .pr-section .pr-rowimg {
   position: relative;
   min-inline-size: 0;
 }
 
-.pr-section .pr-rowimg img {
+/* r368 — the twin grammar (the roles/why idiom): both twins occupy
+ * the SAME box (grid-area 1 / 1) so both always load — a
+ * display:none lazy twin would never fetch in the other theme; the
+ * theme token swaps them by VISIBILITY (geometry never moves). The
+ * light twin carries the seat's data-spec hook + alt; the dark twin
+ * rides aria-hidden. */
+.pr-section .pr-rowimg,
+.pr-section .pr-img {
+  display: grid;
+}
+
+.pr-section .pr-media {
+  grid-area: 1 / 1;
   display: block;
   inline-size: 100%;
   object-fit: cover;
-  object-position: top; /* the UI chrome leads the crop */
+  object-position: top; /* the capture chrome leads the crop */
 }
+
+.pr-section .pr-media.is-dark { visibility: hidden; }
+html[data-theme='dark'] .pr-section .pr-media.is-light { visibility: hidden; }
+html[data-theme='dark'] .pr-section .pr-media.is-dark { visibility: visible; }
 
 .pr-section .pr-rowimg-rule {
   position: absolute;
@@ -348,24 +406,29 @@ html[data-theme='dark'] .pr-section .pr-cta {
   background: var(--pr-rule-ink);
 }
 
-.pr-section .pr-img img {
-  display: block;
-  inline-size: 100%;
+/* the capture rows fill their measured boxes (img1 599×354 @1440 =
+   the dominant floor-plan anchor; img2 the data-table capture) */
+.pr-section .pr-img .pr-media {
   block-size: 100%;
-  object-fit: cover;
-  object-position: top;
 }
 
-/* ── ≥992 — the measured 3-col row grid with the cross-fade pair ──── */
+/* ── ≥992 — the measured 3-col row grid, UN-MIRRORED ─────────────── */
 @media (min-width: 992px) {
   .pr-section {
     display: grid;
     grid-template-rows: auto 1fr auto;
   }
 
+  /* R368 UN-MIRROR — the declaration order flips to the reference's
+   * own visual order: 'side | imgs | head'. RTL renders col1 at the
+   * RIGHT (the side text — the Arabic reading START) and col3 at the
+   * LEFT (the head) — the imgs column lands on the reference's
+   * left-of-center 42% (x25.7-67.8% @1440), not the mirrored
+   * x32.6-74.8%. The widths are the same measured trio, re-ordered:
+   * 619 | 802 | 481 @1920 (rem-exact 464 | 601 | 361 @1440). */
   .pr-section .pr-grid {
     display: grid;
-    grid-template-columns: 25.24% 42.16% 32.6%; /* 481/802/619 @1920 (measured) */
+    grid-template-columns: 32.6% 42.16% 25.24%; /* side | imgs | head — measured, re-ordered */
     grid-template-rows: 42.57rem 42.57rem;      /* 473+473 @1920 (measured) */
   }
 
@@ -373,20 +436,22 @@ html[data-theme='dark'] .pr-section .pr-cta {
     grid-column: 1 / -1;
     grid-row: 1 / -1;
     display: grid;
-    grid-template-columns: 25.24% 42.16% 32.6%;
+    grid-template-columns: 32.6% 42.16% 25.24%;
     grid-template-rows: 42.57rem 42.57rem;
   }
 
   /* the two row copies share the SAME rects (heron's marquee pair);
-   * the cross-fade is opacity-only so no measured box ever moves */
+   * the cross-fade is opacity-only so no measured box ever moves.
+   * r368: block-size auto — the side cell's text → spec panel → CTA
+   * stack grows past the r338 17.37rem clip (the panel rides under
+   * the text; the head cell keeps its own measured 17.37rem box). */
   .pr-section .pr-row {
     grid-column: 1 / -1;
     grid-row: 1;
     transition: opacity 0.4s ease; /* motion-token: allow — heron row cross-fade (TR 0.4s/ease) */
     align-self: start;
-    block-size: 17.37rem; /* 193 @1920 · 145 @1440 (measured) */
     display: grid;
-    grid-template-columns: 25.24% 42.16% 32.6%;
+    grid-template-columns: 32.6% 42.16% 25.24%;
   }
 
   .pr-section .pr-row + .pr-row {
@@ -432,8 +497,10 @@ html[data-theme='dark'] .pr-section .pr-cta {
     }
   }
 
+  /* the head cell — col3 renders LEFT (the reference's x7-368
+   * quarter); its own measured 17.37rem box + rules ride unchanged */
   .pr-section .pr-head {
-    grid-column: 1;
+    grid-column: 3;
     grid-row: 1;
     margin-inline: 0;
     block-size: 17.37rem;
@@ -444,11 +511,14 @@ html[data-theme='dark'] .pr-section .pr-cta {
     margin-block-start: 7.02rem; /* label-top→title-top = 9rem (measured) */
   }
 
+  /* the side cell — col1 renders RIGHT (the reference's x969-1433
+   * third; the Arabic reading start); the r368 stack: text → spec
+   * panel → CTA (block-size auto, the panel under the text's tail) */
   .pr-section .pr-side {
-    grid-column: 3;
+    grid-column: 1;
     grid-row: 1;
     margin-inline: 0;
-    block-size: 17.37rem;
+    block-size: auto;
   }
 
   .pr-section .pr-sidebox {
@@ -456,7 +526,7 @@ html[data-theme='dark'] .pr-section .pr-cta {
   }
 
   .pr-section .pr-cta {
-    block-size: 4.77rem; /* 53 @1920 · 40 @1440 (measured) */
+    block-size: auto; /* r368: content-driven (the strip follows the spec panel) */
   }
 
   .pr-section .pr-rowimg {
@@ -476,7 +546,7 @@ html[data-theme='dark'] .pr-section .pr-cta {
  * same commit (9 leaves, 0.014% of the ratchet; the HCLIP exclusion
  * entry removed from panel.mjs). */
 
-/* ── 768–991 — the two-col fold: img | head+side, rows 254/258 ────── */
+/* ── 768–991 — the two-col fold, UN-MIRRORED: img LEFT | text RIGHT ── */
 @media (max-width: 991px) {
   /* r338 T-08c2 — specificity seat: the base .pr-section .pr-imgs
      (display:grid) outranked the old bare .pr-imgs selector, so the
@@ -486,6 +556,14 @@ html[data-theme='dark'] .pr-section .pr-cta {
     display: none; /* heron's central column is 0×0 ≤991 (measured census) */
   }
 
+  /* r368 — the dark spec panel is heron's own ≤991 census state: NO
+     menu node exists at 768/390, so the static panel folds with the
+     hover menu it replaces (the phone arm keeps the per-row captures
+     + the CTA strip — the reference's own phone band). */
+  .pr-section .pr-menu {
+    display: none;
+  }
+
   .pr-section .pr-row {
     display: grid;
     grid-template-columns: 50% 50%; /* img 377 | content 376 @768 (measured) */
@@ -493,17 +571,20 @@ html[data-theme='dark'] .pr-section .pr-cta {
     align-items: start;
   }
 
+  /* R368 UN-MIRROR — the fold flips to heron's own 768 order: img at
+   * x7 (the LEFT half — col2 renders left in RTL), head+side at x384
+   * (the RIGHT half — col1). The r338 fold had the image RIGHT. */
   .pr-section .pr-rowimg {
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 1 / -1;
   }
 
-  .pr-section .pr-rowimg img {
+  .pr-section .pr-rowimg .pr-media {
     block-size: 27.6rem; /* 254px @768 (measured) */
   }
 
   .pr-section .pr-head {
-    grid-column: 2;
+    grid-column: 1;
     grid-row: 1;
     block-size: 9.24rem; /* 85 @768 (measured) */
     padding: 2.4rem 2.4rem 0 2.4rem; /* label @x406 y7628 (measured) */
@@ -519,7 +600,7 @@ html[data-theme='dark'] .pr-section .pr-cta {
   }
 
   .pr-section .pr-side {
-    grid-column: 2;
+    grid-column: 1;
     grid-row: 2;
     /* R347-Z (D8 family): auto, not the measured 18.37rem — the Arabic
      * text + the CTA strip need more than the fixed seat, and the fixed
@@ -537,12 +618,6 @@ html[data-theme='dark'] .pr-section .pr-cta {
   .pr-section .pr-cta {
     block-size: auto; /* R347-Z: content-driven (the two lines + the icon row) */
   }
-
-  .pr-section .pr-menu {
-    inline-size: 100%;
-    inset-block-start: auto;
-    inset-block-end: 4.9rem;
-  }
 }
 
 /* ── ≤767 — the stacked fold: img 226 + head 87 + side, rows 474 ──── */
@@ -553,11 +628,16 @@ html[data-theme='dark'] .pr-section .pr-cta {
     grid-template-columns: 1fr;
   }
 
+  /* the stacked fold re-seats the rowimg in the ONE column (the ≤991
+   * fold's grid-column: 2 would ride into an implicit second column
+   * and squeeze the stack — the reference's own 390 band is full-width
+   * img over head over side, rows 474) */
   .pr-section .pr-rowimg {
+    grid-column: 1;
     grid-row: 1;
   }
 
-  .pr-section .pr-rowimg img {
+  .pr-section .pr-rowimg .pr-media {
     block-size: 22.77rem; /* 226px @390 (measured) */
   }
 

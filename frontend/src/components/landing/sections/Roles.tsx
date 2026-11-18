@@ -1,11 +1,25 @@
-/* P2-0 (r335 split) — [7] الأدوار — R337 (A-usecase): the section is
- * REBUILT against the frozen Heron spec (docs/redesign/r335/heron-spec/
- * home-usecase-wrap.*.json). Heron's usecase band is a hairline-framed
- * full-bleed scene: a media pane on one side (an 8-slide image deck,
- * one slide per accordion row) and a ruled accordion on the other — a
- * label, a three-line display title, and eight rows (title + plus
- * glyph; the first row open with its honest one-line answer). Every
- * measured parameter mirrors the spec; every WORD is ours.
+/* P2-0 (r335 split) — [7] الأدوار — R368 T3 (usecase seat): IMAGE-LED,
+ * un-mirrored against the frozen Heron spec (docs/redesign/r335/heron-spec/
+ * home-usecase-wrap.*.json). The reference's band is image-led — ONE dominant
+ * photographic mass on the LEFT (the media column + its deck img read
+ * x≈-2% of the section at 1440) with the ruled list on the right; the r337
+ * build mirrored the halves for RTL, which the E law (SSIM over aligned
+ * regions) scores as structure-vs-text misalignment. The grid now follows
+ * the statement.css 'stmt media' precedent: media pane at the physical
+ * LEFT, the Arabic text column at the physical right (the RTL reading
+ * start), the text itself RTL inside its cells — the language law holds.
+ *
+ * The image: manifest id r368/usecase-student — a Madarek-owned editorial
+ * portrait (768×1344, a student at a laptop; light + dark webp twins
+ * ≤60KB; provenance docs/audit/evidence/asset-provenance-r368.json). It
+ * fills the media pane edge to edge (object-fit cover, the manifest's own
+ * contract) and crop-bleeds past the pane's edges at the reference's own
+ * measured deck seats (the live slide img -1.35% inset ≥1440, the parked
+ * slides' 1.04 scale — geometry unchanged from the r337 census build).
+ * The census shell stays 8 slides (the mapping contract) — the ONE image
+ * rides every slide, so the deck reads as a single dominant image block;
+ * the light twin carries the slideimg.N census binding, the dark twin
+ * swaps on the theme token (visibility, geometry never moves).
  *
  * Honesty contracts kept from the r168b/r188 pins (verbatim lines):
  *  · «المعامل الافتراضية … دون تشغيل بعد» — the VR-labs row is a
@@ -13,14 +27,21 @@
  *  · the five verified platform roles keep their real one-liners;
  *    the honest-absence personas keep theirs.
  *  · No funnel CTA here (the 5-register / 6-login counts stay).
- *  · Images are the repo's own seeded-demo captures (public/media/
- *    product) — real UI, demo data, nothing invented.
+ *  · The retired per-row imagery: the r337/r342-era product-capture deck
+ *    (public/media/product) leaves this seat — the files stay (the
+ *    product register is untouched); the r342 role illustrations under
+ *    public/media/illustrations/r342/roles/ stay on disk unreferenced by
+ *    this seat (they were already unused by the r337 deck; noted in the
+ *    r368 report).
  *
- * STRUCTURE (the spec's own element census — 1920):
+ * STRUCTURE (the spec's own element census — 1920; unchanged — the mapping
+ *   binds every key):
  *   section > ruleTop · ruleBottom · frame
- *   frame > media · titlecol · contentcol        (the 50/50 split;
- *     titlecol/contentcol stack in the right half)
- *   media  > mediarule · deck > inner > slide×8 > img×8
+ *   frame > media · titlecol · contentcol        (the 50/50 split; media at
+ *     the physical LEFT, titlecol/contentcol stack in the right half — the
+ *     RTL reading start)
+ *   media  > mediarule · deck > inner > slide×8 > (light + dark img twins
+ *     — roles.slideimg.N binds the light twin)
  *   titlecol > labelbox > label · h2box > h2 (3 lines, 2 <br>)
  *            · midrule (stacked bands only)
  *   contentcol > accwrap > acc > row×8
@@ -36,11 +57,26 @@
  * (r-1)*15 + 5). */
 import { useState } from 'react';
 
-/* ── The deck: the eight accordion rows, each with its real capture.
- * The five verified roles first (their lines are the ROLE_SHOWCASES
- * copy the r168b pins ride), then the three honest personas. */
+/* ── The deck's ONE image — manifest id r368/usecase-student: the
+ * Madarek-owned editorial portrait (a university student at a laptop;
+ * light + dark twins — the theme token flips the pair, the wy-cycle
+ * visibility grammar). The per-row product-capture deck of the r337
+ * build retires with this rework: the section reads as ONE dominant
+ * image + the role list, exactly the reference's image-led mass. The
+ * alt is the manifest's own altAr (the asset contract's Arabic line). */
+const DECK_ART = {
+  light: '/media/illustrations/r368/roles/usecase-plate-light.webp',
+  dark: '/media/illustrations/r368/roles/usecase-plate-dark.webp',
+  alt: 'طالب جامعي لحيتة داكنة يكتب على حاسوبه المحمول في غرفة هادئة يضيئها ضوء نهاري طبيعي',
+  width: 768,
+  height: 1344,
+} as const;
+
+/* ── The ruled list: the eight accordion rows (the seat's content —
+ * the five verified platform roles first, then the three honest
+ * personas; the one-liners are the ROLE_SHOWCASES copy the r168b pins
+ * ride). */
 interface RoleRow {
-  img: string;
   num: string;
   title: string;
   line: string;
@@ -48,49 +84,41 @@ interface RoleRow {
 
 const ROLE_ROWS: RoleRow[] = [
   {
-    img: 'student-dashboard-720',
     num: '01',
     title: 'الطالب',
     line: 'رحلة تعلّم شخصية — من المحاضرة الأولى إلى الإتقان: جدول اليوم، والمهام، والتقدّم في مقرّر واحد.',
   },
   {
-    img: 'teacher-dashboard-720',
     num: '02',
     title: 'الأستاذ',
     line: 'بناء المحاضرات والاختبارات، وتصحيح بملاحظات، ومتابعة الطلاب قسمًا قسمًا.',
   },
   {
-    img: 'admin-dashboard-720',
     num: '03',
     title: 'المسجل العام',
     line: 'الكليات والأقسام والمقرّرات والصلاحيات، وتقارير حيّة عنها جميعًا.',
   },
   {
-    img: 'quality-dashboard-720',
     num: '04',
     title: 'ضمان الجودة',
     line: 'مجالس الجودة ومؤشرات الالتزام — وكل مؤسّسة معزولة تمامًا عن غيرها.',
   },
   {
-    img: 'owner-dashboard-720',
     num: '05',
     title: 'مالك المنصّة',
     line: 'الحاكمية والمؤسّسات وسجلّ التدقيق — والصلاحيات منفصلة دورًا عن دور.',
   },
   {
-    img: 'student-library-720',
     num: '06',
     title: 'الباحث',
     line: 'طالب أو أستاذ يكتب بحثه: رفع PDF، وفحص نزاهة معلَن، وملاحظات معلَّمة من الأستاذ.',
   },
   {
-    img: 'student-matrix-720',
     num: '07',
     title: 'مشرف المعمل',
     line: 'المعامل الافتراضية قيد التطوير — فهرس للاستعراض دون تشغيل بعد.',
   },
   {
-    img: 'student-lecture-player-720',
     num: '08',
     title: 'وليّ الأمر',
     line: 'لا حساب منفصل لوليّ الأمر اليوم — المتابعة تمرّ عبر تقرير الطالب نفسه.',
@@ -99,17 +127,6 @@ const ROLE_ROWS: RoleRow[] = [
 
 /** the row that starts open (and whose slide starts active) */
 const FIRST_OPEN = 0;
-
-/* r342-06 — the deck's resolution ladder: the media pane renders ~950px
- * wide @1920 (50% of the full-bleed frame), so the 720-only source
- * upscaled softly on the wide desktop. The -1280 twins of the same
- * seeded captures (public/media/product) join via srcSet; the pinned
- * slide boxes never move (the img is absolutely inset in its slide —
- * only the served bitmap sharpens). */
-const slideSrcSet = (img: string) => {
-  const base = img.replace(/-720$/, '');
-  return `/media/product/${base}-720.webp 720w, /media/product/${base}-1280.webp 1280w`;
-};
 
 /* T-13: heron faq hover ordinals (spec hovers: 5/6/7 · 20/21/22 · 35). */
 const ROLE_HOVER_ORD = [5, 6, 7, 20, 21, 22, 35];
@@ -134,10 +151,14 @@ export function Roles() {
       <div className="rl-rule rl-rule-bottom" aria-hidden="true" data-spec="roles.rulebottom" />
 
       <div className="rl-frame" data-spec="roles.frame">
-        {/* ── the media pane: the 8-slide deck. One slide per row; the
-            open row's slide is active (the spec's transform,opacity
-            .4s ease cross-fade). The pane's inner edge carries the
-            center hairline (a real 1px element — the spec's mid rule). */}
+        {/* ── the media pane: the ONE dominant image in the census shell.
+            The 8-slide deck (the mapping contract, one slide per row)
+            carries the SAME twin pair on every slide — the section reads
+            as a single portrait block at the reference's measured image
+            seat; the open row's slide stays the active one (the census
+            transform/opacity cross-fade — visually a no-op now). The
+            pane's inner edge carries the center hairline (a real 1px
+            element — the spec's mid rule). */}
         <div className="rl-media" aria-hidden="true" data-spec="roles.media">
           <div className="rl-mediarule" data-spec="roles.mediarule" />
           <div className="rl-deck" data-spec="roles.mediadeck">
@@ -148,16 +169,28 @@ export function Roles() {
                   className={`rl-slide${i === open ? ' is-active' : ''}`}
                   data-spec={`roles.slide.${i + 1}`}
                 >
+                  {/* the twin pair: the LIGHT twin carries the slideimg.N
+                      census binding; the dark twin rides the same box
+                      (the theme token swaps them — geometry never moves) */}
                   <img
-                    src={`/media/product/${r.img}.webp`}
-                    srcSet={slideSrcSet(r.img)}
-                    sizes="(min-width: 992px) 50vw, 100vw"
-                    alt=""
+                    className="rl-slide-img is-light"
+                    src={DECK_ART.light}
+                    alt={DECK_ART.alt}
                     loading="lazy"
                     decoding="async"
-                    width={720}
-                    height={450}
+                    width={DECK_ART.width}
+                    height={DECK_ART.height}
                     data-spec={`roles.slideimg.${i + 1}`}
+                  />
+                  <img
+                    className="rl-slide-img is-dark"
+                    src={DECK_ART.dark}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
+                    width={DECK_ART.width}
+                    height={DECK_ART.height}
                   />
                 </div>
               ))}

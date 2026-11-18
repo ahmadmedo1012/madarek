@@ -130,13 +130,20 @@
 .hpf-14 { position: absolute; inset-inline-start: 80.04rem; inset-block-start: 48.22%; inline-size: 4.8rem; block-size: 1.32rem; font-size: 1rem; line-height: 1.35rem; font-weight: var(--fw-medium); color: var(--hpf-ink); }
 @media (min-width: 768px) and (max-width: 991px) { .hpf-14 { display: none; } }
 @media (max-width: 767px) { .hpf-14 { display: none; } }
-.hpf-15 { position: absolute; inset-inline-start: 81.24rem; inset-block-start: 48.22%; inline-size: 2.4rem; block-size: 1.2rem; font-size: 1rem; line-height: 1.35rem; font-weight: var(--fw-medium); color: var(--hpf-ink); }
+/* r368 T3 — stress (c): hpf-15/17 are now NESTED inside hpf-14/16
+ * (HeroPlate.tsx — the frozen spec's own div[1] > span[1] structure:
+ * the 40×11 numeral box contains the 20×10 word chip at the 10px
+ * inset), so their insets re-anchor to their PARENT boxes: the same
+ * rendered geometry (81.24rem − 80.04rem = the 1.2rem start inset;
+ * the parent's own 48.22%/49.92% block seat = a 0 block inset), a
+ * hand-edit over the generated value — regenerate with the same
+ * nesting or keep this pair. */.hpf-15 { position: absolute; inset-inline-start: 1.2rem; inset-block-start: 0rem; inline-size: 2.4rem; block-size: 1.2rem; font-size: 1rem; line-height: 1.35rem; font-weight: var(--fw-medium); color: var(--hpf-ink); }
 @media (min-width: 768px) and (max-width: 991px) { .hpf-15 { display: none; } }
 @media (max-width: 767px) { .hpf-15 { display: none; } }
 .hpf-16 { position: absolute; inset-inline-start: 80.04rem; inset-block-start: 49.92%; inline-size: 4.8rem; block-size: 1.32rem; font-size: 1rem; line-height: 1.35rem; font-weight: var(--fw-medium); color: var(--hpf-ink); }
 @media (min-width: 768px) and (max-width: 991px) { .hpf-16 { display: none; } }
 @media (max-width: 767px) { .hpf-16 { display: none; } }
-.hpf-17 { position: absolute; inset-inline-start: 81.24rem; inset-block-start: 49.92%; inline-size: 2.4rem; block-size: 1.2rem; font-size: 1rem; line-height: 1.35rem; font-weight: var(--fw-medium); color: var(--hpf-ink); }
+.hpf-17 { position: absolute; inset-inline-start: 1.2rem; inset-block-start: 0rem; inline-size: 2.4rem; block-size: 1.2rem; font-size: 1rem; line-height: 1.35rem; font-weight: var(--fw-medium); color: var(--hpf-ink); } /* r368 T3 — see the hpf-15 note: nested in hpf-16 */
 @media (min-width: 768px) and (max-width: 991px) { .hpf-17 { display: none; } }
 @media (max-width: 767px) { .hpf-17 { display: none; } }
 .hpf-18 { position: absolute; inset-inline-start: 74.64rem; inset-block-start: 47.3%; inline-size: 15.6rem; block-size: 4.2rem; background-color: var(--hpf-ink-solid); color: var(--hpf-dot); opacity: 0; }

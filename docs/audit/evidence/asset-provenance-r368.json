@@ -11,52 +11,6 @@
  },
  "assets": [
   {
-   "id": "r368/intro-courtyard",
-   "slot": "home-intro-wrap",
-   "source": {
-    "file": "intro-courtyard.png",
-    "generator": "z-ai image CLI (original AI-generated artwork, Madarek-owned output)",
-    "prompt": "Minimalist architectural ink line drawing of a university campus courtyard, orthographic elevation view, thin precise dark ink lines on warm cream paper background, generous empty margins, one single bold orange-red circle accent overlapping the drawing's corner, technical drafting aesthetic, monochrome, no text, no perspective, flat 2D",
-    "dims": [
-     1024,
-     1024
-    ],
-    "sha256_16": "09eb7d988766429e"
-   },
-   "light": {
-    "path": "frontend/public/media/illustrations/r368/statement/intro-courtyard-light.webp",
-    "bytes": 56576,
-    "quality": 70,
-    "scale": 1.0,
-    "steps": [
-     {
-      "q": 70,
-      "scale": 1.0,
-      "bytes": 56576
-     }
-    ]
-   },
-   "dark": {
-    "path": "frontend/public/media/illustrations/r368/statement/intro-courtyard-dark.webp",
-    "bytes": 56230,
-    "quality": 70,
-    "scale": 1.0,
-    "derivation": "paper/ink inversion of the light twin (geometry never moves)",
-    "steps": [
-     {
-      "q": 70,
-      "scale": 1.0,
-      "bytes": 56230
-     }
-    ]
-   },
-   "edgeEnergy": {
-    "ratio_1x": 1.002,
-    "ratio_2x": 0.999,
-    "read": "1x/2x edge-energy ratio vs the PNG source at matched effective scale; ~1.0 = no visible softening"
-   }
-  },
-  {
    "id": "r368/platform-floorplan",
    "slot": "platform",
    "source": {
@@ -109,52 +63,6 @@
    "edgeEnergy": {
     "ratio_1x": 0.997,
     "ratio_2x": 0.994,
-    "read": "1x/2x edge-energy ratio vs the PNG source at matched effective scale; ~1.0 = no visible softening"
-   }
-  },
-  {
-   "id": "r368/usecase-student",
-   "slot": "roles",
-   "source": {
-    "file": "usecase-student.png",
-    "generator": "z-ai image CLI (original AI-generated artwork, Madarek-owned output)",
-    "prompt": "Portrait of a focused Libyan university student studying with a laptop in a bright minimal room, soft natural window light, muted warm tones, editorial photography, calm scholarly mood, neutral cream background, high quality",
-    "dims": [
-     768,
-     1344
-    ],
-    "sha256_16": "b6c40d05f174251d"
-   },
-   "light": {
-    "path": "frontend/public/media/illustrations/r368/roles/usecase-student-light.webp",
-    "bytes": 47722,
-    "quality": 70,
-    "scale": 1.0,
-    "steps": [
-     {
-      "q": 70,
-      "scale": 1.0,
-      "bytes": 47722
-     }
-    ]
-   },
-   "dark": {
-    "path": "frontend/public/media/illustrations/r368/roles/usecase-student-dark.webp",
-    "bytes": 47452,
-    "quality": 70,
-    "scale": 1.0,
-    "derivation": "paper/ink inversion of the light twin (geometry never moves)",
-    "steps": [
-     {
-      "q": 70,
-      "scale": 1.0,
-      "bytes": 47452
-     }
-    ]
-   },
-   "edgeEnergy": {
-    "ratio_1x": 1.006,
-    "ratio_2x": 1.0,
     "read": "1x/2x edge-energy ratio vs the PNG source at matched effective scale; ~1.0 = no visible softening"
    }
   },
@@ -223,6 +131,65 @@
     "ratio_2x": 1.01,
     "read": "1x/2x edge-energy ratio vs the PNG source at matched effective scale; ~1.0 = no visible softening"
    }
+  },
+  {
+   "id": "r368/intro-tower",
+   "slot": "home-intro-wrap",
+   "source": {
+    "file": "intro-tower.png",
+    "generator": "glm-image via z-ai image CLI (original AI-generated work)",
+    "prompt": "Minimalist architectural ink line drawing on warm cream paper: ONE tall modernist tower with vertical slot windows rising from bottom edge to top of frame, narrow vertical silhouette positioned center-right of the image, thin dark ink linework with dense vertical hatching making the tower read as a dark vertical column, a LARGE bold orange-red circle (about one quarter of image width) overlapping the tower's upper right shoulder, generous empty cream margins on the left side, orthographic elevation, technical drafting aesthetic, monochrome plus single orange accent, no text, flat 2D",
+    "dims": [
+     864,
+     1152
+    ],
+    "sha256_16": null
+   },
+   "light": {
+    "path": "frontend/public/media/illustrations/r368/statement/intro-tower-light.webp",
+    "bytes": 42218,
+    "quality": 70,
+    "scale": 1.0
+   },
+   "dark": {
+    "path": "frontend/public/media/illustrations/r368/statement/intro-tower-dark.webp",
+    "bytes": 41734,
+    "quality": 70,
+    "scale": 1.0,
+    "derivation": "paper/ink inversion of the light twin"
+   },
+   "iterationNote": "v1 intro-courtyard (low-wide classical facade, circle top-left) measured structurally wrong against the reference crop (tall vertical dark column at the image/text boundary with a large circle overlapping its upper shoulder) — regenerated as v2 intro-tower; the v1 file is retired from the manifest (kept on disk as the draft record until Task 3 wiring stabilises, then removed with the evidence note)",
+   "tonalStructure": {
+    "darkMass": "22.5% of image, right third (56% column density), mid 11%, left 0%",
+    "orangeBlob": "5.8% area"
+   }
+  },
+  {
+   "id": "r368/usecase-plate",
+   "slot": "home-usecase-wrap",
+   "source": {
+    "file": "usecase-plate.png",
+    "generator": "z-ai image CLI photo base + PIL composite of the measured orange seats (disc centroid 24%w/27%h Ø38%w; tall rect centroid 76%w/22%h 24%w×46%h) + luminance remap to the reference's measured 8×8 profile",
+    "prompt": "Grayscale high-texture architectural photograph, dramatic modern building facade with deep shadows and bright concrete, documentary black-and-white photography, strong tonal variation from light gray to near black, muted warm tone, no people, no text",
+    "dims": [
+     864,
+     1152
+    ]
+   },
+   "light": {
+    "path": "frontend/public/media/illustrations/r368/roles/usecase-plate-light.webp",
+    "bytes": 67374,
+    "quality": 35,
+    "scale": 1.0
+   },
+   "dark": {
+    "path": "frontend/public/media/illustrations/r368/roles/usecase-plate-dark.webp",
+    "bytes": 67144,
+    "quality": 35,
+    "scale": 1.0,
+    "derivation": "paper/ink inversion composite"
+   },
+   "iterationNote": "v1 usecase-student (a portrait) measured wrong against the reference crop (its left half = a mid-dark HIGH-VARIANCE architectural photo + an ember disc + an ember tall rectangle — measured components); v2 usecase-plate composites those measured seats over a generated architectural photo remapped to the reference's luminance profile"
   }
  ],
  "derivativePipeline": "ffmpeg libwebp, quality descent 70->35, 0.85x scale steps, floor 35 (GRAPHICS-PIPELINE.md §3b)",

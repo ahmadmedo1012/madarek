@@ -19,7 +19,19 @@
    lh floor 1.35×fs. Colors: --rule-strong IS the spec rgb(179,179,175),
    --accent IS rgb(250,54,0); the 72% soft ink + quiet mono greys ride
    the spec-exact literals (color-gate allows) and flip to the site's
-   dark tokens under [data-theme="dark"]. */
+   dark tokens under [data-theme="dark"].
+
+   R368 T3 — the print-ladder rework (the E=43.2 finding): col1's brow
+   cluster retires (the reference's col1 = brand block + newsletter row
+   only; every brow href survives in the col2 link columns — الكليات
+   joins المنتج); the three link columns gain terse Arabic headers + 1px
+   seam dividers; the contact CTA (h3 + the /contact door) lifts out of
+   the col2 CONTACT group into its own underlined strip above the band;
+   the band becomes the GIANT outlined «مدارك» wordmark (the reference's
+   tonal anchor — the census's 1427×314 seat) — the r342 skyline render
+   retires from that seat (no counterpart in the reference at that
+   position; the asset files stay, the col3 mark-img stub keeps the
+   reference). */
 
 .fo-footer {
   /* T-06j: the fluid unit — 1px @1440, 100vw/1440 everywhere */
@@ -91,23 +103,10 @@
   font-weight: 500;
   color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink); color-mix() renders as color() in the twin */
 }
-.fo-brow {
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: calc(var(--fu) * 10);
-  margin-block-start: calc(var(--fu) * 5);
-  min-block-size: calc(var(--fu) * 26);
-  align-items: center;
-}
-.fo-ilink {
-  text-decoration: none;
-  color: inherit;
-  font-size: calc(var(--fu) * 13.33);
-  line-height: calc(var(--fu) * 17.33);
-  font-weight: 500;
-  transition: color 0.4s ease; /* the census link transition (0.4s/ease seats) */
-}
-.fo-ilink-t { cursor: pointer; line-height: 18px; } /* the census's interactive label seats; R343: the 1.35x floor */
+/* R368 T3 — the brow cluster (col1's 4+3+2 inline link rows) is
+   RETIRED: the reference's col1 carries the brand block + the
+   newsletter row only; every brow href survives in the col2 link
+   columns (الكليات rides المنتج). */
 /* r188/r320 §D — the independence paragraph (VERBATIM the About
    page's own sentence) + the r320 contact-cell heading */
 .fo-footer-about {
@@ -131,7 +130,7 @@
   font-weight: 500;
   color: var(--c-grey-ink); /* the quiet mono grey — --c-grey-ink IS the spec rgb(98,98,96) */
 }
-.fo-mono-label-t { color: inherit; }
+.fo-mono-label-t { color: inherit; font-size: 11.67px; line-height: 16.33px; } /* R343: the mono text seats' own pitch (was inheriting 13.33 in some zones) */
 
 /* R342-07 — the subscribe zone (the census's c1sub > div[2] > [label,
    div[1] > form] tree): its own 63×16 mono label, then the form
@@ -225,6 +224,10 @@
   grid-template-columns: 1fr 1fr 1fr;
 }
 .fo-lgroup { padding: calc(var(--fu) * 13.33); min-inline-size: 0; }
+/* R368 T3 — the print ladder's visible seams: 1px hairline dividers
+   between the three link columns (the census's own 1×203 rules at
+   the column seams); the bottom groups ride undivided */
+.fo-c2-top .fo-lgroup + .fo-lgroup { border-inline-start: 1px solid var(--rule-strong); }
 .fo-lg-links { margin-block-start: calc(var(--fu) * 4.17); }
 /* R342-07 — the census link seats: fit-content <a> boxes (47–135fu wide,
    26fu tall, label 17fu) stacked one per line; the labels carry the
@@ -252,26 +255,60 @@
 }
 .fo-link-accent,
 .fo-link-accent .fo-link-t { color: var(--accent); }
-.fo-biglink {
-  display: block;
-  margin-block-start: calc(var(--fu) * 5);
-  padding: calc(var(--fu) * 4.17);
+/* R368 T3 — the CTA strip: the reference's distinct contact row above
+   the wordmark — the h3 header + the underlined /contact door + the
+   RTL-mirrored chevron (the ArrowIcon grammar). The biglink seats
+   re-home here from the col2 CONTACT group (same data-spec keys, the
+   ds-based pairing); the underline affordance is the reference's own
+   email+phone grammar (currentColor — the hover sweep flips it). */
+.fo-cta-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: calc(var(--fu) * 13.33);
+  padding-block: calc(var(--fu) * 14.17);
+  padding-inline: calc(var(--fu) * 13.33);
+}
+.fo-cta-link {
+  display: inline-flex;
+  align-items: center;
+  column-gap: calc(var(--fu) * 8.33);
   text-decoration: none;
-  transition: color 0.4s ease;
+  color: var(--text);
+  transition: color 0.4s ease; /* the census link transition seat */
+}
+.fo-cta-arrow {
+  inline-size: calc(var(--fu) * 17);
+  block-size: calc(var(--fu) * 17);
+  overflow: visible;
+  color: inherit;
+}
+.fo-cta-arrow-path {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+/* the strip's own terse header — the h3 reset to the label ladder (the
+   base h3 rung would render 2.5em here; the belts pin their own pitches) */
+.fo-contact-h {
+  margin: 0;
+  font-size: calc(var(--fu) * 13.33);
+  line-height: calc(var(--fu) * 17.33);
   color: var(--text);
 }
 .fo-link-account { line-height: 1.35; } /* R366: the R343 fixed 18px broke the fu-scaled tree (@1024 exp 12.8 · @1920 exp 24 — the aLh floor is 1.35×fs, not a constant) */
-.fo-mono-label-t { font-size: 11.67px; line-height: 16.33px; } /* R343: the mono text seats' own pitch (was inheriting 13.33 in some zones) */
-.fo-social-t { line-height: 18px; }
 .fo-biglink-t {
-  font-size: calc(var(--fu) * 20);
-  line-height: calc(var(--fu) * 22);
-  font-weight: 700;
+  font-size: calc(var(--fu) * 26.67); /* the reference CTA law: 26.67fs · 600 — the census's colA contact row */
+  line-height: calc(var(--fu) * 26.67);
+  font-weight: 600;
   color: inherit;
+  text-decoration: underline; /* the underlined contact affordance — the ink rides currentColor */
+  text-underline-offset: 0.3em;
   cursor: pointer;
 }
 @media (hover: hover) and (pointer: fine) {
-  .fo-biglink:hover { color: var(--accent); }
+  .fo-cta-link:hover { color: var(--accent); }
 }
 /* R342-07 — the CHANNELS grid: the census's 2×3 single-line link seats
    (99×26 boxes, 91×17 labels) — the retired two-line socials rode the
@@ -292,7 +329,7 @@
 }
 .fo-social-t {
   font-size: calc(var(--fu) * 13.33);
-  line-height: calc(var(--fu) * 17.33);
+  line-height: 18px; /* R343: the 1.35x floor (18px @1440 — the census's interactive label seats) */
   font-weight: 500;
   color: var(--text);
   cursor: pointer;
@@ -307,6 +344,7 @@
   position: relative;
   display: grid;
   place-items: center;
+  color: var(--text); /* the col3 rail ink — the census seat is OPAQUE text ink, not the 72% soft ink the footer root carries */
   transition: opacity 0.65s cubic-bezier(0.59, 0.23, 0.22, 0.96); /* the census col3 transition seat */
 }
 /* R342-07 — the rail's own seat: the census vrule runs the FULL column
@@ -351,22 +389,59 @@
 .fo-mark-p--point { fill: var(--accent); stroke: none; }
 .fo-mark-img { inline-size: calc(var(--fu) * 215); block-size: 0; }
 
-/* ═══ the strip band: OUR ink render + the grayscale twin + chrome ═══ */
-/* T-06k census re-seat: the grid's accumulated height delta above the
-   band, measured per bp (−37@1920 · −39@1440 · −29@1024 · −54@768 —
-   non-linear, so per-belt seats); 390 keeps the parked deck */
-.fo-fstrip { position: relative; block-size: calc(var(--fu) * 314); overflow: hidden; margin-block-start: 0; } /* R347 D5: the -39px census pull-up is retired - it sat the photo strip's top edge under the socials' last row (الخصوصية/الشروط printed over the image); the socials now clear the band */ /* 235/314/419 — the census band law */
+/* ═══ R368 T3 — the wordmark band: the giant outlined «مدارك» — the
+    reference's own tonal anchor (the census's 1427×314 img render +
+    its svg twin at the same seats). The r342 skyline photo strip
+    retires from this seat (no counterpart in the reference there);
+    the chrome zone (edge rules + corner regs) stays the census's own.
+    T-06k census re-seat: the grid's accumulated height delta above the
+    band, measured per bp (−37@1920 · −39@1440 · −29@1024 · −54@768 —
+    non-linear, so per-belt seats); 390 keeps the parked deck */
+.fo-fstrip { position: relative; block-size: calc(var(--fu) * 314); overflow: hidden; margin-block-start: 0; } /* 235/314/419 — the census band law */
 .fo-strip-in { position: absolute; inset: 0; }
-.fo-strip-media,
-.fo-strip-twin { position: absolute; inset: 0; }
-.fo-strip-img {
+.fo-strip-media { position: absolute; inset: 0; }
+.fo-strip-twin {
+  position: absolute;
+  inset: 0;
+  visibility: hidden; /* the census svg twin seat — stays in the tree for the ds-based pairing, never paints (the DOM-text wordmark is the render — the twin-swap grammar's hidden arm) */
+}
+.fo-wordmark {
+  /* the primary render — DOM text, stroke-only ink on the paper ground.
+     fs 240fu rides the 314fu band: the ink block ≈ 1.15em ≈ 276fu tall,
+     the advance ≈ 2.71em ≈ 650fu wide — the widest single-word مدارك
+     that keeps the census band's own box law; lh = fs (the
+     fo-brand-name display law). -webkit-text-stroke draws the outline;
+     the fill is transparent; the ink var flips in dark via the token. */
   inline-size: 100%;
   block-size: 100%;
-  object-fit: cover;
-  display: block;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: calc(var(--fu) * 240);
+  line-height: calc(var(--fu) * 240);
+  letter-spacing: 0; /* Arabic joins — never tracked */
+  color: transparent;
+  -webkit-text-stroke: calc(var(--fu) * 2.2) var(--text);
+  opacity: 0.9;
+  user-select: none;
+  /* the optical seat: the ink block (0.85em above the baseline, ~0.15em
+     below) hangs ~19.5fu below the band's centre at lh = fs — the nudge
+     recentres the painted strokes (measured 58/19 margins → 39/39) */
+  transform: translateY(calc(var(--fu) * -19.5));
 }
 .fo-strip-svg { inline-size: 100%; block-size: 100%; display: block; }
-.fo-strip-image { inline-size: 100%; block-size: 100%; }
+.fo-strip-image {
+  /* the twin's own wordmark (SVG text — stroke + transparent fill, the
+     reference's own svg-twin grammar) */
+  font-family: var(--font-display);
+  font-size: calc(var(--fu) * 240);
+  font-weight: 600;
+  letter-spacing: 0;
+  fill: none;
+  stroke: var(--text);
+  stroke-width: calc(var(--fu) * 2.2);
+}
 
 /* the registration chrome: 4 edge rules (heron paints them via a
    background IMAGE — backgroundColor stays transparent) + the 4 corner
@@ -400,7 +475,6 @@
 
 @media (min-width: 1700px) { .fo-fstrip { margin-block-start: 0; } } /* R347 D5: the census pull-up retired (labels over image) */
 @media (min-width: 992px) and (max-width: 1299.98px) { .fo-fstrip { margin-block-start: 0; } } /* R347 D5 */
-
 /* the © bar + the legal row (R321 §A2 — one ruled line). R342-07: the
    links ride the census's 13.33fs label law + the 0.5s/--ease
    transition seat; the nav + separator grammar is the r321/r332
@@ -475,9 +549,6 @@
    --text-muted (#B4B4B0 dark) clears 7.0:1. Light spec law untouched. */
 [data-theme='dark'] .fo-legal-sep { color: var(--text-muted); }
 
-/* the col3 rail ink — the census seat is OPAQUE text ink, not the 72%
-   soft ink the footer root carries */
-.fo-col3 { color: var(--text); }
 .fo-grid-rule { grid-column: 1 / -1; }
 
 /* ═══ 768 belt — the dumped heron grid model (T-06j), FIXED px:
@@ -503,8 +574,7 @@
      full-width (753×171); row3 = c2-bottom 502×331 | the col3 rail. The
      col wrappers go display:contents so the four blocks seat directly. */
   .fo-col { display: contents; }
-  .fo-col3 { display: block; grid-column: 2; grid-row: 3; }
-  .fo-col2 > div:first-child { display: contents; }
+  .fo-c2-top { grid-column: 2; grid-row: 1; grid-template-columns: 1fr; } /* re-seated below (the col3 rail block) — the dumped-grid model's own half */
   .fo-c1-top { grid-column: 1; grid-row: 1; padding: 22px 22px 0; }
   .fo-rule-bleed { margin-inline: -22px; }
   /* T-06k: heron 768 row2 = the subscribe seat FULL-WIDTH (753×171) */
@@ -512,14 +582,12 @@
   /* col2 unwraps (heron col2@768 = 0×0 window) — its rows place directly */
   .fo-col2 { display: contents; }
   .fo-col2 > div:first-child { display: contents; }
-  /* T-06k: the c2-top label|link half seats BESIDE c1top in row1
-     (heron toprow 753×189 = c1top 377 | half2 377) — the ~100px
-     label-row y-shift the census flagged */
-  .fo-c2-top { grid-column: 2; grid-row: 1; grid-template-columns: 1fr; }
   .fo-c2-bottom { grid-column: 1; grid-row: 3; grid-template-columns: 1fr; inline-size: 502px; }
   /* the label|link row model (lglabel.1 101×26 | lglinks.1 at +106) */
   .fo-lgroup { display: grid; grid-template-columns: auto 1fr; column-gap: 8.33px; align-items: start; padding: 0 22px; }
   .fo-c2-bottom .fo-lgroup { display: block; padding: 0; }
+  /* R368 T3: the dumped 768 grid stacks the groups — no column seams */
+  .fo-c2-top .fo-lgroup + .fo-lgroup { border-inline-start: 0; }
   /* the col3 rail: 251×331, vrule + mark 207 (x+21) + the 166×0 twin */
   .fo-col3 {
     display: grid;
@@ -542,8 +610,6 @@
   /* fixed text/padding seats (the desktop rules are fluid now) */
   .fo-brand-name { font-size: 26.67px; line-height: 26.67px; }
   .fo-brand-sub { margin-block-start: 4.17px; font-size: 13.33px; line-height: 17.33px; }
-  .fo-brow { column-gap: 10px; margin-block-start: 5.83px; min-block-size: 27px; }
-  .fo-ilink { font-size: 13.33px; line-height: 17.33px; }
   .fo-footer-about { margin: 8.33px 0 0; font-size: 11.67px; line-height: 16.33px; }
   .fo-contact-h { margin: 5px 0 0; font-size: 13.33px; line-height: 18px; }
   .fo-mono-label { font-size: 11.67px; line-height: 16.33px; }
@@ -559,21 +625,19 @@
   /* R343 — the census's 768-991 label scale (14.73 + the 1.35x floor 19.89 —
      the reference's own tablet type pitch, the same scale as the input seat) */
   .fo-link-t { font-size: 14.73px; line-height: 19.89px; }
-  .fo-ilink-t { font-size: 14.73px; line-height: 19.89px; }
   .fo-social-t { font-size: 14.73px; line-height: 19.89px; }
-  /* R343 — the census's 390 label pitch (13.89 + the 1.35x floor 18.75);
-     the account funnel pair is the reference's own BIGGER seat (15.88) */
-  /* R343 — the census's 390 label pitch (13.89 + the 1.35x floor 18.75);
-     the account funnel pair is the reference's own BIGGER seat (15.88) */
-  /* R343 — the census's 390 label pitch (the recorded label divs are 13.89/18.06;
-     the a-seat keeps its own 13.33 metrics — only the text div changes) */
-   .fo-biglink { margin-block-start: 5px; padding: 4.17px; block-size: 47px; }
-  .fo-biglink-t { font-size: 19.2px; line-height: 20px; }
+  /* R368 T3 — the CTA strip's 768 seats (fixed px, the belt law) */
+  .fo-cta-strip { padding-block: 10px; padding-inline: 22px; column-gap: 10px; }
+  .fo-cta-link { column-gap: 8.33px; }
+  .fo-cta-arrow { inline-size: 17px; block-size: 17px; }
+  .fo-biglink-t { font-size: 19.2px; line-height: 25.92px; } /* the 19.2@768 pitch on the 1.35×fs floor */
   .fo-socials { margin-block-start: 5px; }
   .fo-social { padding: 4.17px; block-size: 25px; }
-  .fo-social-t { font-size: 14.73px; line-height: 19.89px; } /* R343: the census's 768-991 label scale */
-  /* the chrome band: 217 tall, chrome inset 11 (sctop 694×7 @+19) */
-  .fo-fstrip { block-size: 217px; margin-block-start: 0; } /* R347 D5: the -54px mobile pull-up retired - the worst overlap (socials deep over the image) */
+  /* the wordmark band: 217 tall — the ink law keeps the 1.15em block inside;
+     the fu-scaled stroke would fall to 1.17px here — the belt pins its own
+     hairline weight + the ink's optical nudge (measured 36/19 → 27/27) */
+  .fo-fstrip { block-size: 217px; margin-block-start: 0; } /* the 768 band law */
+  .fo-wordmark { font-size: 170px; line-height: 170px; -webkit-text-stroke: 1.6px var(--text); transform: translateY(-8.5px); }
   .fo-sc-zone { inset: 11px; }
   .fo-sc-t,
   .fo-sc-b { inset-inline: 19px; block-size: 7px; }
@@ -632,7 +696,6 @@
   .fo-mark-cap { min-block-size: 0; }
   .fo-mark-img { inline-size: 0; block-size: 0; margin: 0; }
   .fo-grid-rule { grid-column: 1 / -1; grid-row: auto; }
-  .fo-brow { display: none; }
   .fo-brand-name { font-size: 65.8px; line-height: 79px; }
   .fo-brand-sub { display: none; }
   /* T-06i: heron 390 c1top = 344×79 brand + rule ONLY (0,0,374,118) —
@@ -646,6 +709,7 @@
      the sheet edge (x8) — the blind panel's 8px mobile clearance. */
   .fo-lgroup { display: block; padding: 0 1.61rem; }
   .fo-c2-top .fo-lgroup:first-child { min-block-size: 124px; }
+  .fo-c2-top .fo-lgroup + .fo-lgroup { border-inline-start: 0; } /* the 390 stack — no column seams */
   .fo-lg-links { display: grid; grid-template-columns: 1fr 1fr; margin-block-start: 0; line-height: 15.4px; }
   .fo-lg-links a { padding-block: 0; }
   /* R343 — the form-label seat's 390 pitch: the fluid 11.67fu unit collapsed
@@ -676,20 +740,24 @@
      the account funnel pair is the reference's own BIGGER seat (15.88) */
   .fo-link-t { font-size: 13.89px; line-height: 18.75px; }
   .fo-link-account { font-size: 15.88px; line-height: 21.44px; }
-  /* L2-c: block-size auto + the 38.3px floor — the 2-line Arabic biglink
-     (2×19.2 lh + 8.34 padding = 46.74px) overflowed the fixed 38.3px box
-     and its second line's ink ran 9px into the ADDRESS label below
-     (sweep-measured @390). The floor keeps the 1-line seat at 38.3px. */
-  .fo-biglink { margin-block-start: 5px; padding: 4.17px; block-size: auto; min-block-size: 38.3px; }
-  .fo-biglink-t { font-size: 18.3px; line-height: 19.2px; }
+  /* R368 T3 — the CTA strip's 390 seats (fixed px, the belt law) */
+  .fo-cta-strip { padding-block: 8.33px; padding-inline: 16px; column-gap: 8.33px; }
+  .fo-cta-arrow { inline-size: 20px; block-size: 20px; }
+  .fo-biglink-t { font-size: 18.3px; line-height: 24.75px; } /* the 18.3@390 pitch on the 1.35×fs floor (L2-c's one-line seat) */
   .fo-social { padding: 4.17px; block-size: 23.3px; }
    .fo-social-t { font-size: 13.89px; line-height: 18.75px; } /* R343: the census pitch + the 1.35x floor */
   .fo-socials { margin-block-start: 5px; row-gap: 15px; }
+  /* R368 T3 — the wordmark band's 390 law: the 80px deck carries the
+     outlined wordmark (fs 42 — the ink ≈ 48px, the reference's own
+     334×48 img height law) + the chrome framed INSIDE the band; the
+     legal row follows BELOW (the retired -80px pull-up was the old
+     parked-skylight compression). */
   .fo-fstrip { block-size: 80px; margin-block-start: 0; }
-  .fo-strip-in { block-size: 41.6px; }
-  .fo-strip-media,
-  .fo-strip-twin { inline-size: 181.7px; block-size: 21.7px; inset-inline: 0; margin-inline: auto; inset-block: 9.2px auto; }
-  .fo-sc-zone { inset: auto 6.67px 86.7px 6.67px; block-size: 100.8px; }
+  /* the fu-scaled stroke would fall to 0.6px (sub-pixel, a no-ink band on
+     phones) — the belt pins a legible hairline; the ink is near-centred here
+     (measured 20/15) so no optical nudge */
+  .fo-wordmark { font-size: 42px; line-height: 42px; -webkit-text-stroke: 1.2px var(--text); transform: none; } /* transform:none retires the ≤991 belt's -8.5px nudge (the 42px ink is near-centred) */
+  .fo-sc-zone { inset: 6.67px; }
   .fo-sc-t,
   .fo-sc-b { inset-inline: 12px; block-size: 6px; }
   .fo-sc-l,
@@ -706,7 +774,7 @@
   .fo-legal-p { font-size: 9.92px; line-height: 13.39px; } /* T-06l census: 9.92/13.39@390 */
   .fo-mono { font-size: 9.92px; line-height: 13.39px; }
   .fo-legal-link { padding-inline: 10px; font-size: 11.67px; line-height: 15.17px; }
-  .fo-footer-bottom { margin-block-start: -80px; flex-direction: column; }
+  .fo-footer-bottom { block-size: auto; flex-direction: column; } /* R368 T3: the wordmark band owns its own deck — the -80px pull-up retires; the 42fu box (11px @390) would clip the wrapped rows, so the bar grows with its content */
   /* L2-c (R341 panel-1 finding 3 — mobile footer collisions): the wrapped
      legal rows span the full 374px sheet, so the rows' inline-end links
      park their ink at x18–37 — exactly under the scroll-rule chrome stack
@@ -807,8 +875,6 @@
   .fo-freg { inline-size: 7px; block-size: 7px; }
 }
 
-/* R343 C-2 — the skyline twins swap on the theme token (the wy-cycle
- * grammar); the strip img keeps its recorded box. */
-.fo-strip-img.is-dark { visibility: hidden; }
-[data-theme="dark"] .fo-strip-img.is-light { visibility: hidden; }
-[data-theme="dark"] .fo-strip-img.is-dark { visibility: visible; }
+/* R343 C-2 → R368 T3 — the skyline twin-swap grammar retired with the
+ * strip imgs (the band paints the outlined wordmark now — the ink var
+ * flips in dark via the token on its own). */

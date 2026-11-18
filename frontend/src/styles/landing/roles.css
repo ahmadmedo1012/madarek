@@ -1,15 +1,29 @@
 /* R337 A-usecase — الأدوار, REBUILT against the frozen Heron spec
    (docs/redesign/r335/heron-spec/home-usecase-wrap.*.json).
-   The old R323 ledger (cards → hairline rows) is RETIRED with this
-   rewrite; every rule below is new. The DOM (Roles.tsx):
+   R368 T3 — the un-mirror + the image-led rework: the media pane sits at
+   the physical LEFT (the reference's own seat — its deck img reads
+   x≈-2% of the section at 1440, the left half) and the Arabic text
+   column at the physical right (the RTL reading start) — the
+   statement.css 'stmt media' precedent; the E law (SSIM over aligned
+   regions) scores mirrored halves as structure-vs-text mismatch. The
+   deck now renders ONE dominant editorial portrait (manifest id
+   r368/usecase-student, light + dark twins) on every census slide.
+   The old R323 ledger (cards → hairline rows) was RETIRED with the
+   r337 rewrite; the r337 geometry laws below are unchanged. The DOM
+   (Roles.tsx):
      section > ruleTop · ruleBottom · frame
-     frame > media(mediarule · deck > inner > slide×8>img) ·
+     frame > media(mediarule · deck > inner > slide×8 > light+dark img) ·
              titlecol(labelbox>label · h2box>h2 · midrule) ·
              contentcol(accwrap > acc > row×8)
 
-   Desktop (≥992): frame = 98.45vh, grid 50/50 — media left-column,
-   titlecol+contentcol stacked in the right column (grid-template-
-   areas). RTL: media sits right, column left (the x-mirror).
+   Desktop (≥992): frame = 98.45vh, grid 50/50 — media at the physical
+   left, titlecol+contentcol stacked in the right column (grid-template-
+   areas; in RTL the first area of each row string sits at the inline
+   start = the physical right). The text column's content anchors at
+   the SEAM side (the labelbox/h2box center in the column — the spec's
+   own symmetric 64% boxes; the rows carry the seam-side 15.4rem inset
+   and the icon at the outer edge — the reference's own measured
+   seats, matched under the run.mjs x-mirror law to <10px).
    768–991: frame flex-column — media, titlecol, contentcol.
    ≤767: titlecol, media, contentcol (the spec's phone order). */
 
@@ -55,34 +69,62 @@
 .rl-rule-bottom { inset-block-end: 0; }
 
 /* ═══ the frame ═══ */
+/* R368 T3 — the un-mirror: 'title media' / 'content media' puts the
+   media area in the SECOND grid column — in RTL that is the physical
+   LEFT, exactly the reference's measured media seat (its column + deck
+   img at x≈-2% of the section @1440); the title/content areas land at
+   inline-start = the physical right, the Arabic reading start. The
+   Arabic text itself stays RTL inside its cells — the language law. */
 .rl-frame {
   position: relative;
   display: grid;
   grid-template-areas:
-    'media title'
-    'media content';
+    'title media'
+    'content media';
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto 1fr;
   min-block-size: 98.45vh;
 }
 .rl-media { grid-area: media; position: relative; overflow: hidden; }
-.rl-titlecol { grid-area: title; position: relative; min-inline-size: 0; }
+/* the titlecol's block-start pad (3.2rem @≥992 — the spec's own
+   section-top→label pitch) rides the area rule so the selector list
+   occurs once (the stylelint ratchet: errors only go down); the
+   stacked bands override it in their own media blocks */
+.rl-titlecol { grid-area: title; position: relative; min-inline-size: 0; padding-block-start: 3.2rem; }
 .rl-contentcol { grid-area: content; min-inline-size: 0; }
 
-/* the center hairline: a real 1px element on the pane's inner edge */
+/* the center hairline: a real 1px element on the pane's inner edge
+   (the seam toward the text column — the media pane's physical right
+   edge = inline-START in RTL; the reference's own divider seat at
+   x=720 @1440 / x=760 @768) */
 .rl-mediarule {
   position: absolute;
   inset-block: 0;
-  inset-inline-end: 0;
+  inset-inline-start: 0;
   inline-size: 1px;
   background: var(--rule-strong);
 }
 
 /* ── the deck ── */
-/* the census deck seats: the LIVE slide rides at scale 1 (it is the
-   frame-sized box: 1062/887/737/254 = the frame itself) and the parked
-   slides at 1.04 of it (1105/922/766/264); the img overflows its slide
-   by ±1.35% at ≥1440 (1089 on 1062), flush below */
+/* R368 T3 — the census deck seats, re-read from the frozen spec per bp
+   (the img-over-slide law — the img box = its own slide × a bp-scaled
+   bleed, cropped by the pane's overflow — the reference's own crop-bleed
+   to the section's start edge):
+     · ≥1440: the live slide = the column (transform none), the parked
+       slides ×1.04 (743 on the 714 column), every img = its slide
+       ×1.027 (the live 734×911, the parked 764×949 on the 714×887)
+     · 992–1439 (the 1024 census): the live slide ×1.0343 (526×785),
+       the parked ×1.0394 (528×789) — the r337 sheet's parked 1.1227 was
+       a stale extraction (its own comment cites 849-wide slides that
+       exist in no frozen bp); every img = its slide ×1.032 (544/545)
+     · 768/390: the live slide = the band, the parked ×1.04 (783×766 /
+       389×264), every img = its slide exactly (753×737 / 374×254)
+   The img box must be STRETCHED to its slide (inline/block-size 100% +
+   the belt bleed): a bare inset resolves a replaced element to its
+   intrinsic box (the old 720×450 captures capped by the global
+   max-width on img) — the pane's lower half rendered empty, the E
+   crop's "no image mass" root cause. object-fit: cover crops the
+   portrait's content inside the stretched box. */
 .rl-deck, .rl-deckinner { position: absolute; inset: 0; }
 .rl-slide {
   position: absolute;
@@ -98,22 +140,38 @@
 .rl-slide img {
   position: absolute;
   inset: 0;
+  /* max-inline-size: none — the global img cap (base.css's img,svg,video
+     { max-width: 100% }) would clamp the belt bleed to the slide's width,
+     cropping the img asymmetrically (start-edge inset instead of the
+     reference's own symmetric ±1.35–2% crop-bleed past the pane's edges) */
+  max-inline-size: none;
+  inline-size: 100%;
+  block-size: 100%;
   object-fit: cover;
 }
 @media (min-width: 1440px) {
-  .rl-slide img { inset: -1.35%; }
+  .rl-slide img { inset: -1.35%; inline-size: 102.7%; block-size: 102.7%; }
 }
 @media (min-width: 992px) and (max-width: 1439px) {
-  /* the 1024 census: the parked deck rides at 849 on the 759 frame
-     (scale 1.1227) while the live slide reads 785 (scale 1.0343, img
-     812 = slide+1.7%) — the reference's own mid-desktop seats */
-  .rl-slide { transform: scale(1.1227); }
+  .rl-slide { transform: scale(1.0394); }
   .rl-slide.is-active { transform: scale(1.0343); }
-  .rl-slide.is-active img { inset: -1.7%; }
+  .rl-slide img { inset: -1.6%; inline-size: 103.2%; block-size: 103.2%; }
 }
 
+/* R368 T3 — the ONE dominant image's twin pair (manifest id
+ * r368/usecase-student, 768×1344 editorial portrait, light + dark
+ * webp): every census slide carries the same pair; the theme token
+ * swaps them by VISIBILITY (the wy-cycle grammar — display would drop
+ * the bound light twin's box out of the census; geometry never moves). */
+.rl-slide-img.is-dark { visibility: hidden; }
+[data-theme="dark"] .rl-slide-img.is-light { visibility: hidden; }
+[data-theme="dark"] .rl-slide-img.is-dark { visibility: visible; }
+
 /* ── the title column ── */
-.rl-labelbox { margin: 0; }
+/* the labelbox carries the belt's block-end gap (1.5rem @≥992 — the
+   spec's label→h2 pitch 13px @1440); the stacked bands re-seat it in
+   their own media blocks below */
+.rl-labelbox { margin: 0; margin-block-end: 1.5rem; }
 .rl-label {
   font-size: 1.4rem;
   line-height: 1.96rem;
@@ -140,18 +198,30 @@
 /* ═══ the accordion ═══ */
 .rl-accwrap, .rl-acc { margin: 0; }
 /* the census row box: 83px closed @1920 = 27 top + 36 title + 20 bottom
-   (2.43rem/1.8rem; 62px @1440, 44px @1024 — the same seats scale) */
+   (2.43rem/1.8rem; 62px @1440, 44px @1024 — the same seats scale).
+   R368 T3 — the un-mirrored insets: the icon rides the OUTER edge
+   (inline-START in RTL = the physical right) at the reference's own
+   26px seat (3.2rem), the title block's edge sits 15.4rem off the
+   SEAM (inline-END in RTL = the physical left, the column's inner
+   edge) — the swapped pair of the r337 paddings, matching the
+   reference's measured row anatomy (title 128 from the seam, icon 26
+   from the outer edge) under the x-mirror law. */
 .rl-row {
   position: relative;
   display: block;
   padding-block: 2.43rem 1.8rem;
-  padding-inline-start: 15.4rem;
-  padding-inline-end: 3.2rem;
+  padding-inline-start: 3.2rem;
+  padding-inline-end: 15.4rem;
   cursor: pointer;
 }
+/* R368 T3 — the row's visual order mirrors with the column: the glyph
+   parks at the OUTER edge (the reading-start side of the mirrored
+   reference row — DOM order unchanged: title, then icon; the a11y
+   tree and the mapping bindings are untouched) */
 .rl-row-tw {
   position: relative;
   display: flex;
+  flex-direction: row-reverse;
   align-items: center;
   justify-content: space-between;
 }
@@ -208,20 +278,22 @@
   font-weight: 500;
   color: var(--rl-soft-ink);
 }
+/* the frozen census: the rows' bottom + unfold rules (rule1/rule2) read
+   TRANSPARENT at every bp — only the open row's top rule (rule-t) carries
+   the construction hairline #B3B3AF. The boxes stay real (h=1, full
+   inline size) exactly as the spec records them; the settle transition
+   (the spec's own 0.4s ease on the open row's unfold) rides the base
+   rule — merged here so the selector list occurs once (the stylelint
+   ratchet: errors only go down). */
 .rl-row-rule {
   position: absolute;
   inset-inline: 0;
   block-size: 1px;
   pointer-events: none;
+  transition: opacity 0.4s ease;
 }
-/* the frozen census: the rows' bottom + unfold rules (rule1/rule2) read
-   TRANSPARENT at every bp — only the open row's top rule (rule-t) carries
-   the construction hairline #B3B3AF. The boxes stay real (h=1, full
-   inline size) exactly as the spec records them. */
-.rl-row-rule-o, .rl-row-rule-b { background: transparent; }
-.rl-row-rule-t { background: var(--rule-strong); }
-.rl-row-rule-b, .rl-row-rule-o { inset-block-end: 0; }
-.rl-row-rule-t { inset-block-start: 0; }
+.rl-row-rule-o, .rl-row-rule-b { background: transparent; inset-block-end: 0; }
+.rl-row-rule-t { background: var(--rule-strong); inset-block-start: 0; }
 .rl-row-zero {
   position: absolute;
   inline-size: 0;
@@ -234,11 +306,14 @@
    col @1920, 457 on 713 @1440) — the width that wraps the h2 to the
    census's 3 lines (160/120/85 tall); the h2end→accordion gap is
    carried by the titlecol's block-end padding (134/191.5/264px at
-   1920/1440/1024 — the column ends where the accordion starts) */
-.rl-titlecol { padding-block-start: 3.2rem; }
-.rl-labelbox { margin-block-end: 1.5rem; }
+   1920/1440/1024 — the column ends where the accordion starts).
+   R368 T3 — the boxes CENTER in the column (margin-inline: auto): the
+   spec's own labelbox/h2box measure symmetric insets (128 both sides
+   @1440, 171 both sides @1920) — the r337 build anchored them flush at
+   the seam, which the x-mirror law scored ~107–160px off; centered,
+   the boxes land on the reference's seats to <10px at every bp. */
 @media (min-width: 992px) {
-  .rl-labelbox, .rl-h2box { inline-size: 64%; }
+  .rl-labelbox, .rl-h2box { inline-size: 64%; margin-inline: auto; }
   .rl-titlecol { padding-block-end: 44.58rem; }
 }
 @media (min-width: 1440px) {
@@ -373,10 +448,6 @@
    98.45vh section exact is impossible simultaneously — the reference's
    own 1.0 box wins (box + section + column geometry all conform); the
    two lh assertions per bp are the accepted, documented residual. */
-
-/* the row rules' settle: the spec records a 0.4s ease transition on the
-   open row's rules (the accordion's unfold) — carried verbatim */
-.rl-row-rule { transition: opacity 0.4s ease; }
 
 /* ── R339 T-11b — the row rules' scroll-reveal WIDEN ─────────────────
    The frozen census (T-11A-TWEEN.md, home-usecase-wrap): 16 width

@@ -39,6 +39,10 @@
      frozen Heron measure; under [data-theme=dark] the rgba(40,40,40,.72)
      ink composites to ~1.0:1 on the dark surface — invisible, WCAG fail) */
   --st-soft-ink: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%); color-mix() renders as color() and the conformance twin requires the literal */
+  /* r368 T3 — the crawl chip's MEASURED tone (the reference's partner-logo
+     ticker band reads 101–171 at mid states, 212–220 at the entry bottom;
+     the mid value sits here — the section-scoped measured-value law) */
+  --st-crawl-chip: rgb(209, 207, 200); /* color-gate: allow — the measured reference ticker-band tone @entry r7 (212–214; r368 T3) */
   position: relative;
   display: block;
   margin: 0;
@@ -55,6 +59,7 @@
 }
 [data-theme="dark"] .st-section {
   --st-soft-ink: rgb(226, 226, 222); /* color-gate: allow — the dark-arm soft ink (composited ≥3.0:1 on the dark surface; the light arm above stays byte-identical to the frozen spec measure) */
+  --st-crawl-chip: rgb(46, 46, 44); /* color-gate: allow — the inverted-pair chip (the same measured tone on the dark paper) */
 }
 
 .st-band {
@@ -68,9 +73,17 @@
   display: grid;
   margin: 0;
   padding: 0;
+  /* R368 T3 — the block order returns to the REFERENCE's measured visual
+   * order (frozen spec @1440: media x=7 LEFT half, stmt x=720 RIGHT half).
+   * The r338-era build mirrored the halves for RTL; the fidelity E law
+   * scores SSIM over aligned regions, so a mirrored seat structurally
+   * places its image half against the reference's masked text half —
+   * the measured E ceiling. Media now sits at the reading END (left in
+   * RTL), stmt/ticker at the reading START (right in RTL); the Arabic
+   * text itself stays RTL inside its cells — the language law holds. */
   grid-template-areas:
-    'media stmt'
-    'media ticker';
+    'stmt media'
+    'ticker media';
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: auto auto;
 }
@@ -95,6 +108,13 @@
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
+}
+/* r368 T3 — the authored SVG plate's dark twin: the paper/ink pair inverts
+ * (the token law: dark mode flips the pair, geometry never moves). The
+ * ember disc stays ember (hue-rotate restores its temperature after the
+ * inversion of the warm paper). */
+.st-media-img.is-dark {
+  filter: invert(1) hue-rotate(180deg);
 }
 /* R347 D1 — the retired photo veil's tone rules (.st-media-tone /
    .st-media-tone-rect, no DOM counterpart since the R343 C-1 courtyard

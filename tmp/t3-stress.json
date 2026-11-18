@@ -1,0 +1,228 @@
+{
+ "generatedAt": "2026-11-18T20:06:36.102Z",
+ "url": "http://localhost:5333/",
+ "profile": {
+  "browser": "chromium 143.0.7499.4",
+  "node": "v24.22.3"
+ },
+ "sizes": {
+  "1440": {
+   "viewport": "1440x900",
+   "overflow": 0,
+   "clipped": [],
+   "collisions": [
+    {
+     "section": "home-hero-wrap",
+     "a": "div.hpf-14",
+     "b": "span.hpf-15",
+     "share": 100,
+     "aText": "01",
+     "bText": "محور"
+    },
+    {
+     "section": "home-hero-wrap",
+     "a": "div.hpf-16",
+     "b": "span.hpf-17",
+     "share": 100,
+     "aText": "02",
+     "bText": "قياس"
+    },
+    {
+     "section": "home-hero-wrap",
+     "a": "span.hro-line",
+     "b": "div.hro-work-item",
+     "share": 33,
+     "aText": "من المحاضرة إلى الإتقان",
+     "bText": "المحاضرات التفاعلية"
+    },
+    {
+     "section": "home-hero-wrap",
+     "a": "span.hro-line",
+     "b": "span.fo-mono",
+     "share": 100,
+     "aText": "من المحاضرة إلى الإتقان",
+     "bText": "[ 01 ]"
+    }
+   ],
+   "unreachable": [],
+   "sections": [
+    {
+     "key": "chrome",
+     "height": 56
+    },
+    {
+     "key": "footer",
+     "height": 903
+    },
+    {
+     "key": "home-cta-wrap",
+     "height": 1332
+    },
+    {
+     "key": "home-hero-wrap",
+     "height": 887
+    },
+    {
+     "key": "home-intro-wrap",
+     "height": 723
+    },
+    {
+     "key": "home-map-wrap",
+     "height": 6300
+    },
+    {
+     "key": "home-platform-wrap",
+     "height": 712
+    },
+    {
+     "key": "home-problem-wrap",
+     "height": 746
+    },
+    {
+     "key": "home-usecase-wrap",
+     "height": 886
+    },
+    {
+     "key": "home-why-wrap",
+     "height": 3158
+    }
+   ],
+   "unreachableTransient": 0
+  },
+  "640x360": {
+   "viewport": "640x360",
+   "overflow": 0,
+   "clipped": [
+    {
+     "el": "a.btn.accent",
+     "text": "أنشئ حسابك الجامعي",
+     "scrollW": 251,
+     "clientW": 249
+    }
+   ],
+   "collisions": [],
+   "unreachable": [
+    {
+     "section": "home-hero-wrap",
+     "action": "button.hi-marker",
+     "coveredBy": "div.hro-sub-cell",
+     "coveringBox": "586x136",
+     "actionBox": "44x44"
+    }
+   ],
+   "sections": [
+    {
+     "key": "chrome",
+     "height": 81
+    },
+    {
+     "key": "footer",
+     "height": 2034
+    },
+    {
+     "key": "home-cta-wrap",
+     "height": 1491
+    },
+    {
+     "key": "home-hero-wrap",
+     "height": 346
+    },
+    {
+     "key": "home-intro-wrap",
+     "height": 1542
+    },
+    {
+     "key": "home-map-wrap",
+     "height": 2559
+    },
+    {
+     "key": "home-platform-wrap",
+     "height": 1563
+    },
+    {
+     "key": "home-problem-wrap",
+     "height": 1451
+    },
+    {
+     "key": "home-usecase-wrap",
+     "height": 1694
+    },
+    {
+     "key": "home-why-wrap",
+     "height": 1937
+    }
+   ],
+   "unreachableTransient": 0
+  },
+  "844x390": {
+   "viewport": "844x390",
+   "overflow": 0,
+   "clipped": [],
+   "collisions": [],
+   "unreachable": [
+    {
+     "section": "home-hero-wrap",
+     "action": "button.hi-marker",
+     "coveredBy": "div.hro-work-item",
+     "coveringBox": "112x18",
+     "actionBox": "44x44"
+    }
+   ],
+   "sections": [
+    {
+     "key": "chrome",
+     "height": 51
+    },
+    {
+     "key": "footer",
+     "height": 1043
+    },
+    {
+     "key": "home-cta-wrap",
+     "height": 1128
+    },
+    {
+     "key": "home-hero-wrap",
+     "height": 376
+    },
+    {
+     "key": "home-intro-wrap",
+     "height": 575
+    },
+    {
+     "key": "home-map-wrap",
+     "height": 2437
+    },
+    {
+     "key": "home-platform-wrap",
+     "height": 561
+    },
+    {
+     "key": "home-problem-wrap",
+     "height": 1503
+    },
+    {
+     "key": "home-usecase-wrap",
+     "height": 1492
+    },
+    {
+     "key": "home-why-wrap",
+     "height": 2654
+    }
+   ],
+   "unreachableTransient": 0
+  }
+ },
+ "map": {
+  "chrome": "header.fo-header",
+  "footer": "footer.fo-footer",
+  "home-cta-wrap": "section#vision.fo-cta",
+  "home-hero-wrap": "section.fo-hero",
+  "home-intro-wrap": "div#statement.st-section",
+  "home-map-wrap": "section#chapters.chapters",
+  "home-platform-wrap": "section#product.pr-section",
+  "home-problem-wrap": "section#live.pm-section",
+  "home-usecase-wrap": "section#roles.rl-section",
+  "home-why-wrap": "section.wy-section"
+ }
+}
