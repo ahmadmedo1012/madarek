@@ -5,7 +5,7 @@
   "node": "v24.22.3",
   "dpr": 1,
   "reducedMotion": "no-preference",
-  "local": "http://localhost:5300",
+  "local": "http://localhost:5301",
   "reference": "https://heronaiapp.com/",
   "settle": "fonts.ready → preloader gone → two identical document heights → 2 rAF",
   "cropRule": "section box ∩ viewport at the named state (pairs.mjs law)",
@@ -90,7 +90,7 @@
       "triggers": 2,
       "minStart": 6111,
       "maxEnd": 8284,
-      "achievedEntryOffset": 7374,
+      "achievedEntryOffset": 7375,
       "sectionHeight": 969,
       "startFracOfSection": -1.3
      },
@@ -129,7 +129,7 @@
     },
     "unpairedRoots": [],
     "spaceValidation": {
-     "achievedEntryOffsetMinusStartMedian": 1263,
+     "achievedEntryOffsetMinusStartMedian": 1264,
      "spread": 881,
      "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
     }
@@ -143,7 +143,7 @@
     "home-hero-wrap": 0,
     "home-intro-wrap": 2,
     "home-map-wrap": 4,
-    "home-platform-wrap": 14,
+    "home-platform-wrap": 15,
     "home-problem-wrap": 3,
     "home-usecase-wrap": 20,
     "home-why-wrap": 16
@@ -274,7 +274,7 @@
       "scrollY": 0,
       "maxScroll": 15754,
       "fixed": true,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/chrome.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/chrome.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -316,7 +316,7 @@
       "declaredTop": 7,
       "offset": 0,
       "targetOffset": 0,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/chrome.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/chrome.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -367,7 +367,7 @@
       "targetY": 15754,
       "maxScroll": 15754,
       "atStageEnd": true,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/footer.1440.end.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/footer.1440.end.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -411,7 +411,7 @@
       "targetOffset": 13257,
       "maxOffset": 13257,
       "atStageEnd": true,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/footer.1440.end.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/footer.1440.end.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -469,7 +469,7 @@
       "declaredTop": 0,
       "scrollY": 14969,
       "maxScroll": 16437,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-cta-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -492,7 +492,7 @@
       "targetY": 15369,
       "maxScroll": 16437,
       "basis": "live entry seat 14969 px + 400 px of 1332 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-cta-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -515,7 +515,7 @@
       "targetY": 15768,
       "maxScroll": 16437,
       "basis": "live entry seat 14969 px + 799 px of 1332 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-cta-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -548,7 +548,7 @@
       "declaredTop": 0,
       "offset": 12740,
       "targetOffset": 12740,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-cta-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-cta-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -572,7 +572,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-cta-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-cta-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -604,7 +604,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-cta-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-cta-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -644,7 +644,7 @@
       "declaredTop": 0,
       "scrollY": 7,
       "maxScroll": 15753,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-hero-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -667,7 +667,7 @@
       "targetY": 273,
       "maxScroll": 15753,
       "basis": "live entry seat 7 px + 266 px of 887 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-hero-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -690,7 +690,7 @@
       "targetY": 539,
       "maxScroll": 15753,
       "basis": "live entry seat 7 px + 532 px of 887 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-hero-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -723,7 +723,7 @@
       "declaredTop": 0,
       "offset": 7,
       "targetOffset": 7,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-hero-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-hero-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -747,7 +747,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-hero-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-hero-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -772,7 +772,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-hero-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-hero-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -819,7 +819,7 @@
       "declaredTop": 0,
       "scrollY": 894,
       "maxScroll": 15767,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-intro-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -842,7 +842,7 @@
       "targetY": 1111,
       "maxScroll": 15767,
       "basis": "live entry seat 894 px + 217 px of 723 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-intro-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -865,7 +865,7 @@
       "targetY": 1328,
       "maxScroll": 15767,
       "basis": "live entry seat 894 px + 434 px of 723 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-intro-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -898,7 +898,7 @@
       "declaredTop": 0,
       "offset": 891,
       "targetOffset": 891,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-intro-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-intro-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -922,7 +922,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-intro-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-intro-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -947,7 +947,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-intro-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-intro-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -987,7 +987,7 @@
       "declaredTop": 0,
       "scrollY": 2363,
       "maxScroll": 15767,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-map-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -1010,7 +1010,7 @@
       "targetY": 4253,
       "maxScroll": 15767,
       "basis": "live entry seat 2363 px + 1890 px of 6300 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-map-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -1033,7 +1033,7 @@
       "targetY": 6143,
       "maxScroll": 15767,
       "basis": "live entry seat 2363 px + 3780 px of 6300 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-map-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -1056,7 +1056,7 @@
       "targetY": 7763,
       "maxScroll": 15767,
       "basis": "live entry seat 2363 px + 5400 px of 6300 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.1440.exit.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-map-wrap.1440.exit.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -1084,7 +1084,7 @@
       "declaredTop": 0,
       "offset": 2356,
       "targetOffset": 2356,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-map-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-map-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1108,7 +1108,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-map-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-map-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1133,7 +1133,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-map-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-map-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1152,13 +1152,13 @@
       "state": "position",
       "declared": "position",
       "stateId": "exit",
-      "top": -5400,
-      "offset": 7758,
+      "top": -5399,
+      "offset": 7757,
       "targetOffset": 7756,
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-map-wrap.1440.exit.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-map-wrap.1440.exit.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1193,7 +1193,7 @@
       "declaredTop": 0,
       "scrollY": 8663,
       "maxScroll": 15767,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-platform-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1216,7 +1216,7 @@
       "targetY": 8877,
       "maxScroll": 15767,
       "basis": "live entry seat 8663 px + 214 px of 712 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-platform-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1239,7 +1239,7 @@
       "targetY": 9090,
       "maxScroll": 15767,
       "basis": "live entry seat 8663 px + 427 px of 712 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-platform-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1272,7 +1272,7 @@
       "declaredTop": 0,
       "offset": 8659,
       "targetOffset": 8659,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-platform-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-platform-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1296,7 +1296,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-platform-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-platform-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1321,7 +1321,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-platform-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-platform-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1361,7 +1361,7 @@
       "declaredTop": 0,
       "scrollY": 1617,
       "maxScroll": 15767,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-problem-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -1384,7 +1384,7 @@
       "targetY": 1841,
       "maxScroll": 15767,
       "basis": "live entry seat 1617 px + 224 px of 746 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-problem-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -1407,7 +1407,7 @@
       "targetY": 2065,
       "maxScroll": 15767,
       "basis": "live entry seat 1617 px + 448 px of 746 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-problem-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -1440,7 +1440,7 @@
       "declaredTop": 0,
       "offset": 1614,
       "targetOffset": 1614,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-problem-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-problem-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1464,7 +1464,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-problem-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-problem-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1502,7 +1502,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-problem-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-problem-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1542,7 +1542,7 @@
       "declaredTop": 0,
       "scrollY": 14083,
       "maxScroll": 16437,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-usecase-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -1565,7 +1565,7 @@
       "targetY": 14349,
       "maxScroll": 16437,
       "basis": "live entry seat 14083 px + 266 px of 886 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -1588,7 +1588,7 @@
       "targetY": 14615,
       "maxScroll": 16437,
       "basis": "live entry seat 14083 px + 532 px of 886 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -1621,7 +1621,7 @@
       "declaredTop": 0,
       "offset": 11855,
       "targetOffset": 11855,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-usecase-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-usecase-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1645,7 +1645,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-usecase-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-usecase-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1670,7 +1670,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-usecase-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-usecase-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1710,7 +1710,7 @@
       "declaredTop": 0,
       "scrollY": 10925,
       "maxScroll": 15929,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-why-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1733,7 +1733,7 @@
       "targetY": 11671,
       "maxScroll": 15929,
       "basis": "live entry seat 10925 px + 746 px of 2488 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-why-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1756,7 +1756,7 @@
       "targetY": 12418,
       "maxScroll": 15929,
       "basis": "live entry seat 10925 px + 1493 px of 2488 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-why-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1789,7 +1789,7 @@
       "declaredTop": 0,
       "offset": 9366,
       "targetOffset": 9366,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-why-wrap.1440.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-why-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1813,7 +1813,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-why-wrap.1440.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-why-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1838,7 +1838,7 @@
       "maxOffset": 13257,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-why-wrap.1440.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-why-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1879,7 +1879,7 @@
       "scrollY": 0,
       "maxScroll": 13354,
       "fixed": true,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/chrome.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/chrome.390.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -1921,7 +1921,7 @@
       "declaredTop": 8,
       "offset": 0,
       "targetOffset": 0,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/chrome.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/chrome.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -1971,7 +1971,7 @@
       "declaredTop": 0,
       "scrollY": 13476,
       "maxScroll": 13992,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/footer.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/footer.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -1994,7 +1994,7 @@
       "targetY": 13848,
       "maxScroll": 13992,
       "basis": "live entry seat 13476 px + 372 px of 1239 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/footer.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/footer.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2033,7 +2033,7 @@
       "declaredTop": 0,
       "offset": 10645,
       "targetOffset": 10645,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/footer.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/footer.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2057,7 +2057,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/footer.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/footer.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2252,7 +2252,7 @@
       "declaredTop": 0,
       "scrollY": 12567,
       "maxScroll": 13992,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-cta-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -2275,7 +2275,7 @@
       "targetY": 12840,
       "maxScroll": 13992,
       "basis": "live entry seat 12567 px + 273 px of 909 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-cta-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -2298,7 +2298,7 @@
       "targetY": 13112,
       "maxScroll": 13992,
       "basis": "live entry seat 12567 px + 545 px of 909 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-cta-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -2331,7 +2331,7 @@
       "declaredTop": 0,
       "offset": 10147,
       "targetOffset": 10147,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-cta-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-cta-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2355,7 +2355,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-cta-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-cta-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2405,7 +2405,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-cta-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-cta-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2445,7 +2445,7 @@
       "declaredTop": 0,
       "scrollY": 7,
       "maxScroll": 13351,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-hero-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -2468,7 +2468,7 @@
       "targetY": 256,
       "maxScroll": 13351,
       "basis": "live entry seat 7 px + 249 px of 830 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-hero-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -2491,7 +2491,7 @@
       "targetY": 505,
       "maxScroll": 13351,
       "basis": "live entry seat 7 px + 498 px of 830 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-hero-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -2524,7 +2524,7 @@
       "declaredTop": 0,
       "offset": 8,
       "targetOffset": 8,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-hero-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-hero-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2548,7 +2548,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-hero-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-hero-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2622,7 +2622,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-hero-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-hero-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2711,7 +2711,7 @@
       "declaredTop": 0,
       "scrollY": 837,
       "maxScroll": 13351,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-intro-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2734,7 +2734,7 @@
       "targetY": 1117,
       "maxScroll": 13351,
       "basis": "live entry seat 837 px + 280 px of 934 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-intro-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2757,7 +2757,7 @@
       "targetY": 1397,
       "maxScroll": 13351,
       "basis": "live entry seat 837 px + 560 px of 934 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-intro-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2790,7 +2790,7 @@
       "declaredTop": 0,
       "offset": 834,
       "targetOffset": 834,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-intro-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-intro-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2814,7 +2814,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-intro-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-intro-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2864,7 +2864,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-intro-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-intro-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -2929,7 +2929,7 @@
       "declaredTop": 0,
       "scrollY": 2656,
       "maxScroll": 13715,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-map-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -2952,7 +2952,7 @@
       "targetY": 3968,
       "maxScroll": 13715,
       "basis": "live entry seat 2656 px + 1312 px of 4372 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-map-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -2975,7 +2975,7 @@
       "targetY": 5279,
       "maxScroll": 13715,
       "basis": "live entry seat 2656 px + 2623 px of 4372 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-map-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -2998,7 +2998,7 @@
       "targetY": 6184,
       "maxScroll": 13715,
       "basis": "live entry seat 2656 px + 3528 px of 4372 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.390.exit.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-map-wrap.390.exit.png",
       "clip": {
        "ok": true,
        "x": 0,
@@ -3026,7 +3026,7 @@
       "declaredTop": 0,
       "offset": 2551,
       "targetOffset": 2551,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-map-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-map-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -3050,7 +3050,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-map-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-map-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -3202,7 +3202,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-map-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-map-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -3354,7 +3354,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-map-wrap.390.exit.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-map-wrap.390.exit.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -3546,7 +3546,7 @@
       "declaredTop": 0,
       "scrollY": 7392,
       "maxScroll": 13681,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-platform-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -3569,7 +3569,7 @@
       "targetY": 7691,
       "maxScroll": 13681,
       "basis": "live entry seat 7392 px + 299 px of 995 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-platform-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -3592,7 +3592,7 @@
       "targetY": 7989,
       "maxScroll": 13681,
       "basis": "live entry seat 7392 px + 597 px of 995 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-platform-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -3615,7 +3615,7 @@
       "targetY": 7543,
       "maxScroll": 13681,
       "basis": "live entry seat 7392 px + 151 px of 995 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.390.exit.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-platform-wrap.390.exit.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -3632,7 +3632,7 @@
    },
    "reference": {
     "ok": true,
-    "entryOffset": 7374,
+    "entryOffset": 7375,
     "height": 969,
     "states": {
      "entry": {
@@ -3641,9 +3641,9 @@
       "declared": "entry",
       "top": -2,
       "declaredTop": 0,
-      "offset": 7374,
-      "targetOffset": 7374,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-platform-wrap.390.entry.png",
+      "offset": 7375,
+      "targetOffset": 7375,
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-platform-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -3661,76 +3661,76 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid30",
-      "top": -291,
-      "offset": 7663,
-      "targetOffset": 7665,
+      "top": -292,
+      "offset": 7664,
+      "targetOffset": 7666,
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-platform-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-platform-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
        "y": 0,
        "w": 374,
-       "h": 678,
+       "h": 677,
        "touchesBottom": false,
        "captureW": 374,
-       "captureH": 678,
+       "captureH": 677,
        "storageScale": 1
       },
       "liveMaskRects": [
        {
         "x": 11.8125,
-        "y": -15.859375,
+        "y": -16.859375,
         "w": 230.265625,
         "h": 31.8125
        },
        {
         "x": 11.8125,
-        "y": 27.796875,
+        "y": 26.796875,
         "w": 350.375,
         "h": 90.5
        },
        {
         "x": 11.8125,
-        "y": 148,
+        "y": 147,
         "w": 309.71875,
         "h": 23.265625
        },
        {
         "x": 11.8125,
-        "y": 163.265625,
+        "y": 162.265625,
         "w": 309.71875,
         "h": 23.265625
        },
        {
         "x": 11.8125,
-        "y": 434.9375,
+        "y": 433.9375,
         "w": 40,
         "h": 23.265625
        },
        {
         "x": 11.8125,
-        "y": 458.140625,
+        "y": 457.140625,
         "w": 212.046875,
         "h": 31.8125
        },
        {
         "x": 11.8125,
-        "y": 501.796875,
+        "y": 500.796875,
         "w": 350.375,
         "h": 111.125
        },
        {
         "x": 11.8125,
-        "y": 642.625,
+        "y": 641.625,
         "w": 309.71875,
         "h": 23.265625
        },
        {
         "x": 11.8125,
-        "y": 657.890625,
+        "y": 656.890625,
         "w": 309.71875,
         "h": 23.265625
        }
@@ -3741,52 +3741,52 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid60",
-      "top": -581,
-      "offset": 7953,
-      "targetOffset": 7955,
+      "top": -582,
+      "offset": 7954,
+      "targetOffset": 7956,
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-platform-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-platform-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
        "y": 0,
        "w": 374,
-       "h": 388,
+       "h": 387,
        "touchesBottom": false,
        "captureW": 374,
-       "captureH": 388,
+       "captureH": 387,
        "storageScale": 1
       },
       "liveMaskRects": [
        {
         "x": 11.8125,
-        "y": 144.9375,
+        "y": 143.9375,
         "w": 40,
         "h": 23.265625
        },
        {
         "x": 11.8125,
-        "y": 168.140625,
+        "y": 167.140625,
         "w": 212.046875,
         "h": 31.8125
        },
        {
         "x": 11.8125,
-        "y": 211.796875,
+        "y": 210.796875,
         "w": 350.375,
         "h": 111.125
        },
        {
         "x": 11.8125,
-        "y": 352.625,
+        "y": 351.625,
         "w": 309.71875,
         "h": 23.265625
        },
        {
         "x": 11.8125,
-        "y": 367.890625,
+        "y": 366.890625,
         "w": 309.71875,
         "h": 23.265625
        }
@@ -3797,82 +3797,82 @@
       "state": "position",
       "declared": "position",
       "stateId": "exit",
-      "top": -127,
-      "offset": 7499,
-      "targetOffset": 7499,
+      "top": -128,
+      "offset": 7500,
+      "targetOffset": 7500,
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-platform-wrap.390.exit.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-platform-wrap.390.exit.png",
       "clip": {
        "ok": true,
        "x": 8,
        "y": 0,
        "w": 374,
-       "h": 842,
+       "h": 841,
        "touchesBottom": true,
        "captureW": 374,
-       "captureH": 842,
+       "captureH": 841,
        "storageScale": 1
       },
       "liveMaskRects": [
        {
         "x": 11.8125,
-        "y": 126.9375,
+        "y": 125.9375,
         "w": 40,
         "h": 23.265625
        },
        {
         "x": 11.8125,
-        "y": 150.140625,
+        "y": 149.140625,
         "w": 230.265625,
         "h": 31.8125
        },
        {
         "x": 11.8125,
-        "y": 193.796875,
+        "y": 192.796875,
         "w": 350.375,
         "h": 90.5
        },
        {
         "x": 11.8125,
-        "y": 314,
+        "y": 313,
         "w": 309.71875,
         "h": 23.265625
        },
        {
         "x": 11.8125,
-        "y": 329.265625,
+        "y": 328.265625,
         "w": 309.71875,
         "h": 23.265625
        },
        {
         "x": 11.8125,
-        "y": 600.9375,
+        "y": 599.9375,
         "w": 40,
         "h": 23.265625
        },
        {
         "x": 11.8125,
-        "y": 624.140625,
+        "y": 623.140625,
         "w": 212.046875,
         "h": 31.8125
        },
        {
         "x": 11.8125,
-        "y": 667.796875,
+        "y": 666.796875,
         "w": 350.375,
         "h": 111.125
        },
        {
         "x": 11.8125,
-        "y": 808.625,
+        "y": 807.625,
         "w": 309.71875,
         "h": 23.265625
        },
        {
         "x": 11.8125,
-        "y": 823.890625,
+        "y": 822.890625,
         "w": 309.71875,
         "h": 23.265625
        }
@@ -3899,7 +3899,7 @@
       "declaredTop": 0,
       "scrollY": 1771,
       "maxScroll": 13715,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-problem-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -3922,7 +3922,7 @@
       "targetY": 2037,
       "maxScroll": 13715,
       "basis": "live entry seat 1771 px + 266 px of 885 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-problem-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -3945,7 +3945,7 @@
       "targetY": 2302,
       "maxScroll": 13715,
       "basis": "live entry seat 1771 px + 531 px of 885 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-problem-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -3978,7 +3978,7 @@
       "declaredTop": 0,
       "offset": 1681,
       "targetOffset": 1681,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-problem-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-problem-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4002,7 +4002,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-problem-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-problem-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4076,7 +4076,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-problem-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-problem-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4141,7 +4141,7 @@
       "declaredTop": 0,
       "scrollY": 11538,
       "maxScroll": 13992,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-usecase-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -4164,7 +4164,7 @@
       "targetY": 11847,
       "maxScroll": 13992,
       "basis": "live entry seat 11538 px + 309 px of 1029 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-usecase-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -4187,7 +4187,7 @@
       "targetY": 12155,
       "maxScroll": 13992,
       "basis": "live entry seat 11538 px + 617 px of 1029 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-usecase-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -4210,7 +4210,7 @@
       "targetY": 11723,
       "maxScroll": 13992,
       "basis": "live entry seat 11538 px + 185 px of 1029 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.390.exit.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-usecase-wrap.390.exit.png",
       "clip": {
        "ok": true,
        "x": 7,
@@ -4238,7 +4238,7 @@
       "declaredTop": 0,
       "offset": 9146,
       "targetOffset": 9146,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-usecase-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-usecase-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4262,7 +4262,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-usecase-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-usecase-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4342,7 +4342,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-usecase-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-usecase-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4410,7 +4410,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-usecase-wrap.390.exit.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-usecase-wrap.390.exit.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4506,7 +4506,7 @@
       "declaredTop": 0,
       "scrollY": 10420,
       "maxScroll": 13681,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-why-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4529,7 +4529,7 @@
       "targetY": 10662,
       "maxScroll": 13681,
       "basis": "live entry seat 10420 px + 242 px of 807 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-why-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4552,7 +4552,7 @@
       "targetY": 10904,
       "maxScroll": 13681,
       "basis": "live entry seat 10420 px + 484 px of 807 px (never the load-time snapshot)",
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/local/home-why-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4585,7 +4585,7 @@
       "declaredTop": 0,
       "offset": 8343,
       "targetOffset": 8343,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-why-wrap.390.entry.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-why-wrap.390.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4609,7 +4609,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-why-wrap.390.mid30.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-why-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4653,7 +4653,7 @@
       "maxOffset": 11075,
       "landed": true,
       "atStageEnd": false,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/reference/home-why-wrap.390.mid60.png",
+      "file": "/home/z/wt/r368-t1/docs/audit/evidence/primary/reference/home-why-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4699,19 +4699,38 @@
       "family": "settle",
       "settleFrames": 0,
       "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "chrome",
       "bp": "390",
       "family": "trigger-baseline",
       "ourOnsetFrac": null,
+      "window": {
+       "start": 0,
+       "end": 307,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 7,
+       "height": 50,
+       "docH": 14195,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "0:0:0:0",
+       "150:0:0:0",
+       "300:0:0:0"
+      ],
+      "firedBeforeWindow": null,
       "refTriggers": 0,
       "refTriggerStartPx": null,
       "refTriggerEndPx": null,
       "refTriggerFracOfSection": null,
-      "resolution": "±1 of section height (18 steps over 17.68×H span)",
+      "resolution": "±3 of section height (150 px seats)",
       "pass": null,
       "note": "no live trigger rooted at this section — named gap, not a pass"
      },
@@ -4719,23 +4738,56 @@
       "section": "footer",
       "bp": "390",
       "family": "settle",
-      "settleFrames": 5,
+      "settleFrames": 0,
       "ambientExcluded": 0,
-      "pass": false,
-      "note": "last change at frame 5; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+      "entranceSettleWaitMs": 1200,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "footer",
       "bp": "390",
       "family": "trigger-baseline",
-      "ourOnsetFrac": null,
+      "ourOnsetFrac": -0.4,
+      "window": {
+       "start": 10735,
+       "end": 13135,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 12835,
+       "height": 1239,
+       "docH": 14195,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "10735:6:84:0",
+       "10885:6:84:0",
+       "11035:6:84:0",
+       "11185:6:84:0",
+       "11335:6:84:0",
+       "11485:6:84:0",
+       "11635:6:84:0",
+       "11785:6:84:0",
+       "11935:6:84:0",
+       "12085:6:84:0",
+       "12235:6:84:0",
+       "12385:6:81:0",
+       "12535:6:72:0",
+       "12685:6:59:0",
+       "12835:6:45:0",
+       "12985:5:34:0",
+       "13135:4:29:0"
+      ],
+      "firedBeforeWindow": null,
       "refTriggers": 7,
       "refTriggerStartPx": 9346,
       "refTriggerEndPx": 11363,
       "refTriggerFracOfSection": -1,
-      "resolution": "±0.1 of section height (18 steps over 1.48×H span)",
+      "resolution": "±0.1 of section height (150 px seats)",
       "pass": null,
-      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
      },
      {
       "section": "home-cta-wrap",
@@ -4743,21 +4795,54 @@
       "family": "settle",
       "settleFrames": 0,
       "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-cta-wrap",
       "bp": "390",
       "family": "trigger-baseline",
-      "ourOnsetFrac": null,
+      "ourOnsetFrac": -2.1,
+      "window": {
+       "start": 9826,
+       "end": 12226,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 11926,
+       "height": 909,
+       "docH": 14195,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "9826:1:0:0",
+       "9976:5:51:0",
+       "10126:5:56:0",
+       "10276:5:56:0",
+       "10426:5:56:0",
+       "10576:5:56:0",
+       "10726:5:56:0",
+       "10876:5:56:0",
+       "11026:5:56:0",
+       "11176:5:56:0",
+       "11326:5:56:0",
+       "11476:5:56:0",
+       "11626:5:56:0",
+       "11776:5:56:0",
+       "11926:5:48:0",
+       "12076:5:34:0",
+       "12226:5:16:0"
+      ],
+      "firedBeforeWindow": null,
       "refTriggers": 2,
       "refTriggerStartPx": 8976,
       "refTriggerEndPx": 10124,
       "refTriggerFracOfSection": -2.3,
-      "resolution": "±0.1 of section height (18 steps over 1.73×H span)",
+      "resolution": "±0.2 of section height (150 px seats)",
       "pass": null,
-      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
      },
      {
       "section": "home-hero-wrap",
@@ -4765,19 +4850,38 @@
       "family": "settle",
       "settleFrames": 0,
       "ambientExcluded": 3,
+      "entranceSettleWaitMs": 1200,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-hero-wrap",
       "bp": "390",
       "family": "trigger-baseline",
       "ourOnsetFrac": null,
+      "window": {
+       "start": 0,
+       "end": 307,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 7,
+       "height": 830,
+       "docH": 14195,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "0:140:180:3",
+       "150:140:180:3",
+       "300:140:180:3"
+      ],
+      "firedBeforeWindow": null,
       "refTriggers": 0,
       "refTriggerStartPx": null,
       "refTriggerEndPx": null,
       "refTriggerFracOfSection": null,
-      "resolution": "±0.1 of section height (18 steps over 1.82×H span)",
+      "resolution": "±0.2 of section height (150 px seats)",
       "pass": null,
       "note": "no live trigger rooted at this section — named gap, not a pass"
      },
@@ -4787,43 +4891,100 @@
       "family": "settle",
       "settleFrames": 0,
       "ambientExcluded": 1,
+      "entranceSettleWaitMs": 1200,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-intro-wrap",
       "bp": "390",
       "family": "trigger-baseline",
-      "ourOnsetFrac": null,
+      "ourOnsetFrac": -0.6,
+      "window": {
+       "start": 0,
+       "end": 1137,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 837,
+       "height": 934,
+       "docH": 14195,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "0:39:238:1",
+       "150:39:238:1",
+       "300:39:136:1",
+       "450:32:85:1",
+       "600:29:72:1",
+       "750:27:70:1",
+       "900:27:48:1",
+       "1050:27:1:1"
+      ],
+      "firedBeforeWindow": null,
       "refTriggers": 4,
       "refTriggerStartPx": 0,
       "refTriggerEndPx": 2079,
       "refTriggerFracOfSection": -1,
-      "resolution": "±0.1 of section height (18 steps over 1.70×H span)",
+      "resolution": "±0.2 of section height (150 px seats)",
       "pass": null,
-      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
      },
      {
       "section": "home-map-wrap",
       "bp": "390",
       "family": "settle",
-      "settleFrames": 1,
+      "settleFrames": 0,
       "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
       "pass": true,
-      "note": "last change at frame 1; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-map-wrap",
       "bp": "390",
       "family": "trigger-baseline",
-      "ourOnsetFrac": -0.1,
+      "ourOnsetFrac": 0,
+      "window": {
+       "start": 556,
+       "end": 2956,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 2656,
+       "height": 4372,
+       "docH": 14195,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "556:2:553:0",
+       "706:2:553:0",
+       "856:2:553:0",
+       "1006:2:553:0",
+       "1156:2:553:0",
+       "1306:2:553:0",
+       "1456:2:553:0",
+       "1606:2:553:0",
+       "1756:2:553:0",
+       "1906:2:553:0",
+       "2056:2:553:0",
+       "2206:2:553:0",
+       "2356:2:553:0",
+       "2506:3:554:0",
+       "2656:3:555:0",
+       "2806:4:555:0",
+       "2956:3:555:0"
+      ],
+      "firedBeforeWindow": null,
       "refTriggers": 1,
       "refTriggerStartPx": 1292,
       "refTriggerEndPx": 7767,
       "refTriggerFracOfSection": -0.3,
-      "resolution": "±0.1 of section height (18 steps over 0.98×H span)",
+      "resolution": "±0 of section height (150 px seats)",
       "pass": null,
-      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
      },
      {
       "section": "home-platform-wrap",
@@ -4831,21 +4992,54 @@
       "family": "settle",
       "settleFrames": 0,
       "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-platform-wrap",
       "bp": "390",
       "family": "trigger-baseline",
-      "ourOnsetFrac": -0.5,
+      "ourOnsetFrac": -0.2,
+      "window": {
+       "start": 4928,
+       "end": 7328,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 7028,
+       "height": 995,
+       "docH": 14195,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "4928:6:69:0",
+       "5078:6:69:0",
+       "5228:6:69:0",
+       "5378:6:69:0",
+       "5528:6:69:0",
+       "5678:6:69:0",
+       "5828:6:69:0",
+       "5978:6:69:0",
+       "6128:6:69:0",
+       "6278:6:69:0",
+       "6428:6:69:0",
+       "6578:6:69:0",
+       "6728:6:69:0",
+       "6878:6:53:0",
+       "7028:6:37:0",
+       "7178:5:29:0",
+       "7328:5:28:0"
+      ],
+      "firedBeforeWindow": null,
       "refTriggers": 2,
       "refTriggerStartPx": 6111,
       "refTriggerEndPx": 8284,
       "refTriggerFracOfSection": -1.3,
-      "resolution": "±0.1 of section height (18 steps over 1.68×H span)",
+      "resolution": "±0.2 of section height (150 px seats)",
       "pass": null,
-      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
      },
      {
       "section": "home-problem-wrap",
@@ -4853,19 +5047,49 @@
       "family": "settle",
       "settleFrames": 0,
       "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-problem-wrap",
       "bp": "390",
       "family": "trigger-baseline",
       "ourOnsetFrac": null,
+      "window": {
+       "start": 0,
+       "end": 2071,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 1771,
+       "height": 885,
+       "docH": 14195,
+       "stabilizedDriftPx": 82
+      },
+      "sigTrace": [
+       "0:0:0:0",
+       "150:0:0:0",
+       "300:0:0:0",
+       "450:0:0:0",
+       "600:0:0:0",
+       "750:0:0:0",
+       "900:0:0:0",
+       "1050:0:0:0",
+       "1200:0:0:0",
+       "1350:0:0:0",
+       "1500:0:0:0",
+       "1650:0:0:0",
+       "1800:0:0:0",
+       "1950:0:0:0"
+      ],
+      "firedBeforeWindow": null,
       "refTriggers": 3,
       "refTriggerStartPx": 423,
       "refTriggerEndPx": 2948,
       "refTriggerFracOfSection": -1.4,
-      "resolution": "±0.1 of section height (18 steps over 1.75×H span)",
+      "resolution": "±0.2 of section height (150 px seats)",
       "pass": null,
       "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
      },
@@ -4875,21 +5099,54 @@
       "family": "settle",
       "settleFrames": 0,
       "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-usecase-wrap",
       "bp": "390",
       "family": "trigger-baseline",
-      "ourOnsetFrac": null,
+      "ourOnsetFrac": -1.9,
+      "window": {
+       "start": 8797,
+       "end": 11197,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 10897,
+       "height": 1029,
+       "docH": 14195,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "8797:25:112:0",
+       "8947:15:112:0",
+       "9097:15:112:0",
+       "9247:15:112:0",
+       "9397:15:112:0",
+       "9547:15:112:0",
+       "9697:15:112:0",
+       "9847:15:112:0",
+       "9997:15:112:0",
+       "10147:15:112:0",
+       "10297:15:112:0",
+       "10447:16:112:0",
+       "10597:16:112:0",
+       "10747:16:112:0",
+       "10897:15:104:0",
+       "11047:17:98:0",
+       "11197:20:74:0"
+      ],
+      "firedBeforeWindow": null,
       "refTriggers": 1,
       "refTriggerStartPx": 7434,
       "refTriggerEndPx": 10038,
       "refTriggerFracOfSection": -1.7,
-      "resolution": "±0.1 of section height (18 steps over 1.62×H span)",
+      "resolution": "±0.1 of section height (150 px seats)",
       "pass": null,
-      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
      },
      {
       "section": "home-why-wrap",
@@ -4897,258 +5154,54 @@
       "family": "settle",
       "settleFrames": 0,
       "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-why-wrap",
       "bp": "390",
       "family": "trigger-baseline",
-      "ourOnsetFrac": null,
+      "ourOnsetFrac": -0.4,
+      "window": {
+       "start": 7990,
+       "end": 10390,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 10090,
+       "height": 807,
+       "docH": 14195,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "7990:30:245:0",
+       "8140:30:245:0",
+       "8290:30:245:0",
+       "8440:30:245:0",
+       "8590:30:245:0",
+       "8740:30:245:0",
+       "8890:30:245:0",
+       "9040:30:245:0",
+       "9190:30:245:0",
+       "9340:30:245:0",
+       "9490:30:245:0",
+       "9640:30:245:0",
+       "9790:30:235:0",
+       "9940:30:231:0",
+       "10090:30:231:0",
+       "10240:29:231:0",
+       "10390:29:231:0"
+      ],
+      "firedBeforeWindow": null,
       "refTriggers": 6,
       "refTriggerStartPx": 6628,
       "refTriggerEndPx": 9090,
       "refTriggerFracOfSection": -2.1,
-      "resolution": "±0.1 of section height (18 steps over 1.55×H span)",
+      "resolution": "±0.2 of section height (150 px seats)",
       "pass": null,
-      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
-     }
-    ],
-    "families": {
-     "settle": {
-      "samples": 10,
-      "pass": 9,
-      "rate": 90
-     },
-     "triggerBaseline": {
-      "samples": 10,
-      "scored": 0,
-      "note": "recorded only — never counted as a Q pass or failure (verified-only rule)"
-     }
-    },
-    "overall": 90
-   },
-   "1440": {
-    "samples": [
-     {
-      "section": "chrome",
-      "bp": "1440",
-      "family": "settle",
-      "settleFrames": 0,
-      "ambientExcluded": 0,
-      "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
-     },
-     {
-      "section": "chrome",
-      "bp": "1440",
-      "family": "trigger-baseline",
-      "ourOnsetFrac": null,
-      "refTriggers": 0,
-      "refTriggerStartPx": null,
-      "refTriggerEndPx": null,
-      "refTriggerFracOfSection": null,
-      "resolution": "±0.9 of section height (18 steps over 16.88×H span)",
-      "pass": null,
-      "note": "no live trigger rooted at this section — named gap, not a pass"
-     },
-     {
-      "section": "footer",
-      "bp": "1440",
-      "family": "settle",
-      "settleFrames": 0,
-      "ambientExcluded": 0,
-      "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
-     },
-     {
-      "section": "footer",
-      "bp": "1440",
-      "family": "trigger-baseline",
-      "ourOnsetFrac": null,
-      "refTriggers": 18,
-      "refTriggerStartPx": 10640,
-      "refTriggerEndPx": 12338,
-      "refTriggerFracOfSection": -3.9,
-      "resolution": "±0.1 of section height (18 steps over 1.80×H span)",
-      "pass": null,
-      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
-     },
-     {
-      "section": "home-cta-wrap",
-      "bp": "1440",
-      "family": "settle",
-      "settleFrames": 0,
-      "ambientExcluded": 0,
-      "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
-     },
-     {
-      "section": "home-cta-wrap",
-      "bp": "1440",
-      "family": "trigger-baseline",
-      "ourOnsetFrac": null,
-      "refTriggers": 4,
-      "refTriggerStartPx": 9942,
-      "refTriggerEndPx": 11627,
-      "refTriggerFracOfSection": -4,
-      "resolution": "±0.1 of section height (18 steps over 1.48×H span)",
-      "pass": null,
-      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
-     },
-     {
-      "section": "home-hero-wrap",
-      "bp": "1440",
-      "family": "settle",
-      "settleFrames": 0,
-      "ambientExcluded": 3,
-      "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
-     },
-     {
-      "section": "home-hero-wrap",
-      "bp": "1440",
-      "family": "trigger-baseline",
-      "ourOnsetFrac": null,
-      "refTriggers": 0,
-      "refTriggerStartPx": null,
-      "refTriggerEndPx": null,
-      "refTriggerFracOfSection": null,
-      "resolution": "±0.1 of section height (18 steps over 1.82×H span)",
-      "pass": null,
-      "note": "no live trigger rooted at this section — named gap, not a pass"
-     },
-     {
-      "section": "home-intro-wrap",
-      "bp": "1440",
-      "family": "settle",
-      "settleFrames": 0,
-      "ambientExcluded": 1,
-      "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
-     },
-     {
-      "section": "home-intro-wrap",
-      "bp": "1440",
-      "family": "trigger-baseline",
-      "ourOnsetFrac": null,
-      "refTriggers": 4,
-      "refTriggerStartPx": 0,
-      "refTriggerEndPx": 2053,
-      "refTriggerFracOfSection": -1.2,
-      "resolution": "±0.1 of section height (18 steps over 2.04×H span)",
-      "pass": null,
-      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
-     },
-     {
-      "section": "home-map-wrap",
-      "bp": "1440",
-      "family": "settle",
-      "settleFrames": 0,
-      "ambientExcluded": 0,
-      "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
-     },
-     {
-      "section": "home-map-wrap",
-      "bp": "1440",
-      "family": "trigger-baseline",
-      "ourOnsetFrac": -0.1,
-      "refTriggers": 1,
-      "refTriggerStartPx": 1021,
-      "refTriggerEndPx": 9095,
-      "refTriggerFracOfSection": -0.2,
-      "resolution": "±0.1 of section height (18 steps over 0.94×H span)",
-      "pass": null,
-      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
-     },
-     {
-      "section": "home-platform-wrap",
-      "bp": "1440",
-      "family": "settle",
-      "settleFrames": 0,
-      "ambientExcluded": 2,
-      "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
-     },
-     {
-      "section": "home-platform-wrap",
-      "bp": "1440",
-      "family": "trigger-baseline",
-      "ourOnsetFrac": -1,
-      "refTriggers": 4,
-      "refTriggerStartPx": 7321,
-      "refTriggerEndPx": 9805,
-      "refTriggerFracOfSection": -1.9,
-      "resolution": "±0.1 of section height (18 steps over 2.06×H span)",
-      "pass": null,
-      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
-     },
-     {
-      "section": "home-problem-wrap",
-      "bp": "1440",
-      "family": "settle",
-      "settleFrames": 0,
-      "ambientExcluded": 0,
-      "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
-     },
-     {
-      "section": "home-problem-wrap",
-      "bp": "1440",
-      "family": "trigger-baseline",
-      "ourOnsetFrac": -1.1,
-      "refTriggers": 3,
-      "refTriggerStartPx": 279,
-      "refTriggerEndPx": 2795,
-      "refTriggerFracOfSection": -1.8,
-      "resolution": "±0.1 of section height (18 steps over 2.01×H span)",
-      "pass": null,
-      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
-     },
-     {
-      "section": "home-usecase-wrap",
-      "bp": "1440",
-      "family": "settle",
-      "settleFrames": 0,
-      "ambientExcluded": 0,
-      "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
-     },
-     {
-      "section": "home-usecase-wrap",
-      "bp": "1440",
-      "family": "trigger-baseline",
-      "ourOnsetFrac": null,
-      "refTriggers": 1,
-      "refTriggerStartPx": 8712,
-      "refTriggerEndPx": 11373,
-      "refTriggerFracOfSection": -3.5,
-      "resolution": "±0.1 of section height (18 steps over 1.82×H span)",
-      "pass": null,
-      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
-     },
-     {
-      "section": "home-why-wrap",
-      "bp": "1440",
-      "family": "settle",
-      "settleFrames": 0,
-      "ambientExcluded": 0,
-      "pass": true,
-      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
-     },
-     {
-      "section": "home-why-wrap",
-      "bp": "1440",
-      "family": "trigger-baseline",
-      "ourOnsetFrac": null,
-      "refTriggers": 6,
-      "refTriggerStartPx": 8031,
-      "refTriggerEndPx": 10486,
-      "refTriggerFracOfSection": -1.2,
-      "resolution": "±0.1 of section height (18 steps over 1.08×H span)",
-      "pass": null,
-      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
      }
     ],
     "families": {
@@ -5160,12 +5213,536 @@
      "triggerBaseline": {
       "samples": 10,
       "scored": 0,
-      "note": "recorded only — never counted as a Q pass or failure (verified-only rule)"
+      "note": "recorded only — never counted as a Q pass or failure (verified-only rule); fresh-page per key since r368 T1 (the earlier keys' probes no longer consume a section's once:true reveals)"
+     }
+    },
+    "overall": 100
+   },
+   "1440": {
+    "samples": [
+     {
+      "section": "chrome",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+     },
+     {
+      "section": "chrome",
+      "bp": "1440",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "window": {
+       "start": 0,
+       "end": 307,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 7,
+       "height": 56,
+       "docH": 16667,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "0:0:0:0",
+       "150:0:0:0",
+       "300:0:0:0"
+      ],
+      "firedBeforeWindow": null,
+      "refTriggers": 0,
+      "refTriggerStartPx": null,
+      "refTriggerEndPx": null,
+      "refTriggerFracOfSection": null,
+      "resolution": "±2.7 of section height (150 px seats)",
+      "pass": null,
+      "note": "no live trigger rooted at this section — named gap, not a pass"
+     },
+     {
+      "section": "footer",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+     },
+     {
+      "section": "footer",
+      "bp": "1440",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -0.2,
+      "window": {
+       "start": 13530,
+       "end": 15767,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 15630,
+       "height": 903,
+       "docH": 16667,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "13530:6:84:0",
+       "13680:6:84:0",
+       "13830:6:84:0",
+       "13980:6:84:0",
+       "14130:6:84:0",
+       "14280:6:84:0",
+       "14430:6:84:0",
+       "14580:6:84:0",
+       "14730:6:84:0",
+       "14880:6:84:0",
+       "15030:6:84:0",
+       "15180:6:84:0",
+       "15330:6:84:0",
+       "15480:6:78:0",
+       "15630:13:60:0"
+      ],
+      "firedBeforeWindow": null,
+      "refTriggers": 18,
+      "refTriggerStartPx": 10640,
+      "refTriggerEndPx": 12338,
+      "refTriggerFracOfSection": -3.9,
+      "resolution": "±0.2 of section height (150 px seats)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
+     },
+     {
+      "section": "home-cta-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+     },
+     {
+      "section": "home-cta-wrap",
+      "bp": "1440",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -1.5,
+      "window": {
+       "start": 12199,
+       "end": 14599,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 14299,
+       "height": 1332,
+       "docH": 16667,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "12199:1:0:0",
+       "12349:5:56:0",
+       "12499:5:56:0",
+       "12649:5:56:0",
+       "12799:5:56:0",
+       "12949:5:56:0",
+       "13099:5:56:0",
+       "13249:5:56:0",
+       "13399:5:56:0",
+       "13549:5:56:0",
+       "13699:5:56:0",
+       "13849:5:56:0",
+       "13999:5:56:0",
+       "14149:5:56:0",
+       "14299:5:56:0",
+       "14449:5:56:0",
+       "14599:5:48:0"
+      ],
+      "firedBeforeWindow": null,
+      "refTriggers": 4,
+      "refTriggerStartPx": 9942,
+      "refTriggerEndPx": 11627,
+      "refTriggerFracOfSection": -4,
+      "resolution": "±0.1 of section height (150 px seats)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "ambientExcluded": 3,
+      "entranceSettleWaitMs": 1200,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "1440",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "window": {
+       "start": 0,
+       "end": 307,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 7,
+       "height": 887,
+       "docH": 16667,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "0:141:280:3",
+       "150:141:280:3",
+       "300:141:280:3"
+      ],
+      "firedBeforeWindow": null,
+      "refTriggers": 0,
+      "refTriggerStartPx": null,
+      "refTriggerEndPx": null,
+      "refTriggerFracOfSection": null,
+      "resolution": "±0.2 of section height (150 px seats)",
+      "pass": null,
+      "note": "no live trigger rooted at this section — named gap, not a pass"
+     },
+     {
+      "section": "home-intro-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "ambientExcluded": 1,
+      "entranceSettleWaitMs": 1200,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+     },
+     {
+      "section": "home-intro-wrap",
+      "bp": "1440",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -1,
+      "window": {
+       "start": 0,
+       "end": 1194,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 894,
+       "height": 723,
+       "docH": 16667,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "0:35:182:1",
+       "150:35:104:1",
+       "300:35:61:1",
+       "450:26:56:1",
+       "600:26:56:1",
+       "750:26:33:1",
+       "900:26:1:1",
+       "1050:22:0:1"
+      ],
+      "firedBeforeWindow": null,
+      "refTriggers": 4,
+      "refTriggerStartPx": 0,
+      "refTriggerEndPx": 2053,
+      "refTriggerFracOfSection": -1.2,
+      "resolution": "±0.2 of section height (150 px seats)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
+     },
+     {
+      "section": "home-map-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+     },
+     {
+      "section": "home-map-wrap",
+      "bp": "1440",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "window": {
+       "start": 263,
+       "end": 2663,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 2363,
+       "height": 6300,
+       "docH": 16667,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "263:1:410:0",
+       "413:1:410:0",
+       "563:1:410:0",
+       "713:1:410:0",
+       "863:1:410:0",
+       "1013:1:410:0",
+       "1163:1:410:0",
+       "1313:1:410:0",
+       "1463:1:410:0",
+       "1613:1:410:0",
+       "1763:1:410:0",
+       "1913:1:410:0",
+       "2063:1:410:0",
+       "2213:1:410:0",
+       "2363:1:410:0",
+       "2513:1:410:0",
+       "2663:1:410:0"
+      ],
+      "firedBeforeWindow": null,
+      "refTriggers": 1,
+      "refTriggerStartPx": 1021,
+      "refTriggerEndPx": 9095,
+      "refTriggerFracOfSection": -0.2,
+      "resolution": "±0 of section height (150 px seats)",
+      "pass": null,
+      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "ambientExcluded": 2,
+      "entranceSettleWaitMs": 1200,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "1440",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -1.1,
+      "window": {
+       "start": 6563,
+       "end": 8963,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 8663,
+       "height": 712,
+       "docH": 16667,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "6563:6:69:2",
+       "6713:6:69:2",
+       "6863:6:69:2",
+       "7013:6:69:2",
+       "7163:6:69:2",
+       "7313:6:69:2",
+       "7463:6:69:2",
+       "7613:6:69:2",
+       "7763:6:69:2",
+       "7913:6:38:2",
+       "8063:6:2:2",
+       "8213:5:0:2",
+       "8363:2:0:2",
+       "8513:2:0:2",
+       "8663:2:0:2",
+       "8813:2:0:2",
+       "8963:2:0:2"
+      ],
+      "firedBeforeWindow": null,
+      "refTriggers": 4,
+      "refTriggerStartPx": 7321,
+      "refTriggerEndPx": 9805,
+      "refTriggerFracOfSection": -1.9,
+      "resolution": "±0.2 of section height (150 px seats)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
+     },
+     {
+      "section": "home-problem-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+     },
+     {
+      "section": "home-problem-wrap",
+      "bp": "1440",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -1.8,
+      "window": {
+       "start": 0,
+       "end": 1917,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 1617,
+       "height": 746,
+       "docH": 16667,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "0:4:56:0",
+       "150:4:56:0",
+       "300:0:0:0",
+       "450:0:0:0",
+       "600:0:0:0",
+       "750:0:0:0",
+       "900:0:0:0",
+       "1050:0:0:0",
+       "1200:0:0:0",
+       "1350:0:0:0",
+       "1500:0:0:0",
+       "1650:0:0:0",
+       "1800:0:0:0"
+      ],
+      "firedBeforeWindow": null,
+      "refTriggers": 3,
+      "refTriggerStartPx": 279,
+      "refTriggerEndPx": 2795,
+      "refTriggerFracOfSection": -1.8,
+      "resolution": "±0.2 of section height (150 px seats)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "1440",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -2.2,
+      "window": {
+       "start": 11313,
+       "end": 13713,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 13413,
+       "height": 886,
+       "docH": 16667,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "11313:15:112:0",
+       "11463:17:112:0",
+       "11613:17:112:0",
+       "11763:17:112:0",
+       "11913:15:112:0",
+       "12063:15:112:0",
+       "12213:15:112:0",
+       "12363:15:112:0",
+       "12513:15:112:0",
+       "12663:15:112:0",
+       "12813:15:112:0",
+       "12963:15:112:0",
+       "13113:15:112:0",
+       "13263:16:112:0",
+       "13413:16:112:0",
+       "13563:16:112:0",
+       "13713:17:104:0"
+      ],
+      "firedBeforeWindow": null,
+      "refTriggers": 1,
+      "refTriggerStartPx": 8712,
+      "refTriggerEndPx": 11373,
+      "refTriggerFracOfSection": -3.5,
+      "resolution": "±0.2 of section height (150 px seats)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
+     },
+     {
+      "section": "home-why-wrap",
+      "bp": "1440",
+      "family": "settle",
+      "settleFrames": 0,
+      "ambientExcluded": 0,
+      "entranceSettleWaitMs": 1200,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2; entrance playback excluded by a 1200 ms wait (the trigger family owns the entrance clocks); running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
+     },
+     {
+      "section": "home-why-wrap",
+      "bp": "1440",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -0.2,
+      "window": {
+       "start": 8825,
+       "end": 11225,
+       "stepPx": 150,
+       "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
+      },
+      "geometry": {
+       "top": 10925,
+       "height": 2488,
+       "docH": 16667,
+       "stabilizedDriftPx": 0
+      },
+      "sigTrace": [
+       "8825:30:245:0",
+       "8975:30:245:0",
+       "9125:30:245:0",
+       "9275:30:245:0",
+       "9425:30:245:0",
+       "9575:30:245:0",
+       "9725:30:245:0",
+       "9875:30:245:0",
+       "10025:30:245:0",
+       "10175:30:245:0",
+       "10325:30:235:0",
+       "10475:30:231:0",
+       "10625:30:231:0",
+       "10775:29:231:0",
+       "10925:29:231:0",
+       "11075:29:231:0",
+       "11225:29:231:0"
+      ],
+      "firedBeforeWindow": null,
+      "refTriggers": 6,
+      "refTriggerStartPx": 8031,
+      "refTriggerEndPx": 10486,
+      "refTriggerFracOfSection": -1.2,
+      "resolution": "±0.1 of section height (150 px seats)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
+     }
+    ],
+    "families": {
+     "settle": {
+      "samples": 10,
+      "pass": 10,
+      "rate": 100
+     },
+     "triggerBaseline": {
+      "samples": 10,
+      "scored": 0,
+      "note": "recorded only — never counted as a Q pass or failure (verified-only rule); fresh-page per key since r368 T1 (the earlier keys' probes no longer consume a section's once:true reveals)"
      }
     },
     "overall": 100
    }
   },
-  "overall": 95
+  "overall": 100
  }
 }

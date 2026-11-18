@@ -1,0 +1,190 @@
+{
+ "generatedAt": "2026-11-18T18:54:44.956Z",
+ "url": "http://localhost:5301/",
+ "contract": "every tracked reveal target ends visible under every input modality; reduced-motion bails before arming (content ships visible, nothing transitions)",
+ "note": "the touch modality runs the coarse-pointer/mobile page config with the Lenis seam as the driver — a real touchscreen swipe trace (the Q touch family's own dial) is the recorded residual",
+ "results": [
+  {
+   "modality": "mouse",
+   "viewport": "1440x900",
+   "targets": {
+    "problem items": {
+     "count": 4,
+     "inView": 4,
+     "visible": 4,
+     "allVisible": true
+    },
+    "usecase rows": {
+     "count": 8,
+     "inView": 8,
+     "visible": 8,
+     "allVisible": true
+    },
+    "cta title": {
+     "count": 1,
+     "inView": 1,
+     "visible": 1,
+     "allVisible": true
+    },
+    "cta lede": {
+     "count": 1,
+     "inView": 1,
+     "visible": 1,
+     "allVisible": true
+    },
+    "intro beats": {
+     "count": 1,
+     "inView": 1,
+     "visible": 1,
+     "allVisible": true
+    },
+    "footer rise": {
+     "count": 3,
+     "inView": 3,
+     "visible": 3,
+     "allVisible": true
+    }
+   },
+   "armedClassAtLoad": true,
+   "reachedScroll": 16437,
+   "docEnd": 16437
+  },
+  {
+   "modality": "touch",
+   "viewport": "390x844",
+   "targets": {
+    "problem items": {
+     "count": 4,
+     "inView": 4,
+     "visible": 4,
+     "allVisible": true
+    },
+    "usecase rows": {
+     "count": 8,
+     "inView": 8,
+     "visible": 8,
+     "allVisible": true
+    },
+    "cta title": {
+     "count": 1,
+     "inView": 1,
+     "visible": 1,
+     "allVisible": true
+    },
+    "cta lede": {
+     "count": 1,
+     "inView": 1,
+     "visible": 1,
+     "allVisible": true
+    },
+    "intro beats": {
+     "count": 1,
+     "inView": 1,
+     "visible": 1,
+     "allVisible": true
+    },
+    "footer rise": {
+     "count": 3,
+     "inView": 3,
+     "visible": 3,
+     "allVisible": true
+    }
+   },
+   "armedClassAtLoad": true,
+   "reachedScroll": 13351,
+   "docEnd": 13992
+  },
+  {
+   "modality": "keyboard",
+   "viewport": "1440x900",
+   "targets": {
+    "problem items": {
+     "count": 4,
+     "inView": 4,
+     "visible": 4,
+     "allVisible": true
+    },
+    "usecase rows": {
+     "count": 8,
+     "inView": 8,
+     "visible": 8,
+     "allVisible": true
+    },
+    "cta title": {
+     "count": 1,
+     "inView": 1,
+     "visible": 1,
+     "allVisible": true
+    },
+    "cta lede": {
+     "count": 1,
+     "inView": 1,
+     "visible": 1,
+     "allVisible": true
+    },
+    "intro beats": {
+     "count": 1,
+     "inView": 1,
+     "visible": 1,
+     "allVisible": true
+    },
+    "footer rise": {
+     "count": 3,
+     "inView": 3,
+     "visible": 3,
+     "allVisible": true
+    }
+   },
+   "armedClassAtLoad": true,
+   "reachedScroll": 16437,
+   "docEnd": 16437
+  },
+  {
+   "modality": "reduced-motion",
+   "viewport": "1440x900",
+   "targets": {
+    "problem items": {
+     "count": 4,
+     "inView": 0,
+     "visible": 4,
+     "allVisible": true
+    },
+    "usecase rows": {
+     "count": 8,
+     "inView": 0,
+     "visible": 8,
+     "allVisible": true
+    },
+    "cta title": {
+     "count": 1,
+     "inView": 0,
+     "visible": 1,
+     "allVisible": true
+    },
+    "cta lede": {
+     "count": 1,
+     "inView": 0,
+     "visible": 1,
+     "allVisible": true
+    },
+    "intro beats": {
+     "count": 1,
+     "inView": 0,
+     "visible": 1,
+     "allVisible": true
+    },
+    "footer rise": {
+     "count": 3,
+     "inView": 0,
+     "visible": 3,
+     "allVisible": true
+    }
+   },
+   "armedClassAtLoad": false,
+   "reachedScroll": 0,
+   "docEnd": 15906
+  }
+ ],
+ "verdict": "PASS",
+ "failures": []
+}
