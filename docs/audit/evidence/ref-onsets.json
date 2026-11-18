@@ -1,0 +1,609 @@
+{
+ "generatedAt": "2026-11-18T17:00:50.670Z",
+ "protocol": "wheel seats in 150 px steps across [entry−2100, entry+300]; signature = mid-flight opacity/transform (ambient keyframe loops excluded); onset = first seat whose signature leaves its initial value; fraction = (onset−entry)/H",
+ "reference": "https://heronaiapp.com/",
+ "viewports": {
+  "1440": {
+   "maxOffset": 13257,
+   "sections": {
+    "footer": {
+     "entryOffset": 13257,
+     "height": 711,
+     "visualOnsetOffset": null,
+     "visualOnsetFrac": null,
+     "note": "no pre-entry visual motion — the family's visible changes begin at/after entry (the trigger table's start is the ScrollTrigger window, not the visible moment)",
+     "sigs": [
+      {
+       "off": 11164,
+       "v": "1:0"
+      },
+      {
+       "off": 11309,
+       "v": "1:0"
+      },
+      {
+       "off": 11456,
+       "v": "1:0"
+      },
+      {
+       "off": 11609,
+       "v": "1:0"
+      },
+      {
+       "off": 11756,
+       "v": "1:0"
+      },
+      {
+       "off": 11906,
+       "v": "1:0"
+      },
+      {
+       "off": 12059,
+       "v": "1:0"
+      },
+      {
+       "off": 12206,
+       "v": "1:0"
+      },
+      {
+       "off": 12359,
+       "v": "1:0"
+      },
+      {
+       "off": 12509,
+       "v": "1:0"
+      },
+      {
+       "off": 12659,
+       "v": "1:0"
+      },
+      {
+       "off": 12809,
+       "v": "1:0"
+      },
+      {
+       "off": 12959,
+       "v": "1:0"
+      },
+      {
+       "off": 13109,
+       "v": "1:0"
+      },
+      {
+       "off": 13257,
+       "v": "1:0"
+      },
+      {
+       "off": 13257,
+       "v": "1:0"
+      },
+      {
+       "off": 13257,
+       "v": "1:0"
+      }
+     ]
+    },
+    "home-cta-wrap": {
+     "entryOffset": 12554,
+     "height": 698,
+     "visualOnsetOffset": null,
+     "visualOnsetFrac": null,
+     "note": "no pre-entry visual motion — the family's visible changes begin at/after entry (the trigger table's start is the ScrollTrigger window, not the visible moment)",
+     "sigs": [
+      {
+       "off": 10463,
+       "v": "3:37"
+      },
+      {
+       "off": 10606,
+       "v": "3:37"
+      },
+      {
+       "off": 10756,
+       "v": "3:37"
+      },
+      {
+       "off": 10906,
+       "v": "3:37"
+      },
+      {
+       "off": 11056,
+       "v": "3:37"
+      },
+      {
+       "off": 11206,
+       "v": "3:37"
+      },
+      {
+       "off": 11353,
+       "v": "3:37"
+      },
+      {
+       "off": 11506,
+       "v": "3:37"
+      },
+      {
+       "off": 11656,
+       "v": "3:37"
+      },
+      {
+       "off": 11806,
+       "v": "3:37"
+      },
+      {
+       "off": 11956,
+       "v": "3:37"
+      },
+      {
+       "off": 12106,
+       "v": "3:37"
+      },
+      {
+       "off": 12256,
+       "v": "3:37"
+      },
+      {
+       "off": 12403,
+       "v": "3:37"
+      },
+      {
+       "off": 12556,
+       "v": "3:37"
+      },
+      {
+       "off": 12706,
+       "v": "3:37"
+      },
+      {
+       "off": 12856,
+       "v": "3:37"
+      }
+     ]
+    },
+    "home-hero-wrap": {
+     "entryOffset": 0,
+     "height": 887,
+     "visualOnsetOffset": 150,
+     "visualOnsetFrac": 0.2,
+     "note": null,
+     "sigs": [
+      {
+       "off": 1,
+       "v": "105:263"
+      },
+      {
+       "off": 152,
+       "v": "105:866"
+      },
+      {
+       "off": 302,
+       "v": "105:1379"
+      }
+     ]
+    },
+    "home-intro-wrap": {
+     "entryOffset": 1154,
+     "height": 723,
+     "visualOnsetOffset": 600,
+     "visualOnsetFrac": -0.8,
+     "note": null,
+     "sigs": [
+      {
+       "off": 1,
+       "v": "9:82"
+      },
+      {
+       "off": 152,
+       "v": "9:82"
+      },
+      {
+       "off": 302,
+       "v": "9:82"
+      },
+      {
+       "off": 452,
+       "v": "9:82"
+      },
+      {
+       "off": 602,
+       "v": "8:82"
+      },
+      {
+       "off": 752,
+       "v": "9:82"
+      },
+      {
+       "off": 902,
+       "v": "9:82"
+      },
+      {
+       "off": 1052,
+       "v": "9:82"
+      },
+      {
+       "off": 1202,
+       "v": "9:82"
+      },
+      {
+       "off": 1352,
+       "v": "9:82"
+      }
+     ]
+    },
+    "home-map-wrap": {
+     "entryOffset": 2353,
+     "height": 6300,
+     "visualOnsetOffset": 1603,
+     "visualOnsetFrac": -0.1,
+     "note": null,
+     "sigs": [
+      {
+       "off": 257,
+       "v": "19:8146"
+      },
+      {
+       "off": 405,
+       "v": "19:8146"
+      },
+      {
+       "off": 555,
+       "v": "19:8146"
+      },
+      {
+       "off": 705,
+       "v": "19:8146"
+      },
+      {
+       "off": 855,
+       "v": "19:8146"
+      },
+      {
+       "off": 1005,
+       "v": "19:8146"
+      },
+      {
+       "off": 1155,
+       "v": "19:8146"
+      },
+      {
+       "off": 1305,
+       "v": "19:8146"
+      },
+      {
+       "off": 1452,
+       "v": "19:8146"
+      },
+      {
+       "off": 1605,
+       "v": "19:8007"
+      },
+      {
+       "off": 1755,
+       "v": "19:7857"
+      },
+      {
+       "off": 1905,
+       "v": "19:7707"
+      },
+      {
+       "off": 2055,
+       "v": "19:7556"
+      },
+      {
+       "off": 2205,
+       "v": "19:7405"
+      },
+      {
+       "off": 2355,
+       "v": "18:7257"
+      },
+      {
+       "off": 2505,
+       "v": "17:7257"
+      },
+      {
+       "off": 2655,
+       "v": "17:7257"
+      }
+     ]
+    },
+    "home-platform-wrap": {
+     "entryOffset": 8961,
+     "height": 710,
+     "visualOnsetOffset": null,
+     "visualOnsetFrac": null,
+     "note": "no pre-entry visual motion — the family's visible changes begin at/after entry (the trigger table's start is the ScrollTrigger window, not the visible moment)",
+     "sigs": [
+      {
+       "off": 6863,
+       "v": "6:153"
+      },
+      {
+       "off": 7013,
+       "v": "6:153"
+      },
+      {
+       "off": 7163,
+       "v": "6:153"
+      },
+      {
+       "off": 7313,
+       "v": "6:153"
+      },
+      {
+       "off": 7463,
+       "v": "6:153"
+      },
+      {
+       "off": 7610,
+       "v": "6:153"
+      },
+      {
+       "off": 7763,
+       "v": "6:153"
+      },
+      {
+       "off": 7913,
+       "v": "6:153"
+      },
+      {
+       "off": 8063,
+       "v": "6:153"
+      },
+      {
+       "off": 8210,
+       "v": "6:153"
+      },
+      {
+       "off": 8363,
+       "v": "6:153"
+      },
+      {
+       "off": 8513,
+       "v": "6:153"
+      },
+      {
+       "off": 8663,
+       "v": "6:153"
+      },
+      {
+       "off": 8813,
+       "v": "6:153"
+      },
+      {
+       "off": 8963,
+       "v": "6:153"
+      },
+      {
+       "off": 9113,
+       "v": "6:153"
+      },
+      {
+       "off": 9263,
+       "v": "6:153"
+      }
+     ]
+    },
+    "home-problem-wrap": {
+     "entryOffset": 1758,
+     "height": 743,
+     "visualOnsetOffset": 1500,
+     "visualOnsetFrac": -0.3,
+     "note": null,
+     "sigs": [
+      {
+       "off": 1,
+       "v": "18:0"
+      },
+      {
+       "off": 149,
+       "v": "18:0"
+      },
+      {
+       "off": 302,
+       "v": "18:0"
+      },
+      {
+       "off": 452,
+       "v": "18:0"
+      },
+      {
+       "off": 602,
+       "v": "18:0"
+      },
+      {
+       "off": 752,
+       "v": "18:0"
+      },
+      {
+       "off": 902,
+       "v": "18:0"
+      },
+      {
+       "off": 1052,
+       "v": "18:0"
+      },
+      {
+       "off": 1202,
+       "v": "18:0"
+      },
+      {
+       "off": 1352,
+       "v": "18:0"
+      },
+      {
+       "off": 1502,
+       "v": "15:0"
+      },
+      {
+       "off": 1652,
+       "v": "15:0"
+      },
+      {
+       "off": 1802,
+       "v": "15:0"
+      },
+      {
+       "off": 1952,
+       "v": "18:0"
+      }
+     ]
+    },
+    "home-usecase-wrap": {
+     "entryOffset": 11952,
+     "height": 887,
+     "visualOnsetOffset": 12102,
+     "visualOnsetFrac": 0.2,
+     "note": null,
+     "sigs": [
+      {
+       "off": 9853,
+       "v": "16:0"
+      },
+      {
+       "off": 10004,
+       "v": "16:0"
+      },
+      {
+       "off": 10154,
+       "v": "16:0"
+      },
+      {
+       "off": 10304,
+       "v": "16:0"
+      },
+      {
+       "off": 10454,
+       "v": "16:0"
+      },
+      {
+       "off": 10604,
+       "v": "16:0"
+      },
+      {
+       "off": 10754,
+       "v": "16:0"
+      },
+      {
+       "off": 10904,
+       "v": "16:0"
+      },
+      {
+       "off": 11054,
+       "v": "16:0"
+      },
+      {
+       "off": 11204,
+       "v": "16:0"
+      },
+      {
+       "off": 11354,
+       "v": "16:0"
+      },
+      {
+       "off": 11504,
+       "v": "16:0"
+      },
+      {
+       "off": 11654,
+       "v": "16:0"
+      },
+      {
+       "off": 11804,
+       "v": "16:0"
+      },
+      {
+       "off": 11951,
+       "v": "16:0"
+      },
+      {
+       "off": 12104,
+       "v": "17:0"
+      },
+      {
+       "off": 12254,
+       "v": "16:0"
+      }
+     ]
+    },
+    "home-why-wrap": {
+     "entryOffset": 9560,
+     "height": 2487,
+     "visualOnsetOffset": 7610,
+     "visualOnsetFrac": -0.8,
+     "note": null,
+     "sigs": [
+      {
+       "off": 7474,
+       "v": "21:2034"
+      },
+      {
+       "off": 7612,
+       "v": "46:2040"
+      },
+      {
+       "off": 7762,
+       "v": "36:2034"
+      },
+      {
+       "off": 7912,
+       "v": "34:2040"
+      },
+      {
+       "off": 8062,
+       "v": "37:2034"
+      },
+      {
+       "off": 8212,
+       "v": "28:2034"
+      },
+      {
+       "off": 8362,
+       "v": "45:2035"
+      },
+      {
+       "off": 8512,
+       "v": "21:2034"
+      },
+      {
+       "off": 8662,
+       "v": "45:2040"
+      },
+      {
+       "off": 8812,
+       "v": "27:2471"
+      },
+      {
+       "off": 8962,
+       "v": "44:1729"
+      },
+      {
+       "off": 9112,
+       "v": "34:974"
+      },
+      {
+       "off": 9262,
+       "v": "34:230"
+      },
+      {
+       "off": 9412,
+       "v": "38:526"
+      },
+      {
+       "off": 9562,
+       "v": "28:1276"
+      },
+      {
+       "off": 9712,
+       "v": "45:2028"
+      },
+      {
+       "off": 9862,
+       "v": "21:2776"
+      }
+     ]
+    }
+   }
+  }
+ }
+}

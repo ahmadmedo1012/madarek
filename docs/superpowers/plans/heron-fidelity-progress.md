@@ -77,3 +77,45 @@ Environment: Node v24.22.3 (supported 20–24), Playwright 1.60.0 with the docum
 ### Rollback
 
 Revert the task commits on `wip/r368-t0` (instrument + evidence land as separate commits; no product file is touched by Task 0).
+
+## Task 1 — measurement foundation (the verified tuning targets)
+
+Before touching any motion file, the two missing halves of the trigger
+baseline were measured (the plan's "Use Task 0 traces to tune" requires
+targets that are actually visual):
+
+1. **The live trigger table's starts are NOT the visible moments.** A wheel-
+   seated visual-onset sampler across each section's approach window
+   (`scripts/conformance/ref-onsets.mjs`, seats in 150 px steps across
+   [entry−2100, entry+300]) shows the reference's first *visible* style
+   changes at fractions of section height (measured @1440):
+   - `home-problem-wrap` visual onset **−0.34×H** (the trigger table says −1.8);
+   - `home-why-wrap` visual onset **−0.78×H** (the table says −1.2);
+   - `home-intro-wrap`, `home-platform-wrap`, `home-usecase-wrap`: **no
+     pre-entry motion at all** — their signatures stay constant through the
+     whole approach (their scrub families play AT/AFTER entry), while the
+     table's starts for those same sections read −1.2/−1.9/−3.5.
+   Tuning our reveal lines against the table would have moved the wrong dial
+   in both directions; the verified targets are the visual onsets above.
+
+2. **Our onsets fire EARLIER than the reference's visible motion for the
+   sections with measured pairs** — ours (Task 0 baseline): problem −1.1×H,
+   platform −1.0×H, map −0.1×H vs the reference's visible −0.34×H / at-entry /
+   −0.2×H. The reveal line knobs (`OBSERVER_ROOT_MARGIN_ITEMS/LINES` in
+   `frontend/src/lib/reveals.ts`, the 88 %/85 % entry lines) are the levers,
+   and the reference is *heterogeneous* (why fires early, problem mid, the
+   scrub families at entry) — a single global line cannot match all of them;
+   the tuning must be per family/section.
+
+3. **The settle-family failures at 768/1024/1920 (intro, platform, 5 frames)
+   are ambient, not scroll-linked**: a live probe shows the intro's crawl
+   marquee keeps the subtree signature changing forever (settle frame 9/9)
+   while the same run's scroll-linked reveals complete in ≤2 frames. The
+   settle sampler must exclude ambient CSS keyframe loops from its signature
+   before its tolerance judges scroll-settle (an instrument refinement,
+   recorded here as the measured fact; the fix belongs with the next capture).
+
+These three findings are the honest state of Task 1: the measurement
+foundation is laid (targets verified on both sides), the product tuning
+(reveal lines, durations, preloader, pointer) is the next increment and is
+NOT claimed done by this record.
