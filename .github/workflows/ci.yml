@@ -513,9 +513,13 @@ jobs:
           # findings (off-token colors, ad-hoc motion/shadows, contrast,
           # CLS, illustration size, bundle bytes) gate at strict
           # defaults; cross-runner FCP gets explicit documented
-          # headroom (observed same-machine run-to-run noise reaches
-          # ~2.8x under load).
-          AUDIT_FCP_RATIO: '4'
+          # headroom. Observed noise: ~2.8x same-machine under load
+          # (the original calibration), 4.6x on GitHub's shared
+          # runners (R366-final round 5: /auth/register dark rtl 360
+          # measured FCP 276ms vs a 60ms baseline, byte-identical
+          # code that passed this gate the four rounds before) — the
+          # documented headroom takes the observed cross-runner max.
+          AUDIT_FCP_RATIO: '6'
         run: |
           npx vite preview --port 4173 --strictPort &
           PREVIEW_PID=$!

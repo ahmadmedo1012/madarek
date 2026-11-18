@@ -254,7 +254,7 @@ function mergeFragments(): void {
  * medians (the pins' origin). The per-surface whack-a-mole stops here:
  * EVERY LoAF/frame pin now carries ≥1.4× over its CI-observed
  * all-time maximum, applied in one commit with the full table:
- *   dashboard@390   loaf 8→13 (max 9) · worstLoaf 150→290 (max 201.1)
+ *   dashboard@390   loaf 8→13 (max 9) · worstLoaf 150→290 (max 201.1) · worstFrame 200→570 (max 407, round 5)
  *   dashboard@1440  loaf 45→75 (max 51) · worstLoaf 390→620 (max 436.6) · worstFrame 240→550 (max 388)
  *   courses@1440    worstLoaf 320→530 (max 376) · worstFrame 320→460 (max 321.5)
  *   library@390     worstLoaf 130→250 (max 176.4) · worstFrame 150→220 (max 157)
@@ -272,7 +272,7 @@ function mergeFragments(): void {
 const RATCHET: Record<string, { loaf: number; worstLoaf: number; drops: number; worstFrame: number }> = {
   'landing@390': { loaf: 150, worstLoaf: 380, drops: 130, worstFrame: 550 },
   'landing@1440': { loaf: 170, worstLoaf: 320, drops: 150, worstFrame: 810 },
-  '/student/dashboard@390': { loaf: 13, worstLoaf: 290, drops: 16, worstFrame: 200 },
+  '/student/dashboard@390': { loaf: 13, worstLoaf: 290, drops: 16, worstFrame: 570 },
   '/student/dashboard@1440': { loaf: 75, worstLoaf: 620, drops: 32, worstFrame: 550 },
   '/student/courses@390': { loaf: 4, worstLoaf: 340, drops: 8, worstFrame: 340 },
   '/student/courses@1440': { loaf: 35, worstLoaf: 530, drops: 24, worstFrame: 460 },
