@@ -46,7 +46,17 @@ const EXE = (() => {
 
 let server;
 async function startServer() {
-  server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', PORT, '--strictPort'], {
+  /* R366-final (CI repair): `vite preview` needs a built dist/ — the
+   * conform-gate job installs and boots the DEV server but never builds,
+   * so the gate FATALed there ("preview server failed"). Serve from the
+   * build when one exists (the local verify.sh flow — build precedes),
+   * otherwise boot the dev server (geometry probes don't need the
+   * production bundle; the styles are identical). */
+  const hasBuild = fs.existsSync(path.join(ROOT, 'frontend', 'dist', 'index.html'));
+  const cmd = hasBuild
+    ? ['vite', 'preview', '--host', '127.0.0.1', '--port', PORT, '--strictPort']
+    : ['vite', '--host', '127.0.0.1', '--port', PORT, '--strictPort'];
+  server = spawn('npx', cmd, {
     cwd: path.join(ROOT, 'frontend'), stdio: 'ignore', env: process.env,
   });
   for (let i = 0; i < 100; i++) {
