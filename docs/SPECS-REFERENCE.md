@@ -14,8 +14,9 @@
 | `008-colleges-mount-order` | College mount order fix | Complete (merged) |
 | `011-platform-completeness-uplift` | Search, notifications, session policy | **Partial** — locale/i18n user story (US7) never implemented: no i18next/react-i18next dependency, no `frontend/src/i18n/` layer, no locale model. Landed parts: Arabic-aware search normalization (`modules/search/normalize.ts`), notification preferences groundwork, a11y CI deps, splash/skeleton primitives |
 | `012-design-graphics-uplift` | Themes, illustrations, overlays, onboarding, milestones | **Complete** — landed via migration `20260602190000_012_design_uplift_state`, branch merged to `main` |
+| `013-heron-fidelity` | Heron-reference visual/interaction fidelity (E/T/Q scorecard, landing + public + roles + Expo, copy/CSS diet) | **In execution** on `wip/r368-*` branches (program root `plan/r368-heron-fidelity` @ `3b8eba04`, base `main` @ `347e2508`): Task 0 closed at `6ee606e3` (instrument repaired; baseline E 53.0 · T 98.3% · Q 95; `footer@390:mid60` both-sides impossibility documented); Task 1 measurement foundation landed (`2e7491a2`), product tuning in progress; Tasks 2–10 not started. Not merged to `main`. |
 
-Spec directories on `main`: 001, 002, 003, 004, 011, 012 (no 009/010 ever existed).
+Spec directories on `main`: 001, 002, 003, 004, 011, 012 (no 009/010 ever existed). `specs/013-heron-fidelity/` lands with the r368 task branches (authoritative docs: `docs/specs/heron-fidelity.md` + `docs/superpowers/plans/heron-fidelity-plan.md`).
 
 ## Feature 012-design-graphics-uplift (landed)
 
