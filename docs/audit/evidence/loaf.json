@@ -1,0 +1,495 @@
+{
+  "generatedAt": "2026-11-18T19:24:10.682Z",
+  "url": "http://localhost:5302/",
+  "build": "npm run build -w frontend (dist, served by vite preview)",
+  "viewport": "1440x900, DPR 1, reducedMotion no-preference",
+  "engine": {
+    "hasSeam": true,
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.7499.4 Safari/537.36"
+  },
+  "docEnd": 15767,
+  "law": {
+    "loafLimitMs": 50,
+    "frameBudgetMs": 16.67,
+    "jankGate": "1.5x budget, WARM steady-state scroll only",
+    "phaseLaw": "pass 1 = cold first-visit observations (recorded); the gate judges pass 2 (warm steady state) after a reload with primed cache; mount-phase frames are the LCP/INP ledger, never the scroll gate"
+  },
+  "cold": {
+    "loafUnsupported": false,
+    "scrollStartMark": 2113,
+    "pass": 1,
+    "loafScroll": {
+      "total": 0,
+      "overLimit": 0,
+      "max": 0,
+      "entries": []
+    },
+    "loafMount": {
+      "total": 2,
+      "max": 248,
+      "entries": [
+        {
+          "startTime": 6.7,
+          "duration": 78.8,
+          "renderStart": 80.4,
+          "blockingDuration": 0,
+          "scripts": []
+        },
+        {
+          "startTime": 253.5,
+          "duration": 248,
+          "renderStart": 440.2,
+          "blockingDuration": 169.9,
+          "scripts": [
+            {
+              "name": "script",
+              "duration": 25,
+              "sourceURL": "http://localhost:5302/assets/react-k5_3mBov.js",
+              "function": ""
+            },
+            {
+              "name": "script",
+              "duration": 158,
+              "sourceURL": "http://localhost:5302/assets/react-k5_3mBov.js",
+              "function": ""
+            },
+            {
+              "name": "script",
+              "duration": 12,
+              "sourceURL": "http://localhost:5302/assets/LandingPage-C5jBFwf-.js",
+              "function": ""
+            },
+            {
+              "name": "script",
+              "duration": 6,
+              "sourceURL": "http://localhost:5302/assets/LandingPage-C5jBFwf-.js",
+              "function": ""
+            }
+          ]
+        }
+      ]
+    },
+    "rafSamples": 749,
+    "rafOverBudget15x": 30,
+    "rafOverBudget15xList": [
+      {
+        "t": 2208.8,
+        "d": 25.3,
+        "pass": 1
+      },
+      {
+        "t": 2379.4,
+        "d": 26.1,
+        "pass": 1
+      },
+      {
+        "t": 2526.3,
+        "d": 28.6,
+        "pass": 1
+      },
+      {
+        "t": 2729,
+        "d": 32.2,
+        "pass": 1
+      },
+      {
+        "t": 4756.5,
+        "d": 26.5,
+        "pass": 1
+      },
+      {
+        "t": 5050.8,
+        "d": 29.9,
+        "pass": 1
+      },
+      {
+        "t": 5088,
+        "d": 26,
+        "pass": 1
+      },
+      {
+        "t": 5259.7,
+        "d": 28.8,
+        "pass": 1
+      },
+      {
+        "t": 6329,
+        "d": 29.9,
+        "pass": 1
+      },
+      {
+        "t": 6358.6,
+        "d": 29.6,
+        "pass": 1
+      },
+      {
+        "t": 6390.2,
+        "d": 31.6,
+        "pass": 1
+      },
+      {
+        "t": 6421.4,
+        "d": 31.2,
+        "pass": 1
+      },
+      {
+        "t": 6454.3,
+        "d": 32.9,
+        "pass": 1
+      },
+      {
+        "t": 6488.4,
+        "d": 34.1,
+        "pass": 1
+      },
+      {
+        "t": 6523,
+        "d": 34.6,
+        "pass": 1
+      },
+      {
+        "t": 6558.1,
+        "d": 35.1,
+        "pass": 1
+      },
+      {
+        "t": 6593.8,
+        "d": 35.7,
+        "pass": 1
+      },
+      {
+        "t": 6636.7,
+        "d": 42.9,
+        "pass": 1
+      },
+      {
+        "t": 6674,
+        "d": 37.3,
+        "pass": 1
+      },
+      {
+        "t": 6713.5,
+        "d": 39.5,
+        "pass": 1
+      },
+      {
+        "t": 6752.6,
+        "d": 39.1,
+        "pass": 1
+      },
+      {
+        "t": 6792.3,
+        "d": 39.7,
+        "pass": 1
+      },
+      {
+        "t": 6833.9,
+        "d": 41.6,
+        "pass": 1
+      },
+      {
+        "t": 6875.7,
+        "d": 41.8,
+        "pass": 1
+      },
+      {
+        "t": 6918.4,
+        "d": 42.7,
+        "pass": 1
+      },
+      {
+        "t": 6969,
+        "d": 50.6,
+        "pass": 1
+      },
+      {
+        "t": 7018.2,
+        "d": 49.2,
+        "pass": 1
+      },
+      {
+        "t": 7066.6,
+        "d": 48.4,
+        "pass": 1
+      },
+      {
+        "t": 7140.1,
+        "d": 73.5,
+        "pass": 1
+      },
+      {
+        "t": 7183.5,
+        "d": 28.3,
+        "pass": 1
+      }
+    ],
+    "rafMax": 73.5,
+    "rafMountOverBudget": 11
+  },
+  "warm": {
+    "loafUnsupported": false,
+    "scrollStartMark": 1957.9,
+    "pass": 2,
+    "loafScroll": {
+      "total": 0,
+      "overLimit": 0,
+      "max": 0,
+      "entries": []
+    },
+    "loafMount": {
+      "total": 2,
+      "max": 198.6,
+      "entries": [
+        {
+          "startTime": 2,
+          "duration": 80.8,
+          "renderStart": 75.9,
+          "blockingDuration": 0,
+          "scripts": []
+        },
+        {
+          "startTime": 242.6,
+          "duration": 198.6,
+          "renderStart": 380,
+          "blockingDuration": 143,
+          "scripts": [
+            {
+              "name": "script",
+              "duration": 131,
+              "sourceURL": "http://localhost:5302/assets/react-k5_3mBov.js",
+              "function": ""
+            },
+            {
+              "name": "script",
+              "duration": 11,
+              "sourceURL": "http://localhost:5302/assets/LandingPage-C5jBFwf-.js",
+              "function": ""
+            },
+            {
+              "name": "script",
+              "duration": 6,
+              "sourceURL": "http://localhost:5302/assets/LandingPage-C5jBFwf-.js",
+              "function": ""
+            },
+            {
+              "name": "script",
+              "duration": 5,
+              "sourceURL": "http://localhost:5302/assets/LandingPage-C5jBFwf-.js",
+              "function": ""
+            }
+          ]
+        }
+      ]
+    },
+    "rafSamples": 743,
+    "rafOverBudget15x": 41,
+    "rafOverBudget15xList": [
+      {
+        "t": 2152.1,
+        "d": 36.3,
+        "pass": 2
+      },
+      {
+        "t": 5018.9,
+        "d": 25.2,
+        "pass": 2
+      },
+      {
+        "t": 5068.8,
+        "d": 29,
+        "pass": 2
+      },
+      {
+        "t": 5179.3,
+        "d": 27.7,
+        "pass": 2
+      },
+      {
+        "t": 5277.9,
+        "d": 25.4,
+        "pass": 2
+      },
+      {
+        "t": 5787.3,
+        "d": 26.2,
+        "pass": 2
+      },
+      {
+        "t": 5881.7,
+        "d": 27,
+        "pass": 2
+      },
+      {
+        "t": 5930.2,
+        "d": 26.2,
+        "pass": 2
+      },
+      {
+        "t": 5994.8,
+        "d": 64.6,
+        "pass": 2
+      },
+      {
+        "t": 6485.2,
+        "d": 25.8,
+        "pass": 2
+      },
+      {
+        "t": 6575.6,
+        "d": 29.5,
+        "pass": 2
+      },
+      {
+        "t": 6623.6,
+        "d": 27.6,
+        "pass": 2
+      },
+      {
+        "t": 6724.3,
+        "d": 30.3,
+        "pass": 2
+      },
+      {
+        "t": 6749.9,
+        "d": 25.6,
+        "pass": 2
+      },
+      {
+        "t": 6777.7,
+        "d": 27.8,
+        "pass": 2
+      },
+      {
+        "t": 6810.4,
+        "d": 32.7,
+        "pass": 2
+      },
+      {
+        "t": 6844.7,
+        "d": 34.3,
+        "pass": 2
+      },
+      {
+        "t": 10186.6,
+        "d": 34.9,
+        "pass": 2
+      },
+      {
+        "t": 10215.6,
+        "d": 29,
+        "pass": 2
+      },
+      {
+        "t": 10247.2,
+        "d": 31.6,
+        "pass": 2
+      },
+      {
+        "t": 10277.4,
+        "d": 30.2,
+        "pass": 2
+      },
+      {
+        "t": 10310.5,
+        "d": 33.1,
+        "pass": 2
+      },
+      {
+        "t": 10341.2,
+        "d": 30.7,
+        "pass": 2
+      },
+      {
+        "t": 10374.6,
+        "d": 33.4,
+        "pass": 2
+      },
+      {
+        "t": 10410.3,
+        "d": 35.7,
+        "pass": 2
+      },
+      {
+        "t": 10441.9,
+        "d": 31.6,
+        "pass": 2
+      },
+      {
+        "t": 10477.2,
+        "d": 35.3,
+        "pass": 2
+      },
+      {
+        "t": 10515.7,
+        "d": 38.5,
+        "pass": 2
+      },
+      {
+        "t": 10556.7,
+        "d": 41,
+        "pass": 2
+      },
+      {
+        "t": 10595.9,
+        "d": 39.2,
+        "pass": 2
+      },
+      {
+        "t": 10634.1,
+        "d": 38.2,
+        "pass": 2
+      },
+      {
+        "t": 10674.3,
+        "d": 40.2,
+        "pass": 2
+      },
+      {
+        "t": 10716.1,
+        "d": 41.8,
+        "pass": 2
+      },
+      {
+        "t": 10758.4,
+        "d": 42.3,
+        "pass": 2
+      },
+      {
+        "t": 10802.7,
+        "d": 44.3,
+        "pass": 2
+      },
+      {
+        "t": 10849.8,
+        "d": 47.1,
+        "pass": 2
+      },
+      {
+        "t": 10896.2,
+        "d": 46.4,
+        "pass": 2
+      },
+      {
+        "t": 10946.2,
+        "d": 50,
+        "pass": 2
+      },
+      {
+        "t": 10996.2,
+        "d": 50,
+        "pass": 2
+      },
+      {
+        "t": 14914.1,
+        "d": 30.3,
+        "pass": 2
+      }
+    ],
+    "rafMax": 64.6,
+    "rafMountOverBudget": 9
+  },
+  "verdict": {
+    "loafPass": true,
+    "jankNote": 41
+  }
+}

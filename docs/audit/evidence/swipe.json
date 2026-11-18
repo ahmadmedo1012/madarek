@@ -1,0 +1,93 @@
+{
+  "generatedAt": "2026-11-18T19:21:03.506Z",
+  "url": "http://localhost:5301/",
+  "viewport": "390x844 DPR2 hasTouch isMobile (real CDP touch sequence)",
+  "engine": {
+    "hasSeam": true,
+    "seamOptions": {
+      "smoothWheel": true,
+      "syncTouch": true,
+      "touchMultiplier": 1,
+      "duration": {}
+    }
+  },
+  "swipe": {
+    "startX": 195,
+    "startY": 620,
+    "endY": 280,
+    "moves": 8,
+    "gestureMs": 128
+  },
+  "curve": [
+    {
+      "t": 1,
+      "y": 343
+    },
+    {
+      "t": 103,
+      "y": 361
+    },
+    {
+      "t": 206,
+      "y": 374
+    },
+    {
+      "t": 308,
+      "y": 380
+    },
+    {
+      "t": 410,
+      "y": 385
+    },
+    {
+      "t": 512,
+      "y": 387
+    },
+    {
+      "t": 614,
+      "y": 389
+    },
+    {
+      "t": 716,
+      "y": 390
+    },
+    {
+      "t": 818,
+      "y": 391
+    },
+    {
+      "t": 920,
+      "y": 391
+    },
+    {
+      "t": 1023,
+      "y": 392
+    },
+    {
+      "t": 1125,
+      "y": 392
+    },
+    {
+      "t": 1227,
+      "y": 392
+    }
+  ],
+  "result": {
+    "yStart": 0,
+    "yAtRelease": 343,
+    "yFinal": 392,
+    "fingerPx": 340,
+    "trackedPx": 343,
+    "momentumPx": 49,
+    "scrolledPx": 392,
+    "settled": true,
+    "settleFrames": 2,
+    "maxVelocityPer100ms": 18,
+    "monotonic": true
+  },
+  "verdict": {
+    "responded": true,
+    "animated": true,
+    "settledWithinBudget": true
+  }
+}
