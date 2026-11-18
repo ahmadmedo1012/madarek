@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-18T16:44:58.334Z",
+ "generatedAt": "2026-11-18T17:52:46.960Z",
  "rule": "same-state entry pairs captured twice; |ΔE| ≤ 1 point",
  "variance": [
   {
@@ -18,8 +18,8 @@
   },
   {
    "target": "home-cta-wrap@1440",
-   "E1": 75.2,
-   "E2": 75.2,
+   "E1": 75.1,
+   "E2": 75.1,
    "delta": 0,
    "ok": true
   },
@@ -46,9 +46,9 @@
   },
   {
    "target": "home-platform-wrap@1440",
-   "E1": 56,
+   "E1": 55.9,
    "E2": 56,
-   "delta": 0,
+   "delta": 0.1,
    "ok": true
   },
   {
@@ -60,16 +60,16 @@
   },
   {
    "target": "home-usecase-wrap@1440",
-   "E1": 49.8,
+   "E1": 49.7,
    "E2": 49.7,
-   "delta": 0.1,
+   "delta": 0,
    "ok": true
   },
   {
    "target": "home-why-wrap@1440",
    "E1": 71.2,
-   "E2": 71.2,
-   "delta": 0,
+   "E2": 71.1,
+   "delta": 0.1,
    "ok": true
   },
   {
@@ -102,8 +102,8 @@
   },
   {
    "target": "home-intro-wrap@390",
-   "E1": 29.9,
-   "E2": 29.9,
+   "E1": 29.6,
+   "E2": 29.6,
    "delta": 0,
    "ok": true
   },

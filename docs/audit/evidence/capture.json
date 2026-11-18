@@ -263,6 +263,7 @@
     "height": 56,
     "docH": 16654,
     "maxScroll": 15754,
+    "liveEntry": null,
     "states": {
      "entry": {
       "ok": true,
@@ -278,12 +279,12 @@
        "ok": true,
        "x": 7,
        "y": 7,
-       "w": 713,
-       "h": 28,
+       "w": 356,
+       "h": 14,
        "touchesBottom": false,
        "captureW": 1426,
        "captureH": 56,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -320,12 +321,12 @@
        "ok": true,
        "x": 7,
        "y": 7,
-       "w": 713,
-       "h": 28,
+       "w": 356,
+       "h": 14,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 56,
-       "storageScale": 2
+       "storageScale": 4
       },
       "fixed": true
      },
@@ -351,14 +352,15 @@
    "key": "footer",
    "bp": "1440",
    "local": {
-    "contentTop": 15631,
+    "contentTop": 15630,
     "height": 903,
     "docH": 16654,
     "maxScroll": 15754,
+    "liveEntry": null,
     "states": {
      "entry": {
       "ok": true,
-      "state": "end",
+      "state": "end-clamped",
       "declared": "end",
       "top": 547,
       "scrollY": 15754,
@@ -370,12 +372,12 @@
        "ok": true,
        "x": 7,
        "y": 547,
-       "w": 713,
-       "h": 176,
+       "w": 356,
+       "h": 88,
        "touchesBottom": true,
        "captureW": 1426,
        "captureH": 353,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -402,7 +404,7 @@
     "states": {
      "entry": {
       "ok": true,
-      "state": "end",
+      "state": "end-clamped",
       "declared": "end",
       "top": 183,
       "offset": 13257,
@@ -414,12 +416,12 @@
        "ok": true,
        "x": 7,
        "y": 183,
-       "w": 713,
-       "h": 355,
+       "w": 356,
+       "h": 177,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 711,
-       "storageScale": 2
+       "storageScale": 4
       },
       "liveMaskRects": [
        {
@@ -427,120 +429,6 @@
         "y": 9.28125,
         "w": 338.421875,
         "h": 88.015625
-       },
-       {
-        "x": 8.984375,
-        "y": 211.359375,
-        "w": 338.421875,
-        "h": 24.328125
-       },
-       {
-        "x": 8.984375,
-        "y": 242.671875,
-        "w": 338.421875,
-        "h": 42.625
-       },
-       {
-        "x": 8.984375,
-        "y": 274.015625,
-        "w": 306.40625,
-        "h": 30
-       },
-       {
-        "x": 8.984375,
-        "y": 302.671875,
-        "w": 306.40625,
-        "h": 42.625
-       },
-       {
-        "x": 365.65625,
-        "y": 9.28125,
-        "w": 57,
-        "h": 24.328125
-       },
-       {
-        "x": 365.65625,
-        "y": 45.609375,
-        "w": 46.9375,
-        "h": 25.3125
-       },
-       {
-        "x": 365.65625,
-        "y": 76.25,
-        "w": 65.875,
-        "h": 25.3125
-       },
-       {
-        "x": 365.65625,
-        "y": 106.890625,
-        "w": 80.34375,
-        "h": 25.3125
-       },
-       {
-        "x": 603.84375,
-        "y": 9.28125,
-        "w": 57,
-        "h": 24.328125
-       },
-       {
-        "x": 603.84375,
-        "y": 45.609375,
-        "w": 134.46875,
-        "h": 25.3125
-       },
-       {
-        "x": 603.84375,
-        "y": 76.25,
-        "w": 124.015625,
-        "h": 25.3125
-       },
-       {
-        "x": 603.84375,
-        "y": 106.890625,
-        "w": 53.140625,
-        "h": 25.3125
-       },
-       {
-        "x": 365.65625,
-        "y": 212.296875,
-        "w": 219.53125,
-        "h": 24.328125
-       },
-       {
-        "x": 365.65625,
-        "y": 243.609375,
-        "w": 211.21875,
-        "h": 42.625
-       },
-       {
-        "x": 365.65625,
-        "y": 319.984375,
-        "w": 67.609375,
-        "h": 25.3125
-       },
-       {
-        "x": 603.84375,
-        "y": 212.296875,
-        "w": 219.53125,
-        "h": 24.328125
-       },
-       {
-        "x": 603.84375,
-        "y": 243.609375,
-        "w": 140.203125,
-        "h": 25.3125
-       },
-       {
-        "x": 603.84375,
-        "y": 288.125,
-        "w": 219.53125,
-        "h": 24.328125
-       },
-       {
-        "x": 603.84375,
-        "y": 319.4375,
-        "w": 156.671875,
-        "h": 25.3125
        }
       ],
       "note": "end-clamped on the reference: entry offset 13257 + top 183 exceeds the stage end 13257"
@@ -570,7 +458,8 @@
     "contentTop": 14299,
     "height": 1332,
     "docH": 16654,
-    "maxScroll": 15754,
+    "maxScroll": 16437,
+    "liveEntry": 14969,
     "states": {
      "entry": {
       "ok": true,
@@ -579,18 +468,18 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 14969,
-      "maxScroll": 15754,
+      "maxScroll": 16437,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 450,
+       "w": 360,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1440,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -598,21 +487,22 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid30",
-      "top": 270,
-      "scrollY": 14699,
-      "targetY": 14699,
-      "maxScroll": 15754,
+      "top": -400,
+      "scrollY": 15369,
+      "targetY": 15369,
+      "maxScroll": 16437,
+      "basis": "live entry seat 14969 px + 400 px of 1332 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
-       "y": 270,
-       "w": 720,
-       "h": 315,
+       "y": 0,
+       "w": 360,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1440,
-       "captureH": 630,
-       "storageScale": 2
+       "captureH": 900,
+       "storageScale": 4
       }
      },
      "mid60": {
@@ -620,21 +510,22 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid60",
-      "top": -129,
-      "scrollY": 15098,
-      "targetY": 15098,
-      "maxScroll": 15754,
+      "top": -799,
+      "scrollY": 15768,
+      "targetY": 15768,
+      "maxScroll": 16437,
+      "basis": "live entry seat 14969 px + 799 px of 1332 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 450,
-       "touchesBottom": true,
+       "w": 360,
+       "h": 133,
+       "touchesBottom": false,
        "captureW": 1440,
-       "captureH": 900,
-       "storageScale": 2
+       "captureH": 533,
+       "storageScale": 4
       }
      },
      "exit": {
@@ -662,12 +553,12 @@
        "ok": true,
        "x": 7,
        "y": 2,
-       "w": 713,
-       "h": 349,
+       "w": 356,
+       "h": 174,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 698,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -686,12 +577,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 246,
+       "w": 356,
+       "h": 123,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 492,
-       "storageScale": 2
+       "storageScale": 4
       },
       "liveMaskRects": [
        {
@@ -699,24 +590,6 @@
         "y": 79.390625,
         "w": 50,
         "h": 21
-       },
-       {
-        "x": 378.984375,
-        "y": -11.21875,
-        "w": 669.265625,
-        "h": 25.3125
-       },
-       {
-        "x": 655.875,
-        "y": 44.40625,
-        "w": 78,
-        "h": 24.328125
-       },
-       {
-        "x": 655.875,
-        "y": 60.734375,
-        "w": 78,
-        "h": 24.328125
        }
       ]
      },
@@ -736,12 +609,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 141,
+       "w": 356,
+       "h": 70,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 282,
-       "storageScale": 2
+       "storageScale": 4
       },
       "liveMaskRects": []
      },
@@ -760,7 +633,8 @@
     "contentTop": 7,
     "height": 887,
     "docH": 16654,
-    "maxScroll": 15754,
+    "maxScroll": 15753,
+    "liveEntry": 7,
     "states": {
      "entry": {
       "ok": true,
@@ -769,18 +643,18 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 7,
-      "maxScroll": 15754,
+      "maxScroll": 15753,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 443,
+       "w": 360,
+       "h": 221,
        "touchesBottom": false,
        "captureW": 1440,
        "captureH": 887,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -791,18 +665,19 @@
       "top": -266,
       "scrollY": 273,
       "targetY": 273,
-      "maxScroll": 15754,
+      "maxScroll": 15753,
+      "basis": "live entry seat 7 px + 266 px of 887 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 310,
+       "w": 360,
+       "h": 155,
        "touchesBottom": false,
        "captureW": 1440,
        "captureH": 621,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid60": {
@@ -813,18 +688,19 @@
       "top": -532,
       "scrollY": 539,
       "targetY": 539,
-      "maxScroll": 15754,
+      "maxScroll": 15753,
+      "basis": "live entry seat 7 px + 532 px of 887 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 177,
+       "w": 360,
+       "h": 88,
        "touchesBottom": false,
        "captureW": 1440,
        "captureH": 355,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "exit": {
@@ -852,12 +728,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 443,
+       "w": 356,
+       "h": 221,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 886,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -876,27 +752,14 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 311,
+       "w": 356,
+       "h": 155,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 622,
-       "storageScale": 2
+       "storageScale": 4
       },
-      "liveMaskRects": [
-       {
-        "x": 264.5916748046875,
-        "y": 244.12835693359375,
-        "w": 69.73419189453125,
-        "h": 20.1597900390625
-       },
-       {
-        "x": 264.5916748046875,
-        "y": 259.4011535644531,
-        "w": 170.13995361328125,
-        "h": 23.272796630859375
-       }
-      ]
+      "liveMaskRects": []
      },
      "mid60": {
       "ok": true,
@@ -914,12 +777,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 178,
+       "w": 356,
+       "h": 89,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 356,
-       "storageScale": 2
+       "storageScale": 4
       },
       "liveMaskRects": [
        {
@@ -945,7 +808,8 @@
     "contentTop": 894,
     "height": 723,
     "docH": 16654,
-    "maxScroll": 15754,
+    "maxScroll": 15767,
+    "liveEntry": 894,
     "states": {
      "entry": {
       "ok": true,
@@ -954,18 +818,18 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 894,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 8,
        "y": 0,
-       "w": 712,
-       "h": 361,
+       "w": 356,
+       "h": 180,
        "touchesBottom": false,
        "captureW": 1425,
        "captureH": 723,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -976,18 +840,19 @@
       "top": -217,
       "scrollY": 1111,
       "targetY": 1111,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
+      "basis": "live entry seat 894 px + 217 px of 723 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
        "y": 0,
-       "w": 712,
-       "h": 253,
+       "w": 356,
+       "h": 126,
        "touchesBottom": false,
        "captureW": 1425,
        "captureH": 506,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid60": {
@@ -998,18 +863,19 @@
       "top": -434,
       "scrollY": 1328,
       "targetY": 1328,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
+      "basis": "live entry seat 894 px + 434 px of 723 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
        "y": 0,
-       "w": 712,
-       "h": 144,
+       "w": 356,
+       "h": 72,
        "touchesBottom": false,
        "captureW": 1425,
        "captureH": 289,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "exit": {
@@ -1037,12 +903,12 @@
        "ok": true,
        "x": 7,
        "y": 2,
-       "w": 713,
-       "h": 361,
+       "w": 356,
+       "h": 180,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 723,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -1061,12 +927,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 254,
+       "w": 356,
+       "h": 127,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 509,
-       "storageScale": 2
+       "storageScale": 4
       },
       "liveMaskRects": []
      },
@@ -1086,12 +952,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 146,
+       "w": 356,
+       "h": 73,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 292,
-       "storageScale": 2
+       "storageScale": 4
       },
       "liveMaskRects": []
      },
@@ -1110,7 +976,8 @@
     "contentTop": 2363,
     "height": 6300,
     "docH": 16654,
-    "maxScroll": 15754,
+    "maxScroll": 15767,
+    "liveEntry": 2363,
     "states": {
      "entry": {
       "ok": true,
@@ -1119,18 +986,18 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 2363,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 450,
+       "w": 360,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1440,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -1141,18 +1008,19 @@
       "top": -1890,
       "scrollY": 4253,
       "targetY": 4253,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
+      "basis": "live entry seat 2363 px + 1890 px of 6300 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 450,
+       "w": 360,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1440,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid60": {
@@ -1163,18 +1031,19 @@
       "top": -3780,
       "scrollY": 6143,
       "targetY": 6143,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
+      "basis": "live entry seat 2363 px + 3780 px of 6300 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 450,
+       "w": 360,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1440,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "exit": {
@@ -1185,18 +1054,19 @@
       "top": -5400,
       "scrollY": 7763,
       "targetY": 7763,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
+      "basis": "live entry seat 2363 px + 5400 px of 6300 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.1440.exit.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 450,
+       "w": 360,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1440,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       }
      }
     }
@@ -1219,12 +1089,12 @@
        "ok": true,
        "x": 7,
        "y": 2,
-       "w": 713,
-       "h": 449,
+       "w": 356,
+       "h": 224,
        "touchesBottom": true,
        "captureW": 1427,
        "captureH": 898,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -1243,39 +1113,14 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 450,
+       "w": 356,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1427,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       },
-      "liveMaskRects": [
-       {
-        "x": 433.31500244140625,
-        "y": 421.0743713378906,
-        "w": 559.3699951171875,
-        "h": 52.805023193359375
-       },
-       {
-        "x": 414.328125,
-        "y": 422.640625,
-        "w": 597.34375,
-        "h": 54.671875
-       },
-       {
-        "x": 496.984375,
-        "y": 326.71875,
-        "w": 181.828125,
-        "h": 21
-       },
-       {
-        "x": 496.984375,
-        "y": 343.046875,
-        "w": 181.828125,
-        "h": 42.625
-       }
-      ]
+      "liveMaskRects": []
      },
      "mid60": {
       "ok": true,
@@ -1293,47 +1138,22 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 450,
+       "w": 356,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1427,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       },
-      "liveMaskRects": [
-       {
-        "x": 433.31500244140625,
-        "y": 421.0743713378906,
-        "w": 559.3699951171875,
-        "h": 52.805023193359375
-       },
-       {
-        "x": 426.114990234375,
-        "y": 421.0743713378906,
-        "w": 573.77001953125,
-        "h": 52.805023193359375
-       },
-       {
-        "x": 496.984375,
-        "y": 326.71875,
-        "w": 181.828125,
-        "h": 21
-       },
-       {
-        "x": 496.984375,
-        "y": 343.046875,
-        "w": 181.828125,
-        "h": 42.625
-       }
-      ]
+      "liveMaskRects": []
      },
      "exit": {
       "ok": true,
       "state": "position",
       "declared": "position",
       "stateId": "exit",
-      "top": -5399,
-      "offset": 7757,
+      "top": -5400,
+      "offset": 7758,
       "targetOffset": 7756,
       "maxOffset": 13257,
       "landed": true,
@@ -1343,39 +1163,14 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 450,
+       "w": 356,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1427,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       },
-      "liveMaskRects": [
-       {
-        "x": 201.4403076171875,
-        "y": 421.0743713378906,
-        "w": 559.3699951171875,
-        "h": 52.805023193359375
-       },
-       {
-        "x": 194.2403106689453,
-        "y": 421.0743713378906,
-        "w": 573.7699584960938,
-        "h": 52.805023193359375
-       },
-       {
-        "x": 265.328125,
-        "y": 326.71875,
-        "w": 181.828125,
-        "h": 21
-       },
-       {
-        "x": 265.328125,
-        "y": 343.046875,
-        "w": 181.828125,
-        "h": 42.625
-       }
-      ]
+      "liveMaskRects": []
      }
     }
    }
@@ -1387,7 +1182,8 @@
     "contentTop": 8663,
     "height": 712,
     "docH": 16654,
-    "maxScroll": 15754,
+    "maxScroll": 15767,
+    "liveEntry": 8663,
     "states": {
      "entry": {
       "ok": true,
@@ -1396,18 +1192,18 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 8663,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 355,
+       "w": 356,
+       "h": 177,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 711,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -1418,18 +1214,19 @@
       "top": -214,
       "scrollY": 8877,
       "targetY": 8877,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
+      "basis": "live entry seat 8663 px + 214 px of 712 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 248,
+       "w": 356,
+       "h": 124,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 497,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid60": {
@@ -1440,18 +1237,19 @@
       "top": -427,
       "scrollY": 9090,
       "targetY": 9090,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
+      "basis": "live entry seat 8663 px + 427 px of 712 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 142,
+       "w": 356,
+       "h": 71,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 284,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "exit": {
@@ -1479,12 +1277,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 354,
+       "w": 356,
+       "h": 177,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 709,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -1503,12 +1301,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 248,
+       "w": 356,
+       "h": 124,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 497,
-       "storageScale": 2
+       "storageScale": 4
       },
       "liveMaskRects": []
      },
@@ -1528,12 +1326,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 142,
+       "w": 356,
+       "h": 71,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 284,
-       "storageScale": 2
+       "storageScale": 4
       },
       "liveMaskRects": []
      },
@@ -1552,7 +1350,8 @@
     "contentTop": 1617,
     "height": 746,
     "docH": 16654,
-    "maxScroll": 15754,
+    "maxScroll": 15767,
+    "liveEntry": 1617,
     "states": {
      "entry": {
       "ok": true,
@@ -1561,18 +1360,18 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 1617,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 373,
+       "w": 360,
+       "h": 186,
        "touchesBottom": false,
        "captureW": 1440,
        "captureH": 746,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -1583,18 +1382,19 @@
       "top": -224,
       "scrollY": 1841,
       "targetY": 1841,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
+      "basis": "live entry seat 1617 px + 224 px of 746 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 261,
+       "w": 360,
+       "h": 130,
        "touchesBottom": false,
        "captureW": 1440,
        "captureH": 522,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid60": {
@@ -1605,18 +1405,19 @@
       "top": -448,
       "scrollY": 2065,
       "targetY": 2065,
-      "maxScroll": 15754,
+      "maxScroll": 15767,
+      "basis": "live entry seat 1617 px + 448 px of 746 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 149,
+       "w": 360,
+       "h": 74,
        "touchesBottom": false,
        "captureW": 1440,
        "captureH": 298,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "exit": {
@@ -1644,12 +1445,12 @@
        "ok": true,
        "x": 7,
        "y": 2,
-       "w": 713,
-       "h": 371,
+       "w": 356,
+       "h": 185,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 743,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -1668,12 +1469,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 261,
+       "w": 356,
+       "h": 130,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 522,
-       "storageScale": 2
+       "storageScale": 4
       },
       "liveMaskRects": [
        {
@@ -1684,18 +1485,6 @@
        },
        {
         "x": 297.65625,
-        "y": -20.5625,
-        "w": 36,
-        "h": 24.328125
-       },
-       {
-        "x": 378.984375,
-        "y": -20.5625,
-        "w": 78,
-        "h": 24.328125
-       },
-       {
-        "x": 654.328125,
         "y": -20.5625,
         "w": 36,
         "h": 24.328125
@@ -1718,27 +1507,14 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 149,
+       "w": 356,
+       "h": 74,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 299,
-       "storageScale": 2
+       "storageScale": 4
       },
-      "liveMaskRects": [
-       {
-        "x": 22.3125,
-        "y": 112.75,
-        "w": 311.359375,
-        "h": 77.984375
-       },
-       {
-        "x": 378.984375,
-        "y": 112.75,
-        "w": 311.359375,
-        "h": 77.984375
-       }
-      ]
+      "liveMaskRects": []
      },
      "exit": {
       "ok": false,
@@ -1755,7 +1531,8 @@
     "contentTop": 13413,
     "height": 886,
     "docH": 16654,
-    "maxScroll": 15754,
+    "maxScroll": 16437,
+    "liveEntry": 14083,
     "states": {
      "entry": {
       "ok": true,
@@ -1764,18 +1541,18 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 14083,
-      "maxScroll": 15754,
+      "maxScroll": 16437,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 0,
        "y": 0,
-       "w": 720,
-       "h": 443,
+       "w": 360,
+       "h": 221,
        "touchesBottom": false,
        "captureW": 1440,
        "captureH": 886,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -1783,21 +1560,22 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid30",
-      "top": 404,
-      "scrollY": 13679,
-      "targetY": 13679,
-      "maxScroll": 15754,
+      "top": -266,
+      "scrollY": 14349,
+      "targetY": 14349,
+      "maxScroll": 16437,
+      "basis": "live entry seat 14083 px + 266 px of 886 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
-       "y": 404,
-       "w": 720,
-       "h": 248,
-       "touchesBottom": true,
+       "y": 0,
+       "w": 360,
+       "h": 155,
+       "touchesBottom": false,
        "captureW": 1440,
-       "captureH": 496,
-       "storageScale": 2
+       "captureH": 620,
+       "storageScale": 4
       }
      },
      "mid60": {
@@ -1805,21 +1583,22 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid60",
-      "top": 138,
-      "scrollY": 13945,
-      "targetY": 13945,
-      "maxScroll": 15754,
+      "top": -532,
+      "scrollY": 14615,
+      "targetY": 14615,
+      "maxScroll": 16437,
+      "basis": "live entry seat 14083 px + 532 px of 886 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
-       "y": 138,
-       "w": 720,
-       "h": 381,
-       "touchesBottom": true,
+       "y": 0,
+       "w": 360,
+       "h": 88,
+       "touchesBottom": false,
        "captureW": 1440,
-       "captureH": 762,
-       "storageScale": 2
+       "captureH": 354,
+       "storageScale": 4
       }
      },
      "exit": {
@@ -1847,12 +1626,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 443,
+       "w": 356,
+       "h": 221,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 887,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -1871,12 +1650,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 311,
+       "w": 356,
+       "h": 155,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 623,
-       "storageScale": 2
+       "storageScale": 4
       },
       "liveMaskRects": []
      },
@@ -1896,12 +1675,12 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 178,
+       "w": 356,
+       "h": 89,
        "touchesBottom": false,
        "captureW": 1427,
        "captureH": 357,
-       "storageScale": 2
+       "storageScale": 4
       },
       "liveMaskRects": []
      },
@@ -1920,7 +1699,8 @@
     "contentTop": 10925,
     "height": 2488,
     "docH": 16654,
-    "maxScroll": 15754,
+    "maxScroll": 15929,
+    "liveEntry": 10925,
     "states": {
      "entry": {
       "ok": true,
@@ -1929,18 +1709,18 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 10925,
-      "maxScroll": 15754,
+      "maxScroll": 15929,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.1440.entry.png",
       "clip": {
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 450,
+       "w": 356,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1427,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -1951,18 +1731,19 @@
       "top": -746,
       "scrollY": 11671,
       "targetY": 11671,
-      "maxScroll": 15754,
+      "maxScroll": 15929,
+      "basis": "live entry seat 10925 px + 746 px of 2488 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.1440.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 450,
+       "w": 356,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1427,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid60": {
@@ -1973,18 +1754,19 @@
       "top": -1493,
       "scrollY": 12418,
       "targetY": 12418,
-      "maxScroll": 15754,
+      "maxScroll": 15929,
+      "basis": "live entry seat 10925 px + 1493 px of 2488 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.1440.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 450,
+       "w": 356,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1427,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "exit": {
@@ -2012,12 +1794,12 @@
        "ok": true,
        "x": 7,
        "y": 2,
-       "w": 713,
-       "h": 449,
+       "w": 356,
+       "h": 224,
        "touchesBottom": true,
        "captureW": 1427,
        "captureH": 898,
-       "storageScale": 2
+       "storageScale": 4
       }
      },
      "mid30": {
@@ -2036,39 +1818,14 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 450,
+       "w": 356,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1427,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       },
-      "liveMaskRects": [
-       {
-        "x": 42.3125,
-        "y": 433.8946838378906,
-        "w": 174.65625,
-        "h": 30
-       },
-       {
-        "x": 225.625,
-        "y": 436.2384338378906,
-        "w": 447.203125,
-        "h": 25.3125
-       },
-       {
-        "x": 42.3125,
-        "y": 433.8946838378906,
-        "w": 174.65625,
-        "h": 30
-       },
-       {
-        "x": 225.625,
-        "y": 436.2384338378906,
-        "w": 447.203125,
-        "h": 25.3125
-       }
-      ]
+      "liveMaskRects": []
      },
      "mid60": {
       "ok": true,
@@ -2086,39 +1843,14 @@
        "ok": true,
        "x": 7,
        "y": 0,
-       "w": 713,
-       "h": 450,
+       "w": 356,
+       "h": 225,
        "touchesBottom": true,
        "captureW": 1427,
        "captureH": 900,
-       "storageScale": 2
+       "storageScale": 4
       },
-      "liveMaskRects": [
-       {
-        "x": 42.3125,
-        "y": 434.07586669921875,
-        "w": 174.65625,
-        "h": 30
-       },
-       {
-        "x": 225.625,
-        "y": 436.41961669921875,
-        "w": 447.203125,
-        "h": 25.3125
-       },
-       {
-        "x": 42.3125,
-        "y": 434.07586669921875,
-        "w": 174.65625,
-        "h": 30
-       },
-       {
-        "x": 225.625,
-        "y": 436.41961669921875,
-        "w": 447.203125,
-        "h": 25.3125
-       }
-      ]
+      "liveMaskRects": []
      },
      "exit": {
       "ok": false,
@@ -2134,8 +1866,9 @@
    "local": {
     "contentTop": 7,
     "height": 50,
-    "docH": 14116,
-    "maxScroll": 13272,
+    "docH": 14198,
+    "maxScroll": 13354,
+    "liveEntry": null,
     "states": {
      "entry": {
       "ok": true,
@@ -2144,7 +1877,7 @@
       "top": 7,
       "declaredTop": 7,
       "scrollY": 0,
-      "maxScroll": 13272,
+      "maxScroll": 13354,
       "fixed": true,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/chrome.390.entry.png",
       "clip": {
@@ -2224,10 +1957,11 @@
    "key": "footer",
    "bp": "390",
    "local": {
-    "contentTop": 12753,
+    "contentTop": 12835,
     "height": 1239,
-    "docH": 14116,
-    "maxScroll": 13272,
+    "docH": 14198,
+    "maxScroll": 13992,
+    "liveEntry": 13476,
     "states": {
      "entry": {
       "ok": true,
@@ -2236,7 +1970,7 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 13476,
-      "maxScroll": 13272,
+      "maxScroll": 13992,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/footer.390.entry.png",
       "clip": {
        "ok": true,
@@ -2255,26 +1989,29 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid30",
-      "top": 351,
-      "scrollY": 13125,
-      "targetY": 13125,
-      "maxScroll": 13272,
+      "top": -372,
+      "scrollY": 13848,
+      "targetY": 13848,
+      "maxScroll": 13992,
+      "basis": "live entry seat 13476 px + 372 px of 1239 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/footer.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
-       "y": 351,
+       "y": 0,
        "w": 374,
-       "h": 493,
+       "h": 844,
        "touchesBottom": true,
        "captureW": 374,
-       "captureH": 493,
+       "captureH": 844,
        "storageScale": 1
       }
      },
      "mid60": {
       "ok": false,
-      "reason": "state mid60 needs scroll 13496 > document end 13272 — inaccessible locally (recorded, not scored)"
+      "targetY": 14219,
+      "reason": "state mid60 needs scroll 14219 > live document end 13992 — inaccessible locally (recorded, not scored)",
+      "basis": "live entry seat 13476 px + 743 px of 1239 px (never the load-time snapshot)"
      },
      "exit": {
       "ok": false,
@@ -2501,10 +2238,11 @@
    "key": "home-cta-wrap",
    "bp": "390",
    "local": {
-    "contentTop": 11844,
+    "contentTop": 11926,
     "height": 909,
-    "docH": 14116,
-    "maxScroll": 13272,
+    "docH": 14198,
+    "maxScroll": 13992,
+    "liveEntry": 12567,
     "states": {
      "entry": {
       "ok": true,
@@ -2513,7 +2251,7 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 12567,
-      "maxScroll": 13272,
+      "maxScroll": 13992,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.390.entry.png",
       "clip": {
        "ok": true,
@@ -2532,20 +2270,21 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid30",
-      "top": 450,
-      "scrollY": 12117,
-      "targetY": 12117,
-      "maxScroll": 13272,
+      "top": -273,
+      "scrollY": 12840,
+      "targetY": 12840,
+      "maxScroll": 13992,
+      "basis": "live entry seat 12567 px + 273 px of 909 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 0,
-       "y": 450,
+       "y": 0,
        "w": 390,
-       "h": 394,
-       "touchesBottom": true,
+       "h": 636,
+       "touchesBottom": false,
        "captureW": 390,
-       "captureH": 394,
+       "captureH": 636,
        "storageScale": 1
       }
      },
@@ -2554,20 +2293,21 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid60",
-      "top": 178,
-      "scrollY": 12389,
-      "targetY": 12389,
-      "maxScroll": 13272,
+      "top": -545,
+      "scrollY": 13112,
+      "targetY": 13112,
+      "maxScroll": 13992,
+      "basis": "live entry seat 12567 px + 545 px of 909 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-cta-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 0,
-       "y": 178,
+       "y": 0,
        "w": 390,
-       "h": 666,
-       "touchesBottom": true,
+       "h": 364,
+       "touchesBottom": false,
        "captureW": 390,
-       "captureH": 666,
+       "captureH": 364,
        "storageScale": 1
       }
      },
@@ -2693,8 +2433,9 @@
    "local": {
     "contentTop": 7,
     "height": 830,
-    "docH": 14116,
-    "maxScroll": 13272,
+    "docH": 14198,
+    "maxScroll": 13351,
+    "liveEntry": 7,
     "states": {
      "entry": {
       "ok": true,
@@ -2703,7 +2444,7 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 7,
-      "maxScroll": 13272,
+      "maxScroll": 13351,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.390.entry.png",
       "clip": {
        "ok": true,
@@ -2725,7 +2466,8 @@
       "top": -249,
       "scrollY": 256,
       "targetY": 256,
-      "maxScroll": 13272,
+      "maxScroll": 13351,
+      "basis": "live entry seat 7 px + 249 px of 830 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.390.mid30.png",
       "clip": {
        "ok": true,
@@ -2747,7 +2489,8 @@
       "top": -498,
       "scrollY": 505,
       "targetY": 505,
-      "maxScroll": 13272,
+      "maxScroll": 13351,
+      "basis": "live entry seat 7 px + 498 px of 830 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-hero-wrap.390.mid60.png",
       "clip": {
        "ok": true,
@@ -2849,19 +2592,19 @@
         "h": 23.265625
        },
        {
-        "x": 32.994163513183594,
+        "x": 33.640625,
         "y": 548.5625,
         "w": 144,
         "h": 23.265625
        },
        {
-        "x": 206.69728088378906,
+        "x": 207.34375,
         "y": 548.5625,
-        "w": 120.00001525878906,
+        "w": 120,
         "h": 23.265625
        },
        {
-        "x": 356.4004211425781,
+        "x": 357.046875,
         "y": 548.5625,
         "w": 112,
         "h": 23.265625
@@ -2955,9 +2698,10 @@
    "bp": "390",
    "local": {
     "contentTop": 837,
-    "height": 852,
-    "docH": 14116,
-    "maxScroll": 13272,
+    "height": 934,
+    "docH": 14198,
+    "maxScroll": 13351,
+    "liveEntry": 837,
     "states": {
      "entry": {
       "ok": true,
@@ -2966,7 +2710,7 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 837,
-      "maxScroll": 13272,
+      "maxScroll": 13351,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.390.entry.png",
       "clip": {
        "ok": true,
@@ -2985,20 +2729,21 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid30",
-      "top": -256,
-      "scrollY": 1093,
-      "targetY": 1093,
-      "maxScroll": 13272,
+      "top": -280,
+      "scrollY": 1117,
+      "targetY": 1117,
+      "maxScroll": 13351,
+      "basis": "live entry seat 837 px + 280 px of 934 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
        "y": 0,
        "w": 374,
-       "h": 678,
+       "h": 654,
        "touchesBottom": false,
        "captureW": 374,
-       "captureH": 678,
+       "captureH": 654,
        "storageScale": 1
       }
      },
@@ -3007,27 +2752,28 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid60",
-      "top": -511,
-      "scrollY": 1348,
-      "targetY": 1348,
-      "maxScroll": 13272,
+      "top": -560,
+      "scrollY": 1397,
+      "targetY": 1397,
+      "maxScroll": 13351,
+      "basis": "live entry seat 837 px + 560 px of 934 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-intro-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
        "y": 0,
        "w": 374,
-       "h": 423,
+       "h": 374,
        "touchesBottom": false,
        "captureW": 374,
-       "captureH": 423,
+       "captureH": 374,
        "storageScale": 1
       }
      },
      "exit": {
       "ok": false,
       "coincident": true,
-      "reason": "duplicate state — delta 8 px sits within 100 px of an already-recorded state for this 852 px section"
+      "reason": "duplicate state — delta 90 px sits within 100 px of an already-recorded state for this 934 px section"
      }
     }
    },
@@ -3169,10 +2915,11 @@
    "key": "home-map-wrap",
    "bp": "390",
    "local": {
-    "contentTop": 2574,
+    "contentTop": 2656,
     "height": 4372,
-    "docH": 14116,
-    "maxScroll": 13272,
+    "docH": 14198,
+    "maxScroll": 13715,
+    "liveEntry": 2656,
     "states": {
      "entry": {
       "ok": true,
@@ -3181,7 +2928,7 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 2656,
-      "maxScroll": 13272,
+      "maxScroll": 13715,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.390.entry.png",
       "clip": {
        "ok": true,
@@ -3200,10 +2947,11 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid30",
-      "top": -1230,
-      "scrollY": 3886,
-      "targetY": 3886,
-      "maxScroll": 13272,
+      "top": -1312,
+      "scrollY": 3968,
+      "targetY": 3968,
+      "maxScroll": 13715,
+      "basis": "live entry seat 2656 px + 1312 px of 4372 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.390.mid30.png",
       "clip": {
        "ok": true,
@@ -3222,10 +2970,11 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid60",
-      "top": -2541,
-      "scrollY": 5197,
-      "targetY": 5197,
-      "maxScroll": 13272,
+      "top": -2623,
+      "scrollY": 5279,
+      "targetY": 5279,
+      "maxScroll": 13715,
+      "basis": "live entry seat 2656 px + 2623 px of 4372 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.390.mid60.png",
       "clip": {
        "ok": true,
@@ -3244,10 +2993,11 @@
       "state": "position",
       "declared": "position",
       "stateId": "exit",
-      "top": -3446,
-      "scrollY": 6102,
-      "targetY": 6102,
-      "maxScroll": 13272,
+      "top": -3528,
+      "scrollY": 6184,
+      "targetY": 6184,
+      "maxScroll": 13715,
+      "basis": "live entry seat 2656 px + 3528 px of 4372 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-map-wrap.390.exit.png",
       "clip": {
        "ok": true,
@@ -3782,10 +3532,11 @@
    "key": "home-platform-wrap",
    "bp": "390",
    "local": {
-    "contentTop": 6946,
+    "contentTop": 7028,
     "height": 995,
-    "docH": 14116,
-    "maxScroll": 13272,
+    "docH": 14198,
+    "maxScroll": 13681,
+    "liveEntry": 7392,
     "states": {
      "entry": {
       "ok": true,
@@ -3794,7 +3545,7 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 7392,
-      "maxScroll": 13272,
+      "maxScroll": 13681,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.390.entry.png",
       "clip": {
        "ok": true,
@@ -3813,20 +3564,21 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid30",
-      "top": 147,
-      "scrollY": 7245,
-      "targetY": 7245,
-      "maxScroll": 13272,
+      "top": -299,
+      "scrollY": 7691,
+      "targetY": 7691,
+      "maxScroll": 13681,
+      "basis": "live entry seat 7392 px + 299 px of 995 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 8,
-       "y": 147,
+       "y": 0,
        "w": 374,
-       "h": 697,
-       "touchesBottom": true,
+       "h": 662,
+       "touchesBottom": false,
        "captureW": 374,
-       "captureH": 697,
+       "captureH": 662,
        "storageScale": 1
       }
      },
@@ -3835,11 +3587,35 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid60",
+      "top": -597,
+      "scrollY": 7989,
+      "targetY": 7989,
+      "maxScroll": 13681,
+      "basis": "live entry seat 7392 px + 597 px of 995 px (never the load-time snapshot)",
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.390.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 8,
+       "y": 0,
+       "w": 374,
+       "h": 364,
+       "touchesBottom": false,
+       "captureW": 374,
+       "captureH": 364,
+       "storageScale": 1
+      }
+     },
+     "exit": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "exit",
       "top": -151,
       "scrollY": 7543,
       "targetY": 7543,
-      "maxScroll": 13272,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.390.mid60.png",
+      "maxScroll": 13681,
+      "basis": "live entry seat 7392 px + 151 px of 995 px (never the load-time snapshot)",
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.390.exit.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -3849,28 +3625,6 @@
        "touchesBottom": false,
        "captureW": 374,
        "captureH": 810,
-       "storageScale": 1
-      }
-     },
-     "exit": {
-      "ok": true,
-      "state": "position",
-      "declared": "position",
-      "stateId": "exit",
-      "top": 295,
-      "scrollY": 7097,
-      "targetY": 7097,
-      "maxScroll": 13272,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-platform-wrap.390.exit.png",
-      "clip": {
-       "ok": true,
-       "x": 8,
-       "y": 295,
-       "w": 374,
-       "h": 549,
-       "touchesBottom": true,
-       "captureW": 374,
-       "captureH": 549,
        "storageScale": 1
       }
      }
@@ -4131,10 +3885,11 @@
    "key": "home-problem-wrap",
    "bp": "390",
    "local": {
-    "contentTop": 1689,
+    "contentTop": 1771,
     "height": 885,
-    "docH": 14116,
-    "maxScroll": 13272,
+    "docH": 14198,
+    "maxScroll": 13715,
+    "liveEntry": 1771,
     "states": {
      "entry": {
       "ok": true,
@@ -4143,7 +3898,7 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 1771,
-      "maxScroll": 13272,
+      "maxScroll": 13715,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.390.entry.png",
       "clip": {
        "ok": true,
@@ -4162,20 +3917,21 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid30",
-      "top": -184,
-      "scrollY": 1955,
-      "targetY": 1955,
-      "maxScroll": 13272,
+      "top": -266,
+      "scrollY": 2037,
+      "targetY": 2037,
+      "maxScroll": 13715,
+      "basis": "live entry seat 1771 px + 266 px of 885 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
        "y": 0,
        "w": 376,
-       "h": 701,
+       "h": 619,
        "touchesBottom": false,
        "captureW": 376,
-       "captureH": 701,
+       "captureH": 619,
        "storageScale": 1
       }
      },
@@ -4184,20 +3940,21 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid60",
-      "top": -449,
-      "scrollY": 2220,
-      "targetY": 2220,
-      "maxScroll": 13272,
+      "top": -531,
+      "scrollY": 2302,
+      "targetY": 2302,
+      "maxScroll": 13715,
+      "basis": "live entry seat 1771 px + 531 px of 885 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-problem-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
        "y": 0,
        "w": 376,
-       "h": 436,
+       "h": 354,
        "touchesBottom": false,
        "captureW": 376,
-       "captureH": 436,
+       "captureH": 354,
        "storageScale": 1
       }
      },
@@ -4370,10 +4127,11 @@
    "key": "home-usecase-wrap",
    "bp": "390",
    "local": {
-    "contentTop": 10815,
+    "contentTop": 10897,
     "height": 1029,
-    "docH": 14116,
-    "maxScroll": 13272,
+    "docH": 14198,
+    "maxScroll": 13992,
+    "liveEntry": 11538,
     "states": {
      "entry": {
       "ok": true,
@@ -4382,7 +4140,7 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 11538,
-      "maxScroll": 13272,
+      "maxScroll": 13992,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.390.entry.png",
       "clip": {
        "ok": true,
@@ -4401,20 +4159,21 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid30",
-      "top": 414,
-      "scrollY": 11124,
-      "targetY": 11124,
-      "maxScroll": 13272,
+      "top": -309,
+      "scrollY": 11847,
+      "targetY": 11847,
+      "maxScroll": 13992,
+      "basis": "live entry seat 11538 px + 309 px of 1029 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.390.mid30.png",
       "clip": {
        "ok": true,
        "x": 7,
-       "y": 414,
+       "y": 0,
        "w": 376,
-       "h": 430,
-       "touchesBottom": true,
+       "h": 720,
+       "touchesBottom": false,
        "captureW": 376,
-       "captureH": 430,
+       "captureH": 720,
        "storageScale": 1
       }
      },
@@ -4423,20 +4182,21 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid60",
-      "top": 106,
-      "scrollY": 11432,
-      "targetY": 11432,
-      "maxScroll": 13272,
+      "top": -617,
+      "scrollY": 12155,
+      "targetY": 12155,
+      "maxScroll": 13992,
+      "basis": "live entry seat 11538 px + 617 px of 1029 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 7,
-       "y": 106,
+       "y": 0,
        "w": 376,
-       "h": 738,
-       "touchesBottom": true,
+       "h": 412,
+       "touchesBottom": false,
        "captureW": 376,
-       "captureH": 738,
+       "captureH": 412,
        "storageScale": 1
       }
      },
@@ -4445,20 +4205,21 @@
       "state": "position",
       "declared": "position",
       "stateId": "exit",
-      "top": 538,
-      "scrollY": 11000,
-      "targetY": 11000,
-      "maxScroll": 13272,
+      "top": -185,
+      "scrollY": 11723,
+      "targetY": 11723,
+      "maxScroll": 13992,
+      "basis": "live entry seat 11538 px + 185 px of 1029 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-usecase-wrap.390.exit.png",
       "clip": {
        "ok": true,
        "x": 7,
-       "y": 538,
+       "y": 0,
        "w": 376,
-       "h": 306,
+       "h": 844,
        "touchesBottom": true,
        "captureW": 376,
-       "captureH": 306,
+       "captureH": 844,
        "storageScale": 1
       }
      }
@@ -4731,10 +4492,11 @@
    "key": "home-why-wrap",
    "bp": "390",
    "local": {
-    "contentTop": 10008,
+    "contentTop": 10090,
     "height": 807,
-    "docH": 14116,
-    "maxScroll": 13272,
+    "docH": 14198,
+    "maxScroll": 13681,
+    "liveEntry": 10420,
     "states": {
      "entry": {
       "ok": true,
@@ -4743,7 +4505,7 @@
       "top": 0,
       "declaredTop": 0,
       "scrollY": 10420,
-      "maxScroll": 13272,
+      "maxScroll": 13681,
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.390.entry.png",
       "clip": {
        "ok": true,
@@ -4762,33 +4524,12 @@
       "state": "position",
       "declared": "position",
       "stateId": "mid30",
-      "top": 170,
-      "scrollY": 10250,
-      "targetY": 10250,
-      "maxScroll": 13272,
+      "top": -242,
+      "scrollY": 10662,
+      "targetY": 10662,
+      "maxScroll": 13681,
+      "basis": "live entry seat 10420 px + 242 px of 807 px (never the load-time snapshot)",
       "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.390.mid30.png",
-      "clip": {
-       "ok": true,
-       "x": 8,
-       "y": 170,
-       "w": 374,
-       "h": 674,
-       "touchesBottom": true,
-       "captureW": 374,
-       "captureH": 674,
-       "storageScale": 1
-      }
-     },
-     "mid60": {
-      "ok": true,
-      "state": "position",
-      "declared": "position",
-      "stateId": "mid60",
-      "top": -72,
-      "scrollY": 10492,
-      "targetY": 10492,
-      "maxScroll": 13272,
-      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.390.mid60.png",
       "clip": {
        "ok": true,
        "x": 8,
@@ -4798,6 +4539,29 @@
        "touchesBottom": true,
        "captureW": 374,
        "captureH": 844,
+       "storageScale": 1
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -484,
+      "scrollY": 10904,
+      "targetY": 10904,
+      "maxScroll": 13681,
+      "basis": "live entry seat 10420 px + 484 px of 807 px (never the load-time snapshot)",
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/primary/local/home-why-wrap.390.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 8,
+       "y": 0,
+       "w": 374,
+       "h": 634,
+       "touchesBottom": false,
+       "captureW": 374,
+       "captureH": 634,
        "storageScale": 1
       }
      },
@@ -4934,8 +4698,9 @@
       "bp": "390",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "chrome",
@@ -4955,8 +4720,9 @@
       "bp": "390",
       "family": "settle",
       "settleFrames": 5,
+      "ambientExcluded": 0,
       "pass": false,
-      "note": "last change at frame 5; tolerance ≤2"
+      "note": "last change at frame 5; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "footer",
@@ -4976,8 +4742,9 @@
       "bp": "390",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-cta-wrap",
@@ -4997,8 +4764,9 @@
       "bp": "390",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 3,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-hero-wrap",
@@ -5018,8 +4786,9 @@
       "bp": "390",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 1,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-intro-wrap",
@@ -5039,8 +4808,9 @@
       "bp": "390",
       "family": "settle",
       "settleFrames": 1,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 1; tolerance ≤2"
+      "note": "last change at frame 1; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-map-wrap",
@@ -5060,8 +4830,9 @@
       "bp": "390",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-platform-wrap",
@@ -5081,8 +4852,9 @@
       "bp": "390",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-problem-wrap",
@@ -5102,8 +4874,9 @@
       "bp": "390",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-usecase-wrap",
@@ -5123,8 +4896,9 @@
       "bp": "390",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-why-wrap",
@@ -5161,8 +4935,9 @@
       "bp": "1440",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "chrome",
@@ -5182,8 +4957,9 @@
       "bp": "1440",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "footer",
@@ -5203,8 +4979,9 @@
       "bp": "1440",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-cta-wrap",
@@ -5224,8 +5001,9 @@
       "bp": "1440",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 3,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-hero-wrap",
@@ -5245,8 +5023,9 @@
       "bp": "1440",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 1,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-intro-wrap",
@@ -5266,8 +5045,9 @@
       "bp": "1440",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-map-wrap",
@@ -5287,8 +5067,9 @@
       "bp": "1440",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 2,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-platform-wrap",
@@ -5308,8 +5089,9 @@
       "bp": "1440",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-problem-wrap",
@@ -5329,8 +5111,9 @@
       "bp": "1440",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-usecase-wrap",
@@ -5350,8 +5133,9 @@
       "bp": "1440",
       "family": "settle",
       "settleFrames": 0,
+      "ambientExcluded": 0,
       "pass": true,
-      "note": "last change at frame 0; tolerance ≤2"
+      "note": "last change at frame 0; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature"
      },
      {
       "section": "home-why-wrap",
