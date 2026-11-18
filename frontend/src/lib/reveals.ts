@@ -74,14 +74,41 @@ import { PREFERS_REDUCED_MOTION } from '../lib/motion-media';
 /** Root seam class — added BEFORE any hiding class lands (the arm order). */
 const ARMED_CLASS = 'js-reveal-armed';
 
-/** Grammar targets — the landing's second half (P-C sheets). */
-const LINES_SEL = '.fo-cta-title'; // display heading → whole-block rise
-const ITEM_SEL =
-  '.pm-col, .rl-row, .fo-cta-lede, .fo-cta-actions, .fo-cta-meta';
-/* P-A2 R333 — the #product proof strip's panels joined the card rung:
-   the .pr-shot figures get row 13's imgCardReveal (scale 0.8→1) on the
-   same IO pair + RM bail as the drawn panels. */
-const CARD_SEL = '.pm-artzone .pm-art, .fo-cta-sketch, .pr-shots .pr-shot'; // drawn panels + the product-proof shots
+/* ── r368 T1 — the per-family entry lines (the committed restructure) ──────
+ * The reference is HETEROGENEOUS (the Task-0 pairing's census-validated
+ * trigger table + the measured visual onsets): the intro band enters WITH the
+ * page (its beats are mid-flight at the stage top — measured on the reference),
+ * the problem family's transitions begin deep below the fold (the census-
+ * validated trigger window starts at −1.8×H — its columns are mid-reveal as
+ * they enter view), the usecase rows engage at +0.2×H (the measured visual
+ * onset — the rows reveal near the top of the viewport), and the CTA/footer
+ * families show no pre-entry motion (their first visible changes land
+ * at/after entry). One global line cannot express this — each family rides its
+ * own bucket. [Derivation, validated live within ±40 px: an element at
+ * section-relative offset d crosses the line L at scroll E+d−L — frac
+ * (d−L)/H; live geometry only — the load-time snapshot drifts +670…+723 px.]
+ * The WHY scene family's early line (≈ +70% vh root expansion) is NOT here:
+ * the why seat's elements arm through their own files (useReveal/WhyScene) —
+ * the lever is recorded and lands with the why seat's Task-3 work. */
+const OBSERVER_ROOT_MARGIN_PROBLEM = '0px 0px 72% 0px'; // problem family — transitions start ≈650 px below the fold (−1.8×H)
+const OBSERVER_ROOT_MARGIN_BEAT = '0px 0px 66% 0px'; // intro beats — the reference's band enters with the page (mid-flight at the stage top)
+const OBSERVER_ROOT_MARGIN_ROWS = '0px 0px -77% 0px'; // usecase rows — engage at +0.2×H: the rows reveal in the viewport's top quarter
+const OBSERVER_ROOT_MARGIN_ENTRY = '0px 0px -100% 0px'; // the at/after-entry families (CTA, footer rise, the usecase rule draws) — the reference shows no pre-entry motion
+
+/** Grammar targets — the landing's second half (P-C sheets), grouped by family. */
+/* problem family: the columns + the art panels (one bucket, one onset) */
+const PROBLEM_ITEM_SEL = '.pm-col';
+const PROBLEM_CARD_SEL = '.pm-artzone .pm-art';
+/* usecase family: the accordion rows ride the rows line */
+const ROWS_SEL = '.rl-row';
+/* CTA family (at/after entry): the display heading, the copy, the actions, the sketch */
+const CTA_LINES_SEL = '.fo-cta-title';
+const CTA_ITEM_SEL = '.fo-cta-lede, .fo-cta-actions, .fo-cta-meta';
+const CTA_CARD_SEL = '.fo-cta-sketch';
+/* P-A2 R333 — the #product proof strip's panels joined the card rung; the
+   platform family shows no pre-entry motion — at/after entry (the live DOM
+   no longer carries .pr-shots; the selector stays harmless). */
+const PLATFORM_CARD_SEL = '.pr-shots .pr-shot';
 /* ── R339 T-11b — the footer's Heron-register rise (work-list #1: the
    biggest single gap, 107 els × 2 props). The six structural blocks
    (column stacks, ink strip, © bar) ride `.reveal-rise-h` — shared.css's
@@ -130,9 +157,6 @@ interface RevealsWindow extends Window {
   __mdrkReveals?: RevealsHandle;
 }
 
-const OBSERVER_ROOT_MARGIN_LINES = '0px 0px -15% 0px'; // the 85% entry line
-const OBSERVER_ROOT_MARGIN_ITEMS = '0px 0px -12% 0px'; // the 88% entry line
-
 export function initReveals(): RevealsHandle {
   const noop: RevealsHandle = { destroy() {} };
   if (typeof window === 'undefined' || typeof document === 'undefined') {
@@ -147,9 +171,15 @@ export function initReveals(): RevealsHandle {
   // The ARM SEAM comes first: root class, then hiding classes, then observers.
   document.documentElement.classList.add(ARMED_CLASS);
 
-  const lines = toArray(document, LINES_SEL);
-  const items = toArray(document, ITEM_SEL);
-  const cards = toArray(document, CARD_SEL);
+  // ── the family groups (r368 T1: one bucket per family) ──────────────
+  const problemItems = toArray(document, PROBLEM_ITEM_SEL);
+  const problemCards = toArray(document, PROBLEM_CARD_SEL);
+  const problem = [...problemItems, ...problemCards];
+  const rows = toArray(document, ROWS_SEL);
+  const ctaLines = toArray(document, CTA_LINES_SEL);
+  const ctaItems = toArray(document, CTA_ITEM_SEL);
+  const ctaCards = [...toArray(document, CTA_CARD_SEL), ...toArray(document, PLATFORM_CARD_SEL)];
+  const cta = [...ctaLines, ...ctaItems, ...ctaCards];
   const observers: IntersectionObserver[] = [];
   /** every class this module added — destroy() removes exactly these. */
   const touched: Array<{ el: Element; cls: string }> = [];
@@ -195,33 +225,43 @@ export function initReveals(): RevealsHandle {
     el.getBoundingClientRect().bottom <= 0 ||
     el.getBoundingClientRect().top < window.innerHeight * 0.12;
 
-  /* ── Lines — display headings, whole blocks, 80ms steps ─────────── */
-  const pendingLines = lines.filter((el) => !isPassed(el));
-  lines.filter(isPassed).forEach(reveal);
-  pendingLines.forEach((el) => arm(el, 'reveal-up'));
-  observe(pendingLines, OBSERVER_ROOT_MARGIN_LINES);
+  /* ── PROBLEM family — the columns + the art panels, one bucket, one onset:
+   * the reference's trigger window starts at −1.8×H (census-validated), so
+   * the transitions begin ≈650 px below the fold and the columns are
+   * mid-reveal as they enter view (the measured reference behavior). ── */
+  const pendingProblem = problem.filter((el) => !isPassed(el));
+  problem.filter(isPassed).forEach(reveal);
+  pendingProblem.forEach((el) =>
+    arm(el, el.matches(PROBLEM_CARD_SEL) ? 'reveal-card' : 'reveal-up'),
+  );
+  observe(pendingProblem, OBSERVER_ROOT_MARGIN_PROBLEM);
 
-  /* ── Items — rows and copy blocks, 80ms steps within each group ────
-   * (y-only + fade: no x — direction-safe in RTL. Groups enter as one
-   * beat with internal stagger, like the reference.) */
-  const pendingItems = items.filter((el) => !isPassed(el));
-  items.filter(isPassed).forEach(reveal);
-  pendingItems.forEach((el) => arm(el, 'reveal-up'));
-  observe(pendingItems, OBSERVER_ROOT_MARGIN_ITEMS);
+  /* ── ROWS family — the usecase rows engage at +0.2×H (the measured
+   * reference visual onset): the rows reveal in the viewport's top
+   * quarter, riding later than the fold. ── */
+  const pendingRows = rows.filter((el) => !isPassed(el));
+  rows.filter(isPassed).forEach(reveal);
+  pendingRows.forEach((el) => arm(el, 'reveal-up'));
+  observe(pendingRows, OBSERVER_ROOT_MARGIN_ROWS);
 
-  /* ── Cards — the Heron imgCardReveal: scale 0.8→1 + fade on the
-   * dedicated card rung. Scale/opacity only — direction-agnostic. ── */
-  const pendingCards = cards.filter((el) => !isPassed(el));
-  cards.filter(isPassed).forEach(reveal);
-  pendingCards.forEach((el) => arm(el, 'reveal-card'));
-  observe(pendingCards, OBSERVER_ROOT_MARGIN_LINES);
+  /* ── CTA + platform families — "at/after entry" (the reference shows no
+   * pre-entry motion): the display heading, the copy blocks, the actions,
+   * the sketch and the proof panels all reveal as their tops pass the
+   * viewport top. The heading keeps the 80ms-step stagger grammar. ── */
+  const pendingCta = cta.filter((el) => !isPassed(el));
+  cta.filter(isPassed).forEach(reveal);
+  pendingCta.forEach((el) =>
+    arm(el, el.matches(CTA_CARD_SEL) || el.matches(PLATFORM_CARD_SEL) ? 'reveal-card' : 'reveal-up'),
+  );
+  observe(pendingCta, OBSERVER_ROOT_MARGIN_ENTRY);
 
   /* ── T-11b — the footer rise: the six structural blocks on the
    * Heron register (see RISE_SEL). `.reveal-up` rides along for the
    * grammar + house contract; `.reveal-rise-h` owns the tween (it
    * wins the cascade — later in shared.css); the last three blocks
-   * add `--ty` (instant opacity, rise-only). Same IO bucket as the
-   * items; the 20ms ladder lands at reveal time. ── */
+   * add `--ty` (instant opacity, rise-only). The footer family plays
+   * at/after entry; at the end-clamped geometry the settle belt
+   * rescues the blocks at the document end. ── */
   const rises = [...toArray(document, RISE_SEL), ...toArray(document, RISE_TY_SEL)];
   const pendingRises = rises.filter((el) => !isPassed(el));
   rises.filter(isPassed).forEach(reveal);
@@ -232,10 +272,12 @@ export function initReveals(): RevealsHandle {
       arm(el, 'reveal-rise-h--ty');
     }
   });
-  observe(pendingRises, OBSERVER_ROOT_MARGIN_ITEMS);
+  observe(pendingRises, OBSERVER_ROOT_MARGIN_ENTRY);
 
   /* ── T-11b1 — the intro beat: the SAME rise seat at the band's own
-   * 600ms clock (--beat modifier, shared.css) + the 4ms ladder. */
+   * 600ms clock (--beat modifier, shared.css) + the 4ms ladder. The
+   * band enters WITH the page (the reference's beats are mid-flight at
+   * the stage top — measured): the +66% root fires the beats at load. */
   const beats = toArray(document, BEAT_SEL);
   const pendingBeats = beats.filter((el) => !isPassed(el));
   beats.filter(isPassed).forEach(reveal);
@@ -244,25 +286,26 @@ export function initReveals(): RevealsHandle {
     arm(el, 'reveal-rise-h');
     arm(el, 'reveal-rise-h--beat');
   });
-  observe(pendingBeats, OBSERVER_ROOT_MARGIN_ITEMS);
+  observe(pendingBeats, OBSERVER_ROOT_MARGIN_BEAT);
 
   /* ── T-11b1 — the usecase rules: the rows' bottom hairlines WIDEN
    * (width 0→100%, roles.css .rl-rule-w), the frame pair DRAWS
    * (scale 0 1→1 1, roles.css .rl-rule-x). Keyframe seats — `.in-view`
-   * fires them; no transition to stagger, so they ride the lines
-   * entry margin with the headings. */
+   * fires them; no transition to stagger. The rules sit at the
+   * section's top edge: the at/after-entry line fires them at entry
+   * (firing later needs the seat's own pin — the Task-3 residual). */
   const rules = [...toArray(document, RULE_W_SEL), ...toArray(document, RULE_X_SEL)];
   const pendingRules = rules.filter((el) => !isPassed(el));
   rules.filter(isPassed).forEach(reveal);
   pendingRules.forEach((el) =>
     arm(el, el.matches(RULE_X_SEL) ? 'rl-rule-x' : 'rl-rule-w'),
   );
-  observe(pendingRules, OBSERVER_ROOT_MARGIN_LINES);
+  observe(pendingRules, OBSERVER_ROOT_MARGIN_ENTRY);
 
   /* ── T-11b1 — the pending pool + the settle belt ─────────────
    * Every armed-but-unrevealed element, rescued by scroll-quiet (see
    * the header block). The pool drains as the IO reveals. */
-  const pending: Element[] = [...pendingLines, ...pendingItems, ...pendingCards, ...pendingRises, ...pendingBeats, ...pendingRules];
+  const pending: Element[] = [...pendingProblem, ...pendingRows, ...pendingCta, ...pendingRises, ...pendingBeats, ...pendingRules];
   const SETTLE_QUIET_MS = 120;
   let settleTimer = 0;
   const settle = () => {
