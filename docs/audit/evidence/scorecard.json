@@ -1,8 +1,8 @@
 {
- "generatedAt": "2026-11-18T16:33:54.068Z",
+ "generatedAt": "2026-11-18T17:48:05.930Z",
  "formula": {
   "E": "100 × mean SSIM over 8×8 windows outside preregistered text masks, per section∩viewport crop",
-  "T": "100 × verified matched state pairs / required state pairs (pairs.mjs law: same named state on both sides, ±2 px)",
+  "T": "100 × verified matched state pairs / required non-coincident state pairs (pairs.mjs aggregateT law: verdict-valid pairs — both sides at the same declared state within ±2 px; E-refused mask pairs are covered-but-E-unscored, listed in E_unscored)",
   "Q": "100 × passing verified samples / verified samples (settle only; trigger baseline recorded, unscored)"
  },
  "viewports": [
@@ -20,16 +20,18 @@
  ],
  "required": 58,
  "coincident": 22,
- "covered": 55,
- "E": 51.8,
- "T": 94.8,
- "T_note": "T = scored / required, required excludes protocol-coincident states (duplicates, fixed chrome, END collapse — reasons carried in invalidRows); every other gap stays in the denominator",
+ "covered": 57,
+ "E": 53,
+ "T": 98.3,
+ "T_note": "T = verdict-valid matched pairs / required non-coincident pairs (the pairs.mjs aggregateT law — the instrument now obeys its own law module; the old T = scored/required conflated E-scoreability with pair coverage). E-refused pairs (mask share over the preregistered 55 % cap — recorded, not scored) count as covered evidence with an unscored E and are listed in E_unscored; genuinely invalid pairs (a side missing/unlanded/mismatched; states beyond both ends) stay uncovered in the denominator with both sides' reasons",
  "invalidRows": [
   {
    "target": "footer@390:mid60",
    "status": "missing",
-   "reason": "local: state mid60 needs scroll 13496 > document end 13272 — inaccessible locally (recorded, not scored)"
-  },
+   "reason": "local: state mid60 needs scroll 14219 > live document end 13992 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)"
+  }
+ ],
+ "E_unscored": [
   {
    "target": "home-hero-wrap@390:mid60",
    "status": "invalid-mask-share",
@@ -120,7 +122,7 @@
   },
   {
    "target": "home-intro-wrap@390:exit",
-   "reason": "local: duplicate state — delta 8 px sits within 100 px of an already-recorded state for this 852 px section"
+   "reason": "local: duplicate state — delta 90 px sits within 100 px of an already-recorded state for this 934 px section"
   },
   {
    "target": "home-problem-wrap@390:exit",
@@ -425,14 +427,15 @@
  },
  "perSection": {
   "chrome": {
-   "E": 60.8,
+   "E": 61,
    "T": 100,
    "pairs": 2,
    "covered": 2,
+   "eScored": 2,
    "coincident": 6,
    "states": {
     "1440:entry": {
-     "E": 48.6,
+     "E": 48.9,
      "status": "scored"
     },
     "390:entry": {
@@ -442,14 +445,15 @@
    }
   },
   "footer": {
-   "E": 43.6,
+   "E": 43.2,
    "T": 75,
    "pairs": 4,
    "covered": 3,
+   "eScored": 3,
    "coincident": 4,
    "states": {
     "1440:entry": {
-     "E": 22.8,
+     "E": 22.4,
      "status": "scored"
     },
     "390:entry": {
@@ -457,7 +461,7 @@
      "status": "scored"
     },
     "390:mid30": {
-     "E": 53,
+     "E": 52.3,
      "status": "scored"
     },
     "390:mid60": {
@@ -467,22 +471,23 @@
    }
   },
   "home-cta-wrap": {
-   "E": 70.4,
+   "E": 65.1,
    "T": 100,
    "pairs": 6,
    "covered": 6,
+   "eScored": 6,
    "coincident": 2,
    "states": {
     "1440:entry": {
-     "E": 77.1,
+     "E": 77,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 80.4,
+     "E": 75.7,
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 67,
+     "E": 69.6,
      "status": "scored"
     },
     "390:entry": {
@@ -490,32 +495,33 @@
      "status": "scored"
     },
     "390:mid30": {
-     "E": 72.1,
+     "E": 58.3,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 61.9,
+     "E": 45.8,
      "status": "scored"
     }
    }
   },
   "home-hero-wrap": {
-   "E": 45.6,
-   "T": 83.3,
+   "E": 45.3,
+   "T": 100,
    "pairs": 6,
-   "covered": 5,
+   "covered": 6,
+   "eScored": 5,
    "coincident": 2,
    "states": {
     "1440:entry": {
-     "E": 45.2,
+     "E": 45.1,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 32.1,
+     "E": 32.3,
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 34.5,
+     "E": 33,
      "status": "scored"
     },
     "390:entry": {
@@ -533,22 +539,23 @@
    }
   },
   "home-intro-wrap": {
-   "E": 31.4,
+   "E": 31.3,
    "T": 100,
    "pairs": 6,
    "covered": 6,
+   "eScored": 6,
    "coincident": 2,
    "states": {
     "1440:entry": {
-     "E": 35.7,
+     "E": 35.6,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 22.1,
+     "E": 22,
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 23.1,
+     "E": 23,
      "status": "scored"
     },
     "390:entry": {
@@ -556,36 +563,37 @@
      "status": "scored"
     },
     "390:mid30": {
-     "E": 31.2,
+     "E": 30,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 45.9,
+     "E": 46.8,
      "status": "scored"
     }
    }
   },
   "home-map-wrap": {
-   "E": 52,
-   "T": 87.5,
+   "E": 51.5,
+   "T": 100,
    "pairs": 8,
-   "covered": 7,
+   "covered": 8,
+   "eScored": 7,
    "coincident": 0,
    "states": {
     "1440:entry": {
-     "E": 54.8,
+     "E": 54.6,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 53.3,
+     "E": 52.3,
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 47.6,
+     "E": 47,
      "status": "scored"
     },
     "1440:exit": {
-     "E": 40,
+     "E": 38.6,
      "status": "scored"
     },
     "390:entry": {
@@ -593,7 +601,7 @@
      "status": "scored"
     },
     "390:mid30": {
-     "E": 51.2,
+     "E": 51.1,
      "status": "scored"
     },
     "390:mid60": {
@@ -607,10 +615,11 @@
    }
   },
   "home-platform-wrap": {
-   "E": 48.7,
+   "E": 49.1,
    "T": 100,
    "pairs": 7,
    "covered": 7,
+   "eScored": 7,
    "coincident": 1,
    "states": {
     "1440:entry": {
@@ -618,7 +627,7 @@
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 59.3,
+     "E": 60.6,
      "status": "scored"
     },
     "1440:mid60": {
@@ -630,36 +639,37 @@
      "status": "scored"
     },
     "390:mid30": {
-     "E": 42.1,
+     "E": 44.2,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 44.1,
+     "E": 42.3,
      "status": "scored"
     },
     "390:exit": {
-     "E": 41,
+     "E": 42,
      "status": "scored"
     }
    }
   },
   "home-problem-wrap": {
-   "E": 64.5,
+   "E": 67.1,
    "T": 100,
    "pairs": 6,
    "covered": 6,
+   "eScored": 6,
    "coincident": 2,
    "states": {
     "1440:entry": {
-     "E": 71.6,
+     "E": 71.5,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 66.1,
+     "E": 66,
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 59.2,
+     "E": 56.7,
      "status": "scored"
     },
     "390:entry": {
@@ -667,20 +677,21 @@
      "status": "scored"
     },
     "390:mid30": {
-     "E": 63.8,
+     "E": 75.3,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 60.2,
+     "E": 67.1,
      "status": "scored"
     }
    }
   },
   "home-usecase-wrap": {
-   "E": 44.5,
+   "E": 52.6,
    "T": 100,
    "pairs": 7,
    "covered": 7,
+   "eScored": 7,
    "coincident": 1,
    "states": {
     "1440:entry": {
@@ -688,11 +699,11 @@
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 43.3,
+     "E": 50.3,
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 33.2,
+     "E": 46.7,
      "status": "scored"
     },
     "390:entry": {
@@ -700,28 +711,29 @@
      "status": "scored"
     },
     "390:mid30": {
-     "E": 42.4,
+     "E": 58.1,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 57.7,
+     "E": 72.3,
      "status": "scored"
     },
     "390:exit": {
-     "E": 37.7,
+     "E": 43.5,
      "status": "scored"
     }
    }
   },
   "home-why-wrap": {
-   "E": 59.4,
+   "E": 63.7,
    "T": 100,
    "pairs": 6,
    "covered": 6,
+   "eScored": 6,
    "coincident": 2,
    "states": {
     "1440:entry": {
-     "E": 70.3,
+     "E": 70.2,
      "status": "scored"
     },
     "1440:mid30": {
@@ -729,7 +741,7 @@
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 66.4,
+     "E": 66.3,
      "status": "scored"
     },
     "390:entry": {
@@ -737,11 +749,11 @@
      "status": "scored"
     },
     "390:mid30": {
-     "E": 51.8,
+     "E": 55.1,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 37,
+     "E": 59.7,
      "status": "scored"
     }
    }
@@ -754,6 +766,11 @@
    "state": "entry",
    "target": "chrome@1440:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/chrome.1440.entry.png",
     "top": 7,
@@ -764,12 +781,12 @@
      "ok": true,
      "x": 7,
      "y": 7,
-     "w": 713,
-     "h": 28,
+     "w": 356,
+     "h": 14,
      "touchesBottom": false,
      "captureW": 1426,
      "captureH": 56,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -783,12 +800,12 @@
      "ok": true,
      "x": 7,
      "y": 7,
-     "w": 713,
-     "h": 28,
+     "w": 356,
+     "h": 14,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 56,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "header.fo-header",
@@ -805,15 +822,15 @@
     "w": 356,
     "h": 14,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 48.6,
+   "E": 48.9,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 56.3,
+   "E_unmasked": 56.5,
    "structuralDiffPct": 10.9
   },
   {
@@ -849,6 +866,12 @@
    "state": "entry",
    "target": "footer@1440:entry",
    "declared": "end",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "end-clamped",
+    "note": "matched END state — both sides at their own maximum with their exact tops recorded (tops differ by design)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/footer.1440.end.png",
     "top": 547,
@@ -859,12 +882,12 @@
      "ok": true,
      "x": 7,
      "y": 547,
-     "w": 713,
-     "h": 176,
+     "w": 356,
+     "h": 88,
      "touchesBottom": true,
      "captureW": 1426,
      "captureH": 353,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -877,12 +900,12 @@
      "ok": true,
      "x": 7,
      "y": 183,
-     "w": 713,
-     "h": 355,
+     "w": 356,
+     "h": 177,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 711,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "footer.fo-footer",
@@ -899,16 +922,16 @@
     "w": 356,
     "h": 28,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 22.8,
+   "E": 22.4,
    "ssim_unmasked": 0.2,
-   "E_unmasked": 19.5,
-   "structuralDiffPct": 11.6
+   "E_unmasked": 19.1,
+   "structuralDiffPct": 11.7
   },
   {
    "key": "footer",
@@ -943,6 +966,11 @@
    "state": "entry",
    "target": "home-cta-wrap@1440:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.1440.entry.png",
     "top": 0,
@@ -953,12 +981,12 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 450,
+     "w": 360,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1440,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -972,12 +1000,12 @@
      "ok": true,
      "x": 7,
      "y": 2,
-     "w": 713,
-     "h": 349,
+     "w": 356,
+     "h": 174,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 698,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#vision.fo-cta",
@@ -994,15 +1022,15 @@
     "w": 356,
     "h": 114,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 77.1,
+   "E": 77,
    "ssim_unmasked": 0.8,
-   "E_unmasked": 77.1,
+   "E_unmasked": 77,
    "structuralDiffPct": 5.9
   },
   {
@@ -1011,22 +1039,27 @@
    "state": "mid30",
    "target": "home-cta-wrap@1440:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.1440.mid30.png",
-    "top": 270,
+    "top": -400,
     "state": "position",
-    "scrollY": 14699,
-    "targetY": 14699,
+    "scrollY": 15369,
+    "targetY": 15369,
     "clip": {
      "ok": true,
      "x": 0,
-     "y": 270,
-     "w": 720,
-     "h": 315,
+     "y": 0,
+     "w": 360,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1440,
-     "captureH": 630,
-     "storageScale": 2
+     "captureH": 900,
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1039,18 +1072,18 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 246,
+     "w": 356,
+     "h": 123,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 492,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#vision.fo-cta",
    "referenceSelector": "div.cta-wrap",
    "masks": {
-    "count": 4,
+    "count": 1,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0
    },
@@ -1060,16 +1093,16 @@
     "w": 356,
     "h": 63,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 80.4,
+   "E": 75.7,
    "ssim_unmasked": 0.8,
-   "E_unmasked": 80.7,
-   "structuralDiffPct": 4.3
+   "E_unmasked": 76.1,
+   "structuralDiffPct": 6.4
   },
   {
    "key": "home-cta-wrap",
@@ -1077,22 +1110,27 @@
    "state": "mid60",
    "target": "home-cta-wrap@1440:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.1440.mid60.png",
-    "top": -129,
+    "top": -799,
     "state": "position",
-    "scrollY": 15098,
-    "targetY": 15098,
+    "scrollY": 15768,
+    "targetY": 15768,
     "clip": {
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 450,
-     "touchesBottom": true,
+     "w": 360,
+     "h": 133,
+     "touchesBottom": false,
      "captureW": 1440,
-     "captureH": 900,
-     "storageScale": 2
+     "captureH": 533,
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1105,12 +1143,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 141,
+     "w": 356,
+     "h": 70,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 282,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#vision.fo-cta",
@@ -1124,18 +1162,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 356,
-    "h": 10,
+    "h": 70,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 67,
+   "E": 69.6,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 67,
-   "structuralDiffPct": 6.3
+   "E_unmasked": 69.6,
+   "structuralDiffPct": 14.4
   },
   {
    "key": "home-cta-wrap",
@@ -1152,6 +1190,11 @@
    "state": "entry",
    "target": "home-hero-wrap@1440:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-hero-wrap.1440.entry.png",
     "top": 0,
@@ -1162,12 +1205,12 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 443,
+     "w": 360,
+     "h": 221,
      "touchesBottom": false,
      "captureW": 1440,
      "captureH": 887,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1181,12 +1224,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 443,
+     "w": 356,
+     "h": 221,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 886,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section.fo-hero",
@@ -1203,16 +1246,16 @@
     "w": 356,
     "h": 219,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 45.2,
+   "E": 45.1,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 41.3,
-   "structuralDiffPct": 19.7
+   "E_unmasked": 41.2,
+   "structuralDiffPct": 19.8
   },
   {
    "key": "home-hero-wrap",
@@ -1220,6 +1263,11 @@
    "state": "mid30",
    "target": "home-hero-wrap@1440:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-hero-wrap.1440.mid30.png",
     "top": -266,
@@ -1230,12 +1278,12 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 310,
+     "w": 360,
+     "h": 155,
      "touchesBottom": false,
      "captureW": 1440,
      "captureH": 621,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1248,18 +1296,18 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 311,
+     "w": 356,
+     "h": 155,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 622,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section.fo-hero",
    "referenceSelector": "div.home-hero-wrap",
    "masks": {
-    "count": 2,
+    "count": 0,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0
    },
@@ -1269,16 +1317,16 @@
     "w": 356,
     "h": 153,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 32.1,
+   "E": 32.3,
    "ssim_unmasked": 0.3,
    "E_unmasked": 32.3,
-   "structuralDiffPct": 29.2
+   "structuralDiffPct": 29.7
   },
   {
    "key": "home-hero-wrap",
@@ -1286,6 +1334,11 @@
    "state": "mid60",
    "target": "home-hero-wrap@1440:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-hero-wrap.1440.mid60.png",
     "top": -532,
@@ -1296,12 +1349,12 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 177,
+     "w": 360,
+     "h": 88,
      "touchesBottom": false,
      "captureW": 1440,
      "captureH": 355,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1314,12 +1367,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 178,
+     "w": 356,
+     "h": 89,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 356,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section.fo-hero",
@@ -1327,7 +1380,7 @@
    "masks": {
     "count": 1,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
-    "maskedShare": 0
+    "maskedShare": 0.1
    },
    "status": "scored",
    "crop": {
@@ -1335,16 +1388,16 @@
     "w": 356,
     "h": 87,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 34.5,
+   "E": 33,
    "ssim_unmasked": 0.3,
-   "E_unmasked": 33.7,
-   "structuralDiffPct": 21.9
+   "E_unmasked": 33.5,
+   "structuralDiffPct": 22.7
   },
   {
    "key": "home-hero-wrap",
@@ -1361,6 +1414,11 @@
    "state": "entry",
    "target": "home-intro-wrap@1440:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-intro-wrap.1440.entry.png",
     "top": 0,
@@ -1371,12 +1429,12 @@
      "ok": true,
      "x": 8,
      "y": 0,
-     "w": 712,
-     "h": 361,
+     "w": 356,
+     "h": 180,
      "touchesBottom": false,
      "captureW": 1425,
      "captureH": 723,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1390,12 +1448,12 @@
      "ok": true,
      "x": 7,
      "y": 2,
-     "w": 713,
-     "h": 361,
+     "w": 356,
+     "h": 180,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 723,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "div#statement.st-section",
@@ -1412,16 +1470,16 @@
     "w": 356,
     "h": 180,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 35.7,
+   "E": 35.6,
    "ssim_unmasked": 0.3,
-   "E_unmasked": 32,
-   "structuralDiffPct": 28.9
+   "E_unmasked": 31.9,
+   "structuralDiffPct": 28.8
   },
   {
    "key": "home-intro-wrap",
@@ -1429,6 +1487,11 @@
    "state": "mid30",
    "target": "home-intro-wrap@1440:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-intro-wrap.1440.mid30.png",
     "top": -217,
@@ -1439,12 +1502,12 @@
      "ok": true,
      "x": 8,
      "y": 0,
-     "w": 712,
-     "h": 253,
+     "w": 356,
+     "h": 126,
      "touchesBottom": false,
      "captureW": 1425,
      "captureH": 506,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1457,12 +1520,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 254,
+     "w": 356,
+     "h": 127,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 509,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "div#statement.st-section",
@@ -1478,16 +1541,16 @@
     "w": 356,
     "h": 126,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 22.1,
+   "E": 22,
    "ssim_unmasked": 0.2,
-   "E_unmasked": 22.1,
-   "structuralDiffPct": 45
+   "E_unmasked": 22,
+   "structuralDiffPct": 44.9
   },
   {
    "key": "home-intro-wrap",
@@ -1495,6 +1558,11 @@
    "state": "mid60",
    "target": "home-intro-wrap@1440:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-intro-wrap.1440.mid60.png",
     "top": -434,
@@ -1505,12 +1573,12 @@
      "ok": true,
      "x": 8,
      "y": 0,
-     "w": 712,
-     "h": 144,
+     "w": 356,
+     "h": 72,
      "touchesBottom": false,
      "captureW": 1425,
      "captureH": 289,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1523,12 +1591,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 146,
+     "w": 356,
+     "h": 73,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 292,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "div#statement.st-section",
@@ -1544,15 +1612,15 @@
     "w": 356,
     "h": 72,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 23.1,
+   "E": 23,
    "ssim_unmasked": 0.2,
-   "E_unmasked": 23.1,
+   "E_unmasked": 23,
    "structuralDiffPct": 39.9
   },
   {
@@ -1570,6 +1638,11 @@
    "state": "entry",
    "target": "home-map-wrap@1440:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.entry.png",
     "top": 0,
@@ -1580,12 +1653,12 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 450,
+     "w": 360,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1440,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1599,12 +1672,12 @@
      "ok": true,
      "x": 7,
      "y": 2,
-     "w": 713,
-     "h": 449,
+     "w": 356,
+     "h": 224,
      "touchesBottom": true,
      "captureW": 1427,
      "captureH": 898,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#chapters.chapters",
@@ -1621,15 +1694,15 @@
     "w": 356,
     "h": 163,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 54.8,
+   "E": 54.6,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 52.7,
+   "E_unmasked": 52.5,
    "structuralDiffPct": 9.2
   },
   {
@@ -1638,6 +1711,11 @@
    "state": "mid30",
    "target": "home-map-wrap@1440:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.mid30.png",
     "top": -1890,
@@ -1648,12 +1726,12 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 450,
+     "w": 360,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1440,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1666,18 +1744,18 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 450,
+     "w": 356,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1427,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#chapters.chapters",
    "referenceSelector": "div.home-map-wrap",
    "masks": {
-    "count": 4,
+    "count": 0,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0
    },
@@ -1687,16 +1765,16 @@
     "w": 356,
     "h": 163,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 53.3,
+   "E": 52.3,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 52.5,
-   "structuralDiffPct": 10.1
+   "E_unmasked": 52.3,
+   "structuralDiffPct": 11.1
   },
   {
    "key": "home-map-wrap",
@@ -1704,6 +1782,11 @@
    "state": "mid60",
    "target": "home-map-wrap@1440:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.mid60.png",
     "top": -3780,
@@ -1714,12 +1797,12 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 450,
+     "w": 360,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1440,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1732,18 +1815,18 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 450,
+     "w": 356,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1427,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#chapters.chapters",
    "referenceSelector": "div.home-map-wrap",
    "masks": {
-    "count": 4,
+    "count": 0,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0
    },
@@ -1753,16 +1836,16 @@
     "w": 356,
     "h": 163,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 47.6,
+   "E": 47,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 47.2,
-   "structuralDiffPct": 11.9
+   "E_unmasked": 47,
+   "structuralDiffPct": 12.8
   },
   {
    "key": "home-map-wrap",
@@ -1770,6 +1853,11 @@
    "state": "exit",
    "target": "home-map-wrap@1440:exit",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "exit (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.exit.png",
     "top": -5400,
@@ -1780,38 +1868,38 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 450,
+     "w": 360,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1440,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-map-wrap.1440.exit.png",
-    "top": -5399,
+    "top": -5400,
     "state": "position",
-    "offset": 7757,
+    "offset": 7758,
     "targetOffset": 7756,
     "clip": {
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 450,
+     "w": 356,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1427,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#chapters.chapters",
    "referenceSelector": "div.home-map-wrap",
    "masks": {
-    "count": 4,
+    "count": 0,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
-    "maskedShare": 0.1
+    "maskedShare": 0
    },
    "status": "scored",
    "crop": {
@@ -1819,16 +1907,16 @@
     "w": 356,
     "h": 163,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 40,
+   "E": 38.6,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 38.8,
-   "structuralDiffPct": 14.5
+   "E_unmasked": 38.6,
+   "structuralDiffPct": 16.9
   },
   {
    "key": "home-platform-wrap",
@@ -1836,6 +1924,11 @@
    "state": "entry",
    "target": "home-platform-wrap@1440:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.1440.entry.png",
     "top": 0,
@@ -1846,12 +1939,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 355,
+     "w": 356,
+     "h": 177,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 711,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1865,12 +1958,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 354,
+     "w": 356,
+     "h": 177,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 709,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#product.pr-section",
@@ -1887,15 +1980,15 @@
     "w": 356,
     "h": 177,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
    "E": 55.3,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 56,
+   "E_unmasked": 55.9,
    "structuralDiffPct": 9.4
   },
   {
@@ -1904,6 +1997,11 @@
    "state": "mid30",
    "target": "home-platform-wrap@1440:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.1440.mid30.png",
     "top": -214,
@@ -1914,12 +2012,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 248,
+     "w": 356,
+     "h": 124,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 497,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1932,12 +2030,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 248,
+     "w": 356,
+     "h": 124,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 497,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#product.pr-section",
@@ -1953,16 +2051,16 @@
     "w": 356,
     "h": 124,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 59.3,
+   "E": 60.6,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 59.3,
-   "structuralDiffPct": 9.2
+   "E_unmasked": 60.6,
+   "structuralDiffPct": 9.4
   },
   {
    "key": "home-platform-wrap",
@@ -1970,6 +2068,11 @@
    "state": "mid60",
    "target": "home-platform-wrap@1440:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.1440.mid60.png",
     "top": -427,
@@ -1980,12 +2083,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 142,
+     "w": 356,
+     "h": 71,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 284,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -1998,12 +2101,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 142,
+     "w": 356,
+     "h": 71,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 284,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#product.pr-section",
@@ -2019,8 +2122,8 @@
     "w": 356,
     "h": 71,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
@@ -2045,6 +2148,11 @@
    "state": "entry",
    "target": "home-problem-wrap@1440:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.1440.entry.png",
     "top": 0,
@@ -2055,12 +2163,12 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 373,
+     "w": 360,
+     "h": 186,
      "touchesBottom": false,
      "captureW": 1440,
      "captureH": 746,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -2074,12 +2182,12 @@
      "ok": true,
      "x": 7,
      "y": 2,
-     "w": 713,
-     "h": 371,
+     "w": 356,
+     "h": 185,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 743,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#live.pm-section",
@@ -2096,16 +2204,16 @@
     "w": 356,
     "h": 184,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 71.6,
+   "E": 71.5,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 60.8,
-   "structuralDiffPct": 0.7
+   "E_unmasked": 60.7,
+   "structuralDiffPct": 0.6
   },
   {
    "key": "home-problem-wrap",
@@ -2113,6 +2221,11 @@
    "state": "mid30",
    "target": "home-problem-wrap@1440:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.1440.mid30.png",
     "top": -224,
@@ -2123,12 +2236,12 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 261,
+     "w": 360,
+     "h": 130,
      "touchesBottom": false,
      "captureW": 1440,
      "captureH": 522,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -2141,18 +2254,18 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 261,
+     "w": 356,
+     "h": 130,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 522,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#live.pm-section",
    "referenceSelector": "div.home-problem-wrap",
    "masks": {
-    "count": 4,
+    "count": 2,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0
    },
@@ -2162,16 +2275,16 @@
     "w": 356,
     "h": 129,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 66.1,
+   "E": 66,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 66.1,
-   "structuralDiffPct": 6.6
+   "E_unmasked": 66,
+   "structuralDiffPct": 6.7
   },
   {
    "key": "home-problem-wrap",
@@ -2179,6 +2292,11 @@
    "state": "mid60",
    "target": "home-problem-wrap@1440:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.1440.mid60.png",
     "top": -448,
@@ -2189,12 +2307,12 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 149,
+     "w": 360,
+     "h": 74,
      "touchesBottom": false,
      "captureW": 1440,
      "captureH": 298,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -2207,20 +2325,20 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 149,
+     "w": 356,
+     "h": 74,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 299,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#live.pm-section",
    "referenceSelector": "div.home-problem-wrap",
    "masks": {
-    "count": 2,
+    "count": 0,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
-    "maskedShare": 0.2
+    "maskedShare": 0
    },
    "status": "scored",
    "crop": {
@@ -2228,16 +2346,16 @@
     "w": 356,
     "h": 73,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 59.2,
+   "E": 56.7,
    "ssim_unmasked": 0.6,
    "E_unmasked": 56.7,
-   "structuralDiffPct": 7.3
+   "structuralDiffPct": 10.4
   },
   {
    "key": "home-problem-wrap",
@@ -2254,6 +2372,11 @@
    "state": "entry",
    "target": "home-usecase-wrap@1440:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1440.entry.png",
     "top": 0,
@@ -2264,12 +2387,12 @@
      "ok": true,
      "x": 0,
      "y": 0,
-     "w": 720,
-     "h": 443,
+     "w": 360,
+     "h": 221,
      "touchesBottom": false,
      "captureW": 1440,
      "captureH": 886,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -2283,12 +2406,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 443,
+     "w": 356,
+     "h": 221,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 887,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#roles.rl-section",
@@ -2305,16 +2428,16 @@
     "w": 356,
     "h": 219,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
    "E": 53.1,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 49.8,
-   "structuralDiffPct": 26.1
+   "E_unmasked": 49.7,
+   "structuralDiffPct": 26.3
   },
   {
    "key": "home-usecase-wrap",
@@ -2322,22 +2445,27 @@
    "state": "mid30",
    "target": "home-usecase-wrap@1440:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid30.png",
-    "top": 404,
+    "top": -266,
     "state": "position",
-    "scrollY": 13679,
-    "targetY": 13679,
+    "scrollY": 14349,
+    "targetY": 14349,
     "clip": {
      "ok": true,
      "x": 0,
-     "y": 404,
-     "w": 720,
-     "h": 248,
-     "touchesBottom": true,
+     "y": 0,
+     "w": 360,
+     "h": 155,
+     "touchesBottom": false,
      "captureW": 1440,
-     "captureH": 496,
-     "storageScale": 2
+     "captureH": 620,
+     "storageScale": 4
     }
    },
    "reference": {
@@ -2350,12 +2478,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 311,
+     "w": 356,
+     "h": 155,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 623,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#roles.rl-section",
@@ -2369,18 +2497,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 356,
-    "h": 63,
+    "h": 153,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 43.3,
-   "ssim_unmasked": 0.4,
-   "E_unmasked": 43.3,
-   "structuralDiffPct": 24.1
+   "E": 50.3,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 50.3,
+   "structuralDiffPct": 28.7
   },
   {
    "key": "home-usecase-wrap",
@@ -2388,22 +2516,27 @@
    "state": "mid60",
    "target": "home-usecase-wrap@1440:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid60.png",
-    "top": 138,
+    "top": -532,
     "state": "position",
-    "scrollY": 13945,
-    "targetY": 13945,
+    "scrollY": 14615,
+    "targetY": 14615,
     "clip": {
      "ok": true,
      "x": 0,
-     "y": 138,
-     "w": 720,
-     "h": 381,
-     "touchesBottom": true,
+     "y": 0,
+     "w": 360,
+     "h": 88,
+     "touchesBottom": false,
      "captureW": 1440,
-     "captureH": 762,
-     "storageScale": 2
+     "captureH": 354,
+     "storageScale": 4
     }
    },
    "reference": {
@@ -2416,12 +2549,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 178,
+     "w": 356,
+     "h": 89,
      "touchesBottom": false,
      "captureW": 1427,
      "captureH": 357,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section#roles.rl-section",
@@ -2435,18 +2568,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 356,
-    "h": 29,
+    "h": 87,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 33.2,
-   "ssim_unmasked": 0.3,
-   "E_unmasked": 33.2,
-   "structuralDiffPct": 31.2
+   "E": 46.7,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 46.7,
+   "structuralDiffPct": 32.4
   },
   {
    "key": "home-usecase-wrap",
@@ -2463,6 +2596,11 @@
    "state": "entry",
    "target": "home-why-wrap@1440:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1440.entry.png",
     "top": 0,
@@ -2473,12 +2611,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 450,
+     "w": 356,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1427,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -2492,12 +2630,12 @@
      "ok": true,
      "x": 7,
      "y": 2,
-     "w": 713,
-     "h": 449,
+     "w": 356,
+     "h": 224,
      "touchesBottom": true,
      "captureW": 1427,
      "captureH": 898,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section.wy-section",
@@ -2514,15 +2652,15 @@
     "w": 356,
     "h": 164,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 70.3,
+   "E": 70.2,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 67.8,
+   "E_unmasked": 67.7,
    "structuralDiffPct": 8.3
   },
   {
@@ -2531,6 +2669,11 @@
    "state": "mid30",
    "target": "home-why-wrap@1440:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1440.mid30.png",
     "top": -746,
@@ -2541,12 +2684,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 450,
+     "w": 356,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1427,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -2559,18 +2702,18 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 450,
+     "w": 356,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1427,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section.wy-section",
    "referenceSelector": "div.home-why-wrap",
    "masks": {
-    "count": 4,
+    "count": 0,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0
    },
@@ -2580,8 +2723,8 @@
     "w": 356,
     "h": 165,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
@@ -2589,7 +2732,7 @@
    "E": 74.8,
    "ssim_unmasked": 0.7,
    "E_unmasked": 74.8,
-   "structuralDiffPct": 7.9
+   "structuralDiffPct": 8
   },
   {
    "key": "home-why-wrap",
@@ -2597,6 +2740,11 @@
    "state": "mid60",
    "target": "home-why-wrap@1440:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1440.mid60.png",
     "top": -1493,
@@ -2607,12 +2755,12 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 450,
+     "w": 356,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1427,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "reference": {
@@ -2625,18 +2773,18 @@
      "ok": true,
      "x": 7,
      "y": 0,
-     "w": 713,
-     "h": 450,
+     "w": 356,
+     "h": 225,
      "touchesBottom": true,
      "captureW": 1427,
      "captureH": 900,
-     "storageScale": 2
+     "storageScale": 4
     }
    },
    "localSelector": "section.wy-section",
    "referenceSelector": "div.home-why-wrap",
    "masks": {
-    "count": 4,
+    "count": 0,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0
    },
@@ -2646,16 +2794,16 @@
     "w": 356,
     "h": 165,
     "storedScale": {
-     "reference": 2,
-     "local": 2
+     "reference": 4,
+     "local": 4
     },
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 66.4,
+   "E": 66.3,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 66.4,
-   "structuralDiffPct": 9.5
+   "E_unmasked": 66.3,
+   "structuralDiffPct": 9.3
   },
   {
    "key": "home-why-wrap",
@@ -2672,6 +2820,11 @@
    "state": "entry",
    "target": "chrome@390:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/chrome.390.entry.png",
     "top": 7,
@@ -2767,6 +2920,11 @@
    "state": "entry",
    "target": "footer@390:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/footer.390.entry.png",
     "top": 0,
@@ -2835,21 +2993,26 @@
    "state": "mid30",
    "target": "footer@390:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/footer.390.mid30.png",
-    "top": 351,
+    "top": -372,
     "state": "position",
-    "scrollY": 13125,
-    "targetY": 13125,
+    "scrollY": 13848,
+    "targetY": 13848,
     "clip": {
      "ok": true,
      "x": 8,
-     "y": 351,
+     "y": 0,
      "w": 374,
-     "h": 493,
+     "h": 844,
      "touchesBottom": true,
      "captureW": 374,
-     "captureH": 493,
+     "captureH": 844,
      "storageScale": 1
     }
    },
@@ -2882,7 +3045,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 433,
+    "h": 784,
     "storedScale": {
      "reference": 1,
      "local": 1
@@ -2890,10 +3053,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 53,
+   "E": 52.3,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 51.4,
-   "structuralDiffPct": 8.6
+   "E_unmasked": 50,
+   "structuralDiffPct": 9.8
   },
   {
    "key": "footer",
@@ -2901,7 +3064,12 @@
    "state": "mid60",
    "target": "footer@390:mid60",
    "status": "missing",
-   "reason": "local: state mid60 needs scroll 13496 > document end 13272 — inaccessible locally (recorded, not scored)"
+   "reason": "local: state mid60 needs scroll 14219 > live document end 13992 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)",
+   "verdict": {
+    "valid": false,
+    "status": "invalid-local",
+    "reason": "local: state mid60 needs scroll 14219 > live document end 13992 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)"
+   }
   },
   {
    "key": "footer",
@@ -2918,6 +3086,11 @@
    "state": "entry",
    "target": "home-cta-wrap@390:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.390.entry.png",
     "top": 0,
@@ -2986,21 +3159,26 @@
    "state": "mid30",
    "target": "home-cta-wrap@390:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.390.mid30.png",
-    "top": 450,
+    "top": -273,
     "state": "position",
-    "scrollY": 12117,
-    "targetY": 12117,
+    "scrollY": 12840,
+    "targetY": 12840,
     "clip": {
      "ok": true,
      "x": 0,
-     "y": 450,
+     "y": 0,
      "w": 390,
-     "h": 394,
-     "touchesBottom": true,
+     "h": 636,
+     "touchesBottom": false,
      "captureW": 390,
-     "captureH": 394,
+     "captureH": 636,
      "storageScale": 1
     }
    },
@@ -3033,18 +3211,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 290,
+    "h": 350,
     "storedScale": {
      "reference": 1,
      "local": 1
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 72.1,
-   "ssim_unmasked": 0.7,
-   "E_unmasked": 68.4,
-   "structuralDiffPct": 10
+   "E": 58.3,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 56,
+   "structuralDiffPct": 16.6
   },
   {
    "key": "home-cta-wrap",
@@ -3052,21 +3230,26 @@
    "state": "mid60",
    "target": "home-cta-wrap@390:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.390.mid60.png",
-    "top": 178,
+    "top": -545,
     "state": "position",
-    "scrollY": 12389,
-    "targetY": 12389,
+    "scrollY": 13112,
+    "targetY": 13112,
     "clip": {
      "ok": true,
      "x": 0,
-     "y": 178,
+     "y": 0,
      "w": 390,
-     "h": 666,
-     "touchesBottom": true,
+     "h": 364,
+     "touchesBottom": false,
      "captureW": 390,
-     "captureH": 666,
+     "captureH": 364,
      "storageScale": 1
     }
    },
@@ -3099,18 +3282,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 140,
+    "h": 200,
     "storedScale": {
      "reference": 1,
      "local": 1
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 61.9,
-   "ssim_unmasked": 0.6,
-   "E_unmasked": 61.9,
-   "structuralDiffPct": 13.3
+   "E": 45.8,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 45.8,
+   "structuralDiffPct": 27.1
   },
   {
    "key": "home-cta-wrap",
@@ -3127,6 +3310,11 @@
    "state": "entry",
    "target": "home-hero-wrap@390:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-hero-wrap.390.entry.png",
     "top": 0,
@@ -3195,6 +3383,11 @@
    "state": "mid30",
    "target": "home-hero-wrap@390:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-hero-wrap.390.mid30.png",
     "top": -249,
@@ -3253,7 +3446,7 @@
    "E": 62.9,
    "ssim_unmasked": 0.5,
    "E_unmasked": 46.5,
-   "structuralDiffPct": 3.8
+   "structuralDiffPct": 3.9
   },
   {
    "key": "home-hero-wrap",
@@ -3261,6 +3454,11 @@
    "state": "mid60",
    "target": "home-hero-wrap@390:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-hero-wrap.390.mid60.png",
     "top": -498,
@@ -3337,6 +3535,11 @@
    "state": "entry",
    "target": "home-intro-wrap@390:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-intro-wrap.390.entry.png",
     "top": 0,
@@ -3405,21 +3608,26 @@
    "state": "mid30",
    "target": "home-intro-wrap@390:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-intro-wrap.390.mid30.png",
-    "top": -256,
+    "top": -280,
     "state": "position",
-    "scrollY": 1093,
-    "targetY": 1093,
+    "scrollY": 1117,
+    "targetY": 1117,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 678,
+     "h": 654,
      "touchesBottom": false,
      "captureW": 374,
-     "captureH": 678,
+     "captureH": 654,
      "storageScale": 1
     }
    },
@@ -3460,10 +3668,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 31.2,
+   "E": 30,
    "ssim_unmasked": 0.3,
-   "E_unmasked": 30.9,
-   "structuralDiffPct": 22.6
+   "E_unmasked": 28.9,
+   "structuralDiffPct": 21.8
   },
   {
    "key": "home-intro-wrap",
@@ -3471,21 +3679,26 @@
    "state": "mid60",
    "target": "home-intro-wrap@390:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-intro-wrap.390.mid60.png",
-    "top": -511,
+    "top": -560,
     "state": "position",
-    "scrollY": 1348,
-    "targetY": 1348,
+    "scrollY": 1397,
+    "targetY": 1397,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 423,
+     "h": 374,
      "touchesBottom": false,
      "captureW": 374,
-     "captureH": 423,
+     "captureH": 374,
      "storageScale": 1
     }
    },
@@ -3526,10 +3739,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 45.9,
+   "E": 46.8,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 43.5,
-   "structuralDiffPct": 11.5
+   "E_unmasked": 42,
+   "structuralDiffPct": 10.6
   },
   {
    "key": "home-intro-wrap",
@@ -3538,7 +3751,7 @@
    "target": "home-intro-wrap@390:exit",
    "status": "coincident",
    "coincident": true,
-   "reason": "local: duplicate state — delta 8 px sits within 100 px of an already-recorded state for this 852 px section"
+   "reason": "local: duplicate state — delta 90 px sits within 100 px of an already-recorded state for this 934 px section"
   },
   {
    "key": "home-map-wrap",
@@ -3546,6 +3759,11 @@
    "state": "entry",
    "target": "home-map-wrap@390:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.390.entry.png",
     "top": 0,
@@ -3614,12 +3832,17 @@
    "state": "mid30",
    "target": "home-map-wrap@390:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.390.mid30.png",
-    "top": -1230,
+    "top": -1312,
     "state": "position",
-    "scrollY": 3886,
-    "targetY": 3886,
+    "scrollY": 3968,
+    "targetY": 3968,
     "clip": {
      "ok": true,
      "x": 0,
@@ -3669,10 +3892,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 51.2,
+   "E": 51.1,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 47.3,
-   "structuralDiffPct": 10.5
+   "E_unmasked": 47.1,
+   "structuralDiffPct": 10.4
   },
   {
    "key": "home-map-wrap",
@@ -3680,12 +3903,17 @@
    "state": "mid60",
    "target": "home-map-wrap@390:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.390.mid60.png",
-    "top": -2541,
+    "top": -2623,
     "state": "position",
-    "scrollY": 5197,
-    "targetY": 5197,
+    "scrollY": 5279,
+    "targetY": 5279,
     "clip": {
      "ok": true,
      "x": 0,
@@ -3746,12 +3974,17 @@
    "state": "exit",
    "target": "home-map-wrap@390:exit",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "exit (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.390.exit.png",
-    "top": -3446,
+    "top": -3528,
     "state": "position",
-    "scrollY": 6102,
-    "targetY": 6102,
+    "scrollY": 6184,
+    "targetY": 6184,
     "clip": {
      "ok": true,
      "x": 0,
@@ -3804,8 +4037,8 @@
    },
    "E": null,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 38.6,
-   "structuralDiffPct": 5.6
+   "E_unmasked": 38.7,
+   "structuralDiffPct": 6.5
   },
   {
    "key": "home-platform-wrap",
@@ -3813,6 +4046,11 @@
    "state": "entry",
    "target": "home-platform-wrap@390:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.entry.png",
     "top": 0,
@@ -3881,21 +4119,26 @@
    "state": "mid30",
    "target": "home-platform-wrap@390:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.mid30.png",
-    "top": 147,
+    "top": -299,
     "state": "position",
-    "scrollY": 7245,
-    "targetY": 7245,
+    "scrollY": 7691,
+    "targetY": 7691,
     "clip": {
      "ok": true,
      "x": 8,
-     "y": 147,
+     "y": 0,
      "w": 374,
-     "h": 697,
-     "touchesBottom": true,
+     "h": 662,
+     "touchesBottom": false,
      "captureW": 374,
-     "captureH": 697,
+     "captureH": 662,
      "storageScale": 1
     }
    },
@@ -3928,18 +4171,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 618,
+    "h": 662,
     "storedScale": {
      "reference": 1,
      "local": 1
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 42.1,
+   "E": 44.2,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 42.1,
-   "structuralDiffPct": 9.5
+   "E_unmasked": 37.6,
+   "structuralDiffPct": 8.3
   },
   {
    "key": "home-platform-wrap",
@@ -3947,21 +4190,26 @@
    "state": "mid60",
    "target": "home-platform-wrap@390:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.mid60.png",
-    "top": -151,
+    "top": -597,
     "state": "position",
-    "scrollY": 7543,
-    "targetY": 7543,
+    "scrollY": 7989,
+    "targetY": 7989,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 810,
+     "h": 364,
      "touchesBottom": false,
      "captureW": 374,
-     "captureH": 810,
+     "captureH": 364,
      "storageScale": 1
     }
    },
@@ -3994,7 +4242,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 388,
+    "h": 364,
     "storedScale": {
      "reference": 1,
      "local": 1
@@ -4002,9 +4250,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 44.1,
+   "E": 42.3,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 41.1,
+   "E_unmasked": 36.5,
    "structuralDiffPct": 7.8
   },
   {
@@ -4013,21 +4261,26 @@
    "state": "exit",
    "target": "home-platform-wrap@390:exit",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "exit (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.exit.png",
-    "top": 295,
+    "top": -151,
     "state": "position",
-    "scrollY": 7097,
-    "targetY": 7097,
+    "scrollY": 7543,
+    "targetY": 7543,
     "clip": {
      "ok": true,
      "x": 8,
-     "y": 295,
+     "y": 0,
      "w": 374,
-     "h": 549,
-     "touchesBottom": true,
+     "h": 810,
+     "touchesBottom": false,
      "captureW": 374,
-     "captureH": 549,
+     "captureH": 810,
      "storageScale": 1
     }
    },
@@ -4060,7 +4313,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 489,
+    "h": 750,
     "storedScale": {
      "reference": 1,
      "local": 1
@@ -4068,10 +4321,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 41,
+   "E": 42,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 41.4,
-   "structuralDiffPct": 11
+   "E_unmasked": 39.7,
+   "structuralDiffPct": 9.4
   },
   {
    "key": "home-problem-wrap",
@@ -4079,6 +4332,11 @@
    "state": "entry",
    "target": "home-problem-wrap@390:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.390.entry.png",
     "top": 0,
@@ -4147,21 +4405,26 @@
    "state": "mid30",
    "target": "home-problem-wrap@390:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.390.mid30.png",
-    "top": -184,
+    "top": -266,
     "state": "position",
-    "scrollY": 1955,
-    "targetY": 1955,
+    "scrollY": 2037,
+    "targetY": 2037,
     "clip": {
      "ok": true,
      "x": 7,
      "y": 0,
      "w": 376,
-     "h": 701,
+     "h": 619,
      "touchesBottom": false,
      "captureW": 376,
-     "captureH": 701,
+     "captureH": 619,
      "storageScale": 1
     }
    },
@@ -4202,10 +4465,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 63.8,
+   "E": 75.3,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 56.9,
-   "structuralDiffPct": 5.6
+   "E_unmasked": 62.3,
+   "structuralDiffPct": 3.7
   },
   {
    "key": "home-problem-wrap",
@@ -4213,21 +4476,26 @@
    "state": "mid60",
    "target": "home-problem-wrap@390:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.390.mid60.png",
-    "top": -449,
+    "top": -531,
     "state": "position",
-    "scrollY": 2220,
-    "targetY": 2220,
+    "scrollY": 2302,
+    "targetY": 2302,
     "clip": {
      "ok": true,
      "x": 7,
      "y": 0,
      "w": 376,
-     "h": 436,
+     "h": 354,
      "touchesBottom": false,
      "captureW": 376,
-     "captureH": 436,
+     "captureH": 354,
      "storageScale": 1
     }
    },
@@ -4260,7 +4528,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 353,
+    "h": 352,
     "storedScale": {
      "reference": 1,
      "local": 1
@@ -4268,10 +4536,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 60.2,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 53.2,
-   "structuralDiffPct": 6
+   "E": 67.1,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 56.8,
+   "structuralDiffPct": 4.6
   },
   {
    "key": "home-problem-wrap",
@@ -4288,6 +4556,11 @@
    "state": "entry",
    "target": "home-usecase-wrap@390:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.entry.png",
     "top": 0,
@@ -4356,21 +4629,26 @@
    "state": "mid30",
    "target": "home-usecase-wrap@390:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.mid30.png",
-    "top": 414,
+    "top": -309,
     "state": "position",
-    "scrollY": 11124,
-    "targetY": 11124,
+    "scrollY": 11847,
+    "targetY": 11847,
     "clip": {
      "ok": true,
      "x": 7,
-     "y": 414,
+     "y": 0,
      "w": 376,
-     "h": 430,
-     "touchesBottom": true,
+     "h": 720,
+     "touchesBottom": false,
      "captureW": 376,
-     "captureH": 430,
+     "captureH": 720,
      "storageScale": 1
     }
    },
@@ -4403,18 +4681,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 368,
+    "h": 702,
     "storedScale": {
      "reference": 1,
      "local": 1
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 42.4,
-   "ssim_unmasked": 0.4,
-   "E_unmasked": 39.1,
-   "structuralDiffPct": 18.6
+   "E": 58.1,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 54.9,
+   "structuralDiffPct": 15.2
   },
   {
    "key": "home-usecase-wrap",
@@ -4422,21 +4700,26 @@
    "state": "mid60",
    "target": "home-usecase-wrap@390:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.mid60.png",
-    "top": 106,
+    "top": -617,
     "state": "position",
-    "scrollY": 11432,
-    "targetY": 11432,
+    "scrollY": 12155,
+    "targetY": 12155,
     "clip": {
      "ok": true,
      "x": 7,
-     "y": 106,
+     "y": 0,
      "w": 376,
-     "h": 738,
-     "touchesBottom": true,
+     "h": 412,
+     "touchesBottom": false,
      "captureW": 376,
-     "captureH": 738,
+     "captureH": 412,
      "storageScale": 1
     }
    },
@@ -4469,18 +4752,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 343,
+    "h": 403,
     "storedScale": {
      "reference": 1,
      "local": 1
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 57.7,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 53.6,
-   "structuralDiffPct": 6.9
+   "E": 72.3,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 63.1,
+   "structuralDiffPct": 3.7
   },
   {
    "key": "home-usecase-wrap",
@@ -4488,21 +4771,26 @@
    "state": "exit",
    "target": "home-usecase-wrap@390:exit",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "exit (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.exit.png",
-    "top": 538,
+    "top": -185,
     "state": "position",
-    "scrollY": 11000,
-    "targetY": 11000,
+    "scrollY": 11723,
+    "targetY": 11723,
     "clip": {
      "ok": true,
      "x": 7,
-     "y": 538,
+     "y": 0,
      "w": 376,
-     "h": 306,
+     "h": 844,
      "touchesBottom": true,
      "captureW": 376,
-     "captureH": 306,
+     "captureH": 844,
      "storageScale": 1
     }
    },
@@ -4535,7 +4823,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 244,
+    "h": 780,
     "storedScale": {
      "reference": 1,
      "local": 1
@@ -4543,10 +4831,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 37.7,
-   "ssim_unmasked": 0.3,
-   "E_unmasked": 34,
-   "structuralDiffPct": 20.8
+   "E": 43.5,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 47.4,
+   "structuralDiffPct": 22.8
   },
   {
    "key": "home-why-wrap",
@@ -4554,6 +4842,11 @@
    "state": "entry",
    "target": "home-why-wrap@390:entry",
    "declared": "entry",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "entry"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-why-wrap.390.entry.png",
     "top": 0,
@@ -4622,21 +4915,26 @@
    "state": "mid30",
    "target": "home-why-wrap@390:mid30",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid30 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-why-wrap.390.mid30.png",
-    "top": 170,
+    "top": -242,
     "state": "position",
-    "scrollY": 10250,
-    "targetY": 10250,
+    "scrollY": 10662,
+    "targetY": 10662,
     "clip": {
      "ok": true,
      "x": 8,
-     "y": 170,
+     "y": 0,
      "w": 374,
-     "h": 674,
+     "h": 844,
      "touchesBottom": true,
      "captureW": 374,
-     "captureH": 674,
+     "captureH": 844,
      "storageScale": 1
     }
    },
@@ -4677,10 +4975,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 51.8,
+   "E": 55.1,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 51.8,
-   "structuralDiffPct": 19.6
+   "E_unmasked": 54.2,
+   "structuralDiffPct": 18.4
   },
   {
    "key": "home-why-wrap",
@@ -4688,21 +4986,26 @@
    "state": "mid60",
    "target": "home-why-wrap@390:mid60",
    "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "mid60 (position-matched)"
+   },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-why-wrap.390.mid60.png",
-    "top": -72,
+    "top": -484,
     "state": "position",
-    "scrollY": 10492,
-    "targetY": 10492,
+    "scrollY": 10904,
+    "targetY": 10904,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 844,
-     "touchesBottom": true,
+     "h": 634,
+     "touchesBottom": false,
      "captureW": 374,
-     "captureH": 844,
+     "captureH": 634,
      "storageScale": 1
     }
    },
@@ -4735,18 +5038,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 262,
+    "h": 322,
     "storedScale": {
      "reference": 1,
      "local": 1
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 37,
-   "ssim_unmasked": 0.4,
-   "E_unmasked": 38.8,
-   "structuralDiffPct": 27.4
+   "E": 59.7,
+   "ssim_unmasked": 0.5,
+   "E_unmasked": 54.6,
+   "structuralDiffPct": 15.9
   },
   {
    "key": "home-why-wrap",

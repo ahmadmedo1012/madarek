@@ -145,6 +145,47 @@ export function validatePositionPair(localRow, referenceRow) {
 }
 
 /**
+ * Position-state target derivation (r368 T0 re-baseline law). The measured
+ * defect: the LOCAL side derived mid30/mid60/exit targets from the load-time
+ * snapshot (`contentTop`), but the document grows after the snapshot (late
+ * layout: +723 px at 390 measured — 8 of 10 sections shifted), so
+ * snapshot-based targets seated PRE-ENTRY states (the footer's mid30 sat with
+ * its root top +351 px BELOW the viewport top while the reference side — which
+ * already derives its targets from its LIVE landed entry offset — seated the
+ * true mid state). The law: a position target is ALWAYS the live entry seat +
+ * the state's delta; the snapshot may only serve as the landing hint, never as
+ * the target base. The live scroller maximum governs inaccessibility (a stale
+ * smaller end must neither mask a real gap nor fabricate one).
+ */
+export function positionTarget(liveEntryScroll, st, height, vh, liveMaxScroll) {
+  const delta = st.delta(height, vh);
+  const targetY = Math.round(liveEntryScroll + delta);
+  const maxScroll = typeof liveMaxScroll === "number" ? liveMaxScroll : null;
+  return {
+    id: st.id,
+    delta,
+    targetY,
+    maxScroll,
+    inaccessible: maxScroll != null && targetY > maxScroll + LANDING_TOL_PX,
+    basis: `live entry seat ${liveEntryScroll} px + ${Math.round(delta)} px of ${height} px (never the load-time snapshot)`,
+  };
+}
+
+/**
+ * Both-sides inaccessibility disclosure: when a state is unreachable on both
+ * sides (our document end AND the reference's stage end), the row carries BOTH
+ * reasons together — the impossibility proof lives in the row itself, reviewable
+ * without opening the capture. One-sided failures keep their single reason.
+ */
+export function bothSidesReason(localRow, referenceRow) {
+  const parts = [
+    (!localRow || localRow.ok !== true) ? `local: ${localRow?.reason ?? "not captured"}` : null,
+    (!referenceRow || referenceRow.ok !== true) ? `reference: ${referenceRow?.reason ?? "not captured"}` : null,
+  ].filter(Boolean);
+  return parts.length ? parts.join("; ") : null;
+}
+
+/**
  * T over the pair verdicts: valid pairs only, invalid pairs listed, never
  * silently absorbed. A wholly unavailable reference reports T=null with the
  * blocker reason instead of 0.

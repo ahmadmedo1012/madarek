@@ -136,3 +136,126 @@ The two global IO buckets (`OBSERVER_ROOT_MARGIN_LINES` −15 %,
 express this heterogeneity — the next increment restructures them per family
 and re-measures our onsets against this table. No such product change is
 claimed done by this record.
+## Task 0 — closure: the re-baseline (the T gap and two measured instrument defects, fixed and re-measured)
+
+The task's own record above ended at T=94.8 % (55/58) with three invalid rows. The
+closure run re-examined each row against the instrument's own law module and
+found two real measurement defects; both are fixed in the lead-owned instrument
+(no threshold, denominator, or gate was touched), and the baseline is re-measured.
+
+### Defect #1 — position targets derived from a STALE snapshot (the local side only)
+
+`captureLocalSide` computed mid30/mid60/exit targets from the load-time geometry
+snapshot (`g.top + delta`) while the reference side correctly used its LIVE landed
+entry offset (`land.offset + delta`). The document grows after the snapshot — the
+re-measured divergence is +723 px at 390 for the last three sections (usecase/cta/
+footer: snapshot 12753 vs live entry 13476), +641 px in the closure run (snapshot
+12835 vs live 13476), and +82…+670 px for five more sections. Consequence: every
+position state of a shifted section was seated at a PRE-ENTRY scroll (the footer's
+mid30 sat with its root top +351 px BELOW the viewport top) while the reference
+side seated the true mid state — the stored E for those pairs compared mismatched
+states.
+
+The fix is a new law in `pairs.mjs` (`positionTarget` + fixtures): a position
+target is ALWAYS the live entry seat + the state's delta, and the LIVE scroller
+maximum (read at the entry seat, post-growth) governs inaccessibility. The
+snapshot's `g.top` survives only as the landing hint. `fidelity.mjs` now seats
+entry first and derives the position states from that seat; each state row records
+its `basis` provenance.
+
+### Defect #2 — T was not computed by the law module
+
+`fidelity.mjs` computed T as `scored / required` (status === "scored"), never
+calling the `pairs.mjs` `aggregateT` it was built to obey. That conflated
+E-SCOREABILITY with pair validity: the two mask-refused pairs
+(`home-hero-wrap@390:mid60`, `home-map-wrap@390:exit`) have VALID position-match
+verdicts (both sides landed their declared positions within ±2 px — the fixtures'
+own law: "a mid state matched on its declared position is a valid pair"), with
+complete crops/coordinates/provenance; what is refused is their E, by the
+preregistered 55 % mask-share cap (the reference frames at those states are 74.9 %
+and 63.7 % text — recomputed independently from `capture.json`'s `liveMaskRects`,
+matching the instrument's numbers). T is evidence COVERAGE; the cap governs E.
+
+The fix: `fidelity.mjs` now computes T through `aggregateT` over the verdicts
+(the law the 38/38 fixtures test — 4 new fixtures added: live-base targets,
+live-end inaccessibility, mask-refused pairs count as covered,
+`bothSidesReason`). The two E-refused rows are listed separately as `E_unscored`
+(covered for T, unscored for E); E's aggregation is unchanged.
+
+### The third defect class (recorded, from the Task 1 measurement notes) — fixed in the same repair
+
+The settle sampler judged the intro crawl marquee (a running infinite CSS
+keyframe loop) as unsettled scroll — the measured fact was settle frame 9/9 for
+intro while scroll-linked reveals complete in ≤2 frames. The sampler's signature
+now excludes elements with a running infinite animation (the exclusion count is
+recorded per sample; finite entrance animations still count — their settling is
+settle-relevant). This is the instrument refinement the Task 1 notes scheduled
+for "the next capture", landed with this one.
+
+### The re-measured baseline (closure run; the same law, the same gates)
+
+| Dial | Before (this record, above) | After (closure run) | Gate |
+|---|---:|---:|---|
+| E overall | 51.8 | **53.0** | ≥90 — the honest Task 2–3 work-list |
+| T overall | 94.8 % (55/58) | **98.3 % (57/58)** | ≥95 — **PASS** |
+| Q (settle, verified-only) | 95 | **95** | ≥90 — PASS |
+| Repeatability | 20/20, worst 0.2 | **20/20, worst |ΔE| 0.2** (home-why-wrap@390) | ≤1 point |
+| Manifest validation | exit 0 | **exit 0** (zero rejections) | — |
+
+Per-section E (ascending — the Task 3 order): intro 31.3 · footer 43.2 · hero
+45.3 · platform 49.1 · map 51.5 · usecase 52.6 · chrome 61.0 · why 63.7 ·
+cta 65.1 · problem 67.1. (All below the ≥88 floor — this IS the work-list; no
+floor is claimed met.) Position-state crops re-seat at the TRUE named states —
+per-section E deltas from the stale-seat run: why +4.3, usecase +8.1, problem
++2.6, cta −5.3, footer −0.4, map −0.5, hero −0.3, intro −0.1, chrome +0.2,
+platform +0.4.
+
+### The three former invalid rows — closed with evidence
+
+1. `footer@390:mid60` — **impossible on BOTH sides, proven in the row**: local
+   `state mid60 needs scroll 14219 > live document end 13992` (live base 13476 +
+   743 px; the closure run's live max) and reference `needs stage offset 11404 >
+   stage end 11075` (the reference's own stage). The scorecard's `invalidRows`
+   entry carries both reasons (the `bothSidesReason` law). This is the spec's
+   documented-limitation path ("if the public reference no longer exposes a
+   reproducible state, document the exact limitation") — the reference cannot
+   produce this state at all. Footer's per-target T is 75 % (3/4) and is
+   reported below the 90 % target floor with this reason; the denominator keeps
+   the row (nothing was excluded).
+2. `home-hero-wrap@390:mid60` — **covered evidence, E refused by the mask cap**:
+   the reference frame is 74.9 % text (8 live rects, the largest 362×103). The
+   pair is position-matched (local 505/505, reference 504/505, ±2 px law);
+   listed in `E_unscored`.
+3. `home-map-wrap@390:exit` — same: 63.7 % text (26 live rects), position-matched;
+   listed in `E_unscored`.
+
+### Stress (unchanged product defects — recorded as Task 3 fix tasks, NOT a pass)
+
+4/7 sizes clean, 0 horizontal overflow at all seven. The three confirmed defects
+stay open as the hero/CTA seats' Task 3 fix items:
+- CTA primary button 2 px clip at 640×360 (`a.btn.accent` "أنشئ حسابك الجامعي" 251>249);
+- hero `hi-marker` (44×44) unreachable at 640×360 and 844×390 (covered by `hro-sub-cell`/`hro-work-item`);
+- hero text-on-text collisions at 1440 (`01`/`محور`, `02`/`قياس`, `hro-line` × `hro-work-item`/`fo-mono`).
+
+4/7 is a recorded state, not an achievement; the floor is 7/7 in the declared matrix.
+
+### Commands and outputs (the closure runs)
+
+```bash
+node --test scripts/conformance/pairs.test.mjs scripts/conformance/gates.test.mjs   # 38/38 pass (34 + 4 new fixtures)
+PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers node scripts/conformance/fidelity.mjs \
+  --local http://localhost:5300 --bps 1440,390 --out docs/audit/evidence --validate   # E 53.0 · T 98.3 % · Q 95 · exit 0 (rejections: none)
+PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers node scripts/conformance/fidelity.mjs \
+  --local http://localhost:5300 --bps 1440,390 --repeat-entry --out docs/audit/evidence  # REPEATABILITY: 20/20 within ≤1 point — worst |ΔE| 0.2
+PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers node scripts/conformance/stress.mjs \
+  --url http://localhost:5300/ --out docs/audit/evidence/stress.json                 # 4/7 clean, 0 overflow (defects recorded above)
+PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers node scripts/conformance/fidelity.mjs --score-only \
+  --out docs/audit/evidence --validate                                              # exit 0 — reproduces the committed scorecard from the stored crops
+```
+
+Environment: Node v24.22.3, Playwright 1.60.0 with the `/tmp/pw-browsers`
+chromium-1223→1200 symlink fallback, local vite on strict :5300, live reference
+`https://heronaiapp.com/`. The `repeat/` crops stay untracked (only
+`repeatability.json` is committed — the established pattern); the modified
+primary crops re-commit in place (push delta ≈ 4 MB, within the +5 MB docs/
+per-push budget).

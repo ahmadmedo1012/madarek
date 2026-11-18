@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-18T16:33:54.070Z",
+ "generatedAt": "2026-11-18T17:48:05.939Z",
  "state": "named states (entry/mid30/mid60/exit/end) per pairs.mjs — a pair is matched only when both sides reached the same declared state within ±2 px; crops are section∩viewport clips",
  "profile": {
   "browser": "chromium 143.0.7499.4",
@@ -381,12 +381,14 @@
   "home-cta-wrap@390:mid60",
   "home-hero-wrap@390:entry",
   "home-hero-wrap@390:mid30",
+  "home-hero-wrap@390:mid60",
   "home-intro-wrap@390:entry",
   "home-intro-wrap@390:mid30",
   "home-intro-wrap@390:mid60",
   "home-map-wrap@390:entry",
   "home-map-wrap@390:mid30",
   "home-map-wrap@390:mid60",
+  "home-map-wrap@390:exit",
   "home-platform-wrap@390:entry",
   "home-platform-wrap@390:mid30",
   "home-platform-wrap@390:mid60",
@@ -406,8 +408,10 @@
   {
    "target": "footer@390:mid60",
    "status": "missing",
-   "reason": "local: state mid60 needs scroll 13496 > document end 13272 — inaccessible locally (recorded, not scored)"
-  },
+   "reason": "local: state mid60 needs scroll 14219 > live document end 13992 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)"
+  }
+ ],
+ "E_unscored": [
   {
    "target": "home-hero-wrap@390:mid60",
    "status": "invalid-mask-share",
@@ -420,8 +424,8 @@
   }
  ],
  "dials": {
-  "E": 51.8,
-  "T": 94.8,
+  "E": 53,
+  "T": 98.3,
   "Q": 95
  },
  "validate": {

@@ -57,6 +57,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   LANDING_TOL_PX, validatePair, validatePositionPair, manifestRejections,
+  positionTarget, aggregateT, bothSidesReason,
 } from "./pairs.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -843,6 +844,15 @@ async function captureLocalSide(browser, dir, bp, refRows) {
       const pairIsEnd = refEntry?.ok === true && refEntry?.declared === "end";
       const refEntryFailed = refRows?.[key] && !refEntry?.ok;
       const stateRows = {};
+      // The LIVE entry seat — position-state targets derive from it, never
+      // from the load-time snapshot (pairs.mjs positionTarget law): the
+      // document grows after the snapshot (measured +723 px at 390; 8 of 10
+      // sections shifted), and snapshot-based targets seated PRE-ENTRY states
+      // (footer mid30 sat +351 px below the viewport top while the reference
+      // side seated the true mid state). The live scroller maximum (read at
+      // the entry seat, post-growth) governs inaccessibility.
+      let liveEntryScroll = null;
+      let liveMaxScroll = maxScroll;
       for (const st of ACTIVE_STATES) {
         if (FIXED_SECTIONS.includes(key)) {
           if (st.id !== "entry") { stateRows[st.id] = { ok: false, coincident: true, reason: "fixed chrome — every state coincides with rest" }; continue; }
@@ -872,50 +882,57 @@ async function captureLocalSide(browser, dir, bp, refRows) {
           };
           continue;
         }
-        const delta = st.delta(g.height, geometry.vh);
-        const targetY = Math.round(g.top + delta);
-        if (st.id !== "entry" && refEntryFailed) {
-          stateRows[st.id] = { ok: false, reason: "the reference did not achieve its entry state — mid/exit pairs are not defined for this seat (recorded)" };
-          continue;
-        }
-        if (targetY > maxScroll + LANDING_TOL_PX) {
-          stateRows[st.id] = { ok: false, reason: `state ${st.id} needs scroll ${targetY} > document end ${maxScroll} — inaccessible locally (recorded, not scored)` };
-          continue;
-        }
-        const idx = STATES.findIndex((x) => x.id === st.id);
-        const dup = STATES.slice(0, idx).some((x) => {
-          const prev = stateRows[x.id];
-          return prev?.ok && Math.abs(x.delta(g.height, geometry.vh) - delta) < 100;
-        });
-        if (dup) {
-          stateRows[st.id] = { ok: false, coincident: true, reason: `duplicate state — delta ${Math.round(delta)} px sits within 100 px of an already-recorded state for this ${g.height} px section` };
-          continue;
-        }
         if (st.id === "entry") {
-          const land = await localLandEntry(page, sel, targetY);
+          // entry FIRST: the corrective landing is the authority for the live
+          // seat (the snapshot's g.top is only the initial hint)
+          const land = await localLandEntry(page, sel, g.top);
+          if (typeof land.maxScroll === "number") liveMaxScroll = land.maxScroll;
+          if (land.ok) liveEntryScroll = land.scrollY;
           if (!land.ok) { stateRows[st.id] = { ...land, declared: "entry" }; continue; }
           const file = join(dir, `${key}.${bp.name}.entry.png`);
           const crop = await sectionCrop(page, sel, file);
           stateRows[st.id] = {
             ok: crop.ok, reason: crop.ok ? undefined : crop.reason, state: land.state, declared: "entry",
-            top: land.top, declaredTop: 0, scrollY: land.scrollY, maxScroll,
+            top: land.top, declaredTop: 0, scrollY: land.scrollY, maxScroll: liveMaxScroll,
             file: crop.ok ? file : undefined, clip: crop.clip,
           };
           continue;
         }
+        if (refEntryFailed) {
+          stateRows[st.id] = { ok: false, reason: "the reference did not achieve its entry state — mid/exit pairs are not defined for this seat (recorded)" };
+          continue;
+        }
+        if (liveEntryScroll == null) {
+          stateRows[st.id] = { ok: false, reason: "local entry unlanded — position states have no live base (recorded, not scored)" };
+          continue;
+        }
+        const pt = positionTarget(liveEntryScroll, st, g.height, geometry.vh, liveMaxScroll);
+        if (pt.inaccessible) {
+          stateRows[st.id] = { ok: false, targetY: pt.targetY, reason: `state ${st.id} needs scroll ${pt.targetY} > live document end ${liveMaxScroll} — inaccessible locally (recorded, not scored)`, basis: pt.basis };
+          continue;
+        }
+        const idx = STATES.findIndex((x) => x.id === st.id);
+        const dup = STATES.slice(0, idx).some((x) => {
+          const prev = stateRows[x.id];
+          return prev?.ok && Math.abs(x.delta(g.height, geometry.vh) - pt.delta) < 100;
+        });
+        if (dup) {
+          stateRows[st.id] = { ok: false, coincident: true, reason: `duplicate state — delta ${Math.round(pt.delta)} px sits within 100 px of an already-recorded state for this ${g.height} px section` };
+          continue;
+        }
         // position state: seat the scroll exactly, record target + achieved
-        const pos = await localScrollTo(page, targetY);
+        const pos = await localScrollTo(page, pt.targetY);
         const rect = await localRect(page, sel);
         if (!rect) { stateRows[st.id] = { ok: false, reason: "selector-not-found" }; continue; }
         const file = join(dir, `${key}.${bp.name}.${st.id}.png`);
         const crop = await sectionCrop(page, sel, file);
         stateRows[st.id] = {
           ok: crop.ok, reason: crop.ok ? undefined : crop.reason, state: "position", declared: "position", stateId: st.id,
-          top: rect.top, scrollY: pos.scrollY, targetY, maxScroll,
+          top: rect.top, scrollY: pos.scrollY, targetY: pt.targetY, maxScroll: liveMaxScroll, basis: pt.basis,
           file: crop.ok ? file : undefined, clip: crop.clip,
         };
       }
-      rows[key] = { contentTop: g.top, height: g.height, docH: geometry.docH, maxScroll, states: stateRows };
+      rows[key] = { contentTop: g.top, height: g.height, docH: geometry.docH, maxScroll: liveMaxScroll, liveEntry: liveEntryScroll, states: stateRows };
     }
   } finally {
     await page.close();
@@ -942,9 +959,18 @@ async function sampleMotion(browser, bp, pairing) {
       const sig = () => page.evaluate(({ s }) => {
         const root = document.querySelector(s);
         if (!root) return null;
-        let animated = 0, shift = 0;
+        let animated = 0, shift = 0, ambient = 0;
         for (const el of root.querySelectorAll("*")) {
           const cs = getComputedStyle(el);
+          // ambient infinite CSS keyframe loops (the intro crawl marquee) run
+          // forever BY DESIGN — they are not scroll-settle state. The measured
+          // defect: the crawl kept the signature changing at frame 9/9 while
+          // the same run's scroll-linked reveals completed in ≤2 frames, so the
+          // settle tolerance judged the marquee, never the scroll. Running
+          // infinite animations are excluded from the signature and the
+          // exclusion count is recorded in it (finite entrance animations
+          // still count — their settling IS settle-relevant).
+          if (cs.animationName !== "none" && /infinite/.test(String(cs.animationIterationCount)) && cs.animationPlayState === "running") { ambient++; continue; }
           const op = Number(cs.opacity);
           const tr = cs.transform;
           if ((op > 0 && op < 0.999) || (tr && tr !== "none" && !/^matrix\(1, 0, 0, 1, 0, 0\)$/.test(tr))) {
@@ -953,7 +979,7 @@ async function sampleMotion(browser, bp, pairing) {
             if (m) shift += Math.abs(Number(m[1]));
           }
         }
-        return `${animated}:${Math.round(shift)}`;
+        return `${animated}:${Math.round(shift)}:${ambient}`;
       }, { s: sel });
       // settle frames after a jump into the section (verified family)
       const settleY = geom.top + Math.round(geom.height * 0.35);
@@ -965,7 +991,7 @@ async function sampleMotion(browser, bp, pairing) {
         if (last != null && v !== last) frames = f;
         last = v;
       }
-      samples.push({ section: key, bp: bp.name, family: "settle", settleFrames: frames, pass: frames <= 2, note: `last change at frame ${frames}; tolerance ≤2` });
+      samples.push({ section: key, bp: bp.name, family: "settle", settleFrames: frames, ambientExcluded: last ? Number(last.split(":")[2] ?? 0) : null, pass: frames <= 2, note: `last change at frame ${frames}; tolerance ≤2; running infinite-keyframe elements (ambient loops, e.g. the intro crawl) excluded from the signature` });
       // our onset fraction (baseline for Task 1; ±(span/steps) resolution recorded)
       const steps = 18;
       const start = geom.top - geom.vh; // a full viewport before entry — reveals that fire on enter are inside the window
@@ -1254,19 +1280,25 @@ for (const row of rows) {
       });
       continue;
     }
-    if (!L || !R) { pairRows.push({ key, bp, state: st.id, target, status: "missing", reason: "a side has no row for this state" }); continue; }
-    if (!L.ok || !R.ok) {
-      pairRows.push({ key, bp, state: st.id, target, status: "missing", reason: !L.ok ? `local: ${L.reason ?? "not captured"}` : `reference: ${R.reason ?? "not captured"}` });
+    if (!L || !R || !L.ok || !R.ok) {
+      // BOTH sides' inaccessibility reasons travel together (pairs.mjs
+      // bothSidesReason law): a state unreachable on both sides — e.g.
+      // footer@390:mid60, our live document end AND the reference's stage end
+      // both fall short — carries its full impossibility proof in the row
+      const reason = bothSidesReason(L, R) ?? "a side has no row for this state";
+      const verdict = { valid: false, status: (!L || !L.ok) ? "invalid-local" : "invalid-reference", reason };
+      pairRows.push({ key, bp, state: st.id, target, status: "missing", reason, verdict });
       continue;
     }
     if (!L.file || !R.file || !existsSync(L.file) || !existsSync(R.file)) {
-      pairRows.push({ key, bp, state: st.id, target, status: "missing", reason: "file absent" });
+      const verdict = { valid: false, status: "missing", reason: "file absent" };
+      pairRows.push({ key, bp, state: st.id, target, status: "missing", reason: "file absent", verdict });
       continue;
     }
     const declared = R.declared ?? L.declared ?? st.id;
     const verdict = verdictFor(L, R, declared);
     const rec = {
-      key, bp, state: st.id, target, declared,
+      key, bp, state: st.id, target, declared, verdict,
       local: { path: rel(L.file), top: L.top, state: L.state === "end" ? "end-clamped" : L.state, declaredTop: L.declaredTop, scrollY: L.scrollY, targetY: L.targetY, clip: L.clip },
       reference: { path: rel(R.file), top: R.top, state: R.state === "end" ? "end-clamped" : R.state, declaredTop: R.declaredTop, offset: R.offset, targetOffset: R.targetOffset, clip: R.clip },
       localSelector: MAPPING.ourSection[key], referenceSelector: MAPPING.heronPageKey[key],
@@ -1328,28 +1360,40 @@ for (const row of rows) {
 // ── aggregates ───────────────────────────────────────────────────────────────
 // Required = the declared protocol pairs: everything except the
 // protocol-coincident rows (no distinct state to verify) — their reasons are
-// still carried in the manifest. Inaccessible-beyond-end, state mismatches,
-// unlanded sides and missing files STAY in the denominator: they are real
+// still carried in the manifest. T itself obeys the pairs.mjs aggregateT law
+// (see below); genuinely invalid pairs stay in the denominator: they are real
 // coverage gaps, never silently absorbed.
 const required = pairRows.filter((p) => !p.coincident).length;
 const scored = pairRows.filter((p) => p.status === "scored");
+// T obeys the pairs.mjs law (aggregateT): a pair counts when its VERDICT is a
+// valid matched pair (both sides at the declared state, ±2 px) — the law the
+// fixtures test. E-refused pairs (mask share over the preregistered cap) are
+// covered evidence with an unscored E, never pair failures; genuinely invalid
+// pairs (a side missing/unlanded/mismatched, states beyond the ends) stay
+// uncovered in the denominator.
+const lawRows = pairRows.filter((p) => !p.coincident && p.verdict);
+const law = aggregateT(lawRows);
+const covered = law.valid;
+const eUnscored = pairRows.filter((p) => p.status === "invalid-mask-share");
 const coincidentCount = pairRows.length - required;
 const perSection = {};
 for (const key of KEYS) {
-  const set = pairRows.filter((p) => p.key === key && !p.coincident);
-  const ok = set.filter((p) => p.status === "scored");
+  const set = lawRows.filter((p) => p.key === key);
+  const okScored = set.filter((p) => p.status === "scored");
+  const valid = set.filter((p) => p.verdict.valid);
   const coincident = pairRows.filter((p) => p.key === key && p.coincident).length;
   perSection[key] = {
-    E: ok.length ? round(ok.reduce((a, s) => a + s.E, 0) / ok.length) : null,
-    T: set.length ? round((100 * ok.length) / set.length) : null,
+    E: okScored.length ? round(okScored.reduce((a, s) => a + s.E, 0) / okScored.length) : null,
+    T: set.length ? round((100 * valid.length) / set.length) : null,
     pairs: set.length,
-    covered: ok.length,
+    covered: valid.length,
+    eScored: okScored.length,
     coincident,
     states: Object.fromEntries(set.map((p) => [`${p.bp}:${p.state}`, { E: p.E ?? null, status: p.status }])),
   };
 }
 const E_overall = scored.length ? round(scored.reduce((a, s) => a + s.E, 0) / scored.length) : null;
-const T_overall = required ? round((100 * scored.length) / required) : null;
+const T_overall = law.T;
 const Q = motion ? {
   overall: motion.overall,
   families: Object.fromEntries(Object.entries(motion.byBp ?? {}).map(([b, m]) => [b, m.families])),
@@ -1361,16 +1405,17 @@ const scorecard = {
   generatedAt: new Date().toISOString(),
   formula: {
     E: "100 × mean SSIM over 8×8 windows outside preregistered text masks, per section∩viewport crop",
-    T: "100 × verified matched state pairs / required state pairs (pairs.mjs law: same named state on both sides, ±2 px)",
+    T: "100 × verified matched state pairs / required non-coincident state pairs (pairs.mjs aggregateT law: verdict-valid pairs — both sides at the same declared state within ±2 px; E-refused mask pairs are covered-but-E-unscored, listed in E_unscored)",
     Q: "100 × passing verified samples / verified samples (settle only; trigger baseline recorded, unscored)",
   },
   viewports: VIEWPORTS.map((v) => `${v.name}=${v.width}x${v.height}`),
   states: STATES.map((s) => s.id),
-  required, coincident: coincidentCount, covered: scored.length,
+  required, coincident: coincidentCount, covered,
   E: E_overall,
   T: T_overall,
-  T_note: "T = scored / required, required excludes protocol-coincident states (duplicates, fixed chrome, END collapse — reasons carried in invalidRows); every other gap stays in the denominator",
-  invalidRows: pairRows.filter((p) => p.status !== "scored" && p.status !== "coincident").map((p) => ({ target: p.target, status: p.status, reason: p.reason })),
+  T_note: "T = verdict-valid matched pairs / required non-coincident pairs (the pairs.mjs aggregateT law — the instrument now obeys its own law module; the old T = scored/required conflated E-scoreability with pair coverage). E-refused pairs (mask share over the preregistered 55 % cap — recorded, not scored) count as covered evidence with an unscored E and are listed in E_unscored; genuinely invalid pairs (a side missing/unlanded/mismatched; states beyond both ends) stay uncovered in the denominator with both sides' reasons",
+  invalidRows: pairRows.filter((p) => p.verdict && !p.verdict.valid && !p.coincident).map((p) => ({ target: p.target, status: p.status, reason: p.reason })),
+  E_unscored: eUnscored.map((p) => ({ target: p.target, status: p.status, reason: p.reason })),
   coincidentRows: pairRows.filter((p) => p.status === "coincident").map((p) => ({ target: p.target, reason: p.reason })),
   Q,
   perSection,
@@ -1397,8 +1442,9 @@ const manifest = {
     storagePolicy: `crops wider than ${MAX_STORE_W}px are stored halved (colour box-average, deterministic; scale recorded per row) to respect the docs/ size gates (tracked file ≤500KB, push ≤5MB); every score runs on the STORED files so --score-only reproduces E from the committed evidence alone`,
   },
   requiredPairs: pairRows.map((p) => p.target),
-  coveredPairs: scored.map((p) => p.target),
+  coveredPairs: lawRows.filter((p) => p.verdict.valid).map((p) => p.target),
   invalidPairs: scorecard.invalidRows,
+  E_unscored: scorecard.E_unscored,
   dials: { E: E_overall, T: T_overall, Q: Q.overall },
   validate: {
     everyPairValidOrExplicit: pairRows.every((p) => p.status === "scored" || (typeof p.reason === "string" && p.reason.length > 0)),
@@ -1410,9 +1456,11 @@ const manifest = {
 writeFileSync(join(OUT, "manifest.json"), JSON.stringify(manifest, null, 1));
 
 if (flag("validate")) {
-  console.log(`\nMANIFEST VALIDATION — ${scored.length}/${required} state pairs scored, E gate ${E_overall != null && E_overall >= 90 ? "PASS" : "FAIL"} (E ${E_overall ?? "—"}), T gate ${T_overall != null && T_overall >= 95 ? "PASS" : "FAIL"} (T ${T_overall ?? "—"} %)`);
+  console.log(`\nMANIFEST VALIDATION — T ${covered}/${required} pairs covered by the aggregateT law (verdict-valid), E ${scored.length} scored; E gate ${E_overall != null && E_overall >= 90 ? "PASS" : "FAIL"} (E ${E_overall ?? "—"}), T gate ${T_overall != null && T_overall >= 95 ? "PASS" : "FAIL"} (T ${T_overall ?? "—"} %)`);
   const below = Object.entries(perSection).filter(([, v]) => v.E == null || v.E < 88).map(([k, v]) => `${k} (${v.E ?? "missing"})`);
   if (below.length) console.log(`  below the ≥88 section floor: ${below.join(", ")}`);
+  const tBelow = Object.entries(perSection).filter(([, v]) => v.T != null && v.T < 90).map(([k, v]) => `${k} (${v.T}% — reasons on its invalid rows)`);
+  if (tBelow.length) console.log(`  below the ≥90 section T floor: ${tBelow.join(", ")}`);
   if (rejections.length) console.error(`  REJECTIONS:\n    ${rejections.join("\n    ")}`);
   process.exitCode = rejections.length || !manifest.validate.everyPairValidOrExplicit ? 1 : 0;
 }
@@ -1422,5 +1470,6 @@ console.log(`E overall ${E_overall ?? "—"}  (gate ≥90)   T overall ${T_overa
 for (const [k, v] of Object.entries(perSection)) {
   console.log(`  ${k.padEnd(22)} E ${String(v.E ?? "—").padStart(6)} (gate ≥88)  T ${String(v.T ?? "—").padStart(5)} %  ${v.covered}/${v.pairs} state pairs`);
 }
-if (scorecard.invalidRows.length) console.log(`invalid/missing rows: ${scorecard.invalidRows.length} (reasons in scorecard.json)`);
+if (scorecard.invalidRows.length) console.log(`invalid pairs (law): ${scorecard.invalidRows.length} (both-sides reasons in scorecard.json invalidRows)`);
+if (scorecard.E_unscored.length) console.log(`E-refused pairs (preregistered mask cap): ${scorecard.E_unscored.length} — covered for T, unscored for E`);
 console.log(`scorecard → ${rel(join(OUT, "scorecard.json"))}`);

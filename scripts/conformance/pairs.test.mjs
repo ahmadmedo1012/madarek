@@ -19,7 +19,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   LANDING_TOL_PX, classifySide, validatePair, aggregateT, manifestRejections,
-  POSITION_TOL_PX, validatePositionPair,
+  POSITION_TOL_PX, validatePositionPair, positionTarget, bothSidesReason,
 } from "./pairs.mjs";
 
 const side = (over = {}) => ({ ok: true, top: 0, scrollY: 0, maxScroll: 10000, ...over });
@@ -201,4 +201,78 @@ test("position provenance is mandatory — a side without its target is invalid"
 test("the position tolerance is ±2 px, at the floor inclusive", () => {
   assert.equal(validatePositionPair({ ok: true, scrollY: 2602, targetY: 2600 }, { ok: true, offset: 3500, targetOffset: 3500 }).valid, true);
   assert.equal(validatePositionPair({ ok: true, scrollY: 2603, targetY: 2600 }, { ok: true, offset: 3500, targetOffset: 3500 }).valid, false);
+});
+
+// ── r368 T0 re-baseline laws: live-base position targets; T counts the
+// verdict, not the E-scoreability ──────────────────────────────────────────
+
+test("position targets derive from the LIVE entry seat — a stale load-time snapshot must not displace states", () => {
+  const mid30 = { id: "mid30", delta: (h) => 0.3 * h };
+  // the measured defect (footer@390): live entry seat 13476 vs the stale
+  // snapshot contentTop 12753 (+723 px late growth). The true mid30 target is
+  // 13476 + 371.7 = 13848; the snapshot-based 13125 seated a PRE-entry state.
+  const live = positionTarget(13476, mid30, 1239, 844, 13871);
+  assert.equal(live.targetY, 13848);
+  assert.equal(live.inaccessible, false);
+  assert.match(live.basis, /live entry seat 13476/);
+  const stale = positionTarget(12753, mid30, 1239, 844, 13272);
+  assert.equal(stale.targetY, 13125); // the OLD wrong seat — a different base gives a different state
+  assert.notEqual(stale.targetY, live.targetY);
+});
+
+test("a state beyond the LIVE document end is inaccessible — the stale smaller end must not mask the gap", () => {
+  const mid60 = { id: "mid60", delta: (h) => 0.6 * h };
+  // footer@390 mid60: live seat 13476 + 743 px = 14219 > live end 13871
+  const t = positionTarget(13476, mid60, 1239, 844, 13871);
+  assert.equal(t.targetY, 14219);
+  assert.equal(t.inaccessible, true);
+  // the stale snapshot end (13272) would have called a SMALLER target
+  // (12753 + 743 = 13496) accessible-or-not against its own stale number —
+  // the live law refuses both confusions by taking the live values only
+  const stale = positionTarget(12753, mid60, 1239, 844, 13272);
+  assert.equal(stale.targetY, 13496);
+  assert.equal(stale.inaccessible, true); // even the stale pair says unreachable — the live pair is worse; recorded either way
+});
+
+test("T counts a position-matched pair as covered even when its E is refused by the mask cap — the E refusal is not a pair invalidity", () => {
+  // the measured rows: home-hero-wrap@390:mid60 (mask share 74.9 %) and
+  // home-map-wrap@390:exit (63.7 %) — both sides landed their declared
+  // positions within ±2 px; the preregistered mask cap refuses their E, never
+  // their evidence coverage
+  const rows = [
+    pairRow("home-hero-wrap", "390", validatePositionPair(
+      { ok: true, scrollY: 505, targetY: 505 },
+      { ok: true, offset: 504, targetOffset: 505, stateId: "mid60" },
+    )),
+    pairRow("home-map-wrap", "390", validatePositionPair(
+      { ok: true, scrollY: 6102, targetY: 6102 },
+      { ok: true, offset: 6101, targetOffset: 6102, stateId: "exit" },
+    )),
+    pairRow("footer", "390", validatePositionPair(
+      { ok: false, reason: "state mid60 needs scroll 14219 > live document end 13871 — inaccessible locally (recorded, not scored)" },
+      { ok: true, offset: 11404, targetOffset: 11404 },
+    )),
+  ];
+  const t = aggregateT(rows);
+  assert.equal(t.required, 3);
+  assert.equal(t.valid, 2);
+  assert.equal(t.T, 66.7);
+  assert.equal(t.invalidPairs.length, 1);
+  assert.match(t.invalidPairs[0].reason, /14219/);
+});
+
+test("a pair inaccessible on BOTH sides carries BOTH reasons — the impossibility proof lives in the row itself", () => {
+  // footer@390:mid60 — our live document end AND the reference's stage end both
+  // fall short; the row must carry the two reasons together
+  const merged = bothSidesReason(
+    { ok: false, reason: "state mid60 needs scroll 14219 > live document end 13871 — inaccessible locally (recorded, not scored)" },
+    { ok: false, reason: "state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)" },
+  );
+  assert.ok(merged);
+  assert.match(merged, /local: .*14219/);
+  assert.match(merged, /reference: .*11075/);
+  // one-sided failures keep a single side's reason — no fabricated merge
+  const one = bothSidesReason({ ok: false, reason: "boom" }, { ok: true });
+  assert.equal(one, "local: boom");
+  assert.equal(bothSidesReason({ ok: true }, { ok: true }), null);
 });
