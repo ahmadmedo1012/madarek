@@ -396,10 +396,9 @@ jobs:
       # exits 1 only for design-system-owned files (the other lanes stay
       # report-only until they adopt the standard).
       - run: node scripts/gates/copy-budget.mjs --style enforce
-      # L3 — the type-stress gate: 36 viewport probes (4 widths × 3 text
-      # scales × 3 routes) under the long-word/bidi/zoom matrix — zero
-      # horizontal overflow.
-      - run: node scripts/gates/type-stress.mjs
+      # L3 (type-stress) moved to the conform-gate job below — it needs
+      # a real chromium binary, and this job installs nothing by design
+      # (every other gate here is node:fs-only dependency-free).
 
   conform-gate:
     name: Conformance gate (frozen Heron spec, ratchet)
@@ -449,6 +448,14 @@ jobs:
           if-no-files-found: ignore
       - name: Conformance matrix vs ratchet (scroll + interaction extensions)
         run: node scripts/conformance/run.mjs --gate --scroll --interact
+      # R366-final: the type-stress gate rides THIS job — npm ci +
+      # playwright chromium are already installed here (the design-gates
+      # job is node_modules-free by contract, which is why the gate
+      # failed there with ERR_MODULE_NOT_FOUND twice). 36 viewport
+      # probes (4 widths × 3 text scales × 3 routes) under the
+      # long-word/bidi/zoom matrix — zero horizontal overflow.
+      - name: Type-stress gate (36 viewport probes)
+        run: node scripts/gates/type-stress.mjs
       - name: Upload results artifact
         if: always()
         uses: actions/upload-artifact@v4
