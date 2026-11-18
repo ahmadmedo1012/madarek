@@ -183,7 +183,7 @@ test.describe('student pages B — §B2 sheet grammar (chromium · light)', () =
     await expectSheetContract(page);
   });
 
-  test('/student/ai — [01] gaps + [02] conversations bars + empty-state suggestions', async ({ page }) => {
+  test('/student/ai — [01] gaps + [02] conversations + [03] suggestions bars', async ({ page }) => {
     await installStatefulApi(page, [
       {
         method: 'GET',
@@ -231,16 +231,19 @@ test.describe('student pages B — §B2 sheet grammar (chromium · light)', () =
 
     await page.goto('/student/ai');
     await expect(page.locator('h1.pf-page-title')).toBeVisible({ timeout: 20000 });
-    /* r366 (2-a): the suggestions left the sidebar's [03] bar for the
-     * transcript's empty state — the greeting + suggestion chips ride the
-     * composer's chip grammar and unmount after the first send (the
-     * natural place: you tap a suggestion to ASK). The sheet keeps [01]
-     * gaps + [02] conversations. */
-    await expect(page.locator('.r319s-bar')).toHaveCount(2, { timeout: 15000 });
+    /* R366-final (integration contract, proven green at c79ebe35): BOTH
+     * live — the sidebar keeps its three sheet regions ([01] gaps,
+     * [02] conversations, [03] suggestions — the persistent list), and
+     * the transcript's empty state carries the greeting + suggestion
+     * chips (the r366 2-a/2-f surface; they unmount after the first
+     * send). The session-2 fold had re-dropped the sidebar's [03] bar;
+     * the §B2 restoration (53f21459) is the integration truth this test
+     * pins. */
+    await expect(page.locator('.r319s-bar')).toHaveCount(3, { timeout: 15000 });
 
     const bars = await readBars(page);
-    expect(bars.map((b) => b.title)).toEqual(['بناءً على أدائك', 'محادثاتك']);
-    expect(bars.map((b) => b.index)).toEqual(['[01]', '[02]']);
+    expect(bars.map((b) => b.title)).toEqual(['بناءً على أدائك', 'محادثاتك', 'أسئلة مقترحة']);
+    expect(bars.map((b) => b.index)).toEqual(['[01]', '[02]', '[03]']);
     for (const b of bars) {
       expect(b.index).toMatch(/^\[\d{2}\]$/);
       expect(b.indexMono).toContain('Geist Mono');
@@ -257,15 +260,16 @@ test.describe('student pages B — §B2 sheet grammar (chromium · light)', () =
      * retry too. The auto-retrying toHaveCount(3) gate makes the read
      * deterministic (same discipline as the h1/bar waits above). */
     const countLoc = page.locator('.r319s-bar .r319s-count');
-    await expect(countLoc).toHaveCount(2, { timeout: 15000 });
+    await expect(countLoc).toHaveCount(3, { timeout: 15000 });
     const counts = await countLoc.allTextContents();
-    expect(counts).toEqual(['02', '02']);
+    expect(counts).toEqual(['02', '02', '05']);
 
-    /* The suggestions — now the empty state's primary action set: the
-     * student set is 03 chips inside the labelled group. */
+    /* The suggestions — the empty state's primary action set ALSO rides
+     * the transcript greeting: the student set is the same 05 chips the
+     * sidebar's [03] counter pins (session-2 grew the set 3 → 05). */
     const suggest = page.locator('.ai-suggest');
     await expect(suggest).toBeVisible();
-    await expect(suggest.locator('.ai-suggest-chip')).toHaveCount(3);
+    await expect(suggest.locator('.ai-suggest-chip')).toHaveCount(5);
 
     // The gap card (the card class sample) computes radius 0.
     const gapCard = page.locator('.ai-gap-card').first();
