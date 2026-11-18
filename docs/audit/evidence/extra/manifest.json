@@ -1,0 +1,479 @@
+{
+ "generatedAt": "2026-11-18T16:52:56.893Z",
+ "state": "named states (entry/mid30/mid60/exit/end) per pairs.mjs — a pair is matched only when both sides reached the same declared state within ±2 px; crops are section∩viewport clips",
+ "profile": {
+  "browser": "chromium 143.0.7499.4",
+  "playwright": "1.60.0",
+  "node": "v24.22.3",
+  "dpr": 1,
+  "reducedMotion": "no-preference",
+  "local": "http://localhost:5300",
+  "reference": "https://heronaiapp.com/",
+  "settle": "fonts.ready → preloader gone → two identical document heights → 2 rAF",
+  "cropRule": "section box ∩ viewport at the named state (pairs.mjs law)",
+  "states": [
+   "entry",
+   "mid30",
+   "mid60",
+   "exit"
+  ]
+ },
+ "census": {
+  "768": {
+   "maxOffset": 11983,
+   "bestStep": {
+    "home-intro-wrap": 2,
+    "home-hero-wrap": 0,
+    "home-usecase-wrap": 17,
+    "footer": 20,
+    "home-platform-wrap": 13
+   },
+   "contentTopsDiagnostic": {
+    "home-intro-wrap": 893,
+    "home-hero-wrap": 7,
+    "home-usecase-wrap": 8995,
+    "footer": 10873,
+    "home-platform-wrap": 7606
+   },
+   "heights": {
+    "home-intro-wrap": 527,
+    "home-hero-wrap": 885,
+    "home-usecase-wrap": 1367,
+    "footer": 968,
+    "home-platform-wrap": 512
+   },
+   "steps": 25,
+   "anchor0": 7,
+   "triggerPairing": {
+    "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
+    "viewport": [
+     768,
+     900
+    ],
+    "bySection": {
+     "home-intro-wrap": {
+      "triggers": 4,
+      "minStart": 0,
+      "maxEnd": 1855,
+      "achievedEntryOffset": 891,
+      "sectionHeight": 527,
+      "startFracOfSection": -1.7
+     },
+     "home-problem-wrap": {
+      "triggers": 3,
+      "minStart": 85,
+      "maxEnd": 3188,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-map-wrap": {
+      "triggers": 1,
+      "minStart": 1418,
+      "maxEnd": 8022,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-platform-wrap": {
+      "triggers": 2,
+      "minStart": 6252,
+      "maxEnd": 8530,
+      "achievedEntryOffset": 7608,
+      "sectionHeight": 512,
+      "startFracOfSection": -2.6
+     },
+     "home-why-wrap": {
+      "triggers": 6,
+      "minStart": 6760,
+      "maxEnd": 9407,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-usecase-wrap": {
+      "triggers": 1,
+      "minStart": 7637,
+      "maxEnd": 10744,
+      "achievedEntryOffset": 10001,
+      "sectionHeight": 1367,
+      "startFracOfSection": -1.7
+     },
+     "home-cta-wrap": {
+      "triggers": 4,
+      "minStart": 9316,
+      "maxEnd": 10843,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "footer": {
+      "triggers": 18,
+      "minStart": 9858,
+      "maxEnd": 11791,
+      "achievedEntryOffset": 11909,
+      "sectionHeight": 968,
+      "startFracOfSection": -2.1
+     }
+    },
+    "unpairedRoots": [],
+    "spaceValidation": {
+     "achievedEntryOffsetMinusStartMedian": 2051,
+     "spread": 1473,
+     "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
+    }
+   }
+  },
+  "1024": {
+   "maxOffset": 11507,
+   "bestStep": {
+    "home-intro-wrap": 2,
+    "home-hero-wrap": 0,
+    "home-usecase-wrap": 18,
+    "footer": 21,
+    "home-platform-wrap": 14
+   },
+   "contentTopsDiagnostic": {
+    "home-intro-wrap": 895,
+    "home-hero-wrap": 5,
+    "home-usecase-wrap": 9238,
+    "footer": 10625,
+    "home-platform-wrap": 8237
+   },
+   "heights": {
+    "home-intro-wrap": 514,
+    "home-hero-wrap": 891,
+    "home-usecase-wrap": 891,
+    "footer": 505,
+    "home-platform-wrap": 505
+   },
+   "steps": 24,
+   "anchor0": 5,
+   "triggerPairing": {
+    "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
+    "viewport": [
+     1024,
+     900
+    ],
+    "bySection": {
+     "home-intro-wrap": {
+      "triggers": 4,
+      "minStart": 0,
+      "maxEnd": 1850,
+      "achievedEntryOffset": 893,
+      "sectionHeight": 514,
+      "startFracOfSection": -1.7
+     },
+     "home-problem-wrap": {
+      "triggers": 3,
+      "minStart": 68,
+      "maxEnd": 2378,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-map-wrap": {
+      "triggers": 1,
+      "minStart": 596,
+      "maxEnd": 8678,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-platform-wrap": {
+      "triggers": 4,
+      "minStart": 6896,
+      "maxEnd": 9183,
+      "achievedEntryOffset": 8239,
+      "sectionHeight": 505,
+      "startFracOfSection": -2.7
+     },
+     "home-why-wrap": {
+      "triggers": 6,
+      "minStart": 7401,
+      "maxEnd": 9667,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-usecase-wrap": {
+      "triggers": 1,
+      "minStart": 7885,
+      "maxEnd": 10557,
+      "achievedEntryOffset": 10511,
+      "sectionHeight": 891,
+      "startFracOfSection": -2.9
+     },
+     "home-cta-wrap": {
+      "triggers": 4,
+      "minStart": 9121,
+      "maxEnd": 10608,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "footer": {
+      "triggers": 18,
+      "minStart": 9617,
+      "maxEnd": 11114,
+      "achievedEntryOffset": 11897,
+      "sectionHeight": 505,
+      "startFracOfSection": -4.5
+     }
+    },
+    "unpairedRoots": [],
+    "spaceValidation": {
+     "achievedEntryOffsetMinusStartMedian": 2280,
+     "spread": 1733,
+     "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
+    }
+   }
+  },
+  "1920": {
+   "maxOffset": 16717,
+   "bestStep": {
+    "home-intro-wrap": 2,
+    "home-hero-wrap": 0,
+    "home-usecase-wrap": 25,
+    "footer": 30,
+    "home-platform-wrap": 18
+   },
+   "contentTopsDiagnostic": {
+    "home-intro-wrap": 1071,
+    "home-hero-wrap": 9,
+    "home-usecase-wrap": 12462,
+    "footer": 14455,
+    "home-platform-wrap": 10585
+   },
+   "heights": {
+    "home-intro-wrap": 963,
+    "home-hero-wrap": 1062,
+    "home-usecase-wrap": 1062,
+    "footer": 948,
+    "home-platform-wrap": 947
+   },
+   "steps": 33,
+   "anchor0": 9,
+   "triggerPairing": {
+    "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
+    "viewport": [
+     1920,
+     1080
+    ],
+    "bySection": {
+     "home-intro-wrap": {
+      "triggers": 4,
+      "minStart": 0,
+      "maxEnd": 2557,
+      "achievedEntryOffset": 1071,
+      "sectionHeight": 963,
+      "startFracOfSection": -1.1
+     },
+     "home-problem-wrap": {
+      "triggers": 3,
+      "minStart": 433,
+      "maxEnd": 3547,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-map-wrap": {
+      "triggers": 1,
+      "minStart": 1423,
+      "maxEnd": 11107,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-platform-wrap": {
+      "triggers": 4,
+      "minStart": 8983,
+      "maxEnd": 12053,
+      "achievedEntryOffset": 10586,
+      "sectionHeight": 947,
+      "startFracOfSection": -1.7
+     },
+     "home-why-wrap": {
+      "triggers": 6,
+      "minStart": 9929,
+      "maxEnd": 12961,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-usecase-wrap": {
+      "triggers": 1,
+      "minStart": 10837,
+      "maxEnd": 14024,
+      "achievedEntryOffset": 14848,
+      "sectionHeight": 1062,
+      "startFracOfSection": -3.8
+     },
+     "home-cta-wrap": {
+      "triggers": 4,
+      "minStart": 12331,
+      "maxEnd": 14423,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "footer": {
+      "triggers": 18,
+      "minStart": 13261,
+      "maxEnd": 15371,
+      "achievedEntryOffset": 16840,
+      "sectionHeight": 948,
+      "startFracOfSection": -3.8
+     }
+    },
+    "unpairedRoots": [],
+    "spaceValidation": {
+     "achievedEntryOffsetMinusStartMedian": 3579,
+     "spread": 2940,
+     "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
+    }
+   }
+  }
+ },
+ "masks": {
+  "policy": "entry: preregistered frozen-spec text rects (tc≠none, in-viewport, box-relative). Non-entry: live reference text rects recorded at capture before scoring. Masks always derive from the reference side, never ours, and no mask is chosen after seeing a score.",
+  "shareCap": 0.55,
+  "chromeCropBottomPx": 60,
+  "chromeBandRule": "applied only to crops that reach the viewport bottom (the reference's persistent consent bar), symmetric on both sides, recorded per row",
+  "storagePolicy": "crops wider than 480px are stored halved (colour box-average, deterministic; scale recorded per row) to respect the docs/ size gates (tracked file ≤500KB, push ≤5MB); every score runs on the STORED files so --score-only reproduces E from the committed evidence alone"
+ },
+ "requiredPairs": [
+  "home-intro-wrap@768:entry",
+  "home-intro-wrap@768:mid30",
+  "home-intro-wrap@768:mid60",
+  "home-intro-wrap@768:exit",
+  "home-hero-wrap@768:entry",
+  "home-hero-wrap@768:mid30",
+  "home-hero-wrap@768:mid60",
+  "home-hero-wrap@768:exit",
+  "home-usecase-wrap@768:entry",
+  "home-usecase-wrap@768:mid30",
+  "home-usecase-wrap@768:mid60",
+  "home-usecase-wrap@768:exit",
+  "footer@768:entry",
+  "footer@768:mid30",
+  "footer@768:mid60",
+  "footer@768:exit",
+  "home-platform-wrap@768:entry",
+  "home-platform-wrap@768:mid30",
+  "home-platform-wrap@768:mid60",
+  "home-platform-wrap@768:exit",
+  "home-intro-wrap@1024:entry",
+  "home-intro-wrap@1024:mid30",
+  "home-intro-wrap@1024:mid60",
+  "home-intro-wrap@1024:exit",
+  "home-hero-wrap@1024:entry",
+  "home-hero-wrap@1024:mid30",
+  "home-hero-wrap@1024:mid60",
+  "home-hero-wrap@1024:exit",
+  "home-usecase-wrap@1024:entry",
+  "home-usecase-wrap@1024:mid30",
+  "home-usecase-wrap@1024:mid60",
+  "home-usecase-wrap@1024:exit",
+  "footer@1024:entry",
+  "footer@1024:mid30",
+  "footer@1024:mid60",
+  "footer@1024:exit",
+  "home-platform-wrap@1024:entry",
+  "home-platform-wrap@1024:mid30",
+  "home-platform-wrap@1024:mid60",
+  "home-platform-wrap@1024:exit",
+  "home-intro-wrap@1920:entry",
+  "home-intro-wrap@1920:mid30",
+  "home-intro-wrap@1920:mid60",
+  "home-intro-wrap@1920:exit",
+  "home-hero-wrap@1920:entry",
+  "home-hero-wrap@1920:mid30",
+  "home-hero-wrap@1920:mid60",
+  "home-hero-wrap@1920:exit",
+  "home-usecase-wrap@1920:entry",
+  "home-usecase-wrap@1920:mid30",
+  "home-usecase-wrap@1920:mid60",
+  "home-usecase-wrap@1920:exit",
+  "footer@1920:entry",
+  "footer@1920:mid30",
+  "footer@1920:mid60",
+  "footer@1920:exit",
+  "home-platform-wrap@1920:entry",
+  "home-platform-wrap@1920:mid30",
+  "home-platform-wrap@1920:mid60",
+  "home-platform-wrap@1920:exit"
+ ],
+ "coveredPairs": [
+  "home-intro-wrap@768:entry",
+  "home-intro-wrap@768:mid30",
+  "home-intro-wrap@768:mid60",
+  "home-hero-wrap@768:entry",
+  "home-hero-wrap@768:mid30",
+  "home-hero-wrap@768:mid60",
+  "home-usecase-wrap@768:entry",
+  "home-usecase-wrap@768:mid30",
+  "footer@768:entry",
+  "home-platform-wrap@768:entry",
+  "home-platform-wrap@768:mid30",
+  "home-intro-wrap@1024:entry",
+  "home-intro-wrap@1024:mid30",
+  "home-intro-wrap@1024:mid60",
+  "home-hero-wrap@1024:entry",
+  "home-hero-wrap@1024:mid30",
+  "home-hero-wrap@1024:mid60",
+  "home-usecase-wrap@1024:entry",
+  "home-usecase-wrap@1024:mid30",
+  "home-usecase-wrap@1024:mid60",
+  "footer@1024:entry",
+  "home-platform-wrap@1024:entry",
+  "home-platform-wrap@1024:mid30",
+  "home-platform-wrap@1024:mid60",
+  "home-intro-wrap@1920:entry",
+  "home-intro-wrap@1920:mid30",
+  "home-intro-wrap@1920:mid60",
+  "home-hero-wrap@1920:entry",
+  "home-hero-wrap@1920:mid30",
+  "home-hero-wrap@1920:mid60",
+  "home-usecase-wrap@1920:entry",
+  "home-usecase-wrap@1920:mid30",
+  "home-usecase-wrap@1920:mid60",
+  "footer@1920:entry",
+  "home-platform-wrap@1920:entry",
+  "home-platform-wrap@1920:mid30",
+  "home-platform-wrap@1920:mid60"
+ ],
+ "invalidPairs": [
+  {
+   "target": "home-usecase-wrap@768:mid60",
+   "status": "invalid-mask-share",
+   "reason": "mask share 68.9 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
+  },
+  {
+   "target": "footer@768:mid30",
+   "status": "missing",
+   "reason": "local: state mid30 needs scroll 15116 > document end 15091 — inaccessible locally (recorded, not scored)"
+  },
+  {
+   "target": "footer@768:mid60",
+   "status": "missing",
+   "reason": "local: state mid60 needs scroll 15411 > document end 15091 — inaccessible locally (recorded, not scored)"
+  },
+  {
+   "target": "home-platform-wrap@768:mid60",
+   "status": "missing",
+   "reason": "local: empty-intersection"
+  }
+ ],
+ "dials": {
+  "E": 40.5,
+  "T": 90.2,
+  "Q": 60
+ },
+ "validate": {
+  "everyPairValidOrExplicit": true,
+  "noCoordinateViolations": true,
+  "motionTracesPresent": true,
+  "rejections": []
+ }
+}

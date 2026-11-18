@@ -1,0 +1,3047 @@
+{
+ "profile": {
+  "browser": "chromium 143.0.7499.4",
+  "playwright": "1.60.0",
+  "node": "v24.22.3",
+  "dpr": 1,
+  "reducedMotion": "no-preference",
+  "local": "http://localhost:5300",
+  "reference": "https://heronaiapp.com/",
+  "settle": "fonts.ready → preloader gone → two identical document heights → 2 rAF",
+  "cropRule": "section box ∩ viewport at the named state (pairs.mjs law)",
+  "states": [
+   "entry",
+   "mid30",
+   "mid60",
+   "exit"
+  ]
+ },
+ "census": {
+  "768": {
+   "maxOffset": 11983,
+   "bestStep": {
+    "home-intro-wrap": 2,
+    "home-hero-wrap": 0,
+    "home-usecase-wrap": 17,
+    "footer": 20,
+    "home-platform-wrap": 13
+   },
+   "contentTopsDiagnostic": {
+    "home-intro-wrap": 893,
+    "home-hero-wrap": 7,
+    "home-usecase-wrap": 8995,
+    "footer": 10873,
+    "home-platform-wrap": 7606
+   },
+   "heights": {
+    "home-intro-wrap": 527,
+    "home-hero-wrap": 885,
+    "home-usecase-wrap": 1367,
+    "footer": 968,
+    "home-platform-wrap": 512
+   },
+   "steps": 25,
+   "anchor0": 7,
+   "triggerPairing": {
+    "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
+    "viewport": [
+     768,
+     900
+    ],
+    "bySection": {
+     "home-intro-wrap": {
+      "triggers": 4,
+      "minStart": 0,
+      "maxEnd": 1855,
+      "achievedEntryOffset": 891,
+      "sectionHeight": 527,
+      "startFracOfSection": -1.7
+     },
+     "home-problem-wrap": {
+      "triggers": 3,
+      "minStart": 85,
+      "maxEnd": 3188,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-map-wrap": {
+      "triggers": 1,
+      "minStart": 1418,
+      "maxEnd": 8022,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-platform-wrap": {
+      "triggers": 2,
+      "minStart": 6252,
+      "maxEnd": 8530,
+      "achievedEntryOffset": 7608,
+      "sectionHeight": 512,
+      "startFracOfSection": -2.6
+     },
+     "home-why-wrap": {
+      "triggers": 6,
+      "minStart": 6760,
+      "maxEnd": 9407,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-usecase-wrap": {
+      "triggers": 1,
+      "minStart": 7637,
+      "maxEnd": 10744,
+      "achievedEntryOffset": 10001,
+      "sectionHeight": 1367,
+      "startFracOfSection": -1.7
+     },
+     "home-cta-wrap": {
+      "triggers": 4,
+      "minStart": 9316,
+      "maxEnd": 10843,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "footer": {
+      "triggers": 18,
+      "minStart": 9858,
+      "maxEnd": 11791,
+      "achievedEntryOffset": 11909,
+      "sectionHeight": 968,
+      "startFracOfSection": -2.1
+     }
+    },
+    "unpairedRoots": [],
+    "spaceValidation": {
+     "achievedEntryOffsetMinusStartMedian": 2051,
+     "spread": 1473,
+     "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
+    }
+   }
+  },
+  "1024": {
+   "maxOffset": 11507,
+   "bestStep": {
+    "home-intro-wrap": 2,
+    "home-hero-wrap": 0,
+    "home-usecase-wrap": 18,
+    "footer": 21,
+    "home-platform-wrap": 14
+   },
+   "contentTopsDiagnostic": {
+    "home-intro-wrap": 895,
+    "home-hero-wrap": 5,
+    "home-usecase-wrap": 9238,
+    "footer": 10625,
+    "home-platform-wrap": 8237
+   },
+   "heights": {
+    "home-intro-wrap": 514,
+    "home-hero-wrap": 891,
+    "home-usecase-wrap": 891,
+    "footer": 505,
+    "home-platform-wrap": 505
+   },
+   "steps": 24,
+   "anchor0": 5,
+   "triggerPairing": {
+    "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
+    "viewport": [
+     1024,
+     900
+    ],
+    "bySection": {
+     "home-intro-wrap": {
+      "triggers": 4,
+      "minStart": 0,
+      "maxEnd": 1850,
+      "achievedEntryOffset": 893,
+      "sectionHeight": 514,
+      "startFracOfSection": -1.7
+     },
+     "home-problem-wrap": {
+      "triggers": 3,
+      "minStart": 68,
+      "maxEnd": 2378,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-map-wrap": {
+      "triggers": 1,
+      "minStart": 596,
+      "maxEnd": 8678,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-platform-wrap": {
+      "triggers": 4,
+      "minStart": 6896,
+      "maxEnd": 9183,
+      "achievedEntryOffset": 8239,
+      "sectionHeight": 505,
+      "startFracOfSection": -2.7
+     },
+     "home-why-wrap": {
+      "triggers": 6,
+      "minStart": 7401,
+      "maxEnd": 9667,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-usecase-wrap": {
+      "triggers": 1,
+      "minStart": 7885,
+      "maxEnd": 10557,
+      "achievedEntryOffset": 10511,
+      "sectionHeight": 891,
+      "startFracOfSection": -2.9
+     },
+     "home-cta-wrap": {
+      "triggers": 4,
+      "minStart": 9121,
+      "maxEnd": 10608,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "footer": {
+      "triggers": 18,
+      "minStart": 9617,
+      "maxEnd": 11114,
+      "achievedEntryOffset": 11897,
+      "sectionHeight": 505,
+      "startFracOfSection": -4.5
+     }
+    },
+    "unpairedRoots": [],
+    "spaceValidation": {
+     "achievedEntryOffsetMinusStartMedian": 2280,
+     "spread": 1733,
+     "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
+    }
+   }
+  },
+  "1920": {
+   "maxOffset": 16717,
+   "bestStep": {
+    "home-intro-wrap": 2,
+    "home-hero-wrap": 0,
+    "home-usecase-wrap": 25,
+    "footer": 30,
+    "home-platform-wrap": 18
+   },
+   "contentTopsDiagnostic": {
+    "home-intro-wrap": 1071,
+    "home-hero-wrap": 9,
+    "home-usecase-wrap": 12462,
+    "footer": 14455,
+    "home-platform-wrap": 10585
+   },
+   "heights": {
+    "home-intro-wrap": 963,
+    "home-hero-wrap": 1062,
+    "home-usecase-wrap": 1062,
+    "footer": 948,
+    "home-platform-wrap": 947
+   },
+   "steps": 33,
+   "anchor0": 9,
+   "triggerPairing": {
+    "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
+    "viewport": [
+     1920,
+     1080
+    ],
+    "bySection": {
+     "home-intro-wrap": {
+      "triggers": 4,
+      "minStart": 0,
+      "maxEnd": 2557,
+      "achievedEntryOffset": 1071,
+      "sectionHeight": 963,
+      "startFracOfSection": -1.1
+     },
+     "home-problem-wrap": {
+      "triggers": 3,
+      "minStart": 433,
+      "maxEnd": 3547,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-map-wrap": {
+      "triggers": 1,
+      "minStart": 1423,
+      "maxEnd": 11107,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-platform-wrap": {
+      "triggers": 4,
+      "minStart": 8983,
+      "maxEnd": 12053,
+      "achievedEntryOffset": 10586,
+      "sectionHeight": 947,
+      "startFracOfSection": -1.7
+     },
+     "home-why-wrap": {
+      "triggers": 6,
+      "minStart": 9929,
+      "maxEnd": 12961,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "home-usecase-wrap": {
+      "triggers": 1,
+      "minStart": 10837,
+      "maxEnd": 14024,
+      "achievedEntryOffset": 14848,
+      "sectionHeight": 1062,
+      "startFracOfSection": -3.8
+     },
+     "home-cta-wrap": {
+      "triggers": 4,
+      "minStart": 12331,
+      "maxEnd": 14423,
+      "achievedEntryOffset": null,
+      "sectionHeight": null,
+      "startFracOfSection": null
+     },
+     "footer": {
+      "triggers": 18,
+      "minStart": 13261,
+      "maxEnd": 15371,
+      "achievedEntryOffset": 16840,
+      "sectionHeight": 948,
+      "startFracOfSection": -3.8
+     }
+    },
+    "unpairedRoots": [],
+    "spaceValidation": {
+     "achievedEntryOffsetMinusStartMedian": 3579,
+     "spread": 2940,
+     "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
+    }
+   }
+  }
+ },
+ "rows": [
+  {
+   "key": "home-intro-wrap",
+   "bp": "768",
+   "local": {
+    "contentTop": 893,
+    "height": 537,
+    "docH": 15991,
+    "maxScroll": 15091,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 893,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-intro-wrap.768.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 8,
+       "y": 0,
+       "w": 376,
+       "h": 261,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 523,
+       "storageScale": 2
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -161,
+      "scrollY": 1054,
+      "targetY": 1054,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-intro-wrap.768.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 8,
+       "y": 0,
+       "w": 376,
+       "h": 181,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 362,
+       "storageScale": 2
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -322,
+      "scrollY": 1215,
+      "targetY": 1215,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-intro-wrap.768.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 8,
+       "y": 0,
+       "w": 376,
+       "h": 100,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 201,
+       "storageScale": 2
+      }
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 537 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 891,
+    "height": 527,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 2,
+      "declaredTop": 0,
+      "offset": 891,
+      "targetOffset": 891,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-intro-wrap.768.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 2,
+       "w": 376,
+       "h": 263,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 527,
+       "storageScale": 2
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -155,
+      "offset": 1048,
+      "targetOffset": 1049,
+      "maxOffset": 11983,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-intro-wrap.768.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 186,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 372,
+       "storageScale": 2
+      },
+      "liveMaskRects": []
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -313,
+      "offset": 1206,
+      "targetOffset": 1207,
+      "maxOffset": 11983,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-intro-wrap.768.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 107,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 214,
+       "storageScale": 2
+      },
+      "liveMaskRects": [
+       {
+        "x": 18.453125,
+        "y": 69.9375,
+        "w": 64,
+        "h": 26.046875
+       }
+      ]
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 527 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "home-hero-wrap",
+   "bp": "768",
+   "local": {
+    "contentTop": 7,
+    "height": 886,
+    "docH": 15991,
+    "maxScroll": 15091,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 7,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-hero-wrap.768.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 384,
+       "h": 443,
+       "touchesBottom": false,
+       "captureW": 768,
+       "captureH": 886,
+       "storageScale": 2
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -266,
+      "scrollY": 273,
+      "targetY": 273,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-hero-wrap.768.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 384,
+       "h": 310,
+       "touchesBottom": false,
+       "captureW": 768,
+       "captureH": 620,
+       "storageScale": 2
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -532,
+      "scrollY": 539,
+      "targetY": 539,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-hero-wrap.768.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 384,
+       "h": 177,
+       "touchesBottom": false,
+       "captureW": 768,
+       "captureH": 354,
+       "storageScale": 2
+      }
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 886 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 7,
+    "height": 885,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "offset": 7,
+      "targetOffset": 7,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-hero-wrap.768.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 442,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 885,
+       "storageScale": 2
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -265,
+      "offset": 271,
+      "targetOffset": 273,
+      "maxOffset": 11983,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-hero-wrap.768.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 310,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 621,
+       "storageScale": 2
+      },
+      "liveMaskRects": [
+       {
+        "x": 116.61482238769531,
+        "y": 51.73704528808594,
+        "w": 58.87138366699219,
+        "h": 17.486770629882812
+       },
+       {
+        "x": 116.61482238769531,
+        "y": 63.649688720703125,
+        "w": 134.55906677246094,
+        "h": 19.922988891601562
+       }
+      ]
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -529,
+      "offset": 536,
+      "targetOffset": 538,
+      "maxOffset": 11983,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-hero-wrap.768.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 178,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 357,
+       "storageScale": 2
+      },
+      "liveMaskRects": [
+       {
+        "x": 18.453125,
+        "y": 156.046875,
+        "w": 340.453125,
+        "h": 155.3125
+       }
+      ]
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 885 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "768",
+   "local": {
+    "contentTop": 12426,
+    "height": 1358,
+    "docH": 15991,
+    "maxScroll": 15091,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 12738,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-usecase-wrap.768.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 384,
+       "h": 450,
+       "touchesBottom": true,
+       "captureW": 768,
+       "captureH": 900,
+       "storageScale": 2
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -95,
+      "scrollY": 12833,
+      "targetY": 12833,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-usecase-wrap.768.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 384,
+       "h": 450,
+       "touchesBottom": true,
+       "captureW": 768,
+       "captureH": 900,
+       "storageScale": 2
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -503,
+      "scrollY": 13241,
+      "targetY": 13241,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-usecase-wrap.768.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 384,
+       "h": 427,
+       "touchesBottom": false,
+       "captureW": 768,
+       "captureH": 854,
+       "storageScale": 2
+      }
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 458 px sits within 100 px of an already-recorded state for this 1358 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 10001,
+    "height": 1367,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": -2,
+      "declaredTop": 0,
+      "offset": 10001,
+      "targetOffset": 10001,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-usecase-wrap.768.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 450,
+       "touchesBottom": true,
+       "captureW": 753,
+       "captureH": 900,
+       "storageScale": 2
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -410,
+      "offset": 10409,
+      "targetOffset": 10411,
+      "maxOffset": 11983,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-usecase-wrap.768.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 450,
+       "touchesBottom": true,
+       "captureW": 753,
+       "captureH": 900,
+       "storageScale": 2
+      },
+      "liveMaskRects": [
+       {
+        "x": 18.453125,
+        "y": 380.046875,
+        "w": 717.09375,
+        "h": 26.046875
+       },
+       {
+        "x": 18.453125,
+        "y": 412.8125,
+        "w": 339.5,
+        "h": 96.40625
+       }
+      ]
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -820,
+      "offset": 10819,
+      "targetOffset": 10821,
+      "maxOffset": 11983,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-usecase-wrap.768.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 273,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 547,
+       "storageScale": 2
+      },
+      "liveMaskRects": [
+       {
+        "x": 18.453125,
+        "y": 2.8125,
+        "w": 339.5,
+        "h": 96.40625
+       },
+       {
+        "x": 18.453125,
+        "y": 128.03125,
+        "w": 687.640625,
+        "h": 28.25
+       },
+       {
+        "x": 18.453125,
+        "y": 159.328125,
+        "w": 717.09375,
+        "h": 27.140625
+       },
+       {
+        "x": 18.453125,
+        "y": 207.90625,
+        "w": 687.640625,
+        "h": 28.25
+       },
+       {
+        "x": 18.453125,
+        "y": 257.59375,
+        "w": 687.640625,
+        "h": 28.25
+       }
+      ]
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 467 px sits within 100 px of an already-recorded state for this 1367 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "footer",
+   "bp": "768",
+   "local": {
+    "contentTop": 14822,
+    "height": 981,
+    "docH": 15991,
+    "maxScroll": 15091,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 15133,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/footer.768.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 377,
+       "h": 450,
+       "touchesBottom": true,
+       "captureW": 754,
+       "captureH": 900,
+       "storageScale": 2
+      }
+     },
+     "mid30": {
+      "ok": false,
+      "reason": "state mid30 needs scroll 15116 > document end 15091 — inaccessible locally (recorded, not scored)"
+     },
+     "mid60": {
+      "ok": false,
+      "reason": "state mid60 needs scroll 15411 > document end 15091 — inaccessible locally (recorded, not scored)"
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 81 px sits within 100 px of an already-recorded state for this 981 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 11909,
+    "height": 968,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": -2,
+      "declaredTop": 0,
+      "offset": 11909,
+      "targetOffset": 11909,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/footer.768.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 450,
+       "touchesBottom": true,
+       "captureW": 753,
+       "captureH": 900,
+       "storageScale": 2
+      }
+     },
+     "mid30": {
+      "ok": false,
+      "reason": "state mid30 needs stage offset 12199 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
+     },
+     "mid60": {
+      "ok": false,
+      "reason": "state mid60 needs stage offset 12490 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 68 px sits within 100 px of an already-recorded state for this 968 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "768",
+   "local": {
+    "contentTop": 7814,
+    "height": 514,
+    "docH": 15991,
+    "maxScroll": 15091,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 7597,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-platform-wrap.768.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 255,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 510,
+       "storageScale": 2
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -371,
+      "scrollY": 7968,
+      "targetY": 7968,
+      "maxScroll": 15091,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-platform-wrap.768.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 70,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 140,
+       "storageScale": 2
+      }
+     },
+     "mid60": {
+      "ok": false,
+      "reason": "empty-intersection",
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -525,
+      "scrollY": 8122,
+      "targetY": 8122,
+      "maxScroll": 15091
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 514 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 7608,
+    "height": 512,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": -2,
+      "declaredTop": 0,
+      "offset": 7608,
+      "targetOffset": 7608,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-platform-wrap.768.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 255,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 510,
+       "storageScale": 2
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -155,
+      "offset": 7761,
+      "targetOffset": 7762,
+      "maxOffset": 11983,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-platform-wrap.768.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 178,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 357,
+       "storageScale": 2
+      },
+      "liveMaskRects": []
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -308,
+      "offset": 7914,
+      "targetOffset": 7915,
+      "maxOffset": 11983,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-platform-wrap.768.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 7,
+       "y": 0,
+       "w": 376,
+       "h": 102,
+       "touchesBottom": false,
+       "captureW": 753,
+       "captureH": 204,
+       "storageScale": 2
+      },
+      "liveMaskRects": []
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 512 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "home-intro-wrap",
+   "bp": "1024",
+   "local": {
+    "contentTop": 898,
+    "height": 514,
+    "docH": 15059,
+    "maxScroll": 14159,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 898,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-intro-wrap.1024.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 3,
+       "y": 0,
+       "w": 254,
+       "h": 128,
+       "touchesBottom": false,
+       "captureW": 1018,
+       "captureH": 514,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -154,
+      "scrollY": 1052,
+      "targetY": 1052,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-intro-wrap.1024.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 3,
+       "y": 0,
+       "w": 254,
+       "h": 90,
+       "touchesBottom": false,
+       "captureW": 1018,
+       "captureH": 360,
+       "storageScale": 4
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -308,
+      "scrollY": 1206,
+      "targetY": 1206,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-intro-wrap.1024.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 3,
+       "y": 0,
+       "w": 254,
+       "h": 51,
+       "touchesBottom": false,
+       "captureW": 1018,
+       "captureH": 206,
+       "storageScale": 4
+      }
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 514 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 893,
+    "height": 514,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 2,
+      "declaredTop": 0,
+      "offset": 893,
+      "targetOffset": 893,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-intro-wrap.1024.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 2,
+       "w": 253,
+       "h": 128,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 514,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -151,
+      "offset": 1046,
+      "targetOffset": 1047,
+      "maxOffset": 11507,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-intro-wrap.1024.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 90,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 363,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -305,
+      "offset": 1200,
+      "targetOffset": 1201,
+      "maxOffset": 11507,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-intro-wrap.1024.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 52,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 209,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 514 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "home-hero-wrap",
+   "bp": "1024",
+   "local": {
+    "contentTop": 7,
+    "height": 891,
+    "docH": 15059,
+    "maxScroll": 14159,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 7,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-hero-wrap.1024.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 256,
+       "h": 222,
+       "touchesBottom": false,
+       "captureW": 1024,
+       "captureH": 891,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -267,
+      "scrollY": 274,
+      "targetY": 274,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-hero-wrap.1024.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 256,
+       "h": 156,
+       "touchesBottom": false,
+       "captureW": 1024,
+       "captureH": 624,
+       "storageScale": 4
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -535,
+      "scrollY": 542,
+      "targetY": 542,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-hero-wrap.1024.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 256,
+       "h": 89,
+       "touchesBottom": false,
+       "captureW": 1024,
+       "captureH": 356,
+       "storageScale": 4
+      }
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 891 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 5,
+    "height": 891,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "offset": 5,
+      "targetOffset": 5,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-hero-wrap.1024.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 222,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 890,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -266,
+      "offset": 271,
+      "targetOffset": 272,
+      "maxOffset": 11507,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-hero-wrap.1024.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 156,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 624,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -533,
+      "offset": 538,
+      "targetOffset": 540,
+      "maxOffset": 11507,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-hero-wrap.1024.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 89,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 357,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 891 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "1024",
+   "local": {
+    "contentTop": 12551,
+    "height": 756,
+    "docH": 15059,
+    "maxScroll": 14159,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 13032,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-usecase-wrap.1024.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 256,
+       "h": 221,
+       "touchesBottom": false,
+       "captureW": 1024,
+       "captureH": 886,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": 254,
+      "scrollY": 12778,
+      "targetY": 12778,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-usecase-wrap.1024.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 254,
+       "w": 256,
+       "h": 161,
+       "touchesBottom": true,
+       "captureW": 1024,
+       "captureH": 646,
+       "storageScale": 4
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": 27,
+      "scrollY": 13005,
+      "targetY": 13005,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-usecase-wrap.1024.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 27,
+       "w": 256,
+       "h": 218,
+       "touchesBottom": true,
+       "captureW": 1024,
+       "captureH": 873,
+       "storageScale": 4
+      }
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 756 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 10511,
+    "height": 891,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": -1,
+      "declaredTop": 0,
+      "offset": 10511,
+      "targetOffset": 10511,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-usecase-wrap.1024.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 222,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 890,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -267,
+      "offset": 10776,
+      "targetOffset": 10778,
+      "maxOffset": 11507,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-usecase-wrap.1024.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 156,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 624,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -534,
+      "offset": 11044,
+      "targetOffset": 11046,
+      "maxOffset": 11507,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-usecase-wrap.1024.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 89,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 357,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 891 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "footer",
+   "bp": "1024",
+   "local": {
+    "contentTop": 14282,
+    "height": 651,
+    "docH": 15059,
+    "maxScroll": 14159,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "end-clamped",
+      "declared": "end",
+      "top": 735,
+      "scrollY": 14159,
+      "targetY": 14159,
+      "maxScroll": 14159,
+      "atStageEnd": true,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/footer.1024.end.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 735,
+       "w": 253,
+       "h": 41,
+       "touchesBottom": true,
+       "captureW": 1014,
+       "captureH": 165,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": false,
+      "coincident": true,
+      "reason": "pair is END — non-entry states coincide with the document end"
+     },
+     "mid60": {
+      "ok": false,
+      "coincident": true,
+      "reason": "pair is END — non-entry states coincide with the document end"
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "pair is END — non-entry states coincide with the document end"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 11507,
+    "height": 505,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "end-clamped",
+      "declared": "end",
+      "top": 390,
+      "offset": 11507,
+      "targetOffset": 11507,
+      "maxOffset": 11507,
+      "atStageEnd": true,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/footer.1024.end.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 390,
+       "w": 253,
+       "h": 126,
+       "touchesBottom": true,
+       "captureW": 1015,
+       "captureH": 505,
+       "storageScale": 4
+      },
+      "liveMaskRects": [
+       {
+        "x": 5.203125,
+        "y": 5.703125,
+        "w": 242.984375,
+        "h": 64.90625
+       }
+      ],
+      "note": "end-clamped on the reference: entry offset 11507 + top 390 exceeds the stage end 11507"
+     },
+     "mid30": {
+      "ok": false,
+      "coincident": true,
+      "reason": "section is end-clamped on the reference — every non-entry state coincides with END"
+     },
+     "mid60": {
+      "ok": false,
+      "coincident": true,
+      "reason": "section is end-clamped on the reference — every non-entry state coincides with END"
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "section is end-clamped on the reference — every non-entry state coincides with END"
+     }
+    }
+   }
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "1024",
+   "local": {
+    "contentTop": 8243,
+    "height": 507,
+    "docH": 15059,
+    "maxScroll": 14159,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 8243,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-platform-wrap.1024.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 126,
+       "touchesBottom": false,
+       "captureW": 1014,
+       "captureH": 506,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -152,
+      "scrollY": 8395,
+      "targetY": 8395,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-platform-wrap.1024.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 88,
+       "touchesBottom": false,
+       "captureW": 1014,
+       "captureH": 354,
+       "storageScale": 4
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -304,
+      "scrollY": 8547,
+      "targetY": 8547,
+      "maxScroll": 14159,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-platform-wrap.1024.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 50,
+       "touchesBottom": false,
+       "captureW": 1014,
+       "captureH": 202,
+       "storageScale": 4
+      }
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 507 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 8239,
+    "height": 505,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": -2,
+      "declaredTop": 0,
+      "offset": 8239,
+      "targetOffset": 8239,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-platform-wrap.1024.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 125,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 503,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -153,
+      "offset": 8390,
+      "targetOffset": 8391,
+      "maxOffset": 11507,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-platform-wrap.1024.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 88,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 352,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -304,
+      "offset": 8541,
+      "targetOffset": 8542,
+      "maxOffset": 11507,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-platform-wrap.1024.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 5,
+       "y": 0,
+       "w": 253,
+       "h": 50,
+       "touchesBottom": false,
+       "captureW": 1015,
+       "captureH": 201,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 505 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "home-intro-wrap",
+   "bp": "1920",
+   "local": {
+    "contentTop": 1070,
+    "height": 964,
+    "docH": 20954,
+    "maxScroll": 19874,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 1070,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-intro-wrap.1920.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 13,
+       "y": 0,
+       "w": 473,
+       "h": 240,
+       "touchesBottom": false,
+       "captureW": 1894,
+       "captureH": 963,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -289,
+      "scrollY": 1359,
+      "targetY": 1359,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-intro-wrap.1920.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 13,
+       "y": 0,
+       "w": 473,
+       "h": 168,
+       "touchesBottom": false,
+       "captureW": 1894,
+       "captureH": 674,
+       "storageScale": 4
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -578,
+      "scrollY": 1648,
+      "targetY": 1648,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-intro-wrap.1920.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 13,
+       "y": 0,
+       "w": 473,
+       "h": 96,
+       "touchesBottom": false,
+       "captureW": 1894,
+       "captureH": 385,
+       "storageScale": 4
+      }
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 964 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 1071,
+    "height": 963,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "offset": 1071,
+      "targetOffset": 1071,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-intro-wrap.1920.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 240,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 963,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -287,
+      "offset": 1358,
+      "targetOffset": 1360,
+      "maxOffset": 16717,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-intro-wrap.1920.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 169,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 676,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -576,
+      "offset": 1647,
+      "targetOffset": 1649,
+      "maxOffset": 16717,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-intro-wrap.1920.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 96,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 387,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 963 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "home-hero-wrap",
+   "bp": "1920",
+   "local": {
+    "contentTop": 7,
+    "height": 1063,
+    "docH": 20954,
+    "maxScroll": 19874,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 7,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-hero-wrap.1920.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 480,
+       "h": 265,
+       "touchesBottom": false,
+       "captureW": 1920,
+       "captureH": 1063,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -319,
+      "scrollY": 326,
+      "targetY": 326,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-hero-wrap.1920.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 480,
+       "h": 186,
+       "touchesBottom": false,
+       "captureW": 1920,
+       "captureH": 744,
+       "storageScale": 4
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -638,
+      "scrollY": 645,
+      "targetY": 645,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-hero-wrap.1920.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 480,
+       "h": 106,
+       "touchesBottom": false,
+       "captureW": 1920,
+       "captureH": 425,
+       "storageScale": 4
+      }
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 1063 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 9,
+    "height": 1062,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "offset": 9,
+      "targetOffset": 9,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-hero-wrap.1920.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 265,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 1062,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -317,
+      "offset": 326,
+      "targetOffset": 328,
+      "maxOffset": 16717,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-hero-wrap.1920.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 186,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 745,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -635,
+      "offset": 644,
+      "targetOffset": 646,
+      "maxOffset": 16717,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-hero-wrap.1920.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 106,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 427,
+       "storageScale": 4
+      },
+      "liveMaskRects": [
+       {
+        "x": 452.97735595703125,
+        "y": -21.266357421875,
+        "w": 194.10955810546875,
+        "h": 25.53900146484375
+       }
+      ]
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 1062 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "1920",
+   "local": {
+    "contentTop": 16911,
+    "height": 1036,
+    "docH": 20954,
+    "maxScroll": 19874,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": 0,
+      "declaredTop": 0,
+      "scrollY": 17813,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-usecase-wrap.1920.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 0,
+       "w": 480,
+       "h": 265,
+       "touchesBottom": false,
+       "captureW": 1920,
+       "captureH": 1063,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": 591,
+      "scrollY": 17222,
+      "targetY": 17222,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-usecase-wrap.1920.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 591,
+       "w": 480,
+       "h": 122,
+       "touchesBottom": true,
+       "captureW": 1920,
+       "captureH": 489,
+       "storageScale": 4
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": 280,
+      "scrollY": 17533,
+      "targetY": 17533,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-usecase-wrap.1920.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 0,
+       "y": 280,
+       "w": 480,
+       "h": 200,
+       "touchesBottom": true,
+       "captureW": 1920,
+       "captureH": 800,
+       "storageScale": 4
+      }
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 1036 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 14848,
+    "height": 1062,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": -1,
+      "declaredTop": 0,
+      "offset": 14848,
+      "targetOffset": 14848,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-usecase-wrap.1920.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 265,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 1061,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -318,
+      "offset": 15165,
+      "targetOffset": 15167,
+      "maxOffset": 16717,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-usecase-wrap.1920.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 186,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 744,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -636,
+      "offset": 15483,
+      "targetOffset": 15485,
+      "maxOffset": 16717,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-usecase-wrap.1920.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 106,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 426,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 1062 px section"
+     }
+    }
+   }
+  },
+  {
+   "key": "footer",
+   "bp": "1920",
+   "local": {
+    "contentTop": 19690,
+    "height": 1146,
+    "docH": 20954,
+    "maxScroll": 19874,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "end-clamped",
+      "declared": "end",
+      "top": 746,
+      "scrollY": 19874,
+      "targetY": 19874,
+      "maxScroll": 19874,
+      "atStageEnd": true,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/footer.1920.end.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 746,
+       "w": 475,
+       "h": 83,
+       "touchesBottom": true,
+       "captureW": 1901,
+       "captureH": 334,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": false,
+      "coincident": true,
+      "reason": "pair is END — non-entry states coincide with the document end"
+     },
+     "mid60": {
+      "ok": false,
+      "coincident": true,
+      "reason": "pair is END — non-entry states coincide with the document end"
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "pair is END — non-entry states coincide with the document end"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 16717,
+    "height": 948,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "end-clamped",
+      "declared": "end",
+      "top": 123,
+      "offset": 16717,
+      "targetOffset": 16717,
+      "maxOffset": 16717,
+      "atStageEnd": true,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/footer.1920.end.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 123,
+       "w": 475,
+       "h": 237,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 948,
+       "storageScale": 4
+      },
+      "liveMaskRects": [
+       {
+        "x": 13.640625,
+        "y": 13.859375,
+        "w": 448.578125,
+        "h": 114.6875
+       }
+      ],
+      "note": "end-clamped on the reference: entry offset 16717 + top 123 exceeds the stage end 16717"
+     },
+     "mid30": {
+      "ok": false,
+      "coincident": true,
+      "reason": "section is end-clamped on the reference — every non-entry state coincides with END"
+     },
+     "mid60": {
+      "ok": false,
+      "coincident": true,
+      "reason": "section is end-clamped on the reference — every non-entry state coincides with END"
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "section is end-clamped on the reference — every non-entry state coincides with END"
+     }
+    }
+   }
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "1920",
+   "local": {
+    "contentTop": 10591,
+    "height": 948,
+    "docH": 20954,
+    "maxScroll": 19874,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": -1,
+      "declaredTop": 0,
+      "scrollY": 10591,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-platform-wrap.1920.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 236,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 947,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -285,
+      "scrollY": 10875,
+      "targetY": 10875,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-platform-wrap.1920.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 165,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 663,
+       "storageScale": 4
+      }
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -570,
+      "scrollY": 11160,
+      "targetY": 11160,
+      "maxScroll": 19874,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/local/home-platform-wrap.1920.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 94,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 378,
+       "storageScale": 4
+      }
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 948 px section"
+     }
+    }
+   },
+   "reference": {
+    "ok": true,
+    "entryOffset": 10586,
+    "height": 947,
+    "states": {
+     "entry": {
+      "ok": true,
+      "state": "entry",
+      "declared": "entry",
+      "top": -1,
+      "declaredTop": 0,
+      "offset": 10586,
+      "targetOffset": 10586,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-platform-wrap.1920.entry.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 236,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 945,
+       "storageScale": 4
+      }
+     },
+     "mid30": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid30",
+      "top": -283,
+      "offset": 10868,
+      "targetOffset": 10870,
+      "maxOffset": 16717,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-platform-wrap.1920.mid30.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 165,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 663,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "mid60": {
+      "ok": true,
+      "state": "position",
+      "declared": "position",
+      "stateId": "mid60",
+      "top": -567,
+      "offset": 11152,
+      "targetOffset": 11154,
+      "maxOffset": 16717,
+      "landed": true,
+      "atStageEnd": false,
+      "file": "/home/z/wt/r368-t0/docs/audit/evidence/extra/primary/reference/home-platform-wrap.1920.mid60.png",
+      "clip": {
+       "ok": true,
+       "x": 9,
+       "y": 0,
+       "w": 475,
+       "h": 94,
+       "touchesBottom": false,
+       "captureW": 1902,
+       "captureH": 379,
+       "storageScale": 4
+      },
+      "liveMaskRects": []
+     },
+     "exit": {
+      "ok": false,
+      "coincident": true,
+      "reason": "duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 947 px section"
+     }
+    }
+   }
+  }
+ ],
+ "motion": {
+  "byBp": {
+   "768": {
+    "samples": [
+     {
+      "section": "home-intro-wrap",
+      "bp": "768",
+      "family": "settle",
+      "settleFrames": 5,
+      "pass": false,
+      "note": "last change at frame 5; tolerance ≤2"
+     },
+     {
+      "section": "home-intro-wrap",
+      "bp": "768",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -1.6,
+      "refTriggers": 4,
+      "refTriggerStartPx": 0,
+      "refTriggerEndPx": 1855,
+      "refTriggerFracOfSection": -1.7,
+      "resolution": "±0.1 of section height (18 steps over 2.52×H span)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "768",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "768",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "refTriggers": 0,
+      "refTriggerStartPx": null,
+      "refTriggerEndPx": null,
+      "refTriggerFracOfSection": null,
+      "resolution": "±0.1 of section height (18 steps over 1.82×H span)",
+      "pass": null,
+      "note": "no live trigger rooted at this section — named gap, not a pass"
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "768",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "768",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "refTriggers": 1,
+      "refTriggerStartPx": 7637,
+      "refTriggerEndPx": 10744,
+      "refTriggerFracOfSection": -1.7,
+      "resolution": "±0.1 of section height (18 steps over 1.46×H span)",
+      "pass": null,
+      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+     },
+     {
+      "section": "footer",
+      "bp": "768",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "footer",
+      "bp": "768",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "refTriggers": 18,
+      "refTriggerStartPx": 9858,
+      "refTriggerEndPx": 11791,
+      "refTriggerFracOfSection": -2.1,
+      "resolution": "±0.1 of section height (18 steps over 1.72×H span)",
+      "pass": null,
+      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "768",
+      "family": "settle",
+      "settleFrames": 5,
+      "pass": false,
+      "note": "last change at frame 5; tolerance ≤2"
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "768",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -1.6,
+      "refTriggers": 2,
+      "refTriggerStartPx": 6252,
+      "refTriggerEndPx": 8530,
+      "refTriggerFracOfSection": -2.6,
+      "resolution": "±0.1 of section height (18 steps over 2.55×H span)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+     }
+    ],
+    "families": {
+     "settle": {
+      "samples": 5,
+      "pass": 3,
+      "rate": 60
+     },
+     "triggerBaseline": {
+      "samples": 5,
+      "scored": 0,
+      "note": "recorded only — never counted as a Q pass or failure (verified-only rule)"
+     }
+    },
+    "overall": 60
+   },
+   "1024": {
+    "samples": [
+     {
+      "section": "home-intro-wrap",
+      "bp": "1024",
+      "family": "settle",
+      "settleFrames": 5,
+      "pass": false,
+      "note": "last change at frame 5; tolerance ≤2"
+     },
+     {
+      "section": "home-intro-wrap",
+      "bp": "1024",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -1.6,
+      "refTriggers": 4,
+      "refTriggerStartPx": 0,
+      "refTriggerEndPx": 1850,
+      "refTriggerFracOfSection": -1.7,
+      "resolution": "±0.1 of section height (18 steps over 2.55×H span)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "1024",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "1024",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "refTriggers": 0,
+      "refTriggerStartPx": null,
+      "refTriggerEndPx": null,
+      "refTriggerFracOfSection": null,
+      "resolution": "±0.1 of section height (18 steps over 1.81×H span)",
+      "pass": null,
+      "note": "no live trigger rooted at this section — named gap, not a pass"
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "1024",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "1024",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "refTriggers": 1,
+      "refTriggerStartPx": 7885,
+      "refTriggerEndPx": 10557,
+      "refTriggerFracOfSection": -2.9,
+      "resolution": "±0.1 of section height (18 steps over 1.99×H span)",
+      "pass": null,
+      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+     },
+     {
+      "section": "footer",
+      "bp": "1024",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "footer",
+      "bp": "1024",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "refTriggers": 18,
+      "refTriggerStartPx": 9617,
+      "refTriggerEndPx": 11114,
+      "refTriggerFracOfSection": -4.5,
+      "resolution": "±0.1 of section height (18 steps over 2.18×H span)",
+      "pass": null,
+      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "1024",
+      "family": "settle",
+      "settleFrames": 5,
+      "pass": false,
+      "note": "last change at frame 5; tolerance ≤2"
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "1024",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -1.6,
+      "refTriggers": 4,
+      "refTriggerStartPx": 6896,
+      "refTriggerEndPx": 9183,
+      "refTriggerFracOfSection": -2.7,
+      "resolution": "±0.1 of section height (18 steps over 2.58×H span)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+     }
+    ],
+    "families": {
+     "settle": {
+      "samples": 5,
+      "pass": 3,
+      "rate": 60
+     },
+     "triggerBaseline": {
+      "samples": 5,
+      "scored": 0,
+      "note": "recorded only — never counted as a Q pass or failure (verified-only rule)"
+     }
+    },
+    "overall": 60
+   },
+   "1920": {
+    "samples": [
+     {
+      "section": "home-intro-wrap",
+      "bp": "1920",
+      "family": "settle",
+      "settleFrames": 5,
+      "pass": false,
+      "note": "last change at frame 5; tolerance ≤2"
+     },
+     {
+      "section": "home-intro-wrap",
+      "bp": "1920",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -1,
+      "refTriggers": 4,
+      "refTriggerStartPx": 0,
+      "refTriggerEndPx": 2557,
+      "refTriggerFracOfSection": -1.1,
+      "resolution": "±0.1 of section height (18 steps over 1.92×H span)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "1920",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-hero-wrap",
+      "bp": "1920",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "refTriggers": 0,
+      "refTriggerStartPx": null,
+      "refTriggerEndPx": null,
+      "refTriggerFracOfSection": null,
+      "resolution": "±0.1 of section height (18 steps over 1.82×H span)",
+      "pass": null,
+      "note": "no live trigger rooted at this section — named gap, not a pass"
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "1920",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "home-usecase-wrap",
+      "bp": "1920",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "refTriggers": 1,
+      "refTriggerStartPx": 10837,
+      "refTriggerEndPx": 14024,
+      "refTriggerFracOfSection": -3.8,
+      "resolution": "±0.1 of section height (18 steps over 1.84×H span)",
+      "pass": null,
+      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+     },
+     {
+      "section": "footer",
+      "bp": "1920",
+      "family": "settle",
+      "settleFrames": 0,
+      "pass": true,
+      "note": "last change at frame 0; tolerance ≤2"
+     },
+     {
+      "section": "footer",
+      "bp": "1920",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": null,
+      "refTriggers": 18,
+      "refTriggerStartPx": 13261,
+      "refTriggerEndPx": 15371,
+      "refTriggerFracOfSection": -3.8,
+      "resolution": "±0.1 of section height (18 steps over 1.74×H span)",
+      "pass": null,
+      "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "1920",
+      "family": "settle",
+      "settleFrames": 5,
+      "pass": false,
+      "note": "last change at frame 5; tolerance ≤2"
+     },
+     {
+      "section": "home-platform-wrap",
+      "bp": "1920",
+      "family": "trigger-baseline",
+      "ourOnsetFrac": -1,
+      "refTriggers": 4,
+      "refTriggerStartPx": 8983,
+      "refTriggerEndPx": 12053,
+      "refTriggerFracOfSection": -1.7,
+      "resolution": "±0.1 of section height (18 steps over 1.94×H span)",
+      "pass": null,
+      "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset — NOT scored; Task 1 tunes against it"
+     }
+    ],
+    "families": {
+     "settle": {
+      "samples": 5,
+      "pass": 3,
+      "rate": 60
+     },
+     "triggerBaseline": {
+      "samples": 5,
+      "scored": 0,
+      "note": "recorded only — never counted as a Q pass or failure (verified-only rule)"
+     }
+    },
+    "overall": 60
+   }
+  },
+  "overall": 60
+ }
+}
