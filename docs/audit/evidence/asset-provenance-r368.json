@@ -1,0 +1,322 @@
+{
+ "generatedAt": "2026-11-18T19:35:00Z",
+ "task": "r368 Task 2 — the owned raster/SVG asset system (plan.md)",
+ "law": "No Heron-origin asset is copied: every file below is generated from a text prompt describing STYLE PARAMETERS ONLY (orthographic projection, thin ink lines, warm cream paper, single ember accent) measured from the public reference; no reference image was used as generation input, no tracing, no asset byte is shared. All output is Madarek-owned original work (AI-generated, license: original-work-madarek-r368).",
+ "styleParametersMeasured": {
+  "paper": "#F6F6EE-family warm cream",
+  "ink": "thin dark line-work",
+  "accent": "single ember #FA3600-family",
+  "projection": "orthographic (drafting-table metaphor)",
+  "source": "docs/redesign/r335/heron-spec/*.json (frozen) + GRAPHICS-PIPELINE.md §3 color temperature"
+ },
+ "assets": [
+  {
+   "id": "r368/intro-courtyard",
+   "slot": "home-intro-wrap",
+   "source": {
+    "file": "intro-courtyard.png",
+    "generator": "z-ai image CLI (original AI-generated artwork, Madarek-owned output)",
+    "prompt": "Minimalist architectural ink line drawing of a university campus courtyard, orthographic elevation view, thin precise dark ink lines on warm cream paper background, generous empty margins, one single bold orange-red circle accent overlapping the drawing's corner, technical drafting aesthetic, monochrome, no text, no perspective, flat 2D",
+    "dims": [
+     1024,
+     1024
+    ],
+    "sha256_16": "09eb7d988766429e"
+   },
+   "light": {
+    "path": "frontend/public/media/illustrations/r368/statement/intro-courtyard-light.webp",
+    "bytes": 56576,
+    "quality": 70,
+    "scale": 1.0,
+    "steps": [
+     {
+      "q": 70,
+      "scale": 1.0,
+      "bytes": 56576
+     }
+    ]
+   },
+   "dark": {
+    "path": "frontend/public/media/illustrations/r368/statement/intro-courtyard-dark.webp",
+    "bytes": 56230,
+    "quality": 70,
+    "scale": 1.0,
+    "derivation": "paper/ink inversion of the light twin (geometry never moves)",
+    "steps": [
+     {
+      "q": 70,
+      "scale": 1.0,
+      "bytes": 56230
+     }
+    ]
+   },
+   "edgeEnergy": {
+    "ratio_1x": 1.002,
+    "ratio_2x": 0.999,
+    "read": "1x/2x edge-energy ratio vs the PNG source at matched effective scale; ~1.0 = no visible softening"
+   }
+  },
+  {
+   "id": "r368/platform-floorplan",
+   "slot": "platform",
+   "source": {
+    "file": "platform-floorplan.png",
+    "generator": "z-ai image CLI (original AI-generated artwork, Madarek-owned output)",
+    "prompt": "Minimalist architectural floor plan drawing, orthographic top view of a university building, thin dark ink lines on warm cream paper, one room softly filled with orange-red tint, furniture outlines, technical blueprint drafting aesthetic, monochrome plus single orange accent, generous margins, no text, flat 2D",
+    "dims": [
+     1344,
+     768
+    ],
+    "sha256_16": "c12d7107e6ea1783"
+   },
+   "light": {
+    "path": "frontend/public/media/illustrations/r368/platform/platform-floorplan-light.webp",
+    "bytes": 53518,
+    "quality": 60,
+    "scale": 1.0,
+    "steps": [
+     {
+      "q": 70,
+      "scale": 1.0,
+      "bytes": 62418
+     },
+     {
+      "q": 60,
+      "scale": 1.0,
+      "bytes": 53518
+     }
+    ]
+   },
+   "dark": {
+    "path": "frontend/public/media/illustrations/r368/platform/platform-floorplan-dark.webp",
+    "bytes": 53856,
+    "quality": 60,
+    "scale": 1.0,
+    "derivation": "paper/ink inversion of the light twin (geometry never moves)",
+    "steps": [
+     {
+      "q": 70,
+      "scale": 1.0,
+      "bytes": 62184
+     },
+     {
+      "q": 60,
+      "scale": 1.0,
+      "bytes": 53856
+     }
+    ]
+   },
+   "edgeEnergy": {
+    "ratio_1x": 0.997,
+    "ratio_2x": 0.994,
+    "read": "1x/2x edge-energy ratio vs the PNG source at matched effective scale; ~1.0 = no visible softening"
+   }
+  },
+  {
+   "id": "r368/usecase-student",
+   "slot": "roles",
+   "source": {
+    "file": "usecase-student.png",
+    "generator": "z-ai image CLI (original AI-generated artwork, Madarek-owned output)",
+    "prompt": "Portrait of a focused Libyan university student studying with a laptop in a bright minimal room, soft natural window light, muted warm tones, editorial photography, calm scholarly mood, neutral cream background, high quality",
+    "dims": [
+     768,
+     1344
+    ],
+    "sha256_16": "b6c40d05f174251d"
+   },
+   "light": {
+    "path": "frontend/public/media/illustrations/r368/roles/usecase-student-light.webp",
+    "bytes": 47722,
+    "quality": 70,
+    "scale": 1.0,
+    "steps": [
+     {
+      "q": 70,
+      "scale": 1.0,
+      "bytes": 47722
+     }
+    ]
+   },
+   "dark": {
+    "path": "frontend/public/media/illustrations/r368/roles/usecase-student-dark.webp",
+    "bytes": 47452,
+    "quality": 70,
+    "scale": 1.0,
+    "derivation": "paper/ink inversion of the light twin (geometry never moves)",
+    "steps": [
+     {
+      "q": 70,
+      "scale": 1.0,
+      "bytes": 47452
+     }
+    ]
+   },
+   "edgeEnergy": {
+    "ratio_1x": 1.006,
+    "ratio_2x": 1.0,
+    "read": "1x/2x edge-energy ratio vs the PNG source at matched effective scale; ~1.0 = no visible softening"
+   }
+  },
+  {
+   "id": "r368/cta-frame",
+   "slot": "cta",
+   "source": {
+    "file": "cta-frame.png",
+    "generator": "z-ai image CLI (original AI-generated artwork, Madarek-owned output)",
+    "prompt": "Minimalist architectural line drawing of a modern university building facade inside an open rectangular frame outline, orthographic elevation, thin ink lines on warm cream paper, one small orange-red accent element, generous whitespace, technical drafting aesthetic, no text, flat 2D",
+    "dims": [
+     1152,
+     864
+    ],
+    "sha256_16": "5c47536c781f23cd"
+   },
+   "light": {
+    "path": "frontend/public/media/illustrations/r368/cta/cta-frame-light.webp",
+    "bytes": 57038,
+    "quality": 35,
+    "scale": 1.0,
+    "steps": [
+     {
+      "q": 50,
+      "scale": 1.0,
+      "bytes": 72888
+     },
+     {
+      "q": 40,
+      "scale": 1.0,
+      "bytes": 62918
+     },
+     {
+      "q": 35,
+      "scale": 1.0,
+      "bytes": 57038
+     }
+    ]
+   },
+   "dark": {
+    "path": "frontend/public/media/illustrations/r368/cta/cta-frame-dark.webp",
+    "bytes": 61324,
+    "quality": 40,
+    "scale": 1.0,
+    "derivation": "paper/ink inversion of the light twin (geometry never moves)",
+    "steps": [
+     {
+      "q": 60,
+      "scale": 1.0,
+      "bytes": 83406
+     },
+     {
+      "q": 50,
+      "scale": 1.0,
+      "bytes": 71582
+     },
+     {
+      "q": 40,
+      "scale": 1.0,
+      "bytes": 61324
+     }
+    ]
+   },
+   "edgeEnergy": {
+    "ratio_1x": 1.007,
+    "ratio_2x": 1.01,
+    "read": "1x/2x edge-energy ratio vs the PNG source at matched effective scale; ~1.0 = no visible softening"
+   }
+  }
+ ],
+ "derivativePipeline": "ffmpeg libwebp, quality descent 70->35, 0.85x scale steps, floor 35 (GRAPHICS-PIPELINE.md §3b)",
+ "budget": "60 KB webp per asset",
+ "twinLaw": "dark = paper/ink inversion of the light twin (geometry never moves) — matches the measured r342 convention (correlation 0.991 confirmed on the existing twins before deriving)",
+ "wiring": "NONE at this commit — the r368 set is registered in the media manifest and quality-proven; wiring into seat components is Task 3's seat rework (the plan's file split); no section E is affected by this commit",
+ "qualityEvidence": [
+  {
+   "seat": "statement",
+   "stem": "intro-courtyard",
+   "png": {
+    "dims": [
+     1024,
+     1024
+    ],
+    "sha256": "09eb7d988766429e"
+   },
+   "webp": {
+    "dims": [
+     1024,
+     1024
+    ],
+    "bytes": 56576,
+    "mode": "RGB"
+   },
+   "edgeEnergyRatio_1x": 1.002,
+   "edgeEnergyRatio_2x": 0.999,
+   "read": "ratio ~1.0 = webp carries the source's edge energy at that scale; <0.8 = visible softening"
+  },
+  {
+   "seat": "platform",
+   "stem": "platform-floorplan",
+   "png": {
+    "dims": [
+     1344,
+     768
+    ],
+    "sha256": "c12d7107e6ea1783"
+   },
+   "webp": {
+    "dims": [
+     1344,
+     768
+    ],
+    "bytes": 53518,
+    "mode": "RGB"
+   },
+   "edgeEnergyRatio_1x": 0.997,
+   "edgeEnergyRatio_2x": 0.994,
+   "read": "ratio ~1.0 = webp carries the source's edge energy at that scale; <0.8 = visible softening"
+  },
+  {
+   "seat": "roles",
+   "stem": "usecase-student",
+   "png": {
+    "dims": [
+     768,
+     1344
+    ],
+    "sha256": "b6c40d05f174251d"
+   },
+   "webp": {
+    "dims": [
+     768,
+     1344
+    ],
+    "bytes": 47722,
+    "mode": "RGB"
+   },
+   "edgeEnergyRatio_1x": 1.006,
+   "edgeEnergyRatio_2x": 1.0,
+   "read": "ratio ~1.0 = webp carries the source's edge energy at that scale; <0.8 = visible softening"
+  },
+  {
+   "seat": "cta",
+   "stem": "cta-frame",
+   "png": {
+    "dims": [
+     1152,
+     864
+    ],
+    "sha256": "5c47536c781f23cd"
+   },
+   "webp": {
+    "dims": [
+     1152,
+     864
+    ],
+    "bytes": 57038,
+    "mode": "RGB"
+   },
+   "edgeEnergyRatio_1x": 1.007,
+   "edgeEnergyRatio_2x": 1.01,
+   "read": "ratio ~1.0 = webp carries the source's edge energy at that scale; <0.8 = visible softening"
+  }
+ ]
+}
