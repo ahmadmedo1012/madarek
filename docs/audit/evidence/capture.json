@@ -1,0 +1,492 @@
+{
+ "profile": {
+  "browser": "chromium 156.0.8078.4",
+  "playwright": "1.60.0",
+  "node": "v22.22.1",
+  "dpr": 1,
+  "reducedMotion": "no-preference",
+  "settle": "fonts.ready → preloader gone → two identical document heights → 2 rAF",
+  "local": "http://localhost:5301",
+  "reference": "https://heronaiapp.com/"
+ },
+ "rows": [
+  {
+   "key": "chrome",
+   "bp": "1440",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 7,
+    "scrollY": 7,
+    "landed": true,
+    "width": 1440,
+    "height": 900,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/chrome.1440.png",
+    "selector": "header.fo-header"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "header.header"
+   }
+  },
+  {
+   "key": "footer",
+   "bp": "1440",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 15630,
+    "scrollY": 15630,
+    "landed": true,
+    "width": 1440,
+    "height": 900,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/footer.1440.png",
+    "selector": "footer.fo-footer"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "footer.footer"
+   }
+  },
+  {
+   "key": "home-cta-wrap",
+   "bp": "1440",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 14299,
+    "scrollY": 13629,
+    "landed": true,
+    "width": 1440,
+    "height": 900,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-cta-wrap.1440.png",
+    "selector": "section#vision.fo-cta"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.cta-wrap"
+   }
+  },
+  {
+   "key": "home-hero-wrap",
+   "bp": "1440",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 7,
+    "scrollY": 7,
+    "landed": true,
+    "width": 1440,
+    "height": 900,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-hero-wrap.1440.png",
+    "selector": "section.fo-hero"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-hero-wrap"
+   }
+  },
+  {
+   "key": "home-intro-wrap",
+   "bp": "1440",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 894,
+    "scrollY": 894,
+    "landed": true,
+    "width": 1440,
+    "height": 900,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-intro-wrap.1440.png",
+    "selector": "div#statement.st-section"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-intro-wrap"
+   }
+  },
+  {
+   "key": "home-map-wrap",
+   "bp": "1440",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 2363,
+    "scrollY": 2363,
+    "landed": true,
+    "width": 1440,
+    "height": 900,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-map-wrap.1440.png",
+    "selector": "section#chapters.chapters"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-map-wrap"
+   }
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "1440",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 8663,
+    "scrollY": 8663,
+    "landed": true,
+    "width": 1440,
+    "height": 900,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-platform-wrap.1440.png",
+    "selector": "section#product.pr-section"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-platform-wrap"
+   }
+  },
+  {
+   "key": "home-problem-wrap",
+   "bp": "1440",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 1617,
+    "scrollY": 1617,
+    "landed": true,
+    "width": 1440,
+    "height": 900,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-problem-wrap.1440.png",
+    "selector": "section#live.pm-section"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-problem-wrap"
+   }
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "1440",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 14083,
+    "scrollY": 14083,
+    "landed": true,
+    "width": 1440,
+    "height": 900,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-usecase-wrap.1440.png",
+    "selector": "section#roles.rl-section"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-usecase-wrap"
+   }
+  },
+  {
+   "key": "home-why-wrap",
+   "bp": "1440",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 10925,
+    "scrollY": 10925,
+    "landed": true,
+    "width": 1440,
+    "height": 900,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-why-wrap.1440.png",
+    "selector": "section.wy-section"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-why-wrap"
+   }
+  },
+  {
+   "key": "chrome",
+   "bp": "390",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 7,
+    "scrollY": 7,
+    "landed": true,
+    "width": 390,
+    "height": 844,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/chrome.390.png",
+    "selector": "header.fo-header"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "header.header"
+   }
+  },
+  {
+   "key": "footer",
+   "bp": "390",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 12835,
+    "scrollY": 12835,
+    "landed": true,
+    "width": 390,
+    "height": 844,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/footer.390.png",
+    "selector": "footer.fo-footer"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "footer.footer"
+   }
+  },
+  {
+   "key": "home-cta-wrap",
+   "bp": "390",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 11926,
+    "scrollY": 11615,
+    "landed": true,
+    "width": 390,
+    "height": 844,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-cta-wrap.390.png",
+    "selector": "section#vision.fo-cta"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.cta-wrap"
+   }
+  },
+  {
+   "key": "home-hero-wrap",
+   "bp": "390",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 7,
+    "scrollY": 7,
+    "landed": true,
+    "width": 390,
+    "height": 844,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-hero-wrap.390.png",
+    "selector": "section.fo-hero"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-hero-wrap"
+   }
+  },
+  {
+   "key": "home-intro-wrap",
+   "bp": "390",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 837,
+    "scrollY": 837,
+    "landed": true,
+    "width": 390,
+    "height": 844,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-intro-wrap.390.png",
+    "selector": "div#statement.st-section"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-intro-wrap"
+   }
+  },
+  {
+   "key": "home-map-wrap",
+   "bp": "390",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 2656,
+    "scrollY": 2656,
+    "landed": true,
+    "width": 390,
+    "height": 844,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-map-wrap.390.png",
+    "selector": "section#chapters.chapters"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-map-wrap"
+   }
+  },
+  {
+   "key": "home-platform-wrap",
+   "bp": "390",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 7392,
+    "scrollY": 7392,
+    "landed": true,
+    "width": 390,
+    "height": 844,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-platform-wrap.390.png",
+    "selector": "section#product.pr-section"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-platform-wrap"
+   }
+  },
+  {
+   "key": "home-problem-wrap",
+   "bp": "390",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 1771,
+    "scrollY": 1771,
+    "landed": true,
+    "width": 390,
+    "height": 844,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-problem-wrap.390.png",
+    "selector": "section#live.pm-section"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-problem-wrap"
+   }
+  },
+  {
+   "key": "home-usecase-wrap",
+   "bp": "390",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 11538,
+    "scrollY": 11538,
+    "landed": true,
+    "width": 390,
+    "height": 844,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-usecase-wrap.390.png",
+    "selector": "section#roles.rl-section"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-usecase-wrap"
+   }
+  },
+  {
+   "key": "home-why-wrap",
+   "bp": "390",
+   "local": {
+    "ok": true,
+    "state": "entry",
+    "sectionTop": 10420,
+    "scrollY": 10420,
+    "landed": true,
+    "width": 390,
+    "height": 844,
+    "file": "/home/rh2011/Projects/madarek/docs/audit/evidence/primary/local/home-why-wrap.390.png",
+    "selector": "section.wy-section"
+   },
+   "reference": {
+    "ok": false,
+    "reason": "page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)",
+    "file": null,
+    "selector": "div.home-why-wrap"
+   }
+  }
+ ],
+ "motion": {
+  "triggers": 50,
+  "ours": {
+   "sections": {
+    "chrome": {
+     "top": 7,
+     "height": 56,
+     "docHeight": 16585
+    },
+    "footer": {
+     "top": 15630,
+     "height": 903,
+     "docHeight": 16585
+    },
+    "home-cta-wrap": {
+     "top": 14299,
+     "height": 1332,
+     "docHeight": 16585
+    },
+    "home-hero-wrap": {
+     "top": 7,
+     "height": 887,
+     "docHeight": 16585
+    },
+    "home-intro-wrap": {
+     "top": 894,
+     "height": 723,
+     "docHeight": 16585
+    },
+    "home-map-wrap": {
+     "top": 2363,
+     "height": 6300,
+     "docHeight": 16585
+    },
+    "home-platform-wrap": {
+     "top": 8663,
+     "height": 712,
+     "docHeight": 16585
+    },
+    "home-problem-wrap": {
+     "top": 1617,
+     "height": 746,
+     "docHeight": 16585
+    },
+    "home-usecase-wrap": {
+     "top": 13413,
+     "height": 886,
+     "docHeight": 16585
+    },
+    "home-why-wrap": {
+     "top": 10925,
+     "height": 2488,
+     "docHeight": 16585
+    }
+   }
+  },
+  "note": "reference trigger list from the frozen spec; our sibling data is measured live"
+ }
+}

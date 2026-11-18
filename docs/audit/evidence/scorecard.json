@@ -1,0 +1,516 @@
+{
+ "generatedAt": "2026-11-18T10:58:49.550Z",
+ "formula": {
+  "E": "100 × mean SSIM over 8×8 windows outside preregistered text masks",
+  "T": "100 × verified matched pairs / required pairs",
+  "Q": "100 × passing approved samples / total samples"
+ },
+ "viewports": [
+  "1440=1440x900",
+  "390=390x844"
+ ],
+ "required": 20,
+ "covered": 0,
+ "referenceUnavailable": true,
+ "T_reason": "reference evidence unavailable — reference; pairs cannot be verified and are NOT counted as failures",
+ "E": null,
+ "T": null,
+ "Q": {
+  "overall": null,
+  "families": {},
+  "note": "Q awaits a live reference trace: the frozen motion spec carries trigger positions but not sampled displacement/opacity values, and the spec forbids inferring them. Samples recorded, none may be marked passing yet."
+ },
+ "perSection": {
+  "chrome": {
+   "E": null,
+   "T": null,
+   "pairs": 2,
+   "covered": 0,
+   "perViewport": {
+    "390": {
+     "E": null,
+     "status": "missing"
+    },
+    "1440": {
+     "E": null,
+     "status": "missing"
+    }
+   }
+  },
+  "footer": {
+   "E": null,
+   "T": null,
+   "pairs": 2,
+   "covered": 0,
+   "perViewport": {
+    "390": {
+     "E": null,
+     "status": "missing"
+    },
+    "1440": {
+     "E": null,
+     "status": "missing"
+    }
+   }
+  },
+  "home-cta-wrap": {
+   "E": null,
+   "T": null,
+   "pairs": 2,
+   "covered": 0,
+   "perViewport": {
+    "390": {
+     "E": null,
+     "status": "missing"
+    },
+    "1440": {
+     "E": null,
+     "status": "missing"
+    }
+   }
+  },
+  "home-hero-wrap": {
+   "E": null,
+   "T": null,
+   "pairs": 2,
+   "covered": 0,
+   "perViewport": {
+    "390": {
+     "E": null,
+     "status": "missing"
+    },
+    "1440": {
+     "E": null,
+     "status": "missing"
+    }
+   }
+  },
+  "home-intro-wrap": {
+   "E": null,
+   "T": null,
+   "pairs": 2,
+   "covered": 0,
+   "perViewport": {
+    "390": {
+     "E": null,
+     "status": "missing"
+    },
+    "1440": {
+     "E": null,
+     "status": "missing"
+    }
+   }
+  },
+  "home-map-wrap": {
+   "E": null,
+   "T": null,
+   "pairs": 2,
+   "covered": 0,
+   "perViewport": {
+    "390": {
+     "E": null,
+     "status": "missing"
+    },
+    "1440": {
+     "E": null,
+     "status": "missing"
+    }
+   }
+  },
+  "home-platform-wrap": {
+   "E": null,
+   "T": null,
+   "pairs": 2,
+   "covered": 0,
+   "perViewport": {
+    "390": {
+     "E": null,
+     "status": "missing"
+    },
+    "1440": {
+     "E": null,
+     "status": "missing"
+    }
+   }
+  },
+  "home-problem-wrap": {
+   "E": null,
+   "T": null,
+   "pairs": 2,
+   "covered": 0,
+   "perViewport": {
+    "390": {
+     "E": null,
+     "status": "missing"
+    },
+    "1440": {
+     "E": null,
+     "status": "missing"
+    }
+   }
+  },
+  "home-usecase-wrap": {
+   "E": null,
+   "T": null,
+   "pairs": 2,
+   "covered": 0,
+   "perViewport": {
+    "390": {
+     "E": null,
+     "status": "missing"
+    },
+    "1440": {
+     "E": null,
+     "status": "missing"
+    }
+   }
+  },
+  "home-why-wrap": {
+   "E": null,
+   "T": null,
+   "pairs": 2,
+   "covered": 0,
+   "perViewport": {
+    "390": {
+     "E": null,
+     "status": "missing"
+    },
+    "1440": {
+     "E": null,
+     "status": "missing"
+    }
+   }
+  }
+ },
+ "rows": [
+  {
+   "section": "chrome",
+   "bp": "1440",
+   "localSelector": "header.fo-header",
+   "referenceSelector": "header.header",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "footer",
+   "bp": "1440",
+   "localSelector": "footer.fo-footer",
+   "referenceSelector": "footer.footer",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-cta-wrap",
+   "bp": "1440",
+   "localSelector": "section#vision.fo-cta",
+   "referenceSelector": "div.cta-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "localSelector": "section.fo-hero",
+   "referenceSelector": "div.home-hero-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "1440",
+   "localSelector": "div#statement.st-section",
+   "referenceSelector": "div.home-intro-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1440",
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-platform-wrap",
+   "bp": "1440",
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-problem-wrap",
+   "bp": "1440",
+   "localSelector": "section#live.pm-section",
+   "referenceSelector": "div.home-problem-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "localSelector": "section.wy-section",
+   "referenceSelector": "div.home-why-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "chrome",
+   "bp": "390",
+   "localSelector": "header.fo-header",
+   "referenceSelector": "header.header",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "footer",
+   "bp": "390",
+   "localSelector": "footer.fo-footer",
+   "referenceSelector": "footer.footer",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-cta-wrap",
+   "bp": "390",
+   "localSelector": "section#vision.fo-cta",
+   "referenceSelector": "div.cta-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "localSelector": "section.fo-hero",
+   "referenceSelector": "div.home-hero-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "localSelector": "div#statement.st-section",
+   "referenceSelector": "div.home-intro-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "390",
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-platform-wrap",
+   "bp": "390",
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-problem-wrap",
+   "bp": "390",
+   "localSelector": "section#live.pm-section",
+   "referenceSelector": "div.home-problem-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "390",
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "390",
+   "localSelector": "section.wy-section",
+   "referenceSelector": "div.home-why-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  }
+ ],
+ "missing": [
+  {
+   "section": "chrome",
+   "bp": "1440",
+   "localSelector": "header.fo-header",
+   "referenceSelector": "header.header",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "footer",
+   "bp": "1440",
+   "localSelector": "footer.fo-footer",
+   "referenceSelector": "footer.footer",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-cta-wrap",
+   "bp": "1440",
+   "localSelector": "section#vision.fo-cta",
+   "referenceSelector": "div.cta-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "localSelector": "section.fo-hero",
+   "referenceSelector": "div.home-hero-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "1440",
+   "localSelector": "div#statement.st-section",
+   "referenceSelector": "div.home-intro-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "1440",
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-platform-wrap",
+   "bp": "1440",
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-problem-wrap",
+   "bp": "1440",
+   "localSelector": "section#live.pm-section",
+   "referenceSelector": "div.home-problem-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "localSelector": "section.wy-section",
+   "referenceSelector": "div.home-why-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=900 at viewport 1440x900; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "chrome",
+   "bp": "390",
+   "localSelector": "header.fo-header",
+   "referenceSelector": "header.header",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "footer",
+   "bp": "390",
+   "localSelector": "footer.fo-footer",
+   "referenceSelector": "footer.footer",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-cta-wrap",
+   "bp": "390",
+   "localSelector": "section#vision.fo-cta",
+   "referenceSelector": "div.cta-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "localSelector": "section.fo-hero",
+   "referenceSelector": "div.home-hero-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "localSelector": "div#statement.st-section",
+   "referenceSelector": "div.home-intro-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-map-wrap",
+   "bp": "390",
+   "localSelector": "section#chapters.chapters",
+   "referenceSelector": "div.home-map-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-platform-wrap",
+   "bp": "390",
+   "localSelector": "section#product.pr-section",
+   "referenceSelector": "div.home-platform-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-problem-wrap",
+   "bp": "390",
+   "localSelector": "section#live.pm-section",
+   "referenceSelector": "div.home-problem-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "390",
+   "localSelector": "section#roles.rl-section",
+   "referenceSelector": "div.home-usecase-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "390",
+   "localSelector": "section.wy-section",
+   "referenceSelector": "div.home-why-wrap",
+   "status": "missing",
+   "reason": "reference: page-not-scrollable: documentElement.scrollHeight=844 at viewport 390x844; a section state cannot be addressed by scroll position (frozen spec records 14144 px for the reference)"
+  }
+ ],
+ "gates": {
+  "E_overall_min": 90,
+  "E_section_min": 88,
+  "T_overall_min": 95,
+  "T_section_min": 90,
+  "maskShareMax": 0.55
+ }
+}
