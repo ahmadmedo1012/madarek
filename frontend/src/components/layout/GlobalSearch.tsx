@@ -172,6 +172,11 @@ const STUDENT_EXCLUDED_CATEGORIES: ReadonlySet<DiscoverCategoryKey> = new Set([
   'students', 'teachers', 'questions',
 ]);
 
+/* r366-final: the suggestion seeds — ONE seat for both empty moments
+ * (the hits surface and the palette's command dead-end) so the two
+ * never drift apart (jscpd counts the drift otherwise). */
+const SUGGESTION_SEEDS = ['هندسة', 'بحث', 'برمجة', 'حرم المعرفة'] as const;
+
 function discoverCategoriesForRole(role: AppRole | undefined): DiscoverCategoryKey[] {
   if (role && role !== 'STUDENT') return [...DISCOVER_CATEGORY_ORDER];
   return DISCOVER_CATEGORY_ORDER.filter((c) => !STUDENT_EXCLUDED_CATEGORIES.has(c));
@@ -555,10 +560,9 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
               </div>
               <div className="search-empty-title">لم نعثر على نتائج لـ«{debounced}»</div>
               <div className="search-empty-tips">
-                جرّب: <button type="button" className="search-tip-pill" onClick={() => setQuery('هندسة')}>هندسة</button>
-                <button type="button" className="search-tip-pill" onClick={() => setQuery('بحث')}>بحث</button>
-                <button type="button" className="search-tip-pill" onClick={() => setQuery('برمجة')}>برمجة</button>
-                <button type="button" className="search-tip-pill" onClick={() => setQuery('حرم المعرفة')}>حرم المعرفة</button>
+                جرّب: {SUGGESTION_SEEDS.map((seed) => (
+                  <button key={seed} type="button" className="search-tip-pill" onClick={() => setQuery(seed)}>{seed}</button>
+                ))}
               </div>
               <div className="search-empty-hint">
                 البحث يشمل الطلاب والأساتذة والمقرّرات والكليات والمحاضرات والبحوث والكتب والوظائف.
@@ -984,10 +988,9 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
                 here (one tap refills the query; the dead end is gone). */}
             {debounced && (
               <div className="search-empty-tips">
-                جرّب: <button type="button" className="search-tip-pill" onClick={() => setQuery('هندسة')}>هندسة</button>
-                <button type="button" className="search-tip-pill" onClick={() => setQuery('بحث')}>بحث</button>
-                <button type="button" className="search-tip-pill" onClick={() => setQuery('برمجة')}>برمجة</button>
-                <button type="button" className="search-tip-pill" onClick={() => setQuery('حرم المعرفة')}>حرم المعرفة</button>
+                جرّب: {SUGGESTION_SEEDS.map((seed) => (
+                  <button key={seed} type="button" className="search-tip-pill" onClick={() => setQuery(seed)}>{seed}</button>
+                ))}
               </div>
             )}
             <div className="search-empty-hint">
