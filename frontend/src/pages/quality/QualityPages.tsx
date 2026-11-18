@@ -22,6 +22,7 @@ import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '
 import { ErrorState, EmptyState, ChartSkeleton, ListSkeleton, TableSkeleton, Skeleton, CardSkeleton } from '../../components/primitives/States';
 import { useCompactRosterBand, COURSE_UNIT } from '../admin/AdminPages'; // R341 deadcode reconciliation — one definition (see the Professor Evaluation note)
 import { CountIn } from '../../components/motion/CountIn';
+import { Tooltip as UITooltip } from '../../components/overlays/Tooltip'; // R366-final: aliased — chart.js's Tooltip (the register config) already owns the bare name
 import { Icon } from '../../components/Icon';
 /* r361: the working-drawing family — the quality dashboard's no-courses
  * companion: the mastery ladder (the measurement instrument this very
@@ -809,8 +810,14 @@ export function QualityCoursesPage() {
                   {metric && <th scope="col" className="tbl-num">{metricLabel}</th>}
                   {/* A8 P2-4: this is an estimated completion index, not
                       a measured “quality” — renamed + weights surfaced so
-                      the number names its own formula. */}
-                  <th scope="col" title="محاضرة 20 نقطة، ملف 5، واجب 10 — بحدّ أقصى 100">اكتمال المحتوى</th>
+                      the number names its own formula. R366-final
+                      copy-style: the formula rides the shared Tooltip
+                      (the guide §5 «؟» affordance) instead of a native
+                      title attr, which the title law reads as a page
+                      title — same words, same hover seat. */}
+                  <UITooltip content="محاضرة 20 نقطة، ملف 5، واجب 10 — بحدّ أقصى 100">
+                    <th scope="col">اكتمال المحتوى</th>
+                  </UITooltip>
                 </tr>
               </thead>
               <tbody>

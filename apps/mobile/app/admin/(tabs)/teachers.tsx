@@ -28,6 +28,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { initials, num } from "@/lib/format";
 import { pageOf, textOf, UserAvatar, avatarUrlOf, type FacultyNode } from "@/features/governance/components";
+import { SAVING, SEARCH_NAME_OR_EMAIL, UPDATE_FAILED } from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -98,13 +99,13 @@ export default function AdminTeachers() {
         <StatLine
           label="عدد الأساتذة"
           value={num(count.data?.rows ? (count.data.meta?.total ?? count.data.rows.length) : null, "…")}
-          hint={count.isLoading ? "قراءة عدّاد الخادم…" : "في هذه المؤسّسة"}
+          hint={count.isLoading ? "قراءة العدّاد…" : "في هذه المؤسّسة"}
         />
 
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو البريد الإلكتروني…"
+          placeholder={SEARCH_NAME_OR_EMAIL}
           onClear={() => setQ("")}
         />
       </View>
@@ -124,11 +125,11 @@ export default function AdminTeachers() {
           hasNextPage={roster.hasNextPage}
           loadMoreError={roster.loadMoreError}
           onRetryLoadMore={roster.retryLoadMore}
-          emptyTitle={appliedQ ? "لا نتائج مطابقة" : "لم يتم تسجيل أساتذة بعد"}
+          emptyTitle={appliedQ ? "لا نتائج مطابقة" : "لا أساتذة بعد"}
           emptyMessage={
             appliedQ
-              ? "لم نجد أساتذة تطابق البحث الحالي."
-              : "ستظهر القائمة فور تسجيل أول أستاذ في النظام."
+              ? "لا أساتذة تطابق البحث."
+              : "تظهر فور تسجيل أول أستاذ."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
         />
@@ -201,9 +202,9 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
     onSuccess: (_d, verified) => {
       qc.invalidateQueries({ queryKey: ["admin", "users"] });
       qc.invalidateQueries({ queryKey: ["admin", "teachers"] });
-      toast.success(verified ? `تمّ توثيق «${teacher.firstName} ${teacher.lastName}».` : "أُلغي توثيق الأستاذ.");
+      toast.success(verified ? `تمّ توثيق «${teacher.firstName} ${teacher.lastName}».` : "أُلغي التوثيق.");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث التوثيق"),
+    onError: (e) => toast.error(humanizeError(e), UPDATE_FAILED),
   });
 
   const [position, setPosition] = useState<PositionChoice>(
@@ -334,7 +335,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
           <Button
             label={
               setPositionM.isPending
-                ? "جارٍ الحفظ…"
+                ? SAVING
                 : position === "NONE"
                   ? "إلغاء التعيين"
                   : `تعيين ${POSITION_LABELS[position] ?? ""}`
@@ -348,7 +349,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
 
       <ConfirmDialog
         open={unverifyConfirm}
-        title="إلغاء توثيق الأستاذ"
+        title="إلغاء التوثيق"
         message={`سيُفقد «${teacher.firstName} ${teacher.lastName}» شارة التوثيق، ويُسجَّل الإجراء في سجلّ النشاط.`}
         confirmLabel="إلغاء التوثيق"
         danger

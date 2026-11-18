@@ -26,7 +26,7 @@ import { subscribeServerWake, isServerSlow, serverWakePhase, type WakePhase } fr
  *  WAKE_RETRY — so "do not close the page" is the truthful instruction). */
 const PHASE_TEXT: Record<Exclude<WakePhase, 'ok'>, string> = {
   waking: 'الخادم يستيقظ بعد إقلاع بارد — أول استدعاء قد يطول قليلًا',
-  long: 'ما زال الخادم يستيقظ — عادةً ٣٠–٦٠ ثانية. لا تُغلق الصفحة، نُعيد المحاولة تلقائيًا',
+  long: 'ما زال الخادم يستيقظ — عادةً 30–60 ثانية. لا تُغلق الصفحة، نُعيد المحاولة تلقائيًا',
 };
 
 export function ServerWakePill() {

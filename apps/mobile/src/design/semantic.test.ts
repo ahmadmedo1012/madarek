@@ -76,7 +76,7 @@ describe("the ONE accent", () => {
   it("body-size accent text has its own AA-safe ink (not the raw fill)", () => {
     const light = semanticColorsFor("light");
     expect(light.accentInk).not.toBe(light.accent);
-    expect(light.accentInk).toBe("#C72E00");
+    expect(light.accentInk).toBe("#C12B00");
     const dark = semanticColorsFor("dark");
     expect(dark.accentInk).not.toBe(dark.accent);
     expect(dark.accentInk).toBe("#FF6B33");
@@ -88,7 +88,7 @@ describe("status triples — shared-JSON mapping (successInk = deep@light / ink@
     const light = semanticColorsFor("light");
     expect(light.success).toEqual({ fill: "#3F8F5C", soft: "#E3EBE1", ink: "#1B5430" });
     expect(light.warning).toEqual({ fill: "#A8750F", soft: "#F5EBD6", ink: "#5E420C" });
-    expect(light.danger).toEqual({ fill: "#F15534", soft: "#F9E3DC", ink: "#8C230A" });
+    expect(light.danger).toEqual({ fill: "#E5481F", soft: "#F9E3DC", ink: "#8C230A" });
 
     const dark = semanticColorsFor("dark");
     expect(dark.success).toEqual({ fill: "#84D0A0", soft: "#24372B", ink: "#84D0A0" });

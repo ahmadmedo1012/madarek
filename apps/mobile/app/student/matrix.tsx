@@ -132,7 +132,7 @@ export default function MatrixScreen() {
         )}
       </View>
 
-      {/* مصفوفتك حسب المقرّر */}
+      {/* مصفوفتك بالمقرّر */}
       {matrix.isLoading ? (
         <SkeletonList rows={5} rowHeight={72} />
       ) : matrix.isError ? (
@@ -140,16 +140,16 @@ export default function MatrixScreen() {
       ) : courses.length === 0 ? (
         <EmptyState
           art={<Illustration id="r342/problem-03-mastery" width={216} />}
-          title="لم تتشكّل مصفوفتك بعد"
-          message="شاهد أول محاضرة وأجب عن نقاط التفاعل فيها، وستبدأ المصفوفة برسم خريطة معرفتك تلقائياً."
+          title="لم تتشكل بعد"
+          message="أجب عن نقاط التفاعل — ترسم المصفوفة خريطتك."
         />
       ) : (
         <>
           <View style={{ gap: sp[8] }}>
-            <SectionBar index={2} title="مصفوفتك حسب المقرّر" />
+            <SectionBar index={2} title="مصفوفتك بالمقرّر" />
             {totalConcepts > 0 ? (
               <T variant="xs" color="muted">
-                {countAr(totalConcepts, ["مفهوم واحد مُقاس", "مفهومان مُقاسان", "مفاهيم مُقاسة", "مفهوماً مُقاساً"])}
+                {countAr(totalConcepts, ["مفهوم مُقاس", "مفهومان مُقاسان", "مفاهيم مُقاسة", "مفهوماً مُقاساً"])}
               </T>
             ) : null}
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ minHeight: 44 }}>

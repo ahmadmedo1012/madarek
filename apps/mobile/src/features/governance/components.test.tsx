@@ -43,7 +43,7 @@ import {
 
 describe("R334 governance kit — label maps cover the backend enums", () => {
   it("login reasons: known codes map, unknown read «سبب آخر», null is a dash", () => {
-    expect(loginReasonLabel("INVALID_CREDENTIALS")).toBe("بيانات دخول غير صحيحة");
+    expect(loginReasonLabel("INVALID_CREDENTIALS")).toBe("بيانات غير صحيحة");
     expect(loginReasonLabel("TOTALLY_NEW_CODE")).toBe("سبب آخر");
     expect(loginReasonLabel("")).toBe("—");
   });

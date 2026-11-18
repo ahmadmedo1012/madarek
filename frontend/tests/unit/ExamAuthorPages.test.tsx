@@ -1189,7 +1189,8 @@ describe('GradeAttemptModal — verdicts → payload → finalize', () => {
     // The draft survives behind the confirm.
     expect(within(g1).getByRole('button', { name: 'صحيحة' })).toHaveAttribute('aria-pressed', 'true');
 
-    fireEvent.click(screen.getByRole('button', { name: 'التخلّي عن التعديلات' }));
+    // R366-final copy-style: confirm label ≤ 2 words (تأكيد+noun).
+    fireEvent.click(screen.getByRole('button', { name: 'تأكيد التخلّي' }));
     await waitFor(() => {
       expect(screen.queryByRole('dialog', { name: 'تصحيح محاولة — آمنة العبيدي' })).toBeNull();
     });

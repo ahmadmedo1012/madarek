@@ -85,7 +85,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا تقارير هنا"
-            message="عندما يرسل مستخدم «أبلغ عن مشكلة / اقتراح» يظهر تقريره في هذا الصندوق بسياقه الكامل."
+            message="تقارير «أبلغ عن مشكلة» تصل هنا بسياقها الكامل."
           />
         ) : (
           <View style={{ gap: 12 }}>

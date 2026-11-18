@@ -27,6 +27,7 @@ import { AppSheet, FilterSheet, SheetTextInput, useSheetMounted } from "@/compon
 import { Avatar, DataList, LedgerRow, makeRow, ProgressBar, StatLine } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
+import { LIVE_NOW, QUIZ_LABEL, SAVED } from "@/lib/copy";
 
 /* ─── Arabic counted nouns (web lib/format.countAr parity) ─────────── */
 
@@ -42,7 +43,7 @@ export function arCount(n: number, forms: [string, string, string, string]): str
 
 export const ASSIGNMENT_KIND_LABEL: Record<string, string> = {
   HOMEWORK: "واجب",
-  QUIZ: "اختبار قصير",
+  QUIZ: QUIZ_LABEL,
   PROJECT: "مشروع",
   EXAM: "اختبار",
 };
@@ -68,7 +69,7 @@ export const GRADE_KIND_LABEL: Record<string, string> = {
 export const GRADE_KINDS = Object.keys(GRADE_KIND_LABEL);
 
 export const EXAM_KIND_LABEL: Record<string, string> = {
-  QUIZ: "اختبار قصير",
+  QUIZ: QUIZ_LABEL,
   MIDTERM: "نصفي",
   FINAL: "نهائي",
   PRACTICE: "تدريبي",
@@ -95,7 +96,7 @@ export const ATTEMPT_STATUS_LABEL: Record<string, string> = {
   IN_PROGRESS: "قيد الأداء",
   SUBMITTED: "بانتظار التصحيح",
   GRADED: "مُصحَّحة",
-  EXPIRED: "منتهية بانتهاء الوقت",
+  EXPIRED: "منتهية بالوقت",
 };
 export const ATTEMPT_STATUS_TONE: Record<string, StatusToneName> = {
   IN_PROGRESS: "lavender",
@@ -141,7 +142,7 @@ export const PAPER_STATUS_TONE: Record<string, StatusToneName> = {
 
 export const LIVE_STATUS_LABEL: Record<string, string> = {
   SCHEDULED: "مجدولة",
-  LIVE: "مباشرة الآن",
+  LIVE: LIVE_NOW,
   ENDED: "منتهية",
   CANCELLED: "ملغاة",
 };
@@ -443,10 +444,10 @@ function QuickGradeForm({
         throw new ApiError("BAD_GRADE", "أدخل درجة صحيحة.", 400);
       }
       if (Number.isNaN(mx) || !Number.isInteger(mx) || mx < 1 || mx > 100) {
-        throw new ApiError("BAD_MAX", "الدرجة العظمى عدد صحيح بين 1 و100.", 400);
+        throw new ApiError("BAD_MAX", "العظمى عدد صحيح 1–100.", 400);
       }
       if (Number.isNaN(wt) || !Number.isInteger(wt) || wt < 0 || wt > 100) {
-        throw new ApiError("BAD_WEIGHT", "الوزن عدد صحيح بين 0 و100.", 400);
+        throw new ApiError("BAD_WEIGHT", "الوزن عدد صحيح 0–100.", 400);
       }
       if (s > mx) {
         throw new ApiError("OVER_MAX", `الدرجة يجب ألَا تتجاوز ${latn(mx)}.`, 400);
@@ -458,7 +459,7 @@ function QuickGradeForm({
     onSuccess: () => {
       haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("تمّ حفظ الدرجة وستظهر للطالب.", "تمّ الحفظ");
+      toast.success("حُفظت — تظهر للطالب.", SAVED);
       onDone();
     },
     onError: (e) => {
@@ -574,8 +575,8 @@ export function OfferingRoster({
   if (rows.length === 0) {
     return (
       <EmptyState
-        title="لا يوجد طلاب مسجّلون"
-        message="لا توجد تسجيلات نشطة في هذا المقرّر بعد."
+        title="لا طلاب مسجّلون"
+        message="لا تسجيلات نشطة بعد."
       />
     );
   }
@@ -613,7 +614,7 @@ export function OfferingRoster({
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         emptyTitle="لا نتائج مطابقة"
-        emptyMessage="جرّب كلمة بحث أخرى أو أعد تعيين التصفية."
+        emptyMessage="جرّب كلمة أخرى أو أعد التصفية."
         contentPadding={{ horizontal: 20, bottom: 24 }}
       />
 

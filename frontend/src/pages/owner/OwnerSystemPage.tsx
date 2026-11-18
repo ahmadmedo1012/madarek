@@ -312,10 +312,13 @@ export function OwnerSystemPage() {
               <AlertRow
                 color="red"
                 icon={AlertTriangle}
-                title="مخزن الكائنات لا يستجيب — الرفعات الجديدة ستفشل حتى يعود"
+                /* R366-final copy-style: title ≤ 4 words — the damage
+                   clause (new uploads fail until it returns) moved into
+                    the description; every fact survives. */
+                title="مخزن الكائنات لا يستجيب"
                 description={(
                   <>
-                    تحقّق من متغيّرات <bdi>S3_*</bdi> وحالة المزوّد —{' '}
+                    الرفعات الجديدة ستفشل حتى يعود. تحقّق من متغيّرات <bdi>S3_*</bdi> وحالة المزوّد —{' '}
                     <bdi>docs/12-deployment.md</bdi>.
                   </>
                 )}
@@ -325,10 +328,14 @@ export function OwnerSystemPage() {
               <AlertRow
                 color="amber"
                 icon={AlertTriangle}
-                title="الرفعات لا تنجو من إعادة النشر — يتطلب إعداد تخزين دائم (S3)"
+                /* R366-final copy-style: title ≤ 4 words — the r164-i
+                   consequence + fix clause moved into the description
+                    (same words, no fact lost). */
+                title="تخزين مؤقّت للرفعات"
                 description={(
                   <>
-                    الدوام يتطلب ضبط <code>STORAGE_DRIVER=s3</code> مع متغيّرات <bdi>S3_*</bdi> —{' '}
+                    الرفعات لا تنجو من إعادة النشر — يتطلب إعداد تخزين دائم (S3):{' '}
+                    <code>STORAGE_DRIVER=s3</code> مع متغيّرات <bdi>S3_*</bdi> —{' '}
                     الخطوات: <bdi>docs/12-deployment.md</bdi>.
                   </>
                 )}

@@ -355,3 +355,23 @@ green. No allowlist entry was added.
   deliberately deferred until their accepted commits are confirmed as ancestors
   of the verified `main` — they are, by construction of the merge, but the
   deletion itself is a separate, reversible-later step.
+
+---
+
+## R365 addendum (2026-11-17) — live verification of the closed rows
+
+This appendix records measurements made after this report was written. It does not
+rewrite §9 or §12.6; it closes the rows they left open.
+
+| Open item | Measured outcome |
+|---|---|
+| §9 row 8 — security headers on the SPA document | **Closed, live.** `HEAD https://madarek-app.vercel.app/` returns CSP (both pinned hashes), `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()`, and HSTS `max-age=63072000; includeSubDomains; preload` |
+| §9 row 3 — deployment gating | **Closed.** Ruleset `main — verified before merge (R364)` is active with a required pull request and the 13 real CI contexts; deletion and non-fast-forward are blocked |
+| §9 row 9 — repository homepage metadata | **Closed.** `homepage` reads `https://madarek-app.vercel.app` |
+| §12.6 — mobile artifact freshness | **Closed.** `android-latest` and `sidestore-latest` both carry commit `7a097457` with `verified: true`; the iOS rolling SideStore publication job completed successfully |
+| §12.6 — branch cleanup | **Closed.** Ten merged remote branches deleted after ancestry verification; `wip/r358-ui` retained because §4 rejected it rather than merging it |
+
+Still open (external, unchanged): P0 external error tracking; P1 mail domain and the
+dead-letter queue; P1 scheduled off-site backups with a proven restore; P1 the Render
+standby decision; P1/P2 GitHub cron cadence. Exact owner steps:
+`docs/releases/R365-OWNER-ACTIONS.md`. Full evidence: `docs/releases/R365-CLOSEOUT.md`.

@@ -28,6 +28,7 @@ import {
   pointsAr,
 } from "@/features/common/components";
 import { TRAINING_CATEGORY_LABEL, TRAINING_LEVEL_LABEL } from "./index";
+import { PATH_REMOVED, SELF_DEV } from "@/lib/copy";
 
 /**
  * /training/[slug] — track detail: hero facts, honest progress (completed
@@ -51,9 +52,9 @@ export default function TrainingTrack() {
     mutationFn: () => trainingApi.enroll(params.slug),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["training"] });
-      toast.success("سُجّلت في المسار — بالتوفيق!");
+      toast.success("سُجّلت — بالتوفيق!");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر التسجيل في المسار — تحقّق من اتصالك وأعد المحاولة.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر التسجيل.")),
   });
 
   if (!params.slug) {
@@ -61,10 +62,10 @@ export default function TrainingTrack() {
     // `return null` here was a white screen (the exact M1 crash class).
     return (
       <Screen scroll>
-        <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
+        <StackHeader title="مسار تدريبي" kicker={SELF_DEV} />
         <EmptyState
           title="الرابط غير مكتمل"
-          message="لا يوجد مسار في هذا الرابط — اختر مساراً من قائمة التطوير الذاتي."
+          message="لا مسار — اختر من القائمة."
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -74,7 +75,7 @@ export default function TrainingTrack() {
   if (q.isLoading) {
     return (
       <Screen scroll>
-        <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
+        <StackHeader title="مسار تدريبي" kicker={SELF_DEV} />
         <SkeletonList rows={5} />
       </Screen>
     );
@@ -82,9 +83,9 @@ export default function TrainingTrack() {
   if (q.isError) {
     return (
       <Screen scroll>
-        <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
+        <StackHeader title="مسار تدريبي" kicker={SELF_DEV} />
         {isUnauthError(q.error) ? (
-          <SignInPrompt message="مسارات التطوير الذاتي تحتاج حسابًا — سجّل الدخول لتتبّع تقدّمك." />
+          <SignInPrompt message="سجّل الدخول لتتبّع تقدّمك." />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )}
@@ -96,10 +97,10 @@ export default function TrainingTrack() {
     // never a white screen (R327 A4).
     return (
       <Screen scroll>
-        <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
+        <StackHeader title="مسار تدريبي" kicker={SELF_DEV} />
         <EmptyState
-          title="لا توجد بيانات لهذا المسار"
-          message="ربما أُزيل المسار أو أن الرابط قديم."
+          title="لا بيانات للمسار"
+          message={PATH_REMOVED}
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}
         />
@@ -133,7 +134,7 @@ export default function TrainingTrack() {
     <Screen scroll>
       <StackHeader
         title={track.title}
-        kicker={track.category ? TRAINING_CATEGORY_LABEL[track.category] ?? track.category : "التطوير الذاتي"}
+        kicker={track.category ? TRAINING_CATEGORY_LABEL[track.category] ?? track.category : SELF_DEV}
       />
 
       {/* Hero */}
@@ -191,7 +192,7 @@ export default function TrainingTrack() {
           />
           <T variant="sm" color="muted">
             {isCompleted
-              ? "هذا المسار مكتمل — سجلّ الإتمام جاهز في صفحة الإنجازات."
+              ? "مكتمل — الإتمام في الإنجازات."
               : `${latn(completedCount)} / ${lessonsAr(lessons.length)} مكتمل`}
           </T>
         </Card>
@@ -203,8 +204,8 @@ export default function TrainingTrack() {
       </T>
       {lessons.length === 0 ? (
         <EmptyState
-          title="لا توجد دروس بعد"
-          message="لم تُضَف دروس إلى هذا المسار حتى الآن."
+          title="لا دروس بعد"
+          message="لا دروس بعد."
           icon={<BookOpen size={20} color={p.textMuted} />}
         />
       ) : (

@@ -30,6 +30,7 @@ import { haptics } from "@/haptics";
 import { humanizeError } from "@/lib/errors";
 import { fullDate, latn, num } from "@/lib/format";
 import { SectionNote, scanLine } from "@/features/student/more";
+import { NO_FILES } from "@/lib/copy";
 
 type PublishedPaper = ResearchPaper & {
   offering?: { course: { code: string; name: string } } | null;
@@ -239,7 +240,7 @@ function BooksTab() {
       haptics.notify("success");
       const dueAt = (res as { dueAt?: string } | null)?.dueAt ?? null;
       toast.success(
-        dueAt ? `موعد إرجاع الكتاب: ${fullDate(dueAt)}.` : "تمّت الاستعارة — راجع «استعاراتي» لموعد الإرجاع.",
+        dueAt ? `موعد إرجاع الكتاب: ${fullDate(dueAt)}.` : "استُعير — الموعد في «استعاراتي».",
         "تمّت الاستعارة",
       );
     },
@@ -253,7 +254,7 @@ function BooksTab() {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["library"] });
       haptics.notify("success");
-      toast.success("أُعيد الكتاب إلى المكتبة.", "تمّ الإرجاع");
+      toast.success("أُعيد الكتاب.", "تمّ الإرجاع");
     },
     onError: (e) => {
       haptics.notify("error");
@@ -273,7 +274,7 @@ function BooksTab() {
       <SearchBar
         value={q}
         onChange={setQ}
-        placeholder="ابحث عن كتاب أو مؤلف…"
+        placeholder="كتابًا أو مؤلفًا…"
         onClear={() => {
           setQ("");
           setQuery({ q: "", page: 1 });
@@ -359,11 +360,11 @@ function BooksTab() {
           <EmptyState
             art={<Illustration id="r342/journey-library" width={240} />}
             room="library"
-            title={debouncedQ || availability !== "all" ? "لا توجد كتب مطابقة" : "لا توجد ملفات"}
+            title={debouncedQ || availability !== "all" ? "لا كتب مطابقة" : NO_FILES}
             message={
               debouncedQ || availability !== "all"
-                ? "جرّب كلمات بحث مختلفة أو أعد ضبط التصفية."
-                : "ستظهر هنا كتب المكتبة وملفاتها فور توفرها."
+                ? "لا مطابقات — جرّب كلمات أخرى."
+                : "الكتب والملفات فور توفرها."
             }
           />
         }
@@ -461,16 +462,16 @@ const PaperRow = makeRow<PublishedPaper, { last: boolean; snippet: string | null
           </View>
         )}
         {paper.fileUrl ? (
-          // M9 — web parity: «اقرأ البحث كاملاً» is the web's .btn.primary.sm
+          // M9 — web parity: «اقرأ كاملاً» is the web's .btn.primary.sm
           // (charcoal slab), not orange text — the accent leaves the rows.
           <View style={{ alignSelf: "flex-start" }}>
             <Button
-              label="اقرأ البحث كاملاً"
+              label="اقرأ كاملاً"
               kind="primary"
               small
               onPress={() => onOpen(paper)}
               icon={<FileText size={13} color={p.primaryFg} />}
-              accessibilityLabel={`اقرأ البحث كاملاً: ${paper.title}`}
+              accessibilityLabel={`اقرأ كاملاً: ${paper.title}`}
             />
           </View>
         ) : null}
@@ -511,7 +512,7 @@ function ResearchTab() {
   const openPaper = (paper: PublishedPaper) => {
     const filename = paper.fileUrl ? paper.fileUrl.split("/").pop() ?? "" : "";
     if (!filename) {
-      toast.error("لا يوجد ملف مرتبط بهذا البحث.");
+      toast.error("لا ملف مرتبط.");
       return;
     }
     router.push({
@@ -544,7 +545,7 @@ function ResearchTab() {
             <SearchBar
               value={q}
               onChange={setQ}
-              placeholder="ابحث في عنوان البحث، الملخص، أو المحتوى الكامل…"
+              placeholder="في العنوان أو الملخص…"
               onClear={() => {
                 setQ("");
                 setDebouncedQ("");
@@ -570,11 +571,11 @@ function ResearchTab() {
         emptySlot={
           <EmptyState
             room="library"
-            title={debouncedQ ? "لا توجد نتائج للبحث" : "لا توجد ملفات"}
+            title={debouncedQ ? "لا نتائج للبحث" : NO_FILES}
             message={
               debouncedQ
                 ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
-                : "ستظهر هنا بحوث الطلاب المنشورة وملفاتها فور إجازتها."
+                : "بحوث الطلاب فور إجازتها."
             }
           />
         }

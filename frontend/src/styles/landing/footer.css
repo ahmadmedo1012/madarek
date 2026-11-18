@@ -118,10 +118,12 @@
   color: var(--text-secondary);
 }
 
-/* T-06f: the spec-measured seat panel — the heron c1sub box paints
-   rgb(179,179,175) (measured at every bp). R342-07: the bottom pad
-   retires (the census's 153fu box ends flush at the form zone). */
-.fo-c1-sub { padding: calc(var(--fu) * 13.33) calc(var(--fu) * 13.33) 0; background: var(--rule-strong); }
+/* T-06f → R366 correction: the frozen census records the c1sub box
+   TRANSPARENT at every bp (footer.{1920,1440,1024,768,390}.json — the
+   grey the T-06f note saw is the 1px window-column RULES, not the panel;
+   the recorded bg-check was failing on the painted panel). The panel
+   paint retires; the subscribe zone is open like the reference's own. */
+.fo-c1-sub { padding: calc(var(--fu) * 13.33) calc(var(--fu) * 13.33) 0; background: transparent; }
 .fo-mono-label {
   font-family: var(--font-mono);
   font-size: calc(var(--fu) * 11.67);
@@ -134,7 +136,7 @@
 /* R342-07 — the subscribe zone (the census's c1sub > div[2] > [label,
    div[1] > form] tree): its own 63×16 mono label, then the form
    wrapper, then the two 17px copy lines + the 358×40 input row. */
-.fo-form-zone { margin-block-start: calc(var(--fu) * 8.33); }
+.fo-form-zone { margin-block-start: calc(var(--fu) * 8.33); position: relative; } /* R366: the freg brackets' containing block merged here (was a second rule at the file tail — the stylelint duplicate) */
 .fo-form-label {
   font-family: var(--font-mono);
   font-size: calc(var(--fu) * 11.67);
@@ -157,16 +159,24 @@
   color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
 }
 [data-spec='footer.bgroup.2'] { transition: opacity 0.4s ease; } /* the census bgroup.2 transition seat */
+/* R366 L1 — the form row at the census's own full-bleed seat: the spec
+   records the input row DIV at −1..357 (358×40 @1440 — the whole c1sub
+   box plus 1px bleed, mirroring at 390 as 0..374), with the 40×40 go
+   button OVERLAYING the row's inline-start end (317..357 LTR — our RTL
+   mirror: inset-inline-start: 0). The input fills the row; its
+   padding clears the button. */
 .fo-form-row {
+  position: relative;
   display: flex;
   margin-block-start: calc(var(--fu) * 13.33);
+  margin-inline: calc(var(--fu) * -14.33);
   gap: 0;
 }
 .fo-input {
   flex: 1;
   min-inline-size: 0;
   block-size: calc(var(--fu) * 40); /* 28/40/53 — the census input law */
-  padding: calc(var(--fu) * 6.67) calc(var(--fu) * 6.67) calc(var(--fu) * 6.67) calc(var(--fu) * 13.33);
+  padding: calc(var(--fu) * 6.67) calc(var(--fu) * 46.67) calc(var(--fu) * 6.67) calc(var(--fu) * 6.67); /* R366: inline-END clears the row-end overlay button */
   border: 1px solid var(--rule-strong);
   border-start-end-radius: 0;
   border-end-end-radius: 0;
@@ -183,6 +193,11 @@
    multi-ease string must match verbatim: the instrument's parseEase
    returns null for the comma list on BOTH sides → string equality) */
 .fo-go {
+  position: absolute;
+  inset-inline-end: 0; /* R366: the MIRRORED seat — the reference's button rides the row's END (inline-end), which in RTL is the row's LEFT edge (x-mirror exp 383 @1440) */
+  inset-block-start: 0;
+  inline-size: calc(var(--fu) * 40); /* R366: the census's square 40×40 seat (28@1024 · 40@1440 · 53@1920 by fu; 44/48 overrides below) */
+  block-size: calc(var(--fu) * 40);
   transition: border-color 0.2s ease, background-color 0.4s ease, color 0.4s ease;
   line-height: 1.35; /* T-06l census: the go seat lh rides the ROOT fs law (1.35×root: 18fu@1440 · 24@1920) */
   /* T-06l census: the go seat's arrow ink is the rule grey
@@ -198,7 +213,9 @@
   stroke-width: 1.7;
   vector-effect: non-scaling-stroke;
 }
-.fo-go:hover { color: var(--accent); border-color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-go:hover { color: var(--accent); border-color: var(--accent); }
+}
 /* (r172a §3 — the go button's ring also delegates to base.css) */
 
 /* ── col2: the wide index — 3 mono-labelled groups up, 3 seats down ── */
@@ -227,9 +244,12 @@
 .fo-link-t {
   color: var(--text); /* the census label law: SOLID ink, not the 72% soft ink */
   cursor: pointer; /* the census's interactive label seats */
+  line-height: 18px; /* R343: the transformed floor 1.35x13.33 (the a-seat keeps its own 17.33 box; merged from the second rule — the stylelint duplicate) */
 }
-.fo-link:hover,
-.fo-link:hover .fo-link-t { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-link:hover,
+  .fo-link:hover .fo-link-t { color: var(--accent); }
+}
 .fo-link-accent,
 .fo-link-accent .fo-link-t { color: var(--accent); }
 .fo-biglink {
@@ -240,8 +260,7 @@
   transition: color 0.4s ease;
   color: var(--text);
 }
-.fo-link-t { line-height: 18px; } /* R343: the transformed floor 1.35x13.33 (the a-seat keeps its own 17.33 box) */
-.fo-link-account { line-height: 18px; }
+.fo-link-account { line-height: 1.35; } /* R366: the R343 fixed 18px broke the fu-scaled tree (@1024 exp 12.8 · @1920 exp 24 — the aLh floor is 1.35×fs, not a constant) */
 .fo-mono-label-t { font-size: 11.67px; line-height: 16.33px; } /* R343: the mono text seats' own pitch (was inheriting 13.33 in some zones) */
 .fo-social-t { line-height: 18px; }
 .fo-biglink-t {
@@ -251,7 +270,9 @@
   color: inherit;
   cursor: pointer;
 }
-.fo-biglink:hover { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-biglink:hover { color: var(--accent); }
+}
 /* R342-07 — the CHANNELS grid: the census's 2×3 single-line link seats
    (99×26 boxes, 91×17 labels) — the retired two-line socials rode the
    same door routes. */
@@ -276,8 +297,10 @@
   color: var(--text);
   cursor: pointer;
 }
-.fo-social:hover,
-.fo-social:hover .fo-social-t { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-social:hover,
+  .fo-social:hover .fo-social-t { color: var(--accent); }
+}
 
 /* ── col3: the drawn construction mark (our OWN geometry) ─────────── */
 .fo-col3 {
@@ -409,7 +432,9 @@
   text-decoration: none;
   transition: color 0.3s ease;
 }
-.fo-legal-a:hover { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-legal-a:hover { color: var(--accent); }
+}
 .fo-mono {
   font-family: var(--font-mono);
   font-size: calc(var(--fu) * 11.67);
@@ -440,7 +465,9 @@
   min-block-size: 44px;
   transition: color 0.4s ease; /* the census legal-link transition seat */
 }
-.fo-legal-link:hover { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .fo-legal-link:hover { color: var(--accent); }
+}
 .fo-legal-sep { color: var(--rule-strong); }
 /* r339 T-12 — the separator's night seat: --rule-strong flips to
    #85857F in dark — 3.97:1 on the #282828 ground, under the 4.5:1
@@ -522,9 +549,9 @@
   .fo-mono-label { font-size: 11.67px; line-height: 16.33px; }
   .fo-form { margin-block-start: 15px; padding-block-start: 15px; }
   .fo-form-line { font-size: 13.33px; line-height: 17.33px; }
-  .fo-form-row { margin-block-start: 13.33px; }
-  .fo-input { block-size: 44px; padding: 6.67px 6.67px 6.67px 13.33px; font-size: 14.73px; line-height: 21.05px; } /* T-06l census: 14.73/21.05@768 */
-  .fo-go { block-size: 44px; }
+  .fo-form-row { margin-block-start: 13.33px; margin-inline: -22px; } /* R366: the 768 census's full-bleed row (377×44 @377 — the c1sub 22px pad bleeds) */
+  .fo-input { block-size: 44px; padding: 6.67px 50.67px 6.67px 6.67px; font-size: 14.73px; line-height: 21.05px; } /* T-06l census: 14.73/21.05@768; R366: inline-end clears the 44px row-end button */
+  .fo-go { block-size: 44px; inline-size: 44px; } /* R366: the census's square 44×44@768 */
   .fo-go-ic { inline-size: 17px; block-size: 17px; }
   .fo-lg-links { margin-block-start: 4.17px; line-height: 16px; }
   .fo-lg-links a { padding-block: 0; }
@@ -635,14 +662,14 @@
   .fo-mono-label-t { inline-size: fit-content; font-size: 11.91px; line-height: 16.08px; }
   .fo-c2-top,
   .fo-c2-bottom { grid-template-columns: 1fr; }
-  .fo-input { block-size: 40.3px; padding: 6.67px 6.67px 6.67px 13.33px; font-size: 15.88px; line-height: 22.68px; } /* T-06l census: 15.88/22.68@390 */
-  .fo-go { block-size: 40.3px; }
+  .fo-input { block-size: 48px; padding: 6.67px 54.67px 6.67px 6.67px; font-size: 15.88px; line-height: 22.68px; } /* T-06l census: 15.88/22.68@390; R366: the census's 374×48 full-width seat (block-size 40.3→48, inline-end clears the 48px button) */
+  .fo-go { block-size: 48px; inline-size: 48px; } /* R366: the census's square 48×48@390 */
   /* R343 — the census's 20×20 go-icon frame at 390 (the fluid 17fu unit
      collapsed to 4.6px here — a real mobile defect, now the recorded size) */
   .fo-go-ic, .fo-go-ic-in { inline-size: 20px; block-size: 20px; }
   .fo-form { margin-block-start: 15px; padding-block-start: 15px; }
   .fo-form-line { font-size: 13.33px; line-height: 17.33px; }
-  .fo-form-row { margin-block-start: 13.33px; }
+  .fo-form-row { margin-block-start: 13.33px; margin-inline: -16px; } /* R366: the 390 census's 0..374 full-bleed row (the c1sub 16px pad bleeds) */
   .fo-contact-h { margin: 5px 0 0; font-size: 13.33px; line-height: 18px; }
   .fo-link { padding: 4.17px; font-size: 13.33px; line-height: 17.33px; }
   /* R343 — the census's 390 label pitch (13.89 + the 1.35x floor 18.75);
@@ -750,8 +777,8 @@
 /* R343 — the form zone's corner registration marks: the census's own
  * 8×8 ink crosshair seats (div[5..8] > div[1] > svg — the reference's
  * registration grammar, our OWN hairline glyph). Positioned at the
- * form zone's four corners, aria-hidden, pointer-dead. */
-.fo-form-zone { position: relative; }
+ * form zone's four corners, aria-hidden, pointer-dead. (R366: the
+ * position:relative seat merged into the .fo-form-zone rule above.) */
 .fo-freg {
   position: absolute;
   inline-size: calc(var(--fu) * 10);

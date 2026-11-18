@@ -139,7 +139,8 @@ describe('R350 F2 — the import wizard', () => {
     // R355 copy diet: the dropzone title is the short «اسحب الملف هنا»;
     // the format/size honesty survives in the sub line below.
     expect(screen.getByText('اسحب الملف هنا')).toBeTruthy();
-    expect(screen.getByText(/حتى ١٠ ميغابايت/)).toBeTruthy();
+    // R366-final copy-style: Latin digits (guide §4) — ١٠ → 10.
+    expect(screen.getByText(/حتى 10 ميغابايت/)).toBeTruthy();
   });
 
   it('parse lands on the mapping step: headers + sample values + confidence + preset chips', async () => {

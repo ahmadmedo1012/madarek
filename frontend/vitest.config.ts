@@ -33,7 +33,10 @@ export default defineConfig({
     // Playwright overlap probe (the playwright.config.ts `r325`
     // project); the name keeps the task-pinned .spec.ts spelling, so
     // the directory (not the suffix) is what vitest excludes.
-    exclude: [...configDefaults.exclude, 'tests/audit/**', 'tests/r325/**', 'tests/r362/**'],
+    // R366 (Agent 3): same reason — tests/design-lab/lab.spec.ts is
+    // the /__design component matrix (the playwright.config.ts
+    // `design-lab` project); vitest must not import @playwright/test.
+    exclude: [...configDefaults.exclude, 'tests/audit/**', 'tests/r325/**', 'tests/r362/**', 'tests/design-lab/**'],
     css: false,
   },
 });

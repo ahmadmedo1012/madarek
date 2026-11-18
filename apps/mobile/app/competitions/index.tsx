@@ -34,14 +34,14 @@ export default function CompetitionsIndex() {
 
   return (
     <Screen scroll>
-      <StackHeader title="المسابقات" kicker="تحديات المعرفة والابتكار" />
+      <StackHeader title="المسابقات" kicker="تحديات المعرفة" />
 
       <View style={{ gap: sp[4], paddingBottom: sp[8] }}>
         <T variant="h3" weight="bold">
           المسابقات الأكاديمية
         </T>
         <T variant="body" color="secondary">
-          شارك في تحديات المعرفة والابتكار، أو نظِّم مسابقتك الخاصّة.
+          شارك في تحديات المعرفة، أو نظِّم مسابقتك الخاصّة.
         </T>
       </View>
 
@@ -49,14 +49,14 @@ export default function CompetitionsIndex() {
         <SkeletonList rows={5} />
       ) : q.isError ? (
         isUnauthError(q.error) ? (
-          <SignInPrompt message="المسابقات تحتاج حسابًا — سجّل الدخول لعرضها والمشاركة فيها." />
+          <SignInPrompt message="سجّل الدخول للمشاركة." />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )
       ) : rows.length === 0 ? (
         <EmptyState
-          title="لا توجد مسابقات بعد"
-          message="ستظهر المسابقات المتاحة هنا فور إطلاقها من منظّميها."
+          title="لا مسابقات بعد"
+          message="تظهر فور إطلاقها."
           icon={<Trophy size={20} color={p.textMuted} />}
         />
       ) : (

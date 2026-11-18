@@ -195,7 +195,7 @@ export default function CalendarScreen() {
     <>
       <PushFrame
         title="التقويم"
-        kicker="كل مواعيدك في نظرة واحدة — بتوقيت ليبيا"
+        kicker="مواعيدك — بتوقيت ليبيا"
         refreshing={(enrollments.isFetching || dash.isFetching) && !loading}
         onRefresh={() => {
           void enrollments.refetch();
@@ -270,7 +270,7 @@ export default function CalendarScreen() {
           <View style={{ flexDirection: "row" }}>
             {AR_DAYS.map((name) => (
               <View key={name} style={{ flex: 1, alignItems: "center", paddingVertical: 4 }}>
-                <T variant="xs" color="muted" numberOfLines={1}>
+                <T variant="xs" color="muted" numberOfLines={1} maxFontSizeMultiplier={1.3}>
                   {name}
                 </T>
               </View>
@@ -329,12 +329,12 @@ export default function CalendarScreen() {
                             backgroundColor: p.accent,
                           }}
                         >
-                          <T variant="sm" weight="bold" color="onAccent">
+                          <T variant="sm" weight="bold" color="onAccent" maxFontSizeMultiplier={1.3}>
                             {formatNumber(cell.day)}
                           </T>
                         </View>
                       ) : (
-                        <T variant="sm" style={{ color: dayInk }}>
+                        <T variant="sm" style={{ color: dayInk }} maxFontSizeMultiplier={1.3}>
                           {formatNumber(cell.day)}
                         </T>
                       )}
@@ -367,7 +367,7 @@ export default function CalendarScreen() {
             </T>
           ) : (
             <T variant="xs" color="faint">
-              {countAr(monthEventCells, ["يوم واحد له مواعيد", "يوماً لهما مواعيد", "أيام لها مواعيد", "يومًا له مواعيد"])}
+              {countAr(monthEventCells, ["يوم له مواعيد", "يوماً لهما مواعيد", "أيام لها مواعيد", "يومًا له مواعيد"])}
             </T>
           )}
         </>
@@ -386,8 +386,8 @@ export default function CalendarScreen() {
           {daySheet.events.length === 0 ? (
             <EmptyState
               room="library"
-              title="لا أحداث في هذا اليوم"
-              message="اختر يومًا آخر من الشبكة — أو راجع جدولك ومقرّراتك."
+              title="لا أحداث اليوم"
+              message="اختر يومًا آخر."
             />
           ) : (
             <RowList>

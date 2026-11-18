@@ -10,6 +10,7 @@ import { adminApi } from "@/api/admin";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { latn } from "@/lib/format";
 import { countAr, HonestLedger } from "@/features/governance/components";
+import { APPEARS_AFTER_FIRST_UPLOAD, NO_DATA } from "@/lib/copy";
 
 interface TrendMonth {
   month?: string | null;
@@ -59,7 +60,7 @@ export default function AdminReports() {
         ) : reports.isError ? (
           <ErrorState message={humanizeError(reports.error)} onRetry={() => reports.refetch()} />
         ) : !reports.data || typeof reports.data !== "object" ? (
-          <EmptyState title="لا توجد بيانات بعد" message="ستظهر التقارير فور توفّر بيانات المؤسسة." />
+          <EmptyState title={NO_DATA} message="تظهر التقارير فور توفر البيانات." />
         ) : (
           (() => {
             const payload = reports.data as Record<string, unknown>;
@@ -81,9 +82,9 @@ export default function AdminReports() {
                 </View>
 
                 <View>
-                  <SectionBar index={nextIndex()} title="حركة البحوث العلمية" />
+                  <SectionBar index={nextIndex()} title="حركة البحوث" />
                   {!trend || trend.length === 0 ? (
-                    <EmptyState title="لا توجد بيانات نشر بعد" message="ستظهر حركة البحوث هنا بعد رفع أول بحث." />
+                    <EmptyState title="لا بيانات نشر بعد" message={APPEARS_AFTER_FIRST_UPLOAD} />
                   ) : (
                     <RowList>
                       {trend.map((m, i) => (
@@ -105,8 +106,8 @@ export default function AdminReports() {
                   <SectionBar index={nextIndex()} title="أكثر المقرّرات تسجيلاً" />
                   {!topCourses || topCourses.length === 0 ? (
                     <EmptyState
-                      title="لا توجد تسجيلات بعد"
-                      message="ستظهر المقرّرات الأعلى تسجيلاً هنا فور تسجيل الطلاب في مقرّراتهم."
+                      title="لا تسجيلات بعد"
+                      message="تظهر هنا فور تسجيل الطلاب."
                     />
                   ) : (
                     <RowList>
@@ -118,7 +119,7 @@ export default function AdminReports() {
                           <T variant="xs" color="muted">
                             {c.code ?? "—"} ·{" "}
                             {countAr(c.enrollments ?? 0, [
-                              "طالب مسجَّل واحد",
+                              "طالب مسجّل",
                               "طالبان مسجَّلان",
                               "طلاب مسجَّلون",
                               "طالباً مسجَّلاً",

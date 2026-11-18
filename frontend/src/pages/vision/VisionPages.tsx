@@ -12,7 +12,6 @@ import { PageFrame, PageHeader, RowList, RowItem, StatLine } from '../../compone
 import { EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { VISION_CONCEPTS, STATUS_LABEL, STATUS_COLOR, type VisionConcept } from '../../lib/vision';
-import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
 import '../../styles/vision.css';
 
@@ -95,7 +94,7 @@ export function VisionGalleryPage() {
           colleges); the authored vision statement stays the h1. */}
       <PageHeader
         title={`${formatNum(total)} ابتكاراً قادماً`}
-        description="نظرة على المسار التقني — من الذكاء الاصطناعي إلى البلوكشين."
+        description="نظرة على المسار التقني."
       />
 
       {total === 0 ? (
@@ -106,13 +105,14 @@ export function VisionGalleryPage() {
         />
       ) : (
         <>
-          {/* r266: ملخّص الحالات شريط أرقام هادئ (القيم من البيانات). */}
+          {/* r266: ملخّص الحالات شريط أرقام هادئ (القيم من البيانات) —
+              التسميات من STATUS_LABEL نفسها (R366 L4: منزل واحد للتسمية). */}
           <StatLine
             items={[
-              { label: 'إصدار تجريبي', value: formatNum(grouped.beta.length), tone: 'positive' },
-              { label: 'نموذج أولي', value: formatNum(grouped.prototype.length), tone: 'signal' },
-              { label: 'قيد التخطيط', value: formatNum(grouped.planning.length), tone: 'warning' },
-              { label: 'قيد البحث', value: formatNum(grouped.research.length) },
+              { label: STATUS_LABEL.beta, value: formatNum(grouped.beta.length), tone: 'positive' },
+              { label: STATUS_LABEL.prototype, value: formatNum(grouped.prototype.length), tone: 'signal' },
+              { label: STATUS_LABEL.planning, value: formatNum(grouped.planning.length), tone: 'warning' },
+              { label: STATUS_LABEL.research, value: formatNum(grouped.research.length) },
             ]}
           />
 
@@ -128,9 +128,6 @@ export function VisionGalleryPage() {
                   heading's rhythm (.vision-group-head). */}
               <header className="vision-group-head">
                 <h2 id="vision-group-live" className="vision-h2">جرّبها الآن</h2>
-                <span className="text-xs text-subtle">
-                  {countAr(grouped.beta.length, ['متاح للتجربة', 'متاحان للتجربة', 'متاحة للتجربة', 'متاحاً للتجربة'])}
-                </span>
               </header>
               <RowList aria-label="ابتكارات متاحة للتجربة">
                 {grouped.beta.map((c) => (
@@ -143,12 +140,6 @@ export function VisionGalleryPage() {
             <section aria-labelledby="vision-group-dev" className="vision-group">
               <header className="vision-group-head">
                 <h2 id="vision-group-dev" className="vision-h2">قيد التطوير</h2>
-                <span className="text-xs text-subtle">
-                  {countAr(
-                    grouped.prototype.length + grouped.planning.length + grouped.research.length,
-                    ['ابتكار مبكر', 'ابتكاران مبكران', 'ابتكارات مبكرة', 'ابتكاراً مبكراً'],
-                  )}
-                </span>
               </header>
               <RowList aria-label="ابتكارات في المراحل المبكرة">
                 {[...grouped.prototype, ...grouped.planning, ...grouped.research].map((c) => (
@@ -166,7 +157,7 @@ export function VisionGalleryPage() {
             <div className="flex items-center gap-3">
               <Icon icon={Sparkles} size={20} className="text-accent" />
               <p className="text-sm text-muted flex-1 vision-note-copy">
-                خارطة طريق لا وعود تسويقية — كل بطاقة تصف مرحلتها الفعلية وتُحدَّث فور تغيّرها.
+                خارطة طريق لا وعود — الحالة تُحدَّث فور تغيّرها.
               </p>
             </div>
           </Card>
@@ -292,7 +283,7 @@ export function VisionDetailPage() {
 
       {/* Use cases */}
       <Card>
-        <h2 className="vision-h2">الاستخدامات المحتملة</h2>
+        <h2 className="vision-h2">الاستخدامات</h2>
         <div className="flex flex-wrap gap-2">
           {concept.useCases.map((u) => (
             <Badge key={u}>{u}</Badge>
@@ -318,7 +309,7 @@ export function VisionDetailPage() {
               نبّهني عند الإطلاق
             </div>
             <div className="text-xs text-subtle vision-notify-hint">
-              خدمة التنبيه على البريد قيد التطوير.
+              خدمة التنبيه قيد التطوير.
             </div>
           </div>
           <button type="button" className="btn outline" disabled>

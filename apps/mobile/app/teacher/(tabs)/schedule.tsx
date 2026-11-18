@@ -56,15 +56,15 @@ export default function TeacherSchedule() {
   return (
     <Screen scroll>
       <AppTopBar alertsPath="/teacher/alerts" />
-      <PageHeader title="جدول المحاضرات" kicker="جدولك الأسبوعيّ مع القاعات والأوقات." />
+      <PageHeader title="جدول المحاضرات" kicker="جدولك بالقاعات والأوقات." />
       {offs.isLoading ? (
         <SkeletonList rows={5} />
       ) : offs.isError ? (
         <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} />
       ) : days.length === 0 ? (
         <EmptyState
-          title="لا يوجد جدول مسجَّل"
-          message="ستظهر محاضراتك هنا فور تسجيل الجداول لمقرّراتك من قِبَل المسجل العام."
+          title="لا جدول مسجَّل"
+          message="تظهر فور تسجيل الجداول."
         />
       ) : (
         days.map((d, di) => (
@@ -81,9 +81,11 @@ export default function TeacherSchedule() {
                   last={i === d.items.length - 1}
                   accessibilityLabel={`${it.courseName} ${it.startTime}`}
                 >
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                    <View style={{ flex: 1 }}>
-                      <T variant="body" weight="medium" numberOfLines={1}>
+                  {/* R366 A5 (fs2 evidence): title wraps to 2 lines; the
+                      time anchor shrinks last and never truncates. */}
+                  <View style={{ flexDirection: "row", alignItems: "flex-start", gap: sp[8] }}>
+                    <View style={{ flex: 1, minWidth: 120 }}>
+                      <T variant="body" weight="medium" numberOfLines={2}>
                         {it.courseName}
                       </T>
                       <T variant="xs" color="muted">
@@ -95,7 +97,7 @@ export default function TeacherSchedule() {
                             : arCount(it.enrolled, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}
                       </T>
                     </View>
-                    <T variant="sm" color="secondary">
+                    <T variant="sm" color="secondary" maxFontSizeMultiplier={1.4}>
                       {`${it.startTime} — ${it.endTime}`}
                     </T>
                     <Badge label={it.courseCode} tone="grey" mono />

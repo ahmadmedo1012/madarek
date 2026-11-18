@@ -231,6 +231,14 @@ test.describe('student pages B — §B2 sheet grammar (chromium · light)', () =
 
     await page.goto('/student/ai');
     await expect(page.locator('h1.pf-page-title')).toBeVisible({ timeout: 20000 });
+    /* R366-final (integration contract, proven green at c79ebe35): BOTH
+     * live — the sidebar keeps its three sheet regions ([01] gaps,
+     * [02] conversations, [03] suggestions — the persistent list), and
+     * the transcript's empty state carries the greeting + suggestion
+     * chips (the r366 2-a/2-f surface; they unmount after the first
+     * send). The session-2 fold had re-dropped the sidebar's [03] bar;
+     * the §B2 restoration (53f21459) is the integration truth this test
+     * pins. */
     await expect(page.locator('.r319s-bar')).toHaveCount(3, { timeout: 15000 });
 
     const bars = await readBars(page);
@@ -255,6 +263,13 @@ test.describe('student pages B — §B2 sheet grammar (chromium · light)', () =
     await expect(countLoc).toHaveCount(3, { timeout: 15000 });
     const counts = await countLoc.allTextContents();
     expect(counts).toEqual(['02', '02', '05']);
+
+    /* The suggestions — the empty state's primary action set ALSO rides
+     * the transcript greeting: the student set is the same 05 chips the
+     * sidebar's [03] counter pins (session-2 grew the set 3 → 05). */
+    const suggest = page.locator('.ai-suggest');
+    await expect(suggest).toBeVisible();
+    await expect(suggest.locator('.ai-suggest-chip')).toHaveCount(5);
 
     // The gap card (the card class sample) computes radius 0.
     const gapCard = page.locator('.ai-gap-card').first();

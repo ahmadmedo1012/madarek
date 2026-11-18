@@ -349,7 +349,7 @@ function FragmentCheckpoint() {
           <span className="plate-opt plate-muted">الأمثل عالميًّا</span>
         </div>
       </div>
-      <AlertRow color="green" title="إجابة صحيحة — تابع المشاهدة" description="أُعيد التشغيل من ثانية نقطة الفحص" />
+      <AlertRow color="green" title="إجابة صحيحة" description="أُعيد التشغيل من ثانية نقطة الفحص" />
     </div>
   );
 }

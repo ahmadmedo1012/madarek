@@ -28,6 +28,7 @@ import { fullDate, latn } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { PAPER_STATUS_LABEL, PAPER_STATUS_TONE, SectionNote, scanLine } from "@/features/student/more";
+import { UNKNOWN_STATUS } from "@/lib/copy";
 
 /**
  * /student/research — بحوثي (web ResearchPage parity): paper rows with the
@@ -52,9 +53,9 @@ export default function ResearchScreen() {
     mutationFn: (id: string) => researchApi.scan(id),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["research"] });
-      toast.success("اكتمل الفحص — النتائج معروضة على البحث.", "فحص النزاهة");
+      toast.success("اكتمل الفحص.", "فحص النزاهة");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذَّر إجراء الفحص"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الفحص"),
   });
 
   return (
@@ -78,8 +79,8 @@ export default function ResearchScreen() {
         <EmptyState
           art={<Illustration id="r342/problem-04-research" width={216} />}
           icon={<FileText size={24} color={p.textFaint} />}
-          title="لم ترفع أي بحث بعد"
-          message="ابدأ برفع أول بحث لك ليتم فحصه ثم تقييمه من قبل الأستاذ."
+          title="لم ترفع بحثًا بعد"
+          message="ارفع أول بحث."
           actionLabel="رفع بحث جديد"
           onAction={() => setUploadOpen(true)}
         />
@@ -94,7 +95,7 @@ export default function ResearchScreen() {
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6], flexWrap: "wrap" }}>
                 <Badge
-                  label={PAPER_STATUS_LABEL[paper.status] ?? "حالة غير معروفة"}
+                  label={PAPER_STATUS_LABEL[paper.status] ?? UNKNOWN_STATUS}
                   tone={PAPER_STATUS_TONE[paper.status] ?? "grey"}
                 />
                 {paper.plagiarismPct != null || paper.aiContentPct != null ? <SimulatedBadge /> : null}
@@ -155,7 +156,7 @@ function DetailSheet({
       <View style={{ gap: sp[12] }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6], flexWrap: "wrap" }}>
           <Badge
-            label={PAPER_STATUS_LABEL[paper.status] ?? "حالة غير معروفة"}
+            label={PAPER_STATUS_LABEL[paper.status] ?? UNKNOWN_STATUS}
             tone={PAPER_STATUS_TONE[paper.status] ?? "grey"}
           />
           <SimulatedBadge note="الفحص" />
@@ -320,7 +321,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
       } catch {
         // The paper row exists — the scan can be started again from its row.
       }
-      toast.success("سيخضع البحث لفحص الانتحال ثم يصل إلى أستاذك للتقييم.", "تمّ رفع البحث");
+      toast.success("فحص انتحال ثم تقييم الأستاذ.", "تمّ رفع البحث");
       setTitle("");
       setAbstractText("");
       setOfferingId(null);
@@ -369,21 +370,21 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
     >
       <View style={{ gap: sp[12] }}>
         <Field
-          label="عنوان البحث (مطلوب)"
+          label="العنوان (مطلوب)"
           value={title}
           onChangeText={setTitle}
-          placeholder="مثال: تطبيق أنماط التصميم في تطبيقات الويب"
-          error={title.trim().length > 0 && title.trim().length < 3 ? "يجب أن يكون 3 أحرف على الأقل." : undefined}
+          placeholder="مثال: أنماط التصميم في الويب"
+          error={title.trim().length > 0 && title.trim().length < 3 ? "3 أحرف على الأقل." : undefined}
         />
         <Field
           label="الملخّص (اختياري)"
           value={abstractText}
           onChangeText={setAbstractText}
-          placeholder="اكتب ملخصاً مختصراً عن الفكرة، المنهج، والنتائج…"
+          placeholder="الفكرة والمنهج والنتائج…"
           multiline
         />
         <SelectField
-          label="المقرّر الأكاديمي المرتبط (اختياري)"
+          label="المقرّر المرتبط (اختياري)"
           value={selectedOffering}
           options={offeringOptions}
           onSelect={(id) => {
@@ -391,8 +392,8 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
             setOfferingId(id);
           }}
           loading={enrollments.isLoading}
-          sheetTitle="مقرراتك المسجَّلة"
-          emptyLabel="لا توجد مقررات مسجَّلة"
+          sheetTitle="مقرراتك"
+          emptyLabel="لا مقرّرات مسجّلة"
         />
 
         <View style={{ gap: sp[6] }}>

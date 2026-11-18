@@ -58,7 +58,7 @@ type ResetInputs = z.infer<typeof resetFormSchema>;
  * are indistinguishable by design (PAGES-GAP §5: no token-oracle). */
 const INVALID_TOKEN_TITLE = 'الرابط غير صالح أو انتهت صلاحيته';
 const INVALID_TOKEN_BODY =
-  'الرابط يُستخدم مرة وينتهي بعد ٣٠ دقيقة.';
+  'الرابط يُستخدم مرة وينتهي بعد 30 دقيقة.';
 
 /** Generic refusal ONLY for failures the server never answered (network). */
 const GENERIC_RESET_ERROR =
@@ -182,7 +182,7 @@ export default function ResetPasswordPage() {
                 <span className="auth-meta">(كلمة مرور جديدة)</span>
                 <h1 className="auth-form-title">عيّن كلمة مرور جديدة</h1>
                 <p className="auth-form-sub">
-                  اختر كلمة مرور قوية — من ١٢ إلى ٧٢ حرفًا، ليست من الشائعة.
+                  اختر كلمة مرور قوية — من 12 إلى 72 حرفًا، ليست من الشائعة.
                 </p>
               </div>
 

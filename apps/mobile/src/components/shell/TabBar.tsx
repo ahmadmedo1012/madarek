@@ -37,13 +37,28 @@ export interface RoleTabBarProps {
    * never touch shell chrome (see ./immersive.tsx).
    */
   hidden?: boolean;
+  /**
+   * R366 A5 — the responsive shell axis. "horizontal" (default) is the
+   * phone bottom bar; "vertical" is the tablet/foldable/landscape SIDE
+   * RAIL the (tabs) layouts switch to on ≥600dp windows (M3 navigation
+   * rail guidance). Same buttons, same dot, same a11y contract — the axis
+   * flip is layout only, so every Maestro anchor (tab-*, role-tab-bar)
+   * keeps working on both axes.
+   */
+  orientation?: "horizontal" | "vertical";
 }
 
-/** The active-tab marker: ONE orange dot, 6dp, on the bar's bottom edge. */
+/** The active-tab marker: ONE orange dot, 6dp, on the bar's outer edge. */
 const DOT_SIZE = 6;
 
 /** Fallback slide distance before first layout measures the real height. */
 const BAR_HEIGHT_FALLBACK = 84;
+
+/** R366 A5 — the side rail's fixed width (icon + label column, M3 rail). */
+export const RAIL_WIDTH = 88;
+
+/** R366 A5 — one rail item's minimum height (44pt floor + breathing room). */
+const RAIL_ITEM_MIN_HEIGHT = 60;
 
 /**
  * The dot's physical X translate for a slot (pure — unit-tested).
@@ -51,6 +66,10 @@ const BAR_HEIGHT_FALLBACK = 84;
  * The dot is anchored at the row's START edge; under RTL `start` means the
  * RIGHT edge, so the physical translate flips sign to reach the same visual
  * slot. Guards keep the un-measured first frame at 0 (no jump on layout).
+ *
+ * R366 A5 — the same math drives the RAIL's vertical travel: a column's
+ * slots run top→bottom regardless of direction, so the rail passes
+ * `isRTL: false` (no sign flip) and consumes the return value as Y.
  */
 export function indicatorOffset(
   barWidth: number,
@@ -65,7 +84,7 @@ export function indicatorOffset(
 }
 
 /**
- * RoleTabBar — THE shell's bottom bar (R331 A-App-Shell). Rendered ONCE
+ * RoleTabBar — THE shell's tab bar (R331 A-App-Shell). Rendered ONCE
  * per role by the `(tabs)` layout via the `tabBar` prop of expo-router's
  * `Tabs`, OUTSIDE every screen — it never re-mounts or slides with screen
  * transitions (pinned by src/test/navigation-stability.test.tsx).
@@ -87,16 +106,30 @@ export function indicatorOffset(
  *    spring; the bar leaves layout flow only while hidden (the same
  *    position-flip the stock UIKit bar uses), and NEVER unmounts.
  *
+ * R366 A5 — the responsive axis: `orientation="vertical"` renders the same
+ * bar as a side rail for ≥600dp windows (foldables open, landscape phones,
+ * tablets). The rail pins to the START edge (right under the app's forced
+ * RTL), pads for the status bar, hairlines its END edge (the content side)
+ * and slides the dot VERTICALLY; immersive hide translates X instead of Y.
+ *
  * The row mirrors automatically under I18nManager.forceRTL; the dot's
  * physical translate is direction-aware (start-anchored, mirrored sign).
  */
-export function RoleTabBar({ state, navigateToTab, insets, role, hidden = false }: RoleTabBarProps) {
+export function RoleTabBar({
+  state,
+  navigateToTab,
+  insets,
+  role,
+  hidden = false,
+  orientation = "horizontal",
+}: RoleTabBarProps) {
   const p = usePalette();
   const reduced = useReduceMotion();
   const { data: unread = 0 } = useUnreadCount();
   const tabs = ROLE_TABS[role];
   const routes = state.routes;
-  const paddingBottom = Math.max(insets?.bottom ?? 0, 6);
+  const rail = orientation === "vertical";
+  const isRTL = I18nManager.isRTL;
 
   // Only routes that map to a ROLE_TABS entry render — the indicator's slot
   // math must use the RENDERED count, not routes.length.
@@ -113,56 +146,80 @@ export function RoleTabBar({ state, navigateToTab, insets, role, hidden = false 
 
   /* ── the sliding selection dot (UI thread, transform only) ────────── */
 
-  const [barWidth, setBarWidth] = useState(0);
-  const dotX = useSharedValue(0);
-  const isRTL = I18nManager.isRTL;
+  const [slotExtent, setSlotExtent] = useState(0); // bar width (horizontal) / column height (rail)
+  const dotOffset = useSharedValue(0);
 
   useEffect(() => {
-    if (barWidth <= 0 || activeSlot < 0) return;
-    const target = indicatorOffset(barWidth, activeSlot, entries.length, isRTL);
-    dotX.value = reduced ? target : withSpring(target, springs.snappy);
-  }, [barWidth, activeSlot, entries.length, isRTL, reduced, dotX]);
+    if (slotExtent <= 0 || activeSlot < 0) return;
+    // The column's slots read top→bottom in both directions — no RTL flip.
+    const target = indicatorOffset(slotExtent, activeSlot, entries.length, rail ? false : isRTL);
+    dotOffset.value = reduced ? target : withSpring(target, springs.snappy);
+  }, [slotExtent, activeSlot, entries.length, isRTL, rail, reduced, dotOffset]);
 
-  const dotStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: dotX.value }],
-  }));
+  const dotStyle = useAnimatedStyle(() =>
+    rail
+      ? { transform: [{ translateY: dotOffset.value }] }
+      : { transform: [{ translateX: dotOffset.value }] },
+  );
 
-  /* ── the immersive hide: animated translateY, NEVER an unmount ────── */
+  /* ── the immersive hide: animated translate, NEVER an unmount ─────── */
 
-  const [barHeight, setBarHeight] = useState(0);
-  const slideY = useSharedValue(0);
+  const [barExtent, setBarExtent] = useState(0); // measured cross-axis extent for the slide distance
+  const slide = useSharedValue(0);
 
   useEffect(() => {
-    const target = hidden ? barHeight || BAR_HEIGHT_FALLBACK : 0;
-    slideY.value = reduced ? target : withSpring(target, springs.default);
-  }, [hidden, barHeight, reduced, slideY]);
+    const target = hidden ? barExtent || BAR_HEIGHT_FALLBACK : 0;
+    slide.value = reduced ? target : withSpring(target, springs.default);
+  }, [hidden, barExtent, reduced, slide]);
 
-  const slideStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: slideY.value }],
-  }));
+  const slideStyle = useAnimatedStyle(() => {
+    if (rail) {
+      // Slide toward the screen edge the rail pins to: start edge =
+      // negative X in LTR (left), positive X in RTL (right).
+      const dx = isRTL ? slide.value : -slide.value;
+      return { transform: [{ translateX: dx }] };
+    }
+    return { transform: [{ translateY: slide.value }] };
+  });
+
+  const barBase = rail
+    ? {
+        // The side rail: start-pinned column, status-bar padding, hairline
+        // on the END (content-facing) edge.
+        width: RAIL_WIDTH,
+        borderEndWidth: StyleSheet.hairlineWidth,
+        borderEndColor: p.rule,
+        backgroundColor: p.surface,
+        paddingTop: Math.max(insets?.top ?? 0, 8),
+      }
+    : {
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderTopColor: p.rule,
+        backgroundColor: p.surface,
+        paddingBottom: Math.max(insets?.bottom ?? 0, 6),
+      };
 
   return (
     <Animated.View
       testID="role-tab-bar"
       accessibilityRole="tablist"
-      onLayout={(e) => setBarHeight(e.nativeEvent.layout.height)}
+      onLayout={(e) => setBarExtent(rail ? e.nativeEvent.layout.width : e.nativeEvent.layout.height)}
       style={[
-        {
-          borderTopWidth: StyleSheet.hairlineWidth,
-          borderTopColor: p.rule,
-          backgroundColor: p.surface,
-          paddingBottom,
-        },
+        barBase,
         // While hidden the bar leaves layout flow (the position-flip the
-        // stock UIKit bar uses) so immersive screens reclaim the height;
-        // the slide itself is the animated translateY above.
-        hidden ? { position: "absolute" as const, bottom: 0, start: 0, end: 0 } : null,
+        // stock UIKit bar uses) so immersive screens reclaim the space;
+        // the slide itself is the animated translate above.
+        hidden
+          ? rail
+            ? { position: "absolute" as const, top: 0, bottom: 0, start: 0 }
+            : { position: "absolute" as const, bottom: 0, start: 0, end: 0 }
+          : null,
         slideStyle,
       ]}
     >
       <View
-        style={{ flexDirection: "row" }}
-        onLayout={(e) => setBarWidth(e.nativeEvent.layout.width)}
+        style={{ flexDirection: rail ? "column" : "row" }}
+        onLayout={(e) => setSlotExtent(rail ? e.nativeEvent.layout.height : e.nativeEvent.layout.width)}
       >
         {entries.map(({ route, tab, index }) => (
           <TabButton
@@ -170,6 +227,7 @@ export function RoleTabBar({ state, navigateToTab, insets, role, hidden = false 
             tab={tab}
             active={index === state.index}
             badge={tab.inbox ? unread : 0}
+            rail={rail}
             onPress={() => {
               if (index === state.index) return; // already here — no-op, no haptic
               haptics.selection(); // gated + throttled (src/haptics)
@@ -177,23 +235,35 @@ export function RoleTabBar({ state, navigateToTab, insets, role, hidden = false 
             }}
           />
         ))}
-        {/* The single orange dot — start-anchored, springs between slots.
-            Exactly ONE instance (test-pinned); a11y-hidden + untouchable. */}
+        {/* The single orange dot — outer-edge-anchored, springs between
+            slots. Exactly ONE instance (test-pinned); a11y-hidden +
+            untouchable. Horizontal: bottom edge, translateX. Rail: the
+            start (screen) edge, translateY. */}
         <Animated.View
           testID="tab-indicator-dot"
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
           pointerEvents="none"
           style={[
-            {
-              position: "absolute",
-              bottom: 3,
-              start: 0,
-              width: DOT_SIZE,
-              height: DOT_SIZE,
-              borderRadius: DOT_SIZE / 2,
-              backgroundColor: p.accent,
-            },
+            rail
+              ? {
+                  position: "absolute",
+                  top: 0,
+                  start: 3,
+                  width: DOT_SIZE,
+                  height: DOT_SIZE,
+                  borderRadius: DOT_SIZE / 2,
+                  backgroundColor: p.accent,
+                }
+              : {
+                  position: "absolute",
+                  bottom: 3,
+                  start: 0,
+                  width: DOT_SIZE,
+                  height: DOT_SIZE,
+                  borderRadius: DOT_SIZE / 2,
+                  backgroundColor: p.accent,
+                },
             dotStyle,
           ]}
         />
@@ -207,11 +277,14 @@ function TabButton({
   tab,
   active,
   badge,
+  rail,
   onPress,
 }: {
   tab: RoleTab;
   active: boolean;
   badge: number;
+  /** R366 A5 — rail items stack icon over label in the 88dp column. */
+  rail: boolean;
   onPress: () => void;
 }) {
   const p = usePalette();
@@ -248,10 +321,11 @@ function TabButton({
       testID={`tab-${tab.name}`}
       onPress={onPress}
       style={{
-        flex: 1,
+        flex: rail ? undefined : 1,
+        alignSelf: rail ? "stretch" : undefined,
         alignItems: "center",
         justifyContent: "center",
-        minHeight: 54,
+        minHeight: rail ? RAIL_ITEM_MIN_HEIGHT : 54,
         paddingTop: 8,
       }}
     >

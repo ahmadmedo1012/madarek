@@ -38,7 +38,7 @@ export default function LegalDocScreen() {
         <StackHeader title="السياسات" kicker="مدارك" />
         <EmptyState
           title="الصفحة غير موجودة"
-          message="هذه الوثيقة ليست من سياسات المنصّة الست."
+          message="ليست من سياسات المنصّة."
           actionLabel="سياسة الخصوصية"
           onAction={() => router.push("/legal/privacy" as never)}
         />

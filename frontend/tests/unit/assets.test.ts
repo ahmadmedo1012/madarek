@@ -60,11 +60,19 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
     }
   });
 
-  it('all font faces use font-display: swap', () => {
+  it('all REMOTE font faces use font-display: swap', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const faces = css.match(/@font-face\s*\{/g)?.length ?? 0;
-    expect(faces).toBe(16);   // 10 Plex + 4 Alexandria + 2 Geist Mono (R313)
-    expect(css.match(/font-display:\s*swap/g)?.length).toBe(faces);
+    // R366: 16 remote faces (10 Plex + 4 Alexandria + 2 Geist Mono) +
+    // 2 LOCAL-only metric fallback faces (R366 L2 CLS belt — local()
+    // sources never fetch, so font-display is meaningless for them).
+    expect(faces).toBe(18);
+    const remote = [...css.matchAll(/@font-face\s*\{[^}]*url\(/g)].length;
+    expect(remote).toBe(16);
+    expect(css.match(/font-display:\s*swap/g)?.length).toBe(remote);
+    // the fallback faces are local()-only and carry the metric overrides
+    const fallbacks = css.match(/ascent-override:\s*[\d.]+%/g)?.length ?? 0;
+    expect(fallbacks).toBe(2);
   });
 
   it('fonts.css is imported before tokens.css in main.tsx', () => {

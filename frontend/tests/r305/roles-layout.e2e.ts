@@ -61,7 +61,13 @@ test.describe('الزائر — الأسطح العامة', () => {
     await expect(page.locator('main#main')).toBeVisible();
     // The public gallery renders REAL payload rows (mock /colleges),
     // grouped per canonical campus — the mock rows all ride «حرم المعرفة».
-    await expect(page.locator('h1.pf-page-title')).toContainText('مؤسسة مدارك النموذجية');
+    // R366 L4 copy diet (agent1): the index h1 was cut from
+    // «كلّيّات مؤسسة مدارك النموذجية» to the canonical COLLEGES_LABEL
+    // («كلّيّات الجامعة» — the same literal the nav, guest docTitle and
+    // leaderboard CTA already ride), with the page ceiling ratcheted
+    // 228→166 in the same commit. The institution name is not lost: the
+    // detail hero eyebrow still names «مؤسسة مدارك النموذجية» per row.
+    await expect(page.locator('h1.pf-page-title')).toContainText('كلّيّات الجامعة');
     const campusGroup = page.getByRole('group', { name: 'كلّيّات حرم المعرفة' });
     await expect(campusGroup).toBeVisible();
     await expect(campusGroup).toContainText('كلية الهندسة');

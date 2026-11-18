@@ -266,6 +266,12 @@
     align-items: center;
     justify-content: center;
     gap: var(--sp-2);
+    /* r366 (2-g): a button is ATOMIC — it never shrinks inside a flex
+     * row (measured live: /admin/courses at 360 squeezed a «حذف» ghost
+     * to 56px client vs 59px content and its own overflow:hidden ate
+     * the last glyph). Wrapping is the row's honest answer to pressure,
+     * never glyph clipping. */
+    flex-shrink: 0;
     block-size: 40px;
     padding-inline: var(--sp-5);
     font-size: var(--type-label-size);
@@ -489,6 +495,10 @@
   @media (pointer: coarse) {
     .icon-btn { min-inline-size: 44px; min-block-size: 44px; }
     .btn { min-block-size: 44px; }
+    /* R366 (Agent 3 · L3b root fix): the PILL joins the coarse floor —
+       the lab matrix measured the filter/segment pills at 37px, under
+       the 44px touch law (WCAG 2.5.8 best practice; --touch-target). */
+    .pill { min-block-size: var(--touch-target, 44px); }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -721,11 +731,16 @@
        pdf.css's page-number/search inputs are handed off with it. */
     font-size: max(16px, var(--type-body-size));
     color: var(--text);
-    /* R313 (WP-D · D16): the Heron input recipe — TRANSPARENT ground
-       (the paper IS the field), 1px #B3B3AF hairline (--border-strong),
-       radius 0 (token ladder). No fills, no wells. */
+    /* R313 (WP-D · D16) + R366 (Agent 3 · WCAG 1.4.11): the Heron input
+       recipe — TRANSPARENT ground (the paper IS the field), square
+       radius, no fills, no wells. The 1px boundary rides the CONTROL
+       seat --input-border (light #72726F — the reference's own mid
+       step — 4.83:1 on the card ground; the retired --border-strong
+       hairline #B3B3AF measured 2.1:1, under the 3:1 non-text floor
+       for control boundaries). Hover steps one rung darker
+       (--input-border-hover); focus stays the D16 signal orange. */
     background: transparent;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--input-border);
     border-radius: var(--r-md);
     /* R313 (D16): the reference's border-color .45s transition — the
        nearest motion rung is --t-slow (500ms). */
@@ -735,7 +750,7 @@
   textarea { padding-block: var(--sp-3); block-size: auto; min-block-size: 96px; resize: vertical; line-height: var(--lh-base); }
   @media (hover: hover) and (pointer: fine) {
     .input:hover,
-    input:hover, textarea:hover, select:hover { border-color: var(--border-strong); }
+    input:hover, textarea:hover, select:hover { border-color: var(--input-border-hover); }
   }
   /* R313 (D16): focus = the reference's #ED4C1F signal border (measured
      live on the footer-subscribe input; the token source is off-limits
@@ -877,10 +892,12 @@
     margin: 0;
     padding: 0;
     background: transparent;
-    /* R313 (D16): 1px hairline (--rule-strong), transparent ground —
-       square checkbox (radius rung is 0), circle radio (the one
-       sanctioned circular primitive at 50%). */
-    border: 1px solid var(--rule-strong);
+    /* R313 (D16) + R366 (Agent 3 · 1.4.11): the unchecked box boundary
+       joins the input control seat --input-border (the old 1px
+       --rule-strong hairline measured 2.1:1 — under the 3:1 floor for
+       identifying the control). Square checkbox (radius rung is 0),
+       circle radio (the one sanctioned circular primitive at 50%). */
+    border: 1px solid var(--input-border);
     cursor: pointer;
     flex-shrink: 0;
     display: inline-flex;
@@ -981,6 +998,9 @@
   .table-wrap.sticky thead th {
     position: sticky;
     inset-block-start: 0;
+    /* R366-final A2→A4 R1 — contain the pinned header's paint so long
+       table scrolls repaint only the rows, never the sticky thead. */
+    contain: paint;
   }
   .table tbody tr:last-child > * { border-block-end: 0; }
   .table .tbl-strong { font-weight: var(--fw-semibold); }
@@ -1508,6 +1528,20 @@
   .hide-on-mobile { display: revert; }
   @media (max-width: 640px) { .hide-on-mobile { display: none; } }
 
+  /* R366-final A2→A4 R1 — .below-fold: opt-in rendering hint for
+     below-fold dashboard cards / course grids at ≥1024 viewports.
+     The browser skips layout + paint while the block is off-screen
+     (content-visibility: auto) and reserves a 320px placeholder via
+     contain-intrinsic-size so scrollbar geometry stays stable; the
+     `auto` keyword lets the browser swap in the measured height
+     after first render. NOT applied anywhere yet — adoption is a
+     measured change for a later pass (each surface lands with its
+     own CLS check). */
+  .below-fold {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 320px;
+  }
+
   .kbd {
     display: inline-flex; align-items: center; justify-content: center;
     min-inline-size: 22px; padding: var(--sp-0-5) 7px; /* spacing-gate: allow — kbd key-cap glyph inset — rides the glyph ladder, not the spacing scale */
@@ -1837,6 +1871,25 @@
     overflow: clip;
     display: flex; flex-direction: column;
     animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  /* r366 (2-f): the phone band's full-screen sheet. A floating card on
+     12vh headroom with rounded chrome is a desktop idiom; on a phone
+     the palette IS the screen — edge-to-edge, dvh-honest under the
+     soft keyboard (the list is the only scroller), and the input row
+     swaps its Esc hint for the visible close button (a full-screen
+     sheet must never trap a touch-only reader). */
+  @media (max-width: 640px) {
+    .cmd-palette-overlay { padding: 0; }
+    .cmd-palette-card {
+      inline-size: 100%;
+      min-block-size: 100dvh;
+      max-block-size: 100dvh;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+    }
+    .cmd-input-esc { display: none; }
+    .cmd-input-close { display: inline-flex; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2768,6 +2821,13 @@
     color: var(--text);
   }
   .ledger-what { font-size: var(--type-body-size); min-inline-size: 0; }
+  /* R366 (Agent 3 · the 13px floor): the LedgerRow subtitle <small>
+     defaulted to 0.8em of the row body and measured 11.1px on the
+     fluid desktop root — under the Arabic sans floor. R366-final:
+     the floor now consumes the canonical --fs-xxs rung (13px, the
+     ladder's smallest sans step) instead of a raw literal, so the
+     seat stays measured AND token-sourced. */
+  .ledger-what small { font-size: max(var(--fs-xxs), 0.8em); line-height: var(--lh-base); }
 
   /* ── 3 · The stat strip — the typographic KPI replacement ───────
      label (mono) over value (metric role) over trend note. No icon

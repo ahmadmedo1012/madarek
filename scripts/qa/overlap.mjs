@@ -45,6 +45,26 @@ const stress = a.stress === '1' || a.stress === 'true';  /* R354-UI-2 — hostil
 const fontScale = Number(a.fontscale || 0);              /* R354-UI-2 — 1.3 / 2 => html font-size 130% / 200% */
 const seedRole = a.seed || null;      /* R353 P1 — hermetic per-role session (mock API) */
 const shotsDir = a.shots || null;    /* R349 P5 — evidence PNGs (route at top per bp×theme) */
+/* R366 L1 (agent 4) — the blind-spot extensions. All opt-in, defaults
+ * keep the historical behavior byte-identical:
+ *   --workers N   route-level parallelism inside each bp×theme context
+ *                 (findings interleave; the verdict math is unchanged)
+ *   --popovers 1  open every disclosure surface (closed <details>
+ *                 summaries, [aria-haspopup] triggers, [popovertarget])
+ *                 and probe the top stop WITH them open before the
+ *                 normal sweep (the bell panel, menus, disclosure
+ *                 sheets — geometry nobody swept before)
+ *   --focus N     Tab through the first N focusables; a focused
+ *                 element whose rect leaves the viewport is a
+ *                 focus-clip finding (focus rings half-cut by shell
+ *                 edges / sticky bars)
+ *   --contrast more | --reducedmotion reduce  context emulations
+ *                 (prefers-contrast: more / prefers-reduced-motion) */
+const workers = Math.max(1, Number(a.workers || 1));
+const popovers = a.popovers === '1' || a.popovers === 'true';
+const focusN = Number(a.focus || 0);
+const contrast = a.contrast === 'more' || a.contrast === 'less' || a.contrast === 'forced' ? a.contrast : undefined;
+const reducedMotion = a.reducedmotion === 'reduce' ? 'reduce' : undefined;
 const MIN_FRAC = Number(a.minfrac || 0.2);
 const MEDIA = a.media === '1';          // overlap area / smaller rect area
 /* the intentional-layering ledger (entries: {match, reason}) */
@@ -76,6 +96,13 @@ const STRESS = (scale) => {
     if (!el || ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(el.tagName)) continue;
     const t = n.textContent.trim();
     if (/^\s*[\d١٢٣٤٥٦٧٨٩.,%$\/:-]+\s*$/.test(t)) continue; /* numeric cells: leave the numbers alone */
+    /* r366: authored control labels are TYPE, not data — the same class
+     * as the landing exemption above. A «حذف»/«حفظ» verb is a compile-time
+     * constant; lengthening it fabricates clipping no real datum could
+     * produce (hostile data lands in cells, links and row bodies — those
+     * keep getting stressed). Short labels only: a row-button CARRYING
+     * data (a person's name, a file title) is long enough to stay in. */
+    if (t.length <= 16 && el.closest('button, [role="button"], .btn, .search-tip-pill, .pill')) continue;
     i += 1;
     if (i % 5 === 0) n.textContent = `${t} ${AR.slice(0, 34)} — ${AR}`;
     else if (i % 7 === 0) n.textContent = `${t} ${LONG}`;
@@ -359,14 +386,69 @@ if (seedRole) {
   };
 }
 
+/* R366 L1 — the popover-opening pass: click every closed disclosure
+ * (details>summary), [aria-haspopup] trigger and [popovertarget]
+ * button that is NOT a link (no navigation), waiting briefly between
+ * clicks so anchored layers land. Returns the list of triggers that
+ * opened something (for the finding rows). */
+const OPEN_POPOVERS = async () => {
+  const opened = [];
+  const cands = Array.from(document.querySelectorAll('details:not([open]) > summary, [aria-haspopup], [popovertarget]'))
+    .filter((el) => {
+      if (el.tagName === 'A' || el.closest('a')) return false;
+      const r = el.getBoundingClientRect();
+      if (r.width < 4 || r.height < 4) return false;
+      const s = getComputedStyle(el); return s.visibility !== 'hidden' && s.display !== 'none';
+    })
+    .slice(0, 12);
+  for (const el of cands) {
+    try { el.click(); } catch { continue; }
+    await new Promise((r2) => setTimeout(r2, 220));
+    opened.push(el.tagName.toLowerCase() + (el.getAttribute('aria-label') ? `[aria-label="${el.getAttribute('aria-label')}"]` : ''));
+  }
+  return opened;
+};
+
+/* R366 L1 — the focus probe: Tab through the first N focusables; the
+ * focused element's rect must sit fully inside the viewport (a focus
+ * ring half-cut by the shell edge is a real keyboard-trap-adjacent
+ * defect). Returns findings [{el, rect}] for rects that leave the
+ * viewport. Focus moves forward via sequential Tab presses on the
+ * body — the app's own tab order decides where the ring lands. */
+async function focusProbe(p, n) {
+  const findings = [];
+  await p.evaluate(() => { const f = document.querySelector('.skip-link, a, button'); if (f && f.focus) f.focus(); });
+  for (let i = 0; i < n; i++) {
+    await p.keyboard.press('Tab');
+    await p.waitForTimeout(60);
+    const f = await p.evaluate(() => {
+      const el = document.activeElement;
+      if (!el || el === document.body) return null;
+      const r = el.getBoundingClientRect();
+      const cs = getComputedStyle(el);
+      if (cs.visibility === 'hidden' || cs.display === 'none') return null;
+      const out = r.left < -0.5 || r.top < -0.5 || r.right > innerWidth + 0.5 || r.bottom > innerHeight + 0.5;
+      if (!out) return null;
+      return { el: el.tagName.toLowerCase() + '.' + String(el.className).split(/\s+/).slice(0, 2).join('.'), rect: [r.left, r.top, r.right, r.bottom].map(Math.round) };
+    }).catch(() => null);
+    if (f) findings.push(f);
+  }
+  return findings;
+}
+
 const run = async () => {
   const br = await chromium.launch({executablePath: process.env.CHROME_BIN}); const all = [];
   const st = storage ? JSON.parse(fs.readFileSync(storage, 'utf8')) : undefined;
   for (const [w, h] of bps) for (const th of themes) {
-    const ctx = await br.newContext({ viewport: { width: w, height: h }, ...(st ? { storageState: st } : {}) });
+    const ctx = await br.newContext({ viewport: { width: w, height: h }, ...(st ? { storageState: st } : {}), ...(contrast ? { contrast } : {}), ...(reducedMotion ? { reducedMotion } : {}) });
     if (seedInstall) { await seedInstall.ctx(ctx, th); }
     await ctx.addInitScript(m => { try { localStorage.setItem('madarek-theme', JSON.stringify({ state: { mode: m }, version: 2 })); } catch {} }, th);
-    for (const r of routes) {
+    /* R366 L1 — the per-route crawl, optionally N routes at a time.
+     * Workers share the bp×theme CONTEXT (the mock transport + theme
+     * seed are context-scoped); each worker owns its page. Findings
+     * push to the shared `all` (order interleaves; the totals math is
+     * order-independent). */
+    const probePage = async (r) => {
       const p = await ctx.newPage();
       if (seedInstall) { await seedInstall.me(p); }
       await p.goto(url + r, { waitUntil: 'networkidle' }).catch(() => {}); await p.waitForTimeout(1200);
@@ -383,12 +465,33 @@ const run = async () => {
        * more before the evidence shot so it shows DATA, not the first
        * pending frame (the first P5 run shot the directory's skeleton). */
       await p.waitForTimeout(2500);
+      /* R366 L1 — the popover pass: probe the top stop with every
+       * disclosure surface OPEN (before any scrolling), then close
+       * them (Esc per open layer) and continue with the normal
+       * sweep. Rows carry pass: 'popovers' + the opened trigger list. */
+      if (popovers) {
+        const opened = await p.evaluate(OPEN_POPOVERS).catch(() => []);
+        if (opened.length) {
+          await p.waitForTimeout(400);
+          const res = await p.evaluate(`(${PROBE.toString().replace('MIN', MIN_FRAC).replace('__MEDIA__', MEDIA)})()`);
+          if (ALLOW.length) res.fixed = res.fixed.filter(f => !allowed(f.el));
+          const n = res.fixedText.length + res.text.length + res.media.length + res.fixed.length + res.clipped.length + (res.hoverflow > 1 ? 1 : 0);
+          if (n) all.push({ route: r, bp: `${w}x${h}`, theme: th, scrollY: 0, pass: 'popovers', opened, ...res });
+        }
+        for (let k = 0; k < 4; k++) { await p.keyboard.press('Escape').catch(() => {}); await p.waitForTimeout(120); }
+      }
       if (stress) {
         await p.evaluate(`(${STRESS.toString()})(${fontScale})`).catch(() => {});
         await p.waitForTimeout(600);
       } else if (fontScale) {
         await p.evaluate((s) => { document.documentElement.style.fontSize = `${s * 100}%`; window.dispatchEvent(new Event('resize')); }, fontScale).catch(() => {});
         await p.waitForTimeout(400);
+      }
+      /* R366 L1 — the focus probe (after popovers closed, before the
+       * stress mutations — the ring must survive the real layout). */
+      if (focusN > 0) {
+        const ff = await focusProbe(p, focusN).catch(() => []);
+        if (ff.length) all.push({ route: r, bp: `${w}x${h}`, theme: th, scrollY: 0, pass: 'focus', focusClip: ff, text: [], media: [], fixed: [], fixedText: [], clipped: [], hoverflow: 0, overflowEls: [] });
       }
       if (shotsDir) {
         fs.mkdirSync(shotsDir, { recursive: true });
@@ -405,12 +508,20 @@ const run = async () => {
         if (n) all.push({ route: r, bp: `${w}x${h}`, theme: th, scrollY: y, ...res });
       }
       await p.close();
+    };
+    if (workers <= 1) {
+      for (const r of routes) await probePage(r);
+    } else {
+      let idx = 0;
+      await Promise.all(Array.from({ length: Math.min(workers, routes.length) }, async () => {
+        for (let r = routes[idx++]; r !== undefined; r = routes[idx++]) { await probePage(r).catch(() => {}); }
+      }));
     }
     await ctx.close();
   }
   await br.close(); fs.mkdirSync(out.replace(/[^/]+$/, '') || '.', { recursive: true }); fs.writeFileSync(out, JSON.stringify(all, null, 1));
   const tot = k => all.reduce((s, c) => s + (Array.isArray(c[k]) ? c[k].length : +(c[k] > 1)), 0);
-  console.log(`stops-with-defects=${all.length} fixed-over-text=${tot('fixedText')} text-on-text=${tot('text')} text-on-media=${tot('media')} big-fixed=${tot('fixed')} clipped=${tot('clipped')} hoverflow=${tot('hoverflow')}`);
-  process.exit(tot('fixedText') + tot('text') + tot('media') + tot('fixed') + tot('clipped') + tot('hoverflow') ? 1 : 0);
+  console.log(`stops-with-defects=${all.length} fixed-over-text=${tot('fixedText')} text-on-text=${tot('text')} text-on-media=${tot('media')} big-fixed=${tot('fixed')} clipped=${tot('clipped')} hoverflow=${tot('hoverflow')}${focusN ? ` focus-clip=${tot('focusClip')}` : ''}`);
+  process.exit(tot('fixedText') + tot('text') + tot('media') + tot('fixed') + tot('clipped') + tot('hoverflow') + tot('focusClip') ? 1 : 0);
 };
 run();

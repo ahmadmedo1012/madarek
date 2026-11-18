@@ -21,6 +21,7 @@ import { toast } from "@/components/ui/toast";
 import { haptics } from "@/haptics";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { SignInPrompt, apiMessage, competitionStatus, isUnauthError, submissionEnded } from "@/features/common/components";
+import { NO_DATA, SENDING } from "@/lib/copy";
 
 interface EntryRow {
   id: string;
@@ -59,12 +60,12 @@ export default function CompetitionDetail() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["competitions"] });
       haptics.notify("success");
-      toast.success("وصلت مشاركتك — بالتوفيق!", "المشاركة");
+      toast.success("وصلت — بالتوفيق!", "المشاركة");
       setEntering(false);
       setTitle("");
       setBody("");
     },
-    onError: (e) => toast.error(apiMessage(e, "تعذّر تقديم المشاركة. تحقّق من البيانات وحاول مرة أخرى.")),
+    onError: (e) => toast.error(apiMessage(e, "تعذّر التقديم.")),
   });
 
   if (!params.id) {
@@ -74,7 +75,7 @@ export default function CompetitionDetail() {
         <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
         <EmptyState
           title="الرابط غير مكتمل"
-          message="لا توجد مسابقة في هذا الرابط — اختر واحدة من قائمة المسابقات."
+          message="لا مسابقة — اختر من القائمة."
           actionLabel="عرض المسابقات"
           onAction={() => router.push("/competitions" as never)}
         />
@@ -94,7 +95,7 @@ export default function CompetitionDetail() {
       <Screen scroll>
         <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
         {isUnauthError(q.error) ? (
-          <SignInPrompt message="المسابقات تحتاج حسابًا — سجّل الدخول لعرضها والمشاركة فيها." />
+          <SignInPrompt message="سجّل الدخول للمشاركة." />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )}
@@ -107,8 +108,8 @@ export default function CompetitionDetail() {
       <Screen scroll>
         <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
         <EmptyState
-          title="لا توجد بيانات لهذه المسابقة"
-          message="ربما انتهت أو أُزيلت — شاهد المسابقات الجارية."
+          title={NO_DATA}
+          message="ربما انتهت — شاهد الجارية."
           actionLabel="عرض المسابقات"
           onAction={() => router.push("/competitions" as never)}
         />
@@ -129,7 +130,7 @@ export default function CompetitionDetail() {
 
   const submit = () => {
     if (!title.trim() || !body.trim()) {
-      toast.error("العنوان والوصف مطلوبان لتقديم المشاركة.");
+      toast.error("العنوان والوصف مطلوبان.");
       return;
     }
     enter.mutate();
@@ -210,7 +211,7 @@ export default function CompetitionDetail() {
       {entries.length === 0 ? (
         <EmptyState
           title="لم يشارك أحد بعد"
-          message={canEnter ? "كن أوّل من يشارك!" : "انتهت مهلة التقديم على هذه المسابقة."}
+          message={canEnter ? "كن أوّل المشاركين!" : "انتهت المهلة."}
           actionLabel={canEnter ? "قدّم مشاركتك" : undefined}
           onAction={canEnter ? () => setEntering(true) : undefined}
         />
@@ -266,7 +267,7 @@ export default function CompetitionDetail() {
             </View>
             <View style={{ flex: 1 }}>
               <Button
-                label={enter.isPending ? "جارٍ الإرسال…" : "إرسال"}
+                label={enter.isPending ? SENDING : "إرسال"}
                 onPress={submit}
                 loading={enter.isPending}
                 small
@@ -280,7 +281,7 @@ export default function CompetitionDetail() {
             label="عنوان المشاركة"
             value={title}
             onChangeText={setTitle}
-            placeholder="عنوان قصير لمشاركتك"
+            placeholder="عنوان المشاركة"
           />
           <Field
             label="الوصف / المحتوى"
@@ -293,7 +294,7 @@ export default function CompetitionDetail() {
           />
           {enter.isError ? (
             <T variant="sm" color="danger">
-              {apiMessage(enter.error, "تعذّر تقديم المشاركة.")}
+              {apiMessage(enter.error, "تعذّر التقديم.")}
             </T>
           ) : null}
         </View>

@@ -22,6 +22,8 @@ import {
   feedbackStatusLabel,
   pageOf,
 } from "@/features/governance/components";
+import { FEEDBACK, OWNER_DASHBOARD, UPDATE_FAILED } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 const PAGE_LIMIT = 30;
 
@@ -50,7 +52,7 @@ function statusBadgeTone(status: string): "mint" | "grey" | "yellow" | "sky" {
 }
 
 /**
- * Pushed: /owner/feedback — «صندوق التغذية الراجعة» (web FeedbackInboxPage
+ * Pushed: /owner/feedback — «التغذية الراجعة» (web FeedbackInboxPage
  * parity): every «أبلغ عن مشكلة / اقتراح» with its context, a status
  * filter, and a per-report sheet whose Segmented moves the row through the
  * one-way status grammar → socialApi.updateFeedback.
@@ -78,16 +80,16 @@ export default function OwnerFeedback() {
       toast.success(`انتقل التقرير إلى «${FEEDBACK_STATUS_LABEL[payload.status] ?? payload.status}».`);
       setSelected(null);
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث حالة التقرير"),
+    onError: (e) => toast.error(humanizeError(e), UPDATE_FAILED),
   });
 
   const rows = inbox.data?.rows ?? [];
 
   return (
     <Screen scroll>
-      <StackHeader title="صندوق التغذية الراجعة" kicker="لوحة المالك" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="صندوق التغذية الراجعة" kicker="كل «أبلغ عن مشكلة / اقتراح» وصل من مستخدمي المنصّة — مع سياقه الكامل." />
+      <StackHeader title={FEEDBACK} kicker={OWNER_DASHBOARD} />
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
+        <PageHeader title={FEEDBACK} kicker="كل التقارير الواردة." />
 
         <Segmented
           options={STATUS_FILTERS}
@@ -104,11 +106,11 @@ export default function OwnerFeedback() {
           <ErrorState message={humanizeError(inbox.error)} onRetry={() => inbox.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title={status === "all" ? "لا تقارير هنا" : "لا تقارير في هذه الحالة"}
-            message="عندما يرسل مستخدم «أبلغ عن مشكلة / اقتراح» يظهر تقريره في هذا الصندوق بسياقه الكامل."
+            title={status === "all" ? "لا تقارير هنا" : "لا تقارير"}
+            message="تقارير بسياقها الكامل."
           />
         ) : (
-          <View style={{ gap: 12 }}>
+          <View style={{ gap: sp[12] }}>
             <RowList>
               {rows.map((f, i) => (
                 <LedgerRow
@@ -117,7 +119,7 @@ export default function OwnerFeedback() {
                   accessibilityLabel={`حالة تقرير ${f.user ? `${f.user.firstName} ${f.user.lastName}` : "مجهول"}`}
                   last={i === rows.length - 1}
                 >
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
                     <Badge label={feedbackKindLabel(f.kind)} tone={feedbackKindTone(f.kind)} />
                     <Badge
                       label={feedbackStatusLabel(f.status)}
@@ -130,7 +132,7 @@ export default function OwnerFeedback() {
                   <T variant="body" weight="medium">
                     {f.note}
                   </T>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
                     {f.route ? <MonoLabel>{f.route}</MonoLabel> : null}
                     {f.user ? (
                       <T variant="xs" color="faint">
@@ -160,8 +162,8 @@ export default function OwnerFeedback() {
 
       {selected ? (
         <Sheet open onClose={() => setSelected(null)} title="حالة التقرير">
-          <View style={{ gap: 12 }}>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <View style={{ gap: sp[12] }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
               <Badge label={feedbackKindLabel(selected.kind)} tone={feedbackKindTone(selected.kind)} />
               <Badge
                 label={feedbackStatusLabel(selected.status)}
@@ -171,7 +173,7 @@ export default function OwnerFeedback() {
             <T variant="body" color="secondary">
               {selected.note}
             </T>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
               {selected.route ? <MonoLabel>{selected.route}</MonoLabel> : null}
               <T variant="xs" color="faint">
                 {fromNow(selected.createdAt)}

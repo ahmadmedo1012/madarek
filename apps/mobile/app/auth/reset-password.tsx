@@ -11,6 +11,7 @@ import { SecretField } from "@/components/ui/fields";
 import { Card } from "@/components/ui/surfaces";
 import { humanizeError, GENERIC_AR } from "@/lib/errors";
 import { haptics } from "@/haptics";
+import { SAVING } from "@/lib/copy";
 
 /**
  * /auth/reset-password?token=… — single-use 30-min token, on the form
@@ -25,7 +26,7 @@ export default function ResetPassword() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const form = useFormValidation({
-    schema: z.object({ password: ar.password(12, 72), confirm: ar.required("أدخل تأكيد كلمة المرور.") }),
+    schema: z.object({ password: ar.password(12, 72), confirm: ar.required("أدخل التأكيد.") }),
   });
 
   /* The token rides the URL (single-use, 30-min) — derived, never state:
@@ -36,7 +37,7 @@ export default function ResetPassword() {
   const submit = async () => {
     if (busy || done) return;
     if (token.length < 40) {
-      setError("رابط الاستعادة غير صالح أو مفقود.");
+      setError("الرابط غير صالح.");
       haptics.notify("error");
       return;
     }
@@ -46,7 +47,7 @@ export default function ResetPassword() {
     }
     const password = String(form.values.password);
     if (password !== String(form.values.confirm)) {
-      setError("كلمتا المرور غير متطابقتين.");
+      setError("غير متطابقتين.");
       haptics.notify("error");
       return;
     }
@@ -61,7 +62,7 @@ export default function ResetPassword() {
       const human = humanizeError(err);
       // Specific Arabic API copy passes through; the generic bucket gets
       // this flow's own honest sentence (expired/used link).
-      setError(human === GENERIC_AR ? "تعذّر تعيين كلمة المرور — قد يكون الرابط منتهيًا أو مستخدمًا." : human);
+      setError(human === GENERIC_AR ? "تعذّر — الرابط منتهٍ أو مستخدم." : human);
       haptics.notify("error");
     } finally {
       setBusy(false);
@@ -73,11 +74,11 @@ export default function ResetPassword() {
       <AppStatusBar />
       <FormScreen
         onSubmit={done ? undefined : submit}
-        submitLabel={busy ? "جارٍ الحفظ…" : "حفظ كلمة المرور"}
+        submitLabel={busy ? SAVING : "حفظ كلمة المرور"}
         submitLoading={busy}
         submitKind="accent"
         error={error}
-        success={done ? "تم تعيين كلمة المرور — انتهت جلساتك الأخرى وسيُعادك التطبيق إلى تسجيل الدخول الآن." : null}
+        success={done ? "تم — انتهت الجلسات وسيُعادك للدخول." : null}
       >
         <T variant="h2" weight="bold">تعيين كلمة مرور جديدة</T>
         {done ? (
@@ -94,7 +95,7 @@ export default function ResetPassword() {
               fieldId="password"
               label="كلمة المرور الجديدة"
               purpose="newPassword"
-              hint="12 حرفًا على الأقل — حتى 72."
+              hint="بين 12 و72 حرفًا."
               required
             />
             <SecretField

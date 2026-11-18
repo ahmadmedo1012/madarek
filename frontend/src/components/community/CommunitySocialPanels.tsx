@@ -131,7 +131,7 @@ export function StudyRoomsPanel() {
         empty={(
           <EmptyState
             illustration="empty-community"
-            title="لا توجد غرف دراسة بعد"
+            title="لا غرف دراسة بعد"
             description="أنشئ أول غرفة دراسية وادعُ زملاءك للانضمام إليها."
           />
         )}

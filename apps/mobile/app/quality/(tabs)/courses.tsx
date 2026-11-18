@@ -11,6 +11,7 @@ import { get } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { latn } from "@/lib/format";
 import { countAr, type QualityCourseRow } from "@/features/governance/components";
+import { READ_ONLY } from "@/lib/copy";
 
 const ROSTER_CAP = 50;
 
@@ -43,7 +44,7 @@ export default function QualityCourses() {
               تتبّع جودة كل مقرّر: المحاضرات، الملفات، الواجبات، التسجيلات.
             </T>
           </View>
-          <Badge label="قراءة فقط" tone="grey" />
+          <Badge label={READ_ONLY} tone="grey" />
         </View>
 
         {courses.isLoading ? (
@@ -52,8 +53,8 @@ export default function QualityCourses() {
           <ErrorState message={humanizeError(courses.error)} onRetry={() => courses.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title="لا توجد مقرّرات نشطة بعد"
-            message="ستظهر المقرّرات وعروضها الدراسية هنا فور اعتمادها وربطها بالفصل الحاليّ."
+            title="لا مقرّرات نشطة"
+            message="تظهر المقرّرات وعروضها فور اعتمادها."
           />
         ) : (
           <>

@@ -22,6 +22,8 @@ import {
   numOf,
   type QualityAlertsPayload,
 } from "@/features/governance/components";
+import { READ_ONLY } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 /** (tabs) Quality reports — composite (web QualityReportsPage + dashboard sections). */
 export default function QualityReports() {
@@ -61,8 +63,8 @@ export default function QualityReports() {
   return (
     <Screen scroll>
       <AppTopBar alertsPath="/quality/alerts" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
           <View style={{ flex: 1 }}>
             <T variant="h2" weight="bold">
               تقارير الجودة
@@ -71,7 +73,7 @@ export default function QualityReports() {
               لوحات حيّة تُحدَّث مع كل عمليّة.
             </T>
           </View>
-          <Badge label="قراءة فقط" tone="grey" />
+          <Badge label={READ_ONLY} tone="grey" />
         </View>
 
         <View>
@@ -107,7 +109,7 @@ export default function QualityReports() {
                   hint={countAr(eng?.attendance?.total ?? 0, ["سجل واحد", "سجلان", "سجلات", "سجلاً"])}
                 />
                 <StatLine
-                  label="معدل إكمال المحاضرات"
+                  label="إكمال المحاضرات"
                   value={`${latn(Math.round(eng?.videos?.completionRate ?? 0))}%`}
                 />
                 <StatLine
@@ -122,7 +124,7 @@ export default function QualityReports() {
         <View>
           <SectionBar index={3} title="تنبيهات الجودة" />
           {alerts.isLoading ? (
-            <View style={{ gap: 8 }}>
+            <View style={{ gap: sp[8] }}>
               <Skeleton h={44} />
               <Skeleton h={44} />
             </View>
@@ -133,8 +135,8 @@ export default function QualityReports() {
               لا توجد تنبيهات — كل المؤشرات ضمن النطاق الطبيعي حالياً.
             </T>
           ) : (
-            <View style={{ gap: 12 }}>
-              <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
+            <View style={{ gap: sp[12] }}>
+              <View style={{ flexDirection: "row", gap: sp[8], flexWrap: "wrap" }}>
                 <Badge
                   label={`حرجة ${latn(counts?.critical ?? alertRows.filter((a) => a.severity === "critical").length)}`}
                   tone="rose"
@@ -151,7 +153,7 @@ export default function QualityReports() {
               <RowList>
                 {alertRows.slice(0, 3).map((a, i, arr) => (
                   <LedgerRow key={a.id} last={i === arr.length - 1}>
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                       <SeverityChip severity={a.severity} />
                       <T variant="xs" color="faint">
                         {alertCategoryLabel(a.category)} · {fromNow(a.occurredAt)}
@@ -169,7 +171,7 @@ export default function QualityReports() {
                 ))}
               </RowList>
               <Button
-                label="عرض كل التنبيهات"
+                label="كل التنبيهات"
                 kind="ghost"
                 small
                 onPress={() => router.push("/quality/alerts" as never)}
@@ -188,7 +190,7 @@ export default function QualityReports() {
             <LedgerRow
               onPress={() => router.push("/quality/exam-moderation" as never)}
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                 <ClipboardCheck size={18} color={p.accentInk} />
                 <T variant="body" weight="medium">
                   مراجعة الاختبارات
@@ -202,7 +204,7 @@ export default function QualityReports() {
               last
               onPress={() => router.push("/quality/professors" as never)}
             >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                 <Star size={18} color={p.accentInk} />
                 <T variant="body" weight="medium">
                   تقييم الأساتذة

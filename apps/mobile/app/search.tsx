@@ -108,7 +108,7 @@ export default function Search() {
         value={q}
         onChange={setQ}
         autoFocus
-        placeholder="ابحث في المنصّة (مقرّرات، كليات، وظائف)…"
+        placeholder="ابحث: مقرّرات، كليات، وظائف…"
         onClear={() => {
           setQ("");
           setDebounced("");
@@ -117,9 +117,9 @@ export default function Search() {
 
       {debounced.length < MIN_QUERY ? (
         <EmptyState
-          art={<Illustration id="r342/journey-route" width={342} accessibilityLabel="مسارات البحث في المنصّة" />}
+          art={<Illustration id="r342/journey-route" width={342} accessibilityLabel="مسارات البحث" />}
           title="ابحث في المنصّة"
-          message="اكتب حرفين على الأقل — نتائج فورية من مقرّراتك ومحاضراتك وبحوث مكتبتك والوظائف."
+          message="حرفان — نتائج فورية."
         />
       ) : results.isLoading ? (
         <SkeletonList rows={4} />

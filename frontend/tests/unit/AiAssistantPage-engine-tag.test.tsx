@@ -155,7 +155,7 @@ describe('AiAssistantPage — per-turn engine tag (r166d)', () => {
     // The real-LLM copy renders (openrouter counts as a real engine) —
     // R355 copy diet: explainer cut; the greeting bubble + the engine
     // chip carry the claim now.
-    expect(screen.getByText(/مرحبًا! أرى بيانات إتقانك لأركّز على فجواتك/)).toBeInTheDocument();
+    expect(screen.getByText(/أرى بيانات إتقانك لأركّز على فجواتك/)).toBeInTheDocument(); // r366 copy diet: «مرحبًا!» dropped — one line, no greeting filler
     expect(screen.getByText('نموذج خارجيّ')).toBeInTheDocument();
   });
 

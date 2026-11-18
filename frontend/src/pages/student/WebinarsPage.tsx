@@ -185,8 +185,10 @@ export default function WebinarsPage() {
       </section>
 
       <section aria-label="أين أجد الفعاليّات الحقيقيّة؟">
-        {/* R319 (c3-S2): [02] — the honest-destinations section's bar. */}
-        <SectionBar index="02" title="أين أجد الفعاليّات الحقيقيّة؟" />
+        {/* R319 (c3-S2): [02] — the honest-destinations section's bar.
+            R366-final copy-style: title ≤ 4 words, no trailing «؟» — the
+            full question survives in the section's aria-label above. */}
+        <SectionBar index="02" title="وجهات الفعاليّات الحقيقيّة" />
         {/* R305 Heron: the two destinations fold from card tiles into the
             copper-edged rails (the shared .r305s-next emphasis) — quiet
             paths, not boxes. */}

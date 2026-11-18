@@ -16,7 +16,7 @@ import { humanizeError } from "@/lib/errors";
 import { SectionNote, countAr } from "@/features/student/more";
 
 /**
- * /student/ar — واقع افتراضي ومعزز (web ArVrPage parity): the honest
+ * /student/ar — الواقع الافتراضي والمعزز (web ArVrPage parity): the honest
  * read-only catalog of seeded AR/VR experiences — an index for browsing,
  * no launch action (the operator is not built yet).
  */
@@ -32,7 +32,7 @@ export default function ArScreen() {
 
   return (
     <Screen scroll>
-      <StackHeader title="واقع افتراضي ومعزز" kicker="تجارب AR / VR" />
+      <StackHeader title="الواقع الافتراضي والمعزز" kicker="تجارب AR / VR" />
       <SectionNote>فهرس تجارب AR/VR للمقرّرات العمليّة — فهرس للاستعراض، والتشغيل غير متاح بعد.</SectionNote>
 
       {feed.isLoading ? (
@@ -42,8 +42,8 @@ export default function ArScreen() {
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<Headset size={24} color={p.textFaint} />}
-          title="لا توجد تجارب AR/VR بعد"
-          message="ستظهر هنا حين يضيفها المسجل العام."
+          title="لا تجارب AR/VR بعد"
+          message="تظهر حين يضيفها المسجل."
         />
       ) : (
         <RowList>
@@ -72,7 +72,7 @@ export default function ArScreen() {
           {`التجارب المفهرسة: ${num(rows.length)}`}
         </T>
         <T variant="xs" color="muted">
-          {countAr(rows.length, ["تجربة واحدة مفهرسة", "تجربتان مفهرستان", "تجارب مفهرسة", "تجربةً مفهرسة"])} —
+          {countAr(rows.length, ["تجربة مفهرسة", "تجربتان مفهرستان", "تجارب مفهرسة", "تجربةً مفهرسة"])} —
           فهرس للاستعراض فقط حتى إطلاق المشغّل.
         </T>
       </Card>

@@ -135,6 +135,7 @@ WHOLESALE = {
     # reduced-motion-bounded; raw-css gate still enforces tokens there.
     'frontend/src/styles/landing/chrome.css',
     'frontend/src/styles/landing/hero.css',
+    'frontend/src/styles/landing/hero-plate.css',
     'frontend/src/styles/landing/statement.css',
     'frontend/src/styles/landing/journey.css',
     'frontend/src/styles/landing/pains.css',

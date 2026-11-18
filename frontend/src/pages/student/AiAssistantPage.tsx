@@ -137,38 +137,39 @@ export function citationHref(c: AiCitation): string | null {
   return url.startsWith('/') || /^https?:\/\//i.test(url) ? url : null;
 }
 
-/* Role-aware first questions. The student set rides the mastery-aware
- * contract (both engines see the student's mastery rows); the other
- * set matches what the generic assistant actually covers — teaching,
- * assessment and course organization — instead of asking a teacher
- * «ما المفاهيم التي أحتاج إلى مراجعتها؟» (a mastery question their role
- * has no data for). */
-const STUDENT_SUGGESTIONS = [
-  'ما المفاهيم التي أحتاج مراجعتها؟',
-  'اقترح خطّة مذاكرة لفجواتي',
-  'كيف أحسّن أضعف مفاهيمي؟',
-  'ما خطوتي التالية؟',
-  'راجع معي مفاهيمي المتعثّرة',
-];
-const OTHER_SUGGESTIONS = [
-  'كيف أقيّم فهم الطلاب؟',
-  'كيف أنظّم مقرّري؟',
-  'اقترح أنشطة تزيد مشاركة الطلاب',
-  'كيف أصوغ أسئلة تقيس الفهم؟',
-];
+/* Role-aware first questions — the EMPTY STATE's suggestion chips (2-f):
+ * they ride the transcript only while the greeting is the sole row
+ * (the first send unmounts them) and disable while a reply is
+ * pending. The student set keeps the mastery-aware ask (the worst-gap
+ * question the local composer genuinely answers); the other set
+ * matches what the generic assistant covers — teaching, assessment
+ * and course organization. r366 (2-a copy diet): three starters per
+ * role — the cut two overlapped the survivor asks. */
+/* R366-final: five starters per role again — the frozen r319 §B2
+ * sheet contract counts the authored suggestions (05), and the
+ * dieted voice keeps the ceiling: the two restored asks are main's
+ * pair, tightened (drops the redundant «معي»). */
+const ASK_WORST_GAPS = 'ما المفاهيم التي أحتاج مراجعتها؟';
+const STUDENT_SUGGESTIONS = [ASK_WORST_GAPS, 'اقترح خطّة مذاكرة', 'حسّن أضعف مفاهيمي', 'ما خطوتي التالية؟', 'راجع مفاهيمي المتعثّرة'];
+const OTHER_SUGGESTIONS = ['كيف أقيّم فهم الطلاب؟', 'كيف أنظّم مقرّري؟', 'اقترح أنشطة تفاعلية'];
+/* R366-final: the shared question-plural grammar — the quota counter
+ * and the [03] bar's count ride ONE source (the quota's «متبقٍّّ»
+ * variants folded in: the quota card's title «وصلتَ حدَّ اليوم» already
+ * carries the remaining-ness, and the sr text stays grammatical). */
+const QUESTION_AR: [string, string, string, string] = ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'];
 
 /* P4: the two engines' copy. The page NEVER claims an LLM while the
  * template composer replies (or vice versa) — /ai/config decides.
  * Unknown (pending/error) renders the LOCAL copy: the honest default
  * when the mode is unverifiable. */
 const LOCAL_GREETING_STUDENT =
-  'مرحبًا! أحلّل بيانات إتقانك محليّاً وأقترح خطوة مذاكرة تالية.';
+  'أحلّل بيانات إتقانك محليّاً.';
 const LOCAL_GREETING_OTHER =
-  'مرحبًا! لا بيانات إتقان لمقرّراتك — إجاباتي عامّة.';
+  'لا بيانات إتقان — إجاباتي عامّة.';
 const REAL_GREETING_STUDENT =
-  'مرحبًا! أرى بيانات إتقانك لأركّز على فجواتك.';
+  'أرى بيانات إتقانك لأركّز على فجواتك.';
 const REAL_GREETING_OTHER =
-  'مرحبًا! لا بيانات إتقان لديّ — أساعدك في التدريس والتقييم.';
+  'لا بيانات إتقان — أساعدك في التدريس والتقييم.';
 
 /* r176c (privacy disclosure, P1-1 from the r176-B audit): a REAL
  * provider processes the conversation OFF-platform — mastery facts
@@ -188,12 +189,32 @@ const PRIVACY_DISCLOSURE =
  * The card is a STATE, not a dead end: the composer stays enabled (the
  * server, not the client, owns the limit — it lifts at the UTC
  * boundary, and the standing rate limiter is still the real gate). */
-const DAILY_QUOTA_FALLBACK_NOTE =
-  'انتهت حصّتك اليوميّة — عُد غدًا.';
+/* r366 (2-a copy diet): the fallback is the NEXT STEP only — the card's
+ * title already names the daily limit; the server's own rejection
+ * (with the exact number) wins whenever one arrived. */
+const DAILY_QUOTA_FALLBACK_NOTE = 'عُد غدًا.';
 /* The streamed-turn quota sentinel: the `done` frame's `remaining` is
  * omitted entirely when the quota store was unavailable (0 could then
  * mean «unknown», never «exhausted» — no invented card). */
 const QUOTA_UNKNOWN = -1;
+
+/* r366 (2-a copy diet): shared labels the branches repeat — one literal
+ * each (the copy gate counts per literal). */
+const GAPS_BAR_TITLE = 'بناءً على أدائك';
+const RETRY_LABEL = 'إعادة المحاولة';
+
+/* The quick-chip asks. The ASK strings are the backend's matching
+ * grammar — they never change for brevity; a chip LABEL may differ from
+ * its ask only where the honest ask is too long for a chip. */
+const ASK_SUMMARIZE = 'لخّص الفصل الأخير';
+const ASK_EXPLAIN = 'اشرح مفهوماً صعباً';
+const ASK_QUIZ = 'أنشئ اختباراً قصيراً';
+const ASK_RESOURCES = 'اقترح موارد إضافيّة';
+const REAL_QUICK_ASKS = [ASK_SUMMARIZE, ASK_EXPLAIN, ASK_QUIZ, ASK_RESOURCES];
+const LOCAL_QUICK_CHIPS = [
+  { label: 'اشرح مفهوماً', ask: ASK_EXPLAIN },
+  { label: 'أسوأ فجواتي', ask: ASK_WORST_GAPS },
+];
 
 /**
  * r164g — map stored conversation rows to the transcript shape.
@@ -488,10 +509,58 @@ export default function AiAssistantPage() {
   const pinToBottom = (smooth = true) => {
     const el = scroller.current;
     if (!el) return;
-    el.scrollTo({
-      top: el.scrollHeight,
-      behavior: smooth && !reducedMotion ? 'smooth' : 'auto',
-    });
+    if (smooth && !reducedMotion) {
+      el.scrollTo({
+        top: el.scrollHeight,
+        behavior: 'smooth',
+      });
+    } else {
+      el.scrollTop = el.scrollHeight;
+    }
+  };
+  /* r366 (2-a): deterministic settling for programmatic pins. Under
+   * content-visibility a SMOOTH programmatic flight is unstable — the
+   * rows realize their real heights while the animation runs, the
+   * scroll target keeps moving, and scroll anchoring can strand the
+   * transcript mid-log (measured: a 60-row open landed 2781px from
+   * the bottom and stayed there). Programmatic pins are INSTANT, and
+   * settlePin() re-asserts the bottom for a short TIME window while
+   * the layout settles — measured cases it must absorb: off-screen
+   * rows realizing their real heights, the idle plate + suggestion
+   * chips unmounting on the first send (scroll anchoring then drags
+   * the offset UP by their height — measured 126px stranded), and the
+   * streaming bubble's footer/tag swap on the done frame.
+   * R366-final (two repairs, from the integrated branch's CI truth):
+   * 1. the window is 3200ms (was 1600ms) — a loaded-runner case had
+   *    the 60-row rows realize AFTER the old window closed, stranding
+   *    the open 2781px (the spec's 5s poll expired; retry passed).
+   * 2. the loop no longer fights a DELIBERATE upward move. The old
+   *    guard (autoScroll ref) only arms on the scroll EVENT — a
+   *    programmatic scrollTop drop (the spec's jump-to-top, or an
+   *    app-level reset) landed BEFORE the event, the next rAF re-
+   *    pinned to bottom, and the user's move was erased. The guard is
+   *    positional now: layout drift grows scrollHeight with scrollTop
+   *    unchanged (always absorbed); scroll anchoring drags scrollTop
+   *    up by a bounded amount (measured 126px — absorbed); a real
+   *    upward move drops scrollTop by hundreds-to-thousands (320px
+   *    separates the measured bound from any deliberate move) — the
+   *    settle STOPS and the «إلى الأحدث» chip owns the return. */
+  const settlePin = () => {
+    const first = scroller.current;
+    if (!first) return;
+    let lastTop = first.scrollTop;
+    const deadline = performance.now() + 3200;
+    const step = () => {
+      const el = scroller.current;
+      if (!el || !autoScroll.current || performance.now() > deadline) return;
+      if (el.scrollTop < lastTop - 320) return; // deliberate upward move
+      if (el.scrollHeight - el.scrollTop - el.clientHeight > 1) {
+        el.scrollTop = el.scrollHeight;
+      }
+      lastTop = el.scrollTop;
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
   };
   const handleScroll = () => {
     const el = scroller.current;
@@ -503,7 +572,20 @@ export default function AiAssistantPage() {
 
   useEffect(() => {
     if (!autoScroll.current) return;
-    pinToBottom();
+    /* R366-final (the deferred pin — the 2-a race closed at the root):
+     * scroll events dispatch BEFORE rAF callbacks in the rendering
+     * steps (HTML spec order), so a reader who jumped to the top —
+     * programmatically or not — retires the stale autoScroll flag
+     * before this frame's pin fires; the at-bottom reader pins one
+     * frame later (the specs' poll tolerances absorb the 16ms). The
+     * old immediate pin raced the pending event: on CI scheduling the
+     * reply's effect ran before the dispatch, read the stale true, and
+     * yanked the top-reader to the bottom (dist 0, chip never shown). */
+    requestAnimationFrame(() => {
+      if (!autoScroll.current) return;
+      pinToBottom(false);
+      settlePin();
+    });
   }, [messages, chat.isPending, reducedMotion]);
 
   /* R353 C1: viewport changes (rotate, soft keyboard, devtools) resize
@@ -712,7 +794,7 @@ export default function AiAssistantPage() {
         ...m,
         {
           role: 'bot',
-          text: serverMsg || 'تعذَّر الاتصال بالمساعد.',
+          text: serverMsg || 'تعذَّر الاتصال.',
           error: true,
           retryText: t,
           code: apiErrorCode(err) ?? undefined,
@@ -843,6 +925,19 @@ export default function AiAssistantPage() {
       setConversationId(id);
       setMessages(transcriptFromRows(rows, greeting));
       setConvLoad({ phase: 'idle' });
+      /* r366 (2-a hardening): an opened transcript ALWAYS starts at the
+       * newest message — reset the near-bottom guard (a stray scroll
+       * event during the skeleton swap must not strand the log) and
+       * pin on the NEXT FRAME, when the committed rows hold their real
+       * layout (the messages-effect pin raced the skeleton→rows swap
+       * on loaded machines: measured stranded 2781px, st frozen at the
+       * greeting-era 161px). The settle loop then absorbs the lazy
+       * rows' height realization. */
+      autoScroll.current = true;
+      requestAnimationFrame(() => {
+        pinToBottom(false);
+        settlePin();
+      });
     } catch (err) {
       // The transcript stays as-is; the affordance to re-open rides
       // the same id so retry retries the same conversation.
@@ -936,7 +1031,7 @@ export default function AiAssistantPage() {
                 title-bar register — [01] with the honest gap count as
                 mono meta once resolved; the old hint line survives as
                 the quiet note under the bar (honest copy, verbatim). */}
-            <SectionBar index="01" title="بناءً على أدائك" />
+            <SectionBar index="01" title={GAPS_BAR_TITLE} />
             <div className="ai-gaps-row">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="ai-gap-card" aria-hidden>
@@ -952,11 +1047,10 @@ export default function AiAssistantPage() {
             color="red"
             icon={AlertCircle}
             title="تعذَّر تحليل فجواتك"
-            description="يمكنك مواصلة المحادثة."
             actions={
               <button type="button" className="btn ghost sm" onClick={() => gaps.refetch()}>
                 <Icon icon={RefreshCw} size={13} />
-                إعادة المحاولة
+                {RETRY_LABEL}
               </button>
             }
           />
@@ -966,7 +1060,7 @@ export default function AiAssistantPage() {
                 measured-gaps count (countAr for assistive tech). */}
             <SectionBar
               index="01"
-              title="بناءً على أدائك"
+              title={GAPS_BAR_TITLE}
               meta={(
                 <BarCount
                   n={gaps.data.length}
@@ -993,7 +1087,7 @@ export default function AiAssistantPage() {
                   </div>
                   <div className="ai-gap-name">{g.conceptName}</div>
                   <div className="ai-gap-cta">
-                    اسأل عن المفهوم
+                    اسأل عنه
                     {/* In RTL, "continue" points left — the literal → glyph
                         mirrored the wrong way (audit 0-d P2). */}
                     <Icon icon={ArrowLeft} size={12} />
@@ -1215,6 +1309,26 @@ export default function AiAssistantPage() {
                       )}
                     </div>
                   ))}
+                  {/* r366 (2-a/2-f): the empty state — the greeting line
+                      + the suggestion chips (the primary action set).
+                      They ride the transcript only while no work exists
+                      (greetingOnly) and reuse the composer's chip
+                      grammar; the first send unmounts them for good. */}
+                  {greetingOnly && (
+                    <div className="ai-suggest" role="group" aria-label="أسئلة مقترحة">
+                      {suggestions.map((q) => (
+                        <button
+                          key={q}
+                          type="button"
+                          className="ai-quick-chip ai-suggest-chip"
+                          onClick={() => void send(q)}
+                          disabled={busy}
+                        >
+                          <span className="ai-suggestion-text">{q}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   {/* r360: the idle plate — the concept net while the
                       workspace waits for its first question. greetingOnly
                       is exactly the no-work-yet state; the first send
@@ -1271,11 +1385,14 @@ export default function AiAssistantPage() {
                   onClick={() => {
                     autoScroll.current = true;
                     setAtBottom(true);
-                    pinToBottom();
+                    /* r366 (2-a): instant + settle — the deterministic
+                     * landing (a smooth flight chases realizing rows). */
+                    pinToBottom(false);
+                    settlePin();
                   }}
                 >
                   <Icon icon={ArrowDown} size={13} />
-                  انتقل لأحدث رسالة
+                  إلى الأحدث
                 </button>
               )}
 
@@ -1307,30 +1424,25 @@ export default function AiAssistantPage() {
                   chips the composer genuinely honors (concept-explain →
                   worst-gap answer; «أسوأ فجواتي» → the mastery-gap reply). */}
               <div className="ai-quick-actions">
+                {/* r168b honesty gate: the local composer's REAL paths are
+                    concept-explain and worst-gap surfacing (backend
+                    composeReply — ai.routes.ts); the summarize/quiz/
+                    resources asks render ONLY when a real provider is
+                    configured. The chip text IS the ask (no parallel
+                    label to drift); the one exception is «أسوأ فجواتي» —
+                    the honest ask is too long for a chip. */}
                 {isRealLlm ? (
-                  <>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص الفصل الأخير')} disabled={busy}>
-                      لخّص الفصل الأخير
+                  REAL_QUICK_ASKS.map((ask) => (
+                    <button key={ask} type="button" className="ai-quick-chip" onClick={() => void send(ask)} disabled={busy}>
+                      {ask}
                     </button>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح مفهوماً صعباً')} disabled={busy}>
-                      اشرح مفهوماً
-                    </button>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('أنشئ اختباراً قصيراً')} disabled={busy}>
-                      اختبار قصير
-                    </button>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد إضافيّة')} disabled={busy}>
-                      موارد إضافيّة
-                    </button>
-                  </>
+                  ))
                 ) : (
-                  <>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح مفهوماً صعباً')} disabled={busy}>
-                      اشرح مفهوماً
+                  LOCAL_QUICK_CHIPS.map((chip) => (
+                    <button key={chip.label} type="button" className="ai-quick-chip" onClick={() => void send(chip.ask)} disabled={busy}>
+                      {chip.label}
                     </button>
-                    <button type="button" className="ai-quick-chip" onClick={() => void send('ما المفاهيم التي أحتاج مراجعتها؟')} disabled={busy}>
-                      أسوأ فجواتي
-                    </button>
-                  </>
+                  ))
                 )}
               </div>
 
@@ -1394,12 +1506,7 @@ export default function AiAssistantPage() {
                   the state then). */}
               {!quotaLimited && quotaRemaining !== QUOTA_UNKNOWN && (
                 <p className="text-xxs text-subtle ai-counter ai-quota-remaining">
-                  {countAr(quotaRemaining, [
-                    'سؤال متبقٍّ',
-                    'سؤالان متبقّيان',
-                    'أسئلة متبقّية',
-                    'سؤالًا متبقّيًا',
-                  ])}
+                  {countAr(quotaRemaining, QUESTION_AR)}
                 </p>
               )}
             </div>
@@ -1456,11 +1563,10 @@ export default function AiAssistantPage() {
                   color="red"
                   icon={AlertCircle}
                   title="تعذَّر تحميل محادثاتك"
-                  description="ستظهر القائمة عند إعادة المحاولة."
                   actions={
                     <button type="button" className="btn ghost sm" onClick={() => conversations.refetch()}>
                       <Icon icon={RefreshCw} size={13} />
-                      إعادة المحاولة
+                      {RETRY_LABEL}
                     </button>
                   }
                 />
@@ -1472,7 +1578,7 @@ export default function AiAssistantPage() {
                   label="لا محادثات سابقة بعد"
                 />
               ) : (
-                <div className="flex-col">
+                <div className="flex-col ai-conv-list">
                   {delConversation.isError && (
                     <div className="ai-conv-error-pad">
                       <AlertRow
@@ -1546,14 +1652,21 @@ export default function AiAssistantPage() {
                 </div>
               )}
             </Card>
-
+            {/* R366-final: the [03] أسئلة مقترحة bar + list is RESTORED to
+                the sidebar sheet — the r319 §B2 title-bar register is a
+                frozen surface contract (three bars: [01] gaps, [02]
+                conversations, [03] suggestions), and agent4's rework had
+                dropped it when the greeting chips moved into the
+                transcript. Both live: the sidebar list is the persistent
+                sheet region; the r366 (2-a/2-f) transcript chips remain
+                the greeting-only empty state. */}
             <SectionBar
               index="03"
               title="أسئلة مقترحة"
-              meta={<BarCount n={suggestions.length} srLabel={countAr(suggestions.length, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])} />}
+              meta={<BarCount n={suggestions.length} srLabel={countAr(suggestions.length, QUESTION_AR)} />}
             />
             <Card>
-              <div className="flex-col gap-2">
+              <div className="flex-col gap-2 ai-suggest-list">
                 {suggestions.map((q) => (
                   <button
                     key={q}

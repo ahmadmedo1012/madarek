@@ -57,6 +57,13 @@ import '../../styles/student/heron-supplemental.css';
 import '../../styles/student/pages.css';
 import '../../styles/student/academic-pages.css';
 
+/* R366 L4 copy diet — one home per repeated string: the load-failure
+ * message ran once per board, the honest-record label twice, and the
+ * not-found titles twice (catalog + lesson pages). */
+const loadFailed = (what: string) => `تعذَّر تحميل ${what}`;
+const HONEST_RECORD = 'إتمام موثَّق';
+const TRACK_MISSING = 'المسار غير موجود';
+
 const CATEGORY_LABEL: Record<TrainingCategory, string> = {
   ONBOARDING: 'تعريف بالمنصة',
   ACADEMIC: 'منهجية أكاديمية',
@@ -84,7 +91,6 @@ const MINUTES_AR: [string, string, string, string] = ['دقيقة واحدة', '
 const LESSONS_AR: [string, string, string, string] = ['درس واحد', 'درسان', 'دروس', 'درساً'];
 const BADGES_AR: [string, string, string, string] = ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'];
 const BACK_TO_TRACKS = 'العودة إلى المسارات';
-const TRACK_NOT_FOUND = 'المسار غير موجود';
 const BROWSE_TRACKS = 'تصفح المسارات';
 
 /** Counted Arabic noun for point values (D17-2): ar-LY grouping with the
@@ -146,7 +152,7 @@ export default function TrainingCatalogPage() {
       ) : meQ.isError ? (
         <Card>
           <ErrorState
-            message="تعذَّر تحميل الملخص"
+            message={loadFailed('الملخص')}
             error={meQ.error}
             onRetry={() => meQ.refetch()}
           />
@@ -158,8 +164,8 @@ export default function TrainingCatalogPage() {
             cells={[
               { label: 'نقاطك', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
               { label: 'الأوسمة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, BADGES_AR)}` : undefined },
-              { label: 'مسارات نشطة', value: formatNum(enrolledCount), trend: countAr(completedCount, ['واحد مكتمل', 'مكتملان', 'مكتملة', 'مكتمل']) },
-              { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق' },
+              { label: 'مسارات نشطة', value: formatNum(enrolledCount), trend: countAr(completedCount, ['مكتمل', 'مكتملان', 'مكتملة', 'مكتمل']) },
+              { label: 'الشهادات', value: formatNum(me.certificateCount), trend: HONEST_RECORD },
             ]}
           />
 
@@ -235,7 +241,7 @@ export default function TrainingCatalogPage() {
       ) : tracksQ.isError ? (
         <Card>
           <ErrorState
-            message="تعذَّر تحميل المسارات"
+            message={loadFailed('المسارات')}
             error={tracksQ.error}
             onRetry={() => tracksQ.refetch()}
           />
@@ -298,7 +304,7 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
             <ProgressBar
               value={track.progressPct}
               color={accent}
-              label={track.isCompleted ? 'مكتمل' : `${track.completedLessons} / ${countAr(track.totalLessons, ['درس', 'درسان', 'دروس', 'درساً'])}`}
+              label={track.isCompleted ? 'مكتمل' : `${track.completedLessons} / ${countAr(track.totalLessons, LESSONS_AR)}`}
               ariaLabel={`تقدّم مسار ${track.title}`}
             />
           </span>
@@ -361,7 +367,7 @@ export function TrainingTrackPage() {
           <Icon icon={ChevronRight} size={14} />
           {BACK_TO_TRACKS}
         </Link>
-        <ErrorState message="تعذَّر تحميل المسار" error={trackQ.error} onRetry={() => trackQ.refetch()} />
+        <ErrorState message={loadFailed('المسار')} error={trackQ.error} onRetry={() => trackQ.refetch()} />
       </PageFrame>
     );
   }
@@ -371,7 +377,7 @@ export function TrainingTrackPage() {
       <PageFrame>
         <EmptyState
           icon={BookOpen}
-          title={TRACK_NOT_FOUND}
+          title={TRACK_MISSING}
           action={<Link to="/training" className="btn primary sm">{BROWSE_TRACKS}</Link>}
         />
       </PageFrame>
@@ -467,7 +473,7 @@ export function TrainingTrackPage() {
         title="الدروس"
         heading="h2"
         icon={BookOpen}
-        subtitle={track.enrolled ? undefined : 'سجّل في المسار لفتح الدروس'}
+        subtitle={track.enrolled ? undefined : 'سجّل لفتح الدروس'}
         style={{ ['--track-accent' as never]: accent }}
       >
         <div className="flex-col gap-2">
@@ -556,7 +562,7 @@ export function TrainingLessonPage() {
           <Icon icon={ChevronRight} size={14} />
           {BACK_TO_TRACKS}
         </Link>
-        <ErrorState message="تعذَّر تحميل الدرس" error={trackQ.error} onRetry={() => trackQ.refetch()} />
+        <ErrorState message={loadFailed('الدرس')} error={trackQ.error} onRetry={() => trackQ.refetch()} />
       </PageFrame>
     );
   }
@@ -566,7 +572,7 @@ export function TrainingLessonPage() {
       <PageFrame>
         <EmptyState
           icon={BookOpen}
-          title={TRACK_NOT_FOUND}
+          title={TRACK_MISSING}
           action={<Link to="/training" className="btn primary sm">{BROWSE_TRACKS}</Link>}
         />
       </PageFrame>
@@ -600,7 +606,7 @@ export function TrainingLessonPage() {
       if (res.newlyCompleted) {
         setFeedback({
           ok: true,
-          msg: `أحسنت! حصلت على ${pointsAr(res.pointsAwarded)}.`,
+          msg: `حصلت على ${pointsAr(res.pointsAwarded)}.`,
           reward: {
             points: res.pointsAwarded,
             level: res.level.level,
@@ -816,7 +822,7 @@ export function AchievementsPage() {
       ) : meQ.isError ? (
         <Card>
           <ErrorState
-            message="تعذَّر تحميل الملخص"
+            message={loadFailed('الملخص')}
             error={meQ.error}
             onRetry={() => meQ.refetch()}
           />
@@ -832,7 +838,7 @@ export function AchievementsPage() {
             cells={[
               { label: 'مجموع النقاط', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
               { label: 'الأوسمة المحقّقة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, BADGES_AR)}` : undefined },
-              { label: 'الشهادات', value: formatNum(me.certificateCount), trend: 'إتمام موثَّق' },
+              { label: 'الشهادات', value: formatNum(me.certificateCount), trend: HONEST_RECORD },
             ]}
           />
         </div>
@@ -844,14 +850,14 @@ export function AchievementsPage() {
             <BadgeGridSkeleton />
           ) : badgesQ.isError ? (
             <Card>
-              <ErrorState message="تعذَّر تحميل الأوسمة" error={badgesQ.error} onRetry={() => badgesQ.refetch()} />
+              <ErrorState message={loadFailed('الأوسمة')} error={badgesQ.error} onRetry={() => badgesQ.refetch()} />
             </Card>
           ) : !badgesQ.data?.length ? (
             /* R319 (c3-S2): the empty shelf is the sheet's reserved-but-
                empty region — the hatched EmptyCell (same copy + action). */
             <EmptyCell
               label="لا توجد أوسمة بعد"
-              note="أكمل الدروس لتحصد الأوسمة."
+              note="تُكتسب بإكمال الدروس."
               action={<Link to="/training" className="btn primary sm">{BROWSE_TRACKS}</Link>}
             />
           ) : (
@@ -886,13 +892,13 @@ export function AchievementsPage() {
             </div>
           ) : certsQ.isError ? (
             <Card>
-              <ErrorState message="تعذَّر تحميل شهاداتك" error={certsQ.error} onRetry={() => certsQ.refetch()} />
+              <ErrorState message={loadFailed('شهاداتك')} error={certsQ.error} onRetry={() => certsQ.refetch()} />
             </Card>
           ) : !certsQ.data?.length ? (
             /* R319 (c3-S2): the hatched EmptyCell (same copy + action). */
             <EmptyCell
               label="لا شهادات بعد"
-              note="أكمل مساراً لشهادتك."
+              note="تُكتسب بإكمال مسار."
               action={<Link to="/training" className="btn primary sm">{BROWSE_TRACKS}</Link>}
             />
           ) : (
@@ -937,21 +943,21 @@ export function AchievementsPage() {
       {tab === 'leaderboard' && (
         <div role="tabpanel" id="ach-panel-leaderboard" aria-labelledby="ach-tab-leaderboard">
           <Card
-            title="الأعلى نقاطاً هذا الأسبوع"
+            title="الأعلى نقاطاً"
             heading="h2"
             icon={Crown}
-            subtitle="آخر 20 طالباً نشاطاً"
+            subtitle="الأكثر نشاطاً"
           >
             {lbQ.isPending ? (
               <ListSkeleton rows={6} />
             ) : lbQ.isError ? (
-              <ErrorState message="تعذَّر تحميل الترتيب" error={lbQ.error} onRetry={() => lbQ.refetch()} />
+              <ErrorState message={loadFailed('الترتيب')} error={lbQ.error} onRetry={() => lbQ.refetch()} />
             ) : !lbQ.data?.length ? (
               /* R319 (c3-S2): the hatched EmptyCell (same copy + action). */
               <EmptyCell
-                label="لا يوجد ترتيب بعد"
-                note="اكسب النقاط بإكمال الدروس."
-                action={<Link to="/training" className="btn primary sm">ابدأ من التطوير الذاتي</Link>}
+                label="لا ترتيب بعد"
+                note="النقاط بإكمال الدروس."
+                action={<Link to="/training" className="btn primary sm">ابدأ من المسارات</Link>}
               />
             ) : (
               <>

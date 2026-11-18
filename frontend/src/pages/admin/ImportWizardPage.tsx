@@ -244,7 +244,7 @@ export function ImportWizardPage() {
 
   const acceptFile = useCallback(async (file: File) => {
     if (file.size > MAX_BYTES) {
-      setError('أكبر من ١٠ ميغابايت — قسّمه');
+      setError('أكبر من 10 ميغابايت — قسّمه');
       return;
     }
     setError(null);
@@ -409,7 +409,7 @@ export function ImportWizardPage() {
           >
             <UploadCloud size={28} aria-hidden="true" />
             <p className="iw-drop-title">اسحب الملف هنا</p>
-            <p className="iw-drop-sub">XLSX / CSV · حتى ١٠ ميغابايت · ٢٠ ألف صف</p>
+            <p className="iw-drop-sub">XLSX / CSV · حتى 10 ميغابايت · 20 ألف صف</p>
             {fileName !== null && <p className="iw-drop-file" dir="ltr">{fileName}</p>}
           </div>
           <input
@@ -710,7 +710,7 @@ export function ImportWizardPage() {
                 </label>
               </li>
               <li>الحسابات بلا بريد: كلمة مرور مؤقتة تُعرض مرة واحدة.</li>
-              <li className="iw-muted">٧٢ ساعة للتراجع (ما لم يسجّل الطالب دخوله).</li>
+              <li className="iw-muted">72 ساعة للتراجع (ما لم يسجّل الطالب دخوله).</li>
             </ul>
           </Card>
           <div className="iw-stickybar">
@@ -799,7 +799,7 @@ export function ImportWizardPage() {
               {rollbackConfirm && (
                 <ConfirmDialog
                   open
-                  title="التراجع؟"
+                  title="التراجع"
                   message="تُحذف الحسابات غير المستخدمة وتُستعاد القيم."
                   confirmLabel="نعم، تراجع"
                   onConfirm={() => void runRollback()}

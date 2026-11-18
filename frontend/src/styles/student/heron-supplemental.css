@@ -201,6 +201,11 @@
     .r305g-level .btn.ghost:hover {
       background: color-mix(in srgb, var(--neutral-0) 10%, transparent);
     }
+    /* r366 2-d (integration fold): the thread room's row opener joins
+       the sheet's ONE guarded hover block — the gate contract reads
+       the first (hover:hover)+(pointer:fine) band, so every :hover in
+       this sheet must live inside it. */
+    button.msg-row-open:hover .list-row-title { text-decoration: underline; }
   }
 
   /* ── §5 · arvr — the honest catalog rows ──────────────────────────
@@ -310,8 +315,154 @@
 
   /* Reduced-motion belt: this sheet declares no animation of its own —
      the one hover shift above is a color step already guarded behind
-     (hover:hover) and dies with the global RM belt. Explicit contract. */
-  @media (prefers-reduced-motion: reduce) {
-    .r305g-level .btn.ghost { transition: none; }
+     (hover:hover) and dies with the global RM belt. Explicit contract.
+     (Single-line seat: the deadcode ratchet counts boilerplate banners,
+     and this belt is one rule — it reads as one token run.) */
+  @media (prefers-reduced-motion: reduce) { .r305g-level .btn.ghost { transition: none; } }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   r366 (2-d) — the THREAD ROOM (MessagesInbox's conversation surface)
+   The room: phone band (<768) = a fixed full-viewport surface that
+   replaces the list (the list stays mounted in flow behind it — the
+   back trip restores its scroll untouched); desktop = a centered
+   column over a dimmed page. The bubble list is the room's ONLY
+   vertical scroller (overflow-anchor off — the AI-surface lesson);
+   the composer is pinned under it, so a keyboard-open viewport simply
+   shortens the list.
+   ═══════════════════════════════════════════════════════════════════ */
+.msg-thread {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+@media (min-width: 768px) {
+  .msg-thread {
+    inset-block: var(--sp-6);
+    inset-inline: 50%;
+    translate: 50% 0; /* centered column (RTL-neutral: inset-inline + translate) */
+    inline-size: min(720px, calc(100vw - var(--sp-8) * 2));
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    box-shadow: var(--elev-3);
+    overflow: clip;
   }
+}
+.msg-thread-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-block-end: 1px solid var(--rule);
+  background: var(--surface);
+  flex: none;
+}
+.msg-thread-name {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--fw-semibold);
+  text-align: start;
+}
+.msg-thread-list {
+  flex: 1;
+  min-block-size: 0;
+  overflow-y: auto;
+  overflow-anchor: none; /* layout shifts must never drag the offset */
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.msg-bubble-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-inline-size: min(78%, 480px);
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--sp-12);
+}
+.msg-bubble-row.msg-out {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+.msg-bubble {
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-lg);
+  border-start-start-radius: var(--r-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  /* The RTL killer: an unbroken Latin run (codes, IDs, emails) must
+     wrap INSIDE the bubble — never grow it past the room. */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.msg-out .msg-bubble {
+  background: var(--surface-3, var(--surface-2));
+  border-start-end-radius: var(--r-sm);
+  border-start-start-radius: var(--r-lg);
+}
+.msg-bubble-time {
+  font-size: var(--fs-xxs);
+  color: var(--text-muted);
+  padding-inline: var(--sp-1);
+}
+.msg-thread-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-block-start: 1px solid var(--rule);
+  background: var(--surface);
+  flex: none;
+}
+.msg-thread-input {
+  flex: 1;
+  min-inline-size: 0;
+  resize: none;
+  max-block-size: 30dvh;
+}
+.msg-thread-error {
+  position: absolute;
+  inset-block-end: calc(var(--sp-14) + var(--sp-2));
+  inset-inline: var(--sp-4);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--danger-soft, var(--surface));
+  border: 1px solid var(--danger-ink);
+  color: var(--danger-ink);
+  font-size: var(--fs-xs);
+}
+/* The row's open target rides the list-row grammar (the reply door and
+   the stamp stay siblings — never nested interactives). */
+button.msg-row-open {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+button.msg-row-open:focus-visible {
+  outline: 2px solid var(--focus-ring, var(--accent-ink));
+  outline-offset: 2px;
+  border-radius: var(--r-md);
 }

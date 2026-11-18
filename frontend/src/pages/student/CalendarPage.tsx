@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ComponentProps } from 'react';
 import { Link } from 'react-router-dom';
 import {
   CalendarDays, ChevronLeft, ChevronRight,
@@ -88,6 +88,57 @@ function selectedDayLabel(key: string): string {
   return `${dow} · ${md}`;
 }
 
+/* ── r366 (2-d): the week mode ──────────────────────────────────────
+ *
+ * The month grid answers "which days matter this month"; the phone's
+ * honest question is "what is THIS week". The mode switcher rides the
+ * card's head as the shared pill register; the week is the 7-day strip
+ * (Sunday-first) containing the anchor day, and its cells carry the
+ * day's events as one-line chips (ellipsis + the full title on the
+ * tooltip) inked with the same kind colours the legend dots speak. */
+type CalMode = 'month' | 'week';
+
+/** Max chips per week cell — beyond it a «+n أخرى» chip carries the
+ * rest (titles on its tooltip); the detail list below stays the full
+ * ledger for any selected day. */
+const WEEK_CHIP_CAP = 3;
+
+/** The 7-day strip containing the anchor key (Sunday-first — pure UTC
+ *  math like monthGrid; inMonth shades against the anchor's own month
+ *  so a straddling week reads honestly at its seam). */
+function weekGridOf(anchorKey: string): CalendarCell[] {
+  const parts = civilDayParts(anchorKey);
+  if (!parts) return [];
+  const anchor = new Date(Date.UTC(parts.year, parts.month, parts.day, 12));
+  const cursor = new Date(anchor);
+  cursor.setUTCDate(anchor.getUTCDate() - anchor.getUTCDay());
+  const cells: CalendarCell[] = [];
+  for (let i = 0; i < 7; i++) {
+    cells.push({
+      key: civilKeyOf({ year: cursor.getUTCFullYear(), month: cursor.getUTCMonth(), day: cursor.getUTCDate() }),
+      dow: cursor.getUTCDay(),
+      day: cursor.getUTCDate(),
+      inMonth: cursor.getUTCMonth() === anchor.getUTCMonth(),
+    });
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+  return cells;
+}
+
+/** «12 – 18 يناير» — the week strip's range title (the strip's stand-in
+ *  for the month title; a straddling week reads both months). */
+function weekRangeTitleAr(anchorKey: string): string {
+  const parts = civilDayParts(anchorKey);
+  if (!parts) return '';
+  const anchor = new Date(Date.UTC(parts.year, parts.month, parts.day, 12));
+  const start = new Date(anchor);
+  start.setUTCDate(anchor.getUTCDate() - anchor.getUTCDay());
+  const end = new Date(start);
+  end.setUTCDate(start.getUTCDate() + 6);
+  const dayMonth = (d: Date) => formatDate(d, { day: 'numeric', month: 'long' });
+  return `${dayMonth(start)} – ${dayMonth(end)}`;
+}
+
 /* r299 (final C): shape-matched pending mirror — the settled page is
  * a pattern header + the month grid; the skeleton holds the header's
  * own box and a 7×6 cell grid of the same footprint (the CardSkeleton
@@ -139,8 +190,17 @@ export default function StudentCalendarPage() {
     return { year: t.year, month: t.month };
   });
   const [selectedKey, setSelectedKey] = useState(todayKey);
+  /* r366 (2-d): the card's mode — the 42-cell month grid or the
+   * anchored 7-day week strip. weekAnchor is any civil day inside the
+   * shown week (the selection when it owns the focus, else the viewed
+   * month's first day); prev/next shift it a week at a time. */
+  const [mode, setMode] = useState<CalMode>('month');
+  const [weekAnchor, setWeekAnchor] = useState(todayKey);
 
-  const cells = useMemo<CalendarCell[]>(() => monthGrid(view.year, view.month), [view]);
+  const cells = useMemo<CalendarCell[]>(
+    () => (mode === 'month' ? monthGrid(view.year, view.month) : weekGridOf(weekAnchor)),
+    [mode, view, weekAnchor],
+  );
 
   // The four sources, merged per audience-calendar day. The schedule
   // expansion is grid-scoped (recurring); the dated/exam sources are
@@ -209,6 +269,36 @@ export default function StudentCalendarPage() {
     });
   };
 
+  /* r366 (2-d): week nav — ± one week on the anchor (Date.UTC rolls
+   * the month/year overflow; the strip stays Sunday-first). */
+  const shiftWeek = (delta: number) => {
+    setWeekAnchor((k) => {
+      const parts = civilDayParts(k);
+      if (!parts) return k;
+      const d = new Date(Date.UTC(parts.year, parts.month, parts.day + delta * 7, 12));
+      return civilKeyOf({ year: d.getUTCFullYear(), month: d.getUTCMonth(), day: d.getUTCDate() });
+    });
+  };
+
+  /* r366 (2-d): the mode handoff keeps the user's place — month→week
+   * anchors on the selection when it lives in the viewed month (else
+   * the month's first week); week→month opens the anchor's month. */
+  const switchMode = (m: CalMode) => {
+    if (m === mode) return;
+    setMode(m);
+    if (m === 'week') {
+      const p = civilDayParts(selectedKey);
+      setWeekAnchor(
+        p && p.year === view.year && p.month === view.month
+          ? selectedKey
+          : civilKeyOf({ year: view.year, month: view.month, day: 1 }),
+      );
+    } else {
+      const p = civilDayParts(weekAnchor);
+      if (p) setView({ year: p.year, month: p.month });
+    }
+  };
+
   /* r304 — «اليوم» quick-return: month browsing (and day selection)
    * loses the «where am I» anchor, so the header offers one honest tap
    * back. The chip renders ONLY while the page is away from today —
@@ -218,13 +308,20 @@ export default function StudentCalendarPage() {
    * reinvented date math) and re-anchors view + selection + highlight
    * together. Hidden when already on today: no dead control. */
   const todayParts = civilDayParts(todayKey);
-  const awayFromToday = todayParts !== null &&
-    (view.year !== todayParts.year || view.month !== todayParts.month || selectedKey !== todayKey);
+  /* r366 (2-d): week mode reads "away" off the shown strip — a week
+   * that doesn't hold today is as lost as a foreign month (the view
+   * month itself may legitimately straddle; only the strip decides). */
+  const awayFromToday = todayParts !== null && (
+    mode === 'week'
+      ? !cells.some((c) => c.key === todayKey) || selectedKey !== todayKey
+      : view.year !== todayParts.year || view.month !== todayParts.month || selectedKey !== todayKey
+  );
   const goToday = () => {
     const t = tripoliToday();
     const key = civilKeyOf(t);
     setTodayKey(key);
-    setView({ year: t.year, month: t.month });
+    if (mode === 'week') setWeekAnchor(key);
+    else setView({ year: t.year, month: t.month });
     setSelectedKey(key);
   };
 
@@ -323,12 +420,14 @@ export default function StudentCalendarPage() {
           <button
             type="button"
             className="btn ghost sm cal-nav-btn"
-            onClick={() => shiftMonth(-1)}
-            aria-label="الشهر السابق"
+            onClick={() => (mode === 'month' ? shiftMonth(-1) : shiftWeek(-1))}
+            aria-label={mode === 'month' ? 'الشهر السابق' : 'الأسبوع السابق'}
           >
             <Icon icon={ChevronRight} size={16} aria-hidden />
           </button>
-          <h2 className="cal-month" aria-live="polite">{monthTitleAr(view.year, view.month)}</h2>
+          <h2 className="cal-month" aria-live="polite">
+            {mode === 'month' ? monthTitleAr(view.year, view.month) : weekRangeTitleAr(weekAnchor)}
+          </h2>
           <div
             style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}
           >
@@ -345,13 +444,35 @@ export default function StudentCalendarPage() {
             <button
               type="button"
               className="btn ghost sm cal-nav-btn"
-              onClick={() => shiftMonth(1)}
-              aria-label="الشهر التالي"
+              onClick={() => (mode === 'month' ? shiftMonth(1) : shiftWeek(1))}
+              aria-label={mode === 'month' ? 'الشهر التالي' : 'الأسبوع التالي'}
             >
               <Icon icon={ChevronLeft} size={16} aria-hidden />
             </button>
           </div>
         </header>
+
+        {/* r366 (2-d): the mode switcher — the shared .pill register with
+            aria-pressed (the matrix filter's grammar). Two one-word
+            verbs; the card below answers each honestly. */}
+        <div className="cal-mode-row" role="group" aria-label="نمط العرض">
+          <button
+            type="button"
+            className={`pill${mode === 'month' ? ' on' : ''}`}
+            aria-pressed={mode === 'month'}
+            onClick={() => switchMode('month')}
+          >
+            شهر
+          </button>
+          <button
+            type="button"
+            className={`pill${mode === 'week' ? ' on' : ''}`}
+            aria-pressed={mode === 'week'}
+            onClick={() => switchMode('week')}
+          >
+            أسبوع
+          </button>
+        </div>
 
         {/* Heron micro-label: the legend is a metadata block — classify
             it (the chips below carry the kinds; tone on the dot only). */}
@@ -366,8 +487,11 @@ export default function StudentCalendarPage() {
         </div>
 
         {/* Weekday header — Sunday-first (WEEKDAY_NAMES_AR contract:
-            dayOfWeek 0 = Sunday), flowing RTL so Sunday sits inline-start. */}
-        <div className="cal-dow-row" aria-hidden>
+            dayOfWeek 0 = Sunday), flowing RTL so Sunday sits inline-start.
+            r366 (2-d): in week mode the phone band stacks the strip
+            vertically — the per-cell weekday label speaks there, and this
+            7-column header is hidden (it would label a single column). */}
+        <div className={`cal-dow-row${mode === 'week' ? ' cal-dow-week' : ''}`} aria-hidden>
           {WEEKDAY_NAMES_AR.map((name) => (
             <span key={name} className="cal-dow">{name}</span>
           ))}
@@ -382,29 +506,80 @@ export default function StudentCalendarPage() {
             aria-required-children fired on the direct button
             children). Group keeps the label without the structural
             promise. */}
-        <div className="cal-grid" role="group" aria-label={`تقويم ${monthTitleAr(view.year, view.month)}`}>
+        <div
+          className={`cal-grid${mode === 'week' ? ' cal-week' : ''}`}
+          role="group"
+          aria-label={mode === 'month' ? `تقويم ${monthTitleAr(view.year, view.month)}` : `أسبوع ${weekRangeTitleAr(weekAnchor)}`}
+        >
           {cells.map((cell) => {
             const kinds = kindsByDay.get(cell.key);
             const kindCount = kinds?.size ?? 0;
-            const eventCount = byDay.get(cell.key)?.length ?? 0;
+            const dayEvents = byDay.get(cell.key) ?? [];
+            const eventCount = dayEvents.length;
             const isToday = cell.key === todayKey;
             const dayName = isToday ? `اليوم ${WEEKDAY_NAMES_AR[cell.dow]}` : WEEKDAY_NAMES_AR[cell.dow];
             /* r305-c Heron chrome: the weekend (Libya: Friday + Saturday
              * on the 0=Sunday contract) takes a quiet ink step — presentational
              * only, the cell's data/aria contract is untouched. */
             const isWeekend = cell.dow === 5 || cell.dow === 6;
+            /* r366 (2-d): the week cell — day head (numeral + weekday on
+             * the stacked phone band) + the day's events as one-line
+             * chips (kind ink on the inline-start edge; ellipsis + full
+             * title on the tooltip; a «+n أخرى» chip caps the stack —
+             * the detail list below stays the full ledger). */
+            /* r366-final: the week and month cells share the button's
+             * identity/press contract — ONE props seat, spread at both
+             * render sites (the jscpd ratchet counts one copy). */
+            const cellButtonProps = {
+              'data-in-month': cell.inMonth,
+              'data-weekend': isWeekend || undefined,
+              'data-today': isToday || undefined,
+              'data-selected': selectedKey === cell.key || undefined,
+              'aria-pressed': selectedKey === cell.key,
+              'aria-label': `${dayName} ${cell.day}${eventCount > 0 ? ` — ${arUnit(eventCount, 'حدث واحد', 'حدثان', 'أحداث')}` : ''}`,
+              onClick: () => setSelectedKey(cell.key),
+            } as ComponentProps<'button'>;
+            if (mode === 'week') {
+              const shown = dayEvents.slice(0, WEEK_CHIP_CAP);
+              const rest = dayEvents.length - shown.length;
+              return (
+                <button
+                  key={cell.key}
+                  type="button"
+                  className="cal-cell"
+                  {...cellButtonProps}
+                >
+                  <span className="cal-week-dayhead">
+                    <span className="cal-day-num">{cell.day}</span>
+                    <span className="cal-week-dow" aria-hidden>{WEEKDAY_NAMES_AR[cell.dow]}</span>
+                  </span>
+                  {shown.map((ev) => (
+                    <span
+                      key={ev.id}
+                      className="cal-cell-chip"
+                      data-kind={ev.kind}
+                      title={`${ev.time ? `${ev.time} · ` : ''}${ev.title}`}
+                    >
+                      {ev.title}
+                    </span>
+                  ))}
+                  {rest > 0 && (
+                    <span
+                      className="cal-cell-chip cal-chip-more"
+                      title={dayEvents.slice(WEEK_CHIP_CAP).map((ev) => ev.title).join('\n')}
+                    >
+                      +{rest} أخرى
+                    </span>
+                  )}
+                </button>
+              );
+            }
             return (
               <button
                 key={cell.key}
                 type="button"
                 className="cal-cell"
-                data-in-month={cell.inMonth}
-                data-weekend={isWeekend || undefined}
-                data-today={isToday || undefined}
-                data-selected={selectedKey === cell.key || undefined}
-                aria-pressed={selectedKey === cell.key}
-                aria-label={`${dayName} ${cell.day}${eventCount > 0 ? ` — ${arUnit(eventCount, 'حدث واحد', 'حدثان', 'أحداث')}` : ''}`}
-                onClick={() => setSelectedKey(cell.key)}
+                {...cellButtonProps}
               >
                 <span className="cal-day-num">{cell.day}</span>
                 {kindCount > 0 && (

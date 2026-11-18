@@ -335,7 +335,9 @@
 }
 
 /* ═══ interaction ═══ */
-.rl-row-icon:hover { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .rl-row-icon:hover { color: var(--text); }
+}
 @media (hover: none) {
   .rl-row-icon:hover { color: var(--rule-strong); }
 }
@@ -444,7 +446,12 @@
 .rl-section.rl-section { background: transparent; }
 /* T-13 residual: the open row's resting icon ink at ≥1500 already sits
    on the hover pair, so the delta needs its own channel — the dim. */
-.rl-row-icon:hover,
+@media (hover: hover) and (pointer: fine) {
+  .rl-row-icon:hover {
+    opacity: 0.72;
+  }
+}
+
 .rl-row-icon.probe-hover {
   opacity: 0.72;
 }

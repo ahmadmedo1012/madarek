@@ -24,6 +24,7 @@ import {
   countAr,
   numOf,
 } from "@/features/governance/components";
+import { READ_ONLY } from "@/lib/copy";
 
 const ATTENDANCE_KEY_LABEL: Record<string, string> = {
   PRESENT: "سجلّات حضور",
@@ -74,10 +75,10 @@ export default function QualityDashboard() {
   return (
     <Screen scroll>
       <AppTopBar alertsPath="/quality/alerts" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
         <Animated.View
           entering={entering(0)}
-          style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+          style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}
         >
           <View style={{ flex: 1 }}>
             <T variant="h2" weight="bold">
@@ -88,13 +89,13 @@ export default function QualityDashboard() {
               الاعتماد المحلية والدولية.
             </T>
           </View>
-          <Badge label="قراءة فقط" tone="grey" />
+          <Badge label={READ_ONLY} tone="grey" />
         </Animated.View>
 
         {overview.isLoading ? (
-          <Animated.View entering={entering(1)} style={{ gap: 8 }}>
+          <Animated.View entering={entering(1)} style={{ gap: sp[8] }}>
             <Skeleton h={132} />
-            <View style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flexDirection: "row", gap: sp[8] }}>
               <Skeleton h={72} />
               <Skeleton h={72} />
             </View>
@@ -110,26 +111,26 @@ export default function QualityDashboard() {
         ) : !data ? null : !hasAnyData ? (
           <Animated.View entering={entering(1)}>
             <EmptyState
-              title="لا توجد مؤشرات بعد"
-              message="ستظهر مؤشرات الجودة هنا فور توفّر بيانات أكاديمية في المؤسّسة."
+              title="لا مؤشرات بعد"
+              message="تظهر فور توفر البيانات."
               actionLabel="تحديث"
               onAction={() => overview.refetch()}
             />
           </Animated.View>
         ) : (
           <>
-            <Animated.View entering={entering(1)} style={{ gap: 8 }}>
+            <Animated.View entering={entering(1)} style={{ gap: sp[8] }}>
               <MetricHero
                 label="الطلاب النشطون"
                 value={numOf(users.STUDENT)}
-                hint="وفق آخر قراءة من قطاع الجودة"
+                hint="آخر قراءة من الجودة"
                 progress={presentRate}
               />
-              <View style={{ flexDirection: "row", gap: 8 }}>
+              <View style={{ flexDirection: "row", gap: sp[8] }}>
                 <MetricTile label="هيئة التدريس" value={numOf(users.TEACHER)} />
                 <MetricTile label="المقرّرات" value={numOf(data.courses)} />
               </View>
-              <View style={{ flexDirection: "row", gap: 8 }}>
+              <View style={{ flexDirection: "row", gap: sp[8] }}>
                 <MetricTile label="الشُّعب" value={numOf(data.offerings)} />
                 <MetricTile label="المحاضرات" value={numOf(data.lectures)} />
               </View>
@@ -140,8 +141,8 @@ export default function QualityDashboard() {
               {Object.keys(attendance).length === 0 ? (
                 <EmptyState
                   room="lecture-hall"
-                  title="لا سجلّات حضور بعد"
-                  message="ستظهر سجلّات الحضور هنا فور رصد أول حصة في أي شعبة."
+                  title="لا سجلّات بعد"
+                  message="تظهر فور أول حصة."
                 />
               ) : (
                 <RowList>
@@ -151,12 +152,12 @@ export default function QualityDashboard() {
                         key={key}
                         label={ATTENDANCE_KEY_LABEL[key] ?? "سجلّات أخرى"}
                         value={num(numOf(value))}
-                        hint={key in ATTENDANCE_KEY_LABEL ? undefined : "فئة حضور غير مصنَّفة"}
+                        hint={key in ATTENDANCE_KEY_LABEL ? undefined : "حضور غير مصنَّف"}
                       />
                     ))}
                     {presentRate !== null ? (
                       <StatLine
-                        label="نسبة الحضور الفعلية"
+                        label="نسبة الحضور"
                         value={`${num(Math.round(presentRate * 100))}%`}
                         hint={countAr(attTotal, ["سجل واحد", "سجلان", "سجلات", "سجلاً"])}
                         tone="accent"
@@ -173,7 +174,7 @@ export default function QualityDashboard() {
                 <EmptyState
                   room="library"
                   title="لا بحوث بعد"
-                  message="ستظهر البحوث هنا فور رفع أول بحث إلى المنصّة."
+                  message="تظهر فور أول بحث."
                 />
               ) : (
                 <RowList>
@@ -186,7 +187,7 @@ export default function QualityDashboard() {
                           PAPER_STATUS_LABEL[key] ?? "حالة أخرى"
                         }: ${num(numOf(value))}`}
                       >
-                        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                           <Badge
                             label={PAPER_STATUS_LABEL[key] ?? "حالة أخرى"}
                             tone={PAPER_STATUS_TONE[key] ?? "grey"}
@@ -215,7 +216,7 @@ export default function QualityDashboard() {
 
             <Animated.View
               entering={entering(5)}
-              style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
+              style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}
             >
               <Eye size={12} color={p.textFaint} />
               <T variant="xs" color="faint">

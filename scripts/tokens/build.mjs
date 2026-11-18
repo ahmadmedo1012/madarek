@@ -87,6 +87,10 @@ for (const [k, v] of Object.entries(data.spacing.webRungs)) {
 }
 if (data.motion.ease.length !== 4) fail('motion.ease must be a 4-number cubic-bezier');
 if (typeof data.touchFloor !== 'number') fail('touchFloor must be a number');
+/* R366-final (A5→A3 R1): the shared layout seat — theme-invariant. */
+if (!data.layout || typeof data.layout.contentMaxWidth !== 'number') {
+  fail('layout.contentMaxWidth must be a number (the shared readable-column clamp)');
+}
 
 /* ── reference resolution ──────────────────────────────────────────── */
 function refValue(ref, theme) {
@@ -170,6 +174,9 @@ function buildCss() {
   }
   const [e1, e2, e3, e4] = data.motion.ease;
   L.push(`    --ease: cubic-bezier(${e1}, ${e2}, ${e3}, ${e4});`);
+  L.push('');
+  L.push('    /* ── Layout — R366-final (A5→A3 R1): the shared, theme-invariant viewport geometry ── */');
+  L.push(`    --layout-content-max-width: ${data.layout.contentMaxWidth}px;`);
   L.push('  }');
   L.push('');
 
@@ -314,6 +321,11 @@ function buildTs() {
   T.push('');
 
   T.push(`export const touchFloor = ${data.touchFloor};`);
+  T.push('');
+  T.push('// R366-final (A5→A3 R1): the shared layout seats — theme-invariant viewport geometry.');
+  T.push('export const layout = {');
+  T.push(`  contentMaxWidth: ${data.layout.contentMaxWidth},`);
+  T.push('} as const;');
   T.push('');
   return T.join('\n');
 }

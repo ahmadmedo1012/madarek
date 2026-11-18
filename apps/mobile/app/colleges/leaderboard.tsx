@@ -56,8 +56,8 @@ export default function CollegesLeaderboard() {
         <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
-          title="لوحة منافسة الكلّيّات فارغة"
-          message="تُحتسب النقاط من نشاط الطلاب المسجّل؛ ستظهر أولى النتائج مع بداية النشاط هذا الفصل."
+          title="اللوحة فارغة"
+          message="النقاط من نشاط الطلاب — مع بدء الفصل."
           icon={<Medal size={20} color={p.textMuted} />}
         />
       ) : (

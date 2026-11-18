@@ -182,7 +182,8 @@ describe('ResearchPage resubmit — CHECKS_FAILED prefill (r157)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'رفع نسخة جديدة' }));
     await screen.findByRole('dialog');
     fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }));
-    fireEvent.click(await screen.findByRole('button', { name: 'التخلّي عن التعديلات' }));
+    // R366-final copy-style: confirm label ≤ 2 words (تأكيد+noun).
+    fireEvent.click(await screen.findByRole('button', { name: 'تأكيد التخلّي' }));
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).toBeNull();
     });

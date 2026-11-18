@@ -199,7 +199,11 @@ export function OwnerAiPage() {
                    * state: metrics arrive with the first recorded
                    * request; the service's availability is decided by
                    * the server's provider configuration. */
-                  description="تظهر المؤشّرات فور تسجيل أول طلب. الجهوزيّة تحدّدها إعدادات المزوّد — الأعلام تُسجَّل ولا تستهلكها بوابة تشغيل."
+                  /* r366 (2-e): KEPT VERBATIM — the r165g truthfulness pin
+                   guards this exact clause: the availability pointer is
+                   the operator's action path (provider config), not
+                   marketing to trim. */
+                description="تظهر المؤشّرات فور تسجيل أول طلب. الجهوزيّة تحدّدها إعدادات المزوّد — الأعلام تُسجَّل ولا تستهلكها بوابة تشغيل."
                 />
               ) : (
                 <ChartFrame

@@ -19,6 +19,7 @@ import { toast } from "@/components/ui/toast";
 import { dateTime, num } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { LIVE_STATUS, SectionNote, countAr, fmtClock } from "@/features/student/more";
+import { LIVE_NOW, UNKNOWN_STATUS } from "@/lib/copy";
 
 /** The backend opens the join window 10 minutes before the scheduled time. */
 const JOIN_WINDOW_MS = 10 * 60 * 1000;
@@ -27,8 +28,8 @@ function joinHint(s: LiveSession): string {
   const scheduled = new Date(s.scheduledAt).getTime();
   const opensAt = scheduled - JOIN_WINDOW_MS;
   const now = Date.now();
-  if (s.status === "LIVE") return "على الهواء الآن — انضمّ قبل انتهاء الجلسة.";
-  if (now >= opensAt) return "باب الانضمام مفتوح — يبدأ البث عند الموعد.";
+  if (s.status === "LIVE") return "على الهواء — انضمّ الآن.";
+  if (now >= opensAt) return "الانضمام مفتوح — البث بالموعد.";
   const waitMs = opensAt - now;
   if (waitMs <= 60 * 60 * 1000) return `يفتح الانضمام بعد ${fmtClock(waitMs / 1000)} (قبل الموعد بـ10 دقائق).`;
   return `يفتح الانضمام ${dateTime(new Date(opensAt).toISOString())} (قبل الموعد بـ10 دقائق).`;
@@ -66,7 +67,7 @@ export default function LiveScreen() {
       toast.success("سُجّل حضورك.", "تمّ الانضمام");
       const url = res?.session?.joinUrl ?? null;
       if (url) {
-        void Linking.openURL(url).catch(() => toast.error("تعذّر فتح الغرفة الخارجية."));
+        void Linking.openURL(url).catch(() => toast.error("تعذّر الفتح."));
       }
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر الانضمام"),
@@ -85,24 +86,24 @@ export default function LiveScreen() {
         <ErrorState message={humanizeError(feed.error)} onRetry={() => feed.refetch()} />
       ) : list.length === 0 ? (
         <EmptyState
-          title="لا توجد بثوث بعد"
-          message="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
+          title="لا بثوث بعد"
+          message="لا بثوث بعد."
         />
       ) : (
         <View style={{ gap: sp[16] }}>
           <SessionSection
-            title="مباشرة الآن"
+            title={LIVE_NOW}
             sessions={live}
             emptyLabel="لا بثّ مباشرة الآن"
-            emptyNote="لا توجد جلسات نشطة لمقرراتك في هذه اللحظة؛ راجع الجلسات القادمة أدناه."
+            emptyNote="لا جلسات نشطة."
             onJoin={live.length > 0 ? (id) => join.mutate(id) : undefined}
             joinPending={join.isPending ? join.variables ?? null : null}
           />
           <SessionSection
             title="جلسات قادمة"
             sessions={upcoming}
-            emptyLabel="لا توجد جلسات مجدولة"
-            emptyNote="سيظهر هنا أي بثّ يجدوله أساتذتك."
+            emptyLabel="لا جلسات مجدولة"
+            emptyNote="بثوث أساتذتك تظهر هنا."
           />
           {ended.length > 0 ? (
             <SessionSection title="جلسات منتهية" sessions={ended} emptyLabel="" emptyNote="" />
@@ -144,7 +145,7 @@ function SessionSection({
       ) : (
         <RowList>
           {sessions.map((s, i) => {
-            const status = LIVE_STATUS[s.status] ?? { label: "حالة غير معروفة", tone: "grey" as const };
+            const status = LIVE_STATUS[s.status] ?? { label: UNKNOWN_STATUS, tone: "grey" as const };
             const course = s.offering?.course;
             return (
               <LedgerRow key={s.id} last={i === sessions.length - 1} accessibilityLabel={`جلسة: ${s.title}`}>
@@ -184,7 +185,7 @@ function SessionSection({
                       kind="ghost"
                       small
                       onPress={() => {
-                        void Linking.openURL(s.recordingUrl!).catch(() => toast.error("تعذّر فتح التسجيل."));
+                        void Linking.openURL(s.recordingUrl!).catch(() => toast.error("تعذّر الفتح."));
                       }}
                       icon={<ExternalLink size={14} color={p.text} />}
                     />

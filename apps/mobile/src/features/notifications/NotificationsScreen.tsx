@@ -49,6 +49,7 @@ import {
 } from "@/features/notifications/grouping";
 import { safeDeepLink, useMarkAllRead, useMarkRead } from "@/hooks/useNotifications";
 import type { AppNotification, Paginated } from "@/api/types";
+import { RETRY } from "@/lib/copy";
 
 const FEED_LIMIT = 30;
 
@@ -111,11 +112,11 @@ export function NotificationsScreen({
     markAll.mutate(undefined, {
       onSuccess: () => {
         haptics.notify("success");
-        toast.success("عُلّمت كل التنبيهات كمقروءة.");
+        toast.success("عُلّمت كلها كمقروءة.");
       },
       onError: (e) => {
         haptics.notify("error");
-        toast.error(humanizeError(e), "تعذّر التعليم كمقروء");
+        toast.error(humanizeError(e), "تعذّر التعليم");
       },
     });
   };
@@ -165,7 +166,7 @@ export function NotificationsScreen({
           {unread > 0 ? (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="تعليم الكل كمقروء"
+              accessibilityLabel="تعليم الكل"
               onPress={onMarkAll}
               disabled={markAll.isPending}
               style={{ minHeight: 44, justifyContent: "center" }}
@@ -216,8 +217,8 @@ export function NotificationsScreen({
             <PushActivationCard />
             <EmptyState
               room="building"
-              title="لا توجد تنبيهات"
-              message="ستظهر هنا إعلانات المقرّرات والدرجات والرسائل لحظة صدورها."
+              title="لا تنبيهات"
+              message="الإعلانات والدرجات لحظة صدورها."
             />
           </>
         }
@@ -365,10 +366,10 @@ export function PushActivationCard() {
       <T variant="body" weight="bold">إشعارات فورية على جهازك</T>
       <T variant="sm" color="muted">
         {state === "denied"
-          ? "الإشعارات مقفلة من إعدادات النظام — افتحها من هناك."
+          ? "مقفلة من إعدادات النظام — افتحها من هناك."
           : regFailed
-            ? "منحت الإذن، لكن تعذّر تسجيل الجهاز."
-            : "فعّل الإشعارات لتصلك الإعلانات والدرجات لحظة صدورها."}
+            ? "مُنح الإذن — تعذّر تسجيل الجهاز."
+            : "فعّل الإشعارات لتصلك لحظة صدورها."}
       </T>
       {state === "denied" ? (
         <View style={{ alignSelf: "flex-start" }}>
@@ -382,7 +383,7 @@ export function PushActivationCard() {
       ) : (
         <View style={{ alignSelf: "flex-start" }}>
           <Button
-            label={busy ? "جارٍ التفعيل…" : regFailed ? "إعادة المحاولة" : "تفعيل الإشعارات"}
+            label={busy ? "جارٍ التفعيل…" : regFailed ? RETRY : "تفعيل الإشعارات"}
             kind="accent"
             small
             onPress={go}

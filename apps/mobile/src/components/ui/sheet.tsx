@@ -552,7 +552,7 @@ export function PickerSheet({
   selectedId,
   onSelect,
   loading = false,
-  emptyLabel = "لا توجد خيارات",
+  emptyLabel = "لا خيارات",
 }: PickerSheetProps) {
   const p = usePalette();
   return (

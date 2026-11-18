@@ -25,6 +25,7 @@ import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { OfferingPicker, arCount, useTeacherOfferings } from "@/features/teacher/components";
+import { ADDED, NO_COURSES_ASSIGNED, SAVED, SAVING } from "@/lib/copy";
 
 const TRANSCRIPT_LABEL: Record<string, string> = {
   NONE: "بلا نص",
@@ -72,10 +73,10 @@ export default function Curriculum() {
 
   const saveLecture = useMutation({
     mutationFn: async () => {
-      if (title.trim().length < 2) throw new Error("عنوان المحاضرة مطلوب.");
-      if (videoUrl.trim() === "") throw new Error("رابط الفيديو مطلوب — https:// أو مسار ملف داخل المنصة.");
+      if (title.trim().length < 2) throw new Error("العنوان مطلوب.");
+      if (videoUrl.trim() === "") throw new Error("مطلوب: https:// أو مسار ملف.");
       const dur = durationSec.trim() === "" ? undefined : Number(durationSec);
-      if (dur !== undefined && (Number.isNaN(dur) || dur < 1)) throw new Error("المدة يجب أن تكون ثانية واحدة على الأقل.");
+      if (dur !== undefined && (Number.isNaN(dur) || dur < 1)) throw new Error("ثانية واحدة على الأقل.");
       if (editing) {
         return learningApi.updateLecture(editing.id, {
           title: title.trim(),
@@ -93,7 +94,7 @@ export default function Curriculum() {
     },
     onSuccess: () => {
       invalidate();
-      toast.success(editing ? "حُفظت تعديلات المحاضرة." : "أُضيفت المحاضرة إلى المنهج.", "تمّ الحفظ");
+      toast.success(editing ? "حُفظت التعديلات." : "أُضيفت المحاضرة.", SAVED);
       setAdding(false);
       setEditing(null);
       setTitle("");
@@ -110,7 +111,7 @@ export default function Curriculum() {
     onSuccess: () => {
       invalidate();
       setDeleteTarget(null);
-      toast.success("حُذفت المحاضرة من المنهج.", "تمّ الحذف");
+      toast.success("حُذفت المحاضرة.", "تمّ الحذف");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الحذف"),
   });
@@ -119,9 +120,9 @@ export default function Curriculum() {
     mutationFn: (orderedIds: string[]) => learningApi.reorderLectures(effectiveId, orderedIds),
     onSuccess: () => {
       invalidate();
-      toast.success("حُدِّث ترتيب المحاضرات.");
+      toast.success("حُدِّث الترتيب.");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذَّر إعادة الترتيب"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الترتيب"),
   });
 
   const move = (index: number, dir: -1 | 1) => {
@@ -150,19 +151,19 @@ export default function Curriculum() {
   return (
     <Screen scroll>
       <StackHeader title="بناء المنهج" />
-      <PageHeader title="بناء المنهج" kicker="محاضرات المقرّر وفصولها ومحطات الفحص والنص المكتوب." />
+      <PageHeader title="بناء المنهج" kicker="محاضرات وفصول وأسئلة." />
       {offerings.length === 0 ? (
         offs.isLoading ? (
           <SkeletonList rows={3} />
         ) : (
-          <EmptyState title="لم تُسند إليك مقرّرات بعد" message="ستظهر مقرّراتك هنا فور إسنادها من قِبَل المسجل العام." />
+          <EmptyState title={NO_COURSES_ASSIGNED} message="ستظهر فور إسنادها." />
         )
       ) : (
         <>
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
           <Card>
             <T variant="sm" color="muted">
-              رفع الفيديو يتم حاليًا من لوحة الويب — هنا إدارة الروابط (رابط https أو مسار ملف داخل المنصة). الرفع المباشر يحتاج خادم تخزين S3.
+              إدارة الروابط هنا — رفع الفيديو من لوحة الويب.
             </T>
           </Card>
 
@@ -179,8 +180,8 @@ export default function Curriculum() {
             <ErrorState message={humanizeError(lectures.error)} onRetry={() => lectures.refetch()} />
           ) : rows.length === 0 ? (
             <EmptyState
-              title="لا توجد محاضرات بعد"
-              message="ابدأ بإضافة أول محاضرة: عنوان، رابط فيديو، ومدة اختيارية."
+              title="لا محاضرات بعد"
+              message="أضف أول محاضرة."
               actionLabel="محاضرة جديدة"
               onAction={() => openLectureForm(null)}
             />
@@ -242,7 +243,7 @@ export default function Curriculum() {
           label="رابط الفيديو"
           value={videoUrl}
           onChangeText={setVideoUrl}
-          hint="رابط خارجي يبدأ بـ https:// أو مسار ملف داخل المنصة (/api/v1/files/papers/)"
+          hint="https:// أو مسار ملف داخل المنصة"
           accessibilityLabel="رابط الفيديو"
         />
         <Field
@@ -255,7 +256,7 @@ export default function Curriculum() {
           label="المدة بالثواني (اختياري)"
           value={durationSec}
           onChangeText={setDurationSec}
-          hint="مثال: 2700 لمدة 45 دقيقة"
+          hint="مثال: 2700 = 45 دقيقة"
           keyboardType="number-pad"
           accessibilityLabel="المدة بالثواني"
         />
@@ -265,7 +266,7 @@ export default function Curriculum() {
           </T>
         ) : null}
         <Button
-          label={saveLecture.isPending ? "جارٍ الحفظ…" : editing ? "حفظ التعديلات" : "إضافة المحاضرة"}
+          label={saveLecture.isPending ? SAVING : editing ? "حفظ التعديلات" : "إضافة المحاضرة"}
           kind="accent"
           loading={saveLecture.isPending}
           disabled={effectiveId === ""}
@@ -279,7 +280,7 @@ export default function Curriculum() {
       <ConfirmDialog
         open={deleteTarget !== null}
         title="حذف المحاضرة"
-        message={`سيُحذف «${deleteTarget?.title ?? ""}» مع فصولها وأسئلتها التفاعلية نهائيًا. هل تريد الحذف؟`}
+        message={`سيُحذف «${deleteTarget?.title ?? ""}» نهائيًا مع فصولها وأسئلتها. المتابعة؟`}
         confirmLabel="حذف نهائي"
         danger
         loading={deleteLecture.isPending}
@@ -333,12 +334,12 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       if (chStart.trim() === "" || chEnd.trim() === "" || Number.isNaN(start) || Number.isNaN(end)) {
         throw new Error("البداية والنهاية ثوانٍ رقمية.");
       }
-      if (end <= start) throw new Error("نهاية الفصل يجب أن تكون بعد بدايته.");
+      if (end <= start) throw new Error("النهاية بعد البداية.");
       return learningApi.addChapter(lectureId, { title: chTitle.trim(), startSec: start, endSec: end });
     },
     onSuccess: () => {
       invalidateLecture();
-      toast.success("أُضيف الفصل إلى المحاضرة.", "تمّت الإضافة");
+      toast.success("أُضيف الفصل.", ADDED);
       setChapterSheet(false);
       setChTitle("");
       setChStart("");
@@ -361,10 +362,10 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
     mutationFn: async () => {
       if (cpQuestion.trim().length < 3) throw new Error("نص السؤال مطلوب.");
       const trigger = Number(cpTrigger);
-      if (cpTrigger.trim() === "" || Number.isNaN(trigger) || trigger < 0) throw new Error("موضع السؤال ثوانٍ ≥ 0.");
+      if (cpTrigger.trim() === "" || Number.isNaN(trigger) || trigger < 0) throw new Error("ثوانٍ ≥ 0.");
       const opts = cpOptions.map((o) => o.trim()).filter((o) => o !== "");
       if (opts.length < 2) throw new Error("خياران على الأقل.");
-      if (cpCorrect === null || cpCorrect >= opts.length) throw new Error("حدِّد الإجابة الصحيحة قبل الحفظ.");
+      if (cpCorrect === null || cpCorrect >= opts.length) throw new Error("حدِّد الصحيحة قبل الحفظ.");
       return learningApi.addCheckpoint(lectureId, {
         triggerSec: trigger,
         question: cpQuestion.trim(),
@@ -375,7 +376,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
     },
     onSuccess: () => {
       invalidateLecture();
-      toast.success("أُضيف سؤال التفاعل إلى المحاضرة.", "تمّت الإضافة");
+      toast.success("أُضيف سؤال التفاعل.", ADDED);
       setCpSheet(false);
       setCpTrigger("");
       setCpQuestion("");
@@ -400,9 +401,9 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
     mutationFn: () => learningApi.generateTranscript(lectureId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["learning", "lecture", lectureId] });
-      toast.success("بدأ توليد النص المكتوب — تابع حالته من شريحة النص.", "توليد النص");
+      toast.success("بدأ — تابعه في الشريحة.", "توليد النص");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذَّر بدء التوليد"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر البدء"),
   });
 
   if (detail.isLoading) return <SkeletonList rows={2} />;
@@ -450,7 +451,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       />
       {chapters.length === 0 ? (
         <Card>
-          <T variant="sm" color="muted">لا فصول بعد — قسّم المحاضرة إلى فصول بزمن بداية ونهاية.</T>
+          <T variant="sm" color="muted">قسّم المحاضرة بزمن بداية ونهاية.</T>
         </Card>
       ) : (
         <RowList>
@@ -480,7 +481,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       />
       {checkpoints.length === 0 ? (
         <Card>
-          <T variant="sm" color="muted">لا أسئلة تفاعلية بعد — تظهر للطالب عند نقطة زمنية داخل المحاضرة.</T>
+          <T variant="sm" color="muted">تظهر للطالب عند نقطة زمنية.</T>
         </Card>
       ) : (
         <RowList>
@@ -530,7 +531,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
           </T>
         ) : null}
         <Button
-          label={addChapter.isPending ? "جارٍ الحفظ…" : "إضافة الفصل"}
+          label={addChapter.isPending ? SAVING : "إضافة الفصل"}
           kind="accent"
           loading={addChapter.isPending}
           onPress={() => {
@@ -549,14 +550,14 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
             setCpQuestion(v);
             setCpError(null);
           }}
-          placeholder="سؤال يظهر للطالب عند نقطة زمنية داخل المحاضرة"
+          placeholder="سؤال يظهر أثناء المحاضرة"
           accessibilityLabel="نص السؤال"
         />
         <Field
           label="موضع السؤال (بالثواني)"
           value={cpTrigger}
           onChangeText={setCpTrigger}
-          hint="يظهر عند هذه اللحظة"
+          hint="عند هذه اللحظة"
           keyboardType="number-pad"
           accessibilityLabel="موضع السؤال"
         />
@@ -603,7 +604,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
           label="الشرح (اختياري)"
           value={cpExplanation}
           onChangeText={setCpExplanation}
-          hint="يظهر للطالب بعد الإجابة"
+          hint="بعد الإجابة"
           accessibilityLabel="الشرح"
         />
         {cpError ? (
@@ -612,7 +613,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
           </T>
         ) : null}
         <Button
-          label={addCheckpoint.isPending ? "جارٍ الحفظ…" : "إضافة السؤال"}
+          label={addCheckpoint.isPending ? SAVING : "إضافة السؤال"}
           kind="accent"
           loading={addCheckpoint.isPending}
           onPress={() => {

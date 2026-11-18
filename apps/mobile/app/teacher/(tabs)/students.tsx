@@ -19,6 +19,7 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { useStaggerEntrance } from "@/motion";
 import { arCount, OfferingPicker, OfferingRoster, useTeacherOfferings } from "@/features/teacher/components";
+import { NO_COURSES_ASSIGNED } from "@/lib/copy";
 
 export default function TeacherStudents() {
   const offs = useTeacherOfferings();
@@ -36,13 +37,13 @@ export default function TeacherStudents() {
           haptics on the offering picker; the true-empty offering case is
           the kit EmptyState (library room), not a bare Card. */}
       <Animated.View entering={entering(0)} style={{ paddingHorizontal: sp[20], gap: sp[16] }}>
-        <PageHeader title="قائمة الطلاب" kicker="جميع الطلاب المسجَّلين في مقرّراتك." />
+        <PageHeader title="قائمة الطلاب" kicker="طلاب مقرّراتك." />
         {offs.isLoading ? (
           <SkeletonList rows={4} />
         ) : offs.isError ? (
           <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} />
         ) : offerings.length === 0 ? (
-          <EmptyState fill room="library" title="لم تُسند إليك مقرّرات بعد" />
+          <EmptyState fill room="library" title={NO_COURSES_ASSIGNED} />
         ) : (
           <>
             <OfferingPicker

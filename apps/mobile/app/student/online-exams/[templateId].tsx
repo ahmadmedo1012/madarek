@@ -42,6 +42,7 @@ import {
   pointsAr,
   restoreSavedAnswers,
 } from "@/features/student/more";
+import { SAVE_FAILED, SAVING } from "@/lib/copy";
 
 /** Bound on flushing in-flight saves before submit (web SUBMIT_FLUSH_MS). */
 const SUBMIT_FLUSH_MS = 10_000;
@@ -133,7 +134,7 @@ export function deriveNavigatorCells(
 export function navCellA11y(cell: NavCell): string {
   const parts = [`السؤال ${latn(cell.index + 1)}`];
   if (cell.current) parts.push("الحالي");
-  if (cell.failed) parts.push("تعذّر الحفظ");
+  if (cell.failed) parts.push(SAVE_FAILED);
   else if (cell.answered) parts.push("مُجاب");
   else parts.push("بدون إجابة");
   if (cell.flagged) parts.push("معلَّم للمراجعة");
@@ -387,10 +388,10 @@ export default function ExamTakerScreen() {
       } catch (e) {
         if (!alive) return;
         const detail = humanizeError(e);
-        if (detail === "لم يفتح باب هذا الاختبار بعد" && listedExam?.openAt) {
-          setStartError(`لم يفتح باب هذا الاختبار بعد — يفتح ${dateTime(listedExam.openAt)}.`);
+        if (detail === "لم يفتح بابه بعد" && listedExam?.openAt) {
+          setStartError(`لم يفتح بابه بعد — يفتح ${dateTime(listedExam.openAt)}.`);
         } else {
-          setStartError(detail || "تعذَّر بدء الاختبار — تحقّق من اتصالك.");
+          setStartError(detail || "تعذّر البدء — تحقّق من اتصالك.");
         }
       }
     })();
@@ -439,7 +440,7 @@ export default function ExamTakerScreen() {
         });
       }
       if (announce && report.sent > 0) {
-        toast.success("تمت مزامنة إجاباتك المحفوظة.", "عاد الاتصال");
+        toast.success("تمت المزامنة.", "عاد الاتصال");
       }
       return report;
     },
@@ -654,7 +655,7 @@ export default function ExamTakerScreen() {
         status: r.status,
       });
       haptics.notify("success");
-      toast.success("تم تسليم اختبارك.", "تمّ التسليم");
+      toast.success("سُلّم اختبارك.", "تمّ التسليم");
       void qc.invalidateQueries({ queryKey: ["exams"] });
       void qc.invalidateQueries({ queryKey: ["me", "results"] });
     } catch (e) {
@@ -668,7 +669,7 @@ export default function ExamTakerScreen() {
         return;
       }
       haptics.notify("error");
-      setSubmitError(humanizeError(e) || "تعذَّر تسليم الاختبار — حاول مرة أخرى.");
+      setSubmitError(humanizeError(e) || "تعذّر التسليم — حاول مجددًا.");
       finishingRef.current = false;
       setSubmitting(false);
     }
@@ -689,8 +690,8 @@ export default function ExamTakerScreen() {
 
   const finalityNote =
     listedExam?.kind === "PRACTICE"
-      ? "بعد التسليم لا تعديل — يمكنك بدء محاولة تدريبية لاحقاً."
-      : "بعد التسليم لا تعديل ولا إعادة.";
+      ? "بعد التسليم لا تعديل — المحاولة التدريبية متاحة لاحقًا."
+      : "لا تعديل ولا إعادة بعد التسليم.";
 
   /* ── render: post-submit result ─────────────────────────────────── */
   if (result) {
@@ -716,8 +717,8 @@ export default function ExamTakerScreen() {
           <>
             <EmptyState
               icon={<Hourglass size={28} color={tones.yellow.ink} />}
-              title="انتهت مدة هذه المحاولة"
-              message="انتهى الوقت دون تسليم — لا نتيجة ولا إعادة."
+              title="انتهت مدة المحاولة"
+              message="انتهى الوقت — لا نتيجة ولا إعادة."
             />
             <Button label="العودة للقائمة" onPress={() => router.push("/student/online-exams" as never)} />
           </>
@@ -750,8 +751,8 @@ export default function ExamTakerScreen() {
           <>
             <EmptyState
               icon={<CheckCircle2 size={28} color={tones.mint.ink} />}
-              title="لقد أكملت هذا الاختبار مسبقاً"
-              message="لا إعادة بعد التسليم — راجع نتيجتك من الاختبارات."
+              title="أكملته مسبقًا"
+              message="لا إعادة — النتيجة في قائمتها."
             />
             <Button label="العودة للقائمة" onPress={() => router.push("/student/online-exams" as never)} />
           </>
@@ -859,8 +860,8 @@ export default function ExamTakerScreen() {
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: sp[20], paddingBottom: sp[16], gap: sp[12] }} keyboardShouldPersistTaps="handled">
         {total === 0 || !current ? (
           <EmptyState
-            title="لا توجد أسئلة في هذا الاختبار"
-            message="لم يُعتمد سؤال بعد — يمكنك تسليم المحاولة كما هي."
+            title="لا أسئلة في الاختبار"
+            message="لم يُعتمد سؤال — سلّم كما هي."
           />
         ) : (
           <Card style={{ gap: sp[10] }}>
@@ -873,7 +874,7 @@ export default function ExamTakerScreen() {
               <PressableScale
                 accessibilityRole="button"
                 accessibilityState={{ selected: flaggedQids.has(current.id) }}
-                accessibilityLabel={flaggedQids.has(current.id) ? "إزالة علامة المراجعة" : "وضع علامة المراجعة على هذا السؤال"}
+                accessibilityLabel={flaggedQids.has(current.id) ? "إزالة العلامة" : "علّم للمراجعة"}
                 onPress={() => toggleFlag(current.id)}
                 style={{
                   minHeight: touchFloor,
@@ -1021,12 +1022,12 @@ export default function ExamTakerScreen() {
                   >
                     {chip === "failed"
                       ? (answers[current.id]?.answerText ?? "").length > TEXT_MAX
-                        ? "الإجابة أطول من الحد (4000 حرفًا) — اختصرها ليُحفظ"
-                        : "تعذّر الحفظ"
+                        ? "تجاوزت 4000 حرف — اختصر ليُحفظ"
+                        : SAVE_FAILED
                       : chip === "saving"
-                        ? "جارٍ الحفظ…"
+                        ? SAVING
                         : chip === "queued"
-                          ? "في الانتظار — دون اتصال"
+                          ? "بانتظار الاتصال"
                           : "تم الحفظ"}
                   </T>
                 </View>
@@ -1083,7 +1084,7 @@ export default function ExamTakerScreen() {
             ) : (
               <T variant="sm" color={unanswered > 0 ? "danger" : "muted"}>
                 {unanswered > 0
-                  ? countAr(unanswered, ["سؤال واحد بدون إجابة", "سؤالان بدون إجابة", "أسئلة بدون إجابة", "سؤالاً بدون إجابة"])
+                  ? countAr(unanswered, ["سؤال بدون إجابة", "سؤالان بدون إجابة", "أسئلة بدون إجابة", "سؤالاً بدون إجابة"])
                   : "أُجيب عن كل الأسئلة"}
               </T>
             )}
@@ -1118,7 +1119,7 @@ export default function ExamTakerScreen() {
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[12], paddingBottom: sp[12] }}>
             <NavLegend dotColor={p.accentSoft} ringColor={p.accentInk} label="مُجاب" />
             <NavLegend dotColor={p.surface} ringColor={p.accentInk} label="معلَّم للمراجعة" flag />
-            <NavLegend dotColor={p.surface} ringColor={tones.rose.ink} label="تعذّر الحفظ" />
+            <NavLegend dotColor={p.surface} ringColor={tones.rose.ink} label={SAVE_FAILED} />
             <NavLegend dotColor={p.surface} ringColor={p.border} label="بدون إجابة" />
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[8], paddingBottom: sp[8] }}>
@@ -1195,7 +1196,7 @@ export default function ExamTakerScreen() {
         <ConfirmSheet
           open={confirming}
           onClose={() => setConfirming(false)}
-          title="تأكيد التسليم؟ لا يمكن التراجع."
+          title="التسليم نهائي — تأكيد؟"
           message={unanswered > 0 ? `${unansweredNoteAr(unanswered)} ${finalityNote}` : finalityNote}
           confirmLabel="تسليم نهائي"
           destructive
@@ -1214,7 +1215,7 @@ export default function ExamTakerScreen() {
           open={exitOpen}
           onClose={() => setExitOpen(false)}
           title="مغادرة الاختبار؟"
-          message="إجاباتك محفوظة — يمكنك إكمال المحاولة قبل انتهاء الوقت."
+          message="محفوظة — أكمل قبل انتهاء الوقت."
           confirmLabel="مغادرة"
           destructive
           onConfirm={() => {
@@ -1373,15 +1374,15 @@ function ResultBody({
         icon={<CheckCircle2 size={28} color={tones.mint.ink} />}
         title={
           awaitingManual
-            ? "تم تسليم اختبارك"
+            ? "سُلّم اختبارك"
             : result.passed
-              ? "مبروك — لقد اجتزت الاختبار!"
+              ? "مبروك — اجتزت الاختبار!"
               : "الاختبار انتهى"
         }
         message={
           awaitingManual
-            ? "درجتك الأولية من الأسئلة الآلية — الدرجات المقالية بانتظار تقييم الأستاذ."
-            : "تم احتساب النتيجة."
+            ? "آلية — المقالية بانتظار التصحيح."
+            : "احتُسبت."
         }
       />
 
@@ -1394,7 +1395,7 @@ function ResultBody({
           ) : null}
           <View style={{ flexDirection: "row", gap: sp[8] }}>
             {awaitingManual ? (
-              <MutedChip label="بانتظار التصحيح اليدوي" />
+              <MutedChip label="بانتظار التصحيح" />
             ) : result.passed === null ? (
               <MutedChip label="مُصحَّح" />
             ) : (
@@ -1404,7 +1405,7 @@ function ResultBody({
           <T variant="sm" color="muted" align="center">
             {result.needsManual > 0
               ? `${countAr(result.needsManual, ["سؤال", "سؤالان", "أسئلة", "سؤالاً"])} بحاجة لتقييم يدوي من الأستاذ — ستظهر الدرجة النهائية بعد المراجعة.`
-              : "تم احتساب النتيجة فوراً."}
+              : "احتُسبت فورًا."}
           </T>
         </Card>
       ) : null}
@@ -1473,7 +1474,7 @@ function ReviewQuestion({ q, index }: { q: ReviewPayload["questions"][number]; i
         {`${latn(q.awardedPoints ?? 0)} / ${latn(q.points)} درجة`}
       </T>
       <T variant="sm" color="secondary">
-        {`إجابتك: ${answered ? myChoice ?? q.myAnswerText ?? "" : "لم تُجب عن هذا السؤال"}`}
+        {`إجابتك: ${answered ? myChoice ?? q.myAnswerText ?? "" : "لم تُجب عنه"}`}
       </T>
       {keyChoice !== null || typeof q.correctAnswer === "string" ? (
         <T variant="sm" color="secondary">

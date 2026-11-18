@@ -250,6 +250,33 @@ function useCardPointerGlow() {
   }, [reducedMotion]);
 }
 
+/* ───────────────────────────────────────────────────────────
+   ROUTE FALLBACK — the anti-flash skeleton (R366 Agent 2 · L3)
+   ───────────────────────────────────────────────────────────
+   The inner Suspense boundary's fallback is DELAYED by 150 ms: a lazy
+   chunk that resolves faster must never flash a page-shaped skeleton
+   (measured before this rule: cold-route chunk resolves ~30–80 ms on
+   warm localhost — a 30 ms shimmer is a blink, not a loading state).
+   Slow chunks (real networks) still get the skeleton after the delay,
+   and the 2 px RouteProgress strip runs the whole time — progress is
+   always visible while anything lingers. The resolved page enters via
+   the same page-enter fade as every route change, so the skeleton is
+   REPLACED (never blinks out).
+
+   The 150 ms delay is a MOUNT-time promise: this component remounts
+   with the keyed route boundary, so each navigation re-arms it. The
+   timer is cleared on unmount (fast resolve ⇒ zero skeleton DOM). */
+const SKELETON_DELAY_MS = 150;
+
+function RouteFallback(): React.JSX.Element | null {
+  const [showSkeleton, setShowSkeleton] = useState(false);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setShowSkeleton(true), SKELETON_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, []);
+  return showSkeleton ? <PageSkeleton /> : null;
+}
+
 export function AppShell({ children }: { children?: ReactNode }) {
   useThemeSync();
   useThemeProfileSync();
@@ -479,8 +506,20 @@ export function AppShell({ children }: { children?: ReactNode }) {
                     swaps a page-shaped skeleton into the content track
                     while the chrome (and its scroll/dropdown state)
                     persists. The root boundary in App.tsx still covers
-                    the shell chunk itself. */}
-                <Suspense fallback={<PageSkeleton />}>
+                    the shell chunk itself.
+                    R366 (Agent 2 · L3, the anti-flash rule): the
+                    fallback itself is DELAYED — a chunk that resolves in
+                    < 150 ms must never flash a skeleton (a 30 ms
+                    page-shaped shimmer is a perceptible blink; the brief
+                    pins the delay at 150 ms). Slow chunk keeps the
+                    skeleton AND the 2 px RouteProgress strip (the
+                    orchestrator's routeTransition side state) — progress
+                    is always visible while anything lingers. The
+                    resolved page then enters through the SAME 160 ms
+                    page-enter fade the keyed remount plays, so the
+                    skeleton never blinks out — it is replaced by a
+                    rising page. */}
+                <Suspense fallback={<RouteFallback />}>
                   {children ?? <Outlet />}
                 </Suspense>
               </div>

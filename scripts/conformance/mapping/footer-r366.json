@@ -1,0 +1,66 @@
+{
+  "_readme": "R366 L1 (Agent 1) — the subscribe-zone measured-seat conversions: the form/copy/row/input/button seats @1440 (the full-bleed row rebuild + the square 40x40 mirrored button) + the register-door seat @1024/1920 (the lh 1.35 fix). bps-scoped to where every check passes; the 390/768/1920 form seats sit outside our (deliberately taller, channels-grid) footer layout and stay excused with the written reasons.",
+  "explicit": [
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > form[1]",
+      "spec": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > form[1]",
+      "ours": "footer.form",
+      "bps": [
+        "1440"
+      ],
+      "_note": "R366 L1 — the subscribe form seat (330x123 @13,258 — the full-bleed row rebuild)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[1]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[1]",
+      "ours": "footer.formcopy",
+      "bps": [
+        "1440"
+      ],
+      "_note": "R366 L1 — the copy block row (330x35 @13,273)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[2]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[2]",
+      "ours": "footer.formrow",
+      "bps": [
+        "1440"
+      ],
+      "_note": "R366 L1 — the full-bleed input row div (358x40 @-1,341)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > input[1]",
+      "spec": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > input[1]",
+      "ours": "footer.input",
+      "bps": [
+        "1440"
+      ],
+      "_note": "R366 L1 — the input seat (358x40)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > button[2]",
+      "spec": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > button[2]",
+      "ours": "footer.go",
+      "bps": [
+        "1440"
+      ],
+      "_note": "R366 L1 — the square go button (40x40 @317,341 mirrored)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[3] > div[2] > a[1]",
+      "spec": "footer > div[2] > div[1] > div[1] > div[3] > div[2] > a[1]",
+      "ours": "footer.acct.1",
+      "bps": [
+        "1024",
+        "1920"
+      ],
+      "_note": "R366 L1 — the register door seat (42x18@1024 · 79x34@1920; lh 1.35 fix)"
+    }
+  ]
+}

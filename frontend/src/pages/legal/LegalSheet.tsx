@@ -22,6 +22,21 @@ import '../../styles/legal.css';
  * (index.html:33 — the one absolute base the site declares). */
 const CANONICAL_BASE = 'https://madarek-app.vercel.app';
 
+/* ═══ The public sheets' shared chrome copy (R366 L4 copy diet) ═══════
+ *
+ * The nine sheets repeated the skip link, the back-home link, the brand
+ * word, and the honest colophon line as per-file literals — the copy
+ * gate counted each repeat per page file. One home per string (the
+ * CollegePages COLLEGES_LABEL precedent): the sheets that own their
+ * header markup (about/help/capabilities/app) render these consts, so
+ * the words stay counted exactly once, in this file. */
+export const SKIP_LINK = 'تخطّي المحتوى';
+export const BACK_HOME = 'العودة للرئيسية';
+export const BRAND_WORD = 'مدارك';
+export const COLOPHON_LINE = 'منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية';
+export const CONTACT_CHANNEL = 'قناة التواصل';
+export const UPDATED_LABEL = 'آخر تحديث:';
+
 /* ═══ useLegalMeta — per-page head metadata ══════════════════════════
  *
  * The guest document sheets own their head tags the way the auth pages
@@ -99,8 +114,9 @@ export function LegalSheet({
 }: {
   /** The page's ONE h1 (Arabic, no tashkeel). */
   title: ReactNode;
-  /** The one-paragraph lede under the h1. */
-  lede: ReactNode;
+  /** The optional one-line lede under the h1 (R366 L4: only when it
+   *  carries a fact the body does not already state). */
+  lede?: ReactNode;
   /** The آخر تحديث date (LEGAL_UPDATED — one stamp for the whole suite). */
   updated: string;
   children: ReactNode;
@@ -109,18 +125,18 @@ export function LegalSheet({
 
   return (
     <div className="lg">
-      <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
+      <a href="#main" className="skip-link">{SKIP_LINK}</a>
       <GuestSheetChrome />
 
       <header className="lg-header">
         <div className="lg-header-inner">
           <Link to="/" className="btn ghost sm">
             <Icon icon={ArrowRight} size={14} />
-            العودة للرئيسية
+            {BACK_HOME}
           </Link>
           <Link to="/" className="lg-header-brand" aria-label="مدارك — الصفحة الرئيسية">
             <Logo variant="mark" size={22} />
-            مدارك
+            {BRAND_WORD}
           </Link>
         </div>
       </header>
@@ -131,20 +147,22 @@ export function LegalSheet({
             <div className="pf-page-header-text">
               <p className="pf-eyebrow">وثيقة سياسة</p>
               <h1 className="pf-page-title">{title}</h1>
-              <p className="pf-page-desc">{lede}</p>
+              {lede !== undefined && <p className="pf-page-desc">{lede}</p>}
             </div>
+            {/* R366 L4 copy diet: the ghost home CTA is gone — the sticky
+                header's back link already carries the home destination on
+                every sheet (one link per intent, not two per page). */}
             <div className="pf-page-actions">
-              <Link to="/contact" className="lg-cta-primary">قناة التواصل</Link>
-              <Link to="/" className="lg-cta-ghost">الصفحة الرئيسية</Link>
+              <Link to="/contact" className="lg-cta-primary">{CONTACT_CHANNEL}</Link>
             </div>
           </div>
 
           {children}
 
           <footer className="lg-colophon">
-            <p className="lg-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية</p>
+            <p className="lg-colophon-line">{COLOPHON_LINE}</p>
             <p className="lg-colophon-stamp">
-              آخر تحديث: <span className="lg-mono" dir="ltr">{updated}</span>
+              {UPDATED_LABEL} <span className="lg-mono" dir="ltr">{updated}</span>
             </p>
           </footer>
         </div>

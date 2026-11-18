@@ -145,19 +145,34 @@
   transition: opacity var(--t-fast) var(--ease-out);
 }
 
-.cf-svg .ti-node:hover .ti-station,
+@media (hover: hover) and (pointer: fine) {
+  .cf-svg .ti-node:hover .ti-station {
+    stroke-width: 2.4px;
+  }
+}
+
 .cf-svg .ti-node:focus-visible .ti-station,
 .cf-svg .ti-node[aria-pressed='true'] .ti-station {
   stroke-width: 2.4px;
 }
 
-.cf-svg .ti-node:hover .ti-gate line,
+@media (hover: hover) and (pointer: fine) {
+  .cf-svg .ti-node:hover .ti-gate line {
+    stroke-width: 2.4px;
+  }
+}
+
 .cf-svg .ti-node:focus-visible .ti-gate line,
 .cf-svg .ti-node[aria-pressed='true'] .ti-gate line {
   stroke-width: 2.4px;
 }
 
-.cf-svg .ti-node:hover .ti-ring,
+@media (hover: hover) and (pointer: fine) {
+  .cf-svg .ti-node:hover .ti-ring {
+    opacity: 1;
+  }
+}
+
 .cf-svg .ti-node:focus-visible .ti-ring,
 .cf-svg .ti-node[aria-pressed='true'] .ti-ring {
   opacity: 1;

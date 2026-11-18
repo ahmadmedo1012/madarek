@@ -63,7 +63,7 @@ export default function CampusMapScreen() {
   return (
     <PushFrame
       title="خريطة الكليات"
-      kicker="دليل كليّات مؤسّستك بحسب المدينة"
+      kicker="كليات مؤسستك بالمدينة"
       refreshing={faculties.isFetching && !faculties.isLoading}
       onRefresh={() => faculties.refetch()}
     >
@@ -72,16 +72,16 @@ export default function CampusMapScreen() {
       ) : !slug ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
-          title="لم تُحدَّد مؤسستك بعد"
-          message="اختر مؤسستك من مبدّل المؤسسة لعرض خريطة كليّاتها."
+          title="لم تُحدَّد مؤسستك"
+          message="اختر مؤسستك أولًا."
         />
       ) : faculties.isLoading ? (
         <SkeletonList rows={5} rowHeight={64} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
-          title="لا كليات مسجّلة في مؤسّستك بعد"
-          message="لم تُضف كليّات لمؤسّستك الحالية حتى الآن — ستظهر هنا فور تسجيلها من إدارة المؤسّسة."
+          title="لا كليات بعد"
+          message="لا كليات — تظهر فور الإضافة."
         />
       ) : (
         <>

@@ -157,6 +157,23 @@
   /* (r151c: width/height/border-radius/flex-shrink deleted — polish's
      overrides-layer icon rule re-specifies all four.) */
 }
+/* r366 (2-d) — the unread dot's GEOMETRY, restored. The sizing rule
+   (6px / 50% / accent) was swept out with polish's re-skin and the
+   empty <span class="notif-item-dot"> rendered 0x0 — invisible (the
+   r366 test «لا نقطة بلا هندسة» exists for exactly this class). The
+   dot is the ONLY unread marker that survives print + high-contrast,
+   so it is a real state carrier, not decoration: trailing seat in the
+   row's inline axis, flexed never, with the accent halo the re-skin
+   notes describe. Unread is urgent-tone (the bell badge's own ink). */
+.notif-item-dot {
+  flex: none;
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 50%;
+  background: var(--accent-ink);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-ink) 25%, transparent);
+  align-self: center;
+}
 /* 5-D1 (A11 P2-3): the tone wells painted the BASE status tokens —
    2.53-3.06:1 on their -soft grounds in light (non-text floor 3:1).
    The -ink pair mirrors the toast VARIANT wells in this file (the
@@ -667,6 +684,28 @@
   border-end-start-radius: var(--r-2xl);
   border-end-end-radius: var(--r-2xl);
   box-shadow: var(--elev-2);
+}
+
+/* r366 (2-d) — the CONTAINER CONTRACT, restored in full. R313 D16
+   retired the components.css T065 @supports glass block and the
+   geometry never came back: the portal panel computed
+   position:static — a full-width block parked at the end of <body>,
+   its inline top/left inert (measured live by the r366 bell-panel
+   probe: computed position 'static'). The TSX (overlays/
+   NotificationPanel.tsx) carries top/left/maxHeight inline; this
+   unlayered block owns the rest of the anchored surface, mirroring
+   the .dropdown family contract (components.css T063): fixed seat,
+   popover rung of the z ladder, opaque --surface, --rule hairline,
+   and a width that can never leave the viewport at 320. Declared
+   UNLAYERED for the same reason as the re-skin block above — a rule
+   in this sheet must beat every layered one without !important. */
+.notification-panel {
+  position: fixed;
+  z-index: var(--z-popover);
+  inline-size: min(380px, calc(100vw - var(--sp-4) * 2));
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  overflow: clip;
 }
 
 /* ═══════════════════════════════════════════════════════════════════

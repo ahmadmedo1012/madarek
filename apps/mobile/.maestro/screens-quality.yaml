@@ -90,3 +90,21 @@ name: "R358 screens — quality"
       id: "tab-reports"
     timeout: 30000
 - takeScreenshot: "screens/quality-07-reports"
+
+# R366 A5 — the deep-stop walk: every primary pushed surface per
+# role, reached by deep link. Screenshot after the route settles
+# (no fragile Arabic-text assertions — the shot IS the evidence).
+- openLink: "madarek://quality/professors"
+- waitForAnimationToEnd:
+    timeout: 8000
+- takeScreenshot: "screens/quality-08-professors"
+
+- openLink: "madarek://quality/exam-moderation"
+- waitForAnimationToEnd:
+    timeout: 8000
+- takeScreenshot: "screens/quality-09-exam-moderation"
+
+- openLink: "madarek://quality/alerts"
+- waitForAnimationToEnd:
+    timeout: 8000
+- takeScreenshot: "screens/quality-10-alerts"

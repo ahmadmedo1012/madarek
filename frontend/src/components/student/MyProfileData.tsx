@@ -81,7 +81,9 @@ export default function MyProfileData() {
     return (
       <section aria-label="بياناتي واتصالي">
         <SectionBar index="01" title="بياناتي واتصالي" />
-        <EmptyCell label="لا يوجد ملف بيانات" note="بيانات الملف تُدار من مؤسستك — تواصل مع إدارة التسجيل إن كنت تتوقع ملفًا هنا." />
+        {/* R366-final copy-style: helper ≤ 12 words — both facts kept
+            (managed by the institution + who to ask). */}
+        <EmptyCell label="لا يوجد ملف بيانات" note="بيانات الملف تُدار من مؤسستك — للاستعلام تواصل مع إدارة التسجيل." />
       </section>
     );
   }
@@ -240,7 +242,10 @@ export default function MyProfileData() {
         {errorAr && <p className="r349p-error" role="alert">{errorAr}</p>}
         <p className="r349p-note">
           الصيغ المقبولة: <bdi dir="ltr">09XXXXXXXXX</bdi> أو <bdi dir="ltr">9XXXXXXXX</bdi> أو
-          <bdi dir="ltr">+218XXXXXXXXX</bdi> — والأرقام العربية-الهندية (٩…) تُحوَّل تلقائيًا.
+          {/* R366-final copy-style: the Arabic-Indic SAMPLE digit had to
+              go (guide §4 bans ٠–٩ outright) — the conversion fact
+              survives without the visual example. */}
+          <bdi dir="ltr">+218XXXXXXXXX</bdi> — والأرقام العربية-الهندية تُحوَّل تلقائيًا.
         </p>
       </Card>
 

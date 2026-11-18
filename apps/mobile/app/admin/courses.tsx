@@ -28,6 +28,8 @@ import {
   type CourseRow,
   type FacultyNode,
 } from "@/features/governance/components";
+import { ADDED, REGISTRAR_DASHBOARD, SAVED, SAVING } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 const PAGE_LIMIT = 20;
 
@@ -107,7 +109,7 @@ export default function AdminCourses() {
       }),
     onSuccess: () => {
       invalidateCourses();
-      toast.success(`أُضيف مقرّر «${draft?.name}» إلى السجلّ.`, "تمّت الإضافة");
+      toast.success(`أُضيف مقرّر «${draft?.name}» إلى السجلّ.`, ADDED);
       setDraft(null);
       setEditingId(null);
     },
@@ -128,7 +130,7 @@ export default function AdminCourses() {
     },
     onSuccess: () => {
       invalidateCourses();
-      toast.success(`حُفظت تعديلات «${draft?.name}».`, "تمّ الحفظ");
+      toast.success(`حُفظت تعديلات «${draft?.name}».`, SAVED);
       setDraft(null);
       setEditingId(null);
     },
@@ -144,7 +146,7 @@ export default function AdminCourses() {
     },
     onError: (e) =>
       toast.error(
-        humanizeError(e) || "تعذّر حذف المقرّر — قد تكون له شُعب أو مفاهيم مرتبطة.",
+        humanizeError(e) || "تعذّر الحذف — مرتبط بشُعب أو مفاهيم.",
         "فشل الحذف",
       ),
   });
@@ -157,14 +159,14 @@ export default function AdminCourses() {
 
   return (
     <Screen scroll>
-      <NavHeader title="إدارة المقرّرات" kicker="لوحة المسجل العام" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <NavHeader title="إدارة المقرّرات" kicker={REGISTRAR_DASHBOARD} />
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
         <PageHeader
           title="إدارة المقرّرات"
           kicker={
             courses.data
               ? countAr(courses.data.meta?.total ?? rows.length, UNIT.course) + " في الجامعة"
-              : "قراءة سجلّ المقرّرات…"
+              : "قراءة السجلّ…"
           }
         />
 
@@ -194,18 +196,18 @@ export default function AdminCourses() {
           <ErrorState message={humanizeError(courses.error)} onRetry={() => courses.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title={appliedQ ? "لا توجد نتائج" : "لا توجد مقرّرات بعد"}
-            message={appliedQ ? "جرّب تعديل البحث لعرض نتائج أوسع." : "أضف أول مقرّر من الزر أعلاه."}
+            title={appliedQ ? "لا نتائج" : "لا مقرّرات بعد"}
+            message={appliedQ ? "جرّب بحثًا أوسع." : "أضف أول مقرّر."}
             actionLabel={appliedQ ? "مسح البحث" : undefined}
             onAction={appliedQ ? () => setQ("") : undefined}
           />
         ) : (
-          <View style={{ gap: 12 }}>
+          <View style={{ gap: sp[12] }}>
             <RowList>
               {rows.map((c, i) => (
                 <LedgerRow key={c.id} last={i === rows.length - 1}>
-                  <View style={{ gap: 4 }}>
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                  <View style={{ gap: sp[4] }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                       <View style={{ flex: 1 }}>
                         <T variant="body" weight="bold" numberOfLines={1}>
                           {c.name}
@@ -222,7 +224,7 @@ export default function AdminCourses() {
                       {latn(c.offeringCount ?? 0)} شعبة
                     </T>
                   </View>
-                  <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap", paddingTop: 8 }}>
+                  <View style={{ flexDirection: "row", gap: sp[8], flexWrap: "wrap", paddingTop: sp[8] }}>
                     <Button
                       label="شعبة جديدة"
                       kind="ghost"
@@ -280,14 +282,14 @@ export default function AdminCourses() {
             setDraft(null);
             setEditingId(null);
           }}
-          title={editingId ? "تعديل المقرّر" : "إضافة مقرّر جديد"}
+          title={editingId ? "تعديل المقرّر" : "مقرّر جديد"}
           snap="lg"
           scrollable
           footer={
             <Button
               label={
                 createCourse.isPending || updateCourse.isPending
-                  ? "جارٍ الحفظ…"
+                  ? SAVING
                   : editingId
                     ? "حفظ التعديلات"
                     : "إضافة المقرّر"
@@ -305,8 +307,8 @@ export default function AdminCourses() {
           }
         >
           {draft ? (
-            <View style={{ gap: 12 }}>
-              <View style={{ gap: 6 }}>
+            <View style={{ gap: sp[12] }}>
+              <View style={{ gap: sp[6] }}>
                 <T variant="sm" weight="medium" color="secondary">
                   كود المقرّر
                 </T>
@@ -317,7 +319,7 @@ export default function AdminCourses() {
                   placeholder="CS101"
                 />
               </View>
-              <View style={{ gap: 6 }}>
+              <View style={{ gap: sp[6] }}>
                 <T variant="sm" weight="medium" color="secondary">
                   اسم المقرّر
                 </T>
@@ -325,10 +327,10 @@ export default function AdminCourses() {
                   accessibilityLabel="اسم المقرّر"
                   value={draft.name}
                   onChangeText={(name) => setDraft({ ...draft, name })}
-                  placeholder="مقدمة في علوم الحاسب"
+                  placeholder="مثال: علوم الحاسب"
                 />
               </View>
-              <View style={{ gap: 6 }}>
+              <View style={{ gap: sp[6] }}>
                 <T variant="sm" weight="medium" color="secondary">
                   الاسم بالإنجليزية (اختياري)
                 </T>
@@ -339,7 +341,7 @@ export default function AdminCourses() {
                   placeholder="Introduction to Computer Science"
                 />
               </View>
-              <View style={{ gap: 6 }}>
+              <View style={{ gap: sp[6] }}>
                 <T variant="sm" weight="medium" color="secondary">
                   الوصف (اختياري)
                 </T>
@@ -347,13 +349,13 @@ export default function AdminCourses() {
                   accessibilityLabel="الوصف"
                   value={draft.description}
                   onChangeText={(description) => setDraft({ ...draft, description })}
-                  placeholder="وصف موجز للمقرّر"
+                  placeholder="وصف المقرّر"
                   multiline
                   textAlignVertical="top"
                   style={{ minHeight: 96 }}
                 />
               </View>
-              <View style={{ gap: 6 }}>
+              <View style={{ gap: sp[6] }}>
                 <T variant="sm" weight="medium" color="secondary">
                   الساعات المعتمدة
                 </T>
@@ -377,7 +379,7 @@ export default function AdminCourses() {
                 loading={facs.isLoading}
                 placeholder="اختر القسم…"
                 sheetTitle="القسم"
-                emptyLabel="لا توجد أقسام بعد"
+                emptyLabel="لا أقسام بعد"
               />
             </View>
           ) : null}
@@ -450,7 +452,7 @@ function OfferingSheet({
       );
       onClose();
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر فتح الشعبة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر فتحها"),
   });
 
   const teacherOptions = (teachers.data?.rows ?? []).map((t) => ({
@@ -474,11 +476,11 @@ function OfferingSheet({
         />
       }
     >
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: sp[12] }}>
         <T variant="body" color="muted">
           سيُدرَّس مقرّر «{course.name}» ({course.code}) في الشعبة الجديدة.
         </T>
-        <View style={{ gap: 6 }}>
+        <View style={{ gap: sp[6] }}>
           <T variant="sm" weight="medium" color="secondary">
             الفصل الدراسي
           </T>
@@ -503,7 +505,7 @@ function OfferingSheet({
           sheetTitle="أساتذة المؤسسة"
           emptyLabel="لا أساتذة بعد"
         />
-        <View style={{ gap: 6 }}>
+        <View style={{ gap: sp[6] }}>
           <T variant="sm" weight="medium" color="secondary">
             القاعة (اختياري)
           </T>
@@ -514,7 +516,7 @@ function OfferingSheet({
             placeholder="قاعة A12"
           />
         </View>
-        <StatLine label="السعة" value={num(null, "افتراض الخادم")} hint="أقصى عدد طلاب يمكن تسجيلهم في الشعبة" />
+        <StatLine label="السعة" value={num(null, "افتراض الخادم")} hint="أقصى طلاب الشعبة" />
       </View>
     </AppSheet>
   );

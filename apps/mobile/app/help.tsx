@@ -16,7 +16,7 @@ import { StackHeader } from "@/components/shell/AppTopBar";
 import { FAQS, HELP_LEDE } from "@/features/common/helpData";
 
 /**
- * /help — «المساعدة والأسئلة الشائعة» (web HelpPage port): the nine
+ * /help — «المساعدة والأسئلة» (web HelpPage port): the nine
  * FAQs as accordion rows ([nn] question / answer from web content),
  * with onward links to /contact and /legal/accessibility.
  */
@@ -26,11 +26,11 @@ export default function Help() {
 
   return (
     <Screen scroll>
-      <StackHeader title="المساعدة والأسئلة الشائعة" kicker="المساعدة" />
+      <StackHeader title="المساعدة والأسئلة" kicker="المساعدة" />
 
       <View style={{ gap: sp[8], paddingBottom: sp[4] }}>
         <T variant="h3" weight="bold">
-          المساعدة والأسئلة الشائعة
+          المساعدة والأسئلة
         </T>
         <T variant="body" color="secondary">
           {HELP_LEDE}
@@ -78,7 +78,7 @@ export default function Help() {
       </T>
       <View style={{ gap: sp[8] }}>
         <Button
-          label="قناة التواصل والتسجيل المبكر"
+          label="التواصل والتسجيل"
           kind="ghost"
           small
           icon={<LifeBuoy size={16} color={p.text} />}

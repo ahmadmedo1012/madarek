@@ -23,6 +23,8 @@ import {
   useExpanded,
   type FacultyNode,
 } from "@/features/governance/components";
+import { ADDED } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 /** (tabs) Faculties & departments — «الكلّيّات والأقسام» (web AdminFacultiesPage parity). */
 export default function AdminFaculties() {
@@ -57,25 +59,25 @@ export default function AdminFaculties() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "faculties"] });
       qc.invalidateQueries({ queryKey: ["admin", "stats"] });
-      toast.success(`أُضيفت كلّيّة «${fName.trim()}».`, "تمّت الإضافة");
+      toast.success(`أُضيفت كلّيّة «${fName.trim()}».`, ADDED);
       setFacultyOpen(false);
       setFName("");
       setFNameEn("");
       setFCity("");
       setFEmoji("");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّرت إضافة الكلّيّة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر إضافة الكلّيّة"),
   });
 
   const createDepartment = useMutation({
     mutationFn: () => adminApi.createDepartment({ facultyId: deptTarget!.id, name: dName.trim() }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "faculties"] });
-      toast.success(`أُضيف قسم «${dName.trim()}» إلى «${deptTarget?.name}».`, "تمّت الإضافة");
+      toast.success(`أُضيف قسم «${dName.trim()}» إلى «${deptTarget?.name}».`, ADDED);
       setDeptTarget(null);
       setDName("");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّرت إضافة القسم"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر إضافة القسم"),
   });
 
   const { expanded, toggle } = useExpanded();
@@ -86,8 +88,8 @@ export default function AdminFaculties() {
   return (
     <Screen scroll>
       <AppTopBar alertsPath="/admin/alerts" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
           <View style={{ flex: 1 }}>
             <T variant="h2" weight="bold">
               الكلّيّات والأقسام
@@ -105,10 +107,10 @@ export default function AdminFaculties() {
           />
         </View>
 
-        <View style={{ flexDirection: "row", gap: 8 }}>
+        <View style={{ flexDirection: "row", gap: sp[8] }}>
           <StatLine label="الكلّيّات" value={num(facs.data?.length ?? null, "…")} />
         </View>
-        <View style={{ flexDirection: "row", gap: 8 }}>
+        <View style={{ flexDirection: "row", gap: sp[8] }}>
           <StatLine label="الأقسام" value={num(totalDepts, "…")} hint="عبر الكلّيّات" />
         </View>
 
@@ -119,13 +121,13 @@ export default function AdminFaculties() {
           ) : facs.isError ? (
             <ErrorState message={humanizeError(facs.error)} onRetry={() => facs.refetch()} />
           ) : facs.data && facs.data.length > 0 ? (
-            <View style={{ gap: 8 }}>
+            <View style={{ gap: sp[8] }}>
               {facs.data.map((f) => {
                 const depts = f.departments ?? [];
                 const open = expanded.has(f.id);
                 return (
                   <Card key={f.id}>
-                    <View style={{ gap: 4 }}>
+                    <View style={{ gap: sp[4] }}>
                       <T variant="bodyLg" weight="bold">
                         {f.iconEmoji ? `${f.iconEmoji} ` : ""}
                         {f.name}
@@ -146,9 +148,9 @@ export default function AdminFaculties() {
                       <LedgerRow
                         onPress={() => toggle(f.id)}
                         accessibilityLabel={open ? `طيّ أقسام ${f.name}` : `توسيع أقسام ${f.name}`}
-                        style={{ marginTop: 8 }}
+                        style={{ marginTop: sp[8] }}
                       >
-                        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                           <T variant="sm" weight="bold" style={{ flex: 1 }}>
                             {open ? "طيّ الأقسام" : "توسيع الأقسام"}
                           </T>
@@ -157,7 +159,7 @@ export default function AdminFaculties() {
                       </LedgerRow>
                     ) : null}
                     {open && depts.length > 0 ? (
-                      <View style={{ paddingTop: 4 }}>
+                      <View style={{ paddingTop: sp[4] }}>
                         <RowList>
                           {depts.map((d, i) => (
                             <LedgerRow key={d.id} last={i === depts.length - 1}>
@@ -174,7 +176,7 @@ export default function AdminFaculties() {
                         </RowList>
                       </View>
                     ) : null}
-                    <View style={{ paddingTop: 8 }}>
+                    <View style={{ paddingTop: sp[8] }}>
                       <Button
                         label="قسم جديد"
                         kind="ghost"
@@ -190,7 +192,7 @@ export default function AdminFaculties() {
           ) : (
             <EmptyState
               title="لا كليات بعد"
-              message="أنشئ أول كلّيّة من الزر أعلاه — بعدها يمكنك إضافة الأقسام والمقرّرات."
+              message="أنشئ أول كلّيّة."
               actionLabel="كلية جديدة"
               onAction={() => setFacultyOpen(true)}
             />
@@ -201,7 +203,7 @@ export default function AdminFaculties() {
       <Sheet
         open={facultyOpen}
         onClose={() => setFacultyOpen(false)}
-        title="إضافة كلّيّة جديدة"
+        title="كلّيّة جديدة"
         footer={
           <Button
             label={createFaculty.isPending ? "جارٍ الإضافة…" : "إضافة الكلّيّة"}
@@ -210,7 +212,7 @@ export default function AdminFaculties() {
           />
         }
       >
-        <View style={{ gap: 12 }}>
+        <View style={{ gap: sp[12] }}>
           <Field
             label="اسم الكلّيّة"
             value={fName}
@@ -228,7 +230,7 @@ export default function AdminFaculties() {
             value={fCity}
             onChangeText={setFCity}
             placeholder="حرم المعرفة"
-            hint="الكلّيّات تتميّز بالاسم داخل كل مدينة — الاسم نفسه في مدينة أخرى لا يُعدّ تكرارًا"
+            hint="الاسم يتميّز داخل مدينته."
           />
           <Field
             label="رمز تعبيري (اختياري)"
@@ -252,7 +254,7 @@ export default function AdminFaculties() {
           />
         }
       >
-        <View style={{ gap: 12 }}>
+        <View style={{ gap: sp[12] }}>
           <T variant="body" color="muted">
             سيُضاف القسم إلى «{deptTarget?.name}».
           </T>

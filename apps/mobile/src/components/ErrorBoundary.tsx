@@ -9,6 +9,7 @@ import { Component, type ErrorInfo, type ReactNode } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { themeFor } from "@/design/theme";
 import { crumb, reportClientError, getTelemetryRoute } from "@/lib/telemetry";
+import { RETRY } from "@/lib/copy";
 
 interface Props {
   children: ReactNode;
@@ -67,7 +68,7 @@ export class ErrorBoundary extends Component<Props, State> {
           ) : null}
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="إعادة المحاولة"
+            accessibilityLabel={RETRY}
             onPress={this.reset}
             style={({ pressed }) => [
               styles.button,

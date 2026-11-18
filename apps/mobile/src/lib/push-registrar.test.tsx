@@ -249,7 +249,7 @@ describe("PushActivationCard — the honest failure seats", () => {
   it("denied → ONE honest Arabic line + the OS settings button", async () => {
     mockPermission = { granted: false, canAskAgain: false };
     const tree = await mountSettled(() => <PushActivationCard />);
-    expect(tree.queryByText("الإشعارات مقفلة من إعدادات النظام — افتحها من هناك.")).not.toBeNull();
+    expect(tree.queryByText("مقفلة من إعدادات النظام — افتحها من هناك.")).not.toBeNull();
     const settings = tree.getByRole("button", { name: "فتح إعدادات النظام" });
     await fireEvent.press(settings);
     expect(linkingSpy).toHaveBeenCalled();
@@ -258,7 +258,7 @@ describe("PushActivationCard — the honest failure seats", () => {
   it("undetermined → the enable ask; a failed registration renders the retry line, and the retry can succeed", async () => {
     mockPermission = { granted: false, canAskAgain: true };
     const tree = await mountSettled(() => <PushActivationCard />);
-    expect(tree.queryByText("فعّل الإشعارات لتصلك الإعلانات والدرجات لحظة صدورها.")).not.toBeNull();
+    expect(tree.queryByText("فعّل الإشعارات لتصلك لحظة صدورها.")).not.toBeNull();
 
     // The ask grants, the token mints, the registration POST fails.
     mockAskResult = { granted: true, canAskAgain: true };
@@ -267,14 +267,14 @@ describe("PushActivationCard — the honest failure seats", () => {
     mockPostRejects = true;
     await fireEvent.press(tree.getByRole("button", { name: "تفعيل الإشعارات" }));
     await flushAsyncWork(10);
-    expect(tree.queryByText("منحت الإذن، لكن تعذّر تسجيل الجهاز.")).not.toBeNull();
+    expect(tree.queryByText("مُنح الإذن — تعذّر تسجيل الجهاز.")).not.toBeNull();
     expect(tree.queryByRole("button", { name: "إعادة المحاولة" })).not.toBeNull();
 
     // The retry succeeds → the card disappears (granted + registered).
     mockPostRejects = false;
     await fireEvent.press(tree.getByRole("button", { name: "إعادة المحاولة" }));
     await flushAsyncWork(10);
-    expect(tree.queryByText("منحت الإذن، لكن تعذّر تسجيل الجهاز.")).toBeNull();
+    expect(tree.queryByText("مُنح الإذن — تعذّر تسجيل الجهاز.")).toBeNull();
   });
 
   it("granted + registered → no card at all", async () => {

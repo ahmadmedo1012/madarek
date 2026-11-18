@@ -27,7 +27,7 @@ export function RoleGate({ allow, children }: { allow: AppRole[]; children: Reac
   useEffect(() => {
     if (!isHydrated || !user) return;
     if (!allow.includes(user.role)) {
-      toast.error("هذه الصفحة غير متاحة لدور حسابك — أُعيدك إلى لوحتك.");
+      toast.error("غير متاحة لدورك — أُعيدك للوحتك.");
       router.replace((ROLE_HOME[user.role] ?? "/student/dashboard") as never);
       return;
     }

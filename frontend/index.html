@@ -20,6 +20,14 @@
          (style-src 'unsafe-inline'). -->
     <style>html{min-height:100%}</style>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- R366 (Agent 2 · L1): the favicon fallback ladder — SVG first
+         (modern Chromium/Firefox), PNG per-size for Safari/legacy
+         (paper-plated, favicon stroke ratio, legible on dark tabs),
+         then the 16/32/48 ICO for the long tail. One mark, every seat. -->
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <!-- R320 §D (PAGES-GAP P2-8): the web-app identity — the manifest
          (مدارك · ar · rtl · standalone · the paper ground #F6F6EE) with
          the maskable PNG icons rendered from the one brand mark, and
@@ -162,6 +170,43 @@
              observer watches the theme attribute alone again. */
           { attributes: true, attributeFilter: ['data-theme'] },
         );
+      })();
+    </script>
+    <!-- R366-final (A3→A2 R1): the lenis scrollbar flip, resolved
+         PRE-PAINT. The engine sets html[data-lenis-on] when it boots
+         on a guest surface; base.css hides the classic scrollbar with
+         it — but the attribute landed after first paint, the scrollbar
+         vanished mid-view, and the reflow measured 0.0118 CLS on '/'
+         (the page's total 0.0204 sat 0.0004 over budget). This script
+         mirrors isGuestWindowSurface's predicate (App.tsx) and the
+         engine's own guards (reduced-motion NEVER inits) so the
+         attribute exists from the first layout pass; the engine's
+         setAttribute is then a no-op and no reflow occurs. Signed-in
+         visitors on '/', '/auth*', '/login', '/colleges*' bounce to
+         their role home and GuestLenisMount's destroy path drops the
+         attribute on mount — the authed shell keeps its scrollbar
+         (a one-commit transient, not a heuristic: r172a §7 forbids
+         auth reads in this file).
+         Route predicates duplicated by design: the theme bootstrap
+         above sets the same precedent (pre-paint concerns can't wait
+         for the bundle); check-csp-hash.sh pins this block's sha256 in
+         backend/src/app.ts exactly like the theme resolver's. -->
+    <script>
+      (function () {
+        try {
+          if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          var path = location.pathname;
+          var under = function (list) {
+            return list.some(function (p) { return path === p || path.indexOf(p + '/') === 0; });
+          };
+          if (under(['/student', '/teacher', '/admin', '/quality', '/owner', '/vision', '/document', '/competitions', '/community', '/training', '/achievements'])) return;
+          if (under(['/legal'])) return;
+          if (under(['/__design', '/__brand', '/__plates'])) return;
+          document.documentElement.setAttribute('data-lenis-on', '');
+        } catch (e) {
+          /* the engine's own init still flips the attribute — only the
+             CLS optimization is lost, never the behavior. */
+        }
       })();
     </script>
   </head>

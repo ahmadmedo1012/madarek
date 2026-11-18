@@ -398,6 +398,78 @@
     justify-content: center;
   }
 
+  /* ═══ r366 (2-d): the week mode — the phone's honest week ═══ */
+
+  /* The mode switcher — the shared .pill register (aria-pressed
+     grammar, the matrix filter precedent). */
+  .cal-mode-row {
+    display: flex;
+    gap: var(--sp-1-5);
+    padding: var(--sp-2) var(--sp-3) 0;
+  }
+  /* The week strip: below 768 the seven days STACK (a 7-column split
+     at 320 would cradle ~38px chips — unreadable); ≥768 the classic
+     7-column week returns under the shared dow row. */
+  .cal-grid.cal-week { grid-template-columns: 1fr; }
+  .cal-week .cal-cell {
+    min-block-size: 0;
+    align-items: stretch;
+    padding: var(--sp-1-5);
+  }
+  .cal-week-dayhead {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .cal-week-dow {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  /* The event chip — one line, always; the full title rides the
+     tooltip (no truncation without a pointer to the whole). */
+  .cal-cell-chip {
+    display: block;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: start;
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+    background: var(--surface-2);
+    border: 1px solid var(--border-faint);
+    /* The kind's ink rides the inline-start edge — the same colours
+       the legend dots speak, no second colour system. */
+    border-inline-start: 3px solid var(--text-muted);
+    border-radius: var(--r-sm);
+    /* One-line chip geometry: 13px × 1.4 + 2×2px padding + 2px border
+       = 24.2px — safely under the 30px one-line ceiling even at the
+       font-scale stress contexts. */
+    line-height: 1.4;
+    padding: var(--sp-0-5) var(--sp-1-5);
+  }
+  .cal-cell-chip[data-kind='class'] { border-inline-start-color: var(--accent); }
+  .cal-cell-chip[data-kind='assignment'] { border-inline-start-color: var(--gold-ink); }
+  .cal-cell-chip[data-kind='exam'] { border-inline-start-color: var(--danger-ink); }
+  .cal-cell-chip[data-kind='live'] { border-inline-start-color: var(--chart-5); }
+  .cal-chip-more {
+    color: var(--text-muted);
+    background: transparent;
+    border-style: dashed;
+  }
+  @media (max-width: 767px) {
+    /* The stacked week carries its own per-cell day labels — the
+       7-column dow row would label a single column. */
+    .cal-dow-row.cal-dow-week { display: none; }
+  }
+  @media (min-width: 768px) {
+    .cal-grid.cal-week { grid-template-columns: repeat(7, 1fr); }
+    .cal-week .cal-cell { min-block-size: 96px; }
+    .cal-week-dayhead { flex-direction: column; align-items: center; gap: 0; }
+    .cal-week-dow { display: none; }
+  }
+
   /* The selected-day event list — same row anatomy/affordances as the
      dashboard agenda rows (icon well + text + forward chevron). */
   .cal-detail { border-block-start: 1px solid var(--border-faint); }

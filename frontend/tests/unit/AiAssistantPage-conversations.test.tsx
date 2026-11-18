@@ -127,7 +127,7 @@ describe('AiAssistantPage — failed-turn recovery (r164g)', () => {
     mocks.chat.mutateAsync.mockRejectedValueOnce(NETWORK_ERROR);
     renderPage();
     await send('سؤال شبكة');
-    expect(await screen.findByText('تعذَّر الاتصال بالمساعد.')).toBeInTheDocument();
+    expect(await screen.findByText('تعذَّر الاتصال.')).toBeInTheDocument(); // r366 copy diet: «بالمساعد» dropped — the row sits in the assistant's own log
     expect(screen.queryByText('Network Error')).toBeNull();
   });
 
@@ -171,8 +171,34 @@ describe('AiAssistantPage — pending-state honesty (r164g)', () => {
     mocks.conversations = { data: [CONV1], isPending: false, isError: false, refetch: () => undefined };
     mocks.chat.mutateAsync.mockRejectedValueOnce(NETWORK_ERROR);
     const { rerender } = renderPage();
+
+    /* r366 (2-f): the suggestion chips now ride the transcript's empty
+     * state (the old sidebar card is gone) — they exist only BEFORE the
+     * first send, so their pending-disable pin runs here, ahead of the
+     * send that unmounts them. */
+    mocks.chat.isPending = true;
+    rerender(
+      <MemoryRouter>
+        <AiAssistantPage />
+      </MemoryRouter>,
+    );
+    // R366-final: the starter now lives on TWO surfaces — the greeting
+    // chips in the transcript AND the restored [03] sidebar list (r319
+    // §B2) — every instance of the ask must disable while a reply is
+    // pending (the assertion covers both, not one).
+    expect(screen.getAllByRole('button', { name: 'ما المفاهيم التي أحتاج مراجعتها؟' }).length).toBeGreaterThan(0);
+    for (const b of screen.getAllByRole('button', { name: 'ما المفاهيم التي أحتاج مراجعتها؟' })) {
+      expect(b).toBeDisabled();
+    }
+    mocks.chat.isPending = false;
+    rerender(
+      <MemoryRouter>
+        <AiAssistantPage />
+      </MemoryRouter>,
+    );
+
     await send('سؤال معلّق');
-    await screen.findByText('تعذَّر الاتصال بالمساعد.');
+    await screen.findByText('تعذَّر الاتصال.');
     expect(screen.getByRole('button', { name: 'أعد الإرسال' })).toBeInTheDocument();
 
     // Flip the shared chat mock to pending and re-render the same tree.
@@ -189,7 +215,7 @@ describe('AiAssistantPage — pending-state honesty (r164g)', () => {
     expect(screen.getByRole('button', { name: 'فتح محادثة: عنوان أول محادثة' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'حذف محادثة: عنوان أول محادثة' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'أسوأ فجواتي' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'ما المفاهيم التي أحتاج مراجعتها؟' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'اشرح مفهوماً' })).toBeDisabled();
     // The typing indicator owns the pending moment — retry hides.
     expect(screen.queryByRole('button', { name: 'أعد الإرسال' })).toBeNull();
     expect(screen.getByText('المساعد يجهّز الردّ…')).toBeInTheDocument();
@@ -360,7 +386,10 @@ describe('AiAssistantPage — role-aware suggestions (r164g)', () => {
     mocks.conversations = { data: [CONV1], isPending: false, isError: false, refetch: () => undefined };
     useAuthStore.setState({ user: { ...STUDENT, role: 'TEACHER' as const } });
     renderPage();
-    expect(screen.getByText('كيف أقيّم فهم الطلاب؟')).toBeInTheDocument();
+    // R366-final: the starters render on two surfaces (greeting chips
+    // + the [03] sidebar list) — assert EVERY instance, then the
+    // mastery question is absent from both.
+    expect(screen.getAllByText('كيف أقيّم فهم الطلاب؟').length).toBeGreaterThan(0);
     expect(screen.queryByText('ما المفاهيم التي أحتاج مراجعتها؟')).toBeNull();
     // No mastery-awareness chip either — nothing is invented.
     expect(screen.queryByText('واعٍ بمستوى إتقانك')).toBeNull();
@@ -396,10 +425,11 @@ describe('AiAssistantPage — r168b quick-chip honesty gate', () => {
     expect(screen.getByRole('button', { name: 'اشرح مفهوماً' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'أسوأ فجواتي' })).toBeInTheDocument();
     // The local composer has no summarize/quiz/resources paths — the
-    // chips that promise them must not render (r168b).
+    // chips that promise them must not render (r168b). r366 copy diet:
+    // the real-mode chips carry their full asks as labels.
     expect(screen.queryByRole('button', { name: 'لخّص الفصل الأخير' })).toBeNull();
-    expect(screen.queryByRole('button', { name: 'اختبار قصير' })).toBeNull();
-    expect(screen.queryByRole('button', { name: 'موارد إضافيّة' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'أنشئ اختباراً قصيراً' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'اقترح موارد إضافيّة' })).toBeNull();
   });
 
   it('unverifiable mode (pending config) keeps the honest local set', () => {
@@ -413,9 +443,9 @@ describe('AiAssistantPage — r168b quick-chip honesty gate', () => {
     mocks.config = { data: { provider: 'openai', model: 'gpt-4o-mini' }, isPending: false, isError: false };
     renderPage();
     expect(screen.getByRole('button', { name: 'لخّص الفصل الأخير' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'اشرح مفهوماً' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'اختبار قصير' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'موارد إضافيّة' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'اشرح مفهوماً صعباً' })).toBeInTheDocument(); // r366: the chip text IS the ask now
+    expect(screen.getByRole('button', { name: 'أنشئ اختباراً قصيراً' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'اقترح موارد إضافيّة' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'أسوأ فجواتي' })).toBeNull();
   });
 });

@@ -93,7 +93,7 @@ export default function GamificationScreen() {
                 {`${TIER_LABEL[tier]} · المستوى ${num(level ?? null)}`}
               </T>
               <T variant="body" color="secondary">
-                {totalXp != null ? pointsAr(totalXp) : "لم تُسجَّل نقاط بعد"}
+                {totalXp != null ? pointsAr(totalXp) : "لا نقاط بعد"}
               </T>
             </View>
           </View>
@@ -168,7 +168,7 @@ export default function GamificationScreen() {
         ) : (badges.data ?? []).length === 0 ? (
           <EmptyState
             title="لا أوسمة بعد"
-            message="أكمل دروساً ومسارات في التطوير الذاتي لتفتح أول وسام."
+            message="أكمل دروس التطوير لأول وسام."
           />
         ) : (
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[8] }}>

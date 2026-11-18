@@ -35,15 +35,16 @@ import {
   StatusBadge,
   arCount,
 } from "@/features/teacher/components";
+import { AWAITING_QUALITY_APPROVAL, PUBLISH_FINAL_CONFIRM, SENDING } from "@/lib/copy";
 
 type QuestionCategory = { id: string; title?: string; name?: string };
 
 /** Web publishGateReason — the per-status honesty for the gated publish. */
 function publishGateReason(status: string): string | null {
   if (status === "PENDING_REVIEW" || status === "DRAFT") {
-    return "بانتظار مراجعة الجودة — يُفتح النشر بعد اعتمادها.";
+    return AWAITING_QUALITY_APPROVAL;
   }
-  if (status === "REJECTED") return "مرفوض من الجودة — لا يمكن نشره.";
+  if (status === "REJECTED") return "مرفوض من الجودة.";
   if (status === "PUBLISHED" || status === "CLOSED") return "منشور بالفعل.";
   return null;
 }
@@ -86,7 +87,7 @@ export default function Exams() {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       qc.invalidateQueries({ queryKey: ["exams", "template", publishTarget?.id] });
       setPublishTarget(null);
-      toast.success("نُشر الاختبار وسيظهر للطلاب حسب نطاقه.", "تمّ نشر الاختبار");
+      toast.success("نُشر حسب النطاق.", "نُشر");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
@@ -105,22 +106,22 @@ export default function Exams() {
 
   const createQuestion = useMutation({
     mutationFn: async () => {
-      if (prompt.trim().length < 3) throw new Error("اكتب نص السؤال كما سيظهر للطالب.");
+      if (prompt.trim().length < 3) throw new Error("كما يظهر للطالب.");
       const pts = Number(points);
       if (points.trim() === "" || Number.isNaN(pts) || pts < 1 || pts > 20) {
-        throw new Error("النقاط عدد بين 1 و20.");
+        throw new Error("النقاط بين 1 و20.");
       }
       let correctAnswer: unknown = undefined;
       if (type === "MCQ") {
         const filled = choices.map((c) => c.trim()).filter((c) => c !== "");
-        if (filled.length < 2) throw new Error("خياران على الأقل لسؤال الاختيار من متعدد.");
-        if (correctIndex === null || correctIndex >= filled.length) throw new Error("حدِّد الإجابة الصحيحة قبل الحفظ.");
+        if (filled.length < 2) throw new Error("خياران على الأقل للمتعدد.");
+        if (correctIndex === null || correctIndex >= filled.length) throw new Error("حدِّد الصحيحة قبل الحفظ.");
         correctAnswer = correctIndex;
       } else if (type === "TRUE_FALSE") {
-        if (correctIndex === null) throw new Error("حدِّد الإجابة الصحيحة (صواب أو خطأ).");
+        if (correctIndex === null) throw new Error("حدِّد الصحيحة (صواب/خطأ).");
         correctAnswer = correctIndex;
       } else if (type === "SHORT") {
-        if (modelAnswer.trim() === "") throw new Error("الإجابة النموذجية مطلوبة للأسئلة القصيرة.");
+        if (modelAnswer.trim() === "") throw new Error("النموذجية مطلوبة للقصيرة.");
         correctAnswer = modelAnswer.trim();
       }
       return examsApi.createQuestion({
@@ -140,7 +141,7 @@ export default function Exams() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["exams", "question-bank"] });
       toast.success(
-        "أُرسل السؤال إلى مراجعة الجودة — سيظهر في البنك ويصبح متاحاً للقوالب بعد الاعتماد.",
+        "أُرسل — يظهر بعد الاعتماد.",
         "أُرسل السؤال",
       );
       setCreating(false);
@@ -170,7 +171,7 @@ export default function Exams() {
       <Animated.View entering={entering(0)}>
       <PageHeader
         title="بنك الأسئلة والاختبارات"
-        kicker="تأليف الأسئلة وبناء قوالب الاختبارات الموحَّدة، ومتابعة اعتمادها من الجودة حتى النشر."
+        kicker="تأليف الأسئلة وبناء القوالب."
       />
       <Segmented
         options={[
@@ -194,8 +195,8 @@ export default function Exams() {
           ) : (templates.data ?? []).length === 0 ? (
             <EmptyState
               art={<Illustration id="r342/role-teacher" width={216} />}
-              title="لم تُنشئ قوالب اختبارات بعد"
-              message="ستظهر قوالبك هنا — ابنِ قالباً من أسئلة البنك المعتمدة (البناء يتم حاليًا من لوحة الويب)، ثم أرسله لمراجعة الجودة ونشره."
+              title="لا قوالب بعد"
+              message="ابنِ قالبًا (من لوحة الويب) ثم أرسله للجودة."
             />
           ) : (
             <RowList>
@@ -277,11 +278,11 @@ export default function Exams() {
             <ErrorState message={humanizeError(bank.error)} onRetry={() => bank.refetch()} />
           ) : bankRows.length === 0 ? (
             <EmptyState
-              title={q.trim() !== "" ? "لا توجد أسئلة تطابق البحث" : "البنك فارغ حتى الآن"}
+              title={q.trim() !== "" ? "لا أسئلة تطابق البحث" : "البنك فارغ"}
               message={
                 q.trim() !== ""
-                  ? "جرّب كلمات بحث مختلفة أو أزل عوامل التصفية."
-                  : "أنشئ أول سؤال — بعد اعتماده من الجودة سيظهر هنا ويصبح متاحاً للقوالب."
+                  ? "جرّب كلمات أخرى أو أزل التصفية."
+                  : "أنشئ أول سؤال — بعد الاعتماد."
               }
             />
           ) : (
@@ -320,7 +321,7 @@ export default function Exams() {
       <ConfirmDialog
         open={publishTarget !== null}
         title="نشر الاختبار"
-        message="بعد النشر يظهر الاختبار للطلاب حسب نطاقه (المقرّر أو الكلّيّة) ولا يمكن سحبه من هذه الصفحة. هل تريد النشر الآن؟"
+        message={PUBLISH_FINAL_CONFIRM}
         confirmLabel="نشر نهائي"
         loading={publish.isPending}
         onConfirm={() => publishTarget && publish.mutate(publishTarget.id)}
@@ -342,7 +343,7 @@ export default function Exams() {
             placeholder="اختر تصنيفاً…"
             loading={categories.isLoading}
             sheetTitle="تصنيف السؤال"
-            emptyLabel="لا توجد تصنيفات بعد"
+            emptyLabel="لا تصنيفات بعد"
           />
           <SelectField
             label="نوع السؤال"
@@ -369,7 +370,7 @@ export default function Exams() {
               setQError(null);
             }}
             multiline
-            placeholder="اكتب نص السؤال كما سيظهر للطالب…"
+            placeholder="كما يظهر للطالب…"
             accessibilityLabel="نص السؤال"
           />
           {type === "MCQ" ? (
@@ -436,7 +437,7 @@ export default function Exams() {
               label="الإجابة النموذجية"
               value={modelAnswer}
               onChangeText={setModelAnswer}
-              hint="تُصحَّح إجابة الطالب آلياً بمطابقتها مع هذا النص"
+              hint="تُصحَّح بمطابقة هذا النص"
               accessibilityLabel="الإجابة النموذجية"
             />
           ) : null}
@@ -466,7 +467,7 @@ export default function Exams() {
             </T>
           ) : null}
           <Button
-            label={createQuestion.isPending ? "جارٍ الإرسال…" : "إرسال السؤال"}
+            label={createQuestion.isPending ? SENDING : "إرسال السؤال"}
             kind="accent"
             loading={createQuestion.isPending}
             onPress={() => {

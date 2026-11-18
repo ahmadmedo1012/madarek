@@ -182,6 +182,23 @@ export default defineConfig({
       },
     },
     {
+      // r366 (Agent 3) — the /__design component matrix (tests/design-
+      // lab/lab.spec.ts). Additive: no existing project changes. The
+      // spec drives the theme x width matrix itself (contexts seeded
+      // per theme via the theme store's localStorage), so the project
+      // use stays light/1280 — reach it via `npm run test:design-lab`
+      // (expects the dev server on :5173, like the flows project).
+      name: 'design-lab',
+      testDir: './tests/design-lab',
+      testMatch: /\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 800 },
+        colorScheme: 'light',
+        locale: 'ar',
+      },
+    },
+    {
       // r325 P4(a) — the REAL-STACK flow walks (tests/r325/flows/*.spec.ts,
       // the FLOWS.md rehearsal). Unlike the hermetic `e2e` project these
       // specs ride the LIVE local stack (backend :4000 + seeded Postgres)

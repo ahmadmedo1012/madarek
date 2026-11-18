@@ -22,6 +22,8 @@ import {
   numOf,
   type InstitutionRow,
 } from "@/features/governance/components";
+import { CREATING, OWNER_DASHBOARD } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 
 /**
@@ -61,7 +63,7 @@ export default function OwnerInstitutions() {
       qc.invalidateQueries({ queryKey: ["owner", "institutions"] });
       toast.success(
         `أُنشئت «${inst?.name ?? "المؤسسة"}» وهي نشطة الآن.`,
-        "تمّ إنشاء المؤسسة",
+        "أُنشئت",
       );
     },
   });
@@ -70,9 +72,9 @@ export default function OwnerInstitutions() {
 
   return (
     <Screen scroll>
-      <StackHeader title="المؤسسات" kicker="لوحة المالك" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="المؤسسات" kicker="إدارة المؤسسات التعليمية على المنصّة" />
+      <StackHeader title="المؤسسات" kicker={OWNER_DASHBOARD} />
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
+        <PageHeader title="المؤسسات" kicker="إدارة المؤسسات التعليمية" />
 
         <Button
           label="مؤسسة جديدة"
@@ -92,11 +94,11 @@ export default function OwnerInstitutions() {
             />
           ) : rows.length === 0 ? (
             <EmptyState
-              title="لا توجد مؤسسات بعد"
-              message="أنشئ أول مؤسسة تعليمية من الزر أعلاه لبدء استقبال أعضائها."
+              title="لا مؤسسات بعد"
+              message="أنشئ أول مؤسسة."
             />
           ) : (
-            <View style={{ gap: 12 }}>
+            <View style={{ gap: sp[12] }}>
               <RowList>
                 {rows.map((inst, i) => {
                   const members = numOf(inst.activeMembershipCount ?? inst.membersCount);
@@ -108,7 +110,7 @@ export default function OwnerInstitutions() {
                       accessibilityLabel={`فتح المؤسسة ${inst.name}`}
                       last={i === rows.length - 1}
                     >
-                      <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
                         <InstitutionStatusChip status={inst.status} />
                         {inst.createdAt ? (
                           <T variant="xs" color="faint">
@@ -116,8 +118,8 @@ export default function OwnerInstitutions() {
                           </T>
                         ) : null}
                       </View>
-                      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                        <View style={{ flex: 1, gap: 2 }}>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+                        <View style={{ flex: 1, gap: sp[2] }}>
                           <T variant="body" weight="bold" numberOfLines={1}>
                             {inst.name}
                           </T>
@@ -130,7 +132,7 @@ export default function OwnerInstitutions() {
                         </View>
                       </View>
                       {members !== null || faculties !== null ? (
-                        <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
+                        <View style={{ flexDirection: "row", gap: sp[8], flexWrap: "wrap" }}>
                           {members !== null ? (
                             <T variant="xs" color="faint">
                               {countAr(members, ["عضو نشط واحد", "عضوان نشطان", "أعضاء نشطون", "عضواً نشطاً"])}
@@ -198,7 +200,7 @@ function CreateInstitutionSheet({
   const [draft, setDraft] = useState<CreateDraft>(EMPTY_DRAFT);
   const pending = create.isPending;
   const nameProblem =
-    draft.name.length > 0 && draft.name.trim().length < 2 ? "الاسم قصير جدًا — حرفان على الأقل" : undefined;
+    draft.name.length > 0 && draft.name.trim().length < 2 ? "حرفان على الأقل" : undefined;
   const canSubmit = draft.name.trim().length >= 2 && !pending;
 
   const submit = async () => {
@@ -217,8 +219,8 @@ function CreateInstitutionSheet({
   };
 
   return (
-    <Sheet open={open} onClose={onClose} title="إنشاء مؤسسة جديدة">
-      <View style={{ gap: 12 }}>
+    <Sheet open={open} onClose={onClose} title="مؤسسة جديدة">
+      <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
           أضف مؤسسة تعليمية إلى المنصّة — تُنشأ نشطة ويمكن تعيين مسجلها العام بعد ذلك.
         </T>
@@ -226,9 +228,9 @@ function CreateInstitutionSheet({
           label="اسم المؤسسة"
           value={draft.name}
           onChangeText={(v) => setDraft((d) => ({ ...d, name: v }))}
-          placeholder="مثلاً: أكاديمية طرابلس للعلوم"
+          placeholder="مثال: أكاديمية طرابلس"
           error={nameProblem}
-          hint="مطلوب — كما سيظهر لأعضاء المؤسسة"
+          hint="كما يظهر للأعضاء"
         />
         <Field
           label="الاسم بالإنجليزية (اختياري)"
@@ -242,11 +244,11 @@ function CreateInstitutionSheet({
           value={draft.slug}
           onChangeText={(v) => setDraft((d) => ({ ...d, slug: v }))}
           placeholder="inst-example"
-          hint="أحرف لاتينية صغيرة وأرقام وشرطات؛ يُشتق تلقائيًا إن تُرك فارغًا"
+          hint="لاتينية صغيرة وأرقام وشرطات."
           autoCorrect={false}
         />
         <Button
-          label={pending ? "جارٍ الإنشاء…" : "إنشاء المؤسسة"}
+          label={pending ? CREATING : "إنشاء المؤسسة"}
           kind="primary"
           icon={<Plus size={14} color={p.primaryFg} />}
           disabled={!canSubmit}

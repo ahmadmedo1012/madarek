@@ -133,6 +133,11 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  * decision; audits/evidence/r313/reference/digest.json); the metas and
  * the boot plate moved with it. */
 const THEME_BOOTSTRAP_SHA256 = 'jEZ9yPBzXBwMFxHwFlLFqiKKy+HtK9TOGA7FRviqIMc=';
+/* R366-final (A3→A2 R1): the THIRD inline block — the lenis pre-paint
+ * resolver (the scrollbar-flip CLS fix). Pins the exact text between
+ * the tags; refreshed by the same check-csp-hash.sh walk as the other
+ * two whenever the predicate lists change. */
+const LENIS_PREPAINT_SHA256 = 'e1FiA7mJgL6PsNf3wNH8P1RxkoRXgFmxIhou4jyyi78=';
 /* r188: pin refreshed — the JSON-LD block now describes the INDEPENDENT
  * Madarek platform alone (WebSite node; the retired legacy university
  * `about` node is gone — the only demo-data story is the explicitly
@@ -170,6 +175,7 @@ export function createApp() {
           'script-src': [
             "'self'",
             `'sha256-${THEME_BOOTSTRAP_SHA256}'`,
+            `'sha256-${LENIS_PREPAINT_SHA256}'`,
             `'sha256-${JSON_LD_SHA256}'`,
           ],
           'style-src': ["'self'", "'unsafe-inline'"],

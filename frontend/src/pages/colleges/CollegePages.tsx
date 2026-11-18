@@ -199,8 +199,13 @@ function useDocTitle(title: string | null) {
  * links, the guest docTitle and the leaderboard CTA repeated it as
  * three separate literals). */
 const COLLEGES_LABEL = 'كلّيّات الجامعة';
+/* R366 L4: the leaderboard label — one home for the docTitle, the page
+ * header and the CTA (three literals said the same two words). */
+const LEADERBOARD_LABEL = 'منافسة الكلّيّات';
 const LEADERBOARD_CARD_TITLE = 'لوحة المتصدّرين';
-
+/* R366 L4: one clear-filters label — the trailing chip and the
+ * empty-state button said it as two literals. */
+const CLEAR_FILTERS = 'مسح الفلترة';
 /* ── Guest funnel chrome (5-A12 P1-2, r183-B3 funnel split) ─────────
  * The public colleges pages are the university's front door, yet a
  * guest who found their faculty had NO path to registration — 0 auth
@@ -224,7 +229,7 @@ function GuestJoinRow() {
   const from = { from: { pathname } };
   return (
     <div className="guest-join-row">
-      <span className="guest-join-note">طالب جديد في الجامعة؟</span>
+      <span className="guest-join-note">طالب جديد؟</span>
       <Link to="/auth" state={from} className="btn ghost sm">تسجيل الدخول</Link>
       <Link to="/auth/register" state={from} className="btn primary sm">أنشئ حسابك الجامعي</Link>
     </div>
@@ -320,7 +325,7 @@ export function CollegesIndexPage() {
           title + [01] gutter index (the inner-public sheet bridge). */}
       <div className="inx-head">
         <PageHeader
-          title="كلّيّات مؤسسة مدارك النموذجية"
+          title={COLLEGES_LABEL}
           actions={isGuest ? <GuestJoinRow /> : undefined}
           index="01"
         />
@@ -353,7 +358,7 @@ export function CollegesIndexPage() {
       )}
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && q.data.length === 0 && (
-        <EmptyState illustration="empty-list" title="لا توجد كلّيّات بعد" />
+        <EmptyState illustration="empty-list" title="لا كلّيّات بعد" />
       )}
 
       {q.data && q.data.length > 0 && (
@@ -401,7 +406,7 @@ export function CollegesIndexPage() {
             trailing={hasActiveFilters ? (
               <button type="button" className="gallery-clear" onClick={clear}>
                 <Icon icon={X} size={14} />
-                <span>إعادة تعيين</span>
+                <span>{CLEAR_FILTERS}</span>
               </button>
             ) : undefined}
           />
@@ -413,11 +418,11 @@ export function CollegesIndexPage() {
 
           {result.total === 0 ? (
             <EmptyState
-              title="لم نعثر على نتائج"
+              title="لا نتائج"
               action={
                 <button type="button" className="btn primary" onClick={clear}>
                   <Icon icon={X} size={14} />
-                  مسح الفلترة
+                  {CLEAR_FILTERS}
                 </button>
               }
             />
@@ -488,7 +493,7 @@ export function CollegesIndexPage() {
           <div className="leaderboard-cta">
             <Link to="/colleges/leaderboard" className="btn primary">
               <Icon icon={Medal} size={14} />
-              منافسة الكلّيّات
+              {LEADERBOARD_LABEL}
             </Link>
           </div>
         </>
@@ -553,19 +558,14 @@ export function CollegeDetailPage() {
    * R190-D3: the strip is the app-wide typographic StatStrip now —
    * auto-fit columns absorb ANY surviving count (the old grid-2/3/4 +
    * solo-span gymnastics existed only to patch empty grid cells). */
-  const statCells = (isGuest
-    ? [
-        { label: 'عدد الأقسام', value: c.stats.departmentCount },
-        { label: 'إجمالي الطلاب', value: c.stats.studentCount },
-        { label: 'هيئة التدريس', value: c.stats.teacherCount },
-        { label: 'عدد المقرّرات', value: c.stats.courseCount },
-      ].filter((m) => m.value > 0)
-    : [
-        { label: 'عدد الأقسام', value: c.stats.departmentCount },
-        { label: 'إجمالي الطلاب', value: c.stats.studentCount },
-        { label: 'هيئة التدريس', value: c.stats.teacherCount },
-        { label: 'عدد المقرّرات', value: c.stats.courseCount },
-      ]);
+  /* R366 L4: one shared cell array — the guest branch only filters
+   * zeros on top of the same four labels (A8 P1-2 keeps the labels). */
+  const statCells = ([
+    { label: 'أقسام', value: c.stats.departmentCount },
+    { label: 'طلاب', value: c.stats.studentCount },
+    { label: 'هيئة التدريس', value: c.stats.teacherCount },
+    { label: 'مقرّرات', value: c.stats.courseCount },
+  ] as const).filter((m) => !isGuest || m.value > 0);
   const showLeadership = !isGuest || c.leadership.length > 0;
   const showDepartments = !isGuest || c.departments.length > 0;
   const showTopStudents = !isGuest || c.topStudents.length > 0;
@@ -611,7 +611,7 @@ export function CollegeDetailPage() {
           (ghost button, ChevronRight = the RTL back direction). */}
       <Link to="/colleges" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
         <Icon icon={ChevronRight} size={13} />
-        كلّيّات الجامعة
+        {COLLEGES_LABEL}
       </Link>
       {/* Hero / masthead — real photography via identity.heroImage when it
           lands (Principle III: never synthetic); the API emoji chip is the
@@ -671,7 +671,7 @@ export function CollegeDetailPage() {
           because it is real. */}
       {isGuest && statCells.length === 0 && (
         <p className="college-coming-soon text-sm text-muted">
-          كلّيّة حديثة التأسيس — تُحدَّث بياناتها مع بدء التسجيل.
+          كلّيّة حديثة التأسيس — تُحدَّث مع التسجيل.
         </p>
       )}
 
@@ -679,9 +679,9 @@ export function CollegeDetailPage() {
       <div className="college-grid-2">
         {/* Leadership */}
         {showLeadership && (
-        <Card title="القيادة الأكاديميّة" subtitle="المعيَّنون لهذه الكلّيّة" style={soloPair1 ? soloSpan : undefined}>
+        <Card title="القيادة الأكاديميّة" style={soloPair1 ? soloSpan : undefined}>
           {c.leadership.length === 0 ? (
-            <p className="text-muted text-sm">لم يتمّ تعيين قيادة لهذه الكلّيّة بعد.</p>
+            <p className="text-muted text-sm">لا قيادة بعد.</p>
           ) : (
             <ul className="leadership-list">
               {c.leadership.map((l, i) => (
@@ -713,7 +713,7 @@ export function CollegeDetailPage() {
           style={soloPair1 ? soloSpan : undefined}
         >
           {c.departments.length === 0 ? (
-            <p className="text-muted text-sm">لم تُضَف أقسام بعد.</p>
+            <p className="text-muted text-sm">لا أقسام بعد.</p>
           ) : (
             <ul className="dept-list">
               {c.departments.map((d) => (
@@ -740,11 +740,11 @@ export function CollegeDetailPage() {
       <div className="college-grid-2">
         {/* Top students */}
         {showTopStudents && (
-        <Card title="الطلّاب المتميّزون" subtitle="حسب نقاط الخبرة" icon={Trophy} style={soloPair2 ? soloSpan : undefined}>
+        <Card title="الطلّاب المتميّزون" subtitle="حسب النقاط" icon={Trophy} style={soloPair2 ? soloSpan : undefined}>
           {c.topStudents.length === 0 ? (
             <EmptyState
               illustration="empty-list"
-              title="لا توجد بيانات طلّاب بعد."
+              title="لا بيانات بعد."
             />
           ) : (
             <ol className="student-rank-list">
@@ -773,11 +773,11 @@ export function CollegeDetailPage() {
 
         {/* Announcements */}
         {showAnnouncements && (
-        <Card title="الإعلانات" subtitle="آخر التحديثات" icon={Megaphone} style={soloPair2 ? soloSpan : undefined}>
+        <Card title="الإعلانات" icon={Megaphone} style={soloPair2 ? soloSpan : undefined}>
           {c.announcements.length === 0 ? (
             <EmptyState
               illustration="empty-community"
-              title="لا توجد إعلانات حاليّاً."
+              title="لا إعلانات حاليّاً."
             />
           ) : (
             <ul className="announce-list">
@@ -810,7 +810,7 @@ export function CollegeDetailPage() {
           {c.upcomingEvents.length === 0 ? (
             <EmptyState
               illustration="empty-list"
-              title="لا توجد فعاليّات قادمة."
+              title="لا فعاليّات قادمة."
             />
           ) : (
             <ul className="event-list">
@@ -825,7 +825,7 @@ export function CollegeDetailPage() {
                       {/* 5-B1: the count is GOING-only — a decline never
                           occupied a seat; the tooltip says exactly what the
                           pair measures. */}
-                      <span title="الحضور المؤكّدون من إجمالي السعة">{e._count.rsvps}/{e.capacity}</span>
+                      <span title="من السعة">{e._count.rsvps}/{e.capacity}</span>
                     </div>
                   </div>
                 </li>
@@ -839,7 +839,7 @@ export function CollegeDetailPage() {
         {showLive && (
         <Card title="البثّ المباشر" icon={Radio} style={soloPair3 ? soloSpan : undefined}>
           {c.upcomingLive.length === 0 ? (
-            <p className="text-muted text-sm">لا توجد جلسات بثّ مجدولة.</p>
+            <p className="text-muted text-sm">لا بثّ مجدول.</p>
           ) : (
             <ul className="live-list">
               {c.upcomingLive.map((l) => (
@@ -874,7 +874,7 @@ export function CollegeDetailPage() {
         {/* Guests only see this card when a competition exists; the
             empty branch is the authed (internal) view. */}
         {c.activeCompetitions.length === 0 ? (
-          <p className="text-muted text-sm">لا توجد مسابقات نشطة.</p>
+          <p className="text-muted text-sm">لا مسابقات نشطة.</p>
         ) : (
         <div className="comp-grid">
           {c.activeCompetitions.map((comp) => (
@@ -894,7 +894,7 @@ export function CollegeDetailPage() {
                       the honest absence after (same derived state as the
                       competitions index). */}
                   <span>· {comp._count.entries === 0
-                    ? (new Date(comp.deadline).getTime() > Date.now() ? 'كن أول المشاركين' : 'لا مشاركات')
+                    ? (new Date(comp.deadline).getTime() > Date.now() ? 'كن الأول' : 'لا مشاركات')
                     : `${comp._count.entries} مشترك`}</span>
                 </div>
                 {comp.prize && <div className="comp-prize">الجائزة: {comp.prize}</div>}
@@ -956,6 +956,9 @@ interface LeaderboardData {
   colleges: LeaderboardCollege[];
 }
 
+/* The six shared metrics (R366 L4: the th's redundant title tooltip
+ * is gone — the sort button's visible text already carries the label,
+ * and the tbl-stack data-label reads the same one home). */
 const METRICS = [
   { key: 'totalXp' as const, label: 'إجمالي نقاط الخبرة', icon: Award, format: (n: number) => formatNum(n) },
   { key: 'avgGpa' as const, label: 'المعدّل العام', icon: BarChart3, format: (n: number) => formatNum(n, { maximumFractionDigits: 2 }) /* r197 §7: no forced trailing zero */ },
@@ -975,7 +978,7 @@ export function CollegesLeaderboardPage() {
   const isGuest = !user;
   // Guest title (A12 P2-6) — matches AppShell's PAGE_TITLES entry for
   // this route (same label, one source there).
-  useDocTitle(isGuest ? 'منافسة الكلّيّات' : null);
+  useDocTitle(isGuest ? LEADERBOARD_LABEL : null);
   const inst = useInstitutionScope(); // r180: scoped key
   const q = useQuery({
     queryKey: withInstitutionScope(['colleges', 'leaderboard'], inst),
@@ -1022,15 +1025,15 @@ export function CollegesLeaderboardPage() {
           out was the landing. Same ghost idiom as the detail page. */}
       <Link to="/colleges" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
         <Icon icon={ChevronRight} size={13} />
-        كلّيّات الجامعة
+        {COLLEGES_LABEL}
       </Link>
       {/* G: ترويسة patterns — نفس عقد بقية العائلة (المجتمع/المسابقات/
           الكليات)؛ صفّ الانضمام للضيف في خانة الإجراءات التي كان يشغلها.
           R332 W10b — .inx-head: نفس جسر ورقة الصفحة الداخلية. */}
       <div className="inx-head">
         <PageHeader
-          title="منافسة الكلّيّات"
-          description="مقارنة الكلّيّات على مؤشّرات الأداء."
+          title={LEADERBOARD_LABEL}
+          description="مقارنة بالمؤشّرات."
           actions={isGuest ? <GuestJoinRow /> : undefined}
           index="01"
         />
@@ -1047,7 +1050,7 @@ export function CollegesLeaderboardPage() {
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && q.data.colleges.length === 0 && (
         <EmptyState
-          title="لوحة منافسة الكلّيّات فارغة"
+          title="اللوحة فارغة"
         />
       )}
 
@@ -1060,9 +1063,9 @@ export function CollegesLeaderboardPage() {
         <section className="leaderboard-zero" aria-labelledby="leaderboard-zero-title">
           <span className="leaderboard-zero-index font-mono" dir="ltr" aria-hidden="true">[00]</span>
           <div className="leaderboard-zero-body">
-            <h2 className="leaderboard-zero-title" id="leaderboard-zero-title">اللوحة تنتظر أول نقطة</h2>
+            <h2 className="leaderboard-zero-title" id="leaderboard-zero-title">بانتظار أول نقطة</h2>
             <p className="leaderboard-zero-desc">
-              لا كلّيّة جمعت نقاطًا بعد — أول نشاط يفتح الترتيب.
+              لا نقاط بعد — أول نشاط يفتح الترتيب.
             </p>
           </div>
           <div className="leaderboard-zero-actions">
@@ -1090,7 +1093,6 @@ export function CollegesLeaderboardPage() {
                     return (
                       <th scope="col"
                         key={m.key}
-                        title={m.label}
                         aria-sort={ariaSort}
                       >
                         <button

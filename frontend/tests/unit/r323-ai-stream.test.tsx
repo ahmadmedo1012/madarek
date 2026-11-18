@@ -403,7 +403,10 @@ describe('AiAssistantPage — SSE consumption (r323 B1.1)', () => {
     // counter renders countAr's counted-noun sentence for 24 — the
     // 11+ form takes the singular accusative تمييز WITH the numeral
     // prefixed (the bare few-form would be wrong Arabic for 24).
-    expect(screen.getByText('24 سؤالًا متبقّيًا')).toBeInTheDocument();
+    // R366-final: the grammar rides the shared QUESTION_AR source —
+    // «متبقّيًا» folded (the quota card's title carries the
+    // remaining-ness); the counted-noun form itself is unchanged.
+    expect(screen.getByText('24 سؤالاً')).toBeInTheDocument();
   });
 
   it('STOP keeps the partial text honestly (no engine tag, no feedback — nothing was persisted)', async () => {
@@ -466,7 +469,11 @@ describe('AiAssistantPage — SSE consumption (r323 B1.1)', () => {
     renderPage();
     await send('سؤال سريع');
     expect(await screen.findByText('الإجابة الكاملة من الخادم')).toBeInTheDocument();
-    expect(screen.getByText('سؤال متبقٍّ')).toBeInTheDocument();
+    // R366-final: the remaining-count rides the shared QUESTION_AR plural
+    // grammar (was «سؤال متبقٍّ» — the quota card's «وصلتَ حدَّ اليوم»
+    // title already carries the remaining-ness); the count itself — the
+    // thing this pin protects — still renders from the done frame.
+    expect(screen.getByText('سؤال')).toBeInTheDocument();
   });
 
   it('thumbs feedback POSTs the persisted messageId with rating ±1', async () => {

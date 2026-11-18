@@ -20,10 +20,13 @@
     "test:audit:drift": "tsx tests/audit/run-drift.ts",
     "audit:baseline": "tsx tests/audit/promote-baseline.ts",
     "test:e2e": "playwright test tests/e2e",
+    "test:pdf": "playwright test tests/e2e/document-viewer.e2e.ts",
+    "test:design-lab": "playwright test --project=design-lab",
     "test:r305": "playwright test tests/r305",
     "test:r362": "playwright test --project=r362",
     "audit:capture:mock": "AUDIT_BASELINE=1 AUDIT_API_MOCK=1 playwright test tests/audit/surface-inventory.spec.ts",
-    "build:report": "BUNDLE_REPORT=1 vite build --mode production"
+    "build:report": "BUNDLE_REPORT=1 vite build --mode production",
+    "test:r366": "playwright test \"tests/e2e/r366-*.e2e.ts\" --workers=1"
   },
   "dependencies": {
     "@hookform/resolvers": "3.10.0",

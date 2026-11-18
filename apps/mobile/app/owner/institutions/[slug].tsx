@@ -23,6 +23,8 @@ import {
   numOf,
   type InstitutionRow,
 } from "@/features/governance/components";
+import { OWNER_DASHBOARD, SAVE_FAILED, SAVING } from "@/lib/copy";
+import { sp } from "@/design/tokens";
 
 type AdminRow = NonNullable<InstitutionRow["admins"]>[number];
 
@@ -49,8 +51,8 @@ export default function OwnerInstitutionDetail() {
   if (listing.isLoading) {
     return (
       <Screen scroll>
-        <StackHeader title="المؤسسة" kicker="لوحة المالك" />
-        <View style={{ paddingTop: 16 }}>
+        <StackHeader title="المؤسسة" kicker={OWNER_DASHBOARD} />
+        <View style={{ paddingTop: sp[16] }}>
           <SkeletonList rows={5} />
         </View>
       </Screen>
@@ -59,8 +61,8 @@ export default function OwnerInstitutionDetail() {
   if (listing.isError) {
     return (
       <Screen scroll>
-        <StackHeader title="المؤسسة" kicker="لوحة المالك" />
-        <View style={{ paddingTop: 16 }}>
+        <StackHeader title="المؤسسة" kicker={OWNER_DASHBOARD} />
+        <View style={{ paddingTop: sp[16] }}>
           <ErrorState
             message={humanizeError(listing.error)}
             onRetry={() => listing.refetch()}
@@ -72,11 +74,11 @@ export default function OwnerInstitutionDetail() {
   if (!inst) {
     return (
       <Screen scroll>
-        <StackHeader title="المؤسسة" kicker="لوحة المالك" />
-        <View style={{ paddingTop: 16 }}>
+        <StackHeader title="المؤسسة" kicker={OWNER_DASHBOARD} />
+        <View style={{ paddingTop: sp[16] }}>
           <EmptyState
             title="المؤسسة غير موجودة"
-            message="لم نعثر على مؤسسة بهذا المعرّف — ربما حُذفت أو تغيّر معرّفها."
+            message="لا مؤسسة بهذا المعرّف."
             actionLabel="رجوع إلى القائمة"
             onAction={() => router.push("/owner/institutions" as never)}
           />
@@ -102,9 +104,9 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       ownerApi.updateInstitution(inst.id, payload),
     onSuccess: () => {
       invalidate();
-      toast.success("حُفظت أسماء المؤسسة.", "بيانات المؤسسة");
+      toast.success("حُفظ الاسم.", "بيانات المؤسسة");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ الأسماء"),
+    onError: (e) => toast.error(humanizeError(e), SAVE_FAILED),
   });
 
   const provision = useMutation({
@@ -130,16 +132,16 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
         "تمّ التعيين",
       );
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر تعيين المسجل العام"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تعيين المسجل"),
   });
 
   const revoke = useMutation({
     mutationFn: (membershipId: string) => ownerApi.revokeMembership(inst.id, membershipId),
     onSuccess: () => {
       invalidate();
-      toast.success(`أُلغيت العضوية في «${inst.name}».`, "تمّ إلغاء العضوية");
+      toast.success(`أُلغيت العضوية في «${inst.name}».`, "أُلغيت العضوية");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر إلغاء العضوية"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الإلغاء"),
   });
 
   const restore = useMutation({
@@ -148,7 +150,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       invalidate();
       toast.success(`أُعيدت العضوية في «${inst.name}».`, "تمّت الاستعادة");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّرت استعادة العضوية"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّرت الاستعادة"),
   });
 
   const members = numOf(inst.activeMembershipCount ?? inst.membersCount);
@@ -158,8 +160,8 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
   return (
     <Screen scroll>
       <StackHeader title={inst.name} kicker={inst.slug} />
-      <View style={{ gap: 16, paddingTop: 16 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+      <View style={{ gap: sp[16], paddingTop: sp[16] }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
           <InstitutionStatusChip status={inst.status} />
           {members !== null ? (
             <T variant="sm" color="muted">
@@ -234,8 +236,8 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
             <RowList>
               {admins.map((a, i) => (
                 <LedgerRow key={a.membershipId ?? a.userId ?? i} last={i === admins.length - 1}>
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                    <View style={{ flex: 1, gap: 2 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+                    <View style={{ flex: 1, gap: sp[2] }}>
                       <T variant="body" weight="bold" numberOfLines={1}>
                         {`${a.firstName ?? ""} ${a.lastName ?? ""}`.trim() || "—"}
                       </T>
@@ -289,7 +291,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
 
       <ConfirmDialog
         open={revokeTarget !== null}
-        title="إلغاء عضوية المسجل العام"
+        title="إلغاء العضوية"
         confirmLabel="إلغاء العضوية"
         danger
         loading={revoke.isPending}
@@ -306,7 +308,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       />
       <ConfirmDialog
         open={restoreTarget !== null}
-        title="استعادة عضوية المسجل العام"
+        title="استعادة العضوية"
         confirmLabel="استعادة"
         loading={restore.isPending}
         message={
@@ -339,7 +341,7 @@ function RenameSheet({
 }) {
   const [name, setName] = useState(inst.name ?? "");
   const [nameEn, setNameEn] = useState(inst.nameEn ?? "");
-  const nameProblem = name.length > 0 && name.trim().length < 2 ? "الاسم قصير جدًا — حرفان على الأقل" : undefined;
+  const nameProblem = name.length > 0 && name.trim().length < 2 ? "حرفان على الأقل" : undefined;
   const canSubmit = name.trim().length >= 2 && !rename.isPending;
 
   const submit = async () => {
@@ -354,23 +356,23 @@ function RenameSheet({
 
   return (
     <Sheet open={open} onClose={onClose} title="تعديل الأسماء">
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: sp[12] }}>
         <Field
           label="اسم المؤسسة"
           value={name}
           onChangeText={setName}
           error={nameProblem}
-          hint="كما سيظهر لأعضاء المؤسسة"
+          hint="كما يظهر للأعضاء"
         />
         <Field
           label="الاسم بالإنجليزية (اختياري)"
           value={nameEn}
           onChangeText={setNameEn}
           autoCorrect={false}
-          hint="يُترك فارغاً للإبقاء على قيمته الحالية كما هي"
+          hint="فارغ = كما هو"
         />
         <Button
-          label={rename.isPending ? "جارٍ الحفظ…" : "حفظ الأسماء"}
+          label={rename.isPending ? SAVING : "حفظ الأسماء"}
           kind="primary"
           disabled={!canSubmit}
           onPress={() => {
@@ -402,7 +404,7 @@ function ProvisionSheet({
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const emailProblem =
-    email.length > 0 && !/.+@.+\..+/.test(email.trim()) ? "بريد إلكتروني غير صالح" : undefined;
+    email.length > 0 && !/.+@.+\..+/.test(email.trim()) ? "بريد غير صالح" : undefined;
   const canSubmit = /.+@.+\..+/.test(email.trim()) && !provision.isPending;
 
   const submit = async () => {
@@ -424,17 +426,17 @@ function ProvisionSheet({
 
   return (
     <Sheet open={open} onClose={onClose} title="تجهيز مسجل عام">
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
           يُربط الحساب القائم (بالبريد) بدور المسجل العام داخل هذه المؤسسة فقط — إنشاء حساب جديد بكلمة
           مرور يُدار من لوحة الويب.
         </T>
         <Field
-          label="البريد الإلكتروني"
+          label="البريد"
           value={email}
           onChangeText={setEmail}
           error={emailProblem}
-          hint="مطلوب — لحساب مسجَّل على المنصّة"
+          hint="حساب مسجّل"
           autoCorrect={false}
           autoCapitalize="none"
           keyboardType="email-address"
@@ -442,7 +444,7 @@ function ProvisionSheet({
         <Field label="الاسم الأول" value={firstName} onChangeText={setFirstName} />
         <Field label="اللقب" value={lastName} onChangeText={setLastName} />
         <Button
-          label={provision.isPending ? "جارٍ التعيين…" : "تعيين المسجل العام"}
+          label={provision.isPending ? "جارٍ التعيين…" : "تعيين المسجل"}
           kind="primary"
           disabled={!canSubmit}
           onPress={() => {

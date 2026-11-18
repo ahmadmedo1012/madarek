@@ -9,10 +9,11 @@ import { SkeletonList, ErrorState } from "@/components/ui/states";
 import { ownerApi } from "@/api/owner";
 import { clamp01, latn } from "@/lib/format";
 import { numOf, type EducationRow } from "@/features/governance/components";
+import { OWNER_DASHBOARD } from "@/lib/copy";
 
 /** Workload buckets → Arabic labels (web OwnerEducationPage parity). */
 const BUCKETS: { key: keyof NonNullable<EducationRow["workloadBuckets"]>; label: string }[] = [
-  { key: "idle", label: "بدون عرض هذا الفصل" },
+  { key: "idle", label: "بلا عرض هذا الفصل" },
   { key: "one", label: "عرض واحد" },
   { key: "two", label: "عرضان" },
   { key: "three", label: "3 عروض" },
@@ -43,9 +44,9 @@ export default function OwnerEducation() {
 
   return (
     <Screen scroll>
-      <StackHeader title="النظرة التعليميّة" kicker="لوحة المالك" />
+      <StackHeader title="النظرة التعليميّة" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="النظرة التعليميّة" kicker="إحصائيات حيّة عن المقرّرات وأعضاء هيئة التدريس والطلاب" />
+        <PageHeader title="النظرة التعليميّة" kicker="إحصائيات حيّة للمقرّرات والطلاب." />
 
         {edu.isLoading ? (
           <SkeletonList rows={5} rowHeight={48} />
@@ -58,10 +59,10 @@ export default function OwnerEducation() {
               <SectionBar index={1} title="الإجماليات" />
               <RowList>
                 <LedgerRow last>
-                  <StatLine label="إجمالي المقرّرات" value={numOf(e?.totals?.totalCourses)} />
+                  <StatLine label="المقرّرات" value={numOf(e?.totals?.totalCourses)} />
                   <StatLine label="عدد الأساتذة" value={numOf(e?.totals?.teachers)} />
                   <StatLine label="العروض النشطة" value={numOf(e?.totals?.totalOfferings)} />
-                  <StatLine label="متوسط التسجيل في العرض" value={numOf(e?.totals?.avgEnrolment)} />
+                  <StatLine label="متوسط التسجيل" value={numOf(e?.totals?.avgEnrolment)} />
                 </LedgerRow>
               </RowList>
             </View>
@@ -84,9 +85,9 @@ export default function OwnerEducation() {
               )}
             </View>
 
-            {/* [03] أكثر المقرّرات تسجيلاً */}
+            {/* [03] الأكثر تسجيلًا */}
             <View>
-              <SectionBar index={3} title="أكثر المقرّرات تسجيلاً" />
+              <SectionBar index={3} title="الأكثر تسجيلًا" />
               {(e?.topCourses ?? []).length === 0 ? (
                 <T variant="body" color="muted">
                   لا تسجيلات بعد — ستظهر المقرّرات الأكثر تسجيلاً فور تسجيل الطلاب في العروض.
@@ -117,9 +118,9 @@ export default function OwnerEducation() {
               )}
             </View>
 
-            {/* [04] توزيع حِمل أعضاء هيئة التدريس */}
+            {/* [04] حِمل هيئة التدريس */}
             <View>
-              <SectionBar index={4} title="توزيع حِمل أعضاء هيئة التدريس" />
+              <SectionBar index={4} title="حِمل هيئة التدريس" />
               {totalTeachers === 0 ? (
                 <T variant="body" color="muted">
                   لا يوجد أساتذة بعد — يُحسب التوزيع فور إسناد أوّل عرض لمقرّر.

@@ -43,6 +43,7 @@ import {
   useSheetMounted,
   useTeacherOfferings,
 } from "@/features/teacher/components";
+import { CREATING, LIVE_NOW, UPDATE_FAILED } from "@/lib/copy";
 
 const NO_SESSIONS: Awaited<ReturnType<typeof liveApi.sessions>> = [];
 
@@ -128,10 +129,10 @@ export default function TeacherLive() {
     mutationFn: async () => {
       const effId = offeringId || offerings[0]?.id || "";
       if (effId === "") throw new Error("اختر مقرراً أولاً.");
-      if (title.trim().length < 3) throw new Error("عنوان الجلسة حرفان على الأقل.");
-      if (!schedDate) throw new Error("حدّد موعد الجلسة.");
+      if (title.trim().length < 3) throw new Error("العنوان: حرفان على الأقل.");
+      if (!schedDate) throw new Error("حدّد الموعد.");
       const t = Date.parse(`${schedDate}T${schedTime.trim() === "" ? "09:00" : schedTime}`);
-      if (Number.isNaN(t)) throw new Error("قيمة الموعد غير صالحة.");
+      if (Number.isNaN(t)) throw new Error("الموعد غير صالح.");
       return liveApi.create({
         offeringId: effId,
         title: title.trim(),
@@ -144,7 +145,7 @@ export default function TeacherLive() {
     onSuccess: () => {
       haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["live", "sessions"] });
-      toast.success("جُدولت الجلسة وستظهر لطلاب المقرّر.", "تمّت الجدولة");
+      toast.success("جُدولت — لطلاب المقرّر.", "تمّت الجدولة");
       setCreating(false);
       setTitle("");
       setTopic("");
@@ -167,14 +168,14 @@ export default function TeacherLive() {
       haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["live", "sessions"] });
       setConfirmAction(null);
-      if (vars.action === "START") toast.success("بدأ البث الآن — الطلاب يرون الجلسة مباشرة.", "بدء البث");
-      else if (vars.action === "END") toast.success("انتهى البث — أصبحت الجلسة في السجل.", "انتهاء البث");
+      if (vars.action === "START") toast.success("بدأ البث — مباشر الآن.", "بدء البث");
+      else if (vars.action === "END") toast.success("انتهى — في السجلّ.", "انتهاء البث");
       else toast.success("أُلغيت الجلسة.", "إلغاء الجلسة");
     },
     onError: (e) => {
       haptics.notify("error");
       setConfirmAction(null);
-      toast.error(humanizeError(e), "تعذَّر تحديث حالة الجلسة");
+      toast.error(humanizeError(e), UPDATE_FAILED);
     },
   });
 
@@ -215,7 +216,7 @@ export default function TeacherLive() {
             <T variant="xs" color="muted" numberOfLines={1}>
               {session.offering?.course?.code ?? ""}
               {session.topic ? ` · ${session.topic}` : ""} · {dateTime(session.scheduledAt)}
-              {enrolled !== undefined ? ` · ${arCount(enrolled, ["طالب واحد في المقرّر", "طالبان في المقرّر", "طلاب المقرّر", "طالباً في المقرّر"])}` : ""}
+              {enrolled !== undefined ? ` · ${arCount(enrolled, ["طالب في المقرّر", "طالبان في المقرّر", "طلاب المقرّر", "طالباً في المقرّر"])}` : ""}
             </T>
           </View>
           <StatusBadge status={session.status} map={LIVE_STATUS_MAP} />
@@ -244,7 +245,7 @@ export default function TeacherLive() {
       <StackHeader title="إدارة البث المباشر" />
       <PageHeader
         title="إدارة البث المباشر"
-        kicker="جدولة المحاضرات الحية وتشغيلها وإيقافها. الطلاب يرون فقط الجلسات الخاصة بمقرّراتهم."
+        kicker="جدولة الجلسات — لطلاب مقرّراتك."
       />
       <SectionBar
         index={1}
@@ -260,14 +261,14 @@ export default function TeacherLive() {
       ) : (
         <>
           <View style={{ flexDirection: "row", gap: sp[8] }}>
-            <KpiCard label="مباشرة الآن" value={live.length} tone={live.length > 0 ? "accent" : undefined} />
+            <KpiCard label={LIVE_NOW} value={live.length} tone={live.length > 0 ? "accent" : undefined} />
             <KpiCard label="مجدولة" value={scheduled.length} />
             <KpiCard label="منتهية" value={past.length} />
           </View>
 
           {live.length > 0 ? (
             <>
-              <SectionBar index={2} title="مباشرة الآن" />
+              <SectionBar index={2} title={LIVE_NOW} />
               <RowList>
                 {live.map((s) => (
                   <SessionRow
@@ -293,14 +294,14 @@ export default function TeacherLive() {
             action={
               scheduled.length > 0 ? (
                 <Badge
-                  label={arCount(scheduled.length, ["جلسة مجدولة واحدة", "جلستان مجدولتان", "جلسات مجدولة", "جلسة مجدولة"])}
+                  label={arCount(scheduled.length, ["جلسة مجدولة", "جلستان مجدولتان", "جلسات مجدولة", "جلسة مجدولة"])}
                   tone="yellow"
                 />
               ) : undefined
             }
           />
           {scheduled.length === 0 ? (
-            <EmptyState fill title="لا توجد جلسات قادمة" message="أنشئ جلسة جديدة لتظهر هنا." actionLabel="جلسة جديدة" onAction={() => setCreating(true)} />
+            <EmptyState fill title="لا جلسات قادمة" message="أنشئ أول جلسة." actionLabel="جلسة جديدة" onAction={() => setCreating(true)} />
           ) : (
             <RowList>
               {scheduled.map((s) => (
@@ -343,7 +344,7 @@ export default function TeacherLive() {
         scrollable
         footer={
           <Button
-            label={create.isPending ? "جارٍ الإنشاء…" : "جدولة الجلسة"}
+            label={create.isPending ? CREATING : "جدولة الجلسة"}
             kind="accent"
             loading={create.isPending}
             disabled={offerings.length === 0}
@@ -369,7 +370,7 @@ export default function TeacherLive() {
               setTitle(v);
               setCreateError(null);
             }}
-            placeholder="مثال: شرح الوحدة الثالثة — التعلم الآلي"
+            placeholder="مثال: الوحدة الثالثة"
             accessibilityLabel="عنوان الجلسة"
           />
           <SheetField
@@ -380,7 +381,7 @@ export default function TeacherLive() {
             accessibilityLabel="الموضوع الفرعي"
           />
           <SheetField
-            label="موعد الجلسة — التاريخ"
+            label="موعد الجلسة (تاريخ)"
             value={schedDate}
             onChangeText={(v) => {
               setSchedDate(v);
@@ -390,7 +391,7 @@ export default function TeacherLive() {
             accessibilityLabel="تاريخ الجلسة"
           />
           <SheetField
-            label="موعد الجلسة — الوقت"
+            label="موعد الجلسة (وقت)"
             value={schedTime}
             onChangeText={setSchedTime}
             hint="بصيغة HH:MM"
@@ -407,7 +408,7 @@ export default function TeacherLive() {
             label="وصف (اختياري)"
             value={description}
             onChangeText={setDescription}
-            placeholder="الموضوعات التي ستغطّيها الجلسة…"
+            placeholder="موضوعات الجلسة…"
             accessibilityLabel="الوصف"
           />
           {createError ? (

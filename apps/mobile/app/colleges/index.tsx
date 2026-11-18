@@ -20,6 +20,7 @@ import { RowList, LedgerRow } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { apiMessage } from "@/features/common/components";
+import { MODEL_INSTITUTION } from "@/lib/copy";
 
 /**
  * /colleges — the public colleges registry (no auth needed; the backend
@@ -44,7 +45,7 @@ export default function CollegesIndex() {
 
   return (
     <Screen scroll>
-      <StackHeader title="الكلّيات" kicker="مؤسسة مدارك النموذجية" />
+      <StackHeader title="الكلّيات" kicker={MODEL_INSTITUTION} />
 
       <View style={{ gap: sp[4], paddingBottom: sp[8] }}>
         <T variant="h3" weight="bold">
@@ -61,8 +62,8 @@ export default function CollegesIndex() {
         <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
       ) : colleges.length === 0 ? (
         <EmptyState
-          title="لا توجد كلّيّات بعد"
-          message="ستظهر الكلّيّات هنا حين يضيفها المسجل العام."
+          title="لا كلّيّات بعد"
+          message="تظهر حين يضيفها المسجل."
           icon={<Landmark size={20} color={p.textMuted} />}
         />
       ) : (

@@ -306,7 +306,11 @@ describe('PdfViewer — Arabic-normalized search with occurrence counts', () => 
     await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'بحث' })); });
 
     expect(await screen.findByText('1 / 1')).toBeInTheDocument();
-    expect(screen.getByText('موضعان')).toBeInTheDocument();
+    // The occurrence CHIP (.r305pdf-hitcount) carries the dual form.
+    // r366-2b: the results-fold rows report the same dual form per hit
+    // page, so a bare getByText('موضعان') now matches twice — the pin
+    // scopes to the chip it has always been about.
+    expect(screen.getByText('موضعان', { selector: '.r305pdf-hitcount' })).toBeInTheDocument();
   });
 
   it('does not let the «ال» strip degrade a sub-floor query into matching everything', async () => {

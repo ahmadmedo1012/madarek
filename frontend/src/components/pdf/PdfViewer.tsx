@@ -263,6 +263,11 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const [searchTerm, setSearchTerm] = useState('');
   const [searchHits, setSearchHits] = useState<{ page: number; count: number; snippet: string }[]>([]);
   const [searchIdx, setSearchIdx] = useState(0);
+  /** r366-2b: a search walk has COMPLETED (whatever it found) — the
+   *  empty walk answers with its one honest line instead of silence
+   *  or a fake counter. Cleared on close, on a new walk and on a
+   *  document switch. */
+  const [searchWalked, setSearchWalked] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   /** r304: the thumbnail rail — summoned from the toolbar, never
    *  default-on (the paper owns the first impression). */
@@ -296,6 +301,16 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const renderTaskRef = useRef<{ cancel: () => void; promise: Promise<void> } | null>(null);
   /** Content-box width of the canvas wrap, seeded by the ResizeObserver. */
   const containerWRef = useRef(0);
+  /* r366-2b: «ملاءمة» participates in the zoom ladder as a real rung.
+   * fitScaleRef carries the last computed fit-width scale (seeded by
+   * renderPage) so the first zoom-IN from fit picks the next rung ABOVE
+   * it (zooming in must never shrink the page); fitAdjacentRef marks the
+   * rung a zoom-in landed on directly from fit — zooming back OUT from
+   * it returns to the fit mode instead of stepping past it (undo
+   * semantics; the pill stays the explicit toggle back too). Declared
+   * with the viewer's other refs — renderPage seeds the scale ref. */
+  const fitScaleRef = useRef<number | null>(null);
+  const fitAdjacentRef = useRef(false);
   /**
    * Monotonic search generation. Every document load, every new search
    * and every search close bumps it; an in-flight walk compares its
@@ -334,6 +349,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     searchWordsRef.current = [];
     setSearchHits([]);
     setSearchIdx(0);
+    setSearchWalked(false);
     setIsSearching(false);
 
     // A9 P0-1: API auth is Bearer-header-only (backend auth middleware +
@@ -470,6 +486,13 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         effectiveScale = scale;
       }
 
+      if (scale === 'fit-width') {
+        // r366-2b: remember the live fit scale — the zoom ladder reads
+        // it so the first zoom-IN from fit picks the next rung ABOVE it
+        // (zooming in must never shrink the page).
+        fitScaleRef.current = effectiveScale;
+      }
+
       const viewport = pageObj.getViewport({ scale: effectiveScale });
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
@@ -600,20 +623,37 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   // ── Zoom controls (declared before the keyboard shortcuts that use
   // them — the effect's dependency array reads these consts at render) ─
   const SCALES = useMemo(() => [0.5, 0.75, 1, 1.25, 1.5, 2, 3], []);
+  /* Both handlers read the live `scale` from the render closure (deps
+   * below) instead of functional updaters: the fit-adjacent undo is a
+   * ref side-effect, and StrictMode double-invokes updaters — an
+   * impure updater would consume the undo flag on its first invocation
+   * and step the ladder on the second. */
   const zoomIn = useCallback(() => {
-    setScale((cur) => {
-      const v = typeof cur === 'number' ? cur : 1;
-      const next = SCALES.find((s) => s > v) ?? SCALES[SCALES.length - 1]!;
-      return next;
-    });
-  }, [SCALES]);
+    if (scale === 'fit-width') {
+      fitAdjacentRef.current = true;
+      const fit = fitScaleRef.current;
+      const floor = typeof fit === 'number' && fit > 0 ? fit : 1;
+      setScale(SCALES.find((s) => s > floor) ?? SCALES[SCALES.length - 1]!);
+      return;
+    }
+    fitAdjacentRef.current = false;
+    setScale(SCALES.find((s) => s > scale) ?? SCALES[SCALES.length - 1]!);
+  }, [SCALES, scale]);
   const zoomOut = useCallback(() => {
-    setScale((cur) => {
-      const v = typeof cur === 'number' ? cur : 1;
-      const next = [...SCALES].reverse().find((s) => s < v) ?? SCALES[0]!;
-      return next;
-    });
-  }, [SCALES]);
+    if (scale === 'fit-width') {
+      fitAdjacentRef.current = false;
+      setScale(SCALES[0]!);
+      return;
+    }
+    if (fitAdjacentRef.current) {
+      // The rung zoom-in landed on from fit: out means back to fit.
+      fitAdjacentRef.current = false;
+      setScale('fit-width');
+      return;
+    }
+    fitAdjacentRef.current = false;
+    setScale([...SCALES].reverse().find((s) => s < scale) ?? SCALES[0]!);
+  }, [SCALES, scale]);
 
   // ── Search walk invalidation (declared before the keyboard shortcuts
   // that use them — the effect's dependency array reads these consts at
@@ -642,6 +682,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     setSearchHits([]);
     setSearchTerm('');
     if (wasInsideBar) searchToggleRef.current?.focus();
+    setSearchWalked(false);
   }, []);
 
   // ── Keyboard shortcuts ───────────────────────────────────────────
@@ -734,6 +775,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
       searchWordsRef.current = [];
       setSearchHits([]);
       setSearchIdx(0);
+      setSearchWalked(false);
       setIsSearching(false);
       return;
     }
@@ -755,6 +797,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
       if (gen !== searchGenRef.current) return; // superseded — drop results
       setSearchHits(hits);
       setSearchIdx(0);
+      setSearchWalked(true);
       if (hits.length > 0 && hits[0]) setPage(hits[0].page);
     } catch {
       // The document was destroyed mid-walk (src switch / unmount): the
@@ -764,6 +807,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
       if (gen !== searchGenRef.current) return;
       setSearchHits(hits);
       setSearchIdx(0);
+      setSearchWalked(true);
     } finally {
       if (gen === searchGenRef.current) setIsSearching(false);
     }
@@ -997,7 +1041,12 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
           <button
             type="button"
             className="pdf-scale-pill"
-            onClick={() => setScale((s) => (s === 'fit-width' ? 1 : 'fit-width'))}
+            onClick={() => {
+              // An explicit pick — the zoom-out undo (back to fit) no
+              // longer applies once the user chose this rung directly.
+              fitAdjacentRef.current = false;
+              setScale((s) => (s === 'fit-width' ? 1 : 'fit-width'));
+            }}
             aria-pressed={scale === 'fit-width'}
             title="ملاءمة العرض"
           >
@@ -1088,6 +1137,39 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
             <Icon icon={X} size={14} />
           </button>
         </div>
+      )}
+
+      {/* r366-2b — the results fold: one row per hit page, scrolling
+          INSIDE the viewer surface (bounded box + its own overflow — a
+          long walk never stretches the reader). The active hit carries
+          aria-current; every row is a real jump target. */}
+      {searchOpen && searchHits.length > 0 && (
+        <ul className="pdf-search-results" aria-label="نتائج البحث">
+          {searchHits.map((hit, i) => (
+            <li key={hit.page}>
+              <button
+                type="button"
+                className="pdf-search-result"
+                onClick={() => {
+                  setSearchIdx(i);
+                  setPage(hit.page);
+                }}
+                aria-current={i === searchIdx ? 'true' : undefined}
+              >
+                <span className="pdf-search-result-page">صفحة {formatInt(hit.page)}</span>
+                <span className="pdf-search-result-count">
+                  {countAr(hit.count, ['موضع واحد', 'موضعان', 'مواضع', 'موضع'])}
+                </span>
+                <span className="pdf-search-result-snippet" dir="auto">{hit.snippet}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {/* The honest one-line answer to an empty walk — no fake
+          counter, no silent fold. */}
+      {searchOpen && !isSearching && searchWalked && searchHits.length === 0 && (
+        <p className="pdf-search-empty" role="status">لا نتائج مطابقة</p>
       )}
 
       {/* Document area — the workspace composition: the thumbnail

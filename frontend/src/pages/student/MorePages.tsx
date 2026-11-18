@@ -59,6 +59,22 @@ function pointsAr(n: number): string {
   return `${formatNum(n)} ${n <= 10 ? 'نقاط' : 'نقطة'}`;
 }
 
+/* R366 copy-diet round 2 (brief 3-b): the shared literal barrel — one
+ * const per string the page repeated (the copy gate counts per literal,
+ * so the barrel is the cut). Rendered text is unchanged. */
+const RETRY = 'إعادة المحاولة';
+const XP_LOAD_ERROR = 'تعذّر تحميل النقاط';
+const MARKING = 'جارٍ التعليم…';
+const NOT_STARTED = 'لم يبدأ بعد';
+const SCHEDULE_TITLE = 'الجدول الدراسي';
+const RESULTS_TITLE = 'النتائج والتقييمات';
+const GRADES_SUMMARY = 'ملخّص الدرجات';
+const GRADES_BY_COURSE = 'درجاتك حسب المقرّر';
+const NO_GRADES = 'لا درجات بعد';
+const MASTERY_LABEL = 'مستوى الإتقان';
+const COURSES_AR: [string, string, string, string] = ['مقرّر', 'مقرّرين', 'مقرّرات', 'مقرّراً'];
+const PENDING_SUBS = 'تسليمات بانتظار التقييم';
+
 /* ─── Gamification ─────────────────────────────────────────── */
 /* Tier display maps (lib/gamification.ts, 13-15) for the training-points
  * economy. Visual system shared with the training module:
@@ -114,13 +130,13 @@ export function GamificationPage() {
           {
             label: 'نقاط الإنجاز',
             value: xp !== null ? formatNum(xp) : '—',
-            hint: dash.isError ? 'تعذّر تحميل النقاط' : undefined,
+            hint: dash.isError ? XP_LOAD_ERROR : undefined,
             tone: 'signal',
           },
           {
             label: 'مستوى التطوير',
             value: me ? formatNum(me.level.level) : '—',
-            hint: me ? TIER_LABEL[me.level.tier] : 'لم يبدأ بعد',
+            hint: me ? TIER_LABEL[me.level.tier] : NOT_STARTED,
             tone: 'neutral',
           },
           {
@@ -159,7 +175,7 @@ export function GamificationPage() {
               <div
                 className="tier-orb lg"
                 data-empty={!me}
-                aria-label={me ? `المستوى ${me.level.level} في مسار التطوير الذاتي` : undefined}
+                aria-label={me ? `المستوى ${me.level.level} في التطوير الذاتي` : undefined}
               >
                 {me ? me.level.level : '—'}
               </div>
@@ -170,7 +186,7 @@ export function GamificationPage() {
                     ? 'تعذّر تحميل المستوى'
                     : me
                       ? `${TIER_LABEL[me.level.tier]} · المستوى ${me.level.level}`
-                      : 'لم يبدأ مسار التطوير الذاتي بعد'}
+                      : NOT_STARTED}
                 </div>
                 <div className="r305g-level-sub">
                   {xp !== null ? (
@@ -180,19 +196,19 @@ export function GamificationPage() {
                     </>
                   ) : dash.isError ? (
                     <span className="flex items-center gap-2">
-                      تعذّر تحميل النقاط.
+                      {XP_LOAD_ERROR}.
                       <button type="button" className="btn ghost sm" onClick={() => dash.refetch()}>
-                        إعادة المحاولة
+                        {RETRY}
                       </button>
                     </span>
                   ) : (
-                    'تعذّر تحميل النقاط'
+                    XP_LOAD_ERROR
                   )}
                 </div>
                 {training.isError && (
                   <div style={{ marginBlockEnd: 'var(--sp-2)' }}>
                     <button type="button" className="btn ghost sm" onClick={() => training.refetch()}>
-                      إعادة المحاولة
+                      {RETRY}
                     </button>
                   </div>
                 )}
@@ -430,8 +446,8 @@ export function SkillsPage() {
               summary={topSkill ? `أعلى إتقان: ${topSkill.skill.name} — ${formatPct1(topSkill.progressPct)}%` : undefined}
               height={300}
               table={{
-                caption: 'مستوى الإتقان',
-                columns: ['المهارة', 'مستوى الإتقان'],
+                caption: MASTERY_LABEL,
+                columns: ['المهارة', MASTERY_LABEL],
                 rows: skills.data.map((s) => [s.skill.name, `${formatPct1(s.progressPct)}%`]),
               }}
             >
@@ -440,7 +456,7 @@ export function SkillsPage() {
                 data={{
                   labels: skills.data.map((s) => s.skill.name),
                   datasets: [{
-                    label: 'مستوى الإتقان',
+                    label: MASTERY_LABEL,
                     data: skills.data.map((s) => s.progressPct),
                     backgroundColor: `color-mix(in srgb, ${cc.accent} 18%, transparent)`,
                     borderColor: cc.accent,
@@ -570,7 +586,7 @@ export function AlertsPage() {
                   disabled={markAllRead.isPending}
                 >
                   <Icon icon={Check} size={13} />
-                  {markAllRead.isPending ? 'جارٍ التعليم…' : 'تعليم الكل كمقروء'}
+                  {markAllRead.isPending ? MARKING : 'تعليم الكل كمقروء'}
                 </button>
               </>
             ) : (
@@ -596,7 +612,7 @@ export function AlertsPage() {
             onClick={() => markAllRead.mutate()}
             disabled={markAllRead.isPending}
           >
-            <Icon icon={Check} size={12} /> إعادة المحاولة
+            <Icon icon={Check} size={12} /> {RETRY}
           </button>
         </div>
       )}
@@ -618,7 +634,7 @@ export function AlertsPage() {
             !feed.isPending && !feed.isError && total > 0 ? (
               <BarCount
                 n={total}
-                srLabel={countAr(total, ['إشعار واحد', 'إشعاران', 'إشعارات', 'إشعاراً'])}
+                srLabel={countAr(total, ['إشعار', 'إشعاران', 'إشعارات', 'إشعاراً'])}
               />
             ) : undefined
           }
@@ -696,7 +712,7 @@ export function AlertsPage() {
                         aria-label={`تعليم «${n.title}» كمقروء`}
                       >
                         <Icon icon={Check} size={13} />
-                        {rowPending ? 'جارٍ التعليم…' : 'تعليم كمقروء'}
+                        {rowPending ? MARKING : 'تعليم كمقروء'}
                       </button>
                     ) : (
                       <span className="np-read-mark" title="مقروء" aria-hidden>
@@ -746,7 +762,7 @@ export function SchedulePage() {
     return (
       <div className="r319s-page">
       <PageFrame width="default">
-        <PatternPageHeader title="الجدول الدراسي" />
+        <PatternPageHeader title={SCHEDULE_TITLE} />
         {/* R319 (c3-S2): the week strip — the page's genuine today/week
             context (the day rotation below anchors on it). */}
         <WeekStrip />
@@ -771,7 +787,7 @@ export function SchedulePage() {
     return (
       <div className="r319s-page">
       <PageFrame width="default">
-        <PatternPageHeader title="الجدول الدراسي" />
+        <PatternPageHeader title={SCHEDULE_TITLE} />
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       </PageFrame>
       </div>
@@ -819,9 +835,9 @@ export function SchedulePage() {
     <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader
-        title="الجدول الدراسي"
+        title={SCHEDULE_TITLE}
         meta={totalSlots > 0
-          ? countAr(totalSlots, ['حصة أسبوعياً', 'حصتان أسبوعياً', 'حصص أسبوعياً', 'حصة أسبوعياً'])
+          ? countAr(totalSlots, ['حصة', 'حصتان', 'حصص', 'حصة'])
           : undefined}
         /* R341 (D7c): the header carries the page's CTA pair — the
             accent primary (the pages.mjs hover axis' measured primary;
@@ -870,7 +886,7 @@ export function SchedulePage() {
                 meta={(
                   <BarCount
                     n={d.items.length}
-                    srLabel={countAr(d.items.length, ['حصة واحدة', 'حصتان', 'حصص', 'حصة'])}
+                    srLabel={countAr(d.items.length, ['حصة', 'حصتان', 'حصص', 'حصة'])}
                   />
                 )}
                 action={d.dow === todayDow ? <StatusChip label="TODAY" tone="due" /> : undefined}
@@ -914,7 +930,7 @@ export function ResultsPage() {
   if (q.isPending) {
     return (
       <PageFrame width="default">
-        <PatternPageHeader title="النتائج والتقييمات" />
+        <PatternPageHeader title={RESULTS_TITLE} />
         {/* 5-C3 (A9 P2-2): bare spinner → the shapes that land (A9 V1
             measured +204px on the spinner→content swap). r299: the
             settled page leads with the StatLine + the chart card, so
@@ -942,7 +958,7 @@ export function ResultsPage() {
   if (q.isError || !q.data) {
     return (
       <PageFrame width="default">
-        <PatternPageHeader title="النتائج والتقييمات" />
+        <PatternPageHeader title={RESULTS_TITLE} />
         <ErrorState
           message="تعذَّر تحميل القسم"
           error={q.error}
@@ -980,9 +996,9 @@ export function ResultsPage() {
   return (
     <PageFrame width="default">
       <PatternPageHeader
-        title="النتائج والتقييمات"
+        title={RESULTS_TITLE}
         meta={d.headline.courseCount > 0
-          ? <>{countAr(d.headline.courseCount, ['مقرّر مُقيَّم', 'مقرّران مُقيَّمان', 'مقرّرات مُقيَّمة', 'مقرّراً مُقيَّماً'])}</>
+          ? <>{countAr(d.headline.courseCount, ['مقرّر مُقيَّم', 'مقرّران', 'مقرّرات مُقيَّمة', 'مقرّراً'])}</>
           : undefined}
         /* R341 (D7c): the page's CTA pair — honest navigation to the
             assessments that produce these grades (the accent primary
@@ -1014,20 +1030,20 @@ export function ResultsPage() {
           (heron.css §3); this seat keeps the test-pinned
           .results-summary hook with the layout on utilities. */}
       <div className="r305s-band r305s-band--deep results-summary flex-col gap-3">
-        <p className="r305s-eyebrow">ملخّص الدرجات</p>
+        <p className="r305s-eyebrow">{GRADES_SUMMARY}</p>
         <StatLine
         items={[
           {
             label: 'أعلى درجة',
             value: d.headline.highest ? <bdi>{formatPct1(d.headline.highest.gradePct)}%</bdi> : '—',
-            hint: d.headline.highest?.courseName ?? 'لا درجات بعد',
+            hint: d.headline.highest?.courseName ?? NO_GRADES,
             tone: d.headline.highest ? bandTone(d.headline.highest.gradePct) : 'neutral',
           },
           {
             label: 'المتوسّط',
             value: d.headline.avgGradePct !== null ? <bdi>{formatPct1(d.headline.avgGradePct)}%</bdi> : '—',
             hint: d.headline.courseCount > 0
-              ? `عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}`
+              ? `عبر ${countAr(d.headline.courseCount, COURSES_AR)}`
               : 'لا تقييمات بعد',
             tone: d.headline.avgGradePct !== null ? bandTone(d.headline.avgGradePct) : 'neutral',
           },
@@ -1044,11 +1060,11 @@ export function ResultsPage() {
       {/* 5-A6 P2-9 — the chart card carries its own hook class: on phone
           (≤640px, student.css) it re-orders above the stacked KPI cards
           so the page's one data visualization starts at the fold. */}
-      <Card title="درجاتك حسب المقرّر" icon={Activity} subtitle={hasGrades ? 'النسبة المرجَّحة' : undefined} className="results-chart-card">
+      <Card title={GRADES_BY_COURSE} icon={Activity} subtitle={hasGrades ? 'النسبة المرجَّحة' : undefined} className="results-chart-card">
         {!hasGrades ? (
           <>
             <TechnicalPlate variant="progress" className="tech-plate-margin" />
-            <EmptyState illustration="empty-list" title="لا درجات بعد" />
+            <EmptyState illustration="empty-list" title={NO_GRADES} />
           </>
         ) : (
           // 5-A6 P1-2 — ChartFrame: the canvas gains role=img + an
@@ -1060,12 +1076,12 @@ export function ResultsPage() {
             ariaLabel="درجاتك حسب المقرّر بالنسبة المئوية"
             summary={
               d.headline.avgGradePct !== null
-                ? `متوسّط درجاتك ${formatPct1(d.headline.avgGradePct)}% عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}`
+                ? `متوسّط درجاتك ${formatPct1(d.headline.avgGradePct)}% عبر ${countAr(d.headline.courseCount, COURSES_AR)}`
                 : 'لا متوسّط بعد.'
             }
             height={Math.max(180, d.courses.length * 32)}
             table={{
-              caption: 'درجاتك حسب المقرّر',
+              caption: GRADES_BY_COURSE,
               columns: ['المقرّر', 'الدرجة'],
               rows: d.courses.map((r) => [r.courseName, `${formatPct1(r.gradePct)}%`]),
             }}
@@ -1116,7 +1132,7 @@ export function ResultsPage() {
           page carries; the graded feed below keeps its AlertRow tones. */}
       <SectionBar
         index="01"
-        title="تسليمات بانتظار التقييم"
+        title={PENDING_SUBS}
         /* R341 (D7c) reconciliation — tests are law: the honest empty
             state keeps its pinned sentence (ResultsPage-timeline ×2)
             as the bar's meta; the counted meta (the numeral axis seat)
@@ -1126,7 +1142,7 @@ export function ResultsPage() {
           : (
             <BarCount
               n={pendingSubs.length}
-              srLabel={countAr(pendingSubs.length, ['تسليم واحد بانتظار التقييم', 'تسليمان بانتظار التقييم', 'تسليمات بانتظار التقييم', 'تسليماً بانتظار التقييم'])}
+              srLabel={countAr(pendingSubs.length, ['تسليم واحد بانتظار التقييم', 'تسليمان', PENDING_SUBS, 'تسليماً'])}
             />
           )}
       />
@@ -1161,7 +1177,6 @@ export function ResultsPage() {
                       <Link
                         to={`/student/courses/${p.offeringId}`}
                         className="btn ghost sm"
-                        title="الرجوع للمقرّر"
                       >
                         <Icon icon={ArrowLeft} size={13} />
                         المقرّر
@@ -1244,7 +1259,6 @@ export function ResultsPage() {
                       <Link
                         to={`/student/courses/${a.offeringId}`}
                         className="btn ghost sm"
-                        title="الرجوع للمقرّر"
                       >
                         <Icon icon={ArrowLeft} size={13} />
                         المقرّر
@@ -1278,7 +1292,9 @@ export function ArVrPage() {
         index="01"
         eyebrow="المعامل والتقنيات"
         title="تجارب AR / VR"
-        description="فهرس تجارب AR/VR للمقرّرات العمليّة — غير متاح بعد."
+        /* r366 (2-e): the description restated the title; the honest
+           state (غير متاح بعد) rides the empty surface itself. */
+        description="غير متاح بعد."
         /* R342-08 — the [01] numeral + eyebrow seat this page on the
            family grammar (live/map's header precedent), and the CTA
            pair rides the masthead (the D11/D8 measured seat; the
@@ -1489,7 +1505,7 @@ export function SocialPage() {
                       onClick={() =>
                         (reacted ? onUnlike(p.id, p._count.reactions) : onLike(p.id, p._count.reactions))}
                       aria-pressed={reacted}
-                      aria-label={reacted ? 'إزالة الإعجاب' : 'أعجبني بهذا المنشور'}
+                      aria-label={reacted ? 'إزالة الإعجاب' : 'أعجبني'}
                       disabled={likeInFlight(p.id)}
                     >
                       <Icon icon={Heart} size={13} aria-hidden />
@@ -1512,7 +1528,7 @@ export function SocialPage() {
                             ? onUnlike(p.id, p._count.reactions)
                             : onLike(p.id, p._count.reactions))}
                       >
-                        إعادة المحاولة
+                        {RETRY}
                       </button>
                     </div>
                   )}
@@ -1652,7 +1668,7 @@ export function DownloadsPage() {
           !q.isPending && !q.isError && (q.data?.length ?? 0) > 0 ? (
             <BarCount
               n={q.data!.length}
-              srLabel={countAr(q.data!.length, ['ملفّ واحد', 'ملفّان', 'ملفّات', 'ملفاً'])}
+              srLabel={countAr(q.data!.length, ['ملفّ', 'ملفّان', 'ملفّات', 'ملفاً'])}
             />
           ) : undefined
         }

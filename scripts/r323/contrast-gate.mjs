@@ -18,6 +18,14 @@
  *     / sr-only label) and a non-collapsed box — the old vanishing-text
  *     bug class.
  *
+ * r366 (Agent 3): the sweep gains the missing states — DISABLED
+ *   controls (swept, measured, reported; WCAG 1.4.3 exempts inactive
+ *   components so they gate only against a 2.2:1 collapse floor),
+ *   ERROR context ([aria-invalid], .input-error) and SELECTED context
+ *   (aria-selected, [data-selected]) labelled in every finding — and
+ *   every measured row now carries APCA W3 0.1.9 Lc alongside WCAG
+ *   (the second lens: reported, never the failure source).
+ *
  * Emits audits/evidence/r323/contrast-gate.json · exit 1 on breach.
  * Usage: node scripts/r323/contrast-gate.mjs [--port 4325]
  *        [--urls /__design,/] [--max-per-page 260]
@@ -123,6 +131,34 @@ const SWEEP_FN = `
     const effFg = fg.a < 1 ? blend(fg, bg) : fg;
     const L1 = lum(effFg), L2 = lum(bg);
     return Math.round(((Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05)) * 100) / 100;
+  }
+  /* r366 — APCA W3 0.1.9 Lc (reported per row; WCAG stays the gate). */
+  const APCA = { mainTRC: 2.4, Rco: 0.2126729, Gco: 0.7151522, Bco: 0.0721750,
+    normBG: 0.56, normTXT: 0.57, revTXT: 0.62, revBG: 0.65, blkThrs: 0.022,
+    blkClmp: 1.414, scaleBoW: 1.14, scaleWoB: 1.14, loBoWoffset: 0.027,
+    loWoBoffset: 0.027, loClip: 0.1 };
+  function apcaY(c) {
+    const s = (v) => Math.pow(Math.max(0, Math.min(255, v)) / 255, APCA.mainTRC);
+    return APCA.Rco * s(c.r) + APCA.Gco * s(c.g) + APCA.Bco * s(c.b);
+  }
+  const fclamp = (Y) => (Y >= APCA.blkThrs ? Y : Y + Math.pow(APCA.blkThrs - Y, APCA.blkClmp));
+  function apcaLc(txtC, bgC) {
+    try {
+      const txtY = apcaY(txtC), bgY = apcaY(bgC);
+      const BoW = bgY > txtY;
+      if (BoW) {
+        const b = Math.pow(fclamp(bgY), APCA.normBG), t = Math.pow(fclamp(txtY), APCA.normTXT);
+        let sapc = (b - t) * APCA.scaleBoW;
+        if (Math.abs(sapc) < APCA.loClip) return 0;
+        sapc = sapc > 0 ? sapc - APCA.loBoWoffset : sapc + APCA.loWoBoffset;
+        return Math.round(sapc * 100);
+      }
+      const b = Math.pow(fclamp(bgY), APCA.revBG), t = Math.pow(fclamp(txtY), APCA.revTXT);
+      let sapc = (b - t) * APCA.scaleWoB;
+      if (Math.abs(sapc) < APCA.loClip) return 0;
+      sapc = sapc > 0 ? sapc - APCA.loWoBoffset : sapc + APCA.loWoBoffset;
+      return Math.round(sapc * 100);
+    } catch (e) { return null; }
   }
   /* the wipe pattern paints the hover ground on ::before/::after — an
      inset-0 opaque pseudo slab IS the effective background. Checked at
@@ -230,7 +266,9 @@ const SWEEP_FN = `
     const els = [...document.querySelectorAll(sel)]
       .filter((el) => el.hasAttribute('data-cg-idx') && Number(el.getAttribute('data-cg-idx')) < limit)
       .filter((el) => {
-        if (el.disabled || el.getAttribute('aria-disabled') === 'true') return false;
+        /* r366: disabled controls JOIN the sweep (measured + reported;
+           WCAG 1.4.3 exempts inactive components, the house collapse
+           floor is 2.2:1). */
         const r = el.getBoundingClientRect();
         const cs = getComputedStyle(el);
         return cs.visibility !== 'hidden' && cs.display !== 'none'
@@ -249,12 +287,20 @@ const SWEEP_FN = `
       const fs = parseFloat(cs0.fontSize);
       const fw = parseInt(cs0.fontWeight, 10) || 400;
       const large = fs >= 24 || (fs >= 18.66 && fw >= 700);
-      const min = large ? 3 : 4.5;
+      /* r366 — the state CONTEXT: disabled / error / selected ride the
+         finding's state label; pseudo states append after them. */
+      const isDisabled = el.disabled || el.getAttribute('aria-disabled') === 'true';
+      const isReadOnly = !!(el.readOnly || el.closest('[readonly]'));
+      const inError = !!(el.closest('[aria-invalid="true"], .input-error, [data-state="error"]'));
+      const isSelected = !!(el.getAttribute('aria-selected') === 'true' || el.closest('[aria-selected="true"], [data-selected="true"]'));
+      const ctx = isDisabled ? 'disabled' : isReadOnly ? 'read-only' : inError ? 'error' : isSelected ? 'selected' : '';
+      const min = isDisabled ? 2.2 : large ? 3 : 4.5;
       /* checkbox/radio are graphical objects (3:1 non-text) — text
          contrast does not apply; the accent swatch is the glyph. */
       const isCheckish = tag === 'input' && (type === 'checkbox' || type === 'radio');
-      for (const state of [null, 'hover', 'active', 'focus-visible']) {
-        let fg = null, bg = null, ratio = null;
+      const states = isDisabled ? [null] : [null, 'hover', 'active', 'focus-visible'];
+      for (const state of states) {
+        let fg = null, bg = null, ratio = null, lc = null;
         try {
           if (state) { await window.__forceRaw(idx, [state]); await settle(el); }
           /* the painted text node wins when the element has text
@@ -263,15 +309,20 @@ const SWEEP_FN = `
           fg = p ? p.color : getComputedStyle(el).color;
           bg = effectiveBg(p ? p.node : el);
           ratio = contrast(fg, bg);
+          const pf = parse(fg), pb = parse(bg);
+          if (pf && pb) lc = apcaLc(pf.a < 1 ? blend(pf, pb) : pf, pb);
         } finally {
           if (state) { await window.__forceRaw(idx, []); await settle(el); }
         }
         const glyph = glyphInfo(el);
+        const stateLabel = (ctx ? ctx + ':' : '') + (state || 'default');
         if (!isCheckish && ratio != null && ratio < min) {
-          out.push({ el: desc, state: state || 'default', ratio, min, fg, bg, glyph: glyph.text });
+          out.push({ el: desc, state: stateLabel, ratio, min, fg, bg, glyph: glyph.text, apcaLc: lc });
+        } else if (!isCheckish && ratio != null) {
+          out.push({ __pass: true, el: desc, state: stateLabel, ratio, min, fg, bg, apcaLc: lc });
         }
         if (!glyph.hasGlyph || !glyph.visibleBox) {
-          out.push({ el: desc, state: state || 'default', ratio, min, fg, bg, glyph: glyph.text, emptyGlyph: true });
+          out.push({ el: desc, state: stateLabel, ratio, min, fg, bg, glyph: glyph.text, emptyGlyph: true });
         }
       }
     }
@@ -351,7 +402,7 @@ try {
      recorded (with its measured numbers, so drift is visible) and does
      not fail the run. Everything else still fails. */
   const exempted = [];
-  for (const f of results) {
+  for (const f of results.filter((r) => !r.__pass)) {
     const ex = exemptionFor(f);
     if (ex) {
       /* the ledger may document a per-theme value (the hero's dark hover
@@ -369,13 +420,17 @@ try {
     meta: {
       gate: 'r323 contrast-gate (A5 §2)',
       urls: URLS, viewports: ['1440', '390'], themes: ['light', 'dark'],
-      states: ['default', 'hover', 'active', 'focus-visible'],
+      states: ['default', 'hover', 'active', 'focus-visible', 'disabled', 'read-only', 'error', 'selected'],
       maxPerPage: MAX_PER_PAGE,
       generatedAt: new Date().toISOString(),
     },
     head: (() => { try { return execFileSync('git', ['-C', ROOT, 'rev-parse', '--short', 'HEAD']).toString().trim(); } catch { return null; } })(),
     swept: results.length,
-    findings: results.filter((f) => !exemptionFor(f)),
+    /* r366 — the state-coverage histogram: PROOF the sweep actually
+       visited every state family (disabled/error/selected included). */
+    stateHistogram: results.reduce((m, r) => { const k = (r.state || 'default').split(':')[0]; m[k] = (m[k] || 0) + 1; return m; }, {}),
+    findings: results.filter((f) => !f.__pass && !exemptionFor(f)),
+    samples: results.filter((f) => f.__pass).length,
     exempted,
     exemptions: EXEMPTIONS.map((e) => ({ id: e.id, match: e.match, route: e.route, ratio: e.measured?.ratio })),
     failures,

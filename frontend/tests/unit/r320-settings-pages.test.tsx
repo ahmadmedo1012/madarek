@@ -249,7 +249,9 @@ describe('R320 cycle-3 — the routed error sheets (P2-3/4/5)', () => {
 
   it('/403 way-back follows ROLE_HOME for the signed-in role', () => {
     mount(<Error403Page />);
-    expect(screen.getByRole('heading', { level: 1, name: 'هذه الصفحة خارج نطاق صلاحياتك' })).toBeInTheDocument();
+    // R366-final copy-style: title ≤ 4 words — «هذه الصفحة» cut (the
+    // lead below already says the page isn't openable by the role).
+    expect(screen.getByRole('heading', { level: 1, name: 'خارج نطاق صلاحياتك' })).toBeInTheDocument();
     const mine = screen.getByRole('link', { name: 'لوحتي' });
     expect(mine).toHaveAttribute('href', ROLE_HOME.TEACHER);
   });

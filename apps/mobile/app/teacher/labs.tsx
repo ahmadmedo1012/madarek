@@ -49,9 +49,9 @@ export default function TeacherLabs() {
       studentApi.recordLab(labId, experimentName),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["me", "lab-sessions"] });
-      toast.success("سُجّلت جلسة معمل (معاينة كطالب) — تظهر في سجل جلساتك.", "معاينة المعمل");
+      toast.success("سُجّلت معاينة.", "معاينة المعمل");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذَّر تسجيل الجلسة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر التسجيل"),
   });
 
   const rows = (labs.data ?? []) as unknown as LabRow[];
@@ -61,7 +61,7 @@ export default function TeacherLabs() {
       <StackHeader title="المعامل الافتراضية" />
       <PageHeader
         title="المعامل الافتراضية"
-        kicker="استعرض المعامل المتاحة على المنصة ووجّه طلابك إليها كمكمّل عملي للمحاضرات."
+        kicker="المعامل — مكمّل عملي لطلابك."
       />
 
       {/* التنويه الأكاديمي — web parity, verbatim. */}
@@ -82,8 +82,8 @@ export default function TeacherLabs() {
         <ErrorState message={humanizeError(labs.error)} onRetry={() => labs.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
-          title="لم تُضف معامل بعد"
-          message="تواصل مع إدارة المنصة لإضافة معامل لكليتك."
+          title="لا معامل بعد"
+          message="الإضافة عبر الإدارة."
         />
       ) : (
         <RowList>
@@ -101,7 +101,7 @@ export default function TeacherLabs() {
               <T variant="xs" color="muted">
                 {lab.discipline ?? "معمل"}
                 {lab.experiments
-                  ? ` · ${arCount(lab.experiments.length, ["تجربة معدّة واحدة", "تجربتان معدّتان", "تجارب معدّة", "تجربة معدّة"])}`
+                  ? ` · ${arCount(lab.experiments.length, ["تجربة معدّة", "تجربتان معدّتان", "تجارب معدّة", "تجربة معدّة"])}`
                   : ""}
               </T>
               <Button label="معاينة كطالب" kind="ghost" small onPress={() => setPreview(lab)} />

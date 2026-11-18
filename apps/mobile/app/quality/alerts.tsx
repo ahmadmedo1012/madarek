@@ -20,6 +20,7 @@ import {
   numOf,
   type QualityAlertsPayload,
 } from "@/features/governance/components";
+import { QUALITY_SECTOR } from "@/lib/copy";
 
 /**
  * Pushed: /quality/alerts — the quality bell target: BOTH boards in one
@@ -64,7 +65,7 @@ function AlertsBoard({ onInbox }: { onInbox: () => void }) {
 
   return (
     <Screen scroll>
-      <StackHeader title="تنبيهات الجودة" kicker="قطاع ضمان الجودة" />
+      <StackHeader title="تنبيهات الجودة" kicker={QUALITY_SECTOR} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <T variant="body" color="muted">
           أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريًا من بيانات المنصّة.
@@ -85,8 +86,8 @@ function AlertsBoard({ onInbox }: { onInbox: () => void }) {
           <ErrorState message={humanizeError(alerts.error)} onRetry={() => alerts.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title="لا توجد تنبيهات حالياً"
-            message="كلّ المؤشّرات ضمن النطاق الطبيعيّ."
+            title="لا تنبيهات حاليًا"
+            message="المؤشّرات ضمن النطاق."
           />
         ) : (
           <>

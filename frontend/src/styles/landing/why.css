@@ -1356,7 +1356,6 @@
       border-color var(--t-fast, 0.24s) var(--e-out, ease-out),
       background-color var(--t-fast, 0.24s) var(--e-out, ease-out);
   }
-  .wy-deck-btn:hover { border-color: var(--accent-ink); }
   .wy-deck-svg {
     inline-size: 1.68rem;
     block-size: 1.68rem;
@@ -1368,7 +1367,6 @@
     stroke-width: 1.2;
     transition: stroke var(--t-fast, 0.24s) var(--e-out, ease-out);
   }
-  .wy-deck-btn:hover .wy-deck-path { stroke: var(--accent-ink); }
   .wy-deck-dots {
     display: flex;
     gap: 1.2rem;
@@ -1391,6 +1389,14 @@
     transition: background-color var(--t-fast, 0.24s) var(--e-out, ease-out);
   }
   .wy-deck-dot.is-on::after { background: var(--accent-ink); }
+}
+
+/* the deck buttons' two hover channels — the ≤767 deck-chrome belt
+   they were recorded in, combined with the R319 B1 fine-pointer guard
+   (the :hover that must never stick after a tap on touch). */
+@media (max-width: 767px) and (hover: hover) and (pointer: fine) {
+  .wy-deck-btn:hover { border-color: var(--accent-ink); }
+  .wy-deck-btn:hover .wy-deck-path { stroke: var(--accent-ink); }
 }
 
 /* the even-caption clamp (≤599) — the recorded 410px even seat rides
@@ -1450,10 +1456,12 @@
    the capture. Both live on the UNBOUND inner shell (.wy-card-in) —
    the bound card seats keep their measured geometry/transition; the
    shell's base transition sits in its own rule (§ the capture rows). ── */
-.wy-card:hover .wy-card-in {
-  transform: translateY(-0.24rem);
-  outline: 0.12rem solid var(--accent-ink);
-  outline-offset: 0.36rem;
+@media (hover: hover) and (pointer: fine) {
+  .wy-card:hover .wy-card-in {
+    transform: translateY(-0.24rem);
+    outline: 0.12rem solid var(--accent-ink);
+    outline-offset: 0.36rem;
+  }
 }
 
 /* keyboard parity — the cards aren't focusable (narrative surfaces,
@@ -1461,8 +1469,9 @@
    the universal :focus-visible ring (motion.css). */
 
 /* the deck dots gain a hover arm (faint → secondary; the active dot
-   keeps its accent) — the deck buttons already carry two channels. */
-@media (max-width: 767px) {
+   keeps its accent) — the deck buttons already carry two channels.
+   The whole condition combines the ≤767 belt with the R319 B1 guard. */
+@media (max-width: 767px) and (hover: hover) and (pointer: fine) {
   .wy-deck-dot:hover::after {
     background: var(--text-secondary);
   }

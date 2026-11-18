@@ -142,7 +142,8 @@ describe('OwnerInstitutionsPage — listing (r178)', () => {
     renderPage();
 
     expect(screen.getByRole('heading', { level: 1, name: 'المؤسسات' })).toBeInTheDocument();
-    expect(screen.getByText('إدارة المؤسسات التعليمية على المنصّة')).toBeInTheDocument();
+    /* r366 (2-e): the description restated the title — cut with it. */
+    expect(screen.queryByText('إدارة المؤسسات التعليمية على المنصّة')).not.toBeInTheDocument();
 
     // Identity: Arabic name + Latin nameEn + slug per institution.
     expect(screen.getByText('مؤسسة مدارك النموذجية')).toBeInTheDocument();
