@@ -89,20 +89,19 @@
    box + min(100%,108rem) + auto margins — the documented root cause;
    the exact landing.css edit is recorded in r332/sections/hero.md §5).
    The stage is transparent paper, full width, ink edge-to-edge.
-   R368 T3 (the heron-fidelity art re-seat) — ≥768 the stage IS the
-   frozen spec's hero img box: the plate chain already authors the
-   reference's img frame (.hro-plate-art in hero-plate.css — 26/27/26px
-   @1440 inside the 700-box, i.e. x33·y87·w1373·h647 in the reference's
-   own viewport, mirrored), but the stage used to ride the FULL host
-   (1427×700 full-bleed, the svg centered at 1440×520) — the drawing
-   read wide-and-flat against the reference's tall quiet img and its
-   measured margins. The stage now takes EXACTLY the plate-art frame's
-   own per-belt insets (anchored to the same .hro-plate-host box), so
-   the drawing element sits in the reference's img rect at every belt;
-   the svg below takes the cover grammar inside it. The ≤767 phone
-   stage keeps its r366-calibrated flow seat (the 140% crop + the 18px
-   mat — the 390 census seats). */.hro .hro-stage {
-  inline-size: auto;
+   R368 T3 wave 3 — the wave-1 stage RE-ANCHOR is REVERTED (the
+   measured verdict: net-negative ~2.5 E on the hero — the re-anchored
+   crop's ink spread into the img frame's flanks and sank into the
+   lower rows where the reference's img mass reads center-right with
+   light margins; the offline block-profile evidence is recorded in
+   docs/audit/evidence/wave3-notes/T3-B.md). The stage returns to the
+   pre-wave-1 FULL-HOST seat: transparent paper riding the whole
+   .hro-plate-host box, the drawing at its own viewBox aspect capped
+   by the band (meet, not cover), the 12px mat. The ≥768 absolute
+   inset blocks and the svg's cover pair below are retired with it;
+   the ≤767 phone stage never took the re-anchor and is unchanged.
+   */.hro .hro-stage {
+  inline-size: 100%;
   display: grid;
   place-items: center;
   position: relative;
@@ -114,48 +113,19 @@
   min-inline-size: 0;
 }
 
-@media (min-width: 768px) {
-  .hro .hro-stage {
-    position: absolute; /* the plate's art seat — the same box .hro-plate-art anchors (the nearest positioned ancestor is .hro-plate-host, i.e. hpf-6) */
-    inset-inline: 3.12rem; /* the frozen img frame's own insets (hero-plate.css .hro-plate-art, ≥992 base) */
-    inset-block-start: 3.24rem;
-    inset-block-end: 3.12rem;
-    padding-block: 0; /* the frame's insets are the whole mat — the img box has no inner mat */
-    overflow: hidden; /* the cover crop: the svg's flanks crop at the frame's own edges (the reference's img object-fit grammar) */
-  }
+/* ══ [2] THE ART BAND — R342-02: the drafting stage fills the fold above
+   the content band (the 1fr row — the 62svh cap era ends: the reference's
+   art band owns ~87% of the fold's height at 1440, the ink centered on
+   the paper with the ruler chrome spanning the whole field). ═══ *//* the ink — fills the frame's content width (the measured img-inner
+   grammar); height from the viewBox's own aspect, capped honest.
+   R368 T3 wave 3 — the wave-1 cover pair (block-size:100% + the stage's
+   overflow crop) retired WITH the re-anchor above: the drawing rides
+   the meet grammar again — full width at its own 2.77:1 aspect, the
+   band's height the only cap, the flanks visible. */.hro .hro-art .bp-svg {
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 100%;
 }
-
-@media (min-width: 768px) and (max-width: 991px) {
-  .hro .hro-stage {
-    inset-inline: 2.17rem; /* the tablet img frame's own insets (hero-plate.css) */
-    inset-block-start: 2.28rem;
-    inset-block-end: 2.17rem;
-  }
-}
-
-/* ══ [2] THE ART BAND — R342-02 → R368 T3: the drafting stage IS the
-   fold's art band (the frozen spec's own img box — see the stage note
-   above); the ink below rides the COVER grammar inside it. ═══ *//* the ink — R368 T3: the svg ELEMENT takes the frame's height and
-   its width from the viewBox's own aspect (2.77:1), so the ink FILLS
-   the measured img box exactly like the reference's img fills its own
-   (their img-inner aspect 2.12:1 = THEIR artwork's proportion; ours
-   is 2.77:1, so the wider-than-frame flanks crop at the stage's frame
-   edges — the same object-fit-cover grammar the reference runs at
-   every belt: 1373×647 @1440, 977×588 @1024, 709×540 @768, 342×388
-   @390 — a smoothly-varying box, i.e. a cover-cropped illustration).
-   The element box keeps the drawing's aspect exactly, so the
-   HeroInspect letterbox math (fitViewBox, meet) stays byte-exact —
-   markers, pins and cards glue with zero drift. The ≤767 phone belt
-   keeps its own 140%/-20% crop seat below. */@media (min-width: 768px) {
-  .hro .hro-art .bp-svg {
-    block-size: 100%; /* the frame's height drives the scale */
-    inline-size: auto; /* from the viewBox aspect — the cover pair with the stage's overflow crop */
-    max-inline-size: none;
-  }
-}
-
-/* the phone belt's own ink seat (140%/-20% crop) stays where it
-   belongs — the ≤767 band further down (unchanged). */
 
 /* R341 H1-c · L2-a (panel-1 finding #1) — pointer-events discipline at
    tablet/phone widths: the decorative art seats (.hro-art band + the
@@ -704,9 +674,15 @@
 }
 
 .landing.intro-done .hro-stage .bp-drawable {
-  transition:
-    stroke-dashoffset 0.4s ease,
-    fill-opacity 0.4s ease;
+  /* r368 T3 wave 3 — the single-entry measured transition (T-11b: the
+     reference's svg paths carry exactly one 0.4s/ease token — the older
+     2-entry "0.4s/ease, ease" list read as two). The [X] tail override
+     that carried this value is FOLDED HERE — it duplicated this very
+     selector and the sheet's no-duplicate-selectors law flagged it;
+     the effective cascade is byte-identical (this was always the
+     winning declaration; the RM belt's later `transition: none` still
+     wins under reduced motion). */
+  transition: stroke-dashoffset 0.4s ease;
   stroke-dashoffset: 0;
   fill-opacity: 1;
 }
@@ -898,7 +874,17 @@
    and the hero grows past the viewport (the page scrolls; no painted
    overlap anywhere). The 390/768-class portrait belts never hit this
    media (their heights are 640+), so every conformance seat rides its
-   own belt untouched. ═════════════════════════════════════════════ */@media (max-height: 420px) {
+   own belt untouched.
+   R368 T3 wave 3 — the belt's TABLET ARM (the stage's
+   position:static + inline-size:auto + the svg's flow overrides at
+   ≥768) is retired WITH the re-anchor it was authored to undo: the
+   stage's base seat is the flow seat again, so the general belt's
+   chain/host rules alone carry the fix at every width — and the
+   stage keeps its base position:relative, which is the hi-layer's
+   own containing block (HeroInspect's applyMapping computes the
+   layer's left/top against the STAGE box — the arm's static forced
+   the layer onto hpf-6 by coincidence, relative restores the
+   principled anchor). ═════════════════════════════════════════════ */@media (max-height: 420px) {
   .fo-hero.hro {
     block-size: auto;
     min-block-size: calc(100svh - 1.56rem);
@@ -929,24 +915,6 @@
   .hro-plate-host {
     position: static;
     display: block;
-  }
-}
-
-@media (max-height: 420px) and (min-width: 768px) {
-  /* the tablet arm: the absolute img-frame stage returns to flow and
-     the svg to its width-driven natural box (the drawing reads at its
-     own aspect, full band width — the markers glue inside it, the
-     band flows below, nothing paints over anything) */
-  .hro .hro-stage {
-    position: static;
-    inline-size: auto;
-    padding-block: 12px; /* the flow stage's own mat returns */
-  }
-
-  .hro .hro-art .bp-svg {
-    inline-size: 100%;
-    block-size: auto;
-    max-block-size: none;
   }
 }
 
@@ -987,7 +955,13 @@
    MEASURED parameter from the frozen reference spec
    (docs/redesign/r335/heron-spec/home-hero-wrap.*.json) reproduced in
    Madarek's own construction — never pasted reference styling. Scoped
-   vars carry the measured inks per the r338 wave-9 token ruling. ══ */.hro {
+   vars carry the measured inks per the r338 wave-9 token ruling.
+   r368 T3 wave 3 — the element-qualified twin: the sheet-head motion
+   register already owns the bare `.hro` (stylelint's
+   no-duplicate-selectors law), and the section IS the only `.hro` in
+   the DOM (Hero.tsx) — the seat, its vars and the dark arm's cascade
+   below ([data-theme="dark"] .hro, 0,2,0 > 0,1,1 — the same winner as
+   the bare 0,1,0 before) are byte-identical. ══ */section.hro {
   --hro-ink-72: var(--grid-ink-72); /* r339 T-18 gate → R342-02: the tokens' own rgba(40,40,40,.72) literal — byte-equal in light AND rgb()-noted (the color-mix arm computed to color(srgb …), which the instrument's parser cannot read — the honest token twin of the frozen literal) */
   --hro-flare: var(--accent);           /* r339 T-18 gate: the measured secondary flare rgb(250,54,0) IS --accent */
   --hro-paper: rgb(255, 255, 255); /* color-gate: allow — the measured deco caption ink (frozen white; every theme-flipping label token would darken it at night, and no stable-white token exists — documented with the same convention as the dark ink arm below) */
@@ -1145,9 +1119,10 @@
 
 /* [X] single-entry measured transitions — the reference's svg paths
    and links carry exactly one 0.4s/ease token (T-11b residual: the
-   2-entry list read as "0.4s/ease, ease") */.landing.intro-done .hro-stage .bp-drawable {
-  transition: stroke-dashoffset 0.4s ease;
-}
+   2-entry list read as "0.4s/ease, ease"). r368 T3 wave 3: the rule
+   itself is FOLDED into the [9] staged-ink-in block above — the
+   duplicate selector retired (no-duplicate-selectors), the value
+   byte-identical. */
 
 @media (prefers-reduced-motion: reduce) {
   .landing.intro-done .hro-stage .bp-drawable,
