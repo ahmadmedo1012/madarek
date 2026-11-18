@@ -588,3 +588,50 @@ bias, 1440 unchanged) · why/cta/map/chrome/problem at baseline. Every seat
 remains below its ≥88 floor: the convergence loop (per-seat block-profile
 tuning + the ink-reveal scrub + the mid-state tonal work) is the recorded
 continuation.
+
+## Session close-out (the resumable state)
+
+The session's final full run (10 seats × 390+1440, reference side = the
+committed baseline's crops): **E 53 · T 98.3% · Q 100 · stress 7/7**.
+Committed this session on `wip/r368-t3` (2 waves, `b5143884` → `a6652bd8`):
+
+- intro 31.3 → **42.6** (un-mirror + authored plate + crawl chip tones)
+- footer 43.2 → **46.7** (giant outlined wordmark + 4-col print grid)
+- hero 45.3 → 42.8 **in recovery** (mass restored at the measured tone +
+  left light margin; STRESS FIXES LANDED — 7/7; the stage re-anchor surgery
+  is the next increment)
+- platform 49.1 → 48.6 (floorplan wiring; the image-led sheet continues)
+- usecase 52.6 → 43.8 **in recovery** (1440 entry +4.4 on the measured plate;
+  the 390 band recovering at 48.5)
+- why/cta/map/chrome/problem: untouched this session — at baseline
+  (63.7/65.1/51.5/61.0/67.1)
+
+### The exact continuation list (next session, in value order)
+
+1. **why/problem/map mirror flips** — the same grid-column/direction surgery
+   statement.css proved (+11 on intro); why is IMG+TXT mirrored, problem
+   TXT-mirrored, map IMG-mirrored. Use explicit grid-column placement on the
+   children (DOM/a11y order preserved) — NOT the container direction trick
+   without auditing each seat's inset-inline rules.
+2. **hero geometry surgery** — revert the wave-1 stage re-anchor's
+   net-negative ~2.5 points while keeping the three stress fixes (the fixes
+   live in HeroPlate.tsx nesting + hero-mechanics.css hi-marker rules +
+   hero-plate.css re-anchoring; the re-anchor is the inset block).
+3. **intro mid-states** — the reference's media performs an ink-mask scroll
+   reveal (dark foliage appears at mid states — measured 57–130 where our
+   plate stays light): add the scrub-driven reveal to the media cell (the
+   section already carries the --wr-p scrub var; the plate's bottom ink
+   region can ride it via CSS mask/opacity).
+4. **usecase@390 deep fix** — the stacked band's tonal structure vs the
+   reference's mobile slides (the object-position bias recovered +4.9; the
+   band's block profile needs the per-cell tuning).
+5. **Every seat's remaining mid-state tonal work** — the recorded loop:
+   block-profile → seat edit → `--sections <seat> --bps <bp>
+   --reuse-reference <baseline>` measurement (≈60–90 s/iteration).
+6. Then Tasks 4–10 per the plan (tokens, public pages, roles, Expo, copy,
+   CSS, acceptance) — none started yet.
+
+Instrument state: the anchor fix + the --reuse-reference iteration mode are
+committed (both documented in this record); committed evidence runs stay
+full-paired (the baseline's crops were captured paired; the interim runs
+reuse them per the recorded iteration law).
