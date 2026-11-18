@@ -99,24 +99,36 @@
   display: block;
 }
 
-/* ═══ the head — title block at the start, sub note pinned to the far
-   edge in its own measured column (the spec's head census: title col
-   capped 83.4rem, sub col 39.6rem at the far edge — 695+330 @1440,
-   927+440 @1920, 494+235 @1024). ═══ */
+/* ═══ the head — R368 T3-A — THE MIRROR FLIP: the reference's measured
+   physical order is the title lane at the section's LEFT (the 1440
+   spec's h2 x=33 w=695 · the 768 spec's h2 x=29 w=343) with the sub
+   note pinned to the far RIGHT edge (the 1440 spec's x=1077 w=330 ·
+   the 768 spec's x=476 w=262); the r338-era build read the lanes
+   RTL (title at the reading start = the physical right) — the TXT
+   half mirrored at every bp. The statement.css-proven surgery: the
+   template's track order swaps — col 1 (the physical RIGHT in RTL)
+   is now the sub's far-edge 1fr lane, col 2 the 83.4rem title lane
+   at the physical LEFT — with the children's explicit grid-column
+   seats following their tracks. DOM order untouched. ═══ */
 .pm-head {
   display: grid;
-  grid-template-columns: minmax(0, 83.4rem) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 83.4rem);
   align-items: start;
   padding: 3.2rem 3.2rem 6.6rem;
 }
 
 .pm-titleblock {
+  grid-column: 2;
   min-inline-size: 0;
   color: var(--pm-soft-ink); /* the spec's titleblock DIV carries the soft 72% ink; the h2 re-seats the full ink itself */
 }
 
 .pm-kicker {
+  /* R368 T3-A — the kicker box anchors at the title lane's LEFT edge
+     (the reference's own head-left seat): the auto start margin parks
+     the fit-content box at the flipped lane's inline-END. */
   margin-block-end: 1.6rem;
+  margin-inline-start: auto;
   inline-size: fit-content; /* the spec's own census: the kicker box rides its text (72px @1920), not the column */
   color: var(--pm-soft-ink); /* the spec's kicker register is the soft 72% ink (rgba(40,40,40,.72) — the head's full ink rides the h2 only) */
   transition: transform 0.4s ease;
@@ -140,12 +152,14 @@
   padding-block-end: 3.15rem; /* ar-floor compensation: the spec's h2 = 2 lines × lh-1 (107px @1920); our 1 line × floor-lh + this pad = the same measured box at every ≥992 bp (107/80/57) */
   font-weight: 600;
   color: var(--text);
+  text-align: end; /* R368 T3-A — the reference's left-anchored display text (its balance-wrapped tail line flushes the lane's left edge, x=33) */
   text-wrap: balance;
 }
 
 .pm-subwrap {
+  grid-column: 1;
   min-inline-size: 0;
-  justify-self: end; /* pinned to the head row's far edge (the spec's sub cell: x=1077..1407 @1440 — the head pad is the only inset) */
+  justify-self: start; /* R368 T3-A — was: end. The sub cell hugs the far RIGHT edge in the flipped layout: the reference's sub box runs x=1077..1407 @1440, its right edge at the head's right inset — the lane's inline-START in RTL. */
   max-inline-size: 39.6rem; /* the spec's sub measure: 440/330/235 @1920/1440/1024 = 39.6rem fluid */
   margin-block-start: 3.2rem; /* the spec margins the WRAP, not the text (subwrap y=72 @1920 = pad 35.6 + 35.6) */
   padding-block-end: 3.75rem; /* the spec's subwrap runs 42/31/22px below the text @1920/1440/1024 = 3.75rem */
@@ -154,6 +168,7 @@
   margin: 0;
   color: inherit;
   font: inherit;
+  text-align: end; /* R368 T3-A — the reference's sub text anchors at its box's left (x=1077); the wrap's tail line flushes the same edge */
 }
 .pm-sub .fo-text-link {
   color: inherit;
@@ -179,6 +194,20 @@
   list-style: none;
 }
 
+/* R368 T3-A — THE COLUMN ORDER FLIP (the explicit grid-column
+   placement on the children — the statement.css-proven move): the
+   reference's four pains read left-to-right (pain 01's column at
+   x=33 @1440 · x=29 @768, the LTR reading of the reference's own
+   ruled ledger); the RTL grid auto-flow seated pain 01 at the
+   physical RIGHT, cross-matching every column's art/text mass
+   against the reference's. Pain 01 → track 4 (the physical
+   LEFTMOST in RTL), 02 → 3, 03 → 2, 04 → 1. DOM/a11y order is
+   untouched — the nth-child placements are geometry only. */
+.pm-cols > .pm-col:nth-child(1) { grid-column: 4; }
+.pm-cols > .pm-col:nth-child(2) { grid-column: 3; }
+.pm-cols > .pm-col:nth-child(3) { grid-column: 2; }
+.pm-cols > .pm-col:nth-child(4) { grid-column: 1; }
+
 .pm-section .pm-col {
   position: relative;
   min-inline-size: 0;
@@ -191,11 +220,15 @@
 
 /* the column's own start-edge rule (all but the first — the band's
    rule already rides the start edge; the first column mounts no rule
-   element at all — the reference renders none at any breakpoint) */
+   element at all — the reference renders none at any breakpoint).
+   R368 T3-A — the rule rides the flipped column's LEFT edge (its
+   inline-END): with pain 01 now the LEFTMOST column, pain 02's rule
+   lands on the 01/02 boundary, 03's on 02/03, 04's on 03/04 — the
+   reference's own three inter-column rules (x≈390/747/1104 @1440). */
 .pm-colrule {
   position: absolute;
   inset-block: 0;
-  inset-inline-start: 0;
+  inset-inline-end: 0;
   inline-size: 1px;
   background: var(--rule-strong);
 }
@@ -312,6 +345,7 @@
   padding-block-end: 4.4rem; /* toward the spec's 3-line titlebox (93px @1920) — our 1 line × floor-lh + pad */
   font-weight: 600;
   color: var(--text);
+  text-align: end; /* R368 T3-A — the reference's left-anchored column titles (its cell texts run from the column's left edge, x=33) */
   text-wrap: balance;
 }
 
@@ -326,6 +360,7 @@
   margin: 0;
   line-height: 2.16rem; /* the section's own ar-floor register (1.35 × 1.6rem) — base.css's global p rule (--lh-base 1.65) would otherwise clobber the inherited floor at every bp */
   font-weight: 400;
+  text-align: end; /* R368 T3-A — the reference's left-anchored cell bodies (its answer-led body blocks run from the column's left edge) */
   color: var(--pm-soft-ink); /* r339 T-12 — the scoped soft-ink var (dark arm flips; light stays the frozen Heron literal) */
 }
 .pm-ans {
@@ -400,7 +435,20 @@
        R342 re-measure: the census pitch is 311.67px on the 374 band
        = 83.33% (5/6) with BUTT slides (no gap — the 1px column rules
        carry the divider line; a layout gap doubled the pitch and
-       walked every off-screen slide ≥9px off the mirrored measure). */
+       walked every off-screen slide ≥9px off the mirrored measure).
+       R368 T3-A — THE SWIPER'S OWN READING DIRECTION (the audited
+       container-direction surgery): the reference's swiper pans
+       left-to-right — slide 01 at the strip's LEFT edge, the NEXT
+       slide off to the right. The RTL auto-flow seated slide 01 at
+       the physical RIGHT (the next slide to its left) — the whole
+       belt mirrored. direction: ltr on the CONTAINER restores the
+       reference's own flow + scroll origin; the slides themselves
+       re-declare direction: rtl so every Arabic cell inside keeps
+       the language law untouched (the container carries no text
+       nodes of its own — the audit). The composer's JS belt is
+       direction-agnostic (nearest-to-center rect math), so the dot
+       mirror + the tap-to-center keep working verbatim. */
+    direction: ltr;
     grid-template-columns: none;
     grid-auto-flow: column;
     grid-auto-columns: 83.33%;
@@ -411,12 +459,18 @@
     scrollbar-width: thin;
   }
 
+  /* the base's ≥992 explicit column seats (4/3/2/1) must release —
+     the carousel's auto-flow owns the strip again (slide order LTR). */
+  .pm-cols > .pm-col:nth-child(n) { grid-column: auto; }
+
   .pm-col {
+    direction: rtl;
     scroll-snap-align: center;
   }
   /* the mirrored divider: the reference draws each slide's rule on its
-     LTR start edge; mirrored to RTL that is the slide's inline-START
-     (the right edge — the boundary to the previous slide), not the end */
+     LTR start edge (the physical LEFT); under the container's ltr
+     flow the slide's inline-START now IS that edge — the seat stays
+     as written and resolves at the reference's own boundary. */
   .pm-colrule {
     inset-inline-start: 0;
     inset-inline-end: auto;
@@ -550,7 +604,12 @@
      kicker gap 14.73px, h2 4 lines × 36.83px — the r337 guess (4/1.5/3)
      was 87px short, cascading −85…−325px down the whole section */
   .pm-head {
-    grid-template-columns: minmax(0, 37.3rem) minmax(0, 1fr); /* the census head row: title 343px | gap | sub 262px at the far edge */
+    /* R368 T3-A — the 768 head's tracks swap with the base's flip: the
+       1fr sub lane becomes col 1 (the physical RIGHT — the 768 spec's
+       sub x=476 far-edge seat) and the 37.3rem title lane col 2 (the
+       physical LEFT — the 768 spec's h2 x=29). The base's explicit
+       child seats (titleblock col 2 · subwrap col 1) carry over. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 37.3rem);
     /* the inline-end rung steps up from the census 2.4rem: the sub cell is
        pinned to the far edge and must clear the shell's .et-tab edge rail
        (the r322 V7 no-text-under-the-rail law — ~25px rail + nudge) */
@@ -564,7 +623,7 @@
     padding-block-end: 5.2rem; /* 2 lines × floor-lh + pad = the spec's 147px 4-line box */
   }
   .pm-subwrap {
-    justify-self: end;
+    justify-self: start; /* R368 T3-A — was: end. The sub hugs the far RIGHT edge in the flipped layout (the 768 spec's sub right edge at x=738, the head's right inset) — the cell's inline-START in RTL. */
     max-inline-size: 28.45rem; /* the census sub cell: 262px @768 */
     margin-block-start: 9.13rem; /* the census seats the sub 84px below the row top (y=143 vs pad 58.94) */
     padding-block-end: 0; /* the ≤991 subwrap box is the text's own (96px = 5 lines, no run-out) */
@@ -577,6 +636,15 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0;
   }
+  /* R368 T3-A — the 2×2 belt's own column-order flip (the reference's
+     768 census: pain 01 top-LEFT (svg x=120, text x=29), pain 02
+     top-RIGHT (svg x=496, text x=406), 03 bottom-LEFT, 04
+     bottom-RIGHT): pain 01 → track 2 (the physical LEFT in RTL),
+     02 → 1, 03 → 2 (row 2), 04 → 1 (row 2). */
+  .pm-cols > .pm-col:nth-child(1) { grid-column: 2; grid-row: 1; }
+  .pm-cols > .pm-col:nth-child(2) { grid-column: 1; grid-row: 1; }
+  .pm-cols > .pm-col:nth-child(3) { grid-column: 2; grid-row: 2; }
+  .pm-cols > .pm-col:nth-child(4) { grid-column: 1; grid-row: 2; }
   /* the row separator is the cell's own top-of-textzone dash + the
      columns' start-edge rules carry the verticals (the census keeps a
      rule on the bottom-left cell's outer edge — it renders) */

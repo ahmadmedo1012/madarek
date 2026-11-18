@@ -99,17 +99,37 @@ section.chapters {
 /* the FRAME — sticky top 0, the measured column grid:
    [plan column 1fr][1px rule][closing column fixed]. The frame's
    own top hairline (the measured 1902×1 @ y0) rides a pseudo —
-   paint chrome, intentionally not a census node. */
+   paint chrome, intentionally not a census node.
+   R368 T3-A — THE MIRROR FLIP (the IMG half): the reference's
+   measured physical order is the plan column at the section's LEFT
+   (the 1440 spec's art stack x=7 w=963) with the closing column at
+   the RIGHT (x=970 w=464, its h2 x=996); the r338-era flex row
+   seated the DOM-first map column at the physical RIGHT (the
+   reading start) — the whole band mirrored. The statement.css-proven
+   surgery, flex→grid: grid-template-areas 'close rule map' with
+   explicit per-child grid-area seats — in an RTL grid col 1 IS the
+   physical RIGHT (the close column), col 3 the physical LEFT (the
+   map column). DOM order (map · rule · close) untouched — the
+   placement is geometry only. The ≤991 stacked belt restores the
+   flex column below. */
 .jt-pin {
   position: sticky;
   top: 0;
   block-size: calc(100dvh - 1.56rem); /* the measured frame heights (887@1440 · 1062@1920 · 759@1024) */
-  display: flex;
+  display: grid;
+  grid-template-areas: 'close rule map';
+  grid-template-columns: auto 1px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   align-items: stretch;
   gap: 0;
   padding-inline: 0.78rem; /* spacing-gate: allow — the measured frame gutters (6.5@1440 · 9@1920 · 4@1024 on the fluid root) */
   z-index: 1;
 }
+
+/* R368 T3-A — the flipped frame's explicit child seats are folded
+   into the component rules below (.jt-map-col → area map,
+   .jt-close-vrule → rule, .jt-close → close): the auto track sizes
+   to .jt-close's own clamp; the 1fr map track takes the rest. */
 
 .jt-pin::before {
   content: '';
@@ -121,8 +141,11 @@ section.chapters {
 }
 
 /* the frame's vertical seam — the measured 1×887 divider between
-   the plan and closing columns (bg #B3B3AF = the guide grey). */
+   the plan and closing columns (bg #B3B3AF = the guide grey).
+   R368 T3-A — the seam's explicit grid-area seat (the flipped
+   frame's middle track). */
 .jt-close-vrule {
+  grid-area: rule;
   flex: 0 0 1px;
   align-self: stretch;
   background: var(--grid-line);
@@ -150,8 +173,11 @@ section.chapters {
 
 /* the PLAN COLUMN — flex:1 of the frame; the scroll track @≤991.
    contain bounds the plan subtree's invalidations + clips the
-   entrance descent. */
+   entrance descent.
+   R368 T3-A — the column's explicit grid-area seat: the flipped
+   frame's col-3 track (the physical LEFT). */
 .jt-map-col {
+  grid-area: map;
   position: relative;
   flex: 1 1 auto;
   min-inline-size: 0;
@@ -838,6 +864,7 @@ section.chapters {
    → hairline → main (chip/h2/copy bottom-anchored) → the cms
    ledger (16em: four 4em rows). */
 .jt-close {
+  grid-area: close; /* R368 T3-A — the column's explicit seat on the flipped frame's col-1 track (the physical RIGHT) */
   position: static;
   flex: 0 0 auto;
   align-self: stretch;
@@ -862,6 +889,13 @@ section.chapters {
   flex: 1 1 auto;
   min-inline-size: 0;
   transition: width var(--jt-t-art) var(--jt-e-art); /* the measured register */
+  /* R368 T3-A — the column's own text anchor: the reference seats
+     every close-column text at the column's LEFT edge (the chip
+     x=996 · the h2 x=996 · the copy x=996 · the ledger x=996 @1440;
+     the stacked 390 column's chip/h2/copy at x=24). text-align: end
+     flushes the wrap's tail lines to the physical left — the Arabic
+     stays RTL inside its cells (the language law). */
+  text-align: end;
 }
 
 /* the text seats' measured content inset (27px @1440 = 2em). */
@@ -880,6 +914,11 @@ section.chapters {
 
 .jt-close-chip {
   margin-block-start: 1em;
+  /* R368 T3-A — the chip box anchors at the column's LEFT edge (the
+     reference's x=996 seat @1440 · x=24 on the 390 stack): the auto
+     start margin parks the fixed measure at the flipped column's
+     inline-END. */
+  margin-inline-start: auto;
   inline-size: 8.1em;
   block-size: 2.63em;
 }
@@ -954,10 +993,14 @@ section.chapters {
   }
 }
 
-/* the copy — the honest ledger summary at the body voice. */
+/* the copy — the honest ledger summary at the body voice.
+   R368 T3-A — the copy box anchors at the column's LEFT edge too
+   (the reference's 359px measure at x=996): the auto start margin
+   parks the fit-content box at the flipped column's inline-END. */
 .jt-close-copyw {
   margin-block-start: 1.5em;
   margin-block-end: 2em;
+  margin-inline-start: auto;
   inline-size: fit-content;
   max-inline-size: 100%;
 }
@@ -971,8 +1014,18 @@ section.chapters {
 }
 
 /* the cms ledger — the four-station rows: each = full-width
-   hairline + [text cell 1fr][1px vrule][icon 4em]. The icon svg
-   rides the measured 2em box. */
+   hairline + [icon cell 4em][1px vrule][text cell 1fr].
+   R368 T3-A — THE ROW'S OWN MIRROR FLIP (the audited measured
+   order): the reference's desktop rows read [text cell 410 at the
+   row's LEFT (x=970)][1px vrule x=1379][icon cell 53 at the RIGHT
+   (x=1380, svg x=1393)] — ours seated text at the inline-start
+   (the physical RIGHT) and the icon at the end (the LEFT), the
+   row's halves mirrored. The track order swaps: col 1 (the
+   physical RIGHT in RTL) is now the 4em icon cell, col 3 the 1fr
+   text cell at the physical LEFT; the children's explicit
+   grid-area seats follow their tracks. The 390 belt below restores
+   the phone row's own measured order (icon LEFT · text RIGHT —
+   the reference's own responsive flip). */
 .jt-close-cms {
   flex: none;
 }
@@ -984,7 +1037,7 @@ section.chapters {
 
 .jt-cms-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 1px 4em;
+  grid-template-columns: 4em 1px minmax(0, 1fr);
   grid-template-rows: 1px minmax(0, 1fr);
   block-size: 4em;
 }
@@ -994,22 +1047,10 @@ section.chapters {
   background: var(--grid-line);
 }
 
-.jt-cms-textcell {
+.jt-cms-ico {
   grid-area: 2 / 1;
   display: grid;
-  align-content: center;
-  min-inline-size: 0;
-  padding-inline-start: 2em; /* the measured text seat (col + 27px @1440) */
-  color: var(--text); /* the measured cell ink — solid */
-}
-
-.jt-cms-text {
-  font-size: 1em;
-  font-weight: var(--fw-medium);
-  line-height: 1.35;
-  color: var(--text);
-  justify-self: start;
-  max-inline-size: 100%;
+  place-items: center;
 }
 
 .jt-cms-vrule {
@@ -1018,10 +1059,27 @@ section.chapters {
   color: var(--text); /* the measured rule ink — solid */
 }
 
-.jt-cms-ico {
+.jt-cms-textcell {
   grid-area: 2 / 3;
   display: grid;
-  place-items: center;
+  align-content: center;
+  min-inline-size: 0;
+  /* R368 T3-A — the text seat's measured inset flips sides with the
+     row: the reference seats the ledger text 26px off the row's LEFT
+     edge (x=996 = the column x=970 + 2em) — the flipped cell's
+     inline-END. */
+  padding-inline-start: 0;
+  padding-inline-end: 2em;
+  color: var(--text); /* the measured cell ink — solid */
+}
+
+.jt-cms-text {
+  font-size: 1em;
+  font-weight: var(--fw-medium);
+  line-height: 1.35;
+  color: var(--text);
+  justify-self: end; /* R368 T3-A — was: start. The text hugs the cell's LEFT edge — the reference's own x=996 fit-content seat. */
+  max-inline-size: 100%;
 }
 
 .jt-cms-ico-in,
@@ -1048,8 +1106,14 @@ section.chapters {
   }
 
   .jt-pin {
+    /* R368 T3-A — the stacked belt restores the FLEX column (the base
+       is the flipped grid now): the map column stacks above the
+       closing column exactly as before — the reference's own mobile
+       stack (plan track → closing column). The grid-area seats are
+       inert in a flex formatting context. */
     position: static;
     block-size: auto;
+    display: flex;
     flex-direction: column;
     align-items: stretch;
     padding-inline: 0;
@@ -1270,10 +1334,38 @@ section.chapters {
   }
 
   .jt-cms-row {
-    grid-template-columns: minmax(0, 1fr) 1px 4em;
+    /* R368 T3-A — the 768 belt keeps the flipped desktop order (the
+       reference's own 768 ledger rows read text LEFT · icon RIGHT —
+       its svgs at x=702, its texts at x=405); only the row's height
+       re-seats. The child grid-area seats carry over from the base. */
+    grid-template-columns: 4em 1px minmax(0, 1fr);
     grid-template-rows: 1px minmax(0, 1fr);
     block-size: auto;
     min-block-size: 4em;
+  }
+}
+
+/* R368 T3-A — the phone row's own measured order RESTORED (≤767): the
+   reference's 390 ledger rows read [icon cell 56 at the row's LEFT
+   (x=8, svg 24 at x=24)][1px vrule x=64][text cell at the RIGHT
+   (x=64..383, the text at x=79)] — the mirror image of its own
+   desktop row. The tracks and the child seats swap back (the text
+   cell to col 1 — the physical RIGHT in RTL — the icon to col 3 —
+   the physical LEFT), the text keeps its left-flush seat (the
+   reference's text hugs the cell's LEFT edge at both bps). */
+@media (max-width: 767px) {
+  .jt-cms-row {
+    grid-template-columns: minmax(0, 1fr) 1px 4em;
+  }
+
+  .jt-cms-textcell {
+    grid-area: 2 / 1;
+    padding-inline-start: 2em;
+    padding-inline-end: 0;
+  }
+
+  .jt-cms-ico {
+    grid-area: 2 / 3;
   }
 }
 

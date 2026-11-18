@@ -545,11 +545,17 @@ export function WhyScene() {
 
       {/* L1-a (r341) — the ≤767 deck carousel chrome: snap-belt arrows
        * + dots seated in the stage's bottom band (why.css hides it
-       * ≥768; no data-spec — an off-book chrome seat, never measured). */}
+       * ≥768; no data-spec — an off-book chrome seat, never measured).
+       * R368 T3-A — the stage's inline axis flipped (direction: ltr),
+       * so the deck now reads left-to-right like the reference's own
+       * swiper: the PREVIOUS button sits at the belt's left edge and
+       * points left, the NEXT button at the right edge points right —
+       * the chevron pair swaps with the axis (aria labels/DOM order
+       * unchanged). */ }
       <div className="wy-deck-chrome">
         <button type="button" className="wy-deck-btn" onClick={() => deckGo(deckAt - 1)} aria-label="المرحلة السابقة" disabled={deckAt === 0}>
           <svg className="wy-deck-svg" viewBox="0 0 12 12" aria-hidden="true">
-            <path className="wy-deck-path" d="M4.5 1.5 L9 6 L4.5 10.5" />
+            <path className="wy-deck-path" d="M7.5 1.5 L3 6 L7.5 10.5" />
           </svg>
         </button>
         <div className="wy-deck-dots" role="group" aria-label="مراحل الرحلة">
@@ -566,7 +572,7 @@ export function WhyScene() {
         </div>
         <button type="button" className="wy-deck-btn" onClick={() => deckGo(deckAt + 1)} aria-label="المرحلة التالية" disabled={deckAt === ROWS.length - 1}>
           <svg className="wy-deck-svg" viewBox="0 0 12 12" aria-hidden="true">
-            <path className="wy-deck-path" d="M7.5 1.5 L3 6 L7.5 10.5" />
+            <path className="wy-deck-path" d="M4.5 1.5 L9 6 L4.5 10.5" />
           </svg>
         </button>
       </div>

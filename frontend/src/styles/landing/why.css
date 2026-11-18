@@ -21,6 +21,17 @@
   margin-inline: auto;
   padding-inline: 0;
   padding-block: 0;
+  /* T-05k (folded to the shell — r368 T3-A stylelint pass: the bare
+     duplicate .wy-section rules below merged here; the @media belts
+     stay at their original seats): measured section height
+     (sectionHeightVh spec: 1920 0.862 · 1440 0.776 · 1024 0.647 ·
+     768 0.975; 390 already conforms) */
+  min-height: 77.6vh;
+  /* T-05l (folded to the shell, same pass): the measured wrapper arm —
+     heron's own box: 24 @1920 · 22 @1440 · 12.8 @1024 · 24.31 @768 ·
+     21.44 @390 (the empty wrappers' own rung; the ar-floor text seats
+     above keep their own ratios) */
+  line-height: 18px;
   /* W9 (r341) — the measured heron soft-ink wash: the frozen spec seats
      the strip's default voice at rgba(40,40,40,0.72) (the div[1] census
      record — every inheriting wrapper carries it). Light keeps the
@@ -40,19 +51,31 @@
 /* ── the ruled editorial head — heron @1440: 0,0 1427×269 two-column:
    left lane (1fr ≈ 962: eyebrow y133 + h2w y162) | side rail (464px:
    rule + lede + note, pad-top 133). Explicit grid seats — the h2w
-   stays in the left lane, the side rail spans both rows at col 2 ── */
+   stays in the left lane, the side rail spans both rows at col 2.
+   R368 T3-A — THE MIRROR FLIP: the reference's measured physical
+   order is title lane x=7 LEFT 962 + side rail x=969 RIGHT 464 (the
+   frozen spec's own vr); the r338-era build read the lanes RTL
+   (title at the reading start = RIGHT) — both halves mirrored.
+   The statement.css-proven surgery: the TEMPLATE's track order
+   swaps (col 1 = the 464 side track, now the physical RIGHT in
+   RTL; col 2 = the 1fr title lane, the physical LEFT) with the
+   children's explicit grid-column seats following their tracks —
+   the DOM order (eyebrow · h2w · side) is untouched. ── */
 .wy-head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 55.68rem;
+  grid-template-columns: 55.68rem minmax(0, 1fr);
   align-items: start;
 }
 
 .wy-eyebrow {
   display: block;
-  grid-column: 1;
+  grid-column: 2;
   grid-row: 1;
   padding-block-start: 15.92rem;   /* lane y106 + lane pad 26.67 → eyebrow y133 */
-  padding-inline-start: 3.2rem;     /* the lane's 26.67px text inset */
+  /* R368 T3-A — the lane's measured text inset flips sides with the
+     lane: the reference seats the eyebrow glyphs 26.67px off the
+     SECTION's left edge (x=33), which is this lane's inline-END now */
+  padding-inline-end: 3.2rem;
 }
 
 .wy-eyebrow-t {
@@ -61,15 +84,26 @@
   font-weight: 500;
   line-height: 1.4;                    /* 16.33px @1440 */
   letter-spacing: 0;                   /* Arabic joins forbid tracking */
+  /* R368 T3-A — the reference's own anchor: its Arabic head text
+     renders left-anchored (the entry crop's dark strokes sit at
+     x≈0..180 of the crop). text-align: end flushes the line boxes
+     to the physical left without touching direction/bidi — the
+     Arabic stays RTL inside its cells (the language law). */
+  text-align: end;
   color: var(--wy-soft-ink);           /* W9: the measured 0.72 wash (spec eyebrow ink) */
 }
 
 .wy-h2w {
   display: block;
-  grid-column: 1;
+  grid-column: 2;
   grid-row: 2;
   margin-block-start: 1.56rem;      /* eyebrow bottom 149 → h2w top 162 */
-  margin-inline-start: 3.2rem;
+  /* R368 T3-A — the title box's measured seat: the reference seats
+     the 375px h2 box at the lane's LEFT edge + 26.67 (x=33) —
+     inline-END of the flipped lane; the box hugs that edge (the
+     start margin would park it at the page-centre edge). */
+  margin-inline-end: 3.2rem;
+  justify-self: end;
   inline-size: 45rem;                /* the measured 375px text box */
   min-block-size: 9.6rem;            /* the 80px two-line seat */
 }
@@ -80,16 +114,20 @@
   font-weight: 600;
   line-height: 1.35;                   /* heron 72/53.33 @1920 · 54/40 @1440 — the ar-floor rung */
   letter-spacing: 0;                   /* Arabic: ls 0 by law */
+  text-align: end;                    /* R368 T3-A — the reference's left-anchored display lines (the balance-wrapped tail line flushes physical-left) */
   text-wrap: balance;
   min-block-size: 9.6rem;            /* the measured 2-line box */
   color: var(--text);
 }
 
 /* the side rail — heron: x962 y0 464x269, pad 133.33/26.67/26.67 —
-   mirrored RTL: the rule rides the rail's inline-start, full height */
+   R368 T3-A — the rail rides grid col 1 (the physical RIGHT half
+   after the flip): the reference seats it at x=969 with the lede
+   inset 27px off the rail's LEFT edge (x=996) — the rail's
+   inline-END in RTL. */
 .wy-side {
   position: relative;
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 1 / span 2;
   padding-block-start: 16rem;        /* 133.33px -> the lede lands at y133 */
   padding-inline: 3.2rem;
@@ -98,7 +136,10 @@
 
 .wy-rule-v {
   position: absolute;
-  inset-inline-start: 0;
+  /* R368 T3-A — the rule rides the rail's LEFT edge (the reference's
+     own 1×269 seat at x=969, adjacent to the title lane), which is
+     the flipped rail's inline-END — the audited inset-inline flip. */
+  inset-inline-end: 0;
   inset-block: 0;                    /* 0->269: the full head height */
   inline-size: 0.12rem;              /* the 1px hairline */
   background: var(--rule-strong);
@@ -111,6 +152,7 @@
   font-size: var(--fs-body);           /* 13.33px @1440 — Heron txt-16 */
   font-weight: 500;
   line-height: 1.35;                   /* …Arabic ascenders law */
+  text-align: end;                     /* R368 T3-A — the reference's left-anchored rail text (its wrap's tail line flushes the rail's left edge, x=996) */
   color: var(--wy-soft-ink);           /* W9: the measured 0.72 wash (spec lede ink) */
 }
 
@@ -122,7 +164,13 @@
 
 /* W9 (r341) — the measured note seat (spec: 140×16 @1440 y226 ·
    180×22 @1920 y301 · 100×12 @1024 y161 — inline-start aligned in
-   the lede column, 24/31/17px under the lede's own box). */
+   the lede column, 24/31/17px under the lede's own box).
+   R368 T3-A — the note box anchors at the rail's LEFT edge (the
+   reference's x=996 seat): the auto start margin parks the fixed
+   measure at the flipped rail's inline-END. */
+.wy-note {
+  margin-inline-start: auto;
+}
 @media (min-width: 1101px) {
   .wy-note { margin-block-start: 24px; inline-size: 140px; }
 }
@@ -153,6 +201,30 @@
   position: relative;
   block-size: 266.16rem;               /* 2218px */
   margin-block-start: 0;               /* the hairline IS the stage's top edge */
+  /* R368 T3-A — THE STAGE'S INLINE AXIS FLIPS BACK (the audited
+   * container-direction surgery). Every stage seat (--wy-cx on the
+   * cards, --wy-sx/--wy-bx/--wy-ix on the minis/player/route
+   * clusters, and the ≤991/≤767 belt values) was authored as the
+   * frozen spec's PHYSICAL LEFT x (row1 card 14.4rem = the spec's
+   * x=127 seat) but consumed as inset-inline-start — the r338-era
+   * “mirror×RTL = identity” misreading: in RTL those seats render
+   * x-mirrored (row1's card at 843..1307 vs the reference's
+   * 127..591; rows 1/3 LEFT · rows 2/4 RIGHT in the spec, the
+   * reverse here). direction: ltr resolves inline-start = the
+   * physical LEFT again — the whole 2D seat field returns to the
+   * reference's measured visual order in ONE property.
+   * AUDIT (the container-direction law — the subtree was walked):
+   * .wy-stage's subtree carries NO text nodes — cards/minis/vids
+   * (product imgs), the marker/spinner/check/route svgs (paths
+   * only), the deck chrome (svg chevrons; the labels are aria
+   * attributes) — the pinned captions live OUTSIDE at body level
+   * (their own x-flip below) and the cycle figure is a sibling.
+   * The audited counter-flips: the row-4 route svg's scaleX(−1)
+   * (the composed station cluster mirrors WITH its flipped
+   * stations), the ≤767 deck edge-fade gradients, and the deck
+   * chevron pair in WhyScene.tsx. The Arabic text law is untouched
+   * — no text renders in this subtree at any bp. */
+  direction: ltr;
 }
 
 /* the centred 1px axis (x=720 abs @1440) */
@@ -530,6 +602,20 @@
   display: block;
 }
 
+/* R368 T3-A — the row-4 route drawing mirrors with its stations:
+ * the .wy-pt seats flip with the stage's axis (inline-start now
+ * the physical LEFT), so the composed cluster's pattern mirrors
+ * too; the svg's own coordinate art must mirror WITH it or the
+ * station squares detach from the line. scaleX(−1) reflects the
+ * drawing inside its full-row box — the r342-05 composed route
+ * (line + its 12 station squares + the margin ticks) keeps its
+ * internal alignment and lands in the post-flip clear band
+ * (≈355..735 row-relative, clear of row 4's capture face which
+ * the flip itself moves to the reference's right-hand seat). */
+.wy-map-svg {
+  transform: scaleX(-1);
+}
+
 .wy-map-path {
   position: absolute;
   inset-inline-start: var(--wy-sx);
@@ -560,13 +646,19 @@
   }
 
   .wy-head {
-    grid-template-columns: minmax(0, 1fr) 40.97rem;
+    /* R368 T3-A — the ≤991 head's tracks swap sides with the base's
+     * flip: the 40.97rem side track becomes col 1 (the physical
+     * RIGHT, the 768 spec's x=384 rail) and the 1fr title lane col 2
+     * (the physical LEFT, the 768 spec's x=7 title + x=29 h2). The
+     * base's explicit child seats (side col 1 · eyebrow/h2w col 2)
+     * carry over untouched. */
+    grid-template-columns: 40.97rem minmax(0, 1fr);
     block-size: 21.83rem;               /* 201px + the 1px hairline */
   }
 
   .wy-eyebrow {
     padding-block-start: 6.3rem;        /* eyebrow y58 */
-    padding-inline-start: 2.39rem;      /* x22 in the left lane */
+    padding-inline-end: 2.39rem;       /* R368 T3-A — the lane's left-edge inset (the 768 spec's eyebrow x=29) */
   }
 
   .wy-eyebrow-t {
@@ -576,7 +668,7 @@
 
   .wy-h2w {
     margin-block-start: 1.63rem;        /* eyebrow bottom 76 → h2 y91 */
-    margin-inline-start: 2.39rem;
+    margin-inline-end: 2.39rem;        /* R368 T3-A — the 768 title box's left-edge seat (the spec's h2 x=29) */
     inline-size: 28.03rem;              /* the 258px box */
     min-block-size: 0;
   }
@@ -590,7 +682,7 @@
   .wy-side {
     align-self: end;                    /* the rail rides y84 of 202 */
     padding-block-start: 0;
-    padding-inline: 1.41rem 0;
+    padding-inline: 0 1.41rem;          /* R368 T3-A — the lede's left-edge inset (the 768 spec's lede x=397, 13px off the rail's left edge) */
     min-block-size: 0;
   }
 
@@ -992,8 +1084,9 @@
   }
 }
 
-/* T-05k — measured section height (sectionHeightVh spec: 1920 0.862 · 1440 0.776 · 1024 0.647 · 768 0.975; 390 already conforms) */
-.wy-section { min-height: 77.6vh; }
+/* T-05k — the measured height BELTS (the 77.6vh base rung is folded
+   into the section shell above — the r368 T3-A stylelint duplicate
+   pass); the spec's own ladder: 1920 0.862 · 1024 0.647 · 768 0.975 */
 @media (min-width: 1601px) { .wy-section { min-height: 86.2vh; } }
 @media (min-width: 992px) and (max-width: 1100px) { .wy-section { min-height: 64.7vh; } }
 @media (min-width: 600px) and (max-width: 991px) { .wy-section { min-height: 97.5vh; } }
@@ -1176,16 +1269,48 @@
 }
 /* T05I-CAP-END */
 
-/* ═══ T-05l — the measured tween-wrapper arms: per-bp wrapper line-height
-   (heron's own box: 24 @1920 · 22 @1440 · 12.8 @1024 · 24.31 @768 ·
-   21.44 @390 — empty wrappers, the ar-floor text seats above keep their
+/* ═══ R368 T3-A — the pinned captions' mirror flip (the OVERRIDE LAW:
+   the generated T05I-CAP block above stays regenerated truth — its
+   mirrorX() vars ARE the reference's physical-left x's (sr.x + the
+   6px right margin), so the flip rides these hand-written consumers
+   placed AFTER the block, never inside it). The seats move from
+   inset-inline-start (the RTL right edge — the mirrored seat) to
+   inset-inline-end: in RTL the end edge IS the physical left, so the
+   measured x's resolve at the reference's own side — odd captions at
+   741..908 @1440 (the spec's title vr 742..909), even at 53..220 (the
+   spec's 53..220), the 768 band at 412..502 (the spec's 412..502),
+   and the 390 deck's odd caption at 36..134 (the spec's 36). The
+   inset-inline-start: auto release is required — a non-auto start
+   edge wins the over-constrained resolution in RTL and would pin the
+   box back to the right. ═══ */
+.wy-capbar .wy-cap-t {
+  inset-inline-start: auto;
+  inset-inline-end: var(--wy-ct-odd-x);
+}
+.wy-capbar .wy-cap:nth-child(even) .wy-cap-t {
+  inset-inline-start: auto;
+  inset-inline-end: var(--wy-ct-even-x);
+}
+.wy-capbar .wy-cap-s {
+  inset-inline-start: auto;
+  inset-inline-end: var(--wy-cs-odd-x);
+}
+.wy-capbar .wy-cap:nth-child(even) .wy-cap-s {
+  inset-inline-start: auto;
+  inset-inline-end: var(--wy-cs-even-x);
+}
+
+/* ═══ T-05l — the measured tween-wrapper arms: the per-bp wrapper
+   line-height BELTS (the 18px base rung is folded into the section
+   shell above — the r368 T3-A stylelint duplicate pass; heron's own
+   box: 24 @1920 · 22 @1440 · 12.8 @1024 · 24.31 @768 · 21.44 @390 —
+   empty wrappers, the ar-floor text seats above keep their
    own ratios), the scene tween transitions (0.4s/ease scrub grammar,
    0.3s route-map arm, 0.1s micro seats, per-bp mobile arms) and the
    measured radii (heron 0 on the icon-cluster shells + dots; 99 on the
    mini2_1c cluster core/box @≥992, its ring @≤599, the card3 capture
    shell @1024/390, the vid2/vid3 + load-tail shells @768, the mini2_2
    shell @1024/390) ═══ */
-.wy-section { line-height: 18px; }
 @media (min-width: 1601px) { .wy-section { line-height: 24px; } }
 @media (min-width: 992px) and (max-width: 1100px) { .wy-section { font-size: 9.48px; line-height: 12.8px; } }
 @media (min-width: 600px) and (max-width: 991px) { .wy-section { line-height: 19.89px; } }
@@ -1323,11 +1448,11 @@
   }
   .wy-stage::before {
     inset-inline-start: 0;
-    background: linear-gradient(to left, var(--bg) 55%, transparent);
+    background: linear-gradient(to right, var(--bg) 55%, transparent);
   }
   .wy-stage::after {
     inset-inline-end: 0;
-    background: linear-gradient(to right, var(--bg) 55%, transparent);
+    background: linear-gradient(to left, var(--bg) 55%, transparent);
   }
 
   /* arrows + dots — the stage's bottom band (row cards end y367 of
