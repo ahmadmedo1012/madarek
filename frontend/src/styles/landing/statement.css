@@ -87,12 +87,9 @@
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: auto auto;
 }
-.st-media { grid-area: media; }
-.st-stmt { grid-area: stmt; }
-.st-ticker { grid-area: ticker; }
-
 /* ═══ the media cell ═══ */
 .st-media {
+  grid-area: media;
   position: relative;
   overflow: hidden;
   min-inline-size: 0;
@@ -120,8 +117,94 @@
    .st-media-tone-rect, no DOM counterpart since the R343 C-1 courtyard
    illustration replaced the photograph) are deleted with the twins. */
 
+/* ═══ r368 T3-C — the media cell's INK-REVEAL SCRUB (the measured mid-state
+   foliage) ═══
+   The reference's media performs an ink-mask scroll reveal: at the entry
+   state the plate's bottom reads light; at mid30/mid60 the dark foliage band
+   (measured tones 57–130, offline — home-intro-wrap.1440.{entry,mid30,mid60}
+   + 390.{entry,mid30}) appears across media y 62–96%, the densest canopy
+   line at y 75–87.5%. The reference's own seat carries it as an OVERLAY SVG
+   (mask + feComponentTransfer over a second image — the frozen 390 spec
+   census, intro media > div > [div > img · div > svg]); ours is the authored
+   ink overlay (media/illustrations/r368/statement/intro-ink.svg — a
+   leaf-mass stipple fitted to the measured per-block density over the
+   authored plate, the provenance header carries the map).
+   THE DRIVER — the seat verification the task prescribes (Statement.tsx /
+   LandingPage.tsx): --wr-p is written title-center-anchored («center
+   bottom+=10% → center top+=40%», t = clamp((0.9vh − center)/0.5vh)) and
+   SATURATES to 1 BEFORE the entry state at ≥768 (offline: our title center
+   sits ~233px under the section top @1440, so t clamps to 1 at scroll ≈767
+   while the entry seat lands at 894 — the words stand fully inked in the
+   local entry crop, which is the empirical confirmation). An opacity ramp
+   ridden on --wr-p would therefore read FULL ink at the entry crop and
+   invert the measured entry state — the mid-state reveal physically cannot
+   ride it. The reveal rides the repo's own CSS scrub grammar instead (the
+   view() timeline — platform.css T-11b2 / journey.css T-11b2): the
+   overlay's EXIT range maps 1:1 onto the instrument's named states (exit
+   0% = the section top at the viewport top = «entry»; exit 30%/60% =
+   mid30/mid60 at 0.3/0.6 of the media height), zero JS, the same
+   @supports fallback and the no-preference RM belt (the static end state).
+   MEASURED CHOREOGRAPHY (offline):
+     · ≥768 — entry (exit 0%): ink hidden; mid30 (exit 30%): the full band
+       (the 1440 mid30 map, block-exact); mid60 (exit 60%): unchanged;
+       end: fully shown.
+     · ≤767 — the phone arm mirrors the sheet's own word-ink phone law (the
+       390 freeze caught the statement already revealed): the ink stands
+       FULL at rest/entry (the measured 390 entry = the 1440 mid30 map) and
+       the canopy's top edge RETREATS through the exit range — the measured
+       390 mid30 leaves only the band below ~83% of the media, reached at
+       exit 75% (our 934px phone section's mid30 = 0.3×934 = 280px = 75% of
+       the 374px media; the reference's measured boundary ≈83%). */
+.st-media-ink {
+  /* the overlay leaf-mass: no interaction, paints above the plate twins
+     (later sibling in mediainner), the .st-media-img geometry carries it */
+  pointer-events: none;
+}
+/* r368 T3-C — the ink's dark twin: the paper/ink pair inverts (the token
+   law, the plate's own is-dark seat): the dark foliage becomes light
+   foliage on the dark paper; geometry never moves. */
+[data-theme="dark"] .st-media-ink {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* the scrub keyframes: the ≥768 reveal (opacity) and the ≤767 canopy
+   retreat (the ink's top edge rises from its own 62% seat to 83%) */
+@keyframes st-ink-reveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes st-ink-retreat {
+  from { clip-path: inset(0 0 0 0); }
+  to { clip-path: inset(83% 0 0 0); }
+}
+
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .st-media-ink {
+      animation: st-ink-reveal var(--t-cinema) linear both;
+      animation-timeline: view();
+      /* entry (exit 0%) → mid30 (exit 30%): the measured full-band seat —
+         the exit range's progress IS the instrument's 0.3×height axis */
+      animation-range: exit 0% exit 30%;
+    }
+  }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .st-media-ink {
+      animation: st-ink-retreat var(--t-cinema) linear both;
+      animation-timeline: view();
+      /* the phone retreat: the canopy's top edge rises 62% → 83% of the
+         media, the measured boundary landing at OUR mid30 (exit 75% =
+         0.3 × the 934px phone section over the 374px media) */
+      animation-range: exit 0% exit 75%;
+    }
+  }
+}
+
 /* ═══ the statement cell ═══ */
 .st-stmt {
+  grid-area: stmt;
   position: relative;
   min-inline-size: 0;
 }
@@ -264,6 +347,10 @@
 .st-pill-t {
   display: block;
   cursor: pointer;
+  /* r338 T-03b: the reference roll token — the pill ink (intro.ctaspanin) and
+     the label arrow ins (intro.labelarrowin/2) tween on the reference's own
+     0.48s cubic-bezier(0.625, 0.05, 0, 1) curve (transform, hover roll). */
+  transition: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1);
 }
 .st-pill-t-in {
   display: block;
@@ -351,6 +438,7 @@
 
 /* ═══ the ticker cell ═══ */
 .st-ticker {
+  grid-area: ticker;
   position: relative;
 }
 .st-ticker-in {
@@ -690,11 +778,4 @@
 }
 @media (max-width: 479px) {
   .st-section.st-section { min-block-size: 0; padding-block: 0; }
-}
-
-/* r338 T-03b: the reference roll token — the pill ink (intro.ctaspanin) and
-   the label arrow ins (intro.labelarrowin/2) tween on the reference's own
-   0.48s cubic-bezier(0.625, 0.05, 0, 1) curve (transform, hover roll). */
-.st-pill-t {
-  transition: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1);
 }

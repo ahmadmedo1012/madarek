@@ -101,6 +101,14 @@ const MEDIA_ART = {
   height: 723,
 } as const;
 
+/* r368 T3-C — the media cell's INK OVERLAY: the measured mid-state foliage
+ * (the reference's media performs an ink-mask scroll reveal — dark tones
+ * 57–130 appear across media y 62–96% at mid30/mid60 while the plate stays
+ * light at entry). The authored SVG carries the leaf masses at their
+ * measured seats; statement.css drives the reveal (the view() scrub's exit
+ * range — the seat's --wr-p saturates pre-entry, see the sheet's T3-C note). */
+const MEDIA_INK = '/media/illustrations/r368/statement/intro-ink.svg';
+
 /** One arrow glyph — the census nest (svg > path), shared by the pill
  * icons and the ticker label buttons. The svg box is the spec's own
  * 2.04rem seat; the stroke path draws the recorded 11×7 chevron. */
@@ -150,6 +158,22 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                 <img
                   className="st-media-img is-dark"
                   src={MEDIA_ART.dark}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                  width={MEDIA_ART.width}
+                  height={MEDIA_ART.height}
+                />
+                {/* r368 T3-C — the ink reveal overlay (the measured mid-state
+                    foliage over the plate's bottom ink region). Own plumbing
+                    — off the pairable census (no data-spec, like the dark
+                    plate twin); the reveal rides the scroll-driven view()
+                    scrub in statement.css (the per-state coverage measured
+                    offline). */}
+                <img
+                  className="st-media-img st-media-ink"
+                  src={MEDIA_INK}
                   alt=""
                   aria-hidden="true"
                   loading="lazy"
