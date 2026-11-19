@@ -1,7 +1,7 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — R305-A7 «Heron» research · PDF reader · library · AI sheet
    (r305-research-pdf-ai.css)
-   ───────────────────────────────────────────────────────────────────
+   ───
    Branch: redesign/r305-heron-research-pdf-ai · baseline 1b766512
    (r304 follow-up). The research & document family — student library,
    student research, teacher review, the shared PDF workspace, and the
@@ -9,63 +9,63 @@
    Heron grammar established by R305-A5/A8:
 
    • surface STEPS (bg → surface → surface-2/3), hairline frames,
-     radius per task (r-sm wells, r-lg panels, r-full chips);
+   radius per task (r-sm wells, r-lg panels, r-full chips);
    • thin technical dividers that carry the layout instead of boxed
-     cards;
+   cards;
    • micro-labels — 13px-floor semibold secondary-ink overlines that
-     classify every block (what / status / metadata / action);
+   classify every block (what / status / metadata / action);
    • dark/light section contrast via the auto-inverting deep band;
    • ONE restrained accent (copper --accent) for the single next
-     action / active state / key numerals; semantic tones only on
-     real states — state is NEVER color alone (chips pair dot + Arabic
-     label +, where space allows, an icon);
+   action / active state / key numerals; semantic tones only on
+   real states — state is NEVER color alone (chips pair dot + Arabic
+   label +, where space allows, an icon);
    • the mono voice for IDs and tabular numerals (r197 contract).
 
    ── SCOPING CONTRACT (§0) ──────────────────────────────────────────
    · EVERY rule below lives under the `.r305rp` marker class, OR — for
-     PORTAL content only — under `body:has(.r305rp)` (§9). Portals
-     (Modal/Sheet/Tooltip) mount on document.body OUTSIDE the page
-     root, so `body:has()` ties them to the same marker. Pages outside
-     this family never carry the marker → zero leakage, both routes.
+   PORTAL content only — under `body:has(.r305rp)` (§9). Portals
+   (Modal/Sheet/Tooltip) mount on document.body OUTSIDE the page
+   root, so `body:has()` ties them to the same marker. Pages outside
+   this family never carry the marker → zero leakage, both routes.
    · Import order: each page imports this sheet IMMEDIATELY AFTER its
-     existing family sheet import (student.css / research.css /
-     pdf.css / ai.css / teacher-quality.css). Same @layer pages +
-     later source order → this sheet wins every equal-specificity tie
-     inside the layer.
+   existing family sheet import (student.css / research.css /
+   pdf.css / ai.css / teacher-quality.css). Same @layer pages +
+   later source order → this sheet wins every equal-specificity tie
+   inside the layer.
    · Layer: `pages` (declared in tokens.css). The `overrides` layer
-     (polish.css) still outranks this sheet by design: platform belts
-     (focus halo, cursor pointer, reduced-motion kills) keep winning.
+   (polish.css) still outranks this sheet by design: platform belts
+   (focus halo, cursor pointer, reduced-motion kills) keep winning.
 
    ── CONSUMERS (the five owned page modules) ────────────────────────
    student/LibraryPage · student/ResearchPage · teacher/ResearchReviewPage
    student/AiAssistantPage · DocumentViewerPage (+ components/pdf/*).
 
    ── SECTION MAP (append-only ownership — never edit another §) ─────
-     §1–§8   shared Heron primitives (integration-owned; consumers may
-             RELY on them, not restyle them)
-     §A      student library + student research   (a7-lib)
-     §B      teacher research review              (a7-teach)
-     §C      PDF reader workspace                 (a7-pdf)
-     §D      AI assistant                         (a7-ai)
-     §9      portal reach-through (shared)
+   §1–§8   shared Heron primitives (integration-owned; consumers may
+       RELY on them, not restyle them)
+   §A      student library + student research   (a7-lib)
+   §B      teacher research review              (a7-teach)
+   §C      PDF reader workspace                 (a7-pdf)
+   §D      AI assistant                         (a7-ai)
+   §9      portal reach-through (shared)
 
    ── GATE CONTRACT (all enforced on this tree) ──────────────────────
    colors  — var()/color-mix() ONLY, zero raw literals;
    type/radius/spacing — token ladders ONLY (the --fs-*, --r-* and
-     --sp-* families), zero raw px declarations (1px hairlines are the
-     sanctioned exception, same as r305-student.css / r305-admin-owner.css);
+   --sp-* families), zero raw px declarations (1px hairlines are the
+   sanctioned exception, same as r305-student.css / r305-admin-owner.css);
    icons   — Lucide via the Icon component only;
    motion  — the --t-* and --motion-* tokens only, hover guarded behind
-     (hover:hover) and (pointer:fine), reduced-motion safe;
+   (hover:hover) and (pointer:fine), reduced-motion safe;
    Arabic-first RTL — every logical property (inline/block, start/
-     end), no left/right physical direction in new rules.
+   end), no left/right physical direction in new rules.
 
    ── CLASS VOCABULARY (what page agents may rely on) ────────────────
    .r305rp-eyebrow (+ optional .r305rp-eyebrow-rule)
    .r305rp-rule · --strong · -v · -labeled
    .r305rp-band · .r305rp-band--deep (+ .r305rp-band-secondary)
    .r305rp-chip · .r305rp-chip-dot · --accent/--success/--warning/
-     --danger/--info/--gold (+ .r305rp-chip--icon)
+   --danger/--info/--gold (+ .r305rp-chip--icon)
    .r305rp-metric · .r305rp-metric-label
    .r305rp-kicker · -title · -action
    .r305rp-next (the one-action emphasis rail)
@@ -73,76 +73,95 @@
    .r305rp-well (r-sm inset well), .r305rp-panel (r-lg framed panel)
    .r305rp-toolbar (reader/section toolbar row), .r305rp-toolbar-sep
    .r305rp-empty (technical empty state); polite live regions use the
-     shared `.sr-only` (base.css) + aria-live, never a local redefinition.
-   ═════════════════════════════════════════════════════════════════════ */
+   shared `.sr-only` (base.css) + aria-live, never a local redefinition.
+   ═══
+*/
 
 @layer pages {
 
   /* ══ §1 · Micro-label (the Heron overline) ════════════════════════
-     Classifies the block that follows: a status, a metadata family,
-     an action group. 13px floor via --fs-sm, semibold, secondary ink. */
-  /* The short technical tick before the label text. */
+   Classifies the block that follows: a status, a metadata family,
+   an action group. 13px floor via --fs-sm, semibold, secondary ink.
+*/
+  /* The short technical tick before the label text.
+*/
 
   /* ══ §2 · Thin technical dividers ═════════════════════════════════
-     Hairlines carry the layout: horizontal section rule, vertical
-     column rule, and the labeled variant that stamps a micro-label
-     INTO the line (Heron's annotated divider). */
+   Hairlines carry the layout: horizontal section rule, vertical
+   column rule, and the labeled variant that stamps a micro-label
+   INTO the line (Heron's annotated divider).
+*/
 
   /* ══ §3 · Surface bands — the dark/light section contrast ═════════
-     .r305rp-band       : the quiet step (surface-2 ground, hairline).
-     .r305rp-band--deep : the Heron inversion — ink ground in light
-                          theme, paper ground in dark (the neutral
-                          scale flips), so the band always contrasts
-                          its page. Inner ink re-derives from the SAME
-                          theme ramp — theme-proof by construction. */
+   .r305rp-band       : the quiet step (surface-2 ground, hairline).
+   .r305rp-band--deep : the Heron inversion — ink ground in light
+             theme, paper ground in dark (the neutral
+             scale flips), so the band always contrasts
+             its page. Inner ink re-derives from the SAME
+             theme ramp — theme-proof by construction.
+*/
   /* P2.6 — the raw --neutral-500 rung is tuned for the PAGE ground and
-     washes out on the inverted pole (1.87:1 on the dark paper band).
-     Band-safe mix: 5.32:1 paper pole / 8.36:1 ink pole (see the
-     foundation .r305s-eyebrow note — same recipe). */
+   washes out on the inverted pole (1.87:1 on the dark paper band).
+   Band-safe mix: 5.32:1 paper pole / 8.36:1 ink pole (see the
+   foundation .r305s-eyebrow note — same recipe).
+*/
 
   /* ══ §4 · Metadata + status chips ═════════════════════════════════
-     One chip anatomy: quiet well, 13px floor, 44px-safe when
-     interactive. Tone variants color ONLY their dot/ink from semantic
-     state tokens; the resting chip stays neutral. State never rides
-     color alone: the chip always carries its Arabic label (and an
-     icon via --icon where the row allows). */
+   One chip anatomy: quiet well, 13px floor, 44px-safe when
+   interactive. Tone variants color ONLY their dot/ink from semantic
+   state tokens; the resting chip stays neutral. State never rides
+   color alone: the chip always carries its Arabic label (and an
+   icon via --icon where the row allows).
+*/
 
   /* ══ §5 · Numerals — the technical metric register ════════════════
-     Metrics are the mono voice (IDs + tabular numerals only — the
-     r197 mono contract), always formatted upstream via
-     utils/numbers.ts; the class never formats, never counts. */
+   Metrics are the mono voice (IDs + tabular numerals only — the
+   r197 mono contract), always formatted upstream via
+   utils/numbers.ts; the class never formats, never counts.
+*/
 
   /* ══ §6 · Kicker row — editorial section heading ══════════════════
-     Title at the section register, optional trailing action, the
-     hairline filling the remainder: heading and divider as ONE object
-     instead of a boxed card header. */
+   Title at the section register, optional trailing action, the
+   hairline filling the remainder: heading and divider as ONE object
+   instead of a boxed card header.
+*/
 
   /* ══ §7 · The one-action emphasis ═════════════════════════════════
-     Heron restraint: exactly one emphasized action per view region.
-     The shared .btn system carries the fill; this wrapper adds the
-     copper edge-tint rail for hero strips. */
+   Heron restraint: exactly one emphasized action per view region.
+   The shared .btn system carries the fill; this wrapper adds the
+   copper edge-tint rail for hero strips.
+*/
 
-  /* ══ §8 · Density helpers, wells, panels, toolbars, empty states ══ */
+  /* ══ §8 · Density helpers, wells, panels, toolbars, empty states ══
+*/
   /* The r-sm inset well: quiet sunken ground for search fields,
-     filters, quote/evidence blocks. */
-  /* The r-lg framed panel: the primary content container. */
-  /* Toolbar row: 44px-safe controls on a hairline track, wrap-safe. */
-  /* Technical empty state: eyebrow + line + honest explanation. */
+   filters, quote/evidence blocks.
+*/
+  /* The r-lg framed panel: the primary content container.
+*/
+  /* Toolbar row: 44px-safe controls on a hairline track, wrap-safe.
+*/
+  /* Technical empty state: eyebrow + line + honest explanation.
+*/
   /* Async state announcements use the platform utility `.sr-only`
-     (base.css) + aria-live="polite" — do NOT redefine it here. */
+   (base.css) + aria-live="polite" — do NOT redefine it here.
+*/
 
   /* ══ §A · student library + student research (a7-lib) ════════════
-     Owner: agent a7-lib. Append page-specific rules ONLY inside this
-     section. Classes prefixed .r305rp-lib-* / .r305rp-res-*. */
+   Owner: agent a7-lib. Append page-specific rules ONLY inside this
+   section. Classes prefixed .r305rp-lib-* / .r305rp-res-*.
+*/
 
-  /* ── a7-lib appends here ── */
+  /* ── a7-lib appends here ──
+*/
 
   /* ── A0 · Row discipline (both pages) ────────────────────────────
-     Long Arabic titles and mixed Arabic/Latin/numeral strings never
-     break a row: the title clamps at two lines, meta lines wrap, and
-     the flexible children keep a min-inline-size floor. The rowlist
-     also drops its elevation — Heron frames are fine outlines, not
-     shadows. */
+   Long Arabic titles and mixed Arabic/Latin/numeral strings never
+   break a row: the title clamps at two lines, meta lines wrap, and
+   the flexible children keep a min-inline-size floor. The rowlist
+   also drops its elevation — Heron frames are fine outlines, not
+   shadows.
+*/
   .r305rp .pf-rowlist { box-shadow: none; }
   .r305rp .pf-row-title {
     display: -webkit-box;
@@ -158,48 +177,58 @@
   }
 
   /* ── A1 · Library search — the r-sm well the page opens with ─────
-     The pill search becomes the technical well: sunken surface-2
-     ground, r-sm corners, hairline border that deepens on hover
-     (guarded) and on focus-within. The eyebrow classifies the block
-     (what: البحث) and never wraps alone. */
+   The pill search becomes the technical well: sunken surface-2
+   ground, r-sm corners, hairline border that deepens on hover
+   (guarded) and on focus-within. The eyebrow classifies the block
+   (what: البحث) and never wraps alone.
+*/
   @media (hover: hover) and (pointer: fine) {
   }
 
   /* ── A2 · Library loans panel — «استعاراتي» as a framed panel ────
-     The continue surface loses its inner box: rows sit on hairline
-     dividers inside the panel; the kicker row carries the heading and
-     the honest count with the hairline filling the remainder. */
-  /* The technical loans empty — eyebrow + one honest line. */
+   The continue surface loses its inner box: rows sit on hairline
+   dividers inside the panel; the kicker row carries the heading and
+   the honest count with the hairline filling the remainder.
+*/
+  /* The technical loans empty — eyebrow + one honest line.
+*/
 
   /* ── A3 · Course group heads (library research archive) ──────────
-     The group label closes onto a hairline — heading and divider as
-     one object instead of floating text above a boxed list. */
+   The group label closes onto a hairline — heading and divider as
+   one object instead of floating text above a boxed list.
+*/
 
   /* ── A4 · The summary bands (deep, one per page) ─────────────────
-     Library research tab and the research page each carry exactly one
-     deep band — the summary region. Metric labels re-derive from the
-     band's own neutral ramp (theme-proof like §3), values in the mono
-     metric register. */
+   Library research tab and the research page each carry exactly one
+   deep band — the summary region. Metric labels re-derive from the
+   band's own neutral ramp (theme-proof like §3), values in the mono
+   metric register.
+*/
   /* P2.6 — same band-safe recipe as the §3 eyebrow: the raw
-     --neutral-500 rung washed to 1.87:1 on the dark paper band. */
+   --neutral-500 rung washed to 1.87:1 on the dark paper band.
+*/
   /* A real state rides the value as a dot + the hint line (state is
-     never color alone) — the failed-research flag on the research
-     page's summary. */
+   never color alone) — the failed-research flag on the research
+   page's summary.
+*/
 
   /* ── A5 · Research page — the submission rail (the ONE copper) ───
-     .r305rp-next supplies the rail; this sizes the strip and keeps the
-     body flexible so long Arabic intent-lines wrap instead of
-     squeezing the button. */
+   .r305rp-next supplies the rail; this sizes the strip and keeps the
+   body flexible so long Arabic intent-lines wrap instead of
+   squeezing the button.
+*/
 
   /* ── A6 · Research rows — the next-step rail + the verdict rails ──
-     Each row is its own region: the next-step line rides the copper
-     edge-tint rail (the row's one emphasized move), the teacher's
-     verdict rides a gold rail, and body blocks keep flat hairline
-     grounds instead of tinted boxes. */
+   Each row is its own region: the next-step line rides the copper
+   edge-tint rail (the row's one emphasized move), the teacher's
+   verdict rides a gold rail, and body blocks keep flat hairline
+   grounds instead of tinted boxes.
+*/
   @media (max-width: 640px) {
   }
 
-  /* ── A7 · «كيف يعمل النظام» — kicker + hairline step cells ──────── */
+  /* ── A7 · «كيف يعمل النظام» — kicker + hairline step cells ────────
+*/
   .r305rp-res-steps {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -243,15 +272,18 @@
   }
 
   /* ══ §B · teacher research review (a7-teach) ══════════════════════
-     Owner: agent a7-teach. Classes prefixed .r305rp-rev-*. */
+   Owner: agent a7-teach. Classes prefixed .r305rp-rev-*.
+*/
 
-  /* ── a7-teach appends here ── */
+  /* ── a7-teach appends here ──
+*/
 
   /* ══ §B.1 · The triage queue — hairline rows, not boxed cards ════
-     The queue reads as a ledger: quiet rows separated by hairlines,
-     the selection carried by the 2px accent inline-start rail (always
-     reserved → no layout jitter) PLUS the visible «تُعرض الآن» chip —
-     selection is never color alone. Hover is pointer-guarded. */
+   The queue reads as a ledger: quiet rows separated by hairlines,
+   the selection carried by the 2px accent inline-start rail (always
+   reserved → no layout jitter) PLUS the visible «تُعرض الآن» chip —
+   selection is never color alone. Hover is pointer-guarded.
+*/
   .r305rp .r305rp-rev-queue {
     display: flex;
     flex-direction: column;
@@ -300,7 +332,8 @@
   }
   .r305rp .r305rp-rev-row--on .r305rp-rev-row-title { color: var(--accent-ink); }
   /* The row tail stacks status → wait/score → the selection marker;
-     capped so a long Arabic chip can never starve the title column. */
+   capped so a long Arabic chip can never starve the title column.
+*/
   .r305rp .r305rp-rev-row-tail {
     display: flex;
     flex-direction: column;
@@ -311,18 +344,20 @@
   }
   .r305rp .r305rp-rev-row-tail .r305rp-chip {
     /* The label may wrap INSIDE the chip when the queue column is
-       squeezed — a complete Arabic label beats a tidy ellipsis. */
+    squeezed — a complete Arabic label beats a tidy ellipsis.
+*/
     max-inline-size: 100%;
   }
   .r305rp .r305rp-rev-row--static { cursor: default; }
 
   /* ══ §B.2 · The review workspace ══════════════════════════════════
-     The workspace is the decisive surface: hairline panel (the legacy
-     elevation retires under the marker), the ONE deep band as its
-     masthead, a labeled «سجل الحالة» rule over the API's decision
-     timestamps, and the one-action decision rail. The workspace also
-     rides the mobile Sheet PORTAL — every rule mirrors under
-     body:has(.r305rp) per the §9 contract. */
+   The workspace is the decisive surface: hairline panel (the legacy
+   elevation retires under the marker), the ONE deep band as its
+   masthead, a labeled «سجل الحالة» rule over the API's decision
+   timestamps, and the one-action decision rail. The workspace also
+   rides the mobile Sheet PORTAL — every rule mirrors under
+   body:has(.r305rp) per the §9 contract.
+*/
   .r305rp .rs-review-work.r305rp-rev-work {
     border-color: var(--rule);
     box-shadow: none;
@@ -347,13 +382,15 @@
     margin: 0;
     font-family: var(--font-display);
     font-size: var(--fs-h3);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law
+*/
     line-height: var(--lh-snug);
     color: inherit;
     overflow-wrap: anywhere;
   }
   /* Meta ink re-derives from the neutral ramp — legible on the
-     inverted ground in BOTH themes (same recipe as §3). */
+   inverted ground in BOTH themes (same recipe as §3).
+*/
   .r305rp .r305rp-rev-masthead .r305rp-meta-row,
   body:has(.r305rp) .r305rp-rev-masthead .r305rp-meta-row {
     color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
@@ -368,7 +405,8 @@
   }
 
   /* سجل الحالة — the decision record. The labeled rule sits tight (the
-     §2 sp-5 rhythm is for page sections; inside the panel it steps down). */
+   §2 sp-5 rhythm is for page sections; inside the panel it steps down).
+*/
   .r305rp .r305rp-rev-record,
   body:has(.r305rp) .r305rp-rev-record {
     display: flex;
@@ -390,8 +428,9 @@
   }
 
   /* ══ §B.3 · The decision rail — before → after + ONE verb ═════════
-     The r305rp-next copper rail wraps: the current state, the state
-     the action PRODUCES, the honest draft marker, and the action row. */
+   The r305rp-next copper rail wraps: the current state, the state
+   the action PRODUCES, the honest draft marker, and the action row.
+*/
   .r305rp .r305rp-rev-decision,
   body:has(.r305rp) .r305rp-rev-decision {
     display: flex;
@@ -438,7 +477,8 @@
   }
 
   /* The backend support-code chip (D17-3: English UPPER_SNAKE code,
-     Arabic message beside it). */
+   Arabic message beside it).
+*/
   .r305rp .r305rp-rev-err-code,
   body:has(.r305rp) .r305rp-rev-err-code {
     flex: none;
@@ -449,12 +489,14 @@
     padding: var(--sp-0-5) var(--sp-1-5);
   }
 
-  /* Technical empty states inside the workspace (title + honest sub). */
+  /* Technical empty states inside the workspace (title + honest sub).
+*/
   .r305rp .r305rp-rev-empty-title,
   body:has(.r305rp) .r305rp-rev-empty-title {
     margin: 0;
     font-size: var(--fs-body-lg);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600 */
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600
+*/
     color: var(--text-strong);
   }
   .r305rp .r305rp-rev-empty-sub,
@@ -467,112 +509,148 @@
 
 
   /* ══ §C · PDF reader workspace (a7-pdf) ═══════════════════════════
-     Owner: agent a7-pdf. Classes prefixed .r305pdf-*. Covers
-     DocumentViewerPage + components/pdf chrome. Existing pdf.css
-     class names may be restyled ONLY under the .r305rp marker. */
+   Owner: agent a7-pdf. Classes prefixed .r305pdf-*. Covers
+   DocumentViewerPage + components/pdf chrome. Existing pdf.css
+   class names may be restyled ONLY under the .r305rp marker.
+*/
 
-  /* ── a7-pdf appends here ── */
-  /* ═════════════════════════════════════════════════════════════════════
-     §C — the PDF reader workspace (marker .r305rp on the page root)
-     ────────────────────────────────────────────────────────────────
-     Grammar: the DOCUMENT CANVAS is the hero — a quiet hairline frame
-     around a maximal reading area, the paper as the only loud object.
-     Toolbars/search are HAIRLINE TRACKS (1px rules, no boxed cards)
-     with 44px-safe controls. Comments/annotations/metadata are clearly
-     SECONDARY panels: eyebrow-labeled, hairline-separated rows, mono
-     numerals. ONE emphasized action per region (composer «حفظ», search
-     «بحث», selection bar «ملاحظة على التحديد»).
-     New classes here are .r305pdf-*; existing pdf.css names are
-     re-styled ONLY under the .r305rp marker. */
-  /* ══════════════════════════════════════════════════════════════════ */
+  /* ── a7-pdf appends here ──
+*/
+  /* ═══
+   §C — the PDF reader workspace (marker .r305rp on the page root)
+     ───
+   Grammar: the DOCUMENT CANVAS is the hero — a quiet hairline frame
+   around a maximal reading area, the paper as the only loud object.
+   Toolbars/search are HAIRLINE TRACKS (1px rules, no boxed cards)
+   with 44px-safe controls. Comments/annotations/metadata are clearly
+   SECONDARY panels: eyebrow-labeled, hairline-separated rows, mono
+   numerals. ONE emphasized action per region (composer «حفظ», search
+   «بحث», selection bar «ملاحظة على التحديد»).
+   New classes here are .r305pdf-*; existing pdf.css names are
+   re-styled ONLY under the .r305rp marker.
+*/
+  /* ═══
+*/
 
-  /* ── C1 · Reader frame — the canvas is the hero ─────────────────── */
+  /* ── C1 · Reader frame — the canvas is the hero ───────────────────
+*/
   /* The viewer chrome recedes: hairline frame, flat ground, no shadow
-     on the chrome itself — elevation is reserved for the paper. */
+   on the chrome itself — elevation is reserved for the paper.
+*/
   /* The paper stays the one loud object (its elev-3 sheet shadow is
-     pdf.css's designed object — untouched). */
+   pdf.css's designed object — untouched).
+*/
 
   /* Reader head: one quiet bar of context — back affordance + title —
-     closed by a hairline so the canvas owns everything under it. */
+   closed by a hairline so the canvas owns everything under it.
+*/
   /* Page-count context rides the head as a quiet chip (mono numerals
-     via .rs-count's own contract). */
+   via .rs-count's own contract).
+*/
 
-  /* ── C2 · Toolbar — a hairline track, 44px-safe controls ────────── */
-  /* The scale pill is the mono metric register of the toolbar. */
+  /* ── C2 · Toolbar — a hairline track, 44px-safe controls ──────────
+*/
+  /* The scale pill is the mono metric register of the toolbar.
+*/
 
-  /* ── C3 · Search — a second hairline track + hit marks ──────────── */
-  /* «بحث» is the ONE emphasized action of the search region. */
-  /* Per-hit occurrence chip (dot + count) — metadata, not chrome. */
+  /* ── C3 · Search — a second hairline track + hit marks ────────────
+*/
+  /* «بحث» is the ONE emphasized action of the search region.
+*/
+  /* Per-hit occurrence chip (dot + count) — metadata, not chrome.
+*/
   /* Match marks inside the text layer — the find-highlight tints the
-     text layer already declares (pdf.css --highlight-*). The paper is
-     white in both themes so the tint reads identically; glyphs stay
-     transparent (the layer's own contract). */
+   text layer already declares (pdf.css --highlight-*). The paper is
+   white in both themes so the tint reads identically; glyphs stay
+   transparent (the layer's own contract).
+*/
 
-  /* ── C4 · Load progress — tied to pdf.js loading events ─────────── */
+  /* ── C4 · Load progress — tied to pdf.js loading events ───────────
+*/
 
-  /* ── C5 · Selection → note bar (the contextual note affordance) ─── */
-  /* ONE emphasized action: the note verb carries the accent. */
+  /* ── C5 · Selection → note bar (the contextual note affordance) ───
+*/
+  /* ONE emphasized action: the note verb carries the accent.
+*/
   @media (hover: hover) and (pointer: fine) {
   }
   @media (hover: hover) and (pointer: fine) {
   }
-  /* A live selection replaces the passive pinch hint — never both. */
+  /* A live selection replaces the passive pinch hint — never both.
+*/
 
-  /* ── C6 · Annotations — a clearly secondary panel ───────────────── */
+  /* ── C6 · Annotations — a clearly secondary panel ─────────────────
+*/
   /* Eyebrow-labeled head, hairline-separated rows (Notion list, not
-     boxed cards), the author-color hairline kept from the TSX. */
+   boxed cards), the author-color hairline kept from the TSX.
+*/
   /* The composer's «حفظ» stays the region's one emphasized action
-     (.btn.primary — the shared system carries it). */
+   (.btn.primary — the shared system carries it).
+*/
 
-  /* ── C7 · Mobile rungs — stacked layout, no horizontal overflow ─── */
+  /* ── C7 · Mobile rungs — stacked layout, no horizontal overflow ───
+*/
   /* The 44px floor already lives in pdf.css ≤640; the selection bar's
-     44px controls above are always sized. The progress bar shrinks to
-     the phone measure. */
+   44px controls above are always sized. The progress bar shrinks to
+   the phone measure.
+*/
   @media (max-width: 640px) {
   }
 
-  /* ── C8 · Print — hide the live chrome additions ─────────────────── */
+  /* ── C8 · Print — hide the live chrome additions ───────────────────
+*/
   /* R331 A-CSS pass 1 — bangs retired: the only competing rules for
-     these r305pdf-* selectors are this file's own screen rules
-     (same @layer pages, earlier source, equal specificity), which a
-     print-scoped block outranks in document order; no other sheet
-     touches the r305pdf- namespace. */
+   these r305pdf-* selectors are this file's own screen rules
+   (same @layer pages, earlier source, equal specificity), which a
+   print-scoped block outranks in document order; no other sheet
+   touches the r305pdf- namespace.
+*/
   @media print {
   }
 
-  /* ── C9 · Reduced motion — this section adds no animation loops ─── */
+  /* ── C9 · Reduced motion — this section adds no animation loops ───
+*/
   @media (prefers-reduced-motion: reduce) {
   }
 
-  /* ════════════════ end a7-pdf section (§C) ════════════════════════ */
+  /* ════════════════ end a7-pdf section (§C) ════════════════════════
+*/
 
   /* ══ §D · AI assistant (a7-ai) ════════════════════════════════════
-     Owner: agent a7-ai. Classes prefixed .r305ai-*. Existing ai.css
-     class names may be restyled ONLY under the .r305rp marker. */
+   Owner: agent a7-ai. Classes prefixed .r305ai-*. Existing ai.css
+   class names may be restyled ONLY under the .r305rp marker.
+*/
 
-  /* ── a7-ai appends here ── */
+  /* ── a7-ai appends here ──
+*/
 
   /* ══ §D · AI assistant — the Heron ledger (a7-ai) ═════════════════
-     The conversation reads as a TECHNICAL LEDGER: each turn is a hairline
-     separated row carrying a role micro-label («المساعد» / «أنت») and a
-     quiet content panel; roles differ by label + indent + panel ground —
-     never color alone. The surface head is the ONE deep band (status
-     region): title + engine/config chips + the persistent privacy line.
-     The composer wraps input + send in the single .r305rp-next accent
-     rail with the page's one emphasized action. No streaming, no cancel
-     and no citations exist in the API — nothing of the sort is rendered.
-     Existing ai.css/student.css class names are restyled ONLY here,
-     under the .r305rp marker. */
+   The conversation reads as a TECHNICAL LEDGER: each turn is a hairline
+   separated row carrying a role micro-label («المساعد» / «أنت») and a
+   quiet content panel; roles differ by label + indent + panel ground —
+   never color alone. The surface head is the ONE deep band (status
+   region): title + engine/config chips + the persistent privacy line.
+   The composer wraps input + send in the single .r305rp-next accent
+   rail with the page's one emphasized action. No streaming, no cancel
+   and no citations exist in the API — nothing of the sort is rendered.
+   Existing ai.css/student.css class names are restyled ONLY here,
+   under the .r305rp marker.
+*/
 
-  /* ── D1 · the status head — the one deep band ──────────────────── */
+  /* ── D1 · the status head — the one deep band ────────────────────
+*/
   /* Title ink re-derives on the deep ground (band sets neutral-0; the
-     ai.css title color points at the page ink and must not win). */
+   ai.css title color points at the page ink and must not win).
+*/
   /* Chips on the deep ground: the resting chip recipe re-mixed toward
-     the band's own fg — theme-proof by construction (same ramp). */
+   the band's own fg — theme-proof by construction (same ramp).
+*/
 
-  /* ── D2 · the ledger rows ───────────────────────────────────────── */
+  /* ── D2 · the ledger rows ─────────────────────────────────────────
+*/
   .r305rp .chat-area {
-    gap: 0; /* hairlines separate turns, not gaps */
+    gap: 0; /* hairlines separate turns, not gaps
+*/
     padding: var(--sp-1) var(--sp-5) var(--sp-3);
   }
   .r305rp .chat-msg {
@@ -586,7 +664,8 @@
     border-block-start: 1px solid var(--surface-divider);
   }
   /* Role = micro-label + indent (the user turn steps in from the start
-     edge); ink weight differences are a third signal, never the only one. */
+   edge); ink weight differences are a third signal, never the only one.
+*/
   .r305rp .chat-msg.user { padding-inline-start: var(--sp-10); }
   .r305rp .r305ai-role {
     display: inline-flex;
@@ -603,7 +682,8 @@
     background: var(--rule-strong);
     flex: none;
   }
-  /* The quiet content panel (r-lg, hairline) — bubble chrome retired. */
+  /* The quiet content panel (r-lg, hairline) — bubble chrome retired.
+*/
   .r305rp .chat-bubble {
     max-inline-size: min(72ch, 100%);
     padding: var(--sp-3) var(--sp-4);
@@ -614,9 +694,11 @@
     line-height: var(--lh-base);
     color: var(--text-strong);
     /* R353 C1 (W3): long unbreakable tokens (URLs/code) wrap inside the
-       ledger row instead of clipping under .ai-surface's overflow. */
+    ledger row instead of clipping under .ai-surface's overflow.
+*/
     overflow-wrap: anywhere;
-    animation: none; /* the ledger is calm; no per-row entrance */
+    animation: none; /* the ledger is calm; no per-row entrance
+*/
   }
   .r305rp .chat-msg.user .chat-bubble {
     background: transparent;
@@ -630,7 +712,8 @@
     padding: var(--sp-3) var(--sp-4);
     max-inline-size: min(72ch, 100%);
   }
-  /* Reply typography — moved out of TSX inline styles (r305 contract). */
+  /* Reply typography — moved out of TSX inline styles (r305 contract).
+*/
   .r305rp .r305ai-line { margin: 0; overflow-wrap: anywhere; }
   .r305rp .r305ai-line--breath { min-block-size: 0.5em; }
   .r305rp .r305ai-list {
@@ -643,17 +726,19 @@
   .r305rp .ai-engine-tag { margin-block-start: var(--sp-1-5); }
 
   /* ── R362 (§F code rendering) — fenced blocks + inline code chips ──
-     The assistant's programming answers: LTR mono inside the RTL
-     ledger. The block scrolls ITS OWN axis (overflow-x: auto — a wide
-     line never pushes the chat surface), the header carries the
-     language token + the copy verb, and dark/light ride the same
-     surface tokens as every other block. */
+   The assistant's programming answers: LTR mono inside the RTL
+   ledger. The block scrolls ITS OWN axis (overflow-x: auto — a wide
+   line never pushes the chat surface), the header carries the
+   language token + the copy verb, and dark/light ride the same
+   surface tokens as every other block.
+*/
   .r305rp .r305ai-code-wrap {
     margin-block: var(--sp-2);
     border: 1px solid var(--surface-border);
     border-radius: var(--r-md);
     background: var(--surface-2);
-    overflow: hidden; /* the head + pre share the radius */
+    overflow: hidden; /* the head + pre share the radius
+*/
     max-inline-size: 100%;
   }
   .r305rp .r305ai-code-head {
@@ -664,7 +749,8 @@
     padding: var(--sp-1-5) var(--sp-3);
     border-block-end: 1px solid var(--surface-divider);
     font-family: var(--font-mono);
-    font-size: 0.6875rem; /* 11px — the mono micro-label register */
+    font-size: 0.6875rem; /* 11px — the mono micro-label register
+*/
     color: var(--text-subtle);
   }
   .r305rp .r305ai-code-lang { letter-spacing: 0.04em; }
@@ -691,11 +777,13 @@
   .r305rp .r305ai-code {
     margin: 0;
     padding: var(--sp-3);
-    overflow-x: auto; /* the block owns its width — never the page */
+    overflow-x: auto; /* the block owns its width — never the page
+*/
     direction: ltr;
     text-align: left;
     font-family: var(--font-mono);
-    font-size: 0.8125rem; /* 13px */
+    font-size: 0.8125rem; /* 13px
+*/
     line-height: 1.7;
     color: var(--text-strong);
     tab-size: 2;
@@ -703,47 +791,57 @@
   }
   .r305rp .r305ai-code code {
     font: inherit;
-    white-space: pre; /* long lines scroll, not wrap (code shape) */
+    white-space: pre; /* long lines scroll, not wrap (code shape)
+*/
   }
   .r305rp .r305ai-code-inline {
     direction: ltr;
     unicode-bidi: embed;
     font-family: var(--font-mono);
-    font-size: 0.85em; /* scales with the line's rhythm */
+    font-size: 0.85em; /* scales with the line's rhythm
+*/
     padding: 0.08em 0.35em;
     border-radius: var(--r-sm);
     background: var(--surface-2);
     border: 1px solid var(--surface-divider);
   }
 
-  /* ── D3 · error panels — message + support code + real retry ───── */
+  /* ── D3 · error panels — message + support code + real retry ─────
+*/
 
-  /* ── D4 · the pending row — dots + a truthful status line ──────── */
+  /* ── D4 · the pending row — dots + a truthful status line ────────
+*/
 
-  /* ── D5 · the composer — one accent rail, one send ──────────────── */
+  /* ── D5 · the composer — one accent rail, one send ────────────────
+*/
   @media (hover: hover) and (pointer: fine) {
   }
 
-  /* ── D6 · the gaps strip — quiet panels over the hairline head ──── */
+  /* ── D6 · the gaps strip — quiet panels over the hairline head ────
+*/
   @media (hover: hover) and (pointer: fine) {
   }
 
-  /* ── D7 · the sidebar — conversations + suggestions as lists ────── */
+  /* ── D7 · the sidebar — conversations + suggestions as lists ──────
+*/
 
-  /* ── D8 · mobile — thumb reach, no horizontal overflow ──────────── */
+  /* ── D8 · mobile — thumb reach, no horizontal overflow ────────────
+*/
   @media (max-width: 760px) {
   }
 
 
   /* ══ §9 · Portal reach-through ════════════════════════════════════
-     Portals (Modal/Sheet/Tooltip) mount on document.body — page agents
-     reach them with `body:has(.r305rp)` as the scope prefix (same
-     pattern as r305-admin-owner.css §6). No shared portal rules yet;
-     this section documents the contract. */
+   Portals (Modal/Sheet/Tooltip) mount on document.body — page agents
+   reach them with `body:has(.r305rp)` as the scope prefix (same
+   pattern as r305-admin-owner.css §6). No shared portal rules yet;
+   this section documents the contract.
+*/
 
   /* Reduced-motion belt: this sheet introduces no animation of its
-     own — hover/focus are the shared system's grammar (color/border
-     steps only). Nothing to disable; kept as the explicit contract. */
+   own — hover/focus are the shared system's grammar (color/border
+   steps only). Nothing to disable; kept as the explicit contract.
+*/
   @media (prefers-reduced-motion: reduce) {
   }
 }
@@ -751,4 +849,5 @@
 /* ═══ r307 — the book row detail (audit 1-D #1) ═════════════════════
    The expandable body under a library row: a quiet definition grid.
    Keys ride the muted tier; values the secondary tier; bdi isolates
-   the numerals. Scoped to the library sheet (.r305rp root). */
+   the numerals. Scoped to the library sheet (.r305rp root).
+*/

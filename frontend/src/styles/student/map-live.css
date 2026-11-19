@@ -1,4 +1,4 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — R321 (c1 · WP-B2) — CampusMap + Live join the SHEET SYSTEM
    (§B student sweep, the r321-exams.css family contract).
 
@@ -18,26 +18,26 @@
    grammar. This sheet carries ONLY what is unique to the map/live
    family on top of both:
 
-     · §1 the paper-rows section rhythm — the old Card walls are gone
-       (the CampusMap band/contact Cards, the Live section stacks), so
-       every board is a SectionBar + hairline rows sitting directly on
-       the page paper; a board whose whole body is the hatched
-       EmptyCell keeps the same breath a populated board's last row
-       leaves before the page's next section.
-     · §2 the under-bar note rung — the honest copy the old Card
-       subtitles / SectionHeader descriptions carried (preserved
-       verbatim) seats as a quiet note under its §B2 bar (the
-       r305c-sec-note register, this family's own copy).
-     · §3 the contact facts — the CampusMap «معلومات التواصل» Card
-       wall is gone; the phone/email facts print as hairline rows
-       directly on the page paper (label + mono values, the §B2 row
-       grammar; the fact-tile ground tiles retire with the wall).
-     · §4 (the unlayered tail) the inner-scale masthead re-seat —
-       both pages are INNER tool pages (a directory + a broadcast
-       schedule inside the student section, not section covers), so
-       their one display h1 seats at the INNER scale: ≤32px at every
-       band, the r321-exams ladder (31.5px @1440 / ~27.6px @768 /
-       31.8px @390).
+   · §1 the paper-rows section rhythm — the old Card walls are gone
+    (the CampusMap band/contact Cards, the Live section stacks), so
+    every board is a SectionBar + hairline rows sitting directly on
+    the page paper; a board whose whole body is the hatched
+    EmptyCell keeps the same breath a populated board's last row
+    leaves before the page's next section.
+   · §2 the under-bar note rung — the honest copy the old Card
+    subtitles / SectionHeader descriptions carried (preserved
+    verbatim) seats as a quiet note under its §B2 bar (the
+    r305c-sec-note register, this family's own copy).
+   · §3 the contact facts — the CampusMap «معلومات التواصل» Card
+    wall is gone; the phone/email facts print as hairline rows
+    directly on the page paper (label + mono values, the §B2 row
+    grammar; the fact-tile ground tiles retire with the wall).
+   · §4 (the unlayered tail) the inner-scale masthead re-seat —
+    both pages are INNER tool pages (a directory + a broadcast
+    schedule inside the student section, not section covers), so
+    their one display h1 seats at the INNER scale: ≤32px at every
+    band, the r321-exams ladder (31.5px @1440 / ~27.6px @768 /
+    31.8px @390).
 
    What stays in its own family, untouched: the campus-city-* band
    ART (student.css — the bars-grow-in city-footprint moment, this
@@ -50,24 +50,27 @@
    Gate contract (this tree): var()/color-mix() colors only · token
    ladder for radius/spacing · zero :hover STATE rules of our own ·
    static texture, nothing for the RM belt to collapse.
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer pages {
 
   /* ── 1 · the hatched-empty breath (the paper-rows rhythm) ─────────
-     The boards are section bars + rows on the page paper; when the
-     EmptyCell IS the section's whole body it keeps the same breath a
-     populated board leaves under its last row before the page's next
-     section (the r321-exams §1 twin). */
+   The boards are section bars + rows on the page paper; when the
+   EmptyCell IS the section's whole body it keeps the same breath a
+   populated board leaves under its last row before the page's next
+   section (the r321-exams §1 twin).
+*/
   .r321m-page .ml-sec .r319s-empty {
     margin-block-end: var(--sp-4);
   }
 
   /* ── 2 · the under-bar note rung ──────────────────────────────────
-     Honest copy preserved verbatim from the old Card subtitles /
-     SectionHeader descriptions — one quiet muted line under its §B2
-     bar (the r319sp-sec-note register carried into this family's own
-     sheet: pages that don't load the academic family sheet). */
+   Honest copy preserved verbatim from the old Card subtitles /
+   SectionHeader descriptions — one quiet muted line under its §B2
+   bar (the r319sp-sec-note register carried into this family's own
+   sheet: pages that don't load the academic family sheet).
+*/
   .r321m-page .ml-sec-note {
     margin: 0 0 var(--sp-3);
     font-size: var(--fs-sm);
@@ -77,10 +80,11 @@
   }
 
   /* ── 3 · the contact facts — hairline rows on the page paper ──────
-     The fact-tile ground tiles retire with the Card wall: each fact is
-     a hairline row (label rung + the mono LTR values isolated in
-     bdi), the block framed by the row grammar alone — top rule under
-     the bar, one separator between, closing rule before the note. */
+   The fact-tile ground tiles retire with the Card wall: each fact is
+   a hairline row (label rung + the mono LTR values isolated in
+   bdi), the block framed by the row grammar alone — top rule under
+   the bar, one separator between, closing rule before the note.
+*/
   .r321m-page .ml-facts {
     display: flex;
     flex-direction: column;
@@ -118,28 +122,35 @@
    display canon carried over from the family tail. The section h2s
    answer at the SectionBar register (26.7px @1440 / 19.8px @390) —
    the one display voice rule holds without the cover pages' giant
-   word. */
+   word.
+*/
 .r321m-page .pf-page-title {
   font-family: var(--font-display);
-  /* r324 P3 (X9) — unified on the app-density masthead (28/24 @600). */
+  /* r324 P3 (X9) — unified on the app-density masthead (28/24 @600).
+*/
   font-size: var(--fs-app-h1);
   font-weight: var(--fw-semibold);
-  line-height: 1.05;      /* the Alexandria display canon */
-  letter-spacing: 0;      /* Arabic joins — never tracked */
+  line-height: 1.05;      /* the Alexandria display canon
+*/
+  letter-spacing: 0;      /* Arabic joins — never tracked
+*/
   color: var(--text);
   overflow-wrap: break-word;
 }
 @media (max-width: 991px) {
-  .r321m-page .pf-page-title { font-size: 3rem; } /* type-gate: allow — ~27.6px @768 (root ≈9.21px), clear of the section-h2's 25.78px rung — the tablet inner-page hierarchy */
+  .r321m-page .pf-page-title { font-size: 3rem; } /* type-gate: allow — ~27.6px @768 (root ≈9.21px), clear of the section-h2's 25.78px rung — the tablet inner-page hierarchy
+*/
 }
 @media (max-width: 767px) {
-  .r321m-page .pf-page-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the ≤32px brief, kept) */
+  .r321m-page .pf-page-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the ≤32px brief, kept)
+*/
 }
 
 /* Reduced-motion belt: this sheet's material is static texture (three
    spacing/type rungs + hairlines — nothing animates, nothing to
    collapse). Kept as the explicit contract, mirroring the family
-   sheets. */
+   sheets.
+*/
 @media (prefers-reduced-motion: reduce) {
   .r321m-page .ml-sec .r319s-empty,
   .r321m-page .ml-sec-note,
@@ -151,19 +162,23 @@
 /* ── r323 B2.4 — the in-page live seat ──────────────────────────────
    The join → attendance → embed loop: one calm panel above the
    schedule, 16:9 frame, hairline frame + paper ground (the sheet
-   grammar), the LIVE pulse chip riding its .live-chip family. */
+   grammar), the LIVE pulse chip riding its .live-chip family.
+*/
 .live-embed {
   border: 1px solid var(--border-strong, var(--border));
   background: var(--bg);
-  padding: var(--sp-4, 16px); /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
-  margin-block-end: var(--space-xl, 24px); /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
+  padding: var(--sp-4, 16px); /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed)
+*/
+  margin-block-end: var(--space-xl, 24px); /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed)
+*/
 }
 .live-embed-head {
   display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap;
   padding-block-end: var(--sp-3);
   border-bottom: 1px solid var(--border);
 }
-.live-embed-title { font-weight: 600; font-size: 0.9375rem; /* type-gate: allow — the r321 live-map rungs (authored literals, reviewed) */ }
+.live-embed-title { font-weight: 600; font-size: 0.9375rem; /* type-gate: allow — the r321 live-map rungs (authored literals, reviewed)
+*/ }
 .live-embed-actions { margin-inline-start: auto; display: flex; gap: var(--sp-2); flex-wrap: wrap; }
 .live-embed-frame {
   position: relative;
@@ -172,7 +187,8 @@
   margin-block: var(--sp-3);
 }
 /* R345 E1 — the embed frame's placeholder keeps the night rung in dark
-   (the pole-inversion cream frame broke the night page's ink identity). */
+   (the pole-inversion cream frame broke the night page's ink identity).
+*/
 [data-theme='dark'] .live-embed-frame {
   background: var(--neutral-150);
 }
@@ -181,13 +197,17 @@
   width: 100%; height: 100%;
   border: 0;
 }
-.live-embed-note { margin: 0; font-size: 0.75rem; /* type-gate: allow — the r321 live-map rungs (authored literals, reviewed) */ color: var(--text-secondary); }
+.live-embed-note { margin: 0; font-size: 0.75rem; /* type-gate: allow — the r321 live-map rungs (authored literals, reviewed)
+*/ color: var(--text-secondary); }
 .r323d-live-error {
   border: 1px solid var(--danger);
   color: var(--danger);
-  padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade) */
-  margin-block-end: var(--space-lg, 16px); /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
-  font-size: 0.875rem; /* type-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
+  padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade)
+*/
+  margin-block-end: var(--space-lg, 16px); /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed)
+*/
+  font-size: 0.875rem; /* type-gate: allow — the r321 live-map rungs (authored literals, reviewed)
+*/
 }
 @media (max-width: 480px) {
   .live-embed-frame { aspect-ratio: 4 / 3; }

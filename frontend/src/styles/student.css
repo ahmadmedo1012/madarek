@@ -1,29 +1,34 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — Student experience pages (Notion-product flavor)
    Lecture player · training & gamification · research · library · live
    Owned by the student-page waves. Append-only: add sections, never
    rewrite other waves' sections. Import order: before polish.css.
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer pages {
 
-  /* ── LecturePlayerPage ──────────────────────────────────────────── */
+  /* ── LecturePlayerPage ────────────────────────────────────────────
+*/
 
   /* ═══ Lecture player — the flipped-classroom surface ═══
-     Two-column shell (video column + chapter sidebar; the sidebar
-     collapses below the player ≤1024px), a fixed 16:9 video frame,
-     watch progress with checkpoint notches, chapter rows in the
-     .list-row language, and the checkpoint quiz inside the shared
-     Modal (.modal-card supplies surface + elevation + focus trap;
-     these classes style the quiz body only). */
+   Two-column shell (video column + chapter sidebar; the sidebar
+   collapses below the player ≤1024px), a fixed 16:9 video frame,
+   watch progress with checkpoint notches, chapter rows in the
+   .list-row language, and the checkpoint quiz inside the shared
+   Modal (.modal-card supplies surface + elevation + focus trap;
+   these classes style the quiz body only).
+*/
   @media (max-width: 1024px) {
-    /* Sidebar collapses below the player on narrow screens. */
+    /* Sidebar collapses below the player on narrow screens.
+*/
   }
 
   /* r220 — the attachments panel: interaction points + chapters in ONE
-     calm surface beside the video. Sticky on desktop (it scrolls with
-     the player column and never outruns the topbar); static in the
-     ≤1024px flow where it reads as the sheet under the player. */
+   calm surface beside the video. Sticky on desktop (it scrolls with
+   the player column and never outruns the topbar); static in the
+   ≤1024px flow where it reads as the sheet under the player.
+*/
   .lecture-aside {
     display: flex;
     flex-direction: column;
@@ -31,13 +36,16 @@
     min-inline-size: 0;
   }
   /* Interaction-point rows — the chapter-row grammar with a question
-     body; unanswered rows carry the alert ink, answered rows go quiet
-     green (state = word + icon + position, never hue alone: the time
-     chip + the answered count in the section head carry the same truth). */
+   body; unanswered rows carry the alert ink, answered rows go quiet
+   green (state = word + icon + position, never hue alone: the time
+   chip + the answered count in the section head carry the same truth).
+*/
   /* Video column — one flex rhythm for meta / progress / description,
-     no per-child margins. */
+   no per-child margins.
+*/
   /* Fixed 16:9 frame: no layout shift before video metadata lands;
-     the element letterboxes inside it (object-fit: contain). */
+   the element letterboxes inside it (object-fit: contain).
+*/
   .lecture-video-wrap {
     position: relative;
     aspect-ratio: 16 / 9;
@@ -46,19 +54,21 @@
     border: 1px solid var(--rule);
     border-radius: var(--r-xl);
     /* R313 (WP-E): hairline frame, no elevation (the .vpc re-skin in
-       player.css owns the night chrome on top of this geometry). */
+    player.css owns the night chrome on top of this geometry).
+*/
     overflow: clip;
   }
   .lecture-video {
     /* r166a (E1 square-stage defect): the WRAP owns the geometry — the
-       video is pinned to it absolutely. In-flow, a paused <video> with
-       a square poster (the seeded /brand/madarek-mark.svg, viewBox
-       64×64) sizes itself by the POSTER's ratio (818×818 measured
-       live) and, as a .lecture-main flex item's content, stretches the
-       aspect-ratio'd wrap to a square via the auto min-content
-       block-size. Out of flow, the 16:9 frame is definite and any
-       poster ratio letterboxes on the matte (mirrors .vpc > video in
-       player.css — the chrome's own generic slot rule). */
+    video is pinned to it absolutely. In-flow, a paused <video> with
+    a square poster (the seeded /brand/madarek-mark.svg, viewBox
+    64×64) sizes itself by the POSTER's ratio (818×818 measured
+    live) and, as a .lecture-main flex item's content, stretches the
+    aspect-ratio'd wrap to a square via the auto min-content
+    block-size. Out of flow, the 16:9 frame is definite and any
+    poster ratio letterboxes on the matte (mirrors .vpc > video in
+    player.css — the chrome's own generic slot rule).
+*/
     position: absolute;
     inset: 0;
     display: block;
@@ -66,11 +76,15 @@
     block-size: 100%;
     object-fit: contain;
     /* True letterbox black — a genuinely physical video matte, not a
-       theme color: the neutral ramp flips with the theme and must
-       never tint the bars. Documented raw value per brief §3.4. */
-    background: #000;  /* color-gate: allow — true letterbox matte (documented §3.4): the theme ramp must never tint video bars */  /* color-gate: allow — true letterbox matte (documented §3.4): the theme ramp must never tint video bars */
+    theme color: the neutral ramp flips with the theme and must
+    never tint the bars. Documented raw value per brief §3.4.
+*/
+    background: #000;  /* color-gate: allow — true letterbox matte (documented §3.4): the theme ramp must never tint video bars
+*/  /* color-gate: allow — true letterbox matte (documented §3.4): the theme ramp must never tint video bars
+*/
   }
-  /* ── Meta block under the player ── */
+  /* ── Meta block under the player ──
+*/
   .lecture-meta-title {
     font-family: var(--font-display);
     font-size: var(--type-headline-size-md);
@@ -79,40 +93,50 @@
     letter-spacing: var(--type-headline-letter-spacing);
     color: var(--text);
     /* r168a: promoted to <h1> (the player had zero headings — axe
-       page-has-heading-one); margin reset so the tag swap is
-       pixel-identical to the old <div>. */
+    page-has-heading-one); margin reset so the tag swap is
+    pixel-identical to the old <div>.
+*/
     margin: 0;
   }
   /* ── Completion-report retry notice (r152a A4 P3) ──
-     Surfaces a failed end-of-video watch report with a one-tap retry —
-     same visual grammar as the inline error banners (soft danger
-     surface + ink), 44px button per the touch-floor canon. */
+   Surfaces a failed end-of-video watch report with a one-tap retry —
+   same visual grammar as the inline error banners (soft danger
+   surface + ink), 44px button per the touch-floor canon.
+*/
   /* r157 (W2-F7): the two CTAs (retry + «اذهب إلى مقرّراتك») sit side by
-     * side and wrap under the copy on narrow screens — the dashboard's
-     * ResumeHero error card reuses this grammar. */
+   * side and wrap under the copy on narrow screens — the dashboard's
+   * ResumeHero error card reuses this grammar.
+*/
   /* ── Watch progress ──
-     Plain-block fill anchors at inline-start → the fill direction is
-     RTL-correct by construction (same anatomy as .progress-track). */
+   Plain-block fill anchors at inline-start → the fill direction is
+   RTL-correct by construction (same anatomy as .progress-track).
+*/
   /* Checkpoint notches on the track (decorative — the note below and
-     the quiz itself carry the information accessibly). inset-inline-
-     start keeps them direction-correct in RTL. */
+   the quiz itself carry the information accessibly). inset-inline-
+   start keeps them direction-correct in RTL.
+*/
   /* ── Prev / next lecture bar (PP-X2, audit P1-7) ─────────────────
-     The watch loop's exit ramp: prev (ghost) · next (primary — the
-     dominant action, becomes «عُد إلى المقرّر» on the last lecture).
-     Space-between keeps prev at the reading start (right in RTL) and
-     next at the forward edge. */
+   The watch loop's exit ramp: prev (ghost) · next (primary — the
+   dominant action, becomes «عُد إلى المقرّر» on the last lecture).
+   Space-between keeps prev at the reading start (right in RTL) and
+   next at the forward edge.
+*/
   /* End-of-lecture pulse — ONE iteration announcing the next action.
-     R313 (WP-E): opacity breath — glow rings are retired system-wide. */
+   R313 (WP-E): opacity breath — glow rings are retired system-wide.
+*/
   @keyframes lecture-next-pulse {
     from { opacity: 0.55; }
     to { opacity: 1; }
   }
 
-  /* ── Chapter sidebar rows (the .list-row language, button edition) ── */
+  /* ── Chapter sidebar rows (the .list-row language, button edition) ──
+*/
   /* quiet leading dot marks the concept link — hairline/dot language,
-     no colored stripes (orchestrator ruling #4) */
+   no colored stripes (orchestrator ruling #4)
+*/
   /* active chapter — accent-soft ground + accent-strong ink
-     (8.62:1 on --accent-soft, documented in tokens.css) */
+   (8.62:1 on --accent-soft, documented in tokens.css)
+*/
   .chapter-row.on { background: var(--accent-soft); }
   .chapter-row.on .chapter-time {
     background: transparent;
@@ -121,37 +145,48 @@
   }
   .chapter-row.on .chapter-title { color: var(--accent-strong); }
   /* r183-B3 (A6/A3 P1-2): the active row's concept line kept the base
-     --text-faint ink (measured 3.95:1 light / 4.12:1 dark on
-     --accent-soft — the ONLY AA text failure on the student surface).
-     --text-secondary clears 4.5:1 on the same wash in BOTH themes
-     (6.78:1 light / 9.31:1 dark, computed from tokens.css) while
-     staying one rank quieter than the --accent-strong title — the
-     row keeps its hierarchy and passes 1.4.3. */
+   --text-faint ink (measured 3.95:1 light / 4.12:1 dark on
+   --accent-soft — the ONLY AA text failure on the student surface).
+   --text-secondary clears 4.5:1 on the same wash in BOTH themes
+   (6.78:1 light / 9.31:1 dark, computed from tokens.css) while
+   staying one rank quieter than the --accent-strong title — the
+   row keeps its hierarchy and passes 1.4.3.
+*/
   .chapter-row.on .chapter-concept { color: var(--text-secondary); }
 
   .chapter-row.on .chapter-state { color: var(--accent-strong); }
 
   .chapter-row.watched .chapter-state { color: var(--success-ink); }
-  /* ── Checkpoint quiz (body only — the Modal owns chrome + trap) ── */
+  /* ── Checkpoint quiz (body only — the Modal owns chrome + trap) ──
+*/
   /* picked + answer in flight — the shared selected-ring state token
-     (inset ring, not border+borders stacking) */
-  /* radio-style letter marker */
+   (inset ring, not border+borders stacking)
+*/
+  /* radio-style letter marker
+*/
   /* revealed states — full opacity beats the :disabled dim so the
-     outcome stays readable (intentionally ordered after :disabled) */
-  /* feedback banners */
+   outcome stays readable (intentionally ordered after :disabled)
+*/
+  /* feedback banners
+*/
   /* Touch floor (44px) for BOTH quiz actions — «تخطّي» was a 32px sm
-     ghost chip before, under the WCAG 2.5.5 target the rest of the
-     player chrome honors. */
+   ghost chip before, under the WCAG 2.5.5 target the rest of the
+   player chrome honors.
+*/
   /* Quiet ghost ink: the skip CTA reads as text-secondary on the
-     transparent ghost base (via --_btn-fg, the button family's ink
-     channel) — present, honest, never competing with the primary. */
-  /* ── Keyframes (reduced-motion off-switch below — guardrail #6) ── */
+   transparent ghost base (via --_btn-fg, the button family's ink
+   channel) — present, honest, never competing with the primary.
+*/
+  /* ── Keyframes (reduced-motion off-switch below — guardrail #6) ──
+*/
   @keyframes lecture-row-in {
-    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small
+*/
     to { opacity: 1; transform: none; }
   }
   @keyframes lecture-correct-pulse {
-    /* R313 (WP-E): opacity breath — glow rings are retired. */
+    /* R313 (WP-E): opacity breath — glow rings are retired.
+*/
     from { opacity: 0.55; }
     to { opacity: 1; }
   }
@@ -160,37 +195,44 @@
     to { opacity: 1; transform: none; }
   }
   @keyframes lecture-result-in {
-    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small
+*/
     to { opacity: 1; transform: none; }
   }
   @media (prefers-reduced-motion: reduce) {
-    /* same-or-higher specificity as the rules above, so the kill wins */
+    /* same-or-higher specificity as the rules above, so the kill wins
+*/
   }
 
-  /* ── Phone tuning ── */
+  /* ── Phone tuning ──
+*/
 
-  /* ── TrainingPages (tracks / lessons / badges / leaderboard) ────── */
+  /* ── TrainingPages (tracks / lessons / badges / leaderboard) ──────
+*/
 
-  /* ── §analytics — DashboardPage · MatrixPage · AiAssistant (wave 4-a) ── */
+  /* ── §analytics — DashboardPage · MatrixPage · AiAssistant (wave 4-a) ──
+*/
 
   /* ═══ Dashboard — the continue-learning hero ═══
-     R341 D7a — the r285-era KPI/doughnut moment (the term-fill span,
-     the ChartFrame doughnut well, the dash-center-in rise, the agenda
-     tone wells, the compact empty slot, the chevron nudge) is fully
-     retired: the R319/R325 rebuilds seat the StatLine + indicator
-     instruments, and every one of those families is rg-proven zero-
-     seat in the TSX. This section now owns what still renders — the
-     hero band below (the agenda/week rows ride the pattern library).
-     The KPI values still count in (TSX CountIn) — that is TSX, not
-     CSS; no keyframe survives here. */
+   R341 D7a — the r285-era KPI/doughnut moment (the term-fill span,
+   the ChartFrame doughnut well, the dash-center-in rise, the agenda
+   tone wells, the compact empty slot, the chevron nudge) is fully
+   retired: the R319/R325 rebuilds seat the StatLine + indicator
+   instruments, and every one of those families is rg-proven zero-
+   seat in the TSX. This section now owns what still renders — the
+   hero band below (the agenda/week rows ride the pattern library).
+   The KPI values still count in (TSX CountIn) — that is TSX, not
+   CSS; no keyframe survives here.
+*/
 
   /* ═══ Continue-learning hero (PP-X2, audit P0-3) ═══
-     The PRIMARY action of the dashboard: one click from cold-open to
-     the exact lecture second. Reuses the card/metric language — accent
-     only, no new colors: a 3px accent inline-start edge marks the
-     entry point on top of the .lesson-row.next wash recipe (accent
-     color-mix over --surface), so the hero reads as "the row to
-     continue" at the page's top. */
+   The PRIMARY action of the dashboard: one click from cold-open to
+   the exact lecture second. Reuses the card/metric language — accent
+   only, no new colors: a 3px accent inline-start edge marks the
+   entry point on top of the .lesson-row.next wash recipe (accent
+   color-mix over --surface), so the hero reads as "the row to
+   continue" at the page's top.
+*/
   .dash-resume-card {
     display: flex;
     align-items: center;
@@ -199,11 +241,13 @@
     border-inline-start: 3px solid var(--accent);
     background: color-mix(in srgb, var(--accent) 5%, var(--surface));
     /* R313 (WP-E): flat paper tile — no elevation, no lift; the copper
-       rail + wash carry the hierarchy (the deep-band variant in
-       r305-student-dashboard.css already pinned this flatness). */
+    rail + wash carry the hierarchy (the deep-band variant in
+    r305-student-dashboard.css already pinned this flatness).
+*/
   }
   /* Dark: the 5% wash reads near-invisible against the dark card —
-     same raise the .course-hero dark override applies (12%). */
+   same raise the .course-hero dark override applies (12%).
+*/
   [data-theme="dark"] .dash-resume-card {
     background: color-mix(in srgb, var(--accent) 10%, var(--surface));
   }
@@ -227,13 +271,15 @@
     line-height: var(--lh-base);
   }
   /* R329 (gate:clean): the resume progress bar's geometry is
-     r325-indicators.css's unlayered seat (sp-3 top + 420px cap) —
-     these pages-layer copies were inert. */
+   r325-indicators.css's unlayered seat (sp-3 top + 420px cap) —
+   these pages-layer copies were inert.
+*/
   .dash-resume-cta { flex-shrink: 0; }
   /* Desktop prominence (final VLM jury note): the resume CTA is the
-     page's primary action — give it lg-button mass on wide screens so
-     it visually outweighs the progress readout beside it. Mobile
-     already renders it full-width first-in-column. */
+   page's primary action — give it lg-button mass on wide screens so
+   it visually outweighs the progress readout beside it. Mobile
+   already renders it full-width first-in-column.
+*/
   @media (min-width: 921px) {
     .dash-resume-cta {
       min-block-size: 48px;
@@ -243,17 +289,19 @@
   }
   @media (max-width: 640px) {
     /* Phone: the CTA spans the full card width under the text — the
-       thumb target the primary action deserves. */
+    thumb target the primary action deserves.
+*/
     .dash-resume-cta { inline-size: 100%; justify-content: center; }
   }
 
   /* ═══ r164-c — التقويم الأكاديمي (CalendarPage) ═══
-     The one-calendar view: month grid + legend + selected-day event
-     list. Token-only colors; the four event kinds ride data-kind:
-     class → accent · assignment → gold · exam → danger · live →
-     chart-5 (lavender). Dots use the deep inks (WCAG-safe on both
-     themes); icon wells use the soft backgrounds + deep inks — the
-     same pastel/ink recipe as the agenda tone wells. */
+   The one-calendar view: month grid + legend + selected-day event
+   list. Token-only colors; the four event kinds ride data-kind:
+   class → accent · assignment → gold · exam → danger · live →
+   chart-5 (lavender). Dots use the deep inks (WCAG-safe on both
+   themes); icon wells use the soft backgrounds + deep inks — the
+   same pastel/ink recipe as the agenda tone wells.
+*/
 
   .cal-card { overflow: hidden; }
 
@@ -314,8 +362,9 @@
     padding: 0 var(--sp-3) var(--sp-3);
   }
   /* r299: the pending mirror's month footprint — the same 7-column
-     template and cell height as .cal-grid, its own class so the "no
-     .cal-grid while loading" pin keeps meaning the interactive grid. */
+   template and cell height as .cal-grid, its own class so the "no
+   .cal-grid while loading" pin keeps meaning the interactive grid.
+*/
   .cal-grid-skel {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -331,7 +380,8 @@
     min-block-size: 64px;
   }
   .cal-cell {
-    /* Buttons reset — the cell is a selector, not an action */
+    /* Buttons reset — the cell is a selector, not an action
+*/
     appearance: none;
     border: 1px solid transparent;
     border-radius: var(--r-lg);
@@ -351,11 +401,12 @@
     .cal-cell:hover { background: var(--surface-2); }
   }
   /* r299 (final C): out-of-month days — the old opacity:0.35 dim put the
-     13px numeral at 2.31:1 (light, axe color-contrast; opacity-as-
-     secondary-text is the taste anti-pattern r283 already retired
-     elsewhere). The honest distinction is INK, not transparency:
-     muted tier keeps ≥4.5:1 in both themes; the dots never render on
-     out-of-month cells (events bucket by the visible month's dayKeys). */
+   13px numeral at 2.31:1 (light, axe color-contrast; opacity-as-
+   secondary-text is the taste anti-pattern r283 already retired
+   elsewhere). The honest distinction is INK, not transparency:
+   muted tier keeps ≥4.5:1 in both themes; the dots never render on
+   out-of-month cells (events bucket by the visible month's dayKeys).
+*/
   .cal-cell[data-in-month='false'] .cal-day-num { color: var(--text-muted); font-weight: 400; }
   .cal-cell[data-selected='true'] {
     background: var(--surface-2);
@@ -369,47 +420,54 @@
     display: grid;
     place-items: center;
     /* R313 (WP-E): square numeral tile — the mono index register (the
-     tabular digits are centered in a 28px square, today's fill reads
-     as the reference's filled square numerals). */
+   tabular digits are centered in a 28px square, today's fill reads
+   as the reference's filled square numerals).
+*/
     border-radius: var(--r-sm);
     font-variant-numeric: tabular-nums;
   }
-  /* Today: the classic filled numeral — accent fill + accent-fg ink. */
+  /* Today: the classic filled numeral — accent fill + accent-fg ink.
+*/
   .cal-cell[data-today='true'] .cal-day-num {
     background: var(--accent);
     color: var(--accent-fg);
     font-weight: 700;
   }
   /* r341 D7a — the light-theme AA seat: white on the raw --accent
-     (#FA3600) measures 3.76:1 (the documented AA-LARGE exception —
-     but this numeral is fs-sm 13px, a SMALL text node, and the
-     conformance ink probe + axe both read it). The same darker seat
-     the R318 .btn.accent recipe takes (#DB3A00, 4.55:1), built from
-     tokens: accent mixed 82% toward --black ≈ #CD2C00 = 5.31:1 with
-     the white numeral. Dark already passes by construction
-     (--warm-ink #191918 on the luminous ember ≈ 4.7:1+) — untouched. */
+   (#FA3600) measures 3.76:1 (the documented AA-LARGE exception —
+   but this numeral is fs-sm 13px, a SMALL text node, and the
+   conformance ink probe + axe both read it). The same darker seat
+   the R318 .btn.accent recipe takes (#DB3A00, 4.55:1), built from
+   tokens: accent mixed 82% toward --black ≈ #CD2C00 = 5.31:1 with
+   the white numeral. Dark already passes by construction
+   (--warm-ink #191918 on the luminous ember ≈ 4.7:1+) — untouched.
+*/
   [data-theme='light'] .cal-cell[data-today='true'] .cal-day-num {
     background: color-mix(in srgb, var(--accent) 82%, var(--black));
   }
   .cal-dots {
     display: flex;
-    gap: 3px; /* spacing-gate: allow — calendar dot trail hairline gap */
+    gap: 3px; /* spacing-gate: allow — calendar dot trail hairline gap
+*/
     flex-wrap: wrap;
     justify-content: center;
   }
 
-  /* ═══ r366 (2-d): the week mode — the phone's honest week ═══ */
+  /* ═══ r366 (2-d): the week mode — the phone's honest week ═══
+*/
 
   /* The mode switcher — the shared .pill register (aria-pressed
-     grammar, the matrix filter precedent). */
+   grammar, the matrix filter precedent).
+*/
   .cal-mode-row {
     display: flex;
     gap: var(--sp-1-5);
     padding: var(--sp-2) var(--sp-3) 0;
   }
   /* The week strip: below 768 the seven days STACK (a 7-column split
-     at 320 would cradle ~38px chips — unreadable); ≥768 the classic
-     7-column week returns under the shared dow row. */
+   at 320 would cradle ~38px chips — unreadable); ≥768 the classic
+   7-column week returns under the shared dow row.
+*/
   .cal-grid.cal-week { grid-template-columns: 1fr; }
   .cal-week .cal-cell {
     min-block-size: 0;
@@ -426,7 +484,8 @@
     color: var(--text-muted);
   }
   /* The event chip — one line, always; the full title rides the
-     tooltip (no truncation without a pointer to the whole). */
+   tooltip (no truncation without a pointer to the whole).
+*/
   .cal-cell-chip {
     display: block;
     min-inline-size: 0;
@@ -440,12 +499,14 @@
     background: var(--surface-2);
     border: 1px solid var(--border-faint);
     /* The kind's ink rides the inline-start edge — the same colours
-       the legend dots speak, no second colour system. */
+    the legend dots speak, no second colour system.
+*/
     border-inline-start: 3px solid var(--text-muted);
     border-radius: var(--r-sm);
     /* One-line chip geometry: 13px × 1.4 + 2×2px padding + 2px border
-       = 24.2px — safely under the 30px one-line ceiling even at the
-       font-scale stress contexts. */
+    = 24.2px — safely under the 30px one-line ceiling even at the
+    font-scale stress contexts.
+*/
     line-height: 1.4;
     padding: var(--sp-0-5) var(--sp-1-5);
   }
@@ -460,7 +521,8 @@
   }
   @media (max-width: 767px) {
     /* The stacked week carries its own per-cell day labels — the
-       7-column dow row would label a single column. */
+    7-column dow row would label a single column.
+*/
     .cal-dow-row.cal-dow-week { display: none; }
   }
   @media (min-width: 768px) {
@@ -471,64 +533,77 @@
   }
 
   /* The selected-day event list — same row anatomy/affordances as the
-     dashboard agenda rows (icon well + text + forward chevron). */
+   dashboard agenda rows (icon well + text + forward chevron).
+*/
   .cal-detail { border-block-start: 1px solid var(--border-faint); }
-  /* ── r170-e: coarse-pointer 44px floor for the calendar nav ────── */
+  /* ── r170-e: coarse-pointer 44px floor for the calendar nav ──────
+*/
   /* Measured at 390 (touch emulation): the month-nav buttons render
-     42×44 — 2px under the 44 floor on the inline axis — and above
-     640px a coarse tablet renders the same .btn.sm at its 32px box
-     (the polish ≤640 floors only key on viewport width). This block
-     floors the nav buttons at the INPUT CAPABILITY instead (the
-     r164-j idiom), verified live: 44×44 at 390 AND at 900 coarse.
-     The day cells stay out of it on purpose: their block floors are
-     already ≥44 everywhere (64 base / 48 ≤640 — a later 44 rule was
-     measured LOWERING both at coarse pointers), and their inline
-     axis is bound by the 7-column 1fr month grid (a 44px min-inline
-     would overflow the 306px grid box and clip behind
-     .cal-card's overflow:hidden) — they pass WCAG 2.5.8's 24px
-     minimum (40.6px @390) either way. min-* only grows the hit
-     box — no visual change beyond the size floor. */
+   42×44 — 2px under the 44 floor on the inline axis — and above
+   640px a coarse tablet renders the same .btn.sm at its 32px box
+   (the polish ≤640 floors only key on viewport width). This block
+   floors the nav buttons at the INPUT CAPABILITY instead (the
+   r164-j idiom), verified live: 44×44 at 390 AND at 900 coarse.
+   The day cells stay out of it on purpose: their block floors are
+   already ≥44 everywhere (64 base / 48 ≤640 — a later 44 rule was
+   measured LOWERING both at coarse pointers), and their inline
+   axis is bound by the 7-column 1fr month grid (a 44px min-inline
+   would overflow the 306px grid box and clip behind
+   .cal-card's overflow:hidden) — they pass WCAG 2.5.8's 24px
+   minimum (40.6px @390) either way. min-* only grows the hit
+   box — no visual change beyond the size floor.
+*/
   @media (pointer: coarse) {
     .cal-nav-btn { min-inline-size: 44px; min-block-size: 44px; }
   }
 
   @media (max-width: 640px) {
-    /* Phone: tighter cells (dots stay legible), full-width padding. */
+    /* Phone: tighter cells (dots stay legible), full-width padding.
+*/
     .cal-cell { min-block-size: 48px; }
     .cal-day-num { min-inline-size: 24px; min-block-size: 24px; }
     .cal-head, .cal-legend, .cal-detail-head { padding-inline: var(--sp-3); }
     .cal-grid, .cal-dow-row { padding-inline: var(--sp-1); }
   }
 
-  /* ═══ Matrix — the heatmap filter signature ═══ */
+  /* ═══ Matrix — the heatmap filter signature ═══
+*/
 
   /* Count chip inside the shared .filter-pill (training.css owns the
-     pill family; the chip is additive so no layer fight). */
+   pill family; the chip is additive so no layer fight).
+*/
   /* 21-c (A12 P1-4): the teacher dashboard renders the count inside
-     the SHARED .pill.on (not .filter-pill) — the aria-pressed rule
-     never matched, so the light-tuned muted met neither inverted
-     ground (3.35 on neutral-900 light / 1.32 on copper dark).
-     Inheriting the pill's own AA pair fixes both (17.4 / 7.87). */
+   the SHARED .pill.on (not .filter-pill) — the aria-pressed rule
+   never matched, so the light-tuned muted met neither inverted
+   ground (3.35 on neutral-900 light / 1.32 on copper dark).
+   Inheriting the pill's own AA pair fixes both (17.4 / 7.87).
+*/
   /* THE signature: on a filter change, non-matching cells recede (shade
-     desaturates + fades) while the matching level keeps its color — the
-     map stays whole and the filter reads instantly. The shade movement
-     rides .matrix-cell's existing transition (owned here since r151i). */
+   desaturates + fades) while the matching level keeps its color — the
+   map stays whole and the filter reads instantly. The shade movement
+   rides .matrix-cell's existing transition (owned here since r151i).
+*/
   /* 22-c (A4 P3-7): one quiet summary line for courses with no mapped
-     concepts yet (was: N identical empty-state cards). Dashed rule =
-     "pending", matching the colleges announce-row separators. */
-  /* ═══ AiAssistant — typing indicator + gap cards + error rows ═══ */
+   concepts yet (was: N identical empty-state cards). Dashed rule =
+   "pending", matching the colleges announce-row separators.
+*/
+  /* ═══ AiAssistant — typing indicator + gap cards + error rows ═══
+*/
   /* R353 C1 RESTORE: the r333 WAVE-6 sweep deleted these rule bodies on
-     the belief they were dead — they were not (AiAssistantPage.tsx is a
-     live consumer of every class here; the orphaned keyframes below
-     were the tell). Restored verbatim from ca5a5ad0~1. */
+   the belief they were dead — they were not (AiAssistantPage.tsx is a
+   live consumer of every class here; the orphaned keyframes below
+   were the tell). Restored verbatim from ca5a5ad0~1.
+*/
 
   /* Gap starter cards — replaced ~15 lines of inline styles + a JS
-     mouseenter border swap (no focus parity) with the card recipe. */
+   mouseenter border swap (no focus parity) with the card recipe.
+*/
   .ai-gap-card {
     display: flex;
     flex-direction: column;
     gap: var(--sp-2);
-    min-block-size: 44px; /* touch target */
+    min-block-size: 44px; /* touch target
+*/
     padding: var(--sp-4);
     text-align: start;
     background: var(--surface-2);
@@ -550,8 +625,9 @@
   .ai-gap-card:disabled { cursor: default; }
   .ai-gap-head { display: flex; align-items: center; gap: var(--sp-2); }
   /* 21-c: same -ink pairing as .ai-gap-pct — the 14px warning glyph is
-     the card's gap marker (non-text 3:1 floor; --warning was 2.13 on
-     the light card ground). */
+   the card's gap marker (non-text 3:1 floor; --warning was 2.13 on
+   the light card ground).
+*/
   .ai-gap-warn { color: var(--warning-ink); flex-shrink: 0; }
   .ai-gap-pct {
     margin-inline-start: auto;
@@ -559,10 +635,11 @@
     font-size: var(--type-label-size-sm);
     font-weight: var(--fw-semibold);
     /* 21-c (A5 P1-2): --warning gold measured 2.13:1 on the card's
-       surface-2 ground in light (the one number each gap card exists
-       to show). --warning-ink keeps the hue family and clears AA
-       both themes: 7.29:1 light / 9.90:1 dark (dark value identical
-       to the old token, so dark is a no-op). */
+    surface-2 ground in light (the one number each gap card exists
+    to show). --warning-ink keeps the hue family and clears AA
+    both themes: 7.29:1 light / 9.90:1 dark (dark value identical
+    to the old token, so dark is a no-op).
+*/
     color: var(--warning-ink);
     font-variant-numeric: tabular-nums;
   }
@@ -580,16 +657,21 @@
   }
 
   /* Typing indicator — the authored moment while a reply is in flight
-     (bot-bubble silhouette, calm wave, sr text for the live region). */
+   (bot-bubble silhouette, calm wave, sr text for the live region).
+*/
   .chat-typing {
     display: inline-flex;
     align-items: center;
-    gap: 5px; /* spacing-gate: allow — typing-dots cadence gap for the three-dot animation */
-    /* r149 (R3-A2 R8): نفس حشو فقاعة الدردشة 10/14 (كانت 12/14 درجة أعلى) */
-    padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade) */
+    gap: 5px; /* spacing-gate: allow — typing-dots cadence gap for the three-dot animation
+*/
+    /* r149 (R3-A2 R8): نفس حشو فقاعة الدردشة 10/14 (كانت 12/14 درجة أعلى)
+*/
+    padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade)
+*/
     border-radius: var(--r-xl);
     /* R313 (WP-E): square bubbles — the 4px tail-corner detail is
-       retired with the radius-0 canon. */
+    retired with the radius-0 canon.
+*/
     background: var(--surface-2);
     border: 1px solid var(--border-faint);
   }
@@ -607,14 +689,16 @@
     30% { transform: translateY(-3px); opacity: 1; }
   }
 
-  /* Failed exchange — stays in the log, recoverable via retry. */
+  /* Failed exchange — stays in the log, recoverable via retry.
+*/
   .chat-error {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--sp-2);
     max-inline-size: min(640px, 78%);
-    padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade) */
+    padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade)
+*/
     border-radius: var(--r-xl);
     background: var(--danger-soft);
     border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
@@ -630,7 +714,8 @@
     min-block-size: 36px;
     padding-inline: var(--sp-3);
     border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
-    /* R313 (WP-E): square control. */
+    /* R313 (WP-E): square control.
+*/
     border-radius: var(--r-sm);
     background: transparent;
     color: var(--danger-ink);
@@ -654,7 +739,8 @@
   }
 
   /* Phone: 44px touch floor for the compact chat controls (min-* sizes
-     coexist with the shared 40px boxes — min wins, desktop unchanged). */
+   coexist with the shared 40px boxes — min wins, desktop unchanged).
+*/
   @media (max-width: 640px) {
     .ai-quick-chip {
       display: inline-flex;
@@ -665,34 +751,39 @@
     .chat-input { min-block-size: 44px; }
     .chat-send { min-inline-size: 44px; min-block-size: 44px; }
     /* r164g: the conversations rows' compact actions hit the same 44px
-       touch floor on phones (min-* coexists with .btn.sm's 32px box —
-       min wins, desktop unchanged). */
+    touch floor on phones (min-* coexists with .btn.sm's 32px box —
+    min wins, desktop unchanged).
+*/
     .ai-conv-row .btn { min-block-size: 44px; }
   }
 
   /* Guardrail #6 — keyframe off-switches (the base.css token belt
-     handles the duration-based rules; these kill the keyframes). */
+   handles the duration-based rules; these kill the keyframes).
+*/
 
-  /* ── §lists — Courses · CourseDetail · Exams · Mooc · Webinars · Jobs (wave 4-b) ── */
+  /* ── §lists — Courses · CourseDetail · Exams · Mooc · Webinars · Jobs (wave 4-b) ──
+*/
 
   /* ═══ CoursesPage — filter → grid re-stagger (the authored moment) ═══
-     The polish overrides layer staggers EVERY .grid-3 child on every
-     mount (madarek-stagger-up, fill both) — which fires an entrance on
-     the first data render (the antipattern this page avoids) AND pins
-     transform:none forever, silently killing the shared .thumb-card
-     hover lift. The courses grid opts out of the global rule and owns
-     its entrance: first render = static, filter change = re-stagger
-     (TSX sets data-stagger on filter clicks only). !important is
-     required to beat the overrides layer — the same layer-precedence
-     flip wave 3-c used for the .track-card anchor-underline opt-out. */
+   The polish overrides layer staggers EVERY .grid-3 child on every
+   mount (madarek-stagger-up, fill both) — which fires an entrance on
+   the first data render (the antipattern this page avoids) AND pins
+   transform:none forever, silently killing the shared .thumb-card
+   hover lift. The courses grid opts out of the global rule and owns
+   its entrance: first render = static, filter change = re-stagger
+   (TSX sets data-stagger on filter clicks only). !important is
+   required to beat the overrides layer — the same layer-precedence
+   flip wave 3-c used for the .track-card anchor-underline opt-out.
+*/
   /* r173a — the light single-line courses summary (the r171 VLM
-     «courses header weight» deferred note): the four-MetricCard KPI
-     strip — four icon wells + 28px values — outweighed everything
-     the page's content rhythm renders below it (light glass
-     thumb-cards, one 13px line, pills). The SAME counts now ride one
-     text-muted line (AA 5.04:1 on --bg light / 6.80:1 dark), digits
-     in bdi so the latn numerals stay bidi-isolated inside the RTL
-     run. No new colors, no new tokens. */
+   «courses header weight» deferred note): the four-MetricCard KPI
+   strip — four icon wells + 28px values — outweighed everything
+   the page's content rhythm renders below it (light glass
+   thumb-cards, one 13px line, pills). The SAME counts now ride one
+   text-muted line (AA 5.04:1 on --bg light / 6.80:1 dark), digits
+   in bdi so the latn numerals stay bidi-isolated inside the RTL
+   run. No new colors, no new tokens.
+*/
   .courses-summary {
     font-size: var(--fs-sm);
     line-height: 1.5;
@@ -710,13 +801,14 @@
     align-items: center;
   }
   /* live counts ride inside the pills — tabular so columns of digits align.
-     5-D1 (A11 P2-1): was `color: inherit; opacity: 0.7` — the opacity
-     dim left the 12px mono count at 3.82:1 on the idle white pill and
-     4.28:1 on the active copper pill (dark) — opacity-as-secondary-text
-     is the taste anti-pattern. The .filter-pill-count grammar one page
-     over is the fix: the muted tinted ink at rest (5.04:1 light /
-     5.95:1 dark), full inherit on the inverted active grounds (17.4:1
-     light neutral-900 / 7.87:1 dark copper). */
+   5-D1 (A11 P2-1): was `color: inherit; opacity: 0.7` — the opacity
+   dim left the 12px mono count at 3.82:1 on the idle white pill and
+   4.28:1 on the active copper pill (dark) — opacity-as-secondary-text
+   is the taste anti-pattern. The .filter-pill-count grammar one page
+   over is the fix: the muted tinted ink at rest (5.04:1 light /
+   5.95:1 dark), full inherit on the inverted active grounds (17.4:1
+   light neutral-900 / 7.87:1 dark copper).
+*/
   .courses-filter-count {
     font-family: var(--font-mono);
     font-size: var(--type-label-size-sm);
@@ -726,9 +818,10 @@
   .pill.on .courses-filter-count { color: inherit; }
 
   /* r221 (4A redesign — Superlist): the course LIST replaces the card
-     grid — rows in the pattern RowList (detail attached to the row).
-     The API tint rides the leading icon well only; progress + CTA sit
-     on the row's trailing edge. */
+   grid — rows in the pattern RowList (detail attached to the row).
+   The API tint rides the leading icon well only; progress + CTA sit
+   on the row's trailing edge.
+*/
   .courses-row-icon {
     display: inline-flex;
     align-items: center;
@@ -739,8 +832,9 @@
     flex-shrink: 0;
   }
   /* r289: .courses-row-title حُذف — الصف كله الوصلة الآن (RowItem to،
-     .pf-row-link)؛ نصف العنوان نصف عقد الصف الأساسي والتحويم لغة
-     .pf-row-link. */
+   .pf-row-link)؛ نصف العنوان نصف عقد الصف الأساسي والتحويم لغة
+   .pf-row-link.
+*/
   .courses-row-progress {
     display: flex;
     align-items: center;
@@ -749,13 +843,14 @@
   .courses-row-go { flex-shrink: 0; }
   @media (max-width: 640px) {
     /* Phone rows: the chip is decorative (the row's title is the
-       link) — it yields to the text; the bar keeps the honest % only.
-       r341 D7a — EXCEPT the act-now verb: the first still-unfinished
-       course's «تابع/ابدأ» rides the accent register and STAYS on the
-       phone band (the exams list's oex-row-cta precedent — the accent
-       is reserved for THE actionable state, and the page's only
-       primary CTA at 390). The 44px craft floor rides with it (the
-       touch floor law; .btn.sm alone renders a 32px box). */
+    link) — it yields to the text; the bar keeps the honest % only.
+    r341 D7a — EXCEPT the act-now verb: the first still-unfinished
+    course's «تابع/ابدأ» rides the accent register and STAYS on the
+    phone band (the exams list's oex-row-cta precedent — the accent
+    is reserved for THE actionable state, and the page's only
+    primary CTA at 390). The 44px craft floor rides with it (the
+    touch floor law; .btn.sm alone renders a 32px box).
+*/
     .courses-row-go { display: none; }
     .courses-row-go--now {
       display: inline-flex;
@@ -763,38 +858,46 @@
     }
   }
   /* (r151f: bang retired — the v6 stagger's five selectors carry
-     :not(.courses-grid):not(.mooc-grid) at the source now, so this
-     rule fights nothing; kept as the documented belt that pins the
-     page's authored entrance order below.) */
+   :not(.courses-grid):not(.mooc-grid) at the source now, so this
+   rule fights nothing; kept as the documented belt that pins the
+   page's authored entrance order below.)
+*/
   /* API course tint rides on --course-tint (set inline by TSX) and is
-     only consumed through color-mix washes over var(--surface) — the
-     invalid `${tint}10` hex-alpha inline pattern is gone. */
+   only consumed through color-mix washes over var(--surface) — the
+   invalid `${tint}10` hex-alpha inline pattern is gone.
+*/
   /* R341 D7a — the r221 Superlist rebuild killed the thumb-card grid:
-     the card scent block (code chip + counted noun + named .thumb-
-     card-go CTA) and its courses-card-in entrance keyframe are zero-
-     seat (rg-proven; the LIST is the product now — RowList + §B2
-     CourseBar). */
+   the card scent block (code chip + counted noun + named .thumb-
+   card-go CTA) and its courses-card-in entrance keyframe are zero-
+   seat (rg-proven; the LIST is the product now — RowList + §B2
+   CourseBar).
+*/
 
   /* r221 (4A redesign — Superlist): the continue strip — the course
-     home's ONE next action with its progress riding beside it. The
-     old tinted hero card (course-hero family) retires; the tint now
-     washes only this strip's icon-side border and progress fill. */
+   home's ONE next action with its progress riding beside it. The
+   old tinted hero card (course-hero family) retires; the tint now
+   washes only this strip's icon-side border and progress fill.
+*/
 
   /* ═══ CourseDetailPage — tinted hero + curriculum progress ═══
-     Same anatomy as the training track-hero: hierarchy via tint wash +
-     hairline, never a colored side-stripe (ruling #4). --course-tint
-     is set inline on the .course-page root and simply inherits here —
-     no class-level default (it would beat the inherited value). */
+   Same anatomy as the training track-hero: hierarchy via tint wash +
+   hairline, never a colored side-stripe (ruling #4). --course-tint
+   is set inline on the .course-page root and simply inherits here —
+   no class-level default (it would beat the inherited value).
+*/
   /* 21-c (A3 P2-7): the 7% tint wash read near-invisible in dark —
-     measured dark hero rgb(34,39,45) vs card rgb(31,31,30) vs page
-     rgb(25,25,24): ~3 RGB points of separation, the hero survived on
-     its border alone (VLM: "card edges dissolve"). Dark raises the
-     wash to 12% + border to 35% per the audit's sketch. */
+   measured dark hero rgb(34,39,45) vs card rgb(31,31,30) vs page
+   rgb(25,25,24): ~3 RGB points of separation, the hero survived on
+   its border alone (VLM: "card edges dissolve"). Dark raises the
+   wash to 12% + border to 35% per the audit's sketch.
+*/
   /* progress panel — hosts the count-up readout (authored moment #2:
-     the % value animates in JS over --motion-duration-stat; CSS pins
-     the metric role + tabular numerals so digits never shift width) */
+   the % value animates in JS over --motion-duration-stat; CSS pins
+   the metric role + tabular numerals so digits never shift width)
+*/
   /* lecture icon wells (was ~10 lines of inline style per row) —
-     inherits --course-tint from the .course-page root */
+   inherits --course-tint from the .course-page root
+*/
   .course-lec-well {
     inline-size: 36px;
     block-size: 36px;
@@ -809,77 +912,94 @@
   .course-lec-well.done {
     background: var(--success-soft);
     /* R131-F12 (audit A7 §5-1, WCAG 1.4.11 advisory): light --success
-       (#4FA66D) on the mint well measured 2.53:1 — the done-state icon
-       now consumes the -ink tier (7.99:1 in light; in dark --success-ink
-       ≡ --success #7FD39A, so dark renders unchanged). */
+    (#4FA66D) on the mint well measured 2.53:1 — the done-state icon
+    now consumes the -ink tier (7.99:1 in light; in dark --success-ink
+    ≡ --success #7FD39A, so dark renders unchanged).
+*/
     color: var(--success-ink);
   }
   /* PP-X2 (audit P1-7b): the "continue here" row — the training list's
-     .lesson-row.next grammar (training.css): course-tint wash + tinted
-     hairline, with a stronger inline-start edge marking the reading
-     entry point. Same color-mix recipe, --course-tint inherited from
-     the .course-page root. */
-  /* durations / counts in the curriculum rows stay digit-stable */
+   .lesson-row.next grammar (training.css): course-tint wash + tinted
+   hairline, with a stronger inline-start edge marking the reading
+   entry point. Same color-mix recipe, --course-tint inherited from
+   the .course-page root.
+*/
+  /* durations / counts in the curriculum rows stay digit-stable
+*/
   /* r169a: mobile lecture-row wrap — the row's flex children were
-     [well 36px] + [body flex:1 min-0] + up to 3 fixed badges
-     (~232px). At 390px the only shrinkable child (the body) collapsed
-     to width 0 — the lecture title was invisible on the «تابع من هنا»
-     row (measured: .list-row-title rect w=0, recovers ≥640px). The
-     body now takes its own full line next to the well and the badges
-     wrap onto a line beneath, indented to the title column. */
+   [well 36px] + [body flex:1 min-0] + up to 3 fixed badges
+   (~232px). At 390px the only shrinkable child (the body) collapsed
+   to width 0 — the lecture title was invisible on the «تابع من هنا»
+   row (measured: .list-row-title rect w=0, recovers ≥640px). The
+   body now takes its own full line next to the well and the badges
+   wrap onto a line beneath, indented to the title column.
+*/
 
   /* ═══ Exam grade emphasis (PP-X2 note: the /student/exams hub that
-     hosted this block's first consumer was deleted — audit P3-25 —
-     but the classes stay: OnlineExamsPages' result screens render the
-     same .exam-grade reveal as their authored moment) ═══
-     The real cumulative average lands as the visual anchor: metric
-     scale + one-shot rise and a state-ring pulse (0 0 0 spread — the
-     focus-ring language, never elevation). */
+   hosted this block's first consumer was deleted — audit P3-25 —
+   but the classes stay: OnlineExamsPages' result screens render the
+   same .exam-grade reveal as their authored moment) ═══
+   The real cumulative average lands as the visual anchor: metric
+   scale + one-shot rise and a state-ring pulse (0 0 0 spread — the
+   focus-ring language, never elevation).
+*/
   @keyframes exam-grade-in {
-    from { opacity: 0; transform: translateY(var(--motion-distance-small)) scale(0.96); } /* r153h: 6px → --motion-distance-small */
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)) scale(0.96); } /* r153h: 6px → --motion-distance-small
+*/
     to { opacity: 1; transform: none; }
   }
   @keyframes exam-grade-ring {
-    /* R313 (WP-E): opacity breath — glow rings are retired. */
+    /* R313 (WP-E): opacity breath — glow rings are retired.
+*/
     from { opacity: 0.55; }
     to { opacity: 1; }
   }
 
-  /* ═══ MoocPage ═══ */
+  /* ═══ MoocPage ═══
+*/
   /* 22-c (A4 P3-1): grid-3 orphaned the 4th card (a lone tile 283px
-     below the first row). The track-grid auto-fill recipe instead —
-     pages layer overrides the components-layer .grid-3 at every
-     width; phone collapses to one column like the recipe's own
-     mobile clause. */
+   below the first row). The track-grid auto-fill recipe instead —
+   pages layer overrides the components-layer .grid-3 at every
+   width; phone collapses to one column like the recipe's own
+   mobile clause.
+*/
   /* Same opt-out as the courses grid: escape the global mount stagger's
-     fill:both transform pin (restores the thumb-card hover lift), then
-     re-own the incumbent mount entrance with the same keyframe so the
-     visual behavior is unchanged. The page's AUTHORED moment remains
-     the CTA confirmation pulse below. */
+   fill:both transform pin (restores the thumb-card hover lift), then
+   re-own the incumbent mount entrance with the same keyframe so the
+   visual behavior is unchanged. The page's AUTHORED moment remains
+   the CTA confirmation pulse below.
+*/
   /* enrollment CTA confirmation pulse (the authored moment): a one-shot
-     state-ring acknowledgment when the student opens the external
-     registration page — pure feedback, no state is faked */
+   state-ring acknowledgment when the student opens the external
+   registration page — pure feedback, no state is faked
+*/
   @keyframes mooc-cta-pulse {
     /* R313 (WP-E): the confirmation pulse keeps its keyframe seat but
-       breathes OPACITY (glow rings are gone from the system — the
-       reference has zero box-shadows outside the cookie banner). */
+    breathes OPACITY (glow rings are gone from the system — the
+    reference has zero box-shadows outside the cookie banner).
+*/
     from { opacity: 0.45; }
     to { opacity: 1; }
   }
 
-  /* ═══ WebinarsPage — live-vs-upcoming distinction ═══ */
+  /* ═══ WebinarsPage — live-vs-upcoming distinction ═══
+*/
   /* r157 (F8): the hover belongs to rows that DO something —
-     LIVE rows carry the join action (WebinarsPage.tsx); passive
-     upcoming rows keep their quiet rest state (an affordance the row
-     cannot deliver is a dead promise). */
+   LIVE rows carry the join action (WebinarsPage.tsx); passive
+   upcoming rows keep their quiet rest state (an affordance the row
+   cannot deliver is a dead promise).
+*/
   @keyframes webinar-live-pulse {
-    /* R313 (WP-E): opacity breath — glow rings are retired. */
+    /* R313 (WP-E): opacity breath — glow rings are retired.
+*/
     0% { opacity: 1; }
     70%, 100% { opacity: 0.4; }
   }
-  /* destination tiles (was inline-styled) */
+  /* destination tiles (was inline-styled)
+*/
   /* r152i (A3): 680→640 — joins the dominant phone band (nothing else
-     uses 680; nearest ladder rungs are 640/768). */
+   uses 680; nearest ladder rungs are 640/768).
+*/
   .webinar-dest-title {
     display: flex;
     align-items: center;
@@ -889,8 +1009,9 @@
     font-weight: var(--fw-semibold);
     color: var(--text);
     /* 5-D3 (A3 P3-2): the element demoted h3→div — the display family
-       the h3 base rule supplied stays pinned here so rendering is
-       unchanged. */
+    the h3 base rule supplied stays pinned here so rendering is
+    unchanged.
+*/
     font-family: var(--font-display);
   }
   .webinar-dest-desc {
@@ -900,32 +1021,36 @@
     color: var(--text-muted);
   }
 
-  /* ═══ JobsPage — table rows + hover-revealed actions ═══ */
+  /* ═══ JobsPage — table rows + hover-revealed actions ═══
+*/
   /* r155d (integrity F1): this was the unscoped `.table-wrap` override
-     sitting in @layer pages — it beat components.css's shared scroll
-     contract (overflow-x: auto, the .sticky scrollport) for EVERY
-     .table-wrap consumer app-wide (27 pages). Renamed to the
-     JobsPage-local class; the radius declaration (byte-identical to the
-     components.css base) and the contract-breaking `overflow: hidden`
-     were dropped — the base .table-wrap keeps owning scroll + radius +
-     border. R313 (WP-E): the local elevation add-on retired with the
-     flat system — the rule body is gone; the .jobs-table-wrap class
-     survives in JobsPage.tsx as the page's scoping hook (zero CSS
-     needed on top of the shared base). */
-  /* ── §lists touch floor + reduced-motion off-switches ── */
+   sitting in @layer pages — it beat components.css's shared scroll
+   contract (overflow-x: auto, the .sticky scrollport) for EVERY
+   .table-wrap consumer app-wide (27 pages). Renamed to the
+   JobsPage-local class; the radius declaration (byte-identical to the
+   components.css base) and the contract-breaking `overflow: hidden`
+   were dropped — the base .table-wrap keeps owning scroll + radius +
+   border. R313 (WP-E): the local elevation add-on retired with the
+   flat system — the rule body is gone; the .jobs-table-wrap class
+   survives in JobsPage.tsx as the page's scoping hook (zero CSS
+   needed on top of the shared base).
+*/
+  /* ── §lists touch floor + reduced-motion off-switches ──
+*/
   @media (max-width: 920px) {
     /* PP-X2 (audit P2-14): the floor was 640px — a landscape phone
-       (844×390) escaped it with 36px pills + a 32px «تسليم» button.
-       The 920px band is the app's own mobile breakpoint. (r151d: the
-       bang retired — min-block-size composes over the components-
-       layer block-size at used-value time; it only ever fought the
-       pre-9-b 32px pin, which no longer exists. This rule is now the
-       ONLY floor in the 641-920 band — polish's ≤640 block covers
-       phones — so the rule itself stays.) Font sizes unchanged.
-       r341 D7a: the courses arms are zero-seat (rg-proven) — the
-       r221 Superlist rebuild deleted the assignments table
-       (.courses-assignments) and the enrolled thumb-card grid
-       (.thumb-card-go); the row verbs ride .courses-row-go above. */
+    (844×390) escaped it with 36px pills + a 32px «تسليم» button.
+    The 920px band is the app's own mobile breakpoint. (r151d: the
+    bang retired — min-block-size composes over the components-
+    layer block-size at used-value time; it only ever fought the
+    pre-9-b 32px pin, which no longer exists. This rule is now the
+    ONLY floor in the 641-920 band — polish's ≤640 block covers
+    phones — so the rule itself stays.) Font sizes unchanged.
+    r341 D7a: the courses arms are zero-seat (rg-proven) — the
+    r221 Superlist rebuild deleted the assignments table
+    (.courses-assignments) and the enrolled thumb-card grid
+    (.thumb-card-go); the row verbs ride .courses-row-go above.
+*/
     .matrix-filter .pill,
     .courses-filter .pill,
     .webinar-kpis .metric-change .btn,
@@ -933,67 +1058,79 @@
   }
   @media (prefers-reduced-motion: reduce) {
     /* R331 A-CSS pass 1 — bang retired. The comment below described a
-       war that ended at r151f: every entrance these selectors fight
-       (mooc-cta-pulse, webinar-live-pulse, lecture-next-pulse — the
-       courses-card-in twin died with the r221 Superlist rebuild,
-       r341 D7a) lost its own !important then, so a same-layer,
-       later-source, equal-specificity kill wins without one.
-       base.css's canonical belt still wins the cross-layer
-       !important race for durations/delays — animation-name:none here
-       is what actually freezes the pieces. */
+    war that ended at r151f: every entrance these selectors fight
+    (mooc-cta-pulse, webinar-live-pulse, lecture-next-pulse — the
+    courses-card-in twin died with the r221 Superlist rebuild,
+    r341 D7a) lost its own !important then, so a same-layer,
+    later-source, equal-specificity kill wins without one.
+    base.css's canonical belt still wins the cross-layer
+    !important race for durations/delays — animation-name:none here
+    is what actually freezes the pieces.
+*/
   }
 
-  /* ── §research — ResearchPage · LibraryPage · LivePage · LabsPage (wave 4-c) ── */
+  /* ── §research — ResearchPage · LibraryPage · LivePage · LabsPage (wave 4-c) ──
+*/
 
   /* ═══ Research — paper rows, scan states, upload modal, process ═══
-     The scan-* grid itself (.scan-bar/.scan-cell + .ok/.warn/.bad value
-     inks) is owned by components.css "wave 3-c: STAFF SURFACES"; this
-     section owns everything the student page renders AROUND it: the
-     paper row cards, the in-flight scan states (.scan-pulse + the
-     indeterminate .scan-cell-run sweep), the upload dropzone (inside
-     the shared Modal) and the process explainer tiles. */
-  /* full-width pre-scan CTA — .btn.outline supplies the control look */
+   The scan-* grid itself (.scan-bar/.scan-cell + .ok/.warn/.bad value
+   inks) is owned by components.css "wave 3-c: STAFF SURFACES"; this
+   section owns everything the student page renders AROUND it: the
+   paper row cards, the in-flight scan states (.scan-pulse + the
+   indeterminate .scan-cell-run sweep), the upload dropzone (inside
+   the shared Modal) and the process explainer tiles.
+*/
+  /* full-width pre-scan CTA — .btn.outline supplies the control look
+*/
   /* status banners (success-graded / failed-checks) — soft ground +
-     status ink + 45% color-mix hairline, same recipe as the checkpoint
-     result banners in §LecturePlayerPage */
+   status ink + 45% color-mix hairline, same recipe as the checkpoint
+   result banners in §LecturePlayerPage
+*/
   /* published note — lavender is the "library" voice; -deep keeps the
-     text AA on the card ground in both themes */
+   text AA on the card ground in both themes
+*/
   /* ── In-flight scan ──
-     Honest indeterminate progress: the scan endpoint is a single POST
-     with no increments, so the cells show a sweeping bar + step copy,
-     never a fake percentage. */
+   Honest indeterminate progress: the scan endpoint is a single POST
+   with no increments, so the cells show a sweeping bar + step copy,
+   never a fake percentage.
+*/
   @keyframes scan-dot-ping {
-    /* R313 (WP-E): opacity breath — glow rings are retired system-wide. */
+    /* R313 (WP-E): opacity breath — glow rings are retired system-wide.
+*/
     from { opacity: 1; }
     to   { opacity: 0.35; }
   }
   /* indeterminate sweep inside a scanning cell — THE authored moment
-     of the research page. Direction flips with --motion-direction so
-     the sweep always travels inline-start → inline-end. */
+   of the research page. Direction flips with --motion-direction so
+   the sweep always travels inline-start → inline-end.
+*/
   @keyframes scan-sweep {
     /* percentages are of the 40%-wide sweep itself: -110% parks it
-       fully before the inline-start edge, +260% carries it fully past
-       the inline-end edge */
+    fully before the inline-start edge, +260% carries it fully past
+    the inline-end edge
+*/
     from { transform: translateX(calc(var(--motion-direction) * -110%)); }
     70%  { transform: translateX(calc(var(--motion-direction) * 260%)); }
     to   { transform: translateX(calc(var(--motion-direction) * 260%)); }
   }
 
-  /* ── Upload modal body (the shared Modal owns chrome + focus trap) ── */
+  /* ── Upload modal body (the shared Modal owns chrome + focus trap) ──
+*/
   /* (P3 sweep: the .upload-disclosure family — base + icon well, the
-     r154d honest-but-inert note — deleted. rg-verified zero TSX
-     consumers since P3 replaced the disclosure with the REAL file
-     picker (ResearchPage.tsx UploadModal + TeacherPages.tsx
-     MaterialFormModal file mode); the .upload-file-* family below
-     styles what replaced it. The .upload-error alert below stays live
-     — ResearchPage.tsx.)
-     R362 (Agent 5, §G upload experience): the .upload-file-* family
-     itself had been swept out while both modals kept consuming the
-     classes — the picked-file chip rendered unstyled (bare flex-less
-     div). Restored with the documented anatomy (surface-2 chip + a
-     44px remove target), plus the UploadDropZone family (.upload-drop
-     + the standing hint + the drag-over affordance — components/pdf/
-     UploadDropZone.tsx, the drag-and-drop half of the two pick paths). */
+   r154d honest-but-inert note — deleted. rg-verified zero TSX
+   consumers since P3 replaced the disclosure with the REAL file
+   picker (ResearchPage.tsx UploadModal + TeacherPages.tsx
+   MaterialFormModal file mode); the .upload-file-* family below
+   styles what replaced it. The .upload-error alert below stays live
+   — ResearchPage.tsx.)
+   R362 (Agent 5, §G upload experience): the .upload-file-* family
+   itself had been swept out while both modals kept consuming the
+   classes — the picked-file chip rendered unstyled (bare flex-less
+   div). Restored with the documented anatomy (surface-2 chip + a
+   44px remove target), plus the UploadDropZone family (.upload-drop
+   + the standing hint + the drag-over affordance — components/pdf/
+   UploadDropZone.tsx, the drag-and-drop half of the two pick paths).
+*/
   .upload-file-field {
     display: flex;
     align-items: center;
@@ -1002,7 +1139,8 @@
     background: var(--surface-2);
     border: 1px solid var(--surface-border, var(--border));
     border-radius: var(--r-xs);
-    min-block-size: 44px; /* the touch floor */
+    min-block-size: 44px; /* the touch floor
+*/
   }
   .upload-file-name {
     flex: 1;
@@ -1010,15 +1148,17 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    direction: ltr; /* filenames are machine identifiers — LTR embed */
+    direction: ltr; /* filenames are machine identifiers — LTR embed
+*/
     unicode-bidi: isolate;
     font-size: var(--fs-sm);
     color: var(--text);
   }
   .upload-file-remove { flex-shrink: 0; }
   /* The drop region: wraps the native input's FormField. The standing
-     hint is one quiet line under the field; the affordance paints only
-     while a file drag is live over the region (data-over). */
+   hint is one quiet line under the field; the affordance paints only
+   while a file drag is live over the region (data-over).
+*/
   .upload-drop { padding-block-start: var(--sp-1); }
   .upload-drop-hint {
     display: flex;
@@ -1031,8 +1171,9 @@
   }
   .upload-drop[data-over='true'] {
     /* accent-tinted wash + the accent border while the drag is live —
-       color-mix keeps both themes legible (never a raw accent under
-       text). */
+    color-mix keeps both themes legible (never a raw accent under
+    text).
+*/
     background: color-mix(in srgb, var(--accent) 7%, transparent);
     outline: 1px dashed var(--accent);
     outline-offset: var(--sp-1);
@@ -1043,71 +1184,93 @@
   }
   .upload-drop[data-disabled='true'] {
     opacity: 0.55;
-    pointer-events: none; /* an in-flight upload is not replaceable */
+    pointer-events: none; /* an in-flight upload is not replaceable
+*/
   }
-  /* ── Process explainer tiles ── */
-  /* ═══ Library — research cards, search-stagger, skeletons ═══ */
+  /* ── Process explainer tiles ──
+*/
+  /* ═══ Library — research cards, search-stagger, skeletons ═══
+*/
   /* ── r186: typographic book jackets ─────────────────────────────
-     The library's own deterministic cover: composed from the book's
-     data (title, author, category tint) — no upload path, no binary
-     storage. The thumb-card keeps its shared shape and hover; the
-     jacket replaces the generic icon tile every book rendered
-     identically. The whole jacket is decorative (aria-hidden in the
-     source): the accessible title/author stay in the card body.
-     Ink recipes reuse the icon tile's contrast family — field 12%
-     over --surface, spine 45%, ink 70% over --text — so both themes
-     resolve the data tint the same way the old tile did. */
+   The library's own deterministic cover: composed from the book's
+   data (title, author, category tint) — no upload path, no binary
+   storage. The thumb-card keeps its shared shape and hover; the
+   jacket replaces the generic icon tile every book rendered
+   identically. The whole jacket is decorative (aria-hidden in the
+   source): the accessible title/author stay in the card body.
+   Ink recipes reuse the icon tile's contrast family — field 12%
+   over --surface, spine 45%, ink 70% over --text — so both themes
+   resolve the data tint the same way the old tile did.
+*/
   /* the spine rides the inline-start edge — in RTL that is the
-     physical RIGHT, where an Arabic book's spine lives (logical
-     properties, no mirroring needed) */
+   physical RIGHT, where an Arabic book's spine lives (logical
+   properties, no mirroring needed)
+*/
   /* the publisher strip: full-width category band at the foot.
-     r186 tuning: the mixes are strong enough to carry the band's
-     structure on the LIGHT surface too (the first cut washed out —
-     band 14% vs field 12% was a ~2% luminance delta, invisible); the
-     label ink is tint-dyed so the strip reads even where the wash
-     is subtle. */
+   r186 tuning: the mixes are strong enough to carry the band's
+   structure on the LIGHT surface too (the first cut washed out —
+   band 14% vs field 12% was a ~2% luminance delta, invisible); the
+   label ink is tint-dyed so the strip reads even where the wash
+   is subtle.
+*/
   /* research cards — one-shot entrance stagger, THE authored moment of
-     the library page (results cascade in as the search resolves) */
+   the library page (results cascade in as the search resolves)
+*/
   @keyframes research-card-in {
-    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small
+*/
     to   { opacity: 1; transform: none; }
   }
-  /* shape-matched loading skeletons (books shelf + research rows) */
+  /* shape-matched loading skeletons (books shelf + research rows)
+*/
   /* ═══ Live — LIVE indicator + tinted course well on run rows ═══
-     .run-row itself is owned by components.css (wave 3-c). */
+   .run-row itself is owned by components.css (wave 3-c).
+*/
 
   /* THE authored moment of the live page — and its only idle motion:
-     the LIVE chip dot breathes a danger ping; everything else sits
-     still. */
+   the LIVE chip dot breathes a danger ping; everything else sits
+   still.
+*/
   @keyframes live-ping {
-    /* R313 (WP-E): opacity breath — glow rings are retired system-wide. */
+    /* R313 (WP-E): opacity breath — glow rings are retired system-wide.
+*/
     from { opacity: 1; }
     to   { opacity: 0.4; }
   }
   /* tinted course well — replaces the old 3px inline-start stripe
-     (ruling #4): hierarchy rides on the leading icon tint, not a bar */
+   (ruling #4): hierarchy rides on the leading icon tint, not a bar
+*/
   /* live rows keep the 1px hairline language but tint it toward the
-     danger accent — status coding without a stripe */
-  /* ═══ Labs — simulator terminal + stepper + hero band ═══ */
+   danger accent — status coding without a stripe
+*/
+  /* ═══ Labs — simulator terminal + stepper + hero band ═══
+*/
 
   /* tinted hero band (API themeColor rides on --lab-accent and is only
-     ever consumed through color-mix — never raw under text) */
+   ever consumed through color-mix — never raw under text)
+*/
   /* ── Terminal — an always-dark physical console ──
-     The neutral ramp is theme-flipped (dark theme's "ink" is sand), so
-     no theme token can express "dark ground in BOTH themes". (r150a:
-     one CAN now — --warm-ink pins the same canonical ramp hex as a
-     fixed token; the ground below consumes it.) Text uses
-     --text-on-dark which is light in both themes
-     (#FBFAF9 ≈ 15:1 / #F2EAD8 ≈ 13:1 on it). */
+   The neutral ramp is theme-flipped (dark theme's "ink" is sand), so
+   no theme token can express "dark ground in BOTH themes". (r150a:
+   one CAN now — --warm-ink pins the same canonical ramp hex as a
+   fixed token; the ground below consumes it.) Text uses
+   --text-on-dark which is light in both themes
+   (#FBFAF9 ≈ 15:1 / #F2EAD8 ≈ 13:1 on it).
+*/
   /* static CRT scanline texture — 3% light lines, no animation, so no
-     reduced-motion switch is required (it is texture, not motion) */
+   reduced-motion switch is required (it is texture, not motion)
+*/
   /* per-line auto direction: the same console mixes LTR command lines
-     with Arabic result lines — unicode-bidi: plaintext resolves each
-     line by its first strong character, so neither copy is forced */
+   with Arabic result lines — unicode-bidi: plaintext resolves each
+   line by its first strong character, so neither copy is forced
+*/
   /* success lines (✔-prefixed) — mint ink clears AA on the dark
-     ground in both themes (light #4FA66D ≈ 5.6:1, dark #82CB99 ≈ 9:1) */
-  /* system notices (%LINK…, Verification…) — sky ink, same math */
-  /* idle hint line — the quiet system voice, centered */
+   ground in both themes (light #4FA66D ≈ 5.6:1, dark #82CB99 ≈ 9:1)
+*/
+  /* system notices (%LINK…, Verification…) — sky ink, same math
+*/
+  /* idle hint line — the quiet system voice, centered
+*/
   @keyframes terminal-blink {
     0%, 45%  { opacity: 1; }
     50%, 95% { opacity: 0; }
@@ -1118,31 +1281,40 @@
     to   { opacity: 1; }
   }
 
-  /* ── Stepper — done / current / upcoming with an RTL-correct spine ── */
+  /* ── Stepper — done / current / upcoming with an RTL-correct spine ──
+*/
   /* vertical spine segment on the well axis — inset-inline-start keeps
-     it on the inline-start edge in RTL; hidden on the last step */
+   it on the inline-start edge in RTL; hidden on the last step
+*/
   /* current step — accent-soft wash + accent hairline (the shared
-     selected-control language, not a stripe) */
+   selected-control language, not a stripe)
+*/
   /* ── Keyframe off-switches (guardrail #6 — infinite animations MUST
-     die under reduced motion, not strobe at 0.01ms) ── */
+   die under reduced motion, not strobe at 0.01ms) ──
+*/
 
-  /* ── Phone tuning (44px touch floor for small controls) ── */
+  /* ── Phone tuning (44px touch floor for small controls) ──
+*/
 
-  /* ── §misc — CampusMap · Payment · Profile · More · Community (wave 4-d) ── */
+  /* ── §misc — CampusMap · Payment · Profile · More · Community (wave 4-d) ──
+*/
 
   /* ═══ CampusMap — the city-footprint band (the page's authored
-     moment: the bars grow in on entrance, staggered via --city-i).
-     Every value is derived from the live /faculties payload — this is
-     the honest replacement for the removed fake floor-plan map. ═══ */
+   moment: the bars grow in on entrance, staggered via --city-i).
+   Every value is derived from the live /faculties payload — this is
+   the honest replacement for the removed fake floor-plan map. ═══
+*/
   .campus-city-list { display: flex; flex-direction: column; }
   .campus-city-row {
     display: grid;
-    /* city name | proportional track | count */
+    /* city name | proportional track | count
+*/
     grid-template-columns: minmax(84px, max-content) minmax(64px, 1fr) max-content;
     align-items: center;
     gap: var(--sp-3);
     inline-size: 100%;
-    min-block-size: 44px; /* touch target */
+    min-block-size: 44px; /* touch target
+*/
     padding: var(--sp-2) var(--sp-3);
     background: transparent;
     border: 0;
@@ -1158,7 +1330,8 @@
   }
   .campus-city-row:active { background: var(--surface-3); }
   /* selected city — accent-soft ground + accent-strong ink (the
-     WCAG-pinned pair documented in tokens.css) */
+   WCAG-pinned pair documented in tokens.css)
+*/
   .campus-city-row.on { background: var(--accent-soft); }
   .campus-city-name {
     font-size: var(--type-label-size);
@@ -1176,11 +1349,12 @@
     overflow: clip;
   }
   /* fill anchors at inline-start → RTL-correct growth (same anatomy
-     as .progress-track / .xp-track). 5-C1 (A2 §1c #26): campus-fill-in
-     animates transform: scaleX now — the fill keeps its inline X%
-     width (set by CampusMapPage) and the keyframes reveal it from the
-     reading edge (transform-origin flips under [dir=rtl]); the RM
-     kill below still pins the full fill. */
+   as .progress-track / .xp-track). 5-C1 (A2 §1c #26): campus-fill-in
+   animates transform: scaleX now — the fill keeps its inline X%
+   width (set by CampusMapPage) and the keyframes reveal it from the
+   reading edge (transform-origin flips under [dir=rtl]); the RM
+   kill below still pins the full fill.
+*/
   .campus-city-fill {
     display: block;
     block-size: 100%;
@@ -1199,14 +1373,17 @@
     font-variant-numeric: tabular-nums;
   }
   /* 21-c (A5 P2-3): on the selected row the ground becomes
-     --accent-soft and the muted count failed AA (4.22 light / 4.47
-     dark). The name already took the on-state ink (:1688) — the count
-     follows it onto the WCAG-pinned pair the block comment above
-     documents: accent-strong on accent-soft = 8.62:1 light / 10.10:1
-     dark. */
+   --accent-soft and the muted count failed AA (4.22 light / 4.47
+   dark). The name already took the on-state ink (:1688) — the count
+   follows it onto the WCAG-pinned pair the block comment above
+   documents: accent-strong on accent-soft = 8.62:1 light / 10.10:1
+   dark.
+*/
   .campus-city-row.on .campus-city-count { color: var(--accent-strong); }
-  /* skeleton rows share the band's grid so the loading shape matches */
-  /* link-reset layer for .list-row faculty links */
+  /* skeleton rows share the band's grid so the loading shape matches
+*/
+  /* link-reset layer for .list-row faculty links
+*/
   .campus-map-note {
     margin-block-start: var(--sp-3);
     padding: var(--sp-3);
@@ -1221,32 +1398,42 @@
   }
 
   /* ═══ Fact tiles — one shared grammar for the label/value tiles on
-     Payment / UniversityInfo / CampusMap contact / Profile (the audit's
-     private FactRow copies, unified at the CSS layer).
-     r155d (integrity F2): renamed `.fact-row` → `.fact-tile` — the old
-     name collided with components.css's AdminSync `.fact-row`
-     (flex row, gap sp-1/sp-3, transparent) and the pages layer won
-     globally, silently restyling AdminSyncPage's rows. Same recipe,
-     new collision-free name. ═══ */
-  /* inline variant — leading icon + label/value column (ProfilePage) */
+   Payment / UniversityInfo / CampusMap contact / Profile (the audit's
+   private FactRow copies, unified at the CSS layer).
+   r155d (integrity F2): renamed `.fact-row` → `.fact-tile` — the old
+   name collided with components.css's AdminSync `.fact-row`
+   (flex row, gap sp-1/sp-3, transparent) and the pages layer won
+   globally, silently restyling AdminSyncPage's rows. Same recipe,
+   new collision-free name. ═══
+*/
+  /* inline variant — leading icon + label/value column (ProfilePage)
+*/
   /* quiet supplementary-data failure note (audit 0-d P2: never a
-     silent dash — but not a full alarm either; the page still works) */
+   silent dash — but not a full alarm either; the page still works)
+*/
   /* ═══ Payment — the fees-status panel + today's-steps checklist.
-     Clarity over decoration: flat surface with subtle depth, no invented figures. ═══ */
+   Clarity over decoration: flat surface with subtle depth, no invented figures. ═══
+*/
   /* ═══ Profile — academic-link rows (extracted from ~40 lines of
-     inline styles) + the save-feedback flash. ═══ */
+   inline styles) + the save-feedback flash. ═══
+*/
   /* save feedback — the page's authored moment: a transient, polite
-     confirmation that rises in and self-clears (TSX timer) */
+   confirmation that rises in and self-clears (TSX timer)
+*/
   /* ═══ Social feed (MorePages SocialPage) — composer + like
-     feedback + derived trending list. ═══ */
+   feedback + derived trending list. ═══
+*/
   /* reaction burst — plays ONLY when the .pop class rides in on the
-     reacted counter (on-interaction, never idle) */
-  /* trending rows — derived from the loaded feed (never hardcoded) */
+   reacted counter (on-interaction, never idle)
+*/
+  /* trending rows — derived from the loaded feed (never hardcoded)
+*/
   /* r155d (integrity F7, lead-integrated): renamed `.trend-row` →
-     `.trend-item` — the old name collided with components.css's
-     AdminReports `.trend-row` (paper pipeline bars) and the pages
-     layer won globally, silently re-densifying the admin rows.
-     Same recipe, collision-free name. */
+   `.trend-item` — the old name collided with components.css's
+   AdminReports `.trend-row` (paper pipeline bars) and the pages
+   layer won globally, silently re-densifying the admin rows.
+   Same recipe, collision-free name.
+*/
   .trend-rank {
     flex-shrink: 0;
     min-inline-size: 18px;
@@ -1259,9 +1446,10 @@
     flex: 1;
     min-inline-size: 0;
     /* r183-B3 (A6 P3): Arabic hashtags must never ride the numeric-mono
-       costume (same class as the library fix) — the tag inherits the
-       page's Arabic body face; the bdi isolate keeps the «#» prefix
-       ordered. Trending tags are Arabic words, not code. */
+    costume (same class as the library fix) — the tag inherits the
+    page's Arabic body face; the bdi isolate keeps the «#» prefix
+    ordered. Trending tags are Arabic words, not code.
+*/
     font-family: inherit;
     font-size: var(--type-label-size);
     color: var(--accent-strong);
@@ -1277,37 +1465,48 @@
     font-variant-numeric: tabular-nums;
     background: var(--surface-2);
     padding: var(--sp-0-5) var(--sp-2);
-    /* R313 (WP-E · D16): square count chip — 0 radius. */
+    /* R313 (WP-E · D16): square count chip — 0 radius.
+*/
     border-radius: var(--r-sm);
   }
-  /* alerts-page skeleton rows (dot + two lines) */
+  /* alerts-page skeleton rows (dot + two lines)
+*/
   /* ═══ UniversityInfo — degree cards (leading icon chip replaces the
-     old 3px borderRight stripe — orchestrator ruling #4) + faculty
-     chip emoji wells. ═══ */
-  /* ═══ Community — RSVP action row + failure note. ═══ */
+   old 3px borderRight stripe — orchestrator ruling #4) + faculty
+   chip emoji wells. ═══
+*/
+  /* ═══ Community — RSVP action row + failure note. ═══
+*/
   /* ═══ Community — announcement feed cards (22-c, A5 P1-1).
-     The family had NO CSS anywhere: the DEFAULT tab of /community
-     rendered as unstyled HTML (no surface, head display:block so the
-     icon dropped to its own line, meta inline on inherited spaces,
-     hover lifting an invisible box) — the platform's worst page at
-     4.5/10. Grammar: the .post feed-card recipe — polish.css owns the
-     radius + hover lift (its .post/.testimonial-card/.announcement-card
-     group, overrides layer); this block adds the surface, the head
-     row, the icon well, the pin state, the meta line and the reading
-     width. ═══ */
+   The family had NO CSS anywhere: the DEFAULT tab of /community
+   rendered as unstyled HTML (no surface, head display:block so the
+   icon dropped to its own line, meta inline on inherited spaces,
+   hover lifting an invisible box) — the platform's worst page at
+   4.5/10. Grammar: the .post feed-card recipe — polish.css owns the
+   radius + hover lift (its .post/.testimonial-card/.announcement-card
+   group, overrides layer); this block adds the surface, the head
+   row, the icon well, the pin state, the meta line and the reading
+   width. ═══
+*/
   /* Pinned — the platform's "on" grammar (tinted ground + accent-mixed
-     border), scannable without the craft-floor-banned >1px side stripe. */
-  /* leading icon well — .job-icon-well grammar, 40px for the 20px glyph */
+   border), scannable without the craft-floor-banned >1px side stripe.
+*/
+  /* leading icon well — .job-icon-well grammar, 40px for the 20px glyph
+*/
   /* headline-role tokens (A5 P3-5: was five inline style props on the
-     demoted title div — the treatment belongs in CSS, not in TSX) */
+   demoted title div — the treatment belongs in CSS, not in TSX)
+*/
   /* pin chip — badge grammar (soft ground + strong ink), anchored to
-     the head's inline-end corner */
-  /* ── Keyframes (wave 4-d; reduced-motion off-switch below) ── */
+   the head's inline-end corner
+*/
+  /* ── Keyframes (wave 4-d; reduced-motion off-switch below) ──
+*/
   @keyframes campus-fill-in {
     /* 5-C1 (A2 §1c #26): width-only growth became a scaleX reveal —
-     the consumer keeps its inline width and this keyframe scales the
-     fill up from the reading edge (transform-origin on the consumer,
-     flipped for [dir=rtl] above). RTL-neutral by construction. */
+   the consumer keeps its inline width and this keyframe scales the
+   fill up from the reading edge (transform-origin on the consumer,
+   flipped for [dir=rtl] above). RTL-neutral by construction.
+*/
     from { transform: scaleX(0); }
   }
   @keyframes social-count-pop {
@@ -1320,154 +1519,181 @@
     to { opacity: 1; transform: none; }
   }
   @media (prefers-reduced-motion: reduce) {
-    /* same-or-higher specificity than the rules above — the kill wins */
+    /* same-or-higher specificity than the rules above — the kill wins
+*/
     .campus-city-fill,
     .post-count.pop,
     .profile-link-saved { animation: none; }
   }
 
   /* ── Phone tuning (wave 4-d): 44px touch floor on the small
-     controls this section owns (the shared .btn.sm is 32px — a
-     global fix belongs to the primitives wave, these bumps are
-     scoped to my components only). ── */
+   controls this section owns (the shared .btn.sm is 32px — a
+   global fix belongs to the primitives wave, these bumps are
+   scoped to my components only). ──
+*/
 
-  /* ═══════════════════════════════════════════════════════════════
-     5-B3 — exam-taker ergonomics + student mobile order
-     (audit 5-A6: P1-1 chrome, P2-2 map/submit, P2-3 save state,
-     plan-6 timer hairline, plan-7 verdict lockup, P2-8/9/10 order).
-     The exam-taker base chrome (.exam-bar/.exam-choice/.exam-submit-bar)
-     lives in components.css waves 3-c/5-c; this block owns the new
-     pieces. student.css is eager (main.tsx, worklog 8-b) so these
-     apply on the /student/online-exams routes too.
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   5-B3 — exam-taker ergonomics + student mobile order
+   (audit 5-A6: P1-1 chrome, P2-2 map/submit, P2-3 save state,
+   plan-6 timer hairline, plan-7 verdict lockup, P2-8/9/10 order).
+   The exam-taker base chrome (.exam-bar/.exam-choice/.exam-submit-bar)
+   lives in components.css waves 3-c/5-c; this block owns the new
+   pieces. student.css is eager (main.tsx, worklog 8-b) so these
+   apply on the /student/online-exams routes too.
+     ═══
+*/
 
   /* ── Question map (P2-2): one dot per question inside the sticky
-     bar. flex-basis 100% wraps it onto the bar's second row (the
-     bar wraps at 320px — 5-A5 measured the slot). Pagination-button
-     grammar: 36px desktop, 44px phone floor (the .table-pagination
-     precedent, components.css). ── */
+   bar. flex-basis 100% wraps it onto the bar's second row (the
+   bar wraps at 320px — 5-A5 measured the slot). Pagination-button
+   grammar: 36px desktop, 44px phone floor (the .table-pagination
+   precedent, components.css). ──
+*/
   /* Answered — accent-soft ground + accent-strong ink (8.62:1, the
-     WCAG math pinned in tokens.css; same pairing as .exam-choice.selected
-     and the pagination active page). */
-  /* Save-failed — warning chip pairing (.exam-save-warn family). */
+   WCAG math pinned in tokens.css; same pairing as .exam-choice.selected
+   and the pagination active page).
+*/
+  /* Save-failed — warning chip pairing (.exam-save-warn family).
+*/
   /* Current position (P2-2) — the question on screen wears a ring so a
-     long paper always shows where you are. Offset ring (focus-grammar),
-     not a shadow: the dot already carries its state in ground + ink. */
+   long paper always shows where you are. Offset ring (focus-grammar),
+   not a shadow: the dot already carries its state in ground + ink.
+*/
   /* ── Time-consumed hairline (plan-6): the attempt window draining
-     from the inline-start edge along the sticky bar's bottom rule.
-     Color-only urgency — the no-pulse timer decision is documented. ── */
+   from the inline-start edge along the sticky bar's bottom rule.
+   Color-only urgency — the no-pulse timer decision is documented. ──
+*/
   /* ── Question wrapper (P2-2 jump target): the map scrolls here and
-     moves focus; scroll-margin lands the card clear of the sticky bar
-     (the bar carries the map row — measured heights: 113px bar at
-     ≥768, 162px at 390 with the 44px dots; +8px optical gap). ── */
+   moves focus; scroll-margin lands the card clear of the sticky bar
+   (the bar carries the map row — measured heights: 113px bar at
+   ≥768, 162px at 390 with the 44px dots; +8px optical gap). ──
+*/
   /* Programmatic focus lands here (tabIndex -1) — the universal
-     motion.css ring excludes tabindex=-1 by design, so the landing
-     cue is declared here: the ring shows while the jumped card owns
-     focus and leaves when the student clicks elsewhere. */
+   motion.css ring excludes tabindex=-1 by design, so the landing
+   cue is declared here: the ring shows while the jumped card owns
+   focus and leaves when the student clicks elsewhere.
+*/
   /* ── Save-state chip at the question footer (P2-3) — the positive
-     half of the autosave honesty pair; tone-mapped to the sticky
-     failure chip's inks. ── */
+   half of the autosave honesty pair; tone-mapped to the sticky
+   failure chip's inks. ──
+*/
   @keyframes exam-save-in { from { opacity: 0; } }
 
   /* ── Submit bar (P2-2): the unanswered count rides inline next to
-     the submit control (not only inside the confirm dialog); on phone
-     the bar is bottom-sticky above the fixed bottom-nav so a long
-     paper never hides the way out. Overrides the components.css
-     end-aligned block via the pages layer (later in cascade order). ── */
+   the submit control (not only inside the confirm dialog); on phone
+   the bar is bottom-sticky above the fixed bottom-nav so a long
+   paper never hides the way out. Overrides the components.css
+   end-aligned block via the pages layer (later in cascade order). ──
+*/
   /* ≤640px: notifications.css reserves the nav clearance as the
-     scroller's own bottom padding (max(80px, 72px + safe area)) — the
-     sticky reference already sits at the nav's top edge, so 0 docks
-     the bar a hairline above it (measured: 8px gap, no overlap). */
+   scroller's own bottom padding (max(80px, 72px + safe area)) — the
+   sticky reference already sits at the nav's top edge, so 0 docks
+   the bar a hairline above it (measured: 8px gap, no overlap).
+*/
 
   /* ── Verdict lockup (plan-7): icon → title → grade → badge read as
-     one tight group inside .empty-state's rhythm; the note and the
-     action get the breathing room instead. ── */
+   one tight group inside .empty-state's rhythm; the note and the
+   action get the breathing room instead. ──
+*/
   /* ── Post-grading review (5-D3 — 5-B3 hand-off #1): the student's
-     own questions + verdicts + released key, collapsed behind one
-     toggle — the verdict stays the moment; the detail is opt-in. The
-     section lives inside .empty-state's centered column, so the list
-     re-asserts start alignment and a readable measure. ── */
+   own questions + verdicts + released key, collapsed behind one
+   toggle — the verdict stays the moment; the detail is opt-in. The
+   section lives inside .empty-state's centered column, so the list
+   re-asserts start alignment and a readable measure. ──
+*/
   /* ── Student mobile order (P2-9/P2-10, 5-A6 plan): .page is a flex
-     column (base.css) — order moves whole sections without touching
-     the TSX. Desktop order stays authored. ── */
+   column (base.css) — order moves whole sections without touching
+   the TSX. Desktop order stays authored. ──
+*/
 
   /* r174 — the resume-hero PENDING footprint, per breakpoint. The
-     loaded .dash-resume-card measures 176px on desktop (flex row, CTA
-     beside the text) and 224px ≤640px (the CTA stacks full-width under
-     the text — student.css §resume). r172b's flat 176px skeleton was
-     calibrated on desktop only, so every PHONE resolve pushed the KPI
-     row 48px down. The pending section carries the block-size; the
-     Skeleton bar fills it (height 100% from the TSX). */
+   loaded .dash-resume-card measures 176px on desktop (flex row, CTA
+   beside the text) and 224px ≤640px (the CTA stacks full-width under
+   the text — student.css §resume). r172b's flat 176px skeleton was
+   calibrated on desktop only, so every PHONE resolve pushed the KPI
+   row 48px down. The pending section carries the block-size; the
+   Skeleton bar fills it (height 100% from the TSX).
+*/
 
   /* r174 — the dash-hero-row PENDING pair, per breakpoint (live
-     measurements): the resolved pair is [218, 218] >1024, [156, 218]
-     in the 641–1024 single-column band (compact GPA card, doughnut
-     beside text), [156, 302] ≤640 (doughnut stacked under text).
-     r172b's flat 168-inner boxes (210/226 painted) matched only the
-     desktop pair and overshot the compact GPA card by 54px on every
-     tablet/phone resolve. */
+   measurements): the resolved pair is [218, 218] >1024, [156, 218]
+   in the 641–1024 single-column band (compact GPA card, doughnut
+   beside text), [156, 302] ≤640 (doughnut stacked under text).
+   r172b's flat 168-inner boxes (210/226 painted) matched only the
+   desktop pair and overshot the compact GPA card by 54px on every
+   tablet/phone resolve.
+*/
 
   /* P2-10 — the dashboard's morning-first agenda: today's classes and
-     the nearest deadlines move to slot 2 (right after the welcome) on
-     phone; the term-progress bar is the least urgent fact on the page
-     and keeps its desktop depth. PP-X2 (P0-3): the resume hero is the
-     FIRST thing on phone — the page's primary action sits above the
-     greeting, agenda second, KPIs after. */
+   the nearest deadlines move to slot 2 (right after the welcome) on
+   phone; the term-progress bar is the least urgent fact on the page
+   and keeps its desktop depth. PP-X2 (P0-3): the resume hero is the
+   FIRST thing on phone — the page's primary action sits above the
+   greeting, agenda second, KPIs after.
+*/
 
   /* P2-9 — results: the page's one data visualization leads on phone
-     instead of starting below three stacked KPI cards (measured: chart
-     top 658px in a 784px viewport — past the fold). r299 (final C): the
-     KPI trio became the pattern StatLine, so the chart already rides
-     directly under it in the .pf-page column — the order hack (and its
-     .student-results scope, retired with the legacy .page wrapper) is
-     dead and deleted; the .results-chart-card hook class stays for the
-     Card itself. */
+   instead of starting below three stacked KPI cards (measured: chart
+   top 658px in a 784px viewport — past the fold). r299 (final C): the
+   KPI trio became the pattern StatLine, so the chart already rides
+   directly under it in the .pf-page column — the order hack (and its
+   .student-results scope, retired with the legacy .page wrapper) is
+   dead and deleted; the .results-chart-card hook class stays for the
+   Card itself.
+*/
 
   /* P2-8 — hero pair eyebrows on one line: the progress card's text
-     block centers against the 168px doughnut (components.css), landing
-     its eyebrow 24px below the GPA card's. Top-anchor the row so both
-     first lines share the card padding line (also improves the desktop
-     pair). The ≤640px stacked layout re-asserts its centered column —
-     this block's higher specificity would otherwise beat components.css. */
+   block centers against the 168px doughnut (components.css), landing
+   its eyebrow 24px below the GPA card's. Top-anchor the row so both
+   first lines share the card padding line (also improves the desktop
+   pair). The ≤640px stacked layout re-asserts its centered column —
+   this block's higher specificity would otherwise beat components.css.
+*/
   
 
   /* ── University accreditation chip (P2-7, page 7.5): the inline
-     style overrode the muted text utility with --accent on
-     --accent-soft (measured 3.06:1 at 11px). The class restores the
-     text-on-pastel rule — accent-strong holds 8.62:1 — and moves the
-     treatment into CSS where it belongs. ── */
+   style overrode the muted text utility with --accent on
+   --accent-soft (measured 3.06:1 at 11px). The class restores the
+   text-on-pastel rule — accent-strong holds 8.62:1 — and moves the
+   treatment into CSS where it belongs. ──
+*/
   /* Reduced-motion off-switch for the one keyframe added above
-     (guardrail #6 — joins the wave-4d block at the top of this list). */
+   (guardrail #6 — joins the wave-4d block at the top of this list).
+*/
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  polish v10 page systems — migrated home (r151i, R5-A2 m1)    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   polish v10 page systems — migrated home (r151i, R5-A2 m1)
+   ╚╚╚
+*/
   /* Moved verbatim from polish.css @layer overrides — these were
-     primary ownership in the wrong layer (nothing overrode them; the
-     only true override, v22's .chat-input:focus-visible, stayed in
-     polish). Appended AFTER this sheet's own chat/matrix refinements
-     so the v10 base keeps its authority over them, exactly as the
-     overrides layer guaranteed before. The .post border-radius
-     matches v8's mockup-lift pair by value (--r-lg) — the lift's
-     transition/hover rules remain in polish's pages layer and keep
-     winning by source order, as they always did. */
+   primary ownership in the wrong layer (nothing overrode them; the
+   only true override, v22's .chat-input:focus-visible, stayed in
+   polish). Appended AFTER this sheet's own chat/matrix refinements
+   so the v10 base keeps its authority over them, exactly as the
+   overrides layer guaranteed before. The .post border-radius
+   matches v8's mockup-lift pair by value (--r-lg) — the lift's
+   transition/hover rules remain in polish's pages layer and keep
+   winning by source order, as they always did.
+*/
 
-  /* ═══════════════════════════════════════════════════════════════
-     AI ASSISTANT — chat bubbles + quick actions
-     R353 C1 RESTORE: the r333 WAVE-6 sweep emptied this section while
-     AiAssistantPage.tsx still consumes every class (the transcript had
-     NO scroll container — messages painted under the composer inside
-     .ai-surface's overflow:hidden and could never scroll: the owner's
-     «messages don't show / clipped» report). Restored from ca5a5ad0~1;
-     .chat-avatar stays deleted (zero consumers).
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   AI ASSISTANT — chat bubbles + quick actions
+   R353 C1 RESTORE: the r333 WAVE-6 sweep emptied this section while
+   AiAssistantPage.tsx still consumes every class (the transcript had
+   NO scroll container — messages painted under the composer inside
+   .ai-surface's overflow:hidden and could never scroll: the owner's
+   «messages don't show / clipped» report). Restored from ca5a5ad0~1;
+   .chat-avatar stays deleted (zero consumers).
+     ═══
+*/
   .chat-area {
     display: flex;
     flex-direction: column;
     gap: var(--sp-3);
     min-block-size: 320px;
     max-block-size: 480px;
-    overflow-y: auto; /* THE transcript scroller (ai.css's .ai-surface .chat-area lifts the ceiling) */
+    overflow-y: auto; /* THE transcript scroller (ai.css's .ai-surface .chat-area lifts the ceiling)
+*/
     padding: var(--sp-4) var(--sp-2) var(--sp-3);
     scroll-behavior: smooth;
     overscroll-behavior-y: contain;
@@ -1487,7 +1713,8 @@
 
   .chat-bubble {
     max-inline-size: min(640px, 78%);
-    padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade) */
+    padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade)
+*/
     border-radius: var(--r-xl);
     font-size: var(--fs-sm);
     line-height: var(--lh-base);
@@ -1495,9 +1722,11 @@
     background: var(--surface-2);
     border: 1px solid var(--border-faint);
     /* R353 C1 (W3): long tokens (URLs, code, unbroken Arabic strings)
-       must wrap inside the bubble, not clip under .ai-surface. */
+    must wrap inside the bubble, not clip under .ai-surface.
+*/
     overflow-wrap: anywhere;
-    /* subtle entrance */
+    /* subtle entrance
+*/
     animation: chat-in var(--motion-duration-medium) var(--ease-out) both;
   }
   @media (prefers-reduced-motion: reduce) {
@@ -1505,35 +1734,42 @@
   }
 
   /* R313 (WP-E): both bubbles are SQUARE — the 4px tail-corner details
-     are retired with the radius-0 canon (the bot bubble needs no
-     override at all now). */
+   are retired with the radius-0 canon (the bot bubble needs no
+   override at all now).
+*/
   .chat-msg.user .chat-bubble {
     /* R313 (WP-E): FLAT accent fill — the reference's white-on-#FA3600
-       slab (gradients are retired system-wide); square corners. */
+    slab (gradients are retired system-wide); square corners.
+*/
     background: var(--accent);
     color: var(--accent-fg);
     border-color: transparent;
   }
 
   .chat-bubble p { margin: 0; }
-  .chat-bubble p + p { margin-block-start: var(--sp-1-5); } /* r153h: 6px → --sp-1-5 */
+  .chat-bubble p + p { margin-block-start: var(--sp-1-5); } /* r153h: 6px → --sp-1-5
+*/
 
   .ai-quick-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
     padding: var(--sp-3) var(--sp-2) var(--sp-2);
     border-block-start: 1px solid var(--rule);
     margin-block-start: var(--sp-1);
   }
   .ai-quick-chip {
-    padding: var(--sp-1-5) var(--sp-3); /* r153h: 6px → --sp-1-5 */
-    /* R313 (WP-E · D16): square chip — hairline frame, 0 radius. */
+    padding: var(--sp-1-5) var(--sp-3); /* r153h: 6px → --sp-1-5
+*/
+    /* R313 (WP-E · D16): square chip — hairline frame, 0 radius.
+*/
     border-radius: var(--r-sm);
     border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text-muted);
-    font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change */
+    font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change
+*/
     font-weight: var(--fw-medium);
     cursor: pointer;
     transition: var(--t-clean);
@@ -1558,30 +1794,36 @@
     block-size: 40px;
     padding-inline: var(--sp-3);
     /* R313 (WP-E · D16): the Heron input recipe — transparent ground,
-       1px #B3B3AF hairline, square corners (the old surface-2 well +
-       pill radius are retired). */
+    1px #B3B3AF hairline, square corners (the old surface-2 well +
+    pill radius are retired).
+*/
     border-radius: var(--r-md);
     border: 1px solid var(--border-strong);
     background: transparent;
     color: var(--text);
     font-family: inherit;
     /* 21-c (A5 P2-X / A10 P1): was var(--fs-sm) 13px — iOS Safari
-       zooms the viewport on any <16px input focus. 16px floor
-       (components.css's shared .input takes the same fix from 21-b). */
-    font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
+    zooms the viewport on any <16px input focus. 16px floor
+    (components.css's shared .input takes the same fix from 21-b).
+*/
+    font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c)
+*/
     transition: var(--t-clean);
   }
   .chat-input:focus {
     outline: none;
     background: transparent;
     /* R313 (WP-E · D16): focus = the reference's #ED4C1F signal border
-       (the shared input recipe's measured literal — no halo). */
-    border-color: var(--input-focus-signal); /* R313 D16 — tokenized R353 P4 */
+    (the shared input recipe's measured literal — no halo).
+*/
+    border-color: var(--input-focus-signal); /* R313 D16 — tokenized R353 P4
+*/
   }
   .chat-send {
     inline-size: 40px;
     block-size: 40px;
-    /* R313 (WP-E): square control — the accent slab. */
+    /* R313 (WP-E): square control — the accent slab.
+*/
     border-radius: var(--r-sm);
     border: 0;
     display: inline-flex;
@@ -1596,34 +1838,40 @@
   @media (hover: hover) and (pointer: fine) {
     .chat-send:hover:not(:disabled) {
       /* R313 (WP-E): flat hover — the brightened accent tier, no scale,
-         no glow. */
+     no glow.
+*/
       background: var(--accent-hover);
     }
   }
   .chat-send:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
 
   /* R313 (WP-E): both bubbles are SQUARE — the 4px tail-corner details
-     are retired with the radius-0 canon (the bot bubble needs no
-     override at all now). */
-  /* ═══════════════════════════════════════════════════════════════
-     AI ASSISTANT — conversations sidebar (r164g)
-     The row rides the shared .list-row grammar; the OPEN target is a
-     nested <button> (a delete button lives in the same row, so the
-     row itself cannot be the button). Tokens only — no new motion, no
-     raw colors.
-     ═══════════════════════════════════════════════════════════════ */
-  /* ═══════════════════════════════════════════════════════════════
-     MATRIX (knowledge map) — courses + cells + legend
-     ═══════════════════════════════════════════════════════════════ */
+   are retired with the radius-0 canon (the bot bubble needs no
+   override at all now).
+*/
+  /* ═══
+   AI ASSISTANT — conversations sidebar (r164g)
+   The row rides the shared .list-row grammar; the OPEN target is a
+   nested <button> (a delete button lives in the same row, so the
+   row itself cannot be the button). Tokens only — no new motion, no
+   raw colors.
+     ═══
+*/
+  /* ═══
+   MATRIX (knowledge map) — courses + cells + legend
+     ═══
+*/
   /* (R313 WP-E: the legend dot stays a circle — dots/avatars are the
-     reference's only rounded primitives.) */
+   reference's only rounded primitives.)
+*/
 
   /* r299 (final C): the level filter joins the FilterBar + .pill
-     grammar — the CoursesPage toolbar contract (the training.css
-     filter-pill import is retired from this page). Container mirrors
-     .courses-filter; the live count rides inside the pill the same
-     .courses-filter-count way — muted tinted ink at rest, inherit on
-     the inverted active ground. */
+   grammar — the CoursesPage toolbar contract (the training.css
+   filter-pill import is retired from this page). Container mirrors
+   .courses-filter; the live count rides inside the pill the same
+   .courses-filter-count way — muted tinted ink at rest, inherit on
+   the inverted active ground.
+*/
   .matrix-filter {
     display: flex;
     flex-wrap: wrap;
@@ -1639,53 +1887,63 @@
   .pill.on .matrix-filter-count { color: inherit; }
   .matrix-filter .pill:disabled { opacity: 0.55; }
   /* (Wave 6-c dead-selector sweep: .matrix-grid deleted — its only
-     consumer (MatrixPage concept grid) switched to the designed
-     .matrix-cells in wave 4-a; rg over frontend/src = 0 hits since.
-     See worklog 4-a follow-up #1.) */
+   consumer (MatrixPage concept grid) switched to the designed
+   .matrix-cells in wave 4-a; rg over frontend/src = 0 hits since.
+   See worklog 4-a follow-up #1.)
+*/
   /* Per-concept tile (r220: wider min cell = long Arabic concept names
-     stop ellipsising; status word + tabular % mean the state never
-     rides on hue alone). */
+   stop ellipsising; status word + tabular % mean the state never
+   rides on hue alone).
+*/
   /* r220: the non-link cells join the keyboard order — focusable, with
-     the system focus ring so the grid is traversable without a pointer. */
+   the system focus ring so the grid is traversable without a pointer.
+*/
   /* r220 — mobile recomposition: the dense grid becomes a concept list
-     with the SAME data (name + status word + %), one honest row per
-     concept — no sideways scroll, no clipped tiles. */
+   with the SAME data (name + status word + %), one honest row per
+   concept — no sideways scroll, no clipped tiles.
+*/
 
-  /* ═══════════════════════════════════════════════════════════════
-     POSTS (social feed)
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   POSTS (social feed)
+     ═══
+*/
   /* 22-c (A5 P2-2): a reacted heart is a STATE, not an available
-     action (the backend cannot un-react) — the pointer cursor would
-     keep promising the click the handler refuses. */
-  /* ═══════════════════════════════════════════════════════════════
-     Faculty / city chips inside University Info
-     ═══════════════════════════════════════════════════════════════ */
+   action (the backend cannot un-react) — the pointer cursor would
+   keep promising the click the handler refuses.
+*/
+  /* ═══
+   Faculty / city chips inside University Info
+     ═══
+*/
 
-  /* ═══════════════════════════════════════════════════════════════
-     WELCOME CARD — the student dashboard greeting hero (r153f)
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   WELCOME CARD — the student dashboard greeting hero (r153f)
+     ═══
+*/
   /* Consolidated from seven polish.css waves (v8 premium · v9 stack ·
-     v11 surface · v13 isolation · v17 photo overlay · v22 dots) — the
-     family's ONLY consumer is this dashboard (DashboardPage.tsx ×4
-     states), so student.css owns it (the r151i/r152d ownership
-     standard; student.css already owned its mobile `order`). Every
-     value below is the RENDERED truth measured before the move
-     (probe r153w1: margin 24px · padding 32/24 → 20/16 @640 ·
-     radius 20px · photo overlay both themes · ::before dots 200px/.35
-     → 110px/.22 @640 · title clamp(20→28px) lh 1.22). Dead
-     declarations died with the move (v9's padding-inline-end clamp,
-     v9's align-items:stretch, v13's invisible breathing ::after).
-     The generic .page-header rules in polish scope themselves off
-     .welcome-card via :not() so this pages-layer rule-set needs no
-     overrides-layer pin. */
+   v11 surface · v13 isolation · v17 photo overlay · v22 dots) — the
+   family's ONLY consumer is this dashboard (DashboardPage.tsx ×4
+   states), so student.css owns it (the r151i/r152d ownership
+   standard; student.css already owned its mobile `order`). Every
+   value below is the RENDERED truth measured before the move
+   (probe r153w1: margin 24px · padding 32/24 → 20/16 @640 ·
+   radius 20px · photo overlay both themes · ::before dots 200px/.35
+   → 110px/.22 @640 · title clamp(20→28px) lh 1.22). Dead
+   declarations died with the move (v9's padding-inline-end clamp,
+   v9's align-items:stretch, v13's invisible breathing ::after).
+   The generic .page-header rules in polish scope themselves off
+   .welcome-card via :not() so this pages-layer rule-set needs no
+   overrides-layer pin.
+*/
 
   
   
   
 
   /* Title above the decorative layers: the stack's only child grows to
-     fill the row and holds a local paint-order z-index (not a --z-*
-     layer). */
+   fill the row and holds a local paint-order z-index (not a --z-*
+   layer).
+*/
   
   
   
@@ -1693,21 +1951,26 @@
   
 
   /* Corner dot grid on ::before (v22's re-home from the v8/v13 ::after
-     conflict) with the valid RTL-correct fade: dots sit at the
-     inline-end corner, opaque at the edge, fading toward the content —
-     `to left` for LTR (inline-end = right), `to right` for RTL. */
+   conflict) with the valid RTL-correct fade: dots sit at the
+   inline-end corner, opaque at the edge, fading toward the content —
+   `to left` for LTR (inline-end = right), `to right` for RTL.
+*/
 
-  /* ═══════════════════════════════════════════════════════════════
-     r220 (4A redesign — Superlist direction) — dashboard TodayList
-     anatomy. All values ride tokens; overrides scope under
-     .student-dashboard so the shared primitives stay untouched.
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   r220 (4A redesign — Superlist direction) — dashboard TodayList
+   anatomy. All values ride tokens; overrides scope under
+   .student-dashboard so the shared primitives stay untouched.
+     ═══
+*/
 
   /* The continue-learning item inside the TodayList: the small momentum
-     ring rides the leading slot; the chip CTA stays visual (the row is
-     the link — the agenda-row contract). */
-  /* The visual action chips riding list rows (never the only link). */
-  /* The week ledger day bands inside the pattern RowList. */
+   ring rides the leading slot; the chip CTA stays visual (the row is
+   the link — the agenda-row contract).
+*/
+  /* The visual action chips riding list rows (never the only link).
+*/
+  /* The week ledger day bands inside the pattern RowList.
+*/
   .dash-week-group {
     display: flex;
     flex-direction: column;
@@ -1725,34 +1988,38 @@
     color: var(--text-muted);
   }
 
-  /* ═══════════════════════════════════════════════════════════════
-     R304 (student workspace) — the next-learning-action hero band and
-     the dashboard's learning column. Appended per this file's
-     append-only contract; rides the patterns vocabulary + the r299
-     copper/cream tokens. No new colors — the hero keeps the PP-X2
-     .dash-resume-card recipe (tint wash + signal edge) and only adds
-     the eyebrow/side-note anatomy the hero grade needs.
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   R304 (student workspace) — the next-learning-action hero band and
+   the dashboard's learning column. Appended per this file's
+   append-only contract; rides the patterns vocabulary + the r299
+   copper/cream tokens. No new colors — the hero keeps the PP-X2
+   .dash-resume-card recipe (tint wash + signal edge) and only adds
+   the eyebrow/side-note anatomy the hero grade needs.
+     ═══
+*/
 
   /* Hero mass: the base .dash-resume-card recipe + a calmer padding and
-     radius so the band reads as the page's opening surface (the card
-     grid below uses r-xl too). Same layer, later source — the padding
-     lands without touching the frozen PP-X2 block above. */
+   radius so the band reads as the page's opening surface (the card
+   grid below uses r-xl too). Same layer, later source — the padding
+   lands without touching the frozen PP-X2 block above.
+*/
   .stu-hero {
     padding: var(--sp-6);
     border-radius: var(--r-xl);
   }
   /* The hero's classification line — real state, not decoration:
-     «أكمل من حيث توقفت» / «الخطوة التالية» / the track arms. */
+   «أكمل من حيث توقفت» / «الخطوة التالية» / the track arms.
+*/
   .dash-resume-eyebrow {
     font-size: var(--type-label-size-sm);
     font-weight: var(--type-label-weight);
     color: var(--accent-ink);
   }
   /* The CTA column: button + the honest context note under it
-     (course code · lecture clock — data, never decoration). The
-     .dash-resume-cta class rides along so the PP-X2 prominence rules
-     (lg mass ≥921px, full-width thumb target ≤640px) keep applying. */
+   (course code · lecture clock — data, never decoration). The
+   .dash-resume-cta class rides along so the PP-X2 prominence rules
+   (lg mass ≥921px, full-width thumb target ≤640px) keep applying.
+*/
   .stu-hero-side {
     display: flex;
     flex-direction: column;
@@ -1769,17 +2036,19 @@
     font-size: var(--fs-xs);
   }
   /* The pending hero slot (loading-closure mirror): same band, no
-     interaction, no flex-col utility classes (the mirror's slot count
-     belongs to the ListSkeleton placeholders only). */
+   interaction, no flex-col utility classes (the mirror's slot count
+   belongs to the ListSkeleton placeholders only).
+*/
   @media (max-width: 640px) {
     .stu-hero-side { inline-size: 100%; }
     .stu-hero-side .btn { inline-size: 100%; justify-content: center; }
   }
 
   /* «مقرّراتك» rows borrow the courses-page row grammar (leading tinted
-     well + trailing progress/CTA); the dashboard's readout is slightly
-     tighter and adds the mono % beside the bar so the value survives
-     the bar's hidden label on phones. */
+   well + trailing progress/CTA); the dashboard's readout is slightly
+   tighter and adds the mono % beside the bar so the value survives
+   the bar's hidden label on phones.
+*/
   .stu-course-progress {
     display: flex;
     align-items: center;
@@ -1787,7 +2056,8 @@
   }
 
   /* ── R304 · Lecture player page additions ───────────────────────
-     The contents anchor (≤1024px only — desktop's panel sits beside
-     the video) and the keyboard-contract legend that closes the side
-     panel. Both ride the existing lecture-* surface; no colors. */
+   The contents anchor (≤1024px only — desktop's panel sits beside
+   the video) and the keyboard-contract legend that closes the side
+   panel. Both ride the existing lecture-* surface; no colors.
+*/
 }

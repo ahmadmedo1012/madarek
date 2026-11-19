@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    Self-hosted fonts — served from /public/fonts. (r305 → r313)
 
    LICENSING (r305 audit — r305-heron-reference-spec.md §fonts; R313
@@ -27,42 +27,44 @@
    in <head>. This file must be imported FIRST in main.tsx so the
    @font-face rules exist before any stylesheet that uses the
    families (tokens.css --font-sans / -display / -mono).
-   ─────────────────────────────────────────────────────────────────
+   ───
    The app's families (assets.test.ts pins this file at 16 faces and
    fails on any @font-face pointing at a missing file):
    · IBM Plex Sans Arabic 400/500/600/700 (arabic + latin subsets) —
-     body text, chrome, chart.js labels, and the landing's Arabic mono
-     fallback (premium-polish P1-4: mono labels continue their Arabic
-     runs in this face). The family has NO true 800 cut anywhere (not
-     even on Google Fonts), so tokens.css resolves --fw-black to 700 —
-     the heaviest real cut — and every display weight is honest: CSS
-     font matching always lands on a real file, no synthetic bold.
+   body text, chrome, chart.js labels, and the landing's Arabic mono
+   fallback (premium-polish P1-4: mono labels continue their Arabic
+   runs in this face). The family has NO true 800 cut anywhere (not
+   even on Google Fonts), so tokens.css resolves --fw-black to 700 —
+   the heaviest real cut — and every display weight is honest: CSS
+   font matching always lands on a real file, no synthetic bold.
    · IBM Plex Serif italic — RETIRED (r152j): zero live consumers, both
-     woff2s deleted from disk. Arabic emphasis stays upright weight +
-     accent ink. Do not re-add without re-shipping files.
+   woff2s deleted from disk. Arabic emphasis stays upright weight +
+   accent ink. Do not re-add without re-shipping files.
    · IBM Plex Mono 400/500 (latin) — codes, IDs, numbers, emails.
    · Geist Mono 400/500 (latin) — R313: the Heron instrument voice,
-     first entry of --font-mono (loader readouts, coordinates, Latin
-     micro-labels). Both weights resolve from the same variable-font
-     woff2 Google Fonts serves (wght axis 100–900, default 400); the
-     two names mirror the family's per-weight file convention so the
-     assets gate counts faces, not files.
+   first entry of --font-mono (loader readouts, coordinates, Latin
+   micro-labels). Both weights resolve from the same variable-font
+   woff2 Google Fonts serves (wght axis 100–900, default 400); the
+   two names mirror the family's per-weight file convention so the
+   assets gate counts faces, not files.
    · Alexandria 600/700 (arabic + latin subsets) — the DISPLAY voice
-     (r190 «مدار المعرفة»): geometric Kufi-flavored sans, true Arabic
-     + Latin in one family. Display hierarchy: 700 hero/headline ·
-     600 section. (The 500 cut's two woff2 files remain in
-     public/fonts but stay UNWIRED — the r191 wire contract is 600/700
-     only, pinned at 14 faces by assets.test.ts; re-wiring the 500
-     requires moving that pin and its consumers in the same change.)
+   (r190 «مدار المعرفة»): geometric Kufi-flavored sans, true Arabic
+   + Latin in one family. Display hierarchy: 700 hero/headline ·
+   600 section. (The 500 cut's two woff2 files remain in
+   public/fonts but stay UNWIRED — the r191 wire contract is 600/700
+   only, pinned at 14 faces by assets.test.ts; re-wiring the 500
+   requires moving that pin and its consumers in the same change.)
    Subsets: arabic + latin for the Arabic-capable families, latin for
    the rest — the browser downloads only what the page paints.
    All weights/subsets = exact woff2 files the Google Fonts CSS2 API
    serves. font-display: swap on every face.
    A typical first paint needs only the two preloaded arabic subsets
    (~86 KB — see index.html preloads).
-   ═══════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
-/* ── IBM Plex Sans Arabic — arabic subset ─────────────────────────── */
+/* ── IBM Plex Sans Arabic — arabic subset ───────────────────────────
+*/
 @font-face {
   font-family: 'IBM Plex Sans Arabic';
   font-style: normal;
@@ -96,7 +98,8 @@
   unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC4, U+10EFC-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
 }
 
-/* ── IBM Plex Sans Arabic — latin subset (digits, codes, latin runs) ── */
+/* ── IBM Plex Sans Arabic — latin subset (digits, codes, latin runs) ──
+*/
 @font-face {
   font-family: 'IBM Plex Sans Arabic';
   font-style: normal;
@@ -136,9 +139,11 @@
    consumers (r148-d) and no selector ever matches 'IBM Plex Serif'
    today — the browser never downloads them (no family match = no
    fetch). 42.6KB of repo/deploy bloat + two dead @font-face rules.
-   Files deleted from /public/assets/fonts/. */
+   Files deleted from /public/assets/fonts/.
+*/
 
-/* ── IBM Plex Mono — latin (codes, IDs, numbers, emails) ──────────── */
+/* ── IBM Plex Mono — latin (codes, IDs, numbers, emails) ────────────
+*/
 @font-face {
   font-family: 'IBM Plex Mono';
   font-style: normal;
@@ -162,7 +167,8 @@
    the exact latin-subset woff2 the Google Fonts CSS2 API serves.
    Latin-only voice — Arabic runs in mono contexts continue in IBM
    Plex Sans Arabic via the --font-mono stack (per-script fallback,
-   auth.css recipe). */
+   auth.css recipe).
+*/
 @font-face {
   font-family: 'Geist Mono';
   font-style: normal;
@@ -180,9 +186,9 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    Alexandria — the display family (Arabic + Latin).
-   ─────────────────────────────────────────────────────────────────
+   ───
    «مدار المعرفة» direction: the Arabic-native display voice is
    ALEXANDRIA (Google Fonts, OFL — geometric Kufi-flavored sans, true
    Arabic + Latin in one family). Body text stays IBM Plex Sans
@@ -192,9 +198,11 @@
    for 38–64px headlines; the 500 rungs stay unwired — see the header
    note). Self-hosted woff2, font-display: swap, arabic + latin
    subsets only — same pattern as the Plex files above.
-   ═══════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
-/* ── Alexandria — arabic subset ──────────────────────────────────── */
+/* ── Alexandria — arabic subset ────────────────────────────────────
+*/
 
 @font-face {
   font-family: 'Alexandria';
@@ -213,7 +221,8 @@
   unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
 }
 
-/* ── Alexandria — latin subset ────────────────────────────────────── */
+/* ── Alexandria — latin subset ──────────────────────────────────────
+*/
 
 @font-face {
   font-family: 'Alexandria';
@@ -245,14 +254,15 @@
    chain on the ROOT: html now carries the same --font-sans stack
    (unlayered — fonts.css imports first and owns this belt; body keeps
    its identical base.css declaration). Zero computed delta inside
-   body; the serif default can no longer surface anywhere. */
+   body; the serif default can no longer surface anywhere.
+*/
 html {
   font-family: var(--font-sans);
 }
 
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    R366 (Agent 3 · L2) — the METRIC-COMPATIBLE FALLBACK BELT (CLS).
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Measured problem: --font-sans carried a PHANTOM 'Tajawal' (never
    self-hosted, zero local installs in practice) between the webfont
    and the system stack, and the system Arabic faces have different
@@ -268,13 +278,15 @@ html {
    seat keeps its box through the swap; the two preloads cover the
    critical path, numeric line-heights cover the rest. The phantom
    'Tajawal' rung is RETIRED from the stacks (tokens.css value tune).
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @font-face {
   font-family: 'IBM Plex Sans Arabic Fallback';
   src: local('Segoe UI'), local('Geeza Pro'), local('Noto Sans Arabic'), local('Arial');
   /* Plex Sans Arabic metrics (fontTools, shipped 400 arabic woff2):
-     ascender 1085/1000 · descender 415/1000 · line-gap 0. */
+   ascender 1085/1000 · descender 415/1000 · line-gap 0.
+*/
   ascent-override: 108.5%;
   descent-override: 41.5%;
   line-gap-override: 0%;
@@ -285,7 +297,8 @@ html {
   font-family: 'Alexandria Fallback';
   src: local('Segoe UI'), local('Geeza Pro'), local('Noto Sans Arabic'), local('Arial');
   /* Alexandria metrics (fontTools, shipped 600 arabic woff2):
-     ascender 968/1000 · descender 251/1000 · line-gap 0. */
+   ascender 968/1000 · descender 251/1000 · line-gap 0.
+*/
   ascent-override: 96.8%;
   descent-override: 25.1%;
   line-gap-override: 0%;

@@ -2,9 +2,11 @@
    ولي الأمر · الوثائق · الأمان) + the directory/file pages' shared
    atoms. Token-only: no raw colors/type/radius/spacing (design gates).
    RTL: logical properties only. Light+dark: every color rides a token
-   that flips with the theme. */
+   that flips with the theme.
+*/
 
-/* ── the sheet's section stack ─────────────────────────────────── */
+/* ── the sheet's section stack ───────────────────────────────────
+*/
 
 .r349p-data {
   display: flex;
@@ -12,7 +14,8 @@
   gap: var(--sp-4);
 }
 
-/* ── inline edit tiles ─────────────────────────────────────────── */
+/* ── inline edit tiles ───────────────────────────────────────────
+*/
 
 .r349p-editable {
   position: relative;
@@ -67,7 +70,8 @@
   color: var(--success);
 }
 
-/* ── notes + errors ────────────────────────────────────────────── */
+/* ── notes + errors ──────────────────────────────────────────────
+*/
 
 .r349p-note {
   margin: var(--sp-3) 0 0;
@@ -83,12 +87,14 @@
   margin-top: var(--sp-1);
   font-size: var(--fs-xs, 0.75rem);
   /* R369 (C1 · the AA text seat): status TEXT consumes the -ink
-     tokens (the .auth-field-error contract) — the raw --danger fill
-     measured 3.98:1 on the paper. */
+   tokens (the .auth-field-error contract) — the raw --danger fill
+   measured 3.98:1 on the paper.
+*/
   color: var(--danger-ink, var(--danger, var(--error)));
 }
 
-/* ── the visibility radiogroup (الأمان) ────────────────────────── */
+/* ── the visibility radiogroup (الأمان) ──────────────────────────
+*/
 
 .r349p-vis {
   display: flex;
@@ -158,7 +164,8 @@
   line-height: 1.6;
 }
 
-/* ── skeletons (pending state) ─────────────────────────────────── */
+/* ── skeletons (pending state) ───────────────────────────────────
+*/
 
 .r349p-skeleton-line {
   height: 14px;
@@ -186,7 +193,8 @@
   }
 }
 
-/* ── the directory list (P3b) ───────────────────────────────────── */
+/* ── the directory list (P3b) ─────────────────────────────────────
+*/
 
 .r349p-dir-list {
   display: flex;
@@ -202,7 +210,8 @@
   border: 1px solid var(--border);
   border-radius: var(--r-md, 8px);
   background: var(--surface-1, transparent);
-  min-height: 64px; /* ≥44px touch target + breathing room */
+  min-height: 64px; /* ≥44px touch target + breathing room
+*/
 }
 
 .r349p-dir-id {
@@ -226,7 +235,8 @@
   }
 }
 
-/* The directory-row meta + the field-editor row meta share one sheet. */
+/* The directory-row meta + the field-editor row meta share one sheet.
+*/
 .r349p-dir-meta,
 .r349p-fe-meta {
   display: flex;
@@ -251,7 +261,8 @@
   font-size: var(--fs-xs, 0.75rem);
 }
 
-/* ── the registrar form fields (P3b) ────────────────────────────── */
+/* ── the registrar form fields (P3b) ──────────────────────────────
+*/
 
 .r349p-field {
   display: flex;
@@ -269,7 +280,8 @@
    * (components.css .fb-fab — inset-inline-end 18px); the savebar's
    * actions ride the same corner when sticky. Clear the lane: the
    * R349-P5 sweep (detector + VLM read of the shot) caught the save
-   * button sitting under the FAB on /admin/people/:id. */
+   * button sitting under the FAB on /admin/people/:id.
+*/
   padding: var(--sp-2) 0;
   padding-inline-end: 76px;
   position: sticky;
@@ -286,7 +298,8 @@
   padding-top: var(--sp-3);
 }
 
-/* ── the field-definitions editor (P5 residue, hosted on /admin/directory) ── */
+/* ── the field-definitions editor (P5 residue, hosted on /admin/directory) ──
+*/
 
 .r349p-fe {
   display: flex;
@@ -348,7 +361,8 @@
   border: 1px solid var(--border);
   border-radius: var(--r-md, 8px);
   background: var(--surface-2, transparent);
-  min-height: 44px; /* touch floor */
+  min-height: 44px; /* touch floor
+*/
 }
 
 .r349p-fe-row--danger {
@@ -398,7 +412,8 @@
   display: flex;
   align-items: center;
   gap: var(--sp-1);
-  min-height: 44px; /* touch floor */
+  min-height: 44px; /* touch floor
+*/
   cursor: pointer;
 }
 

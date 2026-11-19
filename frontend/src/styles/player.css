@@ -1,7 +1,7 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — player.css · VideoPlayerChrome (`.vpc`) — branded player
    skin (R2-B, «ليل مدارك» v3 family)
-   ─────────────────────────────────────────────────────────────────────
+   ───
    The chrome for the core learning surface: the lecture video player.
    Same product family as the v3 night shell — calm + focused, a WORK
    surface (not marketing): night frame, mist hairlines, ONE gold
@@ -26,27 +26,34 @@
    Icon mirroring: media glyphs are deliberately NOT mirrored in RTL
    (Material "do not mirror media controls" + YouTube-ar precedent);
    only their POSITION mirrors via the RTL flex flow.
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer pages {
 
   /* ── Host + night tokens ─────────────────────────────────────────
-     The stage is a NIGHT surface in BOTH themes — a video stage is a
-     physical matte (the documented #000 rationale on .lecture-video),
-     never a theme card. The sealed neutrals (void/navy/ink/mist) are
-     the island's own; the SIGNAL follows the system accent token so
-     the chrome speaks the reference's #FA3600 grammar (R313 WP-E:
-     the old v3 gold family is retired — progress + play ride the
-     accent, per the lead's player brief). */
+   The stage is a NIGHT surface in BOTH themes — a video stage is a
+   physical matte (the documented #000 rationale on .lecture-video),
+   never a theme card. The sealed neutrals (void/navy/ink/mist) are
+   the island's own; the SIGNAL follows the system accent token so
+   the chrome speaks the reference's #FA3600 grammar (R313 WP-E:
+   the old v3 gold family is retired — progress + play ride the
+   accent, per the lead's player brief).
+*/
   .vpc {
-    --vpc-void: #05070F;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
-    --vpc-navy: #0B1020;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
-    --vpc-ink: #F2EFE6;   /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
-    --vpc-mist: #8E97B8;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-void: #05070F;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome
+*/
+    --vpc-navy: #0B1020;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome
+*/
+    --vpc-ink: #F2EFE6;   /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome
+*/
+    --vpc-mist: #8E97B8;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome
+*/
     --vpc-accent: var(--accent);
     --vpc-accent-bright: var(--accent-hover);
     --vpc-hairline: color-mix(in srgb, var(--vpc-mist) 16%, transparent);
-    --vpc-danger: #F0938F;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-danger: #F0938F;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome
+*/
 
     position: relative;
     user-select: none;
@@ -54,7 +61,8 @@
   }
 
   /* Page-frame re-skin (the host keeps .lecture-video-wrap's geometry):
-     night ground, mist hairline, NO card shadow — a work surface. */
+   night ground, mist hairline, NO card shadow — a work surface.
+*/
   .vpc.lecture-video-wrap {
     box-shadow: none;
     background: var(--vpc-navy);
@@ -62,15 +70,16 @@
   }
 
   /* The video slot — generic so the chrome works with any <video>,
-     not just the .lecture-video-skinned one.
-     r166a (E1 square-stage defect): the video is ABSOLUTELY pinned to
-     the host frame (inset: 0). A paused <video> with a poster gets its
-     intrinsic layout ratio FROM THE POSTER (Chrome: a square brand mark
-     made the element 818×818); as in-flow content that height fed the
-     host flex item's auto min-content block-size and stretched the
-     aspect-ratio'd frame into a square. Out of flow, the HOST owns the
-     geometry in every context and any poster ratio simply letterboxes
-     via object-fit: contain. */
+   not just the .lecture-video-skinned one.
+   r166a (E1 square-stage defect): the video is ABSOLUTELY pinned to
+   the host frame (inset: 0). A paused <video> with a poster gets its
+   intrinsic layout ratio FROM THE POSTER (Chrome: a square brand mark
+   made the element 818×818); as in-flow content that height fed the
+   host flex item's auto min-content block-size and stretched the
+   aspect-ratio'd frame into a square. Out of flow, the HOST owns the
+   geometry in every context and any poster ratio simply letterboxes
+   via object-fit: contain.
+*/
   .vpc > video {
     position: absolute;
     inset: 0;
@@ -79,13 +88,19 @@
     block-size: 100%;
     object-fit: contain;
     /* True letterbox black — physical matte, not a theme color
-       (same rationale as student.css .lecture-video). */
-    background: #000;  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars */  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars */  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars */  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars */
+    (same rationale as student.css .lecture-video).
+*/
+    background: #000;  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars
+*/  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars
+*/  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars
+*/  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars
+*/
   }
 
   /* Fullscreen: the HOST is the fullscreen element so the chrome stays
-     visible (a body-level portal would vanish — that is why the speed
-     menu renders inline, not via the Popover primitive). */
+   visible (a body-level portal would vanish — that is why the speed
+   menu renders inline, not via the Popover primitive).
+*/
   .vpc:fullscreen,
   .vpc:-webkit-full-screen {
     aspect-ratio: auto;
@@ -96,7 +111,8 @@
     background: var(--vpc-void);
   }
 
-  /* ── Click surface (toggle play / double-click fullscreen) ─────── */
+  /* ── Click surface (toggle play / double-click fullscreen) ───────
+*/
   .vpc-surface {
     position: absolute;
     inset: 0;
@@ -104,7 +120,8 @@
     cursor: pointer;
   }
 
-  /* ── Bottom legibility scrim (the one sanctioned gradient) ─────── */
+  /* ── Bottom legibility scrim (the one sanctioned gradient) ───────
+*/
   .vpc-scrim {
     position: absolute;
     inset-inline: 0;
@@ -117,7 +134,8 @@
     transition: opacity var(--motion-duration-short) var(--motion-ease-standard);
   }
 
-  /* ── Control bar (slides up; paused/scrub/hover/focus reveal) ──── */
+  /* ── Control bar (slides up; paused/scrub/hover/focus reveal) ────
+*/
   .vpc-bar {
     position: absolute;
     inset-inline: 0;
@@ -126,7 +144,8 @@
     display: flex;
     flex-direction: column;
     padding: 0 var(--sp-3) var(--sp-2);
-    transform: translateY(calc(100% + var(--motion-distance-small))); /* r153h: 6px → --motion-distance-small */
+    transform: translateY(calc(100% + var(--motion-distance-small))); /* r153h: 6px → --motion-distance-small
+*/
     opacity: 0;
     visibility: hidden;
     transition:
@@ -153,7 +172,8 @@
       opacity: 1;
     }
   }
-  /* Touch: no hover to reveal with — the chrome stays put. */
+  /* Touch: no hover to reveal with — the chrome stays put.
+*/
   @media (hover: none) and (pointer: coarse) {
     .vpc .vpc-bar {
       transform: none;
@@ -165,10 +185,11 @@
   }
 
   /* ── Progress track ──────────────────────────────────────────────
-     R313 (WP-E): the Heron scrubber — a 2px square rail, ACCENT
-     progress, an 8×8 SQUARE handle (no rounded knobs, no glow); the
-     generous block padding keeps the ~24px hit area. Full-bleed
-     (negates the bar's inline padding) so the rail spans the frame. */
+   R313 (WP-E): the Heron scrubber — a 2px square rail, ACCENT
+   progress, an 8×8 SQUARE handle (no rounded knobs, no glow); the
+   generous block padding keeps the ~24px hit area. Full-bleed
+   (negates the bar's inline padding) so the rail spans the frame.
+*/
   .vpc-track {
     position: relative;
     display: block;
@@ -184,14 +205,16 @@
     display: block;
     block-size: 2px;
     border-radius: var(--r-sm);
-    background: color-mix(in srgb, var(--vpc-mist) 20%, transparent);          /* mist 20% */
+    background: color-mix(in srgb, var(--vpc-mist) 20%, transparent);          /* mist 20%
+*/
   }
   .vpc-buffered {
     position: absolute;
     inset-block: 0;
     inset-inline-start: 0;
     border-radius: inherit;
-    background: color-mix(in srgb, var(--vpc-mist) 35%, transparent);          /* mist 35% */
+    background: color-mix(in srgb, var(--vpc-mist) 35%, transparent);          /* mist 35%
+*/
   }
   .vpc-played {
     position: absolute;
@@ -201,8 +224,9 @@
     background: var(--vpc-accent);
   }
   /* Playhead — the 8×8 square handle (R313: no rounded knobs, no
-     glow). `inset-inline-start` is set inline (RTL: measured from the
-     RIGHT edge — the reading start). */
+   glow). `inset-inline-start` is set inline (RTL: measured from the
+   RIGHT edge — the reading start).
+*/
   .vpc-head {
     position: absolute;
     inset-block-start: 50%;
@@ -223,8 +247,9 @@
     transform: translateY(-50%) scale(1.3);
   }
   /* Checkpoint markers — 8px accent-outlined SQUARES on the rail
-     (decorative: the sidebar note + the quiz itself carry the info
-     accessibly, mirroring .lecture-progress-mark). */
+   (decorative: the sidebar note + the quiz itself carry the info
+   accessibly, mirroring .lecture-progress-mark).
+*/
   .vpc-mark {
     position: absolute;
     inset-block-start: 50%;
@@ -238,7 +263,8 @@
     pointer-events: none;
   }
 
-  /* ── Controls row ──────────────────────────────────────────────── */
+  /* ── Controls row ────────────────────────────────────────────────
+*/
   .vpc-controls {
     display: flex;
     align-items: center;
@@ -249,11 +275,13 @@
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    inline-size: 40px;                            /* ≥40px hit target */
+    inline-size: 40px;                            /* ≥40px hit target
+*/
     block-size: 40px;
     padding: 0;
     border: 0;
-    /* R313 (WP-E): square controls — the reference's radius-0 canon. */
+    /* R313 (WP-E): square controls — the reference's radius-0 canon.
+*/
     border-radius: var(--r-sm);
     background: transparent;
     color: var(--vpc-ink);
@@ -265,13 +293,15 @@
   }
   .vpc-btn:active { background: color-mix(in srgb, var(--vpc-mist) 26%, transparent); }
   /* The one accent action — play/pause (the signal is reserved for
-     progress + the primary action). */
+   progress + the primary action).
+*/
   .vpc-btn-play { color: var(--vpc-accent); }
   @media (hover: hover) and (pointer: fine) {
     .vpc-btn-play:hover { background: color-mix(in srgb, var(--vpc-accent) 14%, transparent); }
   }
 
-  /* Time — mono, LTR run, current ink / total mist. */
+  /* Time — mono, LTR run, current ink / total mist.
+*/
   .vpc-time {
     direction: ltr;
     font-family: var(--font-mono);
@@ -284,14 +314,16 @@
   .vpc-time-total { color: var(--vpc-mist); }
 
   /* ── Playback-speed menu (inline, NOT portaled: must survive
-     fullscreen, where only the fullscreened subtree renders) ─────── */
+   fullscreen, where only the fullscreened subtree renders) ───────
+*/
   .vpc-speed { position: relative; }
   .vpc-btn-rate {
     inline-size: auto;
     min-inline-size: 40px;
     padding-inline: var(--sp-2);
     font-family: var(--font-mono);
-    font-size: var(--fs-sm); /* r184: literal → token (13px = --fs-sm), zero visual change */
+    font-size: var(--fs-sm); /* r184: literal → token (13px = --fs-sm), zero visual change
+*/
     font-variant-numeric: tabular-nums;
   }
   .vpc-menu {
@@ -306,7 +338,8 @@
     padding: var(--sp-1);
     border: 1px solid var(--vpc-hairline);
     /* R313 (WP-E): solid night surface — square corners, zero
-       backdrop-filter (the system's no-glass rule). */
+    backdrop-filter (the system's no-glass rule).
+*/
     border-radius: var(--r-sm);
     background: var(--vpc-navy);
     animation: vpc-menu-in var(--motion-duration-short) var(--motion-ease-standard);
@@ -327,11 +360,13 @@
     background: transparent;
     color: var(--vpc-ink);
     font-family: var(--font-mono);
-    font-size: var(--fs-sm); /* r184: literal → token (13px = --fs-sm), zero visual change */
+    font-size: var(--fs-sm); /* r184: literal → token (13px = --fs-sm), zero visual change
+*/
     font-variant-numeric: tabular-nums;
     cursor: pointer;
     /* r149 (R3-A3 §3): الـhover كان يقفز بلا انتقال — آخر صفوف القوائم
-       في المنصة بلا transition. */
+    في المنصة بلا transition.
+*/
     transition:
       background var(--t-fast) var(--ease),
       color var(--t-fast) var(--ease),
@@ -342,7 +377,8 @@
   }
   .vpc-menu-item[aria-checked="true"] { color: var(--vpc-accent); }
 
-  /* ── Poster / ended gates — the 64px accent play ────────────── */
+  /* ── Poster / ended gates — the 64px accent play ──────────────
+*/
   .vpc-overlay {
     position: absolute;
     inset: 0;
@@ -359,7 +395,8 @@
     padding: 0;
     border: 0;
     /* R313 (WP-E): square control — the accent slab (the reference
-       puts white labels on #FA3600 fills). */
+    puts white labels on #FA3600 fills).
+*/
     border-radius: var(--r-sm);
     background: var(--vpc-accent);
     color: var(--vpc-void);
@@ -376,7 +413,8 @@
   }
 
   /* ── Loading spinner (2px ring) — status, kept under reduced
-     motion (essential affordance, WCAG 2.3.3 exception) ──────────── */
+   motion (essential affordance, WCAG 2.3.3 exception) ────────────
+*/
   .vpc-busy {
     position: absolute;
     inset: 0;
@@ -389,15 +427,18 @@
     inline-size: 34px;
     block-size: 34px;
     /* The spinner ring is a circle primitive (the one sanctioned
-     round element — it reads as an instrument dial). */
+   round element — it reads as an instrument dial).
+*/
     border-radius: var(--r-full);
     border: 2px solid color-mix(in srgb, var(--vpc-mist) 25%, transparent);
     border-top-color: var(--vpc-accent);
-    animation: vpc-spin var(--t-cinema) var(--ease-linear) infinite; /* 720ms — the nearest duration token (premium-polish: gate-clean) */
+    animation: vpc-spin var(--t-cinema) var(--ease-linear) infinite; /* 720ms — the nearest duration token (premium-polish: gate-clean)
+*/
   }
   @keyframes vpc-spin { to { transform: rotate(360deg); } }
 
-  /* ── Error gate ────────────────────────────────────────────────── */
+  /* ── Error gate ──────────────────────────────────────────────────
+*/
   .vpc-error {
     position: absolute;
     inset: 0;
@@ -424,7 +465,8 @@
     block-size: 40px;
     padding-inline: var(--sp-6);
     border: 0;
-    /* R313 (WP-E): square control — accent slab. */
+    /* R313 (WP-E): square control — accent slab.
+*/
     border-radius: var(--r-sm);
     background: var(--vpc-accent);
     color: var(--vpc-void);
@@ -438,19 +480,21 @@
   }
 
   /* ── Phone tuning ────────────────────────────────────────────────
-     The meta line under the player already carries the clock; drop
-     the inline time on very narrow frames — except fullscreen, where
-     the bar is the only clock. */
+   The meta line under the player already carries the clock; drop
+   the inline time on very narrow frames — except fullscreen, where
+   the bar is the only clock.
+*/
   @media (max-width: 480px) {
     .vpc:not(:fullscreen):not(:-webkit-full-screen) .vpc-time { display: none; }
   }
 
   /* ── Touch floor (PP-X2, audit P2-12): the six .vpc-btn controls
-     measured 40×40 on phone — under the platform's own 44px mobile
-     standard (bottom-nav 62, filter pills 44). min-block/inline-size
-     grows the HIT AREA + hover circle only; the icon (20px) and the
-     rest state (transparent ground) are unchanged. Same band as the
-     app shell's own mobile breakpoint. */
+   measured 40×40 on phone — under the platform's own 44px mobile
+   standard (bottom-nav 62, filter pills 44). min-block/inline-size
+   grows the HIT AREA + hover circle only; the icon (20px) and the
+   rest state (transparent ground) are unchanged. Same band as the
+   app shell's own mobile breakpoint.
+*/
   @media (max-width: 920px) {
     .vpc-btn {
       min-inline-size: 44px;
@@ -459,7 +503,8 @@
   }
 
   /* ── Reduced motion — no slide, opacity-only chrome (the spinner
-     stays: loading status is essential feedback) ──────────────────── */
+   stays: loading status is essential feedback) ────────────────────
+*/
   @media (prefers-reduced-motion: reduce) {
     .vpc-bar {
       transform: none;

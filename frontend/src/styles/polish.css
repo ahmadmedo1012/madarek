@@ -1,91 +1,106 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — Polish Bundle (consolidated v6 → v21)
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Loaded LAST. Sequence preserved exactly as the historical v6..v21
    ordering. Each section retains its original @layer banner. The
    chronological ordering matters: later blocks intentionally tune or
    override earlier ones. Each block ships with the regression note
    that motivated it.
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v6.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
+   ═══
+*/
+/* ═══
    MADAREK — Visual Polish v6
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Loaded LAST. Refines the existing system; does not redefine it.
    No `!important`. All transitions respect prefers-reduced-motion.
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer pages {
 
   /* (5-C1 entrance diet, A2 P1-1): v6's every-grid stagger is GONE.
-     It stamped an entrance on the children of EVERY .grid-* in the
-     app (128 grid usages / 43 files) and compounded with the v16
-     overrides-layer copy — a route change settled in ~680–900ms
-     through 3–4 stacked fades. The route entrance is now ONE
-     mechanism (PageTransition's keyed .content-inner remount playing
-     `page-enter`, 160ms) plus ONE authored stagger per page — the
-     hero grid only, scoped in the v16 block below. The polish-rise
-     keyframes stay: [data-numeric] count-up reveals ride them. */
+   It stamped an entrance on the children of EVERY .grid-* in the
+   app (128 grid usages / 43 files) and compounded with the v16
+   overrides-layer copy — a route change settled in ~680–900ms
+   through 3–4 stacked fades. The route entrance is now ONE
+   mechanism (PageTransition's keyed .content-inner remount playing
+   `page-enter`, 160ms) plus ONE authored stagger per page — the
+   hero grid only, scoped in the v16 block below. The polish-rise
+   keyframes stay: [data-numeric] count-up reveals ride them.
+*/
   @keyframes polish-rise {
-    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small
+*/
     to   { opacity: 1; transform: translateY(0); }
   }
 
   /* ── Card hover consistency ────────────────────────────────────────
-     The base .card already lifts on hover for `.interactive` and
-     `.bordered`. Make every clickable card feel that way without the
-     opt-in class. Anchors and buttons that wrap a card naturally count. */
+   The base .card already lifts on hover for `.interactive` and
+   `.bordered`. Make every clickable card feel that way without the
+   opt-in class. Anchors and buttons that wrap a card naturally count.
+*/
   @media (hover: hover) and (pointer: fine) {
   }
   /* (Wave 1-a focus consolidation: `outline: none` + the 32%-alpha
-     --focus-ring halo (≈1.5:1 on cream — WCAG fail) deleted. The accent
-     border cue is re-homed in v22; the AA-safe ring comes from the single
-     system re-asserted there. See audits/0-a-foundation.md P0-1/P0-2.) */
+   --focus-ring halo (≈1.5:1 on cream — WCAG fail) deleted. The accent
+   border cue is re-homed in v22; the AA-safe ring comes from the single
+   system re-asserted there. See audits/0-a-foundation.md P0-1/P0-2.)
+*/
 
   /* (4-A11 P2-9: the pages-layer `.skeleton` refinement (softer
-     gradient + polish-shimmer 1800ms, eased) used to live here — fully
-     shadowed by the overrides-layer SKELETON block further down
-     (every property it set is re-set there), and its eased 1800ms
-     loop violated the linear doctrine. Deleted rather than kept as a
-     dead third shimmer system.) */
+   gradient + polish-shimmer 1800ms, eased) used to live here — fully
+   shadowed by the overrides-layer SKELETON block further down
+   (every property it set is re-set there), and its eased 1800ms
+   loop violated the linear doctrine. Deleted rather than kept as a
+   dead third shimmer system.)
+*/
 
   /* ── Topbar scrolled shadow refinement ─────────────────────────────
-     r148 (AUDIT-1 H5): القاعدتان اللتان كانتا هنا (pages-layer whisper
-     shadow فاتح/داكن) مغلوبتان كليًا من .topbar.scrolled في overrides
-     أدناه (var(--elev-2)) — حُذفتا كجثتين داخل الشلال. */
+   r148 (AUDIT-1 H5): القاعدتان اللتان كانتا هنا (pages-layer whisper
+   shadow فاتح/داكن) مغلوبتان كليًا من .topbar.scrolled في overrides
+   أدناه (var(--elev-2)) — حُذفتا كجثتين داخل الشلال.
+*/
 
-  /* ── Sidebar nav items ───────────────────────────────────────── */
+  /* ── Sidebar nav items ─────────────────────────────────────────
+*/
   /* R319 (c1-A · B1): the state twins are DELETED — one home per
-     state. layout.css owns the whole .nav-item family on the
-     paired-token contract (--_bg/--_fg/--_icon-fg flipped together,
-     hover guarded to fine pointers, :active twin on touch). The
-     background-only :hover twin here is THE B1 root cause: it
-     re-declared the wash's background half under layout.css's full
-     charcoal/paper pair — the composed paper-label-on-grey ≈1.1:1,
-     and on touch `:hover` sticks after the tap (the owner's
-     «مقرّراتي الدراسية» pale ghost). The accent-soft `.on` twin
-     loses to nothing anymore — the ink label + 2px accent rule
-     (layout.css, R313 grammar) is the single active truth. */
+   state. layout.css owns the whole .nav-item family on the
+   paired-token contract (--_bg/--_fg/--_icon-fg flipped together,
+   hover guarded to fine pointers, :active twin on touch). The
+   background-only :hover twin here is THE B1 root cause: it
+   re-declared the wash's background half under layout.css's full
+   charcoal/paper pair — the composed paper-label-on-grey ≈1.1:1,
+   and on touch `:hover` sticks after the tap (the owner's
+   «مقرّراتي الدراسية» pale ghost). The accent-soft `.on` twin
+   loses to nothing anymore — the ink label + 2px accent rule
+   (layout.css, R313 grammar) is the single active truth.
+*/
   .nav-item {
     /* (transition-only survivor of the old trio — harmless, and the
-       one property family layout.css's base already authorizes) */
+    one property family layout.css's base already authorizes)
+*/
     transition:
       background var(--t-fast) var(--ease),
       color var(--t-fast) var(--ease);
   }
   /* (Wave 1-a focus consolidation: the inset-only nav-item ring deleted —
-     it suppressed the universal outline. Nav items (anchors) now get the
-     single AA-safe ring from v22.) */
+   it suppressed the universal outline. Nav items (anchors) now get the
+   single AA-safe ring from v22.)
+*/
 
-  /* ── Buttons — focus ring + active feedback ────────────────────── */
+  /* ── Buttons — focus ring + active feedback ──────────────────────
+*/
   .btn {
     /* R313 (WP-D · D4): the colour-swap register — border + color ride
-       the wipe's --t-base so the label flip lands in lockstep with the
-       fill layer (components.css .btn::before). */
+    the wipe's --t-base so the label flip lands in lockstep with the
+    fill layer (components.css .btn::before).
+*/
     transition:
       background var(--t-base) var(--ease),
       border-color var(--t-base) var(--ease),
@@ -93,28 +108,33 @@
       transform var(--motion-duration-micro) var(--ease);
   }
   /* (Wave 1-a focus consolidation: .btn outline suppression + weak halo
-     deleted — buttons take the single AA-safe ring from v22.)
-     (Premium-polish: the v6 `translateY(1px)` sink deleted — it lost the
-     cascade to v13's scale register and only misled edits.) */
+   deleted — buttons take the single AA-safe ring from v22.)
+   (Premium-polish: the v6 `translateY(1px)` sink deleted — it lost the
+   cascade to v13's scale register and only misled edits.)
+*/
 
   /* ── Dropdown / menu enter ──────────────────────────────────────
-     (WS-D2 orphan sweep: the .topbar-user-menu / .notification-dropdown /
-     .global-search-results selector group AND the polish-menu-enter
-     keyframes were dead — Topbar renders the Dropdown / NotificationPanel
-     primitives.) */
+   (WS-D2 orphan sweep: the .topbar-user-menu / .notification-dropdown /
+   .global-search-results selector group AND the polish-menu-enter
+   keyframes were dead — Topbar renders the Dropdown / NotificationPanel
+   primitives.)
+*/
 
-  /* ── Modal / overlay enter ────────────────────────────────────── */
+  /* ── Modal / overlay enter ──────────────────────────────────────
+*/
   /* (Wave 9-b dead-selector sweep: `.modal`, `.dialog`, `.modal-backdrop`
-     and `.dialog-backdrop` deleted — the Modal primitive renders
-     `.modal-overlay` + `.modal-card` (components.css owns their
-     entrance), so these never matched. Only the sidebar drawer
-     backdrop still rides the backdrop-enter keyframes.) */
+   and `.dialog-backdrop` deleted — the Modal primitive renders
+   `.modal-overlay` + `.modal-card` (components.css owns their
+   entrance), so these never matched. Only the sidebar drawer
+   backdrop still rides the backdrop-enter keyframes.)
+*/
   @keyframes polish-backdrop-enter {
     from { opacity: 0; }
     to   { opacity: 1; }
   }
 
-  /* ── Tabs — pointer + animated indicator transition ───────────── */
+  /* ── Tabs — pointer + animated indicator transition ─────────────
+*/
   .tab {
     cursor: pointer;
     transition:
@@ -123,47 +143,58 @@
   }
 
   /* (Wave 1-a focus consolidation: the input outline suppression deleted —
-     it starved every form control of the AA-safe ring. v22 owns the ring.) */
+   it starved every form control of the AA-safe ring. v22 owns the ring.)
+*/
 
-  /* ── Number entrance — subtle "count-up reveal" feel ─────────── */
+  /* ── Number entrance — subtle "count-up reveal" feel ───────────
+*/
 
-  /* ── Mobile refinements ───────────────────────────────────────── */
+  /* ── Mobile refinements ─────────────────────────────────────────
+*/
   @media (max-width: 640px) {
     /* r288 (anatomy fold): the four .page-family mobile lines deleted —
-       base.css now owns the whole legacy frame anatomy at patterns
-       parity (.page/.page-header/.page-title/.page-subtitle mirror
-       PageFrame/PageHeader geometry in both themes at every width);
-       the fs-xl mobile title shrank legacy titles to 24px while
-       contract pages stayed 30px — a mobile jump between siblings. */
+    base.css now owns the whole legacy frame anatomy at patterns
+    parity (.page/.page-header/.page-title/.page-subtitle mirror
+    PageFrame/PageHeader geometry in both themes at every width);
+    the fs-xl mobile title shrank legacy titles to 24px while
+    contract pages stayed 30px — a mobile jump between siblings.
+*/
 
     /* Tap targets — iOS HIG / Material guideline is 44px. (Wave 9-b
-       tap-target consolidation, 6-a follow-up #5: .btn.sm dropped from
-       this pages-layer list — the overrides-layer v11 mobile block is
-       the ONE owner of the button floors; the two disagreed (44 vs 32)
-       leaving this entry permanently dead.) */
+    tap-target consolidation, 6-a follow-up #5: .btn.sm dropped from
+    this pages-layer list — the overrides-layer v11 mobile block is
+    the ONE owner of the button floors; the two disagreed (44 vs 32)
+    leaving this entry permanently dead.)
+*/
     .nav-item,
     .topbar-user-trigger {
       min-block-size: 44px;
     }
 
     /* Bottom nav safe-area padding (already handled in base.css for
-       .content-inner; this guards against double scrollbars). */
+    .content-inner; this guards against double scrollbars).
+*/
     /* (R313 D16: the band's topbar backdrop-filter line is retired —
-       the topbar is a solid surface band + hairline now.) */
+    the topbar is a solid surface band + hairline now.)
+*/
 
     /* Cards lose some inner padding on phones so 1-column grids
-       don't feel like cards-inside-a-card. */
+    don't feel like cards-inside-a-card.
+*/
     .card { padding: var(--sp-4); }
 
-    /* Tables overflow horizontally instead of squishing. */
+    /* Tables overflow horizontally instead of squishing.
+*/
   }
 
-  /* ── Wide screens — looser breathing room ─────────────────────── */
+  /* ── Wide screens — looser breathing room ───────────────────────
+*/
   @media (min-width: 1440px) {
     .content-inner { padding-block: var(--sp-8); }
   }
 
-  /* ── Honour reduced-motion globally for the polish layer ───── */
+  /* ── Honour reduced-motion globally for the polish layer ─────
+*/
   @media (prefers-reduced-motion: reduce) {
     .grid-2 > *,
     .grid-3 > *,
@@ -181,19 +212,22 @@
     .btn:active:not(:disabled) { transform: none; }
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  UI/UX PRO MAX — interactive polish layer                      ║
-     ║  cursor-pointer consistency · press states · touch targets     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   UI/UX PRO MAX — interactive polish layer
+   cursor-pointer consistency · press states · touch targets
+   ╚╚╚
+*/
 
-  /* ── Ensure all interactive elements get pointer cursor ──────── */
+  /* ── Ensure all interactive elements get pointer cursor ────────
+*/
   /* (Wave 9-b dead-selector sweep: .kpi-cell, .surface-card,
-     .table-row-clickable and tr[data-clickable] removed from this
-     group — zero TSX consumers; dashboards render .metric/.compact-kpi
-     and row-level affordances are buttons inside cells now.)
-     5-D3 (A2 P3-16): select joins the group — the native control kept
-     the default arrow while every sibling control answers pointer
-     (measured on the admin filters). */
+   .table-row-clickable and tr[data-clickable] removed from this
+   group — zero TSX consumers; dashboards render .metric/.compact-kpi
+   and row-level affordances are buttons inside cells now.)
+   5-D3 (A2 P3-16): select joins the group — the native control kept
+   the default arrow while every sibling control answers pointer
+   (measured on the admin filters).
+*/
   .metric,
   [role="button"],
   [role="tab"],
@@ -203,89 +237,109 @@
   summary,
   label[tabindex] { cursor: pointer; }
 
-  /* ── Card & surface-card: press feedback ────────────────────── */
+  /* ── Card & surface-card: press feedback ──────────────────────
+*/
 
-  /* ── Metric & KPI: press feedback ───────────────────────────── */
+  /* ── Metric & KPI: press feedback ─────────────────────────────
+*/
   /* r130-W2-7: .metric joins the card register at the token value —
-     was the last live 0.995 straggler (v6 hardcoded it before the
-     card press token existed). */
+   was the last live 0.995 straggler (v6 hardcoded it before the
+   card press token existed).
+*/
 
-  /* ── Nav items: active press ────────────────────────────────── */
+  /* ── Nav items: active press ──────────────────────────────────
+*/
   .nav-item:active {
     transform: scale(0.985);
     transition-duration: var(--t-micro);
   }
 
   /* ── Icon buttons: press feedback ─────────────────────────────
-     5-C1 (A2 P2-3): .icon-btn had NO :active in any sheet — the
-     most-pressed chrome class (modal close, overlay close, inline
-     tool buttons) showed only its hover bg while pressed. Joins the
-     .btn/.tab/.pill press family at the scale(0.97) register; the
-     snap-back rides the micro duration like .nav-item/.pill. */
+   5-C1 (A2 P2-3): .icon-btn had NO :active in any sheet — the
+   most-pressed chrome class (modal close, overlay close, inline
+   tool buttons) showed only its hover bg while pressed. Joins the
+   .btn/.tab/.pill press family at the scale(0.97) register; the
+   snap-back rides the micro duration like .nav-item/.pill.
+*/
 
   /* ── Row-action controls: press feedback ─────────────────────
-     r149 (R3-A3 §3/§4): صفوف القوائم المنسدلة وبحث الأوامر وزر إغلاق
-     التوست وأزرار الترقيم وقائمة إعدادات المشغّل — كلها صمّمت hover
-     بلا ردّ ضغط. السجل كان موجودًا فقط على .btn/.card/.pill/.nav-item/
-     .icon-btn. الصفوف تأخذ 0.985 مثل nav؛ الأزرار المنفردة 0.97 مثل
-     icon-btn. */
+   r149 (R3-A3 §3/§4): صفوف القوائم المنسدلة وبحث الأوامر وزر إغلاق
+   التوست وأزرار الترقيم وقائمة إعدادات المشغّل — كلها صمّمت hover
+   بلا ردّ ضغط. السجل كان موجودًا فقط على .btn/.card/.pill/.nav-item/
+   .icon-btn. الصفوف تأخذ 0.985 مثل nav؛ الأزرار المنفردة 0.97 مثل
+   icon-btn.
+*/
 
-  /* ── Sidebar collapse btn: icon-only 44px touch target ───────── */
+  /* ── Sidebar collapse btn: icon-only 44px touch target ─────────
+*/
   /* (Wave 9-b dead-selector sweep: .topbar-icon-btn + .sidebar-toggle-btn
-     deleted — zero TSX consumers; the toggles render .icon-btn /
-     .topbar-mobile-toggle.) */
+   deleted — zero TSX consumers; the toggles render .icon-btn /
+   .topbar-mobile-toggle.)
+*/
   @media (max-width: 640px) {
   }
 
-  /* ── Tab items: pointer (folded into the base .tab above) + hover underline ── */
+  /* ── Tab items: pointer (folded into the base .tab above) + hover underline ──
+*/
   @media (hover: hover) and (pointer: fine) {
     .tab:hover { color: var(--text); }
   }
   /* 15-g P1-4 — selected-tab label is body-size text (.tab base is
-     --type-label-size 13px/600), so 4.5:1 applies: light --accent
-     #B57438 reads 3.52–3.80:1 on card surfaces. --accent-ink keeps
-     the label AA in both themes (10.29:1 light / 7.87:1 dark) — same
-     fix class as the nav-item 0-c P1-1. The underline indicator keeps
-     its own color (components.css: --neutral-900 light, --accent
-     dark), so the accent read survives via the indicator. */
+   --type-label-size 13px/600), so 4.5:1 applies: light --accent
+   #B57438 reads 3.52–3.80:1 on card surfaces. --accent-ink keeps
+   the label AA in both themes (10.29:1 light / 7.87:1 dark) — same
+   fix class as the nav-item 0-c P1-1. The underline indicator keeps
+   its own color (components.css: --neutral-900 light, --accent
+   dark), so the accent read survives via the indicator.
+*/
   .tab[aria-selected="true"] { color: var(--accent-ink); font-weight: var(--fw-semibold); }
 
   /* ── Pill active state: subtle press ────────────────────────────
-     r294: consolidated into components.css (the pill interaction
-     truth: v15 press-scale transform + this v6 micro press-snap
-     duration; the dead scale(0.985) — beaten by the overrides-layer
-     press-scale — is not carried over). */
+   r294: consolidated into components.css (the pill interaction
+   truth: v15 press-scale transform + this v6 micro press-snap
+   duration; the dead scale(0.985) — beaten by the overrides-layer
+   press-scale — is not carried over).
+*/
 
-  /* ── Table row hover: interactive rows ──────────────────────── */
+  /* ── Table row hover: interactive rows ────────────────────────
+*/
   /* (Wave 9-b dead-selector sweep: the tr[data-clickable] hover rule
-     deleted — zero TSX consumers.) */
+   deleted — zero TSX consumers.)
+*/
 
   /* (Wave 1-a focus consolidation: duplicate ring deleted. Anchor/button
-     wrappers carry the single AA-safe ring from v22; `a > .card:focus-visible`
-     and `button > .card:focus-visible` never matched anything — the wrapper,
-     not the card, is the focused element.) */
+   wrappers carry the single AA-safe ring from v22; `a > .card:focus-visible`
+   and `button > .card:focus-visible` never matched anything — the wrapper,
+   not the card, is the focused element.)
+*/
 
-  /* ── Disabled interactive cards ─────────────────────────────── */
+  /* ── Disabled interactive cards ───────────────────────────────
+*/
 
   /* ── Empty state CTA: centered, friendly ──────────────────────
-     r296: consolidated into components.css STATE — the v10 overrides
-     values beat this pages-layer copy (gap/padding/color); the
-     min-block floor from here is carried over. */
+   r296: consolidated into components.css STATE — the v10 overrides
+   values beat this pages-layer copy (gap/padding/color); the
+   min-block floor from here is carried over.
+*/
   /* (Wave 9-b dead-selector sweep: the .empty-state-icon / -title /
-     -desc child rules deleted — zero TSX consumers; pages render the
-     bare .empty-state container (kept above) with Icon/text utilities,
-     and the real empty-state anatomy is the States primitive.) */
+   -desc child rules deleted — zero TSX consumers; pages render the
+   bare .empty-state container (kept above) with Icon/text utilities,
+   and the real empty-state anatomy is the States primitive.)
+*/
 
-  /* ── Loading shimmer for async content containers ──────────────── */
+  /* ── Loading shimmer for async content containers ────────────────
+*/
   /* (Wave 9-b dead-selector sweep: .loading-pane + its .spinner and
-     the madarek-spin keyframes deleted — zero TSX consumers; loading
-     surfaces render the States/Skeleton primitives. auth.css and
-     components.css each define their own identical madarek-spin
-     keyframes, so their spinners are unaffected.) */
+   the madarek-spin keyframes deleted — zero TSX consumers; loading
+   surfaces render the States/Skeleton primitives. auth.css and
+   components.css each define their own identical madarek-spin
+   keyframes, so their spinners are unaffected.)
+*/
   @media (prefers-reduced-motion: reduce) {
     /* (Wave 1-a: the 1500ms "slow spinner" accommodation deleted — it
-       never won against base.css's `animation-duration: 0.01ms !important`
-       belt. The press-transform resets below stay.) */
+    never won against base.css's `animation-duration: 0.01ms !important`
+    belt. The press-transform resets below stay.)
+*/
     .card.interactive:active,
     a > .card:active,
     button > .card:active,
@@ -294,28 +348,33 @@
     .pill:active:not(.on) { transform: none; }
   }
 
-  /* ═══════════════════════════════════════════════════════════════
-     Collapsible sidebar — desktop icon-rail mode
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   Collapsible sidebar — desktop icon-rail mode
+     ═══
+*/
 
   /* Toggle button next to the brand — r294: the v6 structural half
-     and the v8 refinement half are MERGED into layout.css
-     (.sidebar-collapse-btn, single definition: 28px surface pill,
-     accent hover). The collapsed-rail display:none below stays here
-     with the rest of the collapsed-rail system. */
+   and the v8 refinement half are MERGED into layout.css
+   (.sidebar-collapse-btn, single definition: 28px surface pill,
+   accent hover). The collapsed-rail display:none below stays here
+   with the rest of the collapsed-rail system.
+*/
   /* (Wave 1-a focus consolidation: outline suppression + weak halo deleted;
-     border-color cue re-homed in v22, ring supplied by the v22 system.) */
+   border-color cue re-homed in v22, ring supplied by the v22 system.)
+*/
 
   /* Hide labels and section headers when collapsed; nav-items become
-     icon-only on a tighter padding. The brand text + user info collapse
-     down to icons too. */
+   icon-only on a tighter padding. The brand text + user info collapse
+   down to icons too.
+*/
   @media (min-width: 921px) {
     .sidebar.collapsed {
       padding-inline: var(--sp-2);
     }
     .sidebar.collapsed .sidebar-brand {
       justify-content: center;
-      padding-inline: var(--sp-1); /* r157: 4px → --sp-1 */
+      padding-inline: var(--sp-1); /* r157: 4px → --sp-1
+*/
       gap: 0;
     }
     .sidebar.collapsed .sidebar-brand-text,
@@ -330,27 +389,33 @@
       grid-template-columns: 22px;
       padding: var(--sp-2);
       justify-content: center;
-      /* Tooltip anchor — the title-attribute ::after below. */
+      /* Tooltip anchor — the title-attribute ::after below.
+*/
       position: relative;
     }
     .sidebar.collapsed .nav-icon {
       margin-inline: auto;
     }
     /* (r157 .on/.active vocabulary sweep: the dead .active twin
-       selectors at 7 sites in this file deleted — nav items render .on
-       only (Sidebar.tsx; rg: zero TSX producers of nav-item.active /
-       tab.active). BottomNav's bottom-nav-item.active family is a
-       different, live component and stays.) */
+    selectors at 7 sites in this file deleted — nav items render .on
+    only (Sidebar.tsx; rg: zero TSX producers of nav-item.active /
+    tab.active). BottomNav's bottom-nav-item.active family is a
+    different, live component and stays.)
+*/
     .sidebar.collapsed .nav-item.on::before {
       inset-inline-start: 0;
       /* r184 (A3 §F8 twin): physical `0 2px 2px 0` rounded the wrong
-         side under RTL — logical corners round the inline-END pair
-         (content-facing in both directions); LTR is pixel-identical. */
-      border-start-end-radius: 2px; /* radius-gate: allow — sidebar collapsed indicator micro (r184 F8 twin, logical) */
-      border-end-end-radius: 2px; /* radius-gate: allow — sidebar collapsed indicator micro (r184 F8 twin, logical) */
+     side under RTL — logical corners round the inline-END pair
+     (content-facing in both directions); LTR is pixel-identical.
+*/
+      border-start-end-radius: 2px; /* radius-gate: allow — sidebar collapsed indicator micro (r184 F8 twin, logical)
+*/
+      border-end-end-radius: 2px; /* radius-gate: allow — sidebar collapsed indicator micro (r184 F8 twin, logical)
+*/
     }
     .sidebar.collapsed .sidebar-user {
-      padding: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+      padding: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
       justify-content: center;
     }
     .sidebar.collapsed .sidebar-logout {
@@ -358,7 +423,8 @@
     }
 
     /* Tooltip on hover when collapsed — uses the title attribute via
-       a positioned ::after. Lightweight; no JS portal. */
+    a positioned ::after. Lightweight; no JS portal.
+*/
     @media (hover: hover) and (pointer: fine) {
       .sidebar.collapsed .nav-item:hover::after {
         content: attr(title);
@@ -373,7 +439,8 @@
         font-weight: var(--fw-medium);
         border-radius: var(--r-sm);
         white-space: nowrap;
-        /* 012 z-language: hover tooltip above sidebar content. */
+        /* 012 z-language: hover tooltip above sidebar content.
+*/
         z-index: var(--z-tooltip);
         pointer-events: none;
         opacity: 0;
@@ -393,135 +460,149 @@
   }
 
   /* Mobile — collapsed state has no meaning; the sidebar is a full
-     overlay that's either open or hidden. The toggle button is also
-     hidden via .hide-on-mobile in the markup. */
+   overlay that's either open or hidden. The toggle button is also
+   hidden via .hide-on-mobile in the markup.
+*/
 
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v7.css — RETIRED r294 (polish dismantle)
-   ═══════════════════════════════════════════════════════════════════
+   ═══
    Everything live in this section moved to its owning sheet:
    - .reveal-up / .reveal-d-{1..5} + RM kill → landing.css (the only
-     consumer is RevealCssClass on LandingPage; zero other sheets
-     target these selectors — the layer shift is computed-neutral).
+   consumer is RevealCssClass on LandingPage; zero other sheets
+   target these selectors — the layer shift is computed-neutral).
    - html { scroll-behavior: smooth } + RM auto → deleted as a pure
-     duplicate of base.css's html rule (line 28) and the universal
-     RM !important there (transition/scroll governed centrally).
+   duplicate of base.css's html rule (line 28) and the universal
+   RM !important there (transition/scroll governed centrally).
    The remaining v7 content had been dead for generations (landing
    pre-rebuild families: word-stagger, mockup parallax, feature-card
    ::after spotlight, custom-grid stagger, eyebrow shimmer — all
-   zero-consumer deletions recorded in situ before r294). */
+   zero-consumer deletions recorded in situ before r294).
+*/
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v8.css — RETIRED r294 (polish dismantle, wave 2)
-   ═══════════════════════════════════════════════════════════════════
+   ═══
    The cohesion wave. Every live rule folded to its owning sheet,
    with the polish pages-layer→owner-sheet layer shift verified
    computed-neutral by the audit drift gate (72/72) + e2e + design
    gates:
    - card cursor-follow spotlight (.card:not(.flush) + .card > *)
-     → components.css CARD
+   → components.css CARD
    - metric --t-fast transition trio + accent-tinted hover + RM +
-     ≤640px padding → components.css METRIC (replaced the older
-     premium-h/−2px hover pair — the polish body was the rendered
-     truth)
+   ≤640px padding → components.css METRIC (replaced the older
+   premium-h/−2px hover pair — the polish body was the rendered
+   truth)
    - section-title padding-inline-start + ::before stripe
-     → components.css SECTION-TITLE
+   → components.css SECTION-TITLE
    - page-header-meta full line → components.css (merged with the
-     color-only survivor)
+   color-only survivor)
    - card-title-icon 70/30 accent mix → components.css base
    - spinner text-tint track + accent edge → components.css base
    - btn.primary bevel/glow/press trio → components.css BTN
    - form-label --text ink + ls-normal → components.css base (the
-     r151e note there already documented the retired bang war)
+   r151e note there already documented the retired bang war)
    - pill tactile transition trio → components.css base
    - checkbox/radio branded family (whole block — polish was the
-     sole definition) → components.css, before TABLE
+   sole definition) → components.css, before TABLE
    - hydration-splash ambient pulse + keyframes + RM
-     → components.css base
+   → components.css base
    - topbar-title fw-semibold + topbar-scope full chip recipe
-     → layout.css TOPBAR
+   → layout.css TOPBAR
    - sidebar-collapse-btn trio + sidebar-mobile-close + ≤920px
-     drawer overrides → layout.css SIDEBAR
+   drawer overrides → layout.css SIDEBAR
    - bottom-nav pop keyframes + RM → notifications.css
    - owner-chart-container radius/overflow well → owner.css
    - admin-students-search bare-input reset → admin.css (the
-     comment there now owns the reasoning)
+   comment there now owns the reasoning)
    DELETED as measured-dead (not moved):
    - .sidebar scrollbar group: the rail is overflow:hidden since
-     4-A2 P1-2 (.sidebar-nav is the scroller and already carries the
-     thin scrollbar) — painted nothing.
+   4-A2 P1-2 (.sidebar-nav is the scroller and already carries the
+   thin scrollbar) — painted nothing.
    - .auth-field label element-variant: every auth label renders
-     .form-label (auth.css owns the full recipe at .auth-field
-     .form-label) — duplicate computed values.
+   .form-label (auth.css owns the full recipe at .auth-field
+   .form-label) — duplicate computed values.
    Pre-r294 deletions already recorded in situ: welcome-card family
    (r153f → student.css), topbar invalid gradients (P0-4 → v22),
    global scrollbar (P1-2 → v22), dropdown chrome (WS-D2), print
    block (P0-7 → v22), state padding (r152f → components.css),
-   checkbox weak halo + card weak halo (Wave 1-a → v22 AA ring). */
+   checkbox weak halo + card weak halo (Wave 1-a → v22 AA ring).
+*/
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v9.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
+   ═══
+*/
+/* ═══
    POLISH v9 — topbar, bell button, notifications panel, broader coverage
    Loaded last; uses --vars instead of !important.
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer overrides {
 
-  /* ═══════════════════════════════════════════════════════════════
-     TOPBAR — height + better chrome
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   TOPBAR — height + better chrome
+     ═══
+*/
   .topbar {
     /* r158: consumes the token — was a raw 60px while --topbar-h said
-       64px, so every var(--topbar-h) sticky consumer (pdf viewer,
-       colleges toolbar) floated 4px low. The token now carries the
-       real rendered height (60px); this override stays the last word
-       on the bar's box without forking the value.
-       r366 (2-g): the band GROWS with its text — a fixed 56px box with
-       rem-scaled type spilled the title over the page's first row at
-       the 200% text-scale pass (title measured 123px tall, painting
-       33px over the page's eyebrow). 56px stays the FLOOR; the band is
-       sticky + in flow, so the page follows the grown band naturally. */
+    64px, so every var(--topbar-h) sticky consumer (pdf viewer,
+    colleges toolbar) floated 4px low. The token now carries the
+    real rendered height (60px); this override stays the last word
+    on the bar's box without forking the value.
+    r366 (2-g): the band GROWS with its text — a fixed 56px box with
+    rem-scaled type spilled the title over the page's first row at
+    the 200% text-scale pass (title measured 123px tall, painting
+    33px over the page's eyebrow). 56px stays the FLOOR; the band is
+    sticky + in flow, so the page follows the grown band naturally.
+*/
     min-block-size: var(--topbar-h);
     block-size: auto;
     /* Increase opacity so the page-title underneath never bleeds through.
-       The user reported page titles appearing cut by the topbar — that
-       was caused by the previous 86% mix being too transparent against
-       the cream surface in light mode. */
+    The user reported page titles appearing cut by the topbar — that
+    was caused by the previous 86% mix being too transparent against
+    the cream surface in light mode.
+*/
     /* R313 (D16): the topbar is a SOLID surface band — the 96%
-       translucent mix + backdrop blur are retired (the reference has
-       no glass anywhere; the hairline alone separates chrome). */
+    translucent mix + backdrop blur are retired (the reference has
+    no glass anywhere; the hairline alone separates chrome).
+*/
     background: var(--surface);
     border-block-end: 1px solid var(--rule);
     z-index: var(--z-dropdown);
     /* SWITCH from grid to flex. Grid + auto-placement was producing huge
-       gaps between the title (which slid to far inline-start because
-       col 1 was empty when the mobile toggle is hidden) and the search +
-       actions block. Flex with a single 1fr spacer gives a stable layout:
-         [title-block] [flexible spacer] [search] [actions]
-       that reads correctly in both LTR and RTL. */
+    gaps between the title (which slid to far inline-start because
+    col 1 was empty when the mobile toggle is hidden) and the search +
+    actions block. Flex with a single 1fr spacer gives a stable layout:
+     [title-block] [flexible spacer] [search] [actions]
+    that reads correctly in both LTR and RTL.
+*/
     display: flex;
     align-items: center;
     gap: var(--sp-3);
   }
   [data-theme="dark"] .topbar {
-    /* R313 (D16): solid surface, both themes. */
+    /* R313 (D16): solid surface, both themes.
+*/
     background: var(--surface);
   }
   /* (r155d dead-twin sweep: `.topbar.scrolled { box-shadow: var(--elev-2) }`
-     deleted here — byte-identical to layout.css's rule (T3-F4's
-     theme-aware token; the raw two-layer shadows it replaced are
-     history there). layout.css is the documented topbar owner; the
-     overrides-layer twin painted nothing it didn't already paint.) */
+   deleted here — byte-identical to layout.css's rule (T3-F4's
+   theme-aware token; the raw two-layer shadows it replaced are
+   history there). layout.css is the documented topbar owner; the
+   overrides-layer twin painted nothing it didn't already paint.)
+*/
 
-  /* SWITCH from grid to flex — see the .topbar rule above. */
+  /* SWITCH from grid to flex — see the .topbar rule above.
+*/
 
   /* Actions cluster + search are non-shrinking; title can ellipsize on
-     extremely narrow viewports rather than push everything else off-screen. */
+   extremely narrow viewports rather than push everything else off-screen.
+*/
   .topbar > .topbar-mobile-toggle,
   .topbar > .topbar-actions { flex: 0 0 auto; }
   .topbar > .global-search { flex: 0 1 320px; min-inline-size: 0; }
@@ -530,27 +611,32 @@
     min-inline-size: 0;
     overflow: hidden;
     /* Title text + scope chip should sit on a single line. The chip
-       won't wrap (white-space: nowrap on .topbar-scope) so any extra
-       content gets ellipsized. */
+    won't wrap (white-space: nowrap on .topbar-scope) so any extra
+    content gets ellipsized.
+*/
     white-space: nowrap;
     text-overflow: ellipsis;
   }
   .topbar-title > * { min-inline-size: 0; }
   /* The title block now grows to fill leftover space, so the search
-     stays anchored to the inline-end without a separate spacer. */
+   stays anchored to the inline-end without a separate spacer.
+*/
 
   /* The "اسأل AI" button is a primary tinted CTA inside the topbar — soften
-     its weight so it doesn't fight the page title for attention. */
+   its weight so it doesn't fight the page title for attention.
+*/
   .topbar-actions .btn.primary.sm {
     height: 32px;
     padding-inline: var(--sp-3);
-    font-size: var(--fs-xs); /* r157: 12.5px → --fs-xs (تقريب نصف بكسل مقصود) */
+    font-size: var(--fs-xs); /* r157: 12.5px → --fs-xs (تقريب نصف بكسل مقصود)
+*/
     font-weight: 600;
   }
 
-  /* ═══════════════════════════════════════════════════════════════
-     BELL BUTTON — was unstyled (.topbar-notif had no rules)
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   BELL BUTTON — was unstyled (.topbar-notif had no rules)
+     ═══
+*/
   .topbar-notif {
     position: relative;
     display: inline-flex;
@@ -563,8 +649,9 @@
     color: var(--text-muted);
     cursor: pointer;
     /* R329 (gate:clean): radius 0 is r319-shell.css's unlayered seat;
-       the transition is r305-shell.css's control recipe — both
-       overrides-layer copies here were inert (unlayered wins). */
+    the transition is r305-shell.css's control recipe — both
+    overrides-layer copies here were inert (unlayered wins).
+*/
   }
   @media (hover: hover) and (pointer: fine) {
     .topbar-notif:hover {
@@ -574,27 +661,33 @@
     }
   }
   /* (Wave 1-a focus consolidation: outline suppression + weak halo deleted;
-     the bell button takes the single AA-safe ring from v22.) */
+   the bell button takes the single AA-safe ring from v22.)
+*/
   .topbar-notif-badge {
     position: absolute;
     inset-block-start: 2px;
     inset-inline-end: 2px;
     min-inline-size: 16px;
     block-size: 16px;
-    padding: 0 var(--sp-1); /* r157: 4px → --sp-1 */
+    padding: 0 var(--sp-1); /* r157: 4px → --sp-1
+*/
     border-radius: var(--r-full);
     /* R329 (gate:clean): the badge's danger ground + fg are
-       notifications.css's unlayered seats (danger-ink/danger-fg) —
-       these overrides-layer copies were inert. */
-    font-size: var(--fs-xxs); /* r157: 10px → --fs-xxs (تقريب مقصود لأرقام الشارة) */
+    notifications.css's unlayered seats (danger-ink/danger-fg) —
+    these overrides-layer copies were inert.
+*/
+    font-size: var(--fs-xxs); /* r157: 10px → --fs-xxs (تقريب مقصود لأرقام الشارة)
+*/
     font-weight: 700;
     line-height: 16px;
     text-align: center;
     border: 2px solid var(--surface);
     font-variant-numeric: tabular-nums;
-    /* Off-token by design: danger-tinted attention glow, not elevation. */
+    /* Off-token by design: danger-tinted attention glow, not elevation.
+*/
   box-shadow: 0 2px 6px -1px color-mix(in srgb, var(--danger) 50%, transparent);
-    /* Calm pulse to draw attention without nagging */
+    /* Calm pulse to draw attention without nagging
+*/
     animation: notif-bell-pulse var(--motion-duration-ambient) var(--ease-out) infinite;
   }
   @keyframes notif-bell-pulse {
@@ -605,98 +698,118 @@
     .topbar-notif-badge { animation: none; }
   }
 
-  /* ═══════════════════════════════════════════════════════════════
-     NOTIFICATIONS PANEL — better organisation + visual rhythm
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   NOTIFICATIONS PANEL — better organisation + visual rhythm
+     ═══
+*/
   /* (WS-D2 orphan sweep: the .notif-panel container override was dead —
-     the NotificationPanel primitive owns the container surface.) */
+   the NotificationPanel primitive owns the container surface.)
+*/
 
   /* Items get tighter padding + a subtle hairline between rows so the panel
-     reads as a stack rather than a wall of buttons */
+   reads as a stack rather than a wall of buttons
+*/
   @media (hover: hover) and (pointer: fine) {
   }
 
 
-  /* Unread state — soft accent stripe on the inline-start edge */
+  /* Unread state — soft accent stripe on the inline-start edge
+*/
   /* (Wave 1-a craft-floor sweep, orchestrator ruling #4: the 3px accent
-     edge stripe on unread rows deleted — the leading .notif-item-dot
-     (with its accent halo) already codes "unread", so the stripe was
-     decoration-only duplication. See 0-a P0-5.) */
+   edge stripe on unread rows deleted — the leading .notif-item-dot
+   (with its accent halo) already codes "unread", so the stripe was
+   decoration-only duplication. See 0-a P0-5.)
+*/
 
-  /* Empty state — centred, calmer */
+  /* Empty state — centred, calmer
+*/
   /* (r155d dead-twin sweep: `.notif-empty-text` deleted here — identical
-     to notifications.css's rule (13px/muted/margin 0); the toast/bottom-
-     nav sheet is the documented owner. The -icon rule above stays: it
-     is the overrides-layer winner for the well's geometry/radius.) */
+   to notifications.css's rule (13px/muted/margin 0); the toast/bottom-
+   nav sheet is the documented owner. The -icon rule above stays: it
+   is the overrides-layer winner for the well's geometry/radius.)
+*/
 
   @media (hover: hover) and (pointer: fine) {
   }
 
-  /* ═══════════════════════════════════════════════════════════════
-     SIDEBAR MOBILE CLOSE — visible only on phones
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   SIDEBAR MOBILE CLOSE — visible only on phones
+     ═══
+*/
   /* (Wave 9-b dead-selector sweep: .show-on-mobile deleted (base rule
-     + the ≤920px reveal) — zero TSX consumers; only .hide-on-mobile is
-     rendered by the shell components.) */
+   + the ≤920px reveal) — zero TSX consumers; only .hide-on-mobile is
+   rendered by the shell components.)
+*/
   @media (max-width: 920px) {
     /* (r151e: bang retired — the pages layer already beats the
-       components-layer .hide-on-mobile pair by layer order.) */
+    components-layer .hide-on-mobile pair by layer order.)
+*/
     .hide-on-mobile { display: none; }
     /* (R319 c1-A · B1b: the .sidebar-mobile-close geometry/hover twin
-       that lived here is DELETED — layout.css owns the whole control
-       now (square 44px hairline cell, radius 0, guarded paired states,
-       press twin). One home per control; this pages-layer copy used to
-       out-rank the layout-layer base on geometry.) */
+    that lived here is DELETED — layout.css owns the whole control
+    now (square 44px hairline cell, radius 0, guarded paired states,
+    press twin). One home per control; this pages-layer copy used to
+    out-rank the layout-layer base on geometry.)
+*/
   }
 
-  /* ═══════════════════════════════════════════════════════════════
-     PAGES THAT DIDN'T GET POLISH — give them the same treatment
-     Some pages render their own card-like containers without the .card
-     class. Catch the common ones so polish v8's effects extend.
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   PAGES THAT DIDN'T GET POLISH — give them the same treatment
+   Some pages render their own card-like containers without the .card
+   class. Catch the common ones so polish v8's effects extend.
+     ═══
+*/
   /* (Wave 9-b dead-selector sweep: .invoice-card, .speaker-chip and
-     .webinar-card removed from the group — zero TSX consumers.) */
+   .webinar-card removed from the group — zero TSX consumers.)
+*/
   @media (hover: hover) and (pointer: fine) {
   }
 
-  /* Tab counts get a calm pill style instead of inline numbers */
+  /* Tab counts get a calm pill style instead of inline numbers
+*/
 
-  /* ═══════════════════════════════════════════════════════════════
-     WELCOME CARD — keep the title above the dot pattern + title sizing
-     ═══════════════════════════════════════════════════════════════ */
+  /* ═══
+   WELCOME CARD — keep the title above the dot pattern + title sizing
+     ═══
+*/
   /* (r153f grave: the v9 stack — column layout, title-block z-index
-     paint-order, the clamp(20px,3.4vw,28px) sizing and the ≤640 title
-     clamp — moved home to student.css §WELCOME-CARD. The dead
-     declarations died with the move: padding-inline-end clamp (beaten
-     by v11's higher-specificity padding shorthand since v11 shipped)
-     and align-items:stretch (beaten by the generic .page-header
-     flex-start 37 lines below — in the same layer at equal
-     specificity). The ≤640 ::after line was misaimed since v22 moved
-     the dots to ::before.) */
+   paint-order, the clamp(20px,3.4vw,28px) sizing and the ≤640 title
+   clamp — moved home to student.css §WELCOME-CARD. The dead
+   declarations died with the move: padding-inline-end clamp (beaten
+   by v11's higher-specificity padding shorthand since v11 shipped)
+   and align-items:stretch (beaten by the generic .page-header
+   flex-start 37 lines below — in the same layer at equal
+   specificity). The ≤640 ::after line was misaimed since v22 moved
+   the dots to ::before.)
+*/
 
   /* Generic page-header — also force column layout when there's no
-     right-slot content, so the title-block always gets the full width */
+   right-slot content, so the title-block always gets the full width
+*/
   .page-header {
     align-items: flex-start;
     flex-wrap: wrap;
   }
   /* r153f root fix: scoped off the welcome card — the owning rule in
-     student.css (pages layer) must not be beaten by this overrides-
-     layer flex-basis (320px would stretch the column-stack's only
-     child). Same :not() source-guard precedent as r151e. */
+   student.css (pages layer) must not be beaten by this overrides-
+   layer flex-basis (320px would stretch the column-stack's only
+   child). Same :not() source-guard precedent as r151e.
+*/
 
   /* r288: .page-title { overflow-wrap: break-word } folded into the
-     base.css r288 anatomy block — deleted here. */
+   base.css r288 anatomy block — deleted here.
+*/
 
   /* Avatars — R319 (c1-A · B1b): the square ink cell. Authenticated
-     chrome wears ONE avatar grammar: a square paper cell (radius 0)
-     on the 1px hairline with MONO initials in the theme ink — the
-     reference's own data-dense chip voice. The round + accent-fill
-     recipe (and with it the un-gated DB avatarColor grounds like
-     #5B8DEF-class blue) retires from the default; the `color` prop
-     keeps working for callers that still pass one (inline background
-     beats this sheet), but the shell surfaces (sidebar, topbar) no
-     longer forward it. */
+   chrome wears ONE avatar grammar: a square paper cell (radius 0)
+   on the 1px hairline with MONO initials in the theme ink — the
+   reference's own data-dense chip voice. The round + accent-fill
+   recipe (and with it the un-gated DB avatarColor grounds like
+   #5B8DEF-class blue) retires from the default; the `color` prop
+   keeps working for callers that still pass one (inline background
+   beats this sheet), but the shell surfaces (sidebar, topbar) no
+   longer forward it.
+*/
   .avatar {
     border-radius: 0;
     display: inline-flex;
@@ -713,41 +826,45 @@
   }
 
   /* Page transitions — softer + faster (was 220ms). Notion-class is closer
-     to 160ms with a slightly heavier easing. */
+   to 160ms with a slightly heavier easing.
+*/
   /* r162 (R3): the animation TARGET moved one level down — see the
-     r162 section at the end of this file (`.content-inner > *`).
-     Animating the container made the keyed route remount fade while
-     the Suspense resolve (fallback → real page, first visit per
-     route) swapped content with NO transition. The child-level rule
-     keeps the exact same keyframes/duration/easing and fires on
-     every content mount: route changes AND suspense resolves. The
-     keyframes stay here (they are the page-enter contract's single
-     definition). */
+   r162 section at the end of this file (`.content-inner > *`).
+   Animating the container made the keyed route remount fade while
+   the Suspense resolve (fallback → real page, first visit per
+   route) swapped content with NO transition. The child-level rule
+   keeps the exact same keyframes/duration/easing and fires on
+   every content mount: route changes AND suspense resolves. The
+   keyframes stay here (they are the page-enter contract's single
+   definition).
+*/
   @keyframes page-enter {
     from { opacity: 0; transform: translateY(4px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
   /* ══ R312 (§R D7) — the guest surface's route transition ════════
-     Found by the frame-by-frame pass: the guest surfaces (landing /
-     public colleges / auth) changed routes as a hard cut — reproduced
-     on video vs the reference's measured 1.6s two-phase mask sweep
-     (reference-observations §14). The AppShell keyed remount only
-     ever covered authenticated routes. The declarative translation
-     (the PageTransition precedent; Barba stays rejected per §H).
+   Found by the frame-by-frame pass: the guest surfaces (landing /
+   public colleges / auth) changed routes as a hard cut — reproduced
+   on video vs the reference's measured 1.6s two-phase mask sweep
+   (reference-observations §14). The AppShell keyed remount only
+   ever covered authenticated routes. The declarative translation
+   (the PageTransition precedent; Barba stays rejected per §H).
 
-     The sweep is VIEWPORT-ANCHORED (a plain 100%→0 bottom inset would
-     cross the fold in 500ms×vh/pageH — a flash on tall pages): 0→70%
-     brings the reveal edge from the sheet top down to the fold (the
-     perceptible sweep), 70→100% opens the below-fold in the paint
-     tail (offscreen). The traveling 1px rule (their --size-line
-     midpoint spike, translated) rides the SAME curve via transform
-     (never layout). ~500ms by design (the R308 funnel lesson: faster
-     than the reference); clip-path is paint-only — CLS 0; RM
-     collapses to the standing page. */
+   The sweep is VIEWPORT-ANCHORED (a plain 100%→0 bottom inset would
+   cross the fold in 500ms×vh/pageH — a flash on tall pages): 0→70%
+   brings the reveal edge from the sheet top down to the fold (the
+   perceptible sweep), 70→100% opens the below-fold in the paint
+   tail (offscreen). The traveling 1px rule (their --size-line
+   midpoint spike, translated) rides the SAME curve via transform
+   (never layout). ~500ms by design (the R308 funnel lesson: faster
+   than the reference); clip-path is paint-only — CLS 0; RM
+   collapses to the standing page.
+*/
   /* R313 (D11): the reference's 4-edge inset OPEN (its --mask-percent
-     50%→0%) — a center-out reveal over ~0.7s, sequenced after the
-     ~0.9s cover phase (sheetExit) via --gr-delay = ~1.6s total. */
+   50%→0%) — a center-out reveal over ~0.7s, sequenced after the
+   ~0.9s cover phase (sheetExit) via --gr-delay = ~1.6s total.
+*/
   @keyframes guest-reveal-sweep {
     0%   { clip-path: inset(50% 50% 50% 50%); }
     100% { clip-path: inset(0 0 0 0); }
@@ -764,14 +881,16 @@
   }
 
   .guest-reveal-inner {
-    /* R313 (D11): reveal phase ~700ms, delayed until the cover ends */
+    /* R313 (D11): reveal phase ~700ms, delayed until the cover ends
+*/
     animation: guest-reveal-sweep var(--motion-duration-guest-reveal) var(--motion-ease-decelerate) both;
     animation-delay: var(--gr-delay, 0ms);
   }
 
   /* the traveling hairline at the reveal edge — viewport-fixed (the
-     sweep is a viewport phenomenon), transform-only (the motion gate
-     forbids layout animation in keyframes). */
+   sweep is a viewport phenomenon), transform-only (the motion gate
+   forbids layout animation in keyframes).
+*/
   .guest-reveal::after {
     content: '';
     position: fixed;
@@ -801,26 +920,28 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v10.css — RETIRED r296 (polish dismantle, wave 3)
-   ═══════════════════════════════════════════════════════════════════
+   ═══
    The student-surface wave. Everything live folded home:
    - .empty-state centered container → components.css STATE — the v10
-     overrides-layer values merged with v6's min-block floor (both
-     polish copies deleted; v6/v11 gap-widening comment pointers
-     updated in situ).
+   overrides-layer values merged with v6's min-block floor (both
+   polish copies deleted; v6/v11 gap-widening comment pointers
+   updated in situ).
    - .card iframe/video frame-clipping radius → components.css CARD.
    Pre-r296 deletions already recorded in situ: university-info
-     faculty chips (→ student.css, cascade-verified), thumb-card
-     pair (cascade-dead vs v19), filter-bar twin (6px gap →
-     components.css), gap-rows family (zero consumers). */
+   faculty chips (→ student.css, cascade-verified), thumb-card
+   pair (cascade-dead vs v19), filter-bar twin (6px gap →
+   components.css), gap-rows family (zero consumers).
+*/
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v11.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
+   ═══
+*/
+/* ═══
    MADAREK — polish v11
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Focused improvements that build on v6–v10:
    · Loading/empty/error state variants (inline/page/card)
    · Spinner sizes
@@ -828,90 +949,103 @@
    · Card hover lift refinement
    · Focus rings for keyboard navigation (a11y)
    · Mobile: bottom-nav safe-area + page bottom padding so content
-     never hides behind the dock; tighter tap targets
+   never hides behind the dock; tighter tap targets
    · Mobile: responsive table → card transformation helper
    · Scrollbar cosmetics (Firefox + WebKit)
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer overrides {
 
   /* (r152f: the v11 STATE VARIANTS (.state-inline padding + error/
-     empty icon tints + .spinner-sm) moved home to components.css
-     §STATE. v19's later refinements of the same tints stay below —
-     they still win by layer order, as before.) */
+   empty icon tints + .spinner-sm) moved home to components.css
+   §STATE. v19's later refinements of the same tints stay below —
+   they still win by layer order, as before.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PAGE-HEADER RHYTHM                                            ║
-     ║  Tighter vertical rhythm between header and first content row, ║
-     ║  more generous horizontal breathing on welcome cards.          ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   PAGE-HEADER RHYTHM
+   Tighter vertical rhythm between header and first content row,
+   more generous horizontal breathing on welcome cards.
+   ╚╚╚
+*/
   
 
   /* (r153f grave: the v11 welcome-card surface — accent-soft gradient
-     bg (dead since v17's photo overlay), rule border, r-2xl radius,
-     sp-7/sp-6 padding, the RECONCILED margin-block-end: var(--sp-6)
-     (the v9-margin conflict's surviving value — v8's 0 and the generic
-     sp-5 both lost to it), and the ≤640 padding — moved home to
-     student.css §WELCOME-CARD. The generic page rule above now scopes
-     itself off the welcome card via :not() so the pages-layer owning
-     rule provides the 24px without a pin.) */
+   bg (dead since v17's photo overlay), rule border, r-2xl radius,
+   sp-7/sp-6 padding, the RECONCILED margin-block-end: var(--sp-6)
+   (the v9-margin conflict's surviving value — v8's 0 and the generic
+   sp-5 both lost to it), and the ≤640 padding — moved home to
+   student.css §WELCOME-CARD. The generic page rule above now scopes
+   itself off the welcome card via :not() so the pages-layer owning
+   rule provides the 24px without a pin.)
+*/
 
-  /* Subtle, non-noisy section spacing inside a page */
+  /* Subtle, non-noisy section spacing inside a page
+*/
   .page > * + * { margin-block-start: var(--sp-5); }
   @media (max-width: 640px) {
     .page > * + * { margin-block-start: var(--sp-4); }
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  CARD HOVER — gentler lift, faster snap-back                   ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   CARD HOVER — gentler lift, faster snap-back
+   ╚╚╚
+*/
   @media (hover: hover) {
     /* r148 (AUDIT-6 P1): will-change:transform كان دائمًا على كل بطاقة
-       تفاعلية — كل بطاقة في كل شبكة (12+ في المقررات، 30 صف معلم) تحتجز
-       طبقة GPU دائمة — قاتل الذاكرة على أندرويد الضعيف. الحصر الآن
-       على حالة hover فقط: الطبقة تُنشأ عند الحاجة وتُحرّر بعدها. */
+    تفاعلية — كل بطاقة في كل شبكة (12+ في المقررات، 30 صف معلم) تحتجز
+    طبقة GPU دائمة — قاتل الذاكرة على أندرويد الضعيف. الحصر الآن
+    على حالة hover فقط: الطبقة تُنشأ عند الحاجة وتُحرّر بعدها.
+*/
   }
-  /* never lift-hover on touch — it lingers awkwardly after tap */
+  /* never lift-hover on touch — it lingers awkwardly after tap
+*/
   @media (hover: none) {
     @media (hover: hover) and (pointer: fine) {
     }
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  FOCUS RINGS — keyboard-only, accent color                     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   FOCUS RINGS — keyboard-only, accent color
+   ╚╚╚
+*/
   /* (Wave 1-a focus consolidation: this global :focus-visible block
-     deleted — it beat the WCAG-safe motion.css ring from the overrides
-     layer, mutated square surfaces' corners via `border-radius:
-     var(--r-xs)`, shipped a legacy #8E6516 fallback, and contained the
-     never-matching `.btn:focus-visible:not(:focus-visible)`. The single
-     AA-safe system lives in v22. See 0-a P0-1/P0-2.) */
+   deleted — it beat the WCAG-safe motion.css ring from the overrides
+   layer, mutated square surfaces' corners via `border-radius:
+   var(--r-xs)`, shipped a legacy #8E6516 fallback, and contained the
+   never-matching `.btn:focus-visible:not(:focus-visible)`. The single
+   AA-safe system lives in v22. See 0-a P0-1/P0-2.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  MOBILE — bottom-nav safe area + dock clearance                ║
-     ║  920px matches the bottom-nav breakpoint in layout.css         ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   MOBILE — bottom-nav safe area + dock clearance
+   920px matches the bottom-nav breakpoint in layout.css
+   ╚╚╚
+*/
   @media (max-width: 920px) {
     .page {
-      padding-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4)); /* spacing-gate: allow — fixed bottom-nav clearance (measured dock 78px at 390px; 64px + rung clears it) + safe-area + rung — NOT the topbar (r299 comment fix: the old comment misattributed this to the topbar, whose real height is the --topbar-h token) */
+      padding-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4)); /* spacing-gate: allow — fixed bottom-nav clearance (measured dock 78px at 390px; 64px + rung clears it) + safe-area + rung — NOT the topbar (r299 comment fix: the old comment misattributed this to the topbar, whose real height is the --topbar-h token)
+*/
     }
   }
 
   /* Tighter tap targets on phone — buttons reach the 44px guideline.
-     (Wave 9-b tap-target consolidation, 6-a follow-up #5: this
-     overrides-layer block is now the ONE owner of the mobile .btn
-     floors — 44px per the iOS HIG / Material guideline, matching the
-     per-surface 44px !important floors waves 5-6 already pin. The old
-     32px silently beat v6's pages-layer 44px copy, which is deleted.
-     5-D1 (A5 P2-3): the BASE .btn floor was 40px while only .btn.sm
-     reached 44 — every default-size CTA measured 40 tall @390
-     (te-exams «قالب اختبار جديد» 153×40, exam-taker «بدء الاختبار»
-     98×40). Both floors now sit at 44; min-* beats the components-
-     layer block-size at used-value time, so no visual change ≥641px.) */
+   (Wave 9-b tap-target consolidation, 6-a follow-up #5: this
+   overrides-layer block is now the ONE owner of the mobile .btn
+   floors — 44px per the iOS HIG / Material guideline, matching the
+   per-surface 44px !important floors waves 5-6 already pin. The old
+   32px silently beat v6's pages-layer 44px copy, which is deleted.
+   5-D1 (A5 P2-3): the BASE .btn floor was 40px while only .btn.sm
+   reached 44 — every default-size CTA measured 40 tall @390
+   (te-exams «قالب اختبار جديد» 153×40, exam-taker «بدء الاختبار»
+   98×40). Both floors now sit at 44; min-* beats the components-
+   layer block-size at used-value time, so no visual change ≥641px.)
+*/
   @media (max-width: 640px) {
     .btn { min-block-size: 44px; }
     .btn.sm { min-block-size: 44px; }
@@ -919,96 +1053,112 @@
   }
 
   /* r290: الأرضية تتبع المؤشر لا العرض — الأجهزة اللمسية بين 641–920px
-     (أجهزة لوحية، عرض 768) كانت تقيس .btn.sm عند 32px لأن نطاق العرض
-     وحده هو الذي يرفع الأرضية. (hover:none)+(pointer:coarse) يطبّق
-     44px على كل جهاز لمسي فعليًا بغضّ النظر عن العرض، والماوس الدقيق
-     يحتفظ بالـ32px المضغوطة عمدًا. نفس لغة نطاق العرض أعلاه — الآن
-     للجهاز اللمسي مباشرة. */
+   (أجهزة لوحية، عرض 768) كانت تقيس .btn.sm عند 32px لأن نطاق العرض
+   وحده هو الذي يرفع الأرضية. (hover:none)+(pointer:coarse) يطبّق
+   44px على كل جهاز لمسي فعليًا بغضّ النظر عن العرض، والماوس الدقيق
+   يحتفظ بالـ32px المضغوطة عمدًا. نفس لغة نطاق العرض أعلاه — الآن
+   للجهاز اللمسي مباشرة.
+*/
   @media (hover: none) and (pointer: coarse) {
     .btn { min-block-size: 44px; }
     .btn.sm { min-block-size: 44px; }
     /* أزرار التقسيم (36px ثابتة) وصفوف المؤشرات القابلة للنقر في
-       لوحة المسجل العام (37px) — أرضية اللمس على الجهاز اللمسي. */
+    لوحة المسجل العام (37px) — أرضية اللمس على الجهاز اللمسي.
+*/
   }
 
 
   /* (r151b — the mobile table→cards helper and the universal table
-     fallback moved to their canon home: components.css §TABLE now
-     owns the whole ≤640px fallback ladder (rung 1 stack via
-     .tbl-stack + data-label, rung 2 self-scroll for plain .table).
-     Closes worklog 5-a #3 — .table itself carries the fallback, so
-     the overrides layer no longer needs a word about it. The old
-     .leaderboard-table:not(.tbl-stack) orphan went with it: every
-     leaderboard ships tbl-stack (CollegePages), so rung 2's .table
-     safety net covers any future opt-out.) */
+   fallback moved to their canon home: components.css §TABLE now
+   owns the whole ≤640px fallback ladder (rung 1 stack via
+   .tbl-stack + data-label, rung 2 self-scroll for plain .table).
+   Closes worklog 5-a #3 — .table itself carries the fallback, so
+   the overrides layer no longer needs a word about it. The old
+   .leaderboard-table:not(.tbl-stack) orphan went with it: every
+   leaderboard ships tbl-stack (CollegePages), so rung 2's .table
+   safety net covers any future opt-out.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SCROLLBARS — calmer, theme-aware                              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SCROLLBARS — calmer, theme-aware
+   ╚╚╚
+*/
   /* (Wave 1-a scrollbar consolidation: deleted — `var(--rule)` thumb
-     starved the --scrollbar-thumb tokens; the single token-consuming
-     definition lives in v22. See 0-a P1-2.) */
+   starved the --scrollbar-thumb tokens; the single token-consuming
+   definition lives in v22. See 0-a P1-2.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TYPOGRAPHY MICRO-FIXES                                        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* Numerals always tabular-aligned in metrics — already in some places, applied globally for KPI cards */
+  /* ╔╔╔
+   TYPOGRAPHY MICRO-FIXES
+   ╚╚╚
+*/
+  /* Numerals always tabular-aligned in metrics — already in some places, applied globally for KPI cards
+*/
   
 
   /* Subtle text smoothing for Plex Arabic on retina
-     (r149 R3-A5 #6: حُذف الإعلان المكرر — base.css:11-16 هو البيت
-     الوحيد لمعالجة النص؛ التكرار هنا كان يعيش منذ v7 بلا قيمة). */
+   (r149 R3-A5 #6: حُذف الإعلان المكرر — base.css:11-16 هو البيت
+   الوحيد لمعالجة النص؛ التكرار هنا كان يعيش منذ v7 بلا قيمة).
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SELECTION                                                     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SELECTION
+   ╚╚╚
+*/
   /* (Wave 1-a selection consolidation: one of three deleted polish
-     duplicates — the single definition (v14's recipe, unchanged visual)
-     lives in v22. base.css's copy is wave 2's to remove. See 0-a P1-1.) */
+   duplicates — the single definition (v14's recipe, unchanged visual)
+   lives in v22. base.css's copy is wave 2's to remove. See 0-a P1-1.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  REDUCED MOTION                                                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   REDUCED MOTION
+   ╚╚╚
+*/
   /* (Wave 1-a reduced-motion consolidation: this belt deleted — its
-     0.001ms drifted from base.css's 0.01ms, and the 1500ms "slow
-     spinner" accommodation could never win against base.css's
-     `animation-duration: 0.01ms !important`. The canonical belt — which
-     also resets animation-delay/transition-delay so staggered grids no
-     longer appear sequentially under reduced motion — lives in v22.
-     See 0-a P1-3 + P1-11.) */
+   0.001ms drifted from base.css's 0.01ms, and the 1500ms "slow
+   spinner" accommodation could never win against base.css's
+   `animation-duration: 0.01ms !important`. The canonical belt — which
+   also resets animation-delay/transition-delay so staggered grids no
+   longer appear sequentially under reduced motion — lives in v22.
+   See 0-a P1-3 + P1-11.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SIDEBAR FIXES                                                 ║
-     ║  1. Mobile close button never renders on desktop. The X next   ║
-     ║     to the brand was a leftover that called closeSidebar() —   ║
-     ║     a no-op on desktop because that store field only drives    ║
-     ║     the mobile drawer overlay.                                 ║
-     ║  2. The collapse chevron stays visible even when collapsed.    ║
-     ║     Without this, once folded the only way to expand is the    ║
-     ║     Ctrl+B shortcut — invisible to most users.                 ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SIDEBAR FIXES
+   1. Mobile close button never renders on desktop. The X next
+   to the brand was a leftover that called closeSidebar() —
+   a no-op on desktop because that store field only drives
+   the mobile drawer overlay.
+   2. The collapse chevron stays visible even when collapsed.
+   Without this, once folded the only way to expand is the
+   Ctrl+B shortcut — invisible to most users.
+   ╚╚╚
+*/
   @media (min-width: 921px) {
     /* (r151e: bang retired — the overrides layer already beats the
-       pages-layer base by layer order, and the value matches it.) */
+    pages-layer base by layer order, and the value matches it.)
+*/
     .sidebar-mobile-close { display: none; }
 
     /* The shell's grid track shrinks to var(--sidebar-w-collapsed) = 64px
-       when collapsed, but .sidebar itself still claimed inline-size:
-       var(--sidebar-w) = 256px. The sidebar element therefore overflowed
-       its column by ~192px and sat on top of page content (visible as
-       clipped page titles in screenshots). Match the element width to
-       the grid track so layout stays in sync. */
+    when collapsed, but .sidebar itself still claimed inline-size:
+    var(--sidebar-w) = 256px. The sidebar element therefore overflowed
+    its column by ~192px and sat on top of page content (visible as
+    clipped page titles in screenshots). Match the element width to
+    the grid track so layout stays in sync.
+*/
     .sidebar.collapsed { inline-size: var(--sidebar-w-collapsed); }
 
     /* Override polish-v6's `display: none` on the collapse button when
-       collapsed. Recenter so the chevron sits below the brand mark
-       inside the narrow icon rail. (r151e: bang retired — overrides
-       beats pages by layer order, same band.) */
+    collapsed. Recenter so the chevron sits below the brand mark
+    inside the narrow icon rail. (r151e: bang retired — overrides
+    beats pages by layer order, same band.)
+*/
     .sidebar.collapsed .sidebar-collapse-btn {
       display: inline-flex;
       margin-block-start: var(--sp-2);
@@ -1021,30 +1171,32 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v12.css — RETIRED r296 (polish dismantle, wave 3)
-   ═══════════════════════════════════════════════════════════════════
+   ═══
    The landing-motion wave — every rule was already dead:
    - CTA breathe: the .landing-cta-stack consumers were swept in wave
-     9-b (zero TSX consumers since the «سماء مدارك» rebuild); the
-     @keyframes madarek-breathe had zero animation references and
-     sat inside an unterminated Wave-9-b comment.
+   9-b (zero TSX consumers since the «سماء مدارك» rebuild); the
+   @keyframes madarek-breathe had zero animation references and
+   sat inside an unterminated Wave-9-b comment.
    - MOCKUP HOVER LIFT / feature magnetic glow: zero consumers since
-     the landing redesign (r151c).
+   the landing redesign (r151c).
    - STICKER family: never rendered (zero TSX consumers).
    ALSO FIXED here: a stray `/` token before the STICKER comment —
    a genuine syntax hazard that made CSS parsers skip the section's
    closing `}` (browsers recovered by nesting every subsequent
    @layer into v12's overrides block; harmless by CSS layer-merge
    semantics, but a landmine for any future parse). The whole
-   section's dead weight is gone; the hazard with it. */
+   section's dead weight is gone; the hazard with it.
+*/
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v13.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
+   ═══
+*/
+/* ═══
    MADAREK — polish v13 · site-wide vitality
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Calm, Notion-style motion across every page. The goal is "alive but
    not noisy" — every interactive surface has a little micro-interaction,
    nothing demands attention. CSS-only, no React tree changes.
@@ -1062,90 +1214,101 @@
    · Topbar entrance — slides down on first paint
    · Welcome card has a soft gradient breathe
    · Tabs/pills pulse the active selection
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer overrides {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  GLOBAL SCROLL — calmer feel                                   ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   GLOBAL SCROLL — calmer feel
+   ╚╚╚
+*/
   html {
     /* R313 (4-b · D6): scroll-behavior:smooth RETIRED app-wide — the
-       guest scroll is Lenis-driven now (lib/motion/sheetLenis.ts) and
-       CSS smooth on html fights the engine's programmatic resets; the
-       authenticated app never needed it (.content is its own scroller
-       and ScrollResetOnPush writes behavior:'auto'). */
+    guest scroll is Lenis-driven now (lib/motion/sheetLenis.ts) and
+    CSS smooth on html fights the engine's programmatic resets; the
+    authenticated app never needed it (.content is its own scroller
+    and ScrollResetOnPush writes behavior:'auto').
+*/
     scrollbar-gutter: stable;
   }
   /* r299 (final-shell, measured): the v13 gutter reservation is PHANTOM
-     on shell pages — .has-shell bounds html to 100dvh and .content is
-     the app's only scroller, so html's scrollbar never exists, yet
-     `stable` still reserves ~10px of the initial containing block on
-     classic-scrollbar desktops. Every position:fixed surface measured
-     10px short of the real viewport edge: the mobile drawer stopped
-     10px from the edge and its backdrop left an undimmed strip (RTL
-     390px band; doc scrollWidth 1430 vs clientWidth 1440), and 100vw
-     caps (toast-stack, wake-pill) over-permitted by the same 10px.
-     Scope the reservation OFF exactly where the shell is mounted;
-     public scrolling surfaces (landing/auth/404) keep the v13
-     anti-shift behavior unchanged. */
+   on shell pages — .has-shell bounds html to 100dvh and .content is
+   the app's only scroller, so html's scrollbar never exists, yet
+   `stable` still reserves ~10px of the initial containing block on
+   classic-scrollbar desktops. Every position:fixed surface measured
+   10px short of the real viewport edge: the mobile drawer stopped
+   10px from the edge and its backdrop left an undimmed strip (RTL
+   390px band; doc scrollWidth 1430 vs clientWidth 1440), and 100vw
+   caps (toast-stack, wake-pill) over-permitted by the same 10px.
+   Scope the reservation OFF exactly where the shell is mounted;
+   public scrolling surfaces (landing/auth/404) keep the v13
+   anti-shift behavior unchanged.
+*/
   html:has(.has-shell) {
     scrollbar-gutter: auto;
   }
 
 
   /* (5-C1 entrance diet, A2 P1-1): v16's `.page { madarek-page-in }`
-     is GONE. It double-faded the route — .content-inner already
-     plays `page-enter` (160ms) on the keyed PageTransition remount,
-     and this second container fade (380ms, `both` fill) compounded
-     with it on every navigation. The v16 RM kill list further down
-     keeps `.page` listed — harmless belt-and-braces. The keyed
-     remount in components/motion/PageTransition.tsx owns the route
-     entrance; see its docblock. */
+   is GONE. It double-faded the route — .content-inner already
+   plays `page-enter` (160ms) on the keyed PageTransition remount,
+   and this second container fade (380ms, `both` fill) compounded
+   with it on every navigation. The v16 RM kill list further down
+   keeps `.page` listed — harmless belt-and-braces. The keyed
+   remount in components/motion/PageTransition.tsx owns the route
+   entrance; see its docblock.
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  HERO-GRID STAGGER — one authored moment per page (5-C1)       ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   HERO-GRID STAGGER — one authored moment per page (5-C1)
+   ╚╚╚
+*/
   /* 5-C1 entrance diet (A2 P1-1): the stagger no longer stamps on
-     EVERY .grid-* child (128 usages / 43 files — every page played
-     the same cascade, nested grids included). It survives as the
-     page's ONE authored entrance: children of the FIRST grid that is
-     a direct child of .page — the hero/primary section (KPI band,
-     first card row), whatever its position among siblings
-     (:nth-child(An+B of S) matches the first sibling carrying any of
-     the grid classes; browsers without `of S` support degrade to no
-     stagger — the calm 160ms page-enter remains). Duration diets
-     380→240ms and the cascade caps at 4×50ms, so the last hero child
-     settles ≤390ms after navigation. Pages that own a bespoke
-     moment keep it (e.g. CoursesPage's filter re-stagger opts out
-     via student.css). `backwards` fill stays — the wave-5 fix that
-     keeps hover-lifts alive after the entrance. */
+   EVERY .grid-* child (128 usages / 43 files — every page played
+   the same cascade, nested grids included). It survives as the
+   page's ONE authored entrance: children of the FIRST grid that is
+   a direct child of .page — the hero/primary section (KPI band,
+   first card row), whatever its position among siblings
+   (:nth-child(An+B of S) matches the first sibling carrying any of
+   the grid classes; browsers without `of S` support degrade to no
+   stagger — the calm 160ms page-enter remains). Duration diets
+   380→240ms and the cascade caps at 4×50ms, so the last hero child
+   settles ≤390ms after navigation. Pages that own a bespoke
+   moment keep it (e.g. CoursesPage's filter re-stagger opts out
+   via student.css). `backwards` fill stays — the wave-5 fix that
+   keeps hover-lifts alive after the entrance.
+*/
   @keyframes madarek-stagger-up {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: none; }
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  METRIC CARD — soft hover ring + value pop-in                  ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   METRIC CARD — soft hover ring + value pop-in
+   ╚╚╚
+*/
   /* (r294: the metric transition + pointer-hover pair consolidated
-     into components.css METRIC — the overrides-layer winners, with
-     the v8 touch-path hover kept beside them. The .metric-value
-     pop-in below still lives here until the v13 section folds.) */
+   into components.css METRIC — the overrides-layer winners, with
+   the v8 touch-path hover kept beside them. The .metric-value
+   pop-in below still lives here until the v13 section folds.)
+*/
   @keyframes madarek-pop-in {
     from { opacity: 0; transform: scale(0.92); }
     to   { opacity: 1; transform: none; }
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  BUTTON PRESS — light compression on click                     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   BUTTON PRESS — light compression on click
+   ╚╚╚
+*/
   .btn {
     /* R313 (D4): colour properties join the wipe register (--t-base);
-     transform keeps the micro press snap. */
+   transform keeps the micro press snap.
+*/
     transition:
       background var(--t-base) var(--ease),
       border-color var(--t-base) var(--ease),
@@ -1158,13 +1321,15 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  CLICKABLE CARDS — subtle press                                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   CLICKABLE CARDS — subtle press
+   ╚╚╚
+*/
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  NAV ITEM — accent indicator slides in on hover                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   NAV ITEM — accent indicator slides in on hover
+   ╚╚╚
+*/
   .nav-item {
     transition:
       background var(--t-fast) var(--ease),
@@ -1199,69 +1364,81 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TOPBAR — slides down on first paint                           ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   TOPBAR — slides down on first paint
+   ╚╚╚
+*/
   .topbar {
     animation: madarek-topbar-in var(--motion-duration-long) var(--ease-out) both;
   }
   @keyframes madarek-topbar-in {
-    from { opacity: 0; transform: translateY(calc(var(--motion-distance-small) * -1)); } /* r153h: -6px → --motion-distance-small */
+    from { opacity: 0; transform: translateY(calc(var(--motion-distance-small) * -1)); } /* r153h: -6px → --motion-distance-small
+*/
     to   { opacity: 1; transform: none; }
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  WELCOME CARD — soft gradient breathing                        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   WELCOME CARD — soft gradient breathing
+   ╚╚╚
+*/
   /* (r153f grave: v13's isolation trio moved home with the family;
-     the "breathing radial" ::after + its keyframes are DELETED, not
-     moved — it painted nothing (its inset:-40% box, over-constrained
-     by v8's surviving 200px/100% geometry, sat entirely outside the
-     card in RTL and was clipped by overflow:hidden — measured
-     visibleWidthInsideCard: 0 at 1280 AND 390). A 9s infinite
-     cinema-duration loop animating an invisible box is pure waste;
-     restoring a visible breathing effect would be a separate taste
-     ruling, not an ownership migration.) */
+   the "breathing radial" ::after + its keyframes are DELETED, not
+   moved — it painted nothing (its inset:-40% box, over-constrained
+   by v8's surviving 200px/100% geometry, sat entirely outside the
+   card in RTL and was clipped by overflow:hidden — measured
+   visibleWidthInsideCard: 0 at 1280 AND 390). A 9s infinite
+   cinema-duration loop animating an invisible box is pure waste;
+   restoring a visible breathing effect would be a separate taste
+   ruling, not an ownership migration.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PILLS / TABS — active selection has a soft glow               ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   PILLS / TABS — active selection has a soft glow
+   ╚╚╚
+*/
   /* (r294: the pill/tab transition + halo + press group consolidated
-     into components.css — per-selector winners preserved: .pill rides
-     the v15 5-property recipe + 16% halo, .tab keeps this 4-property
-     recipe + 14% halo + 0.96 press.) */
+   into components.css — per-selector winners preserved: .pill rides
+   the v15 5-property recipe + 16% halo, .tab keeps this 4-property
+   recipe + 14% halo + 0.96 press.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  LIST ROWS — gentle background shift on hover                  ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   LIST ROWS — gentle background shift on hover
+   ╚╚╚
+*/
   @media (hover: hover) {
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TABLE ROWS — R313 (D16): paper + hairlines only              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   TABLE ROWS — R313 (D16): paper + hairlines only
+   ╚╚╚
+*/
   /* (R313: the zebra-on-hover wash — .table AND .leaderboard-table —
-     is RETIRED: the reference table is a ruled hairline grid with no
-     fills; the row-action reveal keeps the hover affordance.) */
+   is RETIRED: the reference table is a ruled hairline grid with no
+   fills; the row-action reveal keeps the hover affordance.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  ICON GLYPHS — slight rotate-on-hover for interactive icons    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   ICON GLYPHS — slight rotate-on-hover for interactive icons
+   ╚╚╚
+*/
   .btn .icon,
   .btn svg {
     /* r149 (R3-A3 §4): 240ms → 160ms — مزامنة مع خلفية الزر (كانت
-     الأيقونة تتأخر عن الزر في كل .btn يحمل svg). */
+   الأيقونة تتأخر عن الزر في كل .btn يحمل svg).
+*/
     /* R313 (D4): the glyph nudge joins the wipe register — --t-base
-       --ease, the reference's dominant .4s transition — so the arrow
-       slides in lockstep with the fill; the r305 iconRight swap keeps
-       its own roll register on [data-motion-icon] buttons.
-       (r149 note: 240ms → 160ms sync with the button bg, retimed
-       again by R313 to the .4s wipe register.) */
+    --ease, the reference's dominant .4s transition — so the arrow
+    slides in lockstep with the fill; the r305 iconRight swap keeps
+    its own roll register on [data-motion-icon] buttons.
+    (r149 note: 240ms → 160ms sync with the button bg, retimed
+    again by R313 to the .4s wipe register.)
+*/
     transition: transform var(--t-base) var(--ease);
   }
   @media (hover: hover) and (pointer: fine) {
@@ -1270,7 +1447,8 @@
       transform: translateX(-1px);
     }
   }
-  /* in RTL the visual "forward" direction flips */
+  /* in RTL the visual "forward" direction flips
+*/
   @media (hover: hover) and (pointer: fine) {
     [dir="rtl"] .btn:hover .icon,
     [dir="rtl"] .btn:hover svg {
@@ -1279,15 +1457,17 @@
   }
 
   /* r143 (T1-f F5): the Send paper-plane is the ONE directional glyph
-     that ships un-mirrored — it points right, i.e. "back" in Arabic
-     reading order, on every إرسال/نشر/تقييم/تسليم button. Mirrored
-     fleet-wide with one rule instead of 10 call sites (the repo's
-     RTL convention: forward = ArrowLeft, back = ArrowRight). */
+   that ships un-mirrored — it points right, i.e. "back" in Arabic
+   reading order, on every إرسال/نشر/تقييم/تسليم button. Mirrored
+   fleet-wide with one rule instead of 10 call sites (the repo's
+   RTL convention: forward = ArrowLeft, back = ArrowRight).
+*/
   [dir="rtl"] .lucide-send {
     transform: scaleX(-1);
   }
   /* the RTL button-hover nudge above re-declares `transform` on svg —
-     compose it with the mirror so the flip survives the hover state. */
+   compose it with the mirror so the flip survives the hover state.
+*/
   @media (hover: hover) and (pointer: fine) {
     [dir="rtl"] .btn:hover svg.lucide-send {
       transform: scaleX(-1) translateX(1px);
@@ -1295,9 +1475,10 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  DOUGHNUT / CHARTS — fade up so they don't pop in cold         ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   DOUGHNUT / CHARTS — fade up so they don't pop in cold
+   ╚╚╚
+*/
   
   @keyframes madarek-chart-in {
     from { opacity: 0; transform: scale(0.96); }
@@ -1305,9 +1486,10 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  REDUCED MOTION — globally honored                             ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   REDUCED MOTION — globally honored
+   ╚╚╚
+*/
   @media (prefers-reduced-motion: reduce) {
     
     .btn:active:not(:disabled),
@@ -1320,12 +1502,13 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v14.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
+   ═══
+*/
+/* ═══
    MADAREK — polish v14 · foundation
-   ─────────────────────────────────────────────────────────────────────
+   ───
    First phase of the comprehensive design polish plan. Adds:
    · Token system (elevation, spring eases, focus rings, glass blur)
    · Campus curated-section styling (parallax photo + chips)
@@ -1335,72 +1518,84 @@
    · Better focus rings everywhere
    · Selection color matching brand
    · Cursor pointer audit (every clickable surface)
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer overrides {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TOKEN SYSTEM EXTENSIONS                                       ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   TOKEN SYSTEM EXTENSIONS
+   ╚╚╚
+*/
   :root {
     /* Elevation scale — RETIRED (premium-polish F1): this second ladder
-       lived beside tokens.css's --elev-1..5 with different dark recipes,
-       so polish-styled surfaces and component-layer surfaces painted two
-       shadow grammars on one screen. All consumers now use the canonical
-       --elev-* tokens; --shadow-card aliases --elev-1. */
+    lived beside tokens.css's --elev-1..5 with different dark recipes,
+    so polish-styled surfaces and component-layer surfaces painted two
+    shadow grammars on one screen. All consumers now use the canonical
+    --elev-* tokens; --shadow-card aliases --elev-1.
+*/
 
     /* Spring easings — (5-C1, A2 §1b): MOVED to tokens.css next to
-       --ease-spring/--ease-bounce (adopted verbatim: soft 1.18 /
-       bounce 1.56 / snappy). The polish re-definitions died with the
-       adoption — same values from the token source, so the cascade
-       outcome is unchanged; the motion-gate debt entries are gone. */
+    --ease-spring/--ease-bounce (adopted verbatim: soft 1.18 /
+    bounce 1.56 / snappy). The polish re-definitions died with the
+    adoption — same values from the token source, so the cascade
+    outcome is unchanged; the motion-gate debt entries are gone.
+*/
 
     /* (4-A11 P1-3 — `all` smuggled out of --t-clean. RESOLVED R329
-       (gate:clean): tokens.css now ships the de-smuggled property
-       list itself (same six properties, adopted verbatim from here)
-       and this overrides-layer copy — the cross-file duplicate seat
-       the duplicate-selector gate flagged — is DELETED. The cascade
-       outcome is unchanged: the same value, now from @layer tokens,
-       the token's one canonical home. tokens.css is file-disjoint
-       from the 20-c motion batch, which is why the de-smuggled value
-       lived here between 4-A11 and now.) */
+    (gate:clean): tokens.css now ships the de-smuggled property
+    list itself (same six properties, adopted verbatim from here)
+    and this overrides-layer copy — the cross-file duplicate seat
+    the duplicate-selector gate flagged — is DELETED. The cascade
+    outcome is unchanged: the same value, now from @layer tokens,
+    the token's one canonical home. tokens.css is file-disjoint
+    from the 20-c motion batch, which is why the de-smuggled value
+    lived here between 4-A11 and now.)
+*/
 
     /* Focus halo ring — RETIRED (premium-polish): the one focus language
-       is --state-focus-ring (outline) + --state-input-focus-halo
-       (tokens.css). The search pill below consumes the halo token. */
+    is --state-focus-ring (outline) + --state-input-focus-halo
+    (tokens.css). The search pill below consumes the halo token.
+*/
   }
   [data-theme="dark"] {
-    /* --elevation-* + --ring-focus retired here too — see :root above. */
+    /* --elevation-* + --ring-focus retired here too — see :root above.
+*/
   }
 
-  /* Selection color matches the brand */
+  /* Selection color matches the brand
+*/
   /* (Wave 1-a selection consolidation: v14's recipe — the visual winner —
-     was the last of four competing definitions. It now lives, unchanged,
-     as the single definition in v22; v7/v11/base.css copies are deleted
-     or wave 2's to remove. See 0-a P1-1.) */
+   was the last of four competing definitions. It now lives, unchanged,
+   as the single definition in v22; v7/v11/base.css copies are deleted
+   or wave 2's to remove. See 0-a P1-1.)
+*/
 
 
   /* CAMPUS SECTION — RETIRED (r150a color-gate triage): the whole
-     .landing-campus-* family died with the landing redesign —
-     LandingPage renders the ln-campus-* classes owned by landing.css
-     since R3-W2-6. Zero TSX consumers, rg-verified. ~136 lines
-     (vignette/grain/caption/eyebrow/line + the stale chips note)
-     removed with the triage. */
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SIDEBAR — smoother collapse easing, active rail dot          ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+   .landing-campus-* family died with the landing redesign —
+   LandingPage renders the ln-campus-* classes owned by landing.css
+   since R3-W2-6. Zero TSX consumers, rg-verified. ~136 lines
+   (vignette/grain/caption/eyebrow/line + the stale chips note)
+   removed with the triage.
+*/
+  /* ╔╔╔
+   SIDEBAR — smoother collapse easing, active rail dot
+   ╚╚╚
+*/
   .sidebar {
     /* (5-C1, A2 §1c residue): inline-size here is the ONE sanctioned
-       layout-property transition outside the wholesale foundation
-       files — the collapse is a STRUCTURAL resize (the rail's content
-       genuinely re-flows: labels fold away, the footer re-stacks),
-       and the box must stay in lockstep with the grid track that
-       base.css + the .has-shell rule below animate in parallel; drop
-       either side and the box desyncs from its track mid-flight
-       (layout.css owns the explicit inline-size declarations). It is
-       written multi-line, so the line-based gate never sees it —
-       deliberate, documented here rather than allowlisted. transform
-       is the mobile drawer slide (layout.css), compositor-only. */
+    layout-property transition outside the wholesale foundation
+    files — the collapse is a STRUCTURAL resize (the rail's content
+    genuinely re-flows: labels fold away, the footer re-stacks),
+    and the box must stay in lockstep with the grid track that
+    base.css + the .has-shell rule below animate in parallel; drop
+    either side and the box desyncs from its track mid-flight
+    (layout.css owns the explicit inline-size declarations). It is
+    written multi-line, so the line-based gate never sees it —
+    deliberate, documented here rather than allowlisted. transform
+    is the mobile drawer slide (layout.css), compositor-only.
+*/
     transition:
       inline-size var(--motion-duration-reveal) var(--ease-spring-soft),
       transform var(--motion-duration-reveal) var(--ease-spring-soft);
@@ -1410,29 +1605,34 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  DROPDOWNS / POPOVERS — spring-pop entrance                    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   DROPDOWNS / POPOVERS — spring-pop entrance
+   ╚╚╚
+*/
   /* (WS-D2 orphan sweep: .topbar-user-menu / .notification-dropdown
-     pruned from the group. r151g: .landing-megamenu pruned too —
-     v14's animation-both entrance here was the ROOT of the stuck-open
-     bug v21 later fought with THREE !importants; deleting the rule
-     at the source returns show/hide to landing.css's transition
-     toggle, which never had an animation write. The whole FIX-1
-     chain (v21's kill + re-assert pair) retired with it — see the
-     r151g tombstone in the v21 section.) */
+   pruned from the group. r151g: .landing-megamenu pruned too —
+   v14's animation-both entrance here was the ROOT of the stuck-open
+   bug v21 later fought with THREE !importants; deleting the rule
+   at the source returns show/hide to landing.css's transition
+   toggle, which never had an animation write. The whole FIX-1
+   chain (v21's kill + re-assert pair) retired with it — see the
+   r151g tombstone in the v21 section.)
+*/
   /* Reverse origin for menus that hang from the start side
-     (WS-D2 orphan sweep: both [dir] .topbar-user-menu rules were dead.) */
+   (WS-D2 orphan sweep: both [dir] .topbar-user-menu rules were dead.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  BOTTOM NAV — active dot indicator                             ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   BOTTOM NAV — active dot indicator
+   ╚╚╚
+*/
   /* (R319 c1-A · B1b: the active-dot ::after, its keyframes and the
-     translateY(-2px) icon lift are DELETED — the active tab's marker
-     is the 2px accent TOP rule on the cell (notifications.css, the
-     same grammar as the sidebar's active row), not a floating dot on
-     pill chrome. The press scale stays — transform, not color.) */
+   translateY(-2px) icon lift are DELETED — the active tab's marker
+   is the 2px accent TOP rule on the cell (notifications.css, the
+   same grammar as the sidebar's active row), not a floating dot on
+   pill chrome. The press scale stays — transform, not color.)
+*/
   @media (max-width: 920px) {
     .bottom-nav-item { position: relative; }
     .bottom-nav-item:active { transform: scale(var(--state-nav-pressed-scale)); }
@@ -1440,22 +1640,25 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  FOCUS RINGS — accent halo on every interactive surface        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   FOCUS RINGS — accent halo on every interactive surface
+   ╚╚╚
+*/
   /* (Wave 1-a focus consolidation: THE P0 deletion. This overrides-layer
-     block killed the WCAG-safe motion.css ring (outline: none) and
-     replaced it with --ring-focus — a 30%-alpha copper halo ≈1.5:1 on
-     cream in light theme, a hard WCAG 2.4.7/1.4.11 fail on every
-     a/button/input/link in the app. The single AA-safe ring, built on
-     --state-focus-ring-color (= --accent-strong, 10.29:1 light /
-     7.38:1 dark — #C9962F on the night ground, r158), lives in v22.
-     See 0-a P0-1.) */
+   block killed the WCAG-safe motion.css ring (outline: none) and
+   replaced it with --ring-focus — a 30%-alpha copper halo ≈1.5:1 on
+   cream in light theme, a hard WCAG 2.4.7/1.4.11 fail on every
+   a/button/input/link in the app. The single AA-safe ring, built on
+   --state-focus-ring-color (= --accent-strong, 10.29:1 light /
+   7.38:1 dark — #C9962F on the night ground, r158), lives in v22.
+   See 0-a P0-1.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  CURSOR POINTER AUDIT — interactive elements always pointer    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   CURSOR POINTER AUDIT — interactive elements always pointer
+   ╚╚╚
+*/
   button:not(:disabled),
   [role="button"],
   .pill,
@@ -1465,17 +1668,20 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  GLASS SURFACES — backdrop blur tuning                         ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   GLASS SURFACES — backdrop blur tuning
+   ╚╚╚
+*/
   /* (R313 D16: the topbar/bottom-nav backdrop blur+saturate pair is
-     deleted — solid surfaces + hairlines only, matching the
-     reference's zero backdrop-filter census.) */
+   deleted — solid surfaces + hairlines only, matching the
+   reference's zero backdrop-filter census.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  REDUCED MOTION — kill all the moving parts                    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   REDUCED MOTION — kill all the moving parts
+   ╚╚╚
+*/
   @media (prefers-reduced-motion: reduce) {
     .landing-megamenu {
       animation: none !important;
@@ -1484,12 +1690,13 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v15.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
+   ═══
+*/
+/* ═══
    MADAREK — polish v15 · primitives refinement
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Phase 1: lift every reusable primitive — Card, Button, MetricCard,
    Pill, Badge, Tabs, Input, Select, Skeleton, Tooltip — without
    touching their React APIs.
@@ -1499,13 +1706,15 @@
    · A press feedback
    · A focus halo
    · A subtle entrance/transition where appropriate
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer overrides {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  CARD — gradient hover border + lifted shadow                  ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   CARD — gradient hover border + lifted shadow
+   ╚╚╚
+*/
   .card {
     transition:
       border-color var(--motion-duration-medium) var(--ease),
@@ -1513,13 +1722,15 @@
       transform var(--motion-duration-medium) var(--ease-spring-soft);
     position: relative;
   }
-  /* Gradient border-glow on hover for non-flush cards */
+  /* Gradient border-glow on hover for non-flush cards
+*/
   .card:not(.flush)::after {
     content: '';
     position: absolute;
     inset: -1px;
     border-radius: inherit;
-    padding: 1px; /* spacing-gate: allow — gradient focus ring: padding IS the 1px ring thickness, a shape construct */
+    padding: 1px; /* spacing-gate: allow — gradient focus ring: padding IS the 1px ring thickness, a shape construct
+*/
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--accent) 35%, transparent) 0%,
@@ -1528,8 +1739,10 @@
       color-mix(in srgb, var(--accent) 35%, transparent) 100%
     );
     -webkit-mask:
-      linear-gradient(#000 0 0) content-box,  /* color-gate: allow — mask paint: only alpha coverage matters, the colour is arbitrary */
-      linear-gradient(#000 0 0);              /* color-gate: allow — mask paint (same trick) */
+      linear-gradient(#000 0 0) content-box,  /* color-gate: allow — mask paint: only alpha coverage matters, the colour is arbitrary
+*/
+      linear-gradient(#000 0 0);              /* color-gate: allow — mask paint (same trick)
+*/
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     opacity: 0;
@@ -1541,14 +1754,16 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  BUTTON — R313 (WP-D · D4): the fill-wipe owns hover           ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   BUTTON — R313 (WP-D · D4): the fill-wipe owns hover
+   ╚╚╚
+*/
   /* (R313: the v15 hover SHEEN + press RIPPLE are RETIRED — the
-     reference button has neither; the components-layer .btn::before
-     fill-wipe layer owns the hover choreography and needs the root's
-     relative + overflow + isolation, re-asserted here so the last
-     layer keeps owning the root geometry.) */
+   reference button has neither; the components-layer .btn::before
+   fill-wipe layer owns the hover choreography and needs the root's
+   relative + overflow + isolation, re-asserted here so the last
+   layer keeps owning the root geometry.)
+*/
   .btn {
     position: relative;
     overflow: hidden;
@@ -1560,44 +1775,55 @@
       transform var(--motion-duration-micro) var(--ease);
   }
   /* (Wave 9-b dead-selector sweep: .btn-primary and .btn.accent
-     removed — zero TSX consumers; only the .btn.primary variant is
-     rendered.) */
+   removed — zero TSX consumers; only the .btn.primary variant is
+   rendered.)
+*/
   /* (r294: the primary hover glow consolidated into components.css
-     BTN — retired there by R313: no shadows on buttons.) */
+   BTN — retired there by R313: no shadows on buttons.)
+*/
   /* (R313 D4: the ghost accent-border hover is retired — every ghost
-     wipes to the ink fill like the reference's nav items.) */
+   wipes to the ink fill like the reference's nav items.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  METRIC CARD — accent leading edge                             ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   METRIC CARD — accent leading edge
+   ╚╚╚
+*/
   /* r149 (R3-A3 M2): ذيل r148 المتبقي — القضيب الرئيس كان يضيء على
-     162 بلاطة KPI غير قابلة للنقر. الآن محصور على .metric-link
-     مثل .metric:hover نفسه (حكم r148 H1). */
+   162 بلاطة KPI غير قابلة للنقر. الآن محصور على .metric-link
+   مثل .metric:hover نفسه (حكم r148 H1).
+*/
   @media (hover: hover) and (pointer: fine) {
   }
-  /* Numeric values get tabular alignment globally */
+  /* Numeric values get tabular alignment globally
+*/
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PILL & TAB — soft active glow + transition smoothing          ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   PILL & TAB — soft active glow + transition smoothing
+   ╚╚╚
+*/
   /* (r294: the v15 pill interaction block consolidated into
-     components.css — the overrides-layer winners over v6/v8/v13;
-     single owner now, computed identical.) */
+   components.css — the overrides-layer winners over v6/v8/v13;
+   single owner now, computed identical.)
+*/
 
-  /* Tab underline becomes spring-easy */
+  /* Tab underline becomes spring-easy
+*/
   .tab::after {
     /* r149 (R3-A3 §4): 320ms → 240ms (النطاق الموثق) — كان مؤشر التبويب
-       يسافر بضعف سرعة تغير لون التسمية (160/320). */
+    يسافر بضعف سرعة تغير لون التسمية (160/320).
+*/
     transition:
       transform var(--motion-duration-medium) var(--ease-spring-soft),
       opacity var(--motion-duration-short) var(--ease);
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  BADGE — pop-in on first paint                                 ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   BADGE — pop-in on first paint
+   ╚╚╚
+*/
   .badge {
     animation: madarek-badge-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
     transition: transform var(--motion-duration-short) var(--ease);
@@ -1607,56 +1833,64 @@
     to   { opacity: 1; transform: none; }
   }
   /* r149 (R3-A3 M2): حُذف .badge:hover scale — الشارات غير تفاعلية؛
-     حذف r148 للنسخة في components.css بقيت له هذه التوأمة في overrides. */
+   حذف r148 للنسخة في components.css بقيت له هذه التوأمة في overrides.
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  INPUT / SELECT / TEXTAREA — R313 (WP-D · D16)                 ║
-     ║  R362 (Agent 4) — RETIRED DUPLICATE: the overrides layer        ║
-     ║  carried this v15 mirror (transition + the raw #ED4C1F focus   ║
-     ║  border) two rounds after the value was tokenized as           ║
-     ║  --input-focus-signal (R353 P4) and one round after the       ║
-     ║  components.css INPUTS section became the sole recipe owner.   ║
-     ║  Identical computed values, so deleting the twin changes       ║
-     ║  nothing rendered — it removes the last raw focus literal      ║
-     ║  and the stale "token seat pending" note. components.css owns  ║
-     ║  the input focus language end-to-end now.                      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   INPUT / SELECT / TEXTAREA — R313 (WP-D · D16)
+   R362 (Agent 4) — RETIRED DUPLICATE: the overrides layer
+   carried this v15 mirror (transition + the raw #ED4C1F focus
+   border) two rounds after the value was tokenized as
+   --input-focus-signal (R353 P4) and one round after the
+   components.css INPUTS section became the sole recipe owner.
+   Identical computed values, so deleting the twin changes
+   nothing rendered — it removes the last raw focus literal
+   and the stale "token seat pending" note. components.css owns
+   the input focus language end-to-end now.
+   ╚╚╚
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SKELETON — retired into the foundation (r150b)                 ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SKELETON — retired into the foundation (r150b)
+   ╚╚╚
+*/
   /* (r150b six-shimmer unification): this overrides-layer block was the
-     de-facto winner of a three-way `.skeleton` cascade fight (motion.css
-     + components.css + this). Its tuned recipe — surface-3 ground, 8%
-     white highlight stop, RTL-aware sweep, token duration, linear loop —
-     was promoted VERBATIM into motion.css (keyframes renamed
-     skeleton-shimmer-rtl/ltr per the motion contract). Deleted here;
-     the display/min-height/r-sm essentials it relied on travel with
-     the canonical definition. */
+   de-facto winner of a three-way `.skeleton` cascade fight (motion.css
+   + components.css + this). Its tuned recipe — surface-3 ground, 8%
+   white highlight stop, RTL-aware sweep, token duration, linear loop —
+   was promoted VERBATIM into motion.css (keyframes renamed
+   skeleton-shimmer-rtl/ltr per the motion contract). Deleted here;
+   the display/min-height/r-sm essentials it relied on travel with
+   the canonical definition.
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PROGRESS BAR — gradient fill with shimmer                     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   PROGRESS BAR — gradient fill with shimmer
+   ╚╚╚
+*/
   /* (Wave 9-b dead-selector sweep: the .progressbar / .progress-bar
-     names removed — zero TSX consumers; the attribute-substring
-     selector subsumed them and matched the live progress bars.) */
+   names removed — zero TSX consumers; the attribute-substring
+   selector subsumed them and matched the live progress bars.)
+*/
   /* (4-A11 P2-10 shotgun fix, then 23-b retired this mirror: the
-     canonical .progress-fill now transitions transform: scaleX() at
-     its definition site (components.css — the value is set inline by
-     the ProgressBar primitive), and .lecture-progress-fill owns its
-     authored inline-size transition in student.css, which this
-     overrides-layer width mirror used to clobber (the lecture fill
-     silently never animated). No fill timing is mirrored here any
-     more; the remaining width/inline-size fill debt lives at its
-     definition sites with the gate's debt entries.) */
+   canonical .progress-fill now transitions transform: scaleX() at
+   its definition site (components.css — the value is set inline by
+   the ProgressBar primitive), and .lecture-progress-fill owns its
+   authored inline-size transition in student.css, which this
+   overrides-layer width mirror used to clobber (the lecture fill
+   silently never animated). No fill timing is mirrored here any
+   more; the remaining width/inline-size fill debt lives at its
+   definition sites with the gate's debt entries.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  AVATAR — subtle hover lift                                    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   AVATAR — subtle hover lift
+   ╚╚╚
+*/
   .avatar {
     transition: transform var(--motion-duration-short) var(--ease), box-shadow var(--motion-duration-medium) var(--ease);
   }
@@ -1669,12 +1903,14 @@
   }
 
 
-  /* STICKER sway — RETIRED with the family (premium-polish sweep). */
+  /* STICKER sway — RETIRED with the family (premium-polish sweep).
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  REDUCED MOTION                                                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   REDUCED MOTION
+   ╚╚╚
+*/
   @media (prefers-reduced-motion: reduce) {
     .badge,
     .btn:active:not(:disabled)::after {
@@ -1684,53 +1920,60 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v16.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
+   ═══
+*/
+/* ═══
    MADAREK — polish v16 · layout shell
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Phase 2: lift the layout chrome — sidebar drawer, topbar, bottom nav,
    user menu, search dropdown. Each shell surface gets calmer motion,
    better focus, and a more confident hover feel.
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer overrides {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SIDEBAR — desktop active rail + dot indicator                 ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SIDEBAR — desktop active rail + dot indicator
+   ╚╚╚
+*/
   /* R329 (gate:clean): the rail-dot block (.nav-item.on::after + its
-     RTL companions + @keyframes madarek-rail-dot-in) is DELETED —
-     r305-shell.css:151's unlayered `content: none` retired the dot
-     (it leaked v6's collapsed-rail tooltip attr()); every declaration
-     here was inert under it. The rail signal is the ::before bar
-     (layout.css), full stop. */
+   RTL companions + @keyframes madarek-rail-dot-in) is DELETED —
+   r305-shell.css:151's unlayered `content: none` retired the dot
+   (it leaked v6's collapsed-rail tooltip attr()); every declaration
+   here was inert under it. The rail signal is the ::before bar
+   (layout.css), full stop.
+*/
   .nav-item {
     position: relative;
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SIDEBAR — group section label tone shift                      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SIDEBAR — group section label tone shift
+   ╚╚╚
+*/
   .nav-section-label {
     position: relative;
     transition: color var(--motion-duration-short) var(--ease);
   }
 /* (R319 c1-A · B1b): the v16 ::before underline — a 50%-opacity
-     directional gradient hairline under every section label — is
-     RETIRED: the ::before slot now belongs to the drawer's mono
-     gutter index (layout.css, [01]/[02]…, the reference's instrument
-     voice), and a decorative gradient underline is off the R313
-     flat-chrome grammar anyway (structural hairlines only, no
-     gradient paint). Deleting it here (overrides layer) frees the
-     pseudo for the layout-layer index at every band. */
+   directional gradient hairline under every section label — is
+   RETIRED: the ::before slot now belongs to the drawer's mono
+   gutter index (layout.css, [01]/[02]…, the reference's instrument
+   voice), and a decorative gradient underline is off the R313
+   flat-chrome grammar anyway (structural hairlines only, no
+   gradient paint). Deleting it here (overrides layer) frees the
+   pseudo for the layout-layer index at every band.
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SIDEBAR DRAWER — mobile slide-in with spring                  ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SIDEBAR DRAWER — mobile slide-in with spring
+   ╚╚╚
+*/
   @media (max-width: 920px) {
     .sidebar {
       transition: transform var(--motion-duration-long) var(--ease-spring-soft);
@@ -1748,61 +1991,73 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SIDEBAR BACKDROP — blur ramp with fade                        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SIDEBAR BACKDROP — blur ramp with fade
+   ╚╚╚
+*/
   .sidebar-backdrop {
     /* R313 (D16): the blur ramp is retired — the backdrop is a solid
-       veil; only opacity animates. */
+    veil; only opacity animates.
+*/
     transition: opacity var(--motion-duration-medium) var(--ease);
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TOPBAR — scroll-aware shadow                                  ║
-     ║  When the document scrolls, the body gets data-scrolled=true   ║
-     ║  via the scroll handler in AppShell (already exists). Use it   ║
-     ║  to deepen the topbar shadow.                                  ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   TOPBAR — scroll-aware shadow
+   When the document scrolls, the body gets data-scrolled=true
+   via the scroll handler in AppShell (already exists). Use it
+   to deepen the topbar shadow.
+   ╚╚╚
+*/
   .topbar {
     transition:
       box-shadow var(--motion-duration-medium) var(--ease),
       border-color var(--motion-duration-medium) var(--ease);
   }
   /* Scroll-state class is set by CSS-only sticky shadow trick: when
-     the topbar is sticky and there's content above it, this kicks in. */
+   the topbar is sticky and there's content above it, this kicks in.
+*/
   /* (Wave 9-b dead-selector sweep: the shadow rule deleted —
-     `body[data-scrolled="true"]` has zero TSX consumers (AppShell
-     drives the topbar's own `.scrolled` class, whose shadow is v9's
-     `.topbar.scrolled`), and `.topbar:not(:first-child)` never matches
-     the shipped shell (the Topbar is <main>'s first child).) */
+   `body[data-scrolled="true"]` has zero TSX consumers (AppShell
+   drives the topbar's own `.scrolled` class, whose shadow is v9's
+   `.topbar.scrolled`), and `.topbar:not(:first-child)` never matches
+   the shipped shell (the Topbar is <main>'s first child).)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TOPBAR USER TRIGGER — spring chevron on press                 ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   TOPBAR USER TRIGGER — spring chevron on press
+   ╚╚╚
+*/
   /* R329 (gate:clean): this block's spring transition was inert —
-     r305-shell.css's unlayered control recipe owns the trigger's
-     transition, and its hover/expanded rules retire the elevation
-     (box-shadow: none) — the copies here lost the unlayered race and
-     are deleted (ONE seat per selector+context per sheet). */
-  /* Chevron in user trigger flips when menu opens */
+   r305-shell.css's unlayered control recipe owns the trigger's
+   transition, and its hover/expanded rules retire the elevation
+   (box-shadow: none) — the copies here lost the unlayered race and
+   are deleted (ONE seat per selector+context per sheet).
+*/
+  /* Chevron in user trigger flips when menu opens
+*/
   /* (Wave 9-b dead-selector sweep: the chevron-flip rule deleted —
-     .icon-chevron has zero TSX consumers and the user trigger renders
-     an avatar + name span (no last-child svg), so neither selector
-     ever matched.) */
+   .icon-chevron has zero TSX consumers and the user trigger renders
+   an avatar + name span (no last-child svg), so neither selector
+   ever matched.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  USER MENU ITEMS — stagger entrance                            ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   USER MENU ITEMS — stagger entrance
+   ╚╚╚
+*/
   /* (WS-D2 orphan sweep: the .topbar-user-menu(-item) stagger + hover
-     rules and madarek-menu-item-in(-rtl) keyframes were dead — Topbar's
-     Dropdown primitive renders its own menu items.) */
+   rules and madarek-menu-item-in(-rtl) keyframes were dead — Topbar's
+   Dropdown primitive renders its own menu items.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  GLOBAL SEARCH — focus-state expansion                         ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   GLOBAL SEARCH — focus-state expansion
+   ╚╚╚
+*/
   .topbar .global-search {
     transition:
       box-shadow var(--motion-duration-medium) var(--ease),
@@ -1811,29 +2066,33 @@
   }
 
   /* (5-C1 entrance diet, A2 P1-1): the title-block spring is GONE.
-     `madarek-page-title-in` (520ms + 80ms delay, off-token spring)
-     was the FOURTH stacked entrance on every route — the title
-     re-faded on top of the page fade on top of the content fade.
-     The title now arrives with the page-enter fade like every other
-     header child. The `position: relative` it carried went with it:
-     its only consumer was the animation (the welcome-card override
-     at the v9 block sets its own relative + z-index). The RM kill
-     list below dropped its selector with it. */
+   `madarek-page-title-in` (520ms + 80ms delay, off-token spring)
+   was the FOURTH stacked entrance on every route — the title
+   re-faded on top of the page fade on top of the content fade.
+   The title now arrives with the page-enter fade like every other
+   header child. The `position: relative` it carried went with it:
+   its only consumer was the animation (the welcome-card override
+   at the v9 block sets its own relative + z-index). The RM kill
+   list below dropped its selector with it.
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  BOTTOM NAV — active ring (R319 c1-A · B1b: RETIRED)           ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   BOTTOM NAV — active ring (R319 c1-A · B1b: RETIRED)
+   ╚╚╚
+*/
   /* (R319 c1-A · B1b): the whole block is DELETED — the role-accent
-     color twin and the -8px ::before wash ring were the bottom bar's
-     pink-pill chrome. The active tab is now the ink label + the 2px
-     accent TOP rule + the filled ink icon (notifications.css),
-     radius 0, one grammar with the sidebar's active row. */
+   color twin and the -8px ::before wash ring were the bottom bar's
+   pink-pill chrome. The active tab is now the ink label + the 2px
+   accent TOP rule + the filled ink icon (notifications.css),
+   radius 0, one grammar with the sidebar's active row.
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  REDUCED MOTION                                                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   REDUCED MOTION
+   ╚╚╚
+*/
   @media (prefers-reduced-motion: reduce) {
     .nav-item.on::after,
     .sidebar.open .nav-item {
@@ -1843,44 +2102,51 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v17.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
+   ═══
+*/
+/* ═══
    MADAREK — polish v17 · pages
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Phase 3 of the design polish plan: page-specific motion + visual
    richness across landing sections, dashboards, list rows, table rows,
    detail headers, owner realtime tiles.
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer overrides {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  LANDING — section stripes (peach / lavender / mint / sky)     ║
-     ║  Each major section gets a tinted backdrop that subtly fades   ║
-     ║  to bg at the seams. Creates visual rhythm down the page.      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   LANDING — section stripes (peach / lavender / mint / sky)
+   Each major section gets a tinted backdrop that subtly fades
+   to bg at the seams. Creates visual rhythm down the page.
+   ╚╚╚
+*/
   /* (r151c: the #features stripe trio deleted — no id="features"
-     exists in any TSX (the landing renders section classes, not
-     anchors); the peach-gradient recipe died with the pre-redesign
-     landing. The scroll-margin note further down still mentions
-     #features generically — anchor targets come and go with
-     redesigns; the html-level rule covers whatever lands.) */
+   exists in any TSX (the landing renders section classes, not
+   anchors); the peach-gradient recipe died with the pre-redesign
+   landing. The scroll-margin note further down still mentions
+   #features generically — anchor targets come and go with
+   redesigns; the html-level rule covers whatever lands.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  STUDENT DASHBOARD — welcome card photo overlay                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   STUDENT DASHBOARD — welcome card photo overlay
+   ╚╚╚
+*/
   /* (r153f grave: v17's photo overlay — light + dark, main_photo-card.webp
-     640px q55 cut (D15 / audit 11-g P2-3) — moved home to student.css
-     §WELCOME-CARD verbatim; it was the family's rendered background in
-     BOTH themes. The assets.test pin followed it.) */
+   640px q55 cut (D15 / audit 11-g P2-3) — moved home to student.css
+   §WELCOME-CARD verbatim; it was the family's rendered background in
+   BOTH themes. The assets.test pin followed it.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  STUDENT DASHBOARD — agenda items glide in                     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   STUDENT DASHBOARD — agenda items glide in
+   ╚╚╚
+*/
   
   
   
@@ -1893,7 +2159,8 @@
     to   { opacity: 1; transform: none; }
   }
   /* RTL variant as a separate name (a selector cannot prefix @keyframes —
-     that syntax is invalid CSS and gets dropped by the minifier) */
+   that syntax is invalid CSS and gets dropped by the minifier)
+*/
   @keyframes madarek-agenda-in-rtl {
     from { opacity: 0; transform: translateX(8px); }
     to   { opacity: 1; transform: none; }
@@ -1901,28 +2168,32 @@
   
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  STUDENT DASHBOARD — doughnut center number transitions        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   STUDENT DASHBOARD — doughnut center number transitions
+   ╚╚╚
+*/
   
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TEACHER FEED — items glide in from the start side             ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   TEACHER FEED — items glide in from the start side
+   ╚╚╚
+*/
   @keyframes madarek-feed-in {
     /* (r151f: the direction merge — components.css's wave-5
-       madarek-feed-slide keyframes + its animation-name !important
-       flip were merged verbatim into this owner. Rows glide in from
-       inline-start, direction-aware via --motion-direction.) */
+    madarek-feed-slide keyframes + its animation-name !important
+    flip were merged verbatim into this owner. Rows glide in from
+    inline-start, direction-aware via --motion-direction.)
+*/
     from { opacity: 0; transform: translateX(calc(var(--motion-direction) * -12px)); }
     to   { opacity: 1; transform: none; }
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  COMPACT KPI — accent stripe + value pop                       ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   COMPACT KPI — accent stripe + value pop
+   ╚╚╚
+*/
   
   
   
@@ -1932,29 +2203,32 @@
 
 
   /* (r153e: the v17 OWNER REALTIME heartbeat family — .owner-live-pulse +
-     .owner-health-dot.green, their ::after rings and the madarek-heartbeat /
-     madarek-pulse-ring keyframes — moved home to owner.css (the Live Pulse
-     + health-dot sections). Pure move for the normal state (probe-verified),
-     plus the documented bug fix it unlocks: owner.css's is-pending /
-     is-degraded `animation: none` freezes were dead under this
-     overrides-layer rule (layer order beat their specificity, so
-     pending/degraded dots kept beating); same sheet now, the frozen-dot
-     honesty contract wins again and a matching ::after ring freeze was
-     added there. The RM belt entries below stay here on purpose — they
-     must keep beating the pages-layer family by layer order, exactly
-     as before.) */
+   .owner-health-dot.green, their ::after rings and the madarek-heartbeat /
+   madarek-pulse-ring keyframes — moved home to owner.css (the Live Pulse
+   + health-dot sections). Pure move for the normal state (probe-verified),
+   plus the documented bug fix it unlocks: owner.css's is-pending /
+   is-degraded `animation: none` freezes were dead under this
+   overrides-layer rule (layer order beat their specificity, so
+   pending/degraded dots kept beating); same sheet now, the frozen-dot
+   honesty contract wins again and a matching ::after ring freeze was
+   added there. The RM belt entries below stay here on purpose — they
+   must keep beating the pages-layer family by layer order, exactly
+   as before.)
+*/
 
   /* (r153e: the v17 ALERT TILE glow — .owner-live-status.has-alerts
-     box-shadow pulse + madarek-alert-glow keyframes — moved home to
-     owner.css beside its border/background siblings. RM belt entry
-     stays here.) */
+   box-shadow pulse + madarek-alert-glow keyframes — moved home to
+   owner.css beside its border/background siblings. RM belt entry
+   stays here.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  ADMIN / OWNER / QUALITY — CHART LINE TRACE                    ║
-     ║  Chart.js animations are JS-driven; we add a CSS hint that     ║
-     ║  fades the canvas in so it doesn't pop cold.                   ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   ADMIN / OWNER / QUALITY — CHART LINE TRACE
+   Chart.js animations are JS-driven; we add a CSS hint that
+   fades the canvas in so it doesn't pop cold.
+   ╚╚╚
+*/
   
   @keyframes madarek-canvas-in {
     from { opacity: 0; }
@@ -1962,13 +2236,15 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TABLE ROWS — leading dot indicator on hover                   ║
-     ║  Adds a small accent dot at the start of the row when hovered. ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   TABLE ROWS — leading dot indicator on hover
+   Adds a small accent dot at the start of the row when hovered.
+   ╚╚╚
+*/
   /* (r150d: owner/admin-students left this flourish with their retired
-     families — the canonical .table hover is the quiet zebra the canon
-     documents; the leaderboard keeps its own dot identity.) */
+   families — the canonical .table hover is the quiet zebra the canon
+   documents; the leaderboard keeps its own dot identity.)
+*/
   @media (hover: hover) {
     @keyframes madarek-row-bar-in {
       from { transform: scaleY(0); }
@@ -1977,89 +2253,101 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  LIST ROWS — leading dot color flush on hover                  ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   LIST ROWS — leading dot color flush on hover
+   ╚╚╚
+*/
   @media (hover: hover) {
   }
 
 
   /* (r153e: the v17 DETAIL HEADERS bar-draw — .college-hero/.comp-hero
-     positioning + ::before gradient rails + madarek-hero-bar-draw —
-     moved home to colleges.css (hero section). The v22 2px stroke pin
-     (the wave 7-b sweep below) and the RM belt entries stay here on
-     purpose: they must keep beating the pages-layer family by layer
-     order, exactly as before.) */
+   positioning + ::before gradient rails + madarek-hero-bar-draw —
+   moved home to colleges.css (hero section). The v22 2px stroke pin
+   (the wave 7-b sweep below) and the RM belt entries stay here on
+   purpose: they must keep beating the pages-layer family by layer
+   order, exactly as before.)
+*/
 
   /* (r153e: the v17 comp-index emoji bob moved home to colleges.css
-     (Competitions section).) */
+   (Competitions section).)
+*/
 
   /* (r153e: the v17 college-card emoji breathe moved home to
-     colleges.css (cards section).) */
+   colleges.css (cards section).)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  LANDING PILOT STATS — count-up effect via existing CountUp    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  REDUCED MOTION                                                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   LANDING PILOT STATS — count-up effect via existing CountUp
+   ╚╚╚
+*/
+  /* ╔╔╔
+   REDUCED MOTION
+   ╚╚╚
+*/
   @media (prefers-reduced-motion: reduce) {
     
   }
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v18.css — RETIRED r297 (polish dismantle, wave 4)
-   ═══════════════════════════════════════════════════════════════════
+   ═══
    The overlays wave. Everything live folded to owners:
    - .comp-modal-close rotate-hover + .comp-icon-btn trio + the RM
-     entry → colleges.css (the competitions/community sheet owns the
-     comp-* families).
+   entry → colleges.css (the competitions/community sheet owns the
+   comp-* families).
    - .toast visual pair (elev-3 + r-md) → components.css TOAST — the
-     r-md radius was the overrides winner over the base r-lg; the
-     [role="status"][data-toast] twin always paired .toast on the
-     same markup, so one selector suffices.
+   r-md radius was the overrides winner over the base r-lg; the
+   [role="status"][data-toast] twin always paired .toast on the
+   same markup, so one selector suffices.
    Pre-r297 deletions recorded in situ: notification-dropdown
-     stagger + unread pulse (WS-D2/Wave-1-a — the NotificationPanel
-     primitive owns items), global-search results (WS-D2 — .search-
-     dropdown in layout.css), comp-modal backdrop/entrance (WS-D2 —
-     the <Modal> primitive), .sheet entrance (zero consumers),
-     toast entrance override (4-A11 P2-13 — notifications.css owns
-     the choreography). */
+   stagger + unread pulse (WS-D2/Wave-1-a — the NotificationPanel
+   primitive owns items), global-search results (WS-D2 — .search-
+   dropdown in layout.css), comp-modal backdrop/entrance (WS-D2 —
+   the <Modal> primitive), .sheet entrance (zero consumers),
+   toast entrance override (4-A11 P2-13 — notifications.css owns
+   the choreography).
+*/
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v19.css
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
+   ═══
+*/
+/* ═══
    MADAREK — polish v19 · states, auth, thumbnails, micro-fixes
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Phase 6 of the design polish plan. Empty/error/loading state polish,
    auth pages, thumb-card hover refinement, and a final pass over
    remaining surfaces (skills/labs/jobs/mooc cards, vision detail pages,
    document viewer, training tracks).
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer overrides {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  THUMB CARDS — image zoom on hover, lift, accent border tip   ║
-     ║  Used by Library, MOOC, Courses, Labs, Webinars.              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   THUMB CARDS — image zoom on hover, lift, accent border tip
+   Used by Library, MOOC, Courses, Labs, Webinars.
+   ╚╚╚
+*/
   @media (hover: hover) {
   }
   /* 5-C1 (A2 P2-4): cards-as-links press DOWN, not up. The hover lift
-     (−3px) used to persist through the press — live-measured
-     matrix(…,−3) on 6/6 course cards during real mousedown, the exact
-     inversion of taste's press rule. The press settles back to the
-     resting plane with a 0.99 compression, deliberately UNGATED so
-     touch presses (which never build a :hover) feel it; the snap-back
-     rides the micro duration like the rest of the press family. */
+   (−3px) used to persist through the press — live-measured
+   matrix(…,−3) on 6/6 course cards during real mousedown, the exact
+   inversion of taste's press rule. The press settles back to the
+   resting plane with a 0.99 compression, deliberately UNGATED so
+   touch presses (which never build a :hover) feel it; the snap-back
+   rides the micro duration like the rest of the press family.
+*/
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  EMPTY STATE — idle wiggle on the icon every 6s                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   EMPTY STATE — idle wiggle on the icon every 6s
+   ╚╚╚
+*/
   .state.state-empty .state-icon {
     animation: madarek-empty-wiggle var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite;
     transform-origin: center;
@@ -2072,9 +2360,10 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  ERROR STATE — icon throbs gently, retry button bounces in     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   ERROR STATE — icon throbs gently, retry button bounces in
+   ╚╚╚
+*/
   @keyframes madarek-error-throb {
     0%, 100% { transform: scale(1); }
     50%      { transform: scale(1.05); }
@@ -2091,76 +2380,88 @@
 
 
   /* r297 hazard fix: a stray `/` preceded this selector — esbuild
-     preserved it verbatim and browsers dropped the rule as invalid.
-     Beyond the hazard it was DOUBLY dead: .landing-footer has zero
-     TSX consumers since the «سماء مدارك» rebuild (the rendered footer
-     is .fo-footer — its top hairline is landing.css's own border-block
-     recipe). Deleted, not moved. */
+   preserved it verbatim and browsers dropped the rule as invalid.
+   Beyond the hazard it was DOUBLY dead: .landing-footer has zero
+   TSX consumers since the «سماء مدارك» rebuild (the rendered footer
+   is .fo-footer — its top hairline is landing.css's own border-block
+   recipe). Deleted, not moved.
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PROFILE PAGES — avatar ring on hover                          ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   PROFILE PAGES — avatar ring on hover
+   ╚╚╚
+*/
   /* r152e: the auth-card entrance moved to auth.css, which already owns
-     its position rule. The reduced-motion belt entry stays here. */
+   its position rule. The reduced-motion belt entry stays here.
+*/
   /* (Wave 9-b dead-selector sweep: this avatar-ring block deleted —
-     .profile-avatar / .profile-page / .teacher-profile-avatar all
-     have zero TSX consumers; the generic .avatar hover treatment in
-     v15 covers the surfaces that render avatars.) */
+   .profile-avatar / .profile-page / .teacher-profile-avatar all
+   have zero TSX consumers; the generic .avatar hover treatment in
+   v15 covers the surfaces that render avatars.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  VISION DETAIL — hero image zoom on hover                      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   VISION DETAIL — hero image zoom on hover
+   ╚╚╚
+*/
   /* (r285: the .vision-card half of this pair retired — the r266 vision
-     gallery renders rows; .vision-detail-hero keeps the zoom-on-hover
-     contract. The dead .vision-card:hover wave deleted with it.) */
+   gallery renders rows; .vision-detail-hero keeps the zoom-on-hover
+   contract. The dead .vision-card:hover wave deleted with it.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TRAINING TRACK CARDS — accent leading edge on hover           ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   TRAINING TRACK CARDS — accent leading edge on hover
+   ╚╚╚
+*/
   /* (Wave 1-a dead-code sweep: the training-card family deleted. Grep
-     evidence: zero TSX consumers for BOTH .training-card and
-     .training-track-card — TrainingPages (and six other pages) render
-     `.track-card`, an interrupted v10 rename. See 0-d P0/P1 +
-     polish.css:4642 in the audit numbering.) */
+   evidence: zero TSX consumers for BOTH .training-card and
+   .training-track-card — TrainingPages (and six other pages) render
+   `.track-card`, an interrupted v10 rename. See 0-d P0/P1 +
+   polish.css:4642 in the audit numbering.)
+*/
 
 
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  ANNOUNCEMENT / EVENT ROWS — leading sticker bobbles on hover ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   ANNOUNCEMENT / EVENT ROWS — leading sticker bobbles on hover
+   ╚╚╚
+*/
   @media (hover: hover) {
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  HELP TEXT / SUBTLE LINKS — underline draws in                 ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   HELP TEXT / SUBTLE LINKS — underline draws in
+   ╚╚╚
+*/
   /* (Wave 9-b root fix, implementing 7-b's recommendation: the
-     `:not(.skip-link)` exclusion was added to every selector in this
-     family. At (0,7,1) this rule silently out-ranked v20's
-     `.skip-link { position: fixed }` (0,1,0) and knocked the pill out
-     of fixed positioning — the root cause of the "760px RTL
-     scrollWidth at 390px" bug (full diagnosis in the 7-b section).
-     .landing-progress needs no exclusion: it renders a <div>, not an
-     <a>.)
-     (16-E4, 15-f FE-9: the `:not(.card-link)` exclusion was dropped
-     from every selector in this family — the .card-link rule itself
-     was deleted in the 13-17 sweep (tombstone at components.css:53)
-     and no element has carried the class since, so the exclusion was
-     a no-op token.) */
+   `:not(.skip-link)` exclusion was added to every selector in this
+   family. At (0,7,1) this rule silently out-ranked v20's
+   `.skip-link { position: fixed }` (0,1,0) and knocked the pill out
+   of fixed positioning — the root cause of the "760px RTL
+   scrollWidth at 390px" bug (full diagnosis in the 7-b section).
+   .landing-progress needs no exclusion: it renders a <div>, not an
+   <a>.)
+   (16-E4, 15-f FE-9: the `:not(.card-link)` exclusion was dropped
+   from every selector in this family — the .card-link rule itself
+   was deleted in the 13-17 sweep (tombstone at components.css:53)
+   and no element has carried the class since, so the exclusion was
+   a no-op token.)
+*/
   a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link) {
     position: relative;
     transition: color var(--motion-duration-short) var(--ease);
   }
   /* r151d/r151e: back-link and track-card anchors opt out of this
-     underline treatment. The PDF toolbar fade-in moved to pdf.css
-     (r152e); its reduced-motion entry stays here. The wave 3-c
-     components-layer content-none override was retired, while the
-     base rule above keeps its existing position/color transition. */
+   underline treatment. The PDF toolbar fade-in moved to pdf.css
+   (r152e); its reduced-motion entry stays here. The wave 3-c
+   components-layer content-none override was retired, while the
+   base rule above keeps its existing position/color transition.
+*/
   a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card)::after {
     content: '';
     position: absolute;
@@ -2190,18 +2491,20 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  HEADINGS — r288 (anatomy fold): the dark-theme text-shadow     ║
-     ║  weighter-trick on .page-title/.college-hero-name RETIRED —     ║
-     ║  the contract title (.pf-page-title) carries no shadow; the     ║
-     ║  trick painted only on the legacy anatomy and made titles      ║
-     ║  read differently between sibling routes in dark. Deleted.     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   HEADINGS — r288 (anatomy fold): the dark-theme text-shadow
+   weighter-trick on .page-title/.college-hero-name RETIRED —
+   the contract title (.pf-page-title) carries no shadow; the
+   trick painted only on the legacy anatomy and made titles
+   read differently between sibling routes in dark. Deleted.
+   ╚╚╚
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  REDUCED MOTION                                                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   REDUCED MOTION
+   ╚╚╚
+*/
   @media (prefers-reduced-motion: reduce) {
     .state.state-empty .state-icon,
     .state.state-error .state-icon,
@@ -2211,14 +2514,15 @@
       animation: none !important;
     }
     /* 22-c: the announcement icon's hover bobble (block above) is a
-       pure-decoration transform — off under reduced motion. */
+    pure-decoration transform — off under reduced motion.
+*/
   }
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v20.css — RETIRED r297 (polish dismantle, wave 4)
-   ═══════════════════════════════════════════════════════════════════
+   ═══
    The a11y wave. The three user-preference media blocks
    (prefers-contrast bolder borders + stronger focus, forced-colors
    OS scheme handover, reduced-transparency solid grounds) moved to
@@ -2227,63 +2531,68 @@
    the families, layer over layout/base). Pre-r297 deletions
    recorded in situ: .sr-only + skip-link + :target scroll-margin +
    tap-highlight + lazy-img fade (r152f → base.css), the blanket
-   print block (Wave 1-a → the v22 print consolidation). */
+   print block (Wave 1-a → the v22 print consolidation).
+*/
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v21.css — RETIRED r297 (polish dismantle, wave 4)
-   ═══════════════════════════════════════════════════════════════════
+   ═══
    The regression-fix wave. Everything live folded home:
    - the DARK LANDING FOOTER readability family → landing.css — and
-     WITH A REAL BUG FIXED: v21 shipped a stray `/` before the
-     base-link selector; esbuild preserved it verbatim and browsers
-     dropped the rule as invalid, so the 78% text lift never
-     rendered — only the :hover did. Home in landing.css the lift
-     finally applies (the intended FIX-3, restored).
+   WITH A REAL BUG FIXED: v21 shipped a stray `/` before the
+   base-link selector; esbuild preserved it verbatim and browsers
+   dropped the rule as invalid, so the 78% text lift never
+   rendered — only the :hover did. Home in landing.css the lift
+   finally applies (the intended FIX-3, restored).
    - the RM belt entries split to their families: megamenu items →
-     landing.css, .search-dropdown/.search-shimmer → layout.css,
-     card>state shimmers → components.css.
+   landing.css, .search-dropdown/.search-shimmer → layout.css,
+   card>state shimmers → components.css.
    Pre-r297 deletions recorded in situ: FIX-1 megamenu un-bang
-     (r151g — the v14 cause deleted at source), FIX-2 pilot gradient
-     (r151c — zero consumers), the search-dropdown family (r152d →
-     layout.css), the LoadingState pair (r152f → components.css),
-     [data-loaded] fades (Wave 9-b — zero consumers). */
+   (r151g — the v14 cause deleted at source), FIX-2 pilot gradient
+   (r151c — zero consumers), the search-dropdown family (r152d →
+   layout.css), the LoadingState pair (r152f → components.css),
+   [data-loaded] fades (Wave 9-b — zero consumers).
+*/
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v22.css — foundation consolidation (wave 1-a)
-   ═══════════════════════════════════════════════════════════════════ */
-/* ═════════════════════════════════════════════════════════════════════
+   ═══
+*/
+/* ═══
    MADAREK — polish v22 · foundation consolidation (wave 1-a)
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Implements audits/0-a-foundation.md inside polish.css only:
    · A  ONE focus-ring system — visible, AA-safe, token-driven
-      (0-a P0-1/P0-2; orchestrator ruling #13: polish.css overrides
-      layer owns the final word).
+   (0-a P0-1/P0-2; orchestrator ruling #13: polish.css overrides
+   layer owns the final word).
    · B  The two invalid `to inline-end|inline-start` gradients,
-      rewritten valid + RTL-correct (0-a P0-4).
+   rewritten valid + RTL-correct (0-a P0-4).
    · C  Reduced-motion belt that also resets delays, so staggered
-      grids stop appearing sequentially (0-a P1-3/P1-11).
+   grids stop appearing sequentially (0-a P1-3/P1-11).
    · D  ONE print block: dark-theme light-lock, link href expansion,
-      break rules, chrome/overlay hiding (0-a P0-7 + P1-10).
+   break rules, chrome/overlay hiding (0-a P0-7 + P1-10).
    · E  ONE selection, ONE scrollbar (finally consuming
-      --scrollbar-thumb), skip-link already owned by v20 (0-a P1-1/P1-2/P1-9).
+   --scrollbar-thumb), skip-link already owned by v20 (0-a P1-1/P1-2/P1-9).
    · F  Canonical, self-sufficient .bottom-nav container (0-c;
-      orchestrator ruling #8).
+   orchestrator ruling #8).
    · I  Craft-floor stripe sweep: toast → 1px colored hairline with
-      restored status coding; animated rails 3-4px → 2px (ruling #4).
+   restored status coding; animated rails 3-4px → 2px (ruling #4).
    Losers/dead code in v6–v21 were deleted in place with tombstone
    comments pointing here.
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer overrides {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  A. FOCUS RING — the one system                                ║
-     ║  Mirrors motion.css's universal ring but lives in the last     ║
-     ║  layer, so polish.css owns the final word (ruling #13).        ║
-     ║  --state-focus-ring-color resolves to the r303 copper seat:    ║
-     ║  #9A5F25 ≈6.9:1 on cream (light) / #F2B782 ≈8:1 on ink (dark)  ║
-     ║  — WCAG 2.4.7 + 1.4.11 safe.                                    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   A. FOCUS RING — the one system
+   Mirrors motion.css's universal ring but lives in the last
+   layer, so polish.css owns the final word (ruling #13).
+   --state-focus-ring-color resolves to the r303 copper seat:
+   #9A5F25 ≈6.9:1 on cream (light) / #F2B782 ≈8:1 on ink (dark)
+   — WCAG 2.4.7 + 1.4.11 safe.
+   ╚╚╚
+*/
   :where(
     a, button, input, select, textarea, summary,
     [tabindex]:not([tabindex="-1"]),
@@ -2292,66 +2601,78 @@
     outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
     outline-offset: var(--state-focus-ring-offset);
     /* wave 2: border-radius: inherit removed — it mutated the focused
-       element's own corners (a square outline would round the host);
-       the ring follows the element's real geometry instead. */
+    element's own corners (a square outline would round the host);
+    the ring follows the element's real geometry instead.
+*/
   }
   /* (Wave 9-b dead-selector sweep: the `[data-focus-ring="custom"]`
-     focus-ring opt-out deleted — the attribute has zero TSX
-     consumers; every surface takes the single ring. Re-add verbatim
-     if a component ever needs a bespoke focus treatment.) */
+   focus-ring opt-out deleted — the attribute has zero TSX
+   consumers; every surface takes the single ring. Re-add verbatim
+   if a component ever needs a bespoke focus treatment.)
+*/
   /* Per-component re-assertions that used to lose to the deleted
-     `outline: none` rules — the ring, plus the accent border cue the
-     old recipes carried. */
+   `outline: none` rules — the ring, plus the accent border cue the
+   old recipes carried.
+*/
   /* NOTE: v20's `prefers-contrast: more` block (3px outline, !important)
-     and `forced-colors: active` block still win over this section —
-     that escape hatch is intentional and untouched. */
+   and `forced-colors: active` block still win over this section —
+   that escape hatch is intentional and untouched.
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  B1. Collapsed-rail topbar tint — RETIRED (R329 gate:clean)   ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   B1. Collapsed-rail topbar tint — RETIRED (R329 gate:clean)
+   ╚╚╚
+*/
   /* R329 (gate:clean): the four gradient rules that lived here are
-     DELETED. r305-shell.css §collapsed-topbar (unlayered) retired the
-     tint for every variant (`background: var(--topbar-bg)` — opaque
-     ground; its own comment documents beating this overrides-layer
-     guard), so each gradient was an inert duplicate seat. The RTL
-     logic note survives for history: the tint anchored the gradient's
-     starting edge to the inline-start rail (`to right` LTR / `to left`
-     RTL) — `to inline-end` was never a valid keyword. */
+   DELETED. r305-shell.css §collapsed-topbar (unlayered) retired the
+   tint for every variant (`background: var(--topbar-bg)` — opaque
+   ground; its own comment documents beating this overrides-layer
+   guard), so each gradient was an inert duplicate seat. The RTL
+   logic note survives for history: the tint anchored the gradient's
+   starting edge to the inline-start rail (`to right` LTR / `to left`
+   RTL) — `to inline-end` was never a valid keyword.
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  B2. Welcome-card corner dot grid — re-homed + valid mask      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   B2. Welcome-card corner dot grid — re-homed + valid mask
+   ╚╚╚
+*/
   /* (r153f grave: v22's ::before dot grid + RTL-correct mask + ≤640
-     shrink moved home to student.css §WELCOME-CARD verbatim. It was
-     the ONLY dot renderer since v13 — the v8 ::after grid it
-     "re-homed" was already dead there.) */
+   shrink moved home to student.css §WELCOME-CARD verbatim. It was
+   the ONLY dot renderer since v13 — the v8 ::after grid it
+   "re-homed" was already dead there.)
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  C. REDUCED MOTION — the canonical belt                        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   C. REDUCED MOTION — the canonical belt
+   ╚╚╚
+*/
   /* R331 A-CSS pass 1 — this section's belt is DELETED. It was a
-     byte-identical duplicate of base.css's universal belt (same
-     `*, *::before, *::after` selector, same six 0.01ms/0s/auto
-     !important declarations, same media query): base.css zeroes
-     durations AND delays since its wave 2-a update ("mirrors polish
-     v22's belt"), so the overrides-layer copy won the !important
-     layer race only to set the exact same values. Deleting it costs
-     nothing and retires 6 !importants; base.css §Reduced motion is
-     the one canonical belt. */
+   byte-identical duplicate of base.css's universal belt (same
+   `*, *::before, *::after` selector, same six 0.01ms/0s/auto
+   !important declarations, same media query): base.css zeroes
+   durations AND delays since its wave 2-a update ("mirrors polish
+   v22's belt"), so the overrides-layer copy won the !important
+   layer race only to set the exact same values. Deleting it costs
+   nothing and retires 6 !importants; base.css §Reduced motion is
+   the one canonical belt.
+*/
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  D. PRINT — one student-document-aware block                    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   D. PRINT — one student-document-aware block
+   ╚╚╚
+*/
   @media print {
     /* D1. Light-lock — the dark-theme token remap itself MOVED to
-       tokens.css (r150a color-gate triage): raw hex there is the token
-       source by definition, and no other layer defines any of the
-       remapped properties, so the cascade outcome is identical. The
-       color-scheme lock below stays here (overrides layer). */
+    tokens.css (r150a color-gate triage): raw hex there is the token
+    source by definition, and no other layer defines any of the
+    remapped properties, so the cascade outcome is identical. The
+    color-scheme lock below stays here (overrides layer).
+*/
     :root,
     :root[data-theme="dark"],
     :root[data-theme="light"] {
@@ -2359,10 +2680,12 @@
     }
 
     /* D2. Ground + ink: paper is the ground; no theme wash, no ink
-       spent on page backgrounds. */
+    spent on page backgrounds.
+*/
     html, body { background: transparent !important; }
 
-    /* D3. Hide app chrome and every overlay portaled over the doc. */
+    /* D3. Hide app chrome and every overlay portaled over the doc.
+*/
     .sidebar,
     .topbar,
     .bottom-nav,
@@ -2380,7 +2703,8 @@
     .has-shell { grid-template-columns: 1fr !important; }
     .page { padding: var(--sp-4) !important; }
 
-    /* D4. Freeze every effect: motion, shadows, glass, text-shadow. */
+    /* D4. Freeze every effect: motion, shadows, glass, text-shadow.
+*/
     *, *::before, *::after {
       animation: none !important;
       transition: none !important;
@@ -2390,15 +2714,18 @@
       -webkit-backdrop-filter: none !important;
     }
     /* Glass surfaces get an opaque light ground instead of the scrim.
-       (Wave 9-b dead-selector sweep: .card.glass + .navbar.glass
-       removed — zero TSX consumers.) */
+    (Wave 9-b dead-selector sweep: .card.glass + .navbar.glass
+    removed — zero TSX consumers.)
+*/
     /* Decorative pseudo-layers (cursor-follow highlight, gradient border
-       glow) would print as empty ink — drop them. */
+    glow) would print as empty ink — drop them.
+*/
     .card:not(.flush)::before,
     .card:not(.flush)::after { display: none !important; }
 
     /* D5. Nothing may print invisible: reveal-wrapped or late-fading
-       content is forced to its final state. */
+    content is forced to its final state.
+*/
     [data-reveal],
     .section-accent,
     .section-accent::after,
@@ -2409,8 +2736,9 @@
     }
 
     /* D6. Links: underline (v19's animated ::after underline is frozen
-       at scaleX(0) — invisible), and expand external targets after the
-       link text so printed docs stay actionable. */
+    at scaleX(0) — invisible), and expand external targets after the
+    link text so printed docs stay actionable.
+*/
     a { text-decoration: underline; text-underline-offset: 3px; }
     a[href^="http"]::after {
       content: " (" attr(href) ")";
@@ -2420,9 +2748,10 @@
     }
 
     /* D7. Pagination: keep cards/rows/images whole, repeat table
-       headers on every page, don't orphan headings. (Wave 9-b
-       dead-selector sweep: .surface-card removed — zero TSX
-       consumers.) */
+    headers on every page, don't orphan headings. (Wave 9-b
+    dead-selector sweep: .surface-card removed — zero TSX
+    consumers.)
+*/
     .card,
     .metric,
     .modal-card,
@@ -2434,14 +2763,16 @@
     }
     h1, h2, h3, h4, h5, h6, .page-title { break-after: avoid; }
 
-    /* D8. Illustrations: capped and crisp on paper. */
+    /* D8. Illustrations: capped and crisp on paper.
+*/
     .illustration > svg { max-block-size: 160px; }
 
     /* D9. r149 (R3-A5 #3): الألوان الدلالية تُطبع فعلًا — بدون هذا
-       تُسقط المتصفحات تعبئات الحالة افتراضيًا («بلا خلفيات») فتخرج
-       الدرجات والجداول بلا شارات ملونة. النطاق ضيق عمدًا (شارات،
-       رؤوس جداول، أيقونات الحالة، حبوب مفعّلة) — الحبر يُوفَّر
-       في كل ما عداها. */
+    تُسقط المتصفحات تعبئات الحالة افتراضيًا («بلا خلفيات») فتخرج
+    الدرجات والجداول بلا شارات ملونة. النطاق ضيق عمدًا (شارات،
+    رؤوس جداول، أيقونات الحالة، حبوب مفعّلة) — الحبر يُوفَّر
+    في كل ما عداها.
+*/
     .badge,
     .pill.on,
     .state-icon,
@@ -2452,19 +2783,22 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  E. BROWSER SURFACES — one definition each                     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   E. BROWSER SURFACES — one definition each
+   ╚╚╚
+*/
   /* Selection — v14's recipe (the visual winner), now the only polish
-     definition. base.css's copy is dead weight; wave 2 removes it. */
+   definition. base.css's copy is dead weight; wave 2 removes it.
+*/
   ::selection {
     background: color-mix(in srgb, var(--accent) 28%, transparent);
     color: var(--text);
   }
 
   /* Scrollbar — thin, calm, and finally consuming the --scrollbar-thumb
-     tokens (they were dead: the deleted v11 winner hard-coded
-     var(--rule)). */
+   tokens (they were dead: the deleted v11 winner hard-coded
+   var(--rule)).
+*/
   * { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
   *::-webkit-scrollbar { inline-size: 10px; block-size: 10px; }
   *::-webkit-scrollbar-track { background: transparent; }
@@ -2481,7 +2815,8 @@
     }
   }
   /* Sidebar's own rail re-lands on top of the global block (0-a P2-14):
-     4px wide and whisper-quiet inside the nav column. */
+   4px wide and whisper-quiet inside the nav column.
+*/
   .sidebar::-webkit-scrollbar { width: 4px; }
   .sidebar::-webkit-scrollbar-thumb {
     background: color-mix(in srgb, var(--text) 8%, transparent);
@@ -2496,31 +2831,35 @@
   .sidebar { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--text) 8%, transparent) transparent; }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  F. BOTTOM-NAV — the canonical container (ruling #8)           ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   F. BOTTOM-NAV — the canonical container (ruling #8)
+   ╚╚╚
+*/
   /* Breakpoint rationale: the sidebar disappears at ≤920px (base.css
-     .has-shell), so the dock must span the full 0→920px band — the old
-     640px pages-layer rule (notifications.css) left 641–920px tablet
-     users with no navigation at all. Grid (not flex) keeps the five
-     role items evenly distributed at every width. Complete without
-     layout.css's block, so wave 2 can delete it safely. */
+   .has-shell), so the dock must span the full 0→920px band — the old
+   640px pages-layer rule (notifications.css) left 641–920px tablet
+   users with no navigation at all. Grid (not flex) keeps the five
+   role items evenly distributed at every width. Complete without
+   layout.css's block, so wave 2 can delete it safely.
+*/
   .bottom-nav {
     display: none;
     position: fixed;
     inset-block-end: 0;
     inset-inline: 0;
     /* R319 (c1-A · B1b): OPAQUE paper — the translucent --topbar-bg
-       chrome glass let page text read through the dock (owner
-       screenshot). alpha 1, no backdrop-filter: the bar is a solid
-       paper band on the 1px structural hairline.
-       R329 (gate:clean): the dock ground is r325-shell.css's unlayered
-       --app-bg seat (and the hairline color its --app-line) — the
-       overrides-layer copies here were inert. */
+    chrome glass let page text read through the dock (owner
+    screenshot). alpha 1, no backdrop-filter: the bar is a solid
+    paper band on the 1px structural hairline.
+    R329 (gate:clean): the dock ground is r325-shell.css's unlayered
+    --app-bg seat (and the hairline color its --app-line) — the
+    overrides-layer copies here were inert.
+*/
     border-block-start: 1px solid var(--rule);
     z-index: var(--z-dropdown);
     /* r153h: 6px → --sp-1-5 (both slots). The bottom slot carries the
-       home-indicator safe area (the dock's own footer reserve). */
+    home-indicator safe area (the dock's own footer reserve).
+*/
     padding: var(--sp-1-5) max(var(--sp-2), env(safe-area-inset-left)) max(var(--sp-1-5), env(safe-area-inset-bottom));
     grid-template-columns: repeat(5, 1fr);
     transition: transform var(--t-base) var(--ease);
@@ -2529,10 +2868,11 @@
     .bottom-nav { display: grid; }
   }
   /* Reduced-transparency accommodation re-asserted (v20's non-important
-     version would lose to the rule above now that polish owns the
-     container): opaque ground whenever the user disables glass. The
-     collapsed-topbar guard matches B1's specificities so the tint can't
-     go translucent there either. */
+   version would lose to the rule above now that polish owns the
+   container): opaque ground whenever the user disables glass. The
+   collapsed-topbar guard matches B1's specificities so the tint can't
+   go translucent there either.
+*/
   @media (prefers-reduced-transparency: reduce) {
     .bottom-nav { background: var(--surface); }
     html[data-sidebar-collapsed] .topbar,
@@ -2540,73 +2880,82 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  I. CRAFT-FLOOR STRIPE SWEEP (orchestrator ruling #4)          ║
-     ║  1px is the Notion hairline language on card/list edges.       ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   I. CRAFT-FLOOR STRIPE SWEEP (orchestrator ruling #4)
+   1px is the Notion hairline language on card/list edges.
+   ╚╚╚
+*/
   /* Toast: the components.css 4px leading stripe is neutralized by v18's
-     1px border, but v18's `border` shorthand also wiped the status
-     coloring — re-assert it so the (soon-to-be-wired, ruling #3) toast
-     codes its variant on a 1px colored hairline. */
+   1px border, but v18's `border` shorthand also wiped the status
+   coloring — re-assert it so the (soon-to-be-wired, ruling #3) toast
+   codes its variant on a 1px colored hairline.
+*/
 
   /* Animated leading-edge rails on cards/list rows: 3–4px → 2px
-     (0-a P0-5 allows hover rails up to 2px). The motion is preserved —
-     only the stroke weight changes. */
+   (0-a P0-5 allows hover rails up to 2px). The motion is preserved —
+   only the stroke weight changes.
+*/
   @media (hover: hover) {
   }
   /* Deliberately KEPT at 3px as standalone accent BAR elements (not card
-     edge stripes): .section-title::before (heading hierarchy marker) and
-     .compact-kpi::before (28px corner tick). The 3px notif unread stripe
-     and the 4px training-card stripe are gone entirely — see tombstones
-     in v9/v19. */
+   edge stripes): .section-title::before (heading hierarchy marker) and
+   .compact-kpi::before (28px corner tick). The 3px notif unread stripe
+   and the 4px training-card stripe are gone entirely — see tombstones
+   in v9/v19.
+*/
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    wave 7-b: shell — AppShell scroll/RTL/route-transition corrections
    (append-only section; see audits/0-c P2-3/P2-4 + 3-agent RTL finding)
-   ═══════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 @layer overrides {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  1. SKIP-LINK — band-aid RETIRED (wave 9-b root fix)          ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   1. SKIP-LINK — band-aid RETIRED (wave 9-b root fix)
+   ╚╚╚
+*/
   /* The "760px RTL scrollWidth at 390px" production bug (flagged by 3
-     agents, misattributed to the off-canvas sidebar) was root-caused
-     here: v19's universal link-underline rule — specificity (0,7,1) —
-     silently out-ranked v20's `.skip-link { position: fixed }` (0,1,0)
-     in this same overrides layer. The pill became a stretched in-flow
-     grid item at `inset-inline-start: 50%` + translateX(-50%); in RTL
-     that lands it entirely at negative x (~-380px), and negative-x
-     content IS scrollable in RTL documents → every page h-scrolled by
-     ~370px (LTR nets out to ~0 — why the bug was RTL-only). This
-     section's `position: fixed !important` + `::after { content: none
-     !important }` were the only tools an append-only section had
-     against a same-layer (0,7,1) selector. Wave 9-b fixed the ROOT
-     instead: v19's selector family now carries `:not(.skip-link)`, so
-     v20's fixed positioning applies naturally, the underline pseudo
-     never matches the pill, and both !important band-aids are deleted.
-     Keep this history: the lesson is that a high-specificity universal
-     selector can silently defeat a low-specificity component rule in
-     the same layer. */
+   agents, misattributed to the off-canvas sidebar) was root-caused
+   here: v19's universal link-underline rule — specificity (0,7,1) —
+   silently out-ranked v20's `.skip-link { position: fixed }` (0,1,0)
+   in this same overrides layer. The pill became a stretched in-flow
+   grid item at `inset-inline-start: 50%` + translateX(-50%); in RTL
+   that lands it entirely at negative x (~-380px), and negative-x
+   content IS scrollable in RTL documents → every page h-scrolled by
+   ~370px (LTR nets out to ~0 — why the bug was RTL-only). This
+   section's `position: fixed !important` + `::after { content: none
+   !important }` were the only tools an append-only section had
+   against a same-layer (0,7,1) selector. Wave 9-b fixed the ROOT
+   instead: v19's selector family now carries `:not(.skip-link)`, so
+   v20's fixed positioning applies naturally, the underline pseudo
+   never matches the pill, and both !important band-aids are deleted.
+   Keep this history: the lesson is that a high-specificity universal
+   selector can silently defeat a low-specificity component rule in
+   the same layer.
+*/
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  2. COLLAPSED RAIL — retire the CSS-only tooltip (0-c P2-4)    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   2. COLLAPSED RAIL — retire the CSS-only tooltip (0-c P2-4)
+   ╚╚╚
+*/
   /* Sidebar.tsx (wave 7-b) wires the portaled <Tooltip> primitive on
-     collapsed nav items — keyboard-focusable, aria-describedby, never
-     clipped. That replaces v8's `::after { content: attr(title) }`
-     tooltip, which was triply broken: (a) clipped to invisibility by
-     the sidebar's own `overflow-x: hidden` (the pill hangs outside the
-     rail's padding box — verified: pseudo right edge ≈ x=1168 vs clip
-     edge x=1206), (b) hover-only — keyboard focus got no label, and
-     (c) its [dir="rtl"] override anchors the tooltip off the physical
-     right edge, i.e. off-screen in RTL. With the title attribute gone
-     from the markup, attr(title) resolves to "" and the leftover rule
-     would paint an empty dark box — stand it down here. Scoped to
-     non-active items so v16's rail-dot ::after (which shares the
-     pseudo-element and wins the cascade on .on/.active anyway) keeps
-     rendering while the active item is hovered. */
+   collapsed nav items — keyboard-focusable, aria-describedby, never
+   clipped. That replaces v8's `::after { content: attr(title) }`
+   tooltip, which was triply broken: (a) clipped to invisibility by
+   the sidebar's own `overflow-x: hidden` (the pill hangs outside the
+   rail's padding box — verified: pseudo right edge ≈ x=1168 vs clip
+   edge x=1206), (b) hover-only — keyboard focus got no label, and
+   (c) its [dir="rtl"] override anchors the tooltip off the physical
+   right edge, i.e. off-screen in RTL. With the title attribute gone
+   from the markup, attr(title) resolves to "" and the leftover rule
+   would paint an empty dark box — stand it down here. Scoped to
+   non-active items so v16's rail-dot ::after (which shares the
+   pseudo-element and wins the cascade on .on/.active anyway) keeps
+   rendering while the active item is hovered.
+*/
   @media (min-width: 921px) {
     @media (hover: hover) and (pointer: fine) {
       .sidebar.collapsed .nav-item:not(.on):hover::after {
@@ -2614,42 +2963,49 @@
       }
     }
     /* The portaled tooltip supersedes the v8 pseudo entirely on
-       focus-visible too (defense against attr(title) leftovers). */
+    focus-visible too (defense against attr(title) leftovers).
+*/
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  3. NAV-ICON — micro press feedback (DESIGN_POLISH_PLAN ph. 2) ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   3. NAV-ICON — micro press feedback (DESIGN_POLISH_PLAN ph. 2)
+   ╚╚╚
+*/
   /* Plan phase 2: "nav-icon micro-rotate on press". Composes with the
-     established press language (cards 0.99 via --state-card-pressed-
-     scale / nav pills 0.985 / bottom-nav 0.93 via --state-nav-pressed-
-     scale) and with v13's hover scale-up on the same transform. */
+   established press language (cards 0.99 via --state-card-pressed-
+   scale / nav pills 0.985 / bottom-nav 0.93 via --state-nav-pressed-
+   scale) and with v13's hover scale-up on the same transform.
+*/
   .nav-item:active .nav-icon {
     transform: scale(0.94) rotate(-6deg);
     transition-duration: var(--t-micro);
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  3b. DRAWER NAV TARGETS — 44px across the whole drawer band    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   3b. DRAWER NAV TARGETS — 44px across the whole drawer band
+   ╚╚╚
+*/
   /* 0-c P2-11: layout.css gives .nav-item a 30px min-block-size and
-     v6's 44px floor only reaches 640px — but the mobile drawer the
-     items live in opens all the way to 920px, leaving the 641–920px
-     tablet drawer with 30px tap targets (guardrail: ≥44px on touch).
-     Extend the floor to the full drawer band. */
+   v6's 44px floor only reaches 640px — but the mobile drawer the
+   items live in opens all the way to 920px, leaving the 641–920px
+   tablet drawer with 30px tap targets (guardrail: ≥44px on touch).
+   Extend the floor to the full drawer band.
+*/
   @media (max-width: 920px) {
     .sidebar .nav-item {
       min-block-size: 44px;
     }
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  4. PRINT — unbound the viewport-bounded shell                  ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   4. PRINT — unbound the viewport-bounded shell
+   ╚╚╚
+*/
   /* layout.css (wave 7-b) bounds .has-shell to 100dvh so .content can
-     be the scroll container. Paper is not a viewport: release the
-     bound and let the content flow across pages (comes after v22's
-     print block in this layer, so it wins the properties it sets). */
+   be the scroll container. Paper is not a viewport: release the
+   bound and let the content flow across pages (comes after v22's
+   print block in this layer, so it wins the properties it sets).
+*/
   @media print {
     .has-shell {
       block-size: auto;
@@ -2662,79 +3018,82 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    ▶ Section: polish-v23.css — final consolidation (wave 9-b)
-   ═══════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 /* No new declarations — v23 is the wave 9-b change log. Every fix was
    made surgically in place, next to the rule it corrects:
    · A  v19's universal link-underline family now excludes .skip-link
-     (the ROOT fix for the 760px RTL scroll bug); wave 7-b's two
-     !important band-aids retired in place. .landing-progress needs no
-     exclusion — it renders a <div>, not an <a>.
+   (the ROOT fix for the 760px RTL scroll bug); wave 7-b's two
+   !important band-aids retired in place. .landing-progress needs no
+   exclusion — it renders a <div>, not an <a>.
    · B  .landing-campus-eyebrow (v14) follows ruling #2: no Latin
-     letter-spacing / text-transform on the Arabic eyebrow copy
-     «the demo university». (8-a's "vision-eyebrow out of file scope" note is
-     stale — that class has zero consumers AND zero definitions
-     anywhere in frontend/, nothing to fix.)
+   letter-spacing / text-transform on the Arabic eyebrow copy
+   «the demo university». (8-a's "vision-eyebrow out of file scope" note is
+   stale — that class has zero consumers AND zero definitions
+   anywhere in frontend/, nothing to fix.)
    · C  ONE mobile .btn.sm tap-target floor: the v11 overrides-layer
-     block now pins 44px; v6's dead pages-layer copy is removed
-     (6-a follow-up #5).
+   block now pins 44px; v6's dead pages-layer copy is removed
+   (6-a follow-up #5).
    · D  Dead-selector sweep: every selector whose class/attribute has
-     zero TSX consumers was deleted in place with a tombstone + worklog
-     evidence. Dynamically-composed classes (state-${variant},
-     toast-${variant}, reveal-d-${delay}) were verified ALIVE and kept.
-     5-a's "dead" scan-bar bridge rule was NOT deleted: it lives in
-     components.css (outside this file's scope) and is still LIVE — the
-     student ResearchPage's .scan-pulse spans the scan grid through it.
+   zero TSX consumers was deleted in place with a tombstone + worklog
+   evidence. Dynamically-composed classes (state-${variant},
+   toast-${variant}, reveal-d-${delay}) were verified ALIVE and kept.
+   5-a's "dead" scan-bar bridge rule was NOT deleted: it lives in
+   components.css (outside this file's scope) and is still LIVE — the
+   student ResearchPage's .scan-pulse spans the scan grid through it.
    · E  Raw-value audit of the v22 + wave sections: only tokens; the
-     sole raw values are the reduced-motion belt's canonical
-     0.01ms/0s !important resets. Zero >1px border-inline stripes
-     remain anywhere in this file (ruling #4); the documented
-     standalone bars (.section-title::before, .compact-kpi::before)
-     and the 2px hover rails stand as swept in v22.
+   sole raw values are the reduced-motion belt's canonical
+   0.01ms/0s !important resets. Zero >1px border-inline stripes
+   remain anywhere in this file (ruling #4); the documented
+   standalone bars (.section-title::before, .compact-kpi::before)
+   and the 2px hover rails stand as swept in v22.
    Layer hygiene: sections v6–v8 remain @layer pages; v9 onward
    (including wave 7-b above) remain @layer overrides — the incumbent
-   structure is unchanged, so this comment-only banner adds no layer. */
+   structure is unchanged, so this comment-only banner adds no layer.
+*/
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    21-c — Arabic typography platform rulings (A12 P1-6/P2-7 · A3 P2-4)
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Two system-level resets for the Arabic document, riding the overrides
    rung (the only rung that beats base/components/pages declarations
    regardless of specificity):
 
    1. NO TRACKING ON ARABIC HEADINGS (platform ruling #2 — cursive
-      joins). base.css ships Latin-tuned --ls-snug/-tight on h1–h6,
-      components.css on .dash-section-title + the onboarding headline
-      (A3's measured -0.264px @ 22px). Those files are sibling-owned
-      (base = 20s, components.css = 21-b); this reset neutralizes their
-      tracking for :lang(ar) without touching them. Numerals/metrics
-      keep their tracking (no joins to break) — the reset is scoped to
-      heading/title roles only.
-      5-C2 (A3 P1-1/P2-1..4): the reset list is extended to the
-      CLASS-STYLED Arabic display/label text the 21-c heading list
-      missed — .card-title (-0.216px @18px), .section-title +
-      .thumb-card-title (same --ls-snug family, div-rendered so the
-      h1–h6 list never matched), .sidebar-brand-name (-0.156px @13px
-      «مدارك»), .avatar (-0.12px Arabic initials), .btn (-0.06px on
-      every Arabic button label — source also fixed at
-      components.css:324) and .settings-label (colleges.css +0.55px,
-      admin settings, swept). (.landing-role-name was in this list
-      until r151c — its consumer died with the landing redesign;
-      the class entry went with it.)
-      Belt+braces: the landing/auth source declarations are also fixed
-      at their sites; this overrides-layer list guards the
-      sibling-owned components/layout/colleges sources in one place.
+   joins). base.css ships Latin-tuned --ls-snug/-tight on h1–h6,
+   components.css on .dash-section-title + the onboarding headline
+   (A3's measured -0.264px @ 22px). Those files are sibling-owned
+   (base = 20s, components.css = 21-b); this reset neutralizes their
+   tracking for :lang(ar) without touching them. Numerals/metrics
+   keep their tracking (no joins to break) — the reset is scoped to
+   heading/title roles only.
+   5-C2 (A3 P1-1/P2-1..4): the reset list is extended to the
+   CLASS-STYLED Arabic display/label text the 21-c heading list
+   missed — .card-title (-0.216px @18px), .section-title +
+   .thumb-card-title (same --ls-snug family, div-rendered so the
+   h1–h6 list never matched), .sidebar-brand-name (-0.156px @13px
+   «مدارك»), .avatar (-0.12px Arabic initials), .btn (-0.06px on
+   every Arabic button label — source also fixed at
+   components.css:324) and .settings-label (colleges.css +0.55px,
+   admin settings, swept). (.landing-role-name was in this list
+   until r151c — its consumer died with the landing redesign;
+   the class entry went with it.)
+   Belt+braces: the landing/auth source declarations are also fixed
+   at their sites; this overrides-layer list guards the
+   sibling-owned components/layout/colleges sources in one place.
 
    2. NO PHANTOM ITALIC ON ARABIC <em> (A12 P1-6): Arabic has no
-      italic; the browser's default synthetic slant on cursive script
-      is the same machine-made tell wave 20-a killed on landing. <em>
-      keeps its semantics and gains weight+accent emphasis. (The
-      em.landing-serif-latin opt-out class retired with the serif
-      faces in r152j — zero TSX consumers; its :not() guards below
-      went with it.)
-   ═══════════════════════════════════════════════════════════════════ */
+   italic; the browser's default synthetic slant on cursive script
+   is the same machine-made tell wave 20-a killed on landing. <em>
+   keeps its semantics and gains weight+accent emphasis. (The
+   em.landing-serif-latin opt-out class retired with the serif
+   faces in r152j — zero TSX consumers; its :not() guards below
+   went with it.)
+   ═══
+*/
 @layer overrides {
   :lang(ar) :is(h1, h2, h3, h4, h5, h6, .page-title, .dash-section-title,
                 .onboarding-flow-headline, .card-title,
@@ -2744,16 +3103,18 @@
   }
 
   /* No font-weight here on purpose: the landing ems carry their own
-     weight accents (fw-black / fw-bold, 20-a) in the pages layer — an
-     overrides-layer weight would clobber them through the layer
-     backdoor (measured: hero em dropped 800→600 when this rule carried
-     fw-semibold). The reset's single job is killing the synthetic
-     slant; emphasis stays whatever the surface authored. */
+   weight accents (fw-black / fw-bold, 20-a) in the pages layer — an
+   overrides-layer weight would clobber them through the layer
+   backdoor (measured: hero em dropped 800→600 when this rule carried
+   fw-semibold). The reset's single job is killing the synthetic
+   slant; emphasis stays whatever the surface authored.
+*/
   /* r148 (AUDIT-4 I5): العقد كان يعد بـ«weight+accent emphasis» ولم يُنفّذ —
-     em عربي خارج الـ landing كان يُعرض بلا أي تمييز. النطاق يستثني عالم
-     الـlanding كليًا (:not(.landing *)) لأن قياسًا موثقًا أعلاه أثبت أن
-     الوزن هنا يكسر hero em (800→600). الوزن + حبر النحاس هما المحوران
-     القانونيان للعربية (لا ميل ولا تتبّع). */
+   em عربي خارج الـ landing كان يُعرض بلا أي تمييز. النطاق يستثني عالم
+   الـlanding كليًا (:not(.landing *)) لأن قياسًا موثقًا أعلاه أثبت أن
+   الوزن هنا يكسر hero em (800→600). الوزن + حبر النحاس هما المحوران
+   القانونيان للعربية (لا ميل ولا تتبّع).
+*/
   :lang(ar) em:not(.landing *) {
     font-style: normal;
     font-weight: var(--fw-semibold);
@@ -2765,10 +3126,10 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    5-B5 — topbar title craft on narrow viewports
    (A4 P1-2 + P3-8, coordinated with A9 P1-2 cold-load CLS)
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Measured BEFORE (5-A4): at 320px the flex topbar starved the title
    track to 0–10px (clientW 0 on /student/results; actions cluster
    202px + burger 44px) — the 4-A10 ellipsis rendered into a sliver no
@@ -2776,20 +3137,22 @@
 
    The fix is a diet + a wrap:
    · ≤420px — the actions cluster shrinks (AI quick-action hidden,
-     user chip avatar-only, tighter tracks/gutter) so the title track
-     gets real width (~88px at 320).
+   user chip avatar-only, tighter tracks/gutter) so the title track
+   gets real width (~88px at 320).
    · ≤920px — the title wraps to TWO full lines (line-clamp 2) instead
-     of ellipsizing one; the full name rides the title attribute
-     (Topbar.tsx, A4 P3-8).
+   of ellipsizing one; the full name rides the title attribute
+   (Topbar.tsx, A4 P3-8).
 
    Height stability (the A9 CLS coordinate): 2 × fs-body(15px) × 1.2
    = 36px, comfortably under the 44px touch floor of the actions
    cluster — the topbar keeps its 60px box on every route and every
    breakpoint, so nothing below it ever shifts on navigation.
-   ═══════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 @layer overrides {
   /* A9 P1-2 sketch (a): pin the title box so the skeleton→real font
-     swap cannot resize it (A9 measured 22→24px at data-land). */
+   swap cannot resize it (A9 measured 22→24px at data-land).
+*/
   .topbar .topbar-title {
     min-block-size: 24px;
   }
@@ -2801,7 +3164,8 @@
       -webkit-line-clamp: 2;
       line-height: 1.2;
       white-space: normal;
-      min-block-size: 18px; /* A9: a settled one-line floor */
+      min-block-size: 18px; /* A9: a settled one-line floor
+*/
     }
   }
 
@@ -2811,15 +3175,17 @@
       gap: var(--sp-2);
     }
     /* Drop the «اسأل AI» quick-action (A4 P1-2 sketch): the 4-A10 hide
-       in layout.css lost the cascade war to components.css's .btn
-       display (layer order) and never applied — re-asserted here, the
-       only layer that wins. The destination stays reachable via the
-       sidebar, the ⌘K palette and (student) the bottom-nav «المساعد». */
+    in layout.css lost the cascade war to components.css's .btn
+    display (layer order) and never applied — re-asserted here, the
+    only layer that wins. The destination stays reachable via the
+    sidebar, the ⌘K palette and (student) the bottom-nav «المساعد».
+*/
     .topbar-actions > .btn.primary.sm {
       display: none;
     }
     /* The user chip collapses to its avatar (the name is already
-       hidden ≤640px) — borderless, centered, 44px touch floor kept. */
+    hidden ≤640px) — borderless, centered, 44px touch floor kept.
+*/
     .topbar .topbar-user-trigger {
       min-inline-size: 44px;
       min-block-size: 44px;
@@ -2836,29 +3202,34 @@
     }
   }
 
-  /* ══════════════════════════════════════════════════════════════════
-     PREMIUM VISUAL LAYER — World-class polish (5-WAVE)
-     ───────────────────────────────────────────────────────────────────
-     Glassmorphism · Gradient accents · Micro-interactions · Staggered reveals
-     ══════════════════════════════════════════════════════════════════ */
+  /* ═══
+   PREMIUM VISUAL LAYER — World-class polish (5-WAVE)
+     ───
+   Glassmorphism · Gradient accents · Micro-interactions · Staggered reveals
+     ═══
+*/
 
-  /* ── Premium glass cards — inner light border + glow on hover ───── */
+  /* ── Premium glass cards — inner light border + glow on hover ─────
+*/
   /* r148 (AUDIT-5 M2): القاعدة كانت .card.glass-premium بينما TSX يمرر
-     card-glass-premium (بدون .card الأصل على نفس العنصر — Card يضيف
-     className إلى .metric-wrapper الظرفية) — الصنف لم يكن يطابق أبدًا
-     فبطاقتا GPA/التقدم تسقطان على dash-gpa-card العادية. أضيف المرآة
-     بصنف TSX الفعلي وأصلح الحد الخام أيضًا ( AUDIT-5 K2 عائلة). */
+   card-glass-premium (بدون .card الأصل على نفس العنصر — Card يضيف
+   className إلى .metric-wrapper الظرفية) — الصنف لم يكن يطابق أبدًا
+   فبطاقتا GPA/التقدم تسقطان على dash-gpa-card العادية. أضيف المرآة
+   بصنف TSX الفعلي وأصلح الحد الخام أيضًا ( AUDIT-5 K2 عائلة).
+*/
   @media (hover: hover) and (pointer: fine) {
   }
 
   /* r297 hazard fix: a stray `/` preceded this media block — the
-     RM kill for the glass-premium shimmer never parsed. Behaviorally
-     redundant anyway: base.css's universal RM (!important
-     animation-duration 0.01ms + iteration-count 1) already freezes
-     the shimmer, so nothing is re-homed. The hazard is gone. */
+   RM kill for the glass-premium shimmer never parsed. Behaviorally
+   redundant anyway: base.css's universal RM (!important
+   animation-duration 0.01ms + iteration-count 1) already freezes
+   the shimmer, so nothing is re-homed. The hazard is gone.
+*/
 
 
-  /* ── Scroll progress indicator ────────────────────────────────── */
+  /* ── Scroll progress indicator ──────────────────────────────────
+*/
   .scroll-progress {
     position: fixed;
     top: 0;
@@ -2869,74 +3240,83 @@
     transform-origin: left;
     transform: scaleX(0);
     /* r155d (integrity F4): was raw 1000 — above the toast(500)/lightbox
-       (600) rungs with no justification. The bar is a fixed 3px strip at
-       the viewport's top edge: it only needs to clear the topbar chrome
-       (sticky at --z-dropdown: 100, base.css) — the popover rung (200)
-       is the lowest documented step strictly above that chrome, and
-       sheets/modals/toasts/lightboxes (300+) still paint over it. */
+    (600) rungs with no justification. The bar is a fixed 3px strip at
+    the viewport's top edge: it only needs to clear the topbar chrome
+    (sticky at --z-dropdown: 100, base.css) — the popover rung (200)
+    is the lowest documented step strictly above that chrome, and
+    sheets/modals/toasts/lightboxes (300+) still paint over it.
+*/
     z-index: var(--z-popover);
     /* r127-F1 motion-gate fix: constant-speed scroll-linked motion —
-       `linear` spelled via the token (tokens.css: --ease-linear is the
-       only legal spelling of `linear` outside the token files). */
+    `linear` spelled via the token (tokens.css: --ease-linear is the
+    only legal spelling of `linear` outside the token files).
+*/
     transition: transform var(--t-fast) var(--ease-linear);
   }
 
   /* P4-22: Landing-specific scroll progress — subtle ink gradient, no accent.
-     The hero is the only place where a colored bar would compete with
-     the narrative. Use cream-dim at low opacity for a quiet presence. */
+   The hero is the only place where a colored bar would compete with
+   the narrative. Use cream-dim at low opacity for a quiet presence.
+*/
   /* (r155d dead-selector sweep: the .landing .scroll-progress variant
-     deleted — zero consumers: LandingPage renders its own
-     .landing-progress ribbon (landing.css §15) and the AppShell's
-     ScrollProgress never mounts inside .landing. The [dir="rtl"]
-     twin below went with it.) */
+   deleted — zero consumers: LandingPage renders its own
+   .landing-progress ribbon (landing.css §15) and the AppShell's
+   ScrollProgress never mounts inside .landing. The [dir="rtl"]
+   twin below went with it.)
+*/
 
   /* r134 (audit R134-W1-M P1): RTL fill direction. The bar is a physical
-     left-anchored scaleX — under [dir="rtl"] it grew left→right, against
-     the reading direction. Mirror both the origin (scalex now grows from
-     the right edge) and the gradient (270deg) so the leading edge keeps
-     the accent end and the fill reads right→left. */
+   left-anchored scaleX — under [dir="rtl"] it grew left→right, against
+   the reading direction. Mirror both the origin (scalex now grows from
+   the right edge) and the gradient (270deg) so the leading edge keeps
+   the accent end and the fill reads right→left.
+*/
   [dir="rtl"] .scroll-progress {
     transform-origin: right;
     background: linear-gradient(270deg, var(--accent) 0%, var(--accent-strong, var(--accent)) 100%);
   }
   /* (r155d dead-selector sweep: the [dir="rtl"] .landing .scroll-progress
-     twin deleted with its base above — the landing variant no longer
-     exists; the RTL comment's "covers the landing variant too" sentence
-     retired with it.) */
+   twin deleted with its base above — the landing variant no longer
+   exists; the RTL comment's "covers the landing variant too" sentence
+   retired with it.)
+*/
 
 }
 
 @layer overrides {
-  /* ═════════════════════════════════════════════════════════════════
-     POLISH r162 — content-mount fade (R3)
-     ═════════════════════════════════════════════════════════════════ */
+  /* ═══
+   POLISH r162 — content-mount fade (R3)
+     ═══
+*/
 
   /* (r172a: the R1 boot-ground half of this section —
-     `html[data-landing-boot] body, html[data-landing-boot]
-     .hydration-splash { background: var(--ln-ink) }` — was RETIRED
-     with the whole data-landing-boot machinery. The landing no longer
-     paints a private ink ground: --ln-ink now aliases the canonical
-     var(--bg) in BOTH data-themes (tokens.css r172a remap), so body
-     (base.css), the hydration splash (components.css) and .landing
-     (landing.css) paint ONE ground from the first styled frame — no
-     override needed, no two-worlds flash left to paper over. The
-     index.html bootstrap heuristic + the App.tsx React owner
-     (useLandingBootGround) were deleted end-to-end with it.) */
+   `html[data-landing-boot] body, html[data-landing-boot]
+   .hydration-splash { background: var(--ln-ink) }` — was RETIRED
+   with the whole data-landing-boot machinery. The landing no longer
+   paints a private ink ground: --ln-ink now aliases the canonical
+   var(--bg) in BOTH data-themes (tokens.css r172a remap), so body
+   (base.css), the hydration splash (components.css) and .landing
+   (landing.css) paint ONE ground from the first styled frame — no
+   override needed, no two-worlds flash left to paper over. The
+   index.html bootstrap heuristic + the App.tsx React owner
+   (useLandingBootGround) were deleted end-to-end with it.)
+*/
 
   /* r162 (R3): ONE entrance language for every content mount. The
-     page-enter fade used to animate `.content-inner` — the keyed
-     remount — so the PageSkeleton fallback entered faded but the
-     resolved page that replaced it (first-visit Suspense resolve)
-     mounted with NO transition: first visits to a route lost the
-     entrance language repeat visits had. The fade now targets the
-     content child (`.content-inner > *` — exactly one element: the
-     fallback's `.page` or the resolved page root), so it plays on
-     route changes (child remounts with the keyed wrapper) AND on
-     suspense resolution (a fresh child mounts). `both` keeps the
-     from-state pinned before the first frame; the skeleton shimmer
-     lives on descendants, untouched. Guest CollegesLayout's
-     `.content-inner` (the back link + Outlet) fades as one on first
-     mount, per-route children fade per route — same contract. */
+   page-enter fade used to animate `.content-inner` — the keyed
+   remount — so the PageSkeleton fallback entered faded but the
+   resolved page that replaced it (first-visit Suspense resolve)
+   mounted with NO transition: first visits to a route lost the
+   entrance language repeat visits had. The fade now targets the
+   content child (`.content-inner > *` — exactly one element: the
+   fallback's `.page` or the resolved page root), so it plays on
+   route changes (child remounts with the keyed wrapper) AND on
+   suspense resolution (a fresh child mounts). `both` keeps the
+   from-state pinned before the first frame; the skeleton shimmer
+   lives on descendants, untouched. Guest CollegesLayout's
+   `.content-inner` (the back link + Outlet) fades as one on first
+   mount, per-route children fade per route — same contract.
+*/
   .content-inner > * {
     animation: page-enter var(--motion-duration-short) var(--ease-out) both;
   }

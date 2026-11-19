@@ -1,9 +1,11 @@
 @layer pages {
-/* ═════════════════════════════════════════════════════════════
+/* ═══
    Owner Control Panel — Premium Styles
-   ═════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
-/* ── Timeline ──────────────────────────────────────────────── */
+/* ── Timeline ────────────────────────────────────────────────
+*/
 .owner-timeline {
   display: flex;
   flex-direction: column;
@@ -20,12 +22,14 @@
   bottom: 12px;
   width: 2px;
   /* 22-b (4-A7 P3-1): the spine was var(--border) = 1.24:1 on the
-     white card — the VLM read the timeline as "a standard list". A
-     tinted accent hairline (28% copper into the strong border) reads
-     as structure in BOTH themes without shouting. */
+   white card — the VLM read the timeline as "a standard list". A
+   tinted accent hairline (28% copper into the strong border) reads
+   as structure in BOTH themes without shouting.
+*/
   background: color-mix(in srgb, var(--accent) 28%, var(--border-strong));
   /* R313 (WP-F · D16): square hairline — radius 0, the sub-pixel
-     rounding allow retired. */
+   rounding allow retired.
+*/
 }
 
 .owner-timeline-item {
@@ -40,8 +44,9 @@
     var(--motion-stagger-step) * min(var(--owner-row-i, 0), var(--motion-stagger-cap))
   );
   /* R329 (gate:clean): the row transition is polish.css's overrides
-     seat (.list-row/.feed-item/.owner-timeline-item — background+
-     transform) — this pages-layer copy was inert. */
+   seat (.list-row/.feed-item/.owner-timeline-item — background+
+   transform) — this pages-layer copy was inert.
+*/
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -55,21 +60,24 @@
   border-bottom: none;
 }
 
-/* ── Event Icon ────────────────────────────────────────────── */
+/* ── Event Icon ──────────────────────────────────────────────
+*/
 .owner-event-icon.green {
   background: var(--success-soft);
   /* R131-F12 (audit A7 §5-1, WCAG 1.4.11 advisory): light --success
-     (mint-ink #4FA66D) on the mint well measured 2.53:1. The icon now
-     takes the -ink tier — the -deep value in light (7.99:1), the same
-     grammar notifications.css already uses for .notif-item-icon.
-     Dark is untouched: its --success-ink resolves to the same mint
-     #7FD39A as --success (tokens.css dark block). */
+   (mint-ink #4FA66D) on the mint well measured 2.53:1. The icon now
+   takes the -ink tier — the -deep value in light (7.99:1), the same
+   grammar notifications.css already uses for .notif-item-icon.
+   Dark is untouched: its --success-ink resolves to the same mint
+   #7FD39A as --success (tokens.css dark block).
+*/
   color: var(--success-ink);
 }
 
 /* r148 (AUDIT-1 H3): الأزرق والبنفسجي كانا على حافة 3:1 (3.06 / 3.18)
    في انتهاك هشّ لـ WCAG 1.4.11 — مواءمة مع إخوتهما المصلحة بقرار
-   R131-F12 (green → --success-ink بـ7.99:1، amber → --warning-ink بـ6.98:1). */
+   R131-F12 (green → --success-ink بـ7.99:1، amber → --warning-ink بـ6.98:1).
+*/
 .owner-event-icon.blue {
   background: var(--accent-soft);
   color: var(--accent-ink);
@@ -81,17 +89,20 @@
 .owner-event-icon.amber {
   background: var(--warning-soft);
   /* R131-F12: 2.04:1 light (worst well pair) → 6.98:1 via -ink; dark
-     --warning-ink ≡ --warning (#ECC97D) — pixel-identical. */
+   --warning-ink ≡ --warning (#ECC97D) — pixel-identical.
+*/
   color: var(--warning-ink);
 }
 .owner-event-icon.red {
   background: var(--danger-soft);
   /* R131-F12: 2.57:1 light → 9.02:1 via -ink; dark --danger-ink ≡
-     --danger (#F0938F) — pixel-identical. */
+   --danger (#F0938F) — pixel-identical.
+*/
   color: var(--danger-ink);
 }
 
-/* ── Toggle Switch ─────────────────────────────────────────── */
+/* ── Toggle Switch ───────────────────────────────────────────
+*/
 /* wave 3-c (audit 0-e P1-23): the track is a 44×44 hit area while the
    painted switch stays 40×22 — the visual is drawn by ::before inset
    inside the hit box, so touch targets meet the ≥44px craft floor
@@ -99,36 +110,43 @@
    floor); the focus ring is re-asserted below with the single AA-safe
    ring tokens (ruling #13 — polish v22's universal [tabindex] selector
    already covers this element; the explicit rule guards against
-   selector drift). */
+   selector drift).
+*/
 .owner-toggle-thumb {
   inline-size: 16px;
   block-size: 16px;
-  /* R313 (WP-F · D16): circular primitive — var(--r-full). */
+  /* R313 (WP-F · D16): circular primitive — var(--r-full).
+*/
   border-radius: var(--r-full);
   /* WS-D2 — was #fff in both themes. Routed through the always-light
-     ink token so the thumb stays visible in Dark too: Light resolves to
-     --neutral-50 #FBFAF9 (≈#fff, imperceptible), Dark to the warm sand
-     --neutral-900 #F2EFE6 which reads on both the off-track
-     (--surface-3 #182142) and the copper on-state (#E0A067). A
-     --surface mapping would render the thumb near-invisible on the
-     Dark off-track, so the light-ink family is the correct slot. */
+   ink token so the thumb stays visible in Dark too: Light resolves to
+   --neutral-50 #FBFAF9 (≈#fff, imperceptible), Dark to the warm sand
+   --neutral-900 #F2EFE6 which reads on both the off-track
+   (--surface-3 #182142) and the copper on-state (#E0A067). A
+   --surface mapping would render the thumb near-invisible on the
+   Dark off-track, so the light-ink family is the correct slot.
+*/
   background: var(--text-on-dark);
   position: absolute;
   /* inside the painted track: hit-box inset (11px/2px) + the original
-     3px track inset */
+   3px track inset
+*/
   inset-block-start: 14px;
   inset-inline-start: 5px;
   /* 21-b (A11 latent P2-10): the thumb used to animate
-     inset-inline-start — a layout property (reflows every frame and
-     the motion gate's P2-10 class). Travel is now a composited
-     transform; --motion-direction keeps it flowing toward the
-     inline-end edge in RTL exactly like the inset it replaced
-     (5px → 23px = 18px of travel). */
+   inset-inline-start — a layout property (reflows every frame and
+   the motion gate's P2-10 class). Travel is now a composited
+   transform; --motion-direction keeps it flowing toward the
+   inline-end edge in RTL exactly like the inset it replaced
+   (5px → 23px = 18px of travel).
+*/
   /* r149 (R3-A3 M5): spring-soft على 160ms — إحساس مفتاح حقيقي
-     بدل انزلاق محايد (كان 240ms standard). */
+   بدل انزلاق محايد (كان 240ms standard).
+*/
   transition: transform var(--motion-duration-short) var(--ease-spring-soft);
   /* R313 (WP-F · D16): the thumb's local pop shadow retired — flat
-     system, the surface step carries the thumb (no shadow paint). */
+   system, the surface step carries the thumb (no shadow paint).
+*/
 }
 
 .owner-toggle-track.on .owner-toggle-thumb {
@@ -136,21 +154,25 @@
 }
 
 /* r149 (R3-A3 M5): لمسة الضغط — الخاصية المستقلة scale تتراكب مع
-   translateX دون تعارض (لا تحتاج معرفة حالة on/off). */
+   translateX دون تعارض (لا تحتاج معرفة حالة on/off).
+*/
 .owner-toggle-track:not(.disabled):active .owner-toggle-thumb {
   scale: 0.88;
 }
 
-/* ── Confirm Dialog (inside the shared <Modal> primitive) ──── */
+/* ── Confirm Dialog (inside the shared <Modal> primitive) ────
+*/
 /* wave 3-c dead-code sweep (audit 0-e P2-45): .owner-confirm-overlay,
    .owner-confirm-dialog (+ its h3/p rules) and the owner-fade-in
    keyframe deleted — zero consumers (ConfirmDialog mounts the <Modal>
    primitive; rg over src = 0 hits). The .owner-confirm-title/-message
    classes were referenced but undefined (0-e P0-13) — authored here
    with .modal-header/.modal-body/.modal-footer rhythm so the dialog
-   reads as a modal instead of floating unpadded text. */
+   reads as a modal instead of floating unpadded text.
+*/
 
-/* ── Action Bar ────────────────────────────────────────────── */
+/* ── Action Bar ──────────────────────────────────────────────
+*/
 .owner-action-bar {
   display: flex;
   flex-wrap: wrap;
@@ -161,83 +183,102 @@
 .owner-action-bar .btn {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
 }
 
-/* ── Color Swatch ──────────────────────────────────────────── */
+/* ── Color Swatch ────────────────────────────────────────────
+*/
 /* (wave 3-c dead-code sweep, audit 0-e P2-45: the .owner-color-swatch
    family — 3 rules — deleted. Zero consumers: OwnerContentPage was made
    honest in a prior pass and renders brand swatches as documented data;
-   rg over src = 0 hits.) */
+   rg over src = 0 hits.)
+*/
 
-/* ── Key-Value Row ─────────────────────────────────────────── */
+/* ── Key-Value Row ───────────────────────────────────────────
+*/
 
-/* ── Error Entry ───────────────────────────────────────────── */
+/* ── Error Entry ─────────────────────────────────────────────
+*/
 
 /* r299 (the 22-b P3-3 family, third member): the mono stack came off —
    these timestamps are ar-LY dates + Arabic day-periods («ص/م») and
    Plex Mono has no Arabic glyphs, so every Arabic run fell to a
    per-glyph system fallback mid-line. Tabular numerals stay so the
-   digits align; mono belongs to identifiers, not dates. */
+   digits align; mono belongs to identifiers, not dates.
+*/
 
 /* 22-b (4-A7 P3-7): the stack's structural spacing de-inlined from
    per-node style props (the classes the 6-b section reserved for
-   exactly this). */
+   exactly this).
+*/
 
-/* ── Table enhancements ────────────────────────────────────── */
+/* ── Table enhancements ──────────────────────────────────────
+*/
 /* (r150d): the .owner-table family RETIRED onto the canonical .table —
    the realtime monitor was its last consumer (now
    .table.tbl-stack.owner-realtime-table). Density had already reached
    the canonical 12/16 in r149; the remaining drift (no th wash, th
    fs-xs, border-strong head rule) dies with the family. The num
    utility re-scopes below; td.muted had zero consumers and is
-   deleted. */
+   deleted.
+*/
 
 /* ── User row ────────────────────────────────────────────────
    (r299 dead-selector sweep: .owner-user-cell + its .name child
    died — zero TSX/test consumers since the directory went RowList
-   (r252), rg-verified; the actions plate below is the survivor. */
+   (r252), rg-verified; the actions plate below is the survivor.
+*/
 
 /* r252: the users directory's inline-expansion body (the .pf-row-body
    child) — the actions row: joined date, role picker, status toggle.
-   Wraps on phones; controls keep the 44px craft floor via .btn/.input. */
+   Wraps on phones; controls keep the 44px craft floor via .btn/.input.
+*/
 
 /* ── r254: the empty-faculties rollup (OwnerInstitutionDetailPage) ──
    The 25× empty-card wall dies here: the content faculties render as
    full cards; the empty seed tail collapses behind ONE disclosure row
    whose body lists the bare rows (name · city · duplicate annotation)
    each with its own add-department affordance. Surface-step styling
-   only — no new borders, no walls. */
+   only — no new borders, no walls.
+*/
 
-/* ── Pagination ────────────────────────────────────────────── */
+/* ── Pagination ──────────────────────────────────────────────
+*/
 /* 13-17 dead-selector sweep (11-g P2-7): .owner-pagination deleted —
    OwnerUsersPage finished the ruling-#5 migration to the
    .table-pagination system (components.css) with flippable
-   ChevronLeft/ChevronRight icons; zero TSX consumers remain. */
+   ChevronLeft/ChevronRight icons; zero TSX consumers remain.
+*/
 
 /* ── Search bar ──────────────────────────────────────────────
    (r299 dead-selector sweep: the .owner-search-bar family died —
    zero TSX consumers since r252 moved every owner search into the
-   patterns FilterBar, rg-verified.) */
+   patterns FilterBar, rg-verified.)
+*/
 
-/* ── Chart container ───────────────────────────────────────── */
+/* ── Chart container ─────────────────────────────────────────
+*/
 .owner-chart-container {
   position: relative;
   height: 260px;
   padding: var(--sp-3);
   /* r294 (polish v8 fold): rectangular cartesian charts clip their
-     glow into an embedded well (circular doughnuts opt out — their
-     container must never take a rectangular clip). */
+   glow into an embedded well (circular doughnuts opt out — their
+   container must never take a rectangular clip).
+*/
   border-radius: var(--r-md);
   overflow: hidden;
 }
 
-/* ── Health indicator ──────────────────────────────────────── */
+/* ── Health indicator ────────────────────────────────────────
+*/
 .owner-health-row {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
+  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة
+*/
   border-bottom: 1px solid var(--border);
 }
 
@@ -248,7 +289,8 @@
 .owner-health-dot {
   width: 8px;
   height: 8px;
-  /* R313 (WP-F · D16): circular primitive — var(--r-full). */
+  /* R313 (WP-F · D16): circular primitive — var(--r-full).
+*/
   border-radius: var(--r-full);
   flex-shrink: 0;
 }
@@ -262,7 +304,8 @@
 /* (r153e: the green dot's half of the v17 heartbeat family moved
    home from polish.css — the same authored moment as
    .owner-live-pulse in the Live Pulse section, declarations
-   verbatim; the keyframes live there.) */
+   verbatim; the keyframes live there.)
+*/
 
 .owner-health-dot.green::after {
   content: '';
@@ -280,7 +323,8 @@
    graphics (the dots carry state). Deepening 38% toward the
    warning-ink family lands ≈ #AE8222 ≈ 3.5:1 in light; in dark the
    mix is a no-op (--warning and --warning-ink resolve to the same
-   light amber, already 11:1) so both themes pass from one rule. */
+   light amber, already 11:1) so both themes pass from one rule.
+*/
 .owner-health-dot.amber { background: color-mix(in srgb, var(--warning) 62%, var(--warning-ink)); }
 
 .owner-health-dot.red { background: var(--danger); }
@@ -296,10 +340,11 @@
   font-weight: var(--fw-semibold);
   color: var(--text);
   /* 22-b (4-A7 P3-3): the mono stack came OFF the container — these
-     values include Arabic words ('سليمة', 'تعذّر الجلب', counted
-     plurals) and IBM Plex Mono has no Arabic glyphs, so every Arabic
-     run fell to a per-glyph system fallback mid-line. The numeric
-     <bdi> runs below keep the mono + tabular numerals treatment. */
+   values include Arabic words ('سليمة', 'تعذّر الجلب', counted
+   plurals) and IBM Plex Mono has no Arabic glyphs, so every Arabic
+   run fell to a per-glyph system fallback mid-line. The numeric
+   <bdi> runs below keep the mono + tabular numerals treatment.
+*/
 }
 
 .owner-health-value bdi {
@@ -307,11 +352,14 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Filter pills row ──────────────────────────────────────── */
+/* ── Filter pills row ────────────────────────────────────────
+*/
 
-/* ── Metadata preview ──────────────────────────────────────── */
+/* ── Metadata preview ────────────────────────────────────────
+*/
 
-/* ── Command Center: Live Pulse ────────────────────────────── */
+/* ── Command Center: Live Pulse ──────────────────────────────
+*/
 /* (r153e: the v17 heartbeat family moved home from polish.css's
    overrides layer — declarations verbatim. The old `pulse-live`
    keyframes were DEAD CODE (polish v17's madarek-heartbeat beat
@@ -319,18 +367,21 @@
    deleted with this move. Render-neutral for the normal state
    (probe-verified at HEAD 3dacc23); leaving the overrides layer also
    revives the is-pending/is-degraded freezes in the wave 6-a section
-   below — the frozen-dot honesty contract, see the bug note there.) */
+   below — the frozen-dot honesty contract, see the bug note there.)
+*/
 .owner-live-pulse {
   position: relative;
   width: 10px;
   height: 10px;
-  /* R313 (WP-F · D16): circular primitive — var(--r-full). */
+  /* R313 (WP-F · D16): circular primitive — var(--r-full).
+*/
   border-radius: var(--r-full);
   background: var(--success);
   /* 5-C1: the ambient base band (2.4s) — the gate debt entry is
-     gone; polish.css's overrides-layer RM belt (v18 owner list) still
-     kills this loop under reduced motion, and the local switch at
-     the bottom of this sheet keeps it self-contained (guardrail #6). */
+   gone; polish.css's overrides-layer RM belt (v18 owner list) still
+   kills this loop under reduced motion, and the local switch at
+   the bottom of this sheet keeps it self-contained (guardrail #6).
+*/
   animation: madarek-heartbeat var(--motion-duration-ambient) var(--motion-ease-standard) infinite;
   flex-shrink: 0;
 }
@@ -379,16 +430,19 @@
   color: var(--warning-ink, var(--warning));
 }
 
-/* ── Command Center: Alert Cards ───────────────────────────── */
+/* ── Command Center: Alert Cards ─────────────────────────────
+*/
 /* wave 3-c (ruling #4): the 4px leading stripe is now the 1px Notion
    hairline — severity keeps its color on the leading edge plus the
    soft wash below. Hover was a border+shadow ghost card; elevation is
-   now declared once (quiet border shift). */
+   now declared once (quiet border shift).
+*/
 
 /* r299: severity 'error' — the second member of the critical pair
    (ownerLabels.isCriticalAlert) — had NO edge/wash rule, so the most
    urgent cards rendered neutral while their Badge said «خطأ» in red.
-   The same danger treatment .critical carries. */
+   The same danger treatment .critical carries.
+*/
 .owner-alert-card.error {
   border-inline-start-color: var(--danger);
   background: color-mix(in srgb, var(--danger) 3%, var(--surface-1));
@@ -396,14 +450,18 @@
 
 /* r299 (the 22-b P3-3 family): mono off the container — the stamp
    is an ar-LY date + Arabic day-period; the digits keep tabular
-   numerals (mono belongs to identifiers, not dates). */
+   numerals (mono belongs to identifiers, not dates).
+*/
 
-/* ── Command Center: Stat Highlight ───────────────────────── */
+/* ── Command Center: Stat Highlight ─────────────────────────
+*/
 /* 13-17 dead-selector sweep (11-g P2-7): .owner-stat-highlight and
    its .value/.label children deleted — zero TSX consumers (the
-   command center renders the .metric-card/.metric families). */
+   command center renders the .metric-card/.metric families).
+*/
 
-/* ── Command Center: AI Chart Grid ───────────────────────── */
+/* ── Command Center: AI Chart Grid ─────────────────────────
+*/
 .owner-ai-chart-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -416,50 +474,60 @@
   }
 }
 
-/* ── Command Center: Badge Counter ────────────────────────── */
+/* ── Command Center: Badge Counter ──────────────────────────
+*/
 .owner-badge-counter {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 20px;
   height: 20px;
-  padding: 0 var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  padding: 0 var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
   border-radius: var(--r-full);
   background: var(--danger);
   /* T3-F4 — was #fff in both themes: 3.19:1 on light --danger #DD6E78
-     and ~1.9:1 on dark --danger #F09BA3. A fixed near-black ink passes
-     BOTH: #191918 on #DD6E78 = 5.51:1, on #F09BA3 = 8.31:1.
-     r368 T6-b: --danger since followed the tuned rose ink #E5481F and
-     #191918 (warm-ink) dropped to 4.42:1 on it (measured, the /owner/
-     system title counter, darkInk 98 light). The tokens' own label-on-
-     danger seat --danger-fg (#101010, 4.78:1 — tokens.css's documented
-     fix for this exact pair) takes over; the night coral fill keeps its
-     documented #191918 7.81:1 (dark --danger-fg ≡ warm-ink, unchanged). */
+   and ~1.9:1 on dark --danger #F09BA3. A fixed near-black ink passes
+   BOTH: #191918 on #DD6E78 = 5.51:1, on #F09BA3 = 8.31:1.
+   r368 T6-b: --danger since followed the tuned rose ink #E5481F and
+   #191918 (warm-ink) dropped to 4.42:1 on it (measured, the /owner/
+   system title counter, darkInk 98 light). The tokens' own label-on-
+   danger seat --danger-fg (#101010, 4.78:1 — tokens.css's documented
+   fix for this exact pair) takes over; the night coral fill keeps its
+   documented #191918 7.81:1 (dark --danger-fg ≡ warm-ink, unchanged).
+*/
   color: var(--danger-fg);
-  font-size: var(--fs-xxs); /* r184: literal → token (11px = --fs-xxs), zero visual change */
+  font-size: var(--fs-xxs); /* r184: literal → token (11px = --fs-xxs), zero visual change
+*/
   font-weight: var(--fw-bold);
   line-height: 1;
   /* 22-b (4-A7 P2-8 + P3-7): the count rides next to the page title
-     (was an inline margin style; the digits inside are now an ar-LY
-     <bdi> like every other numeric on the console). */
+   (was an inline margin style; the digits inside are now an ar-LY
+   <bdi> like every other numeric on the console).
+*/
   margin-inline-start: var(--sp-2);
 }
 
-/* ── Command Center: Realtime Grid ────────────────────────── */
+/* ── Command Center: Realtime Grid ──────────────────────────
+*/
 /* (r149 R3-A1 #9: حُذفت الشبكة الخاصة — القسم يركب ‎.grid-4 الكنونية
-   الآن بنفس فجوة وكسر كل شرائط KPI في المنصة.) */
+   الآن بنفس فجوة وكسر كل شرائط KPI في المنصة.)
+*/
 
 /* ── Command Center: Governance Timeline ────────────────────
    (r299 dead-selector sweep: .owner-governance-section + its h3
    child died — the page unwrapped the redundant padding plate and
-   the h3 rule had no <h3> consumer, rg-verified. */
+   the h3 rule had no <h3> consumer, rg-verified.
+*/
 
-/* ── Feature Flag Connected ───────────────────────────────── */
+/* ── Feature Flag Connected ─────────────────────────────────
+*/
 /* (wave 3-c dead-code sweep, audit 0-e P2-45: .owner-flag-loading
    deleted — zero consumers; OwnerSystemPage renders real loading and
-   error states. rg over src = 0 hits.) */
+   error states. rg over src = 0 hits.)
+*/
 
-/* ═════════════════════════════════════════════════════════════
+/* ═══
    wave 6-a — owner core pages
    Dashboard status-band honesty (1-b follow-up, audit 0-e P0-3),
    alerts-page states + per-card resolve errors (P2-36), the realtime
@@ -468,7 +536,8 @@
    motion tokens only, and every keyframe below carries its own
    reduced-motion off-switch (guardrail #6, belt-and-braces over the
    global token belts).
-   ═════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 /* ── Status band states (OwnerDashboard + OwnerRealtime) ──────
    The band never claims "all normal" unless the alerts query
@@ -485,7 +554,8 @@
    is-pending still computed madarek-heartbeat). The heartbeat
    moved home to THIS sheet, so specificity wins again — and the
    ::after ring freeze below is new: the v17 ring pulsed through
-   pending/degraded too; both layers of the dot are honest now. */
+   pending/degraded too; both layers of the dot are honest now.
+*/
 .owner-live-status.is-pending .owner-live-pulse {
   background: var(--text-faint);
   animation: none;
@@ -505,7 +575,8 @@
 }
 
 /* r153e: the v17 ::after pulse ring must freeze with its dot —
-   pending/degraded honesty on both layers of the element. */
+   pending/degraded honesty on both layers of the element.
+*/
 .owner-live-status.is-pending .owner-live-pulse::after,
 .owner-live-status.is-degraded .owner-live-pulse::after {
   animation: none;
@@ -528,11 +599,13 @@
 /* R313 (WP-F · D16): the v17 warning glow ring retired — flat
    system, no glow paint. The has-alerts state keeps its wash (the
    dark rebase below) and the honest frozen states; the pulse dot's
-   own animation stays the truth carrier. */
+   own animation stays the truth carrier.
+*/
 
 /* Trailing tools (retry chip + "آخر تحديث" stamp) pinned to the
    inline-end edge; one auto margin instead of one per child so the
-   group never splits its free space. */
+   group never splits its free space.
+*/
 .owner-live-tools {
   margin-inline-start: auto;
   display: flex;
@@ -544,7 +617,8 @@
 /* r299 (the 22-b P3-3 family): mono came OFF the container —
    «آخر تحديث:» is Arabic and the bdi below renders an Arabic
    day-period too; the numeric bdi alone keeps mono + tabular
-   digits (the .owner-health-value precedent). */
+   digits (the .owner-health-value precedent).
+*/
 .owner-live-meta {
   font-variant-numeric: tabular-nums;
   font-size: var(--fs-xs);
@@ -560,16 +634,19 @@
    (r299 dead-selector sweep: .owner-realtime-table td.num +
    .owner-health-dot.inline died — the duplicated summary table they
    served was removed (every one of its four numbers repeated the
-   live strip above it); zero TSX consumers remain, rg-verified.) */
+   live strip above it); zero TSX consumers remain, rg-verified.)
+*/
 
 /* Neutral dot — the "unknown" state (query pending) so the health
-   list never paints a claims-health green while loading. */
+   list never paints a claims-health green while loading.
+*/
 .owner-health-dot.neutral {
   background: var(--text-faint);
 }
 
 /* wave 6-a: the dashboard health card's outer rhythm (was an inline
-   padding style on a wrapper div). */
+   padding style on a wrapper div).
+*/
 .owner-health-list {
   padding: var(--sp-3) 0;
 }
@@ -578,11 +655,13 @@
    One pulsing dot per live tile + a one-shot settle on every value
    change (the TSX remounts the value node on data change). The
    pulse cadence rides --motion-duration-skeleton, the platform's
-   infinite-loop token (webinar/live-ping precedent, wave 4-c). */
+   infinite-loop token (webinar/live-ping precedent, wave 4-c).
+*/
 .owner-live-label {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
 }
 
 .owner-live-tick {
@@ -610,16 +689,19 @@
    the cards land, the per-card resolve-error row, and a 44px
    mobile floor for the resolve action (the old inline
    fontSize/padding shrank it below the craft floor, audit 0-e
-   P2-36). */
+   P2-36).
+*/
 
 @keyframes owner-alert-in {
-  from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
+  from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small
+*/
   to { opacity: 1; transform: none; }
 }
 
 /* (r151d: the alert-actions mobile floor deleted — polish's
    overrides-layer ≤640 block owns the .btn height floor; the stale
-   comment described a 40px pin that no longer exists.) */
+   comment described a 40px pin that no longer exists.)
+*/
 
 /* ── Activity feed ────────────────────────────────────────────
    Row stagger (the page's authored moment, capped with the shared
@@ -629,12 +711,15 @@
    with hover/focus/active + a 44px mobile floor (was a stateless
    inline-styled button, audit 0-e P1-27), the meta-line anatomy,
    and the pagination footer class (was .admin-pagination +
-   inline styles — out-of-surface CSS coupling). */
+   inline styles — out-of-surface CSS coupling).
+*/
 @keyframes owner-row-in {
   /* r130-W2-7: this definition governs again — the users-table's
-     same-name keyframes (later in this file, translateY 4px) used to
-     override it document-wide; that one is now `owner-users-row-in`. */
-  from { opacity: 0; transform: translateX(calc(var(--motion-distance-small) * var(--motion-direction))); } /* r153h: 6px → --motion-distance-small (سابقة training.css:552) */
+   same-name keyframes (later in this file, translateY 4px) used to
+   override it document-wide; that one is now `owner-users-row-in`.
+*/
+  from { opacity: 0; transform: translateX(calc(var(--motion-distance-small) * var(--motion-direction))); } /* r153h: 6px → --motion-distance-small (سابقة training.css:552)
+*/
   to { opacity: 1; transform: none; }
 }
 
@@ -664,10 +749,12 @@
 
 /* r251: the affected row's ID — the timeline's ONE mono accent for
    machine identifiers (1A rule: mono = IDs/code/metrics only). A quiet
-   chip on the surface-2 step; the full id stays in the title tooltip. */
+   chip on the surface-2 step; the full id stays in the title tooltip.
+*/
 .owner-timeline-id {
   font-family: var(--font-mono);
-  font-size: max(var(--fs-xxs), 13px); /* Arabic-adjacent metadata floor */
+  font-size: max(var(--fs-xxs), 13px); /* Arabic-adjacent metadata floor
+*/
   direction: ltr;
   unicode-bidi: isolate;
   color: var(--text-muted);
@@ -684,26 +771,31 @@
 }
 
 /* r148 (AUDIT-1 C1): 12px نص بلون --accent = 3.80:1 — يفشل AA للنص الصغير.
-   --accent-ink هو الحل الموثق أصلًا (base.css:66) — 10.29:1 فاتح / 10.39 داكن. */
+   --accent-ink هو الحل الموثق أصلًا (base.css:66) — 10.29:1 فاتح / 10.39 داكن.
+*/
 
 /* wave 6-a: pretty-printed JSON has newlines — without pre-wrap the
    metadata preview collapses into a single run-on line. dir is set
-   per-instance in the TSX (audit 0-e P1-27). */
+   per-instance in the TSX (audit 0-e P1-27).
+*/
 
 /* (r299 dead-selector sweep: the .owner-activity-footer family
    died — the audit log's footer rides the canonical .table-pagination
    grammar now (windowed page numbers, aria-current), killing the
    prev/next-only linear clicking through a 50-row log; zero
-   consumers remain, rg-verified.) */
+   consumers remain, rg-verified.)
+*/
 
 /* (r151d: the owner-live-tools mobile floor block deleted — the
    stale comment described polish pinning .btn at 40px / .btn.sm at
    32px; the wave 9-b consolidation retired that pin and made
    polish's ≤640 block the ONE owner of the floor. The
-   ErrorState/EmptyState retry buttons ride it like every .btn.) */
+   ErrorState/EmptyState retry buttons ride it like every .btn.)
+*/
 
 /* Shape-matched skeleton for the activity timeline — the 32px icon
-   well, the title/meta lines and the trailing time stamp. */
+   well, the title/meta lines and the trailing time stamp.
+*/
 .owner-timeline-skel {
   display: flex;
   align-items: flex-start;
@@ -719,11 +811,13 @@
   gap: var(--sp-2);
 }
 
-/* ── wave 6-a reduced-motion off-switches (guardrail #6) ───── */
+/* ── wave 6-a reduced-motion off-switches (guardrail #6) ─────
+*/
 /* (r153e: .owner-live-pulse::after, .owner-health-dot.green(+::after)
    and .owner-live-status.has-alerts joined the list — the v17 family
    now lives in this sheet, so the local switch mirrors the polish
-   overrides-layer belt's owner coverage for self-containment.) */
+   overrides-layer belt's owner coverage for self-containment.)
+*/
 @media (prefers-reduced-motion: reduce) {
   .owner-live-pulse,
   .owner-live-pulse::after,
@@ -740,13 +834,14 @@
 }
 }
 
-/* ═════════════════════════════════════════════════════════════
+/* ═══
    wave 6-b — owner management pages
    (audit 0-e: OwnerUsersPage P1-24/P1-25 + craft sweep across
    Governance / Education / Content / AI). Append-only section:
    every rule below is NEW — nothing above is touched. The core
    owner pages belong to the wave 6-a section above.
-   ═════════════════════════════════════════════════════════════ */
+   ═══
+*/
 @layer pages {
 
 /* ── Numeric cell utility (audit 0-e P2-118, .table side) ────
@@ -754,13 +849,15 @@
    repetition on the pages that migrated to the .table system: mono
    stack + tabular numerals so columns stay optically aligned. Status
    variants read through the -ink tokens (WCAG-pinned, guardrail #3).
-   (The legacy .owner-table family's td.num lives in wave 6-a above.) */
+   (The legacy .owner-table family's td.num lives in wave 6-a above.)
+*/
 
 .owner-num-success { color: var(--success-ink); }
 
 .owner-num-warning { color: var(--warning-ink); }
 
-/* muted secondary cell (e.g. the faculty column of top-courses) */
+/* muted secondary cell (e.g. the faculty column of top-courses)
+*/
 .owner-cell-muted {
   color: var(--text-muted);
   font-size: var(--fs-xs);
@@ -774,45 +871,56 @@
    r130-W2-7 renamed this rule's keyframes from `owner-row-in` — it
    collided with the activity-feed keyframes (same-name keyframes do
    NOT merge across @layer pages) and was silently overriding the
-   timeline's authored entrance document-wide. */
+   timeline's authored entrance document-wide.
+*/
 
-/* joined-date cell: "joined this week" dot + date on one line */
+/* joined-date cell: "joined this week" dot + date on one line
+*/
 
 /* r299: the recent-join marker — a quiet STATIC dot. The old marker
    reused .owner-health-dot green, whose heartbeat pulses forever and
    whose grammar means "system health"; a join date never carried
-   that status. */
+   that status.
+*/
 
 /* r299: the memberships chips row (was a utility class + inline-style
    pair that fought each other — .flex said display:flex, the inline
-   style said inline-flex). One class owns the anatomy now. */
+   style said inline-flex). One class owns the anatomy now.
+*/
 
 /* ellipsis run between windowed page numbers (bounded pagination,
    audit 0-e P1-25); sized to sit on the .table-pagination-actions
-   button rhythm (36px desktop / 44px phones). */
+   button rhythm (36px desktop / 44px phones).
+*/
 
 /* search icon tint (de-inlined from the TSX)
    (r299 dead-selector sweep: .owner-search-bar > svg died with the
-   family — zero TSX consumers, rg-verified.) */
+   family — zero TSX consumers, rg-verified.)
+*/
 
 /* the inline action-error alert sits above the table — give it the
-   card's rhythm (the .alert primitive itself is margin-free) */
+   card's rhythm (the .alert primitive itself is margin-free)
+*/
 
-/* ── Institutions console (r178 multi-institution) ──────────── */
+/* ── Institutions console (r178 multi-institution) ────────────
+*/
 /* The r178 owner institutions page (OwnerInstitutionsPage) reuses the
    console's canonical .table/.tbl-stack/.table-row-actions grammar;
    this section only owns the institution cell's stacked name block,
    the metric cells, and the admins list — every value a token, every
-   edge logical (RTL-first). */
+   edge logical (RTL-first).
+*/
 .owner-inst-create-form {
   display: grid;
   gap: var(--sp-4);
-  max-inline-size: 30rem; /* the canonical 480px form measure */
+  max-inline-size: 30rem; /* the canonical 480px form measure
+*/
 }
 
 /* institution identity cell: Arabic name over the Latin nameEn/slug
    run (the sub rows keep dir="ltr" in the TSX; bdi-style embedding
-   handled at markup level). */
+   handled at markup level).
+*/
 .owner-inst-cell {
   display: flex;
   flex-direction: column;
@@ -829,25 +937,30 @@
 .owner-inst-sub {
   font-size: var(--fs-xxs);
   color: var(--text-muted);
-  overflow-wrap: anywhere; /* slugs/emails never stretch the column */
+  overflow-wrap: anywhere; /* slugs/emails never stretch the column
+*/
 }
 
-/* count + date cells: icon + tabular figure on one quiet line */
+/* count + date cells: icon + tabular figure on one quiet line
+*/
 .owner-inst-metric {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
   color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
 /* (r299 dead-selector sweep: .owner-inst-metric svg died with the
    per-cell metric icons — the column headers already name the
-   metrics; zero consumers remain, rg-verified.) */
+   metrics; zero consumers remain, rg-verified.)
+*/
 
 /* admins cell: a compact stack of name + LTR email + the row action.
    The action button rides the same .table-row-actions reveal family
-   the users table uses (components.css). */
+   the users table uses (components.css).
+*/
 .owner-inst-admins {
   list-style: none;
   margin: 0;
@@ -861,7 +974,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
 }
 
 .owner-inst-admin-name {
@@ -876,64 +990,76 @@
   overflow-wrap: anywhere;
 }
 
-/* ── Meters (Education workload + AI token share) ──────────── */
+/* ── Meters (Education workload + AI token share) ────────────
+*/
 
 /* The fill grows out of its inline-start edge on load: the keyframe's
    implicit `to` composes with the ProgressBar's inline scaleX (23-b:
    the value rides transform, so later value changes keep the
    .progress-fill transform transition) and the transform-origin tracks
-   the reading direction. Staggered via --meter-i, capped 8. */
+   the reading direction. Staggered via --meter-i, capped 8.
+*/
 
 @keyframes owner-meter-in {
   from { transform: scaleX(0); }
 }
 
-/* in-table token-share meter (AI page) — the same grow language */
+/* in-table token-share meter (AI page) — the same grow language
+*/
 
-/* ── Content page: de-inlined identity card ────────────────── */
+/* ── Content page: de-inlined identity card ──────────────────
+*/
 
 /* Brand chip — the raw hex on it is displayed DATA (see the TSX
    docblock); the hairline keeps the pale chip (#a3c9ff) readable on
-   cream. The one-shot settle is the page's authored moment. */
+   cream. The one-shot settle is the page's authored moment.
+*/
 
 @keyframes owner-swatch-in {
   from { transform: scale(0.6); opacity: 0; }
 }
 
 /* stacked cards below the grid-2 (the grid children already ride the
-   global mount stagger in polish.css) */
+   global mount stagger in polish.css)
+*/
 
 @keyframes owner-card-rise {
   from { opacity: 0; transform: translateY(8px); }
 }
 
-/* ── Touch floors + narrow viewports (craft floor: ≥44px) ──── */
+/* ── Touch floors + narrow viewports (craft floor: ≥44px) ────
+*/
 /* (r151d: the four .btn/.btn.sm bang pins retired — polish's ≤640
    overrides block owns those floors. The .pill / spacer / swatch
    lines below are non-.btn elements polish never touches — they
-   stay.) */
+   stay.)
+*/
 
-/* ── wave 6-b reduced-motion off-switches (guardrail #6) ───── */
+/* ── wave 6-b reduced-motion off-switches (guardrail #6) ─────
+*/
 /* The global belts zero the duration tokens, but these entrances carry
    animation-delay ladders — kill the whole animation so no element
    waits invisible through a delay that no longer resolves.
    (r299: the .owner-users-table tbody tr entry died with the rule —
-   zero consumers, rg-verified.) */
+   zero consumers, rg-verified.)
+*/
 }
 
-/* ═════════════════════════════════════════════════════════════
+/* ═══
    wave 22-b — owner console fixes (audit 4-A7: P1-2 expander
    button chrome + P1-5 stack-table paddings, P2-5 skeletons,
    P3-7 de-inlined system-page spacing, P3-9 realtime tile
    squeeze). Value tweaks on pre-existing rules (spine tint, amber
    dot mix, health-value mono split) were edited in place above.
-   ═════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
-/* ═════════════════════════════════════════════════════════════
+/* ═══
    wave r190-D4 — «مدار المعرفة» mission-control telemetry
    (append-only; later source order inside @layer pages wins over
    the wave 6-a declarations this section refines)
-   ═════════════════════════════════════════════════════════════ */
+   ═══
+*/
 @layer pages {
 
 /* ── 1 · The live pulse — the honest status dot ─────────────────
@@ -941,14 +1067,16 @@
    pulse dot keeps its honest status color (green healthy / amber
    alerts / red degraded) and the dot gains NO aura. The frozen
    states (pending/degraded) keep the status-colored frozen ring
-   below — a neutral or danger dot must never fake life. */
+   below — a neutral or danger dot must never fake life.
+*/
 .owner-live-pulse::after {
   background: var(--accent);
 }
 
 /* r153e's freeze contract, extended to the ring's new color: the
    frozen pending/degraded rings read as the dot's own status tone
-   (inherit), never as a violet orbit claiming life. */
+   (inherit), never as a violet orbit claiming life.
+*/
 .owner-live-status.is-degraded .owner-live-pulse::after,
 .owner-live-status.is-pending .owner-live-pulse::after {
   background: inherit;
@@ -961,29 +1089,33 @@
    the tick stops being a green circle and becomes the violet
    square, still breathing on the skeleton cadence. It is a LIVE
    marker, not a status — the traffic-light semantics stay on the
-   .owner-health-dot family. */
+   .owner-health-dot family.
+*/
 .owner-live-tick {
-  border-radius: 0;   /* raw-css: permitted zero */
+  border-radius: 0;   /* raw-css: permitted zero
+*/
   background: var(--accent);
 }
 
 /* ── 3 · The status band — flat paper on the hairline ──────────
    R313 (WP-F · D16): the dark glass gradient retired — the band is
    a flat --surface slab on the --surface-border hairline in both
-   themes (no gradient paint, no glass step). */
+   themes (no gradient paint, no glass step).
+*/
 [data-theme="dark"] .owner-live-status {
   background: var(--surface);
   border-color: var(--surface-border);
 }
 
 /* the warning wash rides OVER the glass step (wave 6-a's own mix,
-   rebased on --surface so the luminosity language survives) */
+   rebased on --surface so the luminosity language survives)
+*/
 [data-theme="dark"] .owner-live-status.has-alerts {
   background: color-mix(in srgb, var(--warning) 6%, var(--surface));
 }
 }
 
-/* ═════════════════════════════════════════════════════════════
+/* ═══
    R304 (workstream 4D — administration & owner workspaces)
    The owner console joins the admin sheet's workspace grammar:
    the dense institution tables ride the ws-table family (defined
@@ -992,7 +1124,8 @@
    page-scoped additions below close what owner-owned anatomy
    remains: the always-visible create band and the detail header's
    scope facts. Everything token-only, logical, hover-guarded.
-   ═════════════════════════════════════════════════════════════ */
+   ═══
+*/
 @layer pages {
 
 /* ── The create-institution band (OwnerInstitutionsPage) ─────────
@@ -1000,7 +1133,8 @@
    page (the keep-edits contract renders it always-visible). The R304
    treatment quiets the card into a BAND: the fields run as one
    responsive grid with the submit riding the end edge, so the roster
-   — the page's real subject — starts higher up. */
+   — the page's real subject — starts higher up.
+*/
 .owner-inst-create-form {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -1013,7 +1147,8 @@
     align-items: start;
   }
   /* The submit rides the row grid's last cell, aligned to the fields'
-     baseline; on phones it stacks under them full-width. */
+   baseline; on phones it stacks under them full-width.
+*/
   .owner-inst-create-form .owner-inst-create-submit {
     grid-column: auto;
     justify-self: end;
@@ -1027,7 +1162,8 @@
 /* ── The detail header's scope facts (OwnerInstitutionDetailPage) ──
    Status and members read as one quiet meta line under the patterns
    PageHeader's description (the header slot is free-form ReactNode;
-   the plate keeps badge + count on one 24px-high row). */
+   the plate keeps badge + count on one 24px-high row).
+*/
 .owner-detail-scope {
   display: inline-flex;
   align-items: center;
@@ -1040,7 +1176,8 @@
 
 /* ── Institutions console: the admins cell on phones ──────────────
    Inside the ws-table row summary the admins stack keeps its list
-   anatomy; the row action stays a 44px target beside the name. */
+   anatomy; the row action stays a 44px target beside the name.
+*/
 @media (max-width: 640px) {
   .owner-inst-admins li { padding-block: var(--sp-1); }
 }

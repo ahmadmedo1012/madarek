@@ -1,4 +1,4 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — Base layer (r305 — the Heron blueprint foundation)
    Reset · document · shell · browser surfaces · RTL · typography
 
@@ -8,7 +8,8 @@
    cubic-bezier(.23,1,.32,1) register) flows through var() with zero
    structural change here. Evidence + decisions:
    docs/redesign/r305-heron-reference-spec.md
-   ════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer base {
 
@@ -22,20 +23,23 @@
     text-rendering: optimizeLegibility;
     font-feature-settings: "kern", "liga", "calt";
     /* r149 (R3-A4 F1.1): حُذفت "ss01" و"tnum" — غير موجودتين في
-       ملفات woff2 المشحونة (فحص fontTools: لا ss02/tnum/lnum في أي وجه؛
-       الأرقام ثابتة العرض بتصميم 600/1000 UPM). kern/liga/calt
-       افتراضية التشغيل لكن يبقى إعلانها توثيقًا للنية. */
+    ملفات woff2 المشحونة (فحص fontTools: لا ss02/tnum/lnum في أي وجه؛
+    الأرقام ثابتة العرض بتصميم 600/1000 UPM). kern/liga/calt
+    افتراضية التشغيل لكن يبقى إعلانها توثيقًا للنية.
+*/
     /* wave 2-a — kill the grey tap flash on every touch target (button
-       already had it; the document-level rule covers links, cards and
-       all the click-handled non-button chrome). */
+    already had it; the document-level rule covers links, cards and
+    all the click-handled non-button chrome).
+*/
     -webkit-tap-highlight-color: transparent;
     background: var(--bg);
     color: var(--text);
     color-scheme: light;
     /* R313 (4-b · D6): scroll-behavior:smooth RETIRED — the guest scroll
-       is Lenis-driven now (lib/motion/sheetLenis.ts); CSS smooth on html
-       would fight the engine's programmatic resets (ScrollResetOnPush)
-       and double-smooth anchor jumps. The RM `auto` belt below stays. */
+    is Lenis-driven now (lib/motion/sheetLenis.ts); CSS smooth on html
+    would fight the engine's programmatic resets (ScrollResetOnPush)
+    and double-smooth anchor jumps. The RM `auto` belt below stays.
+*/
   }
   html[data-theme="dark"] { color-scheme: dark; }
 
@@ -51,25 +55,32 @@
                 color var(--t-base) var(--ease);
   }
 
-  /* ─── headings — bold sans, very tight tracking on big sizes ─── */
+  /* ─── headings — bold sans, very tight tracking on big sizes ───
+*/
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: var(--fw-semibold); /* r325 Y4 — the reset seats EVERY heading (h4–h6 included) at 600: the §R324 weight law (was --fw-black/700) */
+    font-weight: var(--fw-semibold); /* r325 Y4 — the reset seats EVERY heading (h4–h6 included) at 600: the §R324 weight law (was --fw-black/700)
+*/
     color: var(--text);
     line-height: var(--lh-snug);
     /* r148 (AUDIT-3 M8): التتبّع السالب يفسد اتصال الحروف العربية
-        («العناوين» كلها عربية هنا) — تصفير كما في unified-parity.css:260.
-        يبقى لأي لاتيني مستقبلي عبر أدوار type-role اللاتينية. */
+    («العناوين» كلها عربية هنا) — تصفير كما في unified-parity.css:260.
+    يبقى لأي لاتيني مستقبلي عبر أدوار type-role اللاتينية.
+*/
     letter-spacing: 0;
     text-wrap: balance;
   }
-  h1 { font-size: var(--fs-d1); font-weight: var(--fw-semibold); line-height: var(--type-display-line-height); } /* r325 Y4 — the clamped d1 rung at 600 (the unclamped --fs-h1 alias grew to 55.6px @390; browser-bold 700 is off the §R324 weight law) */
-  h2 { font-size: var(--fs-d2); font-weight: var(--fw-semibold); line-height: var(--lh-snug); } /* r157: 1.2 = --lh-snug بالضبط · r325 Y4 — d2 at 600 (the alias grew to 47.6px @390) */
+  h1 { font-size: var(--fs-d1); font-weight: var(--fw-semibold); line-height: var(--type-display-line-height); } /* r325 Y4 — the clamped d1 rung at 600 (the unclamped --fs-h1 alias grew to 55.6px @390; browser-bold 700 is off the §R324 weight law)
+*/
+  h2 { font-size: var(--fs-d2); font-weight: var(--fw-semibold); line-height: var(--lh-snug); } /* r157: 1.2 = --lh-snug بالضبط · r325 Y4 — d2 at 600 (the alias grew to 47.6px @390)
+*/
   /* ارتفاع سطر h3 يبقى 1.3 خامًا عمدًا: لا درجة مطابقة في سلّم ‎--lh-* —
-     أقربها ‎--lh-snug (1.20) تزحّم نزولات الحروف العربية (ج/ي/ك) في
-     العناوين الفرعية متعددة الأسطر؛ القيمة مضبوطة قياسًا على أسطر h3
-     الفعلية ولا تُستبدل برمز أقرب يقيس غيرها. */
-  h3 { font-size: var(--fs-h3); font-weight: var(--fw-semibold); line-height: 1.3; } /* r325 Y4 — 600 (the weight law); the size stays on the statement rung (within 1.3× of d1@390) */
+   أقربها ‎--lh-snug (1.20) تزحّم نزولات الحروف العربية (ج/ي/ك) في
+   العناوين الفرعية متعددة الأسطر؛ القيمة مضبوطة قياسًا على أسطر h3
+   الفعلية ولا تُستبدل برمز أقرب يقيس غيرها.
+*/
+  h3 { font-size: var(--fs-h3); font-weight: var(--fw-semibold); line-height: 1.3; } /* r325 Y4 — 600 (the weight law); the size stays on the statement rung (within 1.3× of d1@390)
+*/
 
   p { line-height: var(--lh-base); color: var(--text-secondary); text-wrap: pretty; }
 
@@ -77,21 +88,23 @@
     color: inherit;
     text-decoration: none;
     /* wave 2-a — Arabic-appropriate underline metrics for every context
-       that re-enables underlines (print, helper links): 0.18em clears
-       the descenders of ج/ع/ي without detaching the stroke; 1px keeps
-       the hairline language. Inert while links are undecorated.
-       (r149 R3-A5 #9 — documented decision: text-decoration-skip-ink
-       stays at the browser default (auto) on purpose — skip-ink would
-       punch gaps through the Arabic descenders this offset was tuned
-       to clear. Do NOT "fix" this by adding skip-ink: none either;
-       auto + 0.18em offset is the calibrated pair.) */
+    that re-enables underlines (print, helper links): 0.18em clears
+    the descenders of ج/ع/ي without detaching the stroke; 1px keeps
+    the hairline language. Inert while links are undecorated.
+    (r149 R3-A5 #9 — documented decision: text-decoration-skip-ink
+    stays at the browser default (auto) on purpose — skip-ink would
+    punch gaps through the Arabic descenders this offset was tuned
+    to clear. Do NOT "fix" this by adding skip-ink: none either;
+    auto + 0.18em offset is the calibrated pair.)
+*/
     text-underline-offset: 0.18em;
     text-decoration-thickness: 1px;
     transition: color var(--t-fast) var(--ease);
   }
   /* T3-F4 — link hover uses the text-safe accent ink: light --accent
-     #B57438 is 3.65:1 on --bg (fails AA for body-size link text), while
-     --accent-ink clears 10.29:1 light / 7.87:1 dark. */
+   #B57438 is 3.65:1 on --bg (fails AA for body-size link text), while
+   --accent-ink clears 10.29:1 light / 7.87:1 dark.
+*/
   @media (hover: hover) and (pointer: fine) {
     a:hover { color: var(--accent-ink, var(--accent)); }
   }
@@ -107,12 +120,13 @@
   button:disabled { cursor: not-allowed; opacity: var(--state-btn-disabled-opacity); }
 
   /* R329 (gate:clean): `color` is split off the shared reset — the
-     text-like controls (textarea/select + the typed inputs) carry
-     `color: var(--text)` in components.css's Heron input recipe
-     (components layer beats base), while BARE inputs keep the
-     inherit here so check/radio/file controls never fall to the UA
-     default. One color seat per selector segment, no cross-file
-     pair. */
+   text-like controls (textarea/select + the typed inputs) carry
+   `color: var(--text)` in components.css's Heron input recipe
+   (components layer beats base), while BARE inputs keep the
+   inherit here so check/radio/file controls never fall to the UA
+   default. One color seat per selector segment, no cross-file
+   pair.
+*/
   input, textarea, select { font: inherit; }
   input { color: inherit; }
   ul, ol { list-style: none; }
@@ -121,119 +135,137 @@
   hr { border: 0; border-top: 1px solid var(--rule); margin-block: var(--sp-6); }
 
   /* (wave 2-a) ::selection deleted — polish v22 owns the single live
-     definition (overrides layer: accent 28% mix + --text); this token
-     recipe was dead weight it beat (0-a P1-1). */
+   definition (overrides layer: accent 28% mix + --text); this token
+   recipe was dead weight it beat (0-a P1-1).
+*/
 
   /* wave 2-a — neutered from bare `:focus { outline: none }`. The old
-     rule tied motion.css's :where():focus-visible ring on specificity
-     and won on import order (base.css loads after motion.css), which
-     silently killed the universal base-layer ring — a latent gap that
-     polish v22's overrides-layer ring masked. Scoping the suppression
-     to non-focus-visible focus keeps the "no outline on mouse/touch
-     focus" behavior while letting :focus-visible rings through from
-     every layer. The visible ring itself stays owned by polish v22
-     (ruling #13) — nothing new is added here. */
+   rule tied motion.css's :where():focus-visible ring on specificity
+   and won on import order (base.css loads after motion.css), which
+   silently killed the universal base-layer ring — a latent gap that
+   polish v22's overrides-layer ring masked. Scoping the suppression
+   to non-focus-visible focus keeps the "no outline on mouse/touch
+   focus" behavior while letting :focus-visible rings through from
+   every layer. The visible ring itself stays owned by polish v22
+   (ruling #13) — nothing new is added here.
+*/
   :focus:not(:focus-visible) { outline: none; }
 
   /* (wave 2-a) global scrollbar block deleted — polish v22 owns the
-     single live definition (and finally consumes the
-     --scrollbar-thumb/-hover tokens); this identical copy was dead
-     under the overrides layer (0-a P1-2). */
+   single live definition (and finally consumes the
+   --scrollbar-thumb/-hover tokens); this identical copy was dead
+   under the overrides layer (0-a P1-2).
+*/
 
   /* ═══ R313 (4-b · D6) — the guest Lenis engine chrome ══════════
-     While the smooth engine is live on a public/window-scrolled route,
-     lib/motion/sheetLenis.ts sets html[data-lenis-on] and the native
-     scrollbar disappears — Heron shows none (its content lives in an
-     overflow:hidden wrapper; on our window-Lenis the equivalent is
-     this rule). Scoped to the engine's LIFETIME: authenticated routes
-     destroy the engine, the attribute drops, and the app shell keeps
-     its scrollbar (usability).
-     !important is deliberate: polish v22's overrides-layer `*` scrollbar
-     block would otherwise win the cascade against any base-layer rule
-     (layers beat specificity — importance is the one lever left). */
+   While the smooth engine is live on a public/window-scrolled route,
+   lib/motion/sheetLenis.ts sets html[data-lenis-on] and the native
+   scrollbar disappears — Heron shows none (its content lives in an
+   overflow:hidden wrapper; on our window-Lenis the equivalent is
+   this rule). Scoped to the engine's LIFETIME: authenticated routes
+   destroy the engine, the attribute drops, and the app shell keeps
+   its scrollbar (usability).
+   !important is deliberate: polish v22's overrides-layer `*` scrollbar
+   block would otherwise win the cascade against any base-layer rule
+   (layers beat specificity — importance is the one lever left).
+*/
   html[data-lenis-on] { scrollbar-width: none !important; }
   html[data-lenis-on]::-webkit-scrollbar { display: none !important; }
 
-  /* ─── browser surfaces (wave 2-a) ───────────────────────────── */
-  /* ─── a11y utilities — home since r152f (was polish v20) ──────── */
+  /* ─── browser surfaces (wave 2-a) ─────────────────────────────
+*/
+  /* ─── a11y utilities — home since r152f (was polish v20) ────────
+*/
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SR-ONLY — visually hide content, keep it for screen readers   ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SR-ONLY — visually hide content, keep it for screen readers
+   ╚╚╚
+*/
   .sr-only {
     position: absolute;
     inline-size: 1px;
     block-size: 1px;
     padding: 0;
-    margin: -1px; /* spacing-gate: allow — sr-only clip recipe (a11y idiom, not a scale rung) */
+    margin: -1px; /* spacing-gate: allow — sr-only clip recipe (a11y idiom, not a scale rung)
+*/
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SKIP-TO-CONTENT LINK                                          ║
-     ║  Forward-compatible: any <a class="skip-link" href="#main">    ║
-     ║  becomes a visible button when focused.                        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SKIP-TO-CONTENT LINK
+   Forward-compatible: any <a class="skip-link" href="#main">
+   becomes a visible button when focused.
+   ╚╚╚
+*/
   .skip-link {
     position: fixed;
     inset-block-start: 8px;
     /* r143 (T1-f F1): PHYSICAL left, not inset-inline-start — under
-       dir="rtl" the logical property resolves to right:50% and the
-       physical translateX(-50%) then parks the pill a full width left
-       of center (clipped off-screen ≤~600px). Same coupling as the
-       .ln-hero-scroll pattern in landing.css. */
+    dir="rtl" the logical property resolves to right:50% and the
+    physical translateX(-50%) then parks the pill a full width left
+    of center (clipped off-screen ≤~600px). Same coupling as the
+    .ln-hero-scroll pattern in landing.css.
+*/
     left: 50%;
     transform: translateX(-50%) translateY(-150%);
     background: var(--accent);
     /* R342-11: the tokens' documented coral-fill label pair —
-       --warm-ink measures 4.69:1 on the light coral fill and 5.64:1
-       on its dark variant (tokens.css itself: "labels on the
-       orange/coral fills … AA"). The old --accent-fg fallback (white,
-       3.76:1) is the reference's AA-large label seat — a focus pill's
-       compact text can't claim the large-text exception, and the
-       shared darkInk census counts this link on every page. */
+    --warm-ink measures 4.69:1 on the light coral fill and 5.64:1
+    on its dark variant (tokens.css itself: "labels on the
+    orange/coral fills … AA"). The old --accent-fg fallback (white,
+    3.76:1) is the reference's AA-large label seat — a focus pill's
+    compact text can't claim the large-text exception, and the
+    shared darkInk census counts this link on every page.
+*/
     color: var(--warm-ink);
-    padding: var(--sp-2-5) 18px; /* spacing-gate: allow — floating CTA pill compact grade 10/18 (vertical is sp-2-5) */
+    padding: var(--sp-2-5) 18px; /* spacing-gate: allow — floating CTA pill compact grade 10/18 (vertical is sp-2-5)
+*/
     border-radius: var(--r-md);
     text-decoration: none;
     font-weight: var(--fw-semibold);
     /* T3-F4 — was var(--elev-3)/var(--ease-spring-soft) (the polish
-       private token island); canonical 012 tokens: --elev-3 + --ease-spring. */
+    private token island); canonical 012 tokens: --elev-3 + --ease-spring.
+*/
     box-shadow: var(--elev-3);
     z-index: var(--z-toast);
     transition: transform var(--motion-duration-medium) var(--ease-spring);
   }
   /* The universal :focus-visible ring (motion.css) supplies the outline;
-     the transform swap makes the pill appear in the safe top margin. */
+   the transform swap makes the pill appear in the safe top margin.
+*/
   .skip-link:focus,
   .skip-link:focus-visible {
     transform: translateX(-50%) translateY(0);
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  ANCHOR SCROLL MARGIN                                          ║
-     ║  When jumping to #features etc., leave room for the sticky     ║
-     ║  topbar so the heading isn't hidden underneath it.             ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   ANCHOR SCROLL MARGIN
+   When jumping to #features etc., leave room for the sticky
+   topbar so the heading isn't hidden underneath it.
+   ╚╚╚
+*/
   :target {
-    scroll-margin-block-start: calc(var(--topbar-h) + var(--sp-4)); /* r299: consumes --topbar-h (var, tokens.css) — the raw 64px predated the r158 re-measure and kept the anchor 4px lower than the bar it clears */
+    scroll-margin-block-start: calc(var(--topbar-h) + var(--sp-4)); /* r299: consumes --topbar-h (var, tokens.css) — the raw 64px predated the r158 re-measure and kept the anchor 4px lower than the bar it clears
+*/
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TAP HIGHLIGHT — disable the default mobile tap halo           ║
-     ║  Our own focus rings already handle the feedback.              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   TAP HIGHLIGHT — disable the default mobile tap halo
+   Our own focus rings already handle the feedback.
+   ╚╚╚
+*/
   a, button, [role="button"], .nav-item, .bottom-nav-item, .pill, .tab {
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  IMAGE LAZY-LOAD FADE                                          ║
-     ║  Native lazy-loaded images fade in once decoded.               ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   IMAGE LAZY-LOAD FADE
+   Native lazy-loaded images fade in once decoded.
+   ╚╚╚
+*/
   img[loading="lazy"] {
     animation: madarek-img-in var(--motion-duration-long) var(--ease-out) both;
   }
@@ -243,8 +275,9 @@
   }
 
   /* Audit 0-a P2-1/2/3: caret / autofill / underline-offset were
-     completely absent. All themed from the palette so native chrome
-     stops flashing white/blue on themed inputs. */
+   completely absent. All themed from the palette so native chrome
+   stops flashing white/blue on themed inputs.
+*/
   input,
   textarea,
   [contenteditable]:not([contenteditable="false"]) {
@@ -252,10 +285,11 @@
   }
 
   /* Chromium/Safari autofill: the UA repaints its pale-yellow/blue
-     fill on hover+focus, so all three states are covered. The inset
-     box-shadow is the only reliable cover (the UA paints
-     background-color under it); -webkit-text-fill-color pins the typed
-     text to the theme ink. */
+   fill on hover+focus, so all three states are covered. The inset
+   box-shadow is the only reliable cover (the UA paints
+   background-color under it); -webkit-text-fill-color pins the typed
+   text to the theme ink.
+*/
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
@@ -268,7 +302,8 @@
     transition: background-color 9999s ease-out;
   }
   /* Firefox equivalent (its UA lock on :autofill backgrounds lifted
-     long ago — a plain background-color override sticks). */
+   long ago — a plain background-color override sticks).
+*/
   input:autofill,
   textarea:autofill {
     background-color: var(--surface);
@@ -277,30 +312,34 @@
   }
 
   /* Placeholder — components.css sets the same color token on
-     input/textarea; declaring it here keeps the reset self-sufficient,
-     and opacity: 1 undoes Firefox's default ::placeholder 0.54 fade
-     (no double-fainting on top of --text-faint). */
+   input/textarea; declaring it here keeps the reset self-sufficient,
+   and opacity: 1 undoes Firefox's default ::placeholder 0.54 fade
+   (no double-fainting on top of --text-faint).
+*/
   ::placeholder { color: var(--text-faint); opacity: 1; }
 
-  /* ═══════════════════════════════════════════════════════════════════
-     APP SHELL — sidebar / main / content / bottom-nav
-     ═══════════════════════════════════════════════════════════════════ */
+  /* ═══
+   APP SHELL — sidebar / main / content / bottom-nav
+     ═══
+*/
   .has-shell {
     display: grid;
     grid-template-columns: var(--sidebar-w) 1fr;
     min-height: 100dvh;
     /* R329 (gate:clean): the rail resize transition is polish.css's
-       overrides seat (reveal + spring-soft) — this base-layer copy
-       was inert. */
+    overrides seat (reveal + spring-soft) — this base-layer copy
+    was inert.
+*/
   }
 
   /* Collapsed desktop state — narrow icon rail. The state is a global
-     attribute on <html> set by the Sidebar component so .has-shell + the
-     sidebar itself stay in sync without prop-drilling.
-     IMPORTANT: scoped to desktop. On mobile (≤920px) the sidebar is a
-     fixed-position drawer outside grid flow — the grid track must stay
-     1fr regardless of the collapsed state, otherwise content is shifted
-     by the rail width on phones. */
+   attribute on <html> set by the Sidebar component so .has-shell + the
+   sidebar itself stay in sync without prop-drilling.
+   IMPORTANT: scoped to desktop. On mobile (≤920px) the sidebar is a
+   fixed-position drawer outside grid flow — the grid track must stay
+   1fr regardless of the collapsed state, otherwise content is shifted
+   by the rail width on phones.
+*/
   @media (min-width: 921px) {
     html[data-sidebar-collapsed] .has-shell {
       grid-template-columns: var(--sidebar-w-collapsed) 1fr;
@@ -315,7 +354,8 @@
     background: var(--sidebar-bg);
     border-inline-end: 1px solid var(--sidebar-rule);
     /* 012 z-language: sticky app chrome sits at the dropdown rung
-     (above page content, below every portaled overlay). */
+   (above page content, below every portaled overlay).
+*/
     z-index: var(--z-dropdown);
     display: flex;
     flex-direction: column;
@@ -334,20 +374,22 @@
     inset-block-start: 0;
     z-index: var(--z-dropdown);
     /* r366 (2-g): the band GROWS with its text. A fixed 56px box with
-     * rem-scaled type spilled the title over the page's first row at
-     * the 200% text-scale pass (measured: title ballooned to 123px —
-     * two wrapped lines at 51px — painting 33px over the eyebrow).
-     * The §R325 56px chrome height stays as the FLOOR; content flow
-     * follows the grown band (sticky, in flow), so nothing slides
-     * under it. */
+   * rem-scaled type spilled the title over the page's first row at
+   * the 200% text-scale pass (measured: title ballooned to 123px —
+   * two wrapped lines at 51px — painting 33px over the eyebrow).
+   * The §R325 56px chrome height stays as the FLOOR; content flow
+   * follows the grown band (sticky, in flow), so nothing slides
+   * under it.
+*/
     min-block-size: var(--topbar-h);
     block-size: auto;
     backdrop-filter: blur(var(--glass-blur)) saturate(140%);
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
     /* R329 (gate:clean): background + border-block-end + transition
-       are polish.css's overrides seats (surface + rule hairline + the
-       box-shadow/border-color transition) — these base-layer copies
-       were inert. */
+    are polish.css's overrides seats (surface + rule hairline + the
+    box-shadow/border-color transition) — these base-layer copies
+    were inert.
+*/
   }
   .topbar.scrolled { border-block-end-color: var(--topbar-border); }
 
@@ -363,31 +405,34 @@
     padding: var(--page-gutter);
     padding-block-end: calc(var(--page-gutter) + var(--sp-9));
     /* r168a: the r152i grid4 container query was DEAD for every
-       top-level .grid-4 strip — .grid-4 declared `container: grid4`
-       on ITSELF, but a container is only ever queried by its
-       descendants, so the band could never match the strips it was
-       written for (mobile KPI grids stayed 4×70px with clipped
-       labels). This rule makes the CONTENT COLUMN the real query
-       container: every strip inside it (app shell + public main)
-       now flips on the column's actual width — sidebar in/out,
-       phones, narrow windows. All fixed-position overlays portal
-       outside this subtree, so the implied layout containment has
-       no in-content victims. */
+    top-level .grid-4 strip — .grid-4 declared `container: grid4`
+    on ITSELF, but a container is only ever queried by its
+    descendants, so the band could never match the strips it was
+    written for (mobile KPI grids stayed 4×70px with clipped
+    labels). This rule makes the CONTENT COLUMN the real query
+    container: every strip inside it (app shell + public main)
+    now flips on the column's actual width — sidebar in/out,
+    phones, narrow windows. All fixed-position overlays portal
+    outside this subtree, so the implied layout containment has
+    no in-content victims.
+*/
     container: grid4 / inline-size;
     /* r161 (A3): the route entrance animation was deleted here — it
-       was DEAD at the cascade level. polish.css's @layer overrides
-       block owns the ONE route entrance (since r162/R3 it targets
-       `.content-inner > *` — every content mount: route changes AND
-       first-visit Suspense resolves — with page-enter +
-       its prefers-reduced-motion kill); @layer base can never win
-       against overrides, so this duplicate `madarek-page-enter`
-       declaration (240ms + its own keyframes) never painted while
-       doubling the transition surface area for future edits. The
-       layout properties stay; the motion contract lives in exactly
-       one file. */
+    was DEAD at the cascade level. polish.css's @layer overrides
+    block owns the ONE route entrance (since r162/R3 it targets
+    `.content-inner > *` — every content mount: route changes AND
+    first-visit Suspense resolves — with page-enter +
+    its prefers-reduced-motion kill); @layer base can never win
+    against overrides, so this duplicate `madarek-page-enter`
+    declaration (240ms + its own keyframes) never painted while
+    doubling the transition surface area for future edits. The
+    layout properties stay; the motion contract lives in exactly
+    one file.
+*/
   }
 
-  /* mobile shell */
+  /* mobile shell
+*/
   @media (max-width: 920px) {
     .has-shell { grid-template-columns: 1fr; }
     .has-shell > .sidebar { display: none; }
@@ -397,18 +442,20 @@
       padding-block-end: calc(var(--sp-13) + env(safe-area-inset-bottom));
     }
     /* R325 P2.3: was a raw 60px — the phone band re-joins the token so
-       the §R325 56px chrome height holds at every band (--topbar-h now
-       aliases --app-topbar-h, tokens.css). */
+    the §R325 56px chrome height holds at every band (--topbar-h now
+    aliases --app-topbar-h, tokens.css).
+*/
     .topbar { min-block-size: var(--topbar-h); block-size: auto; }
   }
 
   /* ─── PAGE primitive ───────────────────────────────────────────────
-     r288 (anatomy fold): the legacy frame joins the patterns-contract
-     geometry byte-for-byte — PageFrame's 1080px measure + centered
-     column + --sp-6 rhythm (the old --sp-8/40px air and the uncapped
-     1280 stretch retired). Files migrate to <PageFrame/> family by
-     family; while they do, this rule keeps both systems pixel-equal,
-     so crossing routes never jumps measure or rhythm. */
+   r288 (anatomy fold): the legacy frame joins the patterns-contract
+   geometry byte-for-byte — PageFrame's 1080px measure + centered
+   column + --sp-6 rhythm (the old --sp-8/40px air and the uncapped
+   1280 stretch retired). Files migrate to <PageFrame/> family by
+   family; while they do, this rule keeps both systems pixel-equal,
+   so crossing routes never jumps measure or rhythm.
+*/
   .page {
     display: flex;
     flex-direction: column;
@@ -427,46 +474,53 @@
     gap: var(--sp-4);
     flex-wrap: wrap;
     /* R329 (gate:clean): align-items is polish.css's overrides seat
-       (flex-start) — this base-layer copy was inert. */
+    (flex-start) — this base-layer copy was inert.
+*/
     /* r288 (anatomy fold): the r188 folio hairline + its padding/margin
-       air retired for patterns parity — the contract header
-       (CONTRACT.md PageHeader) opens the page as a clean column block;
-       the hairline survived only on un-migrated files and made crossing
-       routes read as two systems. Geometry now mirrors
-       .pf-page-header-main. */
+    air retired for patterns parity — the contract header
+    (CONTRACT.md PageHeader) opens the page as a clean column block;
+    the hairline survived only on un-migrated files and made crossing
+    routes read as two systems. Geometry now mirrors
+    .pf-page-header-main.
+*/
   }
   .page-title-block {
     display: flex; flex-direction: column; gap: var(--sp-1);
     min-inline-size: 0; max-inline-size: 100%;
   }
   /* 13-17 dead-selector sweep (11-g P2-7): .page-eyebrow deleted —
-     zero TSX consumers. */
+   zero TSX consumers.
+*/
   .page-title {
     font-family: var(--font-display);
     /* r288 (anatomy fold): the fluid display-size role retired in favor
-       of the contract's fixed title voice — byte-identical to
-       .pf-page-title (patterns.css). The old clamp (24..38px) read 38px
-       at desktop against the contract pages' 30px — an 8px jump between
-       sibling routes. */
+    of the contract's fixed title voice — byte-identical to
+    .pf-page-title (patterns.css). The old clamp (24..38px) read 38px
+    at desktop against the contract pages' 30px — an 8px jump between
+    sibling routes.
+*/
     /* r325 Y4 — the APP-DENSITY H1 rung (--fs-app-h1, 28/24) at 600:
-       this is the PageHeader seat of the DATA surfaces (teacher/quality/
-       owner/admin) — §R324 pins those to the density ladder (the r319
-       masthead's rung), not the narrative display ladder; the legacy
-       --fs-h1 + 700 recipe grew to 55.6px @390, off every rung. */
+    this is the PageHeader seat of the DATA surfaces (teacher/quality/
+    owner/admin) — §R324 pins those to the density ladder (the r319
+    masthead's rung), not the narrative display ladder; the legacy
+    --fs-h1 + 700 recipe grew to 55.6px @390, off every rung.
+*/
     font-size: var(--fs-app-h1);
     font-weight: var(--fw-semibold);
     line-height: var(--lh-snug);
     /* r149 (R3-A4 F2): ‎--ls-tight → --ls-normal عند المنبع — كان الأمان
-       كله معلقًا بحارس overrides واحد (polish 21-c)؛ العنوان عربي
-       والقاعدة تقول صفر تتبع. الحارس يبقى كحزام إضافي. */
+    كله معلقًا بحارس overrides واحد (polish 21-c)؛ العنوان عربي
+    والقاعدة تقول صفر تتبع. الحارس يبقى كحزام إضافي.
+*/
     letter-spacing: var(--ls-normal);
     overflow-wrap: break-word;
     color: var(--text);
   }
   .page-subtitle {
     /* r288: base.css now OWNS the subtitle (the polish v9 wave that
-       carried it folds home). Mirrors .pf-page-desc exactly: 13px,
-       secondary ink, 72ch measure, base leading. */
+    carried it folds home). Mirrors .pf-page-desc exactly: 13px,
+    secondary ink, 72ch measure, base leading.
+*/
     margin: 0;
     font-size: var(--fs-body);
     line-height: var(--lh-base);
@@ -474,33 +528,39 @@
     max-inline-size: var(--type-body-max-measure);
   }
   /* 13-17 dead-selector sweep (11-g P2-7): .page-lede and .page-actions
-     deleted — zero TSX consumers (page headers render the title block;
-     ledes live in page-scoped sheets). */
+   deleted — zero TSX consumers (page headers render the title block;
+   ledes live in page-scoped sheets).
+*/
 
-  /* helpers retained */
+  /* helpers retained
+*/
   .stack > * + * { margin-block-start: var(--sp-5); }
   .row { display: flex; align-items: center; gap: var(--sp-3); }
   /* 13-17 dead-selector sweep (11-g P2-7): .truncate deleted — zero
-     TSX consumers. */
+   TSX consumers.
+*/
   .visually-hidden {
     position: absolute; width: 1px; height: 1px;
-    padding: 0; margin: -1px; overflow: hidden; /* spacing-gate: allow — visually-hidden clip recipe (a11y idiom, not a scale rung) */
+    padding: 0; margin: -1px; overflow: hidden; /* spacing-gate: allow — visually-hidden clip recipe (a11y idiom, not a scale rung)
+*/
     clip: rect(0,0,0,0); white-space: nowrap; border: 0;
   }
 
   /* (wave 2-a) .skip-link block deleted — polish v20 owns the single
-     live definition (overrides layer: top-center translateY pill,
-     --z-toast, --accent-fg, universal :focus-visible ring). This copy
-     was fully superseded except font-size: 14px → the pill now
-     inherits --fs-body (15px); its raw z-index: 9999 and the ghost
-     token --accent-contrast died with it (0-a P1-9). */
+   live definition (overrides layer: top-center translateY pill,
+   --z-toast, --accent-fg, universal :focus-visible ring). This copy
+   was fully superseded except font-size: 14px → the pill now
+   inherits --fs-body (15px); its raw z-index: 9999 and the ghost
+   token --accent-contrast died with it (0-a P1-9).
+*/
 
   /* When the skip link moves focus to .main (tabindex="-1" — outside
-     the universal ring's [tabindex]:not([tabindex="-1"]) selector),
-     show an inset indicator so the destination is perceivable.
-     wave 2-a: color/width now the canonical focus-ring tokens
-     (10.29:1 light / 7.87:1 dark — was raw --accent at 3.65:1 in
-     light, below the interaction-tokens contract's 4.5:1 bar). */
+   the universal ring's [tabindex]:not([tabindex="-1"]) selector),
+   show an inset indicator so the destination is perceivable.
+   wave 2-a: color/width now the canonical focus-ring tokens
+   (10.29:1 light / 7.87:1 dark — was raw --accent at 3.65:1 in
+   light, below the interaction-tokens contract's 4.5:1 bar).
+*/
   .main:focus-visible {
     outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
     outline-offset: -2px;
@@ -514,9 +574,10 @@
   html[data-theme-swapping] * { transition: none !important; animation-duration: 0ms !important; }
 
   /* ─── Reduced motion ─────────────────────────────────────────────
-     Global safety belt (allowlisted). wave 2-a: delays reset too, so
-     `animation … both` staggers stop revealing content sequentially
-     under reduced motion (0-a P1-3; mirrors polish v22's belt). */
+   Global safety belt (allowlisted). wave 2-a: delays reset too, so
+   `animation … both` staggers stop revealing content sequentially
+   under reduced motion (0-a P1-3; mirrors polish v22's belt).
+*/
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
@@ -531,9 +592,9 @@
 
 
 
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    R323 §A2 — loader orchestration surfaces (append-only · task 1-b)
-   ═════════════════════════════════════════════════════════════════════
+   ═══
    Splash (.mdk-splash) · RouteProgress (.mdk-route-progress) ·
    SlowServerCard (.mdk-slow-server) — the three components of the ONE
    loading surface. (The R323 brand mark styles itself inside
@@ -544,9 +605,11 @@
    signal. Radius 0 · no shadows · no gradients · transform-only
    motion. Appended OUTSIDE @layer base so the loader family is the
    strongest voice in the cascade (it must cover everything).
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
-/* ── Splash — the boot layer (z: --z-splash, the topmost seat) ─────── */
+/* ── Splash — the boot layer (z: --z-splash, the topmost seat) ───────
+*/
 .mdk-splash {
   position: fixed;
   inset: 0;
@@ -554,12 +617,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* --bg IS the paper: the theme-aware page ground (dark remaps it). */
+  /* --bg IS the paper: the theme-aware page ground (dark remaps it).
+*/
   background: var(--bg);
   color: var(--text-strong);
 }
 /* The ≤250 ms exit: the component flips data-exiting, plays the fade,
-   unmounts itself, then calls splashExited() to free the seat. */
+   unmounts itself, then calls splashExited() to free the seat.
+*/
 .mdk-splash[data-exiting='true'] {
   opacity: 0;
   transition: opacity var(--t-fast) var(--ease-out);
@@ -570,7 +635,8 @@
   }
 }
 
-/* ── RouteProgress — the 2 px strip (z: --z-loader; NOT fullscreen) ── */
+/* ── RouteProgress — the 2 px strip (z: --z-loader; NOT fullscreen) ──
+*/
 .mdk-route-progress {
   position: fixed;
   top: 0;
@@ -602,7 +668,8 @@
 [dir='rtl'] .mdk-route-progress[data-mode='indeterminate'] .mdk-route-progress-bar {
   animation-name: mdk-route-progress-sweep-rtl;
 }
-/* Transform-only sweeps — layout is never touched. */
+/* Transform-only sweeps — layout is never touched.
+*/
 @keyframes mdk-route-progress-sweep {
   from { transform: translateX(-110%); }
   to { transform: translateX(290%); }
@@ -619,7 +686,8 @@
   }
 }
 
-/* ── SlowServerCard — the cold-start card (z: --z-loader seat) ─────── */
+/* ── SlowServerCard — the cold-start card (z: --z-loader seat) ───────
+*/
 .mdk-slow-server {
   position: fixed;
   inset: 0;
@@ -647,7 +715,8 @@
   font-size: var(--fs-body-lg);
   line-height: 1.6;
   color: var(--text-strong);
-  /* Arabic prose is NEVER letter-spaced. */
+  /* Arabic prose is NEVER letter-spaced.
+*/
   letter-spacing: 0;
 }
 .mdk-slow-server-retry {
@@ -676,5 +745,6 @@
    Logo, landed by the parallel brand agent) styles itself inline
    (class .mdrk-logo + injected keyframes); no sheet CSS is needed
    here. The temporary .mdk-logo-* styles that task 1-b staged for the
-   placeholder implementation were retired when the real Logo landed. */
+   placeholder implementation were retired when the real Logo landed.
+*/
 

@@ -28,9 +28,11 @@
  *    transitions animate paint only (opacity, stroke-width); the
  *    reduced-motion belt completes every drawing and freezes the
  *    interactive transitions — interactions stay live, motionless.
- */
 
-/* ── the roots: quiet ink + the per-drawing progress mapping ─────── */
+*/
+
+/* ── the roots: quiet ink + the per-drawing progress mapping ───────
+*/
 .cf-sheet {
   color: var(--border-strong);
   display: block;
@@ -65,7 +67,8 @@
 /* ── the family's rungs, extended to the elements the r359 sheet never
  * drew (path envelopes, station circles). Same ink-ladder values as
  * technical-sheet.css — scoped here so the r359/r360 plates' bytes stay
- * untouched (the family extends, never rewrites). */
+ * untouched (the family extends, never rewrites).
+*/
 .cf-svg .tp-envelope path {
   fill: none;
   stroke: currentColor;
@@ -79,14 +82,16 @@
   stroke-width: 1.4px;
 }
 
-/* ── the scroll-draw engine ──────────────────────────────────────── */
+/* ── the scroll-draw engine ────────────────────────────────────────
+*/
 /* The engine's law: px-TYPED bounds. Chrome drops clamp() over var()
  * tokens when the bounds stay unitless — the value coerces to px at
  * the property but the bounds stay numbers, the types mismatch, and
  * the clamp silently falls away (verified live: calc(1 - clamp(...))
  * computed to -3.92px instead of 0). The * 1px middle term types the
  * whole comparison; the bounds hold. dasharray 1 + pathLength 1 keep
- * the offset in the same unit space (1 user unit = the whole path). */
+ * the offset in the same unit space (1 user unit = the whole path).
+*/
 .cf-sheet .ti-draw,
 .cr-sheet .ti-draw {
   stroke-dasharray: 1;
@@ -95,7 +100,8 @@
 
 /* the fade lane: bare arithmetic — opacity's USED value bounds itself
  * at [0,1] by spec, so the clamp's absence can never overshoot into
- * paint; clamp over var() is the same unreliable quirk, dropped. */
+ * paint; clamp over var() is the same unreliable quirk, dropped.
+*/
 .cf-sheet .ti-fade,
 .cr-sheet .ti-fade {
   opacity: calc((var(--dp, 1) - var(--a, 0)) / var(--b, 1));
@@ -105,7 +111,8 @@
  * Only the stations own the pointer — the measurement chains, the
  * annotation ink, the signal mark and the readout render ABOVE the
  * stations (draw order), and opacity:0 does NOT remove hit-testing,
- * so without this they would steal the hover right off the stations. */
+ * so without this they would steal the hover right off the stations.
+*/
 .cf-svg .ti-meas,
 .cf-svg .tp-note,
 .cf-svg .tp-mark,
@@ -114,7 +121,8 @@
   pointer-events: none;
 }
 
-/* ── the node seats: hover / focus-visible / activation ──────────── */
+/* ── the node seats: hover / focus-visible / activation ────────────
+*/
 .cf-svg .ti-node {
   cursor: pointer;
 }
@@ -125,7 +133,8 @@
   pointer-events: all;
 }
 
-/* ── the measurement chains: the datum's live answer ────────────── */
+/* ── the measurement chains: the datum's live answer ──────────────
+*/
 .cf-svg .ti-meas line {
   stroke: var(--app-signal);
   stroke-width: 1.2px;
@@ -178,7 +187,8 @@
   opacity: 1;
 }
 
-/* ── the legs: activation re-inks the connections the node owns ──── */
+/* ── the legs: activation re-inks the connections the node owns ────
+*/
 .cf-field[data-active='C1'] .ti-leg[data-nodes~='C1'],
 .cf-field[data-active='C2'] .ti-leg[data-nodes~='C2'],
 .cf-field[data-active='C3'] .ti-leg[data-nodes~='C3'],
@@ -193,7 +203,8 @@
   opacity: 1;
 }
 
-/* ── the measurement chains: the datum's live answer (reveal) ────── */
+/* ── the measurement chains: the datum's live answer (reveal) ──────
+*/
 .cf-svg .ti-meas {
   opacity: 0;
   transition: opacity var(--t-fast) var(--ease-out);
@@ -206,7 +217,8 @@
   opacity: 1;
 }
 
-/* ── the pointer instrument: guides + crosshair + readout ────────── */
+/* ── the pointer instrument: guides + crosshair + readout ──────────
+*/
 .cf-svg .ti-guides {
   opacity: 0;
   transition: opacity var(--t-fast) var(--ease-out);
@@ -243,7 +255,8 @@
 }
 
 /* coarse pointers never see the instrument — there is no pointer to
- * track; the nodes stay tappable, the drawing stays complete. */
+ * track; the nodes stay tappable, the drawing stays complete.
+*/
 @media (hover: none) {
   .cf-svg .ti-guides,
   .cf-svg .ti-readout {
@@ -251,7 +264,8 @@
   }
 }
 
-/* ── the reduced-motion belt: the complete, motionless sheet ─────── */
+/* ── the reduced-motion belt: the complete, motionless sheet ───────
+*/
 @media (prefers-reduced-motion: reduce) {
   .cf-sheet .ti-draw,
   .cr-sheet .ti-draw {

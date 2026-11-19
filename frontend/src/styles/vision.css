@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    vision.css — صفحات الرؤية (VisionGalleryPage /vision ·
    VisionDetailPage /vision/:slug · عائلة G النهائية)
 
@@ -8,23 +8,28 @@
    الهندسية (صناديق الأيقونات) px خامًا موثَّقًا (خارج عائلة التباعد
    الحارسة). تدرّج الشريحة اللونية يبقى سطريًا في TSX لأنه من بيانات
    المفهوم (lib/vision.ts) لا من النظام.
-   ═══════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer pages {
 
-  /* ── مفاتيح المقال (h2 حقيقي — كان النثر كله بلا عناوين) ─────── */
+  /* ── مفاتيح المقال (h2 حقيقي — كان النثر كله بلا عناوين) ───────
+*/
   .vision-h2 {
     font-family: var(--font-display);
     font-size: var(--type-headline-size-sm);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law
+*/
     color: var(--text);
     /* (r148 AUDIT-4 C2): لا letter-spacing سالب على العربية —
-       تظل القاعدة المُصفّرة من h1–h6 سارية. */
+    تظل القاعدة المُصفّرة من h1–h6 سارية.
+*/
     line-height: 1.3;
     margin: 0 0 var(--sp-4);
   }
 
-  /* ── نثر المقال: حجم الجسم، حبر حقيقي، مقياس 72ch ──────────────── */
+  /* ── نثر المقال: حجم الجسم، حبر حقيقي، مقياس 72ch ────────────────
+*/
   .vision-article {
     font-size: var(--type-body-size);
     line-height: var(--lh-loose);
@@ -34,7 +39,8 @@
     text-wrap: pretty;
   }
 
-  /* ── شريحة المفهوم اللونية: الهندسة هنا، التدرّج من البيانات ──── */
+  /* ── شريحة المفهوم اللونية: الهندسة هنا، التدرّج من البيانات ────
+*/
   .vision-chip {
     display: inline-flex;
     align-items: center;
@@ -42,14 +48,18 @@
     flex-shrink: 0;
     border-radius: var(--r-md);
     /* الصورة الرمزية بيضاء في السمتين — القيمة الحرفية الموثّقة
-       الوحيدة (guardrail 4: لا توكن on-color). يُضبط التدرّج سطريًا
-       في TSX لأنه من بيانات المفهوم. */
+    الوحيدة (guardrail 4: لا توكن on-color). يُضبط التدرّج سطريًا
+    في TSX لأنه من بيانات المفهوم.
+*/
     color: var(--white);
   }
-  .vision-chip--row { inline-size: 36px; block-size: 36px; } /* geometry: leading icon well */
-  .vision-chip--hero { inline-size: 64px; block-size: 64px; } /* geometry: detail hero chip */
+  .vision-chip--row { inline-size: 36px; block-size: 36px; } /* geometry: leading icon well
+*/
+  .vision-chip--hero { inline-size: 64px; block-size: 64px; } /* geometry: detail hero chip
+*/
 
-  /* ── رؤوس مجموعات المعرض (h2 + ملاحظة العدّ على نفس الإيقاع) ──── */
+  /* ── رؤوس مجموعات المعرض (h2 + ملاحظة العدّ على نفس الإيقاع) ────
+*/
   .vision-group {
     margin-block-start: var(--sp-2);
   }
@@ -61,19 +71,22 @@
   }
   .vision-group-head .vision-h2 { margin: 0; }
 
-  /* ── ملاحظة المعرض السفلية ─────────────────────────────────────── */
+  /* ── ملاحظة المعرض السفلية ───────────────────────────────────────
+*/
   .vision-note-copy { line-height: var(--lh-base); }
 
-  /* ── زرّ العودة يلتصق ببداية العمود (الصفحة عمود flex) ─────────── */
+  /* ── زرّ العودة يلتصق ببداية العمود (الصفحة عمود flex) ───────────
+*/
   .vision-back { align-self: flex-start; }
 
   /* ── تفصيل المفهوم: بطولة القراءة (r305) ─────────────────────────
-     كانت .vision-detail-hero تجرّ جلد بطاقة يتيمًا من طبقة التجاوزات
-     (polish.css:2512 — box-shadow/overflow من عهد البطاقة، وزوم
-     التحويم تقاعد) على عنصر شفاف = هالة ظل عائمة بلا سطح. صفحة
-     التفصيل سطح قراءة (A12 P2-7): البطولة تتكوّن مسطّحة على أرض
-     الصفحة. الاسم الجديد .vision-hero أسقط المستهلك عن قاعدة polish
-     اليتيمة (قاعدة ميتة الآن — يُنصح مالك polish بحذفها). */
+   كانت .vision-detail-hero تجرّ جلد بطاقة يتيمًا من طبقة التجاوزات
+   (polish.css:2512 — box-shadow/overflow من عهد البطاقة، وزوم
+   التحويم تقاعد) على عنصر شفاف = هالة ظل عائمة بلا سطح. صفحة
+   التفصيل سطح قراءة (A12 P2-7): البطولة تتكوّن مسطّحة على أرض
+   الصفحة. الاسم الجديد .vision-hero أسقط المستهلك عن قاعدة polish
+   اليتيمة (قاعدة ميتة الآن — يُنصح مالك polish بحذفها).
+*/
   .vision-hero {
     display: flex;
     flex-direction: column;
@@ -83,19 +96,24 @@
   .vision-hero-title {
     font-family: var(--font-display);
     /* سلّم المسح r304: عنوان الصفحة 24px display — درجة .pf-page-title
-       و.comp-hero-title نفسها، لا بلاطة الـ30px اللوحية. */
-    font-size: var(--fs-d2); /* r325 Y4 — the clamped d2 rung (the unclamped alias grows to 47.6px @390) */
+    و.comp-hero-title نفسها، لا بلاطة الـ30px اللوحية.
+*/
+    font-size: var(--fs-d2); /* r325 Y4 — the clamped d2 rung (the unclamped alias grows to 47.6px @390)
+*/
     line-height: var(--lh-snug);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600 */
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600
+*/
     letter-spacing: 0;
     color: var(--text);
     margin: 0;
   }
 
-  /* ── صفوف المميزات ─────────────────────────────────────────────── */
+  /* ── صفوف المميزات ───────────────────────────────────────────────
+*/
   .vision-feature { color: var(--text); }
 
-  /* ── الخطوات المرقّمة (كيف تعمل) ───────────────────────────────── */
+  /* ── الخطوات المرقّمة (كيف تعمل) ─────────────────────────────────
+*/
   .vision-step {
     padding: var(--sp-3);
     background: var(--surface-2);
@@ -105,7 +123,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    inline-size: 26px; /* geometry: numbered step disc */
+    inline-size: 26px; /* geometry: numbered step disc
+*/
     block-size: 26px;
     border-radius: var(--r-full);
     background: var(--accent-soft);
@@ -121,18 +140,21 @@
     line-height: var(--lh-base);
   }
 
-  /* ── بطاقة التنبيه (قريباً الصادقة) ────────────────────────────── */
+  /* ── بطاقة التنبيه (قريباً الصادقة) ──────────────────────────────
+*/
   .vision-notify { flex-wrap: wrap; }
   .vision-notify-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    inline-size: 36px; /* geometry: bell icon well */
+    inline-size: 36px; /* geometry: bell icon well
+*/
     block-size: 36px;
     border-radius: var(--r-md);
     background: var(--gold-soft);
     /* --gold على --gold-soft يساوي 2.2:1؛ --gold-ink هو الزوج
-       المصمَّم (6.98 فاتح / 8.18 داكن). */
+    المصمَّم (6.98 فاتح / 8.18 داكن).
+*/
     color: var(--gold-ink, var(--gold));
     flex-shrink: 0;
   }
@@ -140,15 +162,18 @@
   .vision-notify-title { color: var(--text); }
   .vision-notify-hint { margin-block-start: var(--sp-1); }
 
-  /* ── التنقّل السفلي بين المفاهيم ───────────────────────────────── */
+  /* ── التنقّل السفلي بين المفاهيم ─────────────────────────────────
+*/
   .vision-prevnext {
     padding: var(--sp-4) var(--sp-5);
     /* r305: عناوين المفاهيم طويلة — على 360px يتزاحم الزران في سطر
-       واحد؛ الالتفاف يُنزّل «التالي» سطرًا كاملًا بدل سحق العنوان. */
+    واحد؛ الالتفاف يُنزّل «التالي» سطرًا كاملًا بدل سحق العنوان.
+*/
     flex-wrap: wrap;
     gap: var(--sp-2);
   }
   /* السهم «السابق» يعكس وجهته (RTL: التقدّم يسارًا) — انعكاس اتجاه
-     ثابت لا حركة (mirroring لا تقتله أحزمة الحركة المخفّفة). */
+   ثابت لا حركة (mirroring لا تقتله أحزمة الحركة المخفّفة).
+*/
   .vision-icon-back { transform: scaleX(-1); }
 }

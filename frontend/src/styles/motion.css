@@ -1,42 +1,49 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — Motion + Interaction Foundation
-   ─────────────────────────────────────────────────────────────────────
+   ───
    Owns: reduced-motion overrides, universal :focus-visible ring,
-         reveal keyframes, skeleton shimmer, route-transition keyframes.
+     reveal keyframes, skeleton shimmer, route-transition keyframes.
    Loaded after tokens.css, before component stylesheets.
    See: specs/001-premium-motion-system/contracts/motion-tokens.md
-        specs/001-premium-motion-system/contracts/interaction-tokens.md
-   ════════════════════════════════════════════════════════════════════ */
+    specs/001-premium-motion-system/contracts/interaction-tokens.md
+   ═══
+*/
 
 /* wave 2-a — full canonical layer order (was `tokens, base, components,
    overrides`, which omitted layout/pages: harmless only while tokens.css
    is imported first; repeating the canonical order makes motion.css safe
-   under any import order — 0-a P3-2). */
+   under any import order — 0-a P3-2).
+*/
 @layer tokens, base, layout, components, pages, overrides;
 
 @layer tokens {
 
-  /* ───────────────────────────────────────────────────────────────────
-     Reduced-motion override — single block, single source of truth.
-     Decorative durations collapse to 0; cross-fades collapse to ≤80ms
-     so transitional affordance remains perceivable. Skeleton becomes
-     a static block (no shimmer loop) under reduced motion.
-     ─────────────────────────────────────────────────────────────────── */
+  /* ───
+   Reduced-motion override — single block, single source of truth.
+   Decorative durations collapse to 0; cross-fades collapse to ≤80ms
+   so transitional affordance remains perceivable. Skeleton becomes
+   a static block (no shimmer loop) under reduced motion.
+     ───
+*/
   @media (prefers-reduced-motion: reduce) {
     :root {
       --motion-duration-micro:    0ms;
       --motion-duration-short:    0ms;
       --motion-duration-medium:   0ms;
       --motion-duration-long:     0ms;
-      --motion-duration-page:     80ms;   /* keep cross-fade affordance */
+      --motion-duration-page:     80ms;   /* keep cross-fade affordance
+*/
       --motion-duration-reveal:   80ms;
-      --motion-duration-stat:     0ms;    /* counters snap to value */
-      --motion-duration-skeleton: 0ms;    /* static block, no shimmer */
+      --motion-duration-stat:     0ms;    /* counters snap to value
+*/
+      --motion-duration-skeleton: 0ms;    /* static block, no shimmer
+*/
       /* 5-C1 (A2 §1a): the ambient loop family joins the semantic
-         kill — ambient motion is decorative by definition, so under
-         reduced motion every loop on the ladder collapses (the
-         global belt in base.css backstops this at 0.01ms; owning the
-         kill here keeps the family belt-independent). */
+     kill — ambient motion is decorative by definition, so under
+     reduced motion every loop on the ladder collapses (the
+     global belt in base.css backstops this at 0.01ms; owning the
+     kill here keeps the family belt-independent).
+*/
       --motion-duration-ambient-pulse:  0ms;
       --motion-duration-ambient:        0ms;
       --motion-duration-ambient-slow:   0ms;
@@ -48,13 +55,14 @@
 
 @layer base {
 
-  /* ───────────────────────────────────────────────────────────────────
-     Universal :focus-visible ring.
-     Per-component overrides are still allowed (e.g., inputs that need
-     an inset ring) but every focusable element gains this by default.
-     Uses outline rather than box-shadow so it composes with elements
-     that already use box-shadow for their own elevation.
-     ─────────────────────────────────────────────────────────────────── */
+  /* ───
+   Universal :focus-visible ring.
+   Per-component overrides are still allowed (e.g., inputs that need
+   an inset ring) but every focusable element gains this by default.
+   Uses outline rather than box-shadow so it composes with elements
+   that already use box-shadow for their own elevation.
+     ───
+*/
   :where(
     a, button, input, select, textarea, summary,
     [tabindex]:not([tabindex="-1"]),
@@ -63,30 +71,33 @@
     outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
     outline-offset: var(--state-focus-ring-offset);
     /* wave 2-a — `border-radius: inherit` removed: it overwrote the
-       focused element's OWN radius with its parent's (a pill button
-       inside a 12px card squared its corners for as long as it was
-       focused). Outlines already track the element's own border-radius
-       in every current engine, so no declaration is needed at all.
-       NOTE: polish v22 carries the same stray line in its overrides
-       layer — polish.css is wave-1 territory, so it is flagged to the
-       orchestrator in the 2-a worklog entry rather than edited here. */
+    focused element's OWN radius with its parent's (a pill button
+    inside a 12px card squared its corners for as long as it was
+    focused). Outlines already track the element's own border-radius
+    in every current engine, so no declaration is needed at all.
+    NOTE: polish v22 carries the same stray line in its overrides
+    layer — polish.css is wave-1 territory, so it is flagged to the
+    orchestrator in the 2-a worklog entry rather than edited here.
+*/
   }
 
   /* Forms that already render a custom focus ring may opt out.
-     (r149 R3-A5 #5: حُذف — كان مخرجًا معطوبًا: صفر مستهلكين في TSX،
-     وحتى لو استُخدم فالقاعدة هنا في طبقة base تخسر دائمًا لحلقة
-     overrides في v22. المخرج الوحيد الآمن هو التخصيص داخل overrides.) */
+   (r149 R3-A5 #5: حُذف — كان مخرجًا معطوبًا: صفر مستهلكين في TSX،
+   وحتى لو استُخدم فالقاعدة هنا في طبقة base تخسر دائمًا لحلقة
+   overrides في v22. المخرج الوحيد الآمن هو التخصيص داخل overrides.)
+*/
 }
 
 @layer components {
 
-  /* ───────────────────────────────────────────────────────────────────
-     Reveal keyframes — used by <Reveal> primitive.
-     The element starts at opacity 0 and translated by `--reveal-distance`,
-     ends at opacity 1 and translateY(0). Direction multiplier flips for
-     RTL where applicable (sliding motions); vertical reveals are
-     direction-agnostic.
-     ─────────────────────────────────────────────────────────────────── */
+  /* ───
+   Reveal keyframes — used by <Reveal> primitive.
+   The element starts at opacity 0 and translated by `--reveal-distance`,
+   ends at opacity 1 and translateY(0). Direction multiplier flips for
+   RTL where applicable (sliding motions); vertical reveals are
+   direction-agnostic.
+     ───
+*/
   @keyframes reveal-rise {
     from {
       opacity: 0;
@@ -103,7 +114,8 @@
     to   { opacity: 1; }
   }
 
-  /* Reveal element default state — hidden until activated. */
+  /* Reveal element default state — hidden until activated.
+*/
   [data-reveal]:not([data-revealed="true"]) {
     opacity: 0;
     transform: translateY(var(--reveal-distance, var(--motion-distance-medium)));
@@ -122,21 +134,23 @@
     }
   }
 
-  /* ───────────────────────────────────────────────────────────────────
-     Skeleton shimmer — used by <Skeleton> primitive.
-     Subtle linear-gradient sweep, low contrast. Loops at the skeleton
-     duration token. Static under reduced motion.
-     ─────────────────────────────────────────────────────────────────── */
+  /* ───
+   Skeleton shimmer — used by <Skeleton> primitive.
+   Subtle linear-gradient sweep, low contrast. Loops at the skeleton
+   duration token. Static under reduced motion.
+     ───
+*/
   /* r150b — ONE skeleton grammar (the six-shimmer unification).
-     The tuned recipe the overrides layer had been winning the cascade
-     with — surface-3 ground, 8% white highlight stop, RTL-aware sweep —
-     is promoted here VERBATIM; the two rival `.skeleton` definitions
-     (components.css + polish.css) and their keyframes are deleted, and
-     .search-shimmer rides the same pair. Keyframes carry the
-     `skeleton-shimmer-*` names the motion contract always implied.
-     (--skeleton-base/--skeleton-highlight retired with the dead
-     foundation recipe: the canonical paints surfaces directly, and the
-     parity export defines its own pair internally.) */
+   The tuned recipe the overrides layer had been winning the cascade
+   with — surface-3 ground, 8% white highlight stop, RTL-aware sweep —
+   is promoted here VERBATIM; the two rival `.skeleton` definitions
+   (components.css + polish.css) and their keyframes are deleted, and
+   .search-shimmer rides the same pair. Keyframes carry the
+   `skeleton-shimmer-*` names the motion contract always implied.
+   (--skeleton-base/--skeleton-highlight retired with the dead
+   foundation recipe: the canonical paints surfaces directly, and the
+   parity export defines its own pair internally.)
+*/
   @keyframes skeleton-shimmer-rtl {
     0%   { background-position: -200% 0; }
     100% { background-position: 0% 0; }
@@ -147,11 +161,15 @@
   }
 
   .skeleton {
-    display: inline-block;               /* span primitives take dimension */
-    min-height: 1em;                     /* variants override */
-    max-width: 100%;                     /* R341: a fixed-width bar never pokes past its card — the 320-floor KpiSkeleton case (r305 no-overflow belt) */
+    display: inline-block;               /* span primitives take dimension
+*/
+    min-height: 1em;                     /* variants override
+*/
+    max-width: 100%;                     /* R341: a fixed-width bar never pokes past its card — the 320-floor KpiSkeleton case (r305 no-overflow belt)
+*/
     border-radius: var(--r-sm);
-    background-color: var(--surface-3);  /* static/RM ground */
+    background-color: var(--surface-3);  /* static/RM ground
+*/
     background-image: linear-gradient(
       90deg,
       var(--surface-3) 0%,
@@ -166,15 +184,16 @@
     animation-name: skeleton-shimmer-ltr;
   }
   /* R341 (r305 no-overflow belt, the 320 floor): KpiSkeleton mirrors the
-     MetricCard anatomy with FIXED-width bars (80/70/120). After D6's
-     phone-band gutter re-key (.content-inner gives 8px back to .main) the
-     metric card's content box shrank; at 320 the 120px change-bar poked
-     3px past the card's trailing (RTL: left) edge and .content's
-     scrollWidth read 307 > 304 mid-skeleton. The head column is a bare
-     flex item with NO width constraint of its own (no rule anywhere),
-     so the cap lives HERE with the skeleton family: the column may
-     never exceed its card, and the bars inside may never exceed the
-     column. Loaded metrics always fit — this is the loading state only. */
+   MetricCard anatomy with FIXED-width bars (80/70/120). After D6's
+   phone-band gutter re-key (.content-inner gives 8px back to .main) the
+   metric card's content box shrank; at 320 the 120px change-bar poked
+   3px past the card's trailing (RTL: left) edge and .content's
+   scrollWidth read 307 > 304 mid-skeleton. The head column is a bare
+   flex item with NO width constraint of its own (no rule anywhere),
+   so the cap lives HERE with the skeleton family: the column may
+   never exceed its card, and the bars inside may never exceed the
+   column. Loaded metrics always fit — this is the loading state only.
+*/
   .metric .metric-head {
     min-width: 0;
     max-width: 100%;
@@ -184,12 +203,15 @@
     .skeleton {
       animation: none;
       background-position: 0% 0;
-      opacity: 0.6;  /* the contract's "static muted block" */
+      opacity: 0.6;  /* the contract's "static muted block"
+*/
     }
   }
 
-  /* Variant shapes — match the rough silhouette of final content. */
-  .skeleton[data-variant="text"]     { height: 0.875em; border-radius: 4px; /* radius-gate: allow — text-skeleton micro-radius below the --r-xs rung */ }
+  /* Variant shapes — match the rough silhouette of final content.
+*/
+  .skeleton[data-variant="text"]     { height: 0.875em; border-radius: 4px; /* radius-gate: allow — text-skeleton micro-radius below the --r-xs rung
+*/ }
   .skeleton[data-variant="kpi"]      { height: 96px;  border-radius: var(--r-lg, 12px); }
   .skeleton[data-variant="card"]     { height: 160px; border-radius: var(--r-lg, 12px); }
   .skeleton[data-variant="chart"]    { height: 240px; border-radius: var(--r-lg, 12px); }
@@ -197,44 +219,50 @@
   .skeleton[data-variant="avatar"]   { width: 40px; height: 40px; border-radius: var(--r-full, 9999px); }
 
   /* (r157: .skeleton-group / .skeleton-still-loading deleted — dead
-     rules. F4 removed the <SkeletonGroup> primitive itself (rg: zero
-     consumers ever rendered it, see components/motion/index.ts), so
-     nothing can mount these classes anymore.) */
+   rules. F4 removed the <SkeletonGroup> primitive itself (rg: zero
+   consumers ever rendered it, see components/motion/index.ts), so
+   nothing can mount these classes anymore.)
+*/
 
   /* (wave 7-b — route-transition block deleted: the shell's route change
-     is now ONE animation, the keyed .content-inner remount playing
-     polish.css v9's `page-enter` fade, driven by <PageTransition>'s
-     keyed wrapper. Deleted with it: `.is-route-transitioning` +
-     route-fade-in + its RM variant (the class was toggled only by
-     PageTransition's fallback path — a second animation compounding
-     with the remount on Firefox), and `::view-transition-old/new(route)`
-     (never matched — nothing ever set `view-transition-name: route`;
-     audit 0-c P2-2/P2-3). The root View Transition hooks in base.css
-     stay: they serve the theme-swap path only.) */
+   is now ONE animation, the keyed .content-inner remount playing
+   polish.css v9's `page-enter` fade, driven by <PageTransition>'s
+   keyed wrapper. Deleted with it: `.is-route-transitioning` +
+   route-fade-in + its RM variant (the class was toggled only by
+   PageTransition's fallback path — a second animation compounding
+   with the remount on Firefox), and `::view-transition-old/new(route)`
+   (never matched — nothing ever set `view-transition-name: route`;
+   audit 0-c P2-2/P2-3). The root View Transition hooks in base.css
+   stay: they serve the theme-swap path only.)
+*/
 
-  /* ───────────────────────────────────────────────────────────────────
-     Sheet bottom entrance — wave 2-a.
-     `madarek-sheet-slide-bottom` is consumed by .sheet-panel-bottom
-     (components.css). The keyframes themselves now live in the
-     `@layer overrides` block after this file's components layer —
-     see that block's comment for why (audit 4-A11 P2-8).
-     Sibling keyframes madarek-sheet-slide-end/-start live with
-     the sheet styles in components.css.
-     ─────────────────────────────────────────────────────────────────── */
+  /* ───
+   Sheet bottom entrance — wave 2-a.
+   `madarek-sheet-slide-bottom` is consumed by .sheet-panel-bottom
+   (components.css). The keyframes themselves now live in the
+   `@layer overrides` block after this file's components layer —
+   see that block's comment for why (audit 4-A11 P2-8).
+   Sibling keyframes madarek-sheet-slide-end/-start live with
+   the sheet styles in components.css.
+     ───
+*/
 
   /* Explicit off-switch (brief guardrail #6 — keyframe animations get
-     their own reduced-motion kill, independent of the global belts):
-     under reduced motion the bottom sheet simply renders in place. */
+   their own reduced-motion kill, independent of the global belts):
+   under reduced motion the bottom sheet simply renders in place.
+*/
   @media (prefers-reduced-motion: reduce) {
     .sheet-panel-bottom { animation: none; }
   }
 
   /* (The @keyframes madarek-sheet-slide-bottom definition moved to the
-     @layer overrides block below — 4-A11 P2-8 duplicate-keyframe kill.) */
+   @layer overrides block below — 4-A11 P2-8 duplicate-keyframe kill.)
+*/
 
-  /* ───────────────────────────────────────────────────────────────────
-     Loading spinner — used by Button[loading] and inline spinners.
-     ─────────────────────────────────────────────────────────────────── */
+  /* ───
+   Loading spinner — used by Button[loading] and inline spinners.
+     ───
+*/
   @keyframes motion-spin {
     to { transform: rotate(360deg); }
   }
@@ -251,15 +279,17 @@
   }
 
   /* r149 (R3-A3 R4): حُذف تعديل الـ2s تحت reduced-motion — كان ميتًا
-     أصلًا: حزام base.css العالمي (animation-duration: 0.01ms
-     !important) يبتلعه دائمًا، فلم تظهر «إشارة الانشغال البطيئة»
-     قط. الحزام هو المالك الوحيد؛ لا حاجة لمُكمّل هنا. */
+   أصلًا: حزام base.css العالمي (animation-duration: 0.01ms
+   !important) يبتلعه دائمًا، فلم تظهر «إشارة الانشغال البطيئة»
+   قط. الحزام هو المالك الوحيد؛ لا حاجة لمُكمّل هنا.
+*/
 
-  /* ───────────────────────────────────────────────────────────────────
-     Button + Input loading states — used by canonical Button / Input
-     primitives. No layout shift: the spinner sits on top of the
-     reserved label width.
-     ─────────────────────────────────────────────────────────────────── */
+  /* ───
+   Button + Input loading states — used by canonical Button / Input
+   primitives. No layout shift: the spinner sits on top of the
+   reserved label width.
+     ───
+*/
   .btn[data-loading="true"] {
     cursor: progress;
   }
@@ -271,22 +301,25 @@
   }
 
   /* Visually-hidden label kept inside the button while loading so the
-     button preserves its width and the spinner doesn't change layout.
-     Falls back to the existing utility if motion.css is loaded before
-     base.css (it isn't, but defensive). */
+   button preserves its width and the spinner doesn't change layout.
+   Falls back to the existing utility if motion.css is loaded before
+   base.css (it isn't, but defensive).
+*/
   .btn .visually-hidden {
     position: absolute;
     width: 1px;
     height: 1px;
     padding: 0;
-    margin: -1px; /* spacing-gate: allow — sr-only clip recipe (a11y idiom, not a scale rung) */
+    margin: -1px; /* spacing-gate: allow — sr-only clip recipe (a11y idiom, not a scale rung)
+*/
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
   }
 
-  /* Input affix wrapper (right-aligned spinner, etc.). */
+  /* Input affix wrapper (right-aligned spinner, etc.).
+*/
   .input-affix {
     position: relative;
     display: block;
@@ -294,7 +327,8 @@
   }
   .input-affix .input {
     inline-size: 100%;
-    /* leave room for the spinner so text doesn't run under it */
+    /* leave room for the spinner so text doesn't run under it
+*/
     padding-inline-end: var(--sp-9);
   }
   .input-affix-spinner {
@@ -308,7 +342,8 @@
     cursor: var(--state-input-loading-cursor);
   }
 
-  /* Input error state — adds the canonical error border + ring. */
+  /* Input error state — adds the canonical error border + ring.
+*/
   .input.input-error {
     border-color: var(--state-input-error-border);
   }
@@ -319,37 +354,40 @@
     outline: none;
   }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  r305-c — SHARED MOTION ENGINE (task 2-c) — ADDITIVE SECTION   ║
-     ║  Everything below is new (branch redesign/r305-c-motion): the  ║
-     ║  line-wipe Reveal variant, the .motion-hairline utility and    ║
-     ║  the .motion-cine-lift opt-in. No rule above this point was    ║
-     ║  altered; the @layer order declaration and the reduced-motion  ║
-     ║  token zeroing block are untouched.                            ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   r305-c — SHARED MOTION ENGINE (task 2-c) — ADDITIVE SECTION
+   Everything below is new (branch redesign/r305-c-motion): the
+   line-wipe Reveal variant, the .motion-hairline utility and
+   the .motion-cine-lift opt-in. No rule above this point was
+   altered; the @layer order declaration and the reduced-motion
+   token zeroing block are untouched.
+   ╚╚╚
+*/
 
   /* ── Reveal variant="line" — RTL-aware rule wipe ────────────────────
-     <Reveal variant="line"> renders data-reveal-variant="line" and
-     reuses the SAME one-shot data-reveal belt (mount check + IO +
-     fling clauses + scrollend/resize/load settle in Reveal.tsx); only
-     the visual treatment differs. The element wipes open from the
-     READING START edge — left in LTR, right in RTL via the [dir="rtl"]
-     mirror below (the codebase's physical-override convention, cf.
-     owner.css .progress-fill transform-origin). The wipe REPLACES the
-     default lift's opacity/translate rest state — the clip IS the
-     reveal, so the distance fade has nothing to do here.
+   <Reveal variant="line"> renders data-reveal-variant="line" and
+   reuses the SAME one-shot data-reveal belt (mount check + IO +
+   fling clauses + scrollend/resize/load settle in Reveal.tsx); only
+   the visual treatment differs. The element wipes open from the
+   READING START edge — left in LTR, right in RTL via the [dir="rtl"]
+   mirror below (the codebase's physical-override convention, cf.
+   owner.css .progress-fill transform-origin). The wipe REPLACES the
+   default lift's opacity/translate rest state — the clip IS the
+   reveal, so the distance fade has nothing to do here.
 
-     No-JS safety (2-c brief): the risk profile is IDENTICAL to the
-     existing reveal — [data-reveal] elements are hidden at rest by
-     CSS today (opacity 0, unguarded — verified above at this file's
-     own reveal block), but such elements only exist once React has
-     rendered, and the belt guarantees the reveal fires (above-fold
-     mount check, IO, fling reconciliation, settle belts). The line
-     variant changes the HIDING mechanism (clip-path instead of
-     opacity), not the guarantee. */
+   No-JS safety (2-c brief): the risk profile is IDENTICAL to the
+   existing reveal — [data-reveal] elements are hidden at rest by
+   CSS today (opacity 0, unguarded — verified above at this file's
+   own reveal block), but such elements only exist once React has
+   rendered, and the belt guarantees the reveal fires (above-fold
+   mount check, IO, fling reconciliation, settle belts). The line
+   variant changes the HIDING mechanism (clip-path instead of
+   opacity), not the guarantee.
+*/
   [data-reveal][data-reveal-variant="line"]:not([data-revealed="true"]) {
     /* (0,3,0) — beats the shared rest rule (0,2,0), opting the variant
-       out of the lift's opacity/translateY rest state. */
+    out of the lift's opacity/translateY rest state.
+*/
     opacity: 1;
     transform: none;
     clip-path: inset(0 100% 0 0);
@@ -359,8 +397,9 @@
   }
 
   /* Revealed — wipe open over the reveal token. The explicit
-     animation-delay re-declaration matters: the shorthand above resets
-     the longhand, and the variant must keep the shared stagger choreography. */
+   animation-delay re-declaration matters: the shorthand above resets
+   the longhand, and the variant must keep the shared stagger choreography.
+*/
   [data-reveal][data-reveal-variant="line"][data-revealed="true"] {
     animation: reveal-line-wipe-ltr var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
     animation-delay: calc(var(--motion-stagger-step) * var(--reveal-index, 0));
@@ -379,12 +418,13 @@
   }
 
   /* RM — an explicit per-effect kill IS required for the variant (the
-     existing RM approach does need per-effect rules whenever a variant
-     rule out-specifies the shared RM block): the (0,3,0)/(0,4,0) rules
-     above beat the shared RM reveal kill at (0,2,0), so without this
-     the wipe name + stagger delay would leak into reduced motion.
-     Mirrors the file's own per-effect RM pattern — reveal-fade
-     affordance, delay killed, final state pinned (both directions). */
+   existing RM approach does need per-effect rules whenever a variant
+   rule out-specifies the shared RM block): the (0,3,0)/(0,4,0) rules
+   above beat the shared RM reveal kill at (0,2,0), so without this
+   the wipe name + stagger delay would leak into reduced motion.
+   Mirrors the file's own per-effect RM pattern — reveal-fade
+   affordance, delay killed, final state pinned (both directions).
+*/
   @media (prefers-reduced-motion: reduce) {
     [data-reveal][data-reveal-variant="line"][data-revealed="true"],
     [dir="rtl"] [data-reveal][data-reveal-variant="line"][data-revealed="true"] {
@@ -395,48 +435,23 @@
     }
   }
 
-  /* ── .motion-hairline — the 1px rule utility ────────────────────────
-     The line language as a standalone element: a full-width 1px rule
-     painted with the canonical theme-aware hairline token (--rule).
-     block-size: 1px is the established raw hairline idiom in this repo
-     (auth.css connector rule) and sits outside every check-raw-css
-     axis (not type/radius/spacing). Apply to a <div> (or an <hr> — the
-     utility carries no border of its own, so hr's default border must
-     be handled by the consumer or base styles). */
-  .motion-hairline {
-    display: block;
-    inline-size: 100%;
-    block-size: 1px;
-    background: var(--rule);
-  }
+  
 
-  /* ── .motion-cine-lift — opt-in cinematic pacing ────────────────────
-     Deliberately NOT a standalone hidden-at-rest keyframe utility: a
-     self-contained entrance would need its own trigger/observer (the
-     brief forbids new observers) and would leave content permanently
-     invisible if its class never fired. Instead the class RIDES the
-     platform Reveal belt — add it to <Reveal className="motion-cine-lift">
-     (pair with distance="large") and the shared reveal-rise
-     choreography (translateY --reveal-distance → 0 + opacity, easing
-     var(--motion-ease-decelerate), i.e. the --ease-out decel) simply
-     slows to the cinema token. Only the duration longhand is
-     overridden, so the shared RM block still owns the animation under
-     reduced motion (re-pinned below — this rule out-specifies it). */
-  [data-reveal].motion-cine-lift[data-revealed="true"] {
-    animation-duration: var(--t-cinema);
-  }
+  
   @media (prefers-reduced-motion: reduce) {
     [data-reveal].motion-cine-lift[data-revealed="true"] {
-      animation-duration: 80ms; /* the shared RM reveal affordance */
+      animation-duration: 80ms; /* the shared RM reveal affordance
+*/
     }
   }
 
-  /* (End of the r305-c additive section.) */
+  /* (End of the r305-c additive section.)
+*/
 }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═══
    SECTION-ACCENT (moved from landing.css — 13-17, D14)
-   ─────────────────────────────────────────────────────────────────────
+   ───
    SectionAccent (components/motion/SectionAccent.tsx) renders on BOTH
    the LandingPage chunk and the CollegePages chunk, so its cascade
    rules must stay eager now that landing.css is a lazy chunk CSS.
@@ -445,7 +460,8 @@
    imported before auth/student/polish exactly like landing.css was,
    and eager CSS always precedes lazy chunk CSS — zero cascade outcome
    change.
-   ═══════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 /* SHEET BOTTOM ENTRANCE — the authored spring (audit 4-A11 P2-8).
    r130-W2-7: the duplicate-keyframe collision is CLOSED — the plain
    `translateY(100%)` slide that components.css also declared under
@@ -460,7 +476,8 @@
    multiplier); the easing comes from the consumer (.sheet-panel-bottom
    passes --motion-ease-decelerate); the 62% mid-keyframe supplies the
    spring. The reduced-motion kill for .sheet-panel-bottom stays in the
-   components block above (plus base.css's global belt). */
+   components block above (plus base.css's global belt).
+*/
 @layer overrides {
   @keyframes madarek-sheet-slide-bottom {
     from {
@@ -480,34 +497,30 @@
 
 @layer pages {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SECTION-ACCENT — 012-design-graphics-uplift T110 / T111.      ║
-     ║  Five accent kinds. Each has a pre-fire (initial) state and a  ║
-     ║  fired-state cascade triggered by .is-fired (added by the      ║
-     ║  useSectionAccent hook on viewport entry).                     ║
-     ║                                                                ║
-     ║  Reduced-motion: the hook fires immediately, so .is-fired is   ║
-     ║  applied without the cascade ever running. The selectors here  ║
-     ║  cover both paths.                                             ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔╔╔
+   SECTION-ACCENT — 012-design-graphics-uplift T110 / T111.
+   Five accent kinds. Each has a pre-fire (initial) state and a
+   fired-state cascade triggered by .is-fired (added by the
+   useSectionAccent hook on viewport entry).
+   
+   Reduced-motion: the hook fires immediately, so .is-fired is
+   applied without the cascade ever running. The selectors here
+   cover both paths.
+   ╚╚╚
+*/
   .section-accent {
     position: relative;
   }
 
   /* (r151c vocabulary sweep: the underline-draw / number-tick /
-     quote-fade / parallax-shift kind rules were deleted — audit
-     4-A11 documented 5 kinds across 7 consumers, but the landing
-     redesigns since left exactly TWO SectionAccent mounts, both
-     scene-paint (CollegePages ×2). The AccentKind union was narrowed
-     with them; re-add both halves together when a consumer returns.) */
+   quote-fade / parallax-shift kind rules were deleted — audit
+   4-A11 documented 5 kinds across 7 consumers, but the landing
+   redesigns since left exactly TWO SectionAccent mounts, both
+   scene-paint (CollegePages ×2). The AccentKind union was narrowed
+   with them; re-add both halves together when a consumer returns.)
+*/
 
-  /* ─── scene-paint — fade + 6 px lift, matches Reveal cadence. */
-  .section-accent-scene-paint {
-    opacity: 0;
-    transform: translateY(var(--motion-distance-small)); /* r153h: 6px → --motion-distance-small */
-    transition: opacity var(--motion-duration-reveal) var(--motion-ease-decelerate),
-                transform var(--motion-duration-reveal) var(--motion-ease-decelerate);
-  }
+  
   .section-accent-scene-paint.is-fired {
     opacity: 1;
     transform: none;
@@ -518,27 +531,25 @@
     .section-accent::after {
       transition: none !important;
     }
-    .section-accent-scene-paint {
-      transform: none;
-      opacity: 1;
-    }
   }
 
-  /* ───────────────────────────────────────────────────────────────────
-     Word-mask reveal — <MaskReveal> primitive (immersive wave 1).
-     Words (NEVER characters — Arabic cursive joining) rise from below
-     an overflow mask. The mask carries vertical padding with matching
-     negative margin so Arabic descenders (س ج ي ن …) never clip at
-     rest. Stagger = DOM order; in RTL the first word sits rightmost,
-     so the cascade reads right→left with zero direction math.
-     `--mask-delay` is set per-word by the component (base + index ×
-     token step); delays are exempt from tokenization by policy
-     (choreography offsets — check-motion-tokens.sh §Policy notes).
-     ─────────────────────────────────────────────────────────────────── */
+  /* ───
+   Word-mask reveal — <MaskReveal> primitive (immersive wave 1).
+   Words (NEVER characters — Arabic cursive joining) rise from below
+   an overflow mask. The mask carries vertical padding with matching
+   negative margin so Arabic descenders (س ج ي ن …) never clip at
+   rest. Stagger = DOM order; in RTL the first word sits rightmost,
+   so the cascade reads right→left with zero direction math.
+   `--mask-delay` is set per-word by the component (base + index ×
+   token step); delays are exempt from tokenization by policy
+   (choreography offsets — check-motion-tokens.sh §Policy notes).
+     ───
+*/
   [data-mask-word] {
     display: inline-block;
     overflow: hidden;
-    /* Descender headroom: pad the clip box, reclaim the space in flow. */
+    /* Descender headroom: pad the clip box, reclaim the space in flow.
+*/
     padding-block: 0.16em;
     margin-block: -0.16em;
     vertical-align: top;
