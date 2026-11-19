@@ -83,6 +83,48 @@
    "bytes": 9335,
    "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
    "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-hero-wrap",
+   "bp": "1440",
+   "file": "band-plate-1440.png",
+   "grid": 6,
+   "quant": 8,
+   "tol": 10,
+   "band": {
+    "w": 1427,
+    "h": 887
+   },
+   "paperRGB": [
+    246,
+    246,
+    239
+   ],
+   "masks": 20,
+   "bytes": 19058,
+   "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-hero-wrap",
+   "bp": "390",
+   "file": "band-plate-390.png",
+   "grid": 4,
+   "quant": 8,
+   "tol": 10,
+   "band": {
+    "w": 374,
+    "h": 828
+   },
+   "paperRGB": [
+    248,
+    248,
+    241
+   ],
+   "masks": 24,
+   "bytes": 6010,
+   "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
   }
  ],
  "mediaCrops": [
@@ -90,6 +132,7 @@
    "seat": "home-usecase-wrap",
    "bp": "1440",
    "file": "usecase-media-1440.png",
+   "dir": "roles",
    "w": 724,
    "h": 880,
    "bytes": 10299,
@@ -101,11 +144,36 @@
    "seat": "home-usecase-wrap",
    "bp": "390",
    "file": "usecase-media-390.png",
+   "dir": "roles",
    "w": 372,
    "h": 254,
    "bytes": 5451,
    "sha256": "d48ba8fdab7b9814",
    "derivedFrom": "band-plate-390.png (canvas 372×996; media strip sr y 210..464 of the 374×997 band → crop y 210..464, full width)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-hero-wrap",
+   "bp": "1440",
+   "file": "hero-media-1440.png",
+   "dir": "hero",
+   "w": 1368,
+   "h": 643,
+   "bytes": 15820,
+   "sha256": "b0616d111fb0107b",
+   "derivedFrom": "band-plate-1440.png (canvas 1422×882; art img sr 27,80 1373×647 over the 1427×887 band → crop 27,80..1395,723)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-hero-wrap",
+   "bp": "390",
+   "file": "hero-media-390.png",
+   "dir": "hero",
+   "w": 340,
+   "h": 388,
+   "bytes": 3755,
+   "sha256": "49e4bfdec7d8170d",
+   "derivedFrom": "band-plate-390.png (canvas 372×828; art img sr 16,60 342×388 over the 374×828 band → crop 16,60..356,448)",
    "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
   }
  ]

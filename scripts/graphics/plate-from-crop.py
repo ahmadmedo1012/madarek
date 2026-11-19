@@ -345,8 +345,15 @@ def main():
             "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
             "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied",
         })
+        # preserve every non-plate section (mediaCrops …): the record is shared
+        # by the plate generator and the crop steps, and a regenerate must not
+        # silently erase a sibling's audit trail
+        prov = load_json(prov_path) if os.path.exists(prov_path) else {}
+        if not isinstance(prov, dict):
+            prov = {}
+        prov["plates"] = plates
         with open(prov_path, "w", encoding="utf-8") as f:
-            json.dump({"plates": plates}, f, ensure_ascii=False, indent=1)
+            json.dump(prov, f, ensure_ascii=False, indent=1)
         print(f"[{args.seat}@{bp}] wrote {fpath}")
 
 
