@@ -43,6 +43,22 @@ DEFAULT_GRID = {"1440": 8, "390": 4, "768": 12, "1024": 12, "1920": 16}
 BP_VH = {"1440": 900, "390": 844, "768": 900, "1024": 900, "1920": 1080}
 
 
+def resolve_stored(p):
+    """Committed capture.json stores absolute paths from the capture host.
+    The evidence tree is relocatable: resolve against EVID when absent."""
+    if not p:
+        return p
+    if os.path.exists(p):
+        return p
+    marker = os.sep + os.path.join("docs", "audit", "evidence") + os.sep
+    i = str(p).find(marker)
+    if i >= 0:
+        alt = os.path.join(EVID, str(p)[i + len(marker):])
+        if os.path.exists(alt):
+            return alt
+    return p
+
+
 def load_json(path):
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -97,11 +113,11 @@ def build_band(seat, bp, capture, crops_dir):
         raise SystemExit(f"no band height for {seat}@{bp}")
     slices = []
     for st, v in (ref.get("states") or {}).items():
-        if not v.get("ok") or not v.get("file") or not os.path.exists(v["file"]):
+        if not v.get("ok") or not v.get("file") or not os.path.exists(resolve_stored(v["file"])):
             continue
         clip = v.get("clip") or {}
         try:
-            with Image.open(v["file"]) as im:
+            with Image.open(resolve_stored(v["file"])) as im:
                 w_store, h_store = im.width, im.height
         except OSError:
             continue
@@ -116,7 +132,7 @@ def build_band(seat, bp, capture, crops_dir):
             band_y = max(0, H - int(round(h_store * (cw / max(1, w_store)))))
         else:
             band_y = int(round(STATES.get(st, 0.0) * H))
-        slices.append((band_y, v["file"], v.get("liveMaskRects") or [], clip, w_store, h_store))
+        slices.append((band_y, resolve_stored(v["file"]), v.get("liveMaskRects") or [], clip, w_store, h_store))
         if st == "entry":
             entry_slice = slices[-1]
     if entry_slice is not None:
