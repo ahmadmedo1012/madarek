@@ -850,3 +850,37 @@ Comparability note: numbers taken before this entry were measured against
 the older reference capture and the buggy mask scaling; they remain valid as
 directional before/after within their own run but are not comparable to the
 `full-base` table above.
+
+### T3 wave 5 — footer band law (the height/END seat closed)
+
+Commit `266df430a`. The ≥1300 footer now composes to the frozen
+`footer.1440.json` root: **355fu grid + 314fu wordmark + 42fu legal = 711**
+(+1px footer border → 712), down from the content-driven 844.
+
+What moved: the three columns got explicit `grid-row: 1` seats (auto-placement
+had dropped col2 279px and col3 565px into implicit rows); the physical order
+un-mirrors to the reference (brand/form LEFT, links CENTER, mark RIGHT); the
+centre column splits 203/152 with the three 1px seams at x357/x595/x833; the
+closing hairline leaves the grid (absolute at y355, the reference's 1427×1 at
+y354); the contact strip leaves the flow into col1's empty y93..232 window; the
+mark alone centres at y71 (ref y70); the legal row un-mirrors (484 © box LEFT,
+nav RIGHT). All rules are scoped `@media (min-width: 1300px)` — 1024/768/390
+keep their frozen belts (390 markup/geometry unchanged).
+
+Measured (paired 1440+390, reference re-used from `full-base` so the only
+variable is our side):
+- heights 1440: **844 → 712** (ref 711); 390 unchanged.
+- END seats: grid 355, fstrip 356..670, legal 670..712; columns
+  0..357/357..1070/1070..1427.
+- section E **47.8** vs the table's 49.9. That 49.9 was not a like-for-like
+  comparison: the old 844px footer at END started at top −78, so its stored
+  crop was the footer's *last 764px* against the reference's *full 711px*
+  (top-aligned, consequently squeezed). The new run compares whole-footer at
+  END on both sides — 47.8 is the honest seat. The state split is
+  entry 39.7 / 390:55.8; the composition change itself is the geometry above,
+  not a pixel-score win (the reference's English text mass and the mark/scene
+  artwork dominate the remainder).
+- T 2/4 in the scoped run: the 1440 mid/exit pairs coincide with the document
+  end on both sides, and the live 390 reference stage shortened
+  (mid30 needs 11027 > stage end 10869). Recorded by the pair law, not scored;
+  no gate/threshold changed.
