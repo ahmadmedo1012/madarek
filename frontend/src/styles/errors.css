@@ -38,4 +38,20 @@
       transform: translateY(-1px);
     }
   }
+
+  /* R368 T5 — the [01] mono gutter index on the 404's eyebrow (the
+     numbered-sheet law the inner-public sheets carry; the sheet INDEX,
+     not the retired r324-X10 error code). Guest error sheets never
+     load r319-shell.css (.page-index's home), so the seat is spelled
+     out here — the .inx-head .page-index recipe (inner.css): mono +
+     the accent-ink register + tabular numerals, zero tracking. */
+  .nf-index {
+    margin-inline-end: var(--sp-2-5);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent-ink);
+  }
 }
