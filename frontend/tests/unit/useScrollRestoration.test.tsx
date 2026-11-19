@@ -143,13 +143,14 @@ describe('useScrollRestoration', () => {
   });
 
   it('a throwing sessionStorage degrades silently — no crash, POP falls back to top', async () => {
+    const proto = Object.getPrototypeOf(sessionStorage);
     const getSpy = vi
-      .spyOn(Storage.prototype, 'getItem')
+      .spyOn(proto, 'getItem')
       .mockImplementation(() => {
         throw new Error('SecurityError: opaque origin');
       });
     const setSpy = vi
-      .spyOn(Storage.prototype, 'setItem')
+      .spyOn(proto, 'setItem')
       .mockImplementation(() => {
         throw new Error('SecurityError: opaque origin');
       });
