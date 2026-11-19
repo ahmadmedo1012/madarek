@@ -1107,3 +1107,65 @@ served tree while the instrument captures. The run's REFERENCE side is valid
 (live capture, settled-height protocol, unaffected by local edits); the local
 side was re-captured clean with `--reuse-reference` on the stable committed
 tree. The contaminated numbers are not cited anywhere as scores.
+
+## Wave 3 — the full scorecard on the settled protocol + copy-reduction tree
+
+Run: full matrix (10 targets × 5 viewports × 4 states), reference side live-captured
+with the settled-height protocol, local side re-captured clean on the stable
+committed tree (`--reuse-reference`), after the problem diagonal fix and the T8
+copy reduction. Committed evidence: docs/audit/evidence/{scorecard,manifest,
+capture}.json (the contaminated first attempt is NOT cited anywhere; its reference
+side was reused, its local side replaced).
+
+**E 55.4 (was 55.0) · T 96.5 % · Q 100** — per-seat E (wave-2 → wave-3):
+problem 69.9→**71.0** · cta 68.1→**68.4** · why 66.5→**67.2** · chrome 58.0→58.0 ·
+map 52.7→**53.0** · intro 50.7→**51.4** · hero 46.8→46.5 · usecase 46.7→46.8 ·
+footer 45.9→**46.2** · platform 43.2→**42.7**.
+
+Worst state clusters (the next levers, measured this run):
+- platform@768: 27.6/28.5/24.8 (the whole bp is ~15 under its 390/1024 twins)
+- hero mid states: 1440 mid30 38.5 · 1024 mid30 26.3 (diff 56.6 %) · 768 mid30 37.4
+- intro mid states: 390 mid30 28.8 · 768 46–48 · 1440 mid30 54 (mid60 46.5)
+- usecase@1024 mid60 34.3 · @390 exit 41.8
+- footer@1024 entry 26.8 (footer's 1024 band)
+T floors: footer 66.7 % / cta 86.7 % are the reference-stage structural limits
+(recorded finding; both-sides reasons on the rows) — carried as documented
+limitations to T10 with the spec's acceptance-#1 escape, never a silent pass.
+
+## Session resume record (exact state for the next session)
+
+- **Lead branch** `exec/r368-fidelity-v2` @ `f089795c` (T3/T8/instrument work;
+  SpecKit synced). **Dev server**: vite :5303 (PID in /tmp if alive; restart with
+  `cd frontend && npx vite --port 5303 --strictPort`).
+- **T5 line COMPLETE** — `wip/r368-t5` @ `fac668c3` (+d4c1aadc evidence, db9e105b):
+  all inventoried public routes ≥90 pages.mjs light+dark, axe 0 critical/serious,
+  overflow sweep evidenced, 306 focused tests green; residuals: Lighthouse PERF
+  <90 (SPA-boot LCP; levers lead-owned: prerender public routes/entry diet —
+  landing control `/` also 60), shared ErrorSheetPage eyebrow (lead), PdfViewer
+  tabindex (lead). Merge `wip/r368-t5` + `wip/r368-t5-public` (4c8cc32c, Codebuff
+  line: meta/SEO + a11y hardening, disjoint) at integration.
+- **T6-a ACTIVE** — worktree /home/z/wt/r368-t6, branch `wip/r368-t6` @ `ed81e2de`
+  (+teacher WIP uncommitted): inventory 108 routes committed; shell pass landed
+  (dark indicator contrast 1.84:1→4.95:1); student family landed (/training
+  99.5/100, /achievements 100/100); teacher family IN PROGRESS. Its vite :5306 +
+  a stub API on :4000 (left by T5-b) may be running. DO NOT touch its worktree;
+  monitor via `git -C /home/z/wt/r368-t6 log --oneline -5`. After it finishes:
+  review diff + evidence, then dispatch T6-b (admin/owner/quality/registrar
+  families) per its wave-2 handoff note.
+- **T8 DONE (measurement)** — merged wip/r368-t8 @ 392a5bbd into the lead branch;
+  landing copy 1 398→1 115 (−20.24 %); pinned suites 218/218 green.
+- **T4** — value inventory at docs/audit/evidence/wave4-notes/value-inventory.md:
+  migrate the repeated raw values in non-landing sheets (17 raw spacing literals
+  in shared/heron-admin-owner.css; NOTE: check-raw-css.sh only globs styles/*.css
+  top-level — the shared/student/teacher/shell subdirs are UN-ENFORCED; candidates
+  for lead-minted tokens: --sp-3-5 (14px ×15 across 8 sheets), 3px micro-gap,
+  64px dock clearance).
+- **T7 Expo** — untouched; no mobile branch exists anywhere (checked twice).
+  apps/mobile (Expo ~58, own lockfile). Do AFTER T6 wave 2 dispatch.
+- **T9** — not started; landing CSS 721 612 B vs 601 352 B target; the five
+  cross-context lint duplicates + T4 migration feed it.
+- **T10** — needs T3 floors progress + T6/T7/T9 + integration (review branch),
+  then full acceptance (verify.sh unpiped, e2e, Lighthouse PERF shell work,
+  axe, bundle, mobile checks).
+- Background logs: /tmp/r368-fullrun-w3.log (contaminated run — reference side
+  only is usable), /tmp/r368-fullrun-w3b.log (the clean wave-3 run), /tmp/why-full.log.
