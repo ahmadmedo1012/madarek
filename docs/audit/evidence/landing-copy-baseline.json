@@ -1,0 +1,516 @@
+{
+  "tool": "scripts/gates/landing-copy-baseline.mjs",
+  "round": "r368",
+  "task": "T8-a",
+  "pinned": true,
+  "countingLaw": "lexer copied verbatim from scripts/gates/copy-budget.mjs (R353/R366 copy law): visible = props+plain+jsx buckets; aria reported separately, NOT in the total; Arabic word = whitespace token containing U+0600-06FF/0750-077F/08A0-08FF/FB50-FDFF/FE70-FEFF",
+  "inclusionLaw": [
+    "1. frontend/src/pages/LandingPage.tsx — full scan",
+    "2. frontend/src/components/landing/** — every .tsx (recursive, sorted)",
+    "3. frontend/src/components/landing/copy.ts — the landing shared-copy module (the brief's \"frontend/src/data/copy.ts\" does not exist in this tree; the module lives here)",
+    "4. frontend/src/data/landing-ledger.ts — full scan",
+    "5. frontend/src/data/colleges.config.ts — first 14 nameAr literals only (Vision.tsx renders colleges.slice(0, 14).map(c => c.nameAr)); nameEn/slug/accent/icon/cityAr excluded (machine data or count-only)",
+    "6. frontend/src/styles/landing/**.css — content: strings only (23 declarations scanned across 27 files; 0 Arabic words)"
+  ],
+  "files": [
+    {
+      "file": "frontend/src/pages/LandingPage.tsx",
+      "role": "landing-page",
+      "mounted": true,
+      "arabicVisible": 3,
+      "latinVisible": 54,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 3
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/ElevationDrawing.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 13,
+      "latinVisible": 31,
+      "ariaArabic": 42,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 13
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/HeroInkWindow.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 5,
+      "ariaArabic": 27,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/LearningPlanDrawing.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 11,
+      "latinVisible": 468,
+      "ariaArabic": 48,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 11
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/PainArt.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 2,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/SheetLoader.tsx",
+      "role": "landing-component",
+      "mounted": false,
+      "arabicVisible": 49,
+      "latinVisible": 66,
+      "ariaArabic": 3,
+      "buckets": {
+        "props": 0,
+        "plain": 41,
+        "jsx": 8
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/WhyScene.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 63,
+      "latinVisible": 115,
+      "ariaArabic": 6,
+      "buckets": {
+        "props": 15,
+        "plain": 39,
+        "jsx": 9
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/chrome/ConsentBanner.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 9,
+      "latinVisible": 31,
+      "ariaArabic": 4,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 9
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/chrome/Preloader.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 3,
+      "latinVisible": 14,
+      "ariaArabic": 3,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 3
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/chrome/SheetNav.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 12,
+      "latinVisible": 23,
+      "ariaArabic": 6,
+      "buckets": {
+        "props": 0,
+        "plain": 9,
+        "jsx": 3
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/cursor/HeroInspect.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 51,
+      "latinVisible": 121,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 48,
+        "jsx": 3
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/cursor/SheetCursor.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 51,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/hero/Hero.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 21,
+      "latinVisible": 0,
+      "ariaArabic": 4,
+      "buckets": {
+        "props": 0,
+        "plain": 21,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/hero/HeroPlate.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 16,
+      "latinVisible": 0,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 16
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/journey/JourneyScene.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 178,
+      "latinVisible": 70,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 178,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/journey/WordReveal.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 9,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/patterns/CardGrid.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 0,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/patterns/CtaPair.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 0,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/patterns/Eyebrow.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 0,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/patterns/Hairline.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 12,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/patterns/Marquee.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 0,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/patterns/Numeral.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 0,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/patterns/PinnedScene.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 0,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/sections/Chapters.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 0,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/sections/Concepts.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 212,
+      "latinVisible": 26,
+      "ariaArabic": 8,
+      "buckets": {
+        "props": 0,
+        "plain": 104,
+        "jsx": 108
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/sections/Footer.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 103,
+      "latinVisible": 71,
+      "ariaArabic": 18,
+      "buckets": {
+        "props": 5,
+        "plain": 24,
+        "jsx": 74
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/sections/Hero.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 0,
+      "latinVisible": 1,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/sections/Live.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 86,
+      "latinVisible": 4,
+      "ariaArabic": 2,
+      "buckets": {
+        "props": 0,
+        "plain": 77,
+        "jsx": 9
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/sections/Product.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 118,
+      "latinVisible": 40,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 12,
+        "plain": 89,
+        "jsx": 17
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/sections/Roles.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 137,
+      "latinVisible": 9,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 127,
+        "jsx": 10
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/sections/Statement.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 99,
+      "latinVisible": 5,
+      "ariaArabic": 4,
+      "buckets": {
+        "props": 0,
+        "plain": 82,
+        "jsx": 17
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/sections/Vision.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 39,
+      "latinVisible": 5,
+      "ariaArabic": 14,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 39
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/sections/Why.tsx",
+      "role": "landing-component",
+      "mounted": true,
+      "arabicVisible": 36,
+      "latinVisible": 0,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 0,
+        "jsx": 36
+      }
+    },
+    {
+      "file": "frontend/src/components/landing/copy.ts",
+      "role": "copy-module",
+      "mounted": true,
+      "arabicVisible": 25,
+      "latinVisible": 5,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 25,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/data/landing-ledger.ts",
+      "role": "landing-ledger",
+      "mounted": true,
+      "arabicVisible": 78,
+      "latinVisible": 1,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 78,
+        "jsx": 0
+      }
+    },
+    {
+      "file": "frontend/src/data/colleges.config.ts",
+      "role": "colleges-config (first 14 nameAr — landing-consumed only)",
+      "mounted": true,
+      "arabicVisible": 36,
+      "latinVisible": 0,
+      "ariaArabic": 0,
+      "buckets": {
+        "props": 0,
+        "plain": 36,
+        "jsx": 0
+      },
+      "strings": [
+        "كلية تقنية المعلومات",
+        "كلية الهندسة",
+        "كلية العلوم",
+        "كلية الطب البشري",
+        "كلية الآداب",
+        "كلية الاقتصاد",
+        "كلية التربية",
+        "كلية القانون",
+        "كلية الصيدلة",
+        "كلية طب وجراحة الفم والأسنان",
+        "كلية التقنية الطبية",
+        "كلية الرياضة والتربية البدنية",
+        "كلية التمريض",
+        "كلية الاقتصاد"
+      ]
+    }
+  ],
+  "totals": {
+    "files": 36,
+    "arabicVisible": 1398,
+    "latinVisible": 1239,
+    "ariaArabic": 189,
+    "mountedArabicVisible": 1349,
+    "unmountedCaveat": "SheetLoader.tsx (retired from mount, R333 P-D) is counted per the all-.tsx law; mountedArabicVisible excludes it. The PINNED total is arabicVisible."
+  },
+  "target": {
+    "reductionPct": 20,
+    "specAcceptance": "docs/specs/heron-fidelity.md acceptance 7 — landing copy at least 20% below this baseline",
+    "maxAllowed": 1118,
+    "reductionRequired": 280,
+    "formula": "maxAllowed = floor(1398 x 0.8) = 1118; reductionRequired = 1398 - 1118 = 280"
+  }
+}
