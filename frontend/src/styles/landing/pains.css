@@ -202,11 +202,19 @@
    physical RIGHT, cross-matching every column's art/text mass
    against the reference's. Pain 01 → track 4 (the physical
    LEFTMOST in RTL), 02 → 3, 03 → 2, 04 → 1. DOM/a11y order is
-   untouched — the nth-child placements are geometry only. */
-.pm-cols > .pm-col:nth-child(1) { grid-column: 4; }
-.pm-cols > .pm-col:nth-child(2) { grid-column: 3; }
-.pm-cols > .pm-col:nth-child(3) { grid-column: 2; }
-.pm-cols > .pm-col:nth-child(4) { grid-column: 1; }
+   untouched — the nth-child placements are geometry only.
+   R368 T3 (root-cause fix): the four seats ALSO pin grid-row: 1 —
+   a definite grid-column with an auto row lets the RTL sparse
+   auto-placement cursor advance a row whenever the next item's
+   column sits behind the cursor in the RTL flow direction, so the
+   four columns landed on a DIAGONAL (each on its own row — the
+   section measured 2494 px tall @1440 vs the reference's 743).
+   The row pin restores one row (section 840 px) with the flip's
+   physical order intact. */
+.pm-cols > .pm-col:nth-child(1) { grid-column: 4; grid-row: 1; }
+.pm-cols > .pm-col:nth-child(2) { grid-column: 3; grid-row: 1; }
+.pm-cols > .pm-col:nth-child(3) { grid-column: 2; grid-row: 1; }
+.pm-cols > .pm-col:nth-child(4) { grid-column: 1; grid-row: 1; }
 
 .pm-section .pm-col {
   position: relative;
