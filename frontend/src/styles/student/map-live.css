@@ -185,7 +185,7 @@
 .r323d-live-error {
   border: 1px solid var(--danger);
   color: var(--danger);
-  padding: var(--sp-2-5) 14px; /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
+  padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade) */
   margin-block-end: var(--space-lg, 16px); /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
   font-size: 0.875rem; /* type-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
 }

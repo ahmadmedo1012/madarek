@@ -586,7 +586,7 @@
     align-items: center;
     gap: 5px; /* spacing-gate: allow — typing-dots cadence gap for the three-dot animation */
     /* r149 (R3-A2 R8): نفس حشو فقاعة الدردشة 10/14 (كانت 12/14 درجة أعلى) */
-    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat bubble compact grade 10/14 — r149 R3-A2 R8 message density */
+    padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade) */
     border-radius: var(--r-xl);
     /* R313 (WP-E): square bubbles — the 4px tail-corner detail is
        retired with the radius-0 canon. */
@@ -614,7 +614,7 @@
     align-items: flex-start;
     gap: var(--sp-2);
     max-inline-size: min(640px, 78%);
-    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat error bubble compact grade 10/14 — r149 R3-A2 R8 message density */
+    padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade) */
     border-radius: var(--r-xl);
     background: var(--danger-soft);
     border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
@@ -1487,7 +1487,7 @@
 
   .chat-bubble {
     max-inline-size: min(640px, 78%);
-    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat bubble compact grade 10/14 — r149 R3-A2 R8 message density */
+    padding: var(--sp-2-5) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade) */
     border-radius: var(--r-xl);
     font-size: var(--fs-sm);
     line-height: var(--lh-base);

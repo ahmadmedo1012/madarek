@@ -26,7 +26,7 @@
   /* r155d: 16px → --sp-4 (exact rung); the 14px block inset is off-ladder
      (no 14px spacing rung) — left raw, noted as debt like the 8px at
      .notif-panel-action. */
-  padding: 14px var(--sp-4); /* spacing-gate: allow — panel head compact band grade 14/16 */
+  padding: var(--sp-3-5) var(--sp-4); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade) */
   border-bottom: 1px solid var(--border);
 }
 .notif-panel-title {
