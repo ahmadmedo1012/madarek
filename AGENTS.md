@@ -83,8 +83,12 @@ e2e, ios-webkit, design-gates, conform-gate, surface-drift; plus `size-gate.yml`
 these local gates — all runners pinned `ubuntu-24.04`:
 
 - **Bundle** — `scripts/check-bundle-size.mjs`, gz, `dist/assets/*.js` ONLY (CSS is not in
-  the gate): **total ≤ 770 KB HARD** (R339 restored r337's 777 — 13 KB slack invited
-  bloat; measured 764.1 at the re-pin), entry ≤ 92, pdf ≤ 110. It
+  the gate): **total ≤ 774 KB** (R369 reconciliation: the ONE source is
+  `scripts/check-bundle-size.mjs` `LIMIT_TOTAL_KB` — its comment line carries the
+  full measured raise history: R339 re-pinned 777→770, R350 F2 →773 (import
+  wizard, diet levers measured first), R352 K3 →773.5 (boot warm ping), R353 E2
+  →774.0 (exact-Libyan-roles seat layer); every raise documented + measured in
+  the same line; docs must never contradict the gate), entry ≤ 92, pdf ≤ 110. It
   sums ALL js chunks **including async chunks** — lazy-splitting only moves weight; the
   honest lever is real code cuts (e.g. the axios→native-fetch diet, −17.9 KB).
 - **Conformance ratchet** — `scripts/conformance/ratchet.json` is monotonic: `--gate`
@@ -136,7 +140,7 @@ briefs in `docs/redesign/r341/tasks/`.
   `frontend/src/styles/landing/x.css` (component imports its own sheet — see
   `LandingPage.tsx` header note); add the seat + import in `pages/LandingPage.tsx`; add
   `scripts/conformance/mapping/<key>.json` (ourSection/seat ids must match the DOM);
-  measure with `run.mjs`; total bundle must stay ≤770 KB.
+  measure with `run.mjs`; total bundle must stay ≤774 KB (see §3 — the gate's LIMIT_TOTAL_KB is the one source).
 - **App page**: `frontend/src/pages/X.tsx` + route in `App.tsx` — mind entry-chunk weight
   (`App.tsx`, `GlobalSearch` are eager; prefer lazy routes); light+dark themes, RTL and
   a11y are contract, and `check-csp-hash.sh` must stay green.
