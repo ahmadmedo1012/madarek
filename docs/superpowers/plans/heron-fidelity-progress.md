@@ -1198,3 +1198,19 @@ limitations to T10 with the spec's acceptance-#1 escape, never a silent pass.
   block-profile → art edit → scoped `--reuse-reference` measurement.
 - **Process law (repeated from the T8 lesson):** never edit the served tree
   while a capture runs; scoped runs write to .r368-tmp/<seat>-<n>.
+
+### T3 increment — the platform media enrichment (wave 4, first block-profile pass)
+
+`scripts/art/r368-original-media.py` scene_plan_card/scene_dashboard enriched
+(graph paper, filled rooms + walls/doors/ticks, orange room, tooltip, legend;
+window chrome, stat row, chart with axis, list with chips). 8/8 `--check`
+stable, provenance regenerated. Scoped (`.r368-tmp/platform-b`, reference
+reused): 768 avg 26.9→**28.2** · 390 avg 34.8→**36.6** (exit 32.1→35.9) · 1440
+flat (52.3) — one state regressed (390 entry 37.6→36.4, recorded; the seat
+improves). **The measured lesson:** thin-line drawings on paper-white produce
+low-variance 8×8 windows while the reference's dense screenshots produce
+high-variance windows — SSIM stays ~30–50 regardless of structural match.
+The convergence lever is DENSITY (hatching, furniture massing, text-like
+marks) tuned per measured cell statistics — the block-profile loop, next
+session. 1024/1920 platform crops still carry the previous media in the
+committed evidence (re-capture at the next full run).
