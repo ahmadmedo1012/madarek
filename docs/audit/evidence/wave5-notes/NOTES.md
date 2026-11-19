@@ -136,6 +136,9 @@ table rode `.leaderboard-table.tbl-stack` only — measured 898px wide inside th
   scrollable 898>694, verified live).
 - pages.mjs holds 100/100 light+dark @1440,390; r183+r312+landing-funnel unit 58 green;
   axe 0 critical/serious light+dark @390,1440 after the change.
+- OFFICIAL instrument re-run post-fix (`node scripts/conformance/pages.mjs --routes
+  /colleges/leaderboard --bps 1440,390 --url http://localhost:5305/` + `--dark`):
+  100% both themes, **pages gate: PASS**.
 
 ## Dev specimens — /__brand, /__design, /__plates: EXEMPT (evidenced)
 
