@@ -25,6 +25,8 @@ import '../../styles/student/profile-data.css';
  * copy and validation are unchanged (the r180-F4 contract). */
 import { ChangePasswordCard } from '../../components/account/ChangePasswordCard';
 import '../../styles/training.css'; // .achievement-* family (D11 css split, 12-15)
+/* r368 T6-a: the r333 restoration sheet — the deleted tier-orb/xp/leaderboard/achievement anatomy these pages consume. */
+import '../../styles/student/training-anatomy.css';
 /* R305 Heron: the shared student vocabulary + this family's page-scoped
    refinements (the deep profile hero band, §1 of the family sheet). */
 import '../../styles/student/heron.css';

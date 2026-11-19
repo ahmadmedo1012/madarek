@@ -48,6 +48,10 @@ import { EmptyCell } from '../../components/student';
  * drawn in the card's free margin, ≥1024px only, decorative. */
 import { TechnicalPlate } from '../../components/illustrations/technical/TechnicalPlate';
 import '../../styles/training.css'; // training surfaces + shared families this module owns (D11 css split, 12-15)
+/* r368 T6-a: the r333 restoration sheet — the deleted level-band/
+   badge-grid/leaderboard/tier-orb/reward anatomy this page's data
+   states still consume (see that sheet's banner). */
+import '../../styles/student/training-anatomy.css';
 /* R305 Heron: the shared student vocabulary + the supplemental family's
    page-scoped refinements (the achievements deep strip — §2 of that sheet). */
 import '../../styles/student/heron.css';
@@ -138,6 +142,18 @@ export default function TrainingCatalogPage() {
     <PageFrame>
       <PageHeader
         title="التطوير الذاتي"
+        index="01"
+        actions={
+          /* r368 T6-a: the page-level primary CTA the family contract
+             carries (CatalogPage's «مقرّراتي المسجّلة» idiom) — the
+             growth family's reciprocal link. Retires the level band's
+             ghost twin (same destination/label) so ONE achievements
+             seat remains. */
+          <Link to="/achievements" className="btn primary sm">
+            عرض الإنجازات
+            <Icon icon={ChevronLeft} size={14} />
+          </Link>
+        }
       />
 
       {/* My summary — KPI band + level progress. Pending → shape-matched
@@ -190,10 +206,6 @@ export default function TrainingCatalogPage() {
                   ariaLabel="التقدّم نحو المستوى التالي في التطوير الذاتي"
                 />
               </div>
-              <Link to="/achievements" className="btn ghost sm">
-                عرض الإنجازات
-                <Icon icon={ChevronLeft} size={14} />
-              </Link>
             </div>
           </Card>
         </>
@@ -793,6 +805,17 @@ export function AchievementsPage() {
           انضبط على تركيب العائلة الواحد. */}
       <PageHeader
         title="الإنجازات"
+        index="01"
+        actions={
+          /* r368 T6-a: the page-level primary CTA — the same honest
+             «تصفّح المسارات» destination the empty tab panels already
+             carry, seated in the header so the data state keeps it
+             too (the family's header-CTA contract). */
+          <Link to="/training" className="btn primary sm">
+            {BROWSE_TRACKS}
+            <Icon icon={ChevronLeft} size={14} />
+          </Link>
+        }
         tabs={
           /* Tabs — manual role/aria annotation (the tabs carry icons, which the
               shared Tabs primitive's string-only labels don't support yet).

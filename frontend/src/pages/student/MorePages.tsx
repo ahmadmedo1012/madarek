@@ -35,6 +35,8 @@ import { TechnicalPlate } from '../../components/illustrations/technical/Technic
  * pages). */
 import { SectionBar, BarCount, StatusChip, EmptyCell, WeekStrip } from '../../components/student';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
+/* r368 T6-a: the r333 restoration sheet — the deleted tier-orb/xp/leaderboard/achievement anatomy these pages consume. */
+import '../../styles/student/training-anatomy.css';
 import { formatDate } from '../../utils/numbers';
 /* ── r305-c (schedule family) + r305-d (supplemental family) imports —
    collapsed by the R305 integrator (handoff N1): the duplicated
