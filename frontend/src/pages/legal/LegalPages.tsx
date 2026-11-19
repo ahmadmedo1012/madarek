@@ -54,7 +54,7 @@ export function PrivacyPage() {
   useLegalMeta({
     title: PRIVACY_TITLE,
     path: '/legal/privacy',
-    description: 'ما نجمعه ولماذا وأين يُخزَّن، وحقوقك.',
+    description: 'ماذا نجمع ولماذا، وحقوقك.',
   });
 
   return (
@@ -90,7 +90,7 @@ export function PrivacyPage() {
       <LegalSectionBar index={3} title="أين يُخزَّن" id="privacy-where" />
       <LegalCell>
         <p className="lg-p">
-          الويب وقاعدة <CodeRun>PostgreSQL</CodeRun> على <strong>Vercel</strong> و<strong>Neon</strong>،
+          الويب و<CodeRun>PostgreSQL</CodeRun> على <strong>Vercel</strong> و<strong>Neon</strong>،
           والمرفوعات في مخزن يحدده المشغّل.
         </p>
       </LegalCell>
@@ -98,9 +98,9 @@ export function PrivacyPage() {
       <LegalSectionBar index={4} title="مدة الاحتفاظ" id="privacy-retention" />
       <LegalCell>
         <p className="lg-p">
-          رمز الوصول <CodeRun>15m</CodeRun> ورمز التحديث
+          رمز الوصول <CodeRun>15m</CodeRun> والتحديث
           <CodeRun> 7d</CodeRun>، وقرارك يبقى حتى تغييره؛ سياسة الاحتفاظ
-          وطلب الحذف <PendingTag />.
+          والحذف <PendingTag />.
         </p>
       </LegalCell>
 
@@ -164,7 +164,7 @@ export function TermsPage() {
       <LegalSectionBar index={1} title="ما هي مدارك" id="terms-what" />
       <LegalCell>
         <p className="lg-p">
-          منصّة تعليمية تقنية مستقلّة، عربية أولًا — لا تنتمي لمؤسّسة تعليمية ولا تمثّلها.
+          منصّة تعليمية مستقلّة، عربية أولًا — لا تنتمي لمؤسّسة ولا تمثّلها.
         </p>
         <p className="lg-p">
           <strong>مدارك ليست جامعة معتمدة ولا تمنح درجات</strong> — محتواها عرض تجريبي
@@ -179,8 +179,8 @@ export function TermsPage() {
           أنت مسؤول عن حسابك وما يُكتب منه.
         </p>
         <p className="lg-p">
-          حسابات التجربة على <CodeRun>@test.ly</CodeRun> بكلمة مرور معروفة —
-          لا بيانات حقيقية ولا خصوصية.
+          حسابات <CodeRun>@test.ly</CodeRun> تجريبية بكلمة مرور معروفة —
+          لا بيانات حقيقية.
         </p>
       </LegalCell>
 
@@ -195,7 +195,7 @@ export function TermsPage() {
       <LegalSectionBar index={4} title="الخدمة كما هي" id="terms-as-is" />
       <LegalCell>
         <p className="lg-p">
-          المنصّة تجريبية وتُقدَّم <strong>«كما هي»</strong>: قد تتغيّر الميزات أو تتوقف
+          المنصّة تجريبية <strong>«كما هي»</strong>: قد تتغيّر أو تتوقف
           دون إشعار، بلا ضمانات.
         </p>
       </LegalCell>
@@ -205,7 +205,7 @@ export function TermsPage() {
       <LegalSectionBar index={5} title="المشغّل والقانون" id="terms-operator" />
       <LegalCell>
         <p className="lg-p">
-          تُشغَّل كمشروع تجريبي مستقل؛ الهوية القانونية للمشغّل والقانون
+          مشروع تجريبي مستقل؛ هوية المشغّل والقانون
           الحاكم <PendingTag /> — وقد تُحدَّث.
         </p>
       </LegalCell>
@@ -248,7 +248,7 @@ export function CookiesPage() {
       <LegalSectionBar index={1} title="المبدأ" id="cookies-principle" />
       <LegalCell>
         <p className="lg-p">
-          التخزين محلي على جهازك، ولا يُرسل للخادم إلا ما يلزم طلبك؛
+          التخزين محلي على جهازك، ولا يُرسل إلا ما يلزم طلبك؛
           والخطوط مستضافة داخليًا — لا تحليلات ولا تتبّع.
         </p>
       </LegalCell>
@@ -292,9 +292,9 @@ export function CookiesPage() {
       <LegalSectionBar index={3} title="الكوكي الوحيد" id="cookies-the-cookie" />
       <LegalCell>
         <p className="lg-p">
-          كوكي واحد: <CodeRun>mdrk_refresh</CodeRun> — رمز تحديث الجلسة، <CodeRun>httpOnly</CodeRun>
+          كوكي واحد: <CodeRun>mdrk_refresh</CodeRun> — رمز التحديث، <CodeRun>httpOnly</CodeRun>
           و<CodeRun>sameSite=strict</CodeRun> في <CodeRun>/api/v1/auth</CodeRun>،
-          وينتهي خلال <CodeRun>7d</CodeRun>. حذفه يُخرجك من الجهاز.
+          ينتهي خلال <CodeRun>7d</CodeRun>؛ وحذفه يُخرجك.
         </p>
       </LegalCell>
 
@@ -305,8 +305,8 @@ export function CookiesPage() {
           وقرارك يُحفظ فلا تُسأل مجددًا.
         </p>
         <p className="lg-p">
-          أما <CodeRun>mdrk-academic-links</CodeRun> <strong>فلا يُمس عند الرفض</strong>:
-          بياناتك التي كتبتَها تبقى ملكك.
+          <CodeRun>mdrk-academic-links</CodeRun> <strong>لا يُمس عند الرفض</strong> —
+          بياناتك تبقى ملكك.
         </p>
       </LegalCell>
 
@@ -349,7 +349,7 @@ export function AccessibilityPage() {
       <LegalSectionBar index={2} title="الحدود المعروفة" id="a11y-limits" />
       <LegalCell>
         <p className="lg-p">
-          لم يُجرَ تقييم رسمي بعد، ومستوى الالتزام المستهدف (مثل <CodeRun>WCAG 2.1 AA</CodeRun>)
+          لم يُجرَ تقييم رسمي؛ مستوى الالتزام المستهدف (مثل <CodeRun>WCAG 2.1 AA</CodeRun>)
           <PendingTag />.
         </p>
       </LegalCell>
@@ -382,9 +382,9 @@ export function SecurityPage() {
       <LegalCell>
         <ul className="lg-list">
           <li>كلمات المرور تُجزَّأ بـ <CodeRun>argon2</CodeRun> (<CodeRun>12-72</CodeRun> محرفًا) والشائعة مرفوضة.</li>
-          <li>رمز وصول (<CodeRun>15m</CodeRun>) ورمز تحديث (<CodeRun>7d</CodeRun>) يدور عند كل تجديد؛ تغيير كلمة المرور يُبطل الجلسات.</li>
+          <li>رمز وصول (<CodeRun>15m</CodeRun>) وتحديث (<CodeRun>7d</CodeRun>) يدوران عند كل تجديد؛ تغيير كلمة المرور يُبطل الجلسات.</li>
           <li>رمز التحديث في كوكي <CodeRun>httpOnly</CodeRun> و<CodeRun>sameSite=strict</CodeRun> في <CodeRun>/api/v1/auth</CodeRun> — لا يقرؤه سكربت.</li>
-          <li>تحديد معدل المحاولات لكل IP، وقفل الحساب مؤقتًا بعد الفشل المتكرر.</li>
+          <li>تحديد محاولات لكل IP وقفل الحساب مؤقتًا بعد تكرار الفشل.</li>
           <li>الأذونات تُفرض في الخادم حسب الدور؛ والمرفوض يعيد <CodeRun>403</CodeRun>.</li>
           <li>رؤوس سياسة أمان المحتوى (<CodeRun>CSP</CodeRun>) مع كل صفحة.</li>
         </ul>
@@ -427,9 +427,9 @@ export function DataPage() {
       <LegalSectionBar index={1} title="النوعان" id="data-types" />
       <LegalCell>
         <p className="lg-p">
-          <strong>بيانات مبذورة اصطناعية بالكامل:</strong> «مؤسسة مدارك النموذجية» بكلياتها ومقرراتها
-          وحسابات <CodeRun>@test.ly</CodeRun> ونتائجها —
-          لا تمثّل أحدًا حقيقيًا.
+          <strong>بيانات اصطناعية بالكامل:</strong> «مؤسسة مدارك النموذجية» بكلياتها ومقرراتها
+          ونتائج <CodeRun>@test.ly</CodeRun> —
+          لا تمثّل أحدًا.
         </p>
         <p className="lg-p">
           <strong>بياناتك الحقيقية:</strong> ما تدخله عند التسجيل وما تكتبه وترفعه.
@@ -447,7 +447,7 @@ export function DataPage() {
       <LegalSectionBar index={3} title="التخزين والاحتفاظ" id="data-retention" />
       <LegalCell>
         <p className="lg-p">
-          النوعان في مكان واحد (<Link to="/legal/privacy" className="lg-link">سياسة الخصوصية</Link>)؛
+          النوعان في مكان واحد (<Link to="/legal/privacy" className="lg-link">الخصوصية</Link>)؛
           وكله عرض حتى استكمال سياسة الاحتفاظ <PendingTag />.
         </p>
       </LegalCell>

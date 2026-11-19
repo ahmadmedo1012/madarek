@@ -29,7 +29,7 @@ type Phase = 'pending' | 'verified' | 'failed';
 
 /** The terminal refusal's honest way forward (r357 copy, verbatim —
  * pinned by tests/unit/r357-verify-email.test.tsx). */
-const FAILED_HINT = 'اطلب رسالة جديدة من «الإعدادات» ثم افتح الرابط من بريدك.';
+const FAILED_HINT = 'اطلب رسالة جديدة من «الإعدادات» وافتح الرابط من بريدك.';
 
 export default function VerifyEmailPage() {
   useThemeSync();

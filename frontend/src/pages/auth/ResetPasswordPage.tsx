@@ -39,7 +39,7 @@ const newPasswordSchema = z
   .min(12, '12 حرفًا على الأقل')
   .max(72, '72 حرفًا كحدّ أقصى')
   .refine((pw) => !isCommonPassword(pw), {
-    message: 'كلمة المرور شائعة جدًا — اختر واحدة أقل توقّعًا',
+    message: 'كلمة مرور شائعة — اختر أقل توقّعًا',
   });
 
 const resetFormSchema = z
@@ -61,7 +61,7 @@ const INVALID_TOKEN_BODY =
 
 /** Generic refusal ONLY for failures the server never answered (network). */
 const GENERIC_RESET_ERROR =
-  'تعذّر التحديث — تحقّق من اتصالك ثم أعد المحاولة.';
+  'تعذّر التحديث — تحقّق من اتصالك وأعد المحاولة.';
 
 /** Success → back to the login sheet: fast enough to feel guided, slow
  * enough to read the confirmation (2.4s). */

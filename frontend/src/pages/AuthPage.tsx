@@ -58,7 +58,7 @@ function isRateLimitError(error: unknown): boolean {
 function rateLimitMessage(error: unknown): string {
   const ax = error as ApiError<LoginErrorBody> | null;
   const serverMessage = ax?.response?.data?.error?.message;
-  return serverMessage ?? 'محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة.';
+  return serverMessage ?? 'محاولات كثيرة — انتظر قليلًا وأعد المحاولة.';
 }
 
 /** Generic refusal ONLY for failures the server never answered (network)
@@ -66,7 +66,7 @@ function rateLimitMessage(error: unknown): string {
  *  DID answer, its own Arabic message shows verbatim (authErrorView,
  *  r157 F5 / D17-3). */
 const GENERIC_LOGIN_ERROR =
-  'تعذَّر تسجيل الدخول — تحقَّق من البريد وكلمة المرور واتصالك.';
+  'تعذّر الدخول — تحقّق من البريد والمرور والاتصال.';
 
 const loginSchema = z.object({
   // Validation-first «مطلوب» (r157 F5): empty / whitespace-only input is
@@ -365,8 +365,8 @@ export default function AuthPage() {
                   condition honest: only a real in-app from-path (the
                   exact thing navigateAfterLogin will resume) counts. */}
               {readFromPath(location.state)
-                ? 'سجّل الدخول للمتابعة إلى صفحتك.'
-                : 'سجِّل دخولك للوصول إلى مقرَّراتك.'}
+                ? 'سجّل دخولك للمتابعة إلى صفحتك.'
+                : 'سجّل دخولك للوصول إلى مقرَّراتك.'}
             </p>
           </div>
 
