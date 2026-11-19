@@ -42,3 +42,50 @@ Every line: command + real output, or artifact path. Times UTC.
   `docs/audit/evidence/r369/mobile/before-core/` (gfxinfo.txt, profile.txt, last-frame.png).
 - BEFORE gfxinfo (owner/system, launch window, NOT the scroll protocol): 82.29 % janky —
   this is the cold-launch window number, superseded by the proper per-screen scroll protocol.
+
+## Session 3 — 2026-11-19 (the C3.1/C3.2 sheet review + the C3.4 numbers)
+
+### 16:00–16:05 — AFTER dispatches (C3.1)
+- `POST /actions/workflows/ui-screens.yml/dispatches` (ref=agent/r369-product, app_ref=current):
+  core → run **44561417283** (@c609a279, post-copy-diet tree) — completed **success**;
+  extended → run **44572492895** — cancelled by the pending-run de-dup race (two dispatches
+  <10s apart from one ref cancel the earlier unconsumed one); re-dispatched by the remote
+  session as run **44574441331** (@6f48bcf8) — in flight.
+- BEFORE (main 347e2508): core run **44512581240** (success, 22 jobs) + extended run
+  **44516064642** (success, 22 jobs: tablet 800×1280 / landscape 2340×1080 / fs2 / dark tablet).
+- Artifact downloads (6 AFTER role sets + 2 BEFORE): `/home/z/r369-hoist/mobile/{after-core,before-core}`.
+
+### 16:40–17:05 — the C3.2 sheet review (the C1.5 lesson applied: montage ≠ evidence)
+- Contact sheets cut (6 montages, `scripts/tmp + sharp`): student light/dark-standard,
+  teacher light/dark-standard, quality light/dark-standard — 4-up grids at 180px.
+- The MONTAGE VLM pass rated student 2/5 with ~40 claimed defects — REJECTED as evidence:
+  every spot-checked claim failed the pixel-level cross-check (thumbnail scaling + JPEG
+  compression artifacts; "label overlaps icon" / "title clipped" / "cards overlap" all
+  disproven on full-resolution crops).
+- The FULL-RESOLUTION VLM passes (12 screens + 4 targeted crops):
+  - student light-standard: dashboard / courses / alerts / profile — **CLEAN**
+    (verified crops: TabBar label↔icon gap adequate, no collision; profile title
+    «حسابي» descender 15–20px clear of the hairline);
+  - student dark-a11y-small (font scale): dashboard / courses / AI — **CLEAN**
+    (verified: the "tiles cut" = normal scroll boundary; the "cards overlap" = disjoint
+    y-bands, no ink-on-ink);
+  - teacher light-standard: dashboard / students / grades / schedule — **CLEAN**
+    (one tight clearance verified: the «فتح التكاليف» button ends 7–9px above the bar —
+    no overlap).
+- Verdict: **zero hard defects in the AFTER set** — no C3.2 root-fix required; the two
+  tight-but-valid clearances recorded (TabBar label marginTop 2 + the 1.12 icon scale
+  leaves ~0.7px visual slack; content bottom padding above the bar 8px on one screen).
+
+### 17:10 — the C3.4 numbers (final tree)
+- `CI=1 npx jest --ci` → **1271/1271** · `npx expo-doctor` → **20/20** ·
+  `node scripts/qa/worklet-audit.mjs` → **LAWFUL — 243 files, 0 violations**.
+- Cold start (`Displayed ly.madarek.mobile/.MainActivity`, CI x86_64 emulator):
+  AFTER **2s777ms** (first cold launch) vs BEFORE **3s306ms** — the AFTER boots faster on
+  the same protocol; both above the 2.5s bar ON THE EMULATOR (recorded limitation: the
+  shared-runner x86_64 emulator taxes ART/Hermes; no real-device harness exists).
+- Jank (`dumpsys gfxinfo`, whole-role-walk window incl. screencap stalls): BEFORE
+  student 80.04% / teacher 84.09% vs AFTER student 78.94% / teacher 91.04% — the protocol
+  measures emulator+screencap overhead, not per-screen render cost (the workflow resets
+  gfxinfo before the WHOLE maestro walk; a per-screen framestats harness does not exist —
+  recorded limitation per the lane's allowance).
+- APK growth: `build-android` dispatched on the branch — run **44576412696** (in flight).
