@@ -30,6 +30,7 @@ The live program is **R368/R369 Heron fidelity** (spec `docs/specs/heron-fidelit
 Closed rounds and superseded evidence live in **`docs/archive/redesign/`** (moved in T-21, branch `r338/t21-docs`):
 
 - `r308, r310, r311, r313, r323, r332, r333` — closed round evidence (r313's `OVERRIDE-LEDGER.md` remains linked from `AGENTS.md` at its archive path).
+- `r349, r363-operations-readiness` — closed rounds, archived R369 (grep-verified unreferenced from live code/gates/workflows).
 - `r338, r339, r340` — closed-round evidence, archived (task 8-i, branch `wip/arch`) with two keep-live exceptions documented in the live-docs table above: `r338/excusals.md` (the standing excusal ledger) and `r339/T-10-CHROME.md` (instrument-referenced) remain under `docs/redesign/`; r334/r336 never existed as directories.
 - `handoff/` — r304/r305-era section handoffs and QA audits.
 - `r335/` — round docs only (`HANDOFF.md`, `OWNERSHIP.md`, `REPORT.md`, `arsenal.md`); `heron-spec/` stayed live (see above).
