@@ -37,6 +37,9 @@ import { useAuthStore, type AcademicPosition } from '../../stores/auth.store';
  * grammar carried to the chrome-less guest colleges surfaces, mounted
  * ONLY in the guest branch (authed visitors get the AppShell). */
 import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
+/* R368 T5 — the public sheets' shared head metadata (title,
+ * description, canonical, og:url) — one owner for the pattern. */
+import { useLegalMeta } from '../legal/LegalSheet';
 // D14 CSS split (13-17): this sheet also styles the .comp-* competitions
 // grid rendered by the page below and is shared with two other lazy
 // consumers (CompetitionsPages + CommunityPages — rg-verified, r157;
@@ -199,6 +202,9 @@ function useDocTitle(title: string | null) {
  * links, the guest docTitle and the leaderboard CTA repeated it as
  * three separate literals). */
 const COLLEGES_LABEL = 'كلّيّات الجامعة';
+/* R368 T5 — the gallery's polite loading announcement (one home for the
+ * string; the skeleton bars below stay decorative). */
+const LOADING_COLLEGES = 'جارٍ تحميل الكلّيّات…';
 /* R366 L4: the leaderboard label — one home for the docTitle, the page
  * header and the CTA (three literals said the same two words). */
 const LEADERBOARD_LABEL = 'منافسة الكلّيّات';
@@ -262,9 +268,15 @@ export function CollegesIndexPage() {
   // authed roles, who see the working university tool).
   const isGuest = !user;
   // Guests get no AppShell → no docTitle effect (A12 P2-6). Authed
-  // visitors keep the shell's own resolution (NAV_TITLES carries
-  // /colleges — same label, one source in nav.ts).
-  useDocTitle(isGuest ? COLLEGES_LABEL : null);
+  // visitors keep the shell's own title (NAV_TITLES carries /colleges —
+  // same label, one source in nav.ts); the head metadata is the same on
+  // both branches: without it the LANDING's description, canonical and
+  // og:url stayed mounted here (canonical pointed every guest at `/`).
+  useLegalMeta({
+    title: COLLEGES_LABEL,
+    path: '/colleges',
+    description: 'سجلّ الكلّيّات النموذجي — بيانات اصطناعية للعرض.',
+  });
   const inst = useInstitutionScope(); // r180: scoped key
   const q = useQuery({
     queryKey: withInstitutionScope(['colleges'], inst),
@@ -336,24 +348,30 @@ export function CollegesIndexPage() {
            sections of RowList rows (r264), so the skeleton previews THAT
            anatomy (title bar + bordered row stack per campus), not the
            retired card grid. Decorative only (aria-hidden), per the
-           shared skeleton contract. */
-        <div className="gallery-skeleton" aria-hidden>
-          {[0, 1].map((s) => (
-            <section key={s} className="gallery-skeleton-section">
-              <Skeleton className="gallery-skeleton-title" />
-              <div className="gallery-skeleton-rows">
-                {[0, 1, 2, 3].map((i) => (
-                  <div key={i} className="gallery-skeleton-row">
-                    <Skeleton className="gallery-skeleton-row-emoji" />
-                    <div className="gallery-skeleton-row-lines">
-                      <Skeleton className="gallery-skeleton-row-line-a" />
-                      <Skeleton className="gallery-skeleton-row-line-b" />
+           shared skeleton contract. R368 T5: the skeleton itself is
+           silent to assistive tech, so the wrapper carries the busy
+           state and a polite text announcement — the shared skeleton
+           family's own aria-busy/aria-live contract. */
+        <div aria-busy="true">
+          <p role="status" className="visually-hidden">{LOADING_COLLEGES}</p>
+          <div className="gallery-skeleton" aria-hidden>
+            {[0, 1].map((s) => (
+              <section key={s} className="gallery-skeleton-section">
+                <Skeleton className="gallery-skeleton-title" />
+                <div className="gallery-skeleton-rows">
+                  {[0, 1, 2, 3].map((i) => (
+                    <div key={i} className="gallery-skeleton-row">
+                      <Skeleton className="gallery-skeleton-row-emoji" />
+                      <div className="gallery-skeleton-row-lines">
+                        <Skeleton className="gallery-skeleton-row-line-a" />
+                        <Skeleton className="gallery-skeleton-row-line-b" />
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          ))}
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
         </div>
       )}
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}

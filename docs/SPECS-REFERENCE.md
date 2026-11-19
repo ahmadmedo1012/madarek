@@ -14,8 +14,10 @@
 | `008-colleges-mount-order` | College mount order fix | Complete (merged) |
 | `011-platform-completeness-uplift` | Search, notifications, session policy | **Partial** — locale/i18n user story (US7) never implemented: no i18next/react-i18next dependency, no `frontend/src/i18n/` layer, no locale model. Landed parts: Arabic-aware search normalization (`modules/search/normalize.ts`), notification preferences groundwork, a11y CI deps, splash/skeleton primitives |
 | `012-design-graphics-uplift` | Themes, illustrations, overlays, onboarding, milestones | **Complete** — landed via migration `20260602190000_012_design_uplift_state`, branch merged to `main` |
+| `013-public-pages-fidelity` | R368 T5 — public non-landing pages (RTL, phones, states, a11y, head metadata) | **Branch only** — `wip/r368-t5-public`, not merged. Evidence: axe 0 violations / 60 cells, metadata + loading fixes (`specs/013-public-pages-fidelity/tasks.md`) |
 
 Spec directories on `main`: 001, 002, 003, 004, 011, 012 (no 009/010 ever existed).
+`013` exists only on the R368 task branch until it is reviewed and merged.
 
 ## Feature 012-design-graphics-uplift (landed)
 
