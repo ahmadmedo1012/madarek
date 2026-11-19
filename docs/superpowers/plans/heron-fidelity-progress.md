@@ -1169,3 +1169,32 @@ limitations to T10 with the spec's acceptance-#1 escape, never a silent pass.
   axe, bundle, mobile checks).
 - Background logs: /tmp/r368-fullrun-w3.log (contaminated run — reference side
   only is usable), /tmp/r368-fullrun-w3b.log (the clean wave-3 run), /tmp/why-full.log.
+
+## T3 seat diagnoses (wave-3 evidence, VLM-inspected crops — the next session's map)
+
+- **platform@768 (worst cluster 24.8–28.5):** our band's STRUCTURE already matches
+  the live reference (two 254px rows, image LEFT + text RIGHT — verified by DOM
+  probe; the live reference renders its product images at 768: 371×254 + 377×258
+  at x=7, top 7606/7860 — the frozen spec's "0×0 census at 768" reading does not
+  match the live site). The gap is the ARTWORK: our authored plates render as
+  skeleton bars/dots (geometric primitives) while the reference shows a rich
+  floorplan mockup + a real dashboard screenshot. Lever: enrich the authored
+  media (scripts/art/r368-original-media.py) toward the measured per-cell tonal
+  blocks — richer room shapes, chart geometry, list rows — then re-measure.
+- **hero mid states (38.5/26.3/37.4 at 1440/1024/768 mid30, diffs 44–57 %):**
+  the hero art seat's content at scroll states diverges — diagnose the hero
+  mid30 pair crop next (the plate vs the reference's art progression).
+- **intro mid states (390 mid30 28.8; 1440 mid60 46.5):** the intro ink-reveal
+  (T3-C overlay) likely under/over-plays at these states — check the
+  st-media-ink coverage at 390 mid states vs the reference's dark foliage
+  (measured 57–130 tones).
+- **usecase@1024 mid60 34.3, @390 exit 41.8:** the deck's strip object-position
+  at 1024 + the exit-state band structure.
+- **THE CONVERGENCE METHOD (recorded law for the media seats):** E≥88 with
+  ORIGINAL artwork means authored compositions TUNED to the measured 8×8 tonal
+  block profiles of each reference seat (per-cell mean color/density from the
+  committed reference crops — the band plates' own generator
+  scripts/graphics/plate-from-crop.py holds the statistics). Iterate:
+  block-profile → art edit → scoped `--reuse-reference` measurement.
+- **Process law (repeated from the T8 lesson):** never edit the served tree
+  while a capture runs; scoped runs write to .r368-tmp/<seat>-<n>.
