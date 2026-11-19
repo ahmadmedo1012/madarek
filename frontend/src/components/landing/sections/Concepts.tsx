@@ -38,33 +38,33 @@ const ANNOTATIONS = [
   {
     code: 'DATUM',
     title: 'الأُسّ المرجعي',
-    text: 'نقطة البداية التي تُقاس منها المفاهيم — كل مسافة في الرسم تنطلق منها.',
+    text: 'النقطة التي تُقاس منها المفاهيم.',
   },
   {
     code: 'CLOSURE',
     title: 'إقفال المثلث',
-    text: 'كل خط بصر جديد يُقفل مثلثًا، فيثبت المفهوم في الشبكة ويصبح قابلاً للتحقّق.',
+    text: 'كل خط جديد يُقفل مثلثًا فيثبت المفهوم.',
   },
   {
     code: 'MEASURE',
     title: 'القياس الحي',
-    text: 'مرّر المؤشر أو ركّز على أي محطة: يُرسم خطّ القياس من الأُسّ إليها مع بُعدها بوحدات الرسم.',
+    text: 'مرّر المؤشر على أي محطة: يُرسم خطّ القياس وبُعدها.',
   },
   {
     code: 'GAP',
     title: 'الفجوة المعلَّمة',
-    text: 'المفهوم غير المرتبط يبقى معزولًا بعلامة إشارة — أول ما يعالجه المساعد الأكاديمي.',
+    text: 'المفهوم غير المرتبط يبقى معلّمًا — أول ما يعالجه المساعد.',
   },
 ] as const;
 
 /* the route's stage ledger — the honest training-track stages (the
  * same concepts the product surfaces expose), one row per gate. */
 const STAGES: Array<{ id: RouteWayId; code: string; name: string; note: string }> = [
-  { id: 'G1', code: 'S1', name: 'قراءة موجّهة', note: 'مادة محدّدة قبل الجلسة — البوابة الأولى.' },
-  { id: 'G2', code: 'S2', name: 'نقطة فحص', note: 'سؤال قصير يثبّت الفهم داخل المحاضرة نفسها.' },
-  { id: 'G3', code: 'S3', name: 'تمرين مقيس', note: 'تدريب يُصحَّح فورًا ويُحتسب في مصفوفة الإتقان.' },
-  { id: 'G4', code: 'S4', name: 'مشروع تطبيقي', note: 'عمل يُسلَّم ويُفهرس في مكتبة البحوث.' },
-  { id: 'T', code: 'END', name: 'الإتقان', note: 'المحطة التي تُغلق المسار — سلّم المستويات كاملًا.' },
+  { id: 'G1', code: 'S1', name: 'قراءة موجّهة', note: 'مادة محدّدة قبل الجلسة.' },
+  { id: 'G2', code: 'S2', name: 'نقطة فحص', note: 'سؤال يثبّت الفهم.' },
+  { id: 'G3', code: 'S3', name: 'تمرين مقيس', note: 'تدريب يُصحَّح فورًا ويُحتسب في المصفوفة.' },
+  { id: 'G4', code: 'S4', name: 'مشروع تطبيقي', note: 'عمل يُسلَّم ويُفهرس في المكتبة.' },
+  { id: 'T', code: 'END', name: 'الإتقان', note: 'المحطة التي تُغلق المسار.' },
 ];
 
 const prefersReduced = () => {
@@ -133,9 +133,8 @@ export function Concepts() {
               <div className="cf-side">
                 <div className="cf-side-rule" aria-hidden="true" />
                 <RevealCssClass as="p" className="cf-lede" delay={3}>
-                  نرسم التعلّم كما يرسم المسّاح الأرض: كل مفهوم محطّة معلَّمة، وكل ربط خطّ بصر
-                  مقيس، وكل فجوة تُعلَّم بعلامة — ثم نسير المسار نفسه بوابات، من القراءة
-                  الموجّهة إلى الإتقان.
+                  نرسم التعلّم كما يرسم المسّاح الأرض: كل مفهوم محطّة، وكل ربط مقيس، وكل فجوة
+                  معلَّمة — ثم نسير المسار بوابات إلى الإتقان.
                 </RevealCssClass>
               </div>
             </header>
@@ -148,11 +147,8 @@ export function Concepts() {
                     ACT 01 · SURVEY
                   </div>
                   <h3 className="cf-act-title">شبكة القياس تُبنى أمامك</h3>
-                  <p className="cf-act-text">
-                    خريطة المفاهيم في مدارك شبكة مثلثية: تبدأ من أُسّ مرجعي، تُقفل كل خط بصر
-                    فتُصبح المعرفة قابلة للقياس — والمفهوم الذي لا يُربط يظهر فورًا كفجوة
-                    معلَّمة.
-                  </p>
+                  {/* r368 T8 (C2): the prose restatement of the ANNOTATIONS list
+                      below is retired — every claim survives in the list itself. */}
                   <ol className="cf-annotlist" aria-label="مفتاح قراءة الشبكة">
                     {ANNOTATIONS.map((a) => (
                       <li key={a.code} className="cf-annot">
@@ -187,8 +183,7 @@ export function Concepts() {
                   </div>
                   <h3 className="cf-act-title">المسار يمرّ من أربع بوابات</h3>
                   <p className="cf-act-text">
-                    من نقطة البداية إلى الإتقان: كل بوابة مرحلة مقيسة، والمسار نفسه يتدرّج على
-                    سلّم مستويات. مسّ بوابة في الرسم أو صفًّا في القائمة — يُبرز مقطعاها على
+                    مسّ بوابة في الرسم أو صفًّا في القائمة — يُبرز مقطعها على
                     المسار.
                   </p>
                   <div className="cf-stagelist" role="list" aria-label="بوابات المسار">
@@ -220,7 +215,7 @@ export function Concepts() {
 
             {/* ── the honest disclosure ─────────────────────────── */}
             <p className="cf-disclose">
-              رسم توضيحي — لغة مدارك التقنية على بيانات مثال؛ لا يمثل تقدّمًا أكاديميًا حقيقيًا.
+              رسم توضيحي على بيانات مثال — لا يمثل تقدّمًا أكاديميًا حقيقيًا.
             </p>
           </div>
         </div>

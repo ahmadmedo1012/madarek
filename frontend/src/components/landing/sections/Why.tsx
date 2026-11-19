@@ -32,8 +32,8 @@ export function Why() {
           <div className="wy-rule-v" aria-hidden="true" data-spec="why.rulev" />
           <div className="wy-lede" data-spec="why.lede">
             <div className="wy-lede-t" data-spec="why.ledet">
-              شاهد، تحقّق، اختبر، أتقن — المراحل الأربع التي تعبرها في كل مقرّر داخل
-              مدارك، ولكل مرحلة سطح حقيقي من أسطح الطالب نعرضه هنا كما هو تمامًا.
+              شاهد، تحقّق، اختبر، أتقن — أربع مراحل في كل مقرّر، ولكل مرحلة سطح
+              حقيقي للطالب نعرضه كما هو.
             </div>
           </div>
           <div className="wy-note" data-spec="why.note">

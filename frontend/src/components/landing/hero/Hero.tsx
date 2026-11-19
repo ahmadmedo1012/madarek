@@ -68,7 +68,7 @@ const TITLE_LINES = ['رحلة تعلم واحدة', 'من المحاضرة إل
  * two mask lines (the reference splits its sub on word-wrap; the
  * sentence seam is the Arabic-stable split point). */
 const LEAD_LINES = [
-  'محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —',
+  'محاضرات تفاعلية، واختبارات، وبحوث، ورسائل —',
   'تجربة عربية واحدة لخمسة أدوار وثلاث شرائح.',
 ] as const;
 

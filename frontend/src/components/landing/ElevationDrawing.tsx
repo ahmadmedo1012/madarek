@@ -567,7 +567,7 @@ export function ElevationArt({
         {[1145, 970, 835, 585, 355].map((x) => (
           <line key={x} className={BP_DRAWABLE_HAIR} x1={x} y1="516" x2={x} y2="532" pathLength={1} />
         ))}
-        <text className="bp-tag" x="773" y="524" textAnchor="middle">مسار التعلّم — من المحاضرة إلى الإتقان</text>
+        <text className="bp-tag" x="773" y="524" textAnchor="middle">مسار التعلّم</text>
       </g>
       )}
 
