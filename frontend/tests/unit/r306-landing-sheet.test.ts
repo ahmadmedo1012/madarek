@@ -333,7 +333,12 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     const manifestJson = read('public/media/manifest.json');
     expect(manifestJson).toContain('statement-courtyard');
     expect(manifestJson).toContain('footer-skyline');
-    expect(read('src/components/landing/sections/Statement.tsx')).toContain('statement-courtyard-light.webp');
+    // R368 T3-C re-key: the statement band's media is the measured plate
+    // (intro-plate.svg, authored from the reference crop's tonal skeleton;
+    // provenance plate-provenance-r368.json). The r342 courtyard stays
+    // REGISTERED in the manifest (the mobile/auth register still serves it);
+    // the desktop band's media seat is the r368 plate, per the T3 plan.
+    expect(read('src/components/landing/sections/Statement.tsx')).toContain('intro-plate.svg');
     expect(read('src/components/landing/sections/Footer.tsx')).toContain('footer-skyline-light.webp');
   });
 });
@@ -451,6 +456,7 @@ describe('r306 hygiene — the sheet stays clean', () => {
       'hro-fade-loop', // R331: the hero deco ledger cards' idle fade (the reference's own deco loop, 1.5s, ≥992 only) — collapsed by the hero RM belt
       'pr-item-fade', // r338 T-08: the platform rows' cross-fade marquee (heron's row pair, 14s, ≥992 only) — collapsed by the platform RM belt
       'rl-rule-widen', // r339 T-11b1: the usecase row rules' once-only scroll-reveal WIDEN (width 0→100%, 800ms power2.out, fill both — the tween census' width family is reachable ONLY through a declared @keyframes; the transition envelope records no width). Not a loop: fires once on .in-view, collapsed by the roles RM belt (.rl-rule-w).
+      'rl-band-wash', // r368 T3 wave 3: the usecase band's mid30 paper wash (a view()-timeline opacity scrub ≤767, inside the no-preference wrapper — under reduce the rule is absent and the static band stands).
       // T-11b2 (r339): the two scroll-driven scrub entrances — Heron's
       // home-map scrub scene + the platform-content-title flourish. NOT
       // ambient loops: view()-timeline entrances (animation-timeline:
@@ -461,6 +467,13 @@ describe('r306 hygiene — the sheet stays clean', () => {
       // belt below still collapses every ambient instrument).
       'jt-head-scrub', // r339 T-11b2: the chapters head's scrubbed entrance (journey.css)
       'pr-title-scrub', // r339 T-11b2: the platform band's title flourish (platform.css)
+      // r368 T3-C: the statement media's ink scrub — the ≥768 opacity reveal
+      // and the ≤767 canopy retreat. Both are view()-timeline entrances
+      // inside the prefers-reduced-motion: no-preference wrappers (under
+      // reduce the rules are absent and the static sheet stands) — the
+      // same grammar as jt-head-scrub / pr-title-scrub above.
+      'st-ink-reveal',
+      'st-ink-retreat',
       // r335 W-chrome: 'sl-scan' retired with the R313 SheetLoader sheet
       // (dead .sl-* rules deleted; the preloader's own RM gates are JS-side).
     ]);
