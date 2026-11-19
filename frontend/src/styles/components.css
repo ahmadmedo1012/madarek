@@ -1408,6 +1408,16 @@
     max-block-size: 160px;
   }
   .state-title { font-family: var(--font-display); font-size: var(--type-headline-size-sm); color: var(--text); font-weight: var(--type-headline-weight); }
+  /* R369 C2.1 — the vw twin pins the state title to narrow sheets under
+     the 200 % font-scale protocol: --fs-h3 is a raw rem rung (4rem), so
+     the protocol's html override (8.14px → 32px @320) tripled the title
+     to 128px and the longest word of «تعذَّر تحميل هذا القسم» outgrew
+     the 304px error cell (the /colleges API-failure state measured
+     scrollWidth 352/400). min() is byte-identical at 100 % on every
+     band (4rem ≤ 11.5vw at 320/390/768/1440) and caps growth to the
+     sheet under zoom — the same construction as the d1/auth-title
+     clamps. */
+  .state-title { font-size: min(var(--type-headline-size-sm), 11.5vw); }
   .state-desc  { font-size: var(--type-label-size); color: var(--text-muted); max-inline-size: 42ch; }
   /* R319 (C2-G2 · §C3): the HATCHED CELL — EmptyState's opt-in
      variant="hatch" register. The drawing sheet marks an unfilled

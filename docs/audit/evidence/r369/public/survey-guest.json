@@ -1,0 +1,194 @@
+[
+ {
+  "route": "/auth",
+  "bp": "1440x900",
+  "theme": "light",
+  "scrollY": 0,
+  "text": [],
+  "media": [],
+  "fixed": [
+   {
+    "el": "div.technical-sheet.technical-sheet--plan",
+    "frac": 0.108,
+    "rect": [
+     20,
+     228,
+     317,
+     444
+    ]
+   }
+  ],
+  "clipped": [],
+  "hoverflow": 0,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/auth",
+  "bp": "1440x900",
+  "theme": "light",
+  "scrollY": 540,
+  "text": [],
+  "media": [],
+  "fixed": [
+   {
+    "el": "div.technical-sheet.technical-sheet--plan",
+    "frac": 0.108,
+    "rect": [
+     20,
+     228,
+     317,
+     444
+    ]
+   }
+  ],
+  "clipped": [],
+  "hoverflow": 0,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/auth",
+  "bp": "1440x900",
+  "theme": "light",
+  "scrollY": 1080,
+  "text": [],
+  "media": [],
+  "fixed": [
+   {
+    "el": "div.technical-sheet.technical-sheet--plan",
+    "frac": 0.108,
+    "rect": [
+     20,
+     228,
+     317,
+     444
+    ]
+   }
+  ],
+  "clipped": [],
+  "hoverflow": 0,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/auth",
+  "bp": "1440x900",
+  "theme": "light",
+  "scrollY": 1620,
+  "text": [],
+  "media": [],
+  "fixed": [
+   {
+    "el": "div.technical-sheet.technical-sheet--plan",
+    "frac": 0.108,
+    "rect": [
+     20,
+     228,
+     317,
+     444
+    ]
+   }
+  ],
+  "clipped": [],
+  "hoverflow": 0,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/auth",
+  "bp": "1440x900",
+  "theme": "dark",
+  "scrollY": 0,
+  "text": [],
+  "media": [],
+  "fixed": [
+   {
+    "el": "div.technical-sheet.technical-sheet--plan",
+    "frac": 0.108,
+    "rect": [
+     20,
+     228,
+     317,
+     444
+    ]
+   }
+  ],
+  "clipped": [],
+  "hoverflow": 0,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/auth",
+  "bp": "1440x900",
+  "theme": "dark",
+  "scrollY": 540,
+  "text": [],
+  "media": [],
+  "fixed": [
+   {
+    "el": "div.technical-sheet.technical-sheet--plan",
+    "frac": 0.108,
+    "rect": [
+     20,
+     228,
+     317,
+     444
+    ]
+   }
+  ],
+  "clipped": [],
+  "hoverflow": 0,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/auth",
+  "bp": "1440x900",
+  "theme": "dark",
+  "scrollY": 1080,
+  "text": [],
+  "media": [],
+  "fixed": [
+   {
+    "el": "div.technical-sheet.technical-sheet--plan",
+    "frac": 0.108,
+    "rect": [
+     20,
+     228,
+     317,
+     444
+    ]
+   }
+  ],
+  "clipped": [],
+  "hoverflow": 0,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/auth",
+  "bp": "1440x900",
+  "theme": "dark",
+  "scrollY": 1620,
+  "text": [],
+  "media": [],
+  "fixed": [
+   {
+    "el": "div.technical-sheet.technical-sheet--plan",
+    "frac": 0.108,
+    "rect": [
+     20,
+     228,
+     317,
+     444
+    ]
+   }
+  ],
+  "clipped": [],
+  "hoverflow": 0,
+  "fixedText": [],
+  "overflowEls": []
+ }
+]

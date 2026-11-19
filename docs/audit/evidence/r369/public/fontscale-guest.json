@@ -1,0 +1,632 @@
+[
+ {
+  "route": "/auth",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 0,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 305,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/auth",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 341,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 305,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/auth",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 682,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 305,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 0,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 50,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -50,
+    "right": 370,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 1023,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 305,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 341,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 50,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -50,
+    "right": 370,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 1364,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 305,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 682,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 50,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -50,
+    "right": 370,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 1705,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 305,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 1023,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 50,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -50,
+    "right": 370,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 2046,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 305,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 1364,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 50,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -50,
+    "right": 370,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 2387,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 305,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges/clg_e2e_eng",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 0,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 50,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -50,
+    "right": 370,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 2728,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 305,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges/clg_e2e_eng",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 341,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 50,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -50,
+    "right": 370,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 3069,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 305,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges/clg_e2e_eng",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 682,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 50,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -50,
+    "right": 370,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 3410,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 305,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges/clg_e2e_eng",
+  "bp": "320x568",
+  "theme": "light",
+  "scrollY": 1023,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 50,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -50,
+    "right": 370,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 0,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 265,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 0,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 30,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -30,
+    "right": 390,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 384,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 265,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 384,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 30,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -30,
+    "right": 390,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 768,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 265,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 768,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 30,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -30,
+    "right": 390,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 1152,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 265,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 1152,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 30,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -30,
+    "right": 390,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 1536,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 265,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/auth",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 1920,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 265,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges/clg_e2e_eng",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 0,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 30,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -30,
+    "right": 390,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 2304,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 265,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges/clg_e2e_eng",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 384,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 30,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -30,
+    "right": 390,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 2688,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 265,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges/clg_e2e_eng",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 768,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 30,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -30,
+    "right": 390,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 3072,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 265,
+  "fixedText": [],
+  "overflowEls": []
+ },
+ {
+  "route": "/colleges/clg_e2e_eng",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 1152,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 30,
+  "fixedText": [],
+  "overflowEls": [
+   {
+    "el": "div.state-title",
+    "left": -30,
+    "right": 390,
+    "w": 420,
+    "of": "visible"
+   }
+  ]
+ },
+ {
+  "route": "/auth",
+  "bp": "360x640",
+  "theme": "light",
+  "scrollY": 3456,
+  "text": [],
+  "media": [],
+  "fixed": [],
+  "clipped": [],
+  "hoverflow": 265,
+  "fixedText": [],
+  "overflowEls": []
+ }
+]

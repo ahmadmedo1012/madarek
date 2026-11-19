@@ -111,7 +111,7 @@ export default function Curriculum() {
     onSuccess: () => {
       invalidate();
       setDeleteTarget(null);
-      toast.success("حُذفت المحاضرة.");
+      toast.success("حُذفت المحاضرة.", "تمّ الحذف");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الحذف"),
   });
@@ -151,7 +151,7 @@ export default function Curriculum() {
   return (
     <Screen scroll>
       <StackHeader title="بناء المنهج" />
-      <PageHeader title="بناء المنهج" />
+      <PageHeader title="بناء المنهج" kicker="محاضرات وفصول وأسئلة." />
       {offerings.length === 0 ? (
         offs.isLoading ? (
           <SkeletonList rows={3} />
@@ -163,7 +163,7 @@ export default function Curriculum() {
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
           <Card>
             <T variant="sm" color="muted">
-              الرفع من لوحة الويب
+              الروابط تُدار من لوحة الويب.
             </T>
           </Card>
 
@@ -243,7 +243,7 @@ export default function Curriculum() {
           label="رابط الفيديو"
           value={videoUrl}
           onChangeText={setVideoUrl}
-          hint="https:// أو مسار ملف داخلي"
+          hint="https:// أو مسار ملف داخل المنصة"
           accessibilityLabel="رابط الفيديو"
         />
         <Field
@@ -266,7 +266,7 @@ export default function Curriculum() {
           </T>
         ) : null}
         <Button
-          label={saveLecture.isPending ? SAVING : editing ? "حفظ" : "إضافة المحاضرة"}
+          label={saveLecture.isPending ? SAVING : editing ? "حفظ التعديلات" : "إضافة المحاضرة"}
           kind="accent"
           loading={saveLecture.isPending}
           disabled={effectiveId === ""}
@@ -280,7 +280,7 @@ export default function Curriculum() {
       <ConfirmDialog
         open={deleteTarget !== null}
         title="حذف المحاضرة"
-        message={`سيُحذف «${deleteTarget?.title ?? ""}» نهائيًا مع فصولها وأسئلتها.`}
+        message={`سيُحذف «${deleteTarget?.title ?? ""}» نهائيًا مع فصولها وأسئلتها. المتابعة؟`}
         confirmLabel="حذف نهائي"
         danger
         loading={deleteLecture.isPending}
@@ -436,7 +436,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
         />
         {tStatus === "NONE" ? (
           <T variant="xs" color="muted">
-            التوليد من الصوت — للروابط المدعومة.
+            يحوّل صوت الفيديو إلى نص — للروابط المدعومة فقط.
           </T>
         ) : null}
       </Card>
@@ -451,7 +451,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       />
       {chapters.length === 0 ? (
         <Card>
-          <T variant="sm" color="muted">قسّم المحاضرة ببداية ونهاية.</T>
+          <T variant="sm" color="muted">قسّم المحاضرة بزمن بداية ونهاية.</T>
         </Card>
       ) : (
         <RowList>
@@ -481,7 +481,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       />
       {checkpoints.length === 0 ? (
         <Card>
-          <T variant="sm" color="muted">تظهر أثناء المشاهدة.</T>
+          <T variant="sm" color="muted">تظهر للطالب عند نقطة زمنية.</T>
         </Card>
       ) : (
         <RowList>
@@ -497,7 +497,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
               <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
                 <T variant="xs" color="muted">
                   عند {durationLabel(c.triggerSec)} ·{" "}
-                  {arCount(c.options.length, ["خيار", "خياران", "خيارات", "خياراً"])}
+                  {arCount(c.options.length, ["خيار واحد", "خياران", "خيارات", "خياراً"])}
                 </T>
                 <Button label="حذف" kind="ghost" small onPress={() => deleteCheckpoint.mutate(c.id)} />
               </View>
@@ -550,18 +550,19 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
             setCpQuestion(v);
             setCpError(null);
           }}
-          placeholder="سؤال أثناء المحاضرة"
+          placeholder="سؤال يظهر أثناء المحاضرة"
           accessibilityLabel="نص السؤال"
         />
         <Field
           label="موضع السؤال (بالثواني)"
           value={cpTrigger}
           onChangeText={setCpTrigger}
+          hint="عند هذه اللحظة"
           keyboardType="number-pad"
           accessibilityLabel="موضع السؤال"
         />
         <T variant="sm" weight="medium" color="secondary">
-          الخيارات — علّم «صحيحة»
+          الخيارات — اضغط «صحيحة» لتحديد الإجابة
         </T>
         {cpOptions.map((o, i) => (
           <View key={i} style={{ flexDirection: "row", gap: sp[6], alignItems: "center" }}>

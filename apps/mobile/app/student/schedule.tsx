@@ -24,6 +24,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { useNow } from "@/hooks/useNow";
 import { usePalette } from "@/design/theme";
 import { sp, touchFloor } from "@/design/tokens";
+import { scaledTouchFloor } from "@/design/type";
 import { T, MonoLabel } from "@/components/ui/text";
 import { Screen } from "@/components/ui/screen";
 import { StackHeader } from "@/components/shell/AppTopBar";
@@ -198,11 +199,28 @@ export default function ScheduleScreen() {
         title="الجدول الأسبوعي"
         kicker={countAr(totalSlots, ["حصة أسبوعيًا", "حصتان أسبوعياً", "حصص أسبوعياً", "حصة أسبوعياً"])}
       />
-      {/* The week strip — day chips, today outlined in the one accent. */}
+      {/* The week strip — day chips, today outlined in the one accent.
+          R369 C3.2 (BEFORE-sheet defect, all four core profiles): a bare
+          horizontal ScrollView as a direct child of a `scroll={false}`
+          Screen (an unbounded-height flex column) lets its children
+          STRETCH to the full offered height on Android — the capture
+          showed 120×1093px vertical slabs eating ~50% of the screen
+          (pixel-verified: dark run 917–1037px wide, 238–1331px tall).
+          The law for every horizontal strip in an unbounded column:
+          `alignItems: "flex-start"` on the content container (children
+          keep their natural height, the ScrollView wraps them) + a
+          maxHeight cap derived from the scaled touch floor so the strip
+          can never balloon even if a future renderer stretches again. */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: sp[16], paddingVertical: sp[10], gap: sp[8] }}
+        style={{ maxHeight: scaledTouchFloor() + sp[10] * 2 }}
+        contentContainerStyle={{
+          paddingHorizontal: sp[16],
+          paddingVertical: sp[10],
+          gap: sp[8],
+          alignItems: "flex-start",
+        }}
       >
         <DayChip id="all" label="الكل" count={totalSlots} selected={selected === "all"} onSelect={selectDay} isToday={false} />
         {daysWithItems.map((d) => (
