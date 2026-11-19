@@ -218,7 +218,7 @@ export function CompetitionsIndexPage() {
              colleges.css can lift these primary filter controls to the
              44px touch floor (.comp-filter-pills) without changing the
              compact .pill grade used elsewhere (community/feed). */
-          <div className="comp-filter-pills" role="group" aria-label="تصفية المسابقات بحسب الحالة">
+          <div className="comp-filter-pills" role="group" aria-label="تصفية بحسب الحالة">
             {([
               ['all', 'الكل'],
               ['OPEN', STATUS_LABEL.OPEN],

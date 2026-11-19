@@ -76,7 +76,7 @@ export function AboutPage() {
             <Icon icon={ArrowRight} size={14} />
             {BACK_HOME}
           </Link>
-          <Link to="/" className="ab-header-brand" aria-label="مدارك — الصفحة الرئيسية">
+          <Link to="/" className="ab-header-brand" aria-label="مدارك — الرئيسية">
             <Logo variant="mark" size={22} />
             {BRAND_WORD}
           </Link>
@@ -110,7 +110,7 @@ export function AboutPage() {
                   LEGAL-TODO row 14: nothing may be added about who
                   builds مدارك until the owner states it. */}
               <p className="ab-p ab-p-statement">
-                منصّة تعليمية تقنية مستقلّة، عربية أولًا — بيانات العرض اصطناعية بالكامل.
+                منصّة تعليمية مستقلّة عربية أولًا — بيانات العرض اصطناعية بالكامل.
               </p>
             </div>
           </section>
@@ -124,9 +124,9 @@ export function AboutPage() {
             </div>
             <div className="ab-cell">
               <p className="ab-p">
-                المحاضرات، الاختبارات، مصفوفة الإتقان، البحوث، الرسائل،
+                المحاضرات والاختبارات ومصفوفة الإتقان والبحوث والرسائل
                 والجدول — التفصيل في
-                <Link to="/capabilities" className="ab-link">صفحة السجلّ</Link>.
+                <Link to="/capabilities" className="ab-link">السجلّ</Link>.
               </p>
             </div>
           </section>
@@ -198,8 +198,8 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
       </>
     ) : (
       <>
-        استخدم الحساب الذي وصلك، أو انتظر فتح التسجيل من
-        {' '}<Link to="/auth/register" className="hp-link">نموذج إنشاء الحساب</Link>.
+        استخدم الحساب الذي وصلك أو انتظر فتح التسجيل من
+        {' '}<Link to="/auth/register" className="hp-link">نموذج التسجيل</Link>.
       </>
     ),
   },
@@ -208,7 +208,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     a: (
       <>
         خمسة أدوار: <strong>طالب</strong>، <strong>أستاذ</strong> (ورئيس قسم وعميد)،
-        <strong>إدارة</strong> (المسجل العام ومسجل كلية)، <strong>أخصائي جودة</strong>، و<strong>مالك</strong>.
+        <strong>إدارة</strong> (مسجّل عام ومسجل كلية)، <strong>أخصائي جودة</strong>، و<strong>مالك</strong>.
       </>
     ),
   },
@@ -216,13 +216,13 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'نسيت كلمة المرور؟',
     a: showPilotAccounts ? (
       <>
-        لا يوجد بريد يُرسَل من المنصّة بعد. كلمة مرور <bdi className="hp-code hp-mono" dir="ltr">@test.ly</bdi>
+        لا بريد يُرسَل بعد. كلمة مرور <bdi className="hp-code hp-mono" dir="ltr">@test.ly</bdi>
         معروفة (<bdi className="hp-code hp-mono" dir="ltr">12345678</bdi>)؛
         لحسابك الخاص: <Link to="/contact" className="hp-link">{CONTACT_CHANNEL}</Link>.
       </>
     ) : (
       <>
-        لا يوجد بريد يُرسَل من المنصّة بعد. للحساب الخاص:
+        لا بريد يُرسَل بعد. للحساب الخاص:
         {' '}<Link to="/contact" className="hp-link">{CONTACT_CHANNEL}</Link>.
       </>
     ),
@@ -232,8 +232,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     a: (
       <>
         <bdi>Chrome</bdi> و<bdi>Edge</bdi> و<bdi>Firefox</bdi>
-        و<bdi>Safari</bdi> مع الجافاسكربت — وإن عُطّلت فستقابلك رسالة
-        بالتفعيل وإعادة التحميل.
+        و<bdi>Safari</bdi> مع الجافاسكربت — وإن عُطّلت تظهر رسالة التفعيل.
       </>
     ),
   },
@@ -257,8 +256,8 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'ماذا تكتبون على جهازي؟',
     a: (
       <>
-        كوكي واحد وتسعة مفاتيح — والتفصيل في
-        {' '}<Link to="/legal/cookies" className="hp-link">صفحة التخزين المحلي</Link>.
+        كوكي واحد وتسعة مفاتيح — التفصيل في
+        {' '}<Link to="/legal/cookies" className="hp-link">صفحة التخزين</Link>.
       </>
     ),
   },
@@ -266,7 +265,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'ما يعمل وما هو محاكاة؟',
     a: (
       <>
-        سجلّ القدرات <Link to="/capabilities" className="hp-link">«ما يعمل اليوم»</Link> يفصل —
+        سجلّ <Link to="/capabilities" className="hp-link">«ما يعمل اليوم»</Link> يفصل —
         والمحاكاة موسومة.
       </>
     ),
@@ -276,7 +275,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     a: (
       <>
         نعم — <bdi className="hp-code hp-mono" dir="ltr">/legal/*</bdi> بعمود
-        واحد مع تاريخ آخر تحديث.
+        واحد وتاريخ التحديث.
       </>
     ),
   },
@@ -286,7 +285,7 @@ export function HelpPage() {
   useLegalMeta({
     title: HELP_TITLE,
     path: '/help',
-    description: 'إجابات قصيرة تشير إلى أسطح حقيقية.',
+    description: 'إجابات قصيرة إلى أسطح حقيقية.',
   });
 
   /* r324 X15 — the credential-bearing FAQ variants render on dev/preview
@@ -387,7 +386,7 @@ export function ContactPage() {
       <LegalCell>
         <p className="lg-p">
           لا بريد عام بعد — قدّم طلبك من
-          {' '}<Link to="/auth/register" className="lg-link">نموذج إنشاء الحساب الجامعي</Link>؛
+          {' '}<Link to="/auth/register" className="lg-link">نموذج إنشاء الحساب</Link>؛
           ويقرؤه المشغّل.
         </p>
       </LegalCell>

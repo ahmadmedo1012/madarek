@@ -48,17 +48,17 @@
     "auth/ForgotPasswordPage.tsx": {
       "baseline": 117,
       "class": "public",
-      "max": 83
+      "max": 71
     },
     "auth/ResetPasswordPage.tsx": {
       "baseline": 182,
       "class": "public",
-      "max": 122
+      "max": 111
     },
     "AuthPage.tsx": {
       "baseline": 160,
       "class": "public",
-      "max": 117
+      "max": 113
     },
     "BrandPage.tsx": {
       "baseline": 226,
@@ -73,7 +73,7 @@
     "colleges/CollegePages.tsx": {
       "baseline": 308,
       "class": "public",
-      "max": 166
+      "max": 164
     },
     "community/CommunityPages.tsx": {
       "baseline": 271,
@@ -98,12 +98,12 @@
     "Error403Page.tsx": {
       "baseline": 36,
       "class": "public",
-      "max": 27
+      "max": 20
     },
     "Error500Page.tsx": {
       "baseline": 41,
       "class": "public",
-      "max": 30
+      "max": 29
     },
     "exams/OnlineExamsPages.tsx": {
       "baseline": 685,
@@ -118,7 +118,7 @@
     "legal/LegalPages.tsx": {
       "baseline": 1503,
       "class": "public",
-      "max": 627
+      "max": 600
     },
     "legal/LegalSheet.tsx": {
       "baseline": 27,
@@ -213,7 +213,7 @@
     "PublicPages.tsx": {
       "baseline": 545,
       "class": "public",
-      "max": 212
+      "max": 201
     },
     "quality/QualityPages.tsx": {
       "baseline": 744,
@@ -223,7 +223,7 @@
     "RegisterPage.tsx": {
       "baseline": 341,
       "class": "public",
-      "max": 246
+      "max": 229
     },
     "SettingsPage.tsx": {
       "baseline": 232,
@@ -383,7 +383,7 @@
     "auth/VerifyEmailPage.tsx": {
       "baseline": 43,
       "class": "public",
-      "max": 45
+      "max": 44
     }
   },
   "meta": {

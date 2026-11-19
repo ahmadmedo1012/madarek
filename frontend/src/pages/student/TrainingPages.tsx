@@ -203,7 +203,7 @@ export default function TrainingCatalogPage() {
                   value={me.level.pctIntoLevel}
                   color={TIER_COLOR[me.level.tier]}
                   label={`${pointsAr(me.level.toNext)} للمستوى التالي`}
-                  ariaLabel="التقدّم نحو المستوى التالي في التطوير الذاتي"
+                  ariaLabel="تقدّمك نحو المستوى التالي"
                 />
               </div>
             </div>
@@ -219,7 +219,7 @@ export default function TrainingCatalogPage() {
         <FilterBar
           sticky
           filters={(
-            <div role="group" aria-label="تصفية المسارات حسب الفئة">
+            <div role="group" aria-label="تصفية حسب الفئة">
               <button
                 type="button"
                 className="filter-pill"
