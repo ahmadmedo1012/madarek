@@ -89,3 +89,22 @@ Every line: command + real output, or artifact path. Times UTC.
   gfxinfo before the WHOLE maestro walk; a per-screen framestats harness does not exist —
   recorded limitation per the lane's allowance).
 - APK growth: `build-android` dispatched on the branch — run **44576412696** (in flight).
+
+### 17:15-18:10 — session 2, the C3 evidence close (dark void + triage + perf)
+- The DARK VOID found + closed: every dark ui-screens capture since R358 rendered light
+  (pixel-verified r366/r369 runs); root cause in the job log (raw seg-${THEME_ID} tap);
+  fix = deterministic flow sed + the dark pixel gate + the scroll-jank window (6c1d9f0a).
+- 5 VLM sheet reviews (20 after-core sheets) → full-res triage: 2 REAL defects (schedule
+  strip — fixed in 851072e3; TabBar a11y label clip — fixed in 1599b631), 6 false positives
+  (documented), 2 watch items. AFTER-REVIEW.md §2.
+- Cold start (logcat, CI emulator): student 2.96→2.39s, teacher 2.74→2.56s, registrar
+  2.79→2.21s, quality 5.84→2.99s, owner 2.82→5.33s (KVM outliers flagged) — typical 2.2-3.0s
+  on software-GPU CI vs the 2.5s bar; recorded limitation (real-hardware pass needed).
+- APK: same-recipe preview main 41,464,762 → branch 41,447,178 B (−17,584; the copy diet
+  shrinks it). Release-vs-release gate: build-android dispatched on the tip.
+- Boot hand-off: ground continuity pixel-measured (246,245,236 ≈ #F6F6EE), hideAsync after
+  first frame per spec; the dark boot ground rides the fresh dispatch.
+- Gates on the current tree (with the TabBar fix): mobile jest 1271/1271, expo-doctor 20/20,
+  worklet LAWFUL, copy-budget-mobile CLEAN, tsc 0.
+- In-flight: the student-only dark-fix verification run 44579053777; then the full
+  core+extended dispatch on the tip.

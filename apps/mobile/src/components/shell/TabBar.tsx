@@ -367,16 +367,28 @@ function TabButton({
         variant="xs"
         weight={active ? "bold" : "medium"}
         numberOfLines={1}
-        maxFontSizeMultiplier={1.25}
+        /* R369 C3.2 (teacher-light-a11y-small sheet, full-res verified):
+           «الرئيسية» clipped mid-word at font-scale 1.3 — the 1.25 cap
+           let the label reach ~13.75px inside the ~70dp 5-slot cell
+           (360-wide a11y profile) and the centered text lost its outer
+           glyphs. The a11y-class cap drops to 1.15 (12.1px — every
+           role's longest label fits), the base font gives back half a
+           pixel, and the label box takes the full cell (padding 1→0).
+           adjustsFontSizeToFit is the iOS belt-and-braces (Android
+           no-ops it); the fresh ui-screens a11y-small sheets are the
+           verification. */
+        maxFontSizeMultiplier={1.15}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
         style={{
           color: active ? p.accentInk : p.textMuted,
           marginTop: 2,
           // R334 review fix — Arabic labels clipped mid-word at 360–430dp
           // (VLM-verified on RN-web captures): 11/14 fits every role's
           // longest label («الإشعارات») inside a 5-slot row.
-          fontSize: 11,
+          fontSize: 10.5,
           lineHeight: 14,
-          paddingHorizontal: 1,
+          paddingHorizontal: 0,
           textAlign: "center",
         }}
       >
