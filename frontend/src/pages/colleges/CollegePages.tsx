@@ -1109,8 +1109,15 @@ export function CollegesLeaderboardPage() {
           <div className="leaderboard-table-wrap">
             {/* tbl-stack (A8 P2-5): collapses to labelled cards on phones
                 — the 720px min-width table used to scroll 398px sideways
-                at 390px. */}
-            <table className="leaderboard-table tbl-stack">
+                at 390px. R368 T5 sweep repair: the R362 restore of the
+                §TABLE ladder re-keyed rung 1 on `.table.tbl-stack`, so
+                this table (class `leaderboard-table tbl-stack`) silently
+                fell to rung 2 scroll on phones — measured 898px wide at
+                320/390 inside the wrap. Joining the `table` class (like
+                all 19 sibling consumers) restores the designed cards;
+                `.leaderboard-table`'s own rules keep winning on
+                specificity at desktop widths. */}
+            <table className="leaderboard-table table tbl-stack">
               <thead>
                 <tr>
                   <th scope="col" className="leaderboard-college">الكلّيّة</th>
