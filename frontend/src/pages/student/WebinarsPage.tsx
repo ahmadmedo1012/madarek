@@ -61,6 +61,18 @@ export default function WebinarsPage() {
     <PageFrame width="default">
       <PageHeader
         title="الندوات وورش العمل"
+        actions={(
+          /* R369 (C1 · the R342-08 header-CTA precedent): the phone
+           * band hides the topbar «اسأل AI» ≤920 (D6) — the events
+           * feed lives on the community surface (the page's own
+           * destinations rail says so); the standing verb rides the
+           * header at every width (the deep rail link stays
+           * contextual). */
+          <Link to="/community" className="btn accent sm">
+            <Icon icon={MessageSquare} size={13} />
+            المجتمع الجامعيّ
+          </Link>
+        )}
       />
 
       {/* The two MetricCards collapsed into ONE StatLine — counts from

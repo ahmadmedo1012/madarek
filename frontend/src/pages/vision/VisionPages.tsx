@@ -91,10 +91,21 @@ export function VisionGalleryPage() {
     <PageFrame>
       {/* r262 family grammar (G): patterns PageHeader — the same header
           contract every recomposed index rides (community/competitions/
-          colleges); the authored vision statement stays the h1. */}
+          colleges); the authored vision statement stays the h1.
+          R369 (C1 · the D11 register): the gallery is a single-section
+          surface — [01] rides the h1 gutter (the cards carry no §B2
+          bars); the standing verb joins the header (the phone band
+          hides the topbar «اسأل AI» ≤920, D6 — the any-auth sibling
+          is the community feed, navigation-only). */}
       <PageHeader
         title={`${formatNum(total)} ابتكاراً قادماً`}
         description="نظرة على المسار التقني."
+        index="01"
+        actions={(
+          <Link to="/community" className="btn accent sm">
+            المجتمع الجامعيّ
+          </Link>
+        )}
       />
 
       {total === 0 ? (
