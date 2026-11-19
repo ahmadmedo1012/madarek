@@ -356,9 +356,22 @@ async function gotoWithRetry(page, url, tries = 4) {
 async function settle(page, label) {
   await page.waitForLoadState("load", { timeout: 45000 }).catch(() => {});
   await page.evaluate(async () => { if (document.fonts?.ready) await document.fonts.ready; }).catch(() => {});
+  // SPA mount wait (cold vite compile): negotiate heights only on mounted content
+  const hasRoot = await page.evaluate(() => !!document.querySelector("#root")).catch(() => false);
+  if (hasRoot) {
+    for (let i = 0; i < 80; i++) {
+      const st = await page.evaluate(() => ({ kids: document.querySelector("#root")?.children.length ?? 0, h: document.documentElement.scrollHeight, vh: window.innerHeight })).catch(() => null);
+      if (st && st.kids > 0 && st.h > st.vh * 1.5) break;
+      await page.waitForTimeout(250);
+    }
+  }
   // The local preloader veil unmounts when the intro draw finishes (~6 s);
   // headless loads can stick at 99 % — dismiss it through its own "تخطي"
   // control, the exit a visitor uses. A crop under the veil is not evidence.
+  // R368 T3 instrument fix #4 — this check MUST follow the SPA mount wait:
+  // on a cold load the React tree (and the veil with it) mounts AFTER the
+  // first evaluation, so checking first returned "no veil" and captured the
+  // intro entry under the overlay (the blank cream + logo crop).
   await page.evaluate(async (sel) => {
     const busy = () => !!document.querySelector(sel);
     const t0 = performance.now();
@@ -375,15 +388,6 @@ async function settle(page, label) {
     else await page.keyboard.press("Escape").catch(() => {});
     await page.waitForTimeout(1200);
     console.error(`  ${label}: intro overlay dismissed via ${hasSkip ? "its own تخطي control" : "Escape"}`);
-  }
-  // SPA mount wait (cold vite compile): negotiate heights only on mounted content
-  const hasRoot = await page.evaluate(() => !!document.querySelector("#root")).catch(() => false);
-  if (hasRoot) {
-    for (let i = 0; i < 80; i++) {
-      const st = await page.evaluate(() => ({ kids: document.querySelector("#root")?.children.length ?? 0, h: document.documentElement.scrollHeight, vh: window.innerHeight })).catch(() => null);
-      if (st && st.kids > 0 && st.h > st.vh * 1.5) break;
-      await page.waitForTimeout(250);
-    }
   }
   let prev = -1;
   for (let i = 0; i < 40; i++) {

@@ -717,3 +717,35 @@ re-capturing the reference side once (masks are recorded at capture), which
 would invalidate the reused baseline mid-loop; deferred to the next
 full-paired run and recorded here so the seat numbers above stay readable
 under one instrument generation.
+
+### Instrument finding #4 (fixed) — the settle veil check ran before the SPA mounted
+
+On a cold load the React tree (and the preloader veil with it) mounts AFTER
+the first navigation settle, so the veil check saw "no overlay" and the
+intro entry crop captured the blank cream + logo instead of the band. The
+check now runs after the SPA mount wait (root children + 1.5× viewport
+height). Re-measured the full set with the fix (`live-base2`, reference
+side reused, every number from this host this run):
+
+**E 56.6 · T 98.3 % · Q 100** (was 56.0/98.3/90 before the instrument fix +
+usecase plates; the Q delta is the entry crops now scoring on real pixels).
+
+| seat | E | T |
+|---|---|---|
+| problem | 71.7 | 100 % |
+| cta | 65.1 | 100 % |
+| why | 64.1 | 100 % |
+| chrome | 61.0 | 100 % |
+| usecase | 59.3 | 100 % |
+| map | 51.4 | 100 % |
+| footer | 49.8 | 75 % |
+| platform | 48.5 | 100 % |
+| intro | 47.8 | 100 % |
+| hero | 46.5 | 100 % |
+
+Hero is now the lowest seat: the reference art img sits at
+[27,80,1373,647]@1440 and [16,60,342,388]@390; our `.hro-plate-art` box
+[26,80,1388,647] / [24,59,342,387] is already aligned, so the gap is the
+art's own mass — the band plate now exists for the seat
+(`r368/hero/band-plate-{1440,390}.png`, grid 6/4) and the media crops are
+cut from it (`hero-media-1440.png` 1368×643, `hero-media-390.png` 340×388).
