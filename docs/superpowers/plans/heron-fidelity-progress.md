@@ -929,3 +929,68 @@ entry state.
   `init/check/self` only; analyze and checklist are agent flows, so
   `checklists/analyze-r368-continuation.md` is a manual artifact comparison (six
   inconsistencies resolved, coverage table included) — no CLI command is claimed.
+
+## Wave 2 — the full scorecard after the originality swap (phase close)
+
+Run: `PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers node scripts/conformance/fidelity.mjs
+--local http://localhost:5303 --reference https://heronaiapp.com/ --out docs/audit/evidence`
+on this tree (original media wired, instrument fix #3, preloader fix). Archived at
+`docs/audit/evidence/waves/r368-w2-original-media.*`.
+
+| Dial | Wave 1 (crops) | Wave 2 (original art) | Gate |
+|---|---:|---:|---|
+| E overall | 57.2 | **55.0** | ≥90 |
+| T overall | 83.7 % | **96.5 %** (123/127) | ≥95 ✅ |
+| Q overall | 100 | **100** (settle, verified-only) | ≥90 ✅ |
+
+Per-seat E, wave 1 → wave 2:
+
+| seat | w1 | w2 | Δ |
+|---|---:|---:|---:|
+| home-problem-wrap | 68.7 | 69.9 | +1.2 |
+| home-cta-wrap | 67.2 | 68.1 | +0.9 |
+| home-why-wrap | 66.4 | 66.5 | +0.1 |
+| chrome | 61.5 | 58.0 | −3.5 |
+| home-map-wrap | 53.6 | 52.7 | −0.9 |
+| home-intro-wrap | 50.5 | 50.7 | +0.2 |
+| home-hero-wrap | 48.8 | 46.8 | −2.0 |
+| home-usecase-wrap | 50.8 | 46.7 | −4.1 |
+| footer | 45.9 | 45.9 | 0.0 |
+| home-platform-wrap | 54.4 | 43.2 | **−11.2** |
+
+Read: the three seats whose media changed carry the cost (platform −11.2, usecase −4.1,
+hero −2.0); the ±1–3.5 moves on chrome/intro/map/problem/why are the reference-side
+re-capture, not our pixels (their local crops are unchanged). T rose because this run's
+1440 reference stage reached `maxOffset 13257` (wave 1 recorded `maxOffset 0`, so only
+entry states existed there): invalid pairs 23 → 5, and every seat except footer (66.7 %)
+and cta (86.7 %) is now at 100 %. **E is the open dial: 55.0 vs ≥90 / ≥88 per seat, and
+no seat is at the floor.**
+
+### Gates re-run on this exact tree (phase close)
+
+| check | result |
+|---|---|
+| `npm run typecheck` | exit 0 (frontend, backend, both test projects) |
+| `npm run build -w frontend` + `check-bundle-size.mjs` | PASS — 759.2 KB gz (≤770), entry 65.8 (≤92), pdf 95.4 (≤110) |
+| `bash scripts/gates/stylelint-gate.sh` | ratchet green, stylelintErrors 45 → 20 |
+| `bash scripts/check-colors.sh --strict` | OK (0 findings) |
+| `bash scripts/check-raw-css.sh --strict` | PASS |
+| `bash scripts/check-motion-tokens.sh` | OK |
+| `bash scripts/check-icons.sh` | OK (Lucide-only) |
+| `node scripts/tokens/build.mjs --check` | OK |
+| `node scripts/gates/copy-budget.mjs` | CLEAN (11 887 ≤ 10 770) |
+| `TZ=UTC npx vitest run` (landing media + funnel + scrollspy) | 30/30 pass |
+| `scripts/conformance/stress.mjs` | 6/7 clean (was 5/7); @1440 wordmark/contact overlap recorded |
+| `npm run gate:css-coverage` | **not runnable here** — the probe needs its own server on :5173 plus the authed routes; the attempt produced 0 selectors and was reverted (`git checkout docs/redesign/r331/css-coverage.json`) |
+
+### Where the remaining work starts (resume here)
+
+1. **E per seat** — the floors are unmet on all ten seats. The measured levers, in order:
+   platform (43.2) and usecase (46.7) geometry after the media swap; hero (46.8) art mass;
+   footer (45.9) at 1024/1440; both 390-height gaps (cta +409 px, intro +87 px).
+2. **T floors** — footer@390/768 mid states and cta@1440 mid states are the five invalid
+   pairs; the reasons are in `scorecard.json.invalidRows`.
+3. **Tasks 4–10** — untouched: T4 token migration (gates already green, no migration
+   evidence), T5 public pages, T6 role pages, T7 Expo, T8 copy (blocked on a baseline
+   artifact, analyze A7), T9 CSS −10 % (721 612 B vs the 601 352 B target) and the five
+   remaining cross-context lint duplicates, T10 acceptance (needs T3–T9).

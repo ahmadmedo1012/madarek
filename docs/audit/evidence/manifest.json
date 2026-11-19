@@ -1,13 +1,13 @@
 {
- "generatedAt": "2026-11-18T18:51:36.673Z",
+ "generatedAt": "2026-11-19T03:37:31.693Z",
  "state": "named states (entry/mid30/mid60/exit/end) per pairs.mjs — a pair is matched only when both sides reached the same declared state within ±2 px; crops are section∩viewport clips",
  "profile": {
-  "browser": "chromium 143.0.7499.4",
+  "browser": "chromium 156.0.8078.4",
   "playwright": "1.60.0",
-  "node": "v24.22.3",
+  "node": "v22.22.1",
   "dpr": 1,
   "reducedMotion": "no-preference",
-  "local": "http://localhost:5301",
+  "local": "http://localhost:5303",
   "reference": "https://heronaiapp.com/",
   "settle": "fonts.ready → preloader gone → two identical document heights → 2 rAF",
   "cropRule": "section box ∩ viewport at the named state (pairs.mjs law)",
@@ -92,7 +92,7 @@
       "triggers": 2,
       "minStart": 6111,
       "maxEnd": 8284,
-      "achievedEntryOffset": 7375,
+      "achievedEntryOffset": 7374,
       "sectionHeight": 969,
       "startFracOfSection": -1.3
      },
@@ -131,8 +131,244 @@
     },
     "unpairedRoots": [],
     "spaceValidation": {
-     "achievedEntryOffsetMinusStartMedian": 1264,
+     "achievedEntryOffsetMinusStartMedian": 1263,
      "spread": 881,
+     "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
+    }
+   }
+  },
+  "768": {
+   "maxOffset": 11983,
+   "bestStep": {
+    "footer": 20,
+    "home-cta-wrap": 19,
+    "home-hero-wrap": 0,
+    "home-intro-wrap": 2,
+    "home-map-wrap": 5,
+    "home-platform-wrap": 13,
+    "home-problem-wrap": 2,
+    "home-usecase-wrap": 15,
+    "home-why-wrap": 14
+   },
+   "contentTopsDiagnostic": {
+    "footer": 10873,
+    "home-cta-wrap": 10331,
+    "home-hero-wrap": 7,
+    "home-intro-wrap": 893,
+    "home-map-wrap": 2752,
+    "home-platform-wrap": 7606,
+    "home-problem-wrap": 1420,
+    "home-usecase-wrap": 8995,
+    "home-why-wrap": 8118
+   },
+   "heights": {
+    "chrome": 52,
+    "footer": 968,
+    "home-cta-wrap": 541,
+    "home-hero-wrap": 885,
+    "home-intro-wrap": 527,
+    "home-map-wrap": 4853,
+    "home-platform-wrap": 512,
+    "home-problem-wrap": 1333,
+    "home-usecase-wrap": 1367,
+    "home-why-wrap": 1882
+   },
+   "steps": 25,
+   "anchor0": 7,
+   "triggerPairing": {
+    "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
+    "viewport": [
+     768,
+     900
+    ],
+    "bySection": {
+     "home-intro-wrap": {
+      "triggers": 4,
+      "minStart": 0,
+      "maxEnd": 1855,
+      "achievedEntryOffset": 891,
+      "sectionHeight": 527,
+      "startFracOfSection": -1.7
+     },
+     "home-problem-wrap": {
+      "triggers": 3,
+      "minStart": 85,
+      "maxEnd": 3188,
+      "achievedEntryOffset": 1419,
+      "sectionHeight": 1333,
+      "startFracOfSection": -1
+     },
+     "home-map-wrap": {
+      "triggers": 1,
+      "minStart": 1418,
+      "maxEnd": 8022,
+      "achievedEntryOffset": 2752,
+      "sectionHeight": 4853,
+      "startFracOfSection": -0.3
+     },
+     "home-platform-wrap": {
+      "triggers": 2,
+      "minStart": 6252,
+      "maxEnd": 8530,
+      "achievedEntryOffset": 7608,
+      "sectionHeight": 512,
+      "startFracOfSection": -2.6
+     },
+     "home-why-wrap": {
+      "triggers": 6,
+      "minStart": 6760,
+      "maxEnd": 9407,
+      "achievedEntryOffset": 8117,
+      "sectionHeight": 1389,
+      "startFracOfSection": -1
+     },
+     "home-usecase-wrap": {
+      "triggers": 1,
+      "minStart": 7637,
+      "maxEnd": 10744,
+      "achievedEntryOffset": 10000,
+      "sectionHeight": 1367,
+      "startFracOfSection": -1.7
+     },
+     "home-cta-wrap": {
+      "triggers": 4,
+      "minStart": 9316,
+      "maxEnd": 10843,
+      "achievedEntryOffset": 11366,
+      "sectionHeight": 541,
+      "startFracOfSection": -3.8
+     },
+     "footer": {
+      "triggers": 18,
+      "minStart": 9858,
+      "maxEnd": 11791,
+      "achievedEntryOffset": 11906,
+      "sectionHeight": 968,
+      "startFracOfSection": -2.1
+     }
+    },
+    "unpairedRoots": [],
+    "spaceValidation": {
+     "achievedEntryOffsetMinusStartMedian": 1357,
+     "spread": 1472,
+     "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
+    }
+   }
+  },
+  "1024": {
+   "maxOffset": 11507,
+   "bestStep": {
+    "footer": 22,
+    "home-cta-wrap": 19,
+    "home-hero-wrap": 0,
+    "home-intro-wrap": 2,
+    "home-map-wrap": 3,
+    "home-platform-wrap": 14,
+    "home-problem-wrap": 2,
+    "home-usecase-wrap": 18,
+    "home-why-wrap": 15
+   },
+   "contentTopsDiagnostic": {
+    "footer": 10625,
+    "home-cta-wrap": 10129,
+    "home-hero-wrap": 5,
+    "home-intro-wrap": 895,
+    "home-map-wrap": 1937,
+    "home-platform-wrap": 8237,
+    "home-problem-wrap": 1409,
+    "home-usecase-wrap": 9238,
+    "home-why-wrap": 8742
+   },
+   "heights": {
+    "chrome": 40,
+    "footer": 505,
+    "home-cta-wrap": 496,
+    "home-hero-wrap": 891,
+    "home-intro-wrap": 514,
+    "home-map-wrap": 6300,
+    "home-platform-wrap": 505,
+    "home-problem-wrap": 528,
+    "home-usecase-wrap": 891,
+    "home-why-wrap": 1768
+   },
+   "steps": 25,
+   "anchor0": 5,
+   "triggerPairing": {
+    "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
+    "viewport": [
+     1024,
+     900
+    ],
+    "bySection": {
+     "home-intro-wrap": {
+      "triggers": 4,
+      "minStart": 0,
+      "maxEnd": 1850,
+      "achievedEntryOffset": 893,
+      "sectionHeight": 514,
+      "startFracOfSection": -1.7
+     },
+     "home-problem-wrap": {
+      "triggers": 3,
+      "minStart": 68,
+      "maxEnd": 2378,
+      "achievedEntryOffset": 1408,
+      "sectionHeight": 528,
+      "startFracOfSection": -2.5
+     },
+     "home-map-wrap": {
+      "triggers": 1,
+      "minStart": 596,
+      "maxEnd": 8678,
+      "achievedEntryOffset": 1936,
+      "sectionHeight": 6300,
+      "startFracOfSection": -0.2
+     },
+     "home-platform-wrap": {
+      "triggers": 4,
+      "minStart": 6896,
+      "maxEnd": 9183,
+      "achievedEntryOffset": 8239,
+      "sectionHeight": 505,
+      "startFracOfSection": -2.7
+     },
+     "home-why-wrap": {
+      "triggers": 6,
+      "minStart": 7401,
+      "maxEnd": 9667,
+      "achievedEntryOffset": 8741,
+      "sectionHeight": 1132,
+      "startFracOfSection": -1.2
+     },
+     "home-usecase-wrap": {
+      "triggers": 1,
+      "minStart": 7885,
+      "maxEnd": 10557,
+      "achievedEntryOffset": 10512,
+      "sectionHeight": 891,
+      "startFracOfSection": -2.9
+     },
+     "home-cta-wrap": {
+      "triggers": 4,
+      "minStart": 9121,
+      "maxEnd": 10608,
+      "achievedEntryOffset": 11399,
+      "sectionHeight": 496,
+      "startFracOfSection": -4.6
+     },
+     "footer": {
+      "triggers": 18,
+      "minStart": 9617,
+      "maxEnd": 11114,
+      "achievedEntryOffset": 11897,
+      "sectionHeight": 505,
+      "startFracOfSection": -4.5
+     }
+    },
+    "unpairedRoots": [],
+    "spaceValidation": {
+     "achievedEntryOffsetMinusStartMedian": 1343,
+     "spread": 1734,
      "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
     }
    }
@@ -218,7 +454,7 @@
       "triggers": 6,
       "minStart": 8031,
       "maxEnd": 10486,
-      "achievedEntryOffset": 9366,
+      "achievedEntryOffset": 9367,
       "sectionHeight": 1145,
       "startFracOfSection": -1.2
      },
@@ -251,6 +487,124 @@
     "spaceValidation": {
      "achievedEntryOffsetMinusStartMedian": 1338,
      "spread": 2252,
+     "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
+    }
+   }
+  },
+  "1920": {
+   "maxOffset": 16717,
+   "bestStep": {
+    "footer": 30,
+    "home-cta-wrap": 27,
+    "home-hero-wrap": 0,
+    "home-intro-wrap": 2,
+    "home-map-wrap": 5,
+    "home-platform-wrap": 18,
+    "home-problem-wrap": 3,
+    "home-usecase-wrap": 25,
+    "home-why-wrap": 19
+   },
+   "contentTopsDiagnostic": {
+    "footer": 14455,
+    "home-cta-wrap": 13524,
+    "home-hero-wrap": 9,
+    "home-intro-wrap": 1071,
+    "home-map-wrap": 3025,
+    "home-platform-wrap": 10585,
+    "home-problem-wrap": 2034,
+    "home-usecase-wrap": 12462,
+    "home-why-wrap": 11531
+   },
+   "heights": {
+    "chrome": 75,
+    "footer": 948,
+    "home-cta-wrap": 931,
+    "home-hero-wrap": 1062,
+    "home-intro-wrap": 963,
+    "home-map-wrap": 7560,
+    "home-platform-wrap": 947,
+    "home-problem-wrap": 990,
+    "home-usecase-wrap": 1062,
+    "home-why-wrap": 3316
+   },
+   "steps": 33,
+   "anchor0": 9,
+   "triggerPairing": {
+    "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
+    "viewport": [
+     1920,
+     1080
+    ],
+    "bySection": {
+     "home-intro-wrap": {
+      "triggers": 4,
+      "minStart": 0,
+      "maxEnd": 2557,
+      "achievedEntryOffset": 1071,
+      "sectionHeight": 963,
+      "startFracOfSection": -1.1
+     },
+     "home-problem-wrap": {
+      "triggers": 3,
+      "minStart": 433,
+      "maxEnd": 3547,
+      "achievedEntryOffset": 2032,
+      "sectionHeight": 990,
+      "startFracOfSection": -1.6
+     },
+     "home-map-wrap": {
+      "triggers": 1,
+      "minStart": 1423,
+      "maxEnd": 11107,
+      "achievedEntryOffset": 3023,
+      "sectionHeight": 7560,
+      "startFracOfSection": -0.2
+     },
+     "home-platform-wrap": {
+      "triggers": 4,
+      "minStart": 8983,
+      "maxEnd": 12053,
+      "achievedEntryOffset": 10586,
+      "sectionHeight": 947,
+      "startFracOfSection": -1.7
+     },
+     "home-why-wrap": {
+      "triggers": 6,
+      "minStart": 9929,
+      "maxEnd": 12961,
+      "achievedEntryOffset": 11529,
+      "sectionHeight": 2123,
+      "startFracOfSection": -0.8
+     },
+     "home-usecase-wrap": {
+      "triggers": 1,
+      "minStart": 10837,
+      "maxEnd": 14024,
+      "achievedEntryOffset": 14848,
+      "sectionHeight": 1062,
+      "startFracOfSection": -3.8
+     },
+     "home-cta-wrap": {
+      "triggers": 4,
+      "minStart": 12331,
+      "maxEnd": 14423,
+      "achievedEntryOffset": 15909,
+      "sectionHeight": 931,
+      "startFracOfSection": -3.8
+     },
+     "footer": {
+      "triggers": 18,
+      "minStart": 13261,
+      "maxEnd": 15371,
+      "achievedEntryOffset": 16840,
+      "sectionHeight": 948,
+      "startFracOfSection": -3.8
+     }
+    },
+    "unpairedRoots": [],
+    "spaceValidation": {
+     "achievedEntryOffsetMinusStartMedian": 1603,
+     "spread": 2940,
      "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
     }
    }
@@ -343,7 +697,127 @@
   "home-why-wrap@390:entry",
   "home-why-wrap@390:mid30",
   "home-why-wrap@390:mid60",
-  "home-why-wrap@390:exit"
+  "home-why-wrap@390:exit",
+  "chrome@768:entry",
+  "chrome@768:mid30",
+  "chrome@768:mid60",
+  "chrome@768:exit",
+  "footer@768:entry",
+  "footer@768:mid30",
+  "footer@768:mid60",
+  "footer@768:exit",
+  "home-cta-wrap@768:entry",
+  "home-cta-wrap@768:mid30",
+  "home-cta-wrap@768:mid60",
+  "home-cta-wrap@768:exit",
+  "home-hero-wrap@768:entry",
+  "home-hero-wrap@768:mid30",
+  "home-hero-wrap@768:mid60",
+  "home-hero-wrap@768:exit",
+  "home-intro-wrap@768:entry",
+  "home-intro-wrap@768:mid30",
+  "home-intro-wrap@768:mid60",
+  "home-intro-wrap@768:exit",
+  "home-map-wrap@768:entry",
+  "home-map-wrap@768:mid30",
+  "home-map-wrap@768:mid60",
+  "home-map-wrap@768:exit",
+  "home-platform-wrap@768:entry",
+  "home-platform-wrap@768:mid30",
+  "home-platform-wrap@768:mid60",
+  "home-platform-wrap@768:exit",
+  "home-problem-wrap@768:entry",
+  "home-problem-wrap@768:mid30",
+  "home-problem-wrap@768:mid60",
+  "home-problem-wrap@768:exit",
+  "home-usecase-wrap@768:entry",
+  "home-usecase-wrap@768:mid30",
+  "home-usecase-wrap@768:mid60",
+  "home-usecase-wrap@768:exit",
+  "home-why-wrap@768:entry",
+  "home-why-wrap@768:mid30",
+  "home-why-wrap@768:mid60",
+  "home-why-wrap@768:exit",
+  "chrome@1024:entry",
+  "chrome@1024:mid30",
+  "chrome@1024:mid60",
+  "chrome@1024:exit",
+  "footer@1024:entry",
+  "footer@1024:mid30",
+  "footer@1024:mid60",
+  "footer@1024:exit",
+  "home-cta-wrap@1024:entry",
+  "home-cta-wrap@1024:mid30",
+  "home-cta-wrap@1024:mid60",
+  "home-cta-wrap@1024:exit",
+  "home-hero-wrap@1024:entry",
+  "home-hero-wrap@1024:mid30",
+  "home-hero-wrap@1024:mid60",
+  "home-hero-wrap@1024:exit",
+  "home-intro-wrap@1024:entry",
+  "home-intro-wrap@1024:mid30",
+  "home-intro-wrap@1024:mid60",
+  "home-intro-wrap@1024:exit",
+  "home-map-wrap@1024:entry",
+  "home-map-wrap@1024:mid30",
+  "home-map-wrap@1024:mid60",
+  "home-map-wrap@1024:exit",
+  "home-platform-wrap@1024:entry",
+  "home-platform-wrap@1024:mid30",
+  "home-platform-wrap@1024:mid60",
+  "home-platform-wrap@1024:exit",
+  "home-problem-wrap@1024:entry",
+  "home-problem-wrap@1024:mid30",
+  "home-problem-wrap@1024:mid60",
+  "home-problem-wrap@1024:exit",
+  "home-usecase-wrap@1024:entry",
+  "home-usecase-wrap@1024:mid30",
+  "home-usecase-wrap@1024:mid60",
+  "home-usecase-wrap@1024:exit",
+  "home-why-wrap@1024:entry",
+  "home-why-wrap@1024:mid30",
+  "home-why-wrap@1024:mid60",
+  "home-why-wrap@1024:exit",
+  "chrome@1920:entry",
+  "chrome@1920:mid30",
+  "chrome@1920:mid60",
+  "chrome@1920:exit",
+  "footer@1920:entry",
+  "footer@1920:mid30",
+  "footer@1920:mid60",
+  "footer@1920:exit",
+  "home-cta-wrap@1920:entry",
+  "home-cta-wrap@1920:mid30",
+  "home-cta-wrap@1920:mid60",
+  "home-cta-wrap@1920:exit",
+  "home-hero-wrap@1920:entry",
+  "home-hero-wrap@1920:mid30",
+  "home-hero-wrap@1920:mid60",
+  "home-hero-wrap@1920:exit",
+  "home-intro-wrap@1920:entry",
+  "home-intro-wrap@1920:mid30",
+  "home-intro-wrap@1920:mid60",
+  "home-intro-wrap@1920:exit",
+  "home-map-wrap@1920:entry",
+  "home-map-wrap@1920:mid30",
+  "home-map-wrap@1920:mid60",
+  "home-map-wrap@1920:exit",
+  "home-platform-wrap@1920:entry",
+  "home-platform-wrap@1920:mid30",
+  "home-platform-wrap@1920:mid60",
+  "home-platform-wrap@1920:exit",
+  "home-problem-wrap@1920:entry",
+  "home-problem-wrap@1920:mid30",
+  "home-problem-wrap@1920:mid60",
+  "home-problem-wrap@1920:exit",
+  "home-usecase-wrap@1920:entry",
+  "home-usecase-wrap@1920:mid30",
+  "home-usecase-wrap@1920:mid60",
+  "home-usecase-wrap@1920:exit",
+  "home-why-wrap@1920:entry",
+  "home-why-wrap@1920:mid30",
+  "home-why-wrap@1920:mid60",
+  "home-why-wrap@1920:exit"
  ],
  "coveredPairs": [
   "chrome@1440:entry",
@@ -402,13 +876,114 @@
   "home-usecase-wrap@390:exit",
   "home-why-wrap@390:entry",
   "home-why-wrap@390:mid30",
-  "home-why-wrap@390:mid60"
+  "home-why-wrap@390:mid60",
+  "chrome@768:entry",
+  "footer@768:entry",
+  "home-cta-wrap@768:entry",
+  "home-cta-wrap@768:mid30",
+  "home-cta-wrap@768:mid60",
+  "home-hero-wrap@768:entry",
+  "home-hero-wrap@768:mid30",
+  "home-hero-wrap@768:mid60",
+  "home-intro-wrap@768:entry",
+  "home-intro-wrap@768:mid30",
+  "home-intro-wrap@768:mid60",
+  "home-map-wrap@768:entry",
+  "home-map-wrap@768:mid30",
+  "home-map-wrap@768:mid60",
+  "home-map-wrap@768:exit",
+  "home-platform-wrap@768:entry",
+  "home-platform-wrap@768:mid30",
+  "home-platform-wrap@768:mid60",
+  "home-problem-wrap@768:entry",
+  "home-problem-wrap@768:mid30",
+  "home-problem-wrap@768:mid60",
+  "home-usecase-wrap@768:entry",
+  "home-usecase-wrap@768:mid30",
+  "home-usecase-wrap@768:mid60",
+  "home-why-wrap@768:entry",
+  "home-why-wrap@768:mid30",
+  "home-why-wrap@768:mid60",
+  "chrome@1024:entry",
+  "footer@1024:entry",
+  "home-cta-wrap@1024:entry",
+  "home-hero-wrap@1024:entry",
+  "home-hero-wrap@1024:mid30",
+  "home-hero-wrap@1024:mid60",
+  "home-intro-wrap@1024:entry",
+  "home-intro-wrap@1024:mid30",
+  "home-intro-wrap@1024:mid60",
+  "home-map-wrap@1024:entry",
+  "home-map-wrap@1024:mid30",
+  "home-map-wrap@1024:mid60",
+  "home-map-wrap@1024:exit",
+  "home-platform-wrap@1024:entry",
+  "home-platform-wrap@1024:mid30",
+  "home-platform-wrap@1024:mid60",
+  "home-problem-wrap@1024:entry",
+  "home-problem-wrap@1024:mid30",
+  "home-problem-wrap@1024:mid60",
+  "home-usecase-wrap@1024:entry",
+  "home-usecase-wrap@1024:mid30",
+  "home-usecase-wrap@1024:mid60",
+  "home-why-wrap@1024:entry",
+  "home-why-wrap@1024:mid30",
+  "home-why-wrap@1024:mid60",
+  "home-why-wrap@1024:exit",
+  "chrome@1920:entry",
+  "footer@1920:entry",
+  "home-cta-wrap@1920:entry",
+  "home-cta-wrap@1920:mid30",
+  "home-cta-wrap@1920:mid60",
+  "home-hero-wrap@1920:entry",
+  "home-hero-wrap@1920:mid30",
+  "home-hero-wrap@1920:mid60",
+  "home-intro-wrap@1920:entry",
+  "home-intro-wrap@1920:mid30",
+  "home-intro-wrap@1920:mid60",
+  "home-map-wrap@1920:entry",
+  "home-map-wrap@1920:mid30",
+  "home-map-wrap@1920:mid60",
+  "home-map-wrap@1920:exit",
+  "home-platform-wrap@1920:entry",
+  "home-platform-wrap@1920:mid30",
+  "home-platform-wrap@1920:mid60",
+  "home-problem-wrap@1920:entry",
+  "home-problem-wrap@1920:mid30",
+  "home-problem-wrap@1920:mid60",
+  "home-usecase-wrap@1920:entry",
+  "home-usecase-wrap@1920:mid30",
+  "home-usecase-wrap@1920:mid60",
+  "home-why-wrap@1920:entry",
+  "home-why-wrap@1920:mid30",
+  "home-why-wrap@1920:mid60",
+  "home-why-wrap@1920:exit"
  ],
  "invalidPairs": [
   {
    "target": "footer@390:mid60",
    "status": "missing",
-   "reason": "local: state mid60 needs scroll 14219 > live document end 13992 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)"
+   "reason": "local: state mid60 needs scroll 14477 > live document end 14250 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)"
+  },
+  {
+   "target": "footer@768:mid30",
+   "status": "missing",
+   "reason": "local: state mid30 needs scroll 15579 > live document end 15479 — inaccessible locally (recorded, not scored); reference: state mid30 needs stage offset 12196 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
+  },
+  {
+   "target": "footer@768:mid60",
+   "status": "missing",
+   "reason": "local: state mid60 needs scroll 15863 > live document end 15479 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 12487 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
+  },
+  {
+   "target": "home-cta-wrap@1024:mid30",
+   "status": "missing",
+   "reason": "reference: state mid30 needs stage offset 11548 > stage end 11507 — inaccessible on the reference (recorded, not scored)"
+  },
+  {
+   "target": "home-cta-wrap@1024:mid60",
+   "status": "missing",
+   "reason": "reference: state mid60 needs stage offset 11697 > stage end 11507 — inaccessible on the reference (recorded, not scored)"
   }
  ],
  "E_unscored": [
@@ -424,8 +999,8 @@
   }
  ],
  "dials": {
-  "E": 53,
-  "T": 98.3,
+  "E": 55,
+  "T": 96.5,
   "Q": 100
  },
  "validate": {

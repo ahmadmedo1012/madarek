@@ -9,6 +9,7 @@ scorecard is always the current tree's own run; these are archives only.
 | snapshot | tree | E | T | Q | note |
 |---|---|---:|---:|---:|---|
 | `r368-w1-before-original-media.*` | `wip/r368-t3` tip + instrument fix #3 | 57.2 | 83.7 % | 100 | first full 10 targets × 5 viewports × 4 states × 2 sides matrix; hero/usecase/platform still carried reference-band crops |
+| `r368-w2-original-media.*` | `exec/r368-fidelity-v2` (authored media + preloader fix) | 55.0 | 96.5 % | 100 | the phase-close run: platform −11.2 / usecase −4.1 / hero −2.0 from the originality swap; T rose because the 1440 reference stage reached its maximum this run |
 
 Reading a snapshot: `scorecard.json` carries `perSection` (E/T/covered/pairs and each
 state's E), `dials`, `invalidRows` (both-sides reasons) and `E_unscored` (preregistered
