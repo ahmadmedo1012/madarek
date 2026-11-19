@@ -12,7 +12,7 @@ import { RevealCssClass } from '../../hooks/useReveal';
 import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
 /* R366 L4 copy diet: the shared public-sheet chrome copy (skip link,
  * back-home link, brand word) — one home per string, in LegalSheet. */
-import { BACK_HOME, BRAND_WORD, SKIP_LINK } from '../legal/LegalSheet';
+import { BACK_HOME, BRAND_WORD, SKIP_LINK, useLegalMeta } from '../legal/LegalSheet';
 /* R366 L4: the registry link's label — the CTA and the section lede
  * said the same two words. */
 const COLLEGES_GATE = 'بوابة الكليات';
@@ -36,6 +36,15 @@ const COLLEGES_GATE = 'بوابة الكليات';
  */
 export function CapabilitiesPage() {
   useThemeSync();
+  /* R368 T5 — the ledger sheet owns its head like every other public
+   * sheet: without this the tab title, description, canonical and
+   * og:url all stayed the LANDING's (canonical pointed at `/`, which
+   * de-indexes /capabilities). The words are the page's own. */
+  useLegalMeta({
+    title: 'سجلّ القدرات',
+    path: '/capabilities',
+    description: 'ما يعمل اليوم وما هو محاكاة — من حالة الميزات في النظام.',
+  });
 
   const campusCount = new Set(colleges.map((c) => c.cityAr ?? '')).size;
 
