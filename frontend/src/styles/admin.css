@@ -143,7 +143,7 @@
      viewport on any <16px input focus. */
   flex: 1 1 auto;
   font-family: inherit;
-  font-size: 16px; /* type-gate: allow — iOS-zoom floor (Safari zooms <16px inputs on focus; fix 21-c) */
+  font-size: max(16px, var(--fs-body-lg)); /* R369-C follow-up: the iOS-zoom floor rides the ladder (see components.css) */
   color: var(--text);
   background: transparent;
   border: 0;
@@ -167,7 +167,7 @@
   border: 1px solid var(--rule);
   color: var(--text);
   /* 21-c (A10 P1 cross-ref): 13px → 16px iOS-zoom floor. */
-  font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
+  font-size: max(16px, var(--fs-body-lg)); /* R369-C follow-up: the iOS-zoom floor rides the ladder (see components.css) */
   font-family: inherit;
 }
 .admin-students-input:focus {

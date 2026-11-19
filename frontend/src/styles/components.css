@@ -729,7 +729,17 @@
        inside a control). Remaining sub-16 outliers live in page
        stylesheets — student.css:1900 (13px composer) is 21-c's, and
        pdf.css's page-number/search inputs are handed off with it. */
-    font-size: max(16px, var(--type-body-size));
+    /* R369-C follow-up (the recorded C1.2 residual): the floor rides
+       --fs-body-lg, not --fs-body — at 768 the body rung dips to
+       14.73px, so max(16, body) snapped to the flat 16px floor BETWEEN
+       the ladder's 14.73/16.58 rungs (directory 95.1, students 98.6);
+       with body-lg the control resolves on-rung everywhere the floor
+       wins (16.58 @768) and stays on-rung where the ladder already
+       exceeds 16. iOS-zoom law (>=16px on focus) unchanged. The 1024
+       dip (root 5.93px -> both body rungs floor at 13px) still lands
+       16-flat: the clean fix is the --fs-control token (REQUESTS-C-to-A
+       R1). */
+    font-size: max(16px, var(--type-body-size-lg));
     color: var(--text);
     /* R313 (WP-D · D16) + R366 (Agent 3 · WCAG 1.4.11): the Heron input
        recipe — TRANSPARENT ground (the paper IS the field), square

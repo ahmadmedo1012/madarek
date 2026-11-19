@@ -1314,6 +1314,40 @@ export const TEACHER_PERMISSIONS = {
   ],
 };
 
+/* ── /admin/mail — the registrar mail console (R369-C fixtures) ──── */
+export const MAIL_ADMIN_STATUS = {
+  provider: 'resend',
+  configured: true,
+  from: 'مدارك <no-reply@madarek.ly>',
+  domainVerified: null,
+  previewEnabled: true,
+  caps: { recipientDaily: 50, institutionDaily: 2000 },
+  retryScheduleMin: [5, 30, 120],
+  last24h: { queued: 3, sending: 1, sent: 61, failed: 2, suppressed: 1 },
+  outboxTotals: { queued: 3, sending: 1, sent: 610, failed: 2, suppressed: 1 },
+  suppressionTotal: 3,
+  lastSentAt: iso(-2),
+  lastSentTemplate: 'attendance-digest',
+};
+export const MAIL_OUTBOX_PAGE = {
+  data: [
+    { id: 'mail_e2e_1', to: 'amna@test.ly', template: 'welcome-student', subject: 'أهلًا بك في مدارك', status: 'sent', attempts: 1, nextAttemptAt: null, providerId: 're_e2e_1', lastError: null, dedupeKey: 'welcome:usr_e2e_amna', sentAt: iso(-3), createdAt: iso(-3) },
+    { id: 'mail_e2e_2', to: 'teacher@test.ly', template: 'attendance-digest', subject: 'ملخّص الحضور اليومي', status: 'queued', attempts: 0, nextAttemptAt: iso(1), providerId: null, lastError: null, dedupeKey: 'att:off_e2e', sentAt: null, createdAt: iso(-1) },
+    { id: 'mail_e2e_3', to: 'registrar@test.ly', template: 'import-report', subject: 'تقرير الاستيراد', status: 'failed', attempts: 3, nextAttemptAt: iso(4), providerId: null, lastError: 'SMTP 552 mailbox full', dedupeKey: 'imp:2026-1', sentAt: null, createdAt: iso(-5) },
+    { id: 'mail_e2e_4', to: 'quality@test.ly', template: 'exam-moderation', subject: 'طلب تدقيق امتحان', status: 'sending', attempts: 1, nextAttemptAt: null, providerId: null, lastError: null, dedupeKey: 'mod:ex_e2e', sentAt: null, createdAt: iso(-0) },
+  ],
+  meta: { page: 1, limit: 10, total: 4, totalPages: 1 },
+};
+export const MAIL_SUPPRESSION_PAGE = {
+  data: [
+    { id: 'sup_e2e_1', email: 'bounced@test.ly', type: 'hard_bounce', reason: 'unknown mailbox', createdAt: iso(-24 * 20) },
+    { id: 'sup_e2e_2', email: 'complaint@test.ly', type: 'complaint', reason: 'spam complaint', createdAt: iso(-24 * 40) },
+    { id: 'sup_e2e_3', email: 'left@test.ly', type: 'unsubscribe', reason: 'طلب إلغاء الاشتراك', createdAt: iso(-24 * 60) },
+  ],
+  meta: { page: 1, limit: 10, total: 3, totalPages: 1 },
+};
+export const MAIL_TEMPLATES = { templates: ['welcome-student', 'attendance-digest', 'import-report', 'exam-moderation'] };
+
 /* ── /owner/institutions/:slug ─────────────────────────────────── */
 export const OWNER_INSTITUTIONS = [
   {

@@ -1008,11 +1008,14 @@ html[data-theme='dark'] .r305ao .iw-hint a:not(.btn) { color: var(--accent); }
   align-items: center;
   gap: 6px;
   font-weight: 700;
-  font-size: 20px;
+  /* R369-C follow-up (N6 + AA): the 20px literal snaps off the ladder
+     at 768 — the app display rung owns the metric figure (20px @1440 ·
+     18px below, on-rung everywhere). */
+  font-size: var(--fs-app-h2);
 }
 
-.r305ao .metric-ok { color: var(--success); }
-.r305ao .metric-warn { color: var(--danger); }
+.r305ao .metric-ok { color: var(--success-ink); }
+.r305ao .metric-warn { color: var(--danger-ink); }
 
 .r305ao .metric-label { font-size: 13px; color: var(--text-muted); }
 
