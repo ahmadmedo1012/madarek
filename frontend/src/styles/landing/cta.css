@@ -17,6 +17,10 @@
      ink; the Arabic transform floors every line at 1.35×fs. */
   line-height: 1.35;
   color: var(--cta-ink);
+  /* the resolve pair — same cascade context as this rule (the second
+     identical .fo-cta block was the stylelint duplicate) */
+  --cta-resolve-ink: rgb(255, 255, 255); /* color-gate: allow — measured heron resolve ink */
+  --cta-resolve-bg: rgb(250, 54, 0); /* color-gate: allow — measured heron resolve wash (ADDENDUM 9 scoped-var pattern; T-25 owns unification) */
 }
 
 html[data-theme='dark'] .fo-cta {
@@ -130,11 +134,6 @@ html[data-theme='dark'] .fo-cta {
    16/18/12/17/22 ≈ 2rem. Arabic transform: label fs 1.4rem with the lh
    floor (1.35 phone / 1.4 up), the chevron mirrors to point with the
    RTL reading direction. ── */
-.fo-cta {
-  --cta-resolve-ink: rgb(255, 255, 255); /* color-gate: allow — measured heron resolve ink */
-  --cta-resolve-bg: rgb(250, 54, 0); /* color-gate: allow — measured heron resolve wash (ADDENDUM 9 scoped-var pattern; T-25 owns unification) */
-}
-
 .fo-cta .btn.accent.lg {
   display: block;
   padding: 0;
