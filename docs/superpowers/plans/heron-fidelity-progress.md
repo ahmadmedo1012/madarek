@@ -1214,3 +1214,37 @@ The convergence lever is DENSITY (hatching, furniture massing, text-like
 marks) tuned per measured cell statistics — the block-profile loop, next
 session. 1024/1920 platform crops still carry the previous media in the
 committed evidence (re-capture at the next full run).
+
+## Session record — 2026-11-19 ~17:00–18:00 UTC (the continuation lead)
+
+**The C branch (agent/r369-product) — the three CI reds closed at the root** (merge 3e2ceef6,
+now integrated by the parallel C session's 07e493dd):
+- typecheck:tests — r305a8's getAllByText[0] under noUncheckedIndexedAccess (the r320 `[0]!`
+  precedent applied).
+- Design gates — RegisterPage's C2.2 diet tail named the guarded term: reworded to the r177
+  voice at the SAME word count (ceiling untouched, copy-budget CLEAN) + the pages-authed
+  keep row mirrored (the student twin's own reason).
+- E2E — the r366 round-6 calibration (the file's own documented ≥1.4× law; library data-state
+  pins 220→1050/310→1380, dashboard@1440 550→850; hard budgets untouched) + the parity-seat
+  stability gate (scrollHeight stable across 350ms before seating — the scroll-anchoring
+  600→665 race).
+- The remote C2.2 line's remaining 20 stale twins (6 suites) updated to the shipped strings;
+  full local tree: vitest 3,164/3,164, tsc 0, eslint 0, rename-scan 0 OFF-LIST.
+
+**The B lane OPENED (agent/r369-landing, from BASE-READY 5d2aeaa8)** — B/CHECKLIST.md + B/RESUME.md:
+- R2 CLOSED at the root (BOTH stress collisions): the wordmark optical nudge moved to the inner
+  ink span (box stays in-band; painted pixels identical) + the cta belt clearance law
+  (gap ≥ the reveal family's armed 14px). stress.json re-recorded 7/7 CLEAN; scoped conformance
+  before/after measured (footer@1440 −0.2pp, the honest trade; home-cta identical).
+- R3 FILLED: judge-ledger.json 30/30 rated (VLM z-ai vision + the a5efca43 cross-check
+  discipline; 6 note-groups rejected with reasons; mean 3.10) — accept.mjs reads it honestly:
+  18 below-4 rows = the quantified T3 landing convergence work-list (cta 2/2/2 · hero 2/3/2 ·
+  platform 2/3/4 · why 3/2/4 · usecase 4/2/3 · intro@1440 2 · problem/map/footer 3s · chrome@1440 3
+  pending re-judge after the R2 fix).
+- T9 OPEN: landing CSS 724,396 B vs the 601,352 B bar (−17.0% still required).
+
+**Session resume pointer**: worktrees /home/z/wt/r369-B (landing) + /home/z/wt/r369-C (product,
+fast-forwarded to the remote's 07e493dd — the parallel C session is ACTIVE and owned the
+deadcode fix identically). Next: the B/RESUME.md queue (T9 diet first, then the judge-ordered
+seat convergence). Analyzers (knip/jscpd/depcruise pinned) installed at /home/z/.t22-tools
+(outside the repo, per the environment law).
