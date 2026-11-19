@@ -201,7 +201,7 @@ describe('r170-e — RegisterPage live strength hint (polite, advisory only)', (
     const input = screen.getByLabelText(PW_LABEL);
 
     // Empty → no hint (nothing to announce yet).
-    expect(screen.queryByText(/قوة كلمة المرور/)).toBeNull();
+    expect(screen.queryByText(/القوة:/)).toBeNull();
 
     // 7 chars → ضعيفة
     fireEvent.change(input, { target: { value: 'Ab1!xyz' } });

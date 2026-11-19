@@ -125,7 +125,13 @@ const NO_DEPARTMENTS_TEXT =
  *  «اختر…» select that promises options no deployment can offer.
  *  Platform-administration voice per r177 (إدارة المنصّة). */
 const NO_INSTITUTIONS_TEXT =
-  'لا مؤسسات متاحة — تواصل مع الإدارة.';
+  /* R369 fix: the C2.2 diet's reworded tail tripped the R321 rename
+   * ledger (the guarded term, with the article, is off-limits in live
+   * copy); the r177 platform-administration voice is the bare two-word
+   * form — restored at the SAME word count (6) by dropping the
+   * redundant «متاحة» (the register context implies availability),
+   * keeping the diet's ceiling untouched. */
+  'لا مؤسسات — تواصل مع إدارة المنصّة.';
 
 /* ═─ r170-e: password strength hint (ASVS 2.1.8 advisory) ────────────
  *
