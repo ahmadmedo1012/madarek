@@ -59,14 +59,13 @@ import { Hairline, Numeral } from '../patterns';
 /* the r368 media set — the platform band's three real content visuals
  * (frontend/public/media/manifest.json documents each: original
  * Madarek artwork + the seeded-demo captures, no personal data). */
-/* R368 T3 — the measured media plates (the same band-skeleton law the
- * usecase/hero seats ride): each capture seat's own tonal crop, authored
- * by scripts/graphics/plate-from-crop.py from the committed reference
- * crops (per-cell mean RGB, text flattened to paper; provenance
- * docs/audit/evidence/plate-provenance-r368.json). The visual geometry is
- * unchanged — the plates fill the frozen 599×354 / 374×226 img boxes —
- * but the mass now matches the reference's own (the plan card, the
- * dashboard rows) instead of unrelated product captures. */
+/* R368 T3 — the ORIGINAL card compositions for the two capture seats
+ * (platform-media-*), authored by scripts/art/r368-original-media.py from
+ * geometric primitives in our palette: a plan card (orange header, ruled
+ * rooms) and a dashboard card (header dots, ruled table, meter column).
+ * No reference image, crop or pixel participates; provenance
+ * docs/audit/evidence/media-provenance-r368.json. The frozen 598×351 /
+ * 372×226 img boxes are unchanged, so the seat geometry does not move. */
 const PLATFORM_ART = [
   {
     /* the top capture seat — reference img sr 362,1 599×354 @1440 and

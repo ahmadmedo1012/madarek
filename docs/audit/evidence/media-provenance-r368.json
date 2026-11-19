@@ -1,0 +1,103 @@
+{
+ "generated_by": "scripts/art/r368-original-media.py",
+ "law": "docs/specs/heron-fidelity.md — original Madarek artwork only; the frozen seats are kept so layout, bindings and CSS do not move",
+ "replaces": "the r368 reference-band crops (hero-media-*, usecase-media-*, platform-media-*), retired for originality",
+ "assets": [
+  {
+   "file": "frontend/public/media/illustrations/r368/hero/hero-media-1440.png",
+   "seat": "hero",
+   "width": 1368,
+   "height": 643,
+   "bytes": 10056,
+   "sha256": "0724ca59268b9ed97ec7bfd89bb4c2d75dc28411afc86cab17ee9b858f877e48",
+   "supersample": 2,
+   "source": "scripts/art/r368-original-media.py",
+   "license": "Madarek-owned original artwork (authored geometric composition, this repository's own palette)",
+   "referenceUse": "seat dimensions and tonal mass only — no reference image, crop, pixel or trace participates"
+  },
+  {
+   "file": "frontend/public/media/illustrations/r368/hero/hero-media-390.png",
+   "seat": "hero",
+   "width": 340,
+   "height": 388,
+   "bytes": 4420,
+   "sha256": "7c51cdd3d5f53f393f4b77738549269bebfdb822a8a621acf60b543733a96e60",
+   "supersample": 2,
+   "source": "scripts/art/r368-original-media.py",
+   "license": "Madarek-owned original artwork (authored geometric composition, this repository's own palette)",
+   "referenceUse": "seat dimensions and tonal mass only — no reference image, crop, pixel or trace participates"
+  },
+  {
+   "file": "frontend/public/media/illustrations/r368/roles/usecase-media-1440.png",
+   "seat": "roles",
+   "width": 724,
+   "height": 880,
+   "bytes": 20367,
+   "sha256": "613560a8821cd909860c6b116788aeed456ca736984c6925ae634361beb0ca77",
+   "supersample": 2,
+   "source": "scripts/art/r368-original-media.py",
+   "license": "Madarek-owned original artwork (authored geometric composition, this repository's own palette)",
+   "referenceUse": "seat dimensions and tonal mass only — no reference image, crop, pixel or trace participates"
+  },
+  {
+   "file": "frontend/public/media/illustrations/r368/roles/usecase-media-390.png",
+   "seat": "roles",
+   "width": 374,
+   "height": 254,
+   "bytes": 8092,
+   "sha256": "3f5d63ee5966c1e3d50e1285442d4b29ac847980a2b8bde57757ca617f00a907",
+   "supersample": 2,
+   "source": "scripts/art/r368-original-media.py",
+   "license": "Madarek-owned original artwork (authored geometric composition, this repository's own palette)",
+   "referenceUse": "seat dimensions and tonal mass only — no reference image, crop, pixel or trace participates"
+  },
+  {
+   "file": "frontend/public/media/illustrations/r368/platform/platform-media-1440-a.png",
+   "seat": "platform",
+   "width": 598,
+   "height": 351,
+   "bytes": 4943,
+   "sha256": "e421d3a019bab66f096bd3774e5e0c8c98be610cc2358cbd5d608d48d895635d",
+   "supersample": 2,
+   "source": "scripts/art/r368-original-media.py",
+   "license": "Madarek-owned original artwork (authored geometric composition, this repository's own palette)",
+   "referenceUse": "seat dimensions and tonal mass only — no reference image, crop, pixel or trace participates"
+  },
+  {
+   "file": "frontend/public/media/illustrations/r368/platform/platform-media-1440-b.png",
+   "seat": "platform",
+   "width": 598,
+   "height": 351,
+   "bytes": 6527,
+   "sha256": "9e6920ab31feec6817c7f613802486e25d0d6a8db221d6b5d5b6511dbfc77940",
+   "supersample": 2,
+   "source": "scripts/art/r368-original-media.py",
+   "license": "Madarek-owned original artwork (authored geometric composition, this repository's own palette)",
+   "referenceUse": "seat dimensions and tonal mass only — no reference image, crop, pixel or trace participates"
+  },
+  {
+   "file": "frontend/public/media/illustrations/r368/platform/platform-media-390-a.png",
+   "seat": "platform",
+   "width": 372,
+   "height": 226,
+   "bytes": 3325,
+   "sha256": "2777349407d689a19afc85e949c7ebd4472f1a23c8b8f6352ea0828a74dde04e",
+   "supersample": 2,
+   "source": "scripts/art/r368-original-media.py",
+   "license": "Madarek-owned original artwork (authored geometric composition, this repository's own palette)",
+   "referenceUse": "seat dimensions and tonal mass only — no reference image, crop, pixel or trace participates"
+  },
+  {
+   "file": "frontend/public/media/illustrations/r368/platform/platform-media-390-b.png",
+   "seat": "platform",
+   "width": 372,
+   "height": 225,
+   "bytes": 4047,
+   "sha256": "b662491f58ab220aa454e5fcfd985dc07811f6a5ed83e4ecb15ca314c506b687",
+   "supersample": 2,
+   "source": "scripts/art/r368-original-media.py",
+   "license": "Madarek-owned original artwork (authored geometric composition, this repository's own palette)",
+   "referenceUse": "seat dimensions and tonal mass only — no reference image, crop, pixel or trace participates"
+  }
+ ]
+}

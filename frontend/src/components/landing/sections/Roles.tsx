@@ -61,15 +61,14 @@
  * (r-1)*15 + 5). */
 import { useEffect, useState } from 'react';
 
-/* ── The deck's ONE image — the measured media plates (R368 T3 convergence):
- * each plate is the media half of the band's measured tonal skeleton,
- * authored from the committed reference crops by
- * scripts/graphics/plate-from-crop.py (per-cell mean RGB, text flattened to
- * paper; provenance docs/audit/evidence/plate-provenance-r368.json). Two
- * breakpoint twins ride the reference's own media seats:
- *   · ≥768 — the 724×887 left-half plate (the reference img sr x -10 w 734
- *     h 911 over the 1427×887 band canvas; the E law aligns top-left);
- *   · ≤767 — the 374×254 media strip at the stacked band's y 210 seat.
+/* ── The deck's ONE image — the ORIGINAL arcade composition (R368 T3):
+ * authored by scripts/art/r368-original-media.py from geometric primitives
+ * in our palette (canopy slab, three piers, one orange banner, tiled
+ * ground) — no reference image, crop or pixel participates; provenance
+ * docs/audit/evidence/media-provenance-r368.json. Two breakpoint twins ride
+ * the frozen media seats:
+ *   · ≥768 — the 724×880 media half (the frozen left-half seat);
+ *   · ≤767 — the 374×254 strip at the stacked band's y 210 seat.
  * The light twin carries the slideimg.N census binding; the dark twin rides
  * the same box (the theme token flips the pair — the paper/ink inversion
  * convention, geometry never moves). */

@@ -182,7 +182,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(to right, var(--bg) 0%, rgba(0, 0, 0, 0) 15%);
+  background: linear-gradient(to right, var(--bg) 0%, transparent 15%);
   z-index: 1;
 }
 
