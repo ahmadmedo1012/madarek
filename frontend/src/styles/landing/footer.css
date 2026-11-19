@@ -849,7 +849,7 @@
 }
 
 /* T-06l census: the c2bottom box lh rides the ROOT fs law (1.35×root) */
-[data-spec=footer.c2bottom] { line-height: 1.35; }
+[data-spec="footer.c2bottom"] { line-height: 1.35; }
 
 /* R343 — the form zone's corner registration marks: the census's own
  * 8×8 ink crosshair seats (div[5..8] > div[1] > svg — the reference's
