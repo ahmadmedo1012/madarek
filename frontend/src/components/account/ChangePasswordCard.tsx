@@ -97,7 +97,21 @@ export function ChangePasswordCard() {
           <span className="flex-1">{serverMessage}</span>
         </div>
       )}
-      <form className="flex-col gap-3" onSubmit={onSubmit} noValidate>
+      {/* R369 (C1.5 · the settings rubric fix): the password trio rides
+          a capped measure — uncapped, the inputs spanned ~1050px inside
+          the 1440px card (the VLM rubric sheet read the field rhythm as
+          flat/dead). 34rem keeps the three short fields on one
+          comfortable line-width in both hosts (/settings + the student
+          profile); the submit row aligns to the same cap. min(560px,
+          100%) matches the app's measure family (patterns 720px /
+          student 640px) and avoids the fluid-rem trap (34rem resolved
+          to 283px under the vw root). */}
+      <form
+        className="flex-col gap-3"
+        style={{ maxInlineSize: 'min(560px, 100%)' }}
+        onSubmit={onSubmit}
+        noValidate
+      >
         <FormField
           label="كلمة المرور الحالية"
           id="pw-current"
