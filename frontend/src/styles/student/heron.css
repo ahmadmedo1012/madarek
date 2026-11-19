@@ -95,11 +95,6 @@
     border-radius: var(--r-lg);
     padding: var(--sp-5) var(--sp-6);
   }
-  .r305s-band--deep {
-    background: var(--neutral-900);
-    color: var(--neutral-0);
-    border-color: transparent;
-  }
   /* R341 (D7c) — the band's INK POLE, promoted from the results page's
      local .results-summary recipe (heron-schedule.css §4, deleted) to
      the shared foundation: every deep band re-derives the tokens the
@@ -110,8 +105,12 @@
      properties feed the winning rules via inheritance instead, the
      r305 cascade law). The 72/67 muted strengths are the P2.6
      re-tune (≥4.58:1 on both poles, engine math in
-     audits/evidence/r325/ink-app/README.md). */
+     audits/evidence/r325/ink-app/README.md). R369-C (C4.2): the two
+     property-disjoint blocks folded — one owner per selector. */
   .r305s-band--deep {
+    background: var(--neutral-900);
+    color: var(--neutral-0);
+    border-color: transparent;
     --text: var(--neutral-0);
     --text-muted: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
     --text-faint: color-mix(in srgb, var(--neutral-0) 67%, var(--neutral-900));

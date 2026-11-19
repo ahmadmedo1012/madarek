@@ -719,6 +719,10 @@ a.pf-row-link {
     max-inline-size: 620px;
     display: flex; flex-direction: column; gap: var(--sp-6);
     border-block-start: 1px solid var(--border-strong);
+    /* Card entrance — home since r152e (ONE authored moment: the sheet
+       column rises in, calm distance, no bounce). R369-C (C4.2): folded
+       from the standalone duplicate — one owner per selector. */
+    animation: madarek-auth-card-in var(--t-slow) var(--ease-out) both;
     background: transparent;
     border-radius: var(--r-sm); /* 0 — the r313 ladder */
     padding: 0;
@@ -1873,12 +1877,6 @@ a.pf-row-link {
     .nf-actions .btn { inline-size: 100%; }
   }
 
-  /* ══ Card entrance — home since r152e (was polish v19) ════════════ */
-  /* ONE authored moment: the sheet column rises in (calm distance, no
-     bounce). R315: same keyframe, new seat — the dissolved card. */
-  .auth-card {
-    animation: madarek-auth-card-in var(--t-slow) var(--ease-out) both;
-  }
   @keyframes madarek-auth-card-in {
     from { opacity: 0; transform: translateY(var(--motion-distance-small)); }
     to   { opacity: 1; transform: none; }

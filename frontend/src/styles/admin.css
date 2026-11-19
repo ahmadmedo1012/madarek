@@ -127,6 +127,7 @@
      #B3B3AF rung — the reference's own input thread. */
   border: 1px solid var(--rule);
   color: var(--text-muted);
+  min-block-size: 36px; /* r294: the pill owns the surface — matches the 36px select. R369-C (C4.2): folded home from the duplicate block below. */
 }
 .admin-students-search:focus-within {
   /* R313 (WP-F · D16): focus = the reference's #ED4C1F signal border,
@@ -191,8 +192,9 @@
    .admin-students-input rule) leaves the pill content-sized (~20px)
    next to the 36px faculty select. Size the PILL — the wrapper owns
    the surface — and let the bare input fill it (0,2,0 out-specifies
-   the polish reset's 0,1,1 across the same layer). */
-.admin-students-search { min-block-size: 36px; }
+   the polish reset's 0,1,1 across the same layer). R369-C (C4.2): the
+   sizing note moved HOME (min-block-size lives in the base block
+   above — one owner per selector). */
 .admin-students-search .admin-students-input {
   align-self: stretch;
   padding-inline: 0;
@@ -276,7 +278,6 @@
   color: var(--text);
 }
 .govx-group-count {
-  font-size: var(--fs-xxs);
   color: var(--text-muted);
   /* 13px Arabic floor (1A): the metadata line never drops below the
      floor even though fs-xxs is its nominal step. */

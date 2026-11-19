@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T03:45:39.819Z",
+  "generatedAt": "2026-11-19T13:23:43.873Z",
   "base": "http://localhost:5173",
   "routeSets": [
     {
@@ -11,7 +11,6 @@
         "/about",
         "/help",
         "/contact",
-        "/campus",
         "/colleges",
         "/competitions",
         "/app",
@@ -100,10 +99,10 @@
     "dark"
   ],
   "totals": {
-    "sheetsSeen": 46,
-    "selectorsTested": 5061,
-    "selectorsMatched": 1537,
-    "deadCandidates": 3524
+    "sheetsSeen": 75,
+    "selectorsTested": 4549,
+    "selectorsMatched": 2476,
+    "deadCandidates": 2073
   },
   "routeStats": [
     {
@@ -111,9 +110,9 @@
       "route": "/",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        1236,
-        1233,
-        1244
+        2776,
+        2776,
+        2785
       ],
       "rendered": true
     },
@@ -122,9 +121,9 @@
       "route": "/login",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        202,
-        202,
-        218
+        278,
+        278,
+        294
       ],
       "rendered": true
     },
@@ -133,92 +132,15 @@
       "route": "/register",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        138,
-        138,
-        154
+        237,
+        237,
+        253
       ],
       "rendered": true
     },
     {
       "role": "guest",
       "route": "/about",
-      "theme": "light",
-      "matchedSelectorsPerViewport": [
-        173,
-        173,
-        189
-      ],
-      "rendered": true
-    },
-    {
-      "role": "guest",
-      "route": "/help",
-      "theme": "light",
-      "matchedSelectorsPerViewport": [
-        166,
-        166,
-        182
-      ],
-      "rendered": true
-    },
-    {
-      "role": "guest",
-      "route": "/contact",
-      "theme": "light",
-      "matchedSelectorsPerViewport": [
-        170,
-        170,
-        186
-      ],
-      "rendered": true
-    },
-    {
-      "role": "guest",
-      "route": "/campus",
-      "theme": "light",
-      "matchedSelectorsPerViewport": [
-        222,
-        222,
-        238
-      ],
-      "rendered": true
-    },
-    {
-      "role": "guest",
-      "route": "/colleges",
-      "theme": "light",
-      "matchedSelectorsPerViewport": [
-        204,
-        204,
-        220
-      ],
-      "rendered": true
-    },
-    {
-      "role": "guest",
-      "route": "/competitions",
-      "theme": "light",
-      "matchedSelectorsPerViewport": [
-        202,
-        202,
-        218
-      ],
-      "rendered": true
-    },
-    {
-      "role": "guest",
-      "route": "/app",
-      "theme": "light",
-      "matchedSelectorsPerViewport": [
-        183,
-        183,
-        199
-      ],
-      "rendered": true
-    },
-    {
-      "role": "guest",
-      "route": "/legal/privacy",
       "theme": "light",
       "matchedSelectorsPerViewport": [
         171,
@@ -229,52 +151,52 @@
     },
     {
       "role": "guest",
-      "route": "/404",
+      "route": "/help",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        138,
-        138,
-        154
+        181,
+        181,
+        197
       ],
       "rendered": true
     },
     {
       "role": "guest",
-      "route": "/",
-      "theme": "dark",
+      "route": "/contact",
+      "theme": "light",
       "matchedSelectorsPerViewport": [
-        1248,
-        1245,
-        1256
+        183,
+        183,
+        199
       ],
       "rendered": true
     },
     {
       "role": "guest",
-      "route": "/login",
-      "theme": "dark",
+      "route": "/colleges",
+      "theme": "light",
       "matchedSelectorsPerViewport": [
-        205,
-        205,
-        221
+        213,
+        213,
+        229
       ],
       "rendered": true
     },
     {
       "role": "guest",
-      "route": "/register",
-      "theme": "dark",
+      "route": "/competitions",
+      "theme": "light",
       "matchedSelectorsPerViewport": [
-        145,
-        145,
-        161
+        278,
+        278,
+        294
       ],
       "rendered": true
     },
     {
       "role": "guest",
-      "route": "/about",
-      "theme": "dark",
+      "route": "/app",
+      "theme": "light",
       "matchedSelectorsPerViewport": [
         180,
         180,
@@ -284,62 +206,84 @@
     },
     {
       "role": "guest",
+      "route": "/legal/privacy",
+      "theme": "light",
+      "matchedSelectorsPerViewport": [
+        187,
+        187,
+        203
+      ],
+      "rendered": true
+    },
+    {
+      "role": "guest",
+      "route": "/404",
+      "theme": "light",
+      "matchedSelectorsPerViewport": [
+        141,
+        141,
+        157
+      ],
+      "rendered": true
+    },
+    {
+      "role": "guest",
+      "route": "/",
+      "theme": "dark",
+      "matchedSelectorsPerViewport": [
+        2831,
+        2831,
+        2840
+      ],
+      "rendered": true
+    },
+    {
+      "role": "guest",
+      "route": "/login",
+      "theme": "dark",
+      "matchedSelectorsPerViewport": [
+        284,
+        284,
+        300
+      ],
+      "rendered": true
+    },
+    {
+      "role": "guest",
+      "route": "/register",
+      "theme": "dark",
+      "matchedSelectorsPerViewport": [
+        242,
+        242,
+        258
+      ],
+      "rendered": true
+    },
+    {
+      "role": "guest",
+      "route": "/about",
+      "theme": "dark",
+      "matchedSelectorsPerViewport": [
+        179,
+        179,
+        195
+      ],
+      "rendered": true
+    },
+    {
+      "role": "guest",
       "route": "/help",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        173,
-        173,
-        189
+        189,
+        189,
+        205
       ],
       "rendered": true
     },
     {
       "role": "guest",
       "route": "/contact",
-      "theme": "dark",
-      "matchedSelectorsPerViewport": [
-        177,
-        177,
-        193
-      ],
-      "rendered": true
-    },
-    {
-      "role": "guest",
-      "route": "/campus",
-      "theme": "dark",
-      "matchedSelectorsPerViewport": [
-        228,
-        228,
-        244
-      ],
-      "rendered": true
-    },
-    {
-      "role": "guest",
-      "route": "/colleges",
-      "theme": "dark",
-      "matchedSelectorsPerViewport": [
-        211,
-        211,
-        227
-      ],
-      "rendered": true
-    },
-    {
-      "role": "guest",
-      "route": "/competitions",
-      "theme": "dark",
-      "matchedSelectorsPerViewport": [
-        205,
-        205,
-        221
-      ],
-      "rendered": true
-    },
-    {
-      "role": "guest",
-      "route": "/app",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
         191,
@@ -350,12 +294,45 @@
     },
     {
       "role": "guest",
+      "route": "/colleges",
+      "theme": "dark",
+      "matchedSelectorsPerViewport": [
+        222,
+        222,
+        238
+      ],
+      "rendered": true
+    },
+    {
+      "role": "guest",
+      "route": "/competitions",
+      "theme": "dark",
+      "matchedSelectorsPerViewport": [
+        284,
+        284,
+        300
+      ],
+      "rendered": true
+    },
+    {
+      "role": "guest",
+      "route": "/app",
+      "theme": "dark",
+      "matchedSelectorsPerViewport": [
+        190,
+        190,
+        206
+      ],
+      "rendered": true
+    },
+    {
+      "role": "guest",
       "route": "/legal/privacy",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        178,
-        178,
-        194
+        195,
+        195,
+        211
       ],
       "rendered": true
     },
@@ -364,9 +341,9 @@
       "route": "/404",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        145,
-        145,
-        161
+        150,
+        150,
+        166
       ],
       "rendered": true
     },
@@ -375,9 +352,9 @@
       "route": "/student/dashboard",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        686,
-        686,
-        697
+        684,
+        684,
+        702
       ],
       "rendered": true
     },
@@ -386,9 +363,9 @@
       "route": "/student/courses",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        557,
-        557,
-        573
+        553,
+        553,
+        576
       ],
       "rendered": true
     },
@@ -397,9 +374,9 @@
       "route": "/student/online-exams",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        513,
-        513,
-        529
+        505,
+        505,
+        525
       ],
       "rendered": true
     },
@@ -408,9 +385,9 @@
       "route": "/student/alerts",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        521,
-        521,
-        537
+        516,
+        516,
+        539
       ],
       "rendered": true
     },
@@ -419,9 +396,9 @@
       "route": "/student/calendar",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        538,
-        538,
-        554
+        557,
+        557,
+        580
       ],
       "rendered": true
     },
@@ -430,9 +407,9 @@
       "route": "/student/messages",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        503,
-        503,
-        519
+        502,
+        502,
+        522
       ],
       "rendered": true
     },
@@ -441,9 +418,9 @@
       "route": "/student/research",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        507,
-        507,
-        523
+        504,
+        504,
+        524
       ],
       "rendered": true
     },
@@ -452,9 +429,9 @@
       "route": "/student/mooc",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        493,
-        493,
-        502
+        504,
+        504,
+        517
       ],
       "rendered": true
     },
@@ -463,9 +440,9 @@
       "route": "/student/webinars",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        524,
-        524,
-        533
+        523,
+        523,
+        536
       ],
       "rendered": true
     },
@@ -476,7 +453,7 @@
       "matchedSelectorsPerViewport": [
         537,
         537,
-        542
+        546
       ],
       "rendered": true
     },
@@ -485,9 +462,9 @@
       "route": "/student/gamification",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        539,
-        539,
-        548
+        536,
+        536,
+        549
       ],
       "rendered": true
     },
@@ -496,9 +473,9 @@
       "route": "/student/skills",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        518,
-        518,
-        527
+        515,
+        515,
+        528
       ],
       "rendered": true
     },
@@ -507,9 +484,9 @@
       "route": "/settings",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        528,
-        528,
-        544
+        518,
+        518,
+        541
       ],
       "rendered": true
     },
@@ -518,9 +495,9 @@
       "route": "/training",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        513,
-        513,
-        522
+        573,
+        573,
+        586
       ],
       "rendered": true
     },
@@ -529,8 +506,8 @@
       "route": "/community",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        536,
-        536,
+        532,
+        532,
         546
       ],
       "rendered": true
@@ -540,9 +517,9 @@
       "route": "/achievements",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        529,
-        529,
-        538
+        533,
+        533,
+        546
       ],
       "rendered": true
     },
@@ -551,9 +528,9 @@
       "route": "/vision",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        539,
-        539,
-        544
+        535,
+        535,
+        550
       ],
       "rendered": true
     },
@@ -562,9 +539,9 @@
       "route": "/student/dashboard",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        700,
-        700,
-        711
+        712,
+        712,
+        732
       ],
       "rendered": true
     },
@@ -573,9 +550,9 @@
       "route": "/student/courses",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        572,
-        572,
-        588
+        569,
+        569,
+        594
       ],
       "rendered": true
     },
@@ -584,9 +561,9 @@
       "route": "/student/online-exams",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        528,
-        528,
-        544
+        522,
+        522,
+        542
       ],
       "rendered": true
     },
@@ -595,9 +572,9 @@
       "route": "/student/alerts",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        536,
-        536,
-        552
+        531,
+        531,
+        556
       ],
       "rendered": true
     },
@@ -606,9 +583,9 @@
       "route": "/student/calendar",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        554,
-        554,
-        570
+        573,
+        573,
+        598
       ],
       "rendered": true
     },
@@ -617,9 +594,9 @@
       "route": "/student/messages",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        518,
-        518,
-        534
+        519,
+        519,
+        539
       ],
       "rendered": true
     },
@@ -628,9 +605,9 @@
       "route": "/student/research",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        522,
-        522,
-        538
+        521,
+        521,
+        541
       ],
       "rendered": true
     },
@@ -639,9 +616,9 @@
       "route": "/student/mooc",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        508,
-        508,
-        517
+        521,
+        521,
+        534
       ],
       "rendered": true
     },
@@ -650,9 +627,9 @@
       "route": "/student/webinars",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        539,
-        539,
-        548
+        540,
+        540,
+        553
       ],
       "rendered": true
     },
@@ -661,9 +638,9 @@
       "route": "/student/map",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        552,
-        552,
-        557
+        554,
+        554,
+        563
       ],
       "rendered": true
     },
@@ -672,9 +649,9 @@
       "route": "/student/gamification",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        553,
-        553,
-        562
+        561,
+        561,
+        574
       ],
       "rendered": true
     },
@@ -683,9 +660,9 @@
       "route": "/student/skills",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        534,
-        534,
-        543
+        533,
+        533,
+        546
       ],
       "rendered": true
     },
@@ -694,9 +671,9 @@
       "route": "/settings",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        544,
-        544,
-        560
+        536,
+        536,
+        559
       ],
       "rendered": true
     },
@@ -705,9 +682,9 @@
       "route": "/training",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        530,
-        530,
-        539
+        593,
+        593,
+        606
       ],
       "rendered": true
     },
@@ -716,9 +693,9 @@
       "route": "/community",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        551,
-        551,
-        561
+        549,
+        549,
+        563
       ],
       "rendered": true
     },
@@ -727,9 +704,9 @@
       "route": "/achievements",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        547,
-        547,
-        556
+        559,
+        559,
+        572
       ],
       "rendered": true
     },
@@ -738,9 +715,9 @@
       "route": "/vision",
       "theme": "dark",
       "matchedSelectorsPerViewport": [
-        552,
-        552,
-        557
+        548,
+        548,
+        565
       ],
       "rendered": true
     },
@@ -749,8 +726,8 @@
       "route": "/teacher/dashboard",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        490,
-        490,
+        491,
+        491,
         506
       ],
       "rendered": true
@@ -760,9 +737,9 @@
       "route": "/teacher/exams",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        493,
-        493,
-        509
+        492,
+        492,
+        507
       ],
       "rendered": true
     },
@@ -771,8 +748,8 @@
       "route": "/teacher/profile",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        486,
-        486,
+        496,
+        496,
         502
       ],
       "rendered": true
@@ -782,9 +759,9 @@
       "route": "/admin/dashboard",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        506,
-        506,
-        522
+        509,
+        509,
+        520
       ],
       "rendered": true
     },
@@ -793,9 +770,9 @@
       "route": "/admin/students",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        558,
-        558,
-        574
+        570,
+        570,
+        572
       ],
       "rendered": true
     },
@@ -804,9 +781,9 @@
       "route": "/quality/dashboard",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        501,
-        501,
-        517
+        512,
+        512,
+        523
       ],
       "rendered": true
     },
@@ -826,202 +803,286 @@
       "route": "/owner/institutions",
       "theme": "light",
       "matchedSelectorsPerViewport": [
-        552,
-        552,
-        568
+        596,
+        596,
+        612
       ],
       "rendered": true
     }
   ],
   "perFile": [
     {
+      "file": "src/styles/patterns.css",
+      "selectors": 627,
+      "matchedSelectors": 281,
+      "deadCandidates": 346,
+      "matchRate": 44.8
+    },
+    {
       "file": "src/styles/components.css",
-      "selectors": 785,
-      "matchedSelectors": 141,
-      "deadCandidates": 644,
-      "matchRate": 18
+      "selectors": 327,
+      "matchedSelectors": 159,
+      "deadCandidates": 168,
+      "matchRate": 48.6
     },
     {
-      "file": "src/styles/landing.css",
-      "selectors": 763,
-      "matchedSelectors": 490,
-      "deadCandidates": 273,
-      "matchRate": 64.2
-    },
-    {
-      "file": "src/styles/student.css",
-      "selectors": 523,
-      "matchedSelectors": 63,
-      "deadCandidates": 460,
-      "matchRate": 12
-    },
-    {
-      "file": "src/styles/teacher-quality.css",
-      "selectors": 397,
-      "matchedSelectors": 12,
-      "deadCandidates": 385,
-      "matchRate": 3
+      "file": "src/styles/shared/heron-admin-owner.css",
+      "selectors": 211,
+      "matchedSelectors": 51,
+      "deadCandidates": 160,
+      "matchRate": 24.2
     },
     {
       "file": "src/styles/polish.css",
-      "selectors": 332,
-      "matchedSelectors": 143,
-      "deadCandidates": 189,
-      "matchRate": 43.1
+      "selectors": 194,
+      "matchedSelectors": 139,
+      "deadCandidates": 55,
+      "matchRate": 71.6
     },
     {
-      "file": "src/styles/r305-research-pdf-ai.css",
-      "selectors": 228,
-      "matchedSelectors": 6,
-      "deadCandidates": 222,
-      "matchRate": 2.6
-    },
-    {
-      "file": "src/styles/r305-admin-owner.css",
-      "selectors": 210,
-      "matchedSelectors": 28,
-      "deadCandidates": 182,
-      "matchRate": 13.3
-    },
-    {
-      "file": "src/styles/auth.css",
-      "selectors": 168,
-      "matchedSelectors": 89,
-      "deadCandidates": 79,
-      "matchRate": 53
+      "file": "src/styles/landing/hero-plate.css",
+      "selectors": 188,
+      "matchedSelectors": 180,
+      "deadCandidates": 8,
+      "matchRate": 95.7
     },
     {
       "file": "src/styles/colleges.css",
-      "selectors": 168,
+      "selectors": 179,
       "matchedSelectors": 18,
-      "deadCandidates": 150,
-      "matchRate": 10.7
+      "deadCandidates": 161,
+      "matchRate": 10.1
     },
     {
-      "file": "src/styles/owner.css",
-      "selectors": 165,
-      "matchedSelectors": 2,
-      "deadCandidates": 163,
-      "matchRate": 1.2
+      "file": "src/styles/landing/why.css",
+      "selectors": 172,
+      "matchedSelectors": 167,
+      "deadCandidates": 5,
+      "matchRate": 97.1
     },
     {
-      "file": "src/styles/r305-teacher-quality.css",
-      "selectors": 153,
-      "matchedSelectors": 11,
-      "deadCandidates": 142,
-      "matchRate": 7.2
+      "file": "src/styles/landing/journey.css",
+      "selectors": 171,
+      "matchedSelectors": 107,
+      "deadCandidates": 64,
+      "matchRate": 62.6
+    },
+    {
+      "file": "src/styles/student.css",
+      "selectors": 147,
+      "matchedSelectors": 66,
+      "deadCandidates": 81,
+      "matchRate": 44.9
     },
     {
       "file": "src/styles/layout.css",
-      "selectors": 139,
+      "selectors": 144,
       "matchedSelectors": 75,
-      "deadCandidates": 64,
-      "matchRate": 54
+      "deadCandidates": 69,
+      "matchRate": 52.1
     },
     {
-      "file": "src/styles/research.css",
-      "selectors": 107,
-      "matchedSelectors": 3,
-      "deadCandidates": 104,
-      "matchRate": 2.8
+      "file": "src/styles/landing/footer.css",
+      "selectors": 127,
+      "matchedSelectors": 120,
+      "deadCandidates": 7,
+      "matchRate": 94.5
     },
     {
-      "file": "src/styles/training.css",
+      "file": "src/styles/landing/hero-mechanics.css",
+      "selectors": 124,
+      "matchedSelectors": 91,
+      "deadCandidates": 33,
+      "matchRate": 73.4
+    },
+    {
+      "file": "src/styles/landing/hero.css",
+      "selectors": 118,
+      "matchedSelectors": 68,
+      "deadCandidates": 50,
+      "matchRate": 57.6
+    },
+    {
+      "file": "src/styles/landing/cta.css",
       "selectors": 101,
-      "matchedSelectors": 8,
-      "deadCandidates": 93,
-      "matchRate": 7.9
-    },
-    {
-      "file": "src/styles/campus.css",
-      "selectors": 89,
-      "matchedSelectors": 59,
-      "deadCandidates": 30,
-      "matchRate": 66.3
-    },
-    {
-      "file": "src/styles/patterns.css",
-      "selectors": 88,
-      "matchedSelectors": 59,
-      "deadCandidates": 29,
-      "matchRate": 67
+      "matchedSelectors": 79,
+      "deadCandidates": 22,
+      "matchRate": 78.2
     },
     {
       "file": "src/styles/base.css",
       "selectors": 85,
-      "matchedSelectors": 43,
-      "deadCandidates": 42,
-      "matchRate": 50.6
+      "matchedSelectors": 44,
+      "deadCandidates": 41,
+      "matchRate": 51.8
+    },
+    {
+      "file": "src/styles/shared/research-heron.css",
+      "selectors": 85,
+      "matchedSelectors": 6,
+      "deadCandidates": 79,
+      "matchRate": 7.1
     },
     {
       "file": "src/styles/notifications.css",
-      "selectors": 81,
+      "selectors": 82,
       "matchedSelectors": 34,
-      "deadCandidates": 47,
-      "matchRate": 42
+      "deadCandidates": 48,
+      "matchRate": 41.5
     },
     {
-      "file": "src/styles/r325-indicators.css",
-      "selectors": 74,
-      "matchedSelectors": 48,
-      "deadCandidates": 26,
-      "matchRate": 64.9
+      "file": "src/styles/shared/indicators.css",
+      "selectors": 80,
+      "matchedSelectors": 53,
+      "deadCandidates": 27,
+      "matchRate": 66.3
     },
     {
-      "file": "src/styles/legal.css",
-      "selectors": 56,
-      "matchedSelectors": 40,
-      "deadCandidates": 16,
-      "matchRate": 71.4
+      "file": "src/styles/plates.css",
+      "selectors": 78,
+      "matchedSelectors": 0,
+      "deadCandidates": 78,
+      "matchRate": 0
     },
     {
-      "file": "src/styles/r319-student.css",
+      "file": "src/styles/landing/statement.css",
+      "selectors": 78,
+      "matchedSelectors": 74,
+      "deadCandidates": 4,
+      "matchRate": 94.9
+    },
+    {
+      "file": "src/styles/owner.css",
+      "selectors": 77,
+      "matchedSelectors": 10,
+      "deadCandidates": 67,
+      "matchRate": 13
+    },
+    {
+      "file": "src/styles/landing/pains.css",
+      "selectors": 76,
+      "matchedSelectors": 71,
+      "deadCandidates": 5,
+      "matchRate": 93.4
+    },
+    {
+      "file": "src/styles/landing/nav.css",
+      "selectors": 75,
+      "matchedSelectors": 52,
+      "deadCandidates": 23,
+      "matchRate": 69.3
+    },
+    {
+      "file": "src/styles/student/heron-supplemental.css",
+      "selectors": 72,
+      "matchedSelectors": 27,
+      "deadCandidates": 45,
+      "matchRate": 37.5
+    },
+    {
+      "file": "src/styles/teacher/heron.css",
+      "selectors": 65,
+      "matchedSelectors": 12,
+      "deadCandidates": 53,
+      "matchRate": 18.5
+    },
+    {
+      "file": "src/styles/landing/platform.css",
+      "selectors": 63,
+      "matchedSelectors": 60,
+      "deadCandidates": 3,
+      "matchRate": 95.2
+    },
+    {
+      "file": "src/styles/landing/strata.css",
+      "selectors": 62,
+      "matchedSelectors": 33,
+      "deadCandidates": 29,
+      "matchRate": 53.2
+    },
+    {
+      "file": "src/styles/landing/roles.css",
+      "selectors": 59,
+      "matchedSelectors": 56,
+      "deadCandidates": 3,
+      "matchRate": 94.9
+    },
+    {
+      "file": "src/styles/technical-sheet.css",
+      "selectors": 53,
+      "matchedSelectors": 50,
+      "deadCandidates": 3,
+      "matchRate": 94.3
+    },
+    {
+      "file": "src/styles/technical-interactive.css",
+      "selectors": 53,
+      "matchedSelectors": 31,
+      "deadCandidates": 22,
+      "matchRate": 58.5
+    },
+    {
+      "file": "src/styles/motion.css",
+      "selectors": 48,
+      "matchedSelectors": 10,
+      "deadCandidates": 38,
+      "matchRate": 20.8
+    },
+    {
+      "file": "src/styles/shell/shell.css",
+      "selectors": 48,
+      "matchedSelectors": 39,
+      "deadCandidates": 9,
+      "matchRate": 81.3
+    },
+    {
+      "file": "src/styles/student/pages.css",
       "selectors": 48,
       "matchedSelectors": 45,
       "deadCandidates": 3,
       "matchRate": 93.8
     },
     {
-      "file": "src/styles/motion.css",
-      "selectors": 47,
-      "matchedSelectors": 8,
-      "deadCandidates": 39,
-      "matchRate": 17
-    },
-    {
       "file": "src/styles/admin.css",
       "selectors": 46,
-      "matchedSelectors": 4,
-      "deadCandidates": 42,
-      "matchRate": 8.7
+      "matchedSelectors": 12,
+      "deadCandidates": 34,
+      "matchRate": 26.1
     },
     {
-      "file": "src/styles/r305-shell.css",
-      "selectors": 45,
-      "matchedSelectors": 37,
-      "deadCandidates": 8,
-      "matchRate": 82.2
+      "file": "src/styles/landing/concepts.css",
+      "selectors": 43,
+      "matchedSelectors": 40,
+      "deadCandidates": 3,
+      "matchRate": 93
     },
     {
-      "file": "src/styles/r330-home.css",
+      "file": "src/styles/landing/shared.css",
+      "selectors": 43,
+      "matchedSelectors": 30,
+      "deadCandidates": 13,
+      "matchRate": 69.8
+    },
+    {
+      "file": "src/styles/legal.css",
       "selectors": 40,
-      "matchedSelectors": 31,
-      "deadCandidates": 9,
-      "matchRate": 77.5
+      "matchedSelectors": 25,
+      "deadCandidates": 15,
+      "matchRate": 62.5
     },
     {
-      "file": "src/styles/r305-student-supplemental.css",
-      "selectors": 36,
-      "matchedSelectors": 11,
-      "deadCandidates": 25,
-      "matchRate": 30.6
+      "file": "src/styles/student/training-anatomy.css",
+      "selectors": 39,
+      "matchedSelectors": 8,
+      "deadCandidates": 31,
+      "matchRate": 20.5
     },
     {
-      "file": "src/styles/r314-productframe.css",
-      "selectors": 35,
-      "matchedSelectors": 15,
-      "deadCandidates": 20,
-      "matchRate": 42.9
+      "file": "src/styles/shell/chrome.css",
+      "selectors": 38,
+      "matchedSelectors": 36,
+      "deadCandidates": 2,
+      "matchRate": 94.7
     },
     {
       "file": "inline-or-external",
@@ -1031,32 +1092,32 @@
       "matchRate": 64.7
     },
     {
-      "file": "src/styles/r305-student.css",
-      "selectors": 32,
-      "matchedSelectors": 16,
-      "deadCandidates": 16,
-      "matchRate": 50
-    },
-    {
-      "file": "src/styles/r325-shell.css",
+      "file": "src/styles/student/heron.css",
       "selectors": 31,
-      "matchedSelectors": 29,
-      "deadCandidates": 2,
-      "matchRate": 93.5
+      "matchedSelectors": 19,
+      "deadCandidates": 12,
+      "matchRate": 61.3
     },
     {
-      "file": "src/styles/r314-chrome.css",
-      "selectors": 31,
-      "matchedSelectors": 26,
-      "deadCandidates": 5,
-      "matchRate": 83.9
-    },
-    {
-      "file": "src/styles/tokens.css",
+      "file": "src/styles/tokens/tokens.css",
       "selectors": 28,
       "matchedSelectors": 19,
       "deadCandidates": 9,
       "matchRate": 67.9
+    },
+    {
+      "file": "src/styles/landing/preloader.css",
+      "selectors": 26,
+      "matchedSelectors": 1,
+      "deadCandidates": 25,
+      "matchRate": 3.8
+    },
+    {
+      "file": "src/styles/landing/chrome.css",
+      "selectors": 25,
+      "matchedSelectors": 18,
+      "deadCandidates": 7,
+      "matchRate": 72
     },
     {
       "file": "src/styles/vision.css",
@@ -1066,11 +1127,11 @@
       "matchRate": 29.2
     },
     {
-      "file": "src/styles/r305-student-schedule.css",
-      "selectors": 23,
-      "matchedSelectors": 8,
-      "deadCandidates": 15,
-      "matchRate": 34.8
+      "file": "src/styles/training.css",
+      "selectors": 22,
+      "matchedSelectors": 5,
+      "deadCandidates": 17,
+      "matchRate": 22.7
     },
     {
       "file": "src/components/motion/cursor.css",
@@ -1080,39 +1141,81 @@
       "matchRate": 50
     },
     {
-      "file": "src/styles/r305-student-dashboard.css",
+      "file": "src/styles/landing/consent-edge.css",
+      "selectors": 20,
+      "matchedSelectors": 16,
+      "deadCandidates": 4,
+      "matchRate": 80
+    },
+    {
+      "file": "src/styles/student/heron-dashboard.css",
+      "selectors": 20,
+      "matchedSelectors": 18,
+      "deadCandidates": 2,
+      "matchRate": 90
+    },
+    {
+      "file": "src/styles/student/heron-schedule.css",
+      "selectors": 20,
+      "matchedSelectors": 8,
+      "deadCandidates": 12,
+      "matchRate": 40
+    },
+    {
+      "file": "src/styles/landing/cursor.css",
       "selectors": 18,
-      "matchedSelectors": 10,
-      "deadCandidates": 8,
-      "matchRate": 55.6
+      "matchedSelectors": 9,
+      "deadCandidates": 9,
+      "matchRate": 50
     },
     {
-      "file": "src/styles/r305-student-courses.css",
-      "selectors": 17,
-      "matchedSelectors": 1,
-      "deadCandidates": 16,
-      "matchRate": 5.9
-    },
-    {
-      "file": "src/styles/r319-shell.css",
+      "file": "src/styles/shell/sheet-frame.css",
       "selectors": 16,
       "matchedSelectors": 14,
       "deadCandidates": 2,
       "matchRate": 87.5
     },
     {
-      "file": "src/styles/r321-map-live.css",
-      "selectors": 15,
+      "file": "src/styles/student/map-live.css",
+      "selectors": 16,
       "matchedSelectors": 6,
-      "deadCandidates": 9,
-      "matchRate": 40
+      "deadCandidates": 10,
+      "matchRate": 37.5
     },
     {
-      "file": "src/styles/r321-exams.css",
-      "selectors": 12,
-      "matchedSelectors": 4,
+      "file": "src/styles/landing/patterns.css",
+      "selectors": 15,
+      "matchedSelectors": 7,
       "deadCandidates": 8,
-      "matchRate": 33.3
+      "matchRate": 46.7
+    },
+    {
+      "file": "src/styles/colleges-guest.css",
+      "selectors": 14,
+      "matchedSelectors": 3,
+      "deadCandidates": 11,
+      "matchRate": 21.4
+    },
+    {
+      "file": "src/styles/help.css",
+      "selectors": 13,
+      "matchedSelectors": 13,
+      "deadCandidates": 0,
+      "matchRate": 100
+    },
+    {
+      "file": "src/styles/student/heron-courses.css",
+      "selectors": 13,
+      "matchedSelectors": 0,
+      "deadCandidates": 13,
+      "matchRate": 0
+    },
+    {
+      "file": "src/styles/landing/consent.css",
+      "selectors": 9,
+      "matchedSelectors": 7,
+      "deadCandidates": 2,
+      "matchRate": 77.8
     },
     {
       "file": "src/styles/illustrations.css",
@@ -1122,64 +1225,130 @@
       "matchRate": 25
     },
     {
-      "file": "src/styles/r319-student-pages.css",
+      "file": "src/styles/app.css",
+      "selectors": 8,
+      "matchedSelectors": 8,
+      "deadCandidates": 0,
+      "matchRate": 100
+    },
+    {
+      "file": "src/styles/student/academic-pages.css",
       "selectors": 8,
       "matchedSelectors": 3,
       "deadCandidates": 5,
       "matchRate": 37.5
     },
     {
-      "file": "src/styles/r325-app.css",
+      "file": "src/styles/landing/colleges.css",
+      "selectors": 7,
+      "matchedSelectors": 7,
+      "deadCandidates": 0,
+      "matchRate": 100
+    },
+    {
+      "file": "src/styles/landing/statement-ai1.css",
+      "selectors": 7,
+      "matchedSelectors": 7,
+      "deadCandidates": 0,
+      "matchRate": 100
+    },
+    {
+      "file": "src/styles/shared/app-grammar.css",
       "selectors": 6,
       "matchedSelectors": 1,
       "deadCandidates": 5,
       "matchRate": 16.7
     },
     {
-      "file": "src/styles/r320-settings.css",
+      "file": "src/styles/landing/inner.css",
+      "selectors": 6,
+      "matchedSelectors": 3,
+      "deadCandidates": 3,
+      "matchRate": 50
+    },
+    {
+      "file": "src/styles/student/settings.css",
       "selectors": 6,
       "matchedSelectors": 6,
       "deadCandidates": 0,
       "matchRate": 100
     },
     {
-      "file": "src/styles/tokens.generated.css",
+      "file": "src/styles/landing/reveals.css",
+      "selectors": 5,
+      "matchedSelectors": 4,
+      "deadCandidates": 1,
+      "matchRate": 80
+    },
+    {
+      "file": "src/styles/landing/home.css",
+      "selectors": 5,
+      "matchedSelectors": 3,
+      "deadCandidates": 2,
+      "matchRate": 60
+    },
+    {
+      "file": "src/styles/technical-plates.css",
+      "selectors": 5,
+      "matchedSelectors": 2,
+      "deadCandidates": 3,
+      "matchRate": 40
+    },
+    {
+      "file": "src/styles/about.css",
+      "selectors": 4,
+      "matchedSelectors": 4,
+      "deadCandidates": 0,
+      "matchRate": 100
+    },
+    {
+      "file": "src/styles/tokens/tokens.generated.css",
       "selectors": 3,
       "matchedSelectors": 3,
       "deadCandidates": 0,
       "matchRate": 100
     },
     {
-      "file": "src/styles/r321-community.css",
+      "file": "src/styles/errors.css",
+      "selectors": 3,
+      "matchedSelectors": 3,
+      "deadCandidates": 0,
+      "matchRate": 100
+    },
+    {
+      "file": "src/styles/research.css",
+      "selectors": 3,
+      "matchedSelectors": 3,
+      "deadCandidates": 0,
+      "matchRate": 100
+    },
+    {
+      "file": "src/styles/student/community.css",
       "selectors": 3,
       "matchedSelectors": 1,
       "deadCandidates": 2,
       "matchRate": 33.3
+    },
+    {
+      "file": "src/styles/fonts.css",
+      "selectors": 1,
+      "matchedSelectors": 1,
+      "deadCandidates": 0,
+      "matchRate": 100
     }
   ],
   "deadCandidatesSample": [
+    ".ab-code",
+    ".ab-cta-ghost",
+    ".ab-cta-ghost:hover",
     ".ach-lb-toggle",
     ".achievement",
     ".achievement-desc",
     ".achievement-icon",
     ".achievement-name",
     ".achievement:hover",
-    ".admin-course-tint",
-    ".admin-faculty-body",
     ".admin-faculty-card",
     ".admin-faculty-card:hover",
-    ".admin-faculty-dept",
-    ".admin-faculty-dept-meta",
-    ".admin-faculty-dept-name",
-    ".admin-faculty-depts",
-    ".admin-faculty-head",
-    ".admin-faculty-head.has-depts",
-    ".admin-faculty-icon",
-    ".admin-faculty-meta",
-    ".admin-faculty-name",
-    ".admin-faculty-titles",
-    ".admin-stat-row",
-    ".admin-stat-value",
     ".admin-students-name",
     ".admin-students-search",
     ".admin-students-search .admin-students-input",
@@ -1187,14 +1356,7 @@
     ".admin-students-search input:focus",
     ".admin-students-search:focus-within",
     ".admin-students-toolbar",
-    ".admin-sync-runs tbody tr",
-    ".agenda-row-chevron",
-    ".ai-conv-actions",
-    ".ai-conv-open",
-    ".ai-conv-open:disabled",
     ".ai-conv-row .btn",
-    ".ai-conv-row[aria-current=\"true\"]",
-    ".ai-conv-title",
     ".ai-gap-card",
     ".ai-gap-card:active:not(:disabled)",
     ".ai-gap-card:disabled",
@@ -1204,57 +1366,29 @@
     ".ai-gap-name",
     ".ai-gap-pct",
     ".ai-gap-warn",
-    ".ai-next-steps",
     ".ai-quick-actions",
     ".ai-quick-chip",
     ".ai-quick-chip:hover",
-    ".ai-rationale",
-    ".ai-steps-list",
-    ".alert",
-    ".alert-body",
-    ".alert-desc",
-    ".alert-dot",
-    ".alert-skel",
-    ".alert-time",
-    ".alert-title",
     ".alert.amber .alert-dot",
     ".alert.green .alert-dot",
-    ".alert.purple .alert-dot",
     ".alert.red .alert-dot",
     ".alert.unread",
-    ".annotation-row",
-    ".annotation-row-icon",
-    ".annotation-row.is-newest",
     ".announce-body",
     ".announce-emoji",
     ".announce-list",
     ".announce-meta",
     ".announce-meta bdi",
     ".announce-row",
-    ".announce-row:hover .announce-emoji",
     ".announce-row:last-child",
     ".announce-title",
-    ".announcement-body",
-    ".announcement-card",
-    ".announcement-card.pinned",
-    ".announcement-card:hover",
-    ".announcement-card:hover .announcement-icon",
-    ".announcement-head",
-    ".announcement-head-main",
-    ".announcement-icon",
-    ".announcement-meta",
-    ".announcement-meta-item",
-    ".announcement-pin",
-    ".announcement-title",
-    ".att-toggle",
-    ".att-toggle:active",
-    ".att-toggle:focus-visible",
-    ".att-toggle:hover",
+    ".ap .pf-page-desc",
+    ".ap-cta-ghost",
+    ".ap-cta-ghost:hover",
+    ".ap-p strong",
     ".att-toggle[aria-pressed=\"true\"][data-tone=\"brand\"]",
     ".att-toggle[aria-pressed=\"true\"][data-tone=\"danger\"]",
     ".att-toggle[aria-pressed=\"true\"][data-tone=\"success\"]",
     ".att-toggle[aria-pressed=\"true\"][data-tone=\"warning\"]",
-    ".auth-card--wide",
     ".auth-demo-fill:disabled",
     ".auth-demo-fill:focus-visible",
     ".auth-demo-hint-reopen",
@@ -1269,23 +1403,13 @@
     ".auth-invite-hint",
     ".auth-invite-hint[data-kind=\"bad\"]",
     ".auth-invite-hint[data-kind=\"ok\"]",
+    ".auth-register-link.auth-primary-link:focus-visible",
     ".auth-retry-link",
     ".auth-retry-link:hover",
-    ".auth-row",
     ".auth-row-2",
     ".auth-select-skeleton",
-    ".auth-sheet-label",
-    ".auth-sheet-label::before",
-    ".auth-step",
-    ".auth-step + .auth-step::before",
-    ".auth-step-dot",
-    ".auth-step-panel",
     ".auth-step-panel[data-dir=\"back\"]",
-    ".auth-step-panel[data-dir=\"forward\"]",
-    ".auth-step[data-state=\"current\"]",
-    ".auth-step[data-state=\"current\"] .auth-step-dot",
     ".auth-step[data-state=\"done\"] .auth-step-dot",
-    ".auth-steps",
     ".auth-submit-spinner",
     ".auth-submit:disabled",
     ".auth-submit:not(:disabled):focus-visible",
@@ -1306,48 +1430,30 @@
     ".badge-tile.locked .badge-tile-icon",
     ".badge-tile.locked .badge-tile-rarity",
     ".badge-tile.locked .badge-tile-title",
-    ".badge.green",
-    ".badge.purple",
-    ".bimp",
-    ".bimp-actions",
-    ".bimp-area",
-    ".bimp-error",
-    ".bimp-file",
-    ".bimp-foot",
-    ".bimp-lede",
-    ".bimp-pass",
-    ".bimp-summary",
-    ".bimp-summary .bimp-bad",
-    ".bimp-summary .bimp-bad svg",
-    ".bimp-summary span",
-    ".bimp-summary svg",
-    ".bimp-table",
-    ".bimp-table td",
-    ".bimp-table th",
-    ".bimp-table tr[data-status=\"error\"] td",
-    ".bimp-table-wrap",
-    ".bimp-verdict",
-    ".bottom-nav.is-hidden",
+    ".below-fold",
+    ".benr",
+    ".benr-area",
+    ".benr-capacity",
+    ".benr-capacity .benr-bad",
+    ".benr-error",
+    ".benr-foot",
+    ".benr-lede",
+    ".benr-summary",
+    ".benr-table",
+    ".benr-table td",
+    ".benr-table tr[data-status=\"error\"] td",
+    ".benr-table tr[data-status=\"ok\"] td:first-child",
+    ".benr-table tr[data-status=\"skip\"] td",
+    ".benr-table-wrap",
     ".bp-hotspot",
-    ".bp-hotspot-label",
-    ".bp-hotspot-num",
-    ".bp-hotspot:hover",
-    ".bp-hotspot:hover .bp-hotspot-num",
     ".bp-hotspot[aria-pressed=\"true\"]",
     ".bp-hotspot[aria-pressed=\"true\"] .bp-hotspot-num",
     ".bp-hotspots",
-    ".bp-ink-fill",
     ".bp-name",
-    ".bp-panel",
-    ".bp-panel-desc",
-    ".bp-panel-meta",
-    ".bp-panel-num",
-    ".bp-panel-title",
     ".bp-stage[data-dragging]",
     ".bp-tag",
     ".bp-vol.bp-on .bp-fill",
     ".bp-vol.bp-on .bp-ink",
-    ".bp-vol.bp-on .bp-ink-fill",
     ".btn .icon",
     ".btn .visually-hidden",
     ".btn-motion-icon",
@@ -1358,16 +1464,13 @@
     ".btn-motion-label",
     ".btn-motion-label-dup",
     ".btn-motion-label-track",
-    ".btn.checkpoint-skip",
     ".btn.danger",
-    ".btn.full",
     ".btn.ghost.danger",
     ".btn.gold",
     ".btn.success",
     ".btn:focus-visible:not(:disabled):not([data-loading=\"true\"])",
     ".btn:focus-visible:not(:disabled):not([data-loading=\"true\"])::before",
     ".btn:hover .icon",
-    ".btn[aria-disabled=\"true\"]:not(:disabled)",
     ".btn[data-loading=\"true\"]",
     ".btn[data-loading=\"true\"]:hover",
     ".btn[data-motion-icon]:focus-visible:not(:disabled):not([data-loading=\"true\"]) .btn-motion-icon > :not(.btn-motion-icon-dup)",
@@ -1376,89 +1479,72 @@
     ".btn[data-motion-icon]:hover:not(:disabled):not([data-loading=\"true\"]) .btn-motion-icon-dup",
     ".btn[data-motion-label]:focus-visible:not(:disabled):not([data-loading=\"true\"]) .btn-motion-label-track",
     ".btn[data-motion-label]:hover:not(:disabled):not([data-loading=\"true\"]) .btn-motion-label-track",
+    ".cal-cell-chip",
+    ".cal-cell-chip[data-kind=\"assignment\"]",
+    ".cal-cell-chip[data-kind=\"class\"]",
+    ".cal-cell-chip[data-kind=\"exam\"]",
+    ".cal-cell-chip[data-kind=\"live\"]",
     ".cal-cell-skel",
-    ".cal-detail-date",
+    ".cal-chip-more",
     ".cal-detail-head",
     ".cal-detail-head::after",
-    ".cal-detail-list",
-    ".cal-event-chevron",
-    ".cal-event-icon",
-    ".cal-event-icon[data-kind=\"assignment\"]",
-    ".cal-event-icon[data-kind=\"class\"]",
-    ".cal-event-icon[data-kind=\"exam\"]",
-    ".cal-event-icon[data-kind=\"live\"]",
-    ".cal-event-phase",
+    ".cal-dow-row.cal-dow-week",
     ".cal-event-row",
-    ".cal-event-row:hover",
-    ".cal-event-row:hover .cal-event-chevron",
     ".cal-event-row:last-child",
     ".cal-event-time",
-    ".cal-event-title",
     ".cal-grid-skel",
-    ".campus-faculty-link",
-    ".campus-skel-row",
-    ".card > .state.state-inline",
+    ".cal-grid.cal-week",
+    ".cal-week .cal-cell",
+    ".cal-week-dayhead",
+    ".cal-week-dow",
     ".card > .state.state-inline::before",
-    ".card > .state.state-loading",
     ".card > .state.state-loading::before",
-    ".card iframe",
-    ".card video",
-    ".card-actions",
-    ".card-glass-premium",
-    ".card-glass-premium::before",
-    ".card-glass-premium:hover",
     ".card-header:has(.np-head-actions)",
+    ".card-subtitle",
     ".card-title-text",
-    ".card.bordered",
-    ".card.bordered:hover",
-    ".card.compact",
-    ".card.compact .card-header",
-    ".card.disabled",
-    ".card.flush .card-header",
-    ".card.glass",
-    ".card.glass-premium",
-    ".card.glass-premium::before",
-    ".card.glass-premium:hover",
-    ".card.interactive",
     ".card.interactive:active",
-    ".card.interactive:hover",
-    ".category-row",
-    ".category-row-body",
-    ".category-row-head",
-    ".category-row-head:active",
-    ".category-row-head:hover",
     ".cb-accept:focus-visible",
     ".cb-accept:focus-visible::before",
+    ".cb-banner a.cb-more.cb-more:focus-visible",
+    ".cb-banner[data-cb-yield]",
     ".cb-more:focus-visible",
     ".cert-body",
     ".cert-icon",
     ".cert-meta",
     ".cert-row",
-    ".cert-row > :first-child",
-    ".cert-row-title",
     ".cert-title",
-    ".ch-move",
-    ".ch-move-btn",
-    ".ch-move-btn + .ch-move-btn",
-    ".chapter-body",
-    ".chapter-concept",
-    ".chapter-concept::before",
-    ".chapter-list",
-    ".chapter-row",
-    ".chapter-row + .chapter-row",
+    ".cf-field[data-active=\"C1\"] .ti-leg[data-nodes~=\"C1\"]",
+    ".cf-field[data-active=\"C1\"] .ti-meas[data-node=\"C1\"]",
+    ".cf-field[data-active=\"C2\"] .ti-leg[data-nodes~=\"C2\"]",
+    ".cf-field[data-active=\"C2\"] .ti-meas[data-node=\"C2\"]",
+    ".cf-field[data-active=\"C3\"] .ti-leg[data-nodes~=\"C3\"]",
+    ".cf-field[data-active=\"C3\"] .ti-meas[data-node=\"C3\"]",
+    ".cf-field[data-active=\"C4\"] .ti-leg[data-nodes~=\"C4\"]",
+    ".cf-field[data-active=\"C4\"] .ti-meas[data-node=\"C4\"]",
+    ".cf-stage:focus-visible",
+    ".cf-stage[aria-pressed=\"true\"] .cf-stage-code",
+    ".cf-stage[aria-pressed=\"true\"] .cf-stage-name",
+    ".cf-svg .ti-node:focus-visible .ti-gate line",
+    ".cf-svg .ti-node:focus-visible .ti-ring",
+    ".cf-svg .ti-node:focus-visible .ti-station",
+    ".cf-svg .ti-node[aria-pressed=\"true\"] .ti-gate line",
+    ".cf-svg .ti-node[aria-pressed=\"true\"] .ti-ring",
+    ".cf-svg .ti-node[aria-pressed=\"true\"] .ti-station",
+    ".cf-svg [stroke]",
+    ".cf-svg [vector-effect]",
+    ".cf-svg[data-point=\"on\"] .ti-guides",
+    ".cg-cloud-link.probe-hover",
+    ".cg-cloud-link[data-spec-hover=\"14\"].probe-hover",
+    ".cg-cloud-link[data-spec-hover=\"2\"].probe-hover",
+    ".cg-cloud-link[data-spec-hover]:focus-within",
     ".chapter-row.on",
     ".chapter-row.on .chapter-concept",
     ".chapter-row.on .chapter-state",
     ".chapter-row.on .chapter-time",
     ".chapter-row.on .chapter-title",
     ".chapter-row.watched .chapter-state",
-    ".chapter-row:active",
-    ".chapter-row:hover",
-    ".chapter-state",
-    ".chapter-time",
-    ".chapter-title",
+    ".chapters-head",
     ".chat-area",
-    ".chat-avatar",
     ".chat-bubble",
     ".chat-bubble p",
     ".chat-bubble p + p",
@@ -1466,7 +1552,6 @@
     ".chat-input",
     ".chat-input-row",
     ".chat-input:focus",
-    ".chat-input:focus-visible",
     ".chat-msg",
     ".chat-msg.bot",
     ".chat-msg.user",
@@ -1481,38 +1566,11 @@
     ".chat-typing-dot",
     ".chat-typing-dot:nth-child(2)",
     ".chat-typing-dot:nth-child(3)",
-    ".checkpoint-actions",
-    ".checkpoint-actions .btn",
-    ".checkpoint-actions:empty",
-    ".checkpoint-card",
-    ".checkpoint-error",
-    ".checkpoint-eyebrow",
-    ".checkpoint-mark",
-    ".checkpoint-option",
-    ".checkpoint-option-icon",
-    ".checkpoint-option-text",
-    ".checkpoint-option.correct",
-    ".checkpoint-option.correct .checkpoint-mark",
-    ".checkpoint-option.correct .checkpoint-option-icon",
-    ".checkpoint-option.incorrect",
-    ".checkpoint-option.incorrect .checkpoint-mark",
-    ".checkpoint-option.incorrect .checkpoint-option-icon",
-    ".checkpoint-option.picked",
-    ".checkpoint-option.picked .checkpoint-mark",
-    ".checkpoint-option:active:not(:disabled)",
-    ".checkpoint-option:disabled",
-    ".checkpoint-option:hover:not(:disabled)",
-    ".checkpoint-options",
-    ".checkpoint-question",
-    ".checkpoint-result",
-    ".checkpoint-result strong",
-    ".checkpoint-result-note",
-    ".checkpoint-result.incorrect",
-    ".checkpoint-result.incorrect strong",
-    ".chip",
     ".cmd-body",
     ".cmd-foot",
     ".cmd-input",
+    ".cmd-input-close",
+    ".cmd-input-close:active",
     ".cmd-input-esc",
     ".cmd-input-icon",
     ".cmd-input-row",
@@ -1521,8 +1579,6 @@
     ".cmd-list",
     ".cmd-palette-card",
     ".cmd-palette-overlay",
-    ".cmd-palette-overlay[data-closing=\"true\"]",
-    ".cmd-palette-overlay[data-closing=\"true\"] .cmd-palette-card",
     ".cmd-row",
     ".cmd-row-icon",
     ".college-coming-soon",
@@ -1581,88 +1637,212 @@
     ".comp-modal-head h2",
     ".comp-prize",
     ".comp-score-input",
-    ".comp-score-row",
-    ".comp-score-row .input",
     ".comp-title",
-    ".compact-kpi-delta",
     ".compact-kpi-delta[data-dir=\"dn\"]",
     ".compact-kpi-delta[data-dir=\"up\"]",
-    ".course-continue",
-    ".course-continue-next",
-    ".course-continue-next .btn",
-    ".course-continue-progress",
-    ".course-hero",
-    ".course-hero-badges",
-    ".course-hero-icon",
-    ".course-hero-main",
-    ".course-hero-progress",
-    ".course-hero-progress-head",
-    ".course-hero-progress-label",
-    ".course-hero-progress-note",
-    ".course-hero-progress-value",
-    ".course-hero-row",
-    ".course-hero-sub",
-    ".course-hero-title",
-    ".course-lec-row",
-    ".course-lec-row .list-row-body",
-    ".course-lec-row > .badge",
-    ".course-lec-row.next",
-    ".course-lec-row.next .course-lec-well",
-    ".course-lec-row.next:hover",
     ".course-lec-well",
     ".course-lec-well.done",
-    ".course-lectures .list-row-sub",
-    ".course-select",
-    ".courses-assignments td .btn",
-    ".courses-grid .thumb-card-image",
-    ".courses-grid > .thumb-card",
-    ".courses-grid-empty",
-    ".courses-grid[data-stagger] > .thumb-card",
-    ".courses-row-progress .progress",
-    ".courses-row-progress .progress-head",
-    ".courses-row-progress .progress-head span:first-child",
-    ".courses-row-progress .progress-track",
     ".cp-clamp1",
-    ".cp-clamp2",
     ".cp-inline",
-    ".cp-list",
     ".cp-meta-col",
     ".cp-progress",
-    ".cp-row",
-    ".cp-row + .cp-row",
-    ".cp-row-q",
-    ".cp-row.done .chapter-state",
     ".cp-row.done .chapter-time",
-    ".cp-row.done .cp-row-q",
-    ".cp-row:active",
-    ".cp-row:hover",
-    ".cp-row:not(.done) .chapter-state",
-    ".cp-rsvp",
-    ".cp-trail",
-    ".cu-header-index",
+    ".cr-route[data-active=\"G1\"] .ti-leg[data-nodes~=\"G1\"]",
+    ".cr-route[data-active=\"G2\"] .ti-leg[data-nodes~=\"G2\"]",
+    ".cr-route[data-active=\"G3\"] .ti-leg[data-nodes~=\"G3\"]",
+    ".cr-route[data-active=\"G4\"] .ti-leg[data-nodes~=\"G4\"]",
+    ".cr-route[data-active=\"T\"] .ti-leg[data-nodes~=\"T\"]",
+    ".cu",
+    ".cu .btn.accent",
+    ".cu .btn.accent.probe-hover",
+    ".cu .btn.accent:is(:hover",
+    ".cu .btn.ghost",
+    ".cu .btn.ghost.probe-hover",
+    ".cu .btn.ghost:is(:hover",
+    ".cu .btn.primary",
+    ".cu .btn.primary.probe-hover",
+    ".cu .btn.primary:is(:hover",
+    ".cu-band",
+    ".cu-foot",
+    ".cu-head",
+    ".cu-header",
+    ".cu-header-brand",
+    ".cu-header-inner",
+    ".cu-header-inner .btn",
+    ".cu-lede",
+    ".cu-main",
     ".cu-meta",
     ".cu-registry",
-    ".cu-registry-row",
-    ".cu-text-link",
-    ".cu-text-link:hover",
-    ".cur-form",
-    ".cur-form p",
-    ".cur-grid-2",
-    ".cur-lec-actions",
-    ".cur-lec-main",
-    ".cur-lec-meta",
-    ".cur-lec-row",
-    ".cur-lec-row[data-selected]",
-    ".cur-lec-select",
-    ".cur-lec-title",
-    ".cur-list",
-    ".cur-opt-correct",
-    ".cur-opt-error"
+    ".cu-title",
+    ".cu-title em",
+    ".cursor-layer[data-active=\"true\"] .cursor-dot-core",
+    ".cursor-layer[data-active=\"true\"][data-state=\"down\"] .cursor-dot-core",
+    ".cursor-layer[data-active=\"true\"][data-state=\"drag\"] .cursor-dot::after",
+    ".cursor-layer[data-active=\"true\"][data-state=\"drag\"] .cursor-dot::before",
+    ".cursor-layer[data-active=\"true\"][data-state=\"hidden\"] .cursor-dot-core",
+    ".cursor-layer[data-active=\"true\"][data-state=\"link\"] .cursor-dot-ring",
+    ".cursor-layer[data-active=\"true\"][data-state=\"text\"] .cursor-dot-core",
+    ".cursor-layer[data-lines=\"on\"] .cursor-readout",
+    ".cursor-layer[data-lines=\"on\"]:not([data-lines-axis=\"x\"]) .cursor-line-v",
+    ".cursor-layer[data-lines=\"on\"]:not([data-lines-axis=\"y\"]) .cursor-line-h",
+    ".dash-ai-body > span",
+    ".dash-gap-pct",
+    ".dash-gap-side",
+    ".dash-indicators > .dash-indicator + .dash-indicator",
+    ".dash-section-title",
+    ".dash-week-group + .dash-week-group",
+    ".dept-list",
+    ".dept-row",
+    ".dept-row-counts",
+    ".dept-row-counts strong",
+    ".dept-row-name",
+    ".dept-row:last-child",
+    ".dropdown",
+    ".dropdown-item",
+    ".dropdown-item:focus-visible",
+    ".dropdown-item:hover",
+    ".dropdown-item[data-active=\"true\"]",
+    ".dropdown-separator",
+    ".event-body",
+    ".event-emoji",
+    ".event-list",
+    ".event-meta",
+    ".event-meta bdi",
+    ".event-row",
+    ".event-row:last-child",
+    ".event-title",
+    ".exa-row",
+    ".exa-row-actions",
+    ".exa-row-main",
+    ".exa-row-sub",
+    ".exa-row-title",
+    ".exa-row.exa-row-clickable:hover",
+    ".exa-rows",
+    ".exa-rows > * + *",
+    ".exa-rows > :first-child",
+    ".exa-rows > :last-child",
+    ".exa-section-actions",
+    ".exa-section-desc",
+    ".exa-section-head",
+    ".exa-section-heading",
+    ".exa-section-title",
+    ".exam-choice input[type=\"radio\"]",
+    ".fb-actions",
+    ".fb-body",
+    ".fb-chip[data-kind=\"BUG\"]",
+    ".fb-chip[data-kind=\"IDEA\"]",
+    ".fb-chip[data-status=\"dismissed\"]",
+    ".fb-chip[data-status=\"fixed\"]",
+    ".fb-chip[data-status=\"open\"]",
+    ".fb-chip[data-status=\"triage\"]",
+    ".fb-close",
+    ".fb-field",
+    ".fb-head",
+    ".fb-kind",
+    ".fb-kind[data-active=\"true\"]",
+    ".fb-kinds",
+    ".fb-meta",
+    ".fb-sheet",
+    ".fb-shot-row",
+    ".fb-textarea",
+    ".fb-title",
+    ".filter-pill-row",
+    ".filter-pill:disabled",
+    ".fl",
+    ".fo-burger)",
+    ".fo-burger) :is(.fo-brand",
+    ".fo-burger[aria-expanded=\"true\"] .fo-burger-line:first-child",
+    ".fo-burger[aria-expanded=\"true\"] .fo-burger-line:last-child",
+    ".fo-col3rule",
+    ".fo-cta .btn.accent.probe-hover",
+    ".fo-cta .btn.accent.probe-hover .fo-cta-rbtn",
+    ".fo-cta .btn.accent.probe-hover .fo-cta-ricon",
+    ".fo-cta .btn.accent:focus-within",
+    ".fo-cta .btn.accent:focus-within .fo-cta-rbtn",
+    ".fo-cta .btn.accent:focus-within .fo-cta-ricon",
+    ".fo-cta .btn.ghost.probe-hover",
+    ".fo-cta .btn.ghost.probe-hover::after",
+    ".fo-cta .btn.ghost:focus-within",
+    ".fo-cta .btn.ghost:focus-within::after",
+    ".fo-cta .fo-meta-row",
+    ".fo-cta .fo-meta-row:last-child",
+    ".fo-cta .fo-meta-row:nth-last-child(-n+2)",
+    ".fo-cta .fo-text-link.probe-hover",
+    ".fo-cta .fo-text-link.probe-hover::after",
+    ".fo-cta .fo-text-link:focus-within",
+    ".fo-cta .fo-text-link:focus-within::after",
+    ".fo-cta-sketch",
+    ".fo-eyebrow",
+    ".fo-eyebrow .fo-mono",
+    ".fo-eyebrow::before",
+    ".fo-label",
+    ".fo-label .fo-mono",
+    ".fo-label::before",
+    ".fo-link-accent .fo-link-t",
+    ".fo-link-account.probe-hover",
+    ".fo-link-account.probe-hover::before",
+    ".fo-link-account:focus-within",
+    ".fo-link-account:focus-within::before",
+    ".fo-mb-cta",
+    ".fo-mb-cta .fo-mb-txt",
+    ".fo-mb-login",
+    ".fo-mb-row",
+    ".fo-mb-row:hover",
+    ".fo-mb-sub",
+    ".fo-mb-sub .fo-mb-sub-row + .fo-mb-sub-row",
+    ".fo-mb-sub-row",
+    ".fo-mb-txt",
+    ".fo-meta-k",
+    ".fo-meta-row",
+    ".fo-meta-row:last-child",
+    ".fo-meta-v",
+    ".fo-meta-v .fo-mono",
+    ".fo-mobile-menu",
+    ".fo-mobile-menu.is-open",
+    ".fo-mobile-menu.is-open .fo-mb-cta .fo-mb-txt",
+    ".fo-mobile-menu.is-open .fo-mb-txt",
+    ".fo-mobile-theme",
+    ".fo-mobile-theme-label",
+    ".fo-ticker",
+    ".fo-ticker-item",
+    ".fo-ticker-item .fo-mono",
+    ".fo-ticker-track",
+    ".font-semibold",
+    ".form-field-error",
+    ".fp-dev-inbox",
+    ".fp-dev-inbox-copy",
+    ".fp-dev-inbox-copy:hover",
+    ".fp-dev-inbox-head",
+    ".fp-dev-inbox-head span[dir=\"ltr\"]",
+    ".fp-dev-inbox-link",
+    ".fp-dev-inbox-link-row",
+    ".fp-dev-inbox-link:hover",
+    ".fp-dev-inbox-note",
+    ".fp-invalid",
+    ".fp-mail-note",
+    ".fp-new-link",
+    ".fp-sent",
+    ".fp-sent-message",
+    ".fp-sent-note",
+    ".gallery-chip[aria-selected=\"true\"]",
+    ".gallery-chip[aria-selected=\"true\"] .gallery-chip-count",
+    ".gallery-clear",
+    ".gallery-clear:hover",
+    ".gallery-skeleton-row",
+    ".gallery-skeleton-row-emoji",
+    ".gallery-skeleton-row-line-a",
+    ".gallery-skeleton-row-line-b",
+    ".gallery-skeleton-row-lines",
+    ".gallery-skeleton-rows",
+    ".gallery-skeleton-rows .skeleton",
+    ".gallery-skeleton-rows > * + *",
+    ".gallery-skeleton-section",
+    ".gallery-skeleton-section .gallery-skeleton-title"
   ],
   "notes": [
     "Dead candidate = matched zero elements on zero routes (union of 390/768/1440 × light/dark).",
     "Pseudo-elements and interaction pseudo-classes are stripped before matching.",
     "Only sheets LOADED on these routes are measured; never-imported sheets (unified-parity.css, shared-design-system.css — zero importers) are invisible to this harness.",
-    "Full selector→routes/files map: /home/z/heron-lab/css-coverage-full.json"
+    "Full selector→routes/files map: /tmp/madarek-css-coverage/css-coverage-full.json"
   ]
 }

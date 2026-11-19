@@ -230,6 +230,9 @@
   background: var(--surface-1);
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
+  /* R369-C (C4.2): the entrance animation folded home from the
+     duplicate block below (one owner per selector). */
+  animation: madarek-pdf-controls-in var(--motion-duration-long) var(--ease-out) both 100ms;
 }
 
 /* ╔═══════════════════════════════════════════════════════════════╗
@@ -240,9 +243,6 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* (Wave 9-b dead-selector sweep: .pdf-viewer-controls removed —
      zero TSX consumers; PdfViewer renders .pdf-toolbar.) */
-  .pdf-toolbar {
-    animation: madarek-pdf-controls-in var(--motion-duration-long) var(--ease-out) both 100ms;
-  }
   @keyframes madarek-pdf-controls-in {
     from { opacity: 0; transform: translateY(calc(var(--motion-distance-small) * -1)); } /* r153h: -6px → --motion-distance-small */
     to   { opacity: 1; transform: none; }

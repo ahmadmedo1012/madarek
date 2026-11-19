@@ -643,12 +643,10 @@
 /* ── D0 · Scope plumbing ──────────────────────────────────────────
    The interposed boxless scope absorbs .page's `> *` min-inline-size
    flex guard — re-arm it on the scoped children. The brow keeps its
-   breath above the h1 inside .page-title-block (§0 owns its chrome). */
+   breath above the h1 inside .page-title-block (§0 owns its chrome;
+   the §3 seam below owns the rung — R369-C C4.2 folded the dead early
+   sp-1 twin the later equal-specificity sp-2 rule always overrode). */
 .hr-scope > * { min-inline-size: 0; }
-
-.hr-scope .page-title-block .hr-brow {
-  margin-block-end: var(--sp-1);
-}
 
 /* ── D1 · Toolbars + the pressed-pill ember ───────────────────────
    One placement grammar: every filter rail adds .hr-toolbar (TSX).

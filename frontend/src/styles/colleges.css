@@ -309,6 +309,10 @@
     -ms-overflow-style: none;
     padding-block-end: var(--sp-1); /* leave room for the snap */
     max-inline-size: 100%;
+    /* r183-B8 (A10 finding 4) — the strip's edge fade: masks read alpha
+       only (opaque token, no raw color — color-gate) and never intercept
+       pointer events (drag/scroll/snap untouched). R369-C (C4.2): the
+       later duplicate block folded home — one owner per selector. */
     -webkit-mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
     mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
   }
@@ -325,14 +329,6 @@
      content. Physical `to left` IS inline-end under the app-wide RTL
      (the same documented physical↔logical coupling as base.css
      .skip-link). The opaque stop consumes --surface for token
-     compliance — masks only read the alpha channel, so any opaque
-     token works and NO raw color literal enters the sheet (color
-     gate); masks don't intercept pointer events, so drag/scroll/
-     scroll-snap are untouched. */
-  .gallery-chip-strip {
-    -webkit-mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
-    mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
-  }
 }
 .college-stat-chip {
   display: inline-flex;

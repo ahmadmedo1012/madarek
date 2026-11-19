@@ -678,14 +678,10 @@
    - polish.css's @media print belt (`box-shadow: none !important`)
      still wins in print — !important outranks unlayered normal.
    --elev-2 / --r-2xl are theme- and contrast-mode-aware tokens, so
-   dark + high-contrast re-resolve with zero extra rules. */
-.notification-panel {
-  border-start-start-radius: var(--r-2xl);
-  border-end-start-radius: var(--r-2xl);
-  border-end-end-radius: var(--r-2xl);
-  box-shadow: var(--elev-2);
-}
-
+   dark + high-contrast re-resolve with zero extra rules. R369-C
+   (C4.2): the presentation pair folded into the container contract
+   block below — one owner per selector, computed result identical
+   (the two blocks were property-disjoint). */
 /* r366 (2-d) — the CONTAINER CONTRACT, restored in full. R313 D16
    retired the components.css T065 @supports glass block and the
    geometry never came back: the portal panel computed
@@ -705,6 +701,10 @@
   inline-size: min(380px, calc(100vw - var(--sp-4) * 2));
   background: var(--surface);
   border: 1px solid var(--rule);
+  border-start-start-radius: var(--r-2xl);
+  border-end-start-radius: var(--r-2xl);
+  border-end-end-radius: var(--r-2xl);
+  box-shadow: var(--elev-2);
   overflow: clip;
 }
 

@@ -674,10 +674,9 @@
     transition-duration: var(--motion-duration-micro);
   }
   @media (max-width: 920px) {
-    .topbar-mobile-toggle { display: inline-flex; }
     /* 4-A2 P2-6: 44px touch floor — min-* grows the hit area over the
        38px visual box regardless of source/later-layer width writes. */
-    .topbar-mobile-toggle { min-inline-size: 44px; min-block-size: 44px; }
+    .topbar-mobile-toggle { display: inline-flex; min-inline-size: 44px; min-block-size: 44px; }
   }
 
   /* Mobile-band search entry point (4-A2 P1-3): opens the command
@@ -762,7 +761,6 @@
     .topbar { grid-template-columns: auto 1fr auto; }
     .topbar .global-search { display: none; }
     .topbar-scope { display: none; }
-    .topbar-title { font-size: var(--fs-body); }
     /* Real truncation (4-A10 P2): .topbar-title is a flex row on
        desktop (title + scope chips), but text-overflow never applies
        to a flex container — on phones the two-word page names just
@@ -774,6 +772,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      font-size: var(--fs-body);
     }
     /* 4-A2 P2-6: 44px floor for the topbar chrome that stays visible
        on phones (the AI pill + bell live in this cluster). min-*
@@ -966,29 +965,11 @@
      -sub, -arrow, -empty-title, -empty-hint, -empty-tips, -tip-pill,
      -footer) were deleted outright. When v21 migrates home (r151-m3)
      it becomes a pure move.) */
-  .search-dropdown {
-    position: absolute;
-    inset-block-start: calc(100% + var(--sp-1-5)); /* r153h: 6px → --sp-1-5 */
-    inset-inline-start: 0; inset-inline-end: 0;
-    background: var(--surface);
-    max-block-size: 480px;
-    z-index: var(--z-popover);
-    padding: var(--sp-2);
-  }
-  /* R313 (WP-F · D16): the overlay is a solid sheet on the hairline —
-     no shadow, no gradient, radius 0 (the presentation re-spec below
-     keeps its border + flat surface). */
-  .search-section-label {
-    margin-block-end: var(--sp-1);
-  }
-  .search-row {
-    border-radius: var(--r-sm);
-  }
-  .search-row-icon {
-    background: var(--c-grey-bg);
-    color: var(--c-grey-deep);
-  }
-  .search-empty { display: flex; flex-direction: column; gap: var(--sp-2); align-items: center; }
+  /* R369-C (C4.2): the r151c base survivors folded INTO their v21
+     presentation homes (the block's own comment names this fold as the
+     designed end-state — "When v21 migrates home it becomes a pure
+     move"). One owner per selector; computed result identical (the
+     declarations were property-disjoint by design). */
   .search-loading, .search-shimmer { align-items: center; justify-content: center; padding: var(--sp-5); color: var(--text-muted); font-size: var(--fs-sm); }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1002,6 +983,13 @@
      ║  SEARCH DROPDOWN — richer presentation                         ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .search-dropdown {
+    position: absolute;
+    inset-block-start: calc(100% + var(--sp-1-5)); /* r153h: 6px → --sp-1-5 */
+    inset-inline-start: 0; inset-inline-end: 0;
+    background: var(--surface);
+    max-block-size: 480px;
+    z-index: var(--z-popover);
+    padding: var(--sp-2);
     border: 1px solid var(--rule);
     border-radius: var(--r-xs);
     overflow: hidden;
@@ -1021,6 +1009,7 @@
     border-block-start: 1px solid var(--rule);
   }
   .search-section-label {
+    margin-block-end: var(--sp-1);
     padding: var(--sp-2) var(--sp-4);
     font-size: var(--fs-xxs);
     /* 21-c ruling #2: the section labels are Arabic («مقررات»، «محاضرات»…)
@@ -1043,6 +1032,7 @@
     inline-size: 100%;
     padding: var(--sp-3) var(--sp-4);
     border: none;
+    border-radius: var(--r-sm);
     /* R319 (c1-A · B1): the row joins the paired-state contract —
        hover/selected flip --_bg and --_fg together (base fg is the
        theme ink; the surface step never strands it). */
@@ -1124,6 +1114,8 @@
     inline-size: 36px;
     block-size: 36px;
     border-radius: var(--r-md);
+    background: var(--c-grey-bg);
+    color: var(--c-grey-deep);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1237,6 +1229,10 @@
      ║  SEARCH EMPTY — bigger, more confident                         ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .search-empty {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    align-items: center;
     padding: var(--sp-6) var(--sp-4);
     text-align: center;
   }

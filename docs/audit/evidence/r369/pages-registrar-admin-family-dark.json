@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-19T10:51:50.648Z",
- "url": "http://127.0.0.1:5309/",
+ "generatedAt": "2026-11-19T14:42:34.234Z",
+ "url": "http://localhost:5306/",
  "dark": true,
  "routes": {
   "/admin/dashboard": {
@@ -315,28 +315,12 @@
     }
    },
    "768:dark": {
-    "score": 98.9,
+    "score": 100,
     "axes": {
      "typeRungs": {
-      "score": 93.47826086956522,
+      "score": 100,
       "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "كلّ الكلّيّات"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "كلية الهندسة"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "كلية الطب البشري"
-       }
-      ],
+      "fails": [],
       "total": 46,
       "resolvedRungs": [
        73.6691,
@@ -493,7 +477,7 @@
       "score": 100,
       "distinctTiers": true,
       "fails": [],
-      "total": 33,
+      "total": 36,
       "resolvedRungs": [
        66.6667,
        60,
@@ -548,7 +532,7 @@
      "darkInk": {
       "score": 100,
       "fails": [],
-      "total": 30
+      "total": 36
      },
      "edge390": {
       "score": 100,
@@ -564,64 +548,13 @@
     }
    },
    "768:dark": {
-    "score": 95.1,
+    "score": 100,
     "axes": {
      "typeRungs": {
-      "score": 70.58823529411765,
+      "score": 100,
       "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "كل الأوضاع"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "صباحي"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "مسائي"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "موازي"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "كل الحالات"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "مقيّد"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "موقوف"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "مؤجّل"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "متخرّج"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "منسحب"
-       }
-      ],
-      "total": 34,
+      "fails": [],
+      "total": 37,
       "resolvedRungs": [
        73.6691,
        66.3022,
@@ -676,7 +609,7 @@
      "darkInk": {
       "score": 100,
       "fails": [],
-      "total": 31
+      "total": 37
      },
      "edge390": {
       "score": 100,
@@ -698,7 +631,7 @@
       "score": 100,
       "distinctTiers": true,
       "fails": [],
-      "total": 33,
+      "total": 36,
       "resolvedRungs": [
        79.3893,
        71.4504,
@@ -753,7 +686,7 @@
      "darkInk": {
       "score": 100,
       "fails": [],
-      "total": 30
+      "total": 36
      },
      "edge390": {
       "score": 100,
@@ -1808,23 +1741,12 @@
     }
    },
    "768:dark": {
-    "score": 99.3,
+    "score": 100,
     "axes": {
      "typeRungs": {
-      "score": 95.55555555555556,
+      "score": 100,
       "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "كلّ المدن"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "الزاوية"
-       }
-      ],
+      "fails": [],
       "total": 45,
       "resolvedRungs": [
        73.6691,
@@ -2052,28 +1974,12 @@
     }
    },
    "768:dark": {
-    "score": 99.1,
+    "score": 100,
     "axes": {
      "typeRungs": {
-      "score": 94.73684210526315,
+      "score": 100,
       "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "كلّ الكلّيّات"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "كلية الهندسة"
-       },
-       {
-        "fs": 16,
-        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
-        "text": "كلية الطب البشري"
-       }
-      ],
+      "fails": [],
       "total": 57,
       "resolvedRungs": [
        73.6691,
@@ -3162,7 +3068,7 @@
       "score": 100,
       "distinctTiers": true,
       "fails": [],
-      "total": 42,
+      "total": 97,
       "resolvedRungs": [
        66.6667,
        60,
@@ -3217,7 +3123,7 @@
      "darkInk": {
       "score": 100,
       "fails": [],
-      "total": 26
+      "total": 78
      },
      "edge390": {
       "score": 100,
@@ -3239,7 +3145,7 @@
       "score": 100,
       "distinctTiers": true,
       "fails": [],
-      "total": 43,
+      "total": 98,
       "resolvedRungs": [
        73.6691,
        66.3022,
@@ -3294,7 +3200,7 @@
      "darkInk": {
       "score": 100,
       "fails": [],
-      "total": 27
+      "total": 79
      },
      "edge390": {
       "score": 100,
@@ -3316,7 +3222,7 @@
       "score": 100,
       "distinctTiers": true,
       "fails": [],
-      "total": 42,
+      "total": 97,
       "resolvedRungs": [
        79.3893,
        71.4504,
@@ -3371,7 +3277,7 @@
      "darkInk": {
       "score": 100,
       "fails": [],
-      "total": 26
+      "total": 78
      },
      "edge390": {
       "score": 100,

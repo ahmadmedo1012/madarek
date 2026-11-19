@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-19T10:57:20.238Z",
- "url": "http://127.0.0.1:5311/",
+ "generatedAt": "2026-11-19T14:56:22.208Z",
+ "url": "http://localhost:5306/",
  "dark": false,
  "routes": {
   "/quality/exam-moderation": {

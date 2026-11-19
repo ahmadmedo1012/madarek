@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-19T11:30:12.228Z",
- "url": "http://127.0.0.1:5327/",
+ "generatedAt": "2026-11-19T14:53:29.454Z",
+ "url": "http://localhost:5306/",
  "dark": true,
  "routes": {
   "/quality/dashboard": {
@@ -67,6 +67,83 @@
       "score": 100,
       "fails": [],
       "total": 17
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تقارير الجودة"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 81,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 4
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 18
      },
      "edge390": {
       "score": 100,
@@ -237,6 +314,83 @@
      }
     }
    },
+   "768:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 49,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 46
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تقييم الأساتذة"
+     }
+    }
+   },
    "390:dark": {
     "score": 100,
     "axes": {
@@ -379,6 +533,83 @@
       "score": 100,
       "fails": [],
       "total": 49
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "جودة المقرّرات"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 57,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 6
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 46
      },
      "edge390": {
       "score": 100,
@@ -549,6 +780,83 @@
      }
     }
    },
+   "768:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 56,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 4
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 17
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "جودة المقرّرات"
+     }
+    }
+   },
    "390:dark": {
     "score": 100,
     "axes": {
@@ -705,6 +1013,83 @@
      }
     }
    },
+   "768:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 25,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 18
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "لوحة الجودة"
+     }
+    }
+   },
    "390:dark": {
     "score": 100,
     "axes": {
@@ -847,6 +1232,83 @@
       "score": 100,
       "fails": [],
       "total": 26
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "جودة المقرّرات"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 56,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 27
      },
      "edge390": {
       "score": 100,
@@ -1023,6 +1485,94 @@
      }
     }
    },
+   "768:dark": {
+    "score": 98.9,
+    "axes": {
+     "typeRungs": {
+      "score": 93.54838709677419,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 40.518,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "الإشعارات"
+       },
+       {
+        "fs": 25.7842,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "آخر الإشعارات"
+       }
+      ],
+      "total": 31,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 31
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تعليم الكل كمقروء"
+     }
+    }
+   },
    "390:dark": {
     "score": 99.4,
     "axes": {
@@ -1171,6 +1721,83 @@
       "score": 100,
       "fails": [],
       "total": 28
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "لوحة الجودة"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 40,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 29
      },
      "edge390": {
       "score": 100,
@@ -1341,6 +1968,83 @@
      }
     }
    },
+   "768:dark": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 36,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 5
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 23
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تقارير الجودة"
+     }
+    }
+   },
    "390:dark": {
     "score": 100,
     "axes": {
@@ -1494,6 +2198,94 @@
       "score": 100,
       "fails": [],
       "total": 45
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المسابقات"
+     }
+    }
+   },
+   "768:dark": {
+    "score": 99.3,
+    "axes": {
+     "typeRungs": {
+      "score": 95.65217391304348,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 27.6259,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "[01]المجتمع الجامعي"
+       },
+       {
+        "fs": 25.7842,
+        "ff": "Alexandria, \"Alexandria Fallback\", \"IBM ",
+        "text": "الإعلانات"
+       }
+      ],
+      "total": 46,
+      "resolvedRungs": [
+       73.6691,
+       66.3022,
+       58.9353,
+       51.5683,
+       44.2014,
+       36.8345,
+       16.5755,
+       14.7338,
+       14.7338,
+       13,
+       13,
+       13,
+       12.8921,
+       11.0504,
+       11,
+       14.7338,
+       36.8345,
+       44.2014,
+       51.5683,
+       58.9353,
+       14.7338,
+       66.3022,
+       44.2014,
+       36.8345,
+       13,
+       13,
+       48,
+       30,
+       24,
+       36.864,
+       36.864,
+       23.33,
+       22.1,
+       24,
+       18,
+       17.6806
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 1
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 46
      },
      "edge390": {
       "score": 100,

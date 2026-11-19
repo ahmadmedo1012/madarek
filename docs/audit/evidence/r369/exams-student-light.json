@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-11-19T10:56:19.816Z",
- "url": "http://127.0.0.1:5310/",
+ "generatedAt": "2026-11-19T14:55:31.313Z",
+ "url": "http://localhost:5306/",
  "dark": false,
  "routes": {
   "/student/online-exams": {
