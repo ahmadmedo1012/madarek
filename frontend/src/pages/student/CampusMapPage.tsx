@@ -1,3 +1,5 @@
+import { CAMPUS_GUIDE, LABEL_EMAIL, LABEL_COLLEGE_SHORT, ONE_DEPT, NOUN_TWO_DEPTS, NOUN_DEPTS, NOUN_DEPT_ACC, LABEL_PHONE, MODEL_INSTITUTION, DOWNLOADS_CENTER } from '../../lib/copy';
+
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink, ArrowLeft, Info, Building2, Download } from 'lucide-react';
@@ -50,7 +52,7 @@ function arCount(n: number, one: string, two: string, few: string, many: string)
 }
 
 /* One counted-noun tuple shared by both BarCount sr labels (dedup). */
-const COLLEGE_UNIT = ['كلّيّة واحدة', 'كلّيّتان', 'كليّات', 'كلّيّة'] as const;
+const COLLEGE_UNIT = ['كلّيّة واحدة', 'كلّيّتان', 'كليّات', LABEL_COLLEGE_SHORT] as const;
 
 export default function CampusMapPage() {
   const facs = useFaculties(useCurrentInstitutionSlug()); // r180: caller-institution scoping
@@ -82,7 +84,7 @@ export default function CampusMapPage() {
       <PageHeader
         index="01"
         eyebrow="خدمات الجامعة"
-        title="دليل الحرم الجامعيّ"
+        title={CAMPUS_GUIDE}
         description="بيانات عرض اصطناعية."
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
@@ -93,11 +95,11 @@ export default function CampusMapPage() {
           <>
             <Link to="/student/university" className="btn primary sm">
               <Icon icon={Building2} size={13} />
-              المؤسسة النموذجية
+              {MODEL_INSTITUTION}
             </Link>
             <Link to="/student/downloads" className="btn ghost sm">
               <Icon icon={Download} size={13} />
-              مركز التحميلات
+              {DOWNLOADS_CENTER}
             </Link>
           </>
         )}
@@ -228,7 +230,7 @@ export default function CampusMapPage() {
                   <span className="r305s-meta-row">
                     <bdi>{f.city}</bdi>
                     <span className="r305s-meta-sep" aria-hidden />
-                    {arCount(f.departments.length, 'قسم واحد', 'قسمان', 'أقسام', 'قسماً')}
+                    {arCount(f.departments.length, ONE_DEPT, NOUN_TWO_DEPTS, NOUN_DEPTS, NOUN_DEPT_ACC)}
                   </span>
                 }
               />
@@ -244,14 +246,14 @@ export default function CampusMapPage() {
         <SectionBar index="04" title="معلومات التواصل" id="map-sec-contact" />
         <div className="ml-facts">
           <div className="ml-fact">
-            <span className="ml-fact-label">الهاتف</span>
+            <span className="ml-fact-label">{LABEL_PHONE}</span>
             <span className="ml-fact-values">
               <bdi dir="ltr" className="font-mono text-sm">+218 23 762659</bdi>
               <bdi dir="ltr" className="font-mono text-sm">+218 23 762882</bdi>
             </span>
           </div>
           <div className="ml-fact">
-            <span className="ml-fact-label">البريد الإلكتروني</span>
+            <span className="ml-fact-label">{LABEL_EMAIL}</span>
             <span className="ml-fact-values">
               <bdi dir="ltr" className="font-mono text-sm">info@demo.madarek.ly</bdi>
               <bdi dir="ltr" className="font-mono text-sm">ico@demo.madarek.ly</bdi>

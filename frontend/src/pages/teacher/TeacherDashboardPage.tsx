@@ -1,3 +1,5 @@
+import { LOADING, ALL, NOUN_STUDENTS, NOUN_TWO_STUDENTS, NOUN_STUDENT_ACC, NOUN_STUDENT, LABEL_SYSTEM, UNDER_WATCH, AT_RISK, STATUS_CRITICAL, STATUS_DONE, SUBMIT, NO_RATINGS_YET, ATTENDANCE, NOUN_ATTEND, RESEARCH, NOUN_TWO_SUBMISSIONS, NOUN_SUBMISSION_ACC, RUNNING_NOW, RATE_SUBMISSION, RECORD_ATTENDANCE, STABLE, ALL_STABLE } from '../../lib/copy';
+
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -42,10 +44,10 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, 
 type FeedFilter = 'all' | 'submissions' | 'research' | 'attendance';
 
 const FILTER_OPTIONS: Array<{ value: FeedFilter; label: string }> = [
-  { value: 'all', label: 'الكل' },
+  { value: 'all', label: ALL },
   { value: 'submissions', label: 'تسليمات' },
-  { value: 'research', label: 'بحوث' },
-  { value: 'attendance', label: 'حضور' },
+  { value: 'research', label: RESEARCH },
+  { value: 'attendance', label: NOUN_ATTEND },
 ];
 
 const KIND_ICON: Record<'submissions' | 'research' | 'attendance', LucideIcon> = {
@@ -64,9 +66,9 @@ const KIND_TONE: Record<'submissions' | 'research' | 'attendance', 'amber' | 're
  * view exists, so a "عرض السجل" label promised a page that isn't
  * there. */
 const KIND_ACTION: Record<'submissions' | 'research' | 'attendance', string> = {
-  submissions: 'تقييم التسليم',
+  submissions: RATE_SUBMISSION,
   research: 'مراجعة البحث',
-  attendance: 'تسجيل الحضور',
+  attendance: RECORD_ATTENDANCE,
 };
 /* Visual weight follows the action's kind — decision > review >
  * informational: grading a submission is the teacher's decision queue
@@ -86,8 +88,8 @@ const DASHBOARD_TITLE = 'لوحة الأستاذ';
 const LOAD_FAILED = 'تعذّر التحميل.';
 const TREND_TITLE = 'اتجاه الأداء والحضور';
 const AVG_PERF = 'متوسط الأداء';
-const ATTENDANCE_LABEL = 'الحضور';
-const ONGOING = 'جارٍ الآن';
+const ATTENDANCE_LABEL = ATTENDANCE;
+const ONGOING = RUNNING_NOW;
 const DONE = 'انتهت';
 const UPCOMING = 'قادمة';
 
@@ -192,10 +194,10 @@ export function topRisks(rows: ReadonlyArray<TeacherRiskRow>): TeacherRiskRow[] 
  * page keeps its own edge/ink maps local — the label vocabulary is the
  * shared contract, mirrored here rather than coupled). */
 const RISK_LABEL: Record<TeacherRiskRow['riskLevel'], string> = {
-  OK: 'مستقر',
-  WATCH: 'تحت المراقبة',
-  AT_RISK: 'في خطر',
-  CRITICAL: 'حرج',
+  OK: STABLE,
+  WATCH: UNDER_WATCH,
+  AT_RISK: AT_RISK,
+  CRITICAL: STATUS_CRITICAL,
 };
 /* R305 Heron: the risk chip rides the ONE status vocabulary of the
  * round (.hr-chip[data-tone]) — green→ok, gold→info, amber→warn,
@@ -235,7 +237,7 @@ export function TeacherDashboardPage() {
     return (
       <div className="hr-scope">
         <PageFrame aria-busy="true" aria-live="polite">
-          <PageHeader title={DASHBOARD_TITLE} description="جارٍ التحميل…" />
+          <PageHeader title={DASHBOARD_TITLE} description={LOADING} />
           <RowList loading aria-label="ملخص نشاط التدريس" />
           <RowList loading aria-label="طابور التصحيح" />
           <RowList loading aria-label="طلاب يحتاجون متابعة" />
@@ -323,7 +325,7 @@ export function TeacherDashboardPage() {
           {
             label: AVG_PERF,
             value: d.kpi.avgGradePct !== null ? `${formatPct1(d.kpi.avgGradePct)}%` : '—',
-            hint: d.kpi.avgGradePct === null ? 'لا تقييمات بعد' : 'كل التقييمات المعتمدة',
+            hint: d.kpi.avgGradePct === null ? NO_RATINGS_YET : 'كل التقييمات المعتمدة',
             tone: d.kpi.avgGradePct === null || d.kpi.avgGradePct >= 70 ? 'neutral' : 'warning',
           },
           {
@@ -529,7 +531,7 @@ function FeedRow({ item }: { item: TeacherDashboard['feed'][number] }) {
       title={item.title}
       meta={
         <>
-          <span>{item.author ? `${item.author.firstName} ${item.author.lastName}` : 'النظام'}</span>
+          <span>{item.author ? `${item.author.firstName} ${item.author.lastName}` : LABEL_SYSTEM}</span>
           {/* meta carries a Latin course code — bdi keeps RTL punctuation order */}
           <bdi>{item.meta}</bdi>
           <span>{formatRelativeAr(item.when)}</span>
@@ -561,7 +563,7 @@ function PendingGradingQueue({ index, entries }: { index: string; entries: Teach
     <>
       <SectionHeader
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[{index}]</span>طابور التصحيح</>}
-        description={total === 0 ? undefined : `${countAr(total, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'])} بانتظار درجتك`}
+        description={total === 0 ? undefined : `${countAr(total, [SUBMIT, NOUN_TWO_SUBMISSIONS, 'تسليمات', NOUN_SUBMISSION_ACC])} بانتظار درجتك`}
         actions={total > 0 ? (
           /* R305 Heron: the ONE ember-flavored primary action of the
            * home — the queue is the day's first decision surface. */
@@ -576,7 +578,7 @@ function PendingGradingQueue({ index, entries }: { index: string; entries: Teach
            * named, its line closed by the green status chip. */
           <div className="hr-empty">
             <strong>لا انتظار — الكل مُقيّم</strong>
-            <span className="hr-chip" data-tone="ok">مكتمل</span>
+            <span className="hr-chip" data-tone="ok">{STATUS_DONE}</span>
           </div>
         ) : (
           entries.map((e) => (
@@ -593,7 +595,7 @@ function PendingGradingQueue({ index, entries }: { index: string; entries: Teach
                       hear the per-row submission count. */}
                   <span className="tq-num tqd-count" aria-hidden="true">{formatNum(e.count)}</span>
                   <span className="visually-hidden">
-                    {countAr(e.count, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'])}
+                    {countAr(e.count, [SUBMIT, NOUN_TWO_SUBMISSIONS, 'تسليمات', NOUN_SUBMISSION_ACC])}
                   </span>
                 </>
               }
@@ -694,7 +696,7 @@ function AtRiskShortcuts({ index }: { index: string }) {
       <SectionHeader
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[{index}]</span>طلاب يحتاجون متابعة</>}
         description={risks.data && risks.data.length > 0
-          ? countAr(risks.data.length, ['طالب', 'طالبان', 'طلاب', 'طالباً'])
+          ? countAr(risks.data.length, [NOUN_STUDENT, NOUN_TWO_STUDENTS, NOUN_STUDENTS, NOUN_STUDENT_ACC])
           : undefined}
         actions={risks.data && risks.data.length > 0 ? (
           <Link to="/teacher/intelligence" className="btn ghost sm">
@@ -710,8 +712,8 @@ function AtRiskShortcuts({ index }: { index: string }) {
         <RowList aria-label="طلاب يحتاجون متابعة">
           {top.length === 0 ? (
             <RowItem
-              title="الكل مستقر"
-              trailing={<span className="hr-chip" data-tone="ok">مستقر</span>}
+              title={ALL_STABLE}
+              trailing={<span className="hr-chip" data-tone="ok">{STABLE}</span>}
             />
           ) : (
             top.map((r) => (

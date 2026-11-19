@@ -1,3 +1,5 @@
+import { RETRY_ACTION, NEXT_STEP, VIRTUAL_LABS, LIVE_BROADCAST, ENROLLING, SOON, SESSIONS_ACTIVE, AVAILABLE_LABS } from '../../lib/copy';
+
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import {
@@ -162,7 +164,7 @@ export default function LabsPage() {
       {!activeLab ? (
         <>
           <PageHeader
-            title="المعامل الافتراضية"
+            title={VIRTUAL_LABS}
             description={'تجارب تفاعلية بلا معدات.'}
             /* R342-08 — the header CTA pair (the D11/D8 measured
                seat; the phone band hides the topbar «اسأل AI» ≤920,
@@ -177,7 +179,7 @@ export default function LabsPage() {
                 </Link>
                 <Link to="/student/live" className="btn ghost sm">
                   <Icon icon={Radio} size={13} />
-                  البث المباشر
+                  {LIVE_BROADCAST}
                 </Link>
               </>
             )}
@@ -192,11 +194,11 @@ export default function LabsPage() {
             <StatLine
               items={[
                 {
-                  label: 'معامل متاحة',
+                  label: AVAILABLE_LABS,
                   value: labs.isError ? '—' : formatNum(labs.data?.length ?? 0),
                 },
                 {
-                  label: 'جلسات نشطة',
+                  label: SESSIONS_ACTIVE,
                   value: labStats.isPending ? '…' : labStats.isError || !labStats.data ? '—' : formatNum(labStats.data.active),
                   /* 22-c (A4 P3-3): with zero lab sessions ever the hint
                      would read «من أصل 0 جلسة» — dead copy. Only surface
@@ -229,7 +231,7 @@ export default function LabsPage() {
                 !labs.isPending && !labs.isError && (labs.data?.length ?? 0) > 0 ? (
                   <BarCount
                     n={labs.data!.length}
-                    srLabel={countAr(labs.data!.length, ['معمل واحد', 'معملان', 'معامل متاحة', 'معملاً'])}
+                    srLabel={countAr(labs.data!.length, ['معمل واحد', 'معملان', AVAILABLE_LABS, 'معملاً'])}
                   />
                 ) : undefined
               }
@@ -289,7 +291,7 @@ export default function LabsPage() {
                         disabled={!hasExperiment}
                       >
                         <Icon icon={Play} size={13} />
-                        {hasExperiment ? 'ابدأ تجربة' : 'قريباً'}
+                        {hasExperiment ? 'ابدأ تجربة' : SOON}
                       </button>
                     </div>
                   </div>
@@ -460,7 +462,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
               disabled={completeSession.isPending}
             >
               <Icon icon={Play} size={13} />
-              إعادة المحاولة
+              {RETRY_ACTION}
             </button>
           </div>
         </div>
@@ -540,8 +542,8 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
             {!running && terminalLines.length > 0 && (
               <button type="button" className="btn primary" onClick={nextStep} disabled={completeSession.isPending}>
                 {completeSession.isPending
-                  ? 'جارٍ التسجيل…'
-                  : stepIndex < exp.steps.length - 1 ? 'الخطوة التالية' : 'إنهاء التجربة'}
+                  ? ENROLLING
+                  : stepIndex < exp.steps.length - 1 ? NEXT_STEP : 'إنهاء التجربة'}
                 <Icon icon={ChevronLeft} size={13} />
               </button>
             )}

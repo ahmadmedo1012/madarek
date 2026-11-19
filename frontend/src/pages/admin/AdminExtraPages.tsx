@@ -1,3 +1,5 @@
+import { RETRY_ACTION, LOADING, NO_RESULTS, NOUN_STUDENTS, NOUN_TWO_STUDENTS, NOUN_STUDENT_ACC, DASH_REGISTRAR, LABEL_STUDENTS, FAILED_LOAD, MANAGE_STUDENTS, LIVE_STREAM, CLEAR_SEARCH, BROADCAST_NOTICE, STATUS_SUSPENDED, FAILED_LOAD_COURSES, ONE_STUDENT, ALL_COLLEGES, STATUS_ACTIVE_M, FAILED_ENROL_DOT, ENROLLMENTS, ENROLLING, DIGITAL_TRANSFORMATION, PLATFORM_SETTINGS, IMPORT_STUDENTS, EMPTY_COURSES_DOT, INSTITUTIONAL_REPORTS } from '../../lib/copy';
+
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -84,10 +86,8 @@ interface PaginatedStudents {
 
 /* Shared roster nouns (R353 copy diet): the meta line and the pagination
  * footer counted the same "طالب" forms twice — one home. */
-const STUDENT_COUNT: [string, string, string, string] = ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'];
-const REGISTRAR_DASHBOARD = 'لوحة المسجل العام';
-const LOADING = 'جارٍ التحميل…';
-const FAILED_LOAD = 'تعذّر التحميل';
+const STUDENT_COUNT: [string, string, string, string] = [ONE_STUDENT, NOUN_TWO_STUDENTS, NOUN_STUDENTS, NOUN_STUDENT_ACC];
+const REGISTRAR_DASHBOARD = DASH_REGISTRAR;
 const DROP_ENROLLMENT = 'إلغاء التسجيل';
 
 export function AdminStudentsPage() {
@@ -157,9 +157,9 @@ export function AdminStudentsPage() {
     <div className="r305ao">
     <PageFrame width="default">
       <PatternsPageHeader
-        title="إدارة الطلاب"
+        title={MANAGE_STUDENTS}
         index="05"
-        breadcrumbs={[{ label: REGISTRAR_DASHBOARD, to: '/admin/dashboard' }, { label: 'الطلاب' }]}
+        breadcrumbs={[{ label: REGISTRAR_DASHBOARD, to: '/admin/dashboard' }, { label: LABEL_STUDENTS }]}
         meta={studentsQ.data
           ? `${countAr(studentsQ.data.meta.total, STUDENT_COUNT)}`
           : LOADING}
@@ -172,7 +172,7 @@ export function AdminStudentsPage() {
            * 5-step wizard (its own route); the r323 modal retires. */
             <Link to="/admin/import" className="btn accent sm">
             <Icon icon={Download} size={14} />
-            استيراد الطلاب
+            {IMPORT_STUDENTS}
           </Link>
         )}
       />
@@ -192,13 +192,13 @@ export function AdminStudentsPage() {
               disabled={facQ.isPending}
               aria-label="تصفية حسب الكلّيّة"
             >
-              <option value="">{facQ.isPending ? LOADING : 'كلّ الكلّيّات'}</option>
+              <option value="">{facQ.isPending ? LOADING : ALL_COLLEGES}</option>
               {facQ.data?.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
             </select>
             {facQ.isError && (
               <button type="button" className="btn ghost sm" onClick={() => facQ.refetch()}>
                 <Icon icon={RefreshCw} size={13} />
-                إعادة المحاولة
+                {RETRY_ACTION}
               </button>
             )}
           </>
@@ -211,10 +211,10 @@ export function AdminStudentsPage() {
         {studentsQ.data && (
           <>
             <RowList aria-label="قائمة الطلاب" empty={(
-              <EmptyState illustration="empty-search" title="لا نتائج" action={hasActiveFilters ? (
+              <EmptyState illustration="empty-search" title={NO_RESULTS} action={hasActiveFilters ? (
                 <button type="button" className="btn ghost sm" onClick={clearSearch}>
                   <Icon icon={X} size={13} />
-                  مسح البحث
+                  {CLEAR_SEARCH}
                 </button>
               ) : undefined} />
             )}>
@@ -238,7 +238,7 @@ export function AdminStudentsPage() {
                     <>
                       <span className="font-mono" title="المعدّل التراكمي">{s.studentProfile?.gpa ?? '—'}</span>
                       <span className={`pill ${s.isActive ? 'on' : ''}`}>
-                        {s.isActive ? 'نشط' : 'موقوف'}
+                        {s.isActive ? STATUS_ACTIVE_M : STATUS_SUSPENDED}
                       </span>
                     </>
                   )}
@@ -259,7 +259,7 @@ export function AdminStudentsPage() {
                       onClick={() => setEnrollmentStudent(s)}
                     >
                       <Icon icon={GraduationCap} size={13} />
-                      تسجيلات
+                      {ENROLLMENTS}
                     </button>
                   </div>
                 </RowItem>
@@ -320,7 +320,7 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
       toast.success('تمّ التسجيل');
       setSelectedOffering('');
     } catch (e) {
-      setError(apiErrorMessage(e, 'تعذَّر التسجيل.'));
+      setError(apiErrorMessage(e, FAILED_ENROL_DOT));
     }
   };
 
@@ -385,9 +385,9 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
           {offerings.isPending ? (
             <Skeleton width="100%" height={40} />
           ) : offerings.isError ? (
-            <ErrorState error={offerings.error} message="تعذّر تحميل المقرّرات" onRetry={() => offerings.refetch()} />
+            <ErrorState error={offerings.error} message={FAILED_LOAD_COURSES} onRetry={() => offerings.refetch()} />
           ) : !offerings.data?.length ? (
-            <div className="text-sm text-muted">لا مقرّرات.</div>
+            <div className="text-sm text-muted">{EMPTY_COURSES_DOT}</div>
           ) : (
             <>
               <select
@@ -415,7 +415,7 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
                 disabled={!selectedOffering || busy}
               >
                 <Icon icon={GraduationCap} size={14} />
-                {enroll.isPending ? 'جارٍ التسجيل…' : 'تسجيل'}
+                {enroll.isPending ? ENROLLING : 'تسجيل'}
               </button>
             </>
           )}
@@ -490,16 +490,16 @@ export function AdminDigitalPage() {
   return (
     <div className="page r305ao">
       <PatternsPageHeader
-        title="التحوّل الرقميّ"
+        title={DIGITAL_TRANSFORMATION}
         index="06"
-        breadcrumbs={[{ label: REGISTRAR_DASHBOARD, to: '/admin/dashboard' }, { label: 'التحوّل الرقميّ' }]}
+        breadcrumbs={[{ label: REGISTRAR_DASHBOARD, to: '/admin/dashboard' }, { label: DIGITAL_TRANSFORMATION }]}
         actions={(
           /* R342-09 (D11 sub-page CTA precedent): a read-only metrics ledger
            * names its ONE honest next surface — the institutional reports
            * are the adoption view's analytical sibling. */
           <Link to="/admin/reports" className="btn accent sm">
             <Icon icon={FileText} size={13} />
-            التقارير المؤسسية
+            {INSTITUTIONAL_REPORTS}
           </Link>
         )}
       />
@@ -550,8 +550,8 @@ export function AdminDigitalPage() {
                   <DigitalRow component="الاختبار الإلكترونيّ" label="اختبارات منشورة" value={q.data.onlineExams} />
                   <DigitalRow component="الاختبار الإلكترونيّ" label="محاولات أداء" value={q.data.examAttempts} />
                   <DigitalRow component="التعلّم النشط" label="جلسات معامل" value={q.data.labSessions} />
-                  <DigitalRow component="التعلّم النشط" label="بثّ مباشر" value={q.data.liveSessions} />
-                  <DigitalRow component="التعلّم الذاتيّ" label={<>تسجيلات <bdi>MOOC</bdi></>} value={q.data.moocEnrollments} />
+                  <DigitalRow component="التعلّم النشط" label={LIVE_STREAM} value={q.data.liveSessions} />
+                  <DigitalRow component="التعلّم الذاتيّ" label={<>{ENROLLMENTS} <bdi>MOOC</bdi></>} value={q.data.moocEnrollments} />
                   <DigitalRow component="البحث العلميّ" label="أوراق علميّة" value={q.data.researchPapers} />
                 </tbody>
               </table>
@@ -634,9 +634,9 @@ export function AdminSettingsPage() {
   return (
     <div className="page r305ao">
       <PatternsPageHeader
-        title="إعدادات المنصّة"
+        title={PLATFORM_SETTINGS}
         index="09"
-        breadcrumbs={[{ label: REGISTRAR_DASHBOARD, to: '/admin/dashboard' }, { label: 'إعدادات المنصّة' }]}
+        breadcrumbs={[{ label: REGISTRAR_DASHBOARD, to: '/admin/dashboard' }, { label: PLATFORM_SETTINGS }]}
         actions={(
           /* R342-09 (D11 sub-page CTA precedent): the settings ledger's ONE
            * honest next surface — the university sync is the standing
@@ -721,7 +721,7 @@ export function AdminSettingsPage() {
             </button>
             <button type="button" className="btn ghost sm" disabled>
               <Icon icon={Mail} size={14} />
-              بثّ إعلان
+              {BROADCAST_NOTICE}
             </button>
             <button type="button" className="btn ghost sm" disabled>
               <Icon icon={Radio} size={14} />

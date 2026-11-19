@@ -1,3 +1,5 @@
+import { RETRY_ACTION, LOADING, FROM, CLOSE, EXAM_REVIEW, QUALITY_REPORTS, QUIZ_SHORT, EMPTY_TEMPLATE_QUESTIONS, LEARNING_MATRIX, STATUS_SUSPENDED, EXAM, NOUN_TWO_POINTS, ANSWER_HERE_PLACEHOLDER, MCQ, TRUE_FALSE, STATUS_AVG, FAILED_DECISION_DOT, BACK_TO_EXAMS, PREPARING, LABEL_EXAMS, FOLLOW, MIDTERM, FINAL, EXAMS, NOUN_Q, NOUN_TWO_Q, NOUN_QS, NOUN_Q_ACC, START, VERIFYING, NOUN_POINT, SAVED_PLAIN, SUBMITTING, SHORT_ANSWER, ESSAY_QUESTION, CORRECT_ANSWER_COLON, PENDING_REVIEW, MINUTE, MINUTES, APPROVING, REJECTING, REJECT_TEMPLATE, RESULTS_RATINGS, PASS_MARK, QUALITY_ALERTS } from '../../lib/copy';
+
 /**
  * Unified online exams.
  *
@@ -55,7 +57,7 @@ import '../../styles/teacher/heron.css'; // R305 — the Heron layer (oex2- sect
 import '../../styles/student/pages.css';
 
 const KIND_LABEL: Record<string, string> = {
-  QUIZ: 'اختبار قصير', MIDTERM: 'نصفي', FINAL: 'نهائي', PRACTICE: 'تدريبي',
+  QUIZ: QUIZ_SHORT, MIDTERM: MIDTERM, FINAL: FINAL, PRACTICE: 'تدريبي',
 };
 const KIND_COLOR: Record<string, string> = {
   QUIZ: 'var(--chart-3)',
@@ -296,7 +298,7 @@ export default function OnlineExamsPage() {
       <PageFrame width="default">
         <PatternPageHeader
           index="01"
-          title="الاختبارات"
+          title={LABEL_EXAMS}
           /* R342-08 — the header CTA pair (the D11/D8 measured seat; the
              phone band hides the topbar «اسأل AI» ≤920, D6, and the first
              row's start CTA sits below the phone fold): the exam
@@ -307,11 +309,11 @@ export default function OnlineExamsPage() {
             <>
               <Link to="/student/results" className="btn primary sm">
                 <Icon icon={BarChart3} size={13} />
-                النتائج والتقييمات
+                {RESULTS_RATINGS}
               </Link>
               <Link to="/student/matrix" className="btn ghost sm">
                 <Icon icon={Compass} size={13} />
-                المصفوفة التعليمية
+                {LEARNING_MATRIX}
               </Link>
             </>
           )}
@@ -330,7 +332,7 @@ export default function OnlineExamsPage() {
             !q.isPending && !q.isError && available.length > 0 ? (
               <BarCount
                 n={available.length}
-                srLabel={countAr(available.length, ['اختبار', 'اختباران', 'اختبارات', 'اختباراً'])}
+                srLabel={countAr(available.length, [EXAM, 'اختباران', EXAMS, 'اختباراً'])}
               />
             ) : undefined
           }
@@ -390,7 +392,7 @@ export default function OnlineExamsPage() {
               meta={(
                 <BarCount
                   n={unavailable.length}
-                  srLabel={countAr(unavailable.length, ['اختبار', 'اختباران', 'اختبارات', 'اختباراً'])}
+                  srLabel={countAr(unavailable.length, [EXAM, 'اختباران', EXAMS, 'اختباراً'])}
                 />
               )}
             />
@@ -409,7 +411,7 @@ export default function OnlineExamsPage() {
               meta={(
                 <BarCount
                   n={taken.length}
-                  srLabel={countAr(taken.length, ['اختبار', 'اختباران', 'اختبارات', 'اختباراً'])}
+                  srLabel={countAr(taken.length, [EXAM, 'اختباران', EXAMS, 'اختباراً'])}
                 />
               )}
             />
@@ -484,11 +486,11 @@ function ExamCard({ exam, canStart, actNow }: { exam: MyExam; canStart: boolean;
         <span className="oex-row-title">{exam.title}</span>
         <span className="oex-row-kicker">{KIND_LABEL[exam.kind]} · {exam.courseName ?? exam.facultyName ?? 'موحد'}</span>
         <span className="oex-row-meta">
-          <span><Icon icon={Clock} size={12} /> <bdi>{exam.durationMin}</bdi> دقيقة</span>
+          <span><Icon icon={Clock} size={12} /> <bdi>{exam.durationMin}</bdi> {MINUTE}</span>
           {/* 22-c counted nouns — «N سؤال» broke the glossary for
               2 (سؤالان) and 3–10 (أسئلة); countAr speaks the forms. */}
-          <span><Icon icon={ClipboardCheck} size={12} /> {countAr(exam.questionCount, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])}</span>
-          <span>درجة النجاح <bdi>≥ {exam.passingScore}%</bdi></span>
+          <span><Icon icon={ClipboardCheck} size={12} /> {countAr(exam.questionCount, [NOUN_Q, NOUN_TWO_Q, NOUN_QS, NOUN_Q_ACC])}</span>
+          <span>{PASS_MARK} <bdi>≥ {exam.passingScore}%</bdi></span>
           {/* 15-h P1-5 — an open-window exam carries its close deadline
               so the student knows how long they really have. */}
           {ws === 'open' && exam.closeAt && (
@@ -557,7 +559,7 @@ function ExamCard({ exam, canStart, actNow }: { exam: MyExam; canStart: boolean;
           dashboard's courses-row-go span precedent). */}
       {canStart ? (
         <span className={actNow ? 'btn accent sm oex-row-cta' : 'oex-row-action'} aria-hidden>
-          {exam.myAttempt?.status === 'IN_PROGRESS' ? 'متابعة' : 'ابدأ'}
+          {exam.myAttempt?.status === 'IN_PROGRESS' ? FOLLOW : START}
           <Icon icon={ChevronLeft} size={14} />
         </span>
       ) : showResultLink ? (
@@ -644,7 +646,7 @@ function ReviewQuestionRow({ q, index }: { q: AttemptReviewQuestion; index: numb
           (null) — nothing renders, the verdict + feedback carry it. */}
       {(keyChoice !== null || typeof q.correctAnswer === 'string') && (
         <div className="oex-review-key">
-          <span className="oex-review-label">الإجابة الصحيحة:</span>{' '}
+          <span className="oex-review-label">{CORRECT_ANSWER_COLON}</span>{' '}
           {keyChoice ?? <span className="oex-review-text">{q.correctAnswer as string}</span>}
         </div>
       )}
@@ -1340,7 +1342,7 @@ export function ExamTakerPage() {
                     className="oex-cover-kind"
                     style={{ ['--kind' as never]: KIND_COLOR[listedExam.kind] ?? 'var(--accent)' }}
                   >
-                    {KIND_LABEL[listedExam.kind] ?? 'اختبار'}
+                    {KIND_LABEL[listedExam.kind] ?? EXAM}
                   </span>
                 </p>
               )}
@@ -1349,13 +1351,13 @@ export function ExamTakerPage() {
               <dl className="oex-cover-meta">
                 <div className="oex-cover-cell">
                   <dt>المدة</dt>
-                  <dd><bdi className="font-mono">{listedExam.durationMin}</bdi> دقيقة</dd>
+                  <dd><bdi className="font-mono">{listedExam.durationMin}</bdi> {MINUTE}</dd>
                 </div>
                 <div className="oex-cover-cell">
                   <dt>الأسئلة</dt>
                   {/* 22-c counted nouns — the same grammar the list rows
                       and the sticky bar speak. */}
-                  <dd>{countAr(listedExam.questionCount, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])}</dd>
+                  <dd>{countAr(listedExam.questionCount, [NOUN_Q, NOUN_TWO_Q, NOUN_QS, NOUN_Q_ACC])}</dd>
                 </div>
                 <div className="oex-cover-cell">
                   <dt>درجة الاجتياز</dt>
@@ -1420,7 +1422,7 @@ export function ExamTakerPage() {
                 onClick={onStart}
                 disabled={start.isPending || examsQ.isPending}
               >
-                {start.isPending ? 'جارٍ التحضير…' : examsQ.isPending ? 'جارٍ التحقق…' : hasLiveAttempt ? 'متابعة الاختبار' : 'بدء الاختبار'}
+                {start.isPending ? PREPARING : examsQ.isPending ? VERIFYING : hasLiveAttempt ? 'متابعة الاختبار' : 'بدء الاختبار'}
               </button>
               {win === 'open' && listedExam && !start.isPending && !examsQ.isPending && (
                 <span className="oex-cover-hint" data-state="open">
@@ -1481,7 +1483,7 @@ export function ExamTakerPage() {
                   2/3–10; countAr speaks the forms (the same grammar the
                   submit dialog and the moderation rows carry). */}
               {result.needsManual > 0
-                ? <>{countAr(result.needsManual, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])} بحاجة لتقييم الأستاذ.</>
+                ? <>{countAr(result.needsManual, [NOUN_Q, NOUN_TWO_Q, NOUN_QS, NOUN_Q_ACC])} بحاجة لتقييم الأستاذ.</>
                 : 'تم الاحتساب فوراً.'}
             </p>
             {/* 5-D3 (5-B3 hand-off #1 / A6 P2-4): the review endpoint
@@ -1536,7 +1538,7 @@ export function ExamTakerPage() {
       {submitError && (
         <Link to="/student/online-exams" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          العودة إلى الاختبارات
+          {BACK_TO_EXAMS}
         </Link>
       )}
       <div className="oex-bar" ref={attachBar}>
@@ -1554,7 +1556,7 @@ export function ExamTakerPage() {
             moves as the student reads. aria-hidden — the map nav + the
             subline above carry the same facts for assistive tech. */}
         <span className="oex-bar-progress" aria-hidden="true">
-          س<bdi>{currentQid ? attempt.questions.findIndex((qq) => qq.id === currentQid) + 1 : 1}</bdi> من <bdi>{attempt.questions.length}</bdi>
+          س<bdi>{currentQid ? attempt.questions.findIndex((qq) => qq.id === currentQid) + 1 : 1}</bdi> {FROM} <bdi>{attempt.questions.length}</bdi>
         </span>
         {/* Per-question save honesty (15-e P1-1): the chip names the
             exact questions whose answers are NOT on the server, and
@@ -1589,7 +1591,7 @@ export function ExamTakerPage() {
         <div
           className={`oex-timer${timeUrgent ? ' urgent' : ''}`}
           role="timer"
-          aria-label={`الوقت المتبقي: ${countAr(m, ['دقيقة', 'دقيقتين', 'دقائق', 'دقيقة'])} و${countAr(s, ['ثانية', 'ثانيتين', 'ثوانٍ', 'ثانية'])}`}
+          aria-label={`الوقت المتبقي: ${countAr(m, [MINUTE, 'دقيقتين', MINUTES, MINUTE])} و${countAr(s, ['ثانية', 'ثانيتين', 'ثوانٍ', 'ثانية'])}`}
         >
           <Icon icon={Clock} size={14} />
           <span className="font-mono" dir="ltr">{m.toString().padStart(2, '0')}:{s.toString().padStart(2, '0')}</span>
@@ -1654,7 +1656,7 @@ export function ExamTakerPage() {
           meta={(
             <BarCount
               n={attempt.questions.length}
-              srLabel={countAr(attempt.questions.length, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])}
+              srLabel={countAr(attempt.questions.length, [NOUN_Q, NOUN_TWO_Q, NOUN_QS, NOUN_Q_ACC])}
             />
           )}
         />
@@ -1701,7 +1703,7 @@ export function ExamTakerPage() {
                   {/* 22-c counted nouns — نقطة/نقطتان/N نقاط (the
                       نقطة/نقاط ternary broke 2 and never had an 11+
                       form; same grammar as the moderation rows). */}
-                  السؤال <bdi>{i + 1}</bdi> من <bdi>{attempt.questions.length}</bdi> · {countAr(q.points, ['نقطة', 'نقطتان', 'نقاط', 'نقطة'])}
+                  السؤال <bdi>{i + 1}</bdi> {FROM} <bdi>{attempt.questions.length}</bdi> · {countAr(q.points, [NOUN_POINT, NOUN_TWO_POINTS, 'نقاط', NOUN_POINT])}
                 </div>
                 <div className="oex-prompt" id={`exam-q-${q.id}-prompt`}>{q.prompt}</div>
                 {(q.type === 'MCQ' || q.type === 'TRUE_FALSE') && q.choices && (
@@ -1744,7 +1746,7 @@ export function ExamTakerPage() {
                     <textarea
                       className="input oex-answer-field"
                       rows={q.type === 'ESSAY' ? 6 : 2}
-                      placeholder="اكتب إجابتك هنا…"
+                      placeholder={ANSWER_HERE_PLACEHOLDER}
                       aria-labelledby={`exam-q-${q.id}-num exam-q-${q.id}-prompt`}
                       value={answers[q.id]?.answerText ?? ''}
                       onChange={(e) => onTextChange(q.id, e.target.value)}
@@ -1784,7 +1786,7 @@ export function ExamTakerPage() {
                           : 'تعذَّر الحفظ'
                         : saveState === 'saving'
                           ? 'يُحفَظ تلقائيًا'
-                          : 'تم الحفظ'}
+                          : SAVED_PLAIN}
                     </span>
                   )}
                 </div>
@@ -1823,7 +1825,7 @@ export function ExamTakerPage() {
           </span>
         </div>
         <button type="button" className="btn accent hr-cta" onClick={() => setConfirming(true)} disabled={finish.isPending}>
-          {finish.isPending ? 'جارٍ التسليم…' : 'تسليم الاختبار'}
+          {finish.isPending ? SUBMITTING : 'تسليم الاختبار'}
         </button>
       </div>
 
@@ -1859,14 +1861,14 @@ export function ExamTakerPage() {
  * الملفين؛ الاستيراد المباشر من صفحة المؤلف يسحب قطاع الأستاذ كاملاً
  * إلى حزمة الطالب/الجودة). أي تعديل يُطبّق على الجهتين. */
 const QTYPE_LABEL: Record<QType, string> = {
-  MCQ: 'اختيار من متعدد',
-  TRUE_FALSE: 'صح أم خطأ',
-  SHORT: 'إجابة قصيرة',
-  ESSAY: 'سؤال مقالي',
+  MCQ: MCQ,
+  TRUE_FALSE: TRUE_FALSE,
+  SHORT: SHORT_ANSWER,
+  ESSAY: ESSAY_QUESTION,
 };
 const DIFFICULTY_LABEL: Record<Difficulty, string> = {
   EASY: 'سهل',
-  MEDIUM: 'متوسط',
+  MEDIUM: STATUS_AVG,
   HARD: 'صعب',
 };
 const DIFFICULTY_COLOR: Record<Difficulty, 'green' | 'amber' | 'red'> = {
@@ -1915,9 +1917,9 @@ function TemplateQuestionsPreview({ templateId }: { templateId: string }) {
         <span className="text-xs text-muted">
           الأسئلة —{' '}
           {tplQ.isPending
-            ? 'جارٍ التحميل…'
+            ? LOADING
             : tplQ.data
-              ? countAr(questions.length, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])
+              ? countAr(questions.length, [NOUN_Q, NOUN_TWO_Q, NOUN_QS, NOUN_Q_ACC])
               : '—'}
         </span>
       </div>
@@ -1930,14 +1932,14 @@ function TemplateQuestionsPreview({ templateId }: { templateId: string }) {
             {apiErrorMessage(tplQ.error, 'تعذَّر تحميل أسئلة القالب — راجع أولًا.')}
           </span>
           <button type="button" className="btn ghost sm" onClick={() => void tplQ.refetch()}>
-            إعادة المحاولة
+            {RETRY_ACTION}
           </button>
         </div>
       ) : questions.length === 0 ? (
         <EmptyState
           illustration="empty-list"
           icon={FileText}
-          title="لا أسئلة في القالب"
+          title={EMPTY_TEMPLATE_QUESTIONS}
         />
       ) : (
         <div className="flex-col">
@@ -1973,10 +1975,10 @@ function ModerationQuestionRow({
           <Badge color={DIFFICULTY_COLOR[q.difficulty]}>{DIFFICULTY_LABEL[q.difficulty]}</Badge>
           {q.category && <span>{q.category.title}</span>}
           <span>
-            {countAr(points, ['نقطة', 'نقطتان', 'نقاط', 'نقطة'])}
+            {countAr(points, [NOUN_POINT, NOUN_TWO_POINTS, 'نقاط', NOUN_POINT])}
             {row.pointsOverride !== null && ' (معدَّلة)'}
           </span>
-          {!q.isApproved && <Badge color="red" icon={Ban}>موقوف</Badge>}
+          {!q.isApproved && <Badge color="red" icon={Ban}>{STATUS_SUSPENDED}</Badge>}
         </div>
         {/* مفتاح الإجابة — الخلفية تُخفيه (null) عن كل عارض ليس من
             أجله؛ null لا يُعرض إطلاقاً (لا مفتاحاً مزيّفاً). */}
@@ -2039,7 +2041,7 @@ export function ExamModerationPage() {
       setOpen(null);
       setNote('');
     } catch (e) {
-      setActionError({ id, approve, message: apiErrorMessage(e, 'تعذَّر تنفيذ القرار.') });
+      setActionError({ id, approve, message: apiErrorMessage(e, FAILED_DECISION_DOT) });
     } finally {
       setActing(null);
     }
@@ -2072,7 +2074,7 @@ export function ExamModerationPage() {
         طابور الاعتماد
       </span>
       <PageHeader
-        title="مراجعة الاختبارات"
+        title={EXAM_REVIEW}
         /* R342-11: the header CTA pair (the D10 quality-family grammar,
          * navigation-only — the queue's own decisions live on the rows).
          * The accent seat is the measured hover surface (.has-shell
@@ -2081,8 +2083,8 @@ export function ExamModerationPage() {
          * (تقارير + تنبيهات), the sector's one consistent header. */
         actions={
           <>
-            <Link to="/quality/reports" className="btn accent sm">تقارير الجودة</Link>
-            <Link to="/quality/alerts" className="btn ghost sm">تنبيهات الجودة</Link>
+            <Link to="/quality/reports" className="btn accent sm">{QUALITY_REPORTS}</Link>
+            <Link to="/quality/alerts" className="btn ghost sm">{QUALITY_ALERTS}</Link>
           </>
         }
       />
@@ -2099,7 +2101,7 @@ export function ExamModerationPage() {
         ariaLabel="مؤشرات مراجعة الاختبارات"
         cells={[
           {
-            label: 'بانتظار المراجعة',
+            label: PENDING_REVIEW,
             value: queueQ.isPending ? '…' : queueQ.isError ? '—' : `${pendingCount}`,
           },
           {
@@ -2139,9 +2141,9 @@ export function ExamModerationPage() {
                           glossary for 2 (سؤالان/دقيقتين) and 3–10
                           (أسئلة/دقائق). */}
                       <Badge>
-                        {countAr(item._count.questions, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])
+                        {countAr(item._count.questions, [NOUN_Q, NOUN_TWO_Q, NOUN_QS, NOUN_Q_ACC])
                           + ' · '
-                          + countAr(item.durationMin, ['دقيقة', 'دقيقتين', 'دقائق', 'دقيقة'])}
+                          + countAr(item.durationMin, [MINUTE, 'دقيقتين', MINUTES, MINUTE])}
                       </Badge>
                       <span className="text-xxs text-subtle">
                         قدّمه: {item.author.firstName} {item.author.lastName}
@@ -2179,7 +2181,7 @@ export function ExamModerationPage() {
                         setActionError(null);
                       }}
                     >
-                      {open === item.id ? 'إغلاق' : 'مراجعة'}
+                      {open === item.id ? CLOSE : 'مراجعة'}
                     </button>
                   </div>
                   {open === item.id && (
@@ -2217,7 +2219,7 @@ export function ExamModerationPage() {
                           disabled={rowPending}
                         >
                           <Icon icon={CheckCircle2} size={13} />
-                          {rowPending && acting?.approve ? 'جارٍ الاعتماد…' : 'اعتماد'}
+                          {rowPending && acting?.approve ? APPROVING : 'اعتماد'}
                         </button>
                         <button
                           type="button"
@@ -2226,7 +2228,7 @@ export function ExamModerationPage() {
                           disabled={rowPending}
                         >
                           <Icon icon={AlertTriangle} size={13} />
-                          {rowPending && !acting?.approve ? 'جارٍ الرفض…' : 'رفض'}
+                          {rowPending && !acting?.approve ? REJECTING : 'رفض'}
                         </button>
                       </div>
                       {actionError?.id === item.id && (
@@ -2259,7 +2261,7 @@ export function ExamModerationPage() {
         open={confirmingReject !== null}
         title="رفض قالب الاختبار"
         message="سيُرفض القالب ويُعاد لمؤلفه — لا تراجع."
-        confirmLabel="رفض القالب"
+        confirmLabel={REJECT_TEMPLATE}
         cancelLabel="مراجعة القالب"
         danger
         onConfirm={async () => {

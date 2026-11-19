@@ -1,3 +1,5 @@
+import { RETRY_ACTION, CANCEL, SESSIONS_NOTICE_OTHER_DEVICES, LABEL_COLLEGE, LABEL_DEPT, PUBLISHED_RESEARCH, CHANGE_PASSWORD, SAVE, EDIT, NO_ACHIEVEMENTS_YET, FAILED_LOAD_YOUR_DATA, ACCOUNT_SETTINGS, STATUS_VERIFIED, UNI_ID, SAVED_PLAIN, ENROLLED_COURSES, ACHIEVEMENTS_CERTS } from '../../lib/copy';
+
 import { useEffect, useId, useRef, useState } from 'react';
 import {
   User, Mail, GraduationCap, BookOpen, Award, ExternalLink,
@@ -208,11 +210,11 @@ export default function ProfilePage() {
           <>
             <Link to="/achievements" className="btn primary sm">
               <Icon icon={Trophy} size={13} />
-              الإنجازات والشهادات
+              {ACHIEVEMENTS_CERTS}
             </Link>
             <Link to="/settings" className="btn ghost sm">
               <Icon icon={UserCog} size={13} />
-              إعدادات الحساب
+              {ACCOUNT_SETTINGS}
             </Link>
           </>
         )}
@@ -231,7 +233,7 @@ export default function ProfilePage() {
             <bdi dir="ltr" className="font-mono">{user.email}</bdi>
             {profile.data ? (
               emailVerified ? (
-                <Badge color="green" icon={CheckCircle2}>موثَّق</Badge>
+                <Badge color="green" icon={CheckCircle2}>{STATUS_VERIFIED}</Badge>
               ) : (
                 <Badge color="amber" icon={AlertCircle}>البريد غير موثَّق</Badge>
               )
@@ -269,7 +271,7 @@ export default function ProfilePage() {
       <StatLine
         items={[
           {
-            label: 'مقرّرات مسجَّلة',
+            label: ENROLLED_COURSES,
             value: enrollments.isPending ? '…' : enrollments.isError ? '—' : formatNum(enrollments.data?.length ?? 0),
           },
           {
@@ -277,7 +279,7 @@ export default function ProfilePage() {
             value: achievements.isPending ? '…' : achievements.isError ? '—' : formatNum(achievements.data?.length ?? 0),
           },
           {
-            label: 'بحوث منشورة',
+            label: PUBLISHED_RESEARCH,
             value:
               research.isPending ? '…'
                 : research.isError ? '—'
@@ -318,17 +320,17 @@ export default function ProfilePage() {
             <ProfileField label="الاسم الكامل" value={`${user.firstName} ${user.lastName}`} icon={User} />
             <ProfileField label="البريد الجامعي" value={user.email} icon={Mail} mono />
             <ProfileField
-              label="الكلّيّة"
+              label={LABEL_COLLEGE}
               value={sanitizeInstitutionName(profile.data?.student?.faculty?.name) || '—'}
               icon={GraduationCap}
             />
             <ProfileField
-              label="القسم"
+              label={LABEL_DEPT}
               value={sanitizeInstitutionName(profile.data?.student?.department?.name) || '—'}
               icon={BookOpen}
             />
             <ProfileField
-              label="الرقم الجامعي"
+              label={UNI_ID}
               value={profile.data?.student?.universityId ?? '—'}
               icon={Hash}
               mono
@@ -349,9 +351,9 @@ export default function ProfilePage() {
           {profile.isError && (
             <div className="fact-error" role="status">
               <Icon icon={AlertCircle} size={13} />
-              <span>تعذّر تحميل بياناتك.</span>
+              <span>{FAILED_LOAD_YOUR_DATA}</span>
               <button type="button" className="btn ghost sm" onClick={() => profile.refetch()}>
-                إعادة المحاولة
+                {RETRY_ACTION}
               </button>
             </div>
           )}
@@ -413,7 +415,7 @@ export default function ProfilePage() {
                         {savedKey === l.key && (
                           <span className="profile-link-saved" role="status">
                             <Icon icon={CheckCircle2} size={13} />
-                            تم الحفظ
+                            {SAVED_PLAIN}
                           </span>
                         )}
                       </div>
@@ -426,7 +428,7 @@ export default function ProfilePage() {
                     {!isEditing && (
                       <div className="profile-link-actions">
                         <button type="button" className="btn outline sm" onClick={() => startEdit(l.key)}>
-                          {value ? 'تعديل' : 'ربط'}
+                          {value ? EDIT : 'ربط'}
                         </button>
                         {value && (
                           <button type="button" className="btn ghost sm" onClick={() => removeLink(l.key)}>
@@ -466,10 +468,10 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex gap-2 shrink-0">
                         <button type="submit" className="btn primary sm" disabled={Boolean(draftError) || pristine}>
-                          حفظ
+                          {SAVE}
                         </button>
                         <button type="button" className="btn ghost sm" onClick={cancelEdit}>
-                          إلغاء
+                          {CANCEL}
                         </button>
                       </div>
                     </form>
@@ -524,7 +526,7 @@ export default function ProfilePage() {
                reserved-but-empty region — the hatched EmptyCell (the old
                EmptyState's copy, kept honest and verbatim). */
             <EmptyCell
-              label="لا إنجازات بعد"
+              label={NO_ACHIEVEMENTS_YET}
             />
           ) : (
             <div className="flex-col gap-2">
@@ -553,9 +555,9 @@ export default function ProfilePage() {
           block renders on every tab EXCEPT data (two [04]s on one
           sheet would break the §B2 unique-index grammar). */}
       {tab !== 'data' && (
-        <section aria-label="تغيير كلمة المرور">
-          <SectionBar index="04" title="تغيير كلمة المرور" />
-          <p className="r319sp-sec-note">عند التغيير تُنهى جلسات بقية الأجهزة، وتبقى جلستك مفتوحة.</p>
+        <section aria-label={CHANGE_PASSWORD}>
+          <SectionBar index="04" title={CHANGE_PASSWORD} />
+          <p className="r319sp-sec-note">{SESSIONS_NOTICE_OTHER_DEVICES}</p>
           <ChangePasswordCard />
         </section>
       )}

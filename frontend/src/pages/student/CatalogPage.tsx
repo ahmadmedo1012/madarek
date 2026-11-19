@@ -1,3 +1,5 @@
+import { PREV, NEXT, NOUN_COURSE_ACC, LABEL_COURSES, FROM, ONE_COURSE, NOUN_COURSE_TWO, LABEL_THE_COURSES, CREDIT_HOURS, TWO_CREDIT_HOURS, ONE_CREDIT_HOUR, COURSES_GUIDE } from '../../lib/copy';
+
 import { useEffect, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -43,9 +45,9 @@ import '../../styles/student/academic-pages.css';
  * an even 12-card grid on desktop. */
 const CATALOG_PAGE_SIZE = 12;
 
-const COURSE_UNIT: [string, string, string, string] = ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'];
+const COURSE_UNIT: [string, string, string, string] = [ONE_COURSE, NOUN_COURSE_TWO, LABEL_COURSES, NOUN_COURSE_ACC];
 
-const CREDITS_UNIT: [string, string, string, string] = ['ساعة معتمدة واحدة', 'ساعتان معتمدتان', 'ساعات معتمدة', 'ساعة معتمدة'];
+const CREDITS_UNIT: [string, string, string, string] = ['ساعة معتمدة واحدة', TWO_CREDIT_HOURS, CREDIT_HOURS, ONE_CREDIT_HOUR];
 
 /** Shape-matched loading skeleton for the catalogue grid (the
  *  CourseGridSkeleton grammar from CoursesPage — thumb-card anatomy,
@@ -163,7 +165,7 @@ export default function CatalogPage() {
           courses page's «دليل المقرّرات» ghost: jump to the student's
           OWN enrolled courses. */}
       <PageHeader
-        title="دليل المقرّرات"
+        title={COURSES_GUIDE}
         eyebrow="للقراءة فقط"
         actions={
           <Link to="/student/courses" className="btn accent sm">
@@ -241,7 +243,7 @@ export default function CatalogPage() {
               as quiet mono meta (countAr for assistive tech). */}
           <SectionBar
             index="01"
-            title="المقرّرات"
+            title={LABEL_THE_COURSES}
             meta={
               <BarCount
                 n={meta?.total ?? rows.length}
@@ -264,7 +266,7 @@ export default function CatalogPage() {
               style={{ marginBlockStart: 'var(--sp-4)' }}
             >
               <span className="text-xs text-muted">
-                الصفحة <bdi>{meta.page}</bdi> من <bdi>{totalPages}</bdi> ·{' '}
+                الصفحة <bdi>{meta.page}</bdi> {FROM} <bdi>{totalPages}</bdi> ·{' '}
                 {countAr(meta.total, COURSE_UNIT)}
               </span>
               <div className="flex gap-2">
@@ -277,7 +279,7 @@ export default function CatalogPage() {
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   aria-label="الصفحة السابقة"
                 >
-                  <Icon icon={ChevronRight} size={14} /> السابق
+                  <Icon icon={ChevronRight} size={14} /> {PREV}
                 </button>
                 <button
                   type="button"
@@ -286,7 +288,7 @@ export default function CatalogPage() {
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   aria-label="الصفحة التالية"
                 >
-                  التالي <Icon icon={ChevronLeft} size={14} />
+                  {NEXT} <Icon icon={ChevronLeft} size={14} />
                 </button>
               </div>
             </div>

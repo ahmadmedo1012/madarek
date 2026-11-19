@@ -39,11 +39,15 @@ describe('r183-B5 [A8 P2] — admin rosters carry the ≤1024 compact-band diet'
     const page = stripComments(read('src/pages/admin/AdminPages.tsx'));
     expect(page).toContain('export function useCompactRosterBand()');
     // The diet: both lowest-priority columns render only above the band…
-    expect(page).toContain('{!compact && <th scope="col" className="admin-table-num" style={{ width: 110 }}>تسجيلات</th>}');
+    // R369-C4.1 wave-1: the literals «تسجيلات»/«الفصول»/«السابق»/«التالي» and
+    // the semester form tuple ride the shared copy constants (lib/copy.ts) —
+    // the pinned STRUCTURE (diet columns, compact meta fold, chevron
+    // direction, no scaleX mirror) is unchanged.
+    expect(page).toContain('{!compact && <th scope="col" className="admin-table-num" style={{ width: 110 }}>{ENROLLMENTS}</th>}');
     expect(page).toContain('{!compact && <th scope="col" className="admin-table-num" style={{ width: 100 }}>الفصول</th>}');
     // …and the counts ride the name cell's meta line inside it.
     expect(page).toContain('{compact && (');
-    expect(page).toContain("countAr(c.offeringCount, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])");
+    expect(page).toContain('countAr(c.offeringCount, [ONE_SEMESTER, NOUN_SEM_TWO, NOUN_SEMS, NOUN_SEM_ACC])');
     // The skeleton advertises the dieted column count (6), not 8.
     expect(page).toContain('const courseCols = compact ? 6 : 8;');
   });
@@ -96,8 +100,8 @@ describe('r183-B5 [A9 P2] — OwnerContentPage swatches resolve from the live de
 describe('r183-B5 [A10 P2] — owner institution-detail pagination arrows match MessagesInbox', () => {
   it('«السابق» points right (ChevronRight) and «التالي» points left (ChevronLeft) — no scaleX mirror', () => {
     const page = stripComments(read('src/pages/owner/OwnerInstitutionDetailPage.tsx'));
-    expect(page).toContain('<Icon icon={ChevronRight} size={13} />\n                    السابق');
-    expect(page).toContain('التالي\n                    <Icon icon={ChevronLeft} size={13} />');
+    expect(page).toContain('<Icon icon={ChevronRight} size={13} />\n                    {PREV}');
+    expect(page).toContain('{NEXT}\n                    <Icon icon={ChevronLeft} size={13} />');
     // The old inverted pair: an ArrowLeft «السابق» + a mirrored «التالي».
     expect(page).not.toContain('scaleX(-1)');
     // The page imports the chevrons it renders.

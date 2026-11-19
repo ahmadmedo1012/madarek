@@ -1,3 +1,5 @@
+import { SEARCH_PLACEHOLDER, ONE_SEMESTER, NOUN_SEM_TWO, NOUN_SEMS, NOUN_SEM_ACC, STATUS_DONE_F, ONE_INTERACTION_POINT, TWO_INTERACTION_POINTS, INTERACTION_POINTS, INTERACTION_POINT } from '../../lib/copy';
+
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -659,7 +661,7 @@ export default function LecturePlayerPage() {
             <div className="lecture-meta-badges">
               <Badge><bdi>{data.offering.course.code}</bdi></Badge>
               <span className="text-xs text-subtle r305s-band-secondary">المحاضرة {data.ordinal}</span>
-              {completed && <Badge color="green" icon={CheckCircle2}>مكتملة</Badge>}
+              {completed && <Badge color="green" icon={CheckCircle2}>{STATUS_DONE_F}</Badge>}
             </div>
             {/* R321 B3: the [01] mono gutter index rides the h1 the
                 PageHeader grammar renders it in — on the band it
@@ -746,7 +748,7 @@ export default function LecturePlayerPage() {
             >
               <span>
                 تبقى {countAr(checkpointsTotal - checkpointsAnswered,
-                  ['نقطة تفاعل', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])}.
+                  [INTERACTION_POINT, TWO_INTERACTION_POINTS, INTERACTION_POINTS, INTERACTION_POINT])}.
               </span>
               <button
                 type="button"
@@ -869,7 +871,7 @@ export default function LecturePlayerPage() {
                   index="02"
                   title="نقاط التفاعل"
                   id="lec-sec-cp"
-                  meta={<BarCount n={checkpointsTotal} srLabel={countAr(checkpointsTotal, ['نقطة تفاعل واحدة', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])} />}
+                  meta={<BarCount n={checkpointsTotal} srLabel={countAr(checkpointsTotal, [ONE_INTERACTION_POINT, TWO_INTERACTION_POINTS, INTERACTION_POINTS, INTERACTION_POINT])} />}
                 />
                 {/* R321 B3: the honest answered-count copy the old
                     section-title meta carried, verbatim — one quiet
@@ -907,7 +909,7 @@ export default function LecturePlayerPage() {
                 index="03"
                 title="فصول المحاضرة"
                 id="lec-sec-ch"
-                meta={<BarCount n={data.chapters.length} srLabel={countAr(data.chapters.length, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])} />}
+                meta={<BarCount n={data.chapters.length} srLabel={countAr(data.chapters.length, [ONE_SEMESTER, NOUN_SEM_TWO, NOUN_SEMS, NOUN_SEM_ACC])} />}
               />
               {data.chapters.length > 0 ? (
                 <div className="chapter-list">
@@ -962,7 +964,7 @@ export default function LecturePlayerPage() {
                   <input
                     type="search"
                     className="tr-search-input"
-                    placeholder="ابحث…"
+                    placeholder={SEARCH_PLACEHOLDER}
                     aria-label="ابحث في النص المكتوب"
                     value={cueQuery}
                     onChange={(e) => setCueQuery(e.target.value)}
@@ -1033,13 +1035,13 @@ export default function LecturePlayerPage() {
       <Modal
         open={!!activeCheckpoint}
         onClose={skipCheckpoint}
-        ariaLabel={activeCheckpoint ? `نقطة تفاعل: ${activeCheckpoint.question}` : 'نقطة تفاعل'}
+        ariaLabel={activeCheckpoint ? `نقطة تفاعل: ${activeCheckpoint.question}` : INTERACTION_POINT}
         closeOnOverlayClick={false}
       >
         <div className="checkpoint-card">
           <div className="checkpoint-eyebrow">
             <Icon icon={Sparkles} size={12} />
-            نقطة تفاعل
+            {INTERACTION_POINT}
           </div>
           <div className="checkpoint-question">{activeCheckpoint?.question}</div>
           <div className="checkpoint-options" role="group" aria-label="خيارات الإجابة">

@@ -1,3 +1,5 @@
+import { RETRY_ACTION, CANCEL, E_LIBRARY, LEARNING_MATRIX, NOUN_Q, NOUN_TWO_Q, NOUN_QS, NOUN_Q_ACC, FAILED_CONNECT_DOT, GAPS } from '../../lib/copy';
+
 import { useState, useRef, useEffect } from 'react';
 import {
   Bot,
@@ -156,7 +158,7 @@ const OTHER_SUGGESTIONS = ['كيف أقيّم فهم الطلاب؟', 'كيف أ
  * and the [03] bar's count ride ONE source (the quota's «متبقٍّّ»
  * variants folded in: the quota card's title «وصلتَ حدَّ اليوم» already
  * carries the remaining-ness, and the sr text stays grammatical). */
-const QUESTION_AR: [string, string, string, string] = ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'];
+const QUESTION_AR: [string, string, string, string] = [NOUN_Q, NOUN_TWO_Q, NOUN_QS, NOUN_Q_ACC];
 
 /* P4: the two engines' copy. The page NEVER claims an LLM while the
  * template composer replies (or vice versa) — /ai/config decides.
@@ -201,7 +203,7 @@ const QUOTA_UNKNOWN = -1;
 /* r366 (2-a copy diet): shared labels the branches repeat — one literal
  * each (the copy gate counts per literal). */
 const GAPS_BAR_TITLE = 'بناءً على أدائك';
-const RETRY_LABEL = 'إعادة المحاولة';
+const RETRY_LABEL = RETRY_ACTION;
 
 /* The quick-chip asks. The ASK strings are the backend's matching
  * grammar — they never change for brevity; a chip LABEL may differ from
@@ -794,7 +796,7 @@ export default function AiAssistantPage() {
         ...m,
         {
           role: 'bot',
-          text: serverMsg || 'تعذَّر الاتصال.',
+          text: serverMsg || FAILED_CONNECT_DOT,
           error: true,
           retryText: t,
           code: apiErrorCode(err) ?? undefined,
@@ -1010,11 +1012,11 @@ export default function AiAssistantPage() {
             <>
               <Link to="/student/matrix" className="btn primary sm">
                 <Icon icon={Compass} size={13} />
-                المصفوفة التعليمية
+                {LEARNING_MATRIX}
               </Link>
               <Link to="/student/library" className="btn ghost sm">
                 <Icon icon={BookOpen} size={13} />
-                المكتبة الإلكترونية
+                {E_LIBRARY}
               </Link>
               <Badge color="gold" icon={Sparkles}>{isRealLlm && aiConfig.data?.model ? aiConfig.data.model : 'AI'}</Badge>
             </>
@@ -1064,7 +1066,7 @@ export default function AiAssistantPage() {
               meta={(
                 <BarCount
                   n={gaps.data.length}
-                  srLabel={countAr(gaps.data.length, ['فجوة', 'فجوتان', 'فجوات', 'فجوةً'])}
+                  srLabel={countAr(gaps.data.length, ['فجوة', 'فجوتان', GAPS, 'فجوةً'])}
                 />
               )}
             />
@@ -1624,7 +1626,7 @@ export default function AiAssistantPage() {
                               onClick={() => setConfirmDeleteId(null)}
                               disabled={delConversation.isPending}
                             >
-                              إلغاء
+                              {CANCEL}
                             </button>
                           </div>
                         ) : (

@@ -1,3 +1,5 @@
+import { RETRY_ACTION, SAVING, SAVED, FAILED_FETCH_ALERTS, PENDING_DATA, NOTHING_CRITICAL, PLATFORM_SETTINGS, REFRESH, THE_OPEN_ALERTS, THE_ALERTS } from '../../lib/copy';
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, RefreshCw, Settings, CheckCircle2, ChevronDown, HardDrive } from 'lucide-react';
@@ -108,7 +110,7 @@ export function OwnerSystemPage() {
     );
     if (failedKeys.size === 0) {
       setEditedSettings({});
-      toast.success(`حُفظت ${failedSavesLabel(entries.length)}.`, { title: 'تمّ الحفظ' });
+      toast.success(`حُفظت ${failedSavesLabel(entries.length)}.`, { title: SAVED });
     } else {
       setEditedSettings((prev) =>
         Object.fromEntries(Object.entries(prev).filter(([key]) => failedKeys.has(key))),
@@ -210,7 +212,7 @@ export function OwnerSystemPage() {
             while visible, and this button covers the «أحتاجها الآن»
             moment after a deploy or a fix). */}
         <div className="row">
-          <Link to="/owner/alerts" className="btn accent sm">التنبيهات</Link>
+          <Link to="/owner/alerts" className="btn accent sm">{THE_ALERTS}</Link>
           <button
             type="button"
             className="btn ghost sm"
@@ -218,7 +220,7 @@ export function OwnerSystemPage() {
             disabled={sys.isFetching}
           >
             <Icon icon={RefreshCw} size={12} />
-            {sys.isFetching ? 'جارٍ التحديث…' : 'تحديث'}
+            {sys.isFetching ? 'جارٍ التحديث…' : REFRESH}
           </button>
         </div>
       </header>
@@ -235,7 +237,7 @@ export function OwnerSystemPage() {
           {
             label: 'تنبيهات حرجة مفتوحة',
             value: sysData ? formatNum(sysData.alerts.criticalCount) : unknownValue,
-            trend: sysData ? (sysData.alerts.criticalCount > 0 ? 'تستوجب قرارًا' : 'لا شيء حرجًا') : 'بانتظار البيانات',
+            trend: sysData ? (sysData.alerts.criticalCount > 0 ? 'تستوجب قرارًا' : NOTHING_CRITICAL) : PENDING_DATA,
             trendTone: sysData ? (sysData.alerts.criticalCount > 0 ? 'down' : 'up') : 'flat',
           },
           {
@@ -397,7 +399,7 @@ export function OwnerSystemPage() {
                     {`تعذّر تحديث العلم «${toggleFlag.variables?.slug ?? ''}» — المعروضة آخر حالة محفوظة.`}
                   </span>
                   <button type="button" className="btn ghost sm" onClick={retryFlagToggle}>
-                    إعادة المحاولة
+                    {RETRY_ACTION}
                   </button>
                 </div>
               )}
@@ -432,13 +434,13 @@ export function OwnerSystemPage() {
       {/* Operational alerts — real data, replacing the fake error log.
           An API failure surfaces as an honest error state, never as
           the "لا توجد تنبيهات" empty state. */}
-      <Card title="التنبيهات المفتوحة" icon={AlertTriangle}>
+      <Card title={THE_OPEN_ALERTS} icon={AlertTriangle}>
         <div className="owner-list-pad">
           {sys.isPending ? (
             <ListSkeleton rows={3} />
           ) : sys.isError ? (
             <ErrorState
-              message="تعذّر جلب التنبيهات"
+              message={FAILED_FETCH_ALERTS}
               error={sys.error}
               onRetry={() => sys.refetch()}
             />
@@ -493,7 +495,7 @@ export function OwnerSystemPage() {
           editor's copy no longer carries an implicit "applies now"
           promise — like the flags above, PlatformSetting rows are
           recorded + audited but no runtime consumer exists yet. */}
-      <Card title="إعدادات المنصّة" icon={Settings}>
+      <Card title={PLATFORM_SETTINGS} icon={Settings}>
         <div className="owner-list-pad">
           {/* 6A10-1: same ordering contract as the flags card above —
               error state (with retry) BEFORE the empty state, never a
@@ -535,7 +537,7 @@ export function OwnerSystemPage() {
                   disabled={savingSettings || updateSetting.isPending || Object.keys(editedSettings).length === 0}
                 >
                   <Icon icon={CheckCircle2} size={14} />
-                  {savingSettings ? 'جارٍ الحفظ…' : 'حفظ الإعدادات'}
+                  {savingSettings ? SAVING : 'حفظ الإعدادات'}
                 </button>
               </div>
             </>

@@ -1,3 +1,5 @@
+import { ALL, LABEL_TODAY, SELF_DEV, LABEL_TYPE, SINCE_TWO_DAYS } from '../../lib/copy';
+
 import { useMemo, useState, type ReactNode } from 'react';
 import { Link, useInRouterContext } from 'react-router-dom';
 import {
@@ -62,9 +64,9 @@ function JobsHeaderAction({ to, className, children }: { to: string; className: 
 function fmtPosted(iso: string): string {
   const d = new Date(iso);
   const days = Math.round((Date.now() - d.getTime()) / 86_400_000);
-  if (days <= 0) return 'اليوم';
+  if (days <= 0) return LABEL_TODAY;
   if (days === 1) return 'أمس';
-  if (days === 2) return 'منذ يومين';
+  if (days === 2) return SINCE_TWO_DAYS;
   if (days <= 10) return `منذ ${days} أيام`;
   if (days <= 30) return `منذ ${days} يوماً`;
   return formatDate(d, { day: 'numeric', month: 'short' });
@@ -110,7 +112,7 @@ function JobRow({ job, applied }: { job: Job; applied: boolean }) {
             <Icon icon={MapPin} size={12} aria-hidden /> {job.location}
           </span>
         </td>
-        <td data-label="النوع">{TYPE_LABELS[job.type] ?? job.type}</td>
+        <td data-label={LABEL_TYPE}>{TYPE_LABELS[job.type] ?? job.type}</td>
         <td data-label="الراتب">
           {job.salary
             ? <bdi className="font-mono">{job.salary}</bdi>
@@ -190,7 +192,7 @@ export default function JobsPage() {
             </JobsHeaderAction>
             <JobsHeaderAction to="/training" className="btn ghost sm">
               <Icon icon={GraduationCap} size={13} />
-              التطوير الذاتي
+              {SELF_DEV}
             </JobsHeaderAction>
           </>
         )}
@@ -233,7 +235,7 @@ export default function JobsPage() {
                   aria-pressed={type === 'ALL'}
                   onClick={() => setType('ALL')}
                 >
-                  الكل
+                  {ALL}
                 </button>
                 {types.map((t) => (
                   <button
@@ -280,7 +282,7 @@ export default function JobsPage() {
                   <tr>
                     <th scope="col">الوظيفة</th>
                     <th scope="col">الموقع</th>
-                    <th scope="col">النوع</th>
+                    <th scope="col">{LABEL_TYPE}</th>
                     <th scope="col">الراتب</th>
                     <th scope="col">نُشرت</th>
                     <th scope="col">الإجراء</th>

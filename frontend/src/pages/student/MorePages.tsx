@@ -1,3 +1,5 @@
+import { RETRY_ACTION, LOADING, NOUN_STUDENTS, NOUN_TWO_STUDENTS, NOUN_STUDENT_ACC, NOUN_COURSE_ACC, NOUN_STUDENT, E_LIBRARY, CAMPUS_GUIDE, SELF_DEV, VIRTUAL_LABS, EMPTY_POSTS_YET, LABEL_COURSES, LABEL_ACTIONS, FROM, LABEL_THE_COURSE, NOUN_COURSE_TWO, ONE_POST, MY_COURSES, LIVE_BROADCAST, LABEL_TYPE, NOUN_TWO_POINTS, COURSE, NOT_AVAILABLE_YET, SUBMISSIONS_PENDING_REVIEW, NO_ACHIEVEMENTS_YET, NO_RANKING_YET, NO_RATINGS_YET, LABEL_GRADE, LABEL_EXAMS, ORG_SERVICES, NOUN_POINT, RESULTS_RATINGS, NOUN_FILE_ACC, OPEN, DOWNLOADS_CENTER, MY_COURSES_SHORT, ACHIEVEMENT_POINTS, LABS_TECH, NOUN_TWO_SUBMISSIONS, NOUN_SUBMISSION_ACC, ACHIEVEMENTS_CERTS, TO_NEXT_LEVEL, FINANCE } from '../../lib/copy';
+
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Trophy, Star, Medal, Activity, Crown,
@@ -56,26 +58,26 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearSc
  *  proper one/dual/few/many forms — «نقطة واحدة»، «نقطتان»، «5 نقاط»، «25 نقطة».
  *  Local twin of TrainingPages' helper (lib/format is frozen this wave). */
 function pointsAr(n: number): string {
-  if (n === 1) return 'نقطة';
-  if (n === 2) return 'نقطتان';
-  return `${formatNum(n)} ${n <= 10 ? 'نقاط' : 'نقطة'}`;
+  if (n === 1) return NOUN_POINT;
+  if (n === 2) return NOUN_TWO_POINTS;
+  return `${formatNum(n)} ${n <= 10 ? 'نقاط' : NOUN_POINT}`;
 }
 
 /* R366 copy-diet round 2 (brief 3-b): the shared literal barrel — one
  * const per string the page repeated (the copy gate counts per literal,
  * so the barrel is the cut). Rendered text is unchanged. */
-const RETRY = 'إعادة المحاولة';
+const RETRY = RETRY_ACTION;
 const XP_LOAD_ERROR = 'تعذّر تحميل النقاط';
 const MARKING = 'جارٍ التعليم…';
 const NOT_STARTED = 'لم يبدأ بعد';
 const SCHEDULE_TITLE = 'الجدول الدراسي';
-const RESULTS_TITLE = 'النتائج والتقييمات';
+const RESULTS_TITLE = RESULTS_RATINGS;
 const GRADES_SUMMARY = 'ملخّص الدرجات';
 const GRADES_BY_COURSE = 'درجاتك حسب المقرّر';
 const NO_GRADES = 'لا درجات بعد';
 const MASTERY_LABEL = 'مستوى الإتقان';
-const COURSES_AR: [string, string, string, string] = ['مقرّر', 'مقرّرين', 'مقرّرات', 'مقرّراً'];
-const PENDING_SUBS = 'تسليمات بانتظار التقييم';
+const COURSES_AR: [string, string, string, string] = [COURSE, 'مقرّرين', LABEL_COURSES, NOUN_COURSE_ACC];
+const PENDING_SUBS = SUBMISSIONS_PENDING_REVIEW;
 
 /* ─── Gamification ─────────────────────────────────────────── */
 /* Tier display maps (lib/gamification.ts, 13-15) for the training-points
@@ -116,7 +118,7 @@ export function GamificationPage() {
           <>
             <Link to="/achievements" className="btn primary sm">
               <Icon icon={Trophy} size={13} />
-              الإنجازات والشهادات
+              {ACHIEVEMENTS_CERTS}
             </Link>
             <Link to="/student/skills" className="btn ghost sm">
               <Icon icon={BadgeCheck} size={13} />
@@ -130,7 +132,7 @@ export function GamificationPage() {
       <StatLine
         items={[
           {
-            label: 'نقاط الإنجاز',
+            label: ACHIEVEMENT_POINTS,
             value: xp !== null ? formatNum(xp) : '—',
             hint: dash.isError ? XP_LOAD_ERROR : undefined,
             tone: 'signal',
@@ -233,7 +235,7 @@ export function GamificationPage() {
                       />
                     </div>
                     <div className="r305g-level-foot">
-                      متبقّي <bdi>{pointsAr(me.level.toNext)}</bdi> للمستوى التالي
+                      متبقّي <bdi>{pointsAr(me.level.toNext)}</bdi> {TO_NEXT_LEVEL}
                     </div>
                   </>
                 )}
@@ -271,7 +273,7 @@ export function GamificationPage() {
                 /* R319 (c3-S2): the hatched EmptyCell — the sheet's
                    reserved-but-empty region (same copy, same one action). */
                 <EmptyCell
-                  label="لا إنجازات بعد"
+                  label={NO_ACHIEVEMENTS_YET}
                   action={<Link to="/training" className="btn primary sm">استكشف المسارات</Link>}
                 />
               }
@@ -299,7 +301,7 @@ export function GamificationPage() {
               !lb.isPending && !lb.isError && (lb.data?.length ?? 0) > 0 ? (
                 <BarCount
                   n={lb.data!.length}
-                  srLabel={countAr(lb.data!.length, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}
+                  srLabel={countAr(lb.data!.length, [NOUN_STUDENT, NOUN_TWO_STUDENTS, NOUN_STUDENTS, NOUN_STUDENT_ACC])}
                 />
               ) : undefined
             }
@@ -319,7 +321,7 @@ export function GamificationPage() {
           ) : lb.isError ? <ErrorState error={lb.error} onRetry={() => lb.refetch()} /> :
            !lb.data?.length ? (
             <EmptyCell
-              label="لا ترتيب بعد"
+              label={NO_RANKING_YET}
               action={<Link to="/training" className="btn primary sm">ابدأ التطوير الذاتي</Link>}
             />
           ) : (
@@ -387,7 +389,7 @@ export function SkillsPage() {
           <>
             <Link to="/training" className="btn primary sm">
               <Icon icon={GraduationCap} size={13} />
-              التطوير الذاتي
+              {SELF_DEV}
             </Link>
             <Link to="/student/gamification" className="btn ghost sm">
               <Icon icon={Medal} size={13} />
@@ -733,7 +735,7 @@ export function AlertsPage() {
               <div className="flex-col gap-2" style={{ alignItems: 'center', marginTop: 'var(--sp-2)' }}>
                 {items.length < total && (
                   <p className="text-xxs text-subtle" style={{ margin: 0 }} role="note">
-                    آخر <bdi>{formatNum(items.length)}</bdi> من <bdi>{formatNum(total)}</bdi>
+                    آخر <bdi>{formatNum(items.length)}</bdi> {FROM} <bdi>{formatNum(total)}</bdi>
                   </p>
                 )}
                 <button
@@ -742,7 +744,7 @@ export function AlertsPage() {
                   onClick={() => void feed.fetchNextPage()}
                   disabled={feed.isFetchingNextPage}
                 >
-                  {feed.isFetchingNextPage ? 'جارٍ التحميل…' : 'عرض المزيد'}
+                  {feed.isFetchingNextPage ? LOADING : 'عرض المزيد'}
                 </button>
               </div>
             )}
@@ -854,7 +856,7 @@ export function SchedulePage() {
             </Link>
             <Link to="/student/courses" className="btn ghost sm">
               <Icon icon={BookOpen} size={13} />
-              مقرّراتي
+              {MY_COURSES_SHORT}
             </Link>
           </div>
         )}
@@ -1000,7 +1002,7 @@ export function ResultsPage() {
       <PatternPageHeader
         title={RESULTS_TITLE}
         meta={d.headline.courseCount > 0
-          ? <>{countAr(d.headline.courseCount, ['مقرّر مُقيَّم', 'مقرّران', 'مقرّرات مُقيَّمة', 'مقرّراً'])}</>
+          ? <>{countAr(d.headline.courseCount, ['مقرّر مُقيَّم', NOUN_COURSE_TWO, 'مقرّرات مُقيَّمة', NOUN_COURSE_ACC])}</>
           : undefined}
         /* R341 (D7c): the page's CTA pair — honest navigation to the
             assessments that produce these grades (the accent primary
@@ -1010,11 +1012,11 @@ export function ResultsPage() {
           <div className="flex items-center gap-2 flex-wrap">
             <Link to="/student/online-exams" className="btn accent sm">
               <Icon icon={Activity} size={13} />
-              الاختبارات
+              {LABEL_EXAMS}
             </Link>
             <Link to="/student/courses" className="btn ghost sm">
               <Icon icon={BookOpen} size={13} />
-              مقرّراتي
+              {MY_COURSES_SHORT}
             </Link>
           </div>
         )}
@@ -1046,7 +1048,7 @@ export function ResultsPage() {
             value: d.headline.avgGradePct !== null ? <bdi>{formatPct1(d.headline.avgGradePct)}%</bdi> : '—',
             hint: d.headline.courseCount > 0
               ? `عبر ${countAr(d.headline.courseCount, COURSES_AR)}`
-              : 'لا تقييمات بعد',
+              : NO_RATINGS_YET,
             tone: d.headline.avgGradePct !== null ? bandTone(d.headline.avgGradePct) : 'neutral',
           },
           {
@@ -1084,7 +1086,7 @@ export function ResultsPage() {
             height={Math.max(180, d.courses.length * 32)}
             table={{
               caption: GRADES_BY_COURSE,
-              columns: ['المقرّر', 'الدرجة'],
+              columns: [LABEL_THE_COURSE, LABEL_GRADE],
               rows: d.courses.map((r) => [r.courseName, `${formatPct1(r.gradePct)}%`]),
             }}
           >
@@ -1100,7 +1102,7 @@ export function ResultsPage() {
               data={{
                 labels: d.courses.map((r) => r.courseName),
                 datasets: [{
-                  label: 'الدرجة',
+                  label: LABEL_GRADE,
                   data: d.courses.map((r) => r.gradePct ?? 0),
                   /* r164-a: كل عمود يحمل لون نطاقه من السلّم الكنونيّ
                      (PASS = cc.gold) بدل السلّم الخاصّ القديم الذي كان
@@ -1144,12 +1146,12 @@ export function ResultsPage() {
           : (
             <BarCount
               n={pendingSubs.length}
-              srLabel={countAr(pendingSubs.length, ['تسليم واحد بانتظار التقييم', 'تسليمان', PENDING_SUBS, 'تسليماً'])}
+              srLabel={countAr(pendingSubs.length, ['تسليم واحد بانتظار التقييم', NOUN_TWO_SUBMISSIONS, PENDING_SUBS, NOUN_SUBMISSION_ACC])}
             />
           )}
       />
       {pendingSubs.length === 0 ? null : (
-        <RowList aria-label="تسليمات بانتظار التقييم">
+        <RowList aria-label={SUBMISSIONS_PENDING_REVIEW}>
           {pendingSubs.slice(0, 6).map((p) => {
             const st = submissionStatusAr(p.status);
             return (
@@ -1181,7 +1183,7 @@ export function ResultsPage() {
                         className="btn ghost sm"
                       >
                         <Icon icon={ArrowLeft} size={13} />
-                        المقرّر
+                        {LABEL_THE_COURSE}
                       </Link>
                     )}
                   </span>
@@ -1263,7 +1265,7 @@ export function ResultsPage() {
                         className="btn ghost sm"
                       >
                         <Icon icon={ArrowLeft} size={13} />
-                        المقرّر
+                        {LABEL_THE_COURSE}
                       </Link>
                     )}
                   />
@@ -1292,7 +1294,7 @@ export function ArVrPage() {
           content delivery. */}
       <PatternPageHeader
         index="01"
-        eyebrow="المعامل والتقنيات"
+        eyebrow={LABS_TECH}
         title="تجارب AR / VR"
         /* r366 (2-e): the description restated the title; the honest
            state (غير متاح بعد) rides the empty surface itself. */
@@ -1307,11 +1309,11 @@ export function ArVrPage() {
           <>
             <Link to="/student/labs" className="btn primary sm">
               <Icon icon={FlaskConical} size={13} />
-              المعامل الافتراضية
+              {VIRTUAL_LABS}
             </Link>
             <Link to="/student/live" className="btn ghost sm">
               <Icon icon={Radio} size={13} />
-              البث المباشر
+              {LIVE_BROADCAST}
             </Link>
           </>
         )}
@@ -1404,7 +1406,7 @@ export function SocialPage() {
                     <Icon icon={AlertTriangle} size={14} aria-hidden />
                     <span>تعذّر النشر — نصّك محفوظ بالأعلى.</span>
                     <button type="button" className="btn ghost sm" onClick={publish}>
-                      إعادة المحاولة
+                      {RETRY_ACTION}
                     </button>
                   </div>
                 )}
@@ -1459,7 +1461,7 @@ export function SocialPage() {
                empty region — the hatched EmptyCell (the old EmptyState's
                copy, kept honest and verbatim). */
             <EmptyCell
-              label="لا منشورات بعد"
+              label={EMPTY_POSTS_YET}
             />
           ) : (
             posts.data.map((p) => {
@@ -1567,7 +1569,7 @@ export function SocialPage() {
                   </span>
                   <span
                     className="trend-count"
-                    title={arUnit(t.count, 'منشور', 'منشوران', 'منشورات')}
+                    title={arUnit(t.count, ONE_POST, 'منشوران', 'منشورات')}
                   >
                     <bdi>{t.count}</bdi>
                   </span>
@@ -1605,7 +1607,7 @@ function MaterialAction({ material }: { material: StudentMaterial }) {
   if (target.kind === 'viewer') {
     return (
       <Link to={target.to} className="btn ghost sm">
-        <Icon icon={BookOpen} size={13} /> فتح
+        <Icon icon={BookOpen} size={13} /> {OPEN}
       </Link>
     );
   }
@@ -1622,7 +1624,7 @@ function MaterialAction({ material }: { material: StudentMaterial }) {
   return (
     <span className="r305s-chip" role="note">
       <span className="r305s-chip-dot" aria-hidden />
-      غير متوفر بعد
+      {NOT_AVAILABLE_YET}
     </span>
   );
 }
@@ -1637,7 +1639,7 @@ export function DownloadsPage() {
     <div className="r319s-page">
     <PageFrame width="default">
       <PatternPageHeader
-        title="مركز التحميلات"
+        title={DOWNLOADS_CENTER}
         /* R342-08 — the header CTA pair (the D11/D8 measured seat;
            the phone band hides the topbar «اسأل AI» ≤920, D6):
            «مقرّراتي الدراسية» is where the files originate,
@@ -1650,11 +1652,11 @@ export function DownloadsPage() {
           <>
             <button type="button" className="btn accent sm" onClick={() => navigate('/student/courses')}>
               <Icon icon={BookOpen} size={13} />
-              مقرّراتي الدراسية
+              {MY_COURSES}
             </button>
             <button type="button" className="btn ghost sm" onClick={() => navigate('/student/library')}>
               <Icon icon={Library} size={13} />
-              المكتبة الإلكترونية
+              {E_LIBRARY}
             </button>
           </>
         )}
@@ -1670,7 +1672,7 @@ export function DownloadsPage() {
           !q.isPending && !q.isError && (q.data?.length ?? 0) > 0 ? (
             <BarCount
               n={q.data!.length}
-              srLabel={countAr(q.data!.length, ['ملفّ', 'ملفّان', 'ملفّات', 'ملفاً'])}
+              srLabel={countAr(q.data!.length, ['ملفّ', 'ملفّان', 'ملفّات', NOUN_FILE_ACC])}
             />
           ) : undefined
         }
@@ -1692,26 +1694,26 @@ export function DownloadsPage() {
               <thead>
                 <tr>
                   <th scope="col">الملفّ</th>
-                  <th scope="col">المقرّر</th>
-                  <th scope="col">النوع</th>
+                  <th scope="col">{LABEL_THE_COURSE}</th>
+                  <th scope="col">{LABEL_TYPE}</th>
                   <th scope="col">الحجم</th>
                   <th scope="col">التاريخ</th>
                   {/* r171c (axe empty-table-header): the actions column
-                      used to be a bare <th aria-label="إجراءات" /> — an
+                      used to be a bare <th aria-label={LABEL_ACTIONS} /> — an
                       empty cell whose accessible name never reaches the
                       visual layer. Real visible text, same Arabic copy
                       as OwnerUsersPage's actions header; the mobile
                       tbl-stack layout hides thead anyway (the td's own
                       data-label="التحميل" labels the stacked row). */}
-                  <th scope="col">إجراءات</th>
+                  <th scope="col">{LABEL_ACTIONS}</th>
                 </tr>
               </thead>
               <tbody>
                 {q.data.map((f) => (
                   <tr key={f.id}>
                     <td className="tbl-strong" data-label="الملفّ">{f.name}</td>
-                    <td data-label="المقرّر">{f.course.name}</td>
-                    <td data-label="النوع"><Badge>{f.type}</Badge></td>
+                    <td data-label={LABEL_THE_COURSE}>{f.course.name}</td>
+                    <td data-label={LABEL_TYPE}><Badge>{f.type}</Badge></td>
                     <td className="tbl-num" data-label="الحجم">{f.sizeBytes > 0 ? formatSize(f.sizeBytes) : '—'}</td>
                     <td className="text-subtle" data-label="التاريخ">{formatShortDate(f.createdAt)}</td>
                     <td data-label="التحميل">
@@ -1765,7 +1767,7 @@ export function UniversityInfoPage() {
     return (
       <PageFrame width="default">
         <PatternPageHeader
-          eyebrow="خدمات المؤسسة"
+          eyebrow={ORG_SERVICES}
           title="عن المؤسّسة"
         />
         <EmptyState
@@ -1784,7 +1786,7 @@ export function UniversityInfoPage() {
   return (
     <PageFrame width="default">
       <PatternPageHeader
-        eyebrow="خدمات المؤسسة"
+        eyebrow={ORG_SERVICES}
         title={inst.name}
         /* R342-08 — the header CTA pair rides the masthead (the
            D11/D8 measured seat; the phone band hides the topbar
@@ -1796,11 +1798,11 @@ export function UniversityInfoPage() {
           <>
             <Link to="/student/map" className="btn primary sm">
               <Icon icon={MapPin} size={13} />
-              دليل الحرم الجامعيّ
+              {CAMPUS_GUIDE}
             </Link>
             <Link to="/student/payment" className="btn ghost sm">
               <Icon icon={Wallet} size={13} />
-              الشؤون الماليّة
+              {FINANCE}
             </Link>
           </>
         )}
@@ -1849,7 +1851,7 @@ export function UniversityInfoPage() {
         <Card
           title="كلّيّات المؤسّسة"
           icon={Building2}
-          subtitle={facs.isPending ? 'جارٍ التحميل…' : `${countAr(faculties.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} في مؤسّستك`}
+          subtitle={facs.isPending ? LOADING : `${countAr(faculties.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} في مؤسّستك`}
         >
           {facs.isPending ? (
             <div className="flex-col gap-2" aria-busy="true">

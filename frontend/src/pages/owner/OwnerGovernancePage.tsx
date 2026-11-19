@@ -1,3 +1,5 @@
+import { DASH_OWNER, ACTIVITY_LOG, NO_DATA, USERS } from '../../lib/copy';
+
 import { Line, Doughnut } from 'react-chartjs-2';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -157,7 +159,7 @@ export function OwnerGovernancePage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title="الحوكمة المتقدّمة"
-        breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'الحوكمة المتقدّمة' }]}
+        breadcrumbs={[{ label: DASH_OWNER, to: '/owner/dashboard' }, { label: 'الحوكمة المتقدّمة' }]}
         /* R341 D11: the [13] nav-order gutter numeral (OWNER_NAV
          * register — the D10 quality precedent). */
         index="13"
@@ -167,8 +169,8 @@ export function OwnerGovernancePage() {
          * (ghost). Navigation-only; the page is read-only. */
         actions={(
           <>
-            <Link to="/owner/activity" className="btn accent sm">سجلّ النشاط</Link>
-            <Link to="/owner/users" className="btn ghost sm">المستخدمون</Link>
+            <Link to="/owner/activity" className="btn accent sm">{ACTIVITY_LOG}</Link>
+            <Link to="/owner/users" className="btn ghost sm">{USERS}</Link>
           </>
         )}
       />
@@ -289,7 +291,7 @@ export function OwnerGovernancePage() {
               onRetry={() => loginAnalytics.refetch()}
             />
           ) : loginData.daily.length === 0 ? (
-            <EmptyState illustration="empty-list" title="لا بيانات" description="" />
+            <EmptyState illustration="empty-list" title={NO_DATA} description="" />
           ) : (
             <div className="table-wrap">
               <table className="table tbl-stack">

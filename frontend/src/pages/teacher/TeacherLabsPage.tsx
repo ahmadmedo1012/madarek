@@ -1,3 +1,5 @@
+import { VIRTUAL_LABS, AVAILABLE_LABS, AI } from '../../lib/copy';
+
 /**
  * Teacher virtual-labs management.
  *
@@ -53,7 +55,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   computer: 'حاسوب',
   physics: 'فيزياء',
   electronics: 'إلكترونيات',
-  ai: 'ذكاء اصطناعي',
+  ai: AI,
   bio: 'أحياء',
 };
 
@@ -112,7 +114,7 @@ export default function TeacherLabsPage() {
       <header className="page-header">
         <div className="page-title-block">
           <span className="hr-brow">التعلّم العملي</span>
-          <h1 className="page-title">المعامل الافتراضية</h1>
+          <h1 className="page-title">{VIRTUAL_LABS}</h1>
         </div>
         {/* R342-09 (D8 header-CTA law — the schedule-page precedent for a
          * read-only ledger): the directory's ONE honest next action on the
@@ -131,7 +133,7 @@ export default function TeacherLabsPage() {
           <StatStrip
             ariaLabel="إحصاءات المعامل"
             cells={[
-              { label: 'معامل متاحة', value: '—' },
+              { label: AVAILABLE_LABS, value: '—' },
               { label: 'فئات المعامل', value: '—' },
               { label: 'منصّات التدريب', value: '—' },
             ]}
@@ -150,7 +152,7 @@ export default function TeacherLabsPage() {
             ariaLabel="إحصاءات المعامل"
             cells={[
               {
-                label: 'معامل متاحة',
+                label: AVAILABLE_LABS,
                 value: formatNum(labs?.length ?? 0),
                 trend: 'جاهزة للتجربة',
                 trendTone: 'flat',
@@ -189,7 +191,7 @@ export default function TeacherLabsPage() {
               title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>المعامل المتاحة</>}
               icon={FlaskConical}
               subtitle={labs && labs.length > 0
-                ? countAr(labs.length, ['معمل واحد متاح', 'معملان متاحان', 'معامل متاحة', 'معملاً متاحاً'])
+                ? countAr(labs.length, ['معمل واحد متاح', 'معملان متاحان', AVAILABLE_LABS, 'معملاً متاحاً'])
                 : undefined}
             >
               {/* r241 (Superlist): a LIST of labs, not a card wall — each

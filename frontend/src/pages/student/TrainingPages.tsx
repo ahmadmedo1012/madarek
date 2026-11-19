@@ -1,3 +1,5 @@
+import { SELF_DEV, FROM, NOUN_TWO_POINTS, STATUS_AVG, STATUS_DONE, STATUS_DONE_F, NO_RANKING_YET, CHECK_CONNECTION, NOUN_Q, MINUTE, MINUTES, START_PATH, SCIENTIFIC_RESEARCH, ONE_MINUTE, ONE_POINT, TOTAL_POINTS } from '../../lib/copy';
+
 /**
  * Self-Development module — three pages:
  *  TrainingCatalogPage   /training              browse + filter all tracks
@@ -5,7 +7,7 @@
  *  TrainingLessonPage    /training/:slug/lesson/:id   read a lesson + complete
  *  AchievementsPage      /achievements          my badges + certificates + leaderboard
  *
- * Naming: this module is presented as "التطوير الذاتي" (Self-Development).
+ * Naming: this module is presented as SELF_DEV (Self-Development).
  * Visual language: same brand primitives, gold for points/levels,
  * UoZ green for completion milestones, no glittery gamification.
  * Styling lives in styles/training.css (@layer pages).
@@ -73,7 +75,7 @@ const CATEGORY_LABEL: Record<TrainingCategory, string> = {
   ACADEMIC: 'منهجية أكاديمية',
   FLIPPED: 'الصف المعكوس',
   STUDY_SKILLS: 'مهارات الدراسة',
-  RESEARCH: 'البحث العلمي',
+  RESEARCH: SCIENTIFIC_RESEARCH,
   CAREER: 'مهارات مهنية',
   COMMUNICATION: 'التواصل',
   ENGLISH: 'الإنجليزية',
@@ -84,14 +86,14 @@ const CATEGORY_LABEL: Record<TrainingCategory, string> = {
 
 const LEVEL_LABEL: Record<string, string> = {
   BEGINNER: 'مبتدئ',
-  INTERMEDIATE: 'متوسط',
+  INTERMEDIATE: STATUS_AVG,
   ADVANCED: 'متقدم',
 };
 
 /* Shared counted-noun forms (R353 copy diet): the same plural sets were
  * duplicated per call site — one module-level home each, the file's own
  * CATEGORY_LABEL convention. */
-const MINUTES_AR: [string, string, string, string] = ['دقيقة واحدة', 'دقيقتين', 'دقائق', 'دقيقة'];
+const MINUTES_AR: [string, string, string, string] = [ONE_MINUTE, 'دقيقتين', MINUTES, MINUTE];
 const LESSONS_AR: [string, string, string, string] = ['درس واحد', 'درسان', 'دروس', 'درساً'];
 const BADGES_AR: [string, string, string, string] = ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'];
 const BACK_TO_TRACKS = 'العودة إلى المسارات';
@@ -101,8 +103,8 @@ const BROWSE_TRACKS = 'تصفح المسارات';
  *  proper one/dual/few/many forms — «نقطة واحدة»، «نقطتان»، «5 نقاط»، «25 نقطة».
  *  Local twin of MorePages' helper (lib/format is frozen this wave). */
 function pointsAr(n: number): string {
-  if (n === 1) return 'نقطة واحدة';
-  if (n === 2) return 'نقطتان';
+  if (n === 1) return ONE_POINT;
+  if (n === 2) return NOUN_TWO_POINTS;
   return `${formatNum(n)} ${n <= 10 ? 'نقاط' : 'نقطة'}`;
 }
 
@@ -141,7 +143,7 @@ export default function TrainingCatalogPage() {
   return (
     <PageFrame>
       <PageHeader
-        title="التطوير الذاتي"
+        title={SELF_DEV}
         index="01"
         actions={
           /* r368 T6-a: the page-level primary CTA the family contract
@@ -180,7 +182,7 @@ export default function TrainingCatalogPage() {
             cells={[
               { label: 'نقاطك', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
               { label: 'الأوسمة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, BADGES_AR)}` : undefined },
-              { label: 'مسارات نشطة', value: formatNum(enrolledCount), trend: countAr(completedCount, ['مكتمل', 'مكتملان', 'مكتملة', 'مكتمل']) },
+              { label: 'مسارات نشطة', value: formatNum(enrolledCount), trend: countAr(completedCount, [STATUS_DONE, 'مكتملان', STATUS_DONE_F, STATUS_DONE]) },
               { label: 'الشهادات', value: formatNum(me.certificateCount), trend: HONEST_RECORD },
             ]}
           />
@@ -316,7 +318,7 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
             <ProgressBar
               value={track.progressPct}
               color={accent}
-              label={track.isCompleted ? 'مكتمل' : `${track.completedLessons} / ${countAr(track.totalLessons, LESSONS_AR)}`}
+              label={track.isCompleted ? STATUS_DONE : `${track.completedLessons} / ${countAr(track.totalLessons, LESSONS_AR)}`}
               ariaLabel={`تقدّم مسار ${track.title}`}
             />
           </span>
@@ -453,7 +455,7 @@ export function TrainingTrackPage() {
               نفسه (disabled + aria-busy + «جارٍ…») بدل صمت التعطيل. */}
           {enroll.isPending
             ? 'جارٍ البدء…'
-            : !track.enrolled ? 'ابدأ المسار' : track.isCompleted ? 'مراجعة الدروس' : 'استكمل الدراسة'}
+            : !track.enrolled ? START_PATH : track.isCompleted ? 'مراجعة الدروس' : 'استكمل الدراسة'}
           {!enroll.isPending && <Icon icon={ChevronLeft} size={14} />}
         </button>
       </div>
@@ -463,7 +465,7 @@ export function TrainingTrackPage() {
           color="red"
           icon={AlertTriangle}
           title="تعذّر بدء المسار"
-          description="تحقّق من اتصالك."
+          description={CHECK_CONNECTION}
         />
       )}
 
@@ -549,7 +551,7 @@ function LessonRow({
       </div>
       <div className="lesson-row-meta">
         <span className="text-xxs text-subtle"><Icon icon={Clock} size={10} /> {formatNum(lesson.estMinutes)} د</span>
-        {lesson.quizQuestion && <Badge color="amber"><Icon icon={Target} size={10} /> سؤال</Badge>}
+        {lesson.quizQuestion && <Badge color="amber"><Icon icon={Target} size={10} /> {NOUN_Q}</Badge>}
       </div>
     </Link>
   );
@@ -646,7 +648,7 @@ export function TrainingLessonPage() {
 
       <Card>
         <div className="lesson-kicker">
-          <span>الدرس <bdi>{lesson.order}</bdi> من <bdi>{track.lessons.length}</bdi></span>
+          <span>الدرس <bdi>{lesson.order}</bdi> {FROM} <bdi>{track.lessons.length}</bdi></span>
           <span>·</span>
           <span><Icon icon={Clock} size={10} /> {countAr(lesson.estMinutes, MINUTES_AR)}</span>
         </div>
@@ -859,7 +861,7 @@ export function AchievementsPage() {
           <StatStrip
             ariaLabel="ملخّص نقاطك"
             cells={[
-              { label: 'مجموع النقاط', value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
+              { label: TOTAL_POINTS, value: formatNum(me.points), trend: `المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}` },
               { label: 'الأوسمة المحقّقة', value: formatNum(me.badgeCount), trend: badgesQ.data ? `من ${countAr(badgesQ.data.length, BADGES_AR)}` : undefined },
               { label: 'الشهادات', value: formatNum(me.certificateCount), trend: HONEST_RECORD },
             ]}
@@ -948,7 +950,7 @@ export function AchievementsPage() {
                       <div className="cert-title">{c.title}</div>
                       <div className="text-xs text-muted">{c.issuer}</div>
                       <div className="cert-meta">
-                        <Badge color="green"><Icon icon={CheckCircle2} size={11} /> مكتملة</Badge>
+                        <Badge color="green"><Icon icon={CheckCircle2} size={11} /> {STATUS_DONE_F}</Badge>
                         {c.issuedAt && (
                           <Badge>{formatDate(c.issuedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</Badge>
                         )}
@@ -978,7 +980,7 @@ export function AchievementsPage() {
             ) : !lbQ.data?.length ? (
               /* R319 (c3-S2): the hatched EmptyCell (same copy + action). */
               <EmptyCell
-                label="لا ترتيب بعد"
+                label={NO_RANKING_YET}
                 note="النقاط بإكمال الدروس."
                 action={<Link to="/training" className="btn primary sm">ابدأ من المسارات</Link>}
               />

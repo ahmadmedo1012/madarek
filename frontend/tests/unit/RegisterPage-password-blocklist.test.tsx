@@ -78,7 +78,7 @@ vi.mock('../../src/hooks/useInstitutions', () => ({
 import RegisterPage, { registerPasswordSchema } from '../../src/pages/RegisterPage';
 import { isCommonPassword } from '../../src/lib/commonPasswords';
 
-const COMMON_PASSWORD_MESSAGE = 'كلمة المرور شائعة جدًا — اختر واحدة أقل توقّعًا';
+const COMMON_PASSWORD_MESSAGE = 'كلمة مرور شائعة — اختر أقل توقّعًا';
 
 function renderPage() {
   return render(

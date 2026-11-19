@@ -1,3 +1,5 @@
+import { RETRY_ACTION, NO_RESULTS, SAVING, LABEL_COLLEGE, FAILED_LOAD, CLEAR_SEARCH, RANK_ASSISTANT_PROF, RANK_ASSOCIATE_PROF, EXAM_REVIEW, MANAGE_USERS, QUALITY_REPORTS, LABEL_NAME, LABEL_DEPT, LABEL_COLLEGE_SHORT, NOUN_PROF, NOUN_PROFS, FAILED_SERVER, SAVE, RANK_LECTURER, DASH_QUALITY, NO_PROFS, NOUN_TWO_PROFS, NOUN_PROF_ACC, ACADEMIC_FILE, LABEL_MAIL, LABEL_GRADE, LABEL_RANK, LABEL_SCOPE, LABEL_EXAMS, FAILED_UPDATE, MANAGE_COURSES, STATUS_VERIFIED } from '../../lib/copy';
+
 /**
  * Admin governance pages.
  *
@@ -86,10 +88,10 @@ const DEGREE_LABEL: Record<string, string> = {
   BACHELORS: 'بكالوريوس', MASTERS: 'ماجستير', PHD: 'دكتوراه',
 };
 const RANK_LABEL: Record<string, string> = {
-  LECTURER: 'مُعيد / محاضر',
-  ASSISTANT_PROFESSOR: 'أستاذ مساعد',
-  ASSOCIATE_PROFESSOR: 'أستاذ مشارك',
-  PROFESSOR: 'أستاذ',
+  LECTURER: RANK_LECTURER,
+  ASSISTANT_PROFESSOR: RANK_ASSISTANT_PROF,
+  ASSOCIATE_PROFESSOR: RANK_ASSOCIATE_PROF,
+  PROFESSOR: NOUN_PROF,
 };
 /** Arabic labels for user roles — raw enums (TEACHER/QUALITY…) never reach the UI.
  * R320 §B: the shared map verbatim (lib/roleLabels.ts) — ADMIN is
@@ -101,15 +103,15 @@ const CAP_LABEL: Record<AppCapability, string> = {
   RESEARCH_GRADE_ANY: 'تقييم أي بحث',
   RESEARCH_PUBLISH: 'نشر البحوث',
   EXAMS_AUTHOR: 'إنشاء اختبارات',
-  EXAMS_MODERATE: 'مراجعة الاختبارات',
+  EXAMS_MODERATE: EXAM_REVIEW,
   EXAMS_TAKE: 'تأدية الاختبارات',
   CURRICULUM_EDIT_OWN: 'تعديل منهجي',
   CURRICULUM_EDIT_ANY: 'تعديل المناهج',
-  USERS_MANAGE: 'إدارة المستخدمين',
+  USERS_MANAGE: MANAGE_USERS,
   ROLES_ASSIGN: 'إسناد الأدوار',
   TEACHERS_VERIFY: 'توثيق الأساتذة',
-  QUALITY_VIEW: 'لوحة الجودة',
-  QUALITY_REPORT: 'تقارير الجودة',
+  QUALITY_VIEW: DASH_QUALITY,
+  QUALITY_REPORT: QUALITY_REPORTS,
   ANNOUNCE_PLATFORM: 'إعلانات المنصة',
   ANNOUNCE_FACULTY: 'إعلانات الكلّيّة',
   COMPETITIONS_RUN: 'إنشاء مسابقات',
@@ -289,14 +291,14 @@ export function AdminTeachersPage() {
   const teacherListEmpty = (
     <EmptyState
       icon={Users}
-      title={isSearching ? 'لا نتائج' : 'لا أساتذة'}
+      title={isSearching ? NO_RESULTS : NO_PROFS}
       description={isSearching
         ? 'لم نجد مطابقات.'
         : 'ستظهر مع أول أستاذ.'}
       action={isSearching ? (
         <button type="button" className="btn ghost sm" onClick={clearSearch}>
           <Icon icon={X} size={13} />
-          مسح البحث
+          {CLEAR_SEARCH}
         </button>
       ) : undefined}
     />
@@ -322,7 +324,7 @@ export function AdminTeachersPage() {
                    * in the first viewport (the admin topbar hides «اسأل AI»). */
                   <Link to="/admin/courses" className="btn accent sm">
             <Icon icon={BookOpen} size={13} />
-            إدارة المقرّرات
+            {MANAGE_COURSES}
           </Link>
         )}
       />
@@ -363,7 +365,7 @@ export function AdminTeachersPage() {
             <Card>
               <ErrorState
                 error={roster.error}
-                message="تعذّر التحميل"
+                message={FAILED_LOAD}
                 onRetry={() => roster.refetch()}
               />
             </Card>
@@ -399,7 +401,7 @@ export function AdminTeachersPage() {
                   page={page}
                   totalPages={totalPages}
                   total={meta.total}
-                  unit={['أستاذ', 'أستاذان', 'أساتذة', 'أستاذاً']}
+                  unit={[NOUN_PROF, NOUN_TWO_PROFS, NOUN_PROFS, NOUN_PROF_ACC]}
                   onPage={setPage}
                 />
               )}
@@ -431,7 +433,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
       <Card>
         <ErrorState
           error={error}
-          message="تعذّر التحميل"
+          message={FAILED_LOAD}
           onRetry={() => refetch()}
         />
       </Card>
@@ -451,9 +453,9 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
 
   return (
     <div className="flex-col gap-3">
-      <Card title="الملف الأكاديمي" icon={GraduationCap} actions={
+      <Card title={ACADEMIC_FILE} icon={GraduationCap} actions={
         data.teacher.verified
-          ? <Badge color="green"><Icon icon={CheckCircle2} size={11} /> موثَّق</Badge>
+          ? <Badge color="green"><Icon icon={CheckCircle2} size={11} /> {STATUS_VERIFIED}</Badge>
           : <button
               type="button"
               className="btn primary sm"
@@ -468,7 +470,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
             color="red"
             icon={AlertCircle}
           title="تعذّر التوثيق"
-            description={apiErrorMessage(verify.error, 'لم يستجب الخادم.')}
+            description={apiErrorMessage(verify.error, FAILED_SERVER)}
             actions={
               <button
                 type="button"
@@ -476,21 +478,21 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
                 onClick={() => verify.mutate({ id: teacherId, verified: true })}
                 disabled={verify.isPending}
               >
-                إعادة المحاولة
+                {RETRY_ACTION}
               </button>
             }
           />
         )}
 
         <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
-          <FactRow label="الاسم" value={data.teacher.name} />
-          <FactRow label="البريد" value={data.teacher.email} mono />
+          <FactRow label={LABEL_NAME} value={data.teacher.name} />
+          <FactRow label={LABEL_MAIL} value={data.teacher.email} mono />
           <FactRow label="التخصص" value={data.teacher.specialty} />
-          <FactRow label="الدرجة" value={DEGREE_LABEL[data.teacher.degreeLevel] ?? data.teacher.degreeLevel} />
-          <FactRow label="الرتبة" value={RANK_LABEL[data.teacher.rank] ?? data.teacher.rank} />
+          <FactRow label={LABEL_GRADE} value={DEGREE_LABEL[data.teacher.degreeLevel] ?? data.teacher.degreeLevel} />
+          <FactRow label={LABEL_RANK} value={RANK_LABEL[data.teacher.rank] ?? data.teacher.rank} />
           <FactRow label="الخبرة" value={`${data.teacher.yearsExperience} سنة`} />
-          <FactRow label="القسم" value={data.teacher.department} />
-          <FactRow label="الكلّيّة" value={data.teacher.faculty} />
+          <FactRow label={LABEL_DEPT} value={data.teacher.department} />
+          <FactRow label={LABEL_COLLEGE} value={data.teacher.faculty} />
         </div>
         {data.teacher.subjectKeywords.length > 0 && (
           <div className="gov-keywords">
@@ -671,7 +673,7 @@ function PositionAssignmentCard({
         </FormField>
 
         {(position === 'DEAN' || position === 'ASSOCIATE_DEAN') && (
-          <FormField label="الكلّيّة" id={`pos-fac-${teacher.id}`}>
+          <FormField label={LABEL_COLLEGE} id={`pos-fac-${teacher.id}`}>
             <select
               className="input"
               value={facultyId}
@@ -686,7 +688,7 @@ function PositionAssignmentCard({
 
         {position === 'DEPARTMENT_HEAD' && (
           <>
-            <FormField label="الكلّيّة" id={`pos-dfac-${teacher.id}`}>
+            <FormField label={LABEL_COLLEGE} id={`pos-dfac-${teacher.id}`}>
               <select
                 className="input"
                 value={facultyId}
@@ -701,7 +703,7 @@ function PositionAssignmentCard({
                 ))}
               </select>
             </FormField>
-            <FormField label="القسم" id={`pos-dep-${teacher.id}`}>
+            <FormField label={LABEL_DEPT} id={`pos-dep-${teacher.id}`}>
               <select
                 className="input"
                 value={departmentId}
@@ -723,7 +725,7 @@ function PositionAssignmentCard({
           onClick={onSave}
           disabled={assign.isPending || !dirty}
         >
-          {assign.isPending ? 'جارٍ الحفظ…'
+          {assign.isPending ? SAVING
             : position === 'NONE' ? 'إلغاء التعيين'
             : `تعيين ${POSITION_LABEL[position]}`}
         </button>
@@ -743,7 +745,7 @@ function PositionAssignmentCard({
           color="red"
           icon={AlertCircle}
           title="تعذّر الحفظ"
-          description={apiErrorMessage(assign.error, 'لم يستجب الخادم.')}
+          description={apiErrorMessage(assign.error, FAILED_SERVER)}
           actions={
             <button
               type="button"
@@ -751,7 +753,7 @@ function PositionAssignmentCard({
               onClick={onSave}
               disabled={assign.isPending || !dirty}
             >
-              إعادة المحاولة
+              {RETRY_ACTION}
             </button>
           }
         />
@@ -799,18 +801,18 @@ function ScopeAssignmentCard({
         <strong className="text-sm">نطاق {roleLabel}</strong>
       </div>
       <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
-        <FormField label="النطاق" id={`scope-${userId}`}>
+        <FormField label={LABEL_SCOPE} id={`scope-${userId}`}>
           <select
             className="input"
             value={scope}
             onChange={(e) => setScope(e.target.value as 'UNIVERSITY' | 'FACULTY')}
           >
             <option value="UNIVERSITY">الجامعة</option>
-            <option value="FACULTY">كلّيّة</option>
+            <option value="FACULTY">{LABEL_COLLEGE_SHORT}</option>
           </select>
         </FormField>
         {scope === 'FACULTY' && (
-          <FormField label="الكلّيّة" id={`scope-fac-${userId}`}>
+          <FormField label={LABEL_COLLEGE} id={`scope-fac-${userId}`}>
             <select
               className="input"
               value={facultyId}
@@ -836,7 +838,7 @@ function ScopeAssignmentCard({
           onClick={onSave}
           disabled={assign.isPending || !dirty}
         >
-          {assign.isPending ? 'جارٍ الحفظ…' : 'حفظ'}
+          {assign.isPending ? SAVING : SAVE}
         </button>
       </div>
       {assign.isError && (
@@ -844,7 +846,7 @@ function ScopeAssignmentCard({
           color="red"
           icon={AlertCircle}
           title="تعذّر الحفظ"
-          description={apiErrorMessage(assign.error, 'لم يستجب الخادم.')}
+          description={apiErrorMessage(assign.error, FAILED_SERVER)}
           actions={
             <button
               type="button"
@@ -852,7 +854,7 @@ function ScopeAssignmentCard({
               onClick={onSave}
               disabled={assign.isPending || !dirty}
             >
-              إعادة المحاولة
+              {RETRY_ACTION}
             </button>
           }
         />
@@ -898,7 +900,7 @@ const CAP_DOMAIN_ORDER: CapDomain[] = [
 
 const CAP_DOMAIN_LABEL: Record<CapDomain, string> = {
   research: 'البحوث',
-  exams: 'الاختبارات',
+  exams: LABEL_EXAMS,
   curriculum: 'المناهج والمقرّرات',
   quality: 'ضمان الجودة',
   community: 'الإعلانات والمجتمع',
@@ -957,7 +959,7 @@ export function AdminPermissionsPage() {
         <Card>
           <ErrorState
             error={error}
-            message="تعذّر التحميل"
+            message={FAILED_LOAD}
             onRetry={() => refetch()}
           />
         </Card>
@@ -1093,8 +1095,8 @@ export function AdminPermissionsPage() {
           <AlertRow
             color="red"
             icon={AlertCircle}
-            title="تعذّر التحديث"
-            description={apiErrorMessage(setCap.error, 'لم يستجب الخادم.')}
+            title={FAILED_UPDATE}
+            description={apiErrorMessage(setCap.error, FAILED_SERVER)}
             actions={
               <button
                 type="button"
@@ -1102,7 +1104,7 @@ export function AdminPermissionsPage() {
                 onClick={retryLast}
                 disabled={setCap.isPending || !lastAttempt}
               >
-                إعادة المحاولة
+                {RETRY_ACTION}
               </button>
             }
           />
