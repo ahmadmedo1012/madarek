@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { NO_BADGES_YET } from "@/lib/copy";
 import { useQuery } from "@tanstack/react-query";
 import Crown from "lucide-react-native/icons/crown";
 import Medal from "lucide-react-native/icons/medal";
@@ -167,7 +168,7 @@ export default function GamificationScreen() {
           <ErrorState message={humanizeError(badges.error)} onRetry={() => badges.refetch()} compact />
         ) : (badges.data ?? []).length === 0 ? (
           <EmptyState
-            title="لا أوسمة بعد"
+            title={NO_BADGES_YET}
             message="أكمل دروس التطوير لأول وسام."
           />
         ) : (

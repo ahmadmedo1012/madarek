@@ -16,7 +16,7 @@ import { ownerApi } from "@/api/owner";
 import { useStatusTones } from "@/design/theme";
 import { dateTime, latn } from "@/lib/format";
 import { SeverityChip, alertCategoryLabel } from "@/features/governance/components";
-import { OWNER_DASHBOARD } from "@/lib/copy";
+import {OWNER_DASHBOARD, OPEN_ALERTS} from "@/lib/copy";
 
 interface OwnerAlertRow {
   id: string;
@@ -79,7 +79,7 @@ export default function OwnerAlerts() {
           <View style={{ gap: 16 }}>
             <RowList>
               <LedgerRow last>
-                <StatLine label="تنبيهات مفتوحة" value={latn(rows.length)} hint="ضمن الحدّ" />
+                <StatLine label={OPEN_ALERTS} value={latn(rows.length)} hint="ضمن الحدّ" />
                 <StatLine label="حرجة" value={latn(critical)} hint="تستوجب قرارًا" />
                 <StatLine label="تحذيرات" value={latn(warning)} hint="تحتاج متابعة" />
                 <StatLine label="معلومات" value={latn(info)} hint="للمتابعة فقط" />

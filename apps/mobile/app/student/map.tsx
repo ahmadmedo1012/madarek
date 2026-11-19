@@ -24,6 +24,7 @@ import { latn } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { SectionNote, countAr } from "@/features/student/more";
 import { PushFrame } from "@/features/student/components";
+import {NO_FACULTIES_YET, NO_INSTITUTION, PICK_INSTITUTION_FIRST} from "@/lib/copy";
 
 /** Faculties whose city is null/blank bucket here — never dropped. */
 const UNKNOWN_CITY = "مدينة غير محدّدة";
@@ -72,15 +73,15 @@ export default function CampusMapScreen() {
       ) : !slug ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
-          title="لم تُحدَّد مؤسستك"
-          message="اختر مؤسستك أولًا."
+          title={NO_INSTITUTION}
+          message={PICK_INSTITUTION_FIRST}
         />
       ) : faculties.isLoading ? (
         <SkeletonList rows={5} rowHeight={64} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
-          title="لا كليات بعد"
+          title={NO_FACULTIES_YET}
           message="لا كليات — تظهر فور الإضافة."
         />
       ) : (

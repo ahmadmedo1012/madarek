@@ -36,7 +36,7 @@ import { CountUp, RingProgress } from "@/motion";
 import { fonts } from "@/design/fonts";
 import { type as typeScale } from "@/design/tokens";
 import { latn } from "@/lib/format";
-import { QUIZ_LABEL } from "@/lib/copy";
+import {QUIZ_LABEL, MCQ_LABEL, UNDER_PROCESSING, OPEN_ALERTS, AI_REQUESTS_PER_MIN} from "@/lib/copy";
 
 /* ══════════════════════ Counted Arabic plurals ═══════════════════ */
 
@@ -215,7 +215,7 @@ const KNOWN_LABELS: Record<string, string> = {
   recentAuditLogs: "سجلّات 7 أيام",
   recentEventsLast7Days: "أحداث 7 أيام",
   activeSessions: "جلسات نشطة",
-  aiRequestsPerMin: "طلبات AI / دقيقة",
+  aiRequestsPerMin: AI_REQUESTS_PER_MIN,
   liveBroadcasts: "بثّ جارٍ",
   activeExams: "اختبارات جارية",
   totalRequests: "الطلبات",
@@ -247,7 +247,7 @@ const KNOWN_LABELS: Record<string, string> = {
   weeklyActive: "نشاط الأسبوع",
   factCount: "حقول مُزامنة",
   staleCount: "حقول قديمة",
-  openCount: "تنبيهات مفتوحة",
+  openCount: OPEN_ALERTS,
   criticalCount: "تنبيهات حرجة",
   critical: "حرجة",
   warning: "تحذيرات",
@@ -584,7 +584,7 @@ export const RESOURCE_LABEL: Record<string, string> = {
 /** Feedback inbox grammar (FeedbackInboxPage parity). */
 export const FEEDBACK_STATUS_LABEL: Record<string, string> = {
   open: "مفتوحة",
-  triage: "تحت المعالجة",
+  triage: UNDER_PROCESSING,
   fixed: "أُصلحت",
   dismissed: "مرفوضة",
 };
@@ -643,7 +643,7 @@ export function feedbackStatusLabel(status?: string | null): string {
 
 /** Exam question types (web QTYPE_LABEL parity — exam-moderation rows). */
 export const QUESTION_TYPE_LABEL: Record<string, string> = {
-  MCQ: "اختيار من متعدد",
+  MCQ: MCQ_LABEL,
   TRUE_FALSE: "صح أم خطأ",
   SHORT: "إجابة قصيرة",
   ESSAY: "سؤال مقالي",

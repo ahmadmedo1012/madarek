@@ -28,7 +28,7 @@ import {
   type CourseRow,
   type FacultyNode,
 } from "@/features/governance/components";
-import { ADDED, REGISTRAR_DASHBOARD, SAVED, SAVING } from "@/lib/copy";
+import {ADDED, REGISTRAR_DASHBOARD, SAVED, SAVING, NO_TEACHERS_YET, TRY_WIDER_SEARCH, NO_RESULTS, PICK_DEPARTMENT, FINAL_DELETE} from "@/lib/copy";
 import { sp } from "@/design/tokens";
 
 const PAGE_LIMIT = 20;
@@ -146,7 +146,7 @@ export default function AdminCourses() {
     },
     onError: (e) =>
       toast.error(
-        humanizeError(e) || "تعذّر الحذف — مرتبط بشُعب أو مفاهيم.",
+        humanizeError(e) || "تعذّر الحذف — مرتبط بشُعب.",
         "فشل الحذف",
       ),
   });
@@ -196,8 +196,8 @@ export default function AdminCourses() {
           <ErrorState message={humanizeError(courses.error)} onRetry={() => courses.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title={appliedQ ? "لا نتائج" : "لا مقرّرات بعد"}
-            message={appliedQ ? "جرّب بحثًا أوسع." : "أضف أول مقرّر."}
+            title={appliedQ ? NO_RESULTS : "لا مقرّرات بعد"}
+            message={appliedQ ? TRY_WIDER_SEARCH : "أضف أول مقرّر."}
             actionLabel={appliedQ ? "مسح البحث" : undefined}
             onAction={appliedQ ? () => setQ("") : undefined}
           />
@@ -377,7 +377,7 @@ export default function AdminCourses() {
                 options={departmentOptions}
                 onSelect={(id) => setDraft({ ...draft, departmentId: id })}
                 loading={facs.isLoading}
-                placeholder="اختر القسم…"
+                placeholder={PICK_DEPARTMENT}
                 sheetTitle="القسم"
                 emptyLabel="لا أقسام بعد"
               />
@@ -400,10 +400,10 @@ export default function AdminCourses() {
         title="حذف المقرّر"
         message={
           deleting
-            ? `سيُحذف «${deleting.name}» نهائيًا من السجلّ — لا يمكن التراجع.`
+            ? `سيُحذف «${deleting.name}» نهائيًا — لا تراجع.`
             : ""
         }
-        confirmLabel="حذف نهائي"
+        confirmLabel={FINAL_DELETE}
         danger
         loading={deleteCourse.isPending}
         onConfirm={() => deleting && deleteCourse.mutate(deleting.id)}
@@ -500,7 +500,7 @@ function OfferingSheet({
           loading={teachers.isLoading}
           placeholder="اختر الأستاذ…"
           sheetTitle="أساتذة المؤسسة"
-          emptyLabel="لا أساتذة بعد"
+          emptyLabel={NO_TEACHERS_YET}
         />
         <View style={{ gap: sp[6] }}>
           <T variant="sm" weight="medium" color="secondary">

@@ -9,6 +9,7 @@ import { Markdown } from "@/components/ui/markdown";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { ABOUT_LEDE, ABOUT_SECTIONS } from "@/features/common/helpData";
 import { LEGAL_COLOPHON, LEGAL_UPDATED } from "@/features/common/legalData";
+import { ABOUT_MADAREK } from "@/lib/copy";
 
 /**
  * /about — «عن مدارك» (web AboutPage port): the landing's identity
@@ -19,7 +20,7 @@ import { LEGAL_COLOPHON, LEGAL_UPDATED } from "@/features/common/legalData";
 export default function About() {
   return (
     <Screen scroll>
-      <StackHeader title="عن مدارك" />
+      <StackHeader title={ABOUT_MADAREK} />
 
       <View style={{ gap: sp[8], paddingBottom: sp[4] }}>
         <T variant="h3" weight="bold">

@@ -12,6 +12,7 @@ import { Markdown } from "@/components/ui/markdown";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { CONTACT_LEDE, CONTACT_SECTIONS } from "@/features/common/helpData";
 import { LEGAL_COLOPHON, LEGAL_UPDATED } from "@/features/common/legalData";
+import { ABOUT_MADAREK } from "@/lib/copy";
 
 /**
  * /contact — «التواصل والتسجيل المبكر» (web ContactPage port): the ONE
@@ -69,7 +70,7 @@ export default function Contact() {
           onPress={() => router.push("/auth/register" as never)}
         />
         <Button
-          label="عن مدارك"
+          label={ABOUT_MADAREK}
           kind="ghost"
           small
           icon={<Info size={16} color={p.text} />}

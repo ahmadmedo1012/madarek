@@ -44,6 +44,7 @@ import { latn } from "@/lib/format";
 import { countAr } from "@/features/student/more";
 import { CourseWell } from "@/features/student/components";
 import { catalogDepartmentGroups } from "@/features/student/coursesLogic";
+import {NO_COURSES, UNSPECIFIED_DEPT, NO_INSTITUTION, PICK_INSTITUTION_FIRST} from "@/lib/copy";
 
 const PAGE_SIZE = 20;
 
@@ -91,7 +92,7 @@ const CatalogCard = makeRow<
               {item.name}
             </T>
             <T variant="xs" color="muted" numberOfLines={1}>
-              {item.department?.name ?? "قسم غير محدَّد"}
+              {item.department?.name ?? UNSPECIFIED_DEPT}
               {item.institution ? ` · ${item.institution.name}` : ""}
             </T>
           </View>
@@ -318,8 +319,8 @@ export default function CatalogScreen() {
         {!slug ? (
           <EmptyState
             icon={<BookOpen size={22} color={p.textMuted} />}
-            title="لم تُحدَّد مؤسستك"
-            message="اختر مؤسستك أولًا."
+            title={NO_INSTITUTION}
+            message={PICK_INSTITUTION_FIRST}
           />
         ) : (
           <DataList
@@ -350,7 +351,7 @@ export default function CatalogScreen() {
               ) : (
                 <EmptyState
                   room="library"
-                  title="لا مقرّرات"
+                  title={NO_COURSES}
                   message="لا مقرّرات — تظهر فور الإضافة."
                 />
               )
@@ -427,7 +428,7 @@ export default function CatalogScreen() {
                     {card.name}
                   </T>
                   <T variant="xs" color="muted">
-                    {card.department?.name ?? "قسم غير محدَّد"}
+                    {card.department?.name ?? UNSPECIFIED_DEPT}
                     {card.institution ? ` · ${card.institution.name}` : ""}
                   </T>
                 </View>

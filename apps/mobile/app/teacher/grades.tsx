@@ -39,7 +39,7 @@ import {
   useTeacherOfferings,
 } from "@/features/teacher/components";
 import { isDirtyDraft, nextIndex, parseGradeRows } from "@/features/teacher/wire";
-import { SAVED } from "@/lib/copy";
+import {SAVED, GRADE_NOT_NEGATIVE, MAX_IS_INT_100, WEIGHT_IS_INT_100} from "@/lib/copy";
 
 type Draft = { score: string; feedback: string };
 
@@ -144,20 +144,20 @@ export default function Grades() {
       const mx = Number(maxScore);
       const wt = Number(weight);
       if (maxScore.trim() === "" || Number.isNaN(mx) || !Number.isInteger(mx) || mx < 1 || mx > 100) {
-        throw new Error("العظمى عدد صحيح 1–100.");
+        throw new Error(MAX_IS_INT_100);
       }
       if (weight.trim() === "" || Number.isNaN(wt) || !Number.isInteger(wt) || wt < 0 || wt > 100) {
-        throw new Error("الوزن عدد صحيح 0–100.");
+        throw new Error(WEIGHT_IS_INT_100);
       }
       if (!focus || !focusDraft) {
         throw new Error("اختر طالبًا أولًا.");
       }
       if (!focusDirty) {
-        throw new Error("أدخل درجة أو ملاحظة قبل الحفظ.");
+        throw new Error("أدخل درجة أو ملاحظة.");
       }
       const value = Number(focusDraft.score);
       if (focusDraft.score.trim() === "" || Number.isNaN(value)) throw new Error("أدخل درجة صحيحة.");
-      if (value < 0) throw new Error("الدرجة ليست سالبة.");
+      if (value < 0) throw new Error(GRADE_NOT_NEGATIVE);
       if (value > mx) throw new Error(`أقصى درجة  ${latn(mx)}.`);
       return teacherApi.upsertGrades(effectiveId, [
         {

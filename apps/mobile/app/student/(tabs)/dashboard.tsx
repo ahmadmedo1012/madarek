@@ -42,13 +42,14 @@ import { AppTopBar } from "@/components/shell/AppTopBar";
 import { useNow } from "@/hooks/useNow";
 import { SectionNote, countAr } from "@/features/student/more";
 import { GapList, ScrollBody, classWhenLabel, nextStep } from "@/features/student/components";
+import {WEEKLY_SCHEDULE, NO_ATTENDANCE_DATA, EXAM_WINDOW_OPEN} from "@/lib/copy";
 
 /** Module-scoped: the idempotent onboarding POST fires once per app run. */
 let onboardingFired = false;
 
 /** Quick actions — the four doors students open most (PressableScale tiles). */
 const QUICK_ACTIONS: { icon: typeof CalendarClock; label: string; href: string; a11y: string }[] = [
-  { icon: CalendarClock, label: "الجدول", href: "/student/schedule", a11y: "الجدول الأسبوعي" },
+  { icon: CalendarClock, label: "الجدول", href: "/student/schedule", a11y: WEEKLY_SCHEDULE },
   { icon: ClipboardList, label: "التكاليف", href: "/student/assignments", a11y: "افتح التكاليف" },
   { icon: ClipboardCheck, label: "الاختبارات", href: "/student/online-exams", a11y: "الاختبارات الإلكترونية" },
   { icon: Library, label: "المكتبة", href: "/student/library", a11y: "افتح المكتبة" },
@@ -229,7 +230,7 @@ export default function StudentDashboard() {
                 progress={(kpi.attendancePct ?? 0) / 100}
                 accessibilityLabel={
                   kpi.attendancePct === null
-                    ? "لا بيانات حضور"
+                    ? NO_ATTENDANCE_DATA
                     : `نسبة الحضور ${pct(kpi.attendancePct)}`
                 }
               >
@@ -480,7 +481,7 @@ export default function StudentDashboard() {
                   ? `يفتح باب الاختبار ${dateTime(e.openAt)}`
                   : e.closeAt
                     ? `آخر موعد للتسليم ${dateTime(e.closeAt)}`
-                    : "نافذة الاختبار مفتوحة";
+                    : EXAM_WINDOW_OPEN;
                 return (
                   <LedgerRow
                     key={e.id}

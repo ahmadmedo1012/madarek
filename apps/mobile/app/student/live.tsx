@@ -19,7 +19,7 @@ import { toast } from "@/components/ui/toast";
 import { dateTime, num } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { LIVE_STATUS, SectionNote, countAr, fmtClock } from "@/features/student/more";
-import { LIVE_NOW, UNKNOWN_STATUS } from "@/lib/copy";
+import {LIVE_NOW, UNKNOWN_STATUS, NO_SCHEDULED_SESSIONS} from "@/lib/copy";
 
 /** The backend opens the join window 10 minutes before the scheduled time. */
 const JOIN_WINDOW_MS = 10 * 60 * 1000;
@@ -102,7 +102,7 @@ export default function LiveScreen() {
           <SessionSection
             title="جلسات قادمة"
             sessions={upcoming}
-            emptyLabel="لا جلسات مجدولة"
+            emptyLabel={NO_SCHEDULED_SESSIONS}
             emptyNote="تظهر فور جدولتها."
           />
           {ended.length > 0 ? (

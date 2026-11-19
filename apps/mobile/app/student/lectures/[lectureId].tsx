@@ -77,6 +77,7 @@ import { humanizeError } from "@/lib/errors";
 import { arabicIndic, latn, sizeLabel, useNumerals, type NumeralsPreference } from "@/lib/format";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { AR_CHOICE_LETTERS, countAr } from "@/features/student/more";
+import {LOADING, TRY_OTHER_WORD} from "@/lib/copy";
 import {
   ScrollBody,
   cueClock,
@@ -749,7 +750,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
             </View>
           ) : siblings.isLoading ? (
             <View style={{ flex: 1 }}>
-              <Button label="جارٍ التحميل…" kind="primary" small disabled loading />
+              <Button label={LOADING} kind="primary" small disabled loading />
             </View>
           ) : (
             <View style={{ flex: 1 }}>
@@ -904,7 +905,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                   windowing={{ initialNumToRender: 8, maxToRenderPerBatch: 8, windowSize: 9 }}
                   scrollProps={{ nestedScrollEnabled: true, showsVerticalScrollIndicator: true }}
                   emptyTitle="لا نتائج في النص."
-                  emptyMessage="جرّب كلمة أخرى."
+                  emptyMessage={TRY_OTHER_WORD}
                 />
               </>
             )}

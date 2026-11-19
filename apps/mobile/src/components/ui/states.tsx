@@ -16,7 +16,7 @@ import { T } from "./text";
 import { Button } from "./pressables";
 import { Boot, InlineBusy, usePulseStyle } from "./boot";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
-import { NO_FILES, RETRY } from "@/lib/copy";
+import {NO_FILES, RETRY, APPEARS_ONCE_PUBLISHED, APPEARS_ONCE_ADDED, LOADING, NO_CONTENT_YET} from "@/lib/copy";
 
 /** Skeleton — drafting pulse block (paper rhythm, reduced-motion safe). */
 export function Skeleton({ w = "100%", h = 16, style }: { w?: number | string; h?: number; style?: StyleProp<ViewStyle> }) {
@@ -76,7 +76,7 @@ export function SkeletonList({ rows = 5, rowHeight = 64 }: { rows?: number; rowH
  * converging squares, honest 6s «الخادم يستيقظ…» slow label). Every
  * transient full-screen wait routes here — no generic spinner survives.
  */
-export function LoadingScreen({ label = "جارٍ التحميل…", onRetry }: { label?: string; onRetry?: () => void }) {
+export function LoadingScreen({ label = LOADING, onRetry }: { label?: string; onRetry?: () => void }) {
   return <Boot label={label} onRetry={onRetry} />;
 }
 
@@ -86,7 +86,7 @@ export function LoadingScreen({ label = "جارٍ التحميل…", onRetry }:
  * row: three stepping squares + an honest Arabic label. Full-screen waits
  * keep routing to LoadingScreen; this never replaces it.
  */
-export function LoadingState({ label = "جارٍ التحميل…" }: { label?: string }) {
+export function LoadingState({ label = LOADING }: { label?: string }) {
   const p = usePalette();
   return (
     <View
@@ -132,7 +132,7 @@ const ROOMS: Record<EmptyRoom, RoomSheet> = {
   "exam-hall": {
     Art: PlanExamHall,
     title: "لا امتحانات بعد",
-    message: "تظهر فور نشرها.",
+    message: APPEARS_ONCE_PUBLISHED,
     a11y: "قاعة اختبار فارغة",
   },
   library: {
@@ -144,7 +144,7 @@ const ROOMS: Record<EmptyRoom, RoomSheet> = {
   "lecture-hall": {
     Art: PlanLectureHall,
     title: "لا محاضرات",
-    message: "تظهر فور إضافتها.",
+    message: APPEARS_ONCE_ADDED,
     a11y: "قاعة محاضرات فارغة",
   },
   building: {
@@ -197,7 +197,7 @@ export function EmptyState({
 }) {
   const p = usePalette();
   const sheet = room ? ROOMS[room] : undefined;
-  const resolvedTitle = title ?? sheet?.title ?? "لا محتوى بعد";
+  const resolvedTitle = title ?? sheet?.title ?? NO_CONTENT_YET;
   const resolvedMessage = message ?? sheet?.message;
   const resolvedArt = art ?? (sheet ? <sheet.Art width={216} accessibilityLabel={sheet.a11y} /> : null);
   return (

@@ -22,6 +22,7 @@ import { heron, sp } from "@/design/tokens";
 import { FormFieldsContext, type FormFieldsApi } from "./fields";
 import { T } from "./text";
 import { Button, type ButtonKind } from "./pressables";
+import { INVALID_EMAIL } from "@/lib/copy";
 
 /**
  * form.tsx — R334 B5 «النماذج» — the FormScreen pattern.
@@ -329,7 +330,7 @@ interface IssueLike {
 
 export const AR_MESSAGES = {
   required: "هذا الحقل مطلوب",
-  email: "بريد غير صالح",
+  email: INVALID_EMAIL,
   url: "رابط غير صالح",
   phone: "رقم هاتف غير صالح",
   minChars: (n: number) => `${n} حرفًا على الأقل`,

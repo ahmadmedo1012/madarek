@@ -21,7 +21,7 @@ import type { Paginated } from "@/api/types";
 import { ROLE_LABELS } from "@/auth/session";
 import { initials } from "@/lib/format";
 import { RoleChip, UserAvatar, avatarUrlOf, type OwnerUserRow } from "@/features/governance/components";
-import { SEARCH_NAME_OR_EMAIL, UPDATE_FAILED } from "@/lib/copy";
+import {SEARCH_NAME_OR_EMAIL, UPDATE_FAILED, NO_MATCHING_RESULTS} from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -123,7 +123,7 @@ export default function OwnerUsers() {
           hasNextPage={directory.hasNextPage}
           loadMoreError={directory.loadMoreError}
           onRetryLoadMore={directory.retryLoadMore}
-          emptyTitle={hasFilters ? "لا نتائج مطابقة" : "لا مستخدمون بعد"}
+          emptyTitle={hasFilters ? NO_MATCHING_RESULTS : "لا مستخدمون بعد"}
           emptyMessage={
             hasFilters
               ? "لا حسابات للبحث."

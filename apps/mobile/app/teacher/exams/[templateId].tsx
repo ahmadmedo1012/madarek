@@ -33,7 +33,7 @@ import {
   StatusBadge,
   arCount,
 } from "@/features/teacher/components";
-import { AWAITING_QUALITY_APPROVAL, SAVED } from "@/lib/copy";
+import {AWAITING_QUALITY_APPROVAL, SAVED, LINK_DELETED} from "@/lib/copy";
 
 /** Wire shape of GET /exams/templates/:id (the ExamTemplateQuestion join rows). */
 type TemplateQuestionWire = {
@@ -221,7 +221,7 @@ export default function ExamTemplateDetail() {
     return (
       <Screen scroll>
         <StackHeader title="قالب الاختبار" />
-        <EmptyState title="القالب غير موجود" message="حُذف أو رابط خاطئ." />
+        <EmptyState title="القالب غير موجود" message={LINK_DELETED} />
       </Screen>
     );
   }
@@ -408,7 +408,7 @@ export default function ExamTemplateDetail() {
       {/* تعديل القالب — the safe fields. */}
       <Sheet open={editing} onClose={() => setEditing(false)} title="تعديل القالب">
         <T variant="sm" color="muted">
-          الأسئلة والنوع والنطاق ثابتة بعد الإنشاء — عدّل العرض والتوقيت، أو استنسخ القالب.
+          الأسئلة والنوع والنطاق ثابتة — عدّل العرض والتوقيت أو استنسخ.
         </T>
         <Field label="عنوان القالب" value={title} onChangeText={setTitle} accessibilityLabel="عنوان القالب" />
         <Field
@@ -500,7 +500,7 @@ export default function ExamTemplateDetail() {
             </T>
             {(grading.pendingAnswers ?? []).length === 0 ? (
               <T variant="sm" color="muted">
-                لا إجابات معلّقة — الحفظ يعتدّ بالدرجة الآلية ويُنهي المحاولة.
+                لا معلّقة — الحفظ يعتدّ بالآلية ويُنهي.
               </T>
             ) : (
               (grading.pendingAnswers ?? []).map((a, i) => (

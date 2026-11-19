@@ -20,6 +20,7 @@ import { toast } from "@/components/ui/toast";
 import { fromNow, latn } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { ChipRow } from "@/features/student/more";
+import {NO_POSTS_YET, BE_FIRST_PARTICIPANT} from "@/lib/copy";
 
 /** Reactions arrive as a counter map or a reaction rows list — read the like count honestly. */
 function likeCount(post: Post): number {
@@ -214,8 +215,8 @@ export default function SocialScreen() {
         onRetry={() => feed.refetch()}
         refetch={feed.refetch}
         isRefetching={feed.isRefetching}
-        emptyTitle="لا منشورات بعد"
-        emptyMessage="كن أول المشاركين."
+        emptyTitle={NO_POSTS_YET}
+        emptyMessage={BE_FIRST_PARTICIPANT}
         ListHeaderComponent={
           <View style={{ paddingHorizontal: sp[16], paddingVertical: sp[8] }}>
             <T variant="sm" color="muted">

@@ -15,6 +15,7 @@ import { resolveEntryDestination } from "@/components/ui/boot";
 import { takePendingDeepLink } from "@/lib/push";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
+import { PASSWORD_LABEL } from "@/lib/copy";
 
 const DEMO_ACCOUNTS = [
   { email: "student@test.ly", label: "طالب" },
@@ -154,7 +155,7 @@ export default function SignIn() {
           <SecretField
             {...form.field("password")}
             fieldId="password"
-            label="كلمة المرور"
+            label={PASSWORD_LABEL}
             testID="login-password"
             purpose="password"
             required

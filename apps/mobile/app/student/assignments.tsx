@@ -36,7 +36,7 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { countAr } from "@/features/student/more";
 import { AssignSubmitSheet, type SubmitTarget } from "@/features/student/components";
-import { QUIZ_LABEL } from "@/lib/copy";
+import {QUIZ_LABEL, APPEARS_ONCE_ADDED} from "@/lib/copy";
 
 const ASSIGNMENT_KIND_LABEL: Record<string, string> = {
   HOMEWORK: "واجب",
@@ -178,7 +178,7 @@ export default function AssignmentsScreen() {
           </View>
         }
         emptyTitle="لا تكاليف بانتظارك"
-        emptyMessage="تظهر فور إضافتها."
+        emptyMessage={APPEARS_ONCE_ADDED}
         contentPadding={{ horizontal: 16, top: 12, bottom: 24 }}
         extraData={now}
       />

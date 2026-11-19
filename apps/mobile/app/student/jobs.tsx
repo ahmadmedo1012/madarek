@@ -19,6 +19,7 @@ import { toast } from "@/components/ui/toast";
 import { latn } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { JOB_TYPE_LABEL, SectionNote, countAr } from "@/features/student/more";
+import { REQUEST_SEND_FAILED } from "@/lib/copy";
 
 /** One job row — module scope so FlashList rows stay cheap to re-render. */
 function JobRow({
@@ -97,7 +98,7 @@ export default function JobsScreen() {
       void qc.invalidateQueries({ queryKey: ["jobs"] });
       toast.success("وصل طلبك.");
     },
-    onError: (e) => toast.error(humanizeError(e), "تعذّر إرسال الطلب"),
+    onError: (e) => toast.error(humanizeError(e), REQUEST_SEND_FAILED),
   });
 
   return (

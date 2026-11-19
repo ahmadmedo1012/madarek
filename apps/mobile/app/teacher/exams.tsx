@@ -35,7 +35,7 @@ import {
   StatusBadge,
   arCount,
 } from "@/features/teacher/components";
-import { AWAITING_QUALITY_APPROVAL, PUBLISH_FINAL_CONFIRM, SENDING } from "@/lib/copy";
+import {AWAITING_QUALITY_APPROVAL, PUBLISH_FINAL_CONFIRM, SENDING, QB_AND_EXAMS, PICK_CORRECT_BEFORE_SAVE} from "@/lib/copy";
 
 type QuestionCategory = { id: string; title?: string; name?: string };
 
@@ -115,7 +115,7 @@ export default function Exams() {
       if (type === "MCQ") {
         const filled = choices.map((c) => c.trim()).filter((c) => c !== "");
         if (filled.length < 2) throw new Error("خياران على الأقل.");
-        if (correctIndex === null || correctIndex >= filled.length) throw new Error("حدِّد الصحيحة قبل الحفظ.");
+        if (correctIndex === null || correctIndex >= filled.length) throw new Error(PICK_CORRECT_BEFORE_SAVE);
         correctAnswer = correctIndex;
       } else if (type === "TRUE_FALSE") {
         if (correctIndex === null) throw new Error("حدِّد الصحيحة (صواب/خطأ).");
@@ -161,12 +161,12 @@ export default function Exams() {
 
   return (
     <Screen scroll>
-      <StackHeader title="بنك الأسئلة والاختبارات" />
+      <StackHeader title={QB_AND_EXAMS} />
       {/* T-50 (review-3 §4.1): exams authoring was a zero-motion seat —
           header + segmented filter take the kit stagger; tab/row presses
           fire selection haptics. */}
       <Animated.View entering={entering(0)}>
-      <PageHeader title="بنك الأسئلة والاختبارات" />
+      <PageHeader title={QB_AND_EXAMS} />
       <Segmented
         options={[
           { id: "templates", label: "القوالب" },
@@ -190,7 +190,7 @@ export default function Exams() {
             <EmptyState
               art={<Illustration id="r342/role-teacher" width={216} />}
               title="لا قوالب بعد"
-              message="الإنشاء من لوحة الويب — والإرسال للجودة."
+              message="الإنشاء من لوحة الويب — ثم الجودة."
             />
           ) : (
             <RowList>

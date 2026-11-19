@@ -26,7 +26,7 @@ import {
   minutesAr,
   pointsAr,
 } from "@/features/common/components";
-import { PATH_REMOVED, SELF_DEV, SENDING } from "@/lib/copy";
+import {PATH_REMOVED, SELF_DEV, SENDING, INCOMPLETE_LINK} from "@/lib/copy";
 
 interface CompleteLessonResult {
   newlyCompleted?: boolean;
@@ -78,7 +78,7 @@ export default function TrainingLesson() {
       <Screen scroll>
         <StackHeader title="درس" kicker={SELF_DEV} />
         <EmptyState
-          title="الرابط غير مكتمل"
+          title={INCOMPLETE_LINK}
           message="لا درس — افتح المسار."
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}

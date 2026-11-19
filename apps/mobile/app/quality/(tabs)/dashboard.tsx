@@ -24,7 +24,7 @@ import {
   countAr,
   numOf,
 } from "@/features/governance/components";
-import { READ_ONLY } from "@/lib/copy";
+import {READ_ONLY, NO_PAPERS_YET, EXTRA_DATA} from "@/lib/copy";
 
 const ATTENDANCE_KEY_LABEL: Record<string, string> = {
   PRESENT: "سجلّات حضور",
@@ -85,7 +85,7 @@ export default function QualityDashboard() {
               لوحة الجودة
             </T>
             <T variant="body" color="muted">
-              تطوير الأداء الأكاديمي والإداري والتقني — وفق الاعتماد.
+              تطوير الأداء الأكاديمي والإداري — وفق الاعتماد.
             </T>
           </View>
           <Badge label={READ_ONLY} tone="grey" />
@@ -172,7 +172,7 @@ export default function QualityDashboard() {
               {Object.keys(papers).length === 0 ? (
                 <EmptyState
                   room="library"
-                  title="لا بحوث بعد"
+                  title={NO_PAPERS_YET}
                   message="تظهر فور أول بحث."
                 />
               ) : (
@@ -204,7 +204,7 @@ export default function QualityDashboard() {
 
             {Object.keys(rest).length > 0 ? (
               <Animated.View entering={entering(4)}>
-                <SectionBar index={4} title="بيانات إضافية" />
+                <SectionBar index={4} title={EXTRA_DATA} />
                 <RowList>
                   <LedgerRow last>
                     <HonestLedger value={rest} />

@@ -14,6 +14,7 @@ import { RowList, LedgerRow } from "@/components/ui/data";
 import { haptics } from "@/haptics";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { FAQS, HELP_LEDE } from "@/features/common/helpData";
+import { ABOUT_MADAREK } from "@/lib/copy";
 
 /**
  * /help — «المساعدة والأسئلة» (web HelpPage port): the nine
@@ -91,7 +92,7 @@ export default function Help() {
           onPress={() => router.push("/legal/accessibility" as never)}
         />
         <Button
-          label="عن مدارك"
+          label={ABOUT_MADAREK}
           kind="ghost"
           small
           onPress={() => router.push("/about" as never)}

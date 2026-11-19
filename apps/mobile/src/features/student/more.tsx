@@ -11,7 +11,7 @@ import { T } from "@/components/ui/text";
 import { latn, pct } from "@/lib/format";
 import type { StatusToneName } from "@/design/tokens";
 import type { ExamTemplateRow } from "@/api/exams";
-import { LIVE_NOW, QUIZ_LABEL } from "@/lib/copy";
+import {LIVE_NOW, QUIZ_LABEL, MCQ_LABEL} from "@/lib/copy";
 
 /* ── Arabic counted nouns (web countAr four-form grammar) ────────── */
 export function countAr(n: number, forms: [string, string, string, string]): string {
@@ -93,7 +93,7 @@ export const AR_CHOICE_LETTERS = ["أ", "ب", "ج", "د", "هـ", "و"];
 export const TRUE_FALSE_OPTIONS = ["صواب", "خطأ"];
 
 export const QTYPE_LABEL: Record<string, string> = {
-  MCQ: "اختيار من متعدد",
+  MCQ: MCQ_LABEL,
   TRUE_FALSE: "صح أم خطأ",
   SHORT: "إجابة قصيرة",
   ESSAY: "سؤال مقالي",

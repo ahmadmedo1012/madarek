@@ -22,7 +22,7 @@ import {
   feedbackStatusLabel,
   pageOf,
 } from "@/features/governance/components";
-import { FEEDBACK, OWNER_DASHBOARD, UPDATE_FAILED } from "@/lib/copy";
+import {FEEDBACK, OWNER_DASHBOARD, UPDATE_FAILED, UNDER_PROCESSING, NO_REPORTS_HERE} from "@/lib/copy";
 import { sp } from "@/design/tokens";
 
 const PAGE_LIMIT = 30;
@@ -31,7 +31,7 @@ const PAGE_LIMIT = 30;
 const STATUS_FILTERS: { id: string; label: string }[] = [
   { id: "all", label: "الكل" },
   { id: "open", label: FEEDBACK_STATUS_LABEL.open ?? "مفتوحة" },
-  { id: "triage", label: FEEDBACK_STATUS_LABEL.triage ?? "تحت المعالجة" },
+  { id: "triage", label: FEEDBACK_STATUS_LABEL.triage ?? UNDER_PROCESSING },
   { id: "fixed", label: FEEDBACK_STATUS_LABEL.fixed ?? "أُصلحت" },
   { id: "dismissed", label: FEEDBACK_STATUS_LABEL.dismissed ?? "مرفوضة" },
 ];
@@ -39,7 +39,7 @@ const STATUS_FILTERS: { id: string; label: string }[] = [
 /** The four working states — the sheet's Segmented grammar. */
 const STATUS_OPTIONS: { id: string; label: string }[] = [
   { id: "open", label: FEEDBACK_STATUS_LABEL.open ?? "مفتوحة" },
-  { id: "triage", label: FEEDBACK_STATUS_LABEL.triage ?? "تحت المعالجة" },
+  { id: "triage", label: FEEDBACK_STATUS_LABEL.triage ?? UNDER_PROCESSING },
   { id: "fixed", label: FEEDBACK_STATUS_LABEL.fixed ?? "أُصلحت" },
   { id: "dismissed", label: FEEDBACK_STATUS_LABEL.dismissed ?? "مرفوضة" },
 ];
@@ -106,7 +106,7 @@ export default function OwnerFeedback() {
           <ErrorState message={humanizeError(inbox.error)} onRetry={() => inbox.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title={status === "all" ? "لا تقارير هنا" : "لا تقارير"}
+            title={status === "all" ? NO_REPORTS_HERE : "لا تقارير"}
             message="تقارير بسياقها الكامل."
           />
         ) : (

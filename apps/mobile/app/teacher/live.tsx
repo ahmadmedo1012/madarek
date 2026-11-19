@@ -43,7 +43,7 @@ import {
   useSheetMounted,
   useTeacherOfferings,
 } from "@/features/teacher/components";
-import { CREATING, LIVE_NOW, UPDATE_FAILED } from "@/lib/copy";
+import {CREATING, LIVE_NOW, UPDATE_FAILED, TITLE_TWO_CHARS, INVALID_DATETIME} from "@/lib/copy";
 
 const NO_SESSIONS: Awaited<ReturnType<typeof liveApi.sessions>> = [];
 
@@ -129,10 +129,10 @@ export default function TeacherLive() {
     mutationFn: async () => {
       const effId = offeringId || offerings[0]?.id || "";
       if (effId === "") throw new Error("اختر مقرراً أولاً.");
-      if (title.trim().length < 3) throw new Error("العنوان: حرفان على الأقل.");
+      if (title.trim().length < 3) throw new Error(TITLE_TWO_CHARS);
       if (!schedDate) throw new Error("حدّد الموعد.");
       const t = Date.parse(`${schedDate}T${schedTime.trim() === "" ? "09:00" : schedTime}`);
-      if (Number.isNaN(t)) throw new Error("الموعد غير صالح.");
+      if (Number.isNaN(t)) throw new Error(INVALID_DATETIME);
       return liveApi.create({
         offeringId: effId,
         title: title.trim(),

@@ -23,7 +23,7 @@ import {
   numOf,
   type InstitutionRow,
 } from "@/features/governance/components";
-import { OWNER_DASHBOARD, SAVE_FAILED, SAVING } from "@/lib/copy";
+import {OWNER_DASHBOARD, SAVE_FAILED, SAVING, NAME_EN_OPTIONAL, TWO_CHARS_MIN, INVALID_EMAIL, AS_MEMBERS_SEE} from "@/lib/copy";
 import { sp } from "@/design/tokens";
 
 type AdminRow = NonNullable<InstitutionRow["admins"]>[number];
@@ -338,7 +338,7 @@ function RenameSheet({
 }) {
   const [name, setName] = useState(inst.name ?? "");
   const [nameEn, setNameEn] = useState(inst.nameEn ?? "");
-  const nameProblem = name.length > 0 && name.trim().length < 2 ? "حرفان على الأقل" : undefined;
+  const nameProblem = name.length > 0 && name.trim().length < 2 ? TWO_CHARS_MIN : undefined;
   const canSubmit = name.trim().length >= 2 && !rename.isPending;
 
   const submit = async () => {
@@ -359,10 +359,10 @@ function RenameSheet({
           value={name}
           onChangeText={setName}
           error={nameProblem}
-          hint="كما يظهر للأعضاء"
+          hint={AS_MEMBERS_SEE}
         />
         <Field
-          label="الاسم بالإنجليزية (اختياري)"
+          label={NAME_EN_OPTIONAL}
           value={nameEn}
           onChangeText={setNameEn}
           autoCorrect={false}
@@ -401,7 +401,7 @@ function ProvisionSheet({
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const emailProblem =
-    email.length > 0 && !/.+@.+\..+/.test(email.trim()) ? "بريد غير صالح" : undefined;
+    email.length > 0 && !/.+@.+\..+/.test(email.trim()) ? INVALID_EMAIL : undefined;
   const canSubmit = /.+@.+\..+/.test(email.trim()) && !provision.isPending;
 
   const submit = async () => {

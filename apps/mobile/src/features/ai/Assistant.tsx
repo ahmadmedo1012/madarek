@@ -334,7 +334,7 @@ export function Assistant({
           </View>
           {provider === "local" ? (
             <T variant="xs" color="muted" numberOfLines={1}>
-              المزوّد «local» — ردود قالبيّة محلية حتى مزوّد حقيقي.
+              ردود قالبيّة محلية حتى مزوّد حقيقي.
             </T>
           ) : null}
           {/* R334 review fix — the raw model id (e.g. vendor/model-7b) is a

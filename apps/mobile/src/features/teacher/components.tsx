@@ -27,7 +27,7 @@ import { AppSheet, FilterSheet, SheetTextInput, useSheetMounted } from "@/compon
 import { Avatar, DataList, LedgerRow, makeRow, ProgressBar, StatLine } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
-import { LIVE_NOW, QUIZ_LABEL, SAVED } from "@/lib/copy";
+import {LIVE_NOW, QUIZ_LABEL, SAVED, NO_MATCHING_RESULTS, MCQ_LABEL, TRY_OTHER_WORD, WEIGHT_OF_GRADES, NO_ACTIVE_ENROLLMENTS, MAX_IS_INT_100, WEIGHT_IS_INT_100} from "@/lib/copy";
 
 /* ─── Arabic counted nouns (web lib/format.countAr parity) ─────────── */
 
@@ -106,7 +106,7 @@ export const ATTEMPT_STATUS_TONE: Record<string, StatusToneName> = {
 };
 
 export const QUESTION_TYPE_LABEL: Record<string, string> = {
-  MCQ: "اختيار من متعدد",
+  MCQ: MCQ_LABEL,
   TRUE_FALSE: "صواب أو خطأ",
   SHORT: "إجابة قصيرة",
   ESSAY: "مقالي",
@@ -444,10 +444,10 @@ function QuickGradeForm({
         throw new ApiError("BAD_GRADE", "أدخل درجة صحيحة.", 400);
       }
       if (Number.isNaN(mx) || !Number.isInteger(mx) || mx < 1 || mx > 100) {
-        throw new ApiError("BAD_MAX", "العظمى عدد صحيح 1–100.", 400);
+        throw new ApiError("BAD_MAX", MAX_IS_INT_100, 400);
       }
       if (Number.isNaN(wt) || !Number.isInteger(wt) || wt < 0 || wt > 100) {
-        throw new ApiError("BAD_WEIGHT", "الوزن عدد صحيح 0–100.", 400);
+        throw new ApiError("BAD_WEIGHT", WEIGHT_IS_INT_100, 400);
       }
       if (s > mx) {
         throw new ApiError("OVER_MAX", `أقصى درجة  ${latn(mx)}.`, 400);
@@ -479,7 +479,7 @@ function QuickGradeForm({
       />
       <QuickField label="الدرجة" value={score} onChange={setScore} hint="مثال: 85" />
       <QuickField label="الدرجة العظمى" value={maxScore} onChange={setMaxScore} hint="بين 1 و100" />
-      <QuickField label="الوزن (% من الدرجات)" value={weight} onChange={setWeight} hint="بين 0 و100" />
+      <QuickField label={WEIGHT_OF_GRADES} value={weight} onChange={setWeight} hint="بين 0 و100" />
       {error ? (
         <T variant="sm" color="danger">
           {error}
@@ -576,7 +576,7 @@ export function OfferingRoster({
     return (
       <EmptyState
         title="لا طلاب مسجّلون"
-        message="لا تسجيلات نشطة بعد."
+        message={NO_ACTIVE_ENROLLMENTS}
       />
     );
   }
@@ -613,8 +613,8 @@ export function OfferingRoster({
         data={filtered}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
-        emptyTitle="لا نتائج مطابقة"
-        emptyMessage="جرّب كلمة أخرى."
+        emptyTitle={NO_MATCHING_RESULTS}
+        emptyMessage={TRY_OTHER_WORD}
         contentPadding={{ horizontal: 20, bottom: 24 }}
       />
 
@@ -640,7 +640,7 @@ export function OfferingRoster({
           onSelect={(id) => setDraftFilter(id as RiskFilter)}
         />
         <T variant="xs" color="muted" style={{ paddingTop: sp[8] }}>
-          «متابعة» تشمل الطلاب تحت المراقبة وفي الخطر.
+          «متابعة» = المراقبة والخطر.
         </T>
         </FilterSheet>
       ) : null}

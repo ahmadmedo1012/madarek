@@ -57,7 +57,7 @@ export default function CollegesLeaderboard() {
       ) : rows.length === 0 ? (
         <EmptyState
           title="اللوحة فارغة"
-          message="النقاط من نشاط الطلاب — مع بدء الفصل."
+          message="النقاط من نشاط الطلاب — عند بدء الفصل."
           icon={<Medal size={20} color={p.textMuted} />}
         />
       ) : (

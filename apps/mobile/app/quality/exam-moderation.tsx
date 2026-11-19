@@ -249,7 +249,7 @@ export default function QualityExamModeration() {
         title="رفض القرار"
         message={
           rejectConfirm
-            ? `سيُرفض «${rejectConfirm.title}» ويخرج من الطابور بلا تراجع.`
+            ? `سيُرفض «${rejectConfirm.title}» — بلا تراجع.`
             : ""
         }
         confirmLabel="رفض نهائي"

@@ -32,7 +32,7 @@ import {
   type AuditRow,
   type OwnerStatsRow,
 } from "@/features/governance/components";
-import { OWNER_DASHBOARD } from "@/lib/copy";
+import {OWNER_DASHBOARD, NO_EVENTS_YET} from "@/lib/copy";
 import { sp } from "@/design/tokens";
 
 interface OwnerAlert {
@@ -186,7 +186,7 @@ export default function OwnerDashboard() {
           ) : activity.isError ? (
             <ErrorState message={humanizeError(activity.error)} onRetry={() => activity.refetch()} compact />
           ) : events.length === 0 ? (
-            <EmptyState title="لا أحداث بعد" message="أحدث العمليّات فور حدوثها." />
+            <EmptyState title={NO_EVENTS_YET} message="أحدث العمليّات فور حدوثها." />
           ) : (
             <View style={{ gap: sp[12] }}>
               <DataList

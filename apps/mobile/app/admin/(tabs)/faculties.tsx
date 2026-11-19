@@ -23,7 +23,7 @@ import {
   useExpanded,
   type FacultyNode,
 } from "@/features/governance/components";
-import { ADDED } from "@/lib/copy";
+import {ADDED, NO_FACULTIES_YET, NAME_EN_OPTIONAL} from "@/lib/copy";
 import { sp } from "@/design/tokens";
 
 /** (tabs) Faculties & departments — «الكلّيّات والأقسام» (web AdminFacultiesPage parity). */
@@ -188,7 +188,7 @@ export default function AdminFaculties() {
             </View>
           ) : (
             <EmptyState
-              title="لا كليات بعد"
+              title={NO_FACULTIES_YET}
               message="أنشئ أول كلّيّة."
               actionLabel="كلية جديدة"
               onAction={() => setFacultyOpen(true)}
@@ -217,7 +217,7 @@ export default function AdminFaculties() {
             placeholder="كلية العلوم"
           />
           <Field
-            label="الاسم بالإنجليزية (اختياري)"
+            label={NAME_EN_OPTIONAL}
             value={fNameEn}
             onChangeText={setFNameEn}
             placeholder="Faculty of Science"

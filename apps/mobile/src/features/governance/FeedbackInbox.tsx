@@ -14,6 +14,7 @@ import { toast } from "@/components/ui/toast";
 import { socialApi } from "@/api/social";
 import type { PilotFeedback } from "@/api/types";
 import { fromNow, latn } from "@/lib/format";
+import {UNDER_PROCESSING, NO_REPORTS_HERE} from "@/lib/copy";
 import {
   FEEDBACK_NEXT,
   PagerFooter,
@@ -67,7 +68,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
           options={[
             { id: "all", label: "الكل" },
             { id: "open", label: "مفتوحة" },
-            { id: "triage", label: "تحت المعالجة" },
+            { id: "triage", label: UNDER_PROCESSING },
             { id: "fixed", label: "أُصلحت" },
             { id: "dismissed", label: "مرفوضة" },
           ]}
@@ -84,7 +85,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
           <ErrorState message={humanizeError(inbox.error)} onRetry={() => inbox.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            title="لا تقارير هنا"
+            title={NO_REPORTS_HERE}
             message="تصل هنا بسياقها الكامل."
           />
         ) : (

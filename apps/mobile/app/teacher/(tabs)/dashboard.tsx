@@ -44,6 +44,7 @@ import { CountUp, PressableScale, RingProgress, useStaggerEntrance } from "@/mot
 import { haptics } from "@/haptics";
 import { arCount, useTeacherOfferings } from "@/features/teacher/components";
 import { parseFeed, parsePendingGroups, parseTrend } from "@/features/teacher/wire";
+import {NO_ATTENDANCE_DATA, NO_LECTURES_TODAY, APPEARS_ONCE_ASSIGNED} from "@/lib/copy";
 
 const NO_OFFERINGS: Awaited<ReturnType<typeof teacherApi.offerings>> = [];
 
@@ -195,7 +196,7 @@ export default function TeacherDashboard() {
               accessibilityLabel={
                 kpi?.attendancePct != null
                   ? `نسبة الحضور ${pct(kpi.attendancePct)}`
-                  : "لا بيانات حضور"
+                  : NO_ATTENDANCE_DATA
               }
             >
               <T variant="sm" weight="bold">
@@ -320,7 +321,7 @@ export default function TeacherDashboard() {
         ) : slots.length === 0 ? (
           <EmptyState
             room="lecture-hall"
-            title="لا محاضرات اليوم"
+            title={NO_LECTURES_TODAY}
             message="فارغ — راجع الأسبوعيّ."
             actionLabel="الجدول الأسبوعيّ"
             onAction={() => router.push("/teacher/schedule" as never)}
@@ -483,7 +484,7 @@ export default function TeacherDashboard() {
           <EmptyState
             room="library"
             title="لم تُسند إليك مقرّرات"
-            message="تظهر فور إسنادها."
+            message={APPEARS_ONCE_ASSIGNED}
           />
         ) : (
         <RowList>

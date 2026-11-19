@@ -26,7 +26,7 @@ import { toast } from "@/components/ui/toast";
 import { authenticate, biometricAvailable, getBiometricLockEnabled, setBiometricLockEnabled } from "@/lib/biometric";
 import type { SessionResponse } from "@/api/types";
 import Constants from "expo-constants";
-import { LOGOUT_THIS_DEVICE_ONLY, REPORT_PROBLEM, SAVING } from "@/lib/copy";
+import {LOGOUT_THIS_DEVICE_ONLY, REPORT_PROBLEM, SAVING, PW_NEW, PW_CONFIRM, PW_SAVE, PW_RANGE_HINT, PASSWORD_LABEL, LOGOUT_ACTION, CONFIRM_LOCK_ENABLE} from "@/lib/copy";
 
 /** /settings — the SHARED settings surface (every role). R341 M3: the
  *  30-row wall of boxed one-per-setting cards is dead — rows are grouped
@@ -90,7 +90,7 @@ export default function Settings() {
     setBioBusy(true);
     try {
       if (next) {
-        const ok = await authenticate("أكّد تفعيل القفل");
+        const ok = await authenticate(CONFIRM_LOCK_ENABLE);
         if (!ok) return; // refused → the toggle stays off
       }
       await setBiometricLockEnabled(next);
@@ -165,7 +165,7 @@ export default function Settings() {
   const changePassword = async () => {
     setPwError(null);
     if (newPassword.length < 12 || newPassword.length > 72) {
-      setPwError("بين 12 و72 حرفًا.");
+      setPwError(PW_RANGE_HINT);
       return;
     }
     if (newPassword !== confirm) {
@@ -182,7 +182,7 @@ export default function Settings() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirm("");
-      toast.success("غُيّرت كلمة المرور.", "كلمة المرور");
+      toast.success("غُيّرت كلمة المرور.", PASSWORD_LABEL);
     } catch (err) {
       setPwError((err as ApiError).message ?? "تعذّر التغيير.");
     } finally {
@@ -353,7 +353,7 @@ export default function Settings() {
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="medium">قفل التطبيق بالبصمة</T>
                   <T variant="xs" color="muted">
-                    عند التفعيل يُطلب القفل عند كل فتح بارد — ورمز الجهاز بديل دائمًا.
+                    يُطلب عند كل فتح بارد — ورمز الجهاز بديل.
                   </T>
                 </View>
                 <Button
@@ -368,20 +368,20 @@ export default function Settings() {
           ) : (
             <LedgerRow last>
               <T variant="sm" color="muted">
-                القفل بالبصمة يحتاج مستشعر بصمة أو وجهًا مسجّلًا في النظام — غير متاح على جهازك.
+                يحتاج بصمة أو وجهًا مسجّلًا في النظام — غير متاح على جهازك.
               </T>
             </LedgerRow>
           )}
         </RowList>
         <Card style={{ gap: sp[10] }}>
           <Field label="كلمة المرور الحالية" value={currentPassword} onChangeText={setCurrentPassword} secureTextEntry autoCorrect={false} />
-          <SecretField label="كلمة المرور الجديدة" value={newPassword} onChangeText={setNewPassword} hint="12 حرفًا على الأقل." />
-          <SecretField label="تأكيد كلمة المرور" value={confirm} onChangeText={setConfirm} onSubmitEditing={changePassword} />
+          <SecretField label={PW_NEW} value={newPassword} onChangeText={setNewPassword} hint="12 حرفًا على الأقل." />
+          <SecretField label={PW_CONFIRM} value={confirm} onChangeText={setConfirm} onSubmitEditing={changePassword} />
           {pwError ? <T variant="sm" color="danger">{pwError}</T> : null}
           <T variant="xs" color="faint">
             التغيير يُنهي جلساتك على بقية الأجهزة.
           </T>
-          <Button label={busy ? SAVING : "حفظ كلمة المرور"} onPress={changePassword} loading={busy} />
+          <Button label={busy ? SAVING : PW_SAVE} onPress={changePassword} loading={busy} />
         </Card>
       </View>
 
@@ -414,7 +414,7 @@ export default function Settings() {
       <View style={{ gap: sp[8] }}>
         <GroupHeader index={6} title="الجلسة" />
         <Button
-          label="تسجيل الخروج"
+          label={LOGOUT_ACTION}
           kind="danger"
           onPress={() => {
             haptics.notify("warning");

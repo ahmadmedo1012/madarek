@@ -69,7 +69,7 @@ import { unregisterPushDevices, currentPermission, requestAndRegisterPush, type 
 import { authenticate, biometricAvailable, getBiometricLockEnabled, setBiometricLockEnabled } from "@/lib/biometric";
 import { ScrollBody } from "@/features/student/components";
 import { countAr } from "@/features/student/more";
-import { LOGOUT_THIS_DEVICE_ONLY, REPORT_PROBLEM, RETRY, STUDENT_FILE_UNLINKED } from "@/lib/copy";
+import {LOGOUT_THIS_DEVICE_ONLY, REPORT_PROBLEM, RETRY, STUDENT_FILE_UNLINKED, LOGOUT_ACTION, WEEKLY_SCHEDULE, DEFAULT_LABS, NO_STUDENT_FILE, CONFIRM_LOCK_ENABLE} from "@/lib/copy";
 
 /** The hub — every student surface one tap away (route list = web paths),
  *  R341 M4: the wall of 28 flat rows is grouped by concern; routes and
@@ -86,7 +86,7 @@ const MENU_GROUPS: { title: string; items: { icon: LucideIcon; label: string; to
     title: "الدراسة والجدول",
     items: [
       { icon: Grid3x3, label: "مصفوفة الإتقان", to: "/student/matrix" },
-      { icon: CalendarClock, label: "الجدول الأسبوعي", to: "/student/schedule" },
+      { icon: CalendarClock, label: WEEKLY_SCHEDULE, to: "/student/schedule" },
       { icon: CalendarDays, label: "التقويم", to: "/student/calendar" },
       { icon: FileText, label: "موادي التعليمية", to: "/student/materials" },
       { icon: ClipboardList, label: "التكاليف", to: "/student/assignments" },
@@ -109,7 +109,7 @@ const MENU_GROUPS: { title: string; items: { icon: LucideIcon; label: string; to
       { icon: Dumbbell, label: "التدريب الذاتي", to: "/training" },
       { icon: Globe, label: "دورات MOOC", to: "/student/mooc" },
       { icon: Presentation, label: "الندوات", to: "/student/webinars" },
-      { icon: FlaskConical, label: "المعامل الافتراضية", to: "/student/labs" },
+      { icon: FlaskConical, label: DEFAULT_LABS, to: "/student/labs" },
       { icon: ScanLine, label: "واقع افتراضي", to: "/student/ar" },
     ],
   },
@@ -201,7 +201,7 @@ export default function StudentProfile() {
     setBioBusy(true);
     try {
       if (next) {
-        const ok = await authenticate("أكّد تفعيل القفل");
+        const ok = await authenticate(CONFIRM_LOCK_ENABLE);
         if (!ok) return; // refused → the toggle stays off
       }
       await setBiometricLockEnabled(next);
@@ -285,7 +285,7 @@ export default function StudentProfile() {
         ) : !student ? (
           <EmptyState
             icon={<ScrollText size={22} color={p.textMuted} />}
-            title="لا ملف طالب بعد"
+            title={NO_STUDENT_FILE}
             message={STUDENT_FILE_UNLINKED}
           />
         ) : (
@@ -456,12 +456,12 @@ export default function StudentProfile() {
           ))}
         </RowList>
         <T variant="xs" color="faint">
-          خدمات الطالب من هنا — بعضها يعمل في وضع الطيار وتُوسَم داخل صفحاتها.
+          خدمات الطالب من هنا — بعضها في وضع الطيار وتُوسَم داخل صفحاتها.
         </T>
 
         {/* الجلسة — last concern on the screen, mirroring settings. */}
         <Button
-          label="تسجيل الخروج"
+          label={LOGOUT_ACTION}
           kind="danger"
           onPress={() => {
             haptics.notify("warning");

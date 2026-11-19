@@ -36,6 +36,7 @@ import { dayName, latn, pct } from "@/lib/format";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { countAr } from "@/features/student/more";
 import { CourseWell, courseProgressHint } from "@/features/student/components";
+import { NO_COURSES } from "@/lib/copy";
 import {
   activeCourseFilterCount,
   applyCourseFilters,
@@ -53,6 +54,11 @@ import {
 /* ══ card chrome (surface step + hairline — never a shadow) ═══════════ */
 
 /** Entrance stagger cap — beyond 8 children the rhythm stops (motion doc). */
+/* R369 C3.6 — one owner for the shared empty-copy pair (the list + grid
+ * bodies rendered the same title/message twice; the count sees both). */
+const COURSES_EMPTY_TITLE = NO_COURSES;
+const COURSES_EMPTY_MSG = "الإضافة عبر شؤون الطلاب.";
+
 const STAGGER_CAP = 8;
 
 /** Map-safe stagger for one card (hook: one call per card component). */
@@ -337,8 +343,8 @@ export default function StudentCourses() {
       onRetry={() => feed.refetch()}
       refetch={() => feed.refetch()}
       isRefetching={feed.isRefetching}
-      emptyTitle="لا مقرّرات"
-      emptyMessage="الإضافة عبر شؤون الطلاب."
+      emptyTitle={COURSES_EMPTY_TITLE}
+      emptyMessage={COURSES_EMPTY_MSG}
       emptySlot={
         filteredEmpty ? (
           <EmptyState
@@ -351,7 +357,7 @@ export default function StudentCourses() {
           <EmptyState
             art={<Illustration id="r342/role-student" width={216} />}
             room="library"
-            title="لا مقرّرات"
+            title={NO_COURSES}
             message="الإضافة عبر شؤون الطلاب."
             actionLabel="دليل المقرّرات"
             onAction={() => router.push("/student/catalog" as never)}
@@ -375,8 +381,8 @@ export default function StudentCourses() {
       onRetry={() => feed.refetch()}
       refetch={() => feed.refetch()}
       isRefetching={feed.isRefetching}
-      emptyTitle="لا مقرّرات"
-      emptyMessage="الإضافة عبر شؤون الطلاب."
+      emptyTitle={COURSES_EMPTY_TITLE}
+      emptyMessage={COURSES_EMPTY_MSG}
       emptySlot={
         filteredEmpty ? (
           <EmptyState
@@ -389,7 +395,7 @@ export default function StudentCourses() {
           <EmptyState
             art={<Illustration id="r342/role-student" width={216} />}
             room="library"
-            title="لا مقرّرات"
+            title={NO_COURSES}
             message="الإضافة عبر شؤون الطلاب."
             actionLabel="دليل المقرّرات"
             onAction={() => router.push("/student/catalog" as never)}

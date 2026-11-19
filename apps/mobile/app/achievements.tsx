@@ -30,7 +30,7 @@ import {
   countAr,
   isUnauthError,
 } from "@/features/common/components";
-import { SELF_DEV } from "@/lib/copy";
+import {SELF_DEV, NO_BADGES_YET} from "@/lib/copy";
 
 type Tab = "badges" | "certs" | "leaderboard";
 
@@ -79,7 +79,7 @@ export default function Achievements() {
     <Screen scroll>
       <StackHeader title="الإنجازات" />
       <T variant="body" color="secondary">
-        نقاطك وأوسمتك وشهاداتك وترتيبك بين الزملاء.
+        نقاطك وأوسمتك وشهاداتك وترتيبك.
       </T>
 
       <Segmented
@@ -107,7 +107,7 @@ export default function Achievements() {
         ) : (badges.data ?? []).length === 0 ? (
           <EmptyState
             art={<Illustration id="r342/why-cycle" width={342} />}
-            title="لا أوسمة بعد"
+            title={NO_BADGES_YET}
             message="ابدأ بدروس التطوير لأول وسام."
             icon={<Award size={20} color={p.textMuted} />}
             actionLabel="تصفّح المسارات"

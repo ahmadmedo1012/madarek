@@ -21,7 +21,7 @@ import { toast } from "@/components/ui/toast";
 import { haptics } from "@/haptics";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { SignInPrompt, apiMessage, competitionStatus, isUnauthError, submissionEnded } from "@/features/common/components";
-import { NO_DATA, SENDING } from "@/lib/copy";
+import {NO_DATA, SENDING, LOGIN_TO_PARTICIPATE, INCOMPLETE_LINK} from "@/lib/copy";
 
 interface EntryRow {
   id: string;
@@ -74,7 +74,7 @@ export default function CompetitionDetail() {
       <Screen scroll>
         <StackHeader title="مسابقة" />
         <EmptyState
-          title="الرابط غير مكتمل"
+          title={INCOMPLETE_LINK}
           message="لا مسابقة — اختر من القائمة."
           actionLabel="عرض المسابقات"
           onAction={() => router.push("/competitions" as never)}
@@ -95,7 +95,7 @@ export default function CompetitionDetail() {
       <Screen scroll>
         <StackHeader title="مسابقة" />
         {isUnauthError(q.error) ? (
-          <SignInPrompt message="سجّل الدخول للمشاركة." />
+          <SignInPrompt message={LOGIN_TO_PARTICIPATE} />
         ) : (
           <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />
         )}

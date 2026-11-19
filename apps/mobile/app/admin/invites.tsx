@@ -21,7 +21,7 @@ import {
   type FacultyNode,
   type OfferingPickRow,
 } from "@/features/governance/components";
-import { CREATING, REGISTRAR_DASHBOARD } from "@/lib/copy";
+import {CREATING, REGISTRAR_DASHBOARD, PICK_DEPARTMENT, FINAL_DELETE} from "@/lib/copy";
 
 interface InviteRow {
   id: string;
@@ -241,7 +241,7 @@ const [maxUses, setMaxUses] = useState("1");
               options={departmentOptions}
               onSelect={setScopeId}
               loading={facs.isLoading}
-              placeholder="اختر القسم…"
+              placeholder={PICK_DEPARTMENT}
             />
           ) : null}
           {scopeKind === "offering" ? (
@@ -276,8 +276,8 @@ const [maxUses, setMaxUses] = useState("1");
       <ConfirmDialog
         open={deleting !== null}
         title="حذف الدعوة"
-        message={deleting ? `سيُحذف كود «${deleting.code}» نهائيًا — لا يمكن التراجع.` : ""}
-        confirmLabel="حذف نهائي"
+        message={deleting ? `سيُحذف كود «${deleting.code}» — لا تراجع.` : ""}
+        confirmLabel={FINAL_DELETE}
         danger
         loading={remove.isPending}
         onConfirm={() => deleting && remove.mutate(deleting.id)}

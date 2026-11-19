@@ -27,6 +27,7 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { countAr } from "@/features/student/more";
 import { GapList, CourseWell, PushFrame, masteryMeta } from "@/features/student/components";
+import { MASTERY_EMPTY_NOTE } from "@/lib/copy";
 
 const LEVEL_FILTERS: { id: string; label: string }[] = [
   { id: "all", label: "الكل" },
@@ -140,7 +141,7 @@ export default function MatrixScreen() {
         <EmptyState
           art={<Illustration id="r342/problem-03-mastery" width={216} />}
           title="لم تتشكل بعد"
-          message="أجب عن نقاط التفاعل — ترسم المصفوفة خريطتك."
+          message={MASTERY_EMPTY_NOTE}
         />
       ) : (
         <>

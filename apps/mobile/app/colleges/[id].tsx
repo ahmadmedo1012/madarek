@@ -16,12 +16,12 @@ import { StatLine, RowList, LedgerRow } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { apiMessage } from "@/features/common/components";
-import { MODEL_INSTITUTION, NO_DATA } from "@/lib/copy";
+import {MODEL_INSTITUTION, NO_DATA, TEACHING_STAFF} from "@/lib/copy";
 
 /** Known stat keys → Arabic labels (honest: unmapped keys render raw). */
 const STAT_LABELS: Record<string, string> = {
   studentCount: "الطلاب",
-  teacherCount: "هيئة التدريس",
+  teacherCount: TEACHING_STAFF,
   departmentCount: "عدد الأقسام",
   courseCount: "عدد المقرّرات",
   programsCount: "عدد البرامج",

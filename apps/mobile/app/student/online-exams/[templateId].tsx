@@ -389,7 +389,7 @@ export default function ExamTakerScreen() {
         if (!alive) return;
         const detail = humanizeError(e);
         if (detail === "لم يفتح بابه بعد" && listedExam?.openAt) {
-          setStartError(`لم يفتح بابه بعد — يفتح ${dateTime(listedExam.openAt)}.`);
+          setStartError(`لم يفتح بعد — يفتح ${dateTime(listedExam.openAt)}.`);
         } else {
           setStartError(detail || "تعذّر البدء — تحقّق من اتصالك.");
         }
@@ -690,7 +690,7 @@ export default function ExamTakerScreen() {
 
   const finalityNote =
     listedExam?.kind === "PRACTICE"
-      ? "لا تعديل بعد التسليم — التدريبية لاحقًا."
+      ? "لا تعديل بعد التسليم."
       : "لا تعديل ولا إعادة بعد التسليم.";
 
   /* ── render: post-submit result ─────────────────────────────────── */
@@ -718,7 +718,7 @@ export default function ExamTakerScreen() {
             <EmptyState
               icon={<Hourglass size={28} color={tones.yellow.ink} />}
               title="انتهت مدة المحاولة"
-              message="انتهى الوقت — لا نتيجة ولا إعادة."
+              message="انتهى الوقت — لا إعادة."
             />
             <Button label="العودة للقائمة" onPress={() => router.push("/student/online-exams" as never)} />
           </>
@@ -818,8 +818,8 @@ export default function ExamTakerScreen() {
             <AlertTriangle size={14} color={tones.rose.ink} />
             <T variant="sm" style={{ color: tones.rose.deep }}>
               {failedNumbers.length === 1
-                ? `تعذَّر حفظ إجابة السؤال ${latn(failedNumbers[0])} — أعد الإجابة`
-                : `تعذَّر حفظ إجابات الأسئلة ${failedNumbers.slice(0, 3).map(latn).join(" و")} — أعد الإجابة`}
+                ? `تعذَّر حفظ إجابة ${latn(failedNumbers[0])} — أعد الإجابة`
+                : `تعذَّر حفظ إجابات ${failedNumbers.slice(0, 3).map(latn).join(" و")} — أعد الإجابة`}
             </T>
           </View>
         </View>
@@ -861,7 +861,7 @@ export default function ExamTakerScreen() {
         {total === 0 || !current ? (
           <EmptyState
             title="لا أسئلة في الاختبار"
-            message="لم يُعتمد سؤال — سلّم كما هي."
+            message="لم يُعتمد سؤال — سلّم."
           />
         ) : (
           <Card style={{ gap: sp[10] }}>
@@ -1215,7 +1215,7 @@ export default function ExamTakerScreen() {
           open={exitOpen}
           onClose={() => setExitOpen(false)}
           title="مغادرة الاختبار؟"
-          message="محفوظة — أكمل قبل انتهاء الوقت."
+          message="محفوظة — أكمل قبل الانتهاء."
           confirmLabel="مغادرة"
           destructive
           onConfirm={() => {
@@ -1277,7 +1277,7 @@ function ExamNetGate({
       <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
         <Clock size={14} color={tones.yellow.ink} />
         <T variant="sm" style={{ color: tones.yellow.deep }}>
-          دون اتصال — إجاباتك محفوظة وتُرسل تلقائياً.
+          دون اتصال — محفوظة وتُرسل تلقائياً.
         </T>
       </View>
     </View>
@@ -1404,7 +1404,7 @@ function ResultBody({
           </View>
           <T variant="sm" color="muted" align="center">
             {result.needsManual > 0
-              ? `${countAr(result.needsManual, ["سؤال", "سؤالان", "أسئلة", "سؤالاً"])} بحاجة لتقييم يدوي — الدرجة بعد المراجعة.`
+              ? `${countAr(result.needsManual, ["سؤال", "سؤالان", "أسئلة", "سؤالاً"])} بحاجة لتقييم يدوي — بعد المراجعة.`
               : "احتُسبت فورًا."}
           </T>
         </Card>

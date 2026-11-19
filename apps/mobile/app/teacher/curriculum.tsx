@@ -25,7 +25,7 @@ import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { OfferingPicker, arCount, useTeacherOfferings } from "@/features/teacher/components";
-import { ADDED, NO_COURSES_ASSIGNED, SAVED, SAVING } from "@/lib/copy";
+import {ADDED, NO_COURSES_ASSIGNED, SAVED, SAVING, FINAL_DELETE, PICK_CORRECT_BEFORE_SAVE} from "@/lib/copy";
 
 const TRANSCRIPT_LABEL: Record<string, string> = {
   NONE: "بلا نص",
@@ -281,7 +281,7 @@ export default function Curriculum() {
         open={deleteTarget !== null}
         title="حذف المحاضرة"
         message={`سيُحذف «${deleteTarget?.title ?? ""}» نهائيًا مع فصولها وأسئلتها. المتابعة؟`}
-        confirmLabel="حذف نهائي"
+        confirmLabel={FINAL_DELETE}
         danger
         loading={deleteLecture.isPending}
         onConfirm={() => deleteTarget && deleteLecture.mutate(deleteTarget.id)}
@@ -365,7 +365,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       if (cpTrigger.trim() === "" || Number.isNaN(trigger) || trigger < 0) throw new Error("ثوانٍ ≥ 0.");
       const opts = cpOptions.map((o) => o.trim()).filter((o) => o !== "");
       if (opts.length < 2) throw new Error("خياران على الأقل.");
-      if (cpCorrect === null || cpCorrect >= opts.length) throw new Error("حدِّد الصحيحة قبل الحفظ.");
+      if (cpCorrect === null || cpCorrect >= opts.length) throw new Error(PICK_CORRECT_BEFORE_SAVE);
       return learningApi.addCheckpoint(lectureId, {
         triggerSec: trigger,
         question: cpQuestion.trim(),
@@ -436,7 +436,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
         />
         {tStatus === "NONE" ? (
           <T variant="xs" color="muted">
-            يحوّل صوت الفيديو إلى نص — للروابط المدعومة فقط.
+            تحويل صوت الفيديو إلى نص — للروابط المدعومة.
           </T>
         ) : null}
       </Card>
@@ -451,7 +451,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       />
       {chapters.length === 0 ? (
         <Card>
-          <T variant="sm" color="muted">قسّم المحاضرة بزمن بداية ونهاية.</T>
+          <T variant="sm" color="muted">قسّمها بزمن بداية ونهاية.</T>
         </Card>
       ) : (
         <RowList>

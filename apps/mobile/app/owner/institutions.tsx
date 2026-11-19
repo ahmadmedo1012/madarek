@@ -22,7 +22,7 @@ import {
   numOf,
   type InstitutionRow,
 } from "@/features/governance/components";
-import { CREATING, OWNER_DASHBOARD } from "@/lib/copy";
+import {CREATING, OWNER_DASHBOARD, NAME_EN_OPTIONAL, TWO_CHARS_MIN, AS_MEMBERS_SEE} from "@/lib/copy";
 import { sp } from "@/design/tokens";
 
 
@@ -200,7 +200,7 @@ function CreateInstitutionSheet({
   const [draft, setDraft] = useState<CreateDraft>(EMPTY_DRAFT);
   const pending = create.isPending;
   const nameProblem =
-    draft.name.length > 0 && draft.name.trim().length < 2 ? "حرفان على الأقل" : undefined;
+    draft.name.length > 0 && draft.name.trim().length < 2 ? TWO_CHARS_MIN : undefined;
   const canSubmit = draft.name.trim().length >= 2 && !pending;
 
   const submit = async () => {
@@ -230,10 +230,10 @@ function CreateInstitutionSheet({
           onChangeText={(v) => setDraft((d) => ({ ...d, name: v }))}
           placeholder="مثال: أكاديمية طرابلس"
           error={nameProblem}
-          hint="كما يظهر للأعضاء"
+          hint={AS_MEMBERS_SEE}
         />
         <Field
-          label="الاسم بالإنجليزية (اختياري)"
+          label={NAME_EN_OPTIONAL}
           value={draft.nameEn}
           onChangeText={(v) => setDraft((d) => ({ ...d, nameEn: v }))}
           placeholder="Tripoli Academy of Sciences"

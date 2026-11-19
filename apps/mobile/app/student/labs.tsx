@@ -20,6 +20,7 @@ import { toast } from "@/components/ui/toast";
 import { fromNow, latn, num } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { SectionNote, countAr } from "@/features/student/more";
+import { DEFAULT_LABS } from "@/lib/copy";
 
 type LabRow = Awaited<ReturnType<typeof catalogApi.labs>>[number];
 
@@ -61,7 +62,7 @@ export default function LabsScreen() {
 
   return (
     <Screen scroll>
-      <StackHeader title="المعامل الافتراضية" />
+      <StackHeader title={DEFAULT_LABS} />
       <SectionNote>
         تجارب افتراضية — سجّل جلستك في المعمل.
       </SectionNote>

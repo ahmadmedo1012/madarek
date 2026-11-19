@@ -14,7 +14,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { clamp01, initials, latn } from "@/lib/format";
 import { countAr, type ProfessorRow } from "@/features/governance/components";
-import { QUALITY_SECTOR, READ_ONLY } from "@/lib/copy";
+import {QUALITY_SECTOR, READ_ONLY, NO_TEACHERS_YET, APPEARS_ONCE_ADDED} from "@/lib/copy";
 
 const ROSTER_CAP = 100;
 
@@ -60,8 +60,8 @@ export default function QualityProfessors() {
           />
         ) : rows.length === 0 ? (
           <EmptyState
-            title="لا أساتذة بعد"
-            message="تظهر فور إضافتها."
+            title={NO_TEACHERS_YET}
+            message={APPEARS_ONCE_ADDED}
           />
         ) : (
           <>

@@ -16,7 +16,7 @@ import { Field, SecretField, SelectField } from "@/components/ui/fields";
 import { BrandMark } from "@/components/ui/brand";
 import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
-import { CREATING } from "@/lib/copy";
+import {CREATING, PASSWORD_LABEL} from "@/lib/copy";
 
 interface InstitutionRow { id: string; name: string; slug: string }
 interface FacultyRow { id: string; name: string; departments: { id: string; name: string }[] }
@@ -266,7 +266,7 @@ export default function Register() {
           error={fieldErrors.email}
         />
         <SecretField
-          label="كلمة المرور"
+          label={PASSWORD_LABEL}
           value={password}
           onChangeText={setPassword}
           purpose="newPassword"

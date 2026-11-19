@@ -22,7 +22,7 @@ import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { OfferingPicker, toRosterEntry, useTeacherOfferings } from "@/features/teacher/components";
-import { SAVED } from "@/lib/copy";
+import {SAVED, NO_COURSES, APPEARS_ONCE_ASSIGNED, NO_ACTIVE_ENROLLMENTS} from "@/lib/copy";
 
 type AttStatus = "PRESENT" | "LATE" | "ABSENT" | "EXCUSED";
 
@@ -170,7 +170,7 @@ export default function Attendance() {
       ) : offs.isError ? (
         <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} compact />
       ) : offerings.length === 0 ? (
-        <EmptyState title="لا مقرّرات" message="تظهر فور إسنادها." />
+        <EmptyState title={NO_COURSES} message={APPEARS_ONCE_ASSIGNED} />
       ) : (
         <>
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
@@ -208,7 +208,7 @@ export default function Attendance() {
           ) : roster.isError ? (
             <ErrorState message={humanizeError(roster.error)} onRetry={() => roster.refetch()} />
           ) : rows.length === 0 ? (
-            <EmptyState title="لا طلاب" message="لا تسجيلات نشطة بعد." />
+            <EmptyState title="لا طلاب" message={NO_ACTIVE_ENROLLMENTS} />
           ) : (
             <>
               <RowList>

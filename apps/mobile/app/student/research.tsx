@@ -62,7 +62,7 @@ export default function ResearchScreen() {
     <Screen scroll>
       <StackHeader title="بحوثي" kicker="البحوث العلمية" />
       <SectionNote>
-        ارفع بحوثك لفحص الانتحال والذكاء الاصطناعي (محاكاة)، ثم أرسلها لأستاذك للتقييم والنشر.
+        ارفع بحثك لفحص الانتحال والذكاء الاصطناعي (محاكاة)، ثم أرسله لأستاذك.
       </SectionNote>
       <Button
         label="رفع بحث جديد"

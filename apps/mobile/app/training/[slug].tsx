@@ -28,7 +28,7 @@ import {
   pointsAr,
 } from "@/features/common/components";
 import { TRAINING_CATEGORY_LABEL, TRAINING_LEVEL_LABEL } from "./index";
-import { PATH_REMOVED, SELF_DEV } from "@/lib/copy";
+import {PATH_REMOVED, SELF_DEV, INCOMPLETE_LINK} from "@/lib/copy";
 
 /**
  * /training/[slug] — track detail: hero facts, honest progress (completed
@@ -64,7 +64,7 @@ export default function TrainingTrack() {
       <Screen scroll>
         <StackHeader title="مسار تدريبي" kicker={SELF_DEV} />
         <EmptyState
-          title="الرابط غير مكتمل"
+          title={INCOMPLETE_LINK}
           message="لا مسار — اختر من القائمة."
           actionLabel="عرض المسارات"
           onAction={() => router.push("/training" as never)}

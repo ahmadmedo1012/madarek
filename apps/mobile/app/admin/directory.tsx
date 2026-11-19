@@ -33,6 +33,7 @@ import { humanizeError } from "@/lib/errors";
 import { initials } from "@/lib/format";
 import { UserAvatar, avatarUrlOf } from "@/features/governance/components";
 import { usePalette } from "@/design/theme";
+import {NO_FILES_YET, NO_RESULTS} from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -129,7 +130,7 @@ export default function AdminDirectory() {
           hasNextPage={directory.hasNextPage}
           loadMoreError={directory.loadMoreError}
           onRetryLoadMore={directory.retryLoadMore}
-          emptyTitle={appliedQ ? "لا نتائج" : "لا ملفات بعد"}
+          emptyTitle={appliedQ ? NO_RESULTS : NO_FILES_YET}
           emptyMessage={
             appliedQ
               ? "جرّب بالهاتف (أوله يكفي)."

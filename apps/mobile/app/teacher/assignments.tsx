@@ -29,7 +29,7 @@ import {
   OfferingPicker,
   useTeacherOfferings,
 } from "@/features/teacher/components";
-import { CREATING } from "@/lib/copy";
+import {CREATING, TITLE_TWO_CHARS, GRADE_NOT_NEGATIVE, INVALID_DATETIME, WEIGHT_OF_GRADES} from "@/lib/copy";
 
 /** Wire shape of /teacher/me/pending-submissions (teacher-dashboard.routes.ts). */
 type PendingWire = Submission & {
@@ -117,7 +117,7 @@ export default function Assignments() {
     mutationFn: async () => {
       const value = Number(score);
       if (score.trim() === "" || Number.isNaN(value)) throw new Error("أدخل درجة صحيحة.");
-      if (value < 0) throw new Error("الدرجة ليست سالبة.");
+      if (value < 0) throw new Error(GRADE_NOT_NEGATIVE);
       if (gradeTarget?.maxScore != null && value > gradeTarget.maxScore) {
         throw new Error(`أقصى درجة ${latn(gradeTarget.maxScore)}.`);
       }
@@ -143,11 +143,11 @@ export default function Assignments() {
     mutationFn: async () => {
       const effId = offeringId || offerings[0]?.id || "";
       if (effId === "") throw new Error("اختر المقرّر أولاً.");
-      if (title.trim().length < 2) throw new Error("العنوان: حرفان على الأقل.");
+      if (title.trim().length < 2) throw new Error(TITLE_TWO_CHARS);
       if (!dueDate) throw new Error("حدّد الموعد النهائي.");
       const when = `${dueDate}T${dueTime.trim() === "" ? "23:59" : dueTime}`;
       const t = Date.parse(when);
-      if (Number.isNaN(t)) throw new Error("الموعد غير صالح.");
+      if (Number.isNaN(t)) throw new Error(INVALID_DATETIME);
       const w = Number(weight);
       const mx = Number(maxScore);
       if (Number.isNaN(w) || w < 0 || w > 100) throw new Error("الوزن بين 0 و100.");
@@ -398,7 +398,7 @@ export default function Assignments() {
             accessibilityLabel="وقت التسليم"
           />
           <Field
-            label="الوزن (% من الدرجات)"
+            label={WEIGHT_OF_GRADES}
             value={weight}
             onChangeText={setWeight}
             keyboardType="number-pad"

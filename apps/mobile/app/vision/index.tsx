@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { APPEARS_ONCE_PUBLISHED } from "@/lib/copy";
 import { router } from "expo-router";
 import Sparkles from "lucide-react-native/icons/sparkles";
 import { usePalette } from "@/design/theme";
@@ -62,7 +63,7 @@ export default function VisionIndex() {
       {total === 0 ? (
         <EmptyState
           title="لا ابتكارات معروضة بعد"
-          message="تظهر فور نشرها."
+          message={APPEARS_ONCE_PUBLISHED}
           icon={<Sparkles size={20} color={p.textMuted} />}
         />
       ) : (

@@ -30,7 +30,7 @@ import {
   type OfferingPickRow,
   type StudentEnrollmentRow,
 } from "@/features/governance/components";
-import { SEARCH_NAME_OR_EMAIL } from "@/lib/copy";
+import {SEARCH_NAME_OR_EMAIL, TRY_WIDER_SEARCH, NO_RESULTS} from "@/lib/copy";
 
 const PAGE_LIMIT = 20;
 
@@ -122,10 +122,10 @@ export default function AdminStudents() {
           hasNextPage={users.hasNextPage}
           loadMoreError={users.loadMoreError}
           onRetryLoadMore={users.retryLoadMore}
-          emptyTitle={appliedQ ? "لا نتائج" : "لا طلاب بعد"}
+          emptyTitle={appliedQ ? NO_RESULTS : "لا طلاب بعد"}
           emptyMessage={
             appliedQ
-              ? "جرّب بحثًا أوسع."
+              ? TRY_WIDER_SEARCH
               : "تظهر فور تسجيل أول طالب."
           }
           contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
@@ -248,7 +248,7 @@ function EnrollmentManager({
     <Sheet open onClose={onClose} title={`تسجيلات ${student.firstName} ${student.lastName}`}>
       <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
-          إلغاء التسجيل يحذفه والتقدُّم نهائيًا — يمرّ على تأكيد.
+          الإلغاء يحذف التسجيل والتقدُّم — يمرّ على تأكيد.
         </T>
 
         <T variant="sm" weight="bold">
@@ -344,7 +344,7 @@ function EnrollmentManager({
         title="إلغاء التسجيل"
         message={
           confirming
-            ? `سيُحذف التسجيل في «${confirming.offering?.course?.name ?? "المقرّر"}» والتقدُّم نهائيًا — لا يمكن التراجع.`
+            ? `سيُحذف «${confirming.offering?.course?.name ?? "المقرّر"}» والتقدُّم — لا تراجع.`
             : ""
         }
         confirmLabel="إلغاء نهائي"

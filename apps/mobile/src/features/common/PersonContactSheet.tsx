@@ -27,7 +27,7 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
-import { RETRY } from "@/lib/copy";
+import {RETRY, REQUEST_SEND_FAILED} from "@/lib/copy";
 
 /** PREFERRED_CONTACT labels (web PeoplePages parity). */
 const PREFERRED_LABELS: Record<string, string> = {
@@ -152,11 +152,11 @@ export function PersonContactSheet({
     onSuccess: () => {
       setRequested(true);
       haptics.notify("success");
-      toast.success("أُرسل الطلب — سيصلك الرد عبر الإشعارات.");
+      toast.success("أُرسل — سيصلك الرد عبر الإشعارات.");
     },
     onError: (e) => {
       haptics.notify("error");
-      toast.error(humanizeError(e), "تعذّر إرسال الطلب");
+      toast.error(humanizeError(e), REQUEST_SEND_FAILED);
     },
   });
 

@@ -11,7 +11,7 @@ import { qualityApi } from "@/api/quality";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { AR_DAYS, latn, num } from "@/lib/format";
 import { HonestLedger, PAPER_STATUS_LABEL, UNKNOWN_LABEL, countAr, numOf } from "@/features/governance/components";
-import { READ_ONLY } from "@/lib/copy";
+import {READ_ONLY, EXTRA_DATA} from "@/lib/copy";
 
 interface EngagementPayload {
   attendance?: { presentRate?: number; lateRate?: number; absentRate?: number; total?: number };
@@ -145,7 +145,7 @@ export default function QualityEngagement() {
 
             {Object.keys(rest).length > 0 ? (
               <View>
-                <SectionBar index={4} title="بيانات إضافية" />
+                <SectionBar index={4} title={EXTRA_DATA} />
                 <RowList>
                   <LedgerRow last>
                     <HonestLedger value={rest} />

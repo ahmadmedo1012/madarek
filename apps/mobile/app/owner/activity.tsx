@@ -18,7 +18,7 @@ import {
   textOf,
   type AuditRow,
 } from "@/features/governance/components";
-import { OWNER_DASHBOARD } from "@/lib/copy";
+import {OWNER_DASHBOARD, NO_EVENTS_YET} from "@/lib/copy";
 
 const PAGE_LIMIT = 30;
 
@@ -102,7 +102,7 @@ export default function OwnerActivity() {
           hasNextPage={feed.hasNextPage}
           loadMoreError={feed.loadMoreError}
           onRetryLoadMore={feed.retryLoadMore}
-          emptyTitle="لا أحداث بعد"
+          emptyTitle={NO_EVENTS_YET}
           emptyMessage="تُسجَّل فور أول عمليّة."
           contentPadding={{ horizontal: 20, bottom: 24 }}
         />

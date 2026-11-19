@@ -35,7 +35,7 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { countAr } from "@/features/student/more";
 import { tripoliDow } from "@/features/student/components";
-import { LIVE_NOW } from "@/lib/copy";
+import {LIVE_NOW, WEEKLY_SCHEDULE, PICK_ANOTHER_DAY, NO_LECTURES_TODAY} from "@/lib/copy";
 
 interface DaySlot {
   dow: number;
@@ -196,7 +196,7 @@ export default function ScheduleScreen() {
   return (
     <Screen scroll={false} padded={false}>
       <StackHeader
-        title="الجدول الأسبوعي"
+        title={WEEKLY_SCHEDULE}
         kicker={countAr(totalSlots, ["حصة أسبوعيًا", "حصتان أسبوعياً", "حصص أسبوعياً", "حصة أسبوعياً"])}
       />
       {/* The week strip — day chips, today outlined in the one accent.
@@ -263,8 +263,8 @@ export default function ScheduleScreen() {
           ) : (
             <EmptyState
               room="lecture-hall"
-              title={Number(selected) === todayDow ? "لا محاضرات اليوم" : "لا حصص اليوم"}
-              message="اختر يومًا آخر."
+              title={Number(selected) === todayDow ? NO_LECTURES_TODAY : "لا حصص اليوم"}
+              message={PICK_ANOTHER_DAY}
             />
           )
         }

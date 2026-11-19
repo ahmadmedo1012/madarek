@@ -37,7 +37,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { ScrollBody } from "@/features/student/components";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
-import { SAVE_FAILED, SAVING, STUDENT_FILE_UNLINKED } from "@/lib/copy";
+import {SAVE_FAILED, SAVING, STUDENT_FILE_UNLINKED, NO_STUDENT_FILE} from "@/lib/copy";
 
 const STUDY_TYPE_LABELS: Record<string, string> = {
   MORNING: "صباحي",
@@ -152,7 +152,7 @@ export default function StudentMyData() {
           />
         ) : !view || !draft ? (
           <EmptyState
-            title="لا ملف طالب بعد"
+            title={NO_STUDENT_FILE}
             message={STUDENT_FILE_UNLINKED}
           />
         ) : (
@@ -265,8 +265,7 @@ export default function StudentMyData() {
                 </>
               )}
               <T variant="xs" color="faint">
-                الصيغ المقبولة: 09XXXXXXXXX أو 9XXXXXXXX أو +218XXXXXXXXX — والأرقام الهندية
-                (٩…) تُحوَّل تلقائيًا.
+                الصيغ: 09XXXXXXXXX أو 9XXXXXXXX أو +218XXXXXXXXX — والهندية تُحوَّل تلقائيًا.
               </T>
             </Card>
 

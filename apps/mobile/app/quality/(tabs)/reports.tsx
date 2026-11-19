@@ -22,7 +22,7 @@ import {
   numOf,
   type QualityAlertsPayload,
 } from "@/features/governance/components";
-import { READ_ONLY } from "@/lib/copy";
+import {READ_ONLY, TEACHING_STAFF} from "@/lib/copy";
 import { sp } from "@/design/tokens";
 
 /** (tabs) Quality reports — composite (web QualityReportsPage + dashboard sections). */
@@ -86,7 +86,7 @@ export default function QualityReports() {
             <RowList>
               <LedgerRow last>
                 <StatLine label="الطلاب النشطون" value={num(numOf(users.STUDENT))} />
-                <StatLine label="هيئة التدريس" value={num(numOf(users.TEACHER))} />
+                <StatLine label={TEACHING_STAFF} value={num(numOf(users.TEACHER))} />
                 <StatLine label="المقرّرات" value={num(numOf(ov?.courses))} />
                 <StatLine label="الشُّعب" value={num(numOf(ov?.offerings))} />
               </LedgerRow>

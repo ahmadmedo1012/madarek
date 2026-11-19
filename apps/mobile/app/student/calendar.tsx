@@ -47,6 +47,7 @@ import { humanizeError } from "@/lib/errors";
 import { haptics } from "@/haptics";
 import { fadeIn, useStaggerEntrance } from "@/motion";
 import { countAr } from "@/features/student/more";
+import { PICK_ANOTHER_DAY } from "@/lib/copy";
 import {
   PushFrame,
   civilKey,
@@ -387,7 +388,7 @@ export default function CalendarScreen() {
             <EmptyState
               room="library"
               title="لا أحداث اليوم"
-              message="اختر يومًا آخر."
+              message={PICK_ANOTHER_DAY}
             />
           ) : (
             <RowList>

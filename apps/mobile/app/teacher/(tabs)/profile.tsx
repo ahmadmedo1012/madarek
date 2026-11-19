@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/pressables";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { arCount } from "@/features/teacher/components";
-import { REPORT_PROBLEM, SAVED } from "@/lib/copy";
+import {REPORT_PROBLEM, SAVED, QB_AND_EXAMS} from "@/lib/copy";
 
 /** Wire shape of GET /me/teacher-profile (teacher-profile.routes.ts). */
 type TeacherProfileWire = {
@@ -73,7 +73,7 @@ const MENU_GROUPS: { title: string; items: { label: string; to: string }[] }[] =
     items: [
       { label: "المواد", to: "/teacher/materials" },
       { label: "التكاليف", to: "/teacher/assignments" },
-      { label: "بنك الأسئلة والاختبارات", to: "/teacher/exams" },
+      { label: QB_AND_EXAMS, to: "/teacher/exams" },
       { label: "بناء المنهج", to: "/teacher/curriculum" },
     ],
   },

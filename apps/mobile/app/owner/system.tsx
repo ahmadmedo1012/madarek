@@ -24,13 +24,13 @@ import {
   textOf,
   type SystemRow,
 } from "@/features/governance/components";
-import { OWNER_DASHBOARD, SAVED, SAVE_FAILED, SAVING, UPDATE_FAILED } from "@/lib/copy";
+import {OWNER_DASHBOARD, SAVED, SAVE_FAILED, SAVING, UPDATE_FAILED, OPEN_ALERTS, NEEDS_DECISION} from "@/lib/copy";
 import { sp } from "@/design/tokens";
 
 /** Storage drivers → Arabic labels (web OwnerSystemPage parity). */
 const STORAGE_DRIVER_LABEL: Record<string, string> = {
-  local: "محليّ (قرص الخادم)",
-  s3: "تخزين كائنات (S3-متوافق)",
+  local: "محليّ",
+  s3: "S3-متوافق",
 };
 /** Unknown driver codes read «تعريف غير معروف» — never the raw env code. */
 function storageDriverLabel(driver?: string | null): string {
@@ -106,12 +106,12 @@ export default function OwnerSystem() {
       ? storage?.reachable === true
         ? { label: "دائمة", tone: "mint" as const, note: storage.checkedAt ? `آخر تحقّق: ${fromNow(storage.checkedAt)}` : null }
         : storage?.reachable === false
-          ? { label: "مهيَّأ لكن يتعذّر الوصول", tone: "rose" as const, note: "ستفشل حتى يعود المخزن." }
+          ? { label: "تعذّر الوصول", tone: "rose" as const, note: "حتى يعود المخزن." }
           : { label: "لم يُتحقق بعد", tone: "yellow" as const, note: "لم يُتحقّق من اتصاله." }
       : driver
         ? storage?.persistent
           ? { label: "دائمة", tone: "mint" as const, note: null }
-          : { label: "لا تنجو من النشر", tone: "yellow" as const, note: "ستُفقد عند كل نشر — المطلوب تخزين S3." }
+          : { label: "تُفقد عند النشر", tone: "yellow" as const, note: "اللازم تخزين S3." }
         : null;
 
   const settingRows = Array.isArray(settings.data) ? settings.data : [];
@@ -149,7 +149,7 @@ export default function OwnerSystem() {
                     numOf(s?.alerts?.criticalCount) === 0
                       ? "لا شيء حرجًا"
                       : (numOf(s?.alerts?.criticalCount) ?? 0) > 0
-                        ? "تستوجب قرارًا"
+                        ? NEEDS_DECISION
                         : null
                   }
                   tone={
@@ -181,9 +181,7 @@ export default function OwnerSystem() {
                   </T>
                 </View>
                 <T variant="xs" color="faint">
-                  {sys.isError
-                    ? "تعذّر الجلب — أعد المحاولة."
-                    : "لا تُصرّح عن التخزين بعد."}
+                  {sys.isError ? "تعذّر الجلب — أعد المحاولة." : "لم يُصرَّح بعد."}
                 </T>
               </LedgerRow>
             </RowList>
@@ -228,7 +226,7 @@ export default function OwnerSystem() {
             />
           ) : settingRows.length === 0 ? (
             <T variant="body" color="muted">
-              لا توجد إعدادات مُعرَّفة بعد — القيم الافتراضية تعمل.
+              لا إعدادات بعد — القيم الافتراضية تعمل.
             </T>
           ) : (
             <RowList>
@@ -255,7 +253,7 @@ export default function OwnerSystem() {
             </RowList>
           )}
           <T variant="xs" color="faint">
-            تُحفَظ القيمة وتُوثَّق في السجلّ — لا يستهلكها مسار تشغيل؛ السلوك يبقى بقيم الشيفرة.
+            تُحفَظ وتُوثَّق — لا تُستهلك عند التشغيل.
           </T>
         </View>
 
@@ -274,7 +272,7 @@ export default function OwnerSystem() {
             <EmptyState
               icon={<Settings size={22} color={p.textMuted} />}
               title="لا أعلام معرَّفة"
-              message="لا أعلام — تُدار من قاعدة البيانات."
+              message="تُدار من قاعدة البيانات."
             />
           ) : (
             <RowList>
@@ -304,7 +302,7 @@ export default function OwnerSystem() {
             </RowList>
           )}
           <T variant="xs" color="faint">
-            تُحفَظ حالة العلم وتُوثَّق في السجلّ — لا تستهلكها بوابة تشغيل؛ السلوك لا يتغيّر.
+            تُوثَّق في السجلّ — لا تُستهلك عند التشغيل.
           </T>
         </View>
 
@@ -313,7 +311,7 @@ export default function OwnerSystem() {
             {countAr(s.alerts.openCount, [
               "تنبيه مفتوح",
               "تنبيهان مفتوحان",
-              "تنبيهات مفتوحة",
+              OPEN_ALERTS,
               "تنبيهاً مفتوحاً",
             ])}{" "}
             — تُدار من «التنبيهات التشغيليّة».
@@ -336,8 +334,8 @@ export default function OwnerSystem() {
         message={
           flagConfirm
             ? flagConfirm.enabled
-              ? `هل تريد تعطيل «${flagConfirm.name ?? flagConfirm.slug}»؟ يُسجَّل في سجلّ النشاط ويمكن إعادته من هذه البطاقة.`
-              : `هل تريد تفعيل «${flagConfirm.name ?? flagConfirm.slug}»؟ يُسجَّل في سجلّ النشاط ويمكن التراجع من هذه البطاقة.`
+              ? `تعطيل «${flagConfirm.name ?? flagConfirm.slug}»؟ يُسجَّل ويمكن إعادته.`
+              : `تفعيل «${flagConfirm.name ?? flagConfirm.slug}»؟ يُسجَّل ويمكن التراجع.`
             : ""
         }
         loading={setFlag.isPending}

@@ -11,7 +11,7 @@ import { get } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { latn } from "@/lib/format";
 import { countAr, type QualityCourseRow } from "@/features/governance/components";
-import { READ_ONLY } from "@/lib/copy";
+import {READ_ONLY, NO_CONTENT_YET} from "@/lib/copy";
 
 const ROSTER_CAP = 50;
 
@@ -89,7 +89,7 @@ export default function QualityCourses() {
                     </T>
                     <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap", paddingTop: 4 }}>
                       <Badge
-                        label={score === 0 ? "لا محتوى بعد" : `اكتمال المحتوى ${latn(score)}%`}
+                        label={score === 0 ? NO_CONTENT_YET : `اكتمال المحتوى ${latn(score)}%`}
                         tone={score >= 80 ? "mint" : score >= 50 ? "yellow" : "rose"}
                       />
                       {attendance != null ? (

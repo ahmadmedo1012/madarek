@@ -31,6 +31,7 @@ import { humanizeError } from "@/lib/errors";
 import { countAr } from "@/features/student/more";
 import { PushFrame } from "@/features/student/components";
 import { catalogApi } from "@/api/catalog";
+import { NO_FACULTIES_YET } from "@/lib/copy";
 
 interface FacultyRow {
   id: string;
@@ -102,7 +103,7 @@ export default function UniversityScreen() {
       ) : faculties.length === 0 ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
-          title="لا كليات بعد"
+          title={NO_FACULTIES_YET}
         />
       ) : (
         <>

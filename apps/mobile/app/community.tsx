@@ -37,7 +37,7 @@ import {
   isUnauthError,
   membersAr,
 } from "@/features/common/components";
-import { CREATING } from "@/lib/copy";
+import {CREATING, NO_POSTS_YET, BE_FIRST_PARTICIPANT} from "@/lib/copy";
 
 type Tab = "posts" | "announcements" | "events" | "rooms";
 
@@ -206,8 +206,8 @@ function PostsPanel({ header }: { header: ReactNode }) {
         }
         emptySlot={
           <EmptyState
-            title="لا منشورات بعد"
-            message="كن أول المشاركين."
+            title={NO_POSTS_YET}
+            message={BE_FIRST_PARTICIPANT}
             icon={<MessageCircle size={20} color={p.textMuted} />}
             actionLabel={user ? "اكتب منشورًا" : undefined}
             onAction={user ? () => setComposing(true) : undefined}
