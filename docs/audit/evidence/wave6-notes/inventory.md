@@ -173,6 +173,8 @@ error (every page carries loading/error via the shared `States` primitives;
 | guest sheet chrome | `components/layout/GuestSheetChrome.tsx` | public pages only | NOT an authenticated seat |
 
 Shell style seats (all mine): `styles/shell/{shell,chrome,sheet-frame}.css`,
+`styles/shared/indicators.css` (caller grep: imported ONLY by
+`AppShell.tsx` — the R325 indicator sheet, part of the shell cascade),
 `styles/student.css` (+ `styles/student/*`), `styles/teacher/*`,
 `styles/admin.css`, `styles/owner.css`. `styles/app.css` is the PUBLIC
 /app download sheet — not an authenticated seat (left untouched).

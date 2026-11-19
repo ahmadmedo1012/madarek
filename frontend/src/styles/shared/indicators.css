@@ -124,6 +124,21 @@
 .r305s-band--deep .dash-resume-segcount {
   color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
 }
+/* r368 T6-a (shell-state audit, measured): "theme-proof by construction"
+   held only while the deep band INVERTED poles (ink in light, paper in
+   dark). R345 E1 re-based the night band on the elevated rung —
+   neutral-150 ground, neutral-800 ink (heron.css §3) — so in dark the
+   neutral-0/neutral-900 mix above resolves toward the WRONG pole and
+   washes out: 1.84:1 measured on the night band's ruler numerals (axe
+   color-contrast serious, 5–6 nodes, both 390 and 1440). The dark
+   counterpart rides the same 72/28 recipe the band's own dark eyebrow
+   uses (the night poles) — 5.3:1+ on the neutral-150 ground. Light is
+   untouched. */
+[data-theme='dark'] .r305s-band--deep .ind-microlabel,
+[data-theme='dark'] .r305s-band--deep .ind-ruler-num,
+[data-theme='dark'] .r305s-band--deep .dash-resume-segcount {
+  color: color-mix(in srgb, var(--neutral-800) 72%, var(--neutral-150));
+}
 
 /* ── 2 · SegmentedProgress — one square segment per week/lecture ──────
    full=ink · partial=mid (ink at 45%) · empty=hatch at the element's

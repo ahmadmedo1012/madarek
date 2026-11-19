@@ -69,6 +69,47 @@ green (errors 20 held, warnings 87 tracked).
   `.cp-*` and stay unstyled until their owner imports the restoration sheet
   (T5/wave-2 handoff item, not fixed here).
 
+## N3 · Shared app-shell pass — verification + one measured fix
+
+**Method.** The shell already carries the r305 Heron shell layer + R313/R320/R325/
+R345/R352/R353/r360 grammar (`styles/shell/*.css` discipline sheets). This wave's
+shell pass was therefore a STATE audit, not a rewrite: a dedicated probe
+(`/home/z/t6a/t6a-shell-audit.mjs`, same hermetic session method as the
+instruments) audited the nine shell STATES the per-page matrices don't reach —
+drawer-open @390 (light+dark), palette-open @390/1440, notification dropdown
+@1440, collapsed rail @1440 (light+dark), plain shell dark @390/1440 — for
+horizontal overflow (+ offender elements), focus-visible rings on the first 5
+tab stops per state, touch targets <40px on chrome at 390, and axe
+critical/serious. Plus 768 spot states (plain/palette/drawer/dark: 0px overflow
+each). Result snapshot: `screenshots/audit-SHELL.json`.
+
+**Finding (measured, fixed):** axe `color-contrast` SERIOUS on the deep band's
+indicator seats in EVERY dark state — `.ind-ruler-num` numerals at **1.84:1**
+on the night band (`#666663` on `#3D3D3D`, 11px). Root cause: the R327 F
+override in `styles/shared/indicators.css` (AppShell-exclusive seat — caller
+grep, recorded in inventory §7) mixed the deep-band fg "theme-proof by
+construction", but that proof assumed the band INVERTS poles; R345 E1 re-based
+the night band on the elevated rung (neutral-150 ground, neutral-800 ink), so
+the neutral-0/neutral-900 mix resolved toward the wrong pole in dark. Fix: the
+dark counterpart rule riding the same 72/28 recipe the band's own dark eyebrow
+uses — measured after: **#B2B2AF on #3D3D3D = 4.95:1** (AA), light pole
+untouched (7.7:1). All nine shell states re-audited CLEAN (overflow, focus
+rings, touch targets, axe).
+
+**Grammar verification (no change needed):** tokens — no raw values in shell
+sheets (stylelint gates); density/responsive — the R353 P4 contract
+(`--topbar-h`, dvh, scroll ownership, z-ladder) holds at 390/768/1440 in all
+states; Arabic labels — every chrome control carries an Arabic aria-label with
+`dir="ltr"` isolates on Latin runs (component scan + audit labels); focus
+states — zero missing focus-visible rings across all states' tab stops
+(the r162 focus-visible contract holds); reduced motion — the shell sheets'
+RM belts re-verified by grep (press transforms, accordion reveal, tooltip
+fades all gated).
+
+**Gates:** shell battery 15 files / 186 tests green; route/permission battery
+(App-routes, permissions-matrix, route-titles-coverage) 43 tests green;
+stylelint-gate ratchet green; my-sheet clean.
+
 ## N4 · Wave-2 handoff (files NOT touched this wave)
 
 See `inventory.md` §3–§5 for the full route lists. Current measured state of the
