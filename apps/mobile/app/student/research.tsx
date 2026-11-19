@@ -53,16 +53,16 @@ export default function ResearchScreen() {
     mutationFn: (id: string) => researchApi.scan(id),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["research"] });
-      toast.success("اكتمل الفحص.", "فحص النزاهة");
+      toast.success("اكتمل فحص النزاهة.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر الفحص"),
   });
 
   return (
     <Screen scroll>
-      <StackHeader title="بحوثي" kicker="البحوث العلمية" />
+      <StackHeader title="بحوثي" />
       <SectionNote>
-        ارفع بحوثك، اعرضها على فحص الانتحال وكشف الذكاء الاصطناعي (محاكاة حتى تفعيل كشف حقيقي)، ثم أرسلها لأستاذك للتقييم والنشر في مكتبة الجامعة.
+        ارفع بحوثك لفحص الانتحال والذكاء الاصطناعي (محاكاة) ثم تقييم الأستاذ والنشر في المكتبة.
       </SectionNote>
       <Button
         label="رفع بحث جديد"
@@ -186,14 +186,14 @@ function DetailSheet({
             </T>
           </Card>
         ) : paper.status === "SCANNING" ? (
-          <SectionNote>الفحص الأوتوماتيكي يجري — النتائج تظهر هنا تلقائياً.</SectionNote>
+          <SectionNote>الفحص يجري — النتائج تظهر تلقائياً.</SectionNote>
         ) : (
           <SectionNote>لم يُجرَ الفحص بعد.</SectionNote>
         )}
 
         {paper.status === "CHECKS_FAILED" ? (
           <T variant="sm" color="danger">
-            تجاوز البحث الحدود التجريبية المسموح بها (محاكاة) — ارفع نسخة معدّلة.
+            تجاوز الحدود المسموحة (محاكاة) — ارفع نسخة معدّلة.
           </T>
         ) : null}
 
@@ -215,9 +215,9 @@ function DetailSheet({
 
         {paper.status === "UPLOADED" ? (
           <View style={{ gap: sp[6] }}>
-            <SectionNote>الخطوة التالية: ابدأ الفحص الأوتوماتيكي (انتحال + محتوى ذكاء اصطناعي).</SectionNote>
+            <SectionNote>ابدأ الفحص (انتحال + ذكاء اصطناعي).</SectionNote>
             <Button
-              label={scanning ? "جارٍ بدء الفحص…" : "ابدأ الفحص الآن"}
+              label={scanning ? "جارٍ بدء الفحص…" : "ابدأ الفحص"}
               kind="ghost"
               loading={scanning}
               disabled={scanning}
@@ -226,7 +226,7 @@ function DetailSheet({
             />
           </View>
         ) : paper.status === "CHECKS_PASSED" ? (
-          <SectionNote>بانتظار تقييم أستاذك — لا إجراء مطلوب منك الآن.</SectionNote>
+          <SectionNote>بانتظار تقييم الأستاذ — لا إجراء مطلوب.</SectionNote>
         ) : paper.status === "PUBLISHED" ? (
           <SectionNote>البحث متاح للجميع في مكتبة الجامعة.</SectionNote>
         ) : null}
@@ -321,7 +321,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
       } catch {
         // The paper row exists — the scan can be started again from its row.
       }
-      toast.success("فحص انتحال ثم تقييم الأستاذ.", "تمّ رفع البحث");
+      toast.success("فحص انتحال ثم تقييم الأستاذ.");
       setTitle("");
       setAbstractText("");
       setOfferingId(null);
@@ -354,7 +354,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
           ) : null}
           {!canSubmit && !busy ? (
             <T variant="xs" color="faint">
-              أكمل عنوان البحث (3 أحرف على الأقل) لتتمكّن من الرفع.
+              أكمل العنوان (3 أحرف على الأقل).
             </T>
           ) : null}
           <Button
@@ -401,7 +401,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
             ملف البحث (PDF، اختياري)
           </T>
           <T variant="xs" color="muted">
-            ملفات PDF فقط، بحد أقصى 20 ميغابايت — بدون ملف يُسجَّل البحث بعنوانه وملخصه فقط.
+            PDF فقط، 20 ميغابايت كحدّ أقصى — بدون ملف يُسجَّل البحث بعنوانه وملخصه.
           </T>
           {fileName && !fileError ? (
             <Card style={{ gap: sp[6] }}>

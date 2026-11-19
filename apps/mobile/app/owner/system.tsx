@@ -107,7 +107,7 @@ export default function OwnerSystem() {
         ? { label: "دائمة", tone: "mint" as const, note: storage.checkedAt ? `آخر تحقّق: ${fromNow(storage.checkedAt)}` : null }
         : storage?.reachable === false
           ? { label: "مهيَّأ لكن يتعذّر الوصول", tone: "rose" as const, note: "ستفشل حتى يعود المخزن." }
-          : { label: "لم يُتحقق بعد", tone: "yellow" as const, note: "لم يُتحقّق من اتصاله." }
+          : { label: "لم يُتحقق بعد", tone: "yellow" as const, note: null }
       : driver
         ? storage?.persistent
           ? { label: "دائمة", tone: "mint" as const, note: null }
@@ -121,7 +121,7 @@ export default function OwnerSystem() {
     <Screen scroll>
       <StackHeader title="النظام والتشغيل" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: sp[16], paddingTop: sp[16] }}>
-        <PageHeader title="النظام والتشغيل" kicker="البنية والخدمات" />
+        <PageHeader title="النظام والتشغيل" />
 
         {/* [01] حالة الخدمة */}
         <View>
@@ -228,7 +228,7 @@ export default function OwnerSystem() {
             />
           ) : settingRows.length === 0 ? (
             <T variant="body" color="muted">
-              لا توجد إعدادات مُعرَّفة بعد — القيم الافتراضية تعمل.
+              لا إعدادات مُعرَّفة — القيم الافتراضية تعمل.
             </T>
           ) : (
             <RowList>
@@ -255,8 +255,7 @@ export default function OwnerSystem() {
             </RowList>
           )}
           <T variant="xs" color="faint">
-            تُحفَظ القيمة في قاعدة البيانات وتُوثَّق في سجلّ النشاط — لا يستهلكها مسار تشغيل بعد؛ سلوك
-            المنصّة يبقى بقيمه المضمّنة في الشيفرة.
+            تُحفَظ في قاعدة البيانات وتُوثَّق في السجلّ — لا تُستهلك؛ السلوك بقيم الشيفرة.
           </T>
         </View>
 
@@ -275,7 +274,7 @@ export default function OwnerSystem() {
             <EmptyState
               icon={<Settings size={22} color={p.textMuted} />}
               title="لا أعلام معرَّفة"
-              message="لا أعلام — تُدار من قاعدة البيانات."
+              message="تُدار من قاعدة البيانات."
             />
           ) : (
             <RowList>
@@ -305,8 +304,7 @@ export default function OwnerSystem() {
             </RowList>
           )}
           <T variant="xs" color="faint">
-            تُحفَظ حالة كل علم في قاعدة البيانات وتُوثَّق في سجلّ النشاط — لا تستهلكها أيّ بوابة تشغيل
-            بعد، فلا يتغيّر سلوك المنصّة بتغييرها.
+            تُحفَظ الحالة في قاعدة البيانات وتُوثَّق في السجلّ — لا تُستهلك؛ السلوك بقيم الشيفرة.
           </T>
         </View>
 
@@ -318,7 +316,7 @@ export default function OwnerSystem() {
               "تنبيهات مفتوحة",
               "تنبيهاً مفتوحاً",
             ])}{" "}
-            حالياً — تُدار من لوحة «التنبيهات التشغيليّة».
+            تُدار من لوحة «التنبيهات التشغيليّة».
           </T>
         ) : null}
       </View>
@@ -338,8 +336,8 @@ export default function OwnerSystem() {
         message={
           flagConfirm
             ? flagConfirm.enabled
-              ? `هل تريد تعطيل «${flagConfirm.name ?? flagConfirm.slug}»؟ سيُسجَّل الإجراء في سجلّ النشاط، ويمكن إعادته في أي وقت من هذه البطاقة.`
-              : `هل تريد تفعيل «${flagConfirm.name ?? flagConfirm.slug}»؟ سيُسجَّل الإجراء في سجلّ النشاط، ويمكن التراجع عنه من هذه البطاقة.`
+              ? `تعطيل «${flagConfirm.name ?? flagConfirm.slug}»؟ يُسجَّل في السجلّ — الإرجاع من هذه البطاقة.`
+              : `تفعيل «${flagConfirm.name ?? flagConfirm.slug}»؟ يُسجَّل في السجلّ — التراجع من هذه البطاقة.`
             : ""
         }
         loading={setFlag.isPending}
@@ -394,7 +392,7 @@ function SettingEditSheet({
           autoCorrect={false}
         />
         <Button
-          label={setSetting.isPending ? SAVING : "حفظ الإعداد"}
+          label={setSetting.isPending ? SAVING : "حفظ"}
           kind="primary"
           disabled={!canSave}
           onPress={() => {

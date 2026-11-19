@@ -91,9 +91,6 @@ export default function AdminTeachers() {
               onPress={() => router.push("/admin/directory" as never)}
             />
           </View>
-          <T variant="body" color="muted">
-            توثيق الملفات الأكاديمية وتعيين المناصب القيادية لكل أستاذ.
-          </T>
         </View>
 
         <StatLine
@@ -226,7 +223,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "users"] });
       qc.invalidateQueries({ queryKey: ["admin", "teachers"] });
-      toast.success("تمّ حفظ التعيين.", "المنصب القياديّ");
+      toast.success("تمّ حفظ التعيين.");
       onClose();
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ التعيين"),
@@ -306,7 +303,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
       ) : (
         <View style={{ gap: 12 }}>
           <T variant="sm" color="muted">
-            يُمنح المنصب بالتعيين الإداريّ — يضاف فوق دور الأستاذ ولا يستبدله.
+            المنصب يُمنح بالتعيين — يضاف فوق دور الأستاذ ولا يستبدله.
           </T>
           <Segmented options={POSITION_OPTIONS} selectedId={position ?? ""} onSelect={(id) => setPosition(id as PositionChoice)} />
           {needsFaculty ? (

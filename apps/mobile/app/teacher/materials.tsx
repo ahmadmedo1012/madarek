@@ -127,10 +127,7 @@ export default function Materials() {
   return (
     <Screen scroll>
       <StackHeader title="الملفات التعليمية" />
-      <PageHeader
-        title="الملفات التعليمية"
-        kicker="ملفاتك — المشاهدات والتحميلات."
-      />
+      <PageHeader title="الملفات التعليمية" />
       <SectionBar
         index={1}
         title="ملفاتك"

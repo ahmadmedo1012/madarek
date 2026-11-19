@@ -89,9 +89,6 @@ export default function OwnerDashboard() {
           <T variant="h2" weight="bold">
             لوحة التحكم الرئيسية
           </T>
-          <T variant="body" color="muted">
-            نظرة شاملة وإحصائيات حيّة عن المنصة
-          </T>
         </Animated.View>
 
         {stats.isLoading ? (
@@ -227,9 +224,6 @@ export default function OwnerDashboard() {
                   <T variant="body" weight="bold">
                     المؤسسات
                   </T>
-                  <T variant="xs" color="muted">
-                    إدارة المؤسسات التعليمية على المنصّة
-                  </T>
                 </View>
               </View>
             </LedgerRow>
@@ -245,9 +239,6 @@ export default function OwnerDashboard() {
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     سجلّ النشاط والمراقبة
-                  </T>
-                  <T variant="xs" color="muted">
-                    جميع العمليّات المنفَّذة على المنصّة
                   </T>
                 </View>
               </View>
@@ -265,9 +256,6 @@ export default function OwnerDashboard() {
                   <T variant="body" weight="bold">
                     التنبيهات التشغيليّة
                   </T>
-                  <T variant="xs" color="muted">
-                    إدارة ومراقبة التنبيهات والحوادث
-                  </T>
                 </View>
               </View>
             </LedgerRow>
@@ -283,9 +271,6 @@ export default function OwnerDashboard() {
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     مركز الذكاء الاصطناعيّ
-                  </T>
-                  <T variant="xs" color="muted">
-                    مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ
                   </T>
                 </View>
               </View>
@@ -303,9 +288,6 @@ export default function OwnerDashboard() {
                   <T variant="body" weight="bold">
                     النظرة التعليميّة
                   </T>
-                  <T variant="xs" color="muted">
-                    إحصائيات حيّة عن المقرّرات وأعضاء هيئة التدريس
-                  </T>
                 </View>
               </View>
             </LedgerRow>
@@ -321,9 +303,6 @@ export default function OwnerDashboard() {
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     النظام والتشغيل
-                  </T>
-                  <T variant="xs" color="muted">
-                    البنية التحتية وحالة الخدمات وإعدادات المنصّة
                   </T>
                 </View>
               </View>
@@ -342,15 +321,12 @@ export default function OwnerDashboard() {
                   <T variant="body" weight="bold">
                     المحتوى والعلامة
                   </T>
-                  <T variant="xs" color="muted">
-                    الهويّة البصريّة وأصول العلامة
-                  </T>
                 </View>
               </View>
             </LedgerRow>
           </RowList>
           <T variant="xs" color="faint">
-            المراقبة الحيّة والمستخدمون والحوكمة في تبويبات الشريط السفلي · صندوق التغذية الراجعة من صفحة «المحتوى».
+            صندوق التغذية الراجعة من صفحة «المحتوى».
           </T>
         </Animated.View>
       </View>

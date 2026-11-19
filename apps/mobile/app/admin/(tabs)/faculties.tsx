@@ -94,9 +94,6 @@ export default function AdminFaculties() {
             <T variant="h2" weight="bold">
               الكلّيّات والأقسام
             </T>
-            <T variant="body" color="muted">
-              جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية.
-            </T>
           </View>
           <Button
             label="كلية جديدة"
@@ -168,7 +165,7 @@ export default function AdminFaculties() {
                               </T>
                               <T variant="xs" color="muted">
                                 {countAr(d.courses ?? 0, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"])} ·{" "}
-                                {countAr(d.teachers ?? 0, ["مدرّس واحد", "مدرّسان", "مدرّسون", "مدرّساً"])} ·{" "}
+                                {countAr(d.teachers ?? 0, ["أستاذ واحد", "أستاذان", "أساتذة", "أستاذاً"])} ·{" "}
                                 {countAr(d.students ?? 0, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}
                               </T>
                             </LedgerRow>
@@ -230,7 +227,7 @@ export default function AdminFaculties() {
             value={fCity}
             onChangeText={setFCity}
             placeholder="حرم المعرفة"
-            hint="الاسم يتميّز داخل مدينته."
+            hint="يتميّز داخل مدينته."
           />
           <Field
             label="رمز تعبيري (اختياري)"

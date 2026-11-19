@@ -104,7 +104,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       ownerApi.updateInstitution(inst.id, payload),
     onSuccess: () => {
       invalidate();
-      toast.success("حُفظ الاسم.", "بيانات المؤسسة");
+      toast.success("حُفظ الاسم.");
     },
     onError: (e) => toast.error(humanizeError(e), SAVE_FAILED),
   });
@@ -127,10 +127,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       ),
     onSuccess: (_d, payload) => {
       invalidate();
-      toast.success(
-        `تمّ ربط «${payload.email}» بدور المسجل العام في «${inst.name}».`,
-        "تمّ التعيين",
-      );
+      toast.success(`تمّ ربط «${payload.email}» بدور المسجل العام في «${inst.name}».`);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر تعيين المسجل"),
   });
@@ -139,7 +136,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
     mutationFn: (membershipId: string) => ownerApi.revokeMembership(inst.id, membershipId),
     onSuccess: () => {
       invalidate();
-      toast.success(`أُلغيت العضوية في «${inst.name}».`, "أُلغيت العضوية");
+      toast.success(`أُلغيت العضوية في «${inst.name}».`);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر الإلغاء"),
   });
@@ -148,7 +145,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
     mutationFn: (membershipId: string) => ownerApi.restoreMembership(inst.id, membershipId),
     onSuccess: () => {
       invalidate();
-      toast.success(`أُعيدت العضوية في «${inst.name}».`, "تمّت الاستعادة");
+      toast.success(`أُعيدت العضوية في «${inst.name}».`);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّرت الاستعادة"),
   });
@@ -221,7 +218,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
             }
           />
           <T variant="body" color="muted">
-            يُمنح دور المسجل العام داخل هذه المؤسسة فقط — يُربط حساب قائم عبر بريده الإلكتروني.
+            يُمنح دور المسجل العام داخل المؤسسة فقط — عبر بريد حساب قائم.
           </T>
         </View>
 
@@ -230,7 +227,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
           <SectionBar index={3} title="العضويات" />
           {admins.length === 0 ? (
             <T variant="body" color="muted">
-              لا تحمل حمولة القائمة عضويات مسجلين بعد — تُعرض هنا فور توثيق أول تعيين.
+              لا عضويات بعد — تظهر فور توثيق أول تعيين.
             </T>
           ) : (
             <RowList>
@@ -260,7 +257,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
                     </View>
                   ) : (
                     <T variant="xs" color="faint">
-                      لا تحمل الحمولة معرّف العضوية — يُدار الإجراء من لوحة الويب.
+                      المعرّف غير متوفر — يُدار من لوحة الويب.
                     </T>
                   )}
                 </LedgerRow>
@@ -297,7 +294,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
         loading={revoke.isPending}
         message={
           revokeTarget
-            ? `هل تريد إلغاء عضوية «${`${revokeTarget.firstName ?? ""} ${revokeTarget.lastName ?? ""}`.trim() || revokeTarget.email || "—"}» في «${inst.name}»؟ سيفقد وصوله إلى سياق هذه المؤسسة فورًا.`
+            ? `سيفقد «${`${revokeTarget.firstName ?? ""} ${revokeTarget.lastName ?? ""}`.trim() || revokeTarget.email || "—"}» وصوله إلى «${inst.name}» فورًا.`
             : ""
         }
         onConfirm={() => {
@@ -313,7 +310,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
         loading={restore.isPending}
         message={
           restoreTarget
-            ? `هل تريد إعادة تنشيط عضوية «${`${restoreTarget.firstName ?? ""} ${restoreTarget.lastName ?? ""}`.trim() || restoreTarget.email || "—"}» في «${inst.name}»؟ سيستعيد وصوله إلى سياق هذه المؤسسة.`
+            ? `سيستعيد «${`${restoreTarget.firstName ?? ""} ${restoreTarget.lastName ?? ""}`.trim() || restoreTarget.email || "—"}» وصوله إلى «${inst.name}».`
             : ""
         }
         onConfirm={() => {
@@ -372,7 +369,7 @@ function RenameSheet({
           hint="فارغ = كما هو"
         />
         <Button
-          label={rename.isPending ? SAVING : "حفظ الأسماء"}
+          label={rename.isPending ? SAVING : "حفظ"}
           kind="primary"
           disabled={!canSubmit}
           onPress={() => {
@@ -428,8 +425,7 @@ function ProvisionSheet({
     <Sheet open={open} onClose={onClose} title="تجهيز مسجل عام">
       <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
-          يُربط الحساب القائم (بالبريد) بدور المسجل العام داخل هذه المؤسسة فقط — إنشاء حساب جديد بكلمة
-          مرور يُدار من لوحة الويب.
+          يُربط حساب قائم (بالبريد) بدور المسجل العام هنا — إنشاء الحسابات من لوحة الويب.
         </T>
         <Field
           label="البريد"

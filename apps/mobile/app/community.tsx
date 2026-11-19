@@ -70,9 +70,9 @@ export default function Community() {
 
   const header = (
     <>
-      <StackHeader title="المجتمع الجامعي" kicker="الحياة الأكاديمية" />
+      <StackHeader title="المجتمع الجامعي" />
       <T variant="body" color="secondary">
-        إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية. المساحة الرسمية للحياة الأكاديمية اليومية.
+        المساحة الرسمية للحياة الأكاديمية اليومية.
       </T>
       <Segmented
         options={[
@@ -395,7 +395,7 @@ function AnnouncementsPanel() {
         </RowList>
       )}
       <T variant="xs" color="faint" style={{ textAlign: "center" }}>
-        إنشاء الإعلانات متاح للإدارة وهيئة التدريس من لوحاتها — يظهر هنا آخر تحديثات الجامعة.
+        تُنشأ الإعلانات من لوحات الإدارة والتدريس — هنا آخر التحديثات.
       </T>
     </View>
   );

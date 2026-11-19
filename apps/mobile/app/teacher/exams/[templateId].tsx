@@ -129,7 +129,7 @@ export default function ExamTemplateDetail() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["exams", "template", id] });
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
-      toast.success("حُفظت التعديلات.", SAVED);
+      toast.success("حُفظت التعديلات.");
       setEditing(false);
       setEditError(null);
     },
@@ -144,7 +144,7 @@ export default function ExamTemplateDetail() {
       qc.invalidateQueries({ queryKey: ["exams", "template", id] });
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       setConfirmPublish(false);
-      toast.success("نُشر حسب النطاق.", "نُشر");
+      toast.success("نُشر حسب النطاق.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
@@ -152,7 +152,7 @@ export default function ExamTemplateDetail() {
     mutationFn: () => examsApi.cloneTemplate(id),
     onSuccess: (row) => {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
-      toast.success(`أُستنسخ القالب إلى مسودة جديدة — «${row.title}».`, "تمّ الاستنساخ");
+      toast.success(`أُستنسخ إلى مسودة — «${row.title}».`);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الاستنساخ"),
   });
@@ -177,7 +177,7 @@ export default function ExamTemplateDetail() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["exams", "template", id, "attempts"] });
-      toast.success("اعتُمدت الدرجة.", "تمّ التصحيح");
+      toast.success("اعتُمدت الدرجة.");
       setGrading(null);
       setVerdicts({});
       setNotes({});
@@ -305,7 +305,7 @@ export default function ExamTemplateDetail() {
       <Card>
         <StatLine label="المدة" value={arCount(t.durationMin ?? 0, ["دقيقة واحدة", "دقيقتان", "دقائق", "دقيقة"])} />
         <StatLine label="درجة النجاح" value={t.passingScore != null ? `${latn(t.passingScore)}%` : "—"} />
-        <StatLine label="ترتيب الأسئلة" value={t.randomized ? "عشوائي لكل طالب" : "ثابت بترتيب الإنشاء"} />
+        <StatLine label="ترتيب الأسئلة" value={t.randomized ? "عشوائي لكل طالب" : "بترتيب الإنشاء"} />
         {t.openAt ? <StatLine label="يفتح في" value={dateTime(t.openAt)} /> : null}
         {t.closeAt ? <StatLine label="يغلق في" value={dateTime(t.closeAt)} /> : null}
       </Card>
@@ -342,7 +342,7 @@ export default function ExamTemplateDetail() {
         action={
           awaiting > 0 ? (
             <Badge
-              label={arCount(awaiting, ["محاولة بانتظار تصحيحك", "محاولتان بانتظار تصحيحك", "محاولات بانتظار تصحيحك", "محاولة بانتظار تصحيحك"])}
+              label={`${arCount(awaiting, ["محاولة", "محاولتان", "محاولات", "محاولة"])} بانتظار تصحيحك`}
               tone="yellow"
             />
           ) : undefined
@@ -398,7 +398,7 @@ export default function ExamTemplateDetail() {
       <ConfirmDialog
         open={confirmPublish}
         title="نشر الاختبار"
-        message="النشر نهائي. النشر الآن؟"
+        message="النشر نهائي."
         confirmLabel="نشر نهائي"
         loading={publish.isPending}
         onConfirm={() => publish.mutate()}
@@ -408,7 +408,7 @@ export default function ExamTemplateDetail() {
       {/* تعديل القالب — the safe fields. */}
       <Sheet open={editing} onClose={() => setEditing(false)} title="تعديل القالب">
         <T variant="sm" color="muted">
-          الأسئلة ونوع الاختبار ونطاقه ثابتة بعد الإنشاء — عدّل بيانات العرض والتوقيت هنا، أو استنسخ القالب لنسخة تُبنى عليها أسئلة مختلفة.
+          الأسئلة والنوع والنطاق ثابتة بعد الإنشاء — عدّل العرض والتوقيت أو استنسخ.
         </T>
         <Field label="عنوان القالب" value={title} onChangeText={setTitle} accessibilityLabel="عنوان القالب" />
         <Field
@@ -449,7 +449,7 @@ export default function ExamTemplateDetail() {
           label="وقت الفتح (اختياري)"
           value={openTime}
           onChangeText={setOpenTime}
-          hint="بصيغة HH:MM"
+          hint="HH:MM"
           accessibilityLabel="وقت الفتح"
         />
         <Field
@@ -463,7 +463,7 @@ export default function ExamTemplateDetail() {
           label="وقت الإغلاق (اختياري)"
           value={closeTime}
           onChangeText={setCloseTime}
-          hint="بصيغة HH:MM"
+          hint="HH:MM"
           accessibilityLabel="وقت الإغلاق"
         />
         {editError ? (
@@ -472,7 +472,7 @@ export default function ExamTemplateDetail() {
           </T>
         ) : null}
         <Button
-          label={update.isPending ? "جارٍ حفظ التعديل…" : "حفظ التعديل"}
+          label={update.isPending ? "جارٍ الحفظ…" : "حفظ"}
           kind="accent"
           loading={update.isPending}
           onPress={() => {
@@ -500,7 +500,7 @@ export default function ExamTemplateDetail() {
             </T>
             {(grading.pendingAnswers ?? []).length === 0 ? (
               <T variant="sm" color="muted">
-                لا إجابات معلّقة في هذه المحاولة (أسئلتها المقالية تركت بلا إجابة) — حفظ التصحيح يعتدّ بالدرجة الآلية كما هي ويُنهي المحاولة.
+                لا إجابات معلّقة — حفظ التصحيح يعتدّ بالدرجة الآلية ويُنهي المحاولة.
               </T>
             ) : (
               (grading.pendingAnswers ?? []).map((a, i) => (
@@ -519,7 +519,7 @@ export default function ExamTemplateDetail() {
                       </T>
                     ) : (
                       <T variant="sm" color="muted">
-                        لم يكتب الطالب إجابة لهذا السؤال — حكمك يحدد درجته.
+                        لم يُجب الطالب — حكمك يحدد درجته.
                       </T>
                     )}
                   </View>

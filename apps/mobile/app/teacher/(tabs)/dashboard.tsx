@@ -161,7 +161,7 @@ export default function TeacherDashboard() {
       <AppTopBar alertsPath="/teacher/alerts" />
       <PageHeader
         title="لوحة الأستاذ"
-        kicker="تدخّلات اليوم بالأولوية."
+        kicker="تدخّلات اليوم"
       />
 
       {/* إحصاءات الفصل — hierarchy: one hero card, no card grid.
@@ -258,12 +258,7 @@ export default function TeacherDashboard() {
         action={
           pendingTotal > 0 ? (
             <Badge
-              label={arCount(pendingTotal, [
-                "تسليم بانتظار التصحيح",
-                "تسليمان بانتظار التصحيح",
-                "تسليمات بانتظار التصحيح",
-                "تسليماً بانتظار التصحيح",
-              ])}
+              label={arCount(pendingTotal, ["تسليم", "تسليمان", "تسليمات", "تسليماً"])}
               tone="yellow"
             />
           ) : undefined
@@ -301,12 +296,7 @@ export default function TeacherDashboard() {
            group detail — render the honest count, never a fake list. */
         <Card>
           <T variant="body" color="muted">
-            {arCount(pendingTotal, [
-              "تسليم بانتظار درجتك",
-              "تسليمان بانتظار درجتك",
-              "تسليمات بانتظار درجتك",
-              "تسليماً بانتظار درجتك",
-            ])}
+            {arCount(pendingTotal, ["تسليم", "تسليمان", "تسليمات", "تسليماً"])} بانتظار درجتك
           </T>
         </Card>
       ) : (
@@ -390,7 +380,7 @@ export default function TeacherDashboard() {
         <SectionBar index={3} title="الأداء والحضور" />
         <Card>
         <T variant="sm" color="muted">
-          متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية
+          متوسط الأداء والحضور — آخر 6 أسابيع
         </T>
         {!trendDrawable ? (
           <EmptyState
@@ -424,7 +414,7 @@ export default function TeacherDashboard() {
             label={
               visible.length === 0
                 ? "لا عناصر للمتابعة"
-                : arCount(visible.length, ["عنصر للمتابعة", "عنصران للمتابعة", "عناصر للمتابعة", "عنصرًا للمتابعة"])
+                : `${arCount(visible.length, ["عنصر", "عنصران", "عناصر", "عنصرًا"])} للمتابعة`
             }
             tone={visible.length === 0 ? "mint" : "yellow"}
           />
@@ -446,7 +436,7 @@ export default function TeacherDashboard() {
       {visible.length === 0 ? (
         <EmptyState
           room="building"
-          title="لا متطلبات — أحسنت!"
+          title="لا متطلبات"
           message="تظهر فور وصولها."
         />
       ) : (

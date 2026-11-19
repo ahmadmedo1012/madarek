@@ -92,9 +92,6 @@ export default function OwnerUsers() {
           <T variant="h2" weight="bold">
             إدارة المستخدمين
           </T>
-          <T variant="body" color="muted">
-            عرض جميع حسابات المنصّة والبحث فيها وإدارتها
-          </T>
         </View>
 
         <SearchBar
@@ -196,7 +193,7 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
     mutationFn: (role: string) => ownerApi.setUserRole(user.id, role),
     onSuccess: (_d, role) => {
       qc.invalidateQueries({ queryKey: ["owner", "users"] });
-      toast.success(`أصبح دور «${name}» الآن ${ROLE_LABELS[role] ?? "دور آخر"}.`, "تمّ تغيير الدور");
+      toast.success(`أصبح دور «${name}» الآن ${ROLE_LABELS[role] ?? "دور آخر"}.`);
       setRoleConfirm(false);
       onClose();
     },
@@ -210,7 +207,7 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
     mutationFn: (isActive: boolean) => ownerApi.setUserStatus(user.id, isActive),
     onSuccess: (_d, isActive) => {
       qc.invalidateQueries({ queryKey: ["owner", "users"] });
-      toast.success(isActive ? `أُعيد تفعيل حساب «${name}».` : `عُطِّل حساب «${name}».`, "حُدِّثت الحالة");
+      toast.success(isActive ? `أُعيد تفعيل حساب «${name}».` : `عُطِّل حساب «${name}».`);
       setStatusConfirm(false);
       onClose();
     },
@@ -274,7 +271,7 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
           onPress={() => setStatusConfirm(true)}
         />
         <T variant="xs" color="faint">
-          كل إجراء يُوثَّق في سجلّ نشاط المنصّة.
+          كل إجراء يُوثَّق في سجلّ النشاط.
         </T>
       </View>
 
@@ -283,7 +280,7 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
         title="تغيير الدور"
         message={
           roleDraft
-            ? `هل تريد تغيير دور «${name}» من ${ROLE_LABELS[user.role ?? ""] ?? "دور آخر"} إلى ${ROLE_LABELS[roleDraft] ?? "دور آخر"}؟${insts ? ` عضويته النشطة: ${insts}.` : " لا عضوية مؤسسة نشطة لهذا الحساب."}`
+            ? `من ${ROLE_LABELS[user.role ?? ""] ?? "دور آخر"} إلى ${ROLE_LABELS[roleDraft] ?? "دور آخر"}${insts ? ` — عضويته النشطة: ${insts}.` : " — بلا عضوية نشطة."}`
             : ""
         }
         confirmLabel="تغيير الدور"
@@ -305,8 +302,8 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
         danger={user.isActive}
         message={
           user.isActive
-            ? `هل تريد تعطيل حساب «${name}»؟ لن يتمكّن من الدخول إلى المنصّة.`
-            : `هل تريد إعادة تفعيل حساب «${name}»؟ سيتمكّن من الدخول مجدداً.`
+            ? `لن يتمكّن من الدخول إلى المنصّة.`
+            : `سيتمكّن من الدخول مجدداً.`
         }
         loading={toggleStatus.isPending}
         onConfirm={() => toggleStatus.mutate(!user.isActive)}

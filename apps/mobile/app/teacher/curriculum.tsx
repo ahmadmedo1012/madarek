@@ -111,7 +111,7 @@ export default function Curriculum() {
     onSuccess: () => {
       invalidate();
       setDeleteTarget(null);
-      toast.success("حُذفت المحاضرة.", "تمّ الحذف");
+      toast.success("حُذفت المحاضرة.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الحذف"),
   });
@@ -151,7 +151,7 @@ export default function Curriculum() {
   return (
     <Screen scroll>
       <StackHeader title="بناء المنهج" />
-      <PageHeader title="بناء المنهج" kicker="محاضرات وفصول وأسئلة." />
+      <PageHeader title="بناء المنهج" />
       {offerings.length === 0 ? (
         offs.isLoading ? (
           <SkeletonList rows={3} />
@@ -163,7 +163,7 @@ export default function Curriculum() {
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
           <Card>
             <T variant="sm" color="muted">
-              إدارة الروابط هنا — رفع الفيديو من لوحة الويب.
+              رفع الفيديو من لوحة الويب.
             </T>
           </Card>
 
@@ -266,7 +266,7 @@ export default function Curriculum() {
           </T>
         ) : null}
         <Button
-          label={saveLecture.isPending ? SAVING : editing ? "حفظ التعديلات" : "إضافة المحاضرة"}
+          label={saveLecture.isPending ? SAVING : editing ? "حفظ" : "إضافة المحاضرة"}
           kind="accent"
           loading={saveLecture.isPending}
           disabled={effectiveId === ""}
@@ -436,7 +436,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
         />
         {tStatus === "NONE" ? (
           <T variant="xs" color="muted">
-            التوليد التلقائي يحوّل صوت الفيديو إلى نص — يعمل على روابط الفيديو المدعومة فقط.
+            التوليد التلقائي يحوّل الصوت إلى نص — للروابط المدعومة فقط.
           </T>
         ) : null}
       </Card>
@@ -550,14 +550,13 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
             setCpQuestion(v);
             setCpError(null);
           }}
-          placeholder="سؤال يظهر أثناء المحاضرة"
+          placeholder="سؤال أثناء المحاضرة"
           accessibilityLabel="نص السؤال"
         />
         <Field
           label="موضع السؤال (بالثواني)"
           value={cpTrigger}
           onChangeText={setCpTrigger}
-          hint="عند هذه اللحظة"
           keyboardType="number-pad"
           accessibilityLabel="موضع السؤال"
         />

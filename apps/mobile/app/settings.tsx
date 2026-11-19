@@ -182,7 +182,7 @@ export default function Settings() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirm("");
-      toast.success("غُيّرت كلمة المرور.", "كلمة المرور");
+      toast.success("غُيّرت كلمة المرور.");
     } catch (err) {
       setPwError((err as ApiError).message ?? "تعذّر التغيير.");
     } finally {
@@ -194,7 +194,7 @@ export default function Settings() {
 
   return (
     <Screen scroll>
-      <PageHeader title="الإعدادات" kicker="مدارك" testID="settings-title" />
+      <PageHeader title="الإعدادات" testID="settings-title" />
 
       {/* [01] التفضيلات — مظهرك وأرقامك وملمس التفاعل، مقاعد متطابقة مع الملف */}
       <View style={{ gap: sp[8] }}>
@@ -232,7 +232,7 @@ export default function Settings() {
             </View>
             <Segmented options={NUMERALS_OPTIONS} selectedId={numerals} onSelect={changeNumerals} />
             <T variant="xs" color="faint">
-              طريقة عرض الأرقام في لوحتك ونتائجك — {`١٢٣`} بالخط العربي أو {`123`} باللاتيني.
+              عرض الأرقام في لوحتك ونتائجك — {`١٢٣`} عربي أو {`123`} لاتيني.
             </T>
           </LedgerRow>
           <LedgerRow last>
@@ -241,7 +241,7 @@ export default function Settings() {
               <View style={{ flex: 1 }}>
                 <T variant="body" weight="medium">ردود اللمس</T>
                 <T variant="xs" color="muted">
-                  اهتزاز خفيف عند التفاعلات الرئيسة — يعمل على الجوال فقط.
+                  اهتزاز خفيف عند التفاعلات الرئيسة.
                 </T>
               </View>
               <Button
@@ -353,7 +353,7 @@ export default function Settings() {
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="medium">قفل التطبيق بالبصمة</T>
                   <T variant="xs" color="muted">
-                    عند التفعيل، يُطلب فتح القفل عند كل فتح بارد للتطبيق قبل عرض أي بيانات — مع رمز الجهاز كبديل دائمًا.
+                    يُطلب فتح القفل عند كل فتح بارد، ورمز الجهاز بديل دائم.
                   </T>
                 </View>
                 <Button
@@ -368,7 +368,7 @@ export default function Settings() {
           ) : (
             <LedgerRow last>
               <T variant="sm" color="muted">
-                قفل التطبيق بالبصمة متاح على الأجهزة المزوّدة بمستشعر بصمة أو تعرّف على الوجه — جهازك الحالي لا يوفّره (أو لم تُسجّل بصمة في النظام).
+                القفل بالبصمة يحتاج مستشعرًا أو بصمة مسجّلة في النظام — جهازك لا يوفرها.
               </T>
             </LedgerRow>
           )}
@@ -379,9 +379,9 @@ export default function Settings() {
           <SecretField label="تأكيد كلمة المرور" value={confirm} onChangeText={setConfirm} onSubmitEditing={changePassword} />
           {pwError ? <T variant="sm" color="danger">{pwError}</T> : null}
           <T variant="xs" color="faint">
-            تغيير كلمة المرور ينهي جلساتك على جميع الأجهزة الأخرى.
+            تغيير كلمة المرور ينهي جلساتك على الأجهزة الأخرى.
           </T>
-          <Button label={busy ? SAVING : "حفظ كلمة المرور"} onPress={changePassword} loading={busy} />
+          <Button label={busy ? SAVING : "حفظ"} onPress={changePassword} loading={busy} />
         </Card>
       </View>
 
@@ -433,7 +433,7 @@ export default function Settings() {
         onClose={() => setConfirmLogout(false)}
         title="تسجيل الخروج؟"
         message={LOGOUT_THIS_DEVICE_ONLY}
-        confirmLabel="خروج"
+        confirmLabel="تسجيل الخروج"
         destructive
         onConfirm={async () => {
           setConfirmLogout(false);

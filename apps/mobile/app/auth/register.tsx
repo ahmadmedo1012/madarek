@@ -208,7 +208,7 @@ export default function Register() {
             </Pressable>
           ))}
           <T variant="xs" color="faint">
-            الأدوار الأخرى (المسجل العام، الجودة، المالك) تُمنح بتعيين فقط — تواصل مع إدارة مؤسّستك.
+            الأدوار الأخرى تُمنح بتعيين فقط — تواصل مع إدارة مؤسّستك.
           </T>
         </FormScreen>
       </>
@@ -230,7 +230,7 @@ export default function Register() {
             onPress={() => setStep(0)}
             style={{ alignItems: "center", paddingVertical: sp[8] }}
           >
-            <T variant="sm" color="muted">رجوع — تغيير الصفة</T>
+            <T variant="sm" color="muted">تغيير الصفة</T>
           </Pressable>
         }
       >

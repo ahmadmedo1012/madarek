@@ -118,7 +118,7 @@ function OutlineText({ outline }: { outline: unknown }) {
   if (lines.length === 0) {
     return (
       <T variant="sm" color="muted">
-        لا يوجد مخطط في الاستجابة — الاقتراح قالبيّ ويُعرض كما وصل.
+        لا مخطط في الاستجابة — الاقتراح قالبيّ كما وصل.
       </T>
     );
   }
@@ -130,7 +130,7 @@ function OutlineText({ outline }: { outline: unknown }) {
         </T>
       ))}
       <T variant="xs" color="faint" style={{ paddingTop: sp[4] }}>
-        محتوى الخطوط أعلاه هو نص مقترح آليًا — راجعه قبل اعتماده في منهجك.
+        الخطوط أعلاه مقترحة آليًا — راجعها قبل اعتمادها في منهجك.
       </T>
     </View>
   );
@@ -190,10 +190,7 @@ export default function TeacherIntelligence() {
       {/* T-50 (review-3 §4.1): intelligence was a zero-motion seat — the
           header + risk panel + analytics block take the kit stagger. */}
       <Animated.View entering={entering(0)}>
-      <PageHeader
-        title="الذكاء الأكاديمي"
-        kicker="تحليل لحظي مع توصيات تدخّل."
-      />
+      <PageHeader title="الذكاء الأكاديمي" />
 
       {/* طلاب للمتابعة — the global at-risk panel. */}
       <SectionBar index={1} title="طلاب للمتابعة" />
@@ -321,7 +318,7 @@ export default function TeacherIntelligence() {
               <SimulatedBadge note="اقتراح قالبيّ" />
             </View>
             <T variant="sm" color="muted" style={{ paddingVertical: sp[4] }}>
-              اقتراح قالبيّ لهيكل منهج بمطابقة اسم المقرّر — لا تحليل ذكيّ للمحتوى (محاكاة حتى نموذج حقيقي).
+              اقتراح قالبيّ بمطابقة اسم المقرّر — لا تحليل للمحتوى (محاكاة حتى نموذج حقيقي).
             </T>
             <Button
               label={suggest.data ? "إعادة الاقتراح" : "هيكل المنهج"}

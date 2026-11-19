@@ -76,7 +76,7 @@ describe("R334 governance kit — label maps cover the backend enums", () => {
   });
 
   it("audit actions + resources: unknown codes get the generic Arabic label", () => {
-    expect(auditActionLabel("user.login")).toBe("تسجيل دخول ناجح");
+    expect(auditActionLabel("user.login")).toBe("دخول ناجح");
     expect(auditActionLabel("totally.unknown.action")).toBe("عمليّة إداريّة");
     expect(resourceLabel("User")).toBe("مستخدم");
     expect(resourceLabel("MysteryModel")).toBe("مورد");

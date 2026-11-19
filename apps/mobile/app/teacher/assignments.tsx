@@ -130,7 +130,7 @@ export default function Assignments() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "pending-submissions"] });
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("حُفظت — بإشعار للطالب.", "تمّ التقييم");
+      toast.success("حُفظت — بإشعار للطالب.");
       setGradeTarget(null);
       setScore("");
       setFeedback("");
@@ -164,7 +164,7 @@ export default function Assignments() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["teacher", "me", "assignments"] });
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("أُنشئ — يظهر فورًا.", "تمّ الإنشاء");
+      toast.success("أُنشئ — يظهر فورًا.");
       setCreating(false);
       setTitle("");
       setType("HOMEWORK");
@@ -184,10 +184,7 @@ export default function Assignments() {
   return (
     <Screen scroll>
       <StackHeader title="الواجبات والاختبارات" />
-      <PageHeader
-        title="الواجبات والاختبارات"
-        kicker="واجباتك والتسليمات بانتظارك."
-      />
+      <PageHeader title="الواجبات والاختبارات" />
       <SectionBar
         index={1}
         title="تسليمات بانتظار التقييم"
@@ -348,7 +345,7 @@ export default function Assignments() {
                 {gradeError}
               </T>
             ) : null}
-            <Button label="حفظ الدرجة" kind="accent" loading={grade.isPending} onPress={() => grade.mutate()} />
+            <Button label="حفظ" kind="accent" loading={grade.isPending} onPress={() => grade.mutate()} />
           </View>
         ) : null}
       </Sheet>
@@ -390,7 +387,7 @@ export default function Assignments() {
               setDueDate(v);
               setCreateError(null);
             }}
-            hint="بصيغة YYYY-MM-DD"
+            hint="YYYY-MM-DD"
             accessibilityLabel="الموعد النهائي"
           />
           <Field

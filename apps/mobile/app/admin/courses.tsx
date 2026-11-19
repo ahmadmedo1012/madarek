@@ -141,7 +141,7 @@ export default function AdminCourses() {
     mutationFn: (id: string) => adminApi.deleteCourse(id),
     onSuccess: () => {
       invalidateCourses();
-      toast.success(`حُذف «${deleting?.name}» من السجلّ.`, "تمّ الحذف");
+      toast.success(`حُذف «${deleting?.name}» من السجلّ.`);
       setDeleting(null);
     },
     onError: (e) =>
@@ -173,7 +173,7 @@ export default function AdminCourses() {
         <SearchBar
           value={q}
           onChange={setQ}
-          placeholder="ابحث بالاسم أو الكود…"
+          placeholder="بحث بالاسم أو الكود…"
           onClear={() => {
             setQ("");
             setPage(1);
@@ -291,7 +291,7 @@ export default function AdminCourses() {
                 createCourse.isPending || updateCourse.isPending
                   ? SAVING
                   : editingId
-                    ? "حفظ التعديلات"
+                    ? "حفظ"
                     : "إضافة المقرّر"
               }
               disabled={
@@ -366,7 +366,7 @@ export default function AdminCourses() {
                   keyboardType="numeric"
                 />
                 <T variant="xs" color="muted">
-                  بين 1 و10 — الحدّ الذي يقبله الخادم
+                  بين 1 و10.
                 </T>
               </View>
               <SelectField
@@ -400,7 +400,7 @@ export default function AdminCourses() {
         title="حذف المقرّر"
         message={
           deleting
-            ? `سيُحذف «${deleting.name}» نهائيًا من السجلّ الجامعي. لا يمكن التراجع عن هذا الإجراء.`
+            ? `سيُحذف «${deleting.name}» نهائيًا من السجلّ — لا يمكن التراجع.`
             : ""
         }
         confirmLabel="حذف نهائي"
@@ -446,10 +446,7 @@ function OfferingSheet({
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "courses"] });
       onCreated();
-      toast.success(
-        `فُتحت شعبة «${course.name}» للفصل «${term.trim()}».`,
-        "تمّ فتح الشعبة",
-      );
+      toast.success(`فُتحت شعبة «${course.name}» للفصل «${term.trim()}».`);
       onClose();
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر فتحها"),
@@ -478,7 +475,7 @@ function OfferingSheet({
     >
       <View style={{ gap: sp[12] }}>
         <T variant="body" color="muted">
-          سيُدرَّس مقرّر «{course.name}» ({course.code}) في الشعبة الجديدة.
+          سيُدرَّس «{course.name}» في الشعبة الجديدة.
         </T>
         <View style={{ gap: sp[6] }}>
           <T variant="sm" weight="medium" color="secondary">
@@ -492,7 +489,7 @@ function OfferingSheet({
             maxLength={50}
           />
           <T variant="xs" color="muted">
-            نص حرّ من 1 إلى 50 حرفًا — مثال: 2024-FALL
+            1–50 حرفًا — مثال: 2024-FALL
           </T>
         </View>
         <SelectField

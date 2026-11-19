@@ -37,7 +37,7 @@ export default function OwnerContent() {
     <Screen scroll>
       <StackHeader title="المحتوى والعلامة التجاريّة" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: sp[16], paddingTop: sp[16] }}>
-        <PageHeader title="المحتوى والعلامة التجاريّة" kicker="الهويّة وأصول العلامة" />
+        <PageHeader title="المحتوى والعلامة التجاريّة" />
 
         <Card>
           <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
@@ -67,8 +67,7 @@ export default function OwnerContent() {
             ))}
           </RowList>
           <T variant="xs" color="faint">
-            المصادر الرسميّة تعيش في مستودع الويب (frontend/public/brand) — التطبيق يرسم توأمه
-            المتجهيّ الخاص من الهندسة ذاتها.
+            المصادر الرسميّة في مستودع الويب (frontend/public/brand) — التطبيق يرسم توأمه المتجهيّ.
           </T>
         </View>
 
@@ -81,9 +80,7 @@ export default function OwnerContent() {
               </T>
             </View>
             <T variant="sm" color="muted">
-              تعديل ألوان العلامة التجاريّة (الأساسيّ، الثانويّ، التمييز) ومحتوى الصفحة الرئيسيّة
-              قيد التطوير. حالياً تُعتمَد ألوان علامة مدارك الرسميّة المعتمدة في نظام التصميم —
-              ومحرّر العنوان والوصف الفرعيّ محدَّد في كود الصفحة الرئيسيّة.
+              تعديل الألوان ومحتوى الصفحة الرئيسيّة قيد التطوير — الألوان من نظام التصميم، والعنوان في كود الصفحة.
             </T>
           </View>
         </Card>
@@ -99,8 +96,7 @@ export default function OwnerContent() {
                 </T>
               </View>
               <T variant="sm" color="muted">
-                إدارة المحتوى (بثّ الإعلانات، أعلام الميزات، صياغة الصفحة الرئيسيّة) تُدار
-                من لوحة الويب — التطبيق يعرض هوية المنصّة كما هي معرَّفة في الشيفرة والتصميم.
+                تُدار الإعلانات وأعلام الميزات والصفحة الرئيسيّة من لوحة الويب.
               </T>
               <Button
                 label="عن مدارك — الهويّة"
@@ -118,8 +114,7 @@ export default function OwnerContent() {
           <Card>
             <View style={{ gap: sp[8] }}>
               <T variant="sm" color="muted">
-                صندوق تقارير «أبلغ عن مشكلة / اقتراح» الواردة من مستخدمي المنصّة، مع حالتها الكاملة
-                وطريقها.
+                تقارير «أبلغ عن مشكلة / اقتراح» من المستخدمين، بحالتها وطريقها.
               </T>
               <Button
                 label={FEEDBACK}

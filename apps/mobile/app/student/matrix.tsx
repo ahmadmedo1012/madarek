@@ -70,7 +70,6 @@ export default function MatrixScreen() {
   return (
     <PushFrame
       title="مصفوفة الإتقان"
-      kicker="تتبّع المعرفة"
       refreshing={(matrix.isFetching && !matrix.isLoading) || gaps.isFetching}
       onRefresh={() => {
         void matrix.refetch();
@@ -78,7 +77,7 @@ export default function MatrixScreen() {
       }}
     >
       <T variant="sm" color="muted">
-        {`خريطة معرفيّة شخصيّة لكل مفهوم درسته — تُرسم من نقاط التفاعل في المحاضرات والاختبارات.`}
+        {`خريطة معرفيّة لكل مفهوم — تُرسم من نقاط التفاعل والاختبارات.`}
       </T>
 
       {/* Legend — words + dots, ranges stated in text */}
@@ -117,7 +116,7 @@ export default function MatrixScreen() {
           }
         />
         <T variant="sm" color="muted">
-          ابدأ بسدّ هذه الفجوات — حيث تتوفّر توصية، يأخذك الصفّ مباشرة إلى المحاضرة المناسبة.
+          ابدأ بسدّ الفجوات — التوصية تأخذك للمحاضرة المناسبة.
         </T>
         {gaps.isLoading ? (
           <SkeletonList rows={2} rowHeight={56} />
@@ -125,7 +124,7 @@ export default function MatrixScreen() {
           <ErrorState message={humanizeError(gaps.error)} onRetry={() => gaps.refetch()} compact />
         ) : (gaps.data ?? []).length === 0 ? (
           <T variant="sm" color="muted">
-            لا فجوات حالياً — أحسنت! استمر بحضور المحاضرات والإجابة على نقاط التفاعل.
+            لا فجوات حالياً. استمر بالحضور والإجابة.
           </T>
         ) : (
           <GapList gaps={gaps.data ?? []} max={5} />
@@ -167,7 +166,7 @@ export default function MatrixScreen() {
 
           {mappedCourses.length === 0 ? (
             <T variant="sm" color="muted">
-              لم تُحدَّد مفاهيم مقرّراتك بعد — ستظهر المفاهيم هنا فور إضافتها من الأستاذ.
+              لا مفاهيم بعد — تظهر فور إضافتها من الأستاذ.
             </T>
           ) : (
             <View style={{ gap: sp[16] }}>

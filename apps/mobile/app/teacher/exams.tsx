@@ -77,7 +77,7 @@ export default function Exams() {
     mutationFn: (id: string) => examsApi.cloneTemplate(id),
     onSuccess: (row) => {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
-      toast.success(`أُستنسخ القالب إلى مسودة جديدة — «${row.title}».`, "تمّ الاستنساخ");
+      toast.success(`أُستنسخ إلى مسودة — «${row.title}».`);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر الاستنساخ"),
   });
@@ -87,7 +87,7 @@ export default function Exams() {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       qc.invalidateQueries({ queryKey: ["exams", "template", publishTarget?.id] });
       setPublishTarget(null);
-      toast.success("نُشر حسب النطاق.", "نُشر");
+      toast.success("نُشر حسب النطاق.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
@@ -140,10 +140,7 @@ export default function Exams() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["exams", "question-bank"] });
-      toast.success(
-        "أُرسل — يظهر بعد الاعتماد.",
-        "أُرسل السؤال",
-      );
+      toast.success("أُرسل — يظهر بعد الاعتماد.");
       setCreating(false);
       setPrompt("");
       setChoices(["", ""]);
@@ -169,10 +166,7 @@ export default function Exams() {
           header + segmented filter take the kit stagger; tab/row presses
           fire selection haptics. */}
       <Animated.View entering={entering(0)}>
-      <PageHeader
-        title="بنك الأسئلة والاختبارات"
-        kicker="تأليف الأسئلة وبناء القوالب."
-      />
+      <PageHeader title="بنك الأسئلة والاختبارات" />
       <Segmented
         options={[
           { id: "templates", label: "القوالب" },
@@ -271,7 +265,7 @@ export default function Exams() {
               <Button label="سؤال جديد" kind="accent" small onPress={() => setCreating(true)} />
             }
           />
-          <SearchBar value={q} onChange={setQ} placeholder="ابحث في نص الأسئلة…" />
+          <SearchBar value={q} onChange={setQ} placeholder="بحث…" />
           {bank.isLoading ? (
             <SkeletonList rows={5} />
           ) : bank.isError ? (
@@ -443,7 +437,7 @@ export default function Exams() {
           ) : null}
           {type === "ESSAY" ? (
             <T variant="sm" color="muted">
-              الأسئلة المقالية تُصحَّح يدوياً — سجّل معيار التصحيح من لوحة الويب إن لزم.
+              الأسئلة المقالية تُصحَّح يدوياً — معيار التصحيح من لوحة الويب.
             </T>
           ) : null}
           <SelectField

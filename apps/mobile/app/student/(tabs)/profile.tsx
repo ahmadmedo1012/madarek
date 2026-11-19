@@ -235,7 +235,7 @@ export default function StudentProfile() {
         refreshing={profile.isFetching && !profile.isLoading}
         onRefresh={() => profile.refetch()}
       >
-        <PageHeader title="حسابي" kicker="هويّتك وخدمات الطالب." />
+        <PageHeader title="حسابي" />
 
         {/* الهويّة — the block the shell pulled out of the top bar */}
         <Card style={{ gap: sp[10] }}>
@@ -322,7 +322,7 @@ export default function StudentProfile() {
             }}
           />
           <T variant="xs" color="faint">
-            يتبع التطبيق تفضيلك هنا وعلى الموقع — يتزامن مع حسابك.
+            يتبع التطبيق والموقع تفضيلك — يتزامن مع حسابك.
           </T>
         </Card>
         <Card style={{ gap: sp[8] }}>
@@ -336,7 +336,7 @@ export default function StudentProfile() {
             }}
           />
           <T variant="xs" color="faint">
-            طريقة عرض الأرقام في لوحتك ونتائجك — {`١٢٣`} بالخط العربي أو {`123`} باللاتيني.
+            عرض الأرقام في لوحتك ونتائجك — {`١٢٣`} عربي أو {`123`} لاتيني.
           </T>
         </Card>
         <Card style={{ gap: sp[8] }}>
@@ -345,7 +345,7 @@ export default function StudentProfile() {
             <View style={{ flex: 1 }}>
               <T variant="body" weight="bold">ردود اللمس</T>
               <T variant="xs" color="muted">
-                اهتزاز خفيف عند التفاعلات الرئيسة — يعمل على الجوال فقط.
+                اهتزاز خفيف عند التفاعلات الرئيسة.
               </T>
             </View>
             <Button
@@ -363,7 +363,7 @@ export default function StudentProfile() {
               <View style={{ flex: 1 }}>
                 <T variant="body" weight="bold">قفل التطبيق بالبصمة</T>
                 <T variant="xs" color="muted">
-                  عند التفعيل، يُطلب فتح القفل عند كل فتح بارد للتطبيق قبل عرض أي بيانات — مع رمز الجهاز كبديل دائمًا.
+                  يُطلب فتح القفل عند كل فتح بارد، ورمز الجهاز بديل دائم.
                 </T>
               </View>
               <Button
@@ -380,7 +380,7 @@ export default function StudentProfile() {
           <Card style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
             <Check size={20} color={p.textMuted} />
             <T variant="body" weight="medium" style={{ flex: 1 }}>
-              الإشعارات مفعّلة — تصلك التنبيهات على هذا الجهاز.
+              الإشعارات مفعّلة على هذا الجهاز.
             </T>
           </Card>
         ) : pushState === "granted" && pushRegFailed ? (
@@ -456,7 +456,7 @@ export default function StudentProfile() {
           ))}
         </RowList>
         <T variant="xs" color="faint">
-          جميع خدمات الطالب متاحة من هنا — تعمل بعضها في وضع الطيار وتُوسَم بذلك داخل صفحاتها.
+          كل خدمات الطالب من هنا — بعضها يعمل دون اتصال.
         </T>
 
         {/* الجلسة — last concern on the screen, mirroring settings. */}
@@ -474,7 +474,7 @@ export default function StudentProfile() {
           onClose={() => setConfirmLogout(false)}
           title="تسجيل الخروج؟"
           message={LOGOUT_THIS_DEVICE_ONLY}
-          confirmLabel="خروج"
+          confirmLabel="تسجيل الخروج"
           destructive
           onConfirm={async () => {
             setConfirmLogout(false);

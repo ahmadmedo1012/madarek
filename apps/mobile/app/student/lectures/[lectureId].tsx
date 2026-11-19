@@ -359,7 +359,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
           const target = Math.max(0, we.watchedSec - 3);
           const dur2 = player.duration;
           seekPlayer(player, clampSeek(target, dur2));
-          toast.info("من حيث توقفت", "استئناف المشاهدة");
+          toast.info("من حيث توقفت");
         }
       }
     });
@@ -694,7 +694,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
               {`${fmt(watchPct)}٪`}
             </T>
           </View>
-          <ProgressBar ratio={watchPct / 100} accent label={`تقدّم مشاهدة المحاضرة ${fmt(watchPct)}٪`} />
+          <ProgressBar ratio={watchPct / 100} accent label={`تقدّم المشاهدة ${fmt(watchPct)}٪`} />
           {checkpoints.length > 0 ? (
             <T variant="xs" color={allAnswered ? "muted" : "accentInk"}>
               {`أُجيب عن ${fmt(checkpointsAnswered)} من ${countAr(checkpoints.length, [
@@ -875,7 +875,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                 <SearchBar
                   value={cueQuery}
                   onChange={setCueQuery}
-                  placeholder="ابحث في النص…"
+                  placeholder="بحث…"
                 />
                 {/* M5 — virtualized cue list (nested, height-capped):
                     FULL data in, windowed views out. The old shape mounted
@@ -1050,7 +1050,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                 }}
               >
                 <T variant="body" weight="bold" style={{ color: reveal.correct ? tones.mint.deep : tones.rose.deep }}>
-                  {reveal.correct ? "إجابة صحيحة!" : "إجابة غير صحيحة."}
+                  {reveal.correct ? "إجابة صحيحة." : "إجابة غير صحيحة."}
                 </T>
                 {reveal.explanation ? (
                   <T variant="sm" style={{ color: reveal.correct ? tones.mint.deep : tones.rose.deep }}>
