@@ -1,3 +1,5 @@
+import { DASH_OWNER, EMPTY_COURSES_YET, LABEL_COLLEGE, COURSE_NAME, TOP_ENROLLED_COURSES, NO_ENROLLMENTS_YET, USERS, NO_PROFS_YET, NO_PROFS, NOUN_TWO_PROFS, ONE_PROF, INSTITUTIONS } from '../../lib/copy';
+
 import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
@@ -29,18 +31,18 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineEleme
  * render on up to three branches (pending / error / settled) — one
  * literal each, referenced everywhere. */
 const PAGE_TITLE = 'النظرة التعليميّة';
-const BREADCRUMB_ROOT = 'لوحة المالك';
+const BREADCRUMB_ROOT = DASH_OWNER;
 const T_FACULTY = 'المقرّرات حسب الكلّيّة';
-const T_TOP = 'أكثر المقرّرات تسجيلاً';
+const T_TOP = TOP_ENROLLED_COURSES;
 const T_WORKLOAD = 'توزيع حِمل أعضاء هيئة التدريس';
 const T_TREND = 'اتّجاه الحضور';
 const L_COURSE_COUNT = 'عدد المقرّرات';
 
 /** Proper Arabic counted plural for teacher counts (bucket labels). */
 function teachersCountLabel(n: number): string {
-  if (n === 0) return 'لا أساتذة';
-  if (n === 1) return 'أستاذ واحد';
-  if (n === 2) return 'أستاذان';
+  if (n === 0) return NO_PROFS;
+  if (n === 1) return ONE_PROF;
+  if (n === 2) return NOUN_TWO_PROFS;
   if (n >= 3 && n <= 10) return `${formatNum(n)} أساتذة`;
   return `${formatNum(n)} أستاذاً`;
 }
@@ -202,8 +204,8 @@ export function OwnerEducationPage() {
          * Navigation-only; the page is read-only. */
         actions={(
           <>
-            <Link to="/owner/users" className="btn accent sm">المستخدمون</Link>
-            <Link to="/owner/institutions" className="btn ghost sm">المؤسسات</Link>
+            <Link to="/owner/users" className="btn accent sm">{USERS}</Link>
+            <Link to="/owner/institutions" className="btn ghost sm">{INSTITUTIONS}</Link>
           </>
         )}
       />
@@ -223,14 +225,14 @@ export function OwnerEducationPage() {
 
       <Card title={T_FACULTY}>
         {byFaculty.length === 0 ? (
-          <EmptyState illustration="empty-courses" title="لا مقرّرات بعد" />
+          <EmptyState illustration="empty-courses" title={EMPTY_COURSES_YET} />
         ) : (
           <ChartFrame
             ariaLabel="مخطط أعمدة أفقي — عدد المقرّرات في كل كلّيّة"
             summary={`${facultiesCountLabel(byFaculty.length)} بها مقرّرات؛ أكبرها ${byFaculty.reduce((a, b) => (b.courseCount > a.courseCount ? b : a)).name}.`}
             table={{
               caption: T_FACULTY,
-              columns: ['الكلّيّة', L_COURSE_COUNT],
+              columns: [LABEL_COLLEGE, L_COURSE_COUNT],
               rows: byFaculty.map((f) => [f.name, f.courseCount]),
             }}
             height={barHeight}
@@ -242,15 +244,15 @@ export function OwnerEducationPage() {
 
       <Card title={T_TOP}>
         {topCourses.length === 0 ? (
-          <EmptyState illustration="empty-list" title="لا تسجيلات بعد" />
+          <EmptyState illustration="empty-list" title={NO_ENROLLMENTS_YET} />
         ) : (
           <div className="table-wrap">
             <table className="table tbl-stack">
               <thead>
                 <tr>
                   <th scope="col">الرمز</th>
-                  <th scope="col">اسم المقرّر</th>
-                  <th scope="col">الكلّيّة</th>
+                  <th scope="col">{COURSE_NAME}</th>
+                  <th scope="col">{LABEL_COLLEGE}</th>
                   <th scope="col">المسجَّلون</th>
                 </tr>
               </thead>
@@ -262,8 +264,8 @@ export function OwnerEducationPage() {
                   // keys. The faculty-scoped pair is the row's identity.
                   <tr key={`${course.code}·${course.facultyName}`}>
                     <td data-label="الرمز"><bdi className="owner-num" dir="ltr">{course.code}</bdi></td>
-                    <td className="tbl-strong" data-label="اسم المقرّر">{course.name}</td>
-                    <td data-label="الكلّيّة" className="owner-cell-muted">{course.facultyName}</td>
+                    <td className="tbl-strong" data-label={COURSE_NAME}>{course.name}</td>
+                    <td data-label={LABEL_COLLEGE} className="owner-cell-muted">{course.facultyName}</td>
                     <td className="owner-num" data-label="المسجَّلون">{formatNum(course.enrolled)}</td>
                   </tr>
                 ))}
@@ -275,7 +277,7 @@ export function OwnerEducationPage() {
 
       <Card title={T_WORKLOAD}>
         {totalTeachers === 0 ? (
-          <EmptyState illustration="empty-list" title="لا أساتذة بعد" />
+          <EmptyState illustration="empty-list" title={NO_PROFS_YET} />
         ) : (
           <div className="owner-workload">
             {buckets.map((b, i) => (

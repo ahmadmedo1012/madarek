@@ -1,3 +1,5 @@
+import { RETRY_ACTION, DASH_OWNER, ALL, NO_RESULTS, NOUN_STUDENTS, ACTIVITY_LOG, PREV, NEXT, LABEL_STUDENTS, CLOSE, MANAGE_USERS, SEARCH_PLACEHOLDER, TOTAL_USERS, NOUN_PROFS, USERS, STATUS_ACTIVE_M } from '../../lib/copy';
+
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, ChevronLeft, ChevronRight, X, AlertCircle } from 'lucide-react';
@@ -249,9 +251,9 @@ export function OwnerUsersPage() {
   };
 
   const filterItems: Array<{ value: RoleFilter; label: string }> = [
-    { value: 'ALL', label: 'الكل' },
-    { value: 'STUDENT', label: 'طلاب' },
-    { value: 'TEACHER', label: 'أساتذة' },
+    { value: 'ALL', label: ALL },
+    { value: 'STUDENT', label: NOUN_STUDENTS },
+    { value: 'TEACHER', label: NOUN_PROFS },
     { value: 'ADMIN', label: 'مسجلون عامّون' },
     { value: 'QUALITY', label: 'أخصائيو جودة' },
   ];
@@ -299,8 +301,8 @@ export function OwnerUsersPage() {
     <div className="r305ao">
       <PageFrame width="default">
         <PatternsPageHeader
-          title="إدارة المستخدمين"
-          breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المستخدمون' }]}
+          title={MANAGE_USERS}
+          breadcrumbs={[{ label: DASH_OWNER, to: '/owner/dashboard' }, { label: USERS }]}
           /* R341 D11: the [03] nav-order gutter numeral (OWNER_NAV
            * register — the D10 quality precedent). */
           index="03"
@@ -311,7 +313,7 @@ export function OwnerUsersPage() {
            * invented: role changes stay inline per row. */
           actions={(
             <>
-              <Link to="/owner/activity" className="btn accent sm">سجلّ النشاط</Link>
+              <Link to="/owner/activity" className="btn accent sm">{ACTIVITY_LOG}</Link>
               <Link to="/owner/governance" className="btn ghost sm">الحوكمة</Link>
             </>
           )}
@@ -321,8 +323,8 @@ export function OwnerUsersPage() {
             (never a fake zero). r252: the patterns StatLine. */}
         <StatLine
           items={[
-            { label: 'إجمالي المستخدمين', value: kpiValue(statData?.totalUsers ?? 0) },
-            { label: 'الطلاب', value: kpiValue(statData?.students ?? 0), hint: topSegmentKey === 'students' ? 'الفئة الأكبر' : undefined },
+            { label: TOTAL_USERS, value: kpiValue(statData?.totalUsers ?? 0) },
+            { label: LABEL_STUDENTS, value: kpiValue(statData?.students ?? 0), hint: topSegmentKey === 'students' ? 'الفئة الأكبر' : undefined },
             { label: 'الأساتذة', value: kpiValue(statData?.teachers ?? 0), hint: topSegmentKey === 'teachers' ? 'الفئة الأكبر' : undefined },
             { label: 'مسجلون عامّون وجودة', value: kpiValue((statData?.admins ?? 0) + (statData?.quality ?? 0)), hint: topSegmentKey === 'staff' ? 'الفئة الأكبر' : undefined },
           ]}
@@ -333,7 +335,7 @@ export function OwnerUsersPage() {
           search={{
             value: search,
             onChange: setSearch,
-            placeholder: 'ابحث…',
+            placeholder: SEARCH_PLACEHOLDER,
           }}
           filters={(
             <div className="owner-filter-pills" role="group" aria-label="تصفية حسب الدور">
@@ -368,7 +370,7 @@ export function OwnerUsersPage() {
                     onClick={() => lastAttempt && void runAttempt(lastAttempt)}
                     disabled={mutationBusy || !lastAttempt}
                   >
-                    إعادة المحاولة
+                    {RETRY_ACTION}
                   </button>
                   <button
                     type="button"
@@ -376,7 +378,7 @@ export function OwnerUsersPage() {
                     onClick={() => setActionError(null)}
                     disabled={mutationBusy}
                   >
-                    إغلاق
+                    {CLOSE}
                   </button>
                 </>
               }
@@ -391,7 +393,7 @@ export function OwnerUsersPage() {
             <EmptyState
               icon={Users}
               illustration="empty-list"
-              title={hasActiveFilters ? 'لا نتائج' : 'لا مستخدمين بعد'}
+              title={hasActiveFilters ? NO_RESULTS : 'لا مستخدمين بعد'}
               description=""
               action={hasActiveFilters ? (
                 <button type="button" className="btn ghost sm" onClick={clearFilters}>
@@ -447,7 +449,7 @@ export function OwnerUsersPage() {
                           <Badge color={ROLE_COLORS[user.role]}>
                             {ROLE_LABELS[user.role] ?? <bdi>{user.role}</bdi>}
                           </Badge>
-                          <Badge color={user.isActive ? 'green' : 'red'}>{user.isActive ? 'نشط' : 'معطّل'}</Badge>
+                          <Badge color={user.isActive ? 'green' : 'red'}>{user.isActive ? STATUS_ACTIVE_M : 'معطّل'}</Badge>
                         </>
                       )}
                       expandLabel={`إجراءات ${user.firstName} ${user.lastName}`}
@@ -529,7 +531,7 @@ export function OwnerUsersPage() {
                       aria-label="الصفحة السابقة"
                     >
                       <Icon icon={ChevronRight} size={14} aria-hidden />
-                      السابق
+                      {PREV}
                     </button>
                     {pageList(page, totalPages).map((item, i) =>
                       item === 'gap' ? (
@@ -552,7 +554,7 @@ export function OwnerUsersPage() {
                       disabled={page >= totalPages}
                       aria-label="الصفحة التالية"
                     >
-                      التالي
+                      {NEXT}
                       <Icon icon={ChevronLeft} size={14} aria-hidden />
                     </button>
                   </div>

@@ -1,3 +1,5 @@
+import { RETRY_ACTION, LOADING, ALL, NOUN_STUDENTS, EMPTY_COURSES, NOUN_TWO_STUDENTS, NOUN_STUDENT_ACC, NOUN_COURSE_ACC, LABEL_LECTURES, NOUN_STUDENT, LABEL_COURSES, LABEL_LECTURE, LIST_STUDENTS, NOUN_COURSE_TWO, FAILED_LOAD_DOT, UNDER_WATCH, AT_RISK, NOUN_SEM_TWO, NOUN_SEMS, NOUN_SEM_ACC, EXAM, COURSE, NOUN_TWO_LECTURES, STATUS_CRITICAL, FOLLOW, EXAMS, NOUN_ATTEND, HOMEWORK, MY_COURSES_SHORT, NOUN_TWO_HOMEWORK, NOUN_HOMEWORK_ACC, STABLE, ALL_STABLE, NO_STUDENTS, NO_HOMEWORK, GRADE_ENTRY } from '../../lib/copy';
+
 /**
  * Teacher Academic Intelligence — replaces the hardcoded teacher pages
  * with real DB-backed data + risk scoring + curriculum AI suggestions.
@@ -58,10 +60,10 @@ const RISK_TONE: Record<RiskLevel, 'ok' | 'info' | 'warn' | 'danger'> = {
   CRITICAL: 'danger',
 };
 const RISK_LABEL: Record<RiskLevel, string> = {
-  OK: 'مستقر',
-  WATCH: 'تحت المراقبة',
-  AT_RISK: 'في خطر',
-  CRITICAL: 'حرج',
+  OK: STABLE,
+  WATCH: UNDER_WATCH,
+  AT_RISK: AT_RISK,
+  CRITICAL: STATUS_CRITICAL,
 };
 
 /* ═══════════════ Catalog (my offerings + global risks) ═══════════════ */
@@ -106,8 +108,8 @@ export default function TeacherIntelligencePage() {
         title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>طلاب للمتابعة</>}
         icon={AlertTriangle}
         subtitle={
-          risks.isPending ? 'جارٍ التحميل…'
-          : risks.data && risks.data.length > 0 ? countAr(risks.data.length, ['طالب', 'طالبان', 'طلاب', 'طالباً'])
+          risks.isPending ? LOADING
+          : risks.data && risks.data.length > 0 ? countAr(risks.data.length, [NOUN_STUDENT, NOUN_TWO_STUDENTS, NOUN_STUDENTS, NOUN_STUDENT_ACC])
           : undefined
         }
         actions={(
@@ -122,7 +124,7 @@ export default function TeacherIntelligencePage() {
           <ListSkeleton rows={3} />
         ) : risks.isError ? (
           <ErrorState
-            message="تعذَّر التحميل."
+            message={FAILED_LOAD_DOT}
             error={risks.error}
             onRetry={() => risks.refetch()}
           />
@@ -130,7 +132,7 @@ export default function TeacherIntelligencePage() {
           /* r149 (R3-A1 #6): EmptyState الكنونية بدل اليدوية. */
           <EmptyState
             icon={CheckCircle2}
-            title="الكل مستقر"
+            title={ALL_STABLE}
           />
         ) : (
           <>
@@ -166,11 +168,11 @@ export default function TeacherIntelligencePage() {
 
       {/* My offerings */}
       <Card
-        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>مقرّراتي</>}
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>{MY_COURSES_SHORT}</>}
         icon={BookOpen}
         subtitle={
-          offerings.isPending ? 'جارٍ التحميل…'
-          : offerings.data && offerings.data.length > 0 ? countAr(offerings.data.length, ['مقرّر', 'مقرّران', 'مقرّرات', 'مقرّراً']) + ' هذا الفصل'
+          offerings.isPending ? LOADING
+          : offerings.data && offerings.data.length > 0 ? countAr(offerings.data.length, [COURSE, NOUN_COURSE_TWO, LABEL_COURSES, NOUN_COURSE_ACC]) + ' هذا الفصل'
           : undefined
         }
       >
@@ -178,14 +180,14 @@ export default function TeacherIntelligencePage() {
           <TrackGridSkeleton />
         ) : offerings.isError ? (
           <ErrorState
-            message="تعذَّر التحميل."
+            message={FAILED_LOAD_DOT}
             error={offerings.error}
             onRetry={() => offerings.refetch()}
           />
         ) : offerings.data.length === 0 ? (
           <EmptyState illustration="empty-courses"
             icon={BookOpen}
-            title="لا مقرّرات"
+            title={EMPTY_COURSES}
           />
         ) : (
           /* r241 (Superlist): the catalog is a LIST — full-width rows with
@@ -274,11 +276,11 @@ function OfferingRow({ offering }: { offering: TeacherOffering }) {
         <span className="tq-row-meta">
           {/* P2-1/P2-4 (5-A7): countAr(0) renders the broken «0 محاضرة» —
               each zero case gets its own honest «لا …» copy. */}
-          <span><Icon icon={Users} size={12} /> {offering._count.enrollments === 0 ? 'لا طلاب' : countAr(offering._count.enrollments, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}</span>
-          <span><Icon icon={BookOpen} size={12} /> {offering._count.lectures === 0 ? 'لا محاضرات' : countAr(offering._count.lectures, ['محاضرة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</span>
-          <span><Icon icon={ClipboardCheck} size={12} /> {offering._count.assignments === 0 ? 'لا واجبات' : countAr(offering._count.assignments, ['واجب', 'واجبان', 'واجبات', 'واجباً'])}</span>
+          <span><Icon icon={Users} size={12} /> {offering._count.enrollments === 0 ? NO_STUDENTS : countAr(offering._count.enrollments, [NOUN_STUDENT, NOUN_TWO_STUDENTS, NOUN_STUDENTS, NOUN_STUDENT_ACC])}</span>
+          <span><Icon icon={BookOpen} size={12} /> {offering._count.lectures === 0 ? 'لا محاضرات' : countAr(offering._count.lectures, [LABEL_LECTURE, NOUN_TWO_LECTURES, LABEL_LECTURES, LABEL_LECTURE])}</span>
+          <span><Icon icon={ClipboardCheck} size={12} /> {offering._count.assignments === 0 ? NO_HOMEWORK : countAr(offering._count.assignments, ['واجب', NOUN_TWO_HOMEWORK, HOMEWORK, NOUN_HOMEWORK_ACC])}</span>
           {offering._count.examTemplates > 0 && (
-            <span><Icon icon={Sparkles} size={12} /> {countAr(offering._count.examTemplates, ['اختبار', 'اختباران', 'اختبارات', 'اختباراً'])}</span>
+            <span><Icon icon={Sparkles} size={12} /> {countAr(offering._count.examTemplates, [EXAM, 'اختباران', EXAMS, 'اختباراً'])}</span>
           )}
         </span>
       </span>
@@ -362,7 +364,7 @@ export function TeacherOfferingDetailPage() {
       <div className="page">
         <Link to="/teacher/intelligence" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          مقرّراتي
+          {MY_COURSES_SHORT}
         </Link>
         <header className="page-header">
           <div className="page-title-block">
@@ -370,7 +372,7 @@ export function TeacherOfferingDetailPage() {
           </div>
         </header>
         <ErrorState
-          message="تعذَّر التحميل."
+          message={FAILED_LOAD_DOT}
           error={offerings.error}
           onRetry={() => offerings.refetch()}
         />
@@ -384,7 +386,7 @@ export function TeacherOfferingDetailPage() {
       <div className="page">
         <Link to="/teacher/intelligence" className="back-link">
           <Icon icon={ChevronRight} size={14} />
-          مقرّراتي
+          {MY_COURSES_SHORT}
         </Link>
         <header className="page-header">
           <div className="page-title-block">
@@ -411,7 +413,7 @@ export function TeacherOfferingDetailPage() {
     <div className="page">
       <Link to="/teacher/intelligence" className="back-link">
         <Icon icon={ChevronRight} size={14} />
-        مقرّراتي
+        {MY_COURSES_SHORT}
       </Link>
 
       {/* Tinted band painted by .track-hero from --track-accent (training.css
@@ -434,8 +436,8 @@ export function TeacherOfferingDetailPage() {
             <Badge>
               <Icon icon={Users} size={11} />{' '}
               {offering._count.enrollments === 0
-                ? 'لا طلاب'
-                : countAr(offering._count.enrollments, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}
+                ? NO_STUDENTS
+                : countAr(offering._count.enrollments, [NOUN_STUDENT, NOUN_TWO_STUDENTS, NOUN_STUDENTS, NOUN_STUDENT_ACC])}
             </Badge>
             <Badge>{countAr(offering.course.credits, ['وحدة', 'وحدتان', 'وحدات', 'وحدة'])}</Badge>
             {offering.room && <Badge>قاعة {offering.room}</Badge>}
@@ -449,7 +451,7 @@ export function TeacherOfferingDetailPage() {
               to={`/teacher/grades?offering=${offering.id}`}
               className="btn accent sm hr-cta"
             >
-              <Icon icon={ClipboardCheck} size={13} /> إدخال الدرجات
+              <Icon icon={ClipboardCheck} size={13} /> {GRADE_ENTRY}
             </Link>
           </div>
         </div>
@@ -461,7 +463,7 @@ export function TeacherOfferingDetailPage() {
          * ErrorState replaces the hand-rolled .inline-retry row (the
          * same convention the students/risks sections below use). */
         <ErrorState
-          message="تعذَّر التحميل."
+          message={FAILED_LOAD_DOT}
           error={analytics.error}
           onRetry={() => analytics.refetch()}
         />
@@ -505,19 +507,19 @@ export function TeacherOfferingDetailPage() {
       />
 
       {tab === 'students' && (
-        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>قائمة الطلاب</>} icon={Users}>
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>{LIST_STUDENTS}</>} icon={Users}>
           {students.isPending ? (
             <ListSkeleton rows={4} />
           ) : students.isError ? (
             <ErrorState
-              message="تعذَّر التحميل."
+              message={FAILED_LOAD_DOT}
               error={students.error}
               onRetry={() => students.refetch()}
             />
           ) : students.data.length === 0 ? (
             <EmptyState illustration="empty-list"
               icon={Users}
-              title="لا طلاب"
+              title={NO_STUDENTS}
             />
           ) : (
             <>
@@ -527,7 +529,7 @@ export function TeacherOfferingDetailPage() {
                   R305: the group rides the shared .hr-toolbar grammar. */}
               <div className="hr-toolbar" role="group" aria-label="تصفية بمستوى المخاطر">
                 {([
-                  { v: 'all' as const, label: 'الكل' },
+                  { v: 'all' as const, label: ALL },
                   { v: 'OK' as const, label: RISK_LABEL.OK },
                   { v: 'WATCH' as const, label: RISK_LABEL.WATCH },
                   { v: 'AT_RISK' as const, label: RISK_LABEL.AT_RISK },
@@ -581,7 +583,7 @@ export function TeacherOfferingDetailPage() {
             <div className="inline-retry" role="alert" style={{ marginBlockEnd: 'var(--sp-3)' }}>
               <span className="text-sm text-muted">تعذَّر الاقتراح.</span>
               <button type="button" className="btn ghost sm" onClick={onSuggest}>
-                <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
+                <Icon icon={RefreshCw} size={12} /> {RETRY_ACTION}
               </button>
             </div>
           )}
@@ -598,7 +600,7 @@ export function TeacherOfferingDetailPage() {
               <div className="ai-rationale" style={{ ['--track-accent' as never]: accent }}>
                 <div className="text-xs text-muted">{suggest.data.rationale}</div>
                 <div className="flex gap-2 flex-wrap" style={{ marginBlockStart: 'var(--sp-2)' }}>
-                  <Badge>{countAr(suggest.data.outline.length, ['فصل', 'فصلان', 'فصول', 'فصلاً'])}</Badge>
+                  <Badge>{countAr(suggest.data.outline.length, ['فصل', NOUN_SEM_TWO, NOUN_SEMS, NOUN_SEM_ACC])}</Badge>
                   <Badge color="brand">{countAr(suggest.data.suggestedTotalLectures, ['محاضرة مقترحة', 'محاضرتان مقترحتان', 'محاضرات مقترحة', 'محاضرة مقترحة'])}</Badge>
                   {suggest.data.currentLectureCount > 0 && (
                     <Badge color="green">{countAr(suggest.data.currentLectureCount, ['محاضرة موجودة', 'محاضرتان موجودتان', 'محاضرات موجودة', 'محاضرة موجودة'])}</Badge>
@@ -610,7 +612,7 @@ export function TeacherOfferingDetailPage() {
                   <div key={i} className="curriculum-chapter">
                     <div className="curriculum-chapter-head" style={{ color: accentInk }}>
                       <span>{ch.title}</span>
-                      <Badge>{countAr(ch.estLectures, ['محاضرة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</Badge>
+                      <Badge>{countAr(ch.estLectures, [LABEL_LECTURE, NOUN_TWO_LECTURES, LABEL_LECTURES, LABEL_LECTURE])}</Badge>
                     </div>
                     <ul className="curriculum-topics">
                       {ch.topics.map((t) => (
@@ -651,9 +653,9 @@ function StudentRow({ student, dimmed }: { student: TeacherStudentRow; dimmed: b
         <div className="risk-row-name">{student.name}</div>
         <div className="risk-row-meta">
           <bdi className="font-mono text-xxs">{student.universityId}</bdi>
-          <span><Icon icon={ClipboardCheck} size={11} /> حضور <bdi>{student.attendancePct}%</bdi></span>
+          <span><Icon icon={ClipboardCheck} size={11} /> {NOUN_ATTEND} <bdi>{student.attendancePct}%</bdi></span>
           <span><Icon icon={BarChart3} size={11} /> درجة <bdi>{student.avgGrade}%</bdi></span>
-          <span><Icon icon={BookOpen} size={11} /> متابعة <bdi>{student.watchPct}%</bdi></span>
+          <span><Icon icon={BookOpen} size={11} /> {FOLLOW} <bdi>{student.watchPct}%</bdi></span>
         </div>
         {student.signals.length > 0 && (
           <div className="risk-row-meta" style={{ marginBlockStart: 'var(--sp-1)' }}>

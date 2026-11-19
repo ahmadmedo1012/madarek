@@ -1,3 +1,5 @@
+import { RETRY_ACTION, CANCEL, NOUN_STUDENTS, EMPTY_COURSES, NOUN_TWO_STUDENTS, NOUN_STUDENT_ACC, NOUN_STUDENT, EMPTY_POSTS_YET, RANK_ASSISTANT_PROF, RANK_ASSOCIATE_PROF, FACULTY_BODY, LABEL_THE_COURSES, ONE_POST, FAILED_LOAD_DOT, NOUN_PROF, SAVE, RANK_LECTURER, ACADEMIC_FILE, STATUS_VERIFIED, TOTAL_STUDENTS, BUSY_DOTS, FAILED_SAVE_DOT, VIEW, OFFICE_HOURS, SAVED_DOT } from '../../lib/copy';
+
 /**
  * Teacher self-profile.
  *
@@ -38,16 +40,16 @@ import '../../styles/teacher/heron.css'; // R305 Heron: §0 primitives + §E tax
 import '../../styles/landing/inner.css';
 
 const RANK_LABEL: Record<string, string> = {
-  LECTURER: 'مُعيد / محاضر',
-  ASSISTANT_PROFESSOR: 'أستاذ مساعد',
-  ASSOCIATE_PROFESSOR: 'أستاذ مشارك',
-  PROFESSOR: 'أستاذ',
+  LECTURER: RANK_LECTURER,
+  ASSISTANT_PROFESSOR: RANK_ASSISTANT_PROF,
+  ASSOCIATE_PROFESSOR: RANK_ASSOCIATE_PROF,
+  PROFESSOR: NOUN_PROF,
 };
 
 /* r366 copy-diet §7 — one home for the literals this page repeats
  * (page title, managed-by note, counted units); the copy gate counts
  * per literal, so a shared const counts once. */
-const PROFILE_TITLE = 'الملف الأكاديمي';
+const PROFILE_TITLE = ACADEMIC_FILE;
 const MANAGED_BY_REGISTRAR = 'تُدار من المسجل العام.';
 const CREDIT_UNIT: [string, string, string, string] = ['وحدة', 'وحدتان', 'وحدات', 'وحدة'];
 const DEGREE_LABEL: Record<string, string> = {
@@ -148,7 +150,7 @@ export default function TeacherProfilePage() {
           </div>
         </header>
         <ErrorState
-          message="تعذَّر التحميل."
+          message={FAILED_LOAD_DOT}
           error={error}
           onRetry={() => refetch()}
         />
@@ -211,7 +213,7 @@ export default function TeacherProfilePage() {
     } catch (err) {
       // Keep the edit open with the entered values; the Arabic error
       // renders inline so the teacher can retry without losing work.
-      setSaveError(apiErrorMessage(err, 'تعذَّر الحفظ.'));
+      setSaveError(apiErrorMessage(err, FAILED_SAVE_DOT));
     }
   };
 
@@ -220,7 +222,7 @@ export default function TeacherProfilePage() {
     <div className="page page-profile">
       <header className="page-header">
         <div className="page-title-block">
-          <span className="hr-brow">هيئة التدريس</span>
+          <span className="hr-brow">{FACULTY_BODY}</span>
           <h1 className="page-title">{PROFILE_TITLE}</h1>
         </div>
         {!editing ? (
@@ -234,10 +236,10 @@ export default function TeacherProfilePage() {
         ) : (
           <div className="flex gap-2">
             <button type="button" className="btn ghost" onClick={cancelEdit} disabled={update.isPending}>
-              <Icon icon={X} size={14} /> إلغاء
+              <Icon icon={X} size={14} /> {CANCEL}
             </button>
             <button type="button" className="btn accent hr-cta" onClick={() => void saveEdit()} disabled={update.isPending}>
-              <Icon icon={Save} size={14} /> {update.isPending ? 'جارٍ…' : 'حفظ'}
+              <Icon icon={Save} size={14} /> {update.isPending ? BUSY_DOTS : SAVE}
             </button>
           </div>
         )}
@@ -251,11 +253,11 @@ export default function TeacherProfilePage() {
         >
           <Icon icon={saveError ? AlertCircle : ShieldCheck} size={14} />
           <span className="flex-1">
-            {saveError ?? 'تمّ الحفظ.'}
+            {saveError ?? SAVED_DOT}
           </span>
           {saveError && (
             <button type="button" className="btn ghost sm" onClick={() => void saveEdit()} disabled={update.isPending}>
-              <Icon icon={Save} size={12} /> إعادة المحاولة
+              <Icon icon={Save} size={12} /> {RETRY_ACTION}
             </button>
           )}
         </div>
@@ -276,7 +278,7 @@ export default function TeacherProfilePage() {
               د. {profile.name}
               {profile.verifiedAt && (
                 <span className="teacher-verified" title={`موثَّق منذ ${formatDate(profile.verifiedAt)}`}>
-                  <Icon icon={ShieldCheck} size={14} /> موثَّق
+                  <Icon icon={ShieldCheck} size={14} /> {STATUS_VERIFIED}
                 </span>
               )}
             </h2>
@@ -304,13 +306,13 @@ export default function TeacherProfilePage() {
         ariaLabel="حجم التدريس هذا الفصل"
         cells={[
           {
-            label: 'المقرّرات',
+            label: LABEL_THE_COURSES,
             value: profile.workload.courseCount.toString(),
             trend: countAr(profile.workload.totalCredits, CREDIT_UNIT),
             trendTone: 'flat',
           },
           {
-            label: 'إجمالي الطلاب',
+            label: TOTAL_STUDENTS,
             value: profile.workload.totalEnrolled.toString(),
             trend: 'في مقرّراتك',
             trendTone: 'flat',
@@ -358,7 +360,7 @@ export default function TeacherProfilePage() {
                   onChange={(e) => setDraft({ ...draft, officeLocation: e.target.value })}
                 />
               </FormField>
-              <FormField label="ساعات العمل" id="teacher-office-hours-field">
+              <FormField label={OFFICE_HOURS} id="teacher-office-hours-field">
                 <input
                   className="input"
                   placeholder="الأحد والثلاثاء 10-12"
@@ -455,12 +457,12 @@ export default function TeacherProfilePage() {
         icon={FileText}
         subtitle={profile.publications.length === 0
           ? 'لا منشورات'
-          : countAr(profile.publications.length, ['منشور', 'منشوران', 'منشورات', 'منشوراً'])}
+          : countAr(profile.publications.length, [ONE_POST, 'منشوران', 'منشورات', 'منشوراً'])}
       >
         {profile.publications.length === 0 ? (
           <EmptyState illustration="empty-research"
             icon={FileText}
-            title="لا منشورات بعد"
+            title={EMPTY_POSTS_YET}
             description={MANAGED_BY_REGISTRAR}
           />
         ) : (
@@ -474,7 +476,7 @@ export default function TeacherProfilePage() {
                 </div>
                 {p.url && (
                   <a href={p.url} target="_blank" rel="noreferrer" className="btn ghost sm">
-                    عرض <Icon icon={ChevronLeft} size={12} />
+                    {VIEW} <Icon icon={ChevronLeft} size={12} />
                   </a>
                 )}
               </div>
@@ -518,7 +520,7 @@ export default function TeacherProfilePage() {
         {profile.courses.length === 0 ? (
           <EmptyState illustration="empty-courses"
             icon={BookOpen}
-            title="لا مقرّرات"
+            title={EMPTY_COURSES}
             description=""
           />
         ) : (
@@ -564,7 +566,7 @@ function CourseRow({ course: c }: {
         <span className="tq-row-kicker"><bdi>{c.code}</bdi> · {c.term}</span>
         <span className="tq-row-title" title={c.name}>{c.name}</span>
         <span className="tq-row-meta">
-          <span><Icon icon={Users2} size={12} /> {countAr(c.enrolled, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}</span>
+          <span><Icon icon={Users2} size={12} /> {countAr(c.enrolled, [NOUN_STUDENT, NOUN_TWO_STUDENTS, NOUN_STUDENTS, NOUN_STUDENT_ACC])}</span>
           <span>{countAr(c.credits, CREDIT_UNIT)}</span>
         </span>
       </span>

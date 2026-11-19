@@ -1,3 +1,5 @@
+import { LOADING } from '../../../lib/copy';
+
 /**
  * R351 X5 — the hosting/usage seat in the admin settings page.
  *
@@ -45,7 +47,7 @@ export function HostingUsageCard() {
         <div className="settings-row">
           <div>
             <div className="settings-label">لوحة الاستخدام</div>
-            <div className="settings-value">جارٍ التحميل…</div>
+            <div className="settings-value">{LOADING}</div>
           </div>
         </div>
       ) : usage.isError ? (

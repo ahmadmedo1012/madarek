@@ -1,3 +1,5 @@
+import { RETRY_ACTION, LOADING, CANCEL, ALL, NO_RESULTS, NOUN_STUDENTS, SAVING, NOUN_TWO_STUDENTS, NOUN_STUDENT_ACC, LABEL_STUDENTS, LABEL_COLLEGE, LABEL_STATUS, NOUN_COURSE_ACC, EMPTY_RESEARCH_YET, LABEL_LECTURES, LABEL_COURSES, LABEL_ACTIONS, LABEL_DEPT, ONE_COURSE, NOUN_COURSE_TWO, FACULTY_BODY, LABEL_THE_COURSES, PUBLISHED_RESEARCH, ONE_POST, SEARCH_PLACEHOLDER, ADDING, TOTAL_USERS, COURSE_NAME, ONE_SEMESTER, COLLEGE_DEPT, CREDIT_HOURS, NO_MATCHING_RESULTS, NAME_ENG_OPTIONAL, EMOJI_OPTIONAL, FAILED_ADD_COLLEGE, FAILED_ADD_DEPT, NO_DATA_YET, TOP_ENROLLED_COURSES, NO_ENROLLMENTS_YET, NOUN_SEM_TWO, NOUN_SEMS, NOUN_SEM_ACC, EDIT, FAILED_SAVE_COURSE, FAILED_OPEN_SECTION, ONE_STUDENT, ALL_COLLEGES, ENROLLMENTS, DIGITAL_TRANSFORMATION, INSTITUTIONAL_REPORTS, MANAGE_COURSES, ONE_DEPT, NOUN_TWO_DEPTS, NOUN_DEPTS, NOUN_DEPT_ACC, ONE_ENROLLMENT, NEEDS_YOUR_ATTENTION, TOTAL_STUDENTS, COLLEGE_NAME, COLLEGE_SCIENCES, LABEL_CITY, KNOWLEDGE_CAMPUS, ADD_COLLEGE, ADD_DEPT, DEPT_NAME, CS_DEPT, ADD_THE_DEPT, LABEL_THE_STUDENT, THE_LECTURES, ADD_COURSE, COURSE_CODE, THE_CREDIT_HOURS, BETWEEN_1_10, SAVE_CHANGES, ADD_THE_COURSE, OPEN_SECTION, SEMESTER, LABEL_THE_PROF, PICK_PROF, HALL_OPTIONAL, CAPACITY, OPENING, OPEN_THE_SECTION, DELETE_PERMANENTLY, ADD_A_COLLEGE, PICK_DEPT } from '../../lib/copy';
+
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Building2, BookOpen, BarChart3, FileText, TrendingUp, ClipboardCheck, AlertTriangle, Search, X, ChevronDown, ArrowLeft, Plus, Trash2, GraduationCap, Activity } from 'lucide-react';
@@ -75,10 +77,10 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineEleme
  * forms were inline (byte-identical) at every call site below.
  * COURSE_UNIT is exported: QualityPages' rosters speak the same noun
  * (same cross-page import seat as useCompactRosterBand above). */
-export const COURSE_UNIT: [string, string, string, string] = ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'];
-const STUDENT_UNIT: [string, string, string, string] = ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'];
-const DEPT_UNIT: [string, string, string, string] = ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'];
-const ENROLL_UNIT: [string, string, string, string] = ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'];
+export const COURSE_UNIT: [string, string, string, string] = [ONE_COURSE, NOUN_COURSE_TWO, LABEL_COURSES, NOUN_COURSE_ACC];
+const STUDENT_UNIT: [string, string, string, string] = [ONE_STUDENT, NOUN_TWO_STUDENTS, NOUN_STUDENTS, NOUN_STUDENT_ACC];
+const DEPT_UNIT: [string, string, string, string] = [ONE_DEPT, NOUN_TWO_DEPTS, NOUN_DEPTS, NOUN_DEPT_ACC];
+const ENROLL_UNIT: [string, string, string, string] = [ONE_ENROLLMENT, 'تسجيلان', ENROLLMENTS, 'تسجيلاً'];
 
 /* ════════════════════════════════════════════════════════════════
    Shared helpers
@@ -188,7 +190,7 @@ function ActionStrip() {
   // row placeholders, so the page-skeleton slot and this pending state
   // hand off to the resolved strip at identical heights.
   if (courses.isPending || gradedPapers.isPending) {
-    return <StripSkeleton title="يحتاج انتباهك" subtitle="" />;
+    return <StripSkeleton title={NEEDS_YOUR_ATTENTION} subtitle="" />;
   }
 
   const rows: ActionRow[] = [];
@@ -219,7 +221,7 @@ function ActionStrip() {
   if (rows.length === 0) return null;
   return (
     <LedgerPanel
-      title="يحتاج انتباهك"
+      title={NEEDS_YOUR_ATTENTION}
       zone="rose"
       tag={countAr(rows.length, ['بند', 'بندان', 'بنود', 'بنداً'])}
       ariaLabel="حالات تحتاج انتباهك"
@@ -259,7 +261,7 @@ export function AdminDashboardPage() {
     return (
       <div className="page r305ao" aria-busy="true" aria-live="polite">
         <PatternsPageHeader title={roleDashboardLabel('ADMIN')} />
-        <StripSkeleton title="يحتاج انتباهك" subtitle="" />
+        <StripSkeleton title={NEEDS_YOUR_ATTENTION} subtitle="" />
         <div className="stat-strip" aria-busy="true">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="stat-cell">
@@ -360,20 +362,20 @@ export function AdminDashboardPage() {
             to: '/admin/faculties',
           },
           {
-            label: 'الطلاب',
+            label: LABEL_STUDENTS,
             value: formatNum(s.totalStudents),
             trendTone: 'flat',
             to: '/admin/students',
           },
           {
-            label: 'هيئة التدريس',
+            label: FACULTY_BODY,
             value: formatNum(s.totalTeachers),
             trend: 'عضو',
             trendTone: 'flat',
             to: '/admin/teachers',
           },
           {
-            label: 'المقرّرات',
+            label: LABEL_THE_COURSES,
             value: formatNum(s.totalCourses),
             trend: countAr(s.totalEnrollments, ENROLL_UNIT),
             trendTone: 'flat',
@@ -405,7 +407,7 @@ export function AdminDashboardPage() {
               </p>
               <Stat
                 label="أعلى كلّيّة عدداً"
-                value={`${topFaculty.name} (${countAr(topFaculty.studentCount, ['طالب واحد', 'طالبين', 'طلاب', 'طالباً'])})`}
+                value={`${topFaculty.name} (${countAr(topFaculty.studentCount, [ONE_STUDENT, 'طالبين', NOUN_STUDENTS, NOUN_STUDENT_ACC])})`}
               />
               <Link
                 to={`/admin/students?facultyId=${topFaculty.id}`}
@@ -419,11 +421,11 @@ export function AdminDashboardPage() {
           ) : (
             <ChartFrame
               ariaLabel={`توزيع الطلاب حسب الكلّيّة — أعلى ${countAr(topByStudents.length, ['كلّيّة', 'كلّيّتين', 'كلّيّات', 'كلّيّة'])} عددًا`}
-              summary={topFaculty ? `أعلى كلّيّة: ${topFaculty.name} (${countAr(topFaculty.studentCount, ['طالب واحد', 'طالبين', 'طلاب', 'طالباً'])}).` : undefined}
+              summary={topFaculty ? `أعلى كلّيّة: ${topFaculty.name} (${countAr(topFaculty.studentCount, [ONE_STUDENT, 'طالبين', NOUN_STUDENTS, NOUN_STUDENT_ACC])}).` : undefined}
               height={Math.max(180, topByStudents.length * 36)}
               table={{
                 caption: 'توزيع الطلاب',
-                columns: ['الكلّيّة', 'عدد الطلاب'],
+                columns: [LABEL_COLLEGE, 'عدد الطلاب'],
                 rows: topByStudents.map((row) => [row.name, row.studentCount]),
               }}
             >
@@ -485,7 +487,7 @@ export function AdminDashboardPage() {
               value={studentTeacherRatio !== null ? `${studentTeacherRatio}` : '—'}
             />
             <Stat
-              label="بحوث منشورة"
+              label={PUBLISHED_RESEARCH}
               value={formatNum(r.headline.publishedPapers)}
               to="/admin/reports?status=PUBLISHED"
               hint="فتح سجلّ البحوث"
@@ -506,7 +508,7 @@ export function AdminDashboardPage() {
             height={240}
             table={{
               caption: 'الإنتاج العلمي شهرياً',
-              columns: ['الشهر', 'مقدَّم', 'مقيَّم', 'منشور'],
+              columns: ['الشهر', 'مقدَّم', 'مقيَّم', ONE_POST],
               rows: r.paperTrend.map((m) => [m.month, m.submitted, m.graded, m.published]),
             }}
           >
@@ -531,7 +533,7 @@ export function AdminDashboardPage() {
                     pointBackgroundColor: c.gold,
                   },
                   {
-                    label: 'منشور',
+                    label: ONE_POST,
                     data: r.paperTrend.map((m) => m.published),
                     borderColor: c.success,
                     fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2,
@@ -647,7 +649,7 @@ function FacultyRow({
           onClick={onAddDepartment}
         >
           <Icon icon={Plus} size={13} />
-          إضافة قسم
+          {ADD_DEPT}
         </button>
       </div>
     </div>
@@ -777,7 +779,7 @@ export function AdminFacultiesPage() {
             aria-label="إضافة كلّيّة جديدة"
           >
             <Icon icon={Plus} size={14} />
-            إضافة كلّيّة
+            {ADD_A_COLLEGE}
           </button>
         )}
       />
@@ -787,8 +789,8 @@ export function AdminFacultiesPage() {
         cells={[
           { label: 'الكلّيّات', value: formatNum(data.length), trendTone: 'flat' },
           { label: 'الأقسام', value: formatNum(totalDepts), trendTone: 'flat' },
-          { label: 'إجمالي الطلاب', value: formatNum(totalStudents), trendTone: 'flat' },
-          { label: 'هيئة التدريس', value: formatNum(totalTeachers), trendTone: 'flat' },
+          { label: TOTAL_STUDENTS, value: formatNum(totalStudents), trendTone: 'flat' },
+          { label: FACULTY_BODY, value: formatNum(totalTeachers), trendTone: 'flat' },
         ]}
       />
 
@@ -813,7 +815,7 @@ export function AdminFacultiesPage() {
                 <Icon icon={Search} size={14} />
                 <input
                   type="search"
-                  placeholder="ابحث…"
+                  placeholder={SEARCH_PLACEHOLDER}
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   className="admin-students-input"
@@ -847,7 +849,7 @@ export function AdminFacultiesPage() {
             <EmptyState
               illustration="empty-search"
               icon={Building2}
-              title="لا نتائج مطابقة"
+              title={NO_MATCHING_RESULTS}
               action={hasFilters ? (
                 <button
                   type="button"
@@ -874,21 +876,21 @@ export function AdminFacultiesPage() {
         ariaLabel="إضافة كلّيّة جديدة"
       >
         <div className="modal-header">
-          <h3 className="modal-title">إضافة كلّيّة</h3>
+          <h3 className="modal-title">{ADD_A_COLLEGE}</h3>
           <button type="button" className="icon-btn" onClick={closeFacultyForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
         <div className="modal-body" style={{ maxWidth: 480 }}>
-          <FormField label="اسم الكلّيّة" id="faculty-name">
+          <FormField label={COLLEGE_NAME} id="faculty-name">
             <input
               className="input"
               value={facultyForm.name}
               onChange={(e) => setFacultyForm({ ...facultyForm, name: e.target.value })}
-              placeholder="كلية العلوم"
+              placeholder={COLLEGE_SCIENCES}
             />
           </FormField>
-          <FormField label="الاسم بالإنجليزية (اختياري)" id="faculty-name-en">
+          <FormField label={NAME_ENG_OPTIONAL} id="faculty-name-en">
             <input
               className="input"
               value={facultyForm.nameEn}
@@ -897,17 +899,17 @@ export function AdminFacultiesPage() {
             />
           </FormField>
           <FormField
-            label="المدينة"
+            label={LABEL_CITY}
             id="faculty-city"
           >
             <input
               className="input"
               value={facultyForm.city}
               onChange={(e) => setFacultyForm({ ...facultyForm, city: e.target.value })}
-              placeholder="حرم المعرفة"
+              placeholder={KNOWLEDGE_CAMPUS}
             />
           </FormField>
-          <FormField label="رمز تعبيري (اختياري)" id="faculty-icon">
+          <FormField label={EMOJI_OPTIONAL} id="faculty-icon">
             <input
               className="input"
               value={facultyForm.iconEmoji}
@@ -919,7 +921,7 @@ export function AdminFacultiesPage() {
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={closeFacultyForm}>
-            إلغاء
+            {CANCEL}
           </button>
           <button
             type="button"
@@ -928,14 +930,14 @@ export function AdminFacultiesPage() {
             disabled={!facultyForm.name.trim() || !facultyForm.city.trim()
               || createFaculty.isPending}
           >
-            {createFaculty.isPending ? 'جارٍ الإضافة…' : 'إضافة الكلّيّة'}
+            {createFaculty.isPending ? ADDING : ADD_COLLEGE}
           </button>
         </div>
         {createFaculty.isError && (
           <AlertRow
             color="red"
             icon={AlertTriangle}
-            title="تعذّر إضافة الكلّيّة"
+            title={FAILED_ADD_COLLEGE}
             description={apiErrorMessage(
               createFaculty.error,
               'لا استجابة من الخادم.',
@@ -951,10 +953,10 @@ export function AdminFacultiesPage() {
       <Modal
         open={deptTarget !== null}
         onClose={closeDeptForm}
-        ariaLabel="إضافة قسم"
+        ariaLabel={ADD_DEPT}
       >
         <div className="modal-header">
-          <h3 className="modal-title">إضافة قسم</h3>
+          <h3 className="modal-title">{ADD_DEPT}</h3>
           <button type="button" className="icon-btn" onClick={closeDeptForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
@@ -965,15 +967,15 @@ export function AdminFacultiesPage() {
               في «{deptTarget.name}»
             </p>
           )}
-          <FormField label="اسم القسم" id="dept-name">
+          <FormField label={DEPT_NAME} id="dept-name">
             <input
               className="input"
               value={deptForm.name}
               onChange={(e) => setDeptForm({ ...deptForm, name: e.target.value })}
-              placeholder="قسم الحاسوب"
+              placeholder={CS_DEPT}
             />
           </FormField>
-          <FormField label="الاسم بالإنجليزية (اختياري)" id="dept-name-en">
+          <FormField label={NAME_ENG_OPTIONAL} id="dept-name-en">
             <input
               className="input"
               value={deptForm.nameEn}
@@ -984,7 +986,7 @@ export function AdminFacultiesPage() {
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={closeDeptForm}>
-            إلغاء
+            {CANCEL}
           </button>
           <button
             type="button"
@@ -992,14 +994,14 @@ export function AdminFacultiesPage() {
             onClick={submitDepartment}
             disabled={!deptForm.name.trim() || createDepartment.isPending}
           >
-            {createDepartment.isPending ? 'جارٍ الإضافة…' : 'إضافة القسم'}
+            {createDepartment.isPending ? ADDING : ADD_THE_DEPT}
           </button>
         </div>
         {createDepartment.isError && (
           <AlertRow
             color="red"
             icon={AlertTriangle}
-            title="تعذّر إضافة القسم"
+            title={FAILED_ADD_DEPT}
             description={apiErrorMessage(
               createDepartment.error,
               'لا استجابة من الخادم.',
@@ -1047,7 +1049,7 @@ function PaperRow({ p }: { p: AdminPaper }) {
           <div className="ws-meta">{p.offering.course.name} · <bdi>{p.offering.course.code}</bdi></div>
         )}
       </td>
-      <td data-label="الطالب">
+      <td data-label={LABEL_THE_STUDENT}>
         <div className="admin-students-name">
           <UserAvatar
             initials={p.student.avatarInitials ?? `${p.student.firstName[0]}${p.student.lastName[0]}`}
@@ -1057,7 +1059,7 @@ function PaperRow({ p }: { p: AdminPaper }) {
           <div>{p.student.firstName} {p.student.lastName}</div>
         </div>
       </td>
-      <td data-label="الحالة">
+      <td data-label={LABEL_STATUS}>
         <Badge color={PAPER_STATUS_TONE[p.status]}>{PAPER_STATUS_LABEL[p.status]}</Badge>
       </td>
       <td className="admin-table-num font-mono" data-label="نسبة الاقتباس (محاكاة)">
@@ -1125,8 +1127,8 @@ export function AdminReportsPage() {
     return (
       <div className="page r305ao">
         <PatternsPageHeader
-          title="التقارير المؤسسية"
-          breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+          title={INSTITUTIONAL_REPORTS}
+          breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: INSTITUTIONAL_REPORTS }]}
         />
         <StatStripSkeleton />
         <CardSkeleton lines={6} />
@@ -1137,8 +1139,8 @@ export function AdminReportsPage() {
     return (
       <div className="page r305ao">
         <PatternsPageHeader
-          title="التقارير المؤسسية"
-          breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+          title={INSTITUTIONAL_REPORTS}
+          breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: INSTITUTIONAL_REPORTS }]}
         />
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
@@ -1153,9 +1155,9 @@ export function AdminReportsPage() {
   return (
     <div className="page r305ao">
       <PatternsPageHeader
-        title="التقارير المؤسسية"
+        title={INSTITUTIONAL_REPORTS}
         index="07"
-        breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: 'التقارير المؤسسية' }]}
+        breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: INSTITUTIONAL_REPORTS }]}
         actions={(
           /* R342-09 (D11 sub-page CTA precedent): a read-only ledger still
                    * names its ONE honest next surface — the adoption view is the
@@ -1164,7 +1166,7 @@ export function AdminReportsPage() {
                    * first viewport (the admin topbar hides «اسأل AI»). */
                   <Link to="/admin/digital" className="btn accent sm">
             <Icon icon={Activity} size={13} />
-            التحوّل الرقميّ
+            {DIGITAL_TRANSFORMATION}
           </Link>
         )}
       />
@@ -1184,7 +1186,7 @@ export function AdminReportsPage() {
             to: status ? '/admin/reports' : undefined,
           },
           {
-            label: 'بحوث منشورة',
+            label: PUBLISHED_RESEARCH,
             value: formatNum(data.headline.publishedPapers),
             to: '/admin/reports?status=PUBLISHED',
           },
@@ -1194,7 +1196,7 @@ export function AdminReportsPage() {
             to: '/admin/students',
           },
           {
-            label: 'إجمالي المستخدمين',
+            label: TOTAL_USERS,
             value: formatNum(data.headline.totalUsers),
           },
         ]}
@@ -1224,7 +1226,7 @@ export function AdminReportsPage() {
         {data.paperTrend.length === 0 ? (
           <EmptyState illustration="empty-research"
             icon={TrendingUp}
-            title="لا بيانات بعد"
+            title={NO_DATA_YET}
           />
         ) : trendView === 'table' ? (
           <div className="table-wrap">
@@ -1238,7 +1240,7 @@ export function AdminReportsPage() {
                   <th scope="col">الشهر</th>
                   <th scope="col">مُقدَّم</th>
                   <th scope="col">مقيَّم</th>
-                  <th scope="col">منشور</th>
+                  <th scope="col">{ONE_POST}</th>
                 </tr>
               </thead>
               <tbody>
@@ -1250,7 +1252,7 @@ export function AdminReportsPage() {
                     <td data-label="الشهر">{row.month}</td>
                     <td className="font-mono" data-label="مُقدَّم">{row.submitted}</td>
                     <td className="font-mono" data-label="مقيَّم">{row.graded}</td>
-                    <td className="font-mono" data-label="منشور">{row.published}</td>
+                    <td className="font-mono" data-label={ONE_POST}>{row.published}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1319,7 +1321,7 @@ export function AdminReportsPage() {
               aria-pressed={status === undefined}
               onClick={() => setStatusFilter(undefined)}
             >
-              الكل
+              {ALL}
             </button>
             {RESEARCH_STATUSES.map((st) => (
               <button
@@ -1345,7 +1347,7 @@ export function AdminReportsPage() {
           ) : papers.data && papers.data.data.length === 0 ? (
             <EmptyState
               icon={FileText}
-              title={status ? `لا توجد بحوث بحالة «${PAPER_STATUS_LABEL[status]}»` : 'لا بحوث بعد'}
+              title={status ? `لا توجد بحوث بحالة «${PAPER_STATUS_LABEL[status]}»` : EMPTY_RESEARCH_YET}
               action={status ? (
                 <button type="button" className="btn ghost sm" onClick={() => setStatusFilter(undefined)}>
                   <Icon icon={X} size={13} />
@@ -1361,8 +1363,8 @@ export function AdminReportsPage() {
                 <thead>
                   <tr>
                     <th scope="col">البحث</th>
-                    <th scope="col">الطالب</th>
-                    <th scope="col">الحالة</th>
+                    <th scope="col">{LABEL_THE_STUDENT}</th>
+                    <th scope="col">{LABEL_STATUS}</th>
                     <th scope="col" className="admin-table-num" style={{ width: 110 }}>نسبة الاقتباس <span className="text-xxs text-subtle">محاكاة</span></th>
                     <th scope="col" style={{ width: 130 }}>تاريخ الرفع</th>
                   </tr>
@@ -1386,11 +1388,11 @@ export function AdminReportsPage() {
       </div>
 
       {/* Top courses */}
-      <Card title="أكثر المقرّرات تسجيلاً" icon={ClipboardCheck}>
+      <Card title={TOP_ENROLLED_COURSES} icon={ClipboardCheck}>
         {data.topCourses.length === 0 ? (
           <EmptyState illustration="empty-list"
             icon={ClipboardCheck}
-            title="لا تسجيلات بعد"
+            title={NO_ENROLLMENTS_YET}
           />
         ) : (
           <div className="table-wrap">
@@ -1398,18 +1400,18 @@ export function AdminReportsPage() {
               <thead>
                 <tr>
                   <th scope="col" style={{ width: 110 }}>الكود</th>
-                  <th scope="col">اسم المقرّر</th>
+                  <th scope="col">{COURSE_NAME}</th>
                   <th scope="col" className="admin-table-num" style={{ width: 130 }}>طلاب مسجَّلون</th>
-                  <th scope="col" className="admin-table-num" style={{ width: 110 }}>المحاضرات</th>
+                  <th scope="col" className="admin-table-num" style={{ width: 110 }}>{THE_LECTURES}</th>
                 </tr>
               </thead>
               <tbody>
                 {data.topCourses.map((c) => (
                   <tr key={c.code}>
                     <td className="font-mono text-subtle" data-label="الكود"><bdi>{c.code}</bdi></td>
-                    <td className="ws-id" data-label="اسم المقرّر">{c.name}</td>
+                    <td className="ws-id" data-label={COURSE_NAME}>{c.name}</td>
                     <td className="admin-table-num font-mono" data-label="طلاب مسجَّلون">{c.enrollments}</td>
-                    <td className="admin-table-num font-mono" data-label="المحاضرات">{c.lectures}</td>
+                    <td className="admin-table-num font-mono" data-label={THE_LECTURES}>{c.lectures}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1575,12 +1577,12 @@ export function AdminCoursesPage() {
   return (
     <div className="page r305ao">
       <PatternsPageHeader
-        title="إدارة المقرّرات"
+        title={MANAGE_COURSES}
         description={meta
           ? `${countAr(meta.total, COURSE_UNIT)}${hasFilters ? ' مطابقة للبحث والتصفيّة' : ' في الجامعة'}`
           : undefined}
         index="04"
-        breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: 'المقرّرات' }]}
+        breadcrumbs={[{ label: roleDashboardLabel('ADMIN'), to: '/admin/dashboard' }, { label: LABEL_THE_COURSES }]}
         actions={(
           /* R342-09 (the students-page family contract): the page's ONE
                    * create action rides the header action slot on the accent
@@ -1594,7 +1596,7 @@ export function AdminCoursesPage() {
             aria-label="إضافة مقرّر جديد"
           >
             <Icon icon={Plus} size={14} />
-            إضافة مقرّر
+            {ADD_COURSE}
           </button>
         )}
       />
@@ -1612,7 +1614,7 @@ export function AdminCoursesPage() {
                 <Icon icon={Search} size={14} />
                 <input
                   type="search"
-                  placeholder="ابحث…"
+                  placeholder={SEARCH_PLACEHOLDER}
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   className="admin-students-input"
@@ -1626,12 +1628,12 @@ export function AdminCoursesPage() {
                 disabled={facQ.isPending}
                 aria-label="تصفية حسب الكلّيّة"
               >
-                <option value="">{facQ.isPending ? 'جارٍ التحميل…' : 'كلّ الكلّيّات'}</option>
+                <option value="">{facQ.isPending ? LOADING : ALL_COLLEGES}</option>
                 {facQ.data?.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
               </select>
               {facQ.isError && (
                 <button type="button" className="btn ghost sm" onClick={() => facQ.refetch()}>
-                  إعادة المحاولة
+                  {RETRY_ACTION}
                 </button>
               )}
             </>
@@ -1658,13 +1660,13 @@ export function AdminCoursesPage() {
               <thead>
                 <tr>
                   <th scope="col" style={{ width: 100 }}>الكود</th>
-                  <th scope="col">اسم المقرّر</th>
-                  <th scope="col">الكلّيّة / القسم</th>
+                  <th scope="col">{COURSE_NAME}</th>
+                  <th scope="col">{COLLEGE_DEPT}</th>
                   <th scope="col" className="admin-table-num" style={{ width: 70 }}>س.م</th>
                   {/* r183-B5: folded into the name cell's meta line at
                       ≤1024 (the compact band) — counts stay on the row. */}
-                  {!compact && <th scope="col" className="admin-table-num" style={{ width: 110 }}>تسجيلات</th>}
-                  <th scope="col" className="admin-table-num" style={{ width: 100 }}>محاضرات</th>
+                  {!compact && <th scope="col" className="admin-table-num" style={{ width: 110 }}>{ENROLLMENTS}</th>}
+                  <th scope="col" className="admin-table-num" style={{ width: 100 }}>{LABEL_LECTURES}</th>
                   {!compact && <th scope="col" className="admin-table-num" style={{ width: 100 }}>الفصول</th>}
                   {/* r155c: the rows already carried an 8th data-label cell
                       (الإجراءات — تعديل/حذف) with no matching header, and the
@@ -1679,7 +1681,7 @@ export function AdminCoursesPage() {
                       Plain th = the family pattern: header and
                       buttons share the START edge (right in RTL),
                       like the students table. */}
-                  <th scope="col">إجراءات</th>
+                  <th scope="col">{LABEL_ACTIONS}</th>
                 </tr>
               </thead>
               <tbody>
@@ -1687,7 +1689,7 @@ export function AdminCoursesPage() {
                   <tr>
                     <td colSpan={courseCols}>
                       <EmptyState illustration="empty-search"
-                        title="لا نتائج"
+                        title={NO_RESULTS}
                         action={hasFilters ? (
                           <button type="button" className="btn ghost sm" onClick={clearFilters}>
                             <Icon icon={X} size={13} />
@@ -1701,7 +1703,7 @@ export function AdminCoursesPage() {
                 {courses.map((c) => (
                   <tr key={c.id}>
                     <td className="font-mono text-subtle" data-label="الكود"><bdi>{c.code}</bdi></td>
-                    <td data-label="اسم المقرّر" className="ws-id">
+                    <td data-label={COURSE_NAME} className="ws-id">
                       <div className="flex items-center gap-2">
                         {c.themeColor && (
                           <span className="admin-course-tint" style={{ background: c.themeColor }} aria-hidden />
@@ -1712,13 +1714,13 @@ export function AdminCoursesPage() {
                             <div className="ws-meta">
                               {countAr(c.totalEnrollments, ENROLL_UNIT)}
                               {' · '}
-                              {countAr(c.offeringCount, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])}
+                              {countAr(c.offeringCount, [ONE_SEMESTER, NOUN_SEM_TWO, NOUN_SEMS, NOUN_SEM_ACC])}
                             </div>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td data-label="الكلّيّة / القسم">
+                    <td data-label={COLLEGE_DEPT}>
                       {c.faculty ? (
                         <div className="flex items-center gap-1">
                           <EmojiIcon emoji={c.facultyEmoji} fallback={BookOpen} size={16} className="text-subtle" />
@@ -1729,9 +1731,9 @@ export function AdminCoursesPage() {
                         <span className="text-xxs text-subtle">—</span>
                       )}
                     </td>
-                    <td className="admin-table-num font-mono" data-label="ساعات معتمدة">{c.credits}</td>
-                    {!compact && <td className="admin-table-num font-mono" data-label="تسجيلات">{c.totalEnrollments}</td>}
-                    <td className="admin-table-num font-mono" data-label="محاضرات">{c.totalLectures}</td>
+                    <td className="admin-table-num font-mono" data-label={CREDIT_HOURS}>{c.credits}</td>
+                    {!compact && <td className="admin-table-num font-mono" data-label={ENROLLMENTS}>{c.totalEnrollments}</td>}
+                    <td className="admin-table-num font-mono" data-label={LABEL_LECTURES}>{c.totalLectures}</td>
                     {!compact && <td className="admin-table-num font-mono" data-label="الفصول">{c.offeringCount}</td>}
                     {/* r157 (6A9 #9): font-mono dropped — the actions cell
                         carries Arabic button labels, not figures; the mono
@@ -1757,7 +1759,7 @@ export function AdminCoursesPage() {
                           aria-label={`فتح شعبة لمقرّر ${c.name}`}
                         >
                           <Icon icon={Plus} size={13} />
-                          فتح شعبة
+                          {OPEN_SECTION}
                         </button>
                         <button
                           type="button"
@@ -1766,7 +1768,7 @@ export function AdminCoursesPage() {
                           aria-label={`تعديل ${c.name}`}
                         >
                           <Icon icon={ArrowLeft} size={13} />
-                          تعديل
+                          {EDIT}
                         </button>
                         {/* R305-A8: the destructive verb stands apart —
                             the Heron danger fill rides the standalone
@@ -1815,14 +1817,14 @@ export function AdminCoursesPage() {
       >
         <div className="modal-header">
           <h3 className="modal-title">
-            {formMode === 'edit' ? 'تعديل المقرّر' : 'إضافة مقرّر'}
+            {formMode === 'edit' ? 'تعديل المقرّر' : ADD_COURSE}
           </h3>
           <button type="button" className="icon-btn" onClick={closeForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
         </div>
         <div className="modal-body" style={{ maxWidth: 480 }}>
-          <FormField label="كود المقرّر" id="course-code">
+          <FormField label={COURSE_CODE} id="course-code">
             <input
               className="input"
               value={form.code}
@@ -1830,7 +1832,7 @@ export function AdminCoursesPage() {
               placeholder="CS101"
             />
           </FormField>
-          <FormField label="اسم المقرّر" id="course-name">
+          <FormField label={COURSE_NAME} id="course-name">
             <input
               className="input"
               value={form.name}
@@ -1838,14 +1840,14 @@ export function AdminCoursesPage() {
               placeholder="مقدمة في الحاسوب"
             />
           </FormField>
-          <FormField label="القسم" id="course-dept">
+          <FormField label={LABEL_DEPT} id="course-dept">
             <select
               className="input"
               value={form.departmentId}
               onChange={(e) => setForm({ ...form, departmentId: e.target.value })}
               disabled={facQ.isPending}
             >
-              <option value="">اختر القسم…</option>
+              <option value="">{PICK_DEPT}</option>
               {facQ.data?.flatMap((f) =>
                 f.departments.map((d) => (
                   <option key={d.id} value={d.id}>{f.name} · {d.name}</option>
@@ -1854,9 +1856,9 @@ export function AdminCoursesPage() {
             </select>
           </FormField>
           <FormField
-            label="الساعات المعتمدة"
+            label={THE_CREDIT_HOURS}
             id="course-credits"
-            hint="بين 1 و10"
+            hint={BETWEEN_1_10}
           >
             <input
               className="input"
@@ -1870,7 +1872,7 @@ export function AdminCoursesPage() {
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={closeForm}>
-            إلغاء
+            {CANCEL}
           </button>
           <button
             type="button"
@@ -1881,15 +1883,15 @@ export function AdminCoursesPage() {
               createCourse.isPending || updateCourse.isPending}
           >
             {createCourse.isPending || updateCourse.isPending
-              ? 'جارٍ الحفظ…'
-              : formMode === 'edit' ? 'حفظ التعديلات' : 'إضافة المقرّر'}
+              ? SAVING
+              : formMode === 'edit' ? SAVE_CHANGES : ADD_THE_COURSE}
           </button>
         </div>
         {(createCourse.isError || updateCourse.isError) && (
           <AlertRow
             color="red"
             icon={AlertTriangle}
-            title="تعذّر حفظ المقرّر"
+            title={FAILED_SAVE_COURSE}
             description={apiErrorMessage(
               createCourse.isError ? createCourse.error : updateCourse.error,
               'لا استجابة من الخادم.',
@@ -1910,10 +1912,10 @@ export function AdminCoursesPage() {
       <Modal
         open={offeringCourse !== null}
         onClose={closeOfferingForm}
-        ariaLabel="فتح شعبة"
+        ariaLabel={OPEN_SECTION}
       >
         <div className="modal-header">
-          <h3 className="modal-title">فتح شعبة</h3>
+          <h3 className="modal-title">{OPEN_SECTION}</h3>
           <button type="button" className="icon-btn" onClick={closeOfferingForm} aria-label="إغلاق">
             <Icon icon={X} size={18} />
           </button>
@@ -1924,7 +1926,7 @@ export function AdminCoursesPage() {
               شعبة لمقرّر «{offeringCourse.name}» (<bdi>{offeringCourse.code}</bdi>).
             </p>
           )}
-          <FormField label="الفصل الدراسي" id="offering-term" hint="1–50 حرفًا">
+          <FormField label={SEMESTER} id="offering-term" hint="1–50 حرفًا">
             <input
               className="input"
               value={offeringForm.term}
@@ -1934,7 +1936,7 @@ export function AdminCoursesPage() {
             />
           </FormField>
           <FormField
-            label="الأستاذ"
+            label={LABEL_THE_PROF}
             id="offering-teacher"
           >
             <select
@@ -1944,14 +1946,14 @@ export function AdminCoursesPage() {
               disabled={teachersQ.isPending}
             >
               <option value="">
-                {teachersQ.isPending ? 'جارٍ التحميل…' : 'اختر الأستاذ…'}
+                {teachersQ.isPending ? LOADING : PICK_PROF}
               </option>
               {teachersQ.data?.map((t) => (
                 <option key={t.id} value={t.id}>{t.name}</option>
               ))}
             </select>
           </FormField>
-          <FormField label="القاعة (اختياري)" id="offering-room">
+          <FormField label={HALL_OPTIONAL} id="offering-room">
             <input
               className="input"
               value={offeringForm.room}
@@ -1959,7 +1961,7 @@ export function AdminCoursesPage() {
               placeholder="قاعة A12"
             />
           </FormField>
-          <FormField label="السعة" id="offering-capacity">
+          <FormField label={CAPACITY} id="offering-capacity">
             <input
               className="input"
               type="number"
@@ -1985,7 +1987,7 @@ export function AdminCoursesPage() {
                   onClick={() => teachersQ.refetch()}
                   disabled={teachersQ.isPending}
                 >
-                  إعادة المحاولة
+                  {RETRY_ACTION}
                 </button>
               }
             />
@@ -1993,7 +1995,7 @@ export function AdminCoursesPage() {
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={closeOfferingForm}>
-            إلغاء
+            {CANCEL}
           </button>
           <button
             type="button"
@@ -2002,14 +2004,14 @@ export function AdminCoursesPage() {
             disabled={!offeringForm.term.trim() || !offeringForm.teacherId
               || !(offeringForm.capacity >= 1) || createOffering.isPending}
           >
-            {createOffering.isPending ? 'جارٍ الفتح…' : 'فتح الشعبة'}
+            {createOffering.isPending ? OPENING : OPEN_THE_SECTION}
           </button>
         </div>
         {createOffering.isError && (
           <AlertRow
             color="red"
             icon={AlertTriangle}
-            title="تعذّر فتح الشعبة"
+            title={FAILED_OPEN_SECTION}
             description={apiErrorMessage(
               createOffering.error,
               'لا استجابة من الخادم.',
@@ -2027,7 +2029,7 @@ export function AdminCoursesPage() {
         message={confirmingDelete
           ? `سيُحذف «${confirmingDelete.name}» نهائيًا.`
           : ''}
-        confirmLabel="حذف نهائي"
+        confirmLabel={DELETE_PERMANENTLY}
         danger
         onCancel={() => setConfirmingDelete(null)}
         onConfirm={async () => {

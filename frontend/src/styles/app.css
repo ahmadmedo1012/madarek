@@ -1,6 +1,6 @@
-/* ════════════════════════════════════════════════════════════════════
+/* ═══
    مدارك — /app «تطبيق مدارك: التنزيل والتحديث» (R327 D1 · R341 D4 · W7)
-   ════════════════════════════════════════════════════════════════════
+   ═══
    التطبيق — the distribution sheet. The pattern library owns the
    reading-measure frame (pf-page[data-width=reading], pf-page-header,
    pf-eyebrow, pf-page-desc, pf-page-actions) and the shared
@@ -11,14 +11,17 @@
    the actions row, the QR cell and the print keep-together list.
    Every rule is app-scoped ap-*; the /app seats .lg-qr, .lg-p-actions
    and .lg-p-note died with the D4 rebuild (grep-proven).
-   ──────────────────────────────────────────────────── */
+   ───
+*/
 
 @layer pages {
 
-  /* ── 1 · THE DISTRIBUTION CELLS — the download anatomy ────────── */
+  /* ── 1 · THE DISTRIBUTION CELLS — the download anatomy ──────────
+*/
 
   /* the quiet aside — the honest caveat under a claim (muted, never
-     hidden): the APK link regenerates, the Play step is pending. */
+   hidden): the APK link regenerates, the Play step is pending.
+*/
   .ap-p-note {
     color: var(--text-muted);
     font-size: var(--fs-body);
@@ -26,7 +29,8 @@
   }
 
   /* the actions row — the REAL download buttons inside the document
-     measure (the shared .btn kit, the sheet's only in-cell CTAs). */
+   measure (the shared .btn kit, the sheet's only in-cell CTAs).
+*/
   .ap-actions {
     display: flex;
     gap: var(--sp-3);
@@ -35,7 +39,8 @@
   }
 
   /* the QR cell — the mark-colored code framed on paper (hairline,
-     never an outside service). */
+   never an outside service).
+*/
   .ap-qr {
     display: flex;
     gap: var(--sp-5);
@@ -64,7 +69,8 @@
   }
 
   /* ── 2 · PRINT — the QR stays scannable on paper; the shared
-     collapse (chrome, main, cell) seats in §G·PRINT ──────────────── */
+   collapse (chrome, main, cell) seats in §G·PRINT ────────────────
+*/
 
   @media print {
     .ap-bar,

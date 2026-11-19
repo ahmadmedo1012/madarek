@@ -1,19 +1,22 @@
-/* ══════════════════════════════════════════════════════════════════
+/* ═══
    R323 A5 §1 — the /__design specimen sheet (DesignPage.tsx).
    Heron grammar on dense UI: paper/ink/orange tokens only, hairline
    cells, mono index rows, radius 0, no shadows. System tokens only —
    dark mode is structural.
-   ══════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 .r323d {
   min-height: 100dvh;
   background: var(--bg);
   color: var(--text-primary);
-  padding: var(--space-xl, 24px) var(--space-lg, 16px) 64px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data */
+  padding: var(--space-xl, 24px) var(--space-lg, 16px) 64px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data
+*/
   max-width: 1180px;
   margin-inline: auto;
 }
 
-/* ── header ── */
+/* ── header ──
+*/
 .r323d-head { border-bottom: 1px solid var(--border); padding-block-end: var(--sp-5); }
 .r323d-head-row {
   display: flex; align-items: center; justify-content: space-between;
@@ -21,64 +24,79 @@
 }
 .r323d-wordmark {
   font-family: var(--font-family, inherit);
-  font-size: max(13px, 1.5rem); /* r366 (Agent 3, cross-boundary floor): lab chrome obeys the 13px floor */ font-weight: 600; letter-spacing: 0;
+  font-size: max(13px, 1.5rem); /* r366 (Agent 3, cross-boundary floor): lab chrome obeys the 13px floor
+*/ font-weight: 600; letter-spacing: 0;
   margin: 0;
 }
 .r323d-theme { display: flex; gap: var(--sp-2); }
 .r323d-sub {
   margin: var(--sp-2-5) 0 0;
-  font-size: max(13px, 0.875rem); /* r366 (Agent 3, cross-boundary floor): lab chrome obeys the 13px floor */ line-height: 1.7;
+  font-size: max(13px, 0.875rem); /* r366 (Agent 3, cross-boundary floor): lab chrome obeys the 13px floor
+*/ line-height: 1.7;
   color: var(--text-secondary);
   max-width: 62ch;
 }
 
-/* ── sections: the [nn] index-row grammar ── */
+/* ── sections: the [nn] index-row grammar ──
+*/
 .r323d-main { display: flex; flex-direction: column; gap: var(--sp-8); padding-block-start: var(--sp-7); }
 .r323d-section { border-top: 1px solid var(--border); padding-block-start: var(--sp-4); }
 .r323d-idx-row { display: flex; align-items: baseline; gap: var(--sp-2-5); flex-wrap: wrap; }
 .r323d-idx {
   font-family: var(--font-mono, ui-monospace, monospace);
   /* §R325.b — the gutter index rides --fs-mono-md at --text-muted
-     (was accent ink: the index is wayfinding, not signal). */
+   (was accent ink: the index is wayfinding, not signal).
+*/
   font-size: var(--fs-mono-md); color: var(--text-muted);
 }
-.r323d-title { font-size: max(13px, 1.0625rem); /* r366 (Agent 3, cross-boundary floor): the lab's own chrome obeys the 13px sans floor it exhibits */ font-weight: 600; margin: 0; }
+.r323d-title { font-size: max(13px, 1.0625rem); /* r366 (Agent 3, cross-boundary floor): the lab's own chrome obeys the 13px sans floor it exhibits
+*/ font-weight: 600; margin: 0; }
 .r323d-note {
-  font-size: max(11px, 0.75rem); /* r366 floor: the 11px mono floor */ color: var(--text-secondary);
+  font-size: max(11px, 0.75rem); /* r366 floor: the 11px mono floor
+*/ color: var(--text-secondary);
   font-family: var(--font-mono, ui-monospace, monospace);
 }
 
-/* ── cells: hairline gallery grid ── */
+/* ── cells: hairline gallery grid ──
+*/
 .r323d-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: var(--sp-3); margin-block-start: 14px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data */
+  gap: var(--sp-3); margin-block-start: 14px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data
+*/
 }
 .r323d-grid-2 { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
 .r323d-cell {
   border: 1px solid var(--border);
-  padding: 14px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data */
+  padding: 14px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data
+*/
   display: flex; flex-direction: column; gap: var(--sp-2-5);
   min-height: 96px;
 }
 .r323d-cell-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .r323d-cell-label {
   font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: max(11px, 0.6875rem); /* r366 floor: the 11px mono floor */ color: var(--text-secondary);
+  font-size: max(11px, 0.6875rem); /* r366 floor: the 11px mono floor
+*/ color: var(--text-secondary);
   border-top: 1px solid var(--border); padding-block-start: var(--sp-2);
 }
 
-/* ── helpers ── */
+/* ── helpers ──
+*/
 .r323d-row { display: flex; align-items: center; gap: var(--sp-2-5); flex-wrap: wrap; }
 .r323d-stack { display: flex; flex-direction: column; gap: var(--sp-2-5); align-items: flex-start; }
-/* the stack variant that owns the full cell width (skeleton/alert columns) */
+/* the stack variant that owns the full cell width (skeleton/alert columns)
+*/
 .r323d-fill { align-items: stretch; inline-size: 100%; }
-.r323d-inline { display: inline-flex; align-items: center; gap: var(--sp-1-5); font-size: max(13px, 0.875rem); /* r366 (Agent 3, cross-boundary floor): the lab's inline labels obey the 13px sans floor */ }
-.r323d-p { margin: 0; font-size: max(13px, 0.875rem); /* r366 (Agent 3, cross-boundary floor): lab chrome obeys the 13px floor */ line-height: 1.7; }
+.r323d-inline { display: inline-flex; align-items: center; gap: var(--sp-1-5); font-size: max(13px, 0.875rem); /* r366 (Agent 3, cross-boundary floor): the lab's inline labels obey the 13px sans floor
+*/ }
+.r323d-p { margin: 0; font-size: max(13px, 0.875rem); /* r366 (Agent 3, cross-boundary floor): lab chrome obeys the 13px floor
+*/ line-height: 1.7; }
 .r323d-mt { margin-block-start: var(--sp-3); }
 
 /* ── §R325.f — the chip-dot axis (hollow / ink / signal) ─────────
    No new component: --app-chip-dot + the ink seats composed per the
-   .pat-* composition contract. */
+   .pat-* composition contract.
+*/
 .r323d-chip {
   display: inline-flex; align-items: center; gap: var(--sp-2);
   padding: var(--sp-1) var(--sp-2);
@@ -93,7 +111,8 @@
 
 /* ── §R325.d — the table register exhibit ───────────────────────
    The REAL .table-wrap.sticky/.table classes do the anatomy; these
-   helpers carry only the numeral + empty-row register. */
+   helpers carry only the numeral + empty-row register.
+*/
 .r323d-tablewrap { inline-size: 100%; }
 .r323d-num {
   font-family: var(--font-mono);
@@ -110,7 +129,8 @@
 
 /* ── §R325.c — the hatch-hover target register ────────────────────
    The target carries .pat-hatch statically here for the evidence shot;
-   in the app the SAME pattern is the 120ms hover tint (§R325.c). */
+   in the app the SAME pattern is the 120ms hover tint (§R325.c).
+*/
 .r323d-hover-target {
   display: flex; align-items: center; justify-content: center;
   inline-size: 100%; min-block-size: var(--sp-11);
@@ -121,7 +141,8 @@
 
 /* ── §R325.i — the chart register exhibit ────────────────────────
    Hairline axes (--app-line-soft), mono LTR ticks, the square
-   series-1 marker on the signal. */
+   series-1 marker on the signal.
+*/
 .r323d-axis {
   position: relative;
   display: flex; align-items: flex-end; justify-content: space-between;
@@ -142,7 +163,8 @@
 }
 
 /* ── §R325.g — the .pat-* tiles (pattern frame only; the pattern
-   classes themselves come from r325-app.css) ── */
+   classes themselves come from r325-app.css) ──
+*/
 .r323d-pat {
   inline-size: 100%; block-size: var(--sp-10);
   border: 1px solid var(--app-line-soft);
@@ -155,7 +177,8 @@
 
 /* ── §R325.m — the role-identity seats ──────────────────────────
    pattern + mono code, no new colours — the swatches read the seven
-   --app-role-pat-* seats straight out of r325-app.css. */
+   --app-role-pat-* seats straight out of r325-app.css.
+*/
 .r323d-role { display: flex; align-items: center; gap: var(--sp-3); }
 .r323d-role-swatch {
   inline-size: var(--sp-9); block-size: var(--sp-9);
@@ -176,7 +199,8 @@
 
 /* ── §R325 — the bottom-stack pile exhibit (lib/bottomStack) ────
    The manager writes each layer's base offset into the element's own
-   inline --app-bottom-stack; these layers read it back verbatim. */
+   inline --app-bottom-stack; these layers read it back verbatim.
+*/
 .r323d-readout {
   font-family: var(--font-mono); font-size: var(--fs-mono-sm);
   color: var(--text-muted);
@@ -209,15 +233,19 @@
   .r323d-stackdemo-fab:hover { border-color: var(--app-signal); }
 }
 
-/* ── the modal demo body heading ── */
+/* ── the modal demo body heading ──
+*/
 .r323d-modal-title { margin: 0 0 var(--sp-2-5); font-weight: 600; }
 
-/* ── foot ── */
+/* ── foot ──
+*/
 .r323d-foot {
-  margin-block-start: var(--sp-9); padding-block-start: 14px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data */
+  margin-block-start: var(--sp-9); padding-block-start: 14px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data
+*/
   border-top: 1px solid var(--border);
   font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: max(11px, 0.6875rem); /* r366 floor: the 11px mono floor */ color: var(--text-secondary);
+  font-size: max(11px, 0.6875rem); /* r366 floor: the 11px mono floor
+*/ color: var(--text-secondary);
 }
 
 @media (max-width: 480px) {

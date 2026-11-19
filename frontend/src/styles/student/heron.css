@@ -1,4 +1,4 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — R305-A5 · Heron design language, student workspace foundation
    Branch: redesign/r305-heron-student · baseline 1b766512 (r304 follow-up)
 
@@ -10,36 +10,38 @@
    Heron translation onto the Madarek canon (no token changes, gates
    unmodified — every value rides the r197/r303 ladders):
    • Surface geometry  — surface STEPS (bg → surface → surface-2/3),
-     hairline frames, radius chosen per task (r-sm wells, r-lg panels,
-     r-full chips) — never one global card recipe.
+   hairline frames, radius chosen per task (r-sm wells, r-lg panels,
+   r-full chips) — never one global card recipe.
    • Strong type scale — display/heading register from tokens; page 24
-     → section 18 → body 16 (the r304 product register).
+   → section 18 → body 16 (the r304 product register).
    • Thin technical dividers — hairline rules that carry the layout
-     instead of boxed cards.
+   instead of boxed cards.
    • Micro-labels — 13px semibold secondary-ink overlines that classify
-     every block (what / status / metadata / action).
+   every block (what / status / metadata / action).
    • Dark/light section contrast — theme-reactive "deep" bands built on
-     the auto-inverting neutral scale (ink ground in light, paper ground
-     in dark).
+   the auto-inverting neutral scale (ink ground in light, paper ground
+   in dark).
    • Restrained warm signal — the copper accent (--accent family) used
-     sparingly: the ONE next action, active states, key numerals.
-     Gold stays achievements-only; state tones only on semantic states.
+   sparingly: the ONE next action, active states, key numerals.
+   Gold stays achievements-only; state tones only on semantic states.
 
    Gate contract for every consumer (all enforced on this tree):
    colors  — var()/color-mix() ONLY, zero raw literals;
    type/radius/spacing — token ladder ONLY (the --fs-* , --r-* , --sp-* families)
-     zero raw px declarations, and none in TSX inline styles either;
+   zero raw px declarations, and none in TSX inline styles either;
    icons   — Lucide via the Icon component;
    motion  — the --t-* and --motion-* tokens, guarded hover behind
-     @media (hover:hover) and (pointer:fine), reduced-motion safe.
-   ═════════════════════════════════════════════════════════════════════ */
+   @media (hover:hover) and (pointer:fine), reduced-motion safe.
+   ═══
+*/
 
 @layer pages {
 
   /* ── 1 · Micro-label (the Heron overline) ─────────────────────────
-     Classifies the block that follows: a status, a metadata family,
-     an action group. 13px floor, semibold, secondary ink. Pairs with
-     .r305s-eyebrow-rule for the leading tick. */
+   Classifies the block that follows: a status, a metadata family,
+   an action group. 13px floor, semibold, secondary ink. Pairs with
+   .r305s-eyebrow-rule for the leading tick.
+*/
   .r305s-eyebrow {
     display: inline-flex;
     align-items: center;
@@ -50,7 +52,8 @@
     letter-spacing: 0;
     line-height: 1.4;
   }
-  /* The short technical tick before the label text. */
+  /* The short technical tick before the label text.
+*/
   .r305s-eyebrow::before {
     content: "";
     inline-size: var(--sp-4);
@@ -60,11 +63,12 @@
   }
 
   /* ── 2 · Thin technical dividers ──────────────────────────────────
-     Hairlines carry the layout. Only the labeled variant survives
-     (the annotated divider that stamps a micro-label INTO the line) —
-     the bare hr-style .r305s-rule, its --strong modifier and the
-     vertical .r305s-rule-v are zero-seat since the R319 SectionBar
-     swap (rg-proven, r341 D7a) — deleted. */
+   Hairlines carry the layout. Only the labeled variant survives
+   (the annotated divider that stamps a micro-label INTO the line) —
+   the bare hr-style .r305s-rule, its --strong modifier and the
+   vertical .r305s-rule-v are zero-seat since the R319 SectionBar
+   swap (rg-proven, r341 D7a) — deleted.
+*/
   .r305s-rule-labeled {
     display: flex;
     align-items: center;
@@ -83,12 +87,13 @@
   }
 
   /* ── 3 · Surface bands — the dark/light section contrast ─────────
-     .r305s-band       : the quiet step (surface-2 ground, hairline frame).
-     .r305s-band--deep : the Heron inversion — ink ground in light theme,
-                         paper ground in dark (the neutral scale flips),
-                         so the band always contrasts its page.
-     Inner ink on the deep band re-derives from the SAME theme ramp:
-     fg = the band's own opposite pole, secondary = mixed toward it. */
+   .r305s-band       : the quiet step (surface-2 ground, hairline frame).
+   .r305s-band--deep : the Heron inversion — ink ground in light theme,
+             paper ground in dark (the neutral scale flips),
+             so the band always contrasts its page.
+   Inner ink on the deep band re-derives from the SAME theme ramp:
+   fg = the band's own opposite pole, secondary = mixed toward it.
+*/
   .r305s-band {
     background: var(--surface-2);
     border: 1px solid var(--surface-border);
@@ -96,17 +101,18 @@
     padding: var(--sp-5) var(--sp-6);
   }
   /* R341 (D7c) — the band's INK POLE, promoted from the results page's
-     local .results-summary recipe (heron-schedule.css §4, deleted) to
-     the shared foundation: every deep band re-derives the tokens the
-     pattern children resolve (--text + the -ink tones toward the
-     band's own fg pole) so canonical StatLine/badge tones stay AA on
-     the inverted ground in BOTH themes (patterns.css is unlayered —
-     a layered color override on .pf-* would be dead CSS; custom
-     properties feed the winning rules via inheritance instead, the
-     r305 cascade law). The 72/67 muted strengths are the P2.6
-     re-tune (≥4.58:1 on both poles, engine math in
-     audits/evidence/r325/ink-app/README.md). R369-C (C4.2): the two
-     property-disjoint blocks folded — one owner per selector. */
+   local .results-summary recipe (heron-schedule.css §4, deleted) to
+   the shared foundation: every deep band re-derives the tokens the
+   pattern children resolve (--text + the -ink tones toward the
+   band's own fg pole) so canonical StatLine/badge tones stay AA on
+   the inverted ground in BOTH themes (patterns.css is unlayered —
+   a layered color override on .pf-* would be dead CSS; custom
+   properties feed the winning rules via inheritance instead, the
+   r305 cascade law). The 72/67 muted strengths are the P2.6
+   re-tune (≥4.58:1 on both poles, engine math in
+   audits/evidence/r325/ink-app/README.md). R369-C (C4.2): the two
+   property-disjoint blocks folded — one owner per selector.
+*/
   .r305s-band--deep {
     background: var(--neutral-900);
     color: var(--neutral-0);
@@ -120,32 +126,36 @@
     --accent-ink: color-mix(in srgb, var(--accent) 62%, var(--neutral-0));
   }
   /* KPI values inside a deep band ride the mono metric register (the
-     r197 mono contract — numerals are the technical voice). */
+   r197 mono contract — numerals are the technical voice).
+*/
   .r305s-band--deep .pf-stat-value { font-family: var(--font-mono); }
   /* P2.6 — the eyebrow rode the raw --neutral-500 rung, which is tuned
-     for the PAGE ground. On the inverted pole it washes out: 1.87:1 on
-     the dark theme's paper band (2.85:1 on the light theme's ink band —
-     also under the 4.5 floor for a 13px micro-label). The band-safe
-     recipe mixes the band's own fg toward the band ground: 72/28 holds
-     5.32:1 on the paper pole and 8.36:1 on the ink pole (engine math in
-     audits/evidence/r325/ink-app/README.md). */
+   for the PAGE ground. On the inverted pole it washes out: 1.87:1 on
+   the dark theme's paper band (2.85:1 on the light theme's ink band —
+   also under the 4.5 floor for a 13px micro-label). The band-safe
+   recipe mixes the band's own fg toward the band ground: 72/28 holds
+   5.32:1 on the paper pole and 8.36:1 on the ink pole (engine math in
+   audits/evidence/r325/ink-app/README.md).
+*/
   .r305s-band--deep .r305s-eyebrow {
     color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
   }
   .r305s-band--deep .r305s-eyebrow::before { background: var(--neutral-300); }
   /* Secondary ink on the deep band: mix the band fg back toward the
-     band ground — theme-proof by construction (no per-theme rules). */
+   band ground — theme-proof by construction (no per-theme rules).
+*/
   .r305s-band--deep .r305s-band-secondary {
     color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
   }
 
   /* R345 E1 — the deep band's DARK truth: the night page keeps its
-     ink identity. The documented pole-inversion (paper band on the
-     night ground) broke the dark dashboard — the E1 dark self-test
-     measured the cream band at 0.326 mean luminance (whole-page
-     fail). The band rides the elevated night rung + light ink; every
-     inner pole re-derives toward the band's own fg (the same mixes,
-     the night poles). Light theme untouched. */
+   ink identity. The documented pole-inversion (paper band on the
+   night ground) broke the dark dashboard — the E1 dark self-test
+   measured the cream band at 0.326 mean luminance (whole-page
+   fail). The band rides the elevated night rung + light ink; every
+   inner pole re-derives toward the band's own fg (the same mixes,
+   the night poles). Light theme untouched.
+*/
   [data-theme='dark'] .r305s-band--deep {
     background: var(--neutral-150);
     color: var(--neutral-800);
@@ -166,16 +176,18 @@
   }
 
   /* ── 4 · Metadata + status chips ──────────────────────────────────
-     One chip anatomy: quiet well, 13px, 44px-safe when interactive.
-     Tone variants color ONLY their dot/ink from semantic state tokens;
-     the resting chip stays neutral so status reads at a glance. */
+   One chip anatomy: quiet well, 13px, 44px-safe when interactive.
+   Tone variants color ONLY their dot/ink from semantic state tokens;
+   the resting chip stays neutral so status reads at a glance.
+*/
   .r305s-chip {
     display: inline-flex;
     align-items: center;
     gap: var(--sp-1-5);
     padding: var(--sp-1) var(--sp-2-5);
     /* R313 (WP-E · D16): chips go SQUARE — hairline frame + 0 radius
-       (the reference's only rounded primitives are dots/avatars). */
+    (the reference's only rounded primitives are dots/avatars).
+*/
     border-radius: var(--r-sm);
     background: var(--surface-2);
     border: 1px solid var(--surface-border);
@@ -199,26 +211,22 @@
   .r305s-chip--gold    .r305s-chip-dot { background: var(--gold); }
 
   /* ── 5 · Numerals — the technical metric register ────────────────
-     R341 D7a — the .r305s-metric / .r305s-metric-label twins are
-     zero-seat (rg-proven: every metric voice rides the pattern
-     StatLine, the §B2 .r319s-count mono register, or the deep band's
-     .pf-stat-value rule below) — deleted with their recipes. */
+   R341 D7a — the .r305s-metric / .r305s-metric-label twins are
+   zero-seat (rg-proven: every metric voice rides the pattern
+   StatLine, the §B2 .r319s-count mono register, or the deep band's
+   .pf-stat-value rule below) — deleted with their recipes.
+*/
 
   /* ── 6 · Kicker row — editorial section heading ───────────────────
-     Title at the section register (18px), the hairline filling the
-     remainder: heading and divider as ONE
-     object instead of a boxed card header. */
+   Title at the section register (18px), the hairline filling the
+   remainder: heading and divider as ONE
+   object instead of a boxed card header.
+*/
   .r305s-kicker {
     display: flex;
     align-items: center;
     gap: var(--sp-3);
     margin-block-end: var(--sp-4);
-  }
-  .r305s-kicker-title {
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
-    color: var(--text-strong);
-    line-height: 1.3;
   }
   .r305s-kicker::after {
     content: "";
@@ -227,13 +235,15 @@
     background: var(--surface-divider);
   }
   /* r341 D7a — .r305s-kicker-action is zero-seat (rg-proven; the
-     kicker rows that survive — MorePages' §B2-era sections — render
-     no trailing action span) — deleted. */
+   kicker rows that survive — MorePages' §B2-era sections — render
+   no trailing action span) — deleted.
+*/
 
   /* ── 7 · The one-action emphasis ──────────────────────────────────
-     Heron restraint: exactly one emphasized action per view region.
-     The shared .btn.accent system carries the fill; this wrapper adds
-     the copper edge-tint rail for the non-button hero strips. */
+   Heron restraint: exactly one emphasized action per view region.
+   The shared .btn.accent system carries the fill; this wrapper adds
+   the copper edge-tint rail for the non-button hero strips.
+*/
   .r305s-next {
     border-inline-start: 2px solid var(--accent);
     background: color-mix(in srgb, var(--accent) 7%, var(--surface));
@@ -241,8 +251,9 @@
   }
 
   /* ── 8 · Density helpers for rows and ledgers ─────────────────────
-     The pattern RowList remains the product; these only tune Heron
-     rhythm inside student sections (never re-style .pf-* globally). */
+   The pattern RowList remains the product; these only tune Heron
+   rhythm inside student sections (never re-style .pf-* globally).
+*/
   .r305s-meta-row {
     display: flex;
     flex-wrap: wrap;
@@ -253,7 +264,8 @@
     line-height: 1.5;
   }
   .r305s-meta-row > * { min-inline-size: 0; }
-  /* Metadata separators ride the divider color, not text opacity. */
+  /* Metadata separators ride the divider color, not text opacity.
+*/
   .r305s-meta-sep {
     inline-size: 1px;
     block-size: var(--sp-3);
@@ -262,15 +274,16 @@
   }
 
   /* ── 9 · Skeleton bones inside deep bands ─────────────────────────
-     The shared .skeleton shimmer sweeps toward a near-white highlight
-     (motion.css) tuned for the light page grounds. Inside a deep band
-     the pending mirrors keep REAL text (the pending-mirror = final
-     anatomy contract), so a near-white bone flashing under band-mixed
-     ink produces sub-second contrast faults in both themes. Bones on
-     the deep ground render as a calm static wash of the band's own
-     ink instead — no shimmer, no pole crossing. (r305-a5 browser QA:
-     transient axe color-contrast catches on the dashboard/player/
-     results/profile mirrors all traced here.) */
+   The shared .skeleton shimmer sweeps toward a near-white highlight
+   (motion.css) tuned for the light page grounds. Inside a deep band
+   the pending mirrors keep REAL text (the pending-mirror = final
+   anatomy contract), so a near-white bone flashing under band-mixed
+   ink produces sub-second contrast faults in both themes. Bones on
+   the deep ground render as a calm static wash of the band's own
+   ink instead — no shimmer, no pole crossing. (r305-a5 browser QA:
+   transient axe color-contrast catches on the dashboard/player/
+   results/profile mirrors all traced here.)
+*/
   .r305s-band--deep .skeleton {
     background-color: color-mix(in srgb, var(--neutral-0) 10%, transparent);
     background-image: none;
@@ -279,9 +292,10 @@
   }
 
   /* Reduced-motion belt: this sheet introduces no animation of its
-     own — hover/focus are the shared system's grammar (color/border
-     steps only; the CTA nudge lives in the shell's chrome.css §10
-     with its own RM twin); kept as the explicit contract. */
+   own — hover/focus are the shared system's grammar (color/border
+   steps only; the CTA nudge lives in the shell's chrome.css §10
+   with its own RM twin); kept as the explicit contract.
+*/
   @media (prefers-reduced-motion: reduce) {
     .r305s-eyebrow::before,
     .r305s-rule-labeled::before,

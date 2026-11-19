@@ -16,12 +16,15 @@
  *       first question). Unmounts the moment real work arrives.
  *
  * No ink here — colours, type, motion all ride the tp-* grammar.
- */
 
-/* ── the margin companion seat ──────────────────────────────────── */
+*/
+
+/* ── the margin companion seat ────────────────────────────────────
+*/
 /* The host gives an unpositioned region (the reader's refusal branch)
  * a positioning context for the plate; Cards already position
- * (components.css .card is relative) and need no host. */
+ * (components.css .card is relative) and need no host.
+*/
 .tech-plate-host {
   position: relative;
 }
@@ -30,7 +33,8 @@
  * the state it accompanies. The quieting rides the svg child (the
  * root's sheet-in animation fills `both` and its final opacity:1
  * keyframe would beat any root-level opacity — see technical-sheet.css
- * for the same fix on the auth seat). */
+ * for the same fix on the auth seat).
+*/
 .tech-plate-margin {
   position: absolute;
   inset-block-start: 50%;
@@ -45,17 +49,20 @@
 }
 
 /* Below the wide band there is no honest margin for a drawing — the
- * state copy owns the card alone. */
+ * state copy owns the card alone.
+*/
 @media (max-width: 1023px) {
   .tech-plate-margin {
     display: none;
   }
 }
 
-/* ── the idle workspace seat ────────────────────────────────────── */
+/* ── the idle workspace seat ──────────────────────────────────────
+*/
 /* In-flow, centred, quiet: the net waits under the greeting bubble.
  * Phones keep the bubble alone — the drawing is a wide-band pleasure,
- * not content. */
+ * not content.
+*/
 .tech-plate-idle {
   inline-size: min(44%, 200px);
   margin-inline: auto;
@@ -73,4 +80,5 @@
 }
 
 /* Reduced motion is already complete in the sheet grammar (the frame
- * paints finished); the seats add nothing to wait for. */
+ * paints finished); the seats add nothing to wait for.
+*/

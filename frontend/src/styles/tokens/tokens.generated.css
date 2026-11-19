@@ -1,4 +1,4 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    tokens.generated.css — GENERATED FILE — DO NOT EDIT BY HAND.
    Source of truth: shared/design-tokens.json (R326 M0.4).
    Regen: npm run tokens:build · Drift gate: npm run tokens:check
@@ -9,12 +9,14 @@
    @layer tokens — the hand-written seats in tokens.css compose on
    top, and its prefers-reduced-motion kill still wins by order.
    The MOBILE half: apps/mobile/src/design/tokens.generated.ts.
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer tokens {
 
   :root {
-    /* ── Spacing — the 4px base ladder (historical rung names — index ≠ px/4 above --sp-6) ── */
+    /* ── Spacing — the 4px base ladder (historical rung names — index ≠ px/4 above --sp-6) ──
+*/
     --sp-1: 4px;
     --sp-2: 8px;
     --sp-3: 12px;
@@ -36,7 +38,8 @@
     --sp-2-5: 10px;
     --sp-3-5: 14px;
 
-    /* ── Radius — R313: the ladder collapses to 0; full = circular primitives ── */
+    /* ── Radius — R313: the ladder collapses to 0; full = circular primitives ──
+*/
     --r-xs: 0px;
     --r-sm: 0px;
     --r-md: 0px;
@@ -46,7 +49,8 @@
     --r-3xl: 0px;
     --r-full: 9999px;
 
-    /* ── Motion — the measured Heron register (r305) ── */
+    /* ── Motion — the measured Heron register (r305) ──
+*/
     --t-micro: 80ms;
     --t-fast: 200ms;
     --t-base: 400ms;
@@ -58,14 +62,17 @@
     --t-guest-reveal: 700ms;
     --ease: cubic-bezier(0.23, 1, 0.32, 1);
 
-    /* ── Layout — R366-final (A5→A3 R1): the shared, theme-invariant viewport geometry ── */
+    /* ── Layout — R366-final (A5→A3 R1): the shared, theme-invariant viewport geometry ──
+*/
     --layout-content-max-width: 640px;
   }
 
-  /* LIGHT THEME — the Heron blueprint paper */
+  /* LIGHT THEME — the Heron blueprint paper
+*/
   :root,
   [data-theme="light"] {
-    /* The warm vintage-paper neutral ramp (light) */
+    /* The warm vintage-paper neutral ramp (light)
+*/
     --neutral-0: #FFFFFF;
     --neutral-50: #F6F6EE;
     --neutral-100: #F0F0E6;
@@ -78,7 +85,8 @@
     --neutral-800: #333330;
     --neutral-900: #282828;
 
-    /* The 9 section families — soft ground · saturated ink · deep text */
+    /* The 9 section families — soft ground · saturated ink · deep text
+*/
     --c-peach-bg: #FCE5DE;  --c-peach-ink: #E5481F;  --c-peach-deep: #9C2B0F;
     --c-mint-bg: #E3EBE1;  --c-mint-ink: #3F8F5C;  --c-mint-deep: #1B5430;
     --c-lavender-bg: #ECE6FA;  --c-lavender-ink: #8A6FE0;  --c-lavender-deep: #3F2D7A;
@@ -89,12 +97,14 @@
     --c-grey-bg: #ECEDEB;  --c-grey-ink: #626260;  --c-grey-deep: #282828;
     --c-copper-bg: #FCE3D9;  --c-copper-ink: #FA3600;  --c-copper-deep: #A32400;
 
-    /* r305 — the coral alias namespace (resolves onto the peach seat) */
+    /* r305 — the coral alias namespace (resolves onto the peach seat)
+*/
     --c-coral-bg: var(--c-peach-bg);
     --c-coral-ink: var(--c-peach-ink);
     --c-coral-deep: var(--c-peach-deep);
 
-    /* Role tokens — components consume these */
+    /* Role tokens — components consume these
+*/
     --bg: var(--neutral-50);
     --surface: var(--neutral-0);
     --surface-1: var(--neutral-0);
@@ -140,9 +150,11 @@
     --primary-fg: #FFFFFF;
   }
 
-  /* DARK THEME — the charcoal night */
+  /* DARK THEME — the charcoal night
+*/
   [data-theme="dark"] {
-    /* The warm vintage-paper neutral ramp (dark) */
+    /* The warm vintage-paper neutral ramp (dark)
+*/
     --neutral-0: #2E2E2E;
     --neutral-50: #282828;
     --neutral-100: #353535;
@@ -155,7 +167,8 @@
     --neutral-800: #E0E0DC;
     --neutral-900: #F6F6EE;
 
-    /* The 9 section families — soft ground · saturated ink · deep text */
+    /* The 9 section families — soft ground · saturated ink · deep text
+*/
     --c-peach-bg: #43241C;  --c-peach-ink: #FF8E68;  --c-peach-deep: #FFC5AE;
     --c-mint-bg: #24372B;  --c-mint-ink: #84D0A0;  --c-mint-deep: #C4EBD2;
     --c-lavender-bg: #2D2545;  --c-lavender-ink: #B7A0F4;  --c-lavender-deep: #DCD2F9;
@@ -166,12 +179,14 @@
     --c-grey-bg: #2A2A28;  --c-grey-ink: #B7B2A6;  --c-grey-deep: #DDD8CB;
     --c-copper-bg: #432015;  --c-copper-ink: #FF5A1F;  --c-copper-deep: #FFC5AE;
 
-    /* r305 — the coral alias namespace (resolves onto the peach seat) */
+    /* r305 — the coral alias namespace (resolves onto the peach seat)
+*/
     --c-coral-bg: var(--c-peach-bg);
     --c-coral-ink: var(--c-peach-ink);
     --c-coral-deep: var(--c-peach-deep);
 
-    /* Role tokens — components consume these */
+    /* Role tokens — components consume these
+*/
     --bg: var(--neutral-50);
     --surface: var(--neutral-0);
     --surface-1: var(--neutral-0);

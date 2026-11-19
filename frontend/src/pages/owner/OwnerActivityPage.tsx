@@ -1,3 +1,5 @@
+import { DASH_OWNER, ALL, ACTIVITY_LOG, PREV, NEXT, BROADCAST_NOTICE, LABEL_SYSTEM, PENDING_DATA, USERS, CHANGE_PERMS, CREATE_ACCOUNT, CREATE_COURSE, UPDATE_COURSE, UPLOAD_FILE, DELETE_FILE, PUBLISH_RESEARCH, CREATE_COMPETITION, SKIP_PERM, EDIT_SCOPE, SET_LOCATION, UNENROL, RESOLVE_ALERT, UPDATE_SETTING, TOGGLE_FEATURE, CHANGE_THEME, COMPLETE_PROFILE, ACHIEVE_BADGE, NO_EVENTS, VIEW } from '../../lib/copy';
+
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
@@ -37,10 +39,10 @@ const L_ROLES = 'أدوار';
 const L_SYSTEM = 'نظام';
 const L_ERROR = 'خطأ';
 const L_ROLE_EDIT = 'تعديل صلاحيات';
-const L_ROLE_CHANGE = 'تغيير صلاحيات';
+const L_ROLE_CHANGE = CHANGE_PERMS;
 const L_ACCOUNT_STATUS = 'تعديل حالة الحساب';
 const L_ENROLL = 'تسجيل مقرّر';
-const L_USER_CREATED = 'إنشاء حساب';
+const L_USER_CREATED = CREATE_ACCOUNT;
 
 const TYPE_CONFIG: Record<'login' | 'content' | 'roles' | 'system' | 'error', { icon: LucideIcon; colorClass: string; label: string }> = {
   login:   { icon: LogIn, colorClass: 'green', label: L_LOGIN },
@@ -89,30 +91,30 @@ const ACTION_LABEL: Record<string, string> = {
   'user.created': L_USER_CREATED,
   'user.role_changed': L_ROLE_CHANGE,
   'user.status_changed': L_ACCOUNT_STATUS,
-  'course.created': 'إنشاء مقرّر',
-  'course.updated': 'تحديث مقرّر',
+  'course.created': CREATE_COURSE,
+  'course.updated': UPDATE_COURSE,
   'enrollment.created': L_ENROLL,
-  'material.uploaded': 'رفع ملف',
-  'material.deleted': 'حذف ملف',
-  'paper.published': 'نشر بحث',
-  'announcement.created': 'بثّ إعلان',
-  'competition.created': 'إنشاء مسابقة',
+  'material.uploaded': UPLOAD_FILE,
+  'material.deleted': DELETE_FILE,
+  'paper.published': PUBLISH_RESEARCH,
+  'announcement.created': BROADCAST_NOTICE,
+  'competition.created': CREATE_COMPETITION,
   ROLE_CHANGE: L_ROLE_CHANGE,
   STATUS_CHANGE: L_ACCOUNT_STATUS,
-  CAPABILITY_OVERRIDE: 'تجاوز صلاحية',
-  USER_SCOPE_CHANGE: 'تعديل نطاق',
-  TEACHER_POSITION: 'تعيين موقع',
+  CAPABILITY_OVERRIDE: SKIP_PERM,
+  USER_SCOPE_CHANGE: EDIT_SCOPE,
+  TEACHER_POSITION: SET_LOCATION,
   TEACHER_VERIFY: 'توثيق أستاذ',
   // The two enrollment audit actions the backend writes (15-a P1-4) —
   // before 17-a2 these rendered raw English in the timeline.
   ENROLLMENT_CREATED: 'تسجيل طالب',
-  ENROLLMENT_REMOVED: 'إلغاء تسجيل',
-  ALERT_RESOLVED: 'حلّ تنبيه',
-  SETTING_UPDATED: 'تحديث إعداد',
-  FEATURE_FLAG_TOGGLED: 'تبديل ميزة',
-  'theme.update': 'تغيير المظهر',
-  'onboarding.complete': 'إكمال التعريف',
-  'milestone.fire': 'تحقيق إنجاز',
+  ENROLLMENT_REMOVED: UNENROL,
+  ALERT_RESOLVED: RESOLVE_ALERT,
+  SETTING_UPDATED: UPDATE_SETTING,
+  FEATURE_FLAG_TOGGLED: TOGGLE_FEATURE,
+  'theme.update': CHANGE_THEME,
+  'onboarding.complete': COMPLETE_PROFILE,
+  'milestone.fire': ACHIEVE_BADGE,
 };
 
 /** Audit-log resource types as written by the backend (Prisma models). */
@@ -129,7 +131,7 @@ const RESOURCE_LABELS: Record<string, string> = {
  *  like the OwnerUsersPage/AdminGovernancePages footers (countAr renders
  *  raw digits; a large audit total wants the separators). */
 function eventsCountLabel(n: number): string {
-  if (n === 0) return 'لا أحداث';
+  if (n === 0) return NO_EVENTS;
   if (n === 1) return 'حدث';
   if (n === 2) return 'حدثان';
   if (n >= 3 && n <= 10) return `${formatNum(n)} أحداث`;
@@ -167,7 +169,7 @@ export function OwnerActivityPage() {
   const activity = useOwnerActivity({ page, limit: PAGE_SIZE });
 
   const tabItems: Array<{ value: EventType; label: string }> = [
-    { value: 'all', label: 'الكل' },
+    { value: 'all', label: ALL },
     { value: 'login', label: TYPE_CONFIG.login.label },
     { value: 'content', label: TYPE_CONFIG.content.label },
     { value: 'roles', label: TYPE_CONFIG.roles.label },
@@ -216,8 +218,8 @@ export function OwnerActivityPage() {
     <div className="r305ao">
       <PageFrame width="default">
         <PatternsPageHeader
-          title="سجلّ النشاط"
-          breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'سجلّ النشاط' }]}
+          title={ACTIVITY_LOG}
+          breadcrumbs={[{ label: DASH_OWNER, to: '/owner/dashboard' }, { label: ACTIVITY_LOG }]}
           /* R341 D11: the [05] nav-order gutter numeral (OWNER_NAV
            * register — the D10 quality precedent). */
           index="05"
@@ -228,7 +230,7 @@ export function OwnerActivityPage() {
           actions={(
             <>
               <Link to="/owner/governance" className="btn accent sm">الحوكمة</Link>
-              <Link to="/owner/users" className="btn ghost sm">المستخدمون</Link>
+              <Link to="/owner/users" className="btn ghost sm">{USERS}</Link>
             </>
           )}
         />
@@ -248,7 +250,7 @@ export function OwnerActivityPage() {
             {
               label: 'عمليّات فاشلة',
               value: kpiValue(kpi.failed),
-              hint: kpiKnown ? (kpi.failed === 0 ? 'لا إخفاقات' : 'التفاصيل أدناه') : 'بانتظار البيانات',
+              hint: kpiKnown ? (kpi.failed === 0 ? 'لا إخفاقات' : 'التفاصيل أدناه') : PENDING_DATA,
               tone: kpiKnown && kpi.failed > 0 ? 'danger' : 'neutral',
             },
             {
@@ -292,7 +294,7 @@ export function OwnerActivityPage() {
                   <div className="owner-timeline-body">
                     <div className="owner-timeline-title">{event.actionLabel}</div>
                     <div className="owner-timeline-meta">
-                      {event.user ? `${event.user.firstName} ${event.user.lastName}` : 'النظام'}
+                      {event.user ? `${event.user.firstName} ${event.user.lastName}` : LABEL_SYSTEM}
                       {event.user && (
                         <> &middot; <bdi className="owner-timeline-email">{event.user.email}</bdi></>
                       )}
@@ -317,7 +319,7 @@ export function OwnerActivityPage() {
                         onClick={() => setExpanded(expanded === event.id ? null : event.id)}
                       >
                         <Icon icon={ChevronDown} size={12} className="owner-detail-chevron" />
-                        {expanded === event.id ? 'إخفاء' : 'عرض'}
+                        {expanded === event.id ? 'إخفاء' : VIEW}
                       </button>
                     )}
                     {expanded === event.id && event.metadata !== null && event.metadata !== undefined && (
@@ -356,7 +358,7 @@ export function OwnerActivityPage() {
                   aria-label="الصفحة السابقة"
                 >
                   <Icon icon={ChevronRight} size={14} aria-hidden />
-                  السابق
+                  {PREV}
                 </button>
                 {pageList(page, activity.data.meta.totalPages).map((item, i) =>
                   item === 'gap' ? (
@@ -379,7 +381,7 @@ export function OwnerActivityPage() {
                   disabled={page >= activity.data.meta.totalPages}
                   aria-label="الصفحة التالية"
                 >
-                  التالي
+                  {NEXT}
                   <Icon icon={ChevronLeft} size={14} aria-hidden />
                 </button>
               </div>

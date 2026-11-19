@@ -1,3 +1,5 @@
+import { RETRY_ACTION, LOADING, CANCEL, NOUN_STUDENTS, SAVING, EMPTY_COURSES, NOUN_TWO_STUDENTS, NOUN_STUDENT_ACC, LABEL_STUDENTS, LABEL_LECTURES, NOUN_STUDENT, LABEL_TODAY, LABEL_LECTURE, LABEL_THE_COURSE, LIST_STUDENTS, CLOSE, LABEL_NAME, ADDING, LABEL_ADDRESS, QUIZ_SHORT, NO_DATA, CREATING, UNDER_WATCH, AT_RISK, LABEL_TYPE, EXAM, NOUN_TWO_LECTURES, STATUS_CRITICAL, SUBMIT, SUBMISSIONS_PENDING_REVIEW, UPLOADING_FILE, PICK_FROM_CALENDAR, LABEL_GRADE, LABEL_THE_STUDENT, ATTENDANCE, MIDTERM, FINAL, PASS_RATE, CREATED, NO_ALERTS, TOMORROW, SINCE_TWO_DAYS, SINCE_DAYS, SINCE_A_DAY, NOUN_TWO_SUBMISSIONS, NOUN_SUBMISSION_ACC, UNI_ID_DOT, NO_COURSE_DASH, REMOVE_FILE, RATE_SUBMISSION, RECORD_ATTENDANCE, STABLE, NO_STUDENTS, NO_HOMEWORK, GRADE_ENTRY, SAVED_DOT } from '../../lib/copy';
+
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -90,31 +92,28 @@ const HR_CHIP_TONE: Record<'green' | 'amber' | 'red' | 'purple' | 'gold' | 'bran
 const SCHEDULE_TITLE = 'جدول المحاضرات';
 const ATTENDANCE_TITLE = 'الحضور والغياب';
 const GRADES_TITLE = 'درجات الطلاب';
-const STUDENTS_TITLE = 'قائمة الطلاب';
+const STUDENTS_TITLE = LIST_STUDENTS;
 const PERFORMANCE_TITLE = 'الأداء والتحليل';
-const COURSE_LABEL = 'المقرّر';
+const COURSE_LABEL = LABEL_THE_COURSE;
 const PICK_COURSE = 'اختر مقرّراً';
-const NO_COURSES = 'لا مقرّرات';
+const NO_COURSES = EMPTY_COURSES;
 const NO_COURSES_OPTION = '— لا مقرّرات —';
-const NO_STUDENTS = 'لا طلاب';
-const STUDENT_COL = 'الطالب';
-const NAME_COL = 'الاسم';
-const UNIVERSITY_ID_COL = 'الرقم الجامعيّ';
+const STUDENT_COL = LABEL_THE_STUDENT;
+const NAME_COL = LABEL_NAME;
+const UNIVERSITY_ID_COL = UNI_ID_DOT;
 const AVG_GRADE_COL = 'متوسّط الدرجات';
-const ATTENDANCE_COL = 'الحضور';
+const ATTENDANCE_COL = ATTENDANCE;
 const BAND_COL = 'التقدير';
 const RISK_COL = 'المخاطرة';
-const TYPE_LABEL = 'النوع';
+const TYPE_LABEL = LABEL_TYPE;
 const NOTES_OPTIONAL = 'ملاحظات (اختياري)';
-const NO_DATA = 'لا بيانات';
-const SAVING = 'جارٍ الحفظ…';
 const ADD_MATERIAL = 'إضافة المادة';
 const PICK_COURSE_FIRST = 'اختر المقرّر أولاً.';
 const FILE_NAME_REQUIRED = 'اسم الملف مطلوب.';
 const FILE_ADDED = 'أُضيف الملف إلى المقرّر.';
 const NO_LINKED_COURSES = 'لا مقرّرات مرتبطة بحسابك.';
 const MATERIAL_ADD_FAILED = 'تعذّرت إضافة المادة.';
-const SUBMISSION_UNIT: [string, string, string, string] = ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'];
+const SUBMISSION_UNIT: [string, string, string, string] = [SUBMIT, NOUN_TWO_SUBMISSIONS, 'تسليمات', NOUN_SUBMISSION_ACC];
 const ENTER_VALID_SCORE = 'أدخل درجة صحيحة.';
 const SCORE_NOT_NEGATIVE = 'الدرجة لا تكون سالبة.';
 const scoreCeilingError = (max: number) => `الدرجة يجب ألّا تتجاوز ${max}.`;
@@ -227,7 +226,7 @@ export function TeacherSchedulePage() {
   }
   for (const list of Object.values(byDay)) list.sort((a, b) => a.startTime.localeCompare(b.startTime));
   const days = Object.entries(byDay).map(([dow, items]) => ({ dow: Number(dow), items })).filter((d) => d.items.length > 0);
-  // A6 P3 (22-a): a "اليوم" anchor — the same dayOfWeek convention as
+  // A6 P3 (22-a): a LABEL_TODAY anchor — the same dayOfWeek convention as
   // Date#getDay() (0=Sunday), so a teacher scanning for today's
   // lectures stops at the marked header instead of reading them all.
   const todayDow = new Date().getDay();
@@ -245,7 +244,7 @@ export function TeacherSchedulePage() {
            * still names its ONE honest next action on the accent
            * register — today's lectures are exactly what the roll call
            * records, and the link is in the first fold at every width. */
-          <Link to="/teacher/attendance" className="btn accent sm">تسجيل الحضور</Link>
+          <Link to="/teacher/attendance" className="btn accent sm">{RECORD_ATTENDANCE}</Link>
         )}
       />
       {days.length === 0 ? (
@@ -278,10 +277,10 @@ export function TeacherSchedulePage() {
                 <span className="tpg-day-aux">
                   {/* R305 Heron: today is THE ember signal of the page —
                       the marker chip rides the ember tone. */}
-                  {d.dow === todayDow && <span className="hr-chip" data-tone="ember">اليوم</span>}
+                  {d.dow === todayDow && <span className="hr-chip" data-tone="ember">{LABEL_TODAY}</span>}
                   <span className="tpg-day-count">
                     {/* 22-c counted nouns. */}
-                    <bdi>{d.items.length}</bdi> {countAr(d.items.length, ['محاضرة', 'محاضرتان', 'محاضرات', 'محاضرة'])}
+                    <bdi>{d.items.length}</bdi> {countAr(d.items.length, [LABEL_LECTURE, NOUN_TWO_LECTURES, LABEL_LECTURES, LABEL_LECTURE])}
                   </span>
                 </span>
               </div>
@@ -301,7 +300,7 @@ export function TeacherSchedulePage() {
                       {/* P2-1 (5-A7): a scheduled slot with no enrollments
                           names the reality — countAr(0) renders the
                           broken «0 طالباً». */}
-                      {it.enrolled === 0 ? NO_STUDENTS : countAr(it.enrolled, ['طالب', 'طالبان', 'طلاب', 'طالباً'])}
+                      {it.enrolled === 0 ? NO_STUDENTS : countAr(it.enrolled, [NOUN_STUDENT, NOUN_TWO_STUDENTS, NOUN_STUDENTS, NOUN_STUDENT_ACC])}
                     </div>
                   </div>
                   {/* P-G3b-r — Arabic-first codes: the course's Arabic name
@@ -570,7 +569,7 @@ export function AttendancePage() {
 
       <div className="grid-2-1">
         <Card
-          title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>{offering ? `طلاب ${offering.course.name}` : 'الطلاب'}</>}
+          title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>{offering ? `طلاب ${offering.course.name}` : LABEL_STUDENTS}</>}
           icon={ClipboardCheck}
         >
           {!effectiveOfferingId ? (
@@ -761,7 +760,7 @@ export function GradesPage() {
             {/* R341 D8 — the page's ONE primary action on the accent
              * register: a first-fold jump to the semester-entry card
              * (the write half the read table above feeds). */}
-            <a href="#grade-entry" className="btn accent sm">إدخال الدرجات</a>
+            <a href="#grade-entry" className="btn accent sm">{GRADE_ENTRY}</a>
             <OfferingPickerSelect
               offerings={offerings}
               effectiveOfferingId={effectiveOfferingId}
@@ -856,9 +855,9 @@ const GRADE_KIND_LABEL: Record<GradeKindFE, string> = {
   HOMEWORK: 'واجب',
   QUIZ_1: 'اختبار قصير 1',
   QUIZ_2: 'اختبار قصير 2',
-  MIDTERM: 'نصفي',
+  MIDTERM: MIDTERM,
   PROJECT: 'مشروع',
-  FINAL: 'نهائي',
+  FINAL: FINAL,
 };
 const GRADE_KINDS = Object.keys(GRADE_KIND_LABEL) as GradeKindFE[];
 
@@ -1112,7 +1111,7 @@ function SemesterGradeEntry({
                         <div>{s.name}</div>
                         <div className="text-xs text-muted font-mono"><bdi>{s.universityId}</bdi></div>
                       </td>
-                      <td data-label="الدرجة">
+                      <td data-label={LABEL_GRADE}>
                         <input
                           type="number"
                           className="input input-narrow"
@@ -1175,7 +1174,7 @@ function SemesterGradeEntry({
         {upsert.isSuccess && (
           <div className="form-feedback ok" role="status" style={{ marginBlockStart: 'var(--sp-3)' }}>
             <Icon icon={CheckCircle2} size={14} />
-            <span>تمّ الحفظ.</span>
+            <span>{SAVED_DOT}</span>
           </div>
         )}
       </form>
@@ -1335,7 +1334,7 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
       <div className="hr-scope">
       <div className="modal-header">
         <div className="modal-title">إضافة مادة</div>
-        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={pending}>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label={CLOSE} disabled={pending}>
           <Icon icon={X} size={16} />
         </button>
       </div>
@@ -1422,7 +1421,7 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
                     disabled={pending}
                   >
                     <Icon icon={X} size={14} />
-                    إزالة الملف
+                    {REMOVE_FILE}
                   </button>
                 </div>
               )}
@@ -1516,19 +1515,19 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
                 onClick={() => void onSubmit()}
                 disabled={pending}
               >
-                <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
+                <Icon icon={RefreshCw} size={12} /> {RETRY_ACTION}
               </button>
             </div>
           )}
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={requestClose} disabled={pending}>
-            إلغاء
+            {CANCEL}
           </button>
           <button type="submit" className="btn primary hr-cta" disabled={pending}>
             {mode === 'file'
-              ? (uploadMaterial.isPending ? 'جارٍ رفع الملف…' : ADD_MATERIAL)
-              : (create.isPending ? 'جارٍ الإضافة…' : ADD_MATERIAL)}
+              ? (uploadMaterial.isPending ? UPLOADING_FILE : ADD_MATERIAL)
+              : (create.isPending ? ADDING : ADD_MATERIAL)}
           </button>
         </div>
       </form>
@@ -1624,10 +1623,10 @@ export function ResearchPage() {
  * rows wear (kept local to this bundle; the intelligence page keeps
  * its own edge/ink maps local too). */
 const STUDENT_RISK_LABEL: Record<TeacherStudentRow['riskLevel'], string> = {
-  OK: 'مستقر',
-  WATCH: 'تحت المراقبة',
-  AT_RISK: 'في خطر',
-  CRITICAL: 'حرج',
+  OK: STABLE,
+  WATCH: UNDER_WATCH,
+  AT_RISK: AT_RISK,
+  CRITICAL: STATUS_CRITICAL,
 };
 const STUDENT_RISK_TONE: Record<TeacherStudentRow['riskLevel'], 'green' | 'gold' | 'amber' | 'red'> = {
   OK: 'green',
@@ -1709,9 +1708,9 @@ export function StudentsListPage() {
                  * the reality (the empty-state below carries the guidance). */
                 students.length === 0
                   ? NO_STUDENTS
-                  : countAr(students.length, ['طالب', 'طالبان', 'طلاب', 'طالباً'])
+                  : countAr(students.length, [NOUN_STUDENT, NOUN_TWO_STUDENTS, NOUN_STUDENTS, NOUN_STUDENT_ACC])
               }`
-              : 'الطلاب'}
+              : LABEL_STUDENTS}
           </>
         }
         icon={Users}
@@ -1921,7 +1920,7 @@ export function PerformancePage() {
             ariaLabel="مؤشّرات أداء المقرّر"
             cells={[
               {
-                label: 'معدّل النجاح',
+                label: PASS_RATE,
                 value: students.length > 0 ? `${formatPct1(passRate)}%` : '—',
                 trend: students.length > 0 ? `${passing} من ${students.length}` : NO_DATA,
                 trendTone: students.length === 0 ? 'flat' : passRate >= 70 ? 'up' : passRate >= 50 ? 'flat' : 'down',
@@ -1935,7 +1934,7 @@ export function PerformancePage() {
               {
                 label: 'بحاجة دعم',
                 value: atRisk.toString(),
-                trend: atRisk > 0 ? 'مراقبة مستمرّة' : 'لا تنبيهات',
+                trend: atRisk > 0 ? 'مراقبة مستمرّة' : NO_ALERTS,
                 trendTone: atRisk === 0 ? 'up' : 'down',
               },
             ]}
@@ -1993,15 +1992,15 @@ export function PerformancePage() {
  *  assignments-list badge («انتهى منذ يومين») and the queue sub-line's
  *  past-tense label («استحقّ منذ يومين»). */
 function elapsedSince(daysOverdue: number): string {
-  return countAr(daysOverdue, ['منذ يوم', 'منذ يومين', 'منذ أيام', 'منذ يوماً']);
+  return countAr(daysOverdue, ['منذ يوم', SINCE_TWO_DAYS, SINCE_DAYS, SINCE_A_DAY]);
 }
 
 function formatDue(iso: string): string {
   const d = new Date(iso);
   const days = Math.round((d.getTime() - Date.now()) / 86400000);
   if (days < 0) return `انتهى ${elapsedSince(-days)}`;
-  if (days === 0) return 'اليوم';
-  if (days === 1) return 'غداً';
+  if (days === 0) return LABEL_TODAY;
+  if (days === 1) return TOMORROW;
   if (days < 7) return `بعد ${countAr(days, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
   return formatDate(d, { dateStyle: 'medium' });
 }
@@ -2069,7 +2068,7 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
         weight: Number(weight),
         maxScore: Number(maxScore),
       });
-      toast.success('أُنشئ الواجب.', { title: 'تمّ الإنشاء' });
+      toast.success('أُنشئ الواجب.', { title: CREATED });
       onClose();
     } catch {
       // surfaced inline from create.isError below
@@ -2086,7 +2085,7 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
     >
       <div className="modal-header">
         <div className="modal-title">واجب جديد</div>
-        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={create.isPending}>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label={CLOSE} disabled={create.isPending}>
           <Icon icon={X} size={16} />
         </button>
       </div>
@@ -2114,7 +2113,7 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
             </select>
           </FormField>
 
-          <FormField label="العنوان" error={validationError && title.trim().length < 2 ? validationError : undefined}>
+          <FormField label={LABEL_ADDRESS} error={validationError && title.trim().length < 2 ? validationError : undefined}>
             <input
               className="input"
               value={title}
@@ -2133,9 +2132,9 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
               disabled={create.isPending}
             >
               <option value="HOMEWORK">واجب</option>
-              <option value="QUIZ">اختبار قصير</option>
+              <option value="QUIZ">{QUIZ_SHORT}</option>
               <option value="PROJECT">مشروع</option>
-              <option value="EXAM">اختبار</option>
+              <option value="EXAM">{EXAM}</option>
             </select>
           </FormField>
 
@@ -2151,7 +2150,7 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
             error={validationError && !dueAt ? validationError : undefined}
             hint={dueAt
               ? `المحدَّد: ${formatDateTimeAr(dueAt)}`
-              : 'اختر من التقويم.'}
+              : PICK_FROM_CALENDAR}
           >
             <input
               type="datetime-local"
@@ -2195,10 +2194,10 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>
-            إلغاء
+            {CANCEL}
           </button>
           <button type="submit" className="btn primary hr-cta" disabled={create.isPending}>
-            {create.isPending ? 'جارٍ الإنشاء…' : 'إنشاء الواجب'}
+            {create.isPending ? CREATING : 'إنشاء الواجب'}
           </button>
         </div>
       </form>
@@ -2278,7 +2277,7 @@ export function AssignmentsPage() {
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
-          <EmptyState title="لا واجبات" description="" illustration="empty-list" />
+          <EmptyState title={NO_HOMEWORK} description="" illustration="empty-list" />
         ) : (
           <div className="flex-col gap-2">
             {q.data.map((a) => {
@@ -2457,7 +2456,7 @@ function NeedsReviewCard({
 
   return (
     <Card
-      title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>تسليمات بانتظار التقييم</>}
+      title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>{SUBMISSIONS_PENDING_REVIEW}</>}
       icon={ClipboardCheck}
       /* P2-1: countAr(0) renders the broken «0 تسليماً…» — the zero case
        * carries no subtitle at all (the empty state below speaks). */
@@ -2663,8 +2662,8 @@ function GradeSubmissionModal({
       closeOnEscape={!escapeLocked}
     >
       <div className="modal-header">
-        <div className="modal-title">تقييم التسليم</div>
-        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={grade.isPending}>
+        <div className="modal-title">{RATE_SUBMISSION}</div>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label={CLOSE} disabled={grade.isPending}>
           <Icon icon={X} size={16} />
         </button>
       </div>
@@ -2758,7 +2757,7 @@ function GradeSubmissionModal({
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={requestClose} disabled={grade.isPending}>
-            {done ? 'إغلاق' : 'إلغاء'}
+            {done ? CLOSE : CANCEL}
           </button>
           {done ? (
             nextTarget && (
@@ -2832,7 +2831,7 @@ function TeacherMessageCompose({
   /* The roster's loading/error states ride the recipient select as
    * disabled options — exactly the r170a modal's rows. */
   const statusOptions = [
-    ...(rosterQ.isPending ? ['جارٍ التحميل…'] : []),
+    ...(rosterQ.isPending ? [LOADING] : []),
     ...(rosterQ.isError ? ['تعذَّر تحميل الطلاب'] : []),
   ];
 
@@ -2857,7 +2856,7 @@ function TeacherMessageCompose({
             onChange={(e) => setOfferingId(e.target.value)}
             disabled={sendPending}
           >
-            <option value="">— بدون مقرّر —</option>
+            <option value="">{NO_COURSE_DASH}</option>
             {offerings.map((o) => (
               <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
             ))}

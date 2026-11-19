@@ -1,6 +1,6 @@
 @layer pages {
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══
    Colleges (Faculties) — index and detail pages
    Sub-project B. Calm grids, soft cards, no dramatic motion —
    inherits the platform's restraint.
@@ -14,9 +14,11 @@
    only sets `--college-accent`, `--college-accent-fg`,
    `--college-accent-soft`. Never `--success`, `--warning`, `--danger`,
    `--accent`. This keeps semantic colors stable across every college.
-   ═══════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
-/* ── Index: grid of college cards ──────────────────────────── */
+/* ── Index: grid of college cards ────────────────────────────
+*/
 .college-city-section {
   margin-block-start: var(--section-pad-y-narrow);
 }
@@ -49,7 +51,8 @@
 
 /* (G dead-code sweep): the .college-card family retired with the r264
    row recomposition — the gallery renders RowItem rows and only
-   .college-card-arrow survives (the row trailing affordance). */
+   .college-card-arrow survives (the row trailing affordance).
+*/
 .college-card-arrow {
   color: var(--text-subtle);
   transition: transform var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
@@ -57,19 +60,21 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══
    (G final sweep): the colleges POPOVER family is RETIRED — the
    r198 landing constellation replaced <CollegesPopover /> (never
    rendered anywhere since) and its colleges-popover.css sheet is
    deleted in the same change. The gallery, detail, leaderboard and
    comp-* families below are unchanged.
-   ═══════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══
    Gallery toolbar + filter chips + accent stripe + skeleton.
    See specs/004-colleges-gallery/contracts/gallery-state.md
-   ═══════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 
 
@@ -98,14 +103,16 @@
     border-color var(--motion-duration-short) var(--motion-ease-standard),
     color var(--motion-duration-short) var(--motion-ease-standard);
   /* r305: the platform's 44px touch floor (was 36px — a chip this
-     central to the gallery's only interaction sat under the canon
-     floor; the 7px/14px pill recipe inside .pf-filterbar got the same
-     lift via .comp-filter-pills). Padding keeps the 36px visual grade
-     at rest — the floor is met by block-size, not by inflating paint. */
+   central to the gallery's only interaction sat under the canon
+   floor; the 7px/14px pill recipe inside .pf-filterbar got the same
+   lift via .comp-filter-pills). Padding keeps the 36px visual grade
+   at rest — the floor is met by block-size, not by inflating paint.
+*/
   min-block-size: 44px;
 }
 /* r305 hover belt (r283 parity): the hover wash behind the fine-pointer
-   guard only — a touch tap must not paint a sticky hover state. */
+   guard only — a touch tap must not paint a sticky hover state.
+*/
 @media (hover: hover) and (pointer: fine) {
   .gallery-chip:hover {
     border-color: var(--rule-strong, var(--rule));
@@ -115,7 +122,8 @@
 .gallery-chip.gallery-chip-on,
 .gallery-chip[aria-selected="true"] {
   /* r313: the ACTIVE chip is the ink fill held (the reference's
-     nav-current grammar — dark rect, light label), not a soft tint. */
+   nav-current grammar — dark rect, light label), not a soft tint.
+*/
   background: var(--primary);
   border-color: var(--primary);
   color: var(--primary-fg);
@@ -125,13 +133,15 @@
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   /* r313: chip counts are mono micro-labels (Latin digits, Geist
-     Mono, tabular — the reference's instrument voice). */
+   Mono, tabular — the reference's instrument voice).
+*/
   font-family: var(--font-mono);
   font-size: var(--type-label-size-sm);
 }
 /* 21-c (A8 P1-2) → r313 re-key: the ON ground is the ink fill now, so
    the count joins the light-on-dark pair (color-mix on --primary-fg
-   ≈9:1 both themes — the axe fix survives the re-key). */
+   ≈9:1 both themes — the axe fix survives the re-key).
+*/
 .gallery-chip.gallery-chip-on .gallery-chip-count,
 .gallery-chip[aria-selected="true"] .gallery-chip-count {
   color: color-mix(in srgb, var(--primary-fg) 85%, transparent);
@@ -149,21 +159,23 @@
   cursor: pointer;
   border-radius: var(--r-sm);
   transition: color var(--motion-duration-short) var(--motion-ease-standard);
-  /* r305: 44px floor — the reset control sat beside 44px chips. */
+  /* r305: 44px floor — the reset control sat beside 44px chips.
+*/
   min-block-size: 44px;
 }
 @media (hover: hover) and (pointer: fine) {
   .gallery-clear:hover { color: var(--text); }
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══
    Guest funnel chrome (5-A12 P1-2) — the ONLY auth affordances on
    the world-readable colleges pages. Compact row on the listing
    surfaces (header actions slot); one persuasive closing band on the
    college detail. Buttons reuse the landing's exact grammar (ghost
    «تسجيل الدخول» + primary «أنشئ حسابك الجامعي») so the funnel
    speaks one vocabulary from first click to registration.
-   ═══════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 .guest-join-row {
   display: flex;
@@ -175,7 +187,8 @@
   font-size: var(--type-label-size);
   color: var(--text-muted);
   /* the note rides inline-start of the pair; whitespace-nowrap keeps
-     «طالب جديد في الجامعة؟» one unbroken question */
+   «طالب جديد في الجامعة؟» one unbroken question
+*/
   white-space: nowrap;
 }
 
@@ -188,30 +201,26 @@
   padding: var(--sp-8) var(--sp-5);
   border-radius: var(--r-xl);
   /* r313: flat paper-step band on a hairline — the accent-soft tint
-     retired with the two-tone sweep. */
+   retired with the two-tone sweep.
+*/
   background: var(--surface-2);
   border-block-start: 1px solid var(--border-strong);
   margin-block-start: var(--sp-4);
 }
 .guest-cta-title {
   font-family: var(--font-display);
-  font-size: var(--type-headline-size-md); /* r325 Y4 — rides the re-keyed clamped d2 role */
-  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
+  font-size: var(--type-headline-size-md); /* r325 Y4 — rides the re-keyed clamped d2 role
+*/
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law
+*/
   color: var(--text);
   /* r148 (AUDIT-4 I1): تتبّع سالب على h2 عربي («هل هذه كلّيتك؟») — الشدة
-     في «كلّيتك» أسوأ حالة ممكنة للتتبّع السالب. */
+   في «كلّيتك» أسوأ حالة ممكنة للتتبّع السالب.
+*/
   letter-spacing: 0;
   line-height: 1.2;
   margin: 0;
   text-wrap: balance;
-}
-.guest-cta-note {
-  font-size: var(--type-body-size);
-  line-height: var(--lh-base);
-  color: var(--text-secondary);
-  max-inline-size: var(--type-body-max-measure);
-  margin: 0;
-  text-wrap: pretty;
 }
 .guest-cta-actions {
   display: flex;
@@ -224,11 +233,13 @@
 /* (r190-D3): .college-stat-solo retired — the detail page's stats are
    the app-wide typographic StatStrip now, whose auto-fit columns absorb
    any surviving count without orphan-grid patches (zero TSX consumers,
-   rg-verified). */
+   rg-verified).
+*/
 
 /* The honest thin-board line (A8 P1-2): when a guest's college page
    carries no real data at all, ONE line tells that story — never a
-   wall of internal «لا توجد…بعد» empties. */
+   wall of internal «لا توجد…بعد» empties.
+*/
 .college-coming-soon {
   margin-block: 0 var(--sp-2);
   line-height: var(--lh-loose);
@@ -236,7 +247,8 @@
 
 /* T3-F4 — detail-page cards mirror the index-card leading stripe so
    the gated college accent (inherited from the .college-detail root)
-   actually reaches the page content chrome. 1px per ruling #4. */
+   actually reaches the page content chrome. 1px per ruling #4.
+*/
 .college-detail .card,
 .college-detail .metric {
   border-inline-start: 1px solid var(--college-accent, var(--rule));
@@ -246,7 +258,8 @@
    campus sections of ROWS (r264 RowList recomposition) — the old card
    grid placeholder previewed an anatomy the page no longer has. The
    placeholder now mirrors the real scan: one title bar per campus + a
-   bordered .pf-rowlist-shaped stack of list-row bars. */
+   bordered .pf-rowlist-shaped stack of list-row bars.
+*/
 .gallery-skeleton-section {
   margin-block: var(--sp-5) 0;
 }
@@ -288,18 +301,21 @@
 .gallery-skeleton-row-line-a { inline-size: 32%; block-size: 14px; border-radius: var(--r-sm); }
 .gallery-skeleton-row-line-b { inline-size: 55%; block-size: 11px; border-radius: var(--r-sm); }
 
-/* Mobile: stack cards single-column, sticky toolbar with backdrop blur. */
+/* Mobile: stack cards single-column, sticky toolbar with backdrop blur.
+*/
 /* r152i (A3): 767→768 — off-by-one vs the 768 family used by the same
-   file (:520) and everywhere else; dvh per the iOS URL-bar canon. */
+   file (:520) and everywhere else; dvh per the iOS URL-bar canon.
+*/
 @media (max-width: 768px) {
 
 
 
   /* R333 P-G3a (T-G1-02): the strip must never exceed the frame — the
-     scroll ITSELF is the design (the fade mask below is the affordance),
-     the page never widens. max-inline-size clamps the shrink-to-fit
-     line inside .pf-filterbar-filters (whose own min-inline-size:0 —
-     patterns.css — lets the slot reach this clamp). */
+   scroll ITSELF is the design (the fade mask below is the affordance),
+   the page never widens. max-inline-size clamps the shrink-to-fit
+   line inside .pf-filterbar-filters (whose own min-inline-size:0 —
+   patterns.css — lets the slot reach this clamp).
+*/
   .gallery-chip-strip {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -307,12 +323,14 @@
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding-block-end: var(--sp-1); /* leave room for the snap */
+    padding-block-end: var(--sp-1); /* leave room for the snap
+*/
     max-inline-size: 100%;
     /* r183-B8 (A10 finding 4) — the strip's edge fade: masks read alpha
-       only (opaque token, no raw color — color-gate) and never intercept
-       pointer events (drag/scroll/snap untouched). R369-C (C4.2): the
-       later duplicate block folded home — one owner per selector. */
+    only (opaque token, no raw color — color-gate) and never intercept
+    pointer events (drag/scroll/snap untouched). R369-C (C4.2): the
+    later duplicate block folded home — one owner per selector.
+*/
     -webkit-mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
     mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
   }
@@ -320,20 +338,21 @@
   .gallery-chip { scroll-snap-align: start; flex-shrink: 0; }
 
   /* r183-B8 (A10 finding 4) — the mask's rationale, kept with the rule
-     it styles: the strip hides its scrollbar entirely (scrollbar-width:
-     none + ::-webkit-scrollbar display:none), so at 320-390 the only
-     continuation cue was a 9px sliver of the next campus chip — 3 of 7
-     filters were effectively undiscoverable. The inline-end edge fade
-     hints the scroll: a mask (not paint) ramps alpha transparent →
-     opaque across the first 24px of the inline end, over the scrolled
-     content. Physical `to left` IS inline-end under the app-wide RTL
-     (the same documented physical↔logical coupling as base.css
-     .skip-link). The opaque stop consumes --surface for token
+   it styles: the strip hides its scrollbar entirely (scrollbar-width:
+   none + ::-webkit-scrollbar display:none), so at 320-390 the only
+   continuation cue was a 9px sliver of the next campus chip — 3 of 7
+   filters were effectively undiscoverable. The inline-end edge fade
+   hints the scroll: a mask (not paint) ramps alpha transparent →
+   opaque across the first 24px of the inline end, over the scrolled
+   content. Physical `to left` IS inline-end under the app-wide RTL
+   (the same documented physical↔logical coupling as base.css
+   .skip-link). The opaque stop consumes --surface for token
 }
 .college-stat-chip {
   display: inline-flex;
   align-items: center;
-  /* r153h: 6px → --sp-1-5 */
+  /* r153h: 6px → --sp-1-5
+*/
   gap: var(--sp-1-5);
   padding: var(--sp-1-5) var(--sp-2);
   border-radius: var(--r-sm);
@@ -348,13 +367,15 @@
   font-weight: var(--fw-semibold);
 }
 
-/* ── Detail: hero ──────────────────────────────────────────── */
+/* ── Detail: hero ────────────────────────────────────────────
+*/
 /* 012 FR-005 / T3-F4 — the hero finally CONSUMES the gated college
    accent (set inline on .college-detail by CollegeDetailPage):
    a leading top stripe on the masthead + an accent-tinted eyebrow.
    The eyebrow mixes 55% accent into the text ink so it stays AA even
    for a worst-case 3:1-gated accent (55/45 blend guarantees ≥4.7:1
-   light and ≥8:6:1 dark); body text tokens are untouched. */
+   light and ≥8:6:1 dark); body text tokens are untouched.
+*/
 .college-hero {
   display: flex;
   align-items: center;
@@ -362,7 +383,8 @@
   padding: var(--sp-5);
   border-radius: var(--r-lg);
   /* r313: flat sheet (the surface-1→2 gradient retired) on the
-     hairline grammar. */
+   hairline grammar.
+*/
   background: var(--surface);
   border: 1px solid var(--border);
   border-block-start: 3px solid var(--college-accent, var(--rule));
@@ -374,7 +396,8 @@
    v22 2px stroke pin for these ::before rails stays in polish's
    overrides layer, so the rendered width is unchanged; the RM belt
    entries also stay there — they must keep beating this pages-layer
-   family by layer order, exactly as before.) */
+   family by layer order, exactly as before.)
+*/
 .college-hero,
 .comp-hero {
   position: relative;
@@ -387,9 +410,10 @@
   inset-block: 0;
   inset-inline-start: 0;
   /* r313: the marker is a 1px accent HAIRLINE that draws in (the 4px
-     gradient stripe retired with the gradient sweep; the scaleY draw
-     survives on the line). R329 (gate:clean): the 2px width re-seat
-     lives in polish.css's overrides rule — the 1px here was inert. */
+   gradient stripe retired with the gradient sweep; the scaleY draw
+   survives on the line). R329 (gate:clean): the 2px width re-seat
+   lives in polish.css's overrides rule — the 1px here was inert.
+*/
   background: var(--accent);
   transform: scaleY(0);
   transform-origin: top;
@@ -400,7 +424,8 @@
   to   { transform: scaleY(1); }
 }
 .college-hero-emoji {
-  font-size: var(--fs-metric-xl); /* 48px — the r313 token seat */
+  font-size: var(--fs-metric-xl); /* 48px — the r313 token seat
+*/
   width: 72px;
   height: 72px;
   display: inline-flex;
@@ -416,21 +441,24 @@
   font-size: var(--fs-xxs);
   color: color-mix(in srgb, var(--college-accent, var(--accent)) 55%, var(--text));
   /* 21-c (A8 P2-1): 0.05em letter-spacing broke the cursive joins of
-     «the demo university · {campus}», and uppercase is a Latin-only concept.
-     Same ruling as the Vision eyebrow (removed per ruling #2) and
-     polish.css's .landing-campus-eyebrow: size + weight + color only. */
+   «the demo university · {campus}», and uppercase is a Latin-only concept.
+   Same ruling as the Vision eyebrow (removed per ruling #2) and
+   polish.css's .landing-campus-eyebrow: size + weight + color only.
+*/
   letter-spacing: normal;
   text-transform: none;
   margin-block-end: var(--sp-1);
 }
 .college-hero-name {
   /* r305: the detail hero joins the product type register — the display
-     voice every framed page opens with (.pf-page-title,
-     .comp-hero-title). The college hero shares its column with the
-     StatStrip and eight section cards; the identity accent on the
-     masthead stripe already leads the eye. */
+   voice every framed page opens with (.pf-page-title,
+   .comp-hero-title). The college hero shares its column with the
+   StatStrip and eight section cards; the identity accent on the
+   masthead stripe already leads the eye.
+*/
   /* r325 Y4 — the CLAMPED d2 rung at 600 (the unclamped --fs-h2 alias
-     grew to 47.6px @390 — off every rung; 700 off the weight law). */
+   grew to 47.6px @390 — off every rung; 700 off the weight law).
+*/
   font-family: var(--font-display);
   font-size: var(--fs-d2);
   font-weight: var(--fw-semibold);
@@ -445,7 +473,8 @@
   margin-block-start: var(--sp-1);
 }
 
-/* ── Two-column section grid ───────────────────────────────── */
+/* ── Two-column section grid ─────────────────────────────────
+*/
 .college-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -455,7 +484,8 @@
   .college-grid-2 { grid-template-columns: 1fr; }
 }
 
-/* ── Leadership rows ───────────────────────────────────────── */
+/* ── Leadership rows ─────────────────────────────────────────
+*/
 .leadership-list,
 .dept-list,
 .announce-list,
@@ -487,7 +517,8 @@
   margin-block-start: var(--sp-0-5);
 }
 
-/* ── Department rows ──────────────────────────────────────── */
+/* ── Department rows ────────────────────────────────────────
+*/
 .dept-row {
   display: flex;
   align-items: center;
@@ -500,7 +531,8 @@
 .dept-row-name {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   color: var(--text);
@@ -517,7 +549,8 @@
   font-weight: var(--fw-semibold);
 }
 
-/* ── Top-students rank list ────────────────────────────────── */
+/* ── Top-students rank list ──────────────────────────────────
+*/
 .student-rank-list {
   list-style: none;
   margin: 0;
@@ -534,7 +567,8 @@
   border-radius: var(--r-sm);
   transition: background var(--t-fast) var(--ease);
 }
-/* r305 hover belt (r283 parity): the wash guard. */
+/* r305 hover belt (r283 parity): the wash guard.
+*/
 @media (hover: hover) and (pointer: fine) {
   .student-rank-row:hover { background: var(--surface-2); }
 }
@@ -548,7 +582,8 @@
   background: var(--surface-2);
   color: var(--text-muted);
   /* r313: rank indices are mono micro-labels (Latin digits, Geist
-     Mono, tabular — the reference's instrument voice). */
+   Mono, tabular — the reference's instrument voice).
+*/
   font-family: var(--font-mono);
   font-size: var(--fs-xxs);
   font-weight: var(--fw-bold);
@@ -556,8 +591,9 @@
 }
 .student-rank-row:nth-child(1) .student-rank-num {
   /* T3-F4 — gold-as-text fix: --gold #D6A330 on --surface-2 was 2.2:1.
-     Switched to the family's own text-on-pastel pair (badge.amber
-     pattern): 9.0:1+. */
+   Switched to the family's own text-on-pastel pair (badge.amber
+   pattern): 9.0:1+.
+*/
   background: var(--c-yellow-bg);
   color: var(--gold-ink, var(--c-yellow-deep));
 }
@@ -580,7 +616,8 @@
   flex: 0 0 auto;
 }
 
-/* ── Announcements / events / live rows (similar shape) ────── */
+/* ── Announcements / events / live rows (similar shape) ──────
+*/
 .announce-row,
 .event-row,
 .live-row {
@@ -616,7 +653,8 @@
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   color: var(--text);
@@ -637,7 +675,8 @@
    capacity «N / M», the announce/live counts) read as mono
    micro-labels — Latin numerals in the instrument voice, tabular; the
    surrounding Arabic meta keeps the sans ladder. Same grammar as
-   .comp-entry-meta bdi below. */
+   .comp-entry-meta bdi below.
+*/
 .announce-meta bdi,
 .event-meta bdi,
 .live-meta bdi {
@@ -645,7 +684,8 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Competitions grid ─────────────────────────────────────── */
+/* ── Competitions grid ───────────────────────────────────────
+*/
 .comp-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -660,7 +700,8 @@
   border-radius: var(--r-md);
   background: var(--surface-2);
   /* 1px hairline (ruling #4; the per-competition themeColor still
-     overrides just the color via the inline style in CollegePages). */
+   overrides just the color via the inline style in CollegePages).
+*/
   border-inline-start: 1px solid var(--accent);
 }
 .comp-emoji {
@@ -682,7 +723,8 @@
   color: var(--text-muted);
 }
 .comp-prize {
-  margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
   font-size: var(--fs-xxs);
   color: var(--accent-ink, var(--accent));
   font-weight: var(--fw-medium);
@@ -692,16 +734,19 @@
    links now — the page was a dead-end hub where nothing onward was
    clickable. Same hover language as the college cards (border
    strengthens + a forward chevron fades in at the inline-end edge);
-   suppressed on touch (the retired .college-card-cta idiom). */
+   suppressed on touch (the retired .college-card-cta idiom).
+*/
 a.comp-card {
   text-decoration: none;
   color: inherit;
   /* r313: hover is the border step only — no shadow, no lift (the
-     reference's cards never move under the cursor). */
+   reference's cards never move under the cursor).
+*/
   transition: border-color var(--motion-duration-short) var(--motion-ease-standard);
 }
 /* G (r283–285 hover belt): التحويم خلف حارس المؤشر الدقيق فقط —
-   اللمس لا يعلق البطاقة مرفوعة. */
+   اللمس لا يعلق البطاقة مرفوعة.
+*/
 @media (hover: hover) and (pointer: fine) {
   a.comp-card:hover {
     border-color: var(--border-strong);
@@ -742,17 +787,19 @@ a.comp-card {
   }
 }
 
-/* ==================================================================
+/* ===
    Admin extra pages — MOVED to admin.css (r150e)
    ------------------------------------------------------------------
    (Sub-project D lived here: students table, digital, analysis,
    settings. The r150e split moved it verbatim to admin.css — the
    colleges sheet now owns only the colleges world. The dead
-   .top-courses-* residue died rather than moving.) */
+   .top-courses-* residue died rather than moving.)
+*/
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══
    Colleges leaderboard (Sub-project C) — inter-college comparison
-   ═══════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 .leaderboard-cta {
   display: flex;
@@ -775,9 +822,10 @@ a.comp-card {
   padding: var(--sp-3);
   background: var(--surface-2);
   /* r305 ink lift (r304 chrome-ink precedent): --text-muted measured
-     3.1–3.35:1 on the surface-2 header ground at 12px — the same axe
-     finding the nav-badge/scope-chip lifts fixed in the shell. The
-     header labels are data chrome, not de-emphasized prose. */
+   3.1–3.35:1 on the surface-2 header ground at 12px — the same axe
+   finding the nav-badge/scope-chip lifts fixed in the shell. The
+   header labels are data chrome, not de-emphasized prose.
+*/
   color: var(--text-secondary);
   font-weight: var(--fw-semibold);
   font-size: var(--fs-xs);
@@ -786,7 +834,8 @@ a.comp-card {
 }
 /* Sort affordance (A8 leaderboard polish): the header cell's content is
    a real button — transparent chrome, inherits the th color, hover
-   darkens like every header link in the app. */
+   darkens like every header link in the app.
+*/
 .leaderboard-sort {
   display: inline-flex;
   align-items: center;
@@ -803,7 +852,8 @@ a.comp-card {
   transition: color var(--t-fast) var(--ease);
 }
 /* r305 hover belt: sort buttons are controls; their hover darkening is
-   meaningless on touch and sticks after a tap — fine-pointer only. */
+   meaningless on touch and sticks after a tap — fine-pointer only.
+*/
 @media (hover: hover) and (pointer: fine) {
   .leaderboard-sort:hover { color: var(--text); }
   .leaderboard-sort:hover .leaderboard-sort-on { color: var(--accent-strong); }
@@ -816,14 +866,16 @@ a.comp-card {
 }
 /* r305: zebra-on-hover parity with the shared .table grammar — a quiet
    surface-2 wash marks the scanned row (hover shift, not static
-   stripes); guarded for fine pointers per the r283 belt. */
+   stripes); guarded for fine pointers per the r283 belt.
+*/
 @media (hover: hover) and (pointer: fine) {
   .leaderboard-table tbody tr:hover { background: var(--surface-2); }
 }
 .leaderboard-th {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
 }
 .leaderboard-college { width: 28%; }
 .leaderboard-college-link {
@@ -834,12 +886,14 @@ a.comp-card {
   color: inherit;
   transition: color var(--t-fast) var(--ease);
 }
-/* r305 hover belt: the name-tint hover, fine-pointer only. */
+/* r305 hover belt: the name-tint hover, fine-pointer only.
+*/
 @media (hover: hover) and (pointer: fine) {
   .leaderboard-college-link:hover .leaderboard-college-name { color: var(--accent-ink, var(--accent)); }
 }
 .leaderboard-emoji {
-  font-size: var(--fs-metric-md); /* 24px — the r313 token seat */
+  font-size: var(--fs-metric-md); /* 24px — the r313 token seat
+*/
   width: 36px;
   height: 36px;
   display: inline-flex;
@@ -868,15 +922,18 @@ a.comp-card {
   font-weight: var(--fw-bold);
 }
 /* A8 P3-2: an all-zero column has no leader — its values read as
-   muted “no data”, never as a celebrated rank-1 of nothing. */
+   muted “no data”, never as a celebrated rank-1 of nothing.
+*/
 .leaderboard-cell.is-dead .leaderboard-value {
   color: var(--text-muted);
 }
 /* A8 P3-1: medals are the platform's icon system (lucide Medal),
    tinted gold/silver/bronze through text-grade tokens (each ≥3:1 on
-   the card surface — measured, not a raw hex). */
+   the card surface — measured, not a raw hex).
+*/
 .leaderboard-medal {
-  margin-inline-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  margin-inline-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
   display: inline-flex;
   align-items: center;
   vertical-align: middle;
@@ -893,7 +950,8 @@ a.comp-card {
    the orange accent) — no new colors enter the sheet. Rank 1 is the
    ink fill (the .gallery-chip-on grammar: dark rect, light label);
    2–3 stay outlined. The row keeps its own hairline edge so the
-   hierarchy survives a fast scan down the table. */
+   hierarchy survives a fast scan down the table.
+*/
 .leaderboard-rank {
   display: inline-flex;
   align-items: center;
@@ -926,7 +984,8 @@ a.comp-card {
    the 25-row all-zero wall for guests (the blueprint motif: mono [00]
    index + hairline frame + one plain sentence + the page's one real
    action). Grid collapses to a column on phones; the band uses the
-   section cadence (--sp-6 padding, no one-off gaps). */
+   section cadence (--sp-6 padding, no one-off gaps).
+*/
 .leaderboard-zero {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -978,15 +1037,17 @@ a.comp-card {
 }
 
 /* A8 P2-5: the leaderboard joins the shared .tbl-stack collapse — on
-   phones the 720px floor would still force the stacked cards wide. */
+   phones the 720px floor would still force the stacked cards wide.
+*/
 @media (max-width: 640px) {
   .leaderboard-table.tbl-stack { min-width: 0; }
   .leaderboard-table.tbl-stack .leaderboard-college-link { align-items: flex-start; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══
    Competitions (Phase 6) — index, detail, modals
-   ═══════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 /* r305: 44px touch floor for the index FilterBar's status pills — the
    shared .pill recipe is a ~31px display chip (7/14 padding, 13px);
@@ -994,7 +1055,8 @@ a.comp-card {
    controls. Scoped to this page's group (the class rides the filters
    slot in CompetitionsPages), so community/feed pills keep their
    compact grade (components.css lifts .feed-toolbar pills the same
-   way). */
+   way).
+*/
 .comp-filter-pills {
   display: flex;
   flex-wrap: wrap;
@@ -1009,9 +1071,11 @@ a.comp-card {
    row recomposition — the competitions index renders RowItem rows
    (leading EmojiIcon + cp-clamp2 meta + trailing badges); 4E deleted
    the grid/card but these inner classes were missed. The empty
-   (hover:hover) media (the v17 bob's gutted shell) went with them. */
+   (hover:hover) media (the v17 bob's gutted shell) went with them.
+*/
 
-/* Detail */
+/* Detail
+*/
 .comp-detail { gap: var(--sp-5); }
 
 .comp-hero {
@@ -1019,7 +1083,8 @@ a.comp-card {
   gap: var(--sp-5);
   padding: var(--sp-6);
   border-radius: var(--r-lg);
-  /* r313: flat sheet — the surface-1→2 gradient retired. */
+  /* r313: flat sheet — the surface-1→2 gradient retired.
+*/
   background: var(--surface);
   border: 1px solid var(--border);
 }
@@ -1050,15 +1115,18 @@ a.comp-card {
 }
 .comp-hero-category {
   color: var(--text-subtle);
-  /* 21-c (ruling #2): Arabic category label — no uppercase/tracking. */
+  /* 21-c (ruling #2): Arabic category label — no uppercase/tracking.
+*/
   text-transform: none;
   letter-spacing: normal;
 }
 .comp-hero-title {
   /* r304: the detail hero joins the product type register — display
-     voice (matches every pf-page-title), not the dashboard 30px slab. */
+   voice (matches every pf-page-title), not the dashboard 30px slab.
+*/
   /* r325 Y4 — the CLAMPED d2 rung at 600 (the alias grew to 47.6px
-     @390; 700 off the §R324 weight law). */
+   @390; 700 off the §R324 weight law).
+*/
   font-family: var(--font-display);
   font-size: var(--fs-d2);
   font-weight: var(--fw-semibold);
@@ -1067,9 +1135,10 @@ a.comp-card {
 }
 .comp-hero-desc {
   /* r305: the hero description is the detail page's body voice — 16px
-     on the shared body register (matches .pf-page-desc), not 13px
-     muted chrome. The white-space: pre-wrap multi-paragraph briefs
-     keep their authored line structure. */
+   on the shared body register (matches .pf-page-desc), not 13px
+   muted chrome. The white-space: pre-wrap multi-paragraph briefs
+   keep their authored line structure.
+*/
   font-size: var(--fs-body);
   line-height: var(--lh-base);
   color: var(--text-secondary);
@@ -1088,7 +1157,8 @@ a.comp-card {
 .comp-hero-stats > div {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1-5); /* r149 (R3-A2 #1) */
+  gap: var(--sp-1-5); /* r149 (R3-A2 #1)
+*/
 }
 .comp-hero-actions {
   display: flex;
@@ -1128,7 +1198,8 @@ a.comp-card {
 }
 /* r313: the embedded score run (‎<bdi>{score}/100</bdi>‎) is a mono
    micro-label — Latin digits, Geist Mono, tabular (the reference's
-   instrument voice; the surrounding Arabic meta keeps the sans). */
+   instrument voice; the surrounding Arabic meta keeps the sans).
+*/
 .comp-entry-meta bdi {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -1154,7 +1225,8 @@ a.comp-card {
 
 /* (Wave 6-c dead-selector sweep: .comp-entry-rank deleted — zero TSX
    consumers (rg over frontend/src = 0 hits); 5-c moved JUDGED rows to
-   the leaderboard-rank treatment. See audits/0-f P3 / wave 5-c notes.) */
+   the leaderboard-rank treatment. See audits/0-f P3 / wave 5-c notes.)
+*/
 
 .comp-score-input {
   display: flex;
@@ -1168,19 +1240,22 @@ a.comp-card {
 /* Modal containers (.comp-modal-backdrop / .comp-modal + their keyframes)
    removed in the WS-D2 orphan sweep: CompetitionsPages/CommunityPages now
    mount the <Modal> primitive (modal-overlay/modal-card) and only the
-   comp-modal-head/close/form/actions children remain in the markup. */
+   comp-modal-head/close/form/actions children remain in the markup.
+*/
 .comp-modal-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   /* r149 (R3-A1 #5 / R3-A2 R5): إيقاع المودال الكنوني — كان 16/20
-     درجة أرخص من ‎.modal-header (20/24). */
+   درجة أرخص من ‎.modal-header (20/24).
+*/
   padding: var(--sp-5) var(--sp-6);
   border-block-end: 1px solid var(--border);
 }
 .comp-modal-head h2 {
   /* r149 (R3-A4 #10): وصفة ‎.modal-title الكنونية — كان 18/600
-     بينما نفس المستوى الدلالي في بقية المنصة 22/700. */
+   بينما نفس المستوى الدلالي في بقية المنصة 22/700.
+*/
   font-family: var(--font-display);
   font-size: var(--type-headline-size-md);
   font-weight: var(--type-headline-weight);
@@ -1197,17 +1272,20 @@ a.comp-card {
   border-radius: var(--r-sm);
   transition: background var(--t-fast) var(--ease);
   /* r305: 44px hit floor for the modal's dismiss control (was a 32px
-     glyph well — under the platform floor with no compensating
-     padding). */
+   glyph well — under the platform floor with no compensating
+   padding).
+*/
   min-block-size: 44px;
   min-inline-size: 44px;
 }
-/* r305 hover belt: the close-well wash, fine-pointer only. */
+/* r305 hover belt: the close-well wash, fine-pointer only.
+*/
 @media (hover: hover) and (pointer: fine) {
   .comp-modal-close:hover { background: var(--surface-2); color: var(--text); }
 }
 .comp-modal-form {
-  /* r149 (R3-A2 R5): ‎24px كإيقاع ‎.modal-body الكنوني (كان 20). */
+  /* r149 (R3-A2 R5): ‎24px كإيقاع ‎.modal-body الكنوني (كان 20).
+*/
   padding: var(--sp-6);
   display: flex;
   flex-direction: column;
@@ -1215,7 +1293,8 @@ a.comp-card {
 }
 /* r152c (A2): .comp-form-field retired — AdminGovernancePages was its
    last consumer and its six selects now ride the canonical FormField
-   (.form-field in components.css). Tombstone kept per house convention. */
+   (.form-field in components.css). Tombstone kept per house convention.
+*/
 .comp-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1227,12 +1306,14 @@ a.comp-card {
 .comp-icon-picker {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5
+*/
 }
 .comp-icon-btn {
   /* r305: 44px touch floor (was 36px — the picker is a primary
-     expressive control on phones, and the row wraps at the filter
-     rung anyway). */
+   expressive control on phones, and the row wraps at the filter
+   rung anyway).
+*/
   width: 44px;
   height: 44px;
   border-radius: var(--r-sm);
@@ -1240,7 +1321,8 @@ a.comp-card {
   border: 1px solid var(--border);
   font-size: 18px;
   cursor: pointer;
-  /* r149 (R3-A3 R2): var(--ease) — كان المنحنى الافتراضي. */
+  /* r149 (R3-A3 R2): var(--ease) — كان المنحنى الافتراضي.
+*/
   transition: var(--t-fast) var(--ease);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -1251,10 +1333,12 @@ a.comp-card {
    RETIRED with the Heron re-key. The reference's hovers are colour /
    fill steps only; nothing under the cursor rotates or grows. The
    close keeps its quiet surface wash, the picker keeps the accent
-   border step.) */
+   border step.)
+*/
 .comp-icon-btn.on {
   /* r313: the picked emoji tile is the ink fill held (the reference's
-     active grammar) — the accent-soft tint retired. */
+   active grammar) — the accent-soft tint retired.
+*/
   background: var(--primary);
   border-color: var(--primary);
   color: var(--primary-fg);
@@ -1263,21 +1347,23 @@ a.comp-card {
   display: flex;
   justify-content: flex-end;
   gap: var(--sp-2);
-  /* r149 (R3-A2 R5): تذييل كنوني — 16px فوق الحد (كان 8). */
+  /* r149 (R3-A2 R5): تذييل كنوني — 16px فوق الحد (كان 8).
+*/
   padding-block-start: var(--sp-4);
   border-block-start: 1px solid var(--border);
 }
 
 
-/* ==================================================================
+/* ===
    wave 5-b: admin-extras — MOVED to admin.css (r150e)
    ------------------------------------------------------------------
    (The admin-extras refinements lived here: settings-label/links
    corrections, the students-search pill sizing, the mobile touch
    floor. Moved verbatim to admin.css with the Sub-project D body —
-   the split the banner itself prescribed.) */
+   the split the banner itself prescribed.)
+*/
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══
    wave 6-c — identity registry live (append-only)
 
    The 25-entry registry in data/colleges.config.ts activates the
@@ -1285,10 +1371,12 @@ a.comp-card {
    profile-driven hero surfaces (contract college-identity-profile.md):
    both stay dormant until real UoZ photography lands under
    public/colleges/<slug>/ (Principle III — no synthetic imagery).
-   ═══════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 /* heroImage — real photography replaces the emoji chip; mirrors its
-   geometry (72px chip, r-md, accent-soft hairline). */
+   geometry (72px chip, r-md, accent-soft hairline).
+*/
 .college-hero-media {
   inline-size: 72px;
   block-size: 72px;
@@ -1300,7 +1388,8 @@ a.comp-card {
 
 /* motif — decorative trailing wash behind the hero titles. The base
    .college-hero rule predates the motif and must stay untouched
-   (append-only), so the positioning context is scoped via :has(). */
+   (append-only), so the positioning context is scoped via :has().
+*/
 .college-hero:has(.college-hero-motif) {
   position: relative;
   overflow: clip;
@@ -1316,7 +1405,8 @@ a.comp-card {
   pointer-events: none;
   border-start-end-radius: var(--r-lg);
   /* Gradients take physical directions only — flip the fade per dir.
-     Mask color is irrelevant (alpha channel only); black is conventional. */
+   Mask color is irrelevant (alpha channel only); black is conventional.
+*/
   mask-image: linear-gradient(to left, black 30%, transparent);
   -webkit-mask-image: linear-gradient(to left, black 30%, transparent);
 }
@@ -1327,8 +1417,9 @@ a.comp-card {
 
 
   /* ── Community borrows (D14 split) — وسوم منشورات المجتمع ──────────
-     G: كانت سطرية في CommunitySocialPanels مع font-mono (مخالفة عقد
-     r197 — الوسم محتوى مستخدم لا معرّف)؛ الآن sans بلون accent-ink. */
+   G: كانت سطرية في CommunitySocialPanels مع font-mono (مخالفة عقد
+   r197 — الوسم محتوى مستخدم لا معرّف)؛ الآن sans بلون accent-ink.
+*/
   .post-tags {
     margin-block-start: var(--sp-1-5);
   }

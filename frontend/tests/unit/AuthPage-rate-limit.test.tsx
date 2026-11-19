@@ -2,7 +2,7 @@
  * Wave 23-a — AuthPage rate-limit copy honesty (audit 4-A13 P2-1).
  *
  * One generic banner used to answer every `login.isError`, so a 429
- * lockout told the student to «تحقَّق من البريد وكلمة المرور» —
+ * lockout told the student to «تحقّق من البريد والمرور والاتصال» —
  * actively misleading during the 10/15-min window (the shared IP
  * bucket is easy to trip). The banner must now name the lockout and
  * surface the honest Arabic message the backend already sends.
@@ -89,22 +89,22 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
     loginState.current.error = axError(
       429,
       'TOO_MANY_REQUESTS',
-      'محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة',
+      'محاولات كثيرة — انتظر قليلًا وأعد المحاولة',
     );
     renderPage();
 
     const alert = screen.getByRole('alert');
-    expect(alert).toHaveTextContent('محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة');
+    expect(alert).toHaveTextContent('محاولات كثيرة — انتظر قليلًا وأعد المحاولة');
     // The misleading credential advice must NOT appear in lockout state.
-    expect(alert).not.toHaveTextContent('تحقّق من البريد والمرور');
+    expect(alert).not.toHaveTextContent('تحقّق من البريد والمرور والاتصال');
   });
 
   it('the TOO_MANY_REQUESTS code alone (e.g. a 429 proxied through a gateway) is enough', () => {
     loginState.current.isError = true;
-    loginState.current.error = axError(502, 'TOO_MANY_REQUESTS', 'محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة');
+    loginState.current.error = axError(502, 'TOO_MANY_REQUESTS', 'محاولات كثيرة — انتظر قليلًا وأعد المحاولة');
     renderPage();
 
-    expect(screen.getByRole('alert')).toHaveTextContent('محاولات دخول كثيرة');
+    expect(screen.getByRole('alert')).toHaveTextContent('محاولات كثيرة');
   });
 
   it('falls back to authored Arabic when the 429 carries no message body', () => {
@@ -112,8 +112,8 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
     loginState.current.error = axError(429);
     renderPage();
 
-    expect(screen.getByRole('alert')).toHaveTextContent('محاولات كثيرة — انتظر قليلًا');
-    expect(screen.getByRole('alert')).not.toHaveTextContent('تحقّق من البريد والمرور');
+    expect(screen.getByRole('alert')).toHaveTextContent('محاولات كثيرة — انتظر قليلًا وأعد المحاولة');
+    expect(screen.getByRole('alert')).not.toHaveTextContent('تحقّق من البريد والمرور والاتصال');
   });
 
   it('a 401 (wrong password) surfaces the backend\'s own Arabic message verbatim (D17-3)', () => {
@@ -131,7 +131,7 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
     expect(alert).toHaveTextContent('البريد الإلكتروني أو كلمة المرور غير صحيحة');
     // The generic refusal no longer masks the server's answer.
     expect(alert).not.toHaveTextContent('تعذّر الدخول');
-    expect(alert).not.toHaveTextContent('تحقّق من البريد والمرور');
+    expect(alert).not.toHaveTextContent('تحقّق من البريد والمرور والاتصال');
   });
 
   it('a 403 (disabled account) surfaces the backend\'s own Arabic message verbatim', () => {
@@ -143,7 +143,7 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent('هذا الحساب معطّل — تواصل مع إدارة الجامعة');
     expect(alert).not.toHaveTextContent('تعذّر الدخول');
-    expect(alert).not.toHaveTextContent('تحقّق من البريد والمرور');
+    expect(alert).not.toHaveTextContent('تحقّق من البريد والمرور والاتصال');
   });
 
   it('a network failure (no response) keeps the authored generic — nothing to quote', () => {

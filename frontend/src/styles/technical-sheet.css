@@ -9,7 +9,8 @@
  * Motion: a single stroke-draw cascade (--t-cinema) plus a paper fade.
  * Under prefers-reduced-motion the drawing is already complete — no
  * animation, no dash offset, nothing to wait for.
- */
+
+*/
 
 .technical-sheet {
   color: var(--border-strong);
@@ -34,7 +35,8 @@
   vector-effect: non-scaling-stroke;
 }
 
-/* ── ink ladder ──────────────────────────────────────────────────── */
+/* ── ink ladder ────────────────────────────────────────────────────
+*/
 .tp-frame {
   fill: none;
   stroke: currentColor;
@@ -102,7 +104,8 @@
 /* Annotation ink is real text, not linework: it must clear 4.5:1 on the
  * paper (and its dark flip), so it rides --text-secondary at full
  * opacity. The faintness of the plate lives in the hairlines, never in
- * unreadable labels. */
+ * unreadable labels.
+*/
 .tp-note text,
 .tp-title text {
   fill: var(--text-secondary);
@@ -161,12 +164,14 @@
 }
 
 /* The cut LINE is the signal; its A–A labels are reading text, so they
- * stay on the ink ladder (the orange remains a geometry marker). */
+ * stay on the ink ladder (the orange remains a geometry marker).
+*/
 .tp-cut text {
   fill: var(--text-secondary);
 }
 
-/* ── the stroke-draw cascade ─────────────────────────────────────── */
+/* ── the stroke-draw cascade ───────────────────────────────────────
+*/
 .technical-sheet .tp-line,
 .technical-sheet .tp-grid line,
 .technical-sheet .tp-construct line,
@@ -278,18 +283,21 @@
   }
 }
 
-/* ── the auth seat — a drawing in the sheet's free margin ─────────── */
+/* ── the auth seat — a drawing in the sheet's free margin ───────────
+*/
 /* Guest surfaces (login / register / recovery) carry one technical
  * plate in the inline-end margin. It is decorative chrome: fixed,
  * pointer-transparent, behind the form column, and only mounted where
  * there is real margin for it (≥1280px). Below that the plate would
  * crowd the 620–720px form, so it is not rendered at all — the frame
- * and grain already carry the sheet on small screens. */
+ * and grain already carry the sheet on small screens.
+*/
 /* r360 fix: the sheet-in animation fills `both`, so its final
  * opacity:1 keyframe permanently beats any declared opacity on the
  * animated root — the quieting rides the un-animated svg child
  * instead (0.9 × the root's fade = the intended plate presence).
- * Same fix applied to the plate seats in technical-plates.css. */
+ * Same fix applied to the plate seats in technical-plates.css.
+*/
 .tech-sheet-auth svg {
   opacity: 0.9;
 }

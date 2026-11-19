@@ -1,3 +1,5 @@
+import { CANCEL, ALL, EMPTY_COURSES_YET, NOUN_COURSE_ACC, LABEL_LECTURES, LABEL_TODAY, LABEL_LECTURE, CLOSE, ONE_LECTURE, MY_COURSES, ANSWER_HERE_PLACEHOLDER, NOUN_TWO_LECTURES, STATUS_DONE_F, SUBMIT, START, SUBMITTING, NOUN_TWO_HOMEWORK, NOUN_HOMEWORK_ACC, ENROLLED_COURSES, TOMORROW } from '../../lib/copy';
+
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -57,15 +59,15 @@ export type SubmitModalAssignment = AgendaAssignment;
 type CourseFilter = 'all' | 'active' | 'done' | 'attention';
 
 const FILTERS: Array<{ key: CourseFilter; label: string }> = [
-  { key: 'all', label: 'الكل' },
+  { key: 'all', label: ALL },
   { key: 'active', label: 'قيد التقدّم' },
-  { key: 'done', label: 'مكتملة' },
+  { key: 'done', label: STATUS_DONE_F },
   { key: 'attention', label: 'بحاجة إلى اهتمام' },
 ];
 
 /* Copy diet (single source): the enrolled-count counted plural feeds both
  * the SectionBar's sr-only meta and the summary line — one literal. */
-const ENROLLED_FORMS: [string, string, string, string] = ['مقرّر مسجَّل', 'مقرّران مسجّلان', 'مقرّرات مسجَّلة', 'مقرّراً'];
+const ENROLLED_FORMS: [string, string, string, string] = ['مقرّر مسجَّل', 'مقرّران مسجّلان', ENROLLED_COURSES, NOUN_COURSE_ACC];
 
 function matchesFilter(e: MyEnrollment, f: CourseFilter): boolean {
   if (f === 'done') return e.progressPct >= 100;
@@ -85,8 +87,8 @@ function formatDue(iso: string): string {
   const d = new Date(iso);
   const days = Math.round((d.getTime() - Date.now()) / 86_400_000);
   if (days < 0) return formatDate(d, { dateStyle: 'medium' });
-  if (days === 0) return 'اليوم';
-  if (days === 1) return 'غداً';
+  if (days === 0) return LABEL_TODAY;
+  if (days === 1) return TOMORROW;
   if (days === 2) return 'بعد يومين';
   if (days <= 10) return `بعد ${days} أيام`;
   return formatDate(d, { dateStyle: 'medium' });
@@ -170,7 +172,7 @@ function CourseRow({ e, actNow }: { e: MyEnrollment; actNow?: boolean }) {
           {lectureCount !== undefined && lectureCount > 0 && (
             <>
               <span className="r305s-meta-sep" aria-hidden />
-              <span>{countAr(lectureCount, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</span>
+              <span>{countAr(lectureCount, [ONE_LECTURE, NOUN_TWO_LECTURES, LABEL_LECTURES, LABEL_LECTURE])}</span>
             </>
           )}
           {lectureCount === 0 && (
@@ -201,7 +203,7 @@ function CourseRow({ e, actNow }: { e: MyEnrollment; actNow?: boolean }) {
                 : 'btn ghost sm courses-row-go'
             }
           >
-            {e.progressPct > 0 ? 'تابع' : 'ابدأ'}
+            {e.progressPct > 0 ? 'تابع' : START}
             <Icon icon={ArrowLeft} size={12} />
           </span>
         </span>
@@ -239,7 +241,7 @@ export default function StudentCoursesPage() {
     <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
-        title="مقرّراتي الدراسية"
+        title={MY_COURSES}
         /* r366 (2-e): the r173a summary-line contract keeps exactly one
          * subtitle — the restatement tightened to it, not removed. */
         description="مقرّراتك هذا الفصل."
@@ -258,7 +260,7 @@ export default function StudentCoursesPage() {
       ) : isError ? (
         <ErrorState error={error} onRetry={() => refetch()} />
       ) : !data?.length ? (
-        <EmptyState illustration="empty-courses" icon={BookOpen} title="لا مقرّرات بعد" description="تواصل مع المسجل العام لإكمال التسجيل." />
+        <EmptyState illustration="empty-courses" icon={BookOpen} title={EMPTY_COURSES_YET} description="تواصل مع المسجل العام لإكمال التسجيل." />
       ) : (
         <>
           {/* R319 (c3-S1): the courses region opens with the §B2
@@ -344,7 +346,7 @@ export default function StudentCoursesPage() {
             !dashboard.isPending && !dashboard.isError && upcoming.length > 0 ? (
               <BarCount
                 n={upcoming.length}
-                srLabel={countAr(upcoming.length, ['واجب قادم', 'واجبان', 'واجبات قادمة', 'واجباً'])}
+                srLabel={countAr(upcoming.length, ['واجب قادم', NOUN_TWO_HOMEWORK, 'واجبات قادمة', NOUN_HOMEWORK_ACC])}
               />
             ) : undefined
           }
@@ -383,7 +385,7 @@ export default function StudentCoursesPage() {
                           className="btn outline sm"
                           onClick={() => setSubmitTarget({ assignment: a, offeringId: a.offeringId })}
                         >
-                          <Icon icon={Send} size={12} /> تسليم
+                          <Icon icon={Send} size={12} /> {SUBMIT}
                         </button>
                       )}
                     </>
@@ -477,7 +479,7 @@ export function SubmitAssignmentModal({
     >
       <div className="modal-header">
         <div className="modal-title">تسليم الواجب</div>
-        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={submit.isPending}>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label={CLOSE} disabled={submit.isPending}>
           <Icon icon={X} size={16} />
         </button>
       </div>
@@ -538,7 +540,7 @@ export function SubmitAssignmentModal({
                 ref={textAnswerRef}
                 className="input"
                 rows={5}
-                placeholder="اكتب إجابتك هنا…"
+                placeholder={ANSWER_HERE_PLACEHOLDER}
                 value={textAnswer}
                 onChange={(e) => setTextAnswer(e.target.value)}
                 disabled={submit.isPending}
@@ -575,7 +577,7 @@ export function SubmitAssignmentModal({
       </div>
       <div className="modal-footer">
         <button type="button" className="btn ghost" onClick={requestClose} disabled={submit.isPending}>
-          {done ? 'إغلاق' : 'إلغاء'}
+          {done ? CLOSE : CANCEL}
         </button>
         {!done && (
           <button
@@ -584,7 +586,7 @@ export function SubmitAssignmentModal({
             onClick={() => void onSubmit()}
             disabled={submit.isPending}
           >
-            {submit.isPending ? 'جارٍ التسليم…' : 'حفظ التسليم'}
+            {submit.isPending ? SUBMITTING : 'حفظ التسليم'}
           </button>
         )}
       </div>

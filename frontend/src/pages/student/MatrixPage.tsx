@@ -1,3 +1,5 @@
+import { ALL, NOUN_COURSE_ACC, LABEL_COURSES, ONE_COURSE, LEARNING_MATRIX, ONE_CONCEPT, GAPS, GOOD, AI_ASSISTANT, NOW, CLOSE_THE_GAP } from '../../lib/copy';
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -58,7 +60,7 @@ function levelClass(level: number, attempts: number): MasteryClass {
 function levelLabel(level: number, attempts: number) {
   if (attempts === 0) return 'لم يُختبر';
   if (level >= 0.8) return 'إتقان';
-  if (level >= 0.6) return 'جيد';
+  if (level >= 0.6) return GOOD;
   if (level >= 0.4) return 'يحتاج مراجعة';
   return 'ضعف';
 }
@@ -67,7 +69,7 @@ function levelLabel(level: number, attempts: number) {
 type LevelFilter = 'all' | MasteryClass;
 const FILTER_LABEL: Record<Exclude<LevelFilter, 'all'>, string> = {
   'lvl-strong': 'إتقان',
-  'lvl-good': 'جيد',
+  'lvl-good': GOOD,
   'lvl-weak': 'يحتاج مراجعة',
   'lvl-poor': 'ضعف',
   'lvl-untouched': 'لم يُختبر',
@@ -86,7 +88,7 @@ const LEVEL_CHIP_TONE: Record<MasteryClass, string> = {
 
 /** Arabic plural rules for concept counts (1 / dual / 3–10 / 11+). */
 function conceptCount(n: number): string {
-  if (n === 1) return 'مفهوم واحد';
+  if (n === 1) return ONE_CONCEPT;
   if (n === 2) return 'مفهومان';
   if (n >= 3 && n <= 10) return `${n} مفاهيم`;
   return `${n} مفهوماً`;
@@ -166,12 +168,12 @@ export default function MatrixPage() {
     <div className="r319s-page">
     <PageFrame width="default">
       <PageHeader
-        title="المصفوفة التعليمية"
+        title={LEARNING_MATRIX}
         description={
           'خريطة معرفيّة لكل مفهوم درسته.'
         }
         meta={matrix.data && totalConcepts > 0
-          ? <>{countAr(totalConcepts, ['مفهوم مُقاس', 'مفهومان مُقاسان', 'مفاهيم مُقاسة', 'مفهوماً مُقاساً'])} عبر {countAr(mappedCourses.length, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}</>
+          ? <>{countAr(totalConcepts, ['مفهوم مُقاس', 'مفهومان مُقاسان', 'مفاهيم مُقاسة', 'مفهوماً مُقاساً'])} عبر {countAr(mappedCourses.length, [ONE_COURSE, 'مقرّرين', LABEL_COURSES, NOUN_COURSE_ACC])}</>
           : undefined}
         actions={(
           /* R342-08 — the header CTA pair joins the tacking badge
@@ -183,7 +185,7 @@ export default function MatrixPage() {
           <>
             <Link to="/student/ai" className="btn primary sm">
               <Icon icon={Bot} size={13} />
-              المساعد الذكي
+              {AI_ASSISTANT}
             </Link>
             <Link to="/student/online-exams" className="btn ghost sm">
               <Icon icon={ClipboardCheck} size={13} />
@@ -220,7 +222,7 @@ export default function MatrixPage() {
             !gaps.isPending && !gaps.isError && (gaps.data?.length ?? 0) > 0 ? (
               <BarCount
                 n={gaps.data!.length}
-                srLabel={countAr(gaps.data!.length, ['فجوة واحدة', 'فجوتان', 'فجوات', 'فجوة'])}
+                srLabel={countAr(gaps.data!.length, ['فجوة واحدة', 'فجوتان', GAPS, 'فجوة'])}
               />
             ) : undefined
           }
@@ -245,10 +247,10 @@ export default function MatrixPage() {
                 key={g.conceptId}
                 leading={<Icon icon={AlertCircle} size={16} style={{ color: 'var(--warning-ink)' }} />}
                 title={g.conceptName}
-                meta={<>{g.courseName} · <bdi className="font-mono">{formatInt(Math.round(g.level * 100))}%</bdi> الآن</>}
+                meta={<>{g.courseName} · <bdi className="font-mono">{formatInt(Math.round(g.level * 100))}%</bdi> {NOW}</>}
                 to={g.recommendedLectureId ? `/student/lectures/${g.recommendedLectureId}` : undefined}
                 trailing={g.recommendedLectureId
-                  ? <span className="btn outline sm pf-chip"><Icon icon={Play} size={13} />سدّ الفجوة</span>
+                  ? <span className="btn outline sm pf-chip"><Icon icon={Play} size={13} />{CLOSE_THE_GAP}</span>
                   : <Badge>لا توصية</Badge>}
               />
             ))}
@@ -305,7 +307,7 @@ export default function MatrixPage() {
                   aria-pressed={filter === 'all'}
                   onClick={() => setFilter('all')}
                 >
-                  الكل
+                  {ALL}
                   <span className="matrix-filter-count" aria-hidden>{formatInt(totalConcepts)}</span>
                 </button>
                 {(Object.keys(FILTER_LABEL) as Array<Exclude<LevelFilter, 'all'>>).map((key) => (

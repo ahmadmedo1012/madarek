@@ -1,3 +1,5 @@
+import { ALL, EMPTY_COURSES, LABEL_STUDENTS, LABEL_STATUS, EMPTY_RESEARCH_YET, LABEL_LECTURES, LABEL_TODAY, LABEL_LECTURE, LABEL_THE_COURSE, CLEAR_SEARCH, RANK_ASSISTANT_PROF, RANK_ASSOCIATE_PROF, EXAM_REVIEW, QUALITY_REPORTS, FACULTY_BODY, LABEL_THE_COURSES, SEARCH_PLACEHOLDER, COLLEGE_DEPT, CRITICAL_ALERTS, NO_DATA, ONE_LECTURE, FAILED_LOAD_COURSES, NOUN_PROF, NO_MATCHING_RESULTS, NO_PROFS_YET, FAILED_LOAD_PROFS, NOUN_TWO_LECTURES, STATUS_CRITICAL, STATUS_DONE, ENROLLMENTS, DASH_QUALITY, LABEL_RANK, ONE_ENROLLMENT, THE_LECTURES, LABEL_THE_PROF, SEM, QUALITY_ALERTS, TWO_CRITICAL_ALERTS, NOUN_ALERT_ACC, ONE_FILE, NOUN_FILE_ACC, ACTIVE_COURSES, NOUN_SESSIONS, NOUN_ATTEND, NO_ALERTS, ONE_CONCEPT } from '../../lib/copy';
+
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -195,15 +197,15 @@ const useCurriculum = () => {
 
 const RANK_LABEL: Record<string, string> = {
   LECTURER: 'محاضر',
-  ASSISTANT_PROFESSOR: 'أستاذ مساعد',
-  ASSOCIATE_PROFESSOR: 'أستاذ مشارك',
-  PROFESSOR: 'أستاذ',
+  ASSISTANT_PROFESSOR: RANK_ASSISTANT_PROF,
+  ASSOCIATE_PROFESSOR: RANK_ASSOCIATE_PROF,
+  PROFESSOR: NOUN_PROF,
 };
 
 /* P-B2 (copy budget): shared countAr plural forms — one definition for
  * the whole file (were inline, byte-identical, at every call site). */
-const LECTURE_UNIT: [string, string, string, string] = ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'];
-const FILE_UNIT: [string, string, string, string] = ['ملف واحد', 'ملفان', 'ملفات', 'ملفاً'];
+const LECTURE_UNIT: [string, string, string, string] = [ONE_LECTURE, NOUN_TWO_LECTURES, LABEL_LECTURES, LABEL_LECTURE];
+const FILE_UNIT: [string, string, string, string] = [ONE_FILE, 'ملفان', 'ملفات', NOUN_FILE_ACC];
 const RECORD_UNIT: [string, string, string, string] = ['سجل واحد', 'سجلان', 'سجلات', 'سجلاً'];
 
 /* ════════════════════════════════════════════════════════════════
@@ -240,7 +242,7 @@ const SEVERITY_CHIP_TONE: Record<QualityAlert['severity'], 'danger' | 'warn' | '
  * semantic badge so a row is readable at a glance (dashboard summary
  * keeps the bare AlertRow grammar). */
 const SEVERITY_LABEL: Record<QualityAlert['severity'], string> = {
-  critical: 'حرج',
+  critical: STATUS_CRITICAL,
   warning: 'تحذير',
   info: 'معلومة',
 };
@@ -363,7 +365,7 @@ export function QualityDashboardPage() {
           {/* R341 D10: the [01] nav-order gutter numeral — the R319
               PageHeader index register (primitives/PageHeader grammar). */}
           <span className="page-index" aria-hidden="true" dir="ltr">[01]</span>
-          لوحة الجودة
+          {DASH_QUALITY}
         </h1>
         <p className="page-header-meta">
           {formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })}
@@ -378,8 +380,8 @@ export function QualityDashboardPage() {
           D6 chrome.css §10). */}
       <div className="qlt-header-badges">
         <ReadOnlyBadge />
-        <Link to="/quality/reports" className="btn accent sm">تقارير الجودة</Link>
-        <Link to="/quality/alerts" className="btn ghost sm">تنبيهات الجودة</Link>
+        <Link to="/quality/reports" className="btn accent sm">{QUALITY_REPORTS}</Link>
+        <Link to="/quality/alerts" className="btn ghost sm">{QUALITY_ALERTS}</Link>
       </div>
     </header>
   );
@@ -476,13 +478,13 @@ export function QualityDashboardPage() {
             trendTone: 'flat',
           },
           {
-            label: 'هيئة التدريس',
+            label: FACULTY_BODY,
             value: <CountIn value={d.users.TEACHER ?? 0} />,
             trendTone: 'flat',
             to: '/quality/professors',
           },
           {
-            label: 'مقرّرات نشطة',
+            label: ACTIVE_COURSES,
             value: <CountIn value={d.offerings} />,
             trend: countAr(d.lectures, LECTURE_UNIT),
             trendTone: 'flat',
@@ -498,7 +500,7 @@ export function QualityDashboardPage() {
           {
             label: 'بحوث مكتملة',
             value: `${Math.round(paperProgress)}%`,
-            trend: paperTotal > 0 ? `${formatNum(paperDone)} من ${formatNum(paperTotal)} بحثًا` : 'لا بحوث بعد',
+            trend: paperTotal > 0 ? `${formatNum(paperDone)} من ${formatNum(paperTotal)} بحثًا` : EMPTY_RESEARCH_YET,
             trendTone: 'flat',
           },
         ]}
@@ -519,12 +521,12 @@ export function QualityDashboardPage() {
             ariaLabel={`مخطط خطّي للنشاط الأسبوعي — جلسات نشطة يومياً${e.weeklyActiveEstimated ? ' (منحنى تقديري)' : ''}`}
             summary={
               e.weeklyActive.length > 0
-                ? `الذروة ${countAr(Math.max(...e.weeklyActive), ['جلسة واحدة', 'جلستان', 'جلسات', 'جلسة'])} يوم ${WEEKDAY_NAMES_AR[e.weeklyActive.indexOf(Math.max(...e.weeklyActive))] ?? ''}.`
+                ? `الذروة ${countAr(Math.max(...e.weeklyActive), ['جلسة واحدة', 'جلستان', NOUN_SESSIONS, 'جلسة'])} يوم ${WEEKDAY_NAMES_AR[e.weeklyActive.indexOf(Math.max(...e.weeklyActive))] ?? ''}.`
                 : 'لا بيانات.'
             }
             table={{
               caption: 'النشاط الأسبوعي',
-              columns: ['اليوم', 'جلسات'],
+              columns: [LABEL_TODAY, NOUN_SESSIONS],
               rows: WEEKDAY_NAMES_AR.map((day, i) => [day, e.weeklyActive[i] ?? 0]),
             }}
             height={220}
@@ -577,7 +579,7 @@ export function QualityDashboardPage() {
               honest note beats a solid ring that carries no signal. */}
           {attendanceDominant ? (
             <div className="flex-col gap-4">
-              <ProgressBar value={e.attendance.presentRate} label="حضور" ariaLabel="نسبة الحضور" color="var(--success)" />
+              <ProgressBar value={e.attendance.presentRate} label={NOUN_ATTEND} ariaLabel="نسبة الحضور" color="var(--success)" />
               <p className="text-sm text-muted">
                 تأخير <bdi>{Math.round(e.attendance.lateRate)}%</bdi> · غياب <bdi>{Math.round(e.attendance.absentRate)}%</bdi>
               </p>
@@ -587,9 +589,9 @@ export function QualityDashboardPage() {
             ariaLabel={`توزيع الحضور: حضور ${Math.round(e.attendance.presentRate)}% وتأخر ${Math.round(e.attendance.lateRate)}% وغياب ${Math.round(e.attendance.absentRate)}%`}
             table={{
               caption: 'توزيع الحضور',
-              columns: ['الحالة', 'النسبة'],
+              columns: [LABEL_STATUS, 'النسبة'],
               rows: [
-                ['حضور', Math.round(e.attendance.presentRate)],
+                [NOUN_ATTEND, Math.round(e.attendance.presentRate)],
                 ['تأخر', Math.round(e.attendance.lateRate)],
                 ['غياب', Math.round(e.attendance.absentRate)],
               ],
@@ -600,7 +602,7 @@ export function QualityDashboardPage() {
               key={themeKey}
               aria-hidden="true"
               data={{
-                labels: ['حضور', 'تأخر', 'غياب'],
+                labels: [NOUN_ATTEND, 'تأخر', 'غياب'],
                 datasets: [{
                   data: [e.attendance.presentRate, e.attendance.lateRate, e.attendance.absentRate],
                   backgroundColor: [cc.success, cc.warning, cc.danger],
@@ -614,7 +616,7 @@ export function QualityDashboardPage() {
           )}
           </Card>
 
-          <Card title="تنبيهات الجودة" icon={AlertTriangle}>
+          <Card title={QUALITY_ALERTS} icon={AlertTriangle}>
           {al.isPending ? (
             <ListSkeleton rows={3} />
           ) : al.isError ? (
@@ -630,7 +632,7 @@ export function QualityDashboardPage() {
           ) : !al.data || al.data.alerts.length === 0 ? (
             <EmptyState illustration="empty-notifications"
               icon={CheckCircle2}
-              title="لا تنبيهات"
+              title={NO_ALERTS}
             />
           ) : (
             <>
@@ -734,15 +736,15 @@ export function QualityCoursesPage() {
       {c.isPending ? (
         <Card title="المقرّرات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={8} /></Card>
       ) :
-       c.isError ? <ErrorState message="تعذّر تحميل المقرّرات" error={c.error} onRetry={() => c.refetch()} /> :
+       c.isError ? <ErrorState message={FAILED_LOAD_COURSES} error={c.error} onRetry={() => c.refetch()} /> :
        !courses?.length ? <Card><TechnicalPlate variant="progress" className="tech-plate-margin" /><EmptyState
          illustration="empty-list"
          icon={BookOpen}
-         title={debouncedQ ? 'لا نتائج مطابقة' : 'لا مقرّرات'}
+         title={debouncedQ ? NO_MATCHING_RESULTS : EMPTY_COURSES}
          action={debouncedQ ? (
            <button type="button" className="btn ghost sm" onClick={clearSearch}>
              <Icon icon={X} size={13} />
-             مسح البحث
+             {CLEAR_SEARCH}
            </button>
          ) : undefined}
        /></Card> : (
@@ -779,7 +781,7 @@ export function QualityCoursesPage() {
               <Icon icon={Search} size={14} />
               <input
                 type="search"
-                placeholder="ابحث…"
+                placeholder={SEARCH_PLACEHOLDER}
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 className="tq-search-input"
@@ -798,11 +800,11 @@ export function QualityCoursesPage() {
             <table className="table tbl-stack qlt-table hr-table">
               <thead>
                 <tr>
-                  <th scope="col">المقرّر</th>
-                  {!compact && <th scope="col">الأستاذ</th>}
-                  <th scope="col">الفصل</th>
-                  <th scope="col">الطلاب</th>
-                  {!compact && <th scope="col">المحاضرات</th>}
+                  <th scope="col">{LABEL_THE_COURSE}</th>
+                  {!compact && <th scope="col">{LABEL_THE_PROF}</th>}
+                  <th scope="col">{SEM}</th>
+                  <th scope="col">{LABEL_STUDENTS}</th>
+                  {!compact && <th scope="col">{THE_LECTURES}</th>}
                   {!compact && <th scope="col">الملفات</th>}
                   {compact && (
                     <th scope="col" title="محاضرات وملفات المقرّر">النشاط التعليميّ</th>
@@ -832,7 +834,7 @@ export function QualityCoursesPage() {
                   const mv = metric ? metricValue(o) : undefined;
                   return (
                     <tr key={o.id}>
-                      <td className="tbl-strong" data-label="المقرّر">
+                      <td className="tbl-strong" data-label={LABEL_THE_COURSE}>
                         {/* 4C-b: identity leads — name prominent, Latin
                             code bidi-isolated under it. r299 (E item 8):
                             at ≤1024 the teacher folds under the identity
@@ -843,12 +845,12 @@ export function QualityCoursesPage() {
                           <div className="text-xxs text-subtle">د. {o.teacher.firstName} {o.teacher.lastName}</div>
                         )}
                       </td>
-                      {!compact && <td data-label="الأستاذ">د. {o.teacher.firstName} {o.teacher.lastName}</td>}
-                      <td className="font-mono text-xs" data-label="الفصل"><bdi>{o.term}</bdi></td>
-                      <td className="tbl-num" data-label="الطلاب">{o._count.enrollments}</td>
+                      {!compact && <td data-label={LABEL_THE_PROF}>د. {o.teacher.firstName} {o.teacher.lastName}</td>}
+                      <td className="font-mono text-xs" data-label={SEM}><bdi>{o.term}</bdi></td>
+                      <td className="tbl-num" data-label={LABEL_STUDENTS}>{o._count.enrollments}</td>
                       {!compact ? (
                         <>
-                          <td className="tbl-num" data-label="المحاضرات">{o._count.lectures}</td>
+                          <td className="tbl-num" data-label={THE_LECTURES}>{o._count.lectures}</td>
                           <td className="tbl-num" data-label="الملفات">{o._count.materials}</td>
                         </>
                       ) : (
@@ -860,7 +862,7 @@ export function QualityCoursesPage() {
                       {metric && (
                         <td className="tbl-num" data-label={metricLabel}>
                           {mv == null
-                            ? <span className="hr-chip">لا بيانات</span>
+                            ? <span className="hr-chip">{NO_DATA}</span>
                             : <span className="hr-chip" data-tone={completionChipTone(mv)}><bdi>{Math.round(mv)}%</bdi></span>}
                         </td>
                       )}
@@ -946,7 +948,7 @@ export function QualityProfessorsPage() {
           <div className="qlt-header-badges"><ReadOnlyBadge /></div>
         </header>
         <StatStripSkeleton cells={3} />
-        <Card title="هيئة التدريس" icon={School}><TableSkeleton rows={5} cols={8} /></Card>
+        <Card title={FACULTY_BODY} icon={School}><TableSkeleton rows={5} cols={8} /></Card>
         </div>
       </div>
     );
@@ -972,7 +974,7 @@ export function QualityProfessorsPage() {
           </div>
           <div className="qlt-header-badges"><ReadOnlyBadge /></div>
         </header>
-        <ErrorState message="تعذّر تحميل الأساتذة" error={p.error} onRetry={() => p.refetch()} />
+        <ErrorState message={FAILED_LOAD_PROFS} error={p.error} onRetry={() => p.refetch()} />
         </div>
       </div>
     );
@@ -1006,7 +1008,7 @@ export function QualityProfessorsPage() {
         <div className="qlt-header-badges">
           <ReadOnlyBadge />
           <Link to="/quality/courses" className="btn accent sm">جودة المقرّرات</Link>
-          <Link to="/quality/dashboard" className="btn ghost sm">لوحة الجودة</Link>
+          <Link to="/quality/dashboard" className="btn ghost sm">{DASH_QUALITY}</Link>
         </div>
       </header>
 
@@ -1044,7 +1046,7 @@ export function QualityProfessorsPage() {
           .qlt-section rung replaces the former inline margin). */}
       <Card
         className="qlt-section"
-        title={lowOnly ? `هيئة التدريس · بحاجة لمتابعة (${lowComp})` : 'هيئة التدريس'}
+        title={lowOnly ? `هيئة التدريس · بحاجة لمتابعة (${lowComp})` : FACULTY_BODY}
         subtitle={total != null
           ? (
             /* R305 Heron (§D): the count line rides the §0
@@ -1071,7 +1073,7 @@ export function QualityProfessorsPage() {
             <Icon icon={Search} size={14} />
             <input
               type="search"
-              placeholder="ابحث…"
+              placeholder={SEARCH_PLACEHOLDER}
               value={q}
               onChange={(e) => setQ(e.target.value)}
               className="tq-search-input"
@@ -1095,11 +1097,11 @@ export function QualityProfessorsPage() {
             <EmptyState
               illustration="empty-search"
               icon={School}
-              title="لا نتائج مطابقة"
+              title={NO_MATCHING_RESULTS}
               action={(
                 <button type="button" className="btn ghost sm" onClick={clearSearch}>
                   <Icon icon={X} size={13} />
-                  مسح البحث
+                  {CLEAR_SEARCH}
                 </button>
               )}
             />
@@ -1110,7 +1112,7 @@ export function QualityProfessorsPage() {
             <EmptyState
               illustration="empty-list"
               icon={School}
-              title="لا أساتذة بعد"
+              title={NO_PROFS_YET}
             />
           )
         ) : (
@@ -1134,10 +1136,10 @@ export function QualityProfessorsPage() {
           <table className="table tbl-stack qlt-roster hr-table">
             <thead>
               <tr>
-                <th scope="col">الأستاذ</th>
-                <th scope="col">الكلّيّة / القسم</th>
-                {!compact && <th scope="col">الرتبة</th>}
-                {!compact ? <th scope="col">المقرّرات</th> : <th scope="col" title="مقرّراته وملفاته">النشاط التعليميّ</th>}
+                <th scope="col">{LABEL_THE_PROF}</th>
+                <th scope="col">{COLLEGE_DEPT}</th>
+                {!compact && <th scope="col">{LABEL_RANK}</th>}
+                {!compact ? <th scope="col">{LABEL_THE_COURSES}</th> : <th scope="col" title="مقرّراته وملفاته">النشاط التعليميّ</th>}
                 {!compact && <th scope="col">الملفات المرفوعة</th>}
                 <th scope="col">رضا الطلاب <span className="text-xxs text-subtle">تقديري</span></th>
                 <th scope="col">زمن الاستجابة <span className="text-xxs text-subtle">تقديري</span></th>
@@ -1152,7 +1154,7 @@ export function QualityProfessorsPage() {
                 const compTone = complianceChipTone(t.compliance);
                 return (
                   <tr key={t.id}>
-                    <td data-label="الأستاذ">
+                    <td data-label={LABEL_THE_PROF}>
                       <div className="flex items-center gap-2">
                         {/* r187 (a11y): was a hand-rolled .avatar div — the
                             twin of the AdminExtraPages fix: bypassed
@@ -1171,13 +1173,13 @@ export function QualityProfessorsPage() {
                         </div>
                       </div>
                     </td>
-                    <td data-label="الكلّيّة / القسم">
+                    <td data-label={COLLEGE_DEPT}>
                       <div>{t.faculty}</div>
                       <div className="text-xxs text-subtle">{t.department}</div>
                     </td>
-                    {!compact && <td data-label="الرتبة"><span className="hr-chip">{RANK_LABEL[t.rank] ?? t.rank}</span></td>}
+                    {!compact && <td data-label={LABEL_RANK}><span className="hr-chip">{RANK_LABEL[t.rank] ?? t.rank}</span></td>}
                     {!compact ? (
-                      <td className="tbl-num" data-label="المقرّرات">{t.offerings}</td>
+                      <td className="tbl-num" data-label={LABEL_THE_COURSES}>{t.offerings}</td>
                     ) : (
                       <td data-label="النشاط التعليميّ">
                         <div>{countAr(t.offerings, COURSE_UNIT)}</div>
@@ -1236,7 +1238,7 @@ export function QualityEngagementPage() {
       <div className="qlt-header-badges">
         <ReadOnlyBadge />
         <Link to="/quality/courses" className="btn accent sm">جودة المقرّرات</Link>
-        <Link to="/quality/reports" className="btn ghost sm">تقارير الجودة</Link>
+        <Link to="/quality/reports" className="btn ghost sm">{QUALITY_REPORTS}</Link>
       </div>
     </header>
   );
@@ -1303,7 +1305,7 @@ export function QualityEngagementPage() {
           {
             label: 'معدل التسجيل',
             value: <CountIn value={Math.round(enrollmentRate)} suffix="%" />,
-            trend: countAr(d.enrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً']),
+            trend: countAr(d.enrollments, [ONE_ENROLLMENT, 'تسجيلان', ENROLLMENTS, 'تسجيلاً']),
             trendTone: 'flat',
           },
           {
@@ -1333,7 +1335,7 @@ export function QualityEngagementPage() {
             }
             table={{
               caption: 'النشاط الأسبوعي',
-              columns: ['اليوم', 'جلسات'],
+              columns: [LABEL_TODAY, NOUN_SESSIONS],
               rows: WEEKDAY_NAMES_AR.map((day, i) => [day, d.weeklyActive[i] ?? 0]),
             }}
             height={240}
@@ -1389,8 +1391,8 @@ function completionLevel(pct: number): CurriculumLevel {
   return 'poor';
 }
 const LEVEL_LABEL: Record<CurriculumLevel | 'all', string> = {
-  all: 'الكل',
-  strong: 'مكتمل',
+  all: ALL,
+  strong: STATUS_DONE,
   weak: 'جزئي',
   poor: 'متأخر',
 };
@@ -1422,7 +1424,7 @@ export function QualityCurriculumPage() {
       <div className="qlt-header-badges">
         <ReadOnlyBadge />
         <Link to="/quality/courses" className="btn accent sm">جودة المقرّرات</Link>
-        <Link to="/quality/exam-moderation" className="btn ghost sm">مراجعة الاختبارات</Link>
+        <Link to="/quality/exam-moderation" className="btn ghost sm">{EXAM_REVIEW}</Link>
       </div>
     </header>
   );
@@ -1529,7 +1531,7 @@ export function QualityCurriculumPage() {
                   <div key={d.id}>
                     <div className="section-title">{d.name}</div>
                     {!d.courses.length ? (
-                      <div className="qlt-empty-note">لا مقرّرات</div>
+                      <div className="qlt-empty-note">{EMPTY_COURSES}</div>
                     ) : (
                       <>
                         <div className="q-dept-stat">
@@ -1568,7 +1570,7 @@ export function QualityCurriculumPage() {
                                     {' · '}
                                     {countAr(materials, FILE_UNIT)}
                                     {' · '}
-                                    {countAr(co._count.concepts, ['مفهوم واحد', 'مفهومان', 'مفاهيم', 'مفهوماً'])}
+                                    {countAr(co._count.concepts, [ONE_CONCEPT, 'مفهومان', 'مفاهيم', 'مفهوماً'])}
                                   </div>
                                 </div>
                                 <div className="qlt-course-side">
@@ -1645,7 +1647,7 @@ export function QualityReportsPage() {
           <h1 className="page-title">
             {/* R341 D10: [07] nav-order index register. */}
             <span className="page-index" aria-hidden="true" dir="ltr">[07]</span>
-            تقارير الجودة
+            {QUALITY_REPORTS}
           </h1>
         </div>
         {/* R341 D10: the header CTA pair (navigation-only, the D8 grammar) —
@@ -1653,8 +1655,8 @@ export function QualityReportsPage() {
             the live boards it stands in for. */}
         <div className="qlt-header-badges">
           <ReadOnlyBadge />
-          <Link to="/quality/dashboard" className="btn accent sm">لوحة الجودة</Link>
-          <Link to="/quality/alerts" className="btn ghost sm">تنبيهات الجودة</Link>
+          <Link to="/quality/dashboard" className="btn accent sm">{DASH_QUALITY}</Link>
+          <Link to="/quality/alerts" className="btn ghost sm">{QUALITY_ALERTS}</Link>
         </div>
       </header>
 
@@ -1726,18 +1728,18 @@ export function QualityAlertsPage() {
           <h1 className="page-title">
             {/* R341 D10: [09] nav-order index register. */}
             <span className="page-index" aria-hidden="true" dir="ltr">[09]</span>
-            تنبيهات الجودة
+            {QUALITY_ALERTS}
           </h1>
         </div>
         <div className="qlt-header-badges">
           {q.data && q.data.counts.critical > 0 && (
             /* R305 Heron (§D): the critical count rides the chip lexicon. */
-            <span className="hr-chip" data-tone="danger">{countAr(q.data.counts.critical, ['تنبيه حرج', 'تنبيهان حرجان', 'تنبيهات حرجة', 'تنبيهاً حرجاً'])}</span>
+            <span className="hr-chip" data-tone="danger">{countAr(q.data.counts.critical, ['تنبيه حرج', TWO_CRITICAL_ALERTS, CRITICAL_ALERTS, NOUN_ALERT_ACC])}</span>
           )}
           <ReadOnlyBadge />
           {/* R341 D10: the header CTA pair (navigation-only, the D8 grammar). */}
-          <Link to="/quality/dashboard" className="btn accent sm">لوحة الجودة</Link>
-          <Link to="/quality/reports" className="btn ghost sm">تقارير الجودة</Link>
+          <Link to="/quality/dashboard" className="btn accent sm">{DASH_QUALITY}</Link>
+          <Link to="/quality/reports" className="btn ghost sm">{QUALITY_REPORTS}</Link>
         </div>
       </header>
 
@@ -1789,7 +1791,7 @@ export function QualityAlertsPage() {
               aria-pressed={severityFilter === 'all'}
               onClick={() => setSeverityFilter('all')}
             >
-              الكل
+              {ALL}
               <span className="filter-pill-count">{formatNum(q.data.alerts.length)}</span>
             </button>
             {(['critical', 'warning', 'info'] as const).map((sev) => (

@@ -1,3 +1,5 @@
+import { NO_RESULTS, SELF_DEV, STATUS_AVG } from '../../lib/copy';
+
 import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -38,7 +40,7 @@ const moocIcon = (cat: string): LucideIcon => {
  *  raw string isolated in a bdi. */
 const LEVEL_LABEL: Record<string, string> = {
   BEGINNER: 'مبتدئ',
-  INTERMEDIATE: 'متوسط',
+  INTERMEDIATE: STATUS_AVG,
   ADVANCED: 'متقدم',
 };
 
@@ -155,7 +157,7 @@ export default function MoocPage() {
            * that grows the same skills (navigation-only). */
           <Link to="/training" className="btn accent sm">
             <Icon icon={GraduationCap} size={13} />
-            التطوير الذاتي
+            {SELF_DEV}
           </Link>
         )}
       />
@@ -223,7 +225,7 @@ export default function MoocPage() {
             /* R319 (c3-S1): the no-hits search answer is the hatched
                EmptyCell — the sheet's reserved-but-empty region. */
             <EmptyCell
-              label="لا نتائج"
+              label={NO_RESULTS}
               note="جرّب كلمة أقصر."
             />
           ) : (

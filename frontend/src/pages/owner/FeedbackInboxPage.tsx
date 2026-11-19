@@ -1,3 +1,5 @@
+import { ALL, ACTIVITY_LOG, PREV, NEXT, REFRESH, DETAILS, UNDER_REVIEW } from '../../lib/copy';
+
 /**
  * FeedbackInboxPage — r323 B3.6 — the registrar/owner feedback inbox.
  *
@@ -19,7 +21,7 @@ import { formatDate } from '../../utils/numbers';
 
 const STATUS_LABELS: Record<FeedbackRow['status'], string> = {
   open: 'مفتوح',
-  triage: 'قيد المراجعة',
+  triage: UNDER_REVIEW,
   fixed: 'أُصلح',
   dismissed: 'مُستبعد',
 };
@@ -87,9 +89,9 @@ function FeedbackRowCard({ row }: { row: FeedbackRow }) {
 }
 
 const FILTERS: { value: string | null; label: string }[] = [
-  { value: null, label: 'الكل' },
+  { value: null, label: ALL },
   { value: 'open', label: 'مفتوح' },
-  { value: 'triage', label: 'قيد المراجعة' },
+  { value: 'triage', label: UNDER_REVIEW },
   { value: 'fixed', label: 'أُصلح' },
   { value: 'dismissed', label: 'مُستبعد' },
 ];
@@ -126,7 +128,7 @@ function ClientErrorCard({ row }: { row: ClientErrorRow }) {
       <p className="fb-row-note" dir="auto">{row.message}</p>
       <div className="fb-status-actions">
         <button type="button" className="btn ghost sm" onClick={() => setShowStack((v) => !v)}>
-          {showStack ? 'إخفاء التفاصيل' : 'التفاصيل'}
+          {showStack ? 'إخفاء التفاصيل' : DETAILS}
         </button>
         <button
           type="button"
@@ -163,7 +165,7 @@ function ClientErrorCard({ row }: { row: ClientErrorRow }) {
 const ERROR_FILTERS: { value: 'no' | 'yes' | 'all'; label: string }[] = [
   { value: 'no', label: 'الجديدة' },
   { value: 'yes', label: 'المُراجَعة' },
-  { value: 'all', label: 'الكل' },
+  { value: 'all', label: ALL },
 ];
 
 export default function FeedbackInboxPage() {
@@ -191,9 +193,9 @@ export default function FeedbackInboxPage() {
             {/* D11 (D8/D10 header-CTA precedent): the audit feed that
              * records every status move this inbox makes (primary)
              * rides beside the refresh (ghost). */}
-            <Link to="/owner/activity" className="btn accent sm">سجلّ النشاط</Link>
+            <Link to="/owner/activity" className="btn accent sm">{ACTIVITY_LOG}</Link>
             <button type="button" className="btn ghost sm" onClick={() => void inbox.refetch()}>
-              <Icon icon={RefreshCw} size={13} /> تحديث
+              <Icon icon={RefreshCw} size={13} /> {REFRESH}
             </button>
           </>
         }
@@ -237,7 +239,7 @@ export default function FeedbackInboxPage() {
         {meta && meta.totalPages > 1 && (
           <div className="fb-status-actions" style={{ marginInlineStart: 0, marginTop: 'var(--sp-2-5)' }}>
             <button type="button" className="btn ghost sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-              السابق
+              {PREV}
             </button>
             <span className="fb-row-user">
               صفحة {meta.page} من {meta.totalPages} · {meta.total} تقريرًا
@@ -248,7 +250,7 @@ export default function FeedbackInboxPage() {
               disabled={page >= meta.totalPages}
               onClick={() => setPage((p) => p + 1)}
             >
-              التالي
+              {NEXT}
             </button>
           </div>
         )}
@@ -279,7 +281,7 @@ export default function FeedbackInboxPage() {
             </button>
           ))}
           <button type="button" className="btn ghost sm" onClick={() => void errors.refetch()}>
-            <Icon icon={RefreshCw} size={13} /> تحديث
+            <Icon icon={RefreshCw} size={13} /> {REFRESH}
           </button>
         </div>
 
@@ -303,7 +305,7 @@ export default function FeedbackInboxPage() {
         {errMeta && errMeta.totalPages > 1 && (
           <div className="fb-status-actions" style={{ marginInlineStart: 0, marginTop: 'var(--sp-2-5)' }}>
             <button type="button" className="btn ghost sm" disabled={errPage <= 1} onClick={() => setErrPage((p) => p - 1)}>
-              السابق
+              {PREV}
             </button>
             <span className="fb-row-user">
               صفحة {errMeta.page} من {errMeta.totalPages} · {errMeta.total} خطأً
@@ -314,7 +316,7 @@ export default function FeedbackInboxPage() {
               disabled={errPage >= errMeta.totalPages}
               onClick={() => setErrPage((p) => p + 1)}
             >
-              التالي
+              {NEXT}
             </button>
           </div>
         )}

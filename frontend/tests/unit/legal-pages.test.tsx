@@ -187,8 +187,7 @@ describe('R320 §D — titles + per-page head metadata', () => {
     const ogUrl = mk('meta', { property: 'og:url', content: 'https://madarek.onrender.com/prev' });
 
     const { unmount } = renderPage(PrivacyPage);
-    // R355 copy diet: the privacy meta description tightened; R369 C2.2
-    // public diet (0d827161) tightened it further — «ماذا نجمع ولماذا».
+    // R355 copy diet: the privacy meta description tightened to the new copy
     expect(desc.getAttribute('content')).toBe(
       'ماذا نجمع ولماذا، وحقوقك.',
     );
@@ -416,8 +415,6 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
     expect(text).toContain('12345678');
     expect(text).toContain('خمسة أدوار');
     // the forgot-password truth: no mail is sent yet (honest, no promise)
-    // R369 C2.2 public diet (0d827161): «لا يوجد بريد يُرسَل من المنصّة بعد»
-    // → «لا بريد يُرسَل بعد»
     expect(text).toContain('لا بريد يُرسَل بعد');
     expect(text).toContain('تقليل الحركة');
     expect(text).toContain('/legal/*');
@@ -435,7 +432,6 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
       expect(text).not.toContain('12345678');
       expect(text).not.toContain('@test.ly');
       // the honest reset truth survives the gate — the promise, not the secret
-      // R369 C2.2 public diet: same claim tightened («لا بريد يُرسَل بعد»)
       expect(text).toContain('لا بريد يُرسَل بعد');
       expect(text).toContain('الحساب الذي وصلك');
     } finally {

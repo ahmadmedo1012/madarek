@@ -1,3 +1,5 @@
+import { DASH_REGISTRAR, LABEL_STATUS, MANAGE_STUDENTS, LIST_STUDENTS, LABEL_NAME, PREPARING, IMPORT_STUDENTS, LABEL_MAIL, FOLLOW, DETAILS, UNI_ID, PASSWORD } from '../../lib/copy';
+
 /**
  * R350 F2 — «استيراد الطلاب»: the 5-step import wizard.
  *
@@ -363,14 +365,14 @@ export function ImportWizardPage() {
   return (
     <div className="r305ao">
       <PageHeader
-        title="استيراد الطلاب"
+        title={IMPORT_STUDENTS}
         description="لا شيء يُكتب قبل تأكيدك."
         /* R369 (C1 · the D11 register): [05] shared with the students
          * parent (the wizard opens from «استيراد الطلاب» on /admin/
          * students — the OwnerInstitutions 04 precedent). */
         index="05"
-        eyebrow="إدارة الطلاب"
-        breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'استيراد الطلاب' }]}
+        eyebrow={MANAGE_STUDENTS}
+        breadcrumbs={[{ label: DASH_REGISTRAR, to: '/admin/dashboard' }, { label: IMPORT_STUDENTS }]}
       />
 
       {/* the stepper */}
@@ -460,7 +462,7 @@ export function ImportWizardPage() {
               disabled={busy || parsed === null}
               onClick={() => setStep(2)}
             >
-              متابعة <ArrowLeft size={15} aria-hidden="true" />
+              {FOLLOW} <ArrowLeft size={15} aria-hidden="true" />
             </button>
           </div>
         </Card>
@@ -556,7 +558,7 @@ export function ImportWizardPage() {
               رجوع
             </button>
             <button type="button" className="btn primary" disabled={busy} onClick={() => void runPreview()}>
-              {busy ? 'جارٍ التحضير…' : 'عرض المراجعة'} <ArrowLeft size={15} aria-hidden="true" />
+              {busy ? PREPARING : 'عرض المراجعة'} <ArrowLeft size={15} aria-hidden="true" />
             </button>
           </div>
         </>
@@ -601,8 +603,8 @@ export function ImportWizardPage() {
                   <thead>
                     <tr>
                       <th scope="col">السطر</th>
-                      <th scope="col">الحالة</th>
-                      <th scope="col">التفاصيل</th>
+                      <th scope="col">{LABEL_STATUS}</th>
+                      <th scope="col">{DETAILS}</th>
                       <th scope="col">سياسة الصف</th>
                     </tr>
                   </thead>
@@ -682,7 +684,7 @@ export function ImportWizardPage() {
               تعديل المطابقة
             </button>
             <button type="button" className="btn primary" disabled={busy || preview.counts.ok === 0} onClick={() => setStep(4)}>
-              متابعة <ArrowLeft size={15} aria-hidden="true" />
+              {FOLLOW} <ArrowLeft size={15} aria-hidden="true" />
             </button>
           </div>
         </>
@@ -759,10 +761,10 @@ export function ImportWizardPage() {
                     <table className="iw-table">
                       <thead>
                         <tr>
-                          <th scope="col">الاسم</th>
-                          <th scope="col">الرقم الجامعي</th>
-                          <th scope="col">البريد</th>
-                          <th scope="col">كلمة المرور</th>
+                          <th scope="col">{LABEL_NAME}</th>
+                          <th scope="col">{UNI_ID}</th>
+                          <th scope="col">{LABEL_MAIL}</th>
+                          <th scope="col">{PASSWORD}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -806,7 +808,7 @@ export function ImportWizardPage() {
                 <button type="button" className="btn ghost sm" onClick={() => setRollbackConfirm(true)} disabled={busy}>
                   <RotateCcw size={14} aria-hidden="true" /> التراجع
                 </button>
-                <Link className="btn primary sm" to="/admin/students">قائمة الطلاب</Link>
+                <Link className="btn primary sm" to="/admin/students">{LIST_STUDENTS}</Link>
               </div>
               {rollbackConfirm && (
                 <ConfirmDialog
@@ -828,7 +830,7 @@ export function ImportWizardPage() {
                 {rollback.keptActive > 0 && <li>بقي {rollback.keptActive} حسابًا نشطًا (سجّل دخوله — لا يُمسّ)</li>}
                 {rollback.removedEmptyOrgs > 0 && <li>حُذفت {rollback.removedEmptyOrgs} كلية/قسمًا فارغًا أنشأتها المهمة</li>}
               </ul>
-              <Link className="btn primary sm" to="/admin/students">قائمة الطلاب</Link>
+              <Link className="btn primary sm" to="/admin/students">{LIST_STUDENTS}</Link>
             </div>
           )}
         </Card>

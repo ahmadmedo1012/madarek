@@ -1,4 +1,4 @@
-/* ═════════════════════════════════════════════════════════════════════
+/* ═══
    MADAREK — R305-A5 · Heron design language — student DASHBOARD family
    Branch: redesign/r305-student-a-dashboard
    Owner: Agent 2-a · /student/dashboard only (DashboardPage.tsx)
@@ -13,61 +13,69 @@
    ties over the frozen blocks they deliberately re-skin.
 
    Sections:
-     1 · The hero band — deep surface + copper edge (the ONE action)
-     2 · Section kicker harmonics (wrap-safe at 320px)
-     3 · The momentum strip — labeled rule + technical dividers
-     4 · The week ledger — day-group hairlines
-     5 · Metadata registers — gap % mono numerals
-     6 · Interaction guard (hover media) + reduced-motion belt
+   1 · The hero band — deep surface + copper edge (the ONE action)
+   2 · Section kicker harmonics (wrap-safe at 320px)
+   3 · The momentum strip — labeled rule + technical dividers
+   4 · The week ledger — day-group hairlines
+   5 · Metadata registers — gap % mono numerals
+   6 · Interaction guard (hover media) + reduced-motion belt
 
    Gate contract (enforced on this tree): var()/color-mix() colors
    ONLY · token ladder for type/radius/spacing · every :hover inside
    @media (hover:hover) and (pointer:fine) · motion tokens only.
-   ═════════════════════════════════════════════════════════════════════ */
+   ═══
+*/
 
 @layer pages {
 
   /* ── 1 · The hero band — the ONE next action ─────────────────────
-     The PP-X2 .dash-resume-card recipe (copper inline-start edge) now
-     sits on the Heron DEEP band (r305s-band--deep: ink ground in the
-     light theme, paper ground in the dark — the neutral ramp inverts,
-     so the band always contrasts its page). Inner inks re-derive from
-     the band's own fg/ground pair at the AA-safe 85/15 mix (85% band
-     fg toward the band ground) — the same theme-proof recipe the
-     foundation's .r305s-band-secondary pioneered, tuned so it clears
-     4.5:1 on BOTH poles (see the foundation report: the shared 72/28
-     mix lands ~3:1 on the dark-theme paper pole; this family uses its
-     own safe ratio until the foundation retunes). */
+   The PP-X2 .dash-resume-card recipe (copper inline-start edge) now
+   sits on the Heron DEEP band (r305s-band--deep: ink ground in the
+   light theme, paper ground in the dark — the neutral ramp inverts,
+   so the band always contrasts its page). Inner inks re-derive from
+   the band's own fg/ground pair at the AA-safe 85/15 mix (85% band
+   fg toward the band ground) — the same theme-proof recipe the
+   foundation's .r305s-band-secondary pioneered, tuned so it clears
+   4.5:1 on BOTH poles (see the foundation report: the shared 72/28
+   mix lands ~3:1 on the dark-theme paper pole; this family uses its
+   own safe ratio until the foundation retunes).
+*/
   .dash-resume-card.dash-hero-deep {
     background: var(--neutral-900);
     color: var(--neutral-0);
     border-color: transparent;
     /* The copper rail survives the band's transparent border-color —
-       the .r305s-next grammar carried onto the deep surface. */
+    the .r305s-next grammar carried onto the deep surface.
+*/
     border-inline-start: 3px solid var(--accent);
     box-shadow: none;
   }
-  /* The deep band is its own contrast device: it does not lift. */
+  /* The deep band is its own contrast device: it does not lift.
+*/
   .dash-hero-deep .dash-resume-course-name {
     color: var(--neutral-0);
     /* The band's display line — the page's strongest content voice
-       after the h1 masthead. Wraps, never clips: long Arabic course
-       names break instead of overflowing. */
+    after the h1 masthead. Wraps, never clips: long Arabic course
+    names break instead of overflowing.
+*/
     /* r325 Y4 — the app-density H2 rung (20 @1440 · 18 @390): the
-       unclamped --fs-h2 alias read 40px @1440 / 47.6px @390 — twice
-       the 28/24 masthead it answers to, off every rung on the phone
-       band. §R324 app density: H2 20. */
+    unclamped --fs-h2 alias read 40px @1440 / 47.6px @390 — twice
+    the 28/24 masthead it answers to, off every rung on the phone
+    band. §R324 app density: H2 20.
+*/
     font-size: var(--fs-app-h2);
     line-height: var(--lh-snug);
     overflow-wrap: break-word;
   }
   /* Micro-label + secondary lines: the 85/15 band-fg mix (4.5:1+ on
-     both theme poles — see the section header note). */
+   both theme poles — see the section header note).
+*/
   .dash-hero-deep .dash-resume-eyebrow {
     color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
   }
   /* The eyebrow's leading tick rides the text ink (currentColor) —
-     theme-proof by construction, no per-theme rule. */
+   theme-proof by construction, no per-theme rule.
+*/
   .dash-hero-deep .dash-resume-eyebrow::before { background: currentColor; }
   .dash-hero-deep .dash-resume-lecture,
   .dash-hero-deep .dash-resume-side-note,
@@ -75,17 +83,19 @@
     color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
   }
   /* R341 D7a — the P2.5 instrument swap killed the deep band's quiet
-     ProgressBar + momentum-ring re-derivations that lived here: the
-     hero renders the R325 RulerGauge + SegmentedProgress (rg-proven
-     zero seats for .dash-hero-deep .progress-track/.progress-fill and
-     the .momentum-ring .ring-* rules) — deleted with their RM belt
-     arms. */
+   ProgressBar + momentum-ring re-derivations that lived here: the
+   hero renders the R325 RulerGauge + SegmentedProgress (rg-proven
+   zero seats for .dash-hero-deep .progress-track/.progress-fill and
+   the .momentum-ring .ring-* rules) — deleted with their RM belt
+   arms.
+*/
 
   /* R345 E1 — the hero deep band's DARK truth (the E1 dark self-test
-     caught the cream pole-inversion at 0.326 mean luminance): the
-     night dashboard keeps the ink band on the elevated night rung,
-     the copper rail survives, every inner pole re-derives toward the
-     band's light fg. Light theme untouched. */
+   caught the cream pole-inversion at 0.326 mean luminance): the
+   night dashboard keeps the ink band on the elevated night rung,
+   the copper rail survives, every inner pole re-derives toward the
+   band's light fg. Light theme untouched.
+*/
   [data-theme='dark'] .dash-resume-card.dash-hero-deep {
     background: var(--neutral-150);
     color: var(--neutral-800);
@@ -107,55 +117,61 @@
   }
 
   /* ── 2 · ScheduleStrip harmonics (r341 D7a) ──────────────
-     The §B2 swap retired the .r305s-kicker wrap refinement that lived
-     here (zero seats — the sections render .r319s-bar now). In its
-     place, the strip's TODAY header cell: the inked head sets only its
-     background, so the sr-only «اليوم» label inherited the page's
-     --text ink — 1:1 against the ink fill (the ink-island probe's
-     catch; the WeekStrip twin was D7c's fix in pages.css). The head's
-     OWN color flips to the paper pole so every child (the sr-only
-     label included) inherits an ink that measures against the fill. */
+   The §B2 swap retired the .r305s-kicker wrap refinement that lived
+   here (zero seats — the sections render .r319s-bar now). In its
+   place, the strip's TODAY header cell: the inked head sets only its
+   background, so the sr-only «اليوم» label inherited the page's
+   --text ink — 1:1 against the ink fill (the ink-island probe's
+   catch; the WeekStrip twin was D7c's fix in pages.css). The head's
+   OWN color flips to the paper pole so every child (the sr-only
+   label included) inherits an ink that measures against the fill.
+*/
   .ind-sched-day--today .ind-sched-head { color: var(--bg); }
 
   /* ── 3 · The momentum strip — the page's metadata band ────────────
-     The labeled rule («زخم الفصل» stamped INTO the hairline) replaces
-     a boxed section header; between the stats the technical dividers
-     continue the rhythm. Dividers only where the line actually sits
-     on one row (container ≥700px) so a wrapped phone line never
-     carries a stray edge. */
+   The labeled rule («زخم الفصل» stamped INTO the hairline) replaces
+   a boxed section header; between the stats the technical dividers
+   continue the rhythm. Dividers only where the line actually sits
+   on one row (container ≥700px) so a wrapped phone line never
+   carries a stray edge.
+*/
   .dash-momentum .r305s-rule-labeled { margin-block: 0 var(--sp-4); }
   @container grid4 (min-width: 700px) {
     .dash-momentum .pf-stat + .pf-stat {
       border-inline-start: 1px solid var(--surface-divider);
       /* F1: margin, not padding — the unlayered patterns.css
-         `.pf-stat { padding-inline: var(--sp-1) }` always wins the
-         longhand against @layer pages, so a padding inset here was
-         dead CSS. The margin sits outside that cascade war. */
+     `.pf-stat { padding-inline: var(--sp-1) }` always wins the
+     longhand against @layer pages, so a padding inset here was
+     dead CSS. The margin sits outside that cascade war.
+*/
       margin-inline-start: var(--sp-5);
     }
   }
 
   /* ── 4 · The week ledger — day groups as one hairline rhythm ──────
-     The day bands ride .dash-week-day (frozen); between groups the
-     thin technical divider keeps the ledger reading as one surface. */
+   The day bands ride .dash-week-day (frozen); between groups the
+   thin technical divider keeps the ledger reading as one surface.
+*/
   .dash-week-group + .dash-week-group {
     border-block-start: 1px solid var(--surface-divider);
   }
 
   /* ── 5 · Metadata registers ────────────────────────────────────────
-     The gaps rail's mastery level is a standalone metric — the mono
-     tabular register (the r197 mono contract: numerals only). */
+   The gaps rail's mastery level is a standalone metric — the mono
+   tabular register (the r197 mono contract: numerals only).
+*/
   .dash-gap-pct {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
   }
 
   /* ── 6 · Interaction guard + reduced-motion belt ───────────────────
-     This sheet's ONE hover statement: the deep band does not lift —
-     its surface contrast IS the affordance, so the frozen premium
-     shadow/translate recipe is neutralized for the band only. Guarded
-     per the motion contract; the universal :focus-visible ring is
-     never suppressed. */
+   This sheet's ONE hover statement: the deep band does not lift —
+   its surface contrast IS the affordance, so the frozen premium
+   shadow/translate recipe is neutralized for the band only. Guarded
+   per the motion contract; the universal :focus-visible ring is
+   never suppressed.
+*/
   @media (hover: hover) and (pointer: fine) {
     .dash-resume-card.dash-hero-deep:hover {
       box-shadow: none;
@@ -163,7 +179,8 @@
     }
   }
   /* No animation is authored here (color/border steps only, all via
-     tokens); the belt stays as the explicit contract, mirroring the
-     foundation sheet. R341 D7a: the .progress-fill / .ring-fill arms
-     died with their zero-seat rules above — the block is retired. */
+   tokens); the belt stays as the explicit contract, mirroring the
+   foundation sheet. R341 D7a: the .progress-fill / .ring-fill arms
+   died with their zero-seat rules above — the block is retired.
+*/
 }

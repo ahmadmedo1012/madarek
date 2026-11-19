@@ -1,3 +1,5 @@
+import { PREV, NEXT } from '../../lib/copy';
+
 /* T-24 (deadcode ratchet): the pagination-footer family moved to its own
  * leaf module to sever the AdminPages ↔ AdminGovernancePages cycle
  * (AdminGovernancePages imported TablePaginationFooter from AdminPages
@@ -74,7 +76,7 @@ export function TablePaginationFooter({
           aria-label="الصفحة السابقة"
         >
           <Icon icon={ChevronRight} size={14} />
-          السابق
+          {PREV}
         </button>
         {pageList(page, totalPages).map((item, i) =>
           item === 'gap' ? (
@@ -97,7 +99,7 @@ export function TablePaginationFooter({
           disabled={page >= totalPages}
           aria-label="الصفحة التالية"
         >
-          التالي
+          {NEXT}
           <Icon icon={ChevronLeft} size={14} />
         </button>
       </div>
