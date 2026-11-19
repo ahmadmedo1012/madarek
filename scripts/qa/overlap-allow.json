@@ -14,12 +14,12 @@
       "reason": "R353 P1 — the app shell's own fixed topbar (the AppShell contract from R353 P4: one header height token, the primary navigation). On a 390x844 viewport the 56-64px bar measures ~7% of the viewport area — over the 6% big-fixed threshold by construction, not by defect: it is the platform's global chrome, contains only its own controls, and the R353 P4 layout contract pins its z-index and height. Proven intentional: every authed page renders inside AppShell with the topbar; content scrolls under it by design."
     },
     {
-      "match": "div.auth-frame",
-      "reason": "R353 P1 — the auth/colleges/app sheets' own DRAFTING FRAME (patterns.css .auth-frame/.nf-frame, W7 dedup family of div.sheet-frame): four 1px hairlines at the 7px viewport inset, aria-hidden, pointer-transparent, decorative registration chrome present at every breakpoint by design. It intersects ~95% of the viewport BY CONSTRUCTION (it is the border, not a cover) — same proven-intentional case as the allowlisted div.sheet-frame."
+      "match": "div.auth-frame|div.nf-frame",
+      "reason": "R353 P1 — the auth/colleges/app sheets' own DRAFTING FRAME and its 404/legal twin (patterns.css .auth-frame/.nf-frame, W7 dedup family of div.sheet-frame): four 1px hairlines at the 7px viewport inset, aria-hidden, pointer-transparent, decorative registration chrome present at every breakpoint by design. Both selectors are the SAME construction (nf-frame's own r353 entry: 'the .auth-frame twin — identical bodies, same layer'); consolidated to one entry by R369 C2 to hold the ≤10 ledger cap. It intersects ~95% of the viewport BY CONSTRUCTION (it is the border, not a cover) — same proven-intentional case as the allowlisted div.sheet-frame."
     },
     {
-      "match": "div.nf-frame",
-      "reason": "R353 P1 — the 404/legal sheets' DRAFTING FRAME, the .auth-frame twin (patterns.css:635, W7 dedup — identical bodies, same layer). Decorative 1px fixed frame, aria-hidden, pointer-transparent; the big-fixed flag measures its inset box, not any ink. Same construction as div.sheet-frame / div.auth-frame."
+      "match": "div.technical-sheet",
+      "reason": "R369 C2 — the auth seat's DECORATIVE PLATE IN THE FREE MARGIN (technical-sheet.css .tech-sheet-auth: 'Guest surfaces (login / register / recovery) carry one technical plate in the inline-end margin ... decorative chrome: fixed, pointer-transparent, behind the form column, and only mounted where there is real margin for it (≥1280px)'). Only the .tech-sheet-auth seat is position:fixed in the whole .technical-sheet family; it paints an aria-hidden SVG drawing (pointer-events:none at the family root, z-index 0 under the form), covers 10.8% of a 1440x900 viewport by construction (22vw capped at 340px), and fixed-over-text is 0 across the guest sweep — the same fixed-decor family as div.auth-grain (allowlisted R356). Surfaced by the R369 C2 public survey (/auth @1440 light+dark, all other cells clean)."
     },
     {
       "match": "nav.sidebar.collapsed",

@@ -67,11 +67,13 @@ const contrast = a.contrast === 'more' || a.contrast === 'less' || a.contrast ==
 const reducedMotion = a.reducedmotion === 'reduce' ? 'reduce' : undefined;
 const MIN_FRAC = Number(a.minfrac || 0.2);
 const MEDIA = a.media === '1';          // overlap area / smaller rect area
-/* the intentional-layering ledger (entries: {match, reason}) */
+/* the intentional-layering ledger (entries: {match, reason}); a match may
+ * list sibling selectors with '|' (R369 C2: twin-frame consolidation holds
+ * the ≤10 cap) — semantics unchanged, still prefix-matches only big-fixed */
 const ALLOW_FILE = path.join(path.dirname(fileURLToPath(import.meta.url)), 'overlap-allow.json');
 let ALLOW = [];
 try { ALLOW = (JSON.parse(fs.readFileSync(ALLOW_FILE, 'utf8')).entries || []).map(e => e.match); } catch { ALLOW = []; }
-const allowed = (sel) => ALLOW.some(m => typeof m === 'string' && m && sel.startsWith(m));
+const allowed = (sel) => ALLOW.some(m => typeof m === 'string' && m && m.split('|').some(p => sel.startsWith(p)));
 /* ── R354-UI-2 · STRESS — hostile content, applied in-page before the
  * probe. A clean mock crawl only proves the happy path; the owner's
  * complaints are the real-world shapes (long Arabic names, unbroken

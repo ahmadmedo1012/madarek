@@ -779,7 +779,13 @@ a.pf-row-link {
     .auth-form-title { font-size: 4.4rem; } /* type-gate: allow — ~40.5px @768, the tablet display rung (the r319-student masthead ladder) */
   }
   @media (max-width: 767px) {
-    .auth-form-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the r319-student masthead ladder) */
+    /* R369 C2.1 — the raw 3.2rem bypassed the d1 clamp's zoom guard:
+       at 200 % font scale the longest word («بعودتك») outgrew the
+       320/360 sheet (h1 scrollWidth 380 vs 304 client). The vw cap
+       holds the phone band identical at 100 % (3.2rem = 31.8px ≤
+       10.2vw at every width ≥ 312px) and pins the title to the sheet
+       under zoom — the same construction as --fs-d1 itself. */
+    .auth-form-title { font-size: clamp(28px, 10.2vw, 3.2rem); } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the r319-student masthead ladder) */
   }
   .auth-form-sub {
     font-size: var(--fs-body);
@@ -946,6 +952,14 @@ a.pf-row-link {
   @media (max-width: 639px) {
     .auth-cell {
       grid-template-columns: var(--sp-9) minmax(0, 1fr);
+    }
+    /* R369 C2.1 — the STACKED row wraps its label. The R321 §A8 nowrap
+       is the ≥640 side-by-side contract (one line beside the control);
+       stacked below 640 the label owns the row alone, and at 200 % zoom
+       the longest label («البريد الإلكتروني أو رقم القيد») measured
+       557px in a 244px cell — the page overflowed 305px at 320. */
+    .auth-cell .form-label {
+      white-space: normal;
     }
     .auth-cell-control {
       grid-column: 1 / -1;
