@@ -111,8 +111,8 @@
   aspect-ratio: 374 / 847;
   block-size: auto;
   max-block-size: none;
+  display: none; /* the desktop arm hides the narrow twin; ≤767 flips it */
 }
-.st-bandplate-m { display: none; }
 @media (max-width: 767px) {
   .st-bandplate-d { display: none; }
   .st-bandplate-m { display: block; }
@@ -122,8 +122,9 @@
 }
 /* the convergence: the authored media PLATE retires (the band plate
  * carries the media region's tonal field); the media cell + the ink scrub
- * overlay stay wired above it. */
-.st-media-img { display: none; }
+ * overlay stay wired above it. The retirement is declared on the base rule
+ * below (one selector, one block — the second identical rule was the
+ * stylelint duplicate). */
 
 /* ═══ the media cell ═══ */
 .st-media {
@@ -143,6 +144,7 @@
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
+  display: none; /* retired with the authored plate (the band plate carries the field) */
 }
 /* r368 T3 — the authored SVG plate's dark twin: the paper/ink pair inverts
  * (the token law: dark mode flips the pair, geometry never moves). The

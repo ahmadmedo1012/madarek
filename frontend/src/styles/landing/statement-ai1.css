@@ -11,14 +11,12 @@
  * same card box the university card svg used to fill, now OUR OWN
  * typographic register (a mono index + the capability name, centered
  * in the same box — zero CLS). */
-.st-media-img.is-dark { visibility: hidden; }
+/* r368 T3 — the dark twin rides the CSS invert filter (the paper/ink pair
+ * flips, geometry never moves) inside the SAME rule as its visibility seat:
+ * the second identical selector was the stylelint duplicate. */
+.st-media-img.is-dark { visibility: hidden; filter: invert(1) hue-rotate(180deg); }
 [data-theme="dark"] .st-media-img.is-light { visibility: hidden; }
 [data-theme="dark"] .st-media-img.is-dark { visibility: visible; }
-
-/* r368 T3 — the SVG plate's dark twin rides the CSS invert filter (the
- * paper/ink pair flips, geometry never moves); the visibility rules above
- * stay the theme seam. */
-.st-media-img.is-dark { filter: invert(1) hue-rotate(180deg); }
 
 /* r368 T3 — the crawl chips carry the reference's measured ticker-band
  * tone (the partner-logo row reads 101–171 at mid states, 212–220 at the
