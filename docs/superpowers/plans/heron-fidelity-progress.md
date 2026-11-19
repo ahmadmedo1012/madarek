@@ -994,3 +994,62 @@ no seat is at the floor.**
    evidence), T5 public pages, T6 role pages, T7 Expo, T8 copy (blocked on a baseline
    artifact, analyze A7), T9 CSS −10 % (721 612 B vs the 601 352 B target) and the five
    remaining cross-context lint duplicates, T10 acceptance (needs T3–T9).
+
+## Session resume — third host (lead continuation of exec/r368-fidelity-v2)
+
+Remote state re-verified from the tree, not the log: `wip/r368-t0` (T0 closure),
+`wip/r368-t1` (T1 closure), `wip/r368-t2` (assets + provenance), `wip/r368-t3`
+(HEAD `2b226441`), and **`exec/r368-fidelity-v2` (HEAD `edfba1c4`, 36 commits
+ahead of t0, descendant of `wip/r368-t3`)** — the registered continuation branch
+carrying the originality swap, instrument fixes #3/#4, the wave-1/wave-2
+scorecards and the T2 register correction. No T4–T10 branches exist; **no T5/T7
+local-agent branches exist on the remote at this inspection** (checked
+`git ls-remote --heads origin`; only t0–t3, both exec branches, plan, r358-ui,
+gh-pages, main). This session continues on `exec/r368-fidelity-v2` as the lead.
+
+### Tool ledger (this session, this host)
+
+| skill/tool | version/source | used for | result |
+|---|---|---|---|
+| Node / npm | v24.22.3 / 11.19.1 (in the 20–24 window) | all runs | OK |
+| Playwright | 1.60.0 (frontend workspace) + chromium 143.0.7499.4 via the documented fallback `PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers` (chromium-1223 symlink → chromium-1200; headless-shell-1223 copied from headless-shell-1200 — `ln -s` became blocked after first use, copy is equivalent) | instrument browser | launch + render verified |
+| GitHub SpecKit `specify` | 1.4.2 (pip `specify-cli`; prior host recorded 1.4.3.dev0 — same command surface: init/check/version/mcp/self) | SpecKit readiness | `specify check` runs; analyze/checklist remain agent flows (manual artifacts, as the prior host already recorded) |
+| obra/superpowers skills | cloned to `~/skills-superpowers` (outside the repo) | systematic-debugging, executing-plans, verification-before-completion read and applied as process law | read |
+| ponytail (DietrichGebert) | cloned to `~/skills-ponytail` | minimal-diff discipline for seat/CSS edits | read |
+| emilkowalski/skill (choreograph + emil-design-eng) | cloned to `~/skills-emilkowalski` | animation-review + design-craft guidance for motion/seat work | read |
+| repo instrument (`fidelity.mjs`/`pairs.mjs`/`stress.mjs`) | current tree | E/T/Q measurement | law tests 38/38 pass; score-only reproduces the committed wave-2 scorecard byte-stable (only `generatedAt` differs): **E 55.0 · T 96.5 % · Q 100**, per-seat E problem 69.9 · cta 68.1 · why 66.5 · chrome 58.0 · map 52.7 · intro 50.7 · hero 46.8 · usecase 46.7 · footer 45.9 · platform 43.2 |
+
+Not installed (evidence): `root-cause-tracing`/`impeccable`/`accessibility`/
+`react-native-performance`/`web-design-review` as named Claude-Code skills do not
+exist as installable units on this host (searched the Z.ai skill registry, npm
+global, pip; obra/superpowers carries systematic-debugging which embeds the
+root-cause law; emilkowalski/skill carries the design/animation craft). Fallback
+used: the discipline content above + the repo's own gates (axe enters at
+T5/T6/T10 via the project's a11y tooling). Lighthouse/axe/firecrawl not yet
+needed at this phase; installed/verified when their task starts.
+
+### T-floor structural finding (measured from the committed scorecard, recorded)
+
+The five invalid rows are all stage-geometry-bound, not product defects:
+`footer@390:mid60`, `footer@768:mid30`, `footer@768:mid60` (both sides: reference
+stage end 11075/11983/11983 < needed 11404/12196/12487 — our local end is also
+short) and `home-cta-wrap@1024:mid30/mid60` (reference stage end 11507 < needed
+11548/11697). Because position targets derive from each side's own live entry +
+0.3h/0.6h deltas with the reference's own heights, the reference side can never
+reach these states — footer per-target T is structurally ≤ 6/9 = 66.7 % and cta
+≤ 13/15 = 86.7 %, both under the 90 % floor. This is the spec's acceptance-#1
+escape case ("document the exact limitation"), carried as a named limitation at
+T10 with the row reasons as proof — never a silent pass.
+
+### This session's execution order
+
+1. T3 convergence (height gaps first: cta +634@1440/+409@390, why +1343@1440,
+   footer +192@1440, intro +87@390, map −447@390; then per-seat block-profile
+   tuning in ascending E), scoped `--reuse-reference` iterations, full paired
+   re-capture at wave close.
+2. Parallel subagent waves (≤4 agents total, disjoint files): T6 role pages,
+   T8 copy baseline+reduction, T9 CSS consolidation — none touch landing seats.
+3. T4 token verification/migration evidence.
+4. T5/T7: re-check for local-agent branches each wave; execute in-house if still
+   absent (separate wip branches).
+5. T10 acceptance with real outputs.
