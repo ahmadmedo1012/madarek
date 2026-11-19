@@ -427,7 +427,16 @@
   user-select: none;
   /* the optical seat: the ink block (0.85em above the baseline, ~0.15em
      below) hangs ~19.5fu below the band's centre at lh = fs — the nudge
-     recentres the painted strokes (measured 58/19 margins → 39/39) */
+     recentres the painted strokes (measured 58/19 margins → 39/39).
+     R369 R2 (B lane): the nudge moved to the INNER .fo-wordmark-ink span —
+     a transform on THIS div shifted its whole box 19.5fu above the band,
+     poking it into the footer contact strip's 5px-tight clearance (the
+     settled stress collision h3.fo-contact-h × div.fo-wordmark @1440,
+     share 31%). The ink span carries the same transform; the painted
+     result is byte-identical and the div's box stays in the band. */
+}
+.fo-wordmark-ink {
+  display: block;
   transform: translateY(calc(var(--fu) * -19.5));
 }
 .fo-strip-svg { inline-size: 100%; block-size: 100%; display: block; }

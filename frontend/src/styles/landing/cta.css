@@ -608,7 +608,13 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
   }
 
   .cg-strip {
-    margin-block-start: 0;
+    /* R369 R2 (B lane): the belt's 0 margin left 5px between the meta's
+       box and the label — the .reveal-up family's armed translateY(14px)
+       ate it (the stress collision p.fo-cta-meta × span.cg-strip-label
+       @844x390, share 34%). The clearance law: the gap must exceed the
+       family's armed offset (14px) — sp-3 (12px) + the belt's own 5px
+       clearance = 17px ≥ 15px. */
+    margin-block-start: var(--sp-3);
   }
 }
 

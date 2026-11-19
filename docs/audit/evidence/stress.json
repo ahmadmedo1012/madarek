@@ -1,9 +1,9 @@
 {
- "generatedAt": "2026-11-19T03:31:41.054Z",
- "url": "http://localhost:5303/",
+ "generatedAt": "2026-11-19T17:44:52.460Z",
+ "url": "http://localhost:5330",
  "profile": {
-  "browser": "chromium 156.0.8078.4",
-  "node": "v22.22.1"
+  "browser": "chromium 143.0.7499.4",
+  "node": "v24.22.3"
  },
  "sizes": {
   "320": {
@@ -35,11 +35,11 @@
     },
     {
      "key": "home-map-wrap",
-     "height": 3628
+     "height": 3592
     },
     {
      "key": "home-platform-wrap",
-     "height": 790
+     "height": 772
     },
     {
      "key": "home-problem-wrap",
@@ -85,11 +85,11 @@
     },
     {
      "key": "home-map-wrap",
-     "height": 4190
+     "height": 4150
     },
     {
      "key": "home-platform-wrap",
-     "height": 888
+     "height": 868
     },
     {
      "key": "home-problem-wrap",
@@ -135,11 +135,11 @@
     },
     {
      "key": "home-map-wrap",
-     "height": 4714
+     "height": 4693
     },
     {
      "key": "home-platform-wrap",
-     "height": 962
+     "height": 940
     },
     {
      "key": "home-problem-wrap",
@@ -185,11 +185,11 @@
     },
     {
      "key": "home-map-wrap",
-     "height": 4237
+     "height": 4215
     },
     {
      "key": "home-platform-wrap",
-     "height": 1016
+     "height": 993
     },
     {
      "key": "home-problem-wrap",
@@ -210,16 +210,7 @@
    "viewport": "1440x900",
    "overflow": 0,
    "clipped": [],
-   "collisions": [
-    {
-     "section": "footer",
-     "a": "h3.fo-contact-h",
-     "b": "div.fo-wordmark",
-     "share": 30,
-     "aText": "التواصل",
-     "bText": "مدارك"
-    }
-   ],
+   "collisions": [],
    "unreachable": [],
    "sections": [
     {
@@ -252,7 +243,7 @@
     },
     {
      "key": "home-problem-wrap",
-     "height": 2494
+     "height": 840
     },
     {
      "key": "home-usecase-wrap",
@@ -294,11 +285,11 @@
     },
     {
      "key": "home-map-wrap",
-     "height": 2524
+     "height": 2454
     },
     {
      "key": "home-platform-wrap",
-     "height": 1563
+     "height": 1527
     },
     {
      "key": "home-problem-wrap",
@@ -332,7 +323,7 @@
     },
     {
      "key": "home-cta-wrap",
-     "height": 1128
+     "height": 1140
     },
     {
      "key": "home-hero-wrap",
@@ -344,7 +335,7 @@
     },
     {
      "key": "home-map-wrap",
-     "height": 2437
+     "height": 2417
     },
     {
      "key": "home-platform-wrap",
