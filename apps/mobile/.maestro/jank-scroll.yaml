@@ -1,0 +1,47 @@
+# R369 C3.4 — the SCROLL-JANK PASS: a dedicated gfxinfo window that
+# contains ONLY real scrolling on the role's dashboard (the heaviest
+# screen per role), not the whole maestro walk. The workflow resets
+# gfxinfo immediately before this flow and dumps it right after
+# (gfxinfo-scroll.txt), so the janky-frame % in that file is the
+# scroll-window number the C3.4 bar asks for. __ROLE__ is substituted
+# at dispatch time by the workflow's sed (same deterministic generation
+# as the screens flows — the env-var substitution class of bugs stays
+# out; see the R369 dark-capture postmortem in ui-screens.yml).
+appId: ly.madarek.mobile
+name: "R369 jank scroll pass"
+---
+- openLink: "madarek://__ROLE__/dashboard"
+- extendedWaitUntil:
+    visible:
+      id: "role-tab-bar"
+    timeout: 30000
+# settle: any entering animations must finish before the window opens
+- extendedWaitUntil:
+    visible:
+      id: "role-tab-bar"
+    timeout: 2000
+# 4 down-swipes + 4 up-swipes through the dashboard content
+- swipe:
+    start: 50%, 80%
+    end: 50%, 30%
+- swipe:
+    start: 50%, 80%
+    end: 50%, 30%
+- swipe:
+    start: 50%, 80%
+    end: 50%, 30%
+- swipe:
+    start: 50%, 80%
+    end: 50%, 30%
+- swipe:
+    start: 50%, 30%
+    end: 50%, 80%
+- swipe:
+    start: 50%, 30%
+    end: 50%, 80%
+- swipe:
+    start: 50%, 30%
+    end: 50%, 80%
+- swipe:
+    start: 50%, 30%
+    end: 50%, 80%

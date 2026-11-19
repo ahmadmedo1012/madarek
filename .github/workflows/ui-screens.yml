@@ -301,10 +301,35 @@ jobs:
             # clearState makes the retry deterministic; a second failure is
             # a real red and stays red (the || group's exit code is the
             # retry's).
-            maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens || { echo "::warning::maestro attempt 1 failed — one retry from clean app state"; adb shell am force-stop ly.madarek.mobile || true; sleep 3; maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens; }
+            # R369 — DETERMINISTIC FLOW GENERATION (the dark-capture root cause):
+            # maestro's `-e KEY=VALUE` + `${KEY}` substitution silently failed
+            # in the runner's maestro build — the job log shows `Tap on id:
+            # seg-${THEME_ID}... COMPLETED` (the RAW literal; no element
+            # carries it) and every "dark" capture since R358 rendered LIGHT
+            # (pixel-verified on runs 43/44/48: avg RGB ~240 on the
+            # after-theme shot, identical to the light twin). The flows now
+            # carry a `seg-__THEME__` placeholder and the job seds the real
+            # theme id in BEFORE maestro sees the file — no env-var semantics
+            # left in the capture path.
+            sed "s/seg-__THEME__/seg-${{ matrix.profile.theme }}/g" "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" > apps/mobile/build/screens-flow.yaml
+            maestro test apps/mobile/build/screens-flow.yaml --test-output-dir apps/mobile/build/screens || { echo "::warning::maestro attempt 1 failed — one retry from clean app state"; adb shell am force-stop ly.madarek.mobile || true; sleep 3; maestro test apps/mobile/build/screens-flow.yaml --test-output-dir apps/mobile/build/screens; }
             adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
             adb logcat -d > apps/mobile/build/screens/logcat-after-maestro.log
             adb shell dumpsys gfxinfo ly.madarek.mobile > apps/mobile/build/screens/gfxinfo.txt 2>&1 || true
+            # R369 — THE DARK PIXEL GATE: the capture pipeline verifies its
+            # own theme application — a dark-profile job FAILS if the
+            # after-theme screenshot is still light (avg brightness >= 150).
+            # The silent-light class can never ship "dark" evidence again.
+            test '${{ matrix.profile.theme }}' != dark || { AVG=$(identify -format '%[fx:round(mean*255)]' apps/mobile/build/screens/03-settings-after-theme.png); echo "dark-gate: after-theme avg=$AVG"; test "$AVG" -lt 150 || { echo "::error::dark capture failed — the after-theme screenshot is still light (avg=$AVG)"; exit 1; }; }
+            # R369 C3.4 — THE SCROLL-JANK WINDOW: reset, walk ONLY the
+            # dashboard scroll (jank-scroll.yaml, role-sed'd), dump to
+            # gfxinfo-scroll.txt. The janky% in THAT file is the per-screen
+            # scroll number the C3.4 bar asks for (the walk-window
+            # gfxinfo.txt above stays for comparison).
+            adb shell dumpsys gfxinfo ly.madarek.mobile reset > /dev/null 2>&1 || true
+            sed "s/__ROLE__/${{ matrix.role }}/g" "apps/mobile/.maestro/jank-scroll.yaml" > apps/mobile/build/jank-flow.yaml
+            maestro test apps/mobile/build/jank-flow.yaml --test-output-dir apps/mobile/build/screens/jank || true
+            adb shell dumpsys gfxinfo ly.madarek.mobile > apps/mobile/build/screens/gfxinfo-scroll.txt 2>&1 || true
             ls -l apps/mobile/build/screens || true
 
       - name: Upload the screenshots
@@ -466,10 +491,35 @@ jobs:
             # clearState makes the retry deterministic; a second failure is
             # a real red and stays red (the || group's exit code is the
             # retry's).
-            maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens || { echo "::warning::maestro attempt 1 failed — one retry from clean app state"; adb shell am force-stop ly.madarek.mobile || true; sleep 3; maestro test "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" -e THEME_LABEL="${{ matrix.profile.theme_label }}" -e THEME_ID="${{ matrix.profile.theme }}" --test-output-dir apps/mobile/build/screens; }
+            # R369 — DETERMINISTIC FLOW GENERATION (the dark-capture root cause):
+            # maestro's `-e KEY=VALUE` + `${KEY}` substitution silently failed
+            # in the runner's maestro build — the job log shows `Tap on id:
+            # seg-${THEME_ID}... COMPLETED` (the RAW literal; no element
+            # carries it) and every "dark" capture since R358 rendered LIGHT
+            # (pixel-verified on runs 43/44/48: avg RGB ~240 on the
+            # after-theme shot, identical to the light twin). The flows now
+            # carry a `seg-__THEME__` placeholder and the job seds the real
+            # theme id in BEFORE maestro sees the file — no env-var semantics
+            # left in the capture path.
+            sed "s/seg-__THEME__/seg-${{ matrix.profile.theme }}/g" "apps/mobile/.maestro/screens-${{ matrix.role }}.yaml" > apps/mobile/build/screens-flow.yaml
+            maestro test apps/mobile/build/screens-flow.yaml --test-output-dir apps/mobile/build/screens || { echo "::warning::maestro attempt 1 failed — one retry from clean app state"; adb shell am force-stop ly.madarek.mobile || true; sleep 3; maestro test apps/mobile/build/screens-flow.yaml --test-output-dir apps/mobile/build/screens; }
             adb exec-out screencap -p > apps/mobile/build/screens/last-frame.png
             adb logcat -d > apps/mobile/build/screens/logcat-after-maestro.log
             adb shell dumpsys gfxinfo ly.madarek.mobile > apps/mobile/build/screens/gfxinfo.txt 2>&1 || true
+            # R369 — THE DARK PIXEL GATE: the capture pipeline verifies its
+            # own theme application — a dark-profile job FAILS if the
+            # after-theme screenshot is still light (avg brightness >= 150).
+            # The silent-light class can never ship "dark" evidence again.
+            test '${{ matrix.profile.theme }}' != dark || { AVG=$(identify -format '%[fx:round(mean*255)]' apps/mobile/build/screens/03-settings-after-theme.png); echo "dark-gate: after-theme avg=$AVG"; test "$AVG" -lt 150 || { echo "::error::dark capture failed — the after-theme screenshot is still light (avg=$AVG)"; exit 1; }; }
+            # R369 C3.4 — THE SCROLL-JANK WINDOW: reset, walk ONLY the
+            # dashboard scroll (jank-scroll.yaml, role-sed'd), dump to
+            # gfxinfo-scroll.txt. The janky% in THAT file is the per-screen
+            # scroll number the C3.4 bar asks for (the walk-window
+            # gfxinfo.txt above stays for comparison).
+            adb shell dumpsys gfxinfo ly.madarek.mobile reset > /dev/null 2>&1 || true
+            sed "s/__ROLE__/${{ matrix.role }}/g" "apps/mobile/.maestro/jank-scroll.yaml" > apps/mobile/build/jank-flow.yaml
+            maestro test apps/mobile/build/jank-flow.yaml --test-output-dir apps/mobile/build/screens/jank || true
+            adb shell dumpsys gfxinfo ly.madarek.mobile > apps/mobile/build/screens/gfxinfo-scroll.txt 2>&1 || true
             ls -l apps/mobile/build/screens || true
       - name: Upload the screenshots
         if: always()

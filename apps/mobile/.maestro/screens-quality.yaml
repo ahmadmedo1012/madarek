@@ -45,7 +45,7 @@ name: "R358 screens — quality"
     timeout: 30000
 - takeScreenshot: "screens/02-settings-before-theme"
 - tapOn:
-    id: "seg-${THEME_ID}"
+    id: "seg-__THEME__"
 # R362 — the applied-theme evidence: the settings screen re-renders in
 # the new theme instantly (zustand, no reload); this shot + the
 # before-shot are the pair a reviewer compares. The wait also proves
