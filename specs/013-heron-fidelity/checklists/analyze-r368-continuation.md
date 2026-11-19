@@ -52,3 +52,14 @@ photographic bands, which the spec's §Excluded forbids. This is a spec-level
 conflict, not an execution shortcut, and it needs an owner decision: either
 accept a lower E floor for original-artwork seats, or state in writing which
 non-photographic reference structure may be reproduced.
+
+## A7 — the copy-reduction baseline is not pinned to a landing measurement
+
+`spec.md` acceptance 7 asks for "landing copy … at least 20 % below the committed
+baseline". The only committed copy number in the repository is the global
+`copy-budget` sum (11 887 Arabic words across the enforced pages, ceiling 10 770) and
+the R366 mobile result (13 043 → 10 419, −20.1 %). There is **no landing-only
+baseline file** in `docs/audit/`, so a landing percentage cannot be computed without
+inventing one. T8 therefore stays open on a measurement precondition: either the owner
+names the baseline artifact, or the acceptance moves to the global budget (already
+CLEAN). Recorded instead of picking a convenient denominator.

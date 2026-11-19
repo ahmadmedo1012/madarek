@@ -45,6 +45,12 @@
   z-index: 320; /* above the nav/cursor chrome (250/251) while it plays */
   display: grid;
   place-items: center;
+  /* R368 — the loader is decorative and every child is pointer-transparent,
+     but the designed ROOT box kept pointer-events:auto, so an invisible
+     full-viewport sheet swallowed the first tap until React unmounted it
+     (stress @360: button.fo-burger and button.hi-marker "covered by
+     div.pl.pl--exit, 360x740"). Nothing inside is interactive. */
+  pointer-events: none;
   /* the paper ground lives on the .pl-sheet/.pl-band pair below — the
      root stays clear so the bands can fly without dragging the content's
      paint with them (the recorded .loading-main split geometry) */

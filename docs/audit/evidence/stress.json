@@ -1,9 +1,9 @@
 {
- "generatedAt": "2026-11-18T18:54:54.983Z",
- "url": "http://localhost:5301/",
+ "generatedAt": "2026-11-19T03:31:41.054Z",
+ "url": "http://localhost:5303/",
  "profile": {
-  "browser": "chromium 143.0.7499.4",
-  "node": "v24.22.3"
+  "browser": "chromium 156.0.8078.4",
+  "node": "v22.22.1"
  },
  "sizes": {
   "320": {
@@ -19,7 +19,7 @@
     },
     {
      "key": "footer",
-     "height": 1017
+     "height": 1264
     },
     {
      "key": "home-cta-wrap",
@@ -35,7 +35,7 @@
     },
     {
      "key": "home-map-wrap",
-     "height": 3645
+     "height": 3628
     },
     {
      "key": "home-platform-wrap",
@@ -43,7 +43,7 @@
     },
     {
      "key": "home-problem-wrap",
-     "height": 728
+     "height": 958
     },
     {
      "key": "home-usecase-wrap",
@@ -69,7 +69,7 @@
     },
     {
      "key": "footer",
-     "height": 1144
+     "height": 1265
     },
     {
      "key": "home-cta-wrap",
@@ -93,7 +93,7 @@
     },
     {
      "key": "home-problem-wrap",
-     "height": 818
+     "height": 1075
     },
     {
      "key": "home-usecase-wrap",
@@ -135,7 +135,7 @@
     },
     {
      "key": "home-map-wrap",
-     "height": 4735
+     "height": 4714
     },
     {
      "key": "home-platform-wrap",
@@ -143,7 +143,7 @@
     },
     {
      "key": "home-problem-wrap",
-     "height": 885
+     "height": 1164
     },
     {
      "key": "home-usecase-wrap",
@@ -185,7 +185,7 @@
     },
     {
      "key": "home-map-wrap",
-     "height": 4260
+     "height": 4237
     },
     {
      "key": "home-platform-wrap",
@@ -193,7 +193,7 @@
     },
     {
      "key": "home-problem-wrap",
-     "height": 935
+     "height": 1229
     },
     {
      "key": "home-usecase-wrap",
@@ -212,36 +212,12 @@
    "clipped": [],
    "collisions": [
     {
-     "section": "home-hero-wrap",
-     "a": "div.hpf-14",
-     "b": "span.hpf-15",
-     "share": 100,
-     "aText": "01",
-     "bText": "محور"
-    },
-    {
-     "section": "home-hero-wrap",
-     "a": "div.hpf-16",
-     "b": "span.hpf-17",
-     "share": 100,
-     "aText": "02",
-     "bText": "قياس"
-    },
-    {
-     "section": "home-hero-wrap",
-     "a": "span.hro-line",
-     "b": "div.hro-work-item",
-     "share": 33,
-     "aText": "من المحاضرة إلى الإتقان",
-     "bText": "المحاضرات التفاعلية"
-    },
-    {
-     "section": "home-hero-wrap",
-     "a": "span.hro-line",
-     "b": "span.fo-mono",
-     "share": 100,
-     "aText": "من المحاضرة إلى الإتقان",
-     "bText": "[ 01 ]"
+     "section": "footer",
+     "a": "h3.fo-contact-h",
+     "b": "div.fo-wordmark",
+     "share": 30,
+     "aText": "التواصل",
+     "bText": "مدارك"
     }
    ],
    "unreachable": [],
@@ -252,7 +228,7 @@
     },
     {
      "key": "footer",
-     "height": 903
+     "height": 844
     },
     {
      "key": "home-cta-wrap",
@@ -276,7 +252,7 @@
     },
     {
      "key": "home-problem-wrap",
-     "height": 746
+     "height": 2494
     },
     {
      "key": "home-usecase-wrap",
@@ -292,24 +268,9 @@
   "640x360": {
    "viewport": "640x360",
    "overflow": 0,
-   "clipped": [
-    {
-     "el": "a.btn.accent",
-     "text": "أنشئ حسابك الجامعي",
-     "scrollW": 251,
-     "clientW": 249
-    }
-   ],
+   "clipped": [],
    "collisions": [],
-   "unreachable": [
-    {
-     "section": "home-hero-wrap",
-     "action": "button.hi-marker",
-     "coveredBy": "div.hro-sub-cell",
-     "coveringBox": "586x136",
-     "actionBox": "44x44"
-    }
-   ],
+   "unreachable": [],
    "sections": [
     {
      "key": "chrome",
@@ -325,7 +286,7 @@
     },
     {
      "key": "home-hero-wrap",
-     "height": 346
+     "height": 796
     },
     {
      "key": "home-intro-wrap",
@@ -333,7 +294,7 @@
     },
     {
      "key": "home-map-wrap",
-     "height": 2559
+     "height": 2524
     },
     {
      "key": "home-platform-wrap",
@@ -341,7 +302,7 @@
     },
     {
      "key": "home-problem-wrap",
-     "height": 1451
+     "height": 1909
     },
     {
      "key": "home-usecase-wrap",
@@ -359,15 +320,7 @@
    "overflow": 0,
    "clipped": [],
    "collisions": [],
-   "unreachable": [
-    {
-     "section": "home-hero-wrap",
-     "action": "button.hi-marker",
-     "coveredBy": "div.hro-work-item",
-     "coveringBox": "112x18",
-     "actionBox": "44x44"
-    }
-   ],
+   "unreachable": [],
    "sections": [
     {
      "key": "chrome",
@@ -383,7 +336,7 @@
     },
     {
      "key": "home-hero-wrap",
-     "height": 376
+     "height": 648
     },
     {
      "key": "home-intro-wrap",
@@ -399,7 +352,7 @@
     },
     {
      "key": "home-problem-wrap",
-     "height": 1503
+     "height": 1681
     },
     {
      "key": "home-usecase-wrap",
