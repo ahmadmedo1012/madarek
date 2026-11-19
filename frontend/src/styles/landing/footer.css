@@ -878,3 +878,62 @@
 /* R343 C-2 → R368 T3 — the skyline twin-swap grammar retired with the
  * strip imgs (the band paints the outlined wordmark now — the ink var
  * flips in dark via the token on its own). */
+
+/* ═══ R368 T3 — the ≥1300 desktop band, measured from the frozen
+   footer.1440.json (root 1427×711 = grid 355 + wordmark 314 + legal 42):
+   · the top band's columns un-mirror to the reference's own physical
+     order — brand/form col x7..364 LEFT, link col 357..1072 CENTER,
+     construction mark col x1070..1427 RIGHT. RTL grid col 1 is the
+     physical RIGHT, so the two edge columns swap explicit seats.
+   · the grid's height is the measured 355fu (content-driven 432 before).
+   · the CONTACT strip (our one /contact door) leaves the flow: the
+     reference band has no strip between the grid and the wordmark, and
+     its own col1 carries an empty y93..232 window — the strip re-seats
+     there (inside the brand column, above the subscribe zone), so the
+     wordmark begins at 355 exactly.
+   · the three bottom link groups ride ACROSS the 715 column (the
+     reference's x357/595/833 seats), not stacked in one 238 cell.
+   · the mark centers in the 355 band (y70, the reference's own seat) and
+     its caption leaves the flow to the band's bottom edge.
+   · the legal row is one line (9 links, 900fu) inside the 42fu bar.
+   Scoped ≥1300 so the 1024/768/390 belts keep their frozen layouts. ═══ */
+@media (min-width: 1300px) {
+  .fo-in { position: relative; }
+  /* R368 T3-2: the band law needs EXPLICIT rows — with auto-placement the
+     three columns landed in three implicit rows (col2 279px down, col3
+     279+286). One 355fu row, three explicit seats; the closing hairline
+     is out of the grid (absolute at the band's bottom edge, the
+     reference's 1427x1 at y354) so it cannot open an implicit row. */
+  .fo-grid { position: relative; block-size: calc(var(--fu) * 355); grid-template-rows: 100%; }
+  .fo-col1 { grid-column: 3; grid-row: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  .fo-col2 { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  .fo-col3 { grid-column: 1; grid-row: 1; }
+  .fo-grid-rule { position: absolute; inset-inline: 0; inset-block-end: 0; }
+  /* the 715 column's own 203/152 split (the reference's top band + the
+     bottom groups' 152 seat) + the three 1px seams (x357/x595/x833). The
+     top group is the flex child inside the c2wrap div, so the 203 rides
+     the wrapper; the hairline is absolute at its bottom edge (y202). */
+  .fo-col2 > [data-spec='footer.c2wrap'] { block-size: calc(var(--fu) * 203); }
+  .fo-c2-top { position: relative; block-size: 100%; border-inline-end: 1px solid var(--rule-strong); }
+  .fo-c2-top .fo-rule-h { position: absolute; inset-inline: 0; inset-block-end: 0; }
+  .fo-c2-bottom { grid-template-columns: 1fr; block-size: calc(var(--fu) * 152); border-inline-end: 1px solid var(--rule-strong); }
+  .fo-c2-bottom .fo-c2-binner { display: grid; grid-template-columns: repeat(3, 1fr); inline-size: auto; block-size: 100%; }
+  .fo-c2-bottom .fo-c2-binner .fo-lgroup + .fo-lgroup { border-inline-start: 1px solid var(--rule-strong); }
+  /* the mark: the pair no longer centers together — the mark alone centers
+     at the measured y70, the caption pins to the band's bottom edge */
+  .fo-mark-cap { position: absolute; inset-block-end: 0; inset-inline: 0; margin-inline: auto; margin-block-start: 0; }
+  /* the contact strip: out of the flow, into col1's measured empty window */
+  .fo-cta-strip {
+    position: absolute;
+    inset-block-start: calc(var(--fu) * 130);
+    inset-inline-end: calc(var(--fu) * 13.33);
+    inline-size: calc(var(--fu) * 330);
+    padding: 0;
+    z-index: 2;
+  }
+  .fo-contact-h { display: none; } /* the strip's terse label folds — the underlined link is the door */
+  /* the legal row un-mirrors to the reference's own physical order: the
+     484 © box LEFT, the nav box RIGHT; one line inside the 42fu bar */
+  .fo-footer-bottom { flex-direction: row-reverse; }
+  .fo-legal-row { flex-wrap: nowrap; inline-size: calc(var(--fu) * 900); }
+}

@@ -181,8 +181,11 @@ export function Footer({ year }: { year: number }) {
         {/* ── the 4-column print grid (355 @1440): col1 357 · col2 715 · col3 357 ── */}
         <div className="fo-grid" data-spec="footer.grid">
           {/* col1 (RTL: the right column) — the contact block: brand
-              lockup + the newsletter row (the reference's colA model) */}
-          <div className="fo-col" data-spec="footer.col1">
+              lockup + the newsletter row (the reference's colA model).
+              R368 T3: the ≥1300 seat un-mirrors this column to the
+              reference's physical LEFT (footer.1440.json x7..364) —
+              the `fo-col1` hook is the explicit grid-column seat. */}
+          <div className="fo-col fo-col1" data-spec="footer.col1">
             <div className="fo-c1-top" data-spec="footer.c1top">
               <div className="fo-brand" data-spec="footer.brand">
                 <div className="fo-brand-name" data-spec="footer.brandname">مدارك</div>
