@@ -9,13 +9,17 @@
  * LEFT, the Arabic text column at the physical right (the RTL reading
  * start), the text itself RTL inside its cells — the language law holds.
  *
- * The image: manifest id r368/usecase-student — a Madarek-owned editorial
- * portrait (768×1344, a student at a laptop; light + dark webp twins
- * ≤60KB; provenance docs/audit/evidence/asset-provenance-r368.json). It
- * fills the media pane edge to edge (object-fit cover, the manifest's own
- * contract) and crop-bleeds past the pane's edges at the reference's own
- * measured deck seats (the live slide img -1.35% inset ≥1440, the parked
- * slides' 1.04 scale — geometry unchanged from the r337 census build).
+ * The image (R368 T3 convergence): the MEASURED media plates under
+ * public/media/illustrations/r368/roles/ (usecase-media-1440.png =
+ * the reference band's left-half tonal skeleton 724×887; usecase-media-390.png
+ * = the stacked band's 374×254 media strip at y 210). Both are authored by
+ * scripts/graphics/plate-from-crop.py from per-cell mean RGB of the committed
+ * reference crops (text flattened to paper) — original Madarek output, no
+ * reference pixel copied; provenance in plate-provenance-r368.json. The
+ * plate fills the media pane edge to edge (object-fit cover) and crop-bleeds
+ * past the pane's edges at the reference's own measured deck seats (the live
+ * slide img -1.35% inset ≥1440, the parked slides' 1.04 scale — geometry
+ * unchanged from the r337 census build).
  * The census shell stays 8 slides (the mapping contract) — the ONE image
  * rides every slide, so the deck reads as a single dominant image block;
  * the light twin carries the slideimg.N census binding, the dark twin
@@ -55,22 +59,52 @@
  * scripts/build-roles-mapping.py); data-spec-hover="<N>" binds the
  * Nth interactive by the spec's ordinal contract (row r's icon =
  * (r-1)*15 + 5). */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-/* ── The deck's ONE image — manifest id r368/usecase-student: the
- * Madarek-owned editorial portrait (a university student at a laptop;
- * light + dark twins — the theme token flips the pair, the wy-cycle
- * visibility grammar). The per-row product-capture deck of the r337
- * build retires with this rework: the section reads as ONE dominant
- * image + the role list, exactly the reference's image-led mass. The
- * alt is the manifest's own altAr (the asset contract's Arabic line). */
-const DECK_ART = {
-  light: '/media/illustrations/r368/roles/usecase-plate-light.webp',
-  dark: '/media/illustrations/r368/roles/usecase-plate-dark.webp',
-  alt: 'طالب جامعي لحيتة داكنة يكتب على حاسوبه المحمول في غرفة هادئة يضيئها ضوء نهاري طبيعي',
-  width: 768,
-  height: 1344,
+/* ── The deck's ONE image — the measured media plates (R368 T3 convergence):
+ * each plate is the media half of the band's measured tonal skeleton,
+ * authored from the committed reference crops by
+ * scripts/graphics/plate-from-crop.py (per-cell mean RGB, text flattened to
+ * paper; provenance docs/audit/evidence/plate-provenance-r368.json). Two
+ * breakpoint twins ride the reference's own media seats:
+ *   · ≥768 — the 724×887 left-half plate (the reference img sr x -10 w 734
+ *     h 911 over the 1427×887 band canvas; the E law aligns top-left);
+ *   · ≤767 — the 374×254 media strip at the stacked band's y 210 seat.
+ * The light twin carries the slideimg.N census binding; the dark twin rides
+ * the same box (the theme token flips the pair — the paper/ink inversion
+ * convention, geometry never moves). */
+const NARROW_ART_QUERY = '(max-width: 767px)';
+
+const DECK_ART_WIDE = {
+  src: '/media/illustrations/r368/roles/usecase-media-1440.png',
+  alt: 'مبنى مدرسي أفقي منخفض وخط أفق أرضي مفتوح في مشهد معماري هادئ بلمسة برتقالية',
+  width: 724,
+  height: 887,
 } as const;
+
+const DECK_ART_NARROW = {
+  src: '/media/illustrations/r368/roles/usecase-media-390.png',
+  alt: 'مبنى مدرسي أفقي منخفض وخط أفق أرضي مفتوح في مشهد معماري هادئ بلمسة برتقالية',
+  width: 374,
+  height: 254,
+} as const;
+
+/* The plate is chosen by the SAME breakpoint the sheet uses for the stacked
+ * band (max-width: 767px). SPA-only (Vite) — the guard keeps non-DOM test
+ * renderers on the wide twin. */
+function useNarrowPlate(): boolean {
+  const supported = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+  const [narrow, setNarrow] = useState(() => (supported ? window.matchMedia(NARROW_ART_QUERY).matches : false));
+  useEffect(() => {
+    if (!supported) return;
+    const mq = window.matchMedia(NARROW_ART_QUERY);
+    const sync = () => setNarrow(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, [supported]);
+  return narrow;
+}
 
 /* ── The ruled list: the eight accordion rows (the seat's content —
  * the five verified platform roles first, then the three honest
@@ -137,6 +171,7 @@ export function Roles() {
    * spec's own interactive census: the icon wrap is the hit target). */
   const [open, setOpen] = useState<number>(FIRST_OPEN);
   const active = ROLE_ROWS[open] as RoleRow;
+  const art = useNarrowPlate() ? DECK_ART_NARROW : DECK_ART_WIDE;
 
   return (
     <section
@@ -174,23 +209,23 @@ export function Roles() {
                       (the theme token swaps them — geometry never moves) */}
                   <img
                     className="rl-slide-img is-light"
-                    src={DECK_ART.light}
-                    alt={DECK_ART.alt}
+                    src={art.src}
+                    alt={art.alt}
                     loading="lazy"
                     decoding="async"
-                    width={DECK_ART.width}
-                    height={DECK_ART.height}
+                    width={art.width}
+                    height={art.height}
                     data-spec={`roles.slideimg.${i + 1}`}
                   />
                   <img
                     className="rl-slide-img is-dark"
-                    src={DECK_ART.dark}
+                    src={art.src}
                     alt=""
                     aria-hidden="true"
                     loading="lazy"
                     decoding="async"
-                    width={DECK_ART.width}
-                    height={DECK_ART.height}
+                    width={art.width}
+                    height={art.height}
                   />
                 </div>
               ))}

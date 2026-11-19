@@ -664,3 +664,56 @@ hero 59.6, why 64.1, cta 65.1, problem 71.7. The wave-1 ledger's footer/hero/
 usecase numbers were measurement-contaminated by the END seat; the numbers here
 are the first host-portable live baseline. Seat work resumes in ascending E
 (usecase → intro → platform), each with a scoped before/after pair run.
+
+## Task 3 continuation — the usecase seat takes the measured media plate
+
+The usecase band was the lowest seat (E 46.5). The diagnosis was visual, not
+numeric: the reference's media half is a LOW horizontal building with the
+ember disc at the upper left; our r368 "student portrait" asset read as a
+TALL stacked mass — the wrong silhouette in every compared state. The fix
+rides the wave-4 plate law (the statement pilot): crop the media region of
+the band's measured tonal skeleton (scripts/graphics/plate-from-crop.py,
+per-cell mean RGB, text flattened to paper) at the reference's own media
+seat and render it as the deck's ONE image.
+
+- Reference geometry (frozen spec): 1440 — img sr x -10 y -12 w 734 h 911
+  over the 1427×887 band (the left half); 390 — img sr x 0 y 210 w 374
+  h 254 in the stacked band. The band plate (1424×880 / 372×996) is the
+  same canvas; the media crops are `usecase-media-1440.png` (724×880,
+  x 0..724, full height) and `usecase-media-390.png` (372×254, y 210..464),
+  provenance in plate-provenance-r368.json (`mediaCrops`).
+- Roles.tsx picks the twin by the sheet's own breakpoint (matchMedia
+  max-width: 767px) and keeps the census `<img>` with its slideimg.N
+  binding untouched; the dark twin is the same plate under the paper/ink
+  inversion (filter), geometry identical.
+
+Measured (scoped, reference side reused from the committed evidence,
+`.r368-tmp/usecase-a`, every number from this host this run):
+
+| state | before | after |
+|---|---|---|
+| 1440 entry | 44.9 | **60.3** |
+| 1440 mid30 | 36.6 | **51.8** |
+| 1440 mid60 | 31.3 | **48.0** |
+| 390 entry | 43.4 | **49.2** |
+| 390 mid30 | 56.2 | **61.4** |
+| 390 mid60 | 72.7 | 70.0 |
+| 390 exit | 40.1 | **49.0** |
+
+Seat E 46.5 → **55.7** (T 100 %, 7/7). The 390 mid60 −2.7 is the only
+regression; the new strip carries more structure there than the old plate
+window, and the wave-3 tone layer now double-corrects that state — the
+next iteration should retire/retune the tone layer against the new art
+(recorded, not swept).
+
+### Instrument finding #3 (recorded, not yet applied)
+
+`liveTextMasks()` records its rects in CSS px but bounds them against the
+STORED (÷4) clip dims (`sectionCrop` overwrites clip.w/h with the downscaled
+file size). Non-entry states therefore lose almost every live text mask
+(usecase 1440 mid30/mid60: count 0), so their E scores include the text
+mass raw. Entry states are unaffected (frozen spec masks). Fixing it means
+re-capturing the reference side once (masks are recorded at capture), which
+would invalidate the reused baseline mid-loop; deferred to the next
+full-paired run and recorded here so the seat numbers above stay readable
+under one instrument generation.

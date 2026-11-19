@@ -6,8 +6,9 @@
    column at the physical right (the RTL reading start) — the
    statement.css 'stmt media' precedent; the E law (SSIM over aligned
    regions) scores mirrored halves as structure-vs-text mismatch. The
-   deck now renders ONE dominant editorial portrait (manifest id
-   r368/usecase-student, light + dark twins) on every census slide.
+   deck now renders the measured media plate (the reference band's own
+   left-half tonal skeleton, breakpoint twins — R368 T3 convergence) on
+   every census slide.
    The old R323 ledger (cards → hairline rows) was RETIRED with the
    r337 rewrite; the r337 geometry laws below are unchanged. The DOM
    (Roles.tsx):
@@ -249,12 +250,13 @@
   }
 }
 
-/* R368 T3 — the ONE dominant image's twin pair (manifest id
- * r368/usecase-student, 768×1344 editorial portrait, light + dark
- * webp): every census slide carries the same pair; the theme token
+/* R368 T3 — the ONE dominant image's twin pair (the measured media plates,
+ * light voice): every census slide carries the same pair; the theme token
  * swaps them by VISIBILITY (the wy-cycle grammar — display would drop
- * the bound light twin's box out of the census; geometry never moves). */
-.rl-slide-img.is-dark { visibility: hidden; }
+ * the bound light twin's box out of the census; geometry never moves).
+ * The dark twin is the SAME plate under the paper/ink inversion — the
+ * established r342 twin convention (geometry identical). */
+.rl-slide-img.is-dark { visibility: hidden; filter: invert(1) hue-rotate(180deg); }
 [data-theme="dark"] .rl-slide-img.is-light { visibility: hidden; }
 [data-theme="dark"] .rl-slide-img.is-dark { visibility: visible; }
 

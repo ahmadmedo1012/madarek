@@ -41,6 +41,72 @@
    "bytes": 18730,
    "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
    "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-usecase-wrap",
+   "bp": "1440",
+   "file": "band-plate-1440.png",
+   "grid": 8,
+   "quant": 8,
+   "tol": 10,
+   "band": {
+    "w": 1427,
+    "h": 887
+   },
+   "paperRGB": [
+    246,
+    246,
+    239
+   ],
+   "masks": 27,
+   "bytes": 14332,
+   "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-usecase-wrap",
+   "bp": "390",
+   "file": "band-plate-390.png",
+   "grid": 4,
+   "quant": 8,
+   "tol": 10,
+   "band": {
+    "w": 374,
+    "h": 997
+   },
+   "paperRGB": [
+    247,
+    247,
+    241
+   ],
+   "masks": 35,
+   "bytes": 9335,
+   "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  }
+ ],
+ "mediaCrops": [
+  {
+   "seat": "home-usecase-wrap",
+   "bp": "1440",
+   "file": "usecase-media-1440.png",
+   "w": 724,
+   "h": 880,
+   "bytes": 10299,
+   "sha256": "cdada39878d1cb70",
+   "derivedFrom": "band-plate-1440.png (canvas 1424×880; media img sr x -10 w 734 over the 1427-wide band → crop x 0..724, full height)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-usecase-wrap",
+   "bp": "390",
+   "file": "usecase-media-390.png",
+   "w": 372,
+   "h": 254,
+   "bytes": 5451,
+   "sha256": "d48ba8fdab7b9814",
+   "derivedFrom": "band-plate-390.png (canvas 372×996; media strip sr y 210..464 of the 374×997 band → crop y 210..464, full width)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
   }
  ]
 }
