@@ -27,8 +27,8 @@ const REGISTER_WORDS = REGISTER.split(' ');
 const REGISTER_L1 = REGISTER_WORDS.slice(0, 2).join(' ') + ' ';
 const REGISTER_L2 = REGISTER_WORDS.slice(2).join(' ');
 
-/* The sketch band's authored line-art: ruled baselines, the three-step
- * registration path, the account mark — pure stroke work. */
+/* The sketch band's authored line-art: ruled baselines, the multi-tier
+ * structural elevation, column grids, and the account journey path — pure stroke work. */
 function SketchArt() {
   return (
     <svg
@@ -40,16 +40,63 @@ function SketchArt() {
       aria-label="رسم تخطيطي لمسار إنشاء الحساب الجامعي"
     >
       <g stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke">
-        <path d="M0 .5h713M0 385.5h713" />
+        {/* outer boundary datum rules */}
+        <path d="M0 .5h713M0 385.5h713" opacity=".7" />
         <path d="M.5 0v386M712.5 0v386" opacity=".35" />
-        <path d="M64 322c88-42 148-118 256-118s168 58 256 58" />
+
+        {/* architectural grid columns (1 through 6) */}
+        <path d="M118 24v330M236 24v330M354 24v330M472 24v330M590 24v330" opacity=".18" strokeDasharray="3 3" />
+
+        {/* datum levels & floor elevations */}
+        <path d="M64 84h585M64 168h585M64 252h585M64 336h585" opacity=".22" />
+
+        {/* foundation podium and plinth steps */}
+        <path d="M96 336h522v16H96z" opacity=".5" />
+        <path d="M128 352h458v8H128z" opacity=".3" />
+
+        {/* lower level: structural colonnade & entry bays */}
+        <path d="M148 252h418v84H148z" />
+        <path d="M178 252v84M208 252v84M338 252v84M376 252v84M506 252v84M536 252v84" opacity=".4" />
+        {/* central arch / portal */}
+        <path d="M338 336v-54a19 19 0 0 1 38 0v54" />
+
+        {/* middle tier: faculty bays & cross-braced drafting modules */}
+        <path d="M178 168h358v84H178z" />
+        <path d="M178 168l60 84M238 168l-60 84" opacity=".25" />
+        <path d="M296 168h122v84H296z" />
+        <path d="M312 186h90v48h-90z" opacity=".6" />
+        <path d="M476 168l60 84M536 168l-60 84" opacity=".25" />
+
+        {/* upper tier: clerestory gallery & cantilevered canopy */}
+        <path d="M208 104h298v64H208z" />
+        <path d="M188 104h338" strokeWidth="1.5" />
+        <path d="M236 104v64M276 104v64M316 104v64M356 104v64M396 104v64M436 104v64M476 104v64" opacity=".3" />
+
+        {/* roof truss & skylight pavilion */}
+        <path d="M268 64h178v40H268z" />
+        <path d="M268 64l89-28 89 28" strokeWidth="1.2" />
+        <path d="M357 36v68" opacity=".5" />
+        <path d="M268 64l89 40M446 64l-89 40" opacity=".2" />
+
+        {/* dimension witness lines and measurement annotations */}
+        <path d="M48 84v252M42 84h12M42 336h12" opacity=".4" />
+        <path d="M44 84l4 8M44 336l4-8" opacity=".6" />
+        <path d="M666 168v168M660 168h12M660 336h12" opacity=".4" />
+
+        {/* registration crosshairs at structural nodal points */}
+        <path d="M118 78v12M112 84h12" opacity=".6" />
+        <path d="M590 78v12M584 84h12" opacity=".6" />
+        <path d="M118 330v12M112 336h12" opacity=".6" />
+        <path d="M590 330v12M584 336h12" opacity=".6" />
+
+        {/* learning journey trajectory curve & account registration milestone nodes */}
+        <path d="M64 322c88-42 148-118 256-118s168 58 256 58" strokeWidth="1.5" />
         <circle cx="64" cy="322" r="10" />
+        <circle cx="64" cy="322" r="4" fill="currentColor" opacity=".5" />
+        <circle cx="320" cy="204" r="8" opacity=".8" />
         <circle cx="576" cy="262" r="10" />
-        <path d="M576 262l32-22-8 30M576 262l34 10" />
-        <path d="M118 64h176M118 64v44M294 64v44" />
-        <path d="M470 96h124M470 96l16 16M594 96l-16 16" />
-        <path d="M198 156h168v64H198z" />
-        <path d="M198 156l-14-10M366 220l14 10" />
+        <circle cx="576" cy="262" r="4" fill="currentColor" opacity=".5" />
+        <path d="M576 262l32-22-8 30M576 262l34 10" strokeWidth="1.2" />
       </g>
     </svg>
   );
@@ -98,15 +145,15 @@ export function Vision({ year }: { year: number }) {
               <div className="fo-cta-cell fo-cta-inner" data-spec="cta.title-mid">
                 <div className="fo-cta-copy" data-spec="cta.title-box">
                   <h2 className="fo-cta-title" data-spec="cta.title" data-mdrk-reveal="lines">
-                    جاهز لبدء <em>رحلتك</em>؟
+                    اكتشف ما يمكن لمدارك تحقيقه<br />
+                    <em>في مسيرتك الأكاديمية</em>
                   </h2>
                 </div>
                 <div className="fo-cta-lede-wrap" data-spec="cta.lede-wrap">
                   {/* T-10f: the instrument asserts tags — heron's lede seat is a
                       div (p margins are globally reset, so the swap is neutral). */}
                   <div className="fo-cta-lede" data-spec="cta.lede" data-mdrk-reveal="item">
-                    أنشئ حسابك الجامعي في دقائق — ببريدك الإلكتروني ورقم قيدك،
-                    وتابع تقدّمك.
+                    أنشئ حسابك الجامعي في دقائق برقم قيدك، وتابع تقدّمك.
                   </div>
                 </div>
                 <div className="fo-cta-actions" data-spec="cta.actions" data-mdrk-reveal="item" id="cta">
