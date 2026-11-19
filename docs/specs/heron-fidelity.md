@@ -64,8 +64,25 @@ The current stored E=56.7 and Q=85 are diagnostic only; the current T=100% is a 
 
 ## Acceptance criteria
 
+> **AMENDMENT (owner decision, 2026-11-19 — R369):** criterion 2's E gate is
+> REPLACED. E (SSIM vs the Heron page) is **diagnostic only**: the reference
+> renders English copy and Heron-owned artwork that our originality law
+> forbids copying, so E can never honestly reach ≥90 for Arabic content with
+> original art — a measured fact (wave-3: E 55.4 with structure verified
+> matching on multiple seats), not a target we can ratchet toward. E remains
+> recorded per seat as a regression signal (a seat's E dropping materially
+> between waves still demands investigation). The visual bar is now the
+> **paired-sheet judge rating**: per seat × primary breakpoint, a reviewer
+> rates the deterministic paired contact sheet (Heron | ours | overlay) 1–5
+> on composition, depth/material, colour/contrast, typography, spacing and
+> motion-where-captured; **≥ 4/5 passes**, every defect below 4 is listed
+> (seat → width → defect → target) and re-judged after each fix. Ratings
+> live in `docs/audit/evidence/judge-ledger.json`; `scripts/fidelity/accept.mjs`
+> reads the ledger and enforces the floor. No regression: an accepted seat
+> may not drop below 4 at re-judge without a recorded review decision.
+
 1. **Reference landing match:** on all five comparison widths, each of the ten targets has named, coordinate-valid reference and local states. T ≥95% overall and ≥90% for every target; 100% of confirmed reference trigger families are mapped and tested. If the public reference no longer exposes a reproducible state, document the exact limitation and use reviewed frozen measurements; do not score a mismatched crop as a pass.
-2. **Visual:** E ≥90 overall and ≥88 per target at each comparison width after valid alignment. No accepted target regresses >2 points without a recorded review decision. Inspect and sign off every comparison sheet.
+2. **Visual (amended 2026-11-19):** paired-sheet judge rating ≥4/5 for every seat × primary breakpoint, with defects listed for anything below 4 and re-judged after fixes; zero unintended overlap/clipping (stress/overlap detectors clean); geometry within the frozen tolerances; no accepted target regresses (judge rating or T) without a recorded review decision. E stays recorded per seat as a diagnostic regression signal — never a pass/fail gate. Inspect and sign off every comparison sheet.
 3. **Motion:** Q ≥90 overall and ≥85 per measured family; all verified triggers, easing/timing checkpoints and semantic order match within the scorecard tolerances. No claim for unmeasured Barba, cursor or touch values.
 4. **Whole-product responsive quality:** zero unintended overflow, clipping, overlap, unreachable primary action, or broken RTL layout across the 12 widths/orientations, foldable, 200% zoom, supported themes, reduced motion and 4× CPU. Authenticated role routes must be sampled for every role and page family, including empty/loading/error states.
 5. **Performance:** Lighthouse mobile ≥90 on `/` and representative public, auth and app routes; record LCP, CLS and INP. Landing scroll trace has no >50 ms LoAF and no dropped-frame regression against pinned production-build baseline. Record browser, hardware, throttling and build. Do not substitute development-server timings.
@@ -89,7 +106,7 @@ The current stored E=56.7 and Q=85 are diagnostic only; the current T=100% is a 
 
 ## Success test checklist
 
-- [ ] Valid paired capture/repeatability and section scorecard meet E/T/Q criteria.
+- [ ] Valid paired capture/repeatability and section scorecard meet the amended criteria (judge >=4/5 per seat x primary bp, T >=95%/>=90 per seat, Q on verified samples; E diagnostic).
 - [ ] Trigger, scroll, reveal, transition, pointer/touch and reduced-motion families are measured and pass or are explicitly unverified.
 - [ ] All listed viewports, role families and mobile screen families pass responsive and usability review.
 - [ ] Lighthouse, Web Vitals, accessibility, bundle and repository gates pass on the pinned environment.
