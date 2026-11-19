@@ -1,0 +1,100 @@
+{
+ "route": "/features",
+ "protocol": "Lighthouse 12.8.2 mobile preset (simulated 1.6Mbps/150ms RTT, 4x CPU), prod build + gzip static mirror on 127.0.0.1:5310 (the wave5 protocol), Chrome 148 headless (playwright chromium-1223), --disable-dev-shm-usage; 2 sequential runs per route on the shared box; run-to-run PERF variance measured +/-8 on this box (see the session history in the RESUME)",
+ "runs": [
+  {
+   "run": 1,
+   "performance": 81,
+   "accessibility": 100,
+   "best-practices": 100,
+   "seo": 100,
+   "first-contentful-paint": {
+    "displayValue": "2.7 s",
+    "numericValue": 2682
+   },
+   "largest-contentful-paint": {
+    "displayValue": "4.3 s",
+    "numericValue": 4260
+   },
+   "total-blocking-time": {
+    "displayValue": "90 ms",
+    "numericValue": 86
+   },
+   "cumulative-layout-shift": {
+    "displayValue": "0.019",
+    "numericValue": 0.019072
+   },
+   "speed-index": {
+    "displayValue": "2.7 s",
+    "numericValue": 2682
+   },
+   "interactive": {
+    "displayValue": "4.3 s",
+    "numericValue": 4260
+   },
+   "server-response-time": {
+    "displayValue": "Root document took 0 ms",
+    "numericValue": 0.374
+   },
+   "render-blocking-resources": {
+    "displayValue": "Est savings of 0 ms",
+    "numericValue": 0
+   },
+   "unused-javascript": {
+    "displayValue": "Est savings of 44 KiB",
+    "numericValue": 180
+   },
+   "total-byte-weight": {
+    "displayValue": "Total size was 513 KiB",
+    "numericValue": 524823
+   }
+  },
+  {
+   "run": 2,
+   "performance": 74,
+   "accessibility": 100,
+   "best-practices": 100,
+   "seo": 100,
+   "first-contentful-paint": {
+    "displayValue": "2.7 s",
+    "numericValue": 2671.028125
+   },
+   "largest-contentful-paint": {
+    "displayValue": "4.2 s",
+    "numericValue": 4200.078750000001
+   },
+   "total-blocking-time": {
+    "displayValue": "350 ms",
+    "numericValue": 349
+   },
+   "cumulative-layout-shift": {
+    "displayValue": "0.019",
+    "numericValue": 0.019072
+   },
+   "speed-index": {
+    "displayValue": "2.7 s",
+    "numericValue": 2671.028125
+   },
+   "interactive": {
+    "displayValue": "4.2 s",
+    "numericValue": 4200.078750000001
+   },
+   "server-response-time": {
+    "displayValue": "Root document took 0 ms",
+    "numericValue": 0.607
+   },
+   "render-blocking-resources": {
+    "displayValue": "Est savings of 0 ms",
+    "numericValue": 0
+   },
+   "unused-javascript": {
+    "displayValue": "Est savings of 44 KiB",
+    "numericValue": 150
+   },
+   "total-byte-weight": {
+    "displayValue": "Total size was 510 KiB",
+    "numericValue": 522352
+   }
+  }
+ ]
+}

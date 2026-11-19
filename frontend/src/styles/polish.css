@@ -887,6 +887,25 @@
     animation-delay: var(--gr-delay, 0ms);
   }
 
+  /* R369 C2.3 — the COLD-LOAD standing page. The R313 D11 sweep is the
+   * TRANSITION language (reveal sequenced after the cover's ~0.9s —
+   * GuestReveal's own doc). On a direct load there is no cover to
+   * sequence from, yet the clip-path inset(50%) start still gated the
+   * LCP behind ~0.7s of mask (the /help LCP measured 5.3s simulated,
+   * 89% render delay; /auth — outside this wrapper — measured 2.5s on
+   * the same build). data-cold is GuestReveal's one-line marker for
+   * "no in-flight cover"; the standing page renders open and the
+   * transition sweep keeps its full curve for real navigations. The
+   * traveling hairline (::after on .guest-reveal) rides the same
+   * gate — it exists to trace the reveal edge, and a cold load has
+   * no edge to trace. */
+  .guest-reveal-inner[data-cold='1'] {
+    animation: none;
+  }
+  .guest-reveal:has(> .guest-reveal-inner[data-cold='1'])::after {
+    display: none;
+  }
+
   /* the traveling hairline at the reveal edge — viewport-fixed (the
    sweep is a viewport phenomenon), transform-only (the motion gate
    forbids layout animation in keyframes).
