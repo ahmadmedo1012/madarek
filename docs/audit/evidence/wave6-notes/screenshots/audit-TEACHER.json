@@ -1,0 +1,61 @@
+{
+ "role": "TEACHER",
+ "url": "http://localhost:5306/",
+ "routes": {
+  "/teacher/dashboard": {
+   "390": {
+    "issues": []
+   },
+   "768": {
+    "issues": []
+   },
+   "1440": {
+    "issues": []
+   }
+  },
+  "/teacher/grades": {
+   "390": {
+    "issues": []
+   },
+   "768": {
+    "issues": []
+   },
+   "1440": {
+    "issues": []
+   }
+  },
+  "/teacher/assignments": {
+   "390": {
+    "issues": []
+   },
+   "768": {
+    "issues": []
+   },
+   "1440": {
+    "issues": []
+   }
+  },
+  "/teacher/intelligence": {
+   "390": {
+    "issues": []
+   },
+   "768": {
+    "issues": []
+   },
+   "1440": {
+    "issues": []
+   }
+  },
+  "/teacher/exams/tpl_e2e_quiz4": {
+   "390": {
+    "issues": []
+   },
+   "768": {
+    "issues": []
+   },
+   "1440": {
+    "issues": []
+   }
+  }
+ }
+}

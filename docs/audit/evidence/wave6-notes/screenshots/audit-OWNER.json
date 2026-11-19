@@ -1,0 +1,57 @@
+{
+ "generatedAt": "2026-11-19T09:22:43.779Z",
+ "url": "http://localhost:5306/",
+ "dark": true,
+ "routes": {
+  "/owner/dashboard": {
+   "1440:dark": {
+    "violations": []
+   },
+   "390:dark": {
+    "violations": []
+   }
+  },
+  "/owner/users": {
+   "1440:dark": {
+    "violations": []
+   },
+   "390:dark": {
+    "violations": []
+   }
+  },
+  "/owner/institutions/zu": {
+   "1440:dark": {
+    "violations": []
+   },
+   "390:dark": {
+    "violations": []
+   }
+  },
+  "/owner/system": {
+   "1440:dark": {
+    "violations": []
+   },
+   "390:dark": {
+    "violations": []
+   }
+  },
+  "/owner/alerts": {
+   "1440:dark": {
+    "violations": []
+   },
+   "390:dark": {
+    "violations": []
+   }
+  },
+  "/owner/feedback": {
+   "1440:dark": {
+    "violations": []
+   },
+   "390:dark": {
+    "violations": []
+   }
+  }
+ },
+ "gate": false,
+ "floor": 90
+}

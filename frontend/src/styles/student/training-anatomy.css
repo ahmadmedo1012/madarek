@@ -1,0 +1,385 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — student/training-anatomy.css (r368 · Task 6-a · wave 1)
+   ─────────────────────────────────────────────────────────────────────
+   THE r333 RESTORATION SHEET. The r333 batch-A sweep (ca5a5ad0) deleted
+   the training/achievements/gamification ANATOMY rules from the shared
+   training.css (and the .cp-* row helpers from components.css) as
+   "0-live-match" — but the sweep probed routes whose /training/me,
+   /training/me/badges, /training/leaderboard and /training/catalog
+   queries had NO fixtures, so the level band, the badge grid, the
+   leaderboard rows, the tier orb and the lesson reward banner rendered
+   NOTHING on the measured pages. The markup kept consuming the classes
+   (pages/student/{TrainingPages,MorePages,ProfilePage}.tsx), so every
+   data-state surface has been shipping unstyled since (VLM-verified
+   2026-06-24: /training level band = stacked bare text, no orb, no
+   bar; /achievements badges = plain list, no grid/tiles/wells).
+
+   training.css is a SHARED sheet (competitions/colleges import it too)
+   and sits outside this task's file ownership, so the restoration ships
+   as THIS new student-family sheet (task-owned: "NEW style files for
+   these families"), imported by the three student pages that consume
+   the grammar. Every rule below is the VERBATIM pre-r333 rule
+   (ca5a5ad0^ — tokens only, same cascade layer @layer pages, same
+   order); selectors that r333 KEPT in training.css (.leaderboard-rank
+   family, the .badge-tile-rarity earned/locked variants, .cert-row…)
+   are deliberately NOT repeated here (stylelint duplicate-selector
+   ratchet). Files: /home/z/t6a/training-full-before-1440.png +
+   achievements-full-before-1440.png are the before evidence;
+   *-after-*.png the after.
+
+   Cross-family note: pages/competitions + community also consume
+   .leaderboard-list/.cp-* and stay broken until their owner restores
+   or imports this sheet — recorded in docs/audit/evidence/wave6-notes/
+   NOTES.md (T5/wave-2 handoff), NOT fixed here (out of ownership).
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── §catalog — the my-summary level band ─────────────────────── */
+
+  .level-band {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    flex-wrap: wrap;
+  }
+  .level-band-main {
+    flex: 1;
+    min-inline-size: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+
+  /* ── §achievements — the badge grid ───────────────────────────── */
+
+  .badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: var(--sp-4);
+  }
+  @media (max-width: 640px) {
+    .badge-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--sp-3); }
+  }
+
+  .badge-tile {
+    --rarity: var(--gold);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--sp-2);
+    padding: var(--sp-5) var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    transition:
+      border-color var(--t-fast) var(--ease),
+      box-shadow var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
+  }
+  /* earned — full color + subtle lift */
+  @media (hover: hover) and (pointer: fine) {
+    .badge-tile.earned:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--rarity) 40%, var(--rule));
+      box-shadow: var(--shadow-card-h);
+    }
+  }
+  .badge-tile-icon {
+    inline-size: 56px;
+    block-size: 56px;
+    border-radius: var(--r-lg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .badge-tile.earned .badge-tile-icon {
+    background: color-mix(in srgb, var(--rarity) 14%, var(--surface));
+    /* mix the rarity hue toward the theme ink so both light pastels
+       and dark grounds keep ≥3:1 for the glyph */
+    color: color-mix(in srgb, var(--rarity) 60%, var(--text));
+    /* r313: hairline border, not an inset shadow ring. */
+    border: 1.5px solid color-mix(in srgb, var(--rarity) 30%, transparent);
+  }
+  .badge-tile.locked .badge-tile-icon {
+    background: transparent;
+    border: 1px dashed var(--border-strong);
+    color: var(--text-faint);
+  }
+
+  .badge-tile-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    line-height: 1.4;
+  }
+  /* locked — desaturated tile, ghost icon well (after the base rule:
+     stylelint no-descending-specificity) */
+  .badge-tile.locked .badge-tile-title { color: var(--text-muted); }
+  .badge-tile-desc {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+  }
+  .badge-tile-rarity {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--sp-0-5) var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 */
+    border-radius: var(--r-full);
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-semibold);
+  }
+
+  /* ── §achievements — the leaderboard rows ─────────────────────── */
+
+  .leaderboard-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .leaderboard-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--r-md);
+    transition: background var(--t-fast) var(--ease);
+    /* authored entrance — rows stagger in via --lb-i (capped in TSX
+       at --motion-stagger-cap) */
+    animation: madarek-lb-row-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
+    animation-delay: calc(var(--motion-stagger-step) * var(--lb-i, 0));
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .leaderboard-row:hover { background: var(--surface-2); }
+  }
+
+  .leaderboard-name {
+    flex: 1;
+    min-inline-size: 0;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .leaderboard-tier {
+    flex-shrink: 0;
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+    /* r313: tier codes are mono micro-labels (Latin digits). */
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .leaderboard-points {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--gold-ink);
+    /* r313: scores are mono micro-labels (Latin digits, tabular). */
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 640px) {
+    /* protect name + points on narrow screens */
+    .leaderboard-tier { display: none; }
+  }
+
+  /* ── §gamification — XP economy + achievement rows ────────────── */
+
+  /* XP bar — 23-b (A11 P2-10 — scaleX debt cleared): the fill paints at
+     full track width and the value rides transform: scaleX() (set
+     inline by the page), growing from the inline-start edge (right in
+     RTL via the [dir] override) — compositor-only, no per-frame
+     reflow (previously the same mechanism class as .progress-fill's
+     width transition). */
+  .xp-track {
+    display: block;
+    block-size: 10px;
+    background: var(--surface-3);
+    border-radius: var(--r-full);
+    overflow: clip;
+  }
+  .xp-fill {
+    display: block;
+    block-size: 100%;
+    inline-size: 100%;
+    border-radius: var(--r-full);
+    background: var(--gold);
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform var(--motion-duration-stat) var(--motion-ease-decelerate);
+  }
+  [dir="rtl"] .xp-fill { transform-origin: right center; }
+
+  /* Tier orb — level medallion. The tier hex rides on --tier-color
+     (set inline by TSX) and is only consumed through color-mix. */
+  .tier-orb {
+    --tier-color: var(--accent);
+    --tier-orb-size: 48px;
+    inline-size: var(--tier-orb-size);
+    block-size: var(--tier-orb-size);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: calc(var(--tier-orb-size) * 0.38);
+    font-weight: var(--fw-bold);
+    font-variant-numeric: tabular-nums;
+    background: color-mix(in srgb, var(--tier-color) 12%, var(--surface));
+    color: color-mix(in srgb, var(--tier-color) 60%, var(--text));
+    border: 2px solid color-mix(in srgb, var(--tier-color) 45%, var(--border));
+  }
+  .tier-orb.lg { --tier-orb-size: 72px; }
+  .tier-orb:where([data-empty]) {
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border-color: var(--border);
+  }
+
+  /* Achievement rows (GamificationPage "الإنجازات المحقّقة",
+     ProfilePage achievements) — same list-row grammar as the training
+     module: hairline row, gold icon well, tabular XP chip. */
+  .achievement {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+    /* r313: flat — no card shadow, no hover lift (the reference's
+       cards sit on hairlines; depth is the border step). */
+    transition: border-color var(--t-fast) var(--ease);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .achievement:hover {
+      border-color: var(--border-strong);
+    }
+  }
+  .achievement-icon {
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--r-md);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gold-soft);
+    color: var(--gold-ink);
+  }
+  .achievement-name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .achievement-desc {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+  }
+
+  /* Certificate icon well (AchievementsPage certificates tab). */
+  .cert-icon {
+    inline-size: 56px;
+    block-size: 56px;
+    border-radius: var(--r-md);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--cert-accent, var(--accent)) 12%, var(--surface));
+    color: color-mix(in srgb, var(--cert-accent, var(--accent)) 60%, var(--text));
+    /* r313: hairline border, not an inset shadow ring. */
+    border: 1px solid color-mix(in srgb, var(--cert-accent, var(--accent)) 22%, transparent);
+  }
+
+  /* ── §lesson-reward — completion feedback + badge-earned pulse ── */
+
+  .reward-feedback {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-5);
+    padding: var(--sp-4);
+    border-radius: var(--r-lg);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    animation: madarek-reward-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  .reward-feedback.ok {
+    background: var(--success-soft);
+    border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
+    color: var(--success-ink);
+  }
+  .reward-feedback.fail {
+    background: var(--danger-soft);
+    border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+    color: var(--danger-ink);
+  }
+  /* pills sit on the card surface inside the tinted banner so both
+     badge + point chips stay legible */
+  .reward-feedback .reward-pill {
+    background: var(--surface);
+    color: var(--success-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* THE authored moment — a one-shot scale + ring pulse on newly
+     earned badges only (the class renders exclusively on the reward
+     feedback of a fresh completion; no idle glow anywhere). */
+  .badge-pop {
+    animation: madarek-badge-earned var(--motion-duration-stat) var(--motion-ease-emphasized) both;
+    animation-delay: calc(var(--motion-stagger-step) * var(--badge-i, 0));
+  }
+
+  /* ── the quiet track-row helpers (r265/r266 rows language) ────── */
+
+  .cp-progress {
+    inline-size: 150px;
+  }
+  @media (max-width: 720px) {
+    .cp-progress { inline-size: 120px; }
+  }
+  .cp-meta-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .cp-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .cp-clamp1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ── Reduced-motion off-switches (guardrail #6 — the global token
+     belts already collapse the durations/delays; these kill the
+     keyframe animations outright so nothing loops or slides) ────── */
+  @media (prefers-reduced-motion: reduce) {
+    .badge-pop,
+    .reward-feedback,
+    .leaderboard-row {
+      animation: none;
+    }
+    .xp-fill { transition: none; }
+  }
+}

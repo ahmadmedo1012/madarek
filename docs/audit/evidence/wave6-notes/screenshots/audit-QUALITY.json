@@ -1,0 +1,49 @@
+{
+ "generatedAt": "2026-11-19T09:44:34.888Z",
+ "url": "http://localhost:5306/",
+ "dark": true,
+ "routes": {
+  "/quality/dashboard": {
+   "1440:dark": {
+    "violations": []
+   },
+   "390:dark": {
+    "violations": []
+   }
+  },
+  "/quality/professors": {
+   "1440:dark": {
+    "violations": []
+   },
+   "390:dark": {
+    "violations": []
+   }
+  },
+  "/quality/reports": {
+   "1440:dark": {
+    "violations": []
+   },
+   "390:dark": {
+    "violations": []
+   }
+  },
+  "/quality/exam-moderation": {
+   "1440:dark": {
+    "violations": []
+   },
+   "390:dark": {
+    "violations": []
+   }
+  },
+  "/quality/alerts": {
+   "1440:dark": {
+    "violations": []
+   },
+   "390:dark": {
+    "violations": []
+   }
+  }
+ },
+ "gate": false,
+ "floor": 90
+}
