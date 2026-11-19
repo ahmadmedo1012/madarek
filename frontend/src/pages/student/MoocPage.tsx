@@ -147,7 +147,7 @@ export default function MoocPage() {
     <PageFrame width="default">
       <PageHeader
         title="دورات خارجية"
-        description="التسجيل من موقع المنصّة."
+        description="التسجيل خارجيّ."
         actions={(
           /* R369 (C1 · the R342-08 header-CTA precedent): the phone
            * band hides the topbar «اسأل AI» ≤920 (D6) — the external
@@ -189,8 +189,8 @@ export default function MoocPage() {
         /* R319 (c3-S1): the empty catalog is the hatched EmptyCell —
            the sheet's reserved-but-empty region. */
         <EmptyCell
-          label="لا توجد دورات خارجية مرتبطة"
-          note="يربطها المسجّل العام بمقرّراتك."
+          label="لا دورات مرتبطة"
+          note="يربطها المسجّل بمقرّراتك."
         />
       ) : (
         <>
@@ -223,7 +223,7 @@ export default function MoocPage() {
             /* R319 (c3-S1): the no-hits search answer is the hatched
                EmptyCell — the sheet's reserved-but-empty region. */
             <EmptyCell
-              label="لا نتائج مطابقة للبحث"
+              label="لا نتائج"
               note="جرّب كلمة أقصر."
             />
           ) : (

@@ -204,7 +204,7 @@ export function PeopleDirectoryPage() {
             <select
               className="admin-students-input" value={studyType}
               onChange={(e) => { setStudyType(e.target.value); setPage(1); }}
-              aria-label="تصفية حسب وضع الدراسة"
+              aria-label="وضع الدراسة"
             >
               <option value="">كل الأوضاع</option>
               <option value="MORNING">{STUDY_TYPE_LABELS.MORNING}</option>
@@ -214,7 +214,7 @@ export function PeopleDirectoryPage() {
             <select
               className="admin-students-input" value={enrollmentStatus}
               onChange={(e) => { setEnrollmentStatus(e.target.value); setPage(1); }}
-              aria-label="تصفية حسب الحالة"
+              aria-label="الحالة"
             >
               <option value="">كل الحالات</option>
               <option value="ACTIVE">{ENROLLMENT_LABELS.ACTIVE}</option>
@@ -233,7 +233,7 @@ export function PeopleDirectoryPage() {
           <ErrorState error={directory.error} message="تعذّر التحميل" onRetry={() => directory.refetch()} />
         )}
         {directory.data && rows.length === 0 && (
-          <EmptyCell label="لا نتائج" note="عدّل البحث أو التصفية." />
+          <EmptyCell label="لا نتائج" note="عدّل البحث." />
         )}
         {directory.data && rows.length > 0 && (
           <div className="r349p-dir-list">
@@ -243,7 +243,7 @@ export function PeopleDirectoryPage() {
           </div>
         )}
         {meta && meta.totalPages > 1 && (
-          <nav className="admin-pagination" aria-label="تصفح الدليل">
+          <nav className="admin-pagination" aria-label="الدليل">
             <button type="button" className="btn ghost sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
               السابق
             </button>
@@ -396,7 +396,7 @@ function FieldEditorPanel() {
   if (defs.isError) {
     return (
       <Card>
-        <ErrorState error={defs.error} message="تعذّر تحميل الحقول" onRetry={() => defs.refetch()} />
+        <ErrorState error={defs.error} message="تعذّر التحميل" onRetry={() => defs.refetch()} />
       </Card>
     );
   }
@@ -443,7 +443,7 @@ function FieldEditorPanel() {
           )}
           {byEntity(entity).map((f) => (
             confirmDelete === f.id ? (
-              <div key={f.id} className="r349p-fe-row r349p-fe-row--danger" role="alertdialog" aria-label="تأكيد حذف الحقل">
+              <div key={f.id} className="r349p-fe-row r349p-fe-row--danger" role="alertdialog" aria-label="تأكيد الحذف">
                 <span className="text-xs">
                   حذف «{f.labelAr}» نهائيًا؟ القيم المخزّنة في ملفات الأعضاء تبقى بلا عنوان يعرضها.
                 </span>
@@ -598,8 +598,8 @@ function FieldForm({ initial, onDone }: { initial: Partial<FieldDefinition>; onD
         </button>
       </div>
       <div className="grid-2">
-        <FormField label="التسمية بالعربية" value={form.labelAr} onChange={set('labelAr')} />
-        <FormField label="التسمية باللاتينية" value={form.labelEn} onChange={set('labelEn')} dir="ltr" />
+        <FormField label="التسمية عربية" value={form.labelAr} onChange={set('labelAr')} />
+        <FormField label="التسمية لاتينية" value={form.labelEn} onChange={set('labelEn')} dir="ltr" />
         {!isEdit && (
         <FormField label="المفتاح" value={form.key} onChange={set('key')} dir="ltr" mono />
         )}
@@ -667,7 +667,7 @@ export function StudentFilePage() {
   if (person.isError || !person.data) {
     return (
       <PageFrame width="default">
-        <PageHeader title="ملف الطالب" description="خارج نطاق مؤسستك." />
+        <PageHeader title="ملف الطالب" description="خارج نطاق المؤسسة." />
         <Card>
           <ErrorState error={person.error ?? new Error('not found')} message="تعذّر الفتح" onRetry={() => person.refetch()} />
         </Card>
@@ -680,7 +680,7 @@ export function StudentFilePage() {
       <PageFrame width="default">
         <PageHeader title="الملف" description="ملف مدرّس." />
         <Card>
-          {p ? <TeacherFileBody person={p} /> : <EmptyCell label="غير موجود" note="خارج نطاقك أو محذوف." /> }
+          {p ? <TeacherFileBody person={p} /> : <EmptyCell label="غير موجود" note="خارج نطاقك." /> }
         </Card>
       </PageFrame>
     );
@@ -696,8 +696,8 @@ export function StudentFilePage() {
          * precedent) and gains the sector eyebrow the topbar kicker
          * cannot carry on a dynamic route. */
         index="08"
-        eyebrow="الشؤون الأكاديمية"
-        breadcrumbs={[{ label: 'دليل التواصل', to: '/admin/directory' }, { label: 'الملف' }]}
+        eyebrow="الأكاديمية"
+        breadcrumbs={[{ label: 'الدليل', to: '/admin/directory' }, { label: 'الملف' }]}
         actions={(
           /* R369 (C1 · D11 standing action): the record's ONE honest
            * next surface — the students console where the enrollment
@@ -805,7 +805,7 @@ function StudentFileTab({ p }: { p: StudentPerson }) {
 
   return (
     <section aria-label="الملف" className="r349p-data">
-      <SectionBar index="01" title="بيانات التوثيق" />
+      <SectionBar index="01" title="التوثيق" />
       <Card>
         <div className="grid-2">
           <FormField label="الاسم" value={form.nameAr} onChange={set('nameAr')} />
@@ -915,7 +915,7 @@ function CoursesTab({ userId }: { userId: string }) {
   if (q.isPending) return <Card><ListSkeleton rows={4} /></Card>;
   if (q.isError) return <Card><ErrorState error={q.error} message="تعذّر التحميل" onRetry={() => q.refetch()} /></Card>;
   const rows = q.data?.data ?? [];
-  if (rows.length === 0) return <Card><EmptyCell label="لا مقررات" note="غير مسجّل بعد." /></Card>;
+  if (rows.length === 0) return <Card><EmptyCell label="لا مقررات" note="غير مسجّل." /></Card>;
   return (
     <Card>
       <div className="r349p-dir-list">
@@ -1063,7 +1063,7 @@ function NotesTab({ id }: { id: string }) {
   if (q.isPending) return <Card><ListSkeleton rows={4} /></Card>;
   if (q.isError) return <Card><ErrorState error={q.error} message="تعذّر التحميل" onRetry={() => q.refetch()} /></Card>;
   if (!q.data?.length) {
-    return <Card><EmptyCell label="فارغ" note="لا لمسات بعد." /></Card>;
+    return <Card><EmptyCell label="فارغ" note="لا لمسات." /></Card>;
   }
   return (
     <Card>

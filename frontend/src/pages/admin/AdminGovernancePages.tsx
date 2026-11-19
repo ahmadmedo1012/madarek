@@ -363,7 +363,7 @@ export function AdminTeachersPage() {
             <Card>
               <ErrorState
                 error={roster.error}
-                message="تعذّر تحميل الأساتذة"
+                message="تعذّر التحميل"
                 onRetry={() => roster.refetch()}
               />
             </Card>
@@ -443,7 +443,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
         <EmptyState illustration="empty-list"
           icon={GraduationCap}
           title="بلا ملف"
-          description="لم يُستكمل بعد."
+          description="غير مستكمل"
         />
       </Card>
     );
@@ -1058,7 +1058,7 @@ export function AdminPermissionsPage() {
           * r299: «الدور الحالي» died — the header's meta line directly
           * above carries role + email; one owner per datum. */}
       <StatStrip
-        ariaLabel="حالة صلاحيات المستخدم"
+        ariaLabel="حالة الصلاحيات"
         cells={[
           { label: 'فعلية', value: formatNum(data.effective.length), trend: 'مفعّلة الآن' },
           { label: 'استثناءات', value: formatNum(data.overrides.length), trend: data.overrides.length > 0 ? 'يدويّ' : 'لا استثناءات' },
@@ -1084,8 +1084,8 @@ export function AdminPermissionsPage() {
           <AlertRow
             color="amber"
             icon={ShieldCheck}
-            title="لا تُعدَّل من هنا"
-            description="اطلب من غيرك تطبيقه (403)."
+            title="للعرض فقط"
+            description="طبّقه من غيرك (403)."
           />
         )}
 

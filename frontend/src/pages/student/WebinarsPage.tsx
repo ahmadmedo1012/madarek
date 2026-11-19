@@ -141,7 +141,7 @@ export default function WebinarsPage() {
           /* R319 (c3-S2): the hatched EmptyCell — the sheet's
              reserved-but-empty region (same copy, same one action). */
           <EmptyCell
-            label="لا توجد جلسات مباشرة مجدولة الآن"
+            label="لا جلسات مباشرة الآن"
             action={<Link to="/student/live" className="btn outline sm">زيارة صفحة البثّ</Link>}
           />
         ) : (

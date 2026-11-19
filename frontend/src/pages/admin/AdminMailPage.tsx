@@ -160,7 +160,7 @@ function ProviderStatusCard() {
       )}
       {!data.configured && (
         <p className="r350-e6-note">
-          لتشغيل الإرسال اضبط <code>MAIL_PROVIDER</code> و<code>MAIL_API_KEY</code> و<code>MAIL_FROM</code> — الدليل في <code>MAIL-SETUP-AR.md</code>. توثيق النطاق خطوة تخصّ المالك.
+          لتشغيل الإرسال اضبط <code>MAIL_PROVIDER</code> و<code>MAIL_API_KEY</code> و<code>MAIL_FROM</code> — الدليل في <code>MAIL-SETUP-AR.md</code>. توثيق النطاق للمالك.
         </p>
       )}
     </Card>
@@ -192,7 +192,7 @@ function DeliveryLogCard() {
       title="سجلّ التسليم"
       icon={Mail}
       actions={
-        <div className="filter-bar" role="group" aria-label="تصفية حسب الحالة">
+        <div className="filter-bar" role="group" aria-label="الحالة">
           {OUTBOX_STATUSES.map((s) => (
             <button
               key={s || 'all'}
