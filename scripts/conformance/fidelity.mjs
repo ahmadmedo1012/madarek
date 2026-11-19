@@ -554,7 +554,7 @@ async function sectionCrop(page, sel, path) {
 
 /** live reference text rects as preregistered masks, recorded before scoring */
 async function liveTextMasks(page, sel, clip) {
-  return page.evaluate(({ s, clip, grow }) => {
+  return page.evaluate(({ s, clip, grow, cw, ch }) => {
     const el = document.querySelector(s);
     if (!el) return [];
     const out = [];
@@ -567,14 +567,18 @@ async function liveTextMasks(page, sel, clip) {
           const y = r.top - clip.y - grow;
           const w = r.width + grow * 2;
           const h = r.height + grow * 2;
-          if (r.width > 4 && r.height > 4 && x + w > 0 && x < clip.w && y + h > 0 && y < clip.h) out.push({ x, y, w, h });
+          // R368 T3 instrument fix #3 — bound against the CAPTURE-time dims
+          // (CSS px). clip.w/h are the stored (≤480px policy) file dims, so
+          // bounding against them dropped most of the right/lower text and
+          // starved every non-entry mask set.
+          if (r.width > 4 && r.height > 4 && x + w > 0 && x < cw && y + h > 0 && y < ch) out.push({ x, y, w, h });
         }
         walk(child);
       }
     };
     walk(el);
     return out;
-  }, { s: sel, clip, grow: MASK_GROW }).catch(() => []);
+  }, { s: sel, clip, grow: MASK_GROW, cw: clip.captureW ?? clip.w, ch: clip.captureH ?? clip.h }).catch(() => []);
 }
 
 // ── REFERENCE side: the wheel-driven stage protocol ──────────────────────
@@ -1465,9 +1469,13 @@ for (const row of rows) {
     const h = Math.max(1, Math.min(refFull.height, locScaledH) - band);
     const ref = cropTop(refFull, refFull.width, h);
     const loc = cropTop(resample(locFull, refFull.width, locScaledH), refFull.width, h);
-    // the live-mask rects were recorded in the CAPTURE-time clip space — scale
-    // them onto the stored grid by the measured file ratio
-    const maskK = refFull.width / R.clip.w;
+    // the live-mask rects were recorded in the CAPTURE-time (CSS px) clip
+    // space — scale them onto the stored grid by the capture→stored ratio
+    // (R368 T3 instrument fix #3: clip.w/h are the stored dims, so using
+    // them as the divisor double-shrinks every mask by the storage scale)
+    const capW = R.clip.captureW ?? R.clip.w;
+    const capH = R.clip.captureH ?? R.clip.h;
+    const maskK = refFull.width / capW;
     let masks;
     if (st.id === "entry") {
       const fr = maskFractions(key, bp);
@@ -1476,9 +1484,9 @@ for (const row of rows) {
     } else {
       masks = (R.liveMaskRects ?? []).map((m) => ({
         x: m.x * maskK,
-        y: (m.y / R.clip.h) * h,
+        y: (m.y / capH) * h,
         w: m.w * maskK,
-        h: (m.h / R.clip.h) * h,
+        h: (m.h / capH) * h,
       }));
       rec.masks = { count: masks.length, source: "live reference text rects recorded at capture (before scoring), same tc policy" };
     }
