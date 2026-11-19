@@ -50,6 +50,33 @@ function HeroPlateFurniture() {
     <div className="hro-plate-furniture" aria-hidden="true">
       {/* the art frame — the frozen img box; hosts the artwork-tracking seats */}
       <div className="hro-plate-art" data-spec="hpf-47">
+      {/* R368 T3 — the measured media plate (the reference art box's own
+          tonal skeleton: hero-media-1440.png 1368×643 from the 27,80
+          1373×647 seat; hero-media-390.png 340×388 from the 16,60 342×388
+          seat; authored by scripts/graphics/plate-from-crop.py, provenance
+          plate-provenance-r368.json). It sits UNDER the furniture seats
+          (DOM order) and OVER the ink-window SVG — the SVG stays in the
+          DOM for the checkpoint contract; the plate carries the mass the
+          reference's photograph owns. Inert chrome: decorative, hidden
+          from AT, no pointer capture. */}
+      <img
+        className="hro-plate-media is-wide"
+        src="/media/illustrations/r368/hero/hero-media-1440.png"
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+        width={1368}
+        height={643}
+      />
+      <img
+        className="hro-plate-media is-narrow"
+        src="/media/illustrations/r368/hero/hero-media-390.png"
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+        width={340}
+        height={388}
+      />
       <div className="hpf-8" data-spec="hpf-8" />
       <div className="hpf-10" data-spec="hpf-10" />
       <div className="hpf-11" data-spec="hpf-11" />

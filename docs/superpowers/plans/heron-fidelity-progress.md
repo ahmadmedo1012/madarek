@@ -749,3 +749,31 @@ Hero is now the lowest seat: the reference art img sits at
 art's own mass — the band plate now exists for the seat
 (`r368/hero/band-plate-{1440,390}.png`, grid 6/4) and the media crops are
 cut from it (`hero-media-1440.png` 1368×643, `hero-media-390.png` 340×388).
+
+### Task 3 — the hero seat takes its measured media plate
+
+Hero was the lowest scored seat (46.5 in live-base2). The art frame was
+already aligned to the reference (ours [26,80,1388,647], reference
+[27,80,1373,647] at 1440; [24,59,342,387] vs [16,60,342,388] at 390), so
+the gap was the artwork's mass. The band plate (grid 6/4) supplies the
+media crop, which now renders inside the frozen `.hro-plate-art` frame
+over the ink-window SVG (the SVG stays mounted — the checkpoint and
+`.bp-svg` contracts are untouched; the plate is decorative and aria-hidden).
+Two breakpoint twins swap by display; the dark theme inverts the plate.
+
+Measured (scoped, `.r368-tmp/hero-a`, reference reused):
+
+| state | before | after |
+|---|---|---|
+| 1440 entry | 47.7 | **70.5** |
+| 1440 mid30 | 32.7 | **54.1** |
+| 1440 mid60 | 34.5 | **51.1** |
+| 390 entry | 54.7 | **58.4** |
+| 390 mid30 | 62.9 | 55.7 (regression — recorded) |
+| 390 mid60 | refused (mask share 0.7) | refused (same) |
+
+Seat E 46.5 → **58.0** (T 100 %, 5/6 scored — the 390 mid60 pair was
+already E-refused by the preregistered mask cap before this change; it is
+covered for T). The 390 mid30 −7.2 is the coarse plate's lower edge
+meeting the reference's dotted texture at that scroll state; the entry
+and 1440 states carry the gain (+22.8/+21.4/+16.6).

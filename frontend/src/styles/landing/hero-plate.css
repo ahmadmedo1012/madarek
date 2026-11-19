@@ -60,6 +60,28 @@
   inset-block-start: 3.24rem;
   inset-block-end: 3.12rem;
 }
+/* R368 T3 — the measured media plate (see HeroPlate.tsx): the reference
+ * art box's tonal skeleton, filling the frozen img frame edge to edge.
+ * z-index 0 + DOM order keeps it UNDER the furniture seats; the ink-window
+ * SVG stays mounted in .hro-plate-host (the checkpoint contract) beneath
+ * this plate. Two breakpoint twins, swapped by display — no JS. */
+.hro-plate-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.hro-plate-media.is-narrow { display: none; }
+@media (max-width: 767px) {
+  .hro-plate-media.is-wide { display: none; }
+  .hro-plate-media.is-narrow { display: block; }
+}
+/* the dark flip of the plate: the same paper/ink inversion the twin
+ * convention applies (roles/statement), geometry never moves */
+[data-theme="dark"] .hro-plate-media { filter: invert(1) hue-rotate(180deg); }
 .hro-bandhost { position: relative; block-size: 15.96rem; }
 
 /* the tablet band (768-991): the measured 885-wrap composition */
