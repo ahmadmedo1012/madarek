@@ -19,7 +19,7 @@ Plus the A-lane foundations: size gate fixed at the root (471 artifacts untracke
 
 ## CI on this branch — the green proof
 
-**ALL 15 CHECKS GREEN on `c09e8ea8`** — [Actions run 44529026075](https://github.com/ahmadmedo1012/madarek/actions/runs/44529026075) (2026-11-19, after the noise run-off below). The three reds on the first push of this tip (`4279ec88`, 12/15) and the follow-on noise:
+**ALL 15 CHECKS GREEN on the tip `a0413da0`** — [Actions run 44541028172](https://github.com/ahmadmedo1012/madarek/actions/runs/44541028172) (2026-11-19, first attempt; the identical all-green also held on `c09e8ea8`, [run 44529026075](https://github.com/ahmadmedo1012/madarek/actions/runs/44529026075)). The reds on the first push of this lineage (`4279ec88`, 12/15) and the follow-on noise:
 
 | Check | What happened | Closed by |
 | --- | --- | --- |
@@ -28,7 +28,7 @@ Plus the A-lane foundations: size gate fixed at the root (471 artifacts untracke
 | Surface drift | Ubuntu/azure mirror 503s killed `apt` before the scan ran — runner infra | nothing to fix; green on the next run unaided |
 | E2E (reruns 1–2) | r366-scroll-trace perf ratchets missed on **byte-identical runtime** — different surfaces each run (library@390/1440, dashboard@1440), the file's own documented noise signature; online-exams `y`-shift failed only on azure-hosted runners (mechanism open → REQUESTS-A-to-C R2) | ratchet pins recalibrated per the file's own law (max × 1.4, hard INP/CLS budgets untouched); run 3 green with AND without the recalibration |
 
-The rerun history is the noise proof: `dashboard@1440` failed run 2 after passing run 1 on the same tree; run 3 all green. The pin calibration commit rides above `c09e8ea8` so the next azure day doesn't re-block the lane.
+The rerun history is the noise proof: `dashboard@1440` failed run 2 after passing run 1 on the same tree; run 3 all green; run 4 churned two more surfaces (courses@1440 538/808 — joined the calibration per the same law — and the anti-flash spec's first-ever cold compile, fixed by pre-warming the chunk so the spec pins its own warm-path premise on any host; REQUESTS-A-to-C R1/R3). The tip's run 44541028172 went green on the first attempt with all of it in.
 
 ## Known-open (recorded, NOT base blockers)
 
