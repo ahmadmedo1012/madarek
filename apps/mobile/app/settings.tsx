@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Fingerprint from "lucide-react-native/icons/fingerprint-pattern";
 import Flag from "lucide-react-native/icons/flag";
@@ -6,7 +6,7 @@ import Hash from "lucide-react-native/icons/hash";
 import Moon from "lucide-react-native/icons/moon";
 import Mail from "lucide-react-native/icons/mail";
 import Vibrate from "lucide-react-native/icons/vibrate";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiWithCookieCapture, ApiError, get, put } from "@/api/client";
 import { useSession, ROLE_LABELS, POSITION_LABELS, RANK_LABELS } from "@/auth/session";
@@ -156,6 +156,29 @@ export default function Settings() {
       // Local preference still applies; server sync is best-effort.
     }
   };
+
+  /* R369 C3.1 — the capture-pipeline theme door: `madarek://settings?theme=dark`
+   * applies the preference on arrival. WHY an app-side door: the ui-screens
+   * capture flows could never drive the theme pill — maestro's tap on the
+   * Segmented's testID completes yet never fires the Pressable's onPress
+   * (three run generations of "dark" captures rendered light; the seg-tap
+   * was re-verified broken on the deterministic-flow run 44579053777 —
+   * the 02/03 before/after shots pixel-identical except the clock). A deep
+   * link is the one navigation mechanism the capture pipeline demonstrably
+   * owns. The door is idempotent (only fires when the param differs from
+   * the live preference — a user tapping the same theme just re-lands),
+   * rides the SAME applyTheme the pill uses (local set + best-effort
+   * server sync), and is guarded by a ref so re-renders can't loop. */
+  const themeParam = useLocalSearchParams<{ theme?: string }>().theme;
+  const appliedThemeParam = useRef<string | null>(null);
+  useEffect(() => {
+    const next = themeParam;
+    if (!next || (next !== "light" && next !== "dark" && next !== "system")) return;
+    if (appliedThemeParam.current === next) return;
+    appliedThemeParam.current = next;
+    if (next !== preference) void applyTheme(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [themeParam]);
 
   const changeNumerals = (next: string) => {
     haptics.selection();

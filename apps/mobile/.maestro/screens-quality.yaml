@@ -44,8 +44,7 @@ name: "R358 screens — quality"
       id: "settings-title"
     timeout: 30000
 - takeScreenshot: "screens/02-settings-before-theme"
-- tapOn:
-    id: "seg-__THEME__"
+- openLink: "madarek://settings?theme=__THEME__"
 # R362 — the applied-theme evidence: the settings screen re-renders in
 # the new theme instantly (zustand, no reload); this shot + the
 # before-shot are the pair a reviewer compares. The wait also proves
