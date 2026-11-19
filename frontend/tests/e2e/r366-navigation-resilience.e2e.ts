@@ -144,6 +144,18 @@ test('reduced-motion: the route fade collapses (≤ 100 ms) and the page stands 
 test('anti-flash: a cold chunk resolving < 150 ms never paints the skeleton', async ({ page }) => {
   const errors = await armErrorWatch(page);
   await page.setViewportSize({ width: 390, height: 844 });
+  /* R369 (integrator): pre-warm the chunk. The rule pinned here is the
+   * WARM-path one — a chunk that resolves < 150 ms must never flash the
+   * skeleton (AppShell's SKELETON_DELAY_MS). The Vite dev server
+   * compiles a route's chunk ON DEMAND at its first-ever visit, so the
+   * first navigation on a slow shared runner resolves > 150 ms and
+   * flashes the skeleton — violating the test's own premise ("on a
+   * warm localhost"), not the product. Warming first (a plain goto,
+   * then back to the dashboard) makes the measured navigation resolve
+   * from the loaded chunk on EVERY host; the assertion stays absolute:
+   * zero skeleton paints. */
+  await page.goto('/student/ai');
+  await expect(page.locator('h1')).toBeVisible({ timeout: 30000 });
   await page.goto('/student/dashboard');
   await expect(page.locator('h1')).toBeVisible({ timeout: 30000 });
 
@@ -165,9 +177,9 @@ test('anti-flash: a cold chunk resolving < 150 ms never paints the skeleton', as
   await expect(page).toHaveURL(/\/student\/ai$/);
   await expect(page.locator('h1')).toBeVisible({ timeout: 30000 });
   skeletonSeen = await page.evaluate(() => (window as unknown as { __skeletonSeen: boolean }).__skeletonSeen);
-  // the honest claim: on a warm localhost the chunk resolves < 150 ms, so
-  // NO skeleton may paint. (On a throttled repeat run, the skeleton MAY
-  // appear after ≥ 150 ms — this spec pins the warm-path rule.)
+  // the honest claim: with the chunk warm the resolve is < 150 ms on any
+  // host, so NO skeleton may paint. (A genuinely cold first compile may
+  // exceed the delay — that is the skeleton working as designed.)
   expect(skeletonSeen).toBe(false);
   expect(errors, errors.join('\n')).toHaveLength(0);
 });
