@@ -47,6 +47,11 @@ import '../../styles/colleges.css';
 // the d2 display title + the [01] gutter index (after colleges.css so the
 // bridge's unlayered rules land last in the chunk-shared CSS).
 import '../../styles/landing/inner.css';
+// R368 T5 — the colleges guest-mount sheet: the 2-channel CTA hover seat
+// for the guest join row / closing band + the guest mount's 8px phone
+// inset (the pages.mjs edge390 law). Scoped to this family's guest
+// surfaces only (colleges-guest.css header notes).
+import '../../styles/colleges-guest.css';
 import { formatDate } from '../../utils/numbers';
 
 interface CollegeListItem {
@@ -322,10 +327,15 @@ export function CollegesIndexPage() {
           scene-paint) يتقاعد مع اتجاه Superlist: الهرمية عبر السطوح
           لا عبر الطلاء. ضيف الزائر يبقى فوق الترويسة كإجراء صفحة. */}
       {/* R332 W10b — .inx-head: the page-opening hairline + d2 display
-          title + [01] gutter index (the inner-public sheet bridge). */}
+          title + [01] gutter index (the inner-public sheet bridge).
+          R368 T5 — the eyebrow: the honest registry classification
+          (whose colleges these are — the same classification the
+          detail hero carries), the pf-eyebrow grammar the family
+          sheets share. */}
       <div className="inx-head">
         <PageHeader
           title={COLLEGES_LABEL}
+          eyebrow="المؤسسة النموذجية"
           actions={isGuest ? <GuestJoinRow /> : undefined}
           index="01"
         />
@@ -648,11 +658,25 @@ export function CollegeDetailPage() {
           <div className="college-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={36} /></div>
         )}
         <div className="college-hero-titles">
-          <div className="college-hero-eyebrow">مؤسسة مدارك النموذجية · {c.city} · بيانات تجريبية</div>
+          {/* R368 T5 — the [01] mono gutter index joins the eyebrow (the
+              listing pages' .inx-head grammar: the numbered-sheet law the
+              family's public sheets carry; numeral index, aria-hidden). */}
+          <div className="college-hero-eyebrow">
+            <span className="college-hero-index font-mono" dir="ltr" aria-hidden="true">[01]</span>
+            {' '}مؤسسة مدارك النموذجية · {c.city} · بيانات تجريبية
+          </div>
           <h1 className="page-title college-hero-name">{c.name}</h1>
           {c.nameEn && <div className="college-hero-sub">{c.nameEn}</div>}
         </div>
       </SectionAccent>
+
+      {/* R368 T5 — the guest join row at the masthead: the same compact
+          funnel row the listing surfaces carry (r183's A12 census: a
+          guest who lands on a shared college link had NO auth path until
+          the closing band at the very end of the page — the same gap the
+          gallery had). Guest-only, same labels/destinations, nothing
+          else changes; the closing band keeps its seat at page end. */}
+      {isGuest && <GuestJoinRow />}
 
       {/* Stats strip — guests see only the real numbers (A8 P1-2
           ruling); authed roles keep the full four-stat line including
@@ -1029,10 +1053,13 @@ export function CollegesLeaderboardPage() {
       </Link>
       {/* G: ترويسة patterns — نفس عقد بقية العائلة (المجتمع/المسابقات/
           الكليات)؛ صفّ الانضمام للضيف في خانة الإجراءات التي كان يشغلها.
-          R332 W10b — .inx-head: نفس جسر ورقة الصفحة الداخلية. */}
+          R332 W10b — .inx-head: نفس جسر ورقة الصفحة الداخلية.
+          R368 T5 — the eyebrow: the same registry classification as the
+          gallery (whose competition this is). */}
       <div className="inx-head">
         <PageHeader
           title={LEADERBOARD_LABEL}
+          eyebrow="المؤسسة النموذجية"
           description="مقارنة بالمؤشّرات."
           actions={isGuest ? <GuestJoinRow /> : undefined}
           index="01"
@@ -1082,8 +1109,15 @@ export function CollegesLeaderboardPage() {
           <div className="leaderboard-table-wrap">
             {/* tbl-stack (A8 P2-5): collapses to labelled cards on phones
                 — the 720px min-width table used to scroll 398px sideways
-                at 390px. */}
-            <table className="leaderboard-table tbl-stack">
+                at 390px. R368 T5 sweep repair: the R362 restore of the
+                §TABLE ladder re-keyed rung 1 on `.table.tbl-stack`, so
+                this table (class `leaderboard-table tbl-stack`) silently
+                fell to rung 2 scroll on phones — measured 898px wide at
+                320/390 inside the wrap. Joining the `table` class (like
+                all 19 sibling consumers) restores the designed cards;
+                `.leaderboard-table`'s own rules keep winning on
+                specificity at desktop widths. */}
+            <table className="leaderboard-table table tbl-stack">
               <thead>
                 <tr>
                   <th scope="col" className="leaderboard-college">الكلّيّة</th>

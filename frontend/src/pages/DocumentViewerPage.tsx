@@ -290,6 +290,24 @@ export default function DocumentViewerPage() {
             {countAr(numPages, ['صفحة', 'صفحتان', 'صفحات', 'صفحة'])}
           </span>
         )}
+        {/* R368 T5 — the reader head joins the inner-public family grammar
+            (the numbered-sheet law): the [01] mono gutter index + the
+            pf-eyebrow classification + the standing ALWAYS-ON pair
+            (R342-11 measured seat) ride ONE trailing cluster — the
+            shell's floating CTA is desktop-only, so the phone band had NO
+            primary on this page (the notes FAB carries one hover channel
+            by design). One wrapping unit keeps the viewport-locked
+            reader's head height cost to a single line at every band
+            (pdf.css .doc-reader-head flex-wrap; the quiet back+title
+            contract keeps its lead seats). */}
+        <div className="pf-page-actions doc-reader-family">
+          <p className="pf-eyebrow doc-reader-eyebrow">
+            <span className="page-index" dir="ltr" aria-hidden="true">[01]</span>
+            قارئ المستندات
+          </p>
+          <Link to="/community" className="btn accent sm">المجتمع</Link>
+          <Link to="/colleges" className="btn ghost sm">الكليات</Link>
+        </div>
       </header>
 
       <div

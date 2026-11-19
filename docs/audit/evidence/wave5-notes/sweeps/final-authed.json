@@ -1,0 +1,231 @@
+{
+ "/community": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "tab",
+     "left": -34,
+     "right": 35,
+     "vw": 320
+    },
+    {
+     "cls": "tab",
+     "left": -128,
+     "right": -34,
+     "vw": 320
+    }
+   ]
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "tab",
+     "left": -58,
+     "right": 36,
+     "vw": 390
+    }
+   ]
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "tab",
+     "left": -58,
+     "right": 36,
+     "vw": 390
+    }
+   ]
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/competitions": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/competitions/comp01": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/vision": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/document/sample.pdf": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "CANVAS",
+     "left": 29,
+     "right": 327,
+     "vw": 320
+    }
+   ]
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ }
+}

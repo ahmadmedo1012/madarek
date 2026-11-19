@@ -1,0 +1,425 @@
+{
+ "/auth/verify-email": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/colleges": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "gallery-chip",
+     "left": -82,
+     "right": 11,
+     "vw": 320
+    },
+    {
+     "cls": "SPAN",
+     "left": -53,
+     "right": -2,
+     "vw": 320
+    },
+    {
+     "cls": "gallery-chip-count",
+     "left": -69,
+     "right": -61,
+     "vw": 320
+    }
+   ]
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "gallery-chip",
+     "left": -12,
+     "right": 81,
+     "vw": 390
+    }
+   ]
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "gallery-chip",
+     "left": -12,
+     "right": 81,
+     "vw": 390
+    }
+   ]
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/colleges/fac01": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/404": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/about": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/help": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/contact": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/app": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/legal/privacy": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/capabilities": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ }
+}

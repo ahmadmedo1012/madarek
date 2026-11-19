@@ -1,0 +1,3634 @@
+{
+ "generatedAt": "2026-11-19T05:15:56.351Z",
+ "url": "http://localhost:5305/",
+ "dark": false,
+ "routes": {
+  "/auth": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 79,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 4
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 79
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تسجيل الدخول"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99.6,
+    "axes": {
+     "typeRungs": {
+      "score": 97.46835443037975,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 16.4733,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "البريد الإلكتروني أو رقم"
+       },
+       {
+        "fs": 16.4733,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "كلمة المرور"
+       }
+      ],
+      "total": 79,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 4
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 79
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تسجيل الدخول"
+     }
+    }
+   }
+  },
+  "/auth/register": {
+   "1440:light": {
+    "score": 99.1,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 18,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 94.44444444444444,
+      "fails": [
+       {
+        "text": "1",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 18
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجّل الدخول"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99.1,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 18,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 94.44444444444444,
+      "fails": [
+       {
+        "text": "1",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 18
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجّل الدخول"
+     }
+    }
+   }
+  },
+  "/auth/forgot-password": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 14,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 5
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 14
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إرسال رابط الاستعادة"
+     }
+    }
+   },
+   "390:light": {
+    "score": 98.8,
+    "axes": {
+     "typeRungs": {
+      "score": 92.85714285714286,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 16.4733,
+        "ff": "\"IBM Plex Sans Arabic\", \"IBM Plex Sans A",
+        "text": "البريد الإلكتروني"
+       }
+      ],
+      "total": 14,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 5
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 14
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إرسال رابط الاستعادة"
+     }
+    }
+   }
+  },
+  "/auth/reset-password": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 12,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 12
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اطلب رابطًا جديدًا"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 12,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 12
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اطلب رابطًا جديدًا"
+     }
+    }
+   }
+  },
+  "/auth/verify-email": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 14,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 14
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "العودة إلى تسجيل الد"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 14,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 14
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "العودة إلى تسجيل الد"
+     }
+    }
+   }
+  },
+  "/capabilities": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 49,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 49
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المسابقات"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 49,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 49
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المسابقات"
+     }
+    }
+   }
+  },
+  "/about": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 27,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 10
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 27
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ القدرات"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 27,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 10
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 27
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ القدرات"
+     }
+    }
+   }
+  },
+  "/help": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 55,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 55
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ القدرات"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 55,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 55
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "سجلّ القدرات"
+     }
+    }
+   }
+  },
+  "/contact": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 25,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 25
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 25,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 25
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   }
+  },
+  "/app": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 39,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 14
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 39
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تنزيل لأندرويد"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 39,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 14
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 39
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تنزيل لأندرويد"
+     }
+    }
+   }
+  },
+  "/legal/privacy": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 64,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 64
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 64,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 64
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   }
+  },
+  "/legal/terms": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 34,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 34
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 34,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 34
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   }
+  },
+  "/legal/cookies": {
+   "1440:light": {
+    "score": 96.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 76,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": false
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 76
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   },
+   "390:light": {
+    "score": 96.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 72,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": false
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 72
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   }
+  },
+  "/legal/accessibility": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 31,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 31
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 31,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 31
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   }
+  },
+  "/legal/security": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 38,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 38
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 38,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 38
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   }
+  },
+  "/legal/data": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 29,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 29
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 29,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 29
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "قناة التواصل"
+     }
+    }
+   }
+  },
+  "/colleges": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 275,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 5
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 274
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "أنشئ حسابك الجامعي"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 275,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 5
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 274
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "أنشئ حسابك الجامعي"
+     }
+    }
+   }
+  },
+  "/colleges/leaderboard": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 222,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 222
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "أنشئ حسابك الجامعي"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 222,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 222
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "أنشئ حسابك الجامعي"
+     }
+    }
+   }
+  },
+  "/colleges/fac01": {
+   "1440:light": {
+    "score": 99.8,
+    "axes": {
+     "typeRungs": {
+      "score": 98.91304347826086,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 14,
+        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
+        "text": "أد"
+       }
+      ],
+      "total": 92,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 15
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 90
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "أنشئ حسابك الجامعي"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 92,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 15
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 90
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "أنشئ حسابك الجامعي"
+     }
+    }
+   }
+  },
+  "/404": {
+   "1440:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 9,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 9
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 3,
+      "label": "العودة للرئيسية"
+     }
+    }
+   },
+   "390:light": {
+    "score": 100,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 9,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 9
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 3,
+      "label": "العودة للرئيسية"
+     }
+    }
+   }
+  },
+  "/403": {
+   "1440:light": {
+    "score": 96.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 8,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 8
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 3,
+      "label": "العودة إلى الرئيسية"
+     }
+    }
+   },
+   "390:light": {
+    "score": 96.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 8,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 8
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 3,
+      "label": "العودة إلى الرئيسية"
+     }
+    }
+   }
+  },
+  "/500": {
+   "1440:light": {
+    "score": 96.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 7,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 7
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 3,
+      "label": "العودة إلى الرئيسية"
+     }
+    }
+   },
+   "390:light": {
+    "score": 96.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 7,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 7
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 3,
+      "label": "العودة إلى الرئيسية"
+     }
+    }
+   }
+  },
+  "/maintenance": {
+   "1440:light": {
+    "score": 96.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 7,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       46.6667,
+       40,
+       33.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       46.6667,
+       53.3333,
+       13.3333,
+       60,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       46.6667,
+       40,
+       23.3333,
+       33.3333,
+       28,
+       20,
+       16
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 7
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 3,
+      "label": "العودة إلى الرئيسية"
+     }
+    }
+   },
+   "390:light": {
+    "score": 96.7,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 7,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       55.5725,
+       47.6336,
+       39.6947,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       55.5725,
+       63.5115,
+       15.8779,
+       71.4504,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       31.74,
+       31.74,
+       23.33,
+       22.1,
+       24,
+       18,
+       19.0534
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 80,
+      "paper": true,
+      "hairline": true,
+      "numeral": false,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 7
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 3,
+      "label": "العودة إلى الرئيسية"
+     }
+    }
+   }
+  }
+ },
+ "gate": false,
+ "floor": 90
+}
