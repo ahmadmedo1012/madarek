@@ -1072,3 +1072,38 @@ Scoped re-capture (`.r368-tmp/why-a`, both sides fresh, 1440): reference height
 mid30 71.4 · mid60 69.7 (was 74.0 / 74.3 / 63.9) — the protocol now compares
 matched internal progress; the remaining why gap is content/tonal (our 4-row
 track vs the reference's OBSERVE→ADVISE pinned stages), carried to the seat loop.
+
+## T8 — the landing copy reduction, measured and landed
+
+The T8-a baseline artifact (merged from wip/r368-t8) pinned **1 398 Arabic visible
+words** over the landing source surface (inclusion law in
+`scripts/gates/landing-copy-baseline.mjs`; determinism verified byte-identical).
+The lead applied the full proposal on `exec/r368-fidelity-v2` @ `54cedd00`:
+
+- **Category A (rendered cuts, 56 edits)** and **Category B (source dedup)** both
+  applied: the Statement lines are now DERIVED from the single `STATEMENT_TEXT`
+  by numeric word counts (`STATEMENT_LINE_COUNTS` — the scrub census reads only
+  per-line counts; the 28-word duplicate string set is gone, 8 line boxes kept);
+  the Roles deck art shares ONE alt constant. Ruling recorded: the plan's own
+  Task-8 language ("remove duplicate claims, filler and repeated labels") covers
+  category B against the pinned source-based metric. Reserve B6 applied as
+  buffer. The r168b-pinned finding-5 assistant text kept VERBATIM; every other
+  test pin verified.
+- **Measured after: 1 115 ≤ 1 118** (the −20 % bar, floor(1398×0.8)) —
+  **−283 words = 20.24 %**.
+- Gates re-run on the exact tree: pinned-string suites **218/218 green**
+  (funnel, r168b truthfulness, legal-pages, r170d a11y, r306 sheet, r307 media,
+  r308 interaction, r312 ×2, r177 brand, scrollspy), `npm run typecheck` green
+  (both workspaces + tests), `copy-budget` CLEAN, `stylelint-gate` ratchet
+  green. Remaining for T8 close at T10: the e2e journey suites + full vitest
+  pass on the integration tree.
+
+### Process lesson (recorded, not repeated)
+
+The first wave-3 full matrix run was CONTAMINATED: the lead edited landing copy
+while the capture was in flight — vite HMR reset reveal state machines mid-crop
+and the local side collapsed (cta entry 16.9, footer 9.7). Law: never edit the
+served tree while the instrument captures. The run's REFERENCE side is valid
+(live capture, settled-height protocol, unaffected by local edits); the local
+side was re-captured clean with `--reuse-reference` on the stable committed
+tree. The contaminated numbers are not cited anywhere as scores.
