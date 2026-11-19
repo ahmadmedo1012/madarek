@@ -78,7 +78,7 @@ bash scripts/gates/size-gate.sh    # file ≤500KB · docs ≤30MB · push adds 
 bash scripts/gates/pre-push-guard.sh   # the same gate against the remote tip (git hook:
                                         #   git config core.hooksPath .githooks)
 node scripts/gates/copy-budget.mjs [--style enforce]   # per-page Arabic ratchet
-node scripts/r321/rename-ledger-scan.mjs               # «الإدارة» terminology law
+node scripts/r321/rename-ledger-scan.mjs               # the role-terminology law (r321)
 node scripts/qa/identity-guard.mjs                     # the ONE mark + banned names
 bash scripts/deadcode/check.sh [--update]              # knip+jscpd+depcruise ratchet
 ```
