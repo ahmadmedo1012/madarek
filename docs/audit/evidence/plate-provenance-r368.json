@@ -125,6 +125,48 @@
    "bytes": 6010,
    "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
    "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-platform-wrap",
+   "bp": "1440",
+   "file": "band-plate-1440.png",
+   "grid": 8,
+   "quant": 8,
+   "tol": 10,
+   "band": {
+    "w": 1427,
+    "h": 710
+   },
+   "paperRGB": [
+    246,
+    246,
+    239
+   ],
+   "masks": 10,
+   "bytes": 8417,
+   "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-platform-wrap",
+   "bp": "390",
+   "file": "band-plate-390.png",
+   "grid": 4,
+   "quant": 8,
+   "tol": 10,
+   "band": {
+    "w": 374,
+    "h": 969
+   },
+   "paperRGB": [
+    248,
+    248,
+    241
+   ],
+   "masks": 32,
+   "bytes": 7955,
+   "sources": "docs/audit/evidence/primary/reference (committed paired crops)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
   }
  ],
  "mediaCrops": [
@@ -174,6 +216,54 @@
    "bytes": 3755,
    "sha256": "49e4bfdec7d8170d",
    "derivedFrom": "band-plate-390.png (canvas 372×828; art img sr 16,60 342×388 over the 374×828 band → crop 16,60..356,448)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-platform-wrap",
+   "bp": "1440",
+   "file": "platform-media-1440-a.png",
+   "dir": "platform",
+   "w": 598,
+   "h": 351,
+   "bytes": 2687,
+   "sha256": "4dcda431ac852e7a",
+   "derivedFrom": "band-plate-1440.png (canvas 1424×704; reference img sr 362,1 599×354 over the 1427×710 band → crop 362,1..961,355)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-platform-wrap",
+   "bp": "1440",
+   "file": "platform-media-1440-b.png",
+   "dir": "platform",
+   "w": 598,
+   "h": 351,
+   "bytes": 2371,
+   "sha256": "a4f7dd7578c835eb",
+   "derivedFrom": "band-plate-1440.png (reference img sr 362,356 599×354 → crop 362,356..961,710)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-platform-wrap",
+   "bp": "390",
+   "file": "platform-media-390-a.png",
+   "dir": "platform",
+   "w": 372,
+   "h": 226,
+   "bytes": 2879,
+   "sha256": "2de2c53d6b5ec50e",
+   "derivedFrom": "band-plate-390.png (canvas 372×968; reference img sr 0,0 374×226 → crop 0,0..374,226)",
+   "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
+  },
+  {
+   "seat": "home-platform-wrap",
+   "bp": "390",
+   "file": "platform-media-390-b.png",
+   "dir": "platform",
+   "w": 372,
+   "h": 225,
+   "bytes": 3077,
+   "sha256": "743f00280e2fa4d9",
+   "derivedFrom": "band-plate-390.png (reference img sr 0,474 374×226 → crop 0,474..374,700)",
    "law": "authored from measured per-cell mean-RGB statistics; text flattened to paper; no reference pixel copied"
   }
  ]

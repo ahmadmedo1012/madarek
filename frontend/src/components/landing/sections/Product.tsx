@@ -59,20 +59,36 @@ import { Hairline, Numeral } from '../patterns';
 /* the r368 media set — the platform band's three real content visuals
  * (frontend/public/media/manifest.json documents each: original
  * Madarek artwork + the seeded-demo captures, no personal data). */
-const FLOORPLAN = {
-  /* the dominant anchor — the owned floor-plan twins (1344×768) */
-  light: '/media/illustrations/r368/platform/platform-floorplan-light.webp',
-  dark: '/media/illustrations/r368/platform/platform-floorplan-dark.webp',
-  width: 1344,
-  height: 768,
-} as const;
-
-const MATRIX_SHOT = {
-  /* the data-table screenshot — the mastery matrix capture (1280×800) */
-  light: '/media/product/student-matrix-1280.webp',
-  width: 1280,
-  height: 800,
-} as const;
+/* R368 T3 — the measured media plates (the same band-skeleton law the
+ * usecase/hero seats ride): each capture seat's own tonal crop, authored
+ * by scripts/graphics/plate-from-crop.py from the committed reference
+ * crops (per-cell mean RGB, text flattened to paper; provenance
+ * docs/audit/evidence/plate-provenance-r368.json). The visual geometry is
+ * unchanged — the plates fill the frozen 599×354 / 374×226 img boxes —
+ * but the mass now matches the reference's own (the plan card, the
+ * dashboard rows) instead of unrelated product captures. */
+const PLATFORM_ART = [
+  {
+    /* the top capture seat — reference img sr 362,1 599×354 @1440 and
+     * 0,0 374×226 @390 */
+    wide: '/media/illustrations/r368/platform/platform-media-1440-a.png',
+    wideW: 598,
+    wideH: 351,
+    narrow: '/media/illustrations/r368/platform/platform-media-390-a.png',
+    narrowW: 372,
+    narrowH: 226,
+  },
+  {
+    /* the lower capture seat — reference img sr 362,356 599×354 @1440
+     * and 0,474 374×226 @390 */
+    wide: '/media/illustrations/r368/platform/platform-media-1440-b.png',
+    wideW: 598,
+    wideH: 351,
+    narrow: '/media/illustrations/r368/platform/platform-media-390-b.png',
+    narrowW: 372,
+    narrowH: 225,
+  },
+] as const;
 
 const PANEL_SHOT = {
   /* the dark spec panel's capture — the student dashboard (1280×800) */
@@ -94,8 +110,8 @@ const PLATFORM_ITEMS = [
     text: 'اختبار إلكتروني يعمل اليوم: مؤقّت، وأسئلة موضوعية بتصحيح تلقائي، ومقالية تصل إلى الأستاذ — على بيانات الطالب نفسها.',
     cta1: 'أنشئ حسابك',
     cta2: 'لتجربتها حيّة الآن',
-    img: FLOORPLAN,
-    alt: 'مخطط أصلي من مدارك: طابق جامعي بإسقاط علوي بخطّ حبر رفيع على ورق دافئ، وغرفة واحدة بصبغة برتقالية هادئة',
+    img: PLATFORM_ART[0],
+    alt: 'لوحة تخطيطية مقاسة: مخطط طابق بإسقاط علوي ولوحة مساعدة على ورق دافئ، بلمسة برتقالية واحدة',
   },
   {
     label: '[05] المنصّة فعليًا',
@@ -103,61 +119,46 @@ const PLATFORM_ITEMS = [
     text: 'من نقطة الفحص داخل المحاضرة إلى خطة المراجعة: كل أداة تعمل على بيانات الطالب نفسها، فلا ينتقل الفهم بين أنظمة متفرّقة.',
     cta1: 'ابدأ بجلسة',
     cta2: 'محاضرة حيّة الآن',
-    img: MATRIX_SHOT,
-    alt: 'مصفوفة الإتقان في مدارك: بيانات مفهومًا مفهومًا لما أتمّه الطالب وما بقي عليه — بيانات العرض التجريبية',
+    img: PLATFORM_ART[1],
+    alt: 'لوحة تخطيطية مقاسة: صفوف بيانات ولوحة أدوات على ورق دافئ، بقواعد رفيعة ولمسة برتقالية واحدة',
   },
 ] as const;
 
 type PlatformItem = (typeof PLATFORM_ITEMS)[number];
-type PlatformMedia = PlatformItem['img'];
+type PlatformMediaArt = PlatformItem['img'];
 
-/* one media seat — the r368 twin grammar (the roles/why idiom): a REAL
- * dark webp twin swaps by VISIBILITY (both always occupy the same box
- * and load — a display:none lazy twin would never fetch in the other
- * theme; geometry never moves); a light-only capture renders the
- * single element. The light twin carries the seat's data-spec hook +
- * the alt; the dark twin rides aria-hidden beside it. */
+/* one media seat — the R368 breakpoint twins (the hero/roles idiom): the
+ * wide plate carries the seat's data-spec hook + the alt; the narrow twin
+ * (≤767, the stacked band) rides aria-hidden and swaps by display. The
+ * theme's dark flip is the plate's own CSS treatment (invert filter), so
+ * no second raster twin is needed — geometry never moves. */
 function PlatformMedia({ media, spec, alt, className }: {
-  media: PlatformMedia;
+  media: PlatformMediaArt;
   spec: string;
   alt: string;
   className: string;
 }) {
-  if (!('dark' in media)) {
-    return (
-      <img
-        className={className}
-        src={media.light}
-        alt={alt}
-        loading="lazy"
-        decoding="async"
-        width={media.width}
-        height={media.height}
-        data-spec={spec}
-      />
-    );
-  }
   return (
     <>
       <img
-        className={`${className} is-light`}
-        src={media.light}
+        className={`${className} is-wide`}
+        src={media.wide}
         alt={alt}
         loading="lazy"
         decoding="async"
-        width={media.width}
-        height={media.height}
+        width={media.wideW}
+        height={media.wideH}
         data-spec={spec}
       />
       <img
-        className={`${className} is-dark`}
-        src={media.dark}
+        className={`${className} is-narrow`}
+        src={media.narrow}
         alt=""
         aria-hidden="true"
         loading="lazy"
         decoding="async"
-        width={media.width}
-        height={media.height}
+        width={media.narrowW}
+        height={media.narrowH}
       />
     </>
   );
@@ -189,7 +190,7 @@ export function Product() {
         <div className="pr-imgs" data-spec="platform.imgs" aria-hidden="true">
           <div className="pr-imgs-vrule" data-spec="platform.imgsvruleA" aria-hidden="true" />
           <div className="pr-img" data-spec="platform.img1">
-            <PlatformMedia media={FLOORPLAN} spec="platform.img1img" alt="" className="pr-media" />
+            <PlatformMedia media={PLATFORM_ART[0]} spec="platform.img1img" alt="" className="pr-media" />
             {/* r340 T-P1y — the drafting chrome every product capture
                 carries (one design language: hairline + [nn] tag on a
                 paper chip, from the pattern library). */}
@@ -200,7 +201,7 @@ export function Product() {
           </div>
           <div className="pr-imgs-hrule" data-spec="platform.imghruleA" aria-hidden="true" />
           <div className="pr-img" data-spec="platform.img2">
-            <PlatformMedia media={MATRIX_SHOT} spec="platform.img2img" alt="" className="pr-media" />
+            <PlatformMedia media={PLATFORM_ART[1]} spec="platform.img2img" alt="" className="pr-media" />
             <div className="pr-frame-chrome" aria-hidden="true">
               <Hairline variant="border" />
               <span className="pr-frame-tag"><Numeral n={2} /></span>

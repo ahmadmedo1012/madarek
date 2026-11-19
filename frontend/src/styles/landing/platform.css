@@ -368,6 +368,17 @@ html[data-theme='dark'] .pr-section .pr-menu-shot {
 html[data-theme='dark'] .pr-section .pr-media.is-light { visibility: hidden; }
 html[data-theme='dark'] .pr-section .pr-media.is-dark { visibility: visible; }
 
+/* R368 T3 — the measured-plate breakpoint twins (see Product.tsx): the
+ * wide capture fills the ≥768 seats, the narrow strip the ≤767 fold.
+ * The plates carry no light/dark raster twins — the dark theme applies
+ * the established capture treatment (the pr-menu-shot idiom) to the one
+ * raster; both grid-stack in the same cell (display swap only). */
+.pr-section .pr-media.is-narrow { display: none; }
+@media (max-width: 767px) {
+  .pr-section .pr-media.is-wide { display: none; }
+  .pr-section .pr-media.is-narrow { display: block; }
+}
+
 .pr-section .pr-rowimg-rule {
   position: absolute;
   inset-block: 0;
@@ -411,6 +422,9 @@ html[data-theme='dark'] .pr-section .pr-media.is-dark { visibility: visible; }
 .pr-section .pr-img .pr-media {
   block-size: 100%;
 }
+/* R368 T3 — the plate's dark flip (the pr-menu-shot capture treatment;
+ * placed after the size rules so the specificity ladder stays ordered) */
+html[data-theme='dark'] .pr-section .pr-media { filter: invert(1) hue-rotate(180deg); }
 
 /* ── ≥992 — the measured 3-col row grid, UN-MIRRORED ─────────────── */
 @media (min-width: 992px) {

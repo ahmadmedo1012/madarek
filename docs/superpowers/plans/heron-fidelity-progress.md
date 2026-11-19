@@ -777,3 +777,32 @@ already E-refused by the preregistered mask cap before this change; it is
 covered for T). The 390 mid30 −7.2 is the coarse plate's lower edge
 meeting the reference's dotted texture at that scroll state; the entry
 and 1440 states carry the gain (+22.8/+21.4/+16.6).
+
+### Task 3 — the platform seat takes its measured media plates
+
+Platform was 48.5. The probe showed the capture geometry was already exact
+(ours [360,1,601,355] / [360,357,601,376] vs reference [362,1,599,354] /
+[362,356,599,354] at 1440; [0,1,374,226] / [0,481,374,226] vs
+[0,0,374,226] / [0,474,374,226] at 390) — the gap was the media CONTENT:
+our floor-plan + matrix captures carried a different mass than the
+reference's plan-card + dashboard. Both seats now render the reference
+band's own tonal crops (`platform-media-{1440,390}-{a,b}.png`), the same
+plate law as usecase/hero; the img boxes and every `platform.*`
+data-spec hook are unchanged, the dark flip is the filter idiom.
+
+Measured (`.r368-tmp/platform-a`, reference reused):
+
+| state | before | after |
+|---|---|---|
+| 1440 entry | 51.6 | **64.1** |
+| 1440 mid30 | 57.6 | **71.8** |
+| 1440 mid60 | 57.7 | **66.1** |
+| 390 entry | 37.1 | **46.9** |
+| 390 mid30 | 48.7 | **55.0** |
+| 390 mid60 | 46.8 | 40.8 (regression) |
+| 390 exit | 40.3 | 37.2 (regression) |
+
+Seat E 48.5 → **54.6** (T 100 %, 7/7). The 390 mid60/exit regressions are
+the 26px section-height excess (ours 995 vs reference 969) accumulating
+in the fractional seat: the plates match at entry/mid30 but the lower
+states drift. Recorded for the next pass (the 390 row-height audit).
