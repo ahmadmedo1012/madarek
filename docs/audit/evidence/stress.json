@@ -1,9 +1,9 @@
 {
- "generatedAt": "2026-11-19T17:44:52.460Z",
- "url": "http://localhost:5330",
+ "generatedAt": "2026-11-19T18:55:06.943Z",
+ "url": "http://localhost:5369",
  "profile": {
-  "browser": "chromium 143.0.7499.4",
-  "node": "v24.22.3"
+  "browser": "chromium 156.0.8078.4",
+  "node": "v26.13.1"
  },
  "sizes": {
   "320": {
