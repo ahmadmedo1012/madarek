@@ -1,0 +1,27 @@
+{
+ "lighthouseVersion": "12.8.2",
+ "requestedUrl": "http://localhost:5307/",
+ "fetchTime": "2026-11-19T06:06:47.125Z",
+ "gatherMode": "navigation",
+ "formFactor": null,
+ "throttling": "simulate",
+ "categories": {
+  "performance": 60
+ },
+ "metrics": {
+  "server-response-time": 0.4610000000000001,
+  "first-contentful-paint": 2223.1355000000003,
+  "largest-contentful-paint": 4489.271000000001,
+  "total-blocking-time": 942,
+  "cumulative-layout-shift": 0,
+  "speed-index": 2633.2899593716247,
+  "interactive": 4917.271000000001,
+  "render-blocking-resources": [
+   {
+    "url": "http://localhost:5307/assets/index-BeWp0RrF.css",
+    "wastedMs": 319
+   }
+  ]
+ },
+ "runWarnings": []
+}
