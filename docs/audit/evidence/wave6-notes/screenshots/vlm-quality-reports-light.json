@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "# Visual Audit\n\n- **(1) Text legibility — FAIL:** Top-right header shows \"المارجة والتقارير\" — \"المارجة\" appears to be a broken/garbled word (likely intended \"المراجعة\"). Otherwise text renders fine; no clipped labels detected.\n\n- **(2) Chart legibility — N/A/PASS:** No charts present on this page. The \"اللوحات الحيّة\" panel contains only icon + label menu items; these are legible with adequate contrast.\n\n- **(3) Spacing/alignment — PASS (minor notes):** RTL layout is consistent; panels align well. Minor issue: a stray small red square marker floats oddly below the filter buttons (left area, ~y=183), looking like an orphaned bullet/decoration.\n\n- **(4) Unstyled elements — FAIL:** The export panel is essentially empty/bare — the \"تصدير التقارير (PDF/Excel)\" card contains only a plain gray button (\"المصدر في التطوير\") with no controls, preview, or styled options; looks like a stub/placeholder rather than a finished component. The narrow sidebar icons (thin/outline style) also render inconsistently compared to the main icon set.\n\n**Summary:** Mostly clean RTL layout; main defects = possible garbled word \"المارجة\", stray red marker, and an unfinished export panel.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1795081681,
+  "id": "2026111917475309176040e0744b9e",
+  "model": "glm-5.3-flash",
+  "object": "chat.completion",
+  "request_id": "2026111917475309176040e0744b9e",
+  "usage": {
+    "completion_tokens": 292,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1824,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2116
+  }
+}

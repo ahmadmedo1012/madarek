@@ -305,3 +305,85 @@ UserAvatar monogram seats (14px/12px Geist Mono, `Math.round(size*0.4)`),
 N6's shared-primitive class, out of ownership (components/UserAvatar);
 `/owner/notifications` @768 98.4 — the shared AlertsPage (W1 file) on the
 same N6 fluid-heading class; both ≥ floor.
+
+## N8 · Quality family (10 routes) — baseline matrix, verification pass, zero fixes needed
+
+**Baseline (committed with this note:
+`baselines/pages-quality-before-{light,dark}-3bp-W2.json`):** 10 routes ×
+{1440,768,390} × {light,dark} = 60 cells, worst cell **98.4** — every cell ≥
+floor 90, dark mirrors light cell-for-cell, darkInk **100 on every cell in
+both themes**. The r305/r341 grammar (`styles/teacher/heron.css` — the
+`tq-/qlt-/oex-` family seats — + shared primitives) already carries the
+family; NO code change was required. Commands (both themes):
+
+```
+node scripts/conformance/pages-quality.mjs --url http://localhost:5306/ \
+  --routes /quality/dashboard,/quality/courses,/quality/professors,\
+/quality/engagement,/quality/reports,/quality/curriculum,/quality/notifications,\
+/quality/alerts,/quality/exam-moderation,/quality/community --bps 1440,768,390
+  # light, then again with --dark
+```
+
+| route | light 1440/768/390 | dark 1440/768/390 | note |
+|---|---|---|---|
+| dashboard | 100/99.8/100 | 100/99.8/100 | |
+| courses | 100/99.7/100 | 100/99.7/100 | |
+| professors | 100/99.7/100 | 100/99.7/100 | |
+| engagement | 100/99.7/100 | 100/99.7/100 | |
+| reports | 100/99.3/100 | 100/99.3/100 | typeRungs 96 @768 — N6 class |
+| curriculum | 100/99.7/100 | 100/99.7/100 | |
+| notifications | 99.4/**98.4**/99.4 | 99.4/**98.4**/99.4 | shared AlertsPage (W1 file) @768 typeRungs 90 |
+| alerts | 100/99.6/100 | 100/99.6/100 | |
+| exam-moderation | 100/99.5/100 | 100/99.5/100 | exams file (N9 measures its student mounts too) |
+| community | 99.3/98.9/99.6 | 99.3/98.9/99.6 | T5 file (CommunityPages) — inherited mount |
+
+**typeRungs residuals (all N6's systemic class, exact failing seats):** the
+12px Geist Mono avatar monograms («عب», UserAvatar's `Math.round(size*0.4)`
+formula, shared primitive, out of ownership) on dashboard/courses/professors/
+engagement/reports/curriculum/alerts/exam-moderation @768; the fluid clamp
+Alexandria headings resolving off-rung at intermediate widths (40.52px
+«الإشعارات», 26.67/25.78px «آخر الإشعارات», 19.85px @390 — AlertsPage;
+31.5px «[01]المجتمع الجامعي», 27.63px, 25.78px «الإعلانات» — community, T5
+file). No token-legal fix without new type tokens (tokens read-only this
+wave).
+
+**`.tpg-` dark ember inheritance (verified, not re-fixed):** quality/exams
+pages import `styles/teacher/heron.css` for the family grammar but mount NO
+`.tpg-` seats themselves (grep: the only `tpg-` mention in the family is the
+sheet-header comment in QualityPages.tsx:35) — the N5-T1 fix has no seat to
+cover here, and the dark matrix's darkInk 100 across the family is the
+measured proof the sheet cascade is clean in dark.
+
+**Axe (post-baseline):** `/home/z/t6b/axe-quality.mjs` (the instrument's
+hermetic QUALITY session + axe-core 4.10.3 injected; script outside the repo,
+the N7 axe-owner precedent) on 5 representative routes (dashboard, professors,
+reports, exam-moderation, alerts) × {1440,390} × {light,dark} = 20 audit
+cells — **critical/serious zero everywhere** (`screenshots/audit-QUALITY.json`).
+
+**Overflow probe:** all 10 routes × {1440,768,390} — horizontal overflow zero
+(`screenshots/overflow-QUALITY.json`).
+
+**VLM spot-check (verification, no fix):** reports + exam-moderation @1440
+light+dark (`screenshots/vlm-quality-{reports-light,exam-moderation}.json`).
+Its two FAIL notes are both REJECTED by measurement, the N7 precedent: (a)
+«the brand course chip is dark-on-dark illegible» — the
+`.oex-mod-meta .badge.brand` seat measures **6.10:1** light
+(rgb(163,36,0) on rgb(252,227,217)) and **9.51:1** dark
+(#FFC5AE on #432015), AA-clean both themes (corroborated by darkInk 100 +
+axe clean); (b) «the export card looks like a stub» — it IS the honest
+pending disclosure («التصدير قيد التطوير», QualityPages.tsx:1692, the
+documented D10 copy), a content state, not a visual defect. The minor
+spacing notes (gap above «قائمة الانتظار», header CTA alignment) measure
+spacing 100 at every bp.
+
+**Gates (no code changed — confirmation runs):** quality battery 13 files /
+139 tests green (App-routes, permissions-matrix, route-titles-coverage,
+nav-routes-consistency, QualityDashboard, QualityPages-rosters,
+ExamModerationPage ×3, OnlineExamsPages, r165a ×2, r176e) — unchanged files,
+unchanged assertions; root `npm run typecheck` green; `lint:css` zero NEW
+problems (no file touched; repo held at 20 errors/86 warnings);
+`bash scripts/gates/stylelint-gate.sh` ratchet green (baseline held).
+
+**Residuals (quality):** the N6 typeRungs cells listed above; both inherited
+mounts (notifications=W1 file, community=T5 file) sit ≥ 98.4 — handed to
+their owners, not fixed here.
