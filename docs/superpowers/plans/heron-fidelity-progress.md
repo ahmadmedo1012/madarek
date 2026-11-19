@@ -904,3 +904,28 @@ Section height, local vs reference (px):
 The 390 cta (+409) and 1440 cta/why deltas are the largest single alignment losses; the
 mid/exit states score those bands, which is why the seat E sits 20–30 points under its
 entry state.
+
+## Corrections after the first pass (recorded, not swept)
+
+- **T2 is provenance-complete but partly unwired.** The four webp twins
+  (`intro-courtyard`, `usecase-student`, `platform-floorplan`, `cta-frame`, light+dark,
+  ≤60 KB, sha256 in `asset-provenance-r368.json`) are referenced by
+  `frontend/public/media/manifest.json` only — `grep` over `frontend/src` finds no
+  import. The eight `r368-original-media.py` seats ARE wired (hero plate, roles deck,
+  both platform cards) and are the ones this branch measures. `r307-landing-media.test.tsx`
+  passes 12/12 on this tree.
+- **Landing lint errors 9 → 5** on this branch by merging only same-context duplicate
+  selectors (`.st-bandplate-m`, `.st-media-img`, `.st-media-img.is-dark`, the `.fo-cta`
+  resolve pair). The remaining five (four `.fo-cta-*` pairs and `.hro`) are declared
+  inside `@media` blocks against their base rules — merging them would lift responsive
+  declarations into the base cascade, so they are left for the Task-9 computed-style
+  pass instead of being silently suppressed.
+- **`stylelint-gate.sh` after the merges**: errors 45 → **20**, important 52 → 41,
+  rawZIndex 79 → 75, rawHex 36 → 29 — ratchet green.
+- **Bundle re-measured on this tree** (`npm run build -w frontend` + `check-bundle-size.mjs`):
+  **PASS — 759.2 KB gz total** (≤770), entry 65.8 KB (≤92), pdf 95.4 KB (≤110). The new
+  media files are byte-identical in `dist/` (sha256 compared).
+- **SpecKit**: `specify check` → "Specify CLI is ready to use!". The installed CLI exposes
+  `init/check/self` only; analyze and checklist are agent flows, so
+  `checklists/analyze-r368-continuation.md` is a manual artifact comparison (six
+  inconsistencies resolved, coverage table included) — no CLI command is claimed.
