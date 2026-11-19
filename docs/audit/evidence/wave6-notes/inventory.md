@@ -31,14 +31,14 @@ error (every page carries loading/error via the shared `States` primitives;
 | `/student/mooc` | STUDENT | `pages/student/MoocPage.tsx` | list | data, empty | 99.7/99.7 · 99.7/99.7 | W1 |
 | `/student/jobs` | STUDENT | `pages/student/JobsPage.tsx` | list | data, empty | 99.8/99.7 · 99.8/99.7 | W1 |
 | `/student/ai` | STUDENT (shared page) | `pages/student/AiAssistantPage.tsx` | tool (chat) | data, empty conversations | 99.3/99.3 · 99.3/99.3 | W1 (SHARED with `/teacher/ai`) |
-| `/student/gamification` | STUDENT | `pages/student/MorePages.tsx` (`GamificationPage`) | list/detail | data | 99.3/99.3 · 99.3/99.3 | W1 |
+| `/student/gamification` | STUDENT | `pages/student/MorePages.tsx` (`GamificationPage`) | list/detail | data | 99.3/99.3 · 99.3/99.3 → after N5: 99.2/99.2 · 99.4/99.2 (ink 100 both themes) | W1 |
 | `/student/skills` | STUDENT | `pages/student/MorePages.tsx` (`SkillsPage`) | list | data, empty | 99.7/99.7 · 99.7/99.7 | W1 |
 | `/student/alerts` | STUDENT (shared page) | `pages/student/MorePages.tsx` (`AlertsPage`) | list | data, empty | 99.5/99.4 · 99.5/99.4 | W1 (SHARED with `/teacher/alerts`, `/admin/alerts`, `/quality/notifications`, `/owner/notifications`) |
 | `/student/messages` | STUDENT | `pages/student/MessagesPage.tsx` | list/detail | data, empty | 99.2/99.2 · 99.2/99.2 | W1 |
 | `/student/ar` | STUDENT | `pages/student/MorePages.tsx` (`ArVrPage`) | list | data | 100/100 · 100/100 | W1 |
 | `/student/social` | STUDENT | `pages/student/MorePages.tsx` (`SocialPage`) | list | data | 98.4/99.7 · 98.4/99.7 | W1 |
 | `/student/downloads` | STUDENT | `pages/student/MorePages.tsx` (`DownloadsPage`) | list | data, empty | 99.7/99.7 · 99.7/99.7 | W1 |
-| `/student/university` | STUDENT | `pages/student/MorePages.tsx` (`UniversityInfoPage`) | detail | data | 99.5/99.5 · 97.7/97.5 (darkInk 89/88 — above floor) | W1 |
+| `/student/university` | STUDENT | `pages/student/MorePages.tsx` (`UniversityInfoPage`) | detail | data | 99.5/99.5 · 97.7/97.5 (darkInk 88.9/88.0) → after N5: 99.5/99.5 · 99.5/99.5 (ink 100) | W1 |
 | `/student/live` | STUDENT | `pages/student/LivePage.tsx` | list | data (scheduled/live/ended) | 99.2/99.1 · 99.2/99.1 | W1 |
 | `/student/payment` | STUDENT | `pages/student/PaymentPage.tsx` | form | data | 98.1/98.1 · 98.1/98.1 | W1 |
 | `/student/map` | STUDENT | `pages/student/CampusMapPage.tsx` | detail | data | 99.0/98.9 · 99.0/98.9 | W1 |
@@ -46,7 +46,7 @@ error (every page carries loading/error via the shared `States` primitives;
 | `/student/lectures/:lectureId` | STUDENT | `pages/student/LecturePlayerPage.tsx` | detail/player | data (player chrome) | sampled by e2e (lecture-checkpoints, lecture-poster-geometry) | W1 |
 | `/student/matrix` | STUDENT | `pages/student/MatrixPage.tsx` | dashboard/list | data | 99.6/99.6 · 99.6/99.6 | W1 |
 | `/student/research` | STUDENT | `pages/student/ResearchPage.tsx` | list/form | data (uploaded→graded), empty | 99.6/99.5 · 99.6/99.5 | W1 |
-| `/student/profile` | STUDENT | `pages/student/ProfilePage.tsx` | form/detail | data | 99.1/99.1 · 98.4/98.4 | W1 |
+| `/student/profile` | STUDENT | `pages/student/ProfilePage.tsx` | form/detail | data | 99.1/99.1 · 98.4/98.4 → after N5: 99.1/99.1 · 99.1/99.1 (ink 100) | W1 |
 | `/student/webinars` | STUDENT | `pages/student/WebinarsPage.tsx` | list | data, empty | 99.2/99.2 · 99.2/99.2 | W1 |
 | `/student/online-exams` | STUDENT | `pages/exams/OnlineExamsPages.tsx` (`OnlineExamsPage`) | list | data, empty | 98.9/98.9 · 98.9/98.9 | W2 (exams file) |
 | `/student/online-exams/:id` | STUDENT | `pages/exams/OnlineExamsPages.tsx` (`ExamTakerPage`) | form | data (in-progress, submit, terminal error) | e2e `online-exams.e2e.ts` | W2 (exams file) |
@@ -60,6 +60,12 @@ error (every page carries loading/error via the shared `States` primitives;
 | `/student/training`, `/student/training/:slug`, `/student/training/:slug/lesson/:lessonId`, `/student/achievements`, `/student/community`, `/student/colleges` | redirects (r281) | — | — | — | — | redirect rows |
 
 ## 2 · Teacher family (guard `TEACHER`, App.tsx 502–526)
+
+Baseline light 1440/390 in the table (worst cell 99.0). AFTER the N5 pass
+(`baselines/pages-teacher-after-{light,dark}-3bp-2026W1.json`): full 21-route ×
+{1440,768,390} × {light,dark} matrix, worst cell **98.3** (`/teacher/ai` @768,
+typeRungs residual); `/teacher/schedule` + `/teacher/attendance` dark lifted to
+100/99.7/100 and 100/99.8/100 (the `.tpg-` ember seats re-poled — NOTES N5 T1).
 
 | route | guard | owning file | family | sampled states | baseline (light 1440/390) | owner |
 |---|---|---|---|---|---|---|

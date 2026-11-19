@@ -110,11 +110,115 @@ fades all gated).
 (App-routes, permissions-matrix, route-titles-coverage) 43 tests green;
 stylelint-gate ratchet green; my-sheet clean.
 
+## N5 · Teacher family pass + the dark-contrast harvest (resumed session)
+
+The teacher family needed no anatomy restoration — its 21 harness routes already
+carry the r305 Heron grammar (`styles/teacher/heron.css` + shared primitives);
+the baseline (committed `dc046b26`) was worst-cell 99.0 light. This session
+completed the family pass: the full 3-breakpoint matrix (1440/768/390) in BOTH
+themes, axe on representative routes, and the two real defects the dark matrix
+surfaced.
+
+**Teacher matrix (own stack, after fixes):** 21 routes × 3 bps × 2 themes =
+126 cells, worst cell **98.3** (`/teacher/ai` @768, typeRungs residual — see
+N6), every cell ≥ floor 90. Light worst 98.3, dark worst 98.3. Snapshots:
+`baselines/pages-teacher-after-{light,dark}-3bp-2026W1.json` (before-dark:
+`pages-teacher-before-dark-3bp-2026W1.json`).
+
+**Fix T1 — the ember seats on the night ELEVATED ground (axe serious).**
+`/teacher/schedule` + `/teacher/attendance` in dark: patterns.css routes the
+«today» weekday numeral (`.tpg-day[data-today] .tpg-day-index`) and the
+attendance brand-tone summary value through `--accent-ink`, which the generated
+night tokens set to **#FF6B33 — documented 4.79:1 on --surface but 4.32:1 on the
+worst RAISED surface these seats sit on** (#353535 today card / summary strip);
+axe `color-contrast` SERIOUS. Fix: two unlayered night rules in
+`styles/teacher/heron.css` routing both seats through `--accent-strong`
+(the tokens' own light ember tier #FFC5AE — **8.09:1 measured on #353535**).
+Measured: schedule dark 99.6/99.3/99.6 → **100/99.7/100** (darkInk 97.8→100),
+attendance dark 99.4/99.2/99.4 → **100/99.8/100** (darkInk 96.7→100); axe clean
+@768 dark. Light untouched (verified). NOTE for wave 2: quality/exams pages
+import this sheet and share the `.tpg-` grammar — they inherit the fix.
+
+**Fix S1 — the student deep-band children's NIGHT pole (axe serious).**
+`/student/{profile,gamification,university}` in dark: the r305 supplemental
+sheet (`styles/student/heron-supplemental.css`) hardcodes the LIGHT pole
+(`--neutral-0` + mixes) for the deep-band children (profile hero name/mail/
+meter, gamification level title/sub/foot, university fact labels/values) —
+"theme-proof by construction" only while the band pole-INVERTED. R345 E1
+re-based the night band on neutral-150 + neutral-800, and every seat went
+dark-on-dark: **#2E2E2E on #3D3D3D = 1.25:1**, axe serious ×3 pages. Fix: a
+§9 night-pole block mirroring the E1 recipe (neutral-800 + the same 85/72 mix
+strengths toward neutral-150; measured 8.21 / 6.47 / 5.11:1), plus the meter/
+xp-track translucent wells and the ghost-retry border/hover re-poled.
+
+**Fix S2 — the level medallion (light, 1.09:1).** `/student/gamification`
+light: the `.tier-orb.lg` numeral measured **white on #F6F6EE = 1.09:1**. Two
+stacked causes: (a) the guest-root grammar `.lg:not(.btn)` (patterns.css §G,
+same (0,2,0) in @layer pages but an earlier import) repaints the `.lg` size
+variant as guest paper (`--bg` ground, `--text` ink, sans); (b) the shared
+`.tier-orb` recipe (training-anatomy.css) mixes toward the PAGE poles, which
+the deep band re-derives to the band's light pole — light-on-light. Fix: a
+band-scoped `.r305g-level .tier-orb` seat in heron-supplemental.css (same
+layer, later import — wins the tie) re-poles the medallion like the xp-track
+(translucent pole well + band-pole numeral + tier ring + mono re-assert), with
+the night counterpart in §9. VLM-verified both themes (screenshots
+`gamification-after-{light,dark}-1440.png`; `vlm-*` responses on file).
+
+**Student before/after (this session, 1440/390):**
+
+| route | light before → after | dark before → after |
+|---|---|---|
+| `/student/profile` | 99.1/99.1 → 99.1/99.1 (unchanged, ink 100) | 98.4/98.4 (ink 96) → **99.1/99.1 (ink 100)** |
+| `/student/gamification` | 99.1/99.0 (ink 98.6/98.3) → **99.2/99.2 (ink 100)** | 99.1/99.0 (ink 98.6/98.4) → **99.4/99.2 (ink 100)** |
+| `/student/university` | 99.5/99.5 → 99.5/99.5 (unchanged, ink 100) | 97.7/97.5 (ink 88.9/88.0) → **99.5/99.5 (ink 100)** |
+
+axe re-run in dark on all three + `/teacher/{schedule,attendance}`: **clean**
+(critical/serious zero). Light spot-runs unchanged. Full-family student dark
+matrix not re-run wholesale — the three touched routes re-measured; the other
+29 routes' committed after-dark cells (`pages-student-after-dark-2026W1.json`)
+are untouched by [data-theme='dark']-scoped + band-scoped rules that no other
+route mounts (`.r305g-level`/`.r305u-fact`/`.r305p-hero` are single-page seats;
+`.tpg-*` is teacher/quality-only).
+
+**Gates (this session):** root `npm run typecheck` green; focused vitest 17
+files / 204 tests green (route/permission battery 4 files/67 + teacher battery
+10 files/137); `lint:css` zero NEW errors (my three sheets clean; repo held at
+20 errors — all pre-existing, none in my regions); `bash
+scripts/gates/stylelint-gate.sh` **ratchet green** (baseline held).
+
+## N6 · Residuals (teacher family + shared)
+
+- `/teacher/ai` 98.3 @768 (worst teacher cell) — typeRungs only: the shared
+  chat-surface fluid headings (26.67/40.52/19.85px clamp rungs) + the 12px
+  mono micro-labels. Same systemic class as the student residuals (N2): fluid
+  clamp type resolves off-rung at intermediate widths by design; no
+  token-legal change without new type tokens (out of scope — tokens are
+  read-only this wave).
+- The 12px mono "لف" seats (avatar monograms, `UserAvatar`'s
+  `Math.round(size*0.4)` formula) — shared primitive, used by every family
+  incl. T5 files; off-rung by construction. Handed to the owners, not fixed.
+- `/teacher/{messages,library,alerts,community}` 98.3–99.0 @768 — same
+  typeRungs class on the shared seats.
+- `.tier-orb` on-band ignores the parent's `--tier-color` (the orb's own
+  `--tier-color: var(--accent)` default shadows the inherited inline value) —
+  pre-existing since the r305 markup; verbatim-restored behavior, left as-is
+  (the ring reads accent ember, the numeral band-pole).
+- `[data-empty]` presence-matching (`:where([data-empty])` matches
+  `data-empty="false"`) — pre-existing markup/CSS mismatch; harmless now (the
+  band-scoped seat outranks it) but the OFF-band orb would paint its empty
+  recipe when full; only consumer (`/training` catalog Card orb) sets no
+  `data-empty` attribute, so no live surface is affected. Recorded for the
+  anatomy owner.
+
 ## N4 · Wave-2 handoff (files NOT touched this wave)
 
 See `inventory.md` §3–§5 for the full route lists. Current measured state of the
 shared seats wave 2 will inherit: AlertsPage (student harness) 99.5/99.4 ·
-`/community` 99.0/99.5 · `/settings` 98.0/97.9 · AiAssistantPage 99.3 ·
+`/community` 99.0/99.5 · `/settings` 98.0/97.9 (typeRungs-only dips 87.7/87.3
+on that axis — fluid headings, N6 class) · AiAssistantPage 99.3 ·
 LibraryPage 99.2/99.0. `/vision` 96.7/80.0 (pattern 80 + hover 0 @390 — same two
 axes /training had) is T5-owned. Wave-2 families to measure + pass:
-admin (16 routes), owner (15), quality (10), exams (3 seats).
+admin (16 routes), owner (15), quality (10), exams (3 seats). Wave 2 also
+inherits: the `.tpg-` dark ember fix (quality/exams import teacher/heron.css)
+and the §9 night-pole recipe as the pattern for any deep-band children their
+pages mount.

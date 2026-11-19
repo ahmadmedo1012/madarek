@@ -187,6 +187,25 @@
   .r305g-level .xp-track {
     background: color-mix(in srgb, var(--neutral-0) 14%, transparent);
   }
+  /* R368 T6-a — the level medallion re-poles for the band. Two stacked
+     faults made the numeral unreadable (measured 1.09:1, conformance
+     darkInk on /student/gamification): (a) the shared .tier-orb recipe
+     (training-anatomy.css) mixes its ink/background toward the PAGE
+     poles (--text/--surface), which the deep band re-derives to the
+     band's own light pole — light-on-light on the inverted ground;
+     (b) the guest-root grammar `.lg:not(.btn)` (patterns.css §G,
+     same (0,2,0) in this layer but an EARLIER import) repaints the
+     `.tier-orb.lg` size variant as guest paper (--bg ground, --text
+     ink, sans). This band-scoped seat (same layer, later import —
+     wins the tie) re-mixes toward the band's own pole pair, exactly
+     like the .xp-track above; the empty variant and the base recipe
+     stay authoritative for every OFF-band orb. */
+  .r305g-level .tier-orb {
+    background: color-mix(in srgb, var(--neutral-0) 14%, transparent);
+    color: var(--neutral-0);
+    border-color: color-mix(in srgb, var(--tier-color, var(--accent)) 45%, var(--neutral-0));
+    font-family: var(--font-mono);
+  }
   .r305g-level-foot {
     font-size: var(--fs-xxs);
     color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
@@ -319,6 +338,58 @@
      (Single-line seat: the deadcode ratchet counts boilerplate banners,
      and this belt is one rule — it reads as one token run.) */
   @media (prefers-reduced-motion: reduce) { .r305g-level .btn.ghost { transition: none; } }
+
+  /* ── §9 · R368 T6-a — the deep-band children's NIGHT pole ────────
+     §1/§4/§7 hardcode the light pole (--neutral-0 and its mixes toward
+     --neutral-900), which was "theme-proof by construction" only while
+     the deep band pole-INVERTED in dark. R345 E1 re-based the night
+     band on the elevated rung (neutral-150 ground + neutral-800 ink —
+     heron.css §R345-E1) and every one of these seats went dark-on-dark:
+     #2E2E2E on #3D3D3D = 1.25:1, axe color-contrast SERIOUS on
+     /student/{profile,gamification,university} in dark. The night
+     counterparts mirror the E1 recipe the band itself uses (neutral-800
+     + the same 85/72 mix strengths toward neutral-150; measured 8.21 /
+     6.47 / 5.11:1 on the night band). §2's achievements strip keeps its
+     OWN neutral-900 inversion (cream band in dark) and needs nothing.
+     Light theme untouched. */
+  [data-theme='dark'] .r305p-hero-name,
+  [data-theme='dark'] .r305p-hero-meter-value,
+  [data-theme='dark'] .r305g-level-title,
+  [data-theme='dark'] .r305g-level .btn.ghost,
+  [data-theme='dark'] .r305u-fact-value {
+    color: var(--neutral-800);
+  }
+  [data-theme='dark'] .r305p-hero-mail,
+  [data-theme='dark'] .r305p-hero-meter-head,
+  [data-theme='dark'] .r305g-level-sub,
+  [data-theme='dark'] .r305g-level-foot {
+    color: color-mix(in srgb, var(--neutral-800) 85%, var(--neutral-150));
+  }
+  [data-theme='dark'] .r305u-fact-label {
+    color: color-mix(in srgb, var(--neutral-800) 72%, var(--neutral-150));
+  }
+  [data-theme='dark'] .r305p-hero-meter .progress,
+  [data-theme='dark'] .r305g-level .xp-track,
+  [data-theme='dark'] .r305g-level .tier-orb {
+    background: color-mix(in srgb, var(--neutral-800) 14%, transparent);
+  }
+  [data-theme='dark'] .r305g-level .tier-orb {
+    color: var(--neutral-800);
+    border-color: color-mix(in srgb, var(--tier-color, var(--accent)) 45%, var(--neutral-800));
+  }
+  [data-theme='dark'] .r305g-level .btn.ghost {
+    border-color: color-mix(in srgb, var(--neutral-800) 30%, transparent);
+  }
+  [data-theme='dark'] .r305u-fact {
+    border-block-end-color: color-mix(in srgb, var(--neutral-800) 16%, transparent);
+  }
+  /* The ghost hover's night step (kept inside the sheet's single
+     hover-guard contract — the gate reads the first band). */
+  @media (hover: hover) and (pointer: fine) {
+    [data-theme='dark'] .r305g-level .btn.ghost:hover {
+      background: color-mix(in srgb, var(--neutral-800) 10%, transparent);
+    }
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════

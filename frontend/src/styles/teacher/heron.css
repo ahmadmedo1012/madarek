@@ -786,3 +786,18 @@
   border-radius: 0;
 }
 .inv-note { display: flex; align-items: center; gap: var(--sp-1-5); font-size: var(--fs-xs); /* r341 D8 type-rung fix: same 0.75rem-on-fluid-root bug as .inv-field above */ color: var(--text-secondary); margin: var(--sp-2-5) 0 0; }
+
+/* ── r368 T6-a · the ember seats on the night ELEVATED ground ────────
+ * patterns.css routes the schedule's «today» weekday numeral and the
+ * attendance summary's brand-tone value through --accent-ink, which the
+ * generated night tokens set to #FF6B33 — documented 4.79:1 on --surface
+ * but only 4.32:1 on the worst RAISED surface these seats actually sit
+ * on (the today card / the summary strip, #353535): axe color-contrast
+ * SERIOUS on /teacher/{schedule,attendance} in dark. The night token for
+ * accent TEXT on dark grounds is --accent-strong (the light ember tier
+ * #FFC5AE — tokens.css's own r305 night-signal discipline; measured
+ * 8.09:1 on #353535). Unlayered so it outranks the patterns.css @layer
+ * pages seats; light theme untouched. Wave-2 note: quality/exams pages
+ * import this sheet and share the .tpg- grammar — they inherit the fix. */
+[data-theme='dark'] .tpg-day[data-today='true'] .tpg-day-index { color: var(--accent-strong); }
+[data-theme='dark'] .tpg-att-summary-item[data-tone='brand'] .tpg-att-summary-value { color: var(--accent-strong); }
