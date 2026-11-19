@@ -272,8 +272,11 @@ const resolveStored = (p) => {
   const s = String(p);
   const i = s.indexOf(EVIDENCE_MARKER);
   if (i >= 0) {
-    const alt = join(OUT, s.slice(i + EVIDENCE_MARKER.length));
-    if (existsSync(alt)) return alt;
+    const suffix = s.slice(i + EVIDENCE_MARKER.length);
+    for (const base of [OUT, REUSE].filter(Boolean)) {
+      const alt = join(base, suffix);
+      if (existsSync(alt)) return alt;
+    }
   }
   return p;
 };
@@ -390,6 +393,29 @@ async function settle(page, label) {
     await page.waitForTimeout(150);
   }
   await page.evaluate(async () => { await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))); }).catch(() => {});
+}
+
+// ── END seating: the LIVE maximum is the authority ─────────────────────────
+// The document grows after the load-time census (measured +618 px on this
+// host's footer@1440 run: the recorded "end" seat held the footer at top 674
+// with only 226 px visible while the reference's END shows it at 183). END
+// must re-read scrollHeight after the late content settles and seat the final
+// maximum — never the pre-growth snapshot.
+async function localSeatEnd(page, hintMax) {
+  let y = hintMax;
+  let last = null;
+  for (let i = 0; i < 8; i++) {
+    await localScrollTo(page, y);
+    await page.waitForTimeout(200);
+    const m = await page.evaluate(() => Math.max(0, document.documentElement.scrollHeight - window.innerHeight)).catch(() => null);
+    if (m == null) break;
+    if (Math.abs(m - y) <= LANDING_TOL_PX) {
+      if (last != null && Math.abs(m - last) <= LANDING_TOL_PX) return { ok: true, maxScroll: m };
+      last = m;
+    } else last = null;
+    y = m;
+  }
+  return { ok: false, maxScroll: y };
 }
 
 // ── LOCAL landing: the documented seam first, native fallback second ────────
@@ -910,14 +936,16 @@ async function captureLocalSide(browser, dir, bp, refRows) {
         }
         if (pairIsEnd) {
           if (st.id !== "entry") { stateRows[st.id] = { ok: false, coincident: true, reason: "pair is END — non-entry states coincide with the document end" }; continue; }
-          const pos = await localScrollTo(page, maxScroll);
+          const endSeat = await localSeatEnd(page, maxScroll);
+          if (typeof endSeat.maxScroll === "number") liveMaxScroll = endSeat.maxScroll;
+          const pos = await localScrollTo(page, endSeat.maxScroll);
           const rect = await localRect(page, sel);
           if (!rect) { stateRows[st.id] = { ok: false, reason: "selector-not-found" }; continue; }
           const file = join(dir, `${key}.${bp.name}.end.png`);
           const crop = await sectionCrop(page, sel, file);
           stateRows[st.id] = {
             ok: crop.ok, reason: crop.ok ? undefined : crop.reason, state: "end-clamped", declared: "end",
-            top: rect.top, scrollY: pos.scrollY, targetY: maxScroll, maxScroll, atStageEnd: true,
+            top: rect.top, scrollY: pos.scrollY, targetY: endSeat.maxScroll, maxScroll: endSeat.maxScroll, atStageEnd: true,
             file: crop.ok ? file : undefined, clip: crop.clip,
           };
           continue;

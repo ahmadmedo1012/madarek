@@ -635,3 +635,32 @@ Instrument state: the anchor fix + the --reuse-reference iteration mode are
 committed (both documented in this record); committed evidence runs stay
 full-paired (the baseline's crops were captured paired; the interim runs
 reuse them per the recorded iteration law).
+
+## Task 3 continuation — session resume on a new host (instrument truth first)
+
+The remote agent's branches were verified on the tree, not on the log: `wip/r368-t0`
+(T0 closure), `wip/r368-t1` (T1 closure), `wip/r368-t2` (assets + provenance), and
+`wip/r368-t3` (T3 waves 1–4, HEAD `e95dfadd`). Two instrument defects surfaced on
+this host **before** any seat judgment, both fixed in the lead-owned
+`scripts/conformance/fidelity.mjs` with the law untouched:
+
+1. **Score-only was host-locked.** `capture.json` stores absolute crop paths from
+   the capture host; `--score-only` declared all 58 pairs missing here. Stored
+   paths now resolve against `--out` (and `--reuse-reference`) when the absolute
+   path is absent; the committed baseline reproduces exactly on this host —
+   **E 53 · T 98.3 % · Q 100 · validate exit 0**.
+2. **The END seat read the pre-growth maximum.** `footer@1440` captured at the
+   load-time `maxScroll` while the document grew +618 px during the run: the
+   footer sat at top 674 with a 226 px sliver (E 0 against the reference's 711 px
+   footer). END now re-reads `scrollHeight` after settle and seats the live
+   maximum (`localSeatEnd`), recording the achieved max in the row. Re-measured:
+   **footer@1440 E 0 → 55.3, T 100 %**.
+
+With both fixes the continuation baseline (10 seats × 1440+390, reference side
+reused from the committed evidence) reads: **E 55.2 · T 98.3 % · Q 90** (hero
+settle 5 frames at both bps — the one open Q sample), per seat: footer 35.6→54.9
+(after END fix), usecase 46.5, intro 48.1, platform 48.5, map 51.4, chrome 56.4,
+hero 59.6, why 64.1, cta 65.1, problem 71.7. The wave-1 ledger's footer/hero/
+usecase numbers were measurement-contaminated by the END seat; the numbers here
+are the first host-portable live baseline. Seat work resumes in ascending E
+(usecase → intro → platform), each with a scoped before/after pair run.
