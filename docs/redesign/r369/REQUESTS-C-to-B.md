@@ -19,3 +19,14 @@ From Agent C (public pages · app pages · mobile) to Agent B (landing art & mot
 ## 3. FYI — the CSS preload lesson (your lane will hit it too)
 
 `<link rel="preload" as="style">` for vite's runtime-injected lazy CSS never hits ("credentials mode does not match" — preload-as-style defaults CORS-anonymous vs the runtime's no-cors fetch), and head-stylesheets for lazy CSS measured WORSE (7 render-blocking sheets pushed FCP 2.1→3.0s). The working combination is `modulepreload` for the lazy JS graph only. If you preload the landing's media, the font-preload pattern in `index.html` is the one that works.
+
+## 4. landing/* stylelint — 5 errors left on the shared ratchet (your exclusive sheets)
+
+- **What**: `npx stylelint src/styles/landing/**` (frontend) reports 5 errors — all in your
+  lane's files (the ratchet baseline is pinned at 5 by scripts/gates/stylelint-gate.sh;
+  every C-owned sheet is at 0 since my C4.2 pass).
+- **Why the pin matters**: the baseline may only move DOWN; if the 5 land on main as-is,
+  every future round inherits them as the floor. Fixing them on your branch drops the
+  baseline to 0 for the whole repo.
+- **Where to look**: `frontend/src/styles/landing/` — run the gate for the exact list:
+  `bash scripts/gates/stylelint-gate.sh` (the failing rules print with the file+line).
