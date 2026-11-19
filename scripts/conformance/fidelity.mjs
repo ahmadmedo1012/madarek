@@ -260,6 +260,33 @@ function colorCrop(srcPath, w, scaledH, h) {
 }
 const round = (n) => Math.round(n * 10) / 10;
 const rel = (p) => p.replace(`${ROOT}/`, "");
+// Committed capture.json records ABSOLUTE crop paths from the host that
+// produced them. The evidence tree is tracked under docs/audit/evidence/ and
+// must stay relocatable: resolve a stored path against OUT before a pair is
+// declared missing (R368 T0 portability fix — score-only must reproduce E on
+// any host from the committed files alone).
+const EVIDENCE_MARKER = "/docs/audit/evidence/";
+const resolveStored = (p) => {
+  if (!p) return p;
+  if (existsSync(p)) return p;
+  const s = String(p);
+  const i = s.indexOf(EVIDENCE_MARKER);
+  if (i >= 0) {
+    const alt = join(OUT, s.slice(i + EVIDENCE_MARKER.length));
+    if (existsSync(alt)) return alt;
+  }
+  return p;
+};
+const resolveRowFiles = (rowsIn) => {
+  for (const r of rowsIn) {
+    for (const side of ["local", "reference"]) {
+      for (const st of Object.values(r?.[side]?.states ?? {})) {
+        if (st?.file) st.file = resolveStored(st.file);
+      }
+    }
+  }
+  return rowsIn;
+};
 
 // ── masks ───────────────────────────────────────────────────────────────────
 // ENTRY states use the FROZEN reference spec's preregistered text rects
@@ -1132,9 +1159,10 @@ async function runCapture(outDir, opts = {}) {
         const clone = JSON.parse(JSON.stringify(row.reference));
         for (const st of Object.values(clone.states ?? {})) {
           if (st?.file) {
-            const base = String(st.file).split("/").pop();
+            const src = resolveStored(st.file);
+            const base = String(src).split("/").pop();
             const newFile = join(outDir, "reference", base);
-            copyFileSync(st.file, newFile);
+            copyFileSync(src, newFile);
             st.file = newFile;
           }
         }
@@ -1301,7 +1329,7 @@ if (!SCORE_ONLY && !REPEAT_ENTRY) {
   process.exit(variance.every((v) => v.ok) ? 0 : 1);
 } else if (existsSync(join(OUT, "capture.json"))) {
   const cap = JSON.parse(readFileSync(join(OUT, "capture.json"), "utf8"));
-  rows.push(...cap.rows);
+  rows.push(...resolveRowFiles(cap.rows));
   profile = cap.profile ?? null;
   motion = cap.motion ?? null;
   censusReport = cap.census ?? null;
