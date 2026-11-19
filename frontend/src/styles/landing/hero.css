@@ -186,6 +186,9 @@
 .hro {
   --hro-mass-fill: rgb(158, 156, 148); /* color-gate: allow — the measured reference hero-mass tone (r368 T3) */
   --hro-mass-hatch: rgb(120, 118, 110); /* color-gate: allow — the measured hatch tone (r368 T3) */
+  --hro-seat-ink: rgb(250, 54, 0); /* color-gate: allow — measured heron hover ink (the login twin's recorded after-color); ADDENDUM 9 scoped-var pattern, T-25 owns the global token unification */
+  --hro-seat-ghost: rgb(255, 243, 239); /* color-gate: allow — measured heron register-hover wash-off (the primary's ghost after-state: fill → transparent, ink → rgb(255,243,239)) */
+  --hro-seat-lift: translateY(-0.12rem);
 }
 [data-theme="dark"] .hro {
   --hro-mass-fill: rgb(97, 96, 92); /* color-gate: allow — the inverted-pair mass (the dark paper) */
@@ -801,11 +804,7 @@
  * a missing one); the focus arms stay ungated (keyboard parity is not
  * a per-bp property). .probe-hover is the conformance probe's class.
  *   0 login · 3 register · 1/2/5/7/4/6 work strip · 8/9 deco ·
- *   11–14 ± dmarks · 15–20 the graticule measures. */.hro {
-  --hro-seat-ink: rgb(250, 54, 0); /* color-gate: allow — measured heron hover ink (the login twin's recorded after-color); ADDENDUM 9 scoped-var pattern, T-25 owns the global token unification */
-  --hro-seat-ghost: rgb(255, 243, 239); /* color-gate: allow — measured heron register-hover wash-off (the primary's ghost after-state: fill → transparent, ink → rgb(255,243,239)) */
-  --hro-seat-lift: translateY(-0.12rem);
-}
+ *   11–14 ± dmarks · 15–20 the graticule measures. */
 
 /* 0 — the login secondary (color+bd, every recorded bp):
  * ink rgb(40,40,40) → the measured ember */

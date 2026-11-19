@@ -2324,9 +2324,7 @@
     accent-color: var(--accent);
     inline-size: 16px;
     block-size: 16px;
-    margin-block-start: 3px; /* optical baseline with the first text line
-*/ /* spacing-gate: allow — radio-dot optical baseline with the first choice text line
-*/
+    margin-block-start: 3px; /* spacing-gate: allow — radio-dot optical baseline with the first choice text line */
     flex-shrink: 0;
     cursor: inherit;
   }

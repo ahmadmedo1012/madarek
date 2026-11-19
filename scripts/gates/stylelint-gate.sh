@@ -34,14 +34,22 @@ fail() { printf '\033[31m✗ stylelint-gate: %s\033[0m\n' "$1"; exit 1; }
 # were found — the report itself is what we parse.
 (cd frontend && npx -y stylelint@16 "src/styles/**/*.css" --formatter json) \
   > /tmp/stylelint-gate.stdout 2> /tmp/stylelint-gate.json || true
-if ! node -e 'JSON.parse(require("fs").readFileSync("/tmp/stylelint-gate.json","utf8"))' 2>/dev/null; then
+if ! node -e '
+  let raw = require("fs").readFileSync("/tmp/stylelint-gate.json","utf8");
+  const idx = raw.indexOf("[");
+  if (idx !== -1) raw = raw.slice(idx);
+  JSON.parse(raw);
+' 2>/dev/null; then
   cat /tmp/stylelint-gate.stdout >&2
   fail "stylelint produced no parsable JSON report (see stdout above)"
 fi
 
 COUNTS="$(node "$GATES_DIR/css-counts.mjs")" || fail "css-counts.mjs crashed"
 LINT="$(node -e '
-const r = JSON.parse(require("fs").readFileSync("/tmp/stylelint-gate.json", "utf8"));
+let raw = require("fs").readFileSync("/tmp/stylelint-gate.json", "utf8");
+const idx = raw.indexOf("[");
+if (idx !== -1) raw = raw.slice(idx);
+const r = JSON.parse(raw);
 let e = 0, w = 0;
 for (const f of r) for (const p of f.warnings ?? []) p.severity === "error" ? e++ : w++;
 console.log(JSON.stringify({ stylelintErrors: e, stylelintWarnings: w }));')"
