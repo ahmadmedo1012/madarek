@@ -15,11 +15,21 @@
         "entry"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/chrome.1440.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 1.7
+      "rating": 3,
+      "defects": [
+        "[minor] all panels: extremely low legibility; content appears collapsed to thin header strips with large empty dark regions, limiting parity verification",
+        "[minor] middle vs left: header block placement and visible text density appear roughly mirrored but not clearly aligned with reference structure",
+        "REJECTED: all-panels \"thin header strips / large empty dark regions\" — the 14px-tall chrome strip is the frozen capture geometry (the section box ∩ viewport), not a parity defect — sheet-crop artifact, rejected",
+        "[cross-check] the stress instrument records the wordmark/contact text-on-text overlap @1440 (docs/audit/evidence/stress.json wave-3 note) — the R2 root-fix item; both sheet notes were rejected as artifacts, the overlap is the decisive kept defect"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 1.7,
+      "rawVlm": 3,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 58.0
+      }
     },
     {
       "seat": "footer",
@@ -29,11 +39,19 @@
         "entry"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/footer.1440.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 8.3
+      "rating": 4,
+      "defects": [
+        "[minor] middle: slight vertical spacing/alignment drift vs reference in mid-section",
+        "[minor] overlay: isometric graphic and blocks align well; small offset in footer row"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 8.3,
+      "rawVlm": 4,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 46.2
+      }
     },
     {
       "seat": "home-cta-wrap",
@@ -45,11 +63,21 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-cta-wrap.1440.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 13.7
+      "rating": 2,
+      "defects": [
+        "[major] hero: Hero illustration cluster missing in RTL implementation",
+        "[minor] hero: Headline block present but centered/scaled differently from reference",
+        "[major] row2-3: Below-fold sections nearly empty, lacking reference density",
+        "[cross-check] the recorded wave-3 height gap: our cta sits +409px shorter than the reference section — the density deficit the sheet reads; the T-floor structural excusal (cta@1024) is separate"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 13.7,
+      "rawVlm": 2,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 68.4
+      }
     },
     {
       "seat": "home-hero-wrap",
@@ -61,11 +89,21 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-hero-wrap.1440.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 27.7
+      "rating": 2,
+      "defects": [
+        "[major] hero layout: Reference uses a compact architectural collage block with left-aligned headline; implementation replaces it with a full-width elongated building strip",
+        "[major] hierarchy: Headline 'AN ACADEMY THAT WORKS / INSIDE YOUR DESIGN PROCESS' block missing from implementation panel",
+        "[major] density: Implementation horizontal band is much lower-density and wider proportion than reference composition",
+        "REJECTED: \"headline block missing\" — our Arabic headline IS present at a different scale/position; the *missing* framing is rejected, the scale/position deviation is kept"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 27.7,
+      "rawVlm": 2,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 46.5
+      }
     },
     {
       "seat": "home-intro-wrap",
@@ -77,11 +115,20 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-intro-wrap.1440.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 26.5
+      "rating": 2,
+      "defects": [
+        "[major] row-1 middle: Building image and orange circle missing; replaced by dense text block",
+        "[major] rows-2/3 middle: Middle panels appear nearly empty — hero imagery and accent shapes absent",
+        "[major] overlay: Overlay shows reference elements (circle, photo) with little overlap from implementation, confirming structural mismatch"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 26.5,
+      "rawVlm": 2,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 51.4
+      }
     },
     {
       "seat": "home-map-wrap",
@@ -94,11 +141,19 @@
         "exit"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-map-wrap.1440.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 47.7
+      "rating": 4,
+      "defects": [
+        "[minor] rows 1-2: headline block and form column proportions slightly tighter in RTL version",
+        "[minor] rows 3-4: floor plan placement mirrors correctly but annotation density differs slightly"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 47.7,
+      "rawVlm": 4,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 53.0
+      }
     },
     {
       "seat": "home-platform-wrap",
@@ -110,11 +165,19 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-platform-wrap.1440.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 15.6
+      "rating": 2,
+      "defects": [
+        "[major] middle (ours): content area largely empty/undersized vs reference density",
+        "[major] overlay: poor structural alignment between panels"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 15.6,
+      "rawVlm": 2,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 42.7
+      }
     },
     {
       "seat": "home-problem-wrap",
@@ -126,11 +189,19 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-problem-wrap.1440.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 15.4
+      "rating": 4,
+      "defects": [
+        "[minor] hero-row: Arabic headline block slightly narrower/denser than English reference",
+        "[minor] cards-row: card grid spacing marginally looser in RTL version"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 15.4,
+      "rawVlm": 4,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 71.0
+      }
     },
     {
       "seat": "home-usecase-wrap",
@@ -142,11 +213,19 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-usecase-wrap.1440.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 23.8
+      "rating": 4,
+      "defects": [
+        "[minor] middle: slight column-width and spacing differences in text block alignment vs reference",
+        "[minor] right: minor ghosting on overlaid text columns indicating small offsets"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 23.8,
+      "rawVlm": 4,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 46.8
+      }
     },
     {
       "seat": "home-why-wrap",
@@ -158,11 +237,20 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-why-wrap.1440.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 21.7
+      "rating": 3,
+      "defects": [
+        "[minor] 1440px-1: RTL mirror keeps overall grid but text blocks sit slightly higher/larger than reference",
+        "[major] 1440px-2: middle panel floor-plan/furniture area visibly sparser and shifted vs reference layout",
+        "[minor] 1440px-3: overlay shows offset in lower content column alignment"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 21.7,
+      "rawVlm": 3,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 67.2
+      }
     },
     {
       "seat": "chrome",
@@ -172,11 +260,21 @@
         "entry"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/chrome.390.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 2.7
+      "rating": 4,
+      "defects": [
+        "[major] middle: brand wordmark/logo missing from left side of header",
+        "[minor] middle: nav collapsed to fewer visible items vs reference (missing middle nav link)",
+        "[minor] right: overlay shows only sparse elements, misaligned panel widths",
+        "REJECTED: \"brand wordmark/logo missing from left side\" — the RTL mirror seats our wordmark on the RIGHT by design (documented RTL law); the misread is rejected"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 2.7,
+      "rawVlm": 3,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 58.0
+      }
     },
     {
       "seat": "footer",
@@ -187,11 +285,19 @@
         "mid30"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/footer.390.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 72.6
+      "rating": 4,
+      "defects": [
+        "[minor] ours: footer link columns slightly denser/tighter than reference",
+        "[minor] ours: brand block and cookie bar placement shifted relative to reference"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 72.6,
+      "rawVlm": 4,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 46.2
+      }
     },
     {
       "seat": "home-cta-wrap",
@@ -203,11 +309,21 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-cta-wrap.390.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 39.9
+      "rating": 2,
+      "defects": [
+        "[major] middle: Missing large hero headline block; section replaced by centered short heading",
+        "[major] middle: CTA button repositioned lower/centered vs left-aligned under text",
+        "[major] middle: Illustration/density reduced; large empty whitespace in middle panel",
+        "[cross-check] the recorded wave-3 height gap: our cta sits +409px shorter than the reference section — the density deficit the sheet reads; the T-floor structural excusal (cta@1024) is separate"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 39.9,
+      "rawVlm": 2,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 68.4
+      }
     },
     {
       "seat": "home-hero-wrap",
@@ -219,11 +335,22 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-hero-wrap.390.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 83.8
+      "rating": 3,
+      "defects": [
+        "[major] hero headline block: reference headline is left-aligned large block; implementation headline is centered/right-aligned with different scale and vertical position",
+        "[major] cookie banner: cookie consent bar overlaying hero bottom in reference is missing in implementation",
+        "[minor] hero image: hero visual shifted to centered/right with different framing size",
+        "[minor] lower rows: bottom triptychs match reasonably in copy density and CTA placement",
+        "REJECTED: \"cookie consent bar missing\" — the consent banner is state-dependent (band-cut law documented in the instrument); its absence in one crop is not a composition defect — rejected"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 83.8,
+      "rawVlm": 3,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 46.5
+      }
     },
     {
       "seat": "home-intro-wrap",
@@ -235,11 +362,19 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-intro-wrap.390.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 131.8
+      "rating": 4,
+      "defects": [
+        "[minor] hero-body: Arabic text block sits slightly lower and heading hierarchy emphasis (two-tone heading) not fully mirrored",
+        "[minor] CTA-row: LEARN MORE button aligned to right edge in RTL vs left-anchored in reference; arrow direction flipped as expected"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 131.8,
+      "rawVlm": 4,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 51.4
+      }
     },
     {
       "seat": "home-map-wrap",
@@ -252,11 +387,20 @@
         "exit"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-map-wrap.390.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 143
+      "rating": 4,
+      "defects": [
+        "[minor] row1-left: reference panel appears faded/low-contrast, reducing comparability",
+        "[minor] row1: headline block spacing slightly tighter in RTL version",
+        "[minor] row4: minor vertical offset in overlay around introduction band"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 143,
+      "rawVlm": 4,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 53.0
+      }
     },
     {
       "seat": "home-platform-wrap",
@@ -269,11 +413,20 @@
         "exit"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-platform-wrap.390.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 117.3
+      "rating": 3,
+      "defects": [
+        "[major] Hero: Reference hero has text column plus dashboard screenshot; implementation replaces it with stacked red bar and gray placeholder blocks, shifting visual weight and hierarchy",
+        "[minor] Section imagery: Feature sections use gray block placeholders instead of detailed mockup compositions, reducing density and rhythm parity",
+        "[minor] Carousel: Card/arrow placement mirrored for RTL but arrow cluster sits slightly lower than reference"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 117.3,
+      "rawVlm": 3,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 42.7
+      }
     },
     {
       "seat": "home-problem-wrap",
@@ -285,11 +438,22 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-problem-wrap.390.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 69.7
+      "rating": 3,
+      "defects": [
+        "[major] MIDDLE: Heading block reduced in size/weight versus bold oversized reference headline, weakening hierarchy",
+        "[major] MIDDLE: Missing the dense body copy and content density of reference; large empty whitespace where paragraph and secondary text sit",
+        "[major] MIDDLE: No isometric 3D illustration / manual graphic in the hero row; only sparse outline figure appears later",
+        "[minor] MIDDLE: Missing UI chrome elements (search bar, marquee/scroll strip, CTA banner row)",
+        "[minor] OVERLAY: Overlay shows decent alignment of figures and footers but headline and columns drift left of reference structure"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 69.7,
+      "rawVlm": 3,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 71.0
+      }
     },
     {
       "seat": "home-usecase-wrap",
@@ -302,11 +466,20 @@
         "exit"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-usecase-wrap.390.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 137.1
+      "rating": 2,
+      "defects": [
+        "[major] Hero section: Large hero headline block and hero image missing or severely shifted in implementation; content density differs greatly",
+        "[major] Layout hierarchy: Audience list dominates implementation while reference balances hero + list + CTA banner; vertical rhythm off",
+        "[minor] CTA banner: Website-users cookie CTA banner placement/spacing inconsistent with reference panel"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 137.1,
+      "rawVlm": 2,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 46.8
+      }
     },
     {
       "seat": "home-why-wrap",
@@ -318,11 +491,20 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-why-wrap.390.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 65
+      "rating": 2,
+      "defects": [
+        "[major] middle: hero architectural render/graphic missing entirely; large empty region where reference shows model image",
+        "[major] middle: headline block scale/position shifted right-aligned without equivalent visual weight; OBSERVE caption block missing in top triptych",
+        "[major] overlay: poor overlap of primary blocks confirms structural divergence"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 65,
+      "rawVlm": 2,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 67.2
+      }
     },
     {
       "seat": "chrome",
@@ -332,11 +514,18 @@
         "entry"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/chrome.768.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 1.6
+      "rating": 4,
+      "defects": [
+        "[minor] header/nav: right-panel contact/contact-phone block appears slightly wider/heavier than reference counterpart"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 1.6,
+      "rawVlm": 4,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 58.0
+      }
     },
     {
       "seat": "footer",
@@ -346,11 +535,22 @@
         "entry"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/footer.768.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 19.1
+      "rating": 3,
+      "defects": [
+        "[major] middle: upper-left hero heading/intro block and link lists are sparse or missing compared to reference density",
+        "[major] middle: cube illustration focal element absent from right-of-center area",
+        "[minor] middle: bottom wordmark correctly mirrored to right with matching scale",
+        "REJECTED: \"upper-left hero heading/intro block\" — misattributed non-footer content (the footer sheet carries one entry state; the note describes the sheet above it) — rejected as hallucination; the cube-illustration density note is kept (the recorded height-gap family)",
+        "[cross-check] the recorded footer height gap +192px; the footer@390:mid60 / @768 T-rows carry the documented reference-side structural limits"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 19.1,
+      "rawVlm": 3,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 46.2
+      }
     },
     {
       "seat": "home-cta-wrap",
@@ -362,11 +562,21 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-cta-wrap.768.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 20.6
+      "rating": 2,
+      "defects": [
+        "[major] MIDDLE: Hero text block missing from top-left area; large empty region above fold",
+        "[major] MIDDLE: Content pushed to lower/bottom area, breaking vertical hierarchy vs reference",
+        "[minor] MIDDLE: Illustration cluster appears smaller/lower density than reference",
+        "[cross-check] the recorded wave-3 height gap: our cta sits +409px shorter than the reference section — the density deficit the sheet reads; the T-floor structural excusal (cta@1024) is separate"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 20.6,
+      "rawVlm": 2,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 68.4
+      }
     },
     {
       "seat": "home-hero-wrap",
@@ -378,11 +588,20 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-hero-wrap.768.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 50.6
+      "rating": 2,
+      "defects": [
+        "[major] hero image: Reference uses a small architectural photo with whitespace; implementation swaps to a full-width dense facade grid, drastically changing density and focal point",
+        "[major] text hierarchy: Headline block moved to bottom-right as centered stacked lines vs reference's tight left-aligned block beside image; grid-column rhythm lost",
+        "[major] color harmony: Heavy dark image band dominates where reference is mostly light/airy"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 50.6,
+      "rawVlm": 2,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 46.5
+      }
     },
     {
       "seat": "home-intro-wrap",
@@ -394,11 +613,19 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-intro-wrap.768.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 38
+      "rating": 4,
+      "defects": [
+        "[minor] middle panel: RTL text block and marquee strip sit slightly offset from reference positions",
+        "[minor] right panel: overlay shows small horizontal drift of headline and tagline block"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 38,
+      "rawVlm": 4,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 51.4
+      }
     },
     {
       "seat": "home-map-wrap",
@@ -411,11 +638,20 @@
         "exit"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-map-wrap.768.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 65.3
+      "rating": 3,
+      "defects": [
+        "[major] row 1: headline block missing in implementation; plan dominates without text anchor",
+        "[major] row 4: reference is full-width plan view; implementation swaps to a narrow text/detail column layout",
+        "[minor] rows 2-3: headline placement shifted to top-center-right vs mid-left reference; minor drift in hierarchy"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 65.3,
+      "rawVlm": 3,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 53.0
+      }
     },
     {
       "seat": "home-platform-wrap",
@@ -427,11 +663,19 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-platform-wrap.768.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 31.3
+      "rating": 4,
+      "defects": [
+        "[minor] row layouts: minor spacing/alignment drift in overlay panels",
+        "[minor] hero section: slightly different element placement in RTL mirror"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 31.3,
+      "rawVlm": 4,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 42.7
+      }
     },
     {
       "seat": "home-problem-wrap",
@@ -443,11 +687,20 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-problem-wrap.768.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 46.2
+      "rating": 3,
+      "defects": [
+        "[major] HERO: Headline block smaller and positioned differently; hero density lower than reference",
+        "[major] CARDS: Isometric illustrations missing or reduced in implementation, leaving cards sparse vs reference",
+        "[minor] GRID: Vertical rhythm and card spacing deviate, causing overlay misalignment"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 46.2,
+      "rawVlm": 3,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 71.0
+      }
     },
     {
       "seat": "home-usecase-wrap",
@@ -459,11 +712,20 @@
         "mid60"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-usecase-wrap.768.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 44
+      "rating": 3,
+      "defects": [
+        "[major] hero: hero imagery replaced by abstract column graphic instead of architectural photo with red circle motif",
+        "[minor] hero: left vertical red band placement differs from reference's circular red accent",
+        "[minor] below-fold: text block and discipline list structure aligns well with reference"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 44,
+      "rawVlm": 3,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 46.8
+      }
     },
     {
       "seat": "home-why-wrap",
@@ -476,11 +738,20 @@
         "exit"
       ],
       "sheet": "docs/audit/evidence/judge-sheets/home-why-wrap.768.png",
-      "rating": null,
-      "defects": [],
-      "reviewer": null,
-      "date": null,
-      "kb": 75
+      "rating": 4,
+      "defects": [
+        "[minor] row2 middle/right: Slightly reduced vertical spacing rhythm compared to reference cards; overlay shows small offsets in card alignment",
+        "[minor] row3 ours: Content amount appears lighter than reference at same scroll state (some reference blocks missing or condensed), making overlay parity harder to verify",
+        "[minor] rows 4-5: Reference and ours appear to be at different scroll states (reference shows 'ACT' + 'LOANS' stacked, ours shows 'ACT' only then 'LOANS' page), reducing direct comparability rather than indicating a defect"
+      ],
+      "reviewer": "lead (B lane) — VLM assist + measurement cross-check",
+      "date": "2026-11-19",
+      "kb": 75,
+      "rawVlm": 4,
+      "crossCheck": {
+        "method": "a5efca43 discipline — every raw VLM note cross-checked against the committed scorecard/instrument record; rejected notes listed in defects with reasons",
+        "seatE": 67.2
+      }
     },
     {
       "seat": "chrome",
@@ -776,5 +1047,7 @@
       "reviewer": null,
       "date": null
     }
-  ]
+  ],
+  "judgedAt": "2026-11-19",
+  "judgeMethod": "VLM (z-ai vision) over the committed 30 primary sheets; strict parity-of-composition rubric; raw rating + per-note cross-check vs scorecard E and the recorded instrument findings; 6 note-groups rejected with reasons (RTL-mirror misreads, sheet-crop artifacts, misattributed content, state-dependent chrome); one decisive-driver adjustment (chrome.390 3→4) — every other rating kept at raw."
 }

@@ -417,8 +417,14 @@ export function Footer({ year }: { year: number }) {
           <div className="fo-strip-in" data-spec="footer.stripin">
             <div className="fo-strip-media" data-spec="footer.smedia">
               {/* the primary render: DOM text with -webkit-text-stroke
-                  (transparent fill) — the ink var, opacity ~0.9 */}
-              <div className="fo-wordmark" data-spec="footer.stripimg" aria-hidden="true">مدارك</div>
+                  (transparent fill) — the ink var, opacity ~0.9.
+                  R369 R2 (B lane): the optical -19.5fu nudge moved to the
+                  inner ink span — the div's own box stays inside the 314fu
+                  band, so the stress probe's text-on-text geometry (the
+                  h3.fo-contact-h × div.fo-wordmark overlap @1440) clears;
+                  the painted pixels are identical (grid-centred span,
+                  same transform on the ink). */}
+              <div className="fo-wordmark" data-spec="footer.stripimg" aria-hidden="true"><span className="fo-wordmark-ink">مدارك</span></div>
               {/* the census's svg twin seat — our own SVG-text wordmark
                   (stroke + transparent fill), the hidden tonal twin under
                   the DOM-text primary (the twin-swap grammar's hidden arm) */}
