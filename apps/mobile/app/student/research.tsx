@@ -62,10 +62,10 @@ export default function ResearchScreen() {
     <Screen scroll>
       <StackHeader title="بحوثي" />
       <SectionNote>
-        ارفع بحوثك لفحص الانتحال والذكاء الاصطناعي (محاكاة) ثم تقييم الأستاذ والنشر في المكتبة.
+        ارفع بحوثك — فحص (محاكاة) ثم تقييم الأستاذ والنشر.
       </SectionNote>
       <Button
-        label="رفع بحث جديد"
+        label="رفع بحث"
         kind="accent"
         icon={<Upload size={16} color={p.accentFg} />}
         onPress={() => setUploadOpen(true)}
@@ -81,7 +81,7 @@ export default function ResearchScreen() {
           icon={<FileText size={24} color={p.textFaint} />}
           title="لم ترفع بحثًا بعد"
           message="ارفع أول بحث."
-          actionLabel="رفع بحث جديد"
+          actionLabel="رفع بحث"
           onAction={() => setUploadOpen(true)}
         />
       ) : (
@@ -228,12 +228,12 @@ function DetailSheet({
         ) : paper.status === "CHECKS_PASSED" ? (
           <SectionNote>بانتظار تقييم الأستاذ — لا إجراء مطلوب.</SectionNote>
         ) : paper.status === "PUBLISHED" ? (
-          <SectionNote>البحث متاح للجميع في مكتبة الجامعة.</SectionNote>
+          <SectionNote>البحث متاح في مكتبة الجامعة.</SectionNote>
         ) : null}
 
         {paper.fileUrl ? (
           <Button
-            label="فتح ملف البحث"
+            label="فتح الملف"
             kind="primary"
             onPress={() =>
               router.push({
@@ -344,7 +344,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
       onClose={() => {
         if (!busy) onClose();
       }}
-      title="رفع بحث جديد"
+      title="رفع بحث"
       footer={
         <View style={{ gap: sp[8] }}>
           {error ? (
@@ -401,7 +401,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
             ملف البحث (PDF، اختياري)
           </T>
           <T variant="xs" color="muted">
-            PDF فقط، 20 ميغابايت كحدّ أقصى — بدون ملف يُسجَّل البحث بعنوانه وملخصه.
+            PDF فقط، 20 ميغابايت كحدّ أقصى — بدونه يُسجَّل بالعنوان والملخص.
           </T>
           {fileName && !fileError ? (
             <Card style={{ gap: sp[6] }}>

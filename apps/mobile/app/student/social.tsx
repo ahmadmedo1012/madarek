@@ -184,7 +184,7 @@ export default function SocialScreen() {
     mutationFn: (payload: { body: string; hashtags?: string[] }) => socialApi.createPost(payload),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["posts"] });
-      toast.success("تم نشر منشورك.", "تمّ النشر");
+      toast.success("تم نشر منشورك.");
       setComposerOpen(false);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر النشر"),
@@ -194,7 +194,7 @@ export default function SocialScreen() {
 
   return (
     <Screen scroll={false} padded={false}>
-      <StackHeader title="المنشورات" kicker="الشبكة الاجتماعية" />
+      <StackHeader title="المنشورات" />
       <DataList
         data={posts}
         renderItem={({ item }) => (
@@ -276,7 +276,7 @@ function ComposeSheet({
       title="منشور جديد"
       footer={
         <View style={{ gap: sp[8] }}>
-          {!canSubmit && !pending ? <T variant="xs" color="faint">اكتب نص المنشور لتتمكّن من النشر.</T> : null}
+          {!canSubmit && !pending ? <T variant="xs" color="faint">اكتب نص المنشور.</T> : null}
           <Button
             label={pending ? "جارٍ النشر…" : "نشر"}
             kind="primary"
@@ -310,7 +310,7 @@ function ComposeSheet({
           hint="وسوم بفواصل."
         />
         <T variant="xs" color="faint">
-          لا تُرفع الصور من التطبيق بعد — يُعرض ما يرسله الخادم من روابط فقط.
+          لا رفع صور بعد — روابط الخادم فقط.
         </T>
       </View>
     </Sheet>

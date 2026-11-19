@@ -82,7 +82,7 @@ export default function OwnerActivity() {
     <Screen scroll={false} padded={false}>
       <StackHeader title="سجلّ النشاط" kicker={OWNER_DASHBOARD} />
       <View style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
-        <PageHeader title="سجلّ النشاط" kicker="كل العمليّات — من سجلّ التدقيق" />
+        <PageHeader title="سجلّ النشاط" />
       </View>
       <View style={{ flex: 1 }}>
         <DataList
@@ -186,7 +186,7 @@ function AuditDetailSheet({ event, onClose }: { event: AuditRow; onClose: () => 
         </T>
         {event.metadata === null || event.metadata === undefined ? (
           <T variant="sm" color="faint">
-            لا بيانات إضافية مسجَّلة لهذا الحدث.
+            لا بيانات إضافية للحدث.
           </T>
         ) : (
           <T variant="monoSm" color="muted" style={{ textAlign: "left" }}>
@@ -194,7 +194,7 @@ function AuditDetailSheet({ event, onClose }: { event: AuditRow; onClose: () => 
           </T>
         )}
         <T variant="xs" color="faint">
-          المعرف التقني للحدث يُحفظ في سجلّ التدقيق للمراجعة الفنية عند الحاجة.
+          المعرّف التقني يُحفظ في سجلّ التدقيق.
         </T>
       </View>
     </Sheet>

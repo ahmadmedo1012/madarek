@@ -49,7 +49,7 @@ export default function OwnerAlerts() {
     mutationFn: (id: string) => ownerApi.resolveAlert(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["owner", "alerts"] });
-      toast.success("أُغلق وسُجِّلت العمليّة.", "تمّ حلّ التنبيه");
+      toast.success("أُغلق التنبيه وسُجِّل.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر الحلّ"),
   });
@@ -63,7 +63,7 @@ export default function OwnerAlerts() {
     <Screen scroll>
       <StackHeader title="التنبيهات التشغيليّة" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="التنبيهات التشغيليّة" kicker="التنبيهات والحوادث التشغيليّة." />
+        <PageHeader title="التنبيهات التشغيليّة" />
 
         {alerts.isLoading ? (
           <SkeletonList rows={4} />
@@ -120,7 +120,7 @@ export default function OwnerAlerts() {
               </RowList>
               {rows.length >= 50 ? (
                 <T variant="xs" color="faint">
-                  تُعرض أول {latn(50)} تنبيهاً — حدّ الخادم لهذا اللوح؛ الأعداد أعلاه من الصفوف الظاهرة.
+                  تُعرض أول {latn(50)} تنبيهاً — حدّ الخادم؛ الأعداد من الصفوف الظاهرة.
                 </T>
               ) : null}
             </View>
@@ -135,7 +135,7 @@ export default function OwnerAlerts() {
         danger
         message={
           resolveTarget
-            ? `سيُغلَق التنبيه «${resolveTarget.title ?? "—"}» نهائيًّا، ويُسجَّل الحل باسمك في سجلّ النشاط. إذا استمر السبب الذي أنشأه فقد يُرفع تنبيه جديد.`
+            ? `سيُغلَق «${resolveTarget.title ?? "—"}» نهائيًّا ويُسجَّل الحل باسمك — وقد يُرفع تنبيه جديد إن استمر السبب.`
             : ""
         }
         loading={resolve.isPending}

@@ -48,7 +48,7 @@ export default function WebinarsScreen() {
 
   return (
     <Screen scroll={false} padded={false}>
-      <StackHeader title="ندوات قادمة" kicker="الندوات وورش العمل" />
+      <StackHeader title="ندوات قادمة" />
       <DataList
         data={upcoming}
         renderItem={({ item }) => <UpcomingRow session={item} />}
@@ -62,7 +62,7 @@ export default function WebinarsScreen() {
         emptySlot={
           <EmptyState
             icon={<CalendarClock size={24} color={p.textFaint} />}
-            title="لا جلسات مجدولة الآن"
+            title="لا جلسات مجدولة"
             message="بثوث مباشرة وتسجيلات بعد الجلسة."
             actionLabel="صفحة البثّ"
             onAction={() => router.push("/student/live" as never)}
@@ -71,7 +71,7 @@ export default function WebinarsScreen() {
         ListHeaderComponent={
           <View style={{ paddingHorizontal: sp[16], paddingTop: sp[12], paddingBottom: sp[8] }}>
             <SectionNote>
-              جدول البثّ المباشر لمقرّراتك — المباشرة منها تجري في صفحة البثّ مع زر الانضمام.
+              جدول بثّ مقرّراتك — والمباشرة في صفحتها.
             </SectionNote>
           </View>
         }
@@ -91,10 +91,10 @@ export default function WebinarsScreen() {
           }}
         >
           <T variant="xs" color="faint">
-            {`${countAr(upcoming.length, ["جلسة واحدة", "جلستان", "جلسات", "جلسة"])} · فعاليّات قادمة: ${num(upcoming.length)}`}
+            {`${countAr(upcoming.length, ["جلسة", "جلستان", "جلسات", "جلسة"])} · فعاليّات قادمة: ${num(upcoming.length)}`}
           </T>
           <Button
-            label="فتح صفحة البثّ"
+            label="فتح البثّ"
             kind="ghost"
             small
             onPress={() => router.push("/student/live" as never)}
@@ -129,7 +129,7 @@ function UpcomingRow({ session }: { session: LiveSession }) {
         </T>
       </View>
       <T variant="xs" color="faint">
-        يفتح باب الانضمام قبل الموعد بـ10 دقائق من صفحة البثّ.
+        يفتح الانضمام قبل الموعد بـ10 دقائق في صفحة البثّ.
       </T>
     </LedgerRow>
   );

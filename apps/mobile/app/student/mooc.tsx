@@ -42,7 +42,7 @@ function MoocRow({ course, onOpen }: { course: MoocCourse; onOpen: (url: string 
           />
         </View>
       ) : null}
-      <T variant="xs" color="faint">يفتح خارج التطبيق في متصفح النظام.</T>
+      <T variant="xs" color="faint">يفتح في متصفح النظام.</T>
     </LedgerRow>
   );
 }
@@ -72,7 +72,7 @@ export default function MoocScreen() {
 
   return (
     <Screen scroll={false} padded={false}>
-      <StackHeader title="دورات MOOC" kicker="دورات خارجية" />
+      <StackHeader title="دورات MOOC" />
       <DataList
         data={rows}
         renderItem={({ item }) => <MoocRow course={item} onOpen={open} />}
@@ -93,7 +93,7 @@ export default function MoocScreen() {
         ListHeaderComponent={
           <View style={{ paddingHorizontal: sp[16], paddingTop: sp[12], paddingBottom: sp[8], gap: sp[8] }}>
             <SectionNote>
-              دورات من منصّات تعليم عالمية وبرامج تدريبية معتمدة — التسجيل يتم على موقع المنصّة نفسها.
+              دورات عالمية معتمدة — التسجيل على موقع المنصّة.
             </SectionNote>
             {rows.length > 0 ? (
               <Card style={{ gap: sp[4] }}>

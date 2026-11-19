@@ -24,7 +24,7 @@ export default function Contact() {
 
   return (
     <Screen scroll>
-      <StackHeader title="التواصل والتسجيل المبكر" kicker="التواصل" />
+      <StackHeader title="التواصل والتسجيل المبكر" />
 
       <View style={{ gap: sp[8], paddingBottom: sp[4] }}>
         <T variant="h3" weight="bold">
@@ -58,13 +58,13 @@ export default function Contact() {
           </T>
         </View>
         <T variant="sm" color="secondary">
-          داخل التطبيق زرّ عائم «أبلغ عن مشكلة أو اقتراح» يرسل ملاحظتك مع اسم الصفحة مباشرة — هذا هو طريق الإبلاغ الأسرع، وهو متاح لحسابات مسجّلة.
+          «أبلغ عن مشكلة أو اقتراح» يرسل ملاحظتك مع الصفحة — للحسابات المسجّلة.
         </T>
       </Card>
 
       <View style={{ gap: sp[8] }}>
         <Button
-          label="إنشاء حساب جديد"
+          label="إنشاء حساب"
           kind="primary"
           onPress={() => router.push("/auth/register" as never)}
         />
@@ -76,7 +76,7 @@ export default function Contact() {
           onPress={() => router.push("/about" as never)}
         />
         <Button
-          label="الأمن والإفصاح المسؤول"
+          label="الأمن والإفصاح"
           kind="ghost"
           small
           onPress={() => router.push("/legal/security" as never)}

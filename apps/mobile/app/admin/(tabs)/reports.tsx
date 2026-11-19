@@ -51,7 +51,7 @@ export default function AdminReports() {
             التقارير المؤسسية
           </T>
           <T variant="body" color="muted">
-            مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية.
+            مؤشرات أداء الجامعة الأكاديمية.
           </T>
         </View>
 
@@ -107,7 +107,7 @@ export default function AdminReports() {
                   {!topCourses || topCourses.length === 0 ? (
                     <EmptyState
                       title="لا تسجيلات بعد"
-                      message="تظهر هنا فور تسجيل الطلاب."
+                      message="تظهر فور تسجيل الطلاب."
                     />
                   ) : (
                     <RowList>
@@ -144,7 +144,7 @@ export default function AdminReports() {
                 ) : null}
 
                 <T variant="xs" color="faint">
-                  سجلّ البحوث الكامل مع تصفية الحالة متاح من لوحة المسجل العام على الويب.
+                  سجلّ البحوث وتصفية الحالة من لوحة الويب.
                 </T>
               </>
             );

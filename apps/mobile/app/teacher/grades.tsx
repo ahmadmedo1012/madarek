@@ -158,7 +158,7 @@ export default function Grades() {
       const value = Number(focusDraft.score);
       if (focusDraft.score.trim() === "" || Number.isNaN(value)) throw new Error("أدخل درجة صحيحة.");
       if (value < 0) throw new Error("الدرجة ليست سالبة.");
-      if (value > mx) throw new Error(`الدرجة يجب ألّا تتجاوز ${latn(mx)}.`);
+      if (value > mx) throw new Error(`أقصى درجة  ${latn(mx)}.`);
       return teacherApi.upsertGrades(effectiveId, [
         {
           studentId: focus.id,
@@ -367,7 +367,7 @@ export default function Grades() {
                     }}
                   />
                   <T variant="xs" color="faint">
-                    اسحب البطاقة يمينًا أو يسارًا للتنقّل بين الطلاب.
+                    اسحب للتنقّل بين الطلاب.
                   </T>
                 </View>
               </Card>

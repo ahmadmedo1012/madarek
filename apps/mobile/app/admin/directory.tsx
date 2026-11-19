@@ -87,7 +87,7 @@ export default function AdminDirectory() {
             دليل التواصل
           </T>
           <T variant="body" color="muted">
-            أرقام التواصل على ملفات المؤسّسة — يحكمها إعداد الظهور لدى كل صاحب ملف.
+            أرقام التواصل على الملفات — يحكمها إعداد الظهور.
           </T>
         </View>
         <Segmented

@@ -334,7 +334,7 @@ export function Assistant({
           </View>
           {provider === "local" ? (
             <T variant="xs" color="muted" numberOfLines={1}>
-              المزوّد «local» — ردود قالبيّة مركّبة محليًا حتى تفعيل مزوّد خارجي حقيقي.
+              المزوّد «local» — ردود قالبيّة محلية حتى مزوّد حقيقي.
             </T>
           ) : null}
           {/* R334 review fix — the raw model id (e.g. vendor/model-7b) is a
@@ -464,7 +464,7 @@ export function Assistant({
                 وصلت حدّ الأسئلة اليومي
               </T>
               <T variant="xs" color="muted">
-                عُد غدًا — الحد اليومي يحفظ عدالة استخدام الخدمة للجميع.
+                عُد غدًا.
               </T>
             </Card>
           ) : null}
@@ -509,7 +509,7 @@ export function Assistant({
             )}
           </View>
           <T variant="xs" color="faint">
-            قد تكون الردود غير دقيقة — راجع مصادر المقرّر دائمًا.
+            قد تكون الردود غير دقيقة — راجع مصادر المقرّر.
           </T>
         </View>
         <KeyboardToolbar>

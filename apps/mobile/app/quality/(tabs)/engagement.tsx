@@ -71,7 +71,7 @@ export default function QualityEngagement() {
                   <StatLine
                     label="معدل الحضور"
                     value={`${latn(Math.round(d.attendance?.presentRate ?? 0))}%`}
-                    hint={countAr(d.attendance?.total ?? 0, ["سجل واحد", "سجلان", "سجلات", "سجلاً"])}
+                    hint={countAr(d.attendance?.total ?? 0, ["سجل", "سجلان", "سجلات", "سجلاً"])}
                   />
                   <StatLine label="نسبة التأخر" value={`${latn(Math.round(d.attendance?.lateRate ?? 0))}%`} />
                   <StatLine label="نسبة الغياب" value={`${latn(Math.round(d.attendance?.absentRate ?? 0))}%`} />
@@ -79,7 +79,7 @@ export default function QualityEngagement() {
                   <StatLine label="الطلاب" value={num(numOf(d.totalStudents))} />
                   <StatLine
                     label="التسجيلات"
-                    value={countAr(d.enrollments ?? 0, ["تسجيل واحد", "تسجيلان", "تسجيلات", "تسجيلاً"])}
+                    value={countAr(d.enrollments ?? 0, ["تسجيل", "تسجيلان", "تسجيلات", "تسجيلاً"])}
                   />
                 </LedgerRow>
               </RowList>
@@ -117,7 +117,7 @@ export default function QualityEngagement() {
               </RowList>
               {d.weeklyActiveEstimated ? (
                 <T variant="xs" color="faint">
-                  عدد الجلسات اليومية النشطة — منحنى تقديري لحدّة البيانات المسجَّلة.
+                  الجلسات اليومية — منحنى تقديري.
                 </T>
               ) : null}
             </View>

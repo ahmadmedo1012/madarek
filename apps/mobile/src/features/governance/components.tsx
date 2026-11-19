@@ -49,15 +49,15 @@ export function countAr(n: number, forms: [string, string, string, string]): str
 }
 
 export const UNIT = {
-  user: ["مستخدم واحد", "مستخدمان", "مستخدمين", "مستخدماً"] as [string, string, string, string],
-  student: ["طالب واحد", "طالبان", "طلاب", "طالباً"] as [string, string, string, string],
-  teacher: ["أستاذ واحد", "أستاذان", "أساتذة", "أستاذاً"] as [string, string, string, string],
-  course: ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"] as [string, string, string, string],
-  faculty: ["كلّيّة واحدة", "كلّيّتان", "كلّيّات", "كلّيّة"] as [string, string, string, string],
-  paper: ["ورقة واحدة", "ورقتان", "أوراق", "ورقة"] as [string, string, string, string],
-  event: ["حدث واحد", "حدثان", "أحداث", "حدثاً"] as [string, string, string, string],
-  alert: ["تنبيه واحد", "تنبيهان", "تنبيهات", "تنبيهاً"] as [string, string, string, string],
-  report: ["تقرير واحد", "تقريران", "تقارير", "تقريراً"] as [string, string, string, string],
+  user: ["مستخدم", "مستخدمان", "مستخدمين", "مستخدماً"] as [string, string, string, string],
+  student: ["طالب", "طالبان", "طلاب", "طالباً"] as [string, string, string, string],
+  teacher: ["أستاذ", "أستاذان", "أساتذة", "أستاذاً"] as [string, string, string, string],
+  course: ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"] as [string, string, string, string],
+  faculty: ["كلّيّة", "كلّيّتان", "كلّيّات", "كلّيّة"] as [string, string, string, string],
+  paper: ["ورقة", "ورقتان", "أوراق", "ورقة"] as [string, string, string, string],
+  event: ["حدث", "حدثان", "أحداث", "حدثاً"] as [string, string, string, string],
+  alert: ["تنبيه", "تنبيهان", "تنبيهات", "تنبيهاً"] as [string, string, string, string],
+  report: ["تقرير", "تقريران", "تقارير", "تقريراً"] as [string, string, string, string],
 };
 
 /* ══════════════════════ Page normalization ════════════════════════ */
@@ -223,7 +223,7 @@ const KNOWN_LABELS: Record<string, string> = {
   successRate: "معدّل النجاح",
   avgLatencyMs: "متوسط الاستجابة",
   avgEnrolment: "متوسط التسجيل",
-  idle: "بلا حصص هذا الفصل",
+  idle: "بلا حصص",
   one: "حصّة واحدة",
   two: "حصّتان",
   three: "3 حصص",
@@ -328,7 +328,7 @@ export function HonestLedger({
           if (scalars) {
             return (
               <View key={key}>
-                <StatLine label={label} value={countAr(v.length, ["عنصر واحد", "عنصران", "عناصر", "عنصراً"])} />
+                <StatLine label={label} value={countAr(v.length, ["عنصر", "عنصران", "عناصر", "عنصراً"])} />
                 {v.slice(0, 12).map((x, i) => (
                   <StatLine
                     key={`${key}-${i}`}
@@ -341,7 +341,7 @@ export function HonestLedger({
           }
           return (
             <View key={key}>
-              <StatLine label={label} value={countAr(v.length, ["سجلّ واحد", "سجلّان", "سجلّات", "سجلاً"])} />
+              <StatLine label={label} value={countAr(v.length, ["سجلّ", "سجلّان", "سجلّات", "سجلاً"])} />
               {v.slice(0, 10).map((row, i) => (
                 <View key={`${key}-row-${i}`} style={{ paddingStart: depth > 0 ? 0 : sp[12] }}>
                   {row && typeof row === "object" ? (

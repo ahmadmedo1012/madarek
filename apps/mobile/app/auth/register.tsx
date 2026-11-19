@@ -174,7 +174,7 @@ export default function Register() {
           <View style={{ alignItems: "center", gap: sp[8], paddingTop: sp[16] }}>
             <BrandMark size={40} />
             <T variant="h2" weight="bold">إنشاء حساب</T>
-            <T variant="sm" color="muted">خطوة 1 من 2 — اختر صفة حسابك</T>
+            <T variant="sm" color="muted">خطوة 1 من 2 — الصفة</T>
           </View>
           {(["STUDENT", "TEACHER"] as const).map((r) => (
             <Pressable
@@ -208,7 +208,7 @@ export default function Register() {
             </Pressable>
           ))}
           <T variant="xs" color="faint">
-            الأدوار الأخرى تُمنح بتعيين فقط — تواصل مع إدارة مؤسّستك.
+            الأدوار الأخرى بتعيين — تواصل مع إدارة مؤسّستك.
           </T>
         </FormScreen>
       </>
@@ -306,7 +306,7 @@ export default function Register() {
           onSelect={setDepartmentId}
           disabled={!facultyId}
           sheetTitle="اختر القسم"
-          emptyLabel="لا أقسام في هذه الكلية"
+          emptyLabel="لا أقسام بها"
         />
         {role === "STUDENT" ? (
           <>
@@ -338,7 +338,7 @@ export default function Register() {
           value={inviteCode}
           onChangeText={setInviteCode}
           autoCapitalize="characters"
-          hint={inviteCode.trim() && inviteCheck.data?.ok ? `رمز صالح — ${inviteCheck.data.scopeLabel ?? ""}` : "إن كانت لديك دعوة."}
+          hint={inviteCode.trim() && inviteCheck.data?.ok ? `رمز صالح — ${inviteCheck.data.scopeLabel ?? ""}` : "إن وُجدت دعوة."}
           error={fieldErrors.inviteCode}
         />
       </FormScreen>

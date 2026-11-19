@@ -136,9 +136,9 @@ export default function AdminFaculties() {
                       ) : null}
                       <T variant="xs" color="muted">
                         {f.city || "—"} ·{" "}
-                        {countAr(f.departmentCount ?? depts.length, ["قسم واحد", "قسمان", "أقسام", "قسماً"])} ·{" "}
-                        {countAr(f.courseCount ?? 0, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"])} ·{" "}
-                        {countAr(f.studentCount ?? 0, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}
+                        {countAr(f.departmentCount ?? depts.length, ["قسم", "قسمان", "أقسام", "قسماً"])} ·{" "}
+                        {countAr(f.courseCount ?? 0, ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"])} ·{" "}
+                        {countAr(f.studentCount ?? 0, ["طالب", "طالبان", "طلاب", "طالباً"])}
                       </T>
                     </View>
                     {depts.length > 0 ? (
@@ -164,9 +164,9 @@ export default function AdminFaculties() {
                                 {d.name}
                               </T>
                               <T variant="xs" color="muted">
-                                {countAr(d.courses ?? 0, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"])} ·{" "}
-                                {countAr(d.teachers ?? 0, ["أستاذ واحد", "أستاذان", "أساتذة", "أستاذاً"])} ·{" "}
-                                {countAr(d.students ?? 0, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}
+                                {countAr(d.courses ?? 0, ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"])} ·{" "}
+                                {countAr(d.teachers ?? 0, ["أستاذ", "أستاذان", "أساتذة", "أستاذاً"])} ·{" "}
+                                {countAr(d.students ?? 0, ["طالب", "طالبان", "طلاب", "طالباً"])}
                               </T>
                             </LedgerRow>
                           ))}

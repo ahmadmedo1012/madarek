@@ -303,7 +303,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
       ) : (
         <View style={{ gap: 12 }}>
           <T variant="sm" color="muted">
-            المنصب يُمنح بالتعيين — يضاف فوق دور الأستاذ ولا يستبدله.
+            يُمنح بالتعيين — يضاف فوق دور الأستاذ، لا يستبدله.
           </T>
           <Segmented options={POSITION_OPTIONS} selectedId={position ?? ""} onSelect={(id) => setPosition(id as PositionChoice)} />
           {needsFaculty ? (
@@ -347,7 +347,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
       <ConfirmDialog
         open={unverifyConfirm}
         title="إلغاء التوثيق"
-        message={`سيُفقد «${teacher.firstName} ${teacher.lastName}» شارة التوثيق، ويُسجَّل الإجراء في سجلّ النشاط.`}
+        message={`سيُفقد «${teacher.firstName} ${teacher.lastName}» شارة التوثيق — ويُسجَّل في سجلّ النشاط.`}
         confirmLabel="إلغاء التوثيق"
         danger
         loading={verify.isPending}

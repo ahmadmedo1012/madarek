@@ -65,7 +65,7 @@ export default function OwnerRealtime() {
             المراقبة الحيّة
           </T>
           <T variant="body" color="muted">
-            مراقبة العمليّات الحيّة للمنصّة في الوقت الفعليّ
+            مراقبة العمليّات الحيّة لحظيًا
           </T>
         </View>
 
@@ -137,7 +137,7 @@ export default function OwnerRealtime() {
             ) : null}
 
             <T variant="xs" color="faint">
-              القراءات من نقطة النهاية ‎/owner/realtime‎ — قيم رقميّة بصيغة لاتينية كما تصل من الخادم.
+              القراءات من ‎/owner/realtime‎ — لاتينية كما تصل من الخادم.
             </T>
           </View>
         )}

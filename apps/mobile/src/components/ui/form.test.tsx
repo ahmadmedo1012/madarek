@@ -182,7 +182,7 @@ describe("useFormValidation — the Arabic zod adapter", () => {
     await act(async () => {
       result.current.blur("name");
     });
-    expect(result.current.errorFor("name")).toBe("يجب أن يكون 3 حرفًا على الأقل");
+    expect(result.current.errorFor("name")).toBe("3 حرفًا على الأقل");
 
     // a below-min number (not a missing one) reads the numeric min message
     await act(async () => {
@@ -193,7 +193,7 @@ describe("useFormValidation — the Arabic zod adapter", () => {
       ok = result.current.validateAll();
     });
     expect(ok).toBe(false);
-    expect(result.current.errors.age).toBe("يجب أن يكون 12 على الأقل");
+    expect(result.current.errors.age).toBe("12 على الأقل");
   });
 
   it("handleSubmit gates the callback on validity", async () => {

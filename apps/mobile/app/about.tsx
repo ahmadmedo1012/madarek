@@ -19,7 +19,7 @@ import { LEGAL_COLOPHON, LEGAL_UPDATED } from "@/features/common/legalData";
 export default function About() {
   return (
     <Screen scroll>
-      <StackHeader title="عن مدارك" kicker="المنصّة" />
+      <StackHeader title="عن مدارك" />
 
       <View style={{ gap: sp[8], paddingBottom: sp[4] }}>
         <T variant="h3" weight="bold">
@@ -73,13 +73,13 @@ export default function About() {
           onPress={() => router.push("/legal/terms" as never)}
         />
         <Button
-          label="البيانات وبيانات العرض"
+          label="بيانات العرض"
           kind="ghost"
           small
           onPress={() => router.push("/legal/data" as never)}
         />
         <Button
-          label="التواصل والتسجيل المبكر"
+          label="التواصل"
           kind="ghost"
           small
           onPress={() => router.push("/contact" as never)}

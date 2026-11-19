@@ -79,8 +79,12 @@ export function assignmentStatus(
   return "pending";
 }
 
+/** Counted-grammar nouns — shared by the countdown branches (R369 C4.1). */
+const DAY_COUNT = ["يوم", "يومين", "أيام", "يوماً"] as const;
+const HOUR_COUNT = ["ساعة", "ساعتين", "ساعات", "ساعة"] as const;
+
 /**
- * Due-date countdown — «متبقٍ ٥ ساعات» / «متبقٍ يومان» / «متأخر ٤ أيام».
+ * Due-date countdown — «متبقٍ ٥ ساعات» / «متبقٍ يومين» / «متأخر ٤ أيام».
  * Null when there is no due date. Western digits (latn) per numerals
  * policy; pure function of (dueAt, now).
  */
@@ -95,13 +99,13 @@ export function dueCountdown(dueAt: string | null | undefined, now: number): str
   const days = Math.round(hours / 24);
   if (days >= 1) {
     return overdue
-      ? countAr(days, ["متأخر يوم واحد", "متأخر يومان", "متأخر أيام", "متأخر يومًا"])
-      : countAr(days, ["متبقٍ يوم واحد", "متبقٍ يومان", "متبقٍ أيام", "متبقٍ يومًا"]);
+      ? `متأخر ${countAr(days, DAY_COUNT)}`
+      : `متبقٍ ${countAr(days, DAY_COUNT)}`;
   }
   if (hours >= 1) {
     return overdue
-      ? countAr(hours, ["متأخر ساعة واحدة", "متأخر ساعتان", "متأخر ساعات", "متأخر ساعةً"])
-      : countAr(hours, ["متبقية ساعة واحدة", "متبقية ساعتان", "متبقية ساعات", "متبقية ساعةً"]);
+      ? `متأخر ${countAr(hours, HOUR_COUNT)}`
+      : `متبقية ${countAr(hours, HOUR_COUNT)}`;
   }
   const minutes = Math.max(1, Math.round(absMs / 60_000));
   return overdue
@@ -169,7 +173,7 @@ export default function AssignmentsScreen() {
               }
             />
             <T variant="sm" color="muted">
-              لعرض سجل تكاليف كل مقرر وتقييماتها، افتح صفحة المقرّر من مقرّراتي.
+              التقييمات في صفحة المقرّر من «مقرّراتي».
             </T>
           </View>
         }

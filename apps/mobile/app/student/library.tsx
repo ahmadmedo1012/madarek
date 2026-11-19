@@ -286,7 +286,7 @@ function BooksTab() {
           </T>
           {availability !== "all" ? (
             <T variant="xs" color="muted">
-              تصفية على الكتب الظاهرة — حمّل المزيد للتوسيع.
+              تصفية على الظاهر — حمّل المزيد.
             </T>
           ) : null}
         </View>
@@ -558,7 +558,7 @@ function ResearchTab() {
                 {`بحوث منشورة: ${num(hits.length)}`}
               </T>
               <T variant="xs" color="muted">
-                النشر مُتحقَّق قبل الإدراج — عبر عارض المستندات.
+                النشر مُتحقَّق قبل الإدراج — عبر العارض.
               </T>
             </Card>
           </View>
@@ -573,7 +573,7 @@ function ResearchTab() {
             title={debouncedQ ? "لا نتائج للبحث" : NO_FILES}
             message={
               debouncedQ
-                ? `لم نجد بحثاً يطابق «${debouncedQ}» — جرّب كلمات أخرى.`
+                ? `لا نتائج لـ«${debouncedQ}» — جرّب كلمات أخرى.`
                 : "بحوث الطلاب فور إجازتها."
             }
           />

@@ -67,7 +67,7 @@ export default function AdminDigital() {
     <Screen scroll>
       <StackHeader title="التحوّل الرقميّ" kicker={REGISTRAR_DASHBOARD} />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="التحوّل الرقميّ" kicker="مؤشّرات التبنّي الرقميّ عبر الجامعة." />
+        <PageHeader title="التحوّل الرقميّ" />
 
         {metrics.isLoading ? (
           <SkeletonList rows={5} />

@@ -59,7 +59,7 @@ export default function TeacherStudents() {
               <BidiText variant="sm" color="muted">
                 {`${offering.course.name} · ${offering.course.code}${
                   offering.studentsCount !== undefined
-                    ? ` · ${arCount(offering.studentsCount, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}`
+                    ? ` · ${arCount(offering.studentsCount, ["طالب", "طالبان", "طلاب", "طالباً"])}`
                     : ""
                 }`}
               </BidiText>

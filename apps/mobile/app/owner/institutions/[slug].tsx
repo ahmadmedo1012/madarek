@@ -162,12 +162,12 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
           <InstitutionStatusChip status={inst.status} />
           {members !== null ? (
             <T variant="sm" color="muted">
-              {countAr(members, ["عضو نشط واحد", "عضوان نشطان", "أعضاء نشطون", "عضواً نشطاً"])}
+              {countAr(members, ["عضو نشط", "عضوان نشطان", "أعضاء نشطون", "عضواً نشطاً"])}
             </T>
           ) : null}
           {faculties !== null ? (
             <T variant="sm" color="muted">
-              · {countAr(faculties, ["كلّيّة واحدة", "كلّيّتان", "كلّيّات", "كلّيّة"])}
+              · {countAr(faculties, ["كلّيّة", "كلّيّتان", "كلّيّات", "كلّيّة"])}
             </T>
           ) : null}
         </View>
@@ -218,7 +218,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
             }
           />
           <T variant="body" color="muted">
-            يُمنح دور المسجل العام داخل المؤسسة فقط — عبر بريد حساب قائم.
+            المسجل العام داخل المؤسسة فقط — عبر بريد حساب قائم.
           </T>
         </View>
 
@@ -425,7 +425,7 @@ function ProvisionSheet({
     <Sheet open={open} onClose={onClose} title="تجهيز مسجل عام">
       <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
-          يُربط حساب قائم (بالبريد) بدور المسجل العام هنا — إنشاء الحسابات من لوحة الويب.
+          يُربط حساب قائم (بالبريد) — والإنشاء من لوحة الويب.
         </T>
         <Field
           label="البريد"

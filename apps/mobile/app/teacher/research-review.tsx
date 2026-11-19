@@ -247,7 +247,7 @@ export default function ResearchReview() {
                 {selected.aiContentPct != null ? `${latn(Math.round(selected.aiContentPct))}%` : "—"}
               </T>
               <T variant="xs" color="muted">
-                قيم الفحص تجريبية معلنة — ليست قياساً فعلياً حتى تفعيل كشف حقيقي.
+                قيم الفحص تجريبية — ليست قياساً فعلياً.
               </T>
             </Card>
 
@@ -297,7 +297,7 @@ export default function ResearchReview() {
                 <Badge label={`مُقيَّم — الدرجة ${selected.grade != null ? `${latn(selected.grade)}/20` : "—"}`} tone="copper" />
                 {selected.status === "GRADED" ? (
                   <Button
-                    label="نشر في المكتبة"
+                    label="نشر"
                     kind="accent"
                     loading={publish.isPending}
                     onPress={() => setConfirmPublish(true)}

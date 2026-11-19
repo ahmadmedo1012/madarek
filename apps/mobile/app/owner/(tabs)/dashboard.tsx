@@ -108,7 +108,7 @@ export default function OwnerDashboard() {
             <MetricHero
               label="مستخدمو المنصّة"
               value={s.totalUsers ?? null}
-              hint={countAr(s.totalUsers ?? 0, ["حساب واحد", "حسابان", "حسابات", "حساباً"])}
+              hint={countAr(s.totalUsers ?? 0, ["حساب", "حسابان", "حسابات", "حساباً"])}
             />
             <View style={{ flexDirection: "row", gap: sp[8] }}>
               <MetricTile label="الطلاب" value={s.students ?? null} />

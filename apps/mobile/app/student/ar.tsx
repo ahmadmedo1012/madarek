@@ -32,8 +32,8 @@ export default function ArScreen() {
 
   return (
     <Screen scroll>
-      <StackHeader title="الواقع الافتراضي والمعزز" kicker="تجارب AR / VR" />
-      <SectionNote>فهرس تجارب AR/VR للمقرّرات العمليّة — فهرس للاستعراض، والتشغيل غير متاح بعد.</SectionNote>
+      <StackHeader title="الواقع الافتراضي والمعزز" />
+      <SectionNote>تجارب AR/VR للمقرّرات العمليّة — للاستعراض فقط.</SectionNote>
 
       {feed.isLoading ? (
         <SkeletonList rows={3} rowHeight={72} />

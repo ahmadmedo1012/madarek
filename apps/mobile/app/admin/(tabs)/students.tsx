@@ -248,7 +248,7 @@ function EnrollmentManager({
     <Sheet open onClose={onClose} title={`تسجيلات ${student.firstName} ${student.lastName}`}>
       <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
-          إلغاء التسجيل يحذف التسجيل والتقدُّم نهائيًا — يمرّ على تأكيد قبل التنفيذ.
+          إلغاء التسجيل يحذفه والتقدُّم نهائيًا — يمرّ على تأكيد.
         </T>
 
         <T variant="sm" weight="bold">

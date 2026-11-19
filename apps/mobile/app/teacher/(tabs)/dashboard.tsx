@@ -502,7 +502,7 @@ export default function TeacherDashboard() {
                   </T>
                   <T variant="xs" color="muted">
                     {o.course.code} · {o.term}
-                    {o.studentsCount !== undefined ? ` · ${arCount(o.studentsCount, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}` : ""}
+                    {o.studentsCount !== undefined ? ` · ${arCount(o.studentsCount, ["طالب", "طالبان", "طلاب", "طالباً"])}` : ""}
                   </T>
                 </View>
               </View>

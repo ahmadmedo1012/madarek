@@ -196,7 +196,7 @@ export default function QualityExamModeration() {
                   </T>
                   <T variant="xs" color="muted">
                     {questionTypeLabel(q.type)} · {difficultyLabel(q.difficulty)} ·{" "}
-                    {countAr(q.points ?? 0, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])}
+                    {countAr(q.points ?? 0, ["نقطة", "نقطتان", "نقاط", "نقطة"])}
                   </T>
                 </LedgerRow>
               ))}

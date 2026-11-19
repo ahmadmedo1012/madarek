@@ -24,7 +24,7 @@ export function countAr(n: number, forms: [string, string, string, string]): str
 
 /** «نقطة واحدة» / «نقطتان» / «N نقاط» (D17-2 grammar). */
 export function pointsAr(n: number): string {
-  return countAr(n, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"]);
+  return countAr(n, ["نقطة", "نقطتان", "نقاط", "نقطة"]);
 }
 
 /* ── Exam kinds ──────────────────────────────────────────────────── */

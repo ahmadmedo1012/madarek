@@ -654,7 +654,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
         {loadError ? (
           <Card style={{ gap: sp[8] }}>
             <T variant="body" color="danger">
-              تعذّر تحميل الفيديو — تحقّق من اتصالك ثم أعد المحاولة.
+              تعذّر تحميل الفيديو — تحقّق من الاتصال.
             </T>
             <Button label="إعادة التحميل" kind="ghost" small onPress={loadSource} />
           </Card>
@@ -754,7 +754,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
           ) : (
             <View style={{ flex: 1 }}>
               <Button
-                label="عُد إلى المقرّر"
+                label="رجوع للمقرّر"
                 kind="primary"
                 small
                 onPress={() => router.push(`/student/courses/${lecture.offeringId}` as never)}
@@ -813,7 +813,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
 
           {(lecture.chapters ?? []).length === 0 ? (
             <T variant="sm" color="muted">
-              لا فصول مقسَّمة — شاهد المحاضرة كاملة دون تنقّل.
+              لا فصول مقسَّمة — شاهد المحاضرة كاملة.
             </T>
           ) : (
             <RowList>
@@ -1036,7 +1036,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
             </View>
             {answerErr ? (
               <T variant="sm" color="danger">
-                تعذّر إرسال الإجابة — تحقّق من اتصالك ثم أعد المحاولة.
+                تعذّر إرسال الإجابة — تحقّق من الاتصال.
               </T>
             ) : null}
             {reveal ? (
@@ -1256,7 +1256,7 @@ function VideoStage({
       <Pressable
         style={StyleSheet.absoluteFill}
         accessibilityLabel="إظهار/إخفاء الأدوات"
-        accessibilityHint="نقرتان على الجانب = عشر ثوانٍ"
+        accessibilityHint="نقرتان = عشر ثوانٍ"
         onPress={(e) => handleTap(e.nativeEvent.locationX)}
       />
 
@@ -1443,7 +1443,7 @@ function SeekBar({
       onLayout={(e) => (widthRef.current = e.nativeEvent.layout.width)}
       accessibilityRole="adjustable"
       accessibilityLabel="شريط التقدّم"
-      accessibilityHint="اسحب للانتقال — نقرتان على الجانب = عشر ثوانٍ"
+      accessibilityHint="اسحب للانتقال — نقرتان = عشر ثوانٍ"
       onAccessibilityAction={(e) => {
         const step = e.nativeEvent.actionName === "increment" ? 10 : e.nativeEvent.actionName === "decrement" ? -10 : 0;
         if (step !== 0) player.seekBy(step);

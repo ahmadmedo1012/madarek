@@ -47,7 +47,7 @@ export default function QualityProfessors() {
 
         {rows.some((t) => t.satisfactionEstimated || t.responseHoursEstimated) ? (
           <T variant="xs" color="faint">
-            رضا الطلاب وزمن الاستجابة قيم تقديرية حتى تفعيل قياسها الفعلي.
+            الرضا وزمن الاستجابة تقديريان حتى قياس فعلي.
           </T>
         ) : null}
 
@@ -96,7 +96,7 @@ export default function QualityProfessors() {
                       </View>
                     </View>
                     <T variant="xs" color="muted">
-                      {countAr(t.offerings ?? 0, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"])} ·{" "}
+                      {countAr(t.offerings ?? 0, ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"])} ·{" "}
                       {latn(t.totals?.materials ?? 0)} ملف · {latn(t.totals?.lectures ?? 0)} محاضرة
                     </T>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
@@ -125,7 +125,7 @@ export default function QualityProfessors() {
             </RowList>
             {rows.length >= ROSTER_CAP ? (
               <T variant="xs" color="faint">
-                تُعرض أول {latn(ROSTER_CAP)} أستاذًا — حدّ الخادم لهذا السجلّ.
+                تُعرض أول {latn(ROSTER_CAP)} أستاذًا — حدّ الخادم.
               </T>
             ) : null}
           </>

@@ -252,7 +252,7 @@ export default function TeacherProfile() {
               </T>
             ) : (
               <T variant="sm" color="muted">
-                لم تُضف نبذة بعد. اضغط «تحرير السيرة» لإضافة وصف عن خلفيتك الأكاديمية.
+                لم تُضف نبذة بعد — اضغط «تحرير السيرة».
               </T>
             )}
             <StatLine label="موقع المكتب" value={me.officeLocation ?? "—"} />
@@ -283,14 +283,14 @@ export default function TeacherProfile() {
                   </T>
                   <T variant="xs" color="muted">
                     {c.code} · {c.term} ·{" "}
-                    {c.enrolled === 0 ? "لا طلاب" : arCount(c.enrolled, ["طالب واحد", "طالبان", "طلاب", "طالباً"])}
+                    {c.enrolled === 0 ? "لا طلاب" : arCount(c.enrolled, ["طالب", "طالبان", "طلاب", "طالباً"])}
                   </T>
                 </LedgerRow>
               ))}
             </RowList>
           ) : (
             <Card>
-              <T variant="sm" color="muted">لم يُسند إليك أي مقرّر بعد</T>
+              <T variant="sm" color="muted">لم تُسند إليك مقرّرات بعد</T>
             </Card>
           )}
 

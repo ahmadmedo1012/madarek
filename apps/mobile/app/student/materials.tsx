@@ -161,7 +161,7 @@ export default function MaterialsScreen() {
   return (
     <Screen scroll={false} padded={false}>
       <AppStatusBar />
-      <StackHeader title="موادي التعليمية" kicker="ملفات مقرّراتك معًا" />
+      <StackHeader title="موادي التعليمية" />
       <View style={{ flex: 1 }}>
         <DataList
           data={filtered}
@@ -209,7 +209,7 @@ export default function MaterialsScreen() {
               ) : null}
               {filterActive ? (
                 <T variant="xs" color="muted">
-                  تُطبَّق التصفية على كامل موادّك — أعد الضبط لعرض كل الملفات.
+                  التصفية على كامل موادّك — أعد الضبط للكل.
                 </T>
               ) : null}
             </View>

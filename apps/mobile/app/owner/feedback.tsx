@@ -89,7 +89,7 @@ export default function OwnerFeedback() {
     <Screen scroll>
       <StackHeader title={FEEDBACK} kicker={OWNER_DASHBOARD} />
       <View style={{ gap: sp[16], paddingTop: sp[16] }}>
-        <PageHeader title={FEEDBACK} kicker="كل التقارير الواردة." />
+        <PageHeader title={FEEDBACK} />
 
         <Segmented
           options={STATUS_FILTERS}
@@ -153,8 +153,7 @@ export default function OwnerFeedback() {
               loading={inbox.isFetching}
             />
             <T variant="xs" color="faint">
-              الحالة تتحرّك باتجاه واحد: مفتوحة → تحت المعالجة → أُصلحت أو مرفوضة · المسار يُسجَّل كما
-              وصل من مُبلِّغه.
+              الحالة باتجاه واحد: مفتوحة → معالجة → أُصلحت/مرفوضة — والمسار كما وصل.
             </T>
           </View>
         )}

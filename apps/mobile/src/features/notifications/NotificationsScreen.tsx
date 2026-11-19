@@ -374,7 +374,7 @@ export function PushActivationCard() {
       {state === "denied" ? (
         <View style={{ alignSelf: "flex-start" }}>
           <Button
-            label="فتح إعدادات النظام"
+            label="فتح الإعدادات"
             kind="ghost"
             small
             onPress={() => void Linking.openSettings().catch(() => undefined)}

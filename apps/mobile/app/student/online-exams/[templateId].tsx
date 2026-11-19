@@ -98,7 +98,7 @@ export function planAnswerSave(isOnline: boolean): "direct" | "queue" {
 
 /** «لديك سؤالان بدون إجابة.» — the confirm-sheet warning (web grammar). */
 export function unansweredNoteAr(n: number): string {
-  return `لديك ${countAr(n, ["سؤال واحد بدون إجابة", "سؤالان بدون إجابة", "أسئلة بدون إجابة", "سؤالاً بدون إجابة"])}.`;
+  return `لديك ${countAr(n, ["سؤال بدون إجابة", "سؤالان بدون إجابة", "أسئلة بدون إجابة", "سؤالاً بدون إجابة"])}.`;
 }
 
 /** One navigator cell: every state the grid needs, derived purely. */
@@ -440,7 +440,7 @@ export default function ExamTakerScreen() {
         });
       }
       if (announce && report.sent > 0) {
-        toast.success("تمت المزامنة.", "عاد الاتصال");
+        toast.success("عاد الاتصال وتمت المزامنة.");
       }
       return report;
     },
@@ -690,7 +690,7 @@ export default function ExamTakerScreen() {
 
   const finalityNote =
     listedExam?.kind === "PRACTICE"
-      ? "بعد التسليم لا تعديل — المحاولة التدريبية متاحة لاحقًا."
+      ? "لا تعديل بعد التسليم — التدريبية لاحقًا."
       : "لا تعديل ولا إعادة بعد التسليم.";
 
   /* ── render: post-submit result ─────────────────────────────────── */
@@ -828,7 +828,7 @@ export default function ExamTakerScreen() {
       {total > 0 ? (
         <PressableScale
           accessibilityRole="button"
-          accessibilityLabel={`خريطة الأسئلة — ${latn(answeredCount)} مُجاب و${latn(flaggedQids.size)} معلَّم للمراجعة من ${latn(total)}`}
+          accessibilityLabel={`خريطة الأسئلة — ${latn(answeredCount)} مُجاب · ${latn(flaggedQids.size)} معلَّم`}
           onPress={() => {
             haptics.selection();
             setNavPick(qIndex);
@@ -1079,7 +1079,7 @@ export default function ExamTakerScreen() {
           <View style={{ flex: 1 }}>
             {queuedQids.size > 0 ? (
               <T variant="sm" style={{ color: tones.yellow.deep }}>
-                {`${countAr(queuedQids.size, ["إجابة واحدة في الانتظار", "إجابتان في الانتظار", "إجابات في الانتظار", "إجابةً في الانتظار"])} — دون اتصال`}
+                {`${countAr(queuedQids.size, ["إجابة معلّقة", "إجابتان معلّقتان", "إجابات معلّقة", "إجابةً معلّقة"])} — دون اتصال`}
               </T>
             ) : (
               <T variant="sm" color={unanswered > 0 ? "danger" : "muted"}>
@@ -1277,7 +1277,7 @@ function ExamNetGate({
       <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
         <Clock size={14} color={tones.yellow.ink} />
         <T variant="sm" style={{ color: tones.yellow.deep }}>
-          أنت دون اتصال — إجاباتك تُحفظ وتُرسل تلقائياً عند عودة الشبكة.
+          دون اتصال — إجاباتك محفوظة وتُرسل تلقائياً.
         </T>
       </View>
     </View>
@@ -1404,7 +1404,7 @@ function ResultBody({
           </View>
           <T variant="sm" color="muted" align="center">
             {result.needsManual > 0
-              ? `${countAr(result.needsManual, ["سؤال", "سؤالان", "أسئلة", "سؤالاً"])} بحاجة لتقييم يدوي — الدرجة النهائية بعد المراجعة.`
+              ? `${countAr(result.needsManual, ["سؤال", "سؤالان", "أسئلة", "سؤالاً"])} بحاجة لتقييم يدوي — الدرجة بعد المراجعة.`
               : "احتُسبت فورًا."}
           </T>
         </Card>
@@ -1412,7 +1412,7 @@ function ResultBody({
 
       {awaitingManual ? (
         <T variant="sm" color="muted" align="center">
-          المراجعة متاحة بعد اكتمال التصحيح.
+          المراجعة بعد اكتمال التصحيح.
         </T>
       ) : (
         <View style={{ gap: sp[8] }}>
@@ -1436,7 +1436,7 @@ function ResultBody({
                 ))}
                 {(review.data?.questions ?? []).length === 0 ? (
                   <T variant="sm" color="muted">
-                    لا تفاصيل مراجعة لهذه المحاولة.
+                    لا تفاصيل لهذه المحاولة.
                   </T>
                 ) : null}
               </View>

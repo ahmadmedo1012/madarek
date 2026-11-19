@@ -450,7 +450,7 @@ function QuickGradeForm({
         throw new ApiError("BAD_WEIGHT", "الوزن عدد صحيح 0–100.", 400);
       }
       if (s > mx) {
-        throw new ApiError("OVER_MAX", `الدرجة يجب ألَا تتجاوز ${latn(mx)}.`, 400);
+        throw new ApiError("OVER_MAX", `أقصى درجة  ${latn(mx)}.`, 400);
       }
       return teacherApi.upsertGrades(offeringId, [
         { studentId: student.id, kind, score: s, maxScore: mx, weight: wt },
@@ -586,7 +586,7 @@ export function OfferingRoster({
   return (
     <View style={{ flex: 1, gap: sp[10] }}>
       <View style={{ paddingHorizontal: sp[20], gap: sp[10] }}>
-        <SearchBar value={q} onChange={setQ} placeholder="ابحث باسم الطالب أو الرقم الجامعي…" />
+        <SearchBar value={q} onChange={setQ} placeholder="بحث بالاسم أو الرقم الجامعي…" />
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], paddingHorizontal: sp[20] }}>
         <Button
@@ -614,7 +614,7 @@ export function OfferingRoster({
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         emptyTitle="لا نتائج مطابقة"
-        emptyMessage="جرّب كلمة أخرى أو أعد التصفية."
+        emptyMessage="جرّب كلمة أخرى."
         contentPadding={{ horizontal: 20, bottom: 24 }}
       />
 

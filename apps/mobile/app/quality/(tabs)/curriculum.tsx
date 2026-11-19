@@ -57,7 +57,7 @@ export default function QualityCurriculum() {
               مراجعة المناهج
             </T>
             <T variant="body" color="muted">
-              شجرة الكلّيّات والأقسام والمقرّرات، مع مؤشرات اكتمال المحتوى.
+              الكلّيّات والأقسام والمقرّرات — مع مؤشرات الاكتمال.
             </T>
           </View>
           <Badge label={READ_ONLY} tone="grey" />
@@ -94,8 +94,8 @@ export default function QualityCurriculum() {
                         {f.name}
                       </T>
                       <T variant="xs" color="muted">
-                        {countAr(departments.length, ["قسم واحد", "قسمان", "أقسام", "قسماً"])} ·{" "}
-                        {countAr(coursesCount, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"])}
+                        {countAr(departments.length, ["قسم", "قسمان", "أقسام", "قسماً"])} ·{" "}
+                        {countAr(coursesCount, ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"])}
                       </T>
                     </View>
                     <ExpandChevron open={facOpen} />
@@ -121,7 +121,7 @@ export default function QualityCurriculum() {
                                   {d.name}
                                 </T>
                                 <T variant="xs" color="muted">
-                                  {countAr(courses.length, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"])}
+                                  {countAr(courses.length, ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"])}
                                   {deptAvg !== null ? ` · متوسط الاكتمال ${latn(deptAvg)}%` : ""}
                                 </T>
                               </View>
@@ -151,9 +151,9 @@ export default function QualityCurriculum() {
                                         <Badge label={LEVEL_LABEL[c.level]} tone={LEVEL_TONE[c.level]} />
                                       </View>
                                       <T variant="xs" color="muted">
-                                        {countAr(c.lectures, ["محاضرة واحدة", "محاضرتان", "محاضرات", "محاضرة"])} ·{" "}
-                                        {countAr(c.materials, ["ملف واحد", "ملفان", "ملفات", "ملفاً"])} ·{" "}
-                                        {countAr(co._count?.concepts ?? 0, ["مفهوم واحد", "مفهومان", "مفاهيم", "مفهوماً"])}
+                                        {countAr(c.lectures, ["محاضرة", "محاضرتان", "محاضرات", "محاضرة"])} ·{" "}
+                                        {countAr(c.materials, ["ملف", "ملفان", "ملفات", "ملفاً"])} ·{" "}
+                                        {countAr(co._count?.concepts ?? 0, ["مفهوم", "مفهومان", "مفاهيم", "مفهوماً"])}
                                       </T>
                                       <T variant="bodyLg" weight="bold">
                                         {latn(c.pct)}%

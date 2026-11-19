@@ -363,7 +363,7 @@ export default function StudentProfile() {
               <View style={{ flex: 1 }}>
                 <T variant="body" weight="bold">قفل التطبيق بالبصمة</T>
                 <T variant="xs" color="muted">
-                  يُطلب فتح القفل عند كل فتح بارد، ورمز الجهاز بديل دائم.
+                  يُطلب عند كل فتح بارد — ورمز الجهاز بديل.
                 </T>
               </View>
               <Button
@@ -404,7 +404,7 @@ export default function StudentProfile() {
             <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
               <Bell size={20} color={p.textMuted} />
               <T variant="sm" color="muted" style={{ flex: 1 }}>
-                الإشعارات معطّلة من إعدادات النظام — افتحها من هناك.
+                معطّلة من إعدادات النظام — افتحها هناك.
               </T>
             </View>
             <View style={{ alignSelf: "flex-start" }}>
@@ -456,7 +456,7 @@ export default function StudentProfile() {
           ))}
         </RowList>
         <T variant="xs" color="faint">
-          كل خدمات الطالب من هنا — بعضها يعمل دون اتصال.
+          كل خدمات الطالب — بعضها دون اتصال.
         </T>
 
         {/* الجلسة — last concern on the screen, mirroring settings. */}

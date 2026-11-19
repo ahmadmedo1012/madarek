@@ -108,7 +108,7 @@ export default function CollegeDetail() {
       ) : (
         isGuest ? (
           <T variant="sm" color="muted">
-            كلّيّة حديثة التأسيس — تُحدَّث بياناتها مع بدء التسجيل.
+            كلّيّة حديثة التأسيس — تُحدَّث ببدء التسجيل.
           </T>
         ) : null
       )}

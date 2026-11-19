@@ -81,7 +81,7 @@ const [maxUses, setMaxUses] = useState("1");
       }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "invites"] });
-      toast.success("أُنشئت الدعوة.", "دعوة جديدة");
+      toast.success("أُنشئت الدعوة.");
       setCreateOpen(false);
       setScopeKind("none");
       setScopeId(null);
@@ -95,7 +95,7 @@ const [maxUses, setMaxUses] = useState("1");
     mutationFn: (id: string) => adminApi.deleteInvite(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "invites"] });
-      toast.success("حُذف الكود.", "تمّ الحذف");
+      toast.success("حُذف الكود.");
       setDeleting(null);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر الحذف"),
@@ -208,7 +208,7 @@ const [maxUses, setMaxUses] = useState("1");
           />
 
           <T variant="sm" color="muted">
-            نطاق الدعوة (اختيار واحد على الأكثر)
+            نطاق الدعوة (واحد على الأكثر)
           </T>
           <Segmented
             options={[
@@ -276,7 +276,7 @@ const [maxUses, setMaxUses] = useState("1");
       <ConfirmDialog
         open={deleting !== null}
         title="حذف الدعوة"
-        message={deleting ? `سيُحذف كود «${deleting.code}» نهائيًا. لا يمكن التراجع عن هذا الإجراء.` : ""}
+        message={deleting ? `سيُحذف كود «${deleting.code}» نهائيًا — لا يمكن التراجع.` : ""}
         confirmLabel="حذف نهائي"
         danger
         loading={remove.isPending}

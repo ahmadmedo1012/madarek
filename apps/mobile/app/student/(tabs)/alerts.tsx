@@ -1,5 +1,5 @@
 import { NotificationsScreen } from "@/features/notifications/NotificationsScreen";
 
 export default function Alerts() {
-  return <NotificationsScreen title="الإشعارات" kicker="بريدك" />;
+  return <NotificationsScreen title="الإشعارات" />;
 }

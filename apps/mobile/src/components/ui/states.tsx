@@ -132,25 +132,25 @@ const ROOMS: Record<EmptyRoom, RoomSheet> = {
   "exam-hall": {
     Art: PlanExamHall,
     title: "لا امتحانات بعد",
-    message: "تظهر هنا فور نشرها.",
+    message: "تظهر فور نشرها.",
     a11y: "قاعة اختبار فارغة",
   },
   library: {
     Art: PlanLibrary,
     title: NO_FILES,
-    message: "تظهر هنا عند مشاركتها.",
+    message: "تظهر عند مشاركتها.",
     a11y: "مكتبة فارغة",
   },
   "lecture-hall": {
     Art: PlanLectureHall,
     title: "لا محاضرات",
-    message: "تظهر هنا فور إضافتها.",
+    message: "تظهر فور إضافتها.",
     a11y: "قاعة محاضرات فارغة",
   },
   building: {
     Art: PlanBuilding,
     title: "لا محتوى",
-    message: "يظهر هنا فور إضافته.",
+    message: "يظهر فور إضافته.",
     a11y: "مخطط مبنى فارغ",
   },
 };
@@ -293,7 +293,7 @@ export function ErrorState({
           }}
         >
           {onRetry ? <Button label={RETRY} kind="ghost" onPress={onRetry} small /> : null}
-          {onReport ? <Button label="إبلاغ عن مشكلة" kind="ghost" onPress={onReport} small /> : null}
+          {onReport ? <Button label="أبلغ" kind="ghost" onPress={onReport} small /> : null}
         </View>
       ) : null}
     </View>
@@ -375,7 +375,7 @@ export function OfflineBanner({ visible }: { visible: boolean }) {
     >
       <WifiOff size={16} color={warn.deep} />
       <T variant="sm" style={{ color: warn.deep }}>
-        لا يوجد اتصال — تُعرض بيانات محفوظة قد تكون قديمة، ولن تُرسَل أي عمليات كتابة.
+        دون اتصال — بيانات محفوظة ربما قديمة، ولا كتابة.
       </T>
     </View>
   );

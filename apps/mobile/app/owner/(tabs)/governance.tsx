@@ -44,7 +44,7 @@ export default function OwnerGovernance() {
             الحوكمة المتقدّمة
           </T>
           <T variant="body" color="muted">
-            تتبّع الصلاحيات والنموّ وتحليل تسجيلات الدخول
+            تتبّع الصلاحيات والنموّ والدخول.
           </T>
         </View>
 
@@ -89,7 +89,7 @@ export default function OwnerGovernance() {
             <SkeletonList rows={3} rowHeight={48} />
           ) : gov.isError ? null : (g?.weeklyGrowth ?? []).length === 0 ? (
             <T variant="body" color="muted">
-              لا توجد بيانات نموّ بعد — سيُرسم السجلّ فور تسجيل أوّل مستخدم.
+              لا بيانات نموّ — يُرسم فور أول مستخدم.
             </T>
           ) : (
             <RowList>
@@ -136,7 +136,7 @@ export default function OwnerGovernance() {
             <SkeletonList rows={4} rowHeight={48} />
           ) : logins.isError ? null : (la?.daily ?? []).length === 0 ? (
             <T variant="body" color="muted">
-              لا توجد بيانات يوميّة — تُسجَّل المحاولات يوماً بيوم فور حدوثها.
+              لا بيانات يوميّة — تُسجَّل فور حدوثها.
             </T>
           ) : (
             <RowList>

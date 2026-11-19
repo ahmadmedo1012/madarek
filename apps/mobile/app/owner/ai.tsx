@@ -67,7 +67,7 @@ export default function OwnerAi() {
         }
       />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <PageHeader title="مركز الذكاء" kicker="استخدام وأداء الذكاء." />
+        <PageHeader title="مركز الذكاء" />
 
         {metrics.isLoading ? (
           <SkeletonList rows={4} rowHeight={48} />
@@ -139,7 +139,7 @@ export default function OwnerAi() {
               <SectionBar index={3} title="الاتجاه (7 أيام)" />
               {(m?.trend ?? []).length === 0 ? (
                 <T variant="body" color="muted">
-                  لا توجد بيانات بعد — يُرسم الاتّجاه فور تسجيل أوّل طلب.
+                  لا بيانات بعد — يُرسم فور أول طلب.
                 </T>
               ) : (
                 <RowList>
@@ -156,8 +156,7 @@ export default function OwnerAi() {
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                 <Sparkles size={14} color={tones.yellow.ink} />
                 <T variant="sm" color="muted">
-                  المزوّد محليّ (قالبيّ) — الردود تُركَّب من قوالب على الخادم وليست من نموذج لغويّ
-                  خارجيّ.
+                  المزوّد قالبيّ — الردود من قوالب الخادم، لا نموذج خارجيّ.
                 </T>
               </View>
             ) : null}

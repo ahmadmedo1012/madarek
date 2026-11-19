@@ -85,8 +85,7 @@ export default function QualityDashboard() {
               لوحة الجودة
             </T>
             <T variant="body" color="muted">
-              بناء نظام تعليمي فعّال عبر تطوير الأداء الأكاديمي والإداري والتقني — وفقاً لمتطلبات
-              الاعتماد المحلية والدولية.
+              تطوير الأداء الأكاديمي والإداري والتقني — وفق الاعتماد.
             </T>
           </View>
           <Badge label={READ_ONLY} tone="grey" />
@@ -123,7 +122,7 @@ export default function QualityDashboard() {
               <MetricHero
                 label="الطلاب النشطون"
                 value={numOf(users.STUDENT)}
-                hint="آخر قراءة من الجودة"
+                hint="آخر قراءة"
                 progress={presentRate}
               />
               <View style={{ flexDirection: "row", gap: sp[8] }}>
@@ -159,7 +158,7 @@ export default function QualityDashboard() {
                       <StatLine
                         label="نسبة الحضور"
                         value={`${num(Math.round(presentRate * 100))}%`}
-                        hint={countAr(attTotal, ["سجل واحد", "سجلان", "سجلات", "سجلاً"])}
+                        hint={countAr(attTotal, ["سجل", "سجلان", "سجلات", "سجلاً"])}
                         tone="accent"
                       />
                     ) : null}
@@ -220,7 +219,7 @@ export default function QualityDashboard() {
             >
               <Eye size={12} color={p.textFaint} />
               <T variant="xs" color="faint">
-                قطاع ضمان الجودة — وصول قراءة فقط · قراءة لحظية للمؤشرات.
+                قطاع ضمان الجودة — قراءة فقط، لحظية.
               </T>
             </Animated.View>
           </>

@@ -67,7 +67,7 @@ function clampedPct(value: number): number {
 
 function teacherLine(e: EnrollmentRow): string {
   const t = e.offering.teacher;
-  return t ? `د. ${t.firstName} ${t.lastName}` : "بلا أستاذ مسجَّل";
+  return t ? `د. ${t.firstName} ${t.lastName}` : "بلا أستاذ";
 }
 
 /* ══ list card — well + identity + schedule + progress ring ═══════════ */
@@ -338,12 +338,12 @@ export default function StudentCourses() {
       refetch={() => feed.refetch()}
       isRefetching={feed.isRefetching}
       emptyTitle="لا مقرّرات"
-      emptyMessage="لم تُسجَّل بعد — الإضافة عبر شؤون الطلاب."
+      emptyMessage="الإضافة عبر شؤون الطلاب."
       emptySlot={
         filteredEmpty ? (
           <EmptyState
-            title="لا مطابقات للتصفية"
-            message="خفّف الشروط أو أعد ضبطها."
+            title="لا مطابقات"
+            message="خفّف الشروط."
             actionLabel="إزالة التصفية"
             onAction={() => setFilters(NO_COURSE_FILTERS)}
           />
@@ -352,7 +352,7 @@ export default function StudentCourses() {
             art={<Illustration id="r342/role-student" width={216} />}
             room="library"
             title="لا مقرّرات"
-            message="لم تُسجَّل — الإضافة عبر شؤون الطلاب."
+            message="الإضافة عبر شؤون الطلاب."
             actionLabel="دليل المقرّرات"
             onAction={() => router.push("/student/catalog" as never)}
           />
@@ -376,12 +376,12 @@ export default function StudentCourses() {
       refetch={() => feed.refetch()}
       isRefetching={feed.isRefetching}
       emptyTitle="لا مقرّرات"
-      emptyMessage="لم تُسجَّل — الإضافة عبر شؤون الطلاب."
+      emptyMessage="الإضافة عبر شؤون الطلاب."
       emptySlot={
         filteredEmpty ? (
           <EmptyState
-            title="لا مطابقات للتصفية"
-            message="خفّف الشروط أو أعد ضبطها."
+            title="لا مطابقات"
+            message="خفّف الشروط."
             actionLabel="إزالة التصفية"
             onAction={() => setFilters(NO_COURSE_FILTERS)}
           />
@@ -390,7 +390,7 @@ export default function StudentCourses() {
             art={<Illustration id="r342/role-student" width={216} />}
             room="library"
             title="لا مقرّرات"
-            message="لم تُسجَّل — الإضافة عبر شؤون الطلاب."
+            message="الإضافة عبر شؤون الطلاب."
             actionLabel="دليل المقرّرات"
             onAction={() => router.push("/student/catalog" as never)}
           />

@@ -47,7 +47,7 @@ export default function OwnerContent() {
                 علامة مدارك
               </T>
               <T variant="xs" color="muted">
-                مربَّع + معوّل بخطوط شعرية، وعقدة برتقالية واحدة
+                مربَّع بمعوّل وعقدة برتقالية
               </T>
             </View>
             <Badge label="SVG" tone="grey" mono />
@@ -67,7 +67,7 @@ export default function OwnerContent() {
             ))}
           </RowList>
           <T variant="xs" color="faint">
-            المصادر الرسميّة في مستودع الويب (frontend/public/brand) — التطبيق يرسم توأمه المتجهيّ.
+            المصادر في مستودع الويب (frontend/public/brand) — والتطبيق يرسم توأمه.
           </T>
         </View>
 
@@ -80,7 +80,7 @@ export default function OwnerContent() {
               </T>
             </View>
             <T variant="sm" color="muted">
-              تعديل الألوان ومحتوى الصفحة الرئيسيّة قيد التطوير — الألوان من نظام التصميم، والعنوان في كود الصفحة.
+              قيد التطوير — الألوان من نظام التصميم والعنوان في كود الصفحة.
             </T>
           </View>
         </Card>
@@ -96,10 +96,10 @@ export default function OwnerContent() {
                 </T>
               </View>
               <T variant="sm" color="muted">
-                تُدار الإعلانات وأعلام الميزات والصفحة الرئيسيّة من لوحة الويب.
+                والصفحة الرئيسيّة — كلها من لوحة الويب.
               </T>
               <Button
-                label="عن مدارك — الهويّة"
+                label="عن مدارك"
                 kind="ghost"
                 small
                 icon={<ArrowRight size={14} color={p.text} />}
@@ -114,7 +114,7 @@ export default function OwnerContent() {
           <Card>
             <View style={{ gap: sp[8] }}>
               <T variant="sm" color="muted">
-                تقارير «أبلغ عن مشكلة / اقتراح» من المستخدمين، بحالتها وطريقها.
+                تقارير «أبلغ عن مشكلة / اقتراح» — بحالتها وطريقها.
               </T>
               <Button
                 label={FEEDBACK}

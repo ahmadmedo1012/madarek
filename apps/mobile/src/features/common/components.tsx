@@ -36,19 +36,19 @@ export function pointsAr(n: number | null | undefined): string {
 /** «درس واحد / درسان / 5 دروس / 15 درسًا» */
 export function lessonsAr(n: number | null | undefined): string {
   if (n === null || n === undefined || Number.isNaN(n)) return "—";
-  return countAr(n, ["درس واحد", "درسان", "دروس", "درسًا"]);
+  return countAr(n, ["درس", "درسان", "دروس", "درسًا"]);
 }
 
 /** «دقيقة واحدة / دقيقتان / 5 دقائق / 15 دقيقة» */
 export function minutesAr(n: number | null | undefined): string {
   if (n === null || n === undefined || Number.isNaN(n)) return "—";
-  return countAr(n, ["دقيقة واحدة", "دقيقتان", "دقائق", "دقيقة"]);
+  return countAr(n, ["دقيقة", "دقيقتان", "دقائق", "دقيقة"]);
 }
 
 /** «عضو واحد / عضوان / 5 أعضاء» */
 export function membersAr(n: number | null | undefined): string {
   if (n === null || n === undefined || Number.isNaN(n)) return "—";
-  return countAr(n, ["عضو واحد", "عضوان", "أعضاء", "عضوًا"]);
+  return countAr(n, ["عضو", "عضوان", "أعضاء", "عضوًا"]);
 }
 
 /* ── Auth-error detection (public-ish pages) ─────────────────────────
@@ -94,7 +94,7 @@ export function submissionEnded(c: Pick<Competition, "status" | "deadline">): bo
 
 /** Sign-in EmptyState for guests hitting auth-walled data. */
 export function SignInPrompt({
-  message = "سجّل الدخول لعرض المحتوى والمشاركة.",
+  message = "سجّل الدخول للعرض والمشاركة.",
 }: {
   message?: string;
 }) {

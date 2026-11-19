@@ -223,7 +223,7 @@ export function GapList({
   if (rows.length === 0) {
     return (
       <T variant="sm" color="muted">
-        {emptyNote ?? "أجب عن نقاط التفاعل لترسم خريطة إتقانك."}
+        {emptyNote ?? "أجب عن نقاط التفاعل — ترسم خريطة إتقانك."}
       </T>
     );
   }

@@ -195,7 +195,7 @@ export default function DocumentViewer() {
 
         <Card style={{ gap: sp[8], alignItems: "flex-start" }}>
           <T variant="body" color="secondary">
-            يُنزَّل المستند إلى مساحة التطبيق المؤقتة عبر جلسة موثّقة، ثم يُفتح في العارض الأصلي لجهازك — دعم كامل للبحث والتكبير والصفحات.
+            يُنزَّل بجلسة موثّقة ثم يُفتح في عارض جهازك — ببحث وتكبير وصفحات.
           </T>
           {downloading ? (
             /* Honest indeterminate progress — byte-level progress is not
@@ -212,7 +212,7 @@ export default function DocumentViewer() {
           ) : (
             <View style={{ flexDirection: "row", gap: sp[8], alignSelf: "stretch" }}>
               <View style={{ flex: 1 }}>
-                <Button label="فتح في العارض" kind="primary" onPress={openViewer} icon={<ExternalLink size={16} color={p.primaryFg} />} />
+                <Button label="فتح العارض" kind="primary" onPress={openViewer} icon={<ExternalLink size={16} color={p.primaryFg} />} />
               </View>
               <Button
                 label="مشاركة"
@@ -272,7 +272,7 @@ export default function DocumentViewer() {
               icon: <Share2 size={18} color={p.text} />,
             },
             {
-              label: "فتح في العارض",
+              label: "فتح العارض",
               onPress: () => {
                 void openViewer();
               },

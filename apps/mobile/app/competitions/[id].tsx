@@ -223,7 +223,7 @@ export default function CompetitionDetail() {
             </T>
           ) : (
             <T variant="xs" color="faint">
-              يظهر العنوان فقط حتى يتمّ التحكيم
+              العنوان فقط حتى التحكيم
             </T>
           )}
           <RowList>

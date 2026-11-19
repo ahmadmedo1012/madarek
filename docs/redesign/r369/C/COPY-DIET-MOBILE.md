@@ -129,3 +129,127 @@ The −20% bar (≤ 8335) continues in wave 2 (the long tail + the deep pass on 
 | `app/student/research.tsx` | ملفات PDF فقط، بحد أقصى 20 ميغابايت — بدون ملف يُسجَّل البحث بعنوانه وملخصه فقط. | PDF فقط، 20 ميغابايت كحدّ أقصى — بدون ملف يُسجَّل البحث بعنوانه وملخصه. |
 | `app/teacher/(tabs)/dashboard.tsx` | kicker="تدخّلات اليوم بالأولوية." | kicker="تدخّلات اليوم" |
 | `app/teacher/(tabs)/dashboard.tsx` | "تسليم بانتظار التصحيح", | label={arCount(pendingTotal, ["تسليم", "تسليمان", "تسليمات", "تسليماً"])} |
+
+
+## Wave 2 — the long tail (C4.1)
+
+After wave 2: **8750** counted words (−1669 vs the 10419 baseline = **−16.0%**), 174 screens dieted.
+Ceilings re-censused DOWN in the same commit (sum 8750); gate CLEAN.
+Gates after wave 2: jest 1271/1271 green (two string-pins followed the diet: states.test «أبلغ», push-registrar «فتح الإعدادات» — assertion strength unchanged), worklet-audit LAWFUL.
+
+**The honest stop at −16%:** only 6 strings ≥8 words remain across the whole app — the copy sits at its terse plateau. The residual ~4% to the −20% bar is structural: the countAr grammatical unit arrays (4 plural forms per noun — ~600 counted words that render ONE form contextually; cutting them breaks Arabic plurals) and ≤7-word labels where each word carries meaning. Cutting further would remove action-critical information (violating the diet law).
+
+### Wave 2 read-through table
+
+| screen | before | after |
+|---|---|---|
+| `app/owner/feedback.tsx` | <PageHeader title={FEEDBACK} kicker="كل التقارير الواردة." /> | الحالة باتجاه واحد: مفتوحة → معالجة → أُصلحت/مرفوضة — والمسار كما وصل. |
+| `app/owner/feedback.tsx` | الحالة تتحرّك باتجاه واحد: مفتوحة → تحت المعالجة → أُصلحت أو مرفوضة · المسار يُس | — |
+| `app/owner/feedback.tsx` | وصل من مُبلِّغه. | — |
+| `app/student/jobs.tsx` | toast.success("وصل طلبك.", "تمّ التقديم"); | toast.success("وصل طلبك."); |
+| `app/student/jobs.tsx` | <StackHeader title="وظائف" kicker="فرص العمل" /> | <StackHeader title="وظائف" /> |
+| `app/student/jobs.tsx` | <SectionNote>وظائف وفرص تدريب تجريبية مفتوحة لطلاب وخرّيجي الجامعة (بيانات عرض). | <SectionNote>فرص تجريبية لطلاب وخرّيجي الجامعة — بيانات عرض.</SectionNote> |
+| `app/student/(tabs)/profile.tsx` | يُطلب فتح القفل عند كل فتح بارد، ورمز الجهاز بديل دائم. | يُطلب عند كل فتح بارد — ورمز الجهاز بديل. |
+| `app/student/(tabs)/profile.tsx` | الإشعارات معطّلة من إعدادات النظام — افتحها من هناك. | معطّلة من إعدادات النظام — افتحها هناك. |
+| `app/student/(tabs)/profile.tsx` | كل خدمات الطالب من هنا — بعضها يعمل دون اتصال. | كل خدمات الطالب — بعضها دون اتصال. |
+| `src/features/common/components.tsx` | return countAr(n, ["درس واحد", "درسان", "دروس", "درسًا"]); | return countAr(n, ["درس", "درسان", "دروس", "درسًا"]); |
+| `src/features/common/components.tsx` | return countAr(n, ["دقيقة واحدة", "دقيقتان", "دقائق", "دقيقة"]); | return countAr(n, ["دقيقة", "دقيقتان", "دقائق", "دقيقة"]); |
+| `src/features/common/components.tsx` | return countAr(n, ["عضو واحد", "عضوان", "أعضاء", "عضوًا"]); | return countAr(n, ["عضو", "عضوان", "أعضاء", "عضوًا"]); |
+| `src/features/common/components.tsx` | message = "سجّل الدخول لعرض المحتوى والمشاركة.", | message = "سجّل الدخول للعرض والمشاركة.", |
+| `app/training/index.tsx` | مسارات تدريبية مصمَّمة بعناية لتناسب احتياجاتك الأكاديمية والمهنية. أكمل مسارًا  | مسارات أكاديمية ومهنية — أكملها لشهادة موثَّقة. |
+| `app/admin/(tabs)/teachers.tsx` | المنصب يُمنح بالتعيين — يضاف فوق دور الأستاذ ولا يستبدله. | يُمنح بالتعيين — يضاف فوق دور الأستاذ، لا يستبدله. |
+| `app/admin/(tabs)/teachers.tsx` | message={`سيُفقد «${teacher.firstName} ${teacher.lastName}» شارة التوثيق، ويُسجَ | message={`سيُفقد «${teacher.firstName} ${teacher.lastName}» شارة التوثيق — ويُسج |
+| `src/components/ui/form.tsx` | minChars: (n: number) => `يجب أن يكون ${n} حرفًا على الأقل`, | minChars: (n: number) => `${n} حرفًا على الأقل`, |
+| `src/components/ui/form.tsx` | maxChars: (n: number) => `يجب ألّا يتجاوز ${n} حرفًا`, | maxChars: (n: number) => `أقصى ${n} حرفًا`, |
+| `src/components/ui/form.tsx` | minNumber: (n: number) => `يجب أن يكون ${n} على الأقل`, | minNumber: (n: number) => `${n} على الأقل`, |
+| `src/components/ui/form.tsx` | maxNumber: (n: number) => `يجب أن يكون ${n} على الأكثر`, | maxNumber: (n: number) => `${n} على الأكثر`, |
+| `app/teacher/(tabs)/profile.tsx` | لم تُضف نبذة بعد. اضغط «تحرير السيرة» لإضافة وصف عن خلفيتك الأكاديمية. | لم تُضف نبذة بعد — اضغط «تحرير السيرة». |
+| `app/teacher/(tabs)/profile.tsx` | {c.enrolled === 0 ? "لا طلاب" : arCount(c.enrolled, ["طالب واحد", "طالبان", "طلا | {c.enrolled === 0 ? "لا طلاب" : arCount(c.enrolled, ["طالب", "طالبان", "طلاب", " |
+| `app/teacher/(tabs)/profile.tsx` | <T variant="sm" color="muted">لم يُسند إليك أي مقرّر بعد</T> | <T variant="sm" color="muted">لم تُسند إليك مقرّرات بعد</T> |
+| `src/features/student/more.tsx` | return countAr(n, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"]); | return countAr(n, ["نقطة", "نقطتان", "نقاط", "نقطة"]); |
+| `app/quality/(tabs)/curriculum.tsx` | شجرة الكلّيّات والأقسام والمقرّرات، مع مؤشرات اكتمال المحتوى. | الكلّيّات والأقسام والمقرّرات — مع مؤشرات الاكتمال. |
+| `app/quality/(tabs)/curriculum.tsx` | {countAr(departments.length, ["قسم واحد", "قسمان", "أقسام", "قسماً"])} ·{" "} | {countAr(departments.length, ["قسم", "قسمان", "أقسام", "قسماً"])} ·{" "} |
+| `app/quality/(tabs)/curriculum.tsx` | {countAr(coursesCount, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"])} | {countAr(coursesCount, ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"])} |
+| `app/quality/(tabs)/curriculum.tsx` | {countAr(courses.length, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"])} | {countAr(courses.length, ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"])} |
+| `app/quality/(tabs)/curriculum.tsx` | {countAr(c.lectures, ["محاضرة واحدة", "محاضرتان", "محاضرات", "محاضرة"])} ·{" "} | {countAr(c.lectures, ["محاضرة", "محاضرتان", "محاضرات", "محاضرة"])} ·{" "} |
+| `app/quality/(tabs)/curriculum.tsx` | {countAr(c.materials, ["ملف واحد", "ملفان", "ملفات", "ملفاً"])} ·{" "} | {countAr(c.materials, ["ملف", "ملفان", "ملفات", "ملفاً"])} ·{" "} |
+| `app/quality/(tabs)/curriculum.tsx` | {countAr(co._count?.concepts ?? 0, ["مفهوم واحد", "مفهومان", "مفاهيم", "مفهوماً" | {countAr(co._count?.concepts ?? 0, ["مفهوم", "مفهومان", "مفاهيم", "مفهوماً"])} |
+| `app/quality/(tabs)/reports.tsx` | hint={countAr(eng?.attendance?.total ?? 0, ["سجل واحد", "سجلان", "سجلات", "سجلاً | hint={countAr(eng?.attendance?.total ?? 0, ["سجل", "سجلان", "سجلات", "سجلاً"])} |
+| `app/quality/(tabs)/reports.tsx` | value={countAr(eng?.enrollments ?? 0, ["تسجيل واحد", "تسجيلان", "تسجيلات", "تسجي | value={countAr(eng?.enrollments ?? 0, ["تسجيل", "تسجيلان", "تسجيلات", "تسجيلاً"] |
+| `app/quality/(tabs)/reports.tsx` | لا توجد تنبيهات — كل المؤشرات ضمن النطاق الطبيعي حالياً. | لا تنبيهات — المؤشرات ضمن النطاق الطبيعي. |
+| `app/quality/(tabs)/reports.tsx` | التقارير القابلة للتحميل (PDF/Excel) قيد التطوير — الأرقام أعلاه حيّة. | تحميل PDF/Excel قيد التطوير — الأرقام أعلاه حيّة. |
+| `app/owner/(tabs)/notifications.tsx` | return <NotificationsScreen title="بريدي" kicker="بريدك" />; | return <NotificationsScreen title="بريدي" />; |
+| `src/components/ui/states.test.tsx` | it("stages the exam hall: plan sheet + «تظهر هنا فور نشرها.»", async () => { | it("stages the exam hall: plan sheet + «تظهر فور نشرها.»", async () => { |
+| `src/components/ui/states.test.tsx` | expect(getByText("تظهر هنا فور نشرها.")).toBeTruthy(); | expect(getByText("تظهر فور نشرها.")).toBeTruthy(); |
+| `src/components/ui/states.test.tsx` | expect(getByText("إبلاغ عن مشكلة")).toBeTruthy(); | expect(getByText("أبلغ")).toBeTruthy(); |
+| `src/components/ui/states.test.tsx` | expect(getByText(/لا يوجد اتصال/)).toBeTruthy(); | expect(getByText(/دون اتصال/)).toBeTruthy(); |
+| `app/settings.tsx` | next ? "يُطلب القفل عند كل فتح بارد." : "أُلغي القفل.", | next ? "يُطلب عند كل فتح بارد." : "أُلغي القفل.", |
+| `app/settings.tsx` | يُطلب فتح القفل عند كل فتح بارد، ورمز الجهاز بديل دائم. | عند كل فتح بارد — ورمز الجهاز بديل. |
+| `app/settings.tsx` | القفل بالبصمة يحتاج مستشعرًا أو بصمة مسجّلة في النظام — جهازك لا يوفرها. | يحتاج مستشعرًا أو بصمة مسجّلة — جهازك لا يوفرها. |
+| `app/settings.tsx` | تغيير كلمة المرور ينهي جلساتك على الأجهزة الأخرى. | تغييرها ينهي الجلسات على الأجهزة الأخرى. |
+| `app/teacher/exams/[templateId].tsx` | <StatLine label="المدة" value={arCount(t.durationMin ?? 0, ["دقيقة واحدة", "دقيق | <StatLine label="المدة" value={arCount(t.durationMin ?? 0, ["دقيقة", "دقيقتان",  |
+| `app/teacher/exams/[templateId].tsx` | {arCount(q.points, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])} | {arCount(q.points, ["نقطة", "نقطتان", "نقاط", "نقطة"])} |
+| `app/teacher/exams/[templateId].tsx` | مجموع النقاط {arCount(totalPoints, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])} | مجموع النقاط {arCount(totalPoints, ["نقطة", "نقطتان", "نقاط", "نقطة"])} |
+| `app/teacher/exams/[templateId].tsx` | الأسئلة والنوع والنطاق ثابتة بعد الإنشاء — عدّل العرض والتوقيت أو استنسخ. | الأسئلة والنوع والنطاق ثابتة — عدّل التوقيت أو استنسخ. |
+| `app/teacher/exams/[templateId].tsx` | لا إجابات معلّقة — حفظ التصحيح يعتدّ بالدرجة الآلية ويُنهي المحاولة. | لا إجابات معلّقة — الحفظ يُنهي المحاولة بالدرجة الآلية. |
+| `app/teacher/exams/[templateId].tsx` | {arCount(a.points, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])} | {arCount(a.points, ["نقطة", "نقطتان", "نقاط", "نقطة"])} |
+| `app/teacher/exams/[templateId].tsx` | لم يُجب الطالب — حكمك يحدد درجته. | لم يُجب الطالب — حكمك يحدد الدرجة. |
+| `app/teacher/exams/[templateId].tsx` | accessibilityLabel={`ملاحظة على إجابة السؤال ${latn(i + 1)}`} | accessibilityLabel={`ملاحظة على السؤال ${latn(i + 1)}`} |
+| `app/colleges/index.tsx` | استكشف الكلّيّات والأقسام في سجلّ المؤسّسة المرجعية للعرض، وقادة كلّ كلّيّة، وأب | الكلّيّات والأقسام والقادة وأبرز الطلاب — بيانات تجريبية. |
+| `app/student/assignments.tsx` | * Due-date countdown — «متبقٍ ٥ ساعات» / «متبقٍ يومان» / «متأخر ٤ أيام». | const DAY_COUNT = ["يوم", "يومين", "أيام", "يوماً"] as const; |
+| `app/student/assignments.tsx` | ? countAr(days, ["متأخر يوم واحد", "متأخر يومان", "متأخر أيام", "متأخر يومًا"]) | const HOUR_COUNT = ["ساعة", "ساعتين", "ساعات", "ساعة"] as const; |
+| `app/student/assignments.tsx` | : countAr(days, ["متبقٍ يوم واحد", "متبقٍ يومان", "متبقٍ أيام", "متبقٍ يومًا"]); | * Due-date countdown — «متبقٍ ٥ ساعات» / «متبقٍ يومين» / «متأخر ٤ أيام». |
+| `app/student/assignments.tsx` | ? countAr(hours, ["متأخر ساعة واحدة", "متأخر ساعتان", "متأخر ساعات", "متأخر ساعة | ? `متأخر ${countAr(days, DAY_COUNT)}` |
+| `app/student/assignments.tsx` | : countAr(hours, ["متبقية ساعة واحدة", "متبقية ساعتان", "متبقية ساعات", "متبقية  | : `متبقٍ ${countAr(days, DAY_COUNT)}`; |
+| `app/student/assignments.tsx` | لعرض سجل تكاليف كل مقرر وتقييماتها، افتح صفحة المقرّر من مقرّراتي. | ? `متأخر ${countAr(hours, HOUR_COUNT)}` |
+| `app/student/assignments.tsx` | — | : `متبقية ${countAr(hours, HOUR_COUNT)}`; |
+| `app/student/assignments.tsx` | — | التقييمات في صفحة المقرّر من «مقرّراتي». |
+| `app/owner/institutions.tsx` | <PageHeader title="المؤسسات" kicker="إدارة المؤسسات التعليمية" /> | <PageHeader title="المؤسسات" /> |
+| `app/owner/institutions.tsx` | {countAr(members, ["عضو نشط واحد", "عضوان نشطان", "أعضاء نشطون", "عضواً نشطاً"]) | {countAr(members, ["عضو نشط", "عضوان نشطان", "أعضاء نشطون", "عضواً نشطاً"])} |
+| `app/owner/institutions.tsx` | · {countAr(faculties, ["كلّيّة واحدة", "كلّيّتان", "كلّيّات", "كلّيّة"])} | · {countAr(faculties, ["كلّيّة", "كلّيّتان", "كلّيّات", "كلّيّة"])} |
+| `app/owner/institutions.tsx` | {countAr(rows.length, ["مؤسسة واحدة", "مؤسستان", "مؤسسات", "مؤسسة"])} في السجلّ  | {countAr(rows.length, ["مؤسسة", "مؤسستان", "مؤسسات", "مؤسسة"])} في السجلّ — كما  |
+| `app/owner/institutions.tsx` | أضف مؤسسة تعليمية إلى المنصّة — تُنشأ نشطة ويمكن تعيين مسجلها العام بعد ذلك. | أضف مؤسسة — تُنشأ نشطة والمسجل يُعيَّن بعدها. |
+| `app/legal/[doc].tsx` | <StackHeader title="السياسات" kicker="مدارك" /> | <StackHeader title="السياسات" /> |
+| `app/legal/[doc].tsx` | <StackHeader title={data.title} kicker="السياسات" /> | — |
+| `src/features/governance/FeedbackInbox.tsx` | كل «أبلغ عن مشكلة / اقتراح» وصل من مستخدمي المنصّة — مع سياقه الكامل. | كل «أبلغ عن مشكلة / اقتراح» — بسياقه الكامل. |
+| `src/features/governance/FeedbackInbox.tsx` | message="تقارير «أبلغ عن مشكلة» تصل هنا بسياقها الكامل." | message="تصل هنا بسياقها الكامل." |
+| `src/features/governance/FeedbackInbox.tsx` | الحالة تتحرّك باتجاه واحد: مفتوحة → تحت المعالجة → أُصلحت أو مرفوضة · {latn(rows | الحالة باتجاه واحد: مفتوحة → تحت المعالجة → أُصلحت أو مرفوضة · {latn(rows.length |
+| `app/colleges/[id].tsx` | كلّيّة حديثة التأسيس — تُحدَّث بياناتها مع بدء التسجيل. | كلّيّة حديثة التأسيس — تُحدَّث ببدء التسجيل. |
+| `src/features/messages/MessagesUI.tsx` | كل رسالة وصلتك أو أرسلتها عبر المنصّة — ردّ على الواردة. | رسائلك الواردة والمرسلة — ردّ من هنا. |
+| `src/features/messages/MessagesUI.tsx` | emptyMessage="الرسائل الواردة — يمكنك الردّ عليها." | emptyMessage="يمكنك الردّ عليها." |
+| `src/features/messages/MessagesUI.tsx` | لا رسائل محمّلة مع هذا المستخدم بعد. | لا رسائل مع هذا المستخدم بعد. |
+| `app/admin/digital.tsx` | <PageHeader title="التحوّل الرقميّ" kicker="مؤشّرات التبنّي الرقميّ عبر الجامعة. | <PageHeader title="التحوّل الرقميّ" /> |
+| `src/components/ui/screen.tsx` | — | // «مخططات UML» row cut at the bar edge, subtitle truncated). The |
+| `app/training/[slug].tsx` | message="لا دروس بعد." | <T variant="xs" color="faint">إكمال الدروس يمنح نقاطًا في مستواك.</T> |
+| `app/training/[slug].tsx` | <T variant="xs" color="faint">إكمال الدروس يمنح نقاطًا تُحتسب في مستواك.</T> | — |
+| `src/components/ErrorBoundary.tsx` | نعتذر — حدث خطأ غير متوقع في هذه الشاشة. لم يتم فقدان بياناتك. أُرسل تقرير | حدث خطأ — بياناتك لم تُفقد، وأُرسل التقرير تلقائيًا. |
+| `src/components/ErrorBoundary.tsx` | الخطأ تلقائيًا لفريق مدارك. | — |
+| `src/lib/updates.tsx` | toast.info("تحديث جاهز — أعد التشغيل لتطبيقه", "تحديث مدارك"); | toast.info("تحديث جاهز — أعد التشغيل لتطبيقه."); |
+| `src/lib/updates.tsx` | هذا الإصدار لم يعد مدعومًا. حمّل الإصدار الجديد من صفحة التطبيق ثم عُد — | حمّل الجديد من صفحة التطبيق ثم عُد — بياناتك محفوظة. |
+| `src/lib/updates.tsx` | بياناتك محفوظة على الخادم ولن تفقد شيئًا. | — |
+| `app/teacher/live.tsx` | لا بث مباشر الآن — ابدأ جلسة مجدولة أو أنشئ جديدة. | لا بث مباشر — ابدأ مجدولة أو أنشئ جلسة. |
+| `app/teacher/live.tsx` | ? `ينهي البث للطلاب فورًا وتنتقل الجلسة إلى السجلّ.` | ? `ينهي البث للطلاب فورًا — والجلسة إلى السجلّ.` |
+| `src/features/messages/agenda-logic.test.ts` | expect(dueCountdown(new Date(NOW + 3_600_000).toISOString(), NOW)).toContain("سا | expect(dueCountdown(new Date(NOW + 3_600_000).toISOString(), NOW)).toContain("سا |
+| `src/features/messages/agenda-logic.test.ts` | expect(dueCountdown(new Date(NOW + 2 * 86_400_000).toISOString(), NOW)).toContai | expect(dueCountdown(new Date(NOW + 2 * 86_400_000).toISOString(), NOW)).toContai |
+| `app/owner/alerts.tsx` | toast.success("أُغلق وسُجِّلت العمليّة.", "تمّ حلّ التنبيه"); | toast.success("أُغلق التنبيه وسُجِّل."); |
+| `app/owner/alerts.tsx` | <PageHeader title="التنبيهات التشغيليّة" kicker="التنبيهات والحوادث التشغيليّة." | <PageHeader title="التنبيهات التشغيليّة" /> |
+| `app/owner/alerts.tsx` | تُعرض أول {latn(50)} تنبيهاً — حدّ الخادم لهذا اللوح؛ الأعداد أعلاه من الصفوف ال | تُعرض أول {latn(50)} تنبيهاً — حدّ الخادم؛ الأعداد من الصفوف الظاهرة. |
+| `app/owner/alerts.tsx` | ? `سيُغلَق التنبيه «${resolveTarget.title ?? "—"}» نهائيًّا، ويُسجَّل الحل باسمك | ? `سيُغلَق «${resolveTarget.title ?? "—"}» نهائيًّا ويُسجَّل الحل باسمك — وقد يُ |
+| `app/admin/(tabs)/students.tsx` | إلغاء التسجيل يحذف التسجيل والتقدُّم نهائيًا — يمرّ على تأكيد قبل التنفيذ. | إلغاء التسجيل يحذفه والتقدُّم نهائيًا — يمرّ على تأكيد. |
+| `app/student/research.tsx` | ارفع بحوثك لفحص الانتحال والذكاء الاصطناعي (محاكاة) ثم تقييم الأستاذ والنشر في ا | ارفع بحوثك — فحص (محاكاة) ثم تقييم الأستاذ والنشر. |
+| `app/student/research.tsx` | label="رفع بحث جديد" | label="رفع بحث" |
+| `app/student/research.tsx` | actionLabel="رفع بحث جديد" | actionLabel="رفع بحث" |
+| `app/student/research.tsx` | <SectionNote>البحث متاح للجميع في مكتبة الجامعة.</SectionNote> | <SectionNote>البحث متاح في مكتبة الجامعة.</SectionNote> |
+| `app/student/research.tsx` | label="فتح ملف البحث" | label="فتح الملف" |
+| `app/student/research.tsx` | title="رفع بحث جديد" | title="رفع بحث" |
+| `app/student/research.tsx` | PDF فقط، 20 ميغابايت كحدّ أقصى — بدون ملف يُسجَّل البحث بعنوانه وملخصه. | PDF فقط، 20 ميغابايت كحدّ أقصى — بدونه يُسجَّل بالعنوان والملخص. |
+| `app/training/[slug]/lesson/[lessonId].tsx` | toast.success(`أحسنت! حصلت على ${pointsAr(r.pointsAwarded)}.`, "درس مكتمل"); | toast.success(`حصلت على ${pointsAr(r.pointsAwarded)}.`, "درس مكتمل"); |
+| `app/training/[slug]/lesson/[lessonId].tsx` | toast.success("احتُسب الدرس.", "درس مكتمل"); | toast.success("احتُسب الدرس."); |
+| `app/training/[slug]/lesson/[lessonId].tsx` | يمكنك إعادة قراءة المحتوى متى شئت — لا تُحتسب النقاط مرة أخرى. | أعد القراءة متى شئت — لا نقاط مرة أخرى. |
+| `app/training/[slug]/lesson/[lessonId].tsx` | تُرسل إجابتك مع إكمال الدرس — الإجابة الصحيحة تحتسب الدرس مكتملًا. | الإجابة الصحيحة تكمل الدرس — وتُرسل إجابتك. |
+| `app/student/courses/[offeringId].tsx` | ])} · ${countAr(checkpoints, ["نقطة تفاعل واحدة", "نقطتا تفاعل", "نقاط تفاعل", " | ])} · ${countAr(checkpoints, ["نقطة تفاعل", "نقطتا تفاعل", "نقاط تفاعل", "نقطة ت |
+| `app/student/courses/[offeringId].tsx` | {teacher ? `د. ${teacher.firstName} ${teacher.lastName}` : "بلا أستاذ مسجَّل"} | {teacher ? `د. ${teacher.firstName} ${teacher.lastName}` : "بلا أستاذ"} |
+| `app/student/courses/[offeringId].tsx` | ? ` · ${countAr(course.credits, ["ساعة معتمدة واحدة", "ساعتان معتمدتان", "ساعات  | ? ` · ${countAr(course.credits, ["ساعة معتمدة", "ساعتان معتمدتان", "ساعات معتمدة |
+| `app/student/courses/[offeringId].tsx` | emptyMessage="لا محاضرات — يضيفها الأستاذ تباعًا." | emptyMessage="لا محاضرات — يضيفها الأستاذ." |
+| `app/student/courses/[offeringId].tsx` | message="لا محاضرات — يضيفها الأستاذ تباعًا." | message="يضيفها الأستاذ." |
+| `app/admin/directory.tsx` | أرقام التواصل على ملفات المؤسّسة — يحكمها إعداد الظهور لدى كل صاحب ملف. | أرقام التواصل على الملفات — يحكمها إعداد الظهور. |

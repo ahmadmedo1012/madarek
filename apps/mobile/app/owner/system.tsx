@@ -255,7 +255,7 @@ export default function OwnerSystem() {
             </RowList>
           )}
           <T variant="xs" color="faint">
-            تُحفَظ في قاعدة البيانات وتُوثَّق في السجلّ — لا تُستهلك؛ السلوك بقيم الشيفرة.
+            تُحفَظ وتُوثَّق — لا تُستهلك.
           </T>
         </View>
 
@@ -304,7 +304,7 @@ export default function OwnerSystem() {
             </RowList>
           )}
           <T variant="xs" color="faint">
-            تُحفَظ الحالة في قاعدة البيانات وتُوثَّق في السجلّ — لا تُستهلك؛ السلوك بقيم الشيفرة.
+            تُحفَظ وتُوثَّق — لا تُستهلك.
           </T>
         </View>
 
@@ -336,8 +336,8 @@ export default function OwnerSystem() {
         message={
           flagConfirm
             ? flagConfirm.enabled
-              ? `تعطيل «${flagConfirm.name ?? flagConfirm.slug}»؟ يُسجَّل في السجلّ — الإرجاع من هذه البطاقة.`
-              : `تفعيل «${flagConfirm.name ?? flagConfirm.slug}»؟ يُسجَّل في السجلّ — التراجع من هذه البطاقة.`
+              ? `تعطيل «${flagConfirm.name ?? flagConfirm.slug}»؟ — الإرجاع من البطاقة.`
+              : `تفعيل «${flagConfirm.name ?? flagConfirm.slug}»؟ — التراجع من البطاقة.`
             : ""
         }
         loading={setFlag.isPending}

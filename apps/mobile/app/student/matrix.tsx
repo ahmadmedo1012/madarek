@@ -77,7 +77,7 @@ export default function MatrixScreen() {
       }}
     >
       <T variant="sm" color="muted">
-        {`خريطة معرفيّة لكل مفهوم — تُرسم من نقاط التفاعل والاختبارات.`}
+        {`خريطة لكل مفهوم — تُرسم من نقاط التفاعل والاختبارات.`}
       </T>
 
       {/* Legend — words + dots, ranges stated in text */}
@@ -116,7 +116,7 @@ export default function MatrixScreen() {
           }
         />
         <T variant="sm" color="muted">
-          ابدأ بسدّ الفجوات — التوصية تأخذك للمحاضرة المناسبة.
+          ابدأ بسدّ الفجوات — التوصية للمحاضرة المناسبة.
         </T>
         {gaps.isLoading ? (
           <SkeletonList rows={2} rowHeight={56} />
@@ -166,7 +166,7 @@ export default function MatrixScreen() {
 
           {mappedCourses.length === 0 ? (
             <T variant="sm" color="muted">
-              لا مفاهيم بعد — تظهر فور إضافتها من الأستاذ.
+              لا مفاهيم بعد — تُضاف من الأستاذ.
             </T>
           ) : (
             <View style={{ gap: sp[16] }}>
@@ -257,7 +257,7 @@ export default function MatrixScreen() {
                       </RowList>
                     ) : (
                       <T variant="sm" color="muted">
-                        لا مفاهيم في هذا التصنيف لهذا المقرّر.
+                        لا مفاهيم في هذا التصنيف.
                       </T>
                     )}
                   </View>

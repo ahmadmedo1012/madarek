@@ -332,10 +332,10 @@ export const AR_MESSAGES = {
   email: "بريد غير صالح",
   url: "رابط غير صالح",
   phone: "رقم هاتف غير صالح",
-  minChars: (n: number) => `يجب أن يكون ${n} حرفًا على الأقل`,
-  maxChars: (n: number) => `يجب ألّا يتجاوز ${n} حرفًا`,
-  minNumber: (n: number) => `يجب أن يكون ${n} على الأقل`,
-  maxNumber: (n: number) => `يجب أن يكون ${n} على الأكثر`,
+  minChars: (n: number) => `${n} حرفًا على الأقل`,
+  maxChars: (n: number) => `أقصى ${n} حرفًا`,
+  minNumber: (n: number) => `${n} على الأقل`,
+  maxNumber: (n: number) => `${n} على الأكثر`,
   invalid: "قيمة غير صالحة",
 } as const;
 

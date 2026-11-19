@@ -34,14 +34,14 @@ export default function CompetitionsIndex() {
 
   return (
     <Screen scroll>
-      <StackHeader title="المسابقات" kicker="تحديات المعرفة" />
+      <StackHeader title="المسابقات" />
 
       <View style={{ gap: sp[4], paddingBottom: sp[8] }}>
         <T variant="h3" weight="bold">
           المسابقات الأكاديمية
         </T>
         <T variant="body" color="secondary">
-          شارك في تحديات المعرفة، أو نظِّم مسابقتك الخاصّة.
+          شارك أو نظِّم مسابقتك.
         </T>
       </View>
 

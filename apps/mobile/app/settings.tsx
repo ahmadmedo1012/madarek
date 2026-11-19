@@ -96,7 +96,7 @@ export default function Settings() {
       await setBiometricLockEnabled(next);
       setBioOn(next);
       toast.success(
-        next ? "يُطلب القفل عند كل فتح بارد." : "أُلغي القفل.",
+        next ? "يُطلب عند كل فتح بارد." : "أُلغي القفل.",
         "الأمان",
       );
     } finally {
@@ -353,7 +353,7 @@ export default function Settings() {
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="medium">قفل التطبيق بالبصمة</T>
                   <T variant="xs" color="muted">
-                    يُطلب فتح القفل عند كل فتح بارد، ورمز الجهاز بديل دائم.
+                    عند كل فتح بارد — ورمز الجهاز بديل.
                   </T>
                 </View>
                 <Button
@@ -368,7 +368,7 @@ export default function Settings() {
           ) : (
             <LedgerRow last>
               <T variant="sm" color="muted">
-                القفل بالبصمة يحتاج مستشعرًا أو بصمة مسجّلة في النظام — جهازك لا يوفرها.
+                يحتاج مستشعرًا أو بصمة مسجّلة — جهازك لا يوفرها.
               </T>
             </LedgerRow>
           )}
@@ -379,7 +379,7 @@ export default function Settings() {
           <SecretField label="تأكيد كلمة المرور" value={confirm} onChangeText={setConfirm} onSubmitEditing={changePassword} />
           {pwError ? <T variant="sm" color="danger">{pwError}</T> : null}
           <T variant="xs" color="faint">
-            تغيير كلمة المرور ينهي جلساتك على الأجهزة الأخرى.
+            تغييرها ينهي الجلسات على الأجهزة الأخرى.
           </T>
           <Button label={busy ? SAVING : "حفظ"} onPress={changePassword} loading={busy} />
         </Card>

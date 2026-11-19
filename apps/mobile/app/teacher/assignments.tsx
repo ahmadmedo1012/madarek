@@ -119,7 +119,7 @@ export default function Assignments() {
       if (score.trim() === "" || Number.isNaN(value)) throw new Error("أدخل درجة صحيحة.");
       if (value < 0) throw new Error("الدرجة ليست سالبة.");
       if (gradeTarget?.maxScore != null && value > gradeTarget.maxScore) {
-        throw new Error(`الدرجة يجب ألّا تتجاوز ${latn(gradeTarget.maxScore)}.`);
+        throw new Error(`أقصى درجة ${latn(gradeTarget.maxScore)}.`);
       }
       const rounded = Math.round(value * 100) / 100;
       return teacherApi.gradeSubmission(gradeTarget!.id, {

@@ -281,7 +281,7 @@ export default function TeacherLive() {
             </>
           ) : (
             <T variant="sm" color="muted">
-              لا بث مباشر الآن — ابدأ جلسة مجدولة أو أنشئ جديدة.
+              لا بث مباشر — ابدأ مجدولة أو أنشئ جلسة.
             </T>
           )}
 
@@ -425,7 +425,7 @@ export default function TeacherLive() {
         title={confirmAction?.action === "END" ? "إنهاء البث" : "إلغاء الجلسة"}
         message={
           confirmAction?.action === "END"
-            ? `ينهي البث للطلاب فورًا وتنتقل الجلسة إلى السجلّ.`
+            ? `ينهي البث للطلاب فورًا — والجلسة إلى السجلّ.`
             : `يحذفها من جدول الطلاب.`
         }
         confirmLabel={confirmAction?.action === "END" ? "إنهاء" : "إلغاء الجلسة"}

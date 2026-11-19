@@ -163,7 +163,7 @@ export default function Curriculum() {
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
           <Card>
             <T variant="sm" color="muted">
-              رفع الفيديو من لوحة الويب.
+              الرفع من لوحة الويب
             </T>
           </Card>
 
@@ -243,7 +243,7 @@ export default function Curriculum() {
           label="رابط الفيديو"
           value={videoUrl}
           onChangeText={setVideoUrl}
-          hint="https:// أو مسار ملف داخل المنصة"
+          hint="https:// أو مسار ملف داخلي"
           accessibilityLabel="رابط الفيديو"
         />
         <Field
@@ -280,7 +280,7 @@ export default function Curriculum() {
       <ConfirmDialog
         open={deleteTarget !== null}
         title="حذف المحاضرة"
-        message={`سيُحذف «${deleteTarget?.title ?? ""}» نهائيًا مع فصولها وأسئلتها. المتابعة؟`}
+        message={`سيُحذف «${deleteTarget?.title ?? ""}» نهائيًا مع فصولها وأسئلتها.`}
         confirmLabel="حذف نهائي"
         danger
         loading={deleteLecture.isPending}
@@ -436,7 +436,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
         />
         {tStatus === "NONE" ? (
           <T variant="xs" color="muted">
-            التوليد التلقائي يحوّل الصوت إلى نص — للروابط المدعومة فقط.
+            التوليد من الصوت — للروابط المدعومة.
           </T>
         ) : null}
       </Card>
@@ -451,7 +451,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       />
       {chapters.length === 0 ? (
         <Card>
-          <T variant="sm" color="muted">قسّم المحاضرة بزمن بداية ونهاية.</T>
+          <T variant="sm" color="muted">قسّم المحاضرة ببداية ونهاية.</T>
         </Card>
       ) : (
         <RowList>
@@ -481,7 +481,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       />
       {checkpoints.length === 0 ? (
         <Card>
-          <T variant="sm" color="muted">تظهر للطالب عند نقطة زمنية.</T>
+          <T variant="sm" color="muted">تظهر أثناء المشاهدة.</T>
         </Card>
       ) : (
         <RowList>
@@ -497,7 +497,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
               <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
                 <T variant="xs" color="muted">
                   عند {durationLabel(c.triggerSec)} ·{" "}
-                  {arCount(c.options.length, ["خيار واحد", "خياران", "خيارات", "خياراً"])}
+                  {arCount(c.options.length, ["خيار", "خياران", "خيارات", "خياراً"])}
                 </T>
                 <Button label="حذف" kind="ghost" small onPress={() => deleteCheckpoint.mutate(c.id)} />
               </View>
@@ -561,7 +561,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
           accessibilityLabel="موضع السؤال"
         />
         <T variant="sm" weight="medium" color="secondary">
-          الخيارات — اضغط «صحيحة» لتحديد الإجابة
+          الخيارات — علّم «صحيحة»
         </T>
         {cpOptions.map((o, i) => (
           <View key={i} style={{ flexDirection: "row", gap: sp[6], alignItems: "center" }}>

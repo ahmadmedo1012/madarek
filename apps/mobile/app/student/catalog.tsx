@@ -237,7 +237,7 @@ export default function CatalogScreen() {
   const searching = term.length > 0;
   const filtering = searching || departmentId !== null;
   const offlineFailure = isNetworkFailure(list.query.error);
-  const totalLabel = countAr(list.total, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"]);
+  const totalLabel = countAr(list.total, ["مقرّر", "مقرّران", "مقرّرات", "مقرّراً"]);
 
   return (
     <Screen scroll={false} padded={false}>
@@ -258,7 +258,7 @@ export default function CatalogScreen() {
         >
           <Info size={16} color={p.accentInk} />
           <T variant="sm" style={{ flex: 1, color: p.accentInk }}>
-            التسجيل في المقرّرات تتم إدارته — تواصل مع شؤون الطلاب.
+            التسجيل يُدار من شؤون الطلاب.
           </T>
         </View>
 
@@ -454,7 +454,7 @@ export default function CatalogScreen() {
                 </T>
               ) : null}
               <T variant="xs" color="muted">
-                للاستفسار عن التسجيل تواصل مع شؤون الطلاب.
+                للاستفسار: شؤون الطلاب.
               </T>
             </View>
           ) : null}

@@ -222,7 +222,7 @@ export default function Materials() {
             />
             <T variant="sm" color="muted">
               {file
-                ? `تم اختيار الملف — جاهز للرفع (${sizeLabel(file.size)})`
+                ? `الملف جاهز للرفع (${sizeLabel(file.size)})`
                 : "PDF فقط — 20 ميغابايت كحدّ أقصى."}
             </T>
             {uploadPdf.isPending ? (

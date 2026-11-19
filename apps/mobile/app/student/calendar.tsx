@@ -256,7 +256,7 @@ export default function CalendarScreen() {
               </T>
             </View>
             {awayFromToday ? (
-              <IconButton label="العودة إلى اليوم" onPress={goToday}>
+              <IconButton label="العودة لليوم" onPress={goToday}>
                 <T variant="xs" color="accentInk">
                   اليوم
                 </T>
@@ -358,16 +358,16 @@ export default function CalendarScreen() {
 
           {/* Hint — the events themselves live in the day sheet now. */}
           <T variant="xs" color="faint">
-            اختر يوماً من الشبكة لعرض مواعيده.
+            اختر يومًا لعرض مواعيده.
           </T>
 
           {monthEventCells === 0 ? (
             <T variant="sm" color="muted">
-              {`شهر هادئ — لا مواعيد في ${monthTitle(view.y, view.m)}.`}
+              {`لا مواعيد في ${monthTitle(view.y, view.m)}.`}
             </T>
           ) : (
             <T variant="xs" color="faint">
-              {countAr(monthEventCells, ["يوم له مواعيد", "يوماً لهما مواعيد", "أيام لها مواعيد", "يومًا له مواعيد"])}
+              {countAr(monthEventCells, ["يوم بمواعيد", "يوماً بمواعيد", "أيام بمواعيد", "يومًا بمواعيد"])}
             </T>
           )}
         </>

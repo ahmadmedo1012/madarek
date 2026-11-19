@@ -80,7 +80,7 @@ export default function ResultsScreen() {
   return (
     <PushFrame
       title="النتائج"
-      kicker="درجاتك وتحليل أدائك."
+     
       refreshing={feed.isFetching && !feed.isLoading}
       onRefresh={() => void feed.refetch()}
     >
@@ -113,7 +113,7 @@ export default function ResultsScreen() {
                       المتوسط العام
                     </T>
                     <T variant="xs" color="muted">
-                      {`عبر ${countAr(headline.courseCount, ["مقرّر واحد", "مقرّرين", "مقرّرات", "مقرّراً"])} مُقيَّم`}
+                      {`عبر ${countAr(headline.courseCount, ["مقرّر", "مقرّرين", "مقرّرات", "مقرّراً"])} مُقيَّم`}
                     </T>
                   </View>
                   <Button

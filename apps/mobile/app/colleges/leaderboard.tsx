@@ -39,14 +39,14 @@ export default function CollegesLeaderboard() {
 
   return (
     <Screen scroll>
-      <StackHeader title="منافسة الكلّيات" kicker="لوحة المتصدّرين" />
+      <StackHeader title="منافسة الكلّيات" />
 
       <View style={{ gap: sp[4], paddingBottom: sp[8] }}>
         <T variant="h3" weight="bold">
           لوحة المتصدّرين
         </T>
         <T variant="body" color="secondary">
-          مقارنة الكلّيّات على مؤشّرات الأداء الأكاديميّ والنشاط الرقميّ.
+          مقارنة الكلّيّات على الأداء والنشاط الرقميّ.
         </T>
       </View>
 
@@ -121,7 +121,7 @@ export default function CollegesLeaderboard() {
           </RowList>
 
           <T variant="xs" color="faint" style={{ textAlign: "center" }}>
-            تُحتسب النقاط من نشاط الطلاب المسجّل في كل كلّيّة — بيانات تجريبية.
+            نقاط من نشاط الطلاب — بيانات تجريبية.
           </T>
         </>
       )}

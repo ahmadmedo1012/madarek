@@ -58,8 +58,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <Text style={[styles.index, { color: palette.textMuted }]}>خلل</Text>
           <Text style={[styles.title, { color: palette.text }]}>حدث خلل غير متوقع</Text>
           <Text style={[styles.body, { color: palette.textSecondary }]}>
-            نعتذر — حدث خطأ غير متوقع في هذه الشاشة. لم يتم فقدان بياناتك. أُرسل تقرير
-            الخطأ تلقائيًا لفريق مدارك.
+            حدث خطأ — بياناتك لم تُفقد، وأُرسل التقرير تلقائيًا.
           </Text>
           {__DEV__ && error.message ? (
             <Text style={[styles.stack, { color: palette.textFaint }]} selectable>

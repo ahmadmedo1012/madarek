@@ -86,8 +86,8 @@ export default function CampusMapScreen() {
       ) : (
         <>
           <SectionNote>
-            {countAr(rows.length, ["كلّيّة واحدة", "كلّيّتان", "كليّات", "كلّيّة"])} في مؤسّستك، موزَّعة على{" "}
-            {countAr(byCity.length, ["مدينة واحدة", "مدينتين", "مدن", "مدينة"])}.
+            {countAr(rows.length, ["كلّيّة", "كلّيّتان", "كليّات", "كلّيّة"])} في مؤسّستك، موزَّعة على{" "}
+            {countAr(byCity.length, ["مدينة", "مدينتين", "مدن", "مدينة"])}.
           </SectionNote>
 
           {byCity.map(([city, list], idx) => (
@@ -114,7 +114,7 @@ export default function CampusMapScreen() {
                         </T>
                         {f.departments && f.departments.length > 0 ? (
                           <T variant="xs" color="muted">
-                            {countAr(f.departments.length, ["قسم واحد", "قسمان", "أقسام", "قسماً"])}
+                            {countAr(f.departments.length, ["قسم", "قسمان", "أقسام", "قسماً"])}
                           </T>
                         ) : null}
                       </View>
@@ -126,8 +126,7 @@ export default function CampusMapScreen() {
           ))}
 
           <T variant="xs" color="faint">
-            خريطة الحرم التفاعليّة قيد التطوير — يعرض هذا الدليل الكليّات المسجَّلة فعلياً في مؤسّستك بحسب
-            مدينتها.
+            الخريطة قيد التطوير — الكليات بحسب مدينتها.
           </T>
         </>
       )}

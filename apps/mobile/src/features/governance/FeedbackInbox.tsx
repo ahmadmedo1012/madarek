@@ -60,7 +60,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
       <StackHeader title="صندوق التغذية الراجعة" kicker={kicker} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <T variant="body" color="muted">
-          كل «أبلغ عن مشكلة / اقتراح» وصل من مستخدمي المنصّة — مع سياقه الكامل.
+          كل «أبلغ عن مشكلة / اقتراح» — بسياقه الكامل.
         </T>
 
         <Segmented
@@ -85,7 +85,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا تقارير هنا"
-            message="تقارير «أبلغ عن مشكلة» تصل هنا بسياقها الكامل."
+            message="تصل هنا بسياقها الكامل."
           />
         ) : (
           <View style={{ gap: 12 }}>
@@ -152,7 +152,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
               loading={inbox.isFetching}
             />
             <T variant="xs" color="faint">
-              الحالة تتحرّك باتجاه واحد: مفتوحة → تحت المعالجة → أُصلحت أو مرفوضة · {latn(rows.length)} تقريراً في الصفحة.
+              الحالة باتجاه واحد: مفتوحة → تحت المعالجة → أُصلحت أو مرفوضة · {latn(rows.length)} تقريراً.
             </T>
           </View>
         )}

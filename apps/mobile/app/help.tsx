@@ -26,7 +26,7 @@ export default function Help() {
 
   return (
     <Screen scroll>
-      <StackHeader title="المساعدة والأسئلة" kicker="المساعدة" />
+      <StackHeader title="المساعدة والأسئلة" />
 
       <View style={{ gap: sp[8], paddingBottom: sp[4] }}>
         <T variant="h3" weight="bold">
@@ -85,7 +85,7 @@ export default function Help() {
           onPress={() => router.push("/contact" as never)}
         />
         <Button
-          label="بيان إمكانية الوصول"
+          label="إمكانية الوصول"
           kind="ghost"
           small
           onPress={() => router.push("/legal/accessibility" as never)}
@@ -100,7 +100,7 @@ export default function Help() {
 
       <Card>
         <T variant="sm" color="muted">
-          كل جواب أعلاه يستند إلى ما يعمل اليوم في المنصّة — ولم تجد جوابك؟ قناة التواصل متاحة دائمًا.
+          الأجوبة مما يعمل اليوم — لغير ذلك، قناة التواصل.
         </T>
       </Card>
     </Screen>

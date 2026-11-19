@@ -52,7 +52,7 @@ export default function LabsScreen() {
     mutationFn: ({ labId, name }: { labId: string; name: string }) => studentApi.recordLab(labId, name),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["me", "lab-sessions"] });
-      toast.success("سُجّلت.", "سُجّلت الجلسة");
+      toast.success("سُجّلت الجلسة.");
       setExpSheet(null);
       setLabSheet(null);
     },
@@ -61,9 +61,9 @@ export default function LabsScreen() {
 
   return (
     <Screen scroll>
-      <StackHeader title="المعامل الافتراضية" kicker="المعامل والتقنيات" />
+      <StackHeader title="المعامل الافتراضية" />
       <SectionNote>
-        تجارب علمية بدون الحاجة لمعدات حقيقية — سجّل جلستك في المعمل، والمشغّل التفاعلي قيد التطوير.
+        تجارب افتراضية — سجّل جلستك في المعمل.
       </SectionNote>
 
       {sessions.data && sessions.data.length > 0 ? (
@@ -72,7 +72,7 @@ export default function LabsScreen() {
             جلساتك المسجّلة
           </T>
           <T variant="xs" color="muted">
-            {countAr(sessions.data.length, ["جلسة واحدة", "جلستان", "جلسات", "جلسة"])} في سجلّك — أحدثها{" "}
+            {countAr(sessions.data.length, ["جلسة", "جلستان", "جلسات", "جلسة"])} في سجلّك — أحدثها{" "}
             {fromNow(sessions.data[sessions.data.length - 1]?.createdAt ?? null)}.
           </T>
         </Card>
@@ -163,7 +163,7 @@ export default function LabsScreen() {
               </RowList>
             ) : (
               <T variant="sm" color="muted">
-                لا توجد تجارب مسجّلة لهذا المعمل بعد.
+                لا تجارب مسجّلة بعد.
               </T>
             )}
           </View>
@@ -194,7 +194,7 @@ export default function LabsScreen() {
       >
         <View style={{ gap: sp[10] }}>
           <T variant="sm" color="muted">
-            {expSheet ? `${expSheet.lab.name} — يُسجَّل اسم التجربة في سجلّك على الخادم.` : ""}
+            {expSheet ? `${expSheet.lab.name} — يُسجَّل في سجلّك على الخادم.` : ""}
           </T>
           <Field
             label="اسم التجربة"

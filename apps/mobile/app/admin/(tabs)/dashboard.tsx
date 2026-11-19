@@ -62,7 +62,7 @@ export default function AdminDashboard() {
             لوحة {ROLE_LABELS[user?.role ?? "ADMIN"] ?? "المسجل العام"}
           </T>
           <T variant="body" color="muted">
-            إحصائيات حيّة عن طلاب وأساتذة المنصّة.
+            إحصائيات حيّة عن الطلاب والأساتذة.
           </T>
         </Animated.View>
 
@@ -185,7 +185,7 @@ export default function AdminDashboard() {
 
         <Animated.View entering={entering(4)}>
           <T variant="xs" color="faint" style={{ paddingBottom: sp[8] }}>
-            الكلّيات والأقسام في تبويب «الكلّيات» · الطلاب والأساتذة والتقارير في تبويبات الشريط السفلي.
+            الكلّيات والأقسام في تبويب «الكلّيات» — البقية في الشريط.
           </T>
         </Animated.View>
       </View>

@@ -245,7 +245,7 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
 
         {user.role === "OWNER" ? (
           <T variant="sm" color="muted">
-            دور المالك لا يُغيَّر من هذه الواجهة.
+            دور المالك لا يُغيَّر هنا.
           </T>
         ) : (
           <SelectField

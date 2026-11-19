@@ -331,7 +331,7 @@ export default function StudentDashboard() {
             <SectionBar
               index={2}
               title="حصص اليوم وغدًا"
-              action={<BarCount n={todayTomorrow.length} a11y={countAr(todayTomorrow.length, ["حصة واحدة", "حصتان", "حصص", "حصة"])} />}
+              action={<BarCount n={todayTomorrow.length} a11y={countAr(todayTomorrow.length, ["حصة", "حصتان", "حصص", "حصة"])} />}
             />
             <ScrollView
               horizontal
@@ -446,7 +446,7 @@ export default function StudentDashboard() {
             />
           ) : !agenda ||
             (agenda.assignments.length === 0 && agenda.exams.length === 0 && agenda.live.length === 0) ? (
-            <SectionNote>لا تكليفات ولا اختبارات في النافذة القريبة — استرح أو راجع محاضراتك.</SectionNote>
+            <SectionNote>لا تكليفات ولا اختبارات قريبة — راجع محاضراتك.</SectionNote>
           ) : (
             <RowList>
               {agenda.assignments.slice(0, 3).map((a, i, arr) => {
@@ -529,7 +529,7 @@ export default function StudentDashboard() {
 
         {d && agenda && agenda.classes.length > 0 ? (
           <T variant="xs" color="faint">
-            {countAr(agenda.classes.length, ["حصة في الأجندة", "حصتان في الأجندة", "حصص في الأجندة", "حصة في الأجندة"])}
+            {countAr(agenda.classes.length, ["حصة", "حصتان", "حصص", "حصة"])}
           </T>
         ) : null}
       </ScrollBody>

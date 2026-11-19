@@ -303,7 +303,7 @@ export default function ExamTemplateDetail() {
         </T>
       ) : null}
       <Card>
-        <StatLine label="المدة" value={arCount(t.durationMin ?? 0, ["دقيقة واحدة", "دقيقتان", "دقائق", "دقيقة"])} />
+        <StatLine label="المدة" value={arCount(t.durationMin ?? 0, ["دقيقة", "دقيقتان", "دقائق", "دقيقة"])} />
         <StatLine label="درجة النجاح" value={t.passingScore != null ? `${latn(t.passingScore)}%` : "—"} />
         <StatLine label="ترتيب الأسئلة" value={t.randomized ? "عشوائي لكل طالب" : "بترتيب الإنشاء"} />
         {t.openAt ? <StatLine label="يفتح في" value={dateTime(t.openAt)} /> : null}
@@ -324,7 +324,7 @@ export default function ExamTemplateDetail() {
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6], alignItems: "center" }}>
                 <Badge label={QUESTION_TYPE_LABEL[q.type] ?? "سؤال"} tone="grey" />
                 <T variant="xs" color="muted">
-                  {arCount(q.points, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])}
+                  {arCount(q.points, ["نقطة", "نقطتان", "نقاط", "نقطة"])}
                 </T>
               </View>
             </LedgerRow>
@@ -332,7 +332,7 @@ export default function ExamTemplateDetail() {
         </RowList>
       )}
       <T variant="sm" color="muted">
-        مجموع النقاط {arCount(totalPoints, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])}
+        مجموع النقاط {arCount(totalPoints, ["نقطة", "نقطتان", "نقاط", "نقطة"])}
       </T>
 
       {/* التصحيح — the attempts section. */}
@@ -408,7 +408,7 @@ export default function ExamTemplateDetail() {
       {/* تعديل القالب — the safe fields. */}
       <Sheet open={editing} onClose={() => setEditing(false)} title="تعديل القالب">
         <T variant="sm" color="muted">
-          الأسئلة والنوع والنطاق ثابتة بعد الإنشاء — عدّل العرض والتوقيت أو استنسخ.
+          الأسئلة والنوع والنطاق ثابتة — عدّل التوقيت أو استنسخ.
         </T>
         <Field label="عنوان القالب" value={title} onChangeText={setTitle} accessibilityLabel="عنوان القالب" />
         <Field
@@ -500,7 +500,7 @@ export default function ExamTemplateDetail() {
             </T>
             {(grading.pendingAnswers ?? []).length === 0 ? (
               <T variant="sm" color="muted">
-                لا إجابات معلّقة — حفظ التصحيح يعتدّ بالدرجة الآلية ويُنهي المحاولة.
+                لا إجابات معلّقة — الحفظ يُنهي المحاولة بالدرجة الآلية.
               </T>
             ) : (
               (grading.pendingAnswers ?? []).map((a, i) => (
@@ -510,7 +510,7 @@ export default function ExamTemplateDetail() {
                   </T>
                   <T variant="xs" color="muted">
                     {QUESTION_TYPE_LABEL[a.type] ?? "سؤال"} ·{" "}
-                    {arCount(a.points, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])}
+                    {arCount(a.points, ["نقطة", "نقطتان", "نقاط", "نقطة"])}
                   </T>
                   <View style={{ backgroundColor: p.surfaceHover, padding: sp[8], marginTop: sp[4] }}>
                     {a.studentAnswer !== null && a.studentAnswer !== "" ? (
@@ -519,7 +519,7 @@ export default function ExamTemplateDetail() {
                       </T>
                     ) : (
                       <T variant="sm" color="muted">
-                        لم يُجب الطالب — حكمك يحدد درجته.
+                        لم يُجب الطالب — حكمك يحدد الدرجة.
                       </T>
                     )}
                   </View>
@@ -541,7 +541,7 @@ export default function ExamTemplateDetail() {
                     label="ملاحظة للطالب (اختياري)"
                     value={notes[a.answerId] ?? ""}
                     onChangeText={(v) => setNotes((m) => ({ ...m, [a.answerId]: v }))}
-                    accessibilityLabel={`ملاحظة على إجابة السؤال ${latn(i + 1)}`}
+                    accessibilityLabel={`ملاحظة على السؤال ${latn(i + 1)}`}
                   />
                 </Card>
               ))

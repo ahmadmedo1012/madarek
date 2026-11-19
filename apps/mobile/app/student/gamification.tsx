@@ -59,8 +59,8 @@ export default function GamificationScreen() {
 
   return (
     <Screen scroll>
-      <StackHeader title="نقاطي وأوسمتي" kicker="الإنجازات والنقاط" />
-      <SectionNote>تقدّمك ومستواك مقارنة بزملائك في المنصة.</SectionNote>
+      <StackHeader title="نقاطي وأوسمتي" />
+      <SectionNote>تقدّمك ومستواك مقارنة بزملائك.</SectionNote>
 
       {profile.isLoading ? (
         <SkeletonList rows={2} rowHeight={72} />
@@ -99,7 +99,7 @@ export default function GamificationScreen() {
           </View>
           <Hairline />
           <T variant="xs" color="faint">
-            التصنيف مشتق من مستواك: برونزي حتى المستوى 2، فضي حتى 4، ذهبي حتى 6، بلاتيني من المستوى 7.
+            المستويات: برونزي حتى 2، فضي حتى 4، ذهبي حتى 6، بلاتيني من 7.
           </T>
         </Card>
       )}
@@ -113,7 +113,7 @@ export default function GamificationScreen() {
         ) : leaderboard.isError ? (
           <ErrorState message={humanizeError(leaderboard.error)} onRetry={() => leaderboard.refetch()} compact />
         ) : (leaderboard.data ?? []).length === 0 ? (
-          <SectionNote>لا يوجد ترتيب بعد — اكسب النقاط بإكمال الدروس والمسارات.</SectionNote>
+          <SectionNote>لا ترتيب بعد — اكسب النقاط بالدروس والمسارات.</SectionNote>
         ) : (
           <RowList>
             {(leaderboard.data ?? []).slice(0, 10).map((l, i, arr) => (
@@ -201,7 +201,7 @@ export default function GamificationScreen() {
         )}
         {(badges.data ?? []).length > 0 ? (
           <T variant="xs" color="faint">
-            {countAr((badges.data ?? []).length, ["وسم واحد", "وسمان", "أوسمة", "وسماً"])}
+            {countAr((badges.data ?? []).length, ["وسم", "وسمان", "أوسمة", "وسماً"])}
           </T>
         ) : null}
       </View>

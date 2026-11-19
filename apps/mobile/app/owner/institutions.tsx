@@ -74,7 +74,7 @@ export default function OwnerInstitutions() {
     <Screen scroll>
       <StackHeader title="المؤسسات" kicker={OWNER_DASHBOARD} />
       <View style={{ gap: sp[16], paddingTop: sp[16] }}>
-        <PageHeader title="المؤسسات" kicker="إدارة المؤسسات التعليمية" />
+        <PageHeader title="المؤسسات" />
 
         <Button
           label="مؤسسة جديدة"
@@ -135,12 +135,12 @@ export default function OwnerInstitutions() {
                         <View style={{ flexDirection: "row", gap: sp[8], flexWrap: "wrap" }}>
                           {members !== null ? (
                             <T variant="xs" color="faint">
-                              {countAr(members, ["عضو نشط واحد", "عضوان نشطان", "أعضاء نشطون", "عضواً نشطاً"])}
+                              {countAr(members, ["عضو نشط", "عضوان نشطان", "أعضاء نشطون", "عضواً نشطاً"])}
                             </T>
                           ) : null}
                           {faculties !== null ? (
                             <T variant="xs" color="faint">
-                              · {countAr(faculties, ["كلّيّة واحدة", "كلّيّتان", "كلّيّات", "كلّيّة"])}
+                              · {countAr(faculties, ["كلّيّة", "كلّيّتان", "كلّيّات", "كلّيّة"])}
                             </T>
                           ) : null}
                         </View>
@@ -150,7 +150,7 @@ export default function OwnerInstitutions() {
                 })}
               </RowList>
               <T variant="xs" color="faint">
-                {countAr(rows.length, ["مؤسسة واحدة", "مؤسستان", "مؤسسات", "مؤسسة"])} في السجلّ — كما تحملها
+                {countAr(rows.length, ["مؤسسة", "مؤسستان", "مؤسسات", "مؤسسة"])} في السجلّ — كما تحملها
                 حمولة القائمة.
               </T>
             </View>
@@ -222,7 +222,7 @@ function CreateInstitutionSheet({
     <Sheet open={open} onClose={onClose} title="مؤسسة جديدة">
       <View style={{ gap: sp[12] }}>
         <T variant="sm" color="muted">
-          أضف مؤسسة تعليمية إلى المنصّة — تُنشأ نشطة ويمكن تعيين مسجلها العام بعد ذلك.
+          أضف مؤسسة — تُنشأ نشطة والمسجل يُعيَّن بعدها.
         </T>
         <Field
           label="اسم المؤسسة"

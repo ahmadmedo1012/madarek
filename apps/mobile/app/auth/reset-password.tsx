@@ -85,7 +85,7 @@ export default function ResetPassword() {
           <Card>
             <T variant="h4" weight="bold">تم تعيين كلمة المرور</T>
             <T variant="body" color="secondary">
-              اكتملت الاستعادة — انتهت جلساتك الأخرى وسيُعادك التطبيق إلى تسجيل الدخول الآن.
+              اكتملت الاستعادة — انتهت الجلسات الأخرى.
             </T>
           </Card>
         ) : (

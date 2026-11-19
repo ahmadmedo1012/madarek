@@ -95,14 +95,14 @@ export default function JobsScreen() {
     onSuccess: (_res, jobId) => {
       setJustApplied((prev) => ({ ...prev, [jobId]: true }));
       void qc.invalidateQueries({ queryKey: ["jobs"] });
-      toast.success("وصل طلبك.", "تمّ التقديم");
+      toast.success("وصل طلبك.");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر إرسال الطلب"),
   });
 
   return (
     <Screen scroll={false} padded={false}>
-      <StackHeader title="وظائف" kicker="فرص العمل" />
+      <StackHeader title="وظائف" />
       <DataList
         data={rows}
         renderItem={({ item }) => (
@@ -130,7 +130,7 @@ export default function JobsScreen() {
         }
         ListHeaderComponent={
           <View style={{ paddingHorizontal: sp[16], paddingTop: sp[12], paddingBottom: sp[8] }}>
-            <SectionNote>وظائف وفرص تدريب تجريبية مفتوحة لطلاب وخرّيجي الجامعة (بيانات عرض).</SectionNote>
+            <SectionNote>فرص تجريبية لطلاب وخرّيجي الجامعة — بيانات عرض.</SectionNote>
           </View>
         }
         contentPadding={{ horizontal: 16, bottom: 24 }}

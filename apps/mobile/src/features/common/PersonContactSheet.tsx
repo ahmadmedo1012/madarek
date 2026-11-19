@@ -152,7 +152,7 @@ export function PersonContactSheet({
     onSuccess: () => {
       setRequested(true);
       haptics.notify("success");
-      toast.success("أُرسل الطلب — سيصلك الرد عبر الإشعارات", "طلب تواصل");
+      toast.success("أُرسل الطلب — سيصلك الرد عبر الإشعارات.");
     },
     onError: (e) => {
       haptics.notify("error");
@@ -245,7 +245,7 @@ export function PersonContactSheet({
           ) : null}
 
           <T variant="xs" color="faint" style={{ paddingTop: sp[4] }}>
-            الظهور محكوم بإعدادات الخصوصية لدى صاحب الملف — ما لا يُسمح لك لا يظهر هنا.
+            الظهور محكوم بإعدادات خصوصية صاحب الملف.
           </T>
         </View>
       ) : null}

@@ -109,7 +109,7 @@ function OutlineText({ outline }: { outline: unknown }) {
         }
       }
       const est = obj.estLectures ?? obj.lectures;
-      if (typeof est === "number") lines.push(`${prefix}  (${arCount(est, ["محاضرة واحدة", "محاضرتان", "محاضرات", "محاضرة"])})`);
+      if (typeof est === "number") lines.push(`${prefix}  (${arCount(est, ["محاضرة", "محاضرتان", "محاضرات", "محاضرة"])})`);
     }
   };
   if (Array.isArray(outline)) outline.forEach((ch) => walk(ch, ""));
@@ -118,7 +118,7 @@ function OutlineText({ outline }: { outline: unknown }) {
   if (lines.length === 0) {
     return (
       <T variant="sm" color="muted">
-        لا مخطط في الاستجابة — الاقتراح قالبيّ كما وصل.
+        لا مخطط في الاستجابة — الاقتراح قالبيّ.
       </T>
     );
   }
@@ -130,7 +130,7 @@ function OutlineText({ outline }: { outline: unknown }) {
         </T>
       ))}
       <T variant="xs" color="faint" style={{ paddingTop: sp[4] }}>
-        الخطوط أعلاه مقترحة آليًا — راجعها قبل اعتمادها في منهجك.
+        مقترحة آليًا — راجعها قبل الاعتماد.
       </T>
     </View>
   );
@@ -318,7 +318,7 @@ export default function TeacherIntelligence() {
               <SimulatedBadge note="اقتراح قالبيّ" />
             </View>
             <T variant="sm" color="muted" style={{ paddingVertical: sp[4] }}>
-              اقتراح قالبيّ بمطابقة اسم المقرّر — لا تحليل للمحتوى (محاكاة حتى نموذج حقيقي).
+              اقتراح قالبيّ بمطابقة الاسم — لا تحليل محتوى (محاكاة).
             </T>
             <Button
               label={suggest.data ? "إعادة الاقتراح" : "هيكل المنهج"}

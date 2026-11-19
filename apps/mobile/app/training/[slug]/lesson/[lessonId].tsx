@@ -61,10 +61,10 @@ export default function TrainingLesson() {
         toast.info("احتُسب الدرس مسبقًا.");
       } else if (r?.pointsAwarded && r.pointsAwarded > 0) {
         haptics.notify("success");
-        toast.success(`أحسنت! حصلت على ${pointsAr(r.pointsAwarded)}.`, "درس مكتمل");
+        toast.success(`حصلت على ${pointsAr(r.pointsAwarded)}.`, "درس مكتمل");
       } else {
         haptics.notify("success");
-        toast.success("احتُسب الدرس.", "درس مكتمل");
+        toast.success("احتُسب الدرس.");
       }
       router.back();
     },
@@ -184,7 +184,7 @@ export default function TrainingLesson() {
             ) : null}
           </View>
           <T variant="sm" color="muted">
-            يمكنك إعادة قراءة المحتوى متى شئت — لا تُحتسب النقاط مرة أخرى.
+            أعد القراءة متى شئت — لا نقاط مرة أخرى.
           </T>
         </Card>
       ) : null}
@@ -208,7 +208,7 @@ export default function TrainingLesson() {
           </T>
           <Field label="إجابتك" value={quizAnswer} onChangeText={setQuizAnswer} placeholder="إجابتك…" />
           <T variant="xs" color="faint">
-            تُرسل إجابتك مع إكمال الدرس — الإجابة الصحيحة تحتسب الدرس مكتملًا.
+            الإجابة الصحيحة تكمل الدرس — وتُرسل إجابتك.
           </T>
         </Card>
       ) : null}

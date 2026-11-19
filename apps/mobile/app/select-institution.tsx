@@ -89,7 +89,7 @@ export default function SelectInstitution() {
     <Screen scroll>
       <PageHeader title="اختيار المؤسّسة" kicker="سياق الحساب" compact />
       <T variant="body" color="secondary">
-        حسابك لديه أكثر من عضوية نشطة — اختر المؤسّسة التي ستعمل ضمنها الآن.
+        لحسابك أكثر من عضوية نشطة — اختر المؤسّسة.
       </T>
 
       {active.length > 1 ? (

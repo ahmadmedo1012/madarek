@@ -205,7 +205,6 @@ export default function TrainingTrack() {
       {lessons.length === 0 ? (
         <EmptyState
           title="لا دروس بعد"
-          message="لا دروس بعد."
           icon={<BookOpen size={20} color={p.textMuted} />}
         />
       ) : (
@@ -262,7 +261,7 @@ export default function TrainingTrack() {
       {lessons.some((l) => l.pointsAward != null && l.pointsAward > 0) ? (
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: sp[6] }}>
           <Sparkles size={12} color={p.goldInk} />
-          <T variant="xs" color="faint">إكمال الدروس يمنح نقاطًا تُحتسب في مستواك.</T>
+          <T variant="xs" color="faint">إكمال الدروس يمنح نقاطًا في مستواك.</T>
         </View>
       ) : null}
     </Screen>

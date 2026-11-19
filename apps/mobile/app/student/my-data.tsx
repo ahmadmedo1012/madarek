@@ -174,7 +174,7 @@ export default function StudentMyData() {
               <StatLine label="المدينة (السكن)" value={view.city ?? "—"} />
               <StatLine label="العنوان" value={view.address ?? "—"} />
               <T variant="xs" color="faint">
-                هذه الحقول يُدخلها المسجّل العام — لتصحيحها راجعه.
+                يُدخلها المسجّل العام — لتصحيحها راجعه.
               </T>
             </Card>
 

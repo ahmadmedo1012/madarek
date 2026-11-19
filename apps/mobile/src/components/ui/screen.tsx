@@ -101,7 +101,15 @@ export function FormScreen({ children, style, wide = false }: ScreenProps) {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: sp[20] },
+  // R369-C (the C3.2 root fix, judged from the emulator capture set):
+  // pad carried ONLY the horizontal gutters, so every scrollable Screen
+  // ended flush at the content region's bottom edge — the last row kissed
+  // the bottom TabBar (measured on the student dashboard capture: the
+  // «مخططات UML» row cut at the bar edge, subtitle truncated). The
+  // drafting-sheet rhythm gets a bottom breath (sp[24]) on every
+  // scrolling body; wide/tablet windows and non-scroll Forms are
+  // unaffected (the Form pad is its own rule).
+  pad: { paddingHorizontal: sp[20], paddingBottom: sp[24] },
 });
 
 /** PageHeader — drafting title bar with kicker + hairline rule. */

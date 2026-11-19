@@ -37,9 +37,9 @@ function collectProp(node: JsonNode | JsonNode[], prop: string): unknown[] {
 }
 
 describe("EmptyState (R334 room variants)", () => {
-  it("stages the exam hall: plan sheet + «تظهر هنا فور نشرها.»", async () => {
+  it("stages the exam hall: plan sheet + «تظهر فور نشرها.»", async () => {
     const { getByText, toJSON } = await render(<EmptyState room="exam-hall" />);
-    expect(getByText("تظهر هنا فور نشرها.")).toBeTruthy();
+    expect(getByText("تظهر فور نشرها.")).toBeTruthy();
     // the R330 plan sheet is in the tree — react-native-svg serializes the
     // shared 320×220 drafting viewBox as vbWidth/vbHeight host props.
     expect(collectProp(toJSON(), "vbWidth")).toContain(320);
@@ -88,7 +88,7 @@ describe("ErrorState (R334 report action)", () => {
       <ErrorState onRetry={() => undefined} onReport={() => undefined} />,
     );
     expect(getByText("إعادة المحاولة")).toBeTruthy();
-    expect(getByText("إبلاغ عن مشكلة")).toBeTruthy();
+    expect(getByText("أبلغ")).toBeTruthy();
   });
 
   it("BACKWARD COMPAT: without onReport only the retry seat renders", async () => {
@@ -125,7 +125,7 @@ describe("LoadingState (compact seat)", () => {
 describe("OfflineBanner (backward compat)", () => {
   it("renders when visible, null when not", async () => {
     const { getByText, toJSON, rerender } = await render(<OfflineBanner visible />);
-    expect(getByText(/لا يوجد اتصال/)).toBeTruthy();
+    expect(getByText(/دون اتصال/)).toBeTruthy();
     await act(async () => {
       rerender(<OfflineBanner visible={false} />);
     });
