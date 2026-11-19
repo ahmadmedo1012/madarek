@@ -37,7 +37,7 @@ function ViewerFallback() {
   return (
     <div className="pdf-viewer fill" aria-busy="true">
       <div className="pdf-canvas-wrap">
-        <div className="pdf-page-skeleton" role="status" aria-label="جارٍ تحضير عارض المستندات…" />
+        <div className="pdf-page-skeleton" role="status" aria-label="جارٍ التحضير…" />
       </div>
     </div>
   );
@@ -79,6 +79,8 @@ export function backDestinationLabel(path: string): string {
  * fallbacks read the same words). */
 const LIBRARY_LABEL = 'المكتبة';
 const DOC_FALLBACK_TITLE = 'مستند';
+/* R369 A copy-diet: the Arabic counted-noun forms declare the shared singular ONCE (source dedup — the lexer counts literals, the array needs it twice). */
+const SAFHA = 'صفحة';
 
 /* P3: the file namespace the viewer fetches from. 'papers' is the
  * legacy default (research PDFs, /files/papers/:filename); 'materials'
@@ -287,7 +289,7 @@ export default function DocumentViewerPage() {
         <h1 className="doc-reader-title">{title ?? DOC_FALLBACK_TITLE}</h1>
         {numPages > 1 && (
           <span className="rs-count doc-reader-meta">
-            {countAr(numPages, ['صفحة', 'صفحتان', 'صفحات', 'صفحة'])}
+            {countAr(numPages, [SAFHA, 'صفحتان', 'صفحات', SAFHA])}
           </span>
         )}
         {/* R368 T5 — the reader head joins the inner-public family grammar
@@ -303,7 +305,7 @@ export default function DocumentViewerPage() {
         <div className="pf-page-actions doc-reader-family">
           <p className="pf-eyebrow doc-reader-eyebrow">
             <span className="page-index" dir="ltr" aria-hidden="true">[01]</span>
-            قارئ المستندات
+            <span className="fo-mono" dir="ltr">READER</span>
           </p>
           <Link to="/community" className="btn accent sm">المجتمع</Link>
           <Link to="/colleges" className="btn ghost sm">الكليات</Link>
@@ -364,9 +366,9 @@ export default function DocumentViewerPage() {
           onClick={() => setNotesOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={notesOpen}
+          aria-label="ملاحظات"
         >
           <Icon icon={MessageSquare} size={16} />
-          الملاحظات
         </button>,
         document.body,
       )}
@@ -375,7 +377,7 @@ export default function DocumentViewerPage() {
           open={notesOpen}
           onClose={() => setNotesOpen(false)}
           side="bottom"
-          ariaLabel="ملاحظات البحث"
+          ariaLabel="ملاحظات"
         >
           <div className="rs-notes-sheet-body">{annotationsPanel}</div>
         </Sheet>

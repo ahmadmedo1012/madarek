@@ -29,19 +29,19 @@ type Phase = 'pending' | 'verified' | 'failed';
 
 /** The terminal refusal's honest way forward (r357 copy, verbatim —
  * pinned by tests/unit/r357-verify-email.test.tsx). */
-const FAILED_HINT = 'اطلب رسالة جديدة من «الإعدادات ← إعادة إرسال التأكيد»، ثم افتح الرابط من بريدك مباشرة.';
+const FAILED_HINT = 'اطلب رسالة جديدة من «الإعدادات» ثم افتح الرابط من بريدك.';
 
 export default function VerifyEmailPage() {
   useThemeSync();
-  usePageTitle('تأكيد البريد الإلكتروني');
+  usePageTitle('تأكيد البريد');
   const [phase, setPhase] = useState<Phase>('pending');
-  const [message, setMessage] = useState<string>('…جارٍ التحقق من الرابط');
+  const [message, setMessage] = useState<string>('…جارٍ التحقق');
 
   useEffect(() => {
     const token = new URLSearchParams(window.location.search).get('token');
     if (!token) {
       setPhase('failed');
-      setMessage('الرابط ناقص — افتح رسالة التأكيد من بريدك واضغط الزر داخلها');
+      setMessage('الرابط ناقص — افتحه من بريدك.');
       return;
     }
     let alive = true;
@@ -54,7 +54,7 @@ export default function VerifyEmailPage() {
       .catch((e) => {
         if (!alive) return;
         setPhase('failed');
-        setMessage(apiErrorMessage(e, 'تعذّر التحقق من الرابط — افتحه من بريدك مجددًا'));
+        setMessage(apiErrorMessage(e, 'تعذّر التحقق — حاول مجددًا.'));
       });
     return () => { alive = false; };
   }, []);
@@ -62,9 +62,9 @@ export default function VerifyEmailPage() {
   /* The eyebrow reads the phase — the same state-naming device the
    * reset sheet uses ((تمّ بنجاح) / (انتهت الصلاحية)). */
   const meta =
-    phase === 'verified' ? '(تمّ التأكيد)'
-    : phase === 'failed' ? '(رابط غير صالح)'
-    : '(جارٍ التحقق)';
+    phase === 'verified' ? '(تمّ)'
+    : phase === 'failed' ? '(غير صالح)'
+    : '(جارٍ)';
 
   return (
     <AuthDoor>
@@ -73,11 +73,11 @@ export default function VerifyEmailPage() {
 
           <div className="auth-form-header">
             <span className="auth-meta">{meta}</span>
-            <h1 className="auth-form-title">تأكيد البريد الإلكتروني</h1>
+            <h1 className="auth-form-title">تأكيد البريد</h1>
             <p className="auth-form-sub">
               {phase === 'verified'
-                ? 'تمّ التحقق من الرابط — يمكنك إغلاق هذه الصفحة والمتابعة.'
-                : 'يفتح هذا الرابط مرة واحدة من رسالة التأكيد.'}
+                ? 'تمّ التحقق — يمكنك المتابعة.'
+                : 'يُفتح مرة واحدة.'}
             </p>
           </div>
 
@@ -96,15 +96,13 @@ export default function VerifyEmailPage() {
           {phase === 'failed' && <p className="fp-sent-note">{FAILED_HINT}</p>}
 
           <Link to="/auth" className="auth-submit auth-primary-link">
-            <span>العودة إلى تسجيل الدخول</span>
+            <span>العودة للدخول</span>
             <Icon icon={ArrowLeft} size={14} />
           </Link>
 
           <p className="auth-register-prompt">
-            {phase === 'verified' ? (
-              <>حسابك جاهز — <Link to="/auth" className="auth-register-link">سجّل الدخول الآن</Link></>
-            ) : (
-              <>ليس بريدك؟ <Link to="/auth/register" className="auth-register-link">أنشئ حسابًا جامعيًا</Link></>
+            {phase === 'verified' && (
+              <Link to="/auth" className="auth-register-link">سجّل الدخول</Link>
             )}
           </p>
         </div>

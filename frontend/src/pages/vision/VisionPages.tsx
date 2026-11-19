@@ -114,7 +114,7 @@ export function VisionGalleryPage() {
       {total === 0 ? (
         <EmptyState illustration="empty-list"
           icon={Sparkles}
-          title="لا ابتكارات بعد"
+          title="لا ابتكارات"
           description=""
         />
       ) : (
@@ -141,7 +141,7 @@ export function VisionGalleryPage() {
               {/* baseline alignment keeps the counted-noun note on the
                   heading's rhythm (.vision-group-head). */}
               <header className="vision-group-head">
-                <h2 id="vision-group-live" className="vision-h2">جرّبها الآن</h2>
+                <h2 id="vision-group-live" className="vision-h2">جرّبها</h2>
               </header>
               <RowList aria-label="ابتكارات متاحة للتجربة">
                 {grouped.beta.map((c) => (
@@ -292,7 +292,7 @@ export function VisionDetailPage() {
         {/* How it works — numbered steps on gated tokens (was white-on-
             concept-gradient text, ungated). */}
         <Card>
-          <h2 className="vision-h2">كيف تعمل</h2>
+          <h2 className="vision-h2">الآلية</h2>
           <div className="flex-col gap-3">
             {concept.steps.map((s, i) => (
               <div key={i} className="flex gap-3 vision-step">
@@ -340,10 +340,10 @@ export function VisionDetailPage() {
           </span>
           <div className="flex-1 vision-notify-body">
             <div className="text-md font-semibold vision-notify-title">
-              نبّهني عند الإطلاق
+              نبّهني
             </div>
             <div className="text-xs text-subtle vision-notify-hint">
-              خدمة التنبيه قيد التطوير.
+              التنبيه قيد التطوير.
             </div>
           </div>
           <button type="button" className="btn outline" disabled>

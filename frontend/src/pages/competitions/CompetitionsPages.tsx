@@ -203,7 +203,7 @@ export function CompetitionsIndexPage() {
       <StatLine
         items={[
           { label: 'مفتوحة', value: kpiValue(stats.open), tone: 'positive' },
-          { label: 'تنتهي قريباً', value: kpiValue(stats.closingSoon), tone: 'warning' },
+          { label: 'قريباً', value: kpiValue(stats.closingSoon), tone: 'warning' },
           { label: 'المشاركات', value: kpiValue(stats.totalEntries) },
         ]}
       />
@@ -259,7 +259,7 @@ export function CompetitionsIndexPage() {
             description=""
             action={(
               <button type="button" className="btn ghost sm" onClick={() => setFilter('all')}>
-                عرض الكل
+                الكل
               </button>
             )}
           />
@@ -501,7 +501,7 @@ export function CompetitionDetailPage() {
           rank chips with medal treatment, entrance stagger via --lb-i,
           tabular points), OPEN/CLOSED keep the comp-entry rows with
           the organizer scoring affordances. */}
-      <Card title="المشاركات" subtitle={`${countAr(entries.length, ['مشاركة', 'مشاركتان', 'مشاركات', 'مشاركة'])}${isOrganizer ? '' : c.status === 'JUDGED' ? ' · حسب النتيجة' : ' (العنوان فقط حتى التحكيم)'}`}>
+      <Card title="المشاركات" subtitle={`${countAr(entries.length, ['مشاركة', 'مشاركتان', 'مشاركات', 'مشاركة'])}${isOrganizer ? '' : c.status === 'JUDGED' ? ' · بالنتيجة' : ' (العنوان فقط)'}`}>
         {entries.length === 0 ? (
           <EmptyState illustration="empty-list"
             title={NO_ENTRIES}
@@ -705,15 +705,15 @@ function ScoreInput({
 
 const createSchema = z.object({
   title: z.string().min(3, 'العنوان قصير جدّاً').max(200),
-  description: z.string().min(10, 'الوصف قصير جدّاً').max(4000),
+  description: z.string().min(10, 'الوصف قصير').max(4000),
   category: z.string().min(1, 'اختر فئة'),
   prize: z.string().max(200).optional(),
-  deadline: z.string().min(1, 'حدِّد الموعد النهائي').refine(
+  deadline: z.string().min(1, 'حدِّد الموعد').refine(
     // 15-h P2-5: an OPEN competition whose deadline already passed is
     // inert (the backend blocks entering) but rendered confusingly
     // everywhere — reject it at the form like the live-session create does.
     (d) => new Date(d).getTime() > Date.now(),
-    'الموعد في المستقبل',
+    'موعد مستقبلي',
   ),
   iconEmoji: z.string().max(8).optional(),
 });
@@ -783,7 +783,7 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
         </div>
         <div className="comp-form-row">
           <FormField label="الجائزة (اختياري)">
-            <input type="text" {...form.register('prize')} placeholder="شهادة، 500 د.ل، …" className="input" />
+            <input type="text" {...form.register('prize')} placeholder="شهادة…" className="input" />
           </FormField>
           <div className="form-field">
             <label className="form-field-label" id={iconLabelId}>أيقونة</label>
@@ -819,9 +819,9 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
 /* ───────────────────────── Enter modal ───────────────────────── */
 
 const enterSchema = z.object({
-  title: z.string().min(3, 'العنوان قصير').max(200),
+  title: z.string().min(3, 'العنوان قصير جدّاً').max(200),
   body: z.string().min(10, 'الوصف قصير').max(4000),
-  fileUrl: z.string().url('رابط غير صالح').optional().or(z.literal('')),
+  fileUrl: z.string().url('رابط فاسد').optional().or(z.literal('')),
 });
 type EnterInputs = z.infer<typeof enterSchema>;
 

@@ -280,7 +280,7 @@ export function CollegesIndexPage() {
   useLegalMeta({
     title: COLLEGES_LABEL,
     path: '/colleges',
-    description: 'سجلّ الكلّيّات النموذجي — بيانات اصطناعية للعرض.',
+    description: 'سجلّ الكلّيّات — بيانات اصطناعية للعرض.',
   });
   const inst = useInstitutionScope(); // r180: scoped key
   const q = useQuery({
@@ -713,7 +713,7 @@ export function CollegeDetailPage() {
           because it is real. */}
       {isGuest && statCells.length === 0 && (
         <p className="college-coming-soon text-sm text-muted">
-          كلّيّة حديثة التأسيس — تُحدَّث مع التسجيل.
+          تُحدَّث مع التسجيل.
         </p>
       )}
 
@@ -723,7 +723,7 @@ export function CollegeDetailPage() {
         {showLeadership && (
         <Card title="القيادة الأكاديميّة" style={soloPair1 ? soloSpan : undefined}>
           {c.leadership.length === 0 ? (
-            <p className="text-muted text-sm">لا قيادة بعد.</p>
+            <p className="text-muted text-sm">لا قيادة.</p>
           ) : (
             <ul className="leadership-list">
               {c.leadership.map((l, i) => (
@@ -755,7 +755,7 @@ export function CollegeDetailPage() {
           style={soloPair1 ? soloSpan : undefined}
         >
           {c.departments.length === 0 ? (
-            <p className="text-muted text-sm">لا أقسام بعد.</p>
+            <p className="text-muted text-sm">لا أقسام.</p>
           ) : (
             <ul className="dept-list">
               {c.departments.map((d) => (
@@ -786,7 +786,7 @@ export function CollegeDetailPage() {
           {c.topStudents.length === 0 ? (
             <EmptyState
               illustration="empty-list"
-              title="لا بيانات بعد."
+              title="لا بيانات."
             />
           ) : (
             <ol className="student-rank-list">
@@ -819,7 +819,7 @@ export function CollegeDetailPage() {
           {c.announcements.length === 0 ? (
             <EmptyState
               illustration="empty-community"
-              title="لا إعلانات حاليّاً."
+              title="لا إعلانات."
             />
           ) : (
             <ul className="announce-list">
@@ -852,7 +852,7 @@ export function CollegeDetailPage() {
           {c.upcomingEvents.length === 0 ? (
             <EmptyState
               illustration="empty-list"
-              title="لا فعاليّات قادمة."
+              title="لا فعاليّات."
             />
           ) : (
             <ul className="event-list">
@@ -916,7 +916,7 @@ export function CollegeDetailPage() {
         {/* Guests only see this card when a competition exists; the
             empty branch is the authed (internal) view. */}
         {c.activeCompetitions.length === 0 ? (
-          <p className="text-muted text-sm">لا مسابقات نشطة.</p>
+          <p className="text-muted text-sm">لا مسابقات.</p>
         ) : (
         <div className="comp-grid">
           {c.activeCompetitions.map((comp) => (
@@ -1110,7 +1110,7 @@ export function CollegesLeaderboardPage() {
           <div className="leaderboard-zero-body">
             <h2 className="leaderboard-zero-title" id="leaderboard-zero-title">بانتظار أول نقطة</h2>
             <p className="leaderboard-zero-desc">
-              لا نقاط بعد — أول نشاط يفتح الترتيب.
+              لا نقاط بعد.
             </p>
           </div>
           <div className="leaderboard-zero-actions">
