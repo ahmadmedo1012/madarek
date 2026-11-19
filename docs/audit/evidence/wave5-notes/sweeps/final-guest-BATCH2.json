@@ -1,0 +1,256 @@
+{
+ "/legal/cookies": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/maintenance": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/403": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  }
+ },
+ "/colleges/leaderboard": {
+  "320": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "390": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "leaderboard-table.table.tbl-stack",
+     "left": -167,
+     "right": 731,
+     "vw": 768
+    },
+    {
+     "cls": "THEAD",
+     "left": -167,
+     "right": 731,
+     "vw": 768
+    },
+    {
+     "cls": "TR",
+     "left": -167,
+     "right": 731,
+     "vw": 768
+    },
+    {
+     "cls": "TH",
+     "left": -47,
+     "right": 70,
+     "vw": 768
+    },
+    {
+     "cls": "leaderboard-sort",
+     "left": -43,
+     "right": 66,
+     "vw": 768
+    },
+    {
+     "cls": "leaderboard-th",
+     "left": -31,
+     "right": 58,
+     "vw": 768
+    },
+    {
+     "cls": "SPAN",
+     "left": -31,
+     "right": 52,
+     "vw": 768
+    },
+    {
+     "cls": "TH",
+     "left": -167,
+     "right": -47,
+     "vw": 768
+    }
+   ]
+  },
+  "1440": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "cursor-dot-core",
+     "left": -3,
+     "right": 3,
+     "vw": 1440
+    },
+    {
+     "cls": "cursor-readout",
+     "left": -9985,
+     "right": -9971,
+     "vw": 1440
+    }
+   ]
+  },
+  "390@200%": {
+   "pageOverflowX": 0,
+   "offenders": []
+  },
+  "768@200%": {
+   "pageOverflowX": 0,
+   "offenders": [
+    {
+     "cls": "leaderboard-table.table.tbl-stack",
+     "left": -167,
+     "right": 731,
+     "vw": 768
+    },
+    {
+     "cls": "THEAD",
+     "left": -167,
+     "right": 731,
+     "vw": 768
+    },
+    {
+     "cls": "TR",
+     "left": -167,
+     "right": 731,
+     "vw": 768
+    },
+    {
+     "cls": "TH",
+     "left": -47,
+     "right": 70,
+     "vw": 768
+    },
+    {
+     "cls": "leaderboard-sort",
+     "left": -43,
+     "right": 66,
+     "vw": 768
+    },
+    {
+     "cls": "leaderboard-th",
+     "left": -31,
+     "right": 58,
+     "vw": 768
+    },
+    {
+     "cls": "SPAN",
+     "left": -31,
+     "right": 52,
+     "vw": 768
+    },
+    {
+     "cls": "TH",
+     "left": -167,
+     "right": -47,
+     "vw": 768
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,692 @@
+{
+ "guestBATCH2": {
+  "/auth": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   }
+  },
+  "/auth/register": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   }
+  },
+  "/auth/forgot-password": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   }
+  },
+  "/auth/reset-password": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   }
+  },
+  "/legal/terms": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   }
+  },
+  "/legal/accessibility": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   }
+  },
+  "/legal/security": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   }
+  },
+  "/legal/data": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   }
+  },
+  "/403": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   }
+  },
+  "/500": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   }
+  },
+  "/maintenance": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   }
+  },
+  "/colleges/leaderboard": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "leaderboard-table.table.tbl-stack",
+      "left": -167,
+      "right": 731,
+      "vw": 768,
+      "note": "designed rung-2 wrap scroll: .leaderboard-table-wrap overflow-x:auto, scrollable 898>694 (verified)"
+     },
+     {
+      "cls": "THEAD",
+      "left": -167,
+      "right": 731,
+      "vw": 768
+     },
+     {
+      "cls": "TR",
+      "left": -167,
+      "right": 731,
+      "vw": 768
+     }
+    ]
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "leaderboard-table.table.tbl-stack",
+      "left": -167,
+      "right": 731,
+      "vw": 768,
+      "note": "same designed rung-2 wrap scroll"
+     }
+    ]
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   }
+  }
+ },
+ "authedBATCH1": {
+  "/community": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "tab",
+      "left": -34,
+      "right": 35,
+      "note": "designed tablist scroller: .tabs overflow-x:auto (r169a), scrollable"
+     }
+    ]
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "tab",
+      "left": -58,
+      "right": 36,
+      "note": "designed tablist scroller: .tabs overflow-x:auto, scrollable 428>350 (verified)"
+     }
+    ]
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "tab",
+      "left": -58,
+      "right": 36,
+      "note": "same designed tablist scroller"
+     }
+    ]
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   }
+  },
+  "/competitions": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   }
+  },
+  "/competitions/comp01": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   }
+  },
+  "/vision": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   }
+  },
+  "/vision/ai-predictor": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   }
+  },
+  "/document/sample.pdf": {
+   "320": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "CANVAS",
+      "left": 29,
+      "right": 327,
+      "note": "pre-existing pdf.js canvas seat inside .pdf-canvas-wrap scroll region (stub 404 render); documented in 82ddb693; tabindex fix = PdfViewer.tsx lead handoff"
+     }
+    ]
+   },
+   "390": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "390@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "768@200%": {
+    "pageOverflowX": 0,
+    "offenders": []
+   },
+   "1440": {
+    "pageOverflowX": 0,
+    "offenders": [
+     {
+      "cls": "cursor-dot-core",
+      "note": "global custom-cursor chrome, lead-owned (_chrome zone), pageOverflowX=0"
+     },
+     {
+      "cls": "cursor-readout",
+      "note": "cursor readout parked off-canvas, lead-owned chrome, pageOverflowX=0"
+     }
+    ]
+   }
+  }
+ }
+}

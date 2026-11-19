@@ -147,3 +147,34 @@ MADAREK_E2E_EXECUTABLE=/home/z/.cache/ms-playwright/chromium-1200/chrome-linux64
 
 The parity gate and the formatter/drop-zone unit pins ride the normal vitest suite
 (`npm test -w frontend`); CI is untouched (the r362 project is opt-in like `flows`).
+
+## 7. R368 T5 addendum — the public route inventory, reviewed state (wave5)
+
+The r368 Task 5 wave (branch `wip/r368-t5`, commits 83749b03…fac668c3) visually reviewed
+every public route below against the 6-axis `scripts/conformance/pages.mjs` gate (floor 90,
+light+dark, bps 1440/390). Evidence + raw JSON: `docs/audit/evidence/wave5-notes/` (NOTES.md
+is the index). The auth-only families were probed with a seeded `mdrk-auth` STUDENT session
+against a read-only fixture API (no postgres in that sandbox — disclosed in NOTES.md).
+
+| family | routes | state | pages.mjs after (1440/390, L+D) |
+|---|---|---|---|
+| auth | /auth, /auth/register, /auth/forgot-password, /auth/reset-password | already conformant | 100/99.6 · 99.1/99.1 · 100/98.8 · 100/100 |
+| auth | /auth/verify-email | **rebuilt** (83749b03) | 70/53.3 → **100/100** |
+| colleges | /colleges, /colleges/leaderboard, /colleges/:id | **family pass** (d04bd992) + sweep repair (fac668c3: the leaderboard table rejoined the `.table.tbl-stack` ladder rung 1) | 80/63.3 · 80/63.3 · 79.8/63.3 → **100/100 · 100/100 · 99.8/100** |
+| capabilities | /capabilities (+ /features alias) | already conformant (meta/a11y owned by `wip/r368-t5-public` line, not duplicated) | 100/100 |
+| community | /community | already conformant (authed probe) | 99.2/99.6 |
+| competitions | /competitions, /competitions/:id | **family pass** (b6149b51) | 91.9/76.7-ish → **100/100 · 98.7/100** |
+| vision + document | /vision, /vision/:slug, /document/:fn | **family pass** (82ddb693; incl. the undefined `.flex-wrap` overflow fix) | → **100/100 · 100/100 · 100/100** |
+| about/help/contact | /about, /help, /contact | already conformant | 100/100 ×3 |
+| legal | /legal/{privacy,terms,cookies,accessibility,security,data} | already conformant (cookies 96.7 = single-CTA sheet by design, R366 L4) | 100 ×5 · 96.7 (cookies) |
+| download | /app | already conformant | 100/100 |
+| errors | /404, /403, /500, /maintenance, `*` | **/404 rebuilt** (7d3b8404); 403/500/maintenance hold 96.7 — the eyebrow seat lives in the shared ErrorSheetPage (components/error/, lead follow-up) | /404 96.7 → **100/100**; rest 96.7 ≥ floor |
+| dev specimens | /__brand, /__design, /__plates | **EXEMPT** — dev-plate carve-outs (§1; App.tsx SPECIMEN_SURFACE_PREFIXES); measured 72.9/55.8 · 79.6/63.1 · 69.8/55.5, not gamed | n/a |
+
+Redirect-only aliases (no visual surface): /login→/auth, /register→/auth/register,
+/universities→/colleges, /features→/capabilities. Overflow sweep (320/390/768/1440 +
+390@200%/768@200%): pageOverflowX=0 on every route × cell; all rect escapes are evidenced
+designed scroll seats, lead-owned cursor chrome, or the pre-existing pdf.js canvas seat
+(NOTES.md §FINAL ACCEPTANCE SWEEP). axe: 0 critical/serious on 13 routes × 2 themes.
+Lighthouse mobile on /auth, /capabilities, /legal/privacy: a11y/best-practices/SEO 100×3;
+PERF 78/80/82 — the LCP render-delay diagnosis + lead handoff is in NOTES.md.
