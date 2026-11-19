@@ -1421,7 +1421,7 @@
        sheet under zoom — the same construction as the d1/auth-title
        clamps. R369-C (C4.2): the base family block and the C2.1 zoom
        twin folded — one owner per selector. */
-    font-size: min(var(--type-headline-size-sm), 11.5vw);
+    font-size: clamp(0px, var(--type-headline-size-sm), 11.5vw); /* the vw twin pins the title to narrow sheets under the 200 % font-scale protocol; byte-identical at 100 % on every band (min(a,b) == clamp(0,a,b) for a,b > 0 — the resolver speaks clamp, the sheet keeps the same computed size) */
   }
   .state-desc  { font-size: var(--type-label-size); color: var(--text-muted); max-inline-size: 42ch; }
   /* R319 (C2-G2 · §C3): the HATCHED CELL — EmptyState's opt-in
