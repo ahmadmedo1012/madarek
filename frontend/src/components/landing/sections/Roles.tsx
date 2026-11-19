@@ -74,16 +74,21 @@ import { useEffect, useState } from 'react';
  * convention, geometry never moves). */
 const NARROW_ART_QUERY = '(max-width: 767px)';
 
+/* r368 T8 (R0/R1): ONE shared alt (the copy.ts one-constant pattern) — the
+ * two art objects differ only by src/dimensions; the alt drops the
+ * scene-mood adjectives, keeping the plate's own description. */
+const DECK_ART_ALT = 'مبنى مدرسي أفقي منخفض وخط أفق مفتوح بلمسة برتقالية';
+
 const DECK_ART_WIDE = {
   src: '/media/illustrations/r368/roles/usecase-media-1440.png',
-  alt: 'مبنى مدرسي أفقي منخفض وخط أفق أرضي مفتوح في مشهد معماري هادئ بلمسة برتقالية',
+  alt: DECK_ART_ALT,
   width: 724,
   height: 887,
 } as const;
 
 const DECK_ART_NARROW = {
   src: '/media/illustrations/r368/roles/usecase-media-390.png',
-  alt: 'مبنى مدرسي أفقي منخفض وخط أفق أرضي مفتوح في مشهد معماري هادئ بلمسة برتقالية',
+  alt: DECK_ART_ALT,
   width: 374,
   height: 254,
 } as const;
@@ -119,22 +124,22 @@ const ROLE_ROWS: RoleRow[] = [
   {
     num: '01',
     title: 'الطالب',
-    line: 'رحلة تعلّم شخصية — من المحاضرة الأولى إلى الإتقان: جدول اليوم، والمهام، والتقدّم في مقرّر واحد.',
+    line: 'رحلة تعلّم شخصية: جدول اليوم والمهام والتقدّم في مقرّر واحد.',
   },
   {
     num: '02',
     title: 'الأستاذ',
-    line: 'بناء المحاضرات والاختبارات، وتصحيح بملاحظات، ومتابعة الطلاب قسمًا قسمًا.',
+    line: 'بناء المحاضرات والاختبارات، وتصحيح بملاحظات، ومتابعة الطلاب.',
   },
   {
     num: '03',
     title: 'المسجل العام',
-    line: 'الكليات والأقسام والمقرّرات والصلاحيات، وتقارير حيّة عنها جميعًا.',
+    line: 'الكليات والأقسام والمقرّرات والصلاحيات — وتقارير حيّة.',
   },
   {
     num: '04',
     title: 'ضمان الجودة',
-    line: 'مجالس الجودة ومؤشرات الالتزام — وكل مؤسّسة معزولة تمامًا عن غيرها.',
+    line: 'مجالس الجودة ومؤشرات الالتزام — وكل مؤسّسة معزولة.',
   },
   {
     num: '05',
@@ -144,7 +149,7 @@ const ROLE_ROWS: RoleRow[] = [
   {
     num: '06',
     title: 'الباحث',
-    line: 'طالب أو أستاذ يكتب بحثه: رفع PDF، وفحص نزاهة معلَن، وملاحظات معلَّمة من الأستاذ.',
+    line: 'طالب أو أستاذ: رفع PDF، وفحص نزاهة معلَن، وملاحظات معلَّمة من الأستاذ.',
   },
   {
     num: '07',
@@ -154,7 +159,7 @@ const ROLE_ROWS: RoleRow[] = [
   {
     num: '08',
     title: 'وليّ الأمر',
-    line: 'لا حساب منفصل لوليّ الأمر اليوم — المتابعة تمرّ عبر تقرير الطالب نفسه.',
+    line: 'لا حساب لوليّ الأمر اليوم — المتابعة عبر تقرير الطالب.',
   },
 ];
 

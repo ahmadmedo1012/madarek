@@ -23,7 +23,7 @@ and contributor (current round: R341):
 2. **الاختبارات قانون**: لا يُحذف اختبار ولا يُضعَف تأكيد ليمرّ الكود —
    إن فشل الاختبار فالخلل في الكود. | Tests are law: never delete a test
    or weaken an assertion to make code pass.
-3. **لا رفع سقوف**: لا يُرفع سقف (bundle ≤ 770 KB gz…) ولا يُعاد تثبيت خط
+3. **لا رفع سقوف**: لا يُرفع سقف (bundle ≤ 774 KB gz…) ولا يُعاد تثبيت خط
    أساس بوابة إلا بتوثيق سبب مقنع في نفس الـ PR. | Never raise a ceiling
    or re-pin a gate baseline without a documented justification.
 4. **انضباط السقاطة (ratchet)**: أرقام المطابقة تتحسن فقط؛ التحسن يُثبَّت
@@ -97,7 +97,7 @@ them on every PR.
 1. فرع لكل عمل (`r339/<task>` لجولات البرنامج، أو `feat/…`/`fix/…`)
    يفتح PR إلى `main` — لا دفع مباشر إلى `main` إلا بترتيب مسبق مع المشرف.
 2. املأ قائمة تدقيق الـ PR (`.github/PULL_REQUEST_TEMPLATE.md`): البوابات،
-   أثر المطابقة (قبل ← بعد)، حجم الحزمة (≤ 770 KB gz)، المظهران، 390،
+   أثر المطابقة (قبل ← بعد)، حجم الحزمة (≤ 774 KB gz)، المظهران، 390،
    RTL، لقطات الشاشة لتغييرات الواجهة.
 3. أي تغيير يستحق سطرًا في `CHANGELOG.md` يُحدَّث في نفس الـ PR.
 

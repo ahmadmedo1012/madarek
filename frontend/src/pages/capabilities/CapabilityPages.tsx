@@ -12,10 +12,10 @@ import { RevealCssClass } from '../../hooks/useReveal';
 import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
 /* R366 L4 copy diet: the shared public-sheet chrome copy (skip link,
  * back-home link, brand word) — one home per string, in LegalSheet. */
-import { BACK_HOME, BRAND_WORD, SKIP_LINK } from '../legal/LegalSheet';
+import { BACK_HOME, BRAND_WORD, SKIP_LINK, useLegalMeta } from '../legal/LegalSheet';
 /* R366 L4: the registry link's label — the CTA and the section lede
  * said the same two words. */
-const COLLEGES_GATE = 'بوابة الكليات';
+const COLLEGES_GATE = 'الكليات';
 // patterns.css §10 (r341/D9) — the guest sub-page sheet (ex
 // campus.css, deleted): the honest capability matrix (ما يعمل اليوم) +
 // the status pairs (إلى أين) moved here VERBATIM from the landing when
@@ -36,6 +36,15 @@ const COLLEGES_GATE = 'بوابة الكليات';
  */
 export function CapabilitiesPage() {
   useThemeSync();
+  /* R368 T5 — the ledger sheet owns its head like every other public
+   * sheet: without this the tab title, description, canonical and
+   * og:url all stayed the LANDING's (canonical pointed at `/`, which
+   * de-indexes /capabilities). The words are the page's own. */
+  useLegalMeta({
+    title: 'سجلّ القدرات',
+    path: '/capabilities',
+    description: 'ما يعمل وما هو محاكاة.',
+  });
 
   const campusCount = new Set(colleges.map((c) => c.cityAr ?? '')).size;
 
@@ -96,9 +105,6 @@ export function CapabilitiesPage() {
             <RevealCssClass as="h2" className="cu-title" delay={1} id="cap-vision-title">
               تعليمٌ <em>يعرف كلَّ طالب</em>
             </RevealCssClass>
-            <RevealCssClass as="p" className="cu-lede" delay={2}>
-              كل حالة كما في النظام.
-            </RevealCssClass>
           </div>
 
           <RevealCssClass as="ul" className="vs-status" delay={3}>
@@ -107,7 +113,7 @@ export function CapabilitiesPage() {
                 <span className="vs-status-k"><Icon icon={s.live ? Check : FlaskConical} size={13} /> {s.k}</span>
                 <span className="vs-status-v">{s.v}</span>
                 <span className={`vs-status-tag${s.live ? ' is-live' : ''}`}>
-                  {s.live ? 'يعمل الآن' : 'محاكاة/قيد التطوير'}
+                  {s.live ? 'يعمل الآن' : 'محاكاة'}
                 </span>
               </li>
             ))}

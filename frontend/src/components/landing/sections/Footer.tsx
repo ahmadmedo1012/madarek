@@ -402,7 +402,7 @@ export function Footer({ year }: { year: number }) {
         <div className="fo-cta-strip" data-spec="footer.ctastrip">
           <h3 className="fo-contact-h" data-spec="footer.contacth">التواصل</h3>
           <Link to="/contact" className="fo-cta-link" data-spec="footer.biglink">
-            <div className="fo-biglink-t" data-spec="footer.biglinkt">التواصل والتسجيل المبكر</div>
+            <div className="fo-biglink-t" data-spec="footer.biglinkt">التسجيل المبكر</div>
             <ArrowIcon spec="footer.ctaarrow" />
           </Link>
         </div>

@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-11-19T03:37:31.693Z",
+ "generatedAt": "2026-11-19T07:44:14.275Z",
  "state": "named states (entry/mid30/mid60/exit/end) per pairs.mjs — a pair is matched only when both sides reached the same declared state within ±2 px; crops are section∩viewport clips",
  "profile": {
-  "browser": "chromium 156.0.8078.4",
+  "browser": "chromium 143.0.7499.4",
   "playwright": "1.60.0",
-  "node": "v22.22.1",
+  "node": "v24.22.3",
   "dpr": 1,
   "reducedMotion": "no-preference",
   "local": "http://localhost:5303",
@@ -147,7 +147,7 @@
     "home-map-wrap": 5,
     "home-platform-wrap": 13,
     "home-problem-wrap": 2,
-    "home-usecase-wrap": 15,
+    "home-usecase-wrap": 17,
     "home-why-wrap": 14
    },
    "contentTopsDiagnostic": {
@@ -219,14 +219,14 @@
       "minStart": 6760,
       "maxEnd": 9407,
       "achievedEntryOffset": 8117,
-      "sectionHeight": 1389,
-      "startFracOfSection": -1
+      "sectionHeight": 1882,
+      "startFracOfSection": -0.7
      },
      "home-usecase-wrap": {
       "triggers": 1,
       "minStart": 7637,
       "maxEnd": 10744,
-      "achievedEntryOffset": 10000,
+      "achievedEntryOffset": 10001,
       "sectionHeight": 1367,
       "startFracOfSection": -1.7
      },
@@ -250,7 +250,7 @@
     "unpairedRoots": [],
     "spaceValidation": {
      "achievedEntryOffsetMinusStartMedian": 1357,
-     "spread": 1472,
+     "spread": 1473,
      "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
     }
    }
@@ -258,7 +258,7 @@
   "1024": {
    "maxOffset": 11507,
    "bestStep": {
-    "footer": 22,
+    "footer": 21,
     "home-cta-wrap": 19,
     "home-hero-wrap": 0,
     "home-intro-wrap": 2,
@@ -291,7 +291,7 @@
     "home-usecase-wrap": 891,
     "home-why-wrap": 1768
    },
-   "steps": 25,
+   "steps": 24,
    "anchor0": 5,
    "triggerPairing": {
     "source": "docs/audit/evidence/heron-motion-inventory-live.json (audit live capture, five widths)",
@@ -337,14 +337,14 @@
       "minStart": 7401,
       "maxEnd": 9667,
       "achievedEntryOffset": 8741,
-      "sectionHeight": 1132,
-      "startFracOfSection": -1.2
+      "sectionHeight": 1768,
+      "startFracOfSection": -0.8
      },
      "home-usecase-wrap": {
       "triggers": 1,
       "minStart": 7885,
       "maxEnd": 10557,
-      "achievedEntryOffset": 10512,
+      "achievedEntryOffset": 10511,
       "sectionHeight": 891,
       "startFracOfSection": -2.9
      },
@@ -368,7 +368,7 @@
     "unpairedRoots": [],
     "spaceValidation": {
      "achievedEntryOffsetMinusStartMedian": 1343,
-     "spread": 1734,
+     "spread": 1733,
      "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
     }
    }
@@ -381,7 +381,7 @@
     "home-hero-wrap": 0,
     "home-intro-wrap": 2,
     "home-map-wrap": 4,
-    "home-platform-wrap": 15,
+    "home-platform-wrap": 14,
     "home-problem-wrap": 3,
     "home-usecase-wrap": 20,
     "home-why-wrap": 16
@@ -455,14 +455,14 @@
       "minStart": 8031,
       "maxEnd": 10486,
       "achievedEntryOffset": 9367,
-      "sectionHeight": 1145,
-      "startFracOfSection": -1.2
+      "sectionHeight": 2487,
+      "startFracOfSection": -0.5
      },
      "home-usecase-wrap": {
       "triggers": 1,
       "minStart": 8712,
       "maxEnd": 11373,
-      "achievedEntryOffset": 11855,
+      "achievedEntryOffset": 11856,
       "sectionHeight": 887,
       "startFracOfSection": -3.5
      },
@@ -486,7 +486,7 @@
     "unpairedRoots": [],
     "spaceValidation": {
      "achievedEntryOffsetMinusStartMedian": 1338,
-     "spread": 2252,
+     "spread": 2253,
      "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
     }
    }
@@ -564,7 +564,7 @@
       "triggers": 4,
       "minStart": 8983,
       "maxEnd": 12053,
-      "achievedEntryOffset": 10586,
+      "achievedEntryOffset": 10585,
       "sectionHeight": 947,
       "startFracOfSection": -1.7
      },
@@ -573,14 +573,14 @@
       "minStart": 9929,
       "maxEnd": 12961,
       "achievedEntryOffset": 11529,
-      "sectionHeight": 2123,
-      "startFracOfSection": -0.8
+      "sectionHeight": 3316,
+      "startFracOfSection": -0.5
      },
      "home-usecase-wrap": {
       "triggers": 1,
       "minStart": 10837,
       "maxEnd": 14024,
-      "achievedEntryOffset": 14848,
+      "achievedEntryOffset": 14847,
       "sectionHeight": 1062,
       "startFracOfSection": -3.8
      },
@@ -603,8 +603,8 @@
     },
     "unpairedRoots": [],
     "spaceValidation": {
-     "achievedEntryOffsetMinusStartMedian": 1603,
-     "spread": 2940,
+     "achievedEntryOffsetMinusStartMedian": 1602,
+     "spread": 2939,
      "note": "the live trigger table's starts sit at a near-constant delta from the achieved entry offsets — the table lives in the same stage-offset space the wheels drive; median/spread recorded"
     }
    }
@@ -904,6 +904,7 @@
   "home-why-wrap@768:entry",
   "home-why-wrap@768:mid30",
   "home-why-wrap@768:mid60",
+  "home-why-wrap@768:exit",
   "chrome@1024:entry",
   "footer@1024:entry",
   "home-cta-wrap@1024:entry",
@@ -963,17 +964,17 @@
   {
    "target": "footer@390:mid60",
    "status": "missing",
-   "reason": "local: state mid60 needs scroll 14477 > live document end 14250 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)"
+   "reason": "local: state mid60 needs scroll 14225 > live document end 13998 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)"
   },
   {
    "target": "footer@768:mid30",
    "status": "missing",
-   "reason": "local: state mid30 needs scroll 15579 > live document end 15479 — inaccessible locally (recorded, not scored); reference: state mid30 needs stage offset 12196 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
+   "reason": "local: state mid30 needs scroll 15445 > live document end 15345 — inaccessible locally (recorded, not scored); reference: state mid30 needs stage offset 12196 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
   },
   {
    "target": "footer@768:mid60",
    "status": "missing",
-   "reason": "local: state mid60 needs scroll 15863 > live document end 15479 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 12487 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
+   "reason": "local: state mid60 needs scroll 15729 > live document end 15345 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 12487 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
   },
   {
    "target": "home-cta-wrap@1024:mid30",
@@ -990,16 +991,16 @@
   {
    "target": "home-hero-wrap@390:mid60",
    "status": "invalid-mask-share",
-   "reason": "mask share 74.9 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
+   "reason": "mask share 75 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
   },
   {
    "target": "home-map-wrap@390:exit",
    "status": "invalid-mask-share",
-   "reason": "mask share 63.7 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
+   "reason": "mask share 61.8 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
   }
  ],
  "dials": {
-  "E": 55,
+  "E": 55.4,
   "T": 96.5,
   "Q": 100
  },

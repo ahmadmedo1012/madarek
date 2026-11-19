@@ -82,19 +82,19 @@ const FINDINGS_AR = [
   {
     key: 'lecture',
     title: LECTURE_INTERACTIVE,
-    text: 'محاضرة مسجَّلة بنقاط فحص تُثبِّت الفهم، وحضور يُحتسب تلقائيًا عند الإكمال.',
+    text: 'محاضرة مسجَّلة بنقاط فحص وحضور تلقائي.',
     foot: 'الباب [01] — قاعة المحاضرات',
   },
   {
     key: 'checkpoint',
     title: 'نقاط الفحص',
-    text: 'سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.',
+    text: 'سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم.',
     foot: 'الباب [02] — نقطة الفحص',
   },
   {
     key: 'exam',
     title: 'الاختبارات الإلكترونية',
-    text: 'بنك أسئلة بأربعة أنواع وقوالب جاهزة، وتصحيح تلقائي للأسئلة الموضوعية.',
+    text: 'بنك أسئلة بأربعة أنواع وتصحيح تلقائي للموضوعي.',
     foot: 'الباب [03] — قاعة الاختبارات',
   },
   {
@@ -107,7 +107,7 @@ const FINDINGS_AR = [
     key: 'assistant',
     title: 'المساعد الأكاديمي',
     text: 'يعمل الآن داخل المنصّة، ويقترح شروحات مخصَّصة وخطط مراجعة حسب أدائك الفعلي.',
-    foot: 'المساعد — يعمل اليوم داخل المنصّة',
+    foot: 'المساعد — يعمل اليوم',
   },
 ] as const;
 
@@ -119,25 +119,25 @@ const CLOSE_CHIP_L1_AR = 'الفصول';
 const CLOSE_CHIP_L2_AR = '[04]';
 const CLOSE_TITLE_AR = 'الرحلة — أربعة فصول تتحرك أمامك';
 const CLOSE_COPY_AR =
-  'مرّر لتشاهد الرحلة تُبنى على مسطح واحد: لا لقطات مُجمّلة ولا وعودًا قادمة. كل غرفة في هذا المسطح ميزة تعمل اليوم داخل المنصّة — من قاعة المحاضرات إلى غرفة الإتقان — وإنشاء الحساب في نهاية الصفحة. المسطح رسم أصلي لمدارك، والغرف تتّسع مع كل فصل جديد.';
+  'مرّر لتشاهد الرحلة تُبنى على مسطح واحد: لا لقطات مُجمّلة ولا وعودًا قادمة. كل غرفة ميزة تعمل اليوم داخل المنصّة — وإنشاء الحساب في نهاية الصفحة. المسطح رسم أصلي.';
 
 /* the four-station ledger rows (the cms block): each row = hairline +
  * station line + icon — the journey's own chapters, mirroring the
  * drawing's four doors. */
 const LEDGER_AR = [
-  { key: 'lecture', text: 'المحاضرة التفاعلية — شرح مسجَّل بنقاط فحص وحضور يُحتسب', icon: Presentation },
-  { key: 'checkpoint', text: 'نقاط الفحص داخل المحاضرة تصحّح الفهم فورًا', icon: CircleCheck },
-  { key: 'exam', text: 'الاختبارات الإلكترونية بأنواعها وقوالبها الجاهزة', icon: FileCheck2 },
-  { key: 'mastery', text: 'مصفوفة الإتقان والمراجعة حسب أدائك الفعلي', icon: Grid3x3 },
+  { key: 'lecture', text: 'المحاضرة التفاعلية', icon: Presentation },
+  { key: 'checkpoint', text: 'نقاط الفحص', icon: CircleCheck },
+  { key: 'exam', text: 'الاختبارات الإلكترونية', icon: FileCheck2 },
+  { key: 'mastery', text: 'مصفوفة الإتقان', icon: Grid3x3 },
 ] as const;
 
 /* the three plan annotation cards (Heron's demo cards): orange-ruled
  * callouts on the drawing — title in the accent mono voice + one
  * honest line. Positioned at the measured seats (journey.css). */
 const ANNOTATIONS_AR = [
-  { key: 'exam', title: '[03] قاعة الاختبارات', text: 'بنك أسئلة بأربعة أنواع وتصحيح تلقائي فوري.' },
-  { key: 'library', title: '[04] المكتبة', text: 'مراجع ومصادر لكل فصل.' },
-  { key: 'research', title: 'البحث والمراجعة', text: 'رفع البحوث ومتابعة تقييمها داخل المنصّة.' },
+  { key: 'exam', title: '[03] قاعة الاختبارات', text: 'أسئلة بأربعة أنواع وتصحيح فوري.' },
+  { key: 'library', title: '[04] المكتبة', text: 'مراجع لكل فصل.' },
+  { key: 'research', title: 'البحث والمراجعة', text: 'رفع البحوث ومتابعة تقييمها.' },
 ] as const;
 
 /* the [nn/05] counter rows — static text, opacity-only progression

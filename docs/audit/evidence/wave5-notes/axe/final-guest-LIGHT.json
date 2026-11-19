@@ -1,0 +1,42 @@
+{
+ "/auth": {
+  "390:light": [],
+  "1440:light": []
+ },
+ "/auth/verify-email": {
+  "390:light": [],
+  "1440:light": []
+ },
+ "/capabilities": {
+  "390:light": [],
+  "1440:light": []
+ },
+ "/about": {
+  "390:light": [],
+  "1440:light": []
+ },
+ "/contact": {
+  "390:light": [],
+  "1440:light": []
+ },
+ "/legal/cookies": {
+  "390:light": [],
+  "1440:light": []
+ },
+ "/colleges": {
+  "390:light": [],
+  "1440:light": []
+ },
+ "/colleges/leaderboard": {
+  "390:light": [],
+  "1440:light": []
+ },
+ "/404": {
+  "390:light": [],
+  "1440:light": []
+ },
+ "/app": {
+  "390:light": [],
+  "1440:light": []
+ }
+}

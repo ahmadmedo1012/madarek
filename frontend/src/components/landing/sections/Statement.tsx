@@ -50,17 +50,24 @@ import { ScrubReveal } from '../journey/WordReveal';
  * global across them). */
 const STATEMENT_TEXT =
   'منصّة واحدة تدير الرحلة كلها: المحاضرة تُبنى وتُقاس، والواجب يُصحّح ويُعاد، ' +
-  'والإتقان يُرسَم مفهومًا مفهومًا، والبحث يُفهرَس ويبقى. سجلّ واحد للقسم والكلية — يعمل اليوم، ويكبر مع كل فصل.';
-const STATEMENT_LINES = [
-  'منصّة واحدة تدير الرحلة',
-  'كلها: المحاضرة تُبنى وتُقاس،',
-  'والواجب يُصحّح ويُعاد،',
-  'والإتقان يُرسَم مفهومًا مفهومًا،',
-  'والبحث يُفهرَس ويبقى.',
-  'سجلّ واحد للقسم والكلية —',
-  'يعمل اليوم، ويكبر',
-  'مع كل فصل.',
-] as const;
+  'والإتقان يُرسَم مفهومًا مفهومًا، والبحث يُفهرَس ويبقى. سجلّ واحد للقسم والكلية — يعمل اليوم.';
+/* r368 T8 (S0/S1): the authored lines are now DERIVED from the single
+ * STATEMENT_TEXT source by numeric word counts (the scrub census reads
+ * only each line's word count — WordReveal.tsx ScrubReveal law), killing
+ * the 28-word duplicate string set; the tail drops the roadmap clause
+ * («ويكبر مع كل فصل») — the honest-ledger rule keeps present-tense live
+ * facts only. Line census stays 8 full-width boxes (intro.line.1..8). */
+const STATEMENT_LINE_COUNTS = [4, 4, 3, 4, 3, 2, 3, 2] as const;
+const STATEMENT_LINES = (() => {
+  const words = STATEMENT_TEXT.split(' ');
+  const out: string[] = [];
+  let from = 0;
+  for (const count of STATEMENT_LINE_COUNTS) {
+    out.push(words.slice(from, from + count).join(' '));
+    from += count;
+  }
+  return out;
+})();
 
 /* R338 T-03d — the reference's per-word char-scaffold census (frozen spec,
  * identical at 768/1024/1440/1920): its split-text tween leaves one empty
@@ -96,7 +103,7 @@ const CAPABILITY_REGISTER = [
 const MEDIA_ART = {
   light: '/media/illustrations/r368/statement/intro-plate.svg',
   dark: '/media/illustrations/r368/statement/intro-plate.svg',
-  alt: 'رسم أصلي: برج معرفي عمودي بشرائح رأسية على ورق دافئ، ودائرة جمرٍ تلامس كتفه الأيمن',
+  alt: 'رسم أصلي: برج معرفي بشرائح رأسية ودائرة جمرٍ على ورق دافئ',
   width: 713,
   height: 723,
 } as const;

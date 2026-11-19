@@ -165,68 +165,151 @@ def scene_arcade(d, w, h, wide=True):
 
 
 def scene_plan_card(d, w, h, wide=True):
-    """An authored plan card: our own floor-plan drawing on paper, one orange
-    header block. Generic architectural UI, no reference content."""
+    """An authored plan card (r368 T3 wave-4 enrichment): graph-paper ground,
+    a survey plan with FILLED rooms in two tones + wall strokes with door
+    gaps, dimension ticks, an orange highlighted room, a tooltip chip and a
+    ruled legend — geometric primitives only, no reference pixel."""
     vgrad(d, (0, 0, w, h), PAPER, MIST)
+
+    # graph-paper ground inside the card
     pad = w * 0.035
     card = [pad, h * 0.07, w - pad, h * 0.93]
     d.rectangle([card[0] + w * 0.006, card[1] + h * 0.012, card[2] + w * 0.006, card[3] + h * 0.012], fill=G4)
     d.rectangle(card, fill=WHITE, outline=G3, width=max(1, int(w * 0.0025)))
+    gx = max(2, int(w * 0.014))
+    gy = max(2, int(h * 0.020))
+    x = card[0] + gx
+    while x < card[2]:
+        d.rectangle([x, card[1], x + 1, card[3]], fill=(240, 240, 235))
+        x += gx * 3
+    y = card[1] + gy
+    while y < card[3]:
+        d.rectangle([card[0], y, card[2], y + 1], fill=(240, 240, 235))
+        y += gy * 3
 
-    # orange header block with three white rules
-    hdr = [card[0] + w * 0.03, card[1] + h * 0.05, card[0] + w * 0.42, card[1] + h * 0.44]
-    d.rectangle(hdr, fill=ORANGE)
-    for i in range(3):
-        y = hdr[1] + hdr[3] * (0.22 + i * 0.20) - hdr[1] * 0.0
-        d.rectangle([hdr[0] + w * 0.02, y, hdr[2] - w * (0.06 if i == 2 else 0.02), y + h * 0.012], fill=WHITE)
-
-    # plan drawing: rooms as ruled rectangles
-    px0, py0 = card[0] + w * 0.04, card[1] + h * 0.56
-    px1, py1 = card[0] + w * 0.60, card[3] - h * 0.08
-    d.rectangle([px0, py0, px1, py1], outline=G2, width=max(1, int(w * 0.003)))
-    d.line([(px0 + (px1 - px0) * 0.45, py0), (px0 + (px1 - px0) * 0.45, py1)], fill=G2, width=max(1, int(w * 0.003)))
-    d.line([(px0, py0 + (py1 - py0) * 0.5), (px1, py0 + (py1 - py0) * 0.5)], fill=G2, width=max(1, int(w * 0.002)))
-    d.rectangle([px0 + (px1 - px0) * 0.05, py0 + (py1 - py0) * 0.06, px0 + (px1 - px0) * 0.28, py0 + (py1 - py0) * 0.30], fill=G4)
-    d.rectangle([px0 + (px1 - px0) * 0.55, py0 + (py1 - py0) * 0.58, px0 + (px1 - px0) * 0.92, py0 + (py1 - py0) * 0.86], fill=G4)
-
-    # rule stack + grey legend at the right
-    rx = card[0] + w * 0.66
+    # the plan: a wall outline with door gaps, rooms FILLED in two tones,
+    # one room highlighted in orange (the reference's signal room)
+    px0, py0 = card[0] + w * 0.05, card[1] + h * 0.10
+    px1, py1 = card[0] + w * 0.66, card[1] + h * 0.78
+    wall = max(1, int(w * 0.004))
+    # room fills first (walls overdraw)
+    d.rectangle([px0, py0, px0 + (px1 - px0) * 0.46, py0 + (py1 - py0) * 0.52], fill=MIST)
+    d.rectangle([px0 + (px1 - px0) * 0.50, py0, px1, py0 + (py1 - py0) * 0.30], fill=(232, 232, 226))
+    d.rectangle([px0 + (px1 - px0) * 0.50, py0 + (py1 - py0) * 0.34, px1, py1], fill=MIST)
+    d.rectangle([px0, py0 + (py1 - py0) * 0.56, px0 + (px1 - px0) * 0.46, py1], fill=(226, 226, 220))
+    # the orange room
+    orx = px0 + (px1 - px0) * 0.10
+    ory = py0 + (py1 - py0) * 0.14
+    d.rectangle([orx, ory, orx + (px1 - px0) * 0.24, ory + (py1 - py0) * 0.26], fill=ORANGE)
+    # outer walls with two door gaps
+    for seg in (0, 1, 2, 3):
+        if seg == 0:
+            d.rectangle([px0, py0, px1, py0 + wall], fill=INK2)
+        if seg == 1:
+            d.rectangle([px1 - wall, py0, px1, py0 + (py1 - py0) * 0.55], fill=INK2)
+            d.rectangle([px1 - wall, py0 + (py1 - py0) * 0.68, px1, py1], fill=INK2)
+        if seg == 2:
+            d.rectangle([px0, py1 - wall, px0 + (px1 - px0) * 0.35, py1], fill=INK2)
+            d.rectangle([px0 + (px1 - px0) * 0.52, py1 - wall, px1, py1], fill=INK2)
+        if seg == 3:
+            d.rectangle([px0, py0, px0 + wall, py1], fill=INK2)
+    # inner partitions with gaps
+    mx = px0 + (px1 - px0) * 0.48
+    d.rectangle([mx - wall // 2, py0, mx + wall // 2, py0 + (py1 - py0) * 0.28], fill=INK2)
+    d.rectangle([mx - wall // 2, py0 + (py1 - py0) * 0.40, mx + wall // 2, py1], fill=INK2)
+    d.rectangle([px0, py0 + (py1 - py0) * 0.52, px0 + (px1 - px0) * 0.30, py0 + (py1 - py0) * 0.52 + wall], fill=INK2)
+    # dimension ticks top
     for i in range(7):
-        y = card[1] + h * (0.20 + i * 0.075)
-        d.rectangle([rx, y, card[2] - w * 0.05, y + h * 0.016], fill=G3 if i % 3 else G2)
+        tx = px0 + (px1 - px0) * i / 6
+        d.rectangle([tx, py0 - h * 0.030, tx, py0 - h * 0.014], fill=G2)
+    d.rectangle([px0, py0 - h * 0.022, px1, py0 - h * 0.020], fill=G3)
+
+    # the tooltip chip over the plan's upper right (the reference's card)
+    tip = [px1 - w * 0.02, py0 + h * 0.05, min(card[2] - w * 0.05, px1 + w * 0.24), py0 + h * 0.26]
+    d.rectangle([tip[0] + w * 0.004, tip[1] + h * 0.008, tip[2] + w * 0.004, tip[3] + h * 0.008], fill=G4)
+    d.rectangle(tip, fill=WHITE, outline=G2, width=max(1, int(w * 0.002)))
+    d.rectangle([tip[0] + w * 0.02, tip[1] + h * 0.035, tip[0] + w * 0.16, tip[1] + h * 0.055], fill=G2)
+    d.rectangle([tip[0] + w * 0.02, tip[1] + h * 0.085, tip[0] + w * 0.24, tip[1] + h * 0.100], fill=G3)
+    d.rectangle([tip[0] + w * 0.02, tip[1] + h * 0.12, tip[0] + w * 0.19, tip[1] + h * 0.134], fill=G3)
+    d.rectangle([tip[0] + w * 0.02, tip[1] + h * 0.16, tip[0] + w * 0.08, tip[1] + h * 0.185], fill=ORANGE)
+
+    # the legend column at the right: colour chips + rules
+    lx = card[0] + w * 0.72
+    for i, col in enumerate((ORANGE, G2, G3, MIST, G3, G2, G3)):
+        ly = card[1] + h * (0.14 + i * 0.098)
+        d.rectangle([lx, ly, lx + w * 0.045, ly + h * 0.045], fill=col, outline=G4, width=1)
+        d.rectangle([lx + w * 0.075, ly + h * 0.012, card[2] - w * 0.04, ly + h * 0.030], fill=G3 if i % 2 else G2)
+    # legend footer rule
+    d.rectangle([lx, card[3] - h * 0.10, card[2] - w * 0.04, card[3] - h * 0.098], fill=G3)
 
 
 def scene_dashboard(d, w, h, wide=True):
-    """An authored product card: header dots, a ruled table, one orange chip."""
+    """An authored dashboard card (r368 T3 wave-4 enrichment): window chrome,
+    a stat row with chip + figures, a bar chart with axis and gridlines, a
+    two-column list with orange action chips and avatar dots — geometric
+    primitives only, no reference pixel."""
     vgrad(d, (0, 0, w, h), PAPER, MIST)
     pad = w * 0.035
     card = [pad, h * 0.07, w - pad, h * 0.93]
     d.rectangle([card[0] + w * 0.006, card[1] + h * 0.012, card[2] + w * 0.006, card[3] + h * 0.012], fill=G4)
     d.rectangle(card, fill=WHITE, outline=G3, width=max(1, int(w * 0.0025)))
 
-    # header: three dots + a title rule
-    cy = card[1] + h * 0.09
+    # header: three dots + a title rule + a search pill
+    cy = card[1] + h * 0.075
     for i, col in enumerate((G3, G3, ORANGE)):
         cx = card[0] + w * (0.035 + i * 0.028)
         r = w * 0.008
         d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=col)
-    d.rectangle([card[0] + w * 0.15, cy - h * 0.012, card[0] + w * 0.42, cy + h * 0.012], fill=G2)
+    d.rectangle([card[0] + w * 0.15, cy - h * 0.012, card[0] + w * 0.40, cy + h * 0.012], fill=G2)
+    d.rectangle([card[0] + w * 0.58, cy - h * 0.016, card[2] - w * 0.04, cy + h * 0.016], fill=MIST, outline=G4, width=1)
+    d.rectangle([card[0] + w * 0.60, cy - h * 0.005, card[0] + w * 0.72, cy + h * 0.005], fill=G3)
 
-    # the table: an ink header row then ruled rows with a bar meter column
-    ty = card[1] + h * 0.20
-    d.rectangle([card[0] + w * 0.03, ty, card[2] - w * 0.03, ty + h * 0.055], fill=INK2)
-    rows = 5
+    # stat row: three stat blocks (chip + big figure + delta rule)
+    sy = card[1] + h * 0.15
+    for i in range(3):
+        sx = card[0] + w * (0.035 + i * 0.315)
+        d.rectangle([sx, sy, sx + w * 0.028, sy + h * 0.028], fill=ORANGE if i == 0 else G3)
+        d.rectangle([sx + w * 0.045, sy - h * 0.004, sx + w * 0.20, sy + h * 0.022], fill=INK2)
+        d.rectangle([sx + w * 0.045, sy + h * 0.040, sx + w * (0.13 if i else 0.17), sy + h * 0.054], fill=G3)
+        if i:
+            d.rectangle([sx + w * 0.045, sy + h * 0.062, sx + w * 0.11, sy + h * 0.070], fill=G4)
+
+    # the chart: gridlines + axis + five bars (one orange)
+    ch0 = card[0] + w * 0.035
+    ch1 = card[2] - w * 0.035
+    cy0 = card[1] + h * 0.34
+    cy1 = card[1] + h * 0.64
+    for i in range(4):
+        gy = cy0 + (cy1 - cy0) * i / 3
+        d.rectangle([ch0, gy, ch1, gy + 1], fill=(240, 240, 235))
+    d.rectangle([ch0, cy1, ch1, cy1 + max(1, int(h * 0.006))], fill=G2)
+    d.rectangle([ch0, cy0, ch0 + max(1, int(w * 0.004)), cy1], fill=G2)
+    n = 5
+    bw = (ch1 - ch0) * 0.11
+    heights = (0.55, 0.85, 0.42, 1.0, 0.66)
+    for i in range(n):
+        bx = ch0 + (ch1 - ch0) * (0.08 + i * 0.18)
+        bh = (cy1 - cy0) * heights[i]
+        d.rectangle([bx, cy1 - bh, bx + bw, cy1], fill=ORANGE if i == 3 else G3)
+    # chart caption rules
+    d.rectangle([ch0, cy1 + h * 0.030, ch0 + (ch1 - ch0) * 0.4, cy1 + h * 0.042], fill=G3)
+    d.rectangle([ch1 - (ch1 - ch0) * 0.22, cy1 + h * 0.030, ch1, cy1 + h * 0.042], fill=G4)
+
+    # the two-column list: rows with avatar dot + rules + orange action chips
+    ly0 = card[1] + h * 0.72
+    rows = 2
     for i in range(rows):
-        ry = ty + h * 0.075 + i * h * 0.115
-        d.rectangle([card[0] + w * 0.03, ry, card[2] - w * 0.03, ry + h * 0.0022], fill=G4)
-        d.rectangle([card[0] + w * 0.045, ry + h * 0.028, card[0] + w * (0.30 + 0.06 * (i % 3)), ry + h * 0.05], fill=G3)
-        d.rectangle([card[0] + w * 0.52, ry + h * 0.032, card[0] + w * (0.60 + 0.05 * (i % 2)), ry + h * 0.045], fill=G4)
-        # the meter
-        d.rectangle([card[0] + w * 0.70, ry + h * 0.030, card[2] - w * 0.05, ry + h * 0.047], fill=MIST)
-        d.rectangle(
-            [card[0] + w * 0.70, ry + h * 0.030, card[0] + w * (0.74 + 0.035 * ((i * 2) % 5)), ry + h * 0.047],
-            fill=ORANGE if i == 0 else G2,
-        )
+        ry = ly0 + i * h * 0.095
+        colw = (ch1 - ch0) * 0.47
+        for c in range(2):
+            rx = ch0 + c * (colw + (ch1 - ch0) * 0.06)
+            r = w * 0.011
+            d.ellipse([rx, ry + h * 0.005, rx + 2 * r, ry + h * 0.005 + 2 * r], fill=G2 if (i + c) % 2 else G3)
+            d.rectangle([rx + w * 0.035, ry + h * 0.012, rx + colw * 0.55, ry + h * 0.026], fill=G3)
+            d.rectangle([rx + w * 0.035, ry + h * 0.038, rx + colw * 0.38, ry + h * 0.048], fill=G4)
+            # the action chip (orange on the first row's right column)
+            chip_col = ORANGE if (i == 0 and c == 1) else MIST
+            d.rectangle([rx + colw * 0.68, ry + h * 0.008, rx + colw, ry + h * 0.048], fill=chip_col, outline=G4, width=1)
 
 
 SEATS = [

@@ -339,7 +339,10 @@ test.describe('the phone band (320×568)', () => {
     // column): the viewer keeps its width.
     const viewerBefore = (await page.locator('.pdf-viewer').boundingBox())!;
     await fab.click();
-    const sheet = page.getByRole('dialog', { name: 'ملاحظات البحث' });
+    // ca45d29f's copy cut renamed the Sheet to «ملاحظات» (the panel
+    // section inside keeps its own «ملاحظات البحث» label — see the
+    // AnnotationsPanel unit contract).
+    const sheet = page.getByRole('dialog', { name: 'ملاحظات' });
     await expect(sheet).toBeVisible();
     await expect(sheet.locator('.annotations-panel')).toBeVisible();
     await expect(page.getByText(NOTE.comment)).toBeVisible();

@@ -106,7 +106,7 @@ export function Vision({ year }: { year: number }) {
                       div (p margins are globally reset, so the swap is neutral). */}
                   <div className="fo-cta-lede" data-spec="cta.lede" data-mdrk-reveal="item">
                     أنشئ حسابك الجامعي في دقائق — ببريدك الإلكتروني ورقم قيدك،
-                    وتابع تقدّمك من أول محاضرة.
+                    وتابع تقدّمك.
                   </div>
                 </div>
                 <div className="fo-cta-actions" data-spec="cta.actions" data-mdrk-reveal="item" id="cta">
@@ -206,7 +206,7 @@ export function Vision({ year }: { year: number }) {
         </p>
         <div className="cg-strip-links" data-spec="cta.registry-links">
           <Link to="/colleges" className="btn ghost sm" data-spec-hover="6">تصفح الكليات التجريبية</Link>
-          <Link to="/auth" className="fo-text-link" data-spec-hover="9">سجل الدخول لاستعراض كليتك داخل المنصّة</Link>
+          <Link to="/auth" className="fo-text-link" data-spec-hover="9">سجل الدخول لاستعراض كليتك</Link>
         </div>
         {/* T-13: the registry index cloud — the recorded cta interaction
             seats. Honest counterparts: the registry's OWN college names,

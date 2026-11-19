@@ -1,0 +1,42 @@
+{
+ "/auth": {
+  "390:dark": [],
+  "1440:dark": []
+ },
+ "/auth/verify-email": {
+  "390:dark": [],
+  "1440:dark": []
+ },
+ "/capabilities": {
+  "390:dark": [],
+  "1440:dark": []
+ },
+ "/about": {
+  "390:dark": [],
+  "1440:dark": []
+ },
+ "/contact": {
+  "390:dark": [],
+  "1440:dark": []
+ },
+ "/legal/cookies": {
+  "390:dark": [],
+  "1440:dark": []
+ },
+ "/colleges": {
+  "390:dark": [],
+  "1440:dark": []
+ },
+ "/colleges/leaderboard": {
+  "390:dark": [],
+  "1440:dark": []
+ },
+ "/404": {
+  "390:dark": [],
+  "1440:dark": []
+ },
+ "/app": {
+  "390:dark": [],
+  "1440:dark": []
+ }
+}

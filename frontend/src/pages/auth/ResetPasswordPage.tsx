@@ -5,8 +5,7 @@ import { z } from 'zod';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { Icon } from '../../components/Icon';
-import { TechnicalSheet } from '../../components/illustrations/technical/TechnicalSheet';
-import { Logo } from '../../brand';
+import { AuthDoor } from '../../components/auth/AuthDoor';
 import { useResetPassword } from '../../hooks/useAuth';
 import { useThemeSync } from '../../components/layout/ThemeToggle';
 import { usePageTitle } from '../../hooks/usePageTitle';
@@ -105,26 +104,7 @@ export default function ResetPasswordPage() {
   const linkIsDead = !token || (serverRefused && !succeeded);
 
   return (
-    <div className="auth-shell">
-      <div className="auth-frame" aria-hidden="true">
-        <span className="auth-mark auth-mark-tl" />
-        <span className="auth-mark auth-mark-tr" />
-        <span className="auth-mark auth-mark-bl" />
-        <span className="auth-mark auth-mark-br" />
-      </div>
-      <div className="auth-grain" aria-hidden="true" />
-      <TechnicalSheet className="tech-sheet-auth" />
-
-      <header className="auth-top">
-        <Link to="/auth" className="auth-back-home">
-          <Icon icon={ArrowLeft} size={14} />
-          العودة إلى تسجيل الدخول
-        </Link>
-        <span className="auth-context">
-          <Logo variant="mark" size={14} /> مدارك
-        </span>
-      </header>
-
+    <AuthDoor>
       <main className="auth-center">
         <div className="auth-card">
 
@@ -283,6 +263,6 @@ export default function ResetPasswordPage() {
       <footer className="auth-bottom">
         <strong>منصّة تعليم ذكية مستقلّة</strong> · عربية أولًا
       </footer>
-    </div>
+    </AuthDoor>
   );
 }

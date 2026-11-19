@@ -92,26 +92,29 @@ export function VisionGalleryPage() {
       {/* r262 family grammar (G): patterns PageHeader — the same header
           contract every recomposed index rides (community/competitions/
           colleges); the authored vision statement stays the h1.
-          R369 (C1 · the D11 register): the gallery is a single-section
-          surface — [01] rides the h1 gutter (the cards carry no §B2
-          bars); the standing verb joins the header (the phone band
-          hides the topbar «اسأل AI» ≤920, D6 — the any-auth sibling
-          is the community feed, navigation-only). */}
+          R368 T5 — the numbered-sheet law: the [01] gutter index joins
+          the header (the inner-public family grammar), and the ALWAYS-ON
+          pair (R342-11 measured seat) rides the actions row — vision has
+          no documented reciprocal in nav.ts, so it carries the family's
+          standing pair (community accent + the any-auth colleges ghost):
+          the shell's floating CTA is desktop-only, so the phone band had
+          NO primary on this page. */}
       <PageHeader
         title={`${formatNum(total)} ابتكاراً قادماً`}
         description="نظرة على المسار التقني."
         index="01"
         actions={(
-          <Link to="/community" className="btn accent sm">
-            المجتمع الجامعيّ
-          </Link>
+          <>
+            <Link to="/community" className="btn accent sm">المجتمع</Link>
+            <Link to="/colleges" className="btn ghost sm">الكليات</Link>
+          </>
         )}
       />
 
       {total === 0 ? (
         <EmptyState illustration="empty-list"
           icon={Sparkles}
-          title="لا ابتكارات بعد"
+          title="لا ابتكارات"
           description=""
         />
       ) : (
@@ -138,7 +141,7 @@ export function VisionGalleryPage() {
               {/* baseline alignment keeps the counted-noun note on the
                   heading's rhythm (.vision-group-head). */}
               <header className="vision-group-head">
-                <h2 id="vision-group-live" className="vision-h2">جرّبها الآن</h2>
+                <h2 id="vision-group-live" className="vision-h2">جرّبها</h2>
               </header>
               <RowList aria-label="ابتكارات متاحة للتجربة">
                 {grouped.beta.map((c) => (
@@ -218,16 +221,30 @@ export function VisionDetailPage() {
           r305: .vision-hero owns the composition in vision.css — the
           former .vision-detail-hero name dragged a stale card skin
           (box-shadow/overflow) from the polish overrides layer onto a
-          transparent element; the reading surface composes flat. */}
+          transparent element; the reading surface composes flat.
+          R368 T5 — the family eyebrow grammar: the [01] mono gutter
+          index + the pf-eyebrow classification (the nav's own name
+          «الابتكارات القادمة»), the numbered-sheet law the inner-public
+          family carries; + the standing ALWAYS-ON pair in the actions
+          row (the phone band's only primary — the shell CTA is
+          desktop-only; same seats as the gallery header). */}
       <div className="vision-hero">
         <ConceptChip concept={concept} variant="hero" />
         <div>
+          <p className="pf-eyebrow">
+            <span className="page-index" dir="ltr" aria-hidden="true">[01]</span>
+            الابتكارات القادمة
+          </p>
           <Badge color={STATUS_COLOR[concept.status]} icon={Sparkles}>
             {STATUS_LABEL[concept.status]}
           </Badge>
         </div>
         <h1 className="vision-hero-title">{concept.title}</h1>
         <p className="page-subtitle">{concept.subtitle}</p>
+        <div className="pf-page-actions">
+          <Link to="/community" className="btn accent sm">المجتمع</Link>
+          <Link to="/colleges" className="btn ghost sm">الكليات</Link>
+        </div>
       </div>
 
       {/* Article body — the reading space (A12 P2-7): plain prose on the
@@ -275,7 +292,7 @@ export function VisionDetailPage() {
         {/* How it works — numbered steps on gated tokens (was white-on-
             concept-gradient text, ungated). */}
         <Card>
-          <h2 className="vision-h2">كيف تعمل</h2>
+          <h2 className="vision-h2">الآلية</h2>
           <div className="flex-col gap-3">
             {concept.steps.map((s, i) => (
               <div key={i} className="flex gap-3 vision-step">
@@ -295,7 +312,13 @@ export function VisionDetailPage() {
       {/* Use cases */}
       <Card>
         <h2 className="vision-h2">الاستخدامات</h2>
-        <div className="flex flex-wrap gap-2">
+        {/* R368 T5 — the wrapping row lands on .pf-page-actions (patterns'
+            own flex-wrap + sp-2 row): the previous `flex flex-wrap gap-2`
+            combo rode the UNDEFINED .flex-wrap utility (components.css
+            never defined it), so the badge cluster rendered as a single
+            non-wrapping line — measured off-canvas at 390/320 (badges
+            [-231..-57], sweep evidence wave5-notes). */}
+        <div className="pf-page-actions">
           {concept.useCases.map((u) => (
             <Badge key={u}>{u}</Badge>
           ))}
@@ -317,10 +340,10 @@ export function VisionDetailPage() {
           </span>
           <div className="flex-1 vision-notify-body">
             <div className="text-md font-semibold vision-notify-title">
-              نبّهني عند الإطلاق
+              نبّهني
             </div>
             <div className="text-xs text-subtle vision-notify-hint">
-              خدمة التنبيه قيد التطوير.
+              التنبيه قيد التطوير.
             </div>
           </div>
           <button type="button" className="btn outline" disabled>

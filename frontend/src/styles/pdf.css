@@ -898,6 +898,10 @@
   align-items: center;
   gap: var(--sp-1-5);
   min-block-size: 44px;
+  /* The icon-only form (r368-t8's copy cut) measures 16+24+2 = 42px
+     inline — the same 44px touch floor the topbar's collapsed avatar
+     chip keeps (polish.css), so both axes are floored, not just block. */
+  min-inline-size: 44px;
   padding-inline: var(--sp-3);
   border: 1px solid var(--border);
   border-radius: var(--r-full);

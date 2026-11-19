@@ -1072,3 +1072,145 @@ Scoped re-capture (`.r368-tmp/why-a`, both sides fresh, 1440): reference height
 mid30 71.4 · mid60 69.7 (was 74.0 / 74.3 / 63.9) — the protocol now compares
 matched internal progress; the remaining why gap is content/tonal (our 4-row
 track vs the reference's OBSERVE→ADVISE pinned stages), carried to the seat loop.
+
+## T8 — the landing copy reduction, measured and landed
+
+The T8-a baseline artifact (merged from wip/r368-t8) pinned **1 398 Arabic visible
+words** over the landing source surface (inclusion law in
+`scripts/gates/landing-copy-baseline.mjs`; determinism verified byte-identical).
+The lead applied the full proposal on `exec/r368-fidelity-v2` @ `54cedd00`:
+
+- **Category A (rendered cuts, 56 edits)** and **Category B (source dedup)** both
+  applied: the Statement lines are now DERIVED from the single `STATEMENT_TEXT`
+  by numeric word counts (`STATEMENT_LINE_COUNTS` — the scrub census reads only
+  per-line counts; the 28-word duplicate string set is gone, 8 line boxes kept);
+  the Roles deck art shares ONE alt constant. Ruling recorded: the plan's own
+  Task-8 language ("remove duplicate claims, filler and repeated labels") covers
+  category B against the pinned source-based metric. Reserve B6 applied as
+  buffer. The r168b-pinned finding-5 assistant text kept VERBATIM; every other
+  test pin verified.
+- **Measured after: 1 115 ≤ 1 118** (the −20 % bar, floor(1398×0.8)) —
+  **−283 words = 20.24 %**.
+- Gates re-run on the exact tree: pinned-string suites **218/218 green**
+  (funnel, r168b truthfulness, legal-pages, r170d a11y, r306 sheet, r307 media,
+  r308 interaction, r312 ×2, r177 brand, scrollspy), `npm run typecheck` green
+  (both workspaces + tests), `copy-budget` CLEAN, `stylelint-gate` ratchet
+  green. Remaining for T8 close at T10: the e2e journey suites + full vitest
+  pass on the integration tree.
+
+### Process lesson (recorded, not repeated)
+
+The first wave-3 full matrix run was CONTAMINATED: the lead edited landing copy
+while the capture was in flight — vite HMR reset reveal state machines mid-crop
+and the local side collapsed (cta entry 16.9, footer 9.7). Law: never edit the
+served tree while the instrument captures. The run's REFERENCE side is valid
+(live capture, settled-height protocol, unaffected by local edits); the local
+side was re-captured clean with `--reuse-reference` on the stable committed
+tree. The contaminated numbers are not cited anywhere as scores.
+
+## Wave 3 — the full scorecard on the settled protocol + copy-reduction tree
+
+Run: full matrix (10 targets × 5 viewports × 4 states), reference side live-captured
+with the settled-height protocol, local side re-captured clean on the stable
+committed tree (`--reuse-reference`), after the problem diagonal fix and the T8
+copy reduction. Committed evidence: docs/audit/evidence/{scorecard,manifest,
+capture}.json (the contaminated first attempt is NOT cited anywhere; its reference
+side was reused, its local side replaced).
+
+**E 55.4 (was 55.0) · T 96.5 % · Q 100** — per-seat E (wave-2 → wave-3):
+problem 69.9→**71.0** · cta 68.1→**68.4** · why 66.5→**67.2** · chrome 58.0→58.0 ·
+map 52.7→**53.0** · intro 50.7→**51.4** · hero 46.8→46.5 · usecase 46.7→46.8 ·
+footer 45.9→**46.2** · platform 43.2→**42.7**.
+
+Worst state clusters (the next levers, measured this run):
+- platform@768: 27.6/28.5/24.8 (the whole bp is ~15 under its 390/1024 twins)
+- hero mid states: 1440 mid30 38.5 · 1024 mid30 26.3 (diff 56.6 %) · 768 mid30 37.4
+- intro mid states: 390 mid30 28.8 · 768 46–48 · 1440 mid30 54 (mid60 46.5)
+- usecase@1024 mid60 34.3 · @390 exit 41.8
+- footer@1024 entry 26.8 (footer's 1024 band)
+T floors: footer 66.7 % / cta 86.7 % are the reference-stage structural limits
+(recorded finding; both-sides reasons on the rows) — carried as documented
+limitations to T10 with the spec's acceptance-#1 escape, never a silent pass.
+
+## Session resume record (exact state for the next session)
+
+- **Lead branch** `exec/r368-fidelity-v2` @ `f089795c` (T3/T8/instrument work;
+  SpecKit synced). **Dev server**: vite :5303 (PID in /tmp if alive; restart with
+  `cd frontend && npx vite --port 5303 --strictPort`).
+- **T5 line COMPLETE** — `wip/r368-t5` @ `fac668c3` (+d4c1aadc evidence, db9e105b):
+  all inventoried public routes ≥90 pages.mjs light+dark, axe 0 critical/serious,
+  overflow sweep evidenced, 306 focused tests green; residuals: Lighthouse PERF
+  <90 (SPA-boot LCP; levers lead-owned: prerender public routes/entry diet —
+  landing control `/` also 60), shared ErrorSheetPage eyebrow (lead), PdfViewer
+  tabindex (lead). Merge `wip/r368-t5` + `wip/r368-t5-public` (4c8cc32c, Codebuff
+  line: meta/SEO + a11y hardening, disjoint) at integration.
+- **T6-a ACTIVE** — worktree /home/z/wt/r368-t6, branch `wip/r368-t6` @ `ed81e2de`
+  (+teacher WIP uncommitted): inventory 108 routes committed; shell pass landed
+  (dark indicator contrast 1.84:1→4.95:1); student family landed (/training
+  99.5/100, /achievements 100/100); teacher family IN PROGRESS. Its vite :5306 +
+  a stub API on :4000 (left by T5-b) may be running. DO NOT touch its worktree;
+  monitor via `git -C /home/z/wt/r368-t6 log --oneline -5`. After it finishes:
+  review diff + evidence, then dispatch T6-b (admin/owner/quality/registrar
+  families) per its wave-2 handoff note.
+- **T8 DONE (measurement)** — merged wip/r368-t8 @ 392a5bbd into the lead branch;
+  landing copy 1 398→1 115 (−20.24 %); pinned suites 218/218 green.
+- **T4** — value inventory at docs/audit/evidence/wave4-notes/value-inventory.md:
+  migrate the repeated raw values in non-landing sheets (17 raw spacing literals
+  in shared/heron-admin-owner.css; NOTE: check-raw-css.sh only globs styles/*.css
+  top-level — the shared/student/teacher/shell subdirs are UN-ENFORCED; candidates
+  for lead-minted tokens: --sp-3-5 (14px ×15 across 8 sheets), 3px micro-gap,
+  64px dock clearance).
+- **T7 Expo** — untouched; no mobile branch exists anywhere (checked twice).
+  apps/mobile (Expo ~58, own lockfile). Do AFTER T6 wave 2 dispatch.
+- **T9** — not started; landing CSS 721 612 B vs 601 352 B target; the five
+  cross-context lint duplicates + T4 migration feed it.
+- **T10** — needs T3 floors progress + T6/T7/T9 + integration (review branch),
+  then full acceptance (verify.sh unpiped, e2e, Lighthouse PERF shell work,
+  axe, bundle, mobile checks).
+- Background logs: /tmp/r368-fullrun-w3.log (contaminated run — reference side
+  only is usable), /tmp/r368-fullrun-w3b.log (the clean wave-3 run), /tmp/why-full.log.
+
+## T3 seat diagnoses (wave-3 evidence, VLM-inspected crops — the next session's map)
+
+- **platform@768 (worst cluster 24.8–28.5):** our band's STRUCTURE already matches
+  the live reference (two 254px rows, image LEFT + text RIGHT — verified by DOM
+  probe; the live reference renders its product images at 768: 371×254 + 377×258
+  at x=7, top 7606/7860 — the frozen spec's "0×0 census at 768" reading does not
+  match the live site). The gap is the ARTWORK: our authored plates render as
+  skeleton bars/dots (geometric primitives) while the reference shows a rich
+  floorplan mockup + a real dashboard screenshot. Lever: enrich the authored
+  media (scripts/art/r368-original-media.py) toward the measured per-cell tonal
+  blocks — richer room shapes, chart geometry, list rows — then re-measure.
+- **hero mid states (38.5/26.3/37.4 at 1440/1024/768 mid30, diffs 44–57 %):**
+  the hero art seat's content at scroll states diverges — diagnose the hero
+  mid30 pair crop next (the plate vs the reference's art progression).
+- **intro mid states (390 mid30 28.8; 1440 mid60 46.5):** the intro ink-reveal
+  (T3-C overlay) likely under/over-plays at these states — check the
+  st-media-ink coverage at 390 mid states vs the reference's dark foliage
+  (measured 57–130 tones).
+- **usecase@1024 mid60 34.3, @390 exit 41.8:** the deck's strip object-position
+  at 1024 + the exit-state band structure.
+- **THE CONVERGENCE METHOD (recorded law for the media seats):** E≥88 with
+  ORIGINAL artwork means authored compositions TUNED to the measured 8×8 tonal
+  block profiles of each reference seat (per-cell mean color/density from the
+  committed reference crops — the band plates' own generator
+  scripts/graphics/plate-from-crop.py holds the statistics). Iterate:
+  block-profile → art edit → scoped `--reuse-reference` measurement.
+- **Process law (repeated from the T8 lesson):** never edit the served tree
+  while a capture runs; scoped runs write to .r368-tmp/<seat>-<n>.
+
+### T3 increment — the platform media enrichment (wave 4, first block-profile pass)
+
+`scripts/art/r368-original-media.py` scene_plan_card/scene_dashboard enriched
+(graph paper, filled rooms + walls/doors/ticks, orange room, tooltip, legend;
+window chrome, stat row, chart with axis, list with chips). 8/8 `--check`
+stable, provenance regenerated. Scoped (`.r368-tmp/platform-b`, reference
+reused): 768 avg 26.9→**28.2** · 390 avg 34.8→**36.6** (exit 32.1→35.9) · 1440
+flat (52.3) — one state regressed (390 entry 37.6→36.4, recorded; the seat
+improves). **The measured lesson:** thin-line drawings on paper-white produce
+low-variance 8×8 windows while the reference's dense screenshots produce
+high-variance windows — SSIM stays ~30–50 regardless of structural match.
+The convergence lever is DENSITY (hatching, furniture massing, text-like
+marks) tuned per measured cell statistics — the block-profile loop, next
+session. 1024/1920 platform crops still carry the previous media in the
+committed evidence (re-capture at the next full run).

@@ -34,9 +34,9 @@ scripts/conformance/results/
 # like the conformance results blobs above.
 docs/redesign/r343/css-dead/report.json
 
-# R344 C-sheet: the imagery contact sheet (every on-site asset, light+dark
-# twins, families labeled) — the VLM review artifact (imagery-sheet.png).
-docs/redesign/r344/imagery-sheet.png
+# R369: the R344 imagery contact sheet entry was RETIRED — the sheet moved
+# to local-only under the evidence policy (gitignored in place, see
+# .gitignore); no tracked copy remains, so no allowlist line is needed.
 
 # r347-Z — the home-map-wrap scroll-state re-key: 1,128 noCounterpart
 # entries (438 new noHeuristic excusals + 690 legacy flags, each with a

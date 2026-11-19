@@ -37,6 +37,9 @@ import { useAuthStore, type AcademicPosition } from '../../stores/auth.store';
  * grammar carried to the chrome-less guest colleges surfaces, mounted
  * ONLY in the guest branch (authed visitors get the AppShell). */
 import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
+/* R368 T5 — the public sheets' shared head metadata (title,
+ * description, canonical, og:url) — one owner for the pattern. */
+import { useLegalMeta } from '../legal/LegalSheet';
 // D14 CSS split (13-17): this sheet also styles the .comp-* competitions
 // grid rendered by the page below and is shared with two other lazy
 // consumers (CompetitionsPages + CommunityPages — rg-verified, r157;
@@ -47,6 +50,11 @@ import '../../styles/colleges.css';
 // the d2 display title + the [01] gutter index (after colleges.css so the
 // bridge's unlayered rules land last in the chunk-shared CSS).
 import '../../styles/landing/inner.css';
+// R368 T5 — the colleges guest-mount sheet: the 2-channel CTA hover seat
+// for the guest join row / closing band + the guest mount's 8px phone
+// inset (the pages.mjs edge390 law). Scoped to this family's guest
+// surfaces only (colleges-guest.css header notes).
+import '../../styles/colleges-guest.css';
 import { formatDate } from '../../utils/numbers';
 
 interface CollegeListItem {
@@ -199,6 +207,9 @@ function useDocTitle(title: string | null) {
  * links, the guest docTitle and the leaderboard CTA repeated it as
  * three separate literals). */
 const COLLEGES_LABEL = 'كلّيّات الجامعة';
+/* R368 T5 — the gallery's polite loading announcement (one home for the
+ * string; the skeleton bars below stay decorative). */
+const LOADING_COLLEGES = 'جارٍ تحميل الكلّيّات…';
 /* R366 L4: the leaderboard label — one home for the docTitle, the page
  * header and the CTA (three literals said the same two words). */
 const LEADERBOARD_LABEL = 'منافسة الكلّيّات';
@@ -262,9 +273,15 @@ export function CollegesIndexPage() {
   // authed roles, who see the working university tool).
   const isGuest = !user;
   // Guests get no AppShell → no docTitle effect (A12 P2-6). Authed
-  // visitors keep the shell's own resolution (NAV_TITLES carries
-  // /colleges — same label, one source in nav.ts).
-  useDocTitle(isGuest ? COLLEGES_LABEL : null);
+  // visitors keep the shell's own title (NAV_TITLES carries /colleges —
+  // same label, one source in nav.ts); the head metadata is the same on
+  // both branches: without it the LANDING's description, canonical and
+  // og:url stayed mounted here (canonical pointed every guest at `/`).
+  useLegalMeta({
+    title: COLLEGES_LABEL,
+    path: '/colleges',
+    description: 'سجلّ الكلّيّات — بيانات اصطناعية للعرض.',
+  });
   const inst = useInstitutionScope(); // r180: scoped key
   const q = useQuery({
     queryKey: withInstitutionScope(['colleges'], inst),
@@ -322,10 +339,15 @@ export function CollegesIndexPage() {
           scene-paint) يتقاعد مع اتجاه Superlist: الهرمية عبر السطوح
           لا عبر الطلاء. ضيف الزائر يبقى فوق الترويسة كإجراء صفحة. */}
       {/* R332 W10b — .inx-head: the page-opening hairline + d2 display
-          title + [01] gutter index (the inner-public sheet bridge). */}
+          title + [01] gutter index (the inner-public sheet bridge).
+          R368 T5 — the eyebrow: the honest registry classification
+          (whose colleges these are — the same classification the
+          detail hero carries), the pf-eyebrow grammar the family
+          sheets share. */}
       <div className="inx-head">
         <PageHeader
           title={COLLEGES_LABEL}
+          eyebrow="المؤسسة النموذجية"
           actions={isGuest ? <GuestJoinRow /> : undefined}
           index="01"
         />
@@ -336,24 +358,30 @@ export function CollegesIndexPage() {
            sections of RowList rows (r264), so the skeleton previews THAT
            anatomy (title bar + bordered row stack per campus), not the
            retired card grid. Decorative only (aria-hidden), per the
-           shared skeleton contract. */
-        <div className="gallery-skeleton" aria-hidden>
-          {[0, 1].map((s) => (
-            <section key={s} className="gallery-skeleton-section">
-              <Skeleton className="gallery-skeleton-title" />
-              <div className="gallery-skeleton-rows">
-                {[0, 1, 2, 3].map((i) => (
-                  <div key={i} className="gallery-skeleton-row">
-                    <Skeleton className="gallery-skeleton-row-emoji" />
-                    <div className="gallery-skeleton-row-lines">
-                      <Skeleton className="gallery-skeleton-row-line-a" />
-                      <Skeleton className="gallery-skeleton-row-line-b" />
+           shared skeleton contract. R368 T5: the skeleton itself is
+           silent to assistive tech, so the wrapper carries the busy
+           state and a polite text announcement — the shared skeleton
+           family's own aria-busy/aria-live contract. */
+        <div aria-busy="true">
+          <p role="status" className="visually-hidden">{LOADING_COLLEGES}</p>
+          <div className="gallery-skeleton" aria-hidden>
+            {[0, 1].map((s) => (
+              <section key={s} className="gallery-skeleton-section">
+                <Skeleton className="gallery-skeleton-title" />
+                <div className="gallery-skeleton-rows">
+                  {[0, 1, 2, 3].map((i) => (
+                    <div key={i} className="gallery-skeleton-row">
+                      <Skeleton className="gallery-skeleton-row-emoji" />
+                      <div className="gallery-skeleton-row-lines">
+                        <Skeleton className="gallery-skeleton-row-line-a" />
+                        <Skeleton className="gallery-skeleton-row-line-b" />
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          ))}
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
         </div>
       )}
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
@@ -648,11 +676,25 @@ export function CollegeDetailPage() {
           <div className="college-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={36} /></div>
         )}
         <div className="college-hero-titles">
-          <div className="college-hero-eyebrow">مؤسسة مدارك النموذجية · {c.city} · بيانات تجريبية</div>
+          {/* R368 T5 — the [01] mono gutter index joins the eyebrow (the
+              listing pages' .inx-head grammar: the numbered-sheet law the
+              family's public sheets carry; numeral index, aria-hidden). */}
+          <div className="college-hero-eyebrow">
+            <span className="college-hero-index font-mono" dir="ltr" aria-hidden="true">[01]</span>
+            {' '}مؤسسة مدارك النموذجية · {c.city} · بيانات تجريبية
+          </div>
           <h1 className="page-title college-hero-name">{c.name}</h1>
           {c.nameEn && <div className="college-hero-sub">{c.nameEn}</div>}
         </div>
       </SectionAccent>
+
+      {/* R368 T5 — the guest join row at the masthead: the same compact
+          funnel row the listing surfaces carry (r183's A12 census: a
+          guest who lands on a shared college link had NO auth path until
+          the closing band at the very end of the page — the same gap the
+          gallery had). Guest-only, same labels/destinations, nothing
+          else changes; the closing band keeps its seat at page end. */}
+      {isGuest && <GuestJoinRow />}
 
       {/* Stats strip — guests see only the real numbers (A8 P1-2
           ruling); authed roles keep the full four-stat line including
@@ -671,7 +713,7 @@ export function CollegeDetailPage() {
           because it is real. */}
       {isGuest && statCells.length === 0 && (
         <p className="college-coming-soon text-sm text-muted">
-          كلّيّة حديثة التأسيس — تُحدَّث مع التسجيل.
+          تُحدَّث مع التسجيل.
         </p>
       )}
 
@@ -681,7 +723,7 @@ export function CollegeDetailPage() {
         {showLeadership && (
         <Card title="القيادة الأكاديميّة" style={soloPair1 ? soloSpan : undefined}>
           {c.leadership.length === 0 ? (
-            <p className="text-muted text-sm">لا قيادة بعد.</p>
+            <p className="text-muted text-sm">لا قيادة.</p>
           ) : (
             <ul className="leadership-list">
               {c.leadership.map((l, i) => (
@@ -713,7 +755,7 @@ export function CollegeDetailPage() {
           style={soloPair1 ? soloSpan : undefined}
         >
           {c.departments.length === 0 ? (
-            <p className="text-muted text-sm">لا أقسام بعد.</p>
+            <p className="text-muted text-sm">لا أقسام.</p>
           ) : (
             <ul className="dept-list">
               {c.departments.map((d) => (
@@ -744,7 +786,7 @@ export function CollegeDetailPage() {
           {c.topStudents.length === 0 ? (
             <EmptyState
               illustration="empty-list"
-              title="لا بيانات بعد."
+              title="لا بيانات."
             />
           ) : (
             <ol className="student-rank-list">
@@ -777,7 +819,7 @@ export function CollegeDetailPage() {
           {c.announcements.length === 0 ? (
             <EmptyState
               illustration="empty-community"
-              title="لا إعلانات حاليّاً."
+              title="لا إعلانات."
             />
           ) : (
             <ul className="announce-list">
@@ -810,7 +852,7 @@ export function CollegeDetailPage() {
           {c.upcomingEvents.length === 0 ? (
             <EmptyState
               illustration="empty-list"
-              title="لا فعاليّات قادمة."
+              title="لا فعاليّات."
             />
           ) : (
             <ul className="event-list">
@@ -874,7 +916,7 @@ export function CollegeDetailPage() {
         {/* Guests only see this card when a competition exists; the
             empty branch is the authed (internal) view. */}
         {c.activeCompetitions.length === 0 ? (
-          <p className="text-muted text-sm">لا مسابقات نشطة.</p>
+          <p className="text-muted text-sm">لا مسابقات.</p>
         ) : (
         <div className="comp-grid">
           {c.activeCompetitions.map((comp) => (
@@ -1029,10 +1071,13 @@ export function CollegesLeaderboardPage() {
       </Link>
       {/* G: ترويسة patterns — نفس عقد بقية العائلة (المجتمع/المسابقات/
           الكليات)؛ صفّ الانضمام للضيف في خانة الإجراءات التي كان يشغلها.
-          R332 W10b — .inx-head: نفس جسر ورقة الصفحة الداخلية. */}
+          R332 W10b — .inx-head: نفس جسر ورقة الصفحة الداخلية.
+          R368 T5 — the eyebrow: the same registry classification as the
+          gallery (whose competition this is). */}
       <div className="inx-head">
         <PageHeader
           title={LEADERBOARD_LABEL}
+          eyebrow="المؤسسة النموذجية"
           description="مقارنة بالمؤشّرات."
           actions={isGuest ? <GuestJoinRow /> : undefined}
           index="01"
@@ -1065,7 +1110,7 @@ export function CollegesLeaderboardPage() {
           <div className="leaderboard-zero-body">
             <h2 className="leaderboard-zero-title" id="leaderboard-zero-title">بانتظار أول نقطة</h2>
             <p className="leaderboard-zero-desc">
-              لا نقاط بعد — أول نشاط يفتح الترتيب.
+              لا نقاط بعد.
             </p>
           </div>
           <div className="leaderboard-zero-actions">
@@ -1082,8 +1127,15 @@ export function CollegesLeaderboardPage() {
           <div className="leaderboard-table-wrap">
             {/* tbl-stack (A8 P2-5): collapses to labelled cards on phones
                 — the 720px min-width table used to scroll 398px sideways
-                at 390px. */}
-            <table className="leaderboard-table tbl-stack">
+                at 390px. R368 T5 sweep repair: the R362 restore of the
+                §TABLE ladder re-keyed rung 1 on `.table.tbl-stack`, so
+                this table (class `leaderboard-table tbl-stack`) silently
+                fell to rung 2 scroll on phones — measured 898px wide at
+                320/390 inside the wrap. Joining the `table` class (like
+                all 19 sibling consumers) restores the designed cards;
+                `.leaderboard-table`'s own rules keep winning on
+                specificity at desktop widths. */}
+            <table className="leaderboard-table table tbl-stack">
               <thead>
                 <tr>
                   <th scope="col" className="leaderboard-college">الكلّيّة</th>

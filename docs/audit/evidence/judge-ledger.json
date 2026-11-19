@@ -1,0 +1,780 @@
+{
+  "generatedAt": "2026-11-19T10:35:54.002Z",
+  "primary": [
+    "390",
+    "768",
+    "1440"
+  ],
+  "budgetKb": 1536,
+  "rows": [
+    {
+      "seat": "chrome",
+      "bp": "1440",
+      "primary": true,
+      "states": [
+        "entry"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/chrome.1440.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 1.7
+    },
+    {
+      "seat": "footer",
+      "bp": "1440",
+      "primary": true,
+      "states": [
+        "entry"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/footer.1440.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 8.3
+    },
+    {
+      "seat": "home-cta-wrap",
+      "bp": "1440",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-cta-wrap.1440.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 13.7
+    },
+    {
+      "seat": "home-hero-wrap",
+      "bp": "1440",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-hero-wrap.1440.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 27.7
+    },
+    {
+      "seat": "home-intro-wrap",
+      "bp": "1440",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-intro-wrap.1440.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 26.5
+    },
+    {
+      "seat": "home-map-wrap",
+      "bp": "1440",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60",
+        "exit"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-map-wrap.1440.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 47.7
+    },
+    {
+      "seat": "home-platform-wrap",
+      "bp": "1440",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-platform-wrap.1440.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 15.6
+    },
+    {
+      "seat": "home-problem-wrap",
+      "bp": "1440",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-problem-wrap.1440.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 15.4
+    },
+    {
+      "seat": "home-usecase-wrap",
+      "bp": "1440",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-usecase-wrap.1440.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 23.8
+    },
+    {
+      "seat": "home-why-wrap",
+      "bp": "1440",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-why-wrap.1440.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 21.7
+    },
+    {
+      "seat": "chrome",
+      "bp": "390",
+      "primary": true,
+      "states": [
+        "entry"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/chrome.390.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 2.7
+    },
+    {
+      "seat": "footer",
+      "bp": "390",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/footer.390.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 72.6
+    },
+    {
+      "seat": "home-cta-wrap",
+      "bp": "390",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-cta-wrap.390.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 39.9
+    },
+    {
+      "seat": "home-hero-wrap",
+      "bp": "390",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-hero-wrap.390.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 83.8
+    },
+    {
+      "seat": "home-intro-wrap",
+      "bp": "390",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-intro-wrap.390.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 131.8
+    },
+    {
+      "seat": "home-map-wrap",
+      "bp": "390",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60",
+        "exit"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-map-wrap.390.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 143
+    },
+    {
+      "seat": "home-platform-wrap",
+      "bp": "390",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60",
+        "exit"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-platform-wrap.390.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 117.3
+    },
+    {
+      "seat": "home-problem-wrap",
+      "bp": "390",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-problem-wrap.390.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 69.7
+    },
+    {
+      "seat": "home-usecase-wrap",
+      "bp": "390",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60",
+        "exit"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-usecase-wrap.390.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 137.1
+    },
+    {
+      "seat": "home-why-wrap",
+      "bp": "390",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-why-wrap.390.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 65
+    },
+    {
+      "seat": "chrome",
+      "bp": "768",
+      "primary": true,
+      "states": [
+        "entry"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/chrome.768.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 1.6
+    },
+    {
+      "seat": "footer",
+      "bp": "768",
+      "primary": true,
+      "states": [
+        "entry"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/footer.768.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 19.1
+    },
+    {
+      "seat": "home-cta-wrap",
+      "bp": "768",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-cta-wrap.768.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 20.6
+    },
+    {
+      "seat": "home-hero-wrap",
+      "bp": "768",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-hero-wrap.768.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 50.6
+    },
+    {
+      "seat": "home-intro-wrap",
+      "bp": "768",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-intro-wrap.768.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 38
+    },
+    {
+      "seat": "home-map-wrap",
+      "bp": "768",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60",
+        "exit"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-map-wrap.768.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 65.3
+    },
+    {
+      "seat": "home-platform-wrap",
+      "bp": "768",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-platform-wrap.768.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 31.3
+    },
+    {
+      "seat": "home-problem-wrap",
+      "bp": "768",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-problem-wrap.768.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 46.2
+    },
+    {
+      "seat": "home-usecase-wrap",
+      "bp": "768",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-usecase-wrap.768.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 44
+    },
+    {
+      "seat": "home-why-wrap",
+      "bp": "768",
+      "primary": true,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60",
+        "exit"
+      ],
+      "sheet": "docs/audit/evidence/judge-sheets/home-why-wrap.768.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null,
+      "kb": 75
+    },
+    {
+      "seat": "chrome",
+      "bp": "1024",
+      "primary": false,
+      "states": [
+        "entry"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/chrome.1024.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "footer",
+      "bp": "1024",
+      "primary": false,
+      "states": [
+        "entry"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/footer.1024.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-cta-wrap",
+      "bp": "1024",
+      "primary": false,
+      "states": [
+        "entry"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-cta-wrap.1024.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-hero-wrap",
+      "bp": "1024",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-hero-wrap.1024.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-intro-wrap",
+      "bp": "1024",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-intro-wrap.1024.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-map-wrap",
+      "bp": "1024",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60",
+        "exit"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-map-wrap.1024.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-platform-wrap",
+      "bp": "1024",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-platform-wrap.1024.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-problem-wrap",
+      "bp": "1024",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-problem-wrap.1024.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-usecase-wrap",
+      "bp": "1024",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-usecase-wrap.1024.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-why-wrap",
+      "bp": "1024",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60",
+        "exit"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-why-wrap.1024.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "chrome",
+      "bp": "1920",
+      "primary": false,
+      "states": [
+        "entry"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/chrome.1920.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "footer",
+      "bp": "1920",
+      "primary": false,
+      "states": [
+        "entry"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/footer.1920.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-cta-wrap",
+      "bp": "1920",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-cta-wrap.1920.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-hero-wrap",
+      "bp": "1920",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-hero-wrap.1920.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-intro-wrap",
+      "bp": "1920",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-intro-wrap.1920.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-map-wrap",
+      "bp": "1920",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60",
+        "exit"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-map-wrap.1920.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-platform-wrap",
+      "bp": "1920",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-platform-wrap.1920.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-problem-wrap",
+      "bp": "1920",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-problem-wrap.1920.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-usecase-wrap",
+      "bp": "1920",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-usecase-wrap.1920.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    },
+    {
+      "seat": "home-why-wrap",
+      "bp": "1920",
+      "primary": false,
+      "states": [
+        "entry",
+        "mid30",
+        "mid60",
+        "exit"
+      ],
+      "sheet": "docs/audit/evidence/.local/judge/home-why-wrap.1920.png",
+      "rating": null,
+      "defects": [],
+      "reviewer": null,
+      "date": null
+    }
+  ]
+}

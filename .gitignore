@@ -184,3 +184,23 @@ docs/redesign/**/evidence/
 # R353 baked deployment artifacts — written by backend/scripts/bake-build-sha.mjs during platform builds, never committed
 api/build-sha.json
 frontend/public/build-sha.txt
+
+# ── R369 evidence policy (agent A, 2026-11-19) ─────────────────────────
+# Committed evidence = JSON manifests/results + ≤1.5MB of contact sheets
+# per push. Per-state captures and round-history media stay LOCAL-ONLY:
+# gitignored IN PLACE so offline tools (plate-from-crop.py, generators)
+# keep their documented paths while the tracked tree stays lean
+# (scripts/gates/size-gate.sh rules 1/2; pre-push guard runs it).
+docs/audit/evidence/.local/
+docs/audit/evidence/primary/
+docs/audit/evidence/comparison-sheets/
+docs/audit/evidence/waves/
+docs/audit/evidence/asset-diet/
+docs/audit/evidence/wave6-notes/screenshots/
+docs/audit/evidence/extra/*.png
+docs/audit/evidence/extra/**/*.png
+docs/audit/evidence/heron-*-top.png
+docs/audit/evidence/madarek-*-top.png
+docs/redesign/assets/
+docs/redesign/r366/agent5-mobile/sheets/
+docs/redesign/r344/imagery-sheet.png

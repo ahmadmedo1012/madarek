@@ -824,9 +824,9 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 }
 .r305ao .iw-steps li {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 12px; border: 1px solid var(--rule);
+  padding: var(--sp-1-5) var(--sp-3); border: 1px solid var(--rule);
   background: var(--surface-2); color: var(--text-muted);
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 .r305ao .iw-steps li[data-state='now'] { border-color: var(--accent, currentColor); color: var(--text); font-weight: 700; }
 .r305ao .iw-steps li[data-state='done'] { color: var(--success); }
@@ -839,7 +839,7 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 
 .r305ao .iw-drop {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
-  padding: 40px 20px; margin-block: var(--space-3);
+  padding: var(--sp-8) var(--sp-5); margin-block: var(--space-3);
   border: 2px dashed var(--rule); border-radius: var(--radius-2, 10px);
   background: var(--surface-2); cursor: pointer; text-align: center;
   min-height: 44px; /* touch law */
@@ -851,7 +851,7 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 
 .r305ao .iw-parse-facts {
   display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-start: var(--space-2);
-  font-size: 13px; color: var(--text-secondary);
+  font-size: var(--fs-sm); color: var(--text-secondary);
 }
 .r305ao .iw-parse-facts span { display: inline-flex; align-items: center; gap: 6px; }
 .r305ao .iw-parse-facts .iw-warn { color: var(--danger); }
@@ -861,7 +861,7 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 .r305ao .iw-preset-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .r305ao .iw-preset-chip {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 8px 12px; border: 1px solid var(--rule);
+  padding: var(--sp-2) var(--sp-3); border: 1px solid var(--rule);
   background: var(--surface-2); cursor: pointer; font-size: 13px;
   min-height: 44px; /* touch law */
 }
@@ -895,7 +895,7 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 .r305ao .iw-counts-total { font-size: 13px; color: var(--text-muted); }
 .r305ao .iw-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-block-end: var(--space-2); }
 .r305ao .iw-filter {
-  padding: 6px 12px; border: 1px solid var(--rule); background: var(--surface-2);
+  padding: var(--sp-1-5) var(--sp-3); border: 1px solid var(--rule); background: var(--surface-2);
   cursor: pointer; font-size: 13px; min-height: 36px;
 }
 .r305ao .iw-filter.now { border-color: var(--accent, currentColor); font-weight: 700; }
@@ -950,8 +950,8 @@ html[data-theme='dark'] .r305ao .iw-hint a:not(.btn) { color: var(--accent); }
 .benr-lede { margin: 0; line-height: 1.9; font-size: 14px; /* type-gate: allow — modal rung, reviewed */ }
 .benr-area { min-height: 120px; }
 .benr-capacity {
-  display: flex; gap: 12px; /* type-gate: allow — modal rung, reviewed */
-  font-size: 13px; /* type-gate: allow — modal rung, reviewed */
+  display: flex; gap: var(--sp-3);
+  font-size: var(--fs-sm);
   color: var(--text-secondary);
 }
 .benr-capacity .benr-bad { color: var(--danger); font-weight: 700; }
@@ -997,7 +997,7 @@ html[data-theme='dark'] .r305ao .iw-hint a:not(.btn) { color: var(--accent); }
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 12px 14px;
+  padding: var(--sp-3) var(--sp-3-5);
   background: var(--surface-2);
   border: 1px solid var(--rule);
 }
@@ -1006,7 +1006,7 @@ html[data-theme='dark'] .r305ao .iw-hint a:not(.btn) { color: var(--accent); }
 .r305ao .metric-warn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-1-5);
   font-weight: 700;
   /* R369-C follow-up (N6 + AA): the 20px literal snaps off the ladder
      at 768 — the app display rung owns the metric figure (20px @1440 ·
@@ -1025,7 +1025,7 @@ html[data-theme='dark'] .r305ao .iw-hint a:not(.btn) { color: var(--accent); }
 
 .r305ao .mail-provider-id {
   display: inline-block;
-  margin-inline-start: 6px;
+  margin-inline-start: var(--sp-1-5);
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-muted);
@@ -1041,9 +1041,9 @@ html[data-theme='dark'] .r305ao .iw-hint a:not(.btn) { color: var(--accent); }
 .r305ao .r350-e6-suppression li {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
   flex-wrap: wrap;
-  padding: 8px 10px;
+  padding: var(--sp-2) var(--sp-2-5);
   border: 1px solid var(--rule);
   background: var(--surface-2);
 }
@@ -1055,7 +1055,7 @@ html[data-theme='dark'] .r305ao .iw-hint a:not(.btn) { color: var(--accent); }
 .r305ao .r350-e6-testsend .field { display: flex; flex-direction: column; gap: 4px; flex: 1 1 240px; }
 
 .r305ao .r350-e6-testsend input {
-  padding: 10px 12px;
+  padding: var(--sp-2-5) var(--sp-3);
   border: 1px solid var(--rule);
   background: var(--surface-2);
   font-size: 14px;

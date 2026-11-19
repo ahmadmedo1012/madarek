@@ -1,0 +1,69 @@
+/* ════════════════════════════════════════════════════════════════════
+   مدارك — /colleges* guest surfaces (R368 · T5 · the colleges family
+   pass)
+   ════════════════════════════════════════════════════════════════════
+   The three public colleges routes ride the pattern library
+   (PageFrame/PageHeader/RowList) + colleges.css + landing/inner.css.
+   This sheet carries ONLY the guest-mount seats the family pass
+   proved missing (pages.mjs axes, r340 T-D1a precedent):
+
+   · the 2-channel CTA hover seat — the shared .btn fill-wipe carries
+     ONE computed channel on hover (border); the guest join row and
+     the closing band add the r368 micro-drift + accent-strong border
+     (the .cu sheet's D9 recipe, patterns.css — same translateX, same
+     tokens, scoped to the two guest funnel seats that live in
+     CollegePages.tsx);
+   · the guest mount's phone inset — the CollegesLayout guest branch
+     renders <main class="content-inner">, whose base.css mobile
+     gutter is --page-gutter-mobile (20px). Every guest sheet the
+     family measures (ab/hp/ap/lg mains, auth-center, cu-main) rides
+     the sheet's own 8px inset at ≤767 (--sp-2, the pages.mjs
+     edge390 law). main.content-inner is the colleges guest mount
+     ONLY (the authed shell's .content-inner is a <div> inside
+     .content), so the selector cannot leak into the app shell.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ══ 1 · THE GUEST CTA HOVER SEAT (2-channel law) ═════════════════ */
+
+  @media (hover: hover) and (pointer: fine) {
+    .guest-join-row .btn.primary:is(:hover, :focus-within),
+    .guest-join-row .btn.primary.probe-hover,
+    .guest-cta-band .btn.primary:is(:hover, :focus-within),
+    .guest-cta-band .btn.primary.probe-hover {
+      transform: translateX(-0.1875rem);
+      border-block-end-color: var(--accent-strong);
+    }
+
+    .guest-join-row .btn.ghost:is(:hover, :focus-within),
+    .guest-join-row .btn.ghost.probe-hover,
+    .guest-cta-band .btn.ghost:is(:hover, :focus-within),
+    .guest-cta-band .btn.ghost.probe-hover {
+      transform: translateX(-0.1875rem);
+      border-block-end-color: var(--accent);
+    }
+  }
+
+  /* Reduced motion: the micro-drift collapses statelessly (the .cu
+     sheet's law — no :hover arm inside a non-hover-guard media). */
+  @media (prefers-reduced-motion: reduce) {
+    .guest-join-row .btn.primary,
+    .guest-join-row .btn.ghost,
+    .guest-cta-band .btn.primary,
+    .guest-cta-band .btn.ghost {
+      transform: none;
+    }
+  }
+
+  /* ══ 2 · THE GUEST MOUNT'S PHONE INSET ════════════════════════════ */
+  /* The sheet's own mobile inset (the pages.mjs edge390 law, proved on
+     /auth in r340 T-D1a): --sp-2 = the 8px content gutter at 390. The
+     authed colleges mounts (AppShell's div.content-inner) never match
+     a main-element selector. */
+  @media (max-width: 767px) {
+    main.content-inner {
+      padding-inline: var(--sp-2);
+    }
+  }
+}

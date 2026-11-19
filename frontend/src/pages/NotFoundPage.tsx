@@ -62,8 +62,15 @@ export default function NotFoundPage() {
             RETIRED: coordinates/revision tags are not content. R341 D5
             — the pattern library's quiet kicker seat carries the
             sheet's own tab-title word (no code chrome). The sr-only
-            «خطأ 404.» carrier stays; the title carries the meaning. */}
-        <p className="pf-eyebrow">الصفحة غير موجودة</p>
+            «خطأ 404.» carrier stays; the title carries the meaning.
+            R368 T5 — the numbered-sheet law: the [01] mono gutter
+            index joins the eyebrow (the sheet INDEX — the same seat
+            every inner-public sheet carries — NOT the retired error
+            code; numeral index, aria-hidden, ltr). */}
+        <p className="pf-eyebrow">
+          <span className="page-index nf-index" dir="ltr" aria-hidden="true">[01]</span>
+          الصفحة غير موجودة
+        </p>
         <span className="sr-only">خطأ 404.</span>
 
         <h1 className="nf-title">هذه الصفحة تغيّبت عن الحضور</h1>

@@ -170,17 +170,30 @@ export function CompetitionsIndexPage() {
   return (
     <PageFrame>
       {/* R332 W10b — .inx-head: the page-opening hairline + d2 display
-          title + [01] gutter index (the inner-public sheet bridge). */}
+          title + [01] gutter index (the inner-public sheet bridge).
+          R368 T5 — the ALWAYS-ON header pair (the R342-11 measured seat
+          the community page landed for its own hover axis + every
+          role's phone-band primary): the accent seat is the page's
+          documented reciprocal CTA — nav.ts: «/competitions stays
+          reachable from the community page CTA»; community ↔
+          competitions are the «المجتمع والفرص» pair. The ghost is the
+          any-auth colleges sibling (the shared public surface all
+          five roles carry). The organizer's create verb keeps its
+          seat after the pair. */}
       <div className="inx-head">
         <PageHeader
           title="المسابقات الأكاديمية"
           actions={
-            canRun ? (
-              <button type="button" className="btn primary" onClick={() => setCreating(true)}>
-                <Icon icon={Plus} size={14} />
-                {NEW_COMPETITION}
-              </button>
-            ) : undefined
+            <>
+              <Link to="/community" className="btn accent sm">المجتمع</Link>
+              <Link to="/colleges" className="btn ghost sm">الكليات</Link>
+              {canRun && (
+                <button type="button" className="btn primary" onClick={() => setCreating(true)}>
+                  <Icon icon={Plus} size={14} />
+                  {NEW_COMPETITION}
+                </button>
+              )}
+            </>
           }
           index="01"
         />
@@ -190,7 +203,7 @@ export function CompetitionsIndexPage() {
       <StatLine
         items={[
           { label: 'مفتوحة', value: kpiValue(stats.open), tone: 'positive' },
-          { label: 'تنتهي قريباً', value: kpiValue(stats.closingSoon), tone: 'warning' },
+          { label: 'قريباً', value: kpiValue(stats.closingSoon), tone: 'warning' },
           { label: 'المشاركات', value: kpiValue(stats.totalEntries) },
         ]}
       />
@@ -246,7 +259,7 @@ export function CompetitionsIndexPage() {
             description=""
             action={(
               <button type="button" className="btn ghost sm" onClick={() => setFilter('all')}>
-                عرض الكل
+                الكل
               </button>
             )}
           />
@@ -391,6 +404,14 @@ export function CompetitionDetailPage() {
       <header className="comp-hero">
         <div className="comp-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={36} /></div>
         <div className="comp-hero-body">
+          {/* R368 T5 — the hero joins the family's eyebrow grammar (the
+              [01] mono gutter index + the pf-eyebrow classification the
+              colleges detail hero carries; classes are the shared
+              sheet-frame/patterns seats, no new CSS). */}
+          <p className="pf-eyebrow comp-hero-eyebrow">
+            <span className="page-index" dir="ltr" aria-hidden="true">[01]</span>
+            منافسة الجامعة
+          </p>
           <div className="comp-hero-meta">
             <span className="comp-hero-category">{c.category}</span>
             {/* P2-3: the badge carries the DERIVED state — «مفتوحة» only
@@ -417,12 +438,20 @@ export function CompetitionDetailPage() {
             <div className="text-subtle">نظَّمها {c.organizer.firstName} {c.organizer.lastName}</div>
           </div>
           <div className="comp-hero-actions">
+            {/* R368 T5 — the ALWAYS-ON family pair rides the hero's
+                action row too (the R342-11 measured seat: the shell's
+                floating CTA is desktop-only, so the phone band had NO
+                primary on this page; community ↔ competitions are the
+                documented reciprocal pair, colleges the any-auth
+                sibling). The entrant/organizer verbs keep first seat. */}
             {canEnter && (
               <button type="button" className="btn primary" onClick={() => setEntering(true)}>
                 <Icon icon={Send} size={14} />
                 {myEntry ? EDIT_MY_ENTRY : 'شارك الآن'}
               </button>
             )}
+            <Link to="/community" className="btn accent sm">المجتمع</Link>
+            <Link to="/colleges" className="btn ghost sm">الكليات</Link>
             {isOrganizer && c.status === 'OPEN' && (
               <button
                 type="button"
@@ -472,7 +501,7 @@ export function CompetitionDetailPage() {
           rank chips with medal treatment, entrance stagger via --lb-i,
           tabular points), OPEN/CLOSED keep the comp-entry rows with
           the organizer scoring affordances. */}
-      <Card title="المشاركات" subtitle={`${countAr(entries.length, ['مشاركة', 'مشاركتان', 'مشاركات', 'مشاركة'])}${isOrganizer ? '' : c.status === 'JUDGED' ? ' · حسب النتيجة' : ' (العنوان فقط حتى التحكيم)'}`}>
+      <Card title="المشاركات" subtitle={`${countAr(entries.length, ['مشاركة', 'مشاركتان', 'مشاركات', 'مشاركة'])}${isOrganizer ? '' : c.status === 'JUDGED' ? ' · بالنتيجة' : ' (العنوان فقط)'}`}>
         {entries.length === 0 ? (
           <EmptyState illustration="empty-list"
             title={NO_ENTRIES}
@@ -676,15 +705,15 @@ function ScoreInput({
 
 const createSchema = z.object({
   title: z.string().min(3, 'العنوان قصير جدّاً').max(200),
-  description: z.string().min(10, 'الوصف قصير جدّاً').max(4000),
+  description: z.string().min(10, 'الوصف قصير').max(4000),
   category: z.string().min(1, 'اختر فئة'),
   prize: z.string().max(200).optional(),
-  deadline: z.string().min(1, 'حدِّد الموعد النهائي').refine(
+  deadline: z.string().min(1, 'حدِّد الموعد').refine(
     // 15-h P2-5: an OPEN competition whose deadline already passed is
     // inert (the backend blocks entering) but rendered confusingly
     // everywhere — reject it at the form like the live-session create does.
     (d) => new Date(d).getTime() > Date.now(),
-    'الموعد في المستقبل',
+    'موعد مستقبلي',
   ),
   iconEmoji: z.string().max(8).optional(),
 });
@@ -754,7 +783,7 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
         </div>
         <div className="comp-form-row">
           <FormField label="الجائزة (اختياري)">
-            <input type="text" {...form.register('prize')} placeholder="شهادة، 500 د.ل، …" className="input" />
+            <input type="text" {...form.register('prize')} placeholder="شهادة…" className="input" />
           </FormField>
           <div className="form-field">
             <label className="form-field-label" id={iconLabelId}>أيقونة</label>
@@ -790,9 +819,9 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
 /* ───────────────────────── Enter modal ───────────────────────── */
 
 const enterSchema = z.object({
-  title: z.string().min(3, 'العنوان قصير').max(200),
+  title: z.string().min(3, 'العنوان قصير جدّاً').max(200),
   body: z.string().min(10, 'الوصف قصير').max(4000),
-  fileUrl: z.string().url('رابط غير صالح').optional().or(z.literal('')),
+  fileUrl: z.string().url('رابط فاسد').optional().or(z.literal('')),
 });
 type EnterInputs = z.infer<typeof enterSchema>;
 

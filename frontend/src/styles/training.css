@@ -290,23 +290,13 @@
      ║  §gamification — XP economy + achievement rows                 ║
      ║  (GamificationPage in MorePages.tsx shares this system;        ║
      ║   ProfilePage renders the same achievement markup)             ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-
-  /* XP bar — 23-b (A11 P2-10 — scaleX debt cleared): the fill paints at
-     full track width and the value rides transform: scaleX() (set
-     inline by the page), growing from the inline-start edge (right in
-     RTL via the [dir] override) — compositor-only, no per-frame
-     reflow (previously the same mechanism class as .progress-fill's
-     width transition). */
-  /* Tier orb — level medallion. The tier hex rides on --tier-color
-     (set inline by TSX) and is only consumed through color-mix. */
-  /* Achievement rows (GamificationPage "الإنجازات المحققة",
-     ProfilePage achievements) — same list-row grammar as the training
-     module: hairline row, gold icon well, tabular XP chip. */
-  /* Certificate icon well (AchievementsPage certificates tab). */
-  /* ── Reduced-motion off-switches (guardrail #6 — the global token
-     belts already collapse the durations/delays; these kill the
-     keyframe animations outright so nothing loops or slides) ────── */
+     ╚═══════════════════════════════════════════════════════════════╝
+     R369 A-debt: this banner's RULES (.xp-track/.xp-fill, .tier-orb,
+     .achievement*, .cert-icon, the reduced-motion off-switches) live
+     in student/training-anatomy.css — restored there verbatim by the
+     r368 T6-a wave. The old inline copies were removed when the
+     anatomy sheet was rebuilt; this pointer replaces the orphaned
+     per-rule comments that jscpd was counting as duplicate blocks. */
   /* r265 — صفوف المسارات: شريط التقدّم المضغوط داخل عمود الطرف
      (عرض مضبوط لا يشدّ الصف) والسطر الثانوي عمودٌ من سطرين — البقية
      من عقد patterns (§CP ROWS في components.css). G: القواعد تعود

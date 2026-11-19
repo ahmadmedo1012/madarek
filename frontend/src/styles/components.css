@@ -550,7 +550,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--sp-1-5); /* r149 (R3-A2 #1) */
-    padding: 7px 14px; /* spacing-gate: allow — pill grade 7/14 — compact control padding below the sp-3 rung */
+    padding: 7px var(--sp-3-5); /* spacing-gate: allow — pill grade 7/14: the 14 rides --sp-3-5, the 7 is the authored half-rung below the ladder (one site; r368 T4 review) */
     border-radius: var(--r-full);
     font-size: var(--type-label-size-sm);
     font-weight: var(--fw-semibold);
@@ -3332,7 +3332,7 @@
   align-items: center;
   gap: 7px; /* spacing-gate: allow — reviewed authored literal (r-round sheet) */
   min-block-size: 40px;
-  padding: var(--sp-2) 14px; /* spacing-gate: allow — reviewed authored literal (r-round sheet) */
+  padding: var(--sp-2) var(--sp-3-5); /* r368 T4: the --sp-3-5 rung (the acknowledged compact-control grade) */
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);

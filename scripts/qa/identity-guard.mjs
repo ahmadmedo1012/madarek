@@ -140,6 +140,16 @@ const STRUCTURAL_EXEMPT = [
   /^docs\/redesign\//, // round ledgers — they NAME the residue
   /^docs\/archive\//, // archived history
   /^audits\//, // evidence captures (round artifacts)
+  /* R369 A-fix: MACHINE artifacts under docs/audit/evidence/ (Lighthouse
+   * audits, conformance captures, scorecards) embed rendered-DOM echoes —
+   * every page that legitimately mounts the sanctioned mark projects its
+   * literal path into the DOM, and the audit snippet captures it (measured:
+   * the r368 T5 lighthouse lh-*.json recordings on /auth + /capabilities +
+   * /legal/privacy). The SOURCE files stay fully scanned — this exemption
+   * only stops the gate re-policing machine copies of sanctioned runtime
+   * projections. Prose (.md) and every source/script extension under
+   * evidence stays scanned; same class as the rename-ledger-scan fix. */
+  /^docs\/audit\/evidence\/.*\.json$/,
 ];
 
 function isText(file) {

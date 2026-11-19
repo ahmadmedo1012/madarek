@@ -57,7 +57,7 @@ const ROWS: Row[] = [
     ],
     tagX: '85.8rem',
     title: 'شاهد المحاضرة',
-    sub: 'محاضرة مسجَّلة بنقاط فحص تُصحَّح فورًا أثناء المشاهدة',
+    sub: 'محاضرة مسجَّلة بنقاط فحص تُصحَّح فورًا',
   },
   {
     card: CARD_R, cardId: 'student-dashboard',
@@ -83,7 +83,7 @@ const ROWS: Row[] = [
     minis: [{ box: ['90.96rem', '40.56rem', '13.68rem', '10.92rem'], img: true, capId: 'teacher-dashboard' }],
     tagX: '3.12rem',
     title: 'أتقن المهارات',
-    sub: 'مصفوفة إتقان تُظهر ما أتممت وما بقي عليك',
+    sub: 'مصفوفة إتقان تُظهر ما أتممت وما بقي',
   },
 ];
 
@@ -255,7 +255,7 @@ function CycleFigure() {
         <img
           className="wy-cycle-img is-light"
           src="/media/illustrations/r342/why/why-cycle-light.webp"
-          alt="دورة المنصّة من اليمين إلى اليسار: مرصد التعلّم، جدار الفجوات، ممر التدريب، وسلّم التقدّم الصاعد"
+          alt="دورة المنصّة: مرصد التعلّم، جدار الفجوات، ممر التدريب، وسلّم التقدّم"
           loading="lazy"
           onError={settle('light')}
           onLoad={settle('light')}
@@ -269,7 +269,7 @@ function CycleFigure() {
           onLoad={settle('dark')}
         />
       </RevealCssClass>
-      <figcaption className="wy-cycle-cap">دورة مدارك في لوحة واحدة — من المشاهدة إلى الإتقان</figcaption>
+      <figcaption className="wy-cycle-cap">دورة مدارك في لوحة واحدة</figcaption>
     </figure>
   );
 }

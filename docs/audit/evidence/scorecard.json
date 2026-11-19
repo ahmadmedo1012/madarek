@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-19T03:37:31.689Z",
+ "generatedAt": "2026-11-19T07:44:14.272Z",
  "formula": {
   "E": "100 × mean SSIM over 8×8 windows outside preregistered text masks, per section∩viewport crop",
   "T": "100 × verified matched state pairs / required non-coincident state pairs (pairs.mjs aggregateT law: verdict-valid pairs — both sides at the same declared state within ±2 px; E-refused mask pairs are covered-but-E-unscored, listed in E_unscored)",
@@ -18,27 +18,27 @@
   "mid60",
   "exit"
  ],
- "required": 143,
- "coincident": 57,
- "covered": 138,
- "E": 55,
+ "required": 144,
+ "coincident": 56,
+ "covered": 139,
+ "E": 55.4,
  "T": 96.5,
  "T_note": "T = verdict-valid matched pairs / required non-coincident pairs (the pairs.mjs aggregateT law — the instrument now obeys its own law module; the old T = scored/required conflated E-scoreability with pair coverage). E-refused pairs (mask share over the preregistered 55 % cap — recorded, not scored) count as covered evidence with an unscored E and are listed in E_unscored; genuinely invalid pairs (a side missing/unlanded/mismatched; states beyond both ends) stay uncovered in the denominator with both sides' reasons",
  "invalidRows": [
   {
    "target": "footer@390:mid60",
    "status": "missing",
-   "reason": "local: state mid60 needs scroll 14477 > live document end 14250 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)"
+   "reason": "local: state mid60 needs scroll 14225 > live document end 13998 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)"
   },
   {
    "target": "footer@768:mid30",
    "status": "missing",
-   "reason": "local: state mid30 needs scroll 15579 > live document end 15479 — inaccessible locally (recorded, not scored); reference: state mid30 needs stage offset 12196 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
+   "reason": "local: state mid30 needs scroll 15445 > live document end 15345 — inaccessible locally (recorded, not scored); reference: state mid30 needs stage offset 12196 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
   },
   {
    "target": "footer@768:mid60",
    "status": "missing",
-   "reason": "local: state mid60 needs scroll 15863 > live document end 15479 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 12487 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
+   "reason": "local: state mid60 needs scroll 15729 > live document end 15345 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 12487 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
   },
   {
    "target": "home-cta-wrap@1024:mid30",
@@ -55,12 +55,12 @@
   {
    "target": "home-hero-wrap@390:mid60",
    "status": "invalid-mask-share",
-   "reason": "mask share 74.9 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
+   "reason": "mask share 75 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
   },
   {
    "target": "home-map-wrap@390:exit",
    "status": "invalid-mask-share",
-   "reason": "mask share 63.7 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
+   "reason": "mask share 61.8 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored"
   }
  ],
  "coincidentRows": [
@@ -106,7 +106,7 @@
   },
   {
    "target": "home-problem-wrap@1440:exit",
-   "reason": "local: duplicate state — delta 1594 px sits within 100 px of an already-recorded state for this 2494 px section"
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 840 px section"
   },
   {
    "target": "home-usecase-wrap@1440:exit",
@@ -142,7 +142,7 @@
   },
   {
    "target": "home-intro-wrap@390:exit",
-   "reason": "local: duplicate state — delta 90 px sits within 100 px of an already-recorded state for this 934 px section"
+   "reason": "local: duplicate state — delta 8 px sits within 100 px of an already-recorded state for this 852 px section"
   },
   {
    "target": "home-problem-wrap@390:exit",
@@ -193,10 +193,6 @@
    "reason": "local: duplicate state — delta 458 px sits within 100 px of an already-recorded state for this 1358 px section"
   },
   {
-   "target": "home-why-wrap@768:exit",
-   "reason": "reference: duplicate state — delta 489 px sits within 100 px of an already-recorded state for this 1389 px section"
-  },
-  {
    "target": "chrome@1024:mid30",
    "reason": "local: fixed chrome — every state coincides with rest"
   },
@@ -238,7 +234,7 @@
   },
   {
    "target": "home-problem-wrap@1024:exit",
-   "reason": "reference: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 528 px section"
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 598 px section"
   },
   {
    "target": "home-usecase-wrap@1024:exit",
@@ -278,7 +274,7 @@
   },
   {
    "target": "home-intro-wrap@1920:exit",
-   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 963 px section"
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 964 px section"
   },
   {
    "target": "home-platform-wrap@1920:exit",
@@ -286,7 +282,7 @@
   },
   {
    "target": "home-problem-wrap@1920:exit",
-   "reason": "reference: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 990 px section"
+   "reason": "local: duplicate state — delta 66 px sits within 100 px of an already-recorded state for this 1146 px section"
   },
   {
    "target": "home-usecase-wrap@1920:exit",
@@ -373,7 +369,7 @@
     "geometry": {
      "top": 7,
      "height": 50,
-     "docH": 14474,
+     "docH": 14265,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -396,35 +392,35 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -0.4,
     "window": {
-     "start": 11014,
-     "end": 13414,
+     "start": 10805,
+     "end": 13205,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 13114,
+     "top": 12905,
      "height": 1239,
-     "docH": 14474,
+     "docH": 14265,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "11014:7:84:0",
-     "11164:7:84:0",
-     "11314:7:84:0",
-     "11464:7:84:0",
-     "11614:7:84:0",
-     "11764:7:84:0",
-     "11914:7:84:0",
-     "12064:7:84:0",
-     "12214:7:84:0",
-     "12364:7:84:0",
-     "12514:7:84:0",
-     "12664:7:82:0",
-     "12814:7:72:0",
-     "12964:7:58:0",
-     "13114:7:45:0",
-     "13264:5:34:0",
-     "13414:11:29:0"
+     "10805:7:84:0",
+     "10955:7:84:0",
+     "11105:7:84:0",
+     "11255:7:84:0",
+     "11405:7:84:0",
+     "11555:7:84:0",
+     "11705:7:84:0",
+     "11855:7:84:0",
+     "12005:7:84:0",
+     "12155:7:84:0",
+     "12305:7:84:0",
+     "12455:7:82:0",
+     "12605:7:72:0",
+     "12755:7:59:0",
+     "12905:7:45:0",
+     "13055:5:34:0",
+     "13205:12:29:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 7,
@@ -439,37 +435,37 @@
     "section": "home-cta-wrap",
     "bp": "390",
     "family": "trigger-baseline",
-    "ourOnsetFrac": -2.1,
+    "ourOnsetFrac": -2,
     "window": {
-     "start": 10105,
-     "end": 12505,
+     "start": 9896,
+     "end": 12296,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 12205,
+     "top": 11996,
      "height": 909,
-     "docH": 14474,
+     "docH": 14265,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "10105:1:0:0",
-     "10255:5:49:0",
-     "10405:5:56:0",
-     "10555:5:56:0",
-     "10705:5:56:0",
-     "10855:5:56:0",
-     "11005:5:56:0",
-     "11155:5:56:0",
-     "11305:5:56:0",
-     "11455:5:56:0",
-     "11605:5:56:0",
-     "11755:5:56:0",
-     "11905:5:56:0",
-     "12055:5:56:0",
-     "12205:5:48:0",
-     "12355:5:34:0",
-     "12505:5:15:0"
+     "9896:5:51:0",
+     "10046:5:51:0",
+     "10196:5:56:0",
+     "10346:5:56:0",
+     "10496:5:56:0",
+     "10646:5:56:0",
+     "10796:5:56:0",
+     "10946:5:56:0",
+     "11096:5:56:0",
+     "11246:5:56:0",
+     "11396:5:56:0",
+     "11546:5:56:0",
+     "11696:5:56:0",
+     "11846:5:56:0",
+     "11996:5:48:0",
+     "12146:5:31:0",
+     "12296:5:15:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 2,
@@ -494,7 +490,7 @@
     "geometry": {
      "top": 7,
      "height": 830,
-     "docH": 14474,
+     "docH": 14265,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -525,18 +521,18 @@
     "geometry": {
      "top": 837,
      "height": 934,
-     "docH": 14474,
+     "docH": 14265,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
      "0:39:238:1",
      "150:39:238:1",
      "300:39:136:1",
-     "450:32:84:1",
+     "450:32:85:1",
      "600:29:72:1",
      "750:27:70:1",
      "900:27:48:1",
-     "1050:27:1:1"
+     "1050:27:2:1"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 4,
@@ -561,8 +557,8 @@
     "geometry": {
      "top": 2935,
      "height": 4372,
-     "docH": 14474,
-     "stabilizedDriftPx": 0
+     "docH": 14265,
+     "stabilizedDriftPx": 82
     },
     "sigTrace": [
      "835:2:553:0",
@@ -606,8 +602,8 @@
     "geometry": {
      "top": 7307,
      "height": 995,
-     "docH": 14474,
-     "stabilizedDriftPx": 0
+     "docH": 14265,
+     "stabilizedDriftPx": 82
     },
     "sigTrace": [
      "5207:6:69:0",
@@ -623,7 +619,7 @@
      "6707:6:69:0",
      "6857:6:69:0",
      "7007:6:69:0",
-     "7157:6:48:0",
+     "7157:6:45:0",
      "7307:6:31:0",
      "7457:5:28:0",
      "7607:5:28:0"
@@ -651,7 +647,7 @@
     "geometry": {
      "top": 1771,
      "height": 1164,
-     "docH": 14474,
+     "docH": 14265,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -685,35 +681,35 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -0.4,
     "window": {
-     "start": 9076,
-     "end": 11476,
+     "start": 8867,
+     "end": 11267,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 11176,
+     "top": 10967,
      "height": 1029,
-     "docH": 14474,
+     "docH": 14265,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "9076:15:112:0",
-     "9226:15:112:0",
-     "9376:15:112:0",
-     "9526:15:112:0",
-     "9676:15:112:0",
-     "9826:15:112:0",
-     "9976:15:112:0",
-     "10126:15:112:0",
-     "10276:15:112:0",
-     "10426:15:112:0",
-     "10576:15:112:0",
-     "10726:16:112:0",
-     "10876:16:112:0",
-     "11026:16:112:0",
-     "11176:15:104:0",
-     "11326:17:98:0",
-     "11476:20:76:0"
+     "8867:15:112:0",
+     "9017:15:112:0",
+     "9167:15:112:0",
+     "9317:15:112:0",
+     "9467:15:112:0",
+     "9617:15:112:0",
+     "9767:15:112:0",
+     "9917:15:112:0",
+     "10067:15:112:0",
+     "10217:15:112:0",
+     "10367:15:112:0",
+     "10517:16:112:0",
+     "10667:16:112:0",
+     "10817:16:112:0",
+     "10967:15:104:0",
+     "11117:18:98:0",
+     "11267:20:76:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 1,
@@ -728,37 +724,37 @@
     "section": "home-why-wrap",
     "bp": "390",
     "family": "trigger-baseline",
-    "ourOnsetFrac": null,
+    "ourOnsetFrac": -0.6,
     "window": {
-     "start": 8269,
-     "end": 10669,
+     "start": 8060,
+     "end": 10460,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 10369,
+     "top": 10160,
      "height": 807,
-     "docH": 14474,
+     "docH": 14265,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "8269:29:217:0",
-     "8419:29:217:0",
-     "8569:29:217:0",
-     "8719:29:217:0",
-     "8869:29:217:0",
-     "9019:29:217:0",
-     "9169:29:217:0",
-     "9319:29:217:0",
-     "9469:29:217:0",
-     "9619:29:217:0",
-     "9769:29:217:0",
-     "9919:29:217:0",
-     "10069:29:217:0",
-     "10219:29:217:0",
-     "10369:29:217:0",
-     "10519:29:217:0",
-     "10669:29:217:0"
+     "8060:31:245:0",
+     "8210:31:245:0",
+     "8360:31:245:0",
+     "8510:31:245:0",
+     "8660:31:245:0",
+     "8810:31:245:0",
+     "8960:31:245:0",
+     "9110:31:245:0",
+     "9260:31:245:0",
+     "9410:31:245:0",
+     "9560:31:245:0",
+     "9710:31:242:0",
+     "9860:31:232:0",
+     "10010:31:231:0",
+     "10160:30:231:0",
+     "10310:30:231:0",
+     "10460:30:230:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 6,
@@ -767,7 +763,7 @@
     "refTriggerFracOfSection": -2.1,
     "resolution": "±0.2 of section height (150 px seats)",
     "pass": null,
-    "note": "our onset was not detected in the sampled window (the seat reveals fire outside it, or it has no scroll-driven animation) — named gap on OUR side, not a pass"
+    "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
    },
    {
     "section": "chrome",
@@ -783,7 +779,7 @@
     "geometry": {
      "top": 7,
      "height": 46,
-     "docH": 16054,
+     "docH": 15940,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -806,34 +802,34 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -0.3,
     "window": {
-     "start": 12869,
-     "end": 15154,
+     "start": 12755,
+     "end": 15040,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 14969,
+     "top": 14855,
      "height": 949,
-     "docH": 16054,
-     "stabilizedDriftPx": 0
+     "docH": 15940,
+     "stabilizedDriftPx": 14
     },
     "sigTrace": [
-     "12869:7:93:0",
-     "13019:7:93:0",
-     "13169:7:93:0",
-     "13319:7:93:0",
-     "13469:7:93:0",
-     "13619:7:93:0",
-     "13769:7:93:0",
-     "13919:7:93:0",
-     "14069:7:93:0",
-     "14219:7:93:0",
-     "14369:7:93:0",
-     "14519:7:93:0",
-     "14669:7:88:0",
-     "14819:7:71:0",
-     "14969:14:55:0",
-     "15119:7:43:0"
+     "12755:7:93:0",
+     "12905:7:93:0",
+     "13055:7:93:0",
+     "13205:7:93:0",
+     "13355:7:93:0",
+     "13505:7:93:0",
+     "13655:7:93:0",
+     "13805:7:93:0",
+     "13955:7:93:0",
+     "14105:7:93:0",
+     "14255:7:93:0",
+     "14405:7:93:0",
+     "14555:7:88:0",
+     "14705:7:72:0",
+     "14855:14:54:0",
+     "15005:7:42:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 18,
@@ -850,35 +846,35 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -1.9,
     "window": {
-     "start": 11831,
-     "end": 14231,
+     "start": 11717,
+     "end": 14117,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 13931,
+     "top": 13817,
      "height": 1038,
-     "docH": 16054,
+     "docH": 15940,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "11831:1:0:0",
-     "11981:5:49:0",
-     "12131:5:56:0",
-     "12281:5:56:0",
-     "12431:5:56:0",
-     "12581:5:56:0",
-     "12731:5:56:0",
-     "12881:5:56:0",
-     "13031:5:56:0",
-     "13181:5:56:0",
-     "13331:5:56:0",
-     "13481:5:56:0",
-     "13631:5:56:0",
-     "13781:5:56:0",
-     "13931:5:56:0",
-     "14081:5:47:0",
-     "14231:5:21:0"
+     "11717:1:0:0",
+     "11867:5:51:0",
+     "12017:5:56:0",
+     "12167:5:56:0",
+     "12317:5:56:0",
+     "12467:5:56:0",
+     "12617:5:56:0",
+     "12767:5:56:0",
+     "12917:5:56:0",
+     "13067:5:56:0",
+     "13217:5:56:0",
+     "13367:5:56:0",
+     "13517:5:56:0",
+     "13667:5:56:0",
+     "13817:5:56:0",
+     "13967:5:47:0",
+     "14117:5:21:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 4,
@@ -903,7 +899,7 @@
     "geometry": {
      "top": 7,
      "height": 886,
-     "docH": 16054,
+     "docH": 15940,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -934,15 +930,15 @@
     "geometry": {
      "top": 893,
      "height": 523,
-     "docH": 16054,
+     "docH": 15940,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "0:23:14:1",
-     "150:23:14:1",
-     "300:23:14:1",
-     "450:23:10:1",
-     "600:23:0:1",
+     "0:24:28:1",
+     "150:24:28:1",
+     "300:24:28:1",
+     "450:24:19:1",
+     "600:24:1:1",
      "750:22:0:1",
      "900:22:0:1",
      "1050:22:0:1"
@@ -970,7 +966,7 @@
     "geometry": {
      "top": 2945,
      "height": 5016,
-     "docH": 16054,
+     "docH": 15940,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -1015,7 +1011,7 @@
     "geometry": {
      "top": 7961,
      "height": 514,
-     "docH": 16054,
+     "docH": 15940,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -1026,9 +1022,9 @@
      "6461:6:69:0",
      "6611:6:69:0",
      "6761:6:69:0",
-     "6911:6:67:0",
+     "6911:6:59:0",
      "7061:6:38:0",
-     "7211:5:28:0",
+     "7211:5:26:0",
      "7361:5:10:0",
      "7511:4:1:0",
      "7661:3:0:0",
@@ -1060,7 +1056,7 @@
     "geometry": {
      "top": 1416,
      "height": 1529,
-     "docH": 16054,
+     "docH": 15940,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -1092,35 +1088,35 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -1.4,
     "window": {
-     "start": 10473,
-     "end": 12873,
+     "start": 10359,
+     "end": 12759,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 12573,
+     "top": 12459,
      "height": 1358,
-     "docH": 16054,
-     "stabilizedDriftPx": 0
+     "docH": 15940,
+     "stabilizedDriftPx": 14
     },
     "sigTrace": [
-     "10473:15:112:0",
-     "10623:25:112:0",
-     "10773:17:112:0",
-     "10923:15:112:0",
-     "11073:15:112:0",
-     "11223:15:112:0",
-     "11373:15:112:0",
-     "11523:15:112:0",
-     "11673:15:112:0",
-     "11823:15:112:0",
-     "11973:15:112:0",
-     "12123:15:112:0",
-     "12273:16:112:0",
-     "12423:16:112:0",
-     "12573:16:112:0",
-     "12723:15:112:0",
-     "12873:15:112:0"
+     "10359:15:112:0",
+     "10509:25:112:0",
+     "10659:17:112:0",
+     "10809:15:112:0",
+     "10959:15:112:0",
+     "11109:15:112:0",
+     "11259:15:112:0",
+     "11409:15:112:0",
+     "11559:15:112:0",
+     "11709:15:112:0",
+     "11859:15:112:0",
+     "12009:15:112:0",
+     "12159:16:112:0",
+     "12309:16:112:0",
+     "12459:16:112:0",
+     "12609:16:112:0",
+     "12759:15:112:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 1,
@@ -1137,41 +1133,41 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -0.5,
     "window": {
-     "start": 8590,
-     "end": 10990,
+     "start": 8476,
+     "end": 10876,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 10690,
+     "top": 10576,
      "height": 1883,
-     "docH": 16054,
+     "docH": 15940,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "8590:31:245:0",
-     "8740:31:245:0",
-     "8890:31:245:0",
-     "9040:31:245:0",
-     "9190:31:245:0",
-     "9340:31:245:0",
-     "9490:31:245:0",
-     "9640:31:245:0",
-     "9790:31:244:0",
-     "9940:31:232:0",
-     "10090:31:231:0",
-     "10240:30:231:0",
-     "10390:30:231:0",
-     "10540:30:231:0",
-     "10690:30:231:0",
-     "10840:30:231:0",
-     "10990:30:231:0"
+     "8476:31:245:0",
+     "8626:31:245:0",
+     "8776:31:245:0",
+     "8926:31:245:0",
+     "9076:31:245:0",
+     "9226:31:245:0",
+     "9376:31:245:0",
+     "9526:31:245:0",
+     "9676:31:235:0",
+     "9826:31:231:0",
+     "9976:31:231:0",
+     "10126:30:231:0",
+     "10276:30:231:0",
+     "10426:30:231:0",
+     "10576:30:231:0",
+     "10726:30:231:0",
+     "10876:30:231:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 6,
     "refTriggerStartPx": 6760,
     "refTriggerEndPx": 9407,
-    "refTriggerFracOfSection": -1,
+    "refTriggerFracOfSection": -0.7,
     "resolution": "±0.1 of section height (150 px seats)",
     "pass": null,
     "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
@@ -1190,7 +1186,7 @@
     "geometry": {
      "top": 7,
      "height": 56,
-     "docH": 16289,
+     "docH": 15026,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -1213,32 +1209,32 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -0.2,
     "window": {
-     "start": 13425,
-     "end": 15389,
+     "start": 12163,
+     "end": 14126,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 15525,
+     "top": 14263,
      "height": 624,
-     "docH": 16289,
+     "docH": 15026,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "13425:7:98:0",
-     "13575:7:98:0",
-     "13725:7:98:0",
-     "13875:7:98:0",
-     "14025:7:98:0",
-     "14175:7:98:0",
-     "14325:7:98:0",
-     "14475:7:98:0",
-     "14625:7:98:0",
-     "14775:7:98:0",
-     "14925:7:98:0",
-     "15075:7:98:0",
-     "15225:7:98:0",
-     "15375:14:91:0"
+     "12163:7:98:0",
+     "12313:7:98:0",
+     "12463:7:98:0",
+     "12613:7:98:0",
+     "12763:7:98:0",
+     "12913:7:98:0",
+     "13063:7:98:0",
+     "13213:7:98:0",
+     "13363:7:98:0",
+     "13513:7:98:0",
+     "13663:7:98:0",
+     "13813:7:98:0",
+     "13963:7:98:0",
+     "14113:14:91:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 18,
@@ -1255,35 +1251,35 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -2,
     "window": {
-     "start": 12449,
-     "end": 14849,
+     "start": 11187,
+     "end": 13587,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 14549,
+     "top": 13287,
      "height": 976,
-     "docH": 16289,
+     "docH": 15026,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "12449:1:0:0",
-     "12599:5:49:0",
-     "12749:5:56:0",
-     "12899:5:56:0",
-     "13049:5:56:0",
-     "13199:5:56:0",
-     "13349:5:56:0",
-     "13499:5:56:0",
-     "13649:5:56:0",
-     "13799:5:56:0",
-     "13949:5:56:0",
-     "14099:5:56:0",
-     "14249:5:56:0",
-     "14399:5:56:0",
-     "14549:5:56:0",
-     "14699:5:47:0",
-     "14849:5:21:0"
+     "11187:1:0:0",
+     "11337:5:49:0",
+     "11487:5:56:0",
+     "11637:5:56:0",
+     "11787:5:56:0",
+     "11937:5:56:0",
+     "12087:5:56:0",
+     "12237:5:56:0",
+     "12387:5:56:0",
+     "12537:5:56:0",
+     "12687:5:56:0",
+     "12837:5:56:0",
+     "12987:5:56:0",
+     "13137:5:56:0",
+     "13287:5:56:0",
+     "13437:5:44:0",
+     "13587:5:21:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 4,
@@ -1308,7 +1304,7 @@
     "geometry": {
      "top": 7,
      "height": 891,
-     "docH": 16289,
+     "docH": 15026,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -1339,15 +1335,15 @@
     "geometry": {
      "top": 898,
      "height": 514,
-     "docH": 16289,
+     "docH": 15026,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "0:25:42:1",
-     "150:25:42:1",
-     "300:25:42:1",
-     "450:25:29:1",
-     "600:25:1:1",
+     "0:26:56:1",
+     "150:26:56:1",
+     "300:26:56:1",
+     "450:26:44:1",
+     "600:26:1:1",
      "750:22:0:1",
      "900:22:0:1",
      "1050:22:0:1"
@@ -1367,35 +1363,34 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": null,
     "window": {
-     "start": 1085,
-     "end": 3485,
+     "start": 0,
+     "end": 2310,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 3185,
+     "top": 2010,
      "height": 6300,
-     "docH": 16289,
+     "docH": 15026,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "1085:1:410:0",
-     "1235:1:410:0",
-     "1385:1:410:0",
-     "1535:1:410:0",
-     "1685:1:410:0",
-     "1835:1:410:0",
-     "1985:1:410:0",
-     "2135:1:410:0",
-     "2285:1:410:0",
-     "2435:1:410:0",
-     "2585:1:410:0",
-     "2735:1:410:0",
-     "2885:1:410:0",
-     "3035:1:410:0",
-     "3185:1:410:0",
-     "3335:1:410:0",
-     "3485:1:410:0"
+     "0:1:410:0",
+     "150:1:410:0",
+     "300:1:410:0",
+     "450:1:410:0",
+     "600:1:410:0",
+     "750:1:410:0",
+     "900:1:410:0",
+     "1050:1:410:0",
+     "1200:1:410:0",
+     "1350:1:410:0",
+     "1500:1:410:0",
+     "1650:1:410:0",
+     "1800:1:410:0",
+     "1950:1:410:0",
+     "2100:1:410:0",
+     "2250:1:410:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 1,
@@ -1410,37 +1405,37 @@
     "section": "home-platform-wrap",
     "bp": "1024",
     "family": "trigger-baseline",
-    "ourOnsetFrac": -3.8,
+    "ourOnsetFrac": -1.5,
     "window": {
-     "start": 7385,
-     "end": 9785,
+     "start": 6210,
+     "end": 8610,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 9485,
+     "top": 8310,
      "height": 507,
-     "docH": 16289,
+     "docH": 15026,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "7385:6:53:2",
-     "7535:6:29:2",
-     "7685:6:27:2",
-     "7835:3:27:2",
-     "7985:3:27:2",
-     "8135:3:27:2",
-     "8285:3:27:2",
-     "8435:3:27:2",
-     "8585:3:27:2",
-     "8735:3:5:2",
-     "8885:3:0:2",
-     "9035:2:0:2",
-     "9185:2:0:2",
-     "9335:2:0:2",
-     "9485:2:0:2",
-     "9635:2:0:2",
-     "9785:2:0:2"
+     "6210:6:69:2",
+     "6360:6:69:2",
+     "6510:6:69:2",
+     "6660:6:69:2",
+     "6810:6:69:2",
+     "6960:6:69:2",
+     "7110:6:69:2",
+     "7260:6:69:2",
+     "7410:6:69:2",
+     "7560:6:37:2",
+     "7710:6:2:2",
+     "7860:5:0:2",
+     "8010:2:0:2",
+     "8160:2:0:2",
+     "8310:2:0:2",
+     "8460:2:0:2",
+     "8610:2:0:2"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 4,
@@ -1455,7 +1450,7 @@
     "section": "home-problem-wrap",
     "bp": "1024",
     "family": "trigger-baseline",
-    "ourOnsetFrac": -0.7,
+    "ourOnsetFrac": -2.1,
     "window": {
      "start": 0,
      "end": 1712,
@@ -1464,30 +1459,30 @@
     },
     "geometry": {
      "top": 1412,
-     "height": 1774,
-     "docH": 16289,
+     "height": 598,
+     "docH": 15026,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
      "0:4:56:0",
-     "150:3:42:0",
-     "300:3:42:0",
-     "450:3:42:0",
-     "600:2:28:0",
-     "750:2:28:0",
-     "900:1:14:0",
-     "1050:1:14:0",
-     "1200:1:14:0",
+     "150:0:0:0",
+     "300:0:0:0",
+     "450:0:0:0",
+     "600:0:0:0",
+     "750:0:0:0",
+     "900:0:0:0",
+     "1050:0:0:0",
+     "1200:0:0:0",
      "1350:0:0:0",
      "1500:0:0:0",
-     "1650:0:0:0"
+     "1650:1:0:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 3,
     "refTriggerStartPx": 68,
     "refTriggerEndPx": 2378,
     "refTriggerFracOfSection": -2.5,
-    "resolution": "±0.1 of section height (150 px seats)",
+    "resolution": "±0.3 of section height (150 px seats)",
     "pass": null,
     "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
    },
@@ -1497,35 +1492,35 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -2.4,
     "window": {
-     "start": 11693,
-     "end": 14093,
+     "start": 10431,
+     "end": 12831,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 13793,
+     "top": 12531,
      "height": 756,
-     "docH": 16289,
+     "docH": 15026,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "11693:26:112:0",
-     "11843:26:112:0",
-     "11993:18:112:0",
-     "12143:16:112:0",
-     "12293:16:112:0",
-     "12443:16:112:0",
-     "12593:16:112:0",
-     "12743:16:112:0",
-     "12893:16:112:0",
-     "13043:16:112:0",
-     "13193:16:112:0",
-     "13343:16:112:0",
-     "13493:17:112:0",
-     "13643:17:112:0",
-     "13793:17:104:0",
-     "13943:19:98:0",
-     "14093:22:77:0"
+     "10431:26:112:0",
+     "10581:26:112:0",
+     "10731:18:112:0",
+     "10881:16:112:0",
+     "11031:16:112:0",
+     "11181:16:112:0",
+     "11331:16:112:0",
+     "11481:16:112:0",
+     "11631:16:112:0",
+     "11781:16:112:0",
+     "11931:16:112:0",
+     "12081:16:112:0",
+     "12231:17:112:0",
+     "12381:17:112:0",
+     "12531:17:103:0",
+     "12681:19:98:0",
+     "12831:22:77:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 1,
@@ -1542,41 +1537,41 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -0.4,
     "window": {
-     "start": 9915,
-     "end": 12315,
+     "start": 8653,
+     "end": 11053,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 12015,
+     "top": 10753,
      "height": 1778,
-     "docH": 16289,
+     "docH": 15026,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "9915:31:245:0",
-     "10065:31:245:0",
-     "10215:31:245:0",
-     "10365:31:245:0",
-     "10515:31:245:0",
-     "10665:31:245:0",
-     "10815:31:245:0",
-     "10965:31:245:0",
-     "11115:31:245:0",
-     "11265:31:244:0",
-     "11415:31:232:0",
-     "11565:31:231:0",
-     "11715:30:231:0",
-     "11865:30:231:0",
-     "12015:30:231:0",
-     "12165:30:231:0",
-     "12315:30:231:0"
+     "8653:31:245:0",
+     "8803:31:245:0",
+     "8953:31:245:0",
+     "9103:31:245:0",
+     "9253:31:245:0",
+     "9403:31:245:0",
+     "9553:31:245:0",
+     "9703:31:245:0",
+     "9853:31:245:0",
+     "10003:31:244:0",
+     "10153:31:232:0",
+     "10303:31:231:0",
+     "10453:30:231:0",
+     "10603:30:231:0",
+     "10753:30:231:0",
+     "10903:30:231:0",
+     "11053:30:231:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 6,
     "refTriggerStartPx": 7401,
     "refTriggerEndPx": 9667,
-    "refTriggerFracOfSection": -1.2,
+    "refTriggerFracOfSection": -0.8,
     "resolution": "±0.1 of section height (150 px seats)",
     "pass": null,
     "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
@@ -1595,7 +1590,7 @@
     "geometry": {
      "top": 7,
      "height": 56,
-     "docH": 18356,
+     "docH": 16666,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -1618,33 +1613,33 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -0.2,
     "window": {
-     "start": 15278,
-     "end": 17456,
+     "start": 13588,
+     "end": 15766,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 17378,
+     "top": 15688,
      "height": 844,
-     "docH": 18356,
-     "stabilizedDriftPx": 0
+     "docH": 16666,
+     "stabilizedDriftPx": 1
     },
     "sigTrace": [
-     "15278:7:104:0",
-     "15428:7:104:0",
-     "15578:7:104:0",
-     "15728:7:104:0",
-     "15878:7:104:0",
-     "16028:7:104:0",
-     "16178:7:104:0",
-     "16328:7:104:0",
-     "16478:7:104:0",
-     "16628:7:104:0",
-     "16778:7:104:0",
-     "16928:7:104:0",
-     "17078:7:104:0",
-     "17228:7:99:0",
-     "17378:14:81:0"
+     "13588:7:104:0",
+     "13738:7:104:0",
+     "13888:7:104:0",
+     "14038:7:104:0",
+     "14188:7:104:0",
+     "14338:7:104:0",
+     "14488:7:104:0",
+     "14638:7:104:0",
+     "14788:7:104:0",
+     "14938:7:104:0",
+     "15088:7:104:0",
+     "15238:7:104:0",
+     "15388:7:104:0",
+     "15538:7:99:0",
+     "15688:14:81:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 18,
@@ -1661,35 +1656,35 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -1.5,
     "window": {
-     "start": 13946,
-     "end": 16346,
+     "start": 12256,
+     "end": 14656,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 16046,
+     "top": 14356,
      "height": 1332,
-     "docH": 18356,
+     "docH": 16666,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "13946:1:0:0",
-     "14096:5:49:0",
-     "14246:5:56:0",
-     "14396:5:56:0",
-     "14546:5:56:0",
-     "14696:5:56:0",
-     "14846:5:56:0",
-     "14996:5:56:0",
-     "15146:5:56:0",
-     "15296:5:56:0",
-     "15446:5:56:0",
-     "15596:5:56:0",
-     "15746:5:56:0",
-     "15896:5:56:0",
-     "16046:5:56:0",
-     "16196:5:56:0",
-     "16346:5:47:0"
+     "12256:1:0:0",
+     "12406:5:51:0",
+     "12556:5:56:0",
+     "12706:5:56:0",
+     "12856:5:56:0",
+     "13006:5:56:0",
+     "13156:5:56:0",
+     "13306:5:56:0",
+     "13456:5:56:0",
+     "13606:5:56:0",
+     "13756:5:56:0",
+     "13906:5:56:0",
+     "14056:5:56:0",
+     "14206:5:56:0",
+     "14356:5:56:0",
+     "14506:5:56:0",
+     "14656:5:48:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 4,
@@ -1714,7 +1709,7 @@
     "geometry": {
      "top": 7,
      "height": 887,
-     "docH": 18356,
+     "docH": 16666,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -1745,13 +1740,13 @@
     "geometry": {
      "top": 894,
      "height": 723,
-     "docH": 18356,
+     "docH": 16666,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
      "0:35:182:1",
-     "150:35:92:1",
-     "300:29:60:1",
+     "150:35:87:1",
+     "300:29:59:1",
      "450:26:56:1",
      "600:26:56:1",
      "750:26:38:1",
@@ -1773,35 +1768,35 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": null,
     "window": {
-     "start": 2011,
-     "end": 4411,
+     "start": 357,
+     "end": 2757,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 4111,
+     "top": 2457,
      "height": 6300,
-     "docH": 18356,
+     "docH": 16666,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "2011:1:410:0",
-     "2161:1:410:0",
-     "2311:1:410:0",
-     "2461:1:410:0",
-     "2611:1:410:0",
-     "2761:1:410:0",
-     "2911:1:410:0",
-     "3061:1:410:0",
-     "3211:1:410:0",
-     "3361:1:410:0",
-     "3511:1:410:0",
-     "3661:1:410:0",
-     "3811:1:410:0",
-     "3961:1:410:0",
-     "4111:1:410:0",
-     "4261:1:410:0",
-     "4411:1:410:0"
+     "357:1:410:0",
+     "507:1:410:0",
+     "657:1:410:0",
+     "807:1:410:0",
+     "957:1:410:0",
+     "1107:1:410:0",
+     "1257:1:410:0",
+     "1407:1:410:0",
+     "1557:1:410:0",
+     "1707:1:410:0",
+     "1857:1:410:0",
+     "2007:1:410:0",
+     "2157:1:410:0",
+     "2307:1:410:0",
+     "2457:1:410:0",
+     "2607:1:410:0",
+     "2757:1:410:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 1,
@@ -1816,37 +1811,37 @@
     "section": "home-platform-wrap",
     "bp": "1440",
     "family": "trigger-baseline",
-    "ourOnsetFrac": -2.7,
+    "ourOnsetFrac": -1.1,
     "window": {
-     "start": 8311,
-     "end": 10711,
+     "start": 6657,
+     "end": 9057,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 10411,
+     "top": 8757,
      "height": 712,
-     "docH": 18356,
+     "docH": 16666,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "8311:6:49:2",
-     "8461:6:28:2",
-     "8611:6:27:2",
-     "8761:3:27:2",
-     "8911:3:27:2",
-     "9061:3:27:2",
-     "9211:3:27:2",
-     "9361:3:27:2",
-     "9511:3:27:2",
-     "9661:3:10:2",
-     "9811:3:0:2",
-     "9961:2:0:2",
-     "10111:2:0:2",
-     "10261:2:0:2",
-     "10411:2:0:2",
-     "10561:2:0:2",
-     "10711:2:0:2"
+     "6657:6:69:2",
+     "6807:6:69:2",
+     "6957:6:69:2",
+     "7107:6:69:2",
+     "7257:6:69:2",
+     "7407:6:69:2",
+     "7557:6:69:2",
+     "7707:6:69:2",
+     "7857:6:69:2",
+     "8007:6:40:2",
+     "8157:6:2:2",
+     "8307:5:0:2",
+     "8457:2:0:2",
+     "8607:2:0:2",
+     "8757:2:0:2",
+     "8907:2:0:2",
+     "9057:2:0:2"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 4,
@@ -1861,7 +1856,7 @@
     "section": "home-problem-wrap",
     "bp": "1440",
     "family": "trigger-baseline",
-    "ourOnsetFrac": -0.5,
+    "ourOnsetFrac": -1.4,
     "window": {
      "start": 0,
      "end": 1917,
@@ -1870,31 +1865,31 @@
     },
     "geometry": {
      "top": 1617,
-     "height": 2494,
-     "docH": 18356,
+     "height": 840,
+     "docH": 16666,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
      "0:4:56:0",
      "150:4:56:0",
      "300:4:56:0",
-     "450:3:42:0",
-     "600:3:42:0",
-     "750:3:42:0",
-     "900:3:42:0",
-     "1050:2:28:0",
-     "1200:2:28:0",
-     "1350:2:28:0",
-     "1500:1:14:0",
-     "1650:1:14:0",
-     "1800:1:14:0"
+     "450:0:0:0",
+     "600:0:0:0",
+     "750:0:0:0",
+     "900:0:0:0",
+     "1050:0:0:0",
+     "1200:0:0:0",
+     "1350:0:0:0",
+     "1500:0:0:0",
+     "1650:0:0:0",
+     "1800:0:0:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 3,
     "refTriggerStartPx": 279,
     "refTriggerEndPx": 2795,
     "refTriggerFracOfSection": -1.8,
-    "resolution": "±0.1 of section height (150 px seats)",
+    "resolution": "±0.2 of section height (150 px seats)",
     "pass": null,
     "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
    },
@@ -1904,35 +1899,35 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -2.2,
     "window": {
-     "start": 13060,
-     "end": 15460,
+     "start": 11370,
+     "end": 13770,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 15160,
+     "top": 13470,
      "height": 886,
-     "docH": 18356,
+     "docH": 16666,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "13060:15:112:0",
-     "13210:25:112:0",
-     "13360:17:112:0",
-     "13510:17:112:0",
-     "13660:15:112:0",
-     "13810:15:112:0",
-     "13960:15:112:0",
-     "14110:15:112:0",
-     "14260:15:112:0",
-     "14410:15:112:0",
-     "14560:15:112:0",
-     "14710:15:112:0",
-     "14860:15:112:0",
-     "15010:16:112:0",
-     "15160:16:112:0",
-     "15310:16:112:0",
-     "15460:17:104:0"
+     "11370:15:112:0",
+     "11520:25:112:0",
+     "11670:17:112:0",
+     "11820:17:112:0",
+     "11970:15:112:0",
+     "12120:15:112:0",
+     "12270:15:112:0",
+     "12420:15:112:0",
+     "12570:15:112:0",
+     "12720:15:112:0",
+     "12870:15:112:0",
+     "13020:15:112:0",
+     "13170:15:112:0",
+     "13320:16:112:0",
+     "13470:16:112:0",
+     "13620:16:112:0",
+     "13770:17:103:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 1,
@@ -1949,41 +1944,41 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -0.2,
     "window": {
-     "start": 10573,
-     "end": 12973,
+     "start": 8883,
+     "end": 11283,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 12673,
+     "top": 10983,
      "height": 2488,
-     "docH": 18356,
+     "docH": 16666,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "10573:31:245:0",
-     "10723:31:245:0",
-     "10873:31:245:0",
-     "11023:31:245:0",
-     "11173:31:245:0",
-     "11323:31:245:0",
-     "11473:31:245:0",
-     "11623:31:245:0",
-     "11773:31:245:0",
-     "11923:31:245:0",
-     "12073:31:235:0",
-     "12223:31:231:0",
-     "12373:31:231:0",
-     "12523:30:231:0",
-     "12673:30:231:0",
-     "12823:30:231:0",
-     "12973:30:231:0"
+     "8883:31:245:0",
+     "9033:31:245:0",
+     "9183:31:245:0",
+     "9333:31:245:0",
+     "9483:31:245:0",
+     "9633:31:245:0",
+     "9783:31:245:0",
+     "9933:31:245:0",
+     "10083:31:245:0",
+     "10233:31:245:0",
+     "10383:31:235:0",
+     "10533:31:231:0",
+     "10683:31:231:0",
+     "10833:30:231:0",
+     "10983:30:231:0",
+     "11133:30:231:0",
+     "11283:30:231:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 6,
     "refTriggerStartPx": 8031,
     "refTriggerEndPx": 10486,
-    "refTriggerFracOfSection": -1.2,
+    "refTriggerFracOfSection": -0.5,
     "resolution": "±0.1 of section height (150 px seats)",
     "pass": null,
     "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
@@ -2002,7 +1997,7 @@
     "geometry": {
      "top": 7,
      "height": 56,
-     "docH": 23267,
+     "docH": 21014,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -2025,33 +2020,33 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": 0,
     "window": {
-     "start": 19943,
-     "end": 22187,
+     "start": 17689,
+     "end": 19934,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 22043,
+     "top": 19789,
      "height": 1096,
-     "docH": 23267,
+     "docH": 21014,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "19943:7:110:0",
-     "20093:7:110:0",
-     "20243:7:110:0",
-     "20393:7:110:0",
-     "20543:7:110:0",
-     "20693:7:110:0",
-     "20843:7:110:0",
-     "20993:7:110:0",
-     "21143:7:110:0",
-     "21293:7:110:0",
-     "21443:7:110:0",
-     "21593:7:110:0",
-     "21743:7:110:0",
-     "21893:7:110:0",
-     "22043:14:104:0"
+     "17689:7:110:0",
+     "17839:7:110:0",
+     "17989:7:110:0",
+     "18139:7:110:0",
+     "18289:7:110:0",
+     "18439:7:110:0",
+     "18589:7:110:0",
+     "18739:7:110:0",
+     "18889:7:110:0",
+     "19039:7:110:0",
+     "19189:7:110:0",
+     "19339:7:110:0",
+     "19489:7:110:0",
+     "19639:7:110:0",
+     "19789:14:102:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 18,
@@ -2068,35 +2063,35 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": -1.1,
     "window": {
-     "start": 18200,
-     "end": 20600,
+     "start": 15947,
+     "end": 18347,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 20300,
+     "top": 18047,
      "height": 1743,
-     "docH": 23267,
+     "docH": 21014,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "18200:5:16:0",
-     "18350:5:49:0",
-     "18500:5:56:0",
-     "18650:5:56:0",
-     "18800:5:56:0",
-     "18950:5:56:0",
-     "19100:5:56:0",
-     "19250:5:56:0",
-     "19400:5:56:0",
-     "19550:5:56:0",
-     "19700:5:56:0",
-     "19850:5:56:0",
-     "20000:5:56:0",
-     "20150:5:56:0",
-     "20300:5:56:0",
-     "20450:5:56:0",
-     "20600:5:56:0"
+     "15947:5:28:0",
+     "16097:5:51:0",
+     "16247:5:56:0",
+     "16397:5:56:0",
+     "16547:5:56:0",
+     "16697:5:56:0",
+     "16847:5:56:0",
+     "16997:5:56:0",
+     "17147:5:56:0",
+     "17297:5:56:0",
+     "17447:5:56:0",
+     "17597:5:56:0",
+     "17747:5:56:0",
+     "17897:5:56:0",
+     "18047:5:56:0",
+     "18197:5:56:0",
+     "18347:5:56:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 4,
@@ -2121,7 +2116,7 @@
     "geometry": {
      "top": 7,
      "height": 1063,
-     "docH": 23267,
+     "docH": 21014,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -2152,17 +2147,17 @@
     "geometry": {
      "top": 1070,
      "height": 963,
-     "docH": 23267,
+     "docH": 21014,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
      "0:39:238:1",
-     "150:39:125:1",
-     "300:31:71:1",
-     "450:28:58:1",
+     "150:39:139:1",
+     "300:39:74:1",
+     "450:28:59:1",
      "600:26:56:1",
      "750:26:56:1",
-     "900:26:38:1",
+     "900:26:44:1",
      "1050:26:1:1",
      "1200:22:0:1",
      "1350:22:0:1"
@@ -2182,35 +2177,35 @@
     "family": "trigger-baseline",
     "ourOnsetFrac": null,
     "window": {
-     "start": 3284,
-     "end": 5684,
+     "start": 1079,
+     "end": 3479,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 5384,
+     "top": 3179,
      "height": 7560,
-     "docH": 23267,
-     "stabilizedDriftPx": 0
+     "docH": 21014,
+     "stabilizedDriftPx": 1
     },
     "sigTrace": [
-     "3284:1:410:0",
-     "3434:1:410:0",
-     "3584:1:410:0",
-     "3734:1:410:0",
-     "3884:1:410:0",
-     "4034:1:410:0",
-     "4184:1:410:0",
-     "4334:1:410:0",
-     "4484:1:410:0",
-     "4634:1:410:0",
-     "4784:1:410:0",
-     "4934:1:410:0",
-     "5084:1:410:0",
-     "5234:1:410:0",
-     "5384:1:410:0",
-     "5534:1:410:0",
-     "5684:1:410:0"
+     "1079:1:410:0",
+     "1229:1:410:0",
+     "1379:1:410:0",
+     "1529:1:410:0",
+     "1679:1:410:0",
+     "1829:1:410:0",
+     "1979:1:410:0",
+     "2129:1:410:0",
+     "2279:1:410:0",
+     "2429:1:410:0",
+     "2579:1:410:0",
+     "2729:1:410:0",
+     "2879:1:410:0",
+     "3029:1:410:0",
+     "3179:1:410:0",
+     "3329:1:410:0",
+     "3479:1:410:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 1,
@@ -2225,37 +2220,37 @@
     "section": "home-platform-wrap",
     "bp": "1920",
     "family": "trigger-baseline",
-    "ourOnsetFrac": -2.1,
+    "ourOnsetFrac": -0.9,
     "window": {
-     "start": 10844,
-     "end": 13244,
+     "start": 8639,
+     "end": 11039,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 12944,
+     "top": 10739,
      "height": 948,
-     "docH": 23267,
+     "docH": 21014,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "10844:6:53:2",
-     "10994:6:28:2",
-     "11144:6:27:2",
-     "11294:3:27:2",
-     "11444:3:27:2",
-     "11594:3:27:2",
-     "11744:3:27:2",
-     "11894:3:27:2",
-     "12044:3:13:2",
-     "12194:3:0:2",
-     "12344:2:0:2",
-     "12494:2:0:2",
-     "12644:2:0:2",
-     "12794:2:0:2",
-     "12944:2:0:2",
-     "13094:2:0:2",
-     "13244:2:0:2"
+     "8639:6:69:2",
+     "8789:6:69:2",
+     "8939:6:69:2",
+     "9089:6:69:2",
+     "9239:6:69:2",
+     "9389:6:69:2",
+     "9539:6:69:2",
+     "9689:6:69:2",
+     "9839:6:49:2",
+     "9989:6:3:2",
+     "10139:5:0:2",
+     "10289:2:0:2",
+     "10439:2:0:2",
+     "10589:2:0:2",
+     "10739:2:0:2",
+     "10889:2:0:2",
+     "11039:2:0:2"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 4,
@@ -2270,7 +2265,7 @@
     "section": "home-problem-wrap",
     "bp": "1920",
     "family": "trigger-baseline",
-    "ourOnsetFrac": -0.4,
+    "ourOnsetFrac": -1.1,
     "window": {
      "start": 0,
      "end": 2333,
@@ -2279,8 +2274,8 @@
     },
     "geometry": {
      "top": 2033,
-     "height": 3351,
-     "docH": 23267,
+     "height": 1146,
+     "docH": 21014,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
@@ -2289,24 +2284,24 @@
      "300:4:56:0",
      "450:4:56:0",
      "600:4:56:0",
-     "750:3:42:0",
-     "900:3:42:0",
-     "1050:3:42:0",
-     "1200:3:42:0",
-     "1350:2:28:0",
-     "1500:2:28:0",
-     "1650:2:28:0",
-     "1800:2:28:0",
-     "1950:2:28:0",
-     "2100:1:14:0",
-     "2250:1:14:0"
+     "750:0:0:0",
+     "900:0:0:0",
+     "1050:0:0:0",
+     "1200:0:0:0",
+     "1350:0:0:0",
+     "1500:0:0:0",
+     "1650:0:0:0",
+     "1800:0:0:0",
+     "1950:0:0:0",
+     "2100:0:0:0",
+     "2250:0:0:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 3,
     "refTriggerStartPx": 433,
     "refTriggerEndPx": 3547,
     "refTriggerFracOfSection": -1.6,
-    "resolution": "±0 of section height (150 px seats)",
+    "resolution": "±0.1 of section height (150 px seats)",
     "pass": null,
     "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
    },
@@ -2314,37 +2309,37 @@
     "section": "home-usecase-wrap",
     "bp": "1920",
     "family": "trigger-baseline",
-    "ourOnsetFrac": -1.9,
+    "ourOnsetFrac": -1.7,
     "window": {
-     "start": 17164,
-     "end": 19564,
+     "start": 14911,
+     "end": 17311,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 19264,
+     "top": 17011,
      "height": 1036,
-     "docH": 23267,
+     "docH": 21014,
      "stabilizedDriftPx": 0
     },
     "sigTrace": [
-     "17164:15:112:0",
-     "17314:25:112:0",
-     "17464:17:112:0",
-     "17614:15:112:0",
-     "17764:15:112:0",
-     "17914:15:112:0",
-     "18064:15:112:0",
-     "18214:15:112:0",
-     "18364:15:112:0",
-     "18514:15:112:0",
-     "18664:15:112:0",
-     "18814:15:112:0",
-     "18964:15:112:0",
-     "19114:16:112:0",
-     "19264:16:112:0",
-     "19414:16:112:0",
-     "19564:15:104:0"
+     "14911:25:112:0",
+     "15061:25:112:0",
+     "15211:17:112:0",
+     "15361:15:112:0",
+     "15511:15:112:0",
+     "15661:15:112:0",
+     "15811:15:112:0",
+     "15961:15:112:0",
+     "16111:15:112:0",
+     "16261:15:112:0",
+     "16411:15:112:0",
+     "16561:15:112:0",
+     "16711:15:112:0",
+     "16861:16:112:0",
+     "17011:16:112:0",
+     "17161:16:112:0",
+     "17311:15:103:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 1,
@@ -2359,43 +2354,43 @@
     "section": "home-why-wrap",
     "bp": "1920",
     "family": "trigger-baseline",
-    "ourOnsetFrac": -0.6,
+    "ourOnsetFrac": -0.2,
     "window": {
-     "start": 13857,
-     "end": 16257,
+     "start": 11604,
+     "end": 14004,
      "stepPx": 150,
      "protocol": "the reference sampler's own window (ref-onsets.mjs): 150 px seats across [entry−2100, entry+300]"
     },
     "geometry": {
-     "top": 15957,
+     "top": 13704,
      "height": 3307,
-     "docH": 23267,
-     "stabilizedDriftPx": 0
+     "docH": 21014,
+     "stabilizedDriftPx": 1
     },
     "sigTrace": [
-     "13857:31:228:0",
-     "14007:31:217:0",
-     "14157:31:217:0",
-     "14307:29:217:0",
-     "14457:29:217:0",
-     "14607:29:217:0",
-     "14757:29:217:0",
-     "14907:29:217:0",
-     "15057:29:217:0",
-     "15207:29:217:0",
-     "15357:29:217:0",
-     "15507:29:217:0",
-     "15657:29:217:0",
-     "15807:29:217:0",
-     "15957:29:217:0",
-     "16107:29:217:0",
-     "16257:29:217:0"
+     "11604:31:245:0",
+     "11754:31:245:0",
+     "11904:31:245:0",
+     "12054:31:245:0",
+     "12204:31:245:0",
+     "12354:31:245:0",
+     "12504:31:245:0",
+     "12654:31:245:0",
+     "12804:31:245:0",
+     "12954:31:244:0",
+     "13104:31:231:0",
+     "13254:31:231:0",
+     "13404:30:231:0",
+     "13554:30:231:0",
+     "13704:30:231:0",
+     "13854:30:231:0",
+     "14004:30:231:0"
     ],
     "firedBeforeWindow": null,
     "refTriggers": 6,
     "refTriggerStartPx": 9929,
     "refTriggerEndPx": 12961,
-    "refTriggerFracOfSection": -0.8,
+    "refTriggerFracOfSection": -0.5,
     "resolution": "±0 of section height (150 px seats)",
     "pass": null,
     "note": "paired baseline: live reference trigger start (stage-offset space, census-validated) vs our measured onset (fresh-page, pre-settle window) — NOT scored; the Task 1 tuning dial"
@@ -2434,7 +2429,7 @@
    }
   },
   "footer": {
-   "E": 45.9,
+   "E": 46.2,
    "T": 66.7,
    "pairs": 9,
    "covered": 6,
@@ -2442,11 +2437,11 @@
    "coincident": 11,
    "states": {
     "1440:entry": {
-     "E": 42.7,
+     "E": 43.4,
      "status": "scored"
     },
     "390:entry": {
-     "E": 57.7,
+     "E": 57.9,
      "status": "scored"
     },
     "390:mid30": {
@@ -2458,7 +2453,7 @@
      "status": "missing"
     },
     "768:entry": {
-     "E": 50.5,
+     "E": 50.9,
      "status": "scored"
     },
     "768:mid30": {
@@ -2470,17 +2465,17 @@
      "status": "missing"
     },
     "1024:entry": {
-     "E": 26.7,
+     "E": 26.8,
      "status": "scored"
     },
     "1920:entry": {
-     "E": 48.6,
+     "E": 49.1,
      "status": "scored"
     }
    }
   },
   "home-cta-wrap": {
-   "E": 68.1,
+   "E": 68.4,
    "T": 86.7,
    "pairs": 15,
    "covered": 13,
@@ -2488,11 +2483,11 @@
    "coincident": 5,
    "states": {
     "1440:entry": {
-     "E": 77.1,
+     "E": 77,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 76.1,
+     "E": 76.8,
      "status": "scored"
     },
     "1440:mid60": {
@@ -2504,23 +2499,23 @@
      "status": "scored"
     },
     "390:mid30": {
-     "E": 58.3,
+     "E": 58.8,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 46,
+     "E": 47.5,
      "status": "scored"
     },
     "768:entry": {
-     "E": 65.4,
+     "E": 65.3,
      "status": "scored"
     },
     "768:mid30": {
-     "E": 64.4,
+     "E": 65.2,
      "status": "scored"
     },
     "768:mid60": {
-     "E": 62.9,
+     "E": 62.8,
      "status": "scored"
     },
     "1024:entry": {
@@ -2540,7 +2535,7 @@
      "status": "scored"
     },
     "1920:mid30": {
-     "E": 76.3,
+     "E": 76.6,
      "status": "scored"
     },
     "1920:mid60": {
@@ -2550,7 +2545,7 @@
    }
   },
   "home-hero-wrap": {
-   "E": 46.8,
+   "E": 46.5,
    "T": 100,
    "pairs": 15,
    "covered": 15,
@@ -2558,23 +2553,23 @@
    "coincident": 5,
    "states": {
     "1440:entry": {
-     "E": 48.9,
+     "E": 48.7,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 38.7,
+     "E": 38.5,
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 54.2,
+     "E": 53.6,
      "status": "scored"
     },
     "390:entry": {
-     "E": 55.3,
+     "E": 52.8,
      "status": "scored"
     },
     "390:mid30": {
-     "E": 53.8,
+     "E": 52.8,
      "status": "scored"
     },
     "390:mid60": {
@@ -2582,15 +2577,15 @@
      "status": "invalid-mask-share"
     },
     "768:entry": {
-     "E": 48.2,
+     "E": 49.1,
      "status": "scored"
     },
     "768:mid30": {
-     "E": 36.5,
+     "E": 37.4,
      "status": "scored"
     },
     "768:mid60": {
-     "E": 46.6,
+     "E": 46.4,
      "status": "scored"
     },
     "1024:entry": {
@@ -2598,15 +2593,15 @@
      "status": "scored"
     },
     "1024:mid30": {
-     "E": 26.1,
+     "E": 26.3,
      "status": "scored"
     },
     "1024:mid60": {
-     "E": 53.6,
+     "E": 53.4,
      "status": "scored"
     },
     "1920:entry": {
-     "E": 53.4,
+     "E": 53.3,
      "status": "scored"
     },
     "1920:mid30": {
@@ -2620,7 +2615,7 @@
    }
   },
   "home-intro-wrap": {
-   "E": 50.7,
+   "E": 51.4,
    "T": 100,
    "pairs": 15,
    "covered": 15,
@@ -2628,11 +2623,11 @@
    "coincident": 5,
    "states": {
     "1440:entry": {
-     "E": 73.9,
+     "E": 74.5,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 53.7,
+     "E": 54,
      "status": "scored"
     },
     "1440:mid60": {
@@ -2640,23 +2635,23 @@
      "status": "scored"
     },
     "390:entry": {
-     "E": 54.5,
+     "E": 55.5,
      "status": "scored"
     },
     "390:mid30": {
-     "E": 24.6,
+     "E": 28.8,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 36.7,
+     "E": 39.1,
      "status": "scored"
     },
     "768:entry": {
-     "E": 47.5,
+     "E": 47.6,
      "status": "scored"
     },
     "768:mid30": {
-     "E": 46.3,
+     "E": 46.1,
      "status": "scored"
     },
     "768:mid60": {
@@ -2664,11 +2659,11 @@
      "status": "scored"
     },
     "1024:entry": {
-     "E": 67,
+     "E": 67.4,
      "status": "scored"
     },
     "1024:mid30": {
-     "E": 46.1,
+     "E": 46.4,
      "status": "scored"
     },
     "1024:mid60": {
@@ -2676,11 +2671,11 @@
      "status": "scored"
     },
     "1920:entry": {
-     "E": 70.9,
+     "E": 71.5,
      "status": "scored"
     },
     "1920:mid30": {
-     "E": 53.3,
+     "E": 54.1,
      "status": "scored"
     },
     "1920:mid60": {
@@ -2690,7 +2685,7 @@
    }
   },
   "home-map-wrap": {
-   "E": 52.7,
+   "E": 53,
    "T": 100,
    "pairs": 20,
    "covered": 20,
@@ -2698,31 +2693,31 @@
    "coincident": 0,
    "states": {
     "1440:entry": {
-     "E": 51,
+     "E": 51.3,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 52.4,
+     "E": 53.1,
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 47.9,
+     "E": 48.8,
      "status": "scored"
     },
     "1440:exit": {
-     "E": 44.3,
+     "E": 44.1,
      "status": "scored"
     },
     "390:entry": {
-     "E": 68.5,
+     "E": 68.3,
      "status": "scored"
     },
     "390:mid30": {
-     "E": 51.4,
+     "E": 50.8,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 48.4,
+     "E": 48,
      "status": "scored"
     },
     "390:exit": {
@@ -2730,57 +2725,57 @@
      "status": "invalid-mask-share"
     },
     "768:entry": {
-     "E": 56.2,
+     "E": 56.1,
      "status": "scored"
     },
     "768:mid30": {
-     "E": 49.2,
+     "E": 49.6,
      "status": "scored"
     },
     "768:mid60": {
-     "E": 41.3,
+     "E": 41.2,
      "status": "scored"
     },
     "768:exit": {
-     "E": 58.4,
+     "E": 57.6,
      "status": "scored"
     },
     "1024:entry": {
-     "E": 59.7,
+     "E": 60.5,
      "status": "scored"
     },
     "1024:mid30": {
-     "E": 60.8,
+     "E": 61.5,
      "status": "scored"
     },
     "1024:mid60": {
-     "E": 46.5,
+     "E": 46.8,
      "status": "scored"
     },
     "1024:exit": {
-     "E": 50.6,
+     "E": 50.5,
      "status": "scored"
     },
     "1920:entry": {
-     "E": 56.5,
+     "E": 57.6,
      "status": "scored"
     },
     "1920:mid30": {
-     "E": 57.3,
+     "E": 58.5,
      "status": "scored"
     },
     "1920:mid60": {
-     "E": 52.7,
+     "E": 53.9,
      "status": "scored"
     },
     "1920:exit": {
-     "E": 49,
+     "E": 49.4,
      "status": "scored"
     }
    }
   },
   "home-platform-wrap": {
-   "E": 43.2,
+   "E": 42.7,
    "T": 100,
    "pairs": 16,
    "covered": 16,
@@ -2804,31 +2799,31 @@
      "status": "scored"
     },
     "390:mid30": {
-     "E": 39.4,
+     "E": 36.4,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 36.2,
+     "E": 33.2,
      "status": "scored"
     },
     "390:exit": {
-     "E": 36,
+     "E": 32.1,
      "status": "scored"
     },
     "768:entry": {
-     "E": 28.9,
+     "E": 27.6,
      "status": "scored"
     },
     "768:mid30": {
-     "E": 27.8,
+     "E": 28.5,
      "status": "scored"
     },
     "768:mid60": {
-     "E": 25.1,
+     "E": 24.8,
      "status": "scored"
     },
     "1024:entry": {
-     "E": 46.1,
+     "E": 46.3,
      "status": "scored"
     },
     "1024:mid30": {
@@ -2840,21 +2835,21 @@
      "status": "scored"
     },
     "1920:entry": {
-     "E": 48.5,
+     "E": 49.4,
      "status": "scored"
     },
     "1920:mid30": {
-     "E": 55.5,
+     "E": 55.9,
      "status": "scored"
     },
     "1920:mid60": {
-     "E": 52.9,
+     "E": 53.3,
      "status": "scored"
     }
    }
   },
   "home-problem-wrap": {
-   "E": 69.9,
+   "E": 71,
    "T": 100,
    "pairs": 15,
    "covered": 15,
@@ -2862,27 +2857,27 @@
    "coincident": 5,
    "states": {
     "1440:entry": {
-     "E": 67.4,
+     "E": 67.5,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 78.2,
+     "E": 75.2,
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 74.8,
+     "E": 83.2,
      "status": "scored"
     },
     "390:entry": {
-     "E": 69.5,
+     "E": 69.4,
      "status": "scored"
     },
     "390:mid30": {
-     "E": 74,
+     "E": 73.9,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 65.9,
+     "E": 66.1,
      "status": "scored"
     },
     "768:entry": {
@@ -2890,41 +2885,41 @@
      "status": "scored"
     },
     "768:mid30": {
-     "E": 58.8,
+     "E": 59.5,
      "status": "scored"
     },
     "768:mid60": {
-     "E": 66.1,
+     "E": 67.1,
      "status": "scored"
     },
     "1024:entry": {
-     "E": 67,
-     "status": "scored"
-    },
-    "1024:mid30": {
-     "E": 74.8,
-     "status": "scored"
-    },
-    "1024:mid60": {
-     "E": 71.1,
-     "status": "scored"
-    },
-    "1920:entry": {
-     "E": 73.2,
-     "status": "scored"
-    },
-    "1920:mid30": {
      "E": 75.1,
      "status": "scored"
     },
+    "1024:mid30": {
+     "E": 74.3,
+     "status": "scored"
+    },
+    "1024:mid60": {
+     "E": 74.7,
+     "status": "scored"
+    },
+    "1920:entry": {
+     "E": 73.1,
+     "status": "scored"
+    },
+    "1920:mid30": {
+     "E": 71.6,
+     "status": "scored"
+    },
     "1920:mid60": {
-     "E": 69.6,
+     "E": 71.5,
      "status": "scored"
     }
    }
   },
   "home-usecase-wrap": {
-   "E": 46.7,
+   "E": 46.8,
    "T": 100,
    "pairs": 16,
    "covered": 16,
@@ -2932,31 +2927,31 @@
    "coincident": 4,
    "states": {
     "1440:entry": {
-     "E": 51.2,
+     "E": 51,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 42.5,
+     "E": 42.9,
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 39.9,
+     "E": 39.3,
      "status": "scored"
     },
     "390:entry": {
-     "E": 44,
+     "E": 43.9,
      "status": "scored"
     },
     "390:mid30": {
-     "E": 57.4,
+     "E": 57.3,
      "status": "scored"
     },
     "390:mid60": {
-     "E": 72.8,
+     "E": 72.7,
      "status": "scored"
     },
     "390:exit": {
-     "E": 42.1,
+     "E": 41.8,
      "status": "scored"
     },
     "768:entry": {
@@ -2964,57 +2959,57 @@
      "status": "scored"
     },
     "768:mid30": {
-     "E": 45,
+     "E": 45.7,
      "status": "scored"
     },
     "768:mid60": {
-     "E": 47.9,
+     "E": 48.6,
      "status": "scored"
     },
     "1024:entry": {
-     "E": 53.8,
+     "E": 54,
      "status": "scored"
     },
     "1024:mid30": {
-     "E": 40.6,
+     "E": 40.7,
      "status": "scored"
     },
     "1024:mid60": {
-     "E": 33.6,
+     "E": 34.3,
      "status": "scored"
     },
     "1920:entry": {
-     "E": 51.4,
+     "E": 51.1,
      "status": "scored"
     },
     "1920:mid30": {
-     "E": 42.1,
+     "E": 41.9,
      "status": "scored"
     },
     "1920:mid60": {
-     "E": 42.5,
+     "E": 42.6,
      "status": "scored"
     }
    }
   },
   "home-why-wrap": {
-   "E": 66.5,
+   "E": 67.2,
    "T": 100,
-   "pairs": 17,
-   "covered": 17,
-   "eScored": 17,
-   "coincident": 3,
+   "pairs": 18,
+   "covered": 18,
+   "eScored": 18,
+   "coincident": 2,
    "states": {
     "1440:entry": {
-     "E": 74,
+     "E": 73.8,
      "status": "scored"
     },
     "1440:mid30": {
-     "E": 74.3,
+     "E": 71.4,
      "status": "scored"
     },
     "1440:mid60": {
-     "E": 63.9,
+     "E": 70.4,
      "status": "scored"
     },
     "390:entry": {
@@ -3030,47 +3025,51 @@
      "status": "scored"
     },
     "768:entry": {
-     "E": 72.5,
+     "E": 72.3,
      "status": "scored"
     },
     "768:mid30": {
-     "E": 60.1,
+     "E": 58.5,
      "status": "scored"
     },
     "768:mid60": {
-     "E": 60.2,
+     "E": 56.8,
+     "status": "scored"
+    },
+    "768:exit": {
+     "E": 60.5,
      "status": "scored"
     },
     "1024:entry": {
-     "E": 75.8,
+     "E": 76.1,
      "status": "scored"
     },
     "1024:mid30": {
-     "E": 66,
+     "E": 72.5,
      "status": "scored"
     },
     "1024:mid60": {
-     "E": 61.7,
+     "E": 69.6,
      "status": "scored"
     },
     "1024:exit": {
-     "E": 69.3,
+     "E": 71.1,
      "status": "scored"
     },
     "1920:entry": {
-     "E": 77.6,
+     "E": 77.4,
      "status": "scored"
     },
     "1920:mid30": {
-     "E": 73.6,
+     "E": 69.3,
      "status": "scored"
     },
     "1920:mid60": {
-     "E": 65.5,
+     "E": 70.7,
      "status": "scored"
     },
     "1920:exit": {
-     "E": 63.8,
+     "E": 66.9,
      "status": "scored"
     }
    }
@@ -3191,10 +3190,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/footer.1440.end.png",
-    "top": -78,
+    "top": -77,
     "state": "end-clamped",
-    "scrollY": 18126,
-    "targetY": 18126,
+    "scrollY": 16436,
+    "targetY": 16436,
     "clip": {
      "ok": true,
      "x": 7,
@@ -3245,10 +3244,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 42.7,
+   "E": 43.4,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 40.9,
-   "structuralDiffPct": 9
+   "E_unmasked": 41.5,
+   "structuralDiffPct": 8.8
   },
   {
    "key": "footer",
@@ -3293,7 +3292,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 16717,
+    "scrollY": 15027,
     "clip": {
      "ok": true,
      "x": 0,
@@ -3345,9 +3344,9 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 77.1,
+   "E": 77,
    "ssim_unmasked": 0.8,
-   "E_unmasked": 77.1,
+   "E_unmasked": 77,
    "structuralDiffPct": 5.9
   },
   {
@@ -3365,8 +3364,8 @@
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.1440.mid30.png",
     "top": -400,
     "state": "position",
-    "scrollY": 17117,
-    "targetY": 17117,
+    "scrollY": 15427,
+    "targetY": 15427,
     "clip": {
      "ok": true,
      "x": 0,
@@ -3416,10 +3415,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 76.1,
+   "E": 76.8,
    "ssim_unmasked": 0.8,
-   "E_unmasked": 76.2,
-   "structuralDiffPct": 6.4
+   "E_unmasked": 76.8,
+   "structuralDiffPct": 6.3
   },
   {
    "key": "home-cta-wrap",
@@ -3436,8 +3435,8 @@
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.1440.mid60.png",
     "top": -799,
     "state": "position",
-    "scrollY": 17516,
-    "targetY": 17516,
+    "scrollY": 15826,
+    "targetY": 15826,
     "clip": {
      "ok": true,
      "x": 0,
@@ -3446,7 +3445,7 @@
      "h": 133,
      "touchesBottom": false,
      "captureW": 1440,
-     "captureH": 532,
+     "captureH": 533,
      "storageScale": 4
     }
    },
@@ -3569,9 +3568,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 48.9,
+   "E": 48.7,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 44.6,
+   "E_unmasked": 44.5,
    "structuralDiffPct": 33.2
   },
   {
@@ -3640,9 +3639,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 38.7,
+   "E": 38.5,
    "ssim_unmasked": 0.3,
-   "E_unmasked": 34.8,
+   "E_unmasked": 34.6,
    "structuralDiffPct": 43.9
   },
   {
@@ -3711,9 +3710,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 54.2,
+   "E": 53.6,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 44.2,
+   "E_unmasked": 43.2,
    "structuralDiffPct": 41.3
   },
   {
@@ -3793,10 +3792,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 73.9,
+   "E": 74.5,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 66.3,
-   "structuralDiffPct": 10
+   "E_unmasked": 66.8,
+   "structuralDiffPct": 9.9
   },
   {
    "key": "home-intro-wrap",
@@ -3864,10 +3863,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 53.7,
+   "E": 54,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 53.3,
-   "structuralDiffPct": 25
+   "E_unmasked": 53.6,
+   "structuralDiffPct": 24.8
   },
   {
    "key": "home-intro-wrap",
@@ -3965,7 +3964,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 4111,
+    "scrollY": 2457,
     "clip": {
      "ok": true,
      "x": 0,
@@ -4017,10 +4016,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 51,
+   "E": 51.3,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 52,
-   "structuralDiffPct": 9.6
+   "E_unmasked": 52.7,
+   "structuralDiffPct": 9.7
   },
   {
    "key": "home-map-wrap",
@@ -4037,8 +4036,8 @@
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.mid30.png",
     "top": -1890,
     "state": "position",
-    "scrollY": 6001,
-    "targetY": 6001,
+    "scrollY": 4347,
+    "targetY": 4347,
     "clip": {
      "ok": true,
      "x": 0,
@@ -4088,10 +4087,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 52.4,
+   "E": 53.1,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 51.5,
-   "structuralDiffPct": 9.6
+   "E_unmasked": 52.2,
+   "structuralDiffPct": 9.4
   },
   {
    "key": "home-map-wrap",
@@ -4108,8 +4107,8 @@
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.mid60.png",
     "top": -3780,
     "state": "position",
-    "scrollY": 7891,
-    "targetY": 7891,
+    "scrollY": 6237,
+    "targetY": 6237,
     "clip": {
      "ok": true,
      "x": 0,
@@ -4159,10 +4158,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 47.9,
+   "E": 48.8,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 46.4,
-   "structuralDiffPct": 11.6
+   "E_unmasked": 47.2,
+   "structuralDiffPct": 11.4
   },
   {
    "key": "home-map-wrap",
@@ -4179,8 +4178,8 @@
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1440.exit.png",
     "top": -5400,
     "state": "position",
-    "scrollY": 9511,
-    "targetY": 9511,
+    "scrollY": 7857,
+    "targetY": 7857,
     "clip": {
      "ok": true,
      "x": 0,
@@ -4214,7 +4213,7 @@
    "localSelector": "section#chapters.chapters",
    "referenceSelector": "div.home-map-wrap",
    "masks": {
-    "count": 73,
+    "count": 68,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0.1
    },
@@ -4230,10 +4229,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 44.3,
+   "E": 44.1,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 43.3,
-   "structuralDiffPct": 12.3
+   "E_unmasked": 43.2,
+   "structuralDiffPct": 12.5
   },
   {
    "key": "home-platform-wrap",
@@ -4251,7 +4250,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 10411,
+    "scrollY": 8757,
     "clip": {
      "ok": true,
      "x": 7,
@@ -4306,7 +4305,7 @@
    "E": 49.2,
    "ssim_unmasked": 0.5,
    "E_unmasked": 47.4,
-   "structuralDiffPct": 13.2
+   "structuralDiffPct": 13.3
   },
   {
    "key": "home-platform-wrap",
@@ -4323,8 +4322,8 @@
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.1440.mid30.png",
     "top": -214,
     "state": "position",
-    "scrollY": 10625,
-    "targetY": 10625,
+    "scrollY": 8971,
+    "targetY": 8971,
     "clip": {
      "ok": true,
      "x": 7,
@@ -4394,8 +4393,8 @@
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.1440.mid60.png",
     "top": -427,
     "state": "position",
-    "scrollY": 10838,
-    "targetY": 10838,
+    "scrollY": 9184,
+    "targetY": 9184,
     "clip": {
      "ok": true,
      "x": 7,
@@ -4481,10 +4480,10 @@
      "x": 0,
      "y": 0,
      "w": 360,
-     "h": 225,
-     "touchesBottom": true,
+     "h": 210,
+     "touchesBottom": false,
      "captureW": 1440,
-     "captureH": 900,
+     "captureH": 840,
      "storageScale": 4
     }
    },
@@ -4519,18 +4518,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 356,
-    "h": 125,
+    "h": 185,
     "storedScale": {
      "reference": 4,
      "local": 4
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 67.4,
+   "E": 67.5,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 63.8,
-   "structuralDiffPct": 2.9
+   "E_unmasked": 59.1,
+   "structuralDiffPct": 0.9
   },
   {
    "key": "home-problem-wrap",
@@ -4545,19 +4544,19 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.1440.mid30.png",
-    "top": -748,
+    "top": -252,
     "state": "position",
-    "scrollY": 2365,
-    "targetY": 2365,
+    "scrollY": 1869,
+    "targetY": 1869,
     "clip": {
      "ok": true,
      "x": 0,
      "y": 0,
      "w": 360,
-     "h": 225,
-     "touchesBottom": true,
+     "h": 147,
+     "touchesBottom": false,
      "captureW": 1440,
-     "captureH": 900,
+     "captureH": 588,
      "storageScale": 4
     }
    },
@@ -4584,23 +4583,23 @@
    "masks": {
     "count": 16,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
-    "maskedShare": 0.1
+    "maskedShare": 0.3
    },
    "status": "scored",
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 356,
-    "h": 70,
+    "h": 130,
     "storedScale": {
      "reference": 4,
      "local": 4
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 78.2,
-   "ssim_unmasked": 0.8,
-   "E_unmasked": 78.7,
+   "E": 75.2,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 64.3,
    "structuralDiffPct": 1.1
   },
   {
@@ -4616,19 +4615,19 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.1440.mid60.png",
-    "top": -1496,
+    "top": -504,
     "state": "position",
-    "scrollY": 3113,
-    "targetY": 3113,
+    "scrollY": 2121,
+    "targetY": 2121,
     "clip": {
      "ok": true,
      "x": 0,
      "y": 0,
      "w": 360,
-     "h": 225,
-     "touchesBottom": true,
+     "h": 84,
+     "touchesBottom": false,
      "captureW": 1440,
-     "captureH": 900,
+     "captureH": 336,
      "storageScale": 4
     }
    },
@@ -4655,24 +4654,24 @@
    "masks": {
     "count": 8,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
-    "maskedShare": 0
+    "maskedShare": 0.5
    },
    "status": "scored",
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 356,
-    "h": 14,
+    "h": 74,
     "storedScale": {
      "reference": 4,
      "local": 4
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 74.8,
-   "ssim_unmasked": 0.7,
-   "E_unmasked": 74.8,
-   "structuralDiffPct": 0
+   "E": 83.2,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 57.5,
+   "structuralDiffPct": 1.7
   },
   {
    "key": "home-problem-wrap",
@@ -4681,7 +4680,7 @@
    "target": "home-problem-wrap@1440:exit",
    "status": "coincident",
    "coincident": true,
-   "reason": "local: duplicate state — delta 1594 px sits within 100 px of an already-recorded state for this 2494 px section"
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 840 px section"
   },
   {
    "key": "home-usecase-wrap",
@@ -4699,7 +4698,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 15831,
+    "scrollY": 14141,
     "clip": {
      "ok": true,
      "x": 0,
@@ -4714,11 +4713,11 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1440.entry.png",
-    "top": 0,
+    "top": -1,
     "state": "entry",
     "declaredTop": 0,
-    "offset": 11855,
-    "targetOffset": 11855,
+    "offset": 11856,
+    "targetOffset": 11856,
     "clip": {
      "ok": true,
      "x": 7,
@@ -4727,7 +4726,7 @@
      "h": 221,
      "touchesBottom": false,
      "captureW": 1427,
-     "captureH": 887,
+     "captureH": 886,
      "storageScale": 4
     }
    },
@@ -4751,10 +4750,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 51.2,
+   "E": 51,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 47.2,
-   "structuralDiffPct": 25.4
+   "E_unmasked": 47,
+   "structuralDiffPct": 25.6
   },
   {
    "key": "home-usecase-wrap",
@@ -4771,8 +4770,8 @@
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid30.png",
     "top": -266,
     "state": "position",
-    "scrollY": 16097,
-    "targetY": 16097,
+    "scrollY": 14407,
+    "targetY": 14407,
     "clip": {
      "ok": true,
      "x": 0,
@@ -4787,10 +4786,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1440.mid30.png",
-    "top": -264,
+    "top": -265,
     "state": "position",
-    "offset": 12119,
-    "targetOffset": 12121,
+    "offset": 12120,
+    "targetOffset": 12122,
     "clip": {
      "ok": true,
      "x": 7,
@@ -4799,7 +4798,7 @@
      "h": 155,
      "touchesBottom": false,
      "captureW": 1427,
-     "captureH": 623,
+     "captureH": 622,
      "storageScale": 4
     }
    },
@@ -4822,10 +4821,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 42.5,
+   "E": 42.9,
    "ssim_unmasked": 0.4,
    "E_unmasked": 43.4,
-   "structuralDiffPct": 25.5
+   "structuralDiffPct": 25.6
   },
   {
    "key": "home-usecase-wrap",
@@ -4842,8 +4841,8 @@
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1440.mid60.png",
     "top": -532,
     "state": "position",
-    "scrollY": 16363,
-    "targetY": 16363,
+    "scrollY": 14673,
+    "targetY": 14673,
     "clip": {
      "ok": true,
      "x": 0,
@@ -4858,10 +4857,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1440.mid60.png",
-    "top": -530,
+    "top": -531,
     "state": "position",
-    "offset": 12385,
-    "targetOffset": 12387,
+    "offset": 12386,
+    "targetOffset": 12388,
     "clip": {
      "ok": true,
      "x": 7,
@@ -4870,7 +4869,7 @@
      "h": 89,
      "touchesBottom": false,
      "captureW": 1427,
-     "captureH": 357,
+     "captureH": 356,
      "storageScale": 4
     }
    },
@@ -4893,10 +4892,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 39.9,
+   "E": 39.3,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 41.2,
-   "structuralDiffPct": 18.6
+   "E_unmasked": 40.8,
+   "structuralDiffPct": 18.4
   },
   {
    "key": "home-usecase-wrap",
@@ -4923,7 +4922,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 12673,
+    "scrollY": 10983,
     "clip": {
      "ok": true,
      "x": 7,
@@ -4975,10 +4974,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 74,
+   "E": 73.8,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 73,
-   "structuralDiffPct": 8.1
+   "E_unmasked": 72.7,
+   "structuralDiffPct": 8.2
   },
   {
    "key": "home-why-wrap",
@@ -4995,8 +4994,8 @@
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1440.mid30.png",
     "top": -746,
     "state": "position",
-    "scrollY": 13419,
-    "targetY": 13419,
+    "scrollY": 11729,
+    "targetY": 11729,
     "clip": {
      "ok": true,
      "x": 7,
@@ -5011,10 +5010,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-why-wrap.1440.mid30.png",
-    "top": -341,
+    "top": -747,
     "state": "position",
-    "offset": 9709,
-    "targetOffset": 9711,
+    "offset": 10115,
+    "targetOffset": 10113,
     "clip": {
      "ok": true,
      "x": 7,
@@ -5046,10 +5045,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 74.3,
+   "E": 71.4,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 74,
-   "structuralDiffPct": 7.8
+   "E_unmasked": 71.7,
+   "structuralDiffPct": 9
   },
   {
    "key": "home-why-wrap",
@@ -5066,8 +5065,8 @@
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1440.mid60.png",
     "top": -1493,
     "state": "position",
-    "scrollY": 14166,
-    "targetY": 14166,
+    "scrollY": 12476,
+    "targetY": 12476,
     "clip": {
      "ok": true,
      "x": 7,
@@ -5082,10 +5081,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-why-wrap.1440.mid60.png",
-    "top": -684,
+    "top": -1492,
     "state": "position",
-    "offset": 10052,
-    "targetOffset": 10054,
+    "offset": 10860,
+    "targetOffset": 10859,
     "clip": {
      "ok": true,
      "x": 7,
@@ -5117,10 +5116,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 63.9,
-   "ssim_unmasked": 0.6,
-   "E_unmasked": 64,
-   "structuralDiffPct": 8.8
+   "E": 70.4,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 70.8,
+   "structuralDiffPct": 6.8
   },
   {
    "key": "home-why-wrap",
@@ -5247,7 +5246,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 13734,
+    "scrollY": 13482,
     "clip": {
      "ok": true,
      "x": 8,
@@ -5299,10 +5298,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 57.7,
+   "E": 57.9,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 57.7,
-   "structuralDiffPct": 5.4
+   "E_unmasked": 57.6,
+   "structuralDiffPct": 5.1
   },
   {
    "key": "footer",
@@ -5319,8 +5318,8 @@
     "path": "docs/audit/evidence/primary/local/footer.390.mid30.png",
     "top": -372,
     "state": "position",
-    "scrollY": 14106,
-    "targetY": 14106,
+    "scrollY": 13854,
+    "targetY": 13854,
     "clip": {
      "ok": true,
      "x": 8,
@@ -5372,8 +5371,8 @@
    },
    "E": 49.3,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 49,
-   "structuralDiffPct": 11
+   "E_unmasked": 48.9,
+   "structuralDiffPct": 10.4
   },
   {
    "key": "footer",
@@ -5381,11 +5380,11 @@
    "state": "mid60",
    "target": "footer@390:mid60",
    "status": "missing",
-   "reason": "local: state mid60 needs scroll 14477 > live document end 14250 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)",
+   "reason": "local: state mid60 needs scroll 14225 > live document end 13998 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)",
    "verdict": {
     "valid": false,
     "status": "invalid-local",
-    "reason": "local: state mid60 needs scroll 14477 > live document end 14250 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)"
+    "reason": "local: state mid60 needs scroll 14225 > live document end 13998 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 11404 > stage end 11075 — inaccessible on the reference (recorded, not scored)"
    }
   },
   {
@@ -5413,7 +5412,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 12824,
+    "scrollY": 12572,
     "clip": {
      "ok": true,
      "x": 0,
@@ -5485,8 +5484,8 @@
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.390.mid30.png",
     "top": -273,
     "state": "position",
-    "scrollY": 13097,
-    "targetY": 13097,
+    "scrollY": 12845,
+    "targetY": 12845,
     "clip": {
      "ok": true,
      "x": 0,
@@ -5536,10 +5535,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 58.3,
+   "E": 58.8,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 56.1,
-   "structuralDiffPct": 16.9
+   "E_unmasked": 56.5,
+   "structuralDiffPct": 16.5
   },
   {
    "key": "home-cta-wrap",
@@ -5556,8 +5555,8 @@
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.390.mid60.png",
     "top": -545,
     "state": "position",
-    "scrollY": 13369,
-    "targetY": 13369,
+    "scrollY": 13117,
+    "targetY": 13117,
     "clip": {
      "ok": true,
      "x": 0,
@@ -5607,10 +5606,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 46,
+   "E": 47.5,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 46,
-   "structuralDiffPct": 27.5
+   "E_unmasked": 47.5,
+   "structuralDiffPct": 26.8
   },
   {
    "key": "home-cta-wrap",
@@ -5689,10 +5688,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 55.3,
+   "E": 52.8,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 46.8,
-   "structuralDiffPct": 22
+   "E_unmasked": 45.1,
+   "structuralDiffPct": 21.9
   },
   {
    "key": "home-hero-wrap",
@@ -5725,19 +5724,19 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-hero-wrap.390.mid30.png",
-    "top": -246,
+    "top": -247,
     "state": "position",
-    "offset": 254,
+    "offset": 255,
     "targetOffset": 256,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 582,
+     "h": 581,
      "touchesBottom": false,
      "captureW": 374,
-     "captureH": 582,
+     "captureH": 581,
      "storageScale": 1
     }
    },
@@ -5746,7 +5745,7 @@
    "masks": {
     "count": 8,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
-    "maskedShare": 0.5
+    "maskedShare": 0.4
    },
    "status": "scored",
    "crop": {
@@ -5760,10 +5759,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 53.8,
+   "E": 52.8,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 41.6,
-   "structuralDiffPct": 24
+   "E_unmasked": 41.9,
+   "structuralDiffPct": 24.7
   },
   {
    "key": "home-hero-wrap",
@@ -5796,7 +5795,7 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-hero-wrap.390.mid60.png",
-    "top": -495,
+    "top": -496,
     "state": "position",
     "offset": 503,
     "targetOffset": 505,
@@ -5817,10 +5816,10 @@
    "masks": {
     "count": 8,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
-    "maskedShare": 0.7
+    "maskedShare": 0.8
    },
    "status": "invalid-mask-share",
-   "reason": "mask share 74.9 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored",
+   "reason": "mask share 75 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored",
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
@@ -5834,8 +5833,8 @@
    },
    "E": null,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 41,
-   "structuralDiffPct": 2.8
+   "E_unmasked": 36.5,
+   "structuralDiffPct": 3
   },
   {
    "key": "home-hero-wrap",
@@ -5914,10 +5913,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 54.5,
+   "E": 55.5,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 46.4,
-   "structuralDiffPct": 12.4
+   "E_unmasked": 47.2,
+   "structuralDiffPct": 12.1
   },
   {
    "key": "home-intro-wrap",
@@ -5932,19 +5931,19 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-intro-wrap.390.mid30.png",
-    "top": -280,
+    "top": -256,
     "state": "position",
-    "scrollY": 1117,
-    "targetY": 1117,
+    "scrollY": 1093,
+    "targetY": 1093,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 654,
+     "h": 678,
      "touchesBottom": false,
      "captureW": 374,
-     "captureH": 654,
+     "captureH": 678,
      "storageScale": 1
     }
    },
@@ -5985,10 +5984,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 24.6,
-   "ssim_unmasked": 0.2,
-   "E_unmasked": 24.1,
-   "structuralDiffPct": 28.3
+   "E": 28.8,
+   "ssim_unmasked": 0.3,
+   "E_unmasked": 28.8,
+   "structuralDiffPct": 24.2
   },
   {
    "key": "home-intro-wrap",
@@ -6003,19 +6002,19 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-intro-wrap.390.mid60.png",
-    "top": -560,
+    "top": -511,
     "state": "position",
-    "scrollY": 1397,
-    "targetY": 1397,
+    "scrollY": 1348,
+    "targetY": 1348,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 374,
+     "h": 423,
      "touchesBottom": false,
      "captureW": 374,
-     "captureH": 374,
+     "captureH": 423,
      "storageScale": 1
     }
    },
@@ -6056,10 +6055,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 36.7,
-   "ssim_unmasked": 0.3,
-   "E_unmasked": 33.8,
-   "structuralDiffPct": 22.6
+   "E": 39.1,
+   "ssim_unmasked": 0.4,
+   "E_unmasked": 37.6,
+   "structuralDiffPct": 15.8
   },
   {
    "key": "home-intro-wrap",
@@ -6068,7 +6067,7 @@
    "target": "home-intro-wrap@390:exit",
    "status": "coincident",
    "coincident": true,
-   "reason": "local: duplicate state — delta 90 px sits within 100 px of an already-recorded state for this 934 px section"
+   "reason": "local: duplicate state — delta 8 px sits within 100 px of an already-recorded state for this 852 px section"
   },
   {
    "key": "home-map-wrap",
@@ -6138,9 +6137,9 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 68.5,
+   "E": 68.3,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 65.2,
+   "E_unmasked": 65,
    "structuralDiffPct": 6.3
   },
   {
@@ -6209,10 +6208,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 51.4,
+   "E": 50.8,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 47.3,
-   "structuralDiffPct": 10.5
+   "E_unmasked": 47.2,
+   "structuralDiffPct": 10.7
   },
   {
    "key": "home-map-wrap",
@@ -6280,10 +6279,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 48.4,
+   "E": 48,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 43.5,
-   "structuralDiffPct": 11.1
+   "E_unmasked": 43.3,
+   "structuralDiffPct": 11.3
   },
   {
    "key": "home-map-wrap",
@@ -6340,7 +6339,7 @@
     "maskedShare": 0.6
    },
    "status": "invalid-mask-share",
-   "reason": "mask share 63.7 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored",
+   "reason": "mask share 61.8 % exceeds the 55.00000000000001 % cap — the preregistered masks would eat the frame; the pair is recorded, not scored",
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
@@ -6354,8 +6353,8 @@
    },
    "E": null,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 39.1,
-   "structuralDiffPct": 6.6
+   "E_unmasked": 39,
+   "structuralDiffPct": 6.7
   },
   {
    "key": "home-platform-wrap",
@@ -6373,7 +6372,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 7649,
+    "scrollY": 7628,
     "clip": {
      "ok": true,
      "x": 8,
@@ -6428,7 +6427,7 @@
    "E": 37.6,
    "ssim_unmasked": 0.4,
    "E_unmasked": 38.4,
-   "structuralDiffPct": 16.5
+   "structuralDiffPct": 16.4
   },
   {
    "key": "home-platform-wrap",
@@ -6445,17 +6444,17 @@
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.mid30.png",
     "top": -299,
     "state": "position",
-    "scrollY": 7948,
-    "targetY": 7948,
+    "scrollY": 7927,
+    "targetY": 7927,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 663,
+     "h": 641,
      "touchesBottom": false,
      "captureW": 374,
-     "captureH": 663,
+     "captureH": 641,
      "storageScale": 1
     }
    },
@@ -6488,7 +6487,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 663,
+    "h": 641,
     "storedScale": {
      "reference": 1,
      "local": 1
@@ -6496,10 +6495,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 39.4,
+   "E": 36.4,
    "ssim_unmasked": 0.3,
-   "E_unmasked": 34.4,
-   "structuralDiffPct": 11
+   "E_unmasked": 34.1,
+   "structuralDiffPct": 11.8
   },
   {
    "key": "home-platform-wrap",
@@ -6516,17 +6515,17 @@
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.mid60.png",
     "top": -597,
     "state": "position",
-    "scrollY": 8246,
-    "targetY": 8246,
+    "scrollY": 8225,
+    "targetY": 8225,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 365,
+     "h": 343,
      "touchesBottom": false,
      "captureW": 374,
-     "captureH": 365,
+     "captureH": 343,
      "storageScale": 1
     }
    },
@@ -6559,7 +6558,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 365,
+    "h": 343,
     "storedScale": {
      "reference": 1,
      "local": 1
@@ -6567,10 +6566,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 36.2,
+   "E": 33.2,
    "ssim_unmasked": 0.3,
-   "E_unmasked": 32.4,
-   "structuralDiffPct": 9.9
+   "E_unmasked": 31.9,
+   "structuralDiffPct": 10.4
   },
   {
    "key": "home-platform-wrap",
@@ -6587,17 +6586,17 @@
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.390.exit.png",
     "top": -151,
     "state": "position",
-    "scrollY": 7800,
-    "targetY": 7800,
+    "scrollY": 7779,
+    "targetY": 7779,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 811,
+     "h": 789,
      "touchesBottom": false,
      "captureW": 374,
-     "captureH": 811,
+     "captureH": 789,
      "storageScale": 1
     }
    },
@@ -6630,7 +6629,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 751,
+    "h": 729,
     "storedScale": {
      "reference": 1,
      "local": 1
@@ -6638,10 +6637,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 36,
+   "E": 32.1,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 35.7,
-   "structuralDiffPct": 12.7
+   "E_unmasked": 37,
+   "structuralDiffPct": 13.2
   },
   {
    "key": "home-problem-wrap",
@@ -6711,7 +6710,7 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 69.5,
+   "E": 69.4,
    "ssim_unmasked": 0.6,
    "E_unmasked": 58.4,
    "structuralDiffPct": 4.3
@@ -6747,19 +6746,19 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-problem-wrap.390.mid30.png",
-    "top": -257,
+    "top": -258,
     "state": "position",
-    "offset": 1940,
+    "offset": 1941,
     "targetOffset": 1942,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 613,
+     "h": 612,
      "touchesBottom": false,
      "captureW": 374,
-     "captureH": 613,
+     "captureH": 612,
      "storageScale": 1
     }
    },
@@ -6774,7 +6773,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 613,
+    "h": 612,
     "storedScale": {
      "reference": 1,
      "local": 1
@@ -6782,9 +6781,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 74,
+   "E": 73.9,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 64.6,
+   "E_unmasked": 64.5,
    "structuralDiffPct": 3.8
   },
   {
@@ -6853,10 +6852,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 65.9,
+   "E": 66.1,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 58,
-   "structuralDiffPct": 5
+   "E_unmasked": 58.2,
+   "structuralDiffPct": 4.9
   },
   {
    "key": "home-problem-wrap",
@@ -6883,7 +6882,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 11795,
+    "scrollY": 11544,
     "clip": {
      "ok": true,
      "x": 7,
@@ -6935,10 +6934,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 44,
+   "E": 43.9,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 42.8,
-   "structuralDiffPct": 16.7
+   "E_unmasked": 43.9,
+   "structuralDiffPct": 16.6
   },
   {
    "key": "home-usecase-wrap",
@@ -6955,17 +6954,17 @@
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.mid30.png",
     "top": -309,
     "state": "position",
-    "scrollY": 12104,
-    "targetY": 12104,
+    "scrollY": 11853,
+    "targetY": 11853,
     "clip": {
      "ok": true,
      "x": 7,
      "y": 0,
      "w": 376,
-     "h": 720,
+     "h": 719,
      "touchesBottom": false,
      "captureW": 376,
-     "captureH": 720,
+     "captureH": 719,
      "storageScale": 1
     }
    },
@@ -7006,10 +7005,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 57.4,
+   "E": 57.3,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 53.5,
-   "structuralDiffPct": 12.6
+   "E_unmasked": 54,
+   "structuralDiffPct": 12.5
   },
   {
    "key": "home-usecase-wrap",
@@ -7026,17 +7025,17 @@
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.mid60.png",
     "top": -617,
     "state": "position",
-    "scrollY": 12412,
-    "targetY": 12412,
+    "scrollY": 12161,
+    "targetY": 12161,
     "clip": {
      "ok": true,
      "x": 7,
      "y": 0,
      "w": 376,
-     "h": 412,
+     "h": 411,
      "touchesBottom": false,
      "captureW": 376,
-     "captureH": 412,
+     "captureH": 411,
      "storageScale": 1
     }
    },
@@ -7077,7 +7076,7 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 72.8,
+   "E": 72.7,
    "ssim_unmasked": 0.6,
    "E_unmasked": 62.3,
    "structuralDiffPct": 3.5
@@ -7097,17 +7096,17 @@
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.390.exit.png",
     "top": -185,
     "state": "position",
-    "scrollY": 11980,
-    "targetY": 11980,
+    "scrollY": 11729,
+    "targetY": 11729,
     "clip": {
      "ok": true,
      "x": 7,
      "y": 0,
      "w": 376,
-     "h": 844,
+     "h": 843,
      "touchesBottom": true,
      "captureW": 376,
-     "captureH": 844,
+     "captureH": 843,
      "storageScale": 1
     }
    },
@@ -7140,7 +7139,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 374,
-    "h": 780,
+    "h": 779,
     "storedScale": {
      "reference": 1,
      "local": 1
@@ -7148,9 +7147,9 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 42.1,
+   "E": 41.8,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 46.3,
+   "E_unmasked": 46.1,
    "structuralDiffPct": 15.5
   },
   {
@@ -7169,7 +7168,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 10678,
+    "scrollY": 10426,
     "clip": {
      "ok": true,
      "x": 8,
@@ -7223,7 +7222,7 @@
    },
    "E": 57,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 51.3,
+   "E_unmasked": 51.5,
    "structuralDiffPct": 11.9
   },
   {
@@ -7241,8 +7240,8 @@
     "path": "docs/audit/evidence/primary/local/home-why-wrap.390.mid30.png",
     "top": -242,
     "state": "position",
-    "scrollY": 10920,
-    "targetY": 10920,
+    "scrollY": 10668,
+    "targetY": 10668,
     "clip": {
      "ok": true,
      "x": 8,
@@ -7312,17 +7311,17 @@
     "path": "docs/audit/evidence/primary/local/home-why-wrap.390.mid60.png",
     "top": -484,
     "state": "position",
-    "scrollY": 11162,
-    "targetY": 11162,
+    "scrollY": 10910,
+    "targetY": 10910,
     "clip": {
      "ok": true,
      "x": 8,
      "y": 0,
      "w": 374,
-     "h": 633,
+     "h": 634,
      "touchesBottom": false,
      "captureW": 374,
-     "captureH": 633,
+     "captureH": 634,
      "storageScale": 1
     }
    },
@@ -7493,7 +7492,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 15294,
+    "scrollY": 15160,
     "clip": {
      "ok": true,
      "x": 7,
@@ -7545,10 +7544,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 50.5,
+   "E": 50.9,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 48.8,
-   "structuralDiffPct": 9.6
+   "E_unmasked": 49.2,
+   "structuralDiffPct": 9.2
   },
   {
    "key": "footer",
@@ -7556,11 +7555,11 @@
    "state": "mid30",
    "target": "footer@768:mid30",
    "status": "missing",
-   "reason": "local: state mid30 needs scroll 15579 > live document end 15479 — inaccessible locally (recorded, not scored); reference: state mid30 needs stage offset 12196 > stage end 11983 — inaccessible on the reference (recorded, not scored)",
+   "reason": "local: state mid30 needs scroll 15445 > live document end 15345 — inaccessible locally (recorded, not scored); reference: state mid30 needs stage offset 12196 > stage end 11983 — inaccessible on the reference (recorded, not scored)",
    "verdict": {
     "valid": false,
     "status": "invalid-local",
-    "reason": "local: state mid30 needs scroll 15579 > live document end 15479 — inaccessible locally (recorded, not scored); reference: state mid30 needs stage offset 12196 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
+    "reason": "local: state mid30 needs scroll 15445 > live document end 15345 — inaccessible locally (recorded, not scored); reference: state mid30 needs stage offset 12196 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
    }
   },
   {
@@ -7569,11 +7568,11 @@
    "state": "mid60",
    "target": "footer@768:mid60",
    "status": "missing",
-   "reason": "local: state mid60 needs scroll 15863 > live document end 15479 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 12487 > stage end 11983 — inaccessible on the reference (recorded, not scored)",
+   "reason": "local: state mid60 needs scroll 15729 > live document end 15345 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 12487 > stage end 11983 — inaccessible on the reference (recorded, not scored)",
    "verdict": {
     "valid": false,
     "status": "invalid-local",
-    "reason": "local: state mid60 needs scroll 15863 > live document end 15479 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 12487 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
+    "reason": "local: state mid60 needs scroll 15729 > live document end 15345 — inaccessible locally (recorded, not scored); reference: state mid60 needs stage offset 12487 > stage end 11983 — inaccessible on the reference (recorded, not scored)"
    }
   },
   {
@@ -7601,7 +7600,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 14257,
+    "scrollY": 14122,
     "clip": {
      "ok": true,
      "x": 0,
@@ -7653,10 +7652,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 65.4,
+   "E": 65.3,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 65.4,
-   "structuralDiffPct": 8.4
+   "E_unmasked": 65.3,
+   "structuralDiffPct": 8.3
   },
   {
    "key": "home-cta-wrap",
@@ -7673,8 +7672,8 @@
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.768.mid30.png",
     "top": -311,
     "state": "position",
-    "scrollY": 14568,
-    "targetY": 14568,
+    "scrollY": 14433,
+    "targetY": 14433,
     "clip": {
      "ok": true,
      "x": 0,
@@ -7683,7 +7682,7 @@
      "h": 363,
      "touchesBottom": false,
      "captureW": 768,
-     "captureH": 726,
+     "captureH": 727,
      "storageScale": 2
     }
    },
@@ -7724,10 +7723,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 64.4,
+   "E": 65.2,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 61.9,
-   "structuralDiffPct": 10.3
+   "E_unmasked": 62.7,
+   "structuralDiffPct": 10.1
   },
   {
    "key": "home-cta-wrap",
@@ -7744,8 +7743,8 @@
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.768.mid60.png",
     "top": -623,
     "state": "position",
-    "scrollY": 14880,
-    "targetY": 14880,
+    "scrollY": 14745,
+    "targetY": 14745,
     "clip": {
      "ok": true,
      "x": 0,
@@ -7754,7 +7753,7 @@
      "h": 207,
      "touchesBottom": false,
      "captureW": 768,
-     "captureH": 414,
+     "captureH": 415,
      "storageScale": 2
     }
    },
@@ -7795,9 +7794,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 62.9,
+   "E": 62.8,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 62.9,
+   "E_unmasked": 62.8,
    "structuralDiffPct": 12.3
   },
   {
@@ -7877,10 +7876,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 48.2,
+   "E": 49.1,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 42.8,
-   "structuralDiffPct": 32
+   "E_unmasked": 44.2,
+   "structuralDiffPct": 31.7
   },
   {
    "key": "home-hero-wrap",
@@ -7948,10 +7947,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 36.5,
+   "E": 37.4,
    "ssim_unmasked": 0.3,
-   "E_unmasked": 31.2,
-   "structuralDiffPct": 40.6
+   "E_unmasked": 32.9,
+   "structuralDiffPct": 41
   },
   {
    "key": "home-hero-wrap",
@@ -8019,10 +8018,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 46.6,
+   "E": 46.4,
    "ssim_unmasked": 0.3,
-   "E_unmasked": 33.3,
-   "structuralDiffPct": 25
+   "E_unmasked": 33.6,
+   "structuralDiffPct": 24.7
   },
   {
    "key": "home-hero-wrap",
@@ -8101,9 +8100,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 47.5,
+   "E": 47.6,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 41.6,
+   "E_unmasked": 41.7,
    "structuralDiffPct": 26.3
   },
   {
@@ -8172,9 +8171,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 46.3,
+   "E": 46.1,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 43.5,
+   "E_unmasked": 43.3,
    "structuralDiffPct": 33.2
   },
   {
@@ -8325,7 +8324,7 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 56.2,
+   "E": 56.1,
    "ssim_unmasked": 0.6,
    "E_unmasked": 56.2,
    "structuralDiffPct": 12.3
@@ -8361,9 +8360,9 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-map-wrap.768.mid30.png",
-    "top": -1458,
+    "top": -1457,
     "state": "position",
-    "offset": 4210,
+    "offset": 4209,
     "targetOffset": 4208,
     "clip": {
      "ok": true,
@@ -8396,10 +8395,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 49.2,
+   "E": 49.6,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 48.3,
-   "structuralDiffPct": 12.6
+   "E_unmasked": 48.7,
+   "structuralDiffPct": 12.4
   },
   {
    "key": "home-map-wrap",
@@ -8432,7 +8431,7 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-map-wrap.768.mid60.png",
-    "top": -2914,
+    "top": -2915,
     "state": "position",
     "offset": 5666,
     "targetOffset": 5664,
@@ -8467,7 +8466,7 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 41.3,
+   "E": 41.2,
    "ssim_unmasked": 0.4,
    "E_unmasked": 39.4,
    "structuralDiffPct": 14.6
@@ -8494,18 +8493,18 @@
      "x": 0,
      "y": 0,
      "w": 384,
-     "h": 348,
+     "h": 339,
      "touchesBottom": false,
      "captureW": 768,
-     "captureH": 697,
+     "captureH": 678,
      "storageScale": 2
     }
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-map-wrap.768.exit.png",
-    "top": -3954,
+    "top": -3953,
     "state": "position",
-    "offset": 6706,
+    "offset": 6705,
     "targetOffset": 6705,
     "clip": {
      "ok": true,
@@ -8522,7 +8521,7 @@
    "localSelector": "section#chapters.chapters",
    "referenceSelector": "div.home-map-wrap",
    "masks": {
-    "count": 83,
+    "count": 64,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0.3
    },
@@ -8530,7 +8529,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 376,
-    "h": 281,
+    "h": 272,
     "storedScale": {
      "reference": 2,
      "local": 2
@@ -8538,10 +8537,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 58.4,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 53.3,
-   "structuralDiffPct": 6.8
+   "E": 57.6,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 56.3,
+   "structuralDiffPct": 6
   },
   {
    "key": "home-platform-wrap",
@@ -8559,7 +8558,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 7758,
+    "scrollY": 7739,
     "clip": {
      "ok": true,
      "x": 7,
@@ -8611,10 +8610,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 28.9,
-   "ssim_unmasked": 0.3,
-   "E_unmasked": 27.5,
-   "structuralDiffPct": 16.4
+   "E": 27.6,
+   "ssim_unmasked": 0.2,
+   "E_unmasked": 23.7,
+   "structuralDiffPct": 16.3
   },
   {
    "key": "home-platform-wrap",
@@ -8631,8 +8630,8 @@
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.768.mid30.png",
     "top": -154,
     "state": "position",
-    "scrollY": 7912,
-    "targetY": 7912,
+    "scrollY": 7893,
+    "targetY": 7893,
     "clip": {
      "ok": true,
      "x": 7,
@@ -8641,7 +8640,7 @@
      "h": 178,
      "touchesBottom": false,
      "captureW": 753,
-     "captureH": 357,
+     "captureH": 356,
      "storageScale": 2
     }
    },
@@ -8682,10 +8681,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 27.8,
+   "E": 28.5,
    "ssim_unmasked": 0.3,
-   "E_unmasked": 26.8,
-   "structuralDiffPct": 15.1
+   "E_unmasked": 27.8,
+   "structuralDiffPct": 14.9
   },
   {
    "key": "home-platform-wrap",
@@ -8702,8 +8701,8 @@
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.768.mid60.png",
     "top": -308,
     "state": "position",
-    "scrollY": 8066,
-    "targetY": 8066,
+    "scrollY": 8047,
+    "targetY": 8047,
     "clip": {
      "ok": true,
      "x": 7,
@@ -8712,7 +8711,7 @@
      "h": 101,
      "touchesBottom": false,
      "captureW": 753,
-     "captureH": 203,
+     "captureH": 202,
      "storageScale": 2
     }
    },
@@ -8753,10 +8752,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 25.1,
+   "E": 24.8,
    "ssim_unmasked": 0.3,
-   "E_unmasked": 26.1,
-   "structuralDiffPct": 16.2
+   "E_unmasked": 25.7,
+   "structuralDiffPct": 16.1
   },
   {
    "key": "home-platform-wrap",
@@ -8837,7 +8836,7 @@
    },
    "E": 62.6,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 59.2,
+   "E_unmasked": 59.3,
    "structuralDiffPct": 4.7
   },
   {
@@ -8906,10 +8905,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 58.8,
+   "E": 59.5,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 60.1,
-   "structuralDiffPct": 5.3
+   "E_unmasked": 60.6,
+   "structuralDiffPct": 5.2
   },
   {
    "key": "home-problem-wrap",
@@ -8977,10 +8976,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 66.1,
+   "E": 67.1,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 59.1,
-   "structuralDiffPct": 4.3
+   "E_unmasked": 60,
+   "structuralDiffPct": 4
   },
   {
    "key": "home-problem-wrap",
@@ -9007,7 +9006,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 12899,
+    "scrollY": 12765,
     "clip": {
      "ok": true,
      "x": 0,
@@ -9022,11 +9021,11 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.768.entry.png",
-    "top": -1,
+    "top": -2,
     "state": "entry",
     "declaredTop": 0,
-    "offset": 10000,
-    "targetOffset": 10000,
+    "offset": 10001,
+    "targetOffset": 10001,
     "clip": {
      "ok": true,
      "x": 7,
@@ -9079,8 +9078,8 @@
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.768.mid30.png",
     "top": -407,
     "state": "position",
-    "scrollY": 13306,
-    "targetY": 13306,
+    "scrollY": 13172,
+    "targetY": 13172,
     "clip": {
      "ok": true,
      "x": 0,
@@ -9095,10 +9094,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.768.mid30.png",
-    "top": -409,
+    "top": -410,
     "state": "position",
-    "offset": 10408,
-    "targetOffset": 10410,
+    "offset": 10409,
+    "targetOffset": 10411,
     "clip": {
      "ok": true,
      "x": 7,
@@ -9114,9 +9113,9 @@
    "localSelector": "section#roles.rl-section",
    "referenceSelector": "div.home-usecase-wrap",
    "masks": {
-    "count": 24,
+    "count": 11,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
-    "maskedShare": 0.2
+    "maskedShare": 0.3
    },
    "status": "scored",
    "crop": {
@@ -9130,10 +9129,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 45,
+   "E": 45.7,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 48,
-   "structuralDiffPct": 19.2
+   "E_unmasked": 48.9,
+   "structuralDiffPct": 17.5
   },
   {
    "key": "home-usecase-wrap",
@@ -9150,8 +9149,8 @@
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.768.mid60.png",
     "top": -815,
     "state": "position",
-    "scrollY": 13714,
-    "targetY": 13714,
+    "scrollY": 13580,
+    "targetY": 13580,
     "clip": {
      "ok": true,
      "x": 0,
@@ -9160,25 +9159,25 @@
      "h": 271,
      "touchesBottom": false,
      "captureW": 768,
-     "captureH": 543,
+     "captureH": 542,
      "storageScale": 2
     }
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.768.mid60.png",
-    "top": -819,
+    "top": -820,
     "state": "position",
-    "offset": 10818,
-    "targetOffset": 10820,
+    "offset": 10819,
+    "targetOffset": 10821,
     "clip": {
      "ok": true,
      "x": 7,
      "y": 0,
      "w": 376,
-     "h": 274,
+     "h": 273,
      "touchesBottom": false,
      "captureW": 753,
-     "captureH": 548,
+     "captureH": 547,
      "storageScale": 2
     }
    },
@@ -9187,7 +9186,7 @@
    "masks": {
     "count": 10,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
-    "maskedShare": 0.4
+    "maskedShare": 0.3
    },
    "status": "scored",
    "crop": {
@@ -9201,10 +9200,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 47.9,
+   "E": 48.6,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 53,
-   "structuralDiffPct": 3.8
+   "E_unmasked": 52.5,
+   "structuralDiffPct": 3.6
   },
   {
    "key": "home-usecase-wrap",
@@ -9231,7 +9230,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 10484,
+    "scrollY": 10350,
     "clip": {
      "ok": true,
      "x": 0,
@@ -9283,10 +9282,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 72.5,
+   "E": 72.3,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 67.7,
-   "structuralDiffPct": 7.6
+   "E_unmasked": 67.2,
+   "structuralDiffPct": 7.7
   },
   {
    "key": "home-why-wrap",
@@ -9303,8 +9302,8 @@
     "path": "docs/audit/evidence/primary/local/home-why-wrap.768.mid30.png",
     "top": -565,
     "state": "position",
-    "scrollY": 11049,
-    "targetY": 11049,
+    "scrollY": 10915,
+    "targetY": 10915,
     "clip": {
      "ok": true,
      "x": 0,
@@ -9319,10 +9318,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-why-wrap.768.mid30.png",
-    "top": -416,
+    "top": -564,
     "state": "position",
-    "offset": 8534,
-    "targetOffset": 8534,
+    "offset": 8682,
+    "targetOffset": 8682,
     "clip": {
      "ok": true,
      "x": 7,
@@ -9338,7 +9337,7 @@
    "localSelector": "section.wy-section",
    "referenceSelector": "div.home-why-wrap",
    "masks": {
-    "count": 6,
+    "count": 4,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0.1
    },
@@ -9354,10 +9353,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 60.1,
+   "E": 58.5,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 60.4,
-   "structuralDiffPct": 12.4
+   "E_unmasked": 59.5,
+   "structuralDiffPct": 14.4
   },
   {
    "key": "home-why-wrap",
@@ -9374,8 +9373,8 @@
     "path": "docs/audit/evidence/primary/local/home-why-wrap.768.mid60.png",
     "top": -1130,
     "state": "position",
-    "scrollY": 11614,
-    "targetY": 11614,
+    "scrollY": 11480,
+    "targetY": 11480,
     "clip": {
      "ok": true,
      "x": 0,
@@ -9390,26 +9389,97 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-why-wrap.768.mid60.png",
-    "top": -832,
+    "top": -1128,
     "state": "position",
-    "offset": 8950,
-    "targetOffset": 8950,
+    "offset": 9246,
+    "targetOffset": 9246,
     "clip": {
      "ok": true,
      "x": 7,
      "y": 0,
      "w": 376,
-     "h": 450,
-     "touchesBottom": true,
+     "h": 376,
+     "touchesBottom": false,
      "captureW": 753,
-     "captureH": 900,
+     "captureH": 753,
      "storageScale": 2
     }
    },
    "localSelector": "section.wy-section",
    "referenceSelector": "div.home-why-wrap",
    "masks": {
-    "count": 6,
+    "count": 4,
+    "source": "live reference text rects recorded at capture (before scoring), same tc policy",
+    "maskedShare": 0.1
+   },
+   "status": "scored",
+   "crop": {
+    "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
+    "w": 376,
+    "h": 316,
+    "storedScale": {
+     "reference": 2,
+     "local": 2
+    },
+    "chromeCropBottomPx": 60,
+    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+   },
+   "E": 56.8,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 56.8,
+   "structuralDiffPct": 13.8
+  },
+  {
+   "key": "home-why-wrap",
+   "bp": "768",
+   "state": "exit",
+   "target": "home-why-wrap@768:exit",
+   "declared": "position",
+   "verdict": {
+    "valid": true,
+    "status": "scored",
+    "state": "exit (position-matched)"
+   },
+   "local": {
+    "path": "docs/audit/evidence/primary/local/home-why-wrap.768.exit.png",
+    "top": -983,
+    "state": "position",
+    "scrollY": 11333,
+    "targetY": 11333,
+    "clip": {
+     "ok": true,
+     "x": 0,
+     "y": 0,
+     "w": 384,
+     "h": 450,
+     "touchesBottom": true,
+     "captureW": 768,
+     "captureH": 900,
+     "storageScale": 2
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-why-wrap.768.exit.png",
+    "top": -982,
+    "state": "position",
+    "offset": 9100,
+    "targetOffset": 9099,
+    "clip": {
+     "ok": true,
+     "x": 7,
+     "y": 0,
+     "w": 376,
+     "h": 449,
+     "touchesBottom": true,
+     "captureW": 753,
+     "captureH": 899,
+     "storageScale": 2
+    }
+   },
+   "localSelector": "section.wy-section",
+   "referenceSelector": "div.home-why-wrap",
+   "masks": {
+    "count": 4,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0.1
    },
@@ -9425,19 +9495,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 60.2,
+   "E": 60.5,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 61.2,
-   "structuralDiffPct": 10.8
-  },
-  {
-   "key": "home-why-wrap",
-   "bp": "768",
-   "state": "exit",
-   "target": "home-why-wrap@768:exit",
-   "status": "coincident",
-   "coincident": true,
-   "reason": "reference: duplicate state — delta 489 px sits within 100 px of an already-recorded state for this 1389 px section"
+   "E_unmasked": 60.4,
+   "structuralDiffPct": 12.5
   },
   {
    "key": "chrome",
@@ -9555,8 +9616,8 @@
     "path": "docs/audit/evidence/primary/local/footer.1024.end.png",
     "top": 136,
     "state": "end-clamped",
-    "scrollY": 16001,
-    "targetY": 16001,
+    "scrollY": 14739,
+    "targetY": 14739,
     "clip": {
      "ok": true,
      "x": 5,
@@ -9607,10 +9668,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 26.7,
+   "E": 26.8,
    "ssim_unmasked": 0.3,
-   "E_unmasked": 28.8,
-   "structuralDiffPct": 10.4
+   "E_unmasked": 28.9,
+   "structuralDiffPct": 10.2
   },
   {
    "key": "footer",
@@ -9655,7 +9716,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 15161,
+    "scrollY": 13899,
     "clip": {
      "ok": true,
      "x": 0,
@@ -9863,7 +9924,7 @@
      "h": 156,
      "touchesBottom": false,
      "captureW": 1015,
-     "captureH": 624,
+     "captureH": 625,
      "storageScale": 4
     }
    },
@@ -9886,10 +9947,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 26.1,
+   "E": 26.3,
    "ssim_unmasked": 0.2,
-   "E_unmasked": 24.2,
-   "structuralDiffPct": 56.7
+   "E_unmasked": 24.3,
+   "structuralDiffPct": 56.6
   },
   {
    "key": "home-hero-wrap",
@@ -9957,10 +10018,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 53.6,
+   "E": 53.4,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 43,
-   "structuralDiffPct": 54.1
+   "E_unmasked": 42.8,
+   "structuralDiffPct": 54.3
   },
   {
    "key": "home-hero-wrap",
@@ -10039,10 +10100,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 67,
+   "E": 67.4,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 58.4,
-   "structuralDiffPct": 16.4
+   "E_unmasked": 58.8,
+   "structuralDiffPct": 16.3
   },
   {
    "key": "home-intro-wrap",
@@ -10110,10 +10171,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 46.1,
+   "E": 46.4,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 45.9,
-   "structuralDiffPct": 25.7
+   "E_unmasked": 46.2,
+   "structuralDiffPct": 25.6
   },
   {
    "key": "home-intro-wrap",
@@ -10211,7 +10272,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 3185,
+    "scrollY": 2010,
     "clip": {
      "ok": true,
      "x": 0,
@@ -10263,9 +10324,9 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 59.7,
+   "E": 60.5,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 61,
+   "E_unmasked": 61.7,
    "structuralDiffPct": 8.6
   },
   {
@@ -10283,8 +10344,8 @@
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1024.mid30.png",
     "top": -1890,
     "state": "position",
-    "scrollY": 5075,
-    "targetY": 5075,
+    "scrollY": 3900,
+    "targetY": 3900,
     "clip": {
      "ok": true,
      "x": 0,
@@ -10334,9 +10395,9 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 60.8,
+   "E": 61.5,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 60.2,
+   "E_unmasked": 61,
    "structuralDiffPct": 7.8
   },
   {
@@ -10354,8 +10415,8 @@
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1024.mid60.png",
     "top": -3780,
     "state": "position",
-    "scrollY": 6965,
-    "targetY": 6965,
+    "scrollY": 5790,
+    "targetY": 5790,
     "clip": {
      "ok": true,
      "x": 0,
@@ -10370,9 +10431,9 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-map-wrap.1024.mid60.png",
-    "top": -3780,
+    "top": -3781,
     "state": "position",
-    "offset": 5717,
+    "offset": 5718,
     "targetOffset": 5716,
     "clip": {
      "ok": true,
@@ -10405,10 +10466,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 46.5,
+   "E": 46.8,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 46.4,
-   "structuralDiffPct": 11.6
+   "E_unmasked": 46.7,
+   "structuralDiffPct": 11.7
   },
   {
    "key": "home-map-wrap",
@@ -10425,8 +10486,8 @@
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1024.exit.png",
     "top": -5400,
     "state": "position",
-    "scrollY": 8585,
-    "targetY": 8585,
+    "scrollY": 7410,
+    "targetY": 7410,
     "clip": {
      "ok": true,
      "x": 0,
@@ -10441,9 +10502,9 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-map-wrap.1024.exit.png",
-    "top": -5400,
+    "top": -5399,
     "state": "position",
-    "offset": 7337,
+    "offset": 7336,
     "targetOffset": 7336,
     "clip": {
      "ok": true,
@@ -10460,7 +10521,7 @@
    "localSelector": "section#chapters.chapters",
    "referenceSelector": "div.home-map-wrap",
    "masks": {
-    "count": 80,
+    "count": 57,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
     "maskedShare": 0.1
    },
@@ -10476,10 +10537,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 50.6,
+   "E": 50.5,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 50.3,
-   "structuralDiffPct": 11.4
+   "E_unmasked": 50,
+   "structuralDiffPct": 11.2
   },
   {
    "key": "home-platform-wrap",
@@ -10497,7 +10558,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 9485,
+    "scrollY": 8310,
     "clip": {
      "ok": true,
      "x": 5,
@@ -10506,7 +10567,7 @@
      "h": 126,
      "touchesBottom": false,
      "captureW": 1014,
-     "captureH": 507,
+     "captureH": 506,
      "storageScale": 4
     }
    },
@@ -10549,9 +10610,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 46.1,
+   "E": 46.3,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 43.4,
+   "E_unmasked": 43.7,
    "structuralDiffPct": 13.9
   },
   {
@@ -10569,8 +10630,8 @@
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.1024.mid30.png",
     "top": -152,
     "state": "position",
-    "scrollY": 9637,
-    "targetY": 9637,
+    "scrollY": 8462,
+    "targetY": 8462,
     "clip": {
      "ok": true,
      "x": 5,
@@ -10579,7 +10640,7 @@
      "h": 88,
      "touchesBottom": false,
      "captureW": 1014,
-     "captureH": 355,
+     "captureH": 354,
      "storageScale": 4
     }
    },
@@ -10640,8 +10701,8 @@
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.1024.mid60.png",
     "top": -304,
     "state": "position",
-    "scrollY": 9789,
-    "targetY": 9789,
+    "scrollY": 8614,
+    "targetY": 8614,
     "clip": {
      "ok": true,
      "x": 5,
@@ -10650,7 +10711,7 @@
      "h": 50,
      "touchesBottom": false,
      "captureW": 1014,
-     "captureH": 203,
+     "captureH": 202,
      "storageScale": 4
     }
    },
@@ -10727,10 +10788,10 @@
      "x": 0,
      "y": 0,
      "w": 256,
-     "h": 225,
-     "touchesBottom": true,
+     "h": 149,
+     "touchesBottom": false,
      "captureW": 1024,
-     "captureH": 900,
+     "captureH": 598,
      "storageScale": 4
     }
    },
@@ -10765,18 +10826,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 253,
-    "h": 72,
+    "h": 132,
     "storedScale": {
      "reference": 4,
      "local": 4
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 67,
-   "ssim_unmasked": 0.7,
-   "E_unmasked": 66.7,
-   "structuralDiffPct": 4.3
+   "E": 75.1,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 59.8,
+   "structuralDiffPct": 0.8
   },
   {
    "key": "home-problem-wrap",
@@ -10791,19 +10852,19 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.1024.mid30.png",
-    "top": -532,
+    "top": -179,
     "state": "position",
-    "scrollY": 1944,
-    "targetY": 1944,
+    "scrollY": 1591,
+    "targetY": 1591,
     "clip": {
      "ok": true,
      "x": 0,
      "y": 0,
      "w": 256,
-     "h": 225,
-     "touchesBottom": true,
+     "h": 104,
+     "touchesBottom": false,
      "captureW": 1024,
-     "captureH": 900,
+     "captureH": 419,
      "storageScale": 4
     }
    },
@@ -10830,24 +10891,24 @@
    "masks": {
     "count": 16,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
-    "maskedShare": 0
+    "maskedShare": 0.2
    },
    "status": "scored",
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 253,
-    "h": 33,
+    "h": 93,
     "storedScale": {
      "reference": 4,
      "local": 4
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 74.8,
-   "ssim_unmasked": 0.7,
-   "E_unmasked": 74.8,
-   "structuralDiffPct": 1.2
+   "E": 74.3,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 64.1,
+   "structuralDiffPct": 1.1
   },
   {
    "key": "home-problem-wrap",
@@ -10862,19 +10923,19 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.1024.mid60.png",
-    "top": -1064,
+    "top": -359,
     "state": "position",
-    "scrollY": 2476,
-    "targetY": 2476,
+    "scrollY": 1771,
+    "targetY": 1771,
     "clip": {
      "ok": true,
      "x": 0,
      "y": 0,
      "w": 256,
-     "h": 177,
+     "h": 59,
      "touchesBottom": false,
      "captureW": 1024,
-     "captureH": 709,
+     "captureH": 239,
      "storageScale": 4
     }
    },
@@ -10915,10 +10976,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 71.1,
-   "ssim_unmasked": 0.5,
-   "E_unmasked": 53.7,
-   "structuralDiffPct": 0.1
+   "E": 74.7,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 55.2,
+   "structuralDiffPct": 0.3
   },
   {
    "key": "home-problem-wrap",
@@ -10927,7 +10988,7 @@
    "target": "home-problem-wrap@1024:exit",
    "status": "coincident",
    "coincident": true,
-   "reason": "reference: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 528 px section"
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 598 px section"
   },
   {
    "key": "home-usecase-wrap",
@@ -10945,7 +11006,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 14275,
+    "scrollY": 13012,
     "clip": {
      "ok": true,
      "x": 0,
@@ -10960,11 +11021,11 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1024.entry.png",
-    "top": -2,
+    "top": -1,
     "state": "entry",
     "declaredTop": 0,
-    "offset": 10512,
-    "targetOffset": 10512,
+    "offset": 10511,
+    "targetOffset": 10511,
     "clip": {
      "ok": true,
      "x": 5,
@@ -10973,7 +11034,7 @@
      "h": 222,
      "touchesBottom": false,
      "captureW": 1015,
-     "captureH": 889,
+     "captureH": 890,
      "storageScale": 4
     }
    },
@@ -10997,10 +11058,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 53.8,
+   "E": 54,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 51.6,
-   "structuralDiffPct": 26.3
+   "E_unmasked": 52.3,
+   "structuralDiffPct": 26.1
   },
   {
    "key": "home-usecase-wrap",
@@ -11017,26 +11078,26 @@
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1024.mid30.png",
     "top": -227,
     "state": "position",
-    "scrollY": 14502,
-    "targetY": 14502,
+    "scrollY": 13239,
+    "targetY": 13239,
     "clip": {
      "ok": true,
      "x": 0,
      "y": 0,
      "w": 256,
-     "h": 164,
+     "h": 165,
      "touchesBottom": false,
      "captureW": 1024,
-     "captureH": 659,
+     "captureH": 660,
      "storageScale": 4
     }
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1024.mid30.png",
-    "top": -267,
+    "top": -266,
     "state": "position",
-    "offset": 10777,
-    "targetOffset": 10779,
+    "offset": 10776,
+    "targetOffset": 10778,
     "clip": {
      "ok": true,
      "x": 5,
@@ -11045,7 +11106,7 @@
      "h": 156,
      "touchesBottom": false,
      "captureW": 1015,
-     "captureH": 624,
+     "captureH": 625,
      "storageScale": 4
     }
    },
@@ -11068,10 +11129,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 40.6,
+   "E": 40.7,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 42.3,
-   "structuralDiffPct": 27.2
+   "E_unmasked": 42.4,
+   "structuralDiffPct": 27.4
   },
   {
    "key": "home-usecase-wrap",
@@ -11088,8 +11149,8 @@
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1024.mid60.png",
     "top": -454,
     "state": "position",
-    "scrollY": 14729,
-    "targetY": 14729,
+    "scrollY": 13466,
+    "targetY": 13466,
     "clip": {
      "ok": true,
      "x": 0,
@@ -11098,16 +11159,16 @@
      "h": 108,
      "touchesBottom": false,
      "captureW": 1024,
-     "captureH": 432,
+     "captureH": 433,
      "storageScale": 4
     }
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1024.mid60.png",
-    "top": -535,
+    "top": -534,
     "state": "position",
-    "offset": 11045,
-    "targetOffset": 11047,
+    "offset": 11044,
+    "targetOffset": 11046,
     "clip": {
      "ok": true,
      "x": 5,
@@ -11116,7 +11177,7 @@
      "h": 89,
      "touchesBottom": false,
      "captureW": 1015,
-     "captureH": 356,
+     "captureH": 357,
      "storageScale": 4
     }
    },
@@ -11139,10 +11200,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 33.6,
+   "E": 34.3,
    "ssim_unmasked": 0.4,
    "E_unmasked": 35.9,
-   "structuralDiffPct": 21
+   "structuralDiffPct": 21.1
   },
   {
    "key": "home-usecase-wrap",
@@ -11169,7 +11230,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 12015,
+    "scrollY": 10753,
     "clip": {
      "ok": true,
      "x": 5,
@@ -11221,10 +11282,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 75.8,
+   "E": 76.1,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 73.3,
-   "structuralDiffPct": 5.3
+   "E_unmasked": 73.7,
+   "structuralDiffPct": 5.2
   },
   {
    "key": "home-why-wrap",
@@ -11241,8 +11302,8 @@
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1024.mid30.png",
     "top": -533,
     "state": "position",
-    "scrollY": 12548,
-    "targetY": 12548,
+    "scrollY": 11286,
+    "targetY": 11286,
     "clip": {
      "ok": true,
      "x": 5,
@@ -11257,19 +11318,19 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-why-wrap.1024.mid30.png",
-    "top": -337,
+    "top": -529,
     "state": "position",
-    "offset": 9079,
-    "targetOffset": 9081,
+    "offset": 9271,
+    "targetOffset": 9271,
     "clip": {
      "ok": true,
      "x": 5,
      "y": 0,
      "w": 253,
-     "h": 198,
-     "touchesBottom": false,
+     "h": 225,
+     "touchesBottom": true,
      "captureW": 1015,
-     "captureH": 795,
+     "captureH": 900,
      "storageScale": 4
     }
    },
@@ -11284,7 +11345,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 253,
-    "h": 138,
+    "h": 165,
     "storedScale": {
      "reference": 4,
      "local": 4
@@ -11292,10 +11353,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 66,
+   "E": 72.5,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 66.4,
-   "structuralDiffPct": 8.9
+   "E_unmasked": 72.3,
+   "structuralDiffPct": 5.3
   },
   {
    "key": "home-why-wrap",
@@ -11312,8 +11373,8 @@
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1024.mid60.png",
     "top": -1067,
     "state": "position",
-    "scrollY": 13082,
-    "targetY": 13082,
+    "scrollY": 11820,
+    "targetY": 11820,
     "clip": {
      "ok": true,
      "x": 5,
@@ -11328,19 +11389,19 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-why-wrap.1024.mid60.png",
-    "top": -676,
+    "top": -1060,
     "state": "position",
-    "offset": 9418,
-    "targetOffset": 9420,
+    "offset": 9802,
+    "targetOffset": 9802,
     "clip": {
      "ok": true,
      "x": 5,
      "y": 0,
      "w": 253,
-     "h": 225,
-     "touchesBottom": true,
+     "h": 177,
+     "touchesBottom": false,
      "captureW": 1015,
-     "captureH": 900,
+     "captureH": 708,
      "storageScale": 4
     }
    },
@@ -11349,13 +11410,13 @@
    "masks": {
     "count": 8,
     "source": "live reference text rects recorded at capture (before scoring), same tc policy",
-    "maskedShare": 0
+    "maskedShare": 0.1
    },
    "status": "scored",
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 253,
-    "h": 165,
+    "h": 117,
     "storedScale": {
      "reference": 4,
      "local": 4
@@ -11363,10 +11424,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 61.7,
-   "ssim_unmasked": 0.6,
-   "E_unmasked": 62.3,
-   "structuralDiffPct": 7.4
+   "E": 69.6,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 70,
+   "structuralDiffPct": 7.3
   },
   {
    "key": "home-why-wrap",
@@ -11383,8 +11444,8 @@
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1024.exit.png",
     "top": -878,
     "state": "position",
-    "scrollY": 12893,
-    "targetY": 12893,
+    "scrollY": 11631,
+    "targetY": 11631,
     "clip": {
      "ok": true,
      "x": 5,
@@ -11399,10 +11460,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-why-wrap.1024.exit.png",
-    "top": -231,
+    "top": -868,
     "state": "position",
-    "offset": 8973,
-    "targetOffset": 8973,
+    "offset": 9610,
+    "targetOffset": 9609,
     "clip": {
      "ok": true,
      "x": 5,
@@ -11434,10 +11495,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 69.3,
+   "E": 71.1,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 69.7,
-   "structuralDiffPct": 7.3
+   "E_unmasked": 71,
+   "structuralDiffPct": 6
   },
   {
    "key": "chrome",
@@ -11555,8 +11616,8 @@
     "path": "docs/audit/evidence/primary/local/footer.1920.end.png",
     "top": -145,
     "state": "end-clamped",
-    "scrollY": 23119,
-    "targetY": 23119,
+    "scrollY": 20866,
+    "targetY": 20866,
     "clip": {
      "ok": true,
      "x": 9,
@@ -11607,10 +11668,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 48.6,
+   "E": 49.1,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 45.1,
-   "structuralDiffPct": 7.5
+   "E_unmasked": 45.5,
+   "structuralDiffPct": 7.2
   },
   {
    "key": "footer",
@@ -11655,7 +11716,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 21230,
+    "scrollY": 18977,
     "clip": {
      "ok": true,
      "x": 0,
@@ -11727,8 +11788,8 @@
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.1920.mid30.png",
     "top": -523,
     "state": "position",
-    "scrollY": 21753,
-    "targetY": 21753,
+    "scrollY": 19500,
+    "targetY": 19500,
     "clip": {
      "ok": true,
      "x": 0,
@@ -11778,10 +11839,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 76.3,
+   "E": 76.6,
    "ssim_unmasked": 0.8,
-   "E_unmasked": 76,
-   "structuralDiffPct": 7.3
+   "E_unmasked": 76.3,
+   "structuralDiffPct": 7.2
   },
   {
    "key": "home-cta-wrap",
@@ -11798,8 +11859,8 @@
     "path": "docs/audit/evidence/primary/local/home-cta-wrap.1920.mid60.png",
     "top": -1046,
     "state": "position",
-    "scrollY": 22276,
-    "targetY": 22276,
+    "scrollY": 20023,
+    "targetY": 20023,
     "clip": {
      "ok": true,
      "x": 0,
@@ -11931,9 +11992,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 53.4,
+   "E": 53.3,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 48.4,
+   "E_unmasked": 48.3,
    "structuralDiffPct": 31
   },
   {
@@ -12004,8 +12065,8 @@
    },
    "E": 41.7,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 36.7,
-   "structuralDiffPct": 41.8
+   "E_unmasked": 36.6,
+   "structuralDiffPct": 41.7
   },
   {
    "key": "home-hero-wrap",
@@ -12075,8 +12136,8 @@
    },
    "E": 47.9,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 38.8,
-   "structuralDiffPct": 38
+   "E_unmasked": 38.7,
+   "structuralDiffPct": 38.1
   },
   {
    "key": "home-hero-wrap",
@@ -12155,10 +12216,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 70.9,
+   "E": 71.5,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 63,
-   "structuralDiffPct": 13.3
+   "E_unmasked": 63.5,
+   "structuralDiffPct": 13.1
   },
   {
    "key": "home-intro-wrap",
@@ -12226,10 +12287,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 53.3,
+   "E": 54.1,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 52.7,
-   "structuralDiffPct": 27
+   "E_unmasked": 53.5,
+   "structuralDiffPct": 26.8
   },
   {
    "key": "home-intro-wrap",
@@ -12309,7 +12370,7 @@
    "target": "home-intro-wrap@1920:exit",
    "status": "coincident",
    "coincident": true,
-   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 963 px section"
+   "reason": "local: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 964 px section"
   },
   {
    "key": "home-map-wrap",
@@ -12324,10 +12385,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1920.entry.png",
-    "top": 0,
+    "top": -1,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 5384,
+    "scrollY": 3180,
     "clip": {
      "ok": true,
      "x": 0,
@@ -12379,9 +12440,9 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 56.5,
+   "E": 57.6,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 58.1,
+   "E_unmasked": 59.2,
    "structuralDiffPct": 7.9
   },
   {
@@ -12397,10 +12458,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1920.mid30.png",
-    "top": -2268,
+    "top": -2269,
     "state": "position",
-    "scrollY": 7652,
-    "targetY": 7652,
+    "scrollY": 5448,
+    "targetY": 5448,
     "clip": {
      "ok": true,
      "x": 0,
@@ -12450,10 +12511,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 57.3,
+   "E": 58.5,
    "ssim_unmasked": 0.6,
-   "E_unmasked": 57.4,
-   "structuralDiffPct": 8
+   "E_unmasked": 58.5,
+   "structuralDiffPct": 7.7
   },
   {
    "key": "home-map-wrap",
@@ -12468,10 +12529,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1920.mid60.png",
-    "top": -4536,
+    "top": -4537,
     "state": "position",
-    "scrollY": 9920,
-    "targetY": 9920,
+    "scrollY": 7716,
+    "targetY": 7716,
     "clip": {
      "ok": true,
      "x": 0,
@@ -12521,10 +12582,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 52.7,
+   "E": 53.9,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 52.3,
-   "structuralDiffPct": 10.6
+   "E_unmasked": 53.4,
+   "structuralDiffPct": 10.3
   },
   {
    "key": "home-map-wrap",
@@ -12539,19 +12600,19 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-map-wrap.1920.exit.png",
-    "top": -6480,
+    "top": -6481,
     "state": "position",
-    "scrollY": 11864,
-    "targetY": 11864,
+    "scrollY": 9660,
+    "targetY": 9660,
     "clip": {
      "ok": true,
      "x": 0,
      "y": 0,
      "w": 480,
-     "h": 270,
+     "h": 269,
      "touchesBottom": true,
      "captureW": 1920,
-     "captureH": 1080,
+     "captureH": 1079,
      "storageScale": 4
     }
    },
@@ -12584,7 +12645,7 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 475,
-    "h": 207,
+    "h": 206,
     "storedScale": {
      "reference": 4,
      "local": 4
@@ -12592,9 +12653,9 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 49,
+   "E": 49.4,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 47.8,
+   "E_unmasked": 47.9,
    "structuralDiffPct": 11.6
   },
   {
@@ -12610,29 +12671,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.1920.entry.png",
-    "top": 0,
-    "state": "entry",
-    "declaredTop": 0,
-    "scrollY": 12944,
-    "clip": {
-     "ok": true,
-     "x": 9,
-     "y": 0,
-     "w": 475,
-     "h": 237,
-     "touchesBottom": false,
-     "captureW": 1902,
-     "captureH": 948,
-     "storageScale": 4
-    }
-   },
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.1920.entry.png",
     "top": -1,
     "state": "entry",
     "declaredTop": 0,
-    "offset": 10586,
-    "targetOffset": 10586,
+    "scrollY": 10740,
     "clip": {
      "ok": true,
      "x": 9,
@@ -12641,7 +12683,26 @@
      "h": 236,
      "touchesBottom": false,
      "captureW": 1902,
-     "captureH": 945,
+     "captureH": 947,
+     "storageScale": 4
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.1920.entry.png",
+    "top": 0,
+    "state": "entry",
+    "declaredTop": 0,
+    "offset": 10585,
+    "targetOffset": 10585,
+    "clip": {
+     "ok": true,
+     "x": 9,
+     "y": 0,
+     "w": 475,
+     "h": 236,
+     "touchesBottom": false,
+     "captureW": 1902,
+     "captureH": 946,
      "storageScale": 4
     }
    },
@@ -12665,10 +12726,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 48.5,
+   "E": 49.4,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 47.4,
-   "structuralDiffPct": 13.7
+   "E_unmasked": 48.4,
+   "structuralDiffPct": 13.3
   },
   {
    "key": "home-platform-wrap",
@@ -12683,28 +12744,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.1920.mid30.png",
-    "top": -284,
+    "top": -285,
     "state": "position",
-    "scrollY": 13228,
-    "targetY": 13228,
-    "clip": {
-     "ok": true,
-     "x": 9,
-     "y": 0,
-     "w": 475,
-     "h": 166,
-     "touchesBottom": false,
-     "captureW": 1902,
-     "captureH": 664,
-     "storageScale": 4
-    }
-   },
-   "reference": {
-    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.1920.mid30.png",
-    "top": -283,
-    "state": "position",
-    "offset": 10868,
-    "targetOffset": 10870,
+    "scrollY": 11024,
+    "targetY": 11024,
     "clip": {
      "ok": true,
      "x": 9,
@@ -12714,6 +12757,24 @@
      "touchesBottom": false,
      "captureW": 1902,
      "captureH": 663,
+     "storageScale": 4
+    }
+   },
+   "reference": {
+    "path": "docs/audit/evidence/primary/reference/home-platform-wrap.1920.mid30.png",
+    "top": -282,
+    "state": "position",
+    "offset": 10867,
+    "targetOffset": 10869,
+    "clip": {
+     "ok": true,
+     "x": 9,
+     "y": 0,
+     "w": 475,
+     "h": 166,
+     "touchesBottom": false,
+     "captureW": 1902,
+     "captureH": 664,
      "storageScale": 4
     }
    },
@@ -12736,10 +12797,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 55.5,
+   "E": 55.9,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 53.7,
-   "structuralDiffPct": 11.1
+   "E_unmasked": 54.6,
+   "structuralDiffPct": 10.8
   },
   {
    "key": "home-platform-wrap",
@@ -12754,10 +12815,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-platform-wrap.1920.mid60.png",
-    "top": -569,
+    "top": -570,
     "state": "position",
-    "scrollY": 13513,
-    "targetY": 13513,
+    "scrollY": 11309,
+    "targetY": 11309,
     "clip": {
      "ok": true,
      "x": 9,
@@ -12766,25 +12827,25 @@
      "h": 94,
      "touchesBottom": false,
      "captureW": 1902,
-     "captureH": 379,
+     "captureH": 378,
      "storageScale": 4
     }
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-platform-wrap.1920.mid60.png",
-    "top": -567,
+    "top": -566,
     "state": "position",
-    "offset": 11152,
-    "targetOffset": 11154,
+    "offset": 11151,
+    "targetOffset": 11153,
     "clip": {
      "ok": true,
      "x": 9,
      "y": 0,
      "w": 475,
-     "h": 94,
+     "h": 95,
      "touchesBottom": false,
      "captureW": 1902,
-     "captureH": 379,
+     "captureH": 380,
      "storageScale": 4
     }
    },
@@ -12807,9 +12868,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 52.9,
+   "E": 53.3,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 50.2,
+   "E_unmasked": 50.5,
    "structuralDiffPct": 11.2
   },
   {
@@ -12834,10 +12895,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.1920.entry.png",
-    "top": 0,
+    "top": -1,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 2033,
+    "scrollY": 2034,
     "clip": {
      "ok": true,
      "x": 0,
@@ -12889,10 +12950,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 73.2,
+   "E": 73.1,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 71.6,
-   "structuralDiffPct": 2.1
+   "E_unmasked": 70.5,
+   "structuralDiffPct": 2.3
   },
   {
    "key": "home-problem-wrap",
@@ -12907,19 +12968,19 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.1920.mid30.png",
-    "top": -1005,
+    "top": -345,
     "state": "position",
-    "scrollY": 3038,
-    "targetY": 3038,
+    "scrollY": 2378,
+    "targetY": 2378,
     "clip": {
      "ok": true,
      "x": 0,
      "y": 0,
      "w": 480,
-     "h": 270,
-     "touchesBottom": true,
+     "h": 200,
+     "touchesBottom": false,
      "captureW": 1920,
-     "captureH": 1080,
+     "captureH": 801,
      "storageScale": 4
     }
    },
@@ -12952,18 +13013,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 475,
-    "h": 114,
+    "h": 174,
     "storedScale": {
      "reference": 4,
      "local": 4
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 75.1,
-   "ssim_unmasked": 0.8,
-   "E_unmasked": 77.4,
-   "structuralDiffPct": 1
+   "E": 71.6,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 64.4,
+   "structuralDiffPct": 1.3
   },
   {
    "key": "home-problem-wrap",
@@ -12978,19 +13039,19 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-problem-wrap.1920.mid60.png",
-    "top": -2011,
+    "top": -689,
     "state": "position",
-    "scrollY": 4044,
-    "targetY": 4044,
+    "scrollY": 2722,
+    "targetY": 2722,
     "clip": {
      "ok": true,
      "x": 0,
      "y": 0,
      "w": 480,
-     "h": 270,
-     "touchesBottom": true,
+     "h": 114,
+     "touchesBottom": false,
      "captureW": 1920,
-     "captureH": 1080,
+     "captureH": 457,
      "storageScale": 4
     }
    },
@@ -13023,18 +13084,18 @@
    "crop": {
     "rule": "section∩viewport, width-normalised to the reference, top-aligned common window",
     "w": 475,
-    "h": 40,
+    "h": 100,
     "storedScale": {
      "reference": 4,
      "local": 4
     },
-    "chromeCropBottomPx": 60,
-    "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
+    "chromeCropBottomPx": 0,
+    "chromeBand": null
    },
-   "E": 69.6,
-   "ssim_unmasked": 0.8,
-   "E_unmasked": 75.1,
-   "structuralDiffPct": 0.3
+   "E": 71.5,
+   "ssim_unmasked": 0.6,
+   "E_unmasked": 60,
+   "structuralDiffPct": 1.6
   },
   {
    "key": "home-problem-wrap",
@@ -13043,7 +13104,7 @@
    "target": "home-problem-wrap@1920:exit",
    "status": "coincident",
    "coincident": true,
-   "reason": "reference: duplicate state — delta 0 px sits within 100 px of an already-recorded state for this 990 px section"
+   "reason": "local: duplicate state — delta 66 px sits within 100 px of an already-recorded state for this 1146 px section"
   },
   {
    "key": "home-usecase-wrap",
@@ -13061,7 +13122,7 @@
     "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 20167,
+    "scrollY": 17914,
     "clip": {
      "ok": true,
      "x": 0,
@@ -13076,11 +13137,11 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1920.entry.png",
-    "top": -1,
+    "top": 0,
     "state": "entry",
     "declaredTop": 0,
-    "offset": 14848,
-    "targetOffset": 14848,
+    "offset": 14847,
+    "targetOffset": 14847,
     "clip": {
      "ok": true,
      "x": 9,
@@ -13089,7 +13150,7 @@
      "h": 265,
      "touchesBottom": false,
      "captureW": 1902,
-     "captureH": 1061,
+     "captureH": 1062,
      "storageScale": 4
     }
    },
@@ -13113,10 +13174,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 51.4,
+   "E": 51.1,
    "ssim_unmasked": 0.5,
-   "E_unmasked": 48.5,
-   "structuralDiffPct": 25.7
+   "E_unmasked": 48.1,
+   "structuralDiffPct": 25.6
   },
   {
    "key": "home-usecase-wrap",
@@ -13133,8 +13194,8 @@
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1920.mid30.png",
     "top": -311,
     "state": "position",
-    "scrollY": 20478,
-    "targetY": 20478,
+    "scrollY": 18225,
+    "targetY": 18225,
     "clip": {
      "ok": true,
      "x": 0,
@@ -13149,10 +13210,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1920.mid30.png",
-    "top": -318,
+    "top": -317,
     "state": "position",
-    "offset": 15165,
-    "targetOffset": 15167,
+    "offset": 15164,
+    "targetOffset": 15166,
     "clip": {
      "ok": true,
      "x": 9,
@@ -13161,7 +13222,7 @@
      "h": 186,
      "touchesBottom": false,
      "captureW": 1902,
-     "captureH": 744,
+     "captureH": 745,
      "storageScale": 4
     }
    },
@@ -13184,9 +13245,9 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 42.1,
+   "E": 41.9,
    "ssim_unmasked": 0.4,
-   "E_unmasked": 43.1,
+   "E_unmasked": 42.9,
    "structuralDiffPct": 24.1
   },
   {
@@ -13204,8 +13265,8 @@
     "path": "docs/audit/evidence/primary/local/home-usecase-wrap.1920.mid60.png",
     "top": -622,
     "state": "position",
-    "scrollY": 20789,
-    "targetY": 20789,
+    "scrollY": 18536,
+    "targetY": 18536,
     "clip": {
      "ok": true,
      "x": 0,
@@ -13220,10 +13281,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-usecase-wrap.1920.mid60.png",
-    "top": -636,
+    "top": -635,
     "state": "position",
-    "offset": 15483,
-    "targetOffset": 15485,
+    "offset": 15482,
+    "targetOffset": 15484,
     "clip": {
      "ok": true,
      "x": 9,
@@ -13232,7 +13293,7 @@
      "h": 106,
      "touchesBottom": false,
      "captureW": 1902,
-     "captureH": 426,
+     "captureH": 427,
      "storageScale": 4
     }
    },
@@ -13255,10 +13316,10 @@
     "chromeCropBottomPx": 0,
     "chromeBand": null
    },
-   "E": 42.5,
+   "E": 42.6,
    "ssim_unmasked": 0.4,
    "E_unmasked": 44.7,
-   "structuralDiffPct": 18
+   "structuralDiffPct": 18.2
   },
   {
    "key": "home-usecase-wrap",
@@ -13282,10 +13343,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1920.entry.png",
-    "top": 0,
+    "top": -1,
     "state": "entry",
     "declaredTop": 0,
-    "scrollY": 15957,
+    "scrollY": 13705,
     "clip": {
      "ok": true,
      "x": 9,
@@ -13337,9 +13398,9 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 77.6,
+   "E": 77.4,
    "ssim_unmasked": 0.8,
-   "E_unmasked": 75.8,
+   "E_unmasked": 75.6,
    "structuralDiffPct": 7.8
   },
   {
@@ -13355,10 +13416,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1920.mid30.png",
-    "top": -992,
+    "top": -993,
     "state": "position",
-    "scrollY": 16949,
-    "targetY": 16949,
+    "scrollY": 14697,
+    "targetY": 14697,
     "clip": {
      "ok": true,
      "x": 9,
@@ -13373,10 +13434,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-why-wrap.1920.mid30.png",
-    "top": -635,
+    "top": -995,
     "state": "position",
-    "offset": 12166,
-    "targetOffset": 12166,
+    "offset": 12526,
+    "targetOffset": 12524,
     "clip": {
      "ok": true,
      "x": 9,
@@ -13408,10 +13469,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 73.6,
+   "E": 69.3,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 74.3,
-   "structuralDiffPct": 5.9
+   "E_unmasked": 69.5,
+   "structuralDiffPct": 9.2
   },
   {
    "key": "home-why-wrap",
@@ -13426,10 +13487,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1920.mid60.png",
-    "top": -1984,
+    "top": -1985,
     "state": "position",
-    "scrollY": 17941,
-    "targetY": 17941,
+    "scrollY": 15689,
+    "targetY": 15689,
     "clip": {
      "ok": true,
      "x": 9,
@@ -13444,10 +13505,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-why-wrap.1920.mid60.png",
-    "top": -1272,
+    "top": -1989,
     "state": "position",
-    "offset": 12803,
-    "targetOffset": 12803,
+    "offset": 13520,
+    "targetOffset": 13519,
     "clip": {
      "ok": true,
      "x": 9,
@@ -13479,10 +13540,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 65.5,
+   "E": 70.7,
    "ssim_unmasked": 0.7,
-   "E_unmasked": 65.5,
-   "structuralDiffPct": 6.7
+   "E_unmasked": 70.9,
+   "structuralDiffPct": 4.7
   },
   {
    "key": "home-why-wrap",
@@ -13497,10 +13558,10 @@
    },
    "local": {
     "path": "docs/audit/evidence/primary/local/home-why-wrap.1920.exit.png",
-    "top": -2227,
+    "top": -2228,
     "state": "position",
-    "scrollY": 18184,
-    "targetY": 18184,
+    "scrollY": 15932,
+    "targetY": 15932,
     "clip": {
      "ok": true,
      "x": 9,
@@ -13515,10 +13576,10 @@
    },
    "reference": {
     "path": "docs/audit/evidence/primary/reference/home-why-wrap.1920.exit.png",
-    "top": -1042,
+    "top": -2233,
     "state": "position",
-    "offset": 12573,
-    "targetOffset": 12572,
+    "offset": 13764,
+    "targetOffset": 13765,
     "clip": {
      "ok": true,
      "x": 9,
@@ -13550,10 +13611,10 @@
     "chromeCropBottomPx": 60,
     "chromeBand": "the crop reached the viewport bottom — the reference consent-bar band removed on both sides"
    },
-   "E": 63.8,
-   "ssim_unmasked": 0.6,
-   "E_unmasked": 64.7,
-   "structuralDiffPct": 9.6
+   "E": 66.9,
+   "ssim_unmasked": 0.7,
+   "E_unmasked": 67.2,
+   "structuralDiffPct": 8.1
   }
  ],
  "gates": {
