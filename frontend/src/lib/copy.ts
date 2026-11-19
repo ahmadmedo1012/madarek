@@ -340,9 +340,6 @@ export const LABEL_TYPE = "النوع" as const;
 /** نشطة — 4 screens. */
 export const STATUS_ACTIVE_F = "نشطة" as const;
 
-/** بعد — 4 screens. */
-export const SUFFIX_YET = "بعد" as const;
-
 /** اختبار — 4 screens. */
 export const EXAM = "اختبار" as const;
 
@@ -739,12 +736,6 @@ export const ESSAY_QUESTION = "سؤال مقالي" as const;
 /** الإجابة الصحيحة: — 2 screens. */
 export const CORRECT_ANSWER_COLON = "الإجابة الصحيحة:" as const;
 
-/** الإجابة النموذجية: — 2 screens. */
-export const MODEL_ANSWER_COLON = "الإجابة النموذجية:" as const;
-
-/** معيار التصحيح: — 2 screens. */
-export const GRADING_CRITERIA_COLON = "معيار التصحيح:" as const;
-
 /** بانتظار المراجعة — 2 screens. */
 export const PENDING_REVIEW = "بانتظار المراجعة" as const;
 
@@ -985,9 +976,6 @@ export const SINCE_DAYS = "منذ أيام" as const;
 /** منذ يوماً — 2 screens. */
 export const SINCE_A_DAY = "منذ يوماً" as const;
 
-/** من أصل — 2 screens. */
-export const OUT_OF = "من أصل" as const;
-
 /** معامل متاحة — 2 screens. */
 export const AVAILABLE_LABS = "معامل متاحة" as const;
 
@@ -1075,14 +1063,8 @@ export const RECORD_ATTENDANCE = "تسجيل الحضور" as const;
 /** مستقر — 3 screens. */
 export const STABLE = "مستقر" as const;
 
-/** بانتظار درجتك — 2 screens. */
-export const AWAITING_YOUR_GRADE = "بانتظار درجتك" as const;
-
 /** الكل مستقر — 2 screens. */
 export const ALL_STABLE = "الكل مستقر" as const;
-
-/** هذا الفصل — 2 screens. */
-export const THIS_SEMESTER = "هذا الفصل" as const;
 
 /** لا طلاب — 2 screens. */
 export const NO_STUDENTS = "لا طلاب" as const;

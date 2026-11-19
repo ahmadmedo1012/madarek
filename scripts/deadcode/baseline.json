@@ -2,7 +2,7 @@
   "_comment": "T-22 Track B ratchet baseline — measured analyzer output. Counts may only improve; when a count drops, re-pin it here in the SAME commit (scripts/deadcode/check.sh --update). Pinned tools: knip@5.88.1, jscpd@5.4.2, dependency-cruiser@18.7.2 (+ typescript@5.7.2 for depcruise); jscpd minTokens=70.",
   "knip": {
     "unusedFiles": 62,
-    "unusedExports": 43,
+    "unusedExports": 41,
     "unusedExportedTypes": 226,
     "unusedDependencies": 0,
     "unusedDevDependencies": 1,
@@ -11,7 +11,7 @@
     "duplicates": 0
   },
   "jscpd": {
-    "duplicateBlocks": 180
+    "duplicateBlocks": 139
   },
   "depcruise": {
     "circularDependencies": 0
