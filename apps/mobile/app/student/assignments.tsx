@@ -80,8 +80,8 @@ export function assignmentStatus(
 }
 
 /** Counted-grammar nouns — shared by the countdown branches (R369 C4.1). */
-const DAY_COUNT = ["يوم", "يومين", "أيام", "يوماً"] as const;
-const HOUR_COUNT = ["ساعة", "ساعتين", "ساعات", "ساعة"] as const;
+const DAY_COUNT: [string, string, string, string] = ["يوم", "يومين", "أيام", "يوماً"];
+const HOUR_COUNT: [string, string, string, string] = ["ساعة", "ساعتين", "ساعات", "ساعة"];
 
 /**
  * Due-date countdown — «متبقٍ ٥ ساعات» / «متبقٍ يومين» / «متأخر ٤ أيام».
