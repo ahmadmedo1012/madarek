@@ -75,7 +75,13 @@ test.describe('R312 — the guest route reveal (§R D7)', () => {
     await expect(page.locator('.guest-reveal-inner')).toBeVisible();
   });
 
-  test('browser back → the landing: the same reveal on the landing mount', async ({ page }) => {
+  test('browser back → the landing: the standing page (R369 C2.3 — the cold gate)', async ({ page }) => {
+    /* R369 C2.3 twin update: the cold-load standing page changed the BACK
+     * contract — POP navigation has no in-flight cover (sheetExit installs
+     * on internal link clicks only), so the landing remount rides the same
+     * data-cold gate as a direct load: no sweep, no traveling rule, the
+     * standing page renders open. The old twin waited for the sweep on
+     * back (the pre-C2.3 behavior) and timed out — CI run on 07e493dd. */
     await page.setViewportSize({ width: 1024, height: 640 });
     await page.goto('/');
     await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
@@ -84,31 +90,58 @@ test.describe('R312 — the guest route reveal (§R D7)', () => {
     await page.waitForTimeout(1200);
 
     await page.goBack();
-    await page.waitForFunction(
-      () => {
-        const inner = document.querySelector('.guest-reveal-inner');
-        if (!inner) return false;
-        return document.getAnimations().some((a) => (a as CSSAnimation).animationName === 'guest-reveal-sweep');
-      },
-      undefined,
-      { timeout: 8000 },
-    );
     await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
-    /* the landing tree is inside the reveal stage */
+    /* the standing-page contract: the keyed inner remounts COLD (no
+     * in-flight cover on POP) — data-cold carries the gate, the sweep
+     * never registers, the clip sits open, the page stands rendered. */
+    await expect
+      .poll(async () => page.evaluate(() => document.querySelector('.guest-reveal-inner')?.getAttribute('data-cold')))
+      .toBe('1');
+    const sweepRunning = await page.evaluate(() =>
+      document.getAnimations().some((a) => (a as CSSAnimation).animationName === 'guest-reveal-sweep'));
+    expect(sweepRunning).toBe(false);
+    const settled = await page.evaluate(() => getComputedStyle(document.querySelector('.guest-reveal-inner') as Element).clipPath);
+    expect(settled).toMatch(/0%|none/);
+    /* the landing tree is inside the standing stage */
     const inside = await page.evaluate(() => {
       const inner = document.querySelector('.guest-reveal-inner');
       return !!inner?.contains(document.querySelector('.fo-hero-title'));
     });
     expect(inside).toBe(true);
-    await page.waitForTimeout(900);
-    const settled = await page.evaluate(() => getComputedStyle(document.querySelector('.guest-reveal-inner') as Element).clipPath);
-    expect(settled).toMatch(/0%|none/);
   });
 
-  test('the traveling rule: fixed, 1px, on the rule token', async ({ page }) => {
+  test('the traveling rule: cold loads none · warm transitions fixed, 1px, on the rule token', async ({ page }) => {
+    /* R369 C2.3 twin update: the cold-load standing page kills the
+     * traveling hairline on direct loads (a cold load has no edge to
+     * trace — polish.css's own gate law); the rule's existence contract
+     * rides the WARM transition (an in-app link click with the cover
+     * in flight). The old twin asserted the rule on a direct goto — CI
+     * run on 07e493dd (display none). */
     await page.setViewportSize({ width: 1024, height: 640 });
     await page.goto('/');
     await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
+    /* the COLD contract first — the gate is asserted positively */
+    const coldLine = await page.evaluate(() => {
+      const cs = getComputedStyle(document.querySelector('.guest-reveal') as Element, '::after');
+      return { display: cs.display, content: cs.content };
+    });
+    expect(coldLine.display).toBe('none');
+    expect(coldLine.content).toContain('""');
+
+    /* the WARM contract: navigate in-app (the cover installs, the reveal
+     * sequences) and read the traveling rule mid-transition */
+    await page.locator('a[href="/colleges"]').first().scrollIntoViewIfNeeded();
+    await page.locator('a[href="/colleges"]').first().click();
+    await page.waitForFunction(
+      () => {
+        const wrap = document.querySelector('.guest-reveal');
+        if (!wrap) return false;
+        const cs = getComputedStyle(wrap, '::after');
+        return cs.display !== 'none' && cs.position === 'fixed' && cs.height === '1px';
+      },
+      undefined,
+      { timeout: 8000 },
+    );
     const line = await page.evaluate(() => {
       const wrap = document.querySelector('.guest-reveal');
       const cs = getComputedStyle(wrap as Element, '::after');

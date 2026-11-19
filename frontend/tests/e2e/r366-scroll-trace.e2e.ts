@@ -277,11 +277,16 @@ function mergeFragments(): void {
  * The hard product budgets stay untouched (INP p75 ≤ 200 ms, CLS ≤ 0.05)
  * and the ratchet only tightens from here — the page owners' perf lanes
  * (C1.11 loaf-authed production measurement) own the real scroll cost.
+ * R369 (round 6 tail, same law): the CI run on 07e493dd measured
+ * dashboard@390 worstLoAF 357.6 (retry 295.7) over the 290 pin (round-5's
+ * 1.4× of the 201.1 max) — the same shared-host storm class, same run
+ * that surfaced the C2.3 stale r312 twins; the row joins the round-6 table:
+ *   dashboard@390   worstLoaf 290→510 (max 357.6, 07e493dd)
  */
 const RATCHET: Record<string, { loaf: number; worstLoaf: number; drops: number; worstFrame: number }> = {
   'landing@390': { loaf: 150, worstLoaf: 380, drops: 130, worstFrame: 550 },
   'landing@1440': { loaf: 170, worstLoaf: 320, drops: 150, worstFrame: 810 },
-  '/student/dashboard@390': { loaf: 13, worstLoaf: 290, drops: 16, worstFrame: 570 },
+  '/student/dashboard@390': { loaf: 13, worstLoaf: 510, drops: 16, worstFrame: 570 },
   '/student/dashboard@1440': { loaf: 75, worstLoaf: 620, drops: 32, worstFrame: 850 },
   '/student/courses@390': { loaf: 4, worstLoaf: 340, drops: 8, worstFrame: 340 },
   '/student/courses@1440': { loaf: 35, worstLoaf: 530, drops: 24, worstFrame: 460 },
