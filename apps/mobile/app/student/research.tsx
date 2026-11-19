@@ -53,19 +53,19 @@ export default function ResearchScreen() {
     mutationFn: (id: string) => researchApi.scan(id),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["research"] });
-      toast.success("اكتمل فحص النزاهة.");
+      toast.success("اكتمل الفحص.", "فحص النزاهة");
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر الفحص"),
   });
 
   return (
     <Screen scroll>
-      <StackHeader title="بحوثي" />
+      <StackHeader title="بحوثي" kicker="البحوث العلمية" />
       <SectionNote>
-        ارفع بحوثك — فحص (محاكاة) ثم تقييم الأستاذ والنشر.
+        ارفع بحوثك لفحص الانتحال والذكاء الاصطناعي (محاكاة)، ثم أرسلها لأستاذك للتقييم والنشر.
       </SectionNote>
       <Button
-        label="رفع بحث"
+        label="رفع بحث جديد"
         kind="accent"
         icon={<Upload size={16} color={p.accentFg} />}
         onPress={() => setUploadOpen(true)}
@@ -81,7 +81,7 @@ export default function ResearchScreen() {
           icon={<FileText size={24} color={p.textFaint} />}
           title="لم ترفع بحثًا بعد"
           message="ارفع أول بحث."
-          actionLabel="رفع بحث"
+          actionLabel="رفع بحث جديد"
           onAction={() => setUploadOpen(true)}
         />
       ) : (
@@ -182,7 +182,7 @@ function DetailSheet({
               {scanLine(paper.plagiarismPct, paper.aiContentPct)}
             </T>
             <T variant="xs" color="muted">
-              فحص محاكاة — قيم استرشادية حتى تفعيل كشف حقيقي.
+              فحص محاكاة — قيم استرشادية.
             </T>
           </Card>
         ) : paper.status === "SCANNING" ? (
@@ -193,7 +193,7 @@ function DetailSheet({
 
         {paper.status === "CHECKS_FAILED" ? (
           <T variant="sm" color="danger">
-            تجاوز الحدود المسموحة (محاكاة) — ارفع نسخة معدّلة.
+            تجاوز حدود الفحص التجريبية (محاكاة) — ارفع نسخة معدّلة.
           </T>
         ) : null}
 
@@ -215,7 +215,7 @@ function DetailSheet({
 
         {paper.status === "UPLOADED" ? (
           <View style={{ gap: sp[6] }}>
-            <SectionNote>ابدأ الفحص (انتحال + ذكاء اصطناعي).</SectionNote>
+            <SectionNote>الخطوة التالية: ابدأ الفحص (انتحال + ذكاء اصطناعي).</SectionNote>
             <Button
               label={scanning ? "جارٍ بدء الفحص…" : "ابدأ الفحص"}
               kind="ghost"
@@ -228,12 +228,12 @@ function DetailSheet({
         ) : paper.status === "CHECKS_PASSED" ? (
           <SectionNote>بانتظار تقييم الأستاذ — لا إجراء مطلوب.</SectionNote>
         ) : paper.status === "PUBLISHED" ? (
-          <SectionNote>البحث متاح في مكتبة الجامعة.</SectionNote>
+          <SectionNote>منشور في مكتبة الجامعة.</SectionNote>
         ) : null}
 
         {paper.fileUrl ? (
           <Button
-            label="فتح الملف"
+            label="فتح ملف البحث"
             kind="primary"
             onPress={() =>
               router.push({
@@ -321,7 +321,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
       } catch {
         // The paper row exists — the scan can be started again from its row.
       }
-      toast.success("فحص انتحال ثم تقييم الأستاذ.");
+      toast.success("فحص انتحال ثم تقييم الأستاذ.", "تمّ رفع البحث");
       setTitle("");
       setAbstractText("");
       setOfferingId(null);
@@ -344,7 +344,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
       onClose={() => {
         if (!busy) onClose();
       }}
-      title="رفع بحث"
+      title="رفع بحث جديد"
       footer={
         <View style={{ gap: sp[8] }}>
           {error ? (
@@ -354,7 +354,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
           ) : null}
           {!canSubmit && !busy ? (
             <T variant="xs" color="faint">
-              أكمل العنوان (3 أحرف على الأقل).
+              أكمل العنوان (3 أحرف على الأقل) للرفع.
             </T>
           ) : null}
           <Button
@@ -384,7 +384,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
           multiline
         />
         <SelectField
-          label="المقرّر المرتبط (اختياري)"
+          label="المقرّر (اختياري)"
           value={selectedOffering}
           options={offeringOptions}
           onSelect={(id) => {
@@ -398,10 +398,10 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
 
         <View style={{ gap: sp[6] }}>
           <T variant="sm" weight="medium" color="secondary">
-            ملف البحث (PDF، اختياري)
+            ملف PDF (اختياري)
           </T>
           <T variant="xs" color="muted">
-            PDF فقط، 20 ميغابايت كحدّ أقصى — بدونه يُسجَّل بالعنوان والملخص.
+            PDF فقط، حتى 20 ميغابايت — بدونه يُسجَّل البحث بعنوانه وملخصه.
           </T>
           {fileName && !fileError ? (
             <Card style={{ gap: sp[6] }}>
@@ -409,7 +409,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
                 {fileName}
               </T>
               <Button
-                label="إزالة الملف"
+                label="حذف الملف"
                 kind="ghost"
                 small
                 disabled={busy}

@@ -70,9 +70,9 @@ export default function Community() {
 
   const header = (
     <>
-      <StackHeader title="المجتمع الجامعي" />
+      <StackHeader title="المجتمع الجامعي" kicker="الحياة الأكاديمية" />
       <T variant="body" color="secondary">
-        الحياة الأكاديمية اليومية.
+        إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية.
       </T>
       <Segmented
         options={[
@@ -248,7 +248,7 @@ function PostsPanel({ header }: { header: ReactNode }) {
               accessibilityLabel="نص المنشور"
               value={draft}
               onChangeText={setDraft}
-              placeholder="استخدم #هاشتاج"
+              placeholder="يمكنك استخدام #هاشتاج"
               multiline
               maxLength={2000}
               textAlignVertical="top"
@@ -395,7 +395,7 @@ function AnnouncementsPanel() {
         </RowList>
       )}
       <T variant="xs" color="faint" style={{ textAlign: "center" }}>
-        تُنشأ من لوحات الإدارة والتدريس — آخر التحديثات.
+        إنشاء الإعلانات للإدارة وهيئة التدريس — من لوحاتها.
       </T>
     </View>
   );

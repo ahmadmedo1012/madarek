@@ -235,7 +235,7 @@ export default function StudentProfile() {
         refreshing={profile.isFetching && !profile.isLoading}
         onRefresh={() => profile.refetch()}
       >
-        <PageHeader title="حسابي" />
+        <PageHeader title="حسابي" kicker="هويّتك وخدمات الطالب." />
 
         {/* الهويّة — the block the shell pulled out of the top bar */}
         <Card style={{ gap: sp[10] }}>
@@ -322,7 +322,7 @@ export default function StudentProfile() {
             }}
           />
           <T variant="xs" color="faint">
-            يتبع التطبيق والموقع تفضيلك — يتزامن مع حسابك.
+            يتبع التطبيق تفضيلك هنا وعلى الموقع — يتزامن مع حسابك.
           </T>
         </Card>
         <Card style={{ gap: sp[8] }}>
@@ -336,7 +336,7 @@ export default function StudentProfile() {
             }}
           />
           <T variant="xs" color="faint">
-            عرض الأرقام في لوحتك ونتائجك — {`١٢٣`} عربي أو {`123`} لاتيني.
+            أرقام لوحتك ونتائجك — {`١٢٣`} عربي أو {`123`} لاتيني.
           </T>
         </Card>
         <Card style={{ gap: sp[8] }}>
@@ -345,7 +345,7 @@ export default function StudentProfile() {
             <View style={{ flex: 1 }}>
               <T variant="body" weight="bold">ردود اللمس</T>
               <T variant="xs" color="muted">
-                اهتزاز خفيف عند التفاعلات الرئيسة.
+                اهتزاز خفيف للتفاعلات الرئيسة.
               </T>
             </View>
             <Button
@@ -363,7 +363,7 @@ export default function StudentProfile() {
               <View style={{ flex: 1 }}>
                 <T variant="body" weight="bold">قفل التطبيق بالبصمة</T>
                 <T variant="xs" color="muted">
-                  يُطلب عند كل فتح بارد — ورمز الجهاز بديل.
+                  عند التفعيل يُطلب القفل عند كل فتح بارد — ورمز الجهاز بديل دائمًا.
                 </T>
               </View>
               <Button
@@ -404,7 +404,7 @@ export default function StudentProfile() {
             <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
               <Bell size={20} color={p.textMuted} />
               <T variant="sm" color="muted" style={{ flex: 1 }}>
-                معطّلة من إعدادات النظام — افتحها هناك.
+                الإشعارات معطّلة في إعدادات النظام.
               </T>
             </View>
             <View style={{ alignSelf: "flex-start" }}>
@@ -456,7 +456,7 @@ export default function StudentProfile() {
           ))}
         </RowList>
         <T variant="xs" color="faint">
-          كل خدمات الطالب — بعضها دون اتصال.
+          خدمات الطالب من هنا — بعضها يعمل في وضع الطيار وتُوسَم داخل صفحاتها.
         </T>
 
         {/* الجلسة — last concern on the screen, mirroring settings. */}
@@ -474,7 +474,7 @@ export default function StudentProfile() {
           onClose={() => setConfirmLogout(false)}
           title="تسجيل الخروج؟"
           message={LOGOUT_THIS_DEVICE_ONLY}
-          confirmLabel="تسجيل الخروج"
+          confirmLabel="خروج"
           destructive
           onConfirm={async () => {
             setConfirmLogout(false);
