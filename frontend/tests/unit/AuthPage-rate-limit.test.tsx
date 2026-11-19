@@ -96,7 +96,7 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent('محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة');
     // The misleading credential advice must NOT appear in lockout state.
-    expect(alert).not.toHaveTextContent('تحقَّق من البريد وكلمة المرور');
+    expect(alert).not.toHaveTextContent('تحقّق من البريد والمرور');
   });
 
   it('the TOO_MANY_REQUESTS code alone (e.g. a 429 proxied through a gateway) is enough', () => {
@@ -112,8 +112,8 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
     loginState.current.error = axError(429);
     renderPage();
 
-    expect(screen.getByRole('alert')).toHaveTextContent('محاولات دخول كثيرة — انتظر قليلاً');
-    expect(screen.getByRole('alert')).not.toHaveTextContent('تحقَّق من البريد وكلمة المرور');
+    expect(screen.getByRole('alert')).toHaveTextContent('محاولات كثيرة — انتظر قليلًا');
+    expect(screen.getByRole('alert')).not.toHaveTextContent('تحقّق من البريد والمرور');
   });
 
   it('a 401 (wrong password) surfaces the backend\'s own Arabic message verbatim (D17-3)', () => {
@@ -130,8 +130,8 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent('البريد الإلكتروني أو كلمة المرور غير صحيحة');
     // The generic refusal no longer masks the server's answer.
-    expect(alert).not.toHaveTextContent('تعذَّر تسجيل الدخول');
-    expect(alert).not.toHaveTextContent('تحقَّق من البريد وكلمة المرور');
+    expect(alert).not.toHaveTextContent('تعذّر الدخول');
+    expect(alert).not.toHaveTextContent('تحقّق من البريد والمرور');
   });
 
   it('a 403 (disabled account) surfaces the backend\'s own Arabic message verbatim', () => {
@@ -142,8 +142,8 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
 
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent('هذا الحساب معطّل — تواصل مع إدارة الجامعة');
-    expect(alert).not.toHaveTextContent('تعذَّر تسجيل الدخول');
-    expect(alert).not.toHaveTextContent('تحقَّق من البريد وكلمة المرور');
+    expect(alert).not.toHaveTextContent('تعذّر الدخول');
+    expect(alert).not.toHaveTextContent('تحقّق من البريد والمرور');
   });
 
   it('a network failure (no response) keeps the authored generic — nothing to quote', () => {
@@ -157,8 +157,8 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
     renderPage();
 
     const alert = screen.getByRole('alert');
-    expect(alert).toHaveTextContent('تعذَّر تسجيل الدخول');
-    expect(alert).toHaveTextContent('اتصالك');
+    expect(alert).toHaveTextContent('تعذّر الدخول');
+    expect(alert).toHaveTextContent('الاتصال');
     // The raw Latin transport prose never reaches the RTL UI.
     expect(alert).not.toHaveTextContent('Network Error');
   });
@@ -169,10 +169,10 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
     renderPage();
 
     const alert = screen.getByRole('alert');
-    expect(alert).toHaveTextContent('تعذَّر تسجيل الدخول');
+    expect(alert).toHaveTextContent('تعذّر الدخول');
     expect(alert).not.toHaveTextContent('Request failed with status code 401');
     // Not a rate limit — the credential-generic grammar is correct here.
-    expect(alert).not.toHaveTextContent('محاولات دخول كثيرة');
+    expect(alert).not.toHaveTextContent('محاولات كثيرة');
   });
 
   it('no error state renders no banner', () => {

@@ -201,25 +201,25 @@ describe('r170-e — RegisterPage live strength hint (polite, advisory only)', (
     const input = screen.getByLabelText(PW_LABEL);
 
     // Empty → no hint (nothing to announce yet).
-    expect(screen.queryByText(/قوة كلمة المرور/)).toBeNull();
+    expect(screen.queryByText(/القوة:/)).toBeNull();
 
     // 7 chars → ضعيفة
     fireEvent.change(input, { target: { value: 'Ab1!xyz' } });
-    const weak = screen.getByText('قوة كلمة المرور: ضعيفة');
+    const weak = screen.getByText('القوة: ضعيفة');
     expect(weak).toHaveAttribute('role', 'status');
     expect(weak).toHaveAttribute('aria-live', 'polite');
 
     // 9 chars → متوسطة (same node role — the live region swaps content)
     fireEvent.change(input, { target: { value: 'Madarek26' } });
-    expect(screen.getByText('قوة كلمة المرور: متوسطة')).toHaveAttribute('role', 'status');
+    expect(screen.getByText('القوة: متوسطة')).toHaveAttribute('role', 'status');
 
     // 15 chars → قوية
     fireEvent.change(input, { target: { value: 'Salam-Zawiya-26' } });
-    expect(screen.getByText('قوة كلمة المرور: قوية')).toHaveAttribute('role', 'status');
+    expect(screen.getByText('القوة: قوية')).toHaveAttribute('role', 'status');
 
     // A blocklist hit sinks the tier back to ضعيفة even at 11 chars.
     fireEvent.change(input, { target: { value: 'password123' } });
-    expect(screen.getByText('قوة كلمة المرور: ضعيفة')).toBeInTheDocument();
+    expect(screen.getByText('القوة: ضعيفة')).toBeInTheDocument();
   });
 
   /* r170g interaction: the zod floor moved to 12, so the متوسطة tier
@@ -240,15 +240,15 @@ describe('r170-e — RegisterPage live strength hint (polite, advisory only)', (
     fireEvent.change(screen.getByLabelText('الكلّيّة'), { target: { value: 'fac-1' } });
     fireEvent.change(screen.getByLabelText('القسم'), { target: { value: 'dep-1' } });
 
-    expect(screen.getByText('قوة كلمة المرور: قوية')).toBeInTheDocument();
+    expect(screen.getByText('القوة: قوية')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'إنشاء الحساب' }));
 
     await waitFor(() => {
       expect(registerState.current.mutateAsync).toHaveBeenCalledTimes(1);
     });
     // The hint stays advisory copy — never a field error / alert.
-    expect(screen.getByText('قوة كلمة المرور: قوية')).not.toHaveClass('auth-field-error');
-    expect(screen.getByText('قوة كلمة المرور: قوية')).not.toHaveAttribute('role', 'alert');
+    expect(screen.getByText('القوة: قوية')).not.toHaveClass('auth-field-error');
+    expect(screen.getByText('القوة: قوية')).not.toHaveAttribute('role', 'alert');
   });
 
   it('the teacher form carries the same hint contract (both role paths)', () => {
@@ -256,7 +256,7 @@ describe('r170-e — RegisterPage live strength hint (polite, advisory only)', (
     fireEvent.click(screen.getByRole('button', { name: /أستاذ/ }));
     const input = screen.getByLabelText(PW_LABEL);
     fireEvent.change(input, { target: { value: 'Ab1!xyz' } });
-    expect(screen.getByText('قوة كلمة المرور: ضعيفة')).toHaveAttribute('role', 'status');
+    expect(screen.getByText('القوة: ضعيفة')).toHaveAttribute('role', 'status');
   });
 });
 

@@ -187,9 +187,10 @@ describe('R320 §D — titles + per-page head metadata', () => {
     const ogUrl = mk('meta', { property: 'og:url', content: 'https://madarek.onrender.com/prev' });
 
     const { unmount } = renderPage(PrivacyPage);
-    // R355 copy diet: the privacy meta description tightened to the new copy
+    // R355 copy diet: the privacy meta description tightened; R369 C2.2
+    // public diet (0d827161) tightened it further — «ماذا نجمع ولماذا».
     expect(desc.getAttribute('content')).toBe(
-      'ما نجمعه ولماذا وأين يُخزَّن، وحقوقك.',
+      'ماذا نجمع ولماذا، وحقوقك.',
     );
     expect(canonical.getAttribute('href')).toBe('https://madarek-app.vercel.app/legal/privacy');
     expect(ogTitle.getAttribute('content')).toBe('سياسة الخصوصية');
@@ -299,8 +300,8 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
     expect(text).toContain('mdrk-ui');
     expect(text).toContain('mdrk-doc-side-w');
     expect(text).toContain('mdrk-academic-links');
-    expect(text).toContain('فلا يُمس عند الرفض');
-    expect(text).toContain('بياناتك التي كتبتَها تبقى ملكك');
+    expect(text).toContain('لا يُمس عند الرفض');
+    expect(text).toContain('بياناتك تبقى ملكك');
   });
 
   it('cookies: the 9-key table rendered VERBATIM — each key in its own dir=ltr mono cell', () => {
@@ -382,7 +383,7 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
   it('data: the synthetic-vs-real split + the capabilities ledger door', () => {
     renderPage(DataPage);
     const text = document.body.textContent ?? '';
-    expect(text).toContain('بيانات مبذورة اصطناعية بالكامل');
+    expect(text).toContain('بيانات اصطناعية بالكامل');
     expect(text).toContain('بياناتك الحقيقية');
     expect(text).toContain('@test.ly');
     const link = screen.getByRole('link', { name: /ما يعمل اليوم/ });
@@ -402,7 +403,7 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
     expect(m![0]).toContain('لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها');
     renderPage(AboutPage);
     expect(
-      screen.getByText('منصّة تعليمية تقنية مستقلّة، عربية أولًا — بيانات العرض اصطناعية بالكامل.'),
+      screen.getByText('منصّة تعليمية مستقلّة عربية أولًا — بيانات العرض اصطناعية بالكامل.'),
     ).toBeTruthy();
   });
 
@@ -415,10 +416,12 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
     expect(text).toContain('12345678');
     expect(text).toContain('خمسة أدوار');
     // the forgot-password truth: no mail is sent yet (honest, no promise)
-    expect(text).toContain('لا يوجد بريد يُرسَل من المنصّة بعد');
+    // R369 C2.2 public diet (0d827161): «لا يوجد بريد يُرسَل من المنصّة بعد»
+    // → «لا بريد يُرسَل بعد»
+    expect(text).toContain('لا بريد يُرسَل بعد');
     expect(text).toContain('تقليل الحركة');
     expect(text).toContain('/legal/*');
-    const ledgerLink = screen.getByRole('link', { name: /صفحة التخزين المحلي/ });
+    const ledgerLink = screen.getByRole('link', { name: /صفحة التخزين/ });
     expect(ledgerLink.getAttribute('href')).toBe('/legal/cookies');
   });
 
@@ -432,7 +435,8 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
       expect(text).not.toContain('12345678');
       expect(text).not.toContain('@test.ly');
       // the honest reset truth survives the gate — the promise, not the secret
-      expect(text).toContain('لا يوجد بريد يُرسَل من المنصّة بعد');
+      // R369 C2.2 public diet: same claim tightened («لا بريد يُرسَل بعد»)
+      expect(text).toContain('لا بريد يُرسَل بعد');
       expect(text).toContain('الحساب الذي وصلك');
     } finally {
       (import.meta.env as { DEV: boolean }).DEV = dev;
@@ -441,7 +445,7 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
 
   it('contact: the early-access register form IS the channel — zero invented email/phone/social', () => {
     renderPage(ContactPage);
-    const register = screen.getAllByRole('link', { name: /نموذج إنشاء الحساب الجامعي/ });
+    const register = screen.getAllByRole('link', { name: /نموذج إنشاء الحساب/ });
     expect(register[0]?.getAttribute('href')).toBe('/auth/register');
     const text = document.body.textContent ?? '';
     expect(text).toContain('لا بريد عام');
@@ -545,7 +549,7 @@ describe('R320 §D — every wiring point', () => {
     // the old honest prose moved onto the /contact page, not deleted
     // R355 copy diet: same claim (no channel yet, the register form is it), tightened
     expect(read('src/pages/PublicPages.tsx')).toContain('لا بريد عام بعد');
-    expect(read('src/pages/PublicPages.tsx')).toContain('نموذج إنشاء الحساب الجامعي');
+    expect(read('src/pages/PublicPages.tsx')).toContain('نموذج إنشاء الحساب');
   });
 
   it('ConsentBanner «اعرف أكثر» retargets /capabilities → /legal/cookies', () => {
