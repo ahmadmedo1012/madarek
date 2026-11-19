@@ -1,0 +1,45 @@
+{
+ "generatedAt": "2026-11-19T13:30:49.749Z",
+ "url": "http://127.0.0.1:5356/",
+ "seed": "student",
+ "cpuThrottle": 4,
+ "limitMs": 50,
+ "cells": {
+  "/student/dashboard@1440": {
+   "frames": 0,
+   "worstMs": 0,
+   "over50": 0,
+   "worst": null
+  },
+  "/student/dashboard@390": {
+   "frames": 0,
+   "worstMs": 0,
+   "over50": 0,
+   "worst": null
+  },
+  "/student/courses@1440": {
+   "frames": 0,
+   "worstMs": 0,
+   "over50": 0,
+   "worst": null
+  },
+  "/student/courses@390": {
+   "frames": 0,
+   "worstMs": 0,
+   "over50": 0,
+   "worst": null
+  },
+  "/student/library@1440": {
+   "frames": 0,
+   "worstMs": 0,
+   "over50": 0,
+   "worst": null
+  },
+  "/student/library@390": {
+   "frames": 0,
+   "worstMs": 0,
+   "over50": 0,
+   "worst": null
+  }
+ }
+}

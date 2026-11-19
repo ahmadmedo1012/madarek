@@ -62,6 +62,8 @@ import {
   PERSON_HISTORY,
   RESUME,
   DISCOVER_RESULTS,
+  LIBRARY_BOOKS,
+  LIBRARY_RESEARCH,
   STUDENT_DASHBOARD,
   STUDENT_PERSON,
   STUDENT_USER,
@@ -162,6 +164,16 @@ export function standardRoutes(): MockRouteDef[] {
     { method: 'POST', path: '/notifications/read-all', json: ok({ updated: UNREAD_COUNT }) },
 
     { method: 'GET', path: '/search/discover', json: ok(DISCOVER_RESULTS) },
+    /* R369 (C1 · the mail-fixture precedent): the library's three GETs
+     * 501'd in every hermetic run — the /student/library conformance
+     * cells measured the ERROR state while the fixtures existed unused
+     * (LIBRARY_BOOKS/LIBRARY_RESEARCH exported since r165h, never
+     * wired). Honest corpus: 2 books + 1 published paper + empty
+     * loans. */
+    { method: 'GET', path: '/library/books', json: ok(LIBRARY_BOOKS) },
+    { method: 'GET', path: '/me/loans', json: ok([]) },
+    { method: 'GET', path: '/research/published', json: ok(LIBRARY_RESEARCH) },
+
 
     /* r165h: r164c's resume-hero fallback arm reads the training
      * catalog on every student dashboard visit — the integrated tree
