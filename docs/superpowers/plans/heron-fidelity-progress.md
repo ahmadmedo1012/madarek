@@ -1053,3 +1053,22 @@ T10 with the row reasons as proof — never a silent pass.
 4. T5/T7: re-check for local-agent branches each wave; execute in-house if still
    absent (separate wip branches).
 5. T10 acceptance with real outputs.
+
+### Instrument finding #5 — fixed (the reference why band is DYNAMIC)
+
+`div.home-why-wrap` on the live reference GROWS with its pinned scrub — measured
+directly on the live stage this host: 698 px at load, 1592 px at its entry offset
+in one walk, 1145 px in the wave-2 walk (observer timing), 2487 px at the stage
+end (= the frozen spec's 2487 exactly). The census snapshot (and the entry-rect
+fallback) therefore seated why's position states at the WRONG internal progress
+(wave-2: mid30 at +343 px on a 1145 px base while our side sat at +746 px on its
+2488 px static band). Fix (lead-owned `fidelity.mjs`, law untouched — 38/38
+fixtures green): the census now polls the section boxes at the stage end until
+stable and records `settledHeights`; the reference capture derives state deltas
+from the SETTLED height (static sections read identical values — verified against
+the frozen spec: problem 743 / cta 698 / footer 711 / map 6300 / hero 887 @1440).
+Scoped re-capture (`.r368-tmp/why-a`, both sides fresh, 1440): reference height
+2487, mid30 target 10115 (was 9711), mid60 10861 (was 10054); E entry 73.7 ·
+mid30 71.4 · mid60 69.7 (was 74.0 / 74.3 / 63.9) — the protocol now compares
+matched internal progress; the remaining why gap is content/tonal (our 4-row
+track vs the reference's OBSERVE→ADVISE pinned stages), carried to the seat loop.

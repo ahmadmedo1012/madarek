@@ -663,7 +663,34 @@ async function referenceCensus(page) {
   const boxes = await refBoxes(page);
   const heights = {};
   for (const [k, b] of Object.entries(boxes)) heights[k] = b.h;
-  return { steps: steps.length, maxOffset, bestStep, contentTopsDiagnostic, heights, anchor0 };
+  /* R368 finding #5 — SETTLED heights. Some reference sections are
+   * DYNAMIC: div.home-why-wrap grows with its pinned scrub (measured on
+   * the live stage: 698 px at load, 1592 px at its entry offset in one
+   * walk and 1145 px in another — observer timing — and 2487 px at the
+   * stage end, exactly the frozen spec's 2487). A height snapshot taken
+   * mid-walk is neither cross-run reproducible nor the section's own
+   * deterministic geometry, and the position deltas built on it seat
+   * states at the WRONG internal progress (why mid30 at +343 px instead
+   * of +746 px). The law's escape for non-reproducible states is the
+   * reviewed frozen measurement — the fully-built stage-end geometry is
+   * its live equivalent: we poll the boxes at the stage end until they
+   * stop changing (dynamic sections finish building), and the capture
+   * derives its state deltas from those SETTLED heights. Static sections
+   * read identical values (verified against the frozen spec: problem 743,
+   * cta 698, footer 711, map 6300, hero 887 at 1440), so nothing else
+   * moves. */
+  let settledBoxes = boxes;
+  for (let i = 0; i < 12; i++) {
+    await page.waitForTimeout(700);
+    const next = await refBoxes(page);
+    const sig = JSON.stringify(next);
+    if (sig === JSON.stringify(settledBoxes)) break;
+    settledBoxes = next;
+  }
+  const settledHeights = {};
+  for (const [k, b] of Object.entries(settledBoxes)) settledHeights[k] = b.h;
+  const dynamicSections = Object.keys(settledHeights).filter((k) => settledHeights[k] !== heights[k]);
+  return { steps: steps.length, maxOffset, bestStep, contentTopsDiagnostic, heights, settledHeights, dynamicSections, anchor0 };
 }
 
 const refRectOf = (page, sel) => page.evaluate((s) => {
@@ -835,9 +862,13 @@ async function captureReferenceSide(browser, dir, bp, census) {
         rows[key] = { ok: crop.ok, reason: crop.ok ? undefined : crop.reason, entryOffset: land.offset, height: rect.height, states: stateRows };
         continue;
       }
-      // entry achieved: capture it, then the position states from the achieved offset
+      // entry achieved: capture it, then the position states from the achieved offset.
+      // R368 finding #5: the delta base is the SETTLED height (the census's
+      // stage-end stable geometry — deterministic for dynamic sections like
+      // the why wrap, identical for static ones); the live rect at landing
+      // stays recorded as the entry-moment box.
       const rect = await refRectOf(page, sel);
-      const height = rect?.height ?? heights[key] ?? 1;
+      const height = census.settledHeights?.[key] ?? rect?.height ?? heights[key] ?? 1;
       const file = join(dir, `${key}.${bp.name}.entry.png`);
       const crop = await sectionCrop(page, sel, file);
       stateRows.entry = {
