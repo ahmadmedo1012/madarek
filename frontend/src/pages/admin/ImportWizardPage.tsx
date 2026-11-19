@@ -365,6 +365,11 @@ export function ImportWizardPage() {
       <PageHeader
         title="استيراد الطلاب"
         description="لا شيء يُكتب قبل تأكيدك."
+        /* R369 (C1 · the D11 register): [05] shared with the students
+         * parent (the wizard opens from «استيراد الطلاب» on /admin/
+         * students — the OwnerInstitutions 04 precedent). */
+        index="05"
+        eyebrow="إدارة الطلاب"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'استيراد الطلاب' }]}
       />
 
@@ -424,7 +429,14 @@ export function ImportWizardPage() {
             }}
           />
           <p className="iw-hint">
-            <a href="/api/v1/import/templates/STUDENT" download>تحميل القالب (Excel)</a>
+            {/* R369 (C1 · the D8 family law): the step-1 prep verb rides
+             * the accent register — the only enabled primary action in
+             * the initial state («متابعة» stays honestly disabled until
+             * a file parses; a disabled button never wipes). The raw
+             * --accent text link it replaces also failed AA (3.76:1). */}
+            <a className="btn accent sm" href="/api/v1/import/templates/STUDENT" download>
+              <Download size={14} aria-hidden="true" /> تحميل القالب (Excel)
+            </a>
           </p>
           {busy && parsed === null && <p className="iw-busy" role="status">جارٍ تحليل الملف…</p>}
           {parsed !== null && (

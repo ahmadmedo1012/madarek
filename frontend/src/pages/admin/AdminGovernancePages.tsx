@@ -18,7 +18,7 @@ import {
   AlertCircle, Sparkles, Briefcase, Building2, Users, Crown, BookOpen,
   X,
 } from 'lucide-react';
-import { Card, Badge, UserAvatar, AlertRow, FormField, PageHeader } from '../../components/primitives';
+import { Card, Badge, UserAvatar, AlertRow, FormField } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import {
@@ -26,8 +26,9 @@ import {
 } from '../../components/primitives/States';
 /* r251 (Phase B): the teachers page composes Agent S's frozen patterns
  * (SplitView + RowList/RowItem + FilterBar + StatLine + PageFrame +
- * patterns/PageHeader). The primitives PageHeader above stays imported —
- * the permissions editor (same file) still rides it until its own pass. */
+ * patterns/PageHeader). R369 (C1): the permissions editor migrated to
+ * the patterns PageHeader too — the primitives import above retires
+ * from this file. */
 import {
   PageFrame,
   PageHeader as PatternsPageHeader,
@@ -1026,18 +1027,30 @@ export function AdminPermissionsPage() {
 
   return (
     <div className="page r305ao">
-      <Link to="/admin/teachers" className="back-link">
-        <Icon icon={ChevronRight} size={14} /> العودة للأساتذة
-      </Link>
-
       {/* r190-D3: the page finally owns a masthead — the editor used to
           * open straight onto a back-link + card (NO h1: the only admin
           * route without one — axe page-has-heading-one). The h1 names
           * the USER (same contract as the tab title above); the mono
-          * meta line carries the role + email facts. */}
-      <PageHeader
-        title={<>{data.user.firstName} {data.user.lastName}</>}
+          * meta line carries the role + email facts.
+          * R369 (C1 · the D11 register): migrated to the patterns
+          * PageHeader — [02] shared with the teachers parent (the
+          * OwnerInstitutions 04 precedent), the sector eyebrow, and
+          * breadcrumbs that retire the hand-rolled back-link above. */}
+      <PatternsPageHeader
+        title={`${data.user.firstName} ${data.user.lastName}`}
         meta={<>{roleLabel} · <bdi>{data.user.email}</bdi></>}
+        index="02"
+        eyebrow="الأدوار والصلاحيات"
+        breadcrumbs={[{ label: 'إدارة الأساتذة', to: '/admin/teachers' }, { label: 'الصلاحيات' }]}
+        actions={(
+          /* R369 (C1 · D11 standing action): the editor's ONE honest
+           * next surface — the staff directory (the sibling surface
+           * where every user record lives). */
+          <Link to="/admin/directory" className="btn accent sm">
+            <Icon icon={Users} size={13} />
+            دليل التواصل
+          </Link>
+        )}
       />
 
       {/* R190-D3: the icon-box MetricCard trio → the typographic stat

@@ -833,7 +833,7 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 .r305ao .iw-step-num {
   display: inline-grid; place-items: center;
   inline-size: 22px; block-size: 22px; border-radius: 999px;
-  border: 1px solid var(--rule); font-size: 12px;
+  border: 1px solid var(--rule); font-size: var(--fs-sm); /* R369: on the type ladder (was raw 12px) */
 }
 .r305ao .iw-steps li[data-state='done'] .iw-step-num { border-color: var(--success); }
 
@@ -866,7 +866,7 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
   min-height: 44px; /* touch law */
 }
 .r305ao .iw-preset-chip.unverified { border-style: dashed; }
-.r305ao .iw-preset-cov { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); }
+.r305ao .iw-preset-cov { font-family: var(--font-mono); font-size: var(--fs-mono-sm); color: var(--text-muted); } /* R369: mono rung, was raw 12px */
 .r305ao .iw-preset-unverified { font-size: 11px; color: var(--danger); }
 
 .r305ao .iw-table-wrap {
@@ -925,7 +925,18 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
   color: var(--danger); margin: 0 0 var(--space-2);
 }
 .r305ao .iw-hint { margin: var(--space-2) 0 0; font-size: 13px; color: var(--text-secondary); line-height: 1.9; }
-.r305ao .iw-hint a { color: var(--accent, currentColor); }
+/* R369 (C1 · the AA text seat): the hint links ride accent-strong
+   on light (the raw --accent orange measured 3.76:1 on white) with
+   the paired hover channels the app's quiet-link grammar uses.
+   :not(.btn) keeps the accent CTA's own token seat untouched. */
+.r305ao .iw-hint a:not(.btn) { color: var(--accent-strong); border-block-end: 1px solid transparent; }
+@media (hover: hover) and (pointer: fine) {
+  .r305ao .iw-hint a:not(.btn):hover { color: var(--primary); border-block-end-color: var(--accent-strong); }
+}
+html[data-theme='dark'] .r305ao .iw-hint a:not(.btn) { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme='dark'] .r305ao .iw-hint a:not(.btn):hover { color: var(--accent-strong); border-block-end-color: var(--accent); }
+}
 .r305ao .iw-busy { margin: var(--space-2) 0 0; color: var(--text-muted); }
 .r305ao .iw-instpick { margin-block-end: var(--space-3); }
 .r305ao .iw-instpick label, .r305ao .iw-sheet label { display: block; margin-block-end: 6px; font-size: 13px; }
@@ -1018,7 +1029,7 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
   text-decoration: underline dotted;
 }
 
-.r305ao .mail-error { display: block; margin-top: 4px; font-size: 12px; color: var(--danger); }
+.r305ao .mail-error { display: block; margin-top: 4px; font-size: var(--fs-xs); color: var(--danger); } /* R369: on the ladder, was raw 12px */
 
 .r305ao .r350-e6-actions { display: inline-flex; gap: 8px; flex-wrap: wrap; }
 
@@ -1048,4 +1059,4 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 }
 
 .r305ao .r350-e6-note { margin: 12px 0 0; font-size: 13px; color: var(--text-secondary); line-height: 1.9; }
-.r305ao .r350-e6-note code { font-size: 12px; padding: 1px 5px; border: 1px solid var(--rule); margin-inline-start: 4px; }
+.r305ao .r350-e6-note code { font-size: var(--fs-xs); padding: 1px 5px; border: 1px solid var(--rule); margin-inline-start: 4px; } /* R369: on the ladder, was raw 12px */

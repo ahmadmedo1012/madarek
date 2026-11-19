@@ -136,6 +136,11 @@ export function PeopleDirectoryPage() {
     <PageFrame width="default">
       <PageHeader
         title="الدليل"
+        /* R369 (C1 · the D11 register): [08] = the ADMIN_NAV console
+         * register's free slot (01–07, 09 taken); the sector eyebrow
+         * classifies the surface like the owner detail precedent. */
+        index="08"
+        eyebrow="خدمات المؤسسة"
         actions={(
           <>
             {canEditFields && (
@@ -148,8 +153,11 @@ export function PeopleDirectoryPage() {
                 {fieldsOpen ? 'إخفاء الحقول' : 'الحقول المخصصة'}
               </button>
             )}
+            {/* R369 (C1 · the D8 family law): the roster's ONE standing
+             * verb rides the accent register (primary/accent share the
+             * same token seat — zero visual change, the CTA registers). */}
             <button
-              type="button" className="btn primary sm" disabled={exporting !== null}
+              type="button" className="btn accent sm" disabled={exporting !== null}
               onClick={() => void doExport('xlsx')}
             >
               <Icon icon={FileSpreadsheet} size={13} />
@@ -683,6 +691,22 @@ export function StudentFilePage() {
       <PageHeader
         title={p.nameAr ?? `${p.user.firstName} ${p.user.lastName}`}
         description={`رقم القيد ${p.universityId}`}
+        /* R369 (C1 · the D11 parent-child register): the person file
+         * shares the directory's [08] (the OwnerInstitutions 04
+         * precedent) and gains the sector eyebrow the topbar kicker
+         * cannot carry on a dynamic route. */
+        index="08"
+        eyebrow="الشؤون الأكاديمية"
+        breadcrumbs={[{ label: 'دليل التواصل', to: '/admin/directory' }, { label: 'الملف' }]}
+        actions={(
+          /* R369 (C1 · D11 standing action): the record's ONE honest
+           * next surface — the students console where the enrollment
+           * verbs live (the governance CTA precedent). */
+          <Link to="/admin/students" className="btn accent sm">
+            <Icon icon={GraduationCap} size={13} />
+            إدارة الطلاب
+          </Link>
+        )}
       />
       <StatLine
         items={[

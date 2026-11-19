@@ -2131,6 +2131,16 @@
     color: var(--text-muted);
     line-height: 1.4;
   }
+  /* R369 (C1): the FormField error copy rule the 21-b comment points
+     at ("reuses .form-field-error above") — the rule itself was lost
+     in a later sweep, leaving primitive errors to inherit body ink.
+     Restored with the status-ink text seat (the .auth-field-error
+     contract: -ink tokens, AA in both themes — never the raw fill). */
+  .form-field-error {
+    font-size: var(--fs-xs);
+    color: var(--danger-ink);
+    line-height: 1.4;
+  }
 
   /* ── .btn.success — completes the variant set (.btn.danger already
      exists, audit 0-e P1-28 wanted both). Ground = --success-ink so

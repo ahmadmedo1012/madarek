@@ -82,7 +82,10 @@
   gap: var(--sp-0-5);
   margin-top: var(--sp-1);
   font-size: var(--fs-xs, 0.75rem);
-  color: var(--danger, var(--error));
+  /* R369 (C1 · the AA text seat): status TEXT consumes the -ink
+     tokens (the .auth-field-error contract) — the raw --danger fill
+     measured 3.98:1 on the paper. */
+  color: var(--danger-ink, var(--danger, var(--error)));
 }
 
 /* ── the visibility radiogroup (الأمان) ────────────────────────── */

@@ -13,6 +13,7 @@
  * page. Data: the mail-admin hooks (platform-level, 30s status polling).
  */
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { apiErrorMessage } from '../../lib/format';
 import { toast } from '../../lib/toast';
 import { formatDate } from '../../utils/numbers';
@@ -77,14 +78,36 @@ function StatusPill({ status }: { status: string }) {
 }
 
 export function AdminMailPage() {
+  const queryClient = useQueryClient();
   return (
     <div className="page r305ao">
       <PageHeader
         title="البريد"
+        /* R369 (C1 · the D11 register): [10] = the ADMIN_NAV console
+         * register's next free slot after settings' 09. */
+        index="10"
+        eyebrow="النظام · البريد"
         breadcrumbs={[
           { label: 'لوحة المسجل العام', to: '/admin/dashboard' },
           { label: 'البريد' },
         ]}
+        actions={(
+          /* R369 (C1 · the D8 family law + the first-viewport contract):
+           * the console's ONE standing verb rides the accent register
+           * IN THE HEADER — the log-card seat it first shipped in sat
+           * under the fixed bottom nav at 390 (40 of its 44px covered,
+           * unmeasured hover). One verb refreshes the whole console
+           * (every mail-admin query); the test-send submit stays
+           * honestly disabled until the address is typed. */
+          <button
+            type="button"
+            className="btn accent sm"
+            onClick={() => void queryClient.invalidateQueries({ queryKey: ['mail-admin'] })}
+            aria-label="تحديث البريد"
+          >
+            <RefreshCw aria-hidden /> تحديث
+          </button>
+        )}
       />
       <ProviderStatusCard />
       <DeliveryLogCard />
