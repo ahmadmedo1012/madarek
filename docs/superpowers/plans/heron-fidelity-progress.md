@@ -806,3 +806,47 @@ Seat E 48.5 → **54.6** (T 100 %, 7/7). The 390 mid60/exit regressions are
 the 26px section-height excess (ours 995 vs reference 969) accumulating
 in the fractional seat: the plates match at entry/mid30 but the lower
 states drift. Recorded for the next pass (the 390 row-height audit).
+
+### Instrument finding #3 (fixed) — the live masks were bounded and scaled by the wrong grid
+
+`sectionCrop()` overwrites `clip.w/h` with the STORED (≤480px policy) file
+dims and keeps the CSS dims in `captureW/captureH`. `liveTextMasks()` bounded
+its rects against the stored dims (dropping almost every right/lower text
+run), and the scorer divided by the stored dims again while multiplying masks
+(CSS px) onto the stored grid (`maskK = refFull.width / clip.w` = 1). Result:
+non-entry mask sets were starved and mis-scaled — every mid/exit E carried the
+reference's text mass raw, and some pairs crossed the mask-share cap for the
+wrong reason.
+
+Fix (instrument, no law change): bound at capture by `captureW/captureH`, and
+scale CSS-px masks onto the stored grid by the capture→stored ratio. Masks
+still derive from the reference side only and are recorded before scoring.
+
+Because masks are recorded AT CAPTURE, the committed reference evidence
+could not be repaired; a fresh paired capture was taken as the working
+baseline (`full-base`, every number from this host this run):
+
+**E 59.0 · T 98.3 % · Q 100** (was 56.6 before this fix under the old
+evidence; the delta is the corrected masks + the fresh reference pass).
+
+| seat | E | T |
+|---|---|---|
+| problem | 71.6 | 100 % |
+| cta | 65.2 | 100 % |
+| why | 64.0 | 100 % |
+| hero | 62.7 | 100 % |
+| chrome | 61.0 | 100 % |
+| usecase | 60.3 | 100 % |
+| platform | 54.5 | 100 % |
+| map | 52.0 | 100 % |
+| footer | 49.9 | 75 % |
+| intro | 48.4 | 100 % |
+
+E-refused (mask cap) pairs: hero@390:mid60 (0.7) and map@390:exit (0.6) —
+both genuine reference text coverage, recorded and T-covered. The
+`pairs.test.mjs` + `gates.test.mjs` suites stay green (38/38).
+
+Comparability note: numbers taken before this entry were measured against
+the older reference capture and the buggy mask scaling; they remain valid as
+directional before/after within their own run but are not comparable to the
+`full-base` table above.
