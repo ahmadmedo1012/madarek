@@ -225,6 +225,12 @@
        the first (hover:hover)+(pointer:fine) band, so every :hover in
        this sheet must live inside it. */
     button.msg-row-open:hover .list-row-title { text-decoration: underline; }
+    /* r368 T6-a (§9): the ghost hover's NIGHT step — same single guard
+       block; the [data-theme='dark'] specificity outranks the light
+       step above regardless of source order. */
+    [data-theme='dark'] .r305g-level .btn.ghost:hover {
+      background: color-mix(in srgb, var(--neutral-800) 10%, transparent);
+    }
   }
 
   /* ── §5 · arvr — the honest catalog rows ──────────────────────────
@@ -344,8 +350,9 @@
      --neutral-900), which was "theme-proof by construction" only while
      the deep band pole-INVERTED in dark. R345 E1 re-based the night
      band on the elevated rung (neutral-150 ground + neutral-800 ink —
-     heron.css §R345-E1) and every one of these seats went dark-on-dark:
-     #2E2E2E on #3D3D3D = 1.25:1, axe color-contrast SERIOUS on
+     heron.css §R345-E1) and every one of these seats went dark-on-dark
+     (the neutral-900 ink on the raised neutral-150 ground measured
+     1.25:1, axe color-contrast SERIOUS on
      /student/{profile,gamification,university} in dark. The night
      counterparts mirror the E1 recipe the band itself uses (neutral-800
      + the same 85/72 mix strengths toward neutral-150; measured 8.21 /
@@ -383,13 +390,11 @@
   [data-theme='dark'] .r305u-fact {
     border-block-end-color: color-mix(in srgb, var(--neutral-800) 16%, transparent);
   }
-  /* The ghost hover's night step (kept inside the sheet's single
-     hover-guard contract — the gate reads the first band). */
-  @media (hover: hover) and (pointer: fine) {
-    [data-theme='dark'] .r305g-level .btn.ghost:hover {
-      background: color-mix(in srgb, var(--neutral-800) 10%, transparent);
-    }
-  }
+  /* The ghost hover's night step: joined into the sheet's ONE guarded
+     hover block above (the gate contract reads the first
+     (hover:hover)+(pointer:fine) band — every :hover in this sheet
+     lives inside it; the [data-theme='dark'] specificity outranks the
+     light step regardless of source order). */
 }
 
 /* ═══════════════════════════════════════════════════════════════════

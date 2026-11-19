@@ -41,6 +41,15 @@ const SCAN_FILES = [
 const EXCLUDE_DIR_PARTS = ['node_modules', 'archive', 'redesign'];
 const EXCLUDE_FILE_RE = [/\.png$|\.jpg$|\.jpeg$|\.webp$|\.gif$|\.ico$|\.pdf$|\.zip$/];
 const SCAN_EXT_RE = /\.(ts|tsx|js|mjs|cjs|css|scss|json|md|ya?ml|html|svg|sql|sh|txt)$/;
+/* R369 A-fix: measurement artifacts under docs/audit/evidence/ (conformance
+ * baselines, probe dumps) embed MACHINE-CAPTURED echoes of rendered UI text
+ * — the phrase's SOURCE (frontend/backend/shared/scripts) is scanned below,
+ * so re-policing the captured copies enforces nothing and breaks the gate on
+ * every new baseline (r368 T6 wave6 student baselines carried the covered
+ * PaymentPage «إعلانات الإدارة الماليّة» string and CI went red). Prose
+ * (.md) inside evidence stays scanned — human-written notes must still use
+ * the ledgered terms. */
+const EXCLUDE_PATH_RE = /^docs\/audit\/evidence\/.*\.(json|csv)$/;
 
 const RE = /ال[إأا]دارة/g;
 
@@ -88,6 +97,7 @@ for (const root of SCAN_ROOTS) {
   for (const f of walk(abs)) {
     files += 1;
     const rel = path.relative(ROOT, f).replaceAll('\\', '/');
+    if (EXCLUDE_PATH_RE.test(rel)) continue;
     const text = fs.readFileSync(f, 'utf8');
     for (const m of text.matchAll(RE)) {
       const idx = m.index ?? 0;

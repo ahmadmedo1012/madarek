@@ -95,12 +95,22 @@ export function Concepts() {
    * idempotent writes. The field draws across the band's first
    * third of traversal; the route across the last third — a reading
    * pause owns the middle. Reduced motion: the driver bails entirely
-   * and the CSS defaults (complete drawings) stand. */
+   * and the CSS defaults (complete drawings) stand.
+   *
+   * R369 A-retune: the T8 copy diet (54cedd00, C2) retired the ACT-01
+   * prose restatement — the band's measured geometry shortened and the
+   * route's draw window [0.44, 0.78] no longer closed its last leg by
+   * the band's deterministic end seat (measured live @1440: traversal
+   * 0.6046 at the disclose seat vs the last leg's 0.6066 completion —
+   * the leg stopped 1/15 short, e2e r308:204 red on both retries).
+   * The window narrows 0.34 → 0.32 (still the band's last third; the
+   * last leg now completes at traversal 0.5968, 19px of margin under
+   * the end seat). No pinned value depends on the old span. */
   useSheetScroll(rootRef, ({ traversal }) => {
     const el = rootRef.current;
     if (!el || prefersReduced()) return;
     const f = clamp(traversal / 0.34, 0, 1).toFixed(4);
-    const r = clamp((traversal - 0.44) / 0.34, 0, 1).toFixed(4);
+    const r = clamp((traversal - 0.44) / 0.32, 0, 1).toFixed(4);
     if (f !== lastRef.current.f) {
       el.style.setProperty('--cf-p', f);
       lastRef.current.f = f;

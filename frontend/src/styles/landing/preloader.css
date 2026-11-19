@@ -194,6 +194,15 @@
   color: var(--text-muted);
   cursor: pointer;
   transition: color var(--t-fast), border-color var(--t-fast);
+  /* R369 A-fix (the r368 root-box fix's missed child): the loader root
+     is pointer-transparent (495fc340 — the invisible full-viewport sheet
+     stopped swallowing the first tap), and that made the ONE interactive
+     child transparent too — the skip click fell through to whatever
+     sat underneath (the hero blueprint's bp-drawable rect at 1440;
+     measured: e2e r308:57/r309:550 retried "element intercepts pointer
+     events" for the full 45s budget, CI red on both r368 leaf tips).
+     The button alone re-arms its own events; the root stays clear. */
+  pointer-events: auto;
 }
 
 /* R354-UI: hover ink takes the AA text seat (--accent-ink); the border
